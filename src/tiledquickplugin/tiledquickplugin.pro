@@ -44,6 +44,7 @@ HEADERS += \
     tiledquickplugin.h \
     mapitem.h \
     maploader.h \
+    mapref.h \
     tilelayeritem.h \
     tilesnode.h
 

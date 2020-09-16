@@ -35,10 +35,12 @@ void TiledQuickPlugin::registerTypes(const char *uri)
 {
     // @uri org.mapeditor.Tiled
 
-    qmlRegisterType<Tiled::Map>(uri, 1, 0, "Map");
-    qmlRegisterType<Tiled::MapObject>(uri, 1, 0, "MapObject");
-    qmlRegisterType<Tiled::ObjectGroup>(uri, 1, 0, "ObjectGroup");
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    qmlRegisterType<MapRef>();
+#else
+    qmlRegisterAnonymousType<MapRef>(uri, 1);
+#endif
 
-    qmlRegisterType<TiledQuick::MapLoader>(uri, 1, 0, "MapLoader");
-    qmlRegisterType<TiledQuick::MapItem>(uri, 1, 0, "MapItem");
+    qmlRegisterType<MapLoader>(uri, 1, 0, "MapLoader");
+    qmlRegisterType<MapItem>(uri, 1, 0, "MapItem");
 }

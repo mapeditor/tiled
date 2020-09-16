@@ -270,6 +270,17 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
                                       const TileLayer *layer,
                                       const QRectF &exposed) const
 {
+    CellRenderer renderer(painter, this, layer->effectiveTintColor(), CellRenderer::HexagonalCells);
+    auto tileRenderFunction = [&renderer](const Cell &cell, const QPointF &pos, const QSizeF &size) {
+        renderer.render(cell, pos, size, CellRenderer::BottomLeft);
+    };
+    drawTileLayer(layer, tileRenderFunction, exposed);
+}
+
+void HexagonalRenderer::drawTileLayer(const TileLayer *layer,
+                                      const RenderTileCallback &renderTile,
+                                      const QRectF &exposed) const
+{
     const RenderParams p(map());
 
     QRect rect = exposed.toAlignedRect();
@@ -307,8 +318,6 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
     if (inLeftHalf)
         startTile.rx()--;
 
-    CellRenderer renderer(painter, this, CellRenderer::HexagonalCells);
-
     const int endX = map()->infinite() ? layer->bounds().right() - layer->x() + 1 : layer->width();
     const int endY = map()->infinite() ? layer->bounds().bottom() - layer->y() + 1 : layer->height();
 
@@ -331,9 +340,9 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
                 const Cell &cell = layer->cellAt(rowTile);
 
                 if (!cell.isEmpty()) {
-                    Tile *tile = cell.tile();
-                    QSize size = tile ? tile->size() : map()->tileSize();
-                    renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
+                    const Tile *tile = cell.tile();
+                    const QSize size = tile ? tile->size() : map()->tileSize();
+                    renderTile(cell, rowPos, size);
                 }
 
                 rowPos.rx() += p.tileWidth + p.sideLengthX;
@@ -376,9 +385,9 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
                 const Cell &cell = layer->cellAt(rowTile);
 
                 if (!cell.isEmpty()) {
-                    Tile *tile = cell.tile();
-                    QSize size = tile ? tile->size() : map()->tileSize();
-                    renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
+                    const Tile *tile = cell.tile();
+                    const QSize size = tile ? tile->size() : map()->tileSize();
+                    renderTile(cell, rowPos, size);
                 }
 
                 rowPos.rx() += p.tileWidth + p.sideLengthX;
@@ -394,8 +403,7 @@ void HexagonalRenderer::drawTileSelection(QPainter *painter,
                                           const QColor &color,
                                           const QRectF &exposed) const
 {
-    painter->setBrush(color);
-    painter->setPen(Qt::NoPen);
+    QPainterPath path;
 
 #if QT_VERSION < 0x050800
     const auto rects = region.rects();
@@ -407,10 +415,21 @@ void HexagonalRenderer::drawTileSelection(QPainter *painter,
             for (int x = r.left(); x <= r.right(); ++x) {
                 const QPolygonF polygon = tileToScreenPolygon(x, y);
                 if (QRectF(polygon.boundingRect()).intersects(exposed))
-                    painter->drawConvexPolygon(polygon);
+                    path.addPolygon(polygon);
             }
         }
     }
+
+    QColor penColor(color);
+    penColor.setAlpha(255);
+
+    QPen pen(penColor);
+    pen.setCosmetic(true);
+
+    painter->setPen(pen);
+    painter->setBrush(color);
+    painter->setRenderHint(QPainter::Antialiasing, true);
+    painter->drawPath(path.simplified());
 }
 
 QPointF HexagonalRenderer::tileToPixelCoords(qreal x, qreal y) const

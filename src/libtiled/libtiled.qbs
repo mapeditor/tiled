@@ -13,17 +13,32 @@ DynamicLibrary {
 
     cpp.cxxLanguageVersion: "c++14"
     cpp.visibility: "minimal"
-    cpp.defines: [
-        "TILED_LIBRARY",
-        "QT_NO_CAST_FROM_ASCII",
-        "QT_NO_CAST_TO_ASCII",
-        "QT_NO_URL_CAST_FROM_STRING",
-        "_USE_MATH_DEFINES"
-    ]
+    cpp.defines: {
+        var defs = [
+            "TILED_LIBRARY",
+            "QT_NO_CAST_FROM_ASCII",
+            "QT_NO_CAST_TO_ASCII",
+            "QT_NO_URL_CAST_FROM_STRING",
+            "_USE_MATH_DEFINES",
+        ]
+
+        if (project.enableZstd)
+            defs.push("TILED_ZSTD_SUPPORT");
+
+        return defs;
+    }
+
+    cpp.includePaths: [ "../../zstd/lib" ]
 
     Properties {
         condition: qbs.targetOS.contains("macos")
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
+    }
+
+    Properties {
+        condition: project.enableZstd
+        cpp.staticLibraries: ["zstd"]
+        cpp.libraryPaths: ["../../zstd/lib"]
     }
 
     Properties {
@@ -35,6 +50,7 @@ DynamicLibrary {
     files: [
         "compression.cpp",
         "compression.h",
+        "containerhelpers.h",
         "fileformat.cpp",
         "fileformat.h",
         "filesystemwatcher.cpp",
@@ -57,6 +73,7 @@ DynamicLibrary {
         "isometricrenderer.h",
         "layer.cpp",
         "layer.h",
+        "logginginterface.cpp",
         "logginginterface.h",
         "map.cpp",
         "map.h",
@@ -72,6 +89,8 @@ DynamicLibrary {
         "maptovariantconverter.h",
         "mapwriter.cpp",
         "mapwriter.h",
+        "minimaprenderer.cpp",
+        "minimaprenderer.h",
         "object.cpp",
         "object.h",
         "objectgroup.cpp",

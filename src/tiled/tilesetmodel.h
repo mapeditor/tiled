@@ -111,10 +111,7 @@ public:
      */
     void tilesetChanged();
 
-    /**
-     * Performs a reset on the model.
-     */
-    void resetModel();
+    void setColumnCountOverride(int columnCount);
 
 public slots:
     /**
@@ -142,6 +139,7 @@ private:
 
     Tileset *mTileset;
     QList<int> mTileIds;
+    int mColumnCountOverride = 0;
 };
 
 } // namespace Tiled

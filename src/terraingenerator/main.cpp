@@ -66,7 +66,7 @@ struct CommandLineOptions {
 static void showHelp()
 {
     // TODO: Make translatable
-    qWarning() <<
+    qInfo() <<
             "Usage: terraingenerator [options]\n\n"
             "Options:\n"
             "  -h --help        : Display this help.\n"
@@ -87,8 +87,8 @@ static void showHelp()
 
 static void showVersion()
 {
-    qWarning().noquote() << "Terrain Generator"
-                         << QCoreApplication::applicationVersion();
+    qInfo().noquote() << "Terrain Generator"
+                      << QCoreApplication::applicationVersion();
 }
 
 static bool parseCommandLineArguments(CommandLineOptions &options)
@@ -354,9 +354,9 @@ int main(int argc, char *argv[])
 {
     QGuiApplication a(argc, argv);
 
-    a.setOrganizationDomain(QLatin1String("mapeditor.org"));
-    a.setApplicationName(QLatin1String("TerrainGenerator"));
-    a.setApplicationVersion(QLatin1String("1.0"));
+    a.setOrganizationDomain(QStringLiteral("mapeditor.org"));
+    a.setApplicationName(QStringLiteral("TerrainGenerator"));
+    a.setApplicationVersion(QStringLiteral("1.0"));
 
     CommandLineOptions options;
 
@@ -457,16 +457,16 @@ int main(int argc, char *argv[])
                 terrains.insert(terrain->name(), terrain);
 
     // Check if there is anything to combine.
-    if (options.combineList.size() == 0) {
+    if (options.combineList.isEmpty()) {
         qWarning() << "No terrain specified to combine (-c option).";
     } else {
         // Dump the combine lists.
-        qWarning() << "Terrains to combine:";
+        qInfo() << "Terrains to combine:";
         for (const QStringList &combine : qAsConst(options.combineList)) {
             if (combine.isEmpty()) {
                 qCritical("Empty combine set");
             }
-            qWarning() << combine;
+            qInfo() << combine;
 
             // Make sure every terrain from this set was defined.
             for (const QString &terrainName : combine)
@@ -485,7 +485,7 @@ int main(int argc, char *argv[])
     }
 
     const auto terrainNames = terrains.keys();
-    qDebug() << "Terrains found:" << terrainNames;
+    qInfo() << "Terrains found:" << terrainNames;
 
     // Check if all terrains from priority list were found and loaded.
     const auto terrainsWithPriority = lessThan.terrainPriority.keys();
@@ -558,7 +558,7 @@ int main(int argc, char *argv[])
         Properties properties;
 
         if (!tile) {
-            qWarning() << "Generating" << terrainNames;
+            qInfo() << "Generating" << terrainNames;
 
             // Start a new image
             QImage tileImage = QImage(targetTileset->tileWidth(),
@@ -584,13 +584,13 @@ int main(int argc, char *argv[])
                 }
 
                 painter.drawPixmap(0, 0, tile->image());
-                properties.merge(tile->properties());
+                mergeProperties(properties, tile->properties());
             }
 
             image = QPixmap::fromImage(tileImage);
         } else {
-            qWarning() << "Copying" << terrainNames << "from"
-                       << QFileInfo(tile->tileset()->fileName()).fileName();
+            qInfo() << "Copying" << terrainNames << "from"
+                    << QFileInfo(tile->tileset()->fileName()).fileName();
 
             image = tile->image();
             properties = tile->properties();
@@ -615,7 +615,7 @@ int main(int argc, char *argv[])
         if (targetTileset->tileCount() % options.columns > 0)
             ++rows;
 
-        qWarning() << "Writing external tileset image.";
+        qInfo() << "Writing external tileset image.";
         // Save the target tileset image
         QImage image(targetTileset->tileWidth() * columns,
                      targetTileset->tileHeight() * rows,

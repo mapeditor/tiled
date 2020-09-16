@@ -68,17 +68,17 @@ private:
     QVariant propertyTypesToVariant(const Properties &properties) const;
     QVariant toVariant(const WangSet &wangSet) const;
     QVariant toVariant(const WangColor &wangColor) const;
-    QVariant toVariant(const QList<Layer*> &layers, Map::LayerDataFormat format) const;
-    QVariant toVariant(const TileLayer &tileLayer, Map::LayerDataFormat format) const;
+    QVariant toVariant(const QList<Layer*> &layers, Map::LayerDataFormat format, int compressionLevel, QSize chunkSize) const;
+    QVariant toVariant(const TileLayer &tileLayer, Map::LayerDataFormat format, int compressionLevel, QSize chunkSize) const;
     QVariant toVariant(const ObjectGroup &objectGroup) const;
     QVariant toVariant(const MapObject &object) const;
     QVariant toVariant(const TextData &textData) const;
     QVariant toVariant(const ImageLayer &imageLayer) const;
-    QVariant toVariant(const GroupLayer &groupLayer, Map::LayerDataFormat format) const;
+    QVariant toVariant(const GroupLayer &groupLayer, Map::LayerDataFormat format, int compressionLevel, QSize chunkSize) const;
 
     void addTileLayerData(QVariantMap &variant,
                           const TileLayer &tileLayer,
-                          Map::LayerDataFormat format,
+                          Map::LayerDataFormat format, int compressionLevel,
                           const QRect &bounds) const;
 
     void addLayerAttributes(QVariantMap &layerVariant,
@@ -88,7 +88,7 @@ private:
                        const Properties &properties) const;
 
     int mVersion;
-    QDir mMapDir;
+    QDir mDir;
     GidMapper mGidMapper;
 };
 

@@ -29,16 +29,18 @@
 #include "tilelayer.h"
 #include "tilestamp.h"
 
+#include <QKeyEvent>
 #include <QtMath>
 
 using namespace Tiled;
 
-AbstractTileTool::AbstractTileTool(const QString &name,
+AbstractTileTool::AbstractTileTool(Id id,
+                                   const QString &name,
                                    const QIcon &icon,
                                    const QKeySequence &shortcut,
                                    BrushItem *brushItem,
                                    QObject *parent)
-    : AbstractTool(name, icon, shortcut, parent)
+    : AbstractTool(id, name, icon, shortcut, parent)
     , mTilePositionMethod(OnTiles)
     , mBrushItem(brushItem)
     , mBrushVisible(false)
@@ -101,6 +103,44 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
     }
 }
 
+void AbstractTileTool::mousePressed(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::RightButton && event->modifiers() & Qt::ControlModifier) {
+        const QPoint pos = tilePosition();
+        QList<Layer*> layers;
+
+        const bool append = event->modifiers() & Qt::ShiftModifier;
+        const bool selectAll = event->modifiers() & Qt::AltModifier;
+
+        if (append)
+            layers = mapDocument()->selectedLayers();
+
+        LayerIterator it(mapDocument()->map(), Layer::TileLayerType);
+        it.toBack();
+        while (auto tileLayer = static_cast<TileLayer*>(it.previous())) {
+            if (tileLayer->isHidden())
+                continue;
+
+            if (!tileLayer->cellAt(pos - tileLayer->position()).isEmpty()) {
+                if (!layers.contains(tileLayer))
+                    layers.append(tileLayer);
+                else if (append)
+                    layers.removeOne(tileLayer);
+
+                if (!selectAll)
+                    break;
+            }
+        }
+
+        if (!layers.isEmpty())
+            mapDocument()->switchSelectedLayers(layers);
+
+        return;
+    }
+
+    event->ignore();
+}
+
 void AbstractTileTool::mapDocumentChanged(MapDocument *oldDocument,
                                           MapDocument *newDocument)
 {
@@ -143,7 +183,7 @@ void AbstractTileTool::updateStatusInfo()
             }
         }
 
-        setStatusInfo(QString(QLatin1String("%1, %2 [%3]"))
+        setStatusInfo(QStringLiteral("%1, %2 [%3]")
                       .arg(mTilePosition.x())
                       .arg(mTilePosition.y())
                       .arg(tileIdString));

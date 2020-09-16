@@ -29,14 +29,14 @@ namespace Tiled {
 
 PluginListModel::PluginListModel(QObject *parent)
     : QAbstractListModel(parent)
-    , mPluginIcon(QIcon(QLatin1String(":images/16x16/plugin.png")))
-    , mPluginErrorIcon(QIcon(QLatin1String(":images/16x16/error.png")))
+    , mPluginIcon(QIcon(QLatin1String(":images/16/plugin.png")))
+    , mPluginErrorIcon(QIcon(QLatin1String(":images/16/error.png")))
 {
-    QPixmap pluginIcon2x(QLatin1String(":images/32x32/plugin.png"));
+    QPixmap pluginIcon2x(QLatin1String(":images/32/plugin.png"));
     pluginIcon2x.setDevicePixelRatio(2);
     mPluginIcon.addPixmap(pluginIcon2x);
 
-    QPixmap pluginErrorIcon2x(QLatin1String(":images/32x32/error.png"));
+    QPixmap pluginErrorIcon2x(QLatin1String(":images/32/error.png"));
     pluginErrorIcon2x.setDevicePixelRatio(2);
     mPluginErrorIcon.addPixmap(pluginErrorIcon2x);
 }

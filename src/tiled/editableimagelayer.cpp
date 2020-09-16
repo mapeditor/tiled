@@ -37,11 +37,11 @@ EditableImageLayer::EditableImageLayer(EditableMap *map, ImageLayer *imageLayer,
 
 void EditableImageLayer::setTransparentColor(const QColor &transparentColor)
 {
-    if (map()) {
-        map()->push(new ChangeImageLayerProperties(map()->mapDocument(),
-                                                   imageLayer(),
-                                                   transparentColor,
-                                                   imageSource()));
+    if (auto doc = mapDocument()) {
+        asset()->push(new ChangeImageLayerProperties(doc,
+                                                     imageLayer(),
+                                                     transparentColor,
+                                                     imageSource()));
     } else {
         imageLayer()->setTransparentColor(transparentColor);
         if (!imageSource().isEmpty())
@@ -51,11 +51,11 @@ void EditableImageLayer::setTransparentColor(const QColor &transparentColor)
 
 void EditableImageLayer::setImageSource(const QUrl &imageSource)
 {
-    if (map()) {
-        map()->push(new ChangeImageLayerProperties(map()->mapDocument(),
-                                                   imageLayer(),
-                                                   transparentColor(),
-                                                   imageSource));
+    if (auto doc = mapDocument()) {
+        asset()->push(new ChangeImageLayerProperties(doc,
+                                                     imageLayer(),
+                                                     transparentColor(),
+                                                     imageSource));
     } else {
         if (imageSource.isEmpty())
             imageLayer()->resetImage();

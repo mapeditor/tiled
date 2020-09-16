@@ -39,13 +39,16 @@
 #include <QSet>
 #include <QUndoStack>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+#include <QCborArray>
+#include <QCborValue>
+#endif
+
 #include <algorithm>
 
 static const char * const TMX_MIMETYPE = "text/tmx";
 
 using namespace Tiled;
-
-ClipboardManager *ClipboardManager::mInstance;
 
 ClipboardManager::ClipboardManager()
     : mClipboard(QApplication::clipboard())
@@ -62,18 +65,8 @@ ClipboardManager::ClipboardManager()
  */
 ClipboardManager *ClipboardManager::instance()
 {
-    if (!mInstance)
-        mInstance = new ClipboardManager;
-    return mInstance;
-}
-
-/**
- * Deletes the clipboard manager instance if it exists.
- */
-void ClipboardManager::deleteInstance()
-{
-    delete mInstance;
-    mInstance = nullptr;
+    static ClipboardManager instance;
+    return &instance;
 }
 
 /**
@@ -108,18 +101,30 @@ Properties ClipboardManager::properties() const
 {
     const QMimeData *mimeData = mClipboard->mimeData();
     const QByteArray data = mimeData->data(QLatin1String(PROPERTIES_MIMETYPE));
-    const QJsonDocument document = QJsonDocument::fromBinaryData(data);
 
-    return Properties::fromJson(document.array());
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    const QJsonArray array = QJsonDocument::fromBinaryData(data).array();
+#else
+    const QJsonArray array = QCborValue::fromCbor(data).toArray().toJsonArray();
+#endif
+
+    return propertiesFromJson(array);
 }
 
 void ClipboardManager::setProperties(const Properties &properties)
 {
-    const QJsonDocument document(properties.toJson());
-
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData(QLatin1String(PROPERTIES_MIMETYPE), document.toBinaryData());
+
+    const QJsonArray propertiesJson = propertiesToJson(properties);
+    const QJsonDocument document(propertiesJson);
+
     mimeData->setText(QString::fromUtf8(document.toJson()));
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    mimeData->setData(QLatin1String(PROPERTIES_MIMETYPE), document.toBinaryData());
+#else
+    mimeData->setData(QLatin1String(PROPERTIES_MIMETYPE), QCborArray::fromJsonArray(propertiesJson).toCborValue().toCbor());
+#endif
 
     mClipboard->setMimeData(mimeData);
 }
@@ -164,11 +169,11 @@ bool ClipboardManager::copySelection(const MapDocument &mapDocument)
                     continue;
 
                 // Copy the selected part of the layer
-                TileLayer *copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
+                auto copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
                 copyLayer->setName(tileLayer->name());
                 copyLayer->setPosition(area.boundingRect().topLeft());
 
-                copyMap.addLayer(copyLayer);
+                copyMap.addLayer(std::move(copyLayer));
                 break;
             }
             case Layer::ObjectGroupType: // todo: maybe it makes to group selected objects by layer

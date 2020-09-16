@@ -20,6 +20,7 @@
 
 #include "tilestampsdock.h"
 
+#include "actionmanager.h"
 #include "documentmanager.h"
 #include "filteredit.h"
 #include "preferences.h"
@@ -71,11 +72,11 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     connect(mTileStampView, &QWidget::customContextMenuRequested,
             this, &TileStampsDock::showContextMenu);
 
-    mNewStamp->setIcon(QIcon(QLatin1String(":images/16x16/document-new.png")));
-    mAddVariation->setIcon(QIcon(QLatin1String(":/images/16x16/add.png")));
-    mDuplicate->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
-    mDelete->setIcon(QIcon(QLatin1String(":images/16x16/edit-delete.png")));
-    mChooseFolder->setIcon(QIcon(QLatin1String(":images/16x16/document-open.png")));
+    mNewStamp->setIcon(QIcon(QLatin1String(":images/16/document-new.png")));
+    mAddVariation->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
+    mDuplicate->setIcon(QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
+    mDelete->setIcon(QIcon(QLatin1String(":images/16/edit-delete.png")));
+    mChooseFolder->setIcon(QIcon(QLatin1String(":images/16/document-open.png")));
 
     Utils::setThemeIcon(mNewStamp, "document-new");
     Utils::setThemeIcon(mAddVariation, "add");
@@ -95,6 +96,9 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     connect(mDuplicate, &QAction::triggered, this, &TileStampsDock::duplicate);
     connect(mDelete, &QAction::triggered, this, &TileStampsDock::delete_);
     connect(mChooseFolder, &QAction::triggered, this, &TileStampsDock::chooseFolder);
+
+    ActionManager::registerAction(mNewStamp, "NewStamp");
+    ActionManager::registerAction(mAddVariation, "AddStampVariation");
 
     mDuplicate->setEnabled(false);
     mDelete->setEnabled(false);
@@ -202,7 +206,7 @@ void TileStampsDock::showContextMenu(QPoint pos)
         menu.addSeparator();
         menu.addAction(deleteStamp);
     } else {
-        QAction *removeVariation = new QAction(QIcon(QLatin1String(":/images/16x16/remove.png")),
+        QAction *removeVariation = new QAction(QIcon(QLatin1String(":/images/16/remove.png")),
                                                tr("Remove Variation"),
                                                &menu);
 
@@ -270,14 +274,11 @@ void TileStampsDock::addVariation()
 
 void TileStampsDock::chooseFolder()
 {
-    Preferences *prefs = Preferences::instance();
-
-    QString stampsDirectory = prefs->stampsDirectory();
-    stampsDirectory = QFileDialog::getExistingDirectory(window(),
-                                                        tr("Choose the Stamps Folder"),
-                                                        stampsDirectory);
-    if (!stampsDirectory.isEmpty())
-        prefs->setStampsDirectory(stampsDirectory);
+    auto directory = QFileDialog::getExistingDirectory(window(),
+                                                       tr("Choose the Stamps Folder"),
+                                                       mTileStampManager->stampsDirectory);
+    if (!directory.isEmpty())
+        mTileStampManager->stampsDirectory = directory;
 }
 
 void TileStampsDock::ensureStampVisible(const TileStamp &stamp)
@@ -308,7 +309,7 @@ void TileStampsDock::setStampAtIndex(const QModelIndex &index)
         emit setStamp(mTileStampModel->stampAt(index));
     } else if (const TileStampVariation *variation = mTileStampModel->variationAt(index)) {
         // single variation clicked, use it specifically
-        emit setStamp(TileStamp(std::unique_ptr<Map>(variation->map->clone())));
+        emit setStamp(TileStamp(variation->map->clone()));
     }
 }
 

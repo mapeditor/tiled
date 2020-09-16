@@ -26,7 +26,6 @@
 
 namespace Tiled {
 
-
 /**
  * A model for getting the info for a wang set template of a given WangSet
  */
@@ -51,8 +50,6 @@ public:
 
     WangSet *wangSet() const { return mWangSet; }
     void setWangSet(WangSet *wangSet);
-
-    void resetModel();
 
 public slots:
     void wangSetChanged();

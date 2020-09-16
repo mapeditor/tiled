@@ -109,6 +109,36 @@ void SetLayerLocked::swap()
 }
 
 
+SetLayerTintColor::SetLayerTintColor(Document *document,
+                                 Layer *layer,
+                                 QColor tintColor)
+    : mDocument(document)
+    , mLayer(layer)
+    , mOldTintColor(layer->tintColor())
+    , mNewTintColor(tintColor)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Layer Tint Color"));
+}
+
+bool SetLayerTintColor::mergeWith(const QUndoCommand *other)
+{
+    const SetLayerTintColor *o = static_cast<const SetLayerTintColor*>(other);
+    if (!(mDocument == o->mDocument &&
+          mLayer == o->mLayer))
+        return false;
+
+    mNewTintColor = o->mNewTintColor;
+    return true;
+}
+
+void SetLayerTintColor::setTintColor(QColor tintColor)
+{
+    mLayer->setTintColor(tintColor);
+    emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::TintColorProperty));
+}
+
+
 SetLayerOpacity::SetLayerOpacity(Document *document,
                                  Layer *layer,
                                  qreal opacity)
@@ -157,6 +187,28 @@ void SetLayerOffset::setOffset(const QPointF &offset)
 {
     mLayer->setOffset(offset);
     emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::OffsetProperty));
+}
+
+
+SetTileLayerSize::SetTileLayerSize(Document *document,
+                                   TileLayer *tileLayer,
+                                   QSize size,
+                                   QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mDocument(document)
+    , mTileLayer(tileLayer)
+    , mSize(size)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Tile Layer Size"));
+}
+
+void SetTileLayerSize::swap()
+{
+    QSize oldSize = mTileLayer->size();
+    mTileLayer->setSize(mSize);
+    mSize = oldSize;
+    emit mDocument->changed(TileLayerChangeEvent(mTileLayer, TileLayerChangeEvent::SizeProperty));
 }
 
 } // namespace Tiled

@@ -48,6 +48,10 @@ class TileAnimationDriver;
 class TILEDSHARED_EXPORT TilesetManager : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(TilesetManager)
+
+    TilesetManager();
+    ~TilesetManager() override;
 
 public:
     static TilesetManager *instance();
@@ -67,6 +71,8 @@ public:
 
     void setAnimateTiles(bool enabled);
     bool animateTiles() const;
+
+    void advanceTileAnimations(int ms);
     void resetTileAnimations();
 
     void tilesetImageSourceChanged(const Tileset &tileset,
@@ -84,18 +90,8 @@ signals:
      */
     void repaintTileset(Tileset *tileset);
 
-private slots:
-    void filesChanged(const QStringList &fileNames);
-
-    void advanceTileAnimations(int ms);
-
 private:
-    Q_DISABLE_COPY(TilesetManager)
-
-    TilesetManager();
-    ~TilesetManager() override;
-
-    static TilesetManager *mInstance;
+    void filesChanged(const QStringList &fileNames);
 
     /**
      * The list of loaded tilesets (weak references).
@@ -104,6 +100,8 @@ private:
     FileSystemWatcher *mWatcher;
     TileAnimationDriver *mAnimationDriver;
     bool mReloadTilesetsOnChange;
+
+    static TilesetManager *mInstance;
 };
 
 inline bool TilesetManager::reloadTilesetsOnChange() const

@@ -42,10 +42,12 @@ class MapView;
 class ClipboardManager : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(ClipboardManager)
+
+    ClipboardManager();
 
 public:
     static ClipboardManager *instance();
-    static void deleteInstance();
 
     bool hasMap() const;
     std::unique_ptr<Map> map() const;
@@ -74,19 +76,12 @@ signals:
     void hasMapChanged();
     void hasPropertiesChanged();
 
-private slots:
-    void update();
-
 private:
-    ClipboardManager();
-
-    Q_DISABLE_COPY(ClipboardManager)
+    void update();
 
     QClipboard *mClipboard;
     bool mHasMap;
     bool mHasProperties;
-
-    static ClipboardManager *mInstance;
 };
 
 /**

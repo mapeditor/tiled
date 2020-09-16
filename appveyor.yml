@@ -1,5 +1,8 @@
 clone_depth: 200
-version: '1.2.{build}'
+version: '1.4.{build}'
+image:
+  - Visual Studio 2015
+  - Visual Studio 2019
 
 cache:
   - C:\Users\appveyor\.m2
@@ -10,46 +13,60 @@ environment:
   BUTLER_API_KEY:
     secure: j7JM5L6KeqpnQukzJLsm7J6oV92SpmyEZLSoED1pZ3gQ79VIkdxtbQmTkqUNZPsz
   matrix:
-    - QTDIR: C:\Qt\5.12\mingw73_64
+    - QTDIR: C:\Qt\5.12.9\mingw73_64
       PYTHONHOME: C:\Python37-x64
       MINGW: C:\Qt\Tools\mingw730_64
-      PUSH_RELEASE: true
-      TILED_ITCH_CHANNEL: windows-64bit
-    - QTDIR: C:\Qt\5.12\mingw73_32
-      PYTHONHOME: C:\Python37
-      MINGW: C:\Qt\Tools\mingw730_32
-      PUSH_RELEASE: true
-      TILED_ITCH_CHANNEL: windows-32bit
-    - QTDIR: C:\Qt\5.6\mingw49_32
+      DEFAULT_PROFILE: x86_64-w64-mingw32-gcc-7_3_0
+      PUSH_RELEASE: false
+    - QTDIR: C:\Qt\5.6.3\mingw49_32
       PYTHONHOME: C:\Python37
       MINGW: C:\Qt\Tools\mingw492_32
+      DEFAULT_PROFILE: i686-w64-mingw32-gcc-4_9_2
       PUSH_RELEASE: false
+      PUSH_SNAPSHOT: true
       TILED_ITCH_CHANNEL: winxp-32bit
+    - QTDIR: C:\Qt\5.15.0\mingw81_64
+      PYTHONHOME: C:\Python37-x64
+      MINGW: C:\Qt\Tools\mingw810_64
+      DEFAULT_PROFILE: x86_64-w64-mingw32-gcc-8_1_0
+      PUSH_RELEASE: true
+      PUSH_SNAPSHOT: true
+      TILED_ITCH_CHANNEL: windows-64bit
+
+matrix:
+  exclude:
+    - image: Visual Studio 2015
+      QTDIR: C:\Qt\5.12.9\mingw73_64
+    - image: Visual Studio 2015
+      QTDIR: C:\Qt\5.15.0\mingw81_64
+    - image: Visual Studio 2019
+      QTDIR: C:\Qt\5.6.3\mingw49_32
 
 configuration: Release
 
 install:
-  - choco install -y qbs --version 1.12.1
+  - choco install -y qbs --version 1.16.0
   - nuget install secure-file -ExcludeVersion
   - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
 
 build_script:
   - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
-  - set VERSION_DATE=%DATE:~10,4%.%DATE:~4,2%.%DATE:~7,2%
   - if defined APPVEYOR_REPO_TAG_NAME (set TILED_RELEASE=true) else (set TILED_SNAPSHOT=true)
   - if defined TILED_RELEASE set TILED_VERSION=%APPVEYOR_REPO_TAG_NAME:~1%
-  - if defined TILED_RELEASE echo Building Tiled %TILED_VERSION%... (from %COMMITNOW%)
-  - if defined TILED_SNAPSHOT set TILED_VERSION=%APPVEYOR_BUILD_VERSION%
-  - if defined TILED_SNAPSHOT echo Building Tiled snapshot %TILED_VERSION%... (from %COMMITNOW%)
+  - if defined TILED_SNAPSHOT set TILED_VERSION=%DATE:~10,4%.%DATE:~4,2%.%DATE:~7,2%
+  - if defined TILED_SNAPSHOT set TILED_MSI_VERSION=%APPVEYOR_BUILD_VERSION%
+  - if defined TILED_SNAPSHOT set TILED_ITCH_CHANNEL=%TILED_ITCH_CHANNEL%-snapshot
+  - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] if defined PUSH_SNAPSHOT set PUSH_TO_ITCH=true
+  - echo Building Tiled %TILED_VERSION% (%TILED_ITCH_CHANNEL%) from %COMMITNOW%
+  - git clone --depth 1 -b master https://github.com/facebook/zstd.git
+  - cd zstd/lib
+  - set CC=gcc
+  - mingw32-make -j2 libzstd.a
+  - cd ../../
   - qbs --version
   - qbs setup-toolchains --detect
-  - qbs setup-qt %QTDIR%\bin\qmake.exe qt
-  - qbs config defaultProfile qt
-  - if defined TILED_RELEASE (set TILED_ITCH_VERSION=%TILED_VERSION%) else (set TILED_ITCH_VERSION=%VERSION_DATE%)
-  - if defined TILED_SNAPSHOT (set TILED_ITCH_CHANNEL=%TILED_ITCH_CHANNEL%-snapshot)
-  - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] set PUSH_TO_ITCH=true
-  - qbs build --all-products config:release projects.Tiled.windowsInstaller:true
-  - qbs build --all-products config:itch qbs.buildVariant:release projects.Tiled.version:%TILED_ITCH_VERSION%
+  - qbs config defaultProfile %DEFAULT_PROFILE%
+  - qbs build --all-products config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:true
   - cd util\java
   - mvn --version
   - mvn clean install
@@ -59,8 +76,7 @@ after_build:
   - cd release
   - cd installer*
   - move tiled-*.msi %APPVEYOR_BUILD_FOLDER%
-  - cd ..\..
-  - cd itch
+  - cd ..
   - cd archive*
   - move tiled-*.7z %APPVEYOR_BUILD_FOLDER%
   - cd ..\..
@@ -93,7 +109,30 @@ deploy:
     artifact: /.*\.(msi|7z)/
     on:
         branch: snapshot
+        push_release: true
+
+  - provider: Webhook
+    url: https://app.signpath.io/API/v1/670574d6-49bf-4a0c-824a-3ae977077079/Integrations/AppVeyor?ProjectKey=tiled&SigningPolicyKey=test-signing
+    authorization:
+        secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
+    on:
         appveyor_repo_tag: false
+        push_release: true
+
+  - provider: Webhook
+    url: https://app.signpath.io/API/v1/670574d6-49bf-4a0c-824a-3ae977077079/Integrations/AppVeyor?ProjectKey=tiled&SigningPolicyKey=release-signing
+    authorization:
+        secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
+    on:
+        branch: snapshot
+        push_release: true
+
+  - provider: Webhook
+    url: https://app.signpath.io/API/v1/670574d6-49bf-4a0c-824a-3ae977077079/Integrations/AppVeyor?ProjectKey=tiled&SigningPolicyKey=release-signing
+    authorization:
+        secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
+    on:
+        appveyor_repo_tag: true
         push_release: true
 
 notifications:

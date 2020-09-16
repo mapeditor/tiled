@@ -21,6 +21,7 @@
 #pragma once
 
 #include "changeevents.h"
+#include "map.h"
 #include "properties.h"
 
 #include <QtTreePropertyBrowser>
@@ -37,10 +38,7 @@ namespace Tiled {
 
 class GroupLayer;
 class ImageLayer;
-class Layer;
-class Map;
 class MapObject;
-class Object;
 class ObjectGroup;
 class Tile;
 class TileLayer;
@@ -57,32 +55,15 @@ class PropertyBrowser : public QtTreePropertyBrowser
 public:
     explicit PropertyBrowser(QWidget *parent = nullptr);
 
-    /**
-     * Sets the \a object for which to display the properties.
-     */
     void setObject(Object *object);
-
-    /**
-     * Returns the object for which the properties are displayed.
-     */
     Object *object() const;
 
-    /**
-     * Sets the \a document, used for keeping track of changes and for
-     * undo/redo support.
-     */
     void setDocument(Document *document);
 
-    /**
-     * Returns whether the given \a item displays a custom property.
-     */
     bool isCustomPropertyItem(const QtBrowserItem *item) const;
     bool allCustomPropertyItems(const QList<QtBrowserItem*> &items) const;
 
-    /**
-     * Makes the custom property with the \a name the currently edited one,
-     * if it exists.
-     */
+    void selectCustomProperty(const QString &name);
     void editCustomProperty(const QString &name);
 
     QSize sizeHint() const override;
@@ -90,7 +71,7 @@ public:
 protected:
     bool event(QEvent *event) override;
 
-private slots:
+private:
     void documentChanged(const ChangeEvent &change);
     void mapChanged();
     void objectsChanged(const MapObjectsChangeEvent &mapObjectsChange);
@@ -115,7 +96,6 @@ private slots:
 
     void resetProperty(QtProperty *property);
 
-private:
     enum PropertyId {
         NameProperty,
         TypeProperty,
@@ -150,6 +130,7 @@ private:
         FlippingProperty,
         DrawOrderProperty,
         FileNameProperty,
+        ObjectAlignmentProperty,
         TileOffsetProperty,
         MarginProperty,
         SpacingProperty,
@@ -161,7 +142,11 @@ private:
         WangColorProbabilityProperty,
         CustomProperty,
         InfiniteProperty,
-        TemplateProperty
+        TemplateProperty,
+        CompressionLevelProperty,
+        ChunkWidthProperty,
+        ChunkHeightProperty,
+        TintColorProperty
     };
 
     void addMapProperties();
@@ -212,6 +197,9 @@ private:
     void updateCustomProperties();
     void updateCustomPropertyColor(const QString &name);
 
+    QVariant toDisplayValue(const QVariant &value) const;
+    QVariant fromDisplayValue(const QVariant &value) const;
+
     void retranslateUi();
 
     bool mUpdating;
@@ -236,11 +224,16 @@ private:
     QStringList mOrientationNames;
     QStringList mTilesetOrientationNames;
     QStringList mLayerFormatNames;
+    QList<Map::LayerDataFormat> mLayerFormatValues;
     QStringList mRenderOrderNames;
+    QStringList mAlignmentNames;
     QStringList mFlippingFlagNames;
     QStringList mDrawOrderNames;
 };
 
+/**
+ * Returns the object for which the properties are displayed.
+ */
 inline Object *PropertyBrowser::object() const
 {
     return mObject;

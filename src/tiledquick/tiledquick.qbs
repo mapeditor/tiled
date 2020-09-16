@@ -4,6 +4,7 @@ import qbs.File
 QtGuiApplication {
     name: "tiledquick"
     targetName: name
+    builtByDefault: false
     condition: Qt.core.versionMinor > 10
 
     Depends {

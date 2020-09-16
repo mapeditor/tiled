@@ -44,6 +44,9 @@ public:
     void setFilter(const QString &filter) { mFilter = filter; }
     QString filter() const { return mFilter; }
 
+    void setIsDirectory(bool isDirectory);
+    bool isDirectory() const;
+
 signals:
     void fileUrlChanged(const QUrl &url);
 
@@ -53,16 +56,27 @@ protected:
     void keyPressEvent(QKeyEvent *e) override;
     void keyReleaseEvent(QKeyEvent *e) override;
 
-private slots:
+private:
     void textEdited();
     void validate();
     void buttonClicked();
 
-private:
     QLineEdit *mLineEdit;
     QString mFilter;
+    bool mIsDirectory = false;
     QColor mOkTextColor;
     QColor mErrorTextColor;
 };
+
+
+inline void FileEdit::setIsDirectory(bool isDirectory)
+{
+    mIsDirectory = isDirectory;
+}
+
+inline bool FileEdit::isDirectory() const
+{
+    return mIsDirectory;
+}
 
 } // namespace Tiled

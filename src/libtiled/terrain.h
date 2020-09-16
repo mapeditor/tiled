@@ -42,18 +42,16 @@ namespace Tiled {
  */
 class TILEDSHARED_EXPORT Terrain : public Object
 {
-    Q_OBJECT
-
 public:
     Terrain(int id,
             Tileset *tileset,
             QString name,
-            int imageTileId):
-        Object(TerrainType),
-        mId(id),
-        mTileset(tileset),
-        mName(std::move(name)),
-        mImageTileId(imageTileId)
+            int imageTileId)
+        : Object(TerrainType)
+        , mId(id)
+        , mImageTileId(imageTileId)
+        , mTileset(tileset)
+        , mName(std::move(name))
     {
     }
 
@@ -78,9 +76,9 @@ public:
 
 private:
     int mId;
+    int mImageTileId;
     Tileset *mTileset;
     QString mName;
-    int mImageTileId;
     QVector<int> mTransitionDistance;
 
     friend class Tileset; // To allow changing the terrain id

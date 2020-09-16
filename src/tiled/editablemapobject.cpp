@@ -30,6 +30,7 @@
 #include "scriptmanager.h"
 #include "tilesetdocument.h"
 
+#include <QCoreApplication>
 #include <QJSEngine>
 
 namespace Tiled {
@@ -105,8 +106,7 @@ bool EditableMapObject::isSelected() const
 
 EditableObjectGroup *EditableMapObject::layer() const
 {
-    auto editableLayer = EditableManager::instance().editableObjectGroup(asset(), mapObject()->objectGroup());
-    return static_cast<EditableObjectGroup*>(editableLayer);
+    return EditableManager::instance().editableObjectGroup(asset(), mapObject()->objectGroup());
 }
 
 EditableMap *EditableMapObject::map() const
@@ -166,10 +166,10 @@ void EditableMapObject::setType(QString type)
 
 void EditableMapObject::setPos(QPointF pos)
 {
-    if (asset()) {
-        asset()->push(new MoveMapObject(asset()->document(), mapObject(),
+    if (Document *doc = document()) {
+        asset()->push(new MoveMapObject(doc, mapObject(),
                                         pos, mapObject()->position()));
-    } else {
+    } else if (!checkReadOnly()) {
         mapObject()->setPosition(pos);
         mapObject()->setPropertyChanged(MapObject::PositionProperty);
     }
@@ -193,7 +193,7 @@ void EditableMapObject::setVisible(bool visible)
 void EditableMapObject::setPolygon(QJSValue polygonValue)
 {
     if (!polygonValue.isArray()) {
-        ScriptManager::instance().throwError(tr("Array expected"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Array expected"));
         return;
     }
 
@@ -206,32 +206,57 @@ void EditableMapObject::setPolygon(QJSValue polygonValue)
                             value.property(QStringLiteral("y")).toNumber());
 
         if (!qIsFinite(point.x()) || !qIsFinite(point.y())) {
-            ScriptManager::instance().throwError(tr("Invalid coordinate"));
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid coordinate"));
             return;
         }
 
         polygon.append(point);
     }
 
-    if (asset()) {
-        asset()->push(new ChangePolygon(asset()->document(),
+    if (Document *doc = document()) {
+        asset()->push(new ChangePolygon(doc,
                                         mapObject(),
                                         polygon,
                                         mapObject()->polygon()));
-    } else {
+    } else if (!checkReadOnly()) {
         mapObject()->setPolygon(polygon);
         mapObject()->setPropertyChanged(MapObject::ShapeProperty);
     }
 }
 
+void EditableMapObject::setText(const QString &text)
+{
+    setMapObjectProperty(MapObject::TextProperty, text);
+}
+
+void EditableMapObject::setFont(const Font &font)
+{
+    setMapObjectProperty(MapObject::TextFontProperty, QVariant::fromValue<QFont>(font));
+}
+
+void EditableMapObject::setTextAlignment(Qt::Alignment textAlignment)
+{
+    setMapObjectProperty(MapObject::TextAlignmentProperty, QVariant::fromValue(textAlignment));
+}
+
+void EditableMapObject::setWordWrap(bool wordWrap)
+{
+    setMapObjectProperty(MapObject::TextWordWrapProperty, wordWrap);
+}
+
+void EditableMapObject::setTextColor(const QColor &textColor)
+{
+    setMapObjectProperty(MapObject::TextColorProperty, textColor);
+}
+
 void EditableMapObject::setTile(EditableTile *tile)
 {
-    if (asset()) {
+    if (Document *doc = document()) {
         QList<MapObject *> mapObjects { mapObject() };
-        asset()->push(new ChangeMapObjectsTile(asset()->document(),
+        asset()->push(new ChangeMapObjectsTile(doc,
                                                mapObjects,
                                                tile ? tile->tile() : nullptr));
-    } else {
+    } else if (!checkReadOnly()) {
         Cell cell = mapObject()->cell();
         Tile *prevTile = cell.tile();
 
@@ -252,9 +277,9 @@ void EditableMapObject::setTileFlippedHorizontally(bool tileFlippedHorizontally)
     mapObjectCell.cell = mapObject()->cell();
     mapObjectCell.cell.setFlippedHorizontally(tileFlippedHorizontally);
 
-    if (asset()) {
-        asset()->push(new ChangeMapObjectCells(asset()->document(), { mapObjectCell }));
-    } else {
+    if (Document *doc = document()) {
+        asset()->push(new ChangeMapObjectCells(doc, { mapObjectCell }));
+    } else if (!checkReadOnly()) {
         mapObject()->setCell(mapObjectCell.cell);
         mapObject()->setPropertyChanged(MapObject::CellProperty);
     }
@@ -267,9 +292,9 @@ void EditableMapObject::setTileFlippedVertically(bool tileFlippedVertically)
     mapObjectCell.cell = mapObject()->cell();
     mapObjectCell.cell.setFlippedVertically(tileFlippedVertically);
 
-    if (asset()) {
-        asset()->push(new ChangeMapObjectCells(asset()->document(), { mapObjectCell }));
-    } else {
+    if (Document *doc = document()) {
+        asset()->push(new ChangeMapObjectCells(doc, { mapObjectCell }));
+    } else if (!checkReadOnly()) {
         mapObject()->setCell(mapObjectCell.cell);
         mapObject()->setPropertyChanged(MapObject::CellProperty);
     }
@@ -300,10 +325,10 @@ void EditableMapObject::setSelected(bool selected)
 void EditableMapObject::setMapObjectProperty(MapObject::Property property,
                                              const QVariant &value)
 {
-    if (asset()) {
-        asset()->push(new ChangeMapObject(asset()->document(), mapObject(),
+    if (Document *doc = document()) {
+        asset()->push(new ChangeMapObject(doc, mapObject(),
                                           property, value));
-    } else {
+    } else if (!checkReadOnly()) {
         mapObject()->setMapObjectProperty(property, value);
         mapObject()->setPropertyChanged(property);
     }

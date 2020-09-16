@@ -20,23 +20,25 @@
 
 #include "tileseteditor.h"
 
+#include "actionmanager.h"
 #include "addremovemapobject.h"
 #include "addremoveterrain.h"
 #include "addremovetiles.h"
 #include "addremovewangset.h"
+#include "changeterrain.h"
 #include "changetileterrain.h"
-#include "changewangsetdata.h"
 #include "changewangcolordata.h"
+#include "changewangsetdata.h"
+#include "documentmanager.h"
 #include "erasetiles.h"
 #include "maintoolbar.h"
 #include "mapdocument.h"
 #include "mapobject.h"
-#include "newsbutton.h"
-#include "newversionbutton.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "preferences.h"
 #include "propertiesdock.h"
+#include "session.h"
 #include "templatesdock.h"
 #include "terrain.h"
 #include "terraindock.h"
@@ -67,54 +69,19 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QMimeData>
-#include <QSettings>
 #include <QStackedWidget>
-#include <QStatusBar>
+#include <QUndoGroup>
 
 #include <functional>
 
 #include <QDebug>
 
-static const char SIZE_KEY[] = "TilesetEditor/Size";
-static const char STATE_KEY[] = "TilesetEditor/State";
-
 namespace Tiled {
 
-namespace {
-
-class SetTerrainImage : public QUndoCommand
-{
-public:
-    SetTerrainImage(TilesetDocument *tilesetDocument,
-                    int terrainId,
-                    int tileId)
-        : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                                   "Change Terrain Image"))
-        , mTerrainModel(tilesetDocument->terrainModel())
-        , mTerrainId(terrainId)
-        , mOldImageTileId(tilesetDocument->tileset()->terrain(terrainId)->imageTileId())
-        , mNewImageTileId(tileId)
-    {}
-
-    void undo() override
-    {
-        mTerrainModel->setTerrainImage(mTerrainId, mOldImageTileId);
-    }
-
-    void redo() override
-    {
-        mTerrainModel->setTerrainImage(mTerrainId, mNewImageTileId);
-    }
-
-private:
-    TilesetTerrainModel *mTerrainModel;
-    int mTerrainId;
-    int mOldImageTileId;
-    int mNewImageTileId;
-};
-
-} // anonymous namespace
-
+namespace preferences {
+static Preference<QSize> tilesetEditorSize { "TilesetEditor/Size" };
+static Preference<QByteArray> tilesetEditorState { "TilesetEditor/State" };
+} // namespace preferences
 
 class TilesetEditorWindow : public QMainWindow
 {
@@ -168,6 +135,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mAddTiles(new QAction(this))
     , mRemoveTiles(new QAction(this))
     , mShowAnimationEditor(new QAction(this))
+    , mDynamicWrappingToggle(new QAction(this))
     , mPropertiesDock(new PropertiesDock(mMainWindow))
     , mUndoDock(new UndoDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
@@ -188,17 +156,27 @@ TilesetEditor::TilesetEditor(QObject *parent)
     QAction *editCollision = mTileCollisionDock->toggleViewAction();
     QAction *editWang = mWangDock->toggleViewAction();
 
-    mAddTiles->setIcon(QIcon(QLatin1String(":images/16x16/add.png")));
-    mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16x16/remove.png")));
-    mShowAnimationEditor->setIcon(QIcon(QLatin1String(":images/24x24/animation-edit.png")));
+    ActionManager::registerAction(editTerrain, "EditTerrain");
+    ActionManager::registerAction(editCollision, "EditCollision");
+    ActionManager::registerAction(editWang, "EditWang");
+    ActionManager::registerAction(mAddTiles, "AddTiles");
+    ActionManager::registerAction(mRemoveTiles, "RemoveTiles");
+    ActionManager::registerAction(mShowAnimationEditor, "ShowAnimationEditor");
+    ActionManager::registerAction(mDynamicWrappingToggle, "DynamicWrappingToggle");
+
+    mAddTiles->setIcon(QIcon(QLatin1String(":images/16/add.png")));
+    mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16/remove.png")));
+    mShowAnimationEditor->setIcon(QIcon(QLatin1String(":images/24/animation-edit.png")));
     mShowAnimationEditor->setCheckable(true);
     mShowAnimationEditor->setIconVisibleInMenu(false);
-    editTerrain->setIcon(QIcon(QLatin1String(":images/24x24/terrain.png")));
+    editTerrain->setIcon(QIcon(QLatin1String(":images/24/terrain.png")));
     editTerrain->setIconVisibleInMenu(false);
-    editCollision->setIcon(QIcon(QLatin1String(":images/48x48/tile-collision-editor.png")));
+    editCollision->setIcon(QIcon(QLatin1String(":images/48/tile-collision-editor.png")));
     editCollision->setIconVisibleInMenu(false);
-    editWang->setIcon(QIcon(QLatin1String(":images/24x24/wangtile.png")));
+    editWang->setIcon(QIcon(QLatin1String(":images/24/wangtile.png")));
     editWang->setIconVisibleInMenu(false);
+    mDynamicWrappingToggle->setCheckable(true);
+    mDynamicWrappingToggle->setIcon(QIcon(QLatin1String("://images/scalable/wrap.svg")));
 
     Utils::setThemeIcon(mAddTiles, "add");
     Utils::setThemeIcon(mRemoveTiles, "remove");
@@ -212,11 +190,8 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTilesetToolBar->addAction(editCollision);
     mTilesetToolBar->addAction(editWang);
     mTilesetToolBar->addAction(mShowAnimationEditor);
-
-    mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
-    mMainWindow->statusBar()->addPermanentWidget(new NewsButton);
-    mMainWindow->statusBar()->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible));
-    mMainWindow->statusBar()->addWidget(mStatusInfoLabel);
+    mTilesetToolBar->addSeparator();
+    mTilesetToolBar->addAction(mDynamicWrappingToggle);
 
     mTemplatesDock->setPropertiesDock(mPropertiesDock);
 
@@ -233,6 +208,14 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(editCollision, &QAction::toggled, this, &TilesetEditor::setEditCollision);
     connect(editWang, &QAction::toggled, this, &TilesetEditor::setEditWang);
     connect(mShowAnimationEditor, &QAction::toggled, mTileAnimationEditor, &TileAnimationEditor::setVisible);
+    connect(mDynamicWrappingToggle, &QAction::toggled, this, [this] (bool checked) {
+        if (TilesetView *view = currentTilesetView()) {
+            view->setDynamicWrapping(checked);
+
+            const QString fileName = mCurrentTilesetDocument->externalOrEmbeddedFileName();
+            Session::current().setFileStateValue(fileName, QLatin1String("dynamicWrapping"), checked);
+        }
+    });
 
     connect(mTileAnimationEditor, &TileAnimationEditor::closed, this, &TilesetEditor::onAnimationEditorClosed);
 
@@ -247,6 +230,8 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(mWangDock, &WangDock::removeWangSetRequested, this, &TilesetEditor::removeWangSet);
     connect(mWangDock->wangColorView(), &WangColorView::wangColorColorPicked,
             this, &TilesetEditor::setWangColorColor);
+    connect(DocumentManager::instance(), &DocumentManager::selectCustomPropertyRequested,
+            mPropertiesDock, &PropertiesDock::selectCustomProperty);
 
     connect(this, &TilesetEditor::currentTileChanged, mTileAnimationEditor, &TileAnimationEditor::setTile);
     connect(this, &TilesetEditor::currentTileChanged, mTileCollisionDock, &TileCollisionDock::setTile);
@@ -275,20 +260,18 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
 void TilesetEditor::saveState()
 {
-    QSettings *settings = Preferences::instance()->settings();
-    settings->setValue(QLatin1String(SIZE_KEY), mMainWindow->size());
-    settings->setValue(QLatin1String(STATE_KEY), mMainWindow->saveState());
+    preferences::tilesetEditorSize = mMainWindow->size();
+    preferences::tilesetEditorState = mMainWindow->saveState();
 
     mTileCollisionDock->saveState();
 }
 
 void TilesetEditor::restoreState()
 {
-    QSettings *settings = Preferences::instance()->settings();
-    QSize size = settings->value(QLatin1String(SIZE_KEY)).toSize();
+    QSize size = preferences::tilesetEditorSize;
     if (!size.isEmpty()) {
-        mMainWindow->resize(size.width(), size.height());
-        mMainWindow->restoreState(settings->value(QLatin1String(STATE_KEY)).toByteArray());
+        mMainWindow->resize(size);
+        mMainWindow->restoreState(preferences::tilesetEditorState);
     }
 
     mTileCollisionDock->restoreState();
@@ -301,16 +284,10 @@ void TilesetEditor::addDocument(Document *document)
 
     TilesetView *view = new TilesetView(mWidgetStack);
     view->setTilesetDocument(tilesetDocument);
-
-    Tileset *tileset = tilesetDocument->tileset().data();
-
-    QString path = QLatin1String("TilesetEditor/TilesetScale/") + tileset->name();
-    qreal scale = Preferences::instance()->settings()->value(path, 1).toReal();
-    view->zoomable()->setScale(scale);
-
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
+    Tileset *tileset = tilesetDocument->tileset().data();
     TilesetModel *tilesetModel = new TilesetModel(tileset, view);
     view->setModel(tilesetModel);
 
@@ -325,6 +302,8 @@ void TilesetEditor::addDocument(Document *document)
 
     connect(tilesetDocument, &TilesetDocument::tilesetChanged,
             this, &TilesetEditor::tilesetChanged);
+    connect(tilesetDocument, &TilesetDocument::selectedTilesChanged,
+            this, &TilesetEditor::selectedTilesChanged);
 
     connect(view, &TilesetView::createNewTerrain, this, &TilesetEditor::addTerrainType);
     connect(view, &TilesetView::terrainImageSelected, this, &TilesetEditor::setTerrainImage);
@@ -341,6 +320,8 @@ void TilesetEditor::addDocument(Document *document)
 
     mViewForTileset.insert(tilesetDocument, view);
     mWidgetStack->addWidget(view);
+
+    restoreDocumentState(tilesetDocument);
 }
 
 void TilesetEditor::removeDocument(Document *document)
@@ -351,15 +332,9 @@ void TilesetEditor::removeDocument(Document *document)
 
     tilesetDocument->disconnect(this);
 
-    TilesetView *view = mViewForTileset.take(tilesetDocument);
+    saveDocumentState(tilesetDocument);
 
-    QString path = QLatin1String("TilesetEditor/TilesetScale/") +
-            tilesetDocument->tileset()->name();
-    QSettings *settings = Preferences::instance()->settings();
-    if (view->scale() != 1.0)
-        settings->setValue(path, view->scale());
-    else
-        settings->remove(path);
+    TilesetView *view = mViewForTileset.take(tilesetDocument);
 
     // remove first, to keep it valid while the current widget changes
     mWidgetStack->removeWidget(view);
@@ -370,6 +345,9 @@ void TilesetEditor::setCurrentDocument(Document *document)
 {
     TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document);
     Q_ASSERT(tilesetDocument || !document);
+
+    if (document && DocumentManager::instance()->currentEditor() == this)
+        DocumentManager::instance()->undoGroup()->setActiveStack(document->undoStack());
 
     if (mCurrentTilesetDocument == tilesetDocument)
         return;
@@ -396,6 +374,8 @@ void TilesetEditor::setCurrentDocument(Document *document)
     mCurrentTilesetDocument = tilesetDocument;
 
     if (tilesetDocument) {
+        mDynamicWrappingToggle->setChecked(tilesetView->dynamicWrapping());
+
         currentChanged(tilesetView->currentIndex());
         selectionChanged();
     }
@@ -430,6 +410,20 @@ QList<QDockWidget *> TilesetEditor::dockWidgets() const
         mTileCollisionDock,
         mTemplatesDock,
         mWangDock
+    };
+}
+
+QList<QWidget *> TilesetEditor::statusBarWidgets() const
+{
+    return {
+        mStatusInfoLabel
+    };
+}
+
+QList<QWidget *> TilesetEditor::permanentStatusBarWidgets() const
+{
+    return {
+        mZoomComboBox
     };
 }
 
@@ -526,6 +520,11 @@ QAction *TilesetEditor::editCollisionAction() const
     return mTileCollisionDock->toggleViewAction();
 }
 
+QAction *TilesetEditor::editWangSetsAction() const
+{
+    return mWangDock->toggleViewAction();
+}
+
 void TilesetEditor::currentWidgetChanged()
 {
     auto view = static_cast<TilesetView*>(mWidgetStack->currentWidget());
@@ -552,7 +551,9 @@ void TilesetEditor::selectionChanged()
         if (Tile *tile = model->tileAt(index))
             selectedTiles.append(tile);
 
+    mSettingSelectedTiles = true;
     mCurrentTilesetDocument->setSelectedTiles(selectedTiles);
+    mSettingSelectedTiles = false;
 }
 
 void TilesetEditor::currentChanged(const QModelIndex &index)
@@ -571,6 +572,51 @@ void TilesetEditor::indexPressed(const QModelIndex &index)
         mCurrentTilesetDocument->setCurrentObject(tile);
 }
 
+void TilesetEditor::saveDocumentState(TilesetDocument *tilesetDocument) const
+{
+    TilesetView *view = mViewForTileset.value(tilesetDocument);
+    if (!view)
+        return;
+
+    const QString fileName = tilesetDocument->externalOrEmbeddedFileName();
+    Session::current().setFileStateValue(fileName, QLatin1String("scaleInEditor"), view->scale());
+
+    // Some cleanup for potentially old preferences from Tiled 1.3
+    auto preferences = Preferences::instance();
+    QString path = QLatin1String("TilesetEditor/TilesetScale/") +
+            tilesetDocument->tileset()->name();
+    preferences->remove(path);
+}
+
+void TilesetEditor::restoreDocumentState(TilesetDocument *tilesetDocument) const
+{
+    TilesetView *view = mViewForTileset.value(tilesetDocument);
+    if (!view)
+        return;
+
+    const QString fileName = tilesetDocument->externalOrEmbeddedFileName();
+    const QVariantMap fileState = Session::current().fileState(fileName);
+
+    if (fileState.isEmpty()) {
+        // Compatibility with Tiled 1.3
+        const Tileset *tileset = tilesetDocument->tileset().data();
+        const QString path = QLatin1String("TilesetEditor/TilesetScale/") + tileset->name();
+        const qreal scale = Preferences::instance()->value(path, 1).toReal();
+        view->zoomable()->setScale(scale);
+        return;
+    }
+
+    bool ok;
+    const qreal scale = fileState.value(QLatin1String("scaleInEditor")).toReal(&ok);
+    if (scale > 0 && ok)
+        view->zoomable()->setScale(scale);
+
+    if (fileState.contains(QLatin1String("dynamicWrapping"))) {
+        const bool dynamicWrapping = fileState.value(QLatin1String("dynamicWrapping")).toBool();
+        view->setDynamicWrapping(dynamicWrapping);
+    }
+}
+
 void TilesetEditor::tilesetChanged()
 {
     auto *tilesetDocument = static_cast<TilesetDocument*>(sender());
@@ -582,6 +628,32 @@ void TilesetEditor::tilesetChanged()
 
     tilesetView->updateBackgroundColor();
     model->tilesetChanged();
+}
+
+void TilesetEditor::selectedTilesChanged()
+{
+    if (mSettingSelectedTiles)
+        return;
+
+    if (mCurrentTilesetDocument != sender())
+        return;
+
+    TilesetView *tilesetView = currentTilesetView();
+    const TilesetModel *model = tilesetView->tilesetModel();
+
+    QItemSelection tileSelection;
+
+    for (Tile *tile : mCurrentTilesetDocument->selectedTiles()) {
+        const QModelIndex modelIndex = model->tileIndex(tile);
+        tileSelection.select(modelIndex, modelIndex);
+    }
+
+    QItemSelectionModel *selectionModel = tilesetView->selectionModel();
+    selectionModel->select(tileSelection, QItemSelectionModel::SelectCurrent);
+    if (!tileSelection.isEmpty()) {
+        selectionModel->setCurrentIndex(tileSelection.first().topLeft(),
+                                        QItemSelectionModel::NoUpdate);
+    }
 }
 
 void TilesetEditor::updateTilesetView(Tileset *tileset)
@@ -614,8 +686,9 @@ void TilesetEditor::retranslateUi()
     mAddTiles->setText(tr("Add Tiles"));
     mRemoveTiles->setText(tr("Remove Tiles"));
     mShowAnimationEditor->setText(tr("Tile Animation Editor"));
+    mDynamicWrappingToggle->setText(tr("Dynamically Wrap Tiles"));
 
-    mTileCollisionDock->toggleViewAction()->setShortcut(QCoreApplication::translate("Tiled::MainWindow", "Ctrl+Shift+O"));
+    mTileCollisionDock->toggleViewAction()->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_O);
 }
 
 static bool hasTileInTileset(const QUrl &imageSource, const Tileset &tileset)

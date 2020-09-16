@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.1" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="4" height="1" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="1">
+ <tileset firstgid="1" source="../desert/desert.tsx"/>
+ <layer id="2" name="Layer1" width="4" height="1">
+  <data encoding="base64" compression="zlib">
+   eJzTY2Bo0GNgcADiA0DMAAATwAI5
+  </data>
+ </layer>
+</map>

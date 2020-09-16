@@ -80,17 +80,15 @@ public slots:
     void zoomOut();
     void resetZoom();
 
-private slots:
-    void comboActivated(int index);
-    void comboEdited();
-
 signals:
     void scaleChanged(qreal scale);
 
 private:
+    void comboActivated(int index);
+    void comboEdited();
+
     void syncComboBox();
 
-private:
     qreal mScale;
     qreal mGestureStartScale;
     QVector<qreal> mZoomFactors;

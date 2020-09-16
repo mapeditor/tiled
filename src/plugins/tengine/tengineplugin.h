@@ -40,7 +40,7 @@ class TENGINESHARED_EXPORT TenginePlugin : public Tiled::WritableMapFormat
 public:
     TenginePlugin();
 
-    bool write(const Tiled::Map *map, const QString &fileName) override;
+    bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
     QString nameFilter() const override;
     QString shortName() const override;
     QString errorString() const override;

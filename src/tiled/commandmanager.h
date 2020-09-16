@@ -1,6 +1,7 @@
 /*
  * commandmanager.h
  * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
+ * Copyright 2018-2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,14 +21,15 @@
 
 #pragma once
 
+#include "command.h"
+
 #include <QObject>
+#include <QVector>
 
 class QAction;
 class QMenu;
 
 namespace Tiled {
-
-class LoggingInterface;
 
 class CommandDataModel;
 
@@ -35,53 +37,43 @@ class CommandManager : public QObject
 {
     Q_OBJECT
 
-public:
+    CommandManager();
+    ~CommandManager() override;
 
+public:
     static CommandManager *instance();
 
-    static void deleteInstance();
+    bool executeDefaultCommand() const;
 
-    /**
-     * Returns the CommandDataModel instance stored
-     */
-    CommandDataModel *commandDataModel();
+    const QVector<Command> &globalCommands() const;
+    const QVector<Command> &projectCommands() const;
+    QVector<Command> allCommands() const;
 
-    /**
-     * Registers a new QMenu with the CommandManager
-     */
-    void registerMenu(QMenu* menu);
-
-    void updateActions();
-
-    LoggingInterface *logger() const { return mLogger; }
+    void registerMenu(QMenu *menu);
 
     void retranslateUi();
 
 public slots:
-
-    /**
-     * Displays the dialog to edit the commands
-     */
     void showDialog();
 
 private:
     Q_DISABLE_COPY(CommandManager)
 
-    CommandManager();
-    ~CommandManager() override;
+    void commit();
 
-    /**
-     * Populates all the menus registered in CommandManager
-     */
-    void populateMenus();
+    void updateActions();
 
-    static CommandManager *mInstance;
     CommandDataModel *mModel;
+    QVector<Command> mCommands;
     QList<QMenu*> mMenus;
     QList<QAction*> mActions;
-    QAction *mEditCommands;
-
-    LoggingInterface *mLogger;
+    QAction *mEditCommandsAction = nullptr;
 };
+
+
+inline QVector<Command> CommandManager::allCommands() const
+{
+    return globalCommands() + projectCommands();
+}
 
 } // namespace Tiled

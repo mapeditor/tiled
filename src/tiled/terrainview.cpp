@@ -105,7 +105,7 @@ void TerrainView::contextMenuEvent(QContextMenuEvent *event)
 
     QMenu menu;
 
-    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
+    QIcon propIcon(QLatin1String(":images/16/document-properties.png"));
 
     QAction *terrainProperties = menu.addAction(propIcon,
                                              tr("Terrain &Properties..."));

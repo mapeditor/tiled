@@ -56,6 +56,7 @@ mod.add_include('"pythonplugin.h"')
 mod.add_include('"grouplayer.h"')
 mod.add_include('"imagelayer.h"')
 mod.add_include('"layer.h"')
+mod.add_include('"logginginterface.h"')
 mod.add_include('"map.h"')
 mod.add_include('"mapobject.h"')
 mod.add_include('"objectgroup.h"')
@@ -142,6 +143,7 @@ cls_tileset.add_method('transparentColor', 'QColor', [])
 cls_tileset.add_method('imageSourceString', 'QString', [])
 cls_tileset.add_method('setImageSource', None, [('QString','source')])
 cls_tileset.add_method('isCollection', 'bool', [])
+cls_tileset.add_method('sharedPointer', 'Tiled::SharedTileset', [])
 
 cls_tile.add_constructor([param('const QPixmap&','image'), param('int','id'),
     param('Tileset*','tileset',transfer_ownership=False)])
@@ -404,9 +406,8 @@ cls_pp = mod.add_class('PythonScript',
  PythonPlugin implements LoggingInterface for messaging to Tiled
 """
 cls_logi = tiled.add_class('LoggingInterface', destructor_visibility='private')
-cls_logi.add_enum('OutputType', ('INFO','ERROR'))
-cls_logi.add_method('log', 'void', [('OutputType','type'),('const QString','msg')],
-    is_virtual=True)
+cls_logi.add_enum('OutputType', ('INFO','WARNING','ERROR'))
+cls_logi.add_method('log', 'void', [('OutputType','type'),('const QString','msg')])
 
 
 with open('pythonbind.cpp','w') as fh:
@@ -444,7 +445,7 @@ int _wrap_convert_py2c__Tiled__Map___star__(PyObject *value, Tiled::Map * *addre
         Py_DECREF(py_retval);
         return 0;
     }
-    *address = tmp_Map->obj->clone();
+    *address = tmp_Map->obj->clone().release();
     Py_DECREF(py_retval);
     return 1;
 }

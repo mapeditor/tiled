@@ -31,18 +31,19 @@
 
 using namespace Tiled;
 
-AbstractTileSelectionTool::AbstractTileSelectionTool(const QString &name,
+AbstractTileSelectionTool::AbstractTileSelectionTool(Id id,
+                                                     const QString &name,
                                                      const QIcon &icon,
                                                      const QKeySequence &shortcut,
                                                      QObject *parent)
-    : AbstractTileTool(name, icon, shortcut, nullptr, parent)
+    : AbstractTileTool(id, name, icon, shortcut, nullptr, parent)
     , mSelectionMode(Replace)
     , mDefaultMode(Replace)
 {
-    QIcon replaceIcon(QLatin1String(":images/16x16/selection-replace.png"));
-    QIcon addIcon(QLatin1String(":images/16x16/selection-add.png"));
-    QIcon subtractIcon(QLatin1String(":images/16x16/selection-subtract.png"));
-    QIcon intersectIcon(QLatin1String(":images/16x16/selection-intersect.png"));
+    QIcon replaceIcon(QLatin1String(":images/16/selection-replace.png"));
+    QIcon addIcon(QLatin1String(":images/16/selection-add.png"));
+    QIcon subtractIcon(QLatin1String(":images/16/selection-subtract.png"));
+    QIcon intersectIcon(QLatin1String(":images/16/selection-intersect.png"));
 
     mReplace = new QAction(this);
     mReplace->setIcon(replaceIcon);
@@ -83,29 +84,31 @@ void AbstractTileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     const Qt::MouseButton button = event->button();
 
-    if (button != Qt::LeftButton && button != Qt::RightButton)
-        return;
+    if (button == Qt::LeftButton || (button == Qt::RightButton && event->modifiers() == Qt::NoModifier)) {
+        MapDocument *document = mapDocument();
+        QRegion selection;
 
-    MapDocument *document = mapDocument();
+        // Left button modifies selection, right button clears selection
+        if (button == Qt::LeftButton) {
+            selection = document->selectedArea();
 
-    QRegion selection;
-
-    // Left button modifies selection, right button clears selection
-    if (button == Qt::LeftButton) {
-        selection = document->selectedArea();
-
-        switch (mSelectionMode) {
-        case Replace:   selection = mSelectedRegion; break;
-        case Add:       selection += mSelectedRegion; break;
-        case Subtract:  selection -= mSelectedRegion; break;
-        case Intersect: selection &= mSelectedRegion; break;
+            switch (mSelectionMode) {
+            case Replace:   selection = mSelectedRegion; break;
+            case Add:       selection += mSelectedRegion; break;
+            case Subtract:  selection -= mSelectedRegion; break;
+            case Intersect: selection &= mSelectedRegion; break;
+            }
         }
+
+        if (selection != document->selectedArea()) {
+            QUndoCommand *cmd = new ChangeSelectedArea(document, selection);
+            document->undoStack()->push(cmd);
+        }
+
+        return;
     }
 
-    if (selection != document->selectedArea()) {
-        QUndoCommand *cmd = new ChangeSelectedArea(document, selection);
-        document->undoStack()->push(cmd);
-    }
+    AbstractTileTool::mousePressed(event);
 }
 
 void AbstractTileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *)
@@ -133,10 +136,10 @@ void AbstractTileSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers
 
 void AbstractTileSelectionTool::languageChanged()
 {
-    mReplace->setToolTip(tr("Replace Selection"));
-    mAdd->setToolTip(tr("Add Selection"));
-    mSubtract->setToolTip(tr("Subtract Selection"));
-    mIntersect->setToolTip(tr("Intersect Selection"));
+    mReplace->setText(tr("Replace Selection"));
+    mAdd->setText(tr("Add Selection"));
+    mSubtract->setText(tr("Subtract Selection"));
+    mIntersect->setText(tr("Intersect Selection"));
 }
 
 void AbstractTileSelectionTool::populateToolBar(QToolBar *toolBar)

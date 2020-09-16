@@ -57,7 +57,7 @@ public:
 
     State validate(QString &input, int &pos) const override
     {
-        Q_UNUSED(pos);
+        Q_UNUSED(pos)
         fixup(input);
         return Acceptable;
     }
@@ -117,7 +117,7 @@ TextPropertyEdit::TextPropertyEdit(QWidget *parent)
     setFocusProxy(mLineEdit);
 
     QToolButton *button = new QToolButton(this);
-    button->setText(tr("..."));
+    button->setText(QStringLiteral("..."));
     button->setAutoRaise(true);
 
     // Set a validator that replaces newline characters by literal "\\n".

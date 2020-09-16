@@ -26,14 +26,17 @@
 #include <QObject>
 #include <QStringList>
 
-#include <memory>
-
 class QJSEngine;
 
 namespace Tiled {
 
 class ScriptModule;
 
+/**
+ * Singleton for managing the script engine and module.
+ *
+ * Dependencies: ProjectManager, DocumentManager (optional)
+ */
 class ScriptManager : public QObject
 {
     Q_OBJECT
@@ -42,7 +45,7 @@ public:
     static ScriptManager &instance();
     static void deleteInstance();
 
-    void initialize();
+    void ensureInitialized();
 
     const QString &extensionsPath() const;
 
@@ -54,27 +57,38 @@ public:
 
     QJSValue evaluateFile(const QString &fileName);
 
-    void checkError(QJSValue value, const QString &program = QString());
-    void throwError(const QString &message);
+    /**
+     * Create a new global identifier ($0, $1, $2, ...) for the value. Returns
+     * the name of the identifier.
+     */
+    QString createTempValue(const QJSValue &value);
 
-    void reset();
+    bool checkError(QJSValue value, const QString &program = QString());
+    void throwError(const QString &message);
+    void throwNullArgError(int argNumber);
+
+    void refreshExtensionsPaths();
 
 private:
     explicit ScriptManager(QObject *parent = nullptr);
+    ~ScriptManager() = default;
+
+    void reset();
+    void initialize();
 
     void scriptFilesChanged(const QStringList &scriptFiles);
 
-    void evaluateStartupScripts();
     void loadExtensions();
     void loadExtension(const QString &path);
 
-    QJSEngine *mEngine;
-    ScriptModule *mModule;
+    QJSEngine *mEngine = nullptr;
+    ScriptModule *mModule = nullptr;
     FileSystemWatcher mWatcher;
     QString mExtensionsPath;
     QStringList mExtensionsPaths;
+    int mTempCount = 0;
 
-    static std::unique_ptr<ScriptManager> mInstance;
+    static ScriptManager *mInstance;
 };
 
 

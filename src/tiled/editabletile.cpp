@@ -21,11 +21,21 @@
 #include "editabletile.h"
 
 #include "changetile.h"
+#include "changetileanimation.h"
+#include "changetileimagesource.h"
+#include "changetileobjectgroup.h"
 #include "changetileprobability.h"
+#include "changetileterrain.h"
 #include "editablemanager.h"
 #include "editableobjectgroup.h"
+#include "editableterrain.h"
 #include "editabletileset.h"
+#include "imagecache.h"
 #include "objectgroup.h"
+#include "scriptmanager.h"
+
+#include <QCoreApplication>
+#include <QJSEngine>
 
 namespace Tiled {
 
@@ -39,6 +49,19 @@ EditableTile::~EditableTile()
     EditableManager::instance().mEditableTiles.remove(tile());
 }
 
+QJSValue EditableTile::terrain() const
+{
+    QJSEngine *engine = ScriptManager::instance().engine();
+    QJSValue terrainObject = engine->newObject();
+
+    terrainObject.setProperty(QStringLiteral("topLeft"), engine->newQObject(terrainAtCorner(TopLeft)));
+    terrainObject.setProperty(QStringLiteral("topRight"), engine->newQObject(terrainAtCorner(TopRight)));
+    terrainObject.setProperty(QStringLiteral("bottomLeft"), engine->newQObject(terrainAtCorner(BottomLeft)));
+    terrainObject.setProperty(QStringLiteral("bottomRight"), engine->newQObject(terrainAtCorner(BottomRight)));
+
+    return terrainObject;
+}
+
 EditableObjectGroup *EditableTile::objectGroup() const
 {
     if (!mAttachedObjectGroup) {
@@ -50,9 +73,43 @@ EditableObjectGroup *EditableTile::objectGroup() const
     return EditableManager::instance().editableObjectGroup(asset(), mAttachedObjectGroup);
 }
 
+QJSValue EditableTile::frames() const
+{
+    QJSEngine *engine = ScriptManager::instance().engine();
+
+    const auto &frames = tile()->frames();
+    QJSValue array = engine->newArray(frames.size());
+
+    for (int i = 0; i < frames.size(); ++i) {
+        QJSValue frameObject = engine->newObject();
+        frameObject.setProperty(QStringLiteral("tileId"), frames.at(i).tileId);
+        frameObject.setProperty(QStringLiteral("duration"), frames.at(i).duration);
+        array.setProperty(i, frameObject);
+    }
+
+    return array;
+}
+
 EditableTileset *EditableTile::tileset() const
 {
     return static_cast<EditableTileset*>(asset());
+}
+
+EditableTerrain *EditableTile::terrainAtCorner(Corner corner) const
+{
+    Terrain *terrain = tile()->terrainAtCorner(corner);
+    return EditableManager::instance().editableTerrain(tileset(), terrain);
+}
+
+void EditableTile::setTerrainAtCorner(Corner corner, EditableTerrain *editableTerrain)
+{
+    unsigned terrain = setTerrainCorner(tile()->terrain(), corner,
+                                        editableTerrain ? editableTerrain->id() : 0xFF);
+
+    if (TilesetDocument *doc = tilesetDocument())
+        asset()->push(new ChangeTileTerrain(doc, tile(), terrain));
+    else if (!checkReadOnly())
+        tile()->setTerrain(terrain);
 }
 
 void EditableTile::detach()
@@ -97,18 +154,129 @@ void EditableTile::detachObjectGroup()
 
 void EditableTile::setType(const QString &type)
 {
-    if (asset())
-        asset()->push(new ChangeTileType(tileset()->tilesetDocument(), { tile() }, type));
-    else
+    if (TilesetDocument *doc = tilesetDocument())
+        asset()->push(new ChangeTileType(doc, { tile() }, type));
+    else if (!checkReadOnly())
         tile()->setType(type);
+}
+
+void EditableTile::setImageFileName(const QString &fileName)
+{
+    if (TilesetDocument *doc = tilesetDocument()) {
+        if (!tileset()->tileset()->isCollection()) {
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Tileset needs to be an image collection"));
+            return;
+        }
+
+        asset()->push(new ChangeTileImageSource(doc, tile(),
+                                                QUrl::fromLocalFile(fileName)));
+    } else if (!checkReadOnly()) {
+        tile()->setImage(ImageCache::loadPixmap(fileName));
+        tile()->setImageSource(QUrl::fromLocalFile(fileName));
+    }
+}
+
+void EditableTile::setTerrain(QJSValue value)
+{
+    if (!value.isObject() && !value.isNumber()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Terrain object or number expected"));
+        return;
+    }
+
+    unsigned terrain;
+
+    if (value.isObject()) {
+        auto topLeft = qjsvalue_cast<EditableTerrain *>(value.property(QStringLiteral("topLeft")));
+        auto topRight = qjsvalue_cast<EditableTerrain *>(value.property(QStringLiteral("topRight")));
+        auto bottomLeft = qjsvalue_cast<EditableTerrain *>(value.property(QStringLiteral("bottomLeft")));
+        auto bottomRight = qjsvalue_cast<EditableTerrain *>(value.property(QStringLiteral("bottomRight")));
+        terrain = makeTerrain(topLeft ? topLeft->id() : 0xFF,
+                              topRight ? topRight->id() : 0xFF,
+                              bottomLeft ? bottomLeft->id() : 0xFF,
+                              bottomRight ? bottomRight->id() : 0xFF);
+    } else {
+        terrain = value.toUInt();
+    }
+
+    if (TilesetDocument *doc = tilesetDocument())
+        asset()->push(new ChangeTileTerrain(doc, tile(), terrain));
+    else if (!checkReadOnly())
+        tile()->setTerrain(terrain);
 }
 
 void EditableTile::setProbability(qreal probability)
 {
-    if (asset())
-        asset()->push(new ChangeTileProbability(tileset()->tilesetDocument(), { tile() }, probability));
-    else
+    if (TilesetDocument *doc = tilesetDocument())
+        asset()->push(new ChangeTileProbability(doc, { tile() }, probability));
+    else if (!checkReadOnly())
         tile()->setProbability(probability);
+}
+
+void EditableTile::setObjectGroup(EditableObjectGroup *editableObjectGroup)
+{
+    if (!editableObjectGroup) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+
+    if (!editableObjectGroup->isOwning()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "ObjectGroup is in use"));
+        return;
+    }
+
+    if (checkReadOnly())
+        return;
+
+    std::unique_ptr<ObjectGroup> og(static_cast<ObjectGroup*>(editableObjectGroup->release()));
+
+    if (TilesetDocument *doc = tilesetDocument()) {
+        asset()->push(new ChangeTileObjectGroup(doc, tile(), std::move(og)));
+    } else {
+        detachObjectGroup();
+        tile()->setObjectGroup(std::move(og));
+    }
+
+    Q_ASSERT(editableObjectGroup->objectGroup() == tile()->objectGroup());
+    Q_ASSERT(!editableObjectGroup->isOwning());
+}
+
+void EditableTile::setFrames(QJSValue value)
+{
+    if (!value.isArray()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Array expected"));
+        return;
+    }
+
+    if (checkReadOnly())
+        return;
+
+    QVector<Frame> frames;
+    const int length = value.property(QStringLiteral("length")).toInt();
+
+    for (int i = 0; i < length; ++i) {
+        const auto frameValue = value.property(i);
+        const Frame frame {
+            frameValue.property(QStringLiteral("tileId")).toInt(),
+            frameValue.property(QStringLiteral("duration")).toInt()
+        };
+
+        if (frame.tileId < 0 || frame.duration < 0) {
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid value (negative)"));
+            return;
+        }
+
+        frames.append(frame);
+    }
+
+    if (TilesetDocument *doc = tilesetDocument())
+        asset()->push(new ChangeTileAnimation(doc, tile(), frames));
+    else
+        tile()->setFrames(frames);
+}
+
+TilesetDocument *EditableTile::tilesetDocument() const
+{
+    return tileset() ? tileset()->tilesetDocument() : nullptr;
 }
 
 } // namespace Tiled

@@ -46,7 +46,7 @@ namespace Tiled {
  *
  * It's meant to be used as drop-in replacement for QFileSystemWatcher.
  *
- * Optionally, the 'filesChanged' signal can be used, which triggers at a delay
+ * Optionally, the 'pathsChanged' signal can be used, which triggers at a delay
  * to avoid problems occurring when trying to reload only partially written
  * files, as well as avoiding fast consecutive reloads.
  */
@@ -58,25 +58,43 @@ public:
     explicit FileSystemWatcher(QObject *parent = nullptr);
 
     void addPath(const QString &path);
+    void addPaths(const QStringList &paths);
     void removePath(const QString &path);
+    void removePaths(const QStringList &paths);
     void clear();
 
 signals:
+    // Emitted directly
     void fileChanged(const QString &path);
-    void filesChanged(const QStringList &paths);
     void directoryChanged(const QString &path);
 
-private slots:
-    void onFileChanged(const QString &path);
-    void onDirectoryChanged(const QString &path);
-    void filesChangedTimeout();
+    /**
+     * Emitted only after a short delay.
+     *
+     * May includes both files and directories.
+     */
+    void pathsChanged(const QStringList &paths);
 
 private:
+    void onFileChanged(const QString &path);
+    void onDirectoryChanged(const QString &path);
+    void pathsChangedTimeout();
+
     QFileSystemWatcher *mWatcher;
     QMap<QString, int> mWatchCount;
 
-    QSet<QString> mChangedFiles;
-    QTimer mChangedFilesTimer;
+    QSet<QString> mChangedPaths;
+    QTimer mChangedPathsTimer;
 };
+
+inline void FileSystemWatcher::addPath(const QString &path)
+{
+    addPaths(QStringList(path));
+}
+
+inline void FileSystemWatcher::removePath(const QString &path)
+{
+    removePaths(QStringList(path));
+}
 
 } // namespace Tiled

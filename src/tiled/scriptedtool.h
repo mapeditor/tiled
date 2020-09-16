@@ -37,13 +37,17 @@ class ScriptedTool : public AbstractTileTool
     Q_PROPERTY(QString icon READ iconFileName WRITE setIconFileName)
     Q_PROPERTY(Tiled::EditableMap *map READ editableMap)
     Q_PROPERTY(Tiled::EditableTile *selectedTile READ editableTile)
+    Q_PROPERTY(Tiled::EditableMap *preview READ preview WRITE setPreview)
 
 public:
-    explicit ScriptedTool(QJSValue object, QObject *parent = nullptr);
+    explicit ScriptedTool(Id id, QJSValue object, QObject *parent = nullptr);
     ~ScriptedTool() override;
 
     EditableMap *editableMap() const;
     EditableTile *editableTile() const;
+
+    EditableMap *preview() const;
+    void setPreview(EditableMap *editableMap);
 
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
@@ -75,7 +79,6 @@ private:
     bool call(const QString &methodName, const QJSValueList &args = QJSValueList());
 
     QJSValue mScriptObject;
-    BrushItem *mBrushItem;
     MapScene *mScene = nullptr;
     QString mIconFileName;
 };

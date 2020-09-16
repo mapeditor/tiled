@@ -28,9 +28,10 @@
 #include "tile.h"
 #include "tilelayer.h"
 
-#include <QTextStream>
+#include <QCoreApplication>
 #include <QHash>
 #include <QList>
+#include <QTextStream>
 
 #include <QtMath>
 
@@ -40,13 +41,15 @@ TenginePlugin::TenginePlugin()
 {
 }
 
-bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
+bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
+    Q_UNUSED(options)
+
     using namespace Tiled;
 
     SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
     QTextStream out(file.device());
@@ -295,7 +298,7 @@ QString TenginePlugin::nameFilter() const
 
 QString TenginePlugin::shortName() const
 {
-    return QLatin1String("te4");
+    return QStringLiteral("te4");
 }
 
 QString TenginePlugin::errorString() const

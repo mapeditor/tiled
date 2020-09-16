@@ -49,10 +49,9 @@ public:
     bool wrapX() const;
     bool wrapY() const;
 
-private slots:
+private:
     void boundsSelectionChanged();
 
-private:
     enum LayerSelection {
         AllVisibleLayers,
         AllLayers,

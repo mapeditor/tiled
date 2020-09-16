@@ -26,6 +26,8 @@
 #include "editablemap.h"
 #include "scriptmanager.h"
 
+#include <QCoreApplication>
+
 namespace Tiled {
 
 EditableObjectGroup::EditableObjectGroup(const QString &name, QObject *parent)
@@ -52,7 +54,7 @@ QList<QObject *> EditableObjectGroup::objects()
 EditableMapObject *EditableObjectGroup::objectAt(int index)
 {
     if (index < 0 || index >= objectCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return nullptr;
     }
 
@@ -63,14 +65,14 @@ EditableMapObject *EditableObjectGroup::objectAt(int index)
 void EditableObjectGroup::removeObjectAt(int index)
 {
     if (index < 0 || index >= objectCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
 
     auto mapObject = objectGroup()->objectAt(index);
 
-    if (asset()) {
-        asset()->push(new RemoveMapObjects(asset()->document(), mapObject));
+    if (auto doc = document()) {
+        asset()->push(new RemoveMapObjects(doc, mapObject));
     } else {
         objectGroup()->removeObjectAt(index);
         EditableManager::instance().release(mapObject);
@@ -79,9 +81,13 @@ void EditableObjectGroup::removeObjectAt(int index)
 
 void EditableObjectGroup::removeObject(EditableMapObject *editableMapObject)
 {
+    if (!editableMapObject) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
     int index = objectGroup()->objects().indexOf(editableMapObject->mapObject());
     if (index == -1) {
-        ScriptManager::instance().throwError(tr("Object not found"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Object not found"));
         return;
     }
 
@@ -90,20 +96,24 @@ void EditableObjectGroup::removeObject(EditableMapObject *editableMapObject)
 
 void EditableObjectGroup::insertObjectAt(int index, EditableMapObject *editableMapObject)
 {
+    if (!editableMapObject) {
+        ScriptManager::instance().throwNullArgError(1);
+        return;
+    }
     if (index < 0 || index > objectCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
 
     if (editableMapObject->mapObject()->objectGroup()) {
-        ScriptManager::instance().throwError(tr("Object already part of an object layer"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Object already part of an object layer"));
         return;
     }
 
-    if (asset()) {
-        asset()->push(new AddMapObjects(asset()->document(),
-                                        objectGroup(),
-                                        editableMapObject->mapObject()));
+    if (auto doc = document()) {
+        AddRemoveMapObjects::Entry entry { editableMapObject->mapObject(), objectGroup() };
+        entry.index = index;
+        asset()->push(new AddMapObjects(doc, { entry }));
     } else {
         objectGroup()->insertObject(index, editableMapObject->mapObject());
         editableMapObject->release();   // now owned by the object group
@@ -117,8 +127,8 @@ void EditableObjectGroup::addObject(EditableMapObject *editableMapObject)
 
 void EditableObjectGroup::setColor(const QColor &color)
 {
-    if (asset()) {
-        asset()->push(new ChangeObjectGroupProperties(asset()->document(),
+    if (auto doc = document()) {
+        asset()->push(new ChangeObjectGroupProperties(doc,
                                                       objectGroup(),
                                                       color,
                                                       objectGroup()->drawOrder()));

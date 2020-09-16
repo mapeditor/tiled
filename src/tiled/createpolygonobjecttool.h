@@ -63,7 +63,7 @@ protected:
     void finishNewMapObject() override;
     std::unique_ptr<MapObject> clearNewMapObjectItem() override;
 
-private slots:
+private:
     void updateHover(const QPointF &scenePos, QGraphicsSceneMouseEvent *event = nullptr);
     void updateHandles();
 
@@ -71,14 +71,6 @@ private slots:
     void objectsAboutToBeRemoved(const QList<MapObject *> &objects);
 
     void layerRemoved(Layer *layer);
-
-private:
-    enum Mode {
-        NoMode,
-        Creating,
-        ExtendingAtBegin,
-        ExtendingAtEnd,
-    };
 
     void languageChangedImpl();
 
@@ -88,6 +80,13 @@ private:
     void synchronizeOverlayObject();
 
     void setHoveredHandle(PointHandle *handle);
+
+    enum Mode {
+        NoMode,
+        Creating,
+        ExtendingAtBegin,
+        ExtendingAtEnd,
+    };
 
     MapObject *mOverlayPolygonObject;   // owned by mOverlayObjectGroup
     std::unique_ptr<ObjectGroup> mOverlayObjectGroup;

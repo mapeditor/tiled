@@ -29,6 +29,8 @@
 #include <QList>
 #include <QMap>
 
+#include <memory>
+
 class QAction;
 class QActionGroup;
 class QComboBox;
@@ -47,11 +49,12 @@ class TileLayer;
 class Tileset;
 
 class Document;
+class EditableTileset;
 class MapDocument;
+class TileStamp;
 class TilesetDocument;
 class TilesetDocumentsFilterModel;
 class TilesetView;
-class TileStamp;
 class Zoomable;
 
 /**
@@ -62,13 +65,13 @@ class TilesetDock : public QDockWidget
 {
     Q_OBJECT
 
+    Q_PROPERTY(Tiled::EditableTileset *currentTileset READ currentEditableTileset WRITE setCurrentEditableTileset)
+    Q_PROPERTY(QList<QObject*> selectedTiles READ selectedTiles WRITE setSelectedTiles)
+
 public:
-    /**
-     * Constructor.
-     */
     TilesetDock(QWidget *parent = nullptr);
 
-    ~TilesetDock();
+    ~TilesetDock() override;
 
     /**
      * Sets the map for which the tilesets should be displayed.
@@ -80,7 +83,20 @@ public:
      */
     Tile *currentTile() const { return mCurrentTile; }
 
+    void setCurrentTileset(const SharedTileset &tileset);
+    SharedTileset currentTileset() const;
+    TilesetDocument *currentTilesetDocument() const;
+
+    void setCurrentEditableTileset(EditableTileset *tileset);
+    EditableTileset *currentEditableTileset() const;
+
+    void setSelectedTiles(const QList<QObject*> &tiles);
+    QList<QObject*> selectedTiles() const;
+
     void selectTilesInStamp(const TileStamp &);
+
+    QAction *actionSelectNextTileset() const { return mSelectNextTileset; }
+    QAction *actionSelectPreviousTileset() const { return mSelectPreviousTileset; }
 
 signals:
     /**
@@ -105,7 +121,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *) override;
     void dropEvent(QDropEvent *) override;
 
-private slots:
+private:
     void currentTilesetChanged();
     void selectionChanged();
     void currentChanged(const QModelIndex &index);
@@ -120,6 +136,7 @@ private slots:
     void tileImageSourceChanged(Tile *tile);
     void tileAnimationChanged(Tile *tile);
 
+    void replaceTileset();
     void removeTileset();
     void removeTilesetAt(int index);
 
@@ -132,9 +149,10 @@ private slots:
 
     void swapTiles(Tile *tileA, Tile *tileB);
 
-private:
+    void selectTiles(const QList<Tile *> &tiles);
     void setCurrentTile(Tile *tile);
-    void setCurrentTiles(TileLayer *tiles);
+    void setCurrentTiles(std::unique_ptr<TileLayer> tiles);
+
     void retranslateUi();
 
     void onTilesetRowsInserted(const QModelIndex &parent, int first, int last);
@@ -146,7 +164,6 @@ private:
     void onTabMoved(int from, int to);
     void tabContextMenuRequested(const QPoint &pos);
 
-    Tileset *currentTileset() const;
     TilesetView *currentTilesetView() const;
     TilesetView *tilesetViewAt(int index) const;
 
@@ -155,7 +172,7 @@ private:
     void moveTilesetView(int from, int to);
     void setupTilesetModel(TilesetView *view, Tileset *tileset);
 
-    MapDocument *mMapDocument;
+    MapDocument *mMapDocument = nullptr;
 
     // Shared tileset references because the dock wants to add new tiles
     QVector<SharedTileset> mTilesets;
@@ -166,15 +183,19 @@ private:
     QStackedWidget *mSuperViewStack;
     QStackedWidget *mViewStack;
     QToolBar *mToolBar;
-    Tile *mCurrentTile;
-    TileLayer *mCurrentTiles;
+    Tile *mCurrentTile = nullptr;
+    std::unique_ptr<TileLayer> mCurrentTiles;
     const Terrain *mTerrain;
 
     QAction *mNewTileset;
     QAction *mEmbedTileset;
     QAction *mExportTileset;
     QAction *mEditTileset;
-    QAction *mDeleteTileset;
+    QAction *mReplaceTileset;
+    QAction *mRemoveTileset;
+    QAction *mSelectNextTileset;
+    QAction *mSelectPreviousTileset;
+    QAction *mDynamicWrappingToggle;
 
     QToolButton *mTilesetMenuButton;
     QMenu *mTilesetMenu; //opens on click of mTilesetMenu
@@ -182,8 +203,8 @@ private:
 
     QComboBox *mZoomComboBox;
 
-    bool mEmittingStampCaptured;
-    bool mSynchronizingSelection;
+    bool mEmittingStampCaptured = false;
+    bool mSynchronizingSelection = false;
 };
 
 } // namespace Tiled

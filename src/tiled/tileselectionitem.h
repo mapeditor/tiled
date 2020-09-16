@@ -47,14 +47,13 @@ public:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
 
-private slots:
+private:
     void documentChanged(const ChangeEvent &change);
     void selectionChanged(const QRegion &newSelection,
                           const QRegion &oldSelection);
 
     void currentLayerChanged(Layer *layer);
 
-private:
     void updateBoundingRect();
 
     MapDocument *mMapDocument;

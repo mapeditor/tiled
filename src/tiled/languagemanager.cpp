@@ -31,19 +31,10 @@
 
 using namespace Tiled;
 
-LanguageManager *LanguageManager::mInstance;
-
 LanguageManager *LanguageManager::instance()
 {
-    if (!mInstance)
-        mInstance = new LanguageManager;
-    return mInstance;
-}
-
-void LanguageManager::deleteInstance()
-{
-    delete mInstance;
-    mInstance = nullptr;
+    static LanguageManager instance;
+    return &instance;
 }
 
 LanguageManager::LanguageManager()
@@ -52,28 +43,20 @@ LanguageManager::LanguageManager()
 {
     mTranslationsDir = QCoreApplication::applicationDirPath();
 #if defined(Q_OS_WIN32)
-    mTranslationsDir += QLatin1String("/translations");
+    mTranslationsDir += QStringLiteral("/translations");
 #elif defined(Q_OS_MAC)
-    mTranslationsDir += QLatin1String("/../Translations");
+    mTranslationsDir += QStringLiteral("/../Translations");
 #else
-    mTranslationsDir += QLatin1String("/../share/tiled/translations");
+    mTranslationsDir += QStringLiteral("/../share/tiled/translations");
 #endif
 }
 
-LanguageManager::~LanguageManager()
-{
-    delete mQtTranslator;
-    delete mAppTranslator;
-}
+LanguageManager::~LanguageManager() = default;
 
 void LanguageManager::installTranslators()
 {
-    // Delete previous translators
-    delete mQtTranslator;
-    delete mAppTranslator;
-
-    mQtTranslator = new QTranslator;
-    mAppTranslator = new QTranslator;
+    mQtTranslator.reset(new QTranslator);
+    mAppTranslator.reset(new QTranslator);
 
     QString language = Preferences::instance()->language();
     if (language.isEmpty())
@@ -84,18 +67,16 @@ void LanguageManager::installTranslators()
 
     if (mQtTranslator->load(QLatin1String("qt_") + language,
                             qtTranslationsDir)) {
-        QCoreApplication::installTranslator(mQtTranslator);
+        QCoreApplication::installTranslator(mQtTranslator.get());
     } else {
-        delete mQtTranslator;
-        mQtTranslator = nullptr;
+        mQtTranslator.reset();
     }
 
     if (mAppTranslator->load(QLatin1String("tiled_") + language,
                              mTranslationsDir)) {
-        QCoreApplication::installTranslator(mAppTranslator);
+        QCoreApplication::installTranslator(mAppTranslator.get());
     } else {
-        delete mAppTranslator;
-        mAppTranslator = nullptr;
+        mAppTranslator.reset();
     }
 }
 
@@ -111,7 +92,7 @@ void LanguageManager::loadAvailableLanguages()
     mLanguages.clear();
 
     QStringList nameFilters;
-    nameFilters.append(QLatin1String("tiled_*.qm"));
+    nameFilters.append(QStringLiteral("tiled_*.qm"));
 
     QDirIterator iterator(mTranslationsDir, nameFilters,
                           QDir::Files | QDir::Readable);

@@ -50,11 +50,10 @@ public slots:
 signals:
     void textChanged(const QString &text);
 
-private slots:
+private:
     void onTextChanged(const QString &text);
     void onButtonClicked();
 
-private:
     QLineEdit *mLineEdit;
     QString mCachedText;
 };

@@ -30,6 +30,8 @@
 
 #include "tiled_global.h"
 
+#include <QColor>
+#include <QMetaType>
 #include <QRectF>
 #include <QString>
 #include <QUrl>
@@ -49,6 +51,7 @@ enum RotateDirection {
 };
 
 enum Alignment {
+    Unspecified,
     TopLeft,
     Top,
     TopRight,
@@ -68,18 +71,41 @@ enum LoadingStatus {
 };
 
 const int CHUNK_SIZE = 16;
+const int CHUNK_BITS = 4;
+const int CHUNK_SIZE_MIN = 4;
 const int CHUNK_MASK = CHUNK_SIZE - 1;
 
 static const char TILES_MIMETYPE[] = "application/vnd.tile.list";
 static const char FRAMES_MIMETYPE[] = "application/vnd.frame.list";
 static const char LAYERS_MIMETYPE[] = "application/vnd.layer.list";
-static const char TEMPLATES_MIMETYPE[] = "application/vnd.templates.list";
 static const char PROPERTIES_MIMETYPE[] = "application/vnd.properties.list";
 
 TILEDSHARED_EXPORT QPointF alignmentOffset(const QRectF &r, Alignment alignment);
 
 TILEDSHARED_EXPORT QString toFileReference(const QUrl &url, const QDir &dir);
-TILEDSHARED_EXPORT QUrl toUrl(const QString &reference, const QDir &dir);
+TILEDSHARED_EXPORT QUrl toUrl(const QString &filePathOrUrl, const QDir &dir);
+TILEDSHARED_EXPORT QUrl toUrl(const QString &filePathOrUrl);
 TILEDSHARED_EXPORT QString urlToLocalFileOrQrc(const QUrl &url);
 
+inline QString colorToString(const QColor &color)
+{
+    if (color.alpha() != 255)
+        return color.name(QColor::HexArgb);
+    return color.name();
+}
+
+inline QMargins maxMargins(const QMargins &a,
+                           const QMargins &b)
+{
+    return QMargins(qMax(a.left(), b.left()),
+                    qMax(a.top(), b.top()),
+                    qMax(a.right(), b.right()),
+                    qMax(a.bottom(), b.bottom()));
+}
+
+TILEDSHARED_EXPORT QString alignmentToString(Alignment);
+TILEDSHARED_EXPORT Alignment alignmentFromString(const QString &);
+
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Alignment);

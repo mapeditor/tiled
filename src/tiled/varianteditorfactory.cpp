@@ -22,13 +22,14 @@
 #include "varianteditorfactory.h"
 
 #include "fileedit.h"
+#include "objectrefedit.h"
 #include "textpropertyedit.h"
 #include "tilesetdocument.h"
 #include "tilesetparametersedit.h"
 #include "utils.h"
 #include "variantpropertymanager.h"
 
-#include <QCompleter>
+#include <QComboBox>
 #include <QHBoxLayout>
 #include <QToolButton>
 
@@ -46,10 +47,9 @@ public:
 signals:
     void resetProperty(QtProperty *property);
 
-private slots:
+private:
     void buttonClicked();
 
-private:
     QtProperty *mProperty;
 };
 
@@ -60,15 +60,18 @@ ResetWidget::ResetWidget(QtProperty *property, QWidget *editor, QWidget *parent)
     QHBoxLayout *layout = new QHBoxLayout(this);
 
     QToolButton *resetButton = new QToolButton(this);
-    resetButton->setIcon(QIcon(QLatin1String(":/images/16x16/edit-clear.png")));
+    resetButton->setIcon(QIcon(QLatin1String(":/images/16/edit-clear.png")));
     resetButton->setIconSize(Utils::smallIconSize());
     resetButton->setAutoRaise(true);
+    resetButton->setToolTip(tr("Reset"));
     Utils::setThemeIcon(resetButton, "edit-clear");
 
     layout->setMargin(0);
     layout->setSpacing(0);
     layout->addWidget(editor);
     layout->addWidget(resetButton);
+
+    setFocusProxy(editor);
 
     connect(resetButton, &QToolButton::clicked, this, &ResetWidget::buttonClicked);
 }
@@ -81,9 +84,11 @@ void ResetWidget::buttonClicked()
 
 VariantEditorFactory::~VariantEditorFactory()
 {
-    qDeleteAll(mFileEditToProperty.keys());
-    qDeleteAll(mTilesetEditToProperty.keys());
-    qDeleteAll(mTextPropertyEditToProperty.keys());
+    qDeleteAll(mFileEditToProperty.keyBegin(), mFileEditToProperty.keyEnd());
+    qDeleteAll(mTilesetEditToProperty.keyBegin(), mTilesetEditToProperty.keyEnd());
+    qDeleteAll(mTextPropertyEditToProperty.keyBegin(), mTextPropertyEditToProperty.keyEnd());
+    qDeleteAll(mObjectRefEditToProperty.keyBegin(), mObjectRefEditToProperty.keyEnd());
+    qDeleteAll(mComboBoxToProperty.keyBegin(), mComboBoxToProperty.keyEnd());
 }
 
 void VariantEditorFactory::connectPropertyManager(QtVariantPropertyManager *manager)
@@ -106,6 +111,7 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
         FilePath filePath = manager->value(property).value<FilePath>();
         editor->setFileUrl(filePath.url);
         editor->setFilter(manager->attributeValue(property, QLatin1String("filter")).toString());
+        editor->setIsDirectory(manager->attributeValue(property, QLatin1String("directory")).toBool());
         mCreatedFileEdits[property].append(editor);
         mFileEditToProperty[editor] = property;
 
@@ -115,6 +121,26 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
                 this, &VariantEditorFactory::slotEditorDestroyed);
 
         return editor;
+    }
+
+    if (type == VariantPropertyManager::displayObjectRefTypeId()) {
+        auto editor = new ObjectRefEdit(parent);
+        auto objectRef = manager->value(property).value<DisplayObjectRef>();
+        editor->setValue(objectRef);
+        mCreatedObjectRefEdits[property].append(editor);
+        mObjectRefEditToProperty[editor] = property;
+
+        connect(editor, &ObjectRefEdit::valueChanged,
+                this, &VariantEditorFactory::objectRefEditValueChanged);
+        connect(editor, &QObject::destroyed,
+                this, &VariantEditorFactory::slotEditorDestroyed);
+
+        auto resetEditor = new ResetWidget(property, editor, parent);
+
+        connect(resetEditor, &ResetWidget::resetProperty,
+                this, &VariantEditorFactory::resetProperty);
+
+        return resetEditor;
     }
 
     if (type == VariantPropertyManager::tilesetParametersTypeId()) {
@@ -144,21 +170,26 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
 
             return editor;
         }
+
+        QStringList suggestions = manager->attributeValue(property, QLatin1String("suggestions")).toStringList();
+        if (!suggestions.isEmpty()) {
+            auto editor = new QComboBox(parent);
+            editor->setEditable(true);
+            editor->addItems(suggestions);
+            editor->setCurrentText(manager->value(property).toString());
+            mCreatedComboBoxes[property].append(editor);
+            mComboBoxToProperty[editor] = property;
+
+            connect(editor, &QComboBox::currentTextChanged,
+                    this, &VariantEditorFactory::comboBoxPropertyEditTextChanged);
+            connect(editor, &QObject::destroyed,
+                    this, &VariantEditorFactory::slotEditorDestroyed);
+
+            return editor;
+        }
     }
 
     QWidget *editor = QtVariantEditorFactory::createEditor(manager, property, parent);
-
-    if (type == QVariant::String) {
-        // Add support for "suggestions" attribute that adds a QCompleter to the QLineEdit
-        QVariant suggestions = manager->attributeValue(property, QLatin1String("suggestions"));
-        if (!suggestions.toStringList().isEmpty()) {
-            if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(editor)) {
-                QCompleter *completer = new QCompleter(suggestions.toStringList(), lineEdit);
-                completer->setCaseSensitivity(Qt::CaseInsensitive);
-                lineEdit->setCompleter(completer);
-            }
-        }
-    }
 
     if (type == QVariant::Color) {
         // Allow resetting a color property to the invalid color
@@ -197,6 +228,14 @@ void VariantEditorFactory::slotPropertyChanged(QtProperty *property,
         for (TextPropertyEdit *edit : qAsConst(mCreatedTextPropertyEdits)[property])
             edit->setText(value.toString());
     }
+    else if (mCreatedComboBoxes.contains(property)) {
+        for (QComboBox *comboBox : qAsConst(mCreatedComboBoxes)[property])
+            comboBox->setCurrentText(value.toString());
+    }
+    else if (mCreatedObjectRefEdits.contains(property)) {
+        for (ObjectRefEdit *objectRefEdit : qAsConst(mCreatedObjectRefEdits)[property])
+            objectRefEdit->setValue(value.value<DisplayObjectRef>());
+    }
 }
 
 void VariantEditorFactory::slotPropertyAttributeChanged(QtProperty *property,
@@ -207,6 +246,17 @@ void VariantEditorFactory::slotPropertyAttributeChanged(QtProperty *property,
         if (attribute == QLatin1String("filter")) {
             for (FileEdit *edit : qAsConst(mCreatedFileEdits)[property])
                 edit->setFilter(value.toString());
+        } else if (attribute == QLatin1String("directory")) {
+            for (FileEdit *edit : qAsConst(mCreatedFileEdits)[property])
+                edit->setIsDirectory(value.toBool());
+        }
+    }
+    else if (mCreatedComboBoxes.contains(property)) {
+        if (attribute == QLatin1String("suggestions")) {
+            for (QComboBox *comboBox: qAsConst(mCreatedComboBoxes)[property]) {
+                comboBox->clear();
+                comboBox->addItems(value.toStringList());
+            }
         }
     }
     // changing of "multiline" attribute currently not supported
@@ -238,8 +288,46 @@ void VariantEditorFactory::textPropertyEditTextChanged(const QString &value)
     }
 }
 
+void VariantEditorFactory::comboBoxPropertyEditTextChanged(const QString &value)
+{
+    auto comboBox = qobject_cast<QComboBox*>(sender());
+    Q_ASSERT(comboBox);
+
+    if (QtProperty *property = mComboBoxToProperty.value(comboBox)) {
+        QtVariantPropertyManager *manager = propertyManager(property);
+        if (!manager)
+            return;
+        manager->setValue(property, value);
+    }
+}
+
+void VariantEditorFactory::objectRefEditValueChanged(const DisplayObjectRef &value)
+{
+    auto objectRefEdit = qobject_cast<ObjectRefEdit*>(sender());
+    Q_ASSERT(objectRefEdit);
+    if (QtProperty *property = mObjectRefEditToProperty.value(objectRefEdit)) {
+        QtVariantPropertyManager *manager = propertyManager(property);
+        if (!manager)
+            return;
+        manager->setValue(property, QVariant::fromValue(value));
+    }
+}
+
 void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 {
+    // Check if it was an ObjectRefEdit
+    {
+        ObjectRefEdit *objectRefEdit = static_cast<ObjectRefEdit*>(object);
+
+        if (QtProperty *property = mObjectRefEditToProperty.value(objectRefEdit)) {
+            mObjectRefEditToProperty.remove(objectRefEdit);
+            mCreatedObjectRefEdits[property].removeAll(objectRefEdit);
+            if (mCreatedObjectRefEdits[property].isEmpty())
+                mCreatedObjectRefEdits.remove(property);
+            return;
+        }
+    }
+
     // Check if it was a FileEdit
     {
         FileEdit *fileEdit = static_cast<FileEdit*>(object);
@@ -275,6 +363,19 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
             mCreatedTextPropertyEdits[property].removeAll(textPropertyEdit);
             if (mCreatedTextPropertyEdits[property].isEmpty())
                 mCreatedTextPropertyEdits.remove(property);
+            return;
+        }
+    }
+
+    // Check if it was a QComboBox
+    {
+        QComboBox *comboBox = static_cast<QComboBox*>(object);
+
+        if (QtProperty *property = mComboBoxToProperty.value(comboBox)) {
+            mComboBoxToProperty.remove(comboBox);
+            mCreatedComboBoxes[property].removeAll(comboBox);
+            if (mCreatedComboBoxes[property].isEmpty())
+                mCreatedComboBoxes.remove(property);
             return;
         }
     }

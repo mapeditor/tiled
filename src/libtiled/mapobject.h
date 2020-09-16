@@ -74,8 +74,6 @@ struct TILEDSHARED_EXPORT TextData
  */
 class TILEDSHARED_EXPORT MapObject : public Object
 {
-    Q_OBJECT
-
 public:
     /**
      * Enumerates the different object shapes. Rectangle is the default shape.
@@ -184,10 +182,12 @@ public:
     ObjectGroup *objectGroup() const;
     void setObjectGroup(ObjectGroup *objectGroup);
 
+    Map *map() const;
+
     qreal rotation() const;
     void setRotation(qreal rotation);
 
-    Alignment alignment() const;
+    Alignment alignment(const Map *map = nullptr) const;
 
     bool isVisible() const;
     void setVisible(bool visible);

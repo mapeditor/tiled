@@ -26,6 +26,17 @@
 namespace Tiled {
 
 /**
+ * @return the format options that should be used when writing the file.
+ */
+FileFormat::Options ExportHelper::formatOptions() const
+{
+    FileFormat::Options options;
+    if (mOptions.testFlag(Preferences::ExportMinimized))
+        options |= FileFormat::WriteMinimized;
+    return options;
+}
+
+/**
  * Prepares a tileset for export.
  *
  * \a savingTileset means that this tileset is being saved to its own file
@@ -53,6 +64,7 @@ SharedTileset ExportHelper::prepareExportTileset(const SharedTileset &tileset,
     // Either needs to be embedded or is already embedded and we may need to
     // make other changes to the tileset
     SharedTileset exportTileset = tileset->clone();
+    exportTileset->setOriginalTileset(tileset);
 
     if (mOptions.testFlag(Preferences::DetachTemplateInstances)) {
         for (Tile *tile : exportTileset->tiles()) {
@@ -85,7 +97,7 @@ const Map *ExportHelper::prepareExportMap(const Map *map, std::unique_ptr<Map> &
         return map;
 
     // Make a copy to which export options are applied
-    exportMap.reset(map->clone());
+    exportMap = map->clone();
 
     if (mOptions.testFlag(Preferences::DetachTemplateInstances))
         for (Layer *layer : exportMap->objectGroups())
@@ -127,16 +139,16 @@ void ExportHelper::resolveTypeAndProperties(MapObject *object) const
         for (int i = Object::objectTypes().size() - 1; i >= 0; --i) {
             auto const &type = Object::objectTypes().at(i);
             if (type.name == object->type())
-                properties.merge(type.defaultProperties);
+                mergeProperties(properties, type.defaultProperties);
         }
     }
 
     // Inherit properties from tile
     if (tile)
-        properties.merge(tile->properties());
+        mergeProperties(properties, tile->properties());
 
     // Override with own properties
-    properties.merge(object->properties());
+    mergeProperties(properties, object->properties());
 
     object->setProperties(properties);
 }

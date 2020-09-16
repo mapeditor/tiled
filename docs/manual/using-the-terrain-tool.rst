@@ -154,4 +154,4 @@ your own project. A few things to keep in mind:
    contain transitions that are compatible with this tool on
    `OpenGameArt.org <http://opengameart.org/>`__.
 
-.. |terrain| image:: ../../src/tiled/images/24x24/terrain.png
+.. |terrain| image:: ../../src/tiled/images/24/terrain.png

@@ -62,7 +62,7 @@ public:
     Tileset *tilesetAt(const QModelIndex &index) const;
     WangSet *wangSetAt(const QModelIndex &index) const;
 
-private slots:
+private:
     void onTilesetRowsInserted(const QModelIndex &parent, int first, int last);
     void onTilesetRowsAboutToBeRemoved(const QModelIndex &parent, int first, int last);
     void onTilesetRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row);
@@ -74,7 +74,6 @@ private slots:
     void onWangSetAboutToBeRemoved(WangSet *wangSet);
     void onWangSetRemoved(WangSet *wangSet);
 
-private:
     QAbstractItemModel *mTilesetDocumentsModel;
     QList<TilesetDocument*> mTilesetDocuments;
 };

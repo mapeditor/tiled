@@ -22,13 +22,14 @@
 #include "ui_shortcutsettingspage.h"
 
 #include "actionmanager.h"
-#include "preferences.h"
 #include "savefile.h"
 #include "utils.h"
 
 #include <QAbstractListModel>
 #include <QAction>
 #include <QApplication>
+#include <QCoreApplication>
+#include <QDateTime>
 #include <QFileDialog>
 #include <QItemEditorFactory>
 #include <QKeyEvent>
@@ -52,6 +53,8 @@ namespace Tiled {
  */
 class ActionsModel : public QAbstractListModel
 {
+    Q_OBJECT
+
 public:
     enum UserRoles {
         HasCustomShortcut = Qt::UserRole,
@@ -619,7 +622,7 @@ ShortcutSettingsPage::~ShortcutSettingsPage()
 QSize ShortcutSettingsPage::sizeHint() const
 {
     QSize size = QWidget::sizeHint();
-    size.setWidth(qRound(Utils::dpiScaled(500)));
+    size.setWidth(Utils::dpiScaled(500));
     return size;
 }
 
@@ -665,7 +668,7 @@ void ShortcutSettingsPage::importShortcuts()
     if (!file.open(QFile::ReadOnly | QIODevice::Text)) {
         QMessageBox::critical(this,
                               tr("Error Loading Shortcuts"),
-                              tr("Could not open file for reading."));
+                              QCoreApplication::translate("File Errors", "Could not open file for reading."));
         return;
     }
 
@@ -682,12 +685,12 @@ void ShortcutSettingsPage::importShortcuts()
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("shortcut")) {
-            QStringRef id = xml.attributes().value(QLatin1String("id"));
+            const Id id { xml.attributes().value(QLatin1String("id")).toUtf8() };
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("key")) {
                     QString keyString = xml.attributes().value(QLatin1String("value")).toString();
-                    result.insert(Id(id.toUtf8()), QKeySequence(keyString));
+                    result.insert(id, QKeySequence(keyString));
                     xml.skipCurrentElement();   // skip out of "key" element
                     xml.skipCurrentElement();   // skip out of "shortcut" element
                     break;
@@ -718,7 +721,7 @@ void ShortcutSettingsPage::exportShortcuts()
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QMessageBox::critical(this,
                               tr("Error Saving Shortcuts"),
-                              tr("Could not open file for writing."));
+                              QCoreApplication::translate("File Errors", "Could not open file for writing."));
         return;
     }
 
@@ -729,11 +732,11 @@ void ShortcutSettingsPage::exportShortcuts()
 
     xml.writeStartDocument();
     xml.writeDTD(QLatin1String("<!DOCTYPE KeyboardMappingScheme>"));
-    xml.writeComment(QString::fromLatin1(" Written by %1 %2, %3. ").
+    xml.writeComment(QStringLiteral(" Written by %1 %2, %3. ").
                      arg(QApplication::applicationDisplayName(),
                          QApplication::applicationVersion(),
                          QDateTime::currentDateTime().toString(Qt::ISODate)));
-    xml.writeStartElement(QLatin1String("mapping"));
+    xml.writeStartElement(QStringLiteral("mapping"));
 
     auto actions = ActionManager::actions();
     std::sort(actions.begin(), actions.end());
@@ -742,12 +745,12 @@ void ShortcutSettingsPage::exportShortcuts()
         const auto action = ActionManager::action(actionId);
         const auto shortcut = action->shortcut();
 
-        xml.writeStartElement(QLatin1String("shortcut"));
-        xml.writeAttribute(QLatin1String("id"), actionId.toString());
+        xml.writeStartElement(QStringLiteral("shortcut"));
+        xml.writeAttribute(QStringLiteral("id"), actionId.toString());
 
         if (!shortcut.isEmpty()) {
             xml.writeEmptyElement(QLatin1String("key"));
-            xml.writeAttribute(QLatin1String("value"), shortcut.toString());
+            xml.writeAttribute(QStringLiteral("value"), shortcut.toString());
         }
 
         xml.writeEndElement();  // shortcut

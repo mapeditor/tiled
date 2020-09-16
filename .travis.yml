@@ -2,10 +2,20 @@ language: cpp
 sudo: required
 dist: xenial
 python: 3.6
+
 env:
   global:
   - secure: J8Y+eQD0p5YPOlhBEPFgpZzhRFjXC4phiiFtGV3JaYX34wxCsyyNhMStMqIZTBL4D9lQojfLgXODBDaqT1iSHDe1oonosnyYnGBIJElez247pjuNiSSvcAbYa9RQnwfHe8JFphQHViURbv0OfqpHHyAlHy5b8nrPYWG2xmHA5nY=
   - secure: VgouZ5cStqlgODwIuLIvIBN5gkmrP95agCS3BorLm7g/iXM4cwuaV+bov9FiSlnzcnWfpsNMsFt5xDU2Oc17N0Kyx531MIA1H5h9xdzj/IhjhLcOOqYeXt3lN2quRE2maIZDSrPVr3eY0o6xdcNkeK0jpX/mgIiSHwXOclXv+6o=
+  - QT_INSTALL_DIR=~/Qt
+  - QT_VERSION=5.12.9
+  - QTCREATOR_VERSION=4.10.1
+
+cache:
+  directories:
+    - ${QT_INSTALL_DIR}
+    - ~/.ccache
+
 addons:
   coverity_scan:
     project:
@@ -35,21 +45,23 @@ matrix:
         - binutils
         - g++-7
         - libgl1-mesa-dev
+        - libxkbcommon-x11-0
         - zlib1g-dev
+        - libzstd-dev
+        - p7zip-full
     env:
-    - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+      - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+      - QT_BIN=${QT_INSTALL_DIR}/${QT_VERSION}/gcc_64/bin
+      - PATH="${QT_INSTALL_DIR}/Tools/QtCreator/bin:${QT_BIN}:${PATH}"
     before_install:
     - eval "${MATRIX_EVAL}"
-    - sudo add-apt-repository --yes ppa:beineri/opt-qt-5.12.3-xenial
-    - sudo apt-get update -qq
-    - sudo apt-get -y install qt512base qt512script qt512svg qt512imageformats qt512tools
-    - source /opt/qt512/bin/qt512-env.sh
-    - source ./dist/linux/setup-qbs.sh
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools icu
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QTCREATOR_VERSION} qtcreator
     script:
     - qbs --version
     - qbs setup-toolchains --detect
     - qbs config defaultProfile gcc
-    - qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.version:$TILED_VERSION
+    - qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true
     - cp LICENSE* COPYING *md Tiled/
     after_success:
     - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
@@ -79,11 +91,6 @@ matrix:
         tags: true
     - provider: script
       skip_cleanup: true
-      script: curl --upload-file $(ls Tiled*.AppImage) https://transfer.sh/Tiled.AppImage
-      on:
-        all_branches: true
-    - provider: script
-      skip_cleanup: true
       on:
         repo: bjorn/tiled
         branch: snapshot
@@ -98,6 +105,7 @@ matrix:
         - libgl1-mesa-dev
         - xvfb
         - zlib1g-dev
+        - libzstd-dev
     env:
     - QMAKESPEC=linux-clang
     - MAKEFLAGS=-j2
@@ -108,10 +116,10 @@ matrix:
     - source /opt/qt56/bin/qt56-env.sh
     - qmake -version
     script:
-    - qmake
+    - qmake "CONFIG+=tiled_zstd"
     - make
     - pushd tests/
-    - qmake
+    - qmake "CONFIG+=tiled_zstd"
     - make
     - for test in `find -executable -type f`; do pushd `dirname $test`; xvfb-run -a
       ./`basename $test`||exit 1; popd; done
@@ -119,23 +127,31 @@ matrix:
     after_script:
     - cppcheck --enable=all -q -Isrc/libtiled `git ls-files src/\*.cpp`
   - os: osx
+    addons:
+      homebrew:
+        packages:
+          - p7zip
+          - ccache
+        update: true
+    env:
+      - MAKEFLAGS=-j2
+      - QT_BIN=${QT_INSTALL_DIR}/${QT_VERSION}/clang_64/bin
+      - PATH="${QT_INSTALL_DIR}/Qt Creator.app/Contents/MacOS:${QT_BIN}:${PATH}"
     before_install:
-    - curl -L https://raw.githubusercontent.com/benlau/qtci/master/recipes/install-qt
-      --output install-qt
-    - curl -L https://raw.githubusercontent.com/benlau/qtci/master/bin/extract-qt-installer
-      --output extract-qt-installer
-    - chmod +x install-qt
-    - chmod +x extract-qt-installer
-    - export PATH=$PATH:$PWD
-    - QT_CI_PACKAGES=qt.qt5.5123.clang_64,qt.qt5.5123.qtscript QT_CI_DOWNLOADER="wget -c -nv -N" install-qt 5.12.3
-    - source qt-5.12.3.env
-    - source ./dist/linux/setup-qbs.sh
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QTCREATOR_VERSION} qtcreator
+    - git clone --depth 1 -b master https://github.com/facebook/zstd.git
+    - cd zstd/lib
+    - make libzstd.a
+    - cd ../../
     script:
     - qbs --version
     - qbs setup-toolchains --detect
     - qbs config defaultProfile xcode
-    - qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION
-    - macdeployqt install/Tiled.app
+    - ccache -zs
+    - qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true modules.cpp.compilerWrapper:ccache
+    - ccache -s
+    - macdeployqt install/Tiled.app -verbose=2
     - pushd install
     - ruby ../dist/macos/fixup-install-names.rb
     - ditto -c -k --sequesterRsrc --keepParent Tiled.app ../Tiled-$TILED_VERSION-macos.zip

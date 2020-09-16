@@ -369,7 +369,7 @@ void JsonWriter::stringify(const QVariant &variant, int depth)
     } else {
         if (!m_errorString.isEmpty())
             m_errorString.append(QLatin1Char('\n'));
-        QString msg = QString::fromLatin1("Unsupported type %1 (id: %2)").arg(QString::fromUtf8(variant.typeName())).arg(variant.userType());
+        QString msg = QStringLiteral("Unsupported type %1 (id: %2)").arg(QString::fromUtf8(variant.typeName())).arg(variant.userType());
         m_errorString.append(msg);
         qWarning() << "JsonWriter::stringify - " << msg;
         m_result += QLatin1String("null");

@@ -131,14 +131,14 @@ TerrainDock::TerrainDock(QWidget *parent)
 
     mEraseTerrainButton = new QPushButton(this);
     mEraseTerrainButton->setIconSize(Utils::smallIconSize());
-    mEraseTerrainButton->setIcon(QIcon(QLatin1String(":images/22x22/stock-tool-eraser.png")));
+    mEraseTerrainButton->setIcon(QIcon(QLatin1String(":images/22/stock-tool-eraser.png")));
     mEraseTerrainButton->setCheckable(true);
     mEraseTerrainButton->setAutoExclusive(true);
 
-    mAddTerrainType->setIcon(QIcon(QStringLiteral(":/images/22x22/add.png")));
-    mRemoveTerrainType->setIcon(QIcon(QStringLiteral(":/images/22x22/remove.png")));
-    mMoveTerrainTypeUp->setIcon(QIcon(QStringLiteral(":/images/24x24/go-up.png")));
-    mMoveTerrainTypeDown->setIcon(QIcon(QStringLiteral(":/images/24x24/go-down.png")));
+    mAddTerrainType->setIcon(QIcon(QStringLiteral(":/images/22/add.png")));
+    mRemoveTerrainType->setIcon(QIcon(QStringLiteral(":/images/22/remove.png")));
+    mMoveTerrainTypeUp->setIcon(QIcon(QStringLiteral(":/images/24/go-up.png")));
+    mMoveTerrainTypeDown->setIcon(QIcon(QStringLiteral(":/images/24/go-down.png")));
 
     Utils::setThemeIcon(mAddTerrainType, "add");
     Utils::setThemeIcon(mRemoveTerrainType, "remove");

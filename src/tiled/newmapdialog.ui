@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>518</width>
-    <height>534</height>
+    <width>474</width>
+    <height>483</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,13 +23,29 @@
       <string>Map</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_5">
+      <item row="3" column="1">
+       <widget class="QComboBox" name="renderOrder"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="layerFormat"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="renderOrderLabel">
         <property name="text">
-         <string>Orientation:</string>
+         <string>Tile render order:</string>
         </property>
         <property name="buddy">
-         <cstring>orientation</cstring>
+         <cstring>renderOrder</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="layerFormatLabel">
+        <property name="text">
+         <string>Tile layer format:</string>
+        </property>
+        <property name="buddy">
+         <cstring>layerFormat</cstring>
         </property>
        </widget>
       </item>
@@ -43,31 +59,15 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="layerFormatLabel">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Tile layer format:</string>
+         <string>Orientation:</string>
         </property>
         <property name="buddy">
-         <cstring>layerFormat</cstring>
+         <cstring>orientation</cstring>
         </property>
        </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="layerFormat"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="renderOrderLabel">
-        <property name="text">
-         <string>Tile render order:</string>
-        </property>
-        <property name="buddy">
-         <cstring>renderOrder</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="renderOrder"/>
       </item>
      </layout>
     </widget>

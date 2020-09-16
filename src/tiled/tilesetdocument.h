@@ -51,7 +51,7 @@ class TilesetDocument : public Document
     Q_OBJECT
 
 public:
-    TilesetDocument(const SharedTileset &tileset, const QString &fileName = QString());
+    TilesetDocument(const SharedTileset &tileset);
     ~TilesetDocument() override;
 
     TilesetDocumentPtr sharedFromThis() { return qSharedPointerCast<TilesetDocument>(Document::sharedFromThis()); }
@@ -72,10 +72,14 @@ public:
     FileFormat *writerFormat() const override;
     void setWriterFormat(TilesetFormat *format);
 
+    QString lastExportFileName() const override;
+    void setLastExportFileName(const QString &fileName) override;
+
     TilesetFormat *exportFormat() const override;
     void setExportFormat(FileFormat *format) override;
 
     QString displayName() const override;
+    QString externalOrEmbeddedFileName() const;
 
     void swapTileset(SharedTileset &tileset);
     const SharedTileset &tileset() const;
@@ -91,6 +95,7 @@ public:
 
     void setTilesetName(const QString &name);
     void setTilesetTileOffset(QPoint tileOffset);
+    void setTilesetObjectAlignment(Alignment objectAlignment);
 
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile*> &tiles);
@@ -110,6 +115,8 @@ public:
     void setTileProbability(Tile *tile, qreal probability);
     void swapTileObjectGroup(Tile *tile, std::unique_ptr<ObjectGroup> &objectGroup);
 
+    void checkIssues() override;
+
     static TilesetDocument* findDocumentForTileset(const SharedTileset &tileset);
 
 signals:
@@ -127,6 +134,7 @@ signals:
 
     void tilesetNameChanged(Tileset *tileset);
     void tilesetTileOffsetChanged(Tileset *tileset);
+    void tilesetObjectAlignmentChanged(Tileset *tileset);
 
     void tileTypeChanged(Tile *tile);
     void tileImageSourceChanged(Tile *tile);
@@ -159,7 +167,7 @@ signals:
      */
     void selectedTilesChanged();
 
-private slots:
+private:
     void onPropertyAdded(Object *object, const QString &name);
     void onPropertyRemoved(Object *object, const QString &name);
     void onPropertyChanged(Object *object, const QString &name);
@@ -168,17 +176,14 @@ private slots:
     void onTerrainRemoved(Terrain *terrain);
     void onWangSetRemoved(WangSet *wangSet);
 
-private:
     SharedTileset mTileset;
     QList<MapDocument*> mMapDocuments;
 
     TilesetTerrainModel *mTerrainModel;
     TilesetWangSetModel *mWangSetModel;
-    WangColorModel *mWangColorModel;
     std::unordered_map<WangSet*, std::unique_ptr<WangColorModel>> mWangColorModels;
 
     QList<Tile*> mSelectedTiles;
-    QPointer<TilesetFormat> mExportFormat;
 
     static QMap<SharedTileset, TilesetDocument*> sTilesetToDocument;
 };

@@ -39,9 +39,10 @@
 using namespace Tiled;
 
 LayerOffsetTool::LayerOffsetTool(QObject *parent)
-    : AbstractTool(tr("Offset Layers"),
-                   QIcon(QLatin1String(":images/22x22/stock-tool-move-22.png")),
-                   QKeySequence(tr("M")),
+    : AbstractTool("LayerOffsetTool",
+                   tr("Offset Layers"),
+                   QIcon(QLatin1String(":images/22/stock-tool-move-22.png")),
+                   QKeySequence(Qt::Key_M),
                    parent)
     , mMousePressed(false)
     , mDragging(false)
@@ -55,6 +56,7 @@ void LayerOffsetTool::mouseEntered()
 
 void LayerOffsetTool::mouseLeft()
 {
+    setStatusInfo(QString());
 }
 
 void LayerOffsetTool::activate(MapScene *)
@@ -89,7 +91,7 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = qFloor(tilePosF.x());
     const int y = qFloor(tilePosF.y());
-    setStatusInfo(QString(QLatin1String("%1, %2")).arg(x).arg(y));
+    setStatusInfo(QStringLiteral("%1, %2").arg(x).arg(y));
 
     if (!mMousePressed)
         return;
@@ -139,7 +141,6 @@ void LayerOffsetTool::modifiersChanged(Qt::KeyboardModifiers)
 void LayerOffsetTool::languageChanged()
 {
     setName(tr("Offset Layers"));
-    setShortcut(QKeySequence(tr("M")));
 }
 
 void LayerOffsetTool::updateEnabledState()

@@ -25,6 +25,7 @@
 #include "utils.h"
 
 #include <QDesktopServices>
+#include <QEvent>
 #include <QMenu>
 #include <QPainter>
 
@@ -38,8 +39,8 @@ namespace Tiled {
 
 NewsButton::NewsButton(QWidget *parent)
     : QToolButton(parent)
-    , mReadIcon(QLatin1String("://images/16x16/mail-read-symbolic.png"))
-    , mUnreadIcon(QLatin1String("://images/16x16/mail-unread-symbolic.png"))
+    , mReadIcon(QLatin1String("://images/16/mail-read-symbolic.png"))
+    , mUnreadIcon(QLatin1String("://images/16/mail-unread-symbolic.png"))
 {
     const auto preferences = Preferences::instance();
     setVisible(preferences->displayNews());
@@ -50,11 +51,6 @@ NewsButton::NewsButton(QWidget *parent)
     setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     setAutoRaise(true);
-#ifdef TILED_SNAPSHOT
-    setText(tr("Devlog"));
-#else
-    setText(tr("News"));
-#endif
     setToolTip(feed.errorString());
 
     connect(&feed, &NewsFeed::refreshed,
@@ -66,6 +62,19 @@ NewsButton::NewsButton(QWidget *parent)
             this, &NewsButton::showNewsMenu);
 
     refreshButton();
+    retranslateUi();
+}
+
+void NewsButton::changeEvent(QEvent *event)
+{
+    QToolButton::changeEvent(event);
+    switch (event->type()) {
+    case QEvent::LanguageChange:
+        retranslateUi();
+        break;
+    default:
+        break;
+    }
 }
 
 void NewsButton::refreshButton()
@@ -90,7 +99,7 @@ void NewsButton::refreshButton()
         painter.setBrush(Qt::white);
         painter.setPen(Qt::white);
         painter.drawText(numberPixmap.rect(), Qt::AlignCenter, unreadCount < 5 ? QString::number(unreadCount) :
-                                                                                 QString(QLatin1String("!")));
+                                                                                 QStringLiteral("!"));
 
         setIcon(QIcon(numberPixmap));
     } else {
@@ -106,7 +115,10 @@ void NewsButton::showNewsMenu()
     auto &feed = NewsFeed::instance();
 
     for (const NewsItem &newsItem : feed.newsItems()) {
-        QAction *action = newsFeedMenu->addAction(newsItem.title);
+        QAction *action = newsFeedMenu->addAction(newsItem.title, [=] {
+            QDesktopServices::openUrl(newsItem.link);
+            NewsFeed::instance().markRead(newsItem);
+        });
 
         if (feed.isUnread(newsItem)) {
             QFont f = action->font();
@@ -116,11 +128,6 @@ void NewsButton::showNewsMenu()
         } else {
             action->setIcon(mReadIcon);
         }
-
-        connect(action, &QAction::triggered, [=] {
-            QDesktopServices::openUrl(newsItem.link);
-            NewsFeed::instance().markRead(newsItem);
-        });
     }
 
     newsFeedMenu->addSeparator();
@@ -140,6 +147,15 @@ void NewsButton::showNewsMenu()
     newsFeedMenu->exec();
 
     setDown(false);
+}
+
+void NewsButton::retranslateUi()
+{
+#ifdef TILED_SNAPSHOT
+    setText(tr("Devlog"));
+#else
+    setText(tr("News"));
+#endif
 }
 
 } // namespace Tiled

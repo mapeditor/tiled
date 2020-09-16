@@ -29,10 +29,11 @@
 using namespace Tiled;
 
 MagicWandTool::MagicWandTool(QObject *parent)
-    : AbstractTileSelectionTool(tr("Magic Wand"),
+    : AbstractTileSelectionTool("MagicWandTool",
+                                tr("Magic Wand"),
                                 QIcon(QLatin1String(
-                                      ":images/22x22/stock-tool-fuzzy-select-22.png")),
-                                QKeySequence(tr("W")),
+                                      ":images/22/stock-tool-fuzzy-select-22.png")),
+                                QKeySequence(Qt::Key_W),
                                 parent)
 {
 }
@@ -52,7 +53,6 @@ void MagicWandTool::tilePositionChanged(QPoint tilePos)
 void MagicWandTool::languageChanged()
 {
     setName(tr("Magic Wand"));
-    setShortcut(QKeySequence(tr("W")));
 
     AbstractTileSelectionTool::languageChanged();
 }

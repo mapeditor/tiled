@@ -64,6 +64,7 @@ class TILEDSHARED_EXPORT Cell
     Q_GADGET
 
     Q_PROPERTY(int tileId READ tileId)
+    Q_PROPERTY(bool empty READ isEmpty)
     Q_PROPERTY(bool flippedHorizontally READ flippedHorizontally WRITE setFlippedHorizontally)
     Q_PROPERTY(bool flippedVertically READ flippedVertically WRITE setFlippedVertically)
     Q_PROPERTY(bool flippedAntiDiagonally READ flippedAntiDiagonally WRITE setFlippedAntiDiagonally)
@@ -218,8 +219,6 @@ inline const Cell &Chunk::cellAt(QPoint point) const
  */
 class TILEDSHARED_EXPORT TileLayer : public Layer
 {
-    Q_OBJECT
-
 public:
     class iterator
     {
@@ -360,9 +359,14 @@ public:
     void setSize(QSize size);
 
     /**
-     * Returns the bounds of this layer.
+     * Returns the bounds of this layer in map tile coordinates.
      */
     QRect bounds() const { return mBounds.translated(mX, mY); }
+
+    /**
+     * Returns the bounds of this layer in local tile coordinates.
+     */
+    QRect localBounds() const { return mBounds; }
 
     QRect rect() const { return QRect(mX, mY, mWidth, mHeight); }
 
@@ -387,9 +391,9 @@ public:
      * Returns a copy of the area specified by the given \a region. The
      * caller is responsible for the returned tile layer.
      */
-    TileLayer *copy(const QRegion &region) const;
+    std::unique_ptr<TileLayer> copy(const QRegion &region) const;
 
-    TileLayer *copy(int x, int y, int width, int height) const
+    std::unique_ptr<TileLayer> copy(int x, int y, int width, int height) const
     { return copy(QRegion(x, y, width, height)); }
 
     /**
@@ -407,14 +411,16 @@ public:
     void clear();
 
     /**
-     * Sets the cells starting at the given position to the cells in the given
-     * \a tileLayer. Parts that fall outside of this layer will be ignored.
-     *
-     * When a \a mask is given, only cells that fall within this mask are set.
-     * The mask is applied in local coordinates.
+     * Sets the cells within the given \a area to the cells in the given
+     * \a tileLayer. The tiles in \a tileLayer are offset by \a x and \a y.
      */
-    void setCells(int x, int y, TileLayer *tileLayer,
-                  const QRegion &mask = QRegion());
+    void setCells(int x, int y, const TileLayer *tileLayer, const QRegion &area);
+
+    /**
+     * Sets the cells starting at the given position to the cells in the given
+     * \a tileLayer.
+     */
+    void setCells(int x, int y, const TileLayer *tileLayer);
 
     void setTiles(const QRegion &area, Tile *tile);
 
@@ -520,7 +526,7 @@ public:
     const_iterator begin() const { return const_iterator(mChunks.begin(), mChunks.end()); }
     const_iterator end() const { return const_iterator(mChunks.end(), mChunks.end()); }
 
-    QVector<QRect> sortedChunksToWrite() const;
+    QVector<QRect> sortedChunksToWrite(QSize chunkSize) const;
 
 protected:
     TileLayer *initializeClone(TileLayer *clone) const;
@@ -597,15 +603,13 @@ inline bool TileLayer::contains(QPoint point) const
 
 inline Chunk& TileLayer::chunk(int x, int y)
 {
-    QPoint chunkCoordinates(x < 0 ? (x + 1) / CHUNK_SIZE - 1 : x / CHUNK_SIZE,
-                            y < 0 ? (y + 1) / CHUNK_SIZE - 1 : y / CHUNK_SIZE);
+    const QPoint chunkCoordinates(x >> CHUNK_BITS, y >> CHUNK_BITS);
     return mChunks[chunkCoordinates];
 }
 
 inline const Chunk* TileLayer::findChunk(int x, int y) const
 {
-    QPoint chunkCoordinates(x < 0 ? (x + 1) / CHUNK_SIZE - 1 : x / CHUNK_SIZE,
-                            y < 0 ? (y + 1) / CHUNK_SIZE - 1 : y / CHUNK_SIZE);
+    const QPoint chunkCoordinates(x >> CHUNK_BITS, y >> CHUNK_BITS);
     auto it = mChunks.find(chunkCoordinates);
     return it != mChunks.end() ? &it.value() : nullptr;
 }
@@ -634,6 +638,12 @@ inline const Cell &TileLayer::cellAt(int x, int y) const
 inline const Cell &TileLayer::cellAt(QPoint point) const
 {
     return cellAt(point.x(), point.y());
+}
+
+inline void TileLayer::setCells(int x, int y, const TileLayer *tileLayer)
+{
+    setCells(x, y, tileLayer,
+             QRect(x, y, tileLayer->width(), tileLayer->height()));
 }
 
 typedef QSharedPointer<TileLayer> SharedTileLayer;

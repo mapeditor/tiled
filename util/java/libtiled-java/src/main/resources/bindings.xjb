@@ -280,9 +280,7 @@
         </jxb:bindings>
 
         <jxb:bindings node="xs:simpleType[@name='Compression']">
-            <jxb:bindings node="xs:restriction/xs:enumeration[@value='gzip']">
-                <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
-            </jxb:bindings>
+            <jxb:bindings node="xs:restriction/xs:enumeration[@value='gzip']"/>
         </jxb:bindings>
     </jxb:bindings>
 </jxb:bindings>

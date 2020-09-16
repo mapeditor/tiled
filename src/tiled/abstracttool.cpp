@@ -28,15 +28,16 @@
 
 namespace Tiled {
 
-AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
-                           const QKeySequence &shortcut, QObject *parent)
+AbstractTool::AbstractTool(Id id,
+                           const QString &name,
+                           const QIcon &icon,
+                           const QKeySequence &shortcut,
+                           QObject *parent)
     : QObject(parent)
     , mName(name)
     , mIcon(icon)
     , mShortcut(shortcut)
-    , mEnabled(false)
-    , mToolManager(nullptr)
-    , mMapDocument(nullptr)
+    , mId(id)
 {
 }
 
@@ -93,6 +94,15 @@ void AbstractTool::setEnabled(bool enabled)
 
     mEnabled = enabled;
     emit enabledChanged(enabled);
+}
+
+void AbstractTool::setVisible(bool visible)
+{
+    if (mVisible == visible)
+        return;
+
+    mVisible = visible;
+    emit visibleChanged(visible);
 }
 
 Tile *AbstractTool::tile() const

@@ -23,10 +23,14 @@
 #include "editableobject.h"
 #include "tile.h"
 
+#include <QJSValue>
+
 namespace Tiled {
 
 class EditableObjectGroup;
+class EditableTerrain;
 class EditableTileset;
+class TilesetDocument;
 
 class EditableTile : public EditableObject
 {
@@ -37,10 +41,12 @@ class EditableTile : public EditableObject
     Q_PROPERTY(int height READ height)
     Q_PROPERTY(QSize size READ size)
     Q_PROPERTY(QString type READ type WRITE setType)
-    // TODO: Expose terrain information
+    Q_PROPERTY(QString imageFileName READ imageFileName WRITE setImageFileName)
+    Q_PROPERTY(QJSValue terrain READ terrain WRITE setTerrain)
     Q_PROPERTY(qreal probability READ probability WRITE setProbability)
-    Q_PROPERTY(Tiled::EditableObjectGroup *objectGroup READ objectGroup)
-    // TODO: Expose animation frames
+    Q_PROPERTY(Tiled::EditableObjectGroup *objectGroup READ objectGroup WRITE setObjectGroup)
+    Q_PROPERTY(QJSValue frames READ frames WRITE setFrames)
+    Q_PROPERTY(bool animated READ isAnimated)
     Q_PROPERTY(Tiled::EditableTileset *tileset READ tileset)
 
 public:
@@ -52,6 +58,14 @@ public:
     };
     Q_ENUM(Flags)
 
+    enum Corner {
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight
+    };
+    Q_ENUM(Corner)
+
     EditableTile(EditableTileset *tileset,
                  Tile *tile,
                  QObject *parent = nullptr);
@@ -62,22 +76,36 @@ public:
     int height() const;
     QSize size() const;
     const QString &type() const;
+    QString imageFileName() const;
+    QJSValue terrain() const;
     qreal probability() const;
     EditableObjectGroup *objectGroup() const;
+    QJSValue frames() const;
+    bool isAnimated() const;
     EditableTileset *tileset() const;
+
+    Q_INVOKABLE Tiled::EditableTerrain *terrainAtCorner(Corner corner) const;
+    Q_INVOKABLE void setTerrainAtCorner(Corner corner, Tiled::EditableTerrain *editableTerrain);
 
     Tile *tile() const;
 
     void detach();
     void attach(EditableTileset *tileset);
 
+    const ObjectGroup *attachedObjectGroup() const { return mAttachedObjectGroup; }
     void detachObjectGroup();
 
 public slots:
     void setType(const QString &type);
+    void setImageFileName(const QString &fileName);
+    void setTerrain(QJSValue value);
     void setProbability(qreal probability);
+    void setObjectGroup(EditableObjectGroup *editableObjectGroup);
+    void setFrames(QJSValue value);
 
 private:
+    TilesetDocument *tilesetDocument() const;
+
     std::unique_ptr<Tile> mDetachedTile;
     mutable ObjectGroup *mAttachedObjectGroup = nullptr;
 };
@@ -108,9 +136,19 @@ inline const QString &EditableTile::type() const
     return tile()->type();
 }
 
+inline QString EditableTile::imageFileName() const
+{
+    return tile()->imageSource().toString(QUrl::PreferLocalFile);
+}
+
 inline qreal EditableTile::probability() const
 {
     return tile()->probability();
+}
+
+inline bool EditableTile::isAnimated() const
+{
+    return tile()->isAnimated();
 }
 
 inline Tile *EditableTile::tile() const

@@ -37,6 +37,25 @@ class ObjectGroup;
 class ChangeEvent;
 class MapDocument;
 
+class ObjectIconManager
+{
+public:
+    static const ObjectIconManager &instance();
+
+    const QIcon &iconForObject(MapObject *object) const;
+
+private:
+    ObjectIconManager();
+
+    const QIcon mRectangleIcon;
+    const QIcon mImageIcon;
+    const QIcon mPolygonIcon;
+    const QIcon mPolylineIcon;
+    const QIcon mEllipseIcon;
+    const QIcon mTextIcon;
+    const QIcon mPointIcon;
+};
+
 /**
  * Provides a tree view on the objects present on a map. Also has member
  * functions to modify objects that emit the appropriate signals to allow
@@ -89,13 +108,12 @@ public:
 
     void moveObjects(ObjectGroup *og, int from, int to, int count);
 
-private slots:
+private:
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *groupLayer, int index);
     void tileTypeChanged(Tile *tile);
     void documentChanged(const ChangeEvent &change);
 
-private:
     void emitDataChanged(const QList<MapObject *> &objects,
                          const QVarLengthArray<Column, 3> &columns,
                          const QVector<int> &roles = QVector<int>());
@@ -108,13 +126,6 @@ private:
     QList<Layer *> &filteredChildLayers(GroupLayer *parentLayer) const;
 
     QIcon mObjectGroupIcon;
-    QIcon mRectangleIcon;
-    QIcon mImageIcon;
-    QIcon mPolygonIcon;
-    QIcon mPolylineIcon;
-    QIcon mEllipseIcon;
-    QIcon mTextIcon;
-    QIcon mPointIcon;
 };
 
 } // namespace Tiled

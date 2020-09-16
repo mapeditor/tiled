@@ -28,6 +28,7 @@
 #include <QList>
 #include <QObject>
 #include <QPointF>
+#include <QPointer>
 #include <QVector>
 
 class QTabWidget;
@@ -45,11 +46,13 @@ class BrokenLinksWidget;
 class Document;
 class Editor;
 class FileChangedWarning;
+class MainWindow;
 class MapDocument;
 class MapEditor;
 class MapView;
 class TilesetDocument;
 class TilesetDocumentsModel;
+class WorldDocument;
 
 /**
  * This class controls the open documents.
@@ -60,15 +63,20 @@ class DocumentManager : public QObject
 
     Q_PROPERTY(Document *currentDocument READ currentDocument NOTIFY currentDocumentChanged)
 
+    DocumentManager(QObject *parent = nullptr);
+    ~DocumentManager() override;
+
+    friend class MainWindow;
+
 public:
     static DocumentManager *instance();
-    static void deleteInstance();
+    static DocumentManager *maybeInstance();
 
     QWidget *widget() const;
 
     void setEditor(Document::DocumentType documentType, Editor *editor);
     Editor *editor(Document::DocumentType documentType) const;
-    void deleteEditor(Document::DocumentType documentType);
+    void deleteEditors();
     QList<Editor*> editors() const;
 
     Editor *currentEditor() const;
@@ -87,10 +95,13 @@ public:
     int findDocument(Document *document) const;
 
     void switchToDocument(int index);
+    bool switchToDocument(const QString &fileName);
     bool switchToDocument(Document *document);
     void switchToDocument(MapDocument *mapDocument, QPointF viewCenter, qreal scale);
+    void switchToDocumentAndHandleSimiliarTileset(MapDocument *mapDocument, QPointF viewCenter, qreal scale);
 
     void addDocument(const DocumentPtr &document);
+    void insertDocument(int index, const DocumentPtr &document);
 
     bool isDocumentModified(Document *document) const;
 
@@ -125,6 +136,12 @@ public:
 
     void abortMultiDocumentClose();
 
+    WorldDocument *ensureWorldDocument(const QString &fileName);
+    bool isAnyWorldModified() const;
+    bool isWorldModified(const QString &fileName) const;
+
+    QString fileDialogStartLocation() const;
+
 signals:
     void documentCreated(Document *document);
     void documentOpened(Document *document);
@@ -135,6 +152,7 @@ signals:
     void fileOpenRequested(const QString &path);
     void fileSaveRequested();
     void templateOpenRequested(const QString &path);
+    void selectCustomPropertyRequested(const QString &name);
     void templateTilesetReplaced();
 
     /**
@@ -152,6 +170,8 @@ signals:
      */
     void documentAboutToClose(Document *document);
 
+    void currentEditorChanged(Editor *editor);
+
     /**
      * Emitted when an error occurred while reloading the map.
      */
@@ -168,7 +188,9 @@ public slots:
     void openFile(const QString &path);
     void saveFile();
 
-private slots:
+private:
+    void onWorldUnloaded(const QString &worldFile);
+
     void currentIndexChanged();
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
@@ -179,30 +201,31 @@ private slots:
 
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
-    void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
 
     void tilesetNameChanged(Tileset *tileset);
 
+    void filesChanged(const QStringList &fileNames);
     void fileChanged(const QString &fileName);
     void hideChangedWarning();
 
     void tilesetImagesChanged(Tileset *tileset);
-
-private:
-    DocumentManager(QObject *parent = nullptr);
-    ~DocumentManager() override;
 
     bool askForAdjustment(const Tileset &tileset);
 
     void addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
     void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
 
-    bool eventFilter(QObject *object, QEvent *event) override;
+    void updateSession() const;
+
+    MapDocument *openMapFile(const QString &path);
+    TilesetDocument *openTilesetFile(const QString &path);
 
     QVector<DocumentPtr> mDocuments;
+    QMap<QString, WorldDocument*> mWorldDocuments;
     TilesetDocumentsModel *mTilesetDocumentsModel;
 
-    QWidget *mWidget;
+    // Pointer becomes null when deleted as part of the UI, to prevent double-deletion
+    QPointer<QWidget> mWidget;
     QWidget *mNoEditorWidget;
     QTabBar *mTabBar;
     FileChangedWarning *mFileChangedWarning;

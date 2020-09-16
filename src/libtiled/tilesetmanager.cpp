@@ -49,7 +49,7 @@ TilesetManager::TilesetManager():
     mAnimationDriver(new TileAnimationDriver(this)),
     mReloadTilesetsOnChange(false)
 {
-    connect(mWatcher, &FileSystemWatcher::filesChanged,
+    connect(mWatcher, &FileSystemWatcher::pathsChanged,
             this, &TilesetManager::filesChanged);
 
     connect(mAnimationDriver, &TileAnimationDriver::update,

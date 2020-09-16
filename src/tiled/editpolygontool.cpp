@@ -54,10 +54,11 @@
 using namespace Tiled;
 
 EditPolygonTool::EditPolygonTool(QObject *parent)
-    : AbstractObjectTool(tr("Edit Polygons"),
-          QIcon(QLatin1String(":images/24x24/tool-edit-polygons.png")),
-          QKeySequence(tr("O")),
-          parent)
+    : AbstractObjectTool("EditPolygonTool",
+                         tr("Edit Polygons"),
+                         QIcon(QLatin1String(":images/24/tool-edit-polygons.png")),
+                         QKeySequence(Qt::Key_O),
+                         parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mMousePressed(false)
     , mHoveredHandle(nullptr)
@@ -337,7 +338,6 @@ void EditPolygonTool::languageChanged()
     AbstractObjectTool::languageChanged();
 
     setName(tr("Edit Polygons"));
-    setShortcut(QKeySequence(tr("O")));
 }
 
 void EditPolygonTool::setSelectedHandles(const QSet<PointHandle *> &handles)
@@ -637,7 +637,7 @@ void EditPolygonTool::showHandleContextMenu(QPoint screenPos)
     const int n = mSelectedHandles.size();
     Q_ASSERT(n > 0);
 
-    QIcon delIcon(QLatin1String(":images/16x16/edit-delete.png"));
+    QIcon delIcon(QLatin1String(":images/16/edit-delete.png"));
     QString delText = tr("Delete %n Node(s)", "", n);
 
     QMenu menu;

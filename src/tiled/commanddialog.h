@@ -1,6 +1,8 @@
 /*
  * commanddialog.h
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
+ * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
+ * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,6 +22,8 @@
 
 #pragma once
 
+#include "command.h"
+
 #include <QDialog>
 #include <QTreeView>
 
@@ -30,6 +34,7 @@ class CommandDialog;
 namespace Tiled {
 
 class CommandDataModel;
+class CommandsEdit;
 
 class CommandDialog : public QDialog
 {
@@ -39,33 +44,13 @@ public:
     CommandDialog(QWidget *parent = nullptr);
     ~CommandDialog();
 
-    /**
-      * Saves the changes to the users preferences.
-      * Automatically called when the dialog is closed.
-      */
-    void closeEvent(QCloseEvent *event) override;
-
-public slots:
-    void setShortcut(const QKeySequence &keySequence);
-
-    void setSaveBeforeExecute(int state);
-
-    void setShowOutput(int state);
-
-    void setExecutable(const QString &text);
-
-    void setArguments(const QString &text);
-
-    void setWorkingDirectory(const QString &text);
-
-    void updateWidgets(const QModelIndex &current, const QModelIndex&);
-
-    void browseExecutable();
-
-    void browseWorkingDirectory();
+    const QVector<Command> &globalCommands() const;
+    const QVector<Command> &projectCommands() const;
 
 private:
     Ui::CommandDialog *mUi;
+    CommandsEdit *mGlobalCommandsEdit;
+    CommandsEdit *mProjectCommandsEdit;
 };
 
 class CommandTreeView : public QTreeView
@@ -75,29 +60,18 @@ class CommandTreeView : public QTreeView
 public:
     CommandTreeView(QWidget *parent);
 
-    /**
-      * Returns the model used by this view in CommandDataMode form.
-      */
-    CommandDataModel *model() const { return mModel; }
+    void setModel(QAbstractItemModel *model) override;
+    CommandDataModel *model() const;
 
-private slots:
-    /**
-      * Displays a context menu for the item at <i>event</i>'s position.
-      */
+protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 
-    /**
-      * Fixes the selection after rows have been removed.
-      */
-    void handleRowsRemoved(const QModelIndex &parent, int start, int end);
-
-    /**
-      * Gets the currently selected rows and tells the model to delete them.
-      */
-    void removeSelectedCommands();
+    void rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end) override;
 
 private:
-    CommandDataModel *mModel;
+    void handleRowsRemoved(const QModelIndex &parent, int start, int end);
+
+    void removeSelectedCommands();
 };
 
 } // namespace Tiled

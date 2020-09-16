@@ -26,7 +26,6 @@
 
 #include <Python.h>
 
-#include "logginginterface.h"
 #include "mapformat.h"
 #include "plugin.h"
 
@@ -67,14 +66,10 @@ public:
 
     void initialize() override;
 
-    void log(Tiled::LoggingInterface::OutputType type, const QString &msg);
-    void log(const QString &msg);
-
-private slots:
-    void reloadModules();
-
 private:
+    void reloadModules();
     bool loadOrReloadModule(ScriptEntry &script);
+
     PyObject *findPluginSubclass(PyObject *module);
 
     QString mScriptDir;
@@ -83,8 +78,6 @@ private:
 
     QFileSystemWatcher mFileSystemWatcher;
     QTimer mReloadTimer;
-
-    Tiled::LoggingInterface mLogger;
 };
 
 
@@ -107,14 +100,14 @@ class PythonMapFormat : public Tiled::MapFormat
 public:
     PythonMapFormat(const QString &scriptFile,
                     PyObject *class_,
-                    PythonPlugin &plugin);
+                    QObject *parent = nullptr);
 
     Capabilities capabilities() const override { return mCapabilities; }
 
     std::unique_ptr<Tiled::Map> read(const QString &fileName) override;
     bool supportsFile(const QString &fileName) const override;
 
-    bool write(const Tiled::Map *map, const QString &fileName) override;
+    bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
 
     QString nameFilter() const override;
     QString shortName() const override;
@@ -125,15 +118,9 @@ public:
 
 private:
     PyObject *mClass;
-    PythonPlugin &mPlugin;
     QString mScriptFile;
     QString mError;
     Capabilities mCapabilities;
 };
 
 } // namespace Python
-
-PyMODINIT_FUNC PyInit_tiled(void);
-extern int _wrap_convert_py2c__Tiled__Map___star__(PyObject *obj, Tiled::Map * *address);
-extern PyObject* _wrap_convert_c2py__Tiled__Map_const___star__(Tiled::Map const * *cvalue);
-extern PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *cvalue);

@@ -204,7 +204,7 @@ def generate(parent_mod):
     param('QWidget*','parent',transfer_ownership=False,null_ok=True),
     ('const QString','caption'),('const QString','dir'),('const QString','filter'),
     param('QString*','selectedFilter',default_value='new QString("")'),
-    param('QFlags<QFileDialog::Option>','options', direction=Parameter.DIRECTION_IN, default_value='0')
+    param('QFlags<QFileDialog::Option>','options', direction=Parameter.DIRECTION_IN, default_value='{}')
     ], is_static=True)
 
   mod.add_container('QList<QString>', retval('QString'), 'list')

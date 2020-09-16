@@ -153,8 +153,8 @@ void MiniMap::updateImageRect()
 
     // Scale and center the image
     const QRect r = contentsRect();
-    qreal scale = qMin((qreal) r.width() / imageRect.width(),
-                       (qreal) r.height() / imageRect.height());
+    qreal scale = qMin(static_cast<qreal>(r.width()) / imageRect.width(),
+                       static_cast<qreal>(r.height()) / imageRect.height());
     imageRect.setSize(imageRect.size() * scale);
     imageRect.moveCenter(r.center());
 
@@ -178,8 +178,8 @@ void MiniMap::renderMapToImage()
     }
 
     // Determine the largest possible scale
-    qreal scale = qMin((qreal) viewSize.width() / mapSize.width(),
-                       (qreal) viewSize.height() / mapSize.height());
+    qreal scale = qMin(static_cast<qreal>(viewSize.width()) / mapSize.width(),
+                       static_cast<qreal>(viewSize.height()) / mapSize.height());
 
     // Allocate a new image when the size changed
     const QSize imageSize = mapSize * scale;

@@ -40,11 +40,10 @@ protected:
 signals:
     void wangColorColorPicked(WangColor *wangColor, const QColor &color);
 
-private slots:
+private:
     void pickColor();
     void colorPicked(const QColor &color);
 
-private:
     QSharedPointer<WangColor> mClickedWangColor;
 };
 

@@ -47,8 +47,6 @@ class MapObject;
  */
 class TILEDSHARED_EXPORT ObjectGroup : public Layer
 {
-    Q_OBJECT
-
 public:
     /**
      * Objects within an object group can either be drawn top down (sorted
@@ -86,7 +84,7 @@ public:
      * Adds an object to this object group.
      */
     void addObject(MapObject *object);
-    void addObject(std::unique_ptr<MapObject> &&object);
+    void addObject(std::unique_ptr<MapObject> object);
 
     /**
      * Inserts an object at the specified index. This is only used for undoing

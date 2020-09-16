@@ -44,7 +44,8 @@ public:
     /**
      * Constructs an abstract tile tool with the given \a name and \a icon.
      */
-    AbstractTileTool(const QString &name,
+    AbstractTileTool(Id id,
+                     const QString &name,
                      const QIcon &icon,
                      const QKeySequence &shortcut,
                      BrushItem *brushItem = nullptr,
@@ -58,6 +59,7 @@ public:
     void mouseEntered() override;
     void mouseLeft() override;
     void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
 
 protected:
     void mapDocumentChanged(MapDocument *oldDocument,

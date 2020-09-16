@@ -1,6 +1,6 @@
 /*
  * main.cpp
- * Copyright 2008-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2020, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2011, Ben Longbons <b.r.longbons@gmail.com>
  * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
  *
@@ -23,6 +23,7 @@
 #include "commandlineparser.h"
 #include "exporthelper.h"
 #include "languagemanager.h"
+#include "logginginterface.h"
 #include "mainwindow.h"
 #include "mapdocument.h"
 #include "mapformat.h"
@@ -41,17 +42,20 @@
 #include <QJsonDocument>
 #include <QtPlugin>
 
+#include "qtcompat_p.h"
+
 #include <memory>
 
 #ifdef Q_OS_WIN
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #if QT_VERSION >= 0x050700
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif // QT_VERSION >= 0x050700
+#ifdef ERROR
+#undef ERROR
+#endif
 #endif // Q_OS_WIN
-
-#define STRINGIFY(x) #x
-#define AS_STRING(x) STRINGIFY(x)
 
 using namespace Tiled;
 
@@ -64,12 +68,12 @@ class CommandLineHandler : public CommandLineParser
 public:
     CommandLineHandler();
 
-    bool quit;
-    bool showedVersion;
-    bool disableOpenGL;
-    bool exportMap;
-    bool exportTileset;
-    bool newInstance;
+    bool quit = false;
+    bool showedVersion = false;
+    bool disableOpenGL = false;
+    bool exportMap = false;
+    bool exportTileset = false;
+    bool newInstance = false;
     Preferences::ExportOptions exportOptions;
 
 private:
@@ -81,6 +85,7 @@ private:
     void setExportEmbedTilesets();
     void setExportDetachTemplateInstances();
     void setExportResolveObjectTypesAndProperties();
+    void setExportMinimized();
     void showExportFormats();
     void startNewInstance();
 
@@ -96,6 +101,36 @@ private:
                                                            help);
     }
 };
+
+static const QtMessageHandler QT_DEFAULT_MESSAGE_HANDLER = qInstallMessageHandler(nullptr);
+
+static void messagesToConsole(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    QString txt;
+    switch (type) {
+    case QtFatalMsg:
+        // program will quit so no point routing to the Console window
+        break;
+    case QtInfoMsg:
+    case QtDebugMsg:
+        INFO(qFormatLogMessage(type, context, msg));
+        break;
+    case QtWarningMsg:
+        WARNING(qFormatLogMessage(type, context, msg));
+        break;
+    case QtCriticalMsg:
+        ERROR(qFormatLogMessage(type, context, msg));
+        break;
+    }
+
+    (*QT_DEFAULT_MESSAGE_HANDLER)(type, context, msg);
+}
+
+static void initializePluginsAndExtensions()
+{
+    PluginManager::instance()->loadPlugins();
+    ScriptManager::instance().ensureInitialized();
+}
 
 /**
  * Used during file export, attempt to determine the output file format
@@ -152,12 +187,6 @@ inline T *findExportFormat(const QString *filter,
 
 
 CommandLineHandler::CommandLineHandler()
-    : quit(false)
-    , showedVersion(false)
-    , disableOpenGL(false)
-    , exportMap(false)
-    , exportTileset(false)
-    , newInstance(false)
 {
     option<&CommandLineHandler::showVersion>(
                 QLatin1Char('v'),
@@ -204,6 +233,11 @@ CommandLineHandler::CommandLineHandler()
                 QLatin1String("--resolve-types-and-properties"),
                 tr("Export the map or tileset with types and properties resolved"));
 
+    option<&CommandLineHandler::setExportMinimized>(
+                QChar(),
+                QLatin1String("--minimize"),
+                tr("Minimize the exported file by omitting unnecessary whitespace"));
+
     option<&CommandLineHandler::startNewInstance>(
                 QChar(),
                 QLatin1String("--new-instance"),
@@ -214,8 +248,8 @@ void CommandLineHandler::showVersion()
 {
     if (!showedVersion) {
         showedVersion = true;
-        qWarning().noquote() << QApplication::applicationDisplayName()
-                             << QApplication::applicationVersion();
+        qInfo().noquote() << QApplication::applicationDisplayName()
+                          << QApplication::applicationVersion();
         quit = true;
     }
 }
@@ -255,9 +289,14 @@ void CommandLineHandler::setExportResolveObjectTypesAndProperties()
     exportOptions |= Preferences::ResolveObjectTypesAndProperties;
 }
 
+void CommandLineHandler::setExportMinimized()
+{
+    exportOptions |= Preferences::ExportMinimized;
+}
+
 void CommandLineHandler::showExportFormats()
 {
-    PluginManager::instance()->loadPlugins();
+    initializePluginsAndExtensions();
 
     QStringList formats;
     const auto mapFormats = PluginManager::objects<MapFormat>();
@@ -267,9 +306,9 @@ void CommandLineHandler::showExportFormats()
     }
     formats.sort(Qt::CaseSensitive);
 
-    qWarning().noquote() << tr("Map export formats:");
+    qInfo().noquote() << tr("Map export formats:");
     for (const QString &name : formats)
-        qWarning(" %s", qUtf8Printable(name));
+        qInfo(" %s", qUtf8Printable(name));
 
     formats.clear();
     const auto tilesetFormats = PluginManager::objects<TilesetFormat>();
@@ -279,9 +318,9 @@ void CommandLineHandler::showExportFormats()
     }
     formats.sort(Qt::CaseSensitive);
 
-    qWarning().noquote() << tr("Tileset export formats:");
+    qInfo().noquote() << tr("Tileset export formats:");
     for (const QString &name : formats)
-        qWarning(" %s", qUtf8Printable(name));
+        qInfo(" %s", qUtf8Printable(name));
 
     quit = true;
 }
@@ -303,33 +342,23 @@ int main(int argc, char *argv[])
     }
 #endif
 
+    qInstallMessageHandler(messagesToConsole);
+
     QGuiApplication::setFallbackSessionManagementEnabled(false);
 
     // Enable support for highres images (added in Qt 5.1, but off by default)
-    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-    QGuiApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
+    QCoreApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
+#endif
+
+#ifdef Q_OS_MAC
+    QCoreApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
 
     TiledApplication a(argc, argv);
 
-    a.setOrganizationDomain(QLatin1String("mapeditor.org"));
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
-    a.setApplicationName(QLatin1String("Tiled"));
-#else
-    a.setApplicationName(QLatin1String("tiled"));
-#endif
-    a.setApplicationDisplayName(QLatin1String("Tiled"));
-    a.setApplicationVersion(QLatin1String(AS_STRING(TILED_VERSION)));
-
-#ifdef Q_OS_MAC
-    a.setAttribute(Qt::AA_DontShowIconsInMenus);
-#endif
-
-    StyleHelper::initialize();
-
-    LanguageManager *languageManager = LanguageManager::instance();
-    languageManager->installTranslators();
+    initializeMetatypes();
 
     // Add the built-in file formats
     TmxMapFormat tmxMapFormat;
@@ -357,7 +386,7 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        PluginManager::instance()->loadPlugins();
+        initializePluginsAndExtensions();
 
         int index = 0;
         const QString *filter = commandLine.filesToOpen().length() > 2 ? &commandLine.filesToOpen().at(index++) : nullptr;
@@ -381,10 +410,11 @@ int main(int argc, char *argv[])
 
         // Apply export options
         std::unique_ptr<Map> exportMap;
-        const Map *map = ExportHelper(commandLine.exportOptions).prepareExportMap(sourceMap.get(), exportMap);
+        ExportHelper exportHelper(commandLine.exportOptions);
+        const Map *map = exportHelper.prepareExportMap(sourceMap.get(), exportMap);
 
         // Write out the file
-        bool success = outputFormat->write(map, targetFile);
+        bool success = outputFormat->write(map, targetFile, exportHelper.formatOptions());
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export map to target file.");
@@ -400,7 +430,7 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        PluginManager::instance()->loadPlugins();
+        initializePluginsAndExtensions();
 
         int index = 0;
         const QString *filter = commandLine.filesToOpen().length() > 2 ? &commandLine.filesToOpen().at(index++) : nullptr;
@@ -423,10 +453,11 @@ int main(int argc, char *argv[])
         }
 
         // Apply export options
-        SharedTileset exportTileset = ExportHelper(commandLine.exportOptions).prepareExportTileset(sourceTileset);
+        ExportHelper exportHelper(commandLine.exportOptions);
+        SharedTileset exportTileset = exportHelper.prepareExportTileset(sourceTileset);
 
         // Write out the file
-        bool success = outputFormat->write(*exportTileset, targetFile);
+        bool success = outputFormat->write(*exportTileset, targetFile, exportHelper.formatOptions());
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export tileset to target file.");
@@ -435,16 +466,33 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    if (!commandLine.filesToOpen().isEmpty() && !commandLine.newInstance) {
-        // Convert files to absolute paths because the already running Tiled
+    QStringList filesToOpen;
+
+    for (const QString &fileName : commandLine.filesToOpen()) {
+        const QFileInfo fileInfo(fileName);
+        const QString filePath = QDir::cleanPath(fileInfo.absoluteFilePath());
+
+        if (fileInfo.suffix() == QLatin1String("tiled-project")) {
+            if (!fileInfo.exists()) {
+                qWarning().noquote() << QCoreApplication::translate("Command line", "Project file '%1' not found.").arg(fileName);
+                return 1;
+            }
+            Preferences::setStartupProject(filePath);
+        } else {
+            filesToOpen.append(filePath);
+        }
+    }
+
+    if (!filesToOpen.isEmpty() && !commandLine.newInstance) {
+        // Files need to be absolute paths because the already running Tiled
         // instance likely does not have the same working directory.
-        QStringList absolutePaths;
-        for (const QString &fileName : commandLine.filesToOpen())
-            absolutePaths.append(QFileInfo(fileName).absoluteFilePath());
-        QJsonDocument doc(QJsonArray::fromStringList(absolutePaths));
+        QJsonDocument doc(QJsonArray::fromStringList(filesToOpen));
         if (a.sendMessage(QLatin1String(doc.toJson())))
             return 0;
     }
+
+    StyleHelper::initialize();
+    Session::initialize();
 
     MainWindow w;
     w.show();
@@ -458,14 +506,11 @@ int main(int argc, char *argv[])
                      &w, [&] (const QString &file) { w.openFile(file); });
 
     PluginManager::instance()->loadPlugins();
-    ScriptManager::instance().initialize();
 
-    if (!commandLine.filesToOpen().isEmpty()) {
-        for (const QString &fileName : commandLine.filesToOpen())
-            w.openFile(fileName);
-    } else if (Preferences::instance()->openLastFilesOnStartup()) {
-        w.openLastFiles();
-    }
+    w.initializeSession();
+
+    for (const QString &fileName : qAsConst(filesToOpen))
+        w.openFile(fileName);
 
     return a.exec();
 }

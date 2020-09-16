@@ -1,6 +1,7 @@
 import QtQuick 2.10
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
+import QtQuick.Window 2.11
 import org.mapeditor.Tiled 1.0 as Tiled
 import Qt.labs.settings 1.0
 import Qt.labs.platform 1.0 as Platform
@@ -78,19 +79,9 @@ ApplicationWindow {
     menuBar: MenuBar {
         Menu {
             title: qsTr("File")
-            MenuItem {
-                action: openAction
-                text: qsTr("Open...")
-                onTriggered: {
-                    fileDialog.open()
-                }
-            }
+            MenuItem { action: openAction }
             MenuSeparator {}
-            MenuItem {
-                text: qsTr("Exit")
-                action: exitAction
-                onTriggered: Qt.quit()
-            }
+            MenuItem { action: exitAction }
         }
         Menu {
             title: qsTr("Help")
@@ -118,7 +109,11 @@ ApplicationWindow {
 
     Item {
         id: mapView
-        anchors.fill: parent
+
+        scale: 1 / Screen.devicePixelRatio
+        width: parent.width * Screen.devicePixelRatio
+        height: parent.height * Screen.devicePixelRatio
+        transformOrigin: Item.TopLeft
 
         Item {
             id: mapContainer
@@ -160,6 +155,9 @@ ApplicationWindow {
         anchors.fill: parent
 
         onDragged: {
+            dx *= Screen.devicePixelRatio
+            dy *= Screen.devicePixelRatio
+
             if (containerAnimation.running) {
                 containerAnimation.stop()
                 containerAnimation.x += dx

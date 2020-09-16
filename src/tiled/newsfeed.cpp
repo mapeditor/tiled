@@ -25,7 +25,6 @@
 #include <QDebug>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QSettings>
 #include <QTimerEvent>
 #include <QXmlStreamReader>
 
@@ -44,8 +43,7 @@ NewsFeed::NewsFeed()
             this, &NewsFeed::finished);
 
     const auto preferences = Preferences::instance();
-    const auto settings = preferences->settings();
-    mLastRead = settings->value(QLatin1String("Install/NewsFeedLastRead")).toDateTime();
+    mLastRead = preferences->get<QDateTime>("Install/NewsFeedLastRead");
 
     setEnabled(preferences->displayNews());
     connect(preferences, &Preferences::displayNewsChanged, this, &NewsFeed::setEnabled);
@@ -185,9 +183,9 @@ void NewsFeed::setLastRead(const QDateTime &dateTime)
 {
     mLastRead = dateTime;
 
-    auto settings = Preferences::instance()->settings();
-    settings->setValue(QLatin1String("Install/NewsFeedLastRead"),
-                       mLastRead.toString(Qt::ISODate));
+    auto preferences = Preferences::instance();
+    preferences->setValue(QLatin1String("Install/NewsFeedLastRead"),
+                          mLastRead.toString(Qt::ISODate));
 
     emit refreshed();
 }

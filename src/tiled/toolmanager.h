@@ -43,10 +43,13 @@ class MapDocument;
 class ToolManager : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(ToolManager)
 
 public:
     ToolManager(QObject *parent = nullptr);
     ~ToolManager() override;
+
+    void setRegisterActions(bool enabled);
 
     void setMapDocument(MapDocument *mapDocument);
 
@@ -92,20 +95,20 @@ private slots:
     void selectEnabledTool();
 
 private:
-    Q_DISABLE_COPY(ToolManager)
-
     AbstractTool *firstEnabledTool() const;
     void setSelectedTool(AbstractTool *tool);
 
     QActionGroup *mActionGroup;
-    AbstractTool *mSelectedTool;
-    AbstractTool *mDisabledTool;
-    AbstractTool *mPreviouslyDisabledTool;
-    MapDocument *mMapDocument;
-    Tile *mTile;
-    ObjectTemplate *mObjectTemplate;
+    AbstractTool *mSelectedTool = nullptr;
+    AbstractTool *mDisabledTool = nullptr;
+    AbstractTool *mPreviouslyDisabledTool = nullptr;
+    MapDocument *mMapDocument = nullptr;
+    Tile *mTile = nullptr;
+    ObjectTemplate *mObjectTemplate = nullptr;
 
-    bool mSelectEnabledToolPending;
+    bool mRegisterActions = true;
+    bool mSelectEnabledToolPending = false;
+    bool mUpdatingActionToolTip = false;
 };
 
 /**

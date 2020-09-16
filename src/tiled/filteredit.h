@@ -26,21 +26,30 @@ namespace Tiled {
 
 class FilterEdit : public QLineEdit
 {
+    Q_OBJECT
+
 public:
     FilterEdit(QWidget *parent = nullptr);
 
     void setFilteredView(QWidget *view);
+    void setClearTextOnEscape(bool clearTextOnEscape);
 
     bool event(QEvent *event) override;
 
 private:
     QWidget *mFilteredView = nullptr;
+    bool mClearTextOnEscape = true;
 };
 
 
 inline void FilterEdit::setFilteredView(QWidget *view)
 {
     mFilteredView = view;
+}
+
+inline void FilterEdit::setClearTextOnEscape(bool clearTextOnEscape)
+{
+    mClearTextOnEscape = clearTextOnEscape;
 }
 
 } // namespace Tiled

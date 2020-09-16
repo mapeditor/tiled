@@ -49,7 +49,7 @@ protected:
     void changeEvent(QEvent *e) override;
     void keyPressEvent(QKeyEvent *) override;
 
-private slots:
+private:
     void indexPressed(const QModelIndex &index);
     void currentRowChanged(const QModelIndex &index);
     void showContextMenu(QPoint pos);
@@ -62,7 +62,6 @@ private slots:
 
     void ensureStampVisible(const TileStamp &stamp);
 
-private:
     void retranslateUi();
     void setStampAtIndex(const QModelIndex &index);
 

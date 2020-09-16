@@ -44,10 +44,11 @@
 using namespace Tiled;
 
 TerrainBrush::TerrainBrush(QObject *parent)
-    : AbstractTileTool(tr("Terrain Brush"),
+    : AbstractTileTool("TerrainTool",
+                       tr("Terrain Brush"),
                        QIcon(QLatin1String(
-                               ":images/24x24/terrain-edit.png")),
-                       QKeySequence(tr("T")),
+                               ":images/24/terrain-edit.png")),
+                       QKeySequence(Qt::Key_T),
                        nullptr,
                        parent)
     , mTerrain(nullptr)
@@ -105,33 +106,35 @@ void TerrainBrush::tilePositionChanged(QPoint pos)
 
 void TerrainBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (!brushItem()->isVisible())
-        return;
-
-    if (event->button() == Qt::LeftButton) {
-        switch (mBrushBehavior) {
-        case Line:
-            mLineReferenceX = mPaintX;
-            mLineReferenceY = mPaintY;
-            mBrushBehavior = LineStartSet;
-            break;
-        case LineStartSet:
-            doPaint(false);
-            mLineReferenceX = mPaintX;
-            mLineReferenceY = mPaintY;
-            break;
-        case Paint:
-            beginPaint();
-            break;
-        case Free:
-            beginPaint();
-            mBrushBehavior = Paint;
-            break;
-        }
-    } else {
-        if (event->button() == Qt::RightButton)
+    if (brushItem()->isVisible()) {
+        if (event->button() == Qt::LeftButton) {
+            switch (mBrushBehavior) {
+            case Line:
+                mLineReferenceX = mPaintX;
+                mLineReferenceY = mPaintY;
+                mBrushBehavior = LineStartSet;
+                break;
+            case LineStartSet:
+                doPaint(false);
+                mLineReferenceX = mPaintX;
+                mLineReferenceY = mPaintY;
+                break;
+            case Paint:
+                beginPaint();
+                break;
+            case Free:
+                beginPaint();
+                mBrushBehavior = Paint;
+                break;
+            }
+            return;
+        } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
             capture();
+            return;
+        }
     }
+
+    AbstractTileTool::mousePressed(event);
 }
 
 void TerrainBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
@@ -165,7 +168,6 @@ void TerrainBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 void TerrainBrush::languageChanged()
 {
     setName(tr("Terrain Brush"));
-    setShortcut(QKeySequence(tr("T")));
 }
 
 void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,
@@ -305,7 +307,7 @@ static unsigned short bottomEdge(const Tile *tile)
 static unsigned short leftEdge(const Tile *tile)
 {
     unsigned t = terrain(tile);
-    return((t >> 16) & 0xFF00) | ((t >> 8) & 0xFF);
+    return ((t >> 16) & 0xFF00) | ((t >> 8) & 0xFF);
 }
 
 static unsigned short rightEdge(const Tile *tile)

@@ -27,7 +27,7 @@
 
 namespace Tiled {
 
-EditableLayer::EditableLayer(std::unique_ptr<Layer> &&layer, QObject *parent)
+EditableLayer::EditableLayer(std::unique_ptr<Layer> layer, QObject *parent)
     : EditableObject(nullptr, layer.get(), parent)
 {
     mDetachedLayer = std::move(layer);
@@ -68,6 +68,7 @@ void EditableLayer::detach()
     setAsset(nullptr);
 
     mDetachedLayer.reset(layer()->clone());
+    mDetachedLayer->resetIds();
     setObject(mDetachedLayer.get());
     EditableManager::instance().mEditableLayers.insert(layer(), this);
 }
@@ -98,50 +99,50 @@ void EditableLayer::hold()
 /**
  * Release ownership of the referenced layer.
  */
-void EditableLayer::release()
+Layer *EditableLayer::release()
 {
-    Q_ASSERT(mDetachedLayer.get() == layer());
+    Q_ASSERT(isOwning());
 
-    mDetachedLayer.release();
+    return mDetachedLayer.release();
 }
 
 void EditableLayer::setName(const QString &name)
 {
-    if (asset())
-        asset()->push(new SetLayerName(asset()->document(), layer(), name));
-    else
+    if (auto doc = document())
+        asset()->push(new SetLayerName(doc, layer(), name));
+    else if (!checkReadOnly())
         layer()->setName(name);
 }
 
 void EditableLayer::setOpacity(qreal opacity)
 {
-    if (asset())
-        asset()->push(new SetLayerOpacity(asset()->document(), layer(), opacity));
-    else
+    if (auto doc = document())
+        asset()->push(new SetLayerOpacity(doc, layer(), opacity));
+    else if (!checkReadOnly())
         layer()->setOpacity(opacity);
 }
 
 void EditableLayer::setVisible(bool visible)
 {
-    if (asset())
-        asset()->push(new SetLayerVisible(asset()->document(), layer(), visible));
-    else
+    if (auto doc = document())
+        asset()->push(new SetLayerVisible(doc, layer(), visible));
+    else if (!checkReadOnly())
         layer()->setVisible(visible);
 }
 
 void EditableLayer::setLocked(bool locked)
 {
-    if (asset())
-        asset()->push(new SetLayerLocked(asset()->document(), layer(), locked));
-    else
+    if (auto doc = document())
+        asset()->push(new SetLayerLocked(doc, layer(), locked));
+    else if (!checkReadOnly())
         layer()->setLocked(locked);
 }
 
 void EditableLayer::setOffset(QPointF offset)
 {
-    if (asset())
-        asset()->push(new SetLayerOffset(asset()->document(), layer(), offset));
-    else
+    if (auto doc = document())
+        asset()->push(new SetLayerOffset(doc, layer(), offset));
+    else if (!checkReadOnly())
         layer()->setOffset(offset);
 }
 
@@ -155,14 +156,14 @@ void EditableLayer::setSelected(bool selected)
         if (!document->selectedLayers().contains(layer())) {
             auto layers = document->selectedLayers();
             layers.append(layer());
-            document->setSelectedLayers(layers);
+            document->switchSelectedLayers(layers);
         }
     } else {
         int index = document->selectedLayers().indexOf(layer());
         if (index != -1) {
             auto layers = document->selectedLayers();
             layers.removeAt(index);
-            document->setSelectedLayers(layers);
+            document->switchSelectedLayers(layers);
         }
     }
 }

@@ -40,6 +40,7 @@
 #include "worldmanager.h"
 
 #include <QApplication>
+#include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QMimeData>
@@ -89,10 +90,10 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, &MapDocument::mapChanged,
                 this, &MapScene::mapChanged);
-        connect(mMapDocument, &MapDocument::tilesetTileOffsetChanged,
-                this, &MapScene::adaptToTilesetTileSizeChanges);
+        connect(mMapDocument, &MapDocument::tilesetTilePositioningChanged,
+                this, [this] { update(); });
         connect(mMapDocument, &MapDocument::tileImageSourceChanged,
-                this, &MapScene::adaptToTileSizeChanges);
+                this, [this] { update(); });
         connect(mMapDocument, &MapDocument::tilesetReplaced,
                 this, &MapScene::tilesetReplaced);
     }
@@ -165,16 +166,17 @@ void MapScene::refreshScene()
         return;
     }
 
-    WorldManager &worldManager = WorldManager::instance();
+    const WorldManager &worldManager = WorldManager::instance();
+    const QString currentMapFile = mMapDocument->canonicalFilePath();
 
-    if (const World *world = worldManager.worldForMap(mMapDocument->fileName())) {
-        const QPoint currentMapPosition = world->mapRect(mMapDocument->fileName()).topLeft();
-        auto const contextMaps = world->contextMaps(mMapDocument->fileName());
+    if (const World *world = worldManager.worldForMap(currentMapFile)) {
+        const QPoint currentMapPosition = world->mapRect(currentMapFile).topLeft();
+        auto const contextMaps = world->contextMaps(currentMapFile);
 
         for (const World::MapEntry &mapEntry : contextMaps) {
             MapDocumentPtr mapDocument;
 
-            if (mapEntry.fileName == mMapDocument->fileName()) {
+            if (mapEntry.fileName == currentMapFile) {
                 mapDocument = mMapDocument->sharedFromThis();
             } else {
                 auto doc = DocumentManager::instance()->loadDocument(mapEntry.fileName);
@@ -207,6 +209,8 @@ void MapScene::refreshScene()
         setBackgroundBrush(map->backgroundColor());
     else
         setBackgroundBrush(mDefaultBackgroundColor);
+
+    emit sceneRefreshed();
 }
 
 void MapScene::updateDefaultBackgroundColor()
@@ -264,23 +268,12 @@ void MapScene::repaintTileset(Tileset *tileset)
     }
 }
 
-/**
- * This function should be called when any tiles in the given tileset may have
- * changed their size or offset or image.
- */
-void MapScene::adaptToTilesetTileSizeChanges()
+void MapScene::tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset)
 {
-    update();
-}
+    Q_UNUSED(index)
+    Q_UNUSED(oldTileset)
 
-void MapScene::adaptToTileSizeChanges()
-{
-    update();
-}
-
-void MapScene::tilesetReplaced()
-{
-    adaptToTilesetTileSizeChanges();
+    repaintTileset(tileset);
 }
 
 /**
@@ -376,16 +369,20 @@ void MapScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 static const ObjectTemplate *readObjectTemplate(const QMimeData *mimeData)
 {
-    if (!mimeData->hasFormat(QLatin1String(TEMPLATES_MIMETYPE)))
+    const auto urls = mimeData->urls();
+    if (urls.size() != 1)
         return nullptr;
 
-    QByteArray encodedData = mimeData->data(QLatin1String(TEMPLATES_MIMETYPE));
-    QDataStream stream(&encodedData, QIODevice::ReadOnly);
+    const QString fileName = urls.first().toLocalFile();
+    if (fileName.isEmpty())
+        return nullptr;
 
-    QString fileName;
-    stream >> fileName;
+    const QFileInfo info(fileName);
+    if (info.isDir())
+        return nullptr;
 
-    return TemplateManager::instance()->findObjectTemplate(fileName);
+    auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(info.absoluteFilePath());
+    return objectTemplate->object() ? objectTemplate : nullptr;
 }
 
 /**
@@ -441,12 +438,12 @@ void MapScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 
 void MapScene::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
 }
 
 void MapScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
 }
 
 bool MapScene::eventFilter(QObject *, QEvent *event)

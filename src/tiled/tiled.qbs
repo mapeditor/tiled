@@ -17,7 +17,11 @@ QtGuiApplication {
 
     property bool qtcRunnable: true
 
-    cpp.includePaths: ["."]
+    cpp.includePaths: [
+        ".",
+        "../../zstd/lib"
+    ]
+
     cpp.useRPaths: project.useRPaths
     cpp.rpaths: {
         if (qbs.targetOS.contains("darwin"))
@@ -43,6 +47,10 @@ QtGuiApplication {
         ];
         if (project.snapshot)
             defs.push("TILED_SNAPSHOT");
+
+        if (project.enableZstd)
+            defs.push("TILED_ZSTD_SUPPORT");
+
         return defs;
     }
 
@@ -68,6 +76,8 @@ QtGuiApplication {
         "abstracttiletool.h",
         "abstracttool.cpp",
         "abstracttool.h",
+        "abstractworldtool.cpp",
+        "abstractworldtool.h",
         "actionmanager.cpp",
         "actionmanager.h",
         "addpropertydialog.cpp",
@@ -122,6 +132,8 @@ QtGuiApplication {
         "changeproperties.h",
         "changeselectedarea.cpp",
         "changeselectedarea.h",
+        "changeterrain.cpp",
+        "changeterrain.h",
         "changetile.cpp",
         "changetile.h",
         "changetileanimation.cpp",
@@ -157,9 +169,11 @@ QtGuiApplication {
         "commandlineparser.h",
         "commandmanager.cpp",
         "commandmanager.h",
+        "commandsedit.cpp",
+        "commandsedit.h",
+        "commandsedit.ui",
         "consoledock.cpp",
         "consoledock.h",
-        "containerhelpers.h",
         "createellipseobjecttool.cpp",
         "createellipseobjecttool.h",
         "createobjecttool.cpp",
@@ -182,6 +196,9 @@ QtGuiApplication {
         "document.h",
         "documentmanager.cpp",
         "documentmanager.h",
+        "donationdialog.cpp",
+        "donationdialog.h",
+        "donationdialog.ui",
         "editableasset.cpp",
         "editableasset.h",
         "editablegrouplayer.cpp",
@@ -202,6 +219,8 @@ QtGuiApplication {
         "editableobjectgroup.h",
         "editableselectedarea.cpp",
         "editableselectedarea.h",
+        "editableterrain.cpp",
+        "editableterrain.h",
         "editabletile.cpp",
         "editabletile.h",
         "editabletilelayer.cpp",
@@ -246,6 +265,12 @@ QtGuiApplication {
         "imagelayeritem.h",
         "clickablelabel.cpp",
         "clickablelabel.h",
+        "issuescounter.cpp",
+        "issuescounter.h",
+        "issuesdock.cpp",
+        "issuesdock.h",
+        "issuesmodel.cpp",
+        "issuesmodel.h",
         "languagemanager.cpp",
         "languagemanager.h",
         "layerdock.cpp",
@@ -256,6 +281,8 @@ QtGuiApplication {
         "layermodel.h",
         "layeroffsettool.cpp",
         "layeroffsettool.h",
+        "locatorwidget.cpp",
+        "locatorwidget.h",
         "magicwandtool.h",
         "magicwandtool.cpp",
         "main.cpp",
@@ -278,16 +305,12 @@ QtGuiApplication {
         "mapobjectmodel.h",
         "mapscene.cpp",
         "mapscene.h",
-        "mapsdock.cpp",
-        "mapsdock.h",
         "mapview.cpp",
         "mapview.h",
         "minimap.cpp",
         "minimapdock.cpp",
         "minimapdock.h",
         "minimap.h",
-        "minimaprenderer.cpp",
-        "minimaprenderer.h",
         "movelayer.cpp",
         "movelayer.h",
         "movemapobject.cpp",
@@ -318,6 +341,15 @@ QtGuiApplication {
         "noeditorwidget.ui",
         "objectgroupitem.cpp",
         "objectgroupitem.h",
+        "objectrefdialog.cpp",
+        "objectrefdialog.h",
+        "objectrefdialog.ui",
+        "objectrefedit.cpp",
+        "objectrefedit.h",
+        "objectreferenceitem.cpp",
+        "objectreferenceitem.h",
+        "objectreferencetool.cpp",
+        "objectreferencetool.h",
         "objectsdock.cpp",
         "objectsdock.h",
         "objectselectionitem.cpp",
@@ -326,8 +358,6 @@ QtGuiApplication {
         "objectselectiontool.h",
         "objectsview.cpp",
         "objectsview.h",
-        "objecttemplatemodel.cpp",
-        "objecttemplatemodel.h",
         "objecttypeseditor.cpp",
         "objecttypeseditor.h",
         "objecttypeseditor.ui",
@@ -340,9 +370,6 @@ QtGuiApplication {
         "offsetmapdialog.ui",
         "painttilelayer.cpp",
         "painttilelayer.h",
-        "patreondialog.cpp",
-        "patreondialog.h",
-        "patreondialog.ui",
         "pluginlistmodel.cpp",
         "pluginlistmodel.h",
         "pointhandle.cpp",
@@ -352,6 +379,17 @@ QtGuiApplication {
         "preferencesdialog.h",
         "preferencesdialog.ui",
         "preferences.h",
+        "project.cpp",
+        "project.h",
+        "projectdock.cpp",
+        "projectdock.h",
+        "projectmanager.cpp",
+        "projectmanager.h",
+        "projectmodel.cpp",
+        "projectmodel.h",
+        "projectpropertiesdialog.cpp",
+        "projectpropertiesdialog.h",
+        "projectpropertiesdialog.ui",
         "propertiesdock.cpp",
         "propertiesdock.h",
         "propertybrowser.cpp",
@@ -362,8 +400,6 @@ QtGuiApplication {
         "rangeset.h",
         "regionvaluetype.cpp",
         "regionvaluetype.h",
-        "renameterrain.cpp",
-        "renameterrain.h",
         "renamewangset.cpp",
         "renamewangset.h",
         "reparentlayers.cpp",
@@ -385,14 +421,21 @@ QtGuiApplication {
         "resizetilelayer.h",
         "reversingproxymodel.cpp",
         "reversingproxymodel.h",
+        "reversingrecursivefiltermodel.h",
         "rotatemapobject.cpp",
         "rotatemapobject.h",
         "scriptedaction.cpp",
         "scriptedaction.h",
-        "scriptedmapformat.cpp",
-        "scriptedmapformat.h",
+        "scriptedfileformat.cpp",
+        "scriptedfileformat.h",
         "scriptedtool.cpp",
         "scriptedtool.h",
+        "scriptfile.cpp",
+        "scriptfile.h",
+        "scriptfileformatwrappers.cpp",
+        "scriptfileformatwrappers.h",
+        "scriptfileinfo.cpp",
+        "scriptfileinfo.h",
         "scriptmanager.cpp",
         "scriptmanager.h",
         "scriptmodule.cpp",
@@ -401,6 +444,8 @@ QtGuiApplication {
         "selectionrectangle.h",
         "selectsametiletool.cpp",
         "selectsametiletool.h",
+        "session.cpp",
+        "session.h",
         "shapefilltool.cpp",
         "shapefilltool.h",
         "shortcutsettingspage.cpp",
@@ -416,6 +461,8 @@ QtGuiApplication {
         "stylehelper.h",
         "swaptiles.cpp",
         "swaptiles.h",
+        "tabbar.cpp",
+        "tabbar.h",
         "templatesdock.cpp",
         "templatesdock.h",
         "terrainbrush.cpp",
@@ -513,6 +560,10 @@ QtGuiApplication {
         "wangtemplatemodel.h",
         "wangtemplateview.cpp",
         "wangtemplateview.h",
+        "worlddocument.cpp",
+        "worlddocument.h",
+        "worldmovemaptool.cpp",
+        "worldmovemaptool.h",
         "zoomable.cpp",
         "zoomable.h",
     ]
@@ -608,7 +659,7 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("linux")
         qbs.install: true
         qbs.installDir: "share/icons/hicolor/16x16/apps"
-        files: [ "images/16x16/tiled.png" ]
+        files: [ "images/16/tiled.png" ]
     }
 
     Group {
@@ -616,7 +667,7 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("linux")
         qbs.install: true
         qbs.installDir: "share/icons/hicolor/32x32/apps"
-        files: [ "images/32x32/tiled.png" ]
+        files: [ "images/32/tiled.png" ]
     }
 
     Group {
@@ -632,7 +683,7 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("linux")
         qbs.install: true
         qbs.installDir: "share/icons/hicolor/16x16/mimetypes"
-        files: [ "images/16x16/application-x-tiled.png" ]
+        files: [ "images/16/application-x-tiled.png" ]
     }
 
     Group {
@@ -640,7 +691,7 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("linux")
         qbs.install: true
         qbs.installDir: "share/icons/hicolor/32x32/mimetypes"
-        files: [ "images/32x32/application-x-tiled.png" ]
+        files: [ "images/32/application-x-tiled.png" ]
     }
 
     Group {

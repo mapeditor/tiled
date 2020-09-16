@@ -22,15 +22,15 @@
 
 #include "terrainmodel.h"
 
+#include "changeterrain.h"
 #include "containerhelpers.h"
-#include "mapdocument.h"
 #include "map.h"
-#include "renameterrain.h"
+#include "mapdocument.h"
 #include "terrain.h"
 #include "tile.h"
+#include "tileset.h"
 #include "tilesetdocument.h"
 #include "tilesetdocumentsmodel.h"
-#include "tileset.h"
 #include "tilesetterrainmodel.h"
 
 #include <QApplication>
@@ -109,7 +109,7 @@ int TerrainModel::rowCount(const QModelIndex &parent) const
 
 int TerrainModel::columnCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent);
+    Q_UNUSED(parent)
     return 1;
 }
 

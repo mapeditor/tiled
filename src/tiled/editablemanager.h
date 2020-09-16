@@ -30,13 +30,16 @@ namespace Tiled {
 class Layer;
 class MapObject;
 class ObjectGroup;
+class Terrain;
 class Tile;
+class Tileset;
 
 class EditableAsset;
 class EditableLayer;
 class EditableMap;
 class EditableMapObject;
 class EditableObjectGroup;
+class EditableTerrain;
 class EditableTile;
 class EditableTileset;
 
@@ -47,6 +50,8 @@ class EditableManager : public QObject
 {
     Q_OBJECT
 
+    explicit EditableManager(QObject *parent = nullptr);
+
 public:
     static EditableManager &instance();
     static void deleteInstance();
@@ -54,6 +59,7 @@ public:
     EditableLayer *find(Layer *layer) const;
     EditableMapObject *find(MapObject *mapObject) const;
     EditableTile *find(Tile *tile) const;
+    EditableTerrain *find(Terrain *terrain) const;
 
     void release(Layer *layer);
     void release(MapObject *mapObject);
@@ -61,18 +67,22 @@ public:
     EditableLayer *editableLayer(EditableMap *map, Layer *layer);
     EditableObjectGroup *editableObjectGroup(EditableAsset *asset, ObjectGroup *objectGroup);
     EditableMapObject *editableMapObject(EditableAsset *asset, MapObject *mapObject);
+    EditableTileset *editableTileset(Tileset *tileset);
     EditableTile *editableTile(EditableTileset *tileset, Tile *tile);
+    EditableTerrain *editableTerrain(EditableTileset *tileset, Terrain *terrain);
 
 private:
     friend class EditableLayer;
     friend class EditableMapObject;
+    friend class EditableTileset;
     friend class EditableTile;
-
-    explicit EditableManager(QObject *parent = nullptr);
+    friend class EditableTerrain;
 
     QHash<Layer*, EditableLayer*> mEditableLayers;
     QHash<MapObject*, EditableMapObject*> mEditableMapObjects;
+    QHash<Tileset*, EditableTileset*> mEditableTilesets;
     QHash<Tile*, EditableTile*> mEditableTiles;
+    QHash<Terrain*, EditableTerrain*> mEditableTerrains;
 
     static std::unique_ptr<EditableManager> mInstance;
 };
@@ -91,6 +101,11 @@ inline EditableMapObject *EditableManager::find(MapObject *mapObject) const
 inline EditableTile *EditableManager::find(Tile *tile) const
 {
     return mEditableTiles.value(tile);
+}
+
+inline EditableTerrain *EditableManager::find(Terrain *terrain) const
+{
+    return mEditableTerrains.value(terrain);
 }
 
 } // namespace Tiled

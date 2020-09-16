@@ -1,6 +1,6 @@
 /*
  * tiledapplication.h
- * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011-2020, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,20 +20,19 @@
 
 #pragma once
 
+#include "projectmanager.h"
+
 #include <QtSingleApplication>
 
 namespace Tiled {
 
-/**
- * Custom QApplication subclass which handles the QFileOpenEvent, in order
- * to be able to open files appropriately on MacOS X.
- */
 class TiledApplication : public QtSingleApplication
 {
     Q_OBJECT
 
 public:
     TiledApplication(int &argc, char **argv);
+    ~TiledApplication() override;
 
 protected:
     bool event(QEvent *) override;
@@ -41,8 +40,10 @@ protected:
 signals:
     void fileOpenRequest(const QString &file);
 
-private slots:
+private:
     void onMessageReceived(const QString &message);
+
+    ProjectManager mProjectManager;
 };
 
 } // namespace Tiled

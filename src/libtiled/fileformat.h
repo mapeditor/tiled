@@ -49,6 +49,11 @@ public:
     };
     Q_DECLARE_FLAGS(Capabilities, Capability)
 
+    enum Option {
+        WriteMinimized  = 0x1,
+    };
+    Q_DECLARE_FLAGS(Options, Option)
+
     explicit FileFormat(QObject *parent = nullptr);
 
     /**
@@ -89,6 +94,7 @@ public:
 
 Q_DECLARE_INTERFACE(Tiled::FileFormat, "org.mapeditor.FileFormat")
 Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::FileFormat::Capabilities)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::FileFormat::Options)
 
 namespace Tiled {
 
@@ -108,7 +114,7 @@ public:
                 const QString nameFilter = format->nameFilter();
 
                 if (!mFilter.isEmpty())
-                    mFilter += QLatin1String(";;");
+                    mFilter += QStringLiteral(";;");
                 mFilter += nameFilter;
 
                 mFormats.append(format);
@@ -123,6 +129,14 @@ public:
     const QList<Format*> &formats() const
     { return mFormats; }
 
+    Format *findFormat(const QString &shortName) const
+    {
+        auto it = std::find_if(mFormats.begin(),
+                               mFormats.end(),
+                               [&] (Format *format) { return format->shortName() == shortName; });
+        return it != mFormats.end() ? *it : nullptr;
+    }
+
     Format *formatByNameFilter(const QString &nameFilter) const
     { return mFormatByNameFilter.value(nameFilter); }
 
@@ -131,5 +145,13 @@ private:
     QList<Format*> mFormats;
     QMap<QString, Format*> mFormatByNameFilter;
 };
+
+template<typename Format>
+Format *findFileFormat(const QString &shortName, FileFormat::Capabilities capabilities = FileFormat::Write)
+{
+    return PluginManager::find<Format>([&](Format *format) {
+        return format->hasCapabilities(capabilities) && format->shortName() == shortName;
+    });
+}
 
 } // namespace Tiled

@@ -106,7 +106,7 @@ private:
  */
 inline void TileStamp::addVariation(const TileStampVariation &variation)
 {
-    addVariation(std::unique_ptr<Map>(variation.map->clone()),
+    addVariation(variation.map->clone(),
                  variation.probability);
 }
 

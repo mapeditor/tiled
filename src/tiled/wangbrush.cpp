@@ -70,6 +70,10 @@ QRectF WangBrushItem::boundingRect() const
     } else {
         QRect bounds = mInvalidTiles.boundingRect();
         QRectF bounding = mapDocument()->renderer()->boundingRect(bounds);
+
+        // Adjust for border drawn at tile selection edges
+        bounding.adjust(-1, -1, 1, 1);
+
         return bounding;
     }
 }
@@ -104,12 +108,13 @@ void WangBrushItem::setInvalidTiles(const QRegion &region)
 }
 
 WangBrush::WangBrush(QObject *parent)
-    : AbstractTileTool(tr("Wang Brush"),
-                      QIcon(QLatin1String(
-                                ":images/24x24/wangtile-edit.png")),
-                      QKeySequence(tr("G")),
-                      new WangBrushItem,
-                      parent)
+    : AbstractTileTool("WangTool",
+                       tr("Wang Brush"),
+                       QIcon(QLatin1String(
+                                 ":images/24/wangtile-edit.png")),
+                       QKeySequence(Qt::Key_G),
+                       new WangBrushItem,
+                       parent)
     , mEdgeDir(WangId::Top)
     , mWangSet(nullptr)
     , mCurrentColor(0)
@@ -125,26 +130,29 @@ WangBrush::~WangBrush()
 
 void WangBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (mBrushMode == Idle || !brushItem()->isVisible())
-        return;
-
-    if (event->button() == Qt::LeftButton) {
-        switch (mBrushBehavior) {
-        case Free:
-            beginPaint();
-            break;
-        default:
-            break;
-        }
-    } else if (event->button() == Qt::RightButton) {
-        switch (mBrushBehavior) {
-        case Free:
-            captureHoverColor();
-            break;
-        default:
-            break;
+    if (mBrushMode != Idle && brushItem()->isVisible()) {
+        if (event->button() == Qt::LeftButton) {
+            switch (mBrushBehavior) {
+            case Free:
+                beginPaint();
+                break;
+            default:
+                break;
+            }
+            return;
+        } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
+            switch (mBrushBehavior) {
+            case Free:
+                captureHoverColor();
+                break;
+            default:
+                break;
+            }
+            return;
         }
     }
+
+    AbstractTileTool::mousePressed(event);
 }
 
 void WangBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
@@ -170,7 +178,6 @@ void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 void WangBrush::languageChanged()
 {
     setName(tr("Wang Brush"));
-    setShortcut(QKeySequence(tr("G")));
 }
 
 void WangBrush::setEdgeColor(int color)
@@ -187,10 +194,7 @@ void WangBrush::setCornerColor(int color)
 
 void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
-    if (mBrushMode == Idle)
-        return;
-
-    if (mIsTileMode) {
+    if (mBrushMode == Idle || mIsTileMode) {
         AbstractTileTool::mouseMoved(pos, modifiers);
         return;
     }
@@ -317,14 +321,14 @@ void WangBrush::updateStatusInfo()
         }
 
         if (!wangColor.isEmpty())
-            wangColor = QString(QLatin1String(" [%1]")).arg(wangColor);
+            wangColor = QStringLiteral(" [%1]").arg(wangColor);
 
         QString extraInfo;
         if (!static_cast<WangBrushItem*>(brushItem())->isValid())
-            extraInfo = QString(QLatin1String(" (%1)"))
+            extraInfo = QStringLiteral(" (%1)")
                         .arg(tr("Missing Wang tile transition"));
 
-        setStatusInfo(QString(QLatin1String("%1, %2%3%4"))
+        setStatusInfo(QStringLiteral("%1, %2%3%4")
                       .arg(mPaintPoint.x())
                       .arg(mPaintPoint.y())
                       .arg(wangColor, extraInfo));

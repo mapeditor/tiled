@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -45,10 +45,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 /**
  * An object occupying an {@link org.mapeditor.core.ObjectGroup}.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class MapObject extends MapObjectData implements Cloneable {
@@ -61,7 +58,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     private Tile tile;
 
     /**
-     * <p>Constructor for MapObject.</p>
+     * Constructor for MapObject.
      */
     public MapObject() {
         super();
@@ -72,7 +69,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     }
 
     /**
-     * <p>Constructor for MapObject.</p>
+     * Constructor for MapObject.
      *
      * @param x a double.
      * @param y a double.
@@ -98,7 +95,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     }
 
     /**
-     * <p>Getter for the field <code>objectGroup</code>.</p>
+     * Getter for the field <code>objectGroup</code>.
      *
      * @return the object group this object is part of
      */
@@ -117,7 +114,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     }
 
     /**
-     * <p>Getter for the field <code>bounds</code>.</p>
+     * Getter for the field <code>bounds</code>.
      *
      * @return a {@link java.awt.geom.Rectangle2D.Double} object.
      */
@@ -126,7 +123,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     }
 
     /**
-     * <p>Setter for the field <code>bounds</code>.</p>
+     * Setter for the field <code>bounds</code>.
      *
      * @param bounds a {@link java.awt.geom.Rectangle2D.Double} object.
      */
@@ -138,7 +135,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     }
 
     /**
-     * <p>Getter for the field <code>shape</code>.</p>
+     * Getter for the field <code>shape</code>.
      *
      * @return a {@link java.awt.Shape} object.
      */
@@ -147,7 +144,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     }
 
     /**
-     * <p>Setter for the field <code>shape</code>.</p>
+     * Setter for the field <code>shape</code>.
      *
      * @param shape a {@link java.awt.Shape} object.
      */
@@ -156,7 +153,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     }
 
     /**
-     * <p>Getter for the field <code>imageSource</code>.</p>
+     * Getter for the field <code>imageSource</code>.
      *
      * @return a {@link java.lang.String} object.
      */
@@ -165,7 +162,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     }
 
     /**
-     * <p>Setter for the field <code>imageSource</code>.</p>
+     * Setter for the field <code>imageSource</code>.
      *
      * @param source a {@link java.lang.String} object.
      */
@@ -191,7 +188,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     }
 
     /**
-     * <p>Getter for the field <code>tile</code>.</p>
+     * Getter for the field <code>tile</code>.
      *
      * @return a {@link org.mapeditor.core.Tile} object.
      */
@@ -200,7 +197,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     }
 
     /**
-     * <p>Setter for the field <code>tile</code>.</p>
+     * Setter for the field <code>tile</code>.
      *
      * @param tile a {@link org.mapeditor.core.Tile} object.
      */
@@ -233,7 +230,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     }
 
     /**
-     * <p>translate.</p>
+     * translate.
      *
      * @param dx a double.
      * @param dy a double.

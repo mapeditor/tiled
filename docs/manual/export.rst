@@ -1,14 +1,15 @@
 Export Formats
 ==============
 
-While there are many :doc:`libraries and frameworks </reference/support-for-tmx-maps>`
-that work directly with Tiled maps, Tiled also supports a number of
-additional file and export formats.
+While there are many :doc:`libraries and frameworks
+</reference/support-for-tmx-maps>` that work directly with Tiled maps, Tiled
+also supports a number of additional file and export formats, as well as
+:ref:`exporting a map to an image <export-as-image>`.
 
-Exporting can be done by clicking *File > Export*. When triggering the
-menu action multiple times, Tiled will only ask for the file name the
-first time. Exporting can also be automated using the ``--export-map``
-command-line parameter.
+Exporting can be done by clicking *File > Export*. When triggering the menu
+action multiple times, Tiled will only ask for the file name the first time.
+Exporting can also be automated using the ``--export-map`` and
+``--export-tileset`` command-line parameters.
 
 Several :ref:`export-options` are available, which are applied to maps
 or tilesets before they are exported (without affecting the map
@@ -227,12 +228,44 @@ what you are doing.
 Defold
 ------
 
-Tiled can export a map to a `Defold Tile Map <https://www.defold.com/manuals/2dgraphics/#_tile_maps>`__ (\*.tilemap).
-This component only supports tile layers and only a single tileset may be used.
-The plugin is disabled by default.
+Tiled can export to Defold using one of the two supplied plugins. Both are
+disabled by default.
 
-Upon export, the ``tile_set`` property of the Tile Map is left empty, so
-it will need to be set up in Defold after each export.
+**defold**
+
+This plugin exports a map to a `Defold Tile Map <https://www.defold.com/manuals/tilemap/>`__ (\*.tilemap).
+It only supports tile layers and only a single tileset may be used.
+
+Upon export, the ``tile_set`` property of the Tile Map is left empty, so it
+will need to be set up in Defold after each export.
+
+**defoldcollection**
+
+This plugin exports a map to a `Defold Collection
+<https://www.defold.com/manuals/building-blocks/>`__ (\*.collection), while
+also creating multiple .tilemap files.
+
+It supports:
+
+* Group layers (**only top-level group layers are supported, not nested ones!**)
+* Multiple Tilesets per Tilemap
+
+Upon export:
+
+* The ``Path`` property of each Tileset may need to be set up manually in
+  Defold after each export. However, Tiled will attempt to find the
+  .tilesource file corresponding with the name your Tileset in Tiled in your
+  project's ``/tilesources/`` directory. If one is found, manual adjustments
+  won't be necessary.
+
+* If you create custom properties on your map called ``x-offset`` and
+  ``y-offset``, these values will be used as coordinates for your top-level
+  GameObject in the Collection. This is useful when working with :doc:`Worlds
+  <worlds>`.
+
+All layers of a Tilemap will have Z-index property assigned with values
+ranging between 0 and 0.1. The plugin supports the use of 9999 Group Layers
+and 9999 Tile Layers per Group Layer.
 
 When any additional information from the map is needed, the map can be
 exported in :ref:`Lua format <lua-export>` and loaded as Defold script.
@@ -256,14 +289,35 @@ These plugins are disabled by default. They can be enabled in *Edit > Preference
 JavaScript
 ~~~~~~~~~~
 
-It is possible to add custom export formats using :doc:`scripting </reference/scripting>`
-(by calling :ref:`tiled.registerMapFormat <script-registerMapFormat>`).
+It is possible to add custom export formats using :doc:`scripting
+</reference/scripting>` (by calling :ref:`tiled.registerMapFormat
+<script-registerMapFormat>` or :ref:`tiled.registerTilesetFormat
+<script-registerTilesetFormat>`).
 
 Python Scripts
 ~~~~~~~~~~~~~~
 
 It is also possible to write :doc:`Python scripts <python>` to add
 support for importing or exporting custom map formats.
+
+.. _export-as-image:
+
+Export as Image
+---------------
+
+Maps can be exported as image. Tiled supports most common image formats.
+Choose *File -> Export as Image...* to open the relevant dialog.
+
+Since exporting a map can in some cases result in a huge image, a *Use current
+zoom level* option is provided to allow exporting the map at the size it's
+currently displayed at.
+
+For repeatedly converting a map to an image, manually triggering this export
+isn't very convenient. For this purpose, a tool called ``tmxrasterizer`` ships
+with Tiled, which contrary to its name is able to render any supported map
+format to an image. It is also able to render :doc:`entire worlds <worlds>` to
+an image. On Linux this tool can be set up for generating thumbnail previews
+of maps in the file manager.
 
 
 .. _LÖVE: https://love2d.org/

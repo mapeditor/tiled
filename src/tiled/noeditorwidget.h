@@ -22,11 +22,11 @@
 
 #include <QWidget>
 
-namespace Tiled {
-
 namespace Ui {
 class NoEditorWidget;
 }
+
+namespace Tiled {
 
 class NoEditorWidget : public QWidget
 {
@@ -39,12 +39,17 @@ public:
 protected:
     void changeEvent(QEvent *e);
 
-private slots:
+private:
     void newMap();
     void newTileset();
     void openFile();
 
-private:
+    void retranslateUi();
+
+    void updateRecentProjectsMenu();
+
+    void adjustToStyle();
+
     Ui::NoEditorWidget *ui;
 };
 

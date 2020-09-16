@@ -77,7 +77,12 @@ Resolve object types and properties
     Object properties are inherited from a tile (in case of a tile
     object) and from the default properties of their type.
 
-These options are also available as options when exporting using the command-line.
+Minimize output
+    Omits unnecessary whitespace in the output file. This option is supported
+    for XML (TMX and TSX), JSON and Lua formats.
+
+These options are also available as options when exporting using the
+command-line.
 
 Interface
 ---------
@@ -119,7 +124,7 @@ Mouse wheel zooms by default
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.3</div>
+   <div class="new new-prev">Since Tiled 1.3</div>
 
 Updates
 ~~~~~~~
@@ -133,7 +138,7 @@ whether a new version is available by opening the *About Tiled* dialog.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.3</div>
+   <div class="new new-prev">Since Tiled 1.3</div>
 
 .. _keyboard-options:
 
@@ -172,10 +177,11 @@ as they depend on the system.
 Plugins
 -------
 
-Here you can choose which plugins are enabled. Currently plugins only
-serve to add support for additional map and/or tileset file formats.
-Some generic plugins are enabled by default, while more specific ones
-need to be manually enabled.
+Here you can choose which plugins are enabled, as well as opening the
+:doc:`scripted extensions </reference/scripting>` folder.
+
+Plugins add support for map and/or tileset file formats. Some generic plugins
+are enabled by default, while more specific ones need to be manually enabled.
 
 There is no need to restart Tiled when enabling or disabling plugins.
 When a plugin fails to load, try hovering its icon to see if the tool

@@ -12,6 +12,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/imagereference.cpp \
     $$PWD/isometricrenderer.cpp \
     $$PWD/layer.cpp \
+    $$PWD/logginginterface.cpp \
     $$PWD/map.cpp \
     $$PWD/mapformat.cpp \
     $$PWD/mapobject.cpp \
@@ -19,6 +20,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/maprenderer.cpp \
     $$PWD/maptovariantconverter.cpp \
     $$PWD/mapwriter.cpp \
+    $$PWD/minimaprenderer.cpp \
     $$PWD/object.cpp \
     $$PWD/objectgroup.cpp \
     $$PWD/objecttemplate.cpp \
@@ -42,6 +44,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/wangset.cpp \
     $$PWD/worldmanager.cpp
 HEADERS += $$PWD/compression.h \
+    $$PWD/containerhelpers.h \
     $$PWD/filesystemwatcher.h \
     $$PWD/fileformat.h \
     $$PWD/gidmapper.h \
@@ -61,6 +64,7 @@ HEADERS += $$PWD/compression.h \
     $$PWD/maprenderer.h \
     $$PWD/maptovariantconverter.h \
     $$PWD/mapwriter.h \
+    $$PWD/minimaprenderer.h \
     $$PWD/object.h \
     $$PWD/objectgroup.h \
     $$PWD/objecttemplate.h \

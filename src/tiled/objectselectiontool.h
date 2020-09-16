@@ -64,14 +64,13 @@ public:
 protected:
     void changeEvent(const ChangeEvent &event) override;
 
-private slots:
+private:
     void updateHandles();
     void updateHandlesAndOrigin();
     void updateHandleVisibility();
 
     void objectsAboutToBeRemoved(const QList<MapObject *> &);
 
-private:
     enum Action {
         NoAction,
         Selecting,

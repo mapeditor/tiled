@@ -2,8 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2016 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2016 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -33,10 +34,8 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -44,10 +43,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 /**
  * A layer containing {@link MapObject map objects}.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<MapObject> {
@@ -60,7 +56,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
     }
 
     /**
-     * <p>Constructor for ObjectGroup.</p>
+     * Constructor for ObjectGroup.
      *
      * @param map the map this object group is part of
      */
@@ -97,7 +93,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
     }
 
     /**
-     * <p>isEmpty.</p>
+     * isEmpty.
      *
      * @return a boolean.
      */
@@ -119,7 +115,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
     }
 
     /**
-     * <p>addObject.</p>
+     * addObject.
      *
      * @param o a {@link org.mapeditor.core.MapObject} object.
      */
@@ -129,7 +125,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
     }
 
     /**
-     * <p>removeObject.</p>
+     * removeObject.
      *
      * @param o a {@link org.mapeditor.core.MapObject} object.
      */
@@ -145,7 +141,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
     }
 
     /**
-     * <p>getObjectAt.</p>
+     * getObjectAt.
      *
      * @param x a double.
      * @param y a double.
@@ -175,7 +171,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
 
     // This method will work at any zoom level, provided you provide the correct zoom factor. It also adds a one pixel buffer (that doesn't change with zoom).
     /**
-     * <p>getObjectNear.</p>
+     * getObjectNear.
      *
      * @param x a int.
      * @param y a int.

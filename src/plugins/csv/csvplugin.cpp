@@ -26,6 +26,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
 
@@ -36,8 +37,10 @@ CsvPlugin::CsvPlugin()
 {
 }
 
-bool CsvPlugin::write(const Map *map, const QString &fileName)
+bool CsvPlugin::write(const Map *map, const QString &fileName, Options options)
 {
+    Q_UNUSED(options)
+
     // Get file paths for each layer
     QStringList layerPaths = outputFiles(map, fileName);
 
@@ -49,7 +52,7 @@ bool CsvPlugin::write(const Map *map, const QString &fileName)
         SaveFile file(layerPaths.at(currentLayer));
 
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            mError = tr("Could not open file for writing.");
+            mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
             return false;
         }
 
@@ -137,5 +140,5 @@ QString CsvPlugin::nameFilter() const
 
 QString CsvPlugin::shortName() const
 {
-    return QLatin1String("csv");
+    return QStringLiteral("csv");
 }

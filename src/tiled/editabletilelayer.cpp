@@ -20,15 +20,17 @@
 
 #include "editabletilelayer.h"
 
+#include "changelayer.h"
 #include "editablemanager.h"
 #include "editablemap.h"
+#include "resizetilelayer.h"
 #include "tilelayeredit.h"
 #include "tilesetdocument.h"
 
 namespace Tiled {
 
-EditableTileLayer::EditableTileLayer(const QString &name, QObject *parent)
-    : EditableLayer(std::unique_ptr<Layer>(new TileLayer(name, QPoint(), QSize(0, 0))), parent)
+EditableTileLayer::EditableTileLayer(const QString &name, QSize size, QObject *parent)
+    : EditableLayer(std::unique_ptr<Layer>(new TileLayer(name, QPoint(), size)), parent)
 {
 }
 
@@ -43,6 +45,22 @@ EditableTileLayer::~EditableTileLayer()
 {
     while (!mActiveEdits.isEmpty())
         delete mActiveEdits.first();
+}
+
+void EditableTileLayer::setSize(QSize size)
+{
+    if (auto doc = mapDocument())
+        asset()->push(new SetTileLayerSize(doc, tileLayer(), size));
+    else if (!checkReadOnly())
+        tileLayer()->setSize(size);
+}
+
+void EditableTileLayer::resize(QSize size, QPoint offset)
+{
+    if (auto doc = mapDocument())
+        asset()->push(new ResizeTileLayer(doc, tileLayer(), size, offset));
+    else if (!checkReadOnly())
+        tileLayer()->resize(size, offset);
 }
 
 RegionValueType EditableTileLayer::region() const

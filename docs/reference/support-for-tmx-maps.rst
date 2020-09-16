@@ -29,14 +29,13 @@ game engine or graphics library.
 C
 ~
 
+-  `cute tiled <https://github.com/RandyGaul/cute_headers>`__ - JSON map loader with examples (zlib/Public Domain).
 -  `TMX <https://github.com/baylej/tmx/>`__ - TMX map loader
    with Allegro5 and SDL2 examples (BSD).
 
 C++
 ~~~
 
--  `C++/Boost <http://www.catnapgames.com/blog/2011/10/10/simple-tmx-tilemap-parser.html>`__
-   by Tomas Andrle (limited functionality, single cpp file)
 -  `C++/TinyXML based tmxparser <https://github.com/sainteos/tmxparser>`__ (BSD)
 -  C++/Qt based libtiled, used by Tiled itself and included at
    `src/libtiled <https://github.com/bjorn/tiled/tree/master/src/libtiled>`__
@@ -62,6 +61,7 @@ C++
    with compressed map support but no external linking required.
    Includes examples for SFML and SDL2 rendering. Currently has full tmx
    support up to 0.16. (Zlib/libpng)
+-  `Tileson <https://github.com/SSBMTonberry/tileson>`__ - A Tiled JSON parser for modern C++ (C++17) by Robin Berg Pettersen (BSD)
 
 C#/.NET
 ~~~~~~~
@@ -103,6 +103,7 @@ D
 Go
 ~~
 
+-  `github.com/lafriks/go-tiled <https://github.com/lafriks/go-tiled>`__
 -  `github.com/salviati/go-tmx/tmx <https://github.com/salviati/go-tmx>`__
 
 Haskell
@@ -117,6 +118,7 @@ Java
 
 -  A library for loading TMX files is included with Tiled at
    `util/java/libtiled-java <https://github.com/bjorn/tiled/tree/master/util/java/libtiled-java>`__.
+-  `TiledReader <http://www.alexheyman.org/tiledreader/>`__ is a simple TMX reader that conveys the information in Tiled files via a hand-crafted class structure, but does not load image data.
 -  Android-Specific:
 
    -  `AndroidTMXLoader <https://github.com/davidmi/Android-TMX-Loader>`__
@@ -147,6 +149,10 @@ Processing
 Python
 ~~~~~~
 
+-  `pytiled-parser <https://github.com/Beefy-Swain/pytiled_parser>`__: Python parser
+   for TMX maps
+-  `Arcade <http://arcade.academy>`__: 2D game library that uses pytiled-parser for 
+   easy loading of TMX maps into a game. `Arcade TMX Examples <http://arcade.academy/examples/index.html#tmx-files-tiled-map-editor>`_
 -  `pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>`__: library
    for programmatic manipulation of TMX maps
 -  `python-tmx <http://python-tmx.nongnu.org>`__: a simple library for
@@ -184,6 +190,16 @@ Allegro
    integrates Tiled support with `Allegro
    5 <http://alleg.sourceforge.net/>`__.
 
+Castle Game Engine (Object Pascal)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  `Castle Game Engine <https://castle-engine.io/>`__ has native support for Tiled maps (see the `CastleTiledMap unit <https://castle-engine.io/apidoc-unstable/html/CastleTiledMap.html>`__)
+
+Cell2D
+~~~~~~
+
+-  The Java library `Cell2D <https://www.cell2d.org/>`__ supports Tiled maps via a pipeline that starts with `TiledReader <http://www.alexheyman.org/tiledreader/>`__, but currently has more built-in support for orthogonal maps than for other orientations.
+
 cocos2d
 ~~~~~~~
 
@@ -211,18 +227,6 @@ Construct 2 - Scirra
    file inside the editor. `Official
    Note <https://www.scirra.com/construct2/releases/r149>`__
 
-Corona SDK
-~~~~~~~~~~
-
--  `ponytiled <https://github.com/ponywolf/ponytiled>`__ is a simple
-   Tiled Map Loader for Corona SDK (`forum
-   announcement <http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826>`__)
--  `Dusk Engine <https://github.com/GymbylCoding/Dusk-Engine>`__ is a
-   fully featured Tiled map game engine for Corona SDK (no longer maintained, but may still be useful)
--  `Berry <https://github.com/ldurniat/Berry>`__ is a simple Tiled
-   Map Loader for Corona SDK.
--  `Qiso <https://qiso.qweb.co.uk>`__ is an isometric engine for Corona SDK that supports loading Tiled maps, and also handles things like path-finding for you.
-
 Flixel
 ~~~~~~
 
@@ -238,10 +242,13 @@ Game Maker
 Godot
 ~~~~~
 
--  `Tiled Map
-   Importer <https://godotengine.org/asset-library/asset/25>`__ imports
-   each map as Godot scene which can be instanced or inherited (`forum
-   announcement <http://discourse.mapeditor.org/t/importer-plugin-for-godot-engine/1833/1>`__)
+- `Tiled Map Importer <https://godotengine.org/asset-library/asset/25>`__ imports each map as Godot scene which can be instanced or inherited (`forum announcement <http://discourse.mapeditor.org/t/importer-plugin-for-godot-engine/1833/1>`__).
+- `Tiled To Godot Export <https://github.com/MikeMnD/tiled-to-godot-export>`__ is a Tiled :doc:`JavaScript extension </reference/scripting>` for exporting Tilemaps and Tilesets in Godot 3.2 format (`forum announcement <https://discourse.mapeditor.org/t/tiled-editor-map-and-tileset-integration-with-godot-3-2/4347>`__).
+
+Grid Engine
+~~~~~~~~~~~
+
+- Planimeter's `Grid Engine <https://www.planimeter.org/grid-sdk/>`__ supports Tiled Lua-exported maps.
 
 Haxe
 ~~~~
@@ -385,7 +392,7 @@ RPG Maker MV
 ~~~~~~~~~~~~
 
 -  `Tiled
-   Plugin <https://forums.rpgmakerweb.com/index.php?threads/tiled-plugin-version-1-3-0-released.50752/>`__
+   Plugin for RPG Maker MV <https://archeia.itch.io/tiled-plugin-for-rpg-maker-mv>`__
    by `Dr.Yami <http://yami.moe/>`__ & Archeia, from `RPG Maker
    Web <https://forums.rpgmakerweb.com>`__
 
@@ -413,6 +420,18 @@ Slick2D
    through
    `TiledMap <http://slick.ninjacave.com/javadoc/org/newdawn/slick/tiled/TiledMap.html>`__.
 
+Solar2D (formerly Corona SDK)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  `ponytiled <https://github.com/ponywolf/ponytiled>`__ is a simple
+   Tiled Map Loader for Solar2D (`forum
+   announcement <http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826>`__)
+-  `Dusk Engine <https://github.com/GymbylCoding/Dusk-Engine>`__ is a
+   fully featured Tiled map game engine for Solar2D (no longer maintained, but may still be useful)
+-  `Berry <https://github.com/ldurniat/Berry>`__ is a simple Tiled
+   Map Loader for Solar2D.
+-  `Qiso <https://qiso.qweb.co.uk>`__ is an isometric engine for Solar2D that supports loading Tiled maps, and also handles things like path-finding for you.
+
 Sprite Kit Framework
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -421,9 +440,6 @@ Sprite Kit Framework
    easy to integrate into any Sprite Kit project. Supports iOS and OSX.
 -  `SKTiled <https://github.com/mfessenden/SKTiled>`__ - A Swift
    framework for working with Tiled assets in SpriteKit.
--  `TilemapKit <http://tilemapkit.com>`__ is a tilemapping framework for
-   Sprite Kit. It supports all TMX tilemap types, including staggered
-   iso and all hex variations. No longer in development.
 -  `JSTileMap <https://github.com/slycrel/JSTileMap>`__ is a lightweight
    SpriteKit implementation of the TMX format supporting iOS 7 and OS X
    10.9 and above.
@@ -434,27 +450,28 @@ TERRA Engine (Delphi/Pascal)
 -  `TERRA Engine <http://pascalgameengine.com/>`__ supports loading and
    rendering of TMX maps.
 
-Unity 3D
-~~~~~~~~
+Unity
+~~~~~
 
+-  `SuperTiled2Unity <https://seanba.itch.io/supertiled2unity>`__ is a collection of C# Unity scripts that can automatically import Tiled map editor files directly into your Unity projects.
+-  `Tiled TMX Importer <https://assetstore.unity.com/packages/tools/sprite-management/tiled-tmx-importer-102928>`__, imports into Unity 2017.2's new native Tilemap system.
+-  `Tiled to
+   Unity <https://assetstore.unity.com/packages/tools/integration/tiled-to-unity-17260>`__ is a
+   3D pipeline for Tiled maps. It uses prefabs as tiles, and can place
+   decorations dynamically on tiles. Supports multiple layers (including
+   object layers).
+-  `Tuesday <https://github.com/ShreveportArcade/Tuesday>`__: A generic
+   C# serializer and deserializer plus a set of Unity editor
+   scripts that allow you to drag and drop TMX files into your scene,
+   make edits, and save back out as TMX files. MIT license.
+-  `UniTiled <https://yjaffal.itch.io/unitiled>`__, a native TMX importer for Unity.
+-  `X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supports
+   almost all Tiled 0.11 features. Imports TMX/XML files into Sprite
+   Objects or Meshes.
 -  `Orthello
    Pro <http://www.wyrmtale.com/products/unity3d-components/orthello-pro>`__
    (2D framework) offers `Tiled map
    support <http://www.wyrmtale.com/orthello-pro/tilemaps>`__.
--  `Tiled To
-   Unity <https://www.assetstore.unity3d.com/#/content/17260/>`__ is a
-   3D pipeline for Tiled maps. It uses prefabs as tiles, and can place
-   decorations dynamically on tiles. Supports multiple layers (including
-   object layers).
--  `Tiled2Unity <http://www.seanba.com/introtiled2unity.html>`__ exports
-   TMX files to Unity with support for (non-simple) collisions.
--  `UniTiled <https://yjaffal.itch.io/unitiled>`__, a native TMX importer for Unity.
--  `UniTMX <https://bitbucket.org/PolCPP/unitmx/overview>`__ imports TMX
-   files into a mesh.
--  `X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supports
-   almost all Tiled 0.11 features. Imports TMX/XML files into Sprite
-   Objects or Meshes.
--  `Tiled TMX Importer <https://www.assetstore.unity3d.com/en/#!/content/102928>`__, imports into Unity 2017.2's new native Tilemap system.
 
 Unreal Engine 4
 ~~~~~~~~~~~~~~~
@@ -477,13 +494,9 @@ Urho3D
 XNA
 ~~~
 
--  `FlatRedBall Engine TMXGlue
-   tool <http://www.flatredball.com/frb/docs/index.php?title=Kain%27s_Tavern#Tiled_Map_Editor.2C_TMX.2C_Glue_and_you.>`__
-   by Domenic Datti loads TMX maps into the FlatRedBall engine, complete
-   with node networks, pathfinding, and shapecollection support via
-   object layers.
--  `TiledMax <http://tiledmax.xpod.be/>`__ by Aimee Bailey, a .NET
-   library for parsing TMX maps without dependencies on Windows or XNA
+-  `FlatRedBall <http://flatredball.com/>`__ Glue tool ships with a
+   `Tiled plugin <http://flatredball.com/documentation/tools/tiled-plugin/>`__
+   that loads TMX maps into the FlatRedBall engine, providing rich integration with its features.
 -  `XTiled <https://bitbucket.org/vinull/xtiled>`__ by Michael C. Neel
    and Dylan Wolf, XNA library for loading and rendering TMX maps
 -  `XNA map loader <https://github.com/zachmu/tiled-xna>`__ by Kevin

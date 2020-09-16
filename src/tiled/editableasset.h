@@ -43,7 +43,7 @@ class EditableAsset : public EditableObject
     Q_PROPERTY(bool isTileset READ isTileset CONSTANT)
 
 public:
-    explicit EditableAsset(Document *document, Object *object, QObject *parent = nullptr);
+    EditableAsset(Document *document, Object *object, QObject *parent = nullptr);
 
     QString fileName() const;
     virtual bool isReadOnly() const = 0;
@@ -53,11 +53,9 @@ public:
     QUndoStack *undoStack() const;
     bool isModified() const;
     bool push(QUndoCommand *command);
-    bool push(std::unique_ptr<QUndoCommand> &&command);
+    bool push(std::unique_ptr<QUndoCommand> command);
 
     Q_INVOKABLE QJSValue macro(const QString &text, QJSValue callback);
-
-    bool checkReadOnly() const;
 
     Document *document() const;
 
@@ -71,14 +69,8 @@ signals:
 
 private:
     Document * const mDocument;
-    QUndoStack * const mUndoStack;
 };
 
-
-inline QUndoStack *EditableAsset::undoStack() const
-{
-    return mUndoStack;
-}
 
 inline Document *EditableAsset::document() const
 {

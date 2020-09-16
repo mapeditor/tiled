@@ -33,24 +33,24 @@
           <string>Saving and Loading</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0" colspan="2">
-           <widget class="QCheckBox" name="enableDtd">
-            <property name="toolTip">
-             <string>Not enabled by default since a reference to an external DTD is known to cause problems with some XML parsers.</string>
-            </property>
-            <property name="text">
-             <string>Include &amp;DTD reference in saved maps</string>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="0">
-           <widget class="QCheckBox" name="openLastFiles">
+           <widget class="QCheckBox" name="safeSaving">
+            <property name="toolTip">
+             <string>Turn this off if you're having trouble saving your files.</string>
+            </property>
             <property name="text">
-             <string>Open last files on startup</string>
+             <string>Use safe writing of files</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="restoreSession">
+            <property name="text">
+             <string>Restore previous session on startup</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="reloadTilesetImages">
             <property name="text">
              <string>&amp;Reload tileset images when they change</string>
@@ -58,12 +58,9 @@
            </widget>
           </item>
           <item row="3" column="0">
-           <widget class="QCheckBox" name="safeSaving">
-            <property name="toolTip">
-             <string>Turn this off if you're having trouble saving your files.</string>
-            </property>
+           <widget class="QCheckBox" name="exportOnSave">
             <property name="text">
-             <string>Use safe writing of files</string>
+             <string>Repeat last export on save</string>
             </property>
            </widget>
           </item>
@@ -83,6 +80,13 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="embedTilesets">
+            <property name="text">
+             <string>Embed tilesets</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0" colspan="2">
            <widget class="QCheckBox" name="detachTemplateInstances">
             <property name="text">
@@ -90,10 +94,13 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QCheckBox" name="embedTilesets">
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="minimizeOutput">
+            <property name="toolTip">
+             <string>Omits unnecessary whitespace when supported by the output format</string>
+            </property>
             <property name="text">
-             <string>Embed tilesets</string>
+             <string>Minimize output</string>
             </property>
            </widget>
           </item>
@@ -218,7 +225,7 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
+          <item row="6" column="0" colspan="4">
            <widget class="QCheckBox" name="wheelZoomsByDefault">
             <property name="text">
              <string>Mouse wheel &amp;zooms by default</string>
@@ -443,13 +450,14 @@
  </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
-  <tabstop>enableDtd</tabstop>
   <tabstop>reloadTilesetImages</tabstop>
-  <tabstop>openLastFiles</tabstop>
+  <tabstop>restoreSession</tabstop>
   <tabstop>safeSaving</tabstop>
+  <tabstop>exportOnSave</tabstop>
   <tabstop>embedTilesets</tabstop>
   <tabstop>detachTemplateInstances</tabstop>
   <tabstop>resolveObjectTypesAndProperties</tabstop>
+  <tabstop>minimizeOutput</tabstop>
   <tabstop>languageCombo</tabstop>
   <tabstop>gridColor</tabstop>
   <tabstop>gridFine</tabstop>
@@ -462,6 +470,8 @@
   <tabstop>baseColor</tabstop>
   <tabstop>selectionColor</tabstop>
   <tabstop>pluginList</tabstop>
+  <tabstop>extensionsPathEdit</tabstop>
+  <tabstop>openExtensionsPathButton</tabstop>
  </tabstops>
  <resources/>
  <connections>

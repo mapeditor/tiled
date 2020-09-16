@@ -33,6 +33,7 @@ class ChangeEvent
 public:
     enum Type {
         LayerChanged,
+        TileLayerChanged,
         MapObjectAboutToBeAdded,
         MapObjectAboutToBeRemoved,
         MapObjectAdded,
@@ -59,17 +60,37 @@ public:
         VisibleProperty         = 1 << 2,
         LockedProperty          = 1 << 3,
         OffsetProperty          = 1 << 4,
+        TintColorProperty       = 1 << 5,
         AllProperties           = 0xFF
     };
 
     LayerChangeEvent(Layer *layer, int properties = AllProperties)
-        : ChangeEvent(LayerChanged)
-        , layer(layer)
-        , properties(properties)
+        : LayerChangeEvent(LayerChanged, layer, properties)
     {}
 
     Layer *layer;
     int properties;
+
+protected:
+    LayerChangeEvent(Type type, Layer *layer, int properties = AllProperties)
+        : ChangeEvent(type)
+        , layer(layer)
+        , properties(properties)
+    {}
+};
+
+class TileLayerChangeEvent : public LayerChangeEvent
+{
+public:
+    enum TileLayerProperty {
+        SizeProperty            = 1 << 5,
+    };
+
+    TileLayerChangeEvent(TileLayer *tileLayer, int properties)
+        : LayerChangeEvent(TileLayerChanged, tileLayer, properties)
+    {}
+
+    TileLayer *tileLayer() { return static_cast<TileLayer*>(layer); }
 };
 
 class ObjectGroupChangeEvent : public ChangeEvent

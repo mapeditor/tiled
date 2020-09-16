@@ -60,7 +60,7 @@ protected:
     void showEvent(QShowEvent *) override;
     void hideEvent(QHideEvent *) override;
 
-private slots:
+private:
     void framesEdited();
     void tileAnimationChanged(Tile *tile);
     void currentObjectChanged(Object *object);
@@ -77,7 +77,6 @@ private slots:
     void resetPreview();
     bool updatePreviewPixmap();
 
-private:
     Ui::TileAnimationEditor *mUi;
 
     TilesetDocument *mTilesetDocument;

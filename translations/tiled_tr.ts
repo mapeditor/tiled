@@ -9,8 +9,8 @@
         <translation>Tiled Hakkında</translation>
     </message>
     <message>
-        <location line="+86"/>
-        <source>Donate</source>
+        <location line="+96"/>
+        <source>Donate ↗</source>
         <translation>Bağış Yap</translation>
     </message>
     <message>
@@ -19,14 +19,14 @@
         <translation>Tamam</translation>
     </message>
     <message>
-        <location filename="../src/tiled/aboutdialog.cpp" line="+48"/>
+        <location filename="../src/tiled/aboutdialog.cpp" line="+49"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2018 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2020 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Harita Düzenleyici&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Sürüm %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2018 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(diğer katkı sağlayanları görmek için AUTHORS dosyasına bakın)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2020 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(diğer katkı sağlayanları görmek için AUTHORS dosyasına bakın)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Bu programı GPL (sürüm 2 ve sonrası) çerçevesinde düzenleyebilir ve yeniden dağıtabilirsiniz. GPL kopyası Tile ile birlikte dağıtılan &apos;COPYING&apos; dosyası içinde mevcuttur.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
@@ -48,34 +48,34 @@
 <context>
     <name>Command line</name>
     <message>
-        <location filename="../src/tiled/main.cpp" line="+359"/>
+        <location filename="../src/tiled/main.cpp" line="+385"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
         <translation>Dışa aktarma sözdizimi: --export-map [biçim] &lt;kaynak&gt; &lt;hedef&gt;</translation>
     </message>
     <message>
-        <location line="-232"/>
+        <location line="-226"/>
         <source>Format not recognized (see --export-formats)</source>
-        <translation>Biçim tanınmadı (bkz --export-formats)</translation>
+        <translation>Biçim tanınmadı (bakın: --export-formats)</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
-        <translation>Doğru dosya biçimine karar verilemedi.</translation>
+        <translation>Eşsiz olmayan dosya uzantısı, Doğru dışa aktarma biçimi belirlenemedi.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>No exporter found for target file.</source>
-        <translation>Hedef dosya için aktarıcı bulunamadı.</translation>
+        <translation>Hedef dosya için dışa aktarıcı bulunamadı.</translation>
     </message>
     <message>
-        <location line="+236"/>
+        <location line="+230"/>
         <source>Failed to load source map.</source>
         <translation>Kaynak harita açılamadı.</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+13"/>
         <source>Failed to export map to target file.</source>
-        <translation>Harita hedef dosya olarak aktarılamadı.</translation>
+        <translation>Harita hedef dosyaya aktarılamadı.</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -88,61 +88,25 @@
         <translation>Kaynak desen seti yüklenemedi.</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+12"/>
         <source>Failed to export tileset to target file.</source>
         <translation>Desen seti hedef dosyaya aktarılamadı.</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Project file &apos;%1&apos; not found.</source>
+        <translation>Proje dosyası &apos;%1&apos; bulunamadı.</translation>
     </message>
 </context>
 <context>
     <name>CommandDialog</name>
     <message>
-        <location filename="../src/tiled/commanddialog.ui" line="+20"/>
-        <source>Properties</source>
-        <translation>Özellikler</translation>
+        <location filename="../src/tiled/commanddialog.ui" line="+14"/>
+        <source>Edit Commands</source>
+        <translation>Komutları Düzenle</translation>
     </message>
     <message>
-        <location line="+42"/>
-        <source>Executable:</source>
-        <translation>Yürütülebilir:</translation>
-    </message>
-    <message>
-        <location line="+14"/>
-        <location line="+74"/>
-        <source>Browse...</source>
-        <translation>Gözat...</translation>
-    </message>
-    <message>
-        <location line="-61"/>
-        <source>Shortcut:</source>
-        <translation>Kısayol:</translation>
-    </message>
-    <message>
-        <location line="+17"/>
-        <source>Clear</source>
-        <translation>Temizle</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>&amp;Save map before executing</source>
-        <translation>Önce haritayı &amp;kaydet</translation>
-    </message>
-    <message>
-        <location line="+20"/>
-        <source>Arguments:</source>
-        <translation>Argümanlar:</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Working Directory:</source>
-        <translation>Çalışma Dizini:</translation>
-    </message>
-    <message>
-        <location line="+17"/>
-        <source>Show output in Debug Console</source>
-        <translation>Çıktıyı Hata ayıklama Konsolu&apos;nda göster</translation>
-    </message>
-    <message>
-        <location line="+33"/>
+        <location line="+43"/>
         <source>Close</source>
         <translation>Kapat</translation>
     </message>
@@ -150,14 +114,14 @@
 <context>
     <name>CommandLineHandler</name>
     <message>
-        <location filename="../src/tiled/main.cpp" line="-267"/>
+        <location filename="../src/tiled/main.cpp" line="-283"/>
         <source>Display the version</source>
         <translation>Sürümü görüntüle</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Only check validity of arguments</source>
-        <translation>Sadece argümanların geçerliliğini kontrol et</translation>
+        <translation>Yalnızca argümanların geçerliliğini denetle</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -175,19 +139,24 @@
         <translation>Belirtilen desen seti dosyasını hedefe aktar</translation>
     </message>
     <message>
-        <location line="+84"/>
+        <location line="+25"/>
+        <source>Minimize the exported file by omitting unnecessary whitespace</source>
+        <translation>Gereksiz boşlukları atlayarak dışa aktarılan dosyayı küçült</translation>
+    </message>
+    <message>
+        <location line="+70"/>
         <source>Map export formats:</source>
         <translation>Harita dışa aktarım biçimleri:</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+12"/>
         <source>Tileset export formats:</source>
         <translation>Desen seti dışa aktarım biçimleri:</translation>
     </message>
     <message>
-        <location line="-90"/>
+        <location line="-102"/>
         <source>Print a list of supported export formats</source>
-        <translation>Desteklenen aktarım formatlarını listele</translation>
+        <translation>Desteklenen dışa aktarım formatlarını listele</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -197,7 +166,7 @@
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with template instances detached</source>
-        <translation>Haritayı veya desen setini şablon örnekleri ayrılmış olarak dışa aktar</translation>
+        <translation>Haritayı veya desen setini, şablon örnekleri ayrık dışa aktar</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -205,7 +174,7 @@
         <translation>Haritayı veya desen setini, türler ve özellikler çözülmüş olarak dışa aktar</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+10"/>
         <source>Start a new instance, even if an instance is already running</source>
         <translation>Bir örnek çalışıyor olsa bile yeni bir örnek başlat</translation>
     </message>
@@ -213,9 +182,9 @@
 <context>
     <name>CommandLineParser</name>
     <message>
-        <location filename="../src/tiled/commandlineparser.cpp" line="+77"/>
+        <location filename="../src/tiled/commandlineparser.cpp" line="+76"/>
         <source>Bad argument %1: lonely hyphen</source>
-        <translation>Yanlış argüman %1: lonely hyphen</translation>
+        <translation>Hatalı argüman %1: yalnız kısa çizgi</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -246,50 +215,53 @@
     </message>
 </context>
 <context>
-    <name>ConverterDataModel</name>
+    <name>CommandsEdit</name>
     <message>
-        <location filename="../src/automappingconverter/converterdatamodel.cpp" line="+75"/>
-        <source>File</source>
-        <translation>Dosya</translation>
+        <location filename="../src/tiled/commandsedit.ui" line="+50"/>
+        <source>Executable:</source>
+        <translation>Yürütülebilir:</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Version</source>
-        <translation>Sürüm</translation>
-    </message>
-</context>
-<context>
-    <name>ConverterWindow</name>
-    <message>
-        <location filename="../src/automappingconverter/converterwindow.cpp" line="+36"/>
-        <source>Save all as %1</source>
-        <translation>Tümülü %1 olarak kaydet</translation>
+        <location line="+14"/>
+        <location line="+74"/>
+        <source>Browse...</source>
+        <translation>Gözat...</translation>
     </message>
     <message>
-        <location line="+21"/>
-        <source>All Files (*)</source>
-        <translation>Tüm Dosyalar (*)</translation>
+        <location line="-61"/>
+        <source>Shortcut:</source>
+        <translation>Kısayol:</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Tiled map files (*.tmx)</source>
-        <translation>Tiled harita dosyaları (*.tmx)</translation>
+        <location line="+17"/>
+        <source>Clear</source>
+        <translation>Temizle</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Open Map</source>
-        <translation>Harita Aç</translation>
+        <location line="+7"/>
+        <source>&amp;Save map before executing</source>
+        <translation>Yürütmeden önce haritayı &amp;kaydet</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Arguments:</source>
+        <translation>Argümanlar:</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Working Directory:</source>
+        <translation>Çalışma Dizini:</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Show output in Console view</source>
+        <translation>Konsol görünümünde çıktıyı göster</translation>
     </message>
 </context>
 <context>
     <name>Csv::CsvPlugin</name>
     <message>
-        <location filename="../src/plugins/csv/csvplugin.cpp" line="+54"/>
-        <source>Could not open file for writing.</source>
-        <translation>Dosya yazmak için açılamıyor.</translation>
-    </message>
-    <message>
-        <location line="+80"/>
+        <location filename="../src/plugins/csv/csvplugin.cpp" line="+138"/>
         <source>CSV files (*.csv)</source>
         <translation>CSV dosyaları (*.csv)</translation>
     </message>
@@ -297,14 +269,45 @@
 <context>
     <name>Defold::DefoldPlugin</name>
     <message>
-        <location filename="../src/plugins/defold/defoldplugin.cpp" line="+83"/>
+        <location filename="../src/plugins/defold/defoldplugin.cpp" line="+79"/>
         <source>Defold files (*.tilemap)</source>
         <translation>Defold dosyaları (*.tilemap)</translation>
     </message>
+</context>
+<context>
+    <name>DefoldCollection::DefoldCollectionPlugin</name>
     <message>
-        <location line="+51"/>
-        <source>Could not open file for writing.</source>
-        <translation>Dosya yazmak için açılamıyor.</translation>
+        <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+137"/>
+        <source>Defold collection (*.collection)</source>
+        <translation>Defold koleksiyonu (*.collection)</translation>
+    </message>
+</context>
+<context>
+    <name>DonationDialog</name>
+    <message>
+        <location filename="../src/tiled/donationdialog.ui" line="+14"/>
+        <source>Support Tiled Development</source>
+        <translation>Tiled&apos;ın Geliştirilmesini Destekle</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Thanks for using Tiled! Please consider supporting further development with a small monthly donation.</source>
+        <translation>Tiled kullandığınız için teşekkürler! Lütfen aylık az bir bağışla geliştirmenin ilerlemesini desteklemeyi düşünün.</translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Visit https://www.mapeditor.org/donate ↗</source>
+        <translation>https://www.mapeditor.org/donate ↗ adresine uğrayın</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>I&apos;m already a supporter!</source>
+        <translation>Zaten bir destekçiyim!</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Maybe later</source>
+        <translation>Belki sonra</translation>
     </message>
 </context>
 <context>
@@ -315,7 +318,7 @@
         <translation>Bu geçerli bir Droidcraft harita dosyası değil!</translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+45"/>
         <source>The map needs to have exactly one tile layer!</source>
         <translation>Haritanın en az bir desen katmanı olmalı!</translation>
     </message>
@@ -325,12 +328,7 @@
         <translation>Katman en az 48 x 48 desen boyutunda olmalı!</translation>
     </message>
     <message>
-        <location line="+22"/>
-        <source>Could not open file for writing.</source>
-        <translation>Dosya yazmak için açılamıyor.</translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+38"/>
         <source>Droidcraft map files (*.dat)</source>
         <translation>Droidcraft harita dosyaları (*.dat)</translation>
     </message>
@@ -340,7 +338,7 @@
     <message>
         <location filename="../src/tiled/exportasimagedialog.ui" line="+14"/>
         <source>Export As Image</source>
-        <translation>Resim Olarak Aktar</translation>
+        <translation>Resim Olarak Dışa Aktar</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -365,7 +363,7 @@
     <message>
         <location line="+6"/>
         <source>Only include &amp;visible layers</source>
-        <translation>Sadece &amp;görünür katmanları içer</translation>
+        <translation>Yalnızca &amp;görünür katmanları içer</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -379,21 +377,77 @@
     </message>
     <message>
         <location line="+7"/>
+        <source>Draw object &amp;names</source>
+        <translation>Nesne &amp;adlarını çiz</translation>
+    </message>
+    <message>
+        <location line="+7"/>
         <source>&amp;Include background color</source>
         <translation>Arkaplan rengini &amp;içer</translation>
     </message>
 </context>
 <context>
-    <name>Flare::FlarePlugin</name>
+    <name>File Errors</name>
     <message>
-        <location filename="../src/plugins/flare/flareplugin.cpp" line="+56"/>
+        <location filename="../src/libtiled/mapwriter.cpp" line="+111"/>
+        <location filename="../src/plugins/csv/csvplugin.cpp" line="-83"/>
+        <location filename="../src/plugins/defold/defoldplugin.cpp" line="+53"/>
+        <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+159"/>
+        <location line="+106"/>
+        <location line="+29"/>
+        <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="-16"/>
+        <location filename="../src/plugins/flare/flareplugin.cpp" line="+303"/>
+        <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+109"/>
+        <location filename="../src/plugins/json/jsonplugin.cpp" line="+98"/>
+        <location line="+175"/>
+        <location line="+104"/>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="+98"/>
+        <location line="+175"/>
+        <location line="+104"/>
+        <location filename="../src/plugins/lua/luaplugin.cpp" line="+115"/>
+        <location line="+45"/>
+        <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+242"/>
+        <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+52"/>
+        <location filename="../src/tiled/shortcutsettingspage.cpp" line="+724"/>
+        <source>Could not open file for writing.</source>
+        <translation>Dosya yazmak için açılamadı.</translation>
+    </message>
+    <message>
+        <location filename="../src/libtiled/worldmanager.cpp" line="+135"/>
+        <location filename="../src/plugins/flare/flareplugin.cpp" line="-247"/>
+        <location filename="../src/plugins/json/jsonplugin.cpp" line="-320"/>
+        <location line="+162"/>
+        <location line="+111"/>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="-320"/>
+        <location line="+162"/>
+        <location line="+111"/>
+        <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+118"/>
+        <location filename="../src/tiled/shortcutsettingspage.cpp" line="-53"/>
         <source>Could not open file for reading.</source>
         <translation>Dosya okumak için açılamadı.</translation>
     </message>
+</context>
+<context>
+    <name>File Types</name>
     <message>
-        <location line="+94"/>
+        <location filename="../src/tiled/objecttypeseditor.cpp" line="+353"/>
+        <location line="+43"/>
+        <location filename="../src/tiled/projectpropertiesdialog.cpp" line="+59"/>
+        <source>Object Types files (*.xml *.json)</source>
+        <translation>Nesne Türleri dosyaları (*.xml *.json)</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/projectpropertiesdialog.cpp" line="+6"/>
+        <source>Automapping Rules files (*.txt)</source>
+        <translation>Automap Kural dosyaları (*.txt)</translation>
+    </message>
+</context>
+<context>
+    <name>Flare::FlarePlugin</name>
+    <message>
+        <location filename="../src/plugins/flare/flareplugin.cpp" line="+94"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
-        <translation>Desen seti %1 yüklenirken (%2 ye genişleyen) hata oluştu. Dosya yolu bulunamadı!</translation>
+        <translation>%2 ye genişleyen, %1 desen seti yüklenemedi. Dosya yolu bulunamadı!</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -401,9 +455,9 @@
         <translation>Katman bölümünden önce desen seti bölümü bulunamadı.</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+29"/>
         <source>Error mapping tile id %1.</source>
-        <translation>Desen %1 haritalanamadı.</translation>
+        <translation>Desen id %1 haritalanamadı.</translation>
     </message>
     <message>
         <location line="+70"/>
@@ -415,21 +469,11 @@
         <source>Flare map files (*.txt)</source>
         <translation>Flare harita dosyaları (*.txt)</translation>
     </message>
-    <message>
-        <location line="+18"/>
-        <source>Could not open file for writing.</source>
-        <translation>Dosya yazmak için açılamıyor.</translation>
-    </message>
 </context>
 <context>
     <name>Gmx::GmxPlugin</name>
     <message>
-        <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+107"/>
-        <source>Could not open file for writing.</source>
-        <translation>Dosya yazmak için açılamıyor.</translation>
-    </message>
-    <message>
-        <location line="+364"/>
+        <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+381"/>
         <source>GameMaker room files (*.room.gmx)</source>
         <translation>GameMaker room dosyaları (*.room.gmx)</translation>
     </message>
@@ -437,25 +481,17 @@
 <context>
     <name>Json::JsonMapFormat</name>
     <message>
-        <location filename="../src/plugins/json/jsonplugin.cpp" line="+56"/>
-        <source>Could not open file for reading.</source>
-        <translation>Dosya okumak için açılamadı.</translation>
-    </message>
-    <message>
-        <location line="+21"/>
+        <location filename="../src/plugins/json/jsonplugin.cpp" line="-252"/>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="-252"/>
         <source>Error parsing file.</source>
-        <translation>Dosya ayrıştırma hatası.</translation>
+        <translation>Dosya ayrıştırılamadı.</translation>
     </message>
     <message>
-        <location line="+18"/>
-        <source>Could not open file for writing.</source>
-        <translation>Dosya yazmak için açılamıyor.</translation>
-    </message>
-    <message>
-        <location line="+38"/>
+        <location line="+58"/>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="+58"/>
         <source>Error while writing file:
 %1</source>
-        <translation>Dosya yazılırken hata oluştu:
+        <translation>Dosya yazılırken hata:
 %1</translation>
     </message>
     <message>
@@ -468,29 +504,31 @@
         <source>JavaScript map files (*.js)</source>
         <translation>JavaScript harita dosyaları (*.js)</translation>
     </message>
+    <message>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="+15"/>
+        <source>JSON map files [Tiled 1.1] (*.json)</source>
+        <translation>JSON harita dosyaları [Tiled 1.1] (*.json)</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>JavaScript map files [Tiled 1.1] (*.js)</source>
+        <translation>JavaScript harita dosyaları [Tiled 1.1] (*.js)</translation>
+    </message>
 </context>
 <context>
     <name>Json::JsonObjectTemplateFormat</name>
     <message>
-        <location line="+178"/>
-        <source>Could not open file for reading.</source>
-        <translation>Dosya okumak için açılamadı.</translation>
-    </message>
-    <message>
-        <location line="+10"/>
+        <location filename="../src/plugins/json/jsonplugin.cpp" line="+187"/>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="+187"/>
         <source>Error parsing file.</source>
-        <translation>Dosya ayrıştırma hatası.</translation>
+        <translation>Dosya ayrıştırılamadı.</translation>
     </message>
     <message>
-        <location line="+37"/>
-        <source>Could not open file for writing.</source>
-        <translation>Dosya yazmak için açılamıyor.</translation>
-    </message>
-    <message>
-        <location line="+20"/>
+        <location line="+57"/>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="+57"/>
         <source>Error while writing file:
 %1</source>
-        <translation>Dosya yazılırken hata oluştu:
+        <translation>Dosya yazılırken hata:
 %1</translation>
     </message>
     <message>
@@ -498,29 +536,26 @@
         <source>JSON template files (*.json)</source>
         <translation>json şablon dosyaları (*.json)</translation>
     </message>
+    <message>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
+        <source>JSON template files [Tiled 1.1] (*.json)</source>
+        <translation>JSON şablon dosyaları [Tiled 1.1] (*.json)</translation>
+    </message>
 </context>
 <context>
     <name>Json::JsonTilesetFormat</name>
     <message>
-        <location line="-193"/>
-        <source>Could not open file for reading.</source>
-        <translation>Dosya okumak için açılamadı.</translation>
-    </message>
-    <message>
-        <location line="+10"/>
+        <location filename="../src/plugins/json/jsonplugin.cpp" line="-182"/>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="-182"/>
         <source>Error parsing file.</source>
-        <translation>Dosya ayrıştırma hatası.</translation>
+        <translation>Dosya ayrıştırılamadı.</translation>
     </message>
     <message>
-        <location line="+45"/>
-        <source>Could not open file for writing.</source>
-        <translation>Dosya yazmak için açılamıyor.</translation>
-    </message>
-    <message>
-        <location line="+20"/>
+        <location line="+64"/>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="+64"/>
         <source>Error while writing file:
 %1</source>
-        <translation>Dosya yazılırken hata oluştu:
+        <translation>Dosya yazılırken hata:
 %1</translation>
     </message>
     <message>
@@ -528,16 +563,16 @@
         <source>JSON tileset files (*.json)</source>
         <translation>JSON desen seti dosyaları (*.json)</translation>
     </message>
+    <message>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
+        <source>JSON tileset files [Tiled 1.1] (*.json)</source>
+        <translation>JSON desen seti dosyaları [Tiled 1.1] (*.json)</translation>
+    </message>
 </context>
 <context>
     <name>Lua::LuaMapFormat</name>
     <message>
-        <location filename="../src/plugins/lua/luaplugin.cpp" line="+103"/>
-        <source>Could not open file for writing.</source>
-        <translation>Dosya yazmak için açılamıyor.</translation>
-    </message>
-    <message>
-        <location line="+27"/>
+        <location filename="../src/plugins/lua/luaplugin.cpp" line="-20"/>
         <source>Lua files (*.lua)</source>
         <translation>Lua dosyaları (*.lua)</translation>
     </message>
@@ -545,12 +580,7 @@
 <context>
     <name>Lua::LuaTilesetFormat</name>
     <message>
-        <location line="+18"/>
-        <source>Could not open file for writing.</source>
-        <translation>Dosya yazmak için açılamıyor.</translation>
-    </message>
-    <message>
-        <location line="+27"/>
+        <location line="+45"/>
         <source>Lua files (*.lua)</source>
         <translation>Lua dosyaları (*.lua)</translation>
     </message>
@@ -558,7 +588,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.ui" line="+49"/>
+        <location filename="../src/tiled/mainwindow.ui" line="+46"/>
         <source>&amp;File</source>
         <translation>&amp;Dosya</translation>
     </message>
@@ -568,7 +598,7 @@
         <translation>&amp;Son Dosyalar</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+47"/>
         <source>&amp;Edit</source>
         <translation>&amp;Düzenle</translation>
     </message>
@@ -578,7 +608,7 @@
         <translation>&amp;Yardım</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+10"/>
         <source>&amp;Map</source>
         <translation>&amp;Harita</translation>
     </message>
@@ -588,7 +618,12 @@
         <translation>Dünyayı Boşalt</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+5"/>
+        <source>Save World</source>
+        <translation>Dünyayı Kaydet</translation>
+    </message>
+    <message>
+        <location line="+20"/>
         <source>&amp;View</source>
         <translation>&amp;Görünüm</translation>
     </message>
@@ -598,12 +633,22 @@
         <translation>Nesne &amp;Adlarını Göster</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+44"/>
+        <source>&amp;Project</source>
+        <translation>&amp;Proje</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>&amp;Recent Projects</source>
+        <translation>&amp;Son projeler</translation>
+    </message>
+    <message>
+        <location line="+31"/>
         <source>&amp;Open...</source>
         <translation>&amp;Aç...</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+5"/>
         <source>&amp;Save</source>
         <translation>&amp;Kaydet</translation>
     </message>
@@ -635,7 +680,7 @@
     <message>
         <location line="+12"/>
         <source>&amp;Resize Map...</source>
-        <translation>Haritayı &amp;Yeniden Boyutlandır...</translation>
+        <translation>Haritayı &amp;Boyutlandır...</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -643,32 +688,17 @@
         <translation>AutoMap</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>A</source>
-        <translation>A</translation>
-    </message>
-    <message>
-        <location line="+8"/>
+        <location line="+11"/>
         <source>Show &amp;Grid</source>
         <translation>&amp;Izgarayı Göster</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+G</source>
-        <translation>Ctrl+G</translation>
-    </message>
-    <message>
-        <location line="+9"/>
+        <location line="+12"/>
         <source>Save &amp;As...</source>
-        <translation>&amp;Olarak Kadet...</translation>
+        <translation>&amp;Farklı Kaydet...</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Alt+S</source>
-        <translation>Ctrl+Alt+S</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+8"/>
         <source>New &amp;Tileset...</source>
         <translation>Yeni &amp;Desen Seti...</translation>
     </message>
@@ -693,17 +723,7 @@
         <translation>Normal Boyut</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+0</source>
-        <translation>Ctrl+0</translation>
-    </message>
-    <message>
-        <location line="+142"/>
-        <source>Become a Patron</source>
-        <translation>Patron olarak Destekle</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+147"/>
         <source>Save All</source>
         <translation>Hepsini Kaydet</translation>
     </message>
@@ -718,17 +738,83 @@
         <translation>Dünya Yükle...</translation>
     </message>
     <message>
+        <location line="+5"/>
+        <source>New World...</source>
+        <translation>Yeni Dünya...</translation>
+    </message>
+    <message>
         <location line="+8"/>
         <source>Highlight Hovered Object</source>
         <translation>Vurgulanan Nesneyi Aydınlat</translation>
     </message>
     <message>
-        <location line="-124"/>
+        <location line="+30"/>
+        <source>&amp;Open Project...</source>
+        <translation>Proje &amp;Aç...</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&amp;Close Project</source>
+        <translation>Projeyi &amp;Kapa</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Clear Recent Projects</source>
+        <translation>Son Projeleri Temizle</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Add Folder to Project...</source>
+        <translation>Projeye Klasör Ekle...</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Save Project As...</source>
+        <translation>Projeyi Farklı Kaydet...</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Refresh Folders</source>
+        <translation>Klasörleri Yenile</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Show Object &amp;References</source>
+        <translation>Nesne &amp;Referanslarını Göster</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Reopen Closed File</source>
+        <translation>Kapalı Dosyayı Aç</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <location line="+3"/>
+        <source>Move Map</source>
+        <translation>Haritayı Taşı</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Project &amp;Properties...</source>
+        <translation>Proje &amp;Özellikleri...</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Open File in &amp;Project...</source>
+        <translation>Dosyayı &amp;Projede Aç...</translation>
+    </message>
+    <message>
+        <location line="-229"/>
         <source>&amp;Never</source>
         <translation>&amp;Asla</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="-8"/>
+        <source>User Manual ↗</source>
+        <translation>Kullanıcı Kılavuzu ↗</translation>
+    </message>
+    <message>
+        <location line="+19"/>
         <source>For &amp;Selected Objects</source>
         <translation>&amp;Seçili Nesneler İçin</translation>
     </message>
@@ -754,22 +840,12 @@
         <translation>Yer&amp;ine Yapıştır</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+V</source>
-        <translation>Ctrl+Shift+V</translation>
-    </message>
-    <message>
-        <location line="+8"/>
+        <location line="+11"/>
         <source>Full Screen</source>
         <translation>Tam Ekran</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>F11</source>
-        <translation>F11</translation>
-    </message>
-    <message>
-        <location line="-200"/>
+        <location line="-194"/>
         <source>Cu&amp;t</source>
         <translation>Ke&amp;s</translation>
     </message>
@@ -777,11 +853,6 @@
         <location line="+5"/>
         <source>&amp;Offset Map...</source>
         <translation>Haritayı &amp;Kaydır...</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Offsets everything in a layer</source>
-        <translation>Katmandaki her şeyi kaydırır</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -794,27 +865,17 @@
         <translation>Son Dosyaları Temizle</translation>
     </message>
     <message>
-        <location line="+87"/>
-        <source>Ctrl+R</source>
-        <translation>Ctrl+R</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+92"/>
         <source>&amp;Export</source>
         <translation>&amp;Dışa Aktar</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+E</source>
-        <translation>Ctrl+E</translation>
-    </message>
-    <message>
-        <location line="-82"/>
+        <location line="-79"/>
         <source>&amp;Add External Tileset...</source>
         <translation>Harici Desen Seti &amp;Ekle...</translation>
     </message>
     <message>
-        <location line="-346"/>
+        <location line="-375"/>
         <source>&amp;New</source>
         <translation>&amp;Yeni</translation>
     </message>
@@ -824,37 +885,32 @@
         <translation>Komutlar</translation>
     </message>
     <message>
-        <location line="+81"/>
+        <location line="+90"/>
         <source>Snapping</source>
         <translation>Yapışma</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+28"/>
         <source>Tileset</source>
         <translation>Desen Seti</translation>
     </message>
     <message>
-        <location line="+100"/>
+        <location line="+120"/>
         <source>Map &amp;Properties...</source>
         <translation>Harita &amp;Özellikleri..</translation>
     </message>
     <message>
         <location line="+83"/>
         <source>Export As &amp;Image...</source>
-        <translation>&amp;Resim Olarak Aktar...</translation>
+        <translation>&amp;Resim Olarak Dışa Aktar...</translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+39"/>
         <source>E&amp;xport As...</source>
-        <translation>Olarak A&amp;ktar...</translation>
+        <translation>Farklı Dışa A&amp;ktar...</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+E</source>
-        <translation>Ctrl+Shift+E</translation>
-    </message>
-    <message>
-        <location line="+13"/>
+        <location line="+16"/>
         <source>&amp;Snap to Grid</source>
         <translation>Izgaraya &amp;Yapıştır</translation>
     </message>
@@ -864,12 +920,7 @@
         <translation>Hepsini K&amp;apat</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+W</source>
-        <translation>Ctrl+Shift+W</translation>
-    </message>
-    <message>
-        <location line="+12"/>
+        <location line="+15"/>
         <source>&amp;Delete</source>
         <translation>&amp;Sil</translation>
     </message>
@@ -884,12 +935,7 @@
         <translation>Şu Anki Katmanı &amp;Vurgula</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>H</source>
-        <translation>H</translation>
-    </message>
-    <message>
-        <location line="+8"/>
+        <location line="+11"/>
         <source>Show Tile Object &amp;Outlines</source>
         <translation>Desen Nesne &amp;Ana Hatlarını Göster</translation>
     </message>
@@ -909,17 +955,27 @@
         <translation>Yeniden Yükle</translation>
     </message>
     <message>
-        <location line="+24"/>
-        <source>Ctrl+Shift+S</source>
-        <translation>Ctrl+Shift+S</translation>
+        <location line="+16"/>
+        <source>Support Tiled Development</source>
+        <translation>Tiled&apos;ın Geliştirilmesini Destekle</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>User Manual</source>
-        <translation>Kullanıcı Kılavuzu</translation>
+        <location line="+158"/>
+        <source>Show Tile Collision Shapes</source>
+        <translation>Desen Çarpışma Şekillerini Göster</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+9"/>
+        <source>Fit Map in View</source>
+        <translation>Haritayı Görünüme Sığdır</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Community Forum ↗</source>
+        <translation>Topluluk Forumu ↗</translation>
+    </message>
+    <message>
+        <location line="-92"/>
         <source>Snap to &amp;Pixels</source>
         <translation>Piksellere Yapış</translation>
     </message>
@@ -944,22 +1000,7 @@
         <translation>Görünümü Temizle</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Tab</source>
-        <translation>Sekme</translation>
-    </message>
-    <message>
-        <location filename="../src/automappingconverter/converterwindow.ui" line="+14"/>
-        <source>Tiled Automapping Rule Files Converter</source>
-        <translation>Tiled Automap&apos;leme Kural Dosyaları Dönüştürücü</translation>
-    </message>
-    <message>
-        <location line="+25"/>
-        <source>Add new Automapping rules</source>
-        <translation>Yeni Automap&apos;leme kuralları ekle</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+757"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+803"/>
         <source>All Files (*)</source>
         <translation>Tüm Dosyalar (*)</translation>
     </message>
@@ -967,7 +1008,7 @@
 <context>
     <name>MapDocument</name>
     <message>
-        <location filename="../src/tiled/adjusttileindexes.cpp" line="+188"/>
+        <location filename="../src/tiled/adjusttileindexes.cpp" line="+187"/>
         <source>Tile</source>
         <translation>Desen</translation>
     </message>
@@ -975,7 +1016,7 @@
 <context>
     <name>MapReader</name>
     <message>
-        <location filename="../src/libtiled/mapreader.cpp" line="+164"/>
+        <location filename="../src/libtiled/mapreader.cpp" line="+166"/>
         <source>Not a map file.</source>
         <translation>Harita dosyası değil.</translation>
     </message>
@@ -1015,85 +1056,85 @@ Satır %1, sütun %2</translation>
         <translation>Desteklenmeyen harita yönlendirmesi: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location line="+100"/>
-        <location line="+26"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+161"/>
+        <location line="+127"/>
+        <location line="+30"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+164"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
         <translation>Desen seti &apos;%1&apos; için geçersiz desen seti parametleri</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+63"/>
         <source>Invalid tile ID: %1</source>
         <translation>Geçersiz desen ID: %1</translation>
     </message>
     <message>
-        <location line="+402"/>
+        <location line="+396"/>
         <source>Too many &lt;tile&gt; elements</source>
         <translation>Çok fazla &lt;tile&gt; elemanı</translation>
     </message>
     <message>
-        <location line="+48"/>
-        <location line="+50"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+638"/>
+        <location line="+58"/>
+        <location line="+62"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+647"/>
         <source>Invalid tile: %1</source>
         <translation>Geçersiz desen: %1</translation>
     </message>
     <message>
-        <location line="+27"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-276"/>
+        <location line="-26"/>
+        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;: &quot;%4&quot;</source>
+        <translation>&apos;%3&apos; katmanı (%1,%2) üstündeki desen işlenemedi: &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <location line="+52"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-289"/>
         <source>Invalid draw order: %1</source>
         <translation>Geçersiz çizim sırası: %1</translation>
     </message>
     <message>
-        <location line="+183"/>
+        <location line="+174"/>
         <source>Invalid points data for polygon</source>
-        <translation>Çokgenler için geçersiz nokta verisi</translation>
+        <translation>Çokgen için geçersiz nokta verisi</translation>
     </message>
     <message>
         <location line="-349"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-46"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-40"/>
         <source>Unknown encoding: %1</source>
         <translation>Bilinmeyen kodlama: %1</translation>
     </message>
     <message>
-        <location line="-327"/>
+        <location line="-333"/>
         <source>Error reading embedded image for tile %1</source>
-        <translation>Desen %1 için içe gömülü resim okuma hatası</translation>
+        <translation>%1 deseni için gömülü resim okunamadı</translation>
     </message>
     <message>
-        <location line="+322"/>
+        <location line="+328"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
         <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>Sıkıştırma metodu &apos;%1&apos; desteklenmiyor</translation>
+        <translation>&apos;%1&apos; sıkıştırma yöntemi desteklenmiyor</translation>
     </message>
     <message>
-        <location line="+88"/>
+        <location line="+86"/>
         <location line="+23"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+280"/>
-        <location line="+40"/>
+        <location line="+30"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+286"/>
+        <location line="+41"/>
         <source>Corrupt layer data for layer &apos;%1&apos;</source>
         <translation>Katman &apos;%1&apos; için bozuk katman verisi</translation>
     </message>
     <message>
-        <location line="+14"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-29"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-30"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
         <translation>&apos;%3&apos; katmanındaki desen (%1,%2) ayrıştırılamadı</translation>
     </message>
     <message>
-        <location line="-34"/>
-        <location line="+51"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+32"/>
+        <location filename="../src/libtiled/mapreader.cpp" line="-50"/>
+        <location line="+63"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+33"/>
         <source>Tile used but no tilesets specified</source>
         <translation>Desen kullanılıyor ancak belirtilmiş desen seti yok</translation>
     </message>
     <message>
-        <location filename="../src/libtiled/mapwriter.cpp" line="+124"/>
-        <source>Could not open file for writing.</source>
-        <translation>Dosya yazmak için açılamıyor.</translation>
-    </message>
-    <message>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-517"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-523"/>
         <location line="+27"/>
         <source>Invalid (negative) tile id: %1</source>
         <translation>Geçersiz (negatif) desen id %1</translation>
@@ -1158,17 +1199,17 @@ Satır %1, sütun %2</translation>
         <translation>Harita</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+42"/>
         <source>Orientation:</source>
         <translation>Yönlendirme:</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="-20"/>
         <source>Tile layer format:</source>
         <translation>Desen katman biçimi:</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="-10"/>
         <source>Tile render order:</source>
         <translation>Desen render sırası:</translation>
     </message>
@@ -1177,7 +1218,7 @@ Satır %1, sütun %2</translation>
     <name>NewTilesetDialog</name>
     <message>
         <location filename="../src/tiled/newtilesetdialog.ui" line="+14"/>
-        <location filename="../src/tiled/newtilesetdialog.cpp" line="+269"/>
+        <location filename="../src/tiled/newtilesetdialog.cpp" line="+258"/>
         <source>New Tileset</source>
         <translation>Yeni Desen Seti</translation>
     </message>
@@ -1282,11 +1323,47 @@ Satır %1, sütun %2</translation>
     </message>
 </context>
 <context>
-    <name>NoTilesetWidget</name>
+    <name>NoEditorWidget</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+85"/>
+        <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
+        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
+        <translation>&lt;font size=&quot;+2&quot;&gt;Açık Dosya Yok&lt;/font&gt;</translation>
+    </message>
+    <message>
+        <location line="+110"/>
+        <source>Open File...</source>
+        <translation>Dosya Aç...</translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <source>New Map...</source>
+        <translation>Yeni Harita...</translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>New Tileset...</source>
         <translation>Yeni Desen Seti...</translation>
+    </message>
+</context>
+<context>
+    <name>NoTilesetWidget</name>
+    <message>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+88"/>
+        <source>New Tileset...</source>
+        <translation>Yeni Desen Seti...</translation>
+    </message>
+</context>
+<context>
+    <name>ObjectRefDialog</name>
+    <message>
+        <location filename="../src/tiled/objectrefdialog.ui" line="+14"/>
+        <source>Edit Object Reference</source>
+        <translation>Nesne Referansını Düzenle</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Filter</source>
+        <translation>Filtrele</translation>
     </message>
 </context>
 <context>
@@ -1319,29 +1396,40 @@ Satır %1, sütun %2</translation>
 <context>
     <name>ObjectTypesEditor</name>
     <message>
+        <location filename="../src/tiled/objecttypeseditor-new.ui" line="+14"/>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
         <translation>Nesne Türü Düzenleyicisi</translation>
     </message>
     <message>
-        <location line="+67"/>
-        <source>File</source>
-        <translation>Dosya</translation>
+        <location line="+24"/>
+        <source>&amp;Import...</source>
+        <translation>&amp;İçe Aktar...</translation>
     </message>
     <message>
-        <location line="+12"/>
-        <source>Export Object Types...</source>
-        <translation>Nesne Türlerini Dışa Aktar...</translation>
+        <location line="+7"/>
+        <source>&amp;Export...</source>
+        <translation>&amp;Dışa Aktar...</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/objecttypeseditor.ui" line="+56"/>
+        <source>Export...</source>
+        <translation>Dışa Aktar...</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Export Object Types</source>
+        <translation>Nesne Türlerini Dışa Aktar</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Import Object Types...</source>
-        <translation>Nesne Türlerini İçeri Aktar...</translation>
+        <source>Import...</source>
+        <translation>İçe Aktar...</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>Choose Object Types File...</source>
-        <translation>Nesne Türü Dosyası Seç...</translation>
+        <location line="+3"/>
+        <source>Import Object Types</source>
+        <translation>Nesne Türlerini İçe Aktar</translation>
     </message>
 </context>
 <context>
@@ -1417,34 +1505,6 @@ Satır %1, sütun %2</translation>
     </message>
 </context>
 <context>
-    <name>PatreonDialog</name>
-    <message>
-        <location filename="../src/tiled/patreondialog.ui" line="+14"/>
-        <source>Become a Patron</source>
-        <translation>Patron Olarak Destekleyin</translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Thanks for using Tiled! Please consider supporting further development with a small monthly donation.</source>
-        <translation>Tiled kullandığınız için teşekkürler! Lütfen aylık az bir bağışla daha ileri geliştirmeyi desteklemeyi düşünün.</translation>
-    </message>
-    <message>
-        <location line="+25"/>
-        <source>Visit https://www.patreon.com/bjorn</source>
-        <translation>Ziyaret Et: https://www.patreon.com/bjorn</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>I&apos;m already a supporter!</source>
-        <translation>Zaten bir destekçiyim!</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Maybe later</source>
-        <translation>Belki Daha Sonra</translation>
-    </message>
-</context>
-<context>
     <name>PreferencesDialog</name>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+14"/>
@@ -1462,18 +1522,18 @@ Satır %1, sütun %2</translation>
         <translation>Kaydetme ve Yükleme</translation>
     </message>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+1105"/>
-        <source>XML</source>
-        <translation>XML</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="+92"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="+85"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+1196"/>
         <source>Base64 (uncompressed)</source>
         <translation>Base64 (sıkıştırılmamış)</translation>
     </message>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-1"/>
+        <source>XML (deprecated)</source>
+        <translation>XML (eski)</translation>
+    </message>
+    <message>
+        <location line="+2"/>
         <source>Base64 (gzip compressed)</source>
         <translation>Base64 (gzip sıkıştırması)</translation>
     </message>
@@ -1485,13 +1545,19 @@ Satır %1, sütun %2</translation>
     </message>
     <message>
         <location line="-2"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+4"/>
         <source>CSV</source>
         <translation>CSV</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+2"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-2"/>
+        <source>Base64 (Zstandard compressed)</source>
+        <translation>Base64 (Zstandard sıkıştırılmış)</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+14"/>
         <source>Right Down</source>
         <translation>Sağ Alt</translation>
     </message>
@@ -1519,38 +1585,23 @@ Satır %1, sütun %2</translation>
         <translation>Desen seti resimlerini değiştiklerinde &amp;yeniden yükle</translation>
     </message>
     <message>
-        <location line="-17"/>
-        <source>Not enabled by default since a reference to an external DTD is known to cause problems with some XML parsers.</source>
-        <translation>Harici bir DTD&apos;ye olan başvuruların bazı XML ayrıştırıcılarla problemlere yol açtığı bilindiğinden varsayılan olarak etkinleştirilmedi.</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Include &amp;DTD reference in saved maps</source>
-        <translation>Kaydedilen haritalara &amp;DTD başvurularını dahil et</translation>
-    </message>
-    <message>
-        <location line="+78"/>
+        <location line="+71"/>
         <location line="+6"/>
         <source>Interface</source>
         <translation>Arayüz</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+6"/>
         <source>&amp;Language:</source>
         <translation>&amp;Dil:</translation>
     </message>
     <message>
-        <location line="-17"/>
+        <location line="+49"/>
         <source>Hardware &amp;accelerated drawing (OpenGL)</source>
         <translation>Donanım &amp;destekli çizim (OpenGL)</translation>
     </message>
     <message>
-        <location line="-99"/>
-        <source>Open last files on startup</source>
-        <translation>Son dosyaları başlangıçta aç</translation>
-    </message>
-    <message>
-        <location line="+14"/>
+        <location line="-149"/>
         <source>Turn this off if you&apos;re having trouble saving your files.</source>
         <translation>Dosyaları kaydetmekte zorluk yaşıyorsanız bunu kapatın.</translation>
     </message>
@@ -1558,6 +1609,11 @@ Satır %1, sütun %2</translation>
         <location line="+3"/>
         <source>Use safe writing of files</source>
         <translation>Dosyaların güvenli yazılmasını kullan</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Repeat last export on save</source>
+        <translation>Kaydederken son dışa aktarmayı yinele</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1570,59 +1626,105 @@ Satır %1, sütun %2</translation>
         <translation>Nesne türlerini ve özellikleri çöz</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+14"/>
         <source>Detach templates</source>
         <translation>Şablonları ayır</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-7"/>
         <source>Embed tilesets</source>
         <translation>Gömülü desen setleri</translation>
     </message>
     <message>
-        <location line="+59"/>
+        <location line="+82"/>
         <source>Grid color:</source>
         <translation>Izgara rengi:</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+10"/>
         <source>Fine grid divisions:</source>
         <translation>İnce ızgara bölümleri:</translation>
     </message>
     <message>
-        <location line="-16"/>
+        <location line="-26"/>
         <source> pixels</source>
         <translation> piksel</translation>
     </message>
     <message>
-        <location line="-10"/>
+        <location line="-103"/>
+        <source>Restore previous session on startup</source>
+        <translation>Başlangıçta önceki oturumu geri yükle</translation>
+    </message>
+    <message>
+        <location line="+51"/>
+        <source>Omits unnecessary whitespace when supported by the output format</source>
+        <translation>Çıkış formatınca desteklendiğinde gereksiz boşlukları atlar</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Minimize output</source>
+        <translation>Çıktıyı azalt</translation>
+    </message>
+    <message>
+        <location line="+118"/>
         <source>Object line width:</source>
         <translation>Nesne kenar eni:</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+10"/>
         <source>Mouse wheel &amp;zooms by default</source>
-        <translation>Varsayılan olarak tekerlek &amp;yakınlaştırır</translation>
+        <translation>Tekerlek öntanımlı olarak &amp;yakınlaştırır</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+16"/>
+        <source>Display news in status bar</source>
+        <translation>Durum çubuğunda haberleri görüntüle</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Highlight new version in status bar</source>
+        <translation>Durum çubuğunda yeni sürümü belirt</translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Keyboard</source>
+        <translation>Klavye</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location line="+6"/>
         <source>Theme</source>
         <translation>Tema</translation>
     </message>
     <message>
+        <location line="+106"/>
+        <source>Extensions</source>
+        <translation>Uzantılar</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Directory:</source>
+        <translation>Dizin:</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Open...</source>
+        <translation>Aç...</translation>
+    </message>
+    <message>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+64"/>
-        <location line="+149"/>
+        <location line="+157"/>
         <source>Native</source>
         <translation>Doğal</translation>
     </message>
     <message>
-        <location line="-148"/>
-        <location line="+149"/>
+        <location line="-156"/>
+        <location line="+157"/>
         <source>Tiled Fusion</source>
         <translation>Tiled Füzyon</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.ui" line="+22"/>
+        <location filename="../src/tiled/preferencesdialog.ui" line="-101"/>
         <source>Selection color:</source>
         <translation>Seçim rengi:</translation>
     </message>
@@ -1637,23 +1739,12 @@ Satır %1, sütun %2</translation>
         <translation>Baz renk:</translation>
     </message>
     <message>
-        <location line="+27"/>
-        <location line="+6"/>
+        <location line="-109"/>
         <source>Updates</source>
         <translation>Güncellemeler</translation>
     </message>
     <message>
-        <location line="+9"/>
-        <source>Check Now</source>
-        <translation>Şimdi Kontrol Et</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Automatically check for updates</source>
-        <translation>Güncellemeleri otamatik denetle</translation>
-    </message>
-    <message>
-        <location line="+47"/>
+        <location line="+136"/>
         <source>Plugins</source>
         <translation>Eklentiler</translation>
     </message>
@@ -1664,57 +1755,42 @@ Satır %1, sütun %2</translation>
     </message>
 </context>
 <context>
+    <name>ProjectPropertiesDialog</name>
+    <message>
+        <location filename="../src/tiled/projectpropertiesdialog.ui" line="+14"/>
+        <source>Project Properties</source>
+        <translation>Proje Özellikleri</translation>
+    </message>
+</context>
+<context>
     <name>Python::PythonMapFormat</name>
     <message>
-        <location filename="../src/plugins/python/pythonplugin.cpp" line="+282"/>
+        <location filename="../src/plugins/python/pythonplugin.cpp" line="+274"/>
         <source>-- Using script %1 to read %2</source>
-        <translation>-- %2 yi okumak için script %1 kullanılıyor</translation>
+        <translation>-- %2 yi okumada %1 betiği kullanılıyor</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+30"/>
         <source>-- Using script %1 to write %2</source>
-        <translation>-- %2 yi yazmak için script %1 kullanılıyor</translation>
+        <translation>-- %2 yi yazmada %1 betiği kullanılıyor</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Uncaught exception in script. Please check console.</source>
-        <translation>Scriptteki hata yakalanmadı. Lütfen konsolu kontrol edin.</translation>
+        <translation>Betikte yakalanmayan hata. Lütfen konsola bakın.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation>Script yanlış döndürdü. Lütfen konsolu kontrol edin.</translation>
+        <translation>Betik yanlış döndürdü. Lütfen konsola bakın.</translation>
     </message>
 </context>
 <context>
     <name>Python::PythonPlugin</name>
     <message>
-        <location line="-175"/>
+        <location line="-176"/>
         <source>Reloading Python scripts</source>
-        <translation>Python scriptleri tekrar yükleniyor</translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <location filename="../src/automappingconverter/convertercontrol.h" line="+32"/>
-        <source>v0.8 and before</source>
-        <translation>v0.8 ve öncesi</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>v0.9 and later</source>
-        <translation>v0.9 ve sonrası</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>unknown</source>
-        <translation>bilinmeyen</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>not a map</source>
-        <translation>harita değil</translation>
+        <translation>Python betikleri yeniden yükleniyor</translation>
     </message>
 </context>
 <context>
@@ -1795,7 +1871,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+2"/>
         <source>Up Arrow</source>
-        <translation>Üst Ok</translation>
+        <translation>Yukarı Ok</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1810,7 +1886,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+2"/>
         <source>IBeam</source>
-        <translation>IBeam</translation>
+        <translation>Yazı Çubuğu</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1825,12 +1901,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+2"/>
         <source>Size Backslash</source>
-        <translation>Boyut Ters Çizgisi</translation>
+        <translation>Ters Çizgi Boyut</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Slash</source>
-        <translation>Boyut Çizgisi</translation>
+        <translation>Düz Çizgi Boyut</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1845,12 +1921,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+2"/>
         <source>Split Vertical</source>
-        <translation>Dikey Olarak Böl</translation>
+        <translation>Dikey Böl</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Split Horizontal</source>
-        <translation>Yatay Olarak Böl</translation>
+        <translation>Yatay Böl</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1860,7 +1936,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+2"/>
         <source>Forbidden</source>
-        <translation>Yasaklanmış</translation>
+        <translation>Yasak</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2094,7 +2170,7 @@ Satır %1, sütun %2</translation>
         <location line="+1704"/>
         <location line="+1"/>
         <source>&lt;Invalid&gt;</source>
-        <translation>&lt;Geçersiz&gt;</translation>
+        <translation>&lt;Invalid&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2156,7 +2232,7 @@ Satır %1, sütun %2</translation>
 <context>
     <name>ReplicaIsland::ReplicaIslandPlugin</name>
     <message>
-        <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+58"/>
+        <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="-183"/>
         <source>Cannot open Replica Island map file!</source>
         <translation>Replica Island harita dosyası açılamadı!</translation>
     </message>
@@ -2166,22 +2242,22 @@ Satır %1, sütun %2</translation>
         <translation>Dosya başlığı ayrıştırılamadı!</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+21"/>
         <source>Can&apos;t parse layer header!</source>
         <translation>Katman başlığı ayrıştırılamadı!</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>Inconsistent layer sizes!</source>
         <translation>Tutarsız katman boyutları!</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+20"/>
         <source>File ended in middle of layer!</source>
         <translation>Dosya katmanın ortasında bitti!</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+19"/>
         <source>Unexpected data at end of file!</source>
         <translation>Dosya sonunda beklenmeyen veri!</translation>
     </message>
@@ -2191,12 +2267,7 @@ Satır %1, sütun %2</translation>
         <translation>Replica Island harita dosyaları (*.bin)</translation>
     </message>
     <message>
-        <location line="+37"/>
-        <source>Could not open file for writing.</source>
-        <translation>Dosya yazmak için açılamıyor.</translation>
-    </message>
-    <message>
-        <location line="+15"/>
+        <location line="+53"/>
         <source>You must define a background_index property on the map!</source>
         <translation>Her katmanda background_index özelliğini tanımlamalısınız!</translation>
     </message>
@@ -2206,7 +2277,7 @@ Satır %1, sütun %2</translation>
         <translation>Desen olmayan katman kaydedilemedi!</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+23"/>
         <source>You must define a type property on each layer!</source>
         <translation>Her katmandaki özelliklerin türünü tanımlamalısınız!</translation>
     </message>
@@ -2226,7 +2297,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/resizedialog.ui" line="+14"/>
         <source>Resize</source>
-        <translation>Yeniden Boyutlandır</translation>
+        <translation>Boyutlandır</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2273,26 +2344,377 @@ Satır %1, sütun %2</translation>
     </message>
 </context>
 <context>
-    <name>Tbin::TbinMapFormat</name>
+    <name>Script Errors</name>
     <message>
-        <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+109"/>
-        <source>Could not open file for reading.</source>
-        <translation>Dosya okumak için açılamadı.</translation>
+        <location filename="../src/tiled/editableasset.cpp" line="+92"/>
+        <source>Invalid callback</source>
+        <translation>Geçersiz geriçağrı</translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <location line="+8"/>
+        <source>Undo system not available for this asset</source>
+        <translation>Bu öge için geri-alma sistemi kullanılamaz</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/editablegrouplayer.cpp" line="+45"/>
+        <location line="+11"/>
+        <location line="+29"/>
+        <location filename="../src/tiled/editablemap.cpp" line="+157"/>
+        <location line="+11"/>
+        <location line="+31"/>
+        <location filename="../src/tiled/editableobjectgroup.cpp" line="+57"/>
+        <location line="+11"/>
+        <location line="+36"/>
+        <source>Index out of range</source>
+        <translation>Dizin aralık dışında</translation>
+    </message>
+    <message>
+        <location line="-16"/>
+        <location line="+21"/>
+        <location filename="../src/tiled/editablemap.cpp" line="+57"/>
+        <source>Invalid argument</source>
+        <translation>Geçersiz argüman</translation>
+    </message>
+    <message>
+        <location line="-15"/>
+        <location filename="../src/tiled/editablemap.cpp" line="-67"/>
+        <source>Layer not found</source>
+        <translation>Katman bulunamadı</translation>
     </message>
     <message>
         <location line="+20"/>
+        <source>Layer is in use</source>
+        <translation>Katman kullanımda</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/editablemap.cpp" line="+20"/>
+        <source>Layer already part of a map</source>
+        <translation>Katman zaten haritanın parçası</translation>
+    </message>
+    <message>
+        <location line="+120"/>
+        <source>Merge is currently not supported for detached maps</source>
+        <translation>Ayrılmış haritalar için birleştirme şu anda desteklenmiyor</translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <source>Resize is currently not supported for detached maps</source>
+        <translation>Ayrılmış haritalar için boyutlandırma şu anda desteklenmiyor</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Invalid size</source>
+        <translation>Geçersiz boyut</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>AutoMapping is currently not supported for detached maps</source>
+        <translation>Ayrılmış haritalar için AutoMap şu anda desteklenmiyor</translation>
+    </message>
+    <message>
+        <location line="+185"/>
+        <source>Not a layer</source>
+        <translation>Katman değil</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Layer not from this map</source>
+        <translation>Katman bu haritadan değil</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <location filename="../src/tiled/tilecollisiondock.cpp" line="+320"/>
+        <source>Not an object</source>
+        <translation>Nesne değil</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Object not from this map</source>
+        <translation>Nesne bu haritandan değil</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/editablemapobject.cpp" line="+196"/>
+        <location filename="../src/tiled/editabletile.cpp" line="+246"/>
+        <source>Array expected</source>
+        <translation>Dizi bekleniyordu</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Invalid coordinate</source>
+        <translation>Geçersiz koordinat</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/editableobject.cpp" line="+82"/>
+        <source>Asset is read-only</source>
+        <translation>Varlık salt okunur</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/editableobjectgroup.cpp" line="-14"/>
+        <location filename="../src/tiled/tilecollisiondock.cpp" line="+16"/>
+        <source>Object not found</source>
+        <translation>Nesne bulunamadı</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Object already part of an object layer</source>
+        <translation>Nesne zaten nesne katmanının bir parçası</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/editableterrain.cpp" line="+86"/>
+        <source>Tile not from the same tileset</source>
+        <translation>Desen aynı desen setinden değil</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/editabletile.cpp" line="-79"/>
+        <source>Tileset needs to be an image collection</source>
+        <translation>Desen seti, bir resim koleksiyonu olmalı</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Terrain object or number expected</source>
+        <translation>Zemin nesnesi veya sayı bekleniyordu</translation>
+    </message>
+    <message>
+        <location line="+41"/>
+        <source>ObjectGroup is in use</source>
+        <translation>Nesne grubu kullanımda</translation>
+    </message>
+    <message>
+        <location line="+41"/>
+        <source>Invalid value (negative)</source>
+        <translation>Geçersiz değer (negatif)</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/editabletileset.cpp" line="+75"/>
+        <source>Invalid tile ID</source>
+        <translation>Geçersiz desen ID</translation>
+    </message>
+    <message>
+        <location line="+55"/>
+        <source>Can only add tiles to an image collection tileset</source>
+        <translation>Yalnızca bir resim koleksiyonu desen setine desen eklenebilir</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Can only remove tiles from an image collection tileset</source>
+        <translation>Yalnızca bir resim koleksiyonu desen setinden desen kaldırılabilir</translation>
+    </message>
+    <message>
+        <location line="+32"/>
+        <source>Can&apos;t set the image of an image collection tileset</source>
+        <translation>Bir resim koleksiyonu desen setinin resmi ayarlanamaz</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Can&apos;t set tile size on an image collection tileset</source>
+        <translation>Bir resim koleksiyonu desen setinde desen boyutu ayarlanamaz</translation>
+    </message>
+    <message>
+        <location line="+54"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+891"/>
+        <source>Not a tile</source>
+        <translation>Desen değil</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Tile not from this tileset</source>
+        <translation>Desen bu desen setinden değil</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/scriptedfileformat.cpp" line="+102"/>
+        <source>Invalid return value for &apos;write&apos; (string or undefined expected)</source>
+        <translation>&apos;write&apos; için geçersiz dönüş değeri (dize veya tanımsız bekleniyor)</translation>
+    </message>
+    <message>
+        <location line="+40"/>
+        <source>Invalid file format object (requires string &apos;name&apos; property)</source>
+        <translation>Geçersiz dosya biçimi nesnesi (string &apos;name&apos; özelliği gerektirir)</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Invalid file format object (requires string &apos;extension&apos; property)</source>
+        <translation>Geçersiz dosya biçimi nesnesi (string &apos;extension&apos; özelliği gerektirir)</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Invalid file format object (requires a &apos;write&apos; and/or &apos;read&apos; function property)</source>
+        <translation>Geçersiz dosya biçimi nesnesi (&apos;write&apos; ve/veya &apos;read&apos; fonksiyon özelliği gerektirir)</translation>
+    </message>
+    <message>
+        <location line="-22"/>
+        <source>Invalid return value for &apos;outputFiles&apos; (string or array expected)</source>
+        <translation>&apos;outputFiles&apos; için geçersiz dönüş değeri (string veya array bekleniyordu)</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/scriptedtool.cpp" line="+215"/>
+        <source>Invalid tool object (requires string &apos;name&apos; property)</source>
+        <translation>Geçersiz araç nesnesi (string &apos;name&apos; özelliği gerektirir)</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/scriptmodule.cpp" line="+215"/>
+        <location line="+18"/>
+        <source>Not an open asset</source>
+        <translation>Açık bir varlık değil</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Can&apos;t reload an embedded tileset</source>
+        <translation>Gömülü bir desen seti yeniden yüklenemez</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Invalid ID</source>
+        <translation>Geçersiz ID</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Invalid callback function</source>
+        <translation>Geçersiz geriçağrı fonksiyonu</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Reserved ID</source>
+        <translation>Ayrılmış ID</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <location line="+14"/>
+        <location line="+14"/>
+        <source>Invalid shortName</source>
+        <translation>Geçersiz shortName</translation>
+    </message>
+    <message>
+        <location line="+77"/>
+        <source>Unknown menu</source>
+        <translation>Bilinmeyen menü</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Separators can&apos;t have actions</source>
+        <translation>Ayırıcıların eylemi olamaz</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Unknown action: &apos;%1&apos;</source>
+        <translation>Bilinmeyen eylem: &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Non-separator item without action</source>
+        <translation>Eylemi olmayan ayırıcı-olmayan öge</translation>
+    </message>
+    <message>
+        <location line="+40"/>
+        <source>Unknown action</source>
+        <translation>Bilinmeyen eylem</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Unknown command</source>
+        <translation>Bilinmeyen komut</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/tilecollisiondock.cpp" line="-12"/>
+        <source>Object not from this asset</source>
+        <translation>Nesne bu varlıktan değil</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/scriptfile.cpp" line="+45"/>
+        <source>BinaryFile constructor needs path of file to be opened.</source>
+        <translation>BinaryFile oluşturucu için açılacak dosyanın yolu gereklidir.</translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <location line="+164"/>
+        <source>Unable to open file &apos;%1&apos;: %2</source>
+        <translation>&apos;%1&apos; dosyası açılamadı: %2</translation>
+    </message>
+    <message>
+        <location line="-122"/>
+        <source>Could not resize &apos;%1&apos;: %2</source>
+        <translation>&apos;%1&apos; yeniden boyutlandırılamadı: %2</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Could not seek &apos;%1&apos;: %2</source>
+        <translation>&apos;%1&apos; aranamadı: %2</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <location line="+15"/>
+        <source>Could not read from &apos;%1&apos;: %2</source>
+        <translation>&apos;%1&apos; kaynağından okunamadı: %2</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <location line="+19"/>
+        <location line="+141"/>
+        <source>Could not write to &apos;%1&apos;: %2</source>
+        <translation>&apos;%1&apos; kaynağına yazılamadı: %2</translation>
+    </message>
+    <message>
+        <location line="-120"/>
+        <source>Access to BinaryFile object that was already closed.</source>
+        <translation>Kapatılmış olan BinaryFile nesnesine erişim.</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>TextFile constructor needs path of file to be opened.</source>
+        <translation>TextFile oluşturucu için açılacak dosyanın yolu gereklidir.</translation>
+    </message>
+    <message>
+        <location line="+132"/>
+        <source>Access to TextFile object that was already closed.</source>
+        <translation>Kapatılmış olan TextFile nesnesine erişim.</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/scriptfileformatwrappers.cpp" line="+59"/>
+        <source>File format doesn&apos;t support `read`</source>
+        <translation>Dosya biçimi `read` i desteklemiyor</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>File format doesn&apos;t support `write`</source>
+        <translation>Dosya biçimi `write` i desteklemiyor</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Error reading tileset</source>
+        <translation>Desen seti okunamadı</translation>
+    </message>
+    <message>
+        <location line="+35"/>
+        <source>Error reading map</source>
+        <translation>Harita okunamadı</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/scriptmanager.cpp" line="+267"/>
+        <source>Argument %1 is undefined or the wrong type</source>
+        <translation>Argüman %1 tanımlı değil veya yanlış türde</translation>
+    </message>
+</context>
+<context>
+    <name>Tbin::TbinMapFormat</name>
+    <message>
+        <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+11"/>
+        <source>Map contains no layers.</source>
+        <translation>Harita katman içermiyor.</translation>
+    </message>
+    <message>
+        <location line="+18"/>
         <source>Tilesheet must have equal spacings.</source>
         <translation>Desen sayfası eşit aralıklı olmalı.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tilesheet must have equal margins.</source>
-        <translation>Desen sayfası eşit kenar boşluklu olmalı.</translation>
+        <translation>Desen sayfası eşit kenar paylı olmalı.</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+30"/>
         <source>Different tile sizes per layer are not supported.</source>
-        <translation>Katman başına farklı desen boyutu desteklenmez.</translation>
+        <translation>Katmanlar arasında farklı desen boyutları desteklenmez.</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -2300,12 +2722,12 @@ Satır %1, sütun %2</translation>
         <translation>Geçersiz animasyon karesi.</translation>
     </message>
     <message>
-        <location line="+112"/>
+        <location line="+132"/>
         <source>Only object and tile layers supported.</source>
-        <translation>Sadece nesne ve desen katmanları desteklenir.</translation>
+        <translation>Yalnızca nesne ve desen katmanları desteklenir.</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+50"/>
         <source>Could not open file for writing</source>
         <translation>Dosya yazmak için açılamıyor</translation>
     </message>
@@ -2326,13 +2748,13 @@ Satır %1, sütun %2</translation>
         <location filename="../src/plugins/tbin/tbin/Map.cpp" line="+99"/>
         <location line="+23"/>
         <source>Bad property type</source>
-        <translation>Kötü özellik türü</translation>
+        <translation>Hatalı özellik türü</translation>
     </message>
     <message>
         <location line="+69"/>
         <location line="+68"/>
         <source>Bad layer tile data</source>
-        <translation>Kötü katman desen verisi</translation>
+        <translation>Hatalı katman desen verisi</translation>
     </message>
     <message>
         <location line="+72"/>
@@ -2350,7 +2772,7 @@ Satır %1, sütun %2</translation>
         <translation>Dosya açılamadı</translation>
     </message>
     <message>
-        <location filename="../src/plugins/tbin/tbinplugin.cpp" line="-255"/>
+        <location filename="../src/plugins/tbin/tbinplugin.cpp" line="-305"/>
         <source>Unsupported property type</source>
         <translation>Desteklenmeyen özellik türü</translation>
     </message>
@@ -2358,12 +2780,7 @@ Satır %1, sütun %2</translation>
 <context>
     <name>Tengine::TenginePlugin</name>
     <message>
-        <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+49"/>
-        <source>Could not open file for writing.</source>
-        <translation>Dosya yazmak için açılamıyor.</translation>
-    </message>
-    <message>
-        <location line="+244"/>
+        <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+244"/>
         <source>T-Engine4 map files (*.lua)</source>
         <translation>T-Engine4 harita dosyaları (*.lua)</translation>
     </message>
@@ -2373,7 +2790,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/texteditordialog.ui" line="+14"/>
         <source>Edit Text</source>
-        <translation>Metni Düzenle</translation>
+        <translation>Yazı Düzenle</translation>
     </message>
 </context>
 <context>
@@ -2400,15 +2817,27 @@ Satır %1, sütun %2</translation>
     </message>
     <message>
         <location line="+98"/>
-        <location filename="../src/tiled/tileanimationeditor.cpp" line="+564"/>
+        <location filename="../src/tiled/tileanimationeditor.cpp" line="+550"/>
         <source>Preview</source>
         <translation>Önizle</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::AbstractObjectTool</name>
+    <name>Tiled::AbstractObjectTool</name>
     <message>
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="+265"/>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="+188"/>
+        <location line="+336"/>
+        <source>Flip Horizontally</source>
+        <translation>Yatay Çevir</translation>
+    </message>
+    <message>
+        <location line="-335"/>
+        <location line="+336"/>
+        <source>Flip Vertically</source>
+        <translation>Dikey Çevir</translation>
+    </message>
+    <message>
+        <location line="-253"/>
         <location line="+200"/>
         <source>Reset Tile Size</source>
         <translation>Desen Boyutunu Sıfırla</translation>
@@ -2416,15 +2845,19 @@ Satır %1, sütun %2</translation>
     <message numerus="yes">
         <location line="-13"/>
         <source>Duplicate %n Object(s)</source>
-        <translation><numerusform>Nesneyi Kopyala</numerusform>
-        <numerusform>%n Nesneyi Kopyala</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
-        <translation><numerusform>Nesneyi Kaldır</numerusform>
-        <numerusform>%n Nesneyi Kaldır</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
+        </translation>
+    </message>
     <message>
         <location line="+16"/>
         <source>Replace Tile</source>
@@ -2456,36 +2889,9 @@ Satır %1, sütun %2</translation>
         <translation>Şablon Örneklerini Sıfırla</translation>
     </message>
     <message>
-        <location line="-334"/>
-        <location line="+341"/>
-        <source>Flip Horizontally</source>
-        <translation>Yatay Çevir</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>X</source>
-        <translation>X</translation>
-    </message>
-    <message>
-        <location line="-340"/>
-        <location line="+341"/>
-        <source>Flip Vertically</source>
-        <translation>Dikey Çevir</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Y</source>
-        <translation>Y</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+13"/>
         <source>Raise Object</source>
         <translation>Nesneyi Yükselt</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>PgUp</source>
-        <translation>PgUp</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2493,36 +2899,23 @@ Satır %1, sütun %2</translation>
         <translation>Nesneyi Alçalt</translation>
     </message>
     <message>
-        <location line="+0"/>
-        <source>PgDown</source>
-        <translation>PgDown</translation>
-    </message>
-    <message>
         <location line="+1"/>
         <source>Raise Object to Top</source>
         <translation>Nesneyi En Üste Yükselt</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Home</source>
-        <translation>Home</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lower Object to Bottom</source>
         <translation>Nesneyi En Alta Alçalt</translation>
     </message>
-    <message>
-        <location line="+0"/>
-        <source>End</source>
-        <translation>End</translation>
-    </message>
     <message numerus="yes">
         <location line="+6"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation><numerusform>Nesneyi Katmana Taşı</numerusform>
-        <numerusform>%n Nesneyi Katmana Taşı</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+        </translation>
+    </message>
     <message>
         <location line="+13"/>
         <source>Object &amp;Properties...</source>
@@ -2530,9 +2923,9 @@ Satır %1, sütun %2</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::AbstractTileSelectionTool</name>
+    <name>Tiled::AbstractTileSelectionTool</name>
     <message>
-        <location filename="../src/tiled/abstracttileselectiontool.cpp" line="+137"/>
+        <location filename="../src/tiled/abstracttileselectiontool.cpp" line="+139"/>
         <source>Replace Selection</source>
         <translation>Seçimi Değiştir</translation>
     </message>
@@ -2553,42 +2946,106 @@ Satır %1, sütun %2</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::AbstractTileTool</name>
+    <name>Tiled::AbstractTileTool</name>
     <message>
-        <location filename="../src/tiled/abstracttiletool.cpp" line="+128"/>
+        <location filename="../src/tiled/abstracttiletool.cpp" line="+167"/>
         <source>empty</source>
         <translation>boş</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::AutoMapper</name>
+    <name>Tiled::AbstractWorldTool</name>
     <message>
-        <location filename="../src/tiled/automapper.cpp" line="+119"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: Özellik &apos;%2&apos; = &apos;%3&apos; mantıklı gözükmüyor. Bu özellik görmezden gelinecek.</translation>
+        <location filename="../src/tiled/abstractworldtool.cpp" line="+198"/>
+        <source>Add another map to the current world</source>
+        <translation>Şu anki dünyaya başka bir harita ekle</translation>
     </message>
     <message>
-        <location line="+82"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation>Katman &apos;%1&apos; deki alt çizgiyi unuttunuz mu?</translation>
+        <location line="+1"/>
+        <source>Add the current map to a loaded world</source>
+        <translation>Şu anki dünyayı, yüklü bir dünyaya ekle</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Remove the current map from the current world</source>
+        <translation>Şu anki haritayı şu anki dünyadan kaldır</translation>
     </message>
     <message>
         <location line="+72"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation>Automap için katman &apos;%1&apos; geçerli değil.</translation>
+        <source>Add a Map to World &quot;%2&quot;</source>
+        <translation>&quot;%2&quot; Dünyasına Bir Harita Ekle</translation>
     </message>
     <message>
-        <location line="-104"/>
+        <location line="+7"/>
+        <source>Remove &quot;%1&quot; from World &quot;%2&quot;</source>
+        <translation>&quot;%2&quot; Dünyasından &quot;%1&quot; Ögesini Kaldır</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <location line="+102"/>
+        <source>Add &quot;%1&quot; to World &quot;%2&quot;</source>
+        <translation>&quot;%2&quot; Dünyasına &quot;%1&quot; Ögesini Ekle</translation>
+    </message>
+    <message>
+        <location line="-74"/>
+        <source>All Files (*)</source>
+        <translation>Tüm Dosyalar (*)</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Load Map</source>
+        <translation>Harita Yükle</translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Error Opening File</source>
+        <translation>Dosya Açılamadı</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Error opening &apos;%1&apos;:
+%2</source>
+        <translation>&apos;%1&apos; açılamadı:
+%2</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::ActionsModel</name>
+    <message>
+        <location filename="../src/tiled/shortcutsettingspage.cpp" line="-400"/>
+        <source>Action</source>
+        <translation>Eylem</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Text</source>
+        <translation>Yazı</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Shortcut</source>
+        <translation>Kısayol</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::AutoMapper</name>
+    <message>
+        <location filename="../src/tiled/automapper.cpp" line="+140"/>
+        <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; (rule map &apos;%1&apos;)</source>
+        <translation>Bilinmeyen &apos;%2&apos; = &apos;%3&apos; özelliği yok sayılıyor (kural haritası &apos;%1&apos;)</translation>
+    </message>
+    <message>
+        <location line="+40"/>
+        <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; (rule map &apos;%1&apos;)</source>
+        <translation>&apos;%4&apos; katmanındaki bilinmeyen &apos;%2&apos; = &apos;%3&apos; özelliği yok sayılıyor (kural haritası &apos;%1&apos;)</translation>
+    </message>
+    <message>
+        <location line="+29"/>
         <source>&apos;regions_input&apos; layer must not occur more than once.</source>
         <translation>&apos;regions_input&apos; katmanı birden fazla olmamalı..</translation>
     </message>
     <message>
-        <location line="-25"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: &apos;%4&apos; katmanında Özellik &apos;%2&apos; = &apos;%3&apos; anlamsız. Bu özellik yok sayılıyor.</translation>
-    </message>
-    <message>
-        <location line="+31"/>
+        <location line="+6"/>
         <location line="+13"/>
         <source>&apos;regions_*&apos; layers must be tile layers.</source>
         <translation>&apos;regions_*&apos; katmanları desen katmanları olmalı.</translation>
@@ -2599,12 +3056,22 @@ Satır %1, sütun %2</translation>
         <translation>&apos;regions_output&apos; katmanı birden fazla olmamalı.</translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+19"/>
+        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
+        <translation>&apos;%1&apos; katmanındaki alt çizgiyi unuttunuz mu?</translation>
+    </message>
+    <message>
+        <location line="+21"/>
         <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
         <translation>&apos;input_*&apos; ve &apos;inputnot_*&apos; katmanları desen katmanları olmalı.</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+45"/>
+        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
+        <translation>&apos;%1&apos;, AutoMap için geçerli bir katman olarak algılanmadı.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
         <translation>&apos;regions&apos; veya &apos;regions_input&apos; katmanı bulunamadı.</translation>
     </message>
@@ -2616,69 +3083,61 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+3"/>
         <source>No input_&lt;name&gt; layer found!</source>
-        <translation>input_&lt;name&gt;  katmanı bulunamadı!</translation>
+        <translation>input_&lt;name&gt; katmanı bulunamadı!</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No output_&lt;name&gt; layer found!</source>
-        <translation>output_&lt;ad&gt; katmanı bulunmadı!</translation>
+        <translation>output_&lt;name&gt; katmanı bulunamadı!</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::AutomappingManager</name>
+    <name>Tiled::AutomappingManager</name>
     <message>
-        <location filename="../src/tiled/automappingmanager.cpp" line="+122"/>
+        <location filename="../src/tiled/automappingmanager.cpp" line="+133"/>
         <source>Apply AutoMap rules</source>
         <translation>AutoMap kurallarını uygula</translation>
     </message>
     <message>
         <location line="+24"/>
-        <source>No rules file found at:
-%1</source>
-        <translation>Burada kural bulunamadı:
-%1</translation>
+        <source>No rules file found at &apos;%1&apos;</source>
+        <translation>&apos;%1&apos; konumunda kural dosyası bulunamadı</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>Error opening rules file:
-%1</source>
-        <translation>Kural dosyası açılırken hata oluştu:
-%1</translation>
+        <location line="+8"/>
+        <source>Error opening rules file &apos;%1&apos;</source>
+        <translation>&apos;%1&apos; kural dosyası açılamadı</translation>
     </message>
     <message>
-        <location line="+19"/>
-        <source>File not found:
-%1</source>
-        <translation>Dosya bulunamadı:
-%1</translation>
+        <location line="+28"/>
+        <source>File not found: &apos;%1&apos; (referenced by &apos;%2&apos;)</source>
+        <translation>Dosya: bulunamadı: &apos;%1&apos; (başvuran: &apos;%2&apos;)</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>Opening rules map failed:
-%1</source>
-        <translation>Kural haritası açılırken hata oluştu:
-%1</translation>
+        <location line="+14"/>
+        <source>Opening rules map &apos;%1&apos; failed: %2</source>
+        <translation>&apos;%1&apos; kural haritası açılamadı: %2</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::BrokenLinksModel</name>
+    <name>Tiled::BrokenLinksModel</name>
     <message>
-        <location filename="../src/tiled/brokenlinks.cpp" line="+274"/>
-        <source>Tileset image</source>
-        <translation>Desen seti resmi</translation>
-    </message>
-    <message>
-        <location line="-4"/>
+        <location filename="../src/tiled/brokenlinks.cpp" line="+269"/>
         <source>Tileset</source>
-        <translation>Desen seti</translation>
+        <translation>Desen Seti</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Template tileset</source>
-        <translation>Şablon desen seti</translation>
+        <translation>Desen seti şablonu</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+2"/>
+        <source>Tileset image</source>
+        <translation>Desen seti resmi</translation>
+    </message>
+    <message>
+        <location line="+2"/>
         <source>Tile image</source>
         <translation>Desen resmi</translation>
     </message>
@@ -2695,7 +3154,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+1"/>
         <source>Location</source>
-        <translation>Yol</translation>
+        <translation>Yer</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2704,20 +3163,20 @@ Satır %1, sütun %2</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::BrokenLinksWidget</name>
+    <name>Tiled::BrokenLinksWidget</name>
     <message>
-        <location line="+97"/>
+        <location line="+89"/>
         <source>Some files could not be found</source>
         <translation>Bazı dosyalar bulunamadı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>One or more referenced files could not be found. You can help locate them below.</source>
-        <translation>Bir veya daha çok başvurulan dosya bulunamıyor. Aşağıda yerlerini bulmaya yardım edebilirisiniz.</translation>
+        <translation>Bir veya daha çok başvurulan dosya bulunamıyor. Aşağıda bulmaya yardım edebilirisiniz.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+86"/>
+        <location line="+84"/>
         <location line="+8"/>
         <source>Locate File...</source>
         <translation>Dosyayı Bul...</translation>
@@ -2733,230 +3192,223 @@ Satır %1, sütun %2</translation>
         <translation>Desen Seti Aç...</translation>
     </message>
     <message>
-        <location line="+31"/>
-        <location line="+44"/>
+        <location line="+36"/>
+        <source>Locate Directory for Files</source>
+        <translation>Dosyalar için Dizini Bul</translation>
+    </message>
+    <message>
+        <location line="+90"/>
+        <source>Error Loading Image</source>
+        <translation>Resim Yüklenemedi</translation>
+    </message>
+    <message>
+        <location line="+40"/>
         <source>Locate File</source>
         <translation>Dosya Bul</translation>
     </message>
     <message>
-        <location line="+50"/>
-        <source>Locate Object Template</source>
-        <translation>Nesne Şablonu Bul</translation>
-    </message>
-    <message>
-        <location line="+25"/>
-        <source>Error Loading Image</source>
-        <translation>Resim Yükleme Hatası</translation>
-    </message>
-    <message>
-        <location line="+48"/>
-        <source>Error Reading Object Template</source>
-        <translation>Nesne Şablonu Okuma Hatası</translation>
-    </message>
-    <message>
-        <location line="-89"/>
-        <location line="+13"/>
+        <location line="+14"/>
+        <location line="+17"/>
         <source>All Files (*)</source>
         <translation>Tüm Dosyalar (*)</translation>
     </message>
     <message>
-        <location line="-10"/>
+        <location line="-12"/>
         <source>Locate External Tileset</source>
         <translation>Harici Desen Seti Bul</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+17"/>
+        <source>Locate Object Template</source>
+        <translation>Nesne Şablonu Bul</translation>
+    </message>
+    <message>
+        <location line="+33"/>
         <source>Error Reading Tileset</source>
-        <translation>Desen Seti Okuma Hatası</translation>
+        <translation>Desen Seti Okunamadı</translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Error Reading Object Template</source>
+        <translation>Nesne Şablonu Okunamadı</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::BucketFillTool</name>
+    <name>Tiled::BucketFillTool</name>
     <message>
         <location filename="../src/tiled/bucketfilltool.cpp" line="+44"/>
         <location line="+135"/>
         <source>Bucket Fill Tool</source>
         <translation>Doldurma Aracı</translation>
     </message>
-    <message>
-        <location line="-132"/>
-        <location line="+133"/>
-        <source>F</source>
-        <translation>F</translation>
-    </message>
 </context>
 <context>
-    <name>Tiled::Internal::ClipboardManager</name>
+    <name>Tiled::ClipboardManager</name>
     <message>
-        <location filename="../src/tiled/clipboardmanager.cpp" line="+246"/>
+        <location filename="../src/tiled/clipboardmanager.cpp" line="+264"/>
         <source>Paste Objects</source>
         <translation>Nesneleri Yapıştır</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::CommandButton</name>
+    <name>Tiled::CommandButton</name>
     <message>
-        <location filename="../src/tiled/commandbutton.cpp" line="+105"/>
-        <source>Execute Command</source>
-        <translation>Komutu Çalıştır</translation>
-    </message>
-    <message>
-        <location line="-39"/>
+        <location filename="../src/tiled/commandbutton.cpp" line="+55"/>
         <source>Error Executing Command</source>
-        <translation>Komut Çalıştırma Hatası</translation>
+        <translation>Komut Yürütülemedi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>You do not have any commands setup.</source>
-        <translation>Herhangi bir komut oluşturmadınız.</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Edit commands...</source>
-        <translation>Komutları düzenle...</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::Internal::CommandDataModel</name>
-    <message>
-        <location filename="../src/tiled/commanddatamodel.cpp" line="+60"/>
-        <source>Open in text editor</source>
-        <translation>Metin editörü ile aç</translation>
-    </message>
-    <message>
-        <location line="+88"/>
-        <location line="+66"/>
-        <source>&lt;new command&gt;</source>
-        <translation>&lt;yeni komut&gt;</translation>
-    </message>
-    <message>
-        <location line="-58"/>
-        <source>Set a name for this command</source>
-        <translation>Bu komut için bir ad ayarlayın</translation>
+        <translation>Bir komut ayarlamanız yok.</translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>Show or hide this command in the command list</source>
-        <translation>Bu komutu komut listesinde gösterin veya gizleyin</translation>
+        <source>Edit Commands...</source>
+        <translation>Komutları Düzenle...</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Add a new command</source>
-        <translation>Yeni komut ekle</translation>
+        <location line="+25"/>
+        <source>Execute Command</source>
+        <translation>Komutu Yürüt</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::CommandDataModel</name>
+    <message>
+        <location filename="../src/tiled/commanddatamodel.cpp" line="+127"/>
+        <location line="+69"/>
+        <source>&lt;new command&gt;</source>
+        <translation>&lt;new command&gt;</translation>
     </message>
     <message>
-        <location line="+104"/>
-        <source>Name</source>
-        <translation>Ad</translation>
+        <location line="-61"/>
+        <source>Set a name for this command</source>
+        <translation>Bu komut için bir ad ayarla</translation>
     </message>
     <message>
-        <location line="-109"/>
+        <location line="+2"/>
         <source>Shortcut for this command</source>
         <translation>Bu komut için kısayol</translation>
     </message>
     <message>
-        <location line="+110"/>
+        <location line="+2"/>
+        <source>Show or hide this command in the command list</source>
+        <translation>Bu komutu, komut listesinde göster veya gizle</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Add a new command</source>
+        <translation>Yeni bir komut ekle</translation>
+    </message>
+    <message>
+        <location line="+114"/>
+        <source>Name</source>
+        <translation>Ad</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Shortcut</source>
         <translation>Kısayol</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Enable</source>
-        <translation>Aktifleştir</translation>
+        <translation>Etkinleştir</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+18"/>
         <source>Move Up</source>
         <translation>Yukarı Taşı</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+3"/>
         <source>Move Down</source>
         <translation>Aşağı Taşı</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>Execute</source>
-        <translation>Çalıştır</translation>
-    </message>
-    <message>
         <location line="+3"/>
-        <source>Execute in Terminal</source>
-        <translation>Terminal&apos;de Çalıştır</translation>
+        <source>Execute</source>
+        <translation>Yürüt</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+2"/>
+        <source>Execute in Terminal</source>
+        <translation>Terminal&apos;de Yürüt</translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Delete</source>
         <translation>Sil</translation>
     </message>
     <message>
-        <location line="+80"/>
+        <location line="+92"/>
         <source>%1 (copy)</source>
         <translation>%1 (kopya)</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+18"/>
         <source>New command</source>
-        <translation>Yeni Komut</translation>
+        <translation>Yeni komut</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::CommandDialog</name>
+    <name>Tiled::CommandDialog</name>
     <message>
-        <location filename="../src/tiled/commanddialog.cpp" line="+48"/>
-        <source>Edit Commands</source>
-        <translation>Komutları Düzenle</translation>
+        <location filename="../src/tiled/commanddialog.cpp" line="+53"/>
+        <source>Global Commands</source>
+        <translation>Genel Komutlar</translation>
     </message>
     <message>
-        <location line="+121"/>
-        <source>Select Executable</source>
-        <translation>Yürütülebilir Şeç</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Select Working Directory</source>
-        <translation>Çalışma Dizini Seçin</translation>
+        <location line="+1"/>
+        <source>Project Commands</source>
+        <translation>Proje Komutları</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::CommandManager</name>
+    <name>Tiled::CommandManager</name>
     <message>
-        <location filename="../src/tiled/commandmanager.cpp" line="+127"/>
+        <location filename="../src/tiled/commandmanager.cpp" line="+68"/>
+        <source>Open in text editor</source>
+        <translation>Metin düzenleyicide aç</translation>
+    </message>
+    <message>
+        <location line="+142"/>
         <source>Edit Commands...</source>
         <translation>Komutları Düzenle...</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::CommandProcess</name>
+    <name>Tiled::CommandProcess</name>
     <message>
-        <location filename="../src/tiled/command.cpp" line="+195"/>
+        <location filename="../src/tiled/command.cpp" line="+238"/>
         <source>Unable to create/open %1</source>
-        <translation>%1 Açıklamadı/Oluşturulamadı</translation>
+        <translation>%1 oluşturulamadı/açılamadı</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Unable to add executable permissions to %1</source>
-        <translation>%1 e çalıştırma izni eklenemedi</translation>
+        <translation>%1 için yürütme izni eklenemedi</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+20"/>
         <source>Executing: %1</source>
         <translation>Yürütülüyor: %1</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+28"/>
         <source>The command failed to start.</source>
         <translation>Komut başlatılamadı.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The command crashed.</source>
-        <translation>Komut hata verdi.</translation>
+        <translation>Komut çöktü.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The command timed out.</source>
-        <translation>Komut zaman aşımına uğradı.</translation>
+        <translation>Komut zamanı doldu.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2966,54 +3418,64 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+8"/>
         <source>Error Executing %1</source>
-        <translation>%1 Çalıştırma Hatası</translation>
+        <translation>%1 Yürütülemedi</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::ConsoleDock</name>
+    <name>Tiled::CommandsEdit</name>
     <message>
-        <location filename="../src/tiled/consoledock.cpp" line="+37"/>
-        <source>Debug Console</source>
-        <translation>Debug Konsolu</translation>
+        <location filename="../src/tiled/commandsedit.cpp" line="+163"/>
+        <source>Select Executable</source>
+        <translation>Yürütülebilir Şeç</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Select Working Directory</source>
+        <translation>Çalışma Dizinini Seç</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::CreateEllipseObjectTool</name>
+    <name>Tiled::ConsoleDock</name>
     <message>
-        <location filename="../src/tiled/createellipseobjecttool.cpp" line="+47"/>
-        <source>Insert Ellipse</source>
-        <translation>Elips Ekle</translation>
+        <location filename="../src/tiled/consoledock.cpp" line="+59"/>
+        <location line="+36"/>
+        <location line="+118"/>
+        <source>Clear Console</source>
+        <translation>Konsolu Temizle</translation>
+    </message>
+    <message>
+        <location line="-2"/>
+        <source>Console</source>
+        <translation>Konsol</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>C</source>
-        <translation>C</translation>
+        <source>Execute script</source>
+        <translation>Betiği yürüt</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::CreatePointObjectTool</name>
+    <name>Tiled::CreateEllipseObjectTool</name>
+    <message>
+        <location filename="../src/tiled/createellipseobjecttool.cpp" line="+48"/>
+        <source>Insert Ellipse</source>
+        <translation>Elips Ekle</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::CreatePointObjectTool</name>
     <message>
         <location filename="../src/tiled/createpointobjecttool.cpp" line="+51"/>
         <source>Insert Point</source>
         <translation>Nokta Ekle</translation>
     </message>
-    <message>
-        <location line="+1"/>
-        <source>I</source>
-        <translation>I</translation>
-    </message>
 </context>
 <context>
-    <name>Tiled::Internal::CreatePolygonObjectTool</name>
+    <name>Tiled::CreatePolygonObjectTool</name>
     <message>
-        <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+172"/>
+        <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+161"/>
         <source>Insert Polygon</source>
-        <translation>Polygon Ekle</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>P</source>
-        <translation>P</translation>
+        <translation>Çokgen Ekle</translation>
     </message>
     <message>
         <location line="+122"/>
@@ -3021,48 +3483,33 @@ Satır %1, sütun %2</translation>
         <translation>Çoklu Çizgileri Birleştir</translation>
     </message>
     <message>
-        <location line="+202"/>
+        <location line="+208"/>
         <source>Create Polygon</source>
         <translation>Çokgen Oluştur</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::CreateRectangleObjectTool</name>
+    <name>Tiled::CreateRectangleObjectTool</name>
     <message>
         <location filename="../src/tiled/createrectangleobjecttool.cpp" line="+47"/>
         <source>Insert Rectangle</source>
-        <translation>Kare Ekle</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>R</source>
-        <translation>R</translation>
+        <translation>Dikdörtgen Ekle</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::CreateTemplateTool</name>
+    <name>Tiled::CreateTemplateTool</name>
     <message>
         <location filename="../src/tiled/createtemplatetool.cpp" line="+53"/>
         <source>Insert Template</source>
         <translation>Şablon Ekle</translation>
     </message>
-    <message>
-        <location line="+1"/>
-        <source>V</source>
-        <translation>V</translation>
-    </message>
 </context>
 <context>
-    <name>Tiled::Internal::CreateTextObjectTool</name>
+    <name>Tiled::CreateTextObjectTool</name>
     <message>
-        <location filename="../src/tiled/createtextobjecttool.cpp" line="+65"/>
+        <location filename="../src/tiled/createtextobjecttool.cpp" line="+70"/>
         <source>Insert Text</source>
-        <translation>Metin Ekle</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>E</source>
-        <translation>E</translation>
+        <translation>Yazı Ekle</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3071,28 +3518,36 @@ Satır %1, sütun %2</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::CreateTileObjectTool</name>
+    <name>Tiled::CreateTileObjectTool</name>
     <message>
-        <location filename="../src/tiled/createtileobjecttool.cpp" line="+66"/>
+        <location filename="../src/tiled/createtileobjecttool.cpp" line="+72"/>
         <source>Insert Tile</source>
         <translation>Desen Ekle</translation>
     </message>
+</context>
+<context>
+    <name>Tiled::Document</name>
     <message>
-        <location line="+1"/>
-        <source>T</source>
-        <translation>T</translation>
+        <location filename="../src/tiled/document.cpp" line="+88"/>
+        <source>Custom property &apos;%1&apos; refers to non-existing file &apos;%2&apos;</source>
+        <translation>Özel özellik &apos;%1&apos; var olmayan &apos;%2&apos; dosyasına başvuruyor</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::DocumentManager</name>
+    <name>Tiled::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+461"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+653"/>
         <source>Unrecognized file format.</source>
         <translation>Tanınmayan dosya biçimi.</translation>
     </message>
     <message>
-        <location line="+257"/>
-        <location line="+18"/>
+        <location line="+66"/>
+        <source>Save File As</source>
+        <translation>Farklı kaydet</translation>
+    </message>
+    <message>
+        <location line="+210"/>
+        <location line="+20"/>
         <source>%1:
 
 %2</source>
@@ -3101,22 +3556,22 @@ Satır %1, sütun %2</translation>
 %2</translation>
     </message>
     <message>
-        <location line="+111"/>
+        <location line="+112"/>
         <source>Close</source>
         <translation>Kapat</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>Close Other Tabs</source>
         <translation>Diğer Sekmeleri Kapat</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Close Tabs to the Right</source>
         <translation>Sağdaki Sekmeleri Kapat</translation>
     </message>
     <message>
-        <location line="+241"/>
+        <location line="+287"/>
         <source>Tileset Columns Changed</source>
         <translation>Desen Seti Sütunları Değişti</translation>
     </message>
@@ -3127,109 +3582,119 @@ Satır %1, sütun %2</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::EditPolygonTool</name>
+    <name>Tiled::DonationDialog</name>
+    <message>
+        <location filename="../src/tiled/donationdialog.cpp" line="+49"/>
+        <source>Remind me next week</source>
+        <translation>Bana gelecek hafta hatırlat</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Remind me next month</source>
+        <translation>Bana gelecek ay hatırlat</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Don&apos;t remind me</source>
+        <translation>Bana hatırlatma</translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Thanks!</source>
+        <translation>Teşekkürler!</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Thanks a lot for your support! With your help Tiled will keep getting better.</source>
+        <translation>Desteğiniz için çok teşekkürler! Yardımınızla Tiled daha iyi olmayı sürdürecek.</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::EditPolygonTool</name>
     <message>
         <location filename="../src/tiled/editpolygontool.cpp" line="+58"/>
-        <location line="+294"/>
+        <location line="+282"/>
         <source>Edit Polygons</source>
         <translation>Çokgenleri Düzenle</translation>
     </message>
     <message>
-        <location line="-292"/>
-        <location line="+293"/>
-        <source>O</source>
-        <translation>O</translation>
-    </message>
-    <message>
-        <location line="-23"/>
+        <location line="-22"/>
         <source>Split Segment</source>
         <translation>Parçayı Ayır</translation>
     </message>
     <message numerus="yes">
         <location line="+265"/>
         <source>Move %n Point(s)</source>
-        <translation><numerusform>Noktayı Taşı</numerusform>
-        <numerusform>%n Noktayı Taşı</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Noktayı Taşı</numerusform>
+            <numerusform>%n Noktayı Taşı</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+58"/>
         <location line="+94"/>
         <source>Delete %n Node(s)</source>
-        <translation><numerusform>Boğumu Sil</numerusform>
-        <numerusform>%n Boğumu Sil</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Boğumu Sil</numerusform>
+            <numerusform>%n Boğumu Sil</numerusform>
+        </translation>
+    </message>
     <message>
         <location line="-89"/>
-        <location line="+264"/>
+        <location line="+295"/>
         <source>Join Nodes</source>
         <translation>Boğumları Birleştir</translation>
     </message>
     <message>
-        <location line="-263"/>
-        <location line="+299"/>
+        <location line="-294"/>
+        <location line="+330"/>
         <source>Split Segments</source>
         <translation>Bölümleri Ayır</translation>
     </message>
     <message>
-        <location line="-298"/>
-        <location line="+365"/>
+        <location line="-329"/>
+        <location line="+396"/>
         <source>Delete Segment</source>
         <translation>Bölümü Sil</translation>
     </message>
     <message>
-        <location line="-334"/>
+        <location line="-365"/>
         <source>Extend Polyline</source>
         <translation>Çoklu Çizgiyi Uzat</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::Eraser</name>
+    <name>Tiled::Eraser</name>
     <message>
         <location filename="../src/tiled/eraser.cpp" line="+35"/>
-        <location line="+57"/>
+        <location line="+58"/>
         <source>Eraser</source>
         <translation>Silgi</translation>
     </message>
-    <message>
-        <location line="-54"/>
-        <location line="+55"/>
-        <source>E</source>
-        <translation>E</translation>
-    </message>
 </context>
 <context>
-    <name>Tiled::Internal::ExportAsImageDialog</name>
+    <name>Tiled::ExportAsImageDialog</name>
     <message>
-        <location filename="../src/tiled/exportasimagedialog.cpp" line="+67"/>
+        <location filename="../src/tiled/exportasimagedialog.cpp" line="+70"/>
         <source>Export</source>
         <translation>Dışa Aktar</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+58"/>
         <source>Export as Image</source>
-        <translation>Resim Olarak Aktar</translation>
+        <translation>Resim Olarak Dışa Aktar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation>%1 zaten mevcut.
+        <translation>%1 zaten var.
 Onu değiştirmek istiyor musunuz?</translation>
     </message>
     <message>
-        <location line="+65"/>
-        <source>Out of Memory</source>
-        <translation>Bellek Yetersiz</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Could not allocate sufficient memory for the image. Try reducing the zoom level or using a 64-bit version of Tiled.</source>
-        <translation>Resim için yeterli bellek ayrılamadı. Yakınlaştırma düzeyini azaltın veya Tiled&apos;ın 64-bit sürümünü kullanmayı deneyin.</translation>
-    </message>
-    <message>
-        <location line="-16"/>
+        <location line="+71"/>
         <source>Image too Big</source>
-        <translation>Resim Çok Büyük</translation>
+        <translation>Resim çok Büyük</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3237,15 +3702,25 @@ Onu değiştirmek istiyor musunuz?</translation>
         <translation>Son resim %1 x %2 piksel olacak ve %3 GB bellek kullanacak. Tiled böyle bir görüntü oluşturamaz. Yakınlaştırma seviyesini düşürmeyi deneyin.</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+14"/>
+        <source>Out of Memory</source>
+        <translation>Yetersiz Bellek</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Could not allocate sufficient memory for the image. Try reducing the zoom level or using a 64-bit version of Tiled.</source>
+        <translation>Resim için yeterli bellek ayrılamadı. Yakınlaştırma düzeyini azaltın veya Tiled&apos;ın 64-bit sürümünü kullanmayı deneyin.</translation>
+    </message>
+    <message>
+        <location line="+15"/>
         <source>Image</source>
         <translation>Resim</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::FileChangedWarning</name>
+    <name>Tiled::FileChangedWarning</name>
     <message>
-        <location filename="../src/tiled/filechangedwarning.cpp" line="+40"/>
+        <location filename="../src/tiled/filechangedwarning.cpp" line="+39"/>
         <source>File change detected. Discard changes and reload the file?</source>
         <translation>Dosya değişikliği algılandı. Değişiklikler yok sayılsın ve dosya yeniden yüklensin mi?</translation>
     </message>
@@ -3261,17 +3736,82 @@ Onu değiştirmek istiyor musunuz?</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::FileEdit</name>
+    <name>Tiled::FileEdit</name>
     <message>
-        <location filename="../src/tiled/fileedit.cpp" line="+127"/>
+        <location filename="../src/tiled/fileedit.cpp" line="+48"/>
+        <source>Choose</source>
+        <translation>Seç</translation>
+    </message>
+    <message>
+        <location line="+84"/>
+        <source>Choose a Folder</source>
+        <translation>Bir Klasör Seç</translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Choose a File</source>
-        <translation>Dosya Seç</translation>
+        <translation>Bir Dosya Seç</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::LayerDock</name>
+    <name>Tiled::ImageCache</name>
     <message>
-        <location filename="../src/tiled/layerdock.cpp" line="+229"/>
+        <location filename="../src/libtiled/imagecache.cpp" line="+205"/>
+        <source>Recursive metatile map detected: %1</source>
+        <translation>Özyinelemeli metadesen haritası algılandı: %1</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Failed to read metatile map %1: %2</source>
+        <translation>Metadesen haritası %1 okunamadı: %2</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::IssuesCounter</name>
+    <message numerus="yes">
+        <location filename="../src/tiled/issuescounter.cpp" line="+109"/>
+        <source>%n error(s)</source>
+        <translation>
+            <numerusform>%n hata</numerusform>
+            <numerusform>%n hata</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location line="+1"/>
+        <source>%n warning(s)</source>
+        <translation>
+            <numerusform>%n uyarı</numerusform>
+            <numerusform>%n uyarı</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::IssuesDock</name>
+    <message>
+        <location filename="../src/tiled/issuesdock.cpp" line="+176"/>
+        <source>Show warnings</source>
+        <translation>Uyarıları göster</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Clear</source>
+        <translation>Temizle</translation>
+    </message>
+    <message>
+        <location line="+46"/>
+        <source>Issues</source>
+        <translation>Sorunlar</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Filter</source>
+        <translation>Filtrele</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::LayerDock</name>
+    <message>
+        <location filename="../src/tiled/layerdock.cpp" line="+241"/>
         <source>Layers</source>
         <translation>Katmanlar</translation>
     </message>
@@ -3287,9 +3827,9 @@ Onu değiştirmek istiyor musunuz?</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::LayerModel</name>
+    <name>Tiled::LayerModel</name>
     <message>
-        <location filename="../src/tiled/layermodel.cpp" line="+235"/>
+        <location filename="../src/tiled/layermodel.cpp" line="+236"/>
         <source>Layer</source>
         <translation>Katman</translation>
     </message>
@@ -3304,13 +3844,35 @@ Onu değiştirmek istiyor musunuz?</translation>
         <translation>Kilitli</translation>
     </message>
     <message numerus="yes">
-        <location line="+74"/>
+        <location line="+82"/>
         <source>Drag Layer(s)</source>
-        <translation><numerusform>Katmanı Sürükle</numerusform>
-        <numerusform>Katmanları Sürükle</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Katmanı Sürükle</numerusform>
+            <numerusform>%n Katmanı Sürükle</numerusform>
+        </translation>
+    </message>
     <message>
-        <location line="+238"/>
+        <location line="+142"/>
+        <source>Show Layers</source>
+        <translation>Katmanları Göster</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Hide Layers</source>
+        <translation>Katmanları Gizle</translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Lock Layers</source>
+        <translation>Katmanları Kilitle</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Unlock Layers</source>
+        <translation>Katmanları Çöz</translation>
+    </message>
+    <message>
+        <location line="+61"/>
         <source>Show Other Layers</source>
         <translation>Diğer Katmanları Göster</translation>
     </message>
@@ -3320,7 +3882,7 @@ Onu değiştirmek istiyor musunuz?</translation>
         <translation>Diğer Katmanları Gizle</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+26"/>
         <source>Lock Other Layers</source>
         <translation>Diğer Katmanları Kilitle</translation>
     </message>
@@ -3331,231 +3893,107 @@ Onu değiştirmek istiyor musunuz?</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::LayerOffsetTool</name>
+    <name>Tiled::LayerOffsetTool</name>
     <message>
-        <location filename="../src/tiled/layeroffsettool.cpp" line="+40"/>
-        <location line="+84"/>
+        <location filename="../src/tiled/layeroffsettool.cpp" line="+43"/>
+        <location line="+100"/>
         <source>Offset Layers</source>
         <translation>Katmanları Kaydır</translation>
     </message>
+</context>
+<context>
+    <name>Tiled::LocatorWidget</name>
     <message>
-        <location line="-82"/>
-        <location line="+83"/>
-        <source>M</source>
-        <translation>M</translation>
+        <location filename="../src/tiled/locatorwidget.cpp" line="+322"/>
+        <source>Filename</source>
+        <translation>Dosya Adı</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::MagicWandTool</name>
+    <name>Tiled::MagicWandTool</name>
     <message>
         <location filename="../src/tiled/magicwandtool.cpp" line="+33"/>
         <location line="+22"/>
         <source>Magic Wand</source>
         <translation>Sihirli Değnek</translation>
     </message>
-    <message>
-        <location line="-19"/>
-        <location line="+20"/>
-        <source>W</source>
-        <translation>W</translation>
-    </message>
 </context>
 <context>
-    <name>Tiled::Internal::MainToolBar</name>
+    <name>Tiled::MainToolBar</name>
     <message>
-        <location filename="../src/tiled/maintoolbar.cpp" line="+42"/>
+        <location filename="../src/tiled/maintoolbar.cpp" line="+41"/>
         <source>Main Toolbar</source>
         <translation>Ana Araç Çubuğu</translation>
     </message>
     <message>
-        <location line="+26"/>
-        <location line="+70"/>
-        <source>Undo</source>
-        <translation>Geri Al</translation>
-    </message>
-    <message>
-        <location line="-69"/>
-        <location line="+68"/>
-        <source>Redo</source>
-        <translation>Yinele</translation>
-    </message>
-    <message>
-        <location line="-4"/>
+        <location line="+62"/>
         <source>New</source>
         <translation>Yeni</translation>
     </message>
-    <message>
-        <location line="+1"/>
-        <source>Open</source>
-        <translation>Aç</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Save</source>
-        <translation>Kaydet</translation>
-    </message>
 </context>
 <context>
-    <name>Tiled::Internal::MainWindow</name>
+    <name>Tiled::MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="+240"/>
-        <source>Undo</source>
-        <translation>Geri Al</translation>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="-261"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="-602"/>
+        <location line="+26"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+1358"/>
+        <source>untitled</source>
+        <translation>adsız</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Redo</source>
-        <translation>Yinele</translation>
+        <location line="+5"/>
+        <source>Save Template</source>
+        <translation>Şablon Kaydet</translation>
     </message>
     <message>
-        <location line="+13"/>
-        <source>Ctrl+Q</source>
-        <translation>Ctrl+Q</translation>
+        <location line="+14"/>
+        <source>Error Saving Template</source>
+        <translation>Şablon Kaydedilemedi</translation>
     </message>
     <message>
-        <location line="+66"/>
-        <source>Ctrl+T</source>
-        <translation>Ctrl+T</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Ctrl+=</source>
-        <translation>Ctrl+=</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>+</source>
-        <translation>+</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>-</source>
-        <translation>-</translation>
-    </message>
-    <message>
-        <location line="+20"/>
-        <location line="+1184"/>
-        <source>&amp;Layer</source>
-        <translation>&amp;Katman</translation>
-    </message>
-    <message>
-        <location line="-1113"/>
-        <source>Load World</source>
-        <translation>Dünya Yükle</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Error Loading World</source>
-        <translation>Dünya Yüklenirken Hata</translation>
-    </message>
-    <message>
-        <location line="+79"/>
-        <source>Reset to Default Layout</source>
-        <translation>Varsayılan Düzene Sıfırla</translation>
-    </message>
-    <message>
-        <location line="+269"/>
-        <source>Open File</source>
-        <translation>Dosya Aç</translation>
-    </message>
-    <message>
-        <location line="+759"/>
-        <source>&amp;New</source>
-        <translation>&amp;Yeni</translation>
-    </message>
-    <message>
-        <location line="-1026"/>
-        <source>Object Types Editor</source>
-        <translation>Nesne Türleri Düzenleyicisi</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/tileseteditor.cpp" line="+614"/>
-        <source>Ctrl+Shift+O</source>
-        <translation>Ctrl+Shift+O</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="+43"/>
-        <source>Ctrl+Shift+Tab</source>
-        <translation>Ctrl+Shift+Tab</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Ctrl+Tab</source>
-        <translation>Ctrl+Tab</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Alt+C</source>
-        <translation>Alt+C</translation>
-    </message>
-    <message>
-        <location line="-437"/>
-        <location line="+639"/>
-        <location line="+368"/>
-        <source>All Files (*)</source>
-        <translation>Tüm Dosyalar (*)</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="-567"/>
-        <source>Extension Mismatch</source>
-        <translation>Uzantıi Uyumsuzluğu</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="-418"/>
-        <source>Error Opening File</source>
-        <translation>Dosya Açmada Hata</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="-40"/>
-        <location filename="../src/tiled/mainwindow.cpp" line="+136"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="-96"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="-220"/>
         <source>Error Saving File</source>
-        <translation>Dosya Kaydetmede Hata</translation>
+        <translation>Dosya Kaydedilemedi</translation>
     </message>
     <message>
         <location line="+41"/>
+        <source>Extension Mismatch</source>
+        <translation>Uyumsuz Uzantı</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>The file extension does not match the chosen file type.</source>
         <translation>Dosya uzantısı seçilen dosya türüne uymuyor.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Tiled may not automatically recognize your file when loading. Are you sure you want to save with this extension?</source>
-        <translation>Tiled dosyanızı yüklerken otomatik olarak tanıyamayabilir. Bu uzantı ile kaydetmek istediğinizden emin misiniz?</translation>
+        <translation>Tiled dosyanızı yüklerken kendiliğinden tanıyamayabilir. Bu uzantıyla kaydetmek istediğinizden emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="+16"/>
-        <source>Unsaved Changes</source>
-        <translation>Kaydedilmemiş Değişiklikler</translation>
+        <location filename="../src/tiled/mainwindow.cpp" line="-997"/>
+        <location line="+893"/>
+        <location line="+614"/>
+        <source>All Files (*)</source>
+        <translation>Tüm Dosyalar (*)</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>There are unsaved changes. Do you want to save now?</source>
-        <translation>Kaydedilmemiş değişiklikler mevcut. Şimdi kaydetmek ister misiniz?</translation>
-    </message>
-    <message>
-        <location line="+45"/>
-        <source>Exported to %1</source>
-        <translation>%1 olarak dışa aktarıldı</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Error Exporting Map</source>
-        <translation>Harita Aktarım Hatası</translation>
-    </message>
-    <message>
-        <location line="-768"/>
+        <location line="-1485"/>
         <source>Export As...</source>
-        <translation>Olarak Aktar...</translation>
+        <translation>Farklı Dışa Aktar...</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+16"/>
         <source>Non-unique file extension</source>
-        <translation>Benzersiz olmayan dosya uzantısı</translation>
+        <translation>Eşsiz olmayan dosya uzantısı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Non-unique file extension.
 Please select specific format.</source>
-        <translation>Benzersiz olmayan dosya uzantısı.
+        <translation>Eşsiz olmayan dosya uzantısı.
 Lütfen belirli bir biçim seçin.</translation>
     </message>
     <message>
@@ -3569,9 +4007,199 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Verilen dosya adının bilinen bir dosya uzantısı yok.</translation>
     </message>
     <message>
-        <location line="+1382"/>
+        <location line="+154"/>
+        <source>Undo</source>
+        <translation>Geri Al</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Redo</source>
+        <translation>Yinele</translation>
+    </message>
+    <message>
+        <location line="+150"/>
+        <location line="+1599"/>
+        <source>&amp;Layer</source>
+        <translation>&amp;Katman</translation>
+    </message>
+    <message>
+        <location line="-1515"/>
+        <location line="+34"/>
+        <source>All Files (*);;</source>
+        <translation>Tüm Dosyalar (*);;</translation>
+    </message>
+    <message>
+        <location line="-33"/>
+        <location line="+34"/>
+        <source>World files (*.world)</source>
+        <translation>Dünya dosyaları (*.world)</translation>
+    </message>
+    <message>
+        <location line="-32"/>
+        <source>Load World</source>
+        <translation>Dünya Yükle</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Error Loading World</source>
+        <translation>Dünya Yüklenemedi</translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>New Map</source>
+        <translation>Yeni Harita</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Error Creating World</source>
+        <translation>Dünya Yaratılamadı</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Error Writing World File</source>
+        <translation>Dünya Dosyaya Yazılamadı</translation>
+    </message>
+    <message>
+        <location line="+118"/>
+        <location line="+1339"/>
+        <source>Views and Toolbars</source>
+        <translation>Gürünümler ve Araç Çubukları</translation>
+    </message>
+    <message>
+        <location line="-1336"/>
+        <location line="+1337"/>
+        <source>Reset to Default Layout</source>
+        <translation>Öntanımlı Düzene Sıfırla</translation>
+    </message>
+    <message>
+        <location line="-1335"/>
+        <location line="+1336"/>
+        <source>Object Types Editor</source>
+        <translation>Nesne Türü Düzenleyicisi</translation>
+    </message>
+    <message>
+        <location line="-1097"/>
+        <source>Error Opening File</source>
+        <translation>Dosya Açılamadı</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Error opening &apos;%1&apos;:
+%2</source>
+        <translation>&apos;%1&apos; açılamadı:
+%2</translation>
+    </message>
+    <message>
+        <location line="+37"/>
+        <source>Open File</source>
+        <translation>Dosya Aç</translation>
+    </message>
+    <message>
+        <location line="+110"/>
+        <source>Unsaved Changes</source>
+        <translation>Kaydedilmemiş Değişiklikler</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>There are unsaved changes. Do you want to save now?</source>
+        <translation>Kaydedilmemiş değişiklikler var. Şimdi kaydetmek ister misiniz?</translation>
+    </message>
+    <message>
+        <location line="+35"/>
+        <source>Unsaved Changes to World</source>
+        <translation>Dünyada Kaydedilmemiş Değişiklikler</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>There are unsaved changes to world &quot;%1&quot;. Do you want to save the world now?</source>
+        <translation>&quot;%1&quot; dünyasında kaydedilmemiş değişiklikler var. Dünyayı şimdi kaydetmek istiyor musunuz?</translation>
+    </message>
+    <message>
+        <location line="+47"/>
+        <location line="+14"/>
+        <source>Exported to %1</source>
+        <translation>%1 e aktarıldı</translation>
+    </message>
+    <message>
+        <location line="-10"/>
+        <source>Error Exporting Map</source>
+        <translation>Harita Dışa Aktarılamadı</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Error Exporting Tileset</source>
+        <translation>Desen Seti Dışa Aktarılamadı</translation>
+    </message>
+    <message>
+        <location line="+56"/>
+        <location line="+52"/>
+        <source>Tiled Projects (*.tiled-project)</source>
+        <translation>Tiled Projeleri (*.tiled-project)</translation>
+    </message>
+    <message>
+        <location line="-50"/>
+        <source>Open Project</source>
+        <translation>Proje Aç</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Error Opening Project</source>
+        <translation>Proje Açılamadı</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>An error occurred while opening the project.</source>
+        <translation>Proje açılırken bir hata oluştu.</translation>
+    </message>
+    <message>
+        <location line="+37"/>
+        <source>Save Project As</source>
+        <translation>Projeyi Farklı Kaydet</translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Error Saving Project</source>
+        <translation>Proje Kaydedilemedi</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>An error occurred while saving the project.</source>
+        <translation>Proje kaydedilirken bir hata oluştu.</translation>
+    </message>
+    <message>
+        <location line="+278"/>
+        <source>Add External Tileset(s)</source>
+        <translation>Harici Desen Seti Ekle</translation>
+    </message>
+    <message>
+        <location line="+115"/>
+        <source>Automatic Mapping Error</source>
+        <translation>Automap Hatası</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Automatic Mapping Warning</source>
+        <translation>Automap Uyarısı</translation>
+    </message>
+    <message>
+        <location line="+286"/>
+        <source>[*]%1%2</source>
+        <translation>[*]%1%2</translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>&amp;New</source>
+        <translation>&amp;Yeni</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Group</source>
+        <translation>&amp;Grup</translation>
+    </message>
+    <message>
+        <location line="+32"/>
         <source>Some export files already exist:</source>
-        <translation>Bazı aktarım dosyaları zaten mevcut:</translation>
+        <translation>Bazı dışa aktarım dosyaları zaten var:</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3584,91 +4212,33 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Dosyaların Üzerine Yaz</translation>
     </message>
     <message>
-        <location line="-73"/>
-        <source>[*]%1</source>
-        <translation>[*]%1</translation>
-    </message>
-    <message>
-        <location line="+28"/>
-        <source>&amp;Group</source>
-        <translation>&amp;Grup</translation>
-    </message>
-    <message>
-        <location line="+62"/>
-        <location line="+30"/>
+        <location line="+19"/>
+        <location line="+39"/>
         <source>Error Exporting Map!</source>
-        <translation>Harita Dışa Aktarma Hatası!</translation>
+        <translation>Harita Dışa Aktarılamadı!</translation>
     </message>
     <message>
-        <location line="+48"/>
+        <location line="+81"/>
         <source>Error Reloading Map</source>
-        <translation>Harita Yeniden Yükleme Hatası</translation>
+        <translation>Harita Yeniden Yüklenemedi</translation>
     </message>
     <message>
-        <location line="-399"/>
-        <source>Automatic Mapping Warning</source>
-        <translation>Otomatik Haritalama Uyarısı</translation>
-    </message>
-    <message>
-        <location line="-13"/>
-        <source>Automatic Mapping Error</source>
-        <translation>Otomatik Haritalama Hatası</translation>
-    </message>
-    <message>
-        <location line="-760"/>
-        <location line="+1033"/>
-        <source>Views and Toolbars</source>
-        <translation>Gürünümler ve Araç Çubukları</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/tilecollisiondock.cpp" line="+375"/>
+        <location filename="../src/tiled/tilecollisiondock.cpp" line="+349"/>
         <source>Tile Collision Editor</source>
         <translation>Desen Çarpışma Düzenleyicisi</translation>
     </message>
-    <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="-988"/>
-        <source>Alt+Left</source>
-        <translation>Alt+Left</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Alt+Right</source>
-        <translation>Alt+Right</translation>
-    </message>
-    <message>
-        <location line="+592"/>
-        <source>Add External Tileset(s)</source>
-        <translation>Harici Desen Seti Ekle</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="-261"/>
-        <location filename="../src/tiled/documentmanager.cpp" line="+19"/>
-        <location line="+20"/>
-        <source>untitled</source>
-        <translation>adsız</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Save Template</source>
-        <translation>Şablon Kaydet</translation>
-    </message>
-    <message>
-        <location line="+14"/>
-        <source>Error Saving Template</source>
-        <translation>Şablon Kaydetme Hatası</translation>
-    </message>
 </context>
 <context>
-    <name>Tiled::Internal::MapDocument</name>
+    <name>Tiled::MapDocument</name>
     <message>
-        <location filename="../src/tiled/mapdocument.cpp" line="+210"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="+235"/>
         <source>untitled.tmx</source>
-        <translation>isimsiz.tmx</translation>
+        <translation>adsız.tmx</translation>
     </message>
     <message>
-        <location line="+83"/>
+        <location line="+109"/>
         <source>Resize Map</source>
-        <translation>Haritayı Yeniden Boyutlandır</translation>
+        <translation>Haritayı Boyutlandır</translation>
     </message>
     <message>
         <location line="+75"/>
@@ -3678,11 +4248,14 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+27"/>
         <source>Rotate %n Object(s)</source>
-        <translation><numerusform>Nesneyi Döndür</numerusform>
-        <numerusform>%n Nesneyi Döndür</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Döndür</numerusform>
+            <numerusform>%n Nesneyi Döndür</numerusform>
+        </translation>
+    </message>
     <message>
         <location line="+36"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="+83"/>
         <source>Tile Layer %1</source>
         <translation>Desen Katmanı %1</translation>
     </message>
@@ -3705,39 +4278,47 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+2"/>
         <source>Group %n Layer(s)</source>
-        <translation><numerusform>Katmanı Grupla</numerusform>
-        <numerusform>%n Katmanı Grupla</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Katmanı Grupla</numerusform>
+            <numerusform>%n Katmanı Grupla</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+16"/>
         <source>Ungroup %n Layer(s)</source>
-        <translation><numerusform>Katmanı  Gruptan Çıkar</numerusform>
-        <numerusform>%n Katmanı  Gruptan Çıkar</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Katmanı Gruptan Çıkar</numerusform>
+            <numerusform>%n Katmanı Gruptan Çıkar</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+46"/>
         <source>Duplicate %n Layer(s)</source>
-        <translation><numerusform>Katmanı Kopyala</numerusform>
-        <numerusform>%n Katmanı Kopyala</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Katmanı Çoğalt</numerusform>
+            <numerusform>%n Katmanı Çoğalt</numerusform>
+        </translation>
+    </message>
     <message>
-        <location line="+27"/>
+        <location line="+28"/>
         <source>Copy of %1</source>
         <translation>%1 in kopyası</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+38"/>
         <source>Merge Layer Down</source>
-        <translation>Katmanı Alttakiyle Birleştir</translation>
+        <translation>Katmanı Altta Birleştir</translation>
     </message>
     <message numerus="yes">
-        <location line="+73"/>
+        <location line="+98"/>
         <source>Remove %n Layer(s)</source>
-        <translation><numerusform>Katmanı Kaldır</numerusform>
-        <numerusform>%n Katmanı Kaldır</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Katmanı Kaldır</numerusform>
+            <numerusform>%n Katmanı Kaldır</numerusform>
+        </translation>
+    </message>
     <message>
-        <location line="+305"/>
+        <location line="+345"/>
         <source>Tile</source>
         <translation>Desen</translation>
     </message>
@@ -3746,86 +4327,61 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Tileset Changes</source>
         <translation>Desen Seti Değişiklikleri</translation>
     </message>
+    <message>
+        <location line="+179"/>
+        <source>Failed to load tileset &apos;%1&apos;</source>
+        <translation>&apos;%1&apos; desen seti yüklenemedi</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Failed to load template &apos;%1&apos;</source>
+        <translation>&apos;%1&apos; şablonu yüklenemedi</translation>
+    </message>
     <message numerus="yes">
-        <location line="+229"/>
+        <location line="+78"/>
         <source>Duplicate %n Object(s)</source>
-        <translation><numerusform>Nesneyi Kopyala</numerusform>
-        <numerusform>%n Nesneyi Kopyala</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+13"/>
         <source>Remove %n Object(s)</source>
-        <translation><numerusform>Nesneyi Kaldır</numerusform>
-        <numerusform>%n Nesneyi Kaldır</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+11"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation><numerusform>Nesneyi Katmana Taşı</numerusform>
-        <numerusform>%n Nesneyi Katmana Taşı</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+38"/>
         <source>Move %n Object(s) Up</source>
-        <translation><numerusform>Nesneyi Yukarı Taşı</numerusform>
-        <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
+            <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
-        <translation><numerusform>Nesneyi Aşağı Taşı</numerusform>
-        <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
+            <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
+        </translation>
+    </message>
 </context>
 <context>
-    <name>Tiled::Internal::MapDocumentActionHandler</name>
+    <name>Tiled::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+68"/>
-        <source>Ctrl+Shift+A</source>
-        <translation>Ctrl+Shift+A</translation>
-    </message>
-    <message>
-        <location line="+31"/>
-        <source>Ctrl+Shift+D</source>
-        <translation>Ctrl+Shift+D</translation>
-    </message>
-    <message>
-        <location line="-9"/>
-        <source>Ctrl+J</source>
-        <translation>Ctrl+J</translation>
-    </message>
-    <message>
-        <location line="-24"/>
-        <source>Ctrl+I</source>
-        <translation>Ctrl+I</translation>
-    </message>
-    <message>
-        <location line="+27"/>
-        <source>Ctrl+Shift+J</source>
-        <translation>Ctrl+Shift+J</translation>
-    </message>
-    <message>
-        <location line="+23"/>
-        <source>Ctrl+Shift+Up</source>
-        <translation>Ctrl+Shift+Yukarı</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Ctrl+Shift+Down</source>
-        <translation>Ctrl+Shift+Aşağı</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Ctrl+Shift+H</source>
-        <translation>Ctrl+Shift+H</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Ctrl+Shift+L</source>
-        <translation>Ctrl+Shift+L</translation>
-    </message>
-    <message>
-        <location line="+59"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+241"/>
         <source>Select &amp;All</source>
         <translation>Hepsini &amp;Seç</translation>
     </message>
@@ -3837,7 +4393,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Select &amp;None</source>
-        <translation>Seçimi &amp;İptal Et</translation>
+        <translation>Seçimi &amp;Kaldır</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3847,7 +4403,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Autocrop</source>
-        <translation>Oto-kırp</translation>
+        <translation>Otomatik Kırp</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3867,37 +4423,47 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Group Layer</source>
-        <translation>Katmanı &amp;Gruba Kat</translation>
+        <translation>&amp;Grup Katmanı</translation>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+320"/>
+        <location line="+335"/>
         <source>Layer via Copy</source>
         <translation>Kopya ile Katman</translation>
     </message>
     <message>
-        <location line="-319"/>
-        <location line="+319"/>
+        <location line="-334"/>
+        <location line="+334"/>
         <source>Layer via Cut</source>
         <translation>Kes ile Katman</translation>
     </message>
     <message>
-        <location line="-313"/>
+        <location line="-333"/>
+        <source>&amp;Group Layers</source>
+        <translation>Katmanları Grupla</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Ungroup Layers</source>
+        <translation>Katmanları Gruptan Çıkar</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Duplicate Layers</source>
+        <translation>Katmanları Çoğalt</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Merge Layer Down</source>
+        <translation>Kat&amp;manı Altta Birleştir</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>&amp;Remove Layers</source>
         <translation>Katmanları Kaldır</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>R&amp;aise Layers</source>
-        <translation>Katmanları Yükselt</translation>
-    </message>
-    <message>
         <location line="+1"/>
-        <source>&amp;Lower Layers</source>
-        <translation>Katmanları Alçalt</translation>
-    </message>
-    <message>
-        <location line="-3"/>
         <source>Select Pre&amp;vious Layer</source>
         <translation>Ön&amp;ceki Katmanı Seç</translation>
     </message>
@@ -3907,17 +4473,42 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>So&amp;nraki Katmanı Seç</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Show/&amp;Hide all Other Layers</source>
-        <translation>Diğer Tüm Katm&amp;anları Göster/Gizle</translation>
+        <location line="+1"/>
+        <source>R&amp;aise Layers</source>
+        <translation>Katmanları Yükselt</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Lock/&amp;Unlock all Other Layers</source>
-        <translation>Tüm Diğer Katmanları Kilitle/Çöz</translation>
+        <source>&amp;Lower Layers</source>
+        <translation>Katmanları Alçalt</translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+1"/>
+        <source>Show/&amp;Hide Layers</source>
+        <translation>Katmanları Göster/&amp;Gizle</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Lock/&amp;Unlock Layers</source>
+        <translation>Katmanları Kilitle/&amp;Çöz</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show/&amp;Hide Other Layers</source>
+        <translation>Diğer Katmanları Göster/&amp;Gizle</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Lock/&amp;Unlock Other Layers</source>
+        <translation>Diğer Katmanları Kilitle/&amp;Çöz</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Layer &amp;Properties...</source>
+        <translation>Katman &amp;Özellikleri...</translation>
+    </message>
+    <message>
+        <location line="+37"/>
         <source>&amp;New</source>
         <translation>&amp;Yeni</translation>
     </message>
@@ -3932,80 +4523,49 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Kes</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+65"/>
         <source>Delete</source>
         <translation>Sil</translation>
     </message>
     <message numerus="yes">
-        <location line="+439"/>
+        <location line="+423"/>
         <source>Duplicate %n Object(s)</source>
-        <translation><numerusform>Nesneyi Kopyala</numerusform>
-        <numerusform>%n Nesneyi Kopyala</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
-        <translation><numerusform>Nesneyi Kaldır</numerusform>
-        <numerusform>%n Nesneyi Kaldır</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
+        </translation>
+    </message>
     <message>
         <location line="+2"/>
         <source>Duplicate Objects</source>
-        <translation>Nesneleri Kopyala</translation>
+        <translation>Nesneleri Çoğalt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Objects</source>
         <translation>Nesneleri Kaldır</translation>
     </message>
-    <message>
-        <location line="-680"/>
-        <source>Ctrl+PgUp</source>
-        <translation>Ctrl+PgUp</translation>
-    </message>
-    <message>
-        <location line="-3"/>
-        <source>Ctrl+PgDown</source>
-        <translation>Ctrl+PgDown</translation>
-    </message>
-    <message>
-        <location line="+92"/>
-        <source>&amp;Group Layers</source>
-        <translation>Katmanları Grupla</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&amp;Ungroup Layers</source>
-        <translation>Katmanları Gruptan Çıkar</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>&amp;Duplicate Layers</source>
-        <translation>Katmanları Kopyala</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&amp;Merge Layer Down</source>
-        <translation>Kat&amp;manı Alttakiyle Birleştir</translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>Layer &amp;Properties...</source>
-        <translation>Katman &amp;Özellikleri...</translation>
-    </message>
 </context>
 <context>
-    <name>Tiled::Internal::MapEditor</name>
+    <name>Tiled::MapEditor</name>
     <message>
-        <location filename="../src/tiled/mapeditor.cpp" line="+665"/>
+        <location filename="../src/tiled/mapeditor.cpp" line="+735"/>
         <source>Paste in Place</source>
         <translation>Yerinde Yapıştır</translation>
     </message>
     <message>
-        <location line="+187"/>
+        <location line="+198"/>
         <location line="+5"/>
         <source>Error Reading Tileset</source>
-        <translation>Desen Seti Okuma Hatası</translation>
+        <translation>Desen Seti Okunamadı</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4015,24 +4575,26 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+17"/>
         <source>Add %n Tileset(s)</source>
-        <translation><numerusform>Desen Seti Ekle</numerusform>
-        <numerusform>%n Desen Seti Ekle</numerusform>
-        </translation></message>
-    <message>
-        <location line="+57"/>
-        <source>Tool Options</source>
-        <translation>Araç Seçenekleri</translation>
+        <translation>
+            <numerusform>%n Desen Seti Ekle</numerusform>
+            <numerusform>%n Desen Seti Ekle</numerusform>
+        </translation>
     </message>
     <message>
-        <location line="-1"/>
+        <location line="+56"/>
         <source>Tools</source>
         <translation>Araçlar</translation>
     </message>
+    <message>
+        <location line="+1"/>
+        <source>Tool Options</source>
+        <translation>Araç Seçenekleri</translation>
+    </message>
 </context>
 <context>
-    <name>Tiled::Internal::MapObjectModel</name>
+    <name>Tiled::MapObjectModel</name>
     <message>
-        <location filename="../src/tiled/mapobjectmodel.cpp" line="+201"/>
+        <location filename="../src/tiled/mapobjectmodel.cpp" line="+240"/>
         <source>Change Object Name</source>
         <translation>Nesne Adını Değiştir</translation>
     </message>
@@ -4059,45 +4621,27 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Position</source>
-        <translation>Pozisyon</translation>
+        <translation>Konum</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::MapsDock</name>
+    <name>Tiled::MiniMapDock</name>
     <message>
-        <location filename="../src/tiled/mapsdock.cpp" line="+83"/>
-        <source>Browse...</source>
-        <translation>Gözat...</translation>
-    </message>
-    <message>
-        <location line="+22"/>
-        <source>Choose the Maps Folder</source>
-        <translation>Haritalar Klasörünü Seç</translation>
-    </message>
-    <message>
-        <location line="+41"/>
-        <source>Maps</source>
-        <translation>Haritalar</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::Internal::MiniMapDock</name>
-    <message>
-        <location filename="../src/tiled/minimapdock.cpp" line="+60"/>
+        <location filename="../src/tiled/minimapdock.cpp" line="+59"/>
         <source>Mini-map</source>
         <translation>Küçük-harita</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::NewMapDialog</name>
+    <name>Tiled::NewMapDialog</name>
     <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="-19"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="-95"/>
         <source>Save As...</source>
         <translation>Farklı Kaydet...</translation>
     </message>
     <message>
-        <location line="+21"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="-17"/>
+        <location line="+14"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-34"/>
         <source>Orthogonal</source>
         <translation>Ortogonal</translation>
     </message>
@@ -4111,37 +4655,32 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Isometric (Staggered)</source>
-        <translation>İzometrik (Dereceli)</translation>
+        <translation>İzometrik (Çapraz)</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Hexagonal (Staggered)</source>
-        <translation>Altıgen Şeklinde (Dereceli)</translation>
+        <translation>Altıgensel (Çapraz)</translation>
     </message>
     <message>
-        <location line="+69"/>
-        <source>Tile Layer 1</source>
-        <translation>Desen Katmanı 1</translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location line="+83"/>
         <source>Memory Usage Warning</source>
-        <translation>Hafıza Kullanım Uyarısı</translation>
+        <translation>Bellek Kullanım Uyarısı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tile layers for this map will consume %L1 GB of memory each. Not creating one by default.</source>
-        <translation>Bu harita için desen katmanlarının her biri %L1 GB bellek kullanıyor. Varsayılan olarak oluşturulmuyor.</translation>
+        <translation>Bu harita için desen katmanlarının her biri %L1 GB bellek kullanıyor. Öntanımlı olarak oluşturulmuyor.</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+33"/>
         <source>%1 x %2 pixels</source>
         <translation>%1 x %2 piksel</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::NewTilesetDialog</name>
+    <name>Tiled::NewTilesetDialog</name>
     <message>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-43"/>
         <location line="+7"/>
@@ -4151,12 +4690,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="-6"/>
         <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation>Desen seti resmi &apos;%1&apos; yüklenemedi.</translation>
+        <translation>&apos;%1&apos; desen seti resmi yüklenemedi.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>No tiles found in the tileset image when using the given tile size, margin and spacing!</source>
-        <translation>Bu desen seti resminde belirtilen desen ayarları ile uyumlu herhangi bir desen bulunamadı!</translation>
+        <translation>Desen seti resminde, belirtilen desen boyutu, kenar payı ve aralığı kullanılarak bir desen bulunamadı!</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -4176,71 +4715,118 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::NewsButton</name>
+    <name>Tiled::NewVersionButton</name>
     <message>
-        <location filename="../src/tiled/newsbutton.cpp" line="+45"/>
+        <location filename="../src/tiled/newversionbutton.cpp" line="+43"/>
+        <source>Up to date</source>
+        <translation>Güncel</translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Update Available</source>
+        <translation>Güncelleme Var</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>%1 %2 is available</source>
+        <translation>%1 %2 kullanılabilir</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Error checking for updates</source>
+        <translation>Güncellemeler Denetlenemedi</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::NewVersionDialog</name>
+    <message>
+        <location filename="../src/tiled/newversiondialog.ui" line="+14"/>
+        <source>Update Available</source>
+        <translation>Güncelleme Var</translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Download ↗</source>
+        <translation>İndir ↗</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Release Notes ↗</source>
+        <translation>Sürüm Notları ↗</translation>
+    </message>
+    <message>
+        <location line="+48"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Tiled 1.2.5&lt;/span&gt; is available!&lt;br/&gt;&lt;br/&gt;Current version is Tiled 1.2.3.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Tiled 1.2.5&lt;/span&gt; kullanılabilir!&lt;br/&gt;&lt;br/&gt;Şu anki sürüm Tiled 1.2.3.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/newversiondialog.cpp" line="+47"/>
+        <source>&lt;p&gt;&lt;b&gt;%1 %2&lt;/b&gt; is available!&lt;br/&gt;&lt;br/&gt;Current version is %1 %3.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;b&gt;%1 %2&lt;/b&gt; kullanılabilir!&lt;br/&gt;&lt;br/&gt;Şu anki sürüm %1 %3.&lt;/p&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::NewsButton</name>
+    <message>
+        <location filename="../src/tiled/newsbutton.cpp" line="+155"/>
+        <source>Devlog</source>
+        <translation>Geliştirme</translation>
+    </message>
+    <message>
+        <location line="+2"/>
         <source>News</source>
         <translation>Haberler</translation>
     </message>
     <message>
-        <location line="+69"/>
+        <location line="-22"/>
+        <source>View All Posts</source>
+        <translation>Tüm Mesajları Göster</translation>
+    </message>
+    <message>
+        <location line="+2"/>
         <source>News Archive</source>
         <translation>Haber Arşivi</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::NoEditorWidget</name>
+    <name>Tiled::ObjectRefEdit</name>
     <message>
-        <location filename="../src/tiled/noeditorwidget.ui" line="+19"/>
-        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation>&lt;font size=&quot;+2&quot;&gt;Açık Dosya Yok&lt;/font&gt;</translation>
+        <location filename="../src/tiled/objectrefedit.cpp" line="+54"/>
+        <source>Search Object</source>
+        <translation>Nesne Ara</translation>
     </message>
     <message>
-        <location line="+28"/>
-        <source>New Map...</source>
-        <translation>Yeni Harita...</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>New Tileset...</source>
-        <translation>Yeni Desen Seti...</translation>
-    </message>
-    <message>
-        <location line="+11"/>
-        <source>Open File...</source>
-        <translation>Dosya Aç...</translation>
+        <location line="+9"/>
+        <source>Select Object on Map</source>
+        <translation>Haritada Nesne Seç</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::ObjectSelectionTool</name>
+    <name>Tiled::ObjectSelectionTool</name>
     <message>
-        <location filename="../src/tiled/objectselectiontool.cpp" line="+317"/>
-        <location line="+416"/>
+        <location filename="../src/tiled/objectselectiontool.cpp" line="+316"/>
+        <location line="+413"/>
         <source>Select Objects</source>
         <translation>Nesneleri Seç</translation>
     </message>
-    <message>
-        <location line="-414"/>
-        <location line="+415"/>
-        <source>S</source>
-        <translation>S</translation>
-    </message>
     <message numerus="yes">
         <location line="-289"/>
-        <location line="+719"/>
+        <location line="+742"/>
         <source>Move %n Object(s)</source>
-        <translation><numerusform>Nesneyi Taşı</numerusform>
-        <numerusform>%n Nesneyi Taşı</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Taşı</numerusform>
+            <numerusform>%n Nesneyi Taşı</numerusform>
+        </translation>
+    </message>
     <message>
-        <location line="-593"/>
+        <location line="-615"/>
         <source>Unnamed object</source>
         <translation>Adsız nesne</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Instance of %1</source>
-        <translation>%1 Örneği</translation>
+        <translation>%1 in Örneği</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -4253,22 +4839,26 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>%1) %2</translation>
     </message>
     <message numerus="yes">
-        <location line="+673"/>
+        <location line="+707"/>
         <source>Rotate %n Object(s)</source>
-        <translation><numerusform>Nesneyi Döndür</numerusform>
-        <numerusform>%n Nesneyi Döndür</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Döndür</numerusform>
+            <numerusform>%n Nesneyi Döndür</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
-        <location line="+267"/>
+        <location line="+275"/>
         <source>Resize %n Object(s)</source>
-        <translation><numerusform>Nesneyi Yeniden Boyutlandır</numerusform>
-        <numerusform>%n Nesneyi Yeniden Boyutlandır</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Boyutlandır</numerusform>
+            <numerusform>%n Nesneyi Boyutlandır</numerusform>
+        </translation>
+    </message>
 </context>
 <context>
-    <name>Tiled::Internal::ObjectTypesEditor</name>
+    <name>Tiled::ObjectTypesEditor</name>
     <message>
-        <location filename="../src/tiled/objecttypeseditor.cpp" line="+226"/>
+        <location filename="../src/tiled/objecttypeseditor.cpp" line="-159"/>
         <source>Add Object Type</source>
         <translation>Nesne Türü Ekle</translation>
     </message>
@@ -4289,60 +4879,48 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+321"/>
+        <location line="+301"/>
         <source>Rename Property</source>
         <translation>Özelliği Yeniden Adlandır</translation>
     </message>
     <message>
-        <location line="-266"/>
-        <location line="+128"/>
+        <location line="-244"/>
+        <location line="+105"/>
         <source>Error Writing Object Types</source>
-        <translation>Nesne Türleri Yazma Hatası</translation>
+        <translation>Nesne Türleri Yazılamadı</translation>
     </message>
     <message>
-        <location line="-127"/>
+        <location line="-104"/>
         <source>Error writing to %1:
 %2</source>
-        <translation>%1 e yazılamadı: %2</translation>
+        <translation>%1 yazılamadı:
+%2</translation>
     </message>
     <message>
-        <location line="+40"/>
-        <source>Choose Object Types File</source>
-        <translation>Nesne Türü Dosyası Seç</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <location line="+33"/>
-        <location line="+44"/>
-        <source>Object Types files (*.xml *.json)</source>
-        <translation>Nesne Türleri dosyaları (*.xml *.json)</translation>
-    </message>
-    <message>
-        <location line="-62"/>
-        <location line="+44"/>
+        <location line="+80"/>
         <source>Error Reading Object Types</source>
-        <translation>Nesne Türleri Okuma Hatası</translation>
+        <translation>Nesne Türleri Okunamadı</translation>
     </message>
     <message>
-        <location line="-28"/>
+        <location line="-29"/>
         <source>Import Object Types</source>
         <translation>Nesne Türlerini İçe Aktar</translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+43"/>
         <source>Export Object Types</source>
         <translation>Nesne Türlerini Dışa Aktar</translation>
     </message>
     <message>
-        <location line="+146"/>
+        <location line="+147"/>
         <source>Name:</source>
         <translation>Ad:</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::ObjectTypesModel</name>
+    <name>Tiled::ObjectTypesModel</name>
     <message>
-        <location filename="../src/tiled/objecttypesmodel.cpp" line="+65"/>
+        <location filename="../src/tiled/objecttypesmodel.cpp" line="+64"/>
         <source>Type</source>
         <translation>Tür</translation>
     </message>
@@ -4353,24 +4931,29 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::ObjectsDock</name>
+    <name>Tiled::ObjectsDock</name>
     <message>
-        <location filename="../src/tiled/objectsdock.cpp" line="+174"/>
-        <source>Object Properties</source>
-        <translation>Nesne Özellikleri</translation>
-    </message>
-    <message>
-        <location line="-1"/>
-        <source>Add Object Layer</source>
-        <translation>Nesne Katmanı Ekle</translation>
-    </message>
-    <message>
-        <location line="-2"/>
+        <location filename="../src/tiled/objectsdock.cpp" line="+171"/>
         <source>Objects</source>
         <translation>Nesneler</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+2"/>
+        <source>Filter</source>
+        <translation>Filtrele</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Add Object Layer</source>
+        <translation>Nesne Katmanı Ekle</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Object Properties</source>
+        <translation>Nesne Özellikleri</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Move Objects Up</source>
         <translation>Nesneleri Yukarı Taşı</translation>
     </message>
@@ -4382,84 +4965,119 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation><numerusform>Nesneyi Katmana Taşı</numerusform>
-        <numerusform>%n Nesneyi Katmana Taşı</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+        </translation>
+    </message>
 </context>
 <context>
-    <name>Tiled::Internal::PatreonDialog</name>
+    <name>Tiled::PreferencesDialog</name>
     <message>
-        <location filename="../src/tiled/patreondialog.cpp" line="+49"/>
-        <source>Remind me next week</source>
-        <translation>Beni gelecek hafta anımsat</translation>
+        <location filename="../src/tiled/preferencesdialog.cpp" line="-161"/>
+        <location line="+158"/>
+        <source>System default</source>
+        <translation>Sistem öntanımlı</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::ProjectDock</name>
+    <message>
+        <location filename="../src/tiled/projectdock.cpp" line="+124"/>
+        <source>Choose Folder</source>
+        <translation>Klasör Seç</translation>
+    </message>
+    <message>
+        <location line="+66"/>
+        <source>Project</source>
+        <translation>Proje</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::ProjectModel</name>
+    <message>
+        <location filename="../src/tiled/projectmodel.cpp" line="+271"/>
+        <source>(Refreshing)</source>
+        <translation>(Yenileniyor)</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::ProjectPropertiesDialog</name>
+    <message>
+        <location filename="../src/tiled/projectpropertiesdialog.cpp" line="-18"/>
+        <source>Extensions</source>
+        <translation>Uzantılar</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Remind me next month</source>
-        <translation>Beni gelecek ay anımsat</translation>
+        <source>Directory</source>
+        <translation>Dizin</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Don&apos;t remind me</source>
-        <translation>Beni anımsatma</translation>
+        <location line="+6"/>
+        <source>Files</source>
+        <translation>Dosyalar</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Object types</source>
+        <translation>Nesne türleri</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Automapping rules</source>
+        <translation>Automap kuralları</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::ProjectView</name>
+    <message>
+        <location filename="../src/tiled/projectdock.cpp" line="+91"/>
+        <source>Select Template Instances</source>
+        <translation>Şablon Örneklerini Seç</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>&amp;Remove Folder from Project</source>
+        <translation>Klasörü Projeden &amp;Kaldır</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::PropertiesDock</name>
+    <message numerus="yes">
+        <location filename="../src/tiled/propertiesdock.cpp" line="+247"/>
+        <source>Paste Property/Properties</source>
+        <translation>
+            <numerusform>%n Özelliği Yapıştır</numerusform>
+            <numerusform>%n Özelliği Yapıştır</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location line="+50"/>
+        <source>Remove Property/Properties</source>
+        <translation>
+            <numerusform>%n Özelliği Kaldır</numerusform>
+            <numerusform>%n Özelliği Kaldır</numerusform>
+        </translation>
     </message>
     <message>
         <location line="+23"/>
-        <source>Thanks!</source>
-        <translation>Teşekkürler!</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Thanks a lot for your support! With your help Tiled will keep getting better.</source>
-        <translation>Desteğiniz için çok teşekkürler! Yardımınızla Tiled daha iyi olmayı sürdürecek.</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::Internal::PreferencesDialog</name>
-    <message>
-        <location filename="../src/tiled/preferencesdialog.cpp" line="-153"/>
-        <location line="+150"/>
-        <source>System default</source>
-        <translation>Sistem varsayılanı</translation>
-    </message>
-    <message>
-        <location line="-6"/>
-        <source>Last checked: %1</source>
-        <translation>Son denetleme: %1</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::Internal::PropertiesDock</name>
-    <message>
-        <location filename="../src/tiled/propertiesdock.cpp" line="+313"/>
         <source>Name:</source>
         <translation>Ad:</translation>
     </message>
     <message>
-        <location line="+178"/>
-        <source>Add Property</source>
-        <translation>Özellik Ekle</translation>
-    </message>
-    <message>
-        <location line="-176"/>
-        <location line="+178"/>
+        <location line="+2"/>
+        <location line="+208"/>
         <source>Rename Property</source>
         <translation>Özelliği Yeniden Adlandır</translation>
     </message>
-    <message numerus="yes">
-        <location line="-252"/>
-        <source>Paste Property/Properties</source>
-        <translation><numerusform>Özelliği Yapıştır</numerusform>
-        <numerusform>Özellikleri Yapıştır</numerusform>
-        </translation></message>
-    <message numerus="yes">
-        <location line="+50"/>
-        <source>Remove Property/Properties</source>
-        <translation><numerusform>Özelliği Kaldır</numerusform>
-        <numerusform>Özellikleri Kaldır</numerusform>
-        </translation></message>
     <message>
-        <location line="+65"/>
+        <location line="-149"/>
+        <source>Go to Object</source>
+        <translation>Nesneye Git</translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Cu&amp;t</source>
         <translation>Ke&amp;s</translation>
     </message>
@@ -4474,30 +5092,37 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>&amp;Yapıştır</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+5"/>
         <source>Convert To</source>
         <translation>Dönüştür</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+128"/>
         <source>Rename...</source>
         <translation>Adı Değiştir...</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-3"/>
         <source>Remove</source>
         <translation>Kaldır</translation>
     </message>
     <message numerus="yes">
-        <location line="+69"/>
+        <location line="-62"/>
         <source>Convert Property/Properties</source>
-        <translation><numerusform>Özelliği Dönüştür</numerusform>
-        <numerusform>Özellikleri Dönüştür</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Özelliği Dönüştür</numerusform>
+            <numerusform>%n Özelliği Dönüştür</numerusform>
+        </translation>
+    </message>
     <message>
         <location line="+58"/>
         <source>Properties</source>
         <translation>Özellikler</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Add Property</source>
+        <translation>Özellik Ekle</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4506,181 +5131,46 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::PropertyBrowser</name>
+    <name>Tiled::PropertyBrowser</name>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+16"/>
-        <source>Horizontal</source>
-        <translation>Yatay</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Vertical</source>
-        <translation>Dikey</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Top Down</source>
-        <translation>Yukarıdan Aşağıya</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Manual</source>
-        <translation>Manuel</translation>
-    </message>
-    <message>
-        <location line="-1090"/>
-        <source>Columns</source>
-        <translation>Sütunlar</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Source</source>
-        <translation>Kaynak</translation>
-    </message>
-    <message>
-        <location line="+37"/>
-        <source>Relative chance this tile will be picked</source>
-        <translation>Bu desenin görece seçilme şansı</translation>
-    </message>
-    <message>
-        <location line="+27"/>
-        <source>Wang Set</source>
-        <translation>Wang Seti</translation>
-    </message>
-    <message>
-        <location line="+347"/>
-        <source>Error Reading Tileset</source>
-        <translation>Desen Seti Okuma Hatası</translation>
-    </message>
-    <message>
-        <location line="+295"/>
-        <source>Custom Properties</source>
-        <translation>Özel Özellikler</translation>
-    </message>
-    <message>
-        <location line="-949"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-1398"/>
         <source>Map</source>
         <translation>Harita</translation>
     </message>
     <message>
-        <location line="+37"/>
-        <source>Tile Layer Format</source>
-        <translation>Desen Katman Biçimi</translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>Tile Render Order</source>
-        <translation>Desen Render Sırası</translation>
-    </message>
-    <message>
         <location line="+5"/>
-        <location line="+165"/>
-        <source>Background Color</source>
-        <translation>Arkaplan Rengi</translation>
-    </message>
-    <message>
-        <location line="-133"/>
-        <source>Object</source>
-        <translation>Nesne</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <location line="+45"/>
-        <location line="+78"/>
-        <location line="+91"/>
-        <location line="+8"/>
-        <location line="+21"/>
-        <source>Name</source>
-        <translation>Ad</translation>
-    </message>
-    <message>
-        <location line="-240"/>
-        <location line="+179"/>
-        <source>Type</source>
-        <translation>Tür</translation>
-    </message>
-    <message>
-        <location line="-175"/>
-        <location line="+39"/>
-        <source>Visible</source>
-        <translation>Görünürlük</translation>
-    </message>
-    <message>
-        <location line="-37"/>
-        <location line="+1199"/>
-        <source>X</source>
-        <translation>X</translation>
-    </message>
-    <message>
-        <location line="-1198"/>
-        <location line="+1199"/>
-        <source>Y</source>
-        <translation>Y</translation>
-    </message>
-    <message>
-        <location line="-986"/>
-        <source>Edge Count</source>
-        <translation>Kenar Sayısı</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Corner Count</source>
-        <translation>Köşe Sayısı</translation>
-    </message>
-    <message>
-        <location line="+16"/>
-        <source>Wang Color</source>
-        <translation>Wang Rengi</translation>
-    </message>
-    <message>
-        <location line="+40"/>
-        <source>Change Infinite Property</source>
-        <translation>Sonsuz Özelliğini Değiştir</translation>
-    </message>
-    <message>
-        <location line="+931"/>
-        <source>Odd</source>
-        <translation>Tek</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Even</source>
-        <translation>Çift</translation>
-    </message>
-    <message>
-        <location line="-1293"/>
-        <location line="+216"/>
+        <location line="+233"/>
         <source>Orientation</source>
         <translation>Yönlendirme</translation>
     </message>
     <message>
-        <location line="-211"/>
-        <location line="+92"/>
-        <location line="+170"/>
+        <location line="-228"/>
+        <location line="+100"/>
+        <location line="+179"/>
         <source>Width</source>
         <translation>En</translation>
     </message>
     <message>
-        <location line="-261"/>
-        <location line="+92"/>
-        <location line="+170"/>
+        <location line="-278"/>
+        <location line="+100"/>
+        <location line="+179"/>
         <source>Height</source>
         <translation>Boy</translation>
     </message>
     <message>
-        <location line="-261"/>
-        <location line="+232"/>
+        <location line="-278"/>
+        <location line="+249"/>
         <source>Tile Width</source>
         <translation>Desen Eni</translation>
     </message>
     <message>
-        <location line="-231"/>
-        <location line="+232"/>
+        <location line="-248"/>
+        <location line="+249"/>
         <source>Tile Height</source>
         <translation>Desen Boyu</translation>
     </message>
     <message>
-        <location line="-231"/>
+        <location line="-248"/>
         <source>Infinite</source>
         <translation>Sonsuz</translation>
     </message>
@@ -4692,39 +5182,114 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+5"/>
         <source>Stagger Axis</source>
-        <translatorcomment>Stagger?</translatorcomment>
-        <translation>Stagger Ekseni</translation>
+        <translation>Çapraz Ekseni</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Stagger Index</source>
-        <translatorcomment>Stagger?</translatorcomment>
-        <translation>Stagger İndisi</translation>
+        <translation>Çapraz İndeksi</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+8"/>
+        <source>Tile Layer Format</source>
+        <translation>Desen Katman Biçimi</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Output Chunk Width</source>
+        <translation>Çıktı Yığın Eni</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Output Chunk Height</source>
+        <translation>Çıktı Yığın Boyu</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Tile Render Order</source>
+        <translation>Desen İşleme Sırası</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Compression Level</source>
+        <translation>Sıkıştırma Seviyesi</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <location line="+174"/>
+        <source>Background Color</source>
+        <translation>Arkaplan Rengi</translation>
+    </message>
+    <message>
+        <location line="-142"/>
+        <source>Object</source>
+        <translation>Nesne</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <location line="+46"/>
+        <location line="+144"/>
+        <source>ID</source>
+        <translation>ID</translation>
+    </message>
+    <message>
+        <location line="-189"/>
         <source>Template</source>
         <translation>Şablon</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+1"/>
+        <location line="+45"/>
+        <location line="+79"/>
+        <location line="+99"/>
+        <location line="+8"/>
+        <location line="+21"/>
+        <source>Name</source>
+        <translation>Ad</translation>
+    </message>
+    <message>
+        <location line="-249"/>
+        <location line="+188"/>
+        <source>Type</source>
+        <translation>Tür</translation>
+    </message>
+    <message>
+        <location line="-184"/>
+        <location line="+39"/>
+        <source>Visible</source>
+        <translation>Görünür</translation>
+    </message>
+    <message>
+        <location line="-37"/>
+        <location line="+1284"/>
+        <source>X</source>
+        <translation>X</translation>
+    </message>
+    <message>
+        <location line="-1283"/>
+        <location line="+1284"/>
+        <source>Y</source>
+        <translation>Y</translation>
+    </message>
+    <message>
+        <location line="-1273"/>
         <source>Rotation</source>
-        <translation>Rotasyon</translation>
+        <translation>Döndürme</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Flipping</source>
-        <translation>Çevirmek</translation>
+        <translation>Çevirme</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Text</source>
-        <translation>Metin</translation>
+        <translation>Yazı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alignment</source>
-        <translation>Hizalama</translation>
+        <translation>Hiza</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4737,7 +5302,14 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Sözcük Kaydır</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+1"/>
+        <location line="+36"/>
+        <location line="+184"/>
+        <source>Color</source>
+        <translation>Renk</translation>
+    </message>
+    <message>
+        <location line="-209"/>
         <source>Locked</source>
         <translation>Kilitli</translation>
     </message>
@@ -4747,7 +5319,12 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Görünürlük</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
+        <source>Tint Color</source>
+        <translation>Renk Tonu</translation>
+    </message>
+    <message>
+        <location line="+2"/>
         <source>Horizontal Offset</source>
         <translation>Yatay Kaydırma</translation>
     </message>
@@ -4767,14 +5344,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Nesne Katmanı</translation>
     </message>
     <message>
-        <location line="-32"/>
-        <location line="+35"/>
-        <location line="+176"/>
-        <source>Color</source>
-        <translation>Renk</translation>
-    </message>
-    <message>
-        <location line="-171"/>
+        <location line="+8"/>
         <source>Drawing Order</source>
         <translation>Çizim Sırası</translation>
     </message>
@@ -4785,21 +5355,21 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <location line="+62"/>
+        <location line="+70"/>
         <location line="+48"/>
         <source>Image</source>
         <translation>Resim</translation>
     </message>
     <message>
-        <location line="-105"/>
-        <location line="+66"/>
+        <location line="-113"/>
+        <location line="+74"/>
         <source>Transparent Color</source>
-        <translation>Transparan Renk</translation>
+        <translation>Saydam Renk</translation>
     </message>
     <message>
-        <location line="-59"/>
+        <location line="-67"/>
         <source>Group Layer</source>
-        <translation>Katmanı Gruba Kat</translation>
+        <translation>Grup Katmanı</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -4812,7 +5382,12 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Dosya Adı</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+14"/>
+        <source>Object Alignment</source>
+        <translation>Nesne Hizası</translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>Drawing Offset</source>
         <translation>Çizim Kaydırma</translation>
     </message>
@@ -4827,7 +5402,17 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Izgara Boyu</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+4"/>
+        <source>Columns</source>
+        <translation>Sütunlar</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Source</source>
+        <translation>Kaynak</translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Margin</source>
         <translation>Kenar Payı</translation>
     </message>
@@ -4842,52 +5427,199 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Desen</translation>
     </message>
     <message>
-        <location line="-180"/>
-        <location line="+46"/>
-        <location line="+135"/>
-        <source>ID</source>
-        <translation>ID</translation>
-    </message>
-    <message>
-        <location line="+12"/>
+        <location line="+13"/>
         <location line="+60"/>
         <source>Probability</source>
         <translation>Olasılık</translation>
     </message>
     <message>
-        <location line="-38"/>
+        <location line="-57"/>
+        <source>Relative chance this tile will be picked</source>
+        <translation>Bu desenin görece seçilme şansı</translation>
+    </message>
+    <message>
+        <location line="+19"/>
         <source>Terrain</source>
         <translation>Zemin</translation>
     </message>
+    <message>
+        <location line="+8"/>
+        <source>Wang Set</source>
+        <translation>Wang Seti</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Edge Count</source>
+        <translation>Kenar Sayısı</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Corner Count</source>
+        <translation>Köşe Sayısı</translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Wang Color</source>
+        <translation>Wang Rengi</translation>
+    </message>
+    <message>
+        <location line="+40"/>
+        <source>Change Infinite Property</source>
+        <translation>Sonsuz Özelliğini Değiştir</translation>
+    </message>
+    <message>
+        <location line="+337"/>
+        <source>Error Reading Tileset</source>
+        <translation>Desen Seti Okunamadı</translation>
+    </message>
+    <message>
+        <location line="+306"/>
+        <source>Custom Properties</source>
+        <translation>Özel Özellikler</translation>
+    </message>
+    <message>
+        <location line="+365"/>
+        <source>Odd</source>
+        <translation>Tek</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Even</source>
+        <translation>Çift</translation>
+    </message>
+    <message>
+        <location line="+40"/>
+        <source>Unspecified</source>
+        <translation>Belirtilmemiş</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Top Left</source>
+        <translation>Sol Üst</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Top</source>
+        <translation>Üst</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Top Right</source>
+        <translation>Sağ Üst</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Left</source>
+        <translation>Sol</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Center</source>
+        <translation>Merkez</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Right</source>
+        <translation>Sağ</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Bottom Left</source>
+        <translation>Sol Alt</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Bottom</source>
+        <translation>Alt</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Bottom Right</source>
+        <translation>Sağ Alt</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Horizontal</source>
+        <translation>Yatay</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Vertical</source>
+        <translation>Dikey</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Top Down</source>
+        <translation>Yukarıdan Aşağıya</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Manual</source>
+        <translation>Elle</translation>
+    </message>
 </context>
 <context>
-    <name>Tiled::Internal::SelectSameTileTool</name>
+    <name>Tiled::ResetWidget</name>
+    <message>
+        <location filename="../src/tiled/varianteditorfactory.cpp" line="+66"/>
+        <source>Reset</source>
+        <translation>Sıfırla</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::ScriptManager</name>
+    <message>
+        <location filename="../src/tiled/scriptmanager.cpp" line="-100"/>
+        <source>Error opening file: %1</source>
+        <translation>Dosya açılamadı: %1</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Evaluating &apos;%1&apos;</source>
+        <translation>&apos;%1&apos; değerlendiriliyor</translation>
+    </message>
+    <message>
+        <location line="+59"/>
+        <source>Stack traceback:</source>
+        <translation>Yığın geri izleme:</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>At line %1: %2</source>
+        <translation>%1 satırında: %2</translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>Resetting script engine</source>
+        <translation>Betik motoru sıfırlanıyor</translation>
+    </message>
+    <message>
+        <location line="+41"/>
+        <source>Script files changed: %1</source>
+        <translation>Betik dosyaları değişti: %1</translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>Extensions paths changed: %1</source>
+        <translation>Uzantı yolları değişti: %1</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::SelectSameTileTool</name>
     <message>
         <location filename="../src/tiled/selectsametiletool.cpp" line="+31"/>
         <location line="+26"/>
         <source>Select Same Tile</source>
         <translation>Aynı Deseni Seç</translation>
     </message>
-    <message>
-        <location line="-23"/>
-        <location line="+24"/>
-        <source>S</source>
-        <translation>S</translation>
-    </message>
 </context>
 <context>
-    <name>Tiled::Internal::ShapeFillTool</name>
+    <name>Tiled::ShapeFillTool</name>
     <message>
-        <location filename="../src/tiled/shapefilltool.cpp" line="+40"/>
-        <location line="+77"/>
+        <location filename="../src/tiled/shapefilltool.cpp" line="+41"/>
+        <location line="+80"/>
         <source>Shape Fill Tool</source>
         <translation>Şekil Doldurma Aracı</translation>
-    </message>
-    <message>
-        <location line="-74"/>
-        <location line="+75"/>
-        <source>P</source>
-        <translation>P</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4897,28 +5629,111 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Circle Fill</source>
-        <translation>Daire Dolgu</translation>
+        <translation>Çember Dolgu</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::StampActions</name>
+    <name>Tiled::ShortcutEditor</name>
     <message>
-        <location filename="../src/tiled/stampactions.cpp" line="+48"/>
-        <location line="+25"/>
-        <source>Random Mode</source>
-        <translation>Rastgele Mod</translation>
+        <location filename="../src/tiled/shortcutsettingspage.cpp" line="+103"/>
+        <source>Remove shortcut</source>
+        <translation>Kısayolu kaldır</translation>
     </message>
     <message>
-        <location line="-24"/>
-        <location line="+31"/>
-        <source>D</source>
-        <translation>D</translation>
+        <location line="+7"/>
+        <source>Reset shortcut to default</source>
+        <translation>Kısayalu öntanımlıya sıfırla</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::ShortcutSettingsPage</name>
+    <message>
+        <location filename="../src/tiled/shortcutsettingspage.ui" line="+17"/>
+        <source>Keyboard Shortcuts</source>
+        <translation>Klavye Kısayolları</translation>
     </message>
     <message>
-        <location line="-26"/>
+        <location line="+11"/>
+        <source>Filter</source>
+        <translation>Filtrele</translation>
+    </message>
+    <message>
+        <location line="+41"/>
+        <source>&amp;Import...</source>
+        <translation>&amp;İçe Aktar...</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Potential conflicts!&lt;/span&gt; &lt;a href=&quot;#show-conflicts&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Set Filter&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Olası çakışma!&lt;/span&gt; &lt;a href=&quot;#show-conflicts&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Filtre Ayarla&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
         <location line="+20"/>
+        <source>&amp;Export...</source>
+        <translation>&amp;Dışa Aktar...</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>&amp;Reset All</source>
+        <translation>&amp;Hepsini sıfırla</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/shortcutsettingspage.cpp" line="+275"/>
+        <location line="+52"/>
+        <source>Keyboard Mapping Scheme (*.kms)</source>
+        <translation>Klavye Eşleme Şeması (*.kms)</translation>
+    </message>
+    <message>
+        <location line="-51"/>
+        <source>Import Shortcuts</source>
+        <translation>Kısayolları İçe Aktar</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <location line="+9"/>
+        <source>Error Loading Shortcuts</source>
+        <translation>Kısayollar Yüklenemedi</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Invalid shortcuts file.</source>
+        <translation>Geçersiz kısayollar dosyası.</translation>
+    </message>
+    <message>
+        <location line="+33"/>
+        <source>Export Shortcuts</source>
+        <translation>Kısayolları Dışa Aktar</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <location line="+41"/>
+        <source>Error Saving Shortcuts</source>
+        <translation>Kısayollar Kaydedilemedi</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::StampActions</name>
+    <message>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="-120"/>
+        <location filename="../src/tiled/stampactions.cpp" line="+87"/>
+        <source>Rotate Left</source>
+        <translation>Sola Döndür</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location filename="../src/tiled/stampactions.cpp" line="+1"/>
+        <source>Rotate Right</source>
+        <translation>Sağa Döndür</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/stampactions.cpp" line="-5"/>
+        <source>Random Mode</source>
+        <translation>Rastgele Kipi</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Wang Fill Mode</source>
-        <translation>Wang Dolgu Modu</translation>
+        <translation>Wang Dolgu Kipi</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4930,62 +5745,28 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Flip Vertically</source>
         <translation>Dikey Çevir</translation>
     </message>
-    <message>
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="-125"/>
-        <location filename="../src/tiled/stampactions.cpp" line="+1"/>
-        <source>Rotate Left</source>
-        <translation>Sola Döndür</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <location filename="../src/tiled/stampactions.cpp" line="+1"/>
-        <source>Rotate Right</source>
-        <translation>Sağa Döndür</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <location filename="../src/tiled/stampactions.cpp" line="+3"/>
-        <source>X</source>
-        <translation>X</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <location filename="../src/tiled/stampactions.cpp" line="+1"/>
-        <source>Y</source>
-        <translation>Y</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <location filename="../src/tiled/stampactions.cpp" line="+1"/>
-        <source>Shift+Z</source>
-        <translation>Shift+Z</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <location filename="../src/tiled/stampactions.cpp" line="+1"/>
-        <source>Z</source>
-        <translation>Z</translation>
-    </message>
 </context>
 <context>
-    <name>Tiled::Internal::StampBrush</name>
+    <name>Tiled::StampBrush</name>
     <message>
         <location filename="../src/tiled/stampbrush.cpp" line="+49"/>
-        <location line="+158"/>
+        <location line="+162"/>
         <source>Stamp Brush</source>
         <translation>Damga Fırça</translation>
     </message>
+</context>
+<context>
+    <name>Tiled::TemplateManager</name>
     <message>
-        <location line="-155"/>
-        <location line="+156"/>
-        <source>B</source>
-        <translation>B</translation>
+        <location filename="../src/libtiled/templatemanager.cpp" line="+99"/>
+        <source>Unable to reload template file: %1</source>
+        <translation>Şablon dosyası yeniden yükleyemiyor: %1</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::TemplatesDock</name>
+    <name>Tiled::TemplatesDock</name>
     <message>
-        <location filename="../src/tiled/templatesdock.cpp" line="+293"/>
+        <location filename="../src/tiled/templatesdock.cpp" line="+289"/>
         <source>Open Tileset</source>
         <translation>Desen Seti Aç</translation>
     </message>
@@ -5001,19 +5782,9 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Desen Seti Bul</translation>
     </message>
     <message>
-        <location line="+49"/>
-        <source>Choose the Templates Folder</source>
-        <translation>Şablonlar Klasörünü Seçin</translation>
-    </message>
-    <message>
-        <location line="+24"/>
-        <source>Templates</source>
-        <translation>Şablonlar</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Choose Templates Directory</source>
-        <translation>Şablonlar Dizini Seçin</translation>
+        <location line="+63"/>
+        <source>Template Editor</source>
+        <translation>Şablon Düzenleyici</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -5028,36 +5799,22 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+10"/>
         <source>Error Reading Tileset</source>
-        <translation>Desen Seti Okuma Hatası</translation>
+        <translation>Desen Seti Okunamadı</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::TemplatesView</name>
-    <message>
-        <location line="+90"/>
-        <source>Select All Instances</source>
-        <translation>Tüm Örnekleri Seç</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::Internal::TerrainBrush</name>
+    <name>Tiled::TerrainBrush</name>
     <message>
         <location filename="../src/tiled/terrainbrush.cpp" line="+48"/>
-        <location line="+120"/>
+        <location line="+122"/>
         <source>Terrain Brush</source>
         <translation>Zemin Fırçası</translation>
     </message>
-    <message>
-        <location line="-117"/>
-        <location line="+118"/>
-        <source>T</source>
-        <translation>T</translation>
-    </message>
 </context>
 <context>
-    <name>Tiled::Internal::TerrainDock</name>
+    <name>Tiled::TerrainDock</name>
     <message>
-        <location filename="../src/tiled/terraindock.cpp" line="+338"/>
+        <location filename="../src/tiled/terraindock.cpp" line="+335"/>
         <source>Terrains</source>
         <translation>Zeminler</translation>
     </message>
@@ -5088,33 +5845,45 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::TerrainView</name>
+    <name>Tiled::TerrainView</name>
     <message>
-        <location filename="../src/tiled/terrainview.cpp" line="+112"/>
+        <location filename="../src/tiled/terrainview.cpp" line="+111"/>
         <source>Terrain &amp;Properties...</source>
         <translation>Zemin &amp;Özellikleri...</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::TextPropertyEdit</name>
+    <name>Tiled::TileAnimationEditor</name>
     <message>
-        <location filename="../src/tiled/textpropertyedit.cpp" line="+121"/>
-        <source>...</source>
-        <translation>...</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::Internal::TileAnimationEditor</name>
-    <message>
-        <location filename="../src/tiled/tileanimationeditor.cpp" line="-58"/>
+        <location filename="../src/tiled/tileanimationeditor.cpp" line="-49"/>
         <source>Delete Frames</source>
         <translation>Çerçeveleri Sil</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::TileCollisionDock</name>
+    <name>Tiled::TileCollisionDock</name>
     <message>
-        <location filename="../src/tiled/tilecollisiondock.cpp" line="-32"/>
+        <location filename="../src/tiled/tilecollisiondock.cpp" line="-515"/>
+        <source>Hidden</source>
+        <translation>Gizli</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Show Right</source>
+        <translation>Sağı Göster</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Show Bottom</source>
+        <translation>Altı Göster</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Objects list</source>
+        <translation>Nesneler listesi</translation>
+    </message>
+    <message>
+        <location line="+380"/>
         <source>Delete</source>
         <translation>Sil</translation>
     </message>
@@ -5123,31 +5892,50 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Cut</source>
         <translation>Kes</translation>
     </message>
+    <message>
+        <location line="+108"/>
+        <source>Duplicate Objects</source>
+        <translation>Nesneleri Çoğalt</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Remove Objects</source>
+        <translation>Nesneleri Kaldır</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Move Objects Up</source>
+        <translation>Nesneleri Yukarı Taşı</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Move Objects Down</source>
+        <translation>Nesneleri Aşağı Taşı</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Object Properties</source>
+        <translation>Nesne Özellikleri</translation>
+    </message>
 </context>
 <context>
-    <name>Tiled::Internal::TileSelectionTool</name>
+    <name>Tiled::TileSelectionTool</name>
     <message>
         <location filename="../src/tiled/tileselectiontool.cpp" line="+36"/>
-        <location line="+106"/>
+        <location line="+111"/>
         <source>Rectangular Select</source>
-        <translation>Karesel Seçim</translation>
+        <translation>Dikdörtgensel Seçim</translation>
     </message>
     <message>
-        <location line="-103"/>
-        <location line="+104"/>
-        <source>R</source>
-        <translation>R</translation>
-    </message>
-    <message>
-        <location line="-81"/>
+        <location line="-85"/>
         <source>%1, %2 - Rectangle: (%3 x %4)</source>
-        <translation>%1, %2 - Kare: (%3 x %4)</translation>
+        <translation>%1, %2 - Dikdörtgen: (%3 x %4)</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::TileStampModel</name>
+    <name>Tiled::TileStampModel</name>
     <message>
-        <location filename="../src/tiled/tilestampmodel.cpp" line="+78"/>
+        <location filename="../src/tiled/tilestampmodel.cpp" line="+77"/>
         <source>Stamp</source>
         <translation>Damga</translation>
     </message>
@@ -5158,9 +5946,9 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::TileStampsDock</name>
+    <name>Tiled::TileStampsDock</name>
     <message>
-        <location filename="../src/tiled/tilestampsdock.cpp" line="+196"/>
+        <location filename="../src/tiled/tilestampsdock.cpp" line="+200"/>
         <source>Delete Stamp</source>
         <translation>Damgayı Sil</translation>
     </message>
@@ -5170,7 +5958,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Çeşitliliği Kaldır</translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+68"/>
         <source>Choose the Stamps Folder</source>
         <translation>Damgalar Klasörünü Seç</translation>
     </message>
@@ -5192,7 +5980,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Duplicate Stamp</source>
-        <translation>Damgayı Kopyala</translation>
+        <translation>Damgayı Çoğalt</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5211,24 +5999,40 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::TilesetDock</name>
+    <name>Tiled::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+578"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-289"/>
+        <source>All Files (*)</source>
+        <translation>Tüm Dosyalar (*)</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <location line="+128"/>
+        <source>Replace Tileset</source>
+        <translation>Desen Setini Değiştir</translation>
+    </message>
+    <message>
+        <location line="-113"/>
+        <source>Error Reading Tileset</source>
+        <translation>Desen Seti Okunamadı</translation>
+    </message>
+    <message>
+        <location line="+38"/>
         <source>Remove Tileset</source>
         <translation>Desen Setini Kaldır</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation>Desen seti &quot;%1&quot; harita tarafından hala kullanılmakta!</translation>
+        <translation>&quot;%1&quot; desen seti, harita tarafından hala kullanılmakta!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Remove this tileset and all references to the tiles in this tileset?</source>
-        <translation>Bu desen seti ve desen setindeki desenlere olan tüm başvurular kaldırılsın mı?</translation>
+        <translation>Bu desen seti ve içindeki desenlere olan tüm başvurular kaldırılsın mı?</translation>
     </message>
     <message>
-        <location line="+65"/>
+        <location line="+64"/>
         <source>Tilesets</source>
         <translation>Desen Setleri</translation>
     </message>
@@ -5243,14 +6047,14 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Desen Setini İçe &amp;Göm</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <source>Edit Tile&amp;set</source>
-        <translation>Desen &amp;Setini Düzenle</translation>
-    </message>
-    <message>
-        <location line="-1"/>
+        <location line="+1"/>
         <source>&amp;Export Tileset As...</source>
         <translation>Desen Setini Farklı &amp;Dışa Aktar...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Edit Tile&amp;set</source>
+        <translation>Desen &amp;Setini Düzenle</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5258,61 +6062,91 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Desen Setini &amp;Kaldır</translation>
     </message>
     <message>
-        <location line="+193"/>
-        <source>Error saving tileset: %1</source>
-        <translation>Desen seti kaydedilirken hata oluştu: %1</translation>
+        <location line="+1"/>
+        <source>Select Next Tileset</source>
+        <translation>Sonraki Desen Setini Seçin</translation>
     </message>
     <message>
-        <location line="-18"/>
+        <location line="+1"/>
+        <source>Select Previous Tileset</source>
+        <translation>Önceki Desen Setini Seç</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Dynamically Wrap Tiles</source>
+        <translation>Desenleri Dinamik Kaydır</translation>
+    </message>
+    <message>
+        <location line="+248"/>
         <location line="+17"/>
         <source>Export Tileset</source>
         <translation>Desen Setini Dışa Aktar</translation>
     </message>
-</context>
-<context>
-    <name>Tiled::Internal::TilesetDocument</name>
     <message>
-        <location filename="../src/tiled/tilesetdocument.cpp" line="+200"/>
-        <source>untitled.tsx</source>
-        <translation>isimsiz.tsx</translation>
+        <location line="+1"/>
+        <source>Error saving tileset: %1</source>
+        <translation>Desen seti kaydedilemedi: %1</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::TilesetEditor</name>
+    <name>Tiled::TilesetDocument</name>
     <message>
-        <location filename="../src/tiled/tileseteditor.cpp" line="-406"/>
-        <location line="+400"/>
+        <location filename="../src/tiled/tilesetdocument.cpp" line="+222"/>
+        <source>untitled.tsx</source>
+        <translation>adsız.tsx</translation>
+    </message>
+    <message>
+        <location line="+203"/>
+        <source>Failed to load tileset image &apos;%1&apos;</source>
+        <translation>&apos;%1&apos; desen seti resmi yüklenemedi</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Failed to load tile image &apos;%1&apos;</source>
+        <translation>&apos;%1&apos; desen resmi yüklenemedi</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::TilesetEditor</name>
+    <message>
+        <location filename="../src/tiled/tileseteditor.cpp" line="+184"/>
+        <location line="+500"/>
         <source>Tileset</source>
         <translation>Desen Seti</translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+22"/>
+        <location line="+23"/>
         <location line="+31"/>
         <location line="+19"/>
         <source>Add Tiles</source>
         <translation>Desenleri Ekle</translation>
     </message>
     <message>
-        <location line="-71"/>
-        <location line="+189"/>
+        <location line="-72"/>
+        <location line="+190"/>
         <source>Remove Tiles</source>
         <translation>Desenleri Kaldır</translation>
     </message>
     <message>
-        <location line="-188"/>
+        <location line="-189"/>
         <source>Tile Animation Editor</source>
-        <translation>Desen Animasyon Editörü</translation>
+        <translation>Desen Animasyon Düzenleyici</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Dynamically Wrap Tiles</source>
+        <translation>Desenleri Dinamik Kaydır</translation>
     </message>
     <message>
         <location line="+49"/>
         <source>Apply this action to all tiles</source>
-        <translation>Bu etkiyi tüm desenlere uygula</translation>
+        <translation>Bu eylemi tüm desenlere uygula</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Tile &quot;%1&quot; already exists in the tileset!</source>
-        <translation>Desen &quot;%1&quot; desen setinde zaten var!</translation>
+        <translation>&quot;%1&quot; deseni, desen setinde zaten var!</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -5346,17 +6180,17 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::TilesetParametersEdit</name>
+    <name>Tiled::TilesetParametersEdit</name>
     <message>
-        <location filename="../src/tiled/tilesetparametersedit.cpp" line="+48"/>
+        <location filename="../src/tiled/tilesetparametersedit.cpp" line="+47"/>
         <source>Edit...</source>
         <translation>Düzenle...</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::TilesetView</name>
+    <name>Tiled::TilesetView</name>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+1210"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+1316"/>
         <source>Add Terrain Type</source>
         <translation>Zemin Türü Ekle</translation>
     </message>
@@ -5392,15 +6226,15 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::TmxMapFormat</name>
+    <name>Tiled::TmxMapFormat</name>
     <message>
-        <location filename="../src/tiled/tmxmapformat.h" line="+66"/>
+        <location filename="../src/tiled/tmxmapformat.h" line="+65"/>
         <source>Tiled map files (*.tmx *.xml)</source>
         <translation>Tiled harita dosyaları (*.tmx *.xml)</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::TsxTilesetFormat</name>
+    <name>Tiled::TsxTilesetFormat</name>
     <message>
         <location line="+28"/>
         <source>Tiled tileset files (*.tsx *.xml)</source>
@@ -5408,27 +6242,57 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::UndoDock</name>
+    <name>Tiled::UndoDock</name>
     <message>
-        <location filename="../src/tiled/undodock.cpp" line="+69"/>
+        <location filename="../src/tiled/undodock.cpp" line="+68"/>
         <source>History</source>
         <translation>Geçmiş</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&lt;empty&gt;</source>
-        <translation>&lt;boş&gt;</translation>
+        <translation>&lt;empty&gt;</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::VariantPropertyManager</name>
+    <name>Tiled::VariantPropertyManager</name>
     <message>
-        <location filename="../src/tiled/variantpropertymanager.cpp" line="+169"/>
+        <location filename="../src/tiled/variantpropertymanager.cpp" line="+163"/>
+        <source>%1: </source>
+        <translation>%1: </translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source> (%1)</source>
+        <translation> (%1)</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>(%1)</source>
+        <translation>(%1)</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Unnamed object</source>
+        <translation>Adsız nesne</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Unset</source>
+        <translation>Ayarsız</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>%1: Object not found</source>
+        <translation>%1: Nesne bulunamadı</translation>
+    </message>
+    <message>
+        <location line="+25"/>
         <source>%1, %2</source>
         <translation>%1, %2</translation>
     </message>
     <message>
-        <location line="+126"/>
+        <location line="+139"/>
         <source>Horizontal</source>
         <translation>Yatay</translation>
     </message>
@@ -5438,7 +6302,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Dikey</translation>
     </message>
     <message>
-        <location line="+114"/>
+        <location line="+115"/>
         <location line="+6"/>
         <source>Left</source>
         <translation>Sol</translation>
@@ -5472,29 +6336,23 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::WangBrush</name>
+    <name>Tiled::WangBrush</name>
     <message>
-        <location filename="../src/tiled/wangbrush.cpp" line="+108"/>
-        <location line="+65"/>
+        <location filename="../src/tiled/wangbrush.cpp" line="+112"/>
+        <location line="+68"/>
         <source>Wang Brush</source>
         <translation>Wang Fırçası</translation>
     </message>
     <message>
-        <location line="-62"/>
-        <location line="+63"/>
-        <source>G</source>
-        <translation>G</translation>
-    </message>
-    <message>
-        <location line="+152"/>
+        <location line="+149"/>
         <source>Missing Wang tile transition</source>
         <translation>Eksik Wang desen geçişi</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::WangColorModel</name>
+    <name>Tiled::WangColorModel</name>
     <message>
-        <location filename="../src/tiled/wangcolormodel.cpp" line="+144"/>
+        <location filename="../src/tiled/wangcolormodel.cpp" line="+143"/>
         <source>Edge Colors</source>
         <translation>Kenar Renkleri</translation>
     </message>
@@ -5505,20 +6363,20 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::WangColorView</name>
+    <name>Tiled::WangColorView</name>
     <message>
-        <location filename="../src/tiled/wangcolorview.cpp" line="+184"/>
+        <location filename="../src/tiled/wangcolorview.cpp" line="+183"/>
         <source>Pick Custom Color</source>
-        <translation>Özel renk seç</translation>
+        <translation>Özel Renk Seç</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::WangDock</name>
+    <name>Tiled::WangDock</name>
     <message>
-        <location filename="../src/tiled/wangdock.cpp" line="+227"/>
+        <location filename="../src/tiled/wangdock.cpp" line="+226"/>
         <location line="+327"/>
         <source>Patterns</source>
-        <translation>Desenleri</translation>
+        <translation>Örüntü</translation>
     </message>
     <message>
         <location line="-326"/>
@@ -5563,34 +6421,91 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::WangSetView</name>
+    <name>Tiled::WangSetView</name>
     <message>
-        <location filename="../src/tiled/wangsetview.cpp" line="+105"/>
+        <location filename="../src/tiled/wangsetview.cpp" line="+104"/>
         <source>Wang Set &amp;Properties...</source>
         <translation>Wang Seti &amp;Özellikleri...</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::XmlObjectTemplateFormat</name>
+    <name>Tiled::WorldDocument</name>
     <message>
-        <location filename="../src/tiled/tmxmapformat.h" line="+27"/>
-        <source>Tiled template files (*.tx)</source>
-        <translation>Tiled şablon dosyaları (* .tx)</translation>
+        <location filename="../src/tiled/worlddocument.cpp" line="+43"/>
+        <source>untitled.world</source>
+        <translation>adsız.world</translation>
     </message>
 </context>
 <context>
     <name>Tiled::WorldManager</name>
     <message>
-        <location filename="../src/libtiled/worldmanager.cpp" line="+109"/>
-        <source>Could not open file for reading.</source>
-        <translation>Dosya okumak için açılamadı.</translation>
+        <location filename="../src/libtiled/worldmanager.cpp" line="+8"/>
+        <source>JSON parse error at offset %1:
+%2.</source>
+        <translation>%1 de JSON ayrıştırma hatası:
+%2.</translation>
+    </message>
+    <message>
+        <location line="+37"/>
+        <source>World: Invalid number of captures in &apos;%1&apos;, 2 captures expected</source>
+        <translation>Dünya: &apos;%1&apos; içinde geçersiz sayıda yakalama, 2 yakalama bekleniyordu</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>World: Invalid multiplierX: %1</source>
+        <translation>Dünya: Geçersiz multiplierX: %1</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>World: Invalid multiplierY: %1</source>
+        <translation>Dünya: Geçersiz multiplierY: %1</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>World: Invalid mapWidth: %1</source>
+        <translation>Dünya: Geçersiz mapWidth: %1</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>World: Invalid mapHeight: %1</source>
+        <translation>Dünya: Geçersiz mapHeight: %1</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>JSON parse error at offset %1:
-%2.</source>
-        <translation>%1 üstünde JSON işleme hatası:
-%2.</translation>
+        <source>World contained no valid maps or patterns: %1</source>
+        <translation>Dünya geçerli harita veya örüntü içermiyor: %1</translation>
+    </message>
+    <message>
+        <location line="+89"/>
+        <source>World doesn&apos;t support saving</source>
+        <translation>Dünya kaydedilmeyi desteklemiyor</translation>
+    </message>
+    <message>
+        <location line="+32"/>
+        <source>Could not open file for reading.</source>
+        <translation>Dosya okumak için açılamadı.</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::WorldMoveMapTool</name>
+    <message>
+        <location filename="../src/tiled/worldmovemaptool.cpp" line="+84"/>
+        <location line="+167"/>
+        <source>World Tool</source>
+        <translation>Dünya Aracı</translation>
+    </message>
+    <message>
+        <location line="-46"/>
+        <source>Move map to %1, %2 (offset: %3, %4)</source>
+        <translation>Haritayı %1, %2 (kaydırma: %3, %4) konumuna taşı</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::XmlObjectTemplateFormat</name>
+    <message>
+        <location filename="../src/tiled/tmxmapformat.h" line="+27"/>
+        <source>Tiled template files (*.tx)</source>
+        <translation>Tiled şablon dosyaları (* .tx)</translation>
     </message>
 </context>
 <context>
@@ -5604,7 +6519,7 @@ Lütfen belirli bir biçim seçin.</translation>
 <context>
     <name>Undo Commands</name>
     <message>
-        <location filename="../src/tiled/addremovelayer.cpp" line="+66"/>
+        <location filename="../src/tiled/addremovelayer.cpp" line="+65"/>
         <source>Add Layer</source>
         <translation>Katman Ekle</translation>
     </message>
@@ -5614,7 +6529,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Katmanı Kaldır</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremovemapobject.cpp" line="+84"/>
+        <location filename="../src/tiled/addremovemapobject.cpp" line="+88"/>
         <source>Add Object</source>
         <translation>Nesne Ekle</translation>
     </message>
@@ -5624,7 +6539,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Nesneleri Ekle</translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+51"/>
         <source>Remove Object</source>
         <translation>Nesneyi Kaldır</translation>
     </message>
@@ -5634,7 +6549,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Nesneleri Kaldır</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremovetileset.cpp" line="+62"/>
+        <location filename="../src/tiled/addremovetileset.cpp" line="+61"/>
         <source>Add Tileset</source>
         <translation>Desen Seti Ekle</translation>
     </message>
@@ -5649,12 +6564,12 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Nesneyi Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changeobjectgroupproperties.cpp" line="+39"/>
+        <location filename="../src/tiled/changeobjectgroupproperties.cpp" line="+36"/>
         <source>Change Object Layer Properties</source>
         <translation>Nesne Katmanı Özelliklerini Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changeproperties.cpp" line="+41"/>
+        <location filename="../src/tiled/changeproperties.cpp" line="+40"/>
         <source>Change Properties</source>
         <translation>Özellikleri Değiştir</translation>
     </message>
@@ -5689,23 +6604,22 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Seçimi Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/erasetiles.cpp" line="+37"/>
+        <location filename="../src/tiled/erasetiles.cpp" line="+36"/>
         <source>Erase</source>
         <translation>Sil</translation>
     </message>
     <message>
-        <location filename="../src/tiled/bucketfilltool.cpp" line="-17"/>
+        <location filename="../src/tiled/bucketfilltool.cpp" line="-16"/>
         <source>Fill Area</source>
         <translation>Bölgeyi Doldur</translation>
     </message>
     <message>
-        <location filename="../src/tiled/movemapobject.cpp" line="+42"/>
-        <location line="+14"/>
+        <location filename="../src/tiled/movemapobject.cpp" line="+54"/>
         <source>Move Object</source>
         <translation>Nesneyi Taşı</translation>
     </message>
     <message>
-        <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+42"/>
+        <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+33"/>
         <source>Move Object to Layer</source>
         <translation>Nesneyi Katmana Taşı</translation>
     </message>
@@ -5715,33 +6629,32 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Katman Kaydır</translation>
     </message>
     <message>
-        <location filename="../src/tiled/painttilelayer.cpp" line="+69"/>
+        <location filename="../src/tiled/painttilelayer.cpp" line="+67"/>
         <source>Paint</source>
         <translation>Boya</translation>
     </message>
     <message>
-        <location filename="../src/tiled/renamelayer.cpp" line="+40"/>
+        <location filename="../src/tiled/changelayer.cpp" line="+39"/>
         <source>Rename Layer</source>
         <translation>Katmanı Yeniden Adlandır</translation>
     </message>
     <message>
-        <location filename="../src/tiled/resizetilelayer.cpp" line="+38"/>
+        <location filename="../src/tiled/resizetilelayer.cpp" line="+37"/>
         <source>Resize Layer</source>
-        <translation>Katmanı Yeniden Boyutlandır</translation>
+        <translation>Katmanı Boyutlandır</translation>
     </message>
     <message>
-        <location filename="../src/tiled/resizemap.cpp" line="+34"/>
+        <location filename="../src/tiled/resizemap.cpp" line="+33"/>
         <source>Resize Map</source>
-        <translation>Haritayı Yeniden Boyutlandır</translation>
+        <translation>Haritayı Boyutlandır</translation>
     </message>
     <message>
-        <location filename="../src/tiled/resizemapobject.cpp" line="+41"/>
-        <location line="+13"/>
+        <location filename="../src/tiled/resizemapobject.cpp" line="+51"/>
         <source>Resize Object</source>
-        <translation>Nesneyi Yeniden Boyutlandır</translation>
+        <translation>Nesneyi Boyutlandır</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetchanges.cpp" line="+34"/>
+        <location filename="../src/tiled/tilesetchanges.cpp" line="+33"/>
         <source>Change Tileset Name</source>
         <translation>Desen Seti Adını Değiştir</translation>
     </message>
@@ -5762,11 +6675,16 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
     <message>
         <location line="+59"/>
+        <source>Change Object Alignment</source>
+        <translation>Nesne Hizasını Değiştir</translation>
+    </message>
+    <message>
+        <location line="+18"/>
         <source>Change Grid Size</source>
         <translation>Izgara Boyutunu Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/movelayer.cpp" line="+42"/>
+        <location filename="../src/tiled/movelayer.cpp" line="+41"/>
         <source>Lower Layer</source>
         <translation>Katmanı Alçalt</translation>
     </message>
@@ -5776,23 +6694,23 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Katmanı Yükselt</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changepolygon.cpp" line="+42"/>
+        <location filename="../src/tiled/changepolygon.cpp" line="+41"/>
         <location line="+13"/>
         <source>Change Polygon</source>
         <translation>Çokgeni Değiştir</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+23"/>
         <source>Toggle Polygon/Polyline</source>
         <translation>Çokgen/Çoklu-Çizgi Geçişi</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+17"/>
         <source>Split Polyline</source>
-        <translation>Bölünmüş Çoklu Çizgi</translation>
+        <translation>Çoklu Çizgiyi Ayır</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremoveterrain.cpp" line="+67"/>
+        <location filename="../src/tiled/addremoveterrain.cpp" line="+66"/>
         <source>Add Terrain</source>
         <translation>Zemin Ekle</translation>
     </message>
@@ -5802,22 +6720,22 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Zemini Kaldır</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
+        <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+38"/>
         <source>Change Image Layer Properties</source>
         <translation>Resmin Katman Özelliklerini Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileterrain.cpp" line="+139"/>
+        <location filename="../src/tiled/changetileterrain.cpp" line="+138"/>
         <source>Change Tile Terrain</source>
         <translation>Desen Zeminini Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tileseteditor.cpp" line="-885"/>
+        <location filename="../src/tiled/changeterrain.cpp" line="+56"/>
         <source>Change Terrain Image</source>
         <translation>Zemin Resmini Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changelayer.cpp" line="+41"/>
+        <location filename="../src/tiled/changelayer.cpp" line="+31"/>
         <source>Show Layer</source>
         <translation>Katmanı Göster</translation>
     </message>
@@ -5827,7 +6745,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Katmanı Gizle</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+22"/>
         <source>Lock Layer</source>
         <translation>Katman Kilitle</translation>
     </message>
@@ -5837,14 +6755,25 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Katmanı Aç</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+22"/>
+        <source>Change Layer Tint Color</source>
+        <translation>Katman Renk Tonunu Değiştir</translation>
+    </message>
+    <message>
+        <location line="+30"/>
         <source>Change Layer Opacity</source>
         <translation>Katman Görünürlüğünü Değiştir</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+32"/>
+        <location filename="../src/tiled/layeroffsettool.cpp" line="+93"/>
         <source>Change Layer Offset</source>
         <translation>Katman Kaydırmasını Değiştir</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Change Tile Layer Size</source>
+        <translation>Desen Katman Boyutunu Değiştir</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+12"/>
@@ -5857,53 +6786,56 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Nesneyi Gizle</translation>
     </message>
     <message numerus="yes">
-        <location line="+59"/>
+        <location line="+61"/>
         <source>Change %n Object/s Tile</source>
-        <translation><numerusform>Nesne Desenini Değiştir</numerusform>
-        <numerusform>%n Nesne Desenini Değiştir</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesnenin Desenini Değiştir</numerusform>
+            <numerusform>%n Nesnenin Desenini Değiştir</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+65"/>
         <source>Detach %n Template Instance(s)</source>
-        <translation><numerusform>Şablon Örneğini Ayır</numerusform>
-        <numerusform>%n Şablon Örneğini Ayır</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Şablon Örneğini Ayır</numerusform>
+            <numerusform>%n Şablon Örneğini Ayır</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+39"/>
         <source>Reset %n Instances</source>
-        <translation><numerusform>Örneği Sıfırla</numerusform>
-        <numerusform>%n Örneği Sıfırla</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Örneği Sıfırla</numerusform>
+            <numerusform>%n Örneği Sıfırla</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
-        <location line="+46"/>
+        <location line="+53"/>
         <source>Replace %n Object(s) With Template</source>
-        <translation><numerusform>Nesneyi Şablonla Değiştir</numerusform>
-        <numerusform>%n Nesneyi Şablonla Değiştir</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Şablonla Değiştir</numerusform>
+            <numerusform>%n Nesneyi Şablonla Değiştir</numerusform>
+        </translation>
+    </message>
     <message>
-        <location filename="../src/tiled/renameterrain.cpp" line="+36"/>
+        <location filename="../src/tiled/changeterrain.cpp" line="-21"/>
         <source>Change Terrain Name</source>
         <translation>Zemin Adını Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremovetiles.cpp" line="+63"/>
+        <location filename="../src/tiled/addremovetiles.cpp" line="+62"/>
         <source>Add Tiles</source>
         <translation>Desenleri Ekle</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location filename="../src/tiled/tileseteditor.cpp" line="+645"/>
+        <location filename="../src/tiled/tileseteditor.cpp" line="-240"/>
         <source>Remove Tiles</source>
         <translation>Desenleri Kaldır</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changeimagelayerposition.cpp" line="+36"/>
-        <source>Change Image Layer Position</source>
-        <translation>Resim Katmanı Pozisyonunu Değiştir</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/changemapobjectsorder.cpp" line="+46"/>
-        <location filename="../src/tiled/raiselowerhelper.cpp" line="+69"/>
+        <location filename="../src/tiled/changemapobjectsorder.cpp" line="+45"/>
+        <location filename="../src/tiled/raiselowerhelper.cpp" line="+68"/>
         <source>Raise Object</source>
         <translation>Nesneyi Yükselt</translation>
     </message>
@@ -5914,12 +6846,12 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Nesneyi Alçalt</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileanimation.cpp" line="+35"/>
+        <location filename="../src/tiled/changetileanimation.cpp" line="+34"/>
         <source>Change Tile Animation</source>
         <translation>Desen Animasyonunu Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileobjectgroup.cpp" line="+36"/>
+        <location filename="../src/tiled/changetileobjectgroup.cpp" line="+35"/>
         <source>Change Tile Collision</source>
         <translation>Desen Çarpışmasını Değiştir</translation>
     </message>
@@ -5934,13 +6866,12 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Nesneyi En Alta Alçalt</translation>
     </message>
     <message>
-        <location filename="../src/tiled/rotatemapobject.cpp" line="+41"/>
-        <location line="+13"/>
+        <location filename="../src/tiled/rotatemapobject.cpp" line="+51"/>
         <source>Rotate Object</source>
         <translation>Nesneyi Döndür</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changemapproperty.cpp" line="+42"/>
+        <location filename="../src/tiled/changemapproperty.cpp" line="+41"/>
         <source>Change Tile Width</source>
         <translation>Desen Enini Değiştir</translation>
     </message>
@@ -5960,20 +6891,30 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Hex Kenar Uzunluğunu Değiştir</translation>
     </message>
     <message>
+        <location line="+4"/>
+        <source>Change Compression Level</source>
+        <translation>Sıkıştırma Seviyesini Değiştir</translation>
+    </message>
+    <message>
         <location line="+10"/>
-        <location filename="../src/tiled/tilesetchanges.cpp" line="-40"/>
+        <location filename="../src/tiled/tilesetchanges.cpp" line="-58"/>
         <source>Change Background Color</source>
         <translation>Arkaplan Rengini Değiştir</translation>
     </message>
     <message>
         <location line="+10"/>
+        <source>Change Chunk Size</source>
+        <translation>Yığın Boyutunu Değiştir</translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Change Stagger Axis</source>
-        <translation>Sendeleme Eksenini Değiştir</translation>
+        <translation>Çapraz Eksenini Değiştir</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Stagger Index</source>
-        <translation>Sendeleme İndisini Değiştir</translation>
+        <translation>Çapraz İndeksini Değiştir</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -5992,7 +6933,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Katman Veri Biçimini Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileprobability.cpp" line="+41"/>
+        <location filename="../src/tiled/changetileprobability.cpp" line="+40"/>
         <location line="+14"/>
         <source>Change Tile Probability</source>
         <translation>Desen Olasılığını Değiştir</translation>
@@ -6004,39 +6945,41 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Desen İndekslerini Ayarla</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileimagesource.cpp" line="+40"/>
+        <location filename="../src/tiled/changetileimagesource.cpp" line="+39"/>
         <source>Change Tile Image</source>
         <translation>Desen Resmini Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/replacetileset.cpp" line="+34"/>
+        <location filename="../src/tiled/replacetileset.cpp" line="+33"/>
         <source>Replace Tileset</source>
         <translation>Desen Setini Değiştir</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/tiled/flipmapobjects.cpp" line="+40"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+197"/>
+        <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-922"/>
         <source>Flip %n Object(s)</source>
-        <translation><numerusform>Nesneyi Çevir</numerusform>
-        <numerusform>%n Nesneyi Çevir</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Nesneyi Çevir</numerusform>
+            <numerusform>%n Nesneyi Çevir</numerusform>
+        </translation>
+    </message>
     <message>
-        <location filename="../src/tiled/changetile.cpp" line="+34"/>
+        <location filename="../src/tiled/changetile.cpp" line="+33"/>
         <source>Change Tile Type</source>
         <translation>Desen Türünü Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/swaptiles.cpp" line="+37"/>
+        <location filename="../src/tiled/swaptiles.cpp" line="+36"/>
         <source>Swap Tiles</source>
         <translation>Desenleri Takas Et</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetdocument.cpp" line="-153"/>
+        <location filename="../src/tiled/tilesetdocument.cpp" line="-389"/>
         <source>Reload Tileset</source>
         <translation>Desen Setini Yeniden Yükle</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremovewangset.cpp" line="+65"/>
+        <location filename="../src/tiled/addremovewangset.cpp" line="+64"/>
         <source>Add Wang Set</source>
         <translation>Wang Seti Ekle</translation>
     </message>
@@ -6046,14 +6989,14 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Wang Setini Kaldır</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetilewangid.cpp" line="+36"/>
+        <location filename="../src/tiled/changetilewangid.cpp" line="+35"/>
         <location line="+12"/>
         <location line="+14"/>
         <source>Change Tile WangId</source>
         <translation>Desen WangId&apos;yi Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changewangsetdata.cpp" line="+38"/>
+        <location filename="../src/tiled/changewangsetdata.cpp" line="+37"/>
         <source>Change Wang Set edge count</source>
         <translation>Wang Seti kenar sayısını değiştir</translation>
     </message>
@@ -6073,7 +7016,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Wang Seti Resmini Ayarla</translation>
     </message>
     <message>
-        <location filename="../src/tiled/moveterrain.cpp" line="+61"/>
+        <location filename="../src/tiled/moveterrain.cpp" line="+60"/>
         <source>Move Terrain Up</source>
         <translation>Zemini Yukarı Taşı</translation>
     </message>
@@ -6083,57 +7026,71 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Zemini Aşağı Taşı</translation>
     </message>
     <message>
-        <location filename="../src/tiled/renamewangset.cpp" line="+35"/>
+        <location filename="../src/tiled/renamewangset.cpp" line="+34"/>
         <source>Change Wang Set Name</source>
         <translation>Wang Seti Adını Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/replacetemplate.cpp" line="+35"/>
+        <location filename="../src/tiled/replacetemplate.cpp" line="+34"/>
         <source>Replace Template</source>
         <translation>Şablonu Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/shapefilltool.cpp" line="-20"/>
+        <location filename="../src/tiled/shapefilltool.cpp" line="-19"/>
         <source>Shape Fill</source>
         <translation>Şekil Dolgu</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/tiled/mapdocument.cpp" line="-683"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="-770"/>
         <source>Raise %n Layer(s)</source>
-        <translation><numerusform>Katmanı Yükselt</numerusform>
-        <numerusform>%n Katmanı Yükselt</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Katmanı Yükselt</numerusform>
+            <numerusform>%n Katmanı Yükselt</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
-        <translation><numerusform>Katmanı Alçalt</numerusform>
-        <numerusform>%n Katmanı Alçalt</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>%n Katmanı Alçalt</numerusform>
+            <numerusform>%n Katmanı Alçalt</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/editablemap.cpp" line="-124"/>
+        <source>Change Tile Size</source>
+        <translation>Desen Boyutunu Değiştir</translation>
+    </message>
 </context>
 <context>
     <name>Utils</name>
     <message>
-        <location filename="../src/tiled/utils.cpp" line="+43"/>
+        <location filename="../src/tiled/utils.cpp" line="+47"/>
         <source>Image files</source>
         <translation>Resim dosyaları</translation>
     </message>
     <message>
-        <location line="+223"/>
+        <location line="+387"/>
         <source>Copy File Path</source>
         <translation>Dosya Yolunu Kopyala</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+9"/>
         <source>Open Containing Folder...</source>
         <translation>İçeren Klasörü Aç...</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Open with System Editor</source>
+        <translation>Sistem Düzenleyicisiyle Aç</translation>
     </message>
 </context>
 <context>
     <name>main</name>
     <message>
-        <location filename="../src/tmxrasterizer/main.cpp" line="+52"/>
-        <source>Renders a Tiled map (TMX format) to an image.</source>
-        <translation>Bir Tiled haritasını (TMX biçiminde) bir resme işler.</translation>
+        <location filename="../src/tmxrasterizer/main.cpp" line="+55"/>
+        <source>Renders a Tiled map or world to an image.</source>
+        <translation>Bir Tiled haritasını veya dünyasını resme işler.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6174,12 +7131,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+2"/>
         <source>Ignore all layer visibility flags in the map file, and render all layers in the output (default is to omit invisible layers).</source>
-        <translation>Tüm katman görünürlük bayraklarını yoksay, ve tüm katmanları çıktıda işle (ön tanımlı olan görünmez katmanları atlamaktır).</translation>
+        <translation>Tüm katman görünürlük bayraklarını yok say, ve tüm katmanları çıktıda işle (öntanımlı olan görünmez katmanları atlamaktır).</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Specifies a layer to omit from the output image. Can be repeated to hide multiple layers.</source>
-        <translation>Çıktı resmine eklenmeyecek bir katmanı belirtir. Çoklu katmanları gizlemek için tekrarlanabilir.</translation>
+        <translation>Çıktı resminde atlanacak bir katmanı belirtir. Çoklu katmanları gizlemek için tekrarlanabilir.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6188,8 +7145,8 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>Map file to render.</source>
-        <translation>İşlenecek harita dosyası.</translation>
+        <source>Map or world file to render.</source>
+        <translation>İşleme için harita veya dünya dosyası.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6220,6 +7177,44 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+3"/>
         <source>Map file to display.</source>
         <translation>Gösterilecek harita dosyası.</translation>
+    </message>
+    <message>
+        <location filename="../src/tiledquick/qml/+android/main.qml" line="+17"/>
+        <location filename="../src/tiledquick/qml/main.qml" line="+18"/>
+        <source>Tiled Quick</source>
+        <translation>Tiled Quick</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <location filename="../src/tiledquick/qml/main.qml" line="+46"/>
+        <source>Open...</source>
+        <translation>Aç...</translation>
+    </message>
+    <message>
+        <location line="+65"/>
+        <location filename="../src/tiledquick/qml/main.qml" line="+133"/>
+        <source>No map file loaded</source>
+        <translation>Harita dosyası yüklenmedi</translation>
+    </message>
+    <message>
+        <location filename="../src/tiledquick/qml/main.qml" line="-123"/>
+        <source>Exit</source>
+        <translation>Çıkış</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>File</source>
+        <translation>Dosya</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Help</source>
+        <translation>Yardım</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>About Tiled Quick</source>
+        <translation>Tiled Quick Hakkında</translation>
     </message>
 </context>
 </TS>

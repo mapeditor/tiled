@@ -27,7 +27,6 @@
 #include "mapscene.h"
 #include "mapview.h"
 #include "objectgroup.h"
-#include "objecttemplatemodel.h"
 #include "objectselectiontool.h"
 #include "preferences.h"
 #include "propertiesdock.h"
@@ -39,12 +38,14 @@
 #include "toolmanager.h"
 #include "utils.h"
 
+#include <QAction>
 #include <QBoxLayout>
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QPushButton>
 #include <QSplitter>
 #include <QToolBar>
@@ -55,11 +56,10 @@ using namespace Tiled;
 // This references created dummy documents, to make sure they are shared if the
 // same template is open in the MapEditor and the TilesetEditor.
 QHash<ObjectTemplate*, QWeakPointer<MapDocument>> TemplatesDock::ourDummyDocuments;
+bool TemplatesDock::ourEmittingChanged;
 
 TemplatesDock::TemplatesDock(QWidget *parent)
     : QDockWidget(parent)
-    , mTemplatesView(new TemplatesView)
-    , mChooseDirectory(new QAction(this))
     , mUndoAction(new QAction(this))
     , mRedoAction(new QAction(this))
     , mMapScene(new MapScene(this))
@@ -68,32 +68,22 @@ TemplatesDock::TemplatesDock(QWidget *parent)
 {
     setObjectName(QLatin1String("TemplatesDock"));
 
-    QWidget *widget = new QWidget(this);
-
     // Prevent dropping a template into the editing view
     mMapView->setAcceptDrops(false);
     mMapView->setScene(mMapScene);
+
+    // But accept drops on the dock
+    setAcceptDrops(true);
 
     mMapView->setResizeAnchor(QGraphicsView::AnchorViewCenter);
     mMapView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mMapView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
-    QToolBar *toolBar = new QToolBar;
-    toolBar->setFloatable(false);
-    toolBar->setMovable(false);
-    toolBar->setIconSize(Utils::smallIconSize());
-
-    mChooseDirectory->setIcon(QIcon(QLatin1String(":/images/16x16/document-open.png")));
-    Utils::setThemeIcon(mChooseDirectory, "document-open");
-    connect(mChooseDirectory, &QAction::triggered, this, &TemplatesDock::chooseDirectory);
-
-    toolBar->addAction(mChooseDirectory);
-
-    mUndoAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-undo.png")));
+    mUndoAction->setIcon(QIcon(QLatin1String(":/images/16/edit-undo.png")));
     Utils::setThemeIcon(mUndoAction, "edit-undo");
     connect(mUndoAction, &QAction::triggered, this, &TemplatesDock::undo);
 
-    mRedoAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-redo.png")));
+    mRedoAction->setIcon(QIcon(QLatin1String(":/images/16/edit-redo.png")));
     Utils::setThemeIcon(mRedoAction, "edit-redo");
     connect(mRedoAction, &QAction::triggered, this, &TemplatesDock::redo);
 
@@ -109,9 +99,11 @@ TemplatesDock::TemplatesDock(QWidget *parent)
     auto objectSelectionTool = new ObjectSelectionTool(this);
     auto editPolygonTool = new EditPolygonTool(this);
 
-    // Assign empty shortcuts to avoid collision with the map editor
+    // Assign empty shortcuts and don't register actions for these tools, to
+    // avoid collisions with the map editor and tile collision editor.
     objectSelectionTool->setShortcut(QKeySequence());
     editPolygonTool->setShortcut(QKeySequence());
+    mToolManager->setRegisterActions(false);
 
     editingToolBar->addAction(mUndoAction);
     editingToolBar->addAction(mRedoAction);
@@ -138,37 +130,17 @@ TemplatesDock::TemplatesDock(QWidget *parent)
     editorLayout->setMargin(0);
     editorLayout->setSpacing(0);
 
-
-    auto *editorWidget = new QWidget;
-    editorWidget->setLayout(editorLayout);
-
-    auto *splitter = new QSplitter;
-    splitter->addWidget(mTemplatesView);
-    splitter->addWidget(editorWidget);
-
-    auto *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
-    layout->setSpacing(0);
-    layout->addWidget(splitter);
-    layout->addWidget(toolBar);
+    auto *widget = new QWidget;
+    widget->setLayout(editorLayout);
 
     setWidget(widget);
     retranslateUi();
 
-    connect(mTemplatesView, &TemplatesView::currentTemplateChanged,
-            this, &TemplatesDock::currentTemplateChanged);
-
-    connect(mTemplatesView, &TemplatesView::currentTemplateChanged,
-            this, &TemplatesDock::setTemplate);
-
-    connect(mTemplatesView, &TemplatesView::focusInEvent,
-            this, &TemplatesDock::focusInEvent);
-
-    connect(mTemplatesView, &TemplatesView::focusOutEvent,
-            this, &TemplatesDock::focusOutEvent);
-
     connect(mToolManager, &ToolManager::selectedToolChanged,
             mMapScene, &MapScene::setSelectedTool);
+
+    connect(TemplateManager::instance(), &TemplateManager::objectTemplateChanged,
+            this, &TemplatesDock::objectTemplateChanged);
 
     setFocusPolicy(Qt::ClickFocus);
     mMapView->setFocusProxy(this);
@@ -191,7 +163,16 @@ void TemplatesDock::openTemplate(const QString &path)
 {
     bringToFront();
     setTemplate(TemplateManager::instance()->loadObjectTemplate(path));
-    mTemplatesView->setSelectedTemplate(path);
+}
+
+bool TemplatesDock::tryOpenTemplate(const QString &filePath)
+{
+    auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(filePath);
+    if (objectTemplate->object()) {
+        setTemplate(objectTemplate);
+        return true;
+    }
+    return false;
 }
 
 void TemplatesDock::bringToFront()
@@ -201,26 +182,64 @@ void TemplatesDock::bringToFront()
     setFocus();
 }
 
+static ObjectTemplate *readObjectTemplate(const QMimeData *mimeData)
+{
+    const auto urls = mimeData->urls();
+    if (urls.size() != 1)
+        return nullptr;
+
+    const QString fileName = urls.first().toLocalFile();
+    if (fileName.isEmpty())
+        return nullptr;
+
+    const QFileInfo info(fileName);
+    if (info.isDir())
+        return nullptr;
+
+    auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(info.absoluteFilePath());
+    return objectTemplate->object() ? objectTemplate : nullptr;
+}
+
+void TemplatesDock::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (!readObjectTemplate(event->mimeData()))
+        return;
+
+    event->acceptProposedAction();
+}
+
+void TemplatesDock::dropEvent(QDropEvent *event)
+{
+    if (auto objectTemplate = readObjectTemplate(event->mimeData()))
+        setTemplate(objectTemplate);
+}
+
 void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 {
     if (mObjectTemplate == objectTemplate)
         return;
 
     mObjectTemplate = objectTemplate;
+    refreshDummyObject();
 
+    emit currentTemplateChanged(mObjectTemplate);
+}
+
+void TemplatesDock::refreshDummyObject()
+{
     mMapScene->setSelectedTool(nullptr);
     MapDocumentPtr previousDocument = mDummyMapDocument;
 
-    mMapView->setEnabled(objectTemplate);
+    mMapView->setEnabled(mObjectTemplate);
 
-    if (objectTemplate && objectTemplate->object()) {
-        mDummyMapDocument = ourDummyDocuments.value(objectTemplate);
+    if (mObjectTemplate && mObjectTemplate->object()) {
+        mDummyMapDocument = ourDummyDocuments.value(mObjectTemplate);
 
         if (!mDummyMapDocument) {
             Map::Orientation orientation = Map::Orthogonal;
             std::unique_ptr<Map> map { new Map(orientation, 1, 1, 1, 1) };
 
-            MapObject *dummyObject = objectTemplate->object()->clone();
+            MapObject *dummyObject = mObjectTemplate->object()->clone();
             dummyObject->markAsTemplateBase();
 
             if (Tileset *tileset = dummyObject->cell().tileset()) {
@@ -237,9 +256,9 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 
             mDummyMapDocument = MapDocumentPtr::create(std::move(map));
             mDummyMapDocument->setAllowHidingObjects(false);
-            mDummyMapDocument->setCurrentLayer(objectGroup);
+            mDummyMapDocument->switchCurrentLayer(objectGroup);
 
-            ourDummyDocuments.insert(objectTemplate, mDummyMapDocument);
+            ourDummyDocuments.insert(mObjectTemplate, mDummyMapDocument);
         }
 
         mDummyMapDocument->setCurrentObject(dummyObject());
@@ -300,6 +319,18 @@ void TemplatesDock::checkTileset()
     }
 }
 
+void TemplatesDock::objectTemplateChanged(ObjectTemplate *objectTemplate)
+{
+    if (ourEmittingChanged)
+        return;
+
+    // Apparently the template was changed externally
+    ourDummyDocuments.remove(objectTemplate);
+
+    if (mObjectTemplate == objectTemplate)
+        refreshDummyObject();
+}
+
 void TemplatesDock::undo()
 {
     if (mDummyMapDocument) {
@@ -321,36 +352,27 @@ void TemplatesDock::applyChanges()
     mObjectTemplate->setObject(dummyObject());
 
     // Write out the template file
-    mObjectTemplate->format()->write(mObjectTemplate,
-                                     mObjectTemplate->fileName());
+    mObjectTemplate->save();
 
     mUndoAction->setEnabled(mDummyMapDocument->undoStack()->canUndo());
     mRedoAction->setEnabled(mDummyMapDocument->undoStack()->canRedo());
 
     checkTileset();
 
+    ourEmittingChanged = true;
     emit TemplateManager::instance()->objectTemplateChanged(mObjectTemplate);
-}
-
-void TemplatesDock::chooseDirectory()
-{
-    Preferences *prefs = Preferences::instance();
-    QString f = QFileDialog::getExistingDirectory(window(),
-                                                  tr("Choose the Templates Folder"),
-                                                  prefs->templatesDirectory());
-    if (!f.isEmpty())
-        prefs->setTemplatesDirectory(f);
+    ourEmittingChanged = false;
 }
 
 void TemplatesDock::focusInEvent(QFocusEvent *event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
     mPropertiesDock->setDocument(mDummyMapDocument.data());
 }
 
 void TemplatesDock::focusOutEvent(QFocusEvent *event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
 
     if (hasFocus() || !mDummyMapDocument)
         return;
@@ -360,13 +382,12 @@ void TemplatesDock::focusOutEvent(QFocusEvent *event)
 
 void TemplatesDock::retranslateUi()
 {
-    setWindowTitle(tr("Templates"));
-    mChooseDirectory->setText(tr("Choose Templates Directory"));
+    setWindowTitle(tr("Template Editor"));
 }
 
 void TemplatesDock::fixTileset()
 {
-    if (mObjectTemplate)
+    if (!mObjectTemplate)
         return;
 
     auto tileset = mObjectTemplate->tileset();
@@ -378,7 +399,7 @@ void TemplatesDock::fixTileset()
         auto tilesetDocument = DocumentManager::instance()->findTilesetDocument(tileset);
 
         if (!tilesetDocument) {
-            auto newTilesetDocument = TilesetDocumentPtr::create(tileset, tileset->fileName());
+            auto newTilesetDocument = TilesetDocumentPtr::create(tileset);
             tilesetDocument = newTilesetDocument.data();
             DocumentManager::instance()->addDocument(newTilesetDocument);
         } else {
@@ -419,104 +440,4 @@ MapObject *TemplatesDock::dummyObject() const
         return nullptr;
 
     return mDummyMapDocument->map()->layerAt(0)->asObjectGroup()->objectAt(0);
-}
-
-
-static QSharedPointer<ObjectTemplateModel> sharedTemplateModel()
-{
-    static QWeakPointer<ObjectTemplateModel> templateModel;
-    auto model = templateModel.lock();
-    if (model)
-        return model;
-
-    model = QSharedPointer<ObjectTemplateModel>::create();
-    templateModel = model;
-
-    Preferences *prefs = Preferences::instance();
-
-    // Set the initial root path
-    QDir templatesDir(prefs->templatesDirectory());
-    if (!templatesDir.exists())
-        templatesDir.setPath(QDir::currentPath());
-    model->setRootPath(templatesDir.absolutePath());
-
-    // Make sure the root path stays updated
-    ObjectTemplateModel *modelPointer = model.data();
-    QObject::connect(prefs, &Preferences::templatesDirectoryChanged,
-                     modelPointer, [modelPointer] (const QString &templatesDirectory) {
-        modelPointer->setRootPath(QDir(templatesDirectory).absolutePath());
-    });
-
-    return model;
-}
-
-TemplatesView::TemplatesView(QWidget *parent)
-    : QTreeView(parent)
-    , mModel(sharedTemplateModel())
-{
-    setUniformRowHeights(true);
-    setHeaderHidden(true);
-    setDragEnabled(true);
-    setDragDropMode(QAbstractItemView::DragOnly);
-
-    setModel(mModel.data());
-    setRootIndex(mModel->index(mModel->rootPath()));
-
-    connect(mModel.data(), &QFileSystemModel::rootPathChanged,
-            this, &TemplatesView::onTemplatesDirectoryChanged);
-
-    QHeaderView *headerView = header();
-    headerView->setStretchLastSection(false);
-    headerView->setSectionResizeMode(0, QHeaderView::Stretch);
-
-    connect(selectionModel(), &QItemSelectionModel::currentChanged,
-            this, &TemplatesView::onCurrentChanged);
-}
-
-void TemplatesView::setSelectedTemplate(const QString &path)
-{
-    auto index = mModel->index(path);
-    if (index.isValid())
-        setCurrentIndex(index);
-}
-
-void TemplatesView::contextMenuEvent(QContextMenuEvent *event)
-{
-    const QModelIndex index = indexAt(event->pos());
-    if (!index.isValid())
-        return;
-
-    QMenu menu;
-
-    Utils::addFileManagerActions(menu, mModel->filePath(index));
-
-    if (ObjectTemplate *objectTemplate = mModel->toObjectTemplate(index)) {
-        menu.addSeparator();
-        QAction *action = menu.addAction(tr("Select All Instances"));
-        connect(action, &QAction::triggered, [objectTemplate] {
-            MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
-            handler->selectAllInstances(objectTemplate);
-        });
-    }
-
-    menu.exec(event->globalPos());
-}
-
-QSize TemplatesView::sizeHint() const
-{
-    return Utils::dpiScaled(QSize(130, 100));
-}
-
-void TemplatesView::onCurrentChanged(const QModelIndex &index)
-{
-    if (!index.isValid())
-        return;
-
-    ObjectTemplate *objectTemplate = mModel->toObjectTemplate(index);
-    emit currentTemplateChanged(objectTemplate);
-}
-
-void TemplatesView::onTemplatesDirectoryChanged(const QString &rootPath)
-{
-    setRootIndex(mModel->index(rootPath));
 }

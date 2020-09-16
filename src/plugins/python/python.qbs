@@ -26,7 +26,12 @@ TiledPlugin {
 
     Properties {
         condition: pkgConfigPython3.found
-        cpp.cxxFlags: pkgConfigPython3.cflags
+        cpp.cxxFlags: {
+            var flags = pkgConfigPython3.cflags
+            if (qbs.toolchain.contains("gcc"))
+                flags.push("-Wno-cast-function-type")
+            return flags
+        }
         cpp.dynamicLibraries: pkgConfigPython3.libraries
         cpp.libraryPaths: pkgConfigPython3.libraryPaths
         cpp.linkerFlags: pkgConfigPython3.linkerFlags

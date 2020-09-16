@@ -23,11 +23,14 @@
 #include "undocommands.h"
 
 #include <QPointF>
+#include <QSize>
 #include <QUndoCommand>
+#include <QColor>
 
 namespace Tiled {
 
 class Layer;
+class TileLayer;
 
 class Document;
 
@@ -118,6 +121,29 @@ private:
     qreal mNewOpacity;
 };
 
+class SetLayerTintColor : public QUndoCommand
+{
+public:
+    SetLayerTintColor(Document *document,
+                    Layer *layer,
+                    QColor tintColor);
+
+    void undo() override { setTintColor(mOldTintColor); }
+    void redo() override { setTintColor(mNewTintColor); }
+
+    int id() const override { return Cmd_ChangeLayerTintColor; }
+
+    bool mergeWith(const QUndoCommand *other) override;
+
+private:
+    void setTintColor(QColor tintColor);
+
+    Document *mDocument;
+    Layer *mLayer;
+    QColor mOldTintColor;
+    QColor mNewTintColor;
+};
+
 /**
  * Used for changing the layer offset.
  */
@@ -141,6 +167,31 @@ private:
     Layer *mLayer;
     QPointF mOldOffset;
     QPointF mNewOffset;
+};
+
+/**
+ * Used for changing the tile layer size.
+ *
+ * Does not affect the contents of the tile layer, as opposed to the
+ * ResizeTileLayer command.
+ */
+class SetTileLayerSize : public QUndoCommand
+{
+public:
+    SetTileLayerSize(Document *document,
+                     TileLayer *tileLayer,
+                     QSize size,
+                     QUndoCommand *parent = nullptr);
+
+    void undo() override { swap(); }
+    void redo() override { swap(); }
+
+private:
+    void swap();
+
+    Document *mDocument;
+    TileLayer *mTileLayer;
+    QSize mSize;
 };
 
 } // namespace Tiled

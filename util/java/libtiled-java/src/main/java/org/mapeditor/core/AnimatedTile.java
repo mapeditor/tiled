@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -35,23 +35,20 @@ package org.mapeditor.core;
  * animation using an array of tiles.
  *
  * @see org.mapeditor.core.Sprite
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 public class AnimatedTile extends Tile {
 
     private Sprite sprite;
 
     /**
-     * <p>Constructor for AnimatedTile.</p>
+     * Constructor for AnimatedTile.
      */
     public AnimatedTile() {
     }
 
     /**
-     * <p>Constructor for AnimatedTile.</p>
+     * Constructor for AnimatedTile.
      *
      * @param set a {@link org.mapeditor.core.TileSet} object.
      */
@@ -60,7 +57,7 @@ public class AnimatedTile extends Tile {
     }
 
     /**
-     * <p>Constructor for AnimatedTile.</p>
+     * Constructor for AnimatedTile.
      *
      * @param frames an array of {@link org.mapeditor.core.Tile} objects.
      */
@@ -70,7 +67,7 @@ public class AnimatedTile extends Tile {
     }
 
     /**
-     * <p>Constructor for AnimatedTile.</p>
+     * Constructor for AnimatedTile.
      *
      * @param s a {@link org.mapeditor.core.Sprite} object.
      */
@@ -80,7 +77,7 @@ public class AnimatedTile extends Tile {
     }
 
     /**
-     * <p>Setter for the field <code>sprite</code>.</p>
+     * Setter for the field <code>sprite</code>.
      *
      * @param s a {@link org.mapeditor.core.Sprite} object.
      */
@@ -89,7 +86,7 @@ public class AnimatedTile extends Tile {
     }
 
     /**
-     * <p>countAnimationFrames.</p>
+     * countAnimationFrames.
      *
      * @return a int.
      */
@@ -98,7 +95,7 @@ public class AnimatedTile extends Tile {
     }
 
     /**
-     * <p>countKeys.</p>
+     * countKeys.
      *
      * @return a int.
      */
@@ -107,7 +104,7 @@ public class AnimatedTile extends Tile {
     }
 
     /**
-     * <p>Getter for the field <code>sprite</code>.</p>
+     * Getter for the field <code>sprite</code>.
      *
      * @return a {@link org.mapeditor.core.Sprite} object.
      */

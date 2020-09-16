@@ -35,6 +35,8 @@
 #include <algorithm>
 #include <memory>
 
+#include <QSet>
+
 using namespace Tiled;
 
 Cell Cell::empty;
@@ -118,15 +120,6 @@ TileLayer::TileLayer(const QString &name, QPoint position, QSize size)
 {
 }
 
-static QMargins maxMargins(const QMargins &a,
-                           const QMargins &b)
-{
-    return QMargins(qMax(a.left(), b.left()),
-                    qMax(a.top(), b.top()),
-                    qMax(a.right(), b.right()),
-                    qMax(a.bottom(), b.bottom()));
-}
-
 static QMargins computeDrawMargins(const QSet<SharedTileset> &tilesets)
 {
     int maxTileSize = 0;
@@ -207,14 +200,14 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
     _chunk.setCell(x & CHUNK_MASK, y & CHUNK_MASK, cell);
 }
 
-TileLayer *TileLayer::copy(const QRegion &region) const
+std::unique_ptr<TileLayer> TileLayer::copy(const QRegion &region) const
 {
     const QRect regionBounds = region.boundingRect();
     const QRegion regionWithContents = region.intersected(mBounds);
 
-    TileLayer *copied = new TileLayer(QString(),
-                                      0, 0,
-                                      regionBounds.width(), regionBounds.height());
+    auto copied = std::make_unique<TileLayer>(QString(),
+                                              0, 0,
+                                              regionBounds.width(), regionBounds.height());
 
 #if QT_VERSION < 0x050800
     const auto rects = regionWithContents.rects();
@@ -248,14 +241,9 @@ void TileLayer::merge(QPoint pos, const TileLayer *layer)
     }
 }
 
-void TileLayer::setCells(int x, int y, TileLayer *layer,
-                         const QRegion &mask)
+void TileLayer::setCells(int x, int y, const TileLayer *layer,
+                         const QRegion &area)
 {
-    QRegion area = QRect(x, y, layer->width(), layer->height());
-
-    if (!mask.isEmpty())
-        area &= mask;
-
 #if QT_VERSION < 0x050800
     const auto rects = area.rects();
     for (const QRect &rect : rects)
@@ -760,19 +748,72 @@ static bool compareRectPos(const QRect &a, const QRect &b)
  * This function is used to determine the chunks to write when saving a tile
  * layer.
  */
-QVector<QRect> TileLayer::sortedChunksToWrite() const
+QVector<QRect> TileLayer::sortedChunksToWrite(QSize chunkSize) const
 {
     QVector<QRect> chunksToWrite;
-    chunksToWrite.reserve(mChunks.size());
+    QSet<QPoint> existingChunks;
+
+    bool isNativeChunkSize = (chunkSize.width() == CHUNK_SIZE &&
+                              chunkSize.height() == CHUNK_SIZE);
+
+    if (isNativeChunkSize)
+        chunksToWrite.reserve(mChunks.size());
 
     QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
-        it.next();
-        if (!it.value().isEmpty()) {
-            const QPoint p = it.key();
+        const Chunk &chunk = it.next().value();
+        if (chunk.isEmpty())
+            continue;
+
+        const QPoint &p = it.key();
+
+        if (isNativeChunkSize) {
+            // If the desired chunk size is equal to our native chunk size,
+            // then we just we just have to iterate our chunk list and return
+            // the bounds of each chunk.
             chunksToWrite.append(QRect(p.x() * CHUNK_SIZE,
                                        p.y() * CHUNK_SIZE,
                                        CHUNK_SIZE, CHUNK_SIZE));
+        } else {
+            // If the desired chunk size is not the native size, we have to do
+            // a bit of extra work and "rearrange" chunks as we iterate our
+            // list. We do this by iterating every cell in a chunk. If it's not
+            // empty, we check what chunk it should go into with the new chunk
+            // size. If that chunk doesn't exist yet, we create it.
+            //
+            // NOTE: Rather than checking every cell in every chunk, we could
+            // also just test which "new" chunks our "old" chunk would
+            // intersect with and return all of those, this would be faster.
+            // However, that way we could end up with completely empty chunks,
+            // so we'll take the slower route and iterate all cells instead to
+            // avoid that.
+            int oldChunkStartX = p.x() * CHUNK_SIZE;
+            int oldChunkStartY = p.y() * CHUNK_SIZE;
+
+            for (int y = 0; y < CHUNK_SIZE; ++y) {
+                for (int x = 0; x < CHUNK_SIZE; ++x) {
+                    const Cell &cell = chunk.cellAt(x, y);
+
+                    if (!cell.isEmpty()) {
+                        int tileX = oldChunkStartX + x;
+                        int tileY = oldChunkStartY + y;
+
+                        // Nasty conditionals because of potentially negative
+                        // chunk start position. Modulo with negative numbers
+                        // is weird and unintuitive in C++...
+                        int moduloX = tileX % chunkSize.width();
+                        int newChunkStartX = tileX - (moduloX < 0 ? moduloX + chunkSize.width() : moduloX);
+                        int moduloY = tileY % chunkSize.height();
+                        int newChunkStartY = tileY - (moduloY < 0 ? moduloY + chunkSize.height() : moduloY);
+                        QPoint startPoint(newChunkStartX, newChunkStartY);
+
+                        if (!existingChunks.contains(startPoint)) {
+                            existingChunks.insert(startPoint);
+                            chunksToWrite.append(QRect(newChunkStartX, newChunkStartY, chunkSize.width(), chunkSize.height()));
+                        }
+                    }
+                }
+            }
         }
     }
 

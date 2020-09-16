@@ -36,20 +36,49 @@
 
 using namespace Tiled;
 
+ObjectIconManager::ObjectIconManager()
+   : mRectangleIcon(QLatin1String(":images/24/object-rectangle.png"))
+   , mImageIcon(QLatin1String(":images/24/object-image.png"))
+   , mPolygonIcon(QLatin1String(":images/24/object-polygon.png"))
+   , mPolylineIcon(QLatin1String(":images/24/object-polyline.png"))
+   , mEllipseIcon(QLatin1String(":images/24/object-ellipse.png"))
+   , mTextIcon(QLatin1String(":images/24/object-text.png"))
+   , mPointIcon(QLatin1String(":images/24/object-point.png"))
+{}
+
+const ObjectIconManager &ObjectIconManager::instance()
+{
+    static ObjectIconManager objectIconManager;
+    return objectIconManager;
+}
+
+const QIcon &ObjectIconManager::iconForObject(MapObject *object) const
+{
+    switch (object->shape()) {
+    case MapObject::Rectangle:
+        return object->isTileObject() ? mImageIcon : mRectangleIcon;
+    case MapObject::Polygon:
+        return mPolygonIcon;
+    case MapObject::Polyline:
+        return mPolylineIcon;
+    case MapObject::Ellipse:
+        return mEllipseIcon;
+    case MapObject::Text:
+        return mTextIcon;
+    case MapObject::Point:
+        return mPointIcon;
+    }
+    return mImageIcon;
+}
+
+
 MapObjectModel::MapObjectModel(QObject *parent)
     : QAbstractItemModel(parent)
     , mMapDocument(nullptr)
     , mMap(nullptr)
-    , mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png"))
-    , mRectangleIcon(QLatin1String(":images/24x24/object-rectangle.png"))
-    , mImageIcon(QLatin1String(":images/24x24/object-image.png"))
-    , mPolygonIcon(QLatin1String(":images/24x24/object-polygon.png"))
-    , mPolylineIcon(QLatin1String(":images/24x24/object-polyline.png"))
-    , mEllipseIcon(QLatin1String(":images/24x24/object-ellipse.png"))
-    , mTextIcon(QLatin1String(":images/24x24/object-text.png"))
-    , mPointIcon(QLatin1String(":images/24x24/object-point.png"))
+    , mObjectGroupIcon(QLatin1String(":/images/16/layer-object.png"))
 {
-    mObjectGroupIcon.addFile(QLatin1String(":images/32x32/layer-object.png"));
+    mObjectGroupIcon.addFile(QLatin1String(":images/32/layer-object.png"));
 }
 
 QModelIndex MapObjectModel::index(int row, int column,
@@ -140,22 +169,8 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
             }
             break;
         case Qt::DecorationRole:
-            if (index.column() == Name) {
-                switch (mapObject->shape()) {
-                case MapObject::Rectangle:
-                    return mapObject->isTileObject() ? mImageIcon : mRectangleIcon;
-                case MapObject::Polygon:
-                    return mPolygonIcon;
-                case MapObject::Polyline:
-                    return mPolylineIcon;
-                case MapObject::Ellipse:
-                    return mEllipseIcon;
-                case MapObject::Text:
-                    return mTextIcon;
-                case MapObject::Point:
-                    return mPointIcon;
-                }
-            }
+            if (index.column() == Name)
+                return ObjectIconManager::instance().iconForObject(mapObject);
             break;
         case Qt::ForegroundRole:
             if (index.column() == 1) {
@@ -307,7 +322,7 @@ QModelIndex MapObjectModel::index(MapObject *mapObject, int column) const
 {
     Q_ASSERT(mapObject);
     Q_ASSERT(mapObject->objectGroup());
-    Q_ASSERT(mapObject->objectGroup()->map() == mMap);
+    Q_ASSERT(mapObject->map() == mMap);
 
     const int row = mapObject->objectGroup()->objects().indexOf(mapObject);
     return createIndex(row, column, mapObject);
@@ -401,6 +416,10 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
 void MapObjectModel::layerAdded(Layer *layer)
 {
     if (layer->isObjectGroup() || layer->isGroupLayer()) {
+        auto &filtered = filteredChildLayers(layer->parentLayer());
+        if (filtered.contains(layer))
+            return;
+
         const auto &siblings = layer->siblings();
 
         Layer *prev = nullptr;
@@ -412,7 +431,6 @@ void MapObjectModel::layerAdded(Layer *layer)
             }
         }
 
-        auto &filtered = filteredChildLayers(layer->parentLayer());
         int row = prev ? filtered.indexOf(prev) + 1 : 0;
 
         QModelIndex parent;
@@ -505,6 +523,8 @@ void MapObjectModel::documentChanged(const ChangeEvent &change)
 
         break;
     }
+    case ChangeEvent::TileLayerChanged:
+        break;
     case ChangeEvent::MapObjectsAboutToBeRemoved:
     case ChangeEvent::MapObjectsAdded:
     case ChangeEvent::MapObjectsRemoved:

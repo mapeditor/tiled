@@ -23,7 +23,6 @@
 #include "map.h"
 #include "mapreader.h"
 #include "mapwriter.h"
-#include "preferences.h"
 #include "tilesetmanager.h"
 
 #include <QBuffer>
@@ -49,12 +48,10 @@ std::unique_ptr<Map> TmxMapFormat::read(const QString &fileName)
     return map;
 }
 
-bool TmxMapFormat::write(const Map *map, const QString &fileName)
+bool TmxMapFormat::write(const Map *map, const QString &fileName, Options options)
 {
-    Preferences *prefs = Preferences::instance();
-
     MapWriter writer;
-    writer.setDtdEnabled(prefs->dtdEnabled());
+    writer.setMinimizeOutput(options.testFlag(WriteMinimized));
 
     bool result = writer.writeMap(map, fileName);
     if (!result)
@@ -130,12 +127,10 @@ SharedTileset TsxTilesetFormat::read(const QString &fileName)
     return tileset;
 }
 
-bool TsxTilesetFormat::write(const Tileset &tileset, const QString &fileName)
+bool TsxTilesetFormat::write(const Tileset &tileset, const QString &fileName, Options options)
 {
-    Preferences *prefs = Preferences::instance();
-
     MapWriter writer;
-    writer.setDtdEnabled(prefs->dtdEnabled());
+    writer.setMinimizeOutput(options.testFlag(WriteMinimized));
 
     bool result = writer.writeTileset(tileset, fileName);
     if (!result)
@@ -185,10 +180,7 @@ std::unique_ptr<ObjectTemplate> XmlObjectTemplateFormat::read(const QString &fil
 
 bool XmlObjectTemplateFormat::write(const ObjectTemplate *objectTemplate, const QString &fileName)
 {
-    Preferences *prefs = Preferences::instance();
-
     MapWriter writer;
-    writer.setDtdEnabled(prefs->dtdEnabled());
 
     bool result = writer.writeObjectTemplate(objectTemplate, fileName);
     if (!result)

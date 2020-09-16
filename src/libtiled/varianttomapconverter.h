@@ -35,7 +35,6 @@ class Layer;
 class Map;
 class ObjectGroup;
 class ObjectTemplate;
-class Properties;
 class Tileset;
 class WangColor;
 
@@ -102,6 +101,8 @@ private:
     QPolygonF toPolygon(const QVariant &variant) const;
     TextData toTextData(const QVariantMap &variant) const;
 
+    void readMapEditorSettings(Map &map, const QVariantMap &editorSettings);
+    void readTilesetEditorSettings(Tileset &tileset, const QVariantMap &editorSettings);
     bool readTileLayerData(TileLayer &tileLayer,
                            const QVariant &dataVariant,
                            Map::LayerDataFormat layerDataFormat,
@@ -110,7 +111,7 @@ private:
     Properties extractProperties(const QVariantMap &variantMap) const;
 
     Map *mMap;
-    QDir mMapDir;
+    QDir mDir;
     bool mReadingExternalTileset;
     GidMapper mGidMapper;
     QString mError;

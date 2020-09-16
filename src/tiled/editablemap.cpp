@@ -21,9 +21,9 @@
 #include "editablemap.h"
 
 #include "addremovelayer.h"
-#include "addremovemapobject.h"
+#include "addremovetileset.h"
+#include "automappingmanager.h"
 #include "changeevents.h"
-#include "changelayer.h"
 #include "changemapproperty.h"
 #include "changeselectedarea.h"
 #include "editablegrouplayer.h"
@@ -35,17 +35,18 @@
 #include "editableselectedarea.h"
 #include "editabletilelayer.h"
 #include "grouplayer.h"
-#include "movemapobject.h"
+#include "imagelayer.h"
+#include "mapobject.h"
+#include "maprenderer.h"
+#include "objectgroup.h"
+#include "replacetileset.h"
 #include "resizemap.h"
-#include "resizetilelayer.h"
 #include "scriptmanager.h"
+#include "tilelayer.h"
+#include "tileset.h"
+#include "tilesetdocument.h"
 
-#include <imagelayer.h>
-#include <mapobject.h>
-#include <maprenderer.h>
-#include <objectgroup.h>
-#include <tilelayer.h>
-
+#include <QCoreApplication>
 #include <QUndoStack>
 
 #include "qtcompat_p.h"
@@ -57,9 +58,7 @@ EditableMap::EditableMap(QObject *parent)
     , mReadOnly(false)
     , mSelectedArea(nullptr)
 {
-    connect(map(), &Map::sizeChanged, this, &EditableMap::sizeChanged);
-    connect(map(), &Map::tileWidthChanged, this, &EditableMap::tileWidthChanged);
-    connect(map(), &Map::tileHeightChanged, this, &EditableMap::tileHeightChanged);
+    mDetachedMap.reset(map());
 }
 
 EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
@@ -67,10 +66,6 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     , mReadOnly(false)
     , mSelectedArea(new EditableSelectedArea(mapDocument, this))
 {
-    connect(map(), &Map::sizeChanged, this, &EditableMap::sizeChanged);
-    connect(map(), &Map::tileWidthChanged, this, &EditableMap::tileWidthChanged);
-    connect(map(), &Map::tileHeightChanged, this, &EditableMap::tileHeightChanged);
-
     connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
     connect(mapDocument, &Document::changed, this, &EditableMap::documentChanged);
     connect(mapDocument, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
@@ -93,10 +88,32 @@ EditableMap::EditableMap(const Map *map, QObject *parent)
 {
 }
 
+EditableMap::EditableMap(std::unique_ptr<Map> map, QObject *parent)
+    : EditableAsset(nullptr, map.get(), parent)
+    , mDetachedMap(std::move(map))
+    , mReadOnly(false)
+    , mSelectedArea(nullptr)
+{
+}
+
 EditableMap::~EditableMap()
 {
     for (Layer *layer : map()->layers())
         detachLayer(layer);
+}
+
+QList<QObject *> EditableMap::tilesets() const
+{
+    QList<QObject *> editableTilesets;
+    auto &editableManager = EditableManager::instance();
+
+    for (const SharedTileset &tileset : map()->tilesets()) {
+        if (auto document = TilesetDocument::findDocumentForTileset(tileset))
+            editableTilesets.append(document->editable());
+        else
+            editableTilesets.append(editableManager.editableTileset(tileset.data()));
+    }
+    return editableTilesets;
 }
 
 EditableLayer *EditableMap::currentLayer()
@@ -137,7 +154,7 @@ QList<QObject *> EditableMap::selectedObjects()
 EditableLayer *EditableMap::layerAt(int index)
 {
     if (index < 0 || index >= layerCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return nullptr;
     }
 
@@ -148,23 +165,28 @@ EditableLayer *EditableMap::layerAt(int index)
 void EditableMap::removeLayerAt(int index)
 {
     if (index < 0 || index >= layerCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
 
-    push(new RemoveLayer(mapDocument(), index, nullptr));
+    if (auto doc = mapDocument()) {
+        push(new RemoveLayer(doc, index, nullptr));
+    } else if (!checkReadOnly()) {
+        auto layer = map()->takeLayerAt(index);
+        EditableManager::instance().release(layer);
+    }
 }
 
 void EditableMap::removeLayer(EditableLayer *editableLayer)
 {
     if (!editableLayer) {
-        ScriptManager::instance().throwError(tr("Invalid argument"));
+        ScriptManager::instance().throwNullArgError(0);
         return;
     }
 
     int index = map()->layers().indexOf(editableLayer->layer());
     if (index == -1) {
-        ScriptManager::instance().throwError(tr("Layer not found"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Layer not found"));
         return;
     }
 
@@ -174,21 +196,34 @@ void EditableMap::removeLayer(EditableLayer *editableLayer)
 void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
 {
     if (index < 0 || index > layerCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
 
     if (!editableLayer) {
-        ScriptManager::instance().throwError(tr("Invalid argument"));
+        ScriptManager::instance().throwNullArgError(0);
         return;
     }
 
     if (editableLayer->map()) {
-        ScriptManager::instance().throwError(tr("Layer already part of a map"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Layer already part of a map"));
         return;
     }
 
-    push(new AddLayer(mapDocument(), index, editableLayer->layer(), nullptr));
+    // If this map has a valid size but the tile layer that's getting added
+    // doesn't, default the layer's size to the map size.
+    if (editableLayer->isTileLayer()) {
+        auto editableTileLayer = static_cast<EditableTileLayer*>(editableLayer);
+        if (editableTileLayer->size().isNull() && !size().isNull())
+            editableTileLayer->setSize(size());
+    }
+
+    if (auto doc = mapDocument()) {
+        push(new AddLayer(doc, index, editableLayer->layer(), nullptr));
+    } else if (!checkReadOnly()) {
+        // ownership moves to the map
+        map()->insertLayer(index, editableLayer->release());
+    }
 }
 
 void EditableMap::addLayer(EditableLayer *editableLayer)
@@ -196,67 +231,324 @@ void EditableMap::addLayer(EditableLayer *editableLayer)
     insertLayerAt(layerCount(), editableLayer);
 }
 
+bool EditableMap::addTileset(EditableTileset *editableTileset)
+{
+    if (!editableTileset) {
+        ScriptManager::instance().throwNullArgError(0);
+        return false;
+    }
+    const auto &tileset = editableTileset->tileset()->sharedPointer();
+    if (map()->indexOfTileset(tileset) != -1)
+        return false;   // can't add existing tileset
+
+    if (auto doc = mapDocument())
+        push(new AddTileset(doc, tileset));
+    else if (!checkReadOnly())
+        map()->addTileset(tileset);
+
+    return true;
+}
+
+bool EditableMap::replaceTileset(EditableTileset *oldEditableTileset,
+                                 EditableTileset *newEditableTileset)
+{
+    if (!oldEditableTileset) {
+        ScriptManager::instance().throwNullArgError(0);
+        return false;
+    }
+    if (!newEditableTileset) {
+        ScriptManager::instance().throwNullArgError(1);
+        return false;
+    }
+    if (oldEditableTileset == newEditableTileset) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+        return false;
+    }
+
+    SharedTileset oldTileset = oldEditableTileset->tileset()->sharedPointer();
+    int indexOfOldTileset = map()->indexOfTileset(oldTileset);
+    if (indexOfOldTileset == -1)
+        return false;   // can't replace non-existing tileset
+
+    SharedTileset newTileset = newEditableTileset->tileset()->sharedPointer();
+    int indexOfNewTileset = map()->indexOfTileset(newTileset);
+    if (indexOfNewTileset != -1)
+        return false;   // can't replace with tileset that is already part of the map (undo broken)
+
+    if (auto doc = mapDocument())
+        push(new ReplaceTileset(doc, indexOfOldTileset, newTileset));
+    else if (!checkReadOnly())
+        map()->replaceTileset(oldTileset, newTileset);
+
+    return true;
+}
+
+bool EditableMap::removeTileset(EditableTileset *editableTileset)
+{
+    if (!editableTileset) {
+        ScriptManager::instance().throwNullArgError(0);
+        return false;
+    }
+    Tileset *tileset = editableTileset->tileset();
+    int index = map()->indexOfTileset(tileset->sharedPointer());
+    if (index == -1)
+        return false;   // can't remove non-existing tileset
+
+    if (map()->isTilesetUsed(tileset))
+        return false;   // not allowed to remove a tileset that's in use
+
+    if (auto doc = mapDocument())
+        push(new RemoveTileset(doc, index));
+    else if (!checkReadOnly())
+        map()->removeTilesetAt(index);
+
+    return true;
+}
+
+QList<QObject *> EditableMap::usedTilesets() const
+{
+    const auto tilesets = map()->usedTilesets();
+
+    QList<QObject *> editableTilesets;
+    for (const SharedTileset &tileset : tilesets)
+        if (auto document = TilesetDocument::findDocumentForTileset(tileset))
+            editableTilesets.append(document->editable());
+    return editableTilesets;
+}
+
+/**
+ * Merges the given map with this map. Automatically adds any tilesets that are
+ * used by the merged map which are not yet part of this map.
+ *
+ * Might replace tilesets in the given \a editableMap, if it is detached.
+ *
+ * Pass \a canJoin as 'true' if the operation is allowed to join with the
+ * previous one on the undo stack.
+ *
+ * @warning Currently only supports tile layers!
+ */
+void EditableMap::merge(EditableMap *editableMap, bool canJoin)
+{
+    if (!editableMap) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+    if (!mapDocument()) {   // todo: support this outside of the undo stack
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Merge is currently not supported for detached maps"));
+        return;
+    }
+
+    // unifyTilesets might modify the given map, so need to clone if it has a document.
+    Map *map = editableMap->map();
+    std::unique_ptr<Map> copy;      // manages lifetime
+    if (editableMap->document()) {
+        copy = map->clone();
+        map = copy.get();
+    }
+
+    QVector<SharedTileset> missingTilesets;
+    mapDocument()->unifyTilesets(map, missingTilesets);
+    mapDocument()->paintTileLayers(map, canJoin, &missingTilesets);
+}
+
+/**
+ * Resize this map to the given \a size, while at the same time shifting
+ * the contents by \a offset. If \a removeObjects is true then all objects
+ * which are outside the map will be removed.
+ */
+void EditableMap::resize(QSize size, QPoint offset, bool removeObjects)
+{
+    if (checkReadOnly())
+        return;
+    if (!mapDocument()) {   // todo: should be able to resize still
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Resize is currently not supported for detached maps"));
+        return;
+    }
+    if (size.isEmpty()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid size"));
+        return;
+    }
+
+    mapDocument()->resizeMap(size, offset, removeObjects);
+}
+
+void EditableMap::autoMap(const RegionValueType &region, const QString &rulesFile)
+{
+    if (checkReadOnly())
+        return;
+    if (!mapDocument()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "AutoMapping is currently not supported for detached maps"));
+        return;
+    }
+
+    if (!mAutomappingManager)
+        mAutomappingManager = new AutomappingManager(this);
+
+    AutomappingManager &manager = *mAutomappingManager;
+    manager.setMapDocument(mapDocument(), rulesFile);
+
+    if (region.region().isEmpty())
+        manager.autoMap();
+    else
+        manager.autoMapRegion(region.region());
+}
+
+QPointF EditableMap::screenToTile(qreal x, qreal y) const
+{
+    if (auto renderer = this->renderer())
+        return renderer->screenToTileCoords(x, y);
+    return QPointF(x, y);
+}
+
+QPointF EditableMap::tileToScreen(qreal x, qreal y) const
+{
+    if (auto renderer = this->renderer())
+        return renderer->tileToScreenCoords(x, y);
+    return QPointF(x, y);
+}
+
+QPointF EditableMap::screenToPixel(qreal x, qreal y) const
+{
+    if (auto renderer = this->renderer())
+        return renderer->screenToPixelCoords(x, y);
+    return QPointF(x, y);
+}
+
+QPointF EditableMap::pixelToScreen(qreal x, qreal y) const
+{
+    if (auto renderer = this->renderer())
+        return renderer->pixelToScreenCoords(x, y);
+    return QPointF(x, y);
+}
+
+QPointF EditableMap::pixelToTile(qreal x, qreal y) const
+{
+    if (auto renderer = this->renderer())
+        return renderer->pixelToTileCoords(x, y);
+    return QPointF(x, y);
+}
+
+QPointF EditableMap::tileToPixel(qreal x, qreal y) const
+{
+    if (auto renderer = this->renderer())
+        return renderer->tileToPixelCoords(x, y);
+    return QPointF(x, y);
+}
+
+void EditableMap::setSize(int width, int height)
+{
+    if (auto doc = mapDocument()) {
+        push(new ResizeMap(doc, QSize(width, height)));
+    } else if (!checkReadOnly()) {
+        map()->setWidth(width);
+        map()->setHeight(height);
+    }
+}
+
 void EditableMap::setTileWidth(int value)
 {
-    push(new ChangeMapProperty(mapDocument(), ChangeMapProperty::TileWidth, value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, ChangeMapProperty::TileWidth, value));
+    else if (!checkReadOnly())
+        map()->setTileWidth(value);
 }
 
 void EditableMap::setTileHeight(int value)
 {
-    push(new ChangeMapProperty(mapDocument(), ChangeMapProperty::TileHeight, value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, ChangeMapProperty::TileHeight, value));
+    else if (!checkReadOnly())
+        map()->setTileHeight(value);
+}
+
+void EditableMap::setTileSize(int width, int height)
+{
+    if (checkReadOnly())
+        return;
+
+    if (auto doc = mapDocument()) {
+        doc->undoStack()->beginMacro(QCoreApplication::translate("Undo Commands",
+                                                                 "Change Tile Size"));
+        setTileWidth(width);
+        setTileHeight(height);
+        doc->undoStack()->endMacro();
+    } else {
+        map()->setTileWidth(width);
+        map()->setTileHeight(height);
+    }
 }
 
 void EditableMap::setInfinite(bool value)
 {
-    push(new ChangeMapProperty(mapDocument(), ChangeMapProperty::Infinite, value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, ChangeMapProperty::Infinite, value));
+    else if (!checkReadOnly())
+        map()->setInfinite(value);
 }
 
 void EditableMap::setHexSideLength(int value)
 {
-    push(new ChangeMapProperty(mapDocument(), ChangeMapProperty::HexSideLength, value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, ChangeMapProperty::HexSideLength, value));
+    else if (!checkReadOnly())
+        map()->setHexSideLength(value);
 }
 
-void EditableMap::setStaggerAxis(Map::StaggerAxis value)
+void EditableMap::setStaggerAxis(StaggerAxis value)
 {
-    push(new ChangeMapProperty(mapDocument(), value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, static_cast<Map::StaggerAxis>(value)));
+    else if (!checkReadOnly())
+        map()->setStaggerAxis(static_cast<Map::StaggerAxis>(value));
 }
 
-void EditableMap::setStaggerIndex(Map::StaggerIndex value)
+void EditableMap::setStaggerIndex(StaggerIndex value)
 {
-    push(new ChangeMapProperty(mapDocument(), value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, static_cast<Map::StaggerIndex>(value)));
+    else if (!checkReadOnly())
+        map()->setStaggerIndex(static_cast<Map::StaggerIndex>(value));
 }
 
-void EditableMap::setOrientation(Map::Orientation value)
+void EditableMap::setOrientation(Orientation value)
 {
-    push(new ChangeMapProperty(mapDocument(), value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, static_cast<Map::Orientation>(value)));
+    else if (!checkReadOnly())
+        map()->setOrientation(static_cast<Map::Orientation>(value));
 }
 
-void EditableMap::setRenderOrder(Map::RenderOrder value)
+void EditableMap::setRenderOrder(RenderOrder value)
 {
-    push(new ChangeMapProperty(mapDocument(), value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, static_cast<Map::RenderOrder>(value)));
+    else if (!checkReadOnly())
+        map()->setRenderOrder(static_cast<Map::RenderOrder>(value));
 }
 
 void EditableMap::setBackgroundColor(const QColor &value)
 {
-    push(new ChangeMapProperty(mapDocument(), value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, value));
+    else if (!checkReadOnly())
+        map()->setBackgroundColor(value);
 }
 
-void EditableMap::setLayerDataFormat(Map::LayerDataFormat value)
+void EditableMap::setLayerDataFormat(LayerDataFormat value)
 {
-    push(new ChangeMapProperty(mapDocument(), value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, static_cast<Map::LayerDataFormat>(value)));
+    else if (!checkReadOnly())
+        map()->setLayerDataFormat(static_cast<Map::LayerDataFormat>(value));
 }
 
 void EditableMap::setCurrentLayer(EditableLayer *layer)
 {
-    auto document = mapDocument();
-    if (!document)
-        return;
+    QList<QObject*> layers;
+    if (layer)
+        layers.append(layer);
 
-    document->setCurrentLayer(layer ? layer->layer() : nullptr);
-
-    // Automatically select the layer if it isn't already
-    if (layer && !document->selectedLayers().contains(layer->layer()))
-        document->setSelectedLayers({ layer->layer() });
+    setSelectedLayers(layers);
 }
 
 void EditableMap::setSelectedLayers(const QList<QObject *> &layers)
@@ -270,18 +562,18 @@ void EditableMap::setSelectedLayers(const QList<QObject *> &layers)
     for (QObject *layerObject : layers) {
         auto editableLayer = qobject_cast<EditableLayer*>(layerObject);
         if (!editableLayer) {
-            ScriptManager::instance().throwError(tr("Not a layer"));
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Not a layer"));
+            return;
+        }
+        if (editableLayer->map() != this) {
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Layer not from this map"));
             return;
         }
 
         plainLayers.append(editableLayer->layer());
     }
 
-    document->setSelectedLayers(plainLayers);
-
-    // Automatically make sure the current layer is one of the selected ones
-    if (!plainLayers.contains(document->currentLayer()))
-        document->setCurrentLayer(plainLayers.isEmpty() ? nullptr : plainLayers.first());
+    document->switchSelectedLayers(plainLayers);
 }
 
 void EditableMap::setSelectedObjects(const QList<QObject *> &objects)
@@ -295,7 +587,11 @@ void EditableMap::setSelectedObjects(const QList<QObject *> &objects)
     for (QObject *objectObject : objects) {
         auto editableMapObject = qobject_cast<EditableMapObject*>(objectObject);
         if (!editableMapObject) {
-            ScriptManager::instance().throwError(tr("Not an object"));
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Not an object"));
+            return;
+        }
+        if (editableMapObject->map() != this) {
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Object not from this map"));
             return;
         }
 
@@ -303,117 +599,6 @@ void EditableMap::setSelectedObjects(const QList<QObject *> &objects)
     }
 
     document->setSelectedObjects(plainObjects);
-}
-
-/**
- * Custom intersects check necessary because QRectF::intersects wants a
- * non-empty area of overlap, but we should also consider overlap with empty
- * area as intersection.
- *
- * Results for rectangles with negative size are undefined.
- */
-static bool intersects(const QRectF &a, const QRectF &b)
-{
-    return a.right() >= b.left() &&
-            a.bottom() >= b.top() &&
-            a.left() <= b.right() &&
-            a.top() <= b.bottom();
-}
-
-static bool visibleIn(const QRectF &area, MapObject *object,
-                      const MapRenderer &renderer)
-{
-    QRectF boundingRect = renderer.boundingRect(object);
-
-    if (object->rotation() != 0) {
-        // Rotate around object position
-        QPointF pos = renderer.pixelToScreenCoords(object->position());
-        boundingRect.translate(-pos);
-
-        QTransform transform;
-        transform.rotate(object->rotation());
-        boundingRect = transform.mapRect(boundingRect);
-
-        boundingRect.translate(pos);
-    }
-
-    return intersects(area, boundingRect);
-}
-
-/**
- * Resize this map to the given \a size, while at the same time shifting
- * the contents by \a offset. If \a removeObjects is true then all objects
- * which are outside the map will be removed.
- */
-void EditableMap::resize(QSize size, QPoint offset, bool removeObjects)
-{
-    if (checkReadOnly())
-        return;
-    if (size.isEmpty()) {
-        ScriptManager::instance().throwError(tr("Invalid size"));
-        return;
-    }
-
-    const QRegion movedSelection = mapDocument()->selectedArea().translated(offset);
-    const QRect newArea = QRect(-offset, size);
-    const QRectF visibleArea = renderer()->boundingRect(newArea);
-
-    const QPointF origin = renderer()->tileToPixelCoords(QPointF());
-    const QPointF newOrigin = renderer()->tileToPixelCoords(-offset);
-    const QPointF pixelOffset = origin - newOrigin;
-
-    // Resize the map and each layer
-    QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
-
-    QList<MapObject *> objectsToRemove;
-
-    LayerIterator iterator(map());
-    while (Layer *layer = iterator.next()) {
-        switch (layer->layerType()) {
-        case Layer::TileLayerType: {
-            TileLayer *tileLayer = static_cast<TileLayer*>(layer);
-            new ResizeTileLayer(mapDocument(), tileLayer, size, offset, command);
-            break;
-        }
-        case Layer::ObjectGroupType: {
-            ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
-
-            for (MapObject *o : objectGroup->objects()) {
-                if (removeObjects && !visibleIn(visibleArea, o, *renderer())) {
-                    // Remove objects that will fall outside of the map
-                    objectsToRemove.append(o);
-                } else {
-                    QPointF oldPos = o->position();
-                    QPointF newPos = oldPos + pixelOffset;
-                    new MoveMapObject(mapDocument(), o, newPos, oldPos, command);
-                }
-            }
-            break;
-        }
-        case Layer::ImageLayerType: {
-            // Adjust image layer by changing its offset
-            auto imageLayer = static_cast<ImageLayer*>(layer);
-            new SetLayerOffset(mapDocument(), layer,
-                               imageLayer->offset() + pixelOffset,
-                               command);
-            break;
-        }
-        case Layer::GroupLayerType: {
-            // Recursion handled by LayerIterator
-            break;
-        }
-        }
-    }
-
-    if (!objectsToRemove.isEmpty())
-        new RemoveMapObjects(mapDocument(), objectsToRemove, command);
-
-    new ResizeMap(mapDocument(), size, command);
-    new ChangeSelectedArea(mapDocument(), movedSelection, command);
-
-    push(command);
-
-    // TODO: Handle layers that don't match the map size correctly
 }
 
 void EditableMap::documentChanged(const ChangeEvent &change)

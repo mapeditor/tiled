@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -40,10 +40,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 /**
  * The core class for our tiles.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class Tile extends TileData {
@@ -53,7 +50,7 @@ public class Tile extends TileData {
     private TileSet tileset;
 
     /**
-     * <p>Constructor for Tile.</p>
+     * Constructor for Tile.
      */
     public Tile() {
         super();
@@ -61,7 +58,7 @@ public class Tile extends TileData {
     }
 
     /**
-     * <p>Constructor for Tile.</p>
+     * Constructor for Tile.
      *
      * @param set a {@link org.mapeditor.core.TileSet} object.
      */
@@ -76,7 +73,7 @@ public class Tile extends TileData {
      * @param t tile to copy
      */
     public Tile(Tile t) {
-        tileset = t.tileset;
+        this.tileset = t.tileset;
 
         Properties tileProperties = t.properties;
         if (tileProperties != null) {
@@ -128,7 +125,7 @@ public class Tile extends TileData {
     }
 
     /**
-     * <p>getWidth.</p>
+     * getWidth.
      *
      * @return a int.
      */
@@ -140,7 +137,7 @@ public class Tile extends TileData {
     }
 
     /**
-     * <p>getHeight.</p>
+     * getHeight.
      *
      * @return a int.
      */
@@ -161,7 +158,7 @@ public class Tile extends TileData {
     }
 
     /**
-     * <p>Getter for the field <code>source</code>.</p>
+     * Getter for the field <code>source</code>.
      *
      * @return a {@link java.lang.String} object.
      */

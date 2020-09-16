@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
 SUBDIRS = csv \
           defold \
+          defoldcollection \
           droidcraft \
           flare \
           gmx \

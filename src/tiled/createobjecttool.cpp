@@ -42,8 +42,9 @@
 
 using namespace Tiled;
 
-CreateObjectTool::CreateObjectTool(QObject *parent)
-    : AbstractObjectTool(QString(),
+CreateObjectTool::CreateObjectTool(Id id, QObject *parent)
+    : AbstractObjectTool(id,
+                         QString(),
                          QIcon(),
                          QKeySequence(),
                          parent)

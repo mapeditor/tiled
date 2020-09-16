@@ -20,18 +20,18 @@
 
 #include "objectsdock.h"
 
+#include "actionmanager.h"
 #include "documentmanager.h"
+#include "filteredit.h"
 #include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
 #include "mapobject.h"
-#include "mapobjectmodel.h"
 #include "objectgroup.h"
 #include "objectsview.h"
 #include "utils.h"
 
-#include <QAbstractProxyModel>
 #include <QBoxLayout>
 #include <QEvent>
 #include <QLabel>
@@ -44,13 +44,14 @@ using namespace Tiled;
 
 ObjectsDock::ObjectsDock(QWidget *parent)
     : QDockWidget(parent)
+    , mFilterEdit(new FilterEdit(this))
     , mObjectsView(new ObjectsView)
     , mMapDocument(nullptr)
 {
     setObjectName(QLatin1String("ObjectsDock"));
 
     mActionObjectProperties = new QAction(this);
-    mActionObjectProperties->setIcon(QIcon(QLatin1String(":/images/16x16/document-properties.png")));
+    mActionObjectProperties->setIcon(QIcon(QLatin1String(":/images/16/document-properties.png")));
 
     connect(mActionObjectProperties, &QAction::triggered,
             this, &ObjectsDock::objectProperties);
@@ -61,20 +62,25 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setMargin(0);
     layout->setSpacing(0);
+    layout->addWidget(mFilterEdit);
     layout->addWidget(mObjectsView);
 
+    mFilterEdit->setFilteredView(mObjectsView);
+
+    connect(mFilterEdit, &QLineEdit::textChanged, mObjectsView, &ObjectsView::setFilter);
+
     mActionNewLayer = new QAction(this);
-    mActionNewLayer->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
+    mActionNewLayer->setIcon(QIcon(QLatin1String(":/images/16/document-new.png")));
     connect(mActionNewLayer, &QAction::triggered,
             handler->actionAddObjectGroup(), &QAction::trigger);
 
     mActionMoveToGroup = new QAction(this);
-    mActionMoveToGroup->setIcon(QIcon(QLatin1String(":/images/16x16/layer-object.png")));
+    mActionMoveToGroup->setIcon(QIcon(QLatin1String(":/images/16/layer-object.png")));
 
     mActionMoveUp = new QAction(this);
-    mActionMoveUp->setIcon(QIcon(QLatin1String(":/images/16x16/go-up.png")));
+    mActionMoveUp->setIcon(QIcon(QLatin1String(":/images/16/go-up.png")));
     mActionMoveDown = new QAction(this);
-    mActionMoveDown->setIcon(QIcon(QLatin1String(":/images/16x16/go-down.png")));
+    mActionMoveDown->setIcon(QIcon(QLatin1String(":/images/16/go-down.png")));
 
     Utils::setThemeIcon(mActionObjectProperties, "document-properties");
     Utils::setThemeIcon(mActionMoveUp, "go-up");
@@ -106,6 +112,9 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     setWidget(widget);
     retranslateUi();
 
+    ActionManager::registerAction(mActionMoveUp, "MoveObjectsUp");
+    ActionManager::registerAction(mActionMoveDown, "MoveObjectsDown");
+
     connect(DocumentManager::instance(), &DocumentManager::documentAboutToClose,
             this, &ObjectsDock::documentAboutToClose);
 
@@ -128,7 +137,7 @@ void ObjectsDock::moveObjectsDown()
 void ObjectsDock::setMapDocument(MapDocument *mapDoc)
 {
     if (mMapDocument) {
-        mObjectsView->saveExpandedGroups();
+        mObjectsView->saveExpandedLayers();
         mMapDocument->disconnect(this);
     }
 
@@ -137,7 +146,7 @@ void ObjectsDock::setMapDocument(MapDocument *mapDoc)
     mObjectsView->setMapDocument(mapDoc);
 
     if (mMapDocument) {
-        mObjectsView->restoreExpandedGroups();
+        mObjectsView->restoreExpandedLayers();
         connect(mMapDocument, &MapDocument::selectedObjectsChanged,
                 this, &ObjectsDock::updateActions);
     }
@@ -161,10 +170,12 @@ void ObjectsDock::retranslateUi()
 {
     setWindowTitle(tr("Objects"));
 
-    mActionNewLayer->setToolTip(tr("Add Object Layer"));
-    mActionObjectProperties->setToolTip(tr("Object Properties"));
-    mActionMoveUp->setToolTip(tr("Move Objects Up"));
-    mActionMoveDown->setToolTip(tr("Move Objects Down"));
+    mFilterEdit->setPlaceholderText(tr("Filter"));
+
+    mActionNewLayer->setText(tr("Add Object Layer"));
+    mActionObjectProperties->setText(tr("Object Properties"));
+    mActionMoveUp->setText(tr("Move Objects Up"));
+    mActionMoveDown->setText(tr("Move Objects Down"));
 
     updateActions();
 }
@@ -214,5 +225,5 @@ void ObjectsDock::objectProperties()
 void ObjectsDock::documentAboutToClose(Document *document)
 {
     if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
-        mObjectsView->clearExpandedGroups(mapDocument);
+        mObjectsView->clearExpandedLayers(mapDocument);
 }

@@ -60,12 +60,21 @@ void TileLayerEdit::setTile(int x, int y, EditableTile *tile, int flags)
 
 void TileLayerEdit::apply()
 {
+    // Applying an edit automatically makes it mergeable, so that further
+    // changes made through the same edit are merged by default.
+    bool mergeable = std::exchange(mMergeable, true);
+
     // Determine painted region and normalize the changes layer
     auto paintedRegion = mChanges.region([] (const Cell &cell) { return cell.checked(); });
+
+    // If the painted region is empty there's nothing else to do
+    if (paintedRegion.isEmpty())
+        return;
+
     auto rect = paintedRegion.boundingRect();
     mChanges.resize(rect.size(), -rect.topLeft());
 
-    if (mTargetLayer->map()) {
+    if (mTargetLayer->mapDocument()) {
         // Apply the change using an undo command
         auto mapDocument = mTargetLayer->map()->mapDocument();
         auto paint = new PaintTileLayer(mapDocument,
@@ -73,7 +82,7 @@ void TileLayerEdit::apply()
                                         rect.x(), rect.y(),
                                         &mChanges,
                                         paintedRegion);
-        paint->setMergeable(mMergeable);
+        paint->setMergeable(mergeable);
 
         // Add any used tilesets that aren't yet part of the target map
         const auto tilesets = mChanges.usedTilesets();
@@ -89,10 +98,6 @@ void TileLayerEdit::apply()
     }
 
     mChanges.clear();
-
-    // Applying an edit automatically makes it mergeable, so that further
-    // changes made through the same edit are merged by default.
-    mMergeable = true;
 }
 
 } // namespace Tiled

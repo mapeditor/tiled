@@ -155,6 +155,7 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
 void LayerDock::changeEvent(QEvent *e)
 {
     QDockWidget::changeEvent(e);
+
     switch (e->type()) {
     case QEvent::LanguageChange:
         retranslateUi();
@@ -272,9 +273,7 @@ private:
 
 LayerView::LayerView(QWidget *parent)
     : QTreeView(parent)
-    , mMapDocument(nullptr)
     , mProxyModel(new ReversingProxyModel(this))
-    , mUpdatingSelectedLayers(false)
 {
     setHeaderHidden(true);
     setUniformRowHeights(true);
@@ -322,6 +321,7 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
                 this, &LayerView::layerRemoved);
 
         currentLayerChanged(mMapDocument->currentLayer());
+        selectedLayersChanged();
     } else {
         mProxyModel->setSourceModel(nullptr);
     }
@@ -335,6 +335,8 @@ void LayerView::editLayerModelIndex(const QModelIndex &layerModelIndex)
 void LayerView::currentRowChanged(const QModelIndex &proxyIndex)
 {
     if (!mMapDocument)
+        return;
+    if (mUpdatingViewSelection)
         return;
 
     const LayerModel *layerModel = mMapDocument->layerModel();
@@ -355,10 +357,12 @@ void LayerView::currentLayerChanged(Layer *layer)
     const QModelIndex index = mProxyModel->mapFromSource(layerModel->index(layer));
     const QModelIndex current = currentIndex();
     if (current.parent() != index.parent() || current.row() != index.row()) {
+        mUpdatingViewSelection = true;
         selectionModel()->setCurrentIndex(index,
                                           QItemSelectionModel::Clear |
                                           QItemSelectionModel::SelectCurrent |
                                           QItemSelectionModel::Rows);
+        mUpdatingViewSelection = false;
     }
 }
 
@@ -376,12 +380,14 @@ void LayerView::selectedLayersChanged()
         selection.select(index, index);
     }
 
+    mUpdatingViewSelection = true;
     selectionModel()->select(selection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    mUpdatingViewSelection = false;
 }
 
 void LayerView::layerRemoved(Layer *layer)
 {
-    Q_UNUSED(layer);
+    Q_UNUSED(layer)
 
     // Select "current layer" after layer removal clears selection
     if (mMapDocument->selectedLayers().isEmpty() && mMapDocument->currentLayer())
@@ -469,6 +475,8 @@ void LayerView::selectionChanged(const QItemSelection &selected,
     QTreeView::selectionChanged(selected, deselected);
 
     if (!mMapDocument)
+        return;
+    if (mUpdatingViewSelection)
         return;
 
     const auto selectedRows = selectionModel()->selectedRows();

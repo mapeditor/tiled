@@ -55,7 +55,8 @@ uint TILEDSHARED_EXPORT qHash(const TilesheetParameters &key, uint seed = 0) Q_D
 
 struct LoadedImage
 {
-    explicit LoadedImage(const QString &fileName);
+    LoadedImage();
+    LoadedImage(QImage image, const QDateTime &lastModified);
 
     operator const QImage &() const { return image; }
 
@@ -63,23 +64,9 @@ struct LoadedImage
     QDateTime lastModified;
 };
 
-struct LoadedPixmap
-{
-    explicit LoadedPixmap(const LoadedImage &cachedImage);
-
-    operator const QPixmap &() const { return pixmap; }
-
-    QPixmap pixmap;
-    QDateTime lastModified;
-};
-
-struct CutTiles
-{
-    operator const QVector<QPixmap> &() const { return tiles; }
-
-    QVector<QPixmap> tiles;
-    QDateTime lastModified;
-};
+struct CutTiles;
+struct LoadedPixmap;
+class Map;
 
 class TILEDSHARED_EXPORT ImageCache
 {
@@ -91,6 +78,8 @@ public:
     static void remove(const QString &fileName);
 
 private:
+    static QImage renderMap(const QString &fileName);
+
     static QHash<QString, LoadedImage> sLoadedImages;
     static QHash<QString, LoadedPixmap> sLoadedPixmaps;
     static QHash<TilesheetParameters, CutTiles> sCutTiles;

@@ -52,14 +52,14 @@ public:
 public:
     void accept() override;
 
-private slots:
+private:
     void browse();
     void updateAcceptEnabled();
 
-private:
     Ui::ExportAsImageDialog *mUi;
     MapDocument *mMapDocument;
     qreal mCurrentScale;
+
     static QString mPath;
 };
 

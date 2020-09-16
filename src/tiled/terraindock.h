@@ -86,14 +86,13 @@ public slots:
 protected:
     void changeEvent(QEvent *e) override;
 
-private slots:
+private:
     void refreshCurrentTerrain();
     void indexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
     void eraseTerrainButtonClicked();
     void rowsMoved();
 
-private:
     void retranslateUi();
 
     QModelIndex terrainIndex(Terrain *terrain) const;

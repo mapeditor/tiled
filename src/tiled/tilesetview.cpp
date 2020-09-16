@@ -41,11 +41,14 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QPainter>
+#include <QPainterPath>
 #include <QPinchGesture>
 #include <QScrollBar>
 #include <QUndoCommand>
 #include <QWheelEvent>
 #include <QtCore/qmath.h>
+
+#include <QDebug>
 
 using namespace Tiled;
 
@@ -69,6 +72,17 @@ public:
                    const QModelIndex &index) const override;
 
 private:
+    void drawFilmStrip(QPainter *painter, QRect targetRect) const;
+    void drawTerrainOverlay(QPainter *painter,
+                            const Tile *tile,
+                            QRect targetRect,
+                            const QBrush &highlight,
+                            const QModelIndex &index) const;
+    void drawWangOverlay(QPainter *painter,
+                         const Tile *tile,
+                         QRect targetRect,
+                         const QModelIndex &index) const;
+
     TilesetView *mTilesetView;
 };
 
@@ -216,11 +230,13 @@ static void paintTerrainOverlay(QPainter *painter,
     painter->restore();
 }
 
-static QTransform tilesetGridTransform(const Tileset &tileset, QPoint tileCenter)
+static void setupTilesetGridTransform(const Tileset &tileset, QTransform &transform, QRect &targetRect)
 {
-    QTransform transform;
-
     if (tileset.orientation() == Tileset::Isometric) {
+        const QPoint tileCenter = targetRect.center();
+        targetRect.setHeight(targetRect.width());
+        targetRect.moveCenter(tileCenter);
+
         const QSize gridSize = tileset.gridSize();
 
         transform.translate(tileCenter.x(), tileCenter.y());
@@ -234,8 +250,6 @@ static QTransform tilesetGridTransform(const Tileset &tileset, QPoint tileCenter
 
         transform.translate(-tileCenter.x(), -tileCenter.y());
     }
-
-    return transform;
 }
 
 static void setWangStyle(QPainter *painter, WangSet *wangSet, int index, bool edge)
@@ -531,6 +545,7 @@ void TileDelegate::paint(QPainter *painter,
     const QPixmap &tileImage = tile->image();
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
     const qreal zoom = mTilesetView->scale();
+    const bool wrapping = mTilesetView->dynamicWrapping();
 
     QSize tileSize = tileImage.size();
     if (tileImage.isNull()) {
@@ -538,17 +553,28 @@ void TileDelegate::paint(QPainter *painter,
         if (tileset->isCollection()) {
             tileSize = QSize(32, 32);
         } else {
-            int max = std::max(tileset->tileWidth(), tileset->tileWidth());
+            int max = std::max(tileset->tileWidth(), tileset->tileHeight());
             int min = std::min(max, 32);
             tileSize = QSize(min, min);
         }
     }
-    tileSize *= zoom;
 
     // Compute rectangle to draw the image in: bottom- and left-aligned
     QRect targetRect = option.rect.adjusted(0, 0, -extra, -extra);
-    targetRect.setTop(targetRect.bottom() - tileSize.height() + 1);
-    targetRect.setRight(targetRect.left() + tileSize.width() - 1);
+
+    if (wrapping) {
+        qreal scale = std::min(static_cast<qreal>(targetRect.width()) / tileSize.width(),
+                               static_cast<qreal>(targetRect.height()) / tileSize.height());
+        tileSize *= scale;
+
+        auto center = targetRect.center();
+        targetRect.setSize(tileSize);
+        targetRect.moveCenter(center);
+    } else {
+        tileSize *= zoom;
+        targetRect.setTop(targetRect.bottom() - tileSize.height() + 1);
+        targetRect.setRight(targetRect.left() + tileSize.width() - 1);
+    }
 
     // Draw the tile image
     if (Zoomable *zoomable = mTilesetView->zoomable())
@@ -562,38 +588,8 @@ void TileDelegate::paint(QPainter *painter,
 
 
     // Overlay with film strip when animated
-    if (mTilesetView->markAnimatedTiles() && tile->isAnimated()) {
-        painter->save();
-
-        qreal scale = qMin(tileImage.width() / 32.0,
-                           tileImage.height() / 32.0);
-
-        painter->setClipRect(targetRect);
-        painter->translate(targetRect.right(),
-                           targetRect.bottom());
-        painter->scale(scale * zoom, scale * zoom);
-        painter->translate(-18, 3);
-        painter->rotate(-45);
-        painter->setOpacity(0.8);
-
-        QRectF strip(0, 0, 32, 6);
-        painter->fillRect(strip, Qt::black);
-
-        painter->setRenderHint(QPainter::Antialiasing);
-        painter->setBrush(Qt::white);
-        painter->setPen(Qt::NoPen);
-
-        QRectF hole(0, 0, strip.height() * 0.6, strip.height() * 0.6);
-        qreal step = (strip.height() - hole.height()) + hole.width();
-        qreal margin = (strip.height() - hole.height()) / 2;
-
-        for (qreal x = (step - hole.width()) / 2; x < strip.right(); x += step) {
-            hole.moveTo(x, margin);
-            painter->drawRoundedRect(hole, 25, 25, Qt::RelativeSize);
-        }
-
-        painter->restore();
-    }
+    if (mTilesetView->markAnimatedTiles() && tile->isAnimated())
+        drawFilmStrip(painter, targetRect);
 
     const auto highlight = option.palette.highlight();
 
@@ -605,62 +601,11 @@ void TileDelegate::paint(QPainter *painter,
         painter->setOpacity(opacity);
     }
 
-    if (mTilesetView->isEditTerrain()) {
-        painter->save();
-        painter->setTransform(tilesetGridTransform(*tile->tileset(), targetRect.center()), true);
+    if (mTilesetView->isEditTerrain())
+        drawTerrainOverlay(painter, tile, targetRect, highlight, index);
 
-        const unsigned terrain = tile->terrain();
-
-        paintTerrainOverlay(painter, terrain,
-                            mTilesetView->terrainId(), targetRect,
-                            highlight.color());
-
-        // Overlay with terrain corner indication when hovered
-        if (index == mTilesetView->hoveredIndex()) {
-            QPoint pos;
-            switch (mTilesetView->hoveredCorner()) {
-            case 0: pos = targetRect.topLeft(); break;
-            case 1: pos = targetRect.topRight(); break;
-            case 2: pos = targetRect.bottomLeft(); break;
-            case 3: pos = targetRect.bottomRight(); break;
-            }
-
-            painter->save();
-            painter->setBrush(option.palette.highlight());
-            painter->setClipRect(targetRect);
-            painter->setRenderHint(QPainter::Antialiasing);
-            setCosmeticPen(painter, highlight.color().darker(), 2);
-            painter->drawEllipse(pos,
-                                 targetRect.width() / 3,
-                                 targetRect.height() / 3);
-            painter->restore();
-        }
-
-        painter->restore();
-    }
-
-    if (mTilesetView->isEditWangSet()) {
-        painter->save();
-        painter->setTransform(tilesetGridTransform(*tile->tileset(), targetRect.center()), true);
-
-        if (WangSet *wangSet = mTilesetView->wangSet()) {
-
-            paintWangOverlay(painter, wangSet->wangIdOfTile(tile),
-                             wangSet,
-                             targetRect);
-
-            if (mTilesetView->hoveredIndex() == index) {
-                qreal opacity = painter->opacity();
-                painter->setOpacity(0.9);
-                paintWangOverlay(painter, mTilesetView->wangId(),
-                                 wangSet,
-                                 targetRect);
-                painter->setOpacity(opacity);
-            }
-        }
-
-        painter->restore();
-    }
+    if (mTilesetView->isEditWangSet())
+        drawWangOverlay(painter, tile, targetRect, index);
 }
 
 QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
@@ -668,8 +613,15 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 {
     const TilesetModel *m = static_cast<const TilesetModel*>(index.model());
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
+    const qreal scale = mTilesetView->scale();
 
     if (const Tile *tile = m->tileAt(index)) {
+        if (mTilesetView->dynamicWrapping()) {
+            Tileset *tileset = tile->tileset();
+            return QSize(tileset->tileWidth() * scale + extra,
+                         tileset->tileHeight() * scale + extra);
+        }
+
         const QPixmap &image = tile->image();
         QSize tileSize = image.size();
 
@@ -684,11 +636,116 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
             }
         }
 
-        return QSize(tileSize.width() * mTilesetView->scale() + extra,
-                     tileSize.height() * mTilesetView->scale() + extra);
+        return QSize(tileSize.width() * scale + extra,
+                     tileSize.height() * scale + extra);
     }
 
     return QSize(extra, extra);
+}
+
+void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect) const
+{
+    painter->save();
+
+    qreal scale = qMin(targetRect.width() / 32.0,
+                       targetRect.height() / 32.0);
+
+    painter->setClipRect(targetRect);
+    painter->translate(targetRect.right(),
+                       targetRect.bottom());
+    painter->scale(scale, scale);
+    painter->translate(-18, 3);
+    painter->rotate(-45);
+    painter->setOpacity(0.8);
+
+    QRectF strip(0, 0, 32, 6);
+    painter->fillRect(strip, Qt::black);
+
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setBrush(Qt::white);
+    painter->setPen(Qt::NoPen);
+
+    QRectF hole(0, 0, strip.height() * 0.6, strip.height() * 0.6);
+    qreal step = (strip.height() - hole.height()) + hole.width();
+    qreal margin = (strip.height() - hole.height()) / 2;
+
+    for (qreal x = (step - hole.width()) / 2; x < strip.right(); x += step) {
+        hole.moveTo(x, margin);
+        painter->drawRoundedRect(hole, 25, 25, Qt::RelativeSize);
+    }
+
+    painter->restore();
+}
+
+void TileDelegate::drawTerrainOverlay(QPainter *painter,
+                                      const Tile *tile,
+                                      QRect targetRect,
+                                      const QBrush &highlight,
+                                      const QModelIndex &index) const
+{
+    painter->save();
+
+    QTransform transform;
+    setupTilesetGridTransform(*tile->tileset(), transform, targetRect);
+    painter->setTransform(transform, true);
+
+    const unsigned terrain = tile->terrain();
+
+    paintTerrainOverlay(painter, terrain,
+                        mTilesetView->terrainId(), targetRect,
+                        highlight.color());
+
+    // Overlay with terrain corner indication when hovered
+    if (index == mTilesetView->hoveredIndex()) {
+        QPoint pos;
+        switch (mTilesetView->hoveredCorner()) {
+        case 0: pos = targetRect.topLeft(); break;
+        case 1: pos = targetRect.topRight(); break;
+        case 2: pos = targetRect.bottomLeft(); break;
+        case 3: pos = targetRect.bottomRight(); break;
+        }
+
+        painter->save();
+        painter->setBrush(highlight);
+        painter->setClipRect(targetRect);
+        painter->setRenderHint(QPainter::Antialiasing);
+        setCosmeticPen(painter, highlight.color().darker(), 2);
+        painter->drawEllipse(pos,
+                             targetRect.width() / 3,
+                             targetRect.height() / 3);
+        painter->restore();
+    }
+
+    painter->restore();
+}
+
+void TileDelegate::drawWangOverlay(QPainter *painter,
+                                   const Tile *tile,
+                                   QRect targetRect,
+                                   const QModelIndex &index) const
+{
+    painter->save();
+
+    QTransform transform;
+    setupTilesetGridTransform(*tile->tileset(), transform, targetRect);
+    painter->setTransform(transform, true);
+
+    if (WangSet *wangSet = mTilesetView->wangSet()) {
+        paintWangOverlay(painter, wangSet->wangIdOfTile(tile),
+                         wangSet,
+                         targetRect);
+
+        if (mTilesetView->hoveredIndex() == index) {
+            qreal opacity = painter->opacity();
+            painter->setOpacity(0.9);
+            paintWangOverlay(painter, mTilesetView->wangId(),
+                             wangSet,
+                             targetRect);
+            painter->setOpacity(opacity);
+        }
+    }
+
+    painter->restore();
 }
 
 } // anonymous namespace
@@ -697,21 +754,7 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 TilesetView::TilesetView(QWidget *parent)
     : QTableView(parent)
     , mZoomable(new Zoomable(this))
-    , mTilesetDocument(nullptr)
-    , mMarkAnimatedTiles(true)
-    , mEditTerrain(false)
-    , mEditWangSet(false)
-    , mWangBehavior(WholeId)
-    , mEraseTerrain(false)
-    , mTerrain(nullptr)
-    , mWangSet(nullptr)
-    , mWangId(0)
-    , mWangColorIndex(0)
-    , mHoveredCorner(0)
-    , mTerrainChanged(false)
-    , mWangIdChanged(false)
-    , mHandScrolling(false)
-    , mImageMissingIcon(QStringLiteral("://images/32x32/image-missing.png"))
+    , mImageMissingIcon(QStringLiteral("://images/32/image-missing.png"))
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -765,8 +808,12 @@ int TilesetView::sizeHintForColumn(int column) const
     if (model->tileset()->isCollection())
         return QTableView::sizeHintForColumn(column);
 
+    const int gridSpace = mDrawGrid ? 1 : 0;
+    if (dynamicWrapping())
+        return model->tileset()->tileWidth() * scale() + gridSpace;
+
     const int tileWidth = model->tileset()->tileWidth();
-    return qRound(tileWidth * scale()) + (mDrawGrid ? 1 : 0);
+    return qRound(tileWidth * scale()) + gridSpace;
 }
 
 int TilesetView::sizeHintForRow(int row) const
@@ -778,8 +825,12 @@ int TilesetView::sizeHintForRow(int row) const
     if (model->tileset()->isCollection())
         return QTableView::sizeHintForRow(row);
 
+    const int gridSpace = mDrawGrid ? 1 : 0;
+    if (dynamicWrapping())
+        return model->tileset()->tileHeight() * scale() + gridSpace;
+
     const int tileHeight = model->tileset()->tileHeight();
-    return qRound(tileHeight * scale()) + (mDrawGrid ? 1 : 0);
+    return qRound(tileHeight * scale()) + gridSpace;
 }
 
 qreal TilesetView::scale() const
@@ -787,10 +838,41 @@ qreal TilesetView::scale() const
     return mZoomable->scale();
 }
 
+void TilesetView::setDynamicWrapping(bool enabled)
+{
+    WrapBehavior behavior = enabled ? WrapDynamic : WrapFixed;
+    if (mWrapBehavior == behavior)
+        return;
+
+    mWrapBehavior = behavior;
+    setVerticalScrollBarPolicy(dynamicWrapping() ? Qt::ScrollBarAlwaysOn
+                                                 : Qt::ScrollBarAsNeeded);
+    scheduleDelayedItemsLayout();
+    refreshColumnCount();
+}
+
+bool TilesetView::dynamicWrapping() const
+{
+    switch (mWrapBehavior) {
+    case WrapDefault:
+        if (tilesetModel())
+            return tilesetModel()->tileset()->isCollection();
+        break;
+    case WrapDynamic:
+        return true;
+    case WrapFixed:
+        return false;
+    }
+
+    return false;
+}
+
 void TilesetView::setModel(QAbstractItemModel *model)
 {
     QTableView::setModel(model);
     updateBackgroundColor();
+    setVerticalScrollBarPolicy(dynamicWrapping() ? Qt::ScrollBarAlwaysOn : Qt::ScrollBarAsNeeded);
+    refreshColumnCount();
 }
 
 void TilesetView::setMarkAnimatedTiles(bool enabled)
@@ -1026,8 +1108,10 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
 
         if (mWangBehavior != WholeId) {
             QRect tileRect = visualRect(mHoveredIndex);
-            const auto t = tilesetGridTransform(*tilesetDocument()->tileset(), tileRect.center());
-            const auto mappedPos = t.inverted().map(pos);
+            QTransform transform;
+            setupTilesetGridTransform(*tilesetDocument()->tileset(), transform, tileRect);
+
+            const auto mappedPos = transform.inverted().map(pos);
             QPoint tileLocalPos = mappedPos - tileRect.topLeft();
             QPointF tileLocalPosF((qreal) tileLocalPos.x() / tileRect.width(),
                                   (qreal) tileLocalPos.y() / tileRect.height());
@@ -1086,10 +1170,12 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
         int previousHoverCorner = mHoveredCorner;
 
         if (mHoveredIndex.isValid()) {
-            const QPoint center = visualRect(hoveredIndex).center();
+            QRect tileRect = visualRect(mHoveredIndex);
+            QTransform transform;
+            setupTilesetGridTransform(*tilesetDocument()->tileset(), transform, tileRect);
 
-            const auto t = tilesetGridTransform(*tilesetDocument()->tileset(), center);
-            const auto mappedPos = t.inverted().map(pos);
+            const QPoint center = tileRect.center();
+            const auto mappedPos = transform.inverted().map(pos);
 
             int hoveredCorner = 0;
             if (mappedPos.x() > center.x())
@@ -1168,10 +1254,35 @@ void TilesetView::leaveEvent(QEvent *event)
  */
 void TilesetView::wheelEvent(QWheelEvent *event)
 {
-    if (event->modifiers() & Qt::ControlModifier &&
-            event->orientation() == Qt::Vertical)
-    {
+    bool wheelZoomsByDefault = !dynamicWrapping() && Preferences::instance()->wheelZoomsByDefault();
+    bool control = event->modifiers() & Qt::ControlModifier;
+
+    if ((wheelZoomsByDefault != control) && event->orientation() == Qt::Vertical) {
+        auto hor = horizontalScrollBar();
+        auto ver = verticalScrollBar();
+
+        const QPointF &viewportPos = event->posF();
+        const QPointF contentPos(viewportPos.x() + hor->value(),
+                                 viewportPos.y() + ver->value());
+
+        QPointF relativeContentPos;
+
+        const QSize oldContentSize = viewportSizeHint();
+        if (!oldContentSize.isEmpty()) {
+            relativeContentPos = QPointF(contentPos.x() / oldContentSize.width(),
+                                         contentPos.y() / oldContentSize.height());
+        }
+
         mZoomable->handleWheelDelta(event->delta());
+
+        executeDelayedItemsLayout();
+
+        const QSize newContentSizeHint = viewportSizeHint();
+        const QPointF newContentPos(relativeContentPos.x() * newContentSizeHint.width(),
+                                    relativeContentPos.y() * newContentSizeHint.height());
+
+        hor->setValue(newContentPos.x() - viewportPos.x());
+        ver->setValue(newContentPos.y() - viewportPos.y());
         return;
     }
 
@@ -1192,7 +1303,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
 
     QMenu menu;
 
-    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
+    QIcon propIcon(QLatin1String(":images/16/document-properties.png"));
 
     if (tile) {
         if (mEditTerrain) {
@@ -1253,6 +1364,12 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     menu.exec(event->globalPos());
 }
 
+void TilesetView::resizeEvent(QResizeEvent *event)
+{
+    QTableView::resizeEvent(event);
+    refreshColumnCount();
+}
+
 void TilesetView::addTerrainType()
 {
     if (Tile *tile = currentTile())
@@ -1308,14 +1425,32 @@ void TilesetView::swapTiles()
 void TilesetView::setDrawGrid(bool drawGrid)
 {
     mDrawGrid = drawGrid;
-    if (TilesetModel *model = tilesetModel())
-        model->resetModel();
+    scheduleDelayedItemsLayout();
+    refreshColumnCount();
 }
 
 void TilesetView::adjustScale()
 {
-    if (TilesetModel *model = tilesetModel())
-        model->resetModel();
+    scheduleDelayedItemsLayout();
+    refreshColumnCount();
+}
+
+void TilesetView::refreshColumnCount()
+{
+    if (!tilesetModel())
+        return;
+
+    if (!dynamicWrapping()) {
+        tilesetModel()->setColumnCountOverride(0);
+        return;
+    }
+
+    const QSize maxSize = maximumViewportSize();
+    const int gridSpace = mDrawGrid ? 1 : 0;
+    const int tileWidth = tilesetModel()->tileset()->tileWidth();
+    const int scaledTileSize = std::max<int>(tileWidth * scale(), 1) + gridSpace;
+    const int columnCount = std::max(maxSize.width() / scaledTileSize, 1);
+    tilesetModel()->setColumnCountOverride(columnCount);
 }
 
 void TilesetView::applyTerrain()

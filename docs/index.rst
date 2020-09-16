@@ -10,6 +10,7 @@ Tiled Documentation
    :caption: User Manual
 
    manual/introduction
+   manual/projects
    manual/layers
    manual/editing-tile-layers
    manual/objects

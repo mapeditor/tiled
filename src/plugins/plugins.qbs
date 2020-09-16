@@ -4,6 +4,7 @@ Project {
     references: [
         "csv",
         "defold",
+        "defoldcollection",
         "droidcraft",
         "flare",
         "gmx",

@@ -66,8 +66,12 @@ public:
 
     void setSelectedTool(AbstractTool *tool);
 
+    MapItem *mapItem(MapDocument *mapDocument) const;
+
 signals:
     void mapDocumentChanged(MapDocument *mapDocument);
+
+    void sceneRefreshed();
 
 protected:
     bool event(QEvent *event) override;
@@ -83,18 +87,14 @@ protected:
     void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) override;
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
 
-private slots:
+private:
     void refreshScene();
 
     void mapChanged();
     void repaintTileset(Tileset *tileset);
 
-    void adaptToTilesetTileSizeChanges();
-    void adaptToTileSizeChanges();
+    void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
 
-    void tilesetReplaced();
-
-private:
     void updateDefaultBackgroundColor();
     void updateSceneRect();
 
@@ -119,6 +119,14 @@ private:
 inline MapDocument *MapScene::mapDocument() const
 {
     return mMapDocument;
+}
+
+/**
+ * Returns the map item displaying the given map, if any.
+ */
+inline MapItem *MapScene::mapItem(MapDocument *mapDocument) const
+{
+    return mMapItems.value(mapDocument);
 }
 
 } // namespace Tiled

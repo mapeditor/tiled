@@ -60,13 +60,24 @@ public:
 
     Q_INVOKABLE void removeProperty(const QString &name);
 
+    Q_INVOKABLE QVariant resolvedProperty(const QString &name) const;
+    Q_INVOKABLE QVariantMap resolvedProperties() const;
+
     Object *object() const;
     Document *document() const;
 
     void setAsset(EditableAsset *asset);
     void setObject(Object *object);
 
+protected:
+    bool checkReadOnly() const;
+
 private:
+    QVariant toScript(const QVariant &value) const;
+    QVariant fromScript(const QVariant &value) const;
+    QVariantMap toScript(const QVariantMap &value) const;
+    QVariantMap fromScript(const QVariantMap &value) const;
+
     EditableAsset *mAsset;
     Object *mObject;
 };
@@ -79,12 +90,22 @@ inline EditableAsset *EditableObject::asset() const
 
 inline QVariant EditableObject::property(const QString &name) const
 {
-    return mObject->property(name);
+    return toScript(mObject->property(name));
 }
 
 inline QVariantMap EditableObject::properties() const
 {
-    return mObject->properties();
+    return toScript(mObject->properties());
+}
+
+inline QVariant EditableObject::resolvedProperty(const QString &name) const
+{
+    return toScript(mObject->resolvedProperty(name));
+}
+
+inline QVariantMap EditableObject::resolvedProperties() const
+{
+    return toScript(mObject->resolvedProperties());
 }
 
 inline Object *EditableObject::object() const

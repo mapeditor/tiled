@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -39,10 +39,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * A layer of a map.
  *
  * @see org.mapeditor.core.Map
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class MapLayer extends LayerData implements Cloneable {
@@ -72,16 +69,14 @@ public class MapLayer extends LayerData implements Cloneable {
     protected Map map;
 
     /**
-     * <p>
-     * Constructor for MapLayer.</p>
+     * Constructor for MapLayer.
      */
     public MapLayer() {
         setMap(null);
     }
 
     /**
-     * <p>
-     * Constructor for MapLayer.</p>
+     * Constructor for MapLayer.
      *
      * @param w width in tiles
      * @param h height in tiles
@@ -91,8 +86,7 @@ public class MapLayer extends LayerData implements Cloneable {
     }
 
     /**
-     * <p>
-     * Constructor for MapLayer.</p>
+     * Constructor for MapLayer.
      *
      * @param r a {@link java.awt.Rectangle} object.
      */
@@ -110,8 +104,7 @@ public class MapLayer extends LayerData implements Cloneable {
     }
 
     /**
-     * <p>
-     * Constructor for MapLayer.</p>
+     * Constructor for MapLayer.
      *
      * @param map the map this layer is part of
      * @param w width in tiles
@@ -155,7 +148,7 @@ public class MapLayer extends LayerData implements Cloneable {
     }
 
     /**
-     * <p>getMap.</p>
+     * getMap.
      *
      * @return a {@link org.mapeditor.core.Map} object.
      */
@@ -222,7 +215,6 @@ public class MapLayer extends LayerData implements Cloneable {
      * {@inheritDoc}
      *
      * Creates a copy of this layer.
-     *
      * @see Object#clone
      */
     @Override
@@ -237,7 +229,7 @@ public class MapLayer extends LayerData implements Cloneable {
     }
 
     /**
-     * <p>resize.</p>
+     * resize.
      *
      * @param width the new width of the layer
      * @param height the new height of the layer

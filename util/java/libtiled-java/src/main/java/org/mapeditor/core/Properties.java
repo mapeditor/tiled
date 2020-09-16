@@ -2,8 +2,8 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -36,16 +36,15 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- * <p>Properties class.</p>
+ * Properties class.
  *
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class Properties extends PropertiesData implements Cloneable {
 
     /**
-     * <p>Constructor for Properties.</p>
+     * Constructor for Properties.
      */
     public Properties() {
         super();
@@ -53,7 +52,7 @@ public class Properties extends PropertiesData implements Cloneable {
     }
 
     /**
-     * <p>setProperty.</p>
+     * setProperty.
      *
      * @param name a {@link java.lang.String} object.
      * @param value a {@link java.lang.String} object.
@@ -66,7 +65,7 @@ public class Properties extends PropertiesData implements Cloneable {
     }
 
     /**
-     * <p>getProperty.</p>
+     * getProperty.
      *
      * @param name a {@link java.lang.String} object.
      * @return a {@link java.lang.String} object.
@@ -92,14 +91,14 @@ public class Properties extends PropertiesData implements Cloneable {
     }
 
     /**
-     * <p>clear.</p>
+     * clear.
      */
     public void clear() {
         properties.clear();
     }
 
     /**
-     * <p>isEmpty.</p>
+     * isEmpty.
      *
      * @return a boolean.
      */
@@ -108,20 +107,18 @@ public class Properties extends PropertiesData implements Cloneable {
     }
 
     /**
-     * <p>keySet.</p>
+     * keySet.
      *
      * @return a {@link java.util.List} object.
      */
     public List<String> keySet() {
         List<String> keys = new ArrayList<>();
-        for (Property property : properties) {
-            keys.add(property.getName());
-        }
+        properties.forEach(property -> keys.add(property.getName()));
         return keys;
     }
 
     /**
-     * <p>putAll.</p>
+     * putAll.
      *
      * @param props a {@link org.mapeditor.core.Properties} object.
      */

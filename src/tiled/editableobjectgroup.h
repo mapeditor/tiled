@@ -52,11 +52,10 @@ public:
     Q_INVOKABLE void addObject(Tiled::EditableMapObject *editableMapObject);
     QColor color() const;
 
+    ObjectGroup *objectGroup() const;
+
 public slots:
     void setColor(const QColor &color);
-
-private:
-    ObjectGroup *objectGroup() const;
 };
 
 

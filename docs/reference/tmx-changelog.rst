@@ -4,6 +4,29 @@ TMX Changelog
 Below are described the changes/additions that were made to the
 :doc:`tmx-map-format` for recent versions of Tiled.
 
+Tiled 1.4
+---------
+
+-  Added the ``objectalignment`` attribute to the :ref:`tmx-tileset` element,
+   allowing the tileset to control the alignment used for tile objects.
+
+-  Added the ``tintcolor`` attribute to the :ref:`tmx-layer`,
+   :ref:`tmx-objectgroup`, :ref:`tmx-imagelayer` and :ref:`tmx-group` elements,
+   allowing for a number of graphical effects like darkening or coloring a
+   layer.
+
+Tiled 1.3
+---------
+
+-  Added an :ref:`tmx-editorsettings` element, which is used to store editor
+   specific settings that are generally not relevant when loading a map.
+
+-  Added support for Zstandard compression for tile layer data
+   (``compression="zstd"`` on :ref:`tmx-data` elements).
+
+-  Added the ``compressionlevel`` attribute to the :ref:`tmx-map` element,
+   which stores the compression level to use for compressed tile layer data.
+
 Tiled 1.2.1
 -----------
 
@@ -24,6 +47,10 @@ Tiled 1.2
 Tiled 1.1
 ---------
 
+-  Added a :ref:`map.infinite <tmx-map>` attribute, which indicates whether
+   the map is considered unbounded. Tile layer data for infinite maps is
+   stored in chunks.
+
 -  A new :ref:`tmx-chunk` element was added for infinite maps which
    contains the similar content as :ref:`tmx-data`, except it stores
    the data of the area specified by its ``x``, ``y``, ``width`` and
@@ -39,6 +66,9 @@ Tiled 1.1
 
 -  Tilesets can now contain :doc:`Wang tiles </manual/using-wang-tiles>`.
    They are saved in the new :ref:`tmx-wangsets` element.
+
+-  A new :ref:`tmx-point` child element was added to :ref:`tmx-object`, which
+   marks point objects. Point objects do not have a size or rotation.
 
 Tiled 1.0
 ---------

@@ -312,10 +312,11 @@ void ResizeHandle::paint(QPainter *painter,
 
 
 ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
-    : AbstractObjectTool(tr("Select Objects"),
-          QIcon(QLatin1String(":images/22x22/tool-select-objects.png")),
-          QKeySequence(tr("S")),
-          parent)
+    : AbstractObjectTool("ObjectSelectionTool",
+                         tr("Select Objects"),
+                         QIcon(QLatin1String(":images/22/tool-select-objects.png")),
+                         QKeySequence(Qt::Key_S),
+                         parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mOriginIndicator(new OriginIndicator)
     , mMousePressed(false)
@@ -354,7 +355,7 @@ void ObjectSelectionTool::activate(MapScene *scene)
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::selectedObjectsChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
-    connect(mapDocument(), &MapDocument::tilesetTileOffsetChanged,
+    connect(mapDocument(), &MapDocument::tilesetTilePositioningChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
 
     scene->addItem(mOriginIndicator.get());
@@ -376,7 +377,7 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
-    disconnect(mapDocument(), &MapDocument::tilesetTileOffsetChanged,
+    disconnect(mapDocument(), &MapDocument::tilesetTilePositioningChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
 
     abortCurrentAction(Deactivated);
@@ -454,6 +455,7 @@ void ObjectSelectionTool::mouseEntered()
 void ObjectSelectionTool::mouseLeft()
 {
     mapDocument()->setHoveredMapObject(nullptr);
+    AbstractObjectTool::mouseLeft();
 }
 
 void ObjectSelectionTool::mouseMoved(const QPointF &pos,
@@ -725,7 +727,6 @@ void ObjectSelectionTool::languageChanged()
     AbstractObjectTool::languageChanged();
 
     setName(tr("Select Objects"));
-    setShortcut(QKeySequence(tr("S")));
 }
 
 void ObjectSelectionTool::changeEvent(const ChangeEvent &event)
@@ -1218,6 +1219,15 @@ void ObjectSelectionTool::startRotating(const QPointF &pos)
     updateHandleVisibility();
 }
 
+// Brings rotation values within the range of 0 - 360
+static qreal normalizeRotation(qreal rotation)
+{
+    qreal normalized = fmod(rotation, 360.);
+    if (normalized < 0.)
+        normalized += 360.;
+    return normalized;
+}
+
 void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
                                               Qt::KeyboardModifiers modifiers)
 {
@@ -1246,7 +1256,7 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         const QPointF newPixelPos = mOriginPos + newRelPos - offset;
         const QPointF newPos = renderer->screenToPixelCoords(newPixelPos);
 
-        const qreal newRotation = object.oldRotation + angleDiff * 180 / M_PI;
+        const qreal newRotation = normalizeRotation(object.oldRotation + angleDiff * 180 / M_PI);
 
         mapObject->setPosition(newPos);
         if (mapObject->canRotate())

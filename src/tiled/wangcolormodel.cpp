@@ -108,7 +108,7 @@ int WangColorModel::rowCount(const QModelIndex &parent) const
 
 int WangColorModel::columnCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent);
+    Q_UNUSED(parent)
     return 1;
 }
 
@@ -126,7 +126,7 @@ QVariant WangColorModel::data(const QModelIndex &index, int role) const
         case Qt::EditRole:
             return wangColorAt(index)->name();
         case Qt::DecorationRole:
-            if (Tile *tile =  mWangSet->tileset()->tileAt(wangColorAt(index)->imageId()))
+            if (Tile *tile =  mWangSet->tileset()->findTile(wangColorAt(index)->imageId()))
                 return tile->image();
             break;
         case Qt::BackgroundRole:

@@ -79,6 +79,10 @@ public:
     void drawTileLayer(QPainter *painter, const TileLayer *layer,
                        const QRectF &exposed = QRectF()) const override;
 
+    void drawTileLayer(const TileLayer *layer,
+                       const RenderTileCallback &renderTile,
+                       const QRectF &exposed = QRectF()) const override;
+
     void drawTileSelection(QPainter *painter,
                            const QRegion &region,
                            const QColor &color,

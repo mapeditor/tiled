@@ -135,10 +135,9 @@ public slots:
 
     void selectAllInstances(const ObjectTemplate *objectTemplate);
 
-private slots:
+private:
     void updateActions();
 
-private:
     MapDocument *mMapDocument;
 
     QAction *mActionSelectAll;

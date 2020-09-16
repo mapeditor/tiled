@@ -23,9 +23,13 @@
 
 #include <QtVariantEditorFactory>
 
+class QComboBox;
+
 namespace Tiled {
 
+class DisplayObjectRef;
 class FileEdit;
+class ObjectRefEdit;
 class TextPropertyEdit;
 class TilesetParametersEdit;
 
@@ -45,7 +49,7 @@ public:
         : QtVariantEditorFactory(parent)
     {}
 
-    ~VariantEditorFactory();
+    ~VariantEditorFactory() override;
 
 signals:
     void resetProperty(QtProperty *property);
@@ -57,16 +61,17 @@ protected:
                           QWidget *parent) override;
     void disconnectPropertyManager(QtVariantPropertyManager *manager) override;
 
-private slots:
+private:
     void slotPropertyChanged(QtProperty *property, const QVariant &value);
     void slotPropertyAttributeChanged(QtProperty *property,
                                       const QString &attribute,
                                       const QVariant &value);
     void fileEditFileUrlChanged(const QUrl &value);
     void textPropertyEditTextChanged(const QString &value);
+    void comboBoxPropertyEditTextChanged(const QString &value);
+    void objectRefEditValueChanged(const DisplayObjectRef &value);
     void slotEditorDestroyed(QObject *object);
 
-private:
     QMap<QtProperty *, QList<FileEdit *> > mCreatedFileEdits;
     QMap<FileEdit *, QtProperty *> mFileEditToProperty;
 
@@ -75,6 +80,12 @@ private:
 
     QMap<QtProperty *, QList<TextPropertyEdit *> > mCreatedTextPropertyEdits;
     QMap<TextPropertyEdit *, QtProperty *> mTextPropertyEditToProperty;
+
+    QMap<QtProperty *, QList<QComboBox *> > mCreatedComboBoxes;
+    QMap<QComboBox *, QtProperty *> mComboBoxToProperty;
+
+    QMap<QtProperty *, QList<ObjectRefEdit *> > mCreatedObjectRefEdits;
+    QMap<ObjectRefEdit *, QtProperty *> mObjectRefEditToProperty;
 };
 
 } // namespace Tiled

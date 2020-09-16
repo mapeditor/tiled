@@ -40,7 +40,7 @@ SnapHelper::SnapHelper(const MapRenderer *renderer,
 
 void SnapHelper::toggleSnap()
 {
-    mSnapToGrid = !mSnapToGrid;
+    mSnapToGrid = !(mSnapToGrid || mSnapToFineGrid);
     mSnapToFineGrid = false;
 }
 

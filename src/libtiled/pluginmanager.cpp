@@ -127,17 +127,12 @@ bool PluginManager::loadPlugin(PluginFile *plugin)
 
 bool PluginManager::unloadPlugin(PluginFile *plugin)
 {
-    bool derivedPlugin = qobject_cast<Plugin*>(plugin->instance) != nullptr;
+    if (plugin->instance && !qobject_cast<Plugin*>(plugin->instance))
+        removeObject(plugin->instance);
 
-    if (plugin->loader->unload()) {
-        if (!derivedPlugin)
-            removeObject(plugin->instance);
+    plugin->instance = nullptr;
 
-        plugin->instance = nullptr;
-        return true;
-    } else {
-        return false;
-    }
+    return plugin->loader->unload();
 }
 
 PluginManager *PluginManager::instance()
@@ -195,13 +190,13 @@ void PluginManager::loadPlugins()
 #endif
 
 #if defined(Q_OS_WIN32)
-    pluginPath += QLatin1String("/plugins/tiled");
+    pluginPath += QStringLiteral("/plugins/tiled");
 #elif defined(Q_OS_MAC)
-    pluginPath += QLatin1String("/../PlugIns");
+    pluginPath += QStringLiteral("/../PlugIns");
 #elif defined(TILED_PLUGIN_DIR)
     QString pluginPath = QLatin1String(TILED_PLUGIN_DIR);
 #else
-    pluginPath += QLatin1String("/../lib/tiled/plugins");
+    pluginPath += QStringLiteral("/../lib/tiled/plugins");
 #endif
 
     // Load dynamic plugins

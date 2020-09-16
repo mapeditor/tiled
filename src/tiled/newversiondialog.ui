@@ -41,14 +41,14 @@
      <item>
       <widget class="QPushButton" name="downloadButton">
        <property name="text">
-        <string>Download</string>
+        <string>Download ↗</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="releaseNotesButton">
        <property name="text">
-        <string>Release Notes</string>
+        <string>Release Notes ↗</string>
        </property>
        <property name="default">
         <bool>true</bool>

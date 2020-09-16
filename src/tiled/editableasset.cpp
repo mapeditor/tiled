@@ -25,6 +25,7 @@
 #include "editabletileset.h"
 #include "scriptmanager.h"
 
+#include <QCoreApplication>
 #include <QUndoStack>
 
 namespace Tiled {
@@ -32,9 +33,11 @@ namespace Tiled {
 EditableAsset::EditableAsset(Document *document, Object *object, QObject *parent)
     : EditableObject(this, object, parent)
     , mDocument(document)
-    , mUndoStack(new QUndoStack(this))
 {
-    connect(mUndoStack, &QUndoStack::cleanChanged, this, &EditableAsset::modifiedChanged);
+    if (document) {
+        connect(document, &Document::modifiedChanged,
+                this, &EditableAsset::modifiedChanged);
+    }
 }
 
 QString EditableAsset::fileName() const
@@ -54,12 +57,19 @@ bool EditableAsset::isTileset() const
     return qobject_cast<const EditableTileset*>(this) != nullptr;
 }
 
+QUndoStack *EditableAsset::undoStack() const
+{
+    return document() ? document()->undoStack() : nullptr;
+}
+
 /**
  * Returns whether the asset has unsaved changes.
  */
 bool EditableAsset::isModified() const
 {
-    return !undoStack()->isClean();
+    if (auto stack = undoStack())
+        return !stack->isClean();
+    return false;
 }
 
 bool EditableAsset::push(QUndoCommand *command)
@@ -67,7 +77,7 @@ bool EditableAsset::push(QUndoCommand *command)
     return push(std::unique_ptr<QUndoCommand>(command));
 }
 
-bool EditableAsset::push(std::unique_ptr<QUndoCommand> &&command)
+bool EditableAsset::push(std::unique_ptr<QUndoCommand> command)
 {
     if (checkReadOnly())
         return false;
@@ -79,34 +89,37 @@ bool EditableAsset::push(std::unique_ptr<QUndoCommand> &&command)
 QJSValue EditableAsset::macro(const QString &text, QJSValue callback)
 {
     if (!callback.isCallable()) {
-        ScriptManager::instance().throwError(tr("Invalid callback"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid callback"));
         return QJSValue();
     }
 
-    undoStack()->beginMacro(text);
+    auto stack = undoStack();
+    if (stack)
+        undoStack()->beginMacro(text);
+
     QJSValue result = callback.call();
     ScriptManager::instance().checkError(result);
-    undoStack()->endMacro();
-    return result;
-}
 
-bool EditableAsset::checkReadOnly() const
-{
-    if (isReadOnly()) {
-        ScriptManager::instance().throwError(tr("Asset is read-only"));
-        return true;
-    }
-    return false;
+    if (stack)
+        undoStack()->endMacro();
+
+    return result;
 }
 
 void EditableAsset::undo()
 {
-    undoStack()->undo();
+    if (auto stack = undoStack())
+        stack->undo();
+    else
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Undo system not available for this asset"));
 }
 
 void EditableAsset::redo()
 {
-    undoStack()->redo();
+    if (auto stack = undoStack())
+        stack->redo();
+    else
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Undo system not available for this asset"));
 }
 
 } // namespace Tiled

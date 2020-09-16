@@ -7,7 +7,7 @@ Release:        1%{?dist}
 Summary:        Tiled Map Editor
 # tiled itself is GPLv2+, libtiled and tmxviewer are BSD
 License:        GPLv2+ and BSD
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Source0:        https://github.com/bjorn/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:  pkgconfig(Qt5Core)
@@ -29,7 +29,7 @@ to view Tiled maps.
 %package plugin-python
 Summary:        Python plugin for Tiled
 License:        GPLv2+
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-python
 A plugin for tiled which allows to write Python plugins.
@@ -39,7 +39,7 @@ A plugin for tiled which allows to write Python plugins.
 %package plugin-droidcraft
 Summary:        Droidcraft plugin for Tiled
 License:        GPLv2+
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-droidcraft
 A plugin for tiled which allows to save maps as .dat droidcraft maps.
@@ -49,7 +49,7 @@ A plugin for tiled which allows to save maps as .dat droidcraft maps.
 %package plugin-flare
 Summary:        Flare plugin for Tiled
 License:        GPLv2+
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-flare
 A plugin for tiled which allows to save maps as .txt flare maps.
@@ -59,7 +59,7 @@ A plugin for tiled which allows to save maps as .txt flare maps.
 %package plugin-replica-island
 Summary:        Replica Island plugin for Tiled
 License:        GPLv2+
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-replica-island
 A plugin for tiled which allows to save maps as .bin Replica Island maps.
@@ -69,7 +69,7 @@ A plugin for tiled which allows to save maps as .bin Replica Island maps.
 %package plugin-t-engine4
 Summary:        T-Engine4 plugin for Tiled
 License:        GPLv2+
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-t-engine4
 A plugin for tiled which allows to export maps as .lua T-Engine4 maps.
@@ -79,7 +79,7 @@ A plugin for tiled which allows to export maps as .lua T-Engine4 maps.
 %package plugin-defold
 Summary:        Defold plugin for Tiled
 License:        GPLv2+
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-defold
 A plugin for tiled which allows to export maps as .tilemap Defold maps.
@@ -89,7 +89,7 @@ A plugin for tiled which allows to export maps as .tilemap Defold maps.
 %package plugin-gmx
 Summary:        GameMaker Studio plugin for Tiled
 License:        GPLv2+
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-gmx
 A plugin for tiled which allows to export maps as GameMaker Studio room files.
@@ -145,7 +145,6 @@ fi
 
 %files -f %{name}.lang
 %doc AUTHORS NEWS.md README.md COPYING LICENSE.GPL LICENSE.BSD
-%{_bindir}/automappingconverter
 %{_bindir}/%{name}
 %{_bindir}/terraingenerator
 %{_bindir}/tmxrasterizer
@@ -169,7 +168,6 @@ fi
 %{_libdir}/%{name}/plugins/libjson1.so
 %{_libdir}/%{name}/plugins/liblua.so
 
-%{_mandir}/man1/automappingconverter.1*
 %{_mandir}/man1/%{name}.1*
 %{_mandir}/man1/tmxrasterizer.1*
 %{_mandir}/man1/tmxviewer.1*

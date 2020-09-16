@@ -48,6 +48,35 @@
 
 using namespace Tiled;
 
+static QPixmap tinted(const QPixmap &pixmap, const QColor &color)
+{
+    if (!color.isValid() || color == QColor(255, 255, 255, 255))
+        return pixmap;
+
+    QPixmap resultImage = pixmap;
+    QPainter painter(&resultImage);
+
+    QColor fullOpacity = color;
+    fullOpacity.setAlpha(255);
+    // tint the final color (this will will mess up the alpha which we will fix
+    // in the next lines)
+    painter.setCompositionMode(QPainter::CompositionMode_Multiply);
+    painter.fillRect(resultImage.rect(), fullOpacity);
+
+    // apply the original alpha to the final image
+    painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    painter.drawPixmap(0, 0, pixmap);
+
+    // apply the alpha of the tint color so that we can use it to make the image
+    // transparent instead of just increasing or decreasing the tint effect
+    painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    painter.fillRect(resultImage.rect(), color);
+
+    painter.end();
+
+    return resultImage;
+}
+
 MapRenderer::~MapRenderer()
 {}
 
@@ -86,7 +115,7 @@ void MapRenderer::drawImageLayer(QPainter *painter,
 {
     Q_UNUSED(exposed)
 
-    painter->drawPixmap(QPointF(), imageLayer->image());
+    painter->drawPixmap(QPointF(), tinted(imageLayer->image(), imageLayer->effectiveTintColor()));
 }
 
 void MapRenderer::drawPointObject(QPainter *painter, const QColor &color) const
@@ -223,12 +252,13 @@ static bool hasOpenGLEngine(const QPainter *painter)
             type == QPaintEngine::OpenGL2);
 }
 
-CellRenderer::CellRenderer(QPainter *painter, const MapRenderer *renderer, CellType cellType)
+CellRenderer::CellRenderer(QPainter *painter, const MapRenderer *renderer, const QColor &tintColor, CellType cellType)
     : mPainter(painter)
     , mRenderer(renderer)
     , mTile(nullptr)
     , mIsOpenGL(hasOpenGLEngine(painter))
     , mCellType(cellType)
+    , mTintColor(tintColor)
 {
 }
 
@@ -240,6 +270,8 @@ CellRenderer::CellRenderer(QPainter *painter, const MapRenderer *renderer, CellT
  * kind of tile has to be drawn. For this reason it is necessary to call
  * flush when finished doing drawCell calls. This function is also called by
  * the destructor so usually an explicit call is not needed.
+ *
+ * This call expects `painter.translate(pos)` to correspond to the Origin point.
  */
 void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &size, Origin origin)
 {
@@ -249,9 +281,11 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
         tile = tile->currentFrameTile();
 
     if (!tile || tile->image().isNull()) {
-        QRectF target { pos - QPointF(0, size.height()), size };
-        if (origin == BottomCenter)
-            target.moveLeft(target.left() - size.width() / 2);
+        QRectF target { pos, size };
+
+        if (origin == BottomLeft)
+            target.translate(0.0, -size.height());
+
         renderMissingImageMarker(*mPainter, target);
         return;
     }
@@ -274,8 +308,9 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     bool flippedVertically = cell.flippedVertically();
 
     QPainter::PixmapFragment fragment;
+    // Calculate the position as if the origin is TopLeft, and correct it later.
     fragment.x = pos.x() + (offset.x() * scale.width()) + sizeHalf.x();
-    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y() - size.height();
+    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y();
     fragment.sourceLeft = 0;
     fragment.sourceTop = 0;
     fragment.width = imageSize.width();
@@ -285,8 +320,9 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     fragment.rotation = 0;
     fragment.opacity = 1;
 
-    if (origin == BottomCenter)
-        fragment.x -= sizeHalf.x();
+    // Correct the position if the origin is BottomLeft.
+    if (origin == BottomLeft)
+        fragment.y -= size.height();
 
     if (mCellType == HexagonalCells) {
 
@@ -306,8 +342,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
         // Compensate for the swap of image dimensions
         const qreal halfDiff = sizeHalf.y() - sizeHalf.x();
         fragment.y += halfDiff;
-        if (origin != BottomCenter)
-            fragment.x += halfDiff;
+        fragment.x += halfDiff;
     }
 
     fragment.scaleX = scale.width() * (flippedHorizontally ? -1 : 1);
@@ -335,7 +370,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     const QRectF source(0, 0, fragment.width, fragment.height);
 
     mPainter->setTransform(transform);
-    mPainter->drawPixmap(target, image, source);
+    mPainter->drawPixmap(target, tinted(image, mTintColor), source);
     mPainter->setTransform(oldTransform);
 
     // A bit of a hack to still draw tile collision shapes when requested
@@ -360,7 +395,7 @@ void CellRenderer::flush()
 
     mPainter->drawPixmapFragments(mFragments.constData(),
                                   mFragments.size(),
-                                  mTile->image());
+                                  tinted(mTile->image(), mTintColor));
 
     if (mRenderer->flags().testFlag(ShowTileCollisionShapes)
             && mTile->objectGroup()

@@ -25,6 +25,10 @@
 
 #include "objecttemplate.h"
 #include "objecttemplateformat.h"
+#include "logginginterface.h"
+
+#include <QFile>
+#include <QFileInfo>
 
 using namespace Tiled;
 
@@ -45,8 +49,11 @@ void TemplateManager::deleteInstance()
 }
 
 TemplateManager::TemplateManager(QObject *parent)
-    : QObject(parent)
+    : QObject(parent),
+      mWatcher(new FileSystemWatcher(this))
 {
+    connect(mWatcher, &FileSystemWatcher::pathsChanged,
+            this, &TemplateManager::pathsChanged);
 }
 
 TemplateManager::~TemplateManager()
@@ -66,9 +73,37 @@ ObjectTemplate *TemplateManager::loadObjectTemplate(const QString &fileName, QSt
         if (!newTemplate)
             newTemplate = std::make_unique<ObjectTemplate>(fileName);
 
+        // If the file exists, watch it, regardless of whether the parse was successful.
+        if (QFile::exists(fileName))
+            mWatcher->addPath(fileName);
+
         objectTemplate = newTemplate.get();
         mObjectTemplates.insert(fileName, newTemplate.release());
     }
 
     return objectTemplate;
+}
+
+void TemplateManager::pathsChanged(const QStringList &paths)
+{
+    for (const QString &fileName : paths) {
+        ObjectTemplate *objectTemplate = findObjectTemplate(fileName);
+
+        // Most likely the file was removed.
+        if (!objectTemplate)
+            continue;
+
+        // Check whether we were the ones saving this file.
+        if (objectTemplate->lastSaved() == QFileInfo(fileName).lastModified())
+            continue;
+
+        auto newTemplate = readObjectTemplate(fileName);
+        if (newTemplate) {
+            objectTemplate->setObject(newTemplate->object());
+            objectTemplate->setFormat(newTemplate->format());
+            emit objectTemplateChanged(objectTemplate);
+        } else if (objectTemplate->object()) {  // only report error if it had loaded fine before
+            ERROR(tr("Unable to reload template file: %1").arg(fileName));
+        }
+    }
 }

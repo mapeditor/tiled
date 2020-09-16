@@ -44,7 +44,8 @@ public:
     /**
      * Constructs an abstract object tool with the given \a name and \a icon.
      */
-    AbstractObjectTool(const QString &name,
+    AbstractObjectTool(Id id,
+                       const QString &name,
                        const QIcon &icon,
                        const QKeySequence &shortcut,
                        QObject *parent = nullptr);
@@ -73,9 +74,10 @@ protected:
     QList<MapObject*> mapObjectsAt(const QPointF &pos) const;
     MapObject *topMostMapObjectAt(const QPointF &pos) const;
 
-private slots:
+private:
     void duplicateObjects();
     void removeObjects();
+    void applyCollisionsToSelectedTiles(bool replace);
     void resetTileSize();
     void saveSelectedObject();
     void detachSelectedObjects();
@@ -93,7 +95,6 @@ private slots:
     void raiseToTop();
     void lowerToBottom();
 
-private:
     void showContextMenu(MapObject *clickedObject,
                          QPoint screenPos);
 

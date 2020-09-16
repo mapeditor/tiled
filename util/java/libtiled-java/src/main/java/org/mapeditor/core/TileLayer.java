@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -30,6 +30,8 @@
  */
 package org.mapeditor.core;
 
+import org.mapeditor.io.TMXMapReader;
+
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
@@ -43,19 +45,17 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * data.
  *
  * @see org.mapeditor.core.Map
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class TileLayer extends TileLayerData {
 
     private Tile[][] tileMap;
+    private int[][] flags;
     private HashMap<Object, Properties> tileInstanceProperties = new HashMap<>();
 
     /**
-     * <p>getTileInstancePropertiesAt.</p>
+     * getTileInstancePropertiesAt.
      *
      * @param x a int.
      * @param y a int.
@@ -70,7 +70,7 @@ public class TileLayer extends TileLayerData {
     }
 
     /**
-     * <p>setTileInstancePropertiesAt.</p>
+     * setTileInstancePropertiesAt.
      *
      * @param x a int.
      * @param y a int.
@@ -140,20 +140,24 @@ public class TileLayer extends TileLayerData {
      */
     public void rotate(int angle) {
         Tile[][] trans;
+        int[][] transFlags;
         int xtrans = 0, ytrans = 0;
 
         switch (angle) {
             case ROTATE_90:
                 trans = new Tile[width][height];
+                transFlags = new int[width][height];
                 xtrans = height - 1;
                 break;
             case ROTATE_180:
                 trans = new Tile[height][width];
+                transFlags = new int[height][width];
                 xtrans = width - 1;
                 ytrans = height - 1;
                 break;
             case ROTATE_270:
                 trans = new Tile[width][height];
+                transFlags = new int[width][height];
                 ytrans = width - 1;
                 break;
             default:
@@ -169,12 +173,14 @@ public class TileLayer extends TileLayerData {
                 int xrot = x * cosAngle - y * sinAngle;
                 int yrot = x * sinAngle + y * cosAngle;
                 trans[yrot + ytrans][xrot + xtrans] = getTileAt(x + this.x, y + this.y);
+                transFlags[yrot + ytrans][xrot + xtrans] = getFlagsAt(x + this.x, y + this.y);
             }
         }
 
         width = trans[0].length;
         height = trans.length;
         tileMap = trans;
+        flags = transFlags;
     }
 
     /**
@@ -188,16 +194,20 @@ public class TileLayer extends TileLayerData {
      */
     public void mirror(int dir) {
         Tile[][] mirror = new Tile[height][width];
+        int[][] mirrorFlags = new int[height][width];
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if (dir == MIRROR_VERTICAL) {
                     mirror[y][x] = tileMap[height - 1 - y][x];
+                    mirrorFlags[y][x] = flags[height - 1 - y][x];
                 } else {
                     mirror[y][x] = tileMap[y][width - 1 - x];
+                    mirrorFlags[y][x] = flags[y][width - 1 - x];
                 }
             }
         }
         tileMap = mirror;
+        flags = mirrorFlags;
     }
 
     /**
@@ -219,7 +229,7 @@ public class TileLayer extends TileLayerData {
     }
 
     /**
-     * <p>isEmpty.</p>
+     * isEmpty.
      *
      * @return a boolean.
      */
@@ -247,6 +257,7 @@ public class TileLayer extends TileLayerData {
     protected void setBounds(Rectangle bounds) {
         super.setBounds(bounds);
         tileMap = new Tile[height][width];
+        flags = new int[height][width];
 
         // Tile instance properties is null when this method is called from
         // the constructor of TileLayer
@@ -335,6 +346,27 @@ public class TileLayer extends TileLayerData {
     }
 
     /**
+     * Sets flags for tile at (tx, ty)
+     *
+     * @param tx Tile-space x coordinate
+     * @param ty Tile-space y coordinate
+     * @param flags int containing bit flags
+     */
+    public void setFlagsAt(int tx, int ty, int flags) {
+        if (getBounds().contains(tx, ty)) {
+            this.flags[ty - this.y][tx - this.x] = flags;
+        }
+    }
+
+    /**
+     * @return int containing flags of tile at (tx, ty)
+     */
+    public int getFlagsAt(int tx, int ty) {
+        return getBounds().contains(tx, ty)
+                ? flags[ty - this.y][tx - this.x] : 0;
+    }
+
+    /**
      * Returns the first occurrence (using top down, left to right search) of
      * the given tile.
      *
@@ -384,6 +416,7 @@ public class TileLayer extends TileLayerData {
                 Tile tile = getTileAt(x, y);
                 if (tile != null) {
                     other.setTileAt(x, y, tile);
+                    other.setFlagsAt(x, y, getFlagsAt(x, y));
                 }
             }
         }
@@ -404,6 +437,7 @@ public class TileLayer extends TileLayerData {
                 Tile tile = other.getTileAt(x, y);
                 if (mask.contains(x, y) && tile != null) {
                     setTileAt(x, y, tile);
+                    setFlagsAt(x, y, other.getFlagsAt(x, y));
                 }
             }
         }
@@ -420,6 +454,7 @@ public class TileLayer extends TileLayerData {
         for (int y = this.y; y < this.y + height; y++) {
             for (int x = this.x; x < this.x + width; x++) {
                 setTileAt(x, y, other.getTileAt(x, y));
+                setFlagsAt(x, y, other.getFlagsAt(x, y));
             }
         }
     }
@@ -438,6 +473,7 @@ public class TileLayer extends TileLayerData {
             for (int x = boundBox.x; x < boundBox.x + boundBox.width; x++) {
                 if (mask.contains(x, y)) {
                     setTileAt(x, y, other.getTileAt(x, y));
+                    setFlagsAt(x, y, other.getFlagsAt(x, y));
                 }
             }
         }
@@ -454,6 +490,7 @@ public class TileLayer extends TileLayerData {
         for (int y = this.y; y < this.y + height; y++) {
             for (int x = this.x; x < this.x + width; x++) {
                 other.setTileAt(x, y, getTileAt(x, y));
+                other.setFlagsAt(x, y, getFlagsAt(x, y));
             }
         }
     }
@@ -462,6 +499,7 @@ public class TileLayer extends TileLayerData {
     @Override
     public void resize(int width, int height, int dx, int dy) {
         Tile[][] newMap = new Tile[height][width];
+        int[][] newFlags = new int[height][width];
         HashMap<Object, Properties> newTileInstanceProperties = new HashMap<>();
 
         int maxX = Math.min(width, this.width + dx);
@@ -470,6 +508,7 @@ public class TileLayer extends TileLayerData {
         for (int x = Math.max(0, dx); x < maxX; x++) {
             for (int y = Math.max(0, dy); y < maxY; y++) {
                 newMap[y][x] = getTileAt(x - dx, y - dy);
+                newFlags[y][x] = getFlagsAt(x - dx, y - dy);
 
                 Properties tip = getTileInstancePropertiesAt(x - dx, y - dy);
                 if (tip != null) {
@@ -479,8 +518,45 @@ public class TileLayer extends TileLayerData {
         }
 
         tileMap = newMap;
+        flags = newFlags;
         tileInstanceProperties = newTileInstanceProperties;
         this.width = width;
         this.height = height;
+    }
+
+    /**
+     * Check if tile at (x, y) flipped horizontally
+     *
+     * @param x Tile-space x coordinate
+     * @param y Tile-space y coordinate
+     * @return <code>true</code> if tile at (x, y) is flipped horizontally
+     */
+    public boolean isFlippedHorizontaly(int x, int y) {
+        return getBounds().contains(x, y) &&
+                (flags[y][x] & (int)TMXMapReader.FLIPPED_HORIZONTALLY_FLAG) != 0;
+    }
+
+    /**
+     * Check if tile at (x, y) flipped vertically
+     *
+     * @param x Tile-space x coordinate
+     * @param y Tile-space y coordinate
+     * @return <code>true</code> if tile at (x, y) is flipped vertically
+     */
+    public boolean isFlippedVertically(int x, int y) {
+        return getBounds().contains(x, y) &&
+                (flags[y][x] & (int)TMXMapReader.FLIPPED_VERTICALLY_FLAG) != 0;
+    }
+
+    /**
+     * Check if tile at (x, y) flipped diagonally
+     *
+     * @param x Tile-space x coordinate
+     * @param y Tile-space y coordinate
+     * @return <code>true</code> if tile at (x, y) is flipped diagonally
+     */
+    public boolean isFlippedDiagonaly(int x, int y) {
+        return getBounds().contains(x, y) &&
+                (flags[y][x] & (int)TMXMapReader.FLIPPED_DIAGONALLY_FLAG) != 0;
     }
 }

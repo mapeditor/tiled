@@ -2,11 +2,13 @@ import qbs 1.0
 
 DynamicLibrary {
     targetName: "tiledquickplugin"
+    builtByDefault: false
 
     Depends { name: "libtiled" }
+    Depends { name: "libtiledquick" }
     Depends {
         name: "Qt"; submodules: ["qml", "quick"]
-        versionAtLeast: "5.4"
+        versionAtLeast: "5.6"
     }
 
     cpp.cxxLanguageVersion: "c++14"
@@ -25,16 +27,8 @@ DynamicLibrary {
     }
 
     files: [
-        "mapitem.cpp",
-        "mapitem.h",
-        "maploader.cpp",
-        "maploader.h",
         "tiledquickplugin.cpp",
-        "tiledquickplugin.h",
-        "tilelayeritem.cpp",
-        "tilelayeritem.h",
-        "tilesnode.cpp",
-        "tilesnode.h",
+        "tiledquickplugin.h"
     ]
 
     property string installBase: qbs.targetOS.contains("darwin") ? "Tiled Quick.app/Contents/" : ""

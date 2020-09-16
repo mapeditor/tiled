@@ -20,6 +20,7 @@
 
 #include "scriptedtool.h"
 
+#include "brushitem.h"
 #include "editablemap.h"
 #include "mapdocument.h"
 #include "pluginmanager.h"
@@ -27,13 +28,15 @@
 #include "tile.h"
 #include "tilesetdocument.h"
 
+#include <QCoreApplication>
 #include <QJSEngine>
 #include <QKeyEvent>
+#include <QQmlEngine>
 
 namespace Tiled {
 
-ScriptedTool::ScriptedTool(QJSValue object, QObject *parent)
-    : AbstractTileTool(QStringLiteral("<unnamed tool>"), QIcon(), QKeySequence(), nullptr, parent)
+ScriptedTool::ScriptedTool(Id id, QJSValue object, QObject *parent)
+    : AbstractTileTool(id, QStringLiteral("<unnamed tool>"), QIcon(), QKeySequence(), nullptr, parent)
     , mScriptObject(std::move(object))
 {
     const QJSValue nameProperty = mScriptObject.property(QStringLiteral("name"));
@@ -75,6 +78,28 @@ EditableTile *ScriptedTool::editableTile() const
     }
 
     return nullptr;
+}
+
+EditableMap *ScriptedTool::preview() const
+{
+    const auto &map = brushItem()->map();
+    if (!map)
+        return nullptr;
+
+    auto editableMap = new EditableMap(map->clone());
+    QQmlEngine::setObjectOwnership(editableMap, QQmlEngine::JavaScriptOwnership);
+    return editableMap;
+}
+
+void ScriptedTool::setPreview(EditableMap *editableMap)
+{
+    if (!editableMap) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+    // todo: filter any non-tilelayers out of the map?
+    auto map = editableMap->map()->clone();
+    brushItem()->setMap(SharedMap { map.release() });
 }
 
 void ScriptedTool::activate(MapScene *scene)
@@ -126,6 +151,10 @@ void ScriptedTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifier
 
 void ScriptedTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
+    AbstractTileTool::mousePressed(event);
+    if (event->isAccepted())
+        return;
+
     QJSValueList args;
     args.append(event->button());
     args.append(event->pos().x());
@@ -133,6 +162,7 @@ void ScriptedTool::mousePressed(QGraphicsSceneMouseEvent *event)
     args.append(static_cast<int>(event->modifiers()));
 
     call(QStringLiteral("mousePressed"), args);
+    event->accept();
 }
 
 void ScriptedTool::mouseReleased(QGraphicsSceneMouseEvent *event)
@@ -182,7 +212,7 @@ bool ScriptedTool::validateToolObject(QJSValue value)
     const QJSValue nameProperty = value.property(QStringLiteral("name"));
 
     if (!nameProperty.isString()) {
-        ScriptManager::instance().throwError(tr("Invalid tool object (requires string 'name' property)"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid tool object (requires string 'name' property)"));
         return false;
     }
 

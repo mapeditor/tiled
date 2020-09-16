@@ -229,8 +229,6 @@ private:
 
 class TILEDSHARED_EXPORT WangColor : public Object
 {
-    Q_OBJECT
-
 public:
     WangColor();
     WangColor(int colorIndex,
@@ -274,8 +272,6 @@ private:
  */
 class TILEDSHARED_EXPORT WangSet : public Object
 {
-    Q_OBJECT
-
 public:
     WangSet(Tileset *tileset,
             const QString &name,

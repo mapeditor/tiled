@@ -85,7 +85,7 @@ public:
     /**
      * Constructs a map document around the given map.
      */
-    MapDocument(std::unique_ptr<Map> map, const QString &fileName = QString());
+    MapDocument(std::unique_ptr<Map> map);
 
     ~MapDocument() override;
 
@@ -106,6 +106,9 @@ public:
 
     FileFormat *writerFormat() const override;
     void setWriterFormat(MapFormat *format);
+
+    QString lastExportFileName() const override;
+    void setLastExportFileName(const QString &fileName) override;
 
     MapFormat *exportFormat() const override;
     void setExportFormat(FileFormat *format) override;
@@ -131,6 +134,9 @@ public:
 
     const QList<Layer*> &selectedLayers() const { return mSelectedLayers; }
     void setSelectedLayers(const QList<Layer*> &layers);
+
+    void switchCurrentLayer(Layer *layer);
+    void switchSelectedLayers(const QList<Layer*> &layers);
 
     /**
      * Resize this map to the given \a size, while at the same time shifting
@@ -244,6 +250,8 @@ public:
 
     bool templateAllowed(const ObjectTemplate *objectTemplate) const;
 
+    void checkIssues() override;
+
 signals:
     /**
      * Emitted when the selected tile region changes. Sends the currently
@@ -272,6 +280,24 @@ signals:
      * Emitted when the map view should focus on the given object.
      */
     void focusMapObjectRequested(MapObject *object);
+
+    /**
+     * Emitted when some part of the UI wants the user to pick an object
+     * (currently only used to set an object reference).
+     */
+    void mapObjectPickRequest();
+
+    /**
+     * Emitted to cancel a previously started request for picking an object.
+     */
+    void cancelMapObjectPickRequest();
+
+    /**
+     * Emitted when an object was picked. Response to mapObjectPickRequest.
+     *
+     * \a object can be nullptr if the picking was canceled.
+     */
+    void mapObjectPicked(MapObject *object);
 
     /**
      * Emitted when the map size or its tile size changes.
@@ -328,13 +354,18 @@ signals:
 
     // emitted from the TilesetDocument
     void tilesetNameChanged(Tileset *tileset);
-    void tilesetTileOffsetChanged(Tileset *tileset);
+    void tilesetTilePositioningChanged(Tileset *tileset);
     void tileTypeChanged(Tile *tile);
     void tileImageSourceChanged(Tile *tile);
     void tileProbabilityChanged(Tile *tile);
     void tileObjectGroupChanged(Tile *tile);
 
-private slots:
+public slots:
+    void updateTemplateInstances(const ObjectTemplate *objectTemplate);
+    void selectAllInstances(const ObjectTemplate *objectTemplate);
+    void deselectObjects(const QList<MapObject*> &objects);
+
+private:
     void onChanged(const ChangeEvent &change);
 
     void onMapObjectModelRowsInserted(const QModelIndex &parent, int first, int last);
@@ -346,12 +377,6 @@ private slots:
     void onLayerAboutToBeRemoved(GroupLayer *groupLayer, int index);
     void onLayerRemoved(Layer *layer);
 
-public slots:
-    void updateTemplateInstances(const ObjectTemplate *objectTemplate);
-    void selectAllInstances(const ObjectTemplate *objectTemplate);
-    void deselectObjects(const QList<MapObject*> &objects);
-
-private:
     void moveObjectIndex(const MapObject *object, int count);
 
     /*
@@ -360,7 +385,6 @@ private:
      */
     QPointer<MapFormat> mReaderFormat;
     QPointer<MapFormat> mWriterFormat;
-    QPointer<MapFormat> mExportFormat;
     std::unique_ptr<Map> mMap;
     LayerModel *mLayerModel;
     QRegion mSelectedArea;
@@ -368,7 +392,7 @@ private:
     QList<MapObject*> mSelectedObjects;
     MapObject *mHoveredMapObject;       /**< Map object with mouse on top. */
     std::unique_ptr<MapRenderer> mRenderer;
-    Layer *mCurrentLayer;
+    Layer *mCurrentLayer = nullptr;
     MapObjectModel *mMapObjectModel;
     bool mAllowHidingObjects = true;
     bool mAllowTileObjects = true;

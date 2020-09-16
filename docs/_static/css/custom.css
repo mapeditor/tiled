@@ -54,3 +54,46 @@
 .rst-content .line-block {
     margin-bottom: 0.5em;
 }
+
+.wy-side-nav-search {
+    margin: 0px;        /* override unfitting bottom margin */
+    width: auto;        /* override fixed 300px width */
+    text-align: left;   /* override center alignment */
+}
+
+.wy-nav-top {
+    display: block;     /* override hiding on wide views */
+    padding: 0px;       /* override unwanted padding */
+    line-height: normal;/* override 50px */
+    max-width: 800px;   /* matches content max width */
+}
+
+.wy-nav-top i {
+    float: none;        /* override left float */
+    vertical-align: middle;
+    padding-top: 0px;   /* override inheriting padding */
+    visibility: hidden;
+}
+
+@media screen and (max-width: 768px) {
+    .wy-nav-top i {
+        visibility: visible;
+    }
+}
+
+.wy-side-nav-search input[type=text] {
+    vertical-align: middle !important; /* override top alignment */
+}
+
+.wy-side-nav-search > a {
+    margin-left: 5px;
+    margin-bottom: 0px; /* override unwanted margin */
+}
+
+/* more generic rule (theme only applies to div.version) */
+.wy-side-nav-search > .version {
+    color: rgba(255,255,255,0.3);
+}
+.wy-side-nav-search > div {
+    float: right;
+}

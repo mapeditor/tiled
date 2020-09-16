@@ -51,7 +51,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     for (const QString &name : qAsConst(mLanguages)) {
         QLocale locale(name);
-        QString string = QString(QLatin1String("%1 (%2)"))
+        QString string = QStringLiteral("%1 (%2)")
             .arg(QLocale::languageToString(locale.language()),
                  QLocale::countryToString(locale.country()));
         mUi->languageCombo->addItem(string, name);
@@ -80,14 +80,14 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     auto *preferences = Preferences::instance();
 
-    connect(mUi->enableDtd, &QCheckBox::toggled,
-            preferences, &Preferences::setDtdEnabled);
     connect(mUi->reloadTilesetImages, &QCheckBox::toggled,
             preferences, &Preferences::setReloadTilesetsOnChanged);
-    connect(mUi->openLastFiles, &QCheckBox::toggled,
-            preferences, &Preferences::setOpenLastFilesOnStartup);
+    connect(mUi->restoreSession, &QCheckBox::toggled,
+            preferences, &Preferences::setRestoreSessionOnStartup);
     connect(mUi->safeSaving, &QCheckBox::toggled,
             preferences, &Preferences::setSafeSavingEnabled);
+    connect(mUi->exportOnSave, &QCheckBox::toggled,
+            preferences, &Preferences::setExportOnSave);
 
     connect(mUi->embedTilesets, &QCheckBox::toggled, preferences, [preferences] (bool value) {
         preferences->setExportOption(Preferences::EmbedTilesets, value);
@@ -97,6 +97,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     });
     connect(mUi->resolveObjectTypesAndProperties, &QCheckBox::toggled, preferences, [preferences] (bool value) {
         preferences->setExportOption(Preferences::ResolveObjectTypesAndProperties, value);
+    });
+    connect(mUi->minimizeOutput, &QCheckBox::toggled, preferences, [preferences] (bool value) {
+        preferences->setExportOption(Preferences::ExportMinimized, value);
     });
 
     connect(mUi->languageCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
@@ -169,13 +172,14 @@ void PreferencesDialog::fromPreferences()
 
     // General
     mUi->reloadTilesetImages->setChecked(prefs->reloadTilesetsOnChange());
-    mUi->enableDtd->setChecked(prefs->dtdEnabled());
-    mUi->openLastFiles->setChecked(prefs->openLastFilesOnStartup());
+    mUi->restoreSession->setChecked(prefs->restoreSessionOnStartup());
     mUi->safeSaving->setChecked(prefs->safeSavingEnabled());
+    mUi->exportOnSave->setChecked(prefs->exportOnSave());
 
     mUi->embedTilesets->setChecked(prefs->exportOption(Preferences::EmbedTilesets));
     mUi->detachTemplateInstances->setChecked(prefs->exportOption(Preferences::DetachTemplateInstances));
     mUi->resolveObjectTypesAndProperties->setChecked(prefs->exportOption(Preferences::ResolveObjectTypesAndProperties));
+    mUi->minimizeOutput->setChecked(prefs->exportOption(Preferences::ExportMinimized));
 
     // Interface
     if (mUi->openGL->isEnabled())

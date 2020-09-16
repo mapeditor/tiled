@@ -40,12 +40,18 @@ macx {
     QMAKE_RPATHDIR =
 }
 
+# Support linking to system Zstandard install
+unix:contains(SYSTEM_ZSTD, yes) {
+    DEFINES += TILED_ZSTD_SUPPORT
+}
+
 SOURCES += aboutdialog.cpp \
     abstractobjecttool.cpp \
     abstracttileselectiontool.cpp \
     abstracttiletool.cpp \
     abstracttilefilltool.cpp \
     abstracttool.cpp \
+    abstractworldtool.cpp \
     actionmanager.cpp \
     addpropertydialog.cpp \
     addremovelayer.cpp \
@@ -72,6 +78,7 @@ SOURCES += aboutdialog.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
     changeselectedarea.cpp \
+    changeterrain.cpp \
     changetile.cpp \
     changetileanimation.cpp \
     changetileimagesource.cpp \
@@ -82,6 +89,9 @@ SOURCES += aboutdialog.cpp \
     changewangcolordata.cpp \
     changewangsetdata.cpp \
     clickablelabel.cpp \
+    issuescounter.cpp \
+    issuesdock.cpp \
+    issuesmodel.cpp \
     clipboardmanager.cpp \
     colorbutton.cpp \
     commandbutton.cpp \
@@ -90,6 +100,7 @@ SOURCES += aboutdialog.cpp \
     commanddialog.cpp \
     commandlineparser.cpp \
     commandmanager.cpp \
+    commandsedit.cpp \
     consoledock.cpp \
     createellipseobjecttool.cpp \
     createobjecttool.cpp \
@@ -102,6 +113,7 @@ SOURCES += aboutdialog.cpp \
     createtileobjecttool.cpp \
     document.cpp \
     documentmanager.cpp \
+    donationdialog.cpp \
     editableasset.cpp \
     editablegrouplayer.cpp \
     editableimagelayer.cpp \
@@ -112,6 +124,7 @@ SOURCES += aboutdialog.cpp \
     editableobject.cpp \
     editableobjectgroup.cpp \
     editableselectedarea.cpp \
+    editableterrain.cpp \
     editabletile.cpp \
     editabletilelayer.cpp \
     editabletileset.cpp \
@@ -137,6 +150,7 @@ SOURCES += aboutdialog.cpp \
     layeritem.cpp \
     layermodel.cpp \
     layeroffsettool.cpp \
+    locatorwidget.cpp \
     magicwandtool.cpp \
     main.cpp \
     maintoolbar.cpp \
@@ -148,11 +162,9 @@ SOURCES += aboutdialog.cpp \
     mapobjectitem.cpp \
     mapobjectmodel.cpp \
     mapscene.cpp \
-    mapsdock.cpp \
     mapview.cpp \
     minimap.cpp \
     minimapdock.cpp \
-    minimaprenderer.cpp \
     movelayer.cpp \
     movemapobject.cpp \
     movemapobjecttogroup.cpp \
@@ -166,26 +178,32 @@ SOURCES += aboutdialog.cpp \
     newversiondialog.cpp \
     noeditorwidget.cpp \
     objectgroupitem.cpp \
+    objectrefdialog.cpp \
+    objectrefedit.cpp \
+    objectreferenceitem.cpp \
+    objectreferencetool.cpp \
     objectsdock.cpp \
     objectselectionitem.cpp \
     objectselectiontool.cpp \
     objectsview.cpp \
-    objecttemplatemodel.cpp \
     objecttypeseditor.cpp \
     objecttypesmodel.cpp \
     offsetlayer.cpp \
     offsetmapdialog.cpp \
     painttilelayer.cpp \
-    patreondialog.cpp \
     pluginlistmodel.cpp \
     pointhandle.cpp \
     preferences.cpp \
+    project.cpp \
+    projectdock.cpp \
+    projectmanager.cpp \
+    projectmodel.cpp \
+    projectpropertiesdialog.cpp \
     preferencesdialog.cpp \
     propertiesdock.cpp \
     propertybrowser.cpp \
     raiselowerhelper.cpp \
     regionvaluetype.cpp \
-    renameterrain.cpp \
     renamewangset.cpp \
     reparentlayers.cpp \
     replacetemplate.cpp \
@@ -198,12 +216,16 @@ SOURCES += aboutdialog.cpp \
     reversingproxymodel.cpp \
     rotatemapobject.cpp \
     scriptedaction.cpp \
-    scriptedmapformat.cpp \
+    scriptedfileformat.cpp \
     scriptedtool.cpp \
+    scriptfile.cpp \
+    scriptfileformatwrappers.cpp \
+    scriptfileinfo.cpp \
     scriptmanager.cpp \
     scriptmodule.cpp \
     selectionrectangle.cpp \
     selectsametiletool.cpp \
+    session.cpp \
     shapefilltool.cpp \
     shortcutsettingspage.cpp \
     snaphelper.cpp \
@@ -211,6 +233,7 @@ SOURCES += aboutdialog.cpp \
     stampbrush.cpp \
     stylehelper.cpp \
     swaptiles.cpp \
+    tabbar.cpp \
     templatesdock.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
@@ -256,8 +279,10 @@ SOURCES += aboutdialog.cpp \
     wangsetmodel.cpp \
     wangdock.cpp \
     wangfiller.cpp \
-    wangtemplateview.cpp \
     wangtemplatemodel.cpp \
+    wangtemplateview.cpp \
+    worlddocument.cpp \
+    worldmovemaptool.cpp \
     zoomable.cpp
 
 HEADERS += aboutdialog.h \
@@ -266,6 +291,7 @@ HEADERS += aboutdialog.h \
     abstracttiletool.h \
     abstracttilefilltool.h \
     abstracttool.h \
+    abstractworldtool.h \
     actionmanager.h \
     addpropertydialog.h \
     addremovelayer.h \
@@ -293,6 +319,7 @@ HEADERS += aboutdialog.h \
     changepolygon.h \
     changeproperties.h \
     changeselectedarea.h \
+    changeterrain.h \
     changetile.h \
     changetileanimation.h \
     changetileimagesource.h \
@@ -303,6 +330,9 @@ HEADERS += aboutdialog.h \
     changewangcolordata.h \
     changewangsetdata.h \
     clickablelabel.h \
+    issuescounter.h \
+    issuesdock.h \
+    issuesmodel.h \
     clipboardmanager.h \
     colorbutton.h \
     commandbutton.h \
@@ -311,8 +341,8 @@ HEADERS += aboutdialog.h \
     command.h \
     commandlineparser.h \
     commandmanager.h \
+    commandsedit.h \
     consoledock.h \
-    containerhelpers.h \
     createellipseobjecttool.h \
     createobjecttool.h \
     createpointobjecttool.h \
@@ -324,6 +354,7 @@ HEADERS += aboutdialog.h \
     createtileobjecttool.h \
     document.h \
     documentmanager.h \
+    donationdialog.h \
     editableasset.h \
     editablegrouplayer.h \
     editableimagelayer.h \
@@ -334,6 +365,7 @@ HEADERS += aboutdialog.h \
     editableobject.h \
     editableobjectgroup.h \
     editableselectedarea.h \
+    editableterrain.h \
     editabletile.h \
     editabletilelayer.h \
     editabletileset.h \
@@ -359,6 +391,7 @@ HEADERS += aboutdialog.h \
     layeritem.h \
     layermodel.h \
     layeroffsettool.h \
+    locatorwidget.h \
     macsupport.h \
     magicwandtool.h \
     maintoolbar.h \
@@ -370,11 +403,9 @@ HEADERS += aboutdialog.h \
     mapobjectitem.h \
     mapobjectmodel.h \
     mapscene.h \
-    mapsdock.h \
     mapview.h \
     minimapdock.h \
     minimap.h \
-    minimaprenderer.h \
     movelayer.h \
     movemapobject.h \
     movemapobjecttogroup.h \
@@ -388,9 +419,12 @@ HEADERS += aboutdialog.h \
     newversiondialog.h \
     noeditorwidget.h \
     objectgroupitem.h \
+    objectrefdialog.h \
+    objectrefedit.h \
+    objectreferenceitem.h \
+    objectreferencetool.h \
     objectsdock.h \
     objectselectionitem.h \
-    objecttemplatemodel.h \
     objectselectiontool.h \
     objectsview.h \
     objecttypeseditor.h \
@@ -398,18 +432,21 @@ HEADERS += aboutdialog.h \
     offsetlayer.h \
     offsetmapdialog.h \
     painttilelayer.h \
-    patreondialog.h \
     pluginlistmodel.h \
     pointhandle.h \
-    preferencesdialog.h \
     preferences.h \
+    preferencesdialog.h \
+    project.h \
+    projectdock.h \
+    projectmanager.h \
+    projectmodel.h \
+    projectpropertiesdialog.h \
     propertiesdock.h \
     propertybrowser.h \
     raiselowerhelper.h \
     randompicker.h \
     rangeset.h \
     regionvaluetype.h \
-    renameterrain.h \
     renamewangset.h \
     reparentlayers.h \
     replacetemplate.h \
@@ -420,14 +457,19 @@ HEADERS += aboutdialog.h \
     resizemapobject.h \
     resizetilelayer.h \
     reversingproxymodel.h \
+    reversingrecursivefiltermodel.h \
     rotatemapobject.h \
     scriptedaction.h \
-    scriptedmapformat.h \
+    scriptedfileformat.h \
     scriptedtool.h \
+    scriptfile.h \
+    scriptfileformatwrappers.h \
+    scriptfileinfo.h \
     scriptmanager.h \
     scriptmodule.h \
     selectionrectangle.h \
     selectsametiletool.h \
+    session.h \
     shapefilltool.h \
     shortcutsettingspage.h \
     snaphelper.h \
@@ -435,6 +477,7 @@ HEADERS += aboutdialog.h \
     stampbrush.h \
     stylehelper.h \
     swaptiles.h \
+    tabbar.h \
     templatesdock.h \
     terrainbrush.h \
     terraindock.h \
@@ -480,13 +523,17 @@ HEADERS += aboutdialog.h \
     wangsetmodel.h \
     wangdock.h \
     wangfiller.h \
-    wangtemplateview.h \
     wangtemplatemodel.h \
+    wangtemplateview.h \
+    worlddocument.h \
+    worldmovemaptool.h \
     zoomable.h
 
 FORMS += aboutdialog.ui \
     addpropertydialog.ui \
     commanddialog.ui \
+    commandsedit.ui \
+    donationdialog.ui \
     exportasimagedialog.ui \
     imagecolorpickerwidget.ui \
     mainwindow.ui \
@@ -494,10 +541,11 @@ FORMS += aboutdialog.ui \
     newtilesetdialog.ui \
     newversiondialog.ui \
     noeditorwidget.ui \
+    objectrefdialog.ui \
     objecttypeseditor.ui \
     offsetmapdialog.ui \
-    patreondialog.ui \
     preferencesdialog.ui \
+    projectpropertiesdialog.ui \
     resizedialog.ui \
     shortcutsettingspage.ui \
     texteditordialog.ui \

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.2" orientation="staggered" renderorder="right-down" width="9" height="9" tilewidth="32" tileheight="32" staggeraxis="y" staggerindex="odd" nextobjectid="1">
- <layer name="Tile Layer 1" width="9" height="9">
+<map version="1.2" tiledversion="1.2.3" orientation="staggered" renderorder="right-down" width="9" height="9" tilewidth="32" tileheight="32" infinite="0" staggeraxis="y" staggerindex="odd" nextlayerid="2" nextobjectid="1">
+ <layer id="1" name="Tile Layer 1" width="9" height="9">
   <data encoding="base64" compression="zlib">
    eJxjYBgFlAIAAUQAAQ==
   </data>

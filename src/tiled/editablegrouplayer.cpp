@@ -25,6 +25,8 @@
 #include "editablemap.h"
 #include "scriptmanager.h"
 
+#include <QCoreApplication>
+
 namespace Tiled {
 
 EditableGroupLayer::EditableGroupLayer(const QString &name, QObject *parent)
@@ -40,7 +42,7 @@ EditableGroupLayer::EditableGroupLayer(EditableMap *map, GroupLayer *groupLayer,
 EditableLayer *EditableGroupLayer::layerAt(int index)
 {
     if (index < 0 || index >= layerCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return nullptr;
     }
 
@@ -51,26 +53,26 @@ EditableLayer *EditableGroupLayer::layerAt(int index)
 void EditableGroupLayer::removeLayerAt(int index)
 {
     if (index < 0 || index >= layerCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
 
-    if (asset())
-        asset()->push(new RemoveLayer(mapDocument(), index, groupLayer()));
-    else
+    if (MapDocument *doc = mapDocument())
+        asset()->push(new RemoveLayer(doc, index, groupLayer()));
+    else if (!checkReadOnly())
         EditableManager::instance().release(groupLayer()->takeLayerAt(index));
 }
 
 void EditableGroupLayer::removeLayer(EditableLayer *editableLayer)
 {
     if (!editableLayer) {
-        ScriptManager::instance().throwError(tr("Invalid argument"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
         return;
     }
 
     int index = groupLayer()->layers().indexOf(editableLayer->layer());
     if (index == -1) {
-        ScriptManager::instance().throwError(tr("Layer not found"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Layer not found"));
         return;
     }
 
@@ -80,25 +82,25 @@ void EditableGroupLayer::removeLayer(EditableLayer *editableLayer)
 void EditableGroupLayer::insertLayerAt(int index, EditableLayer *editableLayer)
 {
     if (index < 0 || index > layerCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
 
     if (!editableLayer) {
-        ScriptManager::instance().throwError(tr("Invalid argument"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
         return;
     }
 
-    if (editableLayer->map()) {
-        ScriptManager::instance().throwError(tr("Layer already part of a map"));
+    if (!editableLayer->isOwning()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Layer is in use"));
         return;
     }
 
-    if (asset()) {
-        asset()->push(new AddLayer(mapDocument(), index, editableLayer->layer(), groupLayer()));
-    } else {
-        groupLayer()->insertLayer(index, editableLayer->layer());
-        editableLayer->release();   // now owned by the group layer
+    if (MapDocument *doc = mapDocument()) {
+        asset()->push(new AddLayer(doc, index, editableLayer->layer(), groupLayer()));
+    } else if (!checkReadOnly()) {
+        // ownership moves to the group layer
+        groupLayer()->insertLayer(index, editableLayer->release());
     }
 }
 

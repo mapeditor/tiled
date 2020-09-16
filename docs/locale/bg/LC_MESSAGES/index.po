@@ -1,0 +1,38 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, Tiled Documentation Writers
+# This file is distributed under the same license as the Tiled package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Tiled 1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-12-21 14:31+0100\n"
+"PO-Revision-Date: 2020-05-29 11:42+0000\n"
+"Last-Translator: Любомир Василев <lyubomirv@gmx.com>\n"
+"Language-Team: Bulgarian <https://hosted.weblate.org/projects/tiled/"
+"documentation-index/bg/>\n"
+"Language: bg\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.1-dev\n"
+
+#: ../../index.rst:2
+msgid "Tiled Documentation"
+msgstr "Документация на Tiled"
+
+#: ../../index.rst:5
+msgid "If you're not finding what you're looking for in these pages, please don't hesitate to ask questions on the `Tiled Forum <http://discourse.mapeditor.org>`_."
+msgstr ""
+"Ако в тези страници не намирате това, което търсите, не се притеснявайте да "
+"питата във `Форума на Tiled <http://discourse.mapeditor.org>`_."
+
+#: ../../index.rst:8
+msgid "User Manual"
+msgstr "Ръководство"
+
+#: ../../index.rst:29
+msgid "Reference"
+msgstr "Справка"

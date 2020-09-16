@@ -22,6 +22,7 @@
 
 #include "documentmanager.h"
 #include "id.h"
+#include "issuesdock.h"
 
 #include <QJSValue>
 #include <QObject>
@@ -34,12 +35,15 @@ class QAction;
 
 namespace Tiled {
 
-class LoggingInterface;
-
 class EditableAsset;
+class MapEditor;
 class ScriptedAction;
 class ScriptedMapFormat;
+class ScriptedTilesetFormat;
+class ScriptMapFormatWrapper;
+class ScriptTilesetFormatWrapper;
 class ScriptedTool;
+class TilesetEditor;
 
 /**
  * Initial point of access to Tiled functionality from JavaScript.
@@ -54,9 +58,14 @@ class ScriptModule : public QObject
 
     Q_PROPERTY(QStringList actions READ actions)
     Q_PROPERTY(QStringList menus READ menus)
+    Q_PROPERTY(QStringList mapFormats READ mapFormats)
+    Q_PROPERTY(QStringList tilesetFormats READ tilesetFormats)
 
     Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
+
+    Q_PROPERTY(Tiled::MapEditor *mapEditor READ mapEditor)
+    Q_PROPERTY(Tiled::TilesetEditor *tilesetEditor READ tilesetEditor)
 
 public:
     struct MenuItem {
@@ -79,19 +88,35 @@ public:
 
     QStringList actions() const;
     QStringList menus() const;
+    QStringList mapFormats() const;
+    QStringList tilesetFormats() const;
 
     EditableAsset *activeAsset() const;
     bool setActiveAsset(EditableAsset *asset) const;
 
     QList<QObject*> openAssets() const;
 
+    TilesetEditor *tilesetEditor() const;
+    MapEditor *mapEditor() const;
+
+    Q_INVOKABLE Tiled::FilePath filePath(const QUrl &path) const;
+    Q_INVOKABLE Tiled::ObjectRef objectRef(int id) const;
+
+    Q_INVOKABLE Tiled::EditableAsset *open(const QString &fileName) const;
+    Q_INVOKABLE bool close(Tiled::EditableAsset *asset) const;
+    Q_INVOKABLE Tiled::EditableAsset *reload(Tiled::EditableAsset *asset) const;
+
     Q_INVOKABLE Tiled::ScriptedAction *registerAction(const QByteArray &id, QJSValue callback);
     Q_INVOKABLE void registerMapFormat(const QString &shortName, QJSValue mapFormatObject);
+    Q_INVOKABLE void registerTilesetFormat(const QString &shortName, QJSValue tilesetFormatObject);
     Q_INVOKABLE QJSValue registerTool(const QString &shortName, QJSValue toolObject);
 
-    Q_INVOKABLE void extendMenu(const QByteArray &idName, QJSValue items);
+    Q_INVOKABLE Tiled::ScriptMapFormatWrapper *mapFormat(const QString &shortName) const;
+    Q_INVOKABLE Tiled::ScriptMapFormatWrapper *mapFormatForFile(const QString &fileName) const;
+    Q_INVOKABLE Tiled::ScriptTilesetFormatWrapper *tilesetFormat(const QString &shortName) const;
+    Q_INVOKABLE Tiled::ScriptTilesetFormatWrapper *tilesetFormatForFile(const QString &fileName) const;
 
-    LoggingInterface *logger() const;
+    Q_INVOKABLE void extendMenu(const QByteArray &idName, QJSValue items);
 
 signals:
     void assetCreated(Tiled::EditableAsset *asset);
@@ -104,15 +129,18 @@ signals:
 
 public slots:
     void trigger(const QByteArray &actionName) const;
+    void executeCommand(const QString &name, bool inTerminal = false) const;
 
     void alert(const QString &text, const QString &title = QString()) const;
     bool confirm(const QString &text, const QString &title = QString()) const;
     QString prompt(const QString &label, const QString &text = QString(), const QString &title = QString()) const;
 
     void log(const QString &text) const;
-    void error(const QString &text) const;
 
-private slots:
+    void warn(const QString &text, QJSValue activated = QJSValue());
+    void error(const QString &text, QJSValue activated = QJSValue());
+
+private:
     void documentCreated(Document *document);
     void documentOpened(Document *document);
     void documentAboutToBeSaved(Document *document);
@@ -120,19 +148,14 @@ private slots:
     void documentAboutToClose(Document *document);
     void currentDocumentChanged(Document *document);
 
-private:
-    LoggingInterface *mLogger;
-    std::map<QByteArray, std::unique_ptr<ScriptedAction>> mRegisteredActions;
+    void setCallback(Issue &issue, QJSValue activated);
+
+    std::map<Id, std::unique_ptr<ScriptedAction>> mRegisteredActions;
     std::map<QString, std::unique_ptr<ScriptedMapFormat>> mRegisteredMapFormats;
-    std::map<QString, std::unique_ptr<ScriptedTool>> mRegisteredTools;
+    std::map<QString, std::unique_ptr<ScriptedTilesetFormat>> mRegisteredTilesetFormats;
+    std::map<Id, std::unique_ptr<ScriptedTool>> mRegisteredTools;
 
     QVector<MenuExtension> mMenuExtensions;
 };
-
-
-inline LoggingInterface *ScriptModule::logger() const
-{
-    return mLogger;
-}
 
 } // namespace Tiled

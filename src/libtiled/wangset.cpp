@@ -487,7 +487,7 @@ QList<Tile *> WangSet::tilesChangedOnSetEdgeColors(int newEdgeColors) const
     for (auto i = mTileInfoToWangId.cbegin(); i != mTileInfoToWangId.cend(); ++i) {
         if (!wangIdIsValid(i.value(), newEdgeColors, cornerColorCount())) {
             int tileId = i.key() & 0x1fffffff;
-            tiles.append(mTileset->tileAt(tileId));
+            tiles.append(mTileset->findTile(tileId));
         }
     }
 
@@ -501,7 +501,7 @@ QList<Tile *> WangSet::tilesChangedOnSetCornerColors(int newCornerColors) const
     for (auto i = mTileInfoToWangId.cbegin(); i != mTileInfoToWangId.cend(); ++i) {
         if (!wangIdIsValid(i.value(), edgeColorCount(), newCornerColors)) {
             int tileId = i.key() & 0x1fffffff;
-            tiles.append(mTileset->tileAt(tileId));
+            tiles.append(mTileset->findTile(tileId));
         }
     }
 
@@ -517,17 +517,17 @@ QList<Tile *> WangSet::tilesChangedOnRemoveColor(int color, bool isEdge) const
             int c = isEdge? i.value().edgeColor(j) : i.value().cornerColor(j);
             int tileId = i.key() & 0x1fffffff;
             if (c >= color) {
-                tiles.append(mTileset->tileAt(tileId));
+                tiles.append(mTileset->findTile(tileId));
                 break;
             }
             if (isEdge) {
                 if (edgeColorCount() == 2 && c) {
-                    tiles.append(mTileset->tileAt(tileId));
+                    tiles.append(mTileset->findTile(tileId));
                     break;
                 }
             } else {
                 if (cornerColorCount() == 2 && c) {
-                    tiles.append(mTileset->tileAt(tileId));
+                    tiles.append(mTileset->findTile(tileId));
                     break;
                 }
             }
@@ -593,7 +593,7 @@ void WangSet::removeWangTile(const WangTile &wangTile)
 QList<WangTile> WangSet::sortedWangTiles() const
 {
     QList<WangTile> wangTiles = mWangIdToWangTile.values();
-    qStableSort(wangTiles.begin(), wangTiles.end());
+    std::stable_sort(wangTiles.begin(), wangTiles.end());
     return wangTiles;
 }
 

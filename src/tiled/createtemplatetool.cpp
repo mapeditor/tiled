@@ -32,11 +32,12 @@
 using namespace Tiled;
 
 CreateTemplateTool::CreateTemplateTool(QObject *parent)
-    : CreateObjectTool(parent)
+    : CreateObjectTool("CreateTemplateTool", parent)
 {
-    QIcon icon(QLatin1String(":images/24x24/insert-template.png"));
-    icon.addFile(QLatin1String(":images/48x48/insert-template.png"));
+    QIcon icon(QLatin1String(":images/24/insert-template.png"));
+    icon.addFile(QLatin1String(":images/48/insert-template.png"));
     setIcon(icon);
+    setShortcut(Qt::Key_V);
     Utils::setThemeIcon(this, "insert-template");
     languageChangedImpl();
 }
@@ -50,7 +51,6 @@ void CreateTemplateTool::languageChanged()
 void CreateTemplateTool::languageChangedImpl()
 {
     setName(tr("Insert Template"));
-    setShortcut(QKeySequence(tr("V")));
 }
 
 MapObject *CreateTemplateTool::createNewMapObject()

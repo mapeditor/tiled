@@ -21,30 +21,35 @@
 #include "newmapdialog.h"
 #include "ui_newmapdialog.h"
 
-#include "isometricrenderer.h"
 #include "hexagonalrenderer.h"
+#include "isometricrenderer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "orthogonalrenderer.h"
-#include "preferences.h"
+#include "session.h"
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
 #include "utils.h"
 
+#include <QCoreApplication>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QSettings>
 
 #include <memory>
 
-static const char * const ORIENTATION_KEY = "Map/Orientation";
-static const char * const FIXED_SIZE_KEY = "Map/FixedSize";
-static const char * const MAP_WIDTH_KEY = "Map/Width";
-static const char * const MAP_HEIGHT_KEY = "Map/Height";
-static const char * const TILE_WIDTH_KEY = "Map/TileWidth";
-static const char * const TILE_HEIGHT_KEY = "Map/TileHeight";
-
 using namespace Tiled;
+
+namespace session {
+static SessionOption<Map::Orientation> mapOrientation { "map.orientation", Map::Orthogonal };
+static SessionOption<Map::LayerDataFormat> layerDataFormat { "map.layerDataFormat", Map::CSV };
+static SessionOption<Map::RenderOrder> renderOrder { "map.renderOrder", Map::RightDown };
+static SessionOption<bool> fixedSize { "map.fixedSize", true };
+static SessionOption<int> mapWidth { "map.width", 100 };
+static SessionOption<int> mapHeight { "map.height", 100 };
+static SessionOption<int> mapTileWidth { "map.tileWidth", 32 };
+static SessionOption<int> mapTileHeight { "map.tileHeight", 32 };
+} // namespace session
+
 
 template<typename Type>
 static Type comboBoxValue(QComboBox *comboBox)
@@ -62,7 +67,6 @@ static bool setComboBoxValue(QComboBox *comboBox, Type value)
     return true;
 }
 
-
 NewMapDialog::NewMapDialog(QWidget *parent) :
     QDialog(parent),
     mUi(new Ui::NewMapDialog)
@@ -72,24 +76,17 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 #endif
 
-    mUi->fixedSizeSpacer->changeSize(qRound(Utils::dpiScaled(mUi->fixedSizeSpacer->sizeHint().width())), 0,
+    mUi->fixedSizeSpacer->changeSize(Utils::dpiScaled(mUi->fixedSizeSpacer->sizeHint().width()), 0,
                                      mUi->fixedSizeSpacer->sizePolicy().horizontalPolicy());
 
     mUi->buttonBox->button(QDialogButtonBox::Save)->setText(tr("Save As..."));
 
-    // Restore previously used settings
-    Preferences *prefs = Preferences::instance();
-    QSettings *s = prefs->settings();
-    const auto orientation = static_cast<Map::Orientation>(s->value(QLatin1String(ORIENTATION_KEY)).toInt());
-    const bool fixedSize = s->value(QLatin1String(FIXED_SIZE_KEY), true).toBool();
-    const int mapWidth = s->value(QLatin1String(MAP_WIDTH_KEY), 100).toInt();
-    const int mapHeight = s->value(QLatin1String(MAP_HEIGHT_KEY), 100).toInt();
-    const int tileWidth = s->value(QLatin1String(TILE_WIDTH_KEY), 32).toInt();
-    const int tileHeight = s->value(QLatin1String(TILE_HEIGHT_KEY), 32).toInt();
-
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"), QVariant::fromValue(Map::CSV));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"), QVariant::fromValue(Map::Base64));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"), QVariant::fromValue(Map::Base64Zlib));
+#ifdef TILED_ZSTD_SUPPORT
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (Zstandard compressed)"), QVariant::fromValue(Map::Base64Zstandard));
+#endif
 
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Down"), QVariant::fromValue(Map::RightDown));
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Up"), QVariant::fromValue(Map::RightUp));
@@ -101,18 +98,20 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->orientation->addItem(tr("Isometric (Staggered)"), QVariant::fromValue(Map::Staggered));
     mUi->orientation->addItem(tr("Hexagonal (Staggered)"), QVariant::fromValue(Map::Hexagonal));
 
-    if (!setComboBoxValue(mUi->orientation, orientation))
+    if (!setComboBoxValue<Map::Orientation>(mUi->orientation, session::mapOrientation))
         setComboBoxValue(mUi->orientation, Map::Orthogonal);
 
-    if (!setComboBoxValue(mUi->layerFormat, prefs->layerDataFormat()))
+    if (!setComboBoxValue<Map::LayerDataFormat>(mUi->layerFormat, session::layerDataFormat))
         setComboBoxValue(mUi->layerFormat, Map::CSV);
 
-    setComboBoxValue(mUi->renderOrder, prefs->mapRenderOrder());
+    setComboBoxValue<Map::RenderOrder>(mUi->renderOrder, session::renderOrder);
 
-    mUi->mapWidth->setValue(mapWidth);
-    mUi->mapHeight->setValue(mapHeight);
-    mUi->tileWidth->setValue(tileWidth);
-    mUi->tileHeight->setValue(tileHeight);
+    mUi->mapWidth->setValue(session::mapWidth);
+    mUi->mapHeight->setValue(session::mapHeight);
+    mUi->tileWidth->setValue(session::mapTileWidth);
+    mUi->tileHeight->setValue(session::mapTileHeight);
+
+    Session::current().set("Map/SizeTest", QSize(2, 4300));
 
     // Make the font of the pixel size label smaller
     QFont font = mUi->pixelSizeLabel->font();
@@ -127,7 +126,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     connect(mUi->orientation, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &NewMapDialog::refreshPixelSize);
     connect(mUi->fixedSize, &QAbstractButton::toggled, this, &NewMapDialog::updateWidgets);
 
-    if (fixedSize)
+    if (session::fixedSize)
         mUi->fixedSize->setChecked(true);
     else
         mUi->mapInfinite->setChecked(true);
@@ -145,31 +144,39 @@ MapDocumentPtr NewMapDialog::createMap()
     if (exec() != QDialog::Accepted)
         return MapDocumentPtr();
 
-    const bool fixedSize = mUi->fixedSize->isChecked();
-    const int mapWidth = mUi->mapWidth->value();
-    const int mapHeight = mUi->mapHeight->value();
-    const int tileWidth = mUi->tileWidth->value();
-    const int tileHeight = mUi->tileHeight->value();
+    session::mapOrientation = comboBoxValue<Map::Orientation>(mUi->orientation);
+    session::layerDataFormat = comboBoxValue<Map::LayerDataFormat>(mUi->layerFormat);
+    session::renderOrder = comboBoxValue<Map::RenderOrder>(mUi->renderOrder);
+    session::fixedSize = mUi->fixedSize->isChecked();
+    session::mapWidth = mUi->mapWidth->value();
+    session::mapHeight = mUi->mapHeight->value();
+    session::mapTileWidth = mUi->tileWidth->value();
+    session::mapTileHeight = mUi->tileHeight->value();
 
-    const auto orientation = comboBoxValue<Map::Orientation>(mUi->orientation);
-    const auto layerFormat = comboBoxValue<Map::LayerDataFormat>(mUi->layerFormat);
-    const auto renderOrder = comboBoxValue<Map::RenderOrder>(mUi->renderOrder);
+    std::unique_ptr<Map> map { new Map(session::mapOrientation,
+                                       session::mapWidth, session::mapHeight,
+                                       session::mapTileWidth, session::mapTileHeight,
+                                       !session::fixedSize) };
 
-    std::unique_ptr<Map> map { new Map(orientation,
-                                       mapWidth, mapHeight,
-                                       tileWidth, tileHeight,
-                                       !fixedSize) };
+    map->setLayerDataFormat(session::layerDataFormat);
+    map->setRenderOrder(session::renderOrder);
 
-    map->setLayerDataFormat(layerFormat);
-    map->setRenderOrder(renderOrder);
+    // Try to set a somewhat helpful default for the hex side length
+    if (map->orientation() == Map::Hexagonal) {
+        if (map->staggerAxis() == Map::StaggerX)
+            map->setHexSideLength(map->tileWidth() / 2);
+        else
+            map->setHexSideLength(map->tileHeight() / 2);
+    }
 
     const size_t gigabyte = 1073741824u;
-    const size_t memory = size_t(mapWidth) * size_t(mapHeight) * sizeof(Cell);
+    const size_t memory = size_t(map->width()) * size_t(map->height()) * sizeof(Cell);
 
     // Add a tile layer to new maps of reasonable size
     if (memory < gigabyte) {
-        map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0,
-                                    mapWidth, mapHeight));
+        map->addLayer(new TileLayer(QCoreApplication::translate("Tiled::MapDocument", "Tile Layer %1").arg(1),
+                                    0, 0,
+                                    map->width(), map->height()));
     } else {
         const double gigabytes = static_cast<double>(memory) / gigabyte;
         QMessageBox::warning(this, tr("Memory Usage Warning"),
@@ -177,18 +184,6 @@ MapDocumentPtr NewMapDialog::createMap()
                                 "of memory each. Not creating one by default.")
                              .arg(gigabytes, 0, 'f', 2));
     }
-
-    // Store settings for next time
-    Preferences *prefs = Preferences::instance();
-    prefs->setLayerDataFormat(layerFormat);
-    prefs->setMapRenderOrder(renderOrder);
-    QSettings *s = Preferences::instance()->settings();
-    s->setValue(QLatin1String(ORIENTATION_KEY), orientation);
-    s->setValue(QLatin1String(FIXED_SIZE_KEY), fixedSize);
-    s->setValue(QLatin1String(MAP_WIDTH_KEY), mapWidth);
-    s->setValue(QLatin1String(MAP_HEIGHT_KEY), mapHeight);
-    s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
-    s->setValue(QLatin1String(TILE_HEIGHT_KEY), tileHeight);
 
     return MapDocumentPtr::create(std::move(map));
 }

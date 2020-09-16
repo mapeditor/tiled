@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Tiled 1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2018-04-06 09:24+0000\n"
-"Last-Translator: Tripolis777 <tripolis777@gmail.com>\n"
+"PO-Revision-Date: 2019-10-14 17:52+0000\n"
+"Last-Translator: ILIUS <ilius33@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/tiled/reference/"
 "ru/>\n"
 "Language: ru\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
 "4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 2.20\n"
+"X-Generator: Weblate 3.9-dev\n"
 
 #: ../../reference/json-map-format.rst:2
 msgid "JSON Map Format"
@@ -461,7 +461,7 @@ msgstr "Инкрементный идентификатор - уникальны
 
 #: ../../reference/json-map-format.rst:170
 msgid "String assigned to name field in editor"
-msgstr ""
+msgstr "Строка назначенная полю name (имя) в редакторе"
 
 #: ../../reference/json-map-format.rst:172
 msgid "point"

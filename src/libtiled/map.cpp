@@ -41,28 +41,20 @@
 
 using namespace Tiled;
 
-Map::Map():
-    Map(Orthogonal, 0, 0, 0, 0, false)
+Map::Map()
+    : Object(MapType)
 {
 }
 
 Map::Map(Orientation orientation,
-         int width, int height, int tileWidth, int tileHeight, bool infinite):
-    Object(MapType),
-    mOrientation(orientation),
-    mRenderOrder(RightDown),
-    mWidth(width),
-    mHeight(height),
-    mTileWidth(tileWidth),
-    mTileHeight(tileHeight),
-    mInfinite(infinite),
-    mHexSideLength(0),
-    mStaggerAxis(StaggerY),
-    mStaggerIndex(StaggerOdd),
-    mDrawMarginsDirty(true),
-    mLayerDataFormat(Base64Zlib),
-    mNextLayerId(1),
-    mNextObjectId(1)
+         int width, int height, int tileWidth, int tileHeight, bool infinite)
+    : Object(MapType)
+    , mOrientation(orientation)
+    , mWidth(width)
+    , mHeight(height)
+    , mTileWidth(tileWidth)
+    , mTileHeight(tileHeight)
+    , mInfinite(infinite)
 {
 }
 
@@ -80,59 +72,16 @@ Map::~Map()
     qDeleteAll(mLayers);
 }
 
-void Map::setWidth(int width)
-{
-    if (width == mWidth)
-        return;
-
-    mWidth = width;
-    emit widthChanged();
-    emit sizeChanged();
-}
-
-void Map::setHeight(int height)
-{
-    if (height == mHeight)
-        return;
-
-    mHeight = height;
-    emit heightChanged();
-    emit sizeChanged();
-}
-
-void Map::setTileWidth(int width)
-{
-    if (width == mTileWidth)
-        return;
-
-    mTileWidth = width;
-    emit tileWidthChanged();
-}
-
-void Map::setTileHeight(int height)
-{
-    if (height == mTileHeight)
-        return;
-
-    mTileHeight = height;
-    emit tileHeightChanged();
-}
-
+/**
+ * Returns the margins that have to be taken into account when figuring
+ * out which part of the map to repaint after changing some tiles.
+ */
 QMargins Map::drawMargins() const
 {
     if (mDrawMarginsDirty)
         recomputeDrawMargins();
 
     return mDrawMargins;
-}
-
-static QMargins maxMargins(const QMargins &a,
-                           const QMargins &b)
-{
-    return QMargins(qMax(a.left(), b.left()),
-                    qMax(a.top(), b.top()),
-                    qMax(a.right(), b.right()),
-                    qMax(a.bottom(), b.bottom()));
 }
 
 /**
@@ -191,6 +140,10 @@ void Map::recomputeDrawMargins() const
     mDrawMarginsDirty = false;
 }
 
+/**
+ * Convenience function that returns the number of layers of this map that
+ * match the given \a type.
+ */
 int Map::layerCount(Layer::TypeFlag type) const
 {
     int count = 0;
@@ -206,16 +159,32 @@ void Map::addLayer(Layer *layer)
     mLayers.append(layer);
 }
 
-int Map::indexOfLayer(const QString &layerName, int layertypes) const
+/**
+ * Returns the index of the layer given by \a layerName, or -1 if no
+ * layer with that name is found.
+ *
+ * The second optional parameter specifies the layer types which are
+ * searched.
+ *
+ * @deprecated Does not support group layers. Use findLayer() instead.
+ */
+int Map::indexOfLayer(const QString &layerName, int layerTypes) const
 {
     for (int index = 0; index < mLayers.size(); index++)
         if (layerAt(index)->name() == layerName
-                && (layertypes & layerAt(index)->layerType()))
+                && (layerTypes & layerAt(index)->layerType()))
             return index;
 
     return -1;
 }
 
+/**
+ * Returns the first layer with the given \a name, or nullptr if no
+ * layer with that name is found.
+ *
+ * The second optional parameter specifies the layer types which are
+ * searched.
+ */
 Layer *Map::findLayer(const QString &name, int layerTypes) const
 {
     LayerIterator it(this, layerTypes);
@@ -225,6 +194,9 @@ Layer *Map::findLayer(const QString &name, int layerTypes) const
     return nullptr;
 }
 
+/**
+ * Adds a layer to this map, inserting it at the given index.
+ */
 void Map::insertLayer(int index, Layer *layer)
 {
     adoptLayer(*layer);
@@ -242,6 +214,10 @@ void Map::adoptLayer(Layer &layer)
         initializeObjectIds(*group);
 }
 
+/**
+ * Removes the layer at the given index from this map and returns it.
+ * The caller becomes responsible for the lifetime of this layer.
+ */
 Layer *Map::takeLayerAt(int index)
 {
     Layer *layer = mLayers.takeAt(index);
@@ -249,6 +225,14 @@ Layer *Map::takeLayerAt(int index)
     return layer;
 }
 
+/**
+ * Adds a tileset to this map. The map does not take ownership over its
+ * tilesets, this is merely for keeping track of which tilesets are used by
+ * the map, and their saving order.
+ *
+ * @param tileset the tileset to add
+ * @return whether the tileset wasn't already part of the map
+ */
 bool Map::addTileset(const SharedTileset &tileset)
 {
     if (mTilesets.contains(tileset))
@@ -259,12 +243,18 @@ bool Map::addTileset(const SharedTileset &tileset)
     return true;
 }
 
+/**
+ * Convenience function to be used together with Layer::usedTilesets()
+ */
 void Map::addTilesets(const QSet<SharedTileset> &tilesets)
 {
     for (const SharedTileset &tileset : tilesets)
         addTileset(tileset);
 }
 
+/**
+ * Inserts \a tileset at \a index in the list of tilesets used by this map.
+ */
 void Map::insertTileset(int index, const SharedTileset &tileset)
 {
     Q_ASSERT(!mTilesets.contains(tileset));
@@ -272,17 +262,36 @@ void Map::insertTileset(int index, const SharedTileset &tileset)
     invalidateDrawMargins();
 }
 
+/**
+ * Returns the index of the given \a tileset, or -1 if it is not used in
+ * this map.
+ */
 int Map::indexOfTileset(const SharedTileset &tileset) const
 {
     return mTilesets.indexOf(tileset);
 }
 
+/**
+ * Removes the tileset at \a index from this map.
+ *
+ * \warning Does not make sure that this map no longer refers to tiles from
+ *          the removed tileset!
+ *
+ * \sa addTileset
+ */
 void Map::removeTilesetAt(int index)
 {
     mTilesets.remove(index);
     invalidateDrawMargins();
 }
 
+/**
+ * Replaces all tiles from \a oldTileset with tiles from \a newTileset.
+ * Also replaces the old tileset with the new tileset in the list of
+ * tilesets.
+ *
+ * @return whether the new tileset was added to the map
+ */
 bool Map::replaceTileset(const SharedTileset &oldTileset,
                          const SharedTileset &newTileset)
 {
@@ -308,6 +317,9 @@ bool Map::replaceTileset(const SharedTileset &oldTileset,
     }
 }
 
+/**
+ * Computes the tilesets that are used by this map.
+ */
 QSet<SharedTileset> Map::usedTilesets() const
 {
     QSet<SharedTileset> tilesets;
@@ -320,6 +332,10 @@ QSet<SharedTileset> Map::usedTilesets() const
     return tilesets;
 }
 
+/**
+ * Returns whether the given \a tileset is used by any tile layer of this
+ * map.
+ */
 bool Map::isTilesetUsed(const Tileset *tileset) const
 {
     for (const Layer *layer : mLayers)
@@ -329,20 +345,24 @@ bool Map::isTilesetUsed(const Tileset *tileset) const
     return false;
 }
 
-Map *Map::clone() const
+std::unique_ptr<Map> Map::clone() const
 {
-    Map *o = new Map(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight, mInfinite);
+    auto o = std::make_unique<Map>(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight, mInfinite);
+    o->fileName = fileName;
+    o->exportFileName = exportFileName;
+    o->exportFormat = exportFormat;
     o->mRenderOrder = mRenderOrder;
+    o->mCompressionLevel = mCompressionLevel;
     o->mHexSideLength = mHexSideLength;
     o->mStaggerAxis = mStaggerAxis;
     o->mStaggerIndex = mStaggerIndex;
     o->mBackgroundColor = mBackgroundColor;
+    o->mChunkSize = mChunkSize;
     o->mDrawMargins = mDrawMargins;
     o->mDrawMarginsDirty = mDrawMarginsDirty;
     for (const Layer *layer : mLayers) {
         Layer *clone = layer->clone();
-        clone->setId(layer->id());
-        clone->setMap(o);
+        clone->setMap(o.get());
         o->mLayers.append(clone);
     }
     o->mTilesets = mTilesets;
@@ -353,6 +373,9 @@ Map *Map::clone() const
     return o;
 }
 
+/**
+ * Returns a list of MapObjects to be updated in the map scene
+ */
 QList<MapObject*> Map::replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
                                              const ObjectTemplate *newObjectTemplate)
 {
@@ -381,6 +404,26 @@ void Map::initializeObjectIds(ObjectGroup &objectGroup)
     }
 }
 
+Layer *Map::findLayerById(int layerId) const
+{
+    for (Layer *layer : allLayers()) {
+        if (layer->id() == layerId)
+            return layer;
+    }
+    return nullptr;
+}
+
+MapObject *Map::findObjectById(int objectId) const
+{
+    for (Layer *layer : objectGroups()) {
+        for (MapObject *mapObject : static_cast<ObjectGroup*>(layer)->objects()) {
+            if (mapObject->id() == objectId)
+                return mapObject;
+        }
+    }
+    return nullptr;
+}
+
 QRegion Map::tileRegion() const
 {
     QRegion region;
@@ -394,9 +437,9 @@ QString Tiled::staggerAxisToString(Map::StaggerAxis staggerAxis)
 {
     switch (staggerAxis) {
     case Map::StaggerY:
-        return QLatin1String("y");
+        return QStringLiteral("y");
     case Map::StaggerX:
-        return QLatin1String("x");
+        return QStringLiteral("x");
     }
     return QString();
 }
@@ -413,9 +456,9 @@ QString Tiled::staggerIndexToString(Map::StaggerIndex staggerIndex)
 {
     switch (staggerIndex) {
     case Map::StaggerOdd:
-        return QLatin1String("odd");
+        return QStringLiteral("odd");
     case Map::StaggerEven:
-        return QLatin1String("even");
+        return QStringLiteral("even");
     }
     return QString();
 }
@@ -432,15 +475,15 @@ QString Tiled::orientationToString(Map::Orientation orientation)
 {
     switch (orientation) {
     case Map::Unknown:
-        return QLatin1String("unknown");
+        return QStringLiteral("unknown");
     case Map::Orthogonal:
-        return QLatin1String("orthogonal");
+        return QStringLiteral("orthogonal");
     case Map::Isometric:
-        return QLatin1String("isometric");
+        return QStringLiteral("isometric");
     case Map::Staggered:
-        return QLatin1String("staggered");
+        return QStringLiteral("staggered");
     case Map::Hexagonal:
-        return QLatin1String("hexagonal");
+        return QStringLiteral("hexagonal");
     }
     return QString();
 }
@@ -460,17 +503,34 @@ Map::Orientation Tiled::orientationFromString(const QString &string)
     return orientation;
 }
 
+QString Tiled::compressionToString(Map::LayerDataFormat layerDataFormat)
+{
+    switch (layerDataFormat) {
+    case Map::XML:
+    case Map::Base64:
+    case Map::CSV:
+        return QString();
+    case Map::Base64Gzip:
+        return QStringLiteral("gzip");
+    case Map::Base64Zlib:
+        return QStringLiteral("zlib");
+    case Map::Base64Zstandard:
+        return QStringLiteral("zstd");
+    }
+    return QString();
+}
+
 QString Tiled::renderOrderToString(Map::RenderOrder renderOrder)
 {
     switch (renderOrder) {
     case Map::RightDown:
-        return QLatin1String("right-down");
+        return QStringLiteral("right-down");
     case Map::RightUp:
-        return QLatin1String("right-up");
+        return QStringLiteral("right-up");
     case Map::LeftDown:
-        return QLatin1String("left-down");
+        return QStringLiteral("left-down");
     case Map::LeftUp:
-        return QLatin1String("left-up");
+        return QStringLiteral("left-up");
     }
     return QString();
 }

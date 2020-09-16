@@ -42,7 +42,9 @@ public:
         Orientation,
         RenderOrder,
         BackgroundColor,
-        LayerDataFormat
+        LayerDataFormat,
+        CompressionLevel,
+        ChunkSize
     };
 
     /**
@@ -62,12 +64,20 @@ public:
      * @param backgroundColor   the new color to apply for the background
      */
     ChangeMapProperty(MapDocument *mapDocument, const QColor &backgroundColor);
+    
+    /**
+     * Constructs a command that changes the chunk size.
+     *
+     * @param mapDocument       the map document of the map
+     * @param chunkSize         the new chunk size to use for tile layers
+     */
+    ChangeMapProperty(MapDocument *mapDocument, QSize chunkSize);
 
     /**
      * Constructs a command that changes the map stagger axis.
      *
      * @param mapDocument       the map document of the map
-     * @param orientation       the new map stagger axis
+     * @param staggerAxis       the new map stagger axis
      */
     ChangeMapProperty(MapDocument *mapDocument, Map::StaggerAxis staggerAxis);
 
@@ -75,7 +85,7 @@ public:
      * Constructs a command that changes the map stagger index.
      *
      * @param mapDocument       the map document of the map
-     * @param orientation       the new map stagger index
+     * @param staggerIndex       the new map stagger index
      */
     ChangeMapProperty(MapDocument *mapDocument, Map::StaggerIndex staggerIndex);
 
@@ -112,6 +122,7 @@ private:
     MapDocument *mMapDocument;
     Property mProperty;
     QColor mBackgroundColor;
+    QSize mChunkSize;
     union {
         int mIntValue;
         Map::StaggerAxis mStaggerAxis;

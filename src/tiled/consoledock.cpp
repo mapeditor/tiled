@@ -1,6 +1,7 @@
 /*
- * consoledialog.cpp
+ * consoledock.cpp
  * Copyright 2013, Samuli Tuomola <samuli.tuomola@gmail.com>
+ * Copyright 2018-2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -21,23 +22,53 @@
 #include "consoledock.h"
 
 #include "logginginterface.h"
-#include "pluginmanager.h"
 #include "scriptmanager.h"
+#include "session.h"
+#include "utils.h"
 
+#include <QCoreApplication>
 #include <QLineEdit>
+#include <QMenu>
 #include <QPlainTextEdit>
+#include <QPushButton>
 #include <QShortcut>
 #include <QVBoxLayout>
 
 namespace Tiled {
 
+namespace session {
+static SessionOption<QStringList> commandHistory { "console.history" };
+} // namespace session
+
+class ConsoleOutputWidget : public QPlainTextEdit
+{
+public:
+    using QPlainTextEdit::QPlainTextEdit;
+
+protected:
+    void contextMenuEvent(QContextMenuEvent *event) override;
+};
+
+void ConsoleOutputWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+    std::unique_ptr<QMenu> menu { createStandardContextMenu(event->pos()) };
+
+    auto clearIcon = QIcon::fromTheme(QStringLiteral("edit-clear"));
+    menu->addSeparator();
+    menu->addAction(clearIcon,
+                    QCoreApplication::translate("Tiled::ConsoleDock", "Clear Console"),
+                    this, &QPlainTextEdit::clear);
+
+    menu->exec(event->globalPos());
+}
+
+
 ConsoleDock::ConsoleDock(QWidget *parent)
     : QDockWidget(parent)
-    , mPlainTextEdit(new QPlainTextEdit)
+    , mPlainTextEdit(new ConsoleOutputWidget)
     , mLineEdit(new QLineEdit)
 {
     setObjectName(QLatin1String("ConsoleDock"));
-    setWindowTitle(tr("Console"));
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
@@ -51,7 +82,6 @@ ConsoleDock::ConsoleDock(QWidget *parent)
     p.setColor(QPalette::Text, Qt::lightGray);
     mPlainTextEdit->setPalette(p);
 
-    mLineEdit->setPlaceholderText(tr("Execute script"));
     mLineEdit->setClearButtonEnabled(true);
     connect(mLineEdit, &QLineEdit::returnPressed,
             this, &ConsoleDock::executeScript);
@@ -62,17 +92,33 @@ ConsoleDock::ConsoleDock(QWidget *parent)
     auto nextShortcut = new QShortcut(Qt::Key_Down, mLineEdit, nullptr, nullptr, Qt::WidgetShortcut);
     connect(nextShortcut, &QShortcut::activated, [this] { moveHistory(1); });
 
+    mClearButton = new QPushButton(tr("Clear Console"));
+    connect(mClearButton, &QPushButton::clicked, mPlainTextEdit, &QPlainTextEdit::clear);
+
+    auto bottomBar = new QHBoxLayout;
+    bottomBar->addWidget(mLineEdit);
+    bottomBar->addWidget(mClearButton);
+    bottomBar->setSpacing(Utils::dpiScaled(7));
+
     layout->addWidget(mPlainTextEdit);
-    layout->addWidget(mLineEdit);
+    layout->addLayout(bottomBar);
 
-    const auto outputs = PluginManager::objects<LoggingInterface>();
-    for (LoggingInterface *output : outputs)
-        registerOutput(output);
-
-    connect(PluginManager::instance(), &PluginManager::objectAdded,
-            this, &ConsoleDock::onObjectAdded);
+    auto& logger = LoggingInterface::instance();
+    connect(&logger, &LoggingInterface::info, this, &ConsoleDock::appendInfo);
+    connect(&logger, &LoggingInterface::warning, this, &ConsoleDock::appendWarning);
+    connect(&logger, &LoggingInterface::error, this, &ConsoleDock::appendError);
 
     setWidget(widget);
+
+    mHistory = session::commandHistory;
+    mHistoryPosition = mHistory.size();
+
+    connect(this, &QDockWidget::visibilityChanged, this, [this](bool visible) {
+        if (visible)
+            mLineEdit->setFocus();
+    });
+
+    retranslateUi();
 }
 
 ConsoleDock::~ConsoleDock()
@@ -82,6 +128,12 @@ ConsoleDock::~ConsoleDock()
 void ConsoleDock::appendInfo(const QString &str)
 {
     mPlainTextEdit->appendHtml(QLatin1String("<pre>") + str.toHtmlEscaped() +
+                               QLatin1String("</pre>"));
+}
+
+void ConsoleDock::appendWarning(const QString &str)
+{
+    mPlainTextEdit->appendHtml(QLatin1String("<pre style='color:orange'>") + str.toHtmlEscaped() +
                                QLatin1String("</pre>"));
 }
 
@@ -97,10 +149,11 @@ void ConsoleDock::appendScript(const QString &str)
                                QLatin1String("</pre>"));
 }
 
-void ConsoleDock::onObjectAdded(QObject *object)
+void ConsoleDock::appendScriptResult(const QString &tempName, const QString &result)
 {
-    if (LoggingInterface *output = qobject_cast<LoggingInterface*>(object))
-        registerOutput(output);
+    mPlainTextEdit->appendHtml(QLatin1String("<pre><span style='color:gray'>") + tempName.toHtmlEscaped() +
+                               QLatin1String("&nbsp;=&nbsp;</span>") + result.toHtmlEscaped() +
+                               QLatin1String("</pre>"));
 }
 
 void ConsoleDock::executeScript()
@@ -112,13 +165,18 @@ void ConsoleDock::executeScript()
     appendScript(script);
 
     const QJSValue result = ScriptManager::instance().evaluate(script);
-    if (!result.isError() && !result.isUndefined())
-        appendInfo(result.toString());
+    if (!result.isError() && !result.isUndefined()) {
+        auto name = ScriptManager::instance().createTempValue(result);
+        appendScriptResult(name, result.toString());
+    }
 
     mLineEdit->clear();
 
     mHistory.append(script);
     mHistoryPosition = mHistory.size();
+
+    // Remember the last few script lines
+    session::commandHistory = mHistory.mid(mHistory.size() - 10);
 }
 
 void ConsoleDock::moveHistory(int direction)
@@ -135,10 +193,24 @@ void ConsoleDock::moveHistory(int direction)
     mHistoryPosition = newPosition;
 }
 
-void ConsoleDock::registerOutput(LoggingInterface *output)
+void ConsoleDock::changeEvent(QEvent *e)
 {
-    connect(output, &LoggingInterface::info, this, &ConsoleDock::appendInfo);
-    connect(output, &LoggingInterface::error, this, &ConsoleDock::appendError);
+    QDockWidget::changeEvent(e);
+
+    switch (e->type()) {
+    case QEvent::LanguageChange:
+        retranslateUi();
+        break;
+    default:
+        break;
+    }
+}
+
+void ConsoleDock::retranslateUi()
+{
+    setWindowTitle(tr("Console"));
+    mLineEdit->setPlaceholderText(tr("Execute script"));
+    mClearButton->setText(tr("Clear Console"));
 }
 
 } // namespace Tiled

@@ -20,6 +20,8 @@
 
 #include "stampactions.h"
 
+#include "actionmanager.h"
+
 #include <QAction>
 #include <QToolBar>
 
@@ -27,60 +29,63 @@ using namespace Tiled;
 
 StampActions::StampActions(QObject *parent) : QObject(parent)
 {
-    QIcon diceIcon(QLatin1String(":images/24x24/dice.png"));
-    QIcon wangIcon(QLatin1String(":images/24x24/wangtile.png"));
-    QIcon flipHorizontalIcon(QLatin1String(":images/24x24/flip-horizontal.png"));
-    QIcon flipVerticalIcon(QLatin1String(":images/24x24/flip-vertical.png"));
-    QIcon rotateLeftIcon(QLatin1String(":images/24x24/rotate-left.png"));
-    QIcon rotateRightIcon(QLatin1String(":images/24x24/rotate-right.png"));
+    QIcon diceIcon(QLatin1String(":images/24/dice.png"));
+    QIcon wangIcon(QLatin1String(":images/24/wangtile.png"));
+    QIcon flipHorizontalIcon(QLatin1String(":images/24/flip-horizontal.png"));
+    QIcon flipVerticalIcon(QLatin1String(":images/24/flip-vertical.png"));
+    QIcon rotateLeftIcon(QLatin1String(":images/24/rotate-left.png"));
+    QIcon rotateRightIcon(QLatin1String(":images/24/rotate-right.png"));
 
-    diceIcon.addFile(QLatin1String(":images/32x32/dice.png"));
-    wangIcon.addFile(QLatin1String(":images/32x32/wangtile.png"));
-    flipHorizontalIcon.addFile(QLatin1String(":images/32x32/flip-horizontal.png"));
-    flipVerticalIcon.addFile(QLatin1String(":images/32x32/flip-vertical.png"));
-    rotateLeftIcon.addFile(QLatin1String(":images/32x32/rotate-left.png"));
-    rotateRightIcon.addFile(QLatin1String(":images/32x32/rotate-right.png"));
+    diceIcon.addFile(QLatin1String(":images/32/dice.png"));
+    wangIcon.addFile(QLatin1String(":images/32/wangtile.png"));
+    flipHorizontalIcon.addFile(QLatin1String(":images/32/flip-horizontal.png"));
+    flipVerticalIcon.addFile(QLatin1String(":images/32/flip-vertical.png"));
+    rotateLeftIcon.addFile(QLatin1String(":images/32/rotate-left.png"));
+    rotateRightIcon.addFile(QLatin1String(":images/32/rotate-right.png"));
 
     mRandom = new QAction(this);
     mRandom->setIcon(diceIcon);
     mRandom->setCheckable(true);
-    mRandom->setToolTip(tr("Random Mode"));
-    mRandom->setShortcut(QKeySequence(tr("D")));
+    mRandom->setShortcut(Qt::Key_D);
 
     mWangFill = new QAction(this);
     mWangFill->setIcon(wangIcon);
     mWangFill->setCheckable(true);
-    mWangFill->setToolTip(tr("Wang Fill Mode"));
 
     mFlipHorizontal = new QAction(this);
     mFlipHorizontal->setIcon(flipHorizontalIcon);
+    mFlipHorizontal->setShortcut(Qt::Key_X);
 
     mFlipVertical = new QAction(this);
     mFlipVertical->setIcon(flipVerticalIcon);
+    mFlipVertical->setShortcut(Qt::Key_Y);
 
     mRotateLeft = new QAction(this);
     mRotateLeft->setIcon(rotateLeftIcon);
+    mRotateLeft->setShortcut(Qt::SHIFT + Qt::Key_Z);
 
     mRotateRight = new QAction(this);
     mRotateRight->setIcon(rotateRightIcon);
+    mRotateRight->setShortcut(Qt::Key_Z);
+
+    ActionManager::registerAction(mRandom, "RandomMode");
+    ActionManager::registerAction(mWangFill, "WangFillMode");
+    ActionManager::registerAction(mFlipHorizontal, "FlipHorizontal");
+    ActionManager::registerAction(mFlipVertical, "FlipVertical");
+    ActionManager::registerAction(mRotateLeft, "RotateLeft");
+    ActionManager::registerAction(mRotateRight, "RotateRight");
 
     languageChanged();
 }
 
 void StampActions::languageChanged()
 {
-    mRandom->setToolTip(tr("Random Mode"));
-    mWangFill->setToolTip(tr("Wang Fill Mode"));
-    mFlipHorizontal->setToolTip(tr("Flip Horizontally"));
-    mFlipVertical->setToolTip(tr("Flip Vertically"));
-    mRotateLeft->setToolTip(tr("Rotate Left"));
-    mRotateRight->setToolTip(tr("Rotate Right"));
-
-    mRandom->setShortcut(QKeySequence(tr("D")));
-    mFlipHorizontal->setShortcut(QKeySequence(tr("X")));
-    mFlipVertical->setShortcut(QKeySequence(tr("Y")));
-    mRotateLeft->setShortcut(QKeySequence(tr("Shift+Z")));
-    mRotateRight->setShortcut(QKeySequence(tr("Z")));
+    mRandom->setText(tr("Random Mode"));
+    mWangFill->setText(tr("Wang Fill Mode"));
+    mFlipHorizontal->setText(tr("Flip Horizontally"));
+    mFlipVertical->setText(tr("Flip Vertically"));
+    mRotateLeft->setText(tr("Rotate Left"));
+    mRotateRight->setText(tr("Rotate Right"));
 }
 
 void StampActions::populateToolBar(QToolBar *toolBar, bool isRandom, bool isWangFill)

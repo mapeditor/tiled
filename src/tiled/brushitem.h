@@ -48,6 +48,7 @@ public:
     const SharedTileLayer &tileLayer() const;
 
     void setMap(const SharedMap &map);
+    void setMap(const SharedMap &map, const QRegion &region);
     const SharedMap &map() const;
 
     void setTileLayerPosition(QPoint pos);

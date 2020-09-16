@@ -20,8 +20,10 @@
 
 #include "abstractobjecttool.h"
 
+#include "actionmanager.h"
 #include "addremovetileset.h"
 #include "changemapobject.h"
+#include "changetileobjectgroup.h"
 #include "documentmanager.h"
 #include "mapdocument.h"
 #include "map.h"
@@ -78,34 +80,44 @@ static bool isChangedTemplateInstance(MapObject *mapObject)
 }
 
 
-AbstractObjectTool::AbstractObjectTool(const QString &name,
+AbstractObjectTool::AbstractObjectTool(Id id,
+                                       const QString &name,
                                        const QIcon &icon,
                                        const QKeySequence &shortcut,
                                        QObject *parent)
-    : AbstractTool(name, icon, shortcut, parent)
+    : AbstractTool(id, name, icon, shortcut, parent)
     , mMapScene(nullptr)
 {
-    QIcon flipHorizontalIcon(QLatin1String(":images/24x24/flip-horizontal.png"));
-    QIcon flipVerticalIcon(QLatin1String(":images/24x24/flip-vertical.png"));
-    QIcon rotateLeftIcon(QLatin1String(":images/24x24/rotate-left.png"));
-    QIcon rotateRightIcon(QLatin1String(":images/24x24/rotate-right.png"));
+    QIcon flipHorizontalIcon(QLatin1String(":images/24/flip-horizontal.png"));
+    QIcon flipVerticalIcon(QLatin1String(":images/24/flip-vertical.png"));
+    QIcon rotateLeftIcon(QLatin1String(":images/24/rotate-left.png"));
+    QIcon rotateRightIcon(QLatin1String(":images/24/rotate-right.png"));
 
-    flipHorizontalIcon.addFile(QLatin1String(":images/32x32/flip-horizontal.png"));
-    flipVerticalIcon.addFile(QLatin1String(":images/32x32/flip-vertical.png"));
-    rotateLeftIcon.addFile(QLatin1String(":images/32x32/rotate-left.png"));
-    rotateRightIcon.addFile(QLatin1String(":images/32x32/rotate-right.png"));
+    flipHorizontalIcon.addFile(QLatin1String(":images/32/flip-horizontal.png"));
+    flipVerticalIcon.addFile(QLatin1String(":images/32/flip-vertical.png"));
+    rotateLeftIcon.addFile(QLatin1String(":images/32/rotate-left.png"));
+    rotateRightIcon.addFile(QLatin1String(":images/32/rotate-right.png"));
 
     mFlipHorizontal = new QAction(this);
     mFlipHorizontal->setIcon(flipHorizontalIcon);
+    mFlipHorizontal->setShortcut(Qt::Key_X);
 
     mFlipVertical = new QAction(this);
     mFlipVertical->setIcon(flipVerticalIcon);
+    mFlipVertical->setShortcut(Qt::Key_Y);
 
     mRotateLeft = new QAction(this);
     mRotateLeft->setIcon(rotateLeftIcon);
+    mRotateLeft->setShortcut(Qt::SHIFT + Qt::Key_Z);
 
     mRotateRight = new QAction(this);
     mRotateRight->setIcon(rotateRightIcon);
+    mRotateRight->setShortcut(Qt::Key_Z);
+
+    ActionManager::registerAction(mFlipHorizontal, "FlipHorizontal");
+    ActionManager::registerAction(mFlipVertical, "FlipVertical");
+    ActionManager::registerAction(mRotateLeft, "RotateLeft");
+    ActionManager::registerAction(mRotateRight, "RotateRight");
 
     connect(mFlipHorizontal, &QAction::triggered, this, &AbstractObjectTool::flipHorizontally);
     connect(mFlipVertical, &QAction::triggered, this, &AbstractObjectTool::flipVertically);
@@ -161,7 +173,7 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = qFloor(tilePosF.x());
     const int y = qFloor(tilePosF.y());
-    setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
+    setStatusInfo(QStringLiteral("%1, %2 (%3, %4)").arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
 }
 
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -174,15 +186,10 @@ void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
 void AbstractObjectTool::languageChanged()
 {
-    mFlipHorizontal->setToolTip(tr("Flip Horizontally"));
-    mFlipVertical->setToolTip(tr("Flip Vertically"));
-    mRotateLeft->setToolTip(QCoreApplication::translate("Tiled::StampActions", "Rotate Left"));
-    mRotateRight->setToolTip(QCoreApplication::translate("Tiled::StampActions", "Rotate Right"));
-
-    mFlipHorizontal->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::StampActions", "X")));
-    mFlipVertical->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::StampActions", "Y")));
-    mRotateLeft->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::StampActions", "Shift+Z")));
-    mRotateRight->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::StampActions", "Z")));
+    mFlipHorizontal->setText(tr("Flip Horizontally"));
+    mFlipVertical->setText(tr("Flip Vertically"));
+    mRotateLeft->setText(QCoreApplication::translate("Tiled::StampActions", "Rotate Left"));
+    mRotateRight->setText(QCoreApplication::translate("Tiled::StampActions", "Rotate Right"));
 }
 
 void AbstractObjectTool::populateToolBar(QToolBar *toolBar)
@@ -247,6 +254,56 @@ void AbstractObjectTool::removeObjects()
     mapDocument()->removeObjects(mapDocument()->selectedObjects());
 }
 
+/**
+ * Adds the selected collision shapes for the currently selected tile - the
+ * last selected tile - to all selected tiles.
+ */
+void AbstractObjectTool::applyCollisionsToSelectedTiles(bool replace)
+{
+    auto document = DocumentManager::instance()->currentDocument();
+    auto tilesetDocument = qobject_cast<TilesetDocument*>(document);
+    if (!tilesetDocument)
+        return;
+
+    const auto currentTile = dynamic_cast<Tile *>(tilesetDocument->currentObject());
+    if (!currentTile)
+        return;
+
+    auto undoStack = tilesetDocument->undoStack();
+    undoStack->beginMacro(tr("Apply Collision Shapes"));
+
+    // The selected collision objects
+    const auto &selectedObjects = mapDocument()->selectedObjects();
+
+    // Add each collision object to each selected tile apart from the current one
+    for (Tile *tile : tilesetDocument->selectedTiles()) {
+        if (tile == currentTile)
+            continue;
+
+        std::unique_ptr<ObjectGroup> objectGroup;
+
+        // Create a new group for collision objects if none exists or when replacing
+        if (!tile->objectGroup() || replace)
+            objectGroup = std::make_unique<ObjectGroup>();
+        else
+            objectGroup.reset(tile->objectGroup()->clone());
+
+        // Copy across the selected collision shapes
+        auto highestOjectId = objectGroup->highestObjectId();
+        for (MapObject *object : selectedObjects) {
+            MapObject *newObject = object->clone();
+            newObject->setId(++highestOjectId);
+            objectGroup->addObject(newObject);
+        }
+
+        undoStack->push(new ChangeTileObjectGroup(tilesetDocument,
+                                                  tile,
+                                                  std::move(objectGroup)));
+    }
+
+    undoStack->endMacro();
+}
+
 void AbstractObjectTool::resetTileSize()
 {
     QList<QUndoCommand*> commands;
@@ -283,7 +340,7 @@ static QString saveObjectTemplate(const MapObject *mapObject)
         suggestedFileName += mapObject->name();
     else
         suggestedFileName += QCoreApplication::translate("Tiled::MainWindow", "untitled");
-    suggestedFileName += QLatin1String(".tx");
+    suggestedFileName += QStringLiteral(".tx");
 
     QWidget *parent = DocumentManager::instance()->widget()->window();
     QString fileName = QFileDialog::getSaveFileName(parent,
@@ -450,31 +507,48 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
         return;
 
     QMenu menu;
-    QAction *duplicateAction = menu.addAction(tr("Duplicate %n Object(s)", "", selectedObjects.size()),
-                                              this, SLOT(duplicateObjects()));
-    QAction *removeAction = menu.addAction(tr("Remove %n Object(s)", "", selectedObjects.size()),
-                                           this, SLOT(removeObjects()));
+    menu.setToolTipsVisible(true);
 
-    duplicateAction->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
-    removeAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
+    QAction *duplicateAction = menu.addAction(tr("Duplicate %n Object(s)", "", selectedObjects.size()),
+                                              this, &AbstractObjectTool::duplicateObjects);
+    QAction *removeAction = menu.addAction(tr("Remove %n Object(s)", "", selectedObjects.size()),
+                                           this, &AbstractObjectTool::removeObjects);
+
+    duplicateAction->setIcon(QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
+    removeAction->setIcon(QIcon(QLatin1String(":/images/16/edit-delete.png")));
+
+    // Allow the currently selected collision shapes to be applied to all selected tiles in the tileset editor
+    if (auto document = DocumentManager::instance()->currentDocument()) {
+        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+            menu.addSeparator();
+            auto collisionMenu = menu.addMenu(tr("Apply Collision(s) to Selected Tiles"));
+            collisionMenu->setEnabled(tilesetDocument->selectedTiles().count() > 1);
+            collisionMenu->addAction(tr("Replace Existing Objects"), this, [this] { applyCollisionsToSelectedTiles(true); });
+            collisionMenu->addAction(tr("Add Objects"), this, [this] { applyCollisionsToSelectedTiles(false); });
+        }
+    }
 
     bool anyTileObjectSelected = std::any_of(selectedObjects.begin(),
                                              selectedObjects.end(),
                                              isTileObject);
 
     if (anyTileObjectSelected) {
-        auto resetTileSizeAction = menu.addAction(tr("Reset Tile Size"), this, SLOT(resetTileSize()));
+        menu.addSeparator();
+
+        auto resetTileSizeAction = menu.addAction(tr("Reset Tile Size"), this, &AbstractObjectTool::resetTileSize);
         resetTileSizeAction->setEnabled(std::any_of(selectedObjects.begin(),
                                                     selectedObjects.end(),
                                                     isResizedTileObject));
 
-        auto changeTileAction = menu.addAction(tr("Replace Tile"), this, SLOT(changeTile()));
+        auto changeTileAction = menu.addAction(tr("Replace Tile"), this, &AbstractObjectTool::changeTile);
         changeTileAction->setEnabled(tile() && (!selectedObjects.first()->isTemplateBase() ||
                                                 tile()->tileset()->isExternal()));
     }
 
+    menu.addSeparator();
+
     // Create action for replacing an object with a template
-    auto replaceTemplateAction = menu.addAction(tr("Replace With Template"), this, SLOT(replaceObjectsWithTemplate()));
+    auto replaceTemplateAction = menu.addAction(tr("Replace With Template"), this, &AbstractObjectTool::replaceObjectsWithTemplate);
     auto selectedTemplate = objectTemplate();
 
     if (selectedTemplate) {
@@ -489,9 +563,12 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
 
         if (!(currentObject->isTemplateBase() || currentObject->isTemplateInstance())) {
             const Cell cell = selectedObjects.first()->cell();
-            // Saving objects with embedded tilesets is disabled
-            if (cell.isEmpty() || cell.tileset()->isExternal())
-                menu.addAction(tr("Save As Template"), this, SLOT(saveSelectedObject()));
+            auto action = menu.addAction(tr("Save As Template"), this, &AbstractObjectTool::saveSelectedObject);
+
+            if (!cell.isEmpty() && !cell.tileset()->isExternal()) {
+                action->setEnabled(false);
+                action->setToolTip(tr("Can't create template with embedded tileset"));
+            }
         }
 
         if (currentObject->isTemplateBase()) { // Hide this operations for template base
@@ -506,25 +583,25 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
                                                    isTemplateInstance);
 
     if (anyTemplateInstanceSelected) {
-        menu.addAction(tr("Detach"), this, SLOT(detachSelectedObjects()));
+        menu.addAction(tr("Detach"), this, &AbstractObjectTool::detachSelectedObjects);
 
-        auto resetToTemplateAction = menu.addAction(tr("Reset Template Instance(s)"), this, SLOT(resetInstances()));
+        auto resetToTemplateAction = menu.addAction(tr("Reset Template Instance(s)"), this, &AbstractObjectTool::resetInstances);
         resetToTemplateAction->setEnabled(std::any_of(selectedObjects.begin(),
                                                       selectedObjects.end(),
                                                       isChangedTemplateInstance));
     }
 
     menu.addSeparator();
-    menu.addAction(tr("Flip Horizontally"), this, SLOT(flipHorizontally()), QKeySequence(tr("X")));
-    menu.addAction(tr("Flip Vertically"), this, SLOT(flipVertically()), QKeySequence(tr("Y")));
+    menu.addAction(tr("Flip Horizontally"), this, &AbstractObjectTool::flipHorizontally, Qt::Key_X);
+    menu.addAction(tr("Flip Vertically"), this, &AbstractObjectTool::flipVertically, Qt::Key_Y);
 
     ObjectGroup *sameObjectGroup = RaiseLowerHelper::sameObjectGroup(selectedObjects);
     if (sameObjectGroup && sameObjectGroup->drawOrder() == ObjectGroup::IndexOrder) {
         menu.addSeparator();
-        menu.addAction(tr("Raise Object"), this, SLOT(raise()), QKeySequence(tr("PgUp")));
-        menu.addAction(tr("Lower Object"), this, SLOT(lower()), QKeySequence(tr("PgDown")));
-        menu.addAction(tr("Raise Object to Top"), this, SLOT(raiseToTop()), QKeySequence(tr("Home")));
-        menu.addAction(tr("Lower Object to Bottom"), this, SLOT(lowerToBottom()), QKeySequence(tr("End")));
+        menu.addAction(tr("Raise Object"), this, &AbstractObjectTool::raise, Qt::Key_PageUp);
+        menu.addAction(tr("Lower Object"), this, &AbstractObjectTool::lower, Qt::Key_PageDown);
+        menu.addAction(tr("Raise Object to Top"), this, &AbstractObjectTool::raiseToTop, Qt::Key_Home);
+        menu.addAction(tr("Lower Object to Bottom"), this, &AbstractObjectTool::lowerToBottom, Qt::Key_End);
     }
 
     auto objectGroups = mapDocument()->map()->objectGroups();
@@ -541,7 +618,7 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
     }
 
     menu.addSeparator();
-    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
+    QIcon propIcon(QLatin1String(":images/16/document-properties.png"));
     QAction *propertiesAction = menu.addAction(propIcon,
                                                tr("Object &Properties..."));
 

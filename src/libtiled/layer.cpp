@@ -37,6 +37,14 @@
 
 namespace Tiled {
 
+static QColor multiplyColors(QColor color1, QColor color2)
+{
+    return QColor::fromRgbF(color1.redF() * color2.redF(),
+                            color1.greenF() * color2.greenF(),
+                            color1.blueF() * color2.blueF(),
+                            color1.alphaF() * color2.alphaF());
+}
+
 Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
     Object(LayerType),
     mName(name),
@@ -52,6 +60,23 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
 {
 }
 
+void Layer::resetIds()
+{
+    mId = 0;        // reset out own ID
+
+    switch (layerType()) {
+    case ObjectGroupType:
+        static_cast<ObjectGroup*>(this)->resetObjectIds();
+        break;
+    case GroupLayerType:
+        for (Layer *layer : static_cast<GroupLayer*>(this)->layers())
+            layer->resetIds();
+        break;
+    default:
+        break;
+    }
+}
+
 /**
  * Returns the effective opacity, which is the opacity multiplied by the
  * opacity of any parent layers.
@@ -63,6 +88,23 @@ qreal Layer::effectiveOpacity() const
     while ((layer = layer->parentLayer()))
         opacity *= layer->opacity();
     return opacity;
+}
+
+/**
+ * Returns the effective tint color, which is the tint color multiplied by the
+ * tint color of any parent layers.
+ */
+QColor Layer::effectiveTintColor() const
+{
+    auto tintColor = mTintColor.isValid() ? mTintColor
+                                          : QColor(255, 255, 255, 255);
+
+    const Layer *layer = this;
+    while ((layer = layer->parentLayer()))
+        if (layer->tintColor().isValid())
+            tintColor = multiplyColors(tintColor, layer->tintColor());
+
+    return tintColor;
 }
 
 /**
@@ -165,7 +207,7 @@ bool Layer::canMergeDown() const
  * A helper function for initializing the members of the given instance to
  * those of this layer. Used by subclasses when cloning.
  *
- * Layer name, position and size are not cloned, since they are assumed to have
+ * Layer name, position and size are not copied, since they are assumed to have
  * already been passed to the constructor. Also, map ownership is not cloned,
  * since the clone is not added to the map.
  *
@@ -174,9 +216,10 @@ bool Layer::canMergeDown() const
  */
 Layer *Layer::initializeClone(Layer *clone) const
 {
-    // mId is not copied, will be assigned when layer is added to a map
+    clone->mId = mId;
     clone->mOffset = mOffset;
     clone->mOpacity = mOpacity;
+    clone->mTintColor = mTintColor;
     clone->mVisible = mVisible;
     clone->setProperties(properties());
     return clone;
