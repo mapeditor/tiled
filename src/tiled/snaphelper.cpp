@@ -34,7 +34,9 @@ SnapHelper::SnapHelper(const MapRenderer *renderer,
     mSnapToFineGrid = preferences->snapToFineGrid();
     mSnapToPixels = preferences->snapToPixels();
 
-    if (modifiers & Qt::ControlModifier)
+    if ((modifiers & (Qt::ControlModifier|Qt::ShiftModifier))==(Qt::ControlModifier|Qt::ShiftModifier))
+        toggleFineSnap();
+    else if (modifiers & Qt::ControlModifier)
         toggleSnap();
 }
 
@@ -42,6 +44,12 @@ void SnapHelper::toggleSnap()
 {
     mSnapToGrid = !(mSnapToGrid || mSnapToFineGrid);
     mSnapToFineGrid = false;
+}
+  
+void SnapHelper::toggleFineSnap()
+{
+    mSnapToFineGrid = !(mSnapToGrid || mSnapToFineGrid);
+    mSnapToGrid = false;
 }
 
 void SnapHelper::snap(QPointF &pixelPos) const
