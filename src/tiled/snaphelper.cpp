@@ -34,10 +34,13 @@ SnapHelper::SnapHelper(const MapRenderer *renderer,
     mSnapToFineGrid = preferences->snapToFineGrid();
     mSnapToPixels = preferences->snapToPixels();
 
-    if ((modifiers & (Qt::ControlModifier|Qt::ShiftModifier))==(Qt::ControlModifier|Qt::ShiftModifier))
-        toggleFineSnap();
-    else if (modifiers & Qt::ControlModifier)
-        toggleSnap();
+    if (modifiers & Qt::ControlModifier) {
+        if (modifiers & Qt::ShiftModifier) {
+            toggleFineSnap();
+        } else { 
+            toggleSnap();
+        }
+    }
 }
 
 void SnapHelper::toggleSnap()
