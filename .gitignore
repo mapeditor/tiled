@@ -36,6 +36,7 @@ translations/phony_target.app
 # IDE files
 *.pro.user*
 *.qbs.user*
+*.autosave
 
 tests/mapreader/mapreader
 tests/staggeredrenderer/staggeredrenderer
@@ -58,3 +59,7 @@ util/java/libtiled-java/target
 
 # Linux perf/debugging
 gmon.out
+
+# Vim
+*.swo
+*.swp
