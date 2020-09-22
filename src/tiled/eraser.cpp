@@ -30,14 +30,16 @@
 
 using namespace Tiled;
 
-Eraser::Eraser(QObject *parent)
-    : AbstractTileTool("EraserTool",
-                       tr("Eraser"),
-                       QIcon(QLatin1String(
-                               ":images/22/stock-tool-eraser.png")),
-                       QKeySequence(Qt::Key_E),
+Eraser::Eraser(QObject *parent, bool strong)
+    : AbstractTileTool(!strong ? "Eraser Tool" : "Strong Eraser Tool",
+                       tr(!strong ? "Eraser" : "Strong Eraser"),
+                       QIcon(QLatin1String(!strong ?
+                               ":images/22/stock-tool-eraser.png" :
+                               ":images/22/stock-tool-strong-eraser.png")),
+                       QKeySequence(!strong ? Qt::Key_E : Qt::SHIFT + Qt::Key_E),
                        nullptr,
                        parent)
+    , mStrong(strong)
     , mMode(Nothing)
 {
 }
@@ -105,7 +107,10 @@ void Eraser::doErase(bool continuation)
     }
     mLastTilePos = tilePos;
 
-    for (Layer *layer : mapDocument()->selectedLayers()) {
+    auto layers = !mStrong ? mapDocument()->selectedLayers()
+                           : mapDocument()->map()->layers();
+
+    for (Layer *layer : layers) {
         if (!layer->isTileLayer())
             continue;
         if (!layer->isUnlocked())

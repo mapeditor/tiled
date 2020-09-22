@@ -32,7 +32,12 @@ class Eraser : public AbstractTileTool
     Q_OBJECT
 
 public:
-    Eraser(QObject *parent = nullptr);
+    /**
+     * The eraser comes in 2 flavours: regular and strong. The strong eraser
+     * will erase through all layers in the map except for locked layers.
+     * The regular eraser will erase through selected layers only.
+     */
+    Eraser(QObject *parent = nullptr, bool strong = false);
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
@@ -52,6 +57,7 @@ private:
         RectangleErase
     };
 
+    bool mStrong;
     Mode mMode;
     QPoint mLastTilePos;
     QPoint mStart;

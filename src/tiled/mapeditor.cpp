@@ -198,6 +198,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(mBucketFillTool));
     mToolsToolBar->addAction(mToolManager->registerTool(mShapeFillTool));
     mToolsToolBar->addAction(mToolManager->registerTool(new Eraser(this)));
+    mToolsToolBar->addAction(mToolManager->registerTool(new Eraser(this, true)));
     mToolsToolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new SelectSameTileTool(this)));

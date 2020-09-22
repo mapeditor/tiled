@@ -176,5 +176,6 @@
         <file>images/scalable/replace.svg</file>
         <file>images/24/detect-bounding-box.png</file>
         <file>images/48/detect-bounding-box.png</file>
+        <file>images/22/stock-tool-strong-eraser.png</file>
     </qresource>
 </RCC>
