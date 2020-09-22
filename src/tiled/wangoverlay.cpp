@@ -209,6 +209,8 @@ static const QPainterPath *cornerPathForMask(WangId mask)
 
 namespace EdgesOnly {
 
+#if 1   // Draw edge Wang sets as "roads"
+
 static const QPainterPath oneEdge = [] {
     constexpr qreal d = 1.0 / 6.0;
     QPainterPath path(QPointF(5 * d, 0));
@@ -259,6 +261,53 @@ static const QPainterPath fourEdges = [] {
     path.closeSubpath();
     return path;
 }();
+
+#else   // Draw edge Wang sets as abstract triangles
+
+static const QPainterPath oneEdge = [] {
+    QPainterPath path(QPointF(0.0, 0.0));
+    path.lineTo(QPointF(1.0, 0.0));
+    path.lineTo(QPointF(0.5, 0.5));
+    path.closeSubpath();
+    return path;
+}();
+
+static const QPainterPath twoAdjacentEdges = [] {
+    QPainterPath path(QPointF(0.0, 0.0));
+    path.lineTo(QPointF(1.0, 0.0));
+    path.lineTo(QPointF(1.0, 1.0));
+    path.closeSubpath();
+    return path;
+}();
+
+static const QPainterPath twoOppositeEdges = [] {
+    QPainterPath path(QPointF(0.0, 0.0));
+    path.lineTo(QPointF(1.0, 0.0));
+    path.lineTo(QPointF(0.5, 0.5));
+    path.lineTo(QPointF(1.0, 1.0));
+    path.lineTo(QPointF(0.0, 1.0));
+    path.lineTo(QPointF(0.5, 0.5));
+    path.closeSubpath();
+    return path;
+}();
+
+static const QPainterPath threeEdges = [] {
+    QPainterPath path(QPointF(0.0, 0.0));
+    path.lineTo(QPointF(1.0, 0.0));
+    path.lineTo(QPointF(1.0, 1.0));
+    path.lineTo(QPointF(0.0, 1.0));
+    path.lineTo(QPointF(0.5, 0.5));
+    path.closeSubpath();
+    return path;
+}();
+
+static const QPainterPath fourEdges = [] {
+    QPainterPath path;
+    path.addRect(0, 0, 1, 1);
+    return path;
+}();
+
+#endif
 
 static const QPainterPath *pathForMask(WangId mask)
 {
