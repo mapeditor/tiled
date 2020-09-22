@@ -204,21 +204,21 @@ WangDock::WangDock(QWidget *parent)
     wangSetVertical->addLayout(wangSetHorizontal);
 
     //WangColorView widget:
-    QWidget *wangColorWidget = new QWidget;
+    mWangColorWidget = new QWidget;
 
     QHBoxLayout *colorViewHorizontal = new QHBoxLayout;
     colorViewHorizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
     colorViewHorizontal->addWidget(mWangColorToolBar);
 
-    QVBoxLayout *colorViewVertical = new QVBoxLayout(wangColorWidget);
+    QVBoxLayout *colorViewVertical = new QVBoxLayout(mWangColorWidget);
     colorViewVertical->setMargin(0);
     colorViewVertical->addWidget(mWangColorView);
     colorViewVertical->addLayout(colorViewHorizontal);
 
     mTemplateAndColorView = new QTabWidget;
     mTemplateAndColorView->setDocumentMode(true);
+    mTemplateAndColorView->addTab(mWangColorWidget, tr("Colors"));
     mTemplateAndColorView->addTab(mWangTemplateView, tr("Patterns"));
-    mTemplateAndColorView->addTab(wangColorWidget, tr("Colors"));
 
     //Template and color widget.
     mTemplateAndColorWidget = new QWidget;
@@ -275,7 +275,7 @@ void WangDock::setDocument(Document *document)
         mWangColorToolBar->setVisible(false);
         mEraseWangIdsButton->setVisible(false);
 
-        mTemplateAndColorView->setTabEnabled(0, false);
+        mTemplateAndColorView->setTabEnabled(1, false);
         mTemplateAndColorView->tabBar()->hide();
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         TilesetWangSetModel *wangSetModel = tilesetDocument->wangSetModel();
@@ -295,7 +295,7 @@ void WangDock::setDocument(Document *document)
         mWangColorToolBar->setVisible(true);
         mEraseWangIdsButton->setVisible(true);
 
-        mTemplateAndColorView->setTabEnabled(0, true);
+        mTemplateAndColorView->setTabEnabled(1, true);
         mTemplateAndColorView->tabBar()->show();
 
         /*
@@ -468,12 +468,8 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
     if (wangSet) {
         mWangSetView->setCurrentIndex(wangSetIndex(wangSet));
 
-        if (!mWangTemplateView->isVisible() && !mWangColorView->isVisible()) {
-            if (mDocument->type() == Document::TilesetDocumentType)
-                setTemplateView();
-            else
-                setColorView();
-        }
+        if (!mWangTemplateView->isVisible() && !mWangColorView->isVisible())
+            setColorView();
 
         updateAddColorStatus();
     } else {
@@ -524,8 +520,8 @@ void WangDock::retranslateUi()
     mAddColor->setText(tr("Add Color"));
     mRemoveColor->setText(tr("Remove Color"));
 
-    mTemplateAndColorView->setTabText(0, tr("Patterns"));
-    mTemplateAndColorView->setTabText(1, tr("Colors"));
+    mTemplateAndColorView->setTabText(0, tr("Colors"));
+    mTemplateAndColorView->setTabText(1, tr("Patterns"));
 }
 
 QModelIndex WangDock::wangSetIndex(WangSet *wangSet) const
@@ -574,17 +570,10 @@ void WangDock::onCurrentWangIdChanged(WangId wangId)
     selectionModel->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
 }
 
-void WangDock::setTemplateView()
-{
-    mTemplateAndColorWidget->setVisible(true);
-    mTemplateAndColorView->setCurrentIndex(0);
-    retranslateUi();
-}
-
 void WangDock::setColorView()
 {
     mTemplateAndColorWidget->setVisible(true);
-    mTemplateAndColorView->setCurrentIndex(1);
+    mTemplateAndColorView->setCurrentWidget(mWangColorWidget);
     retranslateUi();
 }
 

@@ -60,7 +60,6 @@ public:
 
     void editWangSetName(WangSet *wangSet);
 
-    void setTemplateView();
     void setColorView();
     void hideTemplateColorView();
 
@@ -123,6 +122,7 @@ private:
     QSortFilterProxyModel *mWangColorFilterModel;
     WangSetModel *mWangSetModel;
     HasChildrenFilterModel *mProxyModel;
+    QWidget *mWangColorWidget;
     WangTemplateView *mWangTemplateView;
     WangTemplateModel *mWangTemplateModel;
     QTabWidget *mTemplateAndColorView;
