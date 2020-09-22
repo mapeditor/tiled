@@ -60,6 +60,8 @@ static const QPainterPath oneEdge = [] {
     return path;
 }();
 
+#if 1   // Draw edges as "roads"
+
 static const QPainterPath twoAdjacentEdges = [] {
     constexpr qreal d = 1.0 / 6.0;
     QPainterPath path(QPointF(2 * d, 0));
@@ -117,6 +119,34 @@ static const QPainterPath fourEdges = [] {
     path.closeSubpath();
     return path;
 }();
+
+#else   // Don't connect edges
+
+static const QPainterPath twoAdjacentEdges = [] {
+    QPainterPath path = oneEdge;
+    path |= rotated(oneEdge, 1);
+    return path;
+}();
+
+static const QPainterPath twoOppositeEdges = [] {
+    QPainterPath path = oneEdge;
+    path |= rotated(oneEdge, 2);
+    return path;
+}();
+
+static const QPainterPath threeEdges = [] {
+    QPainterPath path = twoAdjacentEdges;
+    path |= rotated(oneEdge, 2);
+    return path;
+}();
+
+static const QPainterPath fourEdges = [] {
+    QPainterPath path = threeEdges;
+    path |= rotated(oneEdge, 3);
+    return path;
+}();
+
+#endif
 
 static const QPainterPath *edgePathForMask(WangId mask)
 {
