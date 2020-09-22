@@ -494,6 +494,13 @@ std::unique_ptr<WangSet> VariantToMapConverter::toWangSet(const QVariantMap &var
         wangSet->addWangTile(wangTile);
     }
 
+
+    // Do something useful if we loaded an old Wang set
+    if (cornerColors.isEmpty() && !edgeColors.isEmpty())
+        wangSet->setType(WangSet::Edge);
+    if (edgeColors.isEmpty() && !cornerColors.isEmpty())
+        wangSet->setType(WangSet::Corner);
+
     return wangSet;
 }
 

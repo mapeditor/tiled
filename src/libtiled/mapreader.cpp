@@ -804,6 +804,12 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                 }
             }
 
+            // Do something useful if we loaded an old Wang set
+            if (cornerColors.isEmpty() && !edgeColors.isEmpty())
+                wangSet->setType(WangSet::Edge);
+            if (edgeColors.isEmpty() && !cornerColors.isEmpty())
+                wangSet->setType(WangSet::Corner);
+
             tileset.addWangSet(std::move(wangSet));
         } else {
             readUnknownElement();
