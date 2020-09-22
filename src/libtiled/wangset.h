@@ -274,7 +274,7 @@ public:
     WangSet(Tileset *tileset,
             const QString &name,
             Type type,
-            int imageTileId);
+            int imageTileId = -1);
 
     Tileset *tileset() const;
     void setTileset(Tileset *tileset);
@@ -298,9 +298,6 @@ public:
 
     const QSharedPointer<WangColor> &colorAt(int index) const;
     const QVector<QSharedPointer<WangColor>> &colors() const { return mColors; }
-
-    QList<Tile *> tilesChangedOnSetColorCount(int newColorCount) const;
-    QList<Tile *> tilesChangedOnRemoveColor(int color) const;
 
     void addTile(Tile *tile, WangId wangId);
     void addCell(const Cell &cell, WangId wangId);

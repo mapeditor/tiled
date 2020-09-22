@@ -25,6 +25,8 @@
 
 #include <QCoreApplication>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 
 ChangeTileWangId::ChangeTileWangId()
@@ -88,10 +90,8 @@ void ChangeTileWangId::redo()
 
     QList<Tile *> changedTiles;
 
-    const auto& changes = mChanges;
-    for (const WangIdChange &wangIdChange : changes) {
+    for (const WangIdChange &wangIdChange : qAsConst(mChanges)) {
         changedTiles.append(wangIdChange.tile);
-
         mWangSet->addTile(wangIdChange.tile, wangIdChange.to);
     }
 
@@ -115,4 +115,52 @@ bool ChangeTileWangId::mergeWith(const QUndoCommand *other)
     mMergeable = o->mMergeable;
 
     return true;
+}
+
+QVector<ChangeTileWangId::WangIdChange> ChangeTileWangId::changesOnSetColorCount(
+        const WangSet *wangSet, int colorCount)
+{
+    QVector<WangIdChange> changes;
+
+    for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
+        WangId newWangId = wangTile.wangId();
+
+        for (int i = 0; i < WangId::NumIndexes; ++i)
+            if (newWangId.indexColor(i) > colorCount)
+                newWangId.setIndexColor(i, 0);
+
+        if (wangTile.wangId() != newWangId)
+            changes.append(WangIdChange(wangTile.wangId(), newWangId, wangTile.tile()));
+    }
+
+    return changes;
+}
+
+QVector<ChangeTileWangId::WangIdChange> ChangeTileWangId::changesOnRemoveColor(
+        const WangSet *wangSet, int removedColor)
+{
+    QVector<WangIdChange> changes;
+
+    for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
+        WangId newWangId = wangTile.wangId();
+
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
+            const int color = newWangId.indexColor(i);
+            if (color == removedColor)
+                newWangId.setIndexColor(i, 0);
+            else if (color > removedColor)
+                newWangId.setIndexColor(i, color - 1);
+        }
+
+        if (wangTile.wangId() != newWangId)
+            changes.append(WangIdChange(wangTile.wangId(), newWangId, wangTile.tile()));
+    }
+
+    return changes;
+}
+
+void ChangeTileWangId::applyChanges(WangSet *wangSet, const QVector<WangIdChange> &changes)
+{
+    for (const WangIdChange &change : changes)
+        wangSet->addTile(change.tile, change.to);
 }

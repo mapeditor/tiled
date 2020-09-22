@@ -40,7 +40,6 @@ AddRemoveWangSet::AddRemoveWangSet(TilesetDocument *tilesetDocument,
 
 AddRemoveWangSet::~AddRemoveWangSet()
 {
-    delete mWangSet;
 }
 
 void AddRemoveWangSet::removeWangSet()
@@ -52,8 +51,7 @@ void AddRemoveWangSet::removeWangSet()
 void AddRemoveWangSet::addWangSet()
 {
     Q_ASSERT(mWangSet);
-    mTilesetDocument->wangSetModel()->insertWangSet(mIndex, mWangSet);
-    mWangSet = nullptr;
+    mTilesetDocument->wangSetModel()->insertWangSet(mIndex, std::move(mWangSet));
 }
 
 AddWangSet::AddWangSet(TilesetDocument *tilesetDocument, WangSet *wangSet)

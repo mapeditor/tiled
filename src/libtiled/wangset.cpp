@@ -475,7 +475,6 @@ WangSet::WangSet(Tileset *tileset,
     , mType(type)
     , mImageTileId(imageTileId)
 {
-    Q_ASSERT(tileset);
 }
 
 /**
@@ -554,38 +553,6 @@ void WangSet::removeWangColorAt(int color)
         mColors.at(i)->setColorIndex(i + 1);
 
     mColorDistancesDirty = true;
-}
-
-QList<Tile *> WangSet::tilesChangedOnSetColorCount(int newColorCount) const
-{
-    QList<Tile *> tiles;
-
-    for (auto i = mTileInfoToWangId.cbegin(); i != mTileInfoToWangId.cend(); ++i) {
-        if (!wangIdIsValid(i.value(), newColorCount)) {
-            int tileId = i.key() & 0x1fffffff;
-            tiles.append(mTileset->findTile(tileId));
-        }
-    }
-
-    return tiles;
-}
-
-QList<Tile *> WangSet::tilesChangedOnRemoveColor(int color) const
-{
-    QList<Tile *> tiles;
-
-    for (auto i = mTileInfoToWangId.cbegin(); i != mTileInfoToWangId.cend(); ++i) {
-        for (int j = 0; j < WangId::NumIndexes; ++j) {
-            int c = i.value().indexColor(j);
-            int tileId = i.key() & 0x1fffffff;
-            if (c >= color) {
-                tiles.append(mTileset->findTile(tileId));
-                break;
-            }
-        }
-    }
-
-    return tiles;
 }
 
 /**
@@ -903,7 +870,7 @@ bool WangSet::isComplete() const
 }
 
 /**
- * Returns the amount of tiles expected in a complete tileset.
+ * Returns the amount of tiles expected in a complete Wang set.
  */
 quint64 WangSet::completeSetSize() const
 {

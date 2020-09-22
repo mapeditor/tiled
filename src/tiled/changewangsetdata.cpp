@@ -32,6 +32,29 @@
 
 using namespace Tiled;
 
+RenameWangSet::RenameWangSet(TilesetDocument *tilesetDocument,
+                             WangSet *wangSet,
+                             const QString &newName)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Change Wang Set Name"))
+    , mTilesetDocument(tilesetDocument)
+    , mWangSet(wangSet)
+    , mOldName(wangSet->name())
+    , mNewName(newName)
+{
+}
+
+void RenameWangSet::undo()
+{
+    mTilesetDocument->wangSetModel()->setWangSetName(mWangSet, mOldName);
+}
+
+void RenameWangSet::redo()
+{
+    mTilesetDocument->wangSetModel()->setWangSetName(mWangSet, mNewName);
+}
+
+
 ChangeWangSetType::ChangeWangSetType(TilesetDocument *tilesetDocument,
                                      WangSet *wangSet,
                                      WangSet::Type newType,
@@ -66,19 +89,12 @@ ChangeWangSetColorCount::ChangeWangSetColorCount(TilesetDocument *tilesetDocumen
     , mOldValue(wangSet->colorCount())
     , mNewValue(newValue)
 {
-    // when edge size changes, all tiles with wangIds need to be updated.
+    // when edge size changes, all tiles with WangIds need to be updated.
     if (mNewValue < mOldValue) {
-        // when the size is reduced, some wang assignments can be lost.
-        const QList<Tile *> changedTiles = wangSet->tilesChangedOnSetColorCount(mNewValue);
-
-        if (!changedTiles.isEmpty()) {
-            QVector<ChangeTileWangId::WangIdChange> changes;
-
-            for (Tile *tile : changedTiles)
-                changes.append(ChangeTileWangId::WangIdChange(wangSet->wangIdOfTile(tile), WangId(), tile));
-
+        // when the size is reduced, some Wang assignments can be lost.
+        const auto changes = ChangeTileWangId::changesOnSetColorCount(wangSet, mNewValue);
+        if (!changes.isEmpty())
             new ChangeTileWangId(mTilesetDocument, wangSet, changes, this);
-        }
 
         for (int i = mOldValue; i > mNewValue; --i) {
             WangColorChange w;
@@ -122,30 +138,9 @@ RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, WangSet
 {
     mRemovedWangColor = wangSet->colorAt(mColor);
 
-    const QList<Tile *> changedTiles = wangSet->tilesChangedOnRemoveColor(mColor);
-
-    if (!changedTiles.isEmpty()) {
-        QVector<ChangeTileWangId::WangIdChange> changes;
-
-        for (Tile *tile : changedTiles) {
-            WangId oldWangId = wangSet->wangIdOfTile(tile);
-            WangId changedWangId = oldWangId;
-
-            for (int i = 0; i < WangId::NumIndexes; ++i) {
-                const int color = changedWangId.indexColor(i);
-                if (color == mColor)
-                    changedWangId.setIndexColor(i, 0);
-                else if (color > mColor)
-                    changedWangId.setIndexColor(i, color - 1);
-            }
-
-            changes.append(ChangeTileWangId::WangIdChange(oldWangId,
-                                                          changedWangId,
-                                                          tile));
-        }
-
+    const auto changes = ChangeTileWangId::changesOnRemoveColor(wangSet, color);
+    if (!changes.isEmpty())
         new ChangeTileWangId(mTilesetDocument, wangSet, changes, this);
-    }
 }
 
 void RemoveWangSetColor::undo()

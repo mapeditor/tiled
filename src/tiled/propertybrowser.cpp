@@ -43,7 +43,6 @@
 #include "objecttemplate.h"
 #include "preferences.h"
 #include "properties.h"
-#include "renamewangset.h"
 #include "replacetileset.h"
 #include "resizemapobject.h"
 #include "rotatemapobject.h"

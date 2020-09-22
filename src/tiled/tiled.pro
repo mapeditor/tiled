@@ -125,6 +125,7 @@ SOURCES += aboutdialog.cpp \
     editabletile.cpp \
     editabletilelayer.cpp \
     editabletileset.cpp \
+    editablewangset.cpp \
     editor.cpp \
     editpolygontool.cpp \
     eraser.cpp \
@@ -200,7 +201,6 @@ SOURCES += aboutdialog.cpp \
     propertybrowser.cpp \
     raiselowerhelper.cpp \
     regionvaluetype.cpp \
-    renamewangset.cpp \
     reparentlayers.cpp \
     replacetemplate.cpp \
     replacetileset.cpp \
@@ -358,6 +358,7 @@ HEADERS += aboutdialog.h \
     editabletile.h \
     editabletilelayer.h \
     editabletileset.h \
+    editablewangset.h \
     editor.h \
     editpolygontool.h \
     eraser.h \
@@ -435,7 +436,6 @@ HEADERS += aboutdialog.h \
     randompicker.h \
     rangeset.h \
     regionvaluetype.h \
-    renamewangset.h \
     reparentlayers.h \
     replacetemplate.h \
     replacetileset.h \

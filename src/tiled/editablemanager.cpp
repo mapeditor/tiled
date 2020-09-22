@@ -27,7 +27,9 @@
 #include "editabletile.h"
 #include "editabletilelayer.h"
 #include "editabletileset.h"
+#include "editablewangset.h"
 #include "scriptmanager.h"
+#include "wangset.h"
 
 #include <QQmlEngine>
 
@@ -71,6 +73,18 @@ void EditableManager::release(MapObject *mapObject)
         editable->hold();
     else
         delete mapObject;
+}
+
+/**
+ * Releases the WangSet by either finding an EditableWangSet instance to take
+ * ownership of it or deleting it.
+ */
+void EditableManager::release(std::unique_ptr<WangSet> wangSet)
+{
+    if (EditableWangSet *editable = find(wangSet.get())) {
+        editable->hold();
+        wangSet.release();
+    }
 }
 
 EditableLayer *EditableManager::editableLayer(EditableMap *map, Layer *layer)
@@ -160,6 +174,22 @@ EditableTile *EditableManager::editableTile(EditableTileset *tileset, Tile *tile
     }
 
     return editableTile;
+}
+
+EditableWangSet *EditableManager::editableWangSet(EditableTileset *tileset, WangSet *wangSet)
+{
+    if (!wangSet)
+        return nullptr;
+
+    Q_ASSERT(wangSet->tileset() == tileset->tileset());
+
+    EditableWangSet* &editableWangSet = mEditableWangSets[wangSet];
+    if (becomesNullValue(editableWangSet)) {
+        editableWangSet = new EditableWangSet(tileset, wangSet);
+        QQmlEngine::setObjectOwnership(editableWangSet, QQmlEngine::JavaScriptOwnership);
+    }
+
+    return editableWangSet;
 }
 
 } // namespace Tiled

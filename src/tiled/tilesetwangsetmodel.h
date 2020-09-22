@@ -24,6 +24,8 @@
 
 #include <QAbstractItemModel>
 
+#include <memory>
+
 namespace Tiled {
 
 class Tileset;
@@ -63,8 +65,8 @@ public:
 
     WangSet *wangSetAt(const QModelIndex &index) const;
 
-    void insertWangSet(int index, WangSet *wangSet);
-    WangSet *takeWangSetAt(int index);
+    void insertWangSet(int index, std::unique_ptr<WangSet> wangSet);
+    std::unique_ptr<WangSet> takeWangSetAt(int index);
     void setWangSetName(WangSet *wangSet, const QString &name);
     void setWangSetType(WangSet *wangSet, WangSet::Type type);
     void setWangSetColorCount(WangSet *wangSet, int value);
@@ -73,8 +75,8 @@ public:
     void removeWangColorAt(WangSet *wangSet, int color);
 
 signals:
-    void wangSetAboutToBeAdded(Tileset *tileset);
-    void wangSetAdded(Tileset *tileset);
+    void wangSetAboutToBeAdded(Tileset *tileset, int index);
+    void wangSetAdded(Tileset *tileset, int index);
     void wangSetAboutToBeRemoved(WangSet *wangSet);
     void wangSetRemoved(WangSet *wangSet);
 

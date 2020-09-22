@@ -21,11 +21,14 @@
 #include "editabletileset.h"
 
 #include "addremovetiles.h"
+#include "addremovewangset.h"
 #include "editablemanager.h"
 #include "editabletile.h"
+#include "editablewangset.h"
 #include "scriptmanager.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
+#include "tilesetwangsetmodel.h"
 
 #include <QCoreApplication>
 
@@ -54,11 +57,14 @@ EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
     connect(tilesetDocument, &TilesetDocument::tilesAdded, this, &EditableTileset::attachTiles);
     connect(tilesetDocument, &TilesetDocument::tilesRemoved, this, &EditableTileset::detachTiles);
     connect(tilesetDocument, &TilesetDocument::tileObjectGroupChanged, this, &EditableTileset::tileObjectGroupChanged);
+    connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetAdded, this, &EditableTileset::wangSetAdded);
+    connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetRemoved, this, &EditableTileset::wangSetRemoved);
 }
 
 EditableTileset::~EditableTileset()
 {
     detachTiles(tileset()->tiles().values());
+    detachWangSets(tileset()->wangSets());
 
     EditableManager::instance().mEditableTilesets.remove(tileset());
 }
@@ -82,6 +88,15 @@ QList<QObject*> EditableTileset::tiles()
     for (Tile *tile : tileset()->tiles())
         tiles.append(editableManager.editableTile(this, tile));
     return tiles;
+}
+
+QList<QObject *> EditableTileset::wangSets()
+{
+    auto &editableManager = EditableManager::instance();
+    QList<QObject*> wangSets;
+    for (WangSet *wangSet : tileset()->wangSets())
+        wangSets.append(editableManager.editableWangSet(this, wangSet));
+    return wangSets;
 }
 
 QList<QObject *> EditableTileset::selectedTiles()
@@ -146,6 +161,38 @@ void EditableTileset::removeTiles(const QList<QObject *> &tiles)
     } else if (!checkReadOnly()) {
         tileset()->removeTiles(plainTiles);
         detachTiles(plainTiles);
+    }
+}
+
+EditableWangSet *EditableTileset::addWangSet(const QString &name, int type)
+{
+    auto wangSet = std::make_unique<WangSet>(tileset(), name, static_cast<WangSet::Type>(type));
+    EditableWangSet *editable = nullptr;
+
+    if (auto doc = tilesetDocument()) {
+        push(new AddWangSet(doc, wangSet.release()));
+        editable = EditableManager::instance().editableWangSet(this, tileset()->wangSets().last());
+    } else if (!checkReadOnly()) {
+        tileset()->addWangSet(std::move(wangSet));
+        editable = EditableManager::instance().editableWangSet(this, tileset()->wangSets().last());
+    }
+
+    return editable;
+}
+
+void EditableTileset::removeWangSet(EditableWangSet *editableWangSet)
+{
+    if (!editableWangSet) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+
+    if (auto doc = tilesetDocument()) {
+        push(new RemoveWangSet(doc, editableWangSet->wangSet()));
+    } else if (!checkReadOnly()) {
+        const int index = tileset()->wangSets().indexOf(editableWangSet->wangSet());
+        auto wangSet = tileset()->takeWangSetAt(index);
+        EditableManager::instance().release(std::move(wangSet));
     }
 }
 
@@ -273,6 +320,17 @@ void EditableTileset::detachTiles(const QList<Tile *> &tiles)
     }
 }
 
+void EditableTileset::detachWangSets(const QList<WangSet *> &wangSets)
+{
+    const auto &editableManager = EditableManager::instance();
+    for (WangSet *wangSet : wangSets) {
+        if (auto editable = editableManager.find(wangSet)) {
+            Q_ASSERT(editable->tileset() == this);
+            editable->detach();
+        }
+    }
+}
+
 void EditableTileset::tileObjectGroupChanged(Tile *tile)
 {
     Q_ASSERT(tile->tileset() == tileset());
@@ -280,6 +338,21 @@ void EditableTileset::tileObjectGroupChanged(Tile *tile)
     if (auto editable = EditableManager::instance().find(tile))
         if (editable->attachedObjectGroup() != tile->objectGroup())
             editable->detachObjectGroup();
+}
+
+void EditableTileset::wangSetAdded(Tileset *tileset, int index)
+{
+    Q_ASSERT(this->tileset() == tileset);
+
+    WangSet *wangSet = tileset->wangSet(index);
+
+    if (auto editable = EditableManager::instance().find(wangSet))
+        editable->attach(this);
+}
+
+void EditableTileset::wangSetRemoved(WangSet *wangSet)
+{
+    detachWangSets({ wangSet });
 }
 
 } // namespace Tiled

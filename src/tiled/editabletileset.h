@@ -26,6 +26,7 @@
 namespace Tiled {
 
 class EditableTile;
+class EditableWangSet;
 class TilesetDocument;
 
 class EditableTileset : public EditableAsset
@@ -35,6 +36,7 @@ class EditableTileset : public EditableAsset
     Q_PROPERTY(QString name READ name WRITE setName)
     Q_PROPERTY(QString image READ image WRITE setImage)
     Q_PROPERTY(QList<QObject*> tiles READ tiles)
+    Q_PROPERTY(QList<QObject*> wangSets READ wangSets)
     Q_PROPERTY(int tileCount READ tileCount)
     Q_PROPERTY(int nextTileId READ nextTileId)
     Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth)
@@ -104,12 +106,16 @@ public:
 
     Q_INVOKABLE Tiled::EditableTile *tile(int id);
     QList<QObject*> tiles();
+    QList<QObject*> wangSets();
 
     QList<QObject*> selectedTiles();
     void setSelectedTiles(const QList<QObject*> &tiles);
 
     Q_INVOKABLE Tiled::EditableTile *addTile();
     Q_INVOKABLE void removeTiles(const QList<QObject*> &tiles);
+
+    Q_INVOKABLE Tiled::EditableWangSet *addWangSet(const QString &name, int type);
+    Q_INVOKABLE void removeWangSet(Tiled::EditableWangSet *wangSet);
 
     TilesetDocument *tilesetDocument() const;
     Tileset *tileset() const;
@@ -131,8 +137,12 @@ private:
 
     void attachTiles(const QList<Tile*> &tiles);
     void detachTiles(const QList<Tile*> &tiles);
+    void detachWangSets(const QList<WangSet*> &wangSets);
 
     void tileObjectGroupChanged(Tile *tile);
+
+    void wangSetAdded(Tileset *tileset, int index);
+    void wangSetRemoved(WangSet *wangSet);
 
     bool mReadOnly = false;
     SharedTileset mTileset;

@@ -31,6 +31,23 @@ class Tile;
 
 class TilesetDocument;
 
+class RenameWangSet : public QUndoCommand
+{
+public:
+    RenameWangSet(TilesetDocument *tilesetDocument,
+                  WangSet *wangSet,
+                  const QString &newName);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    TilesetDocument *mTilesetDocument;
+    WangSet *mWangSet;
+    QString mOldName;
+    QString mNewName;
+};
+
 class ChangeWangSetType : public QUndoCommand
 {
 public:

@@ -667,27 +667,19 @@ void Tileset::recalculateTerrainDistances()
     mTerrainDistancesDirty = false;
 }
 
-void Tileset::addWangSet(WangSet *wangSet)
-{
-    Q_ASSERT(wangSet->tileset() == this);
-
-    mWangSets.append(wangSet);
-}
-
 void Tileset::addWangSet(std::unique_ptr<WangSet> wangSet)
 {
-    addWangSet(wangSet.release());
+    Q_ASSERT(wangSet->tileset() == this);
+    mWangSets.append(wangSet.release());
 }
 
 /**
- * @brief Tileset::insertWangSet Adds a wangSet.
- * @param wangSet A pointer to the wangset to add.
+ * Adds a wangSet.
  */
-void Tileset::insertWangSet(int index, WangSet *wangSet)
+void Tileset::insertWangSet(int index, std::unique_ptr<WangSet> wangSet)
 {
     Q_ASSERT(wangSet->tileset() == this);
-
-    mWangSets.insert(index, wangSet);
+    mWangSets.insert(index, wangSet.release());
 }
 
 /**
@@ -696,9 +688,9 @@ void Tileset::insertWangSet(int index, WangSet *wangSet)
  * @param index Index to take at.
  * @return
  */
-WangSet *Tileset::takeWangSetAt(int index)
+std::unique_ptr<WangSet> Tileset::takeWangSetAt(int index)
 {
-    return mWangSets.takeAt(index);
+    return std::unique_ptr<WangSet>(mWangSets.takeAt(index));
 }
 
 /**

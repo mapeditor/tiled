@@ -21,11 +21,11 @@
 #include "tilesetwangsetmodel.h"
 
 #include "tilesetdocument.h"
-#include "renamewangset.h"
 #include "wangset.h"
 #include "tileset.h"
 #include "tile.h"
 #include "changeevents.h"
+#include "changewangsetdata.h"
 
 using namespace Tiled;
 
@@ -117,31 +117,30 @@ WangSet *TilesetWangSetModel::wangSetAt(const QModelIndex &index) const
     return nullptr;
 }
 
-void TilesetWangSetModel::insertWangSet(int index, WangSet *wangSet)
+void TilesetWangSetModel::insertWangSet(int index, std::unique_ptr<WangSet> wangSet)
 {
     Tileset *tileset = mTilesetDocument->tileset().data();
-    int row = tileset->wangSetCount();
 
-    emit wangSetAboutToBeAdded(tileset);
+    emit wangSetAboutToBeAdded(tileset, index);
 
-    beginInsertRows(QModelIndex(), row, row);
-    tileset->insertWangSet(index, wangSet);
+    beginInsertRows(QModelIndex(), index, index);
+    tileset->insertWangSet(index, std::move(wangSet));
     endInsertRows();
 
-    emit wangSetAdded(tileset);
+    emit wangSetAdded(tileset, index);
 }
 
-WangSet *TilesetWangSetModel::takeWangSetAt(int index)
+std::unique_ptr<WangSet> TilesetWangSetModel::takeWangSetAt(int index)
 {
     Tileset *tileset = mTilesetDocument->tileset().data();
 
     emit wangSetAboutToBeRemoved(tileset->wangSet(index));
 
     beginRemoveRows(QModelIndex(), index, index);
-    WangSet *wangSet = tileset->takeWangSetAt(index);
+    std::unique_ptr<WangSet> wangSet = tileset->takeWangSetAt(index);
     endRemoveRows();
 
-    emit wangSetRemoved(wangSet);
+    emit wangSetRemoved(wangSet.get());
 
     return wangSet;
 }

@@ -197,10 +197,9 @@ public:
     int wangSetCount() const;
     WangSet *wangSet(int index) const;
 
-    void addWangSet(WangSet *wangSet);
     void addWangSet(std::unique_ptr<WangSet> wangSet);
-    void insertWangSet(int index, WangSet *wangSet);
-    WangSet *takeWangSetAt(int index);
+    void insertWangSet(int index, std::unique_ptr<WangSet> wangSet);
+    std::unique_ptr<WangSet> takeWangSetAt(int index);
 
     Tile *addTile(const QPixmap &image, const QUrl &source = QUrl());
     void addTiles(const QList<Tile*> &tiles);
