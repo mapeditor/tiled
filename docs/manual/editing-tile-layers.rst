@@ -145,7 +145,16 @@ Eraser
 Shortcut: ``E``
 
 A simple eraser tool. Left click erases single tiles and right click can
-be used to quickly erase rectangular areas.
+be used to quickly erase rectangular areas. Layers to erase on must be selected.
+
+Strong Eraser
+------
+
+Shortcut: ``Shift+E``
+
+The strong eraser tool works exactly like the eraser tool except that it erases
+on all tile layers at once. It's the same thing as selecting all your layers
+then using the eraser, but it's a lot faster to use this tool.
 
 Selection Tools
 ---------------
