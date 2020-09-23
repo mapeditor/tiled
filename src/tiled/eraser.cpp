@@ -57,11 +57,13 @@ void Eraser::mousePressed(QGraphicsSceneMouseEvent *event)
     if (brushItem()->isVisible() && mMode == Nothing) {
         if (event->button() == Qt::LeftButton) {
             mMode = Erase;
+            mAllLayers = event->modifiers() == Qt::ShiftModifier;
             doErase(false);
             return;
-        } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
+        } else if (event->button() == Qt::RightButton) {
             mStart = tilePosition();
             mMode = RectangleErase;
+            mAllLayers = event->modifiers() == Qt::ShiftModifier;
             return;
         }
     }
@@ -105,8 +107,13 @@ void Eraser::doErase(bool continuation)
     }
     mLastTilePos = tilePos;
 
-    for (Layer *layer : mapDocument()->selectedLayers()) {
-        if (!layer->isTileLayer())
+    auto isSelected = [this](const Layer *layer) {
+        auto selection = mapDocument()->selectedLayers();
+        return std::find(selection.begin(), selection.end(), layer) != selection.end();
+    };
+
+    for (Layer *layer :  mapDocument()->map()->tileLayers()) {
+        if (!isSelected(layer) && !mAllLayers)
             continue;
         if (!layer->isUnlocked())
             continue;

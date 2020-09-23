@@ -53,6 +53,7 @@ private:
     };
 
     Mode mMode;
+    bool mAllLayers;
     QPoint mLastTilePos;
     QPoint mStart;
 };
