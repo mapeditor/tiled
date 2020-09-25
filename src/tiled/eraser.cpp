@@ -107,13 +107,10 @@ void Eraser::doErase(bool continuation)
     }
     mLastTilePos = tilePos;
 
-    auto isSelected = [this](const Layer *layer) {
-        auto selection = mapDocument()->selectedLayers();
-        return std::find(selection.begin(), selection.end(), layer) != selection.end();
-    };
-
     for (Layer *layer :  mapDocument()->map()->tileLayers()) {
-        if (!isSelected(layer) && !mAllLayers)
+        bool isSelected = mapDocument()->selectedLayers().contains(layer);
+
+        if (!isSelected && !mAllLayers)
             continue;
         if (!layer->isUnlocked())
             continue;
