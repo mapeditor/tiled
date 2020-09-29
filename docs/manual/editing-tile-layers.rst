@@ -147,6 +147,8 @@ Shortcut: ``E``
 A simple eraser tool. Left click erases single tiles and right click can
 be used to quickly erase rectangular areas.
 
+-  Holding ``Shift`` erases on all layers.
+
 Selection Tools
 ---------------
 
