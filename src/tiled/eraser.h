@@ -37,6 +37,8 @@ public:
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
+    void modifiersChanged(Qt::KeyboardModifiers) override;
+
     void languageChanged() override;
 
 protected:
@@ -52,8 +54,8 @@ private:
         RectangleErase
     };
 
-    Mode mMode;
-    bool mAllLayers;
+    Mode mMode = Nothing;
+    bool mAllLayers = false;
     QPoint mLastTilePos;
     QPoint mStart;
 };

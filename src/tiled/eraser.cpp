@@ -38,7 +38,6 @@ Eraser::Eraser(QObject *parent)
                        QKeySequence(Qt::Key_E),
                        nullptr,
                        parent)
-    , mMode(Nothing)
 {
 }
 
@@ -57,13 +56,11 @@ void Eraser::mousePressed(QGraphicsSceneMouseEvent *event)
     if (brushItem()->isVisible() && mMode == Nothing) {
         if (event->button() == Qt::LeftButton) {
             mMode = Erase;
-            mAllLayers = event->modifiers() == Qt::ShiftModifier;
             doErase(false);
             return;
         } else if (event->button() == Qt::RightButton) {
             mStart = tilePosition();
             mMode = RectangleErase;
-            mAllLayers = event->modifiers() == Qt::ShiftModifier;
             return;
         }
     }
@@ -88,6 +85,11 @@ void Eraser::mouseReleased(QGraphicsSceneMouseEvent *event)
         }
         break;
     }
+}
+
+void Eraser::modifiersChanged(Qt::KeyboardModifiers modifiers)
+{
+    mAllLayers = modifiers & Qt::ShiftModifier;
 }
 
 void Eraser::languageChanged()
