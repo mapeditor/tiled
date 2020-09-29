@@ -30,8 +30,11 @@ SnapHelper::SnapHelper(const MapRenderer *renderer,
     : mRenderer(renderer)
 {
     Preferences *preferences = Preferences::instance();
-    mSnapToGrid = preferences->snapToGrid();
-    mSnapToFineGrid = preferences->snapToFineGrid();
+    if (preferences->snapToGrid())
+        mSnapMode = SnapToGrid;
+    else if (preferences->snapToFineGrid())
+        mSnapMode = SnapToFineGrid;
+
     mSnapToPixels = preferences->snapToPixels();
 
     if (modifiers & Qt::ControlModifier) {
@@ -45,21 +48,35 @@ SnapHelper::SnapHelper(const MapRenderer *renderer,
 
 void SnapHelper::toggleSnap()
 {
-    mSnapToGrid = !(mSnapToGrid || mSnapToFineGrid);
-    mSnapToFineGrid = false;
+    switch (mSnapMode) {
+    case NoSnap:
+        mSnapMode = SnapToGrid;
+        break;
+    case SnapToGrid:
+    case SnapToFineGrid:
+        mSnapMode = NoSnap;
+        break;
+    }
 }
   
 void SnapHelper::toggleFineSnap()
 {
-    mSnapToFineGrid = !(mSnapToGrid || mSnapToFineGrid);
-    mSnapToGrid = false;
+    switch (mSnapMode) {
+    case NoSnap:
+    case SnapToGrid:
+        mSnapMode = SnapToFineGrid;
+        break;
+    case SnapToFineGrid:
+        mSnapMode = SnapToGrid;
+        break;
+    }
 }
 
 void SnapHelper::snap(QPointF &pixelPos) const
 {
-    if (mSnapToFineGrid || mSnapToGrid) {
+    if (mSnapMode != NoSnap) {
         QPointF tileCoords = mRenderer->pixelToTileCoords(pixelPos);
-        if (mSnapToFineGrid) {
+        if (mSnapMode == SnapToFineGrid) {
             int gridFine = Preferences::instance()->gridFine();
             tileCoords = (tileCoords * gridFine).toPoint();
             tileCoords /= gridFine;
