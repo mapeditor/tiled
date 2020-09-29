@@ -122,6 +122,7 @@ TileLayer::TileLayer(const QString &name, QPoint position, QSize size)
 
 static QMargins computeDrawMargins(const QSet<SharedTileset> &tilesets)
 {
+    // Not differentiating between width and height, because tiles could be rotated
     int maxTileSize = 0;
     QMargins offsetMargins;
 
@@ -139,6 +140,8 @@ static QMargins computeDrawMargins(const QSet<SharedTileset> &tilesets)
                                    offsetMargins);
     }
 
+    // Adding maxTileSize to top-right of the margins assumes a bottom-left tile
+    // alignment within the grid cell.
     return QMargins(offsetMargins.left(),
                     offsetMargins.top() + maxTileSize,
                     offsetMargins.right() + maxTileSize,
