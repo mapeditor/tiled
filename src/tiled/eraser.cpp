@@ -107,19 +107,13 @@ void Eraser::doErase(bool continuation)
     }
     mLastTilePos = tilePos;
 
-    for (Layer *layer :  mapDocument()->map()->tileLayers()) {
-        bool isSelected = mapDocument()->selectedLayers().contains(layer);
-
-        if (!isSelected && !mAllLayers)
-            continue;
-        if (!layer->isUnlocked())
-            continue;
-
-        auto tileLayer = static_cast<TileLayer*>(layer);
+    auto eraseOnLayer = [&] (TileLayer *tileLayer) {
+        if (!tileLayer->isUnlocked())
+            return;
 
         QRegion eraseRegion = globalEraseRegion.intersected(tileLayer->bounds());
         if (eraseRegion.isEmpty())
-            continue;
+            return;
 
         EraseTiles *erase = new EraseTiles(mapDocument(), tileLayer, eraseRegion);
         erase->setMergeable(continuation);
@@ -128,6 +122,15 @@ void Eraser::doErase(bool continuation)
         emit mapDocument()->regionEdited(eraseRegion, tileLayer);
 
         continuation = true;    // further erases are always continuations
+    };
+
+    if (mAllLayers) {
+        for (Layer *layer : mapDocument()->map()->tileLayers())
+            eraseOnLayer(static_cast<TileLayer*>(layer));
+    } else {
+        for (Layer *layer : mapDocument()->selectedLayers())
+            if (TileLayer *tileLayer = layer->asTileLayer())
+                eraseOnLayer(tileLayer);
     }
 }
 
