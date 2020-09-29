@@ -7595,6 +7595,18 @@ inittiled_Tiled(void)
         tmp_value = PyLong_FromLong(Tiled::MapObject::Polyline);
         PyDict_SetItemString((PyObject*) PyTiledMapObject_Type.tp_dict, "Polyline", tmp_value);
         Py_DECREF(tmp_value);
+         // Tiled::MapObject::Ellipse
+        tmp_value = PyLong_FromLong(Tiled::MapObject::Ellipse);
+        PyDict_SetItemString((PyObject*) PyTiledMapObject_Type.tp_dict, "Ellipse", tmp_value);
+        Py_DECREF(tmp_value);
+         // Tiled::MapObject::Text
+        tmp_value = PyLong_FromLong(Tiled::MapObject::Text);
+        PyDict_SetItemString((PyObject*) PyTiledMapObject_Type.tp_dict, "Text", tmp_value);
+        Py_DECREF(tmp_value);
+         // Tiled::MapObject::Point
+        tmp_value = PyLong_FromLong(Tiled::MapObject::Point);
+        PyDict_SetItemString((PyObject*) PyTiledMapObject_Type.tp_dict, "Point", tmp_value);
+        Py_DECREF(tmp_value);
     }
     {
         PyObject *tmp_value;
