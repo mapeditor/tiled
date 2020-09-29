@@ -54,9 +54,7 @@ public:
 
     void drawGrid(QPainter *painter, const QRectF &rect, QColor grid) const override;
 
-    void drawTileLayer(QPainter *painter, const TileLayer *layer,
-                       const QRectF &exposed = QRectF()) const override;
-
+    using MapRenderer::drawTileLayer;
     void drawTileLayer(const RenderTileCallback &renderTile,
                        const QRectF &exposed) const override;
 

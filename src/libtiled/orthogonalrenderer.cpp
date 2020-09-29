@@ -263,53 +263,6 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     }
 }
 
-void OrthogonalRenderer::drawTileLayer(QPainter *painter,
-                                       const TileLayer *layer,
-                                       const QRectF &exposed) const
-{
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
-
-    if (tileWidth <= 0 || tileHeight <= 0)
-        return;
-
-    const QPointF layerPos(layer->x() * tileWidth,
-                           layer->y() * tileHeight);
-
-    QRect bounds = layer->localBounds();
-
-    if (!exposed.isNull()) {
-        QMargins drawMargins = layer->drawMargins();
-        drawMargins.setTop(drawMargins.top() - tileHeight);
-        drawMargins.setRight(drawMargins.right() - tileWidth);
-
-        QRectF rect = exposed.adjusted(-drawMargins.right(),
-                                       -drawMargins.bottom(),
-                                       drawMargins.left(),
-                                       drawMargins.top());
-
-        rect.translate(-layerPos);
-
-        bounds.setLeft(qMax(qFloor(rect.x() / tileWidth), bounds.left()));
-        bounds.setTop(qMax(qFloor(rect.y() / tileHeight), bounds.top()));
-        bounds.setRight(qMin(qCeil(rect.right()) / tileWidth, bounds.right()));
-        bounds.setBottom(qMin(qCeil(rect.bottom()) / tileHeight, bounds.bottom()));
-    }
-
-    CellRenderer renderer(painter, this, layer->effectiveTintColor());
-
-    auto tileRenderFunction = [layer, &renderer, this, layerPos](QPoint tilePos, const QPointF &screenPos) {
-        const Cell &cell = layer->cellAt(tilePos);
-        if (!cell.isEmpty()) {
-            const Tile *tile = cell.tile();
-            const QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
-            renderer.render(cell, screenPos + layerPos, size, CellRenderer::BottomLeft);
-        }
-    };
-
-    drawTileLayer(tileRenderFunction, boundingRect(bounds));
-}
-
 void OrthogonalRenderer::drawTileLayer(const RenderTileCallback &renderTile,
                                        const QRectF &exposed) const
 {
@@ -328,10 +281,8 @@ void OrthogonalRenderer::drawTileLayer(const RenderTileCallback &renderTile,
     if (startX > endX || startY > endY)
         return;
 
-    Map::RenderOrder renderOrder = map()->renderOrder();
-
     int incX = 1, incY = 1;
-    switch (renderOrder) {
+    switch (map()->renderOrder()) {
     case Map::RightUp:
         std::swap(startY, endY);
         incY = -1;

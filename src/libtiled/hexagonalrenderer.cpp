@@ -266,37 +266,6 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
     }
 }
 
-void HexagonalRenderer::drawTileLayer(QPainter *painter,
-                                      const TileLayer *layer,
-                                      const QRectF &exposed) const
-{
-    QRect rect = boundingRect(layer->bounds());
-    if (!exposed.isNull())
-        rect &= exposed.toAlignedRect();
-
-    QMargins drawMargins = layer->drawMargins();
-    drawMargins.setBottom(drawMargins.bottom() + map()->tileHeight());
-    drawMargins.setRight(drawMargins.right() - map()->tileWidth());
-
-    rect.adjust(-drawMargins.right(),
-                -drawMargins.bottom(),
-                drawMargins.left(),
-                drawMargins.top());
-
-    CellRenderer renderer(painter, this, layer->effectiveTintColor(), CellRenderer::HexagonalCells);
-
-    auto tileRenderFunction = [layer, &renderer, this](QPoint tilePos, const QPointF &screenPos) {
-        const Cell &cell = layer->cellAt(tilePos);
-        if (!cell.isEmpty()) {
-            const Tile *tile = cell.tile();
-            const QSize size = tile ? tile->size() : map()->tileSize();
-            renderer.render(cell, screenPos, size, CellRenderer::BottomLeft);
-        }
-    };
-
-    drawTileLayer(tileRenderFunction, rect);
-}
-
 void HexagonalRenderer::drawTileLayer(const RenderTileCallback &renderTile,
                                       const QRectF &exposed) const
 {
@@ -325,7 +294,7 @@ void HexagonalRenderer::drawTileLayer(const RenderTileCallback &renderTile,
 
         bool staggeredRow = p.doStaggerX(startTile.x());
 
-        while (startPos.y() < exposed.bottom()) {
+        while (startPos.y() - p.tileHeight < exposed.bottom()) {
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
@@ -356,7 +325,7 @@ void HexagonalRenderer::drawTileLayer(const RenderTileCallback &renderTile,
         if (p.doStaggerY(startTile.y()))
             startPos.rx() -= p.columnWidth;
 
-        for (; startPos.y() < exposed.bottom(); startTile.ry()++) {
+        for (; startPos.y() - p.tileHeight < exposed.bottom(); startTile.ry()++) {
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 

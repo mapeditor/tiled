@@ -262,43 +262,6 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     }
 }
 
-void IsometricRenderer::drawTileLayer(QPainter *painter,
-                                      const TileLayer *layer,
-                                      const QRectF &exposed) const
-{
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
-
-    if (tileWidth <= 0 || tileHeight <= 1)
-        return;
-
-    QRect rect = boundingRect(layer->bounds());
-    if (!exposed.isNull())
-        rect &= exposed.toAlignedRect();
-
-    QMargins drawMargins = layer->drawMargins();
-    drawMargins.setTop(drawMargins.top() - tileHeight);
-    drawMargins.setRight(drawMargins.right() - tileWidth);
-
-    rect.adjust(-drawMargins.right(),
-                -drawMargins.bottom(),
-                drawMargins.left(),
-                drawMargins.top());
-
-    CellRenderer renderer(painter, this, layer->effectiveTintColor());
-
-    auto tileRenderFunction = [layer, &renderer, this](QPoint tilePos, const QPointF &screenPos) {
-        const Cell &cell = layer->cellAt(tilePos - layer->position());
-        if (!cell.isEmpty()) {
-            const Tile *tile = cell.tile();
-            const QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
-            renderer.render(cell, screenPos, size, CellRenderer::BottomLeft);
-        }
-    };
-
-    drawTileLayer(tileRenderFunction, rect);
-}
-
 void IsometricRenderer::drawTileLayer(const RenderTileCallback &renderTile,
                                       const QRectF &exposed) const
 {

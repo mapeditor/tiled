@@ -60,10 +60,13 @@ Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
 class TILEDSHARED_EXPORT MapRenderer
 {
 public:
+    enum CellType {
+        OrthogonalCells,
+        HexagonalCells
+    };
+
     MapRenderer(const Map *map)
         : mMap(map)
-        , mObjectLineWidth(2)
-        , mPainterScale(1)
     {}
 
     virtual ~MapRenderer();
@@ -140,23 +143,19 @@ public:
      * Optionally, you can pass in the \a exposed rect (of pixels), so that
      * only tiles that can be visible in this area will be drawn.
      */
-    virtual void drawTileLayer(QPainter *painter, const TileLayer *layer,
-                               const QRectF &exposed = QRectF()) const = 0;
+    void drawTileLayer(QPainter *painter, const TileLayer *layer,
+                       const QRectF &exposed = QRectF()) const;
 
     /**
-     * Draws the given \a layer using the given \a renderTile callback.
+     * Calls the given \a renderTile callback for each tile in the given
+     * \a exposed rectangle.
      *
-     * The callback takes four arguments:
+     * The callback takes two arguments:
      *
      * \list
-     * \li \c cell - The Cell that is being rendered.
      * \li \c tilePos - The tile position of the cell being rendered.
      * \li \c screenPos - The screen position of the cell being rendered.
-     * \li \c size - The size of the cell being rendered.
      * \endlist
-     *
-     * Optionally, you can pass in the \a exposed rect (of pixels), so that
-     * only tiles that can be visible in this area will be drawn.
      */
     virtual void drawTileLayer(const RenderTileCallback &renderTile,
                                const QRectF &exposed) const = 0;
@@ -266,17 +265,22 @@ public:
     RenderFlags flags() const { return mFlags; }
     void setFlags(RenderFlags flags) { mFlags = flags; }
 
+    CellType cellType() const { return mCellType; }
+
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
 
 protected:
-    QPen makeGridPen(const QPaintDevice *device, QColor color) const;
+    static QPen makeGridPen(const QPaintDevice *device, QColor color);
+
+    void setCellType(CellType cellType) { mCellType = cellType; }
 
 private:
     const Map *mMap;
 
     RenderFlags mFlags;
-    qreal mObjectLineWidth;
-    qreal mPainterScale;
+    CellType mCellType = OrthogonalCells;
+    qreal mObjectLineWidth = 2;
+    qreal mPainterScale = 1;
 };
 
 inline const Map *MapRenderer::map() const
@@ -316,13 +320,8 @@ public:
         BottomLeft
     };
 
-    enum CellType {
-        OrthogonalCells,
-        HexagonalCells
-    };
-
     explicit CellRenderer(QPainter *painter, const MapRenderer *renderer,
-                          const QColor &tintColor, CellType cellType = OrthogonalCells);
+                          const QColor &tintColor);
 
     ~CellRenderer() { flush(); }
 
@@ -338,7 +337,6 @@ private:
     const Tile *mTile;
     QVector<QPainter::PixmapFragment> mFragments;
     const bool mIsOpenGL;
-    const CellType mCellType;
     const QColor mTintColor;
 };
 
