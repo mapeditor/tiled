@@ -29,15 +29,16 @@ jobs:
 
     - name: Package
       run: |
+        export TILED_VERSION=$(git describe | cut -c 2-)
         qbs install --install-root install config:release
         macdeployqt install/Tiled.app -verbose=2
         pushd install
         ruby ../dist/macos/fixup-install-names.rb
-        rm -rf tmxviewer.app
+        ditto -c -k --sequesterRsrc --keepParent Tiled.app ../Tiled-$TILED_VERSION-macos.zip
         popd
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
         name: Tiled.app
-        path: install/
+        path: Tiled-*-macos.zip
