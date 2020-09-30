@@ -33,10 +33,11 @@ jobs:
         macdeployqt install/Tiled.app -verbose=2
         pushd install
         ruby ../dist/macos/fixup-install-names.rb
+        rm -rf tmxviewer.app
         popd
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: Tiled.app
-        path: install/Tiled.app
+        path: install/
