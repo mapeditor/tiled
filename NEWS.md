@@ -1,3 +1,12 @@
+### Tiled 1.4.3 (...)
+
+* Fixed running Tiled on macOS Big Sur (#2845)
+* Improved error message when adding external tileset
+* Tile Collision Editor: Fixed invisible tile for isometric oriented tileset (#2892)
+* Fixed Object Alignment not getting set when reloading a tileset
+* Ignore attempts to replace a tileset with itself
+* qmake: Support linking to system Zstd on all UNIX-like systems
+
 ### Tiled 1.4.2 (5 August 2020)
 
 * Reverted the default layer data format back to CSV (was changed to Zstd by accident in 1.4.0)
