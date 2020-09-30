@@ -1,4 +1,4 @@
-### Tiled 1.4.3 (30 September 2020)
+### Tiled 1.4.3 (...)
 
 * Fixed running Tiled on macOS Big Sur (#2845)
 * Improved error message when adding external tileset
