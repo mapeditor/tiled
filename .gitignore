@@ -59,6 +59,6 @@ util/java/libtiled-java/target
 # Linux perf/debugging
 gmon.out
 
-# Vim
+# Vim files
 *.swp
 *.swo
