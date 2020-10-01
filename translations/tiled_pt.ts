@@ -131,12 +131,12 @@
     <message>
         <location line="+5"/>
         <source>Export the specified map file to target</source>
-        <translation>Exportar o mapa específico para destino</translation>
+        <translation>Exportar o ficheiro do mapa específico para destino</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tileset file to target</source>
-        <translation>Exportar o tileset específico para destino</translation>
+        <translation>Exportar o ficheiro específico do tileset para o destino</translation>
     </message>
     <message>
         <location line="+25"/>
