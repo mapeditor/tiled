@@ -53,14 +53,6 @@ void Eraser::tilePositionChanged(QPoint tilePos)
 
 void Eraser::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    /**
-     * Tiled uses Ctrl + Right Click to select tiles at clicked location.
-     * The eraser Right Click mode cannot be used if Ctrl modifier is used
-     * to avoid collision with this other command.
-     *
-     * @see commit 153405d
-     */
-
     if (brushItem()->isVisible() && mMode == Nothing) {
         if (event->button() == Qt::LeftButton) {
             mMode = Erase;
