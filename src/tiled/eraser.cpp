@@ -58,7 +58,7 @@ void Eraser::mousePressed(QGraphicsSceneMouseEvent *event)
             mMode = Erase;
             doErase(false);
             return;
-        } else if (event->button() == Qt::RightButton) {
+        } else if (event->button() == Qt::RightButton && !(event->modifiers() & Qt::ControlModifier)) {
             mStart = tilePosition();
             mMode = RectangleErase;
             return;
