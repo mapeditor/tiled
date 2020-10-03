@@ -171,9 +171,9 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mDynamicWrappingToggle->setCheckable(true);
     mDynamicWrappingToggle->setIcon(QIcon(QLatin1String("://images/scalable/wrap.svg")));
     mAlternateRotationToggle->setCheckable(true);
-    mAlternateRotationToggle->setIcon(QIcon(QLatin1String("://images/scalable/wrap.svg")));
+    mAlternateRotationToggle->setIcon(QIcon(QLatin1String("://images/scalable/random-rotation.svg")));
     mCanRotateToggle->setCheckable(true);
-    mCanRotateToggle->setIcon(QIcon(QLatin1String("://images/scalable/wrap.svg")));
+    mCanRotateToggle->setIcon(QIcon(QLatin1String("://images/scalable/can-rotate.svg")));
 
     Utils::setThemeIcon(mAddTiles, "add");
     Utils::setThemeIcon(mRemoveTiles, "remove");
@@ -212,6 +212,22 @@ TilesetEditor::TilesetEditor(QObject *parent)
             const QString fileName = mCurrentTilesetDocument->externalOrEmbeddedFileName();
             Session::current().setFileStateValue(fileName, QLatin1String("dynamicWrapping"), checked);
         }
+    });
+    connect(mCanRotateToggle, &QAction::toggled, this, [this] (bool checked) {
+        TilesetView *view = currentTilesetView();
+        if (!view)
+            return;
+        const TilesetModel *model = view->tilesetModel();
+        if (model && model->tileset())
+            model->tileset()->setCanRotate(checked);
+    });
+    connect(mAlternateRotationToggle, &QAction::toggled, this, [this] (bool checked) {
+        TilesetView *view = currentTilesetView();
+        if (!view)
+            return;
+        const TilesetModel *model = view->tilesetModel();
+        if (model && model->tileset())
+            model->tileset()->setAlternateRotation(checked);
     });
 
     connect(mTileAnimationEditor, &TileAnimationEditor::closed, this, &TilesetEditor::onAnimationEditorClosed);
@@ -362,6 +378,8 @@ void TilesetEditor::setCurrentDocument(Document *document)
 
     if (tilesetDocument) {
         mDynamicWrappingToggle->setChecked(tilesetView->dynamicWrapping());
+        mCanRotateToggle->setChecked(tilesetDocument->tileset()->canRotate());
+        mAlternateRotationToggle->setChecked(tilesetDocument->tileset()->alternateRotation());
 
         currentChanged(tilesetView->currentIndex());
         selectionChanged();

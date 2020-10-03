@@ -344,6 +344,14 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                      QString::number(tileset.tileCount()));
     w.writeAttribute(QStringLiteral("columns"),
                      QString::number(tileset.columnCount()));
+    if (tileset.canRotate()) {
+        w.writeAttribute(QStringLiteral("canrotate"),
+                        QString::number(tileset.canRotate()));
+    }
+    if (tileset.alternateRotation()) {
+        w.writeAttribute(QStringLiteral("alternaterotation"),
+                        QString::number(tileset.alternateRotation()));
+    }
 
     if (tileset.backgroundColor().isValid()) {
         w.writeAttribute(QStringLiteral("backgroundcolor"),

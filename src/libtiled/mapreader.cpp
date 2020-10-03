@@ -391,6 +391,8 @@ SharedTileset MapReaderPrivate::readTileset()
                                       tileSpacing, margin);
 
             tileset->setColumnCount(columns);
+            tileset->setCanRotate(atts.value(QLatin1String("canrotate")).toInt());
+            tileset->setAlternateRotation(atts.value(QLatin1String("alternaterotation")).toInt());
 
             if (QColor::isValidColor(backgroundColor))
                 tileset->setBackgroundColor(QColor(backgroundColor));

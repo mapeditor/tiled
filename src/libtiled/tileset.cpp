@@ -67,7 +67,9 @@ Tileset::Tileset(QString name, int tileWidth, int tileHeight,
     mNextTileId(0),
     mMaximumTerrainDistance(0),
     mTerrainDistancesDirty(false),
-    mStatus(LoadingReady)
+    mStatus(LoadingReady),
+    mCanRotate(false),
+    mAlternateRotation(false)
 {
     Q_ASSERT(tileSpacing >= 0);
     Q_ASSERT(margin >= 0);
@@ -828,6 +830,8 @@ void Tileset::swap(Tileset &other)
     std::swap(mStatus, other.mStatus);
     std::swap(mBackgroundColor, other.mBackgroundColor);
     std::swap(mFormat, other.mFormat);
+    std::swap(mAlternateRotation, other.mAlternateRotation);
+    std::swap(mCanRotate, other.mCanRotate);
 
     // Don't swap mWeakPointer, since it's a reference to this.
 
@@ -863,6 +867,8 @@ SharedTileset Tileset::clone() const
     c->mStatus = mStatus;
     c->mBackgroundColor = mBackgroundColor;
     c->mFormat = mFormat;
+    c->mCanRotate = mCanRotate;
+    c->mAlternateRotation = mAlternateRotation;
 
     QMapIterator<int, Tile*> tileIterator(mTiles);
     while (tileIterator.hasNext()) {
