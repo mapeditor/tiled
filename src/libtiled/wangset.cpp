@@ -992,4 +992,26 @@ WangSet::Type wangSetTypeFromString(const QString &string)
     return type;
 }
 
+void WangSet::addRotations(bool alternate) {
+    QList<WangTile> to_add;
+    for (const WangTile & i: mWangIdToWangTile) {
+        for (unsigned rotation=1;rotation<4;++rotation) {
+            WangId rotid=i.wangId().rotated(rotation);
+            if (alternate || !mWangIdToWangTile.contains(rotid))
+            {
+                WangTile newtile = i;
+                switch (rotation) {
+                    case 1: newtile.rotateRight(); break;
+                    case 2: newtile.rotateRight(); newtile.rotateRight(); break;
+                    case 3: newtile.rotateLeft(); break;
+                }
+                to_add.push_back(std::move(newtile));
+            }
+        }
+    }
+    for (WangTile const& i:to_add) {
+        addWangTile(i);
+    }
+}
+
 } // namespace Tiled

@@ -304,6 +304,7 @@ public:
     void addTile(Tile *tile, WangId wangId);
     void addCell(const Cell &cell, WangId wangId);
     void addWangTile(const WangTile &wangTile);
+    void addRotations(bool alternate);
 
     const QMultiHash<WangId, WangTile> &wangTilesByWangId() const { return mWangIdToWangTile; }
 

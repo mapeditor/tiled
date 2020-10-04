@@ -814,6 +814,9 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
             if (edgeColors.isEmpty() && !cornerColors.isEmpty())
                 wangSet->setType(WangSet::Corner);
 
+            if (tileset.alternateRotation() || tileset.canRotate())
+                wangSet->addRotations(tileset.alternateRotation());
+
             tileset.addWangSet(std::move(wangSet));
         } else {
             readUnknownElement();
