@@ -493,8 +493,13 @@ QRect World::mapRect(const QString &fileName) const
     for (const World::Pattern &pattern : patterns) {
         QRegularExpressionMatch match = pattern.regexp.match(fileName);
         if (match.hasMatch()) {
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+            const int x = match.capturedView(1).toInt();
+            const int y = match.capturedView(2).toInt();
+#else
             const int x = match.capturedRef(1).toInt();
             const int y = match.capturedRef(2).toInt();
+#endif
 
             return QRect(QPoint(x * pattern.multiplierX,
                                 y * pattern.multiplierY) + pattern.offset,
@@ -517,8 +522,13 @@ QVector<World::MapEntry> World::allMaps() const
             for (const QString &fileName : entries) {
                 QRegularExpressionMatch match = pattern.regexp.match(fileName);
                 if (match.hasMatch()) {
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+                    const int x = match.capturedView(1).toInt();
+                    const int y = match.capturedView(2).toInt();
+#else
                     const int x = match.capturedRef(1).toInt();
                     const int y = match.capturedRef(2).toInt();
+#endif
 
                     MapEntry entry;
                     entry.fileName = dir.filePath(fileName);

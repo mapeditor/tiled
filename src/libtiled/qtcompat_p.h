@@ -59,3 +59,7 @@ void qAsConst(const T &&) Q_DECL_EQ_DELETE;
 #endif
 
 #endif
+
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+using QStringRef = QStringView;
+#endif

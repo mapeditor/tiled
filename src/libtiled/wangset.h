@@ -36,6 +36,8 @@
 #include <QString>
 #include <QList>
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 
 class TILEDSHARED_EXPORT WangId

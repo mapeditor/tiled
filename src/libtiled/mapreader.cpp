@@ -54,6 +54,8 @@
 
 #include <memory>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -1244,12 +1246,21 @@ QPolygonF MapReaderPrivate::readPolygon()
             break;
         }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+        const qreal x = QStringView(point).left(commaPos).toDouble(&ok);
+        if (!ok)
+            break;
+        const qreal y = QStringView(point).mid(commaPos + 1).toDouble(&ok);
+        if (!ok)
+            break;
+#else
         const qreal x = point.leftRef(commaPos).toDouble(&ok);
         if (!ok)
             break;
         const qreal y = point.midRef(commaPos + 1).toDouble(&ok);
         if (!ok)
             break;
+#endif
 
         polygon.append(QPointF(x, y));
     }
