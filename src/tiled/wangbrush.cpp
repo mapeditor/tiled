@@ -160,9 +160,13 @@ void WangBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 
 void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
-    if (bool(modifiers & Qt::ControlModifier) != mIsTileMode) {
+    const bool isTileMode = modifiers & Qt::ControlModifier;
+    const bool rotationalSymmetry = modifiers & Qt::AltModifier;
+
+    if (mIsTileMode != isTileMode || mRotationalSymmetry != rotationalSymmetry) {
+        mIsTileMode = isTileMode;
+        mRotationalSymmetry = rotationalSymmetry;
         stateChanged();
-        mIsTileMode = modifiers & Qt::ControlModifier;
     }
 }
 
@@ -448,7 +452,7 @@ void WangBrush::doPaint(bool mergeable)
     emit mapDocument()->regionEdited(brushItem()->tileRegion(), tileLayer);
 }
 
-static const QPoint aroundTilePoints[] = {
+static const QPoint aroundTilePoints[WangId::NumIndexes] = {
     QPoint( 0, -1),
     QPoint( 1, -1),
     QPoint( 1,  0),
@@ -461,7 +465,7 @@ static const QPoint aroundTilePoints[] = {
 
 //  3 0
 //  2 1
-static const QPoint aroundVertexPoints[] = {
+static const QPoint aroundVertexPoints[WangId::NumCorners] = {
     QPoint( 0, -1),
     QPoint( 0,  0),
     QPoint(-1,  0),
@@ -487,7 +491,7 @@ void WangBrush::updateBrush()
 
     if (mIsTileMode) {
         //array of adjacent positions which is assigned based on map orientation.
-        QPoint adjacentPositions[8];
+        QPoint adjacentPositions[WangId::NumIndexes];
         if (staggeredRenderer) {
             adjacentPositions[0] = staggeredRenderer->topRight(mPaintPoint.x(), mPaintPoint.y());
             adjacentPositions[2] = staggeredRenderer->bottomRight(mPaintPoint.x(), mPaintPoint.y());
@@ -539,7 +543,7 @@ void WangBrush::updateBrush()
         region += QRect(mPaintPoint, QSize(1, 1));
         grid.set(mPaintPoint, center);
 
-        for (int i = 0; i < 8; ++i) {
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
             const bool isCorner = WangId::isCorner(i);
             if (mBrushMode == PaintEdge && isCorner)
                 continue;
@@ -576,7 +580,7 @@ void WangBrush::updateBrush()
 
         switch (brushMode) {
         case PaintCorner: {
-            QPoint adjacentPoints[4];
+            QPoint adjacentPoints[WangId::NumCorners];
 
             if (staggeredRenderer) {
                 adjacentPoints[0] = staggeredRenderer->topRight(mPaintPoint.x(), mPaintPoint.y());
@@ -584,11 +588,11 @@ void WangBrush::updateBrush()
                 adjacentPoints[2] = staggeredRenderer->topLeft(mPaintPoint.x(), mPaintPoint.y());
                 adjacentPoints[3] = staggeredRenderer->topRight(adjacentPoints[2].x(), adjacentPoints[2].y());
             } else {
-                for (int i = 0; i < 4; ++i)
+                for (int i = 0; i < WangId::NumCorners; ++i)
                     adjacentPoints[i] = mPaintPoint + aroundVertexPoints[i];
             }
 
-            for (int i = 0; i < 4; ++i) {
+            for (int i = 0; i < WangId::NumCorners; ++i) {
                 const QPoint p = adjacentPoints[i];
 
                 region += QRect(p, QSize(1, 1));
@@ -650,6 +654,52 @@ void WangBrush::updateBrush()
         case Idle:
             break;
         }
+    }
+
+    // Extend the region to be filled with a 180-degree rotated version if
+    // rotational symmetry is enabled.
+    if (mRotationalSymmetry) {
+        QRegion completeRegion = region;
+
+        const int w = mapDocument()->map()->width();
+        const int h = mapDocument()->map()->height();
+
+#if QT_VERSION < 0x050800
+        const auto rects = region.rects();
+        for (const QRect &rect : rects) {
+#else
+        for (const QRect &rect : region) {
+#endif
+            for (int y = rect.top(); y <= rect.bottom(); ++y) {
+                for (int x = rect.left(); x <= rect.right(); ++x) {
+                    const QPoint targetPos(w - x - 1, h - y - 1);
+                    const WangFiller::CellInfo &sourceInfo = grid.get(x, y);
+                    WangFiller::CellInfo targetInfo = grid.get(targetPos);
+
+                    const WangId rotatedDesired = sourceInfo.desired.rotated(2);
+                    const WangId rotatedMask = sourceInfo.mask.rotated(2);
+
+                    if (!targetInfo.desired)
+                        targetInfo.desired = mWangSet->wangIdOfCell(currentLayer->cellAt(targetPos));
+
+                    for (int i = 0; i < WangId::NumIndexes; ++i) {
+                        if (rotatedMask.indexColor(i)) {
+                            targetInfo.desired.setIndexColor(i, rotatedDesired.indexColor(i));
+                            targetInfo.mask.setIndexColor(i, WangId::INDEX_MASK);
+                        }
+                    }
+
+                    grid.set(targetPos, targetInfo);
+                }
+            }
+
+            completeRegion += QRect(QPoint(w - rect.right() - 1,
+                                           h - rect.bottom() - 1),
+                                    QPoint(w - rect.left() - 1,
+                                           h - rect.top() - 1));
+        }
+
+        region = completeRegion;
     }
 
     WangFiller wangFiller{ *mWangSet, mapDocument()->renderer() };

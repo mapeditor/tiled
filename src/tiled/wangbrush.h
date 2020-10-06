@@ -89,6 +89,7 @@ private:
     int mCurrentColor = 0;
     BrushMode mBrushMode = Idle;
     bool mIsTileMode = false;
+    bool mRotationalSymmetry = false;
     BrushBehavior mBrushBehavior = Free;
 };
 
