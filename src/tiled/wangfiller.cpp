@@ -149,6 +149,12 @@ void WangFiller::fillRegion(TileLayer &target,
     QVector<QPoint> corrections;
 
     auto resolve = [&] (int x, int y) {
+        const QPoint targetPos(x - target.x(),
+                               y - target.y());
+
+        if (target.cellAt(targetPos).checked())
+            return;
+
         WangTile wangTile;
         if (!findBestMatch(target, grid, QPoint(x, y), wangTile)) {
             // TODO: error feedback
@@ -158,15 +164,13 @@ void WangFiller::fillRegion(TileLayer &target,
         auto cell = wangTile.makeCell();
         cell.setChecked(true);
 
-        target.setCell(x - target.x(),
-                       y - target.y(),
-                       cell);
+        target.setCell(targetPos.x(), targetPos.y(), cell);
 
         // Adjust the desired WangIds for the surrounding tiles based on the placed one
-        QPoint adjacentPoints[8];
+        QPoint adjacentPoints[WangId::NumIndexes];
         getSurroundingPoints(QPoint(x, y), mStaggeredRenderer, adjacentPoints);
 
-        for (int i = 0; i < 8; ++i) {
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
             const QPoint p = adjacentPoints[i];
             if (target.cellAt(p - target.position()).checked())
                 continue;
