@@ -59,11 +59,18 @@ public:
     void setErasingEnabled(bool enabled) { mErasingEnabled = enabled; }
     void setCorrectionsEnabled(bool enabled) { mCorrectionsEnabled = enabled; }
 
+    void setDebugPainter(QPainter *painter) { mDebugPainter = painter; }
+
     /**
      * Fills the given \a region in the \a target layer with Wang methods,
      * based on the desired \a wangIds.
+     *
+     * The \a back layer is used to match up the edges to existing tiles.
      */
-    void fillRegion(TileLayer &target, const TileLayer &back, const QRegion &region, Grid<CellInfo> wangIds = {}) const;
+    void fillRegion(TileLayer &target,
+                    const TileLayer &back,
+                    const QRegion &region,
+                    Grid<CellInfo> wangIds = {}) const;
 
 private:
     /**
@@ -84,6 +91,8 @@ private:
     const StaggeredRenderer * const mStaggeredRenderer;
     bool mErasingEnabled = false;
     bool mCorrectionsEnabled = false;
+
+    QPainter *mDebugPainter = nullptr;
 };
 
 } // namespace Tiled

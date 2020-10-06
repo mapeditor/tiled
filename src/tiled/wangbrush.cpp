@@ -23,6 +23,7 @@
 #include "addremovetileset.h"
 #include "brushitem.h"
 #include "containerhelpers.h"
+#include "geometry.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
@@ -35,7 +36,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QtMath>
 
-using namespace Tiled;
+namespace Tiled {
 
 class WangBrushItem : public BrushItem
 {
@@ -119,6 +120,12 @@ WangBrush::~WangBrush()
 {
 }
 
+void WangBrush::activate(MapScene *scene)
+{
+    AbstractTileTool::activate(scene);
+    mLineStartSet = false;
+}
+
 void WangBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (mBrushMode != Idle && brushItem()->isVisible()) {
@@ -126,6 +133,15 @@ void WangBrush::mousePressed(QGraphicsSceneMouseEvent *event)
             switch (mBrushBehavior) {
             case Free:
                 beginPaint();
+                break;
+            case Line:
+                if (!mLineStartSet) {
+                    mLineStartPos = mPaintPoint;
+                    mLineStartSet = true;
+                } else {
+                    doPaint(false);
+                    updateBrush();
+                }
                 break;
             default:
                 break;
@@ -162,12 +178,27 @@ void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
     const bool isTileMode = modifiers & Qt::ControlModifier;
     const bool rotationalSymmetry = modifiers & Qt::AltModifier;
+    const bool lineMode = modifiers & Qt::ShiftModifier;
 
-    if (mIsTileMode != isTileMode || mRotationalSymmetry != rotationalSymmetry) {
-        mIsTileMode = isTileMode;
-        mRotationalSymmetry = rotationalSymmetry;
-        stateChanged();
+    bool changed = false;
+
+    if (lineMode != (mBrushBehavior == Line)) {
+        mBrushBehavior = lineMode ? Line : Free;
+        changed = true;
     }
+
+    if (mIsTileMode != isTileMode) {
+        mIsTileMode = isTileMode;
+        changed = true;
+    }
+
+    if (mRotationalSymmetry != rotationalSymmetry) {
+        mRotationalSymmetry = rotationalSymmetry;
+        changed = true;
+    }
+
+    if (changed)
+        stateChanged();
 }
 
 void WangBrush::languageChanged()
@@ -231,13 +262,12 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
     const MapRenderer *renderer = mapDocument()->renderer();
     const QPointF tilePosF = renderer->screenToTileCoords(offsetPos);
 
-    WangId::Index wangIndex = mWangIndex;
     QPoint tilePos(qFloor(tilePosF.x()), qFloor(tilePosF.y()));
-    QPointF tileLocalPos = tilePosF - tilePos;
+    const QPointF tileLocalPos = tilePosF - tilePos;
 
-    int x = qBound(0, qFloor(tileLocalPos.x() * 3), 2);
-    int y = qBound(0, qFloor(tileLocalPos.y() * 3), 2);
-    wangIndex = WangId::indexByGrid(x, y);
+    const int x = qBound(0, qFloor(tileLocalPos.x() * 3), 2);
+    const int y = qBound(0, qFloor(tileLocalPos.y() * 3), 2);
+    WangId::Index wangIndex = WangId::indexByGrid(x, y);
 
     switch (mBrushMode) {
     case Idle:              // can't happen due to check above
@@ -328,9 +358,11 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
         break;
     }
 
-    if (wangIndex != mWangIndex || tilePos != mPaintPoint) {
+    // mWangIndex is changed while drawing lines in Edge mode, in which case it
+    // isn't expected to match the one calculated here.
+    if ((mBrushBehavior != Line && wangIndex != mWangIndex) || tilePos != mPaintPoint) {
         mWangIndex = wangIndex;
-        mPaintPoint = tilePos;
+        mPrevPaintPoint = std::exchange(mPaintPoint, tilePos);
         stateChanged();
         updateStatusInfo();
     }
@@ -344,7 +376,7 @@ void WangBrush::tilePositionChanged(QPoint tilePos)
     if (!mIsTileMode)
         return;
 
-    mPaintPoint = tilePos;
+    mPrevPaintPoint = std::exchange(mPaintPoint, tilePos);
 
     stateChanged();
 }
@@ -426,6 +458,9 @@ void WangBrush::beginPaint()
 
 void WangBrush::doPaint(bool mergeable)
 {
+    mLineStartPos = mPaintPoint;
+    mLineStartSet = true;
+
     TileLayer *stamp = brushItem()->tileLayer().data();
     if (!stamp)
         return;
@@ -472,6 +507,12 @@ static const QPoint aroundVertexPoints[WangId::NumCorners] = {
     QPoint(-1, -1)
 };
 
+struct FillRegion
+{
+    Grid<WangFiller::CellInfo> grid;
+    QRegion region;
+};
+
 void WangBrush::updateBrush()
 {
     brushItem()->clear();
@@ -482,40 +523,138 @@ void WangBrush::updateBrush()
     const TileLayer *currentLayer = currentTileLayer();
     Q_ASSERT(currentLayer);
 
+    FillRegion fill;
+
+    QVector<QPoint> points;
+    bool ignoreFirst = false;
+
+    if (mBrushBehavior == Line && mLineStartSet) {
+        points = pointsOnLine(mLineStartPos, mPaintPoint, !mIsTileMode && mBrushMode != PaintEdgeAndCorner);
+    } else if (mBrushBehavior == Paint && (mBrushMode == PaintEdge || mBrushMode == PaintCorner || mIsTileMode)) {
+        points = pointsOnLine(mPrevPaintPoint, mPaintPoint, !mIsTileMode);
+        ignoreFirst = points.size() > 1; // first point has already been painted last time
+    } else {
+        points.append(mPaintPoint);
+    }
+
+    if (points.size() > 1 && mBrushMode == PaintEdge) {
+        for (int i = 1; i < points.size(); ++i) {
+            const QPoint from = points.at(i - 1);
+            const QPoint to = points.at(i);
+
+            if (to.x() > from.x())
+                mWangIndex = WangId::Left;
+            else if (to.x() < from.x())
+                mWangIndex = WangId::Right;
+            else if (to.y() > from.y())
+                mWangIndex = WangId::Top;
+            else if (to.y() < from.y())
+                mWangIndex = WangId::Bottom;
+
+            updateBrushAt(fill, to);
+        }
+    } else {
+        for (int i = ignoreFirst ? 1 : 0; i < points.size(); ++i)
+            updateBrushAt(fill, points.at(i));
+    }
+
+    // Extend the region to be filled with a 180-degree rotated version if
+    // rotational symmetry is enabled.
+    if (mRotationalSymmetry) {
+        QRegion completeRegion = fill.region;
+
+        const int w = mapDocument()->map()->width();
+        const int h = mapDocument()->map()->height();
+
+#if QT_VERSION < 0x050800
+        const auto rects = fill.region.rects();
+        for (const QRect &rect : rects) {
+#else
+        for (const QRect &rect : fill.region) {
+#endif
+            for (int y = rect.top(); y <= rect.bottom(); ++y) {
+                for (int x = rect.left(); x <= rect.right(); ++x) {
+                    const QPoint targetPos(w - x - 1, h - y - 1);
+                    const WangFiller::CellInfo &sourceInfo = fill.grid.get(x, y);
+                    WangFiller::CellInfo targetInfo = fill.grid.get(targetPos);
+
+                    const WangId rotatedDesired = sourceInfo.desired.rotated(2);
+                    const WangId rotatedMask = sourceInfo.mask.rotated(2);
+
+                    for (int i = 0; i < WangId::NumIndexes; ++i) {
+                        if (rotatedMask.indexColor(i)) {
+                            targetInfo.desired.setIndexColor(i, rotatedDesired.indexColor(i));
+                            targetInfo.mask.setIndexColor(i, WangId::INDEX_MASK);
+                        }
+                    }
+
+                    fill.grid.set(targetPos, targetInfo);
+                }
+            }
+
+            completeRegion += QRect(QPoint(w - rect.right() - 1,
+                                           h - rect.bottom() - 1),
+                                    QPoint(w - rect.left() - 1,
+                                           h - rect.top() - 1));
+        }
+
+        fill.region = completeRegion;
+    }
+
     SharedTileLayer stamp = SharedTileLayer::create(QString(), 0, 0, 0, 0);
 
+    WangFiller wangFiller{ *mWangSet, mapDocument()->renderer() };
+    wangFiller.setErasingEnabled(mCurrentColor == 0);
+    wangFiller.setCorrectionsEnabled(true);
+    wangFiller.fillRegion(*stamp, *currentLayer, fill.region, std::move(fill.grid));
+
+    static_cast<WangBrushItem*>(brushItem())->setInvalidTiles();
+
+    // Translate to map coordinate space and normalize stamp
+    QRegion brushRegion = stamp->region([] (const Cell &cell) { return cell.checked(); });
+    brushRegion.translate(currentLayer->position());
+    QRect brushRect = brushRegion.boundingRect();
+    stamp->setPosition(brushRect.topLeft());
+    stamp->resize(brushRect.size(), -brushRect.topLeft());
+
+    // set the new tile layer as the brush
+    brushItem()->setTileLayer(stamp, brushRegion);
+}
+
+void WangBrush::updateBrushAt(FillRegion &fill, QPoint pos)
+{
     auto staggeredRenderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer());
+    Grid<WangFiller::CellInfo> &grid = fill.grid;
+    QRegion &region = fill.region;
 
-    Grid<WangFiller::CellInfo> grid;
-    QRegion region;
-
-    if (mIsTileMode) {
+    // When drawing lines in PaintEdgeAndCorner mode we force "tile mode"
+    // because we currently can't draw thinner lines properly in that mode.
+    if (mIsTileMode || (mBrushBehavior == Line && mBrushMode == PaintEdgeAndCorner)) {
         //array of adjacent positions which is assigned based on map orientation.
         QPoint adjacentPositions[WangId::NumIndexes];
         if (staggeredRenderer) {
-            adjacentPositions[0] = staggeredRenderer->topRight(mPaintPoint.x(), mPaintPoint.y());
-            adjacentPositions[2] = staggeredRenderer->bottomRight(mPaintPoint.x(), mPaintPoint.y());
-            adjacentPositions[4] = staggeredRenderer->bottomLeft(mPaintPoint.x(), mPaintPoint.y());
-            adjacentPositions[6] = staggeredRenderer->topLeft(mPaintPoint.x(), mPaintPoint.y());
+            adjacentPositions[0] = staggeredRenderer->topRight(pos.x(), pos.y());
+            adjacentPositions[2] = staggeredRenderer->bottomRight(pos.x(), pos.y());
+            adjacentPositions[4] = staggeredRenderer->bottomLeft(pos.x(), pos.y());
+            adjacentPositions[6] = staggeredRenderer->topLeft(pos.x(), pos.y());
 
             if (mapDocument()->map()->staggerAxis() == Map::StaggerX) {
-                adjacentPositions[1] = mPaintPoint + QPoint(2, 0);
-                adjacentPositions[3] = mPaintPoint + QPoint(0, 1);
-                adjacentPositions[5] = mPaintPoint + QPoint(-2, 0);
-                adjacentPositions[7] = mPaintPoint + QPoint(0, -1);
+                adjacentPositions[1] = pos + QPoint(2, 0);
+                adjacentPositions[3] = pos + QPoint(0, 1);
+                adjacentPositions[5] = pos + QPoint(-2, 0);
+                adjacentPositions[7] = pos + QPoint(0, -1);
             } else {
-                adjacentPositions[1] = mPaintPoint + QPoint(1, 0);
-                adjacentPositions[3] = mPaintPoint + QPoint(0, 2);
-                adjacentPositions[5] = mPaintPoint + QPoint(-1, 0);
-                adjacentPositions[7] = mPaintPoint + QPoint(0, -2);
+                adjacentPositions[1] = pos + QPoint(1, 0);
+                adjacentPositions[3] = pos + QPoint(0, 2);
+                adjacentPositions[5] = pos + QPoint(-1, 0);
+                adjacentPositions[7] = pos + QPoint(0, -2);
             }
         } else {
             for (int i = 0; i < WangId::NumIndexes; ++i)
-                adjacentPositions[i] = mPaintPoint + aroundTilePoints[i];
+                adjacentPositions[i] = pos + aroundTilePoints[i];
         }
 
-        WangFiller::CellInfo center;
-        center.desired = mWangSet->wangIdOfCell(currentLayer->cellAt(mPaintPoint));
+        WangFiller::CellInfo center = grid.get(pos);
 
         switch (mBrushMode) {
         case PaintCorner:
@@ -540,8 +679,8 @@ void WangBrush::updateBrush()
             break;
         }
 
-        region += QRect(mPaintPoint, QSize(1, 1));
-        grid.set(mPaintPoint, center);
+        region += QRect(pos, QSize(1, 1));
+        grid.set(pos, center);
 
         for (int i = 0; i < WangId::NumIndexes; ++i) {
             const bool isCorner = WangId::isCorner(i);
@@ -549,8 +688,7 @@ void WangBrush::updateBrush()
                 continue;
 
             QPoint p = adjacentPositions[i];
-            WangFiller::CellInfo adjacent;
-            adjacent.desired = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
+            WangFiller::CellInfo adjacent = grid.get(p);
 
             // Mark the opposite side or corner of the adjacent tile
             if (isCorner || (mBrushMode == PaintEdge || mBrushMode == PaintEdgeAndCorner)) {
@@ -583,13 +721,13 @@ void WangBrush::updateBrush()
             QPoint adjacentPoints[WangId::NumCorners];
 
             if (staggeredRenderer) {
-                adjacentPoints[0] = staggeredRenderer->topRight(mPaintPoint.x(), mPaintPoint.y());
-                adjacentPoints[1] = mPaintPoint;
-                adjacentPoints[2] = staggeredRenderer->topLeft(mPaintPoint.x(), mPaintPoint.y());
+                adjacentPoints[0] = staggeredRenderer->topRight(pos.x(), pos.y());
+                adjacentPoints[1] = pos;
+                adjacentPoints[2] = staggeredRenderer->topLeft(pos.x(), pos.y());
                 adjacentPoints[3] = staggeredRenderer->topRight(adjacentPoints[2].x(), adjacentPoints[2].y());
             } else {
                 for (int i = 0; i < WangId::NumCorners; ++i)
-                    adjacentPoints[i] = mPaintPoint + aroundVertexPoints[i];
+                    adjacentPoints[i] = pos + aroundVertexPoints[i];
             }
 
             for (int i = 0; i < WangId::NumCorners; ++i) {
@@ -597,8 +735,7 @@ void WangBrush::updateBrush()
 
                 region += QRect(p, QSize(1, 1));
 
-                WangFiller::CellInfo adjacent;
-                adjacent.desired = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
+                WangFiller::CellInfo adjacent = grid.get(p);
                 adjacent.desired.setCornerColor((i + 2) % 4, mCurrentColor);
                 adjacent.mask.setCornerColor((i + 2) % 4, WangId::INDEX_MASK);
 
@@ -612,37 +749,35 @@ void WangBrush::updateBrush()
             if (staggeredRenderer) {
                 switch (mWangIndex) {
                 case WangId::Top:
-                    dirPoint = staggeredRenderer->topRight(mPaintPoint.x(), mPaintPoint.y());
+                    dirPoint = staggeredRenderer->topRight(pos.x(), pos.y());
                     break;
                 case WangId::Right:
-                    dirPoint = staggeredRenderer->bottomRight(mPaintPoint.x(), mPaintPoint.y());
+                    dirPoint = staggeredRenderer->bottomRight(pos.x(), pos.y());
                     break;
                 case WangId::Bottom:
-                    dirPoint = staggeredRenderer->bottomLeft(mPaintPoint.x(), mPaintPoint.y());
+                    dirPoint = staggeredRenderer->bottomLeft(pos.x(), pos.y());
                     break;
                 case WangId::Left:
-                    dirPoint = staggeredRenderer->topLeft(mPaintPoint.x(), mPaintPoint.y());
+                    dirPoint = staggeredRenderer->topLeft(pos.x(), pos.y());
                     break;
                 default:    // Other color indexes not handled when painting edges
                     break;
                 }
             } else {
-                dirPoint = mPaintPoint + aroundTilePoints[mWangIndex];
+                dirPoint = pos + aroundTilePoints[mWangIndex];
             }
 
-            region += QRect(mPaintPoint, QSize(1, 1));
+            region += QRect(pos, QSize(1, 1));
             region += QRect(dirPoint, QSize(1, 1));
 
             {
-                WangFiller::CellInfo info;
-                info.desired = mWangSet->wangIdOfCell(currentLayer->cellAt(mPaintPoint));
+                WangFiller::CellInfo info = grid.get(pos);
                 info.desired.setIndexColor(mWangIndex, mCurrentColor);
                 info.mask.setIndexColor(mWangIndex, WangId::INDEX_MASK);
-                grid.set(mPaintPoint, info);
+                grid.set(pos, info);
             }
             {
-                WangFiller::CellInfo info;
-                info.desired = mWangSet->wangIdOfCell(currentLayer->cellAt(dirPoint));
+                WangFiller::CellInfo info = grid.get(dirPoint);
                 info.desired.setIndexColor(WangId::oppositeIndex(mWangIndex), mCurrentColor);
                 info.mask.setIndexColor(WangId::oppositeIndex(mWangIndex), WangId::INDEX_MASK);
                 grid.set(dirPoint, info);
@@ -655,67 +790,6 @@ void WangBrush::updateBrush()
             break;
         }
     }
-
-    // Extend the region to be filled with a 180-degree rotated version if
-    // rotational symmetry is enabled.
-    if (mRotationalSymmetry) {
-        QRegion completeRegion = region;
-
-        const int w = mapDocument()->map()->width();
-        const int h = mapDocument()->map()->height();
-
-#if QT_VERSION < 0x050800
-        const auto rects = region.rects();
-        for (const QRect &rect : rects) {
-#else
-        for (const QRect &rect : region) {
-#endif
-            for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                for (int x = rect.left(); x <= rect.right(); ++x) {
-                    const QPoint targetPos(w - x - 1, h - y - 1);
-                    const WangFiller::CellInfo &sourceInfo = grid.get(x, y);
-                    WangFiller::CellInfo targetInfo = grid.get(targetPos);
-
-                    const WangId rotatedDesired = sourceInfo.desired.rotated(2);
-                    const WangId rotatedMask = sourceInfo.mask.rotated(2);
-
-                    if (!targetInfo.desired)
-                        targetInfo.desired = mWangSet->wangIdOfCell(currentLayer->cellAt(targetPos));
-
-                    for (int i = 0; i < WangId::NumIndexes; ++i) {
-                        if (rotatedMask.indexColor(i)) {
-                            targetInfo.desired.setIndexColor(i, rotatedDesired.indexColor(i));
-                            targetInfo.mask.setIndexColor(i, WangId::INDEX_MASK);
-                        }
-                    }
-
-                    grid.set(targetPos, targetInfo);
-                }
-            }
-
-            completeRegion += QRect(QPoint(w - rect.right() - 1,
-                                           h - rect.bottom() - 1),
-                                    QPoint(w - rect.left() - 1,
-                                           h - rect.top() - 1));
-        }
-
-        region = completeRegion;
-    }
-
-    WangFiller wangFiller{ *mWangSet, mapDocument()->renderer() };
-    wangFiller.setErasingEnabled(mCurrentColor == 0);
-    wangFiller.setCorrectionsEnabled(true);
-    wangFiller.fillRegion(*stamp, *currentLayer, region, std::move(grid));
-
-    static_cast<WangBrushItem*>(brushItem())->setInvalidTiles();
-
-    // Translate to map coordinate space and normalize stamp
-    QRegion brushRegion = stamp->region([] (const Cell &cell) { return cell.checked(); });
-    brushRegion.translate(currentLayer->position());
-    QRect brushRect = brushRegion.boundingRect();
-    stamp->setPosition(brushRect.topLeft());
-    stamp->resize(brushRect.size(), -brushRect.topLeft());
-
-    // set the new tile layer as the brush
-    brushItem()->setTileLayer(stamp, brushRegion);
 }
+
+} // namespace Tiled

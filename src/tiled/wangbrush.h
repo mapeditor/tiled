@@ -25,6 +25,8 @@
 
 namespace Tiled {
 
+struct FillRegion;
+
 class WangBrush : public AbstractTileTool
 {
     Q_OBJECT
@@ -39,6 +41,8 @@ public:
 
     WangBrush(QObject *parent = nullptr);
     ~WangBrush();
+
+    void activate(MapScene *scene) override;
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
@@ -63,8 +67,9 @@ protected:
 
 private:
     enum BrushBehavior {
-        Free,
-        Paint
+        Free,               // Hovering
+        Paint,              // Painting (left mouse button pressed)
+        Line,               // Drawing a line (left mouse button pressed)
     };
 
     // sets the current wang color to the corner/edge currently hovered
@@ -76,13 +81,16 @@ private:
     void beginPaint();
     void doPaint(bool mergeable);
     void updateBrush();
+    void updateBrushAt(FillRegion &fill, QPoint pos);
 
     // The point painting happens around
     // In tile mode, this is that tile
     // In corner mode, this means the top-left corner of that tile
     // In edge mode, this is a tile with that edge
     // With mWangIndex being the direction of the edge
+    QPoint mPrevPaintPoint;
     QPoint mPaintPoint;
+    QPoint mLineStartPos;
     WangId::Index mWangIndex = WangId::Top;
 
     const WangSet *mWangSet = nullptr;
@@ -90,6 +98,7 @@ private:
     BrushMode mBrushMode = Idle;
     bool mIsTileMode = false;
     bool mRotationalSymmetry = false;
+    bool mLineStartSet = false;
     BrushBehavior mBrushBehavior = Free;
 };
 

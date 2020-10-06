@@ -169,8 +169,11 @@ QRegion ellipseRegion(int x0, int y0, int x1, int y1)
  * This is an implementation of Bresenham's line algorithm, initially copied
  * from http://en.wikipedia.org/wiki/Bresenham's_line_algorithm#Optimization
  * changed to C++ syntax.
+ *
+ * When the \a manhattan option (named after "Manhattan distance") is set to
+ * true, the points on the line can't take diagonal steps.
  */
-QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1)
+QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1, bool manhattan)
 {
     QVector<QPoint> ret;
 
@@ -197,15 +200,17 @@ QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1)
     else
         ystep = -1;
 
-    for (int x = x0; x < x1 + 1 ; x++) {
-        if (steep)
-            ret += QPoint(y, x);
-        else
-            ret += QPoint(x, y);
+    ret.reserve(deltax + 1 + (manhattan ? deltay : 0));
+
+    for (int x = x0; x <= x1; x++) {
+        ret += steep ? QPoint(y, x) : QPoint(x, y);
         error = error - deltay;
         if (error < 0) {
              y = y + ystep;
              error = error + deltax;
+
+             if (manhattan && x < x1)
+                ret += steep ? QPoint(y, x) : QPoint(x, y);
         }
     }
 

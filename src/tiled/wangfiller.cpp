@@ -104,39 +104,62 @@ void WangFiller::fillRegion(TileLayer &target,
                             const QRegion &region,
                             Grid<CellInfo> grid) const
 {
-    // Set the Wang IDs at the border of the region to make sure the tiles in
-    // the filled region connect with those outside of it.
-    auto setDesiredWangId = [&] (int x, int y) {
-        const WangId source = wangIdFromSurroundings(back, region, QPoint(x, y));
-        CellInfo info = grid.get(x, y);
-        for (int i = 0; i < WangId::NumIndexes; ++i) {
-            if (!info.mask.indexColor(i)) {
-                if (int color = source.indexColor(i)) {
-                    info.desired.setIndexColor(i, color);
+    if (mCorrectionsEnabled) {
+        // Determine the desired WangId for all tiles in the region.
+#if QT_VERSION < 0x050800
+        const auto rects = region.rects();
+        for (const QRect &rect : rects) {
+#else
+        for (const QRect &rect : region) {
+#endif
+            for (int y = rect.top(); y <= rect.bottom(); ++y) {
+                for (int x = rect.left(); x <= rect.right(); ++x) {
+                    CellInfo info = grid.get(x, y);
+                    const auto currentWangId = mWangSet.wangIdOfCell(back.cellAt(x, y));
 
-                    // When we're not making corrections, require the borders
-                    // to match already placed tiles.
-                    if (!mCorrectionsEnabled)
-                        info.mask.setIndexColor(i, WangId::INDEX_MASK);
+                    for (int i = 0; i < WangId::NumIndexes; ++i)
+                        if (!info.mask.indexColor(i))
+                            info.desired.setIndexColor(i, currentWangId.indexColor(i));
+
+                    grid.set(x, y, info);
                 }
             }
         }
-        grid.set(x, y, info);
-    };
+    } else {
+        // Set the Wang IDs at the border of the region to make sure the tiles in
+        // the filled region connect with those outside of it.
+        auto setDesiredWangId = [&] (int x, int y) {
+            const WangId source = wangIdFromSurroundings(back, region, QPoint(x, y));
+            CellInfo info = grid.get(x, y);
+            for (int i = 0; i < WangId::NumIndexes; ++i) {
+                if (!info.mask.indexColor(i)) {
+                    if (int color = source.indexColor(i)) {
+                        info.desired.setIndexColor(i, color);
+
+                        // When we're not making corrections, require the borders
+                        // to match already placed tiles.
+                        if (!mCorrectionsEnabled)
+                            info.mask.setIndexColor(i, WangId::INDEX_MASK);
+                    }
+                }
+            }
+            grid.set(x, y, info);
+        };
 
 #if QT_VERSION < 0x050800
-    const auto rects = region.rects();
-    for (const QRect &rect : rects) {
+        const auto rects = region.rects();
+        for (const QRect &rect : rects) {
 #else
-    for (const QRect &rect : region) {
+        for (const QRect &rect : region) {
 #endif
-        for (int x = rect.left(); x <= rect.right(); ++x) {
-            setDesiredWangId(x, rect.top());
-            setDesiredWangId(x, rect.bottom());
-        }
-        for (int y = rect.top() + 1; y < rect.bottom(); ++y) {
-            setDesiredWangId(rect.left(), y);
-            setDesiredWangId(rect.right(), y);
+            for (int x = rect.left(); x <= rect.right(); ++x) {
+                setDesiredWangId(x, rect.top());
+                setDesiredWangId(x, rect.bottom());
+            }
+            for (int y = rect.top() + 1; y < rect.bottom(); ++y) {
+                setDesiredWangId(rect.left(), y);
+                setDesiredWangId(rect.right(), y);
+            }
         }
     }
 
@@ -198,6 +221,7 @@ void WangFiller::fillRegion(TileLayer &target,
 
     // First process the initial region
 #if QT_VERSION < 0x050800
+    const auto rects = region.rects();
     for (const QRect &rect : rects) {
 #else
     for (const QRect &rect : region) {
