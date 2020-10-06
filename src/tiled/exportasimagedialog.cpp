@@ -29,6 +29,7 @@
 #include "maprenderer.h"
 #include "minimaprenderer.h"
 #include "objectgroup.h"
+#include "objectselectionitem.h"
 #include "preferences.h"
 #include "session.h"
 #include "tilelayer.h"
@@ -44,6 +45,7 @@ namespace session {
 static SessionOption<bool> visibleLayersOnly { "exportAsImage.visibleLayersOnly", true };
 static SessionOption<bool> useCurrentScale { "exportAsImage.useCurrentScale", true };
 static SessionOption<bool> drawTileGrid { "exportAsImage.drawTileGrid", false };
+static SessionOption<bool> drawObjectLabels { "exportAsImage.drawObjectLabels", false };
 static SessionOption<bool> includeBackgroundColor { "exportAsImage.includeBackgroundColor", false };
 } // namespace session
 
@@ -81,10 +83,10 @@ ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
 
         suggestion += QLatin1Char('/');
         suggestion += baseName;
-        suggestion += QLatin1String(".png");
+        suggestion += QStringLiteral(".png");
     } else {
         suggestion += QLatin1Char('/');
-        suggestion += QLatin1String("map.png");
+        suggestion += QStringLiteral("map.png");
     }
 
     mUi->fileNameEdit->setText(suggestion);
@@ -92,6 +94,7 @@ ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
     mUi->visibleLayersOnly->setChecked(session::visibleLayersOnly);
     mUi->currentZoomLevel->setChecked(session::useCurrentScale);
     mUi->drawTileGrid->setChecked(session::drawTileGrid);
+    mUi->drawObjectLabels->setChecked(session::drawObjectLabels);
     mUi->includeBackgroundColor->setChecked(session::includeBackgroundColor);
 
     connect(mUi->browseButton, &QAbstractButton::clicked, this, &ExportAsImageDialog::browse);
@@ -136,10 +139,30 @@ void ExportAsImageDialog::accept()
     session::visibleLayersOnly = mUi->visibleLayersOnly->isChecked();
     session::useCurrentScale = mUi->currentZoomLevel->isChecked();
     session::drawTileGrid = mUi->drawTileGrid->isChecked();
+    session::drawObjectLabels = mUi->drawObjectLabels->isChecked();
     session::includeBackgroundColor = mUi->includeBackgroundColor->isChecked();
 
     MiniMapRenderer miniMapRenderer(mMapDocument->map());
     miniMapRenderer.setGridColor(Preferences::instance()->gridColor());
+
+    if (session::drawObjectLabels) {
+        miniMapRenderer.setRenderObjectLabelCallback([] (QPainter &painter, const MapObject *object, const MapRenderer &renderer) {
+            if (object->name().isEmpty())
+                return;
+
+            MapObjectLabel label { object };
+            label.syncWithMapObject(renderer);
+
+            const auto invertScale = 1 / renderer.painterScale();
+            painter.save();
+            painter.translate(label.pos());
+            painter.scale(invertScale, invertScale);
+
+            label.paint(&painter, nullptr, nullptr);
+
+            painter.restore();
+        });
+    }
 
     MiniMapRenderer::RenderFlags renderFlags(MiniMapRenderer::DrawTileLayers |
                                              MiniMapRenderer::DrawMapObjects |

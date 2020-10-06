@@ -28,18 +28,26 @@ namespace Tiled {
 class SnapHelper
 {
 public:
-    SnapHelper(const MapRenderer *renderer, Qt::KeyboardModifiers modifiers = nullptr);
+    SnapHelper(const MapRenderer *renderer, Qt::KeyboardModifiers modifiers = {});
 
     void toggleSnap();
+    
+    void toggleFineSnap();
 
-    bool snaps() const { return mSnapToGrid || mSnapToFineGrid || mSnapToPixels; }
+    bool snaps() const { return mSnapMode != NoSnap || mSnapToPixels; }
 
     void snap(QPointF &pixelPos) const;
 
 private:
     const MapRenderer *mRenderer;
-    bool mSnapToGrid;
-    bool mSnapToFineGrid;
+
+    enum SnapMode {
+        NoSnap,
+        SnapToGrid,
+        SnapToFineGrid
+    };
+
+    SnapMode mSnapMode = NoSnap;
     bool mSnapToPixels;
 };
 

@@ -10,11 +10,22 @@ Tiled 1.4
 -  Added the ``objectalignment`` attribute to the :ref:`tmx-tileset` element,
    allowing the tileset to control the alignment used for tile objects.
 
+-  Added the ``tintcolor`` attribute to the :ref:`tmx-layer`,
+   :ref:`tmx-objectgroup`, :ref:`tmx-imagelayer` and :ref:`tmx-group` elements,
+   allowing for a number of graphical effects like darkening or coloring a
+   layer.
+
 Tiled 1.3
 ---------
 
 -  Added an :ref:`tmx-editorsettings` element, which is used to store editor
-   specific options that are generally not relevant when loading a map.
+   specific settings that are generally not relevant when loading a map.
+
+-  Added support for Zstandard compression for tile layer data
+   (``compression="zstd"`` on :ref:`tmx-data` elements).
+
+-  Added the ``compressionlevel`` attribute to the :ref:`tmx-map` element,
+   which stores the compression level to use for compressed tile layer data.
 
 Tiled 1.2.1
 -----------

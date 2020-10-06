@@ -122,7 +122,11 @@ void MapView::setScale(qreal scale)
 
 void MapView::fitMapInView()
 {
-    const QRectF rect = mapScene()->mapBoundingRect();
+    MapScene* scene = mapScene();
+    if (!scene)
+        return;
+
+    const QRectF rect = scene->mapBoundingRect();
     if (rect.isEmpty())
         return;
 
@@ -259,6 +263,14 @@ void MapView::setHandScrolling(bool handScrolling)
  */
 void MapView::forceCenterOn(const QPointF &pos)
 {
+    // Let's wait until the initial paint event before we position the view,
+    // otherwise layout changes may still affect the position.
+    if (!mViewInitialized) {
+        mInitialCenterPos = pos;
+        mHasInitialCenterPos = true;
+        return;
+    }
+
     // This is only to make it update QGraphicsViewPrivate::lastCenterPoint,
     // just in case this is important.
     QGraphicsView::centerOn(pos);
@@ -315,14 +327,18 @@ bool MapView::event(QEvent *e)
     return QGraphicsView::event(e);
 }
 
-void MapView::showEvent(QShowEvent *event)
+void MapView::paintEvent(QPaintEvent *event)
 {
     if (!mViewInitialized) {
-        fitMapInView();
         mViewInitialized = true;
+
+        if (mHasInitialCenterPos)
+            forceCenterOn(mInitialCenterPos);
+        else
+            fitMapInView();
     }
 
-    QGraphicsView::showEvent(event);
+    QGraphicsView::paintEvent(event);
 }
 
 void MapView::hideEvent(QHideEvent *event)

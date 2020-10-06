@@ -345,7 +345,7 @@ void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
 
 bool Preferences::safeSavingEnabled() const
 {
-    return get("SafeSavingEnabled", true);
+    return get("Storage/SafeSavingEnabled", true);
 }
 
 void Preferences::setSafeSavingEnabled(bool enabled)
@@ -459,25 +459,25 @@ static QString lastPathKey(Preferences::FileType fileType)
 
     switch (fileType) {
     case Preferences::ExportedFile:
-        key.append(QLatin1String("ExportedFile"));
+        key.append(QStringLiteral("ExportedFile"));
         break;
     case Preferences::ExternalTileset:
-        key.append(QLatin1String("ExternalTileset"));
+        key.append(QStringLiteral("ExternalTileset"));
         break;
     case Preferences::ImageFile:
-        key.append(QLatin1String("Images"));
+        key.append(QStringLiteral("Images"));
         break;
     case Preferences::ObjectTemplateFile:
-        key.append(QLatin1String("ObjectTemplates"));
+        key.append(QStringLiteral("ObjectTemplates"));
         break;
     case Preferences::ObjectTypesFile:
-        key.append(QLatin1String("ObjectTypes"));
+        key.append(QStringLiteral("ObjectTypes"));
         break;
     case Preferences::ProjectFile:
-        key.append(QLatin1String("Project"));
+        key.append(QStringLiteral("Project"));
         break;
     case Preferences::WorldFile:
-        key.append(QLatin1String("WorldFile"));
+        key.append(QStringLiteral("WorldFile"));
         break;
     }
 
@@ -570,18 +570,6 @@ void Preferences::setDonationDialogReminder(const QDate &date)
     setValue(QLatin1String("Install/DonationDialogTime"), date.toString(Qt::ISODate));
 }
 
-QString Preferences::fileDialogStartLocation() const
-{
-    const auto &session = Session::current();
-    if (!session.activeFile.isEmpty())
-        return QFileInfo(session.activeFile).path();
-
-    if (!session.recentFiles.isEmpty())
-        return QFileInfo(session.recentFiles.first()).path();
-
-    return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-}
-
 /**
  * Adds the given file to the recent files list.
  */
@@ -619,7 +607,14 @@ QString Preferences::startupSession() const
 
 void Preferences::setLastSession(const QString &fileName)
 {
-    setValue(QLatin1String("Project/LastSession"), fileName);
+    // Don't store the path to the default session, since this path may vary
+    // between restarts. For example the snap release includes the build
+    // number in the path and trying to save to a session file for a different
+    // version doesn't work.
+    if (fileName == Session::defaultFileName())
+        setValue(QLatin1String("Project/LastSession"), QString());
+    else
+        setValue(QLatin1String("Project/LastSession"), fileName);
 }
 
 bool Preferences::restoreSessionOnStartup() const

@@ -20,18 +20,22 @@
 
 #pragma once
 
-#include <QAbstractButton>
+#include <QToolButton>
 
 class QLabel;
 
 namespace Tiled {
 
-class IssuesCounter : public QAbstractButton
+class IssuesCounter : public QToolButton
 {
     Q_OBJECT
 
 public:
     explicit IssuesCounter(QWidget *parent = nullptr);
+
+    // Skip the QToolButton implementations, due to custum contents
+    QSize sizeHint() const override { return QAbstractButton::sizeHint(); }
+    QSize minimumSizeHint() const override { return QAbstractButton::minimumSizeHint(); };
 
 protected:
     void paintEvent(QPaintEvent *event) override;

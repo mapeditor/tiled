@@ -245,7 +245,7 @@ void ActionManager::setCustomShortcuts(const QHash<Id, QKeySequence> &shortcuts)
 void ActionManager::readCustomShortcuts()
 {
     const auto prefs = Preferences::instance();
-    prefs->beginGroup(QLatin1String("CustomShortcuts"));
+    prefs->beginGroup(QStringLiteral("CustomShortcuts"));
 
     const auto keys = prefs->childKeys();
     for (const auto &key : keys) {
@@ -276,7 +276,7 @@ void ActionManager::updateToolTipWithShortcut(QAction *action)
     }
 
     if (!action->shortcut().isEmpty()) {
-        toolTip.append(QString::fromLatin1(" <span style=\"color: gray;\">(%1)<span>")
+        toolTip.append(QStringLiteral(" <span style=\"color: gray;\">(%1)<span>")
                        .arg(action->shortcut().toString(QKeySequence::NativeText)));
     }
 

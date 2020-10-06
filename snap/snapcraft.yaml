@@ -1,11 +1,5 @@
 name: tiled
 adopt-info: tiled
-summary: Your free, easy to use and flexible tile map editor.
-description: |
-  Tiled is a free software level editor. It supports editing tile maps in
-  various projections (orthogonal, isometric, hexagonal) and also supports
-  building levels with freely positioned, rotated or scaled images or
-  annotating them with objects of various shapes.
 license: GPL-2.0
 base: core18
 
@@ -15,7 +9,7 @@ confinement: strict
 apps:
   tiled:
     command: desktop-launch ${SNAP}/usr/bin/tiled
-    desktop: usr/share/applications/org.mapeditor.Tiled.desktop
+    common-id: org.mapeditor.Tiled.desktop
     plugs: [home, opengl, unity7, network]
   tmxviewer:
     command: desktop-launch ${SNAP}/usr/bin/tmxviewer
@@ -33,21 +27,26 @@ parts:
     qt-version: qt5
     options:
       - PREFIX=/usr
+      - SYSTEM_ZSTD=yes
       - CONFIG+=release
+    parse-info:
+      - org.mapeditor.Tiled.appdata.xml
     override-pull: |
       snapcraftctl pull
       snapcraftctl set-version "$(git describe | cut -c 2-)"
     source: .
     build-packages:
+      - pkg-config
     # FIXME: Python plugin compiles and loads, but can't find platform libraries
-    #  - pkg-config
     #  - python-dev
       - qttools5-dev-tools
       - qtdeclarative5-dev
       - zlib1g-dev
+      - libzstd-dev
     stage-packages:
       - libqt5quick5
     #  - libpython2.7
+      - libzstd1
     after: [desktop-qt5]
 
   desktop-qt5:

@@ -22,6 +22,7 @@ WindowsInstallerPackage {
     Depends { name: "cpp" }
     Depends { name: "Qt.core" }
 
+    property string version: Environment.getEnv("TILED_MSI_VERSION") || project.version
     property string bits: {
         if (qbs.architecture === "x86_64")
             return "64";
@@ -33,7 +34,7 @@ WindowsInstallerPackage {
 
     wix.defines: {
         var defs = [
-            "Version=" + project.version,
+            "Version=" + version,
             "InstallRoot=" + qbs.installRoot,
             "QtDir=" + FileInfo.joinPaths(Qt.core.binPath, ".."),
             "RootDir=" + project.sourceDirectory
@@ -76,7 +77,11 @@ WindowsInstallerPackage {
         "WixUIExtension"
     ]
 
-    files: ["installer.wxs"]
+    files: [
+        "Custom_InstallDir.wxs",
+        "Custom_InstallDirDlg.wxs",
+        "installer.wxs"
+    ]
 
     // This is a clever hack to make the rule that compiles the installer
     // depend on all installables, since that rule implicitly depends on

@@ -30,17 +30,18 @@
 #include "editabletilelayer.h"
 #include "editabletileset.h"
 #include "logginginterface.h"
-#include "mainwindow.h"
 #include "mapeditor.h"
 #include "mapview.h"
 #include "preferences.h"
 #include "project.h"
+#include "projectmanager.h"
 #include "regionvaluetype.h"
 #include "scriptedaction.h"
 #include "scriptedfileformat.h"
 #include "scriptedtool.h"
 #include "scriptfile.h"
 #include "scriptfileformatwrappers.h"
+#include "scriptfileinfo.h"
 #include "scriptimage.h"
 #include "scriptmodule.h"
 #include "tilecollisiondock.h"
@@ -116,6 +117,9 @@ ScriptManager::ScriptManager(QObject *parent)
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 
+    connect(ProjectManager::instance(), &ProjectManager::projectChanged,
+            this, &ScriptManager::refreshExtensionsPaths);
+
     const QString configLocation { Preferences::configLocation() };
     if (!configLocation.isEmpty()) {
         mExtensionsPath = QDir{configLocation}.filePath(QStringLiteral("extensions"));
@@ -128,7 +132,9 @@ ScriptManager::ScriptManager(QObject *parent)
 void ScriptManager::ensureInitialized()
 {
     if (!mEngine) {
-        refreshExtensionsPaths();
+        if (mExtensionsPaths.isEmpty())
+            refreshExtensionsPaths();
+
         initialize();
     }
 }
@@ -232,7 +238,7 @@ bool ScriptManager::checkError(QJSValue value, const QString &program)
         errorString.append(QLatin1Char('\n'));
 
         for (const auto &entry : stackEntries) {
-            errorString.append(QLatin1String("  "));
+            errorString.append(QStringLiteral("  "));
             errorString.append(entry);
             errorString.append(QLatin1Char('\n'));
         }
@@ -301,6 +307,8 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("Image"), mEngine->newQMetaObject<ScriptImage>());
 #endif
 
+    registerFileInfo(mEngine);
+
     loadExtensions();
 }
 
@@ -318,7 +326,7 @@ void ScriptManager::refreshExtensionsPaths()
         extensionsPaths.append(mExtensionsPath);
 
     // Add extensions path from project
-    auto &projectExtensionsPath = MainWindow::instance()->project().mExtensionsPath;
+    auto &projectExtensionsPath = ProjectManager::instance()->project().mExtensionsPath;
     if (!projectExtensionsPath.isEmpty()) {
         const QFileInfo info(projectExtensionsPath);
         if (info.exists() && info.isDir())

@@ -266,84 +266,40 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
     }
 }
 
-void HexagonalRenderer::drawTileLayer(QPainter *painter,
-                                      const TileLayer *layer,
-                                      const QRectF &exposed) const
-{
-    CellRenderer renderer(painter, this, layer->effectiveTintColor(), CellRenderer::HexagonalCells);
-    auto tileRenderFunction = [&renderer](const Cell &cell, const QPointF &pos, const QSizeF &size) {
-        renderer.render(cell, pos, size, CellRenderer::BottomLeft);
-    };
-    drawTileLayer(layer, tileRenderFunction, exposed);
-}
-
-void HexagonalRenderer::drawTileLayer(const TileLayer *layer,
-                                      const RenderTileCallback &renderTile,
+void HexagonalRenderer::drawTileLayer(const RenderTileCallback &renderTile,
                                       const QRectF &exposed) const
 {
     const RenderParams p(map());
 
-    QRect rect = exposed.toAlignedRect();
-
-    if (rect.isNull())
-        rect = boundingRect(layer->bounds());
-
-    QMargins drawMargins = layer->drawMargins();
-    drawMargins.setBottom(drawMargins.bottom() + p.tileHeight);
-    drawMargins.setRight(drawMargins.right() - p.tileWidth);
-
-    rect.adjust(-drawMargins.right(),
-                -drawMargins.bottom(),
-                drawMargins.left(),
-                drawMargins.top());
-
     // Determine the tile and pixel coordinates to start at
-    QPoint startTile = screenToTileCoords(rect.topLeft()).toPoint();
-
-    // Compensate for the layer position
-    startTile -= layer->position();
-
-    QPoint startPos = tileToScreenCoords(startTile + layer->position()).toPoint();
+    QPoint startTile = screenToTileCoords(exposed.topLeft()).toPoint();
+    QPoint startPos = tileToScreenCoords(startTile).toPoint();
 
     /* Determine in which half of the tile the top-left corner of the area we
      * need to draw is. If we're in the upper half, we need to start one row
      * up due to those tiles being visible as well. How we go up one row
      * depends on whether we're in the left or right half of the tile.
      */
-    const bool inUpperHalf = rect.y() - startPos.y() < p.sideOffsetY;
-    const bool inLeftHalf = rect.x() - startPos.x() < p.sideOffsetX;
+    const bool inUpperHalf = exposed.y() - startPos.y() < p.sideOffsetY;
+    const bool inLeftHalf = exposed.x() - startPos.x() < p.sideOffsetX;
 
     if (inUpperHalf)
         startTile.ry()--;
     if (inLeftHalf)
         startTile.rx()--;
 
-    const int endX = map()->infinite() ? layer->bounds().right() - layer->x() + 1 : layer->width();
-    const int endY = map()->infinite() ? layer->bounds().bottom() - layer->y() + 1 : layer->height();
-
     if (p.staggerX) {
-        if (!map()->infinite()) {
-            startTile.setX(qMax(-1, startTile.x()));
-            startTile.setY(qMax(-1, startTile.y()));
-        }
-
-        startPos = tileToScreenCoords(startTile + layer->position()).toPoint();
+        startPos = tileToScreenCoords(startTile).toPoint();
         startPos.ry() += p.tileHeight;
 
-        bool staggeredRow = p.doStaggerX(startTile.x() + layer->x());
+        bool staggeredRow = p.doStaggerX(startTile.x());
 
-        for (; startPos.y() < rect.bottom() && startTile.y() < endY;) {
+        while (startPos.y() - p.tileHeight < exposed.bottom()) {
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
-            for (; rowPos.x() < rect.right() && rowTile.x() < endX; rowTile.rx() += 2) {
-                const Cell &cell = layer->cellAt(rowTile);
-
-                if (!cell.isEmpty()) {
-                    const Tile *tile = cell.tile();
-                    const QSize size = tile ? tile->size() : map()->tileSize();
-                    renderTile(cell, rowPos, size);
-                }
+            for (; rowPos.x() < exposed.right(); rowTile.rx() += 2) {
+                renderTile(rowTile, rowPos);
 
                 rowPos.rx() += p.tileWidth + p.sideLengthX;
             }
@@ -362,33 +318,22 @@ void HexagonalRenderer::drawTileLayer(const TileLayer *layer,
             startPos.ry() += p.rowHeight;
         }
     } else {
-        if (!map()->infinite()) {
-            startTile.setX(qMax(0, startTile.x()));
-            startTile.setY(qMax(0, startTile.y()));
-        }
-
-        startPos = tileToScreenCoords(startTile + layer->position()).toPoint();
+        startPos = tileToScreenCoords(startTile).toPoint();
         startPos.ry() += p.tileHeight;
 
         // Odd row shifting is applied in the rendering loop, so un-apply it here
-        if (p.doStaggerY(startTile.y() + layer->y()))
+        if (p.doStaggerY(startTile.y()))
             startPos.rx() -= p.columnWidth;
 
-        for (; startPos.y() < rect.bottom() && startTile.y() < endY; startTile.ry()++) {
+        for (; startPos.y() - p.tileHeight < exposed.bottom(); startTile.ry()++) {
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
-            if (p.doStaggerY(startTile.y() + layer->y()))
+            if (p.doStaggerY(startTile.y()))
                 rowPos.rx() += p.columnWidth;
 
-            for (; rowPos.x() < rect.right() && rowTile.x() < endX; rowTile.rx()++) {
-                const Cell &cell = layer->cellAt(rowTile);
-
-                if (!cell.isEmpty()) {
-                    const Tile *tile = cell.tile();
-                    const QSize size = tile ? tile->size() : map()->tileSize();
-                    renderTile(cell, rowPos, size);
-                }
+            for (; rowPos.x() < exposed.right(); rowTile.rx()++) {
+                renderTile(rowTile, rowPos);
 
                 rowPos.rx() += p.tileWidth + p.sideLengthX;
             }
@@ -403,8 +348,7 @@ void HexagonalRenderer::drawTileSelection(QPainter *painter,
                                           const QColor &color,
                                           const QRectF &exposed) const
 {
-    painter->setBrush(color);
-    painter->setPen(Qt::NoPen);
+    QPainterPath path;
 
 #if QT_VERSION < 0x050800
     const auto rects = region.rects();
@@ -416,10 +360,21 @@ void HexagonalRenderer::drawTileSelection(QPainter *painter,
             for (int x = r.left(); x <= r.right(); ++x) {
                 const QPolygonF polygon = tileToScreenPolygon(x, y);
                 if (QRectF(polygon.boundingRect()).intersects(exposed))
-                    painter->drawConvexPolygon(polygon);
+                    path.addPolygon(polygon);
             }
         }
     }
+
+    QColor penColor(color);
+    penColor.setAlpha(255);
+
+    QPen pen(penColor);
+    pen.setCosmetic(true);
+
+    painter->setPen(pen);
+    painter->setBrush(color);
+    painter->setRenderHint(QPainter::Antialiasing, true);
+    painter->drawPath(path.simplified());
 }
 
 QPointF HexagonalRenderer::tileToPixelCoords(qreal x, qreal y) const

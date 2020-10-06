@@ -27,12 +27,14 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 
 static QString relative(const QDir &dir, const QString &fileName)
 {
     QString rel = dir.relativeFilePath(fileName);
-    return rel.isEmpty() ? QString(QLatin1String(".")) : rel;
+    return rel.isEmpty() ? QStringLiteral(".") : rel;
 }
 
 static QString absolute(const QDir &dir, const QString &fileName)
@@ -65,14 +67,19 @@ bool Project::save(const QString &fileName)
     const QDir dir = QFileInfo(fileName).dir();
 
     QJsonArray folders;
-    for (auto &folder : mFolders)
+    for (auto &folder : qAsConst(mFolders))
         folders.append(relative(dir, folder));
+
+    QJsonArray commands;
+    for (const Command &command : qAsConst(mCommands))
+        commands.append(QJsonObject::fromVariantHash(command.toVariant()));
 
     const QJsonObject project {
         { QStringLiteral("folders"), folders },
         { QStringLiteral("extensionsPath"), relative(dir, extensionsPath) },
         { QStringLiteral("objectTypesFile"), dir.relativeFilePath(mObjectTypesFile) },
-        { QStringLiteral("automappingRulesFile"), dir.relativeFilePath(mAutomappingRulesFile) }
+        { QStringLiteral("automappingRulesFile"), dir.relativeFilePath(mAutomappingRulesFile) },
+        { QStringLiteral("commands"), commands }
     };
 
     const QJsonDocument document(project);
@@ -117,6 +124,11 @@ bool Project::load(const QString &fileName)
     const QJsonArray folders = project.value(QLatin1String("folders")).toArray();
     for (const QJsonValue &folderValue : folders)
         mFolders.append(QDir::cleanPath(dir.absoluteFilePath(folderValue.toString())));
+
+    mCommands.clear();
+    const QJsonArray commands = project.value(QLatin1String("commands")).toArray();
+    for (const QJsonValue &commandValue : commands)
+        mCommands.append(Command::fromVariant(commandValue.toVariant()));
 
     return true;
 }

@@ -338,20 +338,20 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
 
             tbin::Layer* tiles = tileLayerIdMap[groupName.toStdString()];
             if (!tiles) {
-                Tiled::WARNING(QString(QLatin1String("tBIN: Ignoring object layer \"%1\" without matching tile layer.")).arg(groupName),
+                Tiled::WARNING(QStringLiteral("tBIN: Ignoring object layer \"%1\" without matching tile layer.").arg(groupName),
                                Tiled::SelectLayer { objs });
                 continue;
             }
 
             for (Tiled::MapObject* obj : objs->objects()) {
                 if (obj->name() != QLatin1String("TileData")) {
-                    Tiled::WARNING(QString(QLatin1String("tBIN: Ignoring object %1 with name different from 'TileData'.")).arg(obj->id()),
+                    Tiled::WARNING(QStringLiteral("tBIN: Ignoring object %1 with name different from 'TileData'.").arg(obj->id()),
                                    Tiled::JumpToObject { obj });
                     continue;
                 }
 
                 if (obj->properties().isEmpty()) {
-                    Tiled::WARNING(QString(QLatin1String("tBIN: Ignoring object %1 without custom properties.")).arg(obj->id()),
+                    Tiled::WARNING(QStringLiteral("tBIN: Ignoring object %1 without custom properties.").arg(obj->id()),
                                    Tiled::JumpToObject { obj });
                     continue;
                 }
@@ -360,7 +360,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                         static_cast<int>(obj->height()) != tiles->tileSize.y ||
                         obj->x() / tiles->tileSize.x != std::floor(obj->x() / tiles->tileSize.x) ||
                         obj->y() / tiles->tileSize.y != std::floor(obj->y() / tiles->tileSize.y)) {
-                    Tiled::WARNING(QString(QLatin1String("tBIN: Object %1 is not aligned to the tile grid.")).arg(obj->id()),
+                    Tiled::WARNING(QStringLiteral("tBIN: Object %1 is not aligned to the tile grid.").arg(obj->id()),
                                    Tiled::JumpToObject { obj });
                 }
 
@@ -401,7 +401,7 @@ QString TbinMapFormat::nameFilter() const
 
 QString TbinMapFormat::shortName() const
 {
-    return QLatin1String("tbin");
+    return QStringLiteral("tbin");
 }
 
 bool TbinMapFormat::supportsFile(const QString &fileName) const

@@ -53,6 +53,7 @@
 #include "zoomable.h"
 
 #include <QActionGroup>
+#include <QBitmap>
 #include <QCloseEvent>
 #include <QComboBox>
 #include <QCoreApplication>
@@ -95,6 +96,14 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
     CreateObjectTool *templatesTool = new CreateTemplateTool(this);
 
+    // Autodetection of tile extents
+    QIcon autoDetectMaskIcon(QLatin1String("://images/24/detect-bounding-box.png"));
+    autoDetectMaskIcon.addFile(QLatin1String("://images/48/detect-bounding-box.png"));
+    mActionAutoDetectMask = new QAction(this);
+    mActionAutoDetectMask->setEnabled(false);
+    mActionAutoDetectMask->setIcon(autoDetectMaskIcon);
+    connect(mActionAutoDetectMask, &QAction::triggered, this, &TileCollisionDock::autoDetectMask);
+
     QToolBar *toolsToolBar = new QToolBar(this);
     toolsToolBar->setObjectName(QLatin1String("TileCollisionDockToolBar"));
     toolsToolBar->setMovable(false);
@@ -109,6 +118,8 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     toolsToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     toolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     toolsToolBar->addAction(mToolManager->registerTool(templatesTool));
+    toolsToolBar->addSeparator();
+    toolsToolBar->addAction(mActionAutoDetectMask);
 
     mActionDuplicateObjects = new QAction(this);
     mActionDuplicateObjects->setIcon(QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
@@ -232,6 +243,29 @@ TileCollisionDock::~TileCollisionDock()
     setTile(nullptr);
 }
 
+/**
+ * Automatically detect the extents of the tile and append a simple
+ * rectangular collision mask.
+ */
+void TileCollisionDock::autoDetectMask()
+{
+    if (!mDummyMapDocument)
+        return;
+
+    const QPixmap &pixmap = mTile->image();
+    const QRect content = pixmap.hasAlphaChannel() ? QRegion(pixmap.mask()).boundingRect()
+                                                   : pixmap.rect();
+
+    // Create the rectangular collision shape
+    MapObject *newObject = new MapObject(QString(), QString(),
+                                         content.topLeft(),
+                                         content.size());
+
+    ObjectGroup *objectGroup = static_cast<ObjectGroup*>(mDummyMapDocument->map()->layerAt(1));
+    mDummyMapDocument->undoStack()->push(new AddMapObjects(mDummyMapDocument.data(), objectGroup, newObject));
+    mDummyMapDocument->setSelectedObjects({ newObject });
+}
+
 void TileCollisionDock::saveState()
 {
     preferences::objectsViewVisibility = QVariant::fromValue(mObjectsViewVisibility).toString();
@@ -351,6 +385,7 @@ void TileCollisionDock::setTile(Tile *tile)
     auto previousDocument = mDummyMapDocument;
 
     mMapView->setEnabled(tile);
+    mActionAutoDetectMask->setEnabled(tile);
 
     if (tile) {
         Map::Orientation orientation = Map::Orthogonal;
@@ -671,6 +706,8 @@ void TileCollisionDock::changeEvent(QEvent *e)
 void TileCollisionDock::retranslateUi()
 {
     setWindowTitle(QCoreApplication::translate("Tiled::MainWindow", "Tile Collision Editor"));
+
+    mActionAutoDetectMask->setText(tr("Detect Bounding Box"));
 
     mActionDuplicateObjects->setText(tr("Duplicate Objects"));
     mActionRemoveObjects->setText(tr("Remove Objects"));

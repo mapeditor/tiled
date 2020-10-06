@@ -156,9 +156,9 @@ QString JsonMapFormat::nameFilter() const
 QString JsonMapFormat::shortName() const
 {
     if (mSubFormat == Json)
-        return QLatin1String("json1");
+        return QStringLiteral("json1");
     else
-        return QLatin1String("js1");
+        return QStringLiteral("js1");
 }
 
 bool JsonMapFormat::supportsFile(const QString &fileName) const
@@ -309,7 +309,7 @@ QString JsonTilesetFormat::nameFilter() const
 
 QString JsonTilesetFormat::shortName() const
 {
-    return QLatin1String("json1");
+    return QStringLiteral("json1");
 }
 
 QString JsonTilesetFormat::errorString() const
@@ -413,7 +413,7 @@ QString JsonObjectTemplateFormat::nameFilter() const
 
 QString JsonObjectTemplateFormat::shortName() const
 {
-    return QLatin1String("json1");
+    return QStringLiteral("json1");
 }
 
 QString JsonObjectTemplateFormat::errorString() const

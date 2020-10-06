@@ -79,19 +79,9 @@ ApplicationWindow {
     menuBar: MenuBar {
         Menu {
             title: qsTr("File")
-            MenuItem {
-                action: openAction
-                text: qsTr("Open...")
-                onTriggered: {
-                    fileDialog.open()
-                }
-            }
+            MenuItem { action: openAction }
             MenuSeparator {}
-            MenuItem {
-                text: qsTr("Exit")
-                action: exitAction
-                onTriggered: Qt.quit()
-            }
+            MenuItem { action: exitAction }
         }
         Menu {
             title: qsTr("Help")
@@ -165,6 +155,9 @@ ApplicationWindow {
         anchors.fill: parent
 
         onDragged: {
+            dx *= Screen.devicePixelRatio
+            dy *= Screen.devicePixelRatio
+
             if (containerAnimation.running) {
                 containerAnimation.stop()
                 containerAnimation.x += dx

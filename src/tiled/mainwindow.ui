@@ -75,6 +75,7 @@
     </widget>
     <addaction name="menuNew"/>
     <addaction name="actionOpen"/>
+    <addaction name="actionOpenFileInProject"/>
     <addaction name="menuRecentFiles"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
@@ -748,7 +749,7 @@
     <string>Reopen Closed File</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+T</string>
+    <string notr="true">Ctrl+Shift+T</string>
    </property>
   </action>
   <action name="actionWorldMoveMap">
@@ -759,7 +760,7 @@
     <string>Move Map</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+M</string>
+    <string notr="true">Ctrl+Shift+M</string>
    </property>
   </action>
   <action name="actionProjectProperties">
@@ -769,6 +770,14 @@
    </property>
    <property name="text">
     <string>Project &amp;Properties...</string>
+   </property>
+  </action>
+  <action name="actionOpenFileInProject">
+   <property name="text">
+    <string>Open File in &amp;Project...</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+P</string>
    </property>
   </action>
  </widget>

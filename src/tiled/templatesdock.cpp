@@ -56,6 +56,7 @@ using namespace Tiled;
 // This references created dummy documents, to make sure they are shared if the
 // same template is open in the MapEditor and the TilesetEditor.
 QHash<ObjectTemplate*, QWeakPointer<MapDocument>> TemplatesDock::ourDummyDocuments;
+bool TemplatesDock::ourEmittingChanged;
 
 TemplatesDock::TemplatesDock(QWidget *parent)
     : QDockWidget(parent)
@@ -138,6 +139,9 @@ TemplatesDock::TemplatesDock(QWidget *parent)
     connect(mToolManager, &ToolManager::selectedToolChanged,
             mMapScene, &MapScene::setSelectedTool);
 
+    connect(TemplateManager::instance(), &TemplateManager::objectTemplateChanged,
+            this, &TemplatesDock::objectTemplateChanged);
+
     setFocusPolicy(Qt::ClickFocus);
     mMapView->setFocusProxy(this);
 }
@@ -161,11 +165,14 @@ void TemplatesDock::openTemplate(const QString &path)
     setTemplate(TemplateManager::instance()->loadObjectTemplate(path));
 }
 
-void TemplatesDock::tryOpenTemplate(const QString &filePath)
+bool TemplatesDock::tryOpenTemplate(const QString &filePath)
 {
     auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(filePath);
-    if (objectTemplate->object())
+    if (objectTemplate->object()) {
         setTemplate(objectTemplate);
+        return true;
+    }
+    return false;
 }
 
 void TemplatesDock::bringToFront()
@@ -213,20 +220,26 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
         return;
 
     mObjectTemplate = objectTemplate;
+    refreshDummyObject();
 
+    emit currentTemplateChanged(mObjectTemplate);
+}
+
+void TemplatesDock::refreshDummyObject()
+{
     mMapScene->setSelectedTool(nullptr);
     MapDocumentPtr previousDocument = mDummyMapDocument;
 
-    mMapView->setEnabled(objectTemplate);
+    mMapView->setEnabled(mObjectTemplate);
 
-    if (objectTemplate && objectTemplate->object()) {
-        mDummyMapDocument = ourDummyDocuments.value(objectTemplate);
+    if (mObjectTemplate && mObjectTemplate->object()) {
+        mDummyMapDocument = ourDummyDocuments.value(mObjectTemplate);
 
         if (!mDummyMapDocument) {
             Map::Orientation orientation = Map::Orthogonal;
             std::unique_ptr<Map> map { new Map(orientation, 1, 1, 1, 1) };
 
-            MapObject *dummyObject = objectTemplate->object()->clone();
+            MapObject *dummyObject = mObjectTemplate->object()->clone();
             dummyObject->markAsTemplateBase();
 
             if (Tileset *tileset = dummyObject->cell().tileset()) {
@@ -245,7 +258,7 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
             mDummyMapDocument->setAllowHidingObjects(false);
             mDummyMapDocument->switchCurrentLayer(objectGroup);
 
-            ourDummyDocuments.insert(objectTemplate, mDummyMapDocument);
+            ourDummyDocuments.insert(mObjectTemplate, mDummyMapDocument);
         }
 
         mDummyMapDocument->setCurrentObject(dummyObject());
@@ -269,8 +282,6 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 
     if (previousDocument)
         previousDocument->undoStack()->disconnect(this);
-
-    emit currentTemplateChanged(mObjectTemplate);
 }
 
 void TemplatesDock::checkTileset()
@@ -308,6 +319,18 @@ void TemplatesDock::checkTileset()
     }
 }
 
+void TemplatesDock::objectTemplateChanged(ObjectTemplate *objectTemplate)
+{
+    if (ourEmittingChanged)
+        return;
+
+    // Apparently the template was changed externally
+    ourDummyDocuments.remove(objectTemplate);
+
+    if (mObjectTemplate == objectTemplate)
+        refreshDummyObject();
+}
+
 void TemplatesDock::undo()
 {
     if (mDummyMapDocument) {
@@ -329,15 +352,16 @@ void TemplatesDock::applyChanges()
     mObjectTemplate->setObject(dummyObject());
 
     // Write out the template file
-    mObjectTemplate->format()->write(mObjectTemplate,
-                                     mObjectTemplate->fileName());
+    mObjectTemplate->save();
 
     mUndoAction->setEnabled(mDummyMapDocument->undoStack()->canUndo());
     mRedoAction->setEnabled(mDummyMapDocument->undoStack()->canRedo());
 
     checkTileset();
 
+    ourEmittingChanged = true;
     emit TemplateManager::instance()->objectTemplateChanged(mObjectTemplate);
+    ourEmittingChanged = false;
 }
 
 void TemplatesDock::focusInEvent(QFocusEvent *event)

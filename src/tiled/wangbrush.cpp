@@ -70,6 +70,10 @@ QRectF WangBrushItem::boundingRect() const
     } else {
         QRect bounds = mInvalidTiles.boundingRect();
         QRectF bounding = mapDocument()->renderer()->boundingRect(bounds);
+
+        // Adjust for border drawn at tile selection edges
+        bounding.adjust(-1, -1, 1, 1);
+
         return bounding;
     }
 }
@@ -317,14 +321,14 @@ void WangBrush::updateStatusInfo()
         }
 
         if (!wangColor.isEmpty())
-            wangColor = QString(QLatin1String(" [%1]")).arg(wangColor);
+            wangColor = QStringLiteral(" [%1]").arg(wangColor);
 
         QString extraInfo;
         if (!static_cast<WangBrushItem*>(brushItem())->isValid())
-            extraInfo = QString(QLatin1String(" (%1)"))
+            extraInfo = QStringLiteral(" (%1)")
                         .arg(tr("Missing Wang tile transition"));
 
-        setStatusInfo(QString(QLatin1String("%1, %2%3%4"))
+        setStatusInfo(QStringLiteral("%1, %2%3%4")
                       .arg(mPaintPoint.x())
                       .arg(mPaintPoint.y())
                       .arg(wangColor, extraInfo));

@@ -141,9 +141,55 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <executable>jar</executable>
+                    <workingDirectory>target/generated-test-resources</workingDirectory>
+                    <arguments>
+                        <argument>cf</argument>
+                        <argument>resources.jar</argument>
+                        <argument>-C</argument>
+                        <argument>../../src/test/resources</argument>
+                        <argument>.</argument>
+                    </arguments>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jar-resources</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>add-test-resources</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>add-test-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>target/generated-test-resources</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-    
+
     <profiles>
         <profile>
             <id>java-11-profile</id>

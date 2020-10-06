@@ -116,6 +116,7 @@ void NewTilesetDialog::setImagePath(const QString &path)
 
     const QFileInfo fileInfo(path);
     if (fileInfo.isFile()) {
+        mUi->tilesetType->setCurrentIndex(TilesetImage);
         mUi->image->setText(path);
         mUi->name->setText(fileInfo.completeBaseName());
     }

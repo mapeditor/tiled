@@ -25,6 +25,7 @@
 
 class QLineEdit;
 class QPlainTextEdit;
+class QPushButton;
 
 namespace Tiled {
 
@@ -54,6 +55,7 @@ private:
 
     QPlainTextEdit *mPlainTextEdit;
     QLineEdit *mLineEdit;
+    QPushButton *mClearButton;
     QStringList mHistory;
     int mHistoryPosition = 0;
 };

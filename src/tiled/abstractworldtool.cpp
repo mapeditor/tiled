@@ -182,7 +182,7 @@ void AbstractWorldTool::mouseMoved(const QPointF &pos,
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = qFloor(tilePosF.x());
     const int y = qFloor(tilePosF.y());
-    setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
+    setStatusInfo(QStringLiteral("%1, %2 (%3, %4)").arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
 }
 
 void AbstractWorldTool::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -289,7 +289,7 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
             menu.addAction(tr("Add \"%1\" to World \"%2\"")
                            .arg(currentDocument->displayName())
                            .arg(world->displayName()),
-                           this, [this, fileName = world->fileName] { addToWorld(fileName); });
+                           this, [=] { addToWorld(world); });
         }
     }
 
@@ -353,15 +353,19 @@ void AbstractWorldTool::removeFromWorld(const QString &mapFileName)
     undoStack()->push(new RemoveMapCommand(mapFileName));
 }
 
-void AbstractWorldTool::addToWorld(const QString &worldFileName)
+void AbstractWorldTool::addToWorld(const World *world)
 {
     MapDocument *document = mapDocument();
-    QSize size = document->map()->size();
-    size.setWidth(size.width() * document->map()->tileWidth());
-    size.setHeight(size.height() * document->map()->tileHeight());
-    const QRect rect = QRect(QPoint(0, 0), size);
-    QUndoStack *undoStack = DocumentManager::instance()->ensureWorldDocument(worldFileName)->undoStack();
-    undoStack->push(new AddMapCommand(worldFileName, document->fileName(), rect));
+    QRect rect = document->renderer()->mapBoundingRect();
+
+    // Position the map alongside the last map by default
+    if (!world->maps.isEmpty()) {
+        const QRect &lastWorldRect = world->maps.last().rect;
+        rect.moveTo(lastWorldRect.topRight());
+    }
+
+    QUndoStack *undoStack = DocumentManager::instance()->ensureWorldDocument(world->fileName)->undoStack();
+    undoStack->push(new AddMapCommand(world->fileName, document->fileName(), rect));
 }
 
 QUndoStack *AbstractWorldTool::undoStack()
@@ -391,7 +395,7 @@ void AbstractWorldTool::populateToolBar(QToolBar *toolBar)
             addToWorldMenu->addAction(tr("Add \"%1\" to World \"%2\"")
                                       .arg(mapDocument()->displayName())
                                       .arg(world->displayName()),
-                                      this, [this, fileName = world->fileName] { addToWorld(fileName); });
+                                      this, [=] { addToWorld(world); });
         }
     });
 

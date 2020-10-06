@@ -92,12 +92,12 @@ ConsoleDock::ConsoleDock(QWidget *parent)
     auto nextShortcut = new QShortcut(Qt::Key_Down, mLineEdit, nullptr, nullptr, Qt::WidgetShortcut);
     connect(nextShortcut, &QShortcut::activated, [this] { moveHistory(1); });
 
-    auto clearButton = new QPushButton(tr("Clear Console"));
-    connect(clearButton, &QPushButton::clicked, mPlainTextEdit, &QPlainTextEdit::clear);
+    mClearButton = new QPushButton(tr("Clear Console"));
+    connect(mClearButton, &QPushButton::clicked, mPlainTextEdit, &QPlainTextEdit::clear);
 
     auto bottomBar = new QHBoxLayout;
     bottomBar->addWidget(mLineEdit);
-    bottomBar->addWidget(clearButton);
+    bottomBar->addWidget(mClearButton);
     bottomBar->setSpacing(Utils::dpiScaled(7));
 
     layout->addWidget(mPlainTextEdit);
@@ -210,6 +210,7 @@ void ConsoleDock::retranslateUi()
 {
     setWindowTitle(tr("Console"));
     mLineEdit->setPlaceholderText(tr("Execute script"));
+    mClearButton->setText(tr("Clear Console"));
 }
 
 } // namespace Tiled

@@ -635,19 +635,16 @@ void MapEditor::restoreDocumentState(MapDocument *mapDocument) const
     if (fileState.isEmpty())
         return;
 
-    qreal scale = fileState.value(QLatin1String("scale")).toReal();
+    const qreal scale = fileState.value(QLatin1String("scale")).toReal();
     if (scale > 0)
         mapView->zoomable()->setScale(scale);
 
     const QPointF viewCenter = fromSettingsValue<QPointF>(fileState.value(QLatin1String("viewCenter")));
     mapView->forceCenterOn(viewCenter);
 
-    int layerIndex = fileState.value(QLatin1String("selectedLayer")).toInt();
+    const int layerIndex = fileState.value(QLatin1String("selectedLayer")).toInt();
     if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
         mapDocument->switchCurrentLayer(layer);
-
-    // suppress fitting map in view upon show event
-    mapView->setViewInitialized();
 }
 
 void MapEditor::setSelectedTool(AbstractTool *tool)
@@ -923,7 +920,7 @@ void MapEditor::handleExternalTilesetsAndImages(const QStringList &fileNames,
 
         if (handleImages) {
             // Check if the file is a supported image format
-            QImage image(fileName);
+            const QImage image(fileName);
             if (!image.isNull()) {
                 tileset = newTileset(fileName, image);
                 if (tileset)
@@ -931,6 +928,9 @@ void MapEditor::handleExternalTilesetsAndImages(const QStringList &fileNames,
                 continue;
             }
         }
+
+        if (!tilesetFormat)
+            error = tr("Unrecognized tileset format.");
 
         if (fileNames.size() == 1) {
             QMessageBox::critical(mMainWindow, tr("Error Reading Tileset"), error);

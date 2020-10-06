@@ -38,6 +38,7 @@
 #include "mapview.h"
 #include "noeditorwidget.h"
 #include "preferences.h"
+#include "projectmanager.h"
 #include "session.h"
 #include "tabbar.h"
 #include "terrain.h"
@@ -61,6 +62,7 @@
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QStackedLayout>
+#include <QStandardPaths>
 #include <QTabBar>
 #include <QTabWidget>
 #include <QUndoGroup>
@@ -76,15 +78,13 @@ DocumentManager *DocumentManager::mInstance;
 
 DocumentManager *DocumentManager::instance()
 {
-    if (!mInstance)
-        mInstance = new DocumentManager;
+    Q_ASSERT(mInstance);
     return mInstance;
 }
 
-void DocumentManager::deleteInstance()
+DocumentManager *DocumentManager::maybeInstance()
 {
-    delete mInstance;
-    mInstance = nullptr;
+    return mInstance;
 }
 
 DocumentManager::DocumentManager(QObject *parent)
@@ -101,6 +101,9 @@ DocumentManager::DocumentManager(QObject *parent)
     , mFileSystemWatcher(new FileSystemWatcher(this))
     , mMultiDocumentClose(false)
 {
+    Q_ASSERT(!mInstance);
+    mInstance = this;
+
     mBrokenLinksWidget->setVisible(false);
 
     mTabBar->setExpanding(false);
@@ -134,8 +137,8 @@ DocumentManager::DocumentManager(QObject *parent)
     connect(mTabBar, &QWidget::customContextMenuRequested,
             this, &DocumentManager::tabContextMenuRequested);
 
-    connect(mFileSystemWatcher, &FileSystemWatcher::fileChanged,
-            this, &DocumentManager::fileChanged);
+    connect(mFileSystemWatcher, &FileSystemWatcher::pathsChanged,
+            this, &DocumentManager::filesChanged);
 
     connect(mBrokenLinksModel, &BrokenLinksModel::hasBrokenLinksChanged,
             mBrokenLinksWidget, &BrokenLinksWidget::setVisible);
@@ -295,6 +298,8 @@ DocumentManager::~DocumentManager()
     Q_ASSERT(mDocuments.isEmpty());
     Q_ASSERT(mTilesetDocumentsModel->rowCount() == 0);
     delete mWidget;
+
+    mInstance = nullptr;
 }
 
 /**
@@ -711,7 +716,7 @@ bool DocumentManager::saveDocumentAs(Document *document)
 
     auto getSaveFileName = [&](const QString &filter, const QString &defaultFileName) {
         if (fileName.isEmpty()) {
-            fileName = Preferences::instance()->fileDialogStartLocation();
+            fileName = fileDialogStartLocation();
             fileName += QLatin1Char('/');
             fileName += defaultFileName;
             fileName += Utils::firstExtension(selectedFilter);
@@ -1097,6 +1102,12 @@ void DocumentManager::tilesetNameChanged(Tileset *tileset)
         updateDocumentTab(tilesetDocument);
 }
 
+void DocumentManager::filesChanged(const QStringList &fileNames)
+{
+    for (const QString &fileName : fileNames)
+        fileChanged(fileName);
+}
+
 void DocumentManager::fileChanged(const QString &fileName)
 {
     const int index = findDocument(fileName);
@@ -1259,6 +1270,30 @@ bool DocumentManager::isWorldModified(const QString &fileName) const
     if (const auto worldDocument = mWorldDocuments.value(fileName))
         return !worldDocument->undoStack()->isClean();
     return false;
+}
+
+/**
+ * Returns a logical start location for a file dialog to open a file, based on
+ * the currently selected file, a recent file, the project path or finally, the
+ * home location.
+ */
+QString DocumentManager::fileDialogStartLocation() const
+{
+    if (auto doc = currentDocument()) {
+        QString path = QFileInfo(doc->fileName()).path();
+        if (!path.isEmpty())
+            return path;
+    }
+
+    const auto &session = Session::current();
+    if (!session.recentFiles.isEmpty())
+        return QFileInfo(session.recentFiles.first()).path();
+
+    const auto &project = ProjectManager::instance()->project();
+    if (!project.fileName().isEmpty())
+        return QFileInfo(project.fileName()).path();
+
+    return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
 }
 
 void DocumentManager::onWorldUnloaded(const QString &worldFile)

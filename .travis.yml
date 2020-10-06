@@ -1,14 +1,21 @@
 language: cpp
-cache: ccache
 sudo: required
 dist: xenial
 python: 3.6
+
 env:
   global:
   - secure: J8Y+eQD0p5YPOlhBEPFgpZzhRFjXC4phiiFtGV3JaYX34wxCsyyNhMStMqIZTBL4D9lQojfLgXODBDaqT1iSHDe1oonosnyYnGBIJElez247pjuNiSSvcAbYa9RQnwfHe8JFphQHViURbv0OfqpHHyAlHy5b8nrPYWG2xmHA5nY=
   - secure: VgouZ5cStqlgODwIuLIvIBN5gkmrP95agCS3BorLm7g/iXM4cwuaV+bov9FiSlnzcnWfpsNMsFt5xDU2Oc17N0Kyx531MIA1H5h9xdzj/IhjhLcOOqYeXt3lN2quRE2maIZDSrPVr3eY0o6xdcNkeK0jpX/mgIiSHwXOclXv+6o=
-  - QT_VERSION=5.12.7
-  - QTCREATOR_VERSION=4.10.1
+  - QT_INSTALL_DIR=~/Qt
+  - QT_VERSION=5.15.1
+  - QTCREATOR_VERSION=4.13.1
+
+cache:
+  directories:
+    - ${QT_INSTALL_DIR}
+    - ~/.ccache
+
 addons:
   coverity_scan:
     project:
@@ -44,7 +51,6 @@ matrix:
         - p7zip-full
     env:
       - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-      - QT_INSTALL_DIR=~/Qt
       - QT_BIN=${QT_INSTALL_DIR}/${QT_VERSION}/gcc_64/bin
       - PATH="${QT_INSTALL_DIR}/Tools/QtCreator/bin:${QT_BIN}:${PATH}"
     before_install:
@@ -54,7 +60,7 @@ matrix:
     script:
     - qbs --version
     - qbs setup-toolchains --detect
-    - qbs config defaultProfile gcc
+    - qbs config defaultProfile x86_64-linux-gnu-gcc-7
     - qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true
     - cp LICENSE* COPYING *md Tiled/
     after_success:
@@ -89,11 +95,6 @@ matrix:
         repo: bjorn/tiled
         branch: snapshot
       script: dist/linux/push-to-itch.sh
-    - provider: script
-      skip_cleanup: true
-      script: curl --upload-file $(ls Tiled*.AppImage) https://transfer.sh/Tiled.AppImage
-      on:
-        all_branches: true
   - os: linux
     compiler: clang
     addons:
@@ -134,7 +135,6 @@ matrix:
         update: true
     env:
       - MAKEFLAGS=-j2
-      - QT_INSTALL_DIR=~/Qt
       - QT_BIN=${QT_INSTALL_DIR}/${QT_VERSION}/clang_64/bin
       - PATH="${QT_INSTALL_DIR}/Qt Creator.app/Contents/MacOS:${QT_BIN}:${PATH}"
     before_install:

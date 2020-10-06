@@ -54,10 +54,13 @@ Product {
             function addQtVersions(libs) {
                 var result = [];
                 for (i = 0; i < libs.length; ++i) {
-                    var major = libs[i] + "." + Qt.core.versionMajor;
+                    var lib = libs[i]
+                    var major = lib + "." + Qt.core.versionMajor;
                     var minor = major + "." + Qt.core.versionMinor;
                     var patch = minor + "." + Qt.core.versionPatch;
-                    result.push(libs[i], major, minor, patch);
+                    if (File.exists(lib))
+                        result.push(lib)
+                    result.push(major, minor, patch);
                 }
                 return result;
             }

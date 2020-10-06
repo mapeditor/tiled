@@ -75,7 +75,7 @@ protected:
     void addAnotherMapToWorld(QPoint insertPos);
     void removeCurrentMapFromWorld();
     void removeFromWorld(const QString &mapFileName);
-    void addToWorld(const QString &worldFileName);
+    void addToWorld(const World *world);
 
     QPoint snapPoint(QPoint point, MapDocument *document) const;
 

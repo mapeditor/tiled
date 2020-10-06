@@ -56,9 +56,6 @@ public:
     const QIcon &errorIcon() const;
     const QIcon &warningIcon() const;
 
-signals:
-    void counterClicked();
-
 private:
     void removeIssues(const RangeSet<int> &indexes);
 

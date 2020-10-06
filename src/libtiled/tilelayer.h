@@ -603,15 +603,13 @@ inline bool TileLayer::contains(QPoint point) const
 
 inline Chunk& TileLayer::chunk(int x, int y)
 {
-    QPoint chunkCoordinates(x < 0 ? (x + 1) / CHUNK_SIZE - 1 : x / CHUNK_SIZE,
-                            y < 0 ? (y + 1) / CHUNK_SIZE - 1 : y / CHUNK_SIZE);
+    const QPoint chunkCoordinates(x >> CHUNK_BITS, y >> CHUNK_BITS);
     return mChunks[chunkCoordinates];
 }
 
 inline const Chunk* TileLayer::findChunk(int x, int y) const
 {
-    QPoint chunkCoordinates(x < 0 ? (x + 1) / CHUNK_SIZE - 1 : x / CHUNK_SIZE,
-                            y < 0 ? (y + 1) / CHUNK_SIZE - 1 : y / CHUNK_SIZE);
+    const QPoint chunkCoordinates(x >> CHUNK_BITS, y >> CHUNK_BITS);
     auto it = mChunks.find(chunkCoordinates);
     return it != mChunks.end() ? &it.value() : nullptr;
 }

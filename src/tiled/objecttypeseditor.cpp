@@ -388,7 +388,7 @@ void ObjectTypesEditor::exportObjectTypes()
     QString lastPath = prefs->lastPath(Preferences::ObjectTypesFile);
 
     if (!lastPath.endsWith(QLatin1String(".xml")))
-        lastPath.append(QLatin1String("/objecttypes.xml"));
+        lastPath.append(QStringLiteral("/objecttypes.xml"));
 
     const QString fileName =
             QFileDialog::getSaveFileName(this, tr("Export Object Types"),

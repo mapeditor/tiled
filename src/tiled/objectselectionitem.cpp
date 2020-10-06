@@ -145,33 +145,14 @@ void MapObjectOutline::timerEvent(QTimerEvent *event)
 }
 
 
-class MapObjectLabel : public QGraphicsItem
+MapObjectLabel::MapObjectLabel(const MapObject *object, QGraphicsItem *parent)
+    : QGraphicsItem(parent)
+    , mObject(object)
+    , mColor(mObject->effectiveColor())
 {
-public:
-    MapObjectLabel(MapObject *object, QGraphicsItem *parent = nullptr)
-        : QGraphicsItem(parent)
-        , mObject(object)
-        , mColor(mObject->effectiveColor())
-    {
-        setFlags(QGraphicsItem::ItemIgnoresTransformations |
-                 QGraphicsItem::ItemIgnoresParentOpacity);
-    }
-
-    MapObject *mapObject() const { return mObject; }
-    void syncWithMapObject(const MapRenderer &renderer);
-    void updateColor();
-
-    QRectF boundingRect() const override;
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *,
-               QWidget *) override;
-
-private:
-    QRectF mBoundingRect;
-    QPointF mTextPos;
-    MapObject *mObject;
-    QColor mColor;
-};
+    setFlags(QGraphicsItem::ItemIgnoresTransformations |
+             QGraphicsItem::ItemIgnoresParentOpacity);
+}
 
 void MapObjectLabel::syncWithMapObject(const MapRenderer &renderer)
 {
@@ -611,7 +592,7 @@ void ObjectSelectionItem::tilesetTilePositioningChanged(Tileset *tileset)
 
 void ObjectSelectionItem::tileTypeChanged(Tile *tile)
 {
-    auto isObjectAffected = [tile] (MapObject *object) -> bool {
+    auto isObjectAffected = [tile] (const MapObject *object) -> bool {
         if (!object->type().isEmpty())
             return false;
 

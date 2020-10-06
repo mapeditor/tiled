@@ -155,6 +155,22 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 void StampBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
     switch (mBrushBehavior) {
+    case LineStartSet:
+        if (event->button() == Qt::LeftButton) {
+            if (mStampReference != tilePosition()) {
+                doPaint();
+                mBrushBehavior = Line;
+            }
+        }
+        break;
+    case CircleMidSet:
+        if (event->button() == Qt::LeftButton) {
+            if (mStampReference != tilePosition()) {
+                doPaint();
+                updateBrushBehavior();
+            }
+        }
+        break;
     case Capture:
         if (event->button() == Qt::RightButton) {
             endCapture();
@@ -177,13 +193,18 @@ void StampBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 
 void StampBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
-    if (mStamp.isEmpty() && !mIsWangFill)
-        return;
+    mModifiers = modifiers;
 
+    if (!mStamp.isEmpty() || mIsWangFill)
+        updateBrushBehavior();
+}
+
+void StampBrush::updateBrushBehavior()
+{
     BrushBehavior brushBehavior = mBrushBehavior;
 
-    if (modifiers & Qt::ShiftModifier) {
-        if (modifiers & Qt::ControlModifier) {
+    if (mModifiers & Qt::ShiftModifier) {
+        if (mModifiers & Qt::ControlModifier) {
             if (brushBehavior == LineStartSet) {
                 brushBehavior = CircleMidSet;
             } else if (brushBehavior != CircleMidSet) {
@@ -575,9 +596,6 @@ void StampBrush::updatePreview(QPoint tilePos)
     if (mBrushBehavior == Capture) {
         mPreviewMap.clear();
         tileRegion = mCaptureStampHelper.capturedArea(tilePos);
-    } else if (mStamp.isEmpty() && !mIsWangFill) {
-        mPreviewMap.clear();
-        tileRegion = QRect(tilePos, tilePos);
     } else {
         switch (mBrushBehavior) {
         case LineStartSet:
@@ -593,7 +611,6 @@ void StampBrush::updatePreview(QPoint tilePos)
             // while finding the mid point, there is no need to show
             // the (maybe bigger than 1x1) stamp
             mPreviewMap.clear();
-            tileRegion = QRect(tilePos, tilePos);
             break;
         case Line:
         case Free:
@@ -601,11 +618,15 @@ void StampBrush::updatePreview(QPoint tilePos)
             drawPreviewLayer(QVector<QPoint>() << tilePos);
             break;
         }
+
+        if (mPreviewMap)
+            tileRegion = mPreviewMap->tileRegion();
+
+        if (tileRegion.isEmpty())
+            tileRegion = QRect(tilePos, tilePos);
     }
 
-    brushItem()->setMap(mPreviewMap);
-    if (!tileRegion.isEmpty())
-        brushItem()->setTileRegion(tileRegion);
+    brushItem()->setMap(mPreviewMap, tileRegion);
 }
 
 void StampBrush::setRandom(bool value)

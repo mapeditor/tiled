@@ -34,14 +34,19 @@
 
 #include <QImage>
 
+#include <functional>
+
 namespace Tiled {
 
 class Map;
+class MapObject;
 class MapRenderer;
 
 class TILEDSHARED_EXPORT MiniMapRenderer
 {
 public:
+    using RenderObjectLabelCallback = std::function<void(QPainter&, const MapObject*, const MapRenderer&)>;
+
     enum RenderFlag {
         DrawMapObjects          = 0x0001,
         DrawTileLayers          = 0x0002,
@@ -59,6 +64,7 @@ public:
     ~MiniMapRenderer();
 
     void setGridColor(const QColor &color);
+    void setRenderObjectLabelCallback(const RenderObjectLabelCallback &cb);
 
     QSize mapSize() const;
 
@@ -74,12 +80,18 @@ private:
 #else
     QColor mGridColor = QColorConstants::Black;
 #endif
+    RenderObjectLabelCallback mRenderObjectLabelCallback;
 };
 
 
 inline void MiniMapRenderer::setGridColor(const QColor &color)
 {
     mGridColor = color;
+}
+
+inline void MiniMapRenderer::setRenderObjectLabelCallback(const RenderObjectLabelCallback &cb)
+{
+    mRenderObjectLabelCallback = cb;
 }
 
 } // namespace Tiled

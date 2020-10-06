@@ -25,13 +25,13 @@
 #include "mapdocumentactionhandler.h"
 #include "objecttemplate.h"
 #include "preferences.h"
+#include "projectmanager.h"
 #include "projectmodel.h"
 #include "session.h"
 #include "templatemanager.h"
 #include "utils.h"
 
 #include <QBoxLayout>
-#include <QDesktopServices>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMenu>
@@ -106,14 +106,19 @@ ProjectDock::ProjectDock(QWidget *parent)
 
     connect(mProjectView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             this, &ProjectDock::onCurrentRowChanged);
+
+    connect(mProjectView->model(), &ProjectModel::folderAdded, this, &ProjectDock::folderAdded);
+    connect(mProjectView->model(), &ProjectModel::folderRemoved, this, &ProjectDock::folderRemoved);
 }
 
 void ProjectDock::addFolderToProject()
 {
-    QString folder = QFileInfo(project().fileName()).path();
+    Project &project = ProjectManager::instance()->project();
+
+    QString folder = QFileInfo(project.fileName()).path();
     if (folder.isEmpty()) {
-        if (!project().folders().isEmpty())
-            folder = QFileInfo(project().folders().last()).path();
+        if (!project.folders().isEmpty())
+            folder = QFileInfo(project.folders().last()).path();
         else
             folder = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     }
@@ -128,7 +133,7 @@ void ProjectDock::addFolderToProject()
     mProjectView->model()->addFolder(folder);
     mProjectView->addExpandedPath(folder);
 
-    project().save();
+    project.save();
 }
 
 void ProjectDock::refreshProjectFolders()
@@ -163,16 +168,6 @@ void ProjectDock::onCurrentRowChanged(const QModelIndex &current)
         emit fileSelected(filePath);
 }
 
-Project &ProjectDock::project() const
-{
-    return mProjectView->model()->project();
-}
-
-void ProjectDock::setProject(Project project)
-{
-    mProjectView->model()->setProject(std::move(project));
-}
-
 void ProjectDock::selectFile(const QString &filePath)
 {
     mProjectView->selectPath(filePath);
@@ -194,7 +189,7 @@ ProjectView::ProjectView(QWidget *parent)
     setDefaultDropAction(Qt::MoveAction);
     setDragDropMode(QAbstractItemView::DragOnly);
 
-    auto model = new ProjectModel(this);
+    auto model = ProjectManager::instance()->projectModel();
     setModel(model);
 
     connect(this, &QAbstractItemView::activated,
@@ -223,7 +218,7 @@ ProjectView::ProjectView(QWidget *parent)
 
 QSize ProjectView::sizeHint() const
 {
-    return Utils::dpiScaled(QSize(130, 200));
+    return Utils::dpiScaled(QSize(250, 200));
 }
 
 void ProjectView::setModel(QAbstractItemModel *model)
@@ -266,9 +261,7 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
         Utils::addFileManagerActions(menu, filePath);
 
         if (QFileInfo { filePath }.isFile()) {
-            menu.addAction(tr("Open with System Editor"), [=] {
-                QDesktopServices::openUrl(QUrl::fromLocalFile(filePath));
-            });
+            Utils::addOpenWithSystemEditorAction(menu, filePath);
 
             auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(filePath);
             if (objectTemplate->object()) {

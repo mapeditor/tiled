@@ -91,7 +91,7 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = qFloor(tilePosF.x());
     const int y = qFloor(tilePosF.y());
-    setStatusInfo(QString(QLatin1String("%1, %2")).arg(x).arg(y));
+    setStatusInfo(QStringLiteral("%1, %2").arg(x).arg(y));
 
     if (!mMousePressed)
         return;

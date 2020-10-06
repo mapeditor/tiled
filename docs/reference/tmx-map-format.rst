@@ -1,19 +1,19 @@
 TMX Map Format
 ==============
 
-**Version 1.1**
+**Version 1.4**
 
-The TMX (Tile Map XML) map format used by
-`Tiled <http://www.mapeditor.org>`__ is a flexible way to describe a
+TMX and TSX are `Tiled <http://www.mapeditor.org>`__'s own formats for storing
+tile maps and tilesets, based on XML. TMX provides a flexible way to describe a
 tile based map. It can describe maps with any tile size, any amount of
 layers, any number of tile sets and it allows custom properties to be
 set on most elements. Beside tile layers, it can also contain groups of
 objects that can be placed freely.
 
 Note that there are many :doc:`libraries and frameworks <support-for-tmx-maps>`
-available that can work with TMX maps.
+available that can work with TMX maps and TSX tilesets.
 
-In this document we'll go through each element found in this map format.
+In this document we'll go through each element found in these file formats.
 The elements are mentioned in the headers and the list of attributes of
 the elements are listed right below, followed by a short explanation.
 Attributes or elements that are deprecated or unsupported by the current
@@ -21,20 +21,21 @@ version of Tiled are formatted in italics. All optional attributes are
 either marked as optional, or have a default value to imply that they are
 optional.
 
-Have a look at the :doc:`changelog <tmx-changelog>` when you're
-interested in what changed between Tiled versions.
+Have a look at the :doc:`changelog <tmx-changelog>` when you're interested
+in what changed between Tiled versions.
 
-*A DTD-file (Document Type Definition) is served at
-http://mapeditor.org/dtd/1.0/map.dtd. This file is not up-to-date but
-might be useful for XML-namespacing anyway.*
+.. note::
 
-*Note to implementors: When parsing TMX files, follow XML parsing guidelines.
-If an invalid element is found, it should generally be ignored (or cause a
-warning). When there are multiple copies of an element that should only appear
-once, use the first parsed option. Unknown attributes or element tags should
-also be ignored. These behaviors make adding future features easier without breaking
-backwards compatibility, and allows custom variants and additions to work with
-existing tools.*
+    A DTD-file (Document Type Definition) is served at
+    http://mapeditor.org/dtd/1.0/map.dtd. This file is not up-to-date but might
+    be useful for XML-namespacing anyway.
+
+.. note::
+
+    For compatibility reasons, it is recommended to ignore unknown elements and
+    attributes (or raise a warning). This makes it easier to add features
+    without breaking backwards compatibility, and allows custom variants and
+    additions to work with existing tools.
 
 .. _tmx-map:
 
@@ -206,14 +207,12 @@ rendered.
 -  **format:** Used for embedded images, in combination with a ``data``
    child element. Valid values are file extensions like ``png``,
    ``gif``, ``jpg``, ``bmp``, etc.
--  *id:* Used by some versions of Tiled Java. Deprecated and unsupported
-   by Tiled Qt.
+-  *id:* Used by some versions of Tiled Java. Deprecated and unsupported.
 -  **source:** The reference to the tileset image file (Tiled supports most
    common image formats). Only used if the image is not embedded.
 -  **trans:** Defines a specific color that is treated as transparent
-   (example value: "#FF00FF" for magenta). Up until Tiled 0.12, this
-   value is written out without a ``#`` but this is planned to change.
-   (optional)
+   (example value: "#FF00FF" for magenta). Including the "#" is optional
+   and Tiled leaves it out for compatibility reasons. (optional)
 -  **width:** The image width in pixels (optional, used for tile index
    correction when the image changes)
 -  **height:** The image height in pixels (optional)
@@ -304,8 +303,8 @@ Can contain any number: :ref:`tmx-wangset`
 Defines a list of corner colors and a list of edge colors, and any
 number of Wang tiles using these colors.
 
--  **name**: The name of the Wang set.
--  **tile**: The tile ID of the tile representing this Wang set.
+-  **name:** The name of the Wang set.
+-  **tile:** The tile ID of the tile representing this Wang set.
 
 Can contain at most one: :ref:`tmx-properties`
 
@@ -320,10 +319,10 @@ Can contain any number: :ref:`tmx-wangtile`
 
 A color that can be used to define the corner of a Wang tile.
 
--  **name**: The name of this color.
--  **color**: The color in ``#RRGGBB`` format (example: ``#c17d11``).
--  **tile**: The tile ID of the tile representing this color.
--  **probability**: The relative probability that this color is chosen
+-  **name:** The name of this color.
+-  **color:** The color in ``#RRGGBB`` format (example: ``#c17d11``).
+-  **tile:** The tile ID of the tile representing this color.
+-  **probability:** The relative probability that this color is chosen
    over others in case of multiple options. (defaults to 0)
 
 .. _tmx-wangedgecolor:
@@ -333,10 +332,10 @@ A color that can be used to define the corner of a Wang tile.
 
 A color that can be used to define the edge of a Wang tile.
 
--  **name**: The name of this color.
--  **color**: The color in ``#RRGGBB`` format (example: ``#c17d11``).
--  **tile**: The tile ID of the tile representing this color.
--  **probability**: The relative probability that this color is chosen
+-  **name:** The name of this color.
+-  **color:** The color in ``#RRGGBB`` format (example: ``#c17d11``).
+-  **tile:** The tile ID of the tile representing this color.
+-  **probability:** The relative probability that this color is chosen
    over others in case of multiple options. (defaults to 0)
 
 .. _tmx-wangtile:
@@ -347,18 +346,18 @@ A color that can be used to define the edge of a Wang tile.
 Defines a Wang tile, by referring to a tile in the tileset and
 associating it with a certain Wang ID.
 
--  **tileid**: The tile ID.
--  **wangid**: The Wang ID, which is a 32-bit unsigned integer stored
+-  **tileid:** The tile ID.
+-  **wangid:** The Wang ID, which is a 32-bit unsigned integer stored
    in the format ``0xCECECECE`` (where each C is a corner color and
    each E is an edge color, from right to left clockwise, starting with
    the top edge)
--  **hflip**: Whether the tile is flipped horizontally. This only affects
+-  **hflip:** Whether the tile is flipped horizontally. This only affects
    the tile image, it does not change the meaning of the wangid. See
    :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
--  **vflip**: Whether the tile is flipped vertically. This only affects
+-  **vflip:** Whether the tile is flipped vertically. This only affects
    the tile image, it does not change the meaning of the wangid. See
    :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
--  **dflip**: Whether the tile is flipped on its diagonal. This only affects
+-  **dflip:** Whether the tile is flipped on its diagonal. This only affects
    the tile image, it does not change the meaning of the wangid. See
    :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
 
@@ -381,9 +380,10 @@ tiles.
 -  **height:** The height of the layer in tiles. Always the same as the map height for fixed-size maps.
 -  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to 1.
 -  **visible:** Whether the layer is shown (1) or hidden (0). Defaults to 1.
--  **offsetx:** Rendering offset for this layer in pixels. Defaults to 0.
+-  **tintcolor:** A color that is multiplied with any tiles drawn by this layer in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
+-  **offsetx:** Horizontal offset for this layer in pixels. Defaults to 0.
    (since 0.14)
--  **offsety:** Rendering offset for this layer in pixels. Defaults to 0.
+-  **offsety:** Vertical offset for this layer in pixels. Defaults to 0.
    (since 0.14)
 
 Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-data`
@@ -396,7 +396,8 @@ Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-data`
 -  **encoding:** The encoding used to encode the tile layer data. When used,
    it can be "base64" and "csv" at the moment. (optional)
 -  **compression:** The compression used to compress the tile layer data.
-   Tiled supports "gzip", "zlib", and "zstd". (zstd supported since 1.3)
+   Tiled supports "gzip", "zlib" and (as a compile-time option since Tiled 1.3)
+   "zstd".
 
 When no encoding or compression is given, the tiles are stored as
 individual XML ``tile`` elements. Next to that, the easiest format to
@@ -535,9 +536,10 @@ should generally be avoided.
 -  **opacity:** The opacity of the layer as a value from 0 to 1. (defaults to
    1)
 -  **visible:** Whether the layer is shown (1) or hidden (0). (defaults to 1)
--  **offsetx:** Rendering offset for this object group in pixels. (defaults
+-  **tintcolor:** A color that is multiplied with any tile objects drawn by this layer, in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
+-  **offsetx:** Horizontal offset for this object group in pixels. (defaults
    to 0) (since 0.14)
--  **offsety:** Rendering offset for this object group in pixels. (defaults
+-  **offsety:** Vertical offset for this object group in pixels. (defaults
    to 0) (since 0.14)
 -  **draworder:** Whether the objects are drawn according to the order of
    appearance ("index") or sorted by their y-coordinate ("topdown").
@@ -684,9 +686,9 @@ of the object.
    a unique id. Even if a layer is deleted, no layer ever gets the same
    ID. Can not be changed in Tiled. (since Tiled 1.2)
 -  **name:** The name of the image layer. (defaults to "")
--  **offsetx:** Rendering offset of the image layer in pixels. (defaults to
+-  **offsetx:** Horizontal offset of the image layer in pixels. (defaults to
    0) (since 0.15)
--  **offsety:** Rendering offset of the image layer in pixels. (defaults to
+-  **offsety:** Vertical offset of the image layer in pixels. (defaults to
    0) (since 0.15)
 -  *x:* The x position of the image layer in pixels. (defaults to 0, deprecated
    since 0.15)
@@ -695,6 +697,7 @@ of the object.
 -  **opacity:** The opacity of the layer as a value from 0 to 1. (defaults to
    1)
 -  **visible:** Whether the layer is shown (1) or hidden (0). (defaults to 1)
+-  **tintcolor:** A color that is multiplied with the image drawn by this layer in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
 
 A layer consisting of a single image.
 
@@ -709,17 +712,18 @@ Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-image`
    a unique id. Even if a layer is deleted, no layer ever gets the same
    ID. Can not be changed in Tiled. (since Tiled 1.2)
 -  **name:** The name of the group layer. (defaults to "")
--  **offsetx:** Rendering offset of the group layer in pixels. (defaults to
+-  **offsetx:** Horizontal offset of the group layer in pixels. (defaults to
    0)
--  **offsety:** Rendering offset of the group layer in pixels. (defaults to
+-  **offsety:** Vertical offset of the group layer in pixels. (defaults to
    0)
 -  **opacity:** The opacity of the layer as a value from 0 to 1. (defaults to
    1)
 -  **visible:** Whether the layer is shown (1) or hidden (0). (defaults to 1)
+-  **tintcolor:** A color that is multiplied with any graphics drawn by any child layers, in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
 
 A group layer, used to organize the layers of the map in a hierarchy.
-Its attributes ``offsetx``, ``offsety``, ``opacity`` and ``visible``
-recursively affect child layers.
+Its attributes ``offsetx``, ``offsety``, ``opacity``, ``visible`` and
+``tintcolor`` recursively affect child layers.
 
 Can contain at most one: :ref:`tmx-properties`
 

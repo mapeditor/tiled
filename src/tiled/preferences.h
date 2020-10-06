@@ -158,7 +158,6 @@ public:
     void setDonationDialogReminder(const QDate &date);
 
     enum { MaxRecentFiles = 12 };
-    QString fileDialogStartLocation() const;
     void addRecentFile(const QString &fileName);
 
     QStringList recentProjects() const;

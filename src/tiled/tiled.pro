@@ -40,6 +40,11 @@ macx {
     QMAKE_RPATHDIR =
 }
 
+# Support linking to system Zstandard install
+unix:contains(SYSTEM_ZSTD, yes) {
+    DEFINES += TILED_ZSTD_SUPPORT
+}
+
 SOURCES += aboutdialog.cpp \
     abstractobjecttool.cpp \
     abstracttileselectiontool.cpp \
@@ -95,6 +100,7 @@ SOURCES += aboutdialog.cpp \
     commanddialog.cpp \
     commandlineparser.cpp \
     commandmanager.cpp \
+    commandsedit.cpp \
     consoledock.cpp \
     createellipseobjecttool.cpp \
     createobjecttool.cpp \
@@ -144,6 +150,7 @@ SOURCES += aboutdialog.cpp \
     layeritem.cpp \
     layermodel.cpp \
     layeroffsettool.cpp \
+    locatorwidget.cpp \
     magicwandtool.cpp \
     main.cpp \
     maintoolbar.cpp \
@@ -189,6 +196,7 @@ SOURCES += aboutdialog.cpp \
     preferences.cpp \
     project.cpp \
     projectdock.cpp \
+    projectmanager.cpp \
     projectmodel.cpp \
     projectpropertiesdialog.cpp \
     preferencesdialog.cpp \
@@ -212,6 +220,7 @@ SOURCES += aboutdialog.cpp \
     scriptedtool.cpp \
     scriptfile.cpp \
     scriptfileformatwrappers.cpp \
+    scriptfileinfo.cpp \
     scriptimage.cpp \
     scriptmanager.cpp \
     scriptmodule.cpp \
@@ -333,6 +342,7 @@ HEADERS += aboutdialog.h \
     command.h \
     commandlineparser.h \
     commandmanager.h \
+    commandsedit.h \
     consoledock.h \
     createellipseobjecttool.h \
     createobjecttool.h \
@@ -382,6 +392,7 @@ HEADERS += aboutdialog.h \
     layeritem.h \
     layermodel.h \
     layeroffsettool.h \
+    locatorwidget.h \
     macsupport.h \
     magicwandtool.h \
     maintoolbar.h \
@@ -428,6 +439,7 @@ HEADERS += aboutdialog.h \
     preferencesdialog.h \
     project.h \
     projectdock.h \
+    projectmanager.h \
     projectmodel.h \
     projectpropertiesdialog.h \
     propertiesdock.h \
@@ -453,6 +465,7 @@ HEADERS += aboutdialog.h \
     scriptedtool.h \
     scriptfile.h \
     scriptfileformatwrappers.h \
+    scriptfileinfo.h \
     scriptimage.h \
     scriptmanager.h \
     scriptmodule.h \
@@ -521,6 +534,7 @@ HEADERS += aboutdialog.h \
 FORMS += aboutdialog.ui \
     addpropertydialog.ui \
     commanddialog.ui \
+    commandsedit.ui \
     donationdialog.ui \
     exportasimagedialog.ui \
     imagecolorpickerwidget.ui \

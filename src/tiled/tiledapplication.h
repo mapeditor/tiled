@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "projectmanager.h"
+
 #include <QtSingleApplication>
 
 namespace Tiled {
@@ -40,6 +42,8 @@ signals:
 
 private:
     void onMessageReceived(const QString &message);
+
+    ProjectManager mProjectManager;
 };
 
 } // namespace Tiled

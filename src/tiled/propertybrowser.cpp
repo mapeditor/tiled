@@ -600,9 +600,12 @@ void PropertyBrowser::addMapProperties()
 
     addProperty(WidthProperty, QVariant::Int, tr("Width"), groupProperty)->setEnabled(false);
     addProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
-    addProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), groupProperty);
-    addProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), groupProperty);
+    auto tileWidthProperty = addProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), groupProperty);
+    auto tileHeightProperty = addProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), groupProperty);
     addProperty(InfiniteProperty, QVariant::Bool, tr("Infinite"), groupProperty);
+
+    tileWidthProperty->setAttribute(QStringLiteral("minimum"), 1);
+    tileHeightProperty->setAttribute(QStringLiteral("minimum"), 1);
 
     addProperty(HexSideLengthProperty, QVariant::Int, tr("Tile Side Length (Hex)"), groupProperty);
 

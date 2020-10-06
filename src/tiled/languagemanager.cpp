@@ -43,11 +43,11 @@ LanguageManager::LanguageManager()
 {
     mTranslationsDir = QCoreApplication::applicationDirPath();
 #if defined(Q_OS_WIN32)
-    mTranslationsDir += QLatin1String("/translations");
+    mTranslationsDir += QStringLiteral("/translations");
 #elif defined(Q_OS_MAC)
-    mTranslationsDir += QLatin1String("/../Translations");
+    mTranslationsDir += QStringLiteral("/../Translations");
 #else
-    mTranslationsDir += QLatin1String("/../share/tiled/translations");
+    mTranslationsDir += QStringLiteral("/../share/tiled/translations");
 #endif
 }
 
@@ -92,7 +92,7 @@ void LanguageManager::loadAvailableLanguages()
     mLanguages.clear();
 
     QStringList nameFilters;
-    nameFilters.append(QLatin1String("tiled_*.qm"));
+    nameFilters.append(QStringLiteral("tiled_*.qm"));
 
     QDirIterator iterator(mTranslationsDir, nameFilters,
                           QDir::Files | QDir::Readable);

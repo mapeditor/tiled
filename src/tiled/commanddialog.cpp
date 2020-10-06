@@ -1,6 +1,8 @@
 /*
  * commanddialog.cpp
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
+ * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
+ * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -23,14 +25,13 @@
 
 #include "commanddatamodel.h"
 #include "commandmanager.h"
+#include "commandsedit.h"
 #include "utils.h"
 
 #include <QShortcut>
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QModelIndex>
-#include <QFileDialog>
-#include <QStandardPaths>
 
 using namespace Tiled;
 
@@ -44,35 +45,15 @@ CommandDialog::CommandDialog(QWidget *parent)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 #endif
 
-    setWindowTitle(tr("Edit Commands"));
+    auto *commandManager = CommandManager::instance();
+
+    mGlobalCommandsEdit = new CommandsEdit(commandManager->globalCommands());
+    mProjectCommandsEdit = new CommandsEdit(commandManager->projectCommands());
+
+    mUi->tabWidget->addTab(mGlobalCommandsEdit, tr("Global Commands"));
+    mUi->tabWidget->addTab(mProjectCommandsEdit, tr("Project Commands"));
+
     Utils::restoreGeometry(this);
-
-    connect(mUi->saveBox, &QCheckBox::stateChanged,
-            this, &CommandDialog::setSaveBeforeExecute);
-
-    connect(mUi->outputBox, &QCheckBox::stateChanged,
-            this, &CommandDialog::setShowOutput);
-
-    connect(mUi->keySequenceEdit, &QKeySequenceEdit::keySequenceChanged,
-            this, &CommandDialog::setShortcut);
-
-    connect(mUi->executableEdit, &QLineEdit::textChanged,
-            this, &CommandDialog::setExecutable);
-
-    connect(mUi->argumentsEdit, &QLineEdit::textChanged,
-            this, &CommandDialog::setArguments);
-
-    connect(mUi->workingDirectoryEdit, &QLineEdit::textChanged,
-            this, &CommandDialog::setWorkingDirectory);
-
-    connect(mUi->treeView->selectionModel(), &QItemSelectionModel::currentChanged,
-            this, &CommandDialog::updateWidgets);
-
-    connect(mUi->exBrowseButton, &QPushButton::clicked,
-            this, &CommandDialog::browseExecutable);
-
-    connect(mUi->wdBrowseButton, &QPushButton::clicked,
-            this, &CommandDialog::browseWorkingDirectory);
 }
 
 CommandDialog::~CommandDialog()
@@ -81,160 +62,74 @@ CommandDialog::~CommandDialog()
     delete mUi;
 }
 
-void CommandDialog::closeEvent(QCloseEvent *event)
+const QVector<Command> &CommandDialog::globalCommands() const
 {
-    QDialog::closeEvent(event);
-
-    mUi->treeView->model()->commit();
-
-    CommandManager::instance()->updateActions();
+    return mGlobalCommandsEdit->commands();
 }
 
-void CommandDialog::setShortcut(const QKeySequence &keySequence)
+const QVector<Command> &CommandDialog::projectCommands() const
 {
-    const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount())
-        mUi->treeView->model()->setShortcut(current, keySequence);
+    return mProjectCommandsEdit->commands();
 }
 
-void CommandDialog::setSaveBeforeExecute(int state)
-{
-    const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount())
-        mUi->treeView->model()->setSaveBeforeExecute(current, state);
-}
-
-void CommandDialog::setShowOutput(int state)
-{
-    const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount())
-        mUi->treeView->model()->setShowOutput(current, state);
-}
-
-
-void CommandDialog::setExecutable(const QString &text)
-{
-    const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount())
-        mUi->treeView->model()->setExecutable(current, text);
-}
-
-void CommandDialog::setArguments(const QString &text)
-{
-    const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount())
-        mUi->treeView->model()->setArguments(current, text);
-}
-
-void CommandDialog::setWorkingDirectory(const QString &text)
-{
-    const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount())
-        mUi->treeView->model()->setWorkingDirectory(current, text);
-}
-
-void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex &)
-{
-    bool enable = (current.row() < mUi->treeView->model()->rowCount() - 1);
-
-    mUi->saveBox->setEnabled(enable);
-    mUi->executableEdit->setEnabled(enable);
-    mUi->argumentsEdit->setEnabled(enable);
-    mUi->workingDirectoryEdit->setEnabled(enable);
-    mUi->exBrowseButton->setEnabled(enable);
-    mUi->wdBrowseButton->setEnabled(enable);
-    mUi->keySequenceEdit->setEnabled(enable);
-    mUi->clearButton->setEnabled(enable);
-    mUi->outputBox->setEnabled(enable);
-
-    if (enable) {
-        const Command command = mUi->treeView->model()->command(current);
-        mUi->executableEdit->setText(command.executable);
-        mUi->argumentsEdit->setText(command.arguments);
-        mUi->workingDirectoryEdit->setText(command.workingDirectory);
-        mUi->keySequenceEdit->setKeySequence(command.shortcut);
-        mUi->saveBox->setChecked(command.saveBeforeExecute);
-        mUi->outputBox->setChecked(command.showOutput);
-    } else {
-        mUi->executableEdit->clear();
-        mUi->argumentsEdit->clear();
-        mUi->workingDirectoryEdit->clear();
-        mUi->keySequenceEdit->clear();
-    }
-}
-
-void CommandDialog::browseExecutable()
-{
-    QString caption = tr("Select Executable");
-    QString dir = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
-    QString executableName = QFileDialog::getOpenFileName(this, caption, dir);
-
-    if (!executableName.isEmpty())
-        mUi->executableEdit->setText(executableName);
-}
-
-void CommandDialog::browseWorkingDirectory()
-{
-    QString caption = tr("Select Working Directory");
-    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    QString workingDirectoryName = QFileDialog::getExistingDirectory(this, caption, dir,
-                            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-
-    if (!workingDirectoryName.isEmpty())
-        mUi->workingDirectoryEdit->setText(workingDirectoryName);
-}
 
 CommandTreeView::CommandTreeView(QWidget *parent)
     : QTreeView(parent)
-    , mModel(CommandManager::instance()->commandDataModel())
 {
-    setModel(mModel);
     setRootIsDecorated(false);
-
-    // Setup resizing so the command column stretches
-    setColumnWidth(0, 200);
-    QHeaderView *h = header();
-    h->setStretchLastSection(false);
-    h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Stretch);
-    h->setSectionResizeMode(CommandDataModel::ShortcutColumn, QHeaderView::Fixed);
-    h->setSectionResizeMode(CommandDataModel::EnabledColumn,
-                            QHeaderView::ResizeToContents);
 
     // Allow deletion via keyboard
     QShortcut *d = new QShortcut(QKeySequence::Delete, this);
     d->setContext(Qt::WidgetShortcut);
     connect(d, &QShortcut::activated, this, &CommandTreeView::removeSelectedCommands);
-
-    connect(mModel, &QAbstractItemModel::rowsRemoved,
-            this, &CommandTreeView::handleRowsRemoved);
 }
 
+void CommandTreeView::setModel(QAbstractItemModel *model)
+{
+    Q_ASSERT(qobject_cast<CommandDataModel*>(model) != nullptr);
+    QTreeView::setModel(model);
+}
+
+/**
+ * Returns the model used by this view casted to CommandDataModel.
+ */
+CommandDataModel *CommandTreeView::model() const
+{
+     return static_cast<CommandDataModel*>(QTreeView::model());
+}
+
+/**
+ * Displays a context menu for the item at <i>event</i>'s position.
+ */
 void CommandTreeView::contextMenuEvent(QContextMenuEvent *event)
 {
-    QModelIndex index = indexAt(event->pos());
+    const QModelIndex index = indexAt(event->pos());
 
     // Generate a run a menu for the index
-    if (QMenu *menu = mModel->contextMenu(this, index))
+    if (QMenu *menu = model()->contextMenu(this, index))
         menu->exec(event->globalPos());
 }
 
-void CommandTreeView::handleRowsRemoved(const QModelIndex &parent, int, int)
+/**
+ * Brings the selection to safety before rows will get removed.
+ */
+void CommandTreeView::rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
 {
     if (parent.isValid())
         return;
 
-    // Reselect the same row index of the removed row
-    QItemSelectionModel *sModel = selectionModel();
-    QModelIndex index = sModel->currentIndex();
+    int selectedRow = currentIndex().row();
+    if (selectedRow >= start && selectedRow <= end && end < model()->rowCount() - 1)
+        setCurrentIndex(model()->index(end + 1, 0));
 
-    sModel->select(index.sibling(index.row() + 1,index.column()),
-                   QItemSelectionModel::ClearAndSelect |
-                   QItemSelectionModel::Rows);
+    QTreeView::rowsAboutToBeRemoved(parent, start, end);
 }
 
+/**
+ * Gets the currently selected rows and tells the model to delete them.
+ */
 void CommandTreeView::removeSelectedCommands()
 {
-    QItemSelectionModel *selection = selectionModel();
-    const QModelIndexList indices = selection->selectedRows();
-    mModel->removeRows(indices);
+    const QModelIndexList indices = selectionModel()->selectedRows();
+    model()->removeRows(indices);
 }

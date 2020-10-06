@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2019-11-19 10:04+0000\n"
+"PO-Revision-Date: 2020-06-04 14:41+0000\n"
 "Last-Translator: Tuomas Lähteenmäki <lahtis@gmail.com>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/tiled/reference/"
 "fi/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 
 #: ../../reference/json-map-format.rst:2
 msgid "JSON Map Format"
@@ -298,7 +298,7 @@ msgstr "Karttaesimerkki"
 
 #: ../../reference/json-map-format.rst:79
 msgid "Layer"
-msgstr "Layer"
+msgstr "Tasot"
 
 #: ../../reference/json-map-format.rst:84
 msgid "data"
@@ -634,7 +634,7 @@ msgstr "Per-laatta ominaisuudet, jotka on indeksoitu gidin mukaan merkkijonoksi"
 
 #: ../../reference/json-map-format.rst:412
 msgid "tiles"
-msgstr "tiles"
+msgstr "laatat"
 
 #: ../../reference/json-map-format.rst:412
 msgid "Mapping from tile ID to :ref:`tile <json-tile>` (optional)"
@@ -660,7 +660,7 @@ msgstr "Laatta (määritelmä)"
 
 #: ../../reference/json-map-format.rst:455
 msgid "terrain"
-msgstr "terrain"
+msgstr "maasto"
 
 #: ../../reference/json-map-format.rst:455
 msgid "index of terrain for each corner of tile"
@@ -669,10 +669,17 @@ msgstr "maastoindeksi laattakohdan kulmalle"
 #: ../../reference/json-map-format.rst:458
 msgid "A tileset that associates information with each tile, like its image path or terrain type, may include a \"tiles\" JSON object. Each key is a local ID of a tile within the tileset."
 msgstr ""
+"Laattajoukko, joka yhdistää tiedot jokaiseen ruutuun, kuten sen kuvapolku "
+"tai maastotyyppi, voi sisältää \"laatat\" JSON-objektin. Jokainen avain on "
+"laattajoukon paikallinen tunnus."
 
 #: ../../reference/json-map-format.rst:462
 msgid "For the terrain information, each value is a length-4 array where each element is the index of a :ref:`terrain <json-terrain>` on one corner of the tile. The order of indices is: top-left, top-right, bottom-left, bottom-right."
 msgstr ""
+"Maastoinformaatiota varten jokaisen pituus arvo on 4 matriisi, jossa kukin "
+"elementti on index: ref: `terrain <json-terrain>` -hakemiston ruudun yhdessä "
+"nurkassa. Indeksien järjestys on: vasen ylhäältä, ylhäältä oikealta, "
+"alhaalta vasemmalta ja alhaalta oikealta."
 
 #: ../../reference/json-map-format.rst:467
 #: ../../reference/json-map-format.rst:500
@@ -681,7 +688,7 @@ msgstr "Esimerkki:"
 
 #: ../../reference/json-map-format.rst:490
 msgid "Terrain"
-msgstr "Terrain"
+msgstr "Maasto"
 
 #: ../../reference/json-map-format.rst:495
 msgid "Name of terrain"
@@ -689,11 +696,11 @@ msgstr "Maaston nimi"
 
 #: ../../reference/json-map-format.rst:497
 msgid "tile"
-msgstr "tile"
+msgstr "laatta"
 
 #: ../../reference/json-map-format.rst:497
 msgid "Local ID of tile representing terrain"
-msgstr ""
+msgstr "Maastoa edustavan laatan paikallinen tunnus"
 
 #: ../../reference/support-for-tmx-maps.rst:2
 msgid "Libraries and Frameworks"
@@ -917,7 +924,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:170
 msgid "AndEngine"
-msgstr "AndEngine"
+msgstr "Lisää Moottori"
 
 #: ../../reference/support-for-tmx-maps.rst:172
 msgid "`AndEngine <http://www.andengine.org/>`__ by Nicolas Gramlich supports `rendering TMX maps <http://www.andengine.org/blog/2010/07/andengine-tiledmaps-in-the-tmx-format/>`__"

@@ -32,6 +32,7 @@
 #include "mapobject.h"
 #include "tileset.h"
 
+#include <QDateTime>
 #include <QPointer>
 
 #include <memory>
@@ -57,6 +58,9 @@ public:
     void setFormat(ObjectTemplateFormat *format);
     ObjectTemplateFormat *format() const;
 
+    bool save();
+    QDateTime lastSaved() const;
+
     const SharedTileset &tileset() const;
 
 private:
@@ -64,6 +68,7 @@ private:
     QPointer<ObjectTemplateFormat> mFormat;
     std::unique_ptr<MapObject> mObject;
     SharedTileset mTileset;
+    QDateTime mLastSaved;
 };
 
 inline const MapObject *ObjectTemplate::object() const
@@ -74,6 +79,9 @@ inline const QString &ObjectTemplate::fileName() const
 
 inline void ObjectTemplate::setFileName(const QString &fileName)
 { mFileName = fileName; }
+
+inline QDateTime ObjectTemplate::lastSaved() const
+{ return mLastSaved; }
 
 inline const SharedTileset &ObjectTemplate::tileset() const
 { return mTileset; }

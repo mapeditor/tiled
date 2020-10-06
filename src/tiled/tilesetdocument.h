@@ -79,6 +79,7 @@ public:
     void setExportFormat(FileFormat *format) override;
 
     QString displayName() const override;
+    QString externalOrEmbeddedFileName() const;
 
     void swapTileset(SharedTileset &tileset);
     const SharedTileset &tileset() const;

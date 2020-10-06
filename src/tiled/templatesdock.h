@@ -60,7 +60,7 @@ signals:
 
 public slots:
     void openTemplate(const QString &path);
-    void tryOpenTemplate(const QString &filePath);
+    bool tryOpenTemplate(const QString &filePath);
     void bringToFront();
 
 protected:
@@ -72,7 +72,10 @@ protected:
 
 private:
     void setTemplate(ObjectTemplate *objectTemplate);
+    void refreshDummyObject();
     void checkTileset();
+
+    void objectTemplateChanged(ObjectTemplate *objectTemplate);
 
     void undo();
     void redo();
@@ -96,6 +99,7 @@ private:
     ToolManager *mToolManager;
 
     static QHash<ObjectTemplate*, QWeakPointer<MapDocument>> ourDummyDocuments;
+    static bool ourEmittingChanged;
 };
 
 inline void TemplatesDock::setPropertiesDock(PropertiesDock *propertiesDock)

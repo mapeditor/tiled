@@ -33,7 +33,7 @@ using namespace Tiled;
 
 static QString scaleToString(qreal scale)
 {
-    return QString(QLatin1String("%1 %")).arg(int(scale * 100));
+    return QStringLiteral("%1 %").arg(int(scale * 100));
 }
 
 

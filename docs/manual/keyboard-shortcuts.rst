@@ -1,7 +1,10 @@
 Keyboard Shortcuts
 ==================
 
-Try out these keyboard shortcuts to help save you time.
+.. note::
+
+   Most of the below shortcuts can be changed in the :ref:`Preferences
+   <keyboard-options>`.
 
 On Mac, replace ``Ctrl`` with the ``Command`` key.
 
@@ -25,11 +28,10 @@ General
 -  ``A`` - Invokes :doc:`automapping`
 -  ``Alt + C`` - Copy current position of mouse cursor to clipboard (in
    tile coordinates)
--  ``Ctrl + D`` - Duplicate selected objects (since Tiled 1.0, before it
-   was Delete)
+-  ``Ctrl + D`` - Duplicate selected objects
 -  ``Ctrl + Shift + D`` - Duplicate active layer
 -  ``F2`` - Rename (if applicable in context)
--  ``Tab`` - Hide docks and tool bars (since Tiled 1.0)
+-  ``Tab`` - Hide docks and tool bars
 -  ``Ctrl + PgUp`` - Select previous layer (above current layer)
 -  ``Ctrl + PgDown`` - Select next layer (below current layer)
 -  ``Ctrl + Shift + Up`` - Move current layer up
@@ -40,6 +42,8 @@ General
 -  ``Ctrl + Shift + Tab`` - Switch to right document
 -  ``Alt + Left`` - Switch to left document
 -  ``Alt + Right`` - Switch to right document
+-  ``]`` - Select next tileset
+-  ``[`` - Select previous tileset
 -  ``Ctrl + G`` - Toggle displaying of the tile grid
 -  ``Ctrl + W`` - Close current document
 -  ``Ctrl + Shift + W`` - Close all documents
@@ -97,7 +101,7 @@ When an object layer is selected
    -  ``End`` - Move selected objects to Bottom (with Manual object
       drawing order)
 
--  ``O`` - Activate :ref:`edit-polygons-tool` (was ``E`` until Tiled 1.0)
+-  ``O`` - Activate :ref:`edit-polygons-tool`
 -  ``R`` - Activate :ref:`insert-rectangle-tool`
 -  ``I`` - Activate :ref:`insert-point-tool`
 -  ``C`` - Activate :ref:`insert-ellipse-tool`
@@ -108,7 +112,7 @@ When an object layer is selected
 
 -  ``T`` - Activate :ref:`insert-tile-tool`
 -  ``V`` - Activate :ref:`insert-template-tool` (since Tiled 1.1)
--  ``E`` - Activate :ref:`insert-text-tool` (since Tiled 1.0)
+-  ``E`` - Activate :ref:`insert-text-tool`
 -  ``Ctrl + A`` - Select all objects in the current object layer
 -  ``Ctrl + Shift + A`` - Clear object selection
 

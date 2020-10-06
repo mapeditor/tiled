@@ -31,9 +31,13 @@ class NewsButton : public QToolButton
 public:
     explicit NewsButton(QWidget *parent = nullptr);
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
     void refreshButton();
     void showNewsMenu();
+    void retranslateUi();
 
     QIcon mReadIcon;
     QIcon mUnreadIcon;

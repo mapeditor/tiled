@@ -22,11 +22,11 @@
 
 #include <QWidget>
 
-namespace Tiled {
-
 namespace Ui {
 class NoEditorWidget;
 }
+
+namespace Tiled {
 
 class NoEditorWidget : public QWidget
 {
@@ -43,6 +43,12 @@ private:
     void newMap();
     void newTileset();
     void openFile();
+
+    void retranslateUi();
+
+    void updateRecentProjectsMenu();
+
+    void adjustToStyle();
 
     Ui::NoEditorWidget *ui;
 };

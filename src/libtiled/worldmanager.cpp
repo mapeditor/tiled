@@ -108,19 +108,19 @@ static QString jsonValueToString(const QJsonValue &value)
 {
     switch (value.type()) {
     case QJsonValue::Null:
-        return QLatin1String("null");
+        return QStringLiteral("null");
     case QJsonValue::Bool:
-        return value.toBool() ? QLatin1String("true") : QLatin1String("false");
+        return value.toBool() ? QStringLiteral("true") : QStringLiteral("false");
     case QJsonValue::Double:
         return QString::number(value.toDouble());
     case QJsonValue::String:
-        return QString(QLatin1String("\"%1\"")).arg(value.toString());
+        return QStringLiteral("\"%1\"").arg(value.toString());
     case QJsonValue::Array:
-        return QLatin1String("[...]");
+        return QStringLiteral("[...]");
     case QJsonValue::Object:
-        return QLatin1String("{...}");
+        return QStringLiteral("{...}");
     case QJsonValue::Undefined:
-        return QLatin1String("undefined");
+        return QStringLiteral("undefined");
     }
     Q_UNREACHABLE();
     return QString();
@@ -231,9 +231,12 @@ World *WorldManager::addEmptyWorld(const QString &fileName, QString *errorString
  */
 World *WorldManager::loadWorld(const QString &fileName, QString *errorString)
 {
-    auto world = loadAndStoreWorld(fileName, errorString);
-    if (world)
-        emit worldsChanged();
+    auto world = mWorlds.value(fileName);
+    if (!world) {
+        world = loadAndStoreWorld(fileName, errorString);
+        if (world)
+            emit worldsChanged();
+    }
     return world;
 }
 
@@ -294,11 +297,11 @@ bool WorldManager::saveWorld(const QString &fileName, QString *errorString)
         QFileInfo mapFile = QFileInfo(map.fileName);
 
         QString relativeFileName = QDir::cleanPath(dir.relativeFilePath(map.fileName));
-        jsonMap.insert(QLatin1String("fileName"), QJsonValue::fromVariant(relativeFileName));
-        jsonMap.insert(QLatin1String("x"), QJsonValue::fromVariant(map.rect.x()));
-        jsonMap.insert(QLatin1String("y"), QJsonValue::fromVariant(map.rect.y()));
-        jsonMap.insert(QLatin1String("width"), QJsonValue::fromVariant(map.rect.width()));
-        jsonMap.insert(QLatin1String("height"), QJsonValue::fromVariant(map.rect.height()));
+        jsonMap.insert(QLatin1String("fileName"), relativeFileName);
+        jsonMap.insert(QLatin1String("x"), map.rect.x());
+        jsonMap.insert(QLatin1String("y"), map.rect.y());
+        jsonMap.insert(QLatin1String("width"), map.rect.width());
+        jsonMap.insert(QLatin1String("height"), map.rect.height());
         maps.push_back(jsonMap);
     }
 
@@ -306,8 +309,8 @@ bool WorldManager::saveWorld(const QString &fileName, QString *errorString)
 
     QJsonObject document;
     document.insert(QLatin1String("maps"), maps);
-    document.insert(QLatin1String("type"), QJsonValue::fromVariant(QLatin1String("world")));
-    document.insert(QLatin1String("onlyShowAdjacentMaps"), QJsonValue::fromVariant(savingWorld->onlyShowAdjacentMaps));
+    document.insert(QLatin1String("type"), QLatin1String("world"));
+    document.insert(QLatin1String("onlyShowAdjacentMaps"), savingWorld->onlyShowAdjacentMaps);
 
     QJsonDocument doc(document);
 
@@ -547,6 +550,27 @@ QVector<World::MapEntry> World::contextMaps(const QString &fileName) const
     if (onlyShowAdjacentMaps)
         return mapsInRect(mapRect(fileName).adjusted(-1, -1, 1, 1));
     return allMaps();
+}
+
+QString World::firstMap() const
+{
+    if (!maps.isEmpty())
+        return maps.first().fileName;
+
+    if (!patterns.isEmpty()) {
+        const QDir dir(QFileInfo(fileName).dir());
+        const QStringList entries = dir.entryList(QDir::Files | QDir::Readable);
+
+        for (const World::Pattern &pattern : patterns) {
+            for (const QString &fileName : entries) {
+                QRegularExpressionMatch match = pattern.regexp.match(fileName);
+                if (match.hasMatch())
+                    return dir.filePath(fileName);
+            }
+        }
+    }
+
+    return QString();
 }
 
 void World::error(const QString &message) const

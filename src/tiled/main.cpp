@@ -248,8 +248,8 @@ void CommandLineHandler::showVersion()
 {
     if (!showedVersion) {
         showedVersion = true;
-        qWarning().noquote() << QApplication::applicationDisplayName()
-                             << QApplication::applicationVersion();
+        qInfo().noquote() << QApplication::applicationDisplayName()
+                          << QApplication::applicationVersion();
         quit = true;
     }
 }
@@ -306,9 +306,9 @@ void CommandLineHandler::showExportFormats()
     }
     formats.sort(Qt::CaseSensitive);
 
-    qWarning().noquote() << tr("Map export formats:");
+    qInfo().noquote() << tr("Map export formats:");
     for (const QString &name : formats)
-        qWarning(" %s", qUtf8Printable(name));
+        qInfo(" %s", qUtf8Printable(name));
 
     formats.clear();
     const auto tilesetFormats = PluginManager::objects<TilesetFormat>();
@@ -318,9 +318,9 @@ void CommandLineHandler::showExportFormats()
     }
     formats.sort(Qt::CaseSensitive);
 
-    qWarning().noquote() << tr("Tileset export formats:");
+    qInfo().noquote() << tr("Tileset export formats:");
     for (const QString &name : formats)
-        qWarning(" %s", qUtf8Printable(name));
+        qInfo(" %s", qUtf8Printable(name));
 
     quit = true;
 }

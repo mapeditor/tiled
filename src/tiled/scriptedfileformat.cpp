@@ -56,7 +56,7 @@ QString ScriptedFileFormat::nameFilter() const
     QString name = mObject.property(QStringLiteral("name")).toString();
     QString extension = mObject.property(QStringLiteral("extension")).toString();
 
-    return QString(QStringLiteral("%1 (*.%2)")).arg(name, extension);
+    return QStringLiteral("%1 (*.%2)").arg(name, extension);
 }
 
 bool ScriptedFileFormat::supportsFile(const QString &fileName) const

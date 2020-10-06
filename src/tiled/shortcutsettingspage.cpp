@@ -53,6 +53,8 @@ namespace Tiled {
  */
 class ActionsModel : public QAbstractListModel
 {
+    Q_OBJECT
+
 public:
     enum UserRoles {
         HasCustomShortcut = Qt::UserRole,
@@ -730,11 +732,11 @@ void ShortcutSettingsPage::exportShortcuts()
 
     xml.writeStartDocument();
     xml.writeDTD(QLatin1String("<!DOCTYPE KeyboardMappingScheme>"));
-    xml.writeComment(QString::fromLatin1(" Written by %1 %2, %3. ").
+    xml.writeComment(QStringLiteral(" Written by %1 %2, %3. ").
                      arg(QApplication::applicationDisplayName(),
                          QApplication::applicationVersion(),
                          QDateTime::currentDateTime().toString(Qt::ISODate)));
-    xml.writeStartElement(QLatin1String("mapping"));
+    xml.writeStartElement(QStringLiteral("mapping"));
 
     auto actions = ActionManager::actions();
     std::sort(actions.begin(), actions.end());
@@ -743,12 +745,12 @@ void ShortcutSettingsPage::exportShortcuts()
         const auto action = ActionManager::action(actionId);
         const auto shortcut = action->shortcut();
 
-        xml.writeStartElement(QLatin1String("shortcut"));
-        xml.writeAttribute(QLatin1String("id"), actionId.toString());
+        xml.writeStartElement(QStringLiteral("shortcut"));
+        xml.writeAttribute(QStringLiteral("id"), actionId.toString());
 
         if (!shortcut.isEmpty()) {
             xml.writeEmptyElement(QLatin1String("key"));
-            xml.writeAttribute(QLatin1String("value"), shortcut.toString());
+            xml.writeAttribute(QStringLiteral("value"), shortcut.toString());
         }
 
         xml.writeEndElement();  // shortcut

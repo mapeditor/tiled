@@ -262,58 +262,30 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     }
 }
 
-void IsometricRenderer::drawTileLayer(QPainter *painter,
-                                      const TileLayer *layer,
-                                      const QRectF &exposed) const
-{
-    CellRenderer renderer(painter, this, layer->effectiveTintColor());
-    auto tileRenderFunction = [&renderer](const Cell &cell, const QPointF &pos, const QSizeF &size) {
-        renderer.render(cell, pos, size, CellRenderer::BottomLeft);
-    };
-    drawTileLayer(layer, tileRenderFunction, exposed);
-}
-
-void IsometricRenderer::drawTileLayer(const TileLayer *layer,
-                                      const RenderTileCallback &renderTile,
+void IsometricRenderer::drawTileLayer(const RenderTileCallback &renderTile,
                                       const QRectF &exposed) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
-    if (tileWidth <= 0 || tileHeight <= 1)
+    if (tileWidth < 1 || tileHeight < 1)
         return;
 
-    QRect rect = exposed.toAlignedRect();
-    if (rect.isNull())
-        rect = boundingRect(layer->bounds());
-
-    QMargins drawMargins = layer->drawMargins();
-    drawMargins.setTop(drawMargins.top() - tileHeight);
-    drawMargins.setRight(drawMargins.right() - tileWidth);
-
-    rect.adjust(-drawMargins.right(),
-                -drawMargins.bottom(),
-                drawMargins.left(),
-                drawMargins.top());
-
     // Determine the tile and pixel coordinates to start at
-    QPointF tilePos = screenToTileCoords(rect.x(), rect.y());
+    QPointF tilePos = screenToTileCoords(exposed.x(), exposed.y());
     QPoint rowItr = QPoint(qFloor(tilePos.x()),
                            qFloor(tilePos.y()));
     QPointF startPos = tileToScreenCoords(rowItr);
     startPos.rx() -= tileWidth / 2;
     startPos.ry() += tileHeight;
 
-    // Compensate for the layer position
-    rowItr -= QPoint(layer->x(), layer->y());
-
     /* Determine in which half of the tile the top-left corner of the area we
      * need to draw is. If we're in the upper half, we need to start one row
      * up due to those tiles being visible as well. How we go up one row
      * depends on whether we're in the left or right half of the tile.
      */
-    const bool inUpperHalf = startPos.y() - rect.y() > tileHeight / 2;
-    const bool inLeftHalf = rect.x() - startPos.x() < tileWidth / 2;
+    const bool inUpperHalf = startPos.y() - exposed.y() > tileHeight / 2;
+    const bool inLeftHalf = exposed.x() - startPos.x() < tileWidth / 2;
 
     if (inUpperHalf) {
         if (inLeftHalf) {
@@ -329,18 +301,13 @@ void IsometricRenderer::drawTileLayer(const TileLayer *layer,
     // Determine whether the current row is shifted half a tile to the right
     bool shifted = inUpperHalf ^ inLeftHalf;
 
-    for (int y = startPos.y() * 2; y - tileHeight * 2 < rect.bottom() * 2;
+    for (int y = startPos.y() * 2; y - tileHeight * 2 < exposed.bottom() * 2;
          y += tileHeight)
     {
         QPoint columnItr = rowItr;
 
-        for (int x = startPos.x(); x < rect.right(); x += tileWidth) {
-            const Cell &cell = layer->cellAt(columnItr);
-            if (!cell.isEmpty()) {
-                const Tile *tile = cell.tile();
-                const QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
-                renderTile(cell, QPointF(x, (qreal)y / 2), size);
-            }
+        for (int x = startPos.x(); x < exposed.right(); x += tileWidth) {
+            renderTile(columnItr, QPointF(x, (qreal)y / 2));
 
             // Advance to the next column
             ++columnItr.rx();
@@ -365,8 +332,8 @@ void IsometricRenderer::drawTileSelection(QPainter *painter,
                                           const QColor &color,
                                           const QRectF &exposed) const
 {
-    painter->setBrush(color);
-    painter->setPen(Qt::NoPen);
+    QPainterPath path;
+
 #if QT_VERSION < 0x050800
     const auto rects = region.rects();
     for (const QRect &r : rects) {
@@ -375,8 +342,19 @@ void IsometricRenderer::drawTileSelection(QPainter *painter,
 #endif
         QPolygonF polygon = tileRectToScreenPolygon(r);
         if (QRectF(polygon.boundingRect()).intersects(exposed))
-            painter->drawConvexPolygon(polygon);
+            path.addPolygon(polygon);
     }
+
+    QColor penColor(color);
+    penColor.setAlpha(255);
+
+    QPen pen(penColor);
+    pen.setCosmetic(true);
+
+    painter->setPen(pen);
+    painter->setBrush(color);
+    painter->setRenderHint(QPainter::Antialiasing, true);
+    painter->drawPath(path.simplified());
 }
 
 void IsometricRenderer::drawMapObject(QPainter *painter,

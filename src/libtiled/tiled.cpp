@@ -73,6 +73,18 @@ QUrl Tiled::toUrl(const QString &filePathOrUrl, const QDir &dir)
     return QUrl::fromLocalFile(absolutePath);
 }
 
+QUrl Tiled::toUrl(const QString &filePathOrUrl)
+{
+    QUrl url(filePathOrUrl);
+
+    if (filePathOrUrl.startsWith(QLatin1String(":/")))
+        url = QUrl(QLatin1String("qrc") + filePathOrUrl);
+    else if (QDir::isAbsolutePath(filePathOrUrl) || url.isRelative())
+        url = QUrl::fromLocalFile(filePathOrUrl);
+
+    return url;
+}
+
 /*
     If \a url is a local file returns a path suitable for passing to QFile.
     Otherwise returns an empty string.

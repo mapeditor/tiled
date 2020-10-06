@@ -1,11 +1,12 @@
 # Initialize the version
-isEmpty(TILED_VERSION):TILED_VERSION = "1.3.4"
+isEmpty(TILED_VERSION):TILED_VERSION = "1.4.3"
 
 # See the README file for instructions about setting the install prefix.
 isEmpty(PREFIX):PREFIX = /usr/local
 isEmpty(LIBDIR):LIBDIR = $${PREFIX}/lib
 isEmpty(RPATH):RPATH = yes
 isEmpty(INSTALL_HEADERS):INSTALL_HEADERS = no
+isEmpty(SYSTEM_ZSTD):SYSTEM_ZSTD = no
 
 macx {
     # Do a universal build when possible

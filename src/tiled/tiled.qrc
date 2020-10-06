@@ -47,8 +47,6 @@
         <file>images/16/show_hide_others.png</file>
         <file>images/16/stock-duplicate-16.png</file>
         <file>images/16/stock-tool-color-picker-16.png</file>
-        <file>images/16/terminal-green.png</file>
-        <file>images/16/terminal-red.png</file>
         <file>images/16/terminal.png</file>
         <file>images/16/terrain.png</file>
         <file>images/16/tiled.png</file>
@@ -67,7 +65,6 @@
         <file>images/22/plugin.png</file>
         <file>images/22/rectangle-fill.png</file>
         <file>images/22/remove.png</file>
-        <file>images/22/world-move-tool.png</file>
         <file>images/22/stock-tool-bucket-fill.png</file>
         <file>images/22/stock-tool-by-color-select.png</file>
         <file>images/22/stock-tool-clone.png</file>
@@ -77,6 +74,7 @@
         <file>images/22/stock-tool-move-22.png</file>
         <file>images/22/stock-tool-rect-select.png</file>
         <file>images/22/tool-select-objects.png</file>
+        <file>images/22/world-move-tool.png</file>
         <file>images/24/animation-edit.png</file>
         <file>images/24/dialog-error.png</file>
         <file>images/24/dialog-warning.png</file>
@@ -122,6 +120,7 @@
         <file>images/24/rotate-left.png</file>
         <file>images/24/rotate-right.png</file>
         <file>images/24/system-run.png</file>
+        <file>images/24/terminal.png</file>
         <file>images/24/terrain-edit.png</file>
         <file>images/24/terrain.png</file>
         <file>images/24/tool-edit-polygons.png</file>
@@ -129,6 +128,9 @@
         <file>images/24/visible.png</file>
         <file>images/24/wangtile-edit.png</file>
         <file>images/24/wangtile.png</file>
+        <file>images/24/world-map-add-other.png</file>
+        <file>images/24/world-map-add-this.png</file>
+        <file>images/24/world-map-remove-this.png</file>
         <file>images/24/zoom-fit-best.png</file>
         <file>images/24/zoom-in.png</file>
         <file>images/24/zoom-original.png</file>
@@ -145,6 +147,7 @@
         <file>images/32/plugin.png</file>
         <file>images/32/rotate-left.png</file>
         <file>images/32/rotate-right.png</file>
+        <file>images/32/terminal.png</file>
         <file>images/32/tiled.png</file>
         <file>images/32/wangtile.png</file>
         <file>images/48/insert-ellipse.png</file>
@@ -166,12 +169,12 @@
         <file>images/scalable/edit-undo-symbolic.svg</file>
         <file>images/scalable/highlight-current-layer-16.svg</file>
         <file>images/scalable/highlight-current-layer-24.svg</file>
-        <file>images/scalable/software-update-available-symbolic.svg</file>
-        <file>images/scalable/wrap.svg</file>
         <file>images/scalable/search-object-dialog.svg</file>
         <file>images/scalable/select-object.svg</file>
-        <file>images/24/world-map-add-this.png</file>
-        <file>images/24/world-map-add-other.png</file>
-        <file>images/24/world-map-remove-this.png</file>
+        <file>images/scalable/software-update-available-symbolic.svg</file>
+        <file>images/scalable/wrap.svg</file>
+        <file>images/scalable/replace.svg</file>
+        <file>images/24/detect-bounding-box.png</file>
+        <file>images/48/detect-bounding-box.png</file>
     </qresource>
 </RCC>

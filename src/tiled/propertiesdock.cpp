@@ -31,6 +31,7 @@
 #include "tile.h"
 #include "tileset.h"
 #include "utils.h"
+#include "variantpropertymanager.h"
 
 #include <QAction>
 #include <QEvent>
@@ -40,6 +41,7 @@
 #include <QUndoStack>
 #include <QVBoxLayout>
 #include <QMenu>
+#include <QFileInfo>
 
 namespace Tiled {
 
@@ -339,7 +341,7 @@ void PropertiesDock::renamePropertyTo(const QString &name)
     undoStack->push(new RenameProperty(mDocument, mDocument->currentObjects(), oldName, name));
 }
 
-void PropertiesDock::showContextMenu(const QPoint& pos)
+void PropertiesDock::showContextMenu(const QPoint &pos)
 {
     const Object *object = mDocument->currentObject();
     if (!object)
@@ -359,13 +361,49 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     }
 
     QMenu contextMenu(mPropertyBrowser);
+
+    if (customPropertiesSelected && propertyNames.size() == 1) {
+        const auto value = object->resolvedProperty(propertyNames.first());
+        if (value.userType() == filePathTypeId()) {
+            const FilePath filePath = value.value<FilePath>();
+            const QString localFile = filePath.url.toLocalFile();
+
+            if (!localFile.isEmpty()) {
+                Utils::addOpenContainingFolderAction(contextMenu, localFile);
+
+                if (QFileInfo { localFile }.isFile())
+                    Utils::addOpenWithSystemEditorAction(contextMenu, filePath.url.toLocalFile());
+            }
+        } else if (value.userType() == objectRefTypeId()) {
+            if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
+                const DisplayObjectRef objectRef(value.value<ObjectRef>(), mapDocument);
+
+                contextMenu.addAction(tr("Go to Object"), [=] {
+                    if (auto object = objectRef.object()) {
+                        objectRef.mapDocument->setSelectedObjects({object});
+                        emit objectRef.mapDocument->focusMapObjectRequested(object);
+                    }
+                })->setEnabled(objectRef.object());
+            }
+        }
+    }
+
+    if (!contextMenu.isEmpty())
+        contextMenu.addSeparator();
+
     QAction *cutAction = contextMenu.addAction(tr("Cu&t"), this, &PropertiesDock::cutProperties);
     QAction *copyAction = contextMenu.addAction(tr("&Copy"), this, &PropertiesDock::copyProperties);
     QAction *pasteAction = contextMenu.addAction(tr("&Paste"), this, &PropertiesDock::pasteProperties);
     contextMenu.addSeparator();
-    QMenu *convertMenu = contextMenu.addMenu(tr("Convert To"));
-    contextMenu.addAction(mActionRenameProperty);
-    contextMenu.addAction(mActionRemoveProperty);
+    QMenu *convertMenu = nullptr;
+
+    if (customPropertiesSelected) {
+        convertMenu = contextMenu.addMenu(tr("Convert To"));
+        contextMenu.addAction(mActionRemoveProperty);
+        contextMenu.addAction(mActionRenameProperty);
+    } else {
+        contextMenu.addAction(mActionAddProperty);
+    }
 
     cutAction->setShortcuts(QKeySequence::Cut);
     cutAction->setIcon(QIcon(QLatin1String(":/images/16/edit-cut.png")));
@@ -381,7 +419,7 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     Utils::setThemeIcon(copyAction, "edit-copy");
     Utils::setThemeIcon(pasteAction, "edit-paste");
 
-    if (customPropertiesSelected) {
+    if (convertMenu) {
         const int convertTo[] = {
             QVariant::Bool,
             QVariant::Color,
@@ -413,14 +451,15 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
                 action->setData(toType);
             }
         }
+
+        convertMenu->setEnabled(!convertMenu->actions().isEmpty());
     }
 
-    convertMenu->setEnabled(!convertMenu->actions().isEmpty());
 
     const QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
     const QAction *selectedItem = contextMenu.exec(globalPos);
 
-    if (selectedItem && selectedItem->parentWidget() == convertMenu) {
+    if (selectedItem && convertMenu && selectedItem->parentWidget() == convertMenu) {
         QUndoStack *undoStack = mDocument->undoStack();
         undoStack->beginMacro(tr("Convert Property/Properties", nullptr, items.size()));
 
@@ -482,7 +521,7 @@ void PropertiesDock::retranslateUi()
 {
     setWindowTitle(tr("Properties"));
 
-    mActionAddProperty->setToolTip(tr("Add Property"));
+    mActionAddProperty->setText(tr("Add Property"));
 
     mActionRemoveProperty->setText(tr("Remove"));
     mActionRemoveProperty->setToolTip(tr("Remove Property"));

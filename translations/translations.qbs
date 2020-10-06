@@ -10,6 +10,7 @@ Product {
         "tiled_hi.ts",
         "tiled_lv.ts",
         "tiled_mr.ts",
+        "tiled_th.ts",
     ]
 
     Depends { name: "Qt.core" }

@@ -52,6 +52,7 @@ class ConsoleDock;
 class DocumentManager;
 class Editor;
 class IssuesDock;
+class LocatorWidget;
 class MapDocument;
 class MapDocumentActionHandler;
 class MapEditor;
@@ -59,6 +60,7 @@ class MapScene;
 class MapView;
 class ObjectTypesEditor;
 class ProjectDock;
+class ProjectModel;
 class TilesetDocument;
 class TilesetEditor;
 class Zoomable;
@@ -92,7 +94,7 @@ public:
      */
     bool openFile(const QString &fileName, FileFormat *fileFormat = nullptr);
 
-    Project &project() const;
+    bool addRecentProjectsActions(QMenu *menu) const;
 
     static MainWindow *instance();
 
@@ -111,6 +113,7 @@ protected:
 private:
     void newMap();
     void openFileDialog();
+    void openFileInProject();
     bool saveFile();
     bool saveFileAs();
     void saveAll();
@@ -223,6 +226,7 @@ private:
     ProjectDock *mProjectDock;
     IssuesDock *mIssuesDock;
     ObjectTypesEditor *mObjectTypesEditor;
+    QPointer<LocatorWidget> mLocatorWidget;
 
     QAction *mRecentFiles[Preferences::MaxRecentFiles];
 

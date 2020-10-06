@@ -29,6 +29,8 @@
 #include <QList>
 #include <QMap>
 
+#include <memory>
+
 class QAction;
 class QActionGroup;
 class QComboBox;
@@ -83,6 +85,7 @@ public:
 
     void setCurrentTileset(const SharedTileset &tileset);
     SharedTileset currentTileset() const;
+    TilesetDocument *currentTilesetDocument() const;
 
     void setCurrentEditableTileset(EditableTileset *tileset);
     EditableTileset *currentEditableTileset() const;
@@ -133,6 +136,7 @@ private:
     void tileImageSourceChanged(Tile *tile);
     void tileAnimationChanged(Tile *tile);
 
+    void replaceTileset();
     void removeTileset();
     void removeTilesetAt(int index);
 
@@ -147,7 +151,7 @@ private:
 
     void selectTiles(const QList<Tile *> &tiles);
     void setCurrentTile(Tile *tile);
-    void setCurrentTiles(TileLayer *tiles);
+    void setCurrentTiles(std::unique_ptr<TileLayer> tiles);
 
     void retranslateUi();
 
@@ -168,7 +172,7 @@ private:
     void moveTilesetView(int from, int to);
     void setupTilesetModel(TilesetView *view, Tileset *tileset);
 
-    MapDocument *mMapDocument;
+    MapDocument *mMapDocument = nullptr;
 
     // Shared tileset references because the dock wants to add new tiles
     QVector<SharedTileset> mTilesets;
@@ -179,15 +183,16 @@ private:
     QStackedWidget *mSuperViewStack;
     QStackedWidget *mViewStack;
     QToolBar *mToolBar;
-    Tile *mCurrentTile;
-    TileLayer *mCurrentTiles;
+    Tile *mCurrentTile = nullptr;
+    std::unique_ptr<TileLayer> mCurrentTiles;
     const Terrain *mTerrain;
 
     QAction *mNewTileset;
     QAction *mEmbedTileset;
     QAction *mExportTileset;
     QAction *mEditTileset;
-    QAction *mDeleteTileset;
+    QAction *mReplaceTileset;
+    QAction *mRemoveTileset;
     QAction *mSelectNextTileset;
     QAction *mSelectPreviousTileset;
     QAction *mDynamicWrappingToggle;
@@ -198,8 +203,8 @@ private:
 
     QComboBox *mZoomComboBox;
 
-    bool mEmittingStampCaptured;
-    bool mSynchronizingSelection;
+    bool mEmittingStampCaptured = false;
+    bool mSynchronizingSelection = false;
 };
 
 } // namespace Tiled

@@ -41,7 +41,8 @@ public:
 
     void writeStartTable();
     void writeStartReturnTable();
-    void writeStartTable(const QByteArray &name);
+    void writeStartTable(const char *name);
+    void writeStartTable(const QString &name);
     void writeEndTable();
 
     void writeValue(int value);

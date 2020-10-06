@@ -60,6 +60,7 @@
 #include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
 #include "projectdock.h"
+#include "projectmanager.h"
 #include "projectpropertiesdialog.h"
 #include "resizedialog.h"
 #include "scriptmanager.h"
@@ -103,6 +104,7 @@
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif
 
+#include "locatorwidget.h"
 #include "qtcompat_p.h"
 
 using namespace Tiled;
@@ -154,7 +156,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
         QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
 
         suggestedFilename = lastExportedFilePath
-                            + QLatin1String("/") + baseName
+                            + QLatin1Char('/') + baseName
                             + QLatin1Char('.') + extension;
     }
 
@@ -227,7 +229,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mActionHandler(new MapDocumentActionHandler(this))
     , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
-    , mDocumentManager(DocumentManager::instance())
+    , mDocumentManager(nullptr)
 {
     Q_ASSERT(!mInstance);
     mInstance = this;
@@ -283,6 +285,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionNoLabels, "NoLabels");
     ActionManager::registerAction(mUi->actionOffsetMap, "OffsetMap");
     ActionManager::registerAction(mUi->actionOpen, "Open");
+    ActionManager::registerAction(mUi->actionOpenFileInProject, "OpenFileInProject");
     ActionManager::registerAction(mUi->actionOpenProject, "OpenProject");
     ActionManager::registerAction(mUi->actionPaste, "Paste");
     ActionManager::registerAction(mUi->actionPasteInPlace, "PasteInPlace");
@@ -311,11 +314,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionZoomNormal, "ZoomNormal");
     ActionManager::registerAction(mUi->actionZoomOut, "ZoomOut");
 
+    // Created after registering all the main window actions, since the
+    // NoEditorWidget uses some of those actions.
+    mDocumentManager = new DocumentManager(this);
+
 #ifdef Q_OS_MAC
     MacSupport::addFullscreen(this);
 #endif
-
-    setDockOptions(dockOptions() | QMainWindow::GroupedDragging);
 
     Preferences *preferences = Preferences::instance();
 
@@ -398,6 +403,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     setCentralWidget(mDocumentManager->widget());
 
+    connect(mProjectDock, &ProjectDock::folderAdded, this, &MainWindow::updateActions);
+    connect(mProjectDock, &ProjectDock::folderRemoved, this, &MainWindow::updateActions);
     connect(mProjectDock, &ProjectDock::fileSelected,
             mMapEditor->templatesDock(), &TemplatesDock::tryOpenTemplate);
     connect(mProjectDock, &ProjectDock::fileSelected,
@@ -518,6 +525,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionNewMap, &QAction::triggered, this, &MainWindow::newMap);
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
     connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);
+    connect(mUi->actionOpenFileInProject, &QAction::triggered, this, &MainWindow::openFileInProject);
     connect(mUi->actionReopenClosedFile, &QAction::triggered, this, &MainWindow::reopenClosedFile);
     connect(mUi->actionClearRecentFiles, &QAction::triggered, preferences, &Preferences::clearRecentFiles);
     connect(mUi->actionSave, &QAction::triggered, this, &MainWindow::saveFile);
@@ -610,7 +618,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         filter.append(worldFilesFilter);
 
         auto mapEditor = static_cast<MapEditor*>(DocumentManager::instance()->editor(Document::DocumentType::MapDocumentType));
-        QString worldFile = QFileDialog::getSaveFileName(mapEditor->editorWidget(), tr("New Map"), lastPath,
+        QString worldFile = QFileDialog::getSaveFileName(mapEditor->editorWidget(), tr("New World"), lastPath,
                                                          filter, &worldFilesFilter);
         if (worldFile.isEmpty() || QFile::exists(worldFile))
             return;
@@ -712,7 +720,40 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     auto myStatusBar = statusBar();
     myStatusBar->addPermanentWidget(new NewsButton(myStatusBar));
     myStatusBar->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible, myStatusBar));
-    myStatusBar->addWidget(new IssuesCounter(myStatusBar));
+
+    QIcon terminalIcon(QLatin1String("://images/24/terminal.png"));
+    terminalIcon.addFile(QLatin1String("://images/16/terminal.png"));
+    terminalIcon.addFile(QLatin1String("://images/32/terminal.png"));
+
+    auto toggleConsoleAction = mConsoleDock->toggleViewAction();
+    toggleConsoleAction->setIcon(terminalIcon);
+    toggleConsoleAction->setIconVisibleInMenu(false);
+
+    auto consoleToggleButton = new QToolButton;
+    consoleToggleButton->setDefaultAction(toggleConsoleAction);
+    consoleToggleButton->setAutoRaise(true);
+    connect(toggleConsoleAction, &QAction::toggled, this, [this] (bool checked) {
+        if (checked) {
+            mConsoleDock->show();
+            if (!mIssuesDock->isFloating() && tabifiedDockWidgets(mConsoleDock).contains(mIssuesDock))
+                mIssuesDock->hide();
+            mConsoleDock->raise();
+        }
+    });
+
+    auto issuesCounter = new IssuesCounter(myStatusBar);
+    issuesCounter->setDefaultAction(mIssuesDock->toggleViewAction());
+    connect(mIssuesDock->toggleViewAction(), &QAction::toggled, this, [this] (bool checked) {
+        if (checked) {
+            mIssuesDock->show();
+            if (!mConsoleDock->isFloating() && tabifiedDockWidgets(mIssuesDock).contains(mConsoleDock))
+                mConsoleDock->hide();
+            mIssuesDock->raise();
+        }
+    });
+
+    myStatusBar->addWidget(consoleToggleButton);
+    myStatusBar->addWidget(issuesCounter);
 
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
@@ -731,6 +772,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->showAnimationEditor());
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->editCollisionAction());
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->editTerrainAction());
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->editWangSetsAction());
     mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->addTilesAction());
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->removeTilesAction());
@@ -930,8 +972,9 @@ void MainWindow::initializeSession()
 
     if (projectLoaded) {
         Preferences::instance()->setObjectTypesFile(project.mObjectTypesFile);
-        mProjectDock->setProject(std::move(project));
+        ProjectManager::instance()->setProject(std::move(project));
         updateWindowTitle();
+        updateActions();
     }
 
     // Script manager initialization is delayed until after the project has
@@ -952,10 +995,41 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     if (mDocumentManager->switchToDocument(fileName))
         return true;
 
+    // HACK: World files can't open as document, but we can instead open the
+    // first map in the world.
+    if (fileName.endsWith(QLatin1String(".world"))) {
+        auto &worldManager = WorldManager::instance();
+
+        QString errorString;
+        World *world = worldManager.loadWorld(fileName, &errorString);
+        if (!world) {
+            QMessageBox::critical(this, tr("Error Loading World"), errorString);
+            return false;
+        } else {
+            mLoadedWorlds = worldManager.worlds().keys();
+
+            Document *document = mDocumentManager->currentDocument();
+            if (document && document->type() == Document::MapDocumentType)
+                if (worldManager.worldForMap(document->fileName()) == world)
+                    return true;
+
+            // Try to open the first map in the world, if the current map
+            // isn't already part of this world.
+            return openFile(world->firstMap());
+        }
+    }
+
     QString error;
     DocumentPtr document = mDocumentManager->loadDocument(fileName, fileFormat, &error);
 
     if (!document) {
+        // HACK: Templates can't open as documents, but we can instead show
+        // them in the Template Editor.
+        if (mMapEditor->templatesDock()->tryOpenTemplate(fileName)) {
+            mMapEditor->templatesDock()->bringToFront();
+            return true;
+        }
+
         QMessageBox::critical(this,
                               tr("Error Opening File"),
                               tr("Error opening '%1':\n%2").arg(fileName, error));
@@ -974,11 +1048,6 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     return true;
 }
 
-Project &MainWindow::project() const
-{
-    return mProjectDock->project();
-}
-
 void MainWindow::openFileDialog()
 {
     SessionOption<QString> lastUsedOpenFilter { "file.lastUsedOpenFilter" };
@@ -989,9 +1058,8 @@ void MainWindow::openFileDialog()
 
     FormatHelper<FileFormat> helper(FileFormat::Read, allFilesFilter);
 
-    auto preferences = Preferences::instance();
     const auto fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
-                                                         preferences->fileDialogStartLocation(),
+                                                         mDocumentManager->fileDialogStartLocation(),
                                                          helper.filter(),
                                                          &selectedFilter);
     if (fileNames.isEmpty())
@@ -1004,6 +1072,24 @@ void MainWindow::openFileDialog()
 
     for (const QString &fileName : fileNames)
         openFile(fileName, fileFormat);
+}
+
+void MainWindow::openFileInProject()
+{
+    if (mLocatorWidget)
+        return;
+
+    const QSize size(qMax(width() / 3, qMin(Utils::dpiScaled(600), width())),
+                     qMin(Utils::dpiScaled(600), height()));
+    const int remainingHeight = height() - size.height();
+    const QPoint localPos((width() - size.width()) / 2,
+                          qMin(remainingHeight / 5, Utils::dpiScaled(60)));
+    const QRect rect = QRect(mapToGlobal(localPos), size);
+
+    mLocatorWidget = new LocatorWidget(this);
+    mLocatorWidget->move(rect.topLeft());
+    mLocatorWidget->setMaximumSize(rect.size());
+    mLocatorWidget->show();
 }
 
 static Document *saveAsDocument(Document *document)
@@ -1071,6 +1157,19 @@ void MainWindow::saveAll()
             QMessageBox::critical(this, tr("Error Saving File"), error);
             return;
         }
+    }
+
+    for (const World *world : WorldManager::instance().worlds()) {
+        if (!mDocumentManager->isWorldModified(world->fileName))
+            continue;
+
+        QString error;
+        if (!WorldManager::instance().saveWorld(world->fileName, &error)) {
+            QMessageBox::critical(this, tr("Error Saving World"), error);
+            return;
+        }
+
+        DocumentManager::instance()->ensureWorldDocument(world->fileName)->undoStack()->setClean();
     }
 }
 
@@ -1268,7 +1367,7 @@ void MainWindow::saveProjectAs()
 {
     auto prefs = Preferences::instance();
 
-    Project &project = mProjectDock->project();
+    Project &project = ProjectManager::instance()->project();
     QString fileName = project.fileName();
     if (fileName.isEmpty()) {
         if (!project.folders().isEmpty()) {
@@ -1302,10 +1401,10 @@ void MainWindow::saveProjectAs()
         return;
 
     if (!fileName.endsWith(QLatin1String(".tiled-project"))) {
-        while (fileName.endsWith(QLatin1String(".")))
+        while (fileName.endsWith(QLatin1Char('.')))
             fileName.chop(1);
 
-        fileName.append(QLatin1String(".tiled-project"));
+        fileName.append(QStringLiteral(".tiled-project"));
     }
 
     if (!project.save(fileName)) {
@@ -1327,7 +1426,7 @@ void MainWindow::saveProjectAs()
 
 void MainWindow::closeProject()
 {
-    const Project &project = mProjectDock->project();
+    const Project &project = ProjectManager::instance()->project();
     if (project.fileName().isEmpty())
         return;
 
@@ -1352,9 +1451,7 @@ void MainWindow::switchProject(Project project)
     }
 
     prefs->setObjectTypesFile(project.mObjectTypesFile);
-    mProjectDock->setProject(std::move(project));
-
-    ScriptManager::instance().refreshExtensionsPaths();
+    ProjectManager::instance()->setProject(std::move(project));
 
     restoreSession();
     updateWindowTitle();
@@ -1380,7 +1477,7 @@ void MainWindow::restoreSession()
 
 void MainWindow::projectProperties()
 {
-    Project &project = mProjectDock->project();
+    Project &project = ProjectManager::instance()->project();
 
     if (ProjectPropertiesDialog(project, this).exec() == QDialog::Accepted) {
         project.save();
@@ -1798,11 +1895,8 @@ void MainWindow::updateRecentFilesMenu()
     mUi->menuRecentFiles->setEnabled(numRecentFiles > 0);
 }
 
-void MainWindow::updateRecentProjectsMenu()
+bool MainWindow::addRecentProjectsActions(QMenu *menu) const
 {
-    auto menu = mUi->menuRecentProjects;
-    menu->clear();
-
     const QStringList files = Preferences::instance()->recentProjects();
 
     for (const QString &file : files) {
@@ -1812,9 +1906,20 @@ void MainWindow::updateRecentProjectsMenu()
         action->setToolTip(fileInfo.filePath());
     }
 
-    menu->addSeparator();
-    menu->addAction(mUi->actionClearRecentProjects);
-    menu->setEnabled(!files.isEmpty());
+    return !files.isEmpty();
+}
+
+void MainWindow::updateRecentProjectsMenu()
+{
+    auto menu = mUi->menuRecentProjects;
+    menu->clear();
+
+    bool enabled = addRecentProjectsActions(menu);
+    if (enabled) {
+        menu->addSeparator();
+        menu->addAction(mUi->actionClearRecentProjects);
+    }
+    menu->setEnabled(enabled);
 }
 
 void MainWindow::resetToDefaultLayout()
@@ -1822,7 +1927,10 @@ void MainWindow::resetToDefaultLayout()
     // Make sure we're not in Clear View mode
     mUi->actionClearView->setChecked(false);
 
-    // Reset the Console and Issues dock
+    // Reset the docks
+    mProjectDock->setFloating(false);
+    mConsoleDock->setFloating(false);
+    mIssuesDock->setFloating(false);
     addDockWidget(Qt::LeftDockWidgetArea, mProjectDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
     addDockWidget(Qt::BottomDockWidgetArea, mIssuesDock);
@@ -1832,7 +1940,8 @@ void MainWindow::resetToDefaultLayout()
     tabifyDockWidget(mConsoleDock, mIssuesDock);
 
     // Reset the layout of the current editor
-    mDocumentManager->currentEditor()->resetLayout();
+    if (auto editor = mDocumentManager->currentEditor())
+        editor->resetLayout();
 }
 
 void MainWindow::updateViewsAndToolbarsMenu()
@@ -1853,10 +1962,10 @@ void MainWindow::updateViewsAndToolbarsMenu()
         const auto toolBars = editor->toolBars();
         for (auto toolBar : toolBars)
             mViewsAndToolbarsMenu->addAction(toolBar->toggleViewAction());
-
-        mViewsAndToolbarsMenu->addSeparator();
-        mViewsAndToolbarsMenu->addAction(mResetToDefaultLayout);
     }
+
+    mViewsAndToolbarsMenu->addSeparator();
+    mViewsAndToolbarsMenu->addAction(mResetToDefaultLayout);
 }
 
 void MainWindow::updateActions()
@@ -1865,11 +1974,14 @@ void MainWindow::updateActions()
     const auto document = mDocumentManager->currentDocument();
     const auto mapDocument = qobject_cast<const MapDocument*>(document);
     const auto tilesetDocument = qobject_cast<const TilesetDocument*>(document);
+    const auto &project = ProjectManager::instance()->project();
+    const bool projectHasFolders = !project.folders().isEmpty();
 
     Editor::StandardActions standardActions;
     if (editor)
         standardActions = editor->enabledStandardActions();
 
+    mUi->actionOpenFileInProject->setEnabled(projectHasFolders);
     mUi->actionSave->setEnabled(document);
     mUi->actionSaveAs->setEnabled(document);
     mUi->actionSaveAll->setEnabled(document);
@@ -1899,7 +2011,7 @@ void MainWindow::updateActions()
 
     mLayerMenu->menuAction()->setVisible(mapDocument);
 
-    const bool hasProject = !mProjectDock->project().fileName().isEmpty();
+    const bool hasProject = !project.fileName().isEmpty();
     mUi->actionCloseProject->setEnabled(hasProject);
 }
 
@@ -1981,10 +2093,10 @@ void MainWindow::readSettings()
 
 void MainWindow::updateWindowTitle()
 {
-    QString projectName = mProjectDock->project().fileName();
+    QString projectName = ProjectManager::instance()->project().fileName();
     if (!projectName.isEmpty()) {
         projectName = QFileInfo(projectName).completeBaseName();
-        projectName = QString(QLatin1String(" (%1)")).arg(projectName);
+        projectName = QStringLiteral(" (%1)").arg(projectName);
     }
 
     if (Document *document = mDocumentManager->currentDocument()) {
@@ -2016,6 +2128,8 @@ void MainWindow::retranslateUi()
     mNewLayerMenu->setTitle(tr("&New"));
     mGroupLayerMenu->setTitle(tr("&Group"));
     mViewsAndToolbarsAction->setText(tr("Views and Toolbars"));
+    mResetToDefaultLayout->setText(tr("Reset to Default Layout"));
+    mShowObjectTypesEditor->setText(tr("Object Types Editor"));
     mActionHandler->retranslateUi();
     CommandManager::instance()->retranslateUi();
 }
@@ -2182,7 +2296,7 @@ void MainWindow::currentEditorChanged(Editor *editor)
         return;
 
     const auto statusBarWidgets = editor->statusBarWidgets();
-    int index = 1;  // start after the errors/warnings label
+    int index = 2;  // start after the console and errors/warnings buttons
     for (QWidget *widget : statusBarWidgets) {
         statusBar()->insertWidget(index++, widget);
         widget->show(); // need to show because removeWidget hides explicitly

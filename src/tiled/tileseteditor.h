@@ -93,6 +93,7 @@ public:
     QAction *removeTilesAction() const;
     QAction *editTerrainAction() const;
     QAction *editCollisionAction() const;
+    QAction *editWangSetsAction() const;
     QAction *showAnimationEditor() const;
 
     TileAnimationEditor *tileAnimationEditor() const;
@@ -107,6 +108,9 @@ private:
     void selectionChanged();
     void currentChanged(const QModelIndex &index);
     void indexPressed(const QModelIndex &index);
+
+    void saveDocumentState(TilesetDocument *tilesetDocument) const;
+    void restoreDocumentState(TilesetDocument *tilesetDocument) const;
 
     void tilesetChanged();
     void selectedTilesChanged();

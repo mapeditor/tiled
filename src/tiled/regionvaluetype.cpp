@@ -45,14 +45,14 @@ QString RegionValueType::toString() const
 {
     switch (mRegion.rectCount()) {
     case 0:
-        return QLatin1String("Region(empty)");
+        return QStringLiteral("Region(empty)");
     case 1: {
         QRect r = boundingRect();
         return QString::asprintf("Region(x = %d, y = %d, w = %d, h = %d)",
                                  r.x(), r.y(), r.width(), r.height());
     }
     default:
-        return QLatin1String("Region(...)");
+        return QStringLiteral("Region(...)");
     }
 }
 

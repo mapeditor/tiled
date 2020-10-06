@@ -46,6 +46,7 @@ class BrokenLinksWidget;
 class Document;
 class Editor;
 class FileChangedWarning;
+class MainWindow;
 class MapDocument;
 class MapEditor;
 class MapView;
@@ -65,9 +66,11 @@ class DocumentManager : public QObject
     DocumentManager(QObject *parent = nullptr);
     ~DocumentManager() override;
 
+    friend class MainWindow;
+
 public:
     static DocumentManager *instance();
-    static void deleteInstance();
+    static DocumentManager *maybeInstance();
 
     QWidget *widget() const;
 
@@ -137,6 +140,8 @@ public:
     bool isAnyWorldModified() const;
     bool isWorldModified(const QString &fileName) const;
 
+    QString fileDialogStartLocation() const;
+
 signals:
     void documentCreated(Document *document);
     void documentOpened(Document *document);
@@ -199,6 +204,7 @@ private:
 
     void tilesetNameChanged(Tileset *tileset);
 
+    void filesChanged(const QStringList &fileNames);
     void fileChanged(const QString &fileName);
     void hideChangedWarning();
 

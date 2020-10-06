@@ -25,6 +25,7 @@
 #include "pluginmanager.h"
 #include "preferences.h"
 #include "scriptmanager.h"
+#include "session.h"
 #include "templatemanager.h"
 #include "tilesetmanager.h"
 
@@ -57,12 +58,12 @@ TiledApplication::TiledApplication(int &argc, char **argv)
 
 TiledApplication::~TiledApplication()
 {
-    DocumentManager::deleteInstance();
     TemplateManager::deleteInstance();
     ScriptManager::deleteInstance();
     TilesetManager::deleteInstance();
     Preferences::deleteInstance();
     PluginManager::deleteInstance();
+    Session::deinitialize();
 }
 
 bool TiledApplication::event(QEvent *event)

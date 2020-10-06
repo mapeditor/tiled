@@ -74,6 +74,12 @@ int main(int argc, char *argv[])
                           { "hide-layer",
                             QCoreApplication::translate("main", "Specifies a layer to omit from the output image. Can be repeated to hide multiple layers."),
                             QCoreApplication::translate("main", "name") },
+                          { "show-layer",
+                            QCoreApplication::translate("main", "If used only specified layers are shown. Can be repeated to show multiple specified layers only."),
+                            QCoreApplication::translate("main", "name") },
+                          { "advance-animations",
+                            QCoreApplication::translate("main", "If used tile animations are advanced by the specified duration."),
+                            QCoreApplication::translate("main", "duration") }
                       });
     parser.addPositionalArgument("map|world", QCoreApplication::translate("main", "Map or world file to render."));
     parser.addPositionalArgument("image", QCoreApplication::translate("main", "Image file to output."));
@@ -94,6 +100,7 @@ int main(int argc, char *argv[])
     w.setSmoothImages(!parser.isSet(QLatin1String("no-smoothing")));
     w.setIgnoreVisibility(parser.isSet(QLatin1String("ignore-visibility")));
     w.setLayersToHide(parser.values(QLatin1String("hide-layer")));
+    w.setLayersToShow(parser.values(QLatin1String("show-layer")));
 
     if (parser.isSet(QLatin1String("size"))) {
         bool ok;
@@ -118,6 +125,15 @@ int main(int argc, char *argv[])
         w.setScale(parser.value(QLatin1String("scale")).toDouble(&ok));
         if (!ok || w.scale() <= 0.0) {
             qWarning().noquote() << QCoreApplication::translate("main", "Invalid scale specified: \"%1\"").arg(parser.value(QLatin1String("scale")));
+            exit(1);
+        }
+    }
+
+    if (parser.isSet(QLatin1String("advance-animations"))) {
+        bool ok;
+        w.setAdvanceAnimations(parser.value(QLatin1String("advance-animations")).toInt(&ok));
+        if (!ok || w.advanceAnimations() < 0) {
+            qWarning().noquote() << QCoreApplication::translate("main", "Invalid advance-animations specified: \"%1\"").arg(parser.value(QLatin1String("advance-animations")));
             exit(1);
         }
     }

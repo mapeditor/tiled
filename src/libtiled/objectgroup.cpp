@@ -255,11 +255,11 @@ QString Tiled::drawOrderToString(ObjectGroup::DrawOrder drawOrder)
     switch (drawOrder) {
     default:
     case ObjectGroup::UnknownOrder:
-        return QLatin1String("unknown");
+        return QStringLiteral("unknown");
     case ObjectGroup::TopDownOrder:
-        return QLatin1String("topdown");
+        return QStringLiteral("topdown");
     case ObjectGroup::IndexOrder:
-        return QLatin1String("index");
+        return QStringLiteral("index");
     }
 }
 

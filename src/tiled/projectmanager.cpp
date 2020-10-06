@@ -1,8 +1,8 @@
 /*
- * mapref.h
+ * projectmanager.cpp
  * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
- * This file is part of Tiled Quick.
+ * This file is part of Tiled.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -18,30 +18,34 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "projectmanager.h"
 
-#include <QObject>
+#include "projectmodel.h"
 
 namespace Tiled {
-class Map;
+
+ProjectManager *ProjectManager::ourInstance;
+
+ProjectManager::ProjectManager(QObject *parent)
+    : QObject(parent)
+    , mProjectModel(new ProjectModel(this))
+{
+    Q_ASSERT(!ourInstance);
+    ourInstance = this;
 }
 
-namespace TiledQuick {
-
-class MapRef
+/**
+ * Replaces the current project with the given \a project.
+ */
+void ProjectManager::setProject(Project project)
 {
-    Q_GADGET
+    mProjectModel->setProject(std::move(project));
+    emit projectChanged();
+}
 
-public:
-    MapRef(Tiled::Map *map = nullptr)
-        : mMap(map)
-    {}
+Project &ProjectManager::project()
+{
+    return mProjectModel->project();
+}
 
-    Tiled::Map *mMap;
-
-    operator Tiled::Map *() const { return mMap; }
-};
-
-} // namespace TiledQuick
-
-Q_DECLARE_METATYPE(TiledQuick::MapRef)
+} // namespace Tiled

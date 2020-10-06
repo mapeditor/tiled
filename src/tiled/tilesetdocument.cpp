@@ -213,9 +213,8 @@ QString TilesetDocument::displayName() const
     QString displayName;
 
     if (isEmbedded()) {
-        MapDocument *mapDocument = mMapDocuments.first();
-        displayName = mapDocument->displayName();
-        displayName += QLatin1String("#");
+        displayName = mMapDocuments.first()->displayName();
+        displayName += QLatin1Char('#');
         displayName += mTileset->name();
     } else {
         displayName = QFileInfo(fileName()).fileName();
@@ -224,6 +223,21 @@ QString TilesetDocument::displayName() const
     }
 
     return displayName;
+}
+
+QString TilesetDocument::externalOrEmbeddedFileName() const
+{
+    QString result;
+
+    if (isEmbedded()) {
+        result = mMapDocuments.first()->fileName();
+        result += QLatin1Char('#');
+        result += mTileset->name();
+    } else {
+        result = fileName();
+    }
+
+    return result;
 }
 
 /**

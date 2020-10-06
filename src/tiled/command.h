@@ -22,7 +22,6 @@
 
 #include <QString>
 #include <QKeySequence>
-#include <QProcess>
 #include <QVariant>
 
 #ifdef Q_OS_MAC
@@ -42,53 +41,13 @@ struct Command
     bool showOutput = true;
     bool saveBeforeExecute = true;
 
-    /**
-     * Returns the final command with replaced tokens.
-     */
+    QString finalWorkingDirectory() const;
     QString finalCommand() const;
 
-    QString finalWorkingDirectory() const;
-
-    QString replaceVariables(const QString &string, bool quoteValues = true) const;
-
-    /**
-     * Executes the command in the operating system shell or terminal
-     * application.
-     */
     void execute(bool inTerminal = false) const;
 
-    /**
-     * Stores this command in a QVariant.
-     */
-    QVariant toQVariant() const;
-
-    /**
-     * Generates a command from a QVariant.
-     */
-    static Command fromQVariant(const QVariant &variant);
-};
-
-class CommandProcess : public QProcess
-{
-    Q_OBJECT
-
-public:
-    CommandProcess(const Command &command, bool inTerminal = false, bool showOutput = true);
-
-private:
-    void consoleOutput();
-    void consoleError();
-    void handleProcessError(QProcess::ProcessError);
-
-    void reportErrorAndDelete(const QString &);
-
-    QString mName;
-    QString mFinalCommand;
-    QString mFinalWorkingDirectory;
-
-#ifdef Q_OS_MAC
-    QTemporaryFile mFile;
-#endif
+    QVariantHash toVariant() const;
+    static Command fromVariant(const QVariant &variant);
 };
 
 } // namespace Tiled

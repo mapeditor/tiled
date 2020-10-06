@@ -103,6 +103,9 @@ QHash<TilesheetParameters, CutTiles> ImageCache::sCutTiles;
 
 LoadedImage ImageCache::loadImage(const QString &fileName)
 {
+    if (fileName.isEmpty())
+        return {};
+
     auto it = sLoadedImages.find(fileName);
 
     QFileInfo info(fileName);
@@ -127,6 +130,9 @@ LoadedImage ImageCache::loadImage(const QString &fileName)
 
 QPixmap ImageCache::loadPixmap(const QString &fileName)
 {
+    if (fileName.isEmpty())
+        return {};
+
     auto it = sLoadedPixmaps.find(fileName);
 
     bool found = it != sLoadedPixmaps.end();
@@ -171,6 +177,9 @@ static CutTiles cutTilesImpl(const TilesheetParameters &p)
 
 QVector<QPixmap> ImageCache::cutTiles(const TilesheetParameters &parameters)
 {
+    if (parameters.fileName.isEmpty())
+        return {};
+
     auto it = sCutTiles.find(parameters);
 
     bool found = it != sCutTiles.end();
@@ -199,6 +208,9 @@ void ImageCache::remove(const QString &fileName)
 
 QImage ImageCache::renderMap(const QString &fileName)
 {
+    if (fileName.isEmpty())
+        return {};
+
     static QSet<QString> loadingMaps;
 
     if (loadingMaps.contains(fileName)) {

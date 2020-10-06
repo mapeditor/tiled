@@ -68,7 +68,7 @@ Session::Session(const QString &fileName)
 {
     const auto states = get<QVariantMap>("fileStates");
     for (auto it = states.constBegin(); it != states.constEnd(); ++it)
-        fileStates.insert(resolve(it.key()), it.value());
+        fileStates.insert(resolve(it.key()), it.value().toMap());
 
     mSyncSettingsTimer.setInterval(1000);
     mSyncSettingsTimer.setSingleShot(true);
@@ -171,13 +171,23 @@ void Session::setActiveFile(const QString &fileNames)
 
 QVariantMap Session::fileState(const QString &fileName) const
 {
-    return fileStates.value(fileName).toMap();
+    return fileStates.value(fileName);
 }
 
 void Session::setFileState(const QString &fileName, const QVariantMap &fileState)
 {
     fileStates.insert(fileName, fileState);
     scheduleSync();
+}
+
+void Session::setFileStateValue(const QString &fileName, const QString &name, const QVariant &value)
+{
+    auto &state = fileStates[fileName];
+    auto &v = state[name];
+    if (v != value) {
+        v = value;
+        scheduleSync();
+    }
 }
 
 QString Session::defaultFileName()
@@ -195,7 +205,7 @@ QString Session::defaultFileNameForProject(const QString &projectFile)
     QString sessionFile = fileInfo.path();
     sessionFile += QLatin1Char('/');
     sessionFile += fileInfo.completeBaseName();
-    sessionFile += QLatin1String(".tiled-session");
+    sessionFile += QStringLiteral(".tiled-session");
 
     return sessionFile;
 }
@@ -203,7 +213,21 @@ QString Session::defaultFileNameForProject(const QString &projectFile)
 Session &Session::initialize()
 {
     Q_ASSERT(!mCurrent);
-    return switchCurrent(Preferences::instance()->startupSession());
+    auto &session = switchCurrent(Preferences::instance()->startupSession());
+
+    // Workaround for users facing issue #2852, bringing their default session
+    // to the right location.
+    if (session.project.isEmpty()) {
+        if (QFileInfo(session.fileName()).fileName() == QLatin1String("default.tiled-session")) {
+            const QString defaultName = defaultFileName();
+            if (session.fileName() != defaultName) {
+                session.setFileName(defaultName);
+                Preferences::instance()->setLastSession(defaultName);
+            }
+        }
+    }
+
+    return session;
 }
 
 Session &Session::current()
@@ -234,6 +258,11 @@ Session &Session::switchCurrent(const QString &fileName)
             callback();
 
     return *mCurrent;
+}
+
+void Session::deinitialize()
+{
+    mCurrent.reset();
 }
 
 template<typename T>

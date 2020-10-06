@@ -53,7 +53,8 @@ class SetTerrainImage : public QUndoCommand
 public:
     SetTerrainImage(TilesetDocument *tilesetDocument,
                     int terrainId,
-                    int tileId);
+                    int tileId,
+                    QUndoCommand *parent = nullptr);
 
     void undo() override;
     void redo() override;

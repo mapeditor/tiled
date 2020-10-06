@@ -58,10 +58,22 @@ void LuaTableWriter::writeStartReturnTable()
     m_valueWritten = false;
 }
 
-void LuaTableWriter::writeStartTable(const QByteArray &name)
+void LuaTableWriter::writeStartTable(const char *name)
 {
     prepareNewLine();
-    write(name + (m_minimize ? "={" : " = {"));
+    write(name);
+    write(m_minimize ? "={" : " = {");
+    ++m_indent;
+    m_newLine = false;
+    m_valueWritten = false;
+}
+
+void LuaTableWriter::writeStartTable(const QString &name)
+{
+    prepareNewLine();
+    write('[');
+    write(quote(name).toUtf8());
+    write(m_minimize ? "]={" : "] = {");
     ++m_indent;
     m_newLine = false;
     m_valueWritten = false;
@@ -168,9 +180,9 @@ QString LuaTableWriter::quote(const QString &str)
 
     for (const QChar c : str) {
         switch (c.unicode()) {
-        case '\\':  quoted.append(QLatin1String("\\\\"));  break;
-        case '"':   quoted.append(QLatin1String("\\\""));  break;
-        case '\n':  quoted.append(QLatin1String("\\n"));   break;
+        case '\\':  quoted.append(QStringLiteral("\\\\"));  break;
+        case '"':   quoted.append(QStringLiteral("\\\""));  break;
+        case '\n':  quoted.append(QStringLiteral("\\n"));   break;
         default:    quoted.append(c);
         }
     }

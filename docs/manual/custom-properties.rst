@@ -33,12 +33,21 @@ Tiled supports the following basic property types:
 
 .. figure:: images/properties/add-property.png
    :alt: Add Property Dialog
+   :scale: 66
 
    Add Property Dialog
 
 The property type is used to choose a custom editor in the Properties
 view. Choosing a number or boolean type also avoids that the value will
 get quoted in JSON and Lua exports.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.4</div>
+
+The context menu for custom file properties provides a quick way to open the
+file in its preferred editor. For object references, there is an action to
+quickly jump to the referenced object.
 
 .. raw:: html
 
@@ -76,13 +85,14 @@ menu.
 
 .. figure:: images/properties/object-types-editor.png
    :alt: Object Types Editor
+   :scale: 66
 
    Object Types Editor
 
-By default, Tiled stores these object types in the user settings.
-However, since you'll often want to share them with other people in your
-project, you can export your object types or change the storage location
-of the object types file. A simple XML or JSON file with
+By default, Tiled stores these object types globally. However, since you'll
+often want to share them with other people in your project, you can export
+your object types or change the storage location of the object types file
+:doc:`for your project <projects>`. A simple XML or JSON file with
 self-explanatory contents is used to store your object types.
 
 The color not only affects the rendering of the various shapes of
@@ -124,9 +134,6 @@ those values if you need to.
    -  **Enumerations**, where you can predefine all possible values and it
       forms a combo box
       (`#1211 <https://github.com/bjorn/tiled/issues/1211>`__).
-   -  **Object references**, which would allow easily linking objects
-      together and Tiled could display such connections
-      (`#707 <https://github.com/bjorn/tiled/issues/707>`__).
    -  **Array properties**, which would be properties having a list of
       values (`#1493 <https://github.com/bjorn/tiled/issues/1493>`__).
    -  **Dictionary properties**, which would be properties that can contain
@@ -142,12 +149,7 @@ those values if you need to.
    defining which custom properties are valid for maps, tilesets, layers,
    etc. (`#1410 <https://github.com/bjorn/tiled/issues/1410>`__)
 
-   Finally, the predefined properties would work very well together with
-   explicit **support for projects**. Then you could switch between
-   different projects or get started on an existing project, without
-   needing to configure Tiled to use the right object type definitions.
-
    If you like any of these plans, please help me getting around to it
-   faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
+   faster by `sponsoring Tiled development <https://www.mapeditor.org/donate>`__. The
    more support I receive the more time I can afford to spend improving
    Tiled!

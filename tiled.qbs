@@ -7,7 +7,7 @@ Project {
     qbsSearchPaths: "qbs"
     minimumQbsVersion: "1.8"
 
-    property string version: Environment.getEnv("TILED_VERSION") || "1.3.4";
+    property string version: Environment.getEnv("TILED_VERSION") || "1.4.3";
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT")
     property bool release: Environment.getEnv("TILED_RELEASE")
     property bool installHeaders: false
@@ -21,6 +21,7 @@ Project {
         "dist/win/installer.qbs",
         "docs",
         "src/libtiled",
+        "src/libtiledquick",
         "src/plugins",
         "src/qtpropertybrowser",
         "src/qtsingleapplication",

@@ -19,7 +19,6 @@
  */
 
 #include "commandbutton.h"
-#include "commanddatamodel.h"
 #include "commanddialog.h"
 #include "commandmanager.h"
 #include "utils.h"
@@ -30,60 +29,42 @@
 #include <QPushButton>
 
 using namespace Tiled;
-using namespace Tiled::Utils;
 
 CommandButton::CommandButton(QWidget *parent)
     : QToolButton(parent)
-    , mMenu(new QMenu(this))
 {
     setIcon(QIcon(QLatin1String(":images/24/system-run.png")));
-    setThemeIcon(this, "system-run");
+    Utils::setThemeIcon(this, "system-run");
     retranslateUi();
 
+    auto menu = new QMenu(this);
+    setMenu(menu);
     setPopupMode(QToolButton::MenuButtonPopup);
-    setMenu(mMenu);
 
-    CommandManager::instance()->registerMenu(mMenu);
+    CommandManager::instance()->registerMenu(menu);
 
     connect(this, &QAbstractButton::clicked, this, &CommandButton::runCommand);
 }
 
 void CommandButton::runCommand()
 {
-    Command command;
+    if (CommandManager::instance()->executeDefaultCommand())
+        return;
 
-    QAction *action = dynamic_cast<QAction*>(sender());
-    if (action && action->data().isValid()) {
-        // run the command passed by the action
-        command = Command::fromQVariant(action->data());
-    } else {
-        // run the default command
-        if (auto c = CommandManager::instance()->commandDataModel()->firstEnabledCommand()) {
-            command = *c;
-        } else {
-            QMessageBox msgBox(window());
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setWindowTitle(tr("Error Executing Command"));
-            msgBox.setText(tr("You do not have any commands setup."));
-            msgBox.addButton(QMessageBox::Ok);
-            const auto editButton = msgBox.addButton(tr("Edit commands..."), QMessageBox::ActionRole);
-            msgBox.setDefaultButton(QMessageBox::Ok);
-            msgBox.setEscapeButton(QMessageBox::Ok);
+    QMessageBox warning(QMessageBox::Warning,
+                        tr("Error Executing Command"),
+                        tr("You do not have any commands setup."),
+                        QMessageBox::Ok,
+                        window());
 
-            connect(editButton, &QAbstractButton::clicked, this, &CommandButton::showDialog);
+    const auto editButton = warning.addButton(tr("Edit Commands..."), QMessageBox::ActionRole);
+    warning.setDefaultButton(QMessageBox::Ok);
+    warning.setEscapeButton(QMessageBox::Ok);
 
-            msgBox.exec();
-            return;
-        }
-    }
+    connect(editButton, &QAbstractButton::clicked,
+            CommandManager::instance(), &CommandManager::showDialog);
 
-    command.execute();
-}
-
-void CommandButton::showDialog()
-{
-    CommandDialog dialog(window());
-    dialog.exec();
+    warning.exec();
 }
 
 void CommandButton::changeEvent(QEvent *event)

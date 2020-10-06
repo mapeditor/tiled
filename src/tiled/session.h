@@ -136,6 +136,7 @@ public:
 
     QVariantMap fileState(const QString &fileName) const;
     void setFileState(const QString &fileName, const QVariantMap &fileState);
+    void setFileStateValue(const QString &fileName, const QString &name, const QVariant &value);
 
     template <typename T>
     T get(const char *key, const T &defaultValue = T()) const
@@ -167,13 +168,14 @@ public:
     static Session &initialize();
     static Session &current();
     static Session &switchCurrent(const QString &fileName);
+    static void deinitialize();
 
     QString project;
     QStringList recentFiles;
     QStringList openFiles;
     QStringList expandedProjectPaths;
     QString activeFile;
-    QVariantMap fileStates;
+    QMap<QString, QVariantMap> fileStates;
 
     using ChangedCallback = std::function<void()>;
     using Callbacks = QLinkedList<ChangedCallback>;

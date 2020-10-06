@@ -22,11 +22,11 @@
 
 #include "automapperwrapper.h"
 #include "logginginterface.h"
-#include "mainwindow.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "preferences.h"
 #include "project.h"
+#include "projectmanager.h"
 #include "tilelayer.h"
 
 #include <QDir>
@@ -239,16 +239,22 @@ bool AutomappingManager::loadFile(const QString &filePath)
  */
 void AutomappingManager::setMapDocument(MapDocument *mapDocument, const QString &rulesFile)
 {
-    if (mMapDocument)
-        mMapDocument->disconnect(this);
+    if (mMapDocument != mapDocument) {
+        if (mMapDocument)
+            mMapDocument->disconnect(this);
 
-    mMapDocument = mapDocument;
+        mMapDocument = mapDocument;
 
-    if (mMapDocument) {
-        connect(mMapDocument, &MapDocument::fileNameChanged,
-                this, &AutomappingManager::onMapFileNameChanged);
-        connect(mMapDocument, &MapDocument::regionEdited,
-                this, &AutomappingManager::onRegionEdited);
+        if (mMapDocument) {
+            connect(mMapDocument, &MapDocument::fileNameChanged,
+                    this, &AutomappingManager::onMapFileNameChanged);
+            connect(mMapDocument, &MapDocument::regionEdited,
+                    this, &AutomappingManager::onRegionEdited);
+        }
+
+        // Cleanup needed because AutoMapper instances hold a pointer to the
+        // MapDocument they apply to.
+        cleanUp();
     }
 
     refreshRulesFile(rulesFile);
@@ -264,7 +270,7 @@ void AutomappingManager::refreshRulesFile(const QString &ruleFileOverride)
         rulesFile = mapPath + QLatin1String("/rules.txt");
 
         if (!QFileInfo::exists(rulesFile)) {
-            auto &project = MainWindow::instance()->project();
+            auto &project = ProjectManager::instance()->project();
             rulesFile = project.mAutomappingRulesFile;
         }
     }

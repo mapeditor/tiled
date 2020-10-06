@@ -191,7 +191,7 @@ MatchOutsideMap
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.3</div>
+   <div class="new new-prev">Since Tiled 1.3</div>
 
 OverflowBorder
    This map property customizes the behavior intended by the **MatchOutsideMap**
@@ -204,7 +204,7 @@ OverflowBorder
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.3</div>
+   <div class="new new-prev">Since Tiled 1.3</div>
 
 WrapBorder
    This map property customizes the behavior intended by the **MatchOutsideMap**

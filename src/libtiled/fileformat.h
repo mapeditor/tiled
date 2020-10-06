@@ -114,7 +114,7 @@ public:
                 const QString nameFilter = format->nameFilter();
 
                 if (!mFilter.isEmpty())
-                    mFilter += QLatin1String(";;");
+                    mFilter += QStringLiteral(";;");
                 mFilter += nameFilter;
 
                 mFormats.append(format);
