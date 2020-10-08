@@ -806,7 +806,11 @@ void TiledProxyStyle::drawControl(ControlElement element,
 
             QRect textRect(xpos, y + windowsItemVMargin, w - xm - windowsRightBorder - tab + 1, h - 2 * windowsItemVMargin);
             QRect vTextRect = visualRect(opt->direction, menuitem->rect, textRect);
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+            QStringView s(menuitem->text);
+#else
             QStringRef s(&menuitem->text);
+#endif
             if (!s.isEmpty()) {                     // draw text
                 p->save();
                 int t = s.indexOf(QLatin1Char('\t'));

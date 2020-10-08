@@ -28,6 +28,8 @@
 
 #include <memory>
 
+#include "qtcompat_p.h"
+
 class QAction;
 class QKeyEvent;
 class QMenu;

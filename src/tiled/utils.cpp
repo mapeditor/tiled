@@ -223,7 +223,7 @@ static bool matchingRanges(const QString &word, QStringRef string, int offset, R
 
 int matchingScore(const QStringList &words, QStringRef string)
 {
-    const QStringRef fileName = string.mid(string.lastIndexOf(QLatin1Char('/')) + 1);
+    const auto fileName = string.mid(string.lastIndexOf(QLatin1Char('/')) + 1);
 
     int totalScore = 1;     // no words matches everything
 
@@ -245,7 +245,7 @@ int matchingScore(const QStringList &words, QStringRef string)
 RangeSet<int> matchingRanges(const QStringList &words, QStringRef string)
 {
     const int startOfFileName = string.lastIndexOf(QLatin1Char('/')) + 1;
-    const QStringRef fileName = string.mid(startOfFileName);
+    const auto fileName = string.mid(startOfFileName);
 
     RangeSet<int> result;
 
