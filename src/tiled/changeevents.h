@@ -27,6 +27,7 @@
 namespace Tiled {
 
 class Layer;
+class WangSet;
 
 class ChangeEvent
 {
@@ -43,6 +44,7 @@ public:
         MapObjectsChanged,
         MapObjectsRemoved,
         ObjectGroupChanged,
+        WangSetChanged,
     } type;
 
 protected:
@@ -150,6 +152,23 @@ public:
 
     ObjectGroup *objectGroup;
     int index;
+};
+
+class WangSetChangeEvent : public ChangeEvent
+{
+public:
+    enum WangSetProperty {
+        TypeProperty            = 1 << 0,
+    };
+
+    WangSetChangeEvent(WangSet *wangSet, int properties)
+        : ChangeEvent(WangSetChanged)
+        , wangSet(wangSet)
+        , properties(properties)
+    {}
+
+    WangSet *wangSet;
+    int properties;
 };
 
 } // namespace Tiled

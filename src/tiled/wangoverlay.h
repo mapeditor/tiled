@@ -1,6 +1,6 @@
 /*
- * renamewangset.h
- * Copyright 2017, Benjamin Trotte <bdtrotte@ucsc.edu>
+ * wangoverlay.h
+ * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,29 +20,17 @@
 
 #pragma once
 
-#include <QUndoCommand>
+#include "wangset.h"
+
+class QPainter;
+class QRect;
 
 namespace Tiled {
 
-class WangSet;
-
-class TilesetDocument;
-
-class RenameWangSet : public QUndoCommand
-{
-public:
-    RenameWangSet(TilesetDocument *tilesetDocument,
-                  WangSet *wangSet,
-                  const QString &newName);
-
-    void undo() override;
-    void redo() override;
-
-private:
-    TilesetDocument *mTilesetDocument;
-    WangSet *mWangSet;
-    QString mOldName;
-    QString mNewName;
-};
+void paintWangOverlay(QPainter *painter,
+                      WangId wangId,
+                      const WangSet &wangSet,
+                      const QRect &rect,
+                      bool transparent = true);
 
 } // namespace Tiled

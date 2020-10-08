@@ -626,8 +626,7 @@ Wang Set
     :header: Field, Type, Description
     :widths: 1, 1, 4
 
-    cornercolors,     array,            "Array of :ref:`Wang colors <json-wangcolor>`"
-    edgecolors,       array,            "Array of :ref:`Wang colors <json-wangcolor>`"
+    colors,           array,            "Array of :ref:`Wang colors <json-wangcolor>`"
     name,             string,           "Name of the Wang set"
     properties,       array,            "Array of :ref:`Properties <json-property>`"
     tile,             int,              "Local ID of tile representing the Wang set"
@@ -645,6 +644,7 @@ Wang Color
     color,            string,           "Hex-formatted color (#RRGGBB or #AARRGGBB)"
     name,             string,           "Name of the Wang color"
     probability,      double,           "Probability used when randomizing"
+    properties,       array,            "Array of :ref:`Properties <json-property>`"
     tile,             int,              "Local ID of tile representing the Wang color"
 
 Example:
@@ -730,6 +730,14 @@ A point on a polygon or a polyline, relative to the position of the object.
 
 Changelog
 ---------
+
+Tiled 1.5
+~~~~~~~~~
+
+* Unified ``cornercolors`` and ``edgecolors`` attributes of :ref:`json-wangset`
+  as the new ``colors`` property.
+
+* :ref:`json-wangcolor` can now store ``properties``.
 
 Tiled 1.4
 ~~~~~~~~~

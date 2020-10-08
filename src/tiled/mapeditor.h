@@ -41,8 +41,6 @@ class QToolButton;
 
 namespace Tiled {
 
-class Terrain;
-
 class AbstractTool;
 class BucketFillTool;
 class ComboBoxProxyModel;
@@ -58,8 +56,6 @@ class ReversingProxyModel;
 class ShapeFillTool;
 class StampBrush;
 class TemplatesDock;
-class TerrainBrush;
-class TerrainDock;
 class TileStamp;
 class TileStampManager;
 class TileStampsDock;
@@ -138,7 +134,6 @@ private:
     void setWangFill(bool value);
 
     void setStamp(const TileStamp &stamp);
-    void selectTerrainBrush();
 
     void selectWangBrush();
 
@@ -174,7 +169,6 @@ private:
     ObjectsDock *mObjectsDock;
     TemplatesDock *mTemplatesDock;
     TilesetDock *mTilesetDock;
-    TerrainDock *mTerrainDock;
     WangDock *mWangDock;
     MiniMapDock* mMiniMapDock;
     TileStampsDock *mTileStampsDock;
@@ -190,7 +184,6 @@ private:
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
     ShapeFillTool *mShapeFillTool;
-    TerrainBrush *mTerrainBrush;
     WangBrush *mWangBrush;
     EditPolygonTool *mEditPolygonTool;
 

@@ -26,7 +26,6 @@
 #include "changemapproperty.h"
 #include "changeobjectgroupproperties.h"
 #include "changeproperties.h"
-#include "changeterrain.h"
 #include "changetile.h"
 #include "changetileimagesource.h"
 #include "changetileprobability.h"
@@ -44,18 +43,15 @@
 #include "objecttemplate.h"
 #include "preferences.h"
 #include "properties.h"
-#include "renamewangset.h"
 #include "replacetileset.h"
 #include "resizemapobject.h"
 #include "rotatemapobject.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
 #include "tilesetformat.h"
 #include "tilesetmanager.h"
-#include "tilesetterrainmodel.h"
 #include "tilesetwangsetmodel.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
@@ -132,7 +128,6 @@ void PropertyBrowser::setDocument(Document *document)
     if (mDocument) {
         mDocument->disconnect(this);
         if (mTilesetDocument) {
-            mTilesetDocument->terrainModel()->disconnect(this);
             mTilesetDocument->wangSetModel()->disconnect(this);
         }
     }
@@ -174,10 +169,6 @@ void PropertyBrowser::setDocument(Document *document)
 
         connect(tilesetDocument, &TilesetDocument::selectedTilesChanged,
                 this, &PropertyBrowser::selectedTilesChanged);
-
-        TilesetTerrainModel *terrainModel = tilesetDocument->terrainModel();
-        connect(terrainModel, &TilesetTerrainModel::terrainChanged,
-                this, &PropertyBrowser::terrainChanged);
 
         TilesetWangSetModel *wangSetModel = tilesetDocument->wangSetModel();
         connect(wangSetModel, &TilesetWangSetModel::wangSetChanged,
@@ -340,12 +331,6 @@ void PropertyBrowser::tileTypeChanged(Tile *tile)
         if (mapObject->cell().tile() == tile && mapObject->type().isEmpty())
             updateProperties();
     }
-}
-
-void PropertyBrowser::terrainChanged(Tileset *tileset, int index)
-{
-    if (mObject == tileset->terrain(index))
-        updateProperties();
 }
 
 void PropertyBrowser::wangSetChanged(Tileset *tileset, int index)
@@ -568,7 +553,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::LayerType:             applyLayerValue(id, val); break;
     case Object::TilesetType:           applyTilesetValue(id, val); break;
     case Object::TileType:              applyTileValue(id, val); break;
-    case Object::TerrainType:           applyTerrainValue(id, val); break;
+    case Object::TerrainType:           break;
     case Object::WangSetType:           applyWangSetValue(id, val); break;
     case Object::WangColorType:         applyWangColorValue(id, val); break;
     case Object::ObjectTemplateType:    break;
@@ -905,29 +890,23 @@ void PropertyBrowser::addTileProperties()
     addProperty(groupProperty);
 }
 
-void PropertyBrowser::addTerrainProperties()
-{
-    QtProperty *groupProperty = mGroupManager->addProperty(tr("Terrain"));
-    QtVariantProperty *nameProperty = addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
-    nameProperty->setEnabled(mTilesetDocument);
-    addProperty(groupProperty);
-}
-
 void PropertyBrowser::addWangSetProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Wang Set"));
     QtVariantProperty *nameProperty = addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
-    QtVariantProperty *edgeProperty = addProperty(EdgeCountProperty, QVariant::Int, tr("Edge Count"), groupProperty);
-    QtVariantProperty *cornerProperty = addProperty(CornerCountProperty, QVariant::Int, tr("Corner Count"), groupProperty);
+    QtVariantProperty *typeProperty = addProperty(WangSetTypeProperty,
+                                                  QtVariantPropertyManager::enumTypeId(),
+                                                  tr("Type"),
+                                                  groupProperty);
+    QtVariantProperty *colorCountProperty = addProperty(ColorCountProperty, QVariant::Int, tr("Color Count"), groupProperty);
 
-    edgeProperty->setAttribute(QLatin1String("minimum"), 1);
-    edgeProperty->setAttribute(QLatin1String("maximum"), 15);
-    cornerProperty->setAttribute(QLatin1String("minimum"), 1);
-    cornerProperty->setAttribute(QLatin1String("maximum"), 15);
+    typeProperty->setAttribute(QLatin1String("enumNames"), mWangSetTypeNames);
+
+    colorCountProperty->setAttribute(QLatin1String("minimum"), 0);
+    colorCountProperty->setAttribute(QLatin1String("maximum"), WangId::MAX_COLOR_COUNT);
 
     nameProperty->setEnabled(mTilesetDocument);
-    edgeProperty->setEnabled(mTilesetDocument);
-    cornerProperty->setEnabled(mTilesetDocument);
+    colorCountProperty->setEnabled(mTilesetDocument);
 
     addProperty(groupProperty);
 }
@@ -1404,20 +1383,6 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
     }
 }
 
-void PropertyBrowser::applyTerrainValue(PropertyId id, const QVariant &val)
-{
-    Q_ASSERT(mTilesetDocument);
-
-    Terrain *terrain = static_cast<Terrain*>(mObject);
-
-    if (id == NameProperty) {
-        QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->push(new RenameTerrain(mTilesetDocument,
-                                          terrain->id(),
-                                          val.toString()));
-    }
-}
-
 void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
 {
     Q_ASSERT(mTilesetDocument);
@@ -1430,15 +1395,17 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
                                                        wangSet,
                                                        val.toString()));
         break;
-    case EdgeCountProperty:
-        mDocument->undoStack()->push(new ChangeWangSetEdgeCount(mTilesetDocument,
-                                                                wangSet,
-                                                                val.toInt()));
+    case WangSetTypeProperty: {
+        auto type = static_cast<WangSet::Type>(val.toInt());
+        mDocument->undoStack()->push(new ChangeWangSetType(mTilesetDocument,
+                                                           wangSet,
+                                                           type));
         break;
-    case CornerCountProperty:
-        mDocument->undoStack()->push(new ChangeWangSetCornerCount(mTilesetDocument,
-                                                                  wangSet,
-                                                                  val.toInt()));
+    }
+    case ColorCountProperty:
+        mDocument->undoStack()->push(new ChangeWangSetColorCount(mTilesetDocument,
+                                                                 wangSet,
+                                                                 val.toInt()));
         break;
     default:
         break;
@@ -1600,7 +1567,7 @@ void PropertyBrowser::addProperties()
         break;
     case Object::TilesetType:           addTilesetProperties(); break;
     case Object::TileType:              addTileProperties(); break;
-    case Object::TerrainType:           addTerrainProperties(); break;
+    case Object::TerrainType:           break;
     case Object::WangSetType:           addWangSetProperties(); break;
     case Object::WangColorType:         addWangColorProperties(); break;
     case Object::ObjectTemplateType:    break;
@@ -1789,16 +1756,13 @@ void PropertyBrowser::updateProperties()
             imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));
         break;
     }
-    case Object::TerrainType: {
-        const Terrain *terrain = static_cast<const Terrain*>(mObject);
-        mIdToProperty[NameProperty]->setValue(terrain->name());
+    case Object::TerrainType:
         break;
-    }
     case Object::WangSetType: {
         const WangSet *wangSet = static_cast<const WangSet*>(mObject);
         mIdToProperty[NameProperty]->setValue(wangSet->name());
-        mIdToProperty[EdgeCountProperty]->setValue(wangSet->edgeColorCount());
-        mIdToProperty[CornerCountProperty]->setValue(wangSet->cornerColorCount());
+        mIdToProperty[WangSetTypeProperty]->setValue(wangSet->type());
+        mIdToProperty[ColorCountProperty]->setValue(wangSet->colorCount());
         break;
     }
     case Object::WangColorType: {
@@ -2041,6 +2005,11 @@ void PropertyBrowser::retranslateUi()
     mDrawOrderNames.clear();
     mDrawOrderNames.append(tr("Top Down"));
     mDrawOrderNames.append(tr("Manual"));
+
+    mWangSetTypeNames.clear();
+    mWangSetTypeNames.append(tr("Corner"));
+    mWangSetTypeNames.append(tr("Edge"));
+    mWangSetTypeNames.append(tr("Mixed"));
 
     removeProperties();
     addProperties();

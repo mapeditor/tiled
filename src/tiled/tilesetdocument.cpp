@@ -24,10 +24,8 @@
 #include "issuesmodel.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilesetformat.h"
-#include "tilesetterrainmodel.h"
 #include "tilesetwangsetmodel.h"
 #include "wangcolormodel.h"
 #include "wangset.h"
@@ -62,7 +60,6 @@ QMap<SharedTileset, TilesetDocument*> TilesetDocument::sTilesetToDocument;
 TilesetDocument::TilesetDocument(const SharedTileset &tileset)
     : Document(TilesetDocumentType, tileset->fileName())
     , mTileset(tileset)
-    , mTerrainModel(new TilesetTerrainModel(this, this))
     , mWangSetModel(new TilesetWangSetModel(this, this))
 {
     Q_ASSERT(!sTilesetToDocument.contains(tileset));
@@ -78,9 +75,6 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset)
             this, &TilesetDocument::onPropertyChanged);
     connect(this, &TilesetDocument::propertiesChanged,
             this, &TilesetDocument::onPropertiesChanged);
-
-    connect(mTerrainModel, &TilesetTerrainModel::terrainRemoved,
-            this, &TilesetDocument::onTerrainRemoved);
 
     connect(mWangSetModel, &TilesetWangSetModel::wangSetRemoved,
             this, &TilesetDocument::onWangSetRemoved);
@@ -438,8 +432,6 @@ void TilesetDocument::checkIssues()
                   std::function<void()>(), this);   // todo: hook to file dialog
         }
     }
-    for (Terrain *terrain : tileset()->terrains())
-        checkFilePathProperties(terrain);
     for (WangSet *wangSet : tileset()->wangSets()) {
         checkFilePathProperties(wangSet);
         // todo: check properties on wang colors
@@ -473,12 +465,6 @@ void TilesetDocument::onPropertiesChanged(Object *object)
 {
     for (MapDocument *mapDocument : mapDocuments())
         emit mapDocument->propertiesChanged(object);
-}
-
-void TilesetDocument::onTerrainRemoved(Terrain *terrain)
-{
-    if (terrain == mCurrentObject)
-        setCurrentObject(nullptr);
 }
 
 void TilesetDocument::onWangSetRemoved(WangSet *wangSet)

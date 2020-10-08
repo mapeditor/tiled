@@ -69,7 +69,7 @@ private:
     void onTilesetLayoutChanged(const QList<QPersistentModelIndex> &parents, QAbstractItemModel::LayoutChangeHint hint);
     void onTilesetDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
-    void onWangSetAboutToBeAdded(Tileset *tileset);
+    void onWangSetAboutToBeAdded(Tileset *tileset, int index);
     void onWangSetAdded(Tileset *tileset);
     void onWangSetAboutToBeRemoved(WangSet *wangSet);
     void onWangSetRemoved(WangSet *wangSet);

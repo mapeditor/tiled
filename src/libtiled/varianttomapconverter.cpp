@@ -269,28 +269,50 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 
     tileset->setProperties(extractProperties(variantMap));
 
-    // Read terrains
+    // Read terrains as a WangSet
     QVariantList terrainsVariantList = variantMap[QStringLiteral("terrains")].toList();
-    for (int i = 0; i < terrainsVariantList.count(); ++i) {
-        QVariantMap terrainMap = terrainsVariantList[i].toMap();
-        Terrain *terrain = tileset->addTerrain(terrainMap[QStringLiteral("name")].toString(),
-                                               terrainMap[QStringLiteral("tile")].toInt());
-        terrain->setProperties(extractProperties(terrainMap));
+    WangSet *terrainWangSet = nullptr;
+    if (!terrainsVariantList.isEmpty()) {
+        auto wangSet = std::make_unique<WangSet>(tileset.data(), tr("Converted Terrains"), WangSet::Corner, -1);
+        wangSet->setColorCount(terrainsVariantList.size());
+
+        for (int i = 0; i < terrainsVariantList.count(); ++i) {
+            QVariantMap terrainMap = terrainsVariantList[i].toMap();
+
+            const auto &wc = wangSet->colorAt(i + 1);
+            wc->setName(terrainMap[QStringLiteral("name")].toString());
+            wc->setImageId(terrainMap[QStringLiteral("tile")].toInt());
+            wc->setProperties(extractProperties(terrainMap));
+        }
+
+        terrainWangSet = wangSet.get();
+        tileset->addWangSet(std::move(wangSet));
     }
 
     // Reads tile information (everything except the properties)
     auto readTile = [&](Tile *tile, const QVariantMap &tileVar) {
-        bool ok;
+        bool ok = true;
 
         tile->setType(tileVar[QStringLiteral("type")].toString());
 
+        // Read tile terrain ids as Wang IDs.
         QList<QVariant> terrains = tileVar[QStringLiteral("terrain")].toList();
-        if (terrains.count() == 4) {
-            for (int i = 0; i < 4; ++i) {
-                int terrainId = terrains.at(i).toInt(&ok);
-                if (ok && terrainId >= 0 && terrainId < tileset->terrainCount())
-                    tile->setCornerTerrainId(i, terrainId);
+        if (terrains.count() == 4 && terrainWangSet) {
+            WangId wangId;
+            for (int i = 0; i < 4 && ok; ++i) {
+                const int c = terrains.at(i).toInt(&ok) + 1;
+                if (ok) {
+                    switch (i) {
+                    case 0: wangId.setIndexColor(WangId::TopLeft, c); break;
+                    case 1: wangId.setIndexColor(WangId::TopRight, c); break;
+                    case 2: wangId.setIndexColor(WangId::BottomLeft, c); break;
+                    case 3: wangId.setIndexColor(WangId::BottomRight, c); break;
+                    }
+                }
             }
+
+            if (terrainWangSet->wangIdIsValid(wangId) && ok)
+                terrainWangSet->addTile(tile, wangId);
         }
 
         qreal probability = tileVar[QStringLiteral("probability")].toDouble(&ok);
@@ -397,19 +419,33 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 std::unique_ptr<WangSet> VariantToMapConverter::toWangSet(const QVariantMap &variantMap, Tileset *tileset)
 {
     const QString name = variantMap[QStringLiteral("name")].toString();
+    const WangSet::Type type = wangSetTypeFromString(variantMap[QStringLiteral("type")].toString());
     const int tile = variantMap[QStringLiteral("tile")].toInt();
 
-    std::unique_ptr<WangSet> wangSet { new WangSet(tileset, name, tile) };
+    std::unique_ptr<WangSet> wangSet { new WangSet(tileset, name, type, tile) };
 
     wangSet->setProperties(extractProperties(variantMap));
 
-    const QVariantList edgeColorVariants = variantMap[QStringLiteral("edgecolors")].toList();
-    for (const QVariant &edgeColorVariant : edgeColorVariants)
-        wangSet->addWangColor(toWangColor(edgeColorVariant.toMap(), true));
+    const QVariantList colorVariants = variantMap[QStringLiteral("colors")].toList();
+    for (const QVariant &colorVariant : colorVariants)
+        wangSet->addWangColor(toWangColor(colorVariant.toMap()));
 
+    // For backwards-compatibility
+    QVector<int> cornerColors;
+    QVector<int> edgeColors;
+
+    const QVariantList edgeColorVariants = variantMap[QStringLiteral("edgecolors")].toList();
+    for (const QVariant &edgeColorVariant : edgeColorVariants) {
+        auto wc = toWangColor(edgeColorVariant.toMap());
+        wangSet->addWangColor(wc);
+        edgeColors.append(wc->colorIndex());
+    }
     const QVariantList cornerColorVariants = variantMap[QStringLiteral("cornercolors")].toList();
-    for (const QVariant &cornerColorVariant : cornerColorVariants)
-        wangSet->addWangColor(toWangColor(cornerColorVariant.toMap(), false));
+    for (const QVariant &cornerColorVariant : cornerColorVariants) {
+        auto wc = toWangColor(cornerColorVariant.toMap());
+        wangSet->addWangColor(wc);
+        cornerColors.append(wc->colorIndex());
+    }
 
     const QVariantList wangTileVariants = variantMap[QStringLiteral("wangtiles")].toList();
     for (const QVariant &wangTileVariant : wangTileVariants) {
@@ -420,8 +456,24 @@ std::unique_ptr<WangSet> VariantToMapConverter::toWangSet(const QVariantMap &var
 
         WangId wangId;
         bool ok = true;
-        for (int i = 0; i < 8 && ok; ++i)
+        for (int i = 0; i < WangId::NumIndexes && ok; ++i)
             wangId.setIndexColor(i, wangIdVariant[i].toUInt(&ok));
+
+        // Backwards compatibility with version 1.4:
+        // If the wang set was using explicit corner and edge colors,
+        // map the WangId to the unified colors.
+        if (!cornerColors.isEmpty() || !edgeColors.isEmpty()) {
+            for (int i = 0; i < 4; ++i) {
+                int color = wangId.cornerColor(i);
+                if (color > 0 && color <= cornerColors.size())
+                    wangId.setCornerColor(i, cornerColors.at(color - 1));
+            }
+            for (int i = 0; i < 4; ++i) {
+                int color = wangId.edgeColor(i);
+                if (color > 0 && color <= edgeColors.size())
+                    wangId.setEdgeColor(i, edgeColors.at(color - 1));
+            }
+        }
 
         if (!ok || !wangSet->wangIdIsValid(wangId)) {
             mError = QStringLiteral("Invalid wangId given for tileId: ") + QString::number(tileId);
@@ -442,23 +494,32 @@ std::unique_ptr<WangSet> VariantToMapConverter::toWangSet(const QVariantMap &var
         wangSet->addWangTile(wangTile);
     }
 
+
+    // Do something useful if we loaded an old Wang set
+    if (cornerColors.isEmpty() && !edgeColors.isEmpty())
+        wangSet->setType(WangSet::Edge);
+    if (edgeColors.isEmpty() && !cornerColors.isEmpty())
+        wangSet->setType(WangSet::Corner);
+
     return wangSet;
 }
 
-QSharedPointer<WangColor> VariantToMapConverter::toWangColor(const QVariantMap &variantMap,
-                                                             bool isEdge)
+QSharedPointer<WangColor> VariantToMapConverter::toWangColor(const QVariantMap &variantMap)
 {
     const QString name = variantMap[QStringLiteral("name")].toString();
     const QColor color = variantMap[QStringLiteral("color")].toString();
     const int imageId = variantMap[QStringLiteral("tile")].toInt();
     const qreal probability = variantMap[QStringLiteral("probability")].toDouble();
 
-    return QSharedPointer<WangColor>::create(0,
-                                             isEdge,
-                                             name,
-                                             color,
-                                             imageId,
-                                             probability);
+    auto wangColor = QSharedPointer<WangColor>::create(0,
+                                                       name,
+                                                       color,
+                                                       imageId,
+                                                       probability);
+
+    wangColor->setProperties(extractProperties(variantMap));
+
+    return wangColor;
 }
 
 std::unique_ptr<ObjectTemplate> VariantToMapConverter::toObjectTemplate(const QVariant &variant)

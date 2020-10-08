@@ -86,7 +86,6 @@ AbstractObjectTool::AbstractObjectTool(Id id,
                                        const QKeySequence &shortcut,
                                        QObject *parent)
     : AbstractTool(id, name, icon, shortcut, parent)
-    , mMapScene(nullptr)
 {
     QIcon flipHorizontalIcon(QLatin1String(":images/24/flip-horizontal.png"));
     QIcon flipVerticalIcon(QLatin1String(":images/24/flip-vertical.png"));
@@ -125,16 +124,6 @@ AbstractObjectTool::AbstractObjectTool(Id id,
     connect(mRotateRight, &QAction::triggered, this, &AbstractObjectTool::rotateRight);
 
     AbstractObjectTool::languageChanged();
-}
-
-void AbstractObjectTool::activate(MapScene *scene)
-{
-    mMapScene = scene;
-}
-
-void AbstractObjectTool::deactivate(MapScene *)
-{
-    mMapScene = nullptr;
 }
 
 void AbstractObjectTool::keyPressed(QKeyEvent *event)
@@ -215,7 +204,7 @@ ObjectGroup *AbstractObjectTool::currentObjectGroup() const
 
 QList<MapObject*> AbstractObjectTool::mapObjectsAt(const QPointF &pos) const
 {
-    const QList<QGraphicsItem *> &items = mMapScene->items(pos);
+    const QList<QGraphicsItem *> &items = mapScene()->items(pos);
 
     QList<MapObject*> objectList;
     for (auto item : items) {
@@ -231,7 +220,7 @@ QList<MapObject*> AbstractObjectTool::mapObjectsAt(const QPointF &pos) const
 
 MapObject *AbstractObjectTool::topMostMapObjectAt(const QPointF &pos) const
 {
-    const QList<QGraphicsItem *> &items = mMapScene->items(pos);
+    const QList<QGraphicsItem *> &items = mapScene()->items(pos);
 
     for (QGraphicsItem *item : items) {
         if (!item->isEnabled())
@@ -473,22 +462,22 @@ void AbstractObjectTool::rotateRight()
 
 void AbstractObjectTool::raise()
 {
-    RaiseLowerHelper(mMapScene).raise();
+    RaiseLowerHelper(mapScene()).raise();
 }
 
 void AbstractObjectTool::lower()
 {
-    RaiseLowerHelper(mMapScene).lower();
+    RaiseLowerHelper(mapScene()).lower();
 }
 
 void AbstractObjectTool::raiseToTop()
 {
-    RaiseLowerHelper(mMapScene).raiseToTop();
+    RaiseLowerHelper(mapScene()).raiseToTop();
 }
 
 void AbstractObjectTool::lowerToBottom()
 {
-    RaiseLowerHelper(mMapScene).lowerToBottom();
+    RaiseLowerHelper(mapScene()).lowerToBottom();
 }
 
 /**

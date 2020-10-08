@@ -569,15 +569,22 @@ int Tileset::maximumTerrainDistance() const
     return mMaximumTerrainDistance;
 }
 
+// some fancy expressions which can search for a value in each byte of a word simultaneously
+inline bool hasZeroByte(int value)
+{
+    return (value - 0x01010101UL) & ~value & 0x80808080UL;
+}
+
+inline bool hasByteEqualTo(int value, int byteValue)
+{
+    return hasZeroByte(value ^ (~0UL / 255 * byteValue));
+}
+
 /**
  * Calculates the transition distance matrix for all terrain types.
  */
 void Tileset::recalculateTerrainDistances()
 {
-    // some fancy macros which can search for a value in each byte of a word simultaneously
-    #define hasZeroByte(dword) (((dword) - 0x01010101UL) & ~(dword) & 0x80808080UL)
-    #define hasByteEqualTo(dword, value) (hasZeroByte((dword) ^ (~0UL/255 * (value))))
-
     // Terrain distances are the number of transitions required before one terrain may meet another
     // Terrains that have no transition path have a distance of -1
     int maximumDistance = 1;
@@ -591,7 +598,7 @@ void Tileset::recalculateTerrainDistances()
             if (!hasByteEqualTo(tile->terrain(), i))
                 continue;
 
-            // This tile has transitions, add the transitions as neightbours (distance 1)
+            // This tile has transitions, add the transitions as neighbours (distance 1)
             int tl = tile->cornerTerrainId(0);
             int tr = tile->cornerTerrainId(1);
             int bl = tile->cornerTerrainId(2);
@@ -606,10 +613,10 @@ void Tileset::recalculateTerrainDistances()
                 distance[tl + 1] = 1;
                 distance[br + 1] = 1;
             }
-
-            // terrain has at least one tile of its own type
-            distance[i + 1] = 0;
         }
+
+        // terrain has at least one tile of its own type
+        distance[i + 1] = 0;
 
         type->setTransitionDistances(distance);
     }
@@ -660,27 +667,19 @@ void Tileset::recalculateTerrainDistances()
     mTerrainDistancesDirty = false;
 }
 
-void Tileset::addWangSet(WangSet *wangSet)
-{
-    Q_ASSERT(wangSet->tileset() == this);
-
-    mWangSets.append(wangSet);
-}
-
 void Tileset::addWangSet(std::unique_ptr<WangSet> wangSet)
 {
-    addWangSet(wangSet.release());
+    Q_ASSERT(wangSet->tileset() == this);
+    mWangSets.append(wangSet.release());
 }
 
 /**
- * @brief Tileset::insertWangSet Adds a wangSet.
- * @param wangSet A pointer to the wangset to add.
+ * Adds a wangSet.
  */
-void Tileset::insertWangSet(int index, WangSet *wangSet)
+void Tileset::insertWangSet(int index, std::unique_ptr<WangSet> wangSet)
 {
     Q_ASSERT(wangSet->tileset() == this);
-
-    mWangSets.insert(index, wangSet);
+    mWangSets.insert(index, wangSet.release());
 }
 
 /**
@@ -689,9 +688,9 @@ void Tileset::insertWangSet(int index, WangSet *wangSet)
  * @param index Index to take at.
  * @return
  */
-WangSet *Tileset::takeWangSetAt(int index)
+std::unique_ptr<WangSet> Tileset::takeWangSetAt(int index)
 {
-    return mWangSets.takeAt(index);
+    return std::unique_ptr<WangSet>(mWangSets.takeAt(index));
 }
 
 /**

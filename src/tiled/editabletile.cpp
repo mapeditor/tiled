@@ -25,10 +25,8 @@
 #include "changetileimagesource.h"
 #include "changetileobjectgroup.h"
 #include "changetileprobability.h"
-#include "changetileterrain.h"
 #include "editablemanager.h"
 #include "editableobjectgroup.h"
-#include "editableterrain.h"
 #include "editabletileset.h"
 #include "imagecache.h"
 #include "objectgroup.h"
@@ -47,19 +45,6 @@ EditableTile::EditableTile(EditableTileset *tileset, Tile *tile, QObject *parent
 EditableTile::~EditableTile()
 {
     EditableManager::instance().mEditableTiles.remove(tile());
-}
-
-QJSValue EditableTile::terrain() const
-{
-    QJSEngine *engine = ScriptManager::instance().engine();
-    QJSValue terrainObject = engine->newObject();
-
-    terrainObject.setProperty(QStringLiteral("topLeft"), engine->newQObject(terrainAtCorner(TopLeft)));
-    terrainObject.setProperty(QStringLiteral("topRight"), engine->newQObject(terrainAtCorner(TopRight)));
-    terrainObject.setProperty(QStringLiteral("bottomLeft"), engine->newQObject(terrainAtCorner(BottomLeft)));
-    terrainObject.setProperty(QStringLiteral("bottomRight"), engine->newQObject(terrainAtCorner(BottomRight)));
-
-    return terrainObject;
 }
 
 EditableObjectGroup *EditableTile::objectGroup() const
@@ -93,23 +78,6 @@ QJSValue EditableTile::frames() const
 EditableTileset *EditableTile::tileset() const
 {
     return static_cast<EditableTileset*>(asset());
-}
-
-EditableTerrain *EditableTile::terrainAtCorner(Corner corner) const
-{
-    Terrain *terrain = tile()->terrainAtCorner(corner);
-    return EditableManager::instance().editableTerrain(tileset(), terrain);
-}
-
-void EditableTile::setTerrainAtCorner(Corner corner, EditableTerrain *editableTerrain)
-{
-    unsigned terrain = setTerrainCorner(tile()->terrain(), corner,
-                                        editableTerrain ? editableTerrain->id() : 0xFF);
-
-    if (TilesetDocument *doc = tilesetDocument())
-        asset()->push(new ChangeTileTerrain(doc, tile(), terrain));
-    else if (!checkReadOnly())
-        tile()->setTerrain(terrain);
 }
 
 void EditableTile::detach()
@@ -174,34 +142,6 @@ void EditableTile::setImageFileName(const QString &fileName)
         tile()->setImage(ImageCache::loadPixmap(fileName));
         tile()->setImageSource(QUrl::fromLocalFile(fileName));
     }
-}
-
-void EditableTile::setTerrain(QJSValue value)
-{
-    if (!value.isObject() && !value.isNumber()) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Terrain object or number expected"));
-        return;
-    }
-
-    unsigned terrain;
-
-    if (value.isObject()) {
-        auto topLeft = qjsvalue_cast<EditableTerrain *>(value.property(QStringLiteral("topLeft")));
-        auto topRight = qjsvalue_cast<EditableTerrain *>(value.property(QStringLiteral("topRight")));
-        auto bottomLeft = qjsvalue_cast<EditableTerrain *>(value.property(QStringLiteral("bottomLeft")));
-        auto bottomRight = qjsvalue_cast<EditableTerrain *>(value.property(QStringLiteral("bottomRight")));
-        terrain = makeTerrain(topLeft ? topLeft->id() : 0xFF,
-                              topRight ? topRight->id() : 0xFF,
-                              bottomLeft ? bottomLeft->id() : 0xFF,
-                              bottomRight ? bottomRight->id() : 0xFF);
-    } else {
-        terrain = value.toUInt();
-    }
-
-    if (TilesetDocument *doc = tilesetDocument())
-        asset()->push(new ChangeTileTerrain(doc, tile(), terrain));
-    else if (!checkReadOnly())
-        tile()->setTerrain(terrain);
 }
 
 void EditableTile::setProbability(qreal probability)

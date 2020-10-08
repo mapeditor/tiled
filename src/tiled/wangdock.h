@@ -27,6 +27,7 @@
 
 class QModelIndex;
 class QPushButton;
+class QSortFilterProxyModel;
 class QTabWidget;
 class QToolBar;
 class QTreeView;
@@ -59,7 +60,6 @@ public:
 
     void editWangSetName(WangSet *wangSet);
 
-    void setTemplateView();
     void setColorView();
     void hideTemplateColorView();
 
@@ -71,18 +71,18 @@ signals:
     void currentWangIdChanged(WangId wangId);
 
     void addWangSetRequested();
+    void duplicateWangSetRequested();
     void removeWangSetRequested();
 
     void selectWangBrush();
     // When the color view selection changes.
-    // edges is false if this is a corner color.
-    void wangColorChanged(int color, bool edge);
+    void wangColorChanged(int color);
 
 public slots:
     void setCurrentWangSet(WangSet *wangSet);
     void onCurrentWangIdChanged(WangId wangId);
     void onWangIdUsedChanged(WangId wangId);
-    void onColorCaptured(int color, bool isEdge);
+    void onColorCaptured(int color);
 
 protected:
     void changeEvent(QEvent *event) override;
@@ -95,8 +95,7 @@ private:
     void wangSetChanged();
     void indexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
-    void addEdgeColor();
-    void addCornerColor();
+    void addColor();
     void removeColor();
 
     void updateAddColorStatus();
@@ -107,9 +106,9 @@ private:
     QToolBar *mWangSetToolBar;
     QToolBar *mWangColorToolBar;
     QAction *mAddWangSet;
+    QAction *mDuplicateWangSet;
     QAction *mRemoveWangSet;
-    QAction *mAddEdgeColor;
-    QAction *mAddCornerColor;
+    QAction *mAddColor;
     QAction *mRemoveColor;
 
     Document *mDocument;
@@ -120,9 +119,10 @@ private:
     TilesetDocumentsFilterModel *mTilesetDocumentFilterModel;
     WangColorView *mWangColorView;
     WangColorModel *mWangColorModel;
-    HasChildrenFilterModel *mWangColorFilterModel;
+    QSortFilterProxyModel *mWangColorFilterModel;
     WangSetModel *mWangSetModel;
     HasChildrenFilterModel *mProxyModel;
+    QWidget *mWangColorWidget;
     WangTemplateView *mWangTemplateView;
     WangTemplateModel *mWangTemplateModel;
     QTabWidget *mTemplateAndColorView;

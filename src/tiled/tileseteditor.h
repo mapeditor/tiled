@@ -37,13 +37,11 @@ class QToolBar;
 
 namespace Tiled {
 
-class Terrain;
 class Tile;
 class Tileset;
 
 class PropertiesDock;
 class TemplatesDock;
-class TerrainDock;
 class TileAnimationEditor;
 class TileCollisionDock;
 class TilesetDocument;
@@ -91,7 +89,6 @@ public:
 
     QAction *addTilesAction() const;
     QAction *removeTilesAction() const;
-    QAction *editTerrainAction() const;
     QAction *editCollisionAction() const;
     QAction *editWangSetsAction() const;
     QAction *showAnimationEditor() const;
@@ -120,9 +117,6 @@ private:
     void addTiles(const QList<QUrl> &urls);
     void removeTiles();
 
-    void setEditTerrain(bool editTerrain);
-    void currentTerrainChanged(const Terrain *terrain);
-
     void setEditCollision(bool editCollision);
     void hasSelectedCollisionObjectsChanged();
 
@@ -130,17 +124,14 @@ private:
 
     void updateAddRemoveActions();
 
-    void addTerrainType();
-    void removeTerrainType();
-    void setTerrainImage(Tile *tile);
-
     void currentWangSetChanged(WangSet *wangSet);
     void currentWangIdChanged(WangId wangId);
-    void wangColorChanged(int color, bool edge);
+    void wangColorChanged(int color);
     void addWangSet();
+    void duplicateWangSet();
     void removeWangSet();
     void setWangSetImage(Tile *tile);
-    void setWangColorImage(Tile *tile, bool isEdge, int index);
+    void setWangColorImage(Tile *tile, int index);
     void setWangColorColor(WangColor *wangColor, const QColor &color);
 
     void onAnimationEditorClosed();
@@ -161,7 +152,6 @@ private:
 
     PropertiesDock *mPropertiesDock;
     UndoDock *mUndoDock;
-    TerrainDock *mTerrainDock;
     TileCollisionDock *mTileCollisionDock;
     TemplatesDock *mTemplatesDock;
     WangDock *mWangDock;

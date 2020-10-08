@@ -79,7 +79,6 @@ private:
     void tilesetChanged(Tileset *tileset);
     void tileChanged(Tile *tile);
     void tileTypeChanged(Tile *tile);
-    void terrainChanged(Tileset *tileset, int index);
     void wangSetChanged(Tileset *tileset, int index);
 
     void propertyAdded(Object *object, const QString &name);
@@ -137,9 +136,9 @@ private:
         TileProbabilityProperty,
         ColumnCountProperty,
         IdProperty,
-        EdgeCountProperty,
-        CornerCountProperty,
+        ColorCountProperty,
         WangColorProbabilityProperty,
+        WangSetTypeProperty,
         CustomProperty,
         InfiniteProperty,
         TemplateProperty,
@@ -158,7 +157,6 @@ private:
     void addGroupLayerProperties();
     void addTilesetProperties();
     void addTileProperties();
-    void addTerrainProperties();
     void addWangSetProperties();
     void addWangColorProperties();
 
@@ -173,7 +171,6 @@ private:
     QUndoCommand *applyGroupLayerValueTo(PropertyId id, const QVariant &val, GroupLayer *groupLayer);
     void applyTilesetValue(PropertyId id, const QVariant &val);
     void applyTileValue(PropertyId id, const QVariant &val);
-    void applyTerrainValue(PropertyId id, const QVariant &val);
     void applyWangSetValue(PropertyId id, const QVariant &val);
     void applyWangColorValue(PropertyId id, const QVariant &val);
 
@@ -229,6 +226,7 @@ private:
     QStringList mAlignmentNames;
     QStringList mFlippingFlagNames;
     QStringList mDrawOrderNames;
+    QStringList mWangSetTypeNames;
 };
 
 /**

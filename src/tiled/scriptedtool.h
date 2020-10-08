@@ -79,7 +79,6 @@ private:
     bool call(const QString &methodName, const QJSValueList &args = QJSValueList());
 
     QJSValue mScriptObject;
-    MapScene *mScene = nullptr;
     QString mIconFileName;
 };
 

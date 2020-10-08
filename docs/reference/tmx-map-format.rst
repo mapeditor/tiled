@@ -308,35 +308,24 @@ number of Wang tiles using these colors.
 
 Can contain at most one: :ref:`tmx-properties`
 
-Can contain up to 15 (each): :ref:`tmx-wangcornercolor`, :ref:`tmx-wangedgecolor`
+Can contain up to 255: :ref:`tmx-wangcolor` (since Tiled 1.5)
 
 Can contain any number: :ref:`tmx-wangtile`
 
-.. _tmx-wangcornercolor:
+.. _tmx-wangcolor:
 
-<wangcornercolor>
-'''''''''''''''''
+<wangcolor>
+'''''''''''
 
-A color that can be used to define the corner of a Wang tile.
-
--  **name:** The name of this color.
--  **color:** The color in ``#RRGGBB`` format (example: ``#c17d11``).
--  **tile:** The tile ID of the tile representing this color.
--  **probability:** The relative probability that this color is chosen
-   over others in case of multiple options. (defaults to 0)
-
-.. _tmx-wangedgecolor:
-
-<wangedgecolor>
-'''''''''''''''''
-
-A color that can be used to define the edge of a Wang tile.
+A color that can be used to define the corner and/or edge of a Wang tile.
 
 -  **name:** The name of this color.
 -  **color:** The color in ``#RRGGBB`` format (example: ``#c17d11``).
 -  **tile:** The tile ID of the tile representing this color.
 -  **probability:** The relative probability that this color is chosen
    over others in case of multiple options. (defaults to 0)
+
+Can contain at most one: :ref:`tmx-properties`
 
 .. _tmx-wangtile:
 
@@ -347,10 +336,13 @@ Defines a Wang tile, by referring to a tile in the tileset and
 associating it with a certain Wang ID.
 
 -  **tileid:** The tile ID.
--  **wangid:** The Wang ID, which is a 32-bit unsigned integer stored
-   in the format ``0xCECECECE`` (where each C is a corner color and
-   each E is an edge color, from right to left clockwise, starting with
-   the top edge)
+-  **wangid:** "The Wang ID, given by a comma-separated list of indexes
+   (starting from 1, because 0 means _unset_) referring to the Wang colors in
+   the Wang set in the following order: top, top right, right, bottom right,
+   bottom, bottom left, left, top left (since Tiled 1.5). Before Tiled 1.5, the
+   Wang ID was saved as a 32-bit unsigned integer stored in the format
+   ``0xCECECECE`` (where each C is a corner color and each E is an edge color,
+   in reverse order)."
 -  **hflip:** Whether the tile is flipped horizontally. This only affects
    the tile image, it does not change the meaning of the wangid. See
    :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
@@ -737,8 +729,8 @@ Can contain any number: :ref:`tmx-layer`,
 
 Wraps any number of custom properties. Can be used as a child of the
 ``map``, ``tileset``, ``tile`` (when part of a ``tileset``),
-``terrain``, ``layer``, ``objectgroup``, ``object``, ``imagelayer`` and
-``group`` elements.
+``terrain``, ``wangset``, ``wangcolor``, ``layer``, ``objectgroup``,
+``object``, ``imagelayer`` and ``group`` elements.
 
 Can contain any number: :ref:`tmx-property`
 
