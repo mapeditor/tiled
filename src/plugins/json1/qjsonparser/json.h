@@ -12,24 +12,6 @@
 #include <QByteArray>
 #include <QVariant>
 
-class JsonReader
-{
-public:
-    JsonReader();
-    ~JsonReader();
-
-    bool parse(const QByteArray &ba);
-    bool parse(const QString &str);
-
-    QVariant result() const;
-
-    QString errorString() const;
-
-private:
-    QVariant m_result;
-    QString m_errorString;
-};
-
 class JsonWriter
 {
 public:
@@ -56,4 +38,3 @@ private:
     bool m_autoFormatting;
     QString m_autoFormattingIndent;
 };
-
