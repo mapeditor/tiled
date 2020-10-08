@@ -127,7 +127,7 @@ TemplatesDock::TemplatesDock(QWidget *parent)
     editorLayout->addLayout(toolsLayout);
     editorLayout->addWidget(mDescriptionLabel);
     editorLayout->addWidget(mMapView);
-    editorLayout->setMargin(0);
+    editorLayout->setContentsMargins(0, 0, 0, 0);
     editorLayout->setSpacing(0);
 
     auto *widget = new QWidget;

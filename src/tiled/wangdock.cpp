@@ -199,7 +199,7 @@ WangDock::WangDock(QWidget *parent)
     wangSetHorizontal->addWidget(mWangSetToolBar);
 
     QVBoxLayout *wangSetVertical = new QVBoxLayout(wangSetWidget);
-    wangSetVertical->setMargin(0);
+    wangSetVertical->setContentsMargins(0, 0, 0, 0);
     wangSetVertical->addWidget(mWangSetView);
     wangSetVertical->addLayout(wangSetHorizontal);
 
@@ -211,7 +211,7 @@ WangDock::WangDock(QWidget *parent)
     colorViewHorizontal->addWidget(mWangColorToolBar);
 
     QVBoxLayout *colorViewVertical = new QVBoxLayout(mWangColorWidget);
-    colorViewVertical->setMargin(0);
+    colorViewVertical->setContentsMargins(0, 0, 0, 0);
     colorViewVertical->addWidget(mWangColorView);
     colorViewVertical->addLayout(colorViewHorizontal);
 
@@ -227,7 +227,7 @@ WangDock::WangDock(QWidget *parent)
     templateAndColorHorizontal->addWidget(mEraseWangIdsButton);
 
     QVBoxLayout *templateAndColorVertical = new QVBoxLayout(mTemplateAndColorWidget);
-    templateAndColorVertical->setMargin(0);
+    templateAndColorVertical->setContentsMargins(0, 0, 0, 0);
     templateAndColorVertical->addWidget(mTemplateAndColorView);
     templateAndColorVertical->addLayout(templateAndColorHorizontal);
 
@@ -238,7 +238,7 @@ WangDock::WangDock(QWidget *parent)
     wangViews->addWidget(mTemplateAndColorWidget);
 
     QVBoxLayout *vertical = new QVBoxLayout(w);
-    vertical->setMargin(0);
+    vertical->setContentsMargins(0, 0, 0, 0);
     vertical->addWidget(wangViews);
 
     hideTemplateColorView();

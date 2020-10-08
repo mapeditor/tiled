@@ -333,7 +333,7 @@ LocatorWidget::LocatorWidget(QWidget *parent)
 
     auto margin = Utils::dpiScaled(4);
     auto verticalLayout = new QVBoxLayout;
-    verticalLayout->setMargin(margin);
+    verticalLayout->setContentsMargins(margin, margin, margin, margin);
     verticalLayout->setSpacing(margin);
     verticalLayout->addWidget(mFilterEdit);
     verticalLayout->addWidget(mResultsView);

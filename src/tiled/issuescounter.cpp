@@ -40,7 +40,8 @@ IssuesCounter::IssuesCounter(QWidget *parent)
     , mWarningCount(new QLabel)
 {
     auto layout = new QHBoxLayout;
-    layout->setMargin(Utils::dpiScaled(2));
+    const int margin = Utils::dpiScaled(2);
+    layout->setContentsMargins(margin, margin, margin, margin);
 
     int spacing = Utils::dpiScaled(5);
     layout->addSpacing(spacing);

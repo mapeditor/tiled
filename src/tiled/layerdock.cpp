@@ -65,7 +65,7 @@ LayerDock::LayerDock(QWidget *parent):
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     QHBoxLayout *opacityLayout = new QHBoxLayout;
     mOpacitySlider->setRange(0, 100);

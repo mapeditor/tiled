@@ -386,7 +386,7 @@ ShortcutEditor::ShortcutEditor(QWidget *parent)
     mResetButton->setIcon(QIcon(QLatin1String("://images/scalable/edit-undo-symbolic.svg")));
 
     auto layout = new QHBoxLayout(this);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(mKeySequenceEdit);
     layout->addWidget(clearButton);
