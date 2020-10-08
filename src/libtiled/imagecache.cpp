@@ -51,9 +51,13 @@ bool TilesheetParameters::operator==(const TilesheetParameters &other) const
             transparentColor == other.transparentColor;
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 uint qHash(const TilesheetParameters &key, uint seed) Q_DECL_NOTHROW
+#else
+size_t qHash(const TilesheetParameters &key, size_t seed) Q_DECL_NOTHROW
+#endif
 {
-    uint h = ::qHash(key.fileName, seed);
+    auto h = ::qHash(key.fileName, seed);
     h = ::qHash(key.tileWidth, h);
     h = ::qHash(key.tileHeight, h);
     h = ::qHash(key.margin, h);

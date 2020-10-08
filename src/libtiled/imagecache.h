@@ -51,7 +51,11 @@ struct TILEDSHARED_EXPORT TilesheetParameters
     bool operator==(const TilesheetParameters &other) const;
 };
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 uint TILEDSHARED_EXPORT qHash(const TilesheetParameters &key, uint seed = 0) Q_DECL_NOTHROW;
+#else
+size_t TILEDSHARED_EXPORT qHash(const TilesheetParameters &key, size_t seed = 0) Q_DECL_NOTHROW;
+#endif
 
 struct LoadedImage
 {

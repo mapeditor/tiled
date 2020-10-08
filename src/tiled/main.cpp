@@ -347,7 +347,9 @@ int main(int argc, char *argv[])
     QGuiApplication::setFallbackSessionManagementEnabled(false);
 
     // Enable support for highres images (added in Qt 5.1, but off by default)
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+#endif
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     QCoreApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
 #endif

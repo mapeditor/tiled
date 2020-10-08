@@ -83,6 +83,7 @@
 #include "macsupport.h"
 #endif
 
+#include <QActionGroup>
 #include <QCloseEvent>
 #include <QDesktopServices>
 #include <QFileDialog>
@@ -92,6 +93,7 @@
 #include <QRegularExpression>
 #include <QSessionManager>
 #include <QShortcut>
+#include <QStandardPaths>
 #include <QStatusBar>
 #include <QTextStream>
 #include <QToolBar>
@@ -810,7 +812,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QShortcut *switchToLeftDocument = new QShortcut(Qt::ALT + Qt::Key_Left, this);
     connect(switchToLeftDocument, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToLeftDocument);
-    QShortcut *switchToLeftDocument1 = new QShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab, this);
+    QShortcut *switchToLeftDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_Tab, this);
     connect(switchToLeftDocument1, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToLeftDocument);
 

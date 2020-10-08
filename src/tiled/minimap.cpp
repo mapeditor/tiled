@@ -195,7 +195,7 @@ void MiniMap::renderMapToImage()
     miniMapRenderer.renderToImage(mMapImage, mRenderFlags);
 }
 
-void MiniMap::centerViewOnLocalPixel(QPoint centerPos, int delta)
+void MiniMap::centerViewOnLocalPixel(const QPointF &centerPos, int delta)
 {
     MapView *mapView = DocumentManager::instance()->currentMapView();
     if (!mapView)
@@ -215,8 +215,12 @@ void MiniMap::redrawTimeout()
 
 void MiniMap::wheelEvent(QWheelEvent *event)
 {
-    if (event->orientation() == Qt::Vertical) {
-        centerViewOnLocalPixel(event->pos(), event->delta());
+    if (event->angleDelta().y()) {
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
+        centerViewOnLocalPixel(event->pos(), event->angleDelta().y());
+#else
+        centerViewOnLocalPixel(event->position(), event->angleDelta().y());
+#endif
         return;
     }
 
@@ -302,7 +306,7 @@ QRect MiniMap::viewportRect() const
                  viewRect.height() / mapRect.height() * mImageRect.height());
 }
 
-QPointF MiniMap::mapToScene(QPoint p) const
+QPointF MiniMap::mapToScene(QPointF p) const
 {
     if (mImageRect.isEmpty())
         return QPointF();

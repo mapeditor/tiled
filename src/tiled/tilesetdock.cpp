@@ -55,6 +55,7 @@
 #include "zoomable.h"
 
 #include <QAction>
+#include <QActionGroup>
 #include <QComboBox>
 #include <QDropEvent>
 #include <QFileDialog>

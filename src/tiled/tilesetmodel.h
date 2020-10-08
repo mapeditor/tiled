@@ -21,13 +21,13 @@
 
 #pragma once
 
+#include "tile.h"
+
 #include <QAbstractListModel>
 
 namespace Tiled {
 
-class Tile;
 class Tileset;
-
 
 /**
  * A model wrapping a tileset of a map. Used to display the tiles.

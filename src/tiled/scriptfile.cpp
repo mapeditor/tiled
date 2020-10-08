@@ -35,7 +35,9 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSaveFile>
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
 #include <QTextCodec>
+#endif
 #include <QTextStream>
 
 namespace Tiled {
@@ -242,6 +244,7 @@ QString ScriptTextFile::filePath() const
     return QFileInfo(m_file->fileName()).absoluteFilePath();
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
 QString ScriptTextFile::codec() const
 {
     if (checkForClosed())
@@ -255,6 +258,7 @@ void ScriptTextFile::setCodec(const QString &codec)
         return;
     m_stream->setCodec(codec.toLatin1());
 }
+#endif
 
 QString ScriptTextFile::readLine()
 {

@@ -125,7 +125,7 @@ void ActionsModel::refreshConflicts()
     if (!mConflictsDirty)
         return;
 
-    QMap<QKeySequence, Id> actionsByKey;
+    QMultiMap<QKeySequence, Id> actionsByKey;
 
     for (const auto &actionId : qAsConst(mActions)) {
         if (auto action = ActionManager::findAction(actionId))

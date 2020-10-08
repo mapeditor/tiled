@@ -384,11 +384,11 @@ void MapView::wheelEvent(QWheelEvent *event)
     bool wheelZoomsByDefault = Preferences::instance()->wheelZoomsByDefault();
     bool control = event->modifiers() & Qt::ControlModifier;
 
-    if ((wheelZoomsByDefault != control) && event->orientation() == Qt::Vertical) {
+    if ((wheelZoomsByDefault != control) && event->angleDelta().y()) {
         // No automatic anchoring since we'll do it manually
         setTransformationAnchor(QGraphicsView::NoAnchor);
 
-        mZoomable->handleWheelDelta(event->delta());
+        mZoomable->handleWheelDelta(event->angleDelta().y());
         adjustCenterFromMousePosition(mLastMousePos);
 
         // Restore the centering anchor
@@ -430,7 +430,7 @@ void MapView::wheelEvent(QWheelEvent *event)
  */
 void MapView::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MidButton && isActiveWindow()) {
+    if (event->button() == Qt::MiddleButton && isActiveWindow()) {
         setHandScrolling(true);
         return;
     }
@@ -443,7 +443,7 @@ void MapView::mousePressEvent(QMouseEvent *event)
  */
 void MapView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MidButton) {
+    if (event->button() == Qt::MiddleButton) {
         setHandScrolling(false);
         return;
     }

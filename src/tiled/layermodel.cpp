@@ -255,7 +255,11 @@ QMimeData *LayerModel::mimeData(const QModelIndexList &indexes) const
 
     QMimeData *mimeData = new QMimeData;
     QByteArray encodedData;
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     QDataStream stream(&encodedData, QIODevice::WriteOnly);
+#else
+    QDataStream stream(&encodedData, QDataStream::WriteOnly);
+#endif
     QVector<Layer*> layers;
 
     for (const QModelIndex &index : indexes) {
