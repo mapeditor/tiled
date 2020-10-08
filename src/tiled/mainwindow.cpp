@@ -89,7 +89,7 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QMimeData>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QSessionManager>
 #include <QShortcut>
 #include <QStatusBar>
@@ -149,9 +149,9 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
         QFileInfo baseNameInfo = QFileInfo(fileName);
         QString baseName = baseNameInfo.baseName();
 
-        QRegExp extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
-        extensionFinder.indexIn(selectedFilter);
-        const QString extension = extensionFinder.cap(1);
+        QRegularExpression extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
+        QRegularExpressionMatch match = extensionFinder.match(selectedFilter);
+        const QString extension = match.captured(1);
 
         QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
 

@@ -37,7 +37,10 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QProcess>
+#include <QRegularExpression>
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
 #include <QRegExp>
+#endif
 #include <QScreen>
 
 #include "qtcompat_p.h"
@@ -92,13 +95,18 @@ QStringList cleanFilterList(const QString &filter)
     const char filterRegExp[] =
     "^(.*)\\(([a-zA-Z0-9_.,*? +;#\\-\\[\\]@\\{\\}/!<>\\$%&=^~:\\|]*)\\)$";
 
-    QRegExp regexp(QString::fromLatin1(filterRegExp));
+    QRegularExpression regexp(QString::fromLatin1(filterRegExp));
     Q_ASSERT(regexp.isValid());
     QString f = filter;
-    int i = regexp.indexIn(f);
-    if (i >= 0)
-        f = regexp.cap(2);
+    QRegularExpressionMatch match;
+    filter.indexOf(regexp, 0, &match);
+    if (match.hasMatch())
+        f = match.captured(2);
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     return f.split(QLatin1Char(' '), QString::SkipEmptyParts);
+#else
+    return f.split(QLatin1Char(' '), Qt::SkipEmptyParts);
+#endif
 }
 
 /**
@@ -108,14 +116,24 @@ QStringList cleanFilterList(const QString &filter)
 bool fileNameMatchesNameFilter(const QString &fileName,
                                const QString &nameFilter)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
     QRegExp rx;
     rx.setCaseSensitivity(Qt::CaseInsensitive);
     rx.setPatternSyntax(QRegExp::Wildcard);
+#else
+    QRegularExpression rx;
+    rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+#endif
 
     const QStringList filterList = cleanFilterList(nameFilter);
     for (const QString &filter : filterList) {
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
         rx.setPattern(filter);
         if (rx.exactMatch(fileName))
+#else
+        rx.setPattern(QRegularExpression::wildcardToRegularExpression(filter));
+        if (rx.match(fileName).hasMatch())
+#endif
             return true;
     }
     return false;

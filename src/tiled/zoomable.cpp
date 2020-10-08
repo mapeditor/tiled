@@ -198,7 +198,7 @@ void Zoomable::setComboBox(QComboBox *comboBox)
                 this, &Zoomable::comboEdited);
 
         if (!mComboValidator)
-            mComboValidator = new QRegExpValidator(mComboRegExp, this);
+            mComboValidator = new QRegularExpressionValidator(mComboRegExp, this);
         mComboBox->setValidator(mComboValidator);
     }
 }
@@ -210,12 +210,11 @@ void Zoomable::comboActivated(int index)
 
 void Zoomable::comboEdited()
 {
-    int pos = mComboRegExp.indexIn(mComboBox->currentText());
-    Q_ASSERT(pos != -1);
-    Q_UNUSED(pos)
+    const QRegularExpressionMatch match = mComboRegExp.match(mComboBox->currentText());
+    Q_ASSERT(match.hasMatch());
 
     qreal scale = qBound(mZoomFactors.first(),
-                         qreal(mComboRegExp.cap(1).toDouble() / 100.f),
+                         qreal(match.captured(1).toDouble() / 100.f),
                          mZoomFactors.last());
 
     setScale(scale);
