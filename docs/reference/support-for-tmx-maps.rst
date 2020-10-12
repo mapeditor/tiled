@@ -356,7 +356,7 @@ Orx Portable Game Engine
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  `TMX to ORX
-   Converter <http://orx-project.org/wiki/tutorials/community/sausage/tmx_to_orx>`__
+   Converter <https://wiki.orx-project.org/en/tutorials/tools/tmx_to_orx>`__
    Tutorial and converter download for Orx.
 
 Pygame
