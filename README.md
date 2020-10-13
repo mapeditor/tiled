@@ -70,6 +70,13 @@ You can now run Tiled as follows:
 
     qbs run -p tiled
 
+Qt 6
+-------------------------------------------------------------------------------
+
+For compiling libtiledquick you'll need to install the Vulkan headers:
+
+* On Unbuntu/Debian: `sudo apt install libvulkan-dev`
+
 ### Working with Visual Studio 2017
 
 Once Qbs is set up (see previous instructions), it is possible to generate a

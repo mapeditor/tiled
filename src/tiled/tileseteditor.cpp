@@ -39,7 +39,6 @@
 #include "templatesdock.h"
 #include "tile.h"
 #include "tileanimationeditor.h"
-#include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
 #include "tilesetmanager.h"
@@ -658,7 +657,7 @@ void TilesetEditor::retranslateUi()
     mShowAnimationEditor->setText(tr("Tile Animation Editor"));
     mDynamicWrappingToggle->setText(tr("Dynamically Wrap Tiles"));
 
-    mTileCollisionDock->toggleViewAction()->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_O);
+    mTileCollisionDock->toggleViewAction()->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_O);
 }
 
 static bool hasTileInTileset(const QUrl &imageSource, const Tileset &tileset)

@@ -20,15 +20,13 @@
 
 #pragma once
 
-#include "editableobject.h"
+#include "editabletile.h"
 #include "wangset.h"
 
 #include <QJSValue>
 
 namespace Tiled {
 
-class EditableTile;
-class EditableTileset;
 class TilesetDocument;
 
 class EditableWangSet : public EditableObject
@@ -39,7 +37,7 @@ class EditableWangSet : public EditableObject
     Q_PROPERTY(Type type READ type WRITE setType)
     Q_PROPERTY(Tiled::EditableTile *imageTile READ imageTile WRITE setImageTile)
     Q_PROPERTY(int colorCount READ colorCount WRITE setColorCount)
-    Q_PROPERTY(Tiled::EditableTileset *tileset READ tileset)
+    Q_PROPERTY(QObject *tileset READ assetAsObject)
 
 public:
     enum Type {

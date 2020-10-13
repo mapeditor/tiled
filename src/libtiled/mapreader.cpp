@@ -54,6 +54,8 @@
 
 #include <memory>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -506,7 +508,7 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
     }
 
     // Read tile probability
-    QStringRef probability = atts.value(QLatin1String("probability"));
+    const auto probability = atts.value(QLatin1String("probability"));
     if (!probability.isEmpty())
         tile->setProbability(probability.toDouble());
 
@@ -619,7 +621,7 @@ ImageReference MapReaderPrivate::readImage()
         while (xml.readNextStartElement()) {
             if (xml.name() == QLatin1String("data")) {
                 const QXmlStreamAttributes atts = xml.attributes();
-                QStringRef encoding = atts.value(QLatin1String("encoding"));
+                const auto encoding = atts.value(QLatin1String("encoding"));
 
                 image.data = xml.readElementText().toLatin1();
                 if (encoding == QLatin1String("base64"))
@@ -820,10 +822,10 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
 static void readLayerAttributes(Layer &layer,
                                 const QXmlStreamAttributes &atts)
 {
-    const QStringRef idRef = atts.value(QLatin1String("id"));
-    const QStringRef opacityRef = atts.value(QLatin1String("opacity"));
-    const QStringRef visibleRef = atts.value(QLatin1String("visible"));
-    const QStringRef lockedRef = atts.value(QLatin1String("locked"));
+    const auto idRef = atts.value(QLatin1String("id"));
+    const auto opacityRef = atts.value(QLatin1String("opacity"));
+    const auto visibleRef = atts.value(QLatin1String("visible"));
+    const auto lockedRef = atts.value(QLatin1String("locked"));
 
     bool ok;
     const int id = idRef.toInt(&ok);
@@ -834,7 +836,7 @@ static void readLayerAttributes(Layer &layer,
     if (ok)
         layer.setOpacity(opacity);
 
-    const QStringRef tintColor = atts.value(QLatin1String("tintcolor"));
+    const auto tintColor = atts.value(QLatin1String("tintcolor"));
     if (!tintColor.isEmpty())
         layer.setTintColor(QColor(tintColor.toString()));
 
@@ -883,8 +885,8 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("data"));
 
     const QXmlStreamAttributes atts = xml.attributes();
-    QStringRef encoding = atts.value(QLatin1String("encoding"));
-    QStringRef compression = atts.value(QLatin1String("compression"));
+    const auto encoding = atts.value(QLatin1String("encoding"));
+    const auto compression = atts.value(QLatin1String("compression"));
 
     Map::LayerDataFormat layerDataFormat;
     if (encoding.isEmpty()) {
@@ -1149,7 +1151,7 @@ std::unique_ptr<MapObject> MapReaderPrivate::readObject()
     const qreal width = atts.value(QLatin1String("width")).toDouble();
     const qreal height = atts.value(QLatin1String("height")).toDouble();
     const QString type = atts.value(QLatin1String("type")).toString();
-    const QStringRef visibleRef = atts.value(QLatin1String("visible"));
+    const auto visibleRef = atts.value(QLatin1String("visible"));
 
     const QPointF pos(x, y);
     const QSizeF size(width, height);
@@ -1244,12 +1246,21 @@ QPolygonF MapReaderPrivate::readPolygon()
             break;
         }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+        const qreal x = QStringView(point).left(commaPos).toDouble(&ok);
+        if (!ok)
+            break;
+        const qreal y = QStringView(point).mid(commaPos + 1).toDouble(&ok);
+        if (!ok)
+            break;
+#else
         const qreal x = point.leftRef(commaPos).toDouble(&ok);
         if (!ok)
             break;
         const qreal y = point.midRef(commaPos + 1).toDouble(&ok);
         if (!ok)
             break;
+#endif
 
         polygon.append(QPointF(x, y));
     }
@@ -1289,13 +1300,13 @@ TextData MapReaderPrivate::readObjectText()
     textData.font.setStrikeOut(intAttribute(atts, "strikeout", 0) == 1);
     textData.font.setKerning(intAttribute(atts, "kerning", 1) == 1);
 
-    QStringRef colorString = atts.value(QLatin1String("color"));
+    const auto colorString = atts.value(QLatin1String("color"));
     if (!colorString.isEmpty())
         textData.color = QColor(colorString.toString());
 
     Qt::Alignment alignment;
 
-    QStringRef hAlignString = atts.value(QLatin1String("halign"));
+    const auto hAlignString = atts.value(QLatin1String("halign"));
     if (hAlignString == QLatin1String("center"))
         alignment |= Qt::AlignHCenter;
     else if (hAlignString == QLatin1String("right"))
@@ -1305,7 +1316,7 @@ TextData MapReaderPrivate::readObjectText()
     else
         alignment |= Qt::AlignLeft;
 
-    QStringRef vAlignString = atts.value(QLatin1String("valign"));
+    const auto vAlignString = atts.value(QLatin1String("valign"));
     if (vAlignString == QLatin1String("center"))
         alignment |= Qt::AlignVCenter;
     else if (vAlignString == QLatin1String("bottom"))

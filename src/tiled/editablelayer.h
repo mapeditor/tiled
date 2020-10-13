@@ -39,7 +39,7 @@ class EditableLayer : public EditableObject
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
     Q_PROPERTY(bool locked READ isLocked WRITE setLocked)
     Q_PROPERTY(QPointF offset READ offset WRITE setOffset)
-    Q_PROPERTY(Tiled::EditableMap *map READ map)
+    Q_PROPERTY(QObject *map READ mapAsObject)
     Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
     Q_PROPERTY(bool isTileLayer READ isTileLayer CONSTANT)
     Q_PROPERTY(bool isObjectLayer READ isObjectLayer CONSTANT)
@@ -60,6 +60,7 @@ public:
     bool isVisible() const;
     bool isLocked() const;
     QPointF offset() const;
+    QObject *mapAsObject() const;
     EditableMap *map() const;
     bool isSelected() const;
     bool isTileLayer() const;

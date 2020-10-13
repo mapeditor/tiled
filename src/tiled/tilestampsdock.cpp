@@ -106,7 +106,7 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     QToolBar *buttonContainer = new QToolBar;
     buttonContainer->setFloatable(false);

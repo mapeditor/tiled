@@ -83,15 +83,17 @@
 #include "macsupport.h"
 #endif
 
+#include <QActionGroup>
 #include <QCloseEvent>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
 #include <QMimeData>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QSessionManager>
 #include <QShortcut>
+#include <QStandardPaths>
 #include <QStatusBar>
 #include <QTextStream>
 #include <QToolBar>
@@ -149,9 +151,9 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
         QFileInfo baseNameInfo = QFileInfo(fileName);
         QString baseName = baseNameInfo.baseName();
 
-        QRegExp extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
-        extensionFinder.indexIn(selectedFilter);
-        const QString extension = extensionFinder.cap(1);
+        QRegularExpression extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
+        QRegularExpressionMatch match = extensionFinder.match(selectedFilter);
+        const QString extension = match.captured(1);
 
         QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
 
@@ -810,7 +812,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QShortcut *switchToLeftDocument = new QShortcut(Qt::ALT + Qt::Key_Left, this);
     connect(switchToLeftDocument, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToLeftDocument);
-    QShortcut *switchToLeftDocument1 = new QShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab, this);
+    QShortcut *switchToLeftDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_Tab, this);
     connect(switchToLeftDocument1, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToLeftDocument);
 

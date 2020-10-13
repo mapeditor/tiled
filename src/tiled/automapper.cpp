@@ -38,6 +38,9 @@
 #include "tilelayer.h"
 
 #include <QDebug>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+#include <QRandomGenerator>
+#endif
 
 #include "qtcompat_p.h"
 
@@ -746,6 +749,10 @@ QRect AutoMapper::applyRule(int ruleIndex, const QRect &where)
 
     const TileLayer dummy(QString(), 0, 0, mMapWork->width(), mMapWork->height());
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+    QRandomGenerator *randomGenerator = QRandomGenerator::global();
+#endif
+
     for (int y = minY; y <= maxY; ++y)
     for (int x = minX; x <= maxX; ++x) {
         bool anyMatch = false;
@@ -777,7 +784,11 @@ QRect AutoMapper::applyRule(int ruleIndex, const QRect &where)
 
         if (anyMatch) {
             // choose by chance which group of rule_layers should be used:
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+            const int r = randomGenerator->generate() % mLayerList.size();
+#else
             const int r = qrand() % mLayerList.size();
+#endif
             const RuleOutput &translationTable = mLayerList.at(r);
 
             if (mOptions.noOverlappingRules) {

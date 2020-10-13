@@ -151,7 +151,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     mObjectsWidget->setVisible(false);
     auto objectsVertical = new QVBoxLayout(mObjectsWidget);
     objectsVertical->setSpacing(0);
-    objectsVertical->setMargin(0);
+    objectsVertical->setContentsMargins(0, 0, 0, 0);
     objectsVertical->addWidget(mObjectsView);
     objectsVertical->addWidget(objectsToolBar);
 
@@ -214,7 +214,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     auto widget = new QWidget(this);
     auto vertical = new QVBoxLayout(widget);
     vertical->setSpacing(0);
-    vertical->setMargin(0);
+    vertical->setContentsMargins(0, 0, 0, 0);
     vertical->addLayout(horizontal);
     vertical->addWidget(mObjectsViewSplitter);
 
@@ -293,6 +293,11 @@ void TileCollisionDock::setTilesetDocument(TilesetDocument *tilesetDocument)
         connect(mTilesetDocument, &TilesetDocument::tilesetTileOffsetChanged,
                 this, &TileCollisionDock::tilesetTileOffsetChanged);
     }
+}
+
+QObject *TileCollisionDock::mapView() const
+{
+    return mMapView;
 }
 
 QList<QObject *> TileCollisionDock::selectedObjectsForScript() const

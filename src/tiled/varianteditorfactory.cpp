@@ -66,7 +66,7 @@ ResetWidget::ResetWidget(QtProperty *property, QWidget *editor, QWidget *parent)
     resetButton->setToolTip(tr("Reset"));
     Utils::setThemeIcon(resetButton, "edit-clear");
 
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(editor);
     layout->addWidget(resetButton);

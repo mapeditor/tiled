@@ -139,7 +139,7 @@ QStringList ScriptModule::tilesetFormats() const
     return ret;
 }
 
-EditableAsset *ScriptModule::activeAsset() const
+QObject *ScriptModule::activeAsset() const
 {
     if (auto documentManager = DocumentManager::maybeInstance())
         if (Document *document = documentManager->currentDocument())
@@ -148,8 +148,9 @@ EditableAsset *ScriptModule::activeAsset() const
     return nullptr;
 }
 
-bool ScriptModule::setActiveAsset(EditableAsset *asset) const
+bool ScriptModule::setActiveAsset(QObject *object) const
 {
+    EditableAsset *asset = qobject_cast<EditableAsset*>(object);
     if (!asset) {
         ScriptManager::instance().throwNullArgError(0);
         return false;
@@ -177,14 +178,14 @@ QList<QObject *> ScriptModule::openAssets() const
     return assets;
 }
 
-TilesetEditor *ScriptModule::tilesetEditor() const
+QObject *ScriptModule::tilesetEditor() const
 {
     if (auto documentManager = DocumentManager::maybeInstance())
         return static_cast<TilesetEditor*>(documentManager->editor(Document::TilesetDocumentType));
     return nullptr;
 }
 
-MapEditor *ScriptModule::mapEditor() const
+QObject *ScriptModule::mapEditor() const
 {
     if (auto documentManager = DocumentManager::maybeInstance())
         return static_cast<MapEditor*>(documentManager->editor(Document::MapDocumentType));

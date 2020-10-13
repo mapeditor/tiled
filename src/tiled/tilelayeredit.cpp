@@ -41,6 +41,11 @@ TileLayerEdit::~TileLayerEdit()
     mTargetLayer->mActiveEdits.removeOne(this);
 }
 
+QObject *TileLayerEdit::target() const
+{
+    return mTargetLayer;
+}
+
 void TileLayerEdit::setTile(int x, int y, EditableTile *tile, int flags)
 {
     Cell cell(tile ? tile->tile() : nullptr);

@@ -14,6 +14,7 @@ QtGuiApplication {
     Depends { name: "qtsingleapplication" }
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt"; submodules: ["core", "widgets", "qml"]; versionAtLeast: "5.6" }
+    Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6 }
 
     property bool qtcRunnable: true
 

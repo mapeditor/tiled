@@ -189,9 +189,9 @@ void WangTemplateView::keyPressEvent(QKeyEvent *event)
 void WangTemplateView::wheelEvent(QWheelEvent *event)
 {
     if (event->modifiers() & Qt::ControlModifier &&
-            event->orientation() == Qt::Vertical)
+            event->angleDelta().y())
     {
-        mZoomable->handleWheelDelta(event->delta());
+        mZoomable->handleWheelDelta(event->angleDelta().y());
         return;
     }
 

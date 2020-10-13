@@ -328,7 +328,7 @@ bool Tileset::loadImage()
         }
     }
 
-    mNextTileId = std::max(mNextTileId, tiles.size());
+    mNextTileId = std::max<int>(mNextTileId, tiles.size());
 
     mImageReference.size = image.size();
     mColumnCount = columnCountForWidth(mImageReference.size.width());

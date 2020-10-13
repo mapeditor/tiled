@@ -310,6 +310,11 @@ MapEditor::~MapEditor()
 {
 }
 
+QObject *MapEditor::tilesetDock() const
+{
+    return mTilesetDock;
+}
+
 void MapEditor::saveState()
 {
     preferences::mapEditorSize = mMainWindow->size();
@@ -579,6 +584,11 @@ void MapEditor::resetLayout()
     mTemplatesDock->setVisible(false);
     mWangDock->setVisible(false);
     mTileStampsDock->setVisible(false);
+}
+
+QObject *MapEditor::currentMapViewAsObject() const
+{
+    return currentMapView();
 }
 
 Zoomable *MapEditor::zoomable() const
@@ -981,7 +991,7 @@ void MapEditor::setupQuickStamps()
         connect(createStamp, &QShortcut::activated, [=] { mTileStampManager->createQuickStamp(i); });
 
         // Set up shortcut for extending this quick stamp
-        QShortcut *extendStamp = new QShortcut(Qt::CTRL + Qt::SHIFT + key, mMainWindow);
+        QShortcut *extendStamp = new QShortcut((Qt::CTRL | Qt::SHIFT) + key, mMainWindow);
         connect(extendStamp, &QShortcut::activated, [=] { mTileStampManager->extendQuickStamp(i); });
     }
 
@@ -1011,7 +1021,7 @@ SharedTileset MapEditor::currentTileset() const
     return mTilesetDock->currentTileset();
 }
 
-EditableMap *MapEditor::currentBrush() const
+QObject *MapEditor::currentBrush() const
 {
     const TileStamp &stamp = mStampBrush->stamp();
     if (stamp.isEmpty())
@@ -1023,8 +1033,10 @@ EditableMap *MapEditor::currentBrush() const
     return editableMap;
 }
 
-void MapEditor::setCurrentBrush(EditableMap *editableMap)
+void MapEditor::setCurrentBrush(QObject *object)
 {
+    EditableMap *editableMap = qobject_cast<EditableMap*>(object);
+
     if (!editableMap) {
         ScriptManager::instance().throwNullArgError(0);
         return;

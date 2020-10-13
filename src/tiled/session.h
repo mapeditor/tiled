@@ -22,7 +22,6 @@
 
 #include <QDir>
 #include <QHash>
-#include <QLinkedList>
 #include <QPointF>
 #include <QSettings>
 #include <QSize>
@@ -30,6 +29,7 @@
 #include <QTimer>
 #include <QVariantMap>
 
+#include <list>
 #include <memory>
 
 namespace Tiled {
@@ -178,7 +178,7 @@ public:
     QMap<QString, QVariantMap> fileStates;
 
     using ChangedCallback = std::function<void()>;
-    using Callbacks = QLinkedList<ChangedCallback>;
+    using Callbacks = std::list<ChangedCallback>;
     using CallbackIterator = Callbacks::iterator;
 
 private:
@@ -241,7 +241,7 @@ template<typename T>
 Session::CallbackIterator SessionOption<T>::onChange(const Session::ChangedCallback &callback)
 {
     Session::Callbacks &callbacks = Session::mChangedCallbacks[mKey];
-    callbacks.prepend(callback);
+    callbacks.push_front(callback);
     return callbacks.begin();
 }
 

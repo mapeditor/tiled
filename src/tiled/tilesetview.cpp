@@ -554,7 +554,7 @@ QIcon TilesetView::imageMissingIcon() const
 
 void TilesetView::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MidButton && isActiveWindow()) {
+    if (event->button() == Qt::MiddleButton && isActiveWindow()) {
         mLastMousePos = event->globalPos();
         setHandScrolling(true);
         return;
@@ -670,7 +670,7 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
 
 void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MidButton) {
+    if (event->button() == Qt::MiddleButton) {
         setHandScrolling(false);
         return;
     }
@@ -686,7 +686,11 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
     return;
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void TilesetView::enterEvent(QEvent *event)
+#else
+void TilesetView::enterEvent(QEnterEvent *event)
+#endif
 {
     if (mEditWangSet)
         setFocus();
@@ -713,11 +717,15 @@ void TilesetView::wheelEvent(QWheelEvent *event)
     bool wheelZoomsByDefault = !dynamicWrapping() && Preferences::instance()->wheelZoomsByDefault();
     bool control = event->modifiers() & Qt::ControlModifier;
 
-    if ((wheelZoomsByDefault != control) && event->orientation() == Qt::Vertical) {
+    if ((wheelZoomsByDefault != control) && event->angleDelta().y()) {
         auto hor = horizontalScrollBar();
         auto ver = verticalScrollBar();
 
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
         const QPointF &viewportPos = event->posF();
+#else
+        const QPointF &viewportPos = event->position();
+#endif
         const QPointF contentPos(viewportPos.x() + hor->value(),
                                  viewportPos.y() + ver->value());
 
@@ -729,7 +737,7 @@ void TilesetView::wheelEvent(QWheelEvent *event)
                                          contentPos.y() / oldContentSize.height());
         }
 
-        mZoomable->handleWheelDelta(event->delta());
+        mZoomable->handleWheelDelta(event->angleDelta().y());
 
         executeDelayedItemsLayout();
 

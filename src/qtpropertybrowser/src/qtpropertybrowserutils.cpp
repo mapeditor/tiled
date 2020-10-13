@@ -296,7 +296,7 @@ void QtBoolEdit::mousePressEvent(QMouseEvent *event)
 void QtBoolEdit::paintEvent(QPaintEvent *)
 {
     QStyleOption opt;
-    opt.init(this);
+    opt.initFrom(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
@@ -308,7 +308,7 @@ QtKeySequenceEdit::QtKeySequenceEdit(QWidget *parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(m_lineEdit);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     m_lineEdit->installEventFilter(this);
     m_lineEdit->setReadOnly(true);
     m_lineEdit->setFocusProxy(this);
@@ -442,7 +442,7 @@ void QtKeySequenceEdit::keyReleaseEvent(QKeyEvent *e)
 void QtKeySequenceEdit::paintEvent(QPaintEvent *)
 {
     QStyleOption opt;
-    opt.init(this);
+    opt.initFrom(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
@@ -468,26 +468,18 @@ bool QtKeySequenceEdit::event(QEvent *e)
  */
 QString removeRedundantTrialingZeros(const QString &text)
 {
-    const QChar decimalPoint = QLocale::system().decimalPoint();
+    const QString decimalPoint = QLocale::system().decimalPoint();
+    const auto decimalPointIndex = text.lastIndexOf(decimalPoint);
+    if (decimalPointIndex < 0) // return if there is no decimal point
+        return text;
 
-    int i = text.length() - 1;
+    const auto afterDecimalPoint = decimalPointIndex + decimalPoint.length();
     int redundantZeros = 0;
 
-    while (i > 0) {
-        if (text.at(i) == QLatin1Char('0')) {
-            ++redundantZeros;
-        } else {
-            if (text.at(i) == decimalPoint)
-                --redundantZeros;
-            break;
-        }
-        --i;
-    }
+    for (int i = text.length() - 1; i > afterDecimalPoint && text.at(i) == QLatin1Char('0'); --i)
+        ++redundantZeros;
 
-    if (redundantZeros > 0)
-        return text.left(text.length() - redundantZeros);
-
-    return text;
+    return text.left(text.length() - redundantZeros);
 }
 
 

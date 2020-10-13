@@ -44,6 +44,11 @@ EditableLayer::~EditableLayer()
     EditableManager::instance().mEditableLayers.remove(layer());
 }
 
+QObject *EditableLayer::mapAsObject() const
+{
+    return map();
+}
+
 EditableMap *EditableLayer::map() const
 {
     return asset()->isMap() ? static_cast<EditableMap*>(asset()) : nullptr;

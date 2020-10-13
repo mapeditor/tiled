@@ -20,11 +20,9 @@
 
 #include "tilesetdocument.h"
 
-#include "editabletileset.h"
 #include "issuesmodel.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "tile.h"
 #include "tilesetformat.h"
 #include "tilesetwangsetmodel.h"
 #include "wangcolormodel.h"

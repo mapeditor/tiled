@@ -53,7 +53,9 @@
 #include <QFile>
 #include <QQmlEngine>
 #include <QStandardPaths>
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
 #include <QTextCodec>
+#endif
 #include <QtDebug>
 #include <QCoreApplication>
 
@@ -151,6 +153,7 @@ QJSValue ScriptManager::evaluate(const QString &program,
     return result;
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
 static bool fromUtf8(const QByteArray &bytes, QString &unicode)
 {
     QTextCodec::ConverterState state;
@@ -158,6 +161,7 @@ static bool fromUtf8(const QByteArray &bytes, QString &unicode)
     unicode = codec->toUnicode(bytes.constData(), bytes.size(), &state);
     return state.invalidChars == 0;
 }
+#endif
 
 QJSValue ScriptManager::evaluateFile(const QString &fileName)
 {
@@ -170,8 +174,20 @@ QJSValue ScriptManager::evaluateFile(const QString &fileName)
 
     const QByteArray bytes = file.readAll();
     QString script;
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     if (!fromUtf8(bytes, script))
         script = QTextCodec::codecForUtfText(bytes)->toUnicode(bytes);
+#else
+    // Workaround for Qt 6.0 Alpha bug (QTBUG-87466)
+//    auto encoding = QStringConverter::encodingForData(bytes.constData(), bytes.size());
+//    QStringDecoder decoder(encoding.value_or(QStringConverter::Encoding::Utf8));
+//    script = decoder.decode(bytes);
+//    if (decoder.hasError()) {
+//        Tiled::ERROR(tr("Error decoding file: %1").arg(fileName));
+//        return QJSValue();
+//    }
+    script = QString::fromUtf8(bytes);
+#endif
 
     Tiled::INFO(tr("Evaluating '%1'").arg(fileName));
     return evaluate(script, fileName);
@@ -228,7 +244,11 @@ bool ScriptManager::checkError(QJSValue value, const QString &program)
     QString errorString = value.toString();
     QString stack = value.property(QStringLiteral("stack")).toString();
 
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+    const auto stackEntries = QStringView(stack).split(QLatin1Char('\n'));
+#else
     const auto stackEntries = stack.splitRef(QLatin1Char('\n'));
+#endif
     if (stackEntries.size() > 0 && !stackEntries.first().startsWith(QLatin1String("%entry@"))) {
         // Add stack if there were more than one entries
         errorString.append(QLatin1Char('\n'));

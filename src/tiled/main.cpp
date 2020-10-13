@@ -344,12 +344,17 @@ int main(int argc, char *argv[])
 
     qInstallMessageHandler(messagesToConsole);
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    // Enable support for highres images (added in Qt 5.1, but off by default, always enabled in Qt 6)
+    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
+    // Fallback session management was removed from Qt 6
     QGuiApplication::setFallbackSessionManagementEnabled(false);
 
-    // Enable support for highres images (added in Qt 5.1, but off by default)
-    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    // Window context help buttons are disabled by default in Qt 6
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     QCoreApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
+#endif
 #endif
 
 #ifdef Q_OS_MAC

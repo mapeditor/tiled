@@ -3066,10 +3066,6 @@ inittiled_qt(void)
         tmp_value = PyLong_FromLong(QFileDialog::HideNameFilterDetails);
         PyDict_SetItemString((PyObject*) PyQFileDialog_Type.tp_dict, "HideNameFilterDetails", tmp_value);
         Py_DECREF(tmp_value);
-         // QFileDialog::DontUseSheet
-        tmp_value = PyLong_FromLong(QFileDialog::DontUseSheet);
-        PyDict_SetItemString((PyObject*) PyQFileDialog_Type.tp_dict, "DontUseSheet", tmp_value);
-        Py_DECREF(tmp_value);
     }
     return m;
 }

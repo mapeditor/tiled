@@ -121,7 +121,7 @@ DocumentManager::DocumentManager(QObject *parent)
     vertical->addWidget(mTabBar);
     vertical->addWidget(mFileChangedWarning);
     vertical->addWidget(mBrokenLinksWidget);
-    vertical->setMargin(0);
+    vertical->setContentsMargins(0, 0, 0, 0);
     vertical->setSpacing(0);
 
     mEditorStack = new QStackedLayout;
