@@ -76,10 +76,7 @@ class ScriptTextFile : public QObject
 
     Q_PROPERTY(QString filePath READ filePath)
     Q_PROPERTY(bool atEof READ atEof)
-
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     Q_PROPERTY(QString codec READ codec WRITE setCodec)
-#endif
 
 public:
     enum OpenMode {
@@ -97,10 +94,8 @@ public:
 
     QString filePath() const;
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     QString codec() const;
     void setCodec(const QString &codec);
-#endif
 
     Q_INVOKABLE QString readLine();
     Q_INVOKABLE QString readAll();

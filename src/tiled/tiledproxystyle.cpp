@@ -795,7 +795,11 @@ void TiledProxyStyle::drawControl(ControlElement element,
             }
             int x, y, w, h;
             menuitem->rect.getRect(&x, &y, &w, &h);
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+            int tab = menuitem->reservedShortcutWidth;
+#else
             int tab = menuitem->tabWidth;
+#endif
             QColor discol;
             if (dis) {
                 discol = menuitem->palette.text().color();

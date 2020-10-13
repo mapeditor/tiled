@@ -22,6 +22,7 @@
 
 #include <QPoint>
 #include <QRegion>
+#include <QTransform>
 #include <QVector>
 
 namespace Tiled {

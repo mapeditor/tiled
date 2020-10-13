@@ -71,7 +71,7 @@ QVariant MatchesModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case Qt::DisplayRole: {
         const ProjectModel::Match &match = mMatches.at(index.row());
-        return match.path.mid(match.offset);
+        return match.relativePath().toString();
     }
     }
     return QVariant();
@@ -146,7 +146,11 @@ void MatchDelegate::paint(QPainter *painter,
 
     QString filePath = index.data().toString();
     const int lastSlash = filePath.lastIndexOf(QLatin1Char('/'));
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     const auto ranges = Utils::matchingRanges(mWords, &filePath);
+#else
+    const auto ranges = Utils::matchingRanges(mWords, filePath);
+#endif
 
     filePath = QDir::toNativeSeparators(filePath);
 
@@ -372,16 +376,23 @@ void LocatorWidget::setFilterText(const QString &text)
     if (currentIndex.isValid())
         previousSelected = mListModel->data(currentIndex).toString();
 
-    const QStringList words = QDir::fromNativeSeparators(text).split(QLatin1Char(' '),
-                                                                     QString::SkipEmptyParts);
+    const QString normalized = QDir::fromNativeSeparators(text);
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    const QStringList words = normalized.split(QLatin1Char(' '), QString::SkipEmptyParts);
+#else
+    const QStringList words = normalized.split(QLatin1Char(' '), Qt::SkipEmptyParts);
+#endif
 
     auto projectModel = ProjectManager::instance()->projectModel();
     auto matches = projectModel->findFiles(words);
 
     std::stable_sort(matches.begin(), matches.end(), [] (const ProjectModel::Match &a, const ProjectModel::Match &b) {
+        // Sort based on score first
         if (a.score != b.score)
             return a.score > b.score;
-        return a.path.midRef(a.offset).compare(b.path.midRef(b.offset), Qt::CaseInsensitive) < 0;
+
+        // If score is the same, sort alphabetically
+        return a.relativePath().compare(b.relativePath(), Qt::CaseInsensitive) < 0;
     });
 
     mDelegate->setWords(words);
@@ -396,7 +407,7 @@ void LocatorWidget::setFilterText(const QString &text)
 
         if (!previousSelected.isEmpty()) {
             auto it = std::find_if(matches.cbegin(), matches.cend(), [&] (const ProjectModel::Match &match) {
-                return match.path.midRef(match.offset) == previousSelected;
+                return match.relativePath() == previousSelected;
             });
             if (it != matches.cend())
                 row = std::distance(matches.cbegin(), it);

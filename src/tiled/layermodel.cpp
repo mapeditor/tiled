@@ -298,8 +298,8 @@ bool LayerModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 
     GroupLayer *groupLayer = static_cast<GroupLayer*>(parentLayer);
 
-    QByteArray encodedData = data->data(QLatin1String(LAYERS_MIMETYPE));
-    QDataStream stream(&encodedData, QIODevice::ReadOnly);
+    const QByteArray encodedData = data->data(QLatin1String(LAYERS_MIMETYPE));
+    QDataStream stream(encodedData);
     QList<Layer*> layers;
 
     while (!stream.atEnd()) {

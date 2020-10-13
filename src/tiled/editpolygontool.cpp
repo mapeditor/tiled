@@ -657,7 +657,7 @@ void EditPolygonTool::showHandleContextMenu(QPoint screenPos)
 
     bool canDeleteSegment = false;
     if (n == 2) {
-        const PointHandle *secondHandle = *(mSelectedHandles.constBegin() + 1);
+        const PointHandle *secondHandle = *(++mSelectedHandles.constBegin());
         const MapObject *secondMapObject = secondHandle->mapObject();
 
         int indexDifference = std::abs(firstHandle->pointIndex() - secondHandle->pointIndex());
@@ -1005,8 +1005,8 @@ void EditPolygonTool::deleteSegment()
     if (mSelectedHandles.size() != 2)
         return;
 
-    const auto &firstHandle = *mSelectedHandles.begin();
-    const auto &secondHandle = *(mSelectedHandles.begin() + 1);
+    PointHandle *firstHandle = *mSelectedHandles.constBegin();
+    PointHandle *secondHandle = *(++mSelectedHandles.constBegin());
 
     MapObject *mapObject = firstHandle->mapObject();
 

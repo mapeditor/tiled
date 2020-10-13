@@ -26,6 +26,7 @@
 
 #include <QAction>
 #include <QShortcut>
+#include <QWidget>
 
 using namespace Tiled;
 

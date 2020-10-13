@@ -991,7 +991,7 @@ void MapEditor::setupQuickStamps()
         connect(createStamp, &QShortcut::activated, [=] { mTileStampManager->createQuickStamp(i); });
 
         // Set up shortcut for extending this quick stamp
-        QShortcut *extendStamp = new QShortcut(Qt::CTRL + Qt::SHIFT + key, mMainWindow);
+        QShortcut *extendStamp = new QShortcut((Qt::CTRL | Qt::SHIFT) + key, mMainWindow);
         connect(extendStamp, &QShortcut::activated, [=] { mTileStampManager->extendQuickStamp(i); });
     }
 
