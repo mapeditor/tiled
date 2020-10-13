@@ -58,9 +58,11 @@ Product {
                     var major = lib + "." + Qt.core.versionMajor;
                     var minor = major + "." + Qt.core.versionMinor;
                     var patch = minor + "." + Qt.core.versionPatch;
+                    if (File.exists(minor))
+                        result.push(minor)
                     if (File.exists(lib))
                         result.push(lib)
-                    result.push(major, minor, patch);
+                    result.push(major, patch);
                 }
                 return result;
             }
@@ -68,13 +70,14 @@ Product {
             var list = [];
 
             if (!Qt.core.frameworkBuild) {
+                var major = Qt.core.versionMajor;
                 list.push(
-                    "Qt5Core" + postfix,
-                    "Qt5Gui" + postfix,
-                    "Qt5Network" + postfix,
-                    "Qt5Qml" + postfix,
-                    "Qt5Svg" + postfix,
-                    "Qt5Widgets" + postfix
+                    "Qt" + major + "Core" + postfix,
+                    "Qt" + major + "Gui" + postfix,
+                    "Qt" + major + "Network" + postfix,
+                    "Qt" + major + "Qml" + postfix,
+                    "Qt" + major + "Svg" + postfix,
+                    "Qt" + major + "Widgets" + postfix
                 );
             }
 
@@ -89,8 +92,8 @@ Product {
             } else if (qbs.targetOS.contains("linux")) {
                 list = addQtVersions(list);
                 list = list.concat(addQtVersions([
-                    "Qt5DBus.so",
-                    "Qt5XcbQpa.so",
+                    "Qt" + major + "DBus.so",
+                    "Qt" + major + "XcbQpa.so",
                 ]))
 
                 if (File.exists(prefix + "icudata.so.56")) {
