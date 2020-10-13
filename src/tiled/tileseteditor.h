@@ -22,6 +22,7 @@
 
 #include "clipboardmanager.h"
 #include "editor.h"
+#include "tilecollisiondock.h"
 #include "wangset.h"
 
 #include <QHash>
@@ -43,7 +44,6 @@ class Tileset;
 class PropertiesDock;
 class TemplatesDock;
 class TileAnimationEditor;
-class TileCollisionDock;
 class TilesetDocument;
 class TilesetEditorWindow;
 class TilesetView;

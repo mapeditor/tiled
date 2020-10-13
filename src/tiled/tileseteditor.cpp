@@ -39,7 +39,6 @@
 #include "templatesdock.h"
 #include "tile.h"
 #include "tileanimationeditor.h"
-#include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
 #include "tilesetmanager.h"

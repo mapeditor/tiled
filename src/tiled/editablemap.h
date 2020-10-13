@@ -21,6 +21,8 @@
 #pragma once
 
 #include "editableasset.h"
+#include "editablelayer.h"
+#include "editableselectedarea.h"
 #include "mapdocument.h"
 #include "regionvaluetype.h"
 
@@ -29,9 +31,7 @@ namespace Tiled {
 class MapObject;
 
 class AutomappingManager;
-class EditableLayer;
 class EditableMapObject;
-class EditableSelectedArea;
 class EditableTileset;
 
 class EditableMap : public EditableAsset

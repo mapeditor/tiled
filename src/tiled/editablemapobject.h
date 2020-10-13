@@ -70,13 +70,13 @@ class EditableMapObject : public EditableObject
     Q_PROPERTY(Qt::Alignment textAlignment READ textAlignment WRITE setTextAlignment)
     Q_PROPERTY(bool wordWrap READ wordWrap WRITE setWordWrap)
     Q_PROPERTY(QColor textColor READ textColor WRITE setTextColor)
-    Q_PROPERTY(Tiled::EditableTile *tile READ tile WRITE setTile)
+    Q_PROPERTY(QObject *tile READ tile WRITE setTile)
     Q_PROPERTY(bool tileFlippedHorizontally READ tileFlippedHorizontally WRITE setTileFlippedHorizontally)
     Q_PROPERTY(bool tileFlippedVertically READ tileFlippedVertically WRITE setTileFlippedVertically)
 //    Q_PROPERTY(const ObjectTemplate *mObjectTemplate)
     Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
-    Q_PROPERTY(Tiled::EditableObjectGroup *layer READ layer)
-    Q_PROPERTY(Tiled::EditableMap *map READ map)
+    Q_PROPERTY(QObject *layer READ layer)
+    Q_PROPERTY(QObject *map READ mapAsObject)
 //    Q_PROPERTY(ChangedProperties mChangedProperties)
 
 public:
@@ -122,11 +122,12 @@ public:
     Qt::Alignment textAlignment() const;
     bool wordWrap() const;
     QColor textColor() const;
-    EditableTile *tile() const;
+    QObject *tile() const;
     bool tileFlippedHorizontally() const;
     bool tileFlippedVertically() const;
     bool isSelected() const;
-    EditableObjectGroup *layer() const;
+    QObject *layer() const;
+    QObject *mapAsObject() const;
     EditableMap *map() const;
 
     MapObject *mapObject() const;
@@ -154,7 +155,7 @@ public slots:
     void setTextAlignment(Qt::Alignment textAlignment);
     void setWordWrap(bool wordWrap);
     void setTextColor(const QColor &textColor);
-    void setTile(EditableTile *tile);
+    void setTile(QObject *tile);
     void setTileFlippedHorizontally(bool tileFlippedHorizontally);
     void setTileFlippedVertically(bool tileFlippedVertically);
     void setSelected(bool selected);

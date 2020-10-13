@@ -80,7 +80,7 @@ QJSValue EditableMapObject::polygon() const
     return array;
 }
 
-EditableTile *EditableMapObject::tile() const
+QObject *EditableMapObject::tile() const
 {
     Tile *tile = mapObject()->cell().tile();
     if (!tile)
@@ -104,9 +104,14 @@ bool EditableMapObject::isSelected() const
     return false;
 }
 
-EditableObjectGroup *EditableMapObject::layer() const
+QObject *EditableMapObject::layer() const
 {
     return EditableManager::instance().editableObjectGroup(asset(), mapObject()->objectGroup());
+}
+
+QObject *EditableMapObject::mapAsObject() const
+{
+    return map();
 }
 
 EditableMap *EditableMapObject::map() const
@@ -249,8 +254,10 @@ void EditableMapObject::setTextColor(const QColor &textColor)
     setMapObjectProperty(MapObject::TextColorProperty, textColor);
 }
 
-void EditableMapObject::setTile(EditableTile *tile)
+void EditableMapObject::setTile(QObject *tileAsObject)
 {
+    EditableTile *tile = qobject_cast<EditableTile*>(tileAsObject);
+
     if (Document *doc = document()) {
         QList<MapObject *> mapObjects { mapObject() };
         asset()->push(new ChangeMapObjectsTile(doc,

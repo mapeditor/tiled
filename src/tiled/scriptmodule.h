@@ -61,11 +61,11 @@ class ScriptModule : public QObject
     Q_PROPERTY(QStringList mapFormats READ mapFormats)
     Q_PROPERTY(QStringList tilesetFormats READ tilesetFormats)
 
-    Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
+    Q_PROPERTY(QObject *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
 
-    Q_PROPERTY(Tiled::MapEditor *mapEditor READ mapEditor)
-    Q_PROPERTY(Tiled::TilesetEditor *tilesetEditor READ tilesetEditor)
+    Q_PROPERTY(QObject *mapEditor READ mapEditor)
+    Q_PROPERTY(QObject *tilesetEditor READ tilesetEditor)
 
 public:
     struct MenuItem {
@@ -91,13 +91,13 @@ public:
     QStringList mapFormats() const;
     QStringList tilesetFormats() const;
 
-    EditableAsset *activeAsset() const;
-    bool setActiveAsset(EditableAsset *asset) const;
+    QObject *activeAsset() const;
+    bool setActiveAsset(QObject *asset) const;
 
     QList<QObject*> openAssets() const;
 
-    TilesetEditor *tilesetEditor() const;
-    MapEditor *mapEditor() const;
+    QObject *tilesetEditor() const;
+    QObject *mapEditor() const;
 
     Q_INVOKABLE Tiled::FilePath filePath(const QUrl &path) const;
     Q_INVOKABLE Tiled::ObjectRef objectRef(int id) const;
@@ -125,7 +125,7 @@ signals:
     void assetSaved(Tiled::EditableAsset *asset);
     void assetAboutToBeClosed(Tiled::EditableAsset *asset);
 
-    void activeAssetChanged(Tiled::EditableAsset *asset);
+    void activeAssetChanged(QObject *asset);
 
 public slots:
     void trigger(const QByteArray &actionName) const;

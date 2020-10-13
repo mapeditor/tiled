@@ -42,6 +42,11 @@ EditableObject::EditableObject(EditableAsset *asset,
 {
 }
 
+QObject *EditableObject::assetAsObject() const
+{
+    return asset();
+}
+
 bool EditableObject::isReadOnly() const
 {
     return asset() && asset()->isReadOnly();

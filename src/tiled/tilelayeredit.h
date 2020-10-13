@@ -33,7 +33,7 @@ class TileLayerEdit : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(Tiled::EditableTileLayer *target READ target)
+    Q_PROPERTY(QObject *target READ target)
     Q_PROPERTY(bool mergeable READ isMergeable WRITE setMergeable)
 
 public:
@@ -50,7 +50,7 @@ public:
     void setMergeable(bool mergeable);
     bool isMergeable() const;
 
-    EditableTileLayer *target() const;
+    QObject *target() const;
 
 public slots:
     void setTile(int x, int y, EditableTile *tile, int flags = 0);
@@ -71,11 +71,6 @@ inline void TileLayerEdit::setMergeable(bool mergeable)
 inline bool TileLayerEdit::isMergeable() const
 {
     return mMergeable;
-}
-
-inline EditableTileLayer *TileLayerEdit::target() const
-{
-    return mTargetLayer;
 }
 
 } // namespace Tiled

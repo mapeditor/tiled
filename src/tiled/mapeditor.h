@@ -71,15 +71,15 @@ class MapEditor : public Editor
 {
     Q_OBJECT
 
-    Q_PROPERTY(Tiled::TilesetDock *tilesetsView READ tilesetDock)
-    Q_PROPERTY(Tiled::EditableMap *currentBrush READ currentBrush WRITE setCurrentBrush)
-    Q_PROPERTY(Tiled::MapView *currentMapView READ currentMapView)
+    Q_PROPERTY(QObject *tilesetsView READ tilesetDock)
+    Q_PROPERTY(QObject *currentBrush READ currentBrush WRITE setCurrentBrush)
+    Q_PROPERTY(QObject *currentMapView READ currentMapViewAsObject)
 
 public:
     explicit MapEditor(QObject *parent = nullptr);
     ~MapEditor() override;
 
-    TilesetDock *tilesetDock() const { return mTilesetDock; }
+    QObject *tilesetDock() const;
     TemplatesDock *templatesDock() const { return mTemplatesDock; }
 
     void saveState() override;
@@ -105,6 +105,7 @@ public:
 
     MapView *viewForDocument(MapDocument *mapDocument) const;
     MapView *currentMapView() const;
+    QObject *currentMapViewAsObject() const;
     Zoomable *zoomable() const override;
 
     void saveDocumentState(MapDocument *mapDocument) const;
@@ -113,8 +114,8 @@ public:
     void setCurrentTileset(const SharedTileset &tileset);
     SharedTileset currentTileset() const;
 
-    EditableMap *currentBrush() const;
-    void setCurrentBrush(EditableMap *editableMap);
+    QObject *currentBrush() const;
+    void setCurrentBrush(QObject *editableMap);
 
     void addExternalTilesets(const QStringList &fileNames);
 

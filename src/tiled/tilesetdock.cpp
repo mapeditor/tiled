@@ -956,8 +956,9 @@ TilesetDocument *TilesetDock::currentTilesetDocument() const
     return mTilesetDocuments.at(index);
 }
 
-void TilesetDock::setCurrentEditableTileset(EditableTileset *tileset)
+void TilesetDock::setCurrentEditableTileset(QObject *object)
 {
+    EditableTileset *tileset = qobject_cast<EditableTileset*>(object);
     if (!tileset) {
         ScriptManager::instance().throwNullArgError(0);
         return;
@@ -965,7 +966,7 @@ void TilesetDock::setCurrentEditableTileset(EditableTileset *tileset)
     setCurrentTileset(tileset->tileset()->sharedPointer());
 }
 
-EditableTileset *TilesetDock::currentEditableTileset() const
+QObject *TilesetDock::currentEditableTileset() const
 {
     const int index = mTabBar->currentIndex();
     if (index == -1)
@@ -1006,7 +1007,7 @@ QList<QObject *> TilesetDock::selectedTiles() const
     if (indexes.isEmpty())
         return result;
 
-    EditableTileset *editableTileset = currentEditableTileset();
+    auto editableTileset = static_cast<EditableTileset*>(currentEditableTileset());
 
     const TilesetModel *model = view->tilesetModel();
     auto &editableManager = EditableManager::instance();
