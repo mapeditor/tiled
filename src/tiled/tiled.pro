@@ -15,6 +15,10 @@ win32 {
 
 QT += widgets qml
 
+contains(QT_CONFIG, opengl):minQtVersion(6, 0, 0) {
+    QT += openglwidgets
+}
+
 DEFINES += TILED_VERSION=$${TILED_VERSION}
 
 DEFINES += QT_NO_CAST_FROM_ASCII \
