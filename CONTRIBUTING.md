@@ -24,7 +24,7 @@ In any case, be sure to describe the feature in enough detail, to consider its i
 ## Submitting a Patch
 
 * Ideally, start with something small to get familiar with the review process and work up from there.
-* Make an effort to follow the overal coding style, which is roughly based on the [Qt Creator coding style](https://doc-snapshots.qt.io/qtcreator-extending/coding-style.html).
+* Make an effort to follow the overal coding style, which is roughly based on the [Qt Creator coding style](https://doc.qt.io/qtcreator-extending/coding-style.html).
 * Be prepared for detailed feedback on your patch and to make several revisions.
 * Each pull request will be built automatically for Windows, Linux and macOS. If the build fails anywhere, please check if it may be a problem with your patch.
 
