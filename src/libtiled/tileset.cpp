@@ -32,7 +32,6 @@
 #include "imagecache.h"
 #include "terrain.h"
 #include "tile.h"
-#include "tilesetformat.h"
 #include "tilesetmanager.h"
 #include "wangset.h"
 
@@ -82,12 +81,12 @@ Tileset::~Tileset()
     qDeleteAll(mWangSets);
 }
 
-void Tileset::setFormat(TilesetFormat *format)
+void Tileset::setFormat(const QString &format)
 {
     mFormat = format;
 }
 
-TilesetFormat *Tileset::format() const
+QString Tileset::format() const
 {
     return mFormat;
 }

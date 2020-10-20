@@ -46,6 +46,7 @@
 #include "movemapobject.h"
 #include "movemapobjecttogroup.h"
 #include "objectgroup.h"
+#include "objecttemplate.h"
 #include "offsetlayer.h"
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
@@ -60,7 +61,6 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
-#include "tmxmapformat.h"
 
 #include <QFileInfo>
 #include <QRect>
@@ -126,11 +126,12 @@ MapDocument::~MapDocument()
 
 bool MapDocument::save(const QString &fileName, QString *error)
 {
-    MapFormat *mapFormat = mWriterFormat;
-
-    TmxMapFormat tmxMapFormat;
-    if (!mapFormat)
-        mapFormat = &tmxMapFormat;
+    MapFormat *mapFormat = writerFormat();
+    if (!mapFormat) {
+        if (error)
+            *error = tr("Map format '%s' not found").arg(mWriterFormat);
+        return false;
+    }
 
     if (!mapFormat->write(map(), fileName)) {
         if (error)
@@ -183,22 +184,24 @@ MapDocumentPtr MapDocument::load(const QString &fileName,
 
 MapFormat *MapDocument::readerFormat() const
 {
-    return mReaderFormat;
+    return findFileFormat<MapFormat>(mReaderFormat, FileFormat::Read);
 }
 
 void MapDocument::setReaderFormat(MapFormat *format)
 {
-    mReaderFormat = format;
+    Q_ASSERT(format->hasCapabilities(FileFormat::Read));
+    mReaderFormat = format->shortName();
 }
 
-FileFormat *MapDocument::writerFormat() const
+MapFormat *MapDocument::writerFormat() const
 {
-    return mWriterFormat;
+    return findFileFormat<MapFormat>(mWriterFormat, FileFormat::Write);
 }
 
 void MapDocument::setWriterFormat(MapFormat *format)
 {
-    mWriterFormat = format;
+    Q_ASSERT(format->hasCapabilities(FileFormat::Write));
+    mWriterFormat = format->shortName();
 }
 
 QString MapDocument::lastExportFileName() const
@@ -213,8 +216,6 @@ void MapDocument::setLastExportFileName(const QString &fileName)
 
 MapFormat *MapDocument::exportFormat() const
 {
-    if (map()->exportFormat.isEmpty())
-        return nullptr;
     return findFileFormat<MapFormat>(map()->exportFormat);
 }
 

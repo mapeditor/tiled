@@ -38,7 +38,7 @@ std::unique_ptr<ObjectTemplate> readObjectTemplate(const QString &fileName, QStr
         }
 
         if (objectTemplate)
-            objectTemplate->setFormat(format);
+            objectTemplate->setFormat(format->shortName());
 
         return objectTemplate;
     }

@@ -47,7 +47,7 @@ SharedTileset readTileset(const QString &fileName, QString *error)
 
         if (tileset) {
             tileset->setFileName(fileName);
-            tileset->setFormat(format);
+            tileset->setFormat(format->shortName());
         }
 
         return tileset;

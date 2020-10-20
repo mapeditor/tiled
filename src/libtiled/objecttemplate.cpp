@@ -80,24 +80,15 @@ void ObjectTemplate::setObject(std::unique_ptr<MapObject> object)
         mTileset.reset();
 }
 
-void ObjectTemplate::setFormat(ObjectTemplateFormat *format)
-{
-    mFormat = format;
-}
-
-ObjectTemplateFormat *ObjectTemplate::format() const
-{
-    return mFormat;
-}
-
 bool ObjectTemplate::save()
 {
-    if (!mFormat)
+    auto format = findFileFormat<ObjectTemplateFormat>(mFormat);
+    if (!format)
         return false;
     if (mFileName.isEmpty())
         return false;
 
-    const bool result = mFormat->write(this, mFileName);
+    const bool result = format->write(this, mFileName);
 
     mLastSaved = QFileInfo(mFileName).lastModified();
 

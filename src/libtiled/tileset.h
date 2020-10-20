@@ -36,7 +36,6 @@
 #include <QList>
 #include <QPixmap>
 #include <QPoint>
-#include <QPointer>
 #include <QSharedPointer>
 #include <QString>
 #include <QVector>
@@ -49,7 +48,6 @@ namespace Tiled {
 
 class Tile;
 class Tileset;
-class TilesetFormat;
 class Terrain;
 class WangSet;
 
@@ -113,8 +111,8 @@ public:
     void setFileName(const QString &fileName);
     bool isExternal() const;
 
-    void setFormat(TilesetFormat *format);
-    TilesetFormat *format() const;
+    void setFormat(const QString &format);
+    QString format() const;
 
     int tileWidth() const;
     int tileHeight() const;
@@ -273,7 +271,7 @@ private:
     bool mTerrainDistancesDirty;
     LoadingStatus mStatus;
     QColor mBackgroundColor;
-    QPointer<TilesetFormat> mFormat;
+    QString mFormat;
 
     QWeakPointer<Tileset> mWeakPointer;
     QWeakPointer<Tileset> mOriginalTileset;

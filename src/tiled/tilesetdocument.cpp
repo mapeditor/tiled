@@ -93,10 +93,12 @@ TilesetDocument::~TilesetDocument()
 
 bool TilesetDocument::save(const QString &fileName, QString *error)
 {
-    TilesetFormat *tilesetFormat = mTileset->format();
-
-    if (!tilesetFormat || !(tilesetFormat->capabilities() & FileFormat::Write))
+    auto tilesetFormat = findFileFormat<TilesetFormat>(mTileset->format(), FileFormat::Write);;
+    if (!tilesetFormat) {
+        if (error)
+            *error = tr("Tileset format '%s' not found").arg(mTileset->format());
         return false;
+    }
 
     if (!tilesetFormat->write(*tileset(), fileName)) {
         if (error)
@@ -121,7 +123,7 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
 
 bool TilesetDocument::canReload() const
 {
-    return !fileName().isEmpty() && mTileset->format();
+    return !fileName().isEmpty() && !mTileset->format().isEmpty();
 }
 
 bool TilesetDocument::reload(QString *error)
@@ -129,7 +131,12 @@ bool TilesetDocument::reload(QString *error)
     if (!canReload())
         return false;
 
-    auto format = mTileset->format();
+    auto format = findFileFormat<TilesetFormat>(mTileset->format(), FileFormat::Read);
+    if (!format) {
+        if (error)
+            *error = tr("Tileset format '%s' not found").arg(mTileset->format());
+        return false;
+    }
 
     SharedTileset tileset = format->read(fileName());
 
@@ -140,7 +147,7 @@ bool TilesetDocument::reload(QString *error)
     }
 
     tileset->setFileName(fileName());
-    tileset->setFormat(format);
+    tileset->setFormat(format->shortName());
 
     undoStack()->push(new ReloadTileset(this, tileset));
     undoStack()->setClean();
@@ -162,19 +169,20 @@ TilesetDocumentPtr TilesetDocument::load(const QString &fileName,
     }
 
     tileset->setFileName(fileName);
-    tileset->setFormat(format);
+    tileset->setFormat(format->shortName());
 
     return TilesetDocumentPtr::create(tileset);
 }
 
-FileFormat *TilesetDocument::writerFormat() const
+TilesetFormat *TilesetDocument::writerFormat() const
 {
-    return mTileset->format();
+    return findFileFormat<TilesetFormat>(mTileset->format(), FileFormat::Write);
 }
 
 void TilesetDocument::setWriterFormat(TilesetFormat *format)
 {
-    mTileset->setFormat(format);
+    Q_ASSERT(format->hasCapabilities(FileFormat::Write));
+    mTileset->setFormat(format->shortName());
 }
 
 QString TilesetDocument::lastExportFileName() const
@@ -189,8 +197,6 @@ void TilesetDocument::setLastExportFileName(const QString &fileName)
 
 TilesetFormat* TilesetDocument::exportFormat() const
 {
-    if (tileset()->exportFormat.isEmpty())
-        return nullptr;
     return findFileFormat<TilesetFormat>(tileset()->exportFormat);
 }
 

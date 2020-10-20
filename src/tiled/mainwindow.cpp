@@ -1112,7 +1112,7 @@ bool MainWindow::saveFile()
 
     const QString currentFileName = document->fileName();
 
-    if (currentFileName.isEmpty())
+    if (currentFileName.isEmpty() || !document->writerFormat())
         return mDocumentManager->saveDocumentAs(document);
     else
         return mDocumentManager->saveDocument(document, currentFileName);

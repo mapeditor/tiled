@@ -899,7 +899,7 @@ void MapEditor::handleExternalTilesetsAndImages(const QStringList &fileNames,
             tileset = tilesetFormat->read(fileName);
             if (tileset) {
                 tileset->setFileName(fileName);
-                tileset->setFormat(tilesetFormat);
+                tileset->setFormat(tilesetFormat->shortName());
                 tilesets.append(tileset);
                 continue;
             } else {

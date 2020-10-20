@@ -646,13 +646,9 @@ DocumentPtr DocumentManager::loadDocument(const QString &fileName,
 
     if (!fileFormat) {
         // Try to find a plugin that implements support for this format
-        const auto formats = PluginManager::objects<FileFormat>();
-        for (FileFormat *format : formats) {
-            if (format->supportsFile(fileName)) {
-                fileFormat = format;
-                break;
-            }
-        }
+        fileFormat = PluginManager::find<FileFormat>([&](FileFormat *format) {
+            return format->hasCapabilities(FileFormat::Read) && format->supportsFile(fileName);
+        });
     }
 
     if (!fileFormat) {
@@ -928,9 +924,13 @@ bool DocumentManager::reloadDocumentAt(int index)
     QString error;
 
     if (auto mapDocument = oldDocument.objectCast<MapDocument>()) {
+        auto readerFormat = mapDocument->readerFormat();
+        if (!readerFormat)
+            return false;
+
         // TODO: Consider fixing the reload to avoid recreating the MapDocument
         auto newDocument = MapDocument::load(oldDocument->fileName(),
-                                             mapDocument->readerFormat(),
+                                             readerFormat,
                                              &error);
         if (!newDocument) {
             emit reloadError(tr("%1:\n\n%2").arg(oldDocument->fileName(), error));

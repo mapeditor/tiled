@@ -24,7 +24,6 @@
 
 #include <QDateTime>
 #include <QObject>
-#include <QPointer>
 #include <QSharedPointer>
 #include <QString>
 #include <QVariant>
