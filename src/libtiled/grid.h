@@ -44,7 +44,7 @@ namespace Tiled {
  * of neighboring values.
  */
 template <typename T, int CHUNK_BITS = 4>
-class TILEDSHARED_EXPORT Grid
+class Grid
 {
 public:
     static const int CHUNK_SIZE = 1 << CHUNK_BITS;
