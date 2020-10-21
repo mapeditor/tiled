@@ -1,11 +1,11 @@
-name: Compile on latest Ubuntu
+name: Compile on Ubuntu 20.04
 
 on: [push, pull_request]
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
     - name: Checkout repository
@@ -18,8 +18,10 @@ jobs:
 
     - name: Setup qbs
       run: |
+        qbs --version
         qbs setup-toolchains --detect
-        qbs setup-qt --detect
+        qbs config defaultProfile gcc
 
     - name: Build
-      run: qbs build profile:qt-5-9-5
+      run: |
+        qbs build
