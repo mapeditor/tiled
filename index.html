@@ -549,12 +549,14 @@
         //},
       })
       .done(function(data) {
+        var eurToUsd = 1.18;
+        var weeklyToMonthly = 52.0/12;
         var itchIncome = 950;
         var itchPurchases = 100;
-        var githubIncome = 680;
+        var githubIncome = 759;
         var githubSponsors = 69;
-        var liberapayIncome = data.liberapayEarnings_bjorn * 1.18 * 4;
-        var patreonIncome = data.earnings;
+        var liberapayIncome = data.liberapayEarnings_bjorn * eurToUsd * weeklyToMonthly;
+        var patreonIncome = data.earnings * eurToUsd;
         var totalIncome = itchIncome + liberapayIncome + patreonIncome + githubIncome;
         var totalSupporters = itchPurchases + data.patrons + data.liberapayPatrons_Tiled + data.liberapayPatrons_bjorn + githubSponsors;
         var goals = [1150, 2300, 2600];
