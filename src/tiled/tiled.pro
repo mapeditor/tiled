@@ -552,11 +552,11 @@ FORMS += aboutdialog.ui \
     tileanimationeditor.ui
 
 icon32.path = $${PREFIX}/share/icons/hicolor/32x32/apps/
-icon32.files += images/32x32/tiled.png
+icon32.files += images/32/tiled.png
 INSTALLS += icon32
 
 icon16.path = $${PREFIX}/share/icons/hicolor/16x16/apps/
-icon16.files += images/16x16/tiled.png
+icon16.files += images/16/tiled.png
 INSTALLS += icon16
 
 iconscalable.path = $${PREFIX}/share/icons/hicolor/scalable/apps/
@@ -564,11 +564,11 @@ iconscalable.files += images/scalable/tiled.svg
 INSTALLS += iconscalable
 
 mimeicon16.path = $${PREFIX}/share/icons/hicolor/16x16/mimetypes/
-mimeicon16.files += images/16x16/application-x-tiled.png
+mimeicon16.files += images/16/application-x-tiled.png
 INSTALLS += mimeicon16
 
 mimeicon32.path = $${PREFIX}/share/icons/hicolor/32x32/mimetypes/
-mimeicon32.files += images/32x32/application-x-tiled.png
+mimeicon32.files += images/32/application-x-tiled.png
 INSTALLS += mimeicon32
 
 mimeiconscalable.path = $${PREFIX}/share/icons/hicolor/scalable/mimetypes/
