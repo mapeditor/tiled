@@ -328,13 +328,13 @@
                       <span style="color: gray; margin-left: 5px;" id="goal-percentage"></span>
                     </div>
                     <div style="margin-left: 4px;">
-                      <div id="goal1" class="goalmarker" style="height: 1em; margin-right: 55.77%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
+                      <div id="goal1" class="goalmarker" style="height: 1em; margin-right: 66.66%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
                         <small style="display: block; padding: 6px 4px;">
                           <strong>1 day/week</strong><br>
                           <small style="color: #777">$1150/month</small>
                         </small>
                       </div>
-                      <div id="goal2" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 11.5%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
+                      <div id="goal2" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 33.33%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
                         <small style="display: block; padding: 6px 4px;">
                           <strong>2 days/week</strong><br>
                           <small style="color: #777">$2300/month</small>
@@ -342,8 +342,8 @@
                       </div>
                       <div id="goal3" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 0%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
                         <small style="display: block; padding: 6px 4px;">
-                          <strong>+ office</strong><br>
-                          <small style="color: #777">$2600/month</small>
+                          <strong>3 days/week</strong><br>
+                          <small style="color: #777">$3450/month</small>
                         </small>
                       </div>
                     </div>
@@ -559,7 +559,7 @@
         var patreonIncome = data.earnings * eurToUsd;
         var totalIncome = itchIncome + liberapayIncome + patreonIncome + githubIncome;
         var totalSupporters = itchPurchases + data.patrons + data.liberapayPatrons_Tiled + data.liberapayPatrons_bjorn + githubSponsors;
-        var goals = [1150, 2300, 2600];
+        var goals = [1150, 2300, 3450];
         var endOfProgressBar = Math.max(goals[goals.length - 1], totalIncome);
 
         var itchPercentage = itchIncome / endOfProgressBar * 100;
