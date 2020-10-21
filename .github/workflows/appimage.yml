@@ -1,0 +1,61 @@
+name: Build AppImage
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-16.04
+
+    env:
+      QT_INSTALL_DIR: /home/runner/Qt
+      QT_VERSION: 5.15.1
+      QTCREATOR_VERSION: 4.13.1
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
+
+    - name: Install Qt
+      run: |
+        ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools icu
+        ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QTCREATOR_VERSION} qtcreator
+
+    - name: Setup Qbs
+      run: |
+        export QT_BIN=${QT_INSTALL_DIR}/${QT_VERSION}/gcc_64/bin
+        export PATH="${QT_INSTALL_DIR}/Tools/QtCreator/bin:${QT_BIN}:${PATH}"
+        qbs --version
+        qbs setup-toolchains --detect
+        qbs config defaultProfile x86_64-linux-gnu-gcc-7
+
+    - name: Build
+      run: |
+        export QT_BIN=${QT_INSTALL_DIR}/${QT_VERSION}/gcc_64/bin
+        export PATH="${QT_INSTALL_DIR}/Tools/QtCreator/bin:${QT_BIN}:${PATH}"
+        export TILED_VERSION=$(date "+%Y.%m.%d")
+        qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true
+        cp LICENSE* COPYING *md Tiled/
+
+    - name: Build AppImage
+      run: |
+        export QT_BIN=${QT_INSTALL_DIR}/${QT_VERSION}/gcc_64/bin
+        export PATH="${QT_INSTALL_DIR}/Tools/QtCreator/bin:${QT_BIN}:${PATH}"
+        wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
+        chmod a+x linuxdeployqt
+        ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so -exclude-libs=libpython3.5m.so.1 -verbose=2
+        ./linuxdeployqt --appimage-extract
+        export PATH=$(readlink -f ./squashfs-root/usr/bin/):$PATH
+        ./squashfs-root/usr/bin/appimagetool Tiled/
+        find ./Tiled -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
+
+    - name: Upload AppImage
+      uses: actions/upload-artifact@v2
+      with:
+        name: Tiled-x86_64.AppImage
+        path: Tiled-x86_64.AppImage
