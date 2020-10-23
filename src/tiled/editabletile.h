@@ -42,10 +42,10 @@ class EditableTile : public EditableObject
     Q_PROPERTY(QString type READ type WRITE setType)
     Q_PROPERTY(QString imageFileName READ imageFileName WRITE setImageFileName)
     Q_PROPERTY(qreal probability READ probability WRITE setProbability)
-    Q_PROPERTY(QObject *objectGroup READ objectGroup WRITE setObjectGroup)
+    Q_PROPERTY(Tiled::EditableObjectGroup *objectGroup READ objectGroup WRITE setObjectGroup)
     Q_PROPERTY(QJSValue frames READ frames WRITE setFrames)
     Q_PROPERTY(bool animated READ isAnimated)
-    Q_PROPERTY(QObject *tileset READ assetAsObject)
+    Q_PROPERTY(Tiled::EditableTileset *tileset READ tileset)
 
 public:
     enum Flags {
@@ -76,7 +76,7 @@ public:
     const QString &type() const;
     QString imageFileName() const;
     qreal probability() const;
-    QObject *objectGroup() const;
+    EditableObjectGroup *objectGroup() const;
     QJSValue frames() const;
     bool isAnimated() const;
     EditableTileset *tileset() const;
@@ -93,7 +93,7 @@ public slots:
     void setType(const QString &type);
     void setImageFileName(const QString &fileName);
     void setProbability(qreal probability);
-    void setObjectGroup(QObject *editableObjectGroup);
+    void setObjectGroup(EditableObjectGroup *editableObjectGroup);
     void setFrames(QJSValue value);
 
 private:

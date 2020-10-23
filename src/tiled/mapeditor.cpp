@@ -310,11 +310,6 @@ MapEditor::~MapEditor()
 {
 }
 
-QObject *MapEditor::tilesetDock() const
-{
-    return mTilesetDock;
-}
-
 void MapEditor::saveState()
 {
     preferences::mapEditorSize = mMainWindow->size();
@@ -584,11 +579,6 @@ void MapEditor::resetLayout()
     mTemplatesDock->setVisible(false);
     mWangDock->setVisible(false);
     mTileStampsDock->setVisible(false);
-}
-
-QObject *MapEditor::currentMapViewAsObject() const
-{
-    return currentMapView();
 }
 
 Zoomable *MapEditor::zoomable() const
@@ -1021,7 +1011,7 @@ SharedTileset MapEditor::currentTileset() const
     return mTilesetDock->currentTileset();
 }
 
-QObject *MapEditor::currentBrush() const
+EditableMap *MapEditor::currentBrush() const
 {
     const TileStamp &stamp = mStampBrush->stamp();
     if (stamp.isEmpty())
@@ -1033,10 +1023,8 @@ QObject *MapEditor::currentBrush() const
     return editableMap;
 }
 
-void MapEditor::setCurrentBrush(QObject *object)
+void MapEditor::setCurrentBrush(EditableMap *editableMap)
 {
-    EditableMap *editableMap = qobject_cast<EditableMap*>(object);
-
     if (!editableMap) {
         ScriptManager::instance().throwNullArgError(0);
         return;

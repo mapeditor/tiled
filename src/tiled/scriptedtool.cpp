@@ -22,7 +22,6 @@
 
 #include "brushitem.h"
 #include "editablemap.h"
-#include "editabletile.h"
 #include "mapdocument.h"
 #include "pluginmanager.h"
 #include "scriptmanager.h"
@@ -61,13 +60,13 @@ ScriptedTool::~ScriptedTool()
     PluginManager::removeObject(this);
 }
 
-QObject *ScriptedTool::editableMap() const
+EditableMap *ScriptedTool::editableMap() const
 {
     return mapDocument() ? static_cast<EditableMap*>(mapDocument()->editable())
                          : nullptr;
 }
 
-QObject *ScriptedTool::editableTile() const
+EditableTile *ScriptedTool::editableTile() const
 {
     if (Tile *t = tile()) {
         auto tileset = t->tileset()->sharedPointer();
@@ -81,7 +80,7 @@ QObject *ScriptedTool::editableTile() const
     return nullptr;
 }
 
-QObject *ScriptedTool::preview() const
+EditableMap *ScriptedTool::preview() const
 {
     const auto &map = brushItem()->map();
     if (!map)
@@ -92,9 +91,8 @@ QObject *ScriptedTool::preview() const
     return editableMap;
 }
 
-void ScriptedTool::setPreview(QObject *object)
+void ScriptedTool::setPreview(EditableMap *editableMap)
 {
-    EditableMap *editableMap = qobject_cast<EditableMap*>(object);
     if (!editableMap) {
         ScriptManager::instance().throwNullArgError(0);
         return;

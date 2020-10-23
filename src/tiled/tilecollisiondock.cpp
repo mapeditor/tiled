@@ -295,11 +295,6 @@ void TileCollisionDock::setTilesetDocument(TilesetDocument *tilesetDocument)
     }
 }
 
-QObject *TileCollisionDock::mapView() const
-{
-    return mMapView;
-}
-
 QList<QObject *> TileCollisionDock::selectedObjectsForScript() const
 {
     QList<QObject*> objects;

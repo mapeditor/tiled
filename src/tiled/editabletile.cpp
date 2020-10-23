@@ -47,7 +47,7 @@ EditableTile::~EditableTile()
     EditableManager::instance().mEditableTiles.remove(tile());
 }
 
-QObject *EditableTile::objectGroup() const
+EditableObjectGroup *EditableTile::objectGroup() const
 {
     if (!mAttachedObjectGroup) {
         mAttachedObjectGroup = tile()->objectGroup();
@@ -152,10 +152,8 @@ void EditableTile::setProbability(qreal probability)
         tile()->setProbability(probability);
 }
 
-void EditableTile::setObjectGroup(QObject *object)
+void EditableTile::setObjectGroup(EditableObjectGroup *editableObjectGroup)
 {
-    EditableObjectGroup *editableObjectGroup = qobject_cast<EditableObjectGroup*>(object);
-
     if (!editableObjectGroup) {
         ScriptManager::instance().throwNullArgError(0);
         return;

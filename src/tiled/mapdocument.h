@@ -26,7 +26,6 @@
 #include "layer.h"
 #include "map.h"
 #include "mapformat.h"
-#include "mapobject.h"
 #include "tiled.h"
 #include "tileset.h"
 
@@ -43,9 +42,12 @@ class QUndoStack;
 
 namespace Tiled {
 
+class Map;
+class MapObject;
 class MapRenderer;
 class ObjectTemplate;
 class Terrain;
+class Tile;
 class WangSet;
 
 class LayerModel;

@@ -41,7 +41,7 @@ class EditableObject : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QObject *asset READ assetAsObject)
+    Q_PROPERTY(Tiled::EditableAsset *asset READ asset)
     Q_PROPERTY(bool readOnly READ isReadOnly)
 
 public:
@@ -49,7 +49,6 @@ public:
                    Object *object,
                    QObject *parent = nullptr);
 
-    QObject *assetAsObject() const;
     EditableAsset *asset() const;
     virtual bool isReadOnly() const;
 

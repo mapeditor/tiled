@@ -22,7 +22,6 @@
 
 #include "document.h"
 #include "editabletileset.h"
-#include "tile.h"
 #include "tileset.h"
 #include "tilesetformat.h"
 

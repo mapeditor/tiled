@@ -65,7 +65,7 @@ class TilesetDock : public QDockWidget
 {
     Q_OBJECT
 
-    Q_PROPERTY(QObject *currentTileset READ currentEditableTileset WRITE setCurrentEditableTileset)
+    Q_PROPERTY(Tiled::EditableTileset *currentTileset READ currentEditableTileset WRITE setCurrentEditableTileset)
     Q_PROPERTY(QList<QObject*> selectedTiles READ selectedTiles WRITE setSelectedTiles)
 
 public:
@@ -87,8 +87,8 @@ public:
     SharedTileset currentTileset() const;
     TilesetDocument *currentTilesetDocument() const;
 
-    void setCurrentEditableTileset(QObject *tileset);
-    QObject *currentEditableTileset() const;
+    void setCurrentEditableTileset(EditableTileset *tileset);
+    EditableTileset *currentEditableTileset() const;
 
     void setSelectedTiles(const QList<QObject*> &tiles);
     QList<QObject*> selectedTiles() const;

@@ -46,7 +46,7 @@ class TileCollisionDock : public QDockWidget
     Q_OBJECT
 
     Q_PROPERTY(QList<QObject*> selectedObjects READ selectedObjectsForScript WRITE setSelectedObjectsFromScript)
-    Q_PROPERTY(QObject *view READ mapView)
+    Q_PROPERTY(Tiled::MapView *view READ mapView)
 
 public:
     enum Operation {
@@ -70,7 +70,7 @@ public:
     void setTilesetDocument(TilesetDocument *tilesetDocument);
 
     MapDocument *dummyMapDocument() const;
-    QObject *mapView() const;
+    MapView *mapView() const;
 
     ToolManager *toolManager() const;
 
@@ -150,6 +150,11 @@ private:
 inline MapDocument *TileCollisionDock::dummyMapDocument() const
 {
     return mDummyMapDocument.data();
+}
+
+inline MapView *TileCollisionDock::mapView() const
+{
+    return mMapView;
 }
 
 inline ToolManager *TileCollisionDock::toolManager() const
