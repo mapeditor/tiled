@@ -67,7 +67,6 @@ matrix:
     - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
       -O linuxdeployqt
     - chmod a+x linuxdeployqt
-    - unset QTDIR; unset QT_PLUGIN_PATH; unset LD_LIBRARY_PATH
     - "./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop
       -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so -exclude-libs=libpython3.5m.so.1
       -verbose=2"
