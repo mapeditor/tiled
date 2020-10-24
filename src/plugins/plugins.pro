@@ -9,6 +9,7 @@ SUBDIRS = csv \
           json1 \
           lua \
           replicaisland \
+          rpmap \
           tbin \
           tengine
 
