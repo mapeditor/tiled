@@ -133,7 +133,7 @@ static void writeTile(QXmlStreamWriter &writer, int x, int y, QString const& nam
     writer.writeTextElement(QStringLiteral("z"), QString::number(1));
     writer.writeTextElement(QStringLiteral("anchorX"), QString::number(0));
     writer.writeTextElement(QStringLiteral("anchorY"), QString::number(0));
-    writer.writeTextElement(QStringLiteral("snapToScale"), QStringLiteral("true"));
+    writer.writeTextElement(QStringLiteral("snapToScale"), QStringLiteral("false"));
     writer.writeTextElement(QStringLiteral("width"), QString::number(300));
     writer.writeTextElement(QStringLiteral("height"), QString::number(300));
     writer.writeTextElement(QStringLiteral("isoWidth"), QString::number(0));
