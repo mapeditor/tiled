@@ -27,6 +27,14 @@ Add into `<dependencies>` of your `pom.xml`:
 
 Consult the Maven repository for the latest [org.mapeditor/libtiled](https://mvnrepository.com/artifact/org.mapeditor/libtiled) version.
 
+## sbt
+
+Add the following to your `build.sbt`:
+
+```
+libraryDependencies += "org.mapeditor" % "libtiled" % "x.y.z"
+```
+
 ## Building
 
 To make libtiled.jar, install [Apache Maven](http://maven.apache.org/) and run the following command:
