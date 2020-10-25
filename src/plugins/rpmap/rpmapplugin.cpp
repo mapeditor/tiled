@@ -249,10 +249,10 @@ static void writeTokenMap(QXmlStreamWriter &writer, Tiled::Map const* map) {
                 for (int x = 0; x < mapWidth; ++x) {
                     Cell t = tileLayer->cellAt(x, y);
                     if (t.isEmpty()) continue;
-                    static const uint16_t rotation[8] = { 0, 0, 0, 180, 0, 90, 270, 0 };
+                    static const uint16_t rotation[8] = { 270, 270, 270, 90, 0, 0, 180, 180 };
                     // in addition to rotation
-                    static const bool flip_horiz[8] = { false, false, true, false,  false, false, false, true };
-                    static const bool flip_vert[8] = { false, true, false, false,  true, false, false, false };
+                    static const bool flip_horiz[8] = { false, false, true, false,  true, false, false, true };
+                    static const bool flip_vert[8] = { false, true, false, false,  false, false, false, false };
                     uint8_t rot_index = (t.flippedVertically() ? 1 : 0) | (t.flippedHorizontally() ? 2 : 0) | (t.flippedAntiDiagonally() ? 4 : 0);
                     //int tileid= t.tileId();
                     Tile const* tile = t.tile();
