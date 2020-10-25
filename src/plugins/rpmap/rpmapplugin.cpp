@@ -42,6 +42,7 @@
 #include <QTextStream>
 #include <QXmlStreamWriter>
 #include <QUuid>
+#include <QCryptographicHash>
 #include <kzip.h>
 
 #include <memory>
@@ -56,6 +57,7 @@ RpMapPlugin::RpMapPlugin()
 
 std::unique_ptr<Tiled::Map> RpMapPlugin::read(const QString &fileName)
 {
+#if 0 // not implemented for now
     KZip archive(fileName);
     if (archive.open(QIODevice::ReadOnly)) {
             const KArchiveDirectory *dir = archive.directory();
@@ -78,6 +80,7 @@ std::unique_ptr<Tiled::Map> RpMapPlugin::read(const QString &fileName)
             delete dev;
 #endif
     }
+#endif
     return nullptr;
 }
 
@@ -101,6 +104,10 @@ QString RpMapPlugin::errorString() const
     return mError;
 }
 
+static QMap<QString, QString> filename2md5;
+static QVector<uint32_t> first_used_md5;
+static uint32_t number_of_tiles;
+
 static void writeEntry(QXmlStreamWriter &writer, QString const &key, QString const& value) {
     writer.writeStartElement(QStringLiteral("entry"));
     writer.writeTextElement(QStringLiteral("string"), key);
@@ -114,7 +121,7 @@ static void writeGUID(QXmlStreamWriter &writer, QString const &key, QUuid const&
     writer.writeEndElement();
 }
 
-static void writeTile(QXmlStreamWriter &writer, int x, int y, QString const& name, int facing) {
+static void writeTile(QXmlStreamWriter &writer, int x, int y, QString const& name, int facing, QString md5, bool flipx, bool flipy) {
     writer.writeStartElement(QStringLiteral("entry"));
     writeGUID(writer, QStringLiteral("net.rptools.maptool.model.GUID"), QUuid::createUuid());
     writer.writeStartElement(QStringLiteral("net.rptools.maptool.model.Token"));
@@ -124,7 +131,7 @@ static void writeTile(QXmlStreamWriter &writer, int x, int y, QString const& nam
     writer.writeStartElement(QStringLiteral("entry"));
     writer.writeEmptyElement(QStringLiteral("null"));
     writer.writeStartElement(QStringLiteral("net.rptools.lib.MD5Key"));
-    writer.writeTextElement(QStringLiteral("id"), QStringLiteral("5b55defab5ccba43e2fb54392064c377"));
+    writer.writeTextElement(QStringLiteral("id"), md5); // QStringLiteral(""));
     writer.writeEndElement(); // MD5Key
     writer.writeEndElement(); // entry
     writer.writeEndElement(); // imageAssetMap
@@ -167,8 +174,8 @@ static void writeTile(QXmlStreamWriter &writer, int x, int y, QString const& nam
     writer.writeStartElement(QStringLiteral("terrainModifiersIgnored"));
     writer.writeTextElement(QStringLiteral("net.rptools.maptool.model.Token_-TerrainModifierOperation"), QStringLiteral("NONE"));
     writer.writeEndElement(); // terrainModifiersIgnored
-    writer.writeTextElement(QStringLiteral("isFlippedX"), QStringLiteral("false"));
-    writer.writeTextElement(QStringLiteral("isFlippedY"), QStringLiteral("false"));
+    writer.writeTextElement(QStringLiteral("isFlippedX"), flipx ? QStringLiteral("true") : QStringLiteral("false"));
+    writer.writeTextElement(QStringLiteral("isFlippedY"), flipy ? QStringLiteral("true") : QStringLiteral("false"));
     writer.writeTextElement(QStringLiteral("sightType"), QStringLiteral("Normal"));
     writer.writeTextElement(QStringLiteral("hasSight"), QStringLiteral("false"));
     writer.writeEmptyElement(QStringLiteral("state"));
@@ -230,8 +237,56 @@ static void writeClass(QXmlStreamWriter &writer, QString const &name, QString co
 }
 
 static void writeTokenMap(QXmlStreamWriter &writer, Tiled::Map const* map) {
+    const int mapWidth = map->width();
+    const int mapHeight = map->height();
+    const int tileWidth = map->tileWidth();
+    const int tileHeight = map->tileHeight();
+//    const QColor backgroundColor = map->backgroundColor();
     writer.writeStartElement(QStringLiteral("tokenMap"));
-    writeTile(writer, 400, 300, QStringLiteral("token"), 180);
+    for (Layer *layer : map->layers()) {
+        if (TileLayer *tileLayer = layer->asTileLayer()) {
+            for (int y = 0; y < mapHeight; ++y) {
+                for (int x = 0; x < mapWidth; ++x) {
+                    Cell t = tileLayer->cellAt(x, y);
+                    if (t.isEmpty()) continue;
+                    static const uint16_t rotation[8] = { 0, 0, 0, 180, 0, 90, 270, 0 };
+                    // in addition to rotation
+                    static const bool flip_horiz[8] = { false, false, true, false,  false, false, false, true };
+                    static const bool flip_vert[8] = { false, true, false, false,  true, false, false, false };
+                    uint8_t rot_index = (t.flippedVertically() ? 1 : 0) | (t.flippedHorizontally() ? 2 : 0) | (t.flippedAntiDiagonally() ? 4 : 0);
+                    //int tileid= t.tileId();
+                    Tile const* tile = t.tile();
+                    QUrl tileurl= tile->imageSource();
+                    if (tileurl.isLocalFile())
+                    {
+                        QString tilepath= tileurl.toLocalFile();
+                        auto it = filename2md5.find(tilepath);
+                        if (it==filename2md5.end())
+                        {
+                            QFile file(tilepath);
+                            if (file.open(QIODevice::ReadOnly))
+                            {
+                                QByteArray image = file.readAll();
+                                QByteArray md5bin = QCryptographicHash::hash(image, QCryptographicHash::Md5);
+                                QString md5string = md5bin.toHex();
+                                it = filename2md5.insert(tilepath, md5string);
+                                // remember the first element (tile) referencing this file
+                                first_used_md5.push_back(number_of_tiles);
+                            }
+                            else continue;
+                        }
+                        assert(it!=filename2md5.end());
+                        QString md5 = it.value();
+                        writeTile(writer, x*tileWidth, y*tileHeight, QStringLiteral("token"), rotation[rot_index], md5, flip_horiz[rot_index], flip_vert[rot_index]);
+                        ++number_of_tiles;
+                    }
+                 }
+            }
+            break; // only output first layer (for now)
+        }
+    }
+    //writeTile(writer, 400, 300, QStringLiteral("token"), 180);
+    //writeTile(writer, 400, 600, QStringLiteral("token2"), 0);
     writer.writeEndElement(); // tokenMap
 }
 
@@ -242,6 +297,13 @@ static void writeTokenOrderedList(QXmlStreamWriter &writer, Tiled::Map const* ma
     writer.writeStartElement(QStringLiteral("net.rptools.maptool.model.Token"));
     writer.writeAttribute(QStringLiteral("reference"), QStringLiteral("../../tokenMap/entry/net.rptools.maptool.model.Token"));
     writer.writeEndElement(); // Token
+    for (uint32_t i=1;i<number_of_tiles;++i) {
+        writer.writeStartElement(QStringLiteral("net.rptools.maptool.model.Token"));
+        writer.writeAttribute(QStringLiteral("reference"), QStringLiteral("../../tokenMap/entry[")
+                              +QString::number(i+1)
+                              +QStringLiteral("]/net.rptools.maptool.model.Token"));
+        writer.writeEndElement(); // Token
+    }
 
     writer.writeEndElement(); // tokenOrderedList
 }
@@ -322,45 +384,56 @@ static void writeMap(QXmlStreamWriter &writer, Tiled::Map const* map) {
     writer.writeEndElement(); // zone
 
     writer.writeStartElement(QStringLiteral("assetMap"));
-    writer.writeStartElement(QStringLiteral("entry"));
-    writer.writeStartElement(QStringLiteral("net.rptools.lib.MD5Key"));
-    writer.writeAttribute(QStringLiteral("reference"), QStringLiteral("../../../zone/tokenMap/entry/net.rptools.maptool.model.Token/imageAssetMap/entry/net.rptools.lib.MD5Key"));
-    writer.writeEndElement(); // net.rptools.lib.MD5Key
-    writer.writeEmptyElement(QStringLiteral("null"));
-    writer.writeEndElement(); // entry
+    for (auto i: first_used_md5) {
+        writer.writeStartElement(QStringLiteral("entry"));
+        writer.writeStartElement(QStringLiteral("net.rptools.lib.MD5Key"));
+        QString item=QStringLiteral("");
+        if (i>0) item = QStringLiteral("[") + QString::number(i+1) + QStringLiteral("]");
+        writer.writeAttribute(QStringLiteral("reference"), QStringLiteral("../../../zone/tokenMap/entry")
+                              +item
+                              +QStringLiteral("/net.rptools.maptool.model.Token/imageAssetMap/entry/net.rptools.lib.MD5Key"));
+        writer.writeEndElement(); // net.rptools.lib.MD5Key
+        writer.writeEmptyElement(QStringLiteral("null"));
+        writer.writeEndElement(); // entry
+    }
     writer.writeEndElement(); // assetMap
 }
 
 bool RpMapPlugin::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
+    // TODO move this into the class once working
+    filename2md5.clear();
+    first_used_md5.clear();
+    number_of_tiles= 0;
+
     Q_UNUSED(options)
     KZip archive(fileName);
     if (archive.open(QIODevice::WriteOnly))
     {
         {
-        QByteArray properties;
-        QXmlStreamWriter writer(&properties);
-        writer.setAutoFormatting(true);
-        writer.setAutoFormattingIndent(1);
-        writer.writeStartDocument();
-        writer.writeStartElement(QStringLiteral("map"));
-        writeEntry(writer, QStringLiteral("campaignVersion"), QStringLiteral("1.4.1"));
-        writeEntry(writer, QStringLiteral("version"), QStringLiteral("1.7.0"));
-        writer.writeEndElement();
-        writer.writeEndDocument();
-        archive.writeFile(QStringLiteral("properties.xml"), properties);
+            QByteArray properties;
+            QXmlStreamWriter writer(&properties);
+            writer.setAutoFormatting(true);
+            writer.setAutoFormattingIndent(1);
+            writer.writeStartDocument();
+            writer.writeStartElement(QStringLiteral("map"));
+            writeEntry(writer, QStringLiteral("campaignVersion"), QStringLiteral("1.4.1"));
+            writeEntry(writer, QStringLiteral("version"), QStringLiteral("1.7.0"));
+            writer.writeEndElement();
+            writer.writeEndDocument();
+            archive.writeFile(QStringLiteral("properties.xml"), properties);
         }
         {
-        QByteArray content;
-        QXmlStreamWriter writer(&content);
-        writer.setAutoFormatting(true);
-        writer.setAutoFormattingIndent(1);
-        writer.writeStartDocument();
-        writer.writeStartElement(QStringLiteral("net.rptools.maptool.util.PersistenceUtil_-PersistedMap"));
-        writeMap(writer, map);
-        writer.writeEndElement(); // PersistedMap
-        writer.writeEndDocument();
-        archive.writeFile(QStringLiteral("content.xml"), content);
+            QByteArray content;
+            QXmlStreamWriter writer(&content);
+            writer.setAutoFormatting(true);
+            writer.setAutoFormattingIndent(1);
+            writer.writeStartDocument();
+            writer.writeStartElement(QStringLiteral("net.rptools.maptool.util.PersistenceUtil_-PersistedMap"));
+            writeMap(writer, map);
+            writer.writeEndElement(); // PersistedMap
+            writer.writeEndDocument();
+            archive.writeFile(QStringLiteral("content.xml"), content);
         }
         archive.close();
         return true;
