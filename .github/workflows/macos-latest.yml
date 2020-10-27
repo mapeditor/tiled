@@ -1,4 +1,4 @@
-name: Compile on latest macOS
+name: Compile on latest macOS (Homebrew)
 
 on:
   push:
