@@ -15,7 +15,6 @@ on:
     - '.travis.yml'
 
 env:
-  QT_INSTALL_DIR: $HOME/Qt
   QT_VERSION: 5.15.1
   QTCREATOR_VERSION: 4.13.1
 
@@ -35,10 +34,8 @@ jobs:
 
     - name: Install Qt
       run: |
-        ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools icu
-        ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QTCREATOR_VERSION} qtcreator
-        echo "${QT_INSTALL_DIR}/${QT_VERSION}/gcc_64/bin" >> $GITHUB_PATH
-        echo "${QT_INSTALL_DIR}/Tools/QtCreator/bin" >> $GITHUB_PATH
+        ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools icu | tee -a $GITHUB_PATH
+        ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
 
     - name: Setup Qbs
       run: |
@@ -70,7 +67,7 @@ jobs:
 
   macos_app:
     name: Tiled.app (macOS)
-    runs-on: macOS-latest
+    runs-on: macos-latest
 
     steps:
     - name: Checkout repository
@@ -78,10 +75,8 @@ jobs:
 
     - name: Install Qt
       run: |
-        ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools
-        ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QTCREATOR_VERSION} qtcreator
-        echo "${QT_INSTALL_DIR}/${QT_VERSION}/clang_64/bin" >> $GITHUB_PATH
-        echo "${QT_INSTALL_DIR}/Qt Creator.app/Contents/MacOS" >> $GITHUB_PATH
+        sudo ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools | tee -a $GITHUB_PATH
+        sudo ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
 
     - name: Setup Qbs
       run: |
