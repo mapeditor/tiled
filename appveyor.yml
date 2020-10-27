@@ -26,7 +26,7 @@ environment:
       PUSH_SNAPSHOT: true
       ENABLE_ZSTD: true
       TILED_ITCH_CHANNEL: winxp-32bit
-    - QTDIR: C:\Qt\5.15.0\mingw81_64
+    - QTDIR: C:\Qt\5.15.1\mingw81_64
       PYTHONHOME: C:\Python37-x64
       MINGW: C:\Qt\Tools\mingw810_64
       DEFAULT_PROFILE: x86_64-w64-mingw32-gcc-8_1_0
@@ -40,7 +40,7 @@ matrix:
     - image: Visual Studio 2015
       QTDIR: C:\Qt\5.12.9\msvc2017_64
     - image: Visual Studio 2015
-      QTDIR: C:\Qt\5.15.0\mingw81_64
+      QTDIR: C:\Qt\5.15.1\mingw81_64
     - image: Visual Studio 2019
       QTDIR: C:\Qt\5.6.3\mingw49_32
 
