@@ -1,6 +1,18 @@
 name: Build AppImage
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+    - 'docs/**'
+    - '**.md'
+    - 'appveyor.yml'
+    - '.travis.yml'
+  pull_request:
+    paths-ignore:
+    - 'docs/**'
+    - '**.md'
+    - 'appveyor.yml'
+    - '.travis.yml'
 
 jobs:
   build:
