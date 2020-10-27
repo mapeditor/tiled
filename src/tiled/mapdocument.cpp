@@ -1536,3 +1536,5 @@ void MapDocument::createRenderer()
         break;
     }
 }
+
+#include "moc_mapdocument.cpp"

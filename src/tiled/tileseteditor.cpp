@@ -1011,3 +1011,4 @@ void TilesetEditor::updateAddRemoveActions()
 } // namespace Tiled
 
 #include "tileseteditor.moc"
+#include "moc_tileseteditor.cpp"

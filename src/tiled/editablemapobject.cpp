@@ -335,3 +335,5 @@ void EditableMapObject::setMapObjectProperty(MapObject::Property property,
 }
 
 } // namespace Tiled
+
+#include "moc_editablemapobject.cpp"

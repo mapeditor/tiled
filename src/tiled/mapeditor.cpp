@@ -1038,3 +1038,5 @@ AbstractTool *MapEditor::selectedTool() const {
 }
 
 } // namespace Tiled
+
+#include "moc_mapeditor.cpp"

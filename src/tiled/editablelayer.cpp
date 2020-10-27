@@ -174,3 +174,5 @@ MapDocument *EditableLayer::mapDocument() const
 }
 
 } // namespace Tiled
+
+#include "moc_editablelayer.cpp"

@@ -1204,3 +1204,4 @@ void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
 }
 
 #include "tilesetdock.moc"
+#include "moc_tilesetdock.cpp"

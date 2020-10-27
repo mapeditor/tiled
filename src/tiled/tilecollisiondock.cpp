@@ -717,3 +717,5 @@ void TileCollisionDock::retranslateUi()
 }
 
 } // namespace Tiled
+
+#include "moc_tilecollisiondock.cpp"

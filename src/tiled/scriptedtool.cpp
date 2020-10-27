@@ -22,6 +22,7 @@
 
 #include "brushitem.h"
 #include "editablemap.h"
+#include "editabletile.h"
 #include "mapdocument.h"
 #include "pluginmanager.h"
 #include "scriptmanager.h"
@@ -283,3 +284,5 @@ bool ScriptedTool::call(const QString &methodName, const QJSValueList &args)
 }
 
 } // namespace Tiled
+
+#include "moc_scriptedtool.cpp"

@@ -482,3 +482,5 @@ void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
 }
 
 } // namespace Tiled
+
+#include "moc_tilesetdocument.cpp"

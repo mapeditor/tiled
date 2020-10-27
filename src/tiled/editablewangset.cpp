@@ -190,3 +190,5 @@ TilesetDocument *EditableWangSet::tilesetDocument() const
 }
 
 } // namespace Tiled
+
+#include "moc_editablewangset.cpp"

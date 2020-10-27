@@ -574,3 +574,5 @@ void ScriptModule::currentDocumentChanged(Document *document)
 }
 
 } // namespace Tiled
+
+#include "moc_scriptmodule.cpp"

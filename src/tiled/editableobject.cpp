@@ -169,3 +169,5 @@ QVariantMap EditableObject::fromScript(const QVariantMap &value) const
 }
 
 } // namespace Tiled
+
+#include "moc_editableobject.cpp"

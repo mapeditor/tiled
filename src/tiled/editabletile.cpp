@@ -220,3 +220,5 @@ TilesetDocument *EditableTile::tilesetDocument() const
 }
 
 } // namespace Tiled
+
+#include "moc_editabletile.cpp"
