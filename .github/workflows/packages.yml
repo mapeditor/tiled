@@ -1,4 +1,4 @@
-name: Build AppImage
+name: Build Packages
 
 on:
   push:
@@ -14,15 +14,15 @@ on:
     - 'appveyor.yml'
     - '.travis.yml'
 
+env:
+  QT_INSTALL_DIR: $HOME/Qt
+  QT_VERSION: 5.15.1
+  QTCREATOR_VERSION: 4.13.1
+
 jobs:
-  build:
-
+  appimage:
+    name: Tiled.AppImage (Linux)
     runs-on: ubuntu-16.04
-
-    env:
-      QT_INSTALL_DIR: /home/runner/Qt
-      QT_VERSION: 5.15.1
-      QTCREATOR_VERSION: 4.13.1
 
     steps:
     - name: Checkout repository
@@ -66,8 +66,52 @@ jobs:
         ./squashfs-root/usr/bin/appimagetool Tiled/
         find ./Tiled -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
 
-    - name: Upload AppImage
+    - name: Upload Tiled.AppImage
       uses: actions/upload-artifact@v2
       with:
         name: Tiled-x86_64.AppImage
         path: Tiled-x86_64.AppImage
+
+  macos_app:
+    name: Tiled.app (macOS)
+    runs-on: macOS-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools
+        ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QTCREATOR_VERSION} qtcreator
+
+    - name: Setup Qbs
+      run: |
+        export QT_BIN=${QT_INSTALL_DIR}/${QT_VERSION}/clang_64/bin
+        export PATH="${QT_INSTALL_DIR}/Qt Creator.app/Contents/MacOS:${QT_BIN}:${PATH}"
+        qbs setup-toolchains --detect
+        qbs config defaultProfile xcode
+
+    - name: Build
+      run: |
+        export QT_BIN=${QT_INSTALL_DIR}/${QT_VERSION}/clang_64/bin
+        export PATH="${QT_INSTALL_DIR}/Qt Creator.app/Contents/MacOS:${QT_BIN}:${PATH}"
+        export TILED_VERSION=$(git describe | cut -c 2-)
+        qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION
+
+    - name: Package
+      run: |
+        export QT_BIN=${QT_INSTALL_DIR}/${QT_VERSION}/clang_64/bin
+        export PATH="${QT_INSTALL_DIR}/Qt Creator.app/Contents/MacOS:${QT_BIN}:${PATH}"
+        export TILED_VERSION=$(git describe | cut -c 2-)
+        macdeployqt install/Tiled.app -verbose=2
+        pushd install
+        ruby ../dist/macos/fixup-install-names.rb
+        ditto -c -k --sequesterRsrc --keepParent Tiled.app ../Tiled-$TILED_VERSION-macos.zip
+        popd
+
+    - name: Upload Tiled.app
+      uses: actions/upload-artifact@v2
+      with:
+        name: Tiled.app
+        path: Tiled-*-macos.zip
