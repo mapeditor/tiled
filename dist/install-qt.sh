@@ -231,9 +231,15 @@ function compute_url(){
     local COMPONENT=$1
     local CURL="curl -s -L"
     local BASE_URL="http://download.qt.io/online/qtsdkrepository/${HOST_OS}/${TARGET_PLATFORM}"
+    if [[ "${COMPONENT}" =~ "mingw" ]]; then
+        REMOTE_BASE="tools_mingw/qt.tools.${COMPONENT}"
+        REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "${VERSION}[[:alnum:]_.\-]*rev0.7z" | tail -1)"
 
-    if [[ "${COMPONENT}" =~ "qtcreator" ]]; then
-
+        if [ ! -z "${REMOTE_PATH}" ]; then
+            echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
+            return 0
+        fi
+    elif [[ "${COMPONENT}" =~ "qtcreator" ]]; then
         REMOTE_BASE="tools_qtcreator/qt.tools.qtcreator"
         REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "${VERSION}[0-9\-]*${COMPONENT}\.7z" | tail -1)"
 
@@ -241,7 +247,6 @@ function compute_url(){
             echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
             return 0
         fi
-
     else
         REMOTE_BASES=(
             # New repository format (>=5.9.6)
@@ -318,6 +323,8 @@ for COMPONENT in ${COMPONENTS}; do
         else
             echo "${INSTALL_DIR}/Tools/QtCreator/bin"
         fi
+    elif [[ "${COMPONENT}" =~ "mingw" ]]; then
+        echo "${INSTALL_DIR}/Tools/mingw810_64/bin"
     fi
 
 done

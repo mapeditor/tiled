@@ -20,7 +20,7 @@ env:
 
 jobs:
   appimage:
-    name: Tiled.AppImage (Linux)
+    name: Linux
     runs-on: ubuntu-16.04
 
     steps:
@@ -43,14 +43,14 @@ jobs:
         qbs setup-toolchains --detect
         qbs config defaultProfile x86_64-linux-gnu-gcc-7
 
-    - name: Build
+    - name: Build Tiled
       run: |
         export TILED_VERSION=$(date "+%Y.%m.%d")
         qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true
-        cp LICENSE* COPYING *md Tiled/
 
     - name: Build AppImage
       run: |
+        cp LICENSE* COPYING *md Tiled/
         wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
         chmod a+x linuxdeployqt
         ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so -exclude-libs=libpython3.5m.so.1 -verbose=2
@@ -62,11 +62,11 @@ jobs:
     - name: Upload Tiled.AppImage
       uses: actions/upload-artifact@v2
       with:
-        name: Tiled-x86_64.AppImage (Linux)
+        name: Tiled-x86_64.AppImage
         path: Tiled-x86_64.AppImage
 
   macos_app:
-    name: Tiled.app (macOS)
+    name: macOS
     runs-on: macos-latest
 
     steps:
@@ -83,7 +83,7 @@ jobs:
         qbs setup-toolchains --detect
         qbs config defaultProfile xcode
 
-    - name: Build
+    - name: Build Tiled
       run: |
         export TILED_VERSION=$(date "+%Y.%m.%d")
         qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION
@@ -99,5 +99,47 @@ jobs:
     - name: Upload Tiled.app
       uses: actions/upload-artifact@v2
       with:
-        name: Tiled.app (macOS)
+        name: Tiled-macos.app
         path: Tiled-macos.zip
+
+  windows:
+    name: Windows
+    runs-on: windows-latest
+
+    env:
+      QT_TOOLCHAIN: win64_mingw81
+      MINGW_VERSION: 8.1.0
+      MINGW_COMPONENT: win64_mingw810
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install Qt
+      run: |
+        echo "QT_PATH=$(./dist/install-qt.sh --version ${QT_VERSION} --toolchain ${QT_TOOLCHAIN} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools qttranslations)" >> $GITHUB_ENV
+        echo "MINGW_PATH=$(./dist/install-qt.sh --version ${MINGW_VERSION} ${MINGW_COMPONENT})" >> $GITHUB_ENV
+        ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator >> $GITHUB_PATH
+
+    - name: Setup Qbs
+      run: |
+        qbs setup-toolchains ${MINGW_PATH}/x86_64-w64-mingw32-gcc.exe mingw
+        qbs setup-qt ${QT_PATH}/qmake.exe qt
+        qbs config defaultProfile qt
+
+    - name: Build Tiled
+      run: |
+        export TILED_VERSION=$(date "+%Y.%m.%d")
+        export TILED_MSI_VERSION=1.4.${GITHUB_RUN_NUMBER}
+        qbs build --all-products config:release projects.Tiled.windowsInstaller:true
+        mv release/installer*/Tiled-*.msi .
+
+    - name: Upload Tiled installer
+      uses: actions/upload-artifact@v2
+      with:
+        name: Tiled-win64.msi
+        path: Tiled-*.msi
