@@ -218,7 +218,7 @@ if ! ${FORCE_DOWNLOAD} && [ -f "${HASH_FILEPATH}" ]; then
 fi
 
 if ${INSTALLATION_IS_VALID}; then
-    echo "Already installed. Skipping download."
+    echo "Already installed. Skipping download." >&2
     exit 0
 fi
 
@@ -313,7 +313,11 @@ for COMPONENT in ${COMPONENTS}; do
         # adjust the PATH variable.
         echo $(dirname "${CONF_FILE}")
     elif [[ "${COMPONENT}" =~ "qtcreator" ]]; then
-        echo "${INSTALL_DIR}/Tools/QtCreator/bin"
+        if [ "${HOST_OS}" == "mac_x64" ]; then
+            echo "${INSTALL_DIR}/Qt Creator.app/Contents/MacOS"
+        else
+            echo "${INSTALL_DIR}/Tools/QtCreator/bin"
+        fi
     fi
 
 done
