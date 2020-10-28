@@ -27,6 +27,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QXmlStreamWriter>
 
 namespace RpMap {
 
@@ -49,6 +50,13 @@ public:
 
 private:
     QString mError;
+
+    QMap<QString, QString> filename2md5;
+    QVector<uint32_t> first_used_md5;
+    uint32_t number_of_tiles;
+
+    void writeTokenMap(QXmlStreamWriter &writer, Tiled::Map const* map);
+    void writeTokenOrderedList(QXmlStreamWriter &writer);
 };
 
 } // namespace RpMap

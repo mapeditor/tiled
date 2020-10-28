@@ -57,6 +57,7 @@ RpMapPlugin::RpMapPlugin()
 
 std::unique_ptr<Tiled::Map> RpMapPlugin::read(const QString &fileName)
 {
+    // the problem is to either reference an already loaded tileset (how) or to import the included image resources
 #if 0 // not implemented for now
     KZip archive(fileName);
     if (archive.open(QIODevice::ReadOnly)) {
@@ -103,10 +104,6 @@ QString RpMapPlugin::errorString() const
 {
     return mError;
 }
-
-static QMap<QString, QString> filename2md5;
-static QVector<uint32_t> first_used_md5;
-static uint32_t number_of_tiles;
 
 static void writeEntry(QXmlStreamWriter &writer, QString const &key, QString const& value) {
     writer.writeStartElement(QStringLiteral("entry"));
@@ -236,7 +233,7 @@ static void writeClass(QXmlStreamWriter &writer, QString const &name, QString co
     writer.writeEndElement();
 }
 
-static void writeTokenMap(QXmlStreamWriter &writer, Tiled::Map const* map) {
+void RpMapPlugin::writeTokenMap(QXmlStreamWriter &writer, Tiled::Map const* map) {
     const int mapWidth = map->width();
     const int mapHeight = map->height();
     const int tileWidth = map->tileWidth();
@@ -290,7 +287,7 @@ static void writeTokenMap(QXmlStreamWriter &writer, Tiled::Map const* map) {
     writer.writeEndElement(); // tokenMap
 }
 
-static void writeTokenOrderedList(QXmlStreamWriter &writer, Tiled::Map const* map) {
+void RpMapPlugin::writeTokenOrderedList(QXmlStreamWriter &writer) {
     writer.writeStartElement(QStringLiteral("tokenOrderedList"));
     writer.writeAttribute(QStringLiteral("class"), QStringLiteral("linked-list"));
 
@@ -359,7 +356,7 @@ static void writeZone2(QXmlStreamWriter &writer) {
     writer.writeTextElement(QStringLiteral("width"), QString::number(0));
 }
 
-static void writeMap(QXmlStreamWriter &writer, Tiled::Map const* map) {
+void RpMapPlugin::writeMap(QXmlStreamWriter &writer, Tiled::Map const* map) {
     writer.writeStartElement(QStringLiteral("zone"));
     writer.writeTextElement(QStringLiteral("creationTime"), QString::number(QDateTime::currentMSecsSinceEpoch()));
     writeGUID(writer, QStringLiteral("id"), QUuid::createUuid());
@@ -379,7 +376,7 @@ static void writeMap(QXmlStreamWriter &writer, Tiled::Map const* map) {
     writeTokenMap(writer, map);
     writer.writeStartElement(QStringLiteral("exposedAreaMeta"));
     writer.writeEndElement(); // exposedAreaMeta
-    writeTokenOrderedList(writer, map);
+    writeTokenOrderedList(writer);
     writeZone2(writer); // some arbitrary data
     writer.writeEndElement(); // zone
 
