@@ -88,12 +88,6 @@ matrix:
       on:
         repo: bjorn/tiled
         tags: true
-    - provider: script
-      skip_cleanup: true
-      on:
-        repo: bjorn/tiled
-        branch: snapshot
-      script: dist/linux/push-to-itch.sh
   - os: linux
     compiler: clang
     addons:
@@ -167,12 +161,6 @@ matrix:
       on:
         repo: bjorn/tiled
         tags: true
-    - provider: script
-      skip_cleanup: true
-      on:
-        repo: bjorn/tiled
-        branch: snapshot
-      script: dist/macos/push-to-itch.sh
 before_script:
 - if [[ "$TRAVIS_TAG" ]]; then export TILED_RELEASE=true ; fi
 - if [[ "$TRAVIS_TAG" ]]; then export TILED_VERSION=${TRAVIS_TAG:1} ; fi
