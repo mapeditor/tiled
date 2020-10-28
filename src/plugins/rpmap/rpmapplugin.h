@@ -57,6 +57,7 @@ private:
 
     void writeTokenMap(QXmlStreamWriter &writer, Tiled::Map const* map);
     void writeTokenOrderedList(QXmlStreamWriter &writer);
+    void writeMap(QXmlStreamWriter &writer, Tiled::Map const* map);
 };
 
 } // namespace RpMap
