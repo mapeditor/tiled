@@ -323,7 +323,9 @@ for COMPONENT in ${COMPONENTS}; do
         else
             echo "${INSTALL_DIR}/Tools/QtCreator/bin"
         fi
-    elif [[ "${COMPONENT}" =~ "mingw" ]]; then
+    elif [[ "${COMPONENT}" =~ "win32_mingw" ]]; then
+        echo "${INSTALL_DIR}/Tools/mingw810_32/bin"
+    elif [[ "${COMPONENT}" =~ "win64_mingw" ]]; then
         echo "${INSTALL_DIR}/Tools/mingw810_64/bin"
     fi
 

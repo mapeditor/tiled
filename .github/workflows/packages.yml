@@ -110,13 +110,17 @@ jobs:
         path: Tiled-macos.zip
 
   windows:
-    name: Windows
+    name: Windows (${{ matrix.arch }}-bit)
     runs-on: windows-latest
 
+    strategy:
+      matrix:
+        arch: [32, 64]
+
     env:
-      QT_TOOLCHAIN: win64_mingw81
+      QT_TOOLCHAIN: win${{ matrix.arch }}_mingw81
       MINGW_VERSION: 8.1.0
-      MINGW_COMPONENT: win64_mingw810
+      MINGW_COMPONENT: win${{ matrix.arch }}_mingw810
 
     defaults:
       run:
@@ -134,7 +138,7 @@ jobs:
 
     - name: Setup Qbs
       run: |
-        qbs setup-toolchains ${MINGW_PATH}/x86_64-w64-mingw32-gcc.exe mingw
+        qbs setup-toolchains ${MINGW_PATH}/*-w64-mingw32-gcc.exe mingw
         qbs setup-qt ${QT_PATH}/qmake.exe qt
         qbs config defaultProfile qt
 
@@ -156,5 +160,5 @@ jobs:
     - name: Upload Tiled installer
       uses: actions/upload-artifact@v2
       with:
-        name: Tiled-win64.msi
+        name: Tiled-win${{ matrix.arch }}.msi
         path: Tiled-*.msi
