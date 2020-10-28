@@ -83,10 +83,17 @@ jobs:
         qbs setup-toolchains --detect
         qbs config defaultProfile xcode
 
+    - name: Build Zstandard
+      run: |
+        git clone --depth 1 -b master https://github.com/facebook/zstd.git
+        pushd zstd/lib
+        make libzstd.a
+        popd
+
     - name: Build Tiled
       run: |
         export TILED_VERSION=$(date "+%Y.%m.%d")
-        qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION
+        qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.enableZstd:true
 
     - name: Package
       run: |
@@ -131,11 +138,19 @@ jobs:
         qbs setup-qt ${QT_PATH}/qmake.exe qt
         qbs config defaultProfile qt
 
+    - name: Build Zstandard
+      run: |
+        export PATH="${MINGW_PATH}:$PATH"
+        git clone --depth 1 -b master https://github.com/facebook/zstd.git
+        pushd zstd/lib
+        CC=gcc mingw32-make -j2 libzstd.a
+        popd
+
     - name: Build Tiled
       run: |
         export TILED_VERSION=$(date "+%Y.%m.%d")
         export TILED_MSI_VERSION=1.4.${GITHUB_RUN_NUMBER}
-        qbs build --all-products config:release projects.Tiled.windowsInstaller:true
+        qbs build --all-products config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:true
         mv release/installer*/Tiled-*.msi .
 
     - name: Upload Tiled installer
