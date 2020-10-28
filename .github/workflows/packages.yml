@@ -17,6 +17,7 @@ on:
 env:
   QT_VERSION: 5.15.1
   QTCREATOR_VERSION: 4.13.1
+  TILED_SNAPSHOT: true
 
 jobs:
   appimage:
@@ -156,9 +157,16 @@ jobs:
         export TILED_MSI_VERSION=1.4.${GITHUB_RUN_NUMBER}
         qbs build --all-products config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:true
         mv release/installer*/Tiled-*.msi .
+        mv release/archive*/Tiled-*.7z .
 
     - name: Upload Tiled installer
       uses: actions/upload-artifact@v2
       with:
         name: Tiled-win${{ matrix.arch }}.msi
         path: Tiled-*.msi
+
+    - name: Upload Tiled archive
+      uses: actions/upload-artifact@v2
+      with:
+        name: Tiled-win${{ matrix.arch }}.7z
+        path: Tiled-*.7z
