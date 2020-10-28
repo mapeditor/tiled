@@ -116,12 +116,17 @@ jobs:
 
     strategy:
       matrix:
-        arch: [32, 64]
+        include:
+        - arch: 32
+          openssl_arch: x86
+        - arch: 64
+          openssl_arch: x64
 
     env:
       QT_TOOLCHAIN: win${{ matrix.arch }}_mingw81
       MINGW_VERSION: 8.1.0
       MINGW_COMPONENT: win${{ matrix.arch }}_mingw810
+      OPENSSL_VERSION: 1.1.1
 
     defaults:
       run:
@@ -135,6 +140,7 @@ jobs:
       run: |
         echo "QT_PATH=$(./dist/install-qt.sh --version ${QT_VERSION} --toolchain ${QT_TOOLCHAIN} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools qttranslations)" >> $GITHUB_ENV
         echo "MINGW_PATH=$(./dist/install-qt.sh --version ${MINGW_VERSION} ${MINGW_COMPONENT})" >> $GITHUB_ENV
+        echo "OPENSSL_PATH=$(./dist/install-qt.sh --version ${OPENSSL_VERSION} openssl --arch ${{ matrix.openssl_arch }})" >> $GITHUB_ENV
         ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator >> $GITHUB_PATH
 
     - name: Setup Qbs

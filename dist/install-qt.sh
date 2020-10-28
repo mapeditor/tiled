@@ -99,6 +99,9 @@ Options
                 desktop
                     win64_mingw73, win64_msvc2017_64 (default)
 
+  --arch <arch>
+        The CPU architecture to use when installing openssl (x86 or x64).
+
   --version <version>
         The desired Qt version. Currently supported are all versions
         above 5.9.0.
@@ -111,6 +114,7 @@ COMPONENTS=
 VERSION=
 FORCE_DOWNLOAD=false
 MD5_TOOL=md5sum
+ARCH=
 
 case "$OSTYPE" in
     *linux*)
@@ -154,6 +158,10 @@ while [ $# -gt 0 ]; do
             ;;
         --toolchain)
             TOOLCHAIN=$(echo $2 | tr '[A-Z]' '[a-z]')
+            shift
+            ;;
+        --arch)
+            ARCH="$2"
             shift
             ;;
         --version)
@@ -231,7 +239,15 @@ function compute_url(){
     local COMPONENT=$1
     local CURL="curl -s -L"
     local BASE_URL="http://download.qt.io/online/qtsdkrepository/${HOST_OS}/${TARGET_PLATFORM}"
-    if [[ "${COMPONENT}" =~ "mingw" ]]; then
+    if [[ "${COMPONENT}" =~ "qtcreator" ]]; then
+        REMOTE_BASE="tools_qtcreator/qt.tools.qtcreator"
+        REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "${VERSION}[0-9\-]*${COMPONENT}\.7z" | tail -1)"
+
+        if [ ! -z "${REMOTE_PATH}" ]; then
+            echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
+            return 0
+        fi
+    elif [[ "${COMPONENT}" =~ "mingw" ]]; then
         REMOTE_BASE="tools_mingw/qt.tools.${COMPONENT}"
         REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "${VERSION}[[:alnum:]_.\-]*rev0.7z" | tail -1)"
 
@@ -239,9 +255,14 @@ function compute_url(){
             echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
             return 0
         fi
-    elif [[ "${COMPONENT}" =~ "qtcreator" ]]; then
-        REMOTE_BASE="tools_qtcreator/qt.tools.qtcreator"
-        REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "${VERSION}[0-9\-]*${COMPONENT}\.7z" | tail -1)"
+    elif [[ "${COMPONENT}" =~ "openssl" ]]; then
+        if [ -z "${ARCH}" ]; then
+            echo "No architecture specified for openssl (x86 or x64)." >&2
+            exit 1
+        fi
+
+        REMOTE_BASE="tools_${COMPONENT}_${ARCH}/qt.tools.${COMPONENT}.win_${ARCH}"
+        REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "[[:alnum:]_.\-]*${ARCH}.7z" | tail -1)"
 
         if [ ! -z "${REMOTE_PATH}" ]; then
             echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
@@ -327,6 +348,7 @@ for COMPONENT in ${COMPONENTS}; do
         echo "${INSTALL_DIR}/Tools/mingw810_32/bin"
     elif [[ "${COMPONENT}" =~ "win64_mingw" ]]; then
         echo "${INSTALL_DIR}/Tools/mingw810_64/bin"
+    elif [[ "${COMPONENT}" =~ "openssl" ]]; then
+        echo "${INSTALL_DIR}/Tools/OpenSSL/Win_${ARCH}/bin"
     fi
-
 done
