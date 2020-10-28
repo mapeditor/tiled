@@ -15,6 +15,7 @@ Project {
     property bool windowsInstaller: false
     property bool enableZstd: false
     property string openSslPath: Environment.getEnv("OPENSSL_PATH")
+    property bool enableKArchive: false
 
     references: [
         "dist/archive.qbs",
