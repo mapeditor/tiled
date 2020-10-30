@@ -235,6 +235,19 @@ public class XMLWriter {
      * writeAttribute.
      *
      * @param name a {@link java.lang.String} object.
+     * @param content a long.
+     * @throws java.io.IOException if any.
+     * @throws org.mapeditor.io.xml.XMLWriterException if any.
+     */
+    public void writeAttribute(String name, long content)
+            throws IOException, XMLWriterException {
+        writeAttribute(name, String.valueOf(content));
+    }
+
+    /**
+     * <p>writeAttribute.</p>
+     *
+     * @param name a {@link java.lang.String} object.
      * @param content a float.
      * @throws java.io.IOException if any.
      * @throws org.mapeditor.io.xml.XMLWriterException if any.
@@ -254,7 +267,14 @@ public class XMLWriter {
      */
     public void writeAttribute(String name, double content)
             throws IOException, XMLWriterException {
-        writeAttribute(name, String.valueOf(content));
+        //TODO: Tiled omits the decimals if it's '.0' so this is for parity
+        long longContent = (long)content;
+        if (longContent == content) {
+            writeAttribute(name, String.valueOf(longContent));
+        }
+        else {
+            writeAttribute(name, String.valueOf(content));
+        }
     }
 
     /**

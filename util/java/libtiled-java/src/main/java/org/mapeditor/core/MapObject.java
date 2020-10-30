@@ -56,6 +56,9 @@ public class MapObject extends MapObjectData implements Cloneable {
     private Image image;
     private Image scaledImage;
     private Tile tile;
+    private boolean flipHorizontal;
+    private boolean flipVertical;
+    private boolean flipDiagonal;
 
     /**
      * Constructor for MapObject.
@@ -63,9 +66,11 @@ public class MapObject extends MapObjectData implements Cloneable {
     public MapObject() {
         super();
         this.properties = new Properties();
-        this.name = "Object";
+        this.name = "";
         this.type = "";
         this.imageSource = "";
+        this.flipHorizontal = false;
+        this.flipVertical = false;
     }
 
     /**
@@ -204,6 +209,15 @@ public class MapObject extends MapObjectData implements Cloneable {
     public void setTile(Tile tile) {
         this.tile = tile;
     }
+
+    public boolean getFlipHorizontal() { return flipHorizontal; }
+    public void setFlipHorizontal(boolean flip) { this.flipHorizontal = flip; }
+
+    public boolean getFlipVertical() { return flipVertical; }
+    public void setFlipVertical(boolean flip) { this.flipVertical = flip; }
+
+    public boolean getFlipDiagonal() { return flipDiagonal; }
+    public void setFlipDiagonal(boolean flip) { this.flipDiagonal = flip; }
 
     /**
      * Returns the image to be used when drawing this object. This image is

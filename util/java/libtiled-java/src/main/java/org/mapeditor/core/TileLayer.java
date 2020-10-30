@@ -531,7 +531,7 @@ public class TileLayer extends TileLayerData {
      * @param y Tile-space y coordinate
      * @return <code>true</code> if tile at (x, y) is flipped horizontally
      */
-    public boolean isFlippedHorizontaly(int x, int y) {
+    public boolean isFlippedHorizontally(int x, int y) {
         return getBounds().contains(x, y) &&
                 (flags[y][x] & (int)TMXMapReader.FLIPPED_HORIZONTALLY_FLAG) != 0;
     }
@@ -555,7 +555,7 @@ public class TileLayer extends TileLayerData {
      * @param y Tile-space y coordinate
      * @return <code>true</code> if tile at (x, y) is flipped diagonally
      */
-    public boolean isFlippedDiagonaly(int x, int y) {
+    public boolean isFlippedDiagonally(int x, int y) {
         return getBounds().contains(x, y) &&
                 (flags[y][x] & (int)TMXMapReader.FLIPPED_DIAGONALLY_FLAG) != 0;
     }

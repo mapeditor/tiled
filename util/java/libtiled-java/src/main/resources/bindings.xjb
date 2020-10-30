@@ -38,19 +38,6 @@
 
         <jxb:globalBindings choiceContentProperty="true"/>
 
-        <jxb:bindings node="xs:complexType[@name='Group']">
-            <jxb:bindings node="xs:attribute[@name='x']">
-                <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
-                <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
-                <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
-            </jxb:bindings>
-            <jxb:bindings node="xs:attribute[@name='y']">
-                <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
-                <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
-                <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
-            </jxb:bindings>
-        </jxb:bindings>
-
         <jxb:bindings node="xs:complexType[@name='Image']">
             <jxb:class name="ImageData" />
             <jxb:bindings node="xs:attribute[@name='id']">
@@ -119,6 +106,18 @@
             </jxb:bindings>		
             <jxb:bindings node="xs:attribute[@name='offsety']">		
                 <jxb:property name="offsetY"/>		
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='Group']">
+            <jxb:class name="Group"/>
+
+            <jxb:bindings node="xs:complexContent/xs:extension">
+                <jxb:bindings node="xs:sequence">
+                    <jxb:bindings node="xs:choice">
+                        <jxb:property name="layers"/>
+                    </jxb:bindings>
+                </jxb:bindings>
             </jxb:bindings>
         </jxb:bindings>
 

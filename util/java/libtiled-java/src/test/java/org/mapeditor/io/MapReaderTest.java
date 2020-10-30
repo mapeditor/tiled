@@ -353,21 +353,21 @@ public class MapReaderTest {
         TileLayer layer = (TileLayer) map.getLayer(0);
         assertNotNull(layer.getTileAt(0, 0));
 
-        assertTrue(layer.isFlippedHorizontaly(0, 0));
+        assertTrue(layer.isFlippedHorizontally(0, 0));
         assertFalse(layer.isFlippedVertically(0, 0));
-        assertFalse(layer.isFlippedDiagonaly(0, 0));
+        assertFalse(layer.isFlippedDiagonally(0, 0));
 
-        assertFalse(layer.isFlippedHorizontaly(1, 0));
+        assertFalse(layer.isFlippedHorizontally(1, 0));
         assertTrue(layer.isFlippedVertically(1, 0));
-        assertFalse(layer.isFlippedDiagonaly(1, 0));
+        assertFalse(layer.isFlippedDiagonally(1, 0));
 
-        assertTrue(layer.isFlippedHorizontaly(2, 0));
+        assertTrue(layer.isFlippedHorizontally(2, 0));
         assertTrue(layer.isFlippedVertically(2, 0));
-        assertFalse(layer.isFlippedDiagonaly(2, 0));
+        assertFalse(layer.isFlippedDiagonally(2, 0));
 
-        assertFalse(layer.isFlippedHorizontaly(3, 0));
+        assertFalse(layer.isFlippedHorizontally(3, 0));
         assertFalse(layer.isFlippedVertically(3, 0));
-        assertFalse(layer.isFlippedDiagonaly(3, 0));
+        assertFalse(layer.isFlippedDiagonally(3, 0));
     }
 
     private URL getUrlFromResources(String filename) {
