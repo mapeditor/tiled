@@ -56,7 +56,7 @@
     staggeraxis CDATA #IMPLIED
     staggerindex CDATA #IMPLIED
     backgroundcolor CDATA #IMPLIED
-    infinite CDATA #IMPLIED
+    infinite (0 | 1) #IMPLIED
     nextlayerid ID #IMPLIED
     nextobjectid ID #IMPLIED
 >
@@ -139,7 +139,7 @@
   y           CDATA   #IMPLIED
   opacity     CDATA   #IMPLIED
   visible     (0 | 1) #IMPLIED
-  locked      CDATA   #IMPLIED
+  locked      (0 | 1) #IMPLIED
 >
 
 <!ELEMENT objectgroup (properties?, object*)>
@@ -152,6 +152,7 @@
   y           CDATA   #IMPLIED
   opacity     CDATA   #IMPLIED
   visible     (0 | 1) #IMPLIED
+  locked      (0 | 1) #IMPLIED
 >
 
 <!ELEMENT object (properties?)>

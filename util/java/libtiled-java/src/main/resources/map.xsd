@@ -248,23 +248,6 @@ POSSIBILITY OF SUCH DAMAGE.
                         <xs:element name="group" type="Group" maxOccurs="unbounded"/>
                     </xs:choice>
                 </xs:sequence>
-
-                <xs:attribute name="color" type="xs:string">
-                    <xs:annotation>
-                        <xs:documentation>
-                            The color used to display the objects in this group.
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-                <xs:attribute name="draworder" type="xs:string">
-                    <xs:annotation>
-                        <xs:documentation>
-                            Whether the objects are drawn according to the order
-                            of appearance ("index") or sorted by their
-                            y-coordinate ("topdown"). Defaults to "topdown".
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -655,7 +638,13 @@ POSSIBILITY OF SUCH DAMAGE.
 
         <xs:sequence>
             <xs:element name="properties" type="Properties"/>
-            <xs:element name="point" type="Point"/>
+            <xs:element name="point" type="Point">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 1.1
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
             <xs:element name="ellipse" type="Ellipse">
                 <xs:annotation>
                     <xs:documentation>
