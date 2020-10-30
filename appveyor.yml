@@ -23,6 +23,7 @@ environment:
       MINGW: C:\Qt\Tools\mingw492_32
       DEFAULT_PROFILE: i686-w64-mingw32-gcc-4_9_2
       PUSH_RELEASE: false
+      PUSH_SNAPSHOT: true
       ENABLE_ZSTD: true
       TILED_ITCH_CHANNEL: winxp-32bit
     - QTDIR: C:\Qt\5.15.1\mingw81_64
@@ -30,7 +31,6 @@ environment:
       MINGW: C:\Qt\Tools\mingw810_64
       DEFAULT_PROFILE: x86_64-w64-mingw32-gcc-8_1_0
       PUSH_RELEASE: true
-      PUSH_SNAPSHOT: true
       ENABLE_ZSTD: true
       TILED_ITCH_CHANNEL: windows-64bit
 
