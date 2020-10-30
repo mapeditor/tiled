@@ -229,12 +229,6 @@ public class TMXMapWriter {
     private void writeGroup(Group group, XMLWriter w, String wp) throws IOException {
         w.startElement("group");
 
-        if (group.getColor() != null && group.getColor().isEmpty()) {
-            w.writeAttribute("color", group.getColor());
-        }
-        if (group.getDraworder() != null && !group.getDraworder().equalsIgnoreCase("topdown")) {
-            w.writeAttribute("draworder", group.getDraworder());
-        }
         writeLayerAttributes(group, w);
         writeProperties(group.getProperties(), w);
 
