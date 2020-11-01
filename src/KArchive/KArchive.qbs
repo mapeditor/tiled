@@ -46,6 +46,7 @@ StaticLibrary {
         "src/kzipfileentry.h",
         "src/kzip.cpp",
         "src/kzip.h",
+        "src/loggingcategory.cpp",
         "src/loggingcategory.h",
     ]
 }
