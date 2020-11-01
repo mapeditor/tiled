@@ -21,7 +21,11 @@
 #include <qplatformdefs.h>
 
 #include <time.h>
+#if defined(Q_OS_WIN) && defined(Q_CC_MSVC)
+#include "QtZlib/zlib.h"
+#else
 #include <zlib.h>
+#endif
 #include <string.h>
 
 #ifndef QT_STAT_LNK
