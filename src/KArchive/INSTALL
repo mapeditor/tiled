@@ -1,0 +1,23 @@
+Here's how to build this framework:
+
+* First create a convenient folder to build the code in:
+
+mkdir build
+cd build
+
+* Next run CMake to create the configuration files to be used in the build:
+
+cmake .. \
+      -DCMAKE_BUILD_TYPE=debug \
+      -DCMAKE_INSTALL_PREFIX=/usr/local
+Various options can be passed to CMake to control how a project gets built, but these are the most common:
+
+The first line tells CMake where it can find the source code that is to be built.
+The second line tells CMake what type of build is required, in this example a debug build that will include useful information for when we are debugging any the software.
+The third line tells CMake where to install the software.
+
+* Finally compile and install
+
+make
+make install
+
