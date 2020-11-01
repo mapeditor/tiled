@@ -1,0 +1,7 @@
+### KApiDox Project-specific Overrides File
+
+# define so that deprecated API is not skipped
+PREDEFINED += \
+    "KARCHIVE_ENABLE_DEPRECATED_SINCE(x, y)=1" \
+    "KARCHIVE_BUILD_DEPRECATED_SINCE(x, y)=1" \
+    "KARCHIVE_DEPRECATED_VERSION(x, y, t)="
