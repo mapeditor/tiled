@@ -1,10 +1,10 @@
 import qbs 1.0
 
 TiledPlugin {
-    cpp.defines: base.concat(["RPMAP_LIBRARY"])
-    cpp.includePaths: ["/usr/include/KF5/KArchive"]
-//    Depends { name: "KF5Archive" }
-    cpp.dynamicLibraries: ["KF5Archive"]
+    cpp.defines: base.concat(["RPMAP_LIBRARY", "KARCHIVE_STATIC_DEFINE"])
+    cpp.includePaths: ["../../KArchive/src"]
+
+    Depends { name: "KArchive" }
 
     files: [
         "rpmap_global.h",

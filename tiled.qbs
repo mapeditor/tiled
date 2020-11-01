@@ -15,7 +15,6 @@ Project {
     property bool windowsInstaller: false
     property bool enableZstd: false
     property string openSslPath: Environment.getEnv("OPENSSL_PATH")
-    property bool enableKArchive: false
 
     references: [
         "dist/archive.qbs",
@@ -24,6 +23,7 @@ Project {
         "docs",
         "src/libtiled",
         "src/libtiledquick",
+        "src/KArchive",
         "src/plugins",
         "src/qtpropertybrowser",
         "src/qtsingleapplication",

@@ -1,0 +1,51 @@
+import qbs 1.0
+
+StaticLibrary {
+    targetName: "KArchive"
+
+    Depends { name: "cpp" }
+    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.6" }
+
+    cpp.includePaths: [ "src" ]
+    cpp.defines: [ "KARCHIVE_STATIC_DEFINE" ]
+
+    files : [
+        "src/config-compression.h",
+//        "src/k7zip.cpp",  // requires xz to build
+        "src/k7zip.h",
+        "src/kar.cpp",
+        "src/kar.h",
+        "src/karchivedirectory.h",
+        "src/karchiveentry.h",
+        "src/karchivefile.h",
+        "src/karchive_export.h",
+        "src/karchive_p.h",
+        "src/karchive.cpp",
+        "src/karchive.h",
+        "src/kbzip2filter.cpp",
+        "src/kbzip2filter.h",
+        "src/kcompressiondevice.cpp",
+        "src/kcompressiondevice.h",
+        "src/kcompressiondevice_p.h",
+        "src/kfilterbase.cpp",
+        "src/kfilterbase.h",
+        "src/kfilterdev.cpp",
+        "src/kfilterdev.h",
+        "src/kgzipfilter.cpp",
+        "src/kgzipfilter.h",
+        "src/klimitediodevice.cpp",
+        "src/klimitediodevice_p.h",
+        "src/knonefilter.cpp",
+        "src/knonefilter.h",
+        "src/krcc.cpp",
+        "src/krcc.h",
+        "src/ktar.cpp",
+        "src/ktar.h",
+//        "src/kxzfilter.cpp",
+        "src/kxzfilter.h",
+        "src/kzipfileentry.h",
+        "src/kzip.cpp",
+        "src/kzip.h",
+        "src/loggingcategory.h",
+    ]
+}

@@ -1,13 +1,6 @@
 Project {
     name: "plugins"
 
-    SubProject {
-        filePath: "rpmap/rpmap.qbs"
-        Properties {
-            condition: parent.enableKArchive
-        }
-    }
-
     references: [
         "csv",
         "defold",
@@ -20,6 +13,7 @@ Project {
         "lua",
         "python",
         "replicaisland",
+        "rpmap",
         "tbin",
         "tengine"
     ]
