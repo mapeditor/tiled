@@ -194,6 +194,12 @@ jobs:
         name: Tiled-win${{ matrix.arch }}
         path: release/install-root/*
 
+  snap:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: snapcore/action-build@v1
+
   itch:
     name: Upload to itch.io (${{ matrix.channel }})
     runs-on: ubuntu-latest
