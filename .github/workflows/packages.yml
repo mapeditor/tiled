@@ -32,7 +32,7 @@ jobs:
       run: echo "::set-output name=version::$(date "+%Y.%m.%d")"
 
   linux:
-    name: Linux
+    name: Linux (AppImage)
     runs-on: ubuntu-16.04
     needs: version
 
@@ -79,6 +79,41 @@ jobs:
       with:
         name: Tiled-x86_64.AppImage
         path: Tiled-x86_64.AppImage
+
+  snap:
+    name: Linux (snap)
+    runs-on: ubuntu-latest
+    needs: version
+
+    env:
+      TILED_VERSION: ${{ needs.version.outputs.version }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set Tiled version
+      run: |
+        sed -i 's/^version: .*/version: '"${TILED_VERSION}"'/g' snap/snapcraft.yaml
+        sed -i 's/TILED_VERSION = .*/TILED_VERSION = "'"${TILED_VERSION}"'"/g' tiled.pri
+
+    - name: Build snap
+      id: build
+      uses: snapcore/action-build@v1
+
+    - name: Upload snap artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: tiled_amd64.snap
+        path: tiled_*_amd64.snap
+
+    - name: Release snap (beta channel)
+      uses: snapcore/action-publish@v1
+      if: github.repository == 'bjorn/tiled' && github.event_name == 'push' && github.ref == 'refs/heads/snapshot'
+      with:
+        store_login: ${{ secrets.SNAP_STORE_LOGIN }}
+        snap: ${{ steps.build.outputs.snap }}
+        release: beta
 
   macos:
     name: macOS
