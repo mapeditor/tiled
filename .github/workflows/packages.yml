@@ -89,12 +89,25 @@ jobs:
       TILED_VERSION: ${{ needs.version.outputs.version }}
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: snapcore/action-build@v1
-    - uses: actions/upload-artifact@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Build snap
+      uses: snapcore/action-build@v1
+
+    - name: Upload snap artifact
+      uses: actions/upload-artifact@v2
       with:
         name: tiled_amd64.snap
         path: tiled_*_amd64.snap
+
+    - name: Release snap (beta channel)
+      uses: snapcore/action-publish@v1
+      if: github.repository == 'bjorn/tiled' && github.event_name == 'push'
+      with:
+        store_login: ${{ secrets.SNAP_STORE_LOGIN }}
+        snap: ${{ steps.build.outputs.snap }}
+        release: beta
 
   macos:
     name: macOS
