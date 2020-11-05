@@ -22,6 +22,7 @@
 
 #include "scriptmanager.h"
 
+#include <QCoreApplication>
 #include <QJSEngine>
 
 namespace Tiled {
@@ -71,8 +72,24 @@ void ScriptImage::setColorTable(QJSValue colors)
     const int length = colors.property(QStringLiteral("length")).toInt();
     colorTable.resize(length);
 
-    for (int i = 0; i < length; ++i)
-        colorTable[i] = colors.property(i).toUInt();
+    for (int i = 0; i < length; ++i) {
+        const QJSValue color = colors.property(i);
+        if (color.isNumber()) {
+            colorTable[i] = color.toUInt();
+        } else if (color.isString()) {
+            const QString colorName = color.toString();
+            if (QColor::isValidColor(colorName)) {
+                colorTable[i] = QColor(colorName).rgb();
+            } else {
+                ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors",
+                                                                                 "Invalid color name: '%2'").arg(colorName));
+                return;
+            }
+        } else {
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid color value"));
+            return;
+        }
+    }
 
     mImage.setColorTable(std::move(colorTable));
 }
