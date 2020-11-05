@@ -92,9 +92,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set snap version
+    - name: Set Tiled version
       run: |
         sed -i 's/^version: .*/version: '"${TILED_VERSION}"'/g' snap/snapcraft.yaml
+        sed -i 's/TILED_VERSION = .*/TILED_VERSION = "'"${TILED_VERSION}"'"/g' tiled.pri
 
     - name: Build snap
       id: build
