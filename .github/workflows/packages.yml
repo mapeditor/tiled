@@ -94,7 +94,7 @@ jobs:
 
     - name: Set snap version
       run: |
-        sed -i 's/version: .*/version: '"${TILED_VERSION}"'/g' snap/snapcraft.yaml
+        sed -i 's/^version: .*/version: '"${TILED_VERSION}"'/g' snap/snapcraft.yaml
 
     - name: Build snap
       id: build
