@@ -108,7 +108,7 @@ jobs:
 
     - name: Release snap (beta channel)
       uses: snapcore/action-publish@v1
-      if: github.repository == 'bjorn/tiled' && github.event_name == 'push'
+      if: github.repository == 'bjorn/tiled' && github.event_name == 'push' && github.ref == 'refs/heads/snapshot'
       with:
         store_login: ${{ secrets.SNAP_STORE_LOGIN }}
         snap: ${{ steps.build.outputs.snap }}
