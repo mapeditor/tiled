@@ -32,6 +32,7 @@ class ScriptImage : public QObject
 
     Q_PROPERTY(int width READ width)
     Q_PROPERTY(int height READ height)
+    Q_PROPERTY(int depth READ depth)
     Q_PROPERTY(QSize size READ size)
     Q_PROPERTY(Format format READ format)
 
@@ -87,6 +88,7 @@ public:
     Format format() const { return static_cast<Format>(mImage.format()); }
     int width() const { return mImage.width(); }
     int height() const { return mImage.height(); }
+    int depth() const { return mImage.depth(); }
     QSize size() const { return mImage.size(); }
 
     Q_INVOKABLE uint pixel(int x, int y) const
