@@ -92,6 +92,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Set snap version
+      run: |
+        sed -i 's/version: .*/version: '"${TILED_VERSION}"'/g' snap/snapcraft.yaml
+
     - name: Build snap
       id: build
       uses: snapcore/action-build@v1

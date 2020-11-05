@@ -1,5 +1,6 @@
 name: tiled
 adopt-info: tiled
+version: git
 license: GPL-2.0
 base: core18
 
@@ -31,9 +32,6 @@ parts:
       - CONFIG+=release
     parse-info:
       - org.mapeditor.Tiled.appdata.xml
-    override-pull: |
-      snapcraftctl pull
-      snapcraftctl set-version "$(git describe | cut -c 2-)"
     source: .
     build-packages:
       - pkg-config
