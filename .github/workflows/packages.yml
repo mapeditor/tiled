@@ -17,7 +17,8 @@ on:
 env:
   QT_VERSION: 5.15.1
   QTCREATOR_VERSION: 4.13.1
-  TILED_SNAPSHOT: true
+  TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
+  TILED_SNAPSHOT: ${{ !startsWith(github.ref, 'refs/tags/v') }}
 
 jobs:
   version:
@@ -27,9 +28,11 @@ jobs:
       version: ${{ steps.get-version.outputs.version }}
 
     steps:
-    - id: get-version
-      name: Get version
-      run: echo "::set-output name=version::$(date "+%Y.%m.%d")"
+    - name: Get version
+      id: get-version
+      run: |
+        if [[ "$TILED_RELEASE" == 'true' ]]; then echo "::set-output name=version::${GITHUB_REF:11}" ; fi
+        if [[ "$TILED_RELEASE" != 'true' ]]; then echo "::set-output name=version::$(date "+%Y.%m.%d")" ; fi
 
   linux:
     name: Linux (AppImage)
@@ -93,9 +96,12 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set Tiled version
+      id: version
       run: |
         sed -i 's/^version: .*/version: '"${TILED_VERSION}"'/g' snap/snapcraft.yaml
         sed -i 's/TILED_VERSION = .*/TILED_VERSION = "'"${TILED_VERSION}"'"/g' tiled.pri
+        if [[ "$TILED_RELEASE" == 'true' ]]; then echo "::set-output name=snap_channel::candidate" ; fi
+        if [[ "$TILED_RELEASE" != 'true' ]]; then echo "::set-output name=snap_channel::beta" ; fi
 
     - name: Build snap
       id: build
@@ -109,11 +115,11 @@ jobs:
 
     - name: Release snap (beta channel)
       uses: snapcore/action-publish@v1
-      if: github.repository == 'bjorn/tiled' && github.event_name == 'push' && github.ref == 'refs/heads/snapshot'
+      if: github.repository == 'bjorn/tiled' && github.event_name == 'push' && (github.ref == 'refs/heads/snapshot' || env.TILED_RELEASE == 'true')
       with:
         store_login: ${{ secrets.SNAP_STORE_LOGIN }}
         snap: ${{ steps.build.outputs.snap }}
-        release: beta
+        release: ${{ steps.version.outputs.snap_channel }}
 
   macos:
     name: macOS
