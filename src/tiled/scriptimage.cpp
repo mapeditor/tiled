@@ -100,10 +100,12 @@ ScriptImage *ScriptImage::copy(int x, int y, int w, int h) const
 }
 
 ScriptImage *ScriptImage::scaled(int w, int h,
-                                 Qt::AspectRatioMode aspectMode,
-                                 Qt::TransformationMode mode) const
+                                 AspectRatioMode aspectMode,
+                                 TransformationMode mode) const
 {
-    return new ScriptImage(mImage.scaled(w, h, aspectMode, mode));
+    return new ScriptImage(mImage.scaled(w, h,
+                                         static_cast<Qt::AspectRatioMode>(aspectMode),
+                                         static_cast<Qt::TransformationMode>(mode)));
 }
 
 ScriptImage *ScriptImage::mirrored(bool horiz, bool vert) const

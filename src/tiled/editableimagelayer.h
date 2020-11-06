@@ -25,6 +25,8 @@
 
 namespace Tiled {
 
+class ScriptImage;
+
 class EditableImageLayer : public EditableLayer
 {
     Q_OBJECT
@@ -45,6 +47,8 @@ public:
 
     void setTransparentColor(const QColor &transparentColor);
     void setImageSource(const QUrl &imageSource);
+
+    Q_INVOKABLE void setImage(Tiled::ScriptImage *image, const QUrl &source = QUrl());
 
 private:
     ImageLayer *imageLayer() const;

@@ -75,6 +75,19 @@ public:
     };
     Q_ENUM(Format)
 
+    enum AspectRatioMode {
+        IgnoreAspectRatio           = Qt::IgnoreAspectRatio,
+        KeepAspectRatio             = Qt::KeepAspectRatio,
+        KeepAspectRatioByExpanding  = Qt::KeepAspectRatioByExpanding
+    };
+    Q_ENUM(AspectRatioMode)
+
+    enum TransformationMode {
+        FastTransformation          = Qt::FastTransformation,
+        SmoothTransformation        = Qt::SmoothTransformation
+    };
+    Q_ENUM(TransformationMode)
+
     Q_INVOKABLE explicit ScriptImage(QObject *parent = nullptr);
     Q_INVOKABLE ScriptImage(int width, int height, Format format = Format_ARGB32_Premultiplied, QObject *parent = nullptr);
     Q_INVOKABLE ScriptImage(const QByteArray &data, int width, int height, Format format, QObject *parent = nullptr);
@@ -130,8 +143,8 @@ public:
 
     Q_INVOKABLE ScriptImage *copy(int x, int y, int w, int h) const;
     Q_INVOKABLE ScriptImage *scaled(int w, int h,
-                                    Qt::AspectRatioMode aspectMode = Qt::IgnoreAspectRatio,
-                                    Qt::TransformationMode mode = Qt::FastTransformation) const;
+                                    AspectRatioMode aspectMode = IgnoreAspectRatio,
+                                    TransformationMode mode = FastTransformation) const;
     Q_INVOKABLE ScriptImage *mirrored(bool horiz, bool vert) const;
 
     const QImage &image() const { return mImage; }
