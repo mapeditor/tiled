@@ -676,7 +676,7 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset &tileset)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("terraintypes"));
 
-    auto wangSet = std::make_unique<WangSet>(&tileset, tr("Converted Terrains"), WangSet::Corner, -1);
+    auto wangSet = std::make_unique<WangSet>(&tileset, tr("Terrains"), WangSet::Corner, -1);
     int colorCount = 0;
 
     while (xml.readNextStartElement()) {
