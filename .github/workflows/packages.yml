@@ -26,6 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get-version.outputs.version }}
+      release: ${{ steps.get-version.outputs.release }}
 
     steps:
     - name: Get version
@@ -33,6 +34,7 @@ jobs:
       run: |
         if [[ "$TILED_RELEASE" == 'true' ]]; then echo "::set-output name=version::${GITHUB_REF:11}" ; fi
         if [[ "$TILED_RELEASE" != 'true' ]]; then echo "::set-output name=version::$(date "+%Y.%m.%d")" ; fi
+        echo "::set-output name=release::${TILED_RELEASE}"
 
   linux:
     name: Linux (AppImage)
@@ -115,7 +117,7 @@ jobs:
 
     - name: Release snap (beta channel)
       uses: snapcore/action-publish@v1
-      if: github.repository == 'bjorn/tiled' && github.event_name == 'push' && (github.ref == 'refs/heads/snapshot' || env.TILED_RELEASE == 'true')
+      if: github.repository == 'bjorn/tiled' && github.event_name == 'push' && (github.ref == 'refs/heads/snapshot' || needs.version.outputs.release == 'true')
       with:
         store_login: ${{ secrets.SNAP_STORE_LOGIN }}
         snap: ${{ steps.build.outputs.snap }}
@@ -264,8 +266,8 @@ jobs:
           artifact: Tiled-win64
 
     steps:
-    - id: download
-      name: Download artifact
+    - name: Download artifact
+      id: download
       uses: actions/download-artifact@v2
       with:
         name: ${{ matrix.artifact }}
@@ -283,5 +285,56 @@ jobs:
     - name: Push to itch.io
       env:
         BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
+        TILED_VERSION: ${{ needs.version.outputs.version }}
       run: |
-        ./butler push --userversion=${{ needs.version.outputs.version }} upload thorbjorn/tiled:${{ matrix.channel }}-snapshot
+        ITCH_CHANNEL = ${{ matrix.channel }}
+        if [[ "$TILED_SNAPSHOT" == 'true' ]]; then ITCH_CHANNEL = "${ITCH_CHANNEL}-snapshot" ; fi
+        ./butler push --userversion=${TILED_VERSION} upload thorbjorn/tiled:${ITCH_CHANNEL}
+
+  github:
+    name: Upload to GitHub releases
+    runs-on: ubuntu-latest
+    needs: [version, linux, macos, windows]
+
+    if: github.repository == 'bjorn/tiled' && github.event_name == 'push' && needs.version.outputs.release == 'true'
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Tiled ${{ needs.version.outputs.version }}
+          draft: true
+          prerelease: false
+
+      - name: Download Linux AppImage
+        id: download-appimage
+        uses: actions/download-artifact@v2
+        with:
+          name: Tiled-x86_64.AppImage
+
+      - name: Download macOS app
+        id: download-app
+        uses: actions/download-artifact@v2
+        with:
+          name: Tiled-macos.app
+
+      - name: Upload Linux AppImage
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Tiled-x86_64.AppImage
+          asset_name: Tiled-${{ needs.version.outputs.version }}-x86_64.AppImage
+          asset_content_type: application/vnd.appimage
+
+      - name: Upload macOS app
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Tiled-macos.zip
+          asset_name: Tiled-${{ needs.version.outputs.version }}-macos.zip
+          asset_content_type: application/zip

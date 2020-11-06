@@ -8,8 +8,8 @@ Project {
     minimumQbsVersion: "1.8"
 
     property string version: Environment.getEnv("TILED_VERSION") || "1.4.3";
-    property bool snapshot: Environment.getEnv("TILED_SNAPSHOT")
-    property bool release: Environment.getEnv("TILED_RELEASE")
+    property bool snapshot: Environment.getEnv("TILED_SNAPSHOT") == "true"
+    property bool release: Environment.getEnv("TILED_RELEASE") == "true"
     property bool installHeaders: false
     property bool useRPaths: true
     property bool windowsInstaller: false
