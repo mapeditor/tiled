@@ -427,6 +427,8 @@ void WangBrush::captureHoverColor()
 
     if (mWangIndex == WangId::NumIndexes)
         return;
+    if (!mWangSet)
+        return;
 
     const QPoint mousePoint = mPaintPoint - tileLayer->position();
     const Cell &cell = tileLayer->cellAt(mousePoint);
