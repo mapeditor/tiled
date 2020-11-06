@@ -30,6 +30,7 @@
 #include "editabletileset.h"
 #include "imagecache.h"
 #include "objectgroup.h"
+#include "scriptimage.h"
 #include "scriptmanager.h"
 
 #include <QCoreApplication>
@@ -78,6 +79,12 @@ QJSValue EditableTile::frames() const
 EditableTileset *EditableTile::tileset() const
 {
     return static_cast<EditableTileset*>(asset());
+}
+
+void EditableTile::setImage(ScriptImage *image)
+{
+    // WARNING: This function has no undo!
+    tile()->setImage(QPixmap::fromImage(image->image()));
 }
 
 void EditableTile::detach()

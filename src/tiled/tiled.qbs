@@ -429,6 +429,8 @@ QtGuiApplication {
         "scriptfileformatwrappers.h",
         "scriptfileinfo.cpp",
         "scriptfileinfo.h",
+        "scriptimage.cpp",
+        "scriptimage.h",
         "scriptmanager.cpp",
         "scriptmanager.h",
         "scriptmodule.cpp",
