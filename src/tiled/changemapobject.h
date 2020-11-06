@@ -28,7 +28,6 @@
 
 namespace Tiled {
 
-class MapObject;
 class ObjectTemplate;
 class Tile;
 
@@ -107,7 +106,7 @@ private:
     Tile * const mTile;
     QVector<Cell> mOldCells;
     QVector<bool> mUpdateSize;
-    QVector<bool> mOldChangeStates;
+    QVector<MapObject::ChangedProperties> mOldChangedProperties;
 };
 
 class DetachObjects : public QUndoCommand

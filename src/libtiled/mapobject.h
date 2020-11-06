@@ -520,3 +520,4 @@ inline void MapObject::markAsTemplateBase()
 
 Q_DECLARE_METATYPE(Tiled::MapObject::Shape)
 Q_DECLARE_METATYPE(Tiled::MapObject*)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::MapObject::ChangedProperties);
