@@ -79,7 +79,7 @@ void ScriptImage::setColorTable(QJSValue colors)
         } else if (color.isString()) {
             const QString colorName = color.toString();
             if (QColor::isValidColor(colorName)) {
-                colorTable[i] = QColor(colorName).rgb();
+                colorTable[i] = QColor(colorName).rgba();
             } else {
                 ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors",
                                                                                  "Invalid color name: '%2'").arg(colorName));

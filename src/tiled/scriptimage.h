@@ -94,11 +94,20 @@ public:
     Q_INVOKABLE uint pixel(int x, int y) const
     { return mImage.pixel(x, y); }
 
+    Q_INVOKABLE QColor pixelColor(int x, int y) const
+    { return mImage.pixelColor(x, y); }
+
     Q_INVOKABLE void setPixel(int x, int y, uint index_or_rgb)
     { mImage.setPixel(x, y, index_or_rgb); }
 
+    Q_INVOKABLE void setPixelColor(int x, int y, const QColor &color)
+    { mImage.setPixelColor(x, y, color); }
+
     Q_INVOKABLE void fill(uint index_or_rgb)
     { mImage.fill(index_or_rgb); }
+
+    Q_INVOKABLE void fill(const QColor &color)
+    { mImage.fill(color); }
 
     Q_INVOKABLE bool load(const QString &fileName, const QByteArray &format = QByteArray())
     { return mImage.load(fileName, format); }
@@ -113,6 +122,9 @@ public:
 
     Q_INVOKABLE void setColor(int i, uint rgb)
     { mImage.setColor(i, rgb); }
+
+    Q_INVOKABLE void setColor(int i, const QColor &color)
+    { mImage.setColor(i, color.rgba()); }
 
     Q_INVOKABLE void setColorTable(QJSValue colors);
 
