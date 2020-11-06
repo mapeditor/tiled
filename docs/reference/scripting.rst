@@ -728,6 +728,152 @@ GroupLayer.addLayer(layer : :ref:`script-layer`) : void
     When adding a :ref:`script-tilelayer` to a map, the layer's width and
     height are automatically initialized to the size of the map (since Tiled 1.4.2).
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.5</div>
+
+.. _script-image:
+
+Image
+^^^^^
+
+Can be used to create, load, save and modify images. Also useful when writing
+an importer, where the image can be set on a tileset or its tiles (see :ref:`Tileset.loadFromImage <script-tileset-loadFromImage>` and :ref:`Tile.setImage <script-tile-setImage>`).
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **width** : int, Width of the image in pixels.
+    **height** : int, Height of the image in pixels.
+    **depth** : int, Number of bits used to store a single pixel.
+    **size** : :ref:`script-size`, Size of the image in pixels.
+    **format** : :ref:`Format <script-image-format>`, Format of the image.
+
+Functions
+~~~~~~~~~
+
+new Image()
+    Constructs an empty image.
+
+new Image(width : int, height : int, format : :ref:`Format <script-image-format>`)
+    Constructs an image of the given size using the given format.
+
+new Image(data : ArrayBuffer, width : int, height : int, format : :ref:`Format <script-image-format>`)
+    Constructs an image from the given data, interpreting it in the specified format and size.
+
+new Image(data : ArrayBuffer, width : int, height : int, bytesPerLine : int, format : :ref:`Format <script-image-format>`)
+    Constructs an image from the given data, interpreting it in the specified format and size.
+    The `bytesPerLine` argument specifies the stride and can be useful for referencing a sub-image.
+
+new Image(fileName : string [, format : string])
+    Construct an image by loading it from the given file name.
+    When no format is given it will be auto-detected (can be "bmp", "png", etc.).
+
+Image.pixel(x : int, y : int) : uint
+    Returns the 32-bit color value.
+
+Image.pixelColor(x : int, y : int) : color
+    Returns the color at the given position as string like "#rrggbb".
+
+Image.setPixel(x : int, y : int, index_or_rgb : uint) : void
+    Sets the color at the specified location to the given 32-bit color value or color table index.
+
+Image.setPixelColor(x : int, y : int, color : color) : void
+    Sets the color at the specified location to the given color by string (supports values like "#rrggbb").
+
+Image.fill(index_or_rgb : uint) : void
+    Fills the image with the given 32-bit color value or color table index.
+
+Image.fill(color : color) : void
+    Fills the image with the given color by string (supports values like "#rrggbb").
+
+Image.load(fileName : string [, format : string]) : void
+    Loads the image from the given file name.
+    When no format is given it will be auto-detected (can be "bmp", "png", etc.).
+
+Image.loadFromData(data : ArrayBuffer, format: string)
+    Loads the image from the given data interpreted with the given format (can be "bmp", png", etc.).
+
+Image.color(index : int) : uint
+    Returns the 32-bit color value at the given index in the color table.
+
+Image.colorTable() : array
+    Returns the color table as an array of 32-bit color values.
+
+Image.setColor(index : int, rgb : uint) : void
+    Sets the color at the given index in the color table to a given 32-bit color value.
+
+Image.setColor(index : int, color : color) : void
+    Sets the color at the given index in the color table to a color by string (supports values like "#rrggbb").
+
+Image.setColorTable(colors : array) : void
+    Sets the color table given by an array of either 32-bit color values or strings (supports values like "#rrggbb").
+
+Image.copy(x : int, y : int, width : int, height : int) : Image
+    Copies the given rectangle to a new image object.
+
+Image.scaled(width : int, height : int [, aspectRatioMode : :ref:`AspectRatioMode <script-image-aspectRatioMode>` [, transformationMode : :ref:`TransformationMode <script-image-transformationMode>`]]) : Image
+    Returns a scaled copy of this image. Default ``aspectRatioMode`` behavior is to ignore the aspect ratio. Default ``mode`` is a fast transformation.
+
+Image.mirrored(horizontal : bool, vertical : bool) : Image
+    Returns a mirrored copy of this image.
+
+.. _script-image-format:
+
+.. csv-table::
+    :header: "Image.Format"
+
+    Image.Format_Invalid
+    Image.Format_Mono
+    Image.Format_MonoLSB
+    Image.Format_Indexed8
+    Image.Format_RGB32
+    Image.Format_ARGB32
+    Image.Format_ARGB32_Premultiplied
+    Image.Format_RGB16
+    Image.Format_ARGB8565_Premultiplied
+    Image.Format_RGB666
+    Image.Format_ARGB6666_Premultiplied
+    Image.Format_RGB555
+    Image.Format_ARGB8555_Premultiplied
+    Image.Format_RGB888
+    Image.Format_RGB444
+    Image.Format_ARGB4444_Premultiplied
+    Image.Format_RGBX8888
+    Image.Format_RGBA8888
+    Image.Format_RGBA8888_Premultiplied
+    Image.Format_BGR30
+    Image.Format_A2BGR30_Premultiplied
+    Image.Format_RGB30
+    Image.Format_A2RGB30_Premultiplied
+    Image.Format_Alpha8
+    Image.Format_Grayscale8
+    Image.Format_RGBX64
+    Image.Format_RGBA64
+    Image.Format_RGBA64_Premultiplied
+    Image.Format_Grayscale16
+    Image.Format_BGR888
+
+.. _script-image-aspectRatioMode:
+
+.. csv-table::
+    :header: "Image.AspectRatioMode"
+
+    Image.IgnoreAspectRatio
+    Image.KeepAspectRatio
+    Image.KeepAspectRatioByExpanding
+
+.. _script-image-transformationMode:
+
+.. csv-table::
+    :header: "Image.TransformationMode"
+
+    Image.FastTransformation
+    Image.SmoothTransformation
+
 .. _script-imagelayer:
 
 ImageLayer
@@ -743,6 +889,17 @@ Properties
 
     **transparentColor** : color, Color used as transparent color when rendering the image.
     **imageSource** : url, Reference to the image rendered by this layer.
+
+Functions
+~~~~~~~~~
+
+.. _script-imagelayer-loadFromImage:
+
+ImageLayer.loadFromImage(image : :ref:`script-image` [, source: url]) : void
+    Sets the image for this layer to the given image, optionally also setting
+    the source of the image.
+
+    *Warning: This function has no undo!*
 
 .. _script-layer:
 
@@ -1079,6 +1236,16 @@ Properties
     Tile.FlippedVertically
     Tile.FlippedAntiDiagonally
     Tile.RotatedHexagonal120
+
+Functions
+~~~~~~~~~
+
+.. _script-tile-setImage:
+
+Tile.setImage(image : :ref:`script-image`) : void
+    Sets the image of this tile.
+
+    *Warning: This function has no undo and does not affect the saved tileset!*
 
 .. _script-tilecollisioneditor:
 
@@ -1521,6 +1688,19 @@ Tileset.setTileSize(width : int, height : int) : void
     Sets the tile size for this tileset. If an image has been specified as well,
     the tileset will be (re)loaded. Can't be used on image collection tilesets.
 
+.. _script-tileset-loadFromImage:
+
+Tileset.loadFromImage(image : :ref:`script-image` [, source: string]) : void
+    Creates the tiles in this tileset by cutting them out of the given image,
+    using the current tile size, tile spacing and margin parameters. These
+    values should be set before calling this function.
+
+    Optionally sets the source file of the image. This may be useful, but be
+    careful since Tiled will try to reload the tileset from that source when
+    the tileset parameters are changed.
+
+    *Warning: This function has no undo!*
+
 Tileset.addTile() : :ref:`script-tile`
     Adds a new tile to this tileset and returns it. Only works for image collection tilesets.
 
@@ -1580,6 +1760,10 @@ Properties
 
     **currentTileset** : :ref:`script-tileset`, "Access or change the currently displayed tileset."
     **selectedTiles** : [:ref:`script-tile`], "A list of the tiles that are selected in the current tileset."
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.5</div>
 
 .. _script-wangset:
 
