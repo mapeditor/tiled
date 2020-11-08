@@ -912,20 +912,26 @@ public class TMXMapReader {
     }
 
     /**
-     * readMap.
+     * Read a Map from the given InputStream, using {@code user.dir} to load relative assets.
      *
-     * @param in a {@link java.io.InputStream} object.
+     * @see #readMap(InputStream, String)
+     */
+    public Map readMap(InputStream in) throws Exception {
+        return readMap(in, System.getProperty("user.dir"));
+    }
+
+    /**
+     * Read a Map from the given InputStream, using searchDirectory to load relative assets.
+     *
+     * @param in a {@link java.io.InputStream} containing the Map.
+     * @param searchDirectory Directory to search for relative assets.
      * @return a {@link org.mapeditor.core.Map} object.
      * @throws java.lang.Exception if any.
      */
-    public Map readMap(InputStream in) throws Exception {
-        xmlPath = makeUrl(System.getProperty("user.dir") + File.separatorChar);
+    public Map readMap(InputStream in, String searchDirectory) throws Exception {
+        xmlPath = makeUrl(searchDirectory + File.separatorChar);
 
-        Map unmarshalledMap = unmarshal(in);
-
-        //unmarshalledMap.setFilename(xmlFile)
-        //
-        return unmarshalledMap;
+        return unmarshal(in);
     }
 
     /**
