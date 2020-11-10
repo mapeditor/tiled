@@ -31,7 +31,7 @@
 
 namespace RpMap {
 
-class RPMAPSHARED_EXPORT RpMapPlugin : public Tiled::MapFormat
+class RPMAPSHARED_EXPORT RpMapPlugin : public Tiled::WritableMapFormat
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::MapFormat)
@@ -40,8 +40,10 @@ class RPMAPSHARED_EXPORT RpMapPlugin : public Tiled::MapFormat
 public:
     RpMapPlugin();
 
+#if 0
     std::unique_ptr<Tiled::Map> read(const QString &fileName) override;
     bool supportsFile(const QString &fileName) const override;
+#endif
 
     bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
     QString nameFilter() const override;

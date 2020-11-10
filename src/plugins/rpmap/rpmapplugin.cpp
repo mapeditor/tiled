@@ -55,33 +55,32 @@ RpMapPlugin::RpMapPlugin()
 {
 }
 
+#if 0 // not implemented for now
 std::unique_ptr<Tiled::Map> RpMapPlugin::read(const QString &fileName)
 {
     // the problem is to either reference an already loaded tileset (how) or to import the included image resources
-#if 0 // not implemented for now
     KZip archive(fileName);
     if (archive.open(QIODevice::ReadOnly)) {
-            const KArchiveDirectory *dir = archive.directory();
+        const KArchiveDirectory *dir = archive.directory();
 
-            const KArchiveEntry *e = dir->entry("content.xml");
-            if (!e) {
-                //qDebug() << "File not found!";
-                return nullptr;
-            }
-            const KArchiveFile *f = static_cast<const KArchiveFile *>(e);
-            QByteArray arr(f->data());
-            //qDebug() << arr; // the file contents
+        const KArchiveEntry *e = dir->entry("content.xml");
+        if (!e) {
+            //qDebug() << "File not found!";
+            return nullptr;
+        }
+        const KArchiveFile *f = static_cast<const KArchiveFile *>(e);
+        QByteArray arr(f->data());
+        //qDebug() << arr; // the file contents
 
-            // To avoid reading everything into memory in one go, we can use createDevice() instead
+        // To avoid reading everything into memory in one go, we can use createDevice() instead
 #if 0
-            QIODevice *dev = f->createDevice();
-            while (!dev->atEnd()) {
-                qDebug() << dev->readLine();
-            }
-            delete dev;
+        QIODevice *dev = f->createDevice();
+        while (!dev->atEnd()) {
+            qDebug() << dev->readLine();
+        }
+        delete dev;
 #endif
     }
-#endif
     return nullptr;
 }
 
@@ -89,6 +88,7 @@ bool RpMapPlugin::supportsFile(const QString &fileName) const
 {
     return fileName.endsWith(QLatin1String(".rpmap"), Qt::CaseInsensitive);
 }
+#endif
 
 QString RpMapPlugin::nameFilter() const
 {
@@ -105,20 +105,23 @@ QString RpMapPlugin::errorString() const
     return mError;
 }
 
-static void writeEntry(QXmlStreamWriter &writer, QString const &key, QString const& value) {
+static void writeEntry(QXmlStreamWriter &writer, QString const &key, QString const& value)
+{
     writer.writeStartElement(QStringLiteral("entry"));
     writer.writeTextElement(QStringLiteral("string"), key);
     writer.writeTextElement(QStringLiteral("string"), value);
     writer.writeEndElement();
 }
 
-static void writeGUID(QXmlStreamWriter &writer, QString const &key, QUuid const& id) {
+static void writeGUID(QXmlStreamWriter &writer, QString const &key, QUuid const& id)
+{
     writer.writeStartElement(key);
     writer.writeTextElement(QStringLiteral("baGUID"), id.toRfc4122().toBase64());
     writer.writeEndElement();
 }
 
-static void writeTile(QXmlStreamWriter &writer, int x, int y, QString const& name, int facing, QString md5, bool flipx, bool flipy) {
+static void writeTile(QXmlStreamWriter &writer, int x, int y, QString const& name, int facing, QString const& md5, bool flipx, bool flipy)
+{
     writer.writeStartElement(QStringLiteral("entry"));
     writeGUID(writer, QStringLiteral("net.rptools.maptool.model.GUID"), QUuid::createUuid());
     writer.writeStartElement(QStringLiteral("net.rptools.maptool.model.Token"));
@@ -186,7 +189,8 @@ static void writeTile(QXmlStreamWriter &writer, int x, int y, QString const& nam
     writer.writeEndElement(); // entry
 }
 
-static void writeCellShape(QXmlStreamWriter &writer, Tiled::Map const* map) {
+static void writeCellShape(QXmlStreamWriter &writer, Tiled::Map const* map)
+{
     writer.writeStartElement(QStringLiteral("cellShape"));
     writer.writeStartElement(QStringLiteral("curves"));
     writer.writeStartElement(QStringLiteral("sun.awt.geom.Order0"));
@@ -216,7 +220,8 @@ static void writeCellShape(QXmlStreamWriter &writer, Tiled::Map const* map) {
     writer.writeEndElement(); // cellShape
 }
 
-static void writeGrid(QXmlStreamWriter &writer, Tiled::Map const* map) {
+static void writeGrid(QXmlStreamWriter &writer, Tiled::Map const* map)
+{
     writer.writeStartElement(QStringLiteral("grid"));
     writer.writeAttribute(QStringLiteral("class"), QStringLiteral("net.rptools.maptool.model.SquareGrid"));
     writer.writeTextElement(QStringLiteral("offsetX"), QString::number(0));
@@ -227,42 +232,43 @@ static void writeGrid(QXmlStreamWriter &writer, Tiled::Map const* map) {
     writer.writeEndElement(); // grid
 }
 
-static void writeClass(QXmlStreamWriter &writer, QString const &name, QString const& type) {
+static void writeClass(QXmlStreamWriter &writer, QString const &name, QString const& type)
+{
     writer.writeStartElement(name);
     writer.writeAttribute(QStringLiteral("class"), type);
     writer.writeEndElement();
 }
 
-void RpMapPlugin::writeTokenMap(QXmlStreamWriter &writer, Tiled::Map const* map) {
-    const int mapWidth = map->width();
-    const int mapHeight = map->height();
+void RpMapPlugin::writeTokenMap(QXmlStreamWriter &writer, Tiled::Map const* map)
+{
     const int tileWidth = map->tileWidth();
     const int tileHeight = map->tileHeight();
 //    const QColor backgroundColor = map->backgroundColor();
     writer.writeStartElement(QStringLiteral("tokenMap"));
+
     for (Layer *layer : map->layers()) {
         if (TileLayer *tileLayer = layer->asTileLayer()) {
-            for (int y = 0; y < mapHeight; ++y) {
-                for (int x = 0; x < mapWidth; ++x) {
+            for (int y = 0; y < tileLayer->height(); ++y) {
+                for (int x = 0; x < tileLayer->width(); ++x) {
                     Cell t = tileLayer->cellAt(x, y);
-                    if (t.isEmpty()) continue;
+                    if (t.isEmpty())
+                        continue;
+
                     static const uint16_t rotation[8] = { 270, 270, 270, 90, 0, 0, 180, 180 };
                     // in addition to rotation
                     static const bool flip_horiz[8] = { false, false, true, false,  true, false, false, true };
                     static const bool flip_vert[8] = { false, true, false, false,  false, false, false, false };
+
                     uint8_t rot_index = (t.flippedVertically() ? 1 : 0) | (t.flippedHorizontally() ? 2 : 0) | (t.flippedAntiDiagonally() ? 4 : 0);
                     //int tileid= t.tileId();
                     Tile const* tile = t.tile();
-                    QUrl tileurl= tile->imageSource();
-                    if (tileurl.isLocalFile())
-                    {
-                        QString tilepath= tileurl.toLocalFile();
+                    QUrl tileurl = tile->imageSource();
+                    if (tileurl.isLocalFile()) {
+                        QString tilepath = tileurl.toLocalFile();
                         auto it = filename2md5.find(tilepath);
-                        if (it==filename2md5.end())
-                        {
+                        if (it == filename2md5.end()) {
                             QFile file(tilepath);
-                            if (file.open(QIODevice::ReadOnly))
-                            {
+                            if (file.open(QIODevice::ReadOnly)) {
                                 QByteArray image = file.readAll();
                                 QByteArray md5bin = QCryptographicHash::hash(image, QCryptographicHash::Md5);
                                 QString md5string = md5bin.toHex();
@@ -270,31 +276,34 @@ void RpMapPlugin::writeTokenMap(QXmlStreamWriter &writer, Tiled::Map const* map)
                                 // remember the first element (tile) referencing this file
                                 first_used_md5.push_back(number_of_tiles);
                             }
-                            else continue;
+                            else
+                                continue;
                         }
-                        assert(it!=filename2md5.end());
+                        assert(it != filename2md5.end());
                         QString md5 = it.value();
                         writeTile(writer, x*tileWidth, y*tileHeight, QStringLiteral("token"), rotation[rot_index], md5, flip_horiz[rot_index], flip_vert[rot_index]);
                         ++number_of_tiles;
                     }
-                 }
+                }
             }
             break; // only output first layer (for now)
         }
     }
     //writeTile(writer, 400, 300, QStringLiteral("token"), 180);
     //writeTile(writer, 400, 600, QStringLiteral("token2"), 0);
+
     writer.writeEndElement(); // tokenMap
 }
 
-void RpMapPlugin::writeTokenOrderedList(QXmlStreamWriter &writer) {
+void RpMapPlugin::writeTokenOrderedList(QXmlStreamWriter &writer)
+{
     writer.writeStartElement(QStringLiteral("tokenOrderedList"));
     writer.writeAttribute(QStringLiteral("class"), QStringLiteral("linked-list"));
 
     writer.writeStartElement(QStringLiteral("net.rptools.maptool.model.Token"));
     writer.writeAttribute(QStringLiteral("reference"), QStringLiteral("../../tokenMap/entry/net.rptools.maptool.model.Token"));
     writer.writeEndElement(); // Token
-    for (uint32_t i=1;i<number_of_tiles;++i) {
+    for (uint32_t i = 1; i < number_of_tiles; ++i) {
         writer.writeStartElement(QStringLiteral("net.rptools.maptool.model.Token"));
         writer.writeAttribute(QStringLiteral("reference"), QStringLiteral("../../tokenMap/entry[")
                               +QString::number(i+1)
@@ -305,7 +314,8 @@ void RpMapPlugin::writeTokenOrderedList(QXmlStreamWriter &writer) {
     writer.writeEndElement(); // tokenOrderedList
 }
 
-static void writeZone2(QXmlStreamWriter &writer) {
+static void writeZone2(QXmlStreamWriter &writer)
+{
     writer.writeStartElement(QStringLiteral("initiativeList"));
     writer.writeEmptyElement(QStringLiteral("tokens"));
     writer.writeTextElement(QStringLiteral("current"), QString::number(-1));
@@ -356,7 +366,8 @@ static void writeZone2(QXmlStreamWriter &writer) {
     writer.writeTextElement(QStringLiteral("width"), QString::number(0));
 }
 
-void RpMapPlugin::writeMap(QXmlStreamWriter &writer, Tiled::Map const* map) {
+void RpMapPlugin::writeMap(QXmlStreamWriter &writer, Tiled::Map const* map)
+{
     writer.writeStartElement(QStringLiteral("zone"));
     writer.writeTextElement(QStringLiteral("creationTime"), QString::number(QDateTime::currentMSecsSinceEpoch()));
     writeGUID(writer, QStringLiteral("id"), QUuid::createUuid());
@@ -384,8 +395,9 @@ void RpMapPlugin::writeMap(QXmlStreamWriter &writer, Tiled::Map const* map) {
     for (auto i: first_used_md5) {
         writer.writeStartElement(QStringLiteral("entry"));
         writer.writeStartElement(QStringLiteral("net.rptools.lib.MD5Key"));
-        QString item=QStringLiteral("");
-        if (i>0) item = QStringLiteral("[") + QString::number(i+1) + QStringLiteral("]");
+        QString item = QStringLiteral("");
+        if (i > 0)
+            item = QStringLiteral("[") + QString::number(i+1) + QStringLiteral("]");
         writer.writeAttribute(QStringLiteral("reference"), QStringLiteral("../../../zone/tokenMap/entry")
                               +item
                               +QStringLiteral("/net.rptools.maptool.model.Token/imageAssetMap/entry/net.rptools.lib.MD5Key"));
@@ -398,10 +410,9 @@ void RpMapPlugin::writeMap(QXmlStreamWriter &writer, Tiled::Map const* map) {
 
 bool RpMapPlugin::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
-    // TODO move this into the class once working
     filename2md5.clear();
     first_used_md5.clear();
-    number_of_tiles= 0;
+    number_of_tiles = 0;
 
     Q_UNUSED(options)
     KZip archive(fileName);
