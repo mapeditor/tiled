@@ -56,6 +56,9 @@ StaticLibrary {
     Export {
         Depends { name: "cpp" }
         cpp.includePaths: "src"
-        cpp.defines: [ "KARCHIVE_STATIC_DEFINE" ]
+        cpp.defines: [
+            "KARCHIVE_STATIC_DEFINE",
+            "KARCHIVE_NO_DEPRECATED"
+        ]
     }
 }
