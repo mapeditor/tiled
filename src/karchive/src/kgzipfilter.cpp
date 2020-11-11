@@ -9,9 +9,17 @@
 
 #include <time.h>
 
+#if defined(Q_OS_WIN) && defined(Q_CC_MSVC)
+#include "QtZlib/zlib.h"
+#else
 #include <zlib.h>
+#endif
 #include <QDebug>
 #include <QIODevice>
+
+#ifdef Z_PREFIX
+#undef compress
+#endif
 
 /* gzip flag byte */
 #define ORIG_NAME    0x08 /* bit 3 set: original file name present */

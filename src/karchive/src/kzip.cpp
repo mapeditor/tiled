@@ -32,6 +32,11 @@
 #       define QT_STAT_LNK 0120000
 #endif // QT_STAT_LNK
 
+#ifdef Z_PREFIX
+#undef crc32
+constexpr auto crc32 = z_crc32;
+#endif
+
 static const int max_path_len = 4095;   // maximum number of character a path may contain
 
 static void transformToMsDos(const QDateTime &_dt, char *buffer)
