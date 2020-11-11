@@ -1,7 +1,7 @@
 import qbs 1.0
 
 TiledPlugin {
-    condition: Qt.core.versionMinor >= 12
+    condition: Qt.core.versionMajor > 5 || Qt.core.versionMinor >= 12
 
     Depends { name: "Qt.core" }
     Depends { name: "karchive" }

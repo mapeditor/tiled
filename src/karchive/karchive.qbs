@@ -1,6 +1,8 @@
 import qbs 1.0
 
 StaticLibrary {
+    condition: Qt.core.versionMajor > 5 || Qt.core.versionMinor >= 12
+
     Depends { name: "cpp" }
     Depends { name: "Qt.core"; versionAtLeast: "5.12" }
 

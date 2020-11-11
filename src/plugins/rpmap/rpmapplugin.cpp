@@ -131,7 +131,7 @@ static void writeTile(QXmlStreamWriter &writer, int x, int y, QString const& nam
     writer.writeStartElement(QStringLiteral("entry"));
     writer.writeEmptyElement(QStringLiteral("null"));
     writer.writeStartElement(QStringLiteral("net.rptools.lib.MD5Key"));
-    writer.writeTextElement(QStringLiteral("id"), md5); // QStringLiteral(""));
+    writer.writeTextElement(QStringLiteral("id"), md5);
     writer.writeEndElement(); // MD5Key
     writer.writeEndElement(); // entry
     writer.writeEndElement(); // imageAssetMap
@@ -395,7 +395,7 @@ void RpMapPlugin::writeMap(QXmlStreamWriter &writer, Tiled::Map const* map)
     for (auto i: first_used_md5) {
         writer.writeStartElement(QStringLiteral("entry"));
         writer.writeStartElement(QStringLiteral("net.rptools.lib.MD5Key"));
-        QString item = QStringLiteral("");
+        QString item;
         if (i > 0)
             item = QStringLiteral("[") + QString::number(i+1) + QStringLiteral("]");
         writer.writeAttribute(QStringLiteral("reference"), QStringLiteral("../../../zone/tokenMap/entry")
