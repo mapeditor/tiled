@@ -1,587 +1,314 @@
----
----
-<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Bootstrap -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href='favicon.ico' rel='icon' type='image/png'/>
-    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
-    <link href="css/fontawesome.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/jquery.fancybox.css?v=2.1.4" type="text/css" media="screen" />
-    <link href="css/base.css" rel="stylesheet" media="screen">
-    <link href="css/index.css" rel="stylesheet" media="screen">
-    <link rel="me" href="https://plus.google.com/113047271137781766813" />
-    <link rel="publisher" href="https://plus.google.com/104206952440491912596/" />
-{% seo %}
-    <style>
-      .goalmarker {
-        transition-delay: 0s;
-        transition-duration: 0.6s;
-        transition-property: margin-right;
-        transition-timing-function: ease;
-      }
-    </style>
-  </head>
-  <body>
-    <nav id="navbar" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0px">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="/"><i class="icon-home"></i> Home</a></li>
-        <li><a href="https://discourse.mapeditor.org/"><i class="icon-group"></i> Forum</a></li>
-        <li><a href="https://doc.mapeditor.org/"><i class="icon-book"></i> Documentation</a></li>
-        <li><a href="/donate"><i class="icon icon-heart"></i> Donate</a></li>
-      </ul>
-      <ul class="nav navbar-nav pull-right">
-        <li><a href="https://github.com/bjorn/tiled"><i class="icon-github-alt"></i> Tiled on GitHub</a></li>
-        <!-- TODO: Just have a row of icons (GitHub, [Twitter,] Google+, IRC?) -->
-      </ul>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name='viewport' content="width=device-width, initial-scale=1" />
+  <meta property="og:title" content="Tiled - A free and open source map editor" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mapeditor.org" />
+  <meta property="og:image" content="https://mapeditor.org/assets/tiled_logo_fill.png" />
+  <meta property="og:description" content="Tiled Map Editor is an easy to use and free level editor" />
+  <link rel="shortcut icon" type="image/png" href="/assets/favicon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/index.css">
+  <link href="/atom.xml" rel="alternate" type="application/atom+xml" />
+  <title>Tiled Map Editor - A free easy to use 2d level editor</title>
+
+</head>
+
+<body>
+  <div class="headerbar-container">
+    <nav class="headerbar container">
+      <a href="/" class="header-logo">
+        <img src="http://hostingtech.online/tiled-logo-white.png" class="logo" alt="tiled logo" />
+      </a>
+      <a href="/" class="header-logo-mobile">
+        <img src="http://hostingtech.online/tiled-logo-white.png" class="logo" alt="tiled icon" />
+      </a>
+      <div class="header-item header-push"></div>
+
+      <a name="discourse" href="https://discourse.mapeditor.org/" class="header-social"><i class="fab fa-discourse fa-2x"></i></a>
+      <a name="twitter" href="https://twitter.com/thorbjorn81" class="header-social">
+        <i class='fab fa-twitter fa-2x'></i></a>
+      <a name="discord" href="https://discord.gg/39wbTv7" class="header-social"><i class="fab fa-discord fa-2x"></i></a>
+      <a name="github" href="https://github.com/bjorn/tiled" class="header-social"><i class="fab fa-github fa-2x"></i></a>
+
+      <a href="/" class="header-item header-item-active">
+        Features
+      </a>
+
+      <a href="https://itch.io/games/made-with-tiled" class="header-item">
+        Made with Tiled
+      </a>
+
+      <a class="header-item header-button header-button-download" href="/download">Download</a>
+      <a class="header-item header-button header-button-donate" href="/donate">Donate</a>
+      <a class="header-item header-button" href="https://doc.mapeditor.org/en/stable/manual/introduction/#getting-started">Get Started</a>
     </nav>
+  </div>
+  <section class="section">
+    <div class="container">
 
-    <!-- relative position allows positioning absolute elements inside -->
-    <div class="my-top-box" style="position: relative;">
-      <div class="background">
-
-        <!-- a centered 0-width inline block -->
-        <div style="display: inline-block; width: 0px;">
-          <!-- the actual map, centered on the parent by using negative offset -->
-          <div style="position: relative; left: -800px; width: 1600px; height: 520px;">
-
-<!-- sections of tiles different from the background tile -->
-<div class="t t98" style="left: 0px; top: 0px;"></div>
-<div class="t t104" style="left: 40px; top: 0px;"></div>
-<div class="t t68" style="left: 80px; top: 0px;"></div>
-<div class="t t70" style="left: 120px; top: 0px;"></div>
-<div class="t t66" style="left: 680px; top: 0px;"></div>
-<div class="t t68" style="left: 720px; top: 0px; width: 840px;"></div>
-<div class="t t70" style="left: 1560px; top: 0px;"></div>
-<div class="t t98" style="left: 40px; top: 40px;"></div>
-<div class="t t100" style="left: 80px; top: 40px;"></div>
-<div class="t t102" style="left: 120px; top: 40px;"></div>
-<div class="t t66" style="left: 680px; top: 40px;"></div>
-<div class="t t68" style="left: 720px; top: 40px; width: 200px;"></div>
-<div class="t t106" style="left: 920px; top: 40px;"></div>
-<div class="t t100" style="left: 960px; top: 40px;"></div>
-<div class="t t104" style="left: 1000px; top: 40px;"></div>
-<div class="t t68" style="left: 1040px; top: 40px; width: 480px;"></div>
-<div class="t t106" style="left: 1520px; top: 40px;"></div>
-<div class="t t102" style="left: 1560px; top: 40px;"></div>
-<div class="t t98" style="left: 680px; top: 80px;"></div>
-<div class="t t104" style="left: 720px; top: 80px;"></div>
-<div class="t t68" style="left: 760px; top: 80px; width: 80px;"></div>
-<div class="t t106" style="left: 840px; top: 80px;"></div>
-<div class="t t100" style="left: 880px; top: 80px;"></div>
-<div class="t t102" style="left: 920px; top: 80px;"></div>
-<div class="t t98" style="left: 1000px; top: 80px;"></div>
-<div class="t t104" style="left: 1040px; top: 80px;"></div>
-<div class="t t68" style="left: 1080px; top: 80px; width: 200px;"></div>
-<div class="t t106" style="left: 1280px; top: 80px;"></div>
-<div class="t t100" style="left: 1320px; top: 80px;"></div>
-<div class="t t104" style="left: 1360px; top: 80px;"></div>
-<div class="t t68" style="left: 1400px; top: 80px; width: 120px;"></div>
-<div class="t t74" style="left: 1520px; top: 80px;"></div>
-<div class="t t38" style="left: 1560px; top: 80px;"></div>
-<div class="t t98" style="left: 720px; top: 120px;"></div>
-<div class="t t104" style="left: 760px; top: 120px;"></div>
-<div class="t t68" style="left: 800px; top: 120px;"></div>
-<div class="t t70" style="left: 840px; top: 120px;"></div>
-<div class="t t34" style="left: 1000px; top: 120px;"></div>
-<div class="t t72" style="left: 1040px; top: 120px;"></div>
-<div class="t t68" style="left: 1080px; top: 120px;"></div>
-<div class="t t106" style="left: 1120px; top: 120px;"></div>
-<div class="t t100" style="left: 1160px; top: 120px; width: 120px;"></div>
-<div class="t t102" style="left: 1280px; top: 120px;"></div>
-<div class="t t34" style="left: 1320px; top: 120px;"></div>
-<div class="t t72" style="left: 1360px; top: 120px;"></div>
-<div class="t t68" style="left: 1400px; top: 120px; width: 80px;"></div>
-<div class="t t106" style="left: 1480px; top: 120px;"></div>
-<div class="t t100" style="left: 1520px; top: 120px;"></div>
-<div class="t t102" style="left: 1560px; top: 120px;"></div>
-<div class="t t34" style="left: 0px; top: 160px;"></div>
-<div class="t t38" style="left: 40px; top: 160px;"></div>
-<div class="t t66" style="left: 760px; top: 160px;"></div>
-<div class="t t68" style="left: 800px; top: 160px;"></div>
-<div class="t t70" style="left: 840px; top: 160px;"></div>
-<div class="t t66" style="left: 1000px; top: 160px;"></div>
-<div class="t t68" style="left: 1040px; top: 160px; width: 80px;"></div>
-<div class="t t74" style="left: 1120px; top: 160px;"></div>
-<div class="t t36" style="left: 1160px; top: 160px;"></div>
-<div class="t t38" style="left: 1200px; top: 160px;"></div>
-<div class="t t66" style="left: 1320px; top: 160px;"></div>
-<div class="t t68" style="left: 1360px; top: 160px; width: 120px;"></div>
-<div class="t t74" style="left: 1480px; top: 160px;"></div>
-<div class="t t38" style="left: 1520px; top: 160px;"></div>
-<div class="t t98" style="left: 0px; top: 200px;"></div>
-<div class="t t102" style="left: 40px; top: 200px;"></div>
-<div class="t t34" style="left: 80px; top: 200px;"></div>
-<div class="t t38" style="left: 120px; top: 200px;"></div>
-<div class="t t98" style="left: 760px; top: 200px;"></div>
-<div class="t t104" style="left: 800px; top: 200px;"></div>
-<div class="t t74" style="left: 840px; top: 200px;"></div>
-<div class="t t38" style="left: 880px; top: 200px;"></div>
-<div class="t t66" style="left: 1000px; top: 200px;"></div>
-<div class="t t68" style="left: 1040px; top: 200px; width: 160px;"></div>
-<div class="t t70" style="left: 1200px; top: 200px;"></div>
-<div class="t t34" style="left: 1280px; top: 200px;"></div>
-<div class="t t72" style="left: 1320px; top: 200px;"></div>
-<div class="t t68" style="left: 1360px; top: 200px; width: 160px;"></div>
-<div class="t t70" style="left: 1520px; top: 200px;"></div>
-<div class="t t34" style="left: 40px; top: 240px;"></div>
-<div class="t t72" style="left: 80px; top: 240px;"></div>
-<div class="t t70" style="left: 120px; top: 240px;"></div>
-<div class="t t34" style="left: 720px; top: 240px;"></div>
-<div class="t t38" style="left: 760px; top: 240px;"></div>
-<div class="t t66" style="left: 800px; top: 240px;"></div>
-<div class="t t68" style="left: 840px; top: 240px;"></div>
-<div class="t t70" style="left: 880px; top: 240px;"></div>
-<div class="t t34" style="left: 960px; top: 240px;"></div>
-<div class="t t72" style="left: 1000px; top: 240px;"></div>
-<div class="t t68" style="left: 1040px; top: 240px;"></div>
-<div class="t t106" style="left: 1080px; top: 240px;"></div>
-<div class="t t100" style="left: 1120px; top: 240px; width: 80px;"></div>
-<div class="t t102" style="left: 1200px; top: 240px;"></div>
-<div class="t t34" style="left: 1240px; top: 240px;"></div>
-<div class="t t72" style="left: 1280px; top: 240px;"></div>
-<div class="t t68" style="left: 1320px; top: 240px; width: 80px;"></div>
-<div class="t t106" style="left: 1400px; top: 240px;"></div>
-<div class="t t104" style="left: 1440px; top: 240px;"></div>
-<div class="t t68" style="left: 1480px; top: 240px;"></div>
-<div class="t t70" style="left: 1520px; top: 240px;"></div>
-<div class="t t98" style="left: 40px; top: 280px;"></div>
-<div class="t t100" style="left: 80px; top: 280px;"></div>
-<div class="t t102" style="left: 120px; top: 280px;"></div>
-<div class="t t34" style="left: 680px; top: 280px;"></div>
-<div class="t t72" style="left: 720px; top: 280px;"></div>
-<div class="t t74" style="left: 760px; top: 280px;"></div>
-<div class="t t72" style="left: 800px; top: 280px;"></div>
-<div class="t t106" style="left: 840px; top: 280px;"></div>
-<div class="t t102" style="left: 880px; top: 280px;"></div>
-<div class="t t34" style="left: 920px; top: 280px;"></div>
-<div class="t t72" style="left: 960px; top: 280px;"></div>
-<div class="t t68" style="left: 1000px; top: 280px;"></div>
-<div class="t t106" style="left: 1040px; top: 280px;"></div>
-<div class="t t102" style="left: 1080px; top: 280px;"></div>
-<div class="t t34" style="left: 1200px; top: 280px;"></div>
-<div class="t t72" style="left: 1240px; top: 280px;"></div>
-<div class="t t68" style="left: 1280px; top: 280px; width: 120px;"></div>
-<div class="t t74" style="left: 1400px; top: 280px;"></div>
-<div class="t t72" style="left: 1440px; top: 280px;"></div>
-<div class="t t106" style="left: 1480px; top: 280px;"></div>
-<div class="t t102" style="left: 1520px; top: 280px;"></div>
-<div class="t t34" style="left: 520px; top: 320px;"></div>
-<div class="t t36" style="left: 560px; top: 320px; width: 120px;"></div>
-<div class="t t72" style="left: 680px; top: 320px;"></div>
-<div class="t t106" style="left: 720px; top: 320px;"></div>
-<div class="t t100" style="left: 760px; top: 320px;"></div>
-<div class="t t104" style="left: 800px; top: 320px;"></div>
-<div class="t t74" style="left: 840px; top: 320px;"></div>
-<div class="t t38" style="left: 880px; top: 320px;"></div>
-<div class="t t98" style="left: 920px; top: 320px;"></div>
-<div class="t t104" style="left: 960px; top: 320px;"></div>
-<div class="t t68" style="left: 1000px; top: 320px;"></div>
-<div class="t t70" style="left: 1040px; top: 320px;"></div>
-<div class="t t34" style="left: 1120px; top: 320px;"></div>
-<div class="t t36" style="left: 1160px; top: 320px;"></div>
-<div class="t t72" style="left: 1200px; top: 320px;"></div>
-<div class="t t68" style="left: 1240px; top: 320px; width: 200px;"></div>
-<div class="t t106" style="left: 1440px; top: 320px;"></div>
-<div class="t t102" style="left: 1480px; top: 320px;"></div>
-<div class="t t34" style="left: 480px; top: 360px;"></div>
-<div class="t t72" style="left: 520px; top: 360px;"></div>
-<div class="t t106" style="left: 560px; top: 360px;"></div>
-<div class="t t100" style="left: 600px; top: 360px; width: 120px;"></div>
-<div class="t t102" style="left: 720px; top: 360px;"></div>
-<div class="t t98" style="left: 800px; top: 360px;"></div>
-<div class="t t104" style="left: 840px; top: 360px;"></div>
-<div class="t t70" style="left: 880px; top: 360px;"></div>
-<div class="t t98" style="left: 960px; top: 360px;"></div>
-<div class="t t100" style="left: 1000px; top: 360px;"></div>
-<div class="t t102" style="left: 1040px; top: 360px;"></div>
-<div class="t t34" style="left: 1080px; top: 360px;"></div>
-<div class="t t72" style="left: 1120px; top: 360px;"></div>
-<div class="t t68" style="left: 1160px; top: 360px; width: 200px;"></div>
-<div class="t t106" style="left: 1360px; top: 360px;"></div>
-<div class="t t100" style="left: 1400px; top: 360px;"></div>
-<div class="t t102" style="left: 1440px; top: 360px;"></div>
-<div class="t t34" style="left: 1480px; top: 360px;"></div>
-<div class="t t38" style="left: 1520px; top: 360px;"></div>
-<div class="t t34" style="left: 440px; top: 400px;"></div>
-<div class="t t72" style="left: 480px; top: 400px;"></div>
-<div class="t t106" style="left: 520px; top: 400px;"></div>
-<div class="t t102" style="left: 560px; top: 400px;"></div>
-<div class="t t98" style="left: 840px; top: 400px;"></div>
-<div class="t t102" style="left: 880px; top: 400px;"></div>
-<div class="t t34" style="left: 960px; top: 400px;"></div>
-<div class="t t36" style="left: 1000px; top: 400px; width: 80px;"></div>
-<div class="t t72" style="left: 1080px; top: 400px;"></div>
-<div class="t t68" style="left: 1120px; top: 400px; width: 160px;"></div>
-<div class="t t106" style="left: 1280px; top: 400px;"></div>
-<div class="t t100" style="left: 1320px; top: 400px;"></div>
-<div class="t t102" style="left: 1360px; top: 400px;"></div>
-<div class="t t98" style="left: 1480px; top: 400px;"></div>
-<div class="t t102" style="left: 1520px; top: 400px;"></div>
-<div class="t t34" style="left: 40px; top: 440px;"></div>
-<div class="t t38" style="left: 80px; top: 440px;"></div>
-<div class="t t66" style="left: 440px; top: 440px;"></div>
-<div class="t t106" style="left: 480px; top: 440px;"></div>
-<div class="t t102" style="left: 520px; top: 440px;"></div>
-<div class="t t34" style="left: 840px; top: 440px;"></div>
-<div class="t t36" style="left: 880px; top: 440px;"></div>
-<div class="t t38" style="left: 920px; top: 440px;"></div>
-<div class="t t66" style="left: 960px; top: 440px;"></div>
-<div class="t t68" style="left: 1000px; top: 440px; width: 280px;"></div>
-<div class="t t70" style="left: 1280px; top: 440px;"></div>
-<div class="t t34" style="left: 1440px; top: 440px;"></div>
-<div class="t t38" style="left: 1480px; top: 440px;"></div>
-<div class="t t34" style="left: 1520px; top: 440px;"></div>
-<div class="t t38" style="left: 1560px; top: 440px;"></div>
-<div class="t t34" style="left: 0px; top: 480px;"></div>
-<div class="t t72" style="left: 40px; top: 480px;"></div>
-<div class="t t74" style="left: 80px; top: 480px;"></div>
-<div class="t t38" style="left: 120px; top: 480px;"></div>
-<div class="t t34" style="left: 400px; top: 480px;"></div>
-<div class="t t72" style="left: 440px; top: 480px;"></div>
-<div class="t t70" style="left: 480px; top: 480px;"></div>
-<div class="t t34" style="left: 720px; top: 480px;"></div>
-<div class="t t36" style="left: 760px; top: 480px; width: 80px;"></div>
-<div class="t t72" style="left: 840px; top: 480px;"></div>
-<div class="t t68" style="left: 880px; top: 480px;"></div>
-<div class="t t74" style="left: 920px; top: 480px;"></div>
-<div class="t t72" style="left: 960px; top: 480px;"></div>
-<div class="t t68" style="left: 1000px; top: 480px; width: 280px;"></div>
-<div class="t t74" style="left: 1280px; top: 480px;"></div>
-<div class="t t36" style="left: 1320px; top: 480px; width: 120px;"></div>
-<div class="t t72" style="left: 1440px; top: 480px;"></div>
-<div class="t t74" style="left: 1480px; top: 480px;"></div>
-<div class="t t72" style="left: 1520px; top: 480px;"></div>
-<div class="t t70" style="left: 1560px; top: 480px;"></div>
-
-<!-- some trees -->
-<div class="tree" style="left: 353px; top: 0px;"></div>
-<div class="tree" style="left: 309px; top: 15px;"></div>
-<div class="tree" style="left: 515px; top: 21px;"></div>
-<div class="tree" style="left: 393px; top: 38px;"></div>
-<div class="tree" style="left: 641px; top: 70px;"></div>
-<div class="tree" style="left: 608px; top: 116px;"></div>
-<div class="tree" style="left: 683px; top: 116px;"></div>
-<div class="tree" style="left: 173px; top: 156px;"></div>
-<div class="tree" style="left: 227px; top: 212px;"></div>
-<div class="tree" style="left: 146px; top: 252px;"></div>
-<div class="tree" style="left: 302px; top: 265px;"></div>
-<div class="tree" style="left: 237px; top: 282px;"></div>
-<div class="tree" style="left: 197px; top: 362px;"></div>
-
-          </div>
+      <div class="padded-content container">
+        <img src="http://hostingtech.online/screenshot-terrain-thumb.png" class="tiled-logo-header" />
+        <div class="media-content tiled-description">
+          Tiled is a <a href="https://opensource.org/osd-annotated">free and open source</a>, easy to use, and flexible level editor.
+          <br />
         </div>
-
-      </div>
-      <div class="contents">
-
-      <div class="container-fluid">
-        <div class="row">
-          <!--
-          <a class='g-plus-link' href='https://plus.google.com/104206952440491912596?prsrc=3' rel='publisher' style='text-decoration:none;'><img alt='' src='https://ssl.gstatic.com/images/icons/gplus-32.png' style='border:0;width:32px;height:32px;'/></a>
-          -->
-          <h1 style="display: none;">Tiled</h1>
-          <div class="lead col-md-6" style="text-align: center; color: white; text-shadow: 1px 1px 2px #000000;">
-            <img src="img/tiled-logo-white.png" width="419" height="228" style="margin-bottom: -0.5em; margin-left: -20px;"><br />
-            Your <a href="https://www.gnu.org/philosophy/free-sw.html">free</a>, easy to use and flexible level&nbsp;editor.
-          </div>
-
-          <div class="col-md-4 col-md-offset-1 my-buttons">
-            <a class="btn btn-lg btn-success" href="https://thorbjorn.itch.io/tiled"><i class="icon-download-alt"></i> Download at itch.io</a>
-            <a class="btn btn-lg btn-info" href="https://github.com/sponsors/bjorn"><i class="icon-heart"></i> Sponsor on GitHub</a>
-          </div>
-        </div>
-      </div>
-      <div class="my-navigation">
-        <!--<a class="btn btn-default" href="http://blog.mapeditor.org/"><i class="icon-rss"></i> Blog</a>-->
-        <a class="btn btn-default" href="https://github.com/bjorn/tiled/issues"><i class="icon-exclamation-sign"></i> Issue Tracker</a>
-        <a class="btn btn-default" href="https://discord.gg/39wbTv7"><i class="icon-comments"></i> Tiled on Discord</a>
-      </div>
-
-      </div>
-    </div>
-
-    <!--
-    <p>Current Release: 0.11.0 <small><a href="download.html#changes">See&nbsp;what's&nbsp;new&nbsp;in&nbsp;Tiled</a></small></p>
-    <p>Blog: <a href="http://blog.mapeditor.org/">Request for patrons to boost further Tiled development</a></p>
-    -->
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-          <div class="container-fluid">
-            <div class="my-box">
-              <div class="row" style="margin-bottom: 0.3em;">
-                <div class="col-md-12">
-                  <b>Please support my work on Tiled!</b> - You can donate at <a href="https://github.com/sponsors/bjorn">GitHub Sponsors</a>, <a href="https://www.patreon.com/bjorn/overview">Patreon</a> or <a href="https://liberapay.com/Tiled">Liberapay</a>.
-                </div>
+        <div class="container-fluid">
+          <div class="my-box">
+            <div class="row" style="margin-bottom: 0.3em;">
+              <div class="col-md-12">
+                <b>Please support my work on Tiled!</b> - You can donate at <a href="https://github.com/sponsors/bjorn">GitHub Sponsors</a>, <a href="https://www.patreon.com/bjorn/overview">Patreon</a> or <a href="https://liberapay.com/Tiled">Liberapay</a>.
               </div>
-              <div class="row">
-                <div class="col-md-12" style="padding-bottom: 1.5rem;">
-                  <div>
-                    <div class="progress" style="margin-bottom: 0px;">
-                      <a href="https://thorbjorn.itch.io/tiled" ><div class="progress-bar progress-bar-warning progress-bar-striped" id="itch-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #fa5c5c 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="itch"></div></a>
-                      <a href="https://liberapay.com/bjorn"><div class="progress-bar progress-bar-warning progress-bar-striped" id="liberapay-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #f6c915 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Liberapay"></div></a>
-                      <a href="https://www.patreon.com/bjorn"><div class="progress-bar progress-bar-warning progress-bar-striped" id="patreon-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #FF945A 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Patreon"></div></a>
-                      <a href="https://github.com/sponsors/bjorn"><div class="progress-bar progress-bar-warning progress-bar-striped" id="github-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #ea4aaa 0px, #c54190 100%);" data-toggle="tooltip" data-placement="bottom" title="GitHub Sponsors"></div></a>
-                      <span style="color: gray; margin-left: 5px;" id="goal-percentage"></span>
+            </div>
+            <div class="row">
+              <div class="col-md-12" style="padding-bottom: 1.5rem;">
+                <div>
+                  <div class="progress" style="margin-bottom: 0px;">
+                    <a href="https://thorbjorn.itch.io/tiled">
+                      <div class="progress-bar progress-bar-warning progress-bar-striped" id="itch-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 35%; background-image: linear-gradient(to bottom, #fa5c5c 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="itch"></div>
+                    </a>
+                    <a href="https://liberapay.com/bjorn">
+                      <div class="progress-bar progress-bar-warning progress-bar-striped" id="liberapay-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0.33%; background-image: linear-gradient(to bottom, #f6c915 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Liberapay"></div>
+                    </a>
+                    <a href="https://www.patreon.com/bjorn">
+                      <div class="progress-bar progress-bar-warning progress-bar-striped" id="patreon-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 39.59%; background-image: linear-gradient(to bottom, #FF945A 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Patreon"></div>
+                    </a>
+                    <a href="https://github.com/sponsors/bjorn">
+                      <div class="progress-bar progress-bar-warning progress-bar-striped" id="github-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 25.06%; background-image: linear-gradient(to bottom, #ea4aaa 0px, #c54190 100%);" data-toggle="tooltip" data-placement="bottom" title="GitHub Sponsors"></div>
+                    </a>
+                    <span style="color: gray; margin-left: 5px;" id="goal-percentage"></span>
+                  </div>
+                  <div style="margin-left: 4px;">
+                    <div id="goal1" class="goalmarker" style="height: 1em; margin-right: 55.77%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
+                      <small style="display: block; padding: 6px 4px;">
+                        <strong>1 day/week</strong><br>
+                        <small style="color: #eee">$1150/month</small>
+                      </small>
                     </div>
-                    <div style="margin-left: 4px;">
-                      <div id="goal1" class="goalmarker" style="height: 1em; margin-right: 66.66%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
-                        <small style="display: block; padding: 6px 4px;">
-                          <strong>1 day/week</strong><br>
-                          <small style="color: #777">$1150/month</small>
-                        </small>
-                      </div>
-                      <div id="goal2" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 33.33%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
-                        <small style="display: block; padding: 6px 4px;">
-                          <strong>2 days/week</strong><br>
-                          <small style="color: #777">$2300/month</small>
-                        </small>
-                      </div>
-                      <div id="goal3" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 0%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
-                        <small style="display: block; padding: 6px 4px;">
-                          <strong>3 days/week</strong><br>
-                          <small style="color: #777">$3450/month</small>
-                        </small>
-                      </div>
+                    <div id="goal2" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 11.5%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
+                      <small style="display: block; padding: 6px 4px;">
+                        <strong>2 days/week</strong><br>
+                        <small style="color: #eee">$2300/month</small>
+                      </small>
+                    </div>
+                    <div id="goal3" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 0%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
+                      <small style="display: block; padding: 6px 4px;">
+                        <strong>+ office</strong><br>
+                        <small style="color: #eee">$2600/month</small>
+                      </small>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <div class="feature-list">
+            <div class="feature-container">
+              <div class="feature-text">
+                <div class="feature-description">
+                  Efficient tile editing tools like stamp, fill and terrain brushes.
+                  <ul class="feature-sublist">
+                    <li><b>Stamp</b></li>
+                    <li><b>Fill</b></li>
+                    <li><b>Brushes</b></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="feature-image">
+                <img src="http://hostingtech.online/screenshot-terrain.png" class="feature-img" style="margin-left: 10%; margin-right: auto;" />
+              </div>
+
+            </div>
+            <div class="feature-container feature-container-reverse">
+              <div class="feature-image">
+                <img src="http://hostingtech.online/screenshot-objects.png" class="feature-img" />
+              </div>
+              <div class="feature-text">
+                <div class="feature-description">
+
+                  Objects can be placed with pixel precision.
+
+                  <ul class="feature-sublist">
+                    <li><b>Rectangle</b></li>
+                    <li><b>Ellipse</b></li>
+                    <li><b>Polygon</b></li>
+                    <li><b>Image</b></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="feature-container">
+              <div class="feature-text">
+                Supports different types of maps.
+                <ul class="feature-sublist">
+                  <li><b>Orthogonal</b></li>
+                  <li><b>Isometric</b></li>
+                  <li><b>Hexagonal</b></li>
+                </ul>
+              </div>
+              <div class="feature-image">
+                <img src="http://hostingtech.online/screenshot-isometric.png" class="feature-img" />
+              </div>
+            </div>
+            <h2 class="feature-title">Games made with Tiled</h2>
+            <div class="showcase-container">
+              <div class="showcase-description">
+                <div class="showcase-text">
+                  <h3>Lenna's Inception</h3>
+                </div>
+                <div class="showcase-sublist">Explore a dangerous island filled with dungeons, and defeat the eight archangels to bring order to a glitched-out kingdom in this top-down Zelda-like action-adventure game. Playable in 8-bit and 32-bit pixel art styles!</div>
+                <div class="showcase-os"><i class="fab fa-windows fa-2x"></i><i class="fab fa-apple fa-2x"></i><i class="fab fa-linux fa-2x"></i></div>
+              </div>
+              <div class="showcase-images">
+                <div class="showcase-image">
+                  <img src="https://img.itch.zone/aW1hZ2UvODE1LzI0NjU1MzEucG5n/347x500/vAeOUR.png" class="showcase-img">
+                </div>
+                <div class="showcase-image">
+                  <img src="https://img.itch.zone/aW1hZ2UvODE1LzI0NjU1MzMucG5n/347x500/6kc%2FDd.png" class="showcase-img">
+                </div>
+                <div class="showcase-image">
+                  <img src="https://img.itch.zone/aW1hZ2UvODE1LzI0NjU1MzUucG5n/347x500/IlPBtV.png" class="showcase-img">
+                </div>
+              </div>
+            </div>
+            <div class="showcase-container">
+              <div class="showcase-description">
+                <div class="showcase-text">
+                  <h3>Insignia</h3>
+                </div>
+                <div class="showcase-sublist">Explore a colourful world of beautifully animated pixel art, harkening back to the golden age of 2D games. With hand drawn frame-by-frame sprites and gorgeously expansive tile-sets, playing Insignia will have you reminiscing about blowing on plastic cartridges and calling expensive hotlines for hints, no time machine required! </div>
+                <div class="showcase-os"><i class="fab fa-windows fa-2x"></i><i class="fab fa-apple fa-2x"></i></div>
+              </div>
+              <div class="showcase-images">
+                <div class="showcase-image">
+                  <img src="https://img.itch.zone/aW1hZ2UvMjc4NTUzLzI3NTQwODYucG5n/347x500/HH8f04.png" class="showcase-img">
+                </div>
+                <div class="showcase-image">
+                  <img src="https://img.itch.zone/aW1hZ2UvMjc4NTUzLzI3NzE2MDMucG5n/347x500/j%2FMSwS.png" class="showcase-img">
+                </div>
+                <div class="showcase-image">
+                  <img src="https://img.itch.zone/aW1hZ2UvMjc4NTUzLzI3NTQwODcucG5n/347x500/1%2Bf%2FlQ.png" class="showcase-img">
+                </div>
+              </div>
+            </div>
+            <div class="media-content showcase-more">
+              Want More? <a href="https://itch.io/games/made-with-tiled">See More Games</a>
+            </div>
+            <div class="media-content features-whats-next">
+              Ready to start building levels? Then <a href="https://doc.mapeditor.org">Get Started</a><br />
+              Have a question? Join the <a href="https://discord.gg/39wbTv7">Discord</a>
+
+              <h2 class="feature-title">News</h2>
+              <div class="container">
+
+                <div class="card-list padded-content">
+
+                  <a class="card" href="/news">
+
+                    <div class="card-image">
+                      <img src="http://hostingtech.online/screenshot-terrain-thumb.png" class="centered-card-image" />
+                    </div>
+
+                    <div class="card-text">
+                      <div class="card-title">
+                        Tiled 1.4.2 released
+                      </div>
+                      <div class="card-subtitle">
+                        5 August 2020
+                      </div>
+                      <div class="card-description">
+                        In this second patch release for Tiled 1.4 there are a number of important fixes and some small improvements.
+                      </div>
+                    </div>
+                  </a>
+
+                  <a class="card" href="/news">
+
+                    <div class="card-image">
+                      <img src="http://hostingtech.online/screenshot-terrain-thumb.png" class="centered-card-image" />
+                    </div>
+
+                    <div class="card-text">
+                      <div class="card-title">
+                        Tiled 1.4.1
+                      </div>
+                      <div class="card-subtitle">
+                        25 June 2020
+                      </div>
+                      <div class="card-description">
+                        In this second patch release for Tiled 1.4 there are a number of important fixes and some small improvements.
+
+                      </div>
+                    </div>
+                  </a>
+
+                  <a class="card" href="/news">
+
+                    <div class="card-image">
+                      <img src="http://hostingtech.online/screenshot-terrain-thumb.png" class="centered-card-image" style="max-width: 15rem;" />
+                    </div>
+
+                    <div class="card-text">
+                      <div class="card-title">
+                        Tiled 1.4 released
+                      </div>
+                      <div class="card-subtitle">
+                        20 June 2020
+                      </div>
+                      <div class="card-description">
+                        At long last I can announce the immediate release of Tiled 1.4.0! The biggest change in this release is the support for projects and sessions, but there have been many other welcome improvements as well.
+
+                      </div>
+                    </div>
+                  </a>
+
+                </div>
+
+              </div>
+              <div class="social-content">
+
+              </div>
+            </div>
+
+            <div class="media-content features-sponsors">
+              <h3>A big thanks to Tiled's generous <a href="/donate">Sponsors</a> for making our work sustainable:</h2>
+                <h2>Sponsors</h2>
+                <div class="sponsors">
+                  <div>
+                    <a class="thumbnail" href="https://store.steampowered.com/app/647960/Rusted_Warfare__RTS/"><img src="http://hostingtech.online/banner_rusted_warfare.png" alt="Rusted Warfare: An RTS with Tiled Maps & Workshop Modding" /></a>
+                  </div>
+                  <div>
+                    <a class="thumbnail" href="http://fiiish.omnimad.net/"><img src="http://hostingtech.online/banner_fiiish.png" /></a>
+                  </div>
+                  <div>
+                    <a class="thumbnail" href="https://levvvel.com/"><img src="http://hostingtech.online/banner_levvvel.png" alt="Levvvel" /></a>
+                  </div>
+                  <div>
+                    <a class="thumbnail" href="https://tt.edu.au/"><img src="http://hostingtech.online/banner_tradietraining.png" alt="Tradie Training" /></a>
+                  </div>
+                  <div>
+                    <a class="thumbnail" href="https://www.thinkconveyancing.com.au/"><img src="http://hostingtech.online/banner_thinkconveyancing.png" alt="Think Conveyancing" /></a>
+                  </div>
+                  <div>
+                    <a class="thumbnail" href="https://pillarwm.com/"><img src="http://hostingtech.online/banner_pillarwm.png" alt="Pillar Wealth Management" /></a>
+                  </div>
+                  <div>
+                    <a class="thumbnail" href="https://www.rapidbuildinginspections.com.au/"><img src="http://hostingtech.online/banner_rapidbuildinginspections.jpg" alt="Rapid Building Inspections" /></a>
+                  </div>
+                  <div>
+                    <a class="thumbnail" href="https://icons8.com/line-awesome"><img src="http://hostingtech.online/banner_line-awesome.png" /></a>
+                  </div>
+                  <div>
+                    &nbsp;
+                  </div>
+                </div>
+            </div>
+          </div>
+
         </div>
-      </div>
+  </section>
+</body>
 
-      <div class="row">
-
-        <!-- Screenshots demonstrating some of the main features -->
-        <div class="col-sm-12">
-          <div class="my-box">
-            <div style="margin: -10px -10px 10px -10px; border-top-right-radius: 4px; border-top-left-radius: 4px; padding: 1px; background-color: #EEE; background-image: linear-gradient(to bottom, #FFF 0px, rgba(255,255,255,0) 100%); background-repeat: repeat-x; text-shadow: 0px 1px 0px #FFF; text-align: center; border-bottom: 1px solid rgb(200,200,200);">
-                <h4 class="text-muted">Features</h4>
-            </div>
-            <div class="row">
-              <div class="col-sm-4">
-                <a href="img/screenshot-terrain.png" class="thumbnail fancybox" rel="gallery" data-title-id="title-1">
-                  <div style="height: 200px; background-image: url(img/screenshot-terrain-thumb.png); background-position: center;"></div>
-                </a>
-                <div id="title-1" class="hidden">
-                    The terrain tool automates placement of transition tiles. This example uses tiles from the <a href="http://lpc.opengameart.org/">Liberated Pixel Cup</a> <small>(CC-BY-SA 3.0 &mp; GPLv3)</small>.
-                </div>
-                <div class="caption">
-                  <p>Efficient tile editing tools like <strong>stamp</strong>, <strong>fill</strong> and <strong>terrain</strong> brushes.</p>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <a href="img/screenshot-objects.png" class="thumbnail fancybox" rel="gallery" data-title-id="title-2">
-                  <div style="height: 200px; background-image: url(img/screenshot-objects-thumb.png); background-position: center;"></div>
-                </a>
-                <div id="title-2" class="hidden">
-                    Demonstrating support for custom objects alongside a tile map with background image. Graphics from <a href="http://www.spicypixel.net/2008/01/10/gfxlib-fuzed-a-free-developer-graphic-library/">GfxLib-Fuzed</a> <small>(CPL)</small>.
-                </div>
-                <div class="caption">
-                  <p><strong>Rectangle</strong>, <strong>ellipse</strong>, <strong>polygon</strong> and <strong>image</strong> objects can be placed with pixel precision.</p>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <a href="img/screenshot-isometric.png" class="thumbnail fancybox" rel="gallery" data-title-id="title-3">
-                  <div style="height: 200px; background-image: url(img/screenshot-isometric-thumb.png); background-position: center;"></div>
-                </a>
-                <div id="title-3" class="hidden">
-                    An isometric map with a custom object, showing object shapes are projected as well. The tiles are by <a href="https://opengameart.org/content/grass-and-water-tiles">Clint Bellanger</a> <small>(CC-BY 3.0)</small>.
-                </div>
-                <div class="caption">
-                  <p>Supports <strong>orthogonal</strong>, <strong>isometric</strong> and <strong>hexagonal</strong> maps.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-
-        <!-- Sponsors -->
-        <div class="col-sm-9">
-          <div class="my-box">
-            <div style="margin: -10px -10px 10px -10px; border-top-right-radius: 4px; border-top-left-radius: 4px; padding: 1px; background-color: #EEE; background-image: linear-gradient(to bottom, #FFF 0px, rgba(255,255,255,0) 100%); background-repeat: repeat-x; text-shadow: 0px 1px 0px #FFF; text-align: center; border-bottom: 1px solid rgb(200,200,200);">
-                <h4 class="text-muted">Sponsors</h4>
-            </div>
-            <div class="row">
-              <div class="col-xs-3">
-                <a class="thumbnail" href="https://gather.town/"><img src="img/banner_gather.png" alt="Gather"/></a>
-              </div>
-              <div class="col-xs-3">
-                <a class="thumbnail" href="https://store.steampowered.com/app/647960/Rusted_Warfare__RTS/"><img src="img/banner_rusted_warfare.png" alt="Rusted Warfare: An RTS with Tiled Maps & Workshop Modding" /></a>
-              </div>
-              <div class="col-xs-3">
-                <a class="thumbnail" href="http://fiiish.omnimad.net/"><img src="img/banner_fiiish.png" /></a>
-              </div>
-              <div class="col-xs-3">
-                <a class="thumbnail" href="https://levvvel.com/"><img src="img/banner_levvvel.png" alt="Levvvel" /></a>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-3">
-                <a class="thumbnail" href="https://vpsserver.com/"><img src="img/banner_vpsserver.png" alt="VPS Server" /></a>
-              </div>
-              <div class="col-xs-3">
-                <a class="thumbnail" href="https://pillarwm.com/"><img src="img/banner_pillarwm.png" alt="Pillar Wealth Management" /></a>
-              </div>
-              <div class="col-xs-3">
-                <a class="thumbnail" href="https://www.conveyancing.com.au/need-to-know/buying/conveyancing-costs-explained-in-nsw"><img src="img/banner_conveyancing-alt.png" alt="Conveyancing" /></a>
-              </div>
-              <div class="col-xs-3">
-                <a class="thumbnail" href="https://www.rapidbuildinginspections.com.au/"><img src="img/banner_rapidbuildinginspections.jpg" alt="Rapid Building Inspections" /></a>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-3">
-                <a class="thumbnail" href="https://www.conveyancing.com.au/"><img src="img/banner_conveyancing.png" alt="Conveyancing" /></a>
-              </div>
-              <div class="col-xs-3">
-                <a class="thumbnail" href="https://icons8.com/line-awesome"><img src="img/banner_line-awesome.png" /></a>
-              </div>
-              <div class="col-xs-3">
-                <a class="thumbnail" href="https://tt.edu.au/"><img src="img/banner_tradietraining.png" alt="Tradie Training" /></a>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-12" style="text-align: center;">
-                <a class="thumbnail" href="/donate" style="margin-bottom: 2px;">Help improve Tiled, become a Tiled sponsor!</a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="my-box">
-            <div style="margin: -10px -10px 10px -10px; border-top-right-radius: 4px; border-top-left-radius: 4px; padding: 1px; background-color: #EEE; background-image: linear-gradient(to bottom, #FFF 0px, rgba(255,255,255,0) 100%); background-repeat: repeat-x; text-shadow: 0px 1px 0px #FFF; text-align: center; border-bottom: 1px solid rgb(200,200,200);">
-                <h4 class="text-muted">Recent News</h4>
-            </div>
-            <div class="row">
-              <div class="col-xs-12" style="padding-left: 25px; padding-right: 25px;">
-{% for post in site.posts limit:4 %}
-
-            <div class="news-item">
-             <h4><a href="{{ post.url }}" class="news-headline">{{ post.title }}</a><br/><small>{{ post.date | date_to_long_string }}</small></h4>
-            </div>
-
-{% endfor %}
-<p><a href="/news">News Archive &raquo;</a></p>
-              </div>
-            </div>
-          </div>
-
-          <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
-          <div style="text-align: center">
-            <div data-ea-publisher="mapeditor" data-ea-type="image"></div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <footer id="footer">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-6 tiled-copyright">
-            Tiled - Copyright &copy; 2008-2019 Thorbj&oslash;rn Lindeijer<br />
-            and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a>
-          </div>
-          <div class="col-md-6 attribution">
-            Site based on <a href="https://getbootstrap.com/">Bootstrap</a> and <a href="https://fontawesome.com/">Font Awesome</a><br />
-            Header background graphics by <a href="https://lostgarden.home.blog/2006/07/08/more-free-game-graphics/">Daniel Cook</a>
-          </div>
-        </div>
-      </div>
-    </footer>
-    <!--
-    todo:
-    Link to Google+ page / community
-    -->
-
-    <!-- Scripts at the end to avoid delay in display time -->
-
-    <script src="//code.jquery.com/jquery-1.12.2.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/jquery.fancybox.pack.js?v=2.1.5"></script>
-    <script type="text/javascript">
-        $(".fancybox").attr('rel', 'gallery').fancybox({
-            nextEffect: 'fade',
-            prevEffect: 'fade',
-            helpers : {
-                title: {
-                    type: 'inside'
-                }
-            },
-            beforeLoad: function() {
-                var el, id = $(this.element).data('title-id');
-
-                if (id) {
-                    el = $('#' + id);
-
-                    if (el.length) {
-                        this.title = el.html();
-                    }
-                }
-            }
-        });
-    </script>
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-      ga('create', 'UA-380618-1', 'mapeditor.org');
-      ga('require', 'displayfeatures');
-      ga('send', 'pageview');
-    </script>
-    <script>
-      $.ajax({
-        url: "https://patreon.mapeditor.org",
-        context: document.body,
-        dataType: "json",
-        //error: function(jqXHR, textStatus, errorThrown) {
-        //  console.error("Error while fetching Patreon status");
-        //},
-      })
-      .done(function(data) {
-        var eurToUsd = 1.18;
-        var weeklyToMonthly = 52.0/12;
-        var itchIncome = 950;
-        var itchPurchases = 100;
-        var githubIncome = 759;
-        var githubSponsors = 69;
-        var liberapayIncome = data.liberapayEarnings_bjorn * eurToUsd * weeklyToMonthly;
-        var patreonIncome = data.earnings * eurToUsd;
-        var totalIncome = itchIncome + liberapayIncome + patreonIncome + githubIncome;
-        var totalSupporters = itchPurchases + data.patrons + data.liberapayPatrons_Tiled + data.liberapayPatrons_bjorn + githubSponsors;
-        var goals = [1150, 2300, 3450];
-        var endOfProgressBar = Math.max(goals[goals.length - 1], totalIncome);
-
-        var itchPercentage = itchIncome / endOfProgressBar * 100;
-        var liberapayPercentage = liberapayIncome / endOfProgressBar * 100;
-        var patreonPercentage = patreonIncome / endOfProgressBar * 100;
-        var githubPercentage = githubIncome / endOfProgressBar * 100;
-
-        var totalPercentage = itchPercentage + liberapayPercentage + patreonPercentage + githubPercentage;
-
-        $("#goal-percentage").text(Math.round(totalPercentage) + "%");
-        $("#itch-progressbar").css("width", itchPercentage + "%").attr("title", "itch (~$" + Math.round(itchIncome) + " / month)");
-        $("#liberapay-progressbar").css("width", liberapayPercentage + "%").attr("title", "Liberapay ($" + Math.round(liberapayIncome) + " / month)");
-        $("#patreon-progressbar").css("width", patreonPercentage + "%").attr("title", "Patreon ($" + Math.round(patreonIncome) + " / month)");
-        $("#github-progressbar").css("width", githubPercentage + "%").attr("title", "GitHub Sponsors ($" + Math.round(githubIncome) + " / month)");
-        $("#goal1").css("margin-right", (1 - goals[0] / endOfProgressBar) * 100 + "%");
-        $("#goal2").css("margin-right", (1 - goals[1] / endOfProgressBar) * 100 + "%");
-        $("#goal3").css("margin-right", (1 - goals[2] / endOfProgressBar) * 100 + "%");
-
-        $('[data-toggle="tooltip"]').tooltip();
-      })
-      //.always(function() {
-      //});
-    </script>
-  </body>
 </html>
