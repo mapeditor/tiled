@@ -265,51 +265,95 @@ bool WangFiller::findBestMatch(const TileLayer &target,
 {
     const CellInfo info = grid.get(position);
     const quint64 maskedWangId = info.desired & info.mask;
+    const bool alternateRotation = mWangSet.tileset()->alternateRotation();
+    const bool canRotate = alternateRotation || mWangSet.tileset()->canRotate();
 
     RandomPicker<WangTile> matches;
     int lowestPenalty = INT_MAX;
 
     auto processCandidate = [&] (const WangTile &wangTile) {
-        if ((wangTile.wangId() & info.mask) != maskedWangId)
-            return;
+        enum Flips {
+            FlippedHorizontally = 0x1,
+            FlippedVertically   = 0x2,
+            RotatedRight        = 0x4,
+        };
 
-        int totalPenalty = 0;
+        WangId variations[8];
+        variations[0] = wangTile.wangId();
+        int variationCount = 1;
 
-        for (int i = 0; i < WangId::NumIndexes; ++i) {
-            const int desiredColor = info.desired.indexColor(i);
-            const int candidateColor = wangTile.wangId().indexColor(i);
-
-            if (candidateColor != desiredColor) {
-                int penalty = mWangSet.transitionPenalty(desiredColor, candidateColor);
-
-                // If there is no path to the desired color, this isn't a useful transition
-                if (penalty < 0) {
-                    if (mCorrectionsEnabled) {
-                        // When we're doing corrections, we'd rather not choose
-                        // this candidate at all because it's impossible to
-                        // transition to the desired color.
-                        return;
-                    } else {
-                        penalty = mWangSet.maximumColorDistance() + 1;
-                    }
-                }
-
-                totalPenalty += penalty;
-            }
+        if (canRotate) {
+            variations[1] = variations[0].flippedHorizontally();
+            variations[2] = variations[0].flippedVertically();
+            variations[3] = variations[1].flippedVertically();
+            variations[4] = variations[0].rotated(1);
+            variations[5] = variations[4].flippedHorizontally();
+            variations[6] = variations[4].flippedVertically();
+            variations[7] = variations[5].flippedVertically();
+            variationCount = 8;
         }
 
-        // Add tile to the candidate list
-        if (totalPenalty <= lowestPenalty) {
-            if (totalPenalty < lowestPenalty) {
-                matches.clear();
-                lowestPenalty = totalPenalty;
+        for (int variation = 0; variation < variationCount; ++variation) {
+            const WangId wangId = variations[variation];
+
+            if ((wangId & info.mask) != maskedWangId)
+                continue;
+
+            // Start with a small penalty for variations, when non-flipped
+            // versions are supposed to be preferred.
+            int totalPenalty = variation && !alternateRotation;
+
+            for (int i = 0; i < WangId::NumIndexes; ++i) {
+                const int desiredColor = info.desired.indexColor(i);
+                const int candidateColor = wangId.indexColor(i);
+
+                if (candidateColor != desiredColor) {
+                    int penalty = mWangSet.transitionPenalty(desiredColor, candidateColor);
+
+                    // If there is no path to the desired color, this isn't a useful transition
+                    if (penalty < 0) {
+                        if (mCorrectionsEnabled) {
+                            // When we're doing corrections, we'd rather not choose
+                            // this candidate at all because it's impossible to
+                            // transition to the desired color.
+                            totalPenalty = -1;
+                            break;
+                        } else {
+                            penalty = mWangSet.maximumColorDistance() + 1;
+                        }
+                    }
+
+                    totalPenalty += penalty * 2;
+                }
             }
 
-            matches.add(wangTile, mWangSet.wangTileProbability(wangTile));
+            // Add tile to the candidate list
+            if (totalPenalty >= 0 && totalPenalty <= lowestPenalty) {
+                if (totalPenalty < lowestPenalty) {
+                    matches.clear();
+                    lowestPenalty = totalPenalty;
+                }
+
+                const qreal probability = mWangSet.wangTileProbability(wangTile);
+
+                if (!variation) {
+                    matches.add(wangTile, probability);
+                } else {
+                    WangTile wangTileVariation = wangTile;
+
+                    if (variation & RotatedRight)
+                        wangTileVariation.rotateRight();
+                    if (variation & FlippedHorizontally)
+                        wangTileVariation.flipHorizontally();
+                    if (variation & FlippedVertically)
+                        wangTileVariation.flipVertically();
+
+                    matches.add(wangTileVariation, probability);
+                }
+            }
         }
     };
 
-    // TODO: this is a slow linear search, perhaps we could use a better find algorithm...
     for (const WangTile &wangTile : mWangSet.wangTilesByWangId())
         processCandidate(wangTile);
 
