@@ -7,7 +7,10 @@ StaticLibrary {
     Depends { name: "Qt.core"; versionAtLeast: "5.12" }
 
     cpp.includePaths: [ "src" ]
-    cpp.defines: [ "KARCHIVE_STATIC_DEFINE" ]
+    cpp.defines: [
+        "KARCHIVE_STATIC_DEFINE",
+        "KARCHIVE_NO_DEPRECATED"
+    ]
 
     files : [
         "src/config-compression.h",
