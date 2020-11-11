@@ -19,6 +19,7 @@
 
 #ifdef Z_PREFIX
 #undef compress
+#undef uncompress
 #endif
 
 /* gzip flag byte */
