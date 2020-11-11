@@ -1,10 +1,8 @@
 import qbs 1.0
 
 StaticLibrary {
-    targetName: "KArchive"
-
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.6" }
+    Depends { name: "Qt.core"; versionAtLeast: "5.12" }
 
     cpp.includePaths: [ "src" ]
     cpp.defines: [ "KARCHIVE_STATIC_DEFINE" ]
@@ -49,4 +47,10 @@ StaticLibrary {
         "src/loggingcategory.cpp",
         "src/loggingcategory.h",
     ]
+
+    Export {
+        Depends { name: "cpp" }
+        cpp.includePaths: "src"
+        cpp.defines: [ "KARCHIVE_STATIC_DEFINE" ]
+    }
 }

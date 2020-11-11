@@ -1,21 +1,17 @@
 import qbs 1.0
 
 TiledPlugin {
-    cpp.defines: base.concat(["RPMAP_LIBRARY", "KARCHIVE_STATIC_DEFINE"])
-    cpp.includePaths: ["../../KArchive/src"]
+    condition: Qt.core.versionMinor >= 12
+
+    Depends { name: "Qt.core" }
+    Depends { name: "karchive" }
+
+    cpp.defines: base.concat(["RPMAP_LIBRARY"])
 
     Properties {
         condition: !qbs.toolchain.contains("msvc")
         cpp.dynamicLibraries: base.concat(["z"])
     }
-
-    Properties {
-        condition: qbs.targetOS.contains("darwin")
-        bundle.isBundle: false
-        cpp.sonamePrefix: "@rpath"
-    }
-
-    Depends { name: "KArchive" }
 
     files: [
         "rpmap_global.h",
