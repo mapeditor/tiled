@@ -145,7 +145,12 @@ private:
         CompressionLevelProperty,
         ChunkWidthProperty,
         ChunkHeightProperty,
-        TintColorProperty
+        TintColorProperty,
+        WangSetFlipXProperty,
+        WangSetFlipYProperty,
+        WangSetFlipADProperty,
+        WangSetRandomizeProperty,
+        WangSetInheritProperty
     };
 
     void addMapProperties();

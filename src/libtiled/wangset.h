@@ -205,6 +205,15 @@ public:
     bool operator< (const WangTile &other) const
     { return mTile->id() < other.mTile->id(); }
 
+    inline bool asNeededFlipHorizontally() const { return mAsNeededFlipHorizontally; }
+    inline bool asNeededFlipVertically() const { return mAsNeededFlipVertially; }
+    inline bool asNeededFlipAntiDiagonally() const { return mAsNeededFlipAntiDiagonally; }
+    inline bool asNeededInheritFromSet() const { return mAsNeededInheritFromSet; }
+    inline void setAsNeededFlipHorizontally(bool on) { mAsNeededFlipHorizontally=on; }
+    inline void setAsNeededFlipVertically(bool on) { mAsNeededFlipVertially=on; }
+    inline void setAsNeededFlipAntiDiagonally(bool on) { mAsNeededFlipAntiDiagonally=on; }
+    inline void setAsNeededInheritFromSet(bool on) { mAsNeededInheritFromSet=on; }
+
 private:
     void translate(const int map[]);
 
@@ -213,6 +222,11 @@ private:
     bool mFlippedHorizontally;
     bool mFlippedVertically;
     bool mFlippedAntiDiagonally;
+    // these members indicate whether this tile should be flipped to cover for missing Wang tiles (or to introduce variation)
+    bool mAsNeededInheritFromSet = true;
+    bool mAsNeededFlipHorizontally = false;
+    bool mAsNeededFlipVertially = false;
+    bool mAsNeededFlipAntiDiagonally = false;
 };
 
 TILEDSHARED_EXPORT QDebug operator<<(QDebug debug, const WangTile &wangTile);
@@ -339,6 +353,15 @@ public:
 
     WangSet *clone(Tileset *tileset) const;
 
+    bool asNeededFlipHorizontally() const;
+    bool asNeededFlipVertically() const;
+    bool asNeededFlipAntiDiagonally() const;
+    bool randomizeOrientation() const;
+    void setAsNeededFlipHorizontally(bool);
+    void setAsNeededFlipVertically(bool);
+    void setAsNeededFlipAntiDiagonally(bool);
+    void setRandomizeOrientation(bool);
+
 private:
     void removeWangTile(const WangTile &wangTile);
 
@@ -362,6 +385,11 @@ private:
 
     int mMaximumColorDistance = 0;
     bool mColorDistancesDirty = true;
+
+    bool mAsNeededFlipHorizontally = false;
+    bool mAsNeededFlipVertially = false;
+    bool mAsNeededFlipAntiDiagonally = false;
+    bool mRandomizeOrientation = false;
 };
 
 
@@ -439,6 +467,39 @@ inline void WangSet::addCell(const Cell &cell, WangId wangId)
 inline bool WangSet::isEmpty() const
 {
     return mWangIdToWangTile.isEmpty();
+}
+
+inline bool WangSet::asNeededFlipHorizontally() const
+{
+    return mAsNeededFlipHorizontally;
+}
+inline bool WangSet::asNeededFlipVertically() const
+{
+    return mAsNeededFlipVertially;
+}
+inline bool WangSet::asNeededFlipAntiDiagonally() const
+{
+    return mAsNeededFlipAntiDiagonally;
+}
+inline bool WangSet::randomizeOrientation() const
+{
+    return mRandomizeOrientation;
+}
+inline void WangSet::setAsNeededFlipHorizontally(bool on)
+{
+    mAsNeededFlipHorizontally=on;
+}
+inline void WangSet::setAsNeededFlipVertically(bool on)
+{
+    mAsNeededFlipVertially=on;
+}
+inline void WangSet::setAsNeededFlipAntiDiagonally(bool on)
+{
+    mAsNeededFlipAntiDiagonally=on;
+}
+inline void WangSet::setRandomizeOrientation(bool on)
+{
+    mRandomizeOrientation=on;
 }
 
 TILEDSHARED_EXPORT QString wangSetTypeToString(WangSet::Type type);

@@ -875,6 +875,12 @@ void PropertyBrowser::addTileProperties()
     probabilityProperty->setAttribute(QLatin1String("decimals"), 3);
     probabilityProperty->setToolTip(tr("Relative chance this tile will be picked"));
     probabilityProperty->setEnabled(mTilesetDocument);
+    QtVariantProperty *overrideProperty = addProperty(WangSetInheritProperty, QVariant::Bool, tr("Override Flipping"), groupProperty);
+    QtVariantProperty *flipXProperty = addProperty(WangSetFlipXProperty, QVariant::Bool, tr("Flip Horizontally"), groupProperty);
+    QtVariantProperty *flipYProperty = addProperty(WangSetFlipYProperty, QVariant::Bool, tr("Flip Vertically"), groupProperty);
+    QtVariantProperty *flipADProperty = addProperty(WangSetFlipADProperty, QVariant::Bool, tr("Flip AntiDiagonally"), groupProperty);
+
+    overrideProperty->setEnabled(mTilesetDocument);
 
     const Tile *tile = static_cast<const Tile*>(mObject);
     if (!tile->imageSource().isEmpty()) {
@@ -899,6 +905,10 @@ void PropertyBrowser::addWangSetProperties()
                                                   tr("Type"),
                                                   groupProperty);
     QtVariantProperty *colorCountProperty = addProperty(ColorCountProperty, QVariant::Int, tr("Color Count"), groupProperty);
+    QtVariantProperty *flipXProperty = addProperty(WangSetFlipXProperty, QVariant::Bool, tr("Flip Horizontally"), groupProperty);
+    QtVariantProperty *flipYProperty = addProperty(WangSetFlipYProperty, QVariant::Bool, tr("Flip Vertically"), groupProperty);
+    QtVariantProperty *flipADProperty = addProperty(WangSetFlipADProperty, QVariant::Bool, tr("Flip AntiDiagonally"), groupProperty);
+    QtVariantProperty *randomProperty = addProperty(WangSetRandomizeProperty, QVariant::Bool, tr("Random Flipping"), groupProperty);
 
     typeProperty->setAttribute(QLatin1String("enumNames"), mWangSetTypeNames);
 
@@ -907,6 +917,10 @@ void PropertyBrowser::addWangSetProperties()
 
     nameProperty->setEnabled(mTilesetDocument);
     colorCountProperty->setEnabled(mTilesetDocument);
+    flipXProperty->setEnabled(mTilesetDocument);
+    flipYProperty->setEnabled(mTilesetDocument);
+    flipADProperty->setEnabled(mTilesetDocument);
+    randomProperty->setEnabled(mTilesetDocument);
 
     addProperty(groupProperty);
 }
