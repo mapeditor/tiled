@@ -94,7 +94,7 @@ private:
     void readTilesetGrid(Tileset &tileset);
     void readTilesetImage(Tileset &tileset);
     void readTilesetTerrainTypes(Tileset &tileset);
-    void readTilesetWangSets(Tileset &tileset);
+    void readTilesetWangSets(Tileset &tileset, bool canrotate, bool alternaterotaion);
     ImageReference readImage();
 
     std::unique_ptr<ObjectTemplate> readObjectTemplate();
@@ -391,8 +391,15 @@ SharedTileset MapReaderPrivate::readTileset()
                                       tileSpacing, margin);
 
             tileset->setColumnCount(columns);
-            tileset->setCanRotate(atts.value(QLatin1String("canrotate")).toInt());
-            tileset->setAlternateRotation(atts.value(QLatin1String("alternaterotation")).toInt());
+            // recognize older file format for WangTile rotation
+            bool canrotate=false;
+            bool alternaterotation=false;
+            if (atts.hasAttribute(QLatin1String("canrotate"))) {
+                canrotate=atts.value(QLatin1String("canrotate")).toInt();
+            }
+            if (atts.hasAttribute(QLatin1String("alternaterotation"))) {
+                alternaterotation=atts.value(QLatin1String("alternaterotation")).toInt();
+            }
 
             if (QColor::isValidColor(backgroundColor))
                 tileset->setBackgroundColor(QColor(backgroundColor));
@@ -426,7 +433,7 @@ SharedTileset MapReaderPrivate::readTileset()
                 } else if (xml.name() == QLatin1String("terraintypes")) {
                     readTilesetTerrainTypes(*tileset);
                 } else if (xml.name() == QLatin1String("wangsets")) {
-                    readTilesetWangSets(*tileset);
+                    readTilesetWangSets(*tileset, canrotate, alternaterotation);
                 } else {
                     readUnknownElement();
                 }
@@ -706,7 +713,7 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset &tileset)
         tileset.addWangSet(std::move(wangSet));
 }
 
-void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
+void MapReaderPrivate::readTilesetWangSets(Tileset &tileset, bool canrotate, bool alternaterotation)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("wangsets"));
 
@@ -716,8 +723,26 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
             const QString name = atts.value(QLatin1String("name")).toString();
             const WangSet::Type type = wangSetTypeFromString(atts.value(QLatin1String("type")).toString());
             const int tile = atts.value(QLatin1String("tile")).toInt();
+            const bool randomizeOrientation = atts.value(QLatin1String("randomizeOrientation")).toInt()!=0;
 
             auto wangSet = std::make_unique<WangSet>(&tileset, name, type, tile);
+            if (canrotate)
+            {
+                wangSet->setAsNeededFlipHorizontally(true);
+                wangSet->setAsNeededFlipVertically(true);
+                wangSet->setAsNeededFlipAntiDiagonally(true);
+            }
+            else
+            {
+                const bool flipHorizontally = atts.value(QLatin1String("flipHorizontally")).toInt()!=0;
+                const bool flipVertically = atts.value(QLatin1String("flipVertically")).toInt()!=0;
+                const bool flipAntiDiagonally = atts.value(QLatin1String("flipAntiDiagonally")).toInt()!=0;
+                wangSet->setAsNeededFlipHorizontally(flipHorizontally);
+                wangSet->setAsNeededFlipVertically(flipVertically);
+                wangSet->setAsNeededFlipAntiDiagonally(flipAntiDiagonally);
+            }
+            if (alternaterotation || randomizeOrientation)
+                wangSet->setRandomizeOrientation(true);
 
             // For backwards-compatibility
             QVector<int> cornerColors;
@@ -766,6 +791,7 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                     const bool fH = tileAtts.value(QLatin1String("hflip")).toInt();
                     const bool fV = tileAtts.value(QLatin1String("vflip")).toInt();
                     const bool fA = tileAtts.value(QLatin1String("dflip")).toInt();
+                    const bool fInherit = !tileAtts.hasAttribute(QLatin1String("can_hflip"));
 
                     Tile *tile = tileset.findOrCreateTile(tileId);
 
@@ -773,6 +799,16 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                     wangTile.setFlippedHorizontally(fH);
                     wangTile.setFlippedVertically(fV);
                     wangTile.setFlippedAntiDiagonally(fA);
+
+                    if (!fInherit) {
+                        const bool canH = tileAtts.value(QLatin1String("can_hflip")).toInt();
+                        const bool canV = tileAtts.value(QLatin1String("can_vflip")).toInt();
+                        const bool canA = tileAtts.value(QLatin1String("can_dflip")).toInt();
+                        wangTile.setAsNeededInheritFromSet(false);
+                        wangTile.setAsNeededFlipHorizontally(canH);
+                        wangTile.setAsNeededFlipVertically(canV);
+                        wangTile.setAsNeededFlipAntiDiagonally(canA);
+                    }
 
                     wangSet->addWangTile(wangTile);
 

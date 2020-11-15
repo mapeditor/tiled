@@ -130,8 +130,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mRemoveTiles(new QAction(this))
     , mShowAnimationEditor(new QAction(this))
     , mDynamicWrappingToggle(new QAction(this))
-    , mCanRotateToggle(new QAction(this))
-    , mAlternateRotationToggle(new QAction(this))
     , mPropertiesDock(new PropertiesDock(mMainWindow))
     , mUndoDock(new UndoDock(mMainWindow))
     , mTileCollisionDock(new TileCollisionDock(mMainWindow))
@@ -156,8 +154,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
     ActionManager::registerAction(mRemoveTiles, "RemoveTiles");
     ActionManager::registerAction(mShowAnimationEditor, "ShowAnimationEditor");
     ActionManager::registerAction(mDynamicWrappingToggle, "DynamicWrappingToggle");
-    ActionManager::registerAction(mAlternateRotationToggle, "AlternateRotationToggle");
-    ActionManager::registerAction(mCanRotateToggle, "CanRotateToggle");
 
     mAddTiles->setIcon(QIcon(QLatin1String(":images/16/add.png")));
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16/remove.png")));
@@ -170,10 +166,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
     editWang->setIconVisibleInMenu(false);
     mDynamicWrappingToggle->setCheckable(true);
     mDynamicWrappingToggle->setIcon(QIcon(QLatin1String("://images/scalable/wrap.svg")));
-    mAlternateRotationToggle->setCheckable(true);
-    mAlternateRotationToggle->setIcon(QIcon(QLatin1String("://images/scalable/random-rotation.svg")));
-    mCanRotateToggle->setCheckable(true);
-    mCanRotateToggle->setIcon(QIcon(QLatin1String("://images/scalable/can-rotate.svg")));
 
     Utils::setThemeIcon(mAddTiles, "add");
     Utils::setThemeIcon(mRemoveTiles, "remove");
@@ -188,8 +180,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTilesetToolBar->addAction(mShowAnimationEditor);
     mTilesetToolBar->addSeparator();
     mTilesetToolBar->addAction(mDynamicWrappingToggle);
-    mTilesetToolBar->addAction(mCanRotateToggle);
-    mTilesetToolBar->addAction(mAlternateRotationToggle);
 
     mTemplatesDock->setPropertiesDock(mPropertiesDock);
 
@@ -212,22 +202,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
             const QString fileName = mCurrentTilesetDocument->externalOrEmbeddedFileName();
             Session::current().setFileStateValue(fileName, QLatin1String("dynamicWrapping"), checked);
         }
-    });
-    connect(mCanRotateToggle, &QAction::toggled, this, [this] (bool checked) {
-        TilesetView *view = currentTilesetView();
-        if (!view)
-            return;
-        const TilesetModel *model = view->tilesetModel();
-        if (model && model->tileset())
-            model->tileset()->setCanRotate(checked);
-    });
-    connect(mAlternateRotationToggle, &QAction::toggled, this, [this] (bool checked) {
-        TilesetView *view = currentTilesetView();
-        if (!view)
-            return;
-        const TilesetModel *model = view->tilesetModel();
-        if (model && model->tileset())
-            model->tileset()->setAlternateRotation(checked);
     });
 
     connect(mTileAnimationEditor, &TileAnimationEditor::closed, this, &TilesetEditor::onAnimationEditorClosed);
@@ -378,8 +352,6 @@ void TilesetEditor::setCurrentDocument(Document *document)
 
     if (tilesetDocument) {
         mDynamicWrappingToggle->setChecked(tilesetView->dynamicWrapping());
-        mCanRotateToggle->setChecked(tilesetDocument->tileset()->canRotate());
-        mAlternateRotationToggle->setChecked(tilesetDocument->tileset()->alternateRotation());
 
         currentChanged(tilesetView->currentIndex());
         selectionChanged();
@@ -685,8 +657,6 @@ void TilesetEditor::retranslateUi()
     mRemoveTiles->setText(tr("Remove Tiles"));
     mShowAnimationEditor->setText(tr("Tile Animation Editor"));
     mDynamicWrappingToggle->setText(tr("Dynamically Wrap Tiles"));
-    mCanRotateToggle->setText(tr("Tiles can rotate if needed"));
-    mAlternateRotationToggle->setText(tr("Randomly rotate Tiles"));
 
     mTileCollisionDock->toggleViewAction()->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_O);
 }

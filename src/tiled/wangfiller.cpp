@@ -265,8 +265,11 @@ bool WangFiller::findBestMatch(const TileLayer &target,
 {
     const CellInfo info = grid.get(position);
     const quint64 maskedWangId = info.desired & info.mask;
-    const bool alternateRotation = mWangSet.tileset()->alternateRotation();
-    const bool canRotate = alternateRotation || mWangSet.tileset()->canRotate();
+    const bool alternateRotation = mWangSet.randomizeOrientation();
+    const bool set_canFlipH = mWangSet.asNeededFlipHorizontally();
+    const bool set_canFlipV = mWangSet.asNeededFlipVertically();
+    const bool set_canFlipA = mWangSet.asNeededFlipAntiDiagonally();
+    //const bool canRotate = alternateRotation || mWangSet.tileset()->canRotate();
 
     RandomPicker<WangTile> matches;
     int lowestPenalty = INT_MAX;
@@ -278,19 +281,54 @@ bool WangFiller::findBestMatch(const TileLayer &target,
             RotatedRight        = 0x4,
         };
 
+        const bool canFlipH = wangTile.asNeededInheritFromSet()
+                ? set_canFlipH : wangTile.asNeededFlipHorizontally();
+        const bool canFlipV = wangTile.asNeededInheritFromSet()
+                ? set_canFlipV : wangTile.asNeededFlipVertically();
+        const bool canFlipA = wangTile.asNeededInheritFromSet()
+                ? set_canFlipA : wangTile.asNeededFlipAntiDiagonally();
+
         WangId variations[8];
+        uint8_t variation_recipe[8];
         variations[0] = wangTile.wangId();
+        variation_recipe[0]=0;
         int variationCount = 1;
 
-        if (canRotate) {
-            variations[1] = variations[0].flippedHorizontally();
-            variations[2] = variations[0].flippedVertically();
-            variations[3] = variations[1].flippedVertically();
-            variations[4] = variations[0].rotated(1);
-            variations[5] = variations[4].flippedHorizontally();
-            variations[6] = variations[4].flippedVertically();
-            variations[7] = variations[5].flippedVertically();
-            variationCount = 8;
+        if (canFlipH) {
+            variations[variationCount] = variations[0].flippedHorizontally();
+            variation_recipe[variationCount]=FlippedHorizontally;
+            ++variationCount;
+            if (canFlipV) { // both permitted => 3 variants
+                variations[variationCount] = variations[1].flippedVertically();
+                variation_recipe[variationCount]=FlippedHorizontally+FlippedVertically;
+                ++variationCount;
+            }
+        }
+        if (canFlipV) {
+            variations[variationCount] = variations[0].flippedVertically();
+            variation_recipe[variationCount]=FlippedVertically;
+            ++variationCount;
+        }
+        if (canFlipA) {
+            int aflip_index=variationCount;
+            variations[variationCount] = variations[0].rotated(1).flippedHorizontally();
+            variation_recipe[variationCount]=RotatedRight+FlippedHorizontally;
+            ++variationCount;
+            if (canFlipH) { // A+H
+                variations[variationCount] = variations[aflip_index].flippedHorizontally();
+                variation_recipe[variationCount]=RotatedRight;
+                ++variationCount;
+                if (canFlipV) { // all three permitted => 8 variants
+                    variations[variationCount] = variations[aflip_index+1].flippedVertically();
+                    variation_recipe[variationCount]=RotatedRight+FlippedVertically;
+                    ++variationCount;
+                }
+            }
+            if (canFlipV) { // A+V
+                variations[variationCount] = variations[aflip_index].flippedVertically();
+                variation_recipe[variationCount]=FlippedHorizontally+RotatedRight+FlippedVertically;
+                ++variationCount;
+            }
         }
 
         for (int variation = 0; variation < variationCount; ++variation) {
@@ -341,11 +379,11 @@ bool WangFiller::findBestMatch(const TileLayer &target,
                 } else {
                     WangTile wangTileVariation = wangTile;
 
-                    if (variation & RotatedRight)
+                    if (variation_recipe[variation] & RotatedRight)
                         wangTileVariation.rotateRight();
-                    if (variation & FlippedHorizontally)
+                    if (variation_recipe[variation] & FlippedHorizontally)
                         wangTileVariation.flipHorizontally();
-                    if (variation & FlippedVertically)
+                    if (variation_recipe[variation] & FlippedVertically)
                         wangTileVariation.flipVertically();
 
                     matches.add(wangTileVariation, probability);

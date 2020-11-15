@@ -344,14 +344,6 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                      QString::number(tileset.tileCount()));
     w.writeAttribute(QStringLiteral("columns"),
                      QString::number(tileset.columnCount()));
-    if (tileset.canRotate()) {
-        w.writeAttribute(QStringLiteral("canrotate"),
-                        QString::number(tileset.canRotate()));
-    }
-    if (tileset.alternateRotation()) {
-        w.writeAttribute(QStringLiteral("alternaterotation"),
-                        QString::number(tileset.alternateRotation()));
-    }
 
     if (tileset.backgroundColor().isValid()) {
         w.writeAttribute(QStringLiteral("backgroundcolor"),
@@ -510,6 +502,22 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             w.writeAttribute(QStringLiteral("name"), ws->name());
             w.writeAttribute(QStringLiteral("type"), wangSetTypeToString(ws->type()));
             w.writeAttribute(QStringLiteral("tile"), QString::number(ws->imageTileId()));
+            if (ws->asNeededFlipHorizontally()) {
+                w.writeAttribute(QStringLiteral("flipHorizontally"),
+                                QString::number(ws->asNeededFlipHorizontally()));
+            }
+            if (ws->asNeededFlipVertically()) {
+                w.writeAttribute(QStringLiteral("flipVertically"),
+                                QString::number(ws->asNeededFlipVertically()));
+            }
+            if (ws->asNeededFlipAntiDiagonally()) {
+                w.writeAttribute(QStringLiteral("flipAntiDiagonally"),
+                                QString::number(ws->asNeededFlipAntiDiagonally()));
+            }
+            if (ws->randomizeOrientation()) {
+                w.writeAttribute(QStringLiteral("randomizeOrientation"),
+                                QString::number(ws->randomizeOrientation()));
+            }
 
             for (int i = 1; i <= ws->colorCount(); ++i) {
                 if (WangColor *wc = ws->colorAt(i).data()) {
@@ -540,6 +548,12 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
 
                 if (wangTile.flippedAntiDiagonally())
                     w.writeAttribute(QStringLiteral("dflip"), QString::number(1));
+
+                if (!wangTile.asNeededInheritFromSet()) {
+                    w.writeAttribute(QStringLiteral("can_hflip"), QString::number(wangTile.asNeededFlipHorizontally()));
+                    w.writeAttribute(QStringLiteral("can_vflip"), QString::number(wangTile.asNeededFlipVertically()));
+                    w.writeAttribute(QStringLiteral("can_dflip"), QString::number(wangTile.asNeededFlipAntiDiagonally()));
+                }
 
                 w.writeEndElement(); // </wangtile>
             }
