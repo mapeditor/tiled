@@ -73,6 +73,10 @@ public:
     void setWangSetImage(WangSet *wangSet, int tileId);
     void insertWangColor(WangSet *wangSet, const QSharedPointer<WangColor> &wangColor);
     void removeWangColorAt(WangSet *wangSet, int color);
+    void setAsNeededFlipHorizontally(WangSet *wangSet, bool on);
+    void setAsNeededFlipVertically(WangSet *wangSet, bool on);
+    void setAsNeededFlipAntiDiagonally(WangSet *wangSet, bool on);
+    void setRandomizeOrientation(WangSet *wangSet, bool on);
 
 signals:
     void wangSetAboutToBeAdded(Tileset *tileset, int index);

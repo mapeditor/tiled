@@ -879,7 +879,9 @@ void PropertyBrowser::addTileProperties()
     QtVariantProperty *flipXProperty = addProperty(WangSetFlipXProperty, QVariant::Bool, tr("Flip Horizontally"), groupProperty);
     QtVariantProperty *flipYProperty = addProperty(WangSetFlipYProperty, QVariant::Bool, tr("Flip Vertically"), groupProperty);
     QtVariantProperty *flipADProperty = addProperty(WangSetFlipADProperty, QVariant::Bool, tr("Flip AntiDiagonally"), groupProperty);
-
+    flipXProperty->setEnabled(false);
+    flipYProperty->setEnabled(false);
+    flipADProperty->setEnabled(false);
     overrideProperty->setEnabled(mTilesetDocument);
 
     const Tile *tile = static_cast<const Tile*>(mObject);
@@ -1421,6 +1423,15 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
                                                                  wangSet,
                                                                  val.toInt()));
         break;
+    case WangSetFlipXProperty:
+    case WangSetFlipYProperty:
+    case WangSetFlipADProperty:
+    case WangSetRandomizeProperty:
+        mDocument->undoStack()->push(new ChangeWangSetFlipping(mTilesetDocument,
+                                                                 wangSet,
+                                                                 ChangeWangSetFlipping::ChangeType(int(id)-int(WangSetFlipXProperty)),
+                                                                 val.toBool()));
+        break;
     default:
         break;
     }
@@ -1777,6 +1788,10 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[NameProperty]->setValue(wangSet->name());
         mIdToProperty[WangSetTypeProperty]->setValue(wangSet->type());
         mIdToProperty[ColorCountProperty]->setValue(wangSet->colorCount());
+        mIdToProperty[WangSetFlipXProperty]->setValue(wangSet->asNeededFlipHorizontally());
+        mIdToProperty[WangSetFlipYProperty]->setValue(wangSet->asNeededFlipVertically());
+        mIdToProperty[WangSetFlipADProperty]->setValue(wangSet->asNeededFlipAntiDiagonally());
+        mIdToProperty[WangSetRandomizeProperty]->setValue(wangSet->randomizeOrientation());
         break;
     }
     case Object::WangColorType: {

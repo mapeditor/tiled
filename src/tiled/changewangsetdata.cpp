@@ -129,6 +129,43 @@ void ChangeWangSetColorCount::redo()
 }
 
 
+ChangeWangSetFlipping::ChangeWangSetFlipping(TilesetDocument *TilesetDocument,
+                                             WangSet *wangSet,
+                                             ChangeType _which,
+                                             bool newValue)
+    : mTilesetDocument(TilesetDocument), mWangSet(wangSet), mWhich(_which),
+      mOldValue(_which == flipX ? wangSet->asNeededFlipHorizontally()
+              : _which == flipY ? wangSet->asNeededFlipVertically()
+              : _which == flipAD ? wangSet->asNeededFlipAntiDiagonally()
+                                 : wangSet->randomizeOrientation()),
+      mNewValue(newValue)
+{
+}
+
+void ChangeWangSetFlipping::undo()
+{
+    switch (mWhich)
+    {
+    case flipX: mTilesetDocument->wangSetModel()->setAsNeededFlipHorizontally(mWangSet, mOldValue); break;
+    case flipY: mTilesetDocument->wangSetModel()->setAsNeededFlipVertically(mWangSet, mOldValue); break;
+    case flipAD: mTilesetDocument->wangSetModel()->setAsNeededFlipAntiDiagonally(mWangSet, mOldValue); break;
+    case randomFlip: mTilesetDocument->wangSetModel()->setRandomizeOrientation(mWangSet, mOldValue); break;
+    }
+    QUndoCommand::undo();
+}
+void ChangeWangSetFlipping::redo()
+{
+    switch (mWhich)
+    {
+    case flipX: mTilesetDocument->wangSetModel()->setAsNeededFlipHorizontally(mWangSet, mNewValue); break;
+    case flipY: mTilesetDocument->wangSetModel()->setAsNeededFlipVertically(mWangSet, mNewValue); break;
+    case flipAD: mTilesetDocument->wangSetModel()->setAsNeededFlipAntiDiagonally(mWangSet, mNewValue); break;
+    case randomFlip: mTilesetDocument->wangSetModel()->setRandomizeOrientation(mWangSet, mNewValue); break;
+    }
+    QUndoCommand::redo();
+}
+
+
 RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, WangSet *wangSet, int color)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Remove Wang Color"))

@@ -89,6 +89,26 @@ private:
     QVector<WangColorChange> mRemovedWangColors;
 };
 
+class ChangeWangSetFlipping : public QUndoCommand
+{
+public:
+    enum ChangeType { flipX, flipY, flipAD, randomFlip };
+    ChangeWangSetFlipping(TilesetDocument *TilesetDocument,
+                            WangSet *wangSet,
+                            ChangeType which,
+                            bool newValue);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    TilesetDocument *mTilesetDocument;
+    WangSet *mWangSet;
+    const ChangeType mWhich;
+    const bool mOldValue;
+    const bool mNewValue;
+};
+
 class RemoveWangSetColor : public QUndoCommand
 {
 public:
