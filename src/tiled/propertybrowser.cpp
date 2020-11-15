@@ -164,6 +164,8 @@ void PropertyBrowser::setDocument(Document *document)
                 this, &PropertyBrowser::tileChanged);
         connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
                 this, &PropertyBrowser::tileChanged);
+        connect(tilesetDocument, &TilesetDocument::tileFlipPermissionChanged,
+                this, &PropertyBrowser::tileChanged);
         connect(tilesetDocument, &TilesetDocument::tileTypeChanged,
                 this, &PropertyBrowser::tileTypeChanged);
 
@@ -875,7 +877,7 @@ void PropertyBrowser::addTileProperties()
     probabilityProperty->setAttribute(QLatin1String("decimals"), 3);
     probabilityProperty->setToolTip(tr("Relative chance this tile will be picked"));
     probabilityProperty->setEnabled(mTilesetDocument);
-    QtVariantProperty *overrideProperty = addProperty(WangSetInheritProperty, QVariant::Bool, tr("Override Flipping"), groupProperty);
+    QtVariantProperty *overrideProperty = addProperty(WangTileIndividualFlipProperty, QVariant::Bool, tr("Override Flipping"), groupProperty);
     QtVariantProperty *flipXProperty = addProperty(WangSetFlipXProperty, QVariant::Bool, tr("Flip Horizontally"), groupProperty);
     QtVariantProperty *flipYProperty = addProperty(WangSetFlipYProperty, QVariant::Bool, tr("Flip Vertically"), groupProperty);
     QtVariantProperty *flipADProperty = addProperty(WangSetFlipADProperty, QVariant::Bool, tr("Flip AntiDiagonally"), groupProperty);
@@ -1394,6 +1396,15 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
                                                   tile, filePath.url));
         break;
     }
+    case WangSetFlipXProperty:
+    case WangSetFlipYProperty:
+    case WangSetFlipADProperty:
+    case WangTileIndividualFlipProperty:
+        undoStack->push(new ChangeWangTileFlipping(mTilesetDocument,
+                                             mTilesetDocument->selectedTiles(),
+                                             ChangeWangTileFlipping::ChangeType(int(id)-int(WangSetFlipXProperty)),
+                                             val.toBool()));
+        break;
     default:
         break;
     }
@@ -1777,6 +1788,53 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[WidthProperty]->setValue(tileSize.width());
         mIdToProperty[HeightProperty]->setValue(tileSize.height());
         mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
+        {
+            // to me this indicates that this should be a property of Tile instead of WangTile
+            bool found=false;
+            TilesetWangSetModel* model = mTilesetDocument->wangSetModel();
+            for (int ws=0;ws<model->rowCount();++ws) {
+                WangSet* w=model->wangSetAt(model->index(ws));
+                WangId i = w->wangIdOfTile(tile);
+                for (auto &wt:w->wangTilesByWangId().values(i)) {
+                    if (wt.tile()==tile)
+                    {
+                        mIdToProperty[WangTileIndividualFlipProperty]->setValue(!wt.asNeededInheritFromSet());
+                        mIdToProperty[WangTileIndividualFlipProperty]->setEnabled(true);
+                        if (wt.asNeededInheritFromSet())
+                        {
+                            // TODO: Only use currently selected WangSet?
+                            mIdToProperty[WangSetFlipXProperty]->setValue(w->asNeededFlipHorizontally());
+                            mIdToProperty[WangSetFlipXProperty]->setEnabled(false);
+                            mIdToProperty[WangSetFlipYProperty]->setValue(w->asNeededFlipHorizontally());
+                            mIdToProperty[WangSetFlipYProperty]->setEnabled(false);
+                            mIdToProperty[WangSetFlipADProperty]->setValue(w->asNeededFlipAntiDiagonally());
+                            mIdToProperty[WangSetFlipADProperty]->setEnabled(false);
+                        }
+                        else
+                        {
+                            mIdToProperty[WangSetFlipXProperty]->setValue(wt.asNeededFlipHorizontally());
+                            mIdToProperty[WangSetFlipXProperty]->setEnabled(true);
+                            mIdToProperty[WangSetFlipYProperty]->setValue(wt.asNeededFlipHorizontally());
+                            mIdToProperty[WangSetFlipYProperty]->setEnabled(true);
+                            mIdToProperty[WangSetFlipADProperty]->setValue(wt.asNeededFlipAntiDiagonally());
+                            mIdToProperty[WangSetFlipADProperty]->setEnabled(true);
+                        }
+                        found=true;
+                    }
+                }
+            }
+            if (!found) {
+                mIdToProperty[WangTileIndividualFlipProperty]->setValue(false);
+                mIdToProperty[WangTileIndividualFlipProperty]->setEnabled(false);
+                mIdToProperty[WangSetFlipXProperty]->setValue(false);
+                mIdToProperty[WangSetFlipXProperty]->setEnabled(false);
+                mIdToProperty[WangSetFlipXProperty]->setValue(false);
+                mIdToProperty[WangSetFlipXProperty]->setEnabled(false);
+                mIdToProperty[WangSetFlipXProperty]->setValue(false);
+                mIdToProperty[WangSetFlipXProperty]->setEnabled(false);
+            }
+        }
+
         if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
             imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));
         break;

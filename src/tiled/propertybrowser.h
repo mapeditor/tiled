@@ -150,7 +150,7 @@ private:
         WangSetFlipYProperty,
         WangSetFlipADProperty,
         WangSetRandomizeProperty,
-        WangSetInheritProperty
+        WangTileIndividualFlipProperty
     };
 
     void addMapProperties();

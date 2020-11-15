@@ -109,6 +109,25 @@ private:
     const bool mNewValue;
 };
 
+class ChangeWangTileFlipping : public QUndoCommand
+{
+public:
+    enum ChangeType { flipX, flipY, flipAD, unused, inherit };
+    ChangeWangTileFlipping(TilesetDocument *TilesetDocument,
+                            const QList<Tile*> &tiles,
+                            ChangeType which,
+                            bool newValue);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    TilesetDocument *mTilesetDocument;
+    const ChangeType mWhich;
+    QHash<Tile*, bool> mOldValue;
+    const bool mNewValue;
+};
+
 class RemoveWangSetColor : public QUndoCommand
 {
 public:

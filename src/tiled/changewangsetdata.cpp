@@ -166,6 +166,104 @@ void ChangeWangSetFlipping::redo()
 }
 
 
+ChangeWangTileFlipping::ChangeWangTileFlipping(TilesetDocument *TilesetDocument,
+                                             const QList<Tile*> &tiles,
+                                             ChangeType _which,
+                                             bool newValue)
+    : mTilesetDocument(TilesetDocument), mWhich(_which),
+      mNewValue(newValue)
+{
+    TilesetWangSetModel* model = TilesetDocument->wangSetModel();
+    for (auto t:tiles) {
+        for (int ws=0;ws<model->rowCount();++ws) {
+            WangSet* w=model->wangSetAt(model->index(ws));
+            WangId i = w->wangIdOfTile(t);
+            for (auto &wt:w->wangTilesByWangId().values(i)) {
+                if (wt.tile()==t)
+                {
+                    bool oldvalue=false;
+                    switch (_which)
+                    {
+                    case flipX: oldvalue=wt.asNeededFlipHorizontally();
+                        wt.setAsNeededFlipHorizontally(newValue);
+                        break;
+                    case flipY: oldvalue=wt.asNeededFlipVertically();
+                        wt.setAsNeededFlipVertically(newValue);
+                        break;
+                    case flipAD: oldvalue=wt.asNeededFlipAntiDiagonally();
+                        wt.setAsNeededFlipAntiDiagonally(newValue);
+                        break;
+                    case inherit: oldvalue=wt.asNeededInheritFromSet();
+                        wt.setAsNeededInheritFromSet(newValue);
+                        break;
+                    case unused: break;
+                    }
+                    mOldValue.insert(t, oldvalue);
+                }
+            }
+        }
+        mTilesetDocument->changeWangTileFlipPermission(t);
+    }
+}
+
+void ChangeWangTileFlipping::undo()
+{
+    TilesetWangSetModel* model = mTilesetDocument->wangSetModel();
+    for (auto i=mOldValue.constBegin();i!=mOldValue.constEnd();++i)
+    {
+        Tile *t = i.key();
+        bool oldValue= i.value();
+        for (int ws=0;ws<model->rowCount();++ws) {
+            WangSet* w=model->wangSetAt(model->index(ws));
+            WangId i = w->wangIdOfTile(t);
+            for (auto &wt:w->wangTilesByWangId().values(i)) {
+                if (wt.tile()==t)
+                {
+                    switch (mWhich)
+                    {
+                    case flipX: wt.setAsNeededFlipHorizontally(oldValue); break;
+                    case flipY: wt.setAsNeededFlipVertically(oldValue); break;
+                    case flipAD: wt.setAsNeededFlipAntiDiagonally(oldValue); break;
+                    case inherit: wt.setAsNeededInheritFromSet(oldValue); break;
+                    case unused: break;
+                    }
+                }
+            }
+        }
+        mTilesetDocument->changeWangTileFlipPermission(t);
+    }
+    QUndoCommand::undo();
+}
+void ChangeWangTileFlipping::redo()
+{
+    TilesetWangSetModel* model = mTilesetDocument->wangSetModel();
+    for (auto i=mOldValue.constBegin();i!=mOldValue.constEnd();++i)
+    {
+        Tile *t = i.key();
+        bool newValue= mNewValue;
+        for (int ws=0;ws<model->rowCount();++ws) {
+            WangSet* w=model->wangSetAt(model->index(ws));
+            WangId i = w->wangIdOfTile(t);
+            for (auto &wt:w->wangTilesByWangId().values(i)) {
+                if (wt.tile()==t)
+                {
+                    switch (mWhich)
+                    {
+                    case flipX: wt.setAsNeededFlipHorizontally(newValue); break;
+                    case flipY: wt.setAsNeededFlipVertically(newValue); break;
+                    case flipAD: wt.setAsNeededFlipAntiDiagonally(newValue); break;
+                    case inherit: wt.setAsNeededInheritFromSet(newValue); break;
+                    case unused: break;
+                    }
+                }
+            }
+        }
+        mTilesetDocument->changeWangTileFlipPermission(t);
+    }
+    QUndoCommand::redo();
+}
+
+
 RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, WangSet *wangSet, int color)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Remove Wang Color"))
