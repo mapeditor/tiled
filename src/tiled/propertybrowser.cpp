@@ -912,7 +912,7 @@ void PropertyBrowser::addWangSetProperties()
     QtVariantProperty *flipXProperty = addProperty(WangSetFlipXProperty, QVariant::Bool, tr("Flip Horizontally"), groupProperty);
     QtVariantProperty *flipYProperty = addProperty(WangSetFlipYProperty, QVariant::Bool, tr("Flip Vertically"), groupProperty);
     QtVariantProperty *flipADProperty = addProperty(WangSetFlipADProperty, QVariant::Bool, tr("Flip AntiDiagonally"), groupProperty);
-    QtVariantProperty *randomProperty = addProperty(WangSetRandomizeProperty, QVariant::Bool, tr("Random Flipping"), groupProperty);
+    QtVariantProperty *randomProperty = addProperty(WangSetPreferNonTransformedProperty, QVariant::Bool, tr("Prefer non-transformed tiles"), groupProperty);
 
     typeProperty->setAttribute(QLatin1String("enumNames"), mWangSetTypeNames);
 
@@ -1437,7 +1437,7 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
     case WangSetFlipXProperty:
     case WangSetFlipYProperty:
     case WangSetFlipADProperty:
-    case WangSetRandomizeProperty:
+    case WangSetPreferNonTransformedProperty:
         mDocument->undoStack()->push(new ChangeWangSetFlipping(mTilesetDocument,
                                                                  wangSet,
                                                                  ChangeWangSetFlipping::ChangeType(int(id)-int(WangSetFlipXProperty)),
@@ -1849,7 +1849,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[WangSetFlipXProperty]->setValue(wangSet->asNeededFlipHorizontally());
         mIdToProperty[WangSetFlipYProperty]->setValue(wangSet->asNeededFlipVertically());
         mIdToProperty[WangSetFlipADProperty]->setValue(wangSet->asNeededFlipAntiDiagonally());
-        mIdToProperty[WangSetRandomizeProperty]->setValue(wangSet->randomizeOrientation());
+        mIdToProperty[WangSetPreferNonTransformedProperty]->setValue(wangSet->preferNonTransformedTiles());
         break;
     }
     case Object::WangColorType: {

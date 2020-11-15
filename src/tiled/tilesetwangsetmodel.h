@@ -76,7 +76,7 @@ public:
     void setAsNeededFlipHorizontally(WangSet *wangSet, bool on);
     void setAsNeededFlipVertically(WangSet *wangSet, bool on);
     void setAsNeededFlipAntiDiagonally(WangSet *wangSet, bool on);
-    void setRandomizeOrientation(WangSet *wangSet, bool on);
+    void setPreferNonTransformedTiles(WangSet *wangSet, bool on);
 
 signals:
     void wangSetAboutToBeAdded(Tileset *tileset, int index);

@@ -265,11 +265,10 @@ bool WangFiller::findBestMatch(const TileLayer &target,
 {
     const CellInfo info = grid.get(position);
     const quint64 maskedWangId = info.desired & info.mask;
-    const bool alternateRotation = mWangSet.randomizeOrientation();
+    const bool preferNonTransformed = mWangSet.preferNonTransformedTiles();
     const bool set_canFlipH = mWangSet.asNeededFlipHorizontally();
     const bool set_canFlipV = mWangSet.asNeededFlipVertically();
     const bool set_canFlipA = mWangSet.asNeededFlipAntiDiagonally();
-    //const bool canRotate = alternateRotation || mWangSet.tileset()->canRotate();
 
     RandomPicker<WangTile> matches;
     int lowestPenalty = INT_MAX;
@@ -339,7 +338,7 @@ bool WangFiller::findBestMatch(const TileLayer &target,
 
             // Start with a small penalty for variations, when non-flipped
             // versions are supposed to be preferred.
-            int totalPenalty = variation && !alternateRotation;
+            int totalPenalty = variation && preferNonTransformed;
 
             for (int i = 0; i < WangId::NumIndexes; ++i) {
                 const int desiredColor = info.desired.indexColor(i);

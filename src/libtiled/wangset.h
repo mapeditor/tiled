@@ -356,11 +356,11 @@ public:
     bool asNeededFlipHorizontally() const;
     bool asNeededFlipVertically() const;
     bool asNeededFlipAntiDiagonally() const;
-    bool randomizeOrientation() const;
+    bool preferNonTransformedTiles() const;
     void setAsNeededFlipHorizontally(bool);
     void setAsNeededFlipVertically(bool);
     void setAsNeededFlipAntiDiagonally(bool);
-    void setRandomizeOrientation(bool);
+    void setPreferNonTransformedTiles(bool);
 
 private:
     void removeWangTile(const WangTile &wangTile);
@@ -389,7 +389,7 @@ private:
     bool mAsNeededFlipHorizontally = false;
     bool mAsNeededFlipVertially = false;
     bool mAsNeededFlipAntiDiagonally = false;
-    bool mRandomizeOrientation = false;
+    bool mPreferNonTransformedTiles = true;
 };
 
 
@@ -481,9 +481,9 @@ inline bool WangSet::asNeededFlipAntiDiagonally() const
 {
     return mAsNeededFlipAntiDiagonally;
 }
-inline bool WangSet::randomizeOrientation() const
+inline bool WangSet::preferNonTransformedTiles() const
 {
-    return mRandomizeOrientation;
+    return mPreferNonTransformedTiles;
 }
 inline void WangSet::setAsNeededFlipHorizontally(bool on)
 {
@@ -497,9 +497,9 @@ inline void WangSet::setAsNeededFlipAntiDiagonally(bool on)
 {
     mAsNeededFlipAntiDiagonally=on;
 }
-inline void WangSet::setRandomizeOrientation(bool on)
+inline void WangSet::setPreferNonTransformedTiles(bool on)
 {
-    mRandomizeOrientation=on;
+    mPreferNonTransformedTiles=on;
 }
 
 TILEDSHARED_EXPORT QString wangSetTypeToString(WangSet::Type type);

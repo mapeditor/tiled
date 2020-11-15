@@ -204,10 +204,10 @@ void TilesetWangSetModel::setAsNeededFlipAntiDiagonally(WangSet *wangSet, bool o
     wangSet->setAsNeededFlipAntiDiagonally(on);
     emitWangSetChange(wangSet);
 }
-void TilesetWangSetModel::setRandomizeOrientation(WangSet *wangSet, bool on)
+void TilesetWangSetModel::setPreferNonTransformedTiles(WangSet *wangSet, bool on)
 {
     Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
-    wangSet->setRandomizeOrientation(on);
+    wangSet->setPreferNonTransformedTiles(on);
     emitWangSetChange(wangSet);
 }
 

@@ -723,7 +723,10 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset, bool canrotate, boo
             const QString name = atts.value(QLatin1String("name")).toString();
             const WangSet::Type type = wangSetTypeFromString(atts.value(QLatin1String("type")).toString());
             const int tile = atts.value(QLatin1String("tile")).toInt();
-            const bool randomizeOrientation = atts.value(QLatin1String("randomizeOrientation")).toInt()!=0;
+            bool preferNonTransformedTiles = true;
+
+            if (atts.hasAttribute(QLatin1String("prefer_non_transformed_tiles")))
+                preferNonTransformedTiles = atts.value(QLatin1String("prefer_non_transformed_tiles")).toInt();
 
             auto wangSet = std::make_unique<WangSet>(&tileset, name, type, tile);
             if (canrotate)
@@ -734,15 +737,15 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset, bool canrotate, boo
             }
             else
             {
-                const bool flipHorizontally = atts.value(QLatin1String("flipHorizontally")).toInt()!=0;
-                const bool flipVertically = atts.value(QLatin1String("flipVertically")).toInt()!=0;
-                const bool flipAntiDiagonally = atts.value(QLatin1String("flipAntiDiagonally")).toInt()!=0;
+                const bool flipHorizontally = atts.value(QLatin1String("flip_horizontally")).toInt()!=0;
+                const bool flipVertically = atts.value(QLatin1String("flip_vertically")).toInt()!=0;
+                const bool flipAntiDiagonally = atts.value(QLatin1String("flip_anti_diagonally")).toInt()!=0;
                 wangSet->setAsNeededFlipHorizontally(flipHorizontally);
                 wangSet->setAsNeededFlipVertically(flipVertically);
                 wangSet->setAsNeededFlipAntiDiagonally(flipAntiDiagonally);
             }
-            if (alternaterotation || randomizeOrientation)
-                wangSet->setRandomizeOrientation(true);
+            if (alternaterotation || !preferNonTransformedTiles)
+                wangSet->setPreferNonTransformedTiles(false);
 
             // For backwards-compatibility
             QVector<int> cornerColors;

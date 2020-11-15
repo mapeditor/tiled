@@ -92,7 +92,7 @@ private:
 class ChangeWangSetFlipping : public QUndoCommand
 {
 public:
-    enum ChangeType { flipX, flipY, flipAD, randomFlip };
+    enum ChangeType { FlipX, FlipY, FlipAD, RandomFlip };
     ChangeWangSetFlipping(TilesetDocument *TilesetDocument,
                             WangSet *wangSet,
                             ChangeType which,
@@ -112,7 +112,7 @@ private:
 class ChangeWangTileFlipping : public QUndoCommand
 {
 public:
-    enum ChangeType { flipX, flipY, flipAD, unused, inherit };
+    enum ChangeType { FlipX, FlipY, FlipAD, Unused, Inherit };
     ChangeWangTileFlipping(TilesetDocument *TilesetDocument,
                             const QList<Tile*> &tiles,
                             ChangeType which,

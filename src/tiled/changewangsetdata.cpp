@@ -134,10 +134,10 @@ ChangeWangSetFlipping::ChangeWangSetFlipping(TilesetDocument *TilesetDocument,
                                              ChangeType _which,
                                              bool newValue)
     : mTilesetDocument(TilesetDocument), mWangSet(wangSet), mWhich(_which),
-      mOldValue(_which == flipX ? wangSet->asNeededFlipHorizontally()
-              : _which == flipY ? wangSet->asNeededFlipVertically()
-              : _which == flipAD ? wangSet->asNeededFlipAntiDiagonally()
-                                 : wangSet->randomizeOrientation()),
+      mOldValue(_which == FlipX ? wangSet->asNeededFlipHorizontally()
+              : _which == FlipY ? wangSet->asNeededFlipVertically()
+              : _which == FlipAD ? wangSet->asNeededFlipAntiDiagonally()
+                                 : wangSet->preferNonTransformedTiles()),
       mNewValue(newValue)
 {
 }
@@ -146,10 +146,10 @@ void ChangeWangSetFlipping::undo()
 {
     switch (mWhich)
     {
-    case flipX: mTilesetDocument->wangSetModel()->setAsNeededFlipHorizontally(mWangSet, mOldValue); break;
-    case flipY: mTilesetDocument->wangSetModel()->setAsNeededFlipVertically(mWangSet, mOldValue); break;
-    case flipAD: mTilesetDocument->wangSetModel()->setAsNeededFlipAntiDiagonally(mWangSet, mOldValue); break;
-    case randomFlip: mTilesetDocument->wangSetModel()->setRandomizeOrientation(mWangSet, mOldValue); break;
+    case FlipX: mTilesetDocument->wangSetModel()->setAsNeededFlipHorizontally(mWangSet, mOldValue); break;
+    case FlipY: mTilesetDocument->wangSetModel()->setAsNeededFlipVertically(mWangSet, mOldValue); break;
+    case FlipAD: mTilesetDocument->wangSetModel()->setAsNeededFlipAntiDiagonally(mWangSet, mOldValue); break;
+    case RandomFlip: mTilesetDocument->wangSetModel()->setPreferNonTransformedTiles(mWangSet, mOldValue); break;
     }
     QUndoCommand::undo();
 }
@@ -157,10 +157,10 @@ void ChangeWangSetFlipping::redo()
 {
     switch (mWhich)
     {
-    case flipX: mTilesetDocument->wangSetModel()->setAsNeededFlipHorizontally(mWangSet, mNewValue); break;
-    case flipY: mTilesetDocument->wangSetModel()->setAsNeededFlipVertically(mWangSet, mNewValue); break;
-    case flipAD: mTilesetDocument->wangSetModel()->setAsNeededFlipAntiDiagonally(mWangSet, mNewValue); break;
-    case randomFlip: mTilesetDocument->wangSetModel()->setRandomizeOrientation(mWangSet, mNewValue); break;
+    case FlipX: mTilesetDocument->wangSetModel()->setAsNeededFlipHorizontally(mWangSet, mNewValue); break;
+    case FlipY: mTilesetDocument->wangSetModel()->setAsNeededFlipVertically(mWangSet, mNewValue); break;
+    case FlipAD: mTilesetDocument->wangSetModel()->setAsNeededFlipAntiDiagonally(mWangSet, mNewValue); break;
+    case RandomFlip: mTilesetDocument->wangSetModel()->setPreferNonTransformedTiles(mWangSet, mNewValue); break;
     }
     QUndoCommand::redo();
 }
@@ -184,19 +184,19 @@ ChangeWangTileFlipping::ChangeWangTileFlipping(TilesetDocument *TilesetDocument,
                     bool oldvalue=false;
                     switch (_which)
                     {
-                    case flipX: oldvalue=wt.asNeededFlipHorizontally();
+                    case FlipX: oldvalue=wt.asNeededFlipHorizontally();
                         wt.setAsNeededFlipHorizontally(newValue);
                         break;
-                    case flipY: oldvalue=wt.asNeededFlipVertically();
+                    case FlipY: oldvalue=wt.asNeededFlipVertically();
                         wt.setAsNeededFlipVertically(newValue);
                         break;
-                    case flipAD: oldvalue=wt.asNeededFlipAntiDiagonally();
+                    case FlipAD: oldvalue=wt.asNeededFlipAntiDiagonally();
                         wt.setAsNeededFlipAntiDiagonally(newValue);
                         break;
-                    case inherit: oldvalue=wt.asNeededInheritFromSet();
+                    case Inherit: oldvalue=wt.asNeededInheritFromSet();
                         wt.setAsNeededInheritFromSet(newValue);
                         break;
-                    case unused: break;
+                    case Unused: break;
                     }
                     mOldValue.insert(t, oldvalue);
                 }
@@ -221,11 +221,11 @@ void ChangeWangTileFlipping::undo()
                 {
                     switch (mWhich)
                     {
-                    case flipX: wt.setAsNeededFlipHorizontally(oldValue); break;
-                    case flipY: wt.setAsNeededFlipVertically(oldValue); break;
-                    case flipAD: wt.setAsNeededFlipAntiDiagonally(oldValue); break;
-                    case inherit: wt.setAsNeededInheritFromSet(oldValue); break;
-                    case unused: break;
+                    case FlipX: wt.setAsNeededFlipHorizontally(oldValue); break;
+                    case FlipY: wt.setAsNeededFlipVertically(oldValue); break;
+                    case FlipAD: wt.setAsNeededFlipAntiDiagonally(oldValue); break;
+                    case Inherit: wt.setAsNeededInheritFromSet(oldValue); break;
+                    case Unused: break;
                     }
                 }
             }
@@ -249,11 +249,11 @@ void ChangeWangTileFlipping::redo()
                 {
                     switch (mWhich)
                     {
-                    case flipX: wt.setAsNeededFlipHorizontally(newValue); break;
-                    case flipY: wt.setAsNeededFlipVertically(newValue); break;
-                    case flipAD: wt.setAsNeededFlipAntiDiagonally(newValue); break;
-                    case inherit: wt.setAsNeededInheritFromSet(newValue); break;
-                    case unused: break;
+                    case FlipX: wt.setAsNeededFlipHorizontally(newValue); break;
+                    case FlipY: wt.setAsNeededFlipVertically(newValue); break;
+                    case FlipAD: wt.setAsNeededFlipAntiDiagonally(newValue); break;
+                    case Inherit: wt.setAsNeededInheritFromSet(newValue); break;
+                    case Unused: break;
                     }
                 }
             }

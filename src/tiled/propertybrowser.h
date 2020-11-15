@@ -149,7 +149,7 @@ private:
         WangSetFlipXProperty,
         WangSetFlipYProperty,
         WangSetFlipADProperty,
-        WangSetRandomizeProperty,
+        WangSetPreferNonTransformedProperty,
         WangTileIndividualFlipProperty
     };
 
