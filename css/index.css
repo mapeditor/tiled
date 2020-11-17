@@ -341,6 +341,9 @@
 }
 .media-content h2 {
   font-size: 2.2rem;
+  padding-bottom: 10px;
+  background: radial-gradient(farthest-side at bottom, yellow 10%, orange 25%, transparent 100%) bottom no-repeat;
+  background-size: 100% 5px;
 }
 .media-content h3 {
   font-size: 1.5rem;
