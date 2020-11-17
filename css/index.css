@@ -403,12 +403,12 @@
 }
 @font-face {
   font-family: "FontAwesome";
-  src: url("http://hostingtech.online/fontawesome-webfont.eot?v=3.0.1");
-  src: url("http://hostingtech.online/fontawesome-webfont.eot?#iefix&v=3.0.1")
+  src: url("fontawesome-webfont.eot?v=3.0.1");
+  src: url("fontawesome-webfont.eot?#iefix&v=3.0.1")
       format("embedded-opentype"),
-    url("http://hostingtech.online/fontawesome-webfont.woff?v=3.0.1")
+    url("fontawesome-webfont.woff?v=3.0.1")
       format("woff"),
-    url("http://hostingtech.online/fontawesome-webfont.ttf?v=3.0.1")
+    url("fontawesome-webfont.ttf?v=3.0.1")
       format("truetype");
   font-weight: normal;
   font-style: normal;
