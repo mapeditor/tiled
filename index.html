@@ -1,3 +1,5 @@
+---
+---
 <html lang="en">
 
 <head>
@@ -5,14 +7,14 @@
   <meta name='viewport' content="width=device-width, initial-scale=1" />
   <meta property="og:title" content="Tiled - A free and open source map editor" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://mapeditor.org" />
-  <meta property="og:image" content="https://mapeditor.org/assets/tiled_logo_fill.png" />
-  <meta property="og:description" content="Tiled Map Editor is an easy to use and free level editor" />
+  <meta property="og:url" content="https://www.mapeditor.org" />
+  <meta property="og:image" content="https://www.mapeditor.org/assets/tiled_logo_fill.png" />
+  <meta property="og:description" content="Tiled is an easy to use and free level editor" />
   <link rel="shortcut icon" type="image/png" href="/assets/favicon.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css" crossorigin="anonymous">
   <link rel="stylesheet" href="css/index.css">
   <link href="/atom.xml" rel="alternate" type="application/atom+xml" />
-  <title>Tiled Map Editor - A free easy to use 2d level editor</title>
+  <title>Tiled - A free easy to use 2D level editor</title>
 
 </head>
 
@@ -204,66 +206,19 @@
               <div class="container">
 
                 <div class="card-list padded-content">
-
-                  <a class="card" href="/news">
-
+{% for post in site.posts limit:4 %}
+                  <a class="card" href="{{ post.url }}">
                     <div class="card-image">
                       <img src="img/screenshot-terrain-thumb.png" class="centered-card-image" />
                     </div>
 
                     <div class="card-text">
-                      <div class="card-title">
-                        Tiled 1.4.2 released
-                      </div>
-                      <div class="card-subtitle">
-                        5 August 2020
-                      </div>
-                      <div class="card-description">
-                        In this second patch release for Tiled 1.4 there are a number of important fixes and some small improvements.
-                      </div>
+                      <div class="card-title">{{ post.title }}</div>
+                      <div class="card-subtitle">{{ post.date | date_to_long_string }}</div>
+                      <div class="card-description">{{ post.excerpt | strip_html }}</div>
                     </div>
                   </a>
-
-                  <a class="card" href="/news">
-
-                    <div class="card-image">
-                      <img src="img/screenshot-terrain-thumb.png" class="centered-card-image" />
-                    </div>
-
-                    <div class="card-text">
-                      <div class="card-title">
-                        Tiled 1.4.1
-                      </div>
-                      <div class="card-subtitle">
-                        25 June 2020
-                      </div>
-                      <div class="card-description">
-                        In this second patch release for Tiled 1.4 there are a number of important fixes and some small improvements.
-
-                      </div>
-                    </div>
-                  </a>
-
-                  <a class="card" href="/news">
-
-                    <div class="card-image">
-                      <img src="img/screenshot-terrain-thumb.png" class="centered-card-image" style="max-width: 15rem;" />
-                    </div>
-
-                    <div class="card-text">
-                      <div class="card-title">
-                        Tiled 1.4 released
-                      </div>
-                      <div class="card-subtitle">
-                        20 June 2020
-                      </div>
-                      <div class="card-description">
-                        At long last I can announce the immediate release of Tiled 1.4.0! The biggest change in this release is the support for projects and sessions, but there have been many other welcome improvements as well.
-
-                      </div>
-                    </div>
-                  </a>
-
+{% endfor %}
                 </div>
 
               </div>
