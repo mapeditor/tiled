@@ -13,6 +13,11 @@ TiledPlugin {
         cpp.dynamicLibraries: base.concat(["z"])
     }
 
+    Properties {
+        condition: qbs.toolchain.contains("msvc")
+        cpp.dynamicLibraries: ["Userenv"]
+    }
+
     files: [
         "rpmap_global.h",
         "rpmapplugin.cpp",

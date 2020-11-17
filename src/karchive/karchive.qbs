@@ -12,13 +12,6 @@ StaticLibrary {
         "KARCHIVE_NO_DEPRECATED"
     ]
 
-    Properties {
-        condition: qbs.toolchain.contains("msvc")
-        cpp.dynamicLibraries: [
-            "Userenv"
-        ]
-    }
-
     files : [
         "src/config-compression.h",
 //        "src/k7zip.cpp",  // requires xz to build
