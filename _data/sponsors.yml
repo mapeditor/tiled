@@ -1,0 +1,43 @@
+- name: Gather
+  url: https://gather.town/
+  banner: banner_gather.png
+
+- name: "Rusted Warfare: An RTS with Tiled Maps & Workshop Modding"
+  url: https://store.steampowered.com/app/647960/Rusted_Warfare__RTS/
+  banner: banner_rusted_warfare.png
+
+- name: Fiiish
+  url: http://fiiish.omnimad.net/
+  banner: banner_fiiish.png
+
+- name: Levvvel
+  url: https://levvvel.com/
+  banner: banner_levvvel.png
+
+- name: VPS Server
+  url: https://vpsserver.com/
+  banner: banner_vpsserver.png
+
+- name: Pillar Wealth Management
+  url: https://pillarwm.com/
+  banner: banner_pillarwm.png
+
+- name: Conveyancing
+  url: https://www.conveyancing.com.au/need-to-know/buying/conveyancing-costs-explained-in-nsw"
+  banner: banner_conveyancing-alt.png
+
+- name: Rapid Building Inspections
+  url: https://www.conveyancing.com.au/need-to-know/buying/conveyancing-costs-explained-in-nsw"
+  banner: banner_rapidbuildinginspections.jpg
+
+- name: Conveyancing
+  url: https://www.conveyancing.com.au/
+  banner: banner_conveyancing.png
+
+- name: Line Awesome
+  url: https://icons8.com/line-awesome
+  banner: banner_line-awesome.png
+
+- name: Tradie Training
+  url: https://tt.edu.au/
+  banner: banner_tradietraining.png

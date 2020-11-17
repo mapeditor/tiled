@@ -231,33 +231,11 @@
               <h3>A big thanks to Tiled's generous <a href="/donate">Sponsors</a> for making our work sustainable:</h2>
                 <h2>Sponsors</h2>
                 <div class="sponsors">
+{% for sponsor in site.data.sponsors  %}
                   <div>
-                    <a class="thumbnail" href="https://store.steampowered.com/app/647960/Rusted_Warfare__RTS/"><img src="img/banner_rusted_warfare.png" alt="Rusted Warfare: An RTS with Tiled Maps & Workshop Modding" /></a>
+                    <a class="thumbnail" href="{{ sponsor.url }}"><img src="img/{{ sponsor.banner }}" alt="{{ sponsor.name }}" /></a>
                   </div>
-                  <div>
-                    <a class="thumbnail" href="http://fiiish.omnimad.net/"><img src="img/banner_fiiish.png" /></a>
-                  </div>
-                  <div>
-                    <a class="thumbnail" href="https://levvvel.com/"><img src="img/banner_levvvel.png" alt="Levvvel" /></a>
-                  </div>
-                  <div>
-                    <a class="thumbnail" href="https://tt.edu.au/"><img src="img/banner_tradietraining.png" alt="Tradie Training" /></a>
-                  </div>
-                  <div>
-                    <a class="thumbnail" href="https://www.thinkconveyancing.com.au/"><img src="img/banner_thinkconveyancing.png" alt="Think Conveyancing" /></a>
-                  </div>
-                  <div>
-                    <a class="thumbnail" href="https://pillarwm.com/"><img src="img/banner_pillarwm.png" alt="Pillar Wealth Management" /></a>
-                  </div>
-                  <div>
-                    <a class="thumbnail" href="https://www.rapidbuildinginspections.com.au/"><img src="img/banner_rapidbuildinginspections.jpg" alt="Rapid Building Inspections" /></a>
-                  </div>
-                  <div>
-                    <a class="thumbnail" href="https://icons8.com/line-awesome"><img src="img/banner_line-awesome.png" /></a>
-                  </div>
-                  <div>
-                    &nbsp;
-                  </div>
+{% endfor %}
                 </div>
             </div>
           </div>

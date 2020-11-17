@@ -449,19 +449,30 @@ a:focus {
 .warning {
   color: #c8c864;
 }
+
 .sponsors {
   display: flex;
   flex-wrap: wrap;
-  padding-left: 5rem;
+  justify-content: center;
 }
-
-.sponsors a:hover {
+.sponsors a {
   opacity: 0.7;
+  transition: all .1s ease-out;
 }
-
+.sponsors a:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+.sponsors > div {
+  display: flex;
+  width: 291px;
+  height: 155px;
+  margin: 10px;
+}
 .sponsors img {
-  width: 20rem;
+  width: 100%;
   height: 100%;
+  border-radius: 5px;
 }
 
 .container-fluid {
