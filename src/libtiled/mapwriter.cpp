@@ -355,6 +355,23 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeAttribute(QStringLiteral("objectalignment"), alignment);
     }
 
+    if (tileset.asNeededFlipHorizontally()) {
+        w.writeAttribute(QStringLiteral("flip_horizontally"),
+                        QString::number(tileset.asNeededFlipHorizontally()));
+    }
+    if (tileset.asNeededFlipVertically()) {
+        w.writeAttribute(QStringLiteral("flip_vertically"),
+                        QString::number(tileset.asNeededFlipVertically()));
+    }
+    if (tileset.asNeededFlipAntiDiagonally()) {
+        w.writeAttribute(QStringLiteral("flip_anti_diagonally"),
+                        QString::number(tileset.asNeededFlipAntiDiagonally()));
+    }
+    if (!tileset.preferNonTransformedTiles()) {
+        w.writeAttribute(QStringLiteral("prefer_non_transformed_tiles"),
+                        QString::number(tileset.preferNonTransformedTiles()));
+    }
+
     // Write editor settings when saving external tilesets
     if (firstGid == 0) {
         if (!tileset.exportFileName.isEmpty() || !tileset.exportFormat.isEmpty()) {
@@ -381,23 +398,6 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeAttribute(QStringLiteral("width"), QString::number(tileset.gridSize().width()));
         w.writeAttribute(QStringLiteral("height"), QString::number(tileset.gridSize().height()));
         w.writeEndElement();
-    }
-
-    if (tileset.asNeededFlipHorizontally()) {
-        w.writeAttribute(QStringLiteral("flip_horizontally"),
-                        QString::number(tileset.asNeededFlipHorizontally()));
-    }
-    if (tileset.asNeededFlipVertically()) {
-        w.writeAttribute(QStringLiteral("flip_vertically"),
-                        QString::number(tileset.asNeededFlipVertically()));
-    }
-    if (tileset.asNeededFlipAntiDiagonally()) {
-        w.writeAttribute(QStringLiteral("flip_anti_diagonally"),
-                        QString::number(tileset.asNeededFlipAntiDiagonally()));
-    }
-    if (!tileset.preferNonTransformedTiles()) {
-        w.writeAttribute(QStringLiteral("prefer_non_transformed_tiles"),
-                        QString::number(tileset.preferNonTransformedTiles()));
     }
 
     // Write the tileset properties
