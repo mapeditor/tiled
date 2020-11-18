@@ -188,13 +188,6 @@ public:
     void setFlippedVertically(bool b) { mFlippedVertically = b; }
     void setFlippedAntiDiagonally(bool b) { mFlippedAntiDiagonally = b; }
 
-    void rotateRight();
-    void rotateLeft();
-    void flipHorizontally();
-    void flipVertically();
-
-    Cell makeCell() const;
-
     bool operator== (const WangTile &other) const
     { return mTile == other.mTile
                 && mWangId == other.mWangId
@@ -321,10 +314,17 @@ public:
     const QVector<QSharedPointer<WangColor>> &colors() const { return mColors; }
 
     void addTile(Tile *tile, WangId wangId);
-    void addCell(const Cell &cell, WangId wangId);
     void addWangTile(const WangTile &wangTile);
 
-    const QMultiHash<WangId, WangTile> &wangTilesByWangId() const { return mWangIdToWangTile; }
+    const QHash<int, WangId> &wangIdByTile() const { return mTileIdToWangId; }
+
+    struct WangIdAndCell
+    {
+        WangId wangId;
+        Cell cell;
+    };
+
+    const QVector<WangIdAndCell> &wangIdsAndCells() const;
 
     QList<WangTile> sortedWangTiles() const;
 
@@ -334,7 +334,7 @@ public:
     WangId wangIdOfTile(const Tile *tile) const;
     WangId wangIdOfCell(const Cell &cell) const;
 
-    qreal wangTileProbability(const WangTile &wangTile) const;
+    qreal wangIdProbability(WangId wangId) const;
 
     bool wangIdIsValid(WangId wangId) const;
 
@@ -365,6 +365,7 @@ public:
 private:
     void removeWangTile(const WangTile &wangTile);
 
+    void recalculateCells();
     void recalculateColorDistances();
 
     Tileset *mTileset;
@@ -377,14 +378,13 @@ private:
     quint64 mUniqueFullWangIdCount = 0;
 
     QVector<QSharedPointer<WangColor>> mColors;
-    QMultiHash<WangId, WangTile> mWangIdToWangTile;
+    QHash<int, WangId> mTileIdToWangId;
 
-    // Tile info being the tileId, with the last three bits (32, 31, 30)
-    // being info on flip (horizontal, vertical, and antidiagonal)
-    QHash<unsigned, WangId> mTileInfoToWangId;
+    QVector<WangIdAndCell> mWangIdAndCells;
 
     int mMaximumColorDistance = 0;
     bool mColorDistancesDirty = true;
+    bool mCellsDirty = true;
 
     bool mAsNeededFlipHorizontally = false;
     bool mAsNeededFlipVertially = false;
@@ -459,47 +459,29 @@ inline void WangSet::addTile(Tile *tile, WangId wangId)
     addWangTile(WangTile(tile, wangId));
 }
 
-inline void WangSet::addCell(const Cell &cell, WangId wangId)
-{
-    addWangTile(WangTile(cell, wangId));
-}
-
 inline bool WangSet::isEmpty() const
 {
-    return mWangIdToWangTile.isEmpty();
+    return mTileIdToWangId.isEmpty();
 }
 
 inline bool WangSet::asNeededFlipHorizontally() const
 {
     return mAsNeededFlipHorizontally;
 }
+
 inline bool WangSet::asNeededFlipVertically() const
 {
     return mAsNeededFlipVertially;
 }
+
 inline bool WangSet::asNeededFlipAntiDiagonally() const
 {
     return mAsNeededFlipAntiDiagonally;
 }
+
 inline bool WangSet::preferNonTransformedTiles() const
 {
     return mPreferNonTransformedTiles;
-}
-inline void WangSet::setAsNeededFlipHorizontally(bool on)
-{
-    mAsNeededFlipHorizontally=on;
-}
-inline void WangSet::setAsNeededFlipVertically(bool on)
-{
-    mAsNeededFlipVertially=on;
-}
-inline void WangSet::setAsNeededFlipAntiDiagonally(bool on)
-{
-    mAsNeededFlipAntiDiagonally=on;
-}
-inline void WangSet::setPreferNonTransformedTiles(bool on)
-{
-    mPreferNonTransformedTiles=on;
 }
 
 TILEDSHARED_EXPORT QString wangSetTypeToString(WangSet::Type type);

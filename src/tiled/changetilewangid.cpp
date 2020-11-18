@@ -122,16 +122,16 @@ QVector<ChangeTileWangId::WangIdChange> ChangeTileWangId::changesOnSetColorCount
 {
     QVector<WangIdChange> changes;
 
-    for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
-        WangId newWangId = wangTile.wangId();
+//    for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
+//        WangId newWangId = wangTile.wangId();
 
-        for (int i = 0; i < WangId::NumIndexes; ++i)
-            if (newWangId.indexColor(i) > colorCount)
-                newWangId.setIndexColor(i, 0);
+//        for (int i = 0; i < WangId::NumIndexes; ++i)
+//            if (newWangId.indexColor(i) > colorCount)
+//                newWangId.setIndexColor(i, 0);
 
-        if (wangTile.wangId() != newWangId)
-            changes.append(WangIdChange(wangTile.wangId(), newWangId, wangTile.tile()));
-    }
+//        if (wangTile.wangId() != newWangId)
+//            changes.append(WangIdChange(wangTile.wangId(), newWangId, wangTile.tile()));
+//    }
 
     return changes;
 }
@@ -141,20 +141,20 @@ QVector<ChangeTileWangId::WangIdChange> ChangeTileWangId::changesOnRemoveColor(
 {
     QVector<WangIdChange> changes;
 
-    for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
-        WangId newWangId = wangTile.wangId();
+//    for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
+//        WangId newWangId = wangTile.wangId();
 
-        for (int i = 0; i < WangId::NumIndexes; ++i) {
-            const int color = newWangId.indexColor(i);
-            if (color == removedColor)
-                newWangId.setIndexColor(i, 0);
-            else if (color > removedColor)
-                newWangId.setIndexColor(i, color - 1);
-        }
+//        for (int i = 0; i < WangId::NumIndexes; ++i) {
+//            const int color = newWangId.indexColor(i);
+//            if (color == removedColor)
+//                newWangId.setIndexColor(i, 0);
+//            else if (color > removedColor)
+//                newWangId.setIndexColor(i, color - 1);
+//        }
 
-        if (wangTile.wangId() != newWangId)
-            changes.append(WangIdChange(wangTile.wangId(), newWangId, wangTile.tile()));
-    }
+//        if (wangTile.wangId() != newWangId)
+//            changes.append(WangIdChange(wangTile.wangId(), newWangId, wangTile.tile()));
+//    }
 
     return changes;
 }

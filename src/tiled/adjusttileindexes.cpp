@@ -264,26 +264,26 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
         QVector<ChangeTileWangId::WangIdChange> changes;
 
         // Move all WangIds to their new tiles
-        for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
-            if (Tile *fromTile = wangTile.tile()) {
-                if (Tile *newTile = adjustTile(fromTile)) {
-                    WangId fromWangId = wangSet->wangIdOfTile(newTile);
-                    WangId toWangId = wangTile.wangId();
-                    changes.append(ChangeTileWangId::WangIdChange(fromWangId, toWangId, newTile));
-                }
-            }
-        }
+//        for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
+//            if (Tile *fromTile = wangTile.tile()) {
+//                if (Tile *newTile = adjustTile(fromTile)) {
+//                    WangId fromWangId = wangSet->wangIdOfTile(newTile);
+//                    WangId toWangId = wangTile.wangId();
+//                    changes.append(ChangeTileWangId::WangIdChange(fromWangId, toWangId, newTile));
+//                }
+//            }
+//        }
 
         // Clear WangIds from other tiles
-        for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
-            if (Tile *fromTile = wangTile.tile()) {
-                auto matchesTile = [fromTile](const ChangeTileWangId::WangIdChange &change) {
-                    return change.tile == fromTile;
-                };
-                if (!std::any_of(changes.begin(), changes.end(), matchesTile))
-                    changes.append(ChangeTileWangId::WangIdChange(wangTile.wangId(), WangId(), fromTile));
-            }
-        }
+//        for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
+//            if (Tile *fromTile = wangTile.tile()) {
+//                auto matchesTile = [fromTile](const ChangeTileWangId::WangIdChange &change) {
+//                    return change.tile == fromTile;
+//                };
+//                if (!std::any_of(changes.begin(), changes.end(), matchesTile))
+//                    changes.append(ChangeTileWangId::WangIdChange(wangTile.wangId(), WangId(), fromTile));
+//            }
+//        }
 
         if (!changes.isEmpty())
             new ChangeTileWangId(tilesetDocument, wangSet, changes, this);

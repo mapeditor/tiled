@@ -1795,33 +1795,33 @@ void PropertyBrowser::updateProperties()
             for (int ws=0;ws<model->rowCount();++ws) {
                 WangSet* w=model->wangSetAt(model->index(ws));
                 WangId i = w->wangIdOfTile(tile);
-                for (auto &wt:w->wangTilesByWangId().values(i)) {
-                    if (wt.tile()==tile)
-                    {
-                        mIdToProperty[WangTileIndividualFlipProperty]->setValue(!wt.asNeededInheritFromSet());
-                        mIdToProperty[WangTileIndividualFlipProperty]->setEnabled(true);
-                        if (wt.asNeededInheritFromSet())
-                        {
-                            // TODO: Only use currently selected WangSet?
-                            mIdToProperty[WangSetFlipXProperty]->setValue(w->asNeededFlipHorizontally());
-                            mIdToProperty[WangSetFlipXProperty]->setEnabled(false);
-                            mIdToProperty[WangSetFlipYProperty]->setValue(w->asNeededFlipHorizontally());
-                            mIdToProperty[WangSetFlipYProperty]->setEnabled(false);
-                            mIdToProperty[WangSetFlipADProperty]->setValue(w->asNeededFlipAntiDiagonally());
-                            mIdToProperty[WangSetFlipADProperty]->setEnabled(false);
-                        }
-                        else
-                        {
-                            mIdToProperty[WangSetFlipXProperty]->setValue(wt.asNeededFlipHorizontally());
-                            mIdToProperty[WangSetFlipXProperty]->setEnabled(true);
-                            mIdToProperty[WangSetFlipYProperty]->setValue(wt.asNeededFlipHorizontally());
-                            mIdToProperty[WangSetFlipYProperty]->setEnabled(true);
-                            mIdToProperty[WangSetFlipADProperty]->setValue(wt.asNeededFlipAntiDiagonally());
-                            mIdToProperty[WangSetFlipADProperty]->setEnabled(true);
-                        }
-                        found=true;
-                    }
-                }
+//                for (auto &wt:w->wangTilesByWangId().values(i)) {
+//                    if (wt.tile()==tile)
+//                    {
+//                        mIdToProperty[WangTileIndividualFlipProperty]->setValue(!wt.asNeededInheritFromSet());
+//                        mIdToProperty[WangTileIndividualFlipProperty]->setEnabled(true);
+//                        if (wt.asNeededInheritFromSet())
+//                        {
+//                            // TODO: Only use currently selected WangSet?
+//                            mIdToProperty[WangSetFlipXProperty]->setValue(w->asNeededFlipHorizontally());
+//                            mIdToProperty[WangSetFlipXProperty]->setEnabled(false);
+//                            mIdToProperty[WangSetFlipYProperty]->setValue(w->asNeededFlipHorizontally());
+//                            mIdToProperty[WangSetFlipYProperty]->setEnabled(false);
+//                            mIdToProperty[WangSetFlipADProperty]->setValue(w->asNeededFlipAntiDiagonally());
+//                            mIdToProperty[WangSetFlipADProperty]->setEnabled(false);
+//                        }
+//                        else
+//                        {
+//                            mIdToProperty[WangSetFlipXProperty]->setValue(wt.asNeededFlipHorizontally());
+//                            mIdToProperty[WangSetFlipXProperty]->setEnabled(true);
+//                            mIdToProperty[WangSetFlipYProperty]->setValue(wt.asNeededFlipHorizontally());
+//                            mIdToProperty[WangSetFlipYProperty]->setEnabled(true);
+//                            mIdToProperty[WangSetFlipADProperty]->setValue(wt.asNeededFlipAntiDiagonally());
+//                            mIdToProperty[WangSetFlipADProperty]->setEnabled(true);
+//                        }
+//                        found=true;
+//                    }
+//                }
             }
             if (!found) {
                 mIdToProperty[WangTileIndividualFlipProperty]->setValue(false);

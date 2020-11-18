@@ -178,16 +178,16 @@ void WangFiller::fillRegion(TileLayer &target,
         if (target.cellAt(targetPos).checked())
             return;
 
-        WangTile wangTile;
-        if (!findBestMatch(target, grid, QPoint(x, y), wangTile)) {
+        Cell cell;
+        if (!findBestMatch(target, grid, QPoint(x, y), cell)) {
             // TODO: error feedback
             return;
         }
 
-        auto cell = wangTile.makeCell();
         cell.setChecked(true);
-
         target.setCell(targetPos.x(), targetPos.y(), cell);
+
+        const WangId cellWangId = mWangSet.wangIdOfCell(cell);
 
         // Adjust the desired WangIds for the surrounding tiles based on the placed one
         QPoint adjacentPoints[WangId::NumIndexes];
@@ -199,7 +199,7 @@ void WangFiller::fillRegion(TileLayer &target,
                 continue;
 
             CellInfo adjacentInfo = grid.get(p);
-            updateToAdjacent(adjacentInfo, wangTile.wangId(), WangId::oppositeIndex(i));
+            updateToAdjacent(adjacentInfo, cellWangId, WangId::oppositeIndex(i));
 
             // Check if we may need to reconsider a tile outside of our starting region
             if (!WangId::isCorner(i) && mCorrectionsEnabled && bounds.contains(p) && !region.contains(p)) {
@@ -261,117 +261,66 @@ WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
 bool WangFiller::findBestMatch(const TileLayer &target,
                                const Grid<CellInfo> &grid,
                                QPoint position,
-                               WangTile &result) const
+                               Cell &result) const
 {
     const CellInfo info = grid.get(position);
     const quint64 maskedWangId = info.desired & info.mask;
-    const bool preferNonTransformed = mWangSet.preferNonTransformedTiles();
-    const bool set_canFlipH = mWangSet.asNeededFlipHorizontally();
-    const bool set_canFlipV = mWangSet.asNeededFlipVertically();
-    const bool set_canFlipA = mWangSet.asNeededFlipAntiDiagonally();
 
-    RandomPicker<WangTile> matches;
+    RandomPicker<Cell> matches;
     int lowestPenalty = INT_MAX;
 
-    auto processCandidate = [&] (const WangTile &wangTile) {
-        int nextFlag = 0;
-        int rotatedRightFlag = 0;
-        int flippedHorizontallyFlag = 0;
-        int flippedVerticallyFlag = 0;
+    auto processCandidate = [&] (WangId wangId, const Cell &cell) {
+        if ((wangId & info.mask) != maskedWangId)
+            return;
 
-        WangId variations[8] = { wangTile.wangId() };
-        int variationCount = 1;
+        // Start with a small penalty for variations, when non-flipped
+        // versions are supposed to be preferred.
+        int totalPenalty = 0;
 
-        if (wangTile.asNeededInheritFromSet() ? set_canFlipA : wangTile.asNeededFlipAntiDiagonally()) {
-            for (int i = 0; i < variationCount; ++i)
-                variations[variationCount + i] = variations[i].rotated(1);
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
+            const int desiredColor = info.desired.indexColor(i);
+            const int candidateColor = wangId.indexColor(i);
 
-            rotatedRightFlag = 1 << nextFlag++;
-            variationCount *= 2;
-        }
+            if (candidateColor != desiredColor) {
+                int penalty = mWangSet.transitionPenalty(desiredColor, candidateColor);
 
-        if (wangTile.asNeededInheritFromSet() ? set_canFlipH : wangTile.asNeededFlipHorizontally()) {
-            for (int i = 0; i < variationCount; ++i)
-                variations[variationCount + i] = variations[i].flippedHorizontally();
-
-            flippedHorizontallyFlag = 1 << nextFlag++;
-            variationCount *= 2;
-        }
-
-        if (wangTile.asNeededInheritFromSet() ? set_canFlipV : wangTile.asNeededFlipVertically()) {
-            for (int i = 0; i < variationCount; ++i)
-                variations[variationCount + i] = variations[i].flippedVertically();
-
-            flippedVerticallyFlag = 1 << nextFlag++;
-            variationCount *= 2;
-        }
-
-        for (int variation = 0; variation < variationCount; ++variation) {
-            const WangId wangId = variations[variation];
-
-            if ((wangId & info.mask) != maskedWangId)
-                continue;
-
-            // Start with a small penalty for variations, when non-flipped
-            // versions are supposed to be preferred.
-            int totalPenalty = variation && preferNonTransformed;
-
-            for (int i = 0; i < WangId::NumIndexes; ++i) {
-                const int desiredColor = info.desired.indexColor(i);
-                const int candidateColor = wangId.indexColor(i);
-
-                if (candidateColor != desiredColor) {
-                    int penalty = mWangSet.transitionPenalty(desiredColor, candidateColor);
-
-                    // If there is no path to the desired color, this isn't a useful transition
-                    if (penalty < 0) {
-                        if (mCorrectionsEnabled) {
-                            // When we're doing corrections, we'd rather not choose
-                            // this candidate at all because it's impossible to
-                            // transition to the desired color.
-                            totalPenalty = -1;
-                            break;
-                        } else {
-                            penalty = mWangSet.maximumColorDistance() + 1;
-                        }
+                // If there is no path to the desired color, this isn't a useful transition
+                if (penalty < 0) {
+                    if (mCorrectionsEnabled) {
+                        // When we're doing corrections, we'd rather not choose
+                        // this candidate at all because it's impossible to
+                        // transition to the desired color.
+                        return;
+                    } else {
+                        penalty = mWangSet.maximumColorDistance() + 1;
                     }
-
-                    totalPenalty += penalty * 2;
                 }
+
+                totalPenalty += penalty;
+            }
+        }
+
+        // Add tile to the candidate list
+        if (totalPenalty <= lowestPenalty) {
+            if (totalPenalty < lowestPenalty) {
+                matches.clear();
+                lowestPenalty = totalPenalty;
             }
 
-            // Add tile to the candidate list
-            if (totalPenalty >= 0 && totalPenalty <= lowestPenalty) {
-                if (totalPenalty < lowestPenalty) {
-                    matches.clear();
-                    lowestPenalty = totalPenalty;
-                }
+            qreal probability = mWangSet.wangIdProbability(wangId);
+            if (Tile *tile = cell.tile())
+                probability *= tile->probability();
 
-                const qreal probability = mWangSet.wangTileProbability(wangTile);
-
-                if (!variation) {
-                    matches.add(wangTile, probability);
-                } else {
-                    WangTile wangTileVariation = wangTile;
-
-                    if (variation & rotatedRightFlag)
-                        wangTileVariation.rotateRight();
-                    if (variation & flippedHorizontallyFlag)
-                        wangTileVariation.flipHorizontally();
-                    if (variation & flippedVerticallyFlag)
-                        wangTileVariation.flipVertically();
-
-                    matches.add(wangTileVariation, probability);
-                }
-            }
+            matches.add(cell, probability);
         }
     };
 
-    for (const WangTile &wangTile : mWangSet.wangTilesByWangId())
-        processCandidate(wangTile);
+    const auto &wangIdsAndCells = mWangSet.wangIdsAndCells();
+    for (int i = 0, i_end = wangIdsAndCells.size(); i < i_end; ++i)
+        processCandidate(wangIdsAndCells[i].wangId, wangIdsAndCells[i].cell);
 
     if (mErasingEnabled)
-        processCandidate(WangTile());
+        processCandidate(WangId(), Cell());
 
     // Choose a candidate at random, with consideration for probability
     while (!matches.isEmpty()) {
@@ -383,6 +332,7 @@ bool WangFiller::findBestMatch(const TileLayer &target,
         // complete.
         if (!mCorrectionsEnabled && !mWangSet.isComplete()) {
             bool discard = false;
+            WangId resultWangId = mWangSet.wangIdOfCell(result);
 
             // Adjust the desired WangIds for the surrounding tiles based on
             // the to be placed one.
@@ -395,7 +345,7 @@ bool WangFiller::findBestMatch(const TileLayer &target,
                     continue;
 
                 CellInfo adjacentInfo = grid.get(p);
-                updateToAdjacent(adjacentInfo, result.wangId(), WangId::oppositeIndex(i));
+                updateToAdjacent(adjacentInfo, resultWangId, WangId::oppositeIndex(i));
 
                 if (!mWangSet.wangIdIsUsed(adjacentInfo.desired, adjacentInfo.mask)) {
                     discard = true;

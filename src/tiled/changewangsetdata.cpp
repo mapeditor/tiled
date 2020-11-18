@@ -178,29 +178,29 @@ ChangeWangTileFlipping::ChangeWangTileFlipping(TilesetDocument *TilesetDocument,
         for (int ws=0;ws<model->rowCount();++ws) {
             WangSet* w=model->wangSetAt(model->index(ws));
             WangId i = w->wangIdOfTile(t);
-            for (auto &wt:w->wangTilesByWangId().values(i)) {
-                if (wt.tile()==t)
-                {
-                    bool oldvalue=false;
-                    switch (_which)
-                    {
-                    case FlipX: oldvalue=wt.asNeededFlipHorizontally();
-                        wt.setAsNeededFlipHorizontally(newValue);
-                        break;
-                    case FlipY: oldvalue=wt.asNeededFlipVertically();
-                        wt.setAsNeededFlipVertically(newValue);
-                        break;
-                    case FlipAD: oldvalue=wt.asNeededFlipAntiDiagonally();
-                        wt.setAsNeededFlipAntiDiagonally(newValue);
-                        break;
-                    case Inherit: oldvalue=wt.asNeededInheritFromSet();
-                        wt.setAsNeededInheritFromSet(newValue);
-                        break;
-                    case Unused: break;
-                    }
-                    mOldValue.insert(t, oldvalue);
-                }
-            }
+//            for (auto &wt:w->wangTilesByWangId().values(i)) {
+//                if (wt.tile()==t)
+//                {
+//                    bool oldvalue=false;
+//                    switch (_which)
+//                    {
+//                    case FlipX: oldvalue=wt.asNeededFlipHorizontally();
+//                        wt.setAsNeededFlipHorizontally(newValue);
+//                        break;
+//                    case FlipY: oldvalue=wt.asNeededFlipVertically();
+//                        wt.setAsNeededFlipVertically(newValue);
+//                        break;
+//                    case FlipAD: oldvalue=wt.asNeededFlipAntiDiagonally();
+//                        wt.setAsNeededFlipAntiDiagonally(newValue);
+//                        break;
+//                    case Inherit: oldvalue=wt.asNeededInheritFromSet();
+//                        wt.setAsNeededInheritFromSet(newValue);
+//                        break;
+//                    case Unused: break;
+//                    }
+//                    mOldValue.insert(t, oldvalue);
+//                }
+//            }
         }
         mTilesetDocument->changeWangTileFlipPermission(t);
     }
@@ -216,19 +216,19 @@ void ChangeWangTileFlipping::undo()
         for (int ws=0;ws<model->rowCount();++ws) {
             WangSet* w=model->wangSetAt(model->index(ws));
             WangId i = w->wangIdOfTile(t);
-            for (auto &wt:w->wangTilesByWangId().values(i)) {
-                if (wt.tile()==t)
-                {
-                    switch (mWhich)
-                    {
-                    case FlipX: wt.setAsNeededFlipHorizontally(oldValue); break;
-                    case FlipY: wt.setAsNeededFlipVertically(oldValue); break;
-                    case FlipAD: wt.setAsNeededFlipAntiDiagonally(oldValue); break;
-                    case Inherit: wt.setAsNeededInheritFromSet(oldValue); break;
-                    case Unused: break;
-                    }
-                }
-            }
+//            for (auto &wt:w->wangTilesByWangId().values(i)) {
+//                if (wt.tile()==t)
+//                {
+//                    switch (mWhich)
+//                    {
+//                    case FlipX: wt.setAsNeededFlipHorizontally(oldValue); break;
+//                    case FlipY: wt.setAsNeededFlipVertically(oldValue); break;
+//                    case FlipAD: wt.setAsNeededFlipAntiDiagonally(oldValue); break;
+//                    case Inherit: wt.setAsNeededInheritFromSet(oldValue); break;
+//                    case Unused: break;
+//                    }
+//                }
+//            }
         }
         mTilesetDocument->changeWangTileFlipPermission(t);
     }
@@ -244,19 +244,19 @@ void ChangeWangTileFlipping::redo()
         for (int ws=0;ws<model->rowCount();++ws) {
             WangSet* w=model->wangSetAt(model->index(ws));
             WangId i = w->wangIdOfTile(t);
-            for (auto &wt:w->wangTilesByWangId().values(i)) {
-                if (wt.tile()==t)
-                {
-                    switch (mWhich)
-                    {
-                    case FlipX: wt.setAsNeededFlipHorizontally(newValue); break;
-                    case FlipY: wt.setAsNeededFlipVertically(newValue); break;
-                    case FlipAD: wt.setAsNeededFlipAntiDiagonally(newValue); break;
-                    case Inherit: wt.setAsNeededInheritFromSet(newValue); break;
-                    case Unused: break;
-                    }
-                }
-            }
+//            for (auto &wt:w->wangTilesByWangId().values(i)) {
+//                if (wt.tile()==t)
+//                {
+//                    switch (mWhich)
+//                    {
+//                    case FlipX: wt.setAsNeededFlipHorizontally(newValue); break;
+//                    case FlipY: wt.setAsNeededFlipVertically(newValue); break;
+//                    case FlipAD: wt.setAsNeededFlipAntiDiagonally(newValue); break;
+//                    case Inherit: wt.setAsNeededInheritFromSet(newValue); break;
+//                    case Unused: break;
+//                    }
+//                }
+//            }
         }
         mTilesetDocument->changeWangTileFlipPermission(t);
     }
