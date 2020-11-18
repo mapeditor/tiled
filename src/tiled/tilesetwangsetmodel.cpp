@@ -186,30 +186,6 @@ void TilesetWangSetModel::removeWangColorAt(WangSet *wangSet, int color)
     wangSet->removeWangColorAt(color);
     emitWangSetChange(wangSet);
 }
-void TilesetWangSetModel::setAsNeededFlipHorizontally(WangSet *wangSet, bool on)
-{
-    Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
-    wangSet->setAsNeededFlipHorizontally(on);
-    emitWangSetChange(wangSet);
-}
-void TilesetWangSetModel::setAsNeededFlipVertically(WangSet *wangSet, bool on)
-{
-    Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
-    wangSet->setAsNeededFlipVertically(on);
-    emitWangSetChange(wangSet);
-}
-void TilesetWangSetModel::setAsNeededFlipAntiDiagonally(WangSet *wangSet, bool on)
-{
-    Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
-    wangSet->setAsNeededFlipAntiDiagonally(on);
-    emitWangSetChange(wangSet);
-}
-void TilesetWangSetModel::setPreferNonTransformedTiles(WangSet *wangSet, bool on)
-{
-    Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
-    wangSet->setPreferNonTransformedTiles(on);
-    emitWangSetChange(wangSet);
-}
 
 void TilesetWangSetModel::emitWangSetChange(WangSet *wangSet)
 {

@@ -228,4 +228,42 @@ void ChangeTilesetGridSize::swap()
     emit mTilesetDocument->tilesetChanged(&tileset);
 }
 
+
+ChangeTilesetFlipping::ChangeTilesetFlipping(TilesetDocument *TilesetDocument,
+                                             ChangeType _which,
+                                             bool newValue)
+    : mTilesetDocument(TilesetDocument), mWhich(_which),
+      mOldValue(_which == FlipX ? TilesetDocument->tileset()->asNeededFlipHorizontally()
+              : _which == FlipY ? TilesetDocument->tileset()->asNeededFlipVertically()
+              : _which == FlipAD ? TilesetDocument->tileset()->asNeededFlipAntiDiagonally()
+                                 : TilesetDocument->tileset()->preferNonTransformedTiles()),
+      mNewValue(newValue)
+{
+}
+
+void ChangeTilesetFlipping::undo()
+{
+    switch (mWhich)
+    {
+    // TODO: How to get the tileset model?
+    case FlipX: mTilesetDocument->tileset()->setAsNeededFlipHorizontally(mOldValue); break;
+    case FlipY: mTilesetDocument->tileset()->setAsNeededFlipVertically(mOldValue); break;
+    case FlipAD: mTilesetDocument->tileset()->setAsNeededFlipAntiDiagonally(mOldValue); break;
+    case RandomFlip: mTilesetDocument->tileset()->setPreferNonTransformedTiles(mOldValue); break;
+    }
+    emit mTilesetDocument->tilesetChanged(&*mTilesetDocument->tileset());
+    QUndoCommand::undo();
+}
+void ChangeTilesetFlipping::redo()
+{
+    switch (mWhich)
+    {
+    case FlipX: mTilesetDocument->tileset()->setAsNeededFlipHorizontally(mNewValue); break;
+    case FlipY: mTilesetDocument->tileset()->setAsNeededFlipVertically(mNewValue); break;
+    case FlipAD: mTilesetDocument->tileset()->setAsNeededFlipAntiDiagonally(mNewValue); break;
+    case RandomFlip: mTilesetDocument->tileset()->setPreferNonTransformedTiles(mNewValue); break;
+    }
+    QUndoCommand::redo();
+}
+
 } // namespace Tiled

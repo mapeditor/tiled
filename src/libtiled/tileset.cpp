@@ -886,6 +886,11 @@ SharedTileset Tileset::clone() const
     // the tileset when it calls TilesetManager::tilesetImageSourceChanged.
     c->setImageReference(mImageReference);
 
+    c->mAsNeededFlipHorizontally = mAsNeededFlipHorizontally;
+    c->mAsNeededFlipVertially = mAsNeededFlipVertially;
+    c->mAsNeededFlipAntiDiagonally = mAsNeededFlipAntiDiagonally;
+    c->mPreferNonTransformedTiles = mPreferNonTransformedTiles;
+
     return c;
 }
 
@@ -925,6 +930,30 @@ Tileset::Orientation Tileset::orientationFromString(const QString &string)
     if (string == QLatin1String("isometric"))
         orientation = Isometric;
     return orientation;
+}
+
+void Tileset::setAsNeededFlipHorizontally(bool on)
+{
+    mAsNeededFlipHorizontally = on;
+    //mCellsDirty = true;
+}
+
+void Tileset::setAsNeededFlipVertically(bool on)
+{
+    mAsNeededFlipVertially = on;
+    //mCellsDirty = true;
+}
+
+void Tileset::setAsNeededFlipAntiDiagonally(bool on)
+{
+    mAsNeededFlipAntiDiagonally = on;
+    //mCellsDirty = true;
+}
+
+void Tileset::setPreferNonTransformedTiles(bool on)
+{
+    mPreferNonTransformedTiles = on;
+    //mCellsDirty = true;
 }
 
 } // namespace Tiled

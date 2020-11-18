@@ -239,3 +239,24 @@ void TilesetModel::refreshTileIds()
     for (Tile *tile : mTileset->tiles())
         mTileIds.append(tile->id());
 }
+
+void TilesetModel::setAsNeededFlipHorizontally(bool on)
+{
+    tileset()->setAsNeededFlipHorizontally(on);
+    tilesetChanged(); // too generic?
+}
+void TilesetModel::setAsNeededFlipVertically(bool on)
+{
+    tileset()->setAsNeededFlipVertically(on);
+    tilesetChanged();
+}
+void TilesetModel::setAsNeededFlipAntiDiagonally(bool on)
+{
+    tileset()->setAsNeededFlipAntiDiagonally(on);
+    tilesetChanged();
+}
+void TilesetModel::setPreferNonTransformedTiles(bool on)
+{
+    tileset()->setPreferNonTransformedTiles(on);
+    tilesetChanged();
+}

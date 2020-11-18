@@ -245,6 +245,15 @@ public:
      */
     static Orientation orientationFromString(const QString &);
 
+    bool asNeededFlipHorizontally() const;
+    bool asNeededFlipVertically() const;
+    bool asNeededFlipAntiDiagonally() const;
+    bool preferNonTransformedTiles() const;
+    void setAsNeededFlipHorizontally(bool);
+    void setAsNeededFlipVertically(bool);
+    void setAsNeededFlipAntiDiagonally(bool);
+    void setPreferNonTransformedTiles(bool);
+
 private:
     void updateTileSize();
     void recalculateTerrainDistances();
@@ -275,6 +284,11 @@ private:
 
     QWeakPointer<Tileset> mWeakPointer;
     QWeakPointer<Tileset> mOriginalTileset;
+
+    bool mAsNeededFlipHorizontally = false;
+    bool mAsNeededFlipVertially = false;
+    bool mAsNeededFlipAntiDiagonally = false;
+    bool mPreferNonTransformedTiles = true;
 };
 
 
@@ -680,6 +694,26 @@ inline LoadingStatus Tileset::status() const
 inline LoadingStatus Tileset::imageStatus() const
 {
     return mImageReference.status;
+}
+
+inline bool Tileset::asNeededFlipHorizontally() const
+{
+    return mAsNeededFlipHorizontally;
+}
+
+inline bool Tileset::asNeededFlipVertically() const
+{
+    return mAsNeededFlipVertially;
+}
+
+inline bool Tileset::asNeededFlipAntiDiagonally() const
+{
+    return mAsNeededFlipAntiDiagonally;
+}
+
+inline bool Tileset::preferNonTransformedTiles() const
+{
+    return mPreferNonTransformedTiles;
 }
 
 } // namespace Tiled

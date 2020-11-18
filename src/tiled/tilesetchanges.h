@@ -190,4 +190,22 @@ private:
     QSize mGridSize;
 };
 
+class ChangeTilesetFlipping : public QUndoCommand
+{
+public:
+    enum ChangeType { FlipX, FlipY, FlipAD, RandomFlip };
+    ChangeTilesetFlipping(TilesetDocument *TilesetDocument,
+                            ChangeType which,
+                            bool newValue);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    TilesetDocument *mTilesetDocument;
+    const ChangeType mWhich;
+    const bool mOldValue;
+    const bool mNewValue;
+};
+
 } // namespace Tiled

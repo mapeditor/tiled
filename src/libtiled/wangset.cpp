@@ -579,7 +579,7 @@ void WangSet::recalculateCells()
 
         // TODO: Take individual Tile flipping preferences into account again
 
-        if (asNeededFlipAntiDiagonally()) {
+        if (tileset()->asNeededFlipAntiDiagonally()) {
             for (int i = 0; i < count; ++i) {
                 cells[count + i] = cells[i];
                 cells[count + i].setFlippedAntiDiagonally(true);
@@ -590,7 +590,7 @@ void WangSet::recalculateCells()
             count *= 2;
         }
 
-        if (asNeededFlipHorizontally()) {
+        if (tileset()->asNeededFlipHorizontally()) {
             for (int i = 0; i < count; ++i) {
                 cells[count + i] = cells[i];
                 cells[count + i].setFlippedHorizontally(!cells[count + i].flippedHorizontally());
@@ -600,7 +600,7 @@ void WangSet::recalculateCells()
             count *= 2;
         }
 
-        if (asNeededFlipVertically()) {
+        if (tileset()->asNeededFlipVertically()) {
             for (int i = 0; i < count; ++i) {
                 cells[count + i] = cells[i];
                 cells[count + i].setFlippedVertically(!cells[count + i].flippedVertically());
@@ -612,7 +612,7 @@ void WangSet::recalculateCells()
 
         for (int i = 1; i < count; ++i) {
             const bool exists = addedWangIds.contains(wangIds[i]);
-            if (preferNonTransformedTiles() && exists)
+            if (tileset()->preferNonTransformedTiles() && exists)
                 continue;
             mUniqueFullWangIdCount += !hasWildCards && !exists;
             addedWangIds.insert(wangIds[i]);
@@ -979,10 +979,6 @@ WangSet *WangSet::clone(Tileset *tileset) const
     c->mMaximumColorDistance = mMaximumColorDistance;
     c->mColorDistancesDirty = mColorDistancesDirty;
     c->mCellsDirty = mCellsDirty;
-    c->mAsNeededFlipHorizontally = mAsNeededFlipHorizontally;
-    c->mAsNeededFlipVertially = mAsNeededFlipVertially;
-    c->mAsNeededFlipAntiDiagonally = mAsNeededFlipAntiDiagonally;
-    c->mPreferNonTransformedTiles = mPreferNonTransformedTiles;
     c->setProperties(properties());
 
     // Avoid sharing Wang colors
@@ -1001,30 +997,6 @@ WangSet *WangSet::clone(Tileset *tileset) const
     }
 
     return c;
-}
-
-void WangSet::setAsNeededFlipHorizontally(bool on)
-{
-    mAsNeededFlipHorizontally = on;
-    mCellsDirty = true;
-}
-
-void WangSet::setAsNeededFlipVertically(bool on)
-{
-    mAsNeededFlipVertially = on;
-    mCellsDirty = true;
-}
-
-void WangSet::setAsNeededFlipAntiDiagonally(bool on)
-{
-    mAsNeededFlipAntiDiagonally = on;
-    mCellsDirty = true;
-}
-
-void WangSet::setPreferNonTransformedTiles(bool on)
-{
-    mPreferNonTransformedTiles = on;
-    mCellsDirty = true;
 }
 
 QString wangSetTypeToString(WangSet::Type type)

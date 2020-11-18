@@ -129,43 +129,6 @@ void ChangeWangSetColorCount::redo()
 }
 
 
-ChangeWangSetFlipping::ChangeWangSetFlipping(TilesetDocument *TilesetDocument,
-                                             WangSet *wangSet,
-                                             ChangeType _which,
-                                             bool newValue)
-    : mTilesetDocument(TilesetDocument), mWangSet(wangSet), mWhich(_which),
-      mOldValue(_which == FlipX ? wangSet->asNeededFlipHorizontally()
-              : _which == FlipY ? wangSet->asNeededFlipVertically()
-              : _which == FlipAD ? wangSet->asNeededFlipAntiDiagonally()
-                                 : wangSet->preferNonTransformedTiles()),
-      mNewValue(newValue)
-{
-}
-
-void ChangeWangSetFlipping::undo()
-{
-    switch (mWhich)
-    {
-    case FlipX: mTilesetDocument->wangSetModel()->setAsNeededFlipHorizontally(mWangSet, mOldValue); break;
-    case FlipY: mTilesetDocument->wangSetModel()->setAsNeededFlipVertically(mWangSet, mOldValue); break;
-    case FlipAD: mTilesetDocument->wangSetModel()->setAsNeededFlipAntiDiagonally(mWangSet, mOldValue); break;
-    case RandomFlip: mTilesetDocument->wangSetModel()->setPreferNonTransformedTiles(mWangSet, mOldValue); break;
-    }
-    QUndoCommand::undo();
-}
-void ChangeWangSetFlipping::redo()
-{
-    switch (mWhich)
-    {
-    case FlipX: mTilesetDocument->wangSetModel()->setAsNeededFlipHorizontally(mWangSet, mNewValue); break;
-    case FlipY: mTilesetDocument->wangSetModel()->setAsNeededFlipVertically(mWangSet, mNewValue); break;
-    case FlipAD: mTilesetDocument->wangSetModel()->setAsNeededFlipAntiDiagonally(mWangSet, mNewValue); break;
-    case RandomFlip: mTilesetDocument->wangSetModel()->setPreferNonTransformedTiles(mWangSet, mNewValue); break;
-    }
-    QUndoCommand::redo();
-}
-
-
 ChangeWangTileFlipping::ChangeWangTileFlipping(TilesetDocument *TilesetDocument,
                                              const QList<Tile*> &tiles,
                                              ChangeType _which,

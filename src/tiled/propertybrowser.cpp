@@ -831,6 +831,15 @@ void PropertyBrowser::addTilesetProperties()
     QtVariantProperty *columnsProperty = addProperty(ColumnCountProperty, QVariant::Int, tr("Columns"), groupProperty);
     columnsProperty->setAttribute(QLatin1String("minimum"), 1);
 
+    QtVariantProperty *flipXProperty = addProperty(WangSetFlipXProperty, QVariant::Bool, tr("Flip Horizontally"), groupProperty);
+    QtVariantProperty *flipYProperty = addProperty(WangSetFlipYProperty, QVariant::Bool, tr("Flip Vertically"), groupProperty);
+    QtVariantProperty *flipADProperty = addProperty(WangSetFlipADProperty, QVariant::Bool, tr("Flip AntiDiagonally"), groupProperty);
+    QtVariantProperty *randomProperty = addProperty(WangSetPreferNonTransformedProperty, QVariant::Bool, tr("Prefer non-transformed tiles"), groupProperty);
+    flipXProperty->setEnabled(mTilesetDocument);
+    flipYProperty->setEnabled(mTilesetDocument);
+    flipADProperty->setEnabled(mTilesetDocument);
+    randomProperty->setEnabled(mTilesetDocument);
+
     // Next properties we should add only for non 'Collection of Images' tilesets
     if (!tileset->isCollection()) {
         QtVariantProperty *parametersProperty =
@@ -909,10 +918,6 @@ void PropertyBrowser::addWangSetProperties()
                                                   tr("Type"),
                                                   groupProperty);
     QtVariantProperty *colorCountProperty = addProperty(ColorCountProperty, QVariant::Int, tr("Color Count"), groupProperty);
-    QtVariantProperty *flipXProperty = addProperty(WangSetFlipXProperty, QVariant::Bool, tr("Flip Horizontally"), groupProperty);
-    QtVariantProperty *flipYProperty = addProperty(WangSetFlipYProperty, QVariant::Bool, tr("Flip Vertically"), groupProperty);
-    QtVariantProperty *flipADProperty = addProperty(WangSetFlipADProperty, QVariant::Bool, tr("Flip AntiDiagonally"), groupProperty);
-    QtVariantProperty *randomProperty = addProperty(WangSetPreferNonTransformedProperty, QVariant::Bool, tr("Prefer non-transformed tiles"), groupProperty);
 
     typeProperty->setAttribute(QLatin1String("enumNames"), mWangSetTypeNames);
 
@@ -921,10 +926,6 @@ void PropertyBrowser::addWangSetProperties()
 
     nameProperty->setEnabled(mTilesetDocument);
     colorCountProperty->setEnabled(mTilesetDocument);
-    flipXProperty->setEnabled(mTilesetDocument);
-    flipYProperty->setEnabled(mTilesetDocument);
-    flipADProperty->setEnabled(mTilesetDocument);
-    randomProperty->setEnabled(mTilesetDocument);
 
     addProperty(groupProperty);
 }
@@ -1367,6 +1368,14 @@ void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
         undoStack->push(new ChangeTilesetBackgroundColor(mTilesetDocument,
                                                          val.value<QColor>()));
         break;
+    case WangSetFlipXProperty:
+    case WangSetFlipYProperty:
+    case WangSetFlipADProperty:
+    case WangSetPreferNonTransformedProperty:
+        undoStack->push(new ChangeTilesetFlipping(mTilesetDocument,
+                                                     ChangeTilesetFlipping::ChangeType(int(id)-int(WangSetFlipXProperty)),
+                                                     val.toBool()));
+        break;
     default:
         break;
     }
@@ -1433,15 +1442,6 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
         mDocument->undoStack()->push(new ChangeWangSetColorCount(mTilesetDocument,
                                                                  wangSet,
                                                                  val.toInt()));
-        break;
-    case WangSetFlipXProperty:
-    case WangSetFlipYProperty:
-    case WangSetFlipADProperty:
-    case WangSetPreferNonTransformedProperty:
-        mDocument->undoStack()->push(new ChangeWangSetFlipping(mTilesetDocument,
-                                                                 wangSet,
-                                                                 ChangeWangSetFlipping::ChangeType(int(id)-int(WangSetFlipXProperty)),
-                                                                 val.toBool()));
         break;
     default:
         break;
@@ -1778,6 +1778,11 @@ void PropertyBrowser::updateProperties()
             mIdToProperty[SpacingProperty]->setValue(tileset->tileSpacing());
             mIdToProperty[ColorProperty]->setValue(tileset->transparentColor());
         }
+
+        mIdToProperty[WangSetFlipXProperty]->setValue(tileset->asNeededFlipHorizontally());
+        mIdToProperty[WangSetFlipYProperty]->setValue(tileset->asNeededFlipVertically());
+        mIdToProperty[WangSetFlipADProperty]->setValue(tileset->asNeededFlipAntiDiagonally());
+        mIdToProperty[WangSetPreferNonTransformedProperty]->setValue(tileset->preferNonTransformedTiles());
         break;
     }
     case Object::TileType: {
@@ -1788,51 +1793,26 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[WidthProperty]->setValue(tileSize.width());
         mIdToProperty[HeightProperty]->setValue(tileSize.height());
         mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
+
+        mIdToProperty[WangTileIndividualFlipProperty]->setValue(!tile->asNeededInheritFromSet());
+        mIdToProperty[WangTileIndividualFlipProperty]->setEnabled(true);
+        if (tile->asNeededInheritFromSet())
         {
-            // to me this indicates that this should be a property of Tile instead of WangTile
-            bool found=false;
-            TilesetWangSetModel* model = mTilesetDocument->wangSetModel();
-            for (int ws=0;ws<model->rowCount();++ws) {
-                WangSet* w=model->wangSetAt(model->index(ws));
-                WangId i = w->wangIdOfTile(tile);
-//                for (auto &wt:w->wangTilesByWangId().values(i)) {
-//                    if (wt.tile()==tile)
-//                    {
-//                        mIdToProperty[WangTileIndividualFlipProperty]->setValue(!wt.asNeededInheritFromSet());
-//                        mIdToProperty[WangTileIndividualFlipProperty]->setEnabled(true);
-//                        if (wt.asNeededInheritFromSet())
-//                        {
-//                            // TODO: Only use currently selected WangSet?
-//                            mIdToProperty[WangSetFlipXProperty]->setValue(w->asNeededFlipHorizontally());
-//                            mIdToProperty[WangSetFlipXProperty]->setEnabled(false);
-//                            mIdToProperty[WangSetFlipYProperty]->setValue(w->asNeededFlipHorizontally());
-//                            mIdToProperty[WangSetFlipYProperty]->setEnabled(false);
-//                            mIdToProperty[WangSetFlipADProperty]->setValue(w->asNeededFlipAntiDiagonally());
-//                            mIdToProperty[WangSetFlipADProperty]->setEnabled(false);
-//                        }
-//                        else
-//                        {
-//                            mIdToProperty[WangSetFlipXProperty]->setValue(wt.asNeededFlipHorizontally());
-//                            mIdToProperty[WangSetFlipXProperty]->setEnabled(true);
-//                            mIdToProperty[WangSetFlipYProperty]->setValue(wt.asNeededFlipHorizontally());
-//                            mIdToProperty[WangSetFlipYProperty]->setEnabled(true);
-//                            mIdToProperty[WangSetFlipADProperty]->setValue(wt.asNeededFlipAntiDiagonally());
-//                            mIdToProperty[WangSetFlipADProperty]->setEnabled(true);
-//                        }
-//                        found=true;
-//                    }
-//                }
-            }
-            if (!found) {
-                mIdToProperty[WangTileIndividualFlipProperty]->setValue(false);
-                mIdToProperty[WangTileIndividualFlipProperty]->setEnabled(false);
-                mIdToProperty[WangSetFlipXProperty]->setValue(false);
-                mIdToProperty[WangSetFlipXProperty]->setEnabled(false);
-                mIdToProperty[WangSetFlipXProperty]->setValue(false);
-                mIdToProperty[WangSetFlipXProperty]->setEnabled(false);
-                mIdToProperty[WangSetFlipXProperty]->setValue(false);
-                mIdToProperty[WangSetFlipXProperty]->setEnabled(false);
-            }
+            mIdToProperty[WangSetFlipXProperty]->setValue(tile->asNeededFlipHorizontally());
+            mIdToProperty[WangSetFlipXProperty]->setEnabled(false);
+            mIdToProperty[WangSetFlipYProperty]->setValue(tile->asNeededFlipHorizontally());
+            mIdToProperty[WangSetFlipYProperty]->setEnabled(false);
+            mIdToProperty[WangSetFlipADProperty]->setValue(tile->asNeededFlipAntiDiagonally());
+            mIdToProperty[WangSetFlipADProperty]->setEnabled(false);
+        }
+        else
+        {
+            mIdToProperty[WangSetFlipXProperty]->setValue(tile->asNeededFlipHorizontally());
+            mIdToProperty[WangSetFlipXProperty]->setEnabled(true);
+            mIdToProperty[WangSetFlipYProperty]->setValue(tile->asNeededFlipHorizontally());
+            mIdToProperty[WangSetFlipYProperty]->setEnabled(true);
+            mIdToProperty[WangSetFlipADProperty]->setValue(tile->asNeededFlipAntiDiagonally());
+            mIdToProperty[WangSetFlipADProperty]->setEnabled(true);
         }
 
         if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
@@ -1846,10 +1826,6 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[NameProperty]->setValue(wangSet->name());
         mIdToProperty[WangSetTypeProperty]->setValue(wangSet->type());
         mIdToProperty[ColorCountProperty]->setValue(wangSet->colorCount());
-        mIdToProperty[WangSetFlipXProperty]->setValue(wangSet->asNeededFlipHorizontally());
-        mIdToProperty[WangSetFlipYProperty]->setValue(wangSet->asNeededFlipVertically());
-        mIdToProperty[WangSetFlipADProperty]->setValue(wangSet->asNeededFlipAntiDiagonally());
-        mIdToProperty[WangSetPreferNonTransformedProperty]->setValue(wangSet->preferNonTransformedTiles());
         break;
     }
     case Object::WangColorType: {
