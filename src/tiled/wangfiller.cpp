@@ -274,60 +274,36 @@ bool WangFiller::findBestMatch(const TileLayer &target,
     int lowestPenalty = INT_MAX;
 
     auto processCandidate = [&] (const WangTile &wangTile) {
-        enum Flips {
-            FlippedHorizontally = 0x1,
-            FlippedVertically   = 0x2,
-            RotatedRight        = 0x4,
-        };
+        int nextFlag = 0;
+        int rotatedRightFlag = 0;
+        int flippedHorizontallyFlag = 0;
+        int flippedVerticallyFlag = 0;
 
-        const bool canFlipH = wangTile.asNeededInheritFromSet()
-                ? set_canFlipH : wangTile.asNeededFlipHorizontally();
-        const bool canFlipV = wangTile.asNeededInheritFromSet()
-                ? set_canFlipV : wangTile.asNeededFlipVertically();
-        const bool canFlipA = wangTile.asNeededInheritFromSet()
-                ? set_canFlipA : wangTile.asNeededFlipAntiDiagonally();
-
-        WangId variations[8];
-        uint8_t variation_recipe[8];
-        variations[0] = wangTile.wangId();
-        variation_recipe[0]=0;
+        WangId variations[8] = { wangTile.wangId() };
         int variationCount = 1;
 
-        if (canFlipH) {
-            variations[variationCount] = variations[0].flippedHorizontally();
-            variation_recipe[variationCount]=FlippedHorizontally;
-            ++variationCount;
-            if (canFlipV) { // both permitted => 3 variants
-                variations[variationCount] = variations[1].flippedVertically();
-                variation_recipe[variationCount]=FlippedHorizontally+FlippedVertically;
-                ++variationCount;
-            }
+        if (wangTile.asNeededInheritFromSet() ? set_canFlipA : wangTile.asNeededFlipAntiDiagonally()) {
+            for (int i = 0; i < variationCount; ++i)
+                variations[variationCount + i] = variations[i].rotated(1);
+
+            rotatedRightFlag = 1 << nextFlag++;
+            variationCount *= 2;
         }
-        if (canFlipV) {
-            variations[variationCount] = variations[0].flippedVertically();
-            variation_recipe[variationCount]=FlippedVertically;
-            ++variationCount;
+
+        if (wangTile.asNeededInheritFromSet() ? set_canFlipH : wangTile.asNeededFlipHorizontally()) {
+            for (int i = 0; i < variationCount; ++i)
+                variations[variationCount + i] = variations[i].flippedHorizontally();
+
+            flippedHorizontallyFlag = 1 << nextFlag++;
+            variationCount *= 2;
         }
-        if (canFlipA) {
-            int aflip_index=variationCount;
-            variations[variationCount] = variations[0].rotated(1).flippedHorizontally();
-            variation_recipe[variationCount]=RotatedRight+FlippedHorizontally;
-            ++variationCount;
-            if (canFlipH) { // A+H
-                variations[variationCount] = variations[aflip_index].flippedHorizontally();
-                variation_recipe[variationCount]=RotatedRight;
-                ++variationCount;
-                if (canFlipV) { // all three permitted => 8 variants
-                    variations[variationCount] = variations[aflip_index+1].flippedVertically();
-                    variation_recipe[variationCount]=RotatedRight+FlippedVertically;
-                    ++variationCount;
-                }
-            }
-            if (canFlipV) { // A+V
-                variations[variationCount] = variations[aflip_index].flippedVertically();
-                variation_recipe[variationCount]=FlippedHorizontally+RotatedRight+FlippedVertically;
-                ++variationCount;
-            }
+
+        if (wangTile.asNeededInheritFromSet() ? set_canFlipV : wangTile.asNeededFlipVertically()) {
+            for (int i = 0; i < variationCount; ++i)
+                variations[variationCount + i] = variations[i].flippedVertically();
+
+            flippedVerticallyFlag = 1 << nextFlag++;
+            variationCount *= 2;
         }
 
         for (int variation = 0; variation < variationCount; ++variation) {
@@ -378,11 +354,11 @@ bool WangFiller::findBestMatch(const TileLayer &target,
                 } else {
                     WangTile wangTileVariation = wangTile;
 
-                    if (variation_recipe[variation] & RotatedRight)
+                    if (variation & rotatedRightFlag)
                         wangTileVariation.rotateRight();
-                    if (variation_recipe[variation] & FlippedHorizontally)
+                    if (variation & flippedHorizontallyFlag)
                         wangTileVariation.flipHorizontally();
-                    if (variation_recipe[variation] & FlippedVertically)
+                    if (variation & flippedVerticallyFlag)
                         wangTileVariation.flipVertically();
 
                     matches.add(wangTileVariation, probability);
