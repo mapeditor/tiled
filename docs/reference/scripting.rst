@@ -914,6 +914,7 @@ Properties
 .. csv-table::
     :widths: 1, 2
 
+    **id** : int |ro|, Unique (map-wide) ID of the layer (since Tiled 1.5).
     **name** : string, Name of the layer.
     **opacity** : number, "Opacity of the layer, from 0 (fully transparent) to 1 (fully opaque)."
     **visible** : bool, Whether the layer is visible (affects child layer visibility for group layers).
