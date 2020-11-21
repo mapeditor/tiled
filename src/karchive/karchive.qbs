@@ -1,15 +1,16 @@
 import qbs 1.0
 
 StaticLibrary {
-    condition: Qt.core.versionMajor > 5 || Qt.core.versionMinor >= 12
+    condition: (Qt.core.versionMajor > 5 || Qt.core.versionMinor >= 12) && !qbs.toolchain.contains("msvc")
 
     Depends { name: "cpp" }
     Depends { name: "Qt.core"; versionAtLeast: "5.12" }
 
     cpp.includePaths: [ "src" ]
     cpp.defines: [
+        "KARCHIVE_NO_DEPRECATED",
         "KARCHIVE_STATIC_DEFINE",
-        "KARCHIVE_NO_DEPRECATED"
+        "QT_NO_CAST_FROM_ASCII",
     ]
 
     files : [
@@ -57,8 +58,8 @@ StaticLibrary {
         Depends { name: "cpp" }
         cpp.includePaths: "src"
         cpp.defines: [
+            "KARCHIVE_NO_DEPRECATED",
             "KARCHIVE_STATIC_DEFINE",
-            "KARCHIVE_NO_DEPRECATED"
         ]
     }
 }
