@@ -1,7 +1,6 @@
 /*
- * Flare Tiled Plugin
- * Copyright 2010, Jaderamiso <jaderamiso@gmail.com>
- * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
+ * RpMap Tiled Plugin
+ * Copyright 2020, Christof Petig <christof.petig@arcor.de>
  *
  * This file is part of Tiled.
  *
