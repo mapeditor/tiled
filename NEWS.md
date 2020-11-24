@@ -1,9 +1,11 @@
-### Tiled 1.4.3 (...)
+### Tiled 1.4.3 (17 November 2020)
 
 * Fixed running Tiled on macOS Big Sur (#2845)
 * Improved error message when adding external tileset
-* Tile Collision Editor: Fixed invisible tile for isometric oriented tileset (#2892)
+* Fixed opening of files in already open instance of Tiled
+* Fixed crash in Edit Commands dialog (#2914)
 * Fixed Object Alignment not getting set when reloading a tileset
+* Tile Collision Editor: Fixed invisible tile for isometric oriented tileset (#2892)
 * Ignore attempts to replace a tileset with itself
 * qmake: Support linking to system Zstd on all UNIX-like systems
 

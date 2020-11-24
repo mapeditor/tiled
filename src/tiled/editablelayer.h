@@ -34,6 +34,7 @@ class EditableLayer : public EditableObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(int id READ id)
     Q_PROPERTY(QString name READ name WRITE setName)
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
@@ -55,6 +56,7 @@ public:
                   QObject *parent = nullptr);
     ~EditableLayer() override;
 
+    int id() const;
     const QString &name() const;
     qreal opacity() const;
     bool isVisible() const;
@@ -90,6 +92,11 @@ private:
     std::unique_ptr<Layer> mDetachedLayer;
 };
 
+
+inline int EditableLayer::id() const
+{
+    return layer()->id();
+}
 
 inline const QString &EditableLayer::name() const
 {

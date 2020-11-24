@@ -273,7 +273,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     QVariantList terrainsVariantList = variantMap[QStringLiteral("terrains")].toList();
     WangSet *terrainWangSet = nullptr;
     if (!terrainsVariantList.isEmpty()) {
-        auto wangSet = std::make_unique<WangSet>(tileset.data(), tr("Converted Terrains"), WangSet::Corner, -1);
+        auto wangSet = std::make_unique<WangSet>(tileset.data(), tr("Terrains"), WangSet::Corner, -1);
         wangSet->setColorCount(terrainsVariantList.size());
 
         for (int i = 0; i < terrainsVariantList.count(); ++i) {

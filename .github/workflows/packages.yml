@@ -15,9 +15,10 @@ on:
     - '.travis.yml'
 
 env:
-  QT_VERSION: 5.15.1
-  QTCREATOR_VERSION: 4.13.1
-  TILED_SNAPSHOT: true
+  QT_VERSION: 5.15.2
+  QTCREATOR_VERSION: 4.13.3
+  TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
+  TILED_SNAPSHOT: ${{ !startsWith(github.ref, 'refs/tags/v') }}
 
 jobs:
   version:
@@ -25,14 +26,18 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get-version.outputs.version }}
+      release: ${{ steps.get-version.outputs.release }}
 
     steps:
-    - id: get-version
-      name: Get version
-      run: echo "::set-output name=version::$(date "+%Y.%m.%d")"
+    - name: Get version
+      id: get-version
+      run: |
+        if [[ "$TILED_RELEASE" == 'true' ]]; then echo "::set-output name=version::${GITHUB_REF:11}" ; fi
+        if [[ "$TILED_RELEASE" != 'true' ]]; then echo "::set-output name=version::$(date "+%Y.%m.%d")" ; fi
+        echo "::set-output name=release::${TILED_RELEASE}"
 
   linux:
-    name: Linux
+    name: Linux (AppImage)
     runs-on: ubuntu-16.04
     needs: version
 
@@ -79,6 +84,44 @@ jobs:
       with:
         name: Tiled-x86_64.AppImage
         path: Tiled-x86_64.AppImage
+
+  snap:
+    name: Linux (snap)
+    runs-on: ubuntu-latest
+    needs: version
+
+    env:
+      TILED_VERSION: ${{ needs.version.outputs.version }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set Tiled version
+      id: version
+      run: |
+        sed -i 's/^version: .*/version: '"${TILED_VERSION}"'/g' snap/snapcraft.yaml
+        sed -i 's/TILED_VERSION = .*/TILED_VERSION = "'"${TILED_VERSION}"'"/g' tiled.pri
+        if [[ "$TILED_RELEASE" == 'true' ]]; then echo "::set-output name=snap_channel::candidate" ; fi
+        if [[ "$TILED_RELEASE" != 'true' ]]; then echo "::set-output name=snap_channel::beta" ; fi
+
+    - name: Build snap
+      id: build
+      uses: snapcore/action-build@v1
+
+    - name: Upload snap artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: tiled_amd64.snap
+        path: tiled_*_amd64.snap
+
+    - name: Release snap (beta channel)
+      uses: snapcore/action-publish@v1
+      if: github.repository == 'bjorn/tiled' && github.event_name == 'push' && (github.ref == 'refs/heads/snapshot' || needs.version.outputs.release == 'true')
+      with:
+        store_login: ${{ secrets.SNAP_STORE_LOGIN }}
+        snap: ${{ steps.build.outputs.snap }}
+        release: ${{ steps.version.outputs.snap_channel }}
 
   macos:
     name: macOS
@@ -223,8 +266,8 @@ jobs:
           artifact: Tiled-win64
 
     steps:
-    - id: download
-      name: Download artifact
+    - name: Download artifact
+      id: download
       uses: actions/download-artifact@v2
       with:
         name: ${{ matrix.artifact }}
@@ -242,5 +285,56 @@ jobs:
     - name: Push to itch.io
       env:
         BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
+        TILED_VERSION: ${{ needs.version.outputs.version }}
       run: |
-        ./butler push --userversion=${{ needs.version.outputs.version }} upload thorbjorn/tiled:${{ matrix.channel }}-snapshot
+        ITCH_CHANNEL = ${{ matrix.channel }}
+        if [[ "$TILED_SNAPSHOT" == 'true' ]]; then ITCH_CHANNEL = "${ITCH_CHANNEL}-snapshot" ; fi
+        ./butler push --userversion=${TILED_VERSION} upload thorbjorn/tiled:${ITCH_CHANNEL}
+
+  github:
+    name: Upload to GitHub releases
+    runs-on: ubuntu-latest
+    needs: [version, linux, macos, windows]
+
+    if: github.repository == 'bjorn/tiled' && github.event_name == 'push' && needs.version.outputs.release == 'true'
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Tiled ${{ needs.version.outputs.version }}
+          draft: true
+          prerelease: false
+
+      - name: Download Linux AppImage
+        id: download-appimage
+        uses: actions/download-artifact@v2
+        with:
+          name: Tiled-x86_64.AppImage
+
+      - name: Download macOS app
+        id: download-app
+        uses: actions/download-artifact@v2
+        with:
+          name: Tiled-macos.app
+
+      - name: Upload Linux AppImage
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Tiled-x86_64.AppImage
+          asset_name: Tiled-${{ needs.version.outputs.version }}-x86_64.AppImage
+          asset_content_type: application/vnd.appimage
+
+      - name: Upload macOS app
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Tiled-macos.zip
+          asset_name: Tiled-${{ needs.version.outputs.version }}-macos.zip
+          asset_content_type: application/zip

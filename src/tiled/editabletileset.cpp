@@ -25,6 +25,7 @@
 #include "editablemanager.h"
 #include "editabletile.h"
 #include "editablewangset.h"
+#include "scriptimage.h"
 #include "scriptmanager.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
@@ -67,6 +68,12 @@ EditableTileset::~EditableTileset()
     detachWangSets(tileset()->wangSets());
 
     EditableManager::instance().mEditableTilesets.remove(tileset());
+}
+
+void EditableTileset::loadFromImage(ScriptImage *image, const QString &source)
+{
+    // WARNING: This function has no undo!
+    tileset()->loadFromImage(image->image(), source);
 }
 
 EditableTile *EditableTileset::tile(int id)

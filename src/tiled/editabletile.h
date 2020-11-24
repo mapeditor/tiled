@@ -29,6 +29,7 @@ namespace Tiled {
 
 class EditableObjectGroup;
 class EditableTileset;
+class ScriptImage;
 class TilesetDocument;
 
 class EditableTile : public EditableObject
@@ -80,6 +81,8 @@ public:
     QJSValue frames() const;
     bool isAnimated() const;
     EditableTileset *tileset() const;
+
+    Q_INVOKABLE void setImage(Tiled::ScriptImage *image);
 
     Tile *tile() const;
 

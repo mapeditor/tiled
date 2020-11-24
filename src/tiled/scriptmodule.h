@@ -37,11 +37,12 @@ namespace Tiled {
 
 class EditableAsset;
 class MapEditor;
+class ScriptImage;
+class ScriptMapFormatWrapper;
+class ScriptTilesetFormatWrapper;
 class ScriptedAction;
 class ScriptedMapFormat;
 class ScriptedTilesetFormat;
-class ScriptMapFormatWrapper;
-class ScriptTilesetFormatWrapper;
 class ScriptedTool;
 class TilesetEditor;
 

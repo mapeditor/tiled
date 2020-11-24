@@ -5,7 +5,7 @@ QtGuiApplication {
     name: "tiledquick"
     targetName: name
     builtByDefault: false
-    condition: Qt.core.versionMinor > 10
+    condition: Qt.core.versionMajor >= 6 || Qt.core.versionMinor > 10
 
     Depends {
         name: "Qt"

@@ -225,6 +225,7 @@ WangDock::WangDock(QWidget *parent)
 
     QHBoxLayout *templateAndColorHorizontal = new QHBoxLayout;
     templateAndColorHorizontal->addWidget(mEraseWangIdsButton);
+    templateAndColorHorizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
 
     QVBoxLayout *templateAndColorVertical = new QVBoxLayout(mTemplateAndColorWidget);
     templateAndColorVertical->setContentsMargins(0, 0, 0, 0);
@@ -273,7 +274,6 @@ void WangDock::setDocument(Document *document)
         setColorView();
         mWangSetToolBar->setVisible(false);
         mWangColorToolBar->setVisible(false);
-        mEraseWangIdsButton->setVisible(false);
 
         mTemplateAndColorView->setTabEnabled(1, false);
         mTemplateAndColorView->tabBar()->hide();
@@ -293,7 +293,6 @@ void WangDock::setDocument(Document *document)
 
         mWangSetToolBar->setVisible(true);
         mWangColorToolBar->setVisible(true);
-        mEraseWangIdsButton->setVisible(true);
 
         mTemplateAndColorView->setTabEnabled(1, true);
         mTemplateAndColorView->tabBar()->show();
