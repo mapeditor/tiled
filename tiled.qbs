@@ -23,6 +23,7 @@ Project {
         "docs",
         "src/libtiled",
         "src/libtiledquick",
+        "src/karchive",
         "src/plugins",
         "src/qtpropertybrowser",
         "src/qtsingleapplication",
