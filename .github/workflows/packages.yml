@@ -15,8 +15,8 @@ on:
     - '.travis.yml'
 
 env:
-  QT_VERSION: 5.15.1
-  QTCREATOR_VERSION: 4.13.1
+  QT_VERSION: 5.15.2
+  QTCREATOR_VERSION: 4.13.3
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
   TILED_SNAPSHOT: ${{ !startsWith(github.ref, 'refs/tags/v') }}
 
