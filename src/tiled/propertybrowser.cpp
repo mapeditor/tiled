@@ -831,13 +831,13 @@ void PropertyBrowser::addTilesetProperties()
     QtVariantProperty *columnsProperty = addProperty(ColumnCountProperty, QVariant::Int, tr("Columns"), groupProperty);
     columnsProperty->setAttribute(QLatin1String("minimum"), 1);
 
-    QtVariantProperty *flipXProperty = addProperty(WangSetFlipXProperty, QVariant::Bool, tr("Flip Horizontally"), groupProperty);
-    QtVariantProperty *flipYProperty = addProperty(WangSetFlipYProperty, QVariant::Bool, tr("Flip Vertically"), groupProperty);
-    QtVariantProperty *flipADProperty = addProperty(WangSetFlipADProperty, QVariant::Bool, tr("Flip AntiDiagonally"), groupProperty);
-    QtVariantProperty *randomProperty = addProperty(WangSetPreferNonTransformedProperty, QVariant::Bool, tr("Prefer non-transformed tiles"), groupProperty);
-    flipXProperty->setEnabled(mTilesetDocument);
-    flipYProperty->setEnabled(mTilesetDocument);
-    flipADProperty->setEnabled(mTilesetDocument);
+    QtVariantProperty *flipHorizontallyProperty = addProperty(AllowFlipHorizontallyProperty, QVariant::Bool, tr("Flip Horizontally"), groupProperty);
+    QtVariantProperty *flipVerticallyProperty = addProperty(AllowFlipVerticallyProperty, QVariant::Bool, tr("Flip Vertically"), groupProperty);
+    QtVariantProperty *rotateProperty = addProperty(AllowRotateProperty, QVariant::Bool, tr("Rotate"), groupProperty);
+    QtVariantProperty *randomProperty = addProperty(PreferUntransformedProperty, QVariant::Bool, tr("Prefer Untransformed Tiles"), groupProperty);
+    flipHorizontallyProperty->setEnabled(mTilesetDocument);
+    flipVerticallyProperty->setEnabled(mTilesetDocument);
+    rotateProperty->setEnabled(mTilesetDocument);
     randomProperty->setEnabled(mTilesetDocument);
 
     // Next properties we should add only for non 'Collection of Images' tilesets
@@ -886,13 +886,13 @@ void PropertyBrowser::addTileProperties()
     probabilityProperty->setAttribute(QLatin1String("decimals"), 3);
     probabilityProperty->setToolTip(tr("Relative chance this tile will be picked"));
     probabilityProperty->setEnabled(mTilesetDocument);
-    QtVariantProperty *overrideProperty = addProperty(WangTileIndividualFlipProperty, QVariant::Bool, tr("Override Flipping"), groupProperty);
-    QtVariantProperty *flipXProperty = addProperty(WangSetFlipXProperty, QVariant::Bool, tr("Flip Horizontally"), groupProperty);
-    QtVariantProperty *flipYProperty = addProperty(WangSetFlipYProperty, QVariant::Bool, tr("Flip Vertically"), groupProperty);
-    QtVariantProperty *flipADProperty = addProperty(WangSetFlipADProperty, QVariant::Bool, tr("Flip AntiDiagonally"), groupProperty);
-    flipXProperty->setEnabled(false);
-    flipYProperty->setEnabled(false);
-    flipADProperty->setEnabled(false);
+    QtVariantProperty *overrideProperty = addProperty(OverrideTransformationFlagsProperty, QVariant::Bool, tr("Override Flipping"), groupProperty);
+    QtVariantProperty *flipHorizontallyProperty = addProperty(AllowFlipHorizontallyProperty, QVariant::Bool, tr("Flip Horizontally"), groupProperty);
+    QtVariantProperty *flipVerticallyProperty = addProperty(AllowFlipVerticallyProperty, QVariant::Bool, tr("Flip Vertically"), groupProperty);
+    QtVariantProperty *rotateProperty = addProperty(AllowRotateProperty, QVariant::Bool, tr("Rotate"), groupProperty);
+    flipHorizontallyProperty->setEnabled(false);
+    flipVerticallyProperty->setEnabled(false);
+    rotateProperty->setEnabled(false);
     overrideProperty->setEnabled(mTilesetDocument);
 
     const Tile *tile = static_cast<const Tile*>(mObject);
@@ -1368,14 +1368,44 @@ void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
         undoStack->push(new ChangeTilesetBackgroundColor(mTilesetDocument,
                                                          val.value<QColor>()));
         break;
-    case WangSetFlipXProperty:
-    case WangSetFlipYProperty:
-    case WangSetFlipADProperty:
-    case WangSetPreferNonTransformedProperty:
-        undoStack->push(new ChangeTilesetFlipping(mTilesetDocument,
-                                                     ChangeTilesetFlipping::ChangeType(int(id)-int(WangSetFlipXProperty)),
-                                                     val.toBool()));
+    case AllowFlipHorizontallyProperty:
+    case AllowFlipVerticallyProperty:
+    case AllowRotateProperty:
+    case PreferUntransformedProperty: {
+        Q_ASSERT(mTilesetDocument);
+
+        Tileset::TransformationFlag flag = Tileset::NoTransformation;
+        switch (id) {
+        case AllowFlipHorizontallyProperty:
+            flag = Tileset::AllowFlipHorizontally;
+            break;
+        case AllowFlipVerticallyProperty:
+            flag = Tileset::AllowFlipVertically;
+            break;
+        case AllowRotateProperty:
+            flag = Tileset::AllowRotate;
+            break;
+        case PreferUntransformedProperty:
+            flag = Tileset::PreferUntransformed;
+            break;
+        default:
+            return;
+        }
+
+        auto flags = tileset->transformationFlags();
+
+#if QT_VERSION >= 0x050700
+        flags.setFlag(flag, val.toBool());
+#else
+        if (val.toBool())
+            flags |= flag;
+        else
+            flags &= ~flag;
+#endif
+
+        undoStack->push(new ChangeTilesetTransformationFlags(mTilesetDocument, flags));
         break;
+    }
     default:
         break;
     }
@@ -1405,13 +1435,13 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
                                                   tile, filePath.url));
         break;
     }
-    case WangSetFlipXProperty:
-    case WangSetFlipYProperty:
-    case WangSetFlipADProperty:
-    case WangTileIndividualFlipProperty:
+    case AllowFlipHorizontallyProperty:
+    case AllowFlipVerticallyProperty:
+    case AllowRotateProperty:
+    case OverrideTransformationFlagsProperty:
         undoStack->push(new ChangeWangTileFlipping(mTilesetDocument,
                                              mTilesetDocument->selectedTiles(),
-                                             ChangeWangTileFlipping::ChangeType(int(id)-int(WangSetFlipXProperty)),
+                                             ChangeWangTileFlipping::ChangeType(int(id)-int(AllowFlipHorizontallyProperty)),
                                              val.toBool()));
         break;
     default:
@@ -1779,10 +1809,11 @@ void PropertyBrowser::updateProperties()
             mIdToProperty[ColorProperty]->setValue(tileset->transparentColor());
         }
 
-        mIdToProperty[WangSetFlipXProperty]->setValue(tileset->asNeededFlipHorizontally());
-        mIdToProperty[WangSetFlipYProperty]->setValue(tileset->asNeededFlipVertically());
-        mIdToProperty[WangSetFlipADProperty]->setValue(tileset->asNeededFlipAntiDiagonally());
-        mIdToProperty[WangSetPreferNonTransformedProperty]->setValue(tileset->preferNonTransformedTiles());
+        const auto flags = tileset->transformationFlags();
+        mIdToProperty[AllowFlipHorizontallyProperty]->setValue(flags.testFlag(Tileset::AllowFlipHorizontally));
+        mIdToProperty[AllowFlipVerticallyProperty]->setValue(flags.testFlag(Tileset::AllowFlipVertically));
+        mIdToProperty[AllowRotateProperty]->setValue(flags.testFlag(Tileset::AllowRotate));
+        mIdToProperty[PreferUntransformedProperty]->setValue(flags.testFlag(Tileset::PreferUntransformed));
         break;
     }
     case Object::TileType: {
@@ -1794,26 +1825,15 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[HeightProperty]->setValue(tileSize.height());
         mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
 
-        mIdToProperty[WangTileIndividualFlipProperty]->setValue(!tile->asNeededInheritFromSet());
-        mIdToProperty[WangTileIndividualFlipProperty]->setEnabled(true);
-        if (tile->asNeededInheritFromSet())
-        {
-            mIdToProperty[WangSetFlipXProperty]->setValue(tile->asNeededFlipHorizontally());
-            mIdToProperty[WangSetFlipXProperty]->setEnabled(false);
-            mIdToProperty[WangSetFlipYProperty]->setValue(tile->asNeededFlipHorizontally());
-            mIdToProperty[WangSetFlipYProperty]->setEnabled(false);
-            mIdToProperty[WangSetFlipADProperty]->setValue(tile->asNeededFlipAntiDiagonally());
-            mIdToProperty[WangSetFlipADProperty]->setEnabled(false);
-        }
-        else
-        {
-            mIdToProperty[WangSetFlipXProperty]->setValue(tile->asNeededFlipHorizontally());
-            mIdToProperty[WangSetFlipXProperty]->setEnabled(true);
-            mIdToProperty[WangSetFlipYProperty]->setValue(tile->asNeededFlipHorizontally());
-            mIdToProperty[WangSetFlipYProperty]->setEnabled(true);
-            mIdToProperty[WangSetFlipADProperty]->setValue(tile->asNeededFlipAntiDiagonally());
-            mIdToProperty[WangSetFlipADProperty]->setEnabled(true);
-        }
+        const bool override = !tile->asNeededInheritFromSet();
+        mIdToProperty[OverrideTransformationFlagsProperty]->setValue(override);
+        mIdToProperty[AllowFlipHorizontallyProperty]->setValue(tile->asNeededFlipHorizontally());
+        mIdToProperty[AllowFlipVerticallyProperty]->setValue(tile->asNeededFlipHorizontally());
+        mIdToProperty[AllowRotateProperty]->setValue(tile->asNeededFlipAntiDiagonally());
+
+        mIdToProperty[AllowFlipHorizontallyProperty]->setEnabled(override);
+        mIdToProperty[AllowFlipVerticallyProperty]->setEnabled(override);
+        mIdToProperty[AllowRotateProperty]->setEnabled(override);
 
         if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
             imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));

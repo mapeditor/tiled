@@ -342,6 +342,7 @@ public:
 private:
     void removeWangTile(const WangTile &wangTile);
 
+    bool cellsDirty() const;
     void recalculateCells();
     void recalculateColorDistances();
 
@@ -362,6 +363,7 @@ private:
     int mMaximumColorDistance = 0;
     bool mColorDistancesDirty = true;
     bool mCellsDirty = true;
+    Tileset::TransformationFlags mLastSeenTranslationFlags;
 };
 
 
@@ -434,6 +436,11 @@ inline void WangSet::addTile(Tile *tile, WangId wangId)
 inline bool WangSet::isEmpty() const
 {
     return mTileIdToWangId.isEmpty();
+}
+
+inline bool WangSet::cellsDirty() const
+{
+    return mCellsDirty || mLastSeenTranslationFlags != mTileset->transformationFlags();
 }
 
 TILEDSHARED_EXPORT QString wangSetTypeToString(WangSet::Type type);

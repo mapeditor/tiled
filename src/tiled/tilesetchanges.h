@@ -190,22 +190,19 @@ private:
     QSize mGridSize;
 };
 
-class ChangeTilesetFlipping : public QUndoCommand
+class ChangeTilesetTransformationFlags : public QUndoCommand
 {
 public:
-    enum ChangeType { FlipX, FlipY, FlipAD, RandomFlip };
-    ChangeTilesetFlipping(TilesetDocument *TilesetDocument,
-                            ChangeType which,
-                            bool newValue);
+    ChangeTilesetTransformationFlags(TilesetDocument *TilesetDocument,
+                                     Tileset::TransformationFlags newValue);
 
     void undo() override;
     void redo() override;
 
 private:
     TilesetDocument *mTilesetDocument;
-    const ChangeType mWhich;
-    const bool mOldValue;
-    const bool mNewValue;
+    const Tileset::TransformationFlags mOldValue;
+    const Tileset::TransformationFlags mNewValue;
 };
 
 } // namespace Tiled

@@ -146,11 +146,11 @@ private:
         ChunkWidthProperty,
         ChunkHeightProperty,
         TintColorProperty,
-        WangSetFlipXProperty,
-        WangSetFlipYProperty,
-        WangSetFlipADProperty,
-        WangSetPreferNonTransformedProperty,
-        WangTileIndividualFlipProperty
+        AllowFlipHorizontallyProperty,
+        AllowFlipVerticallyProperty,
+        AllowRotateProperty,
+        PreferUntransformedProperty,
+        OverrideTransformationFlagsProperty
     };
 
     void addMapProperties();

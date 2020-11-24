@@ -319,6 +319,12 @@ void TilesetDocument::setTilesetObjectAlignment(Alignment objectAlignment)
         emit mapDocument->tilesetTilePositioningChanged(mTileset.data());
 }
 
+void TilesetDocument::setTilesetTransformationFlags(Tileset::TransformationFlags flags)
+{
+    tileset()->setTransformationFlags(flags);
+    emit tilesetChanged(mTileset.data());
+}
+
 void TilesetDocument::addTiles(const QList<Tile *> &tiles)
 {
     mTileset->addTiles(tiles);

@@ -113,11 +113,6 @@ public:
 
     void setColumnCountOverride(int columnCount);
 
-    void setAsNeededFlipHorizontally(bool on);
-    void setAsNeededFlipVertically(bool on);
-    void setAsNeededFlipAntiDiagonally(bool on);
-    void setPreferNonTransformedTiles(bool on);
-
 public slots:
     /**
      * Should be called when anything changes about the given \a tiles that

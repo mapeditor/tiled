@@ -545,7 +545,7 @@ void WangSet::removeWangTile(const WangTile &wangTile)
 
 const QVector<WangSet::WangIdAndCell> &WangSet::wangIdsAndCells() const
 {
-    if (mCellsDirty)
+    if (cellsDirty())
         const_cast<WangSet*>(this)->recalculateCells();
     return mWangIdAndCells;
 }
@@ -567,6 +567,12 @@ void WangSet::recalculateCells()
         mWangIdAndCells.append({it.value(), Cell(mTileset, it.key())});
     }
 
+    const auto transformationFlags = tileset()->transformationFlags();
+    mLastSeenTranslationFlags = transformationFlags;
+
+    if (!(transformationFlags & ~Tileset::PreferUntransformed))
+        return;
+
     // Then insert variations based on flipping
     it.toFront();
     while (it.hasNext()) {
@@ -579,7 +585,7 @@ void WangSet::recalculateCells()
 
         // TODO: Take individual Tile flipping preferences into account again
 
-        if (tileset()->asNeededFlipAntiDiagonally()) {
+        if (transformationFlags.testFlag(Tileset::AllowRotate)) {
             for (int i = 0; i < count; ++i) {
                 cells[count + i] = cells[i];
                 cells[count + i].setFlippedAntiDiagonally(true);
@@ -590,7 +596,7 @@ void WangSet::recalculateCells()
             count *= 2;
         }
 
-        if (tileset()->asNeededFlipHorizontally()) {
+        if (transformationFlags.testFlag(Tileset::AllowFlipHorizontally)) {
             for (int i = 0; i < count; ++i) {
                 cells[count + i] = cells[i];
                 cells[count + i].setFlippedHorizontally(!cells[count + i].flippedHorizontally());
@@ -600,7 +606,7 @@ void WangSet::recalculateCells()
             count *= 2;
         }
 
-        if (tileset()->asNeededFlipVertically()) {
+        if (transformationFlags.testFlag(Tileset::AllowFlipVertically)) {
             for (int i = 0; i < count; ++i) {
                 cells[count + i] = cells[i];
                 cells[count + i].setFlippedVertically(!cells[count + i].flippedVertically());
@@ -612,7 +618,7 @@ void WangSet::recalculateCells()
 
         for (int i = 1; i < count; ++i) {
             const bool exists = addedWangIds.contains(wangIds[i]);
-            if (tileset()->preferNonTransformedTiles() && exists)
+            if (transformationFlags.testFlag(Tileset::PreferUntransformed) && exists)
                 continue;
             mUniqueFullWangIdCount += !hasWildCards && !exists;
             addedWangIds.insert(wangIds[i]);
@@ -894,7 +900,7 @@ int WangSet::maximumColorDistance() const
  */
 bool WangSet::isComplete() const
 {
-    if (mCellsDirty)
+    if (cellsDirty())
         const_cast<WangSet*>(this)->recalculateCells();
 
     return mUniqueFullWangIdCount == completeSetSize();

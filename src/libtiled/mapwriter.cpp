@@ -355,23 +355,6 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeAttribute(QStringLiteral("objectalignment"), alignment);
     }
 
-    if (tileset.asNeededFlipHorizontally()) {
-        w.writeAttribute(QStringLiteral("flip_horizontally"),
-                        QString::number(tileset.asNeededFlipHorizontally()));
-    }
-    if (tileset.asNeededFlipVertically()) {
-        w.writeAttribute(QStringLiteral("flip_vertically"),
-                        QString::number(tileset.asNeededFlipVertically()));
-    }
-    if (tileset.asNeededFlipAntiDiagonally()) {
-        w.writeAttribute(QStringLiteral("flip_anti_diagonally"),
-                        QString::number(tileset.asNeededFlipAntiDiagonally()));
-    }
-    if (!tileset.preferNonTransformedTiles()) {
-        w.writeAttribute(QStringLiteral("prefer_non_transformed_tiles"),
-                        QString::number(tileset.preferNonTransformedTiles()));
-    }
-
     // Write editor settings when saving external tilesets
     if (firstGid == 0) {
         if (!tileset.exportFileName.isEmpty() || !tileset.exportFormat.isEmpty()) {
@@ -397,6 +380,20 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeAttribute(QStringLiteral("orientation"), Tileset::orientationToString(tileset.orientation()));
         w.writeAttribute(QStringLiteral("width"), QString::number(tileset.gridSize().width()));
         w.writeAttribute(QStringLiteral("height"), QString::number(tileset.gridSize().height()));
+        w.writeEndElement();
+    }
+
+    const auto transformationFlags = tileset.transformationFlags();
+    if (transformationFlags) {
+        w.writeStartElement(QStringLiteral("transformations"));
+        w.writeAttribute(QStringLiteral("hflip"),
+                         QString::number(transformationFlags.testFlag(Tileset::AllowFlipHorizontally)));
+        w.writeAttribute(QStringLiteral("vflip"),
+                         QString::number(transformationFlags.testFlag(Tileset::AllowFlipVertically)));
+        w.writeAttribute(QStringLiteral("rotate"),
+                         QString::number(transformationFlags.testFlag(Tileset::AllowRotate)));
+        w.writeAttribute(QStringLiteral("preferuntransformed"),
+                         QString::number(transformationFlags.testFlag(Tileset::PreferUntransformed)));
         w.writeEndElement();
     }
 

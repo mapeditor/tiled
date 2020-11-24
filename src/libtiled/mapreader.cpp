@@ -92,6 +92,7 @@ private:
     void readTilesetEditorSettings(Tileset &tileset);
     void readTilesetTile(Tileset &tileset);
     void readTilesetGrid(Tileset &tileset);
+    void readTilesetTransformations(Tileset &tileset);
     void readTilesetImage(Tileset &tileset);
     void readTilesetTerrainTypes(Tileset &tileset);
     void readTilesetWangSets(Tileset &tileset);
@@ -376,87 +377,62 @@ SharedTileset MapReaderPrivate::readTileset()
         const QString name = atts.value(QLatin1String("name")).toString();
         const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
         const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
+
+        if (tileWidth < 0 || tileHeight < 0
+            || (firstGid == 0 && !mReadingExternalTileset)) {
+            xml.raiseError(tr("Invalid tileset parameters for tileset"
+                              " '%1'").arg(name));
+            return {};
+        }
+
         const int tileSpacing = atts.value(QLatin1String("spacing")).toInt();
         const int margin = atts.value(QLatin1String("margin")).toInt();
         const int columns = atts.value(QLatin1String("columns")).toInt();
         const QString backgroundColor = atts.value(QLatin1String("backgroundcolor")).toString();
         const QString alignment = atts.value(QLatin1String("objectalignment")).toString();
 
-        if (tileWidth < 0 || tileHeight < 0
-            || (firstGid == 0 && !mReadingExternalTileset)) {
-            xml.raiseError(tr("Invalid tileset parameters for tileset"
-                              " '%1'").arg(name));
-        } else {
-            tileset = Tileset::create(name, tileWidth, tileHeight,
-                                      tileSpacing, margin);
+        tileset = Tileset::create(name, tileWidth, tileHeight,
+                                  tileSpacing, margin);
 
-            tileset->setColumnCount(columns);
-            // recognize older file format for WangTile rotation
-            bool canrotate=false;
-            bool preferNonTransformedTiles = true;
-            if (atts.hasAttribute(QLatin1String("canrotate"))) {
-                canrotate=atts.value(QLatin1String("canrotate")).toInt();
-            }
-            if (atts.hasAttribute(QLatin1String("alternaterotation"))) {
-                preferNonTransformedTiles= !atts.value(QLatin1String("alternaterotation")).toInt();
-            }
-            if (atts.hasAttribute(QLatin1String("prefer_non_transformed_tiles"))) {
-                preferNonTransformedTiles = atts.value(QLatin1String("prefer_non_transformed_tiles")).toInt();
-            }
-            if (canrotate)
-            {
-                tileset->setAsNeededFlipHorizontally(true);
-                tileset->setAsNeededFlipVertically(true);
-                tileset->setAsNeededFlipAntiDiagonally(true);
-            }
-            else
-            {
-                const bool flipHorizontally = atts.value(QLatin1String("flip_horizontally")).toInt()!=0;
-                const bool flipVertically = atts.value(QLatin1String("flip_vertically")).toInt()!=0;
-                const bool flipAntiDiagonally = atts.value(QLatin1String("flip_anti_diagonally")).toInt()!=0;
-                tileset->setAsNeededFlipHorizontally(flipHorizontally);
-                tileset->setAsNeededFlipVertically(flipVertically);
-                tileset->setAsNeededFlipAntiDiagonally(flipAntiDiagonally);
-            }
-            if (!preferNonTransformedTiles)
-                tileset->setPreferNonTransformedTiles(false);
+        tileset->setColumnCount(columns);
 
-            if (QColor::isValidColor(backgroundColor))
-                tileset->setBackgroundColor(QColor(backgroundColor));
+        if (QColor::isValidColor(backgroundColor))
+            tileset->setBackgroundColor(QColor(backgroundColor));
 
-            tileset->setObjectAlignment(alignmentFromString(alignment));
+        tileset->setObjectAlignment(alignmentFromString(alignment));
 
-            while (xml.readNextStartElement()) {
-                if (xml.name() == QLatin1String("editorsettings")) {
-                    readTilesetEditorSettings(*tileset);
-                } else if (xml.name() == QLatin1String("tile")) {
-                    readTilesetTile(*tileset);
-                } else if (xml.name() == QLatin1String("tileoffset")) {
-                    const QXmlStreamAttributes oa = xml.attributes();
-                    int x = oa.value(QLatin1String("x")).toInt();
-                    int y = oa.value(QLatin1String("y")).toInt();
-                    tileset->setTileOffset(QPoint(x, y));
-                    xml.skipCurrentElement();
-                } else if (xml.name() == QLatin1String("grid")) {
-                    readTilesetGrid(*tileset);
-                } else if (xml.name() == QLatin1String("properties")) {
-                    tileset->mergeProperties(readProperties());
-                } else if (xml.name() == QLatin1String("image")) {
-                    if (tileWidth == 0 || tileHeight == 0) {
-                        xml.raiseError(tr("Invalid tileset parameters for tileset"
-                                          " '%1'").arg(name));
-                        tileset.clear();
-                        break;
-                    } else {
-                        readTilesetImage(*tileset);
-                    }
-                } else if (xml.name() == QLatin1String("terraintypes")) {
-                    readTilesetTerrainTypes(*tileset);
-                } else if (xml.name() == QLatin1String("wangsets")) {
-                    readTilesetWangSets(*tileset);
+        while (xml.readNextStartElement()) {
+            if (xml.name() == QLatin1String("editorsettings")) {
+                readTilesetEditorSettings(*tileset);
+            } else if (xml.name() == QLatin1String("tile")) {
+                readTilesetTile(*tileset);
+            } else if (xml.name() == QLatin1String("tileoffset")) {
+                const QXmlStreamAttributes oa = xml.attributes();
+                int x = oa.value(QLatin1String("x")).toInt();
+                int y = oa.value(QLatin1String("y")).toInt();
+                tileset->setTileOffset(QPoint(x, y));
+                xml.skipCurrentElement();
+            } else if (xml.name() == QLatin1String("grid")) {
+                readTilesetGrid(*tileset);
+            } else if (xml.name() == QLatin1String("transformations")) {
+                readTilesetTransformations(*tileset);
+            } else if (xml.name() == QLatin1String("properties")) {
+                tileset->mergeProperties(readProperties());
+            } else if (xml.name() == QLatin1String("image")) {
+                if (tileWidth == 0 || tileHeight == 0) {
+                    xml.raiseError(tr("Invalid tileset parameters for tileset"
+                                      " '%1'").arg(name));
+                    tileset.clear();
+                    break;
                 } else {
-                    readUnknownElement();
+                    readTilesetImage(*tileset);
                 }
+            } else if (xml.name() == QLatin1String("terraintypes")) {
+                readTilesetTerrainTypes(*tileset);
+            } else if (xml.name() == QLatin1String("wangsets")) {
+                readTilesetWangSets(*tileset);
+            } else {
+                readUnknownElement();
             }
         }
     } else { // External tileset
@@ -625,6 +601,27 @@ void MapReaderPrivate::readTilesetGrid(Tileset &tileset)
     const QSize gridSize(width, height);
     if (!gridSize.isEmpty())
         tileset.setGridSize(gridSize);
+
+    xml.skipCurrentElement();
+}
+
+void MapReaderPrivate::readTilesetTransformations(Tileset &tileset)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("transformations"));
+
+    const QXmlStreamAttributes atts = xml.attributes();
+
+    Tileset::TransformationFlags transformations;
+    if (atts.value(QLatin1String("hflip")).toInt())
+        transformations |= Tileset::AllowFlipHorizontally;
+    if (atts.value(QLatin1String("vflip")).toInt())
+        transformations |= Tileset::AllowFlipVertically;
+    if (atts.value(QLatin1String("rotate")).toInt())
+        transformations |= Tileset::AllowRotate;
+    if (atts.value(QLatin1String("preferuntransformed")).toInt())
+        transformations |= Tileset::PreferUntransformed;
+
+    tileset.setTransformationFlags(transformations);
 
     xml.skipCurrentElement();
 }
