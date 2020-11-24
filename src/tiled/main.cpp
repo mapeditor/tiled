@@ -497,7 +497,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (!filesToOpen.isEmpty() && !commandLine.newInstance) {
+    if (a.isRunning() && !filesToOpen.isEmpty() && !commandLine.newInstance) {
         // Files need to be absolute paths because the already running Tiled
         // instance likely does not have the same working directory.
         QJsonDocument doc(QJsonArray::fromStringList(filesToOpen));

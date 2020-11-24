@@ -108,6 +108,7 @@ matrix:
     after_script:
     - cppcheck --enable=all -q -Isrc/libtiled `git ls-files src/\*.cpp`
   - os: osx
+    osx_image: xcode12
     addons:
       homebrew:
         packages:
