@@ -50,6 +50,8 @@ public:
     MapDocument *mapDocument;
 };
 
+class UnstyledGroup {};
+
 /**
  * Extension of the QtVariantPropertyManager that adds support for a filePath
  * data type.
@@ -73,6 +75,7 @@ public:
     static int tilesetParametersTypeId();
     static int alignmentTypeId();
     static int displayObjectRefTypeId();
+    static int unstyledGroupTypeId();
 
 public slots:
     void setValue(QtProperty *property, const QVariant &val) override;
@@ -129,3 +132,4 @@ private:
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::DisplayObjectRef)
+Q_DECLARE_METATYPE(Tiled::UnstyledGroup)

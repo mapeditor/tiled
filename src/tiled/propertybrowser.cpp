@@ -829,14 +829,18 @@ void PropertyBrowser::addTilesetProperties()
     QtVariantProperty *columnsProperty = addProperty(ColumnCountProperty, QVariant::Int, tr("Columns"), groupProperty);
     columnsProperty->setAttribute(QLatin1String("minimum"), 1);
 
-    QtVariantProperty *flipHorizontallyProperty = addProperty(AllowFlipHorizontallyProperty, QVariant::Bool, tr("Flip Horizontally"), groupProperty);
-    QtVariantProperty *flipVerticallyProperty = addProperty(AllowFlipVerticallyProperty, QVariant::Bool, tr("Flip Vertically"), groupProperty);
-    QtVariantProperty *rotateProperty = addProperty(AllowRotateProperty, QVariant::Bool, tr("Rotate"), groupProperty);
-    QtVariantProperty *randomProperty = addProperty(PreferUntransformedProperty, QVariant::Bool, tr("Prefer Untransformed Tiles"), groupProperty);
+    QtVariantProperty *transformationsGroupProperty = mVariantManager->addProperty(VariantPropertyManager::unstyledGroupTypeId(), tr("Allowed Transformations"));
+
+    QtVariantProperty *flipHorizontallyProperty = addProperty(AllowFlipHorizontallyProperty, QVariant::Bool, tr("Flip Horizontally"), transformationsGroupProperty);
+    QtVariantProperty *flipVerticallyProperty = addProperty(AllowFlipVerticallyProperty, QVariant::Bool, tr("Flip Vertically"), transformationsGroupProperty);
+    QtVariantProperty *rotateProperty = addProperty(AllowRotateProperty, QVariant::Bool, tr("Rotate"), transformationsGroupProperty);
+    QtVariantProperty *randomProperty = addProperty(PreferUntransformedProperty, QVariant::Bool, tr("Prefer Untransformed Tiles"), transformationsGroupProperty);
     flipHorizontallyProperty->setEnabled(mTilesetDocument);
     flipVerticallyProperty->setEnabled(mTilesetDocument);
     rotateProperty->setEnabled(mTilesetDocument);
     randomProperty->setEnabled(mTilesetDocument);
+
+    groupProperty->addSubProperty(transformationsGroupProperty);
 
     // Next properties we should add only for non 'Collection of Images' tilesets
     if (!tileset->isCollection()) {
