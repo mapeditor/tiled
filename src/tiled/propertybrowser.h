@@ -150,7 +150,6 @@ private:
         AllowFlipVerticallyProperty,
         AllowRotateProperty,
         PreferUntransformedProperty,
-        OverrideTransformationFlagsProperty
     };
 
     void addMapProperties();

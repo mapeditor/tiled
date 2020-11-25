@@ -453,7 +453,6 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 w.writeAttribute(QStringLiteral("terrain"), makeTerrainAttribute(tile));
             if (tile->probability() != 1.0)
                 w.writeAttribute(QStringLiteral("probability"), QString::number(tile->probability()));
-
             if (!tile->properties().isEmpty())
                 writeProperties(w, tile->properties());
             if (imageSource.isEmpty()) {

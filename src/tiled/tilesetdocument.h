@@ -114,8 +114,6 @@ public:
     void setTileProbability(Tile *tile, qreal probability);
     void swapTileObjectGroup(Tile *tile, std::unique_ptr<ObjectGroup> &objectGroup);
 
-    void changeWangTileFlipPermission(Tile *tile);
-
     void checkIssues() override;
 
     static TilesetDocument* findDocumentForTileset(const SharedTileset &tileset);
@@ -150,11 +148,6 @@ signals:
      * Emitted when the probability of a tile changed.
      */
     void tileProbabilityChanged(Tile *tile);
-
-    /**
-      * Emitted when the flip permissions of a tile changed.
-      */
-    void tileFlipPermissionChanged(Tile *tile);
 
     /**
      * Notifies the TileCollisionDock about the object group of a tile changing.

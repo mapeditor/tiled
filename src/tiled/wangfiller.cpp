@@ -273,8 +273,6 @@ bool WangFiller::findBestMatch(const TileLayer &target,
         if ((wangId & info.mask) != maskedWangId)
             return;
 
-        // Start with a small penalty for variations, when non-flipped
-        // versions are supposed to be preferred.
         int totalPenalty = 0;
 
         for (int i = 0; i < WangId::NumIndexes; ++i) {

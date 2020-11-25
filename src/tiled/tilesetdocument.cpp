@@ -421,11 +421,6 @@ void TilesetDocument::swapTileObjectGroup(Tile *tile, std::unique_ptr<ObjectGrou
         emit mapDocument->tileObjectGroupChanged(tile);
 }
 
-void TilesetDocument::changeWangTileFlipPermission(Tile *tile)
-{
-    emit tileFlipPermissionChanged(tile);
-}
-
 void TilesetDocument::checkIssues()
 {
     // Clear any previously found issues in this document

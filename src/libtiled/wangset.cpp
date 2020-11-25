@@ -571,8 +571,6 @@ void WangSet::recalculateCells()
         int count = 1;
         const bool hasWildCards = it.value().hasWildCards();
 
-        // TODO: Take individual Tile flipping preferences into account again
-
         if (transformationFlags.testFlag(Tileset::AllowRotate)) {
             for (int i = 0; i < count; ++i) {
                 cells[count + i] = cells[i];
@@ -708,11 +706,14 @@ void WangSet::recalculateColorDistances()
 QList<WangTile> WangSet::sortedWangTiles() const
 {
     QList<WangTile> wangTiles;
+    wangTiles.reserve(mTileIdToWangId.size());
+
     QHashIterator<int, WangId> it(mTileIdToWangId);
     while (it.hasNext()) {
         it.next();
         wangTiles.append(WangTile(it.key(), it.value()));
     }
+
     std::stable_sort(wangTiles.begin(), wangTiles.end());
     return wangTiles;
 }
@@ -971,6 +972,7 @@ WangSet *WangSet::clone(Tileset *tileset) const
     c->mMaximumColorDistance = mMaximumColorDistance;
     c->mColorDistancesDirty = mColorDistancesDirty;
     c->mCellsDirty = mCellsDirty;
+    c->mLastSeenTranslationFlags = mLastSeenTranslationFlags;
     c->setProperties(properties());
 
     // Avoid sharing Wang colors

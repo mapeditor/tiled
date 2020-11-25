@@ -164,8 +164,6 @@ void PropertyBrowser::setDocument(Document *document)
                 this, &PropertyBrowser::tileChanged);
         connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
                 this, &PropertyBrowser::tileChanged);
-        connect(tilesetDocument, &TilesetDocument::tileFlipPermissionChanged,
-                this, &PropertyBrowser::tileChanged);
         connect(tilesetDocument, &TilesetDocument::tileTypeChanged,
                 this, &PropertyBrowser::tileTypeChanged);
 
@@ -1807,7 +1805,6 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[WidthProperty]->setValue(tileSize.width());
         mIdToProperty[HeightProperty]->setValue(tileSize.height());
         mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
-
         if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
             imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));
         break;
