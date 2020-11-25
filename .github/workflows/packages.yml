@@ -287,8 +287,8 @@ jobs:
         BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
         TILED_VERSION: ${{ needs.version.outputs.version }}
       run: |
-        ITCH_CHANNEL = ${{ matrix.channel }}
-        if [[ "$TILED_SNAPSHOT" == 'true' ]]; then ITCH_CHANNEL = "${ITCH_CHANNEL}-snapshot" ; fi
+        ITCH_CHANNEL=${{ matrix.channel }}
+        if [[ "$TILED_SNAPSHOT" == 'true' ]]; then ITCH_CHANNEL="${ITCH_CHANNEL}-snapshot" ; fi
         ./butler push --userversion=${TILED_VERSION} upload thorbjorn/tiled:${ITCH_CHANNEL}
 
   github:
