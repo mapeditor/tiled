@@ -571,15 +571,15 @@ void WangSet::recalculateCells()
         int count = 1;
         const bool hasWildCards = it.value().hasWildCards();
 
+        // Add 90, 180 and 270 degree rotations if enabled
         if (transformationFlags.testFlag(Tileset::AllowRotate)) {
-            for (int i = 0; i < count; ++i) {
+            for (int i = 0; i < 3; ++i) {
                 cells[count + i] = cells[i];
-                cells[count + i].setFlippedAntiDiagonally(true);
-                cells[count + i].setFlippedHorizontally(true);
+                cells[count + i].rotate(RotateRight);
                 wangIds[count + i] = wangIds[i].rotated(1);
             }
 
-            count *= 2;
+            count = 4;
         }
 
         if (transformationFlags.testFlag(Tileset::AllowFlipHorizontally)) {
@@ -592,7 +592,7 @@ void WangSet::recalculateCells()
             count *= 2;
         }
 
-        if (transformationFlags.testFlag(Tileset::AllowFlipVertically)) {
+        if (count <= 4 && transformationFlags.testFlag(Tileset::AllowFlipVertically)) {
             for (int i = 0; i < count; ++i) {
                 cells[count + i] = cells[i];
                 cells[count + i].setFlippedVertically(!cells[count + i].flippedVertically());

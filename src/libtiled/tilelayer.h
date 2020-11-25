@@ -120,6 +120,8 @@ public:
     void setFlippedAntiDiagonally(bool v) { v ? _flags |= FlippedAntiDiagonally : _flags &= ~FlippedAntiDiagonally; }
     void setRotatedHexagonal120(bool v) { v ? _flags |= RotatedHexagonal120 : _flags &= ~RotatedHexagonal120; }
 
+    void rotate(RotateDirection direction);
+
     bool checked() const { return _flags & Checked; }
     void setChecked(bool checked) { checked ? _flags |= Checked : _flags &= ~Checked; }
 

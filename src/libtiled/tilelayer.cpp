@@ -41,6 +41,25 @@ using namespace Tiled;
 
 Cell Cell::empty;
 
+void Cell::rotate(RotateDirection direction)
+{
+    constexpr unsigned char rotateMasks[2][8] = {
+        { 3, 2, 7, 6, 1, 0, 5, 4 },
+        { 5, 4, 1, 0, 7, 6, 3, 2 },
+    };
+
+    unsigned char mask =
+            (flippedHorizontally() << 2) |
+            (flippedVertically() << 1) |
+            (flippedAntiDiagonally() << 0);
+
+    mask = rotateMasks[direction][mask];
+
+    setFlippedHorizontally((mask & 4) != 0);
+    setFlippedVertically((mask & 2) != 0);
+    setFlippedAntiDiagonally((mask & 1) != 0);
+}
+
 QRegion Chunk::region(std::function<bool (const Cell &)> condition) const
 {
     QRegion region;
