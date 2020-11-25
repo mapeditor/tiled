@@ -232,7 +232,6 @@ public:
         PreferUntransformed     = 1 << 3,
     };
     Q_DECLARE_FLAGS(TransformationFlags, TransformationFlag)
-    Q_FLAGS(TransformationFlags)
 
     TransformationFlags transformationFlags() const;
     void setTransformationFlags(TransformationFlags flags);

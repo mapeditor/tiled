@@ -169,7 +169,7 @@ an ``<image>`` tag.
 
 Can contain at most one: :ref:`tmx-image`, :ref:`tmx-tileoffset`,
 :ref:`tmx-grid` (since 1.0), :ref:`tmx-properties`, :ref:`tmx-terraintypes`,
-:ref:`tmx-wangsets` (since 1.1), :ref:`tmx-transformations` (since 1.4.4)
+:ref:`tmx-wangsets` (since 1.1), :ref:`tmx-tileset-transformations` (since 1.5)
 
 Can contain any number: :ref:`tmx-tileset-tile`
 
@@ -248,19 +248,16 @@ Can contain at most one: :ref:`tmx-properties`
 .. _tmx-tileset-transformations:
 
 <transformations>
-~~~~~~
+~~~~~~~~~~~~~~~~~
 
-- **hflip:** Whether the tiles in this set can be flipped horizontally to
-  stand in for missing patterns (default 0)
-- **vflip:** Whether the tiles in this set can be flipped vertically to
-  stand in for missing patterns (default 0)
-- **rotate:** Whether the tiles in this set can be rotated by 90 degree to
-  stand in for missing patterns (default 0)
+This element is used to describe which transformations can be applied to the
+tiles (e.g. to extend a Wang set by transforming existing tiles).
+
+- **hflip:** Whether the tiles in this set can be flipped horizontally (default 0)
+- **vflip:** Whether the tiles in this set can be flipped vertically (default 0)
+- **rotate:** Whether the tiles in this set can be rotated in 90 degree increments (default 0)
 - **preferuntransformed:** Whether untransformed tiles remain preferred, otherwise
   transformed tiles are used to produce more variations (default 0)
-
-This element is used to describe flipping and rotation properties of the tileset
-(e.g. to complete a Wang set by transforming existing tiles).
 
 .. _tmx-tileset-tile:
 
@@ -360,15 +357,9 @@ associating it with a certain Wang ID.
    Wang ID was saved as a 32-bit unsigned integer stored in the format
    ``0xCECECECE`` (where each C is a corner color and each E is an edge color,
    in reverse order)."
--  **hflip:** Whether the tile is flipped horizontally. This only affects
-   the tile image, it does not change the meaning of the wangid. See
-   :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
--  **vflip:** Whether the tile is flipped vertically. This only affects
-   the tile image, it does not change the meaning of the wangid. See
-   :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
--  **dflip:** Whether the tile is flipped on its diagonal. This only affects
-   the tile image, it does not change the meaning of the wangid. See
-   :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
+-  *hflip:* Whether the tile is flipped horizontally (removed in Tiled 1.5).
+-  *vflip:* Whether the tile is flipped vertically (removed in Tiled 1.5).
+-  *dflip:* Whether the tile is flipped on its diagonal (removed in Tiled 1.5).
 
 .. _tmx-layer:
 

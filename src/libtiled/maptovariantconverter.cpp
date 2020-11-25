@@ -228,8 +228,15 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QStringLiteral("imageheight")] = tileset.imageHeight();
     }
 
-    if (tileset.transformationFlags()!=Tileset::NoTransformation)
-        tilesetVariant[QStringLiteral("transformations")] = (unsigned)(tileset.transformationFlags());
+    const auto transformationFlags = tileset.transformationFlags();
+    if (transformationFlags) {
+        tilesetVariant[QStringLiteral("transformations")] = QVariantMap {
+            { QStringLiteral("hflip"), transformationFlags.testFlag(Tileset::AllowFlipHorizontally) },
+            { QStringLiteral("vflip"), transformationFlags.testFlag(Tileset::AllowFlipVertically) },
+            { QStringLiteral("rotate"), transformationFlags.testFlag(Tileset::AllowRotate) },
+            { QStringLiteral("preferuntransformed"), transformationFlags.testFlag(Tileset::PreferUntransformed) },
+        };
+    }
 
     // Write the properties, terrain, external image, object group and
     // animation for those tiles that have them.
@@ -386,10 +393,7 @@ QVariant MapToVariantConverter::toVariant(const WangSet &wangSet) const
             wangIdVariant.append(QVariant(wangTile.wangId().indexColor(i)));
 
         wangTileVariant[QStringLiteral("wangid")] = wangIdVariant;
-        wangTileVariant[QStringLiteral("tileid")] = wangTile.tile()->id();
-        wangTileVariant[QStringLiteral("hflip")] = wangTile.flippedHorizontally();
-        wangTileVariant[QStringLiteral("vflip")] = wangTile.flippedVertically();
-        wangTileVariant[QStringLiteral("dflip")] = wangTile.flippedAntiDiagonally();
+        wangTileVariant[QStringLiteral("tileid")] = wangTile.tileId();
 
         wangTileVariants.append(wangTileVariant);
     }

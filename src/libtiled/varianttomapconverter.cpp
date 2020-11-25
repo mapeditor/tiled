@@ -220,7 +220,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const int columns = variantMap[QStringLiteral("columns")].toInt();
     const QString backgroundColor = variantMap[QStringLiteral("backgroundcolor")].toString();
     const QString objectAlignment = variantMap[QStringLiteral("objectalignment")].toString();
-    const unsigned transformations = variantMap[QStringLiteral("transformations")].toUInt();
+    const QVariantMap transformations = variantMap[QStringLiteral("transformations")].toMap();
 
     if (tileWidth <= 0 || tileHeight <= 0 ||
             (firstGid == 0 && !mReadingExternalTileset)) {
@@ -235,7 +235,21 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     tileset->setObjectAlignment(alignmentFromString(objectAlignment));
     tileset->setTileOffset(QPoint(tileOffsetX, tileOffsetY));
     tileset->setColumnCount(columns);
-    tileset->setTransformationFlags(Tileset::TransformationFlags(transformations));
+
+    if (!transformations.isEmpty()) {
+        Tileset::TransformationFlags transformationFlags;
+
+        if (transformations[QStringLiteral("hflip")].toBool())
+            transformationFlags |= Tileset::AllowFlipHorizontally;
+        if (transformations[QStringLiteral("vflip")].toBool())
+            transformationFlags |= Tileset::AllowFlipVertically;
+        if (transformations[QStringLiteral("rotate")].toBool())
+            transformationFlags |= Tileset::AllowRotate;
+        if (transformations[QStringLiteral("preferuntransformed")].toBool())
+            transformationFlags |= Tileset::PreferUntransformed;
+
+        tileset->setTransformationFlags(transformationFlags);
+    }
 
     readTilesetEditorSettings(*tileset, variantMap[QStringLiteral("editorsettings")].toMap());
 
@@ -314,7 +328,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
             }
 
             if (terrainWangSet->wangIdIsValid(wangId) && ok)
-                terrainWangSet->addTile(tile, wangId);
+                terrainWangSet->setWangId(tile->id(), wangId);
         }
 
         qreal probability = tileVar[QStringLiteral("probability")].toDouble(&ok);
@@ -422,9 +436,9 @@ std::unique_ptr<WangSet> VariantToMapConverter::toWangSet(const QVariantMap &var
 {
     const QString name = variantMap[QStringLiteral("name")].toString();
     const WangSet::Type type = wangSetTypeFromString(variantMap[QStringLiteral("type")].toString());
-    const int tile = variantMap[QStringLiteral("tile")].toInt();
+    const int tileId = variantMap[QStringLiteral("tile")].toInt();
 
-    std::unique_ptr<WangSet> wangSet { new WangSet(tileset, name, type, tile) };
+    std::unique_ptr<WangSet> wangSet { new WangSet(tileset, name, type, tileId) };
 
     wangSet->setProperties(extractProperties(variantMap));
 
@@ -482,18 +496,7 @@ std::unique_ptr<WangSet> VariantToMapConverter::toWangSet(const QVariantMap &var
             return nullptr;
         }
 
-        const bool fH = wangTileVariantMap[QStringLiteral("hflip")].toBool();
-        const bool fV = wangTileVariantMap[QStringLiteral("vflip")].toBool();
-        const bool fA = wangTileVariantMap[QStringLiteral("dflip")].toBool();
-
-        Tile *tile = tileset->findOrCreateTile(tileId);
-
-        WangTile wangTile(tile, wangId);
-        wangTile.setFlippedHorizontally(fH);
-        wangTile.setFlippedVertically(fV);
-        wangTile.setFlippedAntiDiagonally(fA);
-
-        wangSet->addWangTile(wangTile);
+        wangSet->setWangId(tileId, wangId);
     }
 
 

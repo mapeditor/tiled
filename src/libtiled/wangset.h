@@ -151,61 +151,25 @@ TILEDSHARED_EXPORT QDebug operator<<(QDebug debug, WangId wangId);
 
 
 /**
- * Class for holding info about rotation and flipping.
+ * Class for holding a tile and its WangId.
  */
 class TILEDSHARED_EXPORT WangTile
 {
 public:
-    WangTile() : WangTile(nullptr, WangId())
+    WangTile(int tileId, WangId wangId)
+        : mTileId(tileId)
+        , mWangId(wangId)
     {}
 
-    WangTile(Tile *tile, WangId wangId):
-        mTile(tile),
-        mWangId(wangId),
-        mFlippedHorizontally(false),
-        mFlippedVertically(false),
-        mFlippedAntiDiagonally(false)
-    {}
-
-    WangTile(const Cell &cell, WangId wangId):
-        mTile(cell.tile()),
-        mWangId(wangId),
-        mFlippedHorizontally(cell.flippedHorizontally()),
-        mFlippedVertically(cell.flippedVertically()),
-        mFlippedAntiDiagonally(cell.flippedAntiDiagonally())
-    {}
-
-    Tile *tile() const { return mTile; }
-
+    int tileId() const { return mTileId; }
     WangId wangId() const { return mWangId; }
-    void setWangId(WangId wangId) { mWangId = wangId; }
-
-    bool flippedHorizontally() const { return mFlippedHorizontally; }
-    bool flippedVertically() const { return mFlippedVertically; }
-    bool flippedAntiDiagonally() const { return mFlippedAntiDiagonally; }
-
-    void setFlippedHorizontally(bool b) { mFlippedHorizontally = b; }
-    void setFlippedVertically(bool b) { mFlippedVertically = b; }
-    void setFlippedAntiDiagonally(bool b) { mFlippedAntiDiagonally = b; }
-
-    bool operator== (const WangTile &other) const
-    { return mTile == other.mTile
-                && mWangId == other.mWangId
-                && mFlippedHorizontally == other.mFlippedHorizontally
-                && mFlippedVertically == other.mFlippedVertically
-                && mFlippedAntiDiagonally == other.mFlippedAntiDiagonally; }
 
     bool operator< (const WangTile &other) const
-    { return mTile->id() < other.mTile->id(); }
+    { return mTileId < other.mTileId; }
 
 private:
-    void translate(const int map[]);
-
-    Tile *mTile;
+    int mTileId;
     WangId mWangId;
-    bool mFlippedHorizontally;
-    bool mFlippedVertically;
-    bool mFlippedAntiDiagonally;
 };
 
 TILEDSHARED_EXPORT QDebug operator<<(QDebug debug, const WangTile &wangTile);
@@ -299,10 +263,9 @@ public:
     const QSharedPointer<WangColor> &colorAt(int index) const;
     const QVector<QSharedPointer<WangColor>> &colors() const { return mColors; }
 
-    void addTile(Tile *tile, WangId wangId);
-    void addWangTile(const WangTile &wangTile);
+    void setWangId(int tileId, WangId wangId);
 
-    const QHash<int, WangId> &wangIdByTile() const { return mTileIdToWangId; }
+    const QHash<int, WangId> &wangIdByTileId() const { return mTileIdToWangId; }
 
     struct WangIdAndCell
     {
@@ -340,7 +303,7 @@ public:
     WangSet *clone(Tileset *tileset) const;
 
 private:
-    void removeWangTile(const WangTile &wangTile);
+    void removeTileId(int tileId);
 
     bool cellsDirty() const;
     void recalculateCells();
@@ -426,11 +389,6 @@ inline const QSharedPointer<WangColor> &WangSet::colorAt(int index) const
     Q_ASSERT(index > 0 && index <= colorCount());
 
     return mColors.at(index - 1);
-}
-
-inline void WangSet::addTile(Tile *tile, WangId wangId)
-{
-    addWangTile(WangTile(tile, wangId));
 }
 
 inline bool WangSet::isEmpty() const

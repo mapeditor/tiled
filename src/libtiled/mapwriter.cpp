@@ -536,18 +536,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             const auto wangTiles = ws->sortedWangTiles();
             for (const WangTile &wangTile : wangTiles) {
                 w.writeStartElement(QStringLiteral("wangtile"));
-                w.writeAttribute(QStringLiteral("tileid"), QString::number(wangTile.tile()->id()));
+                w.writeAttribute(QStringLiteral("tileid"), QString::number(wangTile.tileId()));
                 w.writeAttribute(QStringLiteral("wangid"), wangTile.wangId().toString());
-
-                if (wangTile.flippedHorizontally())
-                    w.writeAttribute(QStringLiteral("hflip"), QString::number(1));
-
-                if (wangTile.flippedVertically())
-                    w.writeAttribute(QStringLiteral("vflip"), QString::number(1));
-
-                if (wangTile.flippedAntiDiagonally())
-                    w.writeAttribute(QStringLiteral("dflip"), QString::number(1));
-
                 w.writeEndElement(); // </wangtile>
             }
 

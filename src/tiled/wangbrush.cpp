@@ -223,7 +223,7 @@ void WangBrush::setColor(int color)
         bool usedAsEdge = false;
 
         if (mWangSet && color > 0 && color <= mWangSet->colorCount()) {
-            for (const WangId wangId : mWangSet->wangIdByTile()) {
+            for (const WangId wangId : mWangSet->wangIdByTileId()) {
                 for (int i = 0; i < WangId::NumIndexes; ++i) {
                     if (wangId.indexColor(i) == color) {
                         const bool isCorner = WangId::isCorner(i);

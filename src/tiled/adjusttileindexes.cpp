@@ -264,7 +264,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
         QVector<ChangeTileWangId::WangIdChange> changes;
 
         // Move all WangIds to their new tiles
-        QHashIterator<int, WangId> it(wangSet->wangIdByTile());
+        QHashIterator<int, WangId> it(wangSet->wangIdByTileId());
         while (it.hasNext()) {
             it.next();
 
@@ -272,7 +272,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
                 if (Tile *newTile = adjustTile(fromTile)) {
                     const WangId fromWangId = wangSet->wangIdOfTile(newTile);
                     const WangId toWangId = it.value();
-                    changes.append(ChangeTileWangId::WangIdChange(fromWangId, toWangId, newTile));
+                    changes.append(ChangeTileWangId::WangIdChange(fromWangId, toWangId, newTile->id()));
                 }
             }
         }
@@ -283,12 +283,12 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
             it.next();
 
             if (Tile *fromTile = tileset.findTile(it.key())) {
-                auto matchesTile = [fromTile](const ChangeTileWangId::WangIdChange &change) {
-                    return change.tile == fromTile;
+                auto matchesTile = [fromTileId = it.key()](const ChangeTileWangId::WangIdChange &change) {
+                    return change.tileId == fromTileId;
                 };
                 if (!std::any_of(changes.begin(), changes.end(), matchesTile)) {
                     const WangId fromWangId = it.value();
-                    changes.append(ChangeTileWangId::WangIdChange(fromWangId, WangId(), fromTile));
+                    changes.append(ChangeTileWangId::WangIdChange(fromWangId, WangId(), fromTile->id()));
                 }
             }
         }

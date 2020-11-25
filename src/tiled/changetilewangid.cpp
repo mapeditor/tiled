@@ -47,7 +47,7 @@ ChangeTileWangId::ChangeTileWangId(TilesetDocument *tilesetDocument,
 {
     Q_ASSERT(mWangSet);
     setText(QCoreApplication::translate("Undo Commands", "Change Tile WangId"));
-    mChanges.append(WangIdChange(mWangSet->wangIdOfTile(tile), wangId, tile));
+    mChanges.append(WangIdChange(mWangSet->wangIdOfTile(tile), wangId, tile->id()));
 }
 
 ChangeTileWangId::ChangeTileWangId(TilesetDocument *tilesetDocument,
@@ -76,8 +76,9 @@ void ChangeTileWangId::undo()
     while (changes.hasPrevious()) {
         const WangIdChange &wangIdChange = changes.previous();
 
-        changedTiles.append(wangIdChange.tile);
-        mWangSet->addTile(wangIdChange.tile, wangIdChange.from);
+        if (Tile *tile = findTile(wangIdChange.tileId))
+            changedTiles.append(tile);
+        mWangSet->setWangId(wangIdChange.tileId, wangIdChange.from);
     }
 
     emit mTilesetDocument->tileWangSetChanged(changedTiles);
@@ -91,8 +92,9 @@ void ChangeTileWangId::redo()
     QList<Tile *> changedTiles;
 
     for (const WangIdChange &wangIdChange : qAsConst(mChanges)) {
-        changedTiles.append(wangIdChange.tile);
-        mWangSet->addTile(wangIdChange.tile, wangIdChange.to);
+        if (Tile *tile = findTile(wangIdChange.tileId))
+            changedTiles.append(tile);
+        mWangSet->setWangId(wangIdChange.tileId, wangIdChange.to);
     }
 
     emit mTilesetDocument->tileWangSetChanged(changedTiles);
@@ -122,16 +124,18 @@ QVector<ChangeTileWangId::WangIdChange> ChangeTileWangId::changesOnSetColorCount
 {
     QVector<WangIdChange> changes;
 
-//    for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
-//        WangId newWangId = wangTile.wangId();
+    QHashIterator<int, WangId> it(wangSet->wangIdByTileId());
+    while (it.hasNext()) {
+        it.next();
+        WangId newWangId = it.value();
 
-//        for (int i = 0; i < WangId::NumIndexes; ++i)
-//            if (newWangId.indexColor(i) > colorCount)
-//                newWangId.setIndexColor(i, 0);
+        for (int i = 0; i < WangId::NumIndexes; ++i)
+            if (newWangId.indexColor(i) > colorCount)
+                newWangId.setIndexColor(i, 0);
 
-//        if (wangTile.wangId() != newWangId)
-//            changes.append(WangIdChange(wangTile.wangId(), newWangId, wangTile.tile()));
-//    }
+        if (it.value() != newWangId)
+            changes.append(WangIdChange(it.value(), newWangId, it.key()));
+    }
 
     return changes;
 }
@@ -141,20 +145,22 @@ QVector<ChangeTileWangId::WangIdChange> ChangeTileWangId::changesOnRemoveColor(
 {
     QVector<WangIdChange> changes;
 
-//    for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
-//        WangId newWangId = wangTile.wangId();
+    QHashIterator<int, WangId> it(wangSet->wangIdByTileId());
+    while (it.hasNext()) {
+        it.next();
+        WangId newWangId = it.value();
 
-//        for (int i = 0; i < WangId::NumIndexes; ++i) {
-//            const int color = newWangId.indexColor(i);
-//            if (color == removedColor)
-//                newWangId.setIndexColor(i, 0);
-//            else if (color > removedColor)
-//                newWangId.setIndexColor(i, color - 1);
-//        }
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
+            const int color = newWangId.indexColor(i);
+            if (color == removedColor)
+                newWangId.setIndexColor(i, 0);
+            else if (color > removedColor)
+                newWangId.setIndexColor(i, color - 1);
+        }
 
-//        if (wangTile.wangId() != newWangId)
-//            changes.append(WangIdChange(wangTile.wangId(), newWangId, wangTile.tile()));
-//    }
+        if (it.value() != newWangId)
+            changes.append(WangIdChange(it.value(), newWangId, it.key()));
+    }
 
     return changes;
 }
@@ -162,5 +168,10 @@ QVector<ChangeTileWangId::WangIdChange> ChangeTileWangId::changesOnRemoveColor(
 void ChangeTileWangId::applyChanges(WangSet *wangSet, const QVector<WangIdChange> &changes)
 {
     for (const WangIdChange &change : changes)
-        wangSet->addTile(change.tile, change.to);
+        wangSet->setWangId(change.tileId, change.to);
+}
+
+Tile *ChangeTileWangId::findTile(int tileId) const
+{
+    return mTilesetDocument->tileset()->findTile(tileId);
 }

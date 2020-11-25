@@ -509,7 +509,7 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
         }
 
         if (wangId)
-            tileset.wangSet(0)->addTile(tile, wangId);
+            tileset.wangSet(0)->setWangId(id, wangId);
     }
 
     // Read tile probability
@@ -739,9 +739,9 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
             const QXmlStreamAttributes atts = xml.attributes();
             const QString name = atts.value(QLatin1String("name")).toString();
             const WangSet::Type type = wangSetTypeFromString(atts.value(QLatin1String("type")).toString());
-            const int tile = atts.value(QLatin1String("tile")).toInt();
+            const int tileId = atts.value(QLatin1String("tile")).toInt();
 
-            auto wangSet = std::make_unique<WangSet>(&tileset, name, type, tile);
+            auto wangSet = std::make_unique<WangSet>(&tileset, name, type, tileId);
 
             // For backwards-compatibility
             QVector<int> cornerColors;
@@ -787,18 +787,7 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                         return;
                     }
 
-                    const bool fH = tileAtts.value(QLatin1String("hflip")).toInt();
-                    const bool fV = tileAtts.value(QLatin1String("vflip")).toInt();
-                    const bool fA = tileAtts.value(QLatin1String("dflip")).toInt();
-
-                    Tile *tile = tileset.findOrCreateTile(tileId);
-
-                    WangTile wangTile(tile, wangId);
-                    wangTile.setFlippedHorizontally(fH);
-                    wangTile.setFlippedVertically(fV);
-                    wangTile.setFlippedAntiDiagonally(fA);
-
-                    wangSet->addWangTile(wangTile);
+                    wangSet->setWangId(tileId, wangId);
 
                     xml.skipCurrentElement();
                 } else if (xml.name() == QLatin1String("wangcolor") || isCorner || isEdge) {

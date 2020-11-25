@@ -370,16 +370,7 @@ QDebug operator<<(QDebug debug, WangId wangId)
 QDebug operator<<(QDebug debug, const WangTile &wangTile)
 {
     QDebugStateSaver state(debug);
-
-    QString flips;
-    if (wangTile.flippedHorizontally())
-        flips.append(QLatin1Char('H'));
-    if (wangTile.flippedVertically())
-        flips.append(QLatin1Char('V'));
-    if (wangTile.flippedAntiDiagonally())
-        flips.append(QLatin1Char('D'));
-
-    debug.nospace() << "WangTile(" << wangTile.tile()->id() << ", " << wangTile.wangId() << ", " << flips << ')';
+    debug.nospace() << "WangTile(" << wangTile.tileId() << ", " << wangTile.wangId() << ')';
     return debug;
 }
 
@@ -507,38 +498,35 @@ void WangSet::removeWangColorAt(int color)
 }
 
 /**
- * Adds a \a wangTile to the wang set.
+ * Associates the given \a wangId with the given \a tileId.
  *
  * If the given WangTile is already in the set with a different wangId, then
  * that reference is removed, and replaced with the new wangId. If the wangId
- * provided is zero then the wangTile is removed if already in the set. Updates
- * the UniqueFullWangIdCount.
+ * provided is zero then the wangTile is removed if already in the set.
  */
-void WangSet::addWangTile(const WangTile &wangTile)
+void WangSet::setWangId(int tileId, WangId wangId)
 {
-    Q_ASSERT(wangTile.tile()->tileset() == mTileset);
-    Q_ASSERT(wangIdIsValid(wangTile.wangId()));
+    Q_ASSERT(wangIdIsValid(wangId));
 
-    if (WangId previousWangId = mTileIdToWangId.value(wangTile.tile()->id())) {
+    if (WangId previousWangId = mTileIdToWangId.value(tileId)) {
         // return when the same tile is already part of this set with the same WangId
-        if (previousWangId == wangTile.wangId())
+        if (previousWangId == wangId)
             return;
 
-        removeWangTile(wangTile);
+        removeTileId(tileId);
     }
 
-    if (wangTile.wangId() == 0)
+    if (wangId == 0)
         return;
 
-    mTileIdToWangId.insert(wangTile.tile()->id(), wangTile.wangId());
-
+    mTileIdToWangId.insert(tileId, wangId);
     mColorDistancesDirty = true;
     mCellsDirty = true;
 }
 
-void WangSet::removeWangTile(const WangTile &wangTile)
+void WangSet::removeTileId(int tileId)
 {
-    mTileIdToWangId.remove(wangTile.tile()->id());
+    mTileIdToWangId.remove(tileId);
     mColorDistancesDirty = true;
     mCellsDirty = true;
 }
@@ -723,9 +711,7 @@ QList<WangTile> WangSet::sortedWangTiles() const
     QHashIterator<int, WangId> it(mTileIdToWangId);
     while (it.hasNext()) {
         it.next();
-        Tile *tile = mTileset->findTile(it.key());
-        Q_ASSERT(tile);
-        wangTiles.append(WangTile(tile, it.value()));
+        wangTiles.append(WangTile(it.key(), it.value()));
     }
     std::stable_sort(wangTiles.begin(), wangTiles.end());
     return wangTiles;
