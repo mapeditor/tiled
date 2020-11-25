@@ -441,6 +441,7 @@ Tileset
     tileoffset,       :ref:`json-tileset-tileoffset`, "(optional)"
     tiles,            array,            "Array of :ref:`Tiles <json-tile>` (optional)"
     tilewidth,        int,              "Maximum width of tiles in this set"
+    transformations,  int,              "Allowed transformations (optional, bitmask)"
     transparentcolor, string,           "Hex-formatted color (#RRGGBB) (optional)"
     type,             string,           "``tileset`` (for tileset files, since 1.0)"
     version,          number,           "The JSON format version"

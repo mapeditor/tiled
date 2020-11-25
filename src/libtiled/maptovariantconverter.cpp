@@ -228,6 +228,9 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QStringLiteral("imageheight")] = tileset.imageHeight();
     }
 
+    if (tileset.transformationFlags()!=Tileset::NoTransformation)
+        tilesetVariant[QStringLiteral("transformations")] = (unsigned)(tileset.transformationFlags());
+
     // Write the properties, terrain, external image, object group and
     // animation for those tiles that have them.
 

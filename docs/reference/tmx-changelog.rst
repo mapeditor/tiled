@@ -17,6 +17,9 @@ Tiled 1.5
    hex format. This is because the number of colors supported in a Wang set was
    increased from 15 to 255.
 
+-  Valid transformations of tiles in a set (flipping, rotation) are specified
+   in a ``transformations`` element.
+
 Tiled 1.4
 ---------
 

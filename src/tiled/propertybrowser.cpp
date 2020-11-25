@@ -886,14 +886,14 @@ void PropertyBrowser::addTileProperties()
     probabilityProperty->setAttribute(QLatin1String("decimals"), 3);
     probabilityProperty->setToolTip(tr("Relative chance this tile will be picked"));
     probabilityProperty->setEnabled(mTilesetDocument);
-    QtVariantProperty *overrideProperty = addProperty(OverrideTransformationFlagsProperty, QVariant::Bool, tr("Override Flipping"), groupProperty);
-    QtVariantProperty *flipHorizontallyProperty = addProperty(AllowFlipHorizontallyProperty, QVariant::Bool, tr("Flip Horizontally"), groupProperty);
-    QtVariantProperty *flipVerticallyProperty = addProperty(AllowFlipVerticallyProperty, QVariant::Bool, tr("Flip Vertically"), groupProperty);
-    QtVariantProperty *rotateProperty = addProperty(AllowRotateProperty, QVariant::Bool, tr("Rotate"), groupProperty);
-    flipHorizontallyProperty->setEnabled(false);
-    flipVerticallyProperty->setEnabled(false);
-    rotateProperty->setEnabled(false);
-    overrideProperty->setEnabled(mTilesetDocument);
+//    QtVariantProperty *overrideProperty = addProperty(OverrideTransformationFlagsProperty, QVariant::Bool, tr("Override Flipping"), groupProperty);
+//    QtVariantProperty *flipHorizontallyProperty = addProperty(AllowFlipHorizontallyProperty, QVariant::Bool, tr("Flip Horizontally"), groupProperty);
+//    QtVariantProperty *flipVerticallyProperty = addProperty(AllowFlipVerticallyProperty, QVariant::Bool, tr("Flip Vertically"), groupProperty);
+//    QtVariantProperty *rotateProperty = addProperty(AllowRotateProperty, QVariant::Bool, tr("Rotate"), groupProperty);
+//    flipHorizontallyProperty->setEnabled(false);
+//    flipVerticallyProperty->setEnabled(false);
+//    rotateProperty->setEnabled(false);
+//    overrideProperty->setEnabled(mTilesetDocument);
 
     const Tile *tile = static_cast<const Tile*>(mObject);
     if (!tile->imageSource().isEmpty()) {
@@ -1825,15 +1825,15 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[HeightProperty]->setValue(tileSize.height());
         mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
 
-        const bool override = !tile->asNeededInheritFromSet();
-        mIdToProperty[OverrideTransformationFlagsProperty]->setValue(override);
-        mIdToProperty[AllowFlipHorizontallyProperty]->setValue(tile->asNeededFlipHorizontally());
-        mIdToProperty[AllowFlipVerticallyProperty]->setValue(tile->asNeededFlipHorizontally());
-        mIdToProperty[AllowRotateProperty]->setValue(tile->asNeededFlipAntiDiagonally());
+//        const bool override = !tile->asNeededInheritFromSet();
+//        mIdToProperty[OverrideTransformationFlagsProperty]->setValue(override);
+//        mIdToProperty[AllowFlipHorizontallyProperty]->setValue(tile->asNeededFlipHorizontally());
+//        mIdToProperty[AllowFlipVerticallyProperty]->setValue(tile->asNeededFlipHorizontally());
+//        mIdToProperty[AllowRotateProperty]->setValue(tile->asNeededFlipAntiDiagonally());
 
-        mIdToProperty[AllowFlipHorizontallyProperty]->setEnabled(override);
-        mIdToProperty[AllowFlipVerticallyProperty]->setEnabled(override);
-        mIdToProperty[AllowRotateProperty]->setEnabled(override);
+//        mIdToProperty[AllowFlipHorizontallyProperty]->setEnabled(override);
+//        mIdToProperty[AllowFlipVerticallyProperty]->setEnabled(override);
+//        mIdToProperty[AllowRotateProperty]->setEnabled(override);
 
         if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
             imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));

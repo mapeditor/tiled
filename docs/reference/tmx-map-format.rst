@@ -169,7 +169,7 @@ an ``<image>`` tag.
 
 Can contain at most one: :ref:`tmx-image`, :ref:`tmx-tileoffset`,
 :ref:`tmx-grid` (since 1.0), :ref:`tmx-properties`, :ref:`tmx-terraintypes`,
-:ref:`tmx-wangsets` (since 1.1),
+:ref:`tmx-wangsets` (since 1.1), :ref:`tmx-transformations` (since 1.4.4)
 
 Can contain any number: :ref:`tmx-tileset-tile`
 
@@ -244,6 +244,23 @@ Can contain any number: :ref:`tmx-terrain`
    visually.
 
 Can contain at most one: :ref:`tmx-properties`
+
+.. _tmx-tileset-transformations:
+
+<transformations>
+~~~~~~
+
+- **hflip:** Whether the tiles in this set can be flipped horizontally to
+  stand in for missing patterns (default 0)
+- **vflip:** Whether the tiles in this set can be flipped vertically to
+  stand in for missing patterns (default 0)
+- **rotate:** Whether the tiles in this set can be rotated by 90 degree to
+  stand in for missing patterns (default 0)
+- **preferuntransformed:** Whether untransformed tiles remain preferred, otherwise
+  transformed tiles are used to produce more variations (default 0)
+
+This element is used to describe flipping and rotation properties of the tileset
+(e.g. to complete a Wang set by transforming existing tiles).
 
 .. _tmx-tileset-tile:
 
