@@ -149,15 +149,6 @@ public:
 
     Tile *clone(Tileset *tileset) const;
 
-    inline bool asNeededFlipHorizontally() const { return mAsNeededFlipHorizontally; }
-    inline bool asNeededFlipVertically() const { return mAsNeededFlipVertially; }
-    inline bool asNeededFlipAntiDiagonally() const { return mAsNeededFlipAntiDiagonally; }
-    inline bool asNeededInheritFromSet() const { return mAsNeededInheritFromSet; }
-    inline void setAsNeededFlipHorizontally(bool on) { mAsNeededFlipHorizontally=on; }
-    inline void setAsNeededFlipVertically(bool on) { mAsNeededFlipVertially=on; }
-    inline void setAsNeededFlipAntiDiagonally(bool on) { mAsNeededFlipAntiDiagonally=on; }
-    inline void setAsNeededInheritFromSet(bool on) { mAsNeededInheritFromSet=on; }
-
 private:
     int mId;
     Tileset *mTileset;
@@ -172,12 +163,6 @@ private:
     QVector<Frame> mFrames;
     int mCurrentFrameIndex;
     int mUnusedTime;
-
-    // these members indicate whether this tile should be flipped to cover for missing Wang tiles (or to introduce variation)
-    bool mAsNeededInheritFromSet = true;
-    bool mAsNeededFlipHorizontally = false;
-    bool mAsNeededFlipVertially = false;
-    bool mAsNeededFlipAntiDiagonally = false;
 
     friend class Tileset; // To allow changing the tile id
 };

@@ -517,17 +517,6 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
     if (!probability.isEmpty())
         tile->setProbability(probability.toDouble());
 
-    const bool fInherit = !atts.hasAttribute(QLatin1String("can_hflip"));
-    if (!fInherit) {
-        const bool canH = atts.value(QLatin1String("can_hflip")).toInt();
-        const bool canV = atts.value(QLatin1String("can_vflip")).toInt();
-        const bool canA = atts.value(QLatin1String("can_dflip")).toInt();
-        tile->setAsNeededInheritFromSet(false);
-        tile->setAsNeededFlipHorizontally(canH);
-        tile->setAsNeededFlipVertically(canV);
-        tile->setAsNeededFlipAntiDiagonally(canA);
-    }
-
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
             tile->mergeProperties(readProperties());

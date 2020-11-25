@@ -454,12 +454,6 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             if (tile->probability() != 1.0)
                 w.writeAttribute(QStringLiteral("probability"), QString::number(tile->probability()));
 
-            if (!tile->asNeededInheritFromSet()) {
-                w.writeAttribute(QStringLiteral("can_hflip"), QString::number(tile->asNeededFlipHorizontally()));
-                w.writeAttribute(QStringLiteral("can_vflip"), QString::number(tile->asNeededFlipVertically()));
-                w.writeAttribute(QStringLiteral("can_dflip"), QString::number(tile->asNeededFlipAntiDiagonally()));
-            }
-
             if (!tile->properties().isEmpty())
                 writeProperties(w, tile->properties());
             if (imageSource.isEmpty()) {
