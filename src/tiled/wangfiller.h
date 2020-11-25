@@ -84,7 +84,7 @@ private:
     bool findBestMatch(const TileLayer &target,
                        const Grid<CellInfo> &grid,
                        QPoint position,
-                       WangTile &result) const;
+                       Cell &result) const;
 
     const WangSet &mWangSet;
     const MapRenderer * const mMapRenderer;

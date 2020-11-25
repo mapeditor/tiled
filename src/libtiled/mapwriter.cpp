@@ -383,6 +383,20 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeEndElement();
     }
 
+    const auto transformationFlags = tileset.transformationFlags();
+    if (transformationFlags) {
+        w.writeStartElement(QStringLiteral("transformations"));
+        w.writeAttribute(QStringLiteral("hflip"),
+                         QString::number(transformationFlags.testFlag(Tileset::AllowFlipHorizontally)));
+        w.writeAttribute(QStringLiteral("vflip"),
+                         QString::number(transformationFlags.testFlag(Tileset::AllowFlipVertically)));
+        w.writeAttribute(QStringLiteral("rotate"),
+                         QString::number(transformationFlags.testFlag(Tileset::AllowRotate)));
+        w.writeAttribute(QStringLiteral("preferuntransformed"),
+                         QString::number(transformationFlags.testFlag(Tileset::PreferUntransformed)));
+        w.writeEndElement();
+    }
+
     // Write the tileset properties
     writeProperties(w, tileset.properties());
 
@@ -521,18 +535,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             const auto wangTiles = ws->sortedWangTiles();
             for (const WangTile &wangTile : wangTiles) {
                 w.writeStartElement(QStringLiteral("wangtile"));
-                w.writeAttribute(QStringLiteral("tileid"), QString::number(wangTile.tile()->id()));
+                w.writeAttribute(QStringLiteral("tileid"), QString::number(wangTile.tileId()));
                 w.writeAttribute(QStringLiteral("wangid"), wangTile.wangId().toString());
-
-                if (wangTile.flippedHorizontally())
-                    w.writeAttribute(QStringLiteral("hflip"), QString::number(1));
-
-                if (wangTile.flippedVertically())
-                    w.writeAttribute(QStringLiteral("vflip"), QString::number(1));
-
-                if (wangTile.flippedAntiDiagonally())
-                    w.writeAttribute(QStringLiteral("dflip"), QString::number(1));
-
                 w.writeEndElement(); // </wangtile>
             }
 

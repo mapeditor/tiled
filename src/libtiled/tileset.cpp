@@ -863,6 +863,7 @@ SharedTileset Tileset::clone() const
     c->mStatus = mStatus;
     c->mBackgroundColor = mBackgroundColor;
     c->mFormat = mFormat;
+    c->mTransformationFlags = mTransformationFlags;
 
     QMapIterator<int, Tile*> tileIterator(mTiles);
     while (tileIterator.hasNext()) {

@@ -486,13 +486,7 @@ void LuaWriter::writeWangSet(const WangSet &wangSet)
         mWriter.writeEndTable();
         mWriter.setSuppressNewlines(false);
 
-        mWriter.writeKeyAndValue("tileid", wangTile.tile()->id());
-        if (wangTile.flippedHorizontally())
-            mWriter.writeKeyAndValue("hflip", wangTile.flippedHorizontally());
-        if (wangTile.flippedVertically())
-            mWriter.writeKeyAndValue("vflip", wangTile.flippedVertically());
-        if (wangTile.flippedAntiDiagonally())
-            mWriter.writeKeyAndValue("dflip", wangTile.flippedAntiDiagonally());
+        mWriter.writeKeyAndValue("tileid", wangTile.tileId());
 
         mWriter.writeEndTable();
     }

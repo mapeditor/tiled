@@ -228,4 +228,23 @@ void ChangeTilesetGridSize::swap()
     emit mTilesetDocument->tilesetChanged(&tileset);
 }
 
+
+ChangeTilesetTransformationFlags::ChangeTilesetTransformationFlags(TilesetDocument *tilesetDocument,
+                                                                   Tileset::TransformationFlags newValue)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Tileset"))
+    , mTilesetDocument(tilesetDocument)
+    , mOldValue(tilesetDocument->tileset()->transformationFlags())
+    , mNewValue(newValue)
+{
+}
+
+void ChangeTilesetTransformationFlags::undo()
+{
+    mTilesetDocument->setTilesetTransformationFlags(mOldValue);
+}
+void ChangeTilesetTransformationFlags::redo()
+{
+    mTilesetDocument->setTilesetTransformationFlags(mNewValue);
+}
+
 } // namespace Tiled

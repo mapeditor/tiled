@@ -108,6 +108,8 @@ public:
     WangId rotated(int rotations) const;
     void flipHorizontally();
     void flipVertically();
+    WangId flippedHorizontally() const;
+    WangId flippedVertically() const;
 
     static Index indexByGrid(int x, int y);
     static Index oppositeIndex(int index);
@@ -149,69 +151,29 @@ TILEDSHARED_EXPORT QDebug operator<<(QDebug debug, WangId wangId);
 
 
 /**
- * Class for holding info about rotation and flipping.
+ * Class for holding a tile and its WangId.
  */
 class TILEDSHARED_EXPORT WangTile
 {
 public:
-    WangTile() : WangTile(nullptr, WangId())
+    WangTile(int tileId, WangId wangId)
+        : mTileId(tileId)
+        , mWangId(wangId)
     {}
 
-    WangTile(Tile *tile, WangId wangId):
-        mTile(tile),
-        mWangId(wangId),
-        mFlippedHorizontally(false),
-        mFlippedVertically(false),
-        mFlippedAntiDiagonally(false)
-    {}
-
-    WangTile(const Cell &cell, WangId wangId):
-        mTile(cell.tile()),
-        mWangId(wangId),
-        mFlippedHorizontally(cell.flippedHorizontally()),
-        mFlippedVertically(cell.flippedVertically()),
-        mFlippedAntiDiagonally(cell.flippedAntiDiagonally())
-    {}
-
-    Tile *tile() const { return mTile; }
-
+    int tileId() const { return mTileId; }
     WangId wangId() const { return mWangId; }
-    void setWangId(WangId wangId) { mWangId = wangId; }
-
-    bool flippedHorizontally() const { return mFlippedHorizontally; }
-    bool flippedVertically() const { return mFlippedVertically; }
-    bool flippedAntiDiagonally() const { return mFlippedAntiDiagonally; }
-
-    void setFlippedHorizontally(bool b) { mFlippedHorizontally = b; }
-    void setFlippedVertically(bool b) { mFlippedVertically = b; }
-    void setFlippedAntiDiagonally(bool b) { mFlippedAntiDiagonally = b; }
-
-    void rotateRight();
-    void rotateLeft();
-    void flipHorizontally();
-    void flipVertically();
-
-    Cell makeCell() const;
-
-    bool operator== (const WangTile &other) const
-    { return mTile == other.mTile
-                && mWangId == other.mWangId
-                && mFlippedHorizontally == other.mFlippedHorizontally
-                && mFlippedVertically == other.mFlippedVertically
-                && mFlippedAntiDiagonally == other.mFlippedAntiDiagonally; }
 
     bool operator< (const WangTile &other) const
-    { return mTile->id() < other.mTile->id(); }
+    { return mTileId < other.mTileId; }
 
 private:
-    void translate(const int map[]);
-
-    Tile *mTile;
+    int mTileId;
     WangId mWangId;
-    bool mFlippedHorizontally;
-    bool mFlippedVertically;
-    bool mFlippedAntiDiagonally;
 };
+
+TILEDSHARED_EXPORT QDebug operator<<(QDebug debug, const WangTile &wangTile);
+
 
 class TILEDSHARED_EXPORT WangColor : public Object
 {
@@ -301,11 +263,17 @@ public:
     const QSharedPointer<WangColor> &colorAt(int index) const;
     const QVector<QSharedPointer<WangColor>> &colors() const { return mColors; }
 
-    void addTile(Tile *tile, WangId wangId);
-    void addCell(const Cell &cell, WangId wangId);
-    void addWangTile(const WangTile &wangTile);
+    void setWangId(int tileId, WangId wangId);
 
-    const QMultiHash<WangId, WangTile> &wangTilesByWangId() const { return mWangIdToWangTile; }
+    const QHash<int, WangId> &wangIdByTileId() const { return mTileIdToWangId; }
+
+    struct WangIdAndCell
+    {
+        WangId wangId;
+        Cell cell;
+    };
+
+    const QVector<WangIdAndCell> &wangIdsAndCells() const;
 
     QList<WangTile> sortedWangTiles() const;
 
@@ -315,7 +283,7 @@ public:
     WangId wangIdOfTile(const Tile *tile) const;
     WangId wangIdOfCell(const Cell &cell) const;
 
-    qreal wangTileProbability(const WangTile &wangTile) const;
+    qreal wangIdProbability(WangId wangId) const;
 
     bool wangIdIsValid(WangId wangId) const;
 
@@ -335,8 +303,10 @@ public:
     WangSet *clone(Tileset *tileset) const;
 
 private:
-    void removeWangTile(const WangTile &wangTile);
+    void removeTileId(int tileId);
 
+    bool cellsDirty() const;
+    void recalculateCells();
     void recalculateColorDistances();
 
     Tileset *mTileset;
@@ -349,14 +319,14 @@ private:
     quint64 mUniqueFullWangIdCount = 0;
 
     QVector<QSharedPointer<WangColor>> mColors;
-    QMultiHash<WangId, WangTile> mWangIdToWangTile;
+    QHash<int, WangId> mTileIdToWangId;
 
-    // Tile info being the tileId, with the last three bits (32, 31, 30)
-    // being info on flip (horizontal, vertical, and antidiagonal)
-    QHash<unsigned, WangId> mTileInfoToWangId;
+    QVector<WangIdAndCell> mWangIdAndCells;
 
     int mMaximumColorDistance = 0;
     bool mColorDistancesDirty = true;
+    bool mCellsDirty = true;
+    Tileset::TransformationFlags mLastSeenTranslationFlags;
 };
 
 
@@ -421,19 +391,14 @@ inline const QSharedPointer<WangColor> &WangSet::colorAt(int index) const
     return mColors.at(index - 1);
 }
 
-inline void WangSet::addTile(Tile *tile, WangId wangId)
-{
-    addWangTile(WangTile(tile, wangId));
-}
-
-inline void WangSet::addCell(const Cell &cell, WangId wangId)
-{
-    addWangTile(WangTile(cell, wangId));
-}
-
 inline bool WangSet::isEmpty() const
 {
-    return mWangIdToWangTile.isEmpty();
+    return mTileIdToWangId.isEmpty();
+}
+
+inline bool WangSet::cellsDirty() const
+{
+    return mCellsDirty || mLastSeenTranslationFlags != mTileset->transformationFlags();
 }
 
 TILEDSHARED_EXPORT QString wangSetTypeToString(WangSet::Type type);

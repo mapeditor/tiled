@@ -17,6 +17,11 @@ Tiled 1.5
    hex format. This is because the number of colors supported in a Wang set was
    increased from 15 to 255.
 
+-  Valid transformations of tiles in a set (flipping, rotation) are specified
+   in a :ref:`tmx-tileset-transformations` element. The partial support for the
+   ``vflip``, ``hflip`` and ``dflip`` attributes on the :ref:`tmx-wangtile`
+   element has been removed.
+
 Tiled 1.4
 ---------
 

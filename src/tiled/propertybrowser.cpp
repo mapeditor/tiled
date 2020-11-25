@@ -829,6 +829,19 @@ void PropertyBrowser::addTilesetProperties()
     QtVariantProperty *columnsProperty = addProperty(ColumnCountProperty, QVariant::Int, tr("Columns"), groupProperty);
     columnsProperty->setAttribute(QLatin1String("minimum"), 1);
 
+    QtVariantProperty *transformationsGroupProperty = mVariantManager->addProperty(VariantPropertyManager::unstyledGroupTypeId(), tr("Allowed Transformations"));
+
+    QtVariantProperty *flipHorizontallyProperty = addProperty(AllowFlipHorizontallyProperty, QVariant::Bool, tr("Flip Horizontally"), transformationsGroupProperty);
+    QtVariantProperty *flipVerticallyProperty = addProperty(AllowFlipVerticallyProperty, QVariant::Bool, tr("Flip Vertically"), transformationsGroupProperty);
+    QtVariantProperty *rotateProperty = addProperty(AllowRotateProperty, QVariant::Bool, tr("Rotate"), transformationsGroupProperty);
+    QtVariantProperty *randomProperty = addProperty(PreferUntransformedProperty, QVariant::Bool, tr("Prefer Untransformed Tiles"), transformationsGroupProperty);
+    flipHorizontallyProperty->setEnabled(mTilesetDocument);
+    flipVerticallyProperty->setEnabled(mTilesetDocument);
+    rotateProperty->setEnabled(mTilesetDocument);
+    randomProperty->setEnabled(mTilesetDocument);
+
+    groupProperty->addSubProperty(transformationsGroupProperty);
+
     // Next properties we should add only for non 'Collection of Images' tilesets
     if (!tileset->isCollection()) {
         QtVariantProperty *parametersProperty =
@@ -1349,6 +1362,44 @@ void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
         undoStack->push(new ChangeTilesetBackgroundColor(mTilesetDocument,
                                                          val.value<QColor>()));
         break;
+    case AllowFlipHorizontallyProperty:
+    case AllowFlipVerticallyProperty:
+    case AllowRotateProperty:
+    case PreferUntransformedProperty: {
+        Q_ASSERT(mTilesetDocument);
+
+        Tileset::TransformationFlag flag = Tileset::NoTransformation;
+        switch (id) {
+        case AllowFlipHorizontallyProperty:
+            flag = Tileset::AllowFlipHorizontally;
+            break;
+        case AllowFlipVerticallyProperty:
+            flag = Tileset::AllowFlipVertically;
+            break;
+        case AllowRotateProperty:
+            flag = Tileset::AllowRotate;
+            break;
+        case PreferUntransformedProperty:
+            flag = Tileset::PreferUntransformed;
+            break;
+        default:
+            return;
+        }
+
+        auto flags = tileset->transformationFlags();
+
+#if QT_VERSION >= 0x050700
+        flags.setFlag(flag, val.toBool());
+#else
+        if (val.toBool())
+            flags |= flag;
+        else
+            flags &= ~flag;
+#endif
+
+        undoStack->push(new ChangeTilesetTransformationFlags(mTilesetDocument, flags));
+        break;
+    }
     default:
         break;
     }
@@ -1742,6 +1793,12 @@ void PropertyBrowser::updateProperties()
             mIdToProperty[SpacingProperty]->setValue(tileset->tileSpacing());
             mIdToProperty[ColorProperty]->setValue(tileset->transparentColor());
         }
+
+        const auto flags = tileset->transformationFlags();
+        mIdToProperty[AllowFlipHorizontallyProperty]->setValue(flags.testFlag(Tileset::AllowFlipHorizontally));
+        mIdToProperty[AllowFlipVerticallyProperty]->setValue(flags.testFlag(Tileset::AllowFlipVertically));
+        mIdToProperty[AllowRotateProperty]->setValue(flags.testFlag(Tileset::AllowRotate));
+        mIdToProperty[PreferUntransformedProperty]->setValue(flags.testFlag(Tileset::PreferUntransformed));
         break;
     }
     case Object::TileType: {

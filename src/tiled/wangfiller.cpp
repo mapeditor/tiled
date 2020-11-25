@@ -178,16 +178,16 @@ void WangFiller::fillRegion(TileLayer &target,
         if (target.cellAt(targetPos).checked())
             return;
 
-        WangTile wangTile;
-        if (!findBestMatch(target, grid, QPoint(x, y), wangTile)) {
+        Cell cell;
+        if (!findBestMatch(target, grid, QPoint(x, y), cell)) {
             // TODO: error feedback
             return;
         }
 
-        auto cell = wangTile.makeCell();
         cell.setChecked(true);
-
         target.setCell(targetPos.x(), targetPos.y(), cell);
+
+        const WangId cellWangId = mWangSet.wangIdOfCell(cell);
 
         // Adjust the desired WangIds for the surrounding tiles based on the placed one
         QPoint adjacentPoints[WangId::NumIndexes];
@@ -199,7 +199,7 @@ void WangFiller::fillRegion(TileLayer &target,
                 continue;
 
             CellInfo adjacentInfo = grid.get(p);
-            updateToAdjacent(adjacentInfo, wangTile.wangId(), WangId::oppositeIndex(i));
+            updateToAdjacent(adjacentInfo, cellWangId, WangId::oppositeIndex(i));
 
             // Check if we may need to reconsider a tile outside of our starting region
             if (!WangId::isCorner(i) && mCorrectionsEnabled && bounds.contains(p) && !region.contains(p)) {
@@ -261,23 +261,23 @@ WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
 bool WangFiller::findBestMatch(const TileLayer &target,
                                const Grid<CellInfo> &grid,
                                QPoint position,
-                               WangTile &result) const
+                               Cell &result) const
 {
     const CellInfo info = grid.get(position);
     const quint64 maskedWangId = info.desired & info.mask;
 
-    RandomPicker<WangTile> matches;
+    RandomPicker<Cell> matches;
     int lowestPenalty = INT_MAX;
 
-    auto processCandidate = [&] (const WangTile &wangTile) {
-        if ((wangTile.wangId() & info.mask) != maskedWangId)
+    auto processCandidate = [&] (WangId wangId, const Cell &cell) {
+        if ((wangId & info.mask) != maskedWangId)
             return;
 
         int totalPenalty = 0;
 
         for (int i = 0; i < WangId::NumIndexes; ++i) {
             const int desiredColor = info.desired.indexColor(i);
-            const int candidateColor = wangTile.wangId().indexColor(i);
+            const int candidateColor = wangId.indexColor(i);
 
             if (candidateColor != desiredColor) {
                 int penalty = mWangSet.transitionPenalty(desiredColor, candidateColor);
@@ -305,16 +305,20 @@ bool WangFiller::findBestMatch(const TileLayer &target,
                 lowestPenalty = totalPenalty;
             }
 
-            matches.add(wangTile, mWangSet.wangTileProbability(wangTile));
+            qreal probability = mWangSet.wangIdProbability(wangId);
+            if (Tile *tile = cell.tile())
+                probability *= tile->probability();
+
+            matches.add(cell, probability);
         }
     };
 
-    // TODO: this is a slow linear search, perhaps we could use a better find algorithm...
-    for (const WangTile &wangTile : mWangSet.wangTilesByWangId())
-        processCandidate(wangTile);
+    const auto &wangIdsAndCells = mWangSet.wangIdsAndCells();
+    for (int i = 0, i_end = wangIdsAndCells.size(); i < i_end; ++i)
+        processCandidate(wangIdsAndCells[i].wangId, wangIdsAndCells[i].cell);
 
     if (mErasingEnabled)
-        processCandidate(WangTile());
+        processCandidate(WangId(), Cell());
 
     // Choose a candidate at random, with consideration for probability
     while (!matches.isEmpty()) {
@@ -326,6 +330,7 @@ bool WangFiller::findBestMatch(const TileLayer &target,
         // complete.
         if (!mCorrectionsEnabled && !mWangSet.isComplete()) {
             bool discard = false;
+            WangId resultWangId = mWangSet.wangIdOfCell(result);
 
             // Adjust the desired WangIds for the surrounding tiles based on
             // the to be placed one.
@@ -338,7 +343,7 @@ bool WangFiller::findBestMatch(const TileLayer &target,
                     continue;
 
                 CellInfo adjacentInfo = grid.get(p);
-                updateToAdjacent(adjacentInfo, result.wangId(), WangId::oppositeIndex(i));
+                updateToAdjacent(adjacentInfo, resultWangId, WangId::oppositeIndex(i));
 
                 if (!mWangSet.wangIdIsUsed(adjacentInfo.desired, adjacentInfo.mask)) {
                     discard = true;

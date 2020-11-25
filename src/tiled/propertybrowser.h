@@ -145,7 +145,11 @@ private:
         CompressionLevelProperty,
         ChunkWidthProperty,
         ChunkHeightProperty,
-        TintColorProperty
+        TintColorProperty,
+        AllowFlipHorizontallyProperty,
+        AllowFlipVerticallyProperty,
+        AllowRotateProperty,
+        PreferUntransformedProperty,
     };
 
     void addMapProperties();

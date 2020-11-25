@@ -224,6 +224,18 @@ public:
     LoadingStatus status() const;
     LoadingStatus imageStatus() const;
 
+    enum TransformationFlag {
+        NoTransformation        = 0,
+        AllowFlipHorizontally   = 1 << 0,
+        AllowFlipVertically     = 1 << 1,
+        AllowRotate             = 1 << 2,
+        PreferUntransformed     = 1 << 3,
+    };
+    Q_DECLARE_FLAGS(TransformationFlags, TransformationFlag)
+
+    TransformationFlags transformationFlags() const;
+    void setTransformationFlags(TransformationFlags flags);
+
     void swap(Tileset &other);
 
     SharedTileset clone() const;
@@ -272,6 +284,7 @@ private:
     LoadingStatus mStatus;
     QColor mBackgroundColor;
     QString mFormat;
+    TransformationFlags mTransformationFlags;
 
     QWeakPointer<Tileset> mWeakPointer;
     QWeakPointer<Tileset> mOriginalTileset;
@@ -682,7 +695,19 @@ inline LoadingStatus Tileset::imageStatus() const
     return mImageReference.status;
 }
 
+inline Tileset::TransformationFlags Tileset::transformationFlags() const
+{
+    return mTransformationFlags;
+}
+
+inline void Tileset::setTransformationFlags(TransformationFlags flags)
+{
+    mTransformationFlags = flags;
+}
+
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::Tileset*)
 Q_DECLARE_METATYPE(Tiled::SharedTileset)
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Tileset::TransformationFlags)

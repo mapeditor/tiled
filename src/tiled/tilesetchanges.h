@@ -190,4 +190,19 @@ private:
     QSize mGridSize;
 };
 
+class ChangeTilesetTransformationFlags : public QUndoCommand
+{
+public:
+    ChangeTilesetTransformationFlags(TilesetDocument *TilesetDocument,
+                                     Tileset::TransformationFlags newValue);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    TilesetDocument *mTilesetDocument;
+    const Tileset::TransformationFlags mOldValue;
+    const Tileset::TransformationFlags mNewValue;
+};
+
 } // namespace Tiled

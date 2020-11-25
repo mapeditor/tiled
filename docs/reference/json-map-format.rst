@@ -441,6 +441,7 @@ Tileset
     tileoffset,       :ref:`json-tileset-tileoffset`, "(optional)"
     tiles,            array,            "Array of :ref:`Tiles <json-tile>` (optional)"
     tilewidth,        int,              "Maximum width of tiles in this set"
+    transformations,  :ref:`json-tileset-transformations`, "Allowed transformations (optional)"
     transparentcolor, string,           "Hex-formatted color (#RRGGBB) (optional)"
     type,             string,           "``tileset`` (for tileset files, since 1.0)"
     version,          number,           "The JSON format version"
@@ -482,6 +483,22 @@ See :ref:`tmx-tileoffset` in the TMX Map Format.
 
     x,                int,              "Horizontal offset in pixels"
     y,                int,              "Vertical offset in pixels (positive is down)"
+
+.. _json-tileset-transformations:
+
+Transformations
+~~~~~~~~~~~~~~~
+
+See :ref:`tmx-tileset-transformations` in the TMX Map Format.
+
+.. csv-table::
+    :header: Field, Type, Description
+    :widths: 1, 1, 4
+
+    hflip,            bool,             "Tiles can be flipped horizontally"
+    vflip,            bool,             "Tiles can be flipped vertically"
+    rotate,           bool,             "Tiles can be rotated in 90-degree increments"
+    preferuntransformed, bool,          "Whether untransformed tiles remain preferred, otherwise transformed tiles are used to produce more variations"
 
 Tileset Example
 ~~~~~~~~~~~~~~~
@@ -667,10 +684,7 @@ Wang Tile
     :header: Field, Type, Description
     :widths: 1, 1, 4
 
-    dflip,            bool,             "Tile is flipped diagonally (default: ``false``)"
-    hflip,            bool,             "Tile is flipped horizontally (default: ``false``)"
     tileid,           int,              "Local ID of tile"
-    vflip,            bool,             "Tile is flipped vertically (default: ``false``)"
     wangid,           array,            "Array of Wang color indexes (``uchar[8]``)"
 
 Example:
@@ -678,10 +692,7 @@ Example:
 .. code:: json
 
     {
-      "dflip": false,
-      "hflip": false,
       "tileid": 0,
-      "vflip": false,
       "wangid": [2, 0, 1, 0, 1, 0, 2, 0]
     }
 
@@ -738,6 +749,12 @@ Tiled 1.5
   as the new ``colors`` property.
 
 * :ref:`json-wangcolor` can now store ``properties``.
+
+* Added ``transformations`` property to :ref:`json-tileset` (see
+  :ref:`json-tileset-transformations`).
+
+* Removed ``dflip``, ``hflip`` and ``vflip`` properties from
+  :ref:`json-wangtile` (no longer supported).
 
 Tiled 1.4
 ~~~~~~~~~

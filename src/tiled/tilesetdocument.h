@@ -95,6 +95,7 @@ public:
     void setTilesetName(const QString &name);
     void setTilesetTileOffset(QPoint tileOffset);
     void setTilesetObjectAlignment(Alignment objectAlignment);
+    void setTilesetTransformationFlags(Tileset::TransformationFlags flags);
 
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile*> &tiles);
