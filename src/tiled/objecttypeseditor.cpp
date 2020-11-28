@@ -46,19 +46,6 @@
 
 namespace Tiled {
 
-class ColorDelegate : public QStyledItemDelegate
-{
-public:
-    explicit ColorDelegate(QObject *parent = nullptr)
-        : QStyledItemDelegate(parent)
-    { }
-
-    void paint(QPainter *painter, const QStyleOptionViewItem &option,
-               const QModelIndex &index) const override;
-
-    QSize sizeHint(const QStyleOptionViewItem &,
-                   const QModelIndex &) const override;
-};
 
 void ColorDelegate::paint(QPainter *painter,
                           const QStyleOptionViewItem &option,
@@ -464,6 +451,7 @@ QtVariantProperty *ObjectTypesEditor::createProperty(int type,
     QtVariantProperty *property = mVariantManager->addProperty(type, name);
     if (!property) {
         // fall back to string property for unsupported property types
+        qDebug() << "test";
         property = mVariantManager->addProperty(QMetaType::QString, name);
     }
 

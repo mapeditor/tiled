@@ -105,6 +105,7 @@ private:
  */
 using Properties = QVariantMap;
 
+
 /**
  * Collection of properties with information about the consistency of their
  * presence and value over several property collections.
@@ -119,6 +120,7 @@ TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json);
 
 TILEDSHARED_EXPORT int filePathTypeId();
 TILEDSHARED_EXPORT int objectRefTypeId();
+TILEDSHARED_EXPORT int customTypeId();
 
 TILEDSHARED_EXPORT QString typeToName(int type);
 TILEDSHARED_EXPORT int nameToType(const QString &name);

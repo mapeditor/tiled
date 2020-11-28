@@ -69,11 +69,17 @@ private:
     void fileEditFileUrlChanged(const QUrl &value);
     void textPropertyEditTextChanged(const QString &value);
     void comboBoxPropertyEditTextChanged(const QString &value);
+    void enumPropEditTextChanged(const QString &value);
     void objectRefEditValueChanged(const DisplayObjectRef &value);
     void slotEditorDestroyed(QObject *object);
 
     QMap<QtProperty *, QList<FileEdit *> > mCreatedFileEdits;
     QMap<FileEdit *, QtProperty *> mFileEditToProperty;
+
+    // for now there are no other customprops.
+    QMap<QtProperty *, QList<QComboBox *> > mCreatedEnumProps;
+    QMap<QComboBox *, QtProperty *> mEnumPropToProperty;
+
 
     QMap<QtProperty *, QList<TilesetParametersEdit *> > mCreatedTilesetEdits;
     QMap<TilesetParametersEdit *, QtProperty *> mTilesetEditToProperty;

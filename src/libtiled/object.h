@@ -30,6 +30,7 @@
 
 #include "properties.h"
 #include "objecttypes.h"
+#include "customproperties.h"
 
 namespace Tiled {
 
@@ -133,14 +134,19 @@ public:
     bool isPartOfTileset() const;
 
     static void setObjectTypes(const ObjectTypes &objectTypes);
+    static void setCustomProps(const CustomProps &customProps);
     static const ObjectTypes &objectTypes()
     { return mObjectTypes; }
+    static const CustomProps &customProps()
+    { return mCustomProps; }
 
 private:
     const TypeId mTypeId;
     Properties mProperties;
 
     static ObjectTypes mObjectTypes;
+
+    static CustomProps mCustomProps;
 };
 
 

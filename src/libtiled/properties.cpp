@@ -28,6 +28,7 @@
 
 #include "properties.h"
 
+#include "customproperties.h"
 #include "tiled.h"
 
 #include <QColor>
@@ -116,6 +117,13 @@ void aggregateProperties(AggregatedProperties &aggregated, const Properties &pro
     }
 }
 
+
+int customTypeId()
+{
+    return qMetaTypeId<CustomProp>();
+}
+
+
 int filePathTypeId()
 {
     return qMetaTypeId<FilePath>();
@@ -135,7 +143,10 @@ QString typeToName(int type)
         return QStringLiteral("float");
     case QMetaType::QColor:
         return QStringLiteral("color");
+  
     default:
+        if (type == customTypeId())
+            return QStringLiteral("custom");
         if (type == filePathTypeId())
             return QStringLiteral("file");
         if (type == objectRefTypeId())
@@ -152,6 +163,8 @@ int nameToType(const QString &name)
         return QMetaType::Double;
     if (name == QLatin1String("color"))
         return QMetaType::QColor;
+    if (name == QLatin1String("custom"))
+        return customTypeId();
     if (name == QLatin1String("file"))
         return filePathTypeId();
     if (name == QLatin1String("object"))

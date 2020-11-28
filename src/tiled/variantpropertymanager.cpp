@@ -82,7 +82,8 @@ bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
             || propertyType == displayObjectRefTypeId()
             || propertyType == tilesetParametersTypeId()
             || propertyType == alignmentTypeId()
-            || propertyType == unstyledGroupTypeId())
+            || propertyType == unstyledGroupTypeId()
+            || propertyType == customTypeId())
         return true;
     return QtVariantPropertyManager::isPropertyTypeSupported(propertyType);
 }
@@ -90,6 +91,8 @@ bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
 int VariantPropertyManager::valueType(int propertyType) const
 {
     if (propertyType == filePathTypeId())
+        return propertyType;
+    if (propertyType == customTypeId())
         return propertyType;
     if (propertyType == displayObjectRefTypeId())
         return propertyType;
@@ -156,14 +159,14 @@ int VariantPropertyManager::alignmentTypeId()
     return qMetaTypeId<Qt::Alignment>();
 }
 
-int VariantPropertyManager::displayObjectRefTypeId()
-{
-    return qMetaTypeId<DisplayObjectRef>();
-}
-
 int VariantPropertyManager::unstyledGroupTypeId()
 {
     return qMetaTypeId<UnstyledGroup>();
+}
+
+int VariantPropertyManager::displayObjectRefTypeId()
+{
+    return qMetaTypeId<DisplayObjectRef>();
 }
 
 QString VariantPropertyManager::objectRefLabel(const MapObject *object) const
@@ -199,6 +202,17 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
             return tr("%1: Object not found").arg(QString::number(ref.id()));
         }
 
+        if (typeId == filePathTypeId()) {
+            FilePath filePath = value.value<FilePath>();
+            QString fileName = filePath.url.fileName();
+            if (fileName.isEmpty()) {
+                QString path = filePath.url.toLocalFile();
+                if (path.endsWith(QLatin1Char('/')))
+                    path.chop(1);
+                fileName = QFileInfo(path).fileName();
+            }
+            return fileName;
+        }
         if (typeId == filePathTypeId()) {
             FilePath filePath = value.value<FilePath>();
             QString fileName = filePath.url.fileName();
@@ -350,7 +364,8 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
     const int type = propertyType(property);
     if (type == filePathTypeId()
             || type == displayObjectRefTypeId()
-            || type == tilesetParametersTypeId()) {
+            || type == tilesetParametersTypeId()
+            || type == customTypeId()) {
         mValues[property] = QVariant();
         if (type == filePathTypeId())
             mFilePathAttributes[property] = FilePathAttributes();

@@ -509,6 +509,12 @@ void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
     emit objectTypesChanged();
 }
 
+void Preferences::setCustomProps(const CustomProps &customProps)
+{
+    Object::setCustomProps(customProps);
+    emit customPropsChanged();
+}
+
 QDate Preferences::firstRun() const
 {
     return get<QDate>("Install/FirstRun");

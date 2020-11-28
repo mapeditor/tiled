@@ -22,6 +22,8 @@
 #include "addpropertydialog.h"
 #include "ui_addpropertydialog.h"
 
+#include "object.h"
+#include "preferences.h"
 #include "documentmanager.h"
 #include "properties.h"
 #include "session.h"
@@ -46,6 +48,7 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
 
+
     // Add possible types from QVariant
     mUi->typeBox->addItem(typeToName(QMetaType::Bool),      false);
     mUi->typeBox->addItem(typeToName(QMetaType::QColor),    QColor());
@@ -55,15 +58,25 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->typeBox->addItem(typeToName(objectRefTypeId()),    QVariant::fromValue(ObjectRef()));
     mUi->typeBox->addItem(typeToName(QMetaType::QString),   QString());
 
+
+    CustomProps customProps = Object::customProps();
+
+
+    for (const CustomProp cProp: customProps) {
+        QVariant var;
+        var.setValue(cProp);
+        mUi->typeBox->addItem(cProp.name,  var);
+    }
+        
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
     // Restore previously used type
     mUi->typeBox->setCurrentText(session::propertyType);
 
     connect(mUi->name, &QLineEdit::textChanged,
-            this, &AddPropertyDialog::nameChanged);
+        this, &AddPropertyDialog::nameChanged);
     connect(mUi->typeBox, &QComboBox::currentTextChanged,
-            this, &AddPropertyDialog::typeChanged);
+        this, &AddPropertyDialog::typeChanged);
 }
 
 AddPropertyDialog::~AddPropertyDialog()

@@ -29,6 +29,7 @@
 #include "utils.h"
 #include "variantpropertymanager.h"
 
+#include <QDebug>
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QToolButton>
@@ -117,6 +118,24 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
 
         connect(editor, &FileEdit::fileUrlChanged,
                 this, &VariantEditorFactory::fileEditFileUrlChanged);
+        connect(editor, &QObject::destroyed,
+                this, &VariantEditorFactory::slotEditorDestroyed);
+
+        return editor;
+    }
+
+    if (type == customTypeId()) {
+        QComboBox *editor= new QComboBox(parent);
+        CustomProp cProp = manager->value(property).value<CustomProp>();
+        editor->setCurrentText(manager->value(property).value<CustomProp>().currentValue());
+
+        editor->addItems(cProp.values);
+
+        mCreatedEnumProps[property].append(editor);
+        mEnumPropToProperty[editor]= property;
+
+        connect(editor, &QComboBox::currentTextChanged,
+                this, &VariantEditorFactory::enumPropEditTextChanged);
         connect(editor, &QObject::destroyed,
                 this, &VariantEditorFactory::slotEditorDestroyed);
 
@@ -285,6 +304,22 @@ void VariantEditorFactory::textPropertyEditTextChanged(const QString &value)
         if (!manager)
             return;
         manager->setValue(property, value);
+    }
+}
+
+void VariantEditorFactory::enumPropEditTextChanged(const QString &value)
+{
+    auto comboBox = qobject_cast<QComboBox*>(sender());
+    Q_ASSERT(comboBox);
+
+    if (QtProperty *property = mEnumPropToProperty.value(comboBox)) {
+        QtVariantPropertyManager *manager = propertyManager(property);
+        if (!manager)
+            return;
+        CustomProp cProp = manager->value(property).value<CustomProp>();
+        cProp.setValue(value);
+        manager->setValue(property, QVariant::fromValue(cProp));
+        comboBox->setCurrentText(cProp.currentValue());
     }
 }
 

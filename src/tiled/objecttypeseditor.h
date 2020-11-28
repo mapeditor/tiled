@@ -23,7 +23,13 @@
 #include "properties.h"
 
 #include <QDialog>
-
+#include <QColorDialog>
+#include <QCloseEvent>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QPainter>
+#include <QStyledItemDelegate>
 namespace Ui {
 class ObjectTypesEditor;
 }
@@ -35,6 +41,21 @@ class QtVariantProperty;
 class QtVariantPropertyManager;
 
 namespace Tiled {
+
+class ColorDelegate : public QStyledItemDelegate
+{
+public:
+    explicit ColorDelegate(QObject *parent = nullptr)
+        : QStyledItemDelegate(parent)
+    { }
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
+               const QModelIndex &index) const override;
+
+    QSize sizeHint(const QStyleOptionViewItem &,
+                   const QModelIndex &) const override;
+};
+
 
 class ObjectTypesModel;
 

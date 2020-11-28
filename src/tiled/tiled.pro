@@ -117,6 +117,8 @@ SOURCES += aboutdialog.cpp \
     createtemplatetool.cpp \
     createtextobjecttool.cpp \
     createtileobjecttool.cpp \
+    custompropseditor.cpp \
+    custompropsmodel.cpp \
     debugdrawitem.cpp \
     document.cpp \
     documentmanager.cpp \
@@ -354,6 +356,8 @@ HEADERS += aboutdialog.h \
     createtemplatetool.h \
     createtextobjecttool.h \
     createtileobjecttool.h \
+    custompropseditor.h \
+    custompropsmodel.h \
     debugdrawitem.h \
     document.h \
     documentmanager.h \
@@ -534,6 +538,7 @@ FORMS += aboutdialog.ui \
     addpropertydialog.ui \
     commanddialog.ui \
     commandsedit.ui \
+    custompropseditor.ui \
     exportasimagedialog.ui \
     imagecolorpickerwidget.ui \
     mainwindow.ui \

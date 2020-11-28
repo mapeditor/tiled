@@ -57,6 +57,7 @@
 #include "newsbutton.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
+#include "custompropseditor.h"
 #include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
 #include "projectdock.h"
@@ -232,6 +233,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mUi(new Ui::MainWindow)
     , mActionHandler(new MapDocumentActionHandler(this))
     , mObjectTypesEditor(new ObjectTypesEditor(this))
+    , mCustomPropsEditor(new CustomPropsEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(nullptr)
 {
@@ -795,8 +797,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
     mShowObjectTypesEditor->setCheckable(true);
+
+    mShowCustomPropsEditor = new QAction(tr("Custom Props Editor"), this);
+    mShowCustomPropsEditor->setCheckable(true);
+
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowObjectTypesEditor);
+    mUi->menuView->insertAction(mUi->actionShowGrid, mShowCustomPropsEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
 
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->showAnimationEditor());
@@ -815,6 +822,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             mObjectTypesEditor, &QWidget::setVisible);
     connect(mObjectTypesEditor, &ObjectTypesEditor::closed,
             this, &MainWindow::onObjectTypesEditorClosed);
+
+
+    connect(mShowCustomPropsEditor, &QAction::toggled,
+            mCustomPropsEditor, &QWidget::setVisible);
+    connect(mCustomPropsEditor, &CustomPropsEditor::closed,
+            this, &MainWindow::onCustomPropsEditorClosed);
+
 
     connect(ClipboardManager::instance(), &ClipboardManager::hasMapChanged,
             this, &MainWindow::updateActions);
@@ -2012,6 +2026,11 @@ void MainWindow::onObjectTypesEditorClosed()
     mShowObjectTypesEditor->setChecked(false);
 }
 
+void MainWindow::onCustomPropsEditorClosed()
+{
+    mShowCustomPropsEditor->setChecked(false);
+}
+
 void MainWindow::ensureHasBorderInFullScreen()
 {
 #ifdef Q_OS_WIN
@@ -2328,6 +2347,7 @@ void MainWindow::retranslateUi()
     mResetToDefaultLayout->setText(tr("Reset to Default Layout"));
     mLockLayout->setText(tr("Lock Layout"));
     mShowObjectTypesEditor->setText(tr("Object Types Editor"));
+    mShowCustomPropsEditor->setText(tr("Custom Props Editor"));
     mActionHandler->retranslateUi();
     CommandManager::instance()->retranslateUi();
 }
