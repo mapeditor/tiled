@@ -54,9 +54,10 @@ jobs:
         sudo apt install libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
 
     - name: Install Qt
-      run: |
-        ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools icu | tee -a $GITHUB_PATH
-        ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: ${QT_VERSION}
+        tools: 'tools_qtcreator,${QTCREATOR_VERSION}-0,qt.tools.qtcreator'
 
     - name: Setup Qbs
       run: |
