@@ -161,6 +161,7 @@
                 <?endif?>
 
                 <File Source="$(var.InstallRoot)\plugins\tiled\replicaisland.dll" />
+                <File Source="$(var.InstallRoot)\plugins\tiled\rpmap.dll" />
                 <File Source="$(var.InstallRoot)\plugins\tiled\tbin.dll" />
                 <File Source="$(var.InstallRoot)\plugins\tiled\tengine.dll" />
               </Component>
