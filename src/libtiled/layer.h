@@ -184,8 +184,11 @@ public:
 
     void setOffset(const QPointF &offset);
     QPointF offset() const;
-
     QPointF totalOffset() const;
+
+    void setScrollFactor(const QPointF &factor);
+    QPointF scrollFactor() const;
+    QPointF effectiveScrollFactor() const;
 
     bool canMergeDown() const;
 
@@ -252,17 +255,18 @@ protected:
     Layer *initializeClone(Layer *clone) const;
 
     QString mName;
-    int mId;
+    int mId = 0;
     TypeFlag mLayerType;
-    int mX;
-    int mY;
+    int mX = 0;
+    int mY = 0;
     QPointF mOffset;
-    qreal mOpacity;
+    QPointF mScrollFactor = { 1.0, 1.0 };
+    qreal mOpacity = 1.0;
     QColor mTintColor;
-    bool mVisible;
-    Map *mMap;
-    GroupLayer *mParentLayer;
-    bool mLocked;
+    bool mVisible = true;
+    Map *mMap = nullptr;
+    GroupLayer *mParentLayer = nullptr;
+    bool mLocked = false;
 
     friend class Map;
     friend class GroupLayer;
@@ -283,6 +287,22 @@ inline void Layer::setOffset(const QPointF &offset)
 inline QPointF Layer::offset() const
 {
     return mOffset;
+}
+
+/**
+ * Sets the scroll factor of this layer.
+ */
+inline void Layer::setScrollFactor(const QPointF &factor)
+{
+    mScrollFactor = factor;
+}
+
+/**
+ * Returns the scroll factor of this layer.
+ */
+inline QPointF Layer::scrollFactor() const
+{
+    return mScrollFactor;
 }
 
 

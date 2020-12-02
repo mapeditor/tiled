@@ -81,6 +81,9 @@ MapView::MapView(QWidget *parent, Mode mode)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
+    connect(horizontalScrollBar(), &QAbstractSlider::valueChanged, this, &MapView::updateViewRect);
+    connect(verticalScrollBar(), &QAbstractSlider::valueChanged, this, &MapView::updateViewRect);
+
     connect(mZoomable, &Zoomable::scaleChanged, this, &MapView::adjustScale);
 }
 
@@ -162,6 +165,8 @@ void MapView::adjustScale(qreal scale)
 
     setRenderHint(QPainter::SmoothPixmapTransform,
                   mZoomable->smoothTransform());
+
+    updateViewRect();
 }
 
 void MapView::setUseOpenGL(bool useOpenGL)
@@ -209,6 +214,12 @@ void MapView::updateSceneRect(const QRectF &sceneRect, const QTransform &transfo
     const QRectF expandedSceneRect = transform.inverted().mapRect(viewRect);
 
     setSceneRect(expandedSceneRect);
+}
+
+void MapView::updateViewRect()
+{
+    if (MapScene *scene = mapScene())
+        scene->setViewRect(mapToScene(viewport()->geometry()).boundingRect());
 }
 
 void MapView::focusMapObject(MapObject *mapObject)

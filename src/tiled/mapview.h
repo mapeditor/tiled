@@ -108,6 +108,7 @@ private:
     void setUseOpenGL(bool useOpenGL);
     void updateSceneRect(const QRectF &sceneRect);
     void updateSceneRect(const QRectF &sceneRect, const QTransform &transform);
+    void updateViewRect();
     void focusMapObject(MapObject *mapObject);
 
     void setMapDocument(MapDocument *mapDocument);

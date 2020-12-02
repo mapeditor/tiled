@@ -27,6 +27,7 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "objectgroup.h"
 #include "objectreferenceitem.h"
 #include "preferences.h"
@@ -85,12 +86,14 @@ private:
 
 void MapObjectOutline::syncWithMapObject(const MapRenderer &renderer)
 {
-    const QPointF pixelPos = renderer.pixelToScreenCoords(mObject->position());
+    QPointF pixelPos = renderer.pixelToScreenCoords(mObject->position());
     QRectF bounds = mObject->screenBounds(renderer);
-
     bounds.translate(-pixelPos);
 
-    setPos(pixelPos + mObject->objectGroup()->totalOffset());
+    if (auto mapScene = static_cast<MapScene*>(scene()))
+        pixelPos += mapScene->absolutePositionForLayer(*mObject->objectGroup());
+
+    setPos(pixelPos);
     setRotation(mObject->rotation());
 
     if (mBoundingRect != bounds) {
@@ -289,6 +292,31 @@ ObjectSelectionItem::~ObjectSelectionItem()
 {
 }
 
+void ObjectSelectionItem::updateItemPositions()
+{
+    // A bit of a heavy function, should be called when something changes that
+    // could affect the position of any overlay item (like map change or when
+    // parallax mode is enabled).
+
+    const MapRenderer &renderer = *mMapDocument->renderer();
+
+    for (MapObjectLabel *label : qAsConst(mObjectLabels))
+        label->syncWithMapObject(renderer);
+
+    for (MapObjectOutline *outline : qAsConst(mObjectOutlines))
+        outline->syncWithMapObject(renderer);
+
+    for (const auto &items : mReferencesBySourceObject) {
+        for (ObjectReferenceItem *item : items) {
+            item->syncWithSourceObject(renderer);
+            item->syncWithTargetObject(renderer);
+        }
+    }
+
+    if (mHoveredMapObjectItem)
+        mHoveredMapObjectItem->syncWithMapObject();
+}
+
 const MapRenderer &ObjectSelectionItem::mapRenderer() const
 {
     return *mMapDocument->renderer();
@@ -409,7 +437,7 @@ void ObjectSelectionItem::hoveredMapObjectChanged(MapObject *object,
 
 void ObjectSelectionItem::mapChanged()
 {
-    syncOverlayItems(mMapDocument->selectedObjects());
+    updateItemPositions();
 }
 
 static void collectObjects(const GroupLayer &groupLayer, QList<MapObject*> &objects)

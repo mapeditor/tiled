@@ -62,7 +62,9 @@ public:
         VisibleProperty         = 1 << 2,
         LockedProperty          = 1 << 3,
         OffsetProperty          = 1 << 4,
-        TintColorProperty       = 1 << 5,
+        ScrollFactorProperty    = 1 << 5,
+        TintColorProperty       = 1 << 6,
+        PositionProperties      = OffsetProperty | ScrollFactorProperty,
         AllProperties           = 0xFF
     };
 

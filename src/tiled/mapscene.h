@@ -71,10 +71,18 @@ public:
 
     DebugDrawItem *debugDrawItem() const;
 
+    QRectF viewRect() const;
+    void setViewRect(const QRectF &rect);
+
+    QPointF absolutePositionForLayer(const Layer &layer);
+    QPointF scrollOffset(const Layer &layer);
+
 signals:
     void mapDocumentChanged(MapDocument *mapDocument);
 
     void sceneRefreshed();
+
+    void viewRectChanged(const QRectF &rect);
 
 protected:
     bool event(QEvent *event) override;
@@ -114,6 +122,7 @@ private:
     bool mShowTileCollisionShapes = false;
     Qt::KeyboardModifiers mCurrentModifiers = Qt::NoModifier;
     QPointF mLastMousePos;
+    QRectF mViewRect;
     QColor mDefaultBackgroundColor;
 };
 
@@ -136,6 +145,11 @@ inline MapItem *MapScene::mapItem(MapDocument *mapDocument) const
 inline DebugDrawItem *MapScene::debugDrawItem() const
 {
     return mDebugDrawItem;
+}
+
+inline QRectF MapScene::viewRect() const
+{
+    return mViewRect;
 }
 
 } // namespace Tiled

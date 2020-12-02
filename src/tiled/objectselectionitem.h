@@ -77,6 +77,8 @@ public:
                         QGraphicsItem *parent = nullptr);
     ~ObjectSelectionItem() override;
 
+    void updateItemPositions();
+
     const MapRenderer &mapRenderer() const;
 
     // QGraphicsItem interface

@@ -170,6 +170,31 @@ private:
 };
 
 /**
+ * Used for changing the layer scroll factor.
+ */
+class SetLayerScrollFactor : public QUndoCommand
+{
+public:
+    SetLayerScrollFactor(Document *document,
+                         Layer *layer,
+                         const QPointF &scrollFactor,
+                         QUndoCommand *parent = nullptr);
+
+    void undo() override { setScrollFactor(mOldScrollFactor); }
+    void redo() override { setScrollFactor(mNewScrollFactor); }
+
+    int id() const override { return Cmd_ChangeLayerOffset; }
+
+private:
+    void setScrollFactor(const QPointF &scrollFactor);
+
+    Document *mDocument;
+    Layer *mLayer;
+    QPointF mOldScrollFactor;
+    QPointF mNewScrollFactor;
+};
+
+/**
  * Used for changing the tile layer size.
  *
  * Does not affect the contents of the tile layer, as opposed to the

@@ -190,6 +190,27 @@ void SetLayerOffset::setOffset(const QPointF &offset)
 }
 
 
+SetLayerScrollFactor::SetLayerScrollFactor(Document *document,
+                                           Layer *layer,
+                                           const QPointF &scrollFactor,
+                                           QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mDocument(document)
+    , mLayer(layer)
+    , mOldScrollFactor(layer->scrollFactor())
+    , mNewScrollFactor(scrollFactor)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Layer Scroll Factor"));
+}
+
+void SetLayerScrollFactor::setScrollFactor(const QPointF &scrollFactor)
+{
+    mLayer->setScrollFactor(scrollFactor);
+    emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::ScrollFactorProperty));
+}
+
+
 SetTileLayerSize::SetTileLayerSize(Document *document,
                                    TileLayer *tileLayer,
                                    QSize size,

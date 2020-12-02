@@ -159,6 +159,43 @@ void MapScene::setSelectedTool(AbstractTool *tool)
 }
 
 /**
+ * Sets the area of the scene that is currently visible in the MapView.
+ */
+void MapScene::setViewRect(const QRectF &rect)
+{
+    if (mViewRect == rect)
+        return;
+
+    mViewRect = rect;
+
+    for (MapItem *item : qAsConst(mMapItems))
+        item->updateLayerPositions(this);
+
+    emit viewRectChanged(rect);
+}
+
+/**
+ * Returns the position the given layer is supposed to have, taking into
+ * account its offset and the scroll factor along with the current view rect.
+ */
+QPointF MapScene::absolutePositionForLayer(const Layer &layer)
+{
+    return layer.totalOffset() + scrollOffset(layer);
+}
+
+/**
+ * Returns the scroll offset of the given layer, taking into account its scroll
+ * factor in combination with the current view rect.
+ */
+QPointF MapScene::scrollOffset(const Layer &layer)
+{
+    const QPointF scrollFactor = layer.effectiveScrollFactor();
+    const QPointF viewCenter = mViewRect.center();
+    return QPointF((1.0 - scrollFactor.x()) * viewCenter.x(),
+                   (1.0 - scrollFactor.y()) * viewCenter.y());
+}
+
+/**
  * Refreshes the map scene.
  */
 void MapScene::refreshScene()

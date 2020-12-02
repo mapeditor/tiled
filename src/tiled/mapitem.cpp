@@ -29,6 +29,7 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "mapview.h"
 #include "objectgroupitem.h"
 #include "objectselectionitem.h"
@@ -80,7 +81,7 @@ public:
                 this, [this] (const ChangeEvent &change) {
             if (change.type == ChangeEvent::LayerChanged) {
                 auto &layerChange = static_cast<const LayerChangeEvent&>(change);
-                if (layerChange.properties & LayerChangeEvent::OffsetProperty)
+                if (layerChange.properties & LayerChangeEvent::PositionProperties)
                     if (Layer *currentLayer = mMapDocument->currentLayer())
                         if (currentLayer->isParentOrSelf(layerChange.layer))
                             update();
@@ -102,7 +103,7 @@ public:
 
         // Take into account the offset of the current layer
         if (Layer *layer = mMapDocument->currentLayer()) {
-            offset = layer->totalOffset();
+            offset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*layer);
             painter->translate(offset);
         }
 
@@ -246,6 +247,20 @@ void MapItem::setShowTileCollisionShapes(bool enabled)
     for (LayerItem *item : qAsConst(mLayerItems))
         if (item->layer()->isTileLayer())
             item->update();
+}
+
+void MapItem::updateLayerPositions(MapScene *mapScene)
+{
+    for (LayerItem *item : qAsConst(mLayerItems)) {
+        const Layer &layer = *item->layer();
+        item->setPos(layer.offset() + mapScene->scrollOffset(layer));
+    }
+
+    if (mDisplayMode == Editable) {
+        mTileSelectionItem->updatePosition();
+        mTileGridItem->update();
+        mObjectSelectionItem->updateItemPositions();
+    }
 }
 
 QRectF MapItem::boundingRect() const
@@ -416,8 +431,8 @@ void MapItem::layerRemoved(Layer *layer)
 }
 
 /**
- * A layer has changed. This can mean that the layer visibility, opacity or
- * offset changed.
+ * A layer has changed. This can mean that the layer visibility, opacity,
+ * offset or scroll factor changed.
  */
 void MapItem::layerChanged(const LayerChangeEvent &change)
 {
@@ -452,8 +467,10 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
             multiplier = opacityFactor;
     }
 
+    const QPointF scrollOffset = static_cast<MapScene*>(scene())->scrollOffset(*layer);
+
     layerItem->setOpacity(layer->opacity() * multiplier);
-    layerItem->setPos(layer->offset());
+    layerItem->setPos(layer->offset() + scrollOffset);
 
     updateBoundingRect();   // possible layer offset change
 }
