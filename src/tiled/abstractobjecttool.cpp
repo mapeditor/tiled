@@ -32,9 +32,9 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
-#include "preferences.h"
 #include "raiselowerhelper.h"
 #include "resizemapobject.h"
+#include "session.h"
 #include "templatemanager.h"
 #include "tile.h"
 #include "tmxmapformat.h"
@@ -322,8 +322,8 @@ static QString saveObjectTemplate(const MapObject *mapObject)
     QString filter = helper.filter();
     QString selectedFilter = XmlObjectTemplateFormat().nameFilter();
 
-    Preferences *prefs = Preferences::instance();
-    QString suggestedFileName = prefs->lastPath(Preferences::ObjectTemplateFile);
+    Session &session = Session::current();
+    QString suggestedFileName = session.lastPath(Session::ObjectTemplateFile);
     suggestedFileName += QLatin1Char('/');
     if (!mapObject->name().isEmpty())
         suggestedFileName += mapObject->name();
@@ -352,8 +352,7 @@ static QString saveObjectTemplate(const MapObject *mapObject)
         return QString();
     }
 
-    prefs->setLastPath(Preferences::ObjectTemplateFile,
-                       QFileInfo(fileName).path());
+    session.setLastPath(Session::ObjectTemplateFile, QFileInfo(fileName).path());
 
     return fileName;
 }

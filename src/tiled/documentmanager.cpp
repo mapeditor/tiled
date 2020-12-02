@@ -62,7 +62,6 @@
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QStackedLayout>
-#include <QStandardPaths>
 #include <QTabBar>
 #include <QTabWidget>
 #include <QUndoGroup>
@@ -1293,7 +1292,7 @@ QString DocumentManager::fileDialogStartLocation() const
     if (!project.fileName().isEmpty())
         return QFileInfo(project.fileName()).path();
 
-    return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    return Preferences::homeLocation();
 }
 
 void DocumentManager::onWorldUnloaded(const QString &worldFile)

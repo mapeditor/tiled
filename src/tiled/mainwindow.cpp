@@ -91,7 +91,6 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QRegularExpression>
-#include <QSessionManager>
 #include <QShortcut>
 #include <QStandardPaths>
 #include <QStatusBar>
@@ -143,7 +142,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
 {
     FormatHelper<Format> helper(FileFormat::Write, MainWindow::tr("All Files (*)"));
 
-    Preferences *pref = Preferences::instance();
+    const Session &session = Session::current();
 
     QString suggestedFilename = lastExportName;
 
@@ -155,7 +154,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
         QRegularExpressionMatch match = extensionFinder.match(selectedFilter);
         const QString extension = match.captured(1);
 
-        QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
+        QString lastExportedFilePath = session.lastPath(Session::ExportedFile);
 
         suggestedFilename = lastExportedFilePath
                             + QLatin1Char('/') + baseName
@@ -579,8 +578,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mUi->actionAddExternalTileset, &QAction::triggered,
             this, &MainWindow::addExternalTileset);
-    connect(mUi->actionLoadWorld, &QAction::triggered, this, [this,preferences]{
-        QString lastPath = preferences->lastPath(Preferences::WorldFile);
+    connect(mUi->actionLoadWorld, &QAction::triggered, this, [this] {
+        Session &session = Session::current();
+        QString lastPath = session.lastPath(Session::WorldFile);
         QString filter = tr("All Files (*);;");
         QString worldFilesFilter = tr("World files (*.world)");
         filter.append(worldFilesFilter);
@@ -589,7 +589,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         if (worldFile.isEmpty())
             return;
 
-        preferences->setLastPath(Preferences::WorldFile, QFileInfo(worldFile).path());
+        session.setLastPath(Session::WorldFile, QFileInfo(worldFile).path());
         QString errorString;
         if (!WorldManager::instance().loadWorld(worldFile, &errorString))
             QMessageBox::critical(this, tr("Error Loading World"), errorString);
@@ -613,8 +613,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             });
         }
     });
-    connect(mUi->actionNewWorld, &QAction::triggered, this, [this,preferences]{
-        QString lastPath = preferences->lastPath(Preferences::WorldFile);
+    connect(mUi->actionNewWorld, &QAction::triggered, this, [this] {
+        Session &session = Session::current();
+        QString lastPath = session.lastPath(Session::WorldFile);
         QString filter = tr("All Files (*);;");
         QString worldFilesFilter = tr("World files (*.world)");
         filter.append(worldFilesFilter);
@@ -625,7 +626,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         if (worldFile.isEmpty() || QFile::exists(worldFile))
             return;
 
-        preferences->setLastPath(Preferences::WorldFile, QFileInfo(worldFile).path());
+        session.setLastPath(Session::WorldFile, QFileInfo(worldFile).path());
         QString errorString;
         if (!WorldManager::instance().addEmptyWorld(worldFile, &errorString))
             QMessageBox::critical(this, tr("Error Creating World"), errorString);
@@ -1339,7 +1340,7 @@ bool MainWindow::closeAllFiles()
 
 void MainWindow::openProject()
 {
-    const QString dir = Preferences::instance()->lastPath(Preferences::ProjectFile);
+    const QString dir = Preferences::instance()->recentProjectPath();
     const QString projectFilesFilter = tr("Tiled Projects (*.tiled-project)");
     const QString fileName = QFileDialog::getOpenFileName(window(),
                                                           tr("Open Project"),
@@ -1380,13 +1381,7 @@ void MainWindow::saveProjectAs()
                     + QLatin1String(".tiled-project");
         } else {
             // Start in a familiar location otherwise
-            const auto recents = prefs->recentProjects();
-            if (!recents.isEmpty())
-                fileName = QFileInfo(recents.first()).path();
-
-            if (fileName.isEmpty())
-                fileName = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-
+            fileName = prefs->recentProjectPath();
             fileName.append(QLatin1Char('/'));
             fileName.append(tr("untitled") + QLatin1String(".tiled-project"));
         }
@@ -1623,10 +1618,10 @@ void MainWindow::toggleClearView(bool clearView)
 
 bool MainWindow::newTileset(const QString &path)
 {
-    Preferences *prefs = Preferences::instance();
+    Session &session = Session::current();
 
     const QString startLocation = path.isEmpty()
-            ? QFileInfo(prefs->lastPath(Preferences::ImageFile)).absolutePath()
+            ? session.lastPath(Session::ImageFile)
             : path;
 
     NewTilesetDialog newTileset(this);
@@ -1637,7 +1632,7 @@ bool MainWindow::newTileset(const QString &path)
         return false;
 
     if (tileset->imageSource().isLocalFile())
-        prefs->setLastPath(Preferences::ImageFile, tileset->imageSource().toLocalFile());
+        session.setLastPath(Session::ImageFile, QFileInfo(tileset->imageSource().toLocalFile()).absolutePath());
 
     auto mapDocument = qobject_cast<MapDocument*>(mDocument);
 
@@ -1683,8 +1678,8 @@ void MainWindow::addExternalTileset()
 
     FormatHelper<TilesetFormat> helper(FileFormat::Read, filter);
 
-    Preferences *prefs = Preferences::instance();
-    QString start = prefs->lastPath(Preferences::ExternalTileset);
+    Session &session = Session::current();
+    QString start = session.lastPath(Session::ExternalTileset);
 
     const QStringList fileNames =
             QFileDialog::getOpenFileNames(this, tr("Add External Tileset(s)"),
@@ -1695,8 +1690,8 @@ void MainWindow::addExternalTileset()
     if (fileNames.isEmpty())
         return;
 
-    prefs->setLastPath(Preferences::ExternalTileset,
-                       QFileInfo(fileNames.last()).path());
+    session.setLastPath(Session::ExternalTileset,
+                        QFileInfo(fileNames.last()).path());
 
     lastUsedTilesetFilter = selectedFilter;
 
@@ -2185,9 +2180,9 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
         }
     }
 
-    Preferences *pref = Preferences::instance();
+    Session &session = Session::current();
 
-    pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
+    session.setLastPath(Session::ExportedFile, QFileInfo(exportDetails.mFileName).path());
     lastUsedExportFilter = selectedFilter;
 
     auto exportResult = exportDetails.mFormat->write(map,
@@ -2207,7 +2202,7 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
 {
     QString fileName = tilesetDocument->fileName();
     if (fileName.isEmpty()) {
-        fileName = Preferences::instance()->lastPath(Preferences::ExportedFile);
+        fileName = Session::current().lastPath(Session::ExportedFile);
         fileName += QLatin1Char('/');
         fileName = tilesetDocument->tileset()->name();
     }
@@ -2221,9 +2216,9 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
     if (!exportDetails.isValid())
         return;
 
-    Preferences *pref = Preferences::instance();
+    Session &session = Session::current();
 
-    pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
+    session.setLastPath(Session::ExportedFile, QFileInfo(exportDetails.mFileName).path());
     lastUsedTilesetExportFilter = selectedFilter;
 
     ExportHelper exportHelper;

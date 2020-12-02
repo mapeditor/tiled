@@ -672,8 +672,8 @@ static bool hasTileInTileset(const QUrl &imageSource, const Tileset &tileset)
 
 void TilesetEditor::openAddTilesDialog()
 {
-    Preferences *prefs = Preferences::instance();
-    const QString startLocation = QFileInfo(prefs->lastPath(Preferences::ImageFile)).absolutePath();
+    const Session &session = Session::current();
+    const QString startLocation = session.lastPath(Session::ImageFile);
     const QString filter = Utils::readableImageFormatsFilter();
     const auto urls = QFileDialog::getOpenFileUrls(mMainWindow->window(),
                                                    tr("Add Tiles"),
@@ -689,8 +689,6 @@ void TilesetEditor::addTiles(const QList<QUrl> &urls)
     Tileset *tileset = currentTileset();
     if (!tileset)
         return;
-
-    Preferences *prefs = Preferences::instance();
 
     struct LoadedFile {
         QUrl imageSource;
@@ -741,8 +739,10 @@ void TilesetEditor::addTiles(const QList<QUrl> &urls)
         return;
 
     const QString lastLocalFile = urls.last().toLocalFile();
-    if (!lastLocalFile.isEmpty())
-        prefs->setLastPath(Preferences::ImageFile, lastLocalFile);
+    if (!lastLocalFile.isEmpty()) {
+        Session &session = Session::current();
+        session.setLastPath(Session::ImageFile, QFileInfo(lastLocalFile).path());
+    }
 
     QList<Tile*> tiles;
     tiles.reserve(loadedFiles.size());

@@ -38,7 +38,6 @@
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <QSet>
-#include <QStandardPaths>
 #include <QTreeView>
 
 namespace Tiled {
@@ -120,7 +119,7 @@ void ProjectDock::addFolderToProject()
         if (!project.folders().isEmpty())
             folder = QFileInfo(project.folders().last()).path();
         else
-            folder = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+            folder = Preferences::homeLocation();
     }
 
     folder = QFileDialog::getExistingDirectory(window(),

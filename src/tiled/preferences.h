@@ -130,19 +130,6 @@ public:
 
     void setObjectTypes(const ObjectTypes &objectTypes);
 
-    enum FileType {
-        ExportedFile,
-        ExternalTileset,
-        ImageFile,
-        ObjectTemplateFile,
-        ObjectTypesFile,
-        ProjectFile,
-        WorldFile,
-    };
-
-    QString lastPath(FileType fileType) const;
-    void setLastPath(FileType fileType, const QString &path);
-
     QString objectTypesFile() const;
     void setObjectTypesFile(const QString &filePath);
     void setObjectTypesFileLastSaved(const QDateTime &time);
@@ -161,6 +148,7 @@ public:
     void addRecentFile(const QString &fileName);
 
     QStringList recentProjects() const;
+    QString recentProjectPath() const;
     void addRecentProject(const QString &fileName);
 
     QString startupSession() const;
@@ -179,6 +167,7 @@ public:
     T get(const char *key, const T &defaultValue = T()) const
     { return value(QLatin1String(key), defaultValue).template value<T>(); }
 
+    static QString homeLocation();
     static QString dataLocation();
     static QString configLocation();
 
