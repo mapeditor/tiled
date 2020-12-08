@@ -557,9 +557,10 @@ void ObjectSelectionItem::objectsAboutToBeRemoved(const QList<MapObject *> &obje
             delete mObjectLabels.take(object);
 
     for (MapObject *object : objects) {
+        // Remove any references originating from this object
         auto it = mReferencesBySourceObject.find(object);
         if (it != mReferencesBySourceObject.end()) {
-            QList<ObjectReferenceItem*> &items = *it;
+            const QList<ObjectReferenceItem*> &items = *it;
             for (auto item : items) {
                 auto &itemsByTarget = mReferencesByTargetObject[item->targetObject()];
                 itemsByTarget.removeOne(item);
@@ -569,6 +570,21 @@ void ObjectSelectionItem::objectsAboutToBeRemoved(const QList<MapObject *> &obje
                 delete item;
             }
             mReferencesBySourceObject.erase(it);
+        }
+
+        // Remove any references pointing to this object
+        it = mReferencesByTargetObject.find(object);
+        if (it != mReferencesByTargetObject.end()) {
+            const QList<ObjectReferenceItem*> &items = *it;
+            for (auto item : items) {
+                auto &itemsBySource = mReferencesBySourceObject[item->sourceObject()];
+                itemsBySource.removeOne(item);
+                if (itemsBySource.isEmpty())
+                    mReferencesBySourceObject.remove(item->sourceObject());
+
+                delete item;
+            }
+            mReferencesByTargetObject.erase(it);
         }
     }
 }
