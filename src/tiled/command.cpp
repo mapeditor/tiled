@@ -242,8 +242,8 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
         mFile.close();
 
         // Add execute permission to the file
-        int chmodRet = QProcess::execute(QStringLiteral(
-                                     "chmod +x \"%1\"").arg(mFile.fileName()));
+        int chmodRet = QProcess::execute(QStringLiteral("chmod"),
+                                         { QStringLiteral("+x"), mFile.fileName() });
         if (chmodRet != 0) {
             reportErrorAndDelete(tr("Unable to add executable permissions to %1")
                                  .arg(mFile.fileName()));

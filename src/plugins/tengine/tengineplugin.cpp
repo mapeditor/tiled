@@ -57,7 +57,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName, Option
     }
     QTextStream out(file.device());
 
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+#if QT_VERSION >= QT_VERSION_CHECK(5,14,0)
     using Qt::endl;
 #endif
 

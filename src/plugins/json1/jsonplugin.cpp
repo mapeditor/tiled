@@ -61,7 +61,7 @@ std::unique_ptr<Tiled::Map> JsonMapFormat::read(const QString &fileName)
     QByteArray contents = file.readAll();
     if (mSubFormat == JavaScript && contents.size() > 0 && contents[0] != '{') {
         // Scan past JSONP prefix; look for an open curly at the start of the line
-        int i = contents.indexOf(QLatin1String("\n{"));
+        int i = contents.indexOf("\n{");
         if (i > 0) {
             contents.remove(0, i);
             contents = contents.trimmed(); // potential trailing whitespace
@@ -176,7 +176,7 @@ bool JsonMapFormat::supportsFile(const QString &fileName) const
 
         if (mSubFormat == JavaScript && contents.size() > 0 && contents[0] != '{') {
             // Scan past JSONP prefix; look for an open curly at the start of the line
-            int i = contents.indexOf(QLatin1String("\n{"));
+            int i = contents.indexOf("\n{");
             if (i > 0) {
                 contents.remove(0, i);
                 contents = contents.trimmed(); // potential trailing whitespace
