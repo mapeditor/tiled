@@ -94,7 +94,7 @@ private:
     void mapChanged();
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
-    void layerChanged(Layer *layer);
+    void layerChanged(const LayerChangeEvent &event);
     void syncOverlayItems(const QList<MapObject *> &objects);
     void updateItemColors() const;
     void objectsAdded(const QList<MapObject*> &objects);

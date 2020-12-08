@@ -298,7 +298,7 @@ void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
 {
     switch (event.type) {
     case ChangeEvent::LayerChanged:
-        layerChanged(static_cast<const LayerChangeEvent&>(event).layer);
+        layerChanged(static_cast<const LayerChangeEvent&>(event));
         break;
     case ChangeEvent::MapObjectsChanged:
         syncOverlayItems(static_cast<const MapObjectsChangeEvent&>(event).mapObjects);
@@ -470,27 +470,34 @@ void ObjectSelectionItem::layerAboutToBeRemoved(GroupLayer *parentLayer, int ind
     }
 }
 
-void ObjectSelectionItem::layerChanged(Layer *layer)
+void ObjectSelectionItem::layerChanged(const LayerChangeEvent &event)
 {
-    ObjectGroup *objectGroup = layer->asObjectGroup();
-    GroupLayer *groupLayer = layer->asGroupLayer();
+    ObjectGroup *objectGroup = event.layer->asObjectGroup();
+    GroupLayer *groupLayer = event.layer->asGroupLayer();
     if (!(objectGroup || groupLayer))
         return;
 
     // If labels for all objects are visible, some labels may need to be added
-    // removed based on layer visibility.
-    if (objectLabelVisibility() == Preferences::AllObjectLabels)
-        addRemoveObjectLabels();
+    // or removed based on layer visibility.
+    if (event.properties & LayerChangeEvent::VisibleProperty) {
+        if (objectLabelVisibility() == Preferences::AllObjectLabels)
+            addRemoveObjectLabels();
+
+        if (Preferences::instance()->showObjectReferences())
+            addRemoveObjectReferences();
+    }
 
     // If an object or group layer changed, that means its offset may have
     // changed, which affects the outlines of selected objects on that layer
     // and the positions of any name labels that are shown.
-    if (objectGroup) {
-        syncOverlayItems(objectGroup->objects());
-    } else {
-        QList<MapObject*> affectedObjects;
-        collectObjects(*groupLayer, affectedObjects);
-        syncOverlayItems(affectedObjects);
+    if (event.properties & LayerChangeEvent::OffsetProperty) {
+        if (objectGroup) {
+            syncOverlayItems(objectGroup->objects());
+        } else {
+            QList<MapObject*> affectedObjects;
+            collectObjects(*groupLayer, affectedObjects);
+            syncOverlayItems(affectedObjects);
+        }
     }
 }
 
