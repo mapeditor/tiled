@@ -742,6 +742,12 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
         layerVariant[QStringLiteral("offsety")] = offset.y();
     }
 
+    const QPointF scrollFactor = layer.scrollFactor();
+    if (scrollFactor.x() != 1.0)
+        layerVariant[QStringLiteral("scrollx")] = scrollFactor.x();
+    if (scrollFactor.y() != 1.0)
+        layerVariant[QStringLiteral("scrolly")] = scrollFactor.y();
+
     if (layer.tintColor().isValid())
         layerVariant[QStringLiteral("tintcolor")] = colorToString(layer.tintColor());
 

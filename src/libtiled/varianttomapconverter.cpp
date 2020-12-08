@@ -567,6 +567,17 @@ std::unique_ptr<Layer> VariantToMapConverter::toLayer(const QVariant &variant)
         const QPointF offset(variantMap[QStringLiteral("offsetx")].toDouble(),
                              variantMap[QStringLiteral("offsety")].toDouble());
         layer->setOffset(offset);
+
+        bool ok;
+        QPointF scrollFactor(1.0, 1.0);
+        const qreal scrollX = variantMap[QStringLiteral("scrollx")].toDouble(&ok);
+        if (ok)
+            scrollFactor.setX(scrollX);
+        const qreal scrollY = variantMap[QStringLiteral("scrolly")].toDouble(&ok);
+        if (ok)
+            scrollFactor.setY(scrollY);
+
+        layer->setScrollFactor(scrollFactor);
     }
 
     return layer;

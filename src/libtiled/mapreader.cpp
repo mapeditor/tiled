@@ -867,6 +867,16 @@ static void readLayerAttributes(Layer &layer,
                          atts.value(QLatin1String("offsety")).toDouble());
 
     layer.setOffset(offset);
+
+    QPointF scrollFactor(1.0, 1.0);
+    const qreal scrollX = atts.value(QLatin1String("scrollx")).toDouble(&ok);
+    if (ok)
+        scrollFactor.setX(scrollX);
+    const qreal scrollY = atts.value(QLatin1String("scrolly")).toDouble(&ok);
+    if (ok)
+        scrollFactor.setY(scrollY);
+
+    layer.setScrollFactor(scrollFactor);
 }
 
 std::unique_ptr<TileLayer> MapReaderPrivate::readTileLayer()
