@@ -176,7 +176,7 @@ void AbstractWorldTool::mouseMoved(const QPointF &pos,
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer())
-        offsetPos -= layer->totalOffset();
+        offsetPos -= mapScene()->absolutePositionForLayer(*layer);
 
     const QPoint pixelPos = offsetPos.toPoint();
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);

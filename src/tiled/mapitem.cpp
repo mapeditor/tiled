@@ -84,7 +84,7 @@ public:
                 if (layerChange.properties & LayerChangeEvent::PositionProperties)
                     if (Layer *currentLayer = mMapDocument->currentLayer())
                         if (currentLayer->isParentOrSelf(layerChange.layer))
-                            update();
+                            updateOffset();
             }
         });
 
@@ -99,22 +99,29 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *) override
     {
-        QPointF offset;
-
         // Take into account the offset of the current layer
-        if (Layer *layer = mMapDocument->currentLayer()) {
-            offset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*layer);
-            painter->translate(offset);
-        }
+        painter->translate(mOffset);
 
         Preferences *prefs = Preferences::instance();
         mMapDocument->renderer()->drawGrid(painter,
-                                           option->exposedRect.translated(-offset),
+                                           option->exposedRect.translated(-mOffset),
                                            prefs->gridColor());
+    }
+
+    void updateOffset()
+    {
+        if (Layer *currentLayer = mMapDocument->currentLayer()) {
+            QPointF offset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*currentLayer);
+            if (mOffset != offset) {
+                mOffset = offset;
+                update();
+            }
+        }
     }
 
 private:
     MapDocument *mMapDocument;
+    QPointF mOffset;
 };
 
 MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
@@ -258,7 +265,7 @@ void MapItem::updateLayerPositions(MapScene *mapScene)
 
     if (mDisplayMode == Editable) {
         mTileSelectionItem->updatePosition();
-        mTileGridItem->update();
+        mTileGridItem->updateOffset();
         mObjectSelectionItem->updateItemPositions();
     }
 }

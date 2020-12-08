@@ -82,7 +82,9 @@ MapView::MapView(QWidget *parent, Mode mode)
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     connect(horizontalScrollBar(), &QAbstractSlider::valueChanged, this, &MapView::updateViewRect);
+    connect(horizontalScrollBar(), &QAbstractSlider::rangeChanged, this, &MapView::updateViewRect);
     connect(verticalScrollBar(), &QAbstractSlider::valueChanged, this, &MapView::updateViewRect);
+    connect(verticalScrollBar(), &QAbstractSlider::rangeChanged, this, &MapView::updateViewRect);
 
     connect(mZoomable, &Zoomable::scaleChanged, this, &MapView::adjustScale);
 }
@@ -226,7 +228,7 @@ void MapView::focusMapObject(MapObject *mapObject)
 {
     // FIXME: This is not always the visual center
     const QPointF center = mapObject->bounds().center();
-    const QPointF offset = mapObject->objectGroup()->totalOffset();
+    const QPointF offset = mapScene()->absolutePositionForLayer(*mapObject->objectGroup());
     const QPointF focus = center + offset;
 
     centerOn(mMapDocument->renderer()->pixelToScreenCoords(focus));

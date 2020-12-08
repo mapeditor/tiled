@@ -187,7 +187,10 @@ void MapObjectLabel::syncWithMapObject(const MapRenderer &renderer)
     // Center the object name on the object bounding box
     QPointF pos((bounds.left() + bounds.right()) / 2, bounds.top());
 
-    setPos(pos + mObject->objectGroup()->totalOffset());
+    if (auto mapScene = static_cast<MapScene*>(scene()))
+        pos += mapScene->absolutePositionForLayer(*mObject->objectGroup());
+
+    setPos(pos);
 
     if (mBoundingRect != boundingRect) {
         prepareGeometryChange();

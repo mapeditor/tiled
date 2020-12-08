@@ -82,7 +82,9 @@ void MiniMap::setMapDocument(MapDocument *map)
 
         if (MapView *mapView = dm->viewForDocument(mMapDocument)) {
             connect(mapView->horizontalScrollBar(), &QAbstractSlider::valueChanged, this, [this] { update(); });
+            connect(mapView->horizontalScrollBar(), &QAbstractSlider::rangeChanged, this, [this] { update(); });
             connect(mapView->verticalScrollBar(), &QAbstractSlider::valueChanged, this, [this] { update(); });
+            connect(mapView->verticalScrollBar(), &QAbstractSlider::rangeChanged, this, [this] { update(); });
             connect(mapView->zoomable(), &Zoomable::scaleChanged, this, [this] { update(); });
         }
     }
