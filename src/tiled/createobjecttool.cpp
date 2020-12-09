@@ -64,12 +64,12 @@ void CreateObjectTool::activate(MapScene *scene)
     AbstractObjectTool::activate(scene);
     scene->addItem(mObjectGroupItem.get());
 
-    connect(scene, &MapScene::viewRectChanged, this, &CreateObjectTool::updateNewObjectGroupItemPos);
+    connect(scene, &MapScene::parallaxParametersChanged, this, &CreateObjectTool::updateNewObjectGroupItemPos);
 }
 
 void CreateObjectTool::deactivate(MapScene *scene)
 {
-    disconnect(scene, &MapScene::viewRectChanged, this, &CreateObjectTool::updateNewObjectGroupItemPos);
+    disconnect(scene, &MapScene::parallaxParametersChanged, this, &CreateObjectTool::updateNewObjectGroupItemPos);
 
     if (mNewMapObjectItem)
         cancelNewMapObject();

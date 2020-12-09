@@ -86,7 +86,7 @@ void CreatePolygonObjectTool::activate(MapScene *scene)
     connect(mapDocument(), &MapDocument::layerRemoved,
             this, &CreatePolygonObjectTool::layerRemoved);
 
-    connect(scene, &MapScene::viewRectChanged,
+    connect(scene, &MapScene::parallaxParametersChanged,
             this, &CreatePolygonObjectTool::updateHandles);
 }
 
@@ -100,7 +100,7 @@ void CreatePolygonObjectTool::deactivate(MapScene *scene)
     disconnect(mapDocument(), &MapDocument::layerRemoved,
                this, &CreatePolygonObjectTool::layerRemoved);
 
-    disconnect(scene, &MapScene::viewRectChanged,
+    disconnect(scene, &MapScene::parallaxParametersChanged,
                this, &CreatePolygonObjectTool::updateHandles);
 
     qDeleteAll(mHandles);

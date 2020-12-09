@@ -69,6 +69,8 @@ public:
     qreal scale() const;
     void setScale(qreal scale);
 
+    const QRectF &viewRect() const;
+
     void fitMapInView();
 
     bool handScrolling() const { return mHandScrolling; }
@@ -102,6 +104,7 @@ protected:
 
 signals:
     void focused();
+    void viewRectChanged();
 
 private:
     void adjustScale(qreal scale);
@@ -120,9 +123,18 @@ private:
     bool mViewInitialized = false;
     bool mHasInitialCenterPos = false;
     QPointF mInitialCenterPos;
+    QRectF mViewRect;
     Mode mMode;
     Zoomable *mZoomable;
 };
+
+/**
+ * Returns the part of the scene that is visible in this MapView.
+ */
+inline const QRectF &MapView::viewRect() const
+{
+    return mViewRect;
+}
 
 } // namespace Tiled
 

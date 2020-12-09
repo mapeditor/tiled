@@ -74,7 +74,7 @@ public:
     void setDisplayMode(DisplayMode displayMode);
     void setShowTileCollisionShapes(bool enabled);
 
-    void updateLayerPositions(MapScene *mapScene);
+    void updateLayerPositions();
 
     // QGraphicsItem
     QRectF boundingRect() const override;

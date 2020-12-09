@@ -256,8 +256,10 @@ void MapItem::setShowTileCollisionShapes(bool enabled)
             item->update();
 }
 
-void MapItem::updateLayerPositions(MapScene *mapScene)
+void MapItem::updateLayerPositions()
 {
+    const MapScene *mapScene = static_cast<MapScene*>(scene());
+
     for (LayerItem *item : qAsConst(mLayerItems)) {
         const Layer &layer = *item->layer();
         item->setPos(layer.offset() + mapScene->scrollOffset(layer));

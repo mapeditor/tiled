@@ -118,6 +118,15 @@ void MapScene::setShowTileCollisionShapes(bool enabled)
         mapItem->setShowTileCollisionShapes(enabled);
 }
 
+void MapScene::setParallaxEnabled(bool enabled)
+{
+    if (mParallaxEnabled == enabled)
+        return;
+
+    mParallaxEnabled = enabled;
+    emit parallaxParametersChanged();
+}
+
 /**
  * Returns the bounding rect of the map. This can be different from the
  * sceneRect() when multiple maps are displayed.
@@ -168,17 +177,15 @@ void MapScene::setViewRect(const QRectF &rect)
 
     mViewRect = rect;
 
-    for (MapItem *item : qAsConst(mMapItems))
-        item->updateLayerPositions(this);
-
-    emit viewRectChanged(rect);
+    if (mParallaxEnabled)
+        emit parallaxParametersChanged();
 }
 
 /**
  * Returns the position the given layer is supposed to have, taking into
  * account its offset and the scroll factor along with the current view rect.
  */
-QPointF MapScene::absolutePositionForLayer(const Layer &layer)
+QPointF MapScene::absolutePositionForLayer(const Layer &layer) const
 {
     return layer.totalOffset() + scrollOffset(layer);
 }
@@ -187,8 +194,11 @@ QPointF MapScene::absolutePositionForLayer(const Layer &layer)
  * Returns the scroll offset of the given layer, taking into account its scroll
  * factor in combination with the current view rect.
  */
-QPointF MapScene::scrollOffset(const Layer &layer)
+QPointF MapScene::scrollOffset(const Layer &layer) const
 {
+    if (!mParallaxEnabled)
+        return {};
+
     const QPointF scrollFactor = layer.effectiveScrollFactor();
     const QPointF viewCenter = mViewRect.center();
     return QPointF((1.0 - scrollFactor.x()) * viewCenter.x(),
@@ -282,6 +292,7 @@ MapItem *MapScene::takeOrCreateMapItem(const MapDocumentPtr &mapDocument, MapIte
         mapItem = new MapItem(mapDocument, displayMode);
         mapItem->setShowTileCollisionShapes(mShowTileCollisionShapes);
         connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
+        connect(this, &MapScene::parallaxParametersChanged, mapItem, &MapItem::updateLayerPositions);
         addItem(mapItem);
     } else {
         mapItem->setDisplayMode(displayMode);

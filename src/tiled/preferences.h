@@ -57,6 +57,7 @@ public:
     bool showTileAnimations() const;
     bool showTileCollisionShapes() const;
     bool showObjectReferences() const;
+    bool parallaxEnabled() const;
     bool snapToGrid() const;
     bool snapToFineGrid() const;
     bool snapToPixels() const;
@@ -180,6 +181,7 @@ public slots:
     void setShowTileAnimations(bool enabled);
     void setShowTileCollisionShapes(bool enabled);
     void setShowObjectReferences(bool enabled);
+    void setParallaxEnabled(bool enabled);
     void setSnapToGrid(bool snapToGrid);
     void setSnapToFineGrid(bool snapToFineGrid);
     void setSnapToPixels(bool snapToPixels);
@@ -202,6 +204,7 @@ signals:
     void showTileAnimationsChanged(bool enabled);
     void showTileCollisionShapesChanged(bool enabled);
     void showObjectReferencesChanged(bool enabled);
+    void parallaxEnabledChanged(bool enabled);
     void snapToGridChanged(bool snapToGrid);
     void snapToFineGridChanged(bool snapToFineGrid);
     void snapToPixelsChanged(bool snapToPixels);

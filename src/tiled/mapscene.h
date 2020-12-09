@@ -62,6 +62,7 @@ public:
     void setMapDocument(MapDocument *map);
 
     void setShowTileCollisionShapes(bool enabled);
+    void setParallaxEnabled(bool enabled);
 
     QRectF mapBoundingRect() const;
 
@@ -71,18 +72,18 @@ public:
 
     DebugDrawItem *debugDrawItem() const;
 
-    QRectF viewRect() const;
+    const QRectF &viewRect() const;
     void setViewRect(const QRectF &rect);
 
-    QPointF absolutePositionForLayer(const Layer &layer);
-    QPointF scrollOffset(const Layer &layer);
+    QPointF absolutePositionForLayer(const Layer &layer) const;
+    QPointF scrollOffset(const Layer &layer) const;
 
 signals:
     void mapDocumentChanged(MapDocument *mapDocument);
 
     void sceneRefreshed();
 
-    void viewRectChanged(const QRectF &rect);
+    void parallaxParametersChanged();
 
 protected:
     bool event(QEvent *event) override;
@@ -120,6 +121,7 @@ private:
     DebugDrawItem *mDebugDrawItem = nullptr;
     bool mUnderMouse = false;
     bool mShowTileCollisionShapes = false;
+    bool mParallaxEnabled = true;
     Qt::KeyboardModifiers mCurrentModifiers = Qt::NoModifier;
     QPointF mLastMousePos;
     QRectF mViewRect;
@@ -147,7 +149,7 @@ inline DebugDrawItem *MapScene::debugDrawItem() const
     return mDebugDrawItem;
 }
 
-inline QRectF MapScene::viewRect() const
+inline const QRectF &MapScene::viewRect() const
 {
     return mViewRect;
 }

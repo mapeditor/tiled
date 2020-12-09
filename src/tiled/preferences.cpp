@@ -134,6 +134,11 @@ bool Preferences::showObjectReferences() const
     return get("Interface/ShowObjectReferences", true);
 }
 
+bool Preferences::parallaxEnabled() const
+{
+    return get("Interface/ParallaxEnabled", true);
+}
+
 bool Preferences::snapToGrid() const
 {
     return get("Interface/SnapToGrid", false);
@@ -272,6 +277,12 @@ void Preferences::setShowObjectReferences(bool enabled)
 {
     setValue(QLatin1String("Interface/ShowObjectReferences"), enabled);
     emit showObjectReferencesChanged(enabled);
+}
+
+void Preferences::setParallaxEnabled(bool enabled)
+{
+    setValue(QLatin1String("Interface/ParallaxEnabled"), enabled);
+    emit parallaxEnabledChanged(enabled);
 }
 
 void Preferences::setSnapToGrid(bool snapToGrid)

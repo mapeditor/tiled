@@ -357,7 +357,7 @@ void ObjectSelectionTool::activate(MapScene *scene)
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::tilesetTilePositioningChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
-    connect(scene, &MapScene::viewRectChanged,
+    connect(scene, &MapScene::parallaxParametersChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
 
     scene->addItem(mOriginIndicator.get());
@@ -381,7 +381,7 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::tilesetTilePositioningChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
-    disconnect(scene, &MapScene::viewRectChanged,
+    disconnect(scene, &MapScene::parallaxParametersChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
 
     abortCurrentAction(Deactivated);

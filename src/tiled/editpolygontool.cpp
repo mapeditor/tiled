@@ -84,7 +84,7 @@ void EditPolygonTool::activate(MapScene *scene)
     connect(mapDocument(), &MapDocument::selectedObjectsChanged,
             this, &EditPolygonTool::updateHandles);
 
-    connect(scene, &MapScene::viewRectChanged,
+    connect(scene, &MapScene::parallaxParametersChanged,
             this, &EditPolygonTool::updateHandles);
 }
 
@@ -93,7 +93,7 @@ void EditPolygonTool::deactivate(MapScene *scene)
     disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
                this, &EditPolygonTool::updateHandles);
 
-    disconnect(scene, &MapScene::viewRectChanged,
+    disconnect(scene, &MapScene::parallaxParametersChanged,
                this, &EditPolygonTool::updateHandles);
 
     abortCurrentAction();

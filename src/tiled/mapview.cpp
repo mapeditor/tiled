@@ -220,8 +220,16 @@ void MapView::updateSceneRect(const QRectF &sceneRect, const QTransform &transfo
 
 void MapView::updateViewRect()
 {
+    const QRectF viewRect = mapToScene(viewport()->geometry()).boundingRect();
+    if (mViewRect == viewRect)
+        return;
+
+    mViewRect = viewRect;
+
     if (MapScene *scene = mapScene())
-        scene->setViewRect(mapToScene(viewport()->geometry()).boundingRect());
+        scene->setViewRect(viewRect);
+
+    emit viewRectChanged();
 }
 
 void MapView::focusMapObject(MapObject *mapObject)
