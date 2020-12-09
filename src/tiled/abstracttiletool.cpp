@@ -109,7 +109,9 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
 void AbstractTileTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::RightButton && event->modifiers() & Qt::ControlModifier) {
-        const QPoint pos = tilePosition();
+        const QPointF mousePos = event->pos();
+        const MapRenderer *renderer = mapDocument()->renderer();
+
         QList<Layer*> layers;
 
         const bool append = event->modifiers() & Qt::ShiftModifier;
@@ -124,7 +126,12 @@ void AbstractTileTool::mousePressed(QGraphicsSceneMouseEvent *event)
             if (tileLayer->isHidden())
                 continue;
 
-            if (!tileLayer->cellAt(pos - tileLayer->position()).isEmpty()) {
+            const QPointF layerOffset = mapScene()->absolutePositionForLayer(*tileLayer);
+            const QPointF tilePosF = renderer->screenToTileCoords(mousePos - layerOffset);
+            const QPoint tilePos = QPoint(qFloor(tilePosF.x()),
+                                          qFloor(tilePosF.y()));
+
+            if (!tileLayer->cellAt(tilePos - tileLayer->position()).isEmpty()) {
                 if (!layers.contains(tileLayer))
                     layers.append(tileLayer);
                 else if (append)
