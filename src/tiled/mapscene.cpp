@@ -187,14 +187,14 @@ void MapScene::setViewRect(const QRectF &rect)
  */
 QPointF MapScene::absolutePositionForLayer(const Layer &layer) const
 {
-    return layer.totalOffset() + scrollOffset(layer);
+    return layer.totalOffset() + parallaxOffset(layer);
 }
 
 /**
- * Returns the scroll offset of the given layer, taking into account its scroll
- * factor in combination with the current view rect.
+ * Returns the parallax offset of the given layer, taking into account its
+ * parallax factor in combination with the current view rect.
  */
-QPointF MapScene::scrollOffset(const Layer &layer) const
+QPointF MapScene::parallaxOffset(const Layer &layer) const
 {
     if (!mParallaxEnabled)
         return {};

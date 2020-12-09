@@ -76,7 +76,7 @@ public:
     void setViewRect(const QRectF &rect);
 
     QPointF absolutePositionForLayer(const Layer &layer) const;
-    QPointF scrollOffset(const Layer &layer) const;
+    QPointF parallaxOffset(const Layer &layer) const;
 
 signals:
     void mapDocumentChanged(MapDocument *mapDocument);

@@ -270,7 +270,7 @@ void CreatePolygonObjectTool::applySegment()
                 otherPolygon = renderer->pixelToScreenCoords(otherPolygon);
 
                 // FIXME: This doesn't correctly handle joining polylines while
-                // different scrolling factors are active.
+                // different parallax factors are active.
                 QPointF clickedObjectScreenPos = renderer->pixelToScreenCoords(clickedObject->position());
                 QPointF clickedObjectOffset = mapScene()->absolutePositionForLayer(*clickedObject->objectGroup());
                 QTransform clickedObjectRotate = rotateAt(clickedObjectScreenPos, clickedObject->rotation());

@@ -262,7 +262,7 @@ void MapItem::updateLayerPositions()
 
     for (LayerItem *item : qAsConst(mLayerItems)) {
         const Layer &layer = *item->layer();
-        item->setPos(layer.offset() + mapScene->scrollOffset(layer));
+        item->setPos(layer.offset() + mapScene->parallaxOffset(layer));
     }
 
     if (mDisplayMode == Editable) {
@@ -476,10 +476,10 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
             multiplier = opacityFactor;
     }
 
-    const QPointF scrollOffset = static_cast<MapScene*>(scene())->scrollOffset(*layer);
+    const QPointF parallaxOffset = static_cast<MapScene*>(scene())->parallaxOffset(*layer);
 
     layerItem->setOpacity(layer->opacity() * multiplier);
-    layerItem->setPos(layer->offset() + scrollOffset);
+    layerItem->setPos(layer->offset() + parallaxOffset);
 
     updateBoundingRect();   // possible layer offset change
 }

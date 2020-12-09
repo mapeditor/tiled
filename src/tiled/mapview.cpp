@@ -236,10 +236,8 @@ void MapView::focusMapObject(MapObject *mapObject)
 {
     // FIXME: This is not always the visual center
     const QPointF center = mapObject->bounds().center();
-    const QPointF offset = mapScene()->absolutePositionForLayer(*mapObject->objectGroup());
-    const QPointF focus = center + offset;
-
-    centerOn(mMapDocument->renderer()->pixelToScreenCoords(focus));
+    const QPointF screenCoords = mMapDocument->renderer()->pixelToScreenCoords(center);
+    forceCenterOn(screenCoords, *mapObject->objectGroup());
 }
 
 void MapView::setMapDocument(MapDocument *mapDocument)
@@ -282,7 +280,7 @@ void MapView::setHandScrolling(bool handScrolling)
  *
  * This code is based on QGraphicsView::centerOn.
  */
-void MapView::forceCenterOn(const QPointF &pos)
+void MapView::forceCenterOn(QPointF pos)
 {
     // Let's wait until the initial paint event before we position the view,
     // otherwise layout changes may still affect the position.
@@ -318,6 +316,27 @@ void MapView::forceCenterOn(const QPointF &pos)
     }
     if (vScroll)
         vBar->forceSetValue(int(viewPoint.y() - height / 2.0));
+}
+
+/**
+ * Centers the view on the given \a position on the given \a layer, taking into
+ * account that the layer may have an offset and a parallax factor.
+ *
+ * \sa forceCenterOn(QPointF)
+ */
+void MapView::forceCenterOn(QPointF position, const Layer &layer)
+{
+    position += layer.totalOffset();
+
+    if (Preferences::instance()->parallaxEnabled()) {
+        const QPointF parallaxFactor = layer.effectiveParallaxFactor();
+        if (!qFuzzyIsNull(parallaxFactor.x()))
+            position.rx() /= parallaxFactor.x();
+        if (!qFuzzyIsNull(parallaxFactor.y()))
+            position.ry() /= parallaxFactor.y();
+    }
+
+    forceCenterOn(position);
 }
 
 bool MapView::event(QEvent *e)

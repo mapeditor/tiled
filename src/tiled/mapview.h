@@ -25,6 +25,7 @@
 
 namespace Tiled {
 
+class Layer;
 class MapObject;
 
 class MapDocument;
@@ -79,7 +80,8 @@ public:
     using QGraphicsView::centerOn;
     Q_INVOKABLE void centerOn(qreal x, qreal y) { forceCenterOn(QPointF(x, y)); }
 
-    void forceCenterOn(const QPointF &pos);
+    void forceCenterOn(QPointF pos);
+    void forceCenterOn(QPointF pos, const Layer &layer);
 
 protected:
     bool event(QEvent *event) override;
