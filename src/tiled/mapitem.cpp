@@ -441,7 +441,7 @@ void MapItem::layerRemoved(Layer *layer)
 
 /**
  * A layer has changed. This can mean that the layer visibility, opacity,
- * offset or scroll factor changed.
+ * offset or parallax factor changed.
  */
 void MapItem::layerChanged(const LayerChangeEvent &change)
 {

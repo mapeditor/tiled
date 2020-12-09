@@ -222,10 +222,10 @@ void CreateObjectTool::updateEnabledState()
             }
 
             const auto offset = objectGroup->totalOffset();
-            const auto scrollFactor = objectGroup->effectiveScrollFactor();
-            if (mNewMapObjectGroup->offset() != offset || mNewMapObjectGroup->scrollFactor() != scrollFactor) {
+            const auto parallaxFactor = objectGroup->effectiveParallaxFactor();
+            if (mNewMapObjectGroup->offset() != offset || mNewMapObjectGroup->parallaxFactor() != parallaxFactor) {
                 mNewMapObjectGroup->setOffset(offset);
-                mNewMapObjectGroup->setScrollFactor(scrollFactor);
+                mNewMapObjectGroup->setParallaxFactor(parallaxFactor);
 
                 updateNewObjectGroupItemPos();
 
@@ -251,7 +251,7 @@ bool CreateObjectTool::startNewMapObject(const QPointF &pos,
 
     mNewMapObjectGroup->setColor(objectGroup->color());
     mNewMapObjectGroup->setOffset(objectGroup->totalOffset());
-    mNewMapObjectGroup->setScrollFactor(objectGroup->scrollFactor());
+    mNewMapObjectGroup->setParallaxFactor(objectGroup->parallaxFactor());
 
     updateNewObjectGroupItemPos();
 

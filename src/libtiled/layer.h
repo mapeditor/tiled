@@ -186,9 +186,9 @@ public:
     QPointF offset() const;
     QPointF totalOffset() const;
 
-    void setScrollFactor(const QPointF &factor);
-    QPointF scrollFactor() const;
-    QPointF effectiveScrollFactor() const;
+    void setParallaxFactor(const QPointF &factor);
+    QPointF parallaxFactor() const;
+    QPointF effectiveParallaxFactor() const;
 
     bool canMergeDown() const;
 
@@ -260,7 +260,7 @@ protected:
     int mX = 0;
     int mY = 0;
     QPointF mOffset;
-    QPointF mScrollFactor = { 1.0, 1.0 };
+    QPointF mParallaxFactor = { 1.0, 1.0 };
     qreal mOpacity = 1.0;
     QColor mTintColor;
     bool mVisible = true;
@@ -290,19 +290,19 @@ inline QPointF Layer::offset() const
 }
 
 /**
- * Sets the scroll factor of this layer.
+ * Sets the parallax factor of this layer.
  */
-inline void Layer::setScrollFactor(const QPointF &factor)
+inline void Layer::setParallaxFactor(const QPointF &factor)
 {
-    mScrollFactor = factor;
+    mParallaxFactor = factor;
 }
 
 /**
- * Returns the scroll factor of this layer.
+ * Returns the parallax factor of this layer.
  */
-inline QPointF Layer::scrollFactor() const
+inline QPointF Layer::parallaxFactor() const
 {
-    return mScrollFactor;
+    return mParallaxFactor;
 }
 
 

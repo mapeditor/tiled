@@ -184,13 +184,13 @@ QPointF Layer::totalOffset() const
     return offset;
 }
 
-QPointF Layer::effectiveScrollFactor() const
+QPointF Layer::effectiveParallaxFactor() const
 {
-    auto factor = mScrollFactor;
+    auto factor = mParallaxFactor;
     const Layer *layer = this;
     while ((layer = layer->parentLayer())) {
-        factor.rx() *= layer->scrollFactor().rx();
-        factor.ry() *= layer->scrollFactor().ry();
+        factor.rx() *= layer->parallaxFactor().rx();
+        factor.ry() *= layer->parallaxFactor().ry();
     }
     return factor;
 }

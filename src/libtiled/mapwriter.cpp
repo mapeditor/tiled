@@ -715,11 +715,11 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
         w.writeAttribute(QStringLiteral("offsety"), QString::number(offset.y()));
     }
 
-    const QPointF scrollFactor = layer.scrollFactor();
-    if (scrollFactor.x() != 1.0)
-        w.writeAttribute(QStringLiteral("scrollx"), QString::number(scrollFactor.x()));
-    if (scrollFactor.y() != 1.0)
-        w.writeAttribute(QStringLiteral("scrolly"), QString::number(scrollFactor.y()));
+    const QPointF parallaxFactor = layer.parallaxFactor();
+    if (parallaxFactor.x() != 1.0)
+        w.writeAttribute(QStringLiteral("parallaxx"), QString::number(parallaxFactor.x()));
+    if (parallaxFactor.y() != 1.0)
+        w.writeAttribute(QStringLiteral("parallaxy"), QString::number(parallaxFactor.y()));
 }
 
 void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,

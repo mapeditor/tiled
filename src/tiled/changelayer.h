@@ -170,28 +170,28 @@ private:
 };
 
 /**
- * Used for changing the layer scroll factor.
+ * Used for changing the layer parallax factor.
  */
-class SetLayerScrollFactor : public QUndoCommand
+class SetLayerParallaxFactor : public QUndoCommand
 {
 public:
-    SetLayerScrollFactor(Document *document,
-                         Layer *layer,
-                         const QPointF &scrollFactor,
-                         QUndoCommand *parent = nullptr);
+    SetLayerParallaxFactor(Document *document,
+                           Layer *layer,
+                           const QPointF &parallaxFactor,
+                           QUndoCommand *parent = nullptr);
 
-    void undo() override { setScrollFactor(mOldScrollFactor); }
-    void redo() override { setScrollFactor(mNewScrollFactor); }
+    void undo() override { setParallaxFactor(mOldParallaxFactor); }
+    void redo() override { setParallaxFactor(mNewParallaxFactor); }
 
     int id() const override { return Cmd_ChangeLayerOffset; }
 
 private:
-    void setScrollFactor(const QPointF &scrollFactor);
+    void setParallaxFactor(const QPointF &parallaxFactor);
 
     Document *mDocument;
     Layer *mLayer;
-    QPointF mOldScrollFactor;
-    QPointF mNewScrollFactor;
+    QPointF mOldParallaxFactor;
+    QPointF mNewParallaxFactor;
 };
 
 /**

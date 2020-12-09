@@ -183,7 +183,7 @@ void MapScene::setViewRect(const QRectF &rect)
 
 /**
  * Returns the position the given layer is supposed to have, taking into
- * account its offset and the scroll factor along with the current view rect.
+ * account its offset and the parallax factor along with the current view rect.
  */
 QPointF MapScene::absolutePositionForLayer(const Layer &layer) const
 {
@@ -199,10 +199,10 @@ QPointF MapScene::scrollOffset(const Layer &layer) const
     if (!mParallaxEnabled)
         return {};
 
-    const QPointF scrollFactor = layer.effectiveScrollFactor();
+    const QPointF parallaxFactor = layer.effectiveParallaxFactor();
     const QPointF viewCenter = mViewRect.center();
-    return QPointF((1.0 - scrollFactor.x()) * viewCenter.x(),
-                   (1.0 - scrollFactor.y()) * viewCenter.y());
+    return QPointF((1.0 - parallaxFactor.x()) * viewCenter.x(),
+                   (1.0 - parallaxFactor.y()) * viewCenter.y());
 }
 
 /**

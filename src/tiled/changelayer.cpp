@@ -190,24 +190,24 @@ void SetLayerOffset::setOffset(const QPointF &offset)
 }
 
 
-SetLayerScrollFactor::SetLayerScrollFactor(Document *document,
-                                           Layer *layer,
-                                           const QPointF &scrollFactor,
-                                           QUndoCommand *parent)
+SetLayerParallaxFactor::SetLayerParallaxFactor(Document *document,
+                                               Layer *layer,
+                                               const QPointF &parallaxFactor,
+                                               QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
     , mLayer(layer)
-    , mOldScrollFactor(layer->scrollFactor())
-    , mNewScrollFactor(scrollFactor)
+    , mOldParallaxFactor(layer->parallaxFactor())
+    , mNewParallaxFactor(parallaxFactor)
 {
     setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Layer Scroll Factor"));
+                                        "Change Layer Parallax Factor"));
 }
 
-void SetLayerScrollFactor::setScrollFactor(const QPointF &scrollFactor)
+void SetLayerParallaxFactor::setParallaxFactor(const QPointF &parallaxFactor)
 {
-    mLayer->setScrollFactor(scrollFactor);
-    emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::ScrollFactorProperty));
+    mLayer->setParallaxFactor(parallaxFactor);
+    emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::ParallaxFactorProperty));
 }
 
 

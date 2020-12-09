@@ -569,15 +569,15 @@ std::unique_ptr<Layer> VariantToMapConverter::toLayer(const QVariant &variant)
         layer->setOffset(offset);
 
         bool ok;
-        QPointF scrollFactor(1.0, 1.0);
-        const qreal scrollX = variantMap[QStringLiteral("scrollx")].toDouble(&ok);
+        QPointF parallaxFactor(1.0, 1.0);
+        const qreal factorX = variantMap[QStringLiteral("parallaxx")].toDouble(&ok);
         if (ok)
-            scrollFactor.setX(scrollX);
-        const qreal scrollY = variantMap[QStringLiteral("scrolly")].toDouble(&ok);
+            parallaxFactor.setX(factorX);
+        const qreal factorY = variantMap[QStringLiteral("parallaxy")].toDouble(&ok);
         if (ok)
-            scrollFactor.setY(scrollY);
+            parallaxFactor.setY(factorY);
 
-        layer->setScrollFactor(scrollFactor);
+        layer->setParallaxFactor(parallaxFactor);
     }
 
     return layer;
