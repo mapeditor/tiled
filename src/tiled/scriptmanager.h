@@ -68,6 +68,8 @@ public:
     void throwNullArgError(int argNumber);
 
     void refreshExtensionsPaths();
+    void setCommandArguments(const QString &commandArguments);
+    QString getCommandArguments();
 
 private:
     explicit ScriptManager(QObject *parent = nullptr);
@@ -86,6 +88,7 @@ private:
     FileSystemWatcher mWatcher;
     QString mExtensionsPath;
     QStringList mExtensionsPaths;
+    QString mCommandArguments;
     int mTempCount = 0;
 
     static ScriptManager *mInstance;

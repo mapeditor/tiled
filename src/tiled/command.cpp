@@ -27,6 +27,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "projectmanager.h"
+#include "scriptmanager.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
 
@@ -76,7 +77,9 @@ static QString replaceVariables(const QString &string, bool quoteValues = true)
         QFileInfo fileInfo(fileName);
         const QString mapPath = fileInfo.absolutePath();
         const QString projectPath = QFileInfo(ProjectManager::instance()->project().fileName()).absolutePath();
+        const QString scriptArgs = ScriptManager::instance().getCommandArguments();
 
+        finalString.replace(QLatin1String("%scriptargs"), replaceString.arg(scriptArgs));
         finalString.replace(QLatin1String("%mapfile"), replaceString.arg(fileName));
         finalString.replace(QLatin1String("%mappath"), replaceString.arg(mapPath));
         finalString.replace(QLatin1String("%projectpath"), replaceString.arg(projectPath));

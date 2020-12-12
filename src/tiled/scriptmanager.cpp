@@ -367,4 +367,14 @@ void ScriptManager::refreshExtensionsPaths()
     }
 }
 
+void ScriptManager::setCommandArguments(const QString &commandArguments)
+{
+    mCommandArguments = commandArguments;
+}
+
+QString ScriptManager::getCommandArguments()
+{
+    return mCommandArguments;
+}
+
 } // namespace Tiled

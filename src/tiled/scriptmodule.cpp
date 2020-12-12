@@ -484,12 +484,13 @@ void ScriptModule::trigger(const QByteArray &actionName) const
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Unknown action"));
 }
 
-void ScriptModule::executeCommand(const QString &name, bool inTerminal) const
+void ScriptModule::executeCommand(const QString &name, bool inTerminal, const QString &scriptArgs) const
 {
     const auto commands = CommandManager::instance()->allCommands();
 
     for (const Command &command : commands) {
         if (command.name == name) {
+            ScriptManager::instance().setCommandArguments(scriptArgs);
             command.execute(inTerminal);
             return;
         }
