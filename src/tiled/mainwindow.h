@@ -95,6 +95,7 @@ public:
     bool openFile(const QString &fileName, FileFormat *fileFormat = nullptr);
 
     bool addRecentProjectsActions(QMenu *menu) const;
+    bool addCustomObjectActions(QMenu *menu) const;
 
     static MainWindow *instance();
 
@@ -234,6 +235,7 @@ private:
     QMenu *mNewLayerMenu;
     QMenu *mGroupLayerMenu;
     QMenu *mViewsAndToolbarsMenu;
+    QMenu *mCustomObjectMenu;
     QAction *mViewsAndToolbarsAction;
     QAction *mShowObjectTypesEditor;
 

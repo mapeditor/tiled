@@ -25,6 +25,7 @@
 #include "changemapobject.h"
 #include "changetileobjectgroup.h"
 #include "documentmanager.h"
+#include "mainwindow.h"
 #include "mapdocument.h"
 #include "map.h"
 #include "mapobject.h"
@@ -612,6 +613,8 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
 
     Utils::setThemeIcon(removeAction, "edit-delete");
     Utils::setThemeIcon(propertiesAction, "document-properties");
+
+    MainWindow::instance()->addCustomObjectActions(&menu);
 
     QAction *action = menu.exec(screenPos);
     if (!action)

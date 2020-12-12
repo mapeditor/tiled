@@ -523,6 +523,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerMenu(mNewLayerMenu, "NewLayer");
     ActionManager::registerMenu(mGroupLayerMenu, "GroupLayer");
 
+    mCustomObjectMenu = new QMenu(this);
+    ActionManager::registerMenu(mCustomObjectMenu, "ObjectActions");
+
     connect(mUi->actionNewMap, &QAction::triggered, this, &MainWindow::newMap);
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
     connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);
@@ -1903,6 +1906,16 @@ bool MainWindow::addRecentProjectsActions(QMenu *menu) const
     }
 
     return !files.isEmpty();
+}
+
+bool MainWindow::addCustomObjectActions(QMenu *menu) const
+{
+    bool didAdd = false;
+    for (QAction *action : mCustomObjectMenu->actions()) {
+        menu->addAction(action);
+        didAdd = true;
+    }
+    return didAdd;
 }
 
 void MainWindow::updateRecentProjectsMenu()
