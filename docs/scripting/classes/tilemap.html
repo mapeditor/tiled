@@ -1,0 +1,1025 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<!-- Bootstrap -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href='/favicon.ico' rel='icon' type='image/png'/>
+	<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="/css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
+	<link href="/css/fontawesome.css" rel="stylesheet">
+	<link href="/css/base.css" rel="stylesheet" media="screen">
+	<link rel="me" href="https://plus.google.com/113047271137781766813" />
+	<link rel="publisher" href="https://plus.google.com/104206952440491912596/" />
+	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>    <link rel="stylesheet" href="../assets/css/main.css">
+	<link rel="stylesheet" href="../assets/css/override.css">
+	<title>TileMap | Tiled Scripting API</title>
+</head>
+<body>
+<nav id="navbar" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0px">
+	<ul class="nav navbar-nav">
+		<li><a href="/"><i class="icon-home"></i> Home</a></li>
+		<li><a href="https://discourse.mapeditor.org/"><i class="icon-group"></i> Forum</a></li>
+		<li><a href="https://doc.mapeditor.org/"><i class="icon-book"></i> Documentation</a></li>
+		<li><a href="/donate"><i class="icon icon-heart"></i> Donate</a></li>
+	</ul>
+	<ul class="nav navbar-nav pull-right">
+		<li><a href="https://github.com/bjorn/tiled"><i class="icon-github-alt"></i> Tiled on GitHub</a></li>
+		<!-- TODO: Just have a row of icons (GitHub, [Twitter,] Google+, IRC?) -->
+	</ul>
+</nav>
+<div class="my-top-box" style="position: relative;">
+	<div class="background">
+		<!-- a centered 0-width inline block -->
+		<div style="display: inline-block; width: 0px;">
+			<!-- the actual map, centered on the parent by using negative offset -->
+			<div style="position: relative; left: -800px; width: 1600px; height: 520px;">
+				<div class="t t34" style="left: 0px; top: 0px;"></div>
+				<div class="t t38" style="left: 40px; top: 0px;"></div>
+				<div class="t t66" style="left: 760px; top: 0px;"></div>
+				<div class="t t68" style="left: 800px; top: 0px;"></div>
+				<div class="t t70" style="left: 840px; top: 0px;"></div>
+				<div class="t t66" style="left: 1000px; top: 0px;"></div>
+				<div class="t t68" style="left: 1040px; top: 0px; width: 80px;"></div>
+				<div class="t t74" style="left: 1120px; top: 0px;"></div>
+				<div class="t t36" style="left: 1160px; top: 0px;"></div>
+				<div class="t t38" style="left: 1200px; top: 0px;"></div>
+				<div class="t t66" style="left: 1320px; top: 0px;"></div>
+				<div class="t t68" style="left: 1360px; top: 0px; width: 120px;"></div>
+				<div class="t t74" style="left: 1480px; top: 0px;"></div>
+				<div class="t t38" style="left: 1520px; top: 0px;"></div>
+				<div class="t t98" style="left: 0px; top: 40px;"></div>
+				<div class="t t102" style="left: 40px; top: 40px;"></div>
+				<div class="t t34" style="left: 80px; top: 40px;"></div>
+				<div class="t t38" style="left: 120px; top: 40px;"></div>
+				<div class="t t98" style="left: 760px; top: 40px;"></div>
+				<div class="t t104" style="left: 800px; top: 40px;"></div>
+				<div class="t t74" style="left: 840px; top: 40px;"></div>
+				<div class="t t38" style="left: 880px; top: 40px;"></div>
+				<div class="t t66" style="left: 1000px; top: 40px;"></div>
+				<div class="t t68" style="left: 1040px; top: 40px; width: 160px;"></div>
+				<div class="t t70" style="left: 1200px; top: 40px;"></div>
+				<div class="t t34" style="left: 1280px; top: 40px;"></div>
+				<div class="t t72" style="left: 1320px; top: 40px;"></div>
+				<div class="t t68" style="left: 1360px; top: 40px; width: 160px;"></div>
+				<div class="t t70" style="left: 1520px; top: 40px;"></div>
+				<div class="t t34" style="left: 40px; top: 80px;"></div>
+				<div class="t t72" style="left: 80px; top: 80px;"></div>
+				<div class="t t70" style="left: 120px; top: 80px;"></div>
+				<div class="t t34" style="left: 720px; top: 80px;"></div>
+				<div class="t t38" style="left: 760px; top: 80px;"></div>
+				<div class="t t66" style="left: 800px; top: 80px;"></div>
+				<div class="t t68" style="left: 840px; top: 80px;"></div>
+				<div class="t t70" style="left: 880px; top: 80px;"></div>
+				<div class="t t34" style="left: 960px; top: 80px;"></div>
+				<div class="t t72" style="left: 1000px; top: 80px;"></div>
+				<div class="t t68" style="left: 1040px; top: 80px;"></div>
+				<div class="t t106" style="left: 1080px; top: 80px;"></div>
+				<div class="t t100" style="left: 1120px; top: 80px; width: 80px;"></div>
+				<div class="t t102" style="left: 1200px; top: 80px;"></div>
+				<div class="t t34" style="left: 1240px; top: 80px;"></div>
+				<div class="t t72" style="left: 1280px; top: 80px;"></div>
+				<div class="t t68" style="left: 1320px; top: 80px; width: 80px;"></div>
+				<div class="t t106" style="left: 1400px; top: 80px;"></div>
+				<div class="t t104" style="left: 1440px; top: 80px;"></div>
+				<div class="t t68" style="left: 1480px; top: 80px;"></div>
+				<div class="t t70" style="left: 1520px; top: 80px;"></div>
+				<div class="t t98" style="left: 40px; top: 120px;"></div>
+				<div class="t t100" style="left: 80px; top: 120px;"></div>
+				<div class="t t102" style="left: 120px; top: 120px;"></div>
+				<div class="t t34" style="left: 680px; top: 120px;"></div>
+				<div class="t t72" style="left: 720px; top: 120px;"></div>
+				<div class="t t74" style="left: 760px; top: 120px;"></div>
+				<div class="t t72" style="left: 800px; top: 120px;"></div>
+				<div class="t t106" style="left: 840px; top: 120px;"></div>
+				<div class="t t102" style="left: 880px; top: 120px;"></div>
+				<div class="t t34" style="left: 920px; top: 120px;"></div>
+				<div class="t t72" style="left: 960px; top: 120px;"></div>
+				<div class="t t68" style="left: 1000px; top: 120px;"></div>
+				<div class="t t106" style="left: 1040px; top: 120px;"></div>
+				<div class="t t102" style="left: 1080px; top: 120px;"></div>
+				<div class="t t34" style="left: 1200px; top: 120px;"></div>
+				<div class="t t72" style="left: 1240px; top: 120px;"></div>
+				<div class="t t68" style="left: 1280px; top: 120px; width: 120px;"></div>
+				<div class="t t74" style="left: 1400px; top: 120px;"></div>
+				<div class="t t72" style="left: 1440px; top: 120px;"></div>
+				<div class="t t106" style="left: 1480px; top: 120px;"></div>
+				<div class="t t102" style="left: 1520px; top: 120px;"></div>
+				<div class="t t34" style="left: 520px; top: 160px;"></div>
+				<div class="t t36" style="left: 560px; top: 160px; width: 120px;"></div>
+				<div class="t t72" style="left: 680px; top: 160px;"></div>
+				<div class="t t106" style="left: 720px; top: 160px;"></div>
+				<div class="t t100" style="left: 760px; top: 160px;"></div>
+				<div class="t t104" style="left: 800px; top: 160px;"></div>
+				<div class="t t74" style="left: 840px; top: 160px;"></div>
+				<div class="t t38" style="left: 880px; top: 160px;"></div>
+				<div class="t t98" style="left: 920px; top: 160px;"></div>
+				<div class="t t104" style="left: 960px; top: 160px;"></div>
+				<div class="t t68" style="left: 1000px; top: 160px;"></div>
+				<div class="t t70" style="left: 1040px; top: 160px;"></div>
+				<div class="t t34" style="left: 1120px; top: 160px;"></div>
+				<div class="t t36" style="left: 1160px; top: 160px;"></div>
+				<div class="t t72" style="left: 1200px; top: 160px;"></div>
+				<div class="t t68" style="left: 1240px; top: 160px; width: 200px;"></div>
+				<div class="t t106" style="left: 1440px; top: 160px;"></div>
+				<div class="t t102" style="left: 1480px; top: 160px;"></div>
+				<div class="tree" style="left: 641px; top: -90px;"></div>
+				<div class="tree" style="left: 683px; top: -44px;"></div>
+				<div class="tree" style="left: 608px; top: -27px;"></div>
+				<div class="tree" style="left: 173px; top: -4px;"></div>
+				<div class="tree" style="left: 228px; top: 52px;"></div>
+				<div class="tree" style="left: 147px; top: 92px;"></div>
+				<div class="tree" style="left: 303px; top: 105px;"></div>
+				<div class="tree" style="left: 238px; top: 122px;"></div>
+			</div>
+		</div>
+	</div>
+	<div class="contents">
+		<div class="container-fluid">
+			<div class="row">
+				<!--
+        <a class='g-plus-link' href='https://plus.google.com/104206952440491912596?prsrc=3' rel='publisher' style='text-decoration:none;'><img alt='' src='https://ssl.gstatic.com/images/icons/gplus-32.png' style='border:0;width:32px;height:32px;'/></a>
+        -->
+				<div class="lead col-md-12">
+					<h1 style="display: none;">Tiled</h1>
+					<a href="/index.html"><img src="/img/tiled-logo-white.png" style="margin-bottom: -40px; margin-left: 2%; width: 200px;"></a><br />
+				</div>
+			</div>
+		</div>
+		<div class="my-navigation">
+			<!--<a class="btn btn-default btn-sm" href="http://blog.mapeditor.org/"><i class="icon-rss"></i> Blog</a>-->
+			<a class="btn btn-default btn-sm" href="https://github.com/bjorn/tiled/issues"><i class="icon-exclamation-sign"></i> Issue Tracker</a>
+			<a class="btn btn-default btn-sm" href="https://discord.gg/39wbTv7"><i class="icon-comments"></i> Tiled on Discord</a>
+		</div>
+	</div>
+</div>
+<div class="container-fluid">
+	<header>
+		<div class="tsd-page-toolbar">
+			<div class="container">
+				<div class="table-wrap">
+					<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+						<div class="field">
+							<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+							<input id="tsd-search-field" type="text" />
+						</div>
+						<ul class="results">
+							<li class="state loading">Preparing search index...</li>
+							<li class="state failure">The search index is not available</li>
+						</ul>
+						<a href="../index.html" class="title">Tiled Scripting API</a>
+					</div>
+					<div class="table-cell" id="tsd-widgets">
+						<div id="tsd-filter">
+							<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+							<div class="tsd-filter-group">
+								<div class="tsd-select" id="tsd-filter-visibility">
+									<span class="tsd-select-label">All</span>
+									<ul class="tsd-select-list">
+										<li data-value="public">Public</li>
+										<li data-value="protected">Public/Protected</li>
+										<li data-value="private" class="selected">All</li>
+									</ul>
+								</div>
+								<input type="checkbox" id="tsd-filter-inherited" checked />
+								<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+								<input type="checkbox" id="tsd-filter-only-exported" />
+								<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+							</div>
+						</div>
+						<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="tsd-page-title">
+			<div class="container">
+				<ul class="tsd-breadcrumb">
+					<li>
+						<a href="../index.html">Globals</a>
+					</li>
+					<li>
+						<a href="tilemap.html">TileMap</a>
+					</li>
+				</ul>
+				<h1>Class TileMap</h1>
+			</div>
+		</div>
+	</header>
+	<div class="container container-main">
+		<div class="row">
+			<div class="col-8 col-content">
+				<section class="tsd-panel tsd-hierarchy">
+					<h3>Hierarchy</h3>
+					<ul class="tsd-hierarchy">
+						<li>
+							<span class="target">TileMap</span>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel">
+					<h3>Implements</h3>
+					<ul class="tsd-hierarchy">
+						<li><a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a></li>
+					</ul>
+				</section>
+				<section class="tsd-panel-group tsd-index-group">
+					<h2>Index</h2>
+					<section class="tsd-panel tsd-index-panel">
+						<div class="tsd-index-content">
+							<section class="tsd-index-section ">
+								<h3>Constructors</h3>
+								<ul class="tsd-index-list">
+									<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="tilemap.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								</ul>
+							</section>
+							<section class="tsd-index-section ">
+								<h3>Methods</h3>
+								<ul class="tsd-index-list">
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#addlayer" class="tsd-kind-icon">add<wbr>Layer</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#addtileset" class="tsd-kind-icon">add<wbr>Tileset</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#automap" class="tsd-kind-icon">auto<wbr>Map</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#insertlayerat" class="tsd-kind-icon">insert<wbr>Layer<wbr>At</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#layerat" class="tsd-kind-icon">layer<wbr>At</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#merge" class="tsd-kind-icon">merge</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#pixeltoscreen" class="tsd-kind-icon">pixel<wbr>ToScreen</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#pixeltotile" class="tsd-kind-icon">pixel<wbr>ToTile</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#removelayer" class="tsd-kind-icon">remove<wbr>Layer</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#removelayerat" class="tsd-kind-icon">remove<wbr>Layer<wbr>At</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#removetileset" class="tsd-kind-icon">remove<wbr>Tileset</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#replacetileset" class="tsd-kind-icon">replace<wbr>Tileset</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#resize" class="tsd-kind-icon">resize</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#screentopixel" class="tsd-kind-icon">screen<wbr>ToPixel</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#screentotile" class="tsd-kind-icon">screen<wbr>ToTile</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#setsize" class="tsd-kind-icon">set<wbr>Size</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#settilesize" class="tsd-kind-icon">set<wbr>Tile<wbr>Size</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#tiletopixel" class="tsd-kind-icon">tile<wbr>ToPixel</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#tiletoscreen" class="tsd-kind-icon">tile<wbr>ToScreen</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#usedtilesets" class="tsd-kind-icon">used<wbr>Tilesets</a></li>
+								</ul>
+							</section>
+						</div>
+					</section>
+				</section>
+				<section class="tsd-panel-group tsd-member-group ">
+					<h2>Constructors</h2>
+					<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+						<a name="constructor" class="tsd-anchor"></a>
+						<h3>constructor</h3>
+						<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">new <wbr>Tile<wbr>Map<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="tilemap.html" class="tsd-signature-type">TileMap</a></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-returns-title">Returns <a href="tilemap.html" class="tsd-signature-type">TileMap</a></h4>
+							</li>
+						</ul>
+					</section>
+				</section>
+				<section class="tsd-panel-group tsd-member-group ">
+					<h2>Methods</h2>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="addlayer" class="tsd-anchor"></a>
+						<h3>add<wbr>Layer</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">add<wbr>Layer<span class="tsd-signature-symbol">(</span>layer<span class="tsd-signature-symbol">: </span><a href="../interfaces/layer.html" class="tsd-signature-type">Layer</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>layer: <a href="../interfaces/layer.html" class="tsd-signature-type">Layer</a></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="addtileset" class="tsd-anchor"></a>
+						<h3>add<wbr>Tileset</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">add<wbr>Tileset<span class="tsd-signature-symbol">(</span>tileset<span class="tsd-signature-symbol">: </span><a href="../interfaces/tileset.html" class="tsd-signature-type">Tileset</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>tileset: <a href="../interfaces/tileset.html" class="tsd-signature-type">Tileset</a></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="automap" class="tsd-anchor"></a>
+						<h3>auto<wbr>Map</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">auto<wbr>Map<span class="tsd-signature-symbol">(</span>rulesFule<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+							<li class="tsd-signature tsd-kind-icon">auto<wbr>Map<span class="tsd-signature-symbol">(</span>region<span class="tsd-signature-symbol">: </span><a href="../interfaces/region.html" class="tsd-signature-type">region</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/rect.html" class="tsd-signature-type">rect</a>, rulesFile<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> rulesFule: <span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>region: <a href="../interfaces/region.html" class="tsd-signature-type">region</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/rect.html" class="tsd-signature-type">rect</a></h5>
+									</li>
+									<li>
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> rulesFile: <span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="insertlayerat" class="tsd-anchor"></a>
+						<h3>insert<wbr>Layer<wbr>At</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">insert<wbr>Layer<wbr>At<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, layer<span class="tsd-signature-symbol">: </span><a href="../interfaces/layer.html" class="tsd-signature-type">Layer</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>index: <span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li>
+										<h5>layer: <a href="../interfaces/layer.html" class="tsd-signature-type">Layer</a></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="layerat" class="tsd-anchor"></a>
+						<h3>layer<wbr>At</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">layer<wbr>At<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/layer.html" class="tsd-signature-type">Layer</a></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>index: <span class="tsd-signature-type">number</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/layer.html" class="tsd-signature-type">Layer</a></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="merge" class="tsd-anchor"></a>
+						<h3>merge</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">merge<span class="tsd-signature-symbol">(</span>map<span class="tsd-signature-symbol">: </span><a href="tilemap.html" class="tsd-signature-type">TileMap</a>, canJoin<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>map: <a href="tilemap.html" class="tsd-signature-type">TileMap</a></h5>
+									</li>
+									<li>
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> canJoin: <span class="tsd-signature-type">boolean</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="pixeltoscreen" class="tsd-anchor"></a>
+						<h3>pixel<wbr>ToScreen</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">pixel<wbr>ToScreen<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a></li>
+							<li class="tsd-signature tsd-kind-icon">pixel<wbr>ToScreen<span class="tsd-signature-symbol">(</span>position<span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Converts the given position from pixel to screen coordinates.</p>
+									</div>
+								</div>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>x: <span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li>
+										<h5>y: <span class="tsd-signature-type">number</span></h5>
+										<div class="tsd-comment tsd-typography">
+										</div>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h4>
+							</li>
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Converts the given position from pixel to screen coordinates.</p>
+									</div>
+								</div>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>position: <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h5>
+										<div class="tsd-comment tsd-typography">
+										</div>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="pixeltotile" class="tsd-anchor"></a>
+						<h3>pixel<wbr>ToTile</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">pixel<wbr>ToTile<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a></li>
+							<li class="tsd-signature tsd-kind-icon">pixel<wbr>ToTile<span class="tsd-signature-symbol">(</span>position<span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Converts the given position from tile to pixel coordinates.</p>
+									</div>
+								</div>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>x: <span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li>
+										<h5>y: <span class="tsd-signature-type">number</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h4>
+							</li>
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Converts the given position from tile to pixel coordinates.</p>
+									</div>
+								</div>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>position: <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h5>
+										<div class="tsd-comment tsd-typography">
+										</div>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="removelayer" class="tsd-anchor"></a>
+						<h3>remove<wbr>Layer</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">remove<wbr>Layer<span class="tsd-signature-symbol">(</span>layer<span class="tsd-signature-symbol">: </span><a href="../interfaces/layer.html" class="tsd-signature-type">Layer</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>layer: <a href="../interfaces/layer.html" class="tsd-signature-type">Layer</a></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="removelayerat" class="tsd-anchor"></a>
+						<h3>remove<wbr>Layer<wbr>At</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">remove<wbr>Layer<wbr>At<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>index: <span class="tsd-signature-type">number</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="removetileset" class="tsd-anchor"></a>
+						<h3>remove<wbr>Tileset</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">remove<wbr>Tileset<span class="tsd-signature-symbol">(</span>tileset<span class="tsd-signature-symbol">: </span><a href="../interfaces/tileset.html" class="tsd-signature-type">Tileset</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>tileset: <a href="../interfaces/tileset.html" class="tsd-signature-type">Tileset</a></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="replacetileset" class="tsd-anchor"></a>
+						<h3>replace<wbr>Tileset</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">replace<wbr>Tileset<span class="tsd-signature-symbol">(</span>oldTileset<span class="tsd-signature-symbol">: </span><a href="../interfaces/tileset.html" class="tsd-signature-type">Tileset</a>, newTileset<span class="tsd-signature-symbol">: </span><a href="../interfaces/tileset.html" class="tsd-signature-type">Tileset</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>oldTileset: <a href="../interfaces/tileset.html" class="tsd-signature-type">Tileset</a></h5>
+									</li>
+									<li>
+										<h5>newTileset: <a href="../interfaces/tileset.html" class="tsd-signature-type">Tileset</a></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="resize" class="tsd-anchor"></a>
+						<h3>resize</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">resize<span class="tsd-signature-symbol">(</span>size<span class="tsd-signature-symbol">: </span><a href="../interfaces/size.html" class="tsd-signature-type">size</a>, offset<span class="tsd-signature-symbol">?: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a>, removeObjects<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>size: <a href="../interfaces/size.html" class="tsd-signature-type">size</a></h5>
+									</li>
+									<li>
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> offset: <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h5>
+									</li>
+									<li>
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> removeObjects: <span class="tsd-signature-type">boolean</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="screentopixel" class="tsd-anchor"></a>
+						<h3>screen<wbr>ToPixel</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">screen<wbr>ToPixel<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a></li>
+							<li class="tsd-signature tsd-kind-icon">screen<wbr>ToPixel<span class="tsd-signature-symbol">(</span>position<span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Converts the given position from screen to pixel coordinates.</p>
+									</div>
+								</div>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>x: <span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li>
+										<h5>y: <span class="tsd-signature-type">number</span></h5>
+										<div class="tsd-comment tsd-typography">
+										</div>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h4>
+							</li>
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Converts the given position from screen to pixel coordinates.</p>
+									</div>
+								</div>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>position: <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h5>
+										<div class="tsd-comment tsd-typography">
+										</div>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="screentotile" class="tsd-anchor"></a>
+						<h3>screen<wbr>ToTile</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">screen<wbr>ToTile<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a></li>
+							<li class="tsd-signature tsd-kind-icon">screen<wbr>ToTile<span class="tsd-signature-symbol">(</span>position<span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>x: <span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li>
+										<h5>y: <span class="tsd-signature-type">number</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h4>
+							</li>
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>position: <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="setsize" class="tsd-anchor"></a>
+						<h3>set<wbr>Size</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">set<wbr>Size<span class="tsd-signature-symbol">(</span>width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>width: <span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li>
+										<h5>height: <span class="tsd-signature-type">number</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="settilesize" class="tsd-anchor"></a>
+						<h3>set<wbr>Tile<wbr>Size</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">set<wbr>Tile<wbr>Size<span class="tsd-signature-symbol">(</span>width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>width: <span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li>
+										<h5>height: <span class="tsd-signature-type">number</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="tiletopixel" class="tsd-anchor"></a>
+						<h3>tile<wbr>ToPixel</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">tile<wbr>ToPixel<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a></li>
+							<li class="tsd-signature tsd-kind-icon">tile<wbr>ToPixel<span class="tsd-signature-symbol">(</span>position<span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Converts the given position from pixel to tile coordinates.</p>
+									</div>
+								</div>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>x: <span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li>
+										<h5>y: <span class="tsd-signature-type">number</span></h5>
+										<div class="tsd-comment tsd-typography">
+										</div>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h4>
+							</li>
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Converts the given position from pixel to tile coordinates.</p>
+									</div>
+								</div>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>position: <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h5>
+										<div class="tsd-comment tsd-typography">
+										</div>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="tiletoscreen" class="tsd-anchor"></a>
+						<h3>tile<wbr>ToScreen</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">tile<wbr>ToScreen<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a></li>
+							<li class="tsd-signature tsd-kind-icon">tile<wbr>ToScreen<span class="tsd-signature-symbol">(</span>position<span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type">point</a></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>x: <span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li>
+										<h5>y: <span class="tsd-signature-type">number</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h4>
+							</li>
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>position: <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/point.html" class="tsd-signature-type">point</a></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="usedtilesets" class="tsd-anchor"></a>
+						<h3>used<wbr>Tilesets</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">used<wbr>Tilesets<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/tileset.html" class="tsd-signature-type">Tileset</a><span class="tsd-signature-symbol">[]</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/tileset.html" class="tsd-signature-type">Tileset</a><span class="tsd-signature-symbol">[]</span></h4>
+							</li>
+						</ul>
+					</section>
+				</section>
+			</div>
+			<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+				<nav class="tsd-navigation primary">
+					<ul>
+						<li class="globals  ">
+							<a href="../index.html"><em>Globals</em></a>
+						</li>
+					</ul>
+				</nav>
+				<nav class="tsd-navigation secondary menu-sticky">
+					<ul class="before-current">
+						<li class=" tsd-kind-class">
+							<a href="binaryfile.html" class="tsd-kind-icon">Binary<wbr>File</a>
+						</li>
+						<li class=" tsd-kind-class">
+							<a href="textfile.html" class="tsd-kind-icon">Text<wbr>File</a>
+						</li>
+					</ul>
+					<ul class="current">
+						<li class="current tsd-kind-class">
+							<a href="tilemap.html" class="tsd-kind-icon">Tile<wbr>Map</a>
+							<ul>
+								<li class=" tsd-kind-constructor tsd-parent-kind-class">
+									<a href="tilemap.html#constructor" class="tsd-kind-icon">constructor</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#addlayer" class="tsd-kind-icon">add<wbr>Layer</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#addtileset" class="tsd-kind-icon">add<wbr>Tileset</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#automap" class="tsd-kind-icon">auto<wbr>Map</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#insertlayerat" class="tsd-kind-icon">insert<wbr>Layer<wbr>At</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#layerat" class="tsd-kind-icon">layer<wbr>At</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#merge" class="tsd-kind-icon">merge</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#pixeltoscreen" class="tsd-kind-icon">pixel<wbr>ToScreen</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#pixeltotile" class="tsd-kind-icon">pixel<wbr>ToTile</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#removelayer" class="tsd-kind-icon">remove<wbr>Layer</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#removelayerat" class="tsd-kind-icon">remove<wbr>Layer<wbr>At</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#removetileset" class="tsd-kind-icon">remove<wbr>Tileset</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#replacetileset" class="tsd-kind-icon">replace<wbr>Tileset</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#resize" class="tsd-kind-icon">resize</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#screentopixel" class="tsd-kind-icon">screen<wbr>ToPixel</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#screentotile" class="tsd-kind-icon">screen<wbr>ToTile</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#setsize" class="tsd-kind-icon">set<wbr>Size</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#settilesize" class="tsd-kind-icon">set<wbr>Tile<wbr>Size</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#tiletopixel" class="tsd-kind-icon">tile<wbr>ToPixel</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#tiletoscreen" class="tsd-kind-icon">tile<wbr>ToScreen</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tilemap.html#usedtilesets" class="tsd-kind-icon">used<wbr>Tilesets</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+					<ul class="after-current">
+						<li class=" tsd-kind-interface">
+							<a href="../interfaces/action.html" class="tsd-kind-icon">Action</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="../interfaces/asset.html" class="tsd-kind-icon">Asset</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="../interfaces/layer.html" class="tsd-kind-icon">Layer</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="../interfaces/mapeditor.html" class="tsd-kind-icon">Map<wbr>Editor</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="../interfaces/mapformat.html" class="tsd-kind-icon">Map<wbr>Format</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="../interfaces/objectref.html" class="tsd-kind-icon">Object<wbr>Ref</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="../interfaces/tileset.html" class="tsd-kind-icon">Tileset</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="../interfaces/tileseteditor.html" class="tsd-kind-icon">Tileset<wbr>Editor</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="../interfaces/tilesetformat.html" class="tsd-kind-icon">Tileset<wbr>Format</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="../interfaces/tool.html" class="tsd-kind-icon">Tool</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="../interfaces/point.html" class="tsd-kind-icon">point</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="../interfaces/rect.html" class="tsd-kind-icon">rect</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="../interfaces/region.html" class="tsd-kind-icon">region</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="../interfaces/size.html" class="tsd-kind-icon">size</a>
+						</li>
+						<li class=" tsd-kind-type-alias">
+							<a href="../index.html#polygon" class="tsd-kind-icon">Polygon</a>
+						</li>
+						<li class=" tsd-kind-variable">
+							<a href="../index.html#__filename" class="tsd-kind-icon">__filename</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+	<footer class="with-border-bottom">
+		<div class="container">
+			<h2>Legend</h2>
+			<div class="tsd-legend-group">
+				<ul class="tsd-legend">
+					<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+					<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+					<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				</ul>
+				<ul class="tsd-legend">
+					<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+					<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				</ul>
+				<ul class="tsd-legend">
+					<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				</ul>
+			</div>
+		</div>
+	</footer>
+	<div class="container tsd-generator">
+		<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+	</div>
+	<div class="overlay"></div>
+	<script src="../assets/js/main.js"></script>
+</body>
+</html>

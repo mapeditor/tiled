@@ -1,0 +1,837 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<!-- Bootstrap -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href='/favicon.ico' rel='icon' type='image/png'/>
+	<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="/css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
+	<link href="/css/fontawesome.css" rel="stylesheet">
+	<link href="/css/base.css" rel="stylesheet" media="screen">
+	<link rel="me" href="https://plus.google.com/113047271137781766813" />
+	<link rel="publisher" href="https://plus.google.com/104206952440491912596/" />
+	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>    <link rel="stylesheet" href="../assets/css/main.css">
+	<link rel="stylesheet" href="../assets/css/override.css">
+	<title>tiled | Tiled Scripting API</title>
+</head>
+<body>
+<nav id="navbar" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0px">
+	<ul class="nav navbar-nav">
+		<li><a href="/"><i class="icon-home"></i> Home</a></li>
+		<li><a href="https://discourse.mapeditor.org/"><i class="icon-group"></i> Forum</a></li>
+		<li><a href="https://doc.mapeditor.org/"><i class="icon-book"></i> Documentation</a></li>
+		<li><a href="/donate"><i class="icon icon-heart"></i> Donate</a></li>
+	</ul>
+	<ul class="nav navbar-nav pull-right">
+		<li><a href="https://github.com/bjorn/tiled"><i class="icon-github-alt"></i> Tiled on GitHub</a></li>
+		<!-- TODO: Just have a row of icons (GitHub, [Twitter,] Google+, IRC?) -->
+	</ul>
+</nav>
+<div class="my-top-box" style="position: relative;">
+	<div class="background">
+		<!-- a centered 0-width inline block -->
+		<div style="display: inline-block; width: 0px;">
+			<!-- the actual map, centered on the parent by using negative offset -->
+			<div style="position: relative; left: -800px; width: 1600px; height: 520px;">
+				<div class="t t34" style="left: 0px; top: 0px;"></div>
+				<div class="t t38" style="left: 40px; top: 0px;"></div>
+				<div class="t t66" style="left: 760px; top: 0px;"></div>
+				<div class="t t68" style="left: 800px; top: 0px;"></div>
+				<div class="t t70" style="left: 840px; top: 0px;"></div>
+				<div class="t t66" style="left: 1000px; top: 0px;"></div>
+				<div class="t t68" style="left: 1040px; top: 0px; width: 80px;"></div>
+				<div class="t t74" style="left: 1120px; top: 0px;"></div>
+				<div class="t t36" style="left: 1160px; top: 0px;"></div>
+				<div class="t t38" style="left: 1200px; top: 0px;"></div>
+				<div class="t t66" style="left: 1320px; top: 0px;"></div>
+				<div class="t t68" style="left: 1360px; top: 0px; width: 120px;"></div>
+				<div class="t t74" style="left: 1480px; top: 0px;"></div>
+				<div class="t t38" style="left: 1520px; top: 0px;"></div>
+				<div class="t t98" style="left: 0px; top: 40px;"></div>
+				<div class="t t102" style="left: 40px; top: 40px;"></div>
+				<div class="t t34" style="left: 80px; top: 40px;"></div>
+				<div class="t t38" style="left: 120px; top: 40px;"></div>
+				<div class="t t98" style="left: 760px; top: 40px;"></div>
+				<div class="t t104" style="left: 800px; top: 40px;"></div>
+				<div class="t t74" style="left: 840px; top: 40px;"></div>
+				<div class="t t38" style="left: 880px; top: 40px;"></div>
+				<div class="t t66" style="left: 1000px; top: 40px;"></div>
+				<div class="t t68" style="left: 1040px; top: 40px; width: 160px;"></div>
+				<div class="t t70" style="left: 1200px; top: 40px;"></div>
+				<div class="t t34" style="left: 1280px; top: 40px;"></div>
+				<div class="t t72" style="left: 1320px; top: 40px;"></div>
+				<div class="t t68" style="left: 1360px; top: 40px; width: 160px;"></div>
+				<div class="t t70" style="left: 1520px; top: 40px;"></div>
+				<div class="t t34" style="left: 40px; top: 80px;"></div>
+				<div class="t t72" style="left: 80px; top: 80px;"></div>
+				<div class="t t70" style="left: 120px; top: 80px;"></div>
+				<div class="t t34" style="left: 720px; top: 80px;"></div>
+				<div class="t t38" style="left: 760px; top: 80px;"></div>
+				<div class="t t66" style="left: 800px; top: 80px;"></div>
+				<div class="t t68" style="left: 840px; top: 80px;"></div>
+				<div class="t t70" style="left: 880px; top: 80px;"></div>
+				<div class="t t34" style="left: 960px; top: 80px;"></div>
+				<div class="t t72" style="left: 1000px; top: 80px;"></div>
+				<div class="t t68" style="left: 1040px; top: 80px;"></div>
+				<div class="t t106" style="left: 1080px; top: 80px;"></div>
+				<div class="t t100" style="left: 1120px; top: 80px; width: 80px;"></div>
+				<div class="t t102" style="left: 1200px; top: 80px;"></div>
+				<div class="t t34" style="left: 1240px; top: 80px;"></div>
+				<div class="t t72" style="left: 1280px; top: 80px;"></div>
+				<div class="t t68" style="left: 1320px; top: 80px; width: 80px;"></div>
+				<div class="t t106" style="left: 1400px; top: 80px;"></div>
+				<div class="t t104" style="left: 1440px; top: 80px;"></div>
+				<div class="t t68" style="left: 1480px; top: 80px;"></div>
+				<div class="t t70" style="left: 1520px; top: 80px;"></div>
+				<div class="t t98" style="left: 40px; top: 120px;"></div>
+				<div class="t t100" style="left: 80px; top: 120px;"></div>
+				<div class="t t102" style="left: 120px; top: 120px;"></div>
+				<div class="t t34" style="left: 680px; top: 120px;"></div>
+				<div class="t t72" style="left: 720px; top: 120px;"></div>
+				<div class="t t74" style="left: 760px; top: 120px;"></div>
+				<div class="t t72" style="left: 800px; top: 120px;"></div>
+				<div class="t t106" style="left: 840px; top: 120px;"></div>
+				<div class="t t102" style="left: 880px; top: 120px;"></div>
+				<div class="t t34" style="left: 920px; top: 120px;"></div>
+				<div class="t t72" style="left: 960px; top: 120px;"></div>
+				<div class="t t68" style="left: 1000px; top: 120px;"></div>
+				<div class="t t106" style="left: 1040px; top: 120px;"></div>
+				<div class="t t102" style="left: 1080px; top: 120px;"></div>
+				<div class="t t34" style="left: 1200px; top: 120px;"></div>
+				<div class="t t72" style="left: 1240px; top: 120px;"></div>
+				<div class="t t68" style="left: 1280px; top: 120px; width: 120px;"></div>
+				<div class="t t74" style="left: 1400px; top: 120px;"></div>
+				<div class="t t72" style="left: 1440px; top: 120px;"></div>
+				<div class="t t106" style="left: 1480px; top: 120px;"></div>
+				<div class="t t102" style="left: 1520px; top: 120px;"></div>
+				<div class="t t34" style="left: 520px; top: 160px;"></div>
+				<div class="t t36" style="left: 560px; top: 160px; width: 120px;"></div>
+				<div class="t t72" style="left: 680px; top: 160px;"></div>
+				<div class="t t106" style="left: 720px; top: 160px;"></div>
+				<div class="t t100" style="left: 760px; top: 160px;"></div>
+				<div class="t t104" style="left: 800px; top: 160px;"></div>
+				<div class="t t74" style="left: 840px; top: 160px;"></div>
+				<div class="t t38" style="left: 880px; top: 160px;"></div>
+				<div class="t t98" style="left: 920px; top: 160px;"></div>
+				<div class="t t104" style="left: 960px; top: 160px;"></div>
+				<div class="t t68" style="left: 1000px; top: 160px;"></div>
+				<div class="t t70" style="left: 1040px; top: 160px;"></div>
+				<div class="t t34" style="left: 1120px; top: 160px;"></div>
+				<div class="t t36" style="left: 1160px; top: 160px;"></div>
+				<div class="t t72" style="left: 1200px; top: 160px;"></div>
+				<div class="t t68" style="left: 1240px; top: 160px; width: 200px;"></div>
+				<div class="t t106" style="left: 1440px; top: 160px;"></div>
+				<div class="t t102" style="left: 1480px; top: 160px;"></div>
+				<div class="tree" style="left: 641px; top: -90px;"></div>
+				<div class="tree" style="left: 683px; top: -44px;"></div>
+				<div class="tree" style="left: 608px; top: -27px;"></div>
+				<div class="tree" style="left: 173px; top: -4px;"></div>
+				<div class="tree" style="left: 228px; top: 52px;"></div>
+				<div class="tree" style="left: 147px; top: 92px;"></div>
+				<div class="tree" style="left: 303px; top: 105px;"></div>
+				<div class="tree" style="left: 238px; top: 122px;"></div>
+			</div>
+		</div>
+	</div>
+	<div class="contents">
+		<div class="container-fluid">
+			<div class="row">
+				<!--
+        <a class='g-plus-link' href='https://plus.google.com/104206952440491912596?prsrc=3' rel='publisher' style='text-decoration:none;'><img alt='' src='https://ssl.gstatic.com/images/icons/gplus-32.png' style='border:0;width:32px;height:32px;'/></a>
+        -->
+				<div class="lead col-md-12">
+					<h1 style="display: none;">Tiled</h1>
+					<a href="/index.html"><img src="/img/tiled-logo-white.png" style="margin-bottom: -40px; margin-left: 2%; width: 200px;"></a><br />
+				</div>
+			</div>
+		</div>
+		<div class="my-navigation">
+			<!--<a class="btn btn-default btn-sm" href="http://blog.mapeditor.org/"><i class="icon-rss"></i> Blog</a>-->
+			<a class="btn btn-default btn-sm" href="https://github.com/bjorn/tiled/issues"><i class="icon-exclamation-sign"></i> Issue Tracker</a>
+			<a class="btn btn-default btn-sm" href="https://discord.gg/39wbTv7"><i class="icon-comments"></i> Tiled on Discord</a>
+		</div>
+	</div>
+</div>
+<div class="container-fluid">
+	<header>
+		<div class="tsd-page-toolbar">
+			<div class="container">
+				<div class="table-wrap">
+					<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+						<div class="field">
+							<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+							<input id="tsd-search-field" type="text" />
+						</div>
+						<ul class="results">
+							<li class="state loading">Preparing search index...</li>
+							<li class="state failure">The search index is not available</li>
+						</ul>
+						<a href="../index.html" class="title">Tiled Scripting API</a>
+					</div>
+					<div class="table-cell" id="tsd-widgets">
+						<div id="tsd-filter">
+							<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+							<div class="tsd-filter-group">
+								<div class="tsd-select" id="tsd-filter-visibility">
+									<span class="tsd-select-label">All</span>
+									<ul class="tsd-select-list">
+										<li data-value="public">Public</li>
+										<li data-value="protected">Public/Protected</li>
+										<li data-value="private" class="selected">All</li>
+									</ul>
+								</div>
+								<input type="checkbox" id="tsd-filter-inherited" checked />
+								<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+								<input type="checkbox" id="tsd-filter-only-exported" />
+								<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+							</div>
+						</div>
+						<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="tsd-page-title">
+			<div class="container">
+				<ul class="tsd-breadcrumb">
+					<li>
+						<a href="../index.html">Globals</a>
+					</li>
+					<li>
+						<a href="tiled.html">tiled</a>
+					</li>
+				</ul>
+				<h1>Namespace tiled</h1>
+			</div>
+		</div>
+	</header>
+	<div class="container container-main">
+		<div class="row">
+			<div class="col-8 col-content">
+				<section class="tsd-panel-group tsd-index-group">
+					<h2>Index</h2>
+					<section class="tsd-panel tsd-index-panel">
+						<div class="tsd-index-content">
+							<section class="tsd-index-section ">
+								<h3>Variables</h3>
+								<ul class="tsd-index-list">
+									<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#actions" class="tsd-kind-icon">actions</a></li>
+									<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#activeasset" class="tsd-kind-icon">active<wbr>Asset</a></li>
+									<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#arch" class="tsd-kind-icon">arch</a></li>
+									<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#mapformats" class="tsd-kind-icon">map<wbr>Formats</a></li>
+									<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#menus" class="tsd-kind-icon">menus</a></li>
+									<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#openassets" class="tsd-kind-icon">open<wbr>Assets</a></li>
+									<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#platform" class="tsd-kind-icon">platform</a></li>
+									<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#tilesetformats" class="tsd-kind-icon">tileset<wbr>Formats</a></li>
+									<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#version" class="tsd-kind-icon">version</a></li>
+								</ul>
+							</section>
+							<section class="tsd-index-section ">
+								<h3>Functions</h3>
+								<ul class="tsd-index-list">
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#alert" class="tsd-kind-icon">alert</a></li>
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#close" class="tsd-kind-icon">close</a></li>
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#confirm" class="tsd-kind-icon">confirm</a></li>
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#error" class="tsd-kind-icon">error</a></li>
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#executecommand" class="tsd-kind-icon">execute<wbr>Command</a></li>
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#log" class="tsd-kind-icon">log</a></li>
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#open" class="tsd-kind-icon">open</a></li>
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#prompt" class="tsd-kind-icon">prompt</a></li>
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#registeraction" class="tsd-kind-icon">register<wbr>Action</a></li>
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#registermapformat" class="tsd-kind-icon">register<wbr>Map<wbr>Format</a></li>
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#registertilesetformat" class="tsd-kind-icon">register<wbr>Tileset<wbr>Format</a></li>
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#reload" class="tsd-kind-icon">reload</a></li>
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#trigger" class="tsd-kind-icon">trigger</a></li>
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#warn" class="tsd-kind-icon">warn</a></li>
+								</ul>
+							</section>
+						</div>
+					</section>
+				</section>
+				<section class="tsd-panel-group tsd-member-group ">
+					<h2>Variables</h2>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+						<a name="actions" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagConst">Const</span> actions</h3>
+						<div class="tsd-signature tsd-kind-icon">actions<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+						<aside class="tsd-sources">
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+						<a name="activeasset" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagLet">Let</span> active<wbr>Asset</h3>
+						<div class="tsd-signature tsd-kind-icon">active<wbr>Asset<span class="tsd-signature-symbol">:</span> <a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a></div>
+						<aside class="tsd-sources">
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+						<a name="arch" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagConst">Const</span> arch</h3>
+						<div class="tsd-signature tsd-kind-icon">arch<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+						<aside class="tsd-sources">
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+						<a name="mapformats" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagConst">Const</span> map<wbr>Formats</h3>
+						<div class="tsd-signature tsd-kind-icon">map<wbr>Formats<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+						<aside class="tsd-sources">
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+						<a name="menus" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagConst">Const</span> menus</h3>
+						<div class="tsd-signature tsd-kind-icon">menus<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+						<aside class="tsd-sources">
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+						<a name="openassets" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagConst">Const</span> open<wbr>Assets</h3>
+						<div class="tsd-signature tsd-kind-icon">open<wbr>Assets<span class="tsd-signature-symbol">:</span> <a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a><span class="tsd-signature-symbol">[]</span></div>
+						<aside class="tsd-sources">
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+						<a name="platform" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagConst">Const</span> platform</h3>
+						<div class="tsd-signature tsd-kind-icon">platform<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+						<aside class="tsd-sources">
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+						<a name="tilesetformats" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagConst">Const</span> tileset<wbr>Formats</h3>
+						<div class="tsd-signature tsd-kind-icon">tileset<wbr>Formats<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+						<aside class="tsd-sources">
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+						<a name="version" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagConst">Const</span> version</h3>
+						<div class="tsd-signature tsd-kind-icon">version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+						<aside class="tsd-sources">
+						</aside>
+					</section>
+				</section>
+				<section class="tsd-panel-group tsd-member-group ">
+					<h2>Functions</h2>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="alert" class="tsd-anchor"></a>
+						<h3>alert</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">alert<span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, title<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>text: <span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li>
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> title: <span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="close" class="tsd-anchor"></a>
+						<h3>close</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">close<span class="tsd-signature-symbol">(</span>asset<span class="tsd-signature-symbol">: </span><a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>asset: <a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="confirm" class="tsd-anchor"></a>
+						<h3>confirm</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">confirm<span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, title<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>text: <span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li>
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> title: <span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="error" class="tsd-anchor"></a>
+						<h3>error</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">error<span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, activated<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>text: <span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li>
+										<h5>activated: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter-signature">
+												<ul class="tsd-signatures tsd-kind-type-literal">
+													<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+												</ul>
+												<ul class="tsd-descriptions">
+													<li class="tsd-description">
+														<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+													</li>
+												</ul>
+											</li>
+										</ul>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="executecommand" class="tsd-anchor"></a>
+						<h3>execute<wbr>Command</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">execute<wbr>Command<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, inTerminal<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>name: <span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li>
+										<h5>inTerminal: <span class="tsd-signature-type">boolean</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="log" class="tsd-anchor"></a>
+						<h3>log</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>text: <span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="open" class="tsd-anchor"></a>
+						<h3>open</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">open<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>fileName: <span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="prompt" class="tsd-anchor"></a>
+						<h3>prompt</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">prompt<span class="tsd-signature-symbol">(</span>label<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, text<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, title<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>label: <span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li>
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> text: <span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li>
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> title: <span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="registeraction" class="tsd-anchor"></a>
+						<h3>register<wbr>Action</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">register<wbr>Action<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>Action<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/action.html" class="tsd-signature-type">Action</a></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>id: <span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li>
+										<h5>callback: <span class="tsd-signature-symbol">(</span>Action<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter-signature">
+												<ul class="tsd-signatures tsd-kind-type-literal">
+													<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>Action<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+												</ul>
+												<ul class="tsd-descriptions">
+													<li class="tsd-description">
+														<h4 class="tsd-parameters-title">Parameters</h4>
+														<ul class="tsd-parameters">
+															<li>
+																<h5>Action: <span class="tsd-signature-type">any</span></h5>
+															</li>
+														</ul>
+														<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+													</li>
+												</ul>
+											</li>
+										</ul>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/action.html" class="tsd-signature-type">Action</a></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="registermapformat" class="tsd-anchor"></a>
+						<h3>register<wbr>Map<wbr>Format</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">register<wbr>Map<wbr>Format<span class="tsd-signature-symbol">(</span>shortName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, mapFormat<span class="tsd-signature-symbol">: </span><a href="../interfaces/mapformat.html" class="tsd-signature-type">MapFormat</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Registers a new map format that can then be used to open and/or save
+										maps in that format.</p>
+									</div>
+									<p>If a map format is already registered with the same <code>shortName</code>, the
+										existing format is replaced. The short name can also be used to
+										specify the format when using <code>--export-map</code> on the command-line, in
+										case the file extension is ambiguous or a different one should be
+									used.</p>
+									<dl class="tsd-comment-tags">
+										<dt>example</dt>
+										<dd><p>Example that produces a simple JSON representation of a map:</p>
+											<pre><code class="language-js"><span class="hljs-keyword">var</span> customMapFormat = {
+    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Custom map format&quot;</span>,
+    <span class="hljs-attr">extension</span>: <span class="hljs-string">&quot;custom&quot;</span>,
+
+    <span class="hljs-attr">write</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">map, fileName</span>) </span>{
+        <span class="hljs-keyword">var</span> m = {
+            <span class="hljs-attr">width</span>: map.width,
+            <span class="hljs-attr">height</span>: map.height,
+            <span class="hljs-attr">layers</span>: []
+        };
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; map.layerCount; ++i) {
+            <span class="hljs-keyword">var</span> layer = map.layerAt(i);
+            <span class="hljs-keyword">if</span> (layer.isTileLayer) {
+                <span class="hljs-keyword">var</span> rows = [];
+                <span class="hljs-keyword">for</span> (y = <span class="hljs-number">0</span>; y &lt; layer.height; ++y) {
+                    <span class="hljs-keyword">var</span> row = [];
+                    <span class="hljs-keyword">for</span> (x = <span class="hljs-number">0</span>; x &lt; layer.width; ++x)
+                        row.push(layer.cellAt(x, y).tileId);
+                    rows.push(row);
+                }
+                m.layers.push(rows);
+            }
+        }
+
+        <span class="hljs-keyword">var</span> file = <span class="hljs-keyword">new</span> TextFile(fileName, TextFile.WriteOnly);
+        file.write(<span class="hljs-built_in">JSON</span>.stringify(m));
+        file.commit();
+    },
+}
+
+tiled.registerMapFormat(<span class="hljs-string">&quot;custom&quot;</span>, customMapFormat)</code></pre>
+										</dd>
+									</dl>
+								</div>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>shortName: <span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li>
+										<h5>mapFormat: <a href="../interfaces/mapformat.html" class="tsd-signature-type">MapFormat</a></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="registertilesetformat" class="tsd-anchor"></a>
+						<h3>register<wbr>Tileset<wbr>Format</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">register<wbr>Tileset<wbr>Format<span class="tsd-signature-symbol">(</span>shortName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, tilesetFormat<span class="tsd-signature-symbol">: </span><a href="../interfaces/tilesetformat.html" class="tsd-signature-type">TilesetFormat</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>shortName: <span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li>
+										<h5>tilesetFormat: <a href="../interfaces/tilesetformat.html" class="tsd-signature-type">TilesetFormat</a></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="reload" class="tsd-anchor"></a>
+						<h3>reload</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">reload<span class="tsd-signature-symbol">(</span>asset<span class="tsd-signature-symbol">: </span><a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>asset: <a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="trigger" class="tsd-anchor"></a>
+						<h3>trigger</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">trigger<span class="tsd-signature-symbol">(</span>action<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>action: <span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="warn" class="tsd-anchor"></a>
+						<h3>warn</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">warn<span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, activated<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>text: <span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li>
+										<h5>activated: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter-signature">
+												<ul class="tsd-signatures tsd-kind-type-literal">
+													<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+												</ul>
+												<ul class="tsd-descriptions">
+													<li class="tsd-description">
+														<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+													</li>
+												</ul>
+											</li>
+										</ul>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+				</section>
+			</div>
+			<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+				<nav class="tsd-navigation primary">
+					<ul>
+						<li class="globals  ">
+							<a href="../index.html"><em>Globals</em></a>
+						</li>
+						<li class=" tsd-kind-namespace">
+							<a href="qt.html">Qt</a>
+						</li>
+						<li class="current tsd-kind-namespace">
+							<a href="tiled.html">tiled</a>
+						</li>
+					</ul>
+				</nav>
+				<nav class="tsd-navigation secondary menu-sticky">
+					<ul class="before-current">
+						<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+							<a href="tiled.html#actions" class="tsd-kind-icon">actions</a>
+						</li>
+						<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+							<a href="tiled.html#activeasset" class="tsd-kind-icon">active<wbr>Asset</a>
+						</li>
+						<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+							<a href="tiled.html#arch" class="tsd-kind-icon">arch</a>
+						</li>
+						<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+							<a href="tiled.html#mapformats" class="tsd-kind-icon">map<wbr>Formats</a>
+						</li>
+						<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+							<a href="tiled.html#menus" class="tsd-kind-icon">menus</a>
+						</li>
+						<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+							<a href="tiled.html#openassets" class="tsd-kind-icon">open<wbr>Assets</a>
+						</li>
+						<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+							<a href="tiled.html#platform" class="tsd-kind-icon">platform</a>
+						</li>
+						<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+							<a href="tiled.html#tilesetformats" class="tsd-kind-icon">tileset<wbr>Formats</a>
+						</li>
+						<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+							<a href="tiled.html#version" class="tsd-kind-icon">version</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#alert" class="tsd-kind-icon">alert</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#close" class="tsd-kind-icon">close</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#confirm" class="tsd-kind-icon">confirm</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#error" class="tsd-kind-icon">error</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#executecommand" class="tsd-kind-icon">execute<wbr>Command</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#log" class="tsd-kind-icon">log</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#open" class="tsd-kind-icon">open</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#prompt" class="tsd-kind-icon">prompt</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#registeraction" class="tsd-kind-icon">register<wbr>Action</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#registermapformat" class="tsd-kind-icon">register<wbr>Map<wbr>Format</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#registertilesetformat" class="tsd-kind-icon">register<wbr>Tileset<wbr>Format</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#reload" class="tsd-kind-icon">reload</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#trigger" class="tsd-kind-icon">trigger</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#warn" class="tsd-kind-icon">warn</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+	<footer class="with-border-bottom">
+		<div class="container">
+			<h2>Legend</h2>
+			<div class="tsd-legend-group">
+				<ul class="tsd-legend">
+					<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+					<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+					<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				</ul>
+				<ul class="tsd-legend">
+					<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+					<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				</ul>
+				<ul class="tsd-legend">
+					<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				</ul>
+			</div>
+		</div>
+	</footer>
+	<div class="container tsd-generator">
+		<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+	</div>
+	<div class="overlay"></div>
+	<script src="../assets/js/main.js"></script>
+</body>
+</html>
