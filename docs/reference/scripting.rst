@@ -920,7 +920,8 @@ Properties
     **visible** : bool, Whether the layer is visible (affects child layer visibility for group layers).
     **locked** : bool, Whether the layer is locked (affects whether child layers are locked for group layers).
     **offset** : :ref:`script-point`, Offset in pixels that is applied when this layer is rendered.
-    **map** : :ref:`script-map`, Map that this layer is part of (or ``null`` in case of a standalone layer).
+    **parallaxFactor** : :ref:`script-point`, The parallax factor of the layer (since Tiled 1.5).
+    **map** : :ref:`script-map` |ro|, Map that this layer is part of (or ``null`` in case of a standalone layer).
     **selected** : bool, Whether the layer is selected.
     **isTileLayer** : bool |ro|, Whether this layer is a :ref:`script-tilelayer`.
     **isObjectLayer** : bool |ro|, Whether this layer is an :ref:`script-objectgroup`.

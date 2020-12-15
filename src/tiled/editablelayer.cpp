@@ -146,6 +146,14 @@ void EditableLayer::setOffset(QPointF offset)
         layer()->setOffset(offset);
 }
 
+void EditableLayer::setParallaxFactor(QPointF factor)
+{
+    if (auto doc = document())
+        asset()->push(new SetLayerParallaxFactor(doc, layer(), factor));
+    else if (!checkReadOnly())
+        layer()->setParallaxFactor(factor);
+}
+
 void EditableLayer::setSelected(bool selected)
 {
     auto document = mapDocument();
