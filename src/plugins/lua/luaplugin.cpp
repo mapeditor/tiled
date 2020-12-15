@@ -753,6 +753,10 @@ void LuaWriter::writeLayerProperties(const Layer *layer)
     mWriter.writeKeyAndValue("offsetx", offset.x());
     mWriter.writeKeyAndValue("offsety", offset.y());
 
+    const QPointF parallaxFactor = layer->parallaxFactor();
+    mWriter.writeKeyAndValue("parallaxx", parallaxFactor.x());
+    mWriter.writeKeyAndValue("parallaxy", parallaxFactor.y());
+
     if (layer->tintColor().isValid())
         writeColor("tintcolor", layer->tintColor());
 }
