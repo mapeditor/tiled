@@ -62,7 +62,9 @@ public:
         VisibleProperty         = 1 << 2,
         LockedProperty          = 1 << 3,
         OffsetProperty          = 1 << 4,
-        TintColorProperty       = 1 << 5,
+        ParallaxFactorProperty  = 1 << 5,
+        TintColorProperty       = 1 << 6,
+        PositionProperties      = OffsetProperty | ParallaxFactorProperty,
         AllProperties           = 0xFF
     };
 

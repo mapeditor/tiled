@@ -567,6 +567,17 @@ std::unique_ptr<Layer> VariantToMapConverter::toLayer(const QVariant &variant)
         const QPointF offset(variantMap[QStringLiteral("offsetx")].toDouble(),
                              variantMap[QStringLiteral("offsety")].toDouble());
         layer->setOffset(offset);
+
+        bool ok;
+        QPointF parallaxFactor(1.0, 1.0);
+        const qreal factorX = variantMap[QStringLiteral("parallaxx")].toDouble(&ok);
+        if (ok)
+            parallaxFactor.setX(factorX);
+        const qreal factorY = variantMap[QStringLiteral("parallaxy")].toDouble(&ok);
+        if (ok)
+            parallaxFactor.setY(factorY);
+
+        layer->setParallaxFactor(parallaxFactor);
     }
 
     return layer;

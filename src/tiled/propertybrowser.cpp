@@ -728,6 +728,8 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
 
     addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), parent);
     addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), parent);
+
+    addProperty(ParallaxFactorProperty, QVariant::PointF, tr("Parallax Factor"), parent);
 }
 
 void PropertyBrowser::addTileLayerProperties()
@@ -1195,6 +1197,9 @@ QUndoCommand *PropertyBrowser::applyLayerValueTo(PropertyBrowser::PropertyId id,
         command = new SetLayerOffset(mMapDocument, layer, offset);
         break;
     }
+    case ParallaxFactorProperty:
+        command = new SetLayerParallaxFactor(mMapDocument, layer, val.toPointF());
+        break;
     default:
         switch (layer->layerType()) {
         case Layer::TileLayerType:
@@ -1745,6 +1750,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[TintColorProperty]->setValue(layer->tintColor());
         mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
         mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
+        mIdToProperty[ParallaxFactorProperty]->setValue(layer->parallaxFactor());
 
         switch (layer->layerType()) {
         case Layer::TileLayerType:

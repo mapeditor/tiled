@@ -88,7 +88,7 @@ void MapObjectItem::syncWithMapObject()
             setZValue(pixelPos.y());
 
         if (mIsHoveredIndicator) {
-            auto totalOffset = objectGroup->totalOffset();
+            auto totalOffset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*objectGroup);
             setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
         }
     }
@@ -110,7 +110,7 @@ void MapObjectItem::setIsHoverIndicator(bool isHoverIndicator)
     mIsHoveredIndicator = isHoverIndicator;
 
     if (isHoverIndicator) {
-        auto totalOffset = mObject->objectGroup()->totalOffset();
+        auto totalOffset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*mObject->objectGroup());
         setOpacity(0.5);
         setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
     } else {

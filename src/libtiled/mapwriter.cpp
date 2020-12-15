@@ -714,6 +714,12 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
         w.writeAttribute(QStringLiteral("offsetx"), QString::number(offset.x()));
         w.writeAttribute(QStringLiteral("offsety"), QString::number(offset.y()));
     }
+
+    const QPointF parallaxFactor = layer.parallaxFactor();
+    if (parallaxFactor.x() != 1.0)
+        w.writeAttribute(QStringLiteral("parallaxx"), QString::number(parallaxFactor.x()));
+    if (parallaxFactor.y() != 1.0)
+        w.writeAttribute(QStringLiteral("parallaxy"), QString::number(parallaxFactor.y()));
 }
 
 void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,

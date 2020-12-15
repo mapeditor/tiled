@@ -40,6 +40,8 @@ public:
     TileSelectionItem(MapDocument *mapDocument,
                       QGraphicsItem *parent = nullptr);
 
+    void updatePosition();
+
     // QGraphicsItem
     QRectF boundingRect() const override;
 

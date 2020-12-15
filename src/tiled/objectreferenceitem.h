@@ -61,8 +61,8 @@ public:
 private:
     void updateArrowRotation();
 
-    static QPointF objectCenter(MapObject *object,
-                                const MapRenderer &renderer);
+    QPointF objectCenter(MapObject *object,
+                         const MapRenderer &renderer) const;
 
     QPointF mSourcePos;
     QPointF mTargetPos;

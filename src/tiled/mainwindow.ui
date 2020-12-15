@@ -172,6 +172,7 @@
     <addaction name="menuShowObjectNames"/>
     <addaction name="actionShowTileAnimations"/>
     <addaction name="actionShowTileCollisionShapes"/>
+    <addaction name="actionEnableParallax"/>
     <addaction name="actionHighlightCurrentLayer"/>
     <addaction name="actionHighlightHoveredObject"/>
     <addaction name="separator"/>
@@ -778,6 +779,14 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionEnableParallax">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Enable Parallax</string>
    </property>
   </action>
  </widget>

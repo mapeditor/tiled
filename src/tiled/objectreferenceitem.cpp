@@ -196,7 +196,7 @@ void ObjectReferenceItem::paint(QPainter *painter, const QStyleOptionGraphicsIte
     painter->drawLine(start, end);
 }
 
-QPointF ObjectReferenceItem::objectCenter(MapObject *object, const MapRenderer &renderer)
+QPointF ObjectReferenceItem::objectCenter(MapObject *object, const MapRenderer &renderer) const
 {
     QPointF screenPos = renderer.pixelToScreenCoords(object->position());
 
@@ -208,7 +208,10 @@ QPointF ObjectReferenceItem::objectCenter(MapObject *object, const MapRenderer &
         screenPos = bounds.center();
     }
 
-    return screenPos + object->objectGroup()->totalOffset();
+    if (auto mapScene = qobject_cast<MapScene*>(scene()))
+        screenPos += mapScene->absolutePositionForLayer(*object->objectGroup());
+
+    return screenPos;
 }
 
 } // namespace Tiled

@@ -80,7 +80,8 @@ protected:
     MapObjectItem *mNewMapObjectItem;   // owned by mObjectGroupItem if set
 
 private:
-    void objectGroupChanged(ObjectGroup *objectGroup);
+    void objectGroupChanged(const ObjectGroupChangeEvent &event);
+    void updateNewObjectGroupItemPos();
 
     void tryCreatePreview(const QPointF &scenePos,
                           Qt::KeyboardModifiers modifiers);

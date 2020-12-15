@@ -157,10 +157,13 @@ DocumentManager::DocumentManager(QObject *parent)
             auto renderer = mapDocument->renderer();
             auto mapView = viewForDocument(mapDocument);
             auto pos = renderer->tileToScreenCoords(jump.tilePos);
-            mapView->forceCenterOn(pos);
 
-            if (auto layer = mapDocument->map()->findLayerById(jump.layerId))
+            if (auto layer = mapDocument->map()->findLayerById(jump.layerId)) {
                 mapDocument->switchSelectedLayers({ layer });
+                mapView->forceCenterOn(pos, *layer);
+            } else {
+                mapView->forceCenterOn(pos);
+            }
         }
     };
 

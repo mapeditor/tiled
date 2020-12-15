@@ -112,6 +112,7 @@ private:
         WordWrapProperty,
         OffsetXProperty,
         OffsetYProperty,
+        ParallaxFactorProperty,
         ColorProperty,
         BackgroundColorProperty,
         TileWidthProperty,

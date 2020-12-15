@@ -867,6 +867,16 @@ static void readLayerAttributes(Layer &layer,
                          atts.value(QLatin1String("offsety")).toDouble());
 
     layer.setOffset(offset);
+
+    QPointF parallaxFactor(1.0, 1.0);
+    const qreal factorX = atts.value(QLatin1String("parallaxx")).toDouble(&ok);
+    if (ok)
+        parallaxFactor.setX(factorX);
+    const qreal factorY = atts.value(QLatin1String("parallaxy")).toDouble(&ok);
+    if (ok)
+        parallaxFactor.setY(factorY);
+
+    layer.setParallaxFactor(parallaxFactor);
 }
 
 std::unique_ptr<TileLayer> MapReaderPrivate::readTileLayer()

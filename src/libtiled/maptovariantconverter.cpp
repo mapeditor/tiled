@@ -742,6 +742,12 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
         layerVariant[QStringLiteral("offsety")] = offset.y();
     }
 
+    const QPointF parallaxFactor = layer.parallaxFactor();
+    if (parallaxFactor.x() != 1.0)
+        layerVariant[QStringLiteral("parallaxx")] = parallaxFactor.x();
+    if (parallaxFactor.y() != 1.0)
+        layerVariant[QStringLiteral("parallaxy")] = parallaxFactor.y();
+
     if (layer.tintColor().isValid())
         layerVariant[QStringLiteral("tintcolor")] = colorToString(layer.tintColor());
 

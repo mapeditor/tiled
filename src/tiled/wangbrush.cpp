@@ -27,6 +27,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "painttilelayer.h"
 #include "randompicker.h"
 #include "staggeredrenderer.h"
@@ -255,8 +256,9 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer()) {
-        offsetPos -= layer->totalOffset();
-        brushItem()->setLayerOffset(layer->totalOffset());
+        QPointF layerOffset = mapScene()->absolutePositionForLayer(*layer);
+        offsetPos -= layerOffset;
+        brushItem()->setLayerOffset(layerOffset);
     }
 
     const MapRenderer *renderer = mapDocument()->renderer();

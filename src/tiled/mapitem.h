@@ -41,6 +41,7 @@ class BorderItem;
 class LayerChangeEvent;
 class LayerItem;
 class MapObjectItem;
+class MapScene;
 class ObjectSelectionItem;
 class TileGridItem;
 class TileSelectionItem;
@@ -72,6 +73,8 @@ public:
 
     void setDisplayMode(DisplayMode displayMode);
     void setShowTileCollisionShapes(bool enabled);
+
+    void updateLayerPositions();
 
     // QGraphicsItem
     QRectF boundingRect() const override;
