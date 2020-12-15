@@ -1,0 +1,322 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<!-- Bootstrap -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href='/favicon.ico' rel='icon' type='image/png'/>
+	<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="/css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
+	<link href="/css/fontawesome.css" rel="stylesheet">
+	<link href="/css/base.css" rel="stylesheet" media="screen">
+	<link rel="me" href="https://plus.google.com/113047271137781766813" />
+	<link rel="publisher" href="https://plus.google.com/104206952440491912596/" />
+	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>    <link rel="stylesheet" href="../assets/css/main.css">
+	<link rel="stylesheet" href="../assets/css/override.css">
+	<title>MapEditor | Tiled Scripting API</title>
+</head>
+<body>
+<nav id="navbar" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0px">
+	<ul class="nav navbar-nav">
+		<li><a href="/"><i class="icon-home"></i> Home</a></li>
+		<li><a href="https://discourse.mapeditor.org/"><i class="icon-group"></i> Forum</a></li>
+		<li><a href="https://doc.mapeditor.org/"><i class="icon-book"></i> Documentation</a></li>
+		<li><a href="/donate"><i class="icon icon-heart"></i> Donate</a></li>
+	</ul>
+	<ul class="nav navbar-nav pull-right">
+		<li><a href="https://github.com/bjorn/tiled"><i class="icon-github-alt"></i> Tiled on GitHub</a></li>
+		<!-- TODO: Just have a row of icons (GitHub, [Twitter,] Google+, IRC?) -->
+	</ul>
+</nav>
+<div class="my-top-box" style="position: relative;">
+	<div class="background">
+		<!-- a centered 0-width inline block -->
+		<div style="display: inline-block; width: 0px;">
+			<!-- the actual map, centered on the parent by using negative offset -->
+			<div style="position: relative; left: -800px; width: 1600px; height: 520px;">
+				<div class="t t34" style="left: 0px; top: 0px;"></div>
+				<div class="t t38" style="left: 40px; top: 0px;"></div>
+				<div class="t t66" style="left: 760px; top: 0px;"></div>
+				<div class="t t68" style="left: 800px; top: 0px;"></div>
+				<div class="t t70" style="left: 840px; top: 0px;"></div>
+				<div class="t t66" style="left: 1000px; top: 0px;"></div>
+				<div class="t t68" style="left: 1040px; top: 0px; width: 80px;"></div>
+				<div class="t t74" style="left: 1120px; top: 0px;"></div>
+				<div class="t t36" style="left: 1160px; top: 0px;"></div>
+				<div class="t t38" style="left: 1200px; top: 0px;"></div>
+				<div class="t t66" style="left: 1320px; top: 0px;"></div>
+				<div class="t t68" style="left: 1360px; top: 0px; width: 120px;"></div>
+				<div class="t t74" style="left: 1480px; top: 0px;"></div>
+				<div class="t t38" style="left: 1520px; top: 0px;"></div>
+				<div class="t t98" style="left: 0px; top: 40px;"></div>
+				<div class="t t102" style="left: 40px; top: 40px;"></div>
+				<div class="t t34" style="left: 80px; top: 40px;"></div>
+				<div class="t t38" style="left: 120px; top: 40px;"></div>
+				<div class="t t98" style="left: 760px; top: 40px;"></div>
+				<div class="t t104" style="left: 800px; top: 40px;"></div>
+				<div class="t t74" style="left: 840px; top: 40px;"></div>
+				<div class="t t38" style="left: 880px; top: 40px;"></div>
+				<div class="t t66" style="left: 1000px; top: 40px;"></div>
+				<div class="t t68" style="left: 1040px; top: 40px; width: 160px;"></div>
+				<div class="t t70" style="left: 1200px; top: 40px;"></div>
+				<div class="t t34" style="left: 1280px; top: 40px;"></div>
+				<div class="t t72" style="left: 1320px; top: 40px;"></div>
+				<div class="t t68" style="left: 1360px; top: 40px; width: 160px;"></div>
+				<div class="t t70" style="left: 1520px; top: 40px;"></div>
+				<div class="t t34" style="left: 40px; top: 80px;"></div>
+				<div class="t t72" style="left: 80px; top: 80px;"></div>
+				<div class="t t70" style="left: 120px; top: 80px;"></div>
+				<div class="t t34" style="left: 720px; top: 80px;"></div>
+				<div class="t t38" style="left: 760px; top: 80px;"></div>
+				<div class="t t66" style="left: 800px; top: 80px;"></div>
+				<div class="t t68" style="left: 840px; top: 80px;"></div>
+				<div class="t t70" style="left: 880px; top: 80px;"></div>
+				<div class="t t34" style="left: 960px; top: 80px;"></div>
+				<div class="t t72" style="left: 1000px; top: 80px;"></div>
+				<div class="t t68" style="left: 1040px; top: 80px;"></div>
+				<div class="t t106" style="left: 1080px; top: 80px;"></div>
+				<div class="t t100" style="left: 1120px; top: 80px; width: 80px;"></div>
+				<div class="t t102" style="left: 1200px; top: 80px;"></div>
+				<div class="t t34" style="left: 1240px; top: 80px;"></div>
+				<div class="t t72" style="left: 1280px; top: 80px;"></div>
+				<div class="t t68" style="left: 1320px; top: 80px; width: 80px;"></div>
+				<div class="t t106" style="left: 1400px; top: 80px;"></div>
+				<div class="t t104" style="left: 1440px; top: 80px;"></div>
+				<div class="t t68" style="left: 1480px; top: 80px;"></div>
+				<div class="t t70" style="left: 1520px; top: 80px;"></div>
+				<div class="t t98" style="left: 40px; top: 120px;"></div>
+				<div class="t t100" style="left: 80px; top: 120px;"></div>
+				<div class="t t102" style="left: 120px; top: 120px;"></div>
+				<div class="t t34" style="left: 680px; top: 120px;"></div>
+				<div class="t t72" style="left: 720px; top: 120px;"></div>
+				<div class="t t74" style="left: 760px; top: 120px;"></div>
+				<div class="t t72" style="left: 800px; top: 120px;"></div>
+				<div class="t t106" style="left: 840px; top: 120px;"></div>
+				<div class="t t102" style="left: 880px; top: 120px;"></div>
+				<div class="t t34" style="left: 920px; top: 120px;"></div>
+				<div class="t t72" style="left: 960px; top: 120px;"></div>
+				<div class="t t68" style="left: 1000px; top: 120px;"></div>
+				<div class="t t106" style="left: 1040px; top: 120px;"></div>
+				<div class="t t102" style="left: 1080px; top: 120px;"></div>
+				<div class="t t34" style="left: 1200px; top: 120px;"></div>
+				<div class="t t72" style="left: 1240px; top: 120px;"></div>
+				<div class="t t68" style="left: 1280px; top: 120px; width: 120px;"></div>
+				<div class="t t74" style="left: 1400px; top: 120px;"></div>
+				<div class="t t72" style="left: 1440px; top: 120px;"></div>
+				<div class="t t106" style="left: 1480px; top: 120px;"></div>
+				<div class="t t102" style="left: 1520px; top: 120px;"></div>
+				<div class="t t34" style="left: 520px; top: 160px;"></div>
+				<div class="t t36" style="left: 560px; top: 160px; width: 120px;"></div>
+				<div class="t t72" style="left: 680px; top: 160px;"></div>
+				<div class="t t106" style="left: 720px; top: 160px;"></div>
+				<div class="t t100" style="left: 760px; top: 160px;"></div>
+				<div class="t t104" style="left: 800px; top: 160px;"></div>
+				<div class="t t74" style="left: 840px; top: 160px;"></div>
+				<div class="t t38" style="left: 880px; top: 160px;"></div>
+				<div class="t t98" style="left: 920px; top: 160px;"></div>
+				<div class="t t104" style="left: 960px; top: 160px;"></div>
+				<div class="t t68" style="left: 1000px; top: 160px;"></div>
+				<div class="t t70" style="left: 1040px; top: 160px;"></div>
+				<div class="t t34" style="left: 1120px; top: 160px;"></div>
+				<div class="t t36" style="left: 1160px; top: 160px;"></div>
+				<div class="t t72" style="left: 1200px; top: 160px;"></div>
+				<div class="t t68" style="left: 1240px; top: 160px; width: 200px;"></div>
+				<div class="t t106" style="left: 1440px; top: 160px;"></div>
+				<div class="t t102" style="left: 1480px; top: 160px;"></div>
+				<div class="tree" style="left: 641px; top: -90px;"></div>
+				<div class="tree" style="left: 683px; top: -44px;"></div>
+				<div class="tree" style="left: 608px; top: -27px;"></div>
+				<div class="tree" style="left: 173px; top: -4px;"></div>
+				<div class="tree" style="left: 228px; top: 52px;"></div>
+				<div class="tree" style="left: 147px; top: 92px;"></div>
+				<div class="tree" style="left: 303px; top: 105px;"></div>
+				<div class="tree" style="left: 238px; top: 122px;"></div>
+			</div>
+		</div>
+	</div>
+	<div class="contents">
+		<div class="container-fluid">
+			<div class="row">
+				<!--
+        <a class='g-plus-link' href='https://plus.google.com/104206952440491912596?prsrc=3' rel='publisher' style='text-decoration:none;'><img alt='' src='https://ssl.gstatic.com/images/icons/gplus-32.png' style='border:0;width:32px;height:32px;'/></a>
+        -->
+				<div class="lead col-md-12">
+					<h1 style="display: none;">Tiled</h1>
+					<a href="/index.html"><img src="/img/tiled-logo-white.png" style="margin-bottom: -40px; margin-left: 2%; width: 200px;"></a><br />
+				</div>
+			</div>
+		</div>
+		<div class="my-navigation">
+			<!--<a class="btn btn-default btn-sm" href="http://blog.mapeditor.org/"><i class="icon-rss"></i> Blog</a>-->
+			<a class="btn btn-default btn-sm" href="https://github.com/bjorn/tiled/issues"><i class="icon-exclamation-sign"></i> Issue Tracker</a>
+			<a class="btn btn-default btn-sm" href="https://discord.gg/39wbTv7"><i class="icon-comments"></i> Tiled on Discord</a>
+		</div>
+	</div>
+</div>
+<div class="container-fluid">
+	<header>
+		<div class="tsd-page-toolbar">
+			<div class="container">
+				<div class="table-wrap">
+					<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+						<div class="field">
+							<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+							<input id="tsd-search-field" type="text" />
+						</div>
+						<ul class="results">
+							<li class="state loading">Preparing search index...</li>
+							<li class="state failure">The search index is not available</li>
+						</ul>
+						<a href="../index.html" class="title">Tiled Scripting API</a>
+					</div>
+					<div class="table-cell" id="tsd-widgets">
+						<div id="tsd-filter">
+							<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+							<div class="tsd-filter-group">
+								<div class="tsd-select" id="tsd-filter-visibility">
+									<span class="tsd-select-label">All</span>
+									<ul class="tsd-select-list">
+										<li data-value="public">Public</li>
+										<li data-value="protected">Public/Protected</li>
+										<li data-value="private" class="selected">All</li>
+									</ul>
+								</div>
+								<input type="checkbox" id="tsd-filter-inherited" checked />
+								<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+								<input type="checkbox" id="tsd-filter-only-exported" />
+								<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+							</div>
+						</div>
+						<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="tsd-page-title">
+			<div class="container">
+				<ul class="tsd-breadcrumb">
+					<li>
+						<a href="../index.html">Globals</a>
+					</li>
+					<li>
+						<a href="mapeditor.html">MapEditor</a>
+					</li>
+				</ul>
+				<h1>Interface MapEditor</h1>
+			</div>
+		</div>
+	</header>
+	<div class="container container-main">
+		<div class="row">
+			<div class="col-8 col-content">
+				<section class="tsd-panel tsd-hierarchy">
+					<h3>Hierarchy</h3>
+					<ul class="tsd-hierarchy">
+						<li>
+							<span class="target">MapEditor</span>
+						</li>
+					</ul>
+				</section>
+			</div>
+			<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+				<nav class="tsd-navigation primary">
+					<ul>
+						<li class="globals  ">
+							<a href="../index.html"><em>Globals</em></a>
+						</li>
+					</ul>
+				</nav>
+				<nav class="tsd-navigation secondary menu-sticky">
+					<ul class="before-current">
+						<li class=" tsd-kind-class">
+							<a href="../classes/binaryfile.html" class="tsd-kind-icon">Binary<wbr>File</a>
+						</li>
+						<li class=" tsd-kind-class">
+							<a href="../classes/textfile.html" class="tsd-kind-icon">Text<wbr>File</a>
+						</li>
+						<li class=" tsd-kind-class">
+							<a href="../classes/tilemap.html" class="tsd-kind-icon">Tile<wbr>Map</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="action.html" class="tsd-kind-icon">Action</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="asset.html" class="tsd-kind-icon">Asset</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="layer.html" class="tsd-kind-icon">Layer</a>
+						</li>
+					</ul>
+					<ul class="current">
+						<li class="current tsd-kind-interface">
+							<a href="mapeditor.html" class="tsd-kind-icon">Map<wbr>Editor</a>
+						</li>
+					</ul>
+					<ul class="after-current">
+						<li class=" tsd-kind-interface">
+							<a href="mapformat.html" class="tsd-kind-icon">Map<wbr>Format</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="objectref.html" class="tsd-kind-icon">Object<wbr>Ref</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="tileset.html" class="tsd-kind-icon">Tileset</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="tileseteditor.html" class="tsd-kind-icon">Tileset<wbr>Editor</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="tilesetformat.html" class="tsd-kind-icon">Tileset<wbr>Format</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="tool.html" class="tsd-kind-icon">Tool</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="point.html" class="tsd-kind-icon">point</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="rect.html" class="tsd-kind-icon">rect</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="region.html" class="tsd-kind-icon">region</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="size.html" class="tsd-kind-icon">size</a>
+						</li>
+						<li class=" tsd-kind-type-alias">
+							<a href="../index.html#polygon" class="tsd-kind-icon">Polygon</a>
+						</li>
+						<li class=" tsd-kind-variable">
+							<a href="../index.html#__filename" class="tsd-kind-icon">__filename</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+	<footer class="with-border-bottom">
+		<div class="container">
+			<h2>Legend</h2>
+			<div class="tsd-legend-group">
+				<ul class="tsd-legend">
+					<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+					<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+					<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				</ul>
+				<ul class="tsd-legend">
+					<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+					<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				</ul>
+				<ul class="tsd-legend">
+					<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				</ul>
+			</div>
+		</div>
+	</footer>
+	<div class="container tsd-generator">
+		<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+	</div>
+	<div class="overlay"></div>
+	<script src="../assets/js/main.js"></script>
+</body>
+</html>

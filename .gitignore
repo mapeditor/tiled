@@ -15,3 +15,6 @@ org-clock-save.el
 emacs-config.el
 node_modules
 _site
+vendor/
+.bundle/
+.vscode/
