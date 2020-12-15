@@ -87,6 +87,8 @@ public:
                             updateOffset();
             }
         });
+        connect(mapDocument, &MapDocument::currentLayerChanged,
+                this, &TileGridItem::updateOffset);
 
         setVisible(prefs->showGrid());
     }
