@@ -43,9 +43,9 @@ class AbstractObjectTool : public AbstractTool
 
 public:
     enum SelectionBehavior {
-        IgnoreLayer,
+        AllLayers,
         PreferSelectedLayers,
-        PreferHighlightedLayers
+        SelectedLayers
     };
     Q_ENUM(SelectionBehavior)
 
@@ -68,6 +68,8 @@ public:
     void languageChanged() override;
 
     void populateToolBar(QToolBar*) override;
+
+    void filterMapObjects(QList<MapObject*> &mapObjects) const;
 
 protected:
     /**

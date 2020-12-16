@@ -1111,6 +1111,8 @@ void ObjectSelectionTool::updateSelection(const QPointF &pos,
             selectedObjects.append(mapObjectItem->mapObject());
     }
 
+    filterMapObjects(selectedObjects);
+
     if (modifiers & (Qt::ControlModifier | Qt::ShiftModifier)) {
         for (MapObject *object : mapDocument()->selectedObjects())
             if (!selectedObjects.contains(object))

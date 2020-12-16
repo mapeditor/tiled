@@ -208,23 +208,7 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
         mMousePressed = true;
         mStart = event->scenePos();
         mScreenStart = event->screenPos();
-
-        const QList<QGraphicsItem *> items = mapScene()->items(mStart,
-                                                               Qt::IntersectsItemShape,
-                                                               Qt::DescendingOrder,
-                                                               viewTransform(event));
-
-        mClickedObject = nullptr;
-        for (QGraphicsItem *item : items) {
-            if (!item->isEnabled())
-                continue;
-            if (auto mapObjectItem = qgraphicsitem_cast<MapObjectItem*>(item)) {
-                if (mapObjectItem->mapObject()->objectGroup()->isUnlocked()) {
-                    mClickedObject = mapObjectItem->mapObject();
-                    break;
-                }
-            }
-        }
+        mClickedObject = topMostMapObjectAt(mStart);
         break;
     }
     case Qt::RightButton: {
@@ -487,7 +471,10 @@ void EditPolygonTool::updateSelection(QGraphicsSceneMouseEvent *event)
                 selectedObjects.append(mapObjectItem->mapObject());
         }
 
-        mapDocument()->setSelectedObjects(selectedObjects);
+        filterMapObjects(selectedObjects);
+
+        if (!selectedObjects.isEmpty())
+            mapDocument()->setSelectedObjects(selectedObjects);
     } else {
         // Update the selected handles
         QSet<PointHandle*> selectedHandles;

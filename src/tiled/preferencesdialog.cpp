@@ -69,7 +69,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     mUi->objectSelectionBehaviorCombo->addItems({ tr("Select From Any Layer"),
                                                   tr("Prefer Selected Layers"),
-                                                  tr("Prefer Highlighted Layers") });
+                                                  tr("Selected Layers Only") });
 
     PluginListModel *pluginListModel = new PluginListModel(this);
     QSortFilterProxyModel *pluginProxyModel = new QSortFilterProxyModel(this);
@@ -230,7 +230,7 @@ void PreferencesDialog::retranslateUi()
 
     mUi->objectSelectionBehaviorCombo->setItemText(0, tr("Select From Any Layer"));
     mUi->objectSelectionBehaviorCombo->setItemText(1, tr("Prefer Selected Layers"));
-    mUi->objectSelectionBehaviorCombo->setItemText(2, tr("Prefer Highlighted Layers"));
+    mUi->objectSelectionBehaviorCombo->setItemText(3, tr("Selected Layers Only"));
 }
 
 void PreferencesDialog::styleComboChanged()

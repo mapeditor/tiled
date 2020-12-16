@@ -80,7 +80,7 @@ static bool isChangedTemplateInstance(MapObject *mapObject)
 }
 
 Preference<AbstractObjectTool::SelectionBehavior> AbstractObjectTool::ourSelectionBehavior {
-    "AbstractObjectTool/SelectionBehavior", AbstractObjectTool::PreferHighlightedLayers
+    "AbstractObjectTool/SelectionBehavior", AbstractObjectTool::PreferSelectedLayers
 };
 
 AbstractObjectTool::AbstractObjectTool(Id id,
@@ -192,6 +192,27 @@ void AbstractObjectTool::populateToolBar(QToolBar *toolBar)
     toolBar->addAction(mRotateRight);
 }
 
+void AbstractObjectTool::filterMapObjects(QList<MapObject *> &mapObjects) const
+{
+    const SelectionBehavior behavior = ourSelectionBehavior;
+
+    if (behavior != AllLayers) {
+        const auto &selectedLayers = mapDocument()->selectedLayers();
+
+        QList<MapObject*> filteredList;
+
+        for (MapObject *mapObject : qAsConst(mapObjects)) {
+            if (std::any_of(selectedLayers.begin(), selectedLayers.end(),
+                            [=] (Layer *layer) { return layer->isParentOrSelf(mapObject->objectGroup()); })) {
+                filteredList.append(mapObject);
+            }
+        }
+
+        if (behavior == SelectedLayers || !filteredList.isEmpty())
+            mapObjects.swap(filteredList);
+    }
+}
+
 void AbstractObjectTool::updateEnabledState()
 {
     setEnabled(currentObjectGroup() != nullptr);
@@ -210,6 +231,7 @@ QList<MapObject*> AbstractObjectTool::mapObjectsAt(const QPointF &pos) const
     const QList<QGraphicsItem *> &items = mapScene()->items(pos);
 
     QList<MapObject*> objectList;
+
     for (auto item : items) {
         if (!item->isEnabled())
             continue;
@@ -218,6 +240,8 @@ QList<MapObject*> AbstractObjectTool::mapObjectsAt(const QPointF &pos) const
         if (objectItem && objectItem->mapObject()->objectGroup()->isUnlocked())
             objectList.append(objectItem->mapObject());
     }
+
+    filterMapObjects(objectList);
     return objectList;
 }
 
@@ -225,9 +249,8 @@ MapObject *AbstractObjectTool::topMostMapObjectAt(const QPointF &pos) const
 {
     const QList<QGraphicsItem *> &items = mapScene()->items(pos);
 
-    const auto behavior = ourSelectionBehavior.get();
-    const bool preferSelected = behavior == PreferSelectedLayers ||
-            (behavior == PreferHighlightedLayers && Preferences::instance()->highlightCurrentLayer());
+    const auto &selectedLayers = mapDocument()->selectedLayers();
+    const SelectionBehavior behavior = ourSelectionBehavior;
 
     MapObject *topMost = nullptr;
 
@@ -244,7 +267,7 @@ MapObject *AbstractObjectTool::topMostMapObjectAt(const QPointF &pos) const
             continue;
 
         // Return immediately when we don't care if the layer is selected
-        if (!preferSelected)
+        if (behavior == AllLayers)
             return mapObject;
 
         // Return this object instead of the top-most one if it is from a selected layer
@@ -253,7 +276,7 @@ MapObject *AbstractObjectTool::topMostMapObjectAt(const QPointF &pos) const
                 return mapObject;
         }
 
-        if (!topMost)
+        if (!topMost && behavior != SelectedLayers)
             topMost = mapObject;
     }
 
