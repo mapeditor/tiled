@@ -315,12 +315,25 @@ void LuaWriter::writeTileset(const Tileset &tileset,
     }
 
     mWriter.writeKeyAndValue("name", tileset.name());
-    if (embedded)
+    if (embedded) {
         mWriter.writeKeyAndValue("firstgid", firstGid);
 
-    if (!tileset.fileName().isEmpty() && embedded) {
-        const QString rel = mDir.relativeFilePath(tileset.fileName());
-        mWriter.writeKeyAndValue("filename", rel);
+        if (tileset.isExternal()) {
+            const QString rel = mDir.relativeFilePath(tileset.fileName());
+            mWriter.writeKeyAndValue("filename", rel);
+
+            // For those exporting their tilesets separately, it could be
+            // helpful to include a relative reference to the exported file as
+            // well. For consistency I decided to include this separately from
+            // the "filename".
+            if (!tileset.exportFileName.isEmpty()) {
+                const QString rel = mDir.relativeFilePath(tileset.exportFileName);
+                mWriter.writeKeyAndValue("exportfilename", rel);
+            }
+
+            mWriter.writeEndTable(); // tileset
+            return;
+        }
     }
 
     /* Include all tileset information even for external tilesets, since the
