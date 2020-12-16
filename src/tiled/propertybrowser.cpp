@@ -70,7 +70,38 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 
+#include <algorithm>
+
 namespace Tiled {
+
+namespace {
+
+/**
+ * Makes sure the resize mode is set to Fixed during its lifetime. Used to work
+ * around performance issues caused by the view continuously making sure its
+ * name column is adjusted to the contents.
+ */
+class SetFixedResizeMode
+{
+public:
+    SetFixedResizeMode(QtTreePropertyBrowser *browser)
+        : mBrowser(browser)
+        , mPreviousResizeMode(browser->resizeMode())
+    {
+        mBrowser->setResizeMode(QtTreePropertyBrowser::Fixed);
+    }
+
+    ~SetFixedResizeMode()
+    {
+        mBrowser->setResizeMode(mPreviousResizeMode);
+    }
+
+private:
+    QtTreePropertyBrowser * const mBrowser;
+    QtTreePropertyBrowser::ResizeMode const mPreviousResizeMode;
+};
+
+}
 
 PropertyBrowser::PropertyBrowser(QWidget *parent)
     : QtTreePropertyBrowser(parent)
@@ -113,7 +144,6 @@ void PropertyBrowser::setObject(Object *object)
 
     removeProperties();
     mObject = object;
-
     addProperties();
 }
 
@@ -213,11 +243,9 @@ bool PropertyBrowser::isCustomPropertyItem(const QtBrowserItem *item) const
  */
 bool PropertyBrowser::allCustomPropertyItems(const QList<QtBrowserItem *> &items) const
 {
-    for (QtBrowserItem *item : items)
-        if (mPropertyToId[item->property()] != CustomProperty)
-            return false;
-
-    return true;
+    return std::all_of(items.begin(), items.end(), [this] (QtBrowserItem *item) {
+        return mPropertyToId[item->property()] == CustomProperty;
+    });
 }
 
 /**
@@ -1585,6 +1613,7 @@ void PropertyBrowser::addProperties()
         return;
 
     mUpdating = true;
+    SetFixedResizeMode resizeMode(this);
 
     // Add the built-in properties for each object type
     switch (mObject->typeId()) {
@@ -1628,6 +1657,8 @@ void PropertyBrowser::addProperties()
 
 void PropertyBrowser::removeProperties()
 {
+    SetFixedResizeMode resizeMode(this);
+
     mVariantManager->clear();
     mGroupManager->clear();
     mPropertyToId.clear();
@@ -1820,8 +1851,10 @@ void PropertyBrowser::updateCustomProperties()
     if (!mObject)
         return;
 
-    bool wasUpdating = mUpdating;
+    const bool wasUpdating = mUpdating;
     mUpdating = true;
+
+    SetFixedResizeMode resizeMode(this);
 
     qDeleteAll(mNameToProperty);
     mNameToProperty.clear();

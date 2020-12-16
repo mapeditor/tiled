@@ -174,6 +174,7 @@ QtPropertyEditorView::QtPropertyEditorView(QWidget *parent) :
     QTreeWidget(parent),
     m_editorPrivate(0)
 {
+    setUniformRowHeights(true);
     connect(header(), SIGNAL(sectionDoubleClicked(int)), this, SLOT(resizeColumnToContents(int)));
 }
 
