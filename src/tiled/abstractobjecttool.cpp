@@ -80,7 +80,7 @@ static bool isChangedTemplateInstance(MapObject *mapObject)
 }
 
 Preference<AbstractObjectTool::SelectionBehavior> AbstractObjectTool::ourSelectionBehavior {
-    "AbstractObjectTool/SelectionBehavior", AbstractObjectTool::PreferSelectedLayers
+    "AbstractObjectTool/SelectionBehavior", AbstractObjectTool::AllLayers
 };
 
 AbstractObjectTool::AbstractObjectTool(Id id,
@@ -192,9 +192,19 @@ void AbstractObjectTool::populateToolBar(QToolBar *toolBar)
     toolBar->addAction(mRotateRight);
 }
 
-void AbstractObjectTool::filterMapObjects(QList<MapObject *> &mapObjects) const
+AbstractObjectTool::SelectionBehavior AbstractObjectTool::selectionBehavior()
 {
     const SelectionBehavior behavior = ourSelectionBehavior;
+
+    if (behavior == AllLayers && Preferences::instance()->highlightCurrentLayer())
+        return PreferSelectedLayers;
+
+    return behavior;
+}
+
+void AbstractObjectTool::filterMapObjects(QList<MapObject *> &mapObjects) const
+{
+    const SelectionBehavior behavior = selectionBehavior();
 
     if (behavior != AllLayers) {
         const auto &selectedLayers = mapDocument()->selectedLayers();
@@ -248,9 +258,7 @@ QList<MapObject*> AbstractObjectTool::mapObjectsAt(const QPointF &pos) const
 MapObject *AbstractObjectTool::topMostMapObjectAt(const QPointF &pos) const
 {
     const QList<QGraphicsItem *> &items = mapScene()->items(pos);
-
-    const auto &selectedLayers = mapDocument()->selectedLayers();
-    const SelectionBehavior behavior = ourSelectionBehavior;
+    const SelectionBehavior behavior = selectionBehavior();
 
     MapObject *topMost = nullptr;
 

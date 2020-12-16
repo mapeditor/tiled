@@ -335,6 +335,12 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
         mRotateHandles[i] = new RotateHandle(static_cast<AnchorPosition>(i));
     for (int i = 0; i < AnchorCount; ++i)
         mResizeHandles[i] = new ResizeHandle(static_cast<AnchorPosition>(i));
+
+    connect(Preferences::instance(), &Preferences::highlightCurrentLayerChanged,
+            this, [this] {
+        if (mapScene() && mapDocument()->hoveredMapObject())
+            updateHover(mLastMousePos);
+    });
 }
 
 ObjectSelectionTool::~ObjectSelectionTool()

@@ -69,6 +69,7 @@ public:
 
     void populateToolBar(QToolBar*) override;
 
+    static SelectionBehavior selectionBehavior();
     void filterMapObjects(QList<MapObject*> &mapObjects) const;
 
 protected:
