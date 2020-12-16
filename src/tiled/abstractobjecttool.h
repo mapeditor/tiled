@@ -21,6 +21,7 @@
 #pragma once
 
 #include "abstracttool.h"
+#include "preferences.h"
 
 class QAction;
 
@@ -41,6 +42,15 @@ class AbstractObjectTool : public AbstractTool
     Q_INTERFACES(Tiled::AbstractTool)
 
 public:
+    enum SelectionBehavior {
+        AllLayers,
+        PreferSelectedLayers,
+        SelectedLayers
+    };
+    Q_ENUM(SelectionBehavior)
+
+    static Preference<SelectionBehavior> ourSelectionBehavior;
+
     /**
      * Constructs an abstract object tool with the given \a name and \a icon.
      */
@@ -58,6 +68,9 @@ public:
     void languageChanged() override;
 
     void populateToolBar(QToolBar*) override;
+
+    static SelectionBehavior selectionBehavior();
+    void filterMapObjects(QList<MapObject*> &mapObjects) const;
 
 protected:
     /**

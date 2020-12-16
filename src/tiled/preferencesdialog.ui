@@ -133,6 +133,19 @@
           <string>Interface</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="4">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
@@ -140,6 +153,43 @@
             </property>
             <property name="buddy">
              <cstring>languageCombo</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Grid color:</string>
+            </property>
+            <property name="buddy">
+             <cstring>gridColor</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Object line width:</string>
+            </property>
+            <property name="buddy">
+             <cstring>objectLineWidth</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0" colspan="4">
+           <widget class="QCheckBox" name="wheelZoomsByDefault">
+            <property name="text">
+             <string>Mouse wheel &amp;zooms by default</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QSpinBox" name="gridFine">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>128</number>
             </property>
            </widget>
           </item>
@@ -162,16 +212,6 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Grid color:</string>
-            </property>
-            <property name="buddy">
-             <cstring>gridColor</cstring>
-            </property>
-           </widget>
-          </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
@@ -182,7 +222,7 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="4">
+          <item row="6" column="0" colspan="4">
            <widget class="QCheckBox" name="openGL">
             <property name="text">
              <string>Hardware &amp;accelerated drawing (OpenGL)</string>
@@ -192,45 +232,18 @@
           <item row="2" column="3">
            <widget class="Tiled::ColorButton" name="gridColor"/>
           </item>
-          <item row="3" column="3">
-           <widget class="QSpinBox" name="gridFine">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>128</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4">
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label">
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_6">
             <property name="text">
-             <string>Object line width:</string>
+             <string>Object selection behavior:</string>
             </property>
             <property name="buddy">
-             <cstring>objectLineWidth</cstring>
+             <cstring>objectSelectionBehaviorCombo</cstring>
             </property>
            </widget>
           </item>
-          <item row="6" column="0" colspan="4">
-           <widget class="QCheckBox" name="wheelZoomsByDefault">
-            <property name="text">
-             <string>Mouse wheel &amp;zooms by default</string>
-            </property>
-           </widget>
+          <item row="5" column="3">
+           <widget class="QComboBox" name="objectSelectionBehaviorCombo"/>
           </item>
          </layout>
         </widget>
@@ -462,6 +475,7 @@
   <tabstop>gridColor</tabstop>
   <tabstop>gridFine</tabstop>
   <tabstop>objectLineWidth</tabstop>
+  <tabstop>objectSelectionBehaviorCombo</tabstop>
   <tabstop>openGL</tabstop>
   <tabstop>wheelZoomsByDefault</tabstop>
   <tabstop>displayNewsCheckBox</tabstop>
