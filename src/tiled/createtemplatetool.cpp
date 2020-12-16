@@ -66,3 +66,5 @@ MapObject *CreateTemplateTool::createNewMapObject()
     newMapObject->syncWithTemplate();
     return newMapObject;
 }
+
+#include "moc_createtemplatetool.cpp"

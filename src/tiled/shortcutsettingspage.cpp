@@ -769,3 +769,4 @@ void ShortcutSettingsPage::exportShortcuts()
 } // namespace Tiled
 
 #include "shortcutsettingspage.moc"
+#include "moc_shortcutsettingspage.cpp"

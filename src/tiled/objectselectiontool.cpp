@@ -1717,3 +1717,5 @@ QList<MapObject *> ObjectSelectionTool::changingObjects() const
 
     return changingObjects;
 }
+
+#include "moc_objectselectiontool.cpp"

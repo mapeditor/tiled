@@ -317,3 +317,4 @@ void ProjectView::restoreExpanded(const QModelIndex &parent)
 } // namespace Tiled
 
 #include "projectdock.moc"
+#include "moc_projectdock.cpp"

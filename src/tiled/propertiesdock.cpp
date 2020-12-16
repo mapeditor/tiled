@@ -531,3 +531,5 @@ void PropertiesDock::retranslateUi()
 }
 
 } // namespace Tiled
+
+#include "moc_propertiesdock.cpp"

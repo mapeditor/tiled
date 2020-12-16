@@ -121,3 +121,5 @@ void ImageColorPickerWidget::resizeEvent(QResizeEvent *)
     move(screen()->availableGeometry().center() - rect().center());
 #endif
 }
+
+#include "moc_imagecolorpickerwidget.cpp"

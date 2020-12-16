@@ -334,3 +334,5 @@ void NewTilesetDialog::colorSelected(QColor color)
 {
     mUi->colorButton->setColor(color);
 }
+
+#include "moc_newtilesetdialog.cpp"

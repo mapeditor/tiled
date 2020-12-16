@@ -544,3 +544,5 @@ void MapView::adjustCenterFromMousePosition(QPoint mousePos)
     QPointF diff = viewCenterScenePos - mouseScenePos;
     QGraphicsView::centerOn(mLastMouseScenePos + diff);
 }
+
+#include "moc_mapview.cpp"

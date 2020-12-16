@@ -852,3 +852,5 @@ void MapDocumentActionHandler::updateActions()
 }
 
 } // namespace Tiled
+
+#include "moc_mapdocumentactionhandler.cpp"

@@ -2112,3 +2112,5 @@ void PropertyBrowser::retranslateUi()
 }
 
 } // namespace Tiled
+
+#include "moc_propertybrowser.cpp"

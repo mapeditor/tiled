@@ -243,3 +243,5 @@ void ExportAsImageDialog::updateAcceptEnabled()
     QPushButton *saveButton = mUi->buttonBox->button(QDialogButtonBox::Save);
     saveButton->setEnabled(!mUi->fileNameEdit->text().isEmpty());
 }
+
+#include "moc_exportasimagedialog.cpp"

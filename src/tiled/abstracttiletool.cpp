@@ -277,3 +277,5 @@ void AbstractTileTool::setBrushVisible(bool visible)
     updateStatusInfo();
     updateBrushVisibility();
 }
+
+#include "moc_abstracttiletool.cpp"

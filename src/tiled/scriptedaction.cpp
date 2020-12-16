@@ -57,3 +57,5 @@ void ScriptedAction::setIconFileName(const QString &fileName)
 }
 
 } // namespace Tiled
+
+#include "moc_scriptedaction.cpp"

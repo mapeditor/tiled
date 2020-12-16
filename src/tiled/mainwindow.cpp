@@ -2315,3 +2315,5 @@ void MainWindow::reloadError(const QString &error)
 {
     QMessageBox::critical(this, tr("Error Reloading Map"), error);
 }
+
+#include "moc_mainwindow.cpp"

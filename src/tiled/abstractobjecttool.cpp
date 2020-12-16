@@ -630,3 +630,5 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
         mapDocument()->setSelectedObjects(selectedObjectsCopy);
     }
 }
+
+#include "moc_abstractobjecttool.cpp"

@@ -166,3 +166,5 @@ QVariant IssuesModel::data(const QModelIndex &index, int role) const
 }
 
 } // namespace Tiled
+
+#include "moc_issuesmodel.cpp"

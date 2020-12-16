@@ -331,3 +331,5 @@ void AbstractTileFillTool::invalidateRandomAndMissingCache()
 {
     mRandomAndMissingCacheValid = false;
 }
+
+#include "moc_abstracttilefilltool.cpp"

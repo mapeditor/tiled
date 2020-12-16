@@ -167,3 +167,5 @@ void TileSelectionTool::clearSelection()
         document->undoStack()->push(cmd);
     }
 }
+
+#include "moc_tileselectiontool.cpp"

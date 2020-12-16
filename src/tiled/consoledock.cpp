@@ -214,3 +214,5 @@ void ConsoleDock::retranslateUi()
 }
 
 } // namespace Tiled
+
+#include "moc_consoledock.cpp"

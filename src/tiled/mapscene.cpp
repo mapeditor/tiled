@@ -520,3 +520,5 @@ bool MapScene::eventFilter(QObject *, QEvent *event)
 
     return false;
 }
+
+#include "moc_mapscene.cpp"

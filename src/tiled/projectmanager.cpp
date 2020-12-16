@@ -49,3 +49,5 @@ Project &ProjectManager::project()
 }
 
 } // namespace Tiled
+
+#include "moc_projectmanager.cpp"

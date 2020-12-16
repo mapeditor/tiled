@@ -999,3 +999,5 @@ TilesetView::WangBehavior TilesetView::wangBehaviorFromWangSetType(WangSet::Type
         return EdgeAndCorner;
     }
 }
+
+#include "moc_tilesetview.cpp"

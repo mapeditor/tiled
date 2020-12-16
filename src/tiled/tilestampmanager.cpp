@@ -333,3 +333,5 @@ QString TileStampManager::findStampFileName(const QString &name,
 
     return fileName;
 }
+
+#include "moc_tilestampmanager.cpp"

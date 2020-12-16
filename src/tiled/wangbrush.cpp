@@ -797,3 +797,5 @@ void WangBrush::updateBrushAt(FillRegion &fill, QPoint pos)
 }
 
 } // namespace Tiled
+
+#include "moc_wangbrush.cpp"

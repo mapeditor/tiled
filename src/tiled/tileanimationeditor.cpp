@@ -576,3 +576,4 @@ bool TileAnimationEditor::updatePreviewPixmap()
 } // namespace Tiled
 
 #include "tileanimationeditor.moc"
+#include "moc_tileanimationeditor.cpp"

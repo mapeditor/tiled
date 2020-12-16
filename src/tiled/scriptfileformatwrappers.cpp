@@ -141,3 +141,5 @@ void ScriptMapFormatWrapper::write(EditableMap *editable, const QString &filenam
 }
 
 } // namespace Tiled
+
+#include "moc_scriptfileformatwrappers.cpp"

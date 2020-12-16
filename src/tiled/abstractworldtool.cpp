@@ -436,3 +436,5 @@ void AbstractWorldTool::updateSelectionRectangle()
 }
 
 } // namespace Tiled
+
+#include "moc_abstractworldtool.cpp"

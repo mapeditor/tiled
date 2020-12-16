@@ -87,3 +87,5 @@ void EditableSelectedArea::set(const QRegion &region)
 }
 
 } // namespace Tiled
+
+#include "moc_editableselectedarea.cpp"

@@ -111,3 +111,5 @@ void TileSelectionItem::updateBoundingRect()
     // Adjust for border drawn at tile selection edges
     mBoundingRect.adjust(-1, -1, 1, 1);
 }
+
+#include "moc_tileselectionitem.cpp"

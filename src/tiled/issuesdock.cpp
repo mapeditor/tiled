@@ -227,3 +227,5 @@ void IssuesDock::retranslateUi()
 }
 
 } // namespace Tiled
+
+#include "moc_issuesdock.cpp"

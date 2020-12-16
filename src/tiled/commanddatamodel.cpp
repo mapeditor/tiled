@@ -533,3 +533,5 @@ void CommandDataModel::executeInTerminal(int commandIndex) const
 {
     mCommands.at(commandIndex).execute(true);
 }
+
+#include "moc_commanddatamodel.cpp"

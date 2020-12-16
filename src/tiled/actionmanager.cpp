@@ -286,3 +286,5 @@ void ActionManager::updateToolTipWithShortcut(QAction *action)
 }
 
 } // namespace Tiled
+
+#include "moc_actionmanager.cpp"

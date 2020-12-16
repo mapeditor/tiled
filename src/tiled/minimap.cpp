@@ -314,3 +314,5 @@ QPointF MiniMap::mapToScene(QPointF p) const
     return QPointF(p.x() * (mapRect.width() / mImageRect.width()) + mapRect.x(),
                    p.y() * (mapRect.height() / mImageRect.height()) + mapRect.y());
 }
+
+#include "moc_minimap.cpp"

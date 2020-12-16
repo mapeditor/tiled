@@ -156,3 +156,5 @@ void ObjectRefEdit::onEditFinished()
 }
 
 } // namespace Tiled
+
+#include "moc_objectrefedit.cpp"

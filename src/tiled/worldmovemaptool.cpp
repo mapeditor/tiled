@@ -279,3 +279,5 @@ void WorldMoveMapTool::abortMoving()
 }
 
 } // namespace Tiled
+
+#include "moc_worldmovemaptool.cpp"

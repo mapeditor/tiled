@@ -193,3 +193,5 @@ void TilesetWangSetModel::emitWangSetChange(WangSet *wangSet)
     emit dataChanged(index, index);
     emit wangSetChanged(wangSet->tileset(), index.row());
 }
+
+#include "moc_tilesetwangsetmodel.cpp"

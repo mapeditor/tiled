@@ -153,3 +153,5 @@ void StyleHelper::apply()
 }
 
 } // namespace Tiled
+
+#include "moc_stylehelper.cpp"

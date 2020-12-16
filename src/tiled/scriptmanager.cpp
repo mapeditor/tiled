@@ -368,3 +368,5 @@ void ScriptManager::refreshExtensionsPaths()
 }
 
 } // namespace Tiled
+
+#include "moc_scriptmanager.cpp"

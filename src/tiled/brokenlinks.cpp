@@ -777,3 +777,5 @@ void LocateObjectTemplate::operator()() const
 }
 
 } // namespace Tiled
+
+#include "moc_brokenlinks.cpp"

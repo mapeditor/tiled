@@ -863,3 +863,5 @@ TileLayer *TileLayer::initializeClone(TileLayer *clone) const
     clone->mUsedTilesetsDirty = mUsedTilesetsDirty;
     return clone;
 }
+
+#include "moc_tilelayer.cpp"

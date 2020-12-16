@@ -159,3 +159,5 @@ void Document::setChangedOnDisk(bool changedOnDisk)
 }
 
 } // namespace Tiled
+
+#include "moc_document.cpp"

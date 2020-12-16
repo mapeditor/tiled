@@ -72,3 +72,5 @@ void EditableImageLayer::setImage(ScriptImage *image, const QUrl &source)
 }
 
 } // namespace Tiled
+
+#include "moc_editableimagelayer.cpp"

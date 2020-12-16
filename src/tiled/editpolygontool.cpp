@@ -1150,3 +1150,5 @@ void EditPolygonTool::updateHover(const QPointF &scenePos, QGraphicsSceneMouseEv
     mHoveredHandle = hoveredHandle;
     mHoveredSegment = hoveredSegment;
 }
+
+#include "moc_editpolygontool.cpp"

@@ -56,3 +56,5 @@ void MagicWandTool::languageChanged()
 
     AbstractTileSelectionTool::languageChanged();
 }
+
+#include "moc_magicwandtool.cpp"

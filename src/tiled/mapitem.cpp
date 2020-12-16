@@ -828,3 +828,4 @@ void MapItem::updateSelectedLayersHighlight()
 } // namespace Tiled
 
 #include "mapitem.moc"
+#include "moc_mapitem.cpp"

@@ -80,3 +80,5 @@ void TextEditorDialog::changeEvent(QEvent *e)
 }
 
 } // namespace Tiled
+
+#include "moc_texteditordialog.cpp"

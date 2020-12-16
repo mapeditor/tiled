@@ -363,3 +363,5 @@ void EditableTileset::wangSetRemoved(WangSet *wangSet)
 }
 
 } // namespace Tiled
+
+#include "moc_editabletileset.cpp"

@@ -870,3 +870,5 @@ void ObjectSelectionItem::addRemoveObjectReferences(MapObject *object)
 }
 
 } // namespace Tiled
+
+#include "moc_objectselectionitem.cpp"

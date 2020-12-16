@@ -252,3 +252,5 @@ void TilesetManager::advanceTileAnimations(int ms)
 }
 
 } // namespace Tiled
+
+#include "moc_tilesetmanager.cpp"

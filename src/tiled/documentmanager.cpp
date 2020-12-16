@@ -1408,3 +1408,5 @@ void DocumentManager::abortMultiDocumentClose()
 {
     mMultiDocumentClose = false;
 }
+
+#include "moc_documentmanager.cpp"

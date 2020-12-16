@@ -114,3 +114,5 @@ void IssuesCounter::updateLabels()
 }
 
 } // namespace Tiled
+
+#include "moc_issuescounter.cpp"

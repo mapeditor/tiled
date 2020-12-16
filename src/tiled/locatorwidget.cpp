@@ -421,3 +421,5 @@ void LocatorWidget::setFilterText(const QString &text)
 }
 
 } // namespace Tiled
+
+#include "moc_locatorwidget.cpp"

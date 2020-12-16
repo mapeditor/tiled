@@ -1001,3 +1001,5 @@ void AutoMapper::cleanUpRuleMapLayers()
     mLayerOutputRegions = nullptr;
     mInputRules.clear();
 }
+
+#include "moc_automapper.cpp"

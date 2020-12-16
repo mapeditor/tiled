@@ -204,3 +204,5 @@ void WangColorView::colorPicked(const QColor &color)
 
     mClickedWangColor.clear();
 }
+
+#include "moc_wangcolorview.cpp"

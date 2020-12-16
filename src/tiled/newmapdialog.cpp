@@ -226,3 +226,5 @@ void NewMapDialog::updateWidgets(bool checked)
     mUi->heightLabel->setEnabled(checked);
     mUi->widthLabel->setEnabled(checked);
 }
+
+#include "moc_newmapdialog.cpp"

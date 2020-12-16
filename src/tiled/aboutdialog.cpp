@@ -72,3 +72,5 @@ void AboutDialog::donate()
 {
     QDesktopServices::openUrl(QUrl(QLatin1String("https://www.mapeditor.org/donate")));
 }
+
+#include "moc_aboutdialog.cpp"

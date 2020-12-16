@@ -90,3 +90,5 @@ void AddPropertyDialog::typeChanged(const QString &text)
 {
     session::propertyType = text;
 }
+
+#include "moc_addpropertydialog.cpp"

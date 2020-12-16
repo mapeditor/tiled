@@ -493,3 +493,4 @@ void LayerView::selectionChanged(const QItemSelection &selected,
 }
 
 #include "layerdock.moc"
+#include "moc_layerdock.cpp"

@@ -235,3 +235,5 @@ void PreferencesDialog::styleComboChanged()
     mUi->selectionColor->setEnabled(!systemStyle);
     mUi->selectionColorLabel->setEnabled(!systemStyle);
 }
+
+#include "moc_preferencesdialog.cpp"

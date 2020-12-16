@@ -182,3 +182,5 @@ void CommandsEdit::browseWorkingDirectory()
 }
 
 } // namespace Tiled
+
+#include "moc_commandsedit.cpp"

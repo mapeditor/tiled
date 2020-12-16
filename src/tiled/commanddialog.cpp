@@ -133,3 +133,5 @@ void CommandTreeView::removeSelectedCommands()
     const QModelIndexList indices = selectionModel()->selectedRows();
     model()->removeRows(indices);
 }
+
+#include "moc_commanddialog.cpp"

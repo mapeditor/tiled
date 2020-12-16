@@ -580,3 +580,5 @@ void WangDock::hideTemplateColorView()
 {
     mTemplateAndColorWidget->setVisible(false);
 }
+
+#include "moc_wangdock.cpp"

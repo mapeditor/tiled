@@ -157,3 +157,5 @@ void WangColorModel::emitDataChanged(WangColor *wangColor)
     const QModelIndex i = colorIndex(wangColor->colorIndex());
     emit dataChanged(i, i);
 }
+
+#include "moc_wangcolormodel.cpp"

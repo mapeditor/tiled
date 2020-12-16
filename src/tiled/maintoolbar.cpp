@@ -104,3 +104,5 @@ void MainToolBar::retranslateUi()
 }
 
 } // namespace Tiled
+
+#include "moc_maintoolbar.cpp"

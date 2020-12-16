@@ -739,3 +739,5 @@ void Preferences::objectTypesFileChangedOnDisk()
     if (ObjectTypesSerializer().readObjectTypes(fileInfo.filePath(), objectTypes))
         setObjectTypes(objectTypes);
 }
+
+#include "moc_preferences.cpp"

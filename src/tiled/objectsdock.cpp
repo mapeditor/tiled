@@ -227,3 +227,5 @@ void ObjectsDock::documentAboutToClose(Document *document)
     if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
         mObjectsView->clearExpandedLayers(mapDocument);
 }
+
+#include "moc_objectsdock.cpp"

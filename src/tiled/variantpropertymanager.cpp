@@ -505,3 +505,5 @@ QString VariantPropertyManager::indexVToString(int idx) const
 }
 
 } // namespace Tiled
+
+#include "moc_variantpropertymanager.cpp"

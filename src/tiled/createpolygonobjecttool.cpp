@@ -630,3 +630,5 @@ void CreatePolygonObjectTool::setHoveredHandle(PointHandle *handle)
     if (handle)
         handle->setHighlighted(true);
 }
+
+#include "moc_createpolygonobjecttool.cpp"

@@ -384,3 +384,4 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 } // namespace Tiled
 
 #include "varianteditorfactory.moc"
+#include "moc_varianteditorfactory.cpp"

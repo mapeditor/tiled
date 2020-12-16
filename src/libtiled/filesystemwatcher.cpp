@@ -151,3 +151,5 @@ void FileSystemWatcher::pathsChangedTimeout()
 }
 
 } // namespace Tiled
+
+#include "moc_filesystemwatcher.cpp"

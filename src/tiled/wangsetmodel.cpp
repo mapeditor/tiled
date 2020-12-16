@@ -289,3 +289,5 @@ void WangSetModel::onWangSetRemoved(WangSet *wangSet)
     const QModelIndex index = WangSetModel::index(wangSet->tileset());
     emit dataChanged(index, index);
 }
+
+#include "moc_wangsetmodel.cpp"

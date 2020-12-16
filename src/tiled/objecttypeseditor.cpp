@@ -594,3 +594,5 @@ void ObjectTypesEditor::currentItemChanged(QtBrowserItem *item)
 }
 
 } // namespace Tiled
+
+#include "moc_objecttypeseditor.cpp"

@@ -85,3 +85,5 @@ void DonationDialog::maybeLater(QAction *action)
     Preferences::instance()->setDonationDialogReminder(date);
     close();
 }
+
+#include "moc_donationdialog.cpp"

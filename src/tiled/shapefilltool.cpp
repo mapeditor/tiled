@@ -179,3 +179,5 @@ void ShapeFillTool::updateFillOverlay()
         break;
     }
 }
+
+#include "moc_shapefilltool.cpp"

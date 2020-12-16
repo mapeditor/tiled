@@ -176,3 +176,5 @@ void OffsetMapDialog::boundsSelectionChanged()
 }
 
 } // namespace Tiled
+
+#include "moc_offsetmapdialog.cpp"

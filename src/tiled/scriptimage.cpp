@@ -114,3 +114,5 @@ ScriptImage *ScriptImage::mirrored(bool horiz, bool vert) const
 }
 
 } // namespace Tiled
+
+#include "moc_scriptimage.cpp"

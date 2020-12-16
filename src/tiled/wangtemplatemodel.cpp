@@ -124,3 +124,5 @@ void WangTemplateModel::wangSetChanged()
     beginResetModel();
     endResetModel();
 }
+
+#include "moc_wangtemplatemodel.cpp"

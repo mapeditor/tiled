@@ -500,3 +500,4 @@ void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) con
 } // namespace Tiled
 
 #include "projectmodel.moc"
+#include "moc_projectmodel.cpp"

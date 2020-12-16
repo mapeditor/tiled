@@ -289,3 +289,5 @@ void ClipboardManager::update()
         emit hasPropertiesChanged();
     }
 }
+
+#include "moc_clipboardmanager.cpp"

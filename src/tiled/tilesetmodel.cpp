@@ -239,3 +239,5 @@ void TilesetModel::refreshTileIds()
     for (Tile *tile : mTileset->tiles())
         mTileIds.append(tile->id());
 }
+
+#include "moc_tilesetmodel.cpp"

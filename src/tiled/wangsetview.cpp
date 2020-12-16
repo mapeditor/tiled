@@ -124,3 +124,5 @@ void WangSetView::editWangSetProperties()
 void WangSetView::adjustScale()
 {
 }
+
+#include "moc_wangsetview.cpp"

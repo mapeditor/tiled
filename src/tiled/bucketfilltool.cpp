@@ -224,3 +224,5 @@ void BucketFillTool::clearConnections(MapDocument *mapDocument)
     disconnect(mapDocument, &MapDocument::selectedAreaChanged,
                this, &BucketFillTool::clearOverlay);
 }
+
+#include "moc_bucketfilltool.cpp"

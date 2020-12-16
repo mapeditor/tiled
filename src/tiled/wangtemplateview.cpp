@@ -202,3 +202,5 @@ void WangTemplateView::adjustScale()
 {
     scheduleDelayedItemsLayout();
 }
+
+#include "moc_wangtemplateview.cpp"

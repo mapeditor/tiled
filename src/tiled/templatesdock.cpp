@@ -441,3 +441,5 @@ MapObject *TemplatesDock::dummyObject() const
 
     return mDummyMapDocument->map()->layerAt(0)->asObjectGroup()->objectAt(0);
 }
+
+#include "moc_templatesdock.cpp"

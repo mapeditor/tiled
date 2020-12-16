@@ -100,3 +100,5 @@ void StampActions::populateToolBar(QToolBar *toolBar, bool isRandom, bool isWang
     toolBar->addAction(mRotateLeft);
     toolBar->addAction(mRotateRight);
 }
+
+#include "moc_stampactions.cpp"

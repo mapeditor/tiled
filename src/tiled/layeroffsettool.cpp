@@ -249,3 +249,5 @@ void LayerOffsetTool::finishDrag()
 
     undoStack->endMacro();
 }
+
+#include "moc_layeroffsettool.cpp"

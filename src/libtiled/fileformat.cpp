@@ -46,3 +46,5 @@ bool FileFormat::hasCapabilities(Capabilities caps) const
 }
 
 } // namespace Tiled
+
+#include "moc_fileformat.cpp"

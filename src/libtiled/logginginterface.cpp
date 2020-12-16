@@ -205,3 +205,5 @@ SelectTile::SelectTile(const Tile *tile)
 {}
 
 } // namespace Tiled
+
+#include "moc_logginginterface.cpp"

@@ -615,3 +615,5 @@ QString World::displayName(const QString &fileName)
 }
 
 } // namespace Tiled
+
+#include "moc_worldmanager.cpp"

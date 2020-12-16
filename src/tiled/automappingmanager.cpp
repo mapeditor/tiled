@@ -293,3 +293,5 @@ void AutomappingManager::onFileChanged()
 {
     cleanUp();
 }
+
+#include "moc_automappingmanager.cpp"
