@@ -60,12 +60,9 @@ void LayerOffsetTool::mouseLeft()
     setStatusInfo(QString());
 }
 
-void LayerOffsetTool::activate(MapScene *)
+void LayerOffsetTool::deactivate(MapScene *mapScene)
 {
-}
-
-void LayerOffsetTool::deactivate(MapScene *)
-{
+    AbstractTool::deactivate(mapScene);
     finishDrag();
 }
 
