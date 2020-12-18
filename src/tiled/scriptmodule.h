@@ -131,6 +131,7 @@ signals:
 public slots:
     void trigger(const QByteArray &actionName) const;
     void executeCommand(const QString &name, bool inTerminal = false) const;
+    void execute(const QString &executable, const QString &arguments, bool showOutput = false, bool inTerminal = false) const;
 
     void alert(const QString &text, const QString &title = QString()) const;
     bool confirm(const QString &text, const QString &title = QString()) const;

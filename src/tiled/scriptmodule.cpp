@@ -498,6 +498,21 @@ void ScriptModule::executeCommand(const QString &name, bool inTerminal) const
     ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Unknown command"));
 }
 
+void ScriptModule::execute(const QString &executable, const QString &arguments, bool showOutput, bool inTerminal) const
+{
+    const auto command = new Command();
+    command->name = QString::fromLatin1("Script Command");
+    command->executable = executable;
+    command->arguments = arguments;
+    command->isEnabled = true;
+    command->saveBeforeExecute = false;
+    // command->shortcut = shortcut.value<QKeySequence>();
+     command->showOutput = showOutput;
+    // command->workingDirectory = workingDirectory.toString();
+    command->execute(inTerminal);
+    return;
+}
+
 void ScriptModule::alert(const QString &text, const QString &title) const
 {
     QMessageBox::warning(MainWindow::instance(), title, text);
