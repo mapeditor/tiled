@@ -141,7 +141,7 @@
     <message>
         <location line="+25"/>
         <source>Minimize the exported file by omitting unnecessary whitespace</source>
-        <translation type="unfinished"></translation>
+        <translation>Riduci al minimo il file esportato eliminando gli spazi vuoti inutili</translation>
     </message>
     <message>
         <location line="+70"/>
