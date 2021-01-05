@@ -85,7 +85,7 @@
     <message>
         <location line="+22"/>
         <source>Failed to load source tileset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore nel caricamento del tileset sorgente</translation>
     </message>
     <message>
         <location line="+12"/>
