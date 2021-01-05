@@ -46,6 +46,8 @@ protected:
     void tilePositionChanged(QPoint) override;
     void clearConnections(MapDocument *) override {}
 
+    void updateStatusInfo() override;
+
 private:
     enum ToolBehavior {
         Free,   // nothing has been started
