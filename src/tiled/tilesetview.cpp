@@ -710,16 +710,18 @@ void TilesetView::leaveEvent(QEvent *event)
 }
 
 /**
- * Override to support zooming in and out using the mouse wheel.
+ * Override to support zooming in and out using the mouse wheel, as well as to
+ * make the scrolling speed independent of Ctrl modifier and zoom level.
  */
 void TilesetView::wheelEvent(QWheelEvent *event)
 {
+    auto hor = horizontalScrollBar();
+    auto ver = verticalScrollBar();
+
     bool wheelZoomsByDefault = !dynamicWrapping() && Preferences::instance()->wheelZoomsByDefault();
     bool control = event->modifiers() & Qt::ControlModifier;
 
     if ((wheelZoomsByDefault != control) && event->angleDelta().y()) {
-        auto hor = horizontalScrollBar();
-        auto ver = verticalScrollBar();
 
 #if QT_VERSION < QT_VERSION_CHECK(5,14,0)
         const QPointF &viewportPos = event->posF();
@@ -750,7 +752,15 @@ void TilesetView::wheelEvent(QWheelEvent *event)
         return;
     }
 
-    QTableView::wheelEvent(event);
+    if (event->angleDelta().x() != 0) {
+        const int delta = Utils::dpiScaled(event->angleDelta().x());
+        hor->setValue(hor->value() - delta);
+    }
+
+    if (event->angleDelta().y() != 0) {
+        const int delta = Utils::dpiScaled(event->angleDelta().y());
+        ver->setValue(ver->value() - delta);
+    }
 }
 
 /**
