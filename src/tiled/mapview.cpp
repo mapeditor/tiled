@@ -45,7 +45,8 @@
 
 using namespace Tiled;
 
-Preference<bool> MapView::ourAutoScrollEnabled { "Interface/AutoScroll", false };
+Preference<bool> MapView::ourAutoScrollingEnabled { "Interface/AutoScrolling", false };
+Preference<bool> MapView::ourSmoothScrollingEnabled { "Interface/SmoothScrolling", true };
 
 MapView::MapView(QWidget *parent, Mode mode)
     : QGraphicsView(parent)
@@ -246,16 +247,57 @@ void MapView::focusMapObject(MapObject *mapObject)
     forceCenterOn(screenCoords, *mapObject->objectGroup());
 }
 
+void MapView::setPanDirections(PanDirections directions)
+{
+    if (mPanDirections == directions)
+        return;
+
+    mPanDirections = directions;
+    updatePanningDriverState();
+}
+
+void MapView::updatePanningDriverState()
+{
+    const bool run = (mPanDirections && ourSmoothScrollingEnabled) || mScrollingMode == AutoScrolling;
+    if (run && mPanningDriver->state() != QAbstractAnimation::Running)
+        mPanningDriver->start();
+    else if (!run && mPanningDriver->state() == QAbstractAnimation::Running)
+        mPanningDriver->stop();
+}
+
 void MapView::updatePanning(int deltaTime)
 {
     QPoint distance;
 
-    if (mScrollingMode == AutoScrolling)
+    if (mScrollingMode == AutoScrolling) {
         distance = (mLastMousePos - mScrollStartPos) * deltaTime / 100;
+    } else if (mPanDirections && ourSmoothScrollingEnabled) {
+        if (mPanDirections & Left)
+            distance.rx() -= 1;
+        if (mPanDirections & Right)
+            distance.rx() += 1;
+        if (mPanDirections & Up)
+            distance.ry() -= 1;
+        if (mPanDirections & Down)
+            distance.ry() += 1;
+
+        distance = Utils::dpiScaled(distance * deltaTime / 2);
+    }
+
+    scrollBy(distance);
+}
+
+void MapView::scrollBy(QPoint distance)
+{
+    if (distance.isNull())
+        return;
 
     if (distance.x()) {
         auto hor = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
-        hor->forceSetValue(hor->value() + distance.x());
+        if (isRightToLeft())
+            hor->forceSetValue(hor->value() - distance.x());
+        else
+            hor->forceSetValue(hor->value() + distance.x());
     }
 
     if (distance.y()) {
@@ -263,6 +305,8 @@ void MapView::updatePanning(int deltaTime)
         ver->forceSetValue(ver->value() + distance.y());
     }
 
+    // When scrolling the mouse does not move, but the view below it does.
+    // This affects the mouse scene position, which needs to be updated.
     mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
 }
 
@@ -297,16 +341,12 @@ void MapView::setScrollingMode(ScrollingMode mode)
         mScrollStartPos = mLastMousePos;
         QApplication::setOverrideCursor(mScrollingMode == DragScrolling ? Qt::ClosedHandCursor : Qt::SizeAllCursor);
         viewport()->grabMouse();
-
-        if (mScrollingMode == AutoScrolling && mPanningDriver->state() != QAbstractAnimation::Running)
-            mPanningDriver->start();
+        updatePanningDriverState();
         break;
     case NoScrolling:
         viewport()->releaseMouse();
         QApplication::restoreOverrideCursor();
-
-        if (mPanningDriver->state() == QAbstractAnimation::Running)
-            mPanningDriver->stop();
+        updatePanningDriverState();
         break;
     }
 }
@@ -447,7 +487,63 @@ void MapView::keyPressEvent(QKeyEvent *event)
         mZoomable->resetZoom();
         return;
     }
-    return QGraphicsView::keyPressEvent(event);
+
+    // Allow the scene to consume the event (in this case, allows movement of
+    // selected objects to take precedence over moving the view).
+    QCoreApplication::sendEvent(scene(), event);
+    if (event->isAccepted())
+        return;
+
+    switch (event->key()) {
+    case Qt::Key_Down:
+        setPanDirections(mPanDirections | Down);
+        break;
+    case Qt::Key_Left:
+        setPanDirections(mPanDirections | Left);
+        break;
+    case Qt::Key_Right:
+        setPanDirections(mPanDirections | Right);
+        break;
+    case Qt::Key_Up:
+        setPanDirections(mPanDirections | Up);
+        break;
+    }
+
+    if (!ourSmoothScrollingEnabled) {
+        if ((mPanDirections & (Left | Right)) == Left) {
+            horizontalScrollBar()->triggerAction(isRightToLeft() ? QScrollBar::SliderSingleStepAdd
+                                                                 : QScrollBar::SliderSingleStepSub);
+        } else if ((mPanDirections & (Left | Right)) == Right) {
+            horizontalScrollBar()->triggerAction(isRightToLeft() ? QScrollBar::SliderSingleStepSub
+                                                                 : QScrollBar::SliderSingleStepAdd);
+        }
+        if ((mPanDirections & (Up | Down)) == Up)
+            verticalScrollBar()->triggerAction(QScrollBar::SliderSingleStepSub);
+        else if ((mPanDirections & (Up | Down)) == Down)
+            verticalScrollBar()->triggerAction(QScrollBar::SliderSingleStepAdd);
+    }
+}
+
+void MapView::keyReleaseEvent(QKeyEvent *event)
+{
+    if (!event->isAutoRepeat()) {
+        switch (event->key()) {
+        case Qt::Key_Down:
+            setPanDirections(mPanDirections & ~Down);
+            break;
+        case Qt::Key_Left:
+            setPanDirections(mPanDirections & ~Left);
+            break;
+        case Qt::Key_Right:
+            setPanDirections(mPanDirections & ~Right);
+            break;
+        case Qt::Key_Up:
+            setPanDirections(mPanDirections & ~Up);
+            break;
+        }
+    }
+
+    QGraphicsView::keyReleaseEvent(event);
 }
 
 /**
@@ -490,16 +586,7 @@ void MapView::wheelEvent(QWheelEvent *event)
         pixels = Utils::dpiScaled(pixels);
     }
 
-    if (!pixels.isNull()) {
-        int horizontalValue = hBar->value() + (isRightToLeft() ? pixels.x() : -pixels.x());
-        int verticalValue = vBar->value() - pixels.y();
-        hBar->forceSetValue(horizontalValue);
-        vBar->forceSetValue(verticalValue);
-
-        // When scrolling the mouse does not move, but the view below it does.
-        // This affects the mouse scene position, which needs to be updated.
-        mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
-    }
+    scrollBy(pixels);
 }
 
 /**
@@ -508,7 +595,7 @@ void MapView::wheelEvent(QWheelEvent *event)
 void MapView::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MiddleButton && isActiveWindow()) {
-        setScrollingMode(ourAutoScrollEnabled ? AutoScrolling : DragScrolling);
+        setScrollingMode(ourAutoScrollingEnabled ? AutoScrolling : DragScrolling);
         return;
     }
 

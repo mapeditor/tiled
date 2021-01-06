@@ -752,15 +752,14 @@ void TilesetView::wheelEvent(QWheelEvent *event)
         return;
     }
 
-    if (event->angleDelta().x() != 0) {
-        const int delta = Utils::dpiScaled(event->angleDelta().x());
-        hor->setValue(hor->value() - delta);
-    }
+    QPoint delta = event->pixelDelta();
+    if (delta.isNull())
+        delta = Utils::dpiScaled(event->angleDelta());
 
-    if (event->angleDelta().y() != 0) {
-        const int delta = Utils::dpiScaled(event->angleDelta().y());
-        ver->setValue(ver->value() - delta);
-    }
+    if (delta.x())
+        hor->setValue(hor->value() - delta.x());
+    if (delta.y())
+        ver->setValue(ver->value() - delta.y());
 }
 
 /**

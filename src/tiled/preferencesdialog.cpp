@@ -119,8 +119,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setUseOpenGL);
     connect(mUi->wheelZoomsByDefault, &QCheckBox::toggled,
             preferences, &Preferences::setWheelZoomsByDefault);
-    connect(mUi->autoScroll, &QCheckBox::toggled,
-            this, [] (bool checked) { MapView::ourAutoScrollEnabled = checked; });
+    connect(mUi->autoScrolling, &QCheckBox::toggled,
+            this, [] (bool checked) { MapView::ourAutoScrollingEnabled = checked; });
+    connect(mUi->smoothScrolling, &QCheckBox::toggled,
+            this, [] (bool checked) { MapView::ourSmoothScrollingEnabled = checked; });
 
     connect(mUi->styleCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::styleComboChanged);
@@ -194,7 +196,8 @@ void PreferencesDialog::fromPreferences()
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());
-    mUi->autoScroll->setChecked(MapView::ourAutoScrollEnabled);
+    mUi->autoScrolling->setChecked(MapView::ourAutoScrollingEnabled);
+    mUi->smoothScrolling->setChecked(MapView::ourSmoothScrollingEnabled);
 
     // Not found (-1) ends up at index 0, system default
     int languageIndex = mUi->languageCombo->findData(prefs->language());

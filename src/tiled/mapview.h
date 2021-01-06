@@ -62,7 +62,8 @@ public:
         NoStaticContents,
     };
 
-    static Preference<bool> ourAutoScrollEnabled;
+    static Preference<bool> ourAutoScrollingEnabled;
+    static Preference<bool> ourSmoothScrollingEnabled;
 
     MapView(QWidget *parent = nullptr, Mode mode = StaticContents);
     ~MapView() override;
@@ -101,6 +102,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
     void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
 
     void wheelEvent(QWheelEvent *event) override;
 
@@ -126,7 +128,19 @@ private:
     void updateViewRect();
     void focusMapObject(MapObject *mapObject);
 
+    enum PanDirectionFlag {
+        Left    = 0x1,
+        Right   = 0x2,
+        Up      = 0x4,
+        Down    = 0x8,
+    };
+    Q_DECLARE_FLAGS(PanDirections, PanDirectionFlag)
+
+    void setPanDirections(PanDirections directions);
+    void updatePanningDriverState();
     void updatePanning(int deltaTime);
+
+    void scrollBy(QPoint distance);
 
     void setMapDocument(MapDocument *mapDocument);
 
@@ -142,6 +156,7 @@ private:
     Mode mMode;
     Zoomable *mZoomable;
 
+    PanDirections mPanDirections;
     TileAnimationDriver *mPanningDriver;
 };
 
