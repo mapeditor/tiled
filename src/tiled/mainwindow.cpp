@@ -918,16 +918,30 @@ void MainWindow::changeEvent(QEvent *event)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Space && !event->isAutoRepeat())
-        if (MapView *mapView = mDocumentManager->currentMapView())
-            mapView->setHandScrolling(true);
+    if (event->isAutoRepeat())
+        return;
+
+    if (MapView *mapView = mDocumentManager->currentMapView()) {
+        switch (event->key()) {
+        case Qt::Key_Space:
+            mapView->setScrollingMode(MapView::DragScrolling);
+            break;
+        }
+    }
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Space && !event->isAutoRepeat())
-        if (MapView *mapView = mDocumentManager->currentMapView())
-            mapView->setHandScrolling(false);
+    if (event->isAutoRepeat())
+        return;
+
+    if (MapView *mapView = mDocumentManager->currentMapView()) {
+        switch (event->key()) {
+        case Qt::Key_Space:
+            mapView->setScrollingMode(MapView::NoScrolling);
+            break;
+        }
+    }
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)

@@ -23,6 +23,7 @@
 
 #include "abstractobjecttool.h"
 #include "languagemanager.h"
+#include "mapview.h"
 #include "pluginlistmodel.h"
 #include "preferences.h"
 #include "scriptmanager.h"
@@ -118,6 +119,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setUseOpenGL);
     connect(mUi->wheelZoomsByDefault, &QCheckBox::toggled,
             preferences, &Preferences::setWheelZoomsByDefault);
+    connect(mUi->autoScroll, &QCheckBox::toggled,
+            this, [] (bool checked) { MapView::ourAutoScrollEnabled = checked; });
 
     connect(mUi->styleCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::styleComboChanged);
@@ -191,6 +194,7 @@ void PreferencesDialog::fromPreferences()
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());
+    mUi->autoScroll->setChecked(MapView::ourAutoScrollEnabled);
 
     // Not found (-1) ends up at index 0, system default
     int languageIndex = mUi->languageCombo->findData(prefs->language());

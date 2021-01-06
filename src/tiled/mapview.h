@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "preferences.h"
+
 #include <QGraphicsView>
 #include <QPinchGesture>
 
@@ -30,6 +32,7 @@ class MapObject;
 
 class MapDocument;
 class MapScene;
+class TileAnimationDriver;
 class Zoomable;
 
 /**
@@ -59,6 +62,8 @@ public:
         NoStaticContents,
     };
 
+    static Preference<bool> ourAutoScrollEnabled;
+
     MapView(QWidget *parent = nullptr, Mode mode = StaticContents);
     ~MapView() override;
 
@@ -74,8 +79,13 @@ public:
 
     void fitMapInView();
 
-    bool handScrolling() const { return mHandScrolling; }
-    void setHandScrolling(bool handScrolling);
+    enum ScrollingMode {
+        NoScrolling,
+        DragScrolling,
+        AutoScrolling
+    };
+    ScrollingMode scrollingMode() const { return mScrollingMode; }
+    void setScrollingMode(ScrollingMode mode);
 
     using QGraphicsView::centerOn;
     Q_INVOKABLE void centerOn(qreal x, qreal y) { forceCenterOn(QPointF(x, y)); }
@@ -116,18 +126,23 @@ private:
     void updateViewRect();
     void focusMapObject(MapObject *mapObject);
 
+    void updatePanning(int deltaTime);
+
     void setMapDocument(MapDocument *mapDocument);
 
     MapDocument *mMapDocument = nullptr;
     QPoint mLastMousePos;
+    QPoint mScrollStartPos;
     QPointF mLastMouseScenePos;
-    bool mHandScrolling = false;
+    ScrollingMode mScrollingMode = NoScrolling;
     bool mViewInitialized = false;
     bool mHasInitialCenterPos = false;
     QPointF mInitialCenterPos;
     QRectF mViewRect;
     Mode mMode;
     Zoomable *mZoomable;
+
+    TileAnimationDriver *mPanningDriver;
 };
 
 /**
