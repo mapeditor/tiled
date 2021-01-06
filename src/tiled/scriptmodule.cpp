@@ -500,17 +500,14 @@ void ScriptModule::executeCommand(const QString &name, bool inTerminal) const
 
 void ScriptModule::execute(const QString &executable, const QString &arguments, bool showOutput, bool inTerminal) const
 {
-    const auto command = new Command();
-    command->name = QString::fromLatin1("Script Command");
-    command->executable = executable;
-    command->arguments = arguments;
-    command->isEnabled = true;
-    command->saveBeforeExecute = false;
-    // command->shortcut = shortcut.value<QKeySequence>();
-     command->showOutput = showOutput;
-    // command->workingDirectory = workingDirectory.toString();
-    command->execute(inTerminal);
-    return;
+    Command command;
+    command.name = tr("Script Command");
+    command.executable = executable;
+    command.arguments = arguments;
+    command.saveBeforeExecute = false;
+    command.showOutput = showOutput;
+
+    command.execute(inTerminal);
 }
 
 void ScriptModule::alert(const QString &text, const QString &title) const
