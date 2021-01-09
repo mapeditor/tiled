@@ -1326,7 +1326,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
         <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation type="unfinished">&lt;font size=&quot;+2&quot;&gt;開いてるファイルが無い&lt;/font&gt;</translation>
+        <translation>&lt;font size=&quot;+2&quot;&gt;開いているファイルはありません&lt;/font&gt;</translation>
     </message>
     <message>
         <location line="+110"/>
