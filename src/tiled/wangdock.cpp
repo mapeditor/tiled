@@ -144,6 +144,8 @@ WangDock::WangDock(QWidget *parent)
 
     Utils::setThemeIcon(mAddWangSet, "add");
     Utils::setThemeIcon(mRemoveWangSet, "remove");
+    Utils::setThemeIcon(mAddColor, "add");
+    Utils::setThemeIcon(mRemoveColor, "remove");
 
     mWangSetToolBar->setFloatable(false);
     mWangSetToolBar->setMovable(false);
