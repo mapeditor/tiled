@@ -586,7 +586,7 @@ void MapView::wheelEvent(QWheelEvent *event)
         pixels = Utils::dpiScaled(pixels);
     }
 
-    scrollBy(pixels);
+    scrollBy(-pixels);
 }
 
 /**
