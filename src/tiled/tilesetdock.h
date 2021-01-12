@@ -137,6 +137,7 @@ private:
     void tileAnimationChanged(Tile *tile);
 
     void replaceTileset();
+    void replaceTilesetAt(int index);
     void removeTileset();
     void removeTilesetAt(int index);
 

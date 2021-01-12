@@ -679,10 +679,15 @@ void TilesetDock::replaceTileset()
     if (currentIndex == -1)
         return;
 
+    replaceTilesetAt(currentIndex);
+}
+
+void TilesetDock::replaceTilesetAt(int index)
+{
     if (!mMapDocument)
         return;
 
-    auto &sharedTileset = mTilesets.at(currentIndex);
+    auto &sharedTileset = mTilesets.at(index);
     int mapTilesetIndex = mMapDocument->map()->tilesets().indexOf(sharedTileset);
     if (mapTilesetIndex == -1)
         return;
@@ -927,8 +932,12 @@ void TilesetDock::tabContextMenuRequested(const QPoint &pos)
     const QString fileName = mTilesetDocuments.at(index)->fileName();
     Utils::addFileManagerActions(menu, fileName);
 
-    if (!menu.isEmpty())
-        menu.exec(mTabBar->mapToGlobal(pos));
+    menu.addSeparator();
+    menu.addAction(mEditTileset->icon(), mEditTileset->text(), this, [tileset = mTilesets.at(index)] {
+        DocumentManager::instance()->openTileset(tileset);
+    });
+
+    menu.exec(mTabBar->mapToGlobal(pos));
 }
 
 void TilesetDock::setCurrentTileset(const SharedTileset &tileset)
@@ -1192,6 +1201,9 @@ void TilesetDock::refreshTilesetMenu()
         if (i == currentIndex)
             action->setChecked(true);
     }
+
+    mTilesetMenu->addSeparator();
+    mTilesetMenu->addAction(ActionManager::action("AddExternalTileset"));
 }
 
 void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
