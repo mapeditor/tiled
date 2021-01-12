@@ -580,7 +580,6 @@ void MapEditor::resetLayout()
     // they are hidden by default.
     mUndoDock->setVisible(false);
     mTemplatesDock->setVisible(false);
-    mWangDock->setVisible(false);
     mTileStampsDock->setVisible(false);
 }
 
