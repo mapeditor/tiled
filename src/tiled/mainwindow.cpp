@@ -623,11 +623,16 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         QString filter = tr("All Files (*);;");
         QString worldFilesFilter = tr("World files (*.world)");
         filter.append(worldFilesFilter);
+        QString worldFile;
 
-        auto mapEditor = static_cast<MapEditor*>(DocumentManager::instance()->editor(Document::DocumentType::MapDocumentType));
-        QString worldFile = QFileDialog::getSaveFileName(mapEditor->editorWidget(), tr("New World"), lastPath,
-                                                         filter, &worldFilesFilter);
-        if (worldFile.isEmpty() || QFile::exists(worldFile))
+        QFileDialog dialog(this, tr("New World"), lastPath, filter);
+        dialog.setAcceptMode(QFileDialog::AcceptSave);
+        dialog.selectNameFilter(worldFilesFilter);
+        dialog.setDefaultSuffix(QStringLiteral("world"));
+        if (dialog.exec() == QDialog::Accepted)
+            worldFile = dialog.selectedFiles().value(0);
+
+        if (worldFile.isEmpty())
             return;
 
         session.setLastPath(Session::WorldFile, QFileInfo(worldFile).path());
