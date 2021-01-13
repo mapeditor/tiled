@@ -361,7 +361,7 @@ void AbstractWorldTool::addToWorld(const World *world)
     // Position the map alongside the last map by default
     if (!world->maps.isEmpty()) {
         const QRect &lastWorldRect = world->maps.last().rect;
-        rect.moveTo(lastWorldRect.topRight());
+        rect.moveTo(lastWorldRect.right() + 1, lastWorldRect.top());
     }
 
     QUndoStack *undoStack = DocumentManager::instance()->ensureWorldDocument(world->fileName)->undoStack();
