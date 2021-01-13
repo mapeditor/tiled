@@ -502,7 +502,7 @@ void WangDock::activateErase()
     mWangColorView->selectionModel()->clearCurrentIndex();
     mWangColorView->selectionModel()->clearSelection();
 
-    emit currentWangIdChanged(WangId());
+    emit wangColorChanged(0);
 }
 
 void WangDock::updateAddColorStatus()
@@ -559,7 +559,7 @@ void WangDock::onColorCaptured(int color)
 
 void WangDock::onCurrentWangIdChanged(WangId wangId)
 {
-    const QModelIndex &index = mWangTemplateModel->wangIdIndex(wangId);
+    const QModelIndex index = mWangTemplateModel->wangIdIndex(wangId);
     if (!index.isValid()) {
         activateErase();
         return;

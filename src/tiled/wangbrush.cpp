@@ -211,6 +211,9 @@ void WangBrush::setColor(int color)
 {
     mCurrentColor = color;
 
+    if (!mWangSet)
+        return;
+
     switch (mWangSet->type()) {
     case WangSet::Corner:
         mBrushMode = PaintCorner;

@@ -20,8 +20,10 @@
 
 #include "wangoverlay.h"
 
+#include <QGuiApplication>
 #include <QPainter>
 #include <QPainterPath>
+#include <QPalette>
 
 namespace Tiled {
 
@@ -445,7 +447,7 @@ void paintWangOverlay(QPainter *painter,
                       WangId wangId,
                       const WangSet &wangSet,
                       const QRect &rect,
-                      bool transparent)
+                      WangOverlayOptions options)
 {
     if (!wangId)
         return;
@@ -454,7 +456,7 @@ void paintWangOverlay(QPainter *painter,
     if (adjustedRect.isEmpty())
         return;
 
-    const qreal fillOpacity = transparent ? 0.3 : 1.0;
+    const qreal fillOpacity = options.testFlag(WO_TransparentFill) ? 0.3 : 1.0;
     const qreal penWidth = qMin(2.0, adjustedRect.width() / 16.0);
 
     painter->save();
@@ -470,11 +472,10 @@ void paintWangOverlay(QPainter *painter,
     shadowTransform.scale(adjustedRect.width(), adjustedRect.height());
     foregroundTransform.scale(adjustedRect.width(), adjustedRect.height());
 
-    for (int color = 1; color <= wangSet.colorCount(); ++color) {
-        const WangId mask = wangId.mask(color);
-        if (!mask)
-            continue;
+    if (!options.testFlag(WO_Outline))
+        painter->setPen(Qt::NoPen);
 
+    auto paintColor = [&] (const WangId mask, const QColor &color) {
         const QPainterPath *cornerPath = nullptr;
         const QPainterPath *edgePath = nullptr;
 
@@ -493,9 +494,12 @@ void paintWangOverlay(QPainter *painter,
         }
 
         // Draw the shadow
-        if (transparent) {
+        if (options.testFlag(WO_Shadow)) {
             painter->setBrush(Qt::NoBrush);
-            setCosmeticPen(painter, Qt::black, penWidth);
+
+            if (options.testFlag(WO_Outline))
+                setCosmeticPen(painter, Qt::black, penWidth);
+
             painter->setTransform(shadowTransform);
 
             if (cornerPath)
@@ -505,13 +509,15 @@ void paintWangOverlay(QPainter *painter,
         }
 
         // Draw the foreground
-        const QColor c = wangSet.colorAt(color)->color();
-        painter->setBrush(QColor(c.red(), c.green(), c.blue(), c.alpha() * fillOpacity));
+        painter->setBrush(QColor(color.red(), color.green(), color.blue(),
+                                 color.alpha() * fillOpacity));
 
-        if (transparent)
-            setCosmeticPen(painter, c, penWidth);
-        else
-            setCosmeticPen(painter, Qt::black, penWidth);
+        if (options.testFlag(WO_Outline)) {
+            if (options.testFlag(WO_TransparentFill))
+                setCosmeticPen(painter, color, penWidth);
+            else
+                setCosmeticPen(painter, Qt::black, penWidth);
+        }
 
         painter->setTransform(foregroundTransform);
 
@@ -519,6 +525,19 @@ void paintWangOverlay(QPainter *painter,
             painter->drawPath(*cornerPath);
         if (edgePath)
             painter->drawPath(*edgePath);
+    };
+
+    for (int color = 1; color <= wangSet.colorCount(); ++color) {
+        const WangId mask = wangId.mask(color);
+        if (!mask)
+            continue;
+        paintColor(mask, wangSet.colorAt(color)->color());
+    }
+
+    const WangId mask = wangId.mask(WangId::INDEX_MASK);
+    if (mask) {
+        const QColor maskColor = QGuiApplication::palette().color(QPalette::Highlight);
+        paintColor(mask, maskColor);
     }
 
     painter->restore();

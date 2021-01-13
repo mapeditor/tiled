@@ -265,10 +265,11 @@ void TileDelegate::drawWangOverlay(QPainter *painter,
 
     if (mTilesetView->hoveredIndex() == index) {
         qreal opacity = painter->opacity();
-        painter->setOpacity(0.9);
+        painter->setOpacity(0.5);
         paintWangOverlay(painter, mTilesetView->wangId(),
                          *wangSet,
-                         targetRect);
+                         targetRect,
+                         WangOverlayOptions());
         painter->setOpacity(opacity);
     }
 
@@ -450,39 +451,25 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
         return;
     }
 
-    if (mEditWangSet && !(event->modifiers() & Qt::ControlModifier)) {
+    if (mEditWangSet && mWangBehavior == AssignWholeId && !(event->modifiers() & Qt::ControlModifier)) {
+        WangId transformedWangId = mWangId;
 
         if (event->key() == Qt::Key_Z) {
             if (event->modifiers() & Qt::ShiftModifier)
-                mWangId.rotate(-1);
+                transformedWangId.rotate(-1);
             else
-                mWangId.rotate(1);
-
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-
-            emit currentWangIdChanged(mWangId);
-
-            return;
+                transformedWangId.rotate(1);
+        } else if (event->key() == Qt::Key_X) {
+            transformedWangId.flipHorizontally();
+        } else if (event->key() == Qt::Key_Y) {
+            transformedWangId.flipVertically();
         }
-        if (event->key() == Qt::Key_X) {
-            mWangId.flipHorizontally();
 
+        if (mWangId != transformedWangId) {
             if (mHoveredIndex.isValid())
                 update(mHoveredIndex);
 
             emit currentWangIdChanged(mWangId);
-
-            return;
-        }
-        if (event->key() == Qt::Key_Y) {
-            mWangId.flipVertically();
-
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-
-            emit currentWangIdChanged(mWangId);
-
             return;
         }
     }
@@ -516,15 +503,8 @@ void TilesetView::setWangSet(WangSet *wangSet)
  */
 void TilesetView::setWangId(WangId wangId)
 {
-    mWangBehavior = WholeId;
-    mWangColorIndex = 0;
-
-    if (!mWangSet || wangId == mWangId)
-        return;
-
-    Q_ASSERT(mWangSet->wangIdIsValid(wangId));
-
     mWangId = wangId;
+    mWangBehavior = AssignWholeId;
 
     if (mEditWangSet && hoveredIndex().isValid())
         update(hoveredIndex());
@@ -536,15 +516,8 @@ void TilesetView::setWangId(WangId wangId)
  */
 void TilesetView::setWangColor(int color)
 {
-    if (!color)
-        setWangId(WangId());
-
-    // When a specific color is set, we no longer set the whole ID.
-    mWangBehavior = wangBehaviorFromWangSetType(mWangSet->type());
-
-    Q_ASSERT(color <= mWangSet->colorCount());
-
     mWangColorIndex = color;
+    mWangBehavior = AssignHoveredIndex;
 }
 
 QIcon TilesetView::imageMissingIcon() const
@@ -598,7 +571,7 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
 
         WangId wangId;
 
-        if (mWangBehavior == WholeId) {
+        if (mWangBehavior == AssignWholeId) {
             wangId = mWangId;
         } else {
             QRect tileRect = visualRect(mHoveredIndex);
@@ -610,45 +583,47 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
             QPointF tileLocalPosF((qreal) tileLocalPos.x() / tileRect.width(),
                                   (qreal) tileLocalPos.y() / tileRect.height());
 
-            switch (mWangBehavior) {
-            case WholeId:
-                break;  // can't happen due to check above
-            case Edge:
-                tileLocalPosF -= QPointF(0.5, 0.5);
+            const int x = qBound(0, qFloor(tileLocalPosF.x() * 3), 2);
+            const int y = qBound(0, qFloor(tileLocalPosF.y() * 3), 2);
+            WangId::Index index = WangId::indexByGrid(x, y);
 
-                if (tileLocalPosF.x() < tileLocalPosF.y()) {
-                    if (tileLocalPosF.x() > -tileLocalPosF.y())
-                        wangId.setIndexColor(WangId::Bottom, mWangColorIndex);
-                    else
-                        wangId.setIndexColor(WangId::Left, mWangColorIndex);
-                } else {
-                    if (tileLocalPosF.x() > -tileLocalPosF.y())
-                        wangId.setIndexColor(WangId::Right, mWangColorIndex);
-                    else
-                        wangId.setIndexColor(WangId::Top, mWangColorIndex);
+            if (index != WangId::NumIndexes) {  // center is dead zone
+                switch (mWangSet->type()) {
+                case WangSet::Edge:
+                    tileLocalPosF -= QPointF(0.5, 0.5);
+
+                    if (tileLocalPosF.x() < tileLocalPosF.y()) {
+                        if (tileLocalPosF.x() > -tileLocalPosF.y())
+                            index = WangId::Bottom;
+                        else
+                            index = WangId::Left;
+                    } else {
+                        if (tileLocalPosF.x() > -tileLocalPosF.y())
+                            index = WangId::Right;
+                        else
+                            index = WangId::Top;
+                    }
+                    break;
+                case WangSet::Corner:
+                    if (tileLocalPosF.x() > 0.5) {
+                        if (tileLocalPosF.y() > 0.5)
+                            index = WangId::BottomRight;
+                        else
+                            index = WangId::TopRight;
+                    } else {
+                        if (tileLocalPosF.y() > 0.5)
+                            index = WangId::BottomLeft;
+                        else
+                            index = WangId::TopLeft;
+                    }
+                    break;
+                case WangSet::Mixed:
+                    break;
                 }
-                break;
-            case Corner:
-                if (tileLocalPosF.x() > 0.5) {
-                    if (tileLocalPosF.y() > 0.5)
-                        wangId.setIndexColor(WangId::BottomRight, mWangColorIndex);
-                    else
-                        wangId.setIndexColor(WangId::TopRight, mWangColorIndex);
-                } else {
-                    if (tileLocalPosF.y() > 0.5)
-                        wangId.setIndexColor(WangId::BottomLeft, mWangColorIndex);
-                    else
-                        wangId.setIndexColor(WangId::TopLeft, mWangColorIndex);
-                }
-                break;
-            case EdgeAndCorner:
-                int x = qBound(0, qFloor(tileLocalPosF.x() * 3), 2);
-                int y = qBound(0, qFloor(tileLocalPosF.y() * 3), 2);
-                wangId.setGridColor(x, y, mWangColorIndex);
+
+                wangId.setIndexColor(index, WangId::INDEX_MASK);
             }
         }
-
-        Q_ASSERT(mWangSet->wangIdIsValid(wangId));
 
         if (previousHoveredIndex != mHoveredIndex || wangId != mWangId) {
             mWangId = wangId;
@@ -788,7 +763,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                 QAction *setImage = menu.addAction(tr("Set Wang Set Image"));
                 connect(setImage, &QAction::triggered, this, &TilesetView::selectWangSetImage);
             }
-            if (mWangBehavior != WholeId && mWangColorIndex) {
+            if (mWangBehavior != AssignWholeId && mWangColorIndex) {
                 QAction *setImage = menu.addAction(tr("Set Wang Color Image"));
                 connect(setImage, &QAction::triggered, this, &TilesetView::selectWangColorImage);
             }
@@ -837,9 +812,6 @@ void TilesetView::onChange(const ChangeEvent &change)
         if (mEditWangSet && wangSetChange.wangSet == mWangSet &&
                 (wangSetChange.properties & WangSetChangeEvent::TypeProperty)) {
             viewport()->update();
-
-            if (mWangBehavior != WholeId)
-                mWangBehavior = wangBehaviorFromWangSetType(mWangSet->type());
         }
         break;
     }
@@ -929,12 +901,14 @@ void TilesetView::applyWangId()
         return;
 
     WangId previousWangId = mWangSet->wangIdOfTile(tile);
-    WangId newWangId = mWangId;
+    WangId newWangId = previousWangId;
 
-    if (mWangBehavior != WholeId) {
+    if (mWangBehavior == AssignWholeId) {
+        newWangId = mWangId;
+    } else {
         for (int i = 0; i < WangId::NumIndexes; ++i) {
-            if (!newWangId.indexColor(i))
-                newWangId.setIndexColor(i, previousWangId.indexColor(i));
+            if (mWangId.indexColor(i))
+                newWangId.setIndexColor(i, mWangColorIndex);
         }
     }
 
@@ -995,18 +969,6 @@ void TilesetView::updateBackgroundColor()
     QPalette p = palette();
     p.setColor(QPalette::Base, base);
     setPalette(p);
-}
-
-TilesetView::WangBehavior TilesetView::wangBehaviorFromWangSetType(WangSet::Type type)
-{
-    switch (type) {
-    case WangSet::Corner:
-        return Corner;
-    case WangSet::Edge:
-        return Edge;
-    default:
-        return EdgeAndCorner;
-    }
 }
 
 #include "moc_tilesetview.cpp"

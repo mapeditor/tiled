@@ -27,10 +27,18 @@ class QRect;
 
 namespace Tiled {
 
+enum WangOverlayOption {
+    WO_TransparentFill  = 0x1,
+    WO_Shadow           = 0x2,
+    WO_Outline          = 0x4,
+};
+Q_DECLARE_FLAGS(WangOverlayOptions, WangOverlayOption)
+Q_DECLARE_OPERATORS_FOR_FLAGS(WangOverlayOptions);
+
 void paintWangOverlay(QPainter *painter,
                       WangId wangId,
                       const WangSet &wangSet,
                       const QRect &rect,
-                      bool transparent = true);
+                      WangOverlayOptions options = WO_TransparentFill | WO_Shadow | WO_Outline);
 
 } // namespace Tiled
