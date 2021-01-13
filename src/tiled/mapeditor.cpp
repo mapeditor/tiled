@@ -242,7 +242,7 @@ MapEditor::MapEditor(QObject *parent)
     mLayerComboBox->setModel(mComboBoxProxyModel);
     mLayerComboBox->setMinimumContentsLength(10);
     mLayerComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    connect(mLayerComboBox.get(), &QComboBox::activated,
+    connect(mLayerComboBox.get(), static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
             this, &MapEditor::layerComboActivated);
 
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &MapEditor::currentWidgetChanged);
