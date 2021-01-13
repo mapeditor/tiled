@@ -103,7 +103,7 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
         <source>Edit Commands</source>
-        <translation type="unfinished">コマンドの編集</translation>
+        <translation>コマンドの編集</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -225,7 +225,7 @@
         <location line="+14"/>
         <location line="+74"/>
         <source>Browse...</source>
-        <translation type="unfinished">参照...</translation>
+        <translation>参照...</translation>
     </message>
     <message>
         <location line="-61"/>
@@ -1362,7 +1362,7 @@ Line %1, column %2</source>
     <message>
         <location line="+9"/>
         <source>Filter</source>
-        <translation type="unfinished">フィルタ</translation>
+        <translation>フィルター</translation>
     </message>
 </context>
 <context>
@@ -1380,7 +1380,7 @@ Line %1, column %2</source>
     <message>
         <location line="-89"/>
         <source>File doesn&apos;t contain object types.</source>
-        <translation>オブジェクト・タイプがファイルに含まれていない.</translation>
+        <translation>オブジェクトタイプがファイルに含まれていません。</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -1398,7 +1398,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/objecttypeseditor-new.ui" line="+14"/>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
-        <translation>オブジェクト・タイプ・エディター</translation>
+        <translation>オブジェクトタイプエディター</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -1418,7 +1418,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>Export Object Types</source>
-        <translation type="unfinished">オブジェクト・タイプをエクスポート</translation>
+        <translation>オブジェクトタイプをエクスポート</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1428,7 +1428,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>Import Object Types</source>
-        <translation type="unfinished">オブジェクト・タイプをインポート</translation>
+        <translation>オブジェクトタイプをインポート</translation>
     </message>
 </context>
 <context>
@@ -4065,7 +4065,7 @@ Please select specific format.</source>
         <location line="-1335"/>
         <location line="+1336"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished">オブジェクト・タイプ・エディター</translation>
+        <translation>オブジェクトタイプエディター</translation>
     </message>
     <message>
         <location line="-1097"/>
@@ -4251,7 +4251,7 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Object Layer %1</source>
-        <translation type="unfinished">オブジェクト・レイヤー %1</translation>
+        <translation>オブジェクトレイヤー%1</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -4363,7 +4363,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+241"/>
         <source>Select &amp;All</source>
-        <translation type="unfinished">すべて選択(&amp;A)</translation>
+        <translation>すべて選択(&amp;A)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4578,7 +4578,7 @@ Please select specific format.</source>
     <message>
         <location line="+7"/>
         <source>Change Object Type</source>
-        <translation type="unfinished">オブジェクト・タイプを変更</translation>
+        <translation>オブジェクトタイプを変更</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -4834,12 +4834,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/objecttypeseditor.cpp" line="-159"/>
         <source>Add Object Type</source>
-        <translation type="unfinished">オブジェクト・タイプの追加</translation>
+        <translation>オブジェクトタイプの追加</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Object Type</source>
-        <translation type="unfinished">オブジェクト・タイプを削除</translation>
+        <translation>オブジェクトタイプを削除</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5855,22 +5855,22 @@ Please select specific format.</source>
     <message>
         <location line="+380"/>
         <source>Delete</source>
-        <translation type="unfinished">削除</translation>
+        <translation>削除</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Cut</source>
-        <translation type="unfinished">カット</translation>
+        <translation>切り取り</translation>
     </message>
     <message>
         <location line="+108"/>
         <source>Duplicate Objects</source>
-        <translation type="unfinished">オブジェクトを複製</translation>
+        <translation>オブジェクトを複製</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Objects</source>
-        <translation type="unfinished">オブジェクトを削除</translation>
+        <translation>オブジェクトを削除</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5885,7 +5885,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Object Properties</source>
-        <translation type="unfinished">オブジェクトのプロパティ</translation>
+        <translation>オブジェクトのプロパティ</translation>
     </message>
 </context>
 <context>
@@ -5894,7 +5894,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/tileselectiontool.cpp" line="+36"/>
         <location line="+111"/>
         <source>Rectangular Select</source>
-        <translation type="unfinished">選択範囲</translation>
+        <translation>矩形選択</translation>
     </message>
     <message>
         <location line="-85"/>
@@ -5930,7 +5930,7 @@ Please select specific format.</source>
     <message>
         <location line="+68"/>
         <source>Choose the Stamps Folder</source>
-        <translation type="unfinished">スタンプフォルダを選択</translation>
+        <translation>スタンプフォルダーを選択</translation>
     </message>
     <message>
         <location line="+15"/>
