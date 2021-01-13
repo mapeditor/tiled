@@ -358,7 +358,7 @@
     <message>
         <location line="+10"/>
         <source>Settings</source>
-        <translation>Instillinger</translation>
+        <translation>Innstillinger</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -857,7 +857,7 @@
     <message>
         <location line="+5"/>
         <source>Pre&amp;ferences...</source>
-        <translation>&amp;Instillinger...</translation>
+        <translation>&amp;Innstillinger …</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -1507,7 +1507,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+14"/>
         <source>Preferences</source>
-        <translation>Instillinger</translation>
+        <translation>Innstillinger</translation>
     </message>
     <message>
         <location line="+13"/>

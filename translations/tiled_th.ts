@@ -2822,13 +2822,13 @@ Line %1, column %2</source>
         <location line="-335"/>
         <location line="+336"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>พลิกแนวตั้ง</translation>
     </message>
     <message>
         <location line="-253"/>
         <location line="+200"/>
         <source>Reset Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>รีเซ็ตขนาดไทล์</translation>
     </message>
     <message numerus="yes">
         <location line="-13"/>
@@ -2840,29 +2840,29 @@ Line %1, column %2</source>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>ลบ %n ออบเจ็กต์</numerusform>
         </translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Replace Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>แทนที่ไทล์</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Replace With Template</source>
-        <translation type="unfinished"></translation>
+        <translation>แทนที่ด้วยเทมเพลต</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Replace With Template &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>แทนที่ด้วยเทมเพลต &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Save As Template</source>
-        <translation type="unfinished"></translation>
+        <translation>บันทึกเป็นเทมเพลต</translation>
     </message>
     <message>
         <location line="+15"/>
