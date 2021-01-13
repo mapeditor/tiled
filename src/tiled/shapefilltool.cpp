@@ -119,8 +119,10 @@ void ShapeFillTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void ShapeFillTool::modifiersChanged(Qt::KeyboardModifiers)
+void ShapeFillTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
+    mModifiers = modifiers;
+
     if (mToolBehavior == MakingShape)
         updateFillOverlay();
 }
@@ -179,7 +181,7 @@ void ShapeFillTool::updateFillOverlay()
     int dx = tilePosition().x() - mStartCorner.x();
     int dy = tilePosition().y() - mStartCorner.y();
 
-    if (QApplication::keyboardModifiers() & Qt::ShiftModifier) {
+    if (mModifiers & Qt::ShiftModifier) {
         const int min = std::min(std::abs(dx), std::abs(dy));
         dx = ((dx > 0) - (dx < 0)) * min;
         dy = ((dy > 0) - (dy < 0)) * min;

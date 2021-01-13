@@ -71,7 +71,7 @@ void BucketFillTool::tilePositionChanged(QPoint tilePos)
     if (!tileLayer)
         return;
 
-    bool shiftPressed = QApplication::keyboardModifiers() & Qt::ShiftModifier;
+    bool shiftPressed = mModifiers & Qt::ShiftModifier;
     bool fillRegionChanged = false;
 
     TilePainter regionComputer(mapDocument(), tileLayer);
@@ -165,8 +165,10 @@ void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
     mapDocument()->undoStack()->endMacro();
 }
 
-void BucketFillTool::modifiersChanged(Qt::KeyboardModifiers)
+void BucketFillTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
+    mModifiers = modifiers;
+
     // Don't need to recalculate fill region if there was no fill region
     if (!mPreviewMap)
         return;

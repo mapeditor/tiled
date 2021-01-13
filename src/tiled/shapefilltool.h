@@ -59,6 +59,7 @@ private:
         Circle  // making a circle
     };
 
+    Qt::KeyboardModifiers mModifiers;
     ToolBehavior mToolBehavior;
     Shape mCurrentShape;
     QPoint mStartCorner;
