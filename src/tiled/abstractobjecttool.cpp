@@ -23,6 +23,7 @@
 #include "actionmanager.h"
 #include "addremovetileset.h"
 #include "changemapobject.h"
+#include "changepolygon.h"
 #include "changetileobjectgroup.h"
 #include "documentmanager.h"
 #include "mapdocument.h"
@@ -53,24 +54,29 @@
 
 using namespace Tiled;
 
-static bool isTileObject(MapObject *mapObject)
+static bool isTileObject(const MapObject *mapObject)
 {
     return !mapObject->cell().isEmpty();
 }
 
-static bool isTemplateInstance(MapObject *mapObject)
+static bool isRectangleObject(const MapObject *mapObject)
+{
+    return mapObject->shape() == MapObject::Rectangle && !isTileObject(mapObject);
+}
+
+static bool isTemplateInstance(const MapObject *mapObject)
 {
     return mapObject->isTemplateInstance();
 }
 
-static bool isResizedTileObject(MapObject *mapObject)
+static bool isResizedTileObject(const MapObject *mapObject)
 {
     if (const auto tile = mapObject->cell().tile())
         return mapObject->size() != tile->size();
     return false;
 }
 
-static bool isChangedTemplateInstance(MapObject *mapObject)
+static bool isChangedTemplateInstance(const MapObject *mapObject)
 {
     if (const MapObject *templateObject = mapObject->templateObject()) {
         return mapObject->changedProperties() != 0 ||
@@ -374,6 +380,41 @@ void AbstractObjectTool::resetTileSize()
     }
 }
 
+void AbstractObjectTool::convertRectanglesToPolygons()
+{
+    QList<QUndoCommand*> commands;
+
+    for (auto mapObject : mapDocument()->selectedObjects()) {
+        if (!isRectangleObject(mapObject))
+            continue;
+
+        const QSizeF size = mapObject->size();
+        QPolygonF polygon;
+        polygon.reserve(4);
+        polygon.append(QPointF());
+        polygon.append(QPointF(size.width(), 0.0));
+        polygon.append(QPointF(size.width(), size.height()));
+        polygon.append(QPointF(0.0, size.height()));
+
+        commands << new ChangeMapObject(mapDocument(),
+                                        mapObject,
+                                        MapObject::ShapeProperty,
+                                        MapObject::Polygon);
+
+        commands << new ChangePolygon(mapDocument(),
+                                      mapObject,
+                                      polygon, mapObject->polygon());
+    }
+
+    if (!commands.isEmpty()) {
+        QUndoStack *undoStack = mapDocument()->undoStack();
+        undoStack->beginMacro(tr("Convert to Polygon"));
+        for (auto command : qAsConst(commands))
+            undoStack->push(command);
+        undoStack->endMacro();
+    }
+}
+
 static QString saveObjectTemplate(const MapObject *mapObject)
 {
     FormatHelper<ObjectTemplateFormat> helper(FileFormat::ReadWrite);
@@ -590,6 +631,12 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
         changeTileAction->setEnabled(tile() && (!selectedObjects.first()->isTemplateBase() ||
                                                 tile()->tileset()->isExternal()));
     }
+
+    bool onlyRectangleObjectSelected = std::all_of(selectedObjects.begin(),
+                                                   selectedObjects.end(),
+                                                   isRectangleObject);
+    if (onlyRectangleObjectSelected)
+        menu.addAction(tr("Convert to Polygon"), this, &AbstractObjectTool::convertRectanglesToPolygons);
 
     menu.addSeparator();
 

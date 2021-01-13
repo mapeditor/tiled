@@ -21,6 +21,7 @@
 #include "editpolygontool.h"
 
 #include "addremovemapobject.h"
+#include "changemapobject.h"
 #include "changepolygon.h"
 #include "createpolygonobjecttool.h"
 #include "geometry.h"
@@ -1036,7 +1037,8 @@ void EditPolygonTool::deleteSegment()
 
         mapDocument()->undoStack()->beginMacro(tr("Delete Segment"));
         mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(), mapObject, newPolygon, polygon));
-        mapDocument()->undoStack()->push(new TogglePolygonPolyline(mapObject));
+        mapDocument()->undoStack()->push(new ChangeMapObject(mapDocument(), mapObject,
+                                                             MapObject::ShapeProperty, MapObject::Polyline));
         mapDocument()->undoStack()->endMacro();
     }
 }

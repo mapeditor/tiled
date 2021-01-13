@@ -88,6 +88,7 @@ private:
     void removeObjects();
     void applyCollisionsToSelectedTiles(bool replace);
     void resetTileSize();
+    void convertRectanglesToPolygons();
     void saveSelectedObject();
     void detachSelectedObjects();
     void replaceObjectsWithTemplate();
