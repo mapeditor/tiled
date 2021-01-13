@@ -228,7 +228,7 @@
           <item row="9" column="0" colspan="5">
            <widget class="QCheckBox" name="autoScrolling">
             <property name="text">
-             <string>Middle mouse button activates auto-&amp;scrolling</string>
+             <string>Middle mouse button uses auto-&amp;scrolling</string>
             </property>
            </widget>
           </item>
