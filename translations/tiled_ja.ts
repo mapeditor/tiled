@@ -292,7 +292,7 @@
     <message>
         <location line="+9"/>
         <source>Thanks for using Tiled! Please consider supporting further development with a small monthly donation.</source>
-        <translation>Tiled をご利用いただき、ありがとうございます！&#x3000;少額でよいので、月額制の寄付による今後の開発支援をどうかご検討ください。</translation>
+        <translation>Tiled をご利用いただき、ありがとうございます！　少額でよいので、月額制の寄付による今後の開発支援をどうかご検討ください。</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -1549,7 +1549,7 @@ Line %1, column %2</source>
     <message>
         <location line="+183"/>
         <source>Invalid points data for polygon</source>
-        <translation>無効なポリゴンのポイントデータ</translation>
+        <translation>多角形の無効な点データ</translation>
     </message>
     <message>
         <location line="-358"/>
@@ -3579,18 +3579,18 @@ Line %1, column %2</source>
     <message>
         <location line="+29"/>
         <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation type="unfinished">&apos;regions_input&apos;レイヤーは１つも存在してはいけません.</translation>
+        <translation>「regions_input」レイヤーは 1 つしか存在できません。</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
         <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation type="unfinished">&apos;regions_*&apos;レイヤーはタイル・レイヤーである必要があります.</translation>
+        <translation>「regions_*」レイヤーはタイルレイヤーである必要があります。</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation type="unfinished">&apos;regions_output&apos;レイヤーは１つも存在してはいけません.</translation>
+        <translation>「regions_output」レイヤーは 1 つしか存在できません。</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -3600,7 +3600,7 @@ Line %1, column %2</source>
     <message>
         <location line="+21"/>
         <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation type="unfinished">&apos;input_*&apos;と&apos;inputnot_*&apos;レイヤーはタイル・レイヤーである必要があります.</translation>
+        <translation>「input_*」と「inputnot_*」レイヤーはタイルレイヤーである必要があります。</translation>
     </message>
     <message>
         <location line="+45"/>
@@ -3610,12 +3610,12 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation type="unfinished">&apos;regions&apos;、または&apos;regions_input&apos;レイヤーが見つかりません.</translation>
+        <translation>「regions」または「regions_input」レイヤーが見つかりません。</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation type="unfinished">&apos;regions&apos;、または&apos;regions_output&apos;レイヤーが見つかりません.</translation>
+        <translation>「regions」または「regions_output」レイヤーが見つかりません。</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3633,7 +3633,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/automappingmanager.cpp" line="+133"/>
         <source>Apply AutoMap rules</source>
-        <translation type="unfinished">AutoMap rulesを適用</translation>
+        <translation>自動マップルールを適用</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -3661,7 +3661,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+269"/>
         <source>Tileset</source>
-        <translation type="unfinished">タイルセット</translation>
+        <translation>タイルセット</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3676,7 +3676,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Tile image</source>
-        <translation type="unfinished">タイル画像</translation>
+        <translation>タイル画像</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3686,17 +3686,17 @@ Line %1, column %2</source>
     <message>
         <location line="+22"/>
         <source>File name</source>
-        <translation type="unfinished">ファイル名</translation>
+        <translation>ファイル名</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Location</source>
-        <translation type="unfinished">場所</translation>
+        <translation>場所</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Type</source>
-        <translation type="unfinished">種類</translation>
+        <translation>種類</translation>
     </message>
 </context>
 <context>
@@ -3704,7 +3704,7 @@ Line %1, column %2</source>
     <message>
         <location line="+89"/>
         <source>Some files could not be found</source>
-        <translation type="unfinished">いくつかのファイルが見つかりませんでした</translation>
+        <translation>いくつかのファイルが見つかりませんでした</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3716,7 +3716,7 @@ Line %1, column %2</source>
         <location line="+84"/>
         <location line="+8"/>
         <source>Locate File...</source>
-        <translation type="unfinished">ファイルの場所...</translation>
+        <translation>ファイルの場所...</translation>
     </message>
     <message>
         <location line="-5"/>
@@ -3726,7 +3726,7 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>Open Tileset...</source>
-        <translation type="unfinished">タイルセットを開く...</translation>
+        <translation>タイルセットを開く...</translation>
     </message>
     <message>
         <location line="+36"/>
@@ -4004,7 +4004,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpointobjecttool.cpp" line="+51"/>
         <source>Insert Point</source>
-        <translation>ポイントを挿入</translation>
+        <translation>点を追加</translation>
     </message>
 </context>
 <context>
@@ -4012,7 +4012,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+167"/>
         <source>Insert Polygon</source>
-        <translation type="unfinished">ポリゴンを追加</translation>
+        <translation>多角形を追加</translation>
     </message>
     <message>
         <location line="+125"/>
@@ -4022,7 +4022,7 @@ Line %1, column %2</source>
     <message>
         <location line="+208"/>
         <source>Create Polygon</source>
-        <translation>ポリゴンを作成</translation>
+        <translation>多角形を作成</translation>
     </message>
 </context>
 <context>
@@ -4143,7 +4143,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>Thanks a lot for your support! With your help Tiled will keep getting better.</source>
-        <translation>ご支援に感謝します！&#x3000;皆様からの応援のもと、Tiled は今後も発展し続けてまいります。</translation>
+        <translation>ご支援に感謝します！　皆様からの応援のもと、Tiled は今後も発展し続けてまいります。</translation>
     </message>
 </context>
 <context>
@@ -4152,7 +4152,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/editpolygontool.cpp" line="+59"/>
         <location line="+272"/>
         <source>Edit Polygons</source>
-        <translation type="unfinished">ポリゴンを編集</translation>
+        <translation>多角形を編集</translation>
     </message>
     <message>
         <location line="-22"/>
@@ -4162,8 +4162,8 @@ Line %1, column %2</source>
     <message numerus="yes">
         <location line="+268"/>
         <source>Move %n Point(s)</source>
-        <translation type="unfinished">
-            <numerusform>%n ポイントを移動</numerusform>
+        <translation>
+            <numerusform>%n 個の点を移動</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -6037,7 +6037,7 @@ Please select specific format.</source>
     <message>
         <location line="-1170"/>
         <source>Wang Set</source>
-        <translation>ワンのセット</translation>
+        <translation>ワン セット</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -6729,7 +6729,7 @@ Please select specific format.</source>
     <message>
         <location line="+76"/>
         <source>New Wang Set</source>
-        <translation>新しいワンのセット</translation>
+        <translation>新しいワン セット</translation>
     </message>
 </context>
 <context>
@@ -6745,7 +6745,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+763"/>
         <source>Set Wang Set Image</source>
-        <translation>ワンのセット画像を設定</translation>
+        <translation>ワン セット画像を設定</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -6929,7 +6929,7 @@ Please select specific format.</source>
     <message>
         <location line="-9"/>
         <source>Wang Sets</source>
-        <translation>ワンのセット</translation>
+        <translation>ワン セット</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6939,7 +6939,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Add Wang Set</source>
-        <translation>ワンのセットを追加</translation>
+        <translation>ワン セットを追加</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6949,7 +6949,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Remove Wang Set</source>
-        <translation>ワンのセットを削除</translation>
+        <translation>ワン セットを削除</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6967,7 +6967,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+104"/>
         <source>Wang Set &amp;Properties...</source>
-        <translation>ワンのセットプロパティ(&amp;P)...</translation>
+        <translation>ワン セットプロパティ(&amp;P)...</translation>
     </message>
 </context>
 <context>
@@ -7249,7 +7249,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/changepolygon.cpp" line="+41"/>
         <location line="+13"/>
         <source>Change Polygon</source>
-        <translation>ポリゴンを変更</translation>
+        <translation>多角形を変更</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -7498,12 +7498,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
         <source>Add Wang Set</source>
-        <translation>ワンのセットを追加</translation>
+        <translation>ワン セットを追加</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Wang Set</source>
-        <translation>ワンのセットを削除</translation>
+        <translation>ワン セットを削除</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+37"/>
@@ -7515,12 +7515,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+68"/>
         <source>Change Wang Set Type</source>
-        <translation type="unfinished"></translation>
+        <translation>ワン セットの種類を変更</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Change Wang Set Color Count</source>
-        <translation type="unfinished"></translation>
+        <translation>ワン セットの色数を変更</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -7530,7 +7530,7 @@ Please select specific format.</source>
     <message>
         <location line="+32"/>
         <source>Set Wang Set Image</source>
-        <translation>ワンのセット画像を設定</translation>
+        <translation>ワン セット画像を設定</translation>
     </message>
     <message>
         <location line="-127"/>
