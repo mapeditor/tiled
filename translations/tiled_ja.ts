@@ -484,7 +484,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-250"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-250"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルパース時エラー：%1</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -521,7 +521,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+183"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+183"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルパース時エラー：%1</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -548,7 +548,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-180"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-180"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルパース時エラー：%1</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -574,83 +574,83 @@
     <message>
         <location filename="../src/karchive/src/k7zip.cpp" line="+2305"/>
         <source>Could not get underlying device</source>
-        <translation type="unfinished"></translation>
+        <translation>基盤デバイスを取得できませんでした</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Read header failed</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッダーの読み取りに失敗しました</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Check signature failed</source>
-        <translation type="unfinished"></translation>
+        <translation>シグネチャの確認に失敗しました</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Bad CRC</source>
-        <translation type="unfinished"></translation>
+        <translation>CRC が不正です</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Next header size is too big</source>
-        <translation type="unfinished"></translation>
+        <translation>次のヘッダーサイズが大きすぎます</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Next header size is less than zero</source>
-        <translation type="unfinished"></translation>
+        <translation>次のヘッダーサイズが小さすぎます</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Failed read next header size; should read %1, read %2</source>
-        <translation type="unfinished"></translation>
+        <translation>次のヘッダーサイズの読み取りに失敗しました。%1 が必要なのに対し、実際は %2 でした。</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Bad next header CRC</source>
-        <translation type="unfinished"></translation>
+        <translation>次の CRC が不正です</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error in header</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッダーでエラー</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Wrong header type</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッダータイプが違います</translation>
     </message>
     <message>
         <location line="+10"/>
         <location line="+6"/>
         <source>Not implemented</source>
-        <translation type="unfinished"></translation>
+        <translation>実装されていません</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Error while reading main streams information</source>
-        <translation type="unfinished"></translation>
+        <translation>主ストリーム情報の読み取りエラー</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Error while reading header</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッダーの読み取りエラー</translation>
     </message>
     <message>
         <location line="+60"/>
         <source>Error reading modification time</source>
-        <translation type="unfinished"></translation>
+        <translation>変更日時の読み取りエラー</translation>
     </message>
     <message>
         <location line="+46"/>
         <source>Error reading MTime</source>
-        <translation type="unfinished"></translation>
+        <translation>MTime の読み取りエラー</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>無効</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -660,30 +660,30 @@
     <message>
         <location line="+191"/>
         <source>Write error</source>
-        <translation type="unfinished"></translation>
+        <translation>書き込みエラー</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Failed while encoding header</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッダーのエンコーディングエラー</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>No file currently selected</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルが選択されていません</translation>
     </message>
     <message>
         <location line="+19"/>
         <location line="+44"/>
         <location line="+37"/>
         <source>Application error: 7-Zip file must be open before being written into</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリケーションエラー：7-Zip ファイルは書き込み前に開いていなければなりません</translation>
     </message>
     <message>
         <location line="-75"/>
         <location line="+81"/>
         <source>Application error: attempted to write into non-writable 7-Zip file</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリケーションエラー：書き込み不可の 7-Zip ファイルに書き込もうとしました</translation>
     </message>
 </context>
 <context>
@@ -694,22 +694,22 @@
         <location line="+8"/>
         <location line="+8"/>
         <source>Cannot write to AR file</source>
-        <translation type="unfinished"></translation>
+        <translation>AR ファイルに書き込めません</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unsupported mode %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 モードには対応していません</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Invalid main magic</source>
-        <translation type="unfinished"></translation>
+        <translation>主マジックナンバーが不正です</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Invalid magic</source>
-        <translation type="unfinished"></translation>
+        <translation>マジックナンバーが不正です</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -719,12 +719,12 @@
     <message>
         <location line="+20"/>
         <source>Invalid longfilename reference</source>
-        <translation type="unfinished"></translation>
+        <translation>ロングファイルネーム参照が不正です</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Invalid longfilename position reference</source>
-        <translation type="unfinished"></translation>
+        <translation>ロングファイルネーム位置参照が不正です</translation>
     </message>
 </context>
 <context>
@@ -732,52 +732,52 @@
     <message>
         <location filename="../src/karchive/src/karchive.cpp" line="+150"/>
         <source>No filename or device was specified</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルネームまたはデバイスが指定されていません</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Could not set device mode to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>デバイスモードを %1 に設定できません</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>QSaveFile creation for %1 failed: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 の QSaveFile 作成に失敗しました：%2</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Unsupported mode %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 モードには対応していません</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Archive already closed</source>
-        <translation type="unfinished"></translation>
+        <translation>アーカイブはすでに閉じています</translation>
     </message>
     <message>
         <location line="+52"/>
         <source>%1 doesn&apos;t exist or is not a regular file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 は存在しないか通常のファイルではありません。</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Failed accessing the file %1 for adding to the archive. The error was: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>アーカイブに追加しようとしましたが、ファイル %1 にアクセスできませんでした。エラー：%2</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Couldn&apos;t open file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル %1 を開けませんでした：%2</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Directory %1 does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>ディレクトリ %1 は存在しません</translation>
     </message>
     <message>
         <location line="+54"/>
         <source>Writing failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>書き込みできませんでした：%1</translation>
     </message>
 </context>
 <context>
@@ -785,7 +785,7 @@
     <message>
         <location filename="../src/karchive/src/karchive_p.h" line="+57"/>
         <source>Unknown error</source>
-        <translation type="unfinished"></translation>
+        <translation>不明なエラー</translation>
     </message>
 </context>
 <context>
@@ -793,7 +793,7 @@
     <message>
         <location filename="../src/karchive/src/kcompressiondevice.cpp" line="+388"/>
         <source>Could not write. Partition full?</source>
-        <translation type="unfinished"></translation>
+        <translation>書き込みできませんでした。パーティションが一杯？</translation>
     </message>
 </context>
 <context>
@@ -804,17 +804,17 @@
         <location line="+8"/>
         <location line="+8"/>
         <source>Cannot write to RCC file</source>
-        <translation type="unfinished"></translation>
+        <translation>RCC ファイルに書き込めません</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unsupported mode %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 モードには対応していません</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Failed to register resource %1 under prefix %2</source>
-        <translation type="unfinished"></translation>
+        <translation>リソース %1 を接頭辞 %2 で登録できませんでした</translation>
     </message>
 </context>
 <context>
@@ -822,60 +822,60 @@
     <message>
         <location filename="../src/karchive/src/ktar.cpp" line="+327"/>
         <source>File %1 does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル %1 は存在しません</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Archive %1 is corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>アーカイブ %1 は破損しています</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Disk full</source>
-        <translation type="unfinished"></translation>
+        <translation>ディスクが一杯です</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>Could not get underlying device</source>
-        <translation type="unfinished"></translation>
+        <translation>基盤デバイスを取得できませんでした</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Could not read tar header</source>
-        <translation type="unfinished"></translation>
+        <translation>Tar ヘッダーを読み取りできませんでした</translation>
     </message>
     <message>
         <location line="+175"/>
         <source>Failed to write back temp file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>一時ファイルに書き込めませんでした：%1</translation>
     </message>
     <message>
         <location line="+57"/>
         <source>Couldn&apos;t write alignment: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>アライメントを書き込めませんでした：%1</translation>
     </message>
     <message>
         <location line="+122"/>
         <location line="+75"/>
         <location line="+64"/>
         <source>Application error: TAR file must be open before being written into</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリケーションエラー：TAR ファイルは書き込み前に開いていなければなりません</translation>
     </message>
     <message>
         <location line="-133"/>
         <source>Application error: attempted to write into non-writable 7-Zip file</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリケーションエラー：書き込み不可の 7-Zip ファイルに書き込もうとしました</translation>
     </message>
     <message>
         <location line="+56"/>
         <source>Failed to write header: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘッダーに書き込めませんでした：%1</translation>
     </message>
     <message>
         <location line="+19"/>
         <location line="+64"/>
         <source>Application error: attempted to write into non-writable TAR file</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリケーションエラー：書き込み不可の TAR ファイルに書き込もうとしました</translation>
     </message>
 </context>
 <context>
@@ -884,135 +884,135 @@
         <location filename="../src/karchive/src/kzip.cpp" line="+465"/>
         <location line="+19"/>
         <source>Invalid ZIP file. Unexpected end of file. (Error code: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な ZIP ファイルです。予期しないファイルの終端です。（エラーコード：%1）</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Invalid ZIP file. Negative name length</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な ZIP ファイルです。名前の長さがマイナス値</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Invalid ZIP file. Name not completely read (#2)</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な ZIP ファイルです。名前の読み取りが完了していません（#2）</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Invalid ZIP File. Broken ExtraField.</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な ZIP ファイルです。ExtraField が破損しています。</translation>
     </message>
     <message>
         <location line="+14"/>
         <location line="+23"/>
         <source>Could not seek to next header token</source>
-        <translation type="unfinished"></translation>
+        <translation>次のヘッダートークンが見つかりませんでした</translation>
     </message>
     <message>
         <location line="-8"/>
         <source>Invalid ZIP file. Unexpected end of file. (#5)</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な ZIP ファイルです。予期しないファイルの終端です。（#5）</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Could not seek to file compressed size</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル圧縮サイズが見つかりませんでした</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Invalid ZIP file. Unexpected end of file. (#1)</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な ZIP ファイルです。予期しないファイルの終端です。（#1）</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Invalid ZIP file, central entry too short (not long enough for valid entry)</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な ZIP ファイルです。中央エントリーが短すぎます（有効なエントリーに必要な長さを満たしていません）。</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Invalid ZIP file, file path name length smaller or equal to zero</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な ZIP ファイルです。名前の長さが短すぎるかゼロです。</translation>
     </message>
     <message>
         <location line="+82"/>
         <source>Invalid ZIP file, found empty entry name</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な ZIP ファイルです。空のエントリー名が見つかりました。</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>File %1 is in folder %2, but %3 is actually a file.</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル %1 はフォルダー %2 にあるはずですが、%3 は実際はファイルです。</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Could not seek to next entry</source>
-        <translation type="unfinished"></translation>
+        <translation>次のエントリーが見つかりませんでした</translation>
     </message>
     <message>
         <location line="+13"/>
         <location line="+10"/>
         <source>Invalid ZIP file. Unexpected end of file.</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な ZIP ファイルです。予期しないファイルの終端です。</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Invalid ZIP file. Unrecognized header at offset %1</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な ZIP ファイルです。オフセット %1 に認識できないヘッダーがあります</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Could not seek to next file header: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>次のファイルヘッダーが見つかりませんでした：%1</translation>
     </message>
     <message>
         <location line="+28"/>
         <location line="+96"/>
         <source>Could not write file header: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルヘッダーに書き込みできませんでした：%1</translation>
     </message>
     <message>
         <location line="+49"/>
         <source>Could not write central dir record: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>中央ディレクトリレコードに書き込みできませんでした：%1</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Application error: ZIP file must be open before being written into</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリケーションエラー：ZIP ファイルは書き込み前に開いていなければなりません</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Application error: attempted to write into non-writable ZIP file</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリケーションエラー：書き込み不可の ZIP ファイルに書き込もうとしました</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Cannot create a device. Disk full?</source>
-        <translation type="unfinished"></translation>
+        <translation>デバイスを作成できませんでした。ディスクが一杯？</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Cannot seek in ZIP file. Disk full?</source>
-        <translation type="unfinished"></translation>
+        <translation>ZIP ファイル内を検索できません。ディスクが一杯？</translation>
     </message>
     <message>
         <location line="+134"/>
         <source>Could not write to the archive. Disk full?</source>
-        <translation type="unfinished"></translation>
+        <translation>アーカイブに書き込みできませんでした。ディスクが一杯？</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Could not open compression device: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>圧縮デバイスを開けませんでした：%1</translation>
     </message>
     <message>
         <location line="+85"/>
         <source>No file or device</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルまたはデバイスがありません</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Error writing data: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>デーータ書き込みエラー：%1</translation>
     </message>
 </context>
 <context>
@@ -1242,7 +1242,7 @@
     <message>
         <location line="+11"/>
         <source>Enable Parallax</source>
-        <translation type="unfinished"></translation>
+        <translation>パララックスを有効化</translation>
     </message>
     <message>
         <location line="-269"/>
@@ -1555,7 +1555,7 @@ Line %1, column %2</source>
         <location line="-358"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-40"/>
         <source>Unknown encoding: %1</source>
-        <translation>エンコーディングがよく分かりません: %1</translation>
+        <translation>不明なエンコーディングです：%1</translation>
     </message>
     <message>
         <location line="-407"/>
@@ -2133,7 +2133,7 @@ Line %1, column %2</source>
     <message>
         <location line="-20"/>
         <source>Object selection behavior:</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト選択の挙動：</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -2818,7 +2818,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/rpmap/rpmapplugin.cpp" line="+93"/>
         <source>RpTool MapTool files (*.rpmap)</source>
-        <translation type="unfinished"></translation>
+        <translation>RpTool MapTool ファイル (*.rpmap)</translation>
     </message>
 </context>
 <context>
@@ -2941,12 +2941,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editablewangset.cpp" line="+84"/>
         <source>Wang ID must be an array of length 8</source>
-        <translation type="unfinished"></translation>
+        <translation>ワン ID は要素数 8 の配列にしてください</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Invalid Wang ID</source>
-        <translation type="unfinished"></translation>
+        <translation>無効なワン ID</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3038,7 +3038,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/scriptmodule.cpp" line="+160"/>
         <location line="+48"/>
         <source>Editor not available</source>
-        <translation type="unfinished"></translation>
+        <translation>エディターを利用できません</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -3155,7 +3155,7 @@ Line %1, column %2</source>
     <message>
         <location line="+58"/>
         <source>Unsupported encoding: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>非対応のエンコーディングです：%1</translation>
     </message>
     <message>
         <location line="+89"/>
@@ -3190,12 +3190,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/scriptimage.cpp" line="+84"/>
         <source>Invalid color name: &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>無効な色名です：「%2」</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Invalid color value</source>
-        <translation type="unfinished"></translation>
+        <translation>無効な色値</translation>
     </message>
 </context>
 <context>
@@ -3299,7 +3299,7 @@ Line %1, column %2</source>
     <message>
         <location line="+22"/>
         <source>Monospace</source>
-        <translation type="unfinished"></translation>
+        <translation>等幅</translation>
     </message>
 </context>
 <context>
@@ -3348,7 +3348,7 @@ Line %1, column %2</source>
     <message>
         <location line="-363"/>
         <source>Apply Collision Shapes</source>
-        <translation type="unfinished"></translation>
+        <translation>当たり判定形状を適用</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -3360,7 +3360,7 @@ Line %1, column %2</source>
         <location line="-214"/>
         <location line="+228"/>
         <source>Convert to Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>多角形に変換</translation>
     </message>
     <message numerus="yes">
         <location line="-40"/>
@@ -3379,12 +3379,12 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>Apply Collision(s) to Selected Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>当たり判定を選択したタイルに適用</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Replace Existing Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>既存のオブジェクトを置き換える</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3414,7 +3414,7 @@ Line %1, column %2</source>
     <message>
         <location line="+4"/>
         <source>Can&apos;t create template with embedded tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルセットを埋め込んだテンプレートを作成できません</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -3996,7 +3996,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createellipseobjecttool.cpp" line="+48"/>
         <source>Insert Ellipse</source>
-        <translation type="unfinished">楕円形を追加</translation>
+        <translation>楕円形を追加</translation>
     </message>
 </context>
 <context>
@@ -4030,7 +4030,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createrectangleobjecttool.cpp" line="+47"/>
         <source>Insert Rectangle</source>
-        <translation type="unfinished">四角形を追加</translation>
+        <translation>四角形を追加</translation>
     </message>
 </context>
 <context>
@@ -4038,7 +4038,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createtemplatetool.cpp" line="+53"/>
         <source>Insert Template</source>
-        <translation>テンプレートを挿入</translation>
+        <translation>テンプレートを追加</translation>
     </message>
 </context>
 <context>
@@ -4046,7 +4046,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createtextobjecttool.cpp" line="+70"/>
         <source>Insert Text</source>
-        <translation>テキストを挿入</translation>
+        <translation>テキストを追加</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -4338,7 +4338,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>Filter</source>
-        <translation type="unfinished">フィルタ</translation>
+        <translation>フィルター</translation>
     </message>
 </context>
 <context>
@@ -4580,7 +4580,7 @@ Please select specific format.</source>
     <message>
         <location line="-403"/>
         <source>New World</source>
-        <translation type="unfinished"></translation>
+        <translation>新しいワールド</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -4630,7 +4630,7 @@ Please select specific format.</source>
     <message>
         <location line="+107"/>
         <source>Error Saving World</source>
-        <translation type="unfinished"></translation>
+        <translation>ワールド保存時エラー</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -4771,12 +4771,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+132"/>
         <source>Map format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>マップ形式「%s」が見つかりません</translation>
     </message>
     <message>
         <location line="+104"/>
         <source>untitled.tmx</source>
-        <translation type="unfinished">untitled.tmx</translation>
+        <translation>無題.tmx</translation>
     </message>
     <message>
         <location line="+109"/>
@@ -4799,7 +4799,7 @@ Please select specific format.</source>
         <location line="+36"/>
         <location filename="../src/tiled/newmapdialog.cpp" line="+83"/>
         <source>Tile Layer %1</source>
-        <translation type="unfinished">タイル・レイヤー %1</translation>
+        <translation>タイルレイヤー%1</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -4809,7 +4809,7 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Image Layer %1</source>
-        <translation type="unfinished">画像・レイヤー %1</translation>
+        <translation>画像レイヤー%1</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -4952,7 +4952,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>&amp;Image Layer</source>
-        <translation>イメージレイヤー(&amp;I)</translation>
+        <translation>画像レイヤー(&amp;I)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5096,7 +5096,7 @@ Please select specific format.</source>
     <message>
         <location line="+193"/>
         <source>Unrecognized tileset format.</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルセット形式を認識できません。</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5473,12 +5473,12 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Filter</source>
-        <translation type="unfinished">フィルタ</translation>
+        <translation>フィルター</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Object Layer</source>
-        <translation type="unfinished">オブジェクト・レイヤーの追加</translation>
+        <translation>オブジェクトレイヤーを追加</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5515,19 +5515,19 @@ Please select specific format.</source>
         <location line="-162"/>
         <location line="+167"/>
         <source>Select From Any Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>任意のレイヤーから選択</translation>
     </message>
     <message>
         <location line="-166"/>
         <location line="+167"/>
         <source>Prefer Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>選択したレイヤーを優先</translation>
     </message>
     <message>
         <location line="-166"/>
         <location line="+167"/>
         <source>Selected Layers Only</source>
-        <translation type="unfinished"></translation>
+        <translation>選択したレイヤーのみ</translation>
     </message>
 </context>
 <context>
@@ -5863,7 +5863,7 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Opacity</source>
-        <translation type="unfinished">透過度</translation>
+        <translation>不透明度</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -5883,17 +5883,17 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Parallax Factor</source>
-        <translation type="unfinished"></translation>
+        <translation>パララックス係数</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Tile Layer</source>
-        <translation type="unfinished">タイル・レイヤー</translation>
+        <translation>タイルレイヤー</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Object Layer</source>
-        <translation type="unfinished">オブジェクト・レイヤー</translation>
+        <translation>オブジェクトレイヤー</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -5903,7 +5903,7 @@ Please select specific format.</source>
     <message>
         <location line="+10"/>
         <source>Image Layer</source>
-        <translation type="unfinished">画像・レイヤー</translation>
+        <translation>画像レイヤー</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5961,7 +5961,7 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Allowed Transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>変形を許可</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5976,12 +5976,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Rotate</source>
-        <translation type="unfinished"></translation>
+        <translation>回転</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Prefer Untransformed Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>変形していないタイルを優先</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -6017,22 +6017,22 @@ Please select specific format.</source>
     <message>
         <location line="+25"/>
         <source>Color Count</source>
-        <translation type="unfinished"></translation>
+        <translation>色数</translation>
     </message>
     <message>
         <location line="+1162"/>
         <source>Corner</source>
-        <translation type="unfinished"></translation>
+        <translation>角</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edge</source>
-        <translation type="unfinished"></translation>
+        <translation>辺</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Mixed</source>
-        <translation type="unfinished"></translation>
+        <translation>混成</translation>
     </message>
     <message>
         <location line="-1170"/>
@@ -6216,17 +6216,17 @@ Please select specific format.</source>
     <message>
         <location line="+33"/>
         <source>%1, %2 - %3: (%4 x %5)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, %2 - %3: (%4 x %5)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>四角形</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Circle</source>
-        <translation type="unfinished"></translation>
+        <translation>円形</translation>
     </message>
 </context>
 <context>
@@ -6252,7 +6252,7 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Filter</source>
-        <translation type="unfinished">フィルタ</translation>
+        <translation>フィルター</translation>
     </message>
     <message>
         <location line="+41"/>
@@ -6442,7 +6442,7 @@ Please select specific format.</source>
     <message>
         <location line="+108"/>
         <source>Detect Bounding Box</source>
-        <translation type="unfinished"></translation>
+        <translation>バウンディングボックスを検出</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6517,7 +6517,7 @@ Please select specific format.</source>
     <message>
         <location line="+15"/>
         <source>Tile Stamps</source>
-        <translation type="unfinished">タイル・スタンプ</translation>
+        <translation>タイルスタンプ</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6542,12 +6542,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Set Stamps Folder</source>
-        <translation type="unfinished">スタンプフォルダを設定</translation>
+        <translation>スタンプフォルダーを設定</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Filter</source>
-        <translation type="unfinished">フィルタ</translation>
+        <translation>フィルター</translation>
     </message>
 </context>
 <context>
@@ -6646,7 +6646,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/tilesetdocument.cpp" line="+101"/>
         <location line="+38"/>
         <source>Tileset format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルセット形式「%s」が見つかりません</translation>
     </message>
     <message>
         <location line="+83"/>
@@ -6689,7 +6689,7 @@ Please select specific format.</source>
     <message>
         <location line="-189"/>
         <source>Tile Animation Editor</source>
-        <translation type="unfinished">タイル・アニメーション エディター</translation>
+        <translation>タイル・アニメーション エディター</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6944,7 +6944,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Duplicate Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>ワン セットを複製</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6954,7 +6954,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Add Color</source>
-        <translation type="unfinished"></translation>
+        <translation>色を追加</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -7223,7 +7223,7 @@ Please select specific format.</source>
     <message>
         <location line="+20"/>
         <source>Change Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルセットを変更</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+33"/>
@@ -7295,7 +7295,7 @@ Please select specific format.</source>
     <message>
         <location line="+21"/>
         <source>Change Layer Parallax Factor</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤーのパララックス係数を変更</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -7572,7 +7572,7 @@ Please select specific format.</source>
         <location line="+24"/>
         <location line="+24"/>
         <source>Change Wang Color</source>
-        <translation type="unfinished"></translation>
+        <translation>ワンの色を変更</translation>
     </message>
 </context>
 <context>
@@ -7660,17 +7660,17 @@ Please select specific format.</source>
     <message>
         <location line="-1"/>
         <source>If used only specified layers are shown. Can be repeated to show multiple specified layers only.</source>
-        <translation type="unfinished"></translation>
+        <translation>指定したレイヤーのみを表示するかどうか。複数の指定レイヤーのみを表示するために繰り返し記述できます。</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>If used tile animations are advanced by the specified duration.</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルアニメーションの詳細で長さを指定するかどうか。</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>duration</source>
-        <translation type="unfinished"></translation>
+        <translation>長さ</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -7700,7 +7700,7 @@ Please select specific format.</source>
     <message>
         <location line="+9"/>
         <source>Invalid advance-animations specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルアニメーションの詳細が無効です：「%1」</translation>
     </message>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+57"/>
