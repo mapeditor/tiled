@@ -240,7 +240,7 @@
     <message>
         <location line="+7"/>
         <source>&amp;Save before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Запазване преди изпълнение</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -462,7 +462,7 @@
     <message>
         <location line="+70"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
-        <translation>Това не изглежда като правилно оформена карта на flare. Картите на Flare имат заглавен раздел, раздел за плочни набори и един слой плочки.</translation>
+        <translation>Това не изглежда като правилно оформена карта на flare. Картите на Flare имат поне заглавен раздел, раздел за плочни набори и един слой плочки.</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -484,7 +484,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-250"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-250"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при прочитането на файла: %1</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -521,7 +521,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+183"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+183"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при прочитането на файла: %1</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -548,7 +548,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-180"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-180"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при прочитането на файла: %1</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -574,116 +574,116 @@
     <message>
         <location filename="../src/karchive/src/k7zip.cpp" line="+2305"/>
         <source>Could not get underlying device</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се достъпи прилежащото устройство</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Read header failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Прочитането на заглавката беше неуспешно</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Check signature failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверката на подписа беше неуспешна</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Bad CRC</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешно CRC</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Next header size is too big</source>
-        <translation type="unfinished"></translation>
+        <translation>Размерът на следващата заглавка е прекалено голям</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Next header size is less than zero</source>
-        <translation type="unfinished"></translation>
+        <translation>Размерът на следващата заглавка е по-малък от нула</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Failed read next header size; should read %1, read %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Размерът на следващата заглавка не може да бъде прочетен – трябва да бъде %1, а прочетеното беше %2</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Bad next header CRC</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешен CRC на следващата заглавка</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error in header</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка в заглавката</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Wrong header type</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешен тип на заглавка</translation>
     </message>
     <message>
         <location line="+10"/>
         <location line="+6"/>
         <source>Not implemented</source>
-        <translation type="unfinished"></translation>
+        <translation>Не е разработено</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Error while reading main streams information</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при прочитането на информацията за основните потоци</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Error while reading header</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при прочитането на заглавката</translation>
     </message>
     <message>
         <location line="+60"/>
         <source>Error reading modification time</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при прочитането на времето на последна промяна</translation>
     </message>
     <message>
         <location line="+46"/>
         <source>Error reading MTime</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при прочитането на MTime</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправилно</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Read size failed (checkRecordsSize: %1, d-&gt;pos - ppp: %2, size: %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Прочитането на размера беше неуспешно (checkRecordsSize: %1, d-&gt;pos - ppp: %2, size: %3)</translation>
     </message>
     <message>
         <location line="+191"/>
         <source>Write error</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при запис</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Failed while encoding header</source>
-        <translation type="unfinished"></translation>
+        <translation>Провал при кодирането на заглавката</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>No file currently selected</source>
-        <translation type="unfinished"></translation>
+        <translation>В момента няма избран файл</translation>
     </message>
     <message>
         <location line="+19"/>
         <location line="+44"/>
         <location line="+37"/>
         <source>Application error: 7-Zip file must be open before being written into</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка в приложението: Файл от тип 7-Zip трябва първо да бъде отворен, преди да може да се пише в него</translation>
     </message>
     <message>
         <location line="-75"/>
         <location line="+81"/>
         <source>Application error: attempted to write into non-writable 7-Zip file</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка в приложението: опит за писане във файл от тип 7-Zip, който не позволява запис</translation>
     </message>
 </context>
 <context>
@@ -694,37 +694,37 @@
         <location line="+8"/>
         <location line="+8"/>
         <source>Cannot write to AR file</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се записва във файл от тип AR</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unsupported mode %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неподдържан режим %1</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Invalid main magic</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправилна основна магическа стойност</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Invalid magic</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправилна магическа стойност</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Invalid size</source>
-        <translation type="unfinished">Неправилен размер</translation>
+        <translation>Неправилен размер</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Invalid longfilename reference</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправилна препратка към дълго име на файл</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Invalid longfilename position reference</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправилна препратка към позиция с дълго име на файл</translation>
     </message>
 </context>
 <context>
@@ -732,52 +732,52 @@
     <message>
         <location filename="../src/karchive/src/karchive.cpp" line="+150"/>
         <source>No filename or device was specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Не е посочен файл или устройство</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Could not set device mode to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Режимът на устройството не може да бъде зададен на %1</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>QSaveFile creation for %1 failed: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Създаването на QSaveFile за %1 беше неуспеино: %2</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Unsupported mode %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неподдържан режим %1</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Archive already closed</source>
-        <translation type="unfinished"></translation>
+        <translation>Архивът вече е затворен</translation>
     </message>
     <message>
         <location line="+52"/>
         <source>%1 doesn&apos;t exist or is not a regular file.</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ не съществува или не е обикновен файл.</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Failed accessing the file %1 for adding to the archive. The error was: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлът „%1“ не може да бъде достъпен, за да бъде добавен към архива. Грешката е: %2</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Couldn&apos;t open file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлът „%1“ не може да бъде отворен: %2</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Directory %1 does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Папката „%1“ не съществува</translation>
     </message>
     <message>
         <location line="+54"/>
         <source>Writing failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Записът беше неуспешен: %1</translation>
     </message>
 </context>
 <context>
@@ -785,7 +785,7 @@
     <message>
         <location filename="../src/karchive/src/karchive_p.h" line="+57"/>
         <source>Unknown error</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестна грешка</translation>
     </message>
 </context>
 <context>
@@ -793,7 +793,7 @@
     <message>
         <location filename="../src/karchive/src/kcompressiondevice.cpp" line="+388"/>
         <source>Could not write. Partition full?</source>
-        <translation type="unfinished"></translation>
+        <translation>Записът не може да бъде извършен. Възможно ли е дялът да е пълен?</translation>
     </message>
 </context>
 <context>
@@ -804,17 +804,17 @@
         <location line="+8"/>
         <location line="+8"/>
         <source>Cannot write to RCC file</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се извърши запис във файл от типа RCC</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unsupported mode %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неподдържан режим %1</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Failed to register resource %1 under prefix %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ресурсът „%1“ не може да бъде регистриран в префикс „%2“</translation>
     </message>
 </context>
 <context>
@@ -822,60 +822,60 @@
     <message>
         <location filename="../src/karchive/src/ktar.cpp" line="+327"/>
         <source>File %1 does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлът „%1“ не съществува</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Archive %1 is corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>Архивът „%1“ е повреден</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Disk full</source>
-        <translation type="unfinished"></translation>
+        <translation>Дискът е пълен</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>Could not get underlying device</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се достъпи прилежащото устройство</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Could not read tar header</source>
-        <translation type="unfinished"></translation>
+        <translation>Заглавката на tar не може да бъде прочетена</translation>
     </message>
     <message>
         <location line="+175"/>
         <source>Failed to write back temp file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Временният файл не може да бъде записан обратно: %1</translation>
     </message>
     <message>
         <location line="+57"/>
         <source>Couldn&apos;t write alignment: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Подравняването не може да бъде записано: %1</translation>
     </message>
     <message>
         <location line="+122"/>
         <location line="+75"/>
         <location line="+64"/>
         <source>Application error: TAR file must be open before being written into</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка в приложението: Файл от тип TAR трябва първо да бъде отворен, преди в него да може да се пише</translation>
     </message>
     <message>
         <location line="-133"/>
         <source>Application error: attempted to write into non-writable 7-Zip file</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка в приложението: опит за писане във файл от тип 7-Zip, който не позволява запис</translation>
     </message>
     <message>
         <location line="+56"/>
         <source>Failed to write header: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Заглавката не може да бъде записана: %1</translation>
     </message>
     <message>
         <location line="+19"/>
         <location line="+64"/>
         <source>Application error: attempted to write into non-writable TAR file</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка в приложението: опит за писане във файл от тип TAR, който не позволява запис</translation>
     </message>
 </context>
 <context>
@@ -884,135 +884,135 @@
         <location filename="../src/karchive/src/kzip.cpp" line="+465"/>
         <location line="+19"/>
         <source>Invalid ZIP file. Unexpected end of file. (Error code: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Повреден файл ZIP. Неочакван край на файла. (Код на грешката: %1)</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Invalid ZIP file. Negative name length</source>
-        <translation type="unfinished"></translation>
+        <translation>Повреден файл ZIP. Отрицателна дължина на името</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Invalid ZIP file. Name not completely read (#2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Повреден файл ZIP. Името не е прочетено напълно (#2)</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Invalid ZIP File. Broken ExtraField.</source>
-        <translation type="unfinished"></translation>
+        <translation>Повреден файл ZIP. Повредено поле ExtraField.</translation>
     </message>
     <message>
         <location line="+14"/>
         <location line="+23"/>
         <source>Could not seek to next header token</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се прескочи до следващата заглавка</translation>
     </message>
     <message>
         <location line="-8"/>
         <source>Invalid ZIP file. Unexpected end of file. (#5)</source>
-        <translation type="unfinished"></translation>
+        <translation>Повреден файл ZIP. Неочакван край на файла. (#5)</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Could not seek to file compressed size</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се прескочи до компресирания размер на файла</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Invalid ZIP file. Unexpected end of file. (#1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Повреден файл ZIP. Неочакван край на файла. (#1)</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Invalid ZIP file, central entry too short (not long enough for valid entry)</source>
-        <translation type="unfinished"></translation>
+        <translation>Повреден файл ZIP. Централният запис е твърде кратък (недостатъчно дълъг за правилен елемент)</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Invalid ZIP file, file path name length smaller or equal to zero</source>
-        <translation type="unfinished"></translation>
+        <translation>Повреден файл ZIP. Име на файлов път е дължина по-малка или равна на нула</translation>
     </message>
     <message>
         <location line="+82"/>
         <source>Invalid ZIP file, found empty entry name</source>
-        <translation type="unfinished"></translation>
+        <translation>Повреден файл ZIP. Открито е празно име на запис</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>File %1 is in folder %2, but %3 is actually a file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлът „%1“ е в папка „%2“, но „%3“ всъщност е файл.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Could not seek to next entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може де се прескочи до следващия запис</translation>
     </message>
     <message>
         <location line="+13"/>
         <location line="+10"/>
         <source>Invalid ZIP file. Unexpected end of file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Повреден файл ZIP. Неочакван край на файла.</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Invalid ZIP file. Unrecognized header at offset %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Повреден файл ZIP. Непозната заглавка на адрес %1</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Could not seek to next file header: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се прескочи до следващата файлова заглавка: %1</translation>
     </message>
     <message>
         <location line="+28"/>
         <location line="+96"/>
         <source>Could not write file header: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се запише файловата заглавка: %1</translation>
     </message>
     <message>
         <location line="+49"/>
         <source>Could not write central dir record: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се запише записът за централната папка: %1</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Application error: ZIP file must be open before being written into</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка в приложението: Файл от тип ZIP трябва първо да бъде отворен, преди да може да се пише в него</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Application error: attempted to write into non-writable ZIP file</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка в приложението: опит за писане във файл от тип ZIP, който не позволява запис</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Cannot create a device. Disk full?</source>
-        <translation type="unfinished"></translation>
+        <translation>Устройството не може да бъде създадено. Дискът пълен ли е?</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Cannot seek in ZIP file. Disk full?</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се прескача на различни позиции във файла ZIP. Дискът пълен ли е?</translation>
     </message>
     <message>
         <location line="+134"/>
         <source>Could not write to the archive. Disk full?</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се извърши запис в архива. Дискът пълен ли е?</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Could not open compression device: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Устройството за компресиране не може да се отвори: %1</translation>
     </message>
     <message>
         <location line="+85"/>
         <source>No file or device</source>
-        <translation type="unfinished"></translation>
+        <translation>Няма файл или устройство</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Error writing data: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при записа на данните: %1</translation>
     </message>
 </context>
 <context>
@@ -1252,7 +1252,7 @@
     <message>
         <location line="+11"/>
         <source>Enable Parallax</source>
-        <translation type="unfinished"></translation>
+        <translation>Включване на паралакса</translation>
     </message>
     <message>
         <location line="-240"/>
@@ -1521,7 +1521,7 @@ Line %1, column %2</source>
         <location line="+220"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+65"/>
         <source>Terrains</source>
-        <translation type="unfinished">Терени</translation>
+        <translation>Терени</translation>
     </message>
     <message>
         <location line="+260"/>
@@ -2132,17 +2132,17 @@ Line %1, column %2</source>
     <message>
         <location line="-20"/>
         <source>Object selection behavior:</source>
-        <translation type="unfinished"></translation>
+        <translation>Поведение при избор на обект:</translation>
     </message>
     <message>
         <location line="+50"/>
         <source>Middle mouse button uses auto-&amp;scrolling</source>
-        <translation type="unfinished"></translation>
+        <translation>Средният бутон на мишката използва &amp;автоматично превъртане</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Use s&amp;mooth scrolling</source>
-        <translation type="unfinished"></translation>
+        <translation>Използване на &amp;гладко превъртане</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2817,7 +2817,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/rpmap/rpmapplugin.cpp" line="+93"/>
         <source>RpTool MapTool files (*.rpmap)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлове на RpTool MapTool (*.rpmap)</translation>
     </message>
 </context>
 <context>
@@ -2940,12 +2940,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editablewangset.cpp" line="+84"/>
         <source>Wang ID must be an array of length 8</source>
-        <translation type="unfinished"></translation>
+        <translation>Ид. на Ванг трябва да бъде масив с дължина 8</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Invalid Wang ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправилен ид. на Ванг</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3037,7 +3037,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/scriptmodule.cpp" line="+160"/>
         <location line="+48"/>
         <source>Editor not available</source>
-        <translation type="unfinished"></translation>
+        <translation>Редакторът не е наличен</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -3154,7 +3154,7 @@ Line %1, column %2</source>
     <message>
         <location line="+58"/>
         <source>Unsupported encoding: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неподдържана кодировка: %1</translation>
     </message>
     <message>
         <location line="+89"/>
@@ -3189,12 +3189,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/scriptimage.cpp" line="+84"/>
         <source>Invalid color name: &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправилно име на цвят: „%2“</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Invalid color value</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправилна стойност за цвят</translation>
     </message>
 </context>
 <context>
@@ -3298,7 +3298,7 @@ Line %1, column %2</source>
     <message>
         <location line="+22"/>
         <source>Monospace</source>
-        <translation type="unfinished"></translation>
+        <translation>Равноширок</translation>
     </message>
 </context>
 <context>
@@ -3347,7 +3347,7 @@ Line %1, column %2</source>
     <message>
         <location line="-363"/>
         <source>Apply Collision Shapes</source>
-        <translation type="unfinished"></translation>
+        <translation>Прилагане на формите за колизии</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -3359,7 +3359,7 @@ Line %1, column %2</source>
         <location line="-214"/>
         <location line="+228"/>
         <source>Convert to Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Преобразуване в полигон</translation>
     </message>
     <message numerus="yes">
         <location line="-40"/>
@@ -3380,17 +3380,17 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>Apply Collision(s) to Selected Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Прилагане на колизията/колизиите към избраните плочки</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Replace Existing Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Замяна на съществуващите обекти</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Objects</source>
-        <translation type="unfinished">Добавяне на обекти</translation>
+        <translation>Добавяне на обектите</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -3415,7 +3415,7 @@ Line %1, column %2</source>
     <message>
         <location line="+4"/>
         <source>Can&apos;t create template with embedded tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се създаде шаблон с вграден плочен набор</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -4587,7 +4587,7 @@ Please select specific format.</source>
     <message>
         <location line="-403"/>
         <source>New World</source>
-        <translation type="unfinished"></translation>
+        <translation>Нов свят</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -4637,7 +4637,7 @@ Please select specific format.</source>
     <message>
         <location line="+107"/>
         <source>Error Saving World</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при запазване на света</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -4778,7 +4778,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+132"/>
         <source>Map format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Форматът за карти „%s“ не е намерен</translation>
     </message>
     <message>
         <location line="+104"/>
@@ -5115,7 +5115,7 @@ Please select specific format.</source>
     <message>
         <location line="+193"/>
         <source>Unrecognized tileset format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Непознат формат на плочен набор.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5539,19 +5539,19 @@ Please select specific format.</source>
         <location line="-162"/>
         <location line="+167"/>
         <source>Select From Any Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Избиране от всеки слой</translation>
     </message>
     <message>
         <location line="-166"/>
         <location line="+167"/>
         <source>Prefer Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Да се предпочитат избраните слоеве</translation>
     </message>
     <message>
         <location line="-166"/>
         <location line="+167"/>
         <source>Selected Layers Only</source>
-        <translation type="unfinished"></translation>
+        <translation>Само избраните слоеве</translation>
     </message>
 </context>
 <context>
@@ -5910,7 +5910,7 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Parallax Factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Фактор на паралакс</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5988,27 +5988,27 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Allowed Transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Разрешени трансформации</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished">Хоризонтално обръщане</translation>
+        <translation>Хоризонтално обръщане</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished">Вертикално обръщане</translation>
+        <translation>Вертикално обръщане</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Rotate</source>
-        <translation type="unfinished"></translation>
+        <translation>Завъртане</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Prefer Untransformed Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Да се предпочитат нетрансформирани плочки</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -6044,22 +6044,22 @@ Please select specific format.</source>
     <message>
         <location line="+25"/>
         <source>Color Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Брой цветове</translation>
     </message>
     <message>
         <location line="+1162"/>
         <source>Corner</source>
-        <translation type="unfinished"></translation>
+        <translation>Ъгъл</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Ръб</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Mixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Смесено</translation>
     </message>
     <message>
         <location line="-1170"/>
@@ -6243,17 +6243,17 @@ Please select specific format.</source>
     <message>
         <location line="+33"/>
         <source>%1, %2 - %3: (%4 x %5)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, %2 – %3: (%4 x %5)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Правоъгълник</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Circle</source>
-        <translation type="unfinished"></translation>
+        <translation>Кръг</translation>
     </message>
 </context>
 <context>
@@ -6469,7 +6469,7 @@ Please select specific format.</source>
     <message>
         <location line="+108"/>
         <source>Detect Bounding Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Засичане на обграждащата кутия</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6673,7 +6673,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/tilesetdocument.cpp" line="+101"/>
         <location line="+38"/>
         <source>Tileset format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Форматът за плочен набор „%s“ не е намерен</translation>
     </message>
     <message>
         <location line="+83"/>
@@ -6971,7 +6971,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Duplicate Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Дублиране на набора на Ванг</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6981,7 +6981,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Add Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавяне на цвят</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -7255,7 +7255,7 @@ Please select specific format.</source>
     <message>
         <location line="+20"/>
         <source>Change Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на плочния набор</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+41"/>
@@ -7322,7 +7322,7 @@ Please select specific format.</source>
     <message>
         <location line="+21"/>
         <source>Change Layer Parallax Factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на фактора на паралакс на слой</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -7547,12 +7547,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+68"/>
         <source>Change Wang Set Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на типа на набора на Ванг</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Change Wang Set Color Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на броя цветове на набора на Ванг</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -7606,7 +7606,7 @@ Please select specific format.</source>
         <location line="+24"/>
         <location line="+24"/>
         <source>Change Wang Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на цвета на набор на Ванг</translation>
     </message>
 </context>
 <context>
@@ -7694,17 +7694,17 @@ Please select specific format.</source>
     <message>
         <location line="-1"/>
         <source>If used only specified layers are shown. Can be repeated to show multiple specified layers only.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ако се използва, се показват само посочените слоеве. Може да се ползва повече от веднъж, за показване само на няколко набора от посочени слоеве.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>If used tile animations are advanced by the specified duration.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ако се използва, анимациите на плочките напредват с посочената продължителност.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>duration</source>
-        <translation type="unfinished"></translation>
+        <translation>продължителност</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -7734,7 +7734,7 @@ Please select specific format.</source>
     <message>
         <location line="+9"/>
         <source>Invalid advance-animations specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Посочена е неправилно продължителност за напредък на анимациите: „%1“</translation>
     </message>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+57"/>
