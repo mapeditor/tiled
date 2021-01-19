@@ -240,7 +240,7 @@
     <message>
         <location line="+7"/>
         <source>&amp;Save before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Guardar antes de executar</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -484,7 +484,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-250"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-250"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro a interpretar ficheiro: %1</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -521,7 +521,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+183"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+183"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro a interpretar ficheiro: %1</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -548,7 +548,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-180"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-180"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro a interpretar ficheiro: %1</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -574,116 +574,116 @@
     <message>
         <location filename="../src/karchive/src/k7zip.cpp" line="+2305"/>
         <source>Could not get underlying device</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de obter o dispositivo subjacente</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Read header failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Falhou a leitura do cabeçalho</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Check signature failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Falhou verificação da assinatura</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Bad CRC</source>
-        <translation type="unfinished"></translation>
+        <translation>Mau CRC</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Next header size is too big</source>
-        <translation type="unfinished"></translation>
+        <translation>O cabeçalho seguinte é demasiado grande</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Next header size is less than zero</source>
-        <translation type="unfinished"></translation>
+        <translation>O tamanho do cabeçalho seguinte é menor que zero</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Failed read next header size; should read %1, read %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Falhou a leitura do cabeçalho seguinte; devia ler %1, lê %2</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Bad next header CRC</source>
-        <translation type="unfinished"></translation>
+        <translation>Mau CRC no cabeçalho seguinte</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error in header</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro no cabeçalho</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Wrong header type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de cabeçalho errado</translation>
     </message>
     <message>
         <location line="+10"/>
         <location line="+6"/>
         <source>Not implemented</source>
-        <translation type="unfinished"></translation>
+        <translation>Não implementado</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Error while reading main streams information</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro na leitura da informação dos fluxos principais</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Error while reading header</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ao ler cabeçalho</translation>
     </message>
     <message>
         <location line="+60"/>
         <source>Error reading modification time</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro na leitura do tempo de modificação</translation>
     </message>
     <message>
         <location line="+46"/>
         <source>Error reading MTime</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro na leitura de MTime</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Inválido</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Read size failed (checkRecordsSize: %1, d-&gt;pos - ppp: %2, size: %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha na leitura do tamanho (checkRecordsSize: %1, d-&gt;pos - ppp: %2, size: %3)</translation>
     </message>
     <message>
         <location line="+191"/>
         <source>Write error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro de escrita</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Failed while encoding header</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha na codificação do cabeçalho</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>No file currently selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Nenhum ficheiro selecionado</translation>
     </message>
     <message>
         <location line="+19"/>
         <location line="+44"/>
         <location line="+37"/>
         <source>Application error: 7-Zip file must be open before being written into</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro da aplicação: ficheiro 7-zip tem de ser aberto antes de ser escrito</translation>
     </message>
     <message>
         <location line="-75"/>
         <location line="+81"/>
         <source>Application error: attempted to write into non-writable 7-Zip file</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro da aplicação: tentativa de escrever num ficheiro 7-zip só de leitura</translation>
     </message>
 </context>
 <context>
@@ -694,37 +694,37 @@
         <location line="+8"/>
         <location line="+8"/>
         <source>Cannot write to AR file</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de escrever ficheiro AR</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unsupported mode %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo não suportado %1</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Invalid main magic</source>
-        <translation type="unfinished"></translation>
+        <translation>Magia principal inválida</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Invalid magic</source>
-        <translation type="unfinished"></translation>
+        <translation>Magia inválida</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Invalid size</source>
-        <translation type="unfinished">Tamanho inválido</translation>
+        <translation>Tamanho inválido</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Invalid longfilename reference</source>
-        <translation type="unfinished"></translation>
+        <translation>Referência de longfilename inválida</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Invalid longfilename position reference</source>
-        <translation type="unfinished"></translation>
+        <translation>Referência posição de longfilename inválida</translation>
     </message>
 </context>
 <context>
@@ -732,52 +732,52 @@
     <message>
         <location filename="../src/karchive/src/karchive.cpp" line="+150"/>
         <source>No filename or device was specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Nenhum ficheiro ou dispositivo foi especificado</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Could not set device mode to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de definir modo do dispositivo para %1</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>QSaveFile creation for %1 failed: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Falhou a criação de QSaveFile para %1: %2</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Unsupported mode %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo não suportado %1</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Archive already closed</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo já fechado</translation>
     </message>
     <message>
         <location line="+52"/>
         <source>%1 doesn&apos;t exist or is not a regular file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 não existe ou não é um ficheiro regular.</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Failed accessing the file %1 for adding to the archive. The error was: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha no acesso ao ficheiro %1 para adição ao arquivo. O erro foi: %2</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Couldn&apos;t open file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de abrir ficheiro %1: %2</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Directory %1 does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Diretoria %1 não existe</translation>
     </message>
     <message>
         <location line="+54"/>
         <source>Writing failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha na escrita: %1</translation>
     </message>
 </context>
 <context>
@@ -785,7 +785,7 @@
     <message>
         <location filename="../src/karchive/src/karchive_p.h" line="+57"/>
         <source>Unknown error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro desconhecido</translation>
     </message>
 </context>
 <context>
@@ -793,7 +793,7 @@
     <message>
         <location filename="../src/karchive/src/kcompressiondevice.cpp" line="+388"/>
         <source>Could not write. Partition full?</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de escrever. Partição cheia?</translation>
     </message>
 </context>
 <context>
@@ -804,17 +804,17 @@
         <location line="+8"/>
         <location line="+8"/>
         <source>Cannot write to RCC file</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de escrever para ficheiro RCC</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unsupported mode %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo não suportado %1</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Failed to register resource %1 under prefix %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha no registo do recurso %1 sob o prefixo %2</translation>
     </message>
 </context>
 <context>
@@ -822,60 +822,60 @@
     <message>
         <location filename="../src/karchive/src/ktar.cpp" line="+327"/>
         <source>File %1 does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro %1 não existe</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Archive %1 is corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo %1 está corrompido</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Disk full</source>
-        <translation type="unfinished"></translation>
+        <translation>Disco cheio</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>Could not get underlying device</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de obter o dispositivo subjacente</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Could not read tar header</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de ler cabeçalho tar</translation>
     </message>
     <message>
         <location line="+175"/>
         <source>Failed to write back temp file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha na escrita de ficheiro back temp: %1</translation>
     </message>
     <message>
         <location line="+57"/>
         <source>Couldn&apos;t write alignment: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de escrever alinhamento: %1</translation>
     </message>
     <message>
         <location line="+122"/>
         <location line="+75"/>
         <location line="+64"/>
         <source>Application error: TAR file must be open before being written into</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro da aplicação: ficheiro TAR tem de ser aberto antes de ser escrito</translation>
     </message>
     <message>
         <location line="-133"/>
         <source>Application error: attempted to write into non-writable 7-Zip file</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro da aplicação: tentativa de escrever num ficheiro 7-zip só de leitura</translation>
     </message>
     <message>
         <location line="+56"/>
         <source>Failed to write header: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha na escrita de cabeçalho: %1</translation>
     </message>
     <message>
         <location line="+19"/>
         <location line="+64"/>
         <source>Application error: attempted to write into non-writable TAR file</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro da aplicação: tentativa de escrever num ficheiro TAR só de leitura</translation>
     </message>
 </context>
 <context>
@@ -884,22 +884,22 @@
         <location filename="../src/karchive/src/kzip.cpp" line="+465"/>
         <location line="+19"/>
         <source>Invalid ZIP file. Unexpected end of file. (Error code: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro ZIP inválido. Fim de ficheiro inesperado. (Código de erro: %1)</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Invalid ZIP file. Negative name length</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro ZIP inválido. Comprimento de nome negativo</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Invalid ZIP file. Name not completely read (#2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro ZIP inválido. Nome lido incompleto (#2)</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Invalid ZIP File. Broken ExtraField.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro ZIP inválido. ExtraField quebrado.</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -1111,7 +1111,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Save</source>
-        <translation>&amp;Gravar</translation>
+        <translation>&amp;Guardar</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1521,7 +1521,7 @@ Linha %1, coluna %2</translation>
         <location line="+220"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+65"/>
         <source>Terrains</source>
-        <translation type="unfinished">Terrenos</translation>
+        <translation>Terrenos</translation>
     </message>
     <message>
         <location line="+260"/>
@@ -2703,7 +2703,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="-183"/>
         <source>Cannot open Replica Island map file!</source>
-        <translation>Impossivél abrir ficheiro de mapa Replica Island!</translation>
+        <translation>Incapaz de abrir ficheiro de mapa Replica Island!</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -3390,7 +3390,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+1"/>
         <source>Add Objects</source>
-        <translation type="unfinished">Adicionar Objetos</translation>
+        <translation>Adicionar Objetos</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -5267,7 +5267,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="-2"/>
         <source>&amp;Save As...</source>
-        <translation>Guardar como...</translation>
+        <translation>&amp;Guardar como...</translation>
     </message>
 </context>
 <context>
@@ -5585,7 +5585,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Directory</source>
-        <translation>DIretoria</translation>
+        <translation>Diretoria</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -5993,12 +5993,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+2"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished">Inverter Horizontalmente</translation>
+        <translation>Inverter Horizontalmente</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished">Inverter Verticalmente</translation>
+        <translation>Inverter Verticalmente</translation>
     </message>
     <message>
         <location line="+1"/>
