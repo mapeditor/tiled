@@ -1979,7 +1979,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/newmapdialog.cpp" line="+85"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1241"/>
         <source>Base64 (uncompressed)</source>
-        <translation>Base64 (未圧縮)</translation>
+        <translation>Base64（未圧縮）</translation>
     </message>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="-1"/>
@@ -1989,13 +1989,13 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Base64 (gzip compressed)</source>
-        <translation>Base64 (gzip圧縮)</translation>
+        <translation>Base64（gzip 圧縮）</translation>
     </message>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Base64 (zlib compressed)</source>
-        <translation>Base64 (zlib圧縮)</translation>
+        <translation>Base64（zlib 圧縮）</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -5009,7 +5009,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>R&amp;aise Layers</source>
-        <translation>レイヤーを上へ(＆A)</translation>
+        <translation>レイヤーを上へ(&amp;A)</translation>
     </message>
     <message>
         <location line="+1"/>
