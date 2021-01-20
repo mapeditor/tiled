@@ -1521,7 +1521,7 @@ Line %1, column %2</source>
         <location line="+220"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+65"/>
         <source>Terrains</source>
-        <translation type="unfinished">Участки местности</translation>
+        <translation>Участки местности</translation>
     </message>
     <message>
         <location line="+260"/>
@@ -6061,17 +6061,17 @@ Please select specific format.</source>
     <message>
         <location line="+19"/>
         <source>Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Набор участков местности</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Terrain Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество участков местости</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Участок местности</translation>
     </message>
     <message>
         <location line="+1147"/>
@@ -6374,7 +6374,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Terrain Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Заливка участком местности</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6773,7 +6773,7 @@ Please select specific format.</source>
     <message>
         <location line="+76"/>
         <source>Unnamed Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Безымянный набор</translation>
     </message>
 </context>
 <context>
@@ -6789,12 +6789,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+763"/>
         <source>Use as Terrain Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Сделать изображением набора участков местности</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Use as Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Сделать изображением участка местности</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6928,12 +6928,12 @@ Please select specific format.</source>
         <location filename="../src/tiled/wangbrush.cpp" line="+111"/>
         <location line="+96"/>
         <source>Terrain Brush</source>
-        <translation type="unfinished"></translation>
+        <translation>Кисть участков местности</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>Missing terrain transition</source>
-        <translation type="unfinished"></translation>
+        <translation>Не хватает перехода между участками местности</translation>
     </message>
 </context>
 <context>
@@ -6950,7 +6950,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/wangdock.cpp" line="+238"/>
         <location line="+319"/>
         <source>Terrains</source>
-        <translation type="unfinished">Участки местности</translation>
+        <translation>Участки местности</translation>
     </message>
     <message>
         <location line="-318"/>
@@ -6961,37 +6961,37 @@ Please select specific format.</source>
     <message>
         <location line="-13"/>
         <source>Terrain Sets</source>
-        <translation type="unfinished"></translation>
+        <translation>Наборы участков местности</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Erase Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Стереть участок местности</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить набор участков местности</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Corner Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый набор оп углам</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Edge Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый набор по краям</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Mixed Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый смешанный набор</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Дублировать набор участков местности</translation>
     </message>
     <message>
         <location line="+1"/>
