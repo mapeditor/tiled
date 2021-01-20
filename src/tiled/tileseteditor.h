@@ -127,7 +127,7 @@ private:
     void currentWangSetChanged(WangSet *wangSet);
     void currentWangIdChanged(WangId wangId);
     void wangColorChanged(int color);
-    void addWangSet();
+    void addWangSet(WangSet::Type type);
     void duplicateWangSet();
     void removeWangSet();
     void setWangSetImage(Tile *tile);

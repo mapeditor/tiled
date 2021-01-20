@@ -46,6 +46,8 @@
 #include <QToolBar>
 #include <QTreeView>
 #include <QUndoStack>
+#include <QToolButton>
+#include <QMenu>
 
 using namespace Tiled;
 
@@ -102,7 +104,11 @@ WangDock::WangDock(QWidget *parent)
     : QDockWidget(parent)
     , mWangSetToolBar(new QToolBar(this))
     , mWangColorToolBar(new QToolBar(this))
-    , mAddWangSet(new QAction(this))
+    , mNewWangSetButton(new QToolButton(this))
+    , mNewWangSetMenu(new QMenu(this))
+    , mAddCornerWangSet(new QAction(this))
+    , mAddEdgeWangSet(new QAction(this))
+    , mAddMixedWangSet(new QAction(this))
     , mDuplicateWangSet(new QAction(this))
     , mRemoveWangSet(new QAction(this))
     , mAddColor(new QAction(this))
@@ -131,7 +137,14 @@ WangDock::WangDock(QWidget *parent)
     connect(mProxyModel, &QAbstractItemModel::rowsInserted,
             this, &WangDock::expandRows);
 
-    mAddWangSet->setIcon(QIcon(QStringLiteral(":/images/22/add.png")));
+    mNewWangSetMenu->addAction(mAddCornerWangSet);
+    mNewWangSetMenu->addAction(mAddEdgeWangSet);
+    mNewWangSetMenu->addAction(mAddMixedWangSet);
+
+    mNewWangSetButton->setPopupMode(QToolButton::InstantPopup);
+    mNewWangSetButton->setMenu(mNewWangSetMenu);
+    mNewWangSetButton->setIcon(QIcon(QStringLiteral(":/images/22/add.png")));
+
     mDuplicateWangSet->setIcon(QIcon(QStringLiteral(":/images/16/stock-duplicate-16.png")));
     mDuplicateWangSet->setEnabled(false);
     mRemoveWangSet->setIcon(QIcon(QStringLiteral(":/images/22/remove.png")));
@@ -142,7 +155,7 @@ WangDock::WangDock(QWidget *parent)
     mRemoveColor->setIcon(QIcon(QStringLiteral(":/images/22/remove.png")));
     mRemoveColor->setEnabled(false);
 
-    Utils::setThemeIcon(mAddWangSet, "add");
+    Utils::setThemeIcon(mNewWangSetButton, "add");
     Utils::setThemeIcon(mRemoveWangSet, "remove");
     Utils::setThemeIcon(mAddColor, "add");
     Utils::setThemeIcon(mRemoveColor, "remove");
@@ -151,11 +164,13 @@ WangDock::WangDock(QWidget *parent)
     mWangSetToolBar->setMovable(false);
     mWangSetToolBar->setIconSize(Utils::smallIconSize());
 
-    mWangSetToolBar->addAction(mAddWangSet);
+    mWangSetToolBar->addWidget(mNewWangSetButton);
     mWangSetToolBar->addAction(mDuplicateWangSet);
     mWangSetToolBar->addAction(mRemoveWangSet);
 
-    connect(mAddWangSet, &QAction::triggered, this, &WangDock::addWangSetRequested);
+    connect(mAddCornerWangSet, &QAction::triggered, this, [this] { addWangSetRequested(WangSet::Corner); });
+    connect(mAddEdgeWangSet, &QAction::triggered, this, [this] { addWangSetRequested(WangSet::Edge); });
+    connect(mAddMixedWangSet, &QAction::triggered, this, [this] { addWangSetRequested(WangSet::Mixed); });
     connect(mDuplicateWangSet, &QAction::triggered, this, &WangDock::duplicateWangSetRequested);
     connect(mRemoveWangSet, &QAction::triggered, this, &WangDock::removeWangSetRequested);
 
@@ -219,7 +234,7 @@ WangDock::WangDock(QWidget *parent)
 
     mTemplateAndColorView = new QTabWidget;
     mTemplateAndColorView->setDocumentMode(true);
-    mTemplateAndColorView->addTab(mWangColorWidget, tr("Colors"));
+    mTemplateAndColorView->addTab(mWangColorWidget, tr("Terrains"));
     mTemplateAndColorView->addTab(mWangTemplateView, tr("Patterns"));
 
     //Template and color widget.
@@ -512,16 +527,19 @@ void WangDock::updateAddColorStatus()
 
 void WangDock::retranslateUi()
 {
-    setWindowTitle(tr("Wang Sets"));
+    setWindowTitle(tr("Terrain Sets"));
 
-    mEraseWangIdsButton->setText(tr("Erase WangIds"));
-    mAddWangSet->setText(tr("Add Wang Set"));
-    mDuplicateWangSet->setText(tr("Duplicate Wang Set"));
-    mRemoveWangSet->setText(tr("Remove Wang Set"));
-    mAddColor->setText(tr("Add Color"));
-    mRemoveColor->setText(tr("Remove Color"));
+    mEraseWangIdsButton->setText(tr("Erase Terrain"));
+    mNewWangSetButton->setToolTip(tr("Add Terrain Set"));
+    mAddCornerWangSet->setText(tr("New Corner Set"));
+    mAddEdgeWangSet->setText(tr("New Edge Set"));
+    mAddMixedWangSet->setText(tr("New Mixed Set"));
+    mDuplicateWangSet->setText(tr("Duplicate Terrain Set"));
+    mRemoveWangSet->setText(tr("Remove Terrain Set"));
+    mAddColor->setText(tr("Add Terrain"));
+    mRemoveColor->setText(tr("Remove Terrain"));
 
-    mTemplateAndColorView->setTabText(0, tr("Colors"));
+    mTemplateAndColorView->setTabText(0, tr("Terrains"));
     mTemplateAndColorView->setTabText(1, tr("Patterns"));
 }
 

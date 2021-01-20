@@ -25,11 +25,13 @@
 
 #include "wangset.h"
 
+class QMenu;
 class QModelIndex;
 class QPushButton;
 class QSortFilterProxyModel;
 class QTabWidget;
 class QToolBar;
+class QToolButton;
 class QTreeView;
 
 namespace Tiled {
@@ -70,7 +72,7 @@ signals:
     void currentWangSetChanged(WangSet *wangSet);
     void currentWangIdChanged(WangId wangId);
 
-    void addWangSetRequested();
+    void addWangSetRequested(WangSet::Type type);
     void duplicateWangSetRequested();
     void removeWangSetRequested();
 
@@ -105,7 +107,11 @@ private:
 
     QToolBar *mWangSetToolBar;
     QToolBar *mWangColorToolBar;
-    QAction *mAddWangSet;
+    QToolButton *mNewWangSetButton;
+    QMenu *mNewWangSetMenu;
+    QAction *mAddCornerWangSet;
+    QAction *mAddEdgeWangSet;
+    QAction *mAddMixedWangSet;
     QAction *mDuplicateWangSet;
     QAction *mRemoveWangSet;
     QAction *mAddColor;

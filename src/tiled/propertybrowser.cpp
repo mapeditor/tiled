@@ -935,13 +935,13 @@ void PropertyBrowser::addTileProperties()
 
 void PropertyBrowser::addWangSetProperties()
 {
-    QtProperty *groupProperty = mGroupManager->addProperty(tr("Wang Set"));
+    QtProperty *groupProperty = mGroupManager->addProperty(tr("Terrain Set"));
     QtVariantProperty *nameProperty = addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
     QtVariantProperty *typeProperty = addProperty(WangSetTypeProperty,
                                                   QtVariantPropertyManager::enumTypeId(),
                                                   tr("Type"),
                                                   groupProperty);
-    QtVariantProperty *colorCountProperty = addProperty(ColorCountProperty, QVariant::Int, tr("Color Count"), groupProperty);
+    QtVariantProperty *colorCountProperty = addProperty(ColorCountProperty, QVariant::Int, tr("Terrain Count"), groupProperty);
 
     typeProperty->setAttribute(QLatin1String("enumNames"), mWangSetTypeNames);
 
@@ -956,7 +956,7 @@ void PropertyBrowser::addWangSetProperties()
 
 void PropertyBrowser::addWangColorProperties()
 {
-    QtProperty *groupProperty = mGroupManager->addProperty(tr("Wang Color"));
+    QtProperty *groupProperty = mGroupManager->addProperty(tr("Terrain"));
     QtVariantProperty *nameProperty = addProperty(NameProperty,
                                                   QVariant::String,
                                                   tr("Name"),

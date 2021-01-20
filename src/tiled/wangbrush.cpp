@@ -108,9 +108,9 @@ void WangBrushItem::setInvalidTiles(const QRegion &region)
 
 WangBrush::WangBrush(QObject *parent)
     : AbstractTileTool("WangTool",
-                       tr("Wang Brush"),
+                       tr("Terrain Brush"),
                        QIcon(QLatin1String(
-                                 ":images/24/wangtile-edit.png")),
+                                 ":images/24/terrain-edit.png")),
                        QKeySequence(Qt::Key_G),
                        new WangBrushItem,
                        parent)
@@ -204,7 +204,7 @@ void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 
 void WangBrush::languageChanged()
 {
-    setName(tr("Wang Brush"));
+    setName(tr("Terrain Brush"));
 }
 
 void WangBrush::setColor(int color)
@@ -406,7 +406,7 @@ void WangBrush::updateStatusInfo()
         QString extraInfo;
         if (!static_cast<WangBrushItem*>(brushItem())->isValid())
             extraInfo = QStringLiteral(" (%1)")
-                        .arg(tr("Missing Wang tile transition"));
+                        .arg(tr("Missing terrain transition"));
 
         setStatusInfo(QStringLiteral("%1, %2%3%4")
                       .arg(mPaintPoint.x())

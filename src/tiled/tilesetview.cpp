@@ -760,11 +760,11 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                                               QItemSelectionModel::Clear);
 
             if (mWangSet) {
-                QAction *setImage = menu.addAction(tr("Set Wang Set Image"));
+                QAction *setImage = menu.addAction(tr("Use as Terrain Set Image"));
                 connect(setImage, &QAction::triggered, this, &TilesetView::selectWangSetImage);
             }
             if (mWangBehavior != AssignWholeId && mWangColorIndex) {
-                QAction *setImage = menu.addAction(tr("Set Wang Color Image"));
+                QAction *setImage = menu.addAction(tr("Use as Terrain Image"));
                 connect(setImage, &QAction::triggered, this, &TilesetView::selectWangColorImage);
             }
         } else if (mTilesetDocument) {
