@@ -36,7 +36,7 @@ RenameWangSet::RenameWangSet(TilesetDocument *tilesetDocument,
                              WangSet *wangSet,
                              const QString &newName)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Wang Set Name"))
+                                               "Change Terrain Set Name"))
     , mTilesetDocument(tilesetDocument)
     , mWangSet(wangSet)
     , mOldName(wangSet->name())
@@ -65,7 +65,7 @@ ChangeWangSetType::ChangeWangSetType(TilesetDocument *tilesetDocument,
     , mOldType(wangSet->type())
     , mNewType(newType)
 {
-    setText(QCoreApplication::translate("Undo Commands", "Change Wang Set Type"));
+    setText(QCoreApplication::translate("Undo Commands", "Change Terrain Set Type"));
 }
 
 void ChangeWangSetType::undo()
@@ -83,7 +83,7 @@ ChangeWangSetColorCount::ChangeWangSetColorCount(TilesetDocument *tilesetDocumen
                                                  WangSet *wangSet,
                                                  int newValue)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Wang Set Color Count"))
+                                               "Change Terrain Count"))
     , mTilesetDocument(tilesetDocument)
     , mWangSet(wangSet)
     , mOldValue(wangSet->colorCount())
@@ -131,7 +131,7 @@ void ChangeWangSetColorCount::redo()
 
 RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, WangSet *wangSet, int color)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Remove Wang Color"))
+                                               "Remove Terrain"))
     , mTilesetDocument(tilesetDocumnet)
     , mWangSet(wangSet)
     , mColor(color)
@@ -163,7 +163,7 @@ SetWangSetImage::SetWangSetImage(TilesetDocument *tilesetDocument,
                                  int tileId,
                                  QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Set Wang Set Image"),
+                                               "Set Terrain Set Image"),
                    parent)
     , mTilesetDocument(tilesetDocument)
     , mWangSet(wangSet)

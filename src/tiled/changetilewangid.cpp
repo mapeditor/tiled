@@ -34,7 +34,7 @@ ChangeTileWangId::ChangeTileWangId()
     , mWangSet(nullptr)
     , mMergeable(false)
 {
-    setText(QCoreApplication::translate("Undo Commands", "Change Tile WangId"));
+    setText(QCoreApplication::translate("Undo Commands", "Change Tile Terrain"));
 }
 
 ChangeTileWangId::ChangeTileWangId(TilesetDocument *tilesetDocument,
@@ -46,7 +46,7 @@ ChangeTileWangId::ChangeTileWangId(TilesetDocument *tilesetDocument,
     , mMergeable(true)
 {
     Q_ASSERT(mWangSet);
-    setText(QCoreApplication::translate("Undo Commands", "Change Tile WangId"));
+    setText(QCoreApplication::translate("Undo Commands", "Change Tile Terrain"));
     mChanges.append(WangIdChange(mWangSet->wangIdOfTile(tile), wangId, tile->id()));
 }
 
@@ -60,7 +60,7 @@ ChangeTileWangId::ChangeTileWangId(TilesetDocument *tilesetDocument,
     , mChanges(changes)
     , mMergeable(true)
 {
-    setText(QCoreApplication::translate("Undo Commands", "Change Tile WangId"));
+    setText(QCoreApplication::translate("Undo Commands", "Change Tile Terrain"));
 }
 
 void ChangeTileWangId::undo()
