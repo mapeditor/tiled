@@ -21,6 +21,7 @@
 
 #include "wangdock.h"
 
+#include "changeevents.h"
 #include "changewangsetdata.h"
 #include "wangcolormodel.h"
 #include "wangcolorview.h"
@@ -322,6 +323,8 @@ void WangDock::setDocument(Document *document)
         connect(wangSetModel, &TilesetWangSetModel::wangSetRemoved,
                 this, &WangDock::refreshCurrentWangSet);
 
+        connect(tilesetDocument, &Document::changed, this, &WangDock::documentChanged);
+
     } else {
         mProxyModel->setSourceModel(nullptr);
         setCurrentWangSet(nullptr);
@@ -402,6 +405,18 @@ void WangDock::refreshCurrentWangColor()
 
     emit wangColorChanged(color);
     emit selectWangBrush();
+}
+
+void WangDock::documentChanged(const ChangeEvent &change)
+{
+    switch (change.type) {
+    case ChangeEvent::WangSetChanged:
+        if (static_cast<const WangSetChangeEvent&>(change).properties & WangSetChangeEvent::TypeProperty)
+            mWangTemplateModel->wangSetChanged();
+        break;
+    default:
+        break;
+    }
 }
 
 void WangDock::wangSetChanged()

@@ -305,6 +305,10 @@ void PropertyBrowser::documentChanged(const ChangeEvent &change)
         if (mObject == static_cast<const ObjectGroupChangeEvent&>(change).objectGroup)
             updateProperties();
         break;
+    case ChangeEvent::WangSetChanged:
+        if (mObject == static_cast<const WangSetChangeEvent&>(change).wangSet)
+            updateProperties();
+        break;
     default:
         break;
     }

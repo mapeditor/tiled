@@ -36,6 +36,7 @@ class QTreeView;
 
 namespace Tiled {
 
+class ChangeEvent;
 class Document;
 class HasChildrenFilterModel;
 class WangSetView;
@@ -94,6 +95,7 @@ private:
     void refreshCurrentWangSet();
     void refreshCurrentWangId();
     void refreshCurrentWangColor();
+    void documentChanged(const ChangeEvent &change);
     void wangSetChanged();
     void indexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
