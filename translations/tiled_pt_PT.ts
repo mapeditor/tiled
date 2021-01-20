@@ -1852,23 +1852,12 @@ Linha %1, coluna %2</translation>
 <context>
     <name>ObjectTypesEditor</name>
     <message>
-        <location filename="../src/tiled/objecttypeseditor-new.ui" line="+14"/>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
         <translation>Editor de Tipos de Objetos</translation>
     </message>
     <message>
-        <location line="+24"/>
-        <source>&amp;Import...</source>
-        <translation>&amp;Importar...</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>&amp;Export...</source>
-        <translation>&amp;Exportar...</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/objecttypeseditor.ui" line="+56"/>
+        <location line="+56"/>
         <source>Export...</source>
         <translation>Exportar...</translation>
     </message>
@@ -4851,7 +4840,7 @@ Por favor, selecione um formato específico.</translation>
     </message>
     <message>
         <location line="+28"/>
-        <location filename="../src/tiled/tileseteditor.cpp" line="+947"/>
+        <location filename="../src/tiled/tileseteditor.cpp" line="+948"/>
         <source>Copy of %1</source>
         <translation>Cópia de %1</translation>
     </message>
@@ -6042,12 +6031,22 @@ Por favor, selecione um formato específico.</translation>
         <translation>Frequência relativa com que este tile será escolhido</translation>
     </message>
     <message>
-        <location line="+25"/>
-        <source>Color Count</source>
+        <location line="+19"/>
+        <source>Terrain Set</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1162"/>
+        <location line="+6"/>
+        <source>Terrain Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Terrain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1147"/>
         <source>Corner</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6062,17 +6061,7 @@ Por favor, selecione um formato específico.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1170"/>
-        <source>Wang Set</source>
-        <translation>Conjunto Wang</translation>
-    </message>
-    <message>
-        <location line="+21"/>
-        <source>Wang Color</source>
-        <translation>Cor Wang</translation>
-    </message>
-    <message>
-        <location line="+40"/>
+        <location line="-1109"/>
         <source>Change Infinite Property</source>
         <translation>Alterar Propriedade Infinito</translation>
     </message>
@@ -6339,7 +6328,7 @@ Por favor, selecione um formato específico.</translation>
     <name>Tiled::StampActions</name>
     <message>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="-260"/>
-        <location filename="../src/tiled/stampactions.cpp" line="+87"/>
+        <location filename="../src/tiled/stampactions.cpp" line="+86"/>
         <source>Rotate Left</source>
         <translation>Rodar Esquerda</translation>
     </message>
@@ -6356,8 +6345,8 @@ Por favor, selecione um formato específico.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Wang Fill Mode</source>
-        <translation>Modo Preenchimento de Wang</translation>
+        <source>Terrain Fill Mode</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6694,7 +6683,7 @@ Por favor, selecione um formato específico.</translation>
 <context>
     <name>Tiled::TilesetEditor</name>
     <message>
-        <location filename="../src/tiled/tileseteditor.cpp" line="-774"/>
+        <location filename="../src/tiled/tileseteditor.cpp" line="-775"/>
         <location line="+481"/>
         <source>Tileset</source>
         <translation>Tileset</translation>
@@ -6755,8 +6744,8 @@ Por favor, selecione um formato específico.</translation>
     </message>
     <message>
         <location line="+76"/>
-        <source>New Wang Set</source>
-        <translation>Novo Conjunto Wang</translation>
+        <source>Unnamed Set</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6771,13 +6760,13 @@ Por favor, selecione um formato específico.</translation>
     <name>Tiled::TilesetView</name>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+763"/>
-        <source>Set Wang Set Image</source>
-        <translation>Definir Imagem do Conjunto Wang</translation>
+        <source>Use as Terrain Set Image</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>Set Wang Color Image</source>
-        <translation>Definir Imagem da Cor Wang</translation>
+        <source>Use as Terrain Image</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6910,25 +6899,13 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/wangbrush.cpp" line="+111"/>
         <location line="+96"/>
-        <location filename="../src/tiled/wangbrush_BACKUP_56900.cpp" line="+113"/>
-        <location line="+68"/>
-        <location filename="../src/tiled/wangbrush_BASE_56900.cpp" line="+114"/>
-        <location line="+68"/>
-        <location filename="../src/tiled/wangbrush_LOCAL_56900.cpp" line="+113"/>
-        <location line="+68"/>
-        <location filename="../src/tiled/wangbrush_REMOTE_56900.cpp" line="+114"/>
-        <location line="+68"/>
-        <source>Wang Brush</source>
-        <translation>Pincel Wang</translation>
+        <source>Terrain Brush</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+202"/>
-        <location filename="../src/tiled/wangbrush_BACKUP_56900.cpp" line="+197"/>
-        <location filename="../src/tiled/wangbrush_BASE_56900.cpp" line="+197"/>
-        <location filename="../src/tiled/wangbrush_LOCAL_56900.cpp" line="+197"/>
-        <location filename="../src/tiled/wangbrush_REMOTE_56900.cpp" line="+197"/>
-        <source>Missing Wang tile transition</source>
-        <translation>Transição de tile Wang em falta</translation>
+        <source>Missing terrain transition</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6942,59 +6919,74 @@ Por favor, selecione um formato específico.</translation>
 <context>
     <name>Tiled::WangDock</name>
     <message>
-        <location filename="../src/tiled/wangdock.cpp" line="+223"/>
-        <location line="+302"/>
+        <location filename="../src/tiled/wangdock.cpp" line="+237"/>
+        <location line="+305"/>
+        <source>Terrains</source>
+        <translation type="unfinished">Terrenos</translation>
+    </message>
+    <message>
+        <location line="-304"/>
+        <location line="+305"/>
         <source>Patterns</source>
         <translation>Padrões</translation>
     </message>
     <message>
-        <location line="-303"/>
-        <location line="+302"/>
-        <source>Colors</source>
-        <translation>Cores</translation>
-    </message>
-    <message>
-        <location line="-9"/>
-        <source>Wang Sets</source>
-        <translation>Conjuntos Wang</translation>
+        <location line="-13"/>
+        <source>Terrain Sets</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>Erase WangIds</source>
-        <translation>Apagar WangIds</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Add Wang Set</source>
-        <translation>Adicionar Conjunto Wang</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Duplicate Wang Set</source>
+        <source>Erase Terrain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Remove Wang Set</source>
-        <translation>Remover Conjunto Wang</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Add Color</source>
+        <source>Add Terrain Set</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Remove Color</source>
-        <translation>Remover Cor</translation>
+        <source>New Corner Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>New Edge Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>New Mixed Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Duplicate Terrain Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Remove Terrain Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Add Terrain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Remove Terrain</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Tiled::WangSetView</name>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+104"/>
-        <source>Wang Set &amp;Properties...</source>
-        <translation>&amp;Propriedades do Conjunto Wang...</translation>
+        <source>Terrain Set &amp;Properties...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

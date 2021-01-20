@@ -1852,23 +1852,12 @@ Line %1, column %2</source>
 <context>
     <name>ObjectTypesEditor</name>
     <message>
-        <location filename="../src/tiled/objecttypeseditor-new.ui" line="+14"/>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
         <translation>Редактор на обектни типове</translation>
     </message>
     <message>
-        <location line="+24"/>
-        <source>&amp;Import...</source>
-        <translation>&amp;Внасяне…</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>&amp;Export...</source>
-        <translation>&amp;Изнасяне…</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/objecttypeseditor.ui" line="+56"/>
+        <location line="+56"/>
         <source>Export...</source>
         <translation>Изнасяне…</translation>
     </message>
@@ -4851,7 +4840,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+28"/>
-        <location filename="../src/tiled/tileseteditor.cpp" line="+947"/>
+        <location filename="../src/tiled/tileseteditor.cpp" line="+948"/>
         <source>Copy of %1</source>
         <translation>Копие на %1</translation>
     </message>
@@ -6042,12 +6031,22 @@ Please select specific format.</source>
         <translation>Относителен шанс тази плочка да бъде избрана</translation>
     </message>
     <message>
-        <location line="+25"/>
-        <source>Color Count</source>
-        <translation>Брой цветове</translation>
+        <location line="+19"/>
+        <source>Terrain Set</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1162"/>
+        <location line="+6"/>
+        <source>Terrain Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Terrain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1147"/>
         <source>Corner</source>
         <translation>Ъгъл</translation>
     </message>
@@ -6062,17 +6061,7 @@ Please select specific format.</source>
         <translation>Смесено</translation>
     </message>
     <message>
-        <location line="-1170"/>
-        <source>Wang Set</source>
-        <translation>Набор на Ванг</translation>
-    </message>
-    <message>
-        <location line="+21"/>
-        <source>Wang Color</source>
-        <translation>Цвят на Ванг</translation>
-    </message>
-    <message>
-        <location line="+40"/>
+        <location line="-1109"/>
         <source>Change Infinite Property</source>
         <translation>Промяна на безкрайно свойство</translation>
     </message>
@@ -6339,7 +6328,7 @@ Please select specific format.</source>
     <name>Tiled::StampActions</name>
     <message>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="-260"/>
-        <location filename="../src/tiled/stampactions.cpp" line="+87"/>
+        <location filename="../src/tiled/stampactions.cpp" line="+86"/>
         <source>Rotate Left</source>
         <translation>Завъртане наляво</translation>
     </message>
@@ -6356,8 +6345,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>Wang Fill Mode</source>
-        <translation>Режим на запълване на Ванг</translation>
+        <source>Terrain Fill Mode</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6694,7 +6683,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::TilesetEditor</name>
     <message>
-        <location filename="../src/tiled/tileseteditor.cpp" line="-774"/>
+        <location filename="../src/tiled/tileseteditor.cpp" line="-775"/>
         <location line="+481"/>
         <source>Tileset</source>
         <translation>Плочен набор</translation>
@@ -6755,8 +6744,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+76"/>
-        <source>New Wang Set</source>
-        <translation>Нов набор на Ванг</translation>
+        <source>Unnamed Set</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6771,13 +6760,13 @@ Please select specific format.</source>
     <name>Tiled::TilesetView</name>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+763"/>
-        <source>Set Wang Set Image</source>
-        <translation>Задаване на изображение за набора на Ванг</translation>
+        <source>Use as Terrain Set Image</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>Set Wang Color Image</source>
-        <translation>Задаване на изображение за цвета на Ванг</translation>
+        <source>Use as Terrain Image</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6910,25 +6899,13 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangbrush.cpp" line="+111"/>
         <location line="+96"/>
-        <location filename="../src/tiled/wangbrush_BACKUP_56900.cpp" line="+113"/>
-        <location line="+68"/>
-        <location filename="../src/tiled/wangbrush_BASE_56900.cpp" line="+114"/>
-        <location line="+68"/>
-        <location filename="../src/tiled/wangbrush_LOCAL_56900.cpp" line="+113"/>
-        <location line="+68"/>
-        <location filename="../src/tiled/wangbrush_REMOTE_56900.cpp" line="+114"/>
-        <location line="+68"/>
-        <source>Wang Brush</source>
-        <translation>Четка на Ванг</translation>
+        <source>Terrain Brush</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+202"/>
-        <location filename="../src/tiled/wangbrush_BACKUP_56900.cpp" line="+197"/>
-        <location filename="../src/tiled/wangbrush_BASE_56900.cpp" line="+197"/>
-        <location filename="../src/tiled/wangbrush_LOCAL_56900.cpp" line="+197"/>
-        <location filename="../src/tiled/wangbrush_REMOTE_56900.cpp" line="+197"/>
-        <source>Missing Wang tile transition</source>
-        <translation>Липсва плочен преход на Ванг</translation>
+        <source>Missing terrain transition</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6942,59 +6919,74 @@ Please select specific format.</source>
 <context>
     <name>Tiled::WangDock</name>
     <message>
-        <location filename="../src/tiled/wangdock.cpp" line="+223"/>
-        <location line="+302"/>
+        <location filename="../src/tiled/wangdock.cpp" line="+237"/>
+        <location line="+305"/>
+        <source>Terrains</source>
+        <translation type="unfinished">Терени</translation>
+    </message>
+    <message>
+        <location line="-304"/>
+        <location line="+305"/>
         <source>Patterns</source>
         <translation>Модели</translation>
     </message>
     <message>
-        <location line="-303"/>
-        <location line="+302"/>
-        <source>Colors</source>
-        <translation>Цветове</translation>
-    </message>
-    <message>
-        <location line="-9"/>
-        <source>Wang Sets</source>
-        <translation>Набори на Ванг</translation>
+        <location line="-13"/>
+        <source>Terrain Sets</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>Erase WangIds</source>
-        <translation>Изтриване на ид. на Ванг</translation>
+        <source>Erase Terrain</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Add Wang Set</source>
-        <translation>Добавяне на набор на Ванг</translation>
+        <source>Add Terrain Set</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Duplicate Wang Set</source>
-        <translation>Дублиране на набора на Ванг</translation>
+        <source>New Corner Set</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Remove Wang Set</source>
-        <translation>Премахване на набора на Ванг</translation>
+        <source>New Edge Set</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Add Color</source>
-        <translation>Добавяне на цвят</translation>
+        <source>New Mixed Set</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Remove Color</source>
-        <translation>Премахване на цвета</translation>
+        <source>Duplicate Terrain Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Remove Terrain Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Add Terrain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Remove Terrain</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Tiled::WangSetView</name>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+104"/>
-        <source>Wang Set &amp;Properties...</source>
-        <translation>&amp;Свойства на набора на Ванг…</translation>
+        <source>Terrain Set &amp;Properties...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
