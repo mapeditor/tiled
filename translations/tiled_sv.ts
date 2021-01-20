@@ -103,7 +103,7 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
         <source>Edit Commands</source>
-        <translation type="unfinished">Redigera kommandon</translation>
+        <translation>Redigera kommandon</translation>
     </message>
     <message>
         <location line="+43"/>
