@@ -235,7 +235,7 @@
     <message>
         <location line="+7"/>
         <source>&amp;Save before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Save before executing</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -479,7 +479,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-250"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-250"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Error parsing file: %1</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -1066,7 +1066,7 @@ Line %1, column %2</source>
         <location line="+220"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+65"/>
         <source>Terrains</source>
-        <translation type="unfinished">Terrains</translation>
+        <translation>Terrains</translation>
     </message>
     <message>
         <location line="+260"/>
@@ -2922,7 +2922,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>Add Objects</source>
-        <translation type="unfinished">Add Objects</translation>
+        <translation>Add Objects</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -5525,12 +5525,12 @@ Please select specific format.</translation>
     <message>
         <location line="+2"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished">Flip Horizontally</translation>
+        <translation>Flip Horizontally</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished">Flip Vertically</translation>
+        <translation>Flip Vertically</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6465,7 +6465,7 @@ Please select specific format.</translation>
         <location filename="../src/tiled/wangdock.cpp" line="+238"/>
         <location line="+319"/>
         <source>Terrains</source>
-        <translation type="unfinished">Terrains</translation>
+        <translation>Terrains</translation>
     </message>
     <message>
         <location line="-318"/>
