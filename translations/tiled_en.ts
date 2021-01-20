@@ -1443,7 +1443,7 @@
         <translation>Clear View</translation>
     </message>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+821"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+825"/>
         <source>All Files (*)</source>
         <translation>All Files (*)</translation>
     </message>
@@ -6908,14 +6908,14 @@ Please select specific format.</translation>
 <context>
     <name>Tiled::WangDock</name>
     <message>
-        <location filename="../src/tiled/wangdock.cpp" line="+237"/>
-        <location line="+305"/>
+        <location filename="../src/tiled/wangdock.cpp" line="+238"/>
+        <location line="+319"/>
         <source>Terrains</source>
         <translation type="unfinished">Terrains</translation>
     </message>
     <message>
-        <location line="-304"/>
-        <location line="+305"/>
+        <location line="-318"/>
+        <location line="+319"/>
         <source>Patterns</source>
         <translation>Patterns</translation>
     </message>
@@ -7509,48 +7509,6 @@ Please select specific format.</translation>
         <translation>Reload Tileset</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
-        <source>Add Wang Set</source>
-        <translation>Add Wang Set</translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>Remove Wang Set</source>
-        <translation>Remove Wang Set</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/changetilewangid.cpp" line="+37"/>
-        <location line="+12"/>
-        <location line="+14"/>
-        <source>Change Tile WangId</source>
-        <translation>Change Tile WangId</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/changewangsetdata.cpp" line="+68"/>
-        <source>Change Wang Set Type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+17"/>
-        <source>Change Wang Set Color Count</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+48"/>
-        <source>Remove Wang Color</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="+32"/>
-        <source>Set Wang Set Image</source>
-        <translation>Set Wang Set Image</translation>
-    </message>
-    <message>
-        <location line="-127"/>
-        <source>Change Wang Set Name</source>
-        <translation>Change Wang Set Name</translation>
-    </message>
-    <message>
         <location filename="../src/tiled/replacetemplate.cpp" line="+34"/>
         <source>Replace Template</source>
         <translation>Replace Template</translation>
@@ -7582,11 +7540,65 @@ Please select specific format.</translation>
         <translation>Change Tile Size</translation>
     </message>
     <message>
+        <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
+        <source>Add Terrain Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Remove Terrain Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/changetilewangid.cpp" line="+37"/>
+        <location line="+12"/>
+        <location line="+14"/>
+        <source>Change Tile Terrain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/tiled/changewangcolordata.cpp" line="+38"/>
+        <source>Change Terrain Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+26"/>
+        <source>Change Terrain Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+24"/>
+        <source>Change Terrain Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+24"/>
-        <source>Change Wang Color</source>
+        <source>Change Terrain Probability</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/changewangsetdata.cpp" line="+38"/>
+        <source>Change Terrain Set Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Change Terrain Set Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Change Terrain Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+48"/>
+        <source>Remove Terrain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+32"/>
+        <source>Set Terrain Set Image</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

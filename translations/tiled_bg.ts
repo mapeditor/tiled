@@ -1450,7 +1450,7 @@
         <translation>Изчистен изглед</translation>
     </message>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+821"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+825"/>
         <source>All Files (*)</source>
         <translation>Всички файлове (*)</translation>
     </message>
@@ -6919,14 +6919,14 @@ Please select specific format.</source>
 <context>
     <name>Tiled::WangDock</name>
     <message>
-        <location filename="../src/tiled/wangdock.cpp" line="+237"/>
-        <location line="+305"/>
+        <location filename="../src/tiled/wangdock.cpp" line="+238"/>
+        <location line="+319"/>
         <source>Terrains</source>
         <translation>Терени</translation>
     </message>
     <message>
-        <location line="-304"/>
-        <location line="+305"/>
+        <location line="-318"/>
+        <location line="+319"/>
         <source>Patterns</source>
         <translation>Модели</translation>
     </message>
@@ -7520,48 +7520,6 @@ Please select specific format.</source>
         <translation>Презареждане на плочен набор</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
-        <source>Add Wang Set</source>
-        <translation>Добавяне на набор на Ванг</translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>Remove Wang Set</source>
-        <translation>Премахване на набора на Ванг</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/changetilewangid.cpp" line="+37"/>
-        <location line="+12"/>
-        <location line="+14"/>
-        <source>Change Tile WangId</source>
-        <translation>Промяна на ид. на Ванг на плочката</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/changewangsetdata.cpp" line="+68"/>
-        <source>Change Wang Set Type</source>
-        <translation>Промяна на типа на набора на Ванг</translation>
-    </message>
-    <message>
-        <location line="+17"/>
-        <source>Change Wang Set Color Count</source>
-        <translation>Промяна на броя цветове на набора на Ванг</translation>
-    </message>
-    <message>
-        <location line="+48"/>
-        <source>Remove Wang Color</source>
-        <translation>Премахване на цвят на Ванг</translation>
-    </message>
-    <message>
-        <location line="+32"/>
-        <source>Set Wang Set Image</source>
-        <translation>Задаване на изображение за набора на Ванг</translation>
-    </message>
-    <message>
-        <location line="-127"/>
-        <source>Change Wang Set Name</source>
-        <translation>Промяна на името на набора на Ванг</translation>
-    </message>
-    <message>
         <location filename="../src/tiled/replacetemplate.cpp" line="+34"/>
         <source>Replace Template</source>
         <translation>Замяна на шаблона</translation>
@@ -7593,12 +7551,66 @@ Please select specific format.</source>
         <translation>Промяна на размера на плочка</translation>
     </message>
     <message>
+        <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
+        <source>Add Terrain Set</source>
+        <translation type="unfinished">Добавяне на теренен набор</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Remove Terrain Set</source>
+        <translation type="unfinished">Премахване на теренния набор</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/changetilewangid.cpp" line="+37"/>
+        <location line="+12"/>
+        <location line="+14"/>
+        <source>Change Tile Terrain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/tiled/changewangcolordata.cpp" line="+38"/>
+        <source>Change Terrain Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+26"/>
+        <source>Change Terrain Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+24"/>
+        <source>Change Terrain Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+24"/>
-        <source>Change Wang Color</source>
-        <translation>Промяна на цвета на набор на Ванг</translation>
+        <source>Change Terrain Probability</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/changewangsetdata.cpp" line="+38"/>
+        <source>Change Terrain Set Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Change Terrain Set Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Change Terrain Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+48"/>
+        <source>Remove Terrain</source>
+        <translation type="unfinished">Премахване на терена</translation>
+    </message>
+    <message>
+        <location line="+32"/>
+        <source>Set Terrain Set Image</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
