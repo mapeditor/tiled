@@ -241,7 +241,7 @@
     <message>
         <location line="+7"/>
         <source>&amp;Save before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uložit před spuštěním</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -486,7 +486,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-250"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-250"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při načítání souboru: &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -523,7 +523,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+183"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+183"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při načítání souboru: &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -550,7 +550,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-180"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-180"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při načítání souboru: &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -798,7 +798,7 @@
     <message>
         <location line="+11"/>
         <source>Enable Parallax</source>
-        <translation type="unfinished"></translation>
+        <translation>Povolit paralaxu</translation>
     </message>
     <message>
         <location line="-269"/>
@@ -1077,7 +1077,7 @@ Line %1, column %2</source>
         <location line="+220"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+65"/>
         <source>Terrains</source>
-        <translation type="unfinished">Terény</translation>
+        <translation>Terény</translation>
     </message>
     <message>
         <location line="+260"/>
@@ -1678,17 +1678,17 @@ Line %1, column %2</source>
     <message>
         <location line="-20"/>
         <source>Object selection behavior:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chování výběru objektů:</translation>
     </message>
     <message>
         <location line="+50"/>
         <source>Middle mouse button uses auto-&amp;scrolling</source>
-        <translation type="unfinished"></translation>
+        <translation>Prostřední tlačítko myši automaticky &amp;skroluje</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Use s&amp;mooth scrolling</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hladké skrolování</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2363,7 +2363,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/rpmap/rpmapplugin.cpp" line="+93"/>
         <source>RpTool MapTool files (*.rpmap)</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubory RpTool MapTool (*.rpmap)</translation>
     </message>
 </context>
 <context>
@@ -2486,12 +2486,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editablewangset.cpp" line="+84"/>
         <source>Wang ID must be an array of length 8</source>
-        <translation type="unfinished"></translation>
+        <translation>ID pro Wangovu sadu musí být osmiprvkové pole</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Invalid Wang ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Špatné ID pro Wangovu sadu</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -2583,7 +2583,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/scriptmodule.cpp" line="+160"/>
         <location line="+48"/>
         <source>Editor not available</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor není k dispozici</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -2700,7 +2700,7 @@ Line %1, column %2</source>
     <message>
         <location line="+58"/>
         <source>Unsupported encoding: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepodporované kódování: %1</translation>
     </message>
     <message>
         <location line="+89"/>
@@ -2735,12 +2735,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/scriptimage.cpp" line="+84"/>
         <source>Invalid color name: &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Špatné jméno barvy: &apos;%2&apos;</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Invalid color value</source>
-        <translation type="unfinished"></translation>
+        <translation>Špatná barevná hodnota</translation>
     </message>
 </context>
 <context>
@@ -2844,7 +2844,7 @@ Line %1, column %2</source>
     <message>
         <location line="+22"/>
         <source>Monospace</source>
-        <translation type="unfinished"></translation>
+        <translation>Neproporcionální</translation>
     </message>
 </context>
 <context>
@@ -2893,7 +2893,7 @@ Line %1, column %2</source>
     <message>
         <location line="-363"/>
         <source>Apply Collision Shapes</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplikovat kolizní tvary</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -2905,7 +2905,7 @@ Line %1, column %2</source>
         <location line="-214"/>
         <location line="+228"/>
         <source>Convert to Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Převést na mnohoúhelník</translation>
     </message>
     <message numerus="yes">
         <location line="-40"/>
@@ -2928,17 +2928,17 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>Apply Collision(s) to Selected Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplikovat kolize na vybrané dlaždice</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Replace Existing Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Přepsat existující objekty</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Objects</source>
-        <translation type="unfinished">Přidání objektů</translation>
+        <translation>Přidat objekty</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2963,7 +2963,7 @@ Line %1, column %2</source>
     <message>
         <location line="+4"/>
         <source>Can&apos;t create template with embedded tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze vytvořit šablonu s vloženou sadou dlaždic</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -4142,7 +4142,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="-403"/>
         <source>New World</source>
-        <translation type="unfinished"></translation>
+        <translation>Nový svět</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -4192,7 +4192,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+107"/>
         <source>Error Saving World</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při ukládání světa</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -4333,7 +4333,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+132"/>
         <source>Map format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Formát mapy &apos;%s&apos; nenalezen</translation>
     </message>
     <message>
         <location line="+104"/>
@@ -4682,7 +4682,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+193"/>
         <source>Unrecognized tileset format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Neznámý formát sady dlaždic.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5111,19 +5111,19 @@ Prosím vyberte formát ručně.</translation>
         <location line="-162"/>
         <location line="+167"/>
         <source>Select From Any Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybrat z jakékoli vrstvy</translation>
     </message>
     <message>
         <location line="-166"/>
         <location line="+167"/>
         <source>Prefer Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Upřednostnit aktivní vrstvu</translation>
     </message>
     <message>
         <location line="-166"/>
         <location line="+167"/>
         <source>Selected Layers Only</source>
-        <translation type="unfinished"></translation>
+        <translation>Pouze z aktivní vrstvy</translation>
     </message>
 </context>
 <context>
@@ -5485,7 +5485,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+2"/>
         <source>Parallax Factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Koeficient paralaxy</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5563,27 +5563,27 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+3"/>
         <source>Allowed Transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Povolené transformace</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished">Překlopit vodorovně</translation>
+        <translation>Vodorovné překlopení</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished">Překlopit svisle</translation>
+        <translation>Svislé překlopení</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Rotate</source>
-        <translation type="unfinished"></translation>
+        <translation>Otočení</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Prefer Untransformed Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Upřednostnit netransformované dlaždice</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -5619,32 +5619,32 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+19"/>
         <source>Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Sada terénů</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Terrain Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet terénů</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Terén</translation>
     </message>
     <message>
         <location line="+1147"/>
         <source>Corner</source>
-        <translation type="unfinished"></translation>
+        <translation>Roh</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Strana</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Mixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Obojí</translation>
     </message>
     <message>
         <location line="-1109"/>
@@ -5818,17 +5818,17 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+33"/>
         <source>%1, %2 - %3: (%4 x %5)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, %2 - %3: (%4 × %5)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Obdélník</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Circle</source>
-        <translation type="unfinished"></translation>
+        <translation>Kruh</translation>
     </message>
 </context>
 <context>
@@ -5932,7 +5932,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+1"/>
         <source>Terrain Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mód vyplňování terénu</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6044,7 +6044,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+108"/>
         <source>Detect Bounding Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Zjistit Bounding Box</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6248,7 +6248,7 @@ Prosím vyberte formát ručně.</translation>
         <location filename="../src/tiled/tilesetdocument.cpp" line="+101"/>
         <location line="+38"/>
         <source>Tileset format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Formát sady dlaždic &apos;%s&apos; nenalezen</translation>
     </message>
     <message>
         <location line="+83"/>
@@ -6331,7 +6331,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+76"/>
         <source>Unnamed Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepojmenovaná sada</translation>
     </message>
 </context>
 <context>
@@ -6347,12 +6347,12 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+763"/>
         <source>Use as Terrain Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít jako obrázek sady terénů</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Use as Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít jako obrázek terénu</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6486,12 +6486,12 @@ Prosím vyberte formát ručně.</translation>
         <location filename="../src/tiled/wangbrush.cpp" line="+111"/>
         <location line="+96"/>
         <source>Terrain Brush</source>
-        <translation type="unfinished"></translation>
+        <translation>Terénový štětec</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>Missing terrain transition</source>
-        <translation type="unfinished"></translation>
+        <translation>Chybějící informace o terénu</translation>
     </message>
 </context>
 <context>
@@ -6508,7 +6508,7 @@ Prosím vyberte formát ručně.</translation>
         <location filename="../src/tiled/wangdock.cpp" line="+238"/>
         <location line="+319"/>
         <source>Terrains</source>
-        <translation type="unfinished">Terény</translation>
+        <translation>Terény</translation>
     </message>
     <message>
         <location line="-318"/>
@@ -6519,52 +6519,52 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="-13"/>
         <source>Terrain Sets</source>
-        <translation type="unfinished"></translation>
+        <translation>Sady terénů</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Erase Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Smazat terén</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat sadu terénů</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Corner Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat sadu rohů</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Edge Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat sadu stran</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Mixed Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat sadu rohů i stran</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplikovat sadu terénů</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Odebrat sadu terénů</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat terén</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Odebrat terén</translation>
     </message>
 </context>
 <context>
@@ -6572,7 +6572,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+104"/>
         <source>Terrain Set &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlastnosti &amp;sady terénů...</translation>
     </message>
 </context>
 <context>
@@ -6828,7 +6828,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+20"/>
         <source>Change Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna sady dlaždic</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+33"/>
@@ -6900,7 +6900,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+21"/>
         <source>Change Layer Parallax Factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna koeficientu paralaxy</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -7146,64 +7146,64 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
         <source>Add Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidání sady terénů</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Odebrání sady terénů</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+37"/>
         <location line="+12"/>
         <location line="+14"/>
         <source>Change Tile Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna terénu dlaždice</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangcolordata.cpp" line="+38"/>
         <source>Change Terrain Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Přejmenování terénu</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Change Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna obrázku terénu</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna barvy terénu</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna pravděpodobnosti terénu</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+38"/>
         <source>Change Terrain Set Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Přejmenování sady terénů</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Change Terrain Set Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna typu sady terénů</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Change Terrain Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna počtu terénů</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Odebrání terénu</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Set Terrain Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení obrázku sady terénu</translation>
     </message>
 </context>
 <context>
@@ -7291,17 +7291,17 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="-1"/>
         <source>If used only specified layers are shown. Can be repeated to show multiple specified layers only.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit jen zadané vrstvy. Lze použít několikrát a zobrazit tak více vrstev najednou.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>If used tile animations are advanced by the specified duration.</source>
-        <translation type="unfinished"></translation>
+        <translation>Posunout animace o danou dobu.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>duration</source>
-        <translation type="unfinished"></translation>
+        <translation>doba</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -7331,7 +7331,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+9"/>
         <source>Invalid advance-animations specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Zadaná špatná doba posunutí animací (--advance-animations): &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+57"/>
