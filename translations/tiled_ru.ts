@@ -1898,7 +1898,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>IBeam</source>
-        <translation>IBeam</translation>
+        <translation>Палка</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3710,7 +3710,7 @@ Line %1, column %2</source>
     <message numerus="yes">
         <location line="+268"/>
         <source>Move %n Point(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Сдвинуть %n узел</numerusform>
             <numerusform>Сдвинуть %n узла</numerusform>
             <numerusform>Сдвинуть %n узлов</numerusform>
@@ -5615,12 +5615,12 @@ Please select specific format.</source>
     <message>
         <location line="+19"/>
         <source>Terrain Set</source>
-        <translation>Набор участков местности</translation>
+        <translation>Набор местностей</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Terrain Count</source>
-        <translation>Количество участков местости</translation>
+        <translation>Количество местностей</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -6343,12 +6343,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+763"/>
         <source>Use as Terrain Set Image</source>
-        <translation>Сделать изображением набора участков местности</translation>
+        <translation>Сделать изображением набора местностей</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Use as Terrain Image</source>
-        <translation>Сделать изображением участка местности</translation>
+        <translation>Сделать изображением местности</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6487,7 +6487,7 @@ Please select specific format.</source>
     <message>
         <location line="+202"/>
         <source>Missing terrain transition</source>
-        <translation>Не хватает перехода между участками местности</translation>
+        <translation>Не хватает перехода между местностями</translation>
     </message>
 </context>
 <context>
@@ -6504,7 +6504,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/wangdock.cpp" line="+238"/>
         <location line="+319"/>
         <source>Terrains</source>
-        <translation>Участки местности</translation>
+        <translation>Местности</translation>
     </message>
     <message>
         <location line="-318"/>
@@ -6515,17 +6515,17 @@ Please select specific format.</source>
     <message>
         <location line="-13"/>
         <source>Terrain Sets</source>
-        <translation>Наборы участков местности</translation>
+        <translation>Наборы местностей</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Erase Terrain</source>
-        <translation>Стереть участок местности</translation>
+        <translation>Стереть местности</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain Set</source>
-        <translation>Добавить набор участков местности</translation>
+        <translation>Добавить набор местностей</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6545,22 +6545,22 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Duplicate Terrain Set</source>
-        <translation>Дублировать набор участков местности</translation>
+        <translation>Дублировать набор местностей</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить набор местностей</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить местность</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить местность</translation>
     </message>
 </context>
 <context>
@@ -6568,7 +6568,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+104"/>
         <source>Terrain Set &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Свойства набора местности...</translation>
     </message>
 </context>
 <context>
@@ -7142,64 +7142,64 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
         <source>Add Terrain Set</source>
-        <translation type="unfinished">Добавить набор участков местности</translation>
+        <translation>Добавить набор местностей</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить набор местностей</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+37"/>
         <location line="+12"/>
         <location line="+14"/>
         <source>Change Tile Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить участок местности тайла</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangcolordata.cpp" line="+38"/>
         <source>Change Terrain Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать местность</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Change Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить изображение местности</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить цвет местности</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить вероятность местности</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+38"/>
         <source>Change Terrain Set Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать набор местностей</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Change Terrain Set Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить тип набора местностей</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Change Terrain Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить количество местностей</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить местность</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Set Terrain Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить изображение набора местностей</translation>
     </message>
 </context>
 <context>
