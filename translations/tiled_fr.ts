@@ -240,7 +240,7 @@
     <message>
         <location line="+7"/>
         <source>&amp;Save before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Enregistrer avant d&apos;Exécuter</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -484,7 +484,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-250"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-250"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur à la lecture du fichier : %1</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -521,7 +521,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+183"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+183"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur à la lecture du fichier : %1</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -548,7 +548,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-180"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-180"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur à la lecture du fichier : %1</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -714,7 +714,7 @@
     <message>
         <location line="+11"/>
         <source>Invalid size</source>
-        <translation type="unfinished">La taille est invalide</translation>
+        <translation>Taille invalide</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1252,7 +1252,7 @@
     <message>
         <location line="+11"/>
         <source>Enable Parallax</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer la Parallaxe</translation>
     </message>
     <message>
         <location line="-240"/>
@@ -1521,7 +1521,7 @@ Ligne %1, colonne %2</translation>
         <location line="+220"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+65"/>
         <source>Terrains</source>
-        <translation type="unfinished">Terrains</translation>
+        <translation>Terrains</translation>
     </message>
     <message>
         <location line="+260"/>
@@ -2121,17 +2121,17 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-20"/>
         <source>Object selection behavior:</source>
-        <translation type="unfinished"></translation>
+        <translation>Comportement de la sélection des objets :</translation>
     </message>
     <message>
         <location line="+50"/>
         <source>Middle mouse button uses auto-&amp;scrolling</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser le bouton milieu de la souris pour le défilement automatique</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Use s&amp;mooth scrolling</source>
-        <translation type="unfinished"></translation>
+        <translation>Défilement &amp;doux</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2806,7 +2806,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/plugins/rpmap/rpmapplugin.cpp" line="+93"/>
         <source>RpTool MapTool files (*.rpmap)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers RpTool MapTool (*.rpmap)</translation>
     </message>
 </context>
 <context>
@@ -2929,12 +2929,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/editablewangset.cpp" line="+84"/>
         <source>Wang ID must be an array of length 8</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;ID de Wang doit être un tableau de 8 éléments</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Invalid Wang ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID de Wang invalide</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3026,7 +3026,7 @@ Ligne %1, colonne %2</translation>
         <location filename="../src/tiled/scriptmodule.cpp" line="+160"/>
         <location line="+48"/>
         <source>Editor not available</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditeur non disponible</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -3143,7 +3143,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+58"/>
         <source>Unsupported encoding: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Encodage non pris en charge : %1</translation>
     </message>
     <message>
         <location line="+89"/>
@@ -3178,12 +3178,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/scriptimage.cpp" line="+84"/>
         <source>Invalid color name: &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de couleur invalide : &apos;%2&apos;</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Invalid color value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur de couleur invalide</translation>
     </message>
 </context>
 <context>
@@ -3226,7 +3226,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+8"/>
         <source>Exception: %1</source>
-        <translation>Erreur :</translation>
+        <translation>Erreur : %1</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -3287,7 +3287,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+22"/>
         <source>Monospace</source>
-        <translation type="unfinished"></translation>
+        <translation>Police d’écriture à chasse fixe</translation>
     </message>
 </context>
 <context>
@@ -3336,7 +3336,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-363"/>
         <source>Apply Collision Shapes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Appliquer les formes de collision</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -3348,7 +3348,7 @@ Ligne %1, colonne %2</translation>
         <location line="-214"/>
         <location line="+228"/>
         <source>Convert to Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir en Polygone</translation>
     </message>
     <message numerus="yes">
         <location line="-40"/>
@@ -3369,17 +3369,17 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+10"/>
         <source>Apply Collision(s) to Selected Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Appliquer les collisions aux tuiles sélectionnées</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Replace Existing Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplacer les objets existants</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Objects</source>
-        <translation type="unfinished">Ajouter des Objets</translation>
+        <translation>Ajouter des Objets</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -3404,7 +3404,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+4"/>
         <source>Can&apos;t create template with embedded tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de créer un modèle avec un Jeu de Tuiles embarqué</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -4576,7 +4576,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-403"/>
         <source>New World</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau Monde</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -4626,7 +4626,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+107"/>
         <source>Error Saving World</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur à l&apos;enregistrement du Monde</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -4767,7 +4767,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+132"/>
         <source>Map format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Format de Carte &apos;%s&apos; non trouvé</translation>
     </message>
     <message>
         <location line="+104"/>
@@ -5104,7 +5104,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+193"/>
         <source>Unrecognized tileset format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Format de Jeu de Tuiles non reconnu.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5528,19 +5528,19 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="-162"/>
         <location line="+167"/>
         <source>Select From Any Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Depuis n&apos;importe quel Calque</translation>
     </message>
     <message>
         <location line="-166"/>
         <location line="+167"/>
         <source>Prefer Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>De préférence depuis les Calques sélectionnés</translation>
     </message>
     <message>
         <location line="-166"/>
         <location line="+167"/>
         <source>Selected Layers Only</source>
-        <translation type="unfinished"></translation>
+        <translation>Depuis les Calques sélectionnés uniquement</translation>
     </message>
 </context>
 <context>
@@ -5899,7 +5899,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+2"/>
         <source>Parallax Factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteur de Parallaxe</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5977,27 +5977,27 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+3"/>
         <source>Allowed Transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformations autorisés</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished">Retourner Horizontalement</translation>
+        <translation>Inversion Horizontale</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished">Retourner Verticalement</translation>
+        <translation>Inversion Verticale</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Rotate</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotation</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Prefer Untransformed Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune de préférence</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -6033,32 +6033,32 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+19"/>
         <source>Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeux de Terrains</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Terrain Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de Terrains</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Terrain</translation>
     </message>
     <message>
         <location line="+1147"/>
         <source>Corner</source>
-        <translation type="unfinished"></translation>
+        <translation>Coins</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Côtés</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Mixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Mélangé</translation>
     </message>
     <message>
         <location line="-1109"/>
@@ -6068,7 +6068,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+340"/>
         <source>Error Reading Tileset</source>
-        <translation>Erreur de Lecture du Jeu de Tuiles</translation>
+        <translation>Erreur à la Lecture du Jeu de Tuiles</translation>
     </message>
     <message>
         <location line="+333"/>
@@ -6232,17 +6232,17 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+33"/>
         <source>%1, %2 - %3: (%4 x %5)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, %2 - %3 : (%4 x %5)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Rectangle</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Circle</source>
-        <translation type="unfinished"></translation>
+        <translation>Cercle</translation>
     </message>
 </context>
 <context>
@@ -6346,7 +6346,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+1"/>
         <source>Terrain Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode Terrain</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6458,7 +6458,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+108"/>
         <source>Detect Bounding Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Détecter le Rectangle Englobant</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6662,7 +6662,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location filename="../src/tiled/tilesetdocument.cpp" line="+101"/>
         <location line="+38"/>
         <source>Tileset format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Format de Jeu de Tuiles &apos;%s&apos; non trouvé</translation>
     </message>
     <message>
         <location line="+83"/>
@@ -6745,7 +6745,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+76"/>
         <source>Unnamed Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeu de Tuile sans nom</translation>
     </message>
 </context>
 <context>
@@ -6761,12 +6761,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+763"/>
         <source>Use as Terrain Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser l&apos;Image comme Jeu de Terrain</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Use as Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser l&apos;Image comme Terrain</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6900,12 +6900,12 @@ Veuillez sélectionner un format spécifique.</translation>
         <location filename="../src/tiled/wangbrush.cpp" line="+111"/>
         <location line="+96"/>
         <source>Terrain Brush</source>
-        <translation type="unfinished"></translation>
+        <translation>Pinceau Terrain</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>Missing terrain transition</source>
-        <translation type="unfinished"></translation>
+        <translation>Transition de Terrain manquante</translation>
     </message>
 </context>
 <context>
@@ -6922,7 +6922,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location filename="../src/tiled/wangdock.cpp" line="+237"/>
         <location line="+305"/>
         <source>Terrains</source>
-        <translation type="unfinished">Terrains</translation>
+        <translation>Terrains</translation>
     </message>
     <message>
         <location line="-304"/>
@@ -6933,52 +6933,52 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-13"/>
         <source>Terrain Sets</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeux de Terrains</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Erase Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer le Terrain</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un Jeu de Terrains</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Corner Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau Jeu de Coins</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Edge Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau Jeu de Côtés</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Mixed Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau Jeu Mélangé</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Dupliquer le Jeu de Terrains</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever le Jeu de Terrains</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un Terrain</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever le Terrain</translation>
     </message>
 </context>
 <context>
@@ -6986,7 +6986,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+104"/>
         <source>Terrain Set &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Propriétés du Jeu de Terrains...</translation>
     </message>
 </context>
 <context>
@@ -7247,7 +7247,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+20"/>
         <source>Change Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Changement du Jeu de Tuiles</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+41"/>
@@ -7314,7 +7314,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+21"/>
         <source>Change Layer Parallax Factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Changement du Facteur de Parallaxe du Calque</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -7522,44 +7522,44 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
         <source>Add Wang Set</source>
-        <translation>Ajouter un Ensemble Wang</translation>
+        <translation>Ajouter un Ensemble de Wang</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Wang Set</source>
-        <translation>Supprimer un Ensemble Wang</translation>
+        <translation>Supprimer un Ensemble de Wang</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+37"/>
         <location line="+12"/>
         <location line="+14"/>
         <source>Change Tile WangId</source>
-        <translation>Changer l&apos;Identifiant Wang de la Tuile</translation>
+        <translation>Changer l&apos;Identifiant de Wang de la Tuile</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+68"/>
         <source>Change Wang Set Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Changement du Type de l&apos;Ensemble de Wang</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Change Wang Set Color Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Changement du nombre de Couleurs de l&apos;Ensemble de Wang</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>Remove Wang Color</source>
-        <translation>Supprimer la Couleur Wang</translation>
+        <translation>Supprimer la Couleur de Wang</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Set Wang Set Image</source>
-        <translation>Régler l&apos;Image de l&apos;Ensemble Wang</translation>
+        <translation>Régler l&apos;Image de l&apos;Ensemble de Wang</translation>
     </message>
     <message>
         <location line="-127"/>
         <source>Change Wang Set Name</source>
-        <translation>Changer le Nom de l&apos;Ensemble Wang</translation>
+        <translation>Changer le Nom de l&apos;Ensemble de Wang</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetemplate.cpp" line="+34"/>
@@ -7598,7 +7598,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+24"/>
         <location line="+24"/>
         <source>Change Wang Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Changement de la Couleur de Wang</translation>
     </message>
 </context>
 <context>
