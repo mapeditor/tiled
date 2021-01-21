@@ -2425,7 +2425,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+4"/>
         <source>Invalid size</source>
-        <translation>La taille est invalide</translation>
+        <translation>Taille invalide</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -2613,7 +2613,7 @@ Ligne %1, colonne %2</translation>
         <location line="+14"/>
         <location line="+14"/>
         <source>Invalid shortName</source>
-        <translation>shortName invalide</translation>
+        <translation>NomCourt invalide</translation>
     </message>
     <message>
         <location line="+77"/>
@@ -2692,7 +2692,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+9"/>
         <source>TextFile constructor needs path of file to be opened.</source>
-        <translation>Constructeur de Fichier Texte a besoin du chemin vers un fichier à ouvrir.</translation>
+        <translation>Le Constructeur de Fichier Texte a besoin du chemin vers un fichier à ouvrir.</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -2722,7 +2722,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+35"/>
         <source>Error reading map</source>
-        <translation>Erreur lors de la lecture de carte</translation>
+        <translation>Erreur lors de la lecture de la carte</translation>
     </message>
     <message>
         <location filename="../src/tiled/scriptmanager.cpp" line="+289"/>
