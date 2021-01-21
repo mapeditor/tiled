@@ -353,7 +353,7 @@
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation>Rechercher... (&amp;B)</translation>
+        <translation>Parcourir... (&amp;B)</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -640,7 +640,7 @@
     <message>
         <location line="+4"/>
         <source>&amp;Recent Projects</source>
-        <translation>&amp;Projets Récents</translation>
+        <translation>Projets &amp;Récents</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -670,12 +670,12 @@
     <message>
         <location line="+9"/>
         <source>&amp;About Tiled</source>
-        <translation>&amp;A propos de Tiled</translation>
+        <translation>&amp;À propos de Tiled</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>About Qt</source>
-        <translation>A propos de Qt</translation>
+        <translation>À propos de Qt</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -961,7 +961,7 @@
     <message>
         <location line="+16"/>
         <source>Support Tiled Development</source>
-        <translation>Supporter le Développement de Tiled</translation>
+        <translation>Soutenir le Développement de Tiled</translation>
     </message>
     <message>
         <location line="+158"/>
@@ -971,7 +971,7 @@
     <message>
         <location line="+9"/>
         <source>Fit Map in View</source>
-        <translation>Ajuster la Carte à la Vue</translation>
+        <translation>Ajuster la Carte dans la Vue</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1001,7 +1001,7 @@
     <message>
         <location line="+8"/>
         <source>Clear View</source>
-        <translation>Dégager la Vue</translation>
+        <translation>Vider la Vue</translation>
     </message>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+825"/>
@@ -1178,7 +1178,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-38"/>
         <source>Fixed</source>
-        <translation>Fixe</translation>
+        <translation>Fixé</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -1265,7 +1265,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+25"/>
         <source>&amp;Browse...</source>
-        <translation>Rechercher... (&amp;B)</translation>
+        <translation>Parcourir.. (&amp;B)</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1275,7 +1275,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+129"/>
         <source>Tile width:</source>
-        <translation>Largeur :</translation>
+        <translation>Largeur de tuile :</translation>
     </message>
     <message>
         <location line="+38"/>
@@ -1314,7 +1314,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-45"/>
         <source>Tile height:</source>
-        <translation>Hauteur :</translation>
+        <translation>Hauteur de tuile :</translation>
     </message>
     <message>
         <location line="+91"/>
@@ -1381,12 +1381,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/libtiled/objecttypes.cpp" line="+251"/>
         <source>Could not open file for writing.</source>
-        <translation>La tentative d&apos;écriture du fichier a échoué.</translation>
+        <translation>Impossible d&apos;ouvrir le fichier en écriture.</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Could not open file.</source>
-        <translation>La tentative d&apos;ouverture du fichier a échoué.</translation>
+        <translation>Impossible d&apos;ouvrir le fichier.</translation>
     </message>
     <message>
         <location line="-89"/>
@@ -1493,7 +1493,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+8"/>
         <source>Whole Map</source>
-        <translation>Carte Complète</translation>
+        <translation>Carte Entière</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1600,7 +1600,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-169"/>
         <source>Turn this off if you&apos;re having trouble saving your files.</source>
-        <translation>Décochez si vous avez des problèmes à l&apos;enregistrement de vos fichiers.</translation>
+        <translation>Décochez ceci si vous avez des problèmes à l&apos;enregistrement de vos fichiers.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1655,7 +1655,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+51"/>
         <source>Omits unnecessary whitespace when supported by the output format</source>
-        <translation>Omettre les espaces non nécessaires quand cela est supporté par le format d&apos;exportation</translation>
+        <translation>Omettre les espaces non nécessaires quand cela est supporté par le format de sortie</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1680,7 +1680,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+50"/>
         <source>Middle mouse button uses auto-&amp;scrolling</source>
-        <translation>Utiliser le bouton milieu de la souris pour le défilement automatique</translation>
+        <translation>Utiliser le bouton du milieu de la souris pour le défilement automatique</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -1763,7 +1763,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+6"/>
         <source>Enabled Plugins</source>
-        <translation>Greffons Actifs</translation>
+        <translation>Greffons Activés</translation>
     </message>
 </context>
 <context>
@@ -1771,7 +1771,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.ui" line="+14"/>
         <source>Project Properties</source>
-        <translation>Propriétés de Projet</translation>
+        <translation>Propriétés du Projet</translation>
     </message>
 </context>
 <context>
@@ -1794,7 +1794,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation>Le script a retourné une valeur négative. Veuillez vérifier sur la console.</translation>
+        <translation>Le script a retourné &quot;faux&quot;. Veuillez vérifier sur la console.</translation>
     </message>
 </context>
 <context>
@@ -1883,7 +1883,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+2"/>
         <source>Up Arrow</source>
-        <translation>Flèche Montante</translation>
+        <translation>Flèche vers le Haut</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2192,7 +2192,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+45"/>
         <source>Horizontal Policy</source>
-        <translation>Police Horizontal</translation>
+        <translation>Police Horizontale</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -2202,12 +2202,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+9"/>
         <source>Horizontal Stretch</source>
-        <translation>Ecartement Horizontal</translation>
+        <translation>Écartement Horizontal</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Vertical Stretch</source>
-        <translation>Ecartement Vertical</translation>
+        <translation>Écartement Vertical</translation>
     </message>
 </context>
 <context>
@@ -2246,7 +2246,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="-183"/>
         <source>Cannot open Replica Island map file!</source>
-        <translation>Impossible d&apos;ouvrir le fichier carte de Replica Island !</translation>
+        <translation>Impossible d&apos;ouvrir le fichier de la carte de Replica Island !</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -2400,12 +2400,12 @@ Ligne %1, colonne %2</translation>
         <location line="-15"/>
         <location filename="../src/tiled/editablemap.cpp" line="-75"/>
         <source>Layer not found</source>
-        <translation>Le calque n&apos;a pas été trouvée</translation>
+        <translation>Le calque n&apos;a pas été trouvé</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Layer is in use</source>
-        <translation>Le calque est en train d&apos;être utilisé</translation>
+        <translation>Le calque est utilisé</translation>
     </message>
     <message>
         <location filename="../src/tiled/editablemap.cpp" line="+20"/>
