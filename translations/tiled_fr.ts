@@ -25,9 +25,9 @@
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Editeur de cartes Tiled&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2020 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(Voir le fichier AUTHORS pour la liste complète des contributeurs)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Vous avez la possibilité de modifier ou redistribuer ce programme selon les termes de la GPL (version 2 ou supérieure). Une copie de la GPL est contenue dans le fichier &apos;COPYING&apos; distribué avec Tiled.&lt;/p&gt;
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;&amp;Eacute;diteur de cartes Tiled&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2020 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(Voir le fichier AUTHORS pour la liste compl&amp;egrave;te des contributeurs)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Vous avez la possibilit&amp;eacute; de modifier ou redistribuer ce programme selon les termes de la GPL (version 2 ou sup&amp;eacute;rieure). Une copie de la GPL est contenue dans le fichier &apos;COPYING&apos; distribu&amp;eacute; avec Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
@@ -194,7 +194,7 @@
     <message>
         <location line="+12"/>
         <source>Unknown short argument %1.%2: %3</source>
-        <translation>Argument short inconnu %1.%2 : %3</translation>
+        <translation>Argument court inconnu %1.%2 : %3</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -240,7 +240,7 @@
     <message>
         <location line="+7"/>
         <source>&amp;Save before executing</source>
-        <translation>&amp;Enregistrer avant d&apos;Exécuter</translation>
+        <translation>&amp;Enregistrer avant d&apos;exécuter</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -287,7 +287,7 @@
     <message>
         <location filename="../src/tiled/donationdialog.ui" line="+14"/>
         <source>Support Tiled Development</source>
-        <translation>Supporter le Développement de Tiled</translation>
+        <translation>Soutenir le Développement de Tiled</translation>
     </message>
     <message>
         <location line="+9"/>
