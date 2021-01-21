@@ -6661,7 +6661,7 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Remove Objects</source>
-        <translation>Премахване на обектите</translation>
+        <translation>Премахване на обекти</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremovetileset.cpp" line="+61"/>
@@ -6791,7 +6791,7 @@ Please select specific format.</source>
     <message>
         <location line="+59"/>
         <source>Change Object Alignment</source>
-        <translation>Промяна на подравняването на обектите</translation>
+        <translation>Промяна на подравняването на обекти</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -6822,7 +6822,7 @@ Please select specific format.</source>
     <message>
         <location line="+28"/>
         <source>Split Polyline</source>
-        <translation>Разделяне на начупената линия</translation>
+        <translation>Разделяне на начупена линия</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+38"/>
@@ -6847,12 +6847,12 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Unlock Layer</source>
-        <translation>Отключване на слоя</translation>
+        <translation>Отключване на слой</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Change Layer Tint Color</source>
-        <translation>Промяна на оттенъка на слоя</translation>
+        <translation>Промяна на оттенъка на слой</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -6897,8 +6897,8 @@ Please select specific format.</source>
         <location line="+69"/>
         <source>Detach %n Template Instance(s)</source>
         <translation>
-            <numerusform>Разкачане на екземпляр на шаблона</numerusform>
-            <numerusform>Разкачане на %n екземпляра на шаблона</numerusform>
+            <numerusform>Разкачане на екземпляр на шаблон</numerusform>
+            <numerusform>Разкачане на %n екземпляра на шаблон</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -6999,7 +6999,7 @@ Please select specific format.</source>
     <message>
         <location line="+10"/>
         <source>Change Chunk Size</source>
-        <translation>Размер на частите в резултата</translation>
+        <translation>Промяна на размера на частите в резултата</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -7076,7 +7076,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/replacetemplate.cpp" line="+34"/>
         <source>Replace Template</source>
-        <translation>Замяна на шаблона</translation>
+        <translation>Замяна на шаблон</translation>
     </message>
     <message>
         <location filename="../src/tiled/shapefilltool.cpp" line="-57"/>
@@ -7087,7 +7087,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/mapdocument.cpp" line="-770"/>
         <source>Raise %n Layer(s)</source>
         <translation>
-            <numerusform>Преместване на слоя нагоре</numerusform>
+            <numerusform>Преместване на слой нагоре</numerusform>
             <numerusform>Преместване на %n слоя нагоре</numerusform>
         </translation>
     </message>
@@ -7095,7 +7095,7 @@ Please select specific format.</source>
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
         <translation>
-            <numerusform>Преместване на слоя надолу</numerusform>
+            <numerusform>Преместване на слой надолу</numerusform>
             <numerusform>Преместване на %n слоя надолу</numerusform>
         </translation>
     </message>
@@ -7107,64 +7107,64 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
         <source>Add Terrain Set</source>
-        <translation type="unfinished">Добавяне на теренен набор</translation>
+        <translation>Добавяне на теренен набор</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Terrain Set</source>
-        <translation type="unfinished">Премахване на теренния набор</translation>
+        <translation>Премахване на теренен набор</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+37"/>
         <location line="+12"/>
         <location line="+14"/>
         <source>Change Tile Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на теренен набор</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangcolordata.cpp" line="+38"/>
         <source>Change Terrain Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на името на терен</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Change Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на изображението на терен</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на цвета на терен</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на вероятността на терен</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+38"/>
         <source>Change Terrain Set Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на името на теренен набор</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Change Terrain Set Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на типа на теренен набор</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Change Terrain Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на броя терени</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished">Премахване на терена</translation>
+        <translation>Премахване на терен</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Set Terrain Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Задаване на изображение на теренен набор</translation>
     </message>
 </context>
 <context>
