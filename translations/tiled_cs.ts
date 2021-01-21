@@ -6267,7 +6267,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+28"/>
         <source>Tiled tileset files (*.tsx *.xml)</source>
-        <translation>Soubory sady dlaždic Tiled (*.tmx *.xml)</translation>
+        <translation>Soubory sady dlaždic Tiled (*.tsx *.xml)</translation>
     </message>
 </context>
 <context>
