@@ -670,7 +670,7 @@
     <message>
         <location line="+9"/>
         <source>&amp;About Tiled</source>
-        <translation>&amp;À propos de Tiled</translation>
+        <translation>À propos de &amp;Tiled</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1733,7 +1733,7 @@ Ligne %1, colonne %2</translation>
         <location line="-169"/>
         <location line="+170"/>
         <source>Tiled Fusion</source>
-        <translation>Fusion de Tuile</translation>
+        <translation>Tiled Fusion</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="-101"/>
@@ -2890,7 +2890,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-363"/>
         <source>Apply Collision Shapes</source>
-        <translation type="unfinished">Appliquer les formes de collision</translation>
+        <translation>Appliquer les Formes de Collision</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -5314,12 +5314,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+5"/>
         <source>Output Chunk Width</source>
-        <translation>Largeur du Tronçon de Sortie</translation>
+        <translation>Largeur de Fragment en Sortie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Output Chunk Height</source>
-        <translation>Hauteur du Tronçon de Sortie</translation>
+        <translation>Hauteur de Fragment en Sortie</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -6999,7 +6999,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+10"/>
         <source>Change Chunk Size</source>
-        <translation>Changer la Taille de Tronçon</translation>
+        <translation>Changer la Taille de Fragment</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -7107,64 +7107,64 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
         <source>Add Terrain Set</source>
-        <translation type="unfinished">Ajouter un Jeu de Terrains</translation>
+        <translation>Ajouter un Jeu de Terrains</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Terrain Set</source>
-        <translation type="unfinished">Enlever le Jeu de Terrains</translation>
+        <translation>Enlever le Jeu de Terrains</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+37"/>
         <location line="+12"/>
         <location line="+14"/>
         <source>Change Tile Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer le Terrain d&apos;une Tuile</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangcolordata.cpp" line="+38"/>
         <source>Change Terrain Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer le Nom d&apos;un Terrain</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Change Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer l&apos;Image d&apos;un Terrain</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer la Couleur d&apos;un Terrain</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer la Probabilité d&apos;un Terrain</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+38"/>
         <source>Change Terrain Set Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer le Nom d&apos;un Jeu de Terrains</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Change Terrain Set Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer le Type d&apos;un Jeu de Terrains</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Change Terrain Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer le Nombre de Terrains</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished">Enlever le Terrain</translation>
+        <translation>Enlever le Terrain</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Set Terrain Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisir une Image pour un Jeu de Terrains</translation>
     </message>
 </context>
 <context>
@@ -7252,17 +7252,17 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-1"/>
         <source>If used only specified layers are shown. Can be repeated to show multiple specified layers only.</source>
-        <translation type="unfinished"></translation>
+        <translation>N&apos;afficher que le calque spécifié, peut être répétée pour séléctionner les calques à afficher.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>If used tile animations are advanced by the specified duration.</source>
-        <translation type="unfinished"></translation>
+        <translation>Avancer les animations de la durée spécifiée.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>duration</source>
-        <translation type="unfinished"></translation>
+        <translation>durée</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -7292,7 +7292,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+9"/>
         <source>Invalid advance-animations specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètre advance-animations non valide : &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+57"/>
