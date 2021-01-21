@@ -791,7 +791,7 @@
         <location line="+8"/>
         <location line="+3"/>
         <source>Move Map</source>
-        <translation>Bouger la Carte</translation>
+        <translation>Déplacer la Carte</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -1080,7 +1080,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+260"/>
         <source>Too many &lt;tile&gt; elements</source>
-        <translation>Trop d&apos;éléments &lt;tile&gt; à charger</translation>
+        <translation>Trop d&apos;éléments &lt;tile&gt;</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -1670,7 +1670,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-47"/>
         <source>Mouse wheel &amp;zooms by default</source>
-        <translation>La molette de la souris &amp;zoome par défaut</translation>
+        <translation>La molette de la souris &amp;zoom par défaut</translation>
     </message>
     <message>
         <location line="-20"/>
