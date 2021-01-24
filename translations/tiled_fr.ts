@@ -2770,7 +2770,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+132"/>
         <source>Only object and tile layers supported.</source>
-        <translation>Seules les calques de tuiles et d&apos;objets sont supportées.</translation>
+        <translation>Seuls les calques de tuiles et d&apos;objets sont supportées.</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -2800,7 +2800,7 @@ Ligne %1, colonne %2</translation>
         <location line="+69"/>
         <location line="+68"/>
         <source>Bad layer tile data</source>
-        <translation>Mauvaise données de calque de tuiles</translation>
+        <translation>Mauvaises données de calque de tuiles</translation>
     </message>
     <message>
         <location line="+72"/>
@@ -2994,7 +2994,7 @@ Ligne %1, colonne %2</translation>
         <location line="+6"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Déplacer un Objet vers le Calque</numerusform>
+            <numerusform>Déplacer %n Objet vers le Calque</numerusform>
             <numerusform>Déplacer %n Objets vers le Calque</numerusform>
         </translation>
     </message>
@@ -3024,7 +3024,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+1"/>
         <source>Intersect Selection</source>
-        <translation>Intersectionner la Sélection</translation>
+        <translation>Sélection des intersections</translation>
     </message>
 </context>
 <context>
