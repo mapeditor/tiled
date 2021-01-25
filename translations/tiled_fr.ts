@@ -3024,7 +3024,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+1"/>
         <source>Intersect Selection</source>
-        <translation>Sélection des intersections</translation>
+        <translation>Intersectionner la Sélection</translation>
     </message>
 </context>
 <context>
