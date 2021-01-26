@@ -1,7 +1,6 @@
 /*
- * GMX Tiled Plugin
- * Copyright 2016, Jones Blunt <mrjonesblunt@gmail.com>
- * Copyright 2016-2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * YY Tiled Plugin
+ * Copyright 2021, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -23,17 +22,17 @@
 
 #include "mapformat.h"
 
-#include "gmx_global.h"
+#include "yy_global.h"
 
-namespace Gmx {
+namespace Yy {
 
-class GMXSHARED_EXPORT GmxPlugin : public Tiled::WritableMapFormat
+class YYSHARED_EXPORT YyPlugin : public Tiled::WritableMapFormat
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.mapeditor.MapFormat" FILE "plugin.json")
 
 public:
-    GmxPlugin();
+    YyPlugin();
 
     bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
     QString errorString() const override;
@@ -46,4 +45,4 @@ private:
     QString mError;
 };
 
-} // namespace Gmx
+} // namespace Yy

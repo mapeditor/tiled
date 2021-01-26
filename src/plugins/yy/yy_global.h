@@ -1,7 +1,6 @@
 /*
- * GMX Tiled Plugin
- * Copyright 2016, Jones Blunt <mrjonesblunt@gmail.com>
- * Copyright 2016-2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * YY Tiled Plugin
+ * Copyright 2021, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -21,29 +20,10 @@
 
 #pragma once
 
-#include "mapformat.h"
+#include <QtCore/qglobal.h>
 
-#include "gmx_global.h"
-
-namespace Gmx {
-
-class GMXSHARED_EXPORT GmxPlugin : public Tiled::WritableMapFormat
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapFormat" FILE "plugin.json")
-
-public:
-    GmxPlugin();
-
-    bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
-    QString errorString() const override;
-    QString shortName() const override;
-
-protected:
-    QString nameFilter() const override;
-
-private:
-    QString mError;
-};
-
-} // namespace Gmx
+#if defined(YY_LIBRARY)
+#  define YYSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define YYSHARED_EXPORT Q_DECL_IMPORT
+#endif
