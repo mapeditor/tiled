@@ -116,8 +116,10 @@ void JsonWriter::writeValue(const QJsonValue &value)
     case QJsonValue::Array: {
         writeStartArray();
         const QJsonArray array = value.toArray();
-        for (auto v : array)
+        for (auto v : array) {
+            prepareNewLine();
             writeValue(v);
+        }
         writeEndArray();
         break;
     }
@@ -211,13 +213,10 @@ void JsonWriter::prepareNewLine()
 
 void JsonWriter::prepareNewValue()
 {
-    if (!m_valueWritten) {
+    if (!m_valueWritten)
         writeNewline();
-    } else {
+    else
         write(m_valueSeparator);
-        if (!m_minimize)
-            write(' ');
-    }
 }
 
 void JsonWriter::writeIndent()
@@ -229,13 +228,9 @@ void JsonWriter::writeIndent()
 void JsonWriter::writeNewline()
 {
     if (!m_newLine) {
-        if (!m_minimize) {
-            if (m_suppressNewlines) {
-                write(' ');
-            } else {
-                write('\n');
-                writeIndent();
-            }
+        if (!m_minimize && !m_suppressNewlines) {
+            write('\n');
+            writeIndent();
         }
         m_newLine = true;
     }

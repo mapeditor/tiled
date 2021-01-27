@@ -155,8 +155,7 @@ inline void JsonWriter::write(char c)
 { write(&c, 1); }
 
 /**
- * Sets whether newlines should be suppressed. While newlines are suppressed,
- * the writer will write out spaces instead of newlines.
+ * Sets whether newlines should be suppressed.
  */
 inline void JsonWriter::setSuppressNewlines(bool suppressNewlines)
 { m_suppressNewlines = suppressNewlines; }
