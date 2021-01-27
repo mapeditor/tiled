@@ -218,7 +218,6 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
             // The type is used to refer to the name of the object
             stream.writeAttribute("objName", sanitizeName(type));
 
-            QPointF pos = object->position();
             qreal scaleX = 1;
             qreal scaleY = 1;
 
@@ -243,10 +242,10 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
                     }
                 }
 
-                // Tile objects have bottom-left origin in Tiled, so the
-                // position needs to be translated for top-left origin in
+                // Tile objects don't necessarily have top-left origin in Tiled,
+                // so the position needs to be translated for top-left origin in
                 // GameMaker, taking into account the rotation.
-                origin += QPointF(0, -object->height());
+                origin -= alignmentOffset(object->bounds(), object->alignment());
             }
 
             // Allow overriding the scale using custom properties
@@ -256,19 +255,19 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
             // Adjust the position based on the origin
             QTransform transform;
             transform.rotate(object->rotation());
-            pos += transform.map(origin);
+            const QPointF pos = object->position() + transform.map(origin);
 
             stream.writeAttribute("x", QString::number(qRound(pos.x())));
             stream.writeAttribute("y", QString::number(qRound(pos.y())));
 
             // Include object ID in the name when necessary because duplicates are not allowed
             if (object->name().isEmpty()) {
-                stream.writeAttribute("name", QString("inst_%1").arg(object->id()));
+                stream.writeAttribute("name", QStringLiteral("inst_%1").arg(object->id()));
             } else {
                 QString name = sanitizeName(object->name());
 
                 while (usedNames.contains(name))
-                    name += QString("_%1").arg(object->id());
+                    name += QStringLiteral("_%1").arg(object->id());
 
                 usedNames.insert(name);
                 stream.writeAttribute("name", name);
@@ -338,8 +337,8 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
                         } else {
                             bgName = tileset->name();
 
-                            int xInTilesetGrid = tile->id() % tileset->columnCount();
-                            int yInTilesetGrid = static_cast<int>(tile->id() / tileset->columnCount());
+                            const int xInTilesetGrid = tile->id() % tileset->columnCount();
+                            const int yInTilesetGrid = static_cast<int>(tile->id() / tileset->columnCount());
 
                             xo = tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid;
                             yo = tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid;
