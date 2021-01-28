@@ -3261,7 +3261,7 @@ Ligne %1, colonne %2</translation>
         <location line="+84"/>
         <location line="+8"/>
         <source>Locate File...</source>
-        <translation>Rechercher un Fichier ...</translation>
+        <translation>Localiser un Fichier ...</translation>
     </message>
     <message>
         <location line="-5"/>
