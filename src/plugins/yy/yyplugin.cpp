@@ -660,7 +660,7 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
     json.writeEndArray();
 
     writeProperty(json, map, "inheritCreationOrder", false);
-    json.writeMember("sequenceId", QJsonValue::Null);
+    json.writeMember("sequenceId", QJsonValue(QJsonValue::Null));
 
     const int mapPixelWidth = map->tileWidth() * map->width();
     const int mapPixelHeight = map->tileHeight() * map->height();

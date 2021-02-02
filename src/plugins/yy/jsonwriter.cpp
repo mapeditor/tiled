@@ -26,6 +26,8 @@
 #include <QJsonValue>
 #include <QLocale>
 
+#include <cmath>
+
 namespace Yy {
 
 JsonWriter::JsonWriter(QIODevice *device)
@@ -57,15 +59,6 @@ void JsonWriter::writeStartScope(Scope scope, const char *name)
     m_valueWritten = false;
 }
 
-void JsonWriter::writeStartScope(Scope scope, const QString &name)
-{
-    writeKey(name);
-    write(scope == Object ? '{' : '[');
-    m_scopes.push(scope);
-    m_newLine = false;
-    m_valueWritten = false;
-}
-
 void JsonWriter::writeEndScope(Scope scope)
 {
     Q_ASSERT(m_scopes.last() == scope);
@@ -77,6 +70,25 @@ void JsonWriter::writeEndScope(Scope scope)
     write(scope == Object ? '}' : ']');
     m_newLine = false;
     m_valueWritten = true;
+}
+
+void JsonWriter::writeValue(double value)
+{
+    if (qIsFinite(value)) {
+        // Force at least one decimal to avoid double values from being written
+        // as integer, which may confuse GameMaker.
+        if (std::ceil(value) == value) {
+            writeUnquotedValue(QByteArray::number(value, 'f', 1));
+        } else {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
+            writeUnquotedValue(QByteArray::number(value, 'g', QLocale::FloatingPointShortest));
+#else
+            writeUnquotedValue(QByteArray::number(value));
+#endif
+        }
+    } else {
+        writeUnquotedValue("null"); // +INF || -INF || NaN (see RFC4627#section2.4)
+    }
 }
 
 void JsonWriter::writeValue(const QByteArray &value)
@@ -99,18 +111,9 @@ void JsonWriter::writeValue(const QJsonValue &value)
     case QJsonValue::Bool:
         writeUnquotedValue(value.toBool() ? "true" : "false");
         break;
-    case QJsonValue::Double: {
-        const double d = value.toDouble();
-        if (qIsFinite(d))
-#if QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
-            writeUnquotedValue(QByteArray::number(d, 'g', QLocale::FloatingPointShortest));
-#else
-            writeUnquotedValue(QByteArray::number(d));
-#endif
-        else
-            writeUnquotedValue("null"); // +INF || -INF || NaN (see RFC4627#section2.4)
+    case QJsonValue::Double:
+        writeValue(value.toDouble());
         break;
-    }
     case QJsonValue::String:
         writeValue(value.toString());
         break;
@@ -128,7 +131,7 @@ void JsonWriter::writeValue(const QJsonValue &value)
         writeStartObject();
         const QJsonObject object = value.toObject();
         for (auto it = object.begin(); it != object.end(); ++it)
-            writeMember(it.key().toUtf8(), it.value());
+            writeMember(it.key().toLatin1().constData(), it.value());
         writeEndObject();
         break;
     }
@@ -146,9 +149,9 @@ void JsonWriter::writeUnquotedValue(const QByteArray &value)
     m_valueWritten = true;
 }
 
-void JsonWriter::writeMember(const QByteArray &key, const char *value)
+void JsonWriter::writeMember(const char *key, const char *value)
 {
-    writeKey(key.data());
+    writeKey(key);
     write('"');
     write(value);
     write('"');
@@ -156,9 +159,9 @@ void JsonWriter::writeMember(const QByteArray &key, const char *value)
     m_valueWritten = true;
 }
 
-void JsonWriter::writeMember(const QByteArray &key, const QByteArray &value)
+void JsonWriter::writeMember(const char *key, const QByteArray &value)
 {
-    writeKey(key.data());
+    writeKey(key);
     write('"');
     write(value);
     write('"');
@@ -166,16 +169,16 @@ void JsonWriter::writeMember(const QByteArray &key, const QByteArray &value)
     m_valueWritten = true;
 }
 
-void JsonWriter::writeMember(const QByteArray &key, const QJsonValue &value)
+void JsonWriter::writeMember(const char *key, const QJsonValue &value)
 {
-    writeKey(key.data());
+    writeKey(key);
     writeValue(value);
 }
 
-void JsonWriter::writeUnquotedMember(const QByteArray &key,
+void JsonWriter::writeUnquotedMember(const char *key,
                                      const QByteArray &value)
 {
-    writeKey(key.data());
+    writeKey(key);
     write(value);
     m_newLine = false;
     m_valueWritten = true;

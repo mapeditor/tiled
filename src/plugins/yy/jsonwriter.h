@@ -49,33 +49,32 @@ public:
 
     void writeStartObject()                     { writeStartScope(Object); }
     void writeStartObject(const char *name)     { writeStartScope(Object, name); }
-    void writeStartObject(const QString &name)  { writeStartScope(Object, name); }
     void writeEndObject()                       { writeEndScope(Object); }
 
     void writeStartArray()                      { writeStartScope(Array); }
     void writeStartArray(const char *name)      { writeStartScope(Array, name); }
-    void writeStartArray(const QString &name)   { writeStartScope(Array, name); }
     void writeEndArray()                        { writeEndScope(Array); }
 
     void writeValue(int value);
     void writeValue(unsigned value);
+    void writeValue(double value);
     void writeValue(const QByteArray &value);
     void writeValue(const QString &value);
     void writeValue(const QJsonValue &value);
 
     void writeUnquotedValue(const QByteArray &value);
 
-    void writeMember(const QByteArray &key, int value);
-    void writeMember(const QByteArray &key, unsigned value);
-    void writeMember(const QByteArray &key, float value);
-    void writeMember(const QByteArray &key, double value);
-    void writeMember(const QByteArray &key, bool value);
-    void writeMember(const QByteArray &key, const char *value);
-    void writeMember(const QByteArray &key, const QByteArray &value);
-    void writeMember(const QByteArray &key, const QString &value);
-    void writeMember(const QByteArray &key, const QJsonValue &value);
+    void writeMember(const char *key, int value);
+    void writeMember(const char *key, unsigned value);
+    void writeMember(const char *key, float value);
+    void writeMember(const char *key, double value);
+    void writeMember(const char *key, bool value);
+    void writeMember(const char *key, const char *value);
+    void writeMember(const char *key, const QByteArray &value);
+    void writeMember(const char *key, const QString &value);
+    void writeMember(const char *key, const QJsonValue &value);
 
-    void writeUnquotedMember(const QByteArray &key,
+    void writeUnquotedMember(const char *key,
                              const QByteArray &value);
 
     void setSuppressNewlines(bool suppressNewlines);
@@ -93,14 +92,12 @@ public:
 private:
     void writeStartScope(Scope scope);
     void writeStartScope(Scope scope, const char *name);
-    void writeStartScope(Scope scope, const QString &name);
     void writeEndScope(Scope scope);
 
     void prepareNewValue();
     void writeIndent();
 
     void writeNewline();
-    void writeKey(const QString &key) { writeKey(quote(key).toUtf8().constData()); }
     void writeKey(const char *key);
     void write(const char *bytes, qint64 length);
     void write(const char *bytes);
@@ -127,22 +124,22 @@ inline void JsonWriter::writeValue(unsigned value)
 inline void JsonWriter::writeValue(const QString &value)
 { writeUnquotedValue(quote(value).toUtf8()); }
 
-inline void JsonWriter::writeMember(const QByteArray &key, int value)
+inline void JsonWriter::writeMember(const char *key, int value)
 { writeUnquotedMember(key, QByteArray::number(value)); }
 
-inline void JsonWriter::writeMember(const QByteArray &key, unsigned value)
+inline void JsonWriter::writeMember(const char *key, unsigned value)
 { writeUnquotedMember(key, QByteArray::number(value)); }
 
-inline void JsonWriter::writeMember(const QByteArray &key, float value)
+inline void JsonWriter::writeMember(const char *key, float value)
 { writeMember(key, static_cast<double>(value)); }
 
-inline void JsonWriter::writeMember(const QByteArray &key, double value)
-{ writeUnquotedMember(key, QByteArray::number(value)); }
+inline void JsonWriter::writeMember(const char *key, double value)
+{ writeKey(key); writeValue(value); }
 
-inline void JsonWriter::writeMember(const QByteArray &key, bool value)
+inline void JsonWriter::writeMember(const char *key, bool value)
 { writeUnquotedMember(key, value ? "true" : "false"); }
 
-inline void JsonWriter::writeMember(const QByteArray &key, const QString &value)
+inline void JsonWriter::writeMember(const char *key, const QString &value)
 { writeUnquotedMember(key, quote(value).toUtf8()); }
 
 inline void JsonWriter::write(const char *bytes)
