@@ -111,6 +111,7 @@ public:
      */
     void tilesetChanged();
 
+    void relocateTile(const Tile *tile, QModelIndex newPos);
     void setColumnCountOverride(int columnCount);
 
 public slots:

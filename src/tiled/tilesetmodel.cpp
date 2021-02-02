@@ -194,6 +194,21 @@ void TilesetModel::setColumnCountOverride(int columnCount)
     endResetModel();
 }
 
+void TilesetModel::relocateTile(const Tile *tile, QModelIndex newPosition)
+{
+    if (tile->tileset() != mTileset)
+        return;
+
+    const QModelIndex oldPosition = tileIndex(tile);
+    const int columnCount = TilesetModel::columnCount();
+    const int newIndex = newPosition.row() * columnCount + newPosition.column();
+    const int oldIndex = oldPosition.row() * columnCount + oldPosition.column();
+
+    beginResetModel();
+    mTileIds.move(oldIndex, newIndex);
+    endResetModel();
+}
+
 void TilesetModel::tilesChanged(const QList<Tile *> &tiles)
 {
     if (tiles.first()->tileset() != mTileset)

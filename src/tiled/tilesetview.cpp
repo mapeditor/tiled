@@ -477,6 +477,16 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
     return QTableView::keyPressEvent(event);
 }
 
+void TilesetView::setRelocateTiles(bool enabled)
+{
+    if (mRelocateTiles == enabled)
+        return;
+
+    mRelocateTiles = enabled;
+    setMouseTracking(true);
+    viewport()->update();
+}
+
 void TilesetView::setEditWangSet(bool enabled)
 {
     if (mEditWangSet == enabled)
@@ -539,6 +549,9 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 
         return;
     }
+
+    if (mRelocateTiles)
+        /* TODO */;
 
     QTableView::mousePressEvent(event);
 }
@@ -640,6 +653,9 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
+    if (mRelocateTiles)
+        /* TODO */;
+
     QTableView::mouseMoveEvent(event);
 }
 
@@ -656,6 +672,9 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 
         return;
     }
+
+    if (mRelocateTiles)
+        /* TODO */;
 
     QTableView::mouseReleaseEvent(event);
     return;

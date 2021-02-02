@@ -128,6 +128,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mWidgetStack(new QStackedWidget(mMainWindow))
     , mAddTiles(new QAction(this))
     , mRemoveTiles(new QAction(this))
+    , mRelocateTiles(new QAction(this))
     , mShowAnimationEditor(new QAction(this))
     , mDynamicWrappingToggle(new QAction(this))
     , mPropertiesDock(new PropertiesDock(mMainWindow))
@@ -152,11 +153,14 @@ TilesetEditor::TilesetEditor(QObject *parent)
     ActionManager::registerAction(editWang, "EditWang");
     ActionManager::registerAction(mAddTiles, "AddTiles");
     ActionManager::registerAction(mRemoveTiles, "RemoveTiles");
+    ActionManager::registerAction(mRemoveTiles, "RelocateTiles");
     ActionManager::registerAction(mShowAnimationEditor, "ShowAnimationEditor");
     ActionManager::registerAction(mDynamicWrappingToggle, "DynamicWrappingToggle");
 
     mAddTiles->setIcon(QIcon(QLatin1String(":images/16/add.png")));
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16/remove.png")));
+    mRelocateTiles->setIcon(QIcon(QLatin1String(":images/22/stock-tool-move-22.png")));
+    mRelocateTiles->setCheckable(true);
     mShowAnimationEditor->setIcon(QIcon(QLatin1String(":images/24/animation-edit.png")));
     mShowAnimationEditor->setCheckable(true);
     mShowAnimationEditor->setIconVisibleInMenu(false);
@@ -175,6 +179,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTilesetToolBar->addAction(mAddTiles);
     mTilesetToolBar->addAction(mRemoveTiles);
     mTilesetToolBar->addSeparator();
+    mTilesetToolBar->addAction(mRelocateTiles);
     mTilesetToolBar->addAction(editWang);
     mTilesetToolBar->addAction(editCollision);
     mTilesetToolBar->addAction(mShowAnimationEditor);
@@ -192,6 +197,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(mAddTiles, &QAction::triggered, this, &TilesetEditor::openAddTilesDialog);
     connect(mRemoveTiles, &QAction::triggered, this, &TilesetEditor::removeTiles);
 
+    connect(mRelocateTiles, &QAction::toggled, this, &TilesetEditor::setRelocateTiles);
     connect(editCollision, &QAction::toggled, this, &TilesetEditor::setEditCollision);
     connect(editWang, &QAction::toggled, this, &TilesetEditor::setEditWang);
     connect(mShowAnimationEditor, &QAction::toggled, mTileAnimationEditor, &TileAnimationEditor::setVisible);
@@ -864,11 +870,23 @@ void TilesetEditor::removeTiles()
     setCurrentTile(nullptr);
 }
 
+void TilesetEditor::setRelocateTiles(bool relocateTiles)
+{
+    if (TilesetView *view = currentTilesetView())
+        view->setRelocateTiles(relocateTiles);
+
+    if (relocateTiles) {
+        mWangDock->setVisible(false);
+        mTileCollisionDock->setVisible(false);
+    }
+}
+
 void TilesetEditor::setEditCollision(bool editCollision)
 {
     if (editCollision) {
         if (mTileCollisionDock->hasSelectedObjects())
             mPropertiesDock->setDocument(mTileCollisionDock->dummyMapDocument());
+        mRelocateTiles->setChecked(false);
         mWangDock->setVisible(false);
     } else {
         mPropertiesDock->setDocument(mCurrentTilesetDocument);
@@ -890,8 +908,10 @@ void TilesetEditor::setEditWang(bool editWang)
     if (TilesetView *view = currentTilesetView())
         view->setEditWangSet(editWang);
 
-    if (editWang)
+    if (editWang) {
+        mRelocateTiles->setChecked(false);
         mTileCollisionDock->setVisible(false);
+    }
 }
 
 void TilesetEditor::currentWangSetChanged(WangSet *wangSet)
