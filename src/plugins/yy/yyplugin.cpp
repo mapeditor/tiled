@@ -402,7 +402,12 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
                 json.setMinimize(true);
 
                 json.writeMember("isDnd", instance.isDnd);
-                json.writeMember("objectId", instance.objectId);
+
+                json.writeStartObject("objectId");
+                json.writeMember("name", instance.objectId);
+                json.writeMember("path", QStringLiteral("objects/%1/%1.yy").arg(instance.objectId));
+                json.writeEndObject();
+
                 json.writeMember("inheritCode", instance.inheritCode);
                 json.writeMember("hasCreationCode", instance.hasCreationCode);
                 json.writeMember("colour", instance.colour);
@@ -411,13 +416,24 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
                 json.writeMember("scaleY", instance.scaleY);
                 json.writeMember("imageIndex", instance.imageIndex);
                 json.writeMember("imageSpeed", instance.imageSpeed);
-                json.writeMember("inheritedItemId", instance.inheritedItemId);
-                json.writeMember("inheritedItemPath", instance.inheritedItemPath);
+                if (instance.inheritedItemId.isEmpty()) {
+                    json.writeMember("inheritedItemId", QJsonValue(QJsonValue::Null));
+                } else {
+                    json.writeStartObject("inheritedItemId");
+                    json.writeMember("name", instance.inheritedItemId);
+                    json.writeMember("path", instance.inheritedItemPath);
+                    json.writeEndObject();
+                }
                 json.writeMember("frozen", instance.frozen);
                 json.writeMember("ignore", instance.ignore);
                 json.writeMember("inheritItemSettings", instance.inheritItemSettings);
                 json.writeMember("x", instance.x);
                 json.writeMember("y", instance.y);
+                json.writeMember("resourceVersion", instance.resourceVersion);
+                json.writeMember("name", instance.name);
+
+                writeTags(json, instance.tags);
+                json.writeMember("resourceType", resourceTypeStr(instance.resourceType));
 
                 json.writeEndObject();
                 json.setMinimize(wasMinimize);
@@ -620,7 +636,75 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                 }
                 else if (!type.isEmpty())
                 {
-                    // TODO: Export as instance
+                    instances.emplace_back();
+                    GMRInstance &instance = instances.back();
+
+                    // The type is used to refer to the name of the object
+                    instance.isDnd = optionalProperty(mapObject, "isDnd", instance.isDnd);
+                    instance.objectId = sanitizeName(type);
+
+                    QPointF origin(optionalProperty(mapObject, "originX", 0.0),
+                                   optionalProperty(mapObject, "originY", 0.0));
+
+                    if (!mapObject->cell().isEmpty()) {
+                        // For tile objects we can support scaling and flipping, though
+                        // flipping in combination with rotation didn't work in GameMaker 1.4 (maybe works in 2?).
+                        if (auto tile = mapObject->cell().tile()) {
+                            const QSize tileSize = tile->size();
+                            instance.scaleX = mapObject->width() / tileSize.width();
+                            instance.scaleY = mapObject->height() / tileSize.height();
+
+                            if (mapObject->cell().flippedHorizontally()) {
+                                instance.scaleX *= -1;
+                                origin += QPointF(mapObject->width() - 2 * origin.x(), 0);
+                            }
+                            if (mapObject->cell().flippedVertically()) {
+                                instance.scaleY *= -1;
+                                origin += QPointF(0, mapObject->height() - 2 * origin.y());
+                            }
+                        }
+
+                        // Tile objects don't necessarily have top-left origin in Tiled,
+                        // so the position needs to be translated for top-left origin in
+                        // GameMaker, taking into account the rotation.
+                        origin -= alignmentOffset(mapObject->bounds(), mapObject->alignment());
+                    }
+
+                    // Allow overriding the scale using custom properties
+                    instance.scaleX = optionalProperty(mapObject, "scaleX", instance.scaleX);
+                    instance.scaleY = optionalProperty(mapObject, "scaleY", instance.scaleY);
+
+                    // Adjust the position based on the origin
+                    QTransform transform;
+                    transform.rotate(mapObject->rotation());
+                    const QPointF pos = mapObject->position() + transform.map(origin);
+
+                    // TODO: Support creation code - optionalProperty(mapObject, "code", QString());
+                    instance.colour = color.rgba();
+                    instance.rotation = -mapObject->rotation();
+                    instance.imageIndex = optionalProperty(mapObject, "imageIndex", instance.imageIndex);
+                    instance.imageSpeed = optionalProperty(mapObject, "imageSpeed", instance.imageSpeed);
+                    // TODO: instance.inheritedItemId
+                    instance.frozen = frozen;
+                    instance.ignore = optionalProperty(mapObject, "ignore", instance.ignore);
+                    instance.inheritItemSettings = optionalProperty(mapObject, "inheritItemSettings", instance.inheritItemSettings);
+                    instance.x = qRound(pos.x());
+                    instance.y = qRound(pos.y());
+
+                    // Include object ID in the name when necessary because duplicates are not allowed
+                    if (mapObject->name().isEmpty()) {
+                        instance.name = QStringLiteral("inst_%1").arg(mapObject->id());
+                    } else {
+                        QString name = sanitizeName(mapObject->name());
+
+                        while (context.usedNames.contains(name))
+                            name += QStringLiteral("_%1").arg(mapObject->id());
+
+                        context.usedNames.insert(name);
+                        instance.name = name;
+                    }
+
+                    instance.tags = readTags(mapObject);
                 }
                 else if (mapObject->isTileObject())
                 {
