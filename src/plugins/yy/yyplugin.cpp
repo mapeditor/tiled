@@ -47,6 +47,7 @@ namespace Yy {
 
 enum ResourceType
 {
+    GMOverriddenPropertyType,
     GMPathType,
     GMRAssetLayerType,
     GMRBackgroundLayerType,
@@ -61,6 +62,7 @@ enum ResourceType
 static const char *resourceTypeStr(ResourceType type)
 {
     switch (type) {
+    case GMOverriddenPropertyType:  return "GMOverriddenProperty";
     case GMPathType:                return "GMPath";
     case GMRAssetLayerType:         return "GMRAssetLayer";
     case GMRBackgroundLayerType:    return "GMRBackgroundLayer";
@@ -91,7 +93,7 @@ struct GMRView
     int vborder = 32;
     int hspeed = -1;
     int vspeed = -1;
-    QJsonValue objectId = QJsonValue(QJsonValue::Null);
+    QString objectId;
 };
 
 struct GMResource
@@ -142,10 +144,20 @@ struct GMRGraphic : GMResource
     double y = 0.0;
 };
 
+struct GMOverriddenProperty : GMResource
+{
+    GMOverriddenProperty() : GMResource(GMOverriddenPropertyType) {}
+
+    QString propertyId;
+    QString objectId;
+    QString value;
+};
+
 struct GMRInstance : GMResource
 {
     GMRInstance() : GMResource(GMRInstanceType) {}
 
+    std::vector<GMOverriddenProperty> properties;
     bool isDnd = false;
     QString objectId;
     bool inheritCode = false;
@@ -260,6 +272,13 @@ static T optionalProperty(const Object *object, const QString &name, const T &de
 }
 
 template <typename T>
+static T takeProperty(Properties &properties, const QString &name, const T &def)
+{
+    const QVariant var = properties.take(name);
+    return var.isValid() ? var.value<T>() : def;
+}
+
+template <typename T>
 static void writeProperty(JsonWriter &json,
                           const Object *object,
                           const QString &propertyName,
@@ -318,13 +337,29 @@ static QString sanitizeName(QString name)
     return name.replace(regexp, QStringLiteral("_"));
 }
 
-static unsigned convertColor(const QColor &color)
+static unsigned colorToAbgr(const QColor &color)
 {
     const QRgb rgba = color.rgba();
     return ((qAlpha(rgba) & 0xffu) << 24) |
             ((qBlue(rgba) & 0xffu) << 16) |
             ((qGreen(rgba) & 0xffu) << 8) |
             (qRed(rgba) & 0xffu);
+}
+
+static QString toOverriddenPropertyValue(const QVariant &value)
+{
+    switch (value.type()) {
+    case QVariant::Bool:
+        return value.toBool() ? QStringLiteral("True") : QStringLiteral("False");
+
+    case QVariant::Color: {
+        const unsigned abgr = colorToAbgr(value.value<QColor>());
+        return QColor(abgr).name(QColor::HexArgb).replace(QLatin1Char('#'), QLatin1Char('$'));
+    }
+
+    default:
+        return toExportValue(value).toString();
+    }
 }
 
 static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRLayer>> &layers)
@@ -363,7 +398,7 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
                     json.writeMember("u1", asset.u1);
                     json.writeMember("v1", asset.v1);
                 }
-                json.writeMember("colour", convertColor(asset.colour));
+                json.writeMember("colour", colorToAbgr(asset.colour));
                 if (asset.inheritedItemId.isEmpty()) {
                     json.writeMember("inheritedItemId", QJsonValue(QJsonValue::Null));
                 } else {
@@ -394,7 +429,7 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
 
             writeId(json, "spriteId", backgroundLayer.spriteId, QStringLiteral("sprites"));
 
-            json.writeMember("colour", convertColor(backgroundLayer.colour));
+            json.writeMember("colour", colorToAbgr(backgroundLayer.colour));
             json.writeMember("x", backgroundLayer.x);
             json.writeMember("y", backgroundLayer.y);
             json.writeMember("htiled", backgroundLayer.htiled);
@@ -417,13 +452,36 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
                 const bool wasMinimize = json.minimize();
                 json.setMinimize(true);
 
+                json.writeStartArray("properties");
+                for (const GMOverriddenProperty &prop : instance.properties) {
+                    json.writeStartObject();
+
+                    json.writeStartObject("propertyId");
+                    json.writeMember("name", prop.propertyId);
+                    json.writeMember("path", QStringLiteral("%1/%2/%2.yy").arg(QStringLiteral("objects"), prop.objectId));
+                    json.writeEndObject();  // propertyId
+
+                    writeId(json, "objectId", prop.objectId, "objects");
+
+                    json.writeMember("value", prop.value);
+                    json.writeMember("resourceVersion", prop.resourceVersion);
+                    json.writeMember("name", prop.name);
+
+                    writeTags(json, prop.tags);
+
+                    json.writeMember("resourceType", resourceTypeStr(prop.resourceType));
+
+                    json.writeEndObject();
+                }
+                json.writeEndArray();   // properties
+
                 json.writeMember("isDnd", instance.isDnd);
 
                 writeId(json, "objectId", instance.objectId, QStringLiteral("objects"));
 
                 json.writeMember("inheritCode", instance.inheritCode);
                 json.writeMember("hasCreationCode", instance.hasCreationCode);
-                json.writeMember("colour", convertColor(instance.colour));
+                json.writeMember("colour", colorToAbgr(instance.colour));
                 json.writeMember("rotation", instance.rotation);
                 json.writeMember("scaleX", instance.scaleX);
                 json.writeMember("scaleY", instance.scaleY);
@@ -460,7 +518,7 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
 
             writeId(json, "pathId", pathLayer.pathId, QStringLiteral("paths"));
 
-            json.writeMember("colour", convertColor(pathLayer.colour));
+            json.writeMember("colour", colorToAbgr(pathLayer.colour));
             break;
         }
         case GMRTileLayerType: {
@@ -647,19 +705,21 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     view.vborder = qRound(optionalProperty(mapObject, "vborder", 32.0));
                     view.hspeed = qRound(optionalProperty(mapObject, "hspeed", -1.0));
                     view.vspeed = qRound(optionalProperty(mapObject, "vspeed", -1.0));
-                    view.objectId = QJsonValue(QJsonValue::Null);    // TODO: Provide a way to set this?
+                    view.objectId = optionalProperty(mapObject, "objectId", QString());
                 }
                 else if (!type.isEmpty())
                 {
                     instances.emplace_back();
                     GMRInstance &instance = instances.back();
 
+                    auto props = mapObject->resolvedProperties();
+
                     // The type is used to refer to the name of the object
-                    instance.isDnd = optionalProperty(mapObject, "isDnd", instance.isDnd);
+                    instance.isDnd = takeProperty(props, "isDnd", instance.isDnd);
                     instance.objectId = sanitizeName(type);
 
-                    QPointF origin(optionalProperty(mapObject, "originX", 0.0),
-                                   optionalProperty(mapObject, "originY", 0.0));
+                    QPointF origin(takeProperty(props, "originX", 0.0),
+                                   takeProperty(props, "originY", 0.0));
 
                     if (!mapObject->cell().isEmpty()) {
                         // For tile objects we can support scaling and flipping, though
@@ -686,23 +746,23 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     }
 
                     // Allow overriding the scale using custom properties
-                    instance.scaleX = optionalProperty(mapObject, "scaleX", instance.scaleX);
-                    instance.scaleY = optionalProperty(mapObject, "scaleY", instance.scaleY);
+                    instance.scaleX = takeProperty(props, "scaleX", instance.scaleX);
+                    instance.scaleY = takeProperty(props, "scaleY", instance.scaleY);
 
                     // Adjust the position based on the origin
                     QTransform transform;
                     transform.rotate(mapObject->rotation());
                     const QPointF pos = mapObject->position() + transform.map(origin);
 
-                    // TODO: Support creation code - optionalProperty(mapObject, "code", QString());
+                    // TODO: Support creation code - takeProperty(props, "code", QString());
                     instance.colour = color;
                     instance.rotation = -mapObject->rotation();
-                    instance.imageIndex = optionalProperty(mapObject, "imageIndex", instance.imageIndex);
-                    instance.imageSpeed = optionalProperty(mapObject, "imageSpeed", instance.imageSpeed);
+                    instance.imageIndex = takeProperty(props, "imageIndex", instance.imageIndex);
+                    instance.imageSpeed = takeProperty(props, "imageSpeed", instance.imageSpeed);
                     // TODO: instance.inheritedItemId
                     instance.frozen = frozen;
-                    instance.ignore = optionalProperty(mapObject, "ignore", instance.ignore);
-                    instance.inheritItemSettings = optionalProperty(mapObject, "inheritItemSettings", instance.inheritItemSettings);
+                    instance.ignore = takeProperty(props, "ignore", instance.ignore);
+                    instance.inheritItemSettings = takeProperty(props, "inheritItemSettings", instance.inheritItemSettings);
                     instance.x = qRound(pos.x());
                     instance.y = qRound(pos.y());
 
@@ -720,6 +780,16 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     }
 
                     instance.tags = readTags(mapObject);
+
+                    // Remaining unknown custom properties are assumed to
+                    // override properties defined on the GameMaker object.
+                    for (auto it = props.constBegin(); it != props.constEnd(); ++it) {
+                        instance.properties.emplace_back();
+                        GMOverriddenProperty &prop = instance.properties.back();
+                        prop.propertyId = it.key();
+                        prop.objectId = instance.objectId;
+                        prop.value = toOverriddenPropertyValue(it.value());
+                    }
                 }
                 else if (mapObject->isTileObject())
                 {
@@ -1002,7 +1072,8 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
         json.writeMember("vborder", view.vborder);
         json.writeMember("hspeed", view.hspeed);
         json.writeMember("vspeed", view.vspeed);
-        json.writeMember("objectId", view.objectId);
+
+        writeId(json, "objectId", view.objectId, "objects");
 
         json.writeEndObject();
         json.setMinimize(wasMinimize);
