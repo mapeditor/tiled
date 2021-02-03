@@ -95,9 +95,16 @@ Qt::ItemFlags TilesetModel::flags(const QModelIndex &index) const
     Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
 
     if (index.isValid())
-        defaultFlags |= Qt::ItemIsDragEnabled;
+        defaultFlags |= Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+    else
+        defaultFlags |= Qt::ItemIsDropEnabled;
 
     return defaultFlags;
+}
+
+Qt::DropActions TilesetModel::supportedDropActions() const
+{
+    return Qt::MoveAction;
 }
 
 QStringList TilesetModel::mimeTypes() const
@@ -125,6 +132,16 @@ QMimeData *TilesetModel::mimeData(const QModelIndexList &indexes) const
 
     mimeData->setData(QLatin1String(TILES_MIMETYPE), encodedData);
     return mimeData;
+}
+
+bool TilesetModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) {
+    if (!data || action != Qt::MoveAction)
+        return false;
+    if (!data->hasFormat(QLatin1String(TILES_MIMETYPE)))
+        return false;
+
+    /* TODO */
+    return true;
 }
 
 Tile *TilesetModel::tileAt(const QModelIndex &index) const
@@ -191,21 +208,6 @@ void TilesetModel::setColumnCountOverride(int columnCount)
 
     beginResetModel();
     mColumnCountOverride = columnCount;
-    endResetModel();
-}
-
-void TilesetModel::relocateTile(const Tile *tile, QModelIndex newPosition)
-{
-    if (tile->tileset() != mTileset)
-        return;
-
-    const QModelIndex oldPosition = tileIndex(tile);
-    const int columnCount = TilesetModel::columnCount();
-    const int newIndex = newPosition.row() * columnCount + newPosition.column();
-    const int oldIndex = oldPosition.row() * columnCount + oldPosition.column();
-
-    beginResetModel();
-    mTileIds.move(oldIndex, newIndex);
     endResetModel();
 }
 
