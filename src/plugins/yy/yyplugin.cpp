@@ -132,7 +132,7 @@ struct GMRGraphic : GMResource
         };
     };
 
-    QRgb colour = QColor(Qt::white).rgba();
+    QColor colour = Qt::white;
     QString inheritedItemId;
     QString inheritedItemPath;
     bool frozen = false;
@@ -150,7 +150,7 @@ struct GMRInstance : GMResource
     QString objectId;
     bool inheritCode = false;
     bool hasCreationCode = false;
-    QRgb colour = QColor(Qt::white).rgba();
+    QColor colour = Qt::white;
     double rotation = 0.0;
     double scaleX = 1.0;
     double scaleY = 1.0;
@@ -221,7 +221,7 @@ struct GMRPathLayer : GMRLayer
     GMRPathLayer() : GMRLayer(GMRPathLayerType) {}
 
     QString pathId;
-    QRgb colour = QColor(Qt::red).rgba();
+    QColor colour = Qt::red;
 };
 
 struct GMRBackgroundLayer : GMRLayer
@@ -229,7 +229,7 @@ struct GMRBackgroundLayer : GMRLayer
     GMRBackgroundLayer() : GMRLayer(GMRBackgroundLayerType) {}
 
     QString spriteId;
-    QRgb colour = QColor(Qt::white).rgba();
+    QColor colour = Qt::white;
     int x = 0;
     int y = 0;
     bool htiled = false;
@@ -318,6 +318,15 @@ static QString sanitizeName(QString name)
     return name.replace(regexp, QStringLiteral("_"));
 }
 
+static unsigned convertColor(const QColor &color)
+{
+    const QRgb rgba = color.rgba();
+    return ((qAlpha(rgba) & 0xffu) << 24) |
+            ((qBlue(rgba) & 0xffu) << 16) |
+            ((qGreen(rgba) & 0xffu) << 8) |
+            (qRed(rgba) & 0xffu);
+}
+
 static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRLayer>> &layers)
 {
     json.writeStartArray("layers");
@@ -354,7 +363,7 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
                     json.writeMember("u1", asset.u1);
                     json.writeMember("v1", asset.v1);
                 }
-                json.writeMember("colour", asset.colour);
+                json.writeMember("colour", convertColor(asset.colour));
                 if (asset.inheritedItemId.isEmpty()) {
                     json.writeMember("inheritedItemId", QJsonValue(QJsonValue::Null));
                 } else {
@@ -385,7 +394,7 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
 
             writeId(json, "spriteId", backgroundLayer.spriteId, QStringLiteral("sprites"));
 
-            json.writeMember("colour", backgroundLayer.colour);
+            json.writeMember("colour", convertColor(backgroundLayer.colour));
             json.writeMember("x", backgroundLayer.x);
             json.writeMember("y", backgroundLayer.y);
             json.writeMember("htiled", backgroundLayer.htiled);
@@ -414,7 +423,7 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
 
                 json.writeMember("inheritCode", instance.inheritCode);
                 json.writeMember("hasCreationCode", instance.hasCreationCode);
-                json.writeMember("colour", instance.colour);
+                json.writeMember("colour", convertColor(instance.colour));
                 json.writeMember("rotation", instance.rotation);
                 json.writeMember("scaleX", instance.scaleX);
                 json.writeMember("scaleY", instance.scaleY);
@@ -451,7 +460,7 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
 
             writeId(json, "pathId", pathLayer.pathId, QStringLiteral("paths"));
 
-            json.writeMember("colour", pathLayer.colour);
+            json.writeMember("colour", convertColor(pathLayer.colour));
             break;
         }
         case GMRTileLayerType: {
@@ -556,7 +565,8 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                           const QList<Layer *> &layers,
                           Context &context)
 {
-    for (const Layer *layer : layers) {
+    for(auto it = layers.rbegin(); it != layers.rend(); ++it) {
+        const Layer *layer = *it;
         auto layerOffset = layer->totalOffset().toPoint();
 
         std::unique_ptr<GMRLayer> gmrLayer;
@@ -575,6 +585,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     continue;
                 } else {
                     auto gmrTileLayer = std::make_unique<GMRTileLayer>();
+                    gmrTileLayer->name = sanitizeName(QStringLiteral("%1_%2").arg(layer->name(), tileset->name()));
                     fillTileLayer(*gmrTileLayer, tileLayer, tileset.data());
                     gmrLayers.push_back(std::move(gmrTileLayer));
                 }
@@ -684,7 +695,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     const QPointF pos = mapObject->position() + transform.map(origin);
 
                     // TODO: Support creation code - optionalProperty(mapObject, "code", QString());
-                    instance.colour = color.rgba();
+                    instance.colour = color;
                     instance.rotation = -mapObject->rotation();
                     instance.imageIndex = optionalProperty(mapObject, "imageIndex", instance.imageIndex);
                     instance.imageSpeed = optionalProperty(mapObject, "imageSpeed", instance.imageSpeed);
@@ -766,6 +777,11 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                         g.v0 = tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid;
                         g.u1 = g.u0 + tileset->tileWidth();
                         g.v1 = g.v0 + tileset->tileHeight();
+
+                        if (cell.flippedHorizontally())
+                            std::swap(g.u0, g.u1);
+                        if (cell.flippedVertically())
+                            std::swap(g.v0, g.v1);
                     }
 
                     // Adjust the position based on the origin
@@ -773,7 +789,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     transform.rotate(mapObject->rotation());
                     const QPointF pos = mapObject->position() + transform.map(origin);
 
-                    g.colour = color.rgba();
+                    g.colour = color;
                     // TODO: g.inheritedItemId
                     g.frozen = frozen;
                     g.ignore = optionalProperty(mapObject, "ignore", g.ignore);
@@ -829,12 +845,14 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
             // TODO: Sub-layers for object layers containing instances, assets and/or paths
             if (!assets.empty()) {
                 auto gmrAssetLayer = std::make_unique<GMRAssetLayer>();
+                gmrAssetLayer->name = sanitizeName(QStringLiteral("%1_Assets").arg(layer->name()));
                 gmrAssetLayer->assets = std::move(assets);
                 gmrLayers.push_back(std::move(gmrAssetLayer));
             }
 
             if (!instances.empty()) {
                 auto gmrInstancesLayer = std::make_unique<GMRInstanceLayer>();
+                gmrInstancesLayer->name = sanitizeName(QStringLiteral("%1_Instances").arg(layer->name()));
                 gmrInstancesLayer->instances = std::move(instances);
                 gmrLayers.push_back(std::move(gmrInstancesLayer));
             }
@@ -843,6 +861,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
             // file for each path.
             for (GMPath &path : paths) {
                 auto gmrPathLayer = std::make_unique<GMRPathLayer>();
+                gmrPathLayer->name = path.name;
                 gmrPathLayer->pathId = path.name;
                 // TODO: colour of path layer?
                 gmrLayers.push_back(std::move(gmrPathLayer));
@@ -872,7 +891,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
 
             auto color = layer->effectiveTintColor();
             color.setAlphaF(color.alphaF() * layer->effectiveOpacity());
-            gmrBackgroundLayer->colour = color.rgba();
+            gmrBackgroundLayer->colour = color;
 
             gmrBackgroundLayer->x = layerOffset.x();
             gmrBackgroundLayer->y = layerOffset.y();
@@ -897,7 +916,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
         if (!gmrLayer)
             continue;
 
-        gmrLayer->visible = optionalProperty(layer, "visible", true);
+        gmrLayer->visible = optionalProperty(layer, "visible", layer->isVisible());
         gmrLayer->depth = optionalProperty(layer, "depth", context.depth);
         gmrLayer->userdefinedDepth = layer->resolvedProperty(QStringLiteral("depth")).isValid();
         gmrLayer->inheritLayerDepth = optionalProperty(layer, "inheritLayerDepth", false);
@@ -923,7 +942,6 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                 layer->gridX = gmrLayer->gridX;
                 layer->gridY = gmrLayer->gridY;
                 layer->hierarchyFrozen = gmrLayer->hierarchyFrozen;
-                layer->name = gmrLayer->name;
                 layer->tags = gmrLayer->tags;
             }
         }
