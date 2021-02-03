@@ -93,11 +93,10 @@ QVariant TilesetModel::headerData(int /* section */,
 Qt::ItemFlags TilesetModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
+    defaultFlags |= Qt::ItemIsDropEnabled;
 
     if (index.isValid())
-        defaultFlags |= Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
-    else
-        defaultFlags |= Qt::ItemIsDropEnabled;
+        defaultFlags |= Qt::ItemIsDragEnabled;
 
     return defaultFlags;
 }
@@ -134,13 +133,43 @@ QMimeData *TilesetModel::mimeData(const QModelIndexList &indexes) const
     return mimeData;
 }
 
-bool TilesetModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) {
+bool TilesetModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                  int row, int column,
+                  const QModelIndex &parent)
+{
+    Q_UNUSED(row);
+    Q_UNUSED(column);
+
     if (!data || action != Qt::MoveAction)
         return false;
     if (!data->hasFormat(QLatin1String(TILES_MIMETYPE)))
         return false;
 
-    /* TODO */
+    QByteArray encodedData = data->data(QLatin1String(TILES_MIMETYPE));
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+    QDataStream stream(&encodedData, QIODevice::ReadOnly);
+#else
+    QDataStream stream(&encodedData, QDataStream::ReadOnly);
+#endif
+
+    int sourceId, destinationId;
+
+    while (!stream.atEnd()) {
+        stream >> sourceId;
+
+        // assume there is at most one tile selected
+        break;
+    }
+
+    Tile *destinationTile = tileAt(parent);
+    int destinationIndex = destinationTile
+                         ? mTileIds.indexOf(destinationTile->id())
+                         : mTileIds.size() - 1;
+
+    beginResetModel();
+    mTileIds.move(mTileIds.indexOf(sourceId), destinationIndex);
+    endResetModel();
+
     return true;
 }
 

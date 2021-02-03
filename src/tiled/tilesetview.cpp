@@ -487,12 +487,15 @@ void TilesetView::setRelocateTiles(bool enabled)
 
     QModelIndex currentIndex = selectionModel()->currentIndex();
     selectionModel()->setCurrentIndex(currentIndex, QItemSelectionModel::Clear);
-    setSelectionMode(enabled
-                     ? QAbstractItemView::SingleSelection
-                     : QAbstractItemView::ExtendedSelection);
 
-    setDragEnabled(enabled);
-    setAcceptDrops(enabled);
+    if (enabled) {
+        setSelectionMode(QAbstractItemView::SingleSelection);
+        setDragDropMode(QTableView::InternalMove);
+    } else {
+        setSelectionMode(QAbstractItemView::ExtendedSelection);
+        setDragDropMode(QTableView::NoDragDrop);
+    }
+
     setMouseTracking(true);
     viewport()->update();
 }
