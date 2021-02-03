@@ -300,6 +300,18 @@ static void writeTags(JsonWriter &json, const Object *object)
     writeTags(json, readTags(object));
 }
 
+static void writeId(JsonWriter &json, const char *member, const QString &id, const QString &scope)
+{
+    if (id.isEmpty()) {
+        json.writeMember(member, QJsonValue(QJsonValue::Null));
+    } else {
+        json.writeStartObject(member);
+        json.writeMember("name", id);
+        json.writeMember("path", QStringLiteral("%1/%2/%2.yy").arg(scope, id));
+        json.writeEndObject();
+    }
+}
+
 static QString sanitizeName(QString name)
 {
     static const QRegularExpression regexp(QLatin1String("[^a-zA-Z0-9]"));
@@ -326,10 +338,7 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
                 const bool wasMinimize = json.minimize();
                 json.setMinimize(true);
 
-                json.writeStartObject("spriteId");
-                json.writeMember("name", asset.spriteId);
-                json.writeMember("path", QStringLiteral("sprites/%1/%1.yy").arg(asset.spriteId));
-                json.writeEndObject();  // spriteId
+                writeId(json, "spriteId", asset.spriteId, QStringLiteral("sprites"));
 
                 if (asset.isSprite) {
                     json.writeMember("headPosition", asset.headPosition);
@@ -373,10 +382,8 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
         }
         case GMRBackgroundLayerType: {
             auto &backgroundLayer = static_cast<const GMRBackgroundLayer&>(*layer);
-            json.writeStartObject("spriteId");
-            json.writeMember("name", backgroundLayer.spriteId);
-            json.writeMember("path", QStringLiteral("sprites/%1/%1.yy").arg(backgroundLayer.spriteId));
-            json.writeEndObject();
+
+            writeId(json, "spriteId", backgroundLayer.spriteId, QStringLiteral("sprites"));
 
             json.writeMember("colour", backgroundLayer.colour);
             json.writeMember("x", backgroundLayer.x);
@@ -403,10 +410,7 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
 
                 json.writeMember("isDnd", instance.isDnd);
 
-                json.writeStartObject("objectId");
-                json.writeMember("name", instance.objectId);
-                json.writeMember("path", QStringLiteral("objects/%1/%1.yy").arg(instance.objectId));
-                json.writeEndObject();
+                writeId(json, "objectId", instance.objectId, QStringLiteral("objects"));
 
                 json.writeMember("inheritCode", instance.inheritCode);
                 json.writeMember("hasCreationCode", instance.hasCreationCode);
@@ -445,22 +449,15 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
         case GMRPathLayerType: {
             auto &pathLayer = static_cast<const GMRPathLayer&>(*layer);
 
-            json.writeStartObject("pathId");
-            json.writeMember("name", pathLayer.pathId);
-            json.writeMember("path", QStringLiteral("paths/%1/%1.yy").arg(pathLayer.pathId));
-            json.writeEndObject();
+            writeId(json, "pathId", pathLayer.pathId, QStringLiteral("paths"));
 
             json.writeMember("colour", pathLayer.colour);
-
             break;
         }
         case GMRTileLayerType: {
             auto &tileLayer = static_cast<const GMRTileLayer&>(*layer);
 
-            json.writeStartObject("tilesetId");
-            json.writeMember("name", tileLayer.tilesetId);
-            json.writeMember("path", QStringLiteral("tilesets/%1/%1.yy").arg(tileLayer.tilesetId));
-            json.writeEndObject();
+            writeId(json, "tilesetId", tileLayer.tilesetId, QStringLiteral("tilesets"));
 
             json.writeMember("x", tileLayer.x);
             json.writeMember("y", tileLayer.y);
@@ -516,7 +513,7 @@ static void fillTileLayer(GMRTileLayer &gmrTileLayer, const TileLayer *tileLayer
 {
     const auto layerOffset = tileLayer->totalOffset().toPoint();
 
-    gmrTileLayer.tilesetId = tileset->name();
+    gmrTileLayer.tilesetId = sanitizeName(tileset->name());
     gmrTileLayer.x = layerOffset.x();
     gmrTileLayer.y = layerOffset.y();
     gmrTileLayer.SerialiseHeight = tileLayer->height();
@@ -584,8 +581,15 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
             }
 
             if (gmrLayers.size() == 1) {
+                // If one layer was set up, that's the layer we'll use.
                 gmrLayer = std::move(gmrLayers.front());
+            } else if (gmrLayers.empty()) {
+                // When no layers are set up, the tile layer is exported as an
+                // empty tile layer.
+                gmrLayer = std::make_unique<GMRTileLayer>();
             } else {
+                // When multiple layers have been created, they will be exported
+                // as children of a group layer.
                 gmrLayer = std::make_unique<GMRLayer>();
                 gmrLayer->layers = std::move(gmrLayers);
             }
@@ -727,7 +731,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     origin -= alignmentOffset(mapObject->bounds(), mapObject->alignment());
 
                     if (g.isSprite) {
-                        g.spriteId = QFileInfo(tile->imageSource().path()).completeBaseName();
+                        g.spriteId = sanitizeName(QFileInfo(tile->imageSource().path()).completeBaseName());
                         g.headPosition = optionalProperty(mapObject, "headPosition", 0.0);
                         g.rotation = -mapObject->rotation();
 
@@ -751,7 +755,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                         g.animationSpeed = optionalProperty(mapObject, "animationSpeed", 1.0);
                     } else {
                         const Tileset *tileset = tile->tileset();
-                        g.spriteId = QFileInfo(tileset->imageSource().path()).completeBaseName();
+                        g.spriteId = sanitizeName(QFileInfo(tileset->imageSource().path()).completeBaseName());
                         g.w = qRound(mapObject->width());
                         g.h = qRound(mapObject->height());
 
@@ -845,8 +849,16 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
             }
 
             if (gmrLayers.size() == 1) {
+                // If one layer was set up, that's the layer we'll use.
                 gmrLayer = std::move(gmrLayers.front());
+            } else if (gmrLayers.empty()) {
+                // When no layers are set up, the object layer is exported as
+                // an empty instance layer (could also have been an asset
+                // layer...).
+                gmrLayer = std::make_unique<GMRInstanceLayer>();
             } else {
+                // When multiple layers have been created, they will be exported
+                // as children of a group layer.
                 gmrLayer = std::make_unique<GMRLayer>();
                 gmrLayer->layers = std::move(gmrLayers);
             }
@@ -856,7 +868,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
             auto imageLayer = static_cast<const ImageLayer*>(layer);
             auto gmrBackgroundLayer = std::make_unique<GMRBackgroundLayer>();
 
-            gmrBackgroundLayer->spriteId = QFileInfo(imageLayer->imageSource().toLocalFile()).completeBaseName();
+            gmrBackgroundLayer->spriteId = sanitizeName(QFileInfo(imageLayer->imageSource().toLocalFile()).completeBaseName());
 
             auto color = layer->effectiveTintColor();
             color.setAlphaF(color.alphaF() * layer->effectiveOpacity());
@@ -893,7 +905,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
         gmrLayer->gridX = optionalProperty(layer, "gridX", layer->map()->tileWidth());
         gmrLayer->gridY = optionalProperty(layer, "gridY", layer->map()->tileHeight());
         gmrLayer->hierarchyFrozen = layer->isLocked();
-        gmrLayer->name = layer->name();
+        gmrLayer->name = sanitizeName(layer->name());
         gmrLayer->tags = readTags(layer);
 
         context.depth = gmrLayer->depth + 100;   // TODO: Better support for overridden depth logic
