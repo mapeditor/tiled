@@ -21,6 +21,7 @@
 #include "scriptmanager.h"
 
 #include "documentmanager.h"
+#include "editablegrouplayer.h"
 #include "editablemap.h"
 #include "editablemapobject.h"
 #include "editableobjectgroup.h"
@@ -91,6 +92,7 @@ ScriptManager::ScriptManager(QObject *parent)
 {
     qRegisterMetaType<Cell>();
     qRegisterMetaType<EditableAsset*>();
+    qRegisterMetaType<EditableGroupLayer*>();
     qRegisterMetaType<EditableLayer*>();
     qRegisterMetaType<EditableMap*>();
     qRegisterMetaType<EditableMapObject*>();
@@ -314,17 +316,18 @@ void ScriptManager::initialize()
     QJSValue globalObject = mEngine->globalObject();
     globalObject.setProperty(QStringLiteral("tiled"), mEngine->newQObject(mModule));
 #if QT_VERSION >= 0x050800
-    globalObject.setProperty(QStringLiteral("TextFile"), mEngine->newQMetaObject<ScriptTextFile>());
     globalObject.setProperty(QStringLiteral("BinaryFile"), mEngine->newQMetaObject<ScriptBinaryFile>());
+    globalObject.setProperty(QStringLiteral("GroupLayer"), mEngine->newQMetaObject<EditableGroupLayer>());
+    globalObject.setProperty(QStringLiteral("Image"), mEngine->newQMetaObject<ScriptImage>());
     globalObject.setProperty(QStringLiteral("Layer"), mEngine->newQMetaObject<EditableLayer>());
     globalObject.setProperty(QStringLiteral("MapObject"), mEngine->newQMetaObject<EditableMapObject>());
     globalObject.setProperty(QStringLiteral("ObjectGroup"), mEngine->newQMetaObject<EditableObjectGroup>());
+    globalObject.setProperty(QStringLiteral("TextFile"), mEngine->newQMetaObject<ScriptTextFile>());
     globalObject.setProperty(QStringLiteral("Tile"), mEngine->newQMetaObject<EditableTile>());
     globalObject.setProperty(QStringLiteral("TileLayer"), mEngine->newQMetaObject<EditableTileLayer>());
     globalObject.setProperty(QStringLiteral("TileMap"), mEngine->newQMetaObject<EditableMap>());
     globalObject.setProperty(QStringLiteral("Tileset"), mEngine->newQMetaObject<EditableTileset>());
     globalObject.setProperty(QStringLiteral("WangSet"), mEngine->newQMetaObject<EditableWangSet>());
-    globalObject.setProperty(QStringLiteral("Image"), mEngine->newQMetaObject<ScriptImage>());
 #endif
 
     registerFileInfo(mEngine);
