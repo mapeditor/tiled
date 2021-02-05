@@ -152,7 +152,7 @@ bool TilesetModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
     QDataStream stream(&encodedData, QDataStream::ReadOnly);
 #endif
 
-    int sourceId, destinationId;
+    int sourceId;
 
     while (!stream.atEnd()) {
         stream >> sourceId;
@@ -168,6 +168,7 @@ bool TilesetModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 
     beginResetModel();
     mTileIds.move(mTileIds.indexOf(sourceId), destinationIndex);
+    mTileset->moveTile(sourceId, destinationIndex);
     endResetModel();
 
     return true;
@@ -282,8 +283,7 @@ void TilesetModel::tileChanged(Tile *tile)
 void TilesetModel::refreshTileIds()
 {
     mTileIds.clear();
-    for (Tile *tile : mTileset->tiles())
-        mTileIds.append(tile->id());
+    mTileIds = mTileset->sortedTileIds();
 }
 
 #include "moc_tilesetmodel.cpp"

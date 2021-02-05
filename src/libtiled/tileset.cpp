@@ -132,6 +132,7 @@ Tile *Tileset::findOrCreateTile(int id)
         return tile;
 
     mNextTileId = std::max(mNextTileId, id + 1);
+    mSortedTileIds.append(id);
     return mTiles[id] = new Tile(id, this);
 }
 
@@ -225,10 +226,12 @@ bool Tileset::loadFromImage(const QImage &image, const QUrl &source)
             }
 
             auto it = mTiles.find(tileNum);
-            if (it != mTiles.end())
+            if (it != mTiles.end()) {
                 it.value()->setImage(tilePixmap);
-            else
+            } else {
                 mTiles.insert(tileNum, new Tile(tilePixmap, tileNum, this));
+                mSortedTileIds.append(tileNum);
+            }
 
             ++tileNum;
         }
@@ -308,10 +311,12 @@ bool Tileset::loadImage()
 
     for (int tileNum = 0; tileNum < tiles.size(); ++tileNum) {
         auto it = mTiles.find(tileNum);
-        if (it != mTiles.end())
+        if (it != mTiles.end()) {
             it.value()->setImage(tiles.at(tileNum));
-        else
+        } else {
             mTiles.insert(tileNum, new Tile(tiles.at(tileNum), tileNum, this));
+            mSortedTileIds.append(tileNum);
+        }
     }
 
     QPixmap blank;
@@ -702,6 +707,7 @@ Tile *Tileset::addTile(const QPixmap &image, const QUrl &source)
     newTile->setImageSource(source);
 
     mTiles.insert(newTile->id(), newTile);
+    mSortedTileIds.append(newTile->id());
     if (mTileHeight < image.height())
         mTileHeight = image.height();
     if (mTileWidth < image.width())
@@ -719,6 +725,7 @@ void Tileset::addTiles(const QList<Tile *> &tiles)
     for (Tile *tile : tiles) {
         Q_ASSERT(tile->tileset() == this && !mTiles.contains(tile->id()));
         mTiles.insert(tile->id(), tile);
+        mSortedTileIds.append(tile->id());
     }
 
     updateTileSize();
@@ -734,6 +741,7 @@ void Tileset::removeTiles(const QList<Tile *> &tiles)
     for (Tile *tile : tiles) {
         Q_ASSERT(tile->tileset() == this && mTiles.contains(tile->id()));
         mTiles.remove(tile->id());
+        mSortedTileIds.removeOne(tile->id());
     }
 
     updateTileSize();
@@ -745,6 +753,15 @@ void Tileset::removeTiles(const QList<Tile *> &tiles)
 void Tileset::deleteTile(int id)
 {
     delete mTiles.take(id);
+    mSortedTileIds.removeOne(id);
+}
+
+/**
+ * Move the tile with the given \a id to the \a position
+ */
+void Tileset::moveTile(int id, int position)
+{
+    mSortedTileIds.move(mSortedTileIds.indexOf(id), position);
 }
 
 /**
@@ -821,6 +838,7 @@ void Tileset::swap(Tileset &other)
     std::swap(mExpectedColumnCount, other.mExpectedColumnCount);
     std::swap(mExpectedRowCount, other.mExpectedRowCount);
     std::swap(mTiles, other.mTiles);
+    std::swap(mSortedTileIds, other.mSortedTileIds);
     std::swap(mNextTileId, other.mNextTileId);
     std::swap(mTerrainTypes, other.mTerrainTypes);
     std::swap(mWangSets, other.mWangSets);
@@ -874,6 +892,8 @@ SharedTileset Tileset::clone() const
 
         c->mTiles.insert(id, tile->clone(c.data()));
     }
+
+    c->mSortedTileIds = mSortedTileIds;
 
     c->mTerrainTypes.reserve(mTerrainTypes.size());
     for (Terrain *terrain : mTerrainTypes)

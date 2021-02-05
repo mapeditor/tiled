@@ -672,9 +672,6 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    if (mRelocateTiles)
-        /* TODO */;
-
     QTableView::mouseMoveEvent(event);
 }
 
@@ -691,9 +688,6 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 
         return;
     }
-
-    if (mRelocateTiles)
-        /* TODO */;
 
     QTableView::mouseReleaseEvent(event);
 }

@@ -139,6 +139,7 @@ public:
     void setGridSize(QSize gridSize);
 
     const QMap<int, Tile*> &tiles() const;
+    const QList<int> &sortedTileIds() const;
     inline Tile *findTile(int id) const;
     Tile *tileAt(int id) const { return findTile(id); } // provided for Python
     Tile *findOrCreateTile(int id);
@@ -203,6 +204,7 @@ public:
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile *> &tiles);
     void deleteTile(int id);
+    void moveTile(int id, int position);
 
     void setNextTileId(int nextId);
     int nextTileId() const;
@@ -278,6 +280,7 @@ private:
     int mNextTileId;
     int mMaximumTerrainDistance;
     QMap<int, Tile*> mTiles;
+    QList<int> mSortedTileIds;
     QList<Terrain*> mTerrainTypes;
     QList<WangSet*> mWangSets;
     bool mTerrainDistancesDirty;
@@ -444,6 +447,14 @@ inline void Tileset::setGridSize(QSize gridSize)
 inline const QMap<int, Tile *> &Tileset::tiles() const
 {
     return mTiles;
+}
+
+/**
+ * Returns a const reference to the tiles in this tileset.
+ */
+inline const QList<int> &Tileset::sortedTileIds() const
+{
+    return mSortedTileIds;
 }
 
 /**
