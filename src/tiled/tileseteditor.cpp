@@ -153,7 +153,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     ActionManager::registerAction(editWang, "EditWang");
     ActionManager::registerAction(mAddTiles, "AddTiles");
     ActionManager::registerAction(mRemoveTiles, "RemoveTiles");
-    ActionManager::registerAction(mRemoveTiles, "RelocateTiles");
+    ActionManager::registerAction(mRelocateTiles, "RelocateTiles");
     ActionManager::registerAction(mShowAnimationEditor, "ShowAnimationEditor");
     ActionManager::registerAction(mDynamicWrappingToggle, "DynamicWrappingToggle");
 
