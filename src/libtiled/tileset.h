@@ -205,7 +205,7 @@ public:
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile *> &tiles);
     void deleteTile(int id);
-    void moveTile(int id, int position);
+    void relocateTile(int id, int location);
 
     void setNextTileId(int nextId);
     int nextTileId() const;

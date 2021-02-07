@@ -767,9 +767,9 @@ void Tileset::deleteTile(int id)
 /**
  * Move the tile with the given \a id to the \a position
  */
-void Tileset::moveTile(int id, int position)
+void Tileset::relocateTile(int id, int location)
 {
-    mSortedTileIds.move(mSortedTileIds.indexOf(id), position);
+    mSortedTileIds.move(mSortedTileIds.indexOf(id), location);
 }
 
 /**

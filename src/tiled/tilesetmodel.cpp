@@ -171,7 +171,6 @@ bool TilesetModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
                          : mTileIds.size() - 1;
 
     beginResetModel();
-    mTilesetDocument->tileset()->moveTile(sourceId, destinationIndex);
     mTilesetDocument->undoStack()->push(new RelocateTile(mTilesetDocument,
                                                          sourceTile,
                                                          destinationIndex));

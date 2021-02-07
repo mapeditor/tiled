@@ -47,8 +47,8 @@ public:
               Tile *tile,
               int location);
 
-    void undo() { relocate(mTile, mLocation); }
-    void redo() { relocate(mTile, mPrevLocation); }
+    void undo() { relocate(mTile, mPrevLocation); }
+    void redo() { relocate(mTile, mLocation); }
 
 private:
     void relocate(const Tile *tile, int location);

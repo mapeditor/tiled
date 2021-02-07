@@ -41,7 +41,7 @@ RelocateTile::RelocateTile(TilesetDocument *tilesetDocument,
 
 void RelocateTile::relocate(const Tile *tile, int location)
 {
-    mTilesetDocument->tileset()->moveTile(tile->id(), location);
+    mTilesetDocument->relocateTile(tile, location);
 }
 
 } // namespace Tiled
