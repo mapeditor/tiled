@@ -124,6 +124,14 @@ void Tileset::setMargin(int margin)
 }
 
 /**
+ * Returns the location of the tile with the given ID.
+ */
+int Tileset::findTileLocation(int id)
+{
+    return mSortedTileIds.indexOf(id);
+}
+
+/**
  * Returns the tile with the given ID, creating it when it does not exist yet.
  */
 Tile *Tileset::findOrCreateTile(int id)

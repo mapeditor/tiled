@@ -142,6 +142,7 @@ public:
     const QList<int> &sortedTileIds() const;
     inline Tile *findTile(int id) const;
     Tile *tileAt(int id) const { return findTile(id); } // provided for Python
+    int findTileLocation(int id);
     Tile *findOrCreateTile(int id);
     int tileCount() const;
 

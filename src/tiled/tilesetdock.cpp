@@ -1038,7 +1038,7 @@ TilesetView *TilesetDock::tilesetViewAt(int index) const
 
 void TilesetDock::setupTilesetModel(TilesetView *view, Tileset *tileset)
 {
-    view->setModel(new TilesetModel(tileset, view));
+    view->setModel(new TilesetModel(tileset, view->tilesetDocument(), view));
 
     QItemSelectionModel *s = view->selectionModel();
     connect(s, &QItemSelectionModel::selectionChanged,

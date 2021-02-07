@@ -22,17 +22,20 @@
 #include "tilesetmodel.h"
 
 #include "map.h"
+#include "relocatetile.h"
 #include "tile.h"
 #include "tiled.h"
 #include "tileset.h"
+#include "tilesetdocument.h"
 
 #include <QMimeData>
 
 using namespace Tiled;
 
-TilesetModel::TilesetModel(Tileset *tileset, QObject *parent):
+TilesetModel::TilesetModel(Tileset *tileset, TilesetDocument *tilesetDocument, QObject *parent):
     QAbstractListModel(parent),
-    mTileset(tileset)
+    mTileset(tileset),
+    mTilesetDocument(tilesetDocument)
 {
     refreshTileIds();
 }
@@ -161,14 +164,18 @@ bool TilesetModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
         break;
     }
 
+    Tile *sourceTile = mTileset->findOrCreateTile(sourceId);
     Tile *destinationTile = tileAt(parent);
     int destinationIndex = destinationTile
                          ? mTileIds.indexOf(destinationTile->id())
                          : mTileIds.size() - 1;
 
     beginResetModel();
-    mTileIds.move(mTileIds.indexOf(sourceId), destinationIndex);
-    mTileset->moveTile(sourceId, destinationIndex);
+    mTilesetDocument->tileset()->moveTile(sourceId, destinationIndex);
+    mTilesetDocument->undoStack()->push(new RelocateTile(mTilesetDocument,
+                                                         sourceTile,
+                                                         destinationIndex));
+    refreshTileIds();
     endResetModel();
 
     return true;

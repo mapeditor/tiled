@@ -28,6 +28,7 @@
 namespace Tiled {
 
 class Tileset;
+class TilesetDocument;
 
 /**
  * A model wrapping a tileset of a map. Used to display the tiles.
@@ -49,7 +50,7 @@ public:
      *
      * @param tileset the initial tileset to display
      */
-    TilesetModel(Tileset *tileset, QObject *parent = nullptr);
+    TilesetModel(Tileset *tileset, TilesetDocument *tilesetDocument, QObject *parent = nullptr);
 
     /**
      * Returns the number of rows.
@@ -142,6 +143,7 @@ private:
     void refreshTileIds();
 
     Tileset *mTileset;
+    TilesetDocument *mTilesetDocument;
     QList<int> mTileIds;
     int mColumnCountOverride = 0;
 };

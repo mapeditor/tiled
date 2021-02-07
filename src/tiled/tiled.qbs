@@ -394,6 +394,8 @@ QtGuiApplication {
         "rangeset.h",
         "regionvaluetype.cpp",
         "regionvaluetype.h",
+        "relocatetile.cpp",
+        "relocatetile.h",
         "reparentlayers.cpp",
         "reparentlayers.h",
         "replacetemplate.cpp",
