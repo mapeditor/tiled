@@ -26,6 +26,10 @@
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
+#ifdef TILED_ENABLE_DBUS
+#include <QDBusConnection>
+#include <QDBusMessage>
+#endif
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileInfo>
@@ -437,11 +441,31 @@ static void showInFileManager(const QString &fileName)
                << QLatin1String("tell application \"Finder\" to activate");
     QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
 #else
-    // We cannot select a file here, because xdg-open would open the file
-    // instead of the file browser...
+
+#ifdef TILED_ENABLE_DBUS
+    QDBusMessage message = QDBusMessage::createMethodCall(
+        QStringLiteral("org.freedesktop.FileManager1"),
+        QStringLiteral("/org/freedesktop/FileManager1"),
+        QStringLiteral("org.freedesktop.FileManager1"),
+        QStringLiteral("ShowItems"));
+
+    message.setArguments({
+        QStringList(QUrl::fromLocalFile(fileName).toString()),
+        QString()
+    });
+
+    const QDBusError error = QDBusConnection::sessionBus().call(message);
+
+    if (!error.isValid())
+        return;
+#endif // TILED_ENABLE_DBUS
+
+    // Fall back to xdg-open. We cannot select a file here, because
+    // xdg-open would open the file instead of the file browser...
     QProcess::startDetached(QStringLiteral("xdg-open"),
                             QStringList(QFileInfo(fileName).absolutePath()));
-#endif
+
+#endif // !Q_OS_WIN && !Q_OS_MAC
 }
 
 void addFileManagerActions(QMenu &menu, const QString &fileName)
