@@ -182,15 +182,13 @@ QJSValue ScriptManager::evaluateFile(const QString &fileName)
     if (!fromUtf8(bytes, script))
         script = QTextCodec::codecForUtfText(bytes)->toUnicode(bytes);
 #else
-    // Workaround for Qt 6.0 Alpha bug (QTBUG-87466)
-//    auto encoding = QStringConverter::encodingForData(bytes.constData(), bytes.size());
-//    QStringDecoder decoder(encoding.value_or(QStringConverter::Encoding::Utf8));
-//    script = decoder.decode(bytes);
-//    if (decoder.hasError()) {
-//        Tiled::ERROR(tr("Error decoding file: %1").arg(fileName));
-//        return QJSValue();
-//    }
-    script = QString::fromUtf8(bytes);
+    auto encoding = QStringConverter::encodingForData(bytes.constData(), bytes.size());
+    QStringDecoder decoder(encoding.value_or(QStringConverter::Encoding::Utf8));
+    script = decoder.decode(bytes);
+    if (decoder.hasError()) {
+        Tiled::ERROR(tr("Error decoding file: %1").arg(fileName));
+        return QJSValue();
+    }
 #endif
 
     Tiled::INFO(tr("Evaluating '%1'").arg(fileName));
