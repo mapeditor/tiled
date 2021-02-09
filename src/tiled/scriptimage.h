@@ -128,6 +128,11 @@ public:
     Q_INVOKABLE bool loadFromData(const QByteArray &data, const QByteArray &format = QByteArray())
     { return mImage.loadFromData(data, format); }
 
+    Q_INVOKABLE bool save(const QString &fileName, const QByteArray &format = QByteArray(), int quality = -1)
+    { return mImage.save(fileName, format, quality); }
+
+    Q_INVOKABLE QByteArray saveToData(const QByteArray &format = "PNG", int quality = -1);
+
     Q_INVOKABLE uint color(int i) const
     { return mImage.color(i); }
 

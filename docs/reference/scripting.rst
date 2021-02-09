@@ -790,12 +790,19 @@ Image.fill(index_or_rgb : uint) : void
 Image.fill(color : color) : void
     Fills the image with the given color by string (supports values like "#rrggbb").
 
-Image.load(fileName : string [, format : string]) : void
+Image.load(fileName : string [, format : string]) : bool
     Loads the image from the given file name.
     When no format is given it will be auto-detected (can be "bmp", "png", etc.).
 
-Image.loadFromData(data : ArrayBuffer, format: string)
+Image.loadFromData(data : ArrayBuffer, format: string) : bool
     Loads the image from the given data interpreted with the given format (can be "bmp", png", etc.).
+
+Image.save(fileName : string [, format : string [, quality : int ]]) : bool
+    Saves the image to the given file.
+    When no format is given it will be auto-detected based on the file extension.
+
+Image.saveToData(format : string [, quality : int ]) : ArrayBuffer
+    Saves the image to an ArrayBuffer in the given format (can be "bmp", png", etc.).
 
 Image.color(index : int) : uint
     Returns the 32-bit color value at the given index in the color table.
