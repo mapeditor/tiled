@@ -10,9 +10,7 @@ out_base=""
 npx typedoc \
         --name "Tiled Scripting API" \
         --readme none \
-        --includeDeclarations \
         --excludeExternals \
-        --mode file \
         --disableSources \
         --theme $website_root/docs/typedoc_theme \
         --out $website_root/docs/scripting index.d.ts
