@@ -53,7 +53,7 @@ QtGuiApplication {
         if (project.enableZstd)
             defs.push("TILED_ZSTD_SUPPORT");
 
-        if (Qt.dbus.present)
+        if (qbs.targetOS.contains("linux") && Qt.dbus.present)
             defs.push("TILED_ENABLE_DBUS");
 
         return defs;
