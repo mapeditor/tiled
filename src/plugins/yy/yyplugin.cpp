@@ -254,12 +254,22 @@ struct GMRBackgroundLayer : GMRLayer
     bool userdefinedAnimFPS = false;
 };
 
+struct InstanceCreation
+{
+    QString name;
+    int creationOrder = 0;
+
+    bool operator<(const InstanceCreation &other) const
+    { return creationOrder < other.creationOrder; }
+};
+
 struct Context
 {
     int depth = 0;
     QSet<QString> usedNames;
     std::vector<GMRView> views;
     std::vector<GMPath> paths;
+    std::vector<InstanceCreation> instanceCreationOrder;
 };
 
 } // namespace Yy
@@ -781,6 +791,9 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
 
                     instance.tags = readTags(mapObject);
 
+                    context.instanceCreationOrder.push_back({ instance.name,
+                                                              takeProperty(props, "creationOrder", 0) });
+
                     // Remaining unknown custom properties are assumed to
                     // override properties defined on the GameMaker object.
                     for (auto it = props.constBegin(); it != props.constEnd(); ++it) {
@@ -1032,6 +1045,8 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
         return false;
     }
 
+    const QString baseName = QFileInfo(fileName).completeBaseName();
+
     JsonWriter json(file.device());
 
     json.setMinimize(options.testFlag(WriteMinimized));
@@ -1087,11 +1102,22 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
     writeProperty(json, map, "creationCodeFile", QString());
     writeProperty(json, map, "inheritCode", false);
 
+    const QString currentRoomPath = QStringLiteral("rooms/%1/%1.yy").arg(baseName);
+
+    std::stable_sort(context.instanceCreationOrder.begin(),
+                     context.instanceCreationOrder.end());
+
     json.writeStartArray("instanceCreationOrder");
-    // TODO
-    //      {"name":"inst_967BF0","path":"rooms/Room1/Room1.yy",},
-    //      {"name":"inst_1D2061C1","path":"rooms/Room1/Room1.yy",},
-    //      {"name":"inst_6C3C7802","path":"rooms/Room1/Room1.yy",},
+    for (const auto &creation : context.instanceCreationOrder) {
+        json.prepareNewLine();
+        json.writeStartObject();
+        const bool wasMinimize = json.minimize();
+        json.setMinimize(true);
+        json.writeMember("name", creation.name);
+        json.writeMember("path", currentRoomPath);
+        json.writeEndObject();
+        json.setMinimize(wasMinimize);
+    }
     json.writeEndArray();
 
     writeProperty(json, map, "inheritCreationOrder", false);
@@ -1129,7 +1155,7 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
     json.writeEndObject();
 
     writeProperty(json, map, "resourceVersion", QString("1.0"));
-    writeProperty(json, map, "name", QFileInfo(fileName).completeBaseName());
+    writeProperty(json, map, "name", baseName);
     writeTags(json, map);
     json.writeMember("resourceType", "GMRoom");
 
