@@ -369,7 +369,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
     } else if (cell.flippedAntiDiagonally()) {
         fragment.rotation = 90;
 
-        flippedHorizontally = cell.flippedVertically();
+        flippedHorizontally = flippedVertically;
         flippedVertically = !cell.flippedHorizontally();
 
         // Compensate for the swap of image dimensions

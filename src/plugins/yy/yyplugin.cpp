@@ -21,13 +21,17 @@
 #include "yyplugin.h"
 
 #include "grouplayer.h"
+#include "hexagonalrenderer.h"
 #include "imagelayer.h"
+#include "isometricrenderer.h"
 #include "jsonwriter.h"
 #include "logginginterface.h"
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
+#include "orthogonalrenderer.h"
 #include "savefile.h"
+#include "staggeredrenderer.h"
 #include "tile.h"
 #include "tilelayer.h"
 
@@ -270,6 +274,18 @@ struct Context
     std::vector<GMRView> views;
     std::vector<GMPath> paths;
     std::vector<InstanceCreation> instanceCreationOrder;
+    std::unique_ptr<MapRenderer> renderer;
+
+    QString makeUnique(const QString &name) const
+    {
+        int num = 0;
+        QString uniqueName = name;
+        while (usedNames.contains(uniqueName)) {
+            ++num;
+            uniqueName = QStringLiteral("%1_%2").arg(name).arg(num);
+        }
+        return uniqueName;
+    }
 };
 
 } // namespace Yy
@@ -611,6 +627,11 @@ static void fillTileLayer(GMRTileLayer &gmrTileLayer, const TileLayer *tileLayer
 
             unsigned tileId = cell.tileId();
 
+            if (tileId == 0) {
+                Tiled::WARNING(QStringLiteral("YY plugin: First tile in tileset used, which will appear invisible in GameMaker"),
+                               Tiled::JumpToTile { tileLayer->map(), QPoint(x, y), tileLayer });
+            }
+
             if (cell.flippedAntiDiagonally()) {
                 tileId |= Rotated90;
                 if (cell.flippedVertically())
@@ -629,6 +650,113 @@ static void fillTileLayer(GMRTileLayer &gmrTileLayer, const TileLayer *tileLayer
     }
 }
 
+static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
+                                  const TileLayer *tileLayer,
+                                  Context &context)
+{
+    const auto layerOffset = tileLayer->totalOffset().toPoint();
+    const QRect rect = context.renderer->boundingRect(tileLayer->bounds());
+
+    const bool frozen = !tileLayer->isUnlocked();
+    auto color = tileLayer->effectiveTintColor();
+    color.setAlphaF(color.alphaF() * tileLayer->effectiveOpacity());
+
+    auto tileRenderFunction = [&](QPoint tilePos, const QPointF &screenPos) {
+        const Cell &cell = tileLayer->cellAt(tilePos);
+        const Tileset *tileset = cell.tileset();
+
+        // Skip tiles that should be already covered by a GMRTileLayer
+        if (!tileset)
+            return;
+        if (!tileset->isCollection() &&
+                tileset->tileSize() == tileLayer->map()->tileSize() &&
+                tileLayer->map()->orientation() == Map::Orthogonal)
+            return;
+
+        const auto tile = tileset->findTile(cell.tileId());
+        if (!tile || tile->image().isNull())
+            return;
+
+        assets.emplace_back();
+        GMRGraphic &g = assets.back();
+
+        g.isSprite = !tile->imageSource().isEmpty();
+
+        QSize size = tile->size();
+        g.x = screenPos.x() + tileset->tileOffset().x() + layerOffset.x();
+        g.y = screenPos.y() + tileset->tileOffset().y() + layerOffset.y() - size.height();
+
+        if (g.isSprite) {
+            g.spriteId = sanitizeName(QFileInfo(tile->imageSource().path()).completeBaseName());
+            g.headPosition = 0.0;
+            g.rotation = 0.0;
+            g.scaleX = 1.0;
+            g.scaleY = 1.0;
+            g.animationSpeed = 1.0;
+
+            if (cell.flippedAntiDiagonally()) {
+                g.rotation = -90.0;
+                g.scaleY = -1.0;
+
+                g.y -= size.width() - size.height();
+
+                if (cell.flippedVertically()) {
+                    g.scaleX = -1.0;
+                    g.y += size.width();
+                }
+                if (!cell.flippedHorizontally()) {
+                    g.scaleY = 1.0;
+                    g.x += size.height();
+                }
+            } else {
+                if (cell.flippedHorizontally()) {
+                    g.scaleX = -1.0;
+                    g.x += size.width();
+                }
+                if (cell.flippedVertically()) {
+                    g.scaleY = -1.0;
+                    g.y += size.height();
+                }
+            }
+        } else {
+            g.spriteId = sanitizeName(QFileInfo(tileset->imageSource().path()).completeBaseName());
+            g.w = size.width();
+            g.h = size.height();
+
+            const int xInTilesetGrid = tile->id() % tileset->columnCount();
+            const int yInTilesetGrid = static_cast<int>(tile->id() / tileset->columnCount());
+
+            g.u0 = tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid;
+            g.v0 = tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid;
+            g.u1 = g.u0 + tileset->tileWidth();
+            g.v1 = g.v0 + tileset->tileHeight();
+
+            if (cell.flippedHorizontally())
+                std::swap(g.u0, g.u1);
+            if (cell.flippedVertically())
+                std::swap(g.v0, g.v1);
+
+            if (cell.flippedAntiDiagonally()) {
+                Tiled::WARNING(QStringLiteral("YY plugin: Sub-sprite graphics don't support rotated tiles."),
+                               Tiled::JumpToTile { tileLayer->map(), tilePos, tileLayer });
+            }
+        }
+
+        g.colour = color;
+        g.frozen = frozen;
+        g.ignore = optionalProperty(tileLayer, "ignore", g.ignore);
+
+        if (g.isSprite)
+            g.name = context.makeUnique(QStringLiteral("graphic_%1").arg(tile->id()));
+        else
+            g.name = context.makeUnique(QStringLiteral("tile_%1").arg(tile->id()));
+
+        context.usedNames.insert(g.name);
+    };
+
+    context.renderer->drawTileLayer(tileRenderFunction, rect);
+}
+
 static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                           const QList<Layer *> &layers,
                           Context &context)
@@ -642,21 +770,39 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
             const auto tileLayer = static_cast<const TileLayer*>(layer);
-            const auto tilesets = tileLayer->usedTilesets();
 
             std::vector<std::unique_ptr<GMRLayer>> gmrLayers;
+            std::vector<GMRGraphic> assets;
 
-            for (const auto &tileset : tilesets) {
-                if (tileset->isCollection()) {
-                    // GMRTileLayer can't support an image collection tileset
-                    // TODO: Export these as GMRAssetLayer
-                    continue;
-                } else {
+            // For orthogonal maps we try to use GMRTileLayer, for performance
+            // reasons and because it supports tile rotation.
+            //
+            // GMRTileLayer can't support other orientations, or image
+            // collection tilesets or tiles using a different grid size than
+            // tile size. Such tiles are exported to a GMRAssetLayer instead.
+            //
+            if (layer->map()->orientation() == Map::Orthogonal) {
+                const auto tilesets = tileLayer->usedTilesets();
+                for (const auto &tileset : tilesets) {
+                    if (tileset->isCollection())
+                        continue;
+                    if (tileset->tileSize() != layer->map()->tileSize())
+                        continue;
+
                     auto gmrTileLayer = std::make_unique<GMRTileLayer>();
                     gmrTileLayer->name = sanitizeName(QStringLiteral("%1_%2").arg(layer->name(), tileset->name()));
                     fillTileLayer(*gmrTileLayer, tileLayer, tileset.data());
                     gmrLayers.push_back(std::move(gmrTileLayer));
                 }
+            }
+
+            createAssetsFromTiles(assets, tileLayer, context);
+
+            if (!assets.empty()) {
+                auto gmrAssetLayer = std::make_unique<GMRAssetLayer>();
+                gmrAssetLayer->name = sanitizeName(QStringLiteral("%1_Assets").arg(layer->name()));
+                gmrAssetLayer->assets = std::move(assets);
+                gmrLayers.push_back(std::move(gmrAssetLayer));
             }
 
             if (gmrLayers.size() == 1) {
@@ -740,11 +886,11 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                             instance.scaleY = mapObject->height() / tileSize.height();
 
                             if (mapObject->cell().flippedHorizontally()) {
-                                instance.scaleX *= -1;
+                                instance.scaleX *= -1.0;
                                 origin += QPointF(mapObject->width() - 2 * origin.x(), 0);
                             }
                             if (mapObject->cell().flippedVertically()) {
-                                instance.scaleY *= -1;
+                                instance.scaleY *= -1.0;
                                 origin += QPointF(0, mapObject->height() - 2 * origin.y());
                             }
                         }
@@ -771,7 +917,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     instance.imageSpeed = takeProperty(props, "imageSpeed", instance.imageSpeed);
                     // TODO: instance.inheritedItemId
                     instance.frozen = frozen;
-                    instance.ignore = takeProperty(props, "ignore", instance.ignore);
+                    instance.ignore = takeProperty(props, "ignore", !mapObject->isVisible());
                     instance.inheritItemSettings = takeProperty(props, "inheritItemSettings", instance.inheritItemSettings);
                     instance.x = qRound(pos.x());
                     instance.y = qRound(pos.y());
@@ -780,13 +926,8 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     if (mapObject->name().isEmpty()) {
                         instance.name = QStringLiteral("inst_%1").arg(mapObject->id());
                     } else {
-                        QString name = sanitizeName(mapObject->name());
-
-                        while (context.usedNames.contains(name))
-                            name += QStringLiteral("_%1").arg(mapObject->id());
-
-                        context.usedNames.insert(name);
-                        instance.name = name;
+                        instance.name = context.makeUnique(sanitizeName(mapObject->name()));
+                        context.usedNames.insert(instance.name);
                     }
 
                     instance.tags = readTags(mapObject);
@@ -865,6 +1006,11 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                             std::swap(g.u0, g.u1);
                         if (cell.flippedVertically())
                             std::swap(g.v0, g.v1);
+
+                        if (mapObject->rotation() != 0.0) {
+                            Tiled::WARNING(QStringLiteral("YY plugin: Sub-sprite graphics don't support rotation (object %1).").arg(mapObject->id()),
+                                           Tiled::JumpToObject { mapObject });
+                        }
                     }
 
                     // Adjust the position based on the origin
@@ -887,11 +1033,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                         else
                             g.name = QStringLiteral("tile_%1").arg(mapObject->id());
                     } else {
-                        g.name = sanitizeName(mapObject->name());
-
-                        while (context.usedNames.contains(g.name))
-                            g.name += QString("_%1").arg(mapObject->id());
-
+                        g.name = context.makeUnique(sanitizeName(mapObject->name()));
                         context.usedNames.insert(g.name);
                     }
 
@@ -920,6 +1062,15 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     p.tags = readTags(mapObject);
 
                     context.paths.push_back(p);
+
+                    Tiled::WARNING(QStringLiteral("YY plugin: Exporting of paths is not supported yet"),
+                                   Tiled::JumpToObject { mapObject });
+                }
+                else
+                {
+                    Tiled::WARNING(QStringLiteral("YY plugin: Ignoring non-tile object %1 without type.").arg(mapObject->id()),
+                                   Tiled::JumpToObject { mapObject });
+
                 }
             }
 
@@ -1058,6 +1209,23 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
     json.writeMember("parentRoom", QJsonValue(QJsonValue::Null));    // TODO: Provide a way to set this?
 
     Context context;
+
+    switch (map->orientation()) {
+    case Map::Isometric:
+        context.renderer = std::make_unique<IsometricRenderer>(map);
+        break;
+    case Map::Staggered:
+        context.renderer = std::make_unique<StaggeredRenderer>(map);
+        break;
+    case Map::Hexagonal:
+        context.renderer = std::make_unique<HexagonalRenderer>(map);
+        break;
+    case Map::Orthogonal:
+    case Map::Unknown:
+        context.renderer = std::make_unique<OrthogonalRenderer>(map);
+        break;
+    }
+
     std::vector<std::unique_ptr<GMRLayer>> layers;
     processLayers(layers, map->layers(), context);
 
