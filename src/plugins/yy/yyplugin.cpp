@@ -1241,7 +1241,7 @@ static void autoAssignDepth(const std::vector<std::unique_ptr<GMRLayer>> &layers
                 depthIncrement = 100;
             } else {
                 if ((*next)->depth < depth)
-                    Tiled::WARNING(QStringLiteral("YY plugin: User defined layer depths are not adequately spaced, result in game are undefined."));
+                    Tiled::WARNING(QStringLiteral("YY plugin: User defined layer depths are not adequately spaced, results in game are undefined."));
 
                 const int diff = (*next)->depth - (*current)->depth;
                 const int dist = std::distance(current, next);
