@@ -771,7 +771,11 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
 {
     for(auto it = layers.rbegin(); it != layers.rend(); ++it) {
         const Layer *layer = *it;
-        auto layerOffset = layer->totalOffset().toPoint();
+
+        if (layer->resolvedProperty("noExport").toBool())
+            continue;
+
+        const auto layerOffset = layer->totalOffset().toPoint();
 
         std::unique_ptr<GMRLayer> gmrLayer;
 
@@ -1200,6 +1204,58 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
     }
 }
 
+static void collectLayers(const std::vector<std::unique_ptr<GMRLayer>> &layers, std::vector<GMRLayer*> &flattenedLayers)
+{
+    for (const auto &layer : layers) {
+        flattenedLayers.push_back(layer.get());
+        collectLayers(layer->layers, flattenedLayers);
+    }
+}
+
+static void autoAssignDepth(const std::vector<std::unique_ptr<GMRLayer>> &layers)
+{
+    std::vector<GMRLayer*> flattenedLayers;
+    collectLayers(layers, flattenedLayers);
+
+    const auto end = flattenedLayers.cend();
+    auto current = flattenedLayers.cbegin();
+
+    auto findNext = [&] (std::vector<GMRLayer*>::const_iterator start) {
+        return std::find_if(start, end,
+                            [] (GMRLayer *layer) { return layer->userdefinedDepth; });
+    };
+
+    auto next = findNext(current);
+    int depth = 0;
+    int depthIncrement = 100;
+
+    if (next != end)
+        depth = (*next)->depth - std::distance(current, next) * -100;
+
+    for (; current != end; ++current) {
+        if (current == next) {
+            next = findNext(current + 1);
+            depth = (*current)->depth;
+
+            if (next == end) {
+                depthIncrement = 100;
+            } else {
+                if ((*next)->depth < depth)
+                    Tiled::WARNING(QStringLiteral("YY plugin: User defined layer depths are not adequately spaced, result in game are undefined."));
+
+                const int diff = (*next)->depth - (*current)->depth;
+                const int dist = std::distance(current, next);
+                depthIncrement = diff / dist;
+            }
+        } else {
+            (*current)->depth = depth;
+        }
+
+        depth += depthIncrement;
+    }
+}
+
+
 YyPlugin::YyPlugin()
 {
 }
@@ -1252,6 +1308,8 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
         gmrBackgroundLayer->colour = map->backgroundColor();
         layers.push_back(std::move(gmrBackgroundLayer));
     }
+
+    autoAssignDepth(layers);
 
     const bool enableViews = !context.views.empty();
 
