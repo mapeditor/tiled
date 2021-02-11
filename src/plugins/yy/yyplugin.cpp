@@ -932,8 +932,10 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
 
                     instance.tags = readTags(mapObject);
 
-                    context.instanceCreationOrder.push_back({ instance.name,
-                                                              takeProperty(props, "creationOrder", 0) });
+                    context.instanceCreationOrder.push_back(InstanceCreation {
+                                                                instance.name,
+                                                                takeProperty(props, "creationOrder", 0)
+                                                            });
 
                     // Remaining unknown custom properties are assumed to
                     // override properties defined on the GameMaker object.
