@@ -1240,6 +1240,14 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
     std::vector<std::unique_ptr<GMRLayer>> layers;
     processLayers(layers, map->layers(), context);
 
+    // If a valid background color is set, create a background layer with this color.
+    if (map->backgroundColor().isValid()) {
+        auto gmrBackgroundLayer = std::make_unique<GMRBackgroundLayer>();
+        gmrBackgroundLayer->name = QStringLiteral("Background_Color");
+        gmrBackgroundLayer->colour = map->backgroundColor();
+        layers.push_back(std::move(gmrBackgroundLayer));
+    }
+
     const bool enableViews = !context.views.empty();
 
     // Write out views
