@@ -1230,7 +1230,7 @@ static void autoAssignDepth(const std::vector<std::unique_ptr<GMRLayer>> &layers
     int depthIncrement = 100;
 
     if (next != end)
-        depth = (*next)->depth - std::distance(current, next) * -100;
+        depth = (*next)->depth - std::distance(current, next) * depthIncrement;
 
     for (; current != end; ++current) {
         if (current == next) {
