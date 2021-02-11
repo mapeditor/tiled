@@ -363,6 +363,11 @@ static QString sanitizeName(QString name)
     return name.replace(regexp, QStringLiteral("_"));
 }
 
+static QString spriteId(const Object *object, const QUrl &imageUrl)
+{
+    return optionalProperty(object, "sprite", sanitizeName(QFileInfo(imageUrl.fileName()).completeBaseName()));
+}
+
 static unsigned colorToAbgr(const QColor &color)
 {
     const QRgb rgba = color.rgba();
@@ -688,7 +693,7 @@ static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
         QPointF pos = screenPos + tileset->tileOffset() + layerOffset + origin;
 
         if (g.isSprite) {
-            g.spriteId = sanitizeName(QFileInfo(tile->imageSource().path()).completeBaseName());
+            g.spriteId = spriteId(tile, tile->imageSource());
             g.headPosition = 0.0;
             g.rotation = 0.0;
             g.scaleX = 1.0;
@@ -720,7 +725,7 @@ static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
                 }
             }
         } else {
-            g.spriteId = sanitizeName(QFileInfo(tileset->imageSource().path()).completeBaseName());
+            g.spriteId = spriteId(tileset, tileset->imageSource());
             g.w = size.width();
             g.h = size.height();
 
@@ -938,10 +943,10 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
 
                     instance.tags = readTags(mapObject);
 
-                    context.instanceCreationOrder.push_back(InstanceCreation {
-                                                                instance.name,
-                                                                takeProperty(props, "creationOrder", 0)
-                                                            });
+                    context.instanceCreationOrder.emplace_back();
+                    InstanceCreation &instanceCreation = context.instanceCreationOrder.back();
+                    instanceCreation.name = instance.name;
+                    instanceCreation.creationOrder = takeProperty(props, "creationOrder", 0);
 
                     // Remaining unknown custom properties are assumed to
                     // override properties defined on the GameMaker object.
@@ -969,7 +974,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                                    optionalProperty(mapObject, "originY", 0.0));
 
                     if (g.isSprite) {
-                        g.spriteId = sanitizeName(QFileInfo(tile->imageSource().path()).completeBaseName());
+                        g.spriteId = spriteId(tile, tile->imageSource());
                         g.headPosition = optionalProperty(mapObject, "headPosition", 0.0);
                         g.rotation = -mapObject->rotation();
 
@@ -996,7 +1001,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                         g.animationSpeed = optionalProperty(mapObject, "animationSpeed", 1.0);
                     } else {
                         const Tileset *tileset = tile->tileset();
-                        g.spriteId = sanitizeName(QFileInfo(tileset->imageSource().path()).completeBaseName());
+                        g.spriteId = spriteId(tileset, tileset->imageSource());
                         g.w = qRound(mapObject->width());
                         g.h = qRound(mapObject->height());
 
@@ -1132,7 +1137,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
             auto imageLayer = static_cast<const ImageLayer*>(layer);
             auto gmrBackgroundLayer = std::make_unique<GMRBackgroundLayer>();
 
-            gmrBackgroundLayer->spriteId = sanitizeName(QFileInfo(imageLayer->imageSource().toLocalFile()).completeBaseName());
+            gmrBackgroundLayer->spriteId = spriteId(imageLayer, imageLayer->imageSource());
 
             auto color = layer->effectiveTintColor();
             color.setAlphaF(color.alphaF() * layer->effectiveOpacity());
