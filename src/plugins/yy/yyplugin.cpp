@@ -683,8 +683,9 @@ static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
         g.isSprite = !tile->imageSource().isEmpty();
 
         QSize size = tile->size();
-        g.x = screenPos.x() + tileset->tileOffset().x() + layerOffset.x();
-        g.y = screenPos.y() + tileset->tileOffset().y() + layerOffset.y() - size.height();
+        QPointF origin(optionalProperty(tile, "originX", 0.0),
+                       optionalProperty(tile, "originY", 0.0));
+        QPointF pos = screenPos + tileset->tileOffset() + layerOffset + origin;
 
         if (g.isSprite) {
             g.spriteId = sanitizeName(QFileInfo(tile->imageSource().path()).completeBaseName());
@@ -698,24 +699,24 @@ static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
                 g.rotation = -90.0;
                 g.scaleY = -1.0;
 
-                g.y -= size.width() - size.height();
+                pos.ry() -= size.width() - size.height();
 
                 if (cell.flippedVertically()) {
                     g.scaleX = -1.0;
-                    g.y += size.width();
+                    pos.ry() += size.width() - 2 * origin.x();
                 }
                 if (!cell.flippedHorizontally()) {
                     g.scaleY = 1.0;
-                    g.x += size.height();
+                    pos.rx() += size.height() - 2 * origin.y();
                 }
             } else {
                 if (cell.flippedHorizontally()) {
                     g.scaleX = -1.0;
-                    g.x += size.width();
+                    pos.rx() += size.width() - 2 * origin.x();
                 }
                 if (cell.flippedVertically()) {
                     g.scaleY = -1.0;
-                    g.y += size.height();
+                    pos.ry() += size.height() - 2 * origin.y();
                 }
             }
         } else {
@@ -745,6 +746,8 @@ static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
         g.colour = color;
         g.frozen = frozen;
         g.ignore = optionalProperty(tileLayer, "ignore", g.ignore);
+        g.x = pos.x();
+        g.y = pos.y() - size.height();
 
         if (g.isSprite)
             g.name = context.makeUnique(QStringLiteral("graphic_%1").arg(tile->id()));
@@ -885,13 +888,16 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                             instance.scaleX = mapObject->width() / tileSize.width();
                             instance.scaleY = mapObject->height() / tileSize.height();
 
+                            origin = QPointF(origin.x() * instance.scaleX,
+                                             origin.y() * instance.scaleY);
+
                             if (mapObject->cell().flippedHorizontally()) {
                                 instance.scaleX *= -1.0;
-                                origin += QPointF(mapObject->width() - 2 * origin.x(), 0);
+                                origin.rx() += mapObject->width() - 2 * origin.x();
                             }
                             if (mapObject->cell().flippedVertically()) {
                                 instance.scaleY *= -1.0;
-                                origin += QPointF(0, mapObject->height() - 2 * origin.y());
+                                origin.ry() += mapObject->height() - 2 * origin.y();
                             }
                         }
 
@@ -962,11 +968,6 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     QPointF origin(optionalProperty(mapObject, "originX", 0.0),
                                    optionalProperty(mapObject, "originY", 0.0));
 
-                    // Tile objects don't necessarily have top-left origin in Tiled,
-                    // so the position needs to be translated for top-left origin in
-                    // GameMaker, taking into account the rotation.
-                    origin -= alignmentOffset(mapObject->bounds(), mapObject->alignment());
-
                     if (g.isSprite) {
                         g.spriteId = sanitizeName(QFileInfo(tile->imageSource().path()).completeBaseName());
                         g.headPosition = optionalProperty(mapObject, "headPosition", 0.0);
@@ -976,13 +977,16 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                         g.scaleX = mapObject->width() / tileSize.width();
                         g.scaleY = mapObject->height() / tileSize.height();
 
+                        origin = QPointF(origin.x() * g.scaleX,
+                                         origin.y() * g.scaleY);
+
                         if (cell.flippedHorizontally()) {
                             g.scaleX *= -1;
-                            origin += QPointF(mapObject->width() - 2 * origin.x(), 0);
+                            origin.rx() += mapObject->width() - 2 * origin.x();
                         }
                         if (cell.flippedVertically()) {
                             g.scaleY *= -1;
-                            origin += QPointF(0, mapObject->height() - 2 * origin.y());
+                            origin.ry() += mapObject->height() - 2 * origin.y();
                         }
 
                         // Allow overriding the scale using custom properties
@@ -1014,6 +1018,11 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                                            Tiled::JumpToObject { mapObject });
                         }
                     }
+
+                    // Tile objects don't necessarily have top-left origin in Tiled,
+                    // so the position needs to be translated for top-left origin in
+                    // GameMaker, taking into account the rotation.
+                    origin -= alignmentOffset(mapObject->bounds(), mapObject->alignment());
 
                     // Adjust the position based on the origin
                     QTransform transform;
