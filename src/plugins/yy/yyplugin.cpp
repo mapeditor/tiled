@@ -60,6 +60,7 @@ enum ResourceType
     GMRInstanceType,
     GMRLayerType,
     GMRPathLayerType,
+    GMRSpriteGraphicType,
     GMRTileLayerType,
 };
 
@@ -75,6 +76,7 @@ static const char *resourceTypeStr(ResourceType type)
     case GMRInstanceType:           return "GMRInstance";
     case GMRLayerType:              return "GMRLayer";
     case GMRPathLayerType:          return "GMRPathLayer";
+    case GMRSpriteGraphicType:      return "GMRSpriteGraphic";
     case GMRTileLayerType:          return "GMRTileLayer";
     }
 
@@ -112,13 +114,14 @@ struct GMResource
 
 struct GMRGraphic : GMResource
 {
-    GMRGraphic() : GMResource(GMRGraphicType) {}
+    GMRGraphic(bool isSprite)
+        : GMResource(isSprite ? GMRSpriteGraphicType : GMRGraphicType)
+    {}
 
     QString spriteId;
-    bool isSprite = false;
 
     union {
-        // part of a bigger sprite (isSprite == false)
+        // part of a bigger sprite (GMRGraphic)
         struct {
             int w;
             int h;
@@ -128,7 +131,7 @@ struct GMRGraphic : GMResource
             int v1;
         };
 
-        // for whole sprites (isSprite == true)
+        // for whole sprites (GMRSpriteGraphic)
         struct {
             double headPosition;
             double rotation;
@@ -345,6 +348,14 @@ static void writeTags(JsonWriter &json, const Object *object)
     writeTags(json, readTags(object));
 }
 
+static void writeResourceProperties(JsonWriter &json, const GMResource &resource)
+{
+    json.writeMember("resourceVersion", resource.resourceVersion);
+    json.writeMember("name", resource.name);
+    writeTags(json, resource.tags);
+    json.writeMember("resourceType", resourceTypeStr(resource.resourceType));
+}
+
 static void writeId(JsonWriter &json, const char *member, const QString &id, const QString &scope)
 {
     if (id.isEmpty()) {
@@ -415,7 +426,7 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
 
                 writeId(json, "spriteId", asset.spriteId, QStringLiteral("sprites"));
 
-                if (asset.isSprite) {
+                if (asset.resourceType == GMRSpriteGraphicType) {
                     json.writeMember("headPosition", asset.headPosition);
                     json.writeMember("rotation", asset.rotation);
                     json.writeMember("scaleX", asset.scaleX);
@@ -443,10 +454,8 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
                 json.writeMember("inheritItemSettings", asset.inheritItemSettings);
                 json.writeMember("x", asset.x);
                 json.writeMember("y", asset.y);
-                json.writeMember("resourceVersion", asset.resourceVersion);
-                json.writeMember("name", asset.name);
-                writeTags(json, asset.tags);
-                json.writeMember("resourceType", asset.isSprite ? "GMRSpriteGraphic" : "GMRGraphic");
+
+                writeResourceProperties(json, asset);
 
                 json.writeEndObject();
                 json.setMinimize(wasMinimize);
@@ -495,12 +504,8 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
                     writeId(json, "objectId", prop.objectId, "objects");
 
                     json.writeMember("value", prop.value);
-                    json.writeMember("resourceVersion", prop.resourceVersion);
-                    json.writeMember("name", prop.name);
 
-                    writeTags(json, prop.tags);
-
-                    json.writeMember("resourceType", resourceTypeStr(prop.resourceType));
+                    writeResourceProperties(json, prop);
 
                     json.writeEndObject();
                 }
@@ -531,11 +536,8 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
                 json.writeMember("inheritItemSettings", instance.inheritItemSettings);
                 json.writeMember("x", instance.x);
                 json.writeMember("y", instance.y);
-                json.writeMember("resourceVersion", instance.resourceVersion);
-                json.writeMember("name", instance.name);
 
-                writeTags(json, instance.tags);
-                json.writeMember("resourceType", resourceTypeStr(instance.resourceType));
+                writeResourceProperties(json, instance);
 
                 json.writeEndObject();
                 json.setMinimize(wasMinimize);
@@ -595,11 +597,8 @@ static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRL
         writeLayers(json, layer->layers);
 
         json.writeMember("hierarchyFrozen", layer->hierarchyFrozen);
-        json.writeMember("resourceVersion", layer->resourceVersion);
-        json.writeMember("name", layer->name);
 
-        writeTags(json, layer->tags);
-        json.writeMember("resourceType", resourceTypeStr(layer->resourceType));
+        writeResourceProperties(json, *layer);
 
         json.writeEndObject();
     }
@@ -655,6 +654,29 @@ static void fillTileLayer(GMRTileLayer &gmrTileLayer, const TileLayer *tileLayer
     }
 }
 
+static void initializeTileGraphic(GMRGraphic &g, QSize size, const Cell &cell, const Tile *tile)
+{
+    const Tileset *tileset = tile->tileset();
+
+    g.spriteId = spriteId(tileset, tileset->imageSource());
+
+    g.w = size.width();
+    g.h = size.height();
+
+    const int xInTilesetGrid = tile->id() % tileset->columnCount();
+    const int yInTilesetGrid = static_cast<int>(tile->id() / tileset->columnCount());
+
+    g.u0 = tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid;
+    g.v0 = tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid;
+    g.u1 = g.u0 + tileset->tileWidth();
+    g.v1 = g.v0 + tileset->tileHeight();
+
+    if (cell.flippedHorizontally())
+        std::swap(g.u0, g.u1);
+    if (cell.flippedVertically())
+        std::swap(g.v0, g.v1);
+}
+
 static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
                                   const TileLayer *tileLayer,
                                   Context &context)
@@ -682,17 +704,17 @@ static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
         if (!tile || tile->image().isNull())
             return;
 
-        assets.emplace_back();
-        GMRGraphic &g = assets.back();
+        const bool isSprite = !tile->imageSource().isEmpty();
 
-        g.isSprite = !tile->imageSource().isEmpty();
+        assets.emplace_back(isSprite);
+        GMRGraphic &g = assets.back();
 
         QSize size = tile->size();
         QPointF origin(optionalProperty(tile, "originX", 0.0),
                        optionalProperty(tile, "originY", 0.0));
         QPointF pos = screenPos + tileset->tileOffset() + layerOffset + origin;
 
-        if (g.isSprite) {
+        if (isSprite) {
             g.spriteId = spriteId(tile, tile->imageSource());
             g.headPosition = 0.0;
             g.rotation = 0.0;
@@ -725,22 +747,7 @@ static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
                 }
             }
         } else {
-            g.spriteId = spriteId(tileset, tileset->imageSource());
-            g.w = size.width();
-            g.h = size.height();
-
-            const int xInTilesetGrid = tile->id() % tileset->columnCount();
-            const int yInTilesetGrid = static_cast<int>(tile->id() / tileset->columnCount());
-
-            g.u0 = tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid;
-            g.v0 = tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid;
-            g.u1 = g.u0 + tileset->tileWidth();
-            g.v1 = g.v0 + tileset->tileHeight();
-
-            if (cell.flippedHorizontally())
-                std::swap(g.u0, g.u1);
-            if (cell.flippedVertically())
-                std::swap(g.v0, g.v1);
+            initializeTileGraphic(g, size, cell, tile);
 
             if (cell.flippedAntiDiagonally()) {
                 Tiled::WARNING(QStringLiteral("YY plugin: Sub-sprite graphics don't support rotated tiles."),
@@ -754,7 +761,7 @@ static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
         g.x = pos.x();
         g.y = pos.y() - size.height();
 
-        if (g.isSprite)
+        if (isSprite)
             g.name = context.makeUnique(QStringLiteral("graphic_%1").arg(tile->id()));
         else
             g.name = context.makeUnique(QStringLiteral("tile_%1").arg(tile->id()));
@@ -794,8 +801,13 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
             // tile size. Such tiles are exported to a GMRAssetLayer instead.
             //
             if (layer->map()->orientation() == Map::Orthogonal) {
-                const auto tilesets = tileLayer->usedTilesets();
-                for (const auto &tileset : tilesets) {
+                auto tilesets = tileLayer->usedTilesets().values();
+                std::sort(tilesets.begin(), tilesets.end(),
+                          [] (const SharedTileset &a, const SharedTileset &b) {
+                    return a->name() < b->name();
+                });
+
+                for (const auto &tileset : qAsConst(tilesets)) {
                     if (tileset->isCollection())
                         continue;
                     if (tileset->tileSize() != layer->map()->tileSize())
@@ -946,6 +958,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     }
 
                     instance.tags = readTags(mapObject);
+                    props.remove(QStringLiteral("tags"));
 
                     context.instanceCreationOrder.emplace_back();
                     InstanceCreation &instanceCreation = context.instanceCreationOrder.back();
@@ -969,15 +982,15 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     if (!tile)
                         continue;
 
-                    assets.emplace_back();
-                    GMRGraphic &g = assets.back();
+                    const bool isSprite = !tile->imageSource().isEmpty();
 
-                    g.isSprite = !tile->imageSource().isEmpty();
+                    assets.emplace_back(isSprite);
+                    GMRGraphic &g = assets.back();
 
                     QPointF origin(optionalProperty(mapObject, "originX", 0.0),
                                    optionalProperty(mapObject, "originY", 0.0));
 
-                    if (g.isSprite) {
+                    if (isSprite) {
                         g.spriteId = spriteId(tile, tile->imageSource());
                         g.headPosition = optionalProperty(mapObject, "headPosition", 0.0);
                         g.rotation = -mapObject->rotation();
@@ -1004,23 +1017,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
 
                         g.animationSpeed = optionalProperty(mapObject, "animationSpeed", 1.0);
                     } else {
-                        const Tileset *tileset = tile->tileset();
-                        g.spriteId = spriteId(tileset, tileset->imageSource());
-                        g.w = qRound(mapObject->width());
-                        g.h = qRound(mapObject->height());
-
-                        const int xInTilesetGrid = tile->id() % tileset->columnCount();
-                        const int yInTilesetGrid = static_cast<int>(tile->id() / tileset->columnCount());
-
-                        g.u0 = tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid;
-                        g.v0 = tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid;
-                        g.u1 = g.u0 + tileset->tileWidth();
-                        g.v1 = g.v0 + tileset->tileHeight();
-
-                        if (cell.flippedHorizontally())
-                            std::swap(g.u0, g.u1);
-                        if (cell.flippedVertically())
-                            std::swap(g.v0, g.v1);
+                        initializeTileGraphic(g, mapObject->size().toSize(), cell, tile);
 
                         if (mapObject->rotation() != 0.0) {
                             Tiled::WARNING(QStringLiteral("YY plugin: Sub-sprite graphics don't support rotation (object %1).").arg(mapObject->id()),
@@ -1048,7 +1045,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
 
                     // Include object ID in the name when necessary because duplicates are not allowed
                     if (mapObject->name().isEmpty()) {
-                        if (g.isSprite)
+                        if (isSprite)
                             g.name = QStringLiteral("graphic_%1").arg(mapObject->id());
                         else
                             g.name = QStringLiteral("tile_%1").arg(mapObject->id());
