@@ -272,7 +272,6 @@ struct InstanceCreation
 
 struct Context
 {
-    int depth = 0;
     QSet<QString> usedNames;
     std::vector<GMRView> views;
     std::vector<GMPath> paths;
@@ -938,6 +937,8 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     const QPointF pos = mapObject->position() + transform.map(origin);
 
                     // TODO: Support creation code - takeProperty(props, "code", QString());
+                    // Would need to be written out as a separate file
+                    instance.hasCreationCode = takeProperty(props, "hasCreationCode", instance.hasCreationCode);
                     instance.colour = color;
                     instance.rotation = -mapObject->rotation();
                     instance.imageIndex = takeProperty(props, "imageIndex", instance.imageIndex);
@@ -1093,7 +1094,6 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
 
             std::vector<std::unique_ptr<GMRLayer>> gmrLayers;
 
-            // TODO: Sub-layers for object layers containing instances, assets and/or paths
             if (!assets.empty()) {
                 auto gmrAssetLayer = std::make_unique<GMRAssetLayer>();
                 gmrAssetLayer->name = sanitizeName(QStringLiteral("%1_Assets").arg(layer->name()));
@@ -1168,7 +1168,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
             continue;
 
         gmrLayer->visible = optionalProperty(layer, "visible", layer->isVisible());
-        gmrLayer->depth = optionalProperty(layer, "depth", context.depth);
+        gmrLayer->depth = optionalProperty(layer, "depth", 0);
         gmrLayer->userdefinedDepth = layer->resolvedProperty(QStringLiteral("depth")).isValid();
         gmrLayer->inheritLayerDepth = optionalProperty(layer, "inheritLayerDepth", false);
         gmrLayer->inheritLayerSettings = optionalProperty(layer, "inheritLayerSettings", false);
@@ -1177,8 +1177,6 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
         gmrLayer->hierarchyFrozen = layer->isLocked();
         gmrLayer->name = sanitizeName(layer->name());
         gmrLayer->tags = readTags(layer);
-
-        context.depth = gmrLayer->depth + 100;   // TODO: Better support for overridden depth logic
 
         if (layer->isGroupLayer()) {
             auto groupLayer = static_cast<const GroupLayer*>(layer);
