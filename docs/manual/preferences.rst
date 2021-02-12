@@ -137,6 +137,24 @@ Mouse wheel zooms by default
 
 .. raw:: html
 
+   <div class="new">New in Tiled 1.5</div>
+
+Middle mouse button uses auto-scrolling
+    With this option enabled, the clicking middle mouse button doesn't drag the
+    map directly but instead controls the speed of a continuous panning
+    movement.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.5</div>
+
+Use smooth scrolling
+    This option affects the behavior when scrolling with the arrow keys. When
+    disabled, the view scrolls in steps based on key press events. When enabled
+    (the default), the view scrolls continuously while the keys are held down.
+
+.. raw:: html
+
    <div class="new new-prev">Since Tiled 1.3</div>
 
 Updates

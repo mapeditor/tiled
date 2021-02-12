@@ -22,6 +22,9 @@ Tiled 1.5
    ``vflip``, ``hflip`` and ``dflip`` attributes on the :ref:`tmx-wangtile`
    element has been removed.
 
+-  The :ref:`tmx-wangset` element has replaced the now deprecated
+   :ref:`tmx-terraintypes` element.
+
 Tiled 1.4
 ---------
 

@@ -4,6 +4,10 @@ Custom Export Formats
 Tiled provides several options for extending it with support for additional
 file formats.
 
+.. raw:: html
+
+   <div class="new new-prev">Since Tiled 1.3</div>
+
 Using JavaScript
 ~~~~~~~~~~~~~~~~
 

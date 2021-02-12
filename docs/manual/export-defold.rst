@@ -13,6 +13,10 @@ It only supports tile layers and only a single tileset may be used.
 Upon export, the ``tile_set`` property of the Tile Map is left empty, so it
 will need to be set up in Defold after each export.
 
+.. raw:: html
+
+   <div class="new new-prev">Since Tiled 1.3</div>
+
 defoldcollection
 ~~~~~~~~~~~~~~~~
 

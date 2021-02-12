@@ -12,6 +12,10 @@ flare
 replicaisland
     Adds support for editing `Replica Island`_ maps (\*.bin)
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.5</div>
+
 rpmap
     Adds support for exporting Tiled maps as RpMap (\*.rpmap), the format used
     by `MapTool`_.
