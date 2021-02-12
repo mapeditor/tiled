@@ -4,8 +4,7 @@ GameMaker: Studio 2.3
 ---------------------
 
 GameMaker: Studio 2.3 uses a custom json-based format to store its rooms,
-and Tiled ships with a plugin to export maps in this format. [[Currently
-only orthogonal maps will export correctly.]]
+and Tiled ships with a plugin to export maps in this format.
 
 Tiled itself works with tile layers, object layers, image layers and group layers. All layer types are supported and if needed Tiled will automatically divide a layer into several sublayers on export as GameMaker only supports one tileset per tile layer and differentiates between instance and asset layers.
 
