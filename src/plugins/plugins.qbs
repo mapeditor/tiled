@@ -15,6 +15,7 @@ Project {
         "replicaisland",
         "rpmap",
         "tbin",
-        "tengine"
+        "tengine",
+        "yy"
     ]
 }
