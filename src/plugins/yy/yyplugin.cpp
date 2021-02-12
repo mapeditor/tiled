@@ -939,7 +939,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     // TODO: Support creation code - takeProperty(props, "code", QString());
                     // Would need to be written out as a separate file
                     instance.hasCreationCode = takeProperty(props, "hasCreationCode", instance.hasCreationCode);
-                    instance.colour = color;
+                    instance.colour = takeProperty(props, "colour", color);
                     instance.rotation = -mapObject->rotation();
                     instance.imageIndex = takeProperty(props, "imageIndex", instance.imageIndex);
                     instance.imageSpeed = takeProperty(props, "imageSpeed", instance.imageSpeed);
@@ -1036,7 +1036,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     transform.rotate(mapObject->rotation());
                     const QPointF pos = mapObject->position() + transform.map(origin);
 
-                    g.colour = color;
+                    g.colour = optionalProperty(mapObject, "colour", color);
                     // TODO: g.inheritedItemId
                     g.frozen = frozen;
                     g.ignore = optionalProperty(mapObject, "ignore", g.ignore);
@@ -1142,7 +1142,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
 
             auto color = layer->effectiveTintColor();
             color.setAlphaF(color.alphaF() * layer->effectiveOpacity());
-            gmrBackgroundLayer->colour = color;
+            gmrBackgroundLayer->colour = optionalProperty(layer, "colour", color);
 
             gmrBackgroundLayer->x = layerOffset.x();
             gmrBackgroundLayer->y = layerOffset.y();
