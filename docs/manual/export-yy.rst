@@ -11,39 +11,38 @@ Tiled itself works with tile layers, object layers, image layers and group layer
 In general:
 
 * Tiles from tilesets on tile layers will get exported as tiles on tile layers. 
-* Tiles from image collection on tile layers will get exported as assets on an asset layers.
+* Tiles from image collections on tile layers will get exported as assets on asset layers.
 * Tile objects with no type will get exported as assets on asset layers.
 * Tile-, point- and polygon-objects with a set type will get exported as instances on instance layers.
 * Image layers will get exported as background layers.
 
+.. warning::
 
-.. hint::
-
-   The tilesets have to be named the same as the corresponding tileset assets in the GameMaker project. The file names of the source graphics of tilesets and assets should be the same as the corresponding sprites asset in the GameMaker project. Alternatively the custom string property ``sprite`` can be used to overwrite a file name. 
+   Since GameMakers "Add Existing"-Feature doesn't work at this point in time (2.3.1) the easiest way to import a Tiled map into your GameMaker Project is to replace an already existing room.yy file. If you want to do this while GameMaker is running with the open project you'll need to deactivate "Use save writing of files" inside Tileds preferences. (Under ``Edit -> Preferences -> General -> Saving and Loading``). Otherwise GameMaker will detect that the room file got deleted and will propose to restore it from memory. Without "save writing" GameMaker will detect that the file got changed and propose to reload the updated one.
 
 Tilesets
 ~~~~~~~~~~~
 
 A tileset in Tiled has to be named the same as the corresponding tileset asset in the GameMaker project.
-The file name of the source image has to be the same as the corresponding sprite asset. Alternatively the custom property ``sprite`` can be used to overwrite the file name.
+The file name of the source image has to be the same as the name of the corresponding sprite asset. 
+Alternatively the custom property ``sprite`` can be used to overwrite the file name.
 
 * string ``sprite`` (default: filename)
 
 Based on Tileset Image
 ^^^^^^^^^^^^^^^^^^^^^^
-This type of tilesets equals the tilesets in GameMaker. If the map orientation is orthogonal tile layers with this type of tiles will get exported as GameMaker tile layers. Tiles that have a different size then the grid will get exported as assets on a separate asset layer instead.
+This type of tilesets equals the tilesets in GameMaker. If the map orientation is orthogonal tile layers with this type of tiles will get exported as GameMaker tile layers. Tiles that have a different size then the grid will get exported as assets on a separate asset layer instead. If you use different tilesets on the same tile layer inside Tiled they will get divided into sublayers on export as GameMaker only supports one tileset per tile layer.
 
 Collection of Images
 ^^^^^^^^^^^^^^^^^^^^
 This type of tilesets can be used to place sprites on asset layers or instances on instance layers. This can be done with the "Insert Tile"-Tool on object layers.
-Objects with no set Type will get exported as assets on asset layers while objects with a set type will get exported as instances on instance layers.
-You can place the tiles from image collections on the tile layers in Tiled but they will get exported as assets on a separate asset layer instead.
+Objects with no set ``Type`` will get exported as assets on asset layers while objects with a set ``Type`` will get exported as instances on instance layers.
+You can also place tiles from image collections on tile layers in Tiled but they will get exported as assets on a separate asset layer instead.
 
 Isometric and Hexagonal Grids
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Isometric and hexagonal map orientations are also supported but the tile layers will get exported as asset layers in this case since GameMaker Studio 2 supports only tile layers with an orthogonal grid.
-
+Isometric and hexagonal map orientations are supported but the tile layers will get exported as asset layers in this case since GameMaker Studio 2.3 supports only tile layers with an orthogonal grid.
 
 
 Object Instances
@@ -58,7 +57,7 @@ The following custom properties can be set on objects to affect the exported ins
 * float ``scaleX`` (default: derived from tile or 1.0)
 * float ``scaleY`` (default: derived from tile or 1.0)
 * int ``imageIndex`` (default: 0)
-* float ``imageSpeed` (default: 1.0)
+* float ``imageSpeed`` (default: 1.0)
 * bool ``ignore`` (default: derived from tile (!Visible) or false)
 * bool ``inheritItemSettings`` (default: false)
 * int ``creationOrder`` (default: 0)
@@ -88,10 +87,11 @@ Assets
 
 GameMaker assets are created by leaving the ``Type`` field of a tile object in Tiled empty. They can be placed on both the object and tile layers in Tiled but will get exported always to GameMaker asset layers. Rotation, flipping and scaling is supported.
 
-Tiled also supports placing single tiles from a tileset image outside the grid by playing them on an object layer. In this case the single tile assets will get exported as "GMRGraphics" (aka GMS1.4 Tiles) to an asset layer. These "GMRGraphic"-tiles support horizontal and vertical flipping as well as tinting but no rotation.
+Sprites
+^^^^^^^
 
-The following custom properties can be set on assets to affect the
-exported assets:
+The following custom properties can be set on sprites to affect the
+exported sprites:
 
 * float ``headPosition`` (default: 0.0)
 * float ``rotation`` (default:0.0)
@@ -115,28 +115,37 @@ about the origin of the sprite defined in GameMaker, as an offset from
 the top-left. This origin is taken into account when determining the
 position of the exported assets.
 
+GMRGraphic-Tiles
+^^^^^^^^^^^^^^^^
+
+Tiled supports placing single tiles from a tileset image outside the grid by placing them on an object layer. In this case the individual tile assets will get exported as "GMRGraphics" (aka GMS1.4 Tiles) to an asset layer. These "GMRGraphic"-tiles support horizontal and vertical flipping as well as color tinting but no rotation. 
+
+This type of tiles is also used to export Tiled maps with an isometric or hexagonal map orientation.
+
 Backgrounds
 ~~~~~~~~~~~
+
 GameMaker background layers are created by using image layers in Tiled. 
-The filename of the source image has to be the same as the corresponding sprite asset. Alternatively the custom property ``sprite`` can be used to overwrite the sprite name.
+The file name of the source image has to be the same as the name of the corresponding sprite asset. 
+Alternatively the custom property ``sprite`` can be used to overwrite the sprite name.
 
-If a background color is set in the map properties of Tiled an extra background layer with the according color is exported as the bottommost layer.
+If a ``Background Color`` is set in the map properties of Tiled an extra background layer with the according color is exported as the bottommost layer.
 
-The following custom properties can be set on image layers to affect the
-exported background layers:
+The following custom properties can be set on image layers to affect the exported background layers:
 
+* string ``sprite`` (default: filename)
 * bool ``htiled`` (default: false)
 * bool ``vtiled`` (default: false)
 * bool ``stretch`` (default: false)
 * float ``hspeed`` (default: 0.0)
 * float ``vspeed`` (default: 0.0)
-* float ``animationSpeed` (default: 15.0)
+* float ``animationSpeed`` (default: 15.0)
 * int ``animationSpeedtype`` (default: 0)
 * int ``depth`` (default: 0 + N)
 
 Even though the custom properties such as ``htiled``and ``vtiled`` have no visual effect inside Tiled you will see the effect in the exported room inside GameMaker.
 
-The ``depth`` property can be used to assign a specific depth value to a layer.
+The ``depth`` property can be used to assign a specific depth value to the layer.
 
 Paths
 ~~~~~
@@ -144,18 +153,14 @@ Paths
 
 .. warning::
     GameMaker Paths are not supported, yet.
-    But it's planned to export polyline and polygon objects as paths on path layers in a future update.
+    It's planned to export polyline and polygon objects as paths on path layers in a future update.
 
 
 Views
 ~~~~~
 
-.. figure:: images/gamemaker-view-settings.png
-   :alt: GameMaker View Settings
-   :align: right
-
 Views can be defined using :ref:`rectangle objects <insert-rectangle-tool>`
-where the Type has been set to ``view``. The position and size will be
+where the ``Type`` has been set to "view". The position and size will be
 snapped to pixels. Whether the view is visible when the room starts
 depends on whether the object is visible. The use of views is
 automatically enabled when any views are defined. 
@@ -203,7 +208,7 @@ General
 ^^^^^^^
 
 * string ``path`` (default: "folders/Rooms.yy")
-* bool ``inheritLayers"`` (default: false)
+* bool ``inheritLayers`` (default: false)
 * string ``tags`` (default: "")
 
 The ``path`` property is used to define the room location inside GameMakers asset browser.
@@ -219,7 +224,7 @@ Room Settings
 * bool ``inheritCode`` (default: false)
 * string ``creationCodeFile`` (default: "")
 
-The ``creationCodeFile`` property is used to define the path of the creation code file, e.g.: "${project_dir}/rooms/room_name/RoomCreationCode.gml".
+The ``creationCodeFile`` property is used to define the path of an existing creation code file, e.g.: "${project_dir}/rooms/room_name/RoomCreationCode.gml".
 
 Instance Creation Order
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -230,6 +235,8 @@ You can manipulate the order by using the custom property ``creationOrder` insid
 Viewports and Cameras
 ^^^^^^^^^^^^^^^^^^^^^
 
+**General**
+
 * bool ``inheritViewSettings`` (default: false)
 * bool ``enableViews`` (default: false)
 * bool ``clearViewBackground`` (default: false)
@@ -237,7 +244,6 @@ Viewports and Cameras
 **Viewport 0 - Viewport 7**
 
 You can configure up to 8 viewports by using view objects (see Views).
-
 
 Physics
 ^^^^^^^
@@ -253,9 +259,11 @@ Layer Properties
 
 All layer types inside Tiled support the following custom properties:
 
-* int ``visible`` (default: derived from layer or true)
 * int ``depth`` (default: 0 + N)
 
+* int ``visible`` (default: derived from layer or true)
+
 The ``depth`` property can be used to assign a specific depth value to a layer.
+
 The ``visible`` property can be used to overwrite the "Visible" state of the layer inside Tiled if needed.
  
