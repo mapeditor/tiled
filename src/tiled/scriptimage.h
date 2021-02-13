@@ -146,11 +146,11 @@ public:
 
     Q_INVOKABLE void setColorTable(QJSValue colors);
 
-    Q_INVOKABLE ScriptImage *copy(int x, int y, int w, int h) const;
-    Q_INVOKABLE ScriptImage *scaled(int w, int h,
-                                    AspectRatioMode aspectMode = IgnoreAspectRatio,
-                                    TransformationMode mode = FastTransformation) const;
-    Q_INVOKABLE ScriptImage *mirrored(bool horiz, bool vert) const;
+    Q_INVOKABLE Tiled::ScriptImage *copy(int x, int y, int w, int h) const;
+    Q_INVOKABLE Tiled::ScriptImage *scaled(int w, int h,
+                                           AspectRatioMode aspectMode = IgnoreAspectRatio,
+                                           TransformationMode mode = FastTransformation) const;
+    Q_INVOKABLE Tiled::ScriptImage *mirrored(bool horiz, bool vert) const;
 
     const QImage &image() const { return mImage; }
 
