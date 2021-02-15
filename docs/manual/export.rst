@@ -20,9 +20,10 @@ or tileset itself).
    :caption: Supported Formats
 
    export-generic
-   export-gmx
-   export-tbin
    export-defold
+   export-gmx
+   export-yy
+   export-tbin
    export-other
    export-custom
    export-image
