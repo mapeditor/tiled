@@ -241,7 +241,7 @@
     <message>
         <location line="+7"/>
         <source>&amp;Save before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Opslaan voor uitvoeren</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -485,7 +485,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-250"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-250"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout lezen bestand: %1</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -522,7 +522,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+183"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+183"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout lezen bestand: %1</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -549,7 +549,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-180"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-180"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout lezen bestand: %1</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -761,17 +761,17 @@
     <message>
         <location line="+5"/>
         <source>Refresh Folders</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappen verversen</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Show Object &amp;References</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon Object &amp;Referenties</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Reopen Closed File</source>
-        <translation type="unfinished"></translation>
+        <translation>Heropen gesloten bestand</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -792,7 +792,7 @@
     <message>
         <location line="+11"/>
         <source>Enable Parallax</source>
-        <translation type="unfinished"></translation>
+        <translation>Parallax inschakelen</translation>
     </message>
     <message>
         <location line="-256"/>
@@ -852,7 +852,7 @@
     <message>
         <location line="+13"/>
         <source>User Manual ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Handleiding↗</translation>
     </message>
     <message>
         <location line="+19"/>
