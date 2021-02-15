@@ -138,7 +138,16 @@ the custom property ``creationOrder``. Objects with lower values will be
 created before objects with higher values (so objects with negative values
 will be created before objects without a ``creationOrder`` property).
 
-Additional custom properties that are not documented here can be used to override the variable definitions that got set up inside GameMaker for the object. Note: As of now only variable definitions of the object itself can be overriden. Overriding variable definitions of parent objects is not supported.
+Additional custom properties that are not documented here can be used to
+override the variable definitions that got set up inside GameMaker for the
+object.
+
+.. note::
+
+    As of now only variable definitions of the object itself can be overriden.
+    Overriding variable definitions of parent objects is not supported. As a
+    workaround you can use the creation code to override variables of a parent
+    object.
 
 Tile Graphics
 ^^^^^^^^^^^^^
@@ -205,11 +214,11 @@ The following custom properties can be set under *Map -> Map Properties*.
 General
 ^^^^^^^
 
-* string ``path`` (default: "folders/Rooms.yy")
+* string ``parent`` (default: "Rooms")
 * bool ``inheritLayers`` (default: false)
 * string ``tags`` (default: "")
 
-The ``path`` property is used to define the parent folder inside GameMakers
+The ``parent`` property is used to define the parent folder inside GameMakers
 asset browser.
 
 The ``tags`` property is used to assign tags to the room. Multiple tags can be
@@ -332,8 +341,8 @@ layer.
 The ``visible`` property can be used to override the "Visible" state of the
 layer if needed.
 
-The ``hierarchyFrozen`` property can be used to override the "Locked" state of the
-layer if needed.
+The ``hierarchyFrozen`` property can be used to override the "Locked" state of
+the layer if needed.
 
 The ``noExport`` property can be used to suppress exporting of an entire
 layer, including any child layers. This is useful if you use a layer for
