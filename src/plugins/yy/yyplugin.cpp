@@ -1396,9 +1396,9 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
     json.writeEndObject();
 
     json.writeStartObject("parent");
-    const QString path = optionalProperty(map, "path", QStringLiteral("folders/Rooms.yy"));
-    json.writeMember("name", QFileInfo(path).completeBaseName());
-    json.writeMember("path", path);
+    const QString parent = optionalProperty(map, "parent", QStringLiteral("Rooms"));
+    json.writeMember("name", QFileInfo(parent).fileName());
+    json.writeMember("path", QStringLiteral("folders/%1.yy").arg(parent));
     json.writeEndObject();
 
     writeProperty(json, map, "resourceVersion", QString("1.0"));
