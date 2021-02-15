@@ -256,7 +256,7 @@ struct GMRBackgroundLayer : GMRLayer
     double hspeed = 0.0;
     double vspeed = 0.0;
     bool stretch = false;
-    int animationFPS = 15;
+    double animationFPS = 15.0;
     int animationSpeedType = 0;
     bool userdefinedAnimFPS = false;
 };
@@ -901,6 +901,8 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                                    takeProperty(props, "originY", 0.0));
 
                     if (!mapObject->cell().isEmpty()) {
+                        props.remove(QStringLiteral("sprite")); // ignore this, probably inherited from tile
+
                         // For tile objects we can support scaling and flipping, though
                         // flipping in combination with rotation didn't work in GameMaker 1.4 (maybe works in 2?).
                         if (auto tile = mapObject->cell().tile()) {
@@ -1039,7 +1041,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                     g.colour = optionalProperty(mapObject, "colour", color);
                     // TODO: g.inheritedItemId
                     g.frozen = frozen;
-                    g.ignore = optionalProperty(mapObject, "ignore", g.ignore);
+                    g.ignore = optionalProperty(mapObject, "ignore", !mapObject->isVisible());
                     g.inheritItemSettings = optionalProperty(mapObject, "inheritItemSettings", g.inheritItemSettings);
                     g.x = pos.x();
                     g.y = pos.y();
@@ -1147,13 +1149,13 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
             gmrBackgroundLayer->x = layerOffset.x();
             gmrBackgroundLayer->y = layerOffset.y();
 
-            gmrBackgroundLayer->htiled = optionalProperty(layer, "htiled", false);
-            gmrBackgroundLayer->vtiled = optionalProperty(layer, "vtiled", false);
-            gmrBackgroundLayer->hspeed = optionalProperty(layer, "hspeed", 0.0);
-            gmrBackgroundLayer->vspeed = optionalProperty(layer, "vspeed", 0.0);
-            gmrBackgroundLayer->stretch = optionalProperty(layer, "stretch", false);
-            gmrBackgroundLayer->animationFPS = optionalProperty(layer, "animationFPS", 15);
-            gmrBackgroundLayer->animationSpeedType = optionalProperty(layer, "animationSpeedType", 0);
+            gmrBackgroundLayer->htiled = optionalProperty(layer, "htiled", gmrBackgroundLayer->htiled);
+            gmrBackgroundLayer->vtiled = optionalProperty(layer, "vtiled", gmrBackgroundLayer->vtiled);
+            gmrBackgroundLayer->hspeed = optionalProperty(layer, "hspeed", gmrBackgroundLayer->hspeed);
+            gmrBackgroundLayer->vspeed = optionalProperty(layer, "vspeed", gmrBackgroundLayer->vspeed);
+            gmrBackgroundLayer->stretch = optionalProperty(layer, "stretch", gmrBackgroundLayer->stretch);
+            gmrBackgroundLayer->animationFPS = optionalProperty(layer, "animationFPS", gmrBackgroundLayer->animationFPS);
+            gmrBackgroundLayer->animationSpeedType = optionalProperty(layer, "animationSpeedType", gmrBackgroundLayer->animationSpeedType);
             gmrBackgroundLayer->userdefinedAnimFPS = layer->resolvedProperty(QStringLiteral("animationFPS")).isValid();
 
             gmrLayer = std::move(gmrBackgroundLayer);
@@ -1174,7 +1176,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
         gmrLayer->inheritLayerSettings = optionalProperty(layer, "inheritLayerSettings", false);
         gmrLayer->gridX = optionalProperty(layer, "gridX", layer->map()->tileWidth());
         gmrLayer->gridY = optionalProperty(layer, "gridY", layer->map()->tileHeight());
-        gmrLayer->hierarchyFrozen = layer->isLocked();
+        gmrLayer->hierarchyFrozen = optionalProperty(layer, "hierarchyFrozen", layer->isLocked());
         gmrLayer->name = sanitizeName(layer->name());
         gmrLayer->tags = readTags(layer);
 

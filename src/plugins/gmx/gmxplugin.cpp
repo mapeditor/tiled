@@ -327,6 +327,10 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
                             scaleY = -1;
                             pixelY += tile->height();
                         }
+                        if (cell.flippedAntiDiagonally()) {
+                            Tiled::WARNING(QStringLiteral("GMX plugin: Rotated tiles are not supported."),
+                                           Tiled::JumpToTile { tileLayer->map(), QPoint(x, y), tileLayer });
+                        }
 
                         QString bgName;
                         int xo = 0;
