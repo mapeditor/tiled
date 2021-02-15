@@ -47,16 +47,6 @@ tileset asset in GameMaker.
 For object instances, the name of the object should be set in the *Type*
 field.
 
-References to other assets in the GameMaker room file also include a path.
-Currently the export will always assume the following paths:
-
-* Sprites: ``sprites/[name]/[name].yy``
-* Tilesets: ``tilesets/[name]/[name].yy``
-* Objects: ``objects/[type]/[type].yy``
-
-While GameMaker Studio 2.3 allows putting assets anywhere in the asset
-hierarchy, this is currently not supported by the export plugin.
-
 Exporting a Tiled Map
 ---------------------
 
@@ -147,6 +137,8 @@ inside the layer and object hierarchy from Tiled. This can be changed by using
 the custom property ``creationOrder``. Objects with lower values will be
 created before objects with higher values (so objects with negative values
 will be created before objects without a ``creationOrder`` property).
+
+Additional custom properties that are not documented here can be used to override the variable definitions that got set up inside GameMaker for the object. Note: As of now only variable definitions of the object itself can be overriden. Overriding variable definitions of parent objects is not supported.
 
 Tile Graphics
 ^^^^^^^^^^^^^
@@ -338,6 +330,9 @@ The ``depth`` property can be used to assign a specific depth value to a
 layer.
 
 The ``visible`` property can be used to override the "Visible" state of the
+layer if needed.
+
+The ``hierarchyFrozen`` property can be used to override the "Locked" state of the
 layer if needed.
 
 The ``noExport`` property can be used to suppress exporting of an entire
