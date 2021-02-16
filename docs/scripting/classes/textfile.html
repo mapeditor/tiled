@@ -183,8 +183,6 @@
 								</div>
 								<input type="checkbox" id="tsd-filter-inherited" checked />
 								<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-								<input type="checkbox" id="tsd-filter-only-exported" />
-								<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 							</div>
 						</div>
 						<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
@@ -196,7 +194,7 @@
 			<div class="container">
 				<ul class="tsd-breadcrumb">
 					<li>
-						<a href="../index.html">Globals</a>
+						<a href="../index.html">Tiled Scripting API</a>
 					</li>
 					<li>
 						<a href="textfile.html">TextFile</a>
@@ -231,12 +229,6 @@
 					<section class="tsd-panel tsd-index-panel">
 						<div class="tsd-index-content">
 							<section class="tsd-index-section ">
-								<h3>Type aliases</h3>
-								<ul class="tsd-index-list">
-									<li class="tsd-kind-type-alias tsd-parent-kind-class tsd-is-static"><a href="textfile.html#openmode" class="tsd-kind-icon">Open<wbr>Mode</a></li>
-								</ul>
-							</section>
-							<section class="tsd-index-section ">
 								<h3>Constructors</h3>
 								<ul class="tsd-index-list">
 									<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="textfile.html#constructor" class="tsd-kind-icon">constructor</a></li>
@@ -248,10 +240,6 @@
 									<li class="tsd-kind-property tsd-parent-kind-class"><a href="textfile.html#ateof" class="tsd-kind-icon">at<wbr>Eof</a></li>
 									<li class="tsd-kind-property tsd-parent-kind-class"><a href="textfile.html#codec" class="tsd-kind-icon">codec</a></li>
 									<li class="tsd-kind-property tsd-parent-kind-class"><a href="textfile.html#filepath" class="tsd-kind-icon">file<wbr>Path</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="textfile.html#append" class="tsd-kind-icon">Append</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="textfile.html#readonly" class="tsd-kind-icon">Read<wbr>Only</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="textfile.html#readwrite" class="tsd-kind-icon">Read<wbr>Write</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="textfile.html#writeonly" class="tsd-kind-icon">Write<wbr>Only</a></li>
 								</ul>
 							</section>
 							<section class="tsd-index-section ">
@@ -270,22 +258,12 @@
 					</section>
 				</section>
 				<section class="tsd-panel-group tsd-member-group ">
-					<h2>Type aliases</h2>
-					<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-						<a name="openmode" class="tsd-anchor"></a>
-						<h3><span class="tsd-flag ts-flagStatic">Static</span> Open<wbr>Mode</h3>
-						<div class="tsd-signature tsd-kind-icon">Open<wbr>Mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="textfile.html#readonly" class="tsd-signature-type">ReadOnly</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="textfile.html#writeonly" class="tsd-signature-type">WriteOnly</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="textfile.html#readwrite" class="tsd-signature-type">ReadWrite</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="textfile.html#append" class="tsd-signature-type">Append</a></div>
-						<aside class="tsd-sources">
-						</aside>
-					</section>
-				</section>
-				<section class="tsd-panel-group tsd-member-group ">
 					<h2>Constructors</h2>
 					<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
 						<a name="constructor" class="tsd-anchor"></a>
 						<h3>constructor</h3>
 						<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-							<li class="tsd-signature tsd-kind-icon">new <wbr>Text<wbr>File<span class="tsd-signature-symbol">(</span>filePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, mode<span class="tsd-signature-symbol">?: </span><a href="binaryfile.html#openmode" class="tsd-signature-type">OpenMode</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="textfile.html" class="tsd-signature-type">TextFile</a></li>
+							<li class="tsd-signature tsd-kind-icon">new <wbr>Text<wbr>File<span class="tsd-signature-symbol">(</span>filePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, mode<span class="tsd-signature-symbol">?: </span><a href="../modules/binaryfile.html#openmode" class="tsd-signature-type" data-tsd-kind="Type alias">OpenMode</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="textfile.html" class="tsd-signature-type" data-tsd-kind="Class">TextFile</a></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
@@ -302,14 +280,12 @@
 										<h5>filePath: <span class="tsd-signature-type">string</span></h5>
 									</li>
 									<li>
-										<h5><span class="tsd-flag ts-flagOptional">Optional</span> mode: <a href="binaryfile.html#openmode" class="tsd-signature-type">OpenMode</a></h5>
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> mode: <a href="../modules/binaryfile.html#openmode" class="tsd-signature-type" data-tsd-kind="Type alias">OpenMode</a></h5>
 										<div class="tsd-comment tsd-typography">
-											<div class="lead">
-											</div>
 										</div>
 									</li>
 								</ul>
-								<h4 class="tsd-returns-title">Returns <a href="textfile.html" class="tsd-signature-type">TextFile</a></h4>
+								<h4 class="tsd-returns-title">Returns <a href="textfile.html" class="tsd-signature-type" data-tsd-kind="Class">TextFile</a></h4>
 							</li>
 						</ul>
 					</section>
@@ -351,34 +327,6 @@
 								<p>The path of the file.</p>
 							</div>
 						</div>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-						<a name="append" class="tsd-anchor"></a>
-						<h3><span class="tsd-flag ts-flagStatic">Static</span> Append</h3>
-						<div class="tsd-signature tsd-kind-icon">Append<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">4</span><span class="tsd-signature-symbol"> = 4</span></div>
-						<aside class="tsd-sources">
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-						<a name="readonly" class="tsd-anchor"></a>
-						<h3><span class="tsd-flag ts-flagStatic">Static</span> Read<wbr>Only</h3>
-						<div class="tsd-signature tsd-kind-icon">Read<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">1</span><span class="tsd-signature-symbol"> = 1</span></div>
-						<aside class="tsd-sources">
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-						<a name="readwrite" class="tsd-anchor"></a>
-						<h3><span class="tsd-flag ts-flagStatic">Static</span> Read<wbr>Write</h3>
-						<div class="tsd-signature tsd-kind-icon">Read<wbr>Write<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">3</span><span class="tsd-signature-symbol"> = 3</span></div>
-						<aside class="tsd-sources">
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-						<a name="writeonly" class="tsd-anchor"></a>
-						<h3><span class="tsd-flag ts-flagStatic">Static</span> Write<wbr>Only</h3>
-						<div class="tsd-signature tsd-kind-icon">Write<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">2</span><span class="tsd-signature-symbol"> = 2</span></div>
-						<aside class="tsd-sources">
-						</aside>
 					</section>
 				</section>
 				<section class="tsd-panel-group tsd-member-group ">
@@ -538,8 +486,8 @@
 			<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 				<nav class="tsd-navigation primary">
 					<ul>
-						<li class="globals  ">
-							<a href="../index.html"><em>Globals</em></a>
+						<li class=" ">
+							<a href="../index.html">Exports</a>
 						</li>
 					</ul>
 				</nav>
@@ -553,9 +501,6 @@
 						<li class="current tsd-kind-class">
 							<a href="textfile.html" class="tsd-kind-icon">Text<wbr>File</a>
 							<ul>
-								<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-									<a href="textfile.html#openmode" class="tsd-kind-icon">Open<wbr>Mode</a>
-								</li>
 								<li class=" tsd-kind-constructor tsd-parent-kind-class">
 									<a href="textfile.html#constructor" class="tsd-kind-icon">constructor</a>
 								</li>
@@ -567,18 +512,6 @@
 								</li>
 								<li class=" tsd-kind-property tsd-parent-kind-class">
 									<a href="textfile.html#filepath" class="tsd-kind-icon">file<wbr>Path</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-									<a href="textfile.html#append" class="tsd-kind-icon">Append</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-									<a href="textfile.html#readonly" class="tsd-kind-icon">Read<wbr>Only</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-									<a href="textfile.html#readwrite" class="tsd-kind-icon">Read<wbr>Write</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-									<a href="textfile.html#writeonly" class="tsd-kind-icon">Write<wbr>Only</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-class">
 									<a href="textfile.html#close" class="tsd-kind-icon">close</a>
@@ -673,9 +606,6 @@
 				<ul class="tsd-legend">
 					<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
 					<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				</ul>
-				<ul class="tsd-legend">
-					<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
 				</ul>
 			</div>
 		</div>

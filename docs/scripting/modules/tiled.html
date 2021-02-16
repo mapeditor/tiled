@@ -183,8 +183,6 @@
 								</div>
 								<input type="checkbox" id="tsd-filter-inherited" checked />
 								<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-								<input type="checkbox" id="tsd-filter-only-exported" />
-								<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 							</div>
 						</div>
 						<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
@@ -196,7 +194,7 @@
 			<div class="container">
 				<ul class="tsd-breadcrumb">
 					<li>
-						<a href="../index.html">Globals</a>
+						<a href="../index.html">Tiled Scripting API</a>
 					</li>
 					<li>
 						<a href="tiled.html">tiled</a>
@@ -235,6 +233,7 @@
 									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#confirm" class="tsd-kind-icon">confirm</a></li>
 									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#error" class="tsd-kind-icon">error</a></li>
 									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#executecommand" class="tsd-kind-icon">execute<wbr>Command</a></li>
+									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#extendmenu" class="tsd-kind-icon">extend<wbr>Menu</a></li>
 									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#log" class="tsd-kind-icon">log</a></li>
 									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#open" class="tsd-kind-icon">open</a></li>
 									<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#prompt" class="tsd-kind-icon">prompt</a></li>
@@ -261,7 +260,7 @@
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
 						<a name="activeasset" class="tsd-anchor"></a>
 						<h3><span class="tsd-flag ts-flagLet">Let</span> active<wbr>Asset</h3>
-						<div class="tsd-signature tsd-kind-icon">active<wbr>Asset<span class="tsd-signature-symbol">:</span> <a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a></div>
+						<div class="tsd-signature tsd-kind-icon">active<wbr>Asset<span class="tsd-signature-symbol">:</span> <a href="../interfaces/asset.html" class="tsd-signature-type" data-tsd-kind="Interface">Asset</a></div>
 						<aside class="tsd-sources">
 						</aside>
 					</section>
@@ -289,7 +288,7 @@
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
 						<a name="openassets" class="tsd-anchor"></a>
 						<h3><span class="tsd-flag ts-flagConst">Const</span> open<wbr>Assets</h3>
-						<div class="tsd-signature tsd-kind-icon">open<wbr>Assets<span class="tsd-signature-symbol">:</span> <a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a><span class="tsd-signature-symbol">[]</span></div>
+						<div class="tsd-signature tsd-kind-icon">open<wbr>Assets<span class="tsd-signature-symbol">:</span> <a href="../interfaces/asset.html" class="tsd-signature-type" data-tsd-kind="Interface">Asset</a><span class="tsd-signature-symbol">[]</span></div>
 						<aside class="tsd-sources">
 						</aside>
 					</section>
@@ -344,7 +343,7 @@
 						<a name="close" class="tsd-anchor"></a>
 						<h3>close</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
-							<li class="tsd-signature tsd-kind-icon">close<span class="tsd-signature-symbol">(</span>asset<span class="tsd-signature-symbol">: </span><a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+							<li class="tsd-signature tsd-kind-icon">close<span class="tsd-signature-symbol">(</span>asset<span class="tsd-signature-symbol">: </span><a href="../interfaces/asset.html" class="tsd-signature-type" data-tsd-kind="Interface">Asset</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
@@ -353,7 +352,7 @@
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
-										<h5>asset: <a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a></h5>
+										<h5>asset: <a href="../interfaces/asset.html" class="tsd-signature-type" data-tsd-kind="Interface">Asset</a></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -442,6 +441,29 @@
 						</ul>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+						<a name="extendmenu" class="tsd-anchor"></a>
+						<h3>extend<wbr>Menu</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+							<li class="tsd-signature tsd-kind-icon">extend<wbr>Menu<span class="tsd-signature-symbol">(</span>shortName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, menu<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>shortName: <span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li>
+										<h5>menu: <span class="tsd-signature-type">any</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
 						<a name="log" class="tsd-anchor"></a>
 						<h3>log</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
@@ -465,7 +487,7 @@
 						<a name="open" class="tsd-anchor"></a>
 						<h3>open</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
-							<li class="tsd-signature tsd-kind-icon">open<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
+							<li class="tsd-signature tsd-kind-icon">open<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/asset.html" class="tsd-signature-type" data-tsd-kind="Interface">Asset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
@@ -477,7 +499,7 @@
 										<h5>fileName: <span class="tsd-signature-type">string</span></h5>
 									</li>
 								</ul>
-								<h4 class="tsd-returns-title">Returns <a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h4>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/asset.html" class="tsd-signature-type" data-tsd-kind="Interface">Asset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h4>
 							</li>
 						</ul>
 					</section>
@@ -511,7 +533,7 @@
 						<a name="registeraction" class="tsd-anchor"></a>
 						<h3>register<wbr>Action</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
-							<li class="tsd-signature tsd-kind-icon">register<wbr>Action<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>Action<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/action.html" class="tsd-signature-type">Action</a></li>
+							<li class="tsd-signature tsd-kind-icon">register<wbr>Action<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>Action<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/action.html" class="tsd-signature-type" data-tsd-kind="Interface">Action</a></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
@@ -544,7 +566,7 @@
 										</ul>
 									</li>
 								</ul>
-								<h4 class="tsd-returns-title">Returns <a href="../interfaces/action.html" class="tsd-signature-type">Action</a></h4>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/action.html" class="tsd-signature-type" data-tsd-kind="Interface">Action</a></h4>
 							</li>
 						</ul>
 					</section>
@@ -552,7 +574,7 @@
 						<a name="registermapformat" class="tsd-anchor"></a>
 						<h3>register<wbr>Map<wbr>Format</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
-							<li class="tsd-signature tsd-kind-icon">register<wbr>Map<wbr>Format<span class="tsd-signature-symbol">(</span>shortName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, mapFormat<span class="tsd-signature-symbol">: </span><a href="../interfaces/mapformat.html" class="tsd-signature-type">MapFormat</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+							<li class="tsd-signature tsd-kind-icon">register<wbr>Map<wbr>Format<span class="tsd-signature-symbol">(</span>shortName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, mapFormat<span class="tsd-signature-symbol">: </span><a href="../interfaces/mapformat.html" class="tsd-signature-type" data-tsd-kind="Interface">MapFormat</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
@@ -571,38 +593,39 @@
 									<dl class="tsd-comment-tags">
 										<dt>example</dt>
 										<dd><p>Example that produces a simple JSON representation of a map:</p>
-											<pre><code class="language-js"><span class="hljs-keyword">var</span> customMapFormat = {
-    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Custom map format&quot;</span>,
-    <span class="hljs-attr">extension</span>: <span class="hljs-string">&quot;custom&quot;</span>,
+											<pre><code class="language-js"><span style="color: #0000FF">var</span><span style="color: #000000"> </span><span style="color: #001080">customMapFormat</span><span style="color: #000000"> = {</span>
+<span style="color: #000000">    </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Custom map format&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">extension:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;custom&quot;</span><span style="color: #000000">,</span>
 
-    <span class="hljs-attr">write</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">map, fileName</span>) </span>{
-        <span class="hljs-keyword">var</span> m = {
-            <span class="hljs-attr">width</span>: map.width,
-            <span class="hljs-attr">height</span>: map.height,
-            <span class="hljs-attr">layers</span>: []
-        };
+<span style="color: #000000">    </span><span style="color: #795E26">write</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #0000FF">function</span><span style="color: #000000">(</span><span style="color: #001080">map</span><span style="color: #000000">, </span><span style="color: #001080">fileName</span><span style="color: #000000">) {</span>
+<span style="color: #000000">        </span><span style="color: #0000FF">var</span><span style="color: #000000"> </span><span style="color: #001080">m</span><span style="color: #000000"> = {</span>
+<span style="color: #000000">            </span><span style="color: #001080">width:</span><span style="color: #000000"> </span><span style="color: #001080">map</span><span style="color: #000000">.</span><span style="color: #001080">width</span><span style="color: #000000">,</span>
+<span style="color: #000000">            </span><span style="color: #001080">height:</span><span style="color: #000000"> </span><span style="color: #001080">map</span><span style="color: #000000">.</span><span style="color: #001080">height</span><span style="color: #000000">,</span>
+<span style="color: #000000">            </span><span style="color: #001080">layers:</span><span style="color: #000000"> []</span>
+<span style="color: #000000">        };</span>
 
-        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; map.layerCount; ++i) {
-            <span class="hljs-keyword">var</span> layer = map.layerAt(i);
-            <span class="hljs-keyword">if</span> (layer.isTileLayer) {
-                <span class="hljs-keyword">var</span> rows = [];
-                <span class="hljs-keyword">for</span> (y = <span class="hljs-number">0</span>; y &lt; layer.height; ++y) {
-                    <span class="hljs-keyword">var</span> row = [];
-                    <span class="hljs-keyword">for</span> (x = <span class="hljs-number">0</span>; x &lt; layer.width; ++x)
-                        row.push(layer.cellAt(x, y).tileId);
-                    rows.push(row);
-                }
-                m.layers.push(rows);
-            }
-        }
+<span style="color: #000000">        </span><span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">var</span><span style="color: #000000"> </span><span style="color: #001080">i</span><span style="color: #000000"> = </span><span style="color: #098658">0</span><span style="color: #000000">; </span><span style="color: #001080">i</span><span style="color: #000000"> &lt; </span><span style="color: #001080">map</span><span style="color: #000000">.</span><span style="color: #001080">layerCount</span><span style="color: #000000">; ++</span><span style="color: #001080">i</span><span style="color: #000000">) {</span>
+<span style="color: #000000">            </span><span style="color: #0000FF">var</span><span style="color: #000000"> </span><span style="color: #001080">layer</span><span style="color: #000000"> = </span><span style="color: #001080">map</span><span style="color: #000000">.</span><span style="color: #795E26">layerAt</span><span style="color: #000000">(</span><span style="color: #001080">i</span><span style="color: #000000">);</span>
+<span style="color: #000000">            </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #001080">layer</span><span style="color: #000000">.</span><span style="color: #001080">isTileLayer</span><span style="color: #000000">) {</span>
+<span style="color: #000000">                </span><span style="color: #0000FF">var</span><span style="color: #000000"> </span><span style="color: #001080">rows</span><span style="color: #000000"> = [];</span>
+<span style="color: #000000">                </span><span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #001080">y</span><span style="color: #000000"> = </span><span style="color: #098658">0</span><span style="color: #000000">; </span><span style="color: #001080">y</span><span style="color: #000000"> &lt; </span><span style="color: #001080">layer</span><span style="color: #000000">.</span><span style="color: #001080">height</span><span style="color: #000000">; ++</span><span style="color: #001080">y</span><span style="color: #000000">) {</span>
+<span style="color: #000000">                    </span><span style="color: #0000FF">var</span><span style="color: #000000"> </span><span style="color: #001080">row</span><span style="color: #000000"> = [];</span>
+<span style="color: #000000">                    </span><span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #001080">x</span><span style="color: #000000"> = </span><span style="color: #098658">0</span><span style="color: #000000">; </span><span style="color: #001080">x</span><span style="color: #000000"> &lt; </span><span style="color: #001080">layer</span><span style="color: #000000">.</span><span style="color: #001080">width</span><span style="color: #000000">; ++</span><span style="color: #001080">x</span><span style="color: #000000">)</span>
+<span style="color: #000000">                        </span><span style="color: #001080">row</span><span style="color: #000000">.</span><span style="color: #795E26">push</span><span style="color: #000000">(</span><span style="color: #001080">layer</span><span style="color: #000000">.</span><span style="color: #795E26">cellAt</span><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000">, </span><span style="color: #001080">y</span><span style="color: #000000">).</span><span style="color: #001080">tileId</span><span style="color: #000000">);</span>
+<span style="color: #000000">                    </span><span style="color: #001080">rows</span><span style="color: #000000">.</span><span style="color: #795E26">push</span><span style="color: #000000">(</span><span style="color: #001080">row</span><span style="color: #000000">);</span>
+<span style="color: #000000">                }</span>
+<span style="color: #000000">                </span><span style="color: #001080">m</span><span style="color: #000000">.</span><span style="color: #001080">layers</span><span style="color: #000000">.</span><span style="color: #795E26">push</span><span style="color: #000000">(</span><span style="color: #001080">rows</span><span style="color: #000000">);</span>
+<span style="color: #000000">            }</span>
+<span style="color: #000000">        }</span>
 
-        <span class="hljs-keyword">var</span> file = <span class="hljs-keyword">new</span> TextFile(fileName, TextFile.WriteOnly);
-        file.write(<span class="hljs-built_in">JSON</span>.stringify(m));
-        file.commit();
-    },
-}
+<span style="color: #000000">        </span><span style="color: #0000FF">var</span><span style="color: #000000"> </span><span style="color: #001080">file</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">TextFile</span><span style="color: #000000">(</span><span style="color: #001080">fileName</span><span style="color: #000000">, </span><span style="color: #001080">TextFile</span><span style="color: #000000">.</span><span style="color: #001080">WriteOnly</span><span style="color: #000000">);</span>
+<span style="color: #000000">        </span><span style="color: #001080">file</span><span style="color: #000000">.</span><span style="color: #795E26">write</span><span style="color: #000000">(</span><span style="color: #267F99">JSON</span><span style="color: #000000">.</span><span style="color: #795E26">stringify</span><span style="color: #000000">(</span><span style="color: #001080">m</span><span style="color: #000000">));</span>
+<span style="color: #000000">        </span><span style="color: #001080">file</span><span style="color: #000000">.</span><span style="color: #795E26">commit</span><span style="color: #000000">();</span>
+<span style="color: #000000">    },</span>
+<span style="color: #000000">}</span>
 
-tiled.registerMapFormat(<span class="hljs-string">&quot;custom&quot;</span>, customMapFormat)</code></pre>
+<span style="color: #001080">tiled</span><span style="color: #000000">.</span><span style="color: #795E26">registerMapFormat</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;custom&quot;</span><span style="color: #000000">, </span><span style="color: #001080">customMapFormat</span><span style="color: #000000">)</span>
+</code></pre>
 										</dd>
 									</dl>
 								</div>
@@ -612,7 +635,7 @@ tiled.registerMapFormat(<span class="hljs-string">&quot;custom&quot;</span>, cus
 										<h5>shortName: <span class="tsd-signature-type">string</span></h5>
 									</li>
 									<li>
-										<h5>mapFormat: <a href="../interfaces/mapformat.html" class="tsd-signature-type">MapFormat</a></h5>
+										<h5>mapFormat: <a href="../interfaces/mapformat.html" class="tsd-signature-type" data-tsd-kind="Interface">MapFormat</a></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -623,7 +646,7 @@ tiled.registerMapFormat(<span class="hljs-string">&quot;custom&quot;</span>, cus
 						<a name="registertilesetformat" class="tsd-anchor"></a>
 						<h3>register<wbr>Tileset<wbr>Format</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
-							<li class="tsd-signature tsd-kind-icon">register<wbr>Tileset<wbr>Format<span class="tsd-signature-symbol">(</span>shortName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, tilesetFormat<span class="tsd-signature-symbol">: </span><a href="../interfaces/tilesetformat.html" class="tsd-signature-type">TilesetFormat</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+							<li class="tsd-signature tsd-kind-icon">register<wbr>Tileset<wbr>Format<span class="tsd-signature-symbol">(</span>shortName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, tilesetFormat<span class="tsd-signature-symbol">: </span><a href="../interfaces/tilesetformat.html" class="tsd-signature-type" data-tsd-kind="Interface">TilesetFormat</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
@@ -635,7 +658,7 @@ tiled.registerMapFormat(<span class="hljs-string">&quot;custom&quot;</span>, cus
 										<h5>shortName: <span class="tsd-signature-type">string</span></h5>
 									</li>
 									<li>
-										<h5>tilesetFormat: <a href="../interfaces/tilesetformat.html" class="tsd-signature-type">TilesetFormat</a></h5>
+										<h5>tilesetFormat: <a href="../interfaces/tilesetformat.html" class="tsd-signature-type" data-tsd-kind="Interface">TilesetFormat</a></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -646,7 +669,7 @@ tiled.registerMapFormat(<span class="hljs-string">&quot;custom&quot;</span>, cus
 						<a name="reload" class="tsd-anchor"></a>
 						<h3>reload</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
-							<li class="tsd-signature tsd-kind-icon">reload<span class="tsd-signature-symbol">(</span>asset<span class="tsd-signature-symbol">: </span><a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
+							<li class="tsd-signature tsd-kind-icon">reload<span class="tsd-signature-symbol">(</span>asset<span class="tsd-signature-symbol">: </span><a href="../interfaces/asset.html" class="tsd-signature-type" data-tsd-kind="Interface">Asset</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/asset.html" class="tsd-signature-type" data-tsd-kind="Interface">Asset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
@@ -655,10 +678,10 @@ tiled.registerMapFormat(<span class="hljs-string">&quot;custom&quot;</span>, cus
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
-										<h5>asset: <a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a></h5>
+										<h5>asset: <a href="../interfaces/asset.html" class="tsd-signature-type" data-tsd-kind="Interface">Asset</a></h5>
 									</li>
 								</ul>
-								<h4 class="tsd-returns-title">Returns <a href="../interfaces/asset.html" class="tsd-signature-type">Asset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h4>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/asset.html" class="tsd-signature-type" data-tsd-kind="Interface">Asset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h4>
 							</li>
 						</ul>
 					</section>
@@ -722,11 +745,17 @@ tiled.registerMapFormat(<span class="hljs-string">&quot;custom&quot;</span>, cus
 			<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 				<nav class="tsd-navigation primary">
 					<ul>
-						<li class="globals  ">
-							<a href="../index.html"><em>Globals</em></a>
+						<li class=" ">
+							<a href="../index.html">Exports</a>
+						</li>
+						<li class=" tsd-kind-namespace">
+							<a href="binaryfile.html">Binary<wbr>File</a>
 						</li>
 						<li class=" tsd-kind-namespace">
 							<a href="qt.html">Qt</a>
+						</li>
+						<li class=" tsd-kind-namespace">
+							<a href="textfile.html">Text<wbr>File</a>
 						</li>
 						<li class="current tsd-kind-namespace">
 							<a href="tiled.html">tiled</a>
@@ -778,6 +807,9 @@ tiled.registerMapFormat(<span class="hljs-string">&quot;custom&quot;</span>, cus
 							<a href="tiled.html#executecommand" class="tsd-kind-icon">execute<wbr>Command</a>
 						</li>
 						<li class=" tsd-kind-function tsd-parent-kind-namespace">
+							<a href="tiled.html#extendmenu" class="tsd-kind-icon">extend<wbr>Menu</a>
+						</li>
+						<li class=" tsd-kind-function tsd-parent-kind-namespace">
 							<a href="tiled.html#log" class="tsd-kind-icon">log</a>
 						</li>
 						<li class=" tsd-kind-function tsd-parent-kind-namespace">
@@ -821,9 +853,6 @@ tiled.registerMapFormat(<span class="hljs-string">&quot;custom&quot;</span>, cus
 				<ul class="tsd-legend">
 					<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
 					<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				</ul>
-				<ul class="tsd-legend">
-					<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
 				</ul>
 			</div>
 		</div>
