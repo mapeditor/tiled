@@ -26,14 +26,13 @@
   released: 2016
   tweet: https://twitter.com/HughSJ/status/845072224742727680
 
-- name: Alwa's Awakening
+- name: Alwa's Legacy
   url: https://eldenpixels.com/
-  image: alwas-awakening.png
+  image: alwas-legacy.png
   description: |
-    Use your magic staff and progress through a large interconnected world
-    where you'll solve puzzles, fight enemies and defeat bosses in order to
-    help free the land of Alwa.
-  released: 2017
+    A a modern retro game full of dangerous dungeons, magical items and
+    ancient secrets.
+  released: 2020
   tweet: https://twitter.com/EldenPixels/status/1007522860921966592
 
 - name: Carrion

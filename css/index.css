@@ -20,7 +20,6 @@
 .header-logo-mobile {
   display: flex;
   height: 80%;
-  vertical-align: middle;
 }
 .header-logo-mobile {
   height: 60%;
@@ -337,7 +336,6 @@
   line-height: 1.573rem;
   color: #d2d2d2;
   font-style: normal;
-  text-decoration: none;
 }
 .media-content h2 {
   text-align: center;
@@ -356,6 +354,9 @@
 .media-content a {
   text-decoration: none;
   color: #7c90ff;
+}
+.media-content a:hover {
+  text-decoration: underline;
 }
 .media-content pre code {
   padding-bottom: 0px;
