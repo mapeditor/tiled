@@ -1,0 +1,46 @@
+- name: Shovel Knight
+  url: https://yachtclubgames.com/shovel-knight/
+  image: shovel-knight.png
+  description: |
+    A sweeping classic action-adventure game series with awesome gameplay,
+    memorable characters, and an 8-bit retro aesthetic!
+  released: 2014
+  tweet: https://twitter.com/YachtClubGames/status/1148713041665626112
+
+- name: Axiom Verge
+  url: https://www.axiomverge.com/
+  image: axiom-verge.png
+  description: |
+    A side-scroller action-adventure game where the player controls Trace, a
+    scientist who, after suffering a crippling injury, wakes up in an ancient
+    and high-tech world.
+  released: 2015
+  tweet: https://twitter.com/AxiomVerge/status/979233673194086400
+
+- name: Brigador
+  url: https://stellarjockeys.com/games/brigador
+  image: brigador.jpg
+  description: |
+    An isometric real-time tactical game from independent studio Stellar
+    Jockeys.
+  released: 2016
+  tweet: https://twitter.com/HughSJ/status/845072224742727680
+
+- name: Alwa's Awakening
+  url: https://eldenpixels.com/
+  image: alwas-awakening.png
+  description: |
+    Use your magic staff and progress through a large interconnected world
+    where you'll solve puzzles, fight enemies and defeat bosses in order to
+    help free the land of Alwa.
+  released: 2017
+  tweet: https://twitter.com/EldenPixels/status/1007522860921966592
+
+- name: Carrion
+  url: https://carrion.game/
+  image: carrion.jpg
+  description: |
+    A horror video game where you control a red, amorphous, tentacled monster
+    of unknown origin
+  released: 2020
+  tweet: https://twitter.com/kroskiewicz/status/1287022079825653760
