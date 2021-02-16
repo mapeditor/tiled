@@ -1,0 +1,18 @@
+.tsd-page-title {
+    padding: 20px 0px
+}
+
+.tsd-page-toolbar {
+    position: relative;
+}
+
+.tsd-page-toolbar--hide {
+    transform: none;
+}
+
+/* reset to page wide defaults */
+body {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    background-color: #e8e8e8;
+}

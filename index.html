@@ -2,7 +2,7 @@
 ---
 <html lang="en">
 
-<head>
+  <head>
   <meta charset="UTF-8">
   <meta name='viewport' content="width=device-width, initial-scale=1" />
   <meta property="og:title" content="Tiled - A free and open source map editor" />
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="css/index.css">
   <link href="/atom.xml" rel="alternate" type="application/atom+xml" />
   <title>Tiled - A free easy to use 2D level editor</title>
-  <style>
+    <style>
 .flex-wrap-center {
   display: flex;
   flex-wrap: wrap;
@@ -89,11 +89,12 @@
   height: 100%;
   border-radius: 5px;
   background-color: white;
-}
-  </style>
-</head>
+      }
+    </style>
+    <script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
+  </head>
 
-<body>
+  <body>
   <div class="headerbar-container">
     <nav class="headerbar container">
       <a href="/" class="header-logo">
@@ -122,7 +123,7 @@
       <a class="header-item header-button header-button-donate" href="/donate">Donate</a>
       <a class="header-item header-button" href="https://doc.mapeditor.org/en/stable/manual/introduction/#getting-started">Get Started</a>
     </nav>
-  </div>
+          </div>
   <section class="section">
     <div class="container">
 
@@ -131,18 +132,18 @@
         <div class="media-content tiled-description">
           Tiled is a <a href="https://opensource.org/osd-annotated">free and open source</a>, easy to use, and flexible level editor.
           <br />
-        </div>
-        <div class="container-fluid">
-          <div class="my-box">
-            <div class="row" style="margin-bottom: 0.3em;">
-              <div class="col-md-12">
-                <b>Please support my work on Tiled!</b> - You can donate at <a href="https://github.com/sponsors/bjorn">GitHub Sponsors</a>, <a href="https://www.patreon.com/bjorn/overview">Patreon</a> or <a href="https://liberapay.com/Tiled">Liberapay</a>.
+      </div>
+          <div class="container-fluid">
+            <div class="my-box">
+              <div class="row" style="margin-bottom: 0.3em;">
+                <div class="col-md-12">
+                  <b>Please support my work on Tiled!</b> - You can donate at <a href="https://github.com/sponsors/bjorn">GitHub Sponsors</a>, <a href="https://www.patreon.com/bjorn/overview">Patreon</a> or <a href="https://liberapay.com/Tiled">Liberapay</a>.
+                </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12" style="padding-bottom: 1.5rem;">
-                <div>
-                  <div class="progress" style="margin-bottom: 0px;">
+              <div class="row">
+                <div class="col-md-12" style="padding-bottom: 1.5rem;">
+                  <div>
+                    <div class="progress" style="margin-bottom: 0px;">
                     <a href="https://thorbjorn.itch.io/tiled">
                       <div class="progress-bar progress-bar-warning progress-bar-striped" id="itch-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 35%; background-image: linear-gradient(to bottom, #fa5c5c 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="itch"></div>
                     </a>
@@ -155,32 +156,32 @@
                     <a href="https://github.com/sponsors/bjorn">
                       <div class="progress-bar progress-bar-warning progress-bar-striped" id="github-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 25.06%; background-image: linear-gradient(to bottom, #ea4aaa 0px, #c54190 100%);" data-toggle="tooltip" data-placement="bottom" title="GitHub Sponsors"></div>
                     </a>
-                    <span style="color: gray; margin-left: 5px;" id="goal-percentage"></span>
-                  </div>
-                  <div style="margin-left: 4px;">
+                      <span style="color: gray; margin-left: 5px;" id="goal-percentage"></span>
+                    </div>
+                    <div style="margin-left: 4px;">
                     <div id="goal1" class="goalmarker" style="height: 1em; margin-right: 55.77%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
-                      <small style="display: block; padding: 6px 4px;">
-                        <strong>1 day/week</strong><br>
+                        <small style="display: block; padding: 6px 4px;">
+                          <strong>1 day/week</strong><br>
                         <small style="color: #eee">$1150/month</small>
-                      </small>
-                    </div>
+                        </small>
+                      </div>
                     <div id="goal2" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 11.5%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
-                      <small style="display: block; padding: 6px 4px;">
-                        <strong>2 days/week</strong><br>
+                        <small style="display: block; padding: 6px 4px;">
+                          <strong>2 days/week</strong><br>
                         <small style="color: #eee">$2300/month</small>
-                      </small>
-                    </div>
-                    <div id="goal3" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 0%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
-                      <small style="display: block; padding: 6px 4px;">
+                        </small>
+                      </div>
+                      <div id="goal3" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 0%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
+                        <small style="display: block; padding: 6px 4px;">
                         <strong>+ office</strong><br>
                         <small style="color: #eee">$2600/month</small>
-                      </small>
+                        </small>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
           <div class="feature-list">
             <div class="feature-container">
               <div class="feature-text">
@@ -191,11 +192,11 @@
                     <li><b>Fill</b></li>
                     <li><b>Brushes</b></li>
                   </ul>
-                </div>
-              </div>
+          </div>
+        </div>
               <div class="feature-image">
                 <img src="img/screenshot-terrain.png" class="feature-img" style="margin-left: 10%; margin-right: auto;" />
-              </div>
+      </div>
 
             </div>
             <div class="feature-container feature-container-reverse">
@@ -213,9 +214,9 @@
                     <li><b>Polygon</b></li>
                     <li><b>Image</b></li>
                   </ul>
-                </div>
-              </div>
             </div>
+                </div>
+                </div>
             <div class="feature-container">
               <div class="feature-text">
                 Supports different types of maps.
@@ -227,8 +228,8 @@
               </div>
               <div class="feature-image">
                 <img src="img/screenshot-isometric.png" class="feature-img" />
-              </div>
-            </div>
+                </div>
+                </div>
             <div class="media-content showcase-more">
               <h2>Games made with Tiled</h2>
               <p>Some of the best games have used Tiled to create their levels!</p>
@@ -240,12 +241,12 @@
                   <div class="showcase-release-info">{{ game.released }}</div>
                   <div class="showcase-image">
                     <img src="img/showcase/{{ game.image }}">
-                  </div>
+              </div>
                 </a>
 {% endfor %}
-              </div>
+                </div>
               <p>Find more <a href="https://itch.io/games/made-with-tiled">games made with Tiled</a> on itch.io!</p>
-            </div>
+                </div>
             <div class="media-content features-whats-next">
               <h2>News</h2>
               <div class="container">
@@ -255,22 +256,22 @@
                   <a class="card" href="{{ post.url }}">
                     <div class="card-image">
                       <img src="img/screenshot-terrain-thumb.png" class="centered-card-image" />
-                    </div>
+            </div>
 
                     <div class="card-text">
                       <div class="card-title">{{ post.title }}</div>
                       <div class="card-subtitle">{{ post.date | date_to_long_string }}</div>
                       <div class="card-description">{{ post.excerpt | strip_html }}</div>
-                    </div>
+            </div>
                   </a>
 {% endfor %}
-                </div>
+          </div>
 
-              </div>
+          </div>
               <div class="social-content">
 
-              </div>
-            </div>
+      </div>
+    </div>
 
             <div class="media-content features-sponsors">
               <h2>Sponsors</h2>
@@ -279,12 +280,12 @@
 {% for sponsor in site.data.sponsors  %}
                 <div class="sponsor">
                   <a class="thumbnail" href="{{ sponsor.url }}"><img src="img/{{ sponsor.banner }}" alt="{{ sponsor.name }}" /></a>
-                </div>
-{% endfor %}
-              </div>
-              <p>Help improve Tiled by <a href="/donate">becoming a Tiled sponsor</a>!</p>
-            </div>
           </div>
+{% endfor %}
+          </div>
+              <p>Help improve Tiled by <a href="/donate">becoming a Tiled sponsor</a>!</p>
+        </div>
+      </div>
 
         </div>
   </section>

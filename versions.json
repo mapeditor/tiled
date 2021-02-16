@@ -1,12 +1,12 @@
 {
     "release": {
-        "version": "1.4.2",
-        "release_notes": "https://www.mapeditor.org/2020/08/05/tiled-1-4-2-released.html",
+        "version": "1.4.3",
+        "release_notes": "https://www.mapeditor.org/2020/11/17/tiled-1-4-3-released.html",
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     },
     "snapshot":  {
-        "version": "2020.09.22",
-        "release_notes": "https://thorbjorn.itch.io/tiled/devlog/180838/more-wang-tiling-improvements",
+        "version": "2020.10.28",
+        "release_notes": "https://thorbjorn.itch.io/tiled/devlog/191594/big-maintenance-update",
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     }
 }
