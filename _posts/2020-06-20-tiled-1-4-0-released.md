@@ -6,6 +6,7 @@ author:
   twitter: thorbjorn81
 tags: release
 topic_id: 4584
+image: 2020-06-open-file-in-project.png
 ---
 
 At long last I can announce the immediate release of Tiled 1.4.0! The biggest

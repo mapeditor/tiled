@@ -24,23 +24,29 @@
 
     /* SHOWCASE */
 
+    .showcases {
+      max-height: 960px;
+      overflow: hidden;
+    }
     .showcase {
       display: flex;
       flex-flow: column;
       justify-content: space-between;
       align-content: center;
       text-align: center;
-      background-color: #4e4e4e;
+      background-color: #464646;
       border-radius: 5px;
       width: 350px;
-      height: 295px;
+      height: 296px;
       margin: 10px;
-      transition: all .1s ease-out;
       border: 2px solid transparent;
+      transition: all .1s ease-out;
     }
-    .showcase:hover {
+    a.showcase:hover {
       transform: scale(1.05);
+      background-color: #4e4e4e;
       border-color: orange;
+      text-decoration: none;
     }
     .showcase h3 {
       color: #d2d2d2;
@@ -75,7 +81,15 @@
 
     /* SPONSORS */
 
+    .features-sponsors {
+      margin-top: 3rem;
+      margin-bottom: 8rem;
+    }
     .sponsor {
+      display: flex;
+      width: 22%;
+      min-width: 200px;
+      margin: 10px;
       opacity: 0.7;
       transition: all .1s ease-out;
     }
@@ -84,9 +98,7 @@
       transform: scale(1.05);
     }
     .sponsor img {
-      width: 291px;
-      height: 155px;
-      margin: 10px;
+      width: 100%;
       border-radius: 5px;
       background-color: white;
     }
@@ -217,7 +229,7 @@
       <section class="media-content showcase-more">
         <h2>Games made with Tiled</h2>
         <p>Some of the best games have used Tiled to create their levels!</p>
-        <div class="flex-wrap-center">
+        <div class="showcases flex-wrap-center">
 {% assign sorted-showcases = site.data.showcases | sort: 'released' | reverse %}
 {% for game in sorted-showcases %}
           <a class="showcase" href="{{ game.url }}">
@@ -237,9 +249,10 @@
 {% for post in site.posts limit:4 %}
           <a class="card" href="{{ post.url }}">
             <div class="card-image">
-              <img src="img/screenshot-terrain-thumb.png" class="centered-card-image" />
+{% if post.image %}
+              <img src="img/posts/{{ post.image }}" />
+{% endif %}
             </div>
-
             <div class="card-text">
               <div class="card-title">{{ post.title }}</div>
               <div class="card-subtitle">{{ post.date | date_to_long_string }}</div>
@@ -248,6 +261,7 @@
           </a>
 {% endfor %}
         </div>
+        <p><a href="/news">News Archive</a></p>
       </section>
 
       <section class="media-content features-sponsors">

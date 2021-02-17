@@ -236,54 +236,37 @@
   max-width: 80%;
 }
 .features-whats-next {
-  text-align: center;
-  font-size: 1.5rem !important;
   margin-top: 2rem;
   margin-bottom: 2rem;
-  width: 100%;
-}
-.features-sponsors {
-  margin-top: 3rem;
-  text-align: center;
-  font-size: 1.5rem !important;
-  line-height: 2.2rem !important;
-  margin-bottom: 8rem;
 }
 .card {
   display: block;
-  flex-direction: left;
+  text-align: left;
   overflow: hidden;
   height: 12rem;
   border-radius: 5px;
-  background-color: #3e3e3e;
+  background-color: #464646;
   margin-bottom: 15px;
-  font-style: normal;
-  text-decoration: none;
-  box-shadow: 0px 0px 5px #ececec;
+  border: 2px solid transparent;
+  transition: all .1s ease-out;
 }
-.card:hover {
-  background-color: #434343;
-  box-shadow: 0px 0px 5px #ececec;
+.media-content a.card:hover {
+  transform: scale(1.02);
+  text-decoration: none;
+  border-color: orange;
+  background-color: #4e4e4e;
 }
 .card-image {
   width: 30%;
-  overflow: hidden;
-  object-fit: cover;
-  display: flex;
-  background-color: #333;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  align-content: center;
-  justify-content: center;
-  float: left;
+  border-radius: 0px 5px 5px 0px;
+  float: right;
   height: 100%;
   margin-right: 0px;
 }
-.centered-card-image {
-  display: block;
-  align-self: center;
-  height: 85%;
-  max-width: 85%;
+.card-image img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
 }
 .card-text {
   padding-top: 0.8rem;
@@ -295,20 +278,14 @@
 }
 .card-subtitle {
   display: block;
-  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
   font-weight: 200;
-  font-size: 1.4rem;
-  font-style: italic;
+  font-size: 80%;
   color: #8f8f8f;
-  text-decoration: none;
 }
 .card-description {
-  display: block;
-  position: relative;
-  font-weight: 300;
   font-size: 1.3rem;
   color: #ececec;
-  text-decoration: none;
   margin-top: 0.4rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -316,11 +293,10 @@
 }
 .card-title {
   display: block;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 2rem;
   color: #ececec;
   font-style: normal;
-  text-decoration: none;
 }
 .card-image-default {
   display: flex;
@@ -331,11 +307,9 @@
 }
 .media-content {
   width: 100%;
-  font-size: 1.1rem;
-  font-weight: 400;
-  line-height: 1.573rem;
+  font-size: 1.5rem;
+  text-align: center;
   color: #d2d2d2;
-  font-style: normal;
 }
 .media-content h2 {
   text-align: center;
@@ -364,9 +338,6 @@
   padding-left: 0px;
   padding-right: 0px;
 }
-.fun-list {
-  color: #a0c5e7;
-}
 @font-face {
   font-family: "FontAwesome";
   src: url("fontawesome-webfont.eot?v=3.0.1");
@@ -379,23 +350,12 @@
   font-weight: normal;
   font-style: normal;
 }
-html {
-  overflow-y: scroll;
-}
 html,
 body {
-  width: 100%;
-  height: 100%;
-  margin: 0 0 0 0;
+  margin: 0;
   color: #ececec;
   font-family: "FontAwesome", sans-serif;
   background-color: #3e3e3e;
-}
-@media screen and (max-width: 712px) {
-  html,
-  body {
-    font-size: 0.7rem;
-  }
 }
 .container {
   max-width: 1200px;
@@ -406,7 +366,6 @@ a:focus {
   outline: none;
 }
 .section {
-  display: block;
   font-size: 1.4rem;
 }
 .padded-content {
@@ -416,49 +375,25 @@ a:focus {
   color: #c8c864;
 }
 
-.container-fluid {
-  margin: 5px auto;
-  padding-right: 15px;
-  padding-left: 15px;
-}
-
-.my-box {
-  margin-bottom: 2em;
-}
-
-.row {
-  margin-left: -15px;
-  margin-right: -15px;
-}
-.row a {
-  background-color: transparent;
-  text-decoration: none;
-  color: #7c90ff;
-}
-
 .progress {
   background-image: linear-gradient(to bottom, #ebebeb 0, #f5f5f5 100%);
   background-repeat: repeat-x;
   height: 20px;
   overflow: hidden;
 }
-
 .progress-bar {
   float: left;
   color: #fff;
   height: 100%;
   transition: width 0.6s ease;
 }
-
 .progress-bar-warning {
   background-color: #f0ad4e;
   background-repeat: repeat-x;
 }
-
 .progress-bar-striped {
   background-size: 40px 40px;
 }
-
 .goalmarker {
   transition-delay: 0s;
   transition-duration: 0.6s;
@@ -473,4 +408,3 @@ a:focus {
 .fab {
   color: #ececec;
 }
-
