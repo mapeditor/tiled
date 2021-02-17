@@ -215,6 +215,7 @@
 .feature-text {
   max-height: 18rem;
   align-self: center;
+  text-align: left;
 }
 .feature-image,
 .feature-text {
