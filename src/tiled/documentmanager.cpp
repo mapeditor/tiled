@@ -41,7 +41,6 @@
 #include "projectmanager.h"
 #include "session.h"
 #include "tabbar.h"
-#include "terrain.h"
 #include "tilesetdocument.h"
 #include "tilesetdocumentsmodel.h"
 #include "tilesetmanager.h"
@@ -226,11 +225,6 @@ DocumentManager::DocumentManager(QObject *parent)
             switch (select.objectType) {
             case Object::MapObjectType:
                 // todo: no way to know to which tile this object belongs
-                break;
-            case Object::TerrainType:
-                // todo: select the terrain
-                if (select.id < tilesetDocument->tileset()->terrainCount())
-                    obj = tilesetDocument->tileset()->terrain(select.id);
                 break;
             case Object::TilesetType:
                 obj = tilesetDocument->tileset().data();

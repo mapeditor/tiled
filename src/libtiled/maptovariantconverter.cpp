@@ -28,7 +28,6 @@
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "properties.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -238,8 +237,8 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         };
     }
 
-    // Write the properties, terrain, external image, object group and
-    // animation for those tiles that have them.
+    // Write the properties, external image, object group and animation for
+    // those tiles that have them.
 
     // Used for version 1
     QVariantMap tilePropertiesVariant;
@@ -264,12 +263,6 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
 
         if (!tile->type().isEmpty())
             tileVariant[QStringLiteral("type")] = tile->type();
-        if (tile->terrain() != 0xFFFFFFFF) {
-            QVariantList terrainIds;
-            for (int j = 0; j < 4; ++j)
-                terrainIds << QVariant(tile->cornerTerrainId(j));
-            tileVariant[QStringLiteral("terrain")] = terrainIds;
-        }
         if (tile->probability() != 1.0)
             tileVariant[QStringLiteral("probability")] = tile->probability();
         if (!tile->imageSource().isEmpty()) {
@@ -314,21 +307,6 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QStringLiteral("tiles")] = tilesVariantMap;
     else if (!tilesVariant.empty())
         tilesetVariant[QStringLiteral("tiles")] = tilesVariant;
-
-    // Write terrains
-    if (tileset.terrainCount() > 0) {
-        QVariantList terrainsVariant;
-        for (int i = 0; i < tileset.terrainCount(); ++i) {
-            Terrain *terrain = tileset.terrain(i);
-            const Properties &properties = terrain->properties();
-            QVariantMap terrainVariant;
-            terrainVariant[QStringLiteral("name")] = terrain->name();
-            terrainVariant[QStringLiteral("tile")] = terrain->imageTileId();
-            addProperties(terrainVariant, properties);
-            terrainsVariant << terrainVariant;
-        }
-        tilesetVariant[QStringLiteral("terrains")] = terrainsVariant;
-    }
 
     // Write the Wang sets
     if (tileset.wangSetCount() > 0) {

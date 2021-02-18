@@ -394,7 +394,6 @@ static QVariant predefinedPropertyValue(Object *object, const QString &name)
     }
     case Object::LayerType:
     case Object::MapType:
-    case Object::TerrainType:
     case Object::TilesetType:
     case Object::WangSetType:
     case Object::WangColorType:
@@ -585,7 +584,6 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::LayerType:             applyLayerValue(id, val); break;
     case Object::TilesetType:           applyTilesetValue(id, val); break;
     case Object::TileType:              applyTileValue(id, val); break;
-    case Object::TerrainType:           break;
     case Object::WangSetType:           applyWangSetValue(id, val); break;
     case Object::WangColorType:         applyWangColorValue(id, val); break;
     case Object::ObjectTemplateType:    break;
@@ -1656,7 +1654,6 @@ void PropertyBrowser::addProperties()
         break;
     case Object::TilesetType:           addTilesetProperties(); break;
     case Object::TileType:              addTileProperties(); break;
-    case Object::TerrainType:           break;
     case Object::WangSetType:           addWangSetProperties(); break;
     case Object::WangColorType:         addWangColorProperties(); break;
     case Object::ObjectTemplateType:    break;
@@ -1854,8 +1851,6 @@ void PropertyBrowser::updateProperties()
             imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));
         break;
     }
-    case Object::TerrainType:
-        break;
     case Object::WangSetType: {
         const WangSet *wangSet = static_cast<const WangSet*>(mObject);
         mIdToProperty[NameProperty]->setValue(wangSet->name());
@@ -1942,7 +1937,6 @@ void PropertyBrowser::updateCustomProperties()
     }
     case Object::LayerType:
     case Object::MapType:
-    case Object::TerrainType:
     case Object::TilesetType:
     case Object::WangSetType:
     case Object::WangColorType:

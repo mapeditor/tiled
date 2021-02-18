@@ -42,7 +42,6 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
-#include "terrain.h"
 #include "wangset.h"
 
 #include <QCoreApplication>

@@ -45,7 +45,6 @@ namespace Tiled {
 
 class FileFormat;
 class TileLayer;
-class Terrain;
 
 class AutomappingManager;
 class ConsoleDock;

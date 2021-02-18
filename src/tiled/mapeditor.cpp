@@ -62,7 +62,6 @@
 #include "shapefilltool.h"
 #include "stampbrush.h"
 #include "templatesdock.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tileselectiontool.h"
 #include "tilesetdock.h"

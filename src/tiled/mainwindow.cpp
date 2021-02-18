@@ -65,7 +65,6 @@
 #include "resizedialog.h"
 #include "scriptmanager.h"
 #include "templatesdock.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"

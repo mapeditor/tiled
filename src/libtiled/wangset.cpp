@@ -693,7 +693,7 @@ void WangSet::recalculateColorDistances()
         }
 
         // Repeat while we are still making new connections (could take a
-        // number of iterations for distant terrain types to connect)
+        // number of iterations for distant colors to connect)
     } while (newConnections);
 
     mMaximumColorDistance = maximumDistance;

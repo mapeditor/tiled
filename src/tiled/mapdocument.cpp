@@ -57,7 +57,6 @@
 #include "rotatemapobject.h"
 #include "staggeredrenderer.h"
 #include "templatemanager.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"

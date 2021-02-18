@@ -116,7 +116,6 @@ DynamicLibrary {
         "staggeredrenderer.h",
         "templatemanager.cpp",
         "templatemanager.h",
-        "terrain.h",
         "tile.cpp",
         "tileanimationdriver.cpp",
         "tileanimationdriver.h",

@@ -28,7 +28,6 @@
 #include "objecttemplate.h"
 #include "properties.h"
 #include "templatemanager.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
