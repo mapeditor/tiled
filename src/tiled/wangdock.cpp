@@ -485,6 +485,8 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
 
         if (auto tilesetDocument = documentManager->findTilesetDocument(sharedTileset))
             mWangColorModel = tilesetDocument->wangColorModel(wangSet);
+
+        mWangColorView->setTileSize(sharedTileset->tileSize());
     }
 
     mCurrentWangSet = wangSet;

@@ -34,6 +34,8 @@ public:
     WangColorView(QWidget *parent);
     ~WangColorView() override;
 
+    void setTileSize(QSize size);
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 

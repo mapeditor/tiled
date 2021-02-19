@@ -64,7 +64,7 @@ void WangColorDelegate::initStyleOption(QStyleOptionViewItem *option, const QMod
         const qreal scale = std::max(scaleX, scaleY);
         const QSizeF targetSize = size * scale;
 
-        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform, scale < 1.0);
         painter.drawPixmap(QRectF(decorationSize.width() - targetSize.width(),
                                   decorationSize.height() - targetSize.height(),
                                   targetSize.width(),
@@ -81,7 +81,7 @@ void WangColorDelegate::initStyleOption(QStyleOptionViewItem *option, const QMod
     painter.drawPolygon(QPolygonF { QPointF(), topRight, bottomLeft });
     QColor border(Qt::black);
     border.setAlpha(128);
-    painter.setPen(border);
+    painter.setPen(QPen(border, 2.0));
     painter.drawLine(topRight, bottomLeft);
 
     QStyledItemDelegate::initStyleOption(option, index);
@@ -102,12 +102,19 @@ WangColorView::WangColorView(QWidget *parent)
     setItemsExpandable(false);
     setIndentation(0);
     setUniformRowHeights(true);
-    setIconSize(Utils::dpiScaled(QSize(32, 32)));
     setItemDelegate(new WangColorDelegate(this));
 }
 
 WangColorView::~WangColorView()
 {
+}
+
+void WangColorView::setTileSize(QSize size)
+{
+    static const int minSize = 16;
+    static const int maxSize = Utils::dpiScaled(32);
+    setIconSize(QSize(qBound(minSize, size.width(), maxSize),
+                      qBound(minSize, size.height(), maxSize)));
 }
 
 void WangColorView::contextMenuEvent(QContextMenuEvent *event)
