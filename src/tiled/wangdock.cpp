@@ -292,6 +292,7 @@ void WangDock::setDocument(Document *document)
         setColorView();
         mWangSetToolBar->setVisible(false);
         mWangColorToolBar->setVisible(false);
+        mWangColorView->setReadOnly(true);
 
         mTemplateAndColorView->setTabEnabled(1, false);
         mTemplateAndColorView->tabBar()->hide();
@@ -311,6 +312,7 @@ void WangDock::setDocument(Document *document)
 
         mWangSetToolBar->setVisible(true);
         mWangColorToolBar->setVisible(true);
+        mWangColorView->setReadOnly(false);
 
         mTemplateAndColorView->setTabEnabled(1, true);
         mTemplateAndColorView->tabBar()->show();

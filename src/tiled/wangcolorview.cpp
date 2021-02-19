@@ -117,8 +117,18 @@ void WangColorView::setTileSize(QSize size)
                       qBound(minSize, size.height(), maxSize)));
 }
 
+void WangColorView::setReadOnly(bool readOnly)
+{
+    static const auto defaultTriggers = editTriggers();
+    mReadOnly = readOnly;
+    setEditTriggers(readOnly ? NoEditTriggers : defaultTriggers);
+}
+
 void WangColorView::contextMenuEvent(QContextMenuEvent *event)
 {
+    if (mReadOnly)
+        return;
+
     const QAbstractProxyModel *proxyModel = static_cast<QAbstractProxyModel *>(model());
     const WangColorModel *wangColorModel = static_cast<WangColorModel *>(proxyModel->sourceModel());
     const QModelIndex filterModelIndex = indexAt(event->pos());
