@@ -351,7 +351,9 @@ void MapReaderPrivate::readMapEditorSettings(Map &map)
         } else if (xml.name() == QLatin1String("export")) {
             const QXmlStreamAttributes atts = xml.attributes();
 
-            map.exportFileName = QDir::cleanPath(mPath.filePath(atts.value(QLatin1String("target")).toString()));
+            const QString target = atts.value(QLatin1String("target")).toString();
+            if (!target.isEmpty() && target != QLatin1String("."))
+                map.exportFileName = QDir::cleanPath(mPath.filePath(target));
             map.exportFormat = atts.value(QLatin1String("format")).toString();
 
             xml.skipCurrentElement();
@@ -463,7 +465,9 @@ void MapReaderPrivate::readTilesetEditorSettings(Tileset &tileset)
         if (xml.name() == QLatin1String("export")) {
             const QXmlStreamAttributes atts = xml.attributes();
 
-            tileset.exportFileName = QDir::cleanPath(mPath.filePath(atts.value(QLatin1String("target")).toString()));
+            const QString target = atts.value(QLatin1String("target")).toString();
+            if (!target.isEmpty() && target != QLatin1String("."))
+                tileset.exportFileName = QDir::cleanPath(mPath.filePath(target));
             tileset.exportFormat = atts.value(QLatin1String("format")).toString();
 
             xml.skipCurrentElement();
