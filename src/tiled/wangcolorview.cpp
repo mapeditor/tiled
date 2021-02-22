@@ -78,7 +78,7 @@ void WangColorDelegate::initStyleOption(QStyleOptionViewItem *option, const QMod
     const QPointF bottomLeft = QPointF(0, pixmap.height() * 0.75);
     painter.setBrush(wangColor);
     painter.setPen(Qt::NoPen);
-    painter.drawPolygon(QPolygonF { QPointF(), topRight, bottomLeft });
+    painter.drawPolygon(QVector<QPointF> { QPointF(), topRight, bottomLeft });
     QColor border(Qt::black);
     border.setAlpha(128);
     painter.setPen(QPen(border, 2.0));
