@@ -20,6 +20,7 @@
 
 #include "tilesetview.h"
 
+#include "actionmanager.h"
 #include "changeevents.h"
 #include "changetilewangid.h"
 #include "map.h"
@@ -794,6 +795,8 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     Preferences *prefs = Preferences::instance();
     connect(toggleGrid, &QAction::toggled,
             prefs, &Preferences::setShowTilesetGrid);
+
+    ActionManager::applyMenuExtensions(&menu, ActionManager::tilesetViewTilesMenu);
 
     menu.exec(event->globalPos());
 }

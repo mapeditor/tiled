@@ -285,6 +285,8 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(ActionManager::action("RefreshProjectFolders"));
     }
 
+    ActionManager::applyMenuExtensions(&menu, ActionManager::projectViewFilesMenu);
+
     if (!menu.isEmpty())
         menu.exec(event->globalPos());
 }

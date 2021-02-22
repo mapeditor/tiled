@@ -26,7 +26,6 @@
 
 #include <QJSValue>
 #include <QObject>
-#include <QVector>
 
 #include <map>
 #include <memory>
@@ -69,17 +68,6 @@ class ScriptModule : public QObject
     Q_PROPERTY(Tiled::TilesetEditor *tilesetEditor READ tilesetEditor)
 
 public:
-    struct MenuItem {
-        Id action;
-        Id beforeAction;
-        bool isSeparator;
-    };
-
-    struct MenuExtension {
-        Id menuId;
-        QVector<MenuItem> items;
-    };
-
     ScriptModule(QObject *parent = nullptr);
     ~ScriptModule() override;
 
@@ -155,8 +143,6 @@ private:
     std::map<QString, std::unique_ptr<ScriptedMapFormat>> mRegisteredMapFormats;
     std::map<QString, std::unique_ptr<ScriptedTilesetFormat>> mRegisteredTilesetFormats;
     std::map<Id, std::unique_ptr<ScriptedTool>> mRegisteredTools;
-
-    QVector<MenuExtension> mMenuExtensions;
 };
 
 } // namespace Tiled

@@ -26,10 +26,23 @@
 
 namespace Tiled {
 
+const Id ActionManager::layerViewLayersMenu("LayerView.Layers");
+const Id ActionManager::mapViewObjectsMenu("MapView.Objects");
+const Id ActionManager::projectViewFilesMenu("ProjectView.Files");
+const Id ActionManager::propertiesViewPropertiesMenu("PropertiesView.Properties");
+const Id ActionManager::tilesetViewTilesMenu("TilesetView.Tiles");
+
 ActionManager::ActionManager(QObject *parent)
     : QObject(parent)
+    , mMenuSeparatorsParent(new QObject)
 {
     readCustomShortcuts();
+
+    mIdToMenu.insert(layerViewLayersMenu, nullptr);
+    mIdToMenu.insert(mapViewObjectsMenu, nullptr);
+    mIdToMenu.insert(projectViewFilesMenu, nullptr);
+    mIdToMenu.insert(propertiesViewPropertiesMenu, nullptr);
+    mIdToMenu.insert(tilesetViewTilesMenu, nullptr);
 }
 
 ActionManager::~ActionManager() = default;
@@ -98,6 +111,9 @@ void ActionManager::registerMenu(QMenu *menu, Id id)
 
     Q_ASSERT_X(!d->mIdToMenu.contains(id), "ActionManager::registerMenu", "duplicate id");
     d->mIdToMenu.insert(id, menu);
+
+    if (menu)
+        applyMenuExtensions(menu, id);
 }
 
 void ActionManager::unregisterMenu(Id id)
@@ -106,6 +122,32 @@ void ActionManager::unregisterMenu(Id id)
 
     Q_ASSERT_X(d->mIdToMenu.contains(id), "ActionManager::unregisterMenu", "unknown id");
     d->mIdToMenu.remove(id);
+}
+
+void ActionManager::registerMenuExtension(Id id, MenuExtension extension)
+{
+    auto d = instance();
+    d->mIdToMenuExtensions[id].append(extension);
+
+    if (QMenu *menu = instance()->mIdToMenu.value(id))
+        d->applyMenuExtension(menu, extension);
+}
+
+void ActionManager::applyMenuExtensions(QMenu *menu, Id id)
+{
+    auto d = instance();
+
+    Q_ASSERT_X(d->mIdToMenu.contains(id), "ActionManager::applyMenuExtensions", "unknown id");
+    const auto extensions = d->mIdToMenuExtensions.value(id);
+    for (const auto &extension : extensions)
+        d->applyMenuExtension(menu, extension);
+}
+
+void ActionManager::clearMenuExtensions()
+{
+    auto d = instance();
+    d->mIdToMenuExtensions.clear();
+    d->mMenuSeparatorsParent.reset(new QObject);
 }
 
 QAction *ActionManager::action(Id id)
@@ -124,18 +166,9 @@ QAction *ActionManager::findAction(Id id)
     return d->mIdToActions.value(id);
 }
 
-QMenu *ActionManager::menu(Id id)
+bool ActionManager::hasMenu(Id id)
 {
-    auto d = instance();
-
-    auto menu = d->mIdToMenu.value(id);
-    Q_ASSERT_X(menu, "ActionManager::menu", "unknown id");
-    return menu;
-}
-
-QMenu *ActionManager::findMenu(Id id)
-{
-    return instance()->mIdToMenu.value(id);
+    return instance()->mIdToMenu.contains(id);
 }
 
 QList<Id> ActionManager::actions()
@@ -283,6 +316,21 @@ void ActionManager::updateToolTipWithShortcut(QAction *action)
     action->setToolTip(toolTip);
 
     mApplyingToolTipWithShortcut = false;
+}
+
+void ActionManager::applyMenuExtension(QMenu *menu, const ActionManager::MenuExtension &extension)
+{
+    QAction *before = nullptr;
+
+    for (const MenuItem &item : extension.items) {
+        if (item.beforeAction)
+            before = ActionManager::findAction(item.beforeAction);
+
+        if (item.isSeparator)
+            menu->insertSeparator(before)->setParent(mMenuSeparatorsParent.get());
+        else
+            menu->insertAction(before, ActionManager::action(item.action));
+    }
 }
 
 } // namespace Tiled

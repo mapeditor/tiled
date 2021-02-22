@@ -20,6 +20,7 @@
 
 #include "propertiesdock.h"
 
+#include "actionmanager.h"
 #include "addpropertydialog.h"
 #include "changeproperties.h"
 #include "clipboardmanager.h"
@@ -454,6 +455,7 @@ void PropertiesDock::showContextMenu(const QPoint &pos)
         convertMenu->setEnabled(!convertMenu->actions().isEmpty());
     }
 
+    ActionManager::applyMenuExtensions(&contextMenu, ActionManager::propertiesViewPropertiesMenu);
 
     const QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
     const QAction *selectedItem = contextMenu.exec(globalPos);
