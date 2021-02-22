@@ -47,6 +47,7 @@ class MapView : public QGraphicsView
     Q_OBJECT
 
     Q_PROPERTY(qreal scale READ scale WRITE setScale)
+    Q_PROPERTY(QPointF center READ viewCenter WRITE forceCenterOn)
 
 public:
     /**
@@ -77,6 +78,7 @@ public:
     void setScale(qreal scale);
 
     const QRectF &viewRect() const;
+    QPointF viewCenter() const;
 
     void fitMapInView();
 
@@ -166,6 +168,11 @@ private:
 inline const QRectF &MapView::viewRect() const
 {
     return mViewRect;
+}
+
+inline QPointF MapView::viewCenter() const
+{
+    return mViewRect.center();
 }
 
 } // namespace Tiled

@@ -1040,13 +1040,15 @@ Properties
 .. csv-table::
     :widths: 1, 2
 
-    **scale** : number, "Get or set the scale of the view."
+    **scale** : number, "The scale of the view."
+    **center** : :ref:`script-point`, "The center of the view."
 
 Functions
 ~~~~~~~~~
 
 MapView.centerOn(x : number, y : number) : void
-    Centers the view at the given location in screen coordinates.
+    Centers the view at the given location in screen coordinates. Same as
+    assigning to the ``center`` property.
 
 .. _script-object:
 

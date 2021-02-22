@@ -134,7 +134,7 @@ void MapView::setScale(qreal scale)
 
 void MapView::fitMapInView()
 {
-    MapScene* scene = mapScene();
+    MapScene *scene = mapScene();
     if (!scene)
         return;
 
