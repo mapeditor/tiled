@@ -1,43 +1,32 @@
 ### Tiled 1.5.0 (.. February 2021)
 
+* Unified Wang and Terrain tools (backwards incompatible change!)
 * Added support for a per-layer parallax scrolling factor ([#2951](https://github.com/mapeditor/tiled/pull/2951))
 * Added option to change object selection behavior ([#2865](https://github.com/mapeditor/tiled/pull/2865))
 * Added Monospace option to the multi-line text editor
 * Added option to auto-scroll on middle click
 * Added smooth scrolling option for arrow keys
 * Added a 'Convert to Polygon' action for rectangle objects
-* Unified Wang colors (no longer separated in corner colors and edge colors)
 * Added support for drawing with a blob tileset
-* Added support for single-color Wang sets and erasing with the Wang Brush
-* Added support for up to 255 colors in a Wang set (up from 15)
-* Added 'Duplicate Wang Set' action
-* Added the Wang set type (Corner, Edge or Mixed)
-* Added support for rotating and flipping Wang tiles (by Christof Petig, [#2912](https://github.com/mapeditor/tiled/pull/2912))
+* Added 'Duplicate Terrain Set' action
+* Added Terrain Set type (Corner, Edge or Mixed)
+* Added support for rotating and flipping Terrain tiles (by Christof Petig, [#2912](https://github.com/mapeditor/tiled/pull/2912))
 * Added support for exporting to [RPTools MapTool](https://www.rptools.net/toolbox/maptool/) RpMap files (by Christof Petig, [#2926](https://github.com/mapeditor/tiled/pull/2926))
 * Added Ctrl+Shift to toggle Snap to Fine Grid (by sverx, [#2895](https://github.com/bjorn/tiled/pull/2895))
-* Wang Brush: Added adjusting of neighbors (similar to what the Terrain Brush did)
-* Wang Brush: Added line drawing with Shift modifier
-* Wang Brush: Added rotational symmetry mode with Alt modifier
 * Eraser: Added Shift to erase on all layers (by Michael Aganier, [#2897](https://github.com/bjorn/tiled/pull/2897))
-* Enabled high-DPI scaling on Linux and changed rounding policy
 * Automatically add .world extension to new World files
 * Shape Fill Tool now displays the size of the current shape ([#2808](https://github.com/mapeditor/tiled/issues/2808))
-* Tileset editor: Erasing Wang colors now works same as assigning instead of on whole tile
 * Tile Collision Editor: Added action to add an auto-detected bounding box collision rectangle (by Robin Macharg, [#1960](https://github.com/bjorn/tiled/pull/1960))
 * Tile Collision Editor: Added context menu action to copy selected collision objects to all other selected tiles (by Robin Macharg, [#1960](https://github.com/bjorn/tiled/pull/1960))
 * Tilesets view: Added "Edit Tileset" action to tab context menu
 * Tilesets view: Added "Add External Tileset" action to tilesets menu
-* Scripting: Added initial API for creating and modifying Wang sets
+* Scripting: Added initial API for creating and modifying Terrain Sets
 * Scripting: Added API for working with images ([#2787](https://github.com/mapeditor/tiled/pull/2787))
 * Scripting: Added missing Layer.id property
 * Scripting: Fixed reset of file formats on script reload ([#2911](https://github.com/mapeditor/tiled/issues/2911))
-* Load tile terrain information as a Wang set
-* Removed Terrain Brush and Terrains view (all functionality covered by Wang tiles)
 * Enabled high-DPI scaling on Linux and changed rounding policy
 * Remember last file dialog locations in the session instead of globally
 * Fixed loading extension path from project config (by Peter Ruibal, [#2956](https://github.com/mapeditor/tiled/pull/2956))
-* Fixed Wang Brush on infinite maps
-* Fixed saving of properties on Wang colors ([#2738](https://github.com/bjorn/tiled/issues/2738))
 * Fixed performance issues when using a lot of custom properties
 * Fixed storing template instance size when overriding the tile ([#2889](https://github.com/mapeditor/tiled/issues/2889))
 * Fixed removal of object reference arrow when deleting target object ([#2944](https://github.com/mapeditor/tiled/issues/2944))
@@ -45,8 +34,6 @@
 * Fixed map positioning issues in the World Tool ([#2970](https://github.com/mapeditor/tiled/issues/2970))
 * Fixed handling of Shift modifiers in Bucket and Shape Fill tools ([#2883](https://github.com/mapeditor/tiled/issues/2883))
 * Fixed scrolling speed in Tileset view when holding Ctrl
-* Fixed missing undo command texts when changing Wang colors
-* Lua plugin: Write out Wang sets
 * Lua plugin: Don't embed external tilesets, unless enabled as export option ([#2120](https://github.com/mapeditor/tiled/issues/2120))
 * Python plugin: Added missing values to MapObject.Shape enum ([#2898](https://github.com/bjorn/tiled/issues/2898))
 * CSV plugin: Include flipping flags in exported tile IDs
