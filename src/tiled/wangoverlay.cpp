@@ -20,6 +20,8 @@
 
 #include "wangoverlay.h"
 
+#include "utils.h"
+
 #include <QGuiApplication>
 #include <QPainter>
 #include <QPainterPath>
@@ -541,6 +543,51 @@ void paintWangOverlay(QPainter *painter,
     }
 
     painter->restore();
+}
+
+QIcon wangSetIcon(WangSet::Type type)
+{
+    static const auto iconSize = Utils::dpiScaled(QSize(32, 32));
+
+    QPixmap pixmap(iconSize);
+    pixmap.fill(Qt::transparent);
+
+    QPainter painter(&pixmap);
+
+    WangSet wangSet(nullptr, QString(), type);
+    wangSet.setColorCount(2);
+
+    WangId wangId;
+
+    switch (type) {
+    case WangSet::Corner:
+        wangId.setIndexColor(WangId::TopRight, 2);
+        wangId.setIndexColor(WangId::BottomRight, 1);
+        wangId.setIndexColor(WangId::BottomLeft, 2);
+        wangId.setIndexColor(WangId::TopLeft, 1);
+        break;
+    case WangSet::Edge:
+        wangId.setIndexColor(WangId::Top, 1);
+        wangId.setIndexColor(WangId::Right, 2);
+        wangId.setIndexColor(WangId::Bottom, 1);
+        wangId.setIndexColor(WangId::Left, 2);
+        break;
+    case WangSet::Mixed:
+        wangId.setIndexColor(WangId::Top, 1);
+        wangId.setIndexColor(WangId::TopRight, 2);
+        wangId.setIndexColor(WangId::Right, 1);
+        wangId.setIndexColor(WangId::BottomRight, 2);
+        wangId.setIndexColor(WangId::Bottom, 1);
+        wangId.setIndexColor(WangId::BottomLeft, 2);
+        wangId.setIndexColor(WangId::Left, 1);
+        wangId.setIndexColor(WangId::TopLeft, 2);
+        break;
+    }
+
+    paintWangOverlay(&painter, wangId, wangSet, pixmap.rect(),
+                     WO_Shadow | WO_Outline);
+
+    return QIcon(pixmap);
 }
 
 } // namespace Tiled

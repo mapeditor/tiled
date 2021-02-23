@@ -57,6 +57,7 @@
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
 #include "wangcolormodel.h"
+#include "wangoverlay.h"
 #include "wangset.h"
 
 #include <QtGroupPropertyManager>
@@ -119,6 +120,10 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     setAllowMultiSelection(true);
 
     retranslateUi();
+
+    mWangSetIcons.insert(WangSet::Corner, wangSetIcon(WangSet::Corner));
+    mWangSetIcons.insert(WangSet::Edge, wangSetIcon(WangSet::Edge));
+    mWangSetIcons.insert(WangSet::Mixed, wangSetIcon(WangSet::Mixed));
 
     connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
             this, &PropertyBrowser::valueChanged);
@@ -946,6 +951,7 @@ void PropertyBrowser::addWangSetProperties()
     QtVariantProperty *colorCountProperty = addProperty(ColorCountProperty, QVariant::Int, tr("Terrain Count"), groupProperty);
 
     typeProperty->setAttribute(QLatin1String("enumNames"), mWangSetTypeNames);
+    typeProperty->setAttribute(QLatin1String("enumIcons"), QVariant::fromValue(mWangSetIcons));
 
     colorCountProperty->setAttribute(QLatin1String("minimum"), 0);
     colorCountProperty->setAttribute(QLatin1String("maximum"), WangId::MAX_COLOR_COUNT);
