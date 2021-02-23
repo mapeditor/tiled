@@ -438,7 +438,7 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(handler->actionLayerProperties());
     }
 
-    ActionManager::applyMenuExtensions(&menu, ActionManager::layerViewLayersMenu);
+    ActionManager::applyMenuExtensions(&menu, MenuIds::layerViewLayers);
 
     menu.exec(event->globalPos());
 }

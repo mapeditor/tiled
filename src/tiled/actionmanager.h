@@ -35,6 +35,16 @@ namespace Tiled {
 
 class MainWindow;
 
+namespace MenuIds {
+
+constexpr char layerViewLayers[] = "LayerView.Layers";
+constexpr char mapViewObjects[] = "MapView.Objects";
+constexpr char projectViewFiles[] = "ProjectView.Files";
+constexpr char propertiesViewProperties[] = "PropertiesView.Properties";
+constexpr char tilesetViewTiles[] = "TilesetView.Tiles";
+
+} // namespace MenuId
+
 /**
  * Manager of global actions.
  */
@@ -46,13 +56,6 @@ class ActionManager : public QObject
     ~ActionManager();
 
 public:
-    // Ids of extensible context menus
-    static const Id layerViewLayersMenu;
-    static const Id mapViewObjectsMenu;
-    static const Id projectViewFilesMenu;
-    static const Id propertiesViewPropertiesMenu;
-    static const Id tilesetViewTilesMenu;
-
     struct MenuItem {
         Id action;
         Id beforeAction;

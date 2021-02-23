@@ -796,7 +796,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     connect(toggleGrid, &QAction::toggled,
             prefs, &Preferences::setShowTilesetGrid);
 
-    ActionManager::applyMenuExtensions(&menu, ActionManager::tilesetViewTilesMenu);
+    ActionManager::applyMenuExtensions(&menu, MenuIds::tilesetViewTiles);
 
     menu.exec(event->globalPos());
 }

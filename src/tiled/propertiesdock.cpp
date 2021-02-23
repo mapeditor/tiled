@@ -455,7 +455,7 @@ void PropertiesDock::showContextMenu(const QPoint &pos)
         convertMenu->setEnabled(!convertMenu->actions().isEmpty());
     }
 
-    ActionManager::applyMenuExtensions(&contextMenu, ActionManager::propertiesViewPropertiesMenu);
+    ActionManager::applyMenuExtensions(&contextMenu, MenuIds::propertiesViewProperties);
 
     const QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
     const QAction *selectedItem = contextMenu.exec(globalPos);

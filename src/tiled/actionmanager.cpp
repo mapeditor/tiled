@@ -26,23 +26,17 @@
 
 namespace Tiled {
 
-const Id ActionManager::layerViewLayersMenu("LayerView.Layers");
-const Id ActionManager::mapViewObjectsMenu("MapView.Objects");
-const Id ActionManager::projectViewFilesMenu("ProjectView.Files");
-const Id ActionManager::propertiesViewPropertiesMenu("PropertiesView.Properties");
-const Id ActionManager::tilesetViewTilesMenu("TilesetView.Tiles");
-
 ActionManager::ActionManager(QObject *parent)
     : QObject(parent)
     , mMenuSeparatorsParent(new QObject)
 {
     readCustomShortcuts();
 
-    mIdToMenu.insert(layerViewLayersMenu, nullptr);
-    mIdToMenu.insert(mapViewObjectsMenu, nullptr);
-    mIdToMenu.insert(projectViewFilesMenu, nullptr);
-    mIdToMenu.insert(propertiesViewPropertiesMenu, nullptr);
-    mIdToMenu.insert(tilesetViewTilesMenu, nullptr);
+    mIdToMenu.insert(MenuIds::layerViewLayers, nullptr);
+    mIdToMenu.insert(MenuIds::mapViewObjects, nullptr);
+    mIdToMenu.insert(MenuIds::projectViewFiles, nullptr);
+    mIdToMenu.insert(MenuIds::propertiesViewProperties, nullptr);
+    mIdToMenu.insert(MenuIds::tilesetViewTiles, nullptr);
 }
 
 ActionManager::~ActionManager() = default;
