@@ -224,6 +224,7 @@ SOURCES += aboutdialog.cpp \
     scriptimage.cpp \
     scriptmanager.cpp \
     scriptmodule.cpp \
+    scriptprocess.cpp \
     selectionrectangle.cpp \
     selectsametiletool.cpp \
     session.cpp \
@@ -461,6 +462,7 @@ HEADERS += aboutdialog.h \
     scriptimage.h \
     scriptmanager.h \
     scriptmodule.h \
+    scriptprocess.h \
     selectionrectangle.h \
     selectsametiletool.h \
     session.h \

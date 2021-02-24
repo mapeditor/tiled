@@ -2113,3 +2113,86 @@ BinaryFile.commit() : void
 BinaryFile.close() : void
     Closes the file. It is recommended to always call this function as soon as
     you are finished with the file.
+
+.. _script-process:
+
+Process
+~~~~~~~
+
+The Process class allows you to start processes, track their output, and so on.
+
+**Properties**
+
+.. csv-table::
+    :widths: 1, 2
+
+    **workingDirectory** : string, "The directory the process will be started in. This only has an effect if set before the process is started."
+    **atEnd** : bool |ro|, "True if there is no more data to be read from the process output, otherwise false."
+    **exitCode** : int |ro|, "The exit code of the process. This is needed for retrieving the exit code from processes started via ``start()``, rather than ``exec()``."
+    **codec**: string, "Sets the text codec to codec. The codec is used for reading and writing from and to the process, respectively. Common codecs are supported, for example: ""UTF-8"", ""UTF-16"", and ""ISO 8859-1""."
+
+**Functions**
+
+new Process()
+    Allocates and returns a new Process object.
+
+Process.close() : void
+    Frees the resources associated with the process. It is recommended to always
+    call this function as soon as you are finished with the process.
+
+Process.closeWriteChannel() : void
+    Schedules the stdin channel of process to be closed. The channel will close
+    once all data has been written to the process. After calling this function,
+    any attempts to write to the process will do nothing.
+
+Process.exec(filePath : string, arguments : [string] [, throwOnError : bool = true]) : number
+    Executes the program at filePath with the given argument list and blocks
+    until the process is finished. If an error occurs (for example, there is no
+    executable file at filePath) and ``throwOnError`` is true (the default),
+    then a JavaScript exception will be thrown. Otherwise, -1 will be returned
+    in case of an error. The normal return code is the exit code of the process.
+
+Process.getEnv(name : string) : string
+    Returns the value of the variable varName in the process' environment.
+
+Process.kill() : void
+    Kills the process, causing it to exit immediately.
+
+Process.readLine() : string
+    Reads and returns one line of text from the process output, without the
+    newline character(s).
+
+Process.readStdErr() : string
+    Reads and returns all data from the process' standard error channel.
+
+Process.readStdOut() : string
+    Reads and returns all data from the process' standard output channel.
+
+Process.setEnv(varName : string, varValue : string) : string
+    Sets the value of variable varName to varValue in the process environment.
+    This only has an effect if called before the process is started.
+
+Process.start(filePath : string, arguments : [string]) : bool
+    Starts the program at filePath with the given list of arguments. Returns
+    true if the process could be started and false otherwise.
+
+    **Note:** This call returns right after starting the process and should be
+    used only if you need to interact with the process while it is running.
+    Most of the time, you want to use ``exec()`` instead.
+
+Process.terminate() : void
+    Tries to terminate the process. This is not guaranteed to make the process
+    exit immediately; if you need that, use ``kill()``.
+
+Process.waitForFinished(int msecs = 30000) : bool
+    Blocks until the process has finished or timeout milliseconds have passed
+    (default is 30000). Returns true if the process has finished and false if
+    the operation has timed out. Calling this function only makes sense for
+    processes started via ``start()`` (as opposed to ``exec()``).
+
+Process.write(text : string) : void
+    Writes text into the process' input channel.
+
+Process.writeLine(text : string) : void
+    Writes text, followed by a newline character, into the process' input
+    channel.

@@ -45,6 +45,7 @@
 #include "scriptfileinfo.h"
 #include "scriptimage.h"
 #include "scriptmodule.h"
+#include "scriptprocess.h"
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"
@@ -183,7 +184,7 @@ QJSValue ScriptManager::evaluateFile(const QString &fileName)
         script = QTextCodec::codecForUtfText(bytes)->toUnicode(bytes);
 #else
     auto encoding = QStringConverter::encodingForData(bytes.constData(), bytes.size());
-    QStringDecoder decoder(encoding.value_or(QStringConverter::Encoding::Utf8));
+    QStringDecoder decoder(encoding.value_or(QStringConverter::Utf8));
     script = decoder.decode(bytes);
     if (decoder.hasError()) {
         Tiled::ERROR(tr("Error decoding file: %1").arg(fileName));
@@ -329,6 +330,7 @@ void ScriptManager::initialize()
 #endif
 
     registerFileInfo(mEngine);
+    registerProcess(mEngine);
 
     loadExtensions();
 }
