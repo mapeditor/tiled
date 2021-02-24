@@ -41,6 +41,8 @@
 #include <QStringConverter>
 #endif
 
+#include <memory>
+
 namespace Tiled {
 
 class ScriptProcess : public QObject
