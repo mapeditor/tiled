@@ -67,7 +67,7 @@ QRectF ArrowHead::boundingRect() const
 
 void ArrowHead::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    constexpr QPointF arrowHead[4] = {
+    static constexpr QPointF arrowHead[4] = {
         QPointF(0.0, 0.0),
         QPointF(-2 * arrowHeadSize, arrowHeadSize),
         QPointF(-1.5 * arrowHeadSize, 0.0),

@@ -449,13 +449,13 @@ QPointF HexagonalRenderer::screenToTileCoords(qreal x, qreal y) const
         }
     }
 
-    static const QPoint offsetsStaggerX[4] = {
+    static constexpr QPoint offsetsStaggerX[4] = {
         QPoint( 0,  0),
         QPoint(+1, -1),
         QPoint(+1,  0),
         QPoint(+2,  0),
     };
-    static const QPoint offsetsStaggerY[4] = {
+    static constexpr QPoint offsetsStaggerY[4] = {
         QPoint( 0,  0),
         QPoint(-1, +1),
         QPoint( 0, +1),

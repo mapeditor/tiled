@@ -43,7 +43,7 @@ Cell Cell::empty;
 
 void Cell::rotate(RotateDirection direction)
 {
-    constexpr unsigned char rotateMasks[2][8] = {
+    static constexpr unsigned char rotateMasks[2][8] = {
         { 3, 2, 7, 6, 1, 0, 5, 4 },
         { 5, 4, 1, 0, 7, 6, 3, 2 },
     };
@@ -368,8 +368,8 @@ void TileLayer::flipHexagonal(FlipDirection direction)
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
     // for more info see impl "void TileLayer::rotateHexagonal(RotateDirection direction)"
-    static const unsigned char flipMaskH[16] = { 8, 6, 5, 4, 12, 2, 1, 0, 0, 14, 13, 12, 4, 10, 9, 8 }; // [0,15]<=>[8,7]; 2<=>5; 1<=>6; [12,3]<=>[4,11]; 14<=>9; 13<=>10;
-    static const unsigned char flipMaskV[16] = { 4, 10, 9, 8, 0, 14, 13, 12, 12, 2, 1, 0, 8, 6, 5, 4 }; // [0,15]<=>[4,11]; 2<=>9; 1<=>10; [12,3]<=>[8,7]; 14<=>5; 13<=>6;
+    static constexpr unsigned char flipMaskH[16] = { 8, 6, 5, 4, 12, 2, 1, 0, 0, 14, 13, 12, 4, 10, 9, 8 }; // [0,15]<=>[8,7]; 2<=>5; 1<=>6; [12,3]<=>[4,11]; 14<=>9; 13<=>10;
+    static constexpr unsigned char flipMaskV[16] = { 4, 10, 9, 8, 0, 14, 13, 12, 12, 2, 1, 0, 8, 6, 5, 4 }; // [0,15]<=>[4,11]; 2<=>9; 1<=>10; [12,3]<=>[8,7]; 14<=>5; 13<=>6;
 
     const unsigned char (&flipMask)[16] = (direction == FlipHorizontally ? flipMaskH : flipMaskV);
 
@@ -413,8 +413,8 @@ void TileLayer::flipHexagonal(FlipDirection direction)
 
 void TileLayer::rotate(RotateDirection direction)
 {
-    static const unsigned char rotateRightMask[8] = { 5, 4, 1, 0, 7, 6, 3, 2 };
-    static const unsigned char rotateLeftMask[8]  = { 3, 2, 7, 6, 1, 0, 5, 4 };
+    constexpr unsigned char rotateRightMask[8] = { 5, 4, 1, 0, 7, 6, 3, 2 };
+    constexpr unsigned char rotateLeftMask[8]  = { 3, 2, 7, 6, 1, 0, 5, 4 };
 
     const unsigned char (&rotateMask)[8] =
             (direction == RotateRight) ? rotateRightMask : rotateLeftMask;
@@ -500,8 +500,8 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
 
     */
 
-    static const unsigned char rotateRightMask[16] = { 2, 12, 1, 14, 6, 8, 5, 10, 10,  4, 9, 0, 14,  0, 13,  2 }; // [0,15]->2->1->[12,3]->14->13; [8,7]->10->9->[4,11]->6->5;
-    static const unsigned char rotateLeftMask[16]  = { 13, 2, 0,  1, 9, 6, 4,  5,  5, 10, 8, 9,  1, 14, 12, 13 }; // [0,15]->13->14->[12,3]->1->2; [8,7]->5->6->[4,11]->9->10;
+    static constexpr unsigned char rotateRightMask[16] = { 2, 12, 1, 14, 6, 8, 5, 10, 10,  4, 9, 0, 14,  0, 13,  2 }; // [0,15]->2->1->[12,3]->14->13; [8,7]->10->9->[4,11]->6->5;
+    static constexpr unsigned char rotateLeftMask[16]  = { 13, 2, 0,  1, 9, 6, 4,  5,  5, 10, 8, 9,  1, 14, 12, 13 }; // [0,15]->13->14->[12,3]->1->2; [8,7]->5->6->[4,11]->9->10;
 
     const unsigned char (&rotateMask)[16] =
             (direction == RotateRight) ? rotateRightMask : rotateLeftMask;
