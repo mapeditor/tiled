@@ -262,7 +262,7 @@ QString ScriptProcess::readLine()
         return {};
 
     QString result = decode(m_process->readLine());
-    if (!result.isEmpty() && result.back() == QLatin1Char('\n'))
+    if (!result.isEmpty() && result.at(result.size() - 1) == QLatin1Char('\n'))
         result.chop(1);
     return result;
 }
