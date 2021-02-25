@@ -10,7 +10,7 @@ They are, however, more focused on filling larger areas without repetition.
 One defines the edge and corner colors of tiles in a tileset. This information
 can then be used when filling, or brushing to allow for smooth, non-repetitive
 transitions between tiles. In most cases this tiling is random, and based on
-color probability. More info on Wang tiles can be found `here <http://www.cr31.co.uk/stagecast/wang/intro.html>`_.
+color probability. More info on Wang tiles can be found `here <https://web.archive.org/web/20201130045205/http://www.cr31.co.uk/stagecast/wang/intro.html>`_.
 
 To demonstrate how to use Wang tiles, we will describe the steps necessary
 to recreate ``walkways.tsx`` example tileset.
