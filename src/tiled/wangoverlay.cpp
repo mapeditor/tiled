@@ -241,9 +241,11 @@ static const QPainterPath *cornerPathForMask(WangId mask)
 
 } // namespace EdgesAndCorners
 
+#if 0   // Special handling of edge-only Wang sets
+
 namespace EdgesOnly {
 
-#if 1   // Draw edge Wang sets as "roads"
+#if 1   // Draw edge Wang sets as "wide roads"
 
 static const QPainterPath oneEdge = [] {
     constexpr qreal d = 1.0 / 6.0;
@@ -371,7 +373,11 @@ static const QPainterPath *pathForMask(WangId mask)
 
 } // namespace EdgesOnly
 
+#endif
+
 namespace CornersOnly {
+
+#if 0   // Use larger corners for corner-only sets
 
 static const QPainterPath oneCorner = [] {
     QPainterPath path(QPointF(0.5, 0));
@@ -402,6 +408,34 @@ static const QPainterPath threeCorners = [] {
     path.closeSubpath();
     return path;
 }();
+
+#else
+
+using EdgesAndCorners::oneCorner;
+
+static const QPainterPath twoAdjacentCorners = [] {
+    constexpr qreal d = 1.0 / 6.0;
+    QPainterPath path;
+    path.addRect(4 * d, 0, 2 * d, 1);
+    return path;
+}();
+
+using EdgesAndCorners::twoOppositeCorners;
+
+static const QPainterPath threeCorners = [] {
+    constexpr qreal d = 1.0 / 6.0;
+    QPainterPath path(QPointF(1, 0));
+    path.lineTo(1, 1);
+    path.lineTo(0, 1);
+    path.lineTo(0, 4 * d);
+    path.lineTo(2 * d, 4 * d);
+    path.arcTo(QRectF(QPointF(2 * d, 2 * d), QSizeF(2 * d, 2 * d)), -90, 90);
+    path.lineTo(4 * d, 0);
+    path.closeSubpath();
+    return path;
+}();
+
+#endif
 
 static const QPainterPath fourCorners = [] {
     QPainterPath path;
@@ -487,7 +521,7 @@ void paintWangOverlay(QPainter *painter,
             // One of these should be nullptr, but if it isn't we may want to
             // see that the Wang set is a little messed up.
             cornerPath = CornersOnly::pathForMask(mask & WangId::MaskCorners);
-            edgePath = EdgesOnly::pathForMask(mask & WangId::MaskEdges);
+            edgePath = EdgesAndCorners::edgePathForMask(mask & WangId::MaskEdges);
             break;
         case WangSet::Mixed:
             cornerPath = EdgesAndCorners::cornerPathForMask(mask & WangId::MaskCorners);
