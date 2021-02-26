@@ -900,6 +900,9 @@ Properties
 Functions
 ~~~~~~~~~
 
+new ImageLayer([name : string])
+    Constructs a new image layer.
+
 .. _script-imagelayer-loadFromImage:
 
 ImageLayer.loadFromImage(image : :ref:`script-image` [, source: url]) : void

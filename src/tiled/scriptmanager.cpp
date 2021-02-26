@@ -22,6 +22,7 @@
 
 #include "documentmanager.h"
 #include "editablegrouplayer.h"
+#include "editableimagelayer.h"
 #include "editablemap.h"
 #include "editablemapobject.h"
 #include "editableobjectgroup.h"
@@ -318,6 +319,7 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("BinaryFile"), mEngine->newQMetaObject<ScriptBinaryFile>());
     globalObject.setProperty(QStringLiteral("GroupLayer"), mEngine->newQMetaObject<EditableGroupLayer>());
     globalObject.setProperty(QStringLiteral("Image"), mEngine->newQMetaObject<ScriptImage>());
+    globalObject.setProperty(QStringLiteral("ImageLayer"), mEngine->newQMetaObject<EditableImageLayer>());
     globalObject.setProperty(QStringLiteral("Layer"), mEngine->newQMetaObject<EditableLayer>());
     globalObject.setProperty(QStringLiteral("MapObject"), mEngine->newQMetaObject<EditableMapObject>());
     globalObject.setProperty(QStringLiteral("ObjectGroup"), mEngine->newQMetaObject<EditableObjectGroup>());
