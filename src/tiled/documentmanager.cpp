@@ -683,6 +683,7 @@ bool DocumentManager::saveDocument(Document *document, const QString &fileName)
 
     QString error;
     if (!document->save(fileName, &error)) {
+        switchToDocument(document);
         QMessageBox::critical(mWidget->window(), QCoreApplication::translate("Tiled::MainWindow", "Error Saving File"), error);
         return false;
     }
