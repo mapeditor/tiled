@@ -111,7 +111,7 @@ QPainterPath MapRenderer::pointShape(const QPointF &position) const
 
 void MapRenderer::drawImageLayer(QPainter *painter,
                                  const ImageLayer *imageLayer,
-                                 const QRectF &exposed)
+                                 const QRectF &exposed) const
 {
     Q_UNUSED(exposed)
 
