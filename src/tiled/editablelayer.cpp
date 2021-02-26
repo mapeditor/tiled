@@ -21,6 +21,7 @@
 #include "editablelayer.h"
 
 #include "changelayer.h"
+#include "editablegrouplayer.h"
 #include "editablemanager.h"
 #include "editablemap.h"
 #include "scriptmanager.h"
@@ -47,6 +48,12 @@ EditableLayer::~EditableLayer()
 EditableMap *EditableLayer::map() const
 {
     return asset()->isMap() ? static_cast<EditableMap*>(asset()) : nullptr;
+}
+
+EditableGroupLayer *EditableLayer::parentLayer() const
+{
+    GroupLayer *parent = layer()->parentLayer();
+    return static_cast<EditableGroupLayer*>(EditableManager::instance().editableLayer(map(), parent));
 }
 
 bool EditableLayer::isSelected() const

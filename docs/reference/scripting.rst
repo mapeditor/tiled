@@ -929,6 +929,7 @@ Properties
     **offset** : :ref:`script-point`, Offset in pixels that is applied when this layer is rendered.
     **parallaxFactor** : :ref:`script-point`, The parallax factor of the layer (since Tiled 1.5).
     **map** : :ref:`script-map` |ro|, Map that this layer is part of (or ``null`` in case of a standalone layer).
+    **parentLayer** : :ref:`script-grouplayer` |ro|, "The parent group layer, if any."
     **selected** : bool, Whether the layer is selected.
     **isTileLayer** : bool |ro|, Whether this layer is a :ref:`script-tilelayer`.
     **isObjectLayer** : bool |ro|, Whether this layer is an :ref:`script-objectgroup`.
