@@ -179,67 +179,6 @@
   font-size: 1.5rem;
   font-weight: 500;
 }
-.feature-list {
-  margin-top: 1.5rem;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-left: auto;
-  margin-right: auto;
-}
-.feature-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.feature-container-reverse {
-  flex-wrap: wrap-reverse;
-}
-.feature-title {
-  margin-top: 3rem;
-  margin-bottom: 0.3rem;
-}
-.feature-description {
-  font-size: 1.3rem;
-}
-.feature-image {
-  height: 20rem;
-  background-color: #333;
-  border-radius: 4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background-clip: padding-box;
-}
-.feature-text {
-  max-height: 18rem;
-  align-self: center;
-  text-align: left;
-}
-.feature-image,
-.feature-text {
-  min-width: 30rem;
-  max-width: 30rem;
-  border-width: 1.8rem;
-  border-style: solid;
-  border-color: transparent;
-}
-.feature-sublist {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  margin-left: 0px;
-  padding-left: 2rem;
-  font-size: 1.2rem;
-}
-.feature-img {
-  max-height: 80%;
-  max-width: 80%;
-}
-.features-whats-next {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-}
 .card {
   display: block;
   text-align: left;
@@ -285,7 +224,6 @@
   color: #8f8f8f;
 }
 .card-description {
-  font-size: 1.3rem;
   color: #ececec;
   margin-top: 0.4rem;
   overflow: hidden;
@@ -295,7 +233,7 @@
 .card-title {
   display: block;
   font-weight: bold;
-  font-size: 2rem;
+  font-size: 1.3rem;
   color: #ececec;
   font-style: normal;
 }
@@ -308,13 +246,12 @@
 }
 .media-content {
   width: 100%;
-  font-size: 1.5rem;
   text-align: center;
   color: #d2d2d2;
 }
 .media-content h2 {
   text-align: center;
-  font-size: 2.2rem;
+  font-size: 1.7rem;
   padding-bottom: 10px;
   background: radial-gradient(farthest-side at bottom, yellow 10%, orange 25%, transparent 100%) bottom no-repeat;
   background-size: 100% 5px;
