@@ -32,13 +32,6 @@
       margin: 1%;
       border-radius: 5px;
       background-color: #464646;
-      border: solid transparent;
-      border-width: 2px 0px;
-      transition: all .1s ease-out;
-    }
-    .feature:hover {
-      transform: scale(1.025);
-      border-color: orange;
     }
     .feature-title {
       background-color: #4e4e4e;
@@ -79,7 +72,7 @@
       z-index: 1;
       background-color: rgba(50,50,50,0.8);
       backdrop-filter: blur(3px);
-      border-radius: 0px 5px 0px 0px;
+      border-radius: 5px 0px 0px 5px;
     }
     .feature-description {
       padding-right: 1rem;
@@ -88,9 +81,11 @@
     .feature:nth-child(odd) .feature-content {
       flex-direction: row-reverse;
     }
-    .feature:nth-child(odd) .feature-title,
-    .feature:nth-child(odd) .feature-text {
+    .feature:nth-child(odd) .feature-title {
       border-radius: 0px 5px 0px 0px;
+    }
+    .feature:nth-child(odd) .feature-text {
+      border-radius: 0px 5px 5px 0px;
     }
     .feature-text li {
       list-style-type: square;
@@ -110,6 +105,7 @@
       align-content: center;
       text-align: center;
       background-color: #4e4e4e;
+      background-clip: padding-box;
       border-radius: 5px;
       width: 350px;
       height: 266px;
@@ -140,6 +136,16 @@
     .showcase img {
       max-width: 350px;
       border-radius: 0px 0px 5px 5px;
+    }
+
+    /* NEWS */
+
+    .card-small {
+      height: auto;
+      width: 96%;
+    }
+    .media-content a.card-small:hover {
+      transform: scale(1.025);
     }
 
     /* SPONSORS */
@@ -278,7 +284,8 @@
       <section class="media-content">
         <h2>Latest Updates</h2>
         <div class="card-list flex-wrap-center">
-{% for post in site.posts limit:4 %}
+{% for post in site.posts limit:5 %}
+{% if forloop.index < 3 %}
           <a class="card" href="{{ post.url }}">
 {% if post.image %}
             <div class="card-image">
@@ -288,6 +295,11 @@
             <div class="card-title">{{ post.title }} <span class="card-subtitle">{{ post.date | date_to_long_string }}</span></div>
             <div class="card-description">{{ post.excerpt | strip_html }}</div>
           </a>
+{% else %}
+          <a class="card card-small" href="{{ post.url }}">
+            <div class="card-title">{{ post.title }} <span class="card-subtitle">{{ post.date | date_to_long_string }}</span></div>
+          </a>
+{% endif %}
 {% endfor %}
         </div>
         <p><a href="/news">News Archive</a></p>

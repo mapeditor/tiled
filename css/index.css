@@ -188,13 +188,14 @@
   margin: 1%;
   border-radius: 5px;
   background-color: #464646;
+  background-clip: padding-box;
   margin-bottom: 15px;
   border: solid transparent;
   border-width: 2px 0px;
   transition: all .1s ease-out;
 }
 .media-content a.card:hover {
-  transform: scale(1.02);
+  transform: scale(1.05);
   text-decoration: none;
   border-color: orange;
 }

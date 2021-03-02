@@ -2,7 +2,7 @@
   image: img/screenshot-terrain-thumb.png
   description: |
    * Multi-layer tile editing.
-   * Efficient [painting of terrain](https://doc.mapeditor.org/en/stable/manual/using-the-terrain-tool/).
+   * Easy and fast [painting of terrain](https://doc.mapeditor.org/en/stable/manual/using-the-terrain-tool/).
    * [Rule-based](https://doc.mapeditor.org/en/stable/manual/automapping/) tile and object placement.
 
 - title: Flexible Object Layers
@@ -36,4 +36,4 @@
   description: |
    * Tiled is [free as in freedom](https://www.gnu.org/philosophy/free-sw.html), and always will be.
    * [Fork Tiled on GitHub](https://github.com/mapeditor/tiled) and change it however you like.
-   * Please [support Tiled development](/donate) with a small monthly donation!
+   * Consider [supporting Tiled development](/donate) with a small monthly donation!
