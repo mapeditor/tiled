@@ -183,18 +183,20 @@
   display: block;
   text-align: left;
   overflow: hidden;
+  width: 47%;
   height: 12rem;
+  margin: 1%;
   border-radius: 5px;
   background-color: #464646;
   margin-bottom: 15px;
-  border: 2px solid transparent;
+  border: solid transparent;
+  border-width: 2px 0px;
   transition: all .1s ease-out;
 }
 .media-content a.card:hover {
   transform: scale(1.02);
   text-decoration: none;
   border-color: orange;
-  background-color: #4e4e4e;
 }
 .card-image {
   width: 30%;
@@ -208,17 +210,17 @@
   height: 100%;
   width: 100%;
 }
-.card-text {
-  padding-top: 0.8rem;
-  padding-bottom: 0.8rem;
-  padding-left: 1.2rem;
-  padding-right: 1.2rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.card-title {
+  display: block;
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #ececec;
+  font-style: normal;
+  background-color: #4e4e4e;
+  padding: 0.4em 0.8rem;
 }
 .card-subtitle {
-  display: block;
-  padding-bottom: 0.6rem;
+  padding-left: 10px;
   font-weight: 200;
   font-size: 80%;
   color: #8f8f8f;
@@ -229,20 +231,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   height: 100px;
-}
-.card-title {
-  display: block;
-  font-weight: bold;
-  font-size: 1.3rem;
-  color: #ececec;
-  font-style: normal;
-}
-.card-image-default {
-  display: flex;
-  height: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  align-items: center;
+  padding: 0.4em 0.8rem;
 }
 .media-content {
   width: 100%;
@@ -253,8 +242,13 @@
   text-align: center;
   font-size: 1.7rem;
   padding-bottom: 10px;
+  margin-top: 3rem;
   background: radial-gradient(farthest-side at bottom, yellow 10%, orange 25%, transparent 100%) bottom no-repeat;
   background-size: 100% 5px;
+}
+.media-content p.h2-subtitle {
+  margin-top: -15px;
+  margin-bottom: 22px;
 }
 .media-content h3 {
   font-size: 1.5rem;
@@ -277,6 +271,10 @@
   padding-right: 0px;
 }
 @font-face {
+  font-family: "Roboto";
+  src: url(../font/Roboto-Regular.ttf);
+}
+@font-face {
   font-family: "FontAwesome";
   src: url("fontawesome-webfont.eot?v=3.0.1");
   src: url("fontawesome-webfont.eot?#iefix&v=3.0.1")
@@ -292,7 +290,7 @@ html,
 body {
   margin: 0;
   color: #ececec;
-  font-family: "FontAwesome", sans-serif;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
   background-color: #3e3e3e;
 }
 .container {
