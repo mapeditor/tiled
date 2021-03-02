@@ -1,0 +1,39 @@
+- title: Efficient Tile Layer Editing
+  image: img/screenshot-terrain-thumb.png
+  description: |
+   * Multi-layer tile editing.
+   * Efficient [painting of terrain](https://doc.mapeditor.org/en/stable/manual/using-the-terrain-tool/).
+   * [Rule-based](https://doc.mapeditor.org/en/stable/manual/automapping/) tile and object placement.
+
+- title: Flexible Object Layers
+  image: img/screenshot-objects-thumb.png
+  description: |
+   * Annotate the level with [rectangles, ellipses or polygons](https://doc.mapeditor.org/en/stable/manual/objects/)
+   * Place, resize and rotate tiles freely.
+   * Avoid repetition with [object templates](https://doc.mapeditor.org/en/stable/manual/using-templates/)
+
+- title: Edit Large Worlds
+  image: img/screenshot-isometric-thumb.png
+  description: |
+   * Edit [infinite maps](https://doc.mapeditor.org/en/stable/manual/using-infinite-maps/) that grow as needed.
+   * Organize multiple maps [in a world](https://doc.mapeditor.org/en/stable/manual/worlds/)
+
+- title: Extensible with JavaScript
+  image: img/screenshot-terrain-thumb.png
+  description: |
+   * Add support for [custom file formats](https://doc.mapeditor.org/en/stable/reference/scripting/#script-registermapformat)
+   * Write your own [actions](https://doc.mapeditor.org/en/stable/reference/scripting/#script-registeraction) or [tools](https://doc.mapeditor.org/en/stable/reference/scripting/#script-registertool)
+   * Automate your workflow.
+
+- title: Widely Supported
+  image: img/screenshot-terrain-thumb.png
+  description: |
+   * Supported by many [game development frameworks](https://doc.mapeditor.org/en/stable/reference/support-for-tmx-maps/)
+   * Exports to Image, JSON, Lua, GameMaker (1.4 and 2.3), Defold, tBIN and [many more](https://doc.mapeditor.org/en/stable/manual/export/)
+
+- title: Free and Continuously Improving
+  image: img/screenshot-terrain-thumb.png
+  description: |
+   * Tiled is [free as in freedom](https://www.gnu.org/philosophy/free-sw.html), and always will be.
+   * [Fork Tiled on GitHub](https://github.com/mapeditor/tiled) and change it however you like.
+   * Please [support Tiled development](/donate) with a small monthly donation!

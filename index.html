@@ -42,7 +42,7 @@
     }
     .feature-title {
       background-color: #4e4e4e;
-      border-radius: 5px 5px 0px 0px;
+      border-radius: 5px 0px 0px 0px;
       width: 100%;
       padding: 0.4rem 0.8rem;
       box-sizing: border-box;
@@ -60,7 +60,7 @@
       height: 100%;
       width: 100%;
       background-color: #333;
-      border-radius: 0px 0px 5px 0px;
+      border-radius: 5px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -71,26 +71,30 @@
       min-width: 100%;
       object-fit: cover;
     }
-    .feature:nth-child(odd) .feature-content {
-      flex-direction: row-reverse;
-    }
-    .feature:nth-child(odd) .feature-image {
-      border-radius: 0px 0px 0px 5px;
-    }
     .feature-text {
       width: 60%;
       margin: 0px;
       box-sizing: border-box;
-      padding: 20px 10px 15px 30px;
       text-align: left;
       z-index: 1;
       background-color: rgba(50,50,50,0.8);
       backdrop-filter: blur(3px);
+      border-radius: 0px 5px 0px 0px;
+    }
+    .feature-description {
+      padding-right: 1rem;
       text-shadow: 1px 1px 2px black;
+    }
+    .feature:nth-child(odd) .feature-content {
+      flex-direction: row-reverse;
+    }
+    .feature:nth-child(odd) .feature-title,
+    .feature:nth-child(odd) .feature-text {
+      border-radius: 0px 5px 0px 0px;
     }
     .feature-text li {
       list-style-type: square;
-      margin-bottom: 10px;
+      margin-bottom: 0.5em;
     }
 
     /* SHOWCASE */
@@ -240,87 +244,20 @@
         <h2>Full-featured Level Editor</h2>
         <div class="flex-wrap-center">
 
+{% for feature in site.data.features %}
           <div class="feature">
-            <div class="feature-title">Efficient Tile Layer Editing</div>
             <div class="feature-content">
               <div class="feature-image">
-                <img src="img/screenshot-terrain-thumb.png" />
+                <img src="{{ feature.image }}" />
               </div>
-              <ul class="feature-text">
-                <li>Multi-layer tile editing.</li>
-                <li>Efficient <a href="https://doc.mapeditor.org/en/stable/manual/using-the-terrain-tool/">painting of terrain</a>.</li>
-                <li><a href="https://doc.mapeditor.org/en/stable/manual/automapping/">Rule-based</a> tile and object placement.</li>
-              </ul>
+              <div class="feature-text">
+                <div class="feature-title">{{ feature.title }}</div>
+                <div class="feature-description">{{ feature.description | markdownify }}</div>
+              </div>
             </div>
           </div>
+{% endfor %}
 
-          <div class="feature">
-            <div class="feature-title">Flexible Object Layers</div>
-            <div class="feature-content">
-              <div class="feature-image">
-                <img src="img/screenshot-objects-thumb.png" />
-              </div>
-              <ul class="feature-text">
-                <li>Annotate the level with <a href="https://doc.mapeditor.org/en/stable/manual/objects/">rectangles, ellipses or polygons</a>.</li>
-                <li>Place, resize and rotate tiles freely.</li>
-                <li>Avoid repetition with <a href="https://doc.mapeditor.org/en/stable/manual/using-templates/">object templates</a>.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="feature">
-            <div class="feature-title">Edit Large Worlds</div>
-            <div class="feature-content">
-              <div class="feature-image">
-                <img src="img/screenshot-isometric-thumb.png" />
-              </div>
-              <ul class="feature-text">
-                <li>Edit <a href="https://doc.mapeditor.org/en/stable/manual/using-infinite-maps/">infinite maps</a> that grow as needed.</li>
-                <li>Organize multiple maps <a href="https://doc.mapeditor.org/en/stable/manual/worlds/">in a world</a>.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="feature">
-            <div class="feature-title">Extensible with JavaScript</div>
-            <div class="feature-content">
-              <div class="feature-image">
-                <img src="img/screenshot-isometric-thumb.png" />
-              </div>
-              <ul class="feature-text">
-                <li>Add support for <a href="https://doc.mapeditor.org/en/stable/reference/scripting/#script-registermapformat">custom file formats</a>.</li>
-                <li>Write your own <a href="https://doc.mapeditor.org/en/stable/reference/scripting/#script-registeraction">actions</a> or <a href="https://doc.mapeditor.org/en/stable/reference/scripting/#script-registertool">tools</a>.</li>
-                <li>Automate your workflow.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="feature">
-            <div class="feature-title">Widely Supported</div>
-            <div class="feature-content">
-              <div class="feature-image">
-                <img src="img/screenshot-isometric-thumb.png" />
-              </div>
-              <ul class="feature-text">
-                <li>Supported by many <a href="https://doc.mapeditor.org/en/stable/reference/support-for-tmx-maps/">game development frameworks</a>.</li>
-                <li>Exports to Image, JSON, Lua, GameMaker (1.4 and 2.3), Defold, tBIN and <a href="https://doc.mapeditor.org/en/stable/manual/export/">many more</a>.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="feature">
-            <div class="feature-title">Free and Continuously Improving</div>
-            <div class="feature-content">
-              <div class="feature-image">
-                <img src="img/screenshot-isometric-thumb.png" />
-              </div>
-              <ul class="feature-text">
-                <li>Tiled is <a href="https://www.gnu.org/philosophy/free-sw.html">free as in freedom</a>, and always will be.</li>
-                <li><a href="https://github.com/mapeditor/tiled">Fork Tiled on GitHub</a> and change it however you like.</li>
-                <li>Please <a href="/donate">support Tiled development</a> with a small monthly donation!</li>
-              </ul>
-            </div>
-          </div>
         </div>
       </section>
       <section class="media-content">
