@@ -37,7 +37,7 @@
       background-color: #4e4e4e;
       border-radius: 5px 0px 0px 0px;
       width: 100%;
-      padding: 0.4rem 0.8rem;
+      padding: 0.3rem 0.8rem;
       box-sizing: border-box;
       font-size: 1.1rem;
       font-weight: bold;
@@ -71,7 +71,6 @@
       text-align: left;
       z-index: 1;
       background-color: rgba(50,50,50,0.8);
-      backdrop-filter: blur(3px);
       border-radius: 5px 0px 0px 5px;
     }
     .feature-description {
@@ -95,7 +94,7 @@
     /* SHOWCASE */
 
     .showcases {
-      max-height: 960px;
+      max-height: 870px;
       overflow: hidden;
     }
     .showcase {
@@ -121,7 +120,7 @@
     }
     .showcase h3 {
       color: #d2d2d2;
-      margin-top: 13px;
+      margin-top: 7px;
       padding-left: 15%;
       padding-right: 15%;
       font-size: 1.3rem;
@@ -138,22 +137,8 @@
       border-radius: 0px 0px 5px 5px;
     }
 
-    /* NEWS */
-
-    .card-small {
-      height: auto;
-      width: 96%;
-    }
-    .media-content a.card-small:hover {
-      transform: scale(1.025);
-    }
-
     /* SPONSORS */
 
-    .sponsors {
-      margin-top: 3rem;
-      margin-bottom: 8rem;
-    }
     .sponsor {
       display: flex;
       width: 22%;
@@ -180,144 +165,132 @@
       <a href="/" class="header-logo"><img src="img/tiled-logo-white.png" class="logo" alt="tiled logo" /></a>
       <a href="/" class="header-logo-mobile"><img src="img/tiled-logo-white.png" class="logo" alt="tiled icon" /></a>
       <div class="header-item header-push"></div>
-
-      <a name="discourse" href="https://discourse.mapeditor.org/" class="header-social"><i class="fab fa-discourse fa-2x"></i></a>
-      <a name="twitter" href="https://twitter.com/thorbjorn81" class="header-social"><i class='fab fa-twitter fa-2x'></i></a>
-      <a name="discord" href="https://discord.gg/39wbTv7" class="header-social"><i class="fab fa-discord fa-2x"></i></a>
-      <a name="github" href="https://github.com/mapeditor/tiled" class="header-social"><i class="fab fa-github fa-2x"></i></a>
-
-      <a href="/" class="header-item header-item-active">Features</a>
-      <a href="https://itch.io/games/made-with-tiled" class="header-item">Made with Tiled</a>
-
+<!--
       <a class="header-item header-button header-button-download" href="/download">Download</a>
       <a class="header-item header-button header-button-donate" href="/donate">Donate</a>
       <a class="header-item header-button" href="https://doc.mapeditor.org/en/stable/manual/introduction/#getting-started">Get Started</a>
+    -->
+
+      <a name="discourse" href="https://discourse.mapeditor.org/" class="header-social"><i class="fab fa-discourse fa-2x"></i></a>
+      <a name="twitter" href="https://twitter.com/TiledApp" class="header-social"><i class='fab fa-twitter fa-2x'></i></a>
+      <a name="discord" href="https://discord.gg/39wbTv7" class="header-social"><i class="fab fa-discord fa-2x"></i></a>
+      <a name="github" href="https://github.com/mapeditor/tiled" class="header-social"><i class="fab fa-github fa-2x"></i></a>
     </nav>
   </div>
 
   <div class="container">
-
-    <div class="padded-content container">
-      <img src="img/screenshot-terrain-thumb.png" class="tiled-logo-header" />
-      <div class="media-content tiled-description">
-        Tiled is a <a href="https://opensource.org/osd-annotated">free and open source</a>, easy to use, and flexible level editor.
-        <br />
+    <section class="media-content tiled-description">
+    <img src="img/screenshot-terrain-thumb.png" class="tiled-logo-header" />
+      Tiled is a <a href="https://opensource.org/osd-annotated">free and open source</a>, easy to use, and flexible level editor.
+      <br />
+    </section>
+    <section class="media-content">
+      <div>
+        <b>Please support my work on Tiled!</b> - You can donate at <a href="https://github.com/sponsors/bjorn">GitHub Sponsors</a>, <a href="https://www.patreon.com/bjorn/overview">Patreon</a> or <a href="https://liberapay.com/Tiled">Liberapay</a>.
       </div>
-      <section>
-        <div>
-          <b>Please support my work on Tiled!</b> - You can donate at <a href="https://github.com/sponsors/bjorn">GitHub Sponsors</a>, <a href="https://www.patreon.com/bjorn/overview">Patreon</a> or <a href="https://liberapay.com/Tiled">Liberapay</a>.
-        </div>
 
-        <div>
-          <div class="progress" style="margin-bottom: 0px;">
-            <a href="https://thorbjorn.itch.io/tiled">
-              <div class="progress-bar progress-bar-warning progress-bar-striped" id="itch-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 35%; background-image: linear-gradient(to bottom, #fa5c5c 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="itch"></div>
-            </a>
-            <a href="https://liberapay.com/bjorn">
-              <div class="progress-bar progress-bar-warning progress-bar-striped" id="liberapay-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0.33%; background-image: linear-gradient(to bottom, #f6c915 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Liberapay"></div>
-            </a>
-            <a href="https://www.patreon.com/bjorn">
-              <div class="progress-bar progress-bar-warning progress-bar-striped" id="patreon-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 39.59%; background-image: linear-gradient(to bottom, #FF945A 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Patreon"></div>
-            </a>
-            <a href="https://github.com/sponsors/bjorn">
-              <div class="progress-bar progress-bar-warning progress-bar-striped" id="github-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 25.06%; background-image: linear-gradient(to bottom, #ea4aaa 0px, #c54190 100%);" data-toggle="tooltip" data-placement="bottom" title="GitHub Sponsors"></div>
-            </a>
-            <span style="color: gray; margin-left: 5px;" id="goal-percentage"></span>
+      <div>
+        <div class="progress" style="margin-bottom: 0px;">
+          <a href="https://thorbjorn.itch.io/tiled">
+            <div class="progress-bar progress-bar-warning progress-bar-striped" id="itch-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 35%; background-image: linear-gradient(to bottom, #fa5c5c 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="itch"></div>
+          </a>
+          <a href="https://liberapay.com/bjorn">
+            <div class="progress-bar progress-bar-warning progress-bar-striped" id="liberapay-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0.33%; background-image: linear-gradient(to bottom, #f6c915 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Liberapay"></div>
+          </a>
+          <a href="https://www.patreon.com/bjorn">
+            <div class="progress-bar progress-bar-warning progress-bar-striped" id="patreon-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 39.59%; background-image: linear-gradient(to bottom, #FF945A 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Patreon"></div>
+          </a>
+          <a href="https://github.com/sponsors/bjorn">
+            <div class="progress-bar progress-bar-warning progress-bar-striped" id="github-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 25.06%; background-image: linear-gradient(to bottom, #ea4aaa 0px, #c54190 100%);" data-toggle="tooltip" data-placement="bottom" title="GitHub Sponsors"></div>
+          </a>
+          <span style="color: gray; margin-left: 5px;" id="goal-percentage"></span>
+        </div>
+        <div style="margin-left: 4px;">
+          <div id="goal1" class="goalmarker" style="height: 1em; margin-right: 55.77%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
+            <small style="display: block; padding: 6px 4px;">
+              <strong>1 day/week</strong><br>
+              <small style="color: #eee">$1150/month</small>
+            </small>
           </div>
-          <div style="margin-left: 4px;">
-            <div id="goal1" class="goalmarker" style="height: 1em; margin-right: 55.77%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
-              <small style="display: block; padding: 6px 4px;">
-                <strong>1 day/week</strong><br>
-                <small style="color: #eee">$1150/month</small>
-              </small>
-            </div>
-            <div id="goal2" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 11.5%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
-              <small style="display: block; padding: 6px 4px;">
-                <strong>2 days/week</strong><br>
-                <small style="color: #eee">$2300/month</small>
-              </small>
-            </div>
-            <div id="goal3" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 0%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
-              <small style="display: block; padding: 6px 4px;">
-                <strong>+ office</strong><br>
-                <small style="color: #eee">$2600/month</small>
-              </small>
-            </div>
+          <div id="goal2" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 11.5%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
+            <small style="display: block; padding: 6px 4px;">
+              <strong>2 days/week</strong><br>
+              <small style="color: #eee">$2300/month</small>
+            </small>
+          </div>
+          <div id="goal3" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 0%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
+            <small style="display: block; padding: 6px 4px;">
+              <strong>+ office</strong><br>
+              <small style="color: #eee">$2600/month</small>
+            </small>
           </div>
         </div>
-      </section>
-      <section class="media-content">
-        <h2>Full-featured Level Editor</h2>
-        <div class="flex-wrap-center">
+      </div>
+    </section>
+    <section class="media-content">
+      <h2>Full-featured Level Editor</h2>
+      <div class="flex-wrap-center">
 
 {% for feature in site.data.features %}
-          <div class="feature">
-            <div class="feature-content">
-              <div class="feature-image">
-                <img src="{{ feature.image }}" />
-              </div>
-              <div class="feature-text">
-                <div class="feature-title">{{ feature.title }}</div>
-                <div class="feature-description">{{ feature.description | markdownify }}</div>
-              </div>
+        <div class="feature">
+          <div class="feature-content">
+            <div class="feature-image">
+              <img src="{{ feature.image }}" />
+            </div>
+            <div class="feature-text">
+              <div class="feature-title">{{ feature.title }}</div>
+              <div class="feature-description">{{ feature.description | markdownify }}</div>
             </div>
           </div>
+        </div>
 {% endfor %}
 
-        </div>
-      </section>
-      <section class="media-content">
-        <h2>Games made with Tiled</h2>
-        <p class="h2-subtitle">Some of the best games have used Tiled to create their levels!</p>
-        <div class="showcases flex-wrap-center">
+      </div>
+    </section>
+    <section class="media-content">
+      <h2>Games made with Tiled</h2>
+      <p class="h2-subtitle">Some of the best games have used Tiled to create their levels!</p>
+      <div class="showcases flex-wrap-center">
 {% assign sorted-showcases = site.data.showcases | sort: 'released' | reverse %}
 {% for game in sorted-showcases %}
-          <a class="showcase" href="{{ game.url }}">
-            <h3>{{ game.name }}</h3>
-            <div class="showcase-release-info">{{ game.released }}</div>
-            <img src="img/showcase/{{ game.image }}">
-          </a>
+        <a class="showcase" href="{{ game.url }}">
+          <h3>{{ game.name }}</h3>
+          <div class="showcase-release-info">{{ game.released }}</div>
+          <img src="img/showcase/{{ game.image }}">
+        </a>
 {% endfor %}
-        </div>
-        <p>Find more <a href="https://itch.io/games/made-with-tiled">games made with Tiled</a> on itch.io!</p>
-      </section>
-      <section class="media-content">
-        <h2>Latest Updates</h2>
-        <div class="card-list flex-wrap-center">
-{% for post in site.posts limit:5 %}
-{% if forloop.index < 3 %}
-          <a class="card" href="{{ post.url }}">
+      </div>
+      <p>Find more <a href="https://itch.io/games/made-with-tiled">games made with Tiled</a> on itch.io!</p>
+    </section>
+    <section class="media-content">
+      <h2>Latest Updates</h2>
+      <div class="card-list flex-wrap-center">
+{% for post in site.posts limit:4 %}
+        <a class="card" href="{{ post.url }}">
 {% if post.image %}
-            <div class="card-image">
-              <img src="img/posts/{{ post.image }}" />
-            </div>
+          <div class="card-image">
+            <img src="img/posts/{{ post.image }}" />
+          </div>
 {% endif %}
-            <div class="card-title">{{ post.title }} <span class="card-subtitle">{{ post.date | date_to_long_string }}</span></div>
-            <div class="card-description">{{ post.excerpt | strip_html }}</div>
-          </a>
-{% else %}
-          <a class="card card-small" href="{{ post.url }}">
-            <div class="card-title">{{ post.title }} <span class="card-subtitle">{{ post.date | date_to_long_string }}</span></div>
-          </a>
-{% endif %}
+          <div class="card-title">{{ post.title }} <span class="card-subtitle">{{ post.date | date_to_long_string }}</span></div>
+          <div class="card-description">{{ post.excerpt | strip_html }}</div>
+        </a>
 {% endfor %}
-        </div>
-        <p><a href="/news">News Archive</a></p>
-      </section>
+      </div>
+      <p><a href="/news">News Archive</a></p>
+    </section>
 
-      <section class="media-content sponsors">
-        <h2>Sponsors</h2>
-        <p class="h2-subtitle">A big thanks to our generous sponsors for making our work sustainable!</p>
-        <div class="flex-wrap-center">
+    <section class="media-content">
+      <h2>Sponsors</h2>
+      <p class="h2-subtitle">A big thanks to our generous sponsors for making our work sustainable!</p>
+      <div class="flex-wrap-center">
 {% for sponsor in site.data.sponsors  %}
-          <a class="sponsor" href="{{ sponsor.url }}"><img src="img/{{ sponsor.banner }}" alt="{{ sponsor.name }}" /></a>
+        <a class="sponsor" href="{{ sponsor.url }}"><img src="img/{{ sponsor.banner }}" alt="{{ sponsor.name }}" /></a>
 {% endfor %}
-        </div>
-        <p>Help improve Tiled by <a href="/donate">becoming a Tiled sponsor</a>!</p>
-      </section>
-    </div>
-
+      </div>
+      <p>Help improve Tiled by <a href="/donate">becoming a Tiled sponsor</a>!</p>
+    </section>
   </div>
-</body>
 
+</body>
 </html>

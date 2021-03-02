@@ -2,13 +2,11 @@
   width: 100%;
   background-color: #1e1e22;
   margin: 0;
-  box-shadow: 0px 0px 10px #333333;
 }
 .headerbar {
   display: flex;
-  padding-left: 0px;
-  padding-right: 0px;
   height: 4.5rem;
+  padding: 0;
   margin: 0;
   user-select: none;
   align-items: center;
@@ -19,7 +17,7 @@
 .header-logo,
 .header-logo-mobile {
   display: flex;
-  height: 80%;
+  height: 100%;
 }
 .header-logo-mobile {
   height: 60%;
@@ -33,6 +31,7 @@
 }
 .header-push {
   margin-right: 1.5rem;
+  flex: 1;
 }
 .header-item,
 .header-item:visited,
@@ -56,18 +55,30 @@
   text-shadow: 0 0 1px #b1d9ff, 0 0 1px #b1d9ff;
 }
 .header-social {
-  margin-left: 1.2rem;
+  color: #ececec;
+  padding: 0.25em 0.5em;
+  margin-left: 0.7em;
+  border: solid transparent;
+  border-width: 2px 0px;
+  border-radius: 5px;
+  transition: all .1s ease-out;
+  background-color: #464646;
+}
+.header-social:hover {
+  border-color: orange;
+  transform: scale(1.1);
+  color: white;
 }
 .header-button {
-  /*background-color: #00cc66;
+  background-color: #00cc66;
   border-style: solid;
   border-color: #009933;
-  border-width: 3px;*/
+  border-width: 3px;
   padding: 0.4rem;
-  /*border-radius: 10px;
-  font-size: 1.2rem !important;*/
+  border-radius: 10px;
+  font-size: 1.2rem !important;
 }
-/*.header-button-donate {
+.header-button-donate {
   background-color: #bb799c;
   border-color: #865767;
 }
@@ -80,7 +91,7 @@
 .header-button-download {
   background-color: #6262E6;
   border-color: #6757BB;
-}*/
+}
 @media screen and (max-width: 515px) {
   .header-button {
     display: none;
@@ -228,22 +239,22 @@
 }
 .card-description {
   color: #ececec;
-  margin-top: 0.4rem;
+  margin-top: 0.4em;
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 100px;
-  padding: 0.4em 0.8rem;
+  padding: 0.3em 0.8rem;
 }
 .media-content {
   width: 100%;
   text-align: center;
+  line-height: 1.5;
   color: #d2d2d2;
 }
 .media-content h2 {
   text-align: center;
   font-size: 1.7rem;
-  padding-bottom: 10px;
-  margin-top: 3rem;
+  padding-bottom: 5px;
+  margin-top: 3em;
   background: radial-gradient(farthest-side at bottom, yellow 10%, orange 25%, transparent 100%) bottom no-repeat;
   background-size: 100% 5px;
 }
@@ -296,6 +307,7 @@ body {
 }
 .container {
   max-width: 1200px;
+  padding: 0px 0.8rem;
   margin-left: auto;
   margin-right: auto;
 }
@@ -304,9 +316,6 @@ a:focus {
 }
 .section {
   font-size: 1.4rem;
-}
-.padded-content {
-  padding: 15px;
 }
 .warning {
   color: #c8c864;
@@ -336,12 +345,4 @@ a:focus {
   transition-duration: 0.6s;
   transition-property: margin-right;
   transition-timing-function: ease;
-}
-
-.fab:hover {
-  opacity: 0.7;
-}
-
-.fab {
-  color: #ececec;
 }
