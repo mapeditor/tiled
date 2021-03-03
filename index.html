@@ -29,6 +29,7 @@
       flex-direction: column;
       width: 45%;
       min-height: 14em;
+      max-width: 700px;
       margin: 1%;
       border-radius: 5px;
       background-color: #464646;
@@ -90,6 +91,11 @@
       list-style-type: square;
       margin-bottom: 0.5em;
     }
+    @media screen and (max-width: 900px) {
+      .feature {
+        width: 95%;
+      }
+    }
 
     /* SHOWCASE */
 
@@ -141,11 +147,11 @@
 
     .sponsor {
       display: flex;
-      width: 22%;
-      min-width: 200px;
-      margin: 10px;
+      width: 24%;
+      padding: 1%;
       opacity: 0.7;
       transition: all .1s ease-out;
+      box-sizing: border-box;
     }
     .sponsor:hover {
       opacity: 1;
@@ -156,6 +162,18 @@
       border-radius: 5px;
       background-color: white;
     }
+    @media screen and (max-width: 900px) {
+      .sponsor {
+        width: 32%;
+        padding: 1.25%;
+      }
+    }
+    @media screen and (max-width: 720px) {
+      .sponsor {
+        width: 49%;
+        padding: 1.5%;
+      }
+    }
   </style>
 </head>
 
@@ -163,25 +181,34 @@
   <div class="headerbar-container">
     <nav class="headerbar container">
       <a href="/" class="header-logo"><img src="img/tiled-logo-white.png" class="logo" alt="tiled logo" /></a>
-      <div class="header-item header-push"></div>
-<!--
-      <a class="header-item header-button header-button-download" href="/download">Download</a>
-      <a class="header-item header-button header-button-donate" href="/donate">Donate</a>
-      <a class="header-item header-button" href="https://doc.mapeditor.org/en/stable/manual/introduction/#getting-started">Get Started</a>
-    -->
+      <div style="display: flex; flex: 1;">
+        <!-- TOOD: Make the documentation part of the website -->
+        <a class="header-item header-button" href="https://doc.mapeditor.org/en/stable/">Docs</a>
+        <a class="header-item header-item-active header-button" href="/news">News</a>
+        <a class="header-item header-button" href="/donate">Donate</a>
+        <div class="header-push"></div>
 
-      <a href="https://discourse.mapeditor.org/" class="header-social tooltip"><i class="fab fa-discourse fa-2x"></i> <span class="tooltiptext">Forum</span></a>
-      <a href="https://discord.gg/39wbTv7" class="header-social tooltip"><i class="fab fa-discord fa-2x"></i> <span class="tooltiptext">Discord</span></a>
-      <a href="https://twitter.com/TiledApp" class="header-social tooltip"><i class='fab fa-twitter fa-2x'></i> <span class="tooltiptext">Twitter</span></a>
-      <a href="https://github.com/mapeditor/tiled" class="header-social tooltip"><i class="fab fa-github fa-2x"></i> <span class="tooltiptext">GitHub</span></a>
+        <a href="https://discourse.mapeditor.org/" class="header-item header-social tooltip"><i class="fab fa-discourse fa-2x"></i> <span class="tooltiptext">Forum</span></a>
+        <a href="https://discord.gg/39wbTv7" class="header-item header-social tooltip"><i class="fab fa-discord fa-2x"></i> <span class="tooltiptext">Discord</span></a>
+        <a href="https://twitter.com/TiledApp" class="header-item header-social tooltip"><i class='fab fa-twitter fa-2x'></i> <span class="tooltiptext">Twitter</span></a>
+        <a href="https://github.com/mapeditor/tiled" class="header-item header-social tooltip"><i class="fab fa-github fa-2x"></i> <span class="tooltiptext">GitHub</span></a>
+      </div>
     </nav>
   </div>
 
   <div class="container">
-    <section class="media-content tiled-description">
-    <img src="img/screenshot-terrain-thumb.png" class="tiled-logo-header" />
-      Tiled is a <a href="https://opensource.org/osd-annotated">free and open source</a>, easy to use, and flexible level editor.
-      <br />
+    <section class="tiled-description">
+      <div style="display: flex; position: relative; height: 500px; margin-bottom: 4em">
+        <img src="img/screenshot-front.png" class="tiled-screenshot-header" />
+        <img src="img/tiled-logo-forum.png" class="tiled-logo-header" />
+        <div style="width: 100%; height: 75%; bottom: -40px; background-image: linear-gradient(to bottom, transparent 0, #3e3e3e 90%); position: absolute;">
+          <div style="width: 100%; bottom: 0; display: flex; justify-content: center; position: absolute;">
+            <a class="header-item header-button button-download" href="https://thorbjorn.itch.io/tiled">Download on itch.io</a>
+            <a class="header-item header-button button-docs" href="https://doc.mapeditor.org/en/stable/manual/introduction/#getting-started">Get Started</a>
+            <a class="header-item header-button button-donate" href="https://github.com/sponsors/bjorn">Sponsor on GitHub</a>
+          </div>
+        </div>
+      </div>
     </section>
     <section class="media-content">
       <div>
@@ -228,6 +255,7 @@
     </section>
     <section class="media-content">
       <h2>Full-featured Level Editor</h2>
+      <p class="h2-subtitle">Tiled is a free and open source, easy to use, and flexible level editor.</p>
       <div class="flex-wrap-center">
 
 {% for feature in site.data.features %}
@@ -263,16 +291,16 @@
     </section>
     <section class="media-content">
       <h2>Latest Updates</h2>
-      <div class="card-list flex-wrap-center">
+      <div class="flex-wrap-center">
 {% for post in site.posts limit:4 %}
-        <a class="card" href="{{ post.url }}">
+        <a class="news" href="{{ post.url }}">
 {% if post.image %}
-          <div class="card-image">
+          <div class="news-image">
             <img src="img/posts/{{ post.image }}" />
           </div>
 {% endif %}
-          <div class="card-title">{{ post.title }} <span class="card-subtitle">{{ post.date | date_to_long_string }}</span></div>
-          <div class="card-description">{{ post.excerpt | strip_html }}</div>
+          <div class="news-title">{{ post.title }} <span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
+          <div class="news-description">{{ post.excerpt | strip_html }}</div>
         </a>
 {% endfor %}
       </div>
@@ -282,7 +310,7 @@
     <section class="media-content">
       <h2>Sponsors</h2>
       <p class="h2-subtitle">A big thanks to our generous sponsors for making our work sustainable!</p>
-      <div class="flex-wrap-center">
+      <div class="flex-wrap-center" style="padding-left: 5%; padding-right: 5%">
 {% for sponsor in site.data.sponsors  %}
         <a class="sponsor" href="{{ sponsor.url }}"><img src="img/{{ sponsor.banner }}" alt="{{ sponsor.name }}" /></a>
 {% endfor %}
@@ -293,7 +321,7 @@
   <footer id="footer" class="media-content">
     <div class="container" style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
       <p>Tiled - Copyright © 2008-2021 Thorbjørn Lindeijer<br> and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a></p>
-      <nav>
+      <nav style="display: flex; justify-content: center; align-items: top; margin-left: 1em;">
         <ul style="float: right; border-left: 0.125em dotted #ececec; padding: 0 1em">
           <li><a href="https://discourse.mapeditor.org/">Forum</a></li>
           <li><a href="https://doc.mapeditor.org/en/stable/">Documentation</a></li>

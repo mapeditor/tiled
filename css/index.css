@@ -1,3 +1,6 @@
+.tooltip .tooltiptext {
+  margin-left: 0.5em;
+}
 .headerbar-container,
 footer {
   background-color: #1e1e22;
@@ -37,70 +40,67 @@ footer nav li {
   margin-right: 1.5rem;
   flex: 1;
 }
-.header-item,
-.header-item:visited,
-.header-item:link {
-  font-weight: 500;
-  font-size: 1.2rem;
-  margin-left: 1.2rem;
+.header-item {
+  display: flex;
   color: #ececec;
-  font-style: normal;
   text-decoration: none;
-}
-.header-item:active,
-.header-item:hover,
-.header-item-active {
-  color: #ececec;
-  text-shadow: 0 0 1px #d6d6d6, 0 0 1px #d6d6d6;
-}
-.header-item-active,
-.header-item-active:hover {
-  color: #b1d9ff !important;
-  text-shadow: 0 0 1px #b1d9ff, 0 0 1px #b1d9ff;
-}
-.header-social {
-  color: #ececec;
+  justify-content: center;
+  align-items: center;
   padding: 0.25em 0.5em;
   margin-left: 0.7em;
   border: solid transparent;
   border-width: 2px 0px;
   border-radius: 5px;
   transition: all .1s ease-out;
-  background-color: #464646;
-  text-decoration: none;
-  text-align: center;
+}
+.header-item-active {
+  background-color: #3e3e3e;
+}
+.header-item:hover {
+  border-color: orange;
+  transform: scale(1.1);
+  color: white;
+}
+
+.header-social {
   word-spacing: 0.25em;
 }
 .fab {
   vertical-align: -17%;
 }
-.header-social:hover {
-  border-color: orange;
-  transform: scale(1.1);
+.header-button {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+.button-download {
+  background-color: green;
+}
+.button-docs {
+  background-color: green;
+}
+.button-donate {
+  background-color: darkcyan;
+}
+.button-download,
+.button-docs,
+.button-donate {
+  box-shadow: 0px 1px 5px rgb(0, 0, 0, 0.5);
+  margin: 1em;
+  padding: 0.5em 1em;
+  border: 2px solid rgb(255,255,255,0.25);
   color: white;
 }
-.header-button {
-  background-color: #00cc66;
-  border-style: solid;
-  border-color: #009933;
-  border-width: 3px;
-  padding: 0.4rem;
-  border-radius: 10px;
-  font-size: 1.2rem !important;
+.button-download:hover,
+.button-docs:hover,
+.button-donate:hover {
+  border: 2px solid white;
 }
-.header-button-donate {
-  background-color: #bb799c;
-  border-color: #865767;
-}
-.header-button-donate-heart {
+
+.button-donate-heart {
   height: 1.1rem;
   vertical-align: middle;
   margin-bottom: 0.1rem;
   margin-left: -0.1rem;
-}
-.header-button-download {
-  background-color: #6262E6;
-  border-color: #6757BB;
 }
 @media screen and (max-width: 515px) {
   .header-button {
@@ -108,17 +108,6 @@ footer nav li {
   }
 }
 @media screen and (max-width: 1200px) {
-  .header-message {
-    display: none;
-  }
-  .showcase-images {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 60rem;
-  }
-}
-@media screen and (max-width: 900px) {
   .tooltip .tooltiptext {
     display: none;
   }
@@ -164,87 +153,36 @@ footer nav li {
     transition-delay: .3s;
   }
   */
-  .showcase-images {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 60rem;
-  }
 }
-@media screen and (max-width: 720px) {
-  .showcase-images {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 40rem;
-  }
-}
-.community-icon {
-  width: 50% !important;
-  max-width: 7rem;
-}
-.news-title {
-  font-size: 2.8rem;
-  font-weight: 800;
-  margin-bottom: 0px;
-  margin-top: 0px;
-}
-.news-subtitle {
-  margin-top: 0px;
-  font-size: 1.2rem;
-  font-weight: 200;
-  font-style: italic;
-  color: #8f8f8f;
-}
-.news-content img {
-  border-radius: 10px;
-  max-width: 100%;
-}
-.news-content video {
-  border-radius: 10px;
-  max-width: 100%;
-}
-.news-social-links {
-  display: inline-block;
-}
-.news-social-icon {
-  height: 1.3rem;
-  vertical-align: middle;
-}
-.news-social-link {
-  font-size: 1.1rem;
-  color: #ececec;
-}
-.release-feature-authors {
-  margin-top: -1rem !important;
-  font-style: italic;
-}
-.news-image-subtitle {
-  color: #8f8f8f;
-  font-style: italic;
+.tiled-screenshot-header {
+  position: absolute;
+  width: 90%;
+  left: 5%;
+  height: 100%;
+  bottom: 0%;
+  object-fit: contain;
+  max-width: 2956px;
+  box-shadow: 0px 0px 40px rgba(0,0,0,0.5);
 }
 .tiled-logo-header {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-  max-width: 35rem;
+  position: absolute;
+
 }
 .tiled-description {
   text-align: center;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
   margin-bottom: 2rem;
-  font-size: 1.5rem;
-  font-weight: 500;
 }
-.card {
+
+/* NEWS */
+
+.news {
   display: block;
   text-align: left;
   overflow: hidden;
   width: 47%;
   height: 12rem;
+  max-width: 700px;
   margin: 1%;
   border-radius: 5px;
   background-color: #464646;
@@ -254,24 +192,24 @@ footer nav li {
   border-width: 2px 0px;
   transition: all .1s ease-out;
 }
-.media-content a.card:hover {
+.media-content a.news:hover {
   transform: scale(1.03);
   text-decoration: none;
   border-color: orange;
 }
-.card-image {
+.news-image {
   width: 30%;
   border-radius: 0px 5px 5px 0px;
   float: right;
   height: 100%;
   margin-right: 0px;
 }
-.card-image img {
+.news-image img {
   object-fit: cover;
   height: 100%;
   width: 100%;
 }
-.card-title {
+.news-title {
   display: block;
   font-weight: bold;
   font-size: 1.2em;
@@ -280,19 +218,25 @@ footer nav li {
   background-color: #4e4e4e;
   padding: 0.4em 0.8rem;
 }
-.card-subtitle {
+.news-subtitle {
   padding-left: 10px;
   font-weight: 200;
   font-size: 80%;
   color: #8f8f8f;
 }
-.card-description {
+.news-description {
   color: #ececec;
   margin-top: 0.4em;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0.3em 0.8rem;
 }
+@media screen and (max-width: 1200px) {
+  .news {
+    width: 95%;
+  }
+}
+
 .media-content {
   width: 100%;
   text-align: center;
@@ -301,7 +245,7 @@ footer nav li {
 }
 .media-content h2 {
   text-align: center;
-  font-size: 1.7rem;
+  font-size: 1.7em;
   padding-bottom: 5px;
   margin-top: 3em;
   background: radial-gradient(farthest-side at bottom, yellow 10%, orange 25%, transparent 100%) bottom no-repeat;
@@ -312,11 +256,11 @@ footer nav li {
   margin-bottom: 22px;
 }
 .media-content h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  font-size: 1.5em;
+  margin-bottom: 1em;
 }
 .media-content h4 {
-  margin-bottom: 1rem;
+  margin-bottom: 1em;
 }
 .media-content a {
   text-decoration: none;
