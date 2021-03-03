@@ -1,7 +1,16 @@
-.headerbar-container {
-  width: 100%;
+.headerbar-container,
+footer {
   background-color: #1e1e22;
-  margin: 0;
+}
+footer {
+    margin-top: 3em;
+}
+footer.media-content {
+  padding: 1em 0;
+  text-align: left;
+}
+footer nav li {
+  list-style-type: none;
 }
 .headerbar {
   display: flex;
@@ -14,14 +23,9 @@
 .logo {
   height: 100%;
 }
-.header-logo,
-.header-logo-mobile {
+.header-logo {
   display: flex;
-  height: 100%;
-}
-.header-logo-mobile {
-  height: 60%;
-  display: none;
+  height: 90%;
 }
 .header-content {
   display: flex;
@@ -63,6 +67,12 @@
   border-radius: 5px;
   transition: all .1s ease-out;
   background-color: #464646;
+  text-decoration: none;
+  text-align: center;
+  word-spacing: 0.25em;
+}
+.fab {
+  vertical-align: -17%;
 }
 .header-social:hover {
   border-color: orange;
@@ -109,12 +119,51 @@
   }
 }
 @media screen and (max-width: 900px) {
-  .header-logo-mobile {
-    display: flex;
-  }
-  .header-logo {
+  .tooltip .tooltiptext {
     display: none;
   }
+
+  /*
+  Tooltips disabled for now, not sure about them.
+
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+  }
+  .tooltip .tooltiptext {
+    opacity: 0;
+    transition: all .1s ease-out;
+    transition-delay: 0s;
+    width: 6em;
+    top: 150%;
+    left: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    margin-left: -3em;
+    pointer-events : none;
+    position: absolute;
+    z-index: 1;
+  }
+  .tooltip .tooltiptext::after {
+    content: " ";
+    position: absolute;
+    opacity: 0.5;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent black transparent;
+  }
+  .tooltip:hover .tooltiptext {
+    opacity: 1;
+    transition-delay: .3s;
+  }
+  */
   .showcase-images {
     display: flex;
     flex-direction: column;
@@ -206,7 +255,7 @@
   transition: all .1s ease-out;
 }
 .media-content a.card:hover {
-  transform: scale(1.05);
+  transform: scale(1.03);
   text-decoration: none;
   border-color: orange;
 }
@@ -275,6 +324,7 @@
 }
 .media-content a:hover {
   text-decoration: underline;
+  color: #cad2ff;
 }
 .media-content pre code {
   padding-bottom: 0px;
