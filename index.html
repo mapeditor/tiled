@@ -9,12 +9,12 @@
   <meta property="og:url" content="https://www.mapeditor.org" />
   <meta property="og:image" content="https://www.mapeditor.org/assets/tiled_logo_fill.png" />
   <meta property="og:description" content="Tiled is an easy to use and free level editor" />
-  <link rel="shortcut icon" type="image/png" href="/assets/favicon.png">
+  <link href='/favicon.ico' rel='icon' type='image/png'/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css" crossorigin="anonymous">
   <link rel="stylesheet" href="css/index.css">
   <link href="/atom.xml" rel="alternate" type="application/atom+xml" />
-  <title>Tiled - 2D Level Editor</title>
   <script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
+  <title>Tiled - 2D Level Editor</title>
   <style>
     .flex-wrap-center {
       display: flex;
@@ -249,78 +249,17 @@
 </head>
 
 <body>
-  <div class="headerbar-container">
-    <nav class="headerbar container">
-      <a href="/" class="headerbar-logo"><img src="img/tiled-logo-white.png" class="logo" alt="tiled logo" /></a>
-      <div class="headerbar-content">
-        <!-- TOOD: Make the documentation part of the website -->
-        <a class="header-item headerbar-button" href="https://doc.mapeditor.org/en/stable/">Docs</a>
-        <a class="header-item headerbar-button" href="/news">News</a>
-        <a class="header-item headerbar-button" href="/donate">Donate</a>
-        <div class="stretch"></div>
+    {% include body_header.html %}
 
-        <a href="https://discourse.mapeditor.org/" class="header-item headerbar-social tooltip"><i class="fab fa-discourse fa-2x"></i> <span class="tooltiptext">Forum</span></a>
-        <a href="https://discord.gg/39wbTv7" class="header-item headerbar-social tooltip"><i class="fab fa-discord fa-2x"></i> <span class="tooltiptext">Discord</span></a>
-        <a href="https://twitter.com/TiledApp" class="header-item headerbar-social tooltip"><i class='fab fa-twitter fa-2x'></i> <span class="tooltiptext">Twitter</span></a>
-        <a href="https://github.com/mapeditor/tiled" class="header-item headerbar-social tooltip"><i class="fab fa-github fa-2x"></i> <span class="tooltiptext">GitHub</span></a>
-      </div>
-    </nav>
-  </div>
-
-  <div class="container">
     <section class="header">
       <div style="display: flex; justify-content: center; position: relative; margin-bottom: 4em">
         <img src="img/screenshot-front.png" class="header-screenshot" />
         <div class="header-screenshot-fadeout"></div>
         <img src="img/tiled-logo-header.png" class="header-logo" />
         <div class="action-buttons">
-          <a class="header-item action-button button-download" href="https://thorbjorn.itch.io/tiled">Download on itch.io</a>
+          <a class="header-item action-button button-download" href="https://thorbjorn.itch.io/tiled">              Download on itch.io</a>
           <a class="header-item action-button button-docs" href="https://doc.mapeditor.org/en/stable/manual/introduction/#getting-started">Get Started</a>
-          <a class="header-item action-button button-donate" href="https://github.com/sponsors/bjorn">Sponsor on GitHub</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="media-content">
-      <div>
-        <b>Please support my work on Tiled!</b> - You can donate at <a href="https://github.com/sponsors/bjorn">GitHub Sponsors</a>, <a href="https://www.patreon.com/bjorn/overview">Patreon</a> or <a href="https://liberapay.com/Tiled">Liberapay</a>.
-      </div>
-
-      <div>
-        <div class="progress" style="margin-bottom: 0px;">
-          <a href="https://thorbjorn.itch.io/tiled">
-            <div class="progress-bar progress-bar-warning progress-bar-striped" id="itch-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 35%; background-image: linear-gradient(to bottom, #fa5c5c 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="itch"></div>
-          </a>
-          <a href="https://liberapay.com/bjorn">
-            <div class="progress-bar progress-bar-warning progress-bar-striped" id="liberapay-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0.33%; background-image: linear-gradient(to bottom, #f6c915 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Liberapay"></div>
-          </a>
-          <a href="https://www.patreon.com/bjorn">
-            <div class="progress-bar progress-bar-warning progress-bar-striped" id="patreon-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 39.59%; background-image: linear-gradient(to bottom, #FF945A 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Patreon"></div>
-          </a>
-          <a href="https://github.com/sponsors/bjorn">
-            <div class="progress-bar progress-bar-warning progress-bar-striped" id="github-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 25.06%; background-image: linear-gradient(to bottom, #ea4aaa 0px, #c54190 100%);" data-toggle="tooltip" data-placement="bottom" title="GitHub Sponsors"></div>
-          </a>
-          <span style="color: gray; margin-left: 5px;" id="goal-percentage"></span>
-        </div>
-        <div style="margin-left: 4px;">
-          <div id="goal1" class="goalmarker" style="height: 1em; margin-right: 55.77%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
-            <small style="display: block; padding: 6px 4px;">
-              <strong>1 day/week</strong><br>
-              <small style="color: #eee">$1150/month</small>
-            </small>
-          </div>
-          <div id="goal2" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 11.5%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
-            <small style="display: block; padding: 6px 4px;">
-              <strong>2 days/week</strong><br>
-              <small style="color: #eee">$2300/month</small>
-            </small>
-          </div>
-          <div id="goal3" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 0%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
-            <small style="display: block; padding: 6px 4px;">
-              <strong>+ office</strong><br>
-              <small style="color: #eee">$2600/month</small>
-            </small>
-          </div>
+          <a class="header-item action-button button-donate" href="/donate"><i class="fas fa-heart" style="margin-right: 0.5em"></i> Donate</a>
         </div>
       </div>
     </section>
@@ -392,6 +331,7 @@
       <p>Help improve Tiled by <a href="/donate">becoming a Tiled sponsor</a>!</p>
     </section>
   </div>
+
   <footer id="footer" class="media-content">
     <div class="container" style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
       <p>Tiled - Copyright © 2008-2021 Thorbjørn Lindeijer<br> and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a></p>

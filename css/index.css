@@ -6,7 +6,8 @@ footer {
   background-color: #1e1e22;
 }
 footer {
-    margin-top: 3em;
+  margin-top: 3em;
+  box-shadow: 0 50vh 0 50vh #1e1e22;
 }
 footer.media-content {
   padding: 1em 0;
@@ -57,6 +58,7 @@ footer nav li {
   border-color: orange;
   transform: scale(1.1);
   color: white;
+  text-decoration: none;
 }
 
 .headerbar-social {
@@ -196,7 +198,6 @@ footer nav li {
   width: 100%;
   text-align: center;
   line-height: 1.5;
-  color: #d2d2d2;
 }
 .media-content h2 {
   text-align: center;
@@ -217,11 +218,11 @@ footer nav li {
 .media-content h4 {
   margin-bottom: 1em;
 }
-.media-content a {
+a {
   text-decoration: none;
   color: #7c90ff;
 }
-.media-content a:hover {
+a:hover {
   text-decoration: underline;
   color: #cad2ff;
 }
@@ -235,24 +236,12 @@ footer nav li {
   font-family: "Roboto";
   src: url(../font/Roboto-Regular.ttf);
 }
-@font-face {
-  font-family: "FontAwesome";
-  src: url("fontawesome-webfont.eot?v=3.0.1");
-  src: url("fontawesome-webfont.eot?#iefix&v=3.0.1")
-      format("embedded-opentype"),
-    url("fontawesome-webfont.woff?v=3.0.1")
-      format("woff"),
-    url("fontawesome-webfont.ttf?v=3.0.1")
-      format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
 html,
 body {
   margin: 0;
-  color: #ececec;
   font-family: "Roboto", Helvetica, Arial, sans-serif;
   background-color: #3e3e3e;
+  color: #d2d2d2;
 }
 .container {
   max-width: 1200px;
