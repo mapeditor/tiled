@@ -22,6 +22,72 @@
       justify-content: center;
     }
 
+    /* HEADER */
+
+    .header {
+      text-align: center;
+      margin-top: 5%;
+      margin-bottom: 10%;
+    }
+    .header-screenshot {
+      width: 90%;
+      box-shadow: 0px 0px 40px rgba(0,0,0,0.5);
+    }
+    .header-screenshot-fadeout {
+      position: absolute;
+      width: 100%;
+      height: 75%;
+      bottom: -40px;
+      background-image: linear-gradient(to bottom, transparent 0, #3e3e3e 80%);
+    }
+    .header-logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 50%;
+      transform: translate(-55%, -30%);
+    }
+    .button-download {
+      background-color: green;
+    }
+    .button-docs {
+      background-color: green;
+    }
+    .button-donate {
+      background-color: darkcyan;
+    }
+    .action-buttons {
+      width: 100%;
+      bottom: -30px;
+      display: flex;
+      justify-content: center;
+      position: absolute;
+      flex-wrap: wrap;
+      padding-left: 2em;
+      padding-right: 2em;
+      box-sizing: border-box;
+    }
+    .action-button {
+      box-shadow: 0px 1px 5px rgb(0, 0, 0, 0.5);
+      margin: 1.5%;
+      padding: 0.5em 1em;
+      border: 2px solid rgb(255,255,255,0.25);
+      color: white;
+    }
+    .action-button:hover {
+      border: 2px solid white;
+    }
+    @media screen and (max-width: 514px) {
+      .header-logo {
+        display: none;
+      }
+    }
+    @media screen and (max-width: 700px) {
+      .button-docs {
+        display: none;
+      }
+    }
+
     /* FEATURES */
 
     .feature {
@@ -61,8 +127,8 @@
       overflow: hidden;
     }
     .feature-image img {
-      min-height: 100%;
-      min-width: 100%;
+      height: 100%;
+      width: 100%;
       object-fit: cover;
     }
     .feature-text {
@@ -101,7 +167,7 @@
 
     .showcases {
       max-height: 870px;
-      overflow: hidden;
+      overflow-y: hidden;
     }
     .showcase {
       display: flex;
@@ -174,42 +240,47 @@
         padding: 1.5%;
       }
     }
+    @media (hover: none) {
+      .sponsor {
+        opacity: 1;
+      }
+    }
   </style>
 </head>
 
 <body>
   <div class="headerbar-container">
     <nav class="headerbar container">
-      <a href="/" class="header-logo"><img src="img/tiled-logo-white.png" class="logo" alt="tiled logo" /></a>
-      <div style="display: flex; flex: 1;">
+      <a href="/" class="headerbar-logo"><img src="img/tiled-logo-white.png" class="logo" alt="tiled logo" /></a>
+      <div class="headerbar-content">
         <!-- TOOD: Make the documentation part of the website -->
-        <a class="header-item header-button" href="https://doc.mapeditor.org/en/stable/">Docs</a>
-        <a class="header-item header-item-active header-button" href="/news">News</a>
-        <a class="header-item header-button" href="/donate">Donate</a>
-        <div class="header-push"></div>
+        <a class="header-item headerbar-button" href="https://doc.mapeditor.org/en/stable/">Docs</a>
+        <a class="header-item headerbar-button" href="/news">News</a>
+        <a class="header-item headerbar-button" href="/donate">Donate</a>
+        <div class="stretch"></div>
 
-        <a href="https://discourse.mapeditor.org/" class="header-item header-social tooltip"><i class="fab fa-discourse fa-2x"></i> <span class="tooltiptext">Forum</span></a>
-        <a href="https://discord.gg/39wbTv7" class="header-item header-social tooltip"><i class="fab fa-discord fa-2x"></i> <span class="tooltiptext">Discord</span></a>
-        <a href="https://twitter.com/TiledApp" class="header-item header-social tooltip"><i class='fab fa-twitter fa-2x'></i> <span class="tooltiptext">Twitter</span></a>
-        <a href="https://github.com/mapeditor/tiled" class="header-item header-social tooltip"><i class="fab fa-github fa-2x"></i> <span class="tooltiptext">GitHub</span></a>
+        <a href="https://discourse.mapeditor.org/" class="header-item headerbar-social tooltip"><i class="fab fa-discourse fa-2x"></i> <span class="tooltiptext">Forum</span></a>
+        <a href="https://discord.gg/39wbTv7" class="header-item headerbar-social tooltip"><i class="fab fa-discord fa-2x"></i> <span class="tooltiptext">Discord</span></a>
+        <a href="https://twitter.com/TiledApp" class="header-item headerbar-social tooltip"><i class='fab fa-twitter fa-2x'></i> <span class="tooltiptext">Twitter</span></a>
+        <a href="https://github.com/mapeditor/tiled" class="header-item headerbar-social tooltip"><i class="fab fa-github fa-2x"></i> <span class="tooltiptext">GitHub</span></a>
       </div>
     </nav>
   </div>
 
   <div class="container">
-    <section class="tiled-description">
-      <div style="display: flex; position: relative; height: 500px; margin-bottom: 4em">
-        <img src="img/screenshot-front.png" class="tiled-screenshot-header" />
-        <img src="img/tiled-logo-forum.png" class="tiled-logo-header" />
-        <div style="width: 100%; height: 75%; bottom: -40px; background-image: linear-gradient(to bottom, transparent 0, #3e3e3e 90%); position: absolute;">
-          <div style="width: 100%; bottom: 0; display: flex; justify-content: center; position: absolute;">
-            <a class="header-item header-button button-download" href="https://thorbjorn.itch.io/tiled">Download on itch.io</a>
-            <a class="header-item header-button button-docs" href="https://doc.mapeditor.org/en/stable/manual/introduction/#getting-started">Get Started</a>
-            <a class="header-item header-button button-donate" href="https://github.com/sponsors/bjorn">Sponsor on GitHub</a>
-          </div>
+    <section class="header">
+      <div style="display: flex; justify-content: center; position: relative; margin-bottom: 4em">
+        <img src="img/screenshot-front.png" class="header-screenshot" />
+        <div class="header-screenshot-fadeout"></div>
+        <img src="img/tiled-logo-header.png" class="header-logo" />
+        <div class="action-buttons">
+          <a class="header-item action-button button-download" href="https://thorbjorn.itch.io/tiled">Download on itch.io</a>
+          <a class="header-item action-button button-docs" href="https://doc.mapeditor.org/en/stable/manual/introduction/#getting-started">Get Started</a>
+          <a class="header-item action-button button-donate" href="https://github.com/sponsors/bjorn">Sponsor on GitHub</a>
         </div>
       </div>
     </section>
+
     <section class="media-content">
       <div>
         <b>Please support my work on Tiled!</b> - You can donate at <a href="https://github.com/sponsors/bjorn">GitHub Sponsors</a>, <a href="https://www.patreon.com/bjorn/overview">Patreon</a> or <a href="https://liberapay.com/Tiled">Liberapay</a>.
@@ -253,6 +324,25 @@
         </div>
       </div>
     </section>
+
+    <section class="media-content">
+      <h2>Latest Updates</h2>
+      <div class="flex-wrap-center">
+{% for post in site.posts limit:2 %}
+        <a class="news" href="{{ post.url }}">
+{% if post.image %}
+          <div class="news-image">
+            <img src="img/posts/{{ post.image }}" />
+          </div>
+{% endif %}
+          <div class="news-title">{{ post.title }} <span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
+          <div class="news-description">{{ post.excerpt | strip_html }}</div>
+        </a>
+{% endfor %}
+      </div>
+      <p><a href="/news">News Archive</a></p>
+    </section>
+
     <section class="media-content">
       <h2>Full-featured Level Editor</h2>
       <p class="h2-subtitle">Tiled is a free and open source, easy to use, and flexible level editor.</p>
@@ -274,6 +364,7 @@
 
       </div>
     </section>
+
     <section class="media-content">
       <h2>Games made with Tiled</h2>
       <p class="h2-subtitle">Some of the best games have used Tiled to create their levels!</p>
@@ -288,23 +379,6 @@
 {% endfor %}
       </div>
       <p>Find more <a href="https://itch.io/games/made-with-tiled">games made with Tiled</a> on itch.io!</p>
-    </section>
-    <section class="media-content">
-      <h2>Latest Updates</h2>
-      <div class="flex-wrap-center">
-{% for post in site.posts limit:4 %}
-        <a class="news" href="{{ post.url }}">
-{% if post.image %}
-          <div class="news-image">
-            <img src="img/posts/{{ post.image }}" />
-          </div>
-{% endif %}
-          <div class="news-title">{{ post.title }} <span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
-          <div class="news-description">{{ post.excerpt | strip_html }}</div>
-        </a>
-{% endfor %}
-      </div>
-      <p><a href="/news">News Archive</a></p>
     </section>
 
     <section class="media-content">
