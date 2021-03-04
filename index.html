@@ -2,18 +2,8 @@
 ---
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name='viewport' content="width=device-width, initial-scale=1" />
-  <meta property="og:title" content="Tiled - A free and open source map editor" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.mapeditor.org" />
-  <meta property="og:image" content="https://www.mapeditor.org/assets/tiled_logo_fill.png" />
-  <meta property="og:description" content="Tiled is an easy to use and free level editor" />
-  <link href='/favicon.ico' rel='icon' type='image/png'/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css" crossorigin="anonymous">
-  <link rel="stylesheet" href="css/index.css">
+  {% include header_includes.html %}
   <link href="/atom.xml" rel="alternate" type="application/atom+xml" />
-  <script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
   <title>Tiled - 2D Level Editor</title>
   <style>
     .flex-wrap-center {
@@ -85,6 +75,68 @@
     @media screen and (max-width: 700px) {
       .button-docs {
         display: none;
+      }
+    }
+
+    /* NEWS */
+
+    .news {
+      display: block;
+      text-align: left;
+      overflow: hidden;
+      width: 47%;
+      max-width: 700px;
+      margin: 1%;
+      border-radius: 5px;
+      background-color: #464646;
+      background-clip: padding-box;
+      margin-bottom: 15px;
+      border: solid transparent;
+      border-width: 2px 0px;
+      transition: all .1s ease-out;
+    }
+    .media-content a.news:hover {
+      transform: scale(1.03);
+      text-decoration: none;
+      border-color: orange;
+    }
+    .news-image {
+      width: 30%;
+      border-radius: 0px 5px 5px 0px;
+      float: right;
+      height: 100%;
+      margin-right: 0px;
+    }
+    .news-image img {
+      object-fit: cover;
+      height: 100%;
+      width: 100%;
+    }
+    .news-title {
+      display: block;
+      font-weight: bold;
+      font-size: 1.2em;
+      color: #ececec;
+      font-style: normal;
+      background-color: #4e4e4e;
+      padding: 0.4em 0.8rem;
+    }
+    .news-subtitle {
+      padding-left: 10px;
+      font-weight: 200;
+      font-size: 80%;
+      color: #8f8f8f;
+    }
+    .news-description {
+      color: #ececec;
+      margin-top: 0.4em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0.3em 0.8rem;
+    }
+    @media screen and (max-width: 1200px) {
+      .news {
+        width: 95%;
       }
     }
 
@@ -330,24 +382,5 @@
       </div>
       <p>Help improve Tiled by <a href="/donate">becoming a Tiled sponsor</a>!</p>
     </section>
-  </div>
 
-  <footer id="footer" class="media-content">
-    <div class="container" style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
-      <p>Tiled - Copyright © 2008-2021 Thorbjørn Lindeijer<br> and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a></p>
-      <nav style="display: flex; justify-content: center; align-items: top; margin-left: 1em;">
-        <ul style="float: right; border-left: 0.125em dotted #ececec; padding: 0 1em">
-          <li><a href="https://discourse.mapeditor.org/">Forum</a></li>
-          <li><a href="https://doc.mapeditor.org/en/stable/">Documentation</a></li>
-          <li><a href="/news">News</a></li>
-          <li><a href="/donate">Donate</a></li>
-          <li><a href="https://discord.gg/39wbTv7">Discord</a></li>
-          <li><a href="https://twitter.com/TiledApp">Twitter</a></li>
-          <li><a href="https://github.com/mapeditor/tiled">GitHub</a></li>
-        </ul>
-      </nav>
-    </div>
-  </footer>
-
-</body>
-</html>
+{% include footer.html %}

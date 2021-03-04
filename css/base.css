@@ -1,189 +1,223 @@
 /* Base styles go here, only stuff that should appear on every page */
 
-body {
-    padding-right: 0px;
-    padding-left: 0px;
-    background-color: #e8e8e8;
+.tooltip .tooltiptext {
+  margin-left: 0.5em;
 }
-
-.container-fluid {
-    margin: 0 auto;
-    max-width: 1170px;
+.headerbar-container,
+footer {
+  background-color: #1e1e22;
 }
-
-.my-navigation {
-    background-color: rgba(255,255,255,.2);
-    margin-bottom: 0px;
-    padding-top: 0.75em;
-    padding-bottom: 0.25em;
-    text-align: center;
+footer {
+  margin-top: 3em;
+  box-shadow: 0 50vh 0 50vh #1e1e22;
 }
-
-.my-navigation .btn {
-    margin-bottom: 0.5em;
-    border: 1px solid gray;
+footer.media-content {
+  padding: 1em 0;
+  text-align: left;
 }
-
-.my-top-box {
-    border-bottom: 1px solid white;
-    margin-bottom: 2em;
-
-    background-color: #466426;
-    background: url(/img/tile40.png) center top;
+footer nav li {
+  list-style-type: none;
 }
-
-/* element to fill the whole area, center contents and hide overflow */
-.my-top-box .background {
-    text-align: center;
-    position: absolute;
-    width: 100%; height: 100%;
-    overflow: hidden;
+.headerbar {
+  display: flex;
+  height: 4.5rem;
+  padding: 0;
+  margin: 0;
+  user-select: none;
+  align-items: center;
 }
-
-/* adding top/bottom shadows and relative position to make this stuff appear on top */
-.my-top-box .contents {
-     box-shadow: inset 0px 20px 10px -20px #000000, inset 0px -6px 10px -7px #000000;
-     position: relative;
-     padding-top: 10px;
+.logo {
+  height: 100%;
 }
-
-.my-top-box .my-buttons {
-    margin-top: 20px;
+.headerbar-logo {
+  display: flex;
+  height: 90%;
 }
-
-.my-top-box .btn-success {
-    border: 1px solid #387038;
+.headerbar-content {
+  display: flex;
+  flex: 1;
 }
-.my-top-box .btn-info {
-    border: 1px solid #1f6377;
+.stretch {
+  flex: 1;
 }
-
-
-.my-box {
-    box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-    border-radius: 4px;
-    padding: 21px 30px 30px 30px;
-    margin-bottom: 2em;
-    background: white;
+.header-item {
+  display: flex;
+  color: #ececec;
+  text-decoration: none;
+  justify-content: center;
+  align-items: center;
+  padding: 0.25em 0.5em;
+  margin-left: 0.7em;
+  border: solid transparent;
+  border-width: 2px 0px;
+  border-radius: 5px;
+  transition: all .1s ease-out;
 }
-
-.post-header .meta {
-    font-size: 90%;
-    color: #818181;
-    margin-bottom: 20px;
+.header-item-active {
+  background-color: #3e3e3e;
 }
-
-.post-navigation {
-    margin: 2em 0;
-}
-
-.post-navigation > .prev {
-    display: block;
-    float: left;
-}
-
-.post-navigation > .next {
-    display: block;
-    float: right;
-}
-
-#navbar {
-    max-width: 1140px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* center the social buttons */
-#navbar #social-buttons {
-    margin-top: 16px;
-    margin-right: 10px;
-}
-
-#navbar .navbar-nav {
-    margin-left: 10px;
-    margin-right: 10px;
-}
-
-#footer {
-    box-shadow: inset 0px 20px 10px -20px #000000;
-    color: white;
-    text-shadow: 1px 1px 2px #000000;
-    margin-top: 20px;
-
-    padding-top: 20px;
-    padding-bottom: 30px;
-
-    background: #666666;
-    background-image: url(/img/grid.png);
-    background-position: center top;
-}
-
-#footer a {
-  color: #80d4ff;
+.header-item:hover {
+  border-color: orange;
+  transform: scale(1.1);
+  color: white;
   text-decoration: none;
 }
 
-#footer a:hover {
+.fab {
+  vertical-align: -17%;
+}
+.headerbar-button {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.button-donate-heart {
+  height: 1.1rem;
+  vertical-align: middle;
+  margin-bottom: 0.1rem;
+  margin-left: -0.1rem;
+}
+@media screen and (max-width: 700px) {
+  .headerbar-button {
+    display: none;
+  }
+}
+@media screen and (max-width: 1200px) {
+  .tooltip .tooltiptext {
+    display: none;
+  }
+
+  /*
+  Tooltips disabled for now, not sure about them.
+
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+  }
+  .tooltip .tooltiptext {
+    opacity: 0;
+    transition: all .1s ease-out;
+    transition-delay: 0s;
+    width: 6em;
+    top: 150%;
+    left: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    margin-left: -3em;
+    pointer-events : none;
+    position: absolute;
+    z-index: 1;
+  }
+  .tooltip .tooltiptext::after {
+    content: " ";
+    position: absolute;
+    opacity: 0.5;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent black transparent;
+  }
+  .tooltip:hover .tooltiptext {
+    opacity: 1;
+    transition-delay: .3s;
+  }
+  */
+}
+
+
+.media-content {
+  width: 100%;
+  text-align: center;
+  line-height: 1.5;
+}
+.media-content h2 {
+  text-align: center;
+  font-size: 1.7em;
+  padding-bottom: 5px;
+  margin-top: 3em;
+  background: radial-gradient(farthest-side at bottom, yellow 10%, orange 25%, transparent 100%) bottom no-repeat;
+  background-size: 100% 5px;
+}
+.media-content p.h2-subtitle {
+  margin-top: -15px;
+  margin-bottom: 22px;
+}
+.media-content h3 {
+  font-size: 1.5em;
+  margin-bottom: 1em;
+}
+.media-content h4 {
+  margin-bottom: 1em;
+}
+a {
+  text-decoration: none;
+  color: #7c90ff;
+}
+a:hover {
   text-decoration: underline;
+  color: #cad2ff;
+}
+.media-content pre code {
+  padding-bottom: 0px;
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url(../font/Roboto-Regular.ttf);
+}
+html,
+body {
+  margin: 0;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  background-color: #3e3e3e;
+  color: #d2d2d2;
+}
+.container {
+  max-width: 1200px;
+  padding: 0px 0.8rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+a:focus {
+  outline: none;
+}
+.section {
+  font-size: 1.4rem;
+}
+.warning {
+  color: #c8c864;
 }
 
-#footer .attribution {
-    text-align: right;
+.progress {
+  background-image: linear-gradient(to bottom, #ebebeb 0, #f5f5f5 100%);
+  background-repeat: repeat-x;
+  height: 20px;
+  overflow: hidden;
 }
-
-@media (max-width: 767px) {
-    /* center the social buttons */
-    #navbar #social-buttons {
-        margin-top: 5px;
-    }
-
-    #footer .attribution {
-        margin-top: 10px;
-        text-align: left;
-    }
+.progress-bar {
+  float: left;
+  color: #fff;
+  height: 100%;
+  transition: width 0.6s ease;
 }
-
-@media (max-width: 540px) {
-    .container-fluid {
-        margin-right: 0px;
-        margin-left: 0px;
-    }
-
-    .my-box {
-        border-radius: 0px;
-    }
-
-    #footer .container-fluid {
-        margin-right: 3%;
-        margin-left: 3%;
-    }
-    #footer {
-        margin-top: 0px;
-    }
+.progress-bar-warning {
+  background-color: #f0ad4e;
+  background-repeat: repeat-x;
 }
-
-/* Tiles */
-.t {
-    width: 40px;
-    height: 40px;
-    position: absolute;
+.progress-bar-striped {
+  background-size: 40px 40px;
 }
-.t34 { background: url(/img/tile34.png); }
-.t36 { background: url(/img/tile36.png); }
-.t38 { background: url(/img/tile38.png); }
-.t66 { background: url(/img/tile66.png); }
-.t68 { background: url(/img/tile68.png); }
-.t70 { background: url(/img/tile70.png); }
-.t72 { background: url(/img/tile72.png); }
-.t74 { background: url(/img/tile74.png); }
-.t98 { background: url(/img/tile98.png); }
-.t100 { background: url(/img/tile100.png); }
-.t102 { background: url(/img/tile102.png); }
-.t104 { background: url(/img/tile104.png); }
-.t106 { background: url(/img/tile106.png); }
-.tree {
-    width: 120px;
-    height: 160px;
-    position: absolute;
-    background: url(/img/tree.png);
+.goalmarker {
+  transition-delay: 0s;
+  transition-duration: 0.6s;
+  transition-property: margin-right;
+  transition-timing-function: ease;
 }
