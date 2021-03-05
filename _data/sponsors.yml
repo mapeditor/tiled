@@ -53,3 +53,7 @@
 - name: Tradie Training
   url: https://tt.edu.au/
   banner: banner_tradietraining.png
+
+- name: Writers per Hour
+  url: https://writersperhour.com/
+  banner: banner_writersperhour.png
