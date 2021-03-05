@@ -13,10 +13,11 @@
    * Avoid repetition with [object templates](https://doc.mapeditor.org/en/stable/manual/using-templates/)
 
 - title: Edit Large Worlds
-  image: img/screenshot-isometric-thumb.png
+  image: img/feature-worlds.png
   description: |
    * Edit [infinite maps](https://doc.mapeditor.org/en/stable/manual/using-infinite-maps/) that grow as needed
    * Organize multiple maps [in a world](https://doc.mapeditor.org/en/stable/manual/worlds/)
+  attribution: Showing maps from [Alchemic Cutie](https://alchemiccutie.com/)
 
 - title: Extensible with JavaScript
   image: img/screenshot-terrain-thumb.png

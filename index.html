@@ -5,299 +5,6 @@
   {% include header_includes.html %}
   <link href="/atom.xml" rel="alternate" type="application/atom+xml" />
   <title>Tiled - 2D Level Editor</title>
-  <style>
-    .flex-wrap-center {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    /* HEADER */
-
-    .header {
-      text-align: center;
-      margin-top: 5%;
-      margin-bottom: 10%;
-    }
-    .header-screenshot {
-      width: 90%;
-      box-shadow: 0px 0px 40px rgba(0,0,0,0.5);
-    }
-    .header-screenshot-fadeout {
-      position: absolute;
-      width: 100%;
-      height: 75%;
-      bottom: -40px;
-      background-image: linear-gradient(to bottom, transparent 0, #3e3e3e 80%);
-    }
-    .header-logo {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 50%;
-      transform: translate(-55%, -30%);
-    }
-    .button-download {
-      background-color: green;
-    }
-    .button-docs {
-      background-color: green;
-    }
-    .button-donate {
-      background-color: darkcyan;
-    }
-    .action-buttons {
-      width: 100%;
-      bottom: -30px;
-      display: flex;
-      justify-content: center;
-      position: absolute;
-      flex-wrap: wrap;
-      padding-left: 2em;
-      padding-right: 2em;
-      box-sizing: border-box;
-    }
-    .action-button {
-      box-shadow: 0px 1px 5px rgb(0, 0, 0, 0.5);
-      margin: 1.5%;
-      padding: 0.5em 1em;
-      border: 2px solid rgb(255,255,255,0.25);
-      color: white;
-    }
-    .action-button:hover {
-      border: 2px solid white;
-    }
-    @media screen and (max-width: 514px) {
-      .header-logo {
-        display: none;
-      }
-    }
-    @media screen and (max-width: 700px) {
-      .button-docs {
-        display: none;
-      }
-    }
-
-    /* NEWS */
-
-    .news {
-      display: block;
-      text-align: left;
-      overflow: hidden;
-      width: 47%;
-      max-width: 700px;
-      margin: 1%;
-      border-radius: 5px;
-      background-color: #464646;
-      background-clip: padding-box;
-      margin-bottom: 15px;
-      border: solid transparent;
-      border-width: 2px 0px;
-      transition: all .1s ease-out;
-    }
-    .media-content a.news:hover {
-      transform: scale(1.03);
-      text-decoration: none;
-      border-color: orange;
-    }
-    .news-image {
-      width: 30%;
-      border-radius: 0px 5px 5px 0px;
-      float: right;
-      height: 100%;
-      margin-right: 0px;
-    }
-    .news-image img {
-      object-fit: cover;
-      height: 100%;
-      width: 100%;
-    }
-    .news-title {
-      display: block;
-      font-weight: bold;
-      font-size: 1.2em;
-      color: #ececec;
-      font-style: normal;
-      background-color: #4e4e4e;
-      padding: 0.4em 0.8rem;
-    }
-    .news-subtitle {
-      padding-left: 10px;
-      font-weight: 200;
-      font-size: 80%;
-      color: #8f8f8f;
-    }
-    .news-description {
-      color: #ececec;
-      margin-top: 0.4em;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      padding: 0.3em 0.8rem;
-    }
-    @media screen and (max-width: 1200px) {
-      .news {
-        width: 95%;
-      }
-    }
-
-    /* FEATURES */
-
-    .feature {
-      display: flex;
-      flex-direction: column;
-      width: 45%;
-      min-height: 14em;
-      max-width: 700px;
-      margin: 1%;
-      border-radius: 5px;
-      background-color: #464646;
-    }
-    .feature-title {
-      background-color: #4e4e4e;
-      border-radius: 5px 0px 0px 0px;
-      width: 100%;
-      padding: 0.3rem 0.8rem;
-      box-sizing: border-box;
-      font-size: 1.1rem;
-      font-weight: bold;
-    }
-    .feature-content {
-      flex: 1;
-      display: flex;
-      flex-direction: row;
-      position: relative;
-    }
-    .feature-image {
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      background-color: #333;
-      border-radius: 5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-    .feature-image img {
-      height: 100%;
-      width: 100%;
-      object-fit: cover;
-    }
-    .feature-text {
-      width: 60%;
-      margin: 0px;
-      box-sizing: border-box;
-      text-align: left;
-      z-index: 1;
-      background-color: rgba(50,50,50,0.8);
-      border-radius: 5px 0px 0px 5px;
-    }
-    .feature-description {
-      padding-right: 1rem;
-      text-shadow: 1px 1px 2px black;
-    }
-    .feature:nth-child(odd) .feature-content {
-      flex-direction: row-reverse;
-    }
-    .feature:nth-child(odd) .feature-title {
-      border-radius: 0px 5px 0px 0px;
-    }
-    .feature:nth-child(odd) .feature-text {
-      border-radius: 0px 5px 5px 0px;
-    }
-    .feature-text li {
-      list-style-type: square;
-      margin-bottom: 0.5em;
-    }
-    @media screen and (max-width: 900px) {
-      .feature {
-        width: 95%;
-      }
-    }
-
-    /* SHOWCASE */
-
-    .showcases {
-      max-height: 870px;
-      overflow-y: hidden;
-    }
-    .showcase {
-      display: flex;
-      flex-flow: column;
-      justify-content: space-between;
-      align-content: center;
-      text-align: center;
-      background-color: #4e4e4e;
-      background-clip: padding-box;
-      border-radius: 5px;
-      width: 350px;
-      height: 266px;
-      margin: 10px;
-      border: solid transparent;
-      border-width: 2px 0px;
-      transition: all .1s ease-out;
-    }
-    a.showcase:hover {
-      transform: scale(1.05);
-      border-color: orange;
-      text-decoration: none;
-    }
-    .showcase h3 {
-      color: #d2d2d2;
-      margin-top: 7px;
-      padding-left: 15%;
-      padding-right: 15%;
-      font-size: 1.3rem;
-      margin-bottom: 0px;
-      font-variant-caps: small-caps;
-    }
-    .showcase-release-info {
-      flex: 1;
-      color: #8f8f8f;
-      font-weight: bold;
-    }
-    .showcase img {
-      max-width: 350px;
-      border-radius: 0px 0px 5px 5px;
-    }
-
-    /* SPONSORS */
-
-    .sponsor {
-      display: flex;
-      width: 24%;
-      padding: 1%;
-      opacity: 0.7;
-      transition: all .1s ease-out;
-      box-sizing: border-box;
-    }
-    .sponsor:hover {
-      opacity: 1;
-      transform: scale(1.05);
-    }
-    .sponsor img {
-      width: 100%;
-      border-radius: 5px;
-      background-color: white;
-    }
-    @media screen and (max-width: 900px) {
-      .sponsor {
-        width: 32%;
-        padding: 1.25%;
-      }
-    }
-    @media screen and (max-width: 720px) {
-      .sponsor {
-        width: 49%;
-        padding: 1.5%;
-      }
-    }
-    @media (hover: none) {
-      .sponsor {
-        opacity: 1;
-      }
-    }
-  </style>
 </head>
 
 <body>
@@ -317,10 +24,10 @@
     </section>
 
     <section class="media-content">
-      <h2>Latest Updates</h2>
+      <h2 class="big">Latest Updates</h2>
       <div class="flex-wrap-center">
 {% for post in site.posts limit:2 %}
-        <a class="news" href="{{ post.url }}">
+        <a class="news news-sidebyside" href="{{ post.url }}">
 {% if post.image %}
           <div class="news-image">
             <img src="img/posts/{{ post.image }}" />
@@ -335,7 +42,7 @@
     </section>
 
     <section class="media-content">
-      <h2>Full-featured Level Editor</h2>
+      <h2 class="big">Full-featured Level Editor</h2>
       <p class="h2-subtitle">Tiled is a free and open source, easy to use, and flexible level editor.</p>
       <div class="flex-wrap-center">
 
@@ -348,6 +55,9 @@
             <div class="feature-text">
               <div class="feature-title">{{ feature.title }}</div>
               <div class="feature-description">{{ feature.description | markdownify }}</div>
+{% if feature.attribution %}
+              <div class="feature-attribution">{{ feature.attribution | markdownify }}</div>
+{% endif %}
             </div>
           </div>
         </div>
@@ -357,7 +67,7 @@
     </section>
 
     <section class="media-content">
-      <h2>Games made with Tiled</h2>
+      <h2 class="big">Games made with Tiled</h2>
       <p class="h2-subtitle">Some of the best games have used Tiled to create their levels!</p>
       <div class="showcases flex-wrap-center">
 {% assign sorted-showcases = site.data.showcases | sort: 'released' | reverse %}
@@ -373,7 +83,7 @@
     </section>
 
     <section class="media-content">
-      <h2>Sponsors</h2>
+      <h2 class="big">Sponsors</h2>
       <p class="h2-subtitle">A big thanks to our generous sponsors for making our work sustainable!</p>
       <div class="flex-wrap-center" style="padding-left: 5%; padding-right: 5%">
 {% for sponsor in site.data.sponsors  %}

@@ -1,37 +1,14 @@
 {% include header_small.html %}
 
-<style type="text/css">
-  .post-header .meta {
-      font-size: 90%;
-      color: #818181;
-      margin-bottom: 20px;
-  }
-
-  .post-navigation {
-      margin: 2em 0;
-  }
-
-  .post-navigation > .prev {
-      display: block;
-      float: left;
-  }
-
-  .post-navigation > .next {
-      display: block;
-      float: right;
-  }
-</style>
-
-<div class="my-box">
-  <div class="row">
-    <div class="col-md-8">
+<div class="post-container">
+  <div class="post-body">
 
 <header class="post-header">
   <h1>{{ page.title }}</h1>
 {% if page.author.name %}
-  <p class="meta"><i>{{ page.date | date_to_long_string }} • {{ page.author.name }}</i></p>
+  <div class="meta">{{ page.date | date_to_long_string }} • {{ page.author.name }}</div>
 {% else %}
-  <p class="meta"><i>{{ page.date | date_to_long_string }} • {{ page.author }}</i></p>
+  <div class="meta">{{ page.date | date_to_long_string }} • {{ page.author }}</div>
 {% endif %}
 </header>
 <article>
@@ -51,34 +28,6 @@
 {% endif %}
   <div style="clear: both; display: block; text-align: center;"><a href="/news">News Archive</a></div>
 </div>
-
-    </div>
-    <div class="col-md-4" style="padding-top: 20px;">
-
-      <h4>Tiled Map Editor<br/><small>A <a href="https://www.gnu.org/philosophy/free-sw.html">free</a>, easy to use and flexible level&nbsp;editor</small></h4>
-      <div style="margin: 20px 0px 30px 0px;">
-        <a class="btn btn-success" href="https://thorbjorn.itch.io/tiled/purchase"><i class="icon-download-alt"></i> Download</a>&nbsp;<a class="btn btn-info" href="https://github.com/sponsors/bjorn"><i class="icon-heart"></i> Sponsor on GitHub</a>
-      </div>
-
-  <h4>Recent News</h4>
-  <ul style="list-style: none; padding: 0;">
-{% for post in site.posts limit:9 %}
-    <li class="news-item">
-{% if page.url != post.url %}
-     <h5><a href="{{ post.url }}" class="news-headline">{{ post.title }}</a><br/><small>{{ post.date | date_to_long_string }}</small></h5>
-{% endif %}
-    </li>
-{% endfor %}
-  </ul>
-
-      <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
-      <div style="padding-top: 20px">
-        <div data-ea-publisher="mapeditor" data-ea-type="image"></div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-8">
 
 <hr/>
 {% if page.blogger_orig_url %}
@@ -102,6 +51,33 @@
 </script>
 {% endif %}
 
+  </div>
+
+  <div class="post-sidebar">
+    <h4>Tiled Map Editor</h4>
+    <div class="h4-subtitle">A free, easy to use and flexible level&nbsp;editor</div>
+    <div style="display: flex; flex-wrap: wrap;">
+      <a class="header-item action-button button-download" href="https://thorbjorn.itch.io/tiled/purchase"><i class="fas fa-download"></i> Download</a>&nbsp;<a class="header-item action-button button-donate" href="/donate"><i class="fas fa-heart"></i> Donate</a>
+    </div>
+
+  <h4>Latest Updates</h4>
+  <div class="flex-column-center" style="align-content: flex-start;">
+{% for post in site.posts limit:5 %}
+{% if page.url == post.url %}
+    <a class="news news-active news-collapsed news-small" href="{{ post.url }}">
+      <div class="news-title">{{ post.title }}<br/><span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
+    </a>
+{% else %}
+    <a class="news news-collapsed news-small" href="{{ post.url }}">
+      <div class="news-title">{{ post.title }}<br/><span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
+    </a>
+{% endif %}
+{% endfor %}
+  </div>
+
+    <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
+    <div style="padding-top: 20px">
+      <div data-ea-publisher="mapeditor" data-ea-type="image"></div>
     </div>
   </div>
 </div>

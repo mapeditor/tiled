@@ -3,26 +3,49 @@ layout: default
 title: News
 ---
 
-<h2>News Archive</h2>
+<section class="media-content">
+  <h2 class="big">Latest Updates</h2>
+  <div class="flex-column-center">
+{% for post in site.posts limit:2 %}
+    <a class="news" href="{{ post.url }}">
+{% if post.image %}
+      <div class="news-image">
+        <img src="img/posts/{{ post.image }}" />
+      </div>
+{% endif %}
+      <div class="news-title">{{ post.title }} <span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
+      <div class="news-description">{{ post.excerpt | strip_html }}</div>
+    </a>
+{% endfor %}
+  </div>
+</section>
+
+<section class="media-content">
+  <h2 class="big">Previously</h2>
 
 {% for post in site.posts  %}
-  {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
-  {% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
+  {% if forloop.index > 2 %}
+    {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
+    {% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
 
-  {% if forloop.first %}
-    <h3>{{this_year}}</h3>
-    <ul>
-  {% endif %}
+    {% if forloop.index == 3 %}
+      <h3>{{this_year}}</h3>
+      <div class="flex-column-center">
+    {% endif %}
 
-  <li style="display: flex;"><span style="color: #818181; width: 45%; text-align: right; margin-right: 1em">{{ post.date | date: "%e %B" }} </span><a style="text-align: left;" href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
+    <a class="news news-collapsed" href="{{ post.url }}">
+      <div class="news-title">{{ post.title }} <span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
+    </a>
 
-  {% if forloop.last %}
-    </ul>
-  {% else %}
-    {% if this_year != next_year %}
-      </ul>
-      <h3>{{next_year}}</h3>
-      <ul>
+    {% if forloop.last %}
+      </div>
+    {% else %}
+      {% if this_year != next_year %}
+        </div>
+        <h3>{{next_year}}</h3>
+        <div class="flex-column-center">
+      {% endif %}
     {% endif %}
   {% endif %}
 {% endfor %}
+</section>
