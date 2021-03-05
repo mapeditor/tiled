@@ -263,7 +263,7 @@ a:focus {
 .header {
   text-align: center;
   margin-top: 5%;
-  margin-bottom: 10%;
+  margin-bottom: 7%;
 }
 .header-screenshot {
   width: 90%;
@@ -282,7 +282,7 @@ a:focus {
   top: 50%;
   left: 50%;
   width: 50%;
-  transform: translate(-55%, -30%);
+  transform: translate(-55%, -40%);
 }
 .button-download {
   background-color: green;
@@ -458,7 +458,7 @@ a.news:hover {
   margin: 0px;
   text-align: left;
   z-index: 1;
-  background-color: rgba(50,50,50,0.8);
+  background-color: rgba(50,50,50,0.9);
   border-radius: 5px 0px 0px 5px;
 }
 .feature-description {
