@@ -1,5 +1,16 @@
 /* GLOBAL */
 
+img {
+  vertical-align: middle;
+  border: 0;
+}
+.thumbnail {
+  display: block;
+}
+.thumbnail img {
+  max-width: 100%;
+}
+
 a {
   text-decoration: none;
   color: #7c90ff;
@@ -7,6 +18,10 @@ a {
 a:hover {
   text-decoration: underline;
   color: #cad2ff;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 
@@ -286,7 +301,6 @@ a:focus {
   flex-wrap: wrap;
   padding-left: 2em;
   padding-right: 2em;
-  box-sizing: border-box;
 }
 .action-button {
   box-shadow: 0px 1px 5px rgb(0, 0, 0, 0.5);
@@ -411,7 +425,6 @@ a.news:hover {
   border-radius: 5px 0px 0px 0px;
   width: 100%;
   padding: 0.3rem 0.8rem;
-  box-sizing: border-box;
   font-size: 1.1rem;
   font-weight: bold;
 }
@@ -442,7 +455,6 @@ a.news:hover {
   flex-direction: column;
   width: 60%;
   margin: 0px;
-  box-sizing: border-box;
   text-align: left;
   z-index: 1;
   background-color: rgba(50,50,50,0.8);
@@ -532,7 +544,6 @@ a.showcase:hover {
   padding: 1%;
   opacity: 0.7;
   transition: opacity .1s ease-out, transform .1s ease-out;
-  box-sizing: border-box;
 }
 .sponsor:hover {
   opacity: 1;
@@ -597,7 +608,7 @@ a.showcase:hover {
 
 .post-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 .post-body {
   width: 62%;
