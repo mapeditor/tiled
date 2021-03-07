@@ -27,7 +27,7 @@ a:hover {
 
 /* HEADERBAR */
 
-.tooltip .tooltiptext {
+.tooltiptext {
   margin-left: 0.5em;
 }
 .headerbar-container {
@@ -78,8 +78,7 @@ footer nav li {
   align-items: center;
   padding: 0.25em 0.5em;
   margin-left: 0.7em;
-  border: solid transparent;
-  border-width: 2px 0px;
+  border: 2px solid transparent;
   border-radius: 5px;
   transition: border-color .1s ease-out, transform .1s ease-out;
 }
@@ -113,7 +112,7 @@ footer nav li {
   }
 }
 @media screen and (max-width: 1200px) {
-  .tooltip .tooltiptext {
+  .tooltiptext {
     display: none;
   }
 
@@ -275,7 +274,7 @@ a:focus {
   width: 100%;
   height: 75%;
   bottom: -40px;
-  background-image: linear-gradient(to bottom, transparent 0, #3e3e3e 80%);
+  background-image: linear-gradient(to bottom, rgba(62, 62, 62, 0) 0, rgba(62, 62, 62, 1) 80%);
 }
 .header-logo {
   position: absolute;
@@ -329,6 +328,10 @@ a:focus {
 
 /* NEWS */
 
+.news-list .news {
+  margin-right: auto;
+  margin-left: auto;
+}
 .news {
   display: block;
   text-align: left;
@@ -338,8 +341,7 @@ a:focus {
   background-color: #464646;
   background-clip: padding-box;
   margin: 0.5em;
-  border: solid transparent;
-  border-width: 2px 0px;
+  border: 2px solid transparent;
   transition: border-color .1s ease-out, transform .1s ease-out;
 }
 a.news:hover {
@@ -509,8 +511,7 @@ a.news:hover {
   width: 350px;
   height: 266px;
   margin: 10px;
-  border: solid transparent;
-  border-width: 2px 0px;
+  border: 2px solid transparent;
   transition: border-color .1s ease-out, transform .1s ease-out;
 }
 a.showcase:hover {
@@ -540,7 +541,6 @@ a.showcase:hover {
 /* SPONSORS */
 
 .sponsor {
-  display: flex;
   width: 24%;
   padding: 1%;
   opacity: 0.7;
@@ -589,8 +589,7 @@ a.showcase:hover {
   display: block;
   background-color: #4e4e4e;
   border-radius: 5px;
-  border: solid transparent;
-  border-width: 2px;
+  border: 2px solid transparent;
   background-repeat: no-repeat;
   padding: 140px 8px 8px 8px;
   margin-bottom: 10px;

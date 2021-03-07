@@ -5,7 +5,7 @@ title: News
 
 <section class="media-content">
   <h2 class="big">Latest Updates</h2>
-  <div class="flex-column-center">
+  <div class="news-list">
 {% for post in site.posts limit:2 %}
     <a class="news" href="{{ post.url }}">
 {% if post.image %}
@@ -30,7 +30,7 @@ title: News
 
     {% if forloop.index == 3 %}
       <h3>{{this_year}}</h3>
-      <div class="flex-column-center">
+      <div class="news-list">
     {% endif %}
 
     <a class="news news-collapsed" href="{{ post.url }}">
@@ -43,7 +43,7 @@ title: News
       {% if this_year != next_year %}
         </div>
         <h3>{{next_year}}</h3>
-        <div class="flex-column-center">
+        <div class="news-list">
       {% endif %}
     {% endif %}
   {% endif %}
