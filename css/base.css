@@ -21,6 +21,14 @@ img {
   margin-right: 0.5em;
 }
 
+.block {
+  background-color: #464646;
+  border-radius: 5px;
+  padding: 0.8rem;
+  margin: 0 5%;
+  text-align: left;
+}
+
 a {
   text-decoration: none;
   color: #7c90ff;
@@ -645,6 +653,39 @@ a.showcase:hover {
   .donate-liberapay {
     border-color: #f6cb0a;
   }
+}
+
+.donation-goals {
+  display: flex;
+  align-items: flex-start;
+  align-self: flex-start;
+  margin: 1em 2em;
+  border-radius: 5px;
+}
+.donation-goal {
+  border: 2px solid gray;
+  padding: 0 5px;
+  border-left-width: 0px;
+}
+.donation-goal:first-child {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-left-width: 2px;
+}
+.donation-goal:last-child {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.goal-reached {
+  background-color: green;
+  border-color: rgb(100, 200, 100);
+  color: white;
+}
+.goal-next {
+  position: relative;
+  background-image: linear-gradient(to right, green 0, transparent 100%);
+  border-image-source: linear-gradient(to right, rgb(100, 200, 100), gray);
+  border-image-slice: 1;
 }
 
 /* NEWS POST PAGE */
