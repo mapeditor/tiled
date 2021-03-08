@@ -1,98 +1,95 @@
 ---
+layout: default
 ---
-<html lang="en">
-<head>
-  {% include header_includes.html %}
-  <link href="/atom.xml" rel="alternate" type="application/atom+xml" />
-  <title>Tiled - 2D Level Editor</title>
-</head>
 
-<body>
-    {% include body_header.html %}
+<section class="header">
+  <div style="position: relative; margin-bottom: 3em">
+    <img src="img/screenshot-front.png" class="header-screenshot" width="1527" height="599" />
+    <div class="header-screenshot-fadeout"></div>
+    <img src="img/tiled-logo-header.png" class="header-logo" />
+    <div class="action-buttons">
+      <a class="header-item action-button button-download" href="https://thorbjorn.itch.io/tiled">Download on itch.io</a>
+      <a class="header-item action-button button-docs" href="https://doc.mapeditor.org/en/stable/manual/introduction/#getting-started">Get Started</a>
+      <a class="header-item action-button button-donate" href="/donate"><i class="fas fa-heart" style="margin-right: 0.5em"></i> Donate</a>
+    </div>
+  </div>
+  <div class="social-buttons">
+    <a href="https://discourse.mapeditor.org/" class="header-item headerbar-social"><i class="fab fa-discourse fa-2x"></i> <span class="tooltiptext">Forum</span></a>
+    <a href="https://discord.gg/39wbTv7" class="header-item headerbar-social"><i class="fab fa-discord fa-2x"></i> <span class="tooltiptext">Discord</span></a>
+    <a href="https://twitter.com/TiledApp" class="header-item headerbar-social"><i class='fab fa-twitter fa-2x'></i> <span class="tooltiptext">Twitter</span></a>
+    <a href="https://github.com/mapeditor/tiled" class="header-item headerbar-social"><i class="fab fa-github fa-2x"></i> <span class="tooltiptext">GitHub</span></a>
+  </div>
+</section>
 
-    <section class="header">
-      <div style="position: relative; margin-bottom: 4em">
-        <img src="img/screenshot-front.png" class="header-screenshot" width="1527" height="599" />
-        <div class="header-screenshot-fadeout"></div>
-        <img src="img/tiled-logo-header.png" class="header-logo" />
-        <div class="action-buttons">
-          <a class="header-item action-button button-download" href="https://thorbjorn.itch.io/tiled">Download on itch.io</a>
-          <a class="header-item action-button button-docs" href="https://doc.mapeditor.org/en/stable/manual/introduction/#getting-started">Get Started</a>
-          <a class="header-item action-button button-donate" href="/donate"><i class="fas fa-heart" style="margin-right: 0.5em"></i> Donate</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="media-content">
-      <h2 class="big">Latest Updates</h2>
-      <div class="flex-wrap-center">
+<section class="media-content">
+  <h2 class="big">Latest Updates</h2>
+  <div class="flex-wrap-center">
 {% for post in site.posts limit:2 %}
-        <a class="news news-sidebyside" href="{{ post.url }}">
+    <a class="news news-sidebyside" href="{{ post.url }}">
 {% if post.image %}
-          <div class="news-image">
-            <img src="img/posts/{{ post.image }}" />
-          </div>
-{% endif %}
-          <div class="news-title">{{ post.title }} <span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
-          <div class="news-description">{{ post.excerpt | strip_html }}</div>
-        </a>
-{% endfor %}
+      <div class="news-image">
+        <img src="img/posts/{{ post.image }}" />
       </div>
-      <p><a href="/news">News Archive</a></p>
-    </section>
+{% endif %}
+      <div class="news-title">{{ post.title }} <span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
+      <div class="news-description">{{ post.excerpt | strip_html }}</div>
+    </a>
+{% endfor %}
+  </div>
+  <p><a href="/news">News Archive</a></p>
+</section>
 
-    <section class="media-content">
-      <h2 class="big">Full-featured Level Editor</h2>
-      <p class="h2-subtitle">Tiled is a free and open source, easy to use, and flexible level editor.</p>
-      <div class="flex-wrap-center">
+<section class="media-content">
+  <h2 class="big">Full-featured Level Editor</h2>
+  <p class="h2-subtitle">Tiled is a free and open source, easy to use, and flexible level editor.</p>
+  <div class="flex-wrap-center">
 
 {% for feature in site.data.features %}
-        <div class="feature">
-          <div class="feature-content">
-            <div class="feature-image">
-              <img src="{{ feature.image }}" />
-            </div>
-            <div class="feature-text">
-              <div class="feature-title">{{ feature.title }}</div>
-              <div class="feature-description">{{ feature.description | markdownify }}</div>
-{% if feature.attribution %}
-              <div class="feature-attribution">{{ feature.attribution | markdownify }}</div>
-{% endif %}
-            </div>
-          </div>
+    <div class="feature">
+      <div class="feature-content">
+        <div class="feature-image">
+          <img src="{{ feature.image }}" />
         </div>
+        <div class="feature-text">
+          <div class="feature-title">{{ feature.title }}</div>
+          <div class="feature-description">{{ feature.description | markdownify }}</div>
+{% if feature.attribution %}
+          <div class="feature-attribution">{{ feature.attribution | markdownify }}</div>
+{% endif %}
+        </div>
+      </div>
+    </div>
 {% endfor %}
 
-      </div>
-      <p>Tiled is <a href="https://www.gnu.org/philosophy/free-sw.html">free as in freedom</a>. You can fork <a href="https://github.com/mapeditor/tiled">Tiled on GitHub</a> and change it however you like!</p>
-      <p>Please <a href="/donate">support Tiled development</a> with a small monthly donation.</p>
-    </section>
+  </div>
+  <p>Tiled is <a href="https://www.gnu.org/philosophy/free-sw.html">free as in freedom</a>. You can fork <a href="https://github.com/mapeditor/tiled">Tiled on GitHub</a> and change it however you like!</p>
+  <p>Please <a href="/donate">support Tiled development</a> with a small monthly donation.</p>
+</section>
 
-    <section class="media-content">
-      <h2 class="big">Games made with Tiled</h2>
-      <p class="h2-subtitle">Some of the best games have used Tiled to create their levels!</p>
-      <div class="showcases flex-wrap-center">
+<section class="media-content">
+  <h2 class="big">Games made with Tiled</h2>
+  <p class="h2-subtitle">Some of the best games have used Tiled to create their levels!</p>
+  <div class="showcases flex-wrap-center">
 {% assign sorted-showcases = site.data.showcases | sort: 'released' | reverse %}
 {% for game in sorted-showcases %}
-        <a class="showcase" href="{{ game.url }}">
-          <h3>{{ game.name }}</h3>
-          <div class="showcase-release-info">{{ game.released }}</div>
-          <img src="img/showcase/{{ game.image }}">
-        </a>
+    <a class="showcase" href="{{ game.url }}">
+      <h3>{{ game.name }}</h3>
+      <div class="showcase-release-info">{{ game.released }}</div>
+      <img src="img/showcase/{{ game.image }}">
+    </a>
 {% endfor %}
-      </div>
-      <p>Find more <a href="https://itch.io/games/made-with-tiled">games made with Tiled</a> on itch.io!</p>
-    </section>
+  </div>
+  <p>Find more <a href="https://itch.io/games/made-with-tiled">games made with Tiled</a> on itch.io!</p>
+</section>
 
-    <section class="media-content">
-      <h2 class="big">Sponsors</h2>
-      <p class="h2-subtitle">A big thanks to our generous sponsors for making our work sustainable!</p>
-      <div class="flex-wrap-center" style="padding-left: 5%; padding-right: 5%">
+<section class="media-content">
+  <h2 class="big">Sponsors</h2>
+  <p class="h2-subtitle">A big thanks to our generous sponsors for making our work sustainable!</p>
+  <div class="flex-wrap-center" style="padding-left: 5%; padding-right: 5%">
 {% for sponsor in site.data.sponsors  %}
-        <a class="sponsor" href="{{ sponsor.url }}"><img src="img/{{ sponsor.banner }}" alt="{{ sponsor.name }}" /></a>
+    <a class="sponsor" href="{{ sponsor.url }}"><img src="img/{{ sponsor.banner }}" alt="{{ sponsor.name }}" /></a>
 {% endfor %}
-      </div>
-      <p>Help improve Tiled by <a href="/donate">becoming a Tiled sponsor</a>!</p>
-    </section>
-
-{% include footer.html %}
+  </div>
+  <p>Help improve Tiled by <a href="/donate">becoming a Tiled sponsor</a>!</p>
+  <p class="disclaimer"><em>Disclaimer: The listing of sponsors above should not be taken as an endorsement of any provided services.</em></p>
+</section>

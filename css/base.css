@@ -25,7 +25,7 @@ a:hover {
 }
 
 
-/* HEADERBAR */
+/* HEADERBAR AND FOOTER */
 
 .tooltiptext {
   margin-left: 0.5em;
@@ -80,7 +80,7 @@ footer nav li {
   margin-left: 0.7em;
   border: 2px solid transparent;
   border-radius: 5px;
-  transition: border-color .1s ease-out, transform .1s ease-out;
+  transition: .1s ease-out;
 }
 .header-item-active {
   background-color: #3e3e3e;
@@ -106,9 +106,16 @@ footer nav li {
   margin-bottom: 0.1rem;
   margin-left: -0.1rem;
 }
+.social-buttons {
+  display: none;
+  justify-content: center;
+}
 @media screen and (max-width: 700px) {
-  .headerbar-button {
+  .headerbar .headerbar-social {
     display: none;
+  }
+  .social-buttons {
+    display: flex;
   }
 }
 @media screen and (max-width: 1200px) {
@@ -160,21 +167,20 @@ footer nav li {
 }
 
 h1 {
-  margin: 0;
-  padding: 1em 0;
+  margin: 1em 0;
+  padding: 0;
+  color: #ececec;
+  background: radial-gradient(farthest-side at bottom left, yellow 10%, orange 25%, transparent 100%) bottom / 100% 5px no-repeat;
 }
 h2 {
   font-size: 1.7em;
   color: #ececec;
 }
 h2.big {
-  padding-bottom: 5px;
-  margin-top: 2em;
-  background: radial-gradient(farthest-side at bottom, yellow 10%, orange 25%, transparent 100%) bottom no-repeat;
-  background-size: 100% 5px;
+  background: radial-gradient(farthest-side at bottom, yellow 10%, orange 25%, transparent 100%) bottom / 100% 5px no-repeat;
 }
 p.h2-subtitle {
-  margin-top: -15px;
+  margin-top: -20px;
   margin-bottom: 22px;
 }
 h3 {
@@ -262,7 +268,7 @@ a:focus {
 .header {
   text-align: center;
   margin-top: 5%;
-  margin-bottom: 7%;
+  margin-bottom: 5%;
 }
 .header-screenshot {
   width: 90%;
@@ -342,7 +348,7 @@ a:focus {
   background-clip: padding-box;
   margin: 0.5em;
   border: 2px solid transparent;
-  transition: border-color .1s ease-out, transform .1s ease-out;
+  transition: .1s ease-out;
 }
 a.news:hover {
   transform: scale(1.03);
@@ -512,7 +518,7 @@ a.news:hover {
   height: 266px;
   margin: 10px;
   border: 2px solid transparent;
-  transition: border-color .1s ease-out, transform .1s ease-out;
+  transition: .1s ease-out;
 }
 a.showcase:hover {
   transform: scale(1.05);
@@ -572,6 +578,10 @@ a.showcase:hover {
     opacity: 1;
   }
 }
+.disclaimer {
+  font-size: 80%;
+  opacity: 0.8;
+}
 
 /* DONATE PAGE */
 
@@ -585,6 +595,10 @@ a.showcase:hover {
    text-align: center;
    width: 30%;
 }
+.donate-notice {
+  font-style: italic;
+  opacity: 0.7;
+}
 .donate-button {
   display: block;
   background-color: #4e4e4e;
@@ -594,21 +608,40 @@ a.showcase:hover {
   padding: 140px 8px 8px 8px;
   margin-bottom: 10px;
   transition: 0.1s ease-out;
-  box-shadow: 0px 0px 0px rgba(0,0,0,0);
   color: #ececec;
 }
 .donate-button:hover {
-  box-shadow: 0px 5px 8px rgba(0,0,0,0.25);
+  box-shadow: 0px 5px 16px rgba(0,0,0,0.25);
   transform: scale(1.05);
   text-decoration: none;
   color: white;
+}
+.donate-github:hover {
+  border-color: #eb49ac;
+}
+.donate-patreon:hover {
+  border-color: #fa6853;
+}
+.donate-liberapay:hover {
+  border-color: #f6cb0a;
+}
+@media (hover: none) {
+  .donate-github {
+    border-color: #eb49ac;
+  }
+  .donate-patreon {
+    border-color: #fa6853;
+  }
+  .donate-liberapay {
+    border-color: #f6cb0a;
+  }
 }
 
 /* NEWS POST PAGE */
 
 .post-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 .post-body {
   width: 62%;
