@@ -10,6 +10,16 @@ img {
 .thumbnail img {
   max-width: 100%;
 }
+.svg-icon {
+  width: 2em;
+  height: 2em;
+  fill: currentColor;
+}
+.svg-icon-small {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.5em;
+}
 
 a {
   text-decoration: none;
@@ -76,7 +86,7 @@ footer nav li {
   text-decoration: none;
   justify-content: center;
   align-items: center;
-  padding: 0.25em 0.5em;
+  padding: 0.25em;
   margin-left: 0.7em;
   border: 2px solid transparent;
   border-radius: 5px;
@@ -655,7 +665,6 @@ a.showcase:hover {
   color: #818181;
   margin-top: -2em;
   margin-bottom: 2em;
-  font-style: italic;
 }
 .post-navigation {
   margin: 2em 0;
