@@ -13,13 +13,13 @@ layout: default
       <a class="header-item action-button button-donate" href="/donate"><svg class="svg-icon svg-icon-small" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!-- Font Awesome Free 5.15.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg> Donate</a>
     </div>
   </div>
-  <div class="social-buttons">
+  <div class="external-navigation">
     {% include social_icons.html %}
   </div>
 </section>
 
 <section class="media-content">
-  <h2 class="big">Latest Updates</h2>
+  <h2 id="news" class="big">Latest Updates</h2>
   <div class="flex-wrap-center">
 {% for post in site.posts limit:2 %}
     <a class="news news-sidebyside" href="{{ post.url }}">
@@ -37,10 +37,9 @@ layout: default
 </section>
 
 <section class="media-content">
-  <h2 class="big">Full-featured Level Editor</h2>
-  <p class="h2-subtitle">Tiled is a free and open source, easy to use, and flexible level editor.</p>
+  <h2 id="features" class="big">Full-featured Level Editor</h2>
+  <p class="h2-subtitle">Tiled is a <a href="https://www.gnu.org/philosophy/free-sw.html">free and open source</a>, easy to use, and flexible level editor.</p>
   <div class="flex-wrap-center">
-
 {% for feature in site.data.features %}
     <div class="feature">
       <div class="feature-content">
@@ -57,14 +56,11 @@ layout: default
       </div>
     </div>
 {% endfor %}
-
   </div>
-  <p>Tiled is <a href="https://www.gnu.org/philosophy/free-sw.html">free as in freedom</a>. You can fork <a href="https://github.com/mapeditor/tiled">Tiled on GitHub</a> and change it however you like!</p>
-  <p>Please <a href="/donate">support Tiled development</a> with a small monthly donation.</p>
 </section>
 
 <section class="media-content">
-  <h2 class="big">Games made with Tiled</h2>
+  <h2 id="made-with-tiled" class="big">Games made with Tiled</h2>
   <p class="h2-subtitle">Some of the best games have used Tiled to create their levels!</p>
   <div class="showcases flex-wrap-center">
 {% assign sorted-showcases = site.data.showcases | sort: 'released' | reverse %}
@@ -80,7 +76,7 @@ layout: default
 </section>
 
 <section class="media-content">
-  <h2 class="big">Sponsors</h2>
+  <h2 id="sponsors" class="big">Sponsors</h2>
   <p class="h2-subtitle">A big thanks to our generous sponsors for making our work sustainable!</p>
 
   <div class="block">
@@ -97,6 +93,5 @@ layout: default
     <a class="sponsor" href="{{ sponsor.url }}"><img src="img/{{ sponsor.banner }}" alt="{{ sponsor.name }}" /></a>
 {% endfor %}
   </div>
-  <p>Help improve Tiled by <a href="/donate">becoming a Tiled sponsor</a>!</p>
   <p class="disclaimer"><em>Disclaimer: The listing of sponsors above should not be taken as an endorsement of any provided services.</em></p>
 </section>
