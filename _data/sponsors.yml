@@ -1,59 +1,63 @@
 - name: Gather
   url: https://gather.town/
-  banner: banner_gather.png
+  banner: sponsors/gather.png
 
 - name: "Rusted Warfare: An RTS with Tiled Maps & Workshop Modding"
   url: https://store.steampowered.com/app/647960/Rusted_Warfare__RTS/
-  banner: banner_rusted_warfare.png
+  banner: sponsors/rusted_warfare.png
 
 - name: Fiiish
   url: http://fiiish.omnimad.net/
-  banner: banner_fiiish.png
+  banner: sponsors/fiiish.png
 
 - name: Sell Your Phoenix House Fast
   url: https://www.sellyourphoenixhousefast.com/
-  banner: banner_sellyourphoenixhousefast.png
+  banner: sponsors/sellyourphoenixhousefast.png
 
 - name: LeoBoost
   url: https://www.leoboost.com/
-  banner: banner_leoboost.png
+  banner: sponsors/leoboost.png
 
 - name: VPS Server
   url: https://vpsserver.com/
-  banner: banner_vpsserver.png
+  banner: sponsors/vpsserver.png
 
 - name: Pillar Wealth Management
   url: https://pillarwm.com/
-  banner: banner_pillarwm.png
+  banner: sponsors/pillarwm.png
 
 - name: Instagram Likes
   url: https://goread.io/buy-instagram-likes
-  banner: banner_goread.png
+  banner: sponsors/goread.png
 
 - name: CasinoHEX Australia
   url: https://aussiecasinohex.com/
-  banner: banner_aussiecasinohex.png
+  banner: sponsors/aussiecasinohex.png
 
 - name: Conveyancing
   url: https://www.conveyancing.com.au/need-to-know/buying/conveyancing-costs-explained-in-nsw
-  banner: banner_conveyancing-alt.png
+  banner: sponsors/conveyancing-alt.png
 
 - name: Rapid Building Inspections
   url: https://www.rapidbuildinginspections.com.au/
-  banner: banner_rapidbuildinginspections.jpg
+  banner: sponsors/rapidbuildinginspections.jpg
 
 - name: Conveyancing
   url: https://www.conveyancing.com.au/
-  banner: banner_conveyancing.png
+  banner: sponsors/conveyancing.png
 
 - name: Line Awesome
   url: https://icons8.com/line-awesome
-  banner: banner_line-awesome.png
+  banner: sponsors/line-awesome.png
 
 - name: Tradie Training
   url: https://tt.edu.au/
-  banner: banner_tradietraining.png
+  banner: sponsors/tradietraining.png
 
 - name: Writers per Hour
   url: https://writersperhour.com/
-  banner: banner_writersperhour.png
+  banner: sponsors/writersperhour.png
+
+- name: nonstopcasino.org/not-gamstop-casinos
+  url: https://nonstopcasino.org/not-gamstop-casinos/
+  banner: sponsors/nonstopcasino.png

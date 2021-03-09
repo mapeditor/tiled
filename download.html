@@ -3,81 +3,15 @@ layout: default
 title: Download
 ---
 
-<div class="row">
-  <div class="col-md-12">
-    <div class="my-box">
-      <h1>Download</h1>
+<h1>Download</h1>
 
-      <div class="row">
-        <div class="col-md-12">
-          <iframe src="https://itch.io/embed/28768?linkback=true" width="552" height="167" frameborder="0"></iframe>
-          <div style="clear: both;"></div>
+<iframe src="https://itch.io/embed/28768?linkback=true&amp;dark=true" width="552" height="167" frameborder="0"><a href="https://thorbjorn.itch.io/tiled">Tiled Map Editor by Thorbjørn</a></iframe>
 
-          <!--
-          <h4>Repositories</h4>
-          <ul class="downloads">
-            <li>
-              <a class="btn btn-default btn-download" href="https://launchpad.net/~mapeditor.org/+archive/tiled">
-              <img src="img/os-ubuntu.png" />
-              Ubuntu</a>
-            </li>
-            <li>
-              <a class="btn btn-default btn-download" href="https://apps.fedoraproject.org/packages/tiled">
-              <img src="img/os-fedora.png" />
-              Fedora</a>
-            </li>
-          </ul>
-          <div style="clear: both;"></div>
-
-          <h4>Daily Builds</h4>
-          <p>
-            Daily builds provide access to the latest fixes and features. These may also contain new bugs as well as unfinished features.
-          </p>
-          <ul class="downloads">
-            <li>
-              <a class="btn btn-default btn-download" href="https://files.mapeditor.org/daily/?C=N;O=D">
-              <img src="img/os-windows.png" />
-              Windows</a>
-            </li>
-            <li>
-              <a class="btn btn-default btn-download" href="http://tilemapkit.com/tiled/?C=N;O=D">
-              <img src="img/os-apple.png" />
-              Mac OS X</a>
-            </li>
-            <li>
-              <a class="btn btn-default btn-download" href="https://launchpad.net/~mapeditor.org/+archive/tiled">
-              <img src="img/os-ubuntu.png" />
-              Ubuntu</a>
-            </li>
-            <li>
-              <a class="btn btn-default btn-download" href="https://copr.fedoraproject.org/coprs/ablu/tiled-dailies/">
-              <img src="img/os-fedora.png" />
-              Fedora</a>
-            </li>
-          </ul>
-          <div style="clear: both;"></div>
-          <p>
-            Mac OS X builds made possible by <a href="http://tilemapkit.com/">TilemapKit</a>.
-          </p>
-          -->
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-    <div class="my-box">
-      <a id="changes"></a><h3>Recent Releases</h3>
+<h3 id="changes">Recent Releases</h3>
 {% for post in site.posts limit:10 %}
 {% if post.tags contains 'release' %}
-    <a class="news news-collapsed" href="{{ post.url }}">
-      <div class="news-title">{{ post.title }} <span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
-    </a>
+<a class="news news-collapsed" href="{{ post.url }}">
+  <div class="news-title">{{ post.title }} <span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
+</a>
 {% endif %}
 {% endfor %}
-
-    </div>
-  </div>
-</div>

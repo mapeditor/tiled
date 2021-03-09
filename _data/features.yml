@@ -4,6 +4,7 @@
    * Annotate the level with [rectangles, ellipses or polygons](https://doc.mapeditor.org/en/stable/manual/objects/)
    * Place, resize and rotate tiles freely
    * Avoid repetition with [object templates](https://doc.mapeditor.org/en/stable/manual/using-templates/)
+  attribution: Level from [Sticker Knight](https://ponywolf.itch.io/sticker-knight)
 
 - title: Efficient Tile Layer Editing
   image: img/feature-tiles.png
@@ -21,7 +22,7 @@
   attribution: Showing maps from [Alchemic Cutie](https://alchemiccutie.com/)
 
 - title: Powerful Workflow
-  image: img/screenshot-isometric-thumb.png
+  image: img/tiled-header-background.png
   description: |
    * Quickly switch between [projects](https://doc.mapeditor.org/en/stable/manual/projects/)
    * Jump to any file within a project
@@ -35,7 +36,7 @@
    * Automate your workflow
 
 - title: Widely Supported
-  image: img/screenshot-terrain-thumb.png
+  image: img/feature-supported.png
   description: |
    * Supported by many [game development frameworks](https://doc.mapeditor.org/en/stable/reference/support-for-tmx-maps/)
    * Exports to Image, JSON, Lua, GameMaker (1.4 and 2.3), Defold, tBIN and [many more](https://doc.mapeditor.org/en/stable/manual/export/)

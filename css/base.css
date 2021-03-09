@@ -76,6 +76,7 @@ footer nav li {
 }
 .logo {
   height: 100%;
+  width: auto;
 }
 .headerbar-logo {
   display: flex;
@@ -279,6 +280,9 @@ a:focus {
 
 .media-content {
   text-align: center;
+}
+section.media-content {
+  margin-bottom: 2em;
 }
 
 /* HEADER */
