@@ -1,0 +1,42 @@
+- title: Flexible Object Layers
+  image: img/feature-objects.png
+  description: |
+   * Annotate the level with [rectangles, ellipses or polygons](https://doc.mapeditor.org/en/stable/manual/objects/)
+   * Place, resize and rotate tiles freely
+   * Avoid repetition with [object templates](https://doc.mapeditor.org/en/stable/manual/using-templates/)
+  attribution: Level from [Sticker Knight](https://ponywolf.itch.io/sticker-knight)
+
+- title: Efficient Tile Layer Editing
+  image: img/feature-tiles.png
+  description: |
+   * Multi-layer tile editing
+   * Easy and fast [painting of terrain](https://doc.mapeditor.org/en/stable/manual/using-the-terrain-tool/)
+   * [Rule-based](https://doc.mapeditor.org/en/stable/manual/automapping/) tile and object placement
+   * Supports orthogonal, isometric and hexagonal maps
+
+- title: Edit Large Worlds
+  image: img/feature-worlds.png
+  description: |
+   * Edit [infinite maps](https://doc.mapeditor.org/en/stable/manual/using-infinite-maps/) that grow as needed
+   * Organize multiple maps [in a world](https://doc.mapeditor.org/en/stable/manual/worlds/)
+  attribution: Showing maps from [Alchemic Cutie](https://alchemiccutie.com/)
+
+- title: Powerful Workflow
+  image: img/tiled-header-background.png
+  description: |
+   * Quickly switch between [projects](https://doc.mapeditor.org/en/stable/manual/projects/)
+   * Jump to any file within a project
+   * Customizable [keyboard shortcuts](https://doc.mapeditor.org/en/stable/manual/keyboard-shortcuts/)
+
+- title: Extensible with JavaScript
+  image: img/feature-javascript.png
+  description: |
+   * Add support for [custom file formats](https://doc.mapeditor.org/en/stable/reference/scripting/#script-registermapformat)
+   * Write your own [actions](https://doc.mapeditor.org/en/stable/reference/scripting/#script-registeraction) or [tools](https://doc.mapeditor.org/en/stable/reference/scripting/#script-registertool)
+   * Automate your workflow
+
+- title: Widely Supported
+  image: img/feature-supported.png
+  description: |
+   * Supported by many [game development frameworks](https://doc.mapeditor.org/en/stable/reference/support-for-tmx-maps/)
+   * Exports to Image, JSON, Lua, GameMaker (1.4 and 2.3), Defold, tBIN and [many more](https://doc.mapeditor.org/en/stable/manual/export/)

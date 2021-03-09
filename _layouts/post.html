@@ -1,15 +1,14 @@
-{% include header_small.html %}
+{% include header.html %}
 
-<div class="my-box">
-  <div class="row">
-    <div class="col-md-8">
+<div class="post-container">
+  <div class="post-body">
 
 <header class="post-header">
   <h1>{{ page.title }}</h1>
 {% if page.author.name %}
-  <p class="meta"><i>{{ page.date | date_to_long_string }} • {{ page.author.name }}</i></p>
+  <div class="meta">{{ page.date | date_to_long_string }} • {{ page.author.name }}</div>
 {% else %}
-  <p class="meta"><i>{{ page.date | date_to_long_string }} • {{ page.author }}</i></p>
+  <div class="meta">{{ page.date | date_to_long_string }} • {{ page.author }}</div>
 {% endif %}
 </header>
 <article>
@@ -29,34 +28,6 @@
 {% endif %}
   <div style="clear: both; display: block; text-align: center;"><a href="/news">News Archive</a></div>
 </div>
-
-    </div>
-    <div class="col-md-4" style="padding-top: 20px;">
-
-      <h4>Tiled Map Editor<br/><small>A <a href="https://www.gnu.org/philosophy/free-sw.html">free</a>, easy to use and flexible level&nbsp;editor</small></h4>
-      <div style="margin: 20px 0px 30px 0px;">
-        <a class="btn btn-success" href="https://thorbjorn.itch.io/tiled/purchase"><i class="icon-download-alt"></i> Download</a>&nbsp;<a class="btn btn-info" href="https://github.com/sponsors/bjorn"><i class="icon-heart"></i> Sponsor on GitHub</a>
-      </div>
-
-  <h4>Recent News</h4>
-  <ul style="list-style: none; padding: 0;">
-{% for post in site.posts limit:9 %}
-    <li class="news-item">
-{% if page.url != post.url %}
-     <h5><a href="{{ post.url }}" class="news-headline">{{ post.title }}</a><br/><small>{{ post.date | date_to_long_string }}</small></h5>
-{% endif %}
-    </li>
-{% endfor %}
-  </ul>
-
-      <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
-      <div style="padding-top: 20px">
-        <div data-ea-publisher="mapeditor" data-ea-type="image"></div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-8">
 
 <hr/>
 {% if page.blogger_orig_url %}
@@ -80,6 +51,34 @@
 </script>
 {% endif %}
 
+  </div>
+
+  <div class="post-sidebar">
+    <h4>Tiled Map Editor</h4>
+    <div class="h4-subtitle">A free, easy to use and flexible level&nbsp;editor</div>
+    <div style="display: flex; flex-wrap: wrap;">
+      <a class="header-item action-button button-download" href="https://thorbjorn.itch.io/tiled/purchase"><svg class="svg-icon svg-icon-small" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!-- Font Awesome Free 5.15.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"/></svg> Download</a>
+      <a class="header-item action-button button-donate" href="/donate"><svg class="svg-icon svg-icon-small" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!-- Font Awesome Free 5.15.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg> Donate</a>
+    </div>
+
+  <h4>Latest Updates</h4>
+  <div class="flex-column-center" style="align-content: flex-start;">
+{% for post in site.posts limit:5 %}
+{% if page.url == post.url %}
+    <a class="news news-active news-collapsed news-small" href="{{ post.url }}">
+      <div class="news-title">{{ post.title }}<br/><span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
+    </a>
+{% else %}
+    <a class="news news-collapsed news-small" href="{{ post.url }}">
+      <div class="news-title">{{ post.title }}<br/><span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
+    </a>
+{% endif %}
+{% endfor %}
+  </div>
+
+    <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
+    <div style="padding-top: 20px">
+      <div data-ea-publisher="mapeditor" data-ea-type="image"></div>
     </div>
   </div>
 </div>

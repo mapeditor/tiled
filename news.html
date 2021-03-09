@@ -1,28 +1,51 @@
 ---
 layout: default
-title: News Archive
+title: News
 ---
 
-<h1>{{ page.title }}</h1>
+<section class="media-content">
+  <h2 class="big">Latest Updates</h2>
+  <div class="news-list">
+{% for post in site.posts limit:2 %}
+    <a class="news" href="{{ post.url }}">
+{% if post.image %}
+      <div class="news-image">
+        <img src="img/posts/{{ post.image }}" />
+      </div>
+{% endif %}
+      <div class="news-title">{{ post.title }} <span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
+      <div class="news-description">{{ post.excerpt | strip_html }}</div>
+    </a>
+{% endfor %}
+  </div>
+</section>
+
+<section class="media-content">
+  <h2 class="big">Previously</h2>
 
 {% for post in site.posts  %}
-  {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
-  {% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
+  {% if forloop.index > 2 %}
+    {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
+    {% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
 
-  {% if forloop.first %}
-    <h2>{{this_year}}</h2>
-    <ul>
-  {% endif %}
+    {% if forloop.index == 3 %}
+      <h3>{{this_year}}</h3>
+      <div class="news-list">
+    {% endif %}
 
-  <li><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a> <small style="color: #818181;">- {{ post.date | date: "%B %e" }}</small></li>
+    <a class="news news-collapsed" href="{{ post.url }}">
+      <div class="news-title">{{ post.title }} <span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
+    </a>
 
-  {% if forloop.last %}
-    </ul>
-  {% else %}
-    {% if this_year != next_year %}
-      </ul>
-      <h2>{{next_year}}</h2>
-      <ul>
+    {% if forloop.last %}
+      </div>
+    {% else %}
+      {% if this_year != next_year %}
+        </div>
+        <h3>{{next_year}}</h3>
+        <div class="news-list">
+      {% endif %}
     {% endif %}
   {% endif %}
 {% endfor %}
+</section>

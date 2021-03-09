@@ -1,230 +1,100 @@
 ---
+layout: default
 title: Donate
 ---
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- Bootstrap -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href='favicon.ico' rel='icon' type='image/png'/>
-    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
-    <link href="css/fontawesome.css" rel="stylesheet">
-    <link href="css/base.css" rel="stylesheet" media="screen">
-    <link rel="me" href="https://plus.google.com/113047271137781766813" />
-    <link rel="publisher" href="https://plus.google.com/104206952440491912596/" />
-    <style type="text/css">
-      .donate-button {
-        border-width: 2px;
-        background-repeat: no-repeat;
-        padding: 140px 8px 8px 8px;
-        margin-bottom: 10px;
-        transition: 0.2s ease-out;
-        box-shadow: 0px 0px 0px rgba(0,0,0,0);
-      }
 
-      .donate-button:hover {
-        background-color: white;
-        box-shadow: 0px 5px 8px rgba(0,0,0,0.25);
-        margin-top: -5px;
-        margin-bottom: 15px;
-      }
-    </style>
-{% seo %}
-    <script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
-  </head>
-  <body>
-    <nav id="navbar" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0px">
-      <ul class="nav navbar-nav">
-        <li><a href="/"><i class="icon-home"></i> Home</a></li>
-        <li><a href="https://discourse.mapeditor.org/"><i class="icon-group"></i> Forum</a></li>
-        <li><a href="https://doc.mapeditor.org/"><i class="icon-book"></i> Documentation</a></li>
-        <li class="active"><a href="/donate"><i class="icon icon-heart"></i> Donate</a></li>
-      </ul>
-      <ul class="nav navbar-nav pull-right">
-        <li><a href="https://github.com/bjorn/tiled"><i class="icon-github-alt"></i> Tiled on GitHub</a></li>
-        <!-- TODO: Just have a row of icons (GitHub, [Twitter,] Google+, IRC?) -->
-      </ul>
-    </nav>
+<!--
+<section class="media-content">
+  <div>
+    <b>Please support my work on Tiled!</b> - You can donate at <a href="https://github.com/sponsors/bjorn">GitHub Sponsors</a>, <a href="https://www.patreon.com/bjorn/overview">Patreon</a> or <a href="https://liberapay.com/Tiled">Liberapay</a>.
+  </div>
 
-    <div class="my-top-box" style="position: relative;">
-      <div class="background">
-
-        <!-- a centered 0-width inline block -->
-        <div style="display: inline-block; width: 0px;">
-          <!-- the actual map, centered on the parent by using negative offset -->
-          <div style="position: relative; left: -800px; width: 1600px; height: 520px;">
-
-  <div class="t t34" style="left: 0px; top: 0px;"></div>
-  <div class="t t38" style="left: 40px; top: 0px;"></div>
-  <div class="t t66" style="left: 760px; top: 0px;"></div>
-  <div class="t t68" style="left: 800px; top: 0px;"></div>
-  <div class="t t70" style="left: 840px; top: 0px;"></div>
-  <div class="t t66" style="left: 1000px; top: 0px;"></div>
-  <div class="t t68" style="left: 1040px; top: 0px; width: 80px;"></div>
-  <div class="t t74" style="left: 1120px; top: 0px;"></div>
-  <div class="t t36" style="left: 1160px; top: 0px;"></div>
-  <div class="t t38" style="left: 1200px; top: 0px;"></div>
-  <div class="t t66" style="left: 1320px; top: 0px;"></div>
-  <div class="t t68" style="left: 1360px; top: 0px; width: 120px;"></div>
-  <div class="t t74" style="left: 1480px; top: 0px;"></div>
-  <div class="t t38" style="left: 1520px; top: 0px;"></div>
-  <div class="t t98" style="left: 0px; top: 40px;"></div>
-  <div class="t t102" style="left: 40px; top: 40px;"></div>
-  <div class="t t34" style="left: 80px; top: 40px;"></div>
-  <div class="t t38" style="left: 120px; top: 40px;"></div>
-  <div class="t t98" style="left: 760px; top: 40px;"></div>
-  <div class="t t104" style="left: 800px; top: 40px;"></div>
-  <div class="t t74" style="left: 840px; top: 40px;"></div>
-  <div class="t t38" style="left: 880px; top: 40px;"></div>
-  <div class="t t66" style="left: 1000px; top: 40px;"></div>
-  <div class="t t68" style="left: 1040px; top: 40px; width: 160px;"></div>
-  <div class="t t70" style="left: 1200px; top: 40px;"></div>
-  <div class="t t34" style="left: 1280px; top: 40px;"></div>
-  <div class="t t72" style="left: 1320px; top: 40px;"></div>
-  <div class="t t68" style="left: 1360px; top: 40px; width: 160px;"></div>
-  <div class="t t70" style="left: 1520px; top: 40px;"></div>
-  <div class="t t34" style="left: 40px; top: 80px;"></div>
-  <div class="t t72" style="left: 80px; top: 80px;"></div>
-  <div class="t t70" style="left: 120px; top: 80px;"></div>
-  <div class="t t34" style="left: 720px; top: 80px;"></div>
-  <div class="t t38" style="left: 760px; top: 80px;"></div>
-  <div class="t t66" style="left: 800px; top: 80px;"></div>
-  <div class="t t68" style="left: 840px; top: 80px;"></div>
-  <div class="t t70" style="left: 880px; top: 80px;"></div>
-  <div class="t t34" style="left: 960px; top: 80px;"></div>
-  <div class="t t72" style="left: 1000px; top: 80px;"></div>
-  <div class="t t68" style="left: 1040px; top: 80px;"></div>
-  <div class="t t106" style="left: 1080px; top: 80px;"></div>
-  <div class="t t100" style="left: 1120px; top: 80px; width: 80px;"></div>
-  <div class="t t102" style="left: 1200px; top: 80px;"></div>
-  <div class="t t34" style="left: 1240px; top: 80px;"></div>
-  <div class="t t72" style="left: 1280px; top: 80px;"></div>
-  <div class="t t68" style="left: 1320px; top: 80px; width: 80px;"></div>
-  <div class="t t106" style="left: 1400px; top: 80px;"></div>
-  <div class="t t104" style="left: 1440px; top: 80px;"></div>
-  <div class="t t68" style="left: 1480px; top: 80px;"></div>
-  <div class="t t70" style="left: 1520px; top: 80px;"></div>
-  <div class="t t98" style="left: 40px; top: 120px;"></div>
-  <div class="t t100" style="left: 80px; top: 120px;"></div>
-  <div class="t t102" style="left: 120px; top: 120px;"></div>
-  <div class="t t34" style="left: 680px; top: 120px;"></div>
-  <div class="t t72" style="left: 720px; top: 120px;"></div>
-  <div class="t t74" style="left: 760px; top: 120px;"></div>
-  <div class="t t72" style="left: 800px; top: 120px;"></div>
-  <div class="t t106" style="left: 840px; top: 120px;"></div>
-  <div class="t t102" style="left: 880px; top: 120px;"></div>
-  <div class="t t34" style="left: 920px; top: 120px;"></div>
-  <div class="t t72" style="left: 960px; top: 120px;"></div>
-  <div class="t t68" style="left: 1000px; top: 120px;"></div>
-  <div class="t t106" style="left: 1040px; top: 120px;"></div>
-  <div class="t t102" style="left: 1080px; top: 120px;"></div>
-  <div class="t t34" style="left: 1200px; top: 120px;"></div>
-  <div class="t t72" style="left: 1240px; top: 120px;"></div>
-  <div class="t t68" style="left: 1280px; top: 120px; width: 120px;"></div>
-  <div class="t t74" style="left: 1400px; top: 120px;"></div>
-  <div class="t t72" style="left: 1440px; top: 120px;"></div>
-  <div class="t t106" style="left: 1480px; top: 120px;"></div>
-  <div class="t t102" style="left: 1520px; top: 120px;"></div>
-  <div class="t t34" style="left: 520px; top: 160px;"></div>
-  <div class="t t36" style="left: 560px; top: 160px; width: 120px;"></div>
-  <div class="t t72" style="left: 680px; top: 160px;"></div>
-  <div class="t t106" style="left: 720px; top: 160px;"></div>
-  <div class="t t100" style="left: 760px; top: 160px;"></div>
-  <div class="t t104" style="left: 800px; top: 160px;"></div>
-  <div class="t t74" style="left: 840px; top: 160px;"></div>
-  <div class="t t38" style="left: 880px; top: 160px;"></div>
-  <div class="t t98" style="left: 920px; top: 160px;"></div>
-  <div class="t t104" style="left: 960px; top: 160px;"></div>
-  <div class="t t68" style="left: 1000px; top: 160px;"></div>
-  <div class="t t70" style="left: 1040px; top: 160px;"></div>
-  <div class="t t34" style="left: 1120px; top: 160px;"></div>
-  <div class="t t36" style="left: 1160px; top: 160px;"></div>
-  <div class="t t72" style="left: 1200px; top: 160px;"></div>
-  <div class="t t68" style="left: 1240px; top: 160px; width: 200px;"></div>
-  <div class="t t106" style="left: 1440px; top: 160px;"></div>
-  <div class="t t102" style="left: 1480px; top: 160px;"></div>
-  <div class="tree" style="left: 641px; top: -90px;"></div>
-  <div class="tree" style="left: 683px; top: -44px;"></div>
-  <div class="tree" style="left: 608px; top: -27px;"></div>
-  <div class="tree" style="left: 173px; top: -4px;"></div>
-  <div class="tree" style="left: 228px; top: 52px;"></div>
-  <div class="tree" style="left: 147px; top: 92px;"></div>
-  <div class="tree" style="left: 303px; top: 105px;"></div>
-  <div class="tree" style="left: 238px; top: 122px;"></div>
-
-          </div>
-        </div>
-
+  <div>
+    <div class="progress" style="margin-bottom: 0px;">
+      <a href="https://thorbjorn.itch.io/tiled">
+        <div class="progress-bar progress-bar-warning progress-bar-striped" id="itch-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 35%; background-image: linear-gradient(to bottom, #fa5c5c 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="itch"></div>
+      </a>
+      <a href="https://liberapay.com/bjorn">
+        <div class="progress-bar progress-bar-warning progress-bar-striped" id="liberapay-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0.33%; background-image: linear-gradient(to bottom, #f6c915 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Liberapay"></div>
+      </a>
+      <a href="https://www.patreon.com/bjorn">
+        <div class="progress-bar progress-bar-warning progress-bar-striped" id="patreon-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 39.59%; background-image: linear-gradient(to bottom, #FF945A 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Patreon"></div>
+      </a>
+      <a href="https://github.com/sponsors/bjorn">
+        <div class="progress-bar progress-bar-warning progress-bar-striped" id="github-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 25.06%; background-image: linear-gradient(to bottom, #ea4aaa 0px, #c54190 100%);" data-toggle="tooltip" data-placement="bottom" title="GitHub Sponsors"></div>
+      </a>
+      <span style="color: gray; margin-left: 5px;" id="goal-percentage"></span>
+    </div>
+    <div style="margin-left: 4px;">
+      <div id="goal1" class="goalmarker" style="height: 1em; margin-right: 55.77%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
+        <small style="display: block; padding: 6px 4px;">
+          <strong>1 day/week</strong><br>
+          <small style="color: #eee">$1150/month</small>
+        </small>
       </div>
-      <div class="contents">
-
-      <div class="container-fluid">
-        <div class="row">
-          <!--
-          <a class='g-plus-link' href='https://plus.google.com/104206952440491912596?prsrc=3' rel='publisher' style='text-decoration:none;'><img alt='' src='https://ssl.gstatic.com/images/icons/gplus-32.png' style='border:0;width:32px;height:32px;'/></a>
-          -->
-          <div class="lead col-md-12">
-            <h1 style="display: none;">Tiled</h1>
-            <a href="index.html"><img src="img/tiled-logo-white.png" style="margin-bottom: -40px; margin-left: 2%; width: 200px;"></a><br />
-          </div>
-        </div>
+      <div id="goal2" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 11.5%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
+        <small style="display: block; padding: 6px 4px;">
+          <strong>2 days/week</strong><br>
+          <small style="color: #eee">$2300/month</small>
+        </small>
       </div>
-      <div class="my-navigation">
-        <!--<a class="btn btn-default btn-sm" href="http://blog.mapeditor.org/"><i class="icon-rss"></i> Blog</a>-->
-        <a class="btn btn-default btn-sm" href="https://github.com/bjorn/tiled/issues"><i class="icon-exclamation-sign"></i> Issue Tracker</a>
-        <a class="btn btn-default btn-sm" href="https://discord.gg/39wbTv7"><i class="icon-comments"></i> Tiled on Discord</a>
+      <div id="goal3" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 0%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
+        <small style="display: block; padding: 6px 4px;">
+          <strong>+ office</strong><br>
+          <small style="color: #eee">$2600/month</small>
+        </small>
       </div>
     </div>
+  </div>
+</section>
+-->
+<h1>Donate</h1>
 
-    </div>
+<p>Please consider setting up a small recurring donation on one of the following platforms.</p>
 
-    <div class="container-fluid">
-      <div class="my-box">
+<div class="donation-options">
+  <div class="donation-option">
+    <a href="https://github.com/sponsors/bjorn" class="donate-button donate-github" style="background-image: url(img/logo-mona.svg); background-position: 50% 35%; background-size: 120px;">
+      <p>Support Tiled on GitHub</p>
+    </a>
+    <p class="donate-notice">No platform or payment processing fees!</p>
+  </div>
+  <div class="donation-option">
+    <a href="https://www.patreon.com/join/bjorn?" class="donate-button donate-patreon" style="text-align: center; background-image: url(img/Patreon_Mark_Primary.png); background-position: 50% 35%; background-size: 100px;">
+      <p>Support Tiled on Patreon</p>
+    </a>
+  </div>
+  <div class="donation-option">
+    <a href="https://liberapay.com/Tiled" class="donate-button donate-liberapay" style="background-image: url(img/icon-v2_white-on-yellow.svg); background-position: 50% 35%; background-size: 100px;">
+      <p>Support Tiled on Liberapay</p>
+    </a>
+    <p class="donate-notice">Your donation will be anonymous.</p>
+  </div>
+</div>
 
-        <h3>Donate</h3>
+<p>Donations allow <a href="https://github.com/bjorn">Thorbjørn Lindeijer</a> to spend more time on Tiled development, giving you a better tool to work with! The next goal is to fund Tiled development for <strong>3 days/week</strong>.</p>
 
-        <p>Please consider setting up a small recurring donation on one of the following platforms.</p>
+<div style="display: flex;">
+  <div class="donation-goals">
+    <div class="donation-goal goal-reached"><strong>1 day/week</strong><br><small>$1200/month</small></div>
+    <div class="donation-goal goal-reached"><strong>2 days/week</strong><br><small>$2400/month</small></div>
+    <div class="donation-goal goal-next"><strong>3 days/week</strong><br><small>$3600/month</small></div>
+    <div class="donation-goal"><strong>4 days/week</strong><br><small>$4800/month</small></div>
+    <div class="donation-goal"><strong>Full-time</strong><br><small>$6000/month</small></div>
+  </div>
+</div>
 
-        <div class="row" style="margin-top: 20px; margin-bottom: 20px;">
-          <div class="col-md-4" style="text-align: center;">
-            <a href="https://github.com/sponsors/bjorn"><div class="well well-sm donate-button" style="border-color: #eb49ac; background-image: url(img/logo-mona.svg); background-position: 50% 35%; background-size: 120px;">
-              <p>Support Tiled on GitHub</p>
-            </div></a>
-            <p style="margin-left: 30px; margin-right: 30px;"><i>No platform or payment processing fees!</i></p>
-          </div>
-          <div class="col-md-4">
-            <a href="https://www.patreon.com/join/bjorn?"><div class="well well-sm donate-button" style="text-align: center; border-color: #fa6853; background-image: url(img/Patreon_Mark_Primary.png); background-position: 50% 35%; background-size: 100px;">
-              <p>Support Tiled on Patreon</p>
-            </div></a>
-          </div>
-          <div class="col-md-4" style="text-align: center;">
-            <a href="https://liberapay.com/Tiled"><div class="well well-sm donate-button" style="border-color: #f6cb0a; background-image: url(img/icon-v2_white-on-yellow.svg); background-position: 50% 35%; background-size: 100px;">
-              <p>Support Tiled on Liberapay</p>
-            </div></a>
-            <p style="margin-left: 40px; margin-right: 40px;"><i>Your donation will be anonymous.</i></p>
-          </div>
-        </div>
+<p>When you support Tiled development you'll receive regular development updates, a special role on the <a href="https://discord.gg/39wbTv7">Tiled Discord server</a> and priority support, in addition to a continuously improving level editor!</p>
 
-        <p>Donations allow me to spend more time on Tiled development, giving you a better tool to work with!</p>
-        <p>As a patron or sponsor, you'll also receive a special role on the <a href="https://discord.gg/39wbTv7">Tiled Discord server</a>!</p>
+<h2>Sponsor for a Banner or Specific Features</h2>
 
-        <h3>Sponsor for a Banner or Specific Features</h3>
+<p>Companies as well as individuals who'd like extra exposure or who want to push for specific features to get added can sponsor Tiled at the following tiers:</p>
 
-        <p>Companies as well as individuals who'd like extra exposure or who want to push for specific features to get added can sponsor Tiled at the following tiers:</p>
+<ul>
+  <li><b>$100 / month</b> - <i>Banner Sponsor</i> - Get a banner link on Tiled's front page!</li>
+  <li><b>$200 / month</b> - <i>Feature Sponsor</i> - Get 8 hours/month of dedicated development time!</li>
+</ul>
 
-        <ul>
-          <li><b>$100 / month</b> - <i>Banner Sponsor</i> - Get a banner link on Tiled's front page!</li>
-          <li><b>$200 / month</b> - <i>Feature Sponsor</i> - Get 8 hours/month of dedicated development time!</li>
-        </ul>
+<p>The above tiers can be combined if desired. Please choose your tier on either <a href="https://github.com/sponsors/bjorn">GitHub Sponsors</a> (recommended for non-EU sponsors) or <a href="https://www.patreon.com/join/bjorn?">Patreon</a> (EU sponsors)</p>
 
-        <p>The above tiers can be combined if desired. Please choose your tier on either <a href="https://github.com/sponsors/bjorn">GitHub Sponsors</a> (recommended for non-EU sponsors) or <a href="https://www.patreon.com/join/bjorn?">Patreon</a> (EU sponsors)</p>
-
-        <p>There is also the option of contracting me to add to Tiled whatever features you need!</p>
-
-        <div style="text-align: center;">
-        <a href="https://www.openhub.net/p/tiled-qt/commits/summary"><img alt="Commits" height="32" src="https://www.openhub.net/p/tiled-qt/analyses/latest/commits_spark.png" width="179" /></a><br /><small><a href='https://www.openhub.net/p/tiled-qt' style='text-decoration:none; color:#999;' target='_top'>stats by <img src='https://www.openhub.net/assets/widget_logos/openhublogo-aa7cfb70312072afbc2c92375788dfe929a32d0117ec3295bf6a936529052e5f.png' style='border:none; width:68px; height:13px;' /></a></small>
-        </div>
-      </div>
-
-{% include footer.html %}
+<p>There is also the option of contracting <a href="https://github.com/bjorn">Thorbjørn Lindeijer</a> to add to Tiled whatever features you need!</p>
