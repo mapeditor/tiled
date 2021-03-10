@@ -52,7 +52,7 @@ Name
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.4</div>
+   <div class="new new-prev">Since Tiled 1.4</div>
 
 Object Alignment
    The alignment to use for :ref:`tile objects <insert-tile-tool>` referring

@@ -149,7 +149,7 @@ Selected Objects*.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.4</div>
+   <div class="new new-prev">Since Tiled 1.4</div>
 
 You can customize the alignment of tile objects using the *Object Alignment*
 property on the *Tileset*. For compatibility reasons this property is set to
@@ -328,7 +328,7 @@ end of an already selected polyline.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.4</div>
+   <div class="new new-prev">Since Tiled 1.4</div>
 
 .. _connecting-objects:
 

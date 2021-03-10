@@ -45,7 +45,7 @@ Getting Started
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.4</div>
+   <div class="new new-prev">Since Tiled 1.4</div>
 
 Setting up a New Project
 ~~~~~~~~~~~~~~~~~~~~~~~~
