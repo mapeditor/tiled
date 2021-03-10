@@ -43,9 +43,7 @@ layout: default
 {% for feature in site.data.features %}
     <div class="feature">
       <div class="feature-content">
-        <div class="feature-image">
-          <img src="{{ feature.image }}" />
-        </div>
+        <img class="feature-image" src="{{ feature.image }}" />
         <div class="feature-text">
           <div class="feature-title">{{ feature.title }}</div>
           <div class="feature-description">{{ feature.description | markdownify }}</div>
