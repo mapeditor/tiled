@@ -1,14 +1,16 @@
-Automatic Terrain Tile Placement
-================================
+Using Terrains
+==============
 
 When editing a tile map, sometimes we don't think in terms of *tiles* but
-rather in terms of *terrains*. Say we want to draw a patch of grass, a road or
-a certain platform. In this case, manually choosing the right tiles for the
-various transitions or connections quickly gets tedious.
+rather in terms of *terrains* - areas of tiles with transitions to other kinds
+of tiles. Say we want to draw a patch of grass, a road or a certain platform.
+In this case, manually choosing the right tiles for the various transitions or
+connections quickly gets tedious.
 
 The :ref:`terrain-tool` was added to make editing tile maps easier in such
-cases. The tool relies on the tileset providing one or more **Terrain Sets**.
-Tiled supports the following terrain sets:
+cases. The tool relies on the tileset providing one or more *Terrain Sets* -
+sets of tiles labelled according to their terrain layouts. Tiled supports the
+following terrain sets:
 
 Corner Set
     Tiles that needs to match neighboring tiles at their corners, with a
@@ -48,7 +50,7 @@ First of all, switch to the tileset file. If you're looking at the map
 and have the tileset selected, you can do this by clicking the small
 *Edit Tileset* button below the Tilesets view.
 
-.. figure:: images/terraintool/edit-tileset-button.png
+.. figure:: images/terrain/edit-tileset-button.png
    :alt: Edit Tileset button
 
    Edit Tileset button
@@ -58,7 +60,7 @@ Then, activate the terrain editing mode by clicking on the *Terrain Sets*
 view will become visible, with a button to add a new set. In this example,
 we'll define a *Corner Set*.
 
-.. figure:: images/terraintool/add-terrain-set.png
+.. figure:: images/terrain/add-terrain-set.png
    :alt: Adding a Terrain Set
 
    Adding a Terrain Set
@@ -72,14 +74,16 @@ Adding Terrains
 ^^^^^^^^^^^^^^^
 
 The new set will have one terrain added by default. If we already know we need
-additional ones, click the *Add Terrain* button to add more. Each terrain has
-a name, color and can have one of the tiles associated with it. Double-click
-the terrain to edit its name. To change the color, right-click the terrain and
-choose "Pick Custom Color". To assign a tile, select the terrain and then
-right-click a tile, choosing "Use as Terrain Image".
+additional ones, click the *Add Terrain* button to add more.
+
+Each terrain has a name, color and can have one of the tiles as its icon it to
+make it more recognizable. Double-click the terrain to edit its name. To
+change the color, right-click the terrain and choose "Pick Custom Color". To
+assign an icon, select the terrain and then right-click a tile, choosing "Use
+as Terrain Image".
 
 
-.. figure:: images/terraintool/terrains-added.png
+.. figure:: images/terrain/terrains-added.png
    :alt: Our Terrains
 
    Our Terrains
@@ -104,7 +108,7 @@ the terrain set and choose *Terrain Set Properties...*).
 With the terrain we want to mark selected, click and drag to mark the regions
 of the tiles that match this terrain.
 
-.. figure:: images/terraintool/sand-marked.png
+.. figure:: images/terrain/sand-marked.png
    :alt: Sand marked
 
    Here we have marked all the sandy corners in our example tileset.
@@ -117,19 +121,33 @@ corner can only have one type of terrain associated with it.
 Now do the same for each of the other terrain types. Eventually you'll have
 marked all tiles apart from the special objects.
 
-.. figure:: images/terraintool/done-marking-tiles.png
+.. figure:: images/terrain/done-marking-tiles.png
    :alt: Done marking tiles
 
    We're done marking the terrain of our tiles.
 
-Now you can disable the *Terrain Sets* |terrain| mode by clicking the tool bar
-button again.
+Patterns View
+~~~~~~~~~~~~~
+
+Next to the *Terrains* tab there's also a *Patterns* tab. This view can be
+useful when marking complete sets, since it can highlight still missing
+patterns. Each pattern which already occurs on a tile in the tileset is
+darkened, to make the missing patterns stand out. Note though, that it is not
+necessary for a terrain set to have all possible patterns, especially when
+using more than 2 terrains.
+
+.. figure:: images/terrain/patterns-view.png
+   :alt: Patterns view
+
+   Patterns view, showing all possible combinations in the set.
 
 Editing with the Terrain Brush
 ------------------------------
 
-Switch back to the map and then activate the *Terrain Sets* window. Select the
-terrain set we have just set up, so we can use its terrains.
+Now you can disable the *Terrain Sets* |terrain| mode by clicking the tool bar
+button again. Then switch back to the map and activate the *Terrain Sets*
+window. Select the terrain set we have just set up, so we can use its
+terrains.
 
 Click on the Sand terrain and try to paint. You may immediately notice that
 nothing is happening. This is because there are no other tiles on the map yet,
@@ -147,7 +165,7 @@ transitions to "nothing" in our tileset). There are two ways out of this:
 Once we've painted some sand, let's select the Cobblestone terrain. Now you
 can see the tool in action!
 
-.. figure:: images/terraintool/drawing-cobblestone.png
+.. figure:: images/terrain/drawing-cobblestone.png
    :alt: Drawing cobblestone
 
    Drawing cobblestone
@@ -161,7 +179,7 @@ cobblestone. Because there are no transitions from dirt directly to
 cobblestone, the Terrain tool first inserts transitions to sand and from
 there to cobblestone. Neat!
 
-.. figure:: images/terraintool/drawing-dirt.png
+.. figure:: images/terrain/drawing-dirt.png
    :alt: Drawing dirt
 
    Drawing dirt
@@ -173,6 +191,49 @@ there to cobblestone. Neat!
     while choosing the right tiles as well. This mode does nothing useful when
     there are no transitions to nothing in the selected Terrain Set.
 
+Terrain Fill Mode
+-----------------
+
+The :ref:`terrain-tool`, :ref:`bucket-fill-tool` and the
+:ref:`shape-fill-tool` have a *Terrain Fill Mode*, which can be used to paint
+or fill an area with random terrain. With this mode activated, each cell will
+be randomly chosen from all those in the selected Terrain Set, making sure to
+match all adjacent edges and/or corners.
+
+.. figure:: images/terrain/terrain-fill-mode-stamp-brush.png
+
+   Stamp Brush with Terrain Fill Mode Enabled
+
+Note that since this mode makes sure that newly placed tiles match up with any
+already existing tiles, generally nothing will change when painting with the
+Stamp Brush on existing terrain. The exception is when there are multiple
+variations of the same tile, in which case it will randomize between those.
+
+.. figure:: images/terrain/terrain-fill-mode-bucket-fill.png
+
+   Bucket Fill with Terrain Fill Mode Enabled
+
+When filling a shape or an area, only the edges of the filled area need to
+connect to any existing tiles. Internally the area is completely randomized.
+
+Probability
+^^^^^^^^^^^
+
+When choosing a tile in Terrain Fill Mode, by default all tiles with a valid
+pattern are considered with equal probability. Both individual tiles as well
+as terrains have a *Probability* property, which can be used to change the
+frequency with which a certain tile or terrain is chosen compared to other
+valid options.
+
+The relative probability of a tile is the product of its own propability and the probability of the terrain at each corner and/or side.
+
+.. image:: images/terrain/lowprobability.jpg
+   :width: 45%
+.. image:: images/terrain/highprobability.jpg
+   :width: 45%
+
+Left shows "path" with probability 0.1, right shows "path" with probability 10.
+
 Final Words
 -----------
 
@@ -180,10 +241,11 @@ Now you should have a pretty good idea about how to use this tool in
 your own project. A few things to keep in mind:
 
 - For one terrain to interact with another, they need to be part of the same
-  *Terrain Set*. This also means all tiles need to be part of the same tileset.
-  This usually means you may have to merge some tilesets into one image.
+  *Terrain Set*. This also means all tiles need to be part of the same
+  tileset. If you have tiles in different tilesets that you want to transition
+  to one another, you will need to merge the tilesets into one.
 
-- Since defining the terrain information can be somewhat laboursome,
+- Since defining the terrain information can be somewhat laborious,
   you'll want to avoid using embedded tilesets so that terrain
   information can be shared among several maps.
 
@@ -209,8 +271,13 @@ your own project. A few things to keep in mind:
 ..
     TODO:
     * Images showing example of each terrain type
-    * Section about randomization
     * Summarizing the Edge and Mixed sets
-    * Mention the Patterns tab (marking tiles, checking set compleness)
     * Mention flipping and rotation
-    * Mention the Terrain Fill Mode (along with probability?)
+
+    Standard Wang Sets
+    ------------------
+
+    Some typical Wang sets are `2-corner <http://www.cr31.co.uk/stagecast/wang/2corn.html>`__,
+    `2-edge <http://www.cr31.co.uk/stagecast/wang/2edge.html>`__, and
+    `blob <http://www.cr31.co.uk/stagecast/wang/blob.html>`__. Wang tiles
+    in Tiled support up to 15 edge and 15 corner colors in a single set.

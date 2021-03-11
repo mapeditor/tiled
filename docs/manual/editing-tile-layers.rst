@@ -9,10 +9,10 @@ it when you're not going to use it.
 
 .. _stamp-tool:
 
-Stamp Brush |stock-tool-clone|
-------------------------
+Stamp Brush
+-----------
 
-Shortcut: ``B``
+Shortcut: ``B`` |stock-tool-clone|
 
 The primary tool for editing tile layers is the Stamp Brush. It can be
 used to paint single tiles as well as larger "stamps", which is where it
@@ -51,10 +51,10 @@ The Stamp Brush has some extra features:
 
 .. _terrain-tool:
 
-Terrain Brush |terrain-edit|
-----------------------------
+Terrain Brush
+-------------
 
-Shortcut: ``T``
+Shortcut: ``T`` |terrain-edit|
 
 The Terrain Brush allows for efficient editing with certain types of terrain
 transitions (corner-based, edge-based or a combination). Setting it up
@@ -81,10 +81,10 @@ for increasing the edited area.
 
 .. _bucket-fill-tool:
 
-Bucket Fill Tool |stock-tool-bucket-fill|
------------------------------------------
+Bucket Fill Tool
+----------------
 
-Shortcut: ``F``
+Shortcut: ``F`` |stock-tool-bucket-fill|
 
 The Bucket Fill Tool provides a quick way of filling empty areas or
 areas covered with the same tiles. The currently active tile stamp will
@@ -104,10 +104,10 @@ You can also flip and rotate the current stamp as described for the
 
 .. _shape-fill-tool:
 
-Shape Fill Tool |rectangle-fill|
---------------------------------
+Shape Fill Tool
+---------------
 
-Shortcut: ``P``
+Shortcut: ``P`` |rectangle-fill|
 
 This tool provides a quick way to fill rectangles or ellipses with a certain
 tile or pattern. Hold ``Shift`` to fill an exact square or circle.
@@ -117,10 +117,10 @@ You can also flip and rotate the current stamp as described for the
 
 .. _eraser-tool:
 
-Eraser |stock-tool-eraser|
---------------------------
+Eraser
+------
 
-Shortcut: ``E``
+Shortcut: ``E`` |stock-tool-eraser|
 
 A simple eraser tool. Left click erases single tiles and right click can
 be used to quickly erase rectangular areas.

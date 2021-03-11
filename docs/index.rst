@@ -20,7 +20,6 @@ Tiled Documentation
    manual/custom-properties
    manual/using-templates
    manual/terrain
-   manual/using-wang-tiles
    manual/using-infinite-maps
    manual/worlds
    manual/using-commands
