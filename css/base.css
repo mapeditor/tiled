@@ -447,9 +447,7 @@ img.feature-image {
   position: absolute;
   height: 100%;
   width: 100%;
-  background-color: #333;
   border-radius: 5px;
-  overflow: hidden;
   object-fit: cover;
 }
 .feature-text {
