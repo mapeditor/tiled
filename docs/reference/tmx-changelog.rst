@@ -85,7 +85,7 @@ Tiled 1.1
 
       <object id="3" template="diamond.tx" x="200" y="100"/>
 
--  Tilesets can now contain :doc:`Wang tiles </manual/using-wang-tiles>`.
+-  Tilesets can now contain :doc:`Terrain Sets </manual/terrain>`.
    They are saved in the new :ref:`tmx-wangsets` element.
 
 -  A new :ref:`tmx-point` child element was added to :ref:`tmx-object`, which

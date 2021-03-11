@@ -19,7 +19,7 @@ Tiled Documentation
    manual/editing-tilesets
    manual/custom-properties
    manual/using-templates
-   manual/using-the-terrain-tool
+   manual/terrain
    manual/using-wang-tiles
    manual/using-infinite-maps
    manual/worlds

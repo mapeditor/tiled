@@ -5,7 +5,7 @@
 Using Wang Tiles
 ================
 
-Wang tiles are similar in concept to :doc:`Terrains <using-the-terrain-tool>`.
+Wang tiles are similar in concept to :doc:`Terrains <terrain>`.
 They are, however, more focused on filling larger areas without repetition.
 One defines the edge and corner colors of tiles in a tileset. This information
 can then be used when filling, or brushing to allow for smooth, non-repetitive
