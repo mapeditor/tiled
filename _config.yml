@@ -2,6 +2,6 @@ plugins:
   - jekyll-seo-tag
   - jekyll-redirect-from
 title: Tiled
-repository: bjorn/tiled
+repository: mapeditor/tiled
 twitter:
-  username: thorbjorn81
+  username: TiledApp
