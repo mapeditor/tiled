@@ -5,17 +5,34 @@ When editing a tile map, sometimes we don't think in terms of *tiles* but
 rather in terms of *terrains* - areas of tiles with transitions to other kinds
 of tiles. Say we want to draw a patch of grass, a road or a certain platform.
 In this case, manually choosing the right tiles for the various transitions or
-connections quickly gets tedious.
+connections quickly gets tedious. The :ref:`terrain-tool` was added to make
+editing tile maps easier in such cases.
 
-The :ref:`terrain-tool` was added to make editing tile maps easier in such
-cases. The tool relies on the tileset providing one or more *Terrain Sets* -
+.. note::
+
+    While Tiled has supported terrains since version 0.9 and later supported a
+    similar feature called "Wang tiles" since version 1.1, both features were
+    unified and extended in Tiled 1.5. *Terrain information defined in Tiled
+    1.5 can't be used by older versions.*
+
+The Terrain Brush relies on the tileset providing one or more *Terrain Sets* -
 sets of tiles labelled according to their terrain layouts. Tiled supports the
 following terrain sets:
+
+.. figure:: images/terrain/corner-set.png
+   :alt: Corner Set
+   :align: right
+   :scale: 50%
 
 Corner Set
     Tiles that needs to match neighboring tiles at their corners, with a
     transition from one type of terrain to another in between. A complete set
     with 2 terrains has 16 tiles.
+
+.. figure:: images/terrain/edge-set.png
+   :alt: Edge Set
+   :align: right
+   :scale: 50%
 
 Edge Set
     Tiles that need to match neighboring tiles at their sides. This is common
@@ -34,9 +51,9 @@ understand the map and automatically choose the right tiles when making edits.
 When necessary, it also adjusts neighboring tiles to make sure they correctly
 connect to the modified area.
 
-The :ref:`terrain-tool`, as well as the :ref:`bucket-fill-tool` and the
-:ref:`shape-fill-tool`, also have a mode where they can fill an area with
-random terrain.
+The :ref:`stamp-tool`, as well as the :ref:`bucket-fill-tool` and the
+:ref:`shape-fill-tool`, also have a mode where they can :ref:`fill an area with
+random terrain <terrain-fill-mode>`.
 
 .. _define-terrain-information:
 
@@ -154,9 +171,9 @@ nothing is happening. This is because there are no other tiles on the map yet,
 so the terrain tool doesn't really know how to help (because we also have no
 transitions to "nothing" in our tileset). There are two ways out of this:
 
-* We can hold ``Ctrl`` to paint a slightly larger area. This way we will paint
-  at least a single tile filled with the selected terrain, though this is not
-  convenient for painting larger areas.
+* We can hold ``Ctrl`` (``Command`` on a Mac) to paint a slightly larger area.
+  This way we will paint at least a single tile filled with the selected
+  terrain, though this is not convenient for painting larger areas.
 
 * Assuming we're out to create a desert map, it's better to start by filling
   the entire map with sand. Just switch back to the *Tilesets* window for a
@@ -169,10 +186,6 @@ can see the tool in action!
    :alt: Drawing cobblestone
 
    Drawing cobblestone
-
-Try holding ``Control`` (``Command`` on a Mac) while drawing. This increases
-the modified area to cover all corners and/or edges of the hovered tile,
-allowing for faster painting of larger areas.
 
 Finally, see what happens when you try drawing some dirt on the
 cobblestone. Because there are no transitions from dirt directly to
@@ -191,14 +204,16 @@ there to cobblestone. Neat!
     while choosing the right tiles as well. This mode does nothing useful when
     there are no transitions to nothing in the selected Terrain Set.
 
+.. _terrain-fill-mode:
+
 Terrain Fill Mode
 -----------------
 
-The :ref:`terrain-tool`, :ref:`bucket-fill-tool` and the
-:ref:`shape-fill-tool` have a *Terrain Fill Mode*, which can be used to paint
-or fill an area with random terrain. With this mode activated, each cell will
-be randomly chosen from all those in the selected Terrain Set, making sure to
-match all adjacent edges and/or corners.
+The :ref:`stamp-tool`, :ref:`bucket-fill-tool` and the :ref:`shape-fill-tool`
+have a *Terrain Fill Mode*, which can be used to paint or fill an area with
+random terrain. With this mode activated, each cell will be randomly chosen
+from all those in the selected Terrain Set, making sure to match all adjacent
+edges and/or corners.
 
 .. figure:: images/terrain/terrain-fill-mode-stamp-brush.png
 
@@ -216,23 +231,90 @@ variations of the same tile, in which case it will randomize between those.
 When filling a shape or an area, only the edges of the filled area need to
 connect to any existing tiles. Internally the area is completely randomized.
 
-Probability
-^^^^^^^^^^^
+Tile and Terrain Probability
+----------------------------
 
-When choosing a tile in Terrain Fill Mode, by default all tiles with a valid
-pattern are considered with equal probability. Both individual tiles as well
-as terrains have a *Probability* property, which can be used to change the
-frequency with which a certain tile or terrain is chosen compared to other
+Both the :ref:`terrain-fill-mode` and the Terrain Brush will by default
+consider all matching tiles with equal probability. Both individual tiles as
+well as terrains have a *Probability* property, which can be used to change
+the frequency with which a certain tile or terrain is chosen compared to other
 valid options.
 
-The relative probability of a tile is the product of its own propability and the probability of the terrain at each corner and/or side.
+The relative probability of a tile is the product of its own propability and
+the probability of the terrain at each corner and/or side.
 
-.. image:: images/terrain/lowprobability.jpg
-   :width: 45%
-.. image:: images/terrain/highprobability.jpg
-   :width: 45%
+.. figure:: images/terrain/low-and-high-probability.png
 
-Left shows "path" with probability 0.1, right shows "path" with probability 10.
+    Left shows "path" with probability 0.1, right shows "path" with
+    probability 10.
+
+Probability for Variations
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A common usage for probability, especially at the individual tile level, is to
+make certain variations of a tile less common than others. Our example tileset
+contains several bushes and other decorations which we may randomly want to
+scatter across the desert.
+
+To achieve this, first of all we mark all of them as "sand" tiles, because
+this is their base terrain. Then, to make them less common than the regular
+sand tile, we can put their probability on 0.01. This value means they are
+each 100 times less likely to be chosen than the regular sand tile (which
+still has its default probability of 1). To edit the *Probability* property of
+the tiles we need to exit the *Terrain Sets* mode.
+
+.. figure:: images/terrain/decoration-low-probability.png
+
+   Setting low probability on decoration tiles.
+
+.. figure:: images/terrain/decoration-low-probability-painting.png
+
+   Random decorative tiles appearing with low probability.
+
+.. hint::
+
+    It is also possible to put the probability to 0, which disables automatic
+    usage of a tile entirely. This can be useful because it still makes the
+    tools aware of the terrain of a certain tile, which is taken into account
+    when modifying neighboring tiles.
+
+.. raw:: html
+
+    <div class="new">New in Tiled 1.5</div>
+
+Tile Transformations
+--------------------
+
+Tiled supports flipping and rotating tiles. When using terrains, tiles can be
+automatically flipped and/or rotated to create variations that would otherwise
+not be available in a tileset. This can be enabled in the *Tileset
+Properties*.
+
+The following transformation-related options are available:
+
+Flip Horizontally
+    Allow tiles to be flipped horizontally.
+
+Flip Vertically
+    Allow tiles to be flipped vertically. This would be left disabled when the
+    graphics contain shadows in vertical direction, for example.
+
+Rotate
+    Allow tiles to be rotated (by 90, 180 or 270-degrees).
+
+Prefer Untransformed Tiles
+    When transformations are enabled, it could happen that a certain pattern
+    can be filled by either a regular tile or a transformed tile. With this
+    option enabled, the untransformed tiles will always take precedence.
+    Leaving this option disabled allows transformations to be used to create
+    more variation.
+
+.. figure:: images/terrain/blob-with-rotation.png
+   :alt: Blob with rotation.
+
+   With rotations enabled, the normally 47-tiles `Blob tileset`_ can be
+   reduced to a mere 15 tiles.
+
 
 Final Words
 -----------
@@ -270,14 +352,11 @@ your own project. A few things to keep in mind:
 
 ..
     TODO:
-    * Images showing example of each terrain type
-    * Summarizing the Edge and Mixed sets
-    * Mention flipping and rotation
 
-    Standard Wang Sets
-    ------------------
+    Include some section about how the algorithm works:
 
-    Some typical Wang sets are `2-corner <http://www.cr31.co.uk/stagecast/wang/2corn.html>`__,
-    `2-edge <http://www.cr31.co.uk/stagecast/wang/2edge.html>`__, and
-    `blob <http://www.cr31.co.uk/stagecast/wang/blob.html>`__. Wang tiles
-    in Tiled support up to 15 edge and 15 corner colors in a single set.
+    * An image showing an original set-up (e.g. all Sand tiles) with the terrain labels overlaid to show how it's all sand.
+    * An image showing what a click replacing one corner would initially do (change the corner label)
+    * An image showing what Tiled does to remedy this (adjust the surrounding corners), showing the different tiles placed underneath
+
+    Optionally, a similar sequence of images showing a Ctrl click. Original -> all corners changed -> neighbouring corners adjusted.
