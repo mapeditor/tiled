@@ -622,7 +622,8 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
                     break;
                 }
 
-                wangId.setIndexColor(index, WangId::INDEX_MASK);
+                wangId.setIndexColor(index, mWangColorIndex ? mWangColorIndex
+                                                            : WangId::INDEX_MASK);
             }
         }
 
