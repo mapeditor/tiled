@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2021-01-20 10:25+0000\n"
+"PO-Revision-Date: 2021-03-16 15:18+0000\n"
 "Last-Translator: eishiya <eishiya@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/tiled/reference/"
 "ru/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.5-dev\n"
+"X-Generator: Weblate 4.5.2-dev\n"
 
 #: ../../reference/json-map-format.rst:2
 msgid "JSON Map Format"
@@ -621,7 +621,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:402
 msgid "terrains"
-msgstr ""
+msgstr "рельефы"
 
 #: ../../reference/json-map-format.rst:402
 msgid "Array of :ref:`terrains <json-terrain>` (optional)"
