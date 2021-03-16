@@ -1,5 +1,9 @@
 .. _gamemaker2-export:
 
+.. raw:: html
+
+    <div class="new">New in Tiled 1.5</div>
+
 GameMaker Studio 2.3
 ====================
 

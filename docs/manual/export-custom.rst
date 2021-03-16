@@ -14,7 +14,7 @@ Using JavaScript
 Tiled is :doc:`extendable using JavaScript </reference/scripting>` and it is
 possible to add custom export formats using :ref:`tiled.registerMapFormat
 <script-registerMapFormat>` or :ref:`tiled.registerTilesetFormat
-<script-registerTilesetFormat>`).
+<script-registerTilesetFormat>`.
 
 Using Python
 ~~~~~~~~~~~~

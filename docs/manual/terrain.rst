@@ -8,12 +8,12 @@ In this case, manually choosing the right tiles for the various transitions or
 connections quickly gets tedious. The :ref:`terrain-tool` was added to make
 editing tile maps easier in such cases.
 
-.. note::
+.. warning::
 
     While Tiled has supported terrains since version 0.9 and later supported a
     similar feature called "Wang tiles" since version 1.1, both features were
-    unified and extended in Tiled 1.5. *Terrain information defined in Tiled
-    1.5 can't be used by older versions.*
+    unified and extended in Tiled 1.5. As a result, *terrain information
+    defined in Tiled 1.5 can't be used by older versions.*
 
 The Terrain Brush relies on the tileset providing one or more *Terrain Sets* -
 sets of tiles labelled according to their terrain layouts. Tiled supports the
