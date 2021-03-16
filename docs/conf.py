@@ -50,7 +50,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Tiled'
-copyright = '2019, Tiled Documentation Writers'
+copyright = '2021, Tiled Documentation Writers'
 author = 'Thorbjørn Lindeijer'
 
 # The version info for the project you're documenting, acts as replacement for

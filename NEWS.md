@@ -1,7 +1,8 @@
-### Tiled 1.5.0 (.. February 2021)
+### Tiled 1.5.0 (16 March 2021)
 
 * Unified Wang and Terrain tools (backwards incompatible change!)
 * Added support for a per-layer parallax scrolling factor ([#2951](https://github.com/mapeditor/tiled/pull/2951))
+* Added export to GameMaker Studio 2.3 ([#1642](https://github.com/mapeditor/tiled/issues/1642))
 * Added option to change object selection behavior ([#2865](https://github.com/mapeditor/tiled/pull/2865))
 * Added Monospace option to the multi-line text editor
 * Added option to auto-scroll on middle click
@@ -22,8 +23,13 @@
 * Tilesets view: Added "Add External Tileset" action to tilesets menu
 * Scripting: Added initial API for creating and modifying Terrain Sets
 * Scripting: Added API for working with images ([#2787](https://github.com/mapeditor/tiled/pull/2787))
-* Scripting: Added missing Layer.id property
+* Scripting: Added API for launching other processes ([#2783](https://github.com/mapeditor/tiled/issues/2783))
+* Scripting: Added MapView.center property
+* Scripting: Added missing Layer.id and Layer.parentLayer properties
+* Scripting: Enable extending most context menus
 * Scripting: Fixed reset of file formats on script reload ([#2911](https://github.com/mapeditor/tiled/issues/2911))
+* Scripting: Fixed missing GroupLayer and ImageLayer constructors
+* Scripting: Added default icon for scripted actions
 * Enabled high-DPI scaling on Linux and changed rounding policy
 * Remember last file dialog locations in the session instead of globally
 * Fixed loading extension path from project config (by Peter Ruibal, [#2956](https://github.com/mapeditor/tiled/pull/2956))
@@ -34,9 +40,15 @@
 * Fixed map positioning issues in the World Tool ([#2970](https://github.com/mapeditor/tiled/issues/2970))
 * Fixed handling of Shift modifiers in Bucket and Shape Fill tools ([#2883](https://github.com/mapeditor/tiled/issues/2883))
 * Fixed scrolling speed in Tileset view when holding Ctrl
+* Fixed issue causing export.target to get written out as "."
+* Fixed "Repeat last export on save" when using Save All ([#2969](https://github.com/mapeditor/tiled/issues/2969))
+* Fixed interaction shape for rectangle objects to be more precise ([#2999](https://github.com/mapeditor/tiled/issues/2999))
 * Lua plugin: Don't embed external tilesets, unless enabled as export option ([#2120](https://github.com/mapeditor/tiled/issues/2120))
 * Python plugin: Added missing values to MapObject.Shape enum ([#2898](https://github.com/bjorn/tiled/issues/2898))
+* Python plugin: Fixed linking issue when compiling against Python 3.8
 * CSV plugin: Include flipping flags in exported tile IDs
+* GMX plugin: Take tile object alignment into account
+* Linux: "Open Containing Folder" action now also selects the file
 * libtiled-java: Many updates (by Henri Viitanen, [#2207](https://github.com/bjorn/tiled/pull/2207))
 * Ported Tiled to Qt 6 (releases still use 5.15 for now)
 
