@@ -4,18 +4,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-public class UnmarshallerPool extends Pool<Unmarshaller>
-{
+public class UnmarshallerPool extends Pool<Unmarshaller> {
     private final JAXBContext context;
 
-    public UnmarshallerPool(JAXBContext context)
-    {
+    public UnmarshallerPool(JAXBContext context) {
         this.context = context;
     }
 
     @Override
-    protected Unmarshaller create()
-    {
+    protected Unmarshaller create() {
         try
         {
             return context.createUnmarshaller();

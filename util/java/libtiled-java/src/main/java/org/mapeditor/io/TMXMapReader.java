@@ -163,8 +163,7 @@ public class TMXMapReader {
 
     private <T> T unmarshalClass(Node node, Class<T> type) throws JAXBException {
         UnmarshallerPool unmarshallerPool = cachedUnmarshallers.get(type);
-        if (unmarshallerPool == null)
-        {
+        if (unmarshallerPool == null) {
             JAXBContext context = JAXBContext.newInstance(type);
             unmarshallerPool = new UnmarshallerPool(context);
             cachedUnmarshallers.put(type, unmarshallerPool);
@@ -238,12 +237,11 @@ public class TMXMapReader {
                 set = unmarshalTileset(tsNode);
 
                 // if using cached tilesets - we should already have correct source
-                if (!settings.reuseCachedTilesets)
-                {
-                    if (set.getSource() != null)
-                    {
+                if (!settings.reuseCachedTilesets) {
+                    if (set.getSource() != null) {
                         System.out.println("Recursive external tilesets are not supported.");
                     }
+
                     set.setSource(file.toString());
                 }
             }
@@ -987,8 +985,7 @@ public class TMXMapReader {
      * The ability to set cachedTilesets allows cached tilesets to be shared across multiple readers,
      * increasing read speed in a multithreaded environment.
      */
-    public void setCachedTilesets(java.util.Map<String, TileSet> cachedTilesets)
-    {
+    public void setCachedTilesets(java.util.Map<String, TileSet> cachedTilesets) {
         this.cachedTilesets = cachedTilesets;
     }
 }
