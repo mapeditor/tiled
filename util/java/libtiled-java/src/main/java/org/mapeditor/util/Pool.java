@@ -9,7 +9,8 @@ public abstract class Pool<T>
 
     public final T take()
     {
-        return objectQueue.peek() != null ? objectQueue.poll() : create();
+        T t = objectQueue.poll();
+        return t != null ? t : create();
     }
 
     public final void recycle(T t)
