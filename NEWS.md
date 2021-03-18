@@ -43,6 +43,7 @@
 * Fixed issue causing export.target to get written out as "."
 * Fixed "Repeat last export on save" when using Save All ([#2969](https://github.com/mapeditor/tiled/issues/2969))
 * Fixed interaction shape for rectangle objects to be more precise ([#2999](https://github.com/mapeditor/tiled/issues/2999))
+* Fixed "Automap While Drawing" not applying when using Cut/Delete
 * Lua plugin: Don't embed external tilesets, unless enabled as export option ([#2120](https://github.com/mapeditor/tiled/issues/2120))
 * Python plugin: Added missing values to MapObject.Shape enum ([#2898](https://github.com/bjorn/tiled/issues/2898))
 * Python plugin: Fixed linking issue when compiling against Python 3.8

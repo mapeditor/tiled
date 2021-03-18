@@ -387,6 +387,7 @@ void MapDocumentActionHandler::delete_()
                                          [] (Layer *layer) { return layer->isTileLayer(); });
 
     QList<QUndoCommand*> commands;
+    QList<QPair<QRegion, TileLayer*>> erasedRegions;
 
     if (tileLayerSelected) {
         LayerIterator layerIterator(mMapDocument->map(), Layer::TileLayerType);
@@ -401,6 +402,7 @@ void MapDocumentActionHandler::delete_()
 
             // Delete the selected part of the layer
             commands.append(new EraseTiles(mMapDocument, tileLayer, area));
+            erasedRegions.append({ area, tileLayer });
         }
 
         if (!selectedArea.isEmpty())
@@ -418,10 +420,13 @@ void MapDocumentActionHandler::delete_()
     if (!commands.isEmpty()) {
         QUndoStack *undoStack = mMapDocument->undoStack();
         undoStack->beginMacro(tr("Delete"));
-        for (QUndoCommand *command : commands)
+        for (QUndoCommand *command : qAsConst(commands))
             undoStack->push(command);
         undoStack->endMacro();
     }
+
+    for (auto &erased : qAsConst(erasedRegions))
+        emit mMapDocument->regionEdited(erased.first, erased.second);
 }
 
 void MapDocumentActionHandler::selectAll()
