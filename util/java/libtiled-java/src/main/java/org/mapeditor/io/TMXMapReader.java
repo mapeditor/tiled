@@ -43,11 +43,14 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
@@ -97,16 +100,26 @@ public class TMXMapReader {
     private TreeMap<Integer, TileSet> tilesetPerFirstGid;
 
     /**
-     * Map of cached tilesets used when {@link TMXMapReaderSettings#reuseCachedTilesets} option is on
+     * Map of cached tilesets used when {@link TMXMapReaderSettings#reuseCachedTilesets} option is on.
      * TODO: case when multiple tilesets have same name but different sources
+     * @see #setCachedTilesets(java.util.Map)
      */
     private java.util.Map<String, TileSet> cachedTilesets;
 
     /**
-     * Keeping static map of unmarshaller pools allows to significantly increase map reading speed
-     * when reading maps in multiple threads
+     * Set of classes to be bound to the {@link JAXBContext}.
      */
-    private static final java.util.Map<Class<?>, UnmarshallerPool> cachedUnmarshallers = new ConcurrentHashMap<>();
+    private static final Set<Class<?>> classesToBeBound = Collections.synchronizedSet(new HashSet<>());
+    static {
+        classesToBeBound.addAll(Arrays.asList(
+            Map.class, TileSet.class, Tile.class, AnimatedTile.class, ObjectGroup.class, ImageLayer.class));
+    }
+
+    /**
+     * Static unmarshaller pool allows to significantly increase map reading speed
+     * when reading maps in multiple threads.
+     */
+    private static UnmarshallerPool unmarshallerPool;
 
     public static final class TMXMapReaderSettings {
 
@@ -162,11 +175,15 @@ public class TMXMapReader {
     }
 
     private <T> T unmarshalClass(Node node, Class<T> type) throws JAXBException {
-        UnmarshallerPool unmarshallerPool = cachedUnmarshallers.get(type);
-        if (unmarshallerPool == null) {
-            JAXBContext context = JAXBContext.newInstance(type);
-            unmarshallerPool = new UnmarshallerPool(context);
-            cachedUnmarshallers.put(type, unmarshallerPool);
+        boolean typeIsBound = classesToBeBound.contains(type);
+        if (!typeIsBound) {
+            System.out.printf("Please add %s to the list of bound classes, " +
+                                  "cause dynamic addition slows down perfomance%n", type.getName());
+            classesToBeBound.add(type);
+        }
+
+        if (unmarshallerPool == null || !typeIsBound) {
+            unmarshallerPool = new UnmarshallerPool(JAXBContext.newInstance(classesToBeBound.toArray(new Class[0])));
         }
 
         Unmarshaller unmarshaller = unmarshallerPool.take();
@@ -234,16 +251,8 @@ public class TMXMapReader {
             // There can be only one tileset in a .tsx file.
             tsNode = tsNodeList.item(0);
             if (tsNode != null) {
-                set = unmarshalTileset(tsNode);
-
-                // if using cached tilesets - we should already have correct source
-                if (!settings.reuseCachedTilesets) {
-                    if (set.getSource() != null) {
-                        System.out.println("Recursive external tilesets are not supported.");
-                    }
-
-                    set.setSource(file.toString());
-                }
+                set = unmarshalTileset(tsNode, true);
+                set.setSource(file.toString());
             }
 
             xmlPath = xmlPathSave;
@@ -255,9 +264,25 @@ public class TMXMapReader {
     }
 
     private TileSet unmarshalTileset(Node t) throws Exception {
+        return unmarshalTileset(t, false);
+    }
+
+    /**
+     * @param t xml node to begin unmarshalling from
+     * @param isExternalTileset is this a node of external tileset located in separate tsx file
+     */
+    private TileSet unmarshalTileset(Node t, boolean isExternalTileset) throws Exception {
         TileSet set = unmarshalClass(t, TileSet.class);
 
         String source = set.getSource();
+        // if we have a "source" attribute in the external tileset - we ignore it and display a warning
+        if (source != null && isExternalTileset) {
+            source = null;
+            set.setSource(null);
+            System.out.printf("Warning: recursive external tilesets are not supported - " +
+                                  "ignoring source option for tileset %s%n", set.getName());
+        }
+
         if (source != null) {
             source = replacePathSeparator(source);
             URL url = URLHelper.resolve(xmlPath, source);
