@@ -60,11 +60,11 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import com.sun.xml.internal.ws.util.Pool;
 import org.mapeditor.core.*;
 import org.mapeditor.util.BasicTileCutter;
 import org.mapeditor.util.ImageHelper;
 import org.mapeditor.util.URLHelper;
+import org.mapeditor.util.UnmarshallerPool;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -106,7 +106,7 @@ public class TMXMapReader {
      * Keeping static map of unmarshaller pools allows to significantly increase map reading speed
      * when reading maps in multiple threads
      */
-    private static final java.util.Map<Class<?>, Pool.Unmarshaller> cachedUnmarshallers = new ConcurrentHashMap<>();
+    private static final java.util.Map<Class<?>, UnmarshallerPool> cachedUnmarshallers = new ConcurrentHashMap<>();
 
     public static final class TMXMapReaderSettings {
 
@@ -162,11 +162,11 @@ public class TMXMapReader {
     }
 
     private <T> T unmarshalClass(Node node, Class<T> type) throws JAXBException {
-        Pool.Unmarshaller unmarshallerPool = cachedUnmarshallers.get(type);
+        UnmarshallerPool unmarshallerPool = cachedUnmarshallers.get(type);
         if (unmarshallerPool == null)
         {
             JAXBContext context = JAXBContext.newInstance(type);
-            unmarshallerPool = new Pool.Unmarshaller(context);
+            unmarshallerPool = new UnmarshallerPool(context);
             cachedUnmarshallers.put(type, unmarshallerPool);
         }
 
