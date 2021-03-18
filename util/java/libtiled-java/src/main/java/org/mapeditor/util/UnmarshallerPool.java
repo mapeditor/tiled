@@ -13,12 +13,10 @@ public class UnmarshallerPool extends Pool<Unmarshaller> {
 
     @Override
     protected Unmarshaller create() {
-        try
-        {
+        try {
             return context.createUnmarshaller();
         }
-        catch (JAXBException e)
-        {
+        catch (JAXBException e) {
             throw new RuntimeException(e);
         }
     }
