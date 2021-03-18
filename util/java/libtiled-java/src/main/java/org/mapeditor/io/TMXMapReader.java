@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
@@ -59,6 +60,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import com.sun.xml.internal.ws.util.Pool;
 import org.mapeditor.core.*;
 import org.mapeditor.util.BasicTileCutter;
 import org.mapeditor.util.ImageHelper;
@@ -83,18 +85,28 @@ public class TMXMapReader {
     public static final long FLIPPED_VERTICALLY_FLAG = 0xFFFFFFFF40000000L;
     public static final long FLIPPED_DIAGONALLY_FLAG = 0xFFFFFFFF20000000L;
 
-    public static final long ALL_FLAGS = FLIPPED_HORIZONTALLY_FLAG
-            | FLIPPED_VERTICALLY_FLAG
-            | FLIPPED_DIAGONALLY_FLAG;
+    public static final long ALL_FLAGS =
+        FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG;
+
+    public final TMXMapReaderSettings settings = new TMXMapReaderSettings();
 
     private Map map;
     private URL xmlPath;
     private String error;
     private final EntityResolver entityResolver = new MapEntityResolver();
     private TreeMap<Integer, TileSet> tilesetPerFirstGid;
-    public final TMXMapReaderSettings settings = new TMXMapReaderSettings();
-    private final java.util.Map<String, TileSet> cachedTilesets = new HashMap<>();
-    private final java.util.Map<Class<?>, Unmarshaller> cachedUnmarshallers = new HashMap<>();
+
+    /**
+     * Map of cached tilesets used when {@link TMXMapReaderSettings#reuseCachedTilesets} option is on
+     * TODO: case when multiple tilesets have same name but different sources
+     */
+    private java.util.Map<String, TileSet> cachedTilesets;
+
+    /**
+     * Keeping static map of unmarshaller pools allows to significantly increase map reading speed
+     * when reading maps in multiple threads
+     */
+    private static final java.util.Map<Class<?>, Pool.Unmarshaller> cachedUnmarshallers = new ConcurrentHashMap<>();
 
     public static final class TMXMapReaderSettings {
 
@@ -150,13 +162,18 @@ public class TMXMapReader {
     }
 
     private <T> T unmarshalClass(Node node, Class<T> type) throws JAXBException {
-        Unmarshaller unmarshaller = cachedUnmarshallers.get(type);
-        if (unmarshaller == null) {
+        Pool.Unmarshaller unmarshallerPool = cachedUnmarshallers.get(type);
+        if (unmarshallerPool == null)
+        {
             JAXBContext context = JAXBContext.newInstance(type);
-            unmarshaller = context.createUnmarshaller();
-            cachedUnmarshallers.put(type, unmarshaller);
+            unmarshallerPool = new Pool.Unmarshaller(context);
+            cachedUnmarshallers.put(type, unmarshallerPool);
         }
+
+        Unmarshaller unmarshaller = unmarshallerPool.take();
         JAXBElement<T> element = unmarshaller.unmarshal(node, type);
+        unmarshallerPool.recycle(unmarshaller);
+
         return element.getValue();
     }
 
@@ -219,10 +236,16 @@ public class TMXMapReader {
             tsNode = tsNodeList.item(0);
             if (tsNode != null) {
                 set = unmarshalTileset(tsNode);
-                if (set.getSource() != null) {
-                    System.out.println("Recursive external tilesets are not supported.");
+
+                // if using cached tilesets - we should already have correct source
+                if (!settings.reuseCachedTilesets)
+                {
+                    if (set.getSource() != null)
+                    {
+                        System.out.println("Recursive external tilesets are not supported.");
+                    }
+                    set.setSource(file.toString());
                 }
-                set.setSource(file.toString());
             }
 
             xmlPath = xmlPathSave;
@@ -258,6 +281,10 @@ public class TMXMapReader {
             final String name = getAttributeValue(t, "name");
 
             if (settings.reuseCachedTilesets) {
+                if (cachedTilesets == null) {
+                    cachedTilesets = new HashMap<>();
+                }
+
                 set = cachedTilesets.get(name);
                 if (set != null)
                     return set;
@@ -954,5 +981,14 @@ public class TMXMapReader {
         if (path.isEmpty() || path.lastIndexOf(File.separatorChar) >= 0)
             return path;
         return path.replace("/", File.separator);
+    }
+
+    /**
+     * The ability to set cachedTilesets allows cached tilesets to be shared across multiple readers,
+     * increasing read speed in a multithreaded environment.
+     */
+    public void setCachedTilesets(java.util.Map<String, TileSet> cachedTilesets)
+    {
+        this.cachedTilesets = cachedTilesets;
     }
 }
