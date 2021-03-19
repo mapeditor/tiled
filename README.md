@@ -12,12 +12,12 @@ Maps, layers, tiles, and objects can all be assigned arbitrary properties.
 Tiled's map format (TMX) is easy to understand and allows multiple tilesets to
 be used in any map. Tilesets can be modified at any time.
 
-[![Build Status](https://travis-ci.org/bjorn/tiled.svg?branch=master)](https://travis-ci.org/bjorn/tiled)
+[![Build Status](https://api.travis-ci.com/mapeditor/tiled.svg?branch=master&status=passed)](https://travis-ci.com/github/mapeditor/tiled)
 [![Build status](https://ci.appveyor.com/api/projects/status/ceb79jn5cf99y3qd/branch/master?svg=true)](https://ci.appveyor.com/project/bjorn/tiled/branch/master)
-[![Snap Status](https://build.snapcraft.io/badge/bjorn/tiled.svg)](https://build.snapcraft.io/user/bjorn/tiled)
+[![Snap](https://snapcraft.io/tiled/badge.svg)](https://snapcraft.io/tiled)
 [![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=52019)](https://www.bountysource.com/trackers/52019-tiled?utm_source=52019&utm_medium=shield&utm_campaign=TRACKER_BADGE)
 [![Translation status](https://hosted.weblate.org/widgets/tiled/-/shields-badge.svg)](https://hosted.weblate.org/engage/tiled/?utm_source=widget)
-[![Open Source Helpers](https://www.codetriage.com/bjorn/tiled/badges/users.svg)](https://www.codetriage.com/bjorn/tiled)
+[![Open Source Helpers](https://www.codetriage.com/mapeditor/tiled/badges/users.svg)](https://www.codetriage.com/mapeditor/tiled)
 
 About the Qt Version
 -------------------------------------------------------------------------------
