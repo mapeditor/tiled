@@ -28,7 +28,7 @@ Control.
 
 ### Wang Tiles
 
-<img src="/img/posts/wangtile.png" width="32" height="32" style="margin: 10px 20px; float: right;">
+<img src="/img/posts/wangtile.png" style="width: 32px; height: 32px; margin: 10px 20px; float: right;">
 
 Long ago, Hao Wang introduced the concept of [Wang tiles][4]. A Wang
 tile has a color associated with each of its four sides, such that in a
