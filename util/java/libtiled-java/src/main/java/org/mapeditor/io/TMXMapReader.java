@@ -67,7 +67,6 @@ import org.mapeditor.core.*;
 import org.mapeditor.util.BasicTileCutter;
 import org.mapeditor.util.ImageHelper;
 import org.mapeditor.util.URLHelper;
-import org.mapeditor.util.UnmarshallerPool;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -91,6 +90,16 @@ public class TMXMapReader {
     public static final long ALL_FLAGS =
         FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG;
 
+    /**
+     * Set of classes to be bound to the {@link JAXBContext}.
+     * @see #unmarshaller
+     */
+    private static final Set<Class<?>> classesToBeBound = Collections.synchronizedSet(new HashSet<>());
+    static {
+        classesToBeBound.addAll(Arrays.asList(
+            Map.class, TileSet.class, Tile.class, AnimatedTile.class, ObjectGroup.class, ImageLayer.class));
+    }
+
     public final TMXMapReaderSettings settings = new TMXMapReaderSettings();
 
     private Map map;
@@ -107,19 +116,10 @@ public class TMXMapReader {
     private java.util.Map<String, TileSet> cachedTilesets;
 
     /**
-     * Set of classes to be bound to the {@link JAXBContext}.
+     * Unmarshaller capable of unmarshalling all classes listed in {@link #classesToBeBound}.
+     * @see #unmarshalClass(Node, Class)
      */
-    private static final Set<Class<?>> classesToBeBound = Collections.synchronizedSet(new HashSet<>());
-    static {
-        classesToBeBound.addAll(Arrays.asList(
-            Map.class, TileSet.class, Tile.class, AnimatedTile.class, ObjectGroup.class, ImageLayer.class));
-    }
-
-    /**
-     * Static unmarshaller pool allows to significantly increase map reading speed
-     * when reading maps in multiple threads.
-     */
-    private static UnmarshallerPool unmarshallerPool;
+    private final Unmarshaller unmarshaller;
 
     public static final class TMXMapReaderSettings {
 
@@ -129,7 +129,13 @@ public class TMXMapReader {
     /**
      * Constructor for TMXMapReader.
      */
-    public TMXMapReader() {
+    public TMXMapReader()
+    {
+        try {
+            unmarshaller = JAXBContext.newInstance(classesToBeBound.toArray(new Class[0])).createUnmarshaller();
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     String getError() {
@@ -175,20 +181,13 @@ public class TMXMapReader {
     }
 
     private <T> T unmarshalClass(Node node, Class<T> type) throws JAXBException {
-        boolean typeIsBound = classesToBeBound.contains(type);
-        if (!typeIsBound) {
-            System.out.printf("Please add %s to the list of bound classes, " +
-                                  "cause dynamic addition slows down perfomance%n", type.getName());
-            classesToBeBound.add(type);
+        JAXBElement<T> element;
+        try {
+            element = unmarshaller.unmarshal(node, type);
+        } catch (JAXBException e) {
+            throw new RuntimeException(
+                "Please, add class to classesToBeBound set if it is not known to this context", e);
         }
-
-        if (unmarshallerPool == null || !typeIsBound) {
-            unmarshallerPool = new UnmarshallerPool(JAXBContext.newInstance(classesToBeBound.toArray(new Class[0])));
-        }
-
-        Unmarshaller unmarshaller = unmarshallerPool.take();
-        JAXBElement<T> element = unmarshaller.unmarshal(node, type);
-        unmarshallerPool.recycle(unmarshaller);
 
         return element.getValue();
     }
