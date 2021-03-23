@@ -339,7 +339,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Tiled-win64.msi
+          asset_path: Tiled-${{ needs.version.outputs.version }}-win64.msi
           asset_name: Tiled-${{ needs.version.outputs.version }}-win64.msi
           asset_content_type: applictaion/x-msi
 
@@ -347,7 +347,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Tiled-win32.msi
+          asset_path: Tiled-${{ needs.version.outputs.version }}-win32.msi
           asset_name: Tiled-${{ needs.version.outputs.version }}-win32.msi
           asset_content_type: applictaion/x-msi
 
