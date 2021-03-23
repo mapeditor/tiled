@@ -59,12 +59,33 @@ img {
   vertical-align: middle;
   border: 0;
 }
+article p > img {
+  width: 80%;
+  margin: 2em auto;
+  display: block;
+  border-radius: 5px;
+}
+article > video {
+  width: 90%;
+  margin: 2em auto;
+  display: block;
+  border-radius: 5px;
+  border: 2px solid dimgray;
+  outline: none;
+}
 
 .thumbnail {
   display: block;
 }
 .thumbnail img {
   max-width: 100%;
+  border-radius: 5px;
+}
+iframe.video {
+  margin: 2em auto;
+  border-radius: 5px;
+  display: block;
+  box-sizing: content-box;
 }
 .svg-icon {
   width: 2em;
@@ -357,7 +378,7 @@ a.news:hover {
   border-color: orange;
 }
 .news-collapsed {
-  margin: 0.25em;
+  margin: 0.25em 0;
   width: 100%;
 }
 .news-sidebyside {

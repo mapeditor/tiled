@@ -13,13 +13,11 @@ in past 8 years and highlighting a few awesome games made with Tiled!
 Indeed, the [last update to the site's design][2013-website] was exactly 8
 years ago. It was about time for a more modern look and to update the
 presentation of Tiled's features, many of which did not exist when the
-previous website was set up. I had a lot to learn about new HTML and CSS
-features and making design decisions isn't easy either, especially when it
-should also work well on mobile, but I'm happy with how it turned out!
+previous website was set up.
 
-I've added [a showcase][showcase] with some great games made with Tiled. There
-are many out there (over 300 [games made with Tiled][made-with-tiled] are
-listed just on itch.io) so it's a bit hard to choose which ones to show. I
+I've also added [a showcase][showcase] with some great games made with Tiled.
+There are many out there (over 300 [games made with Tiled][made-with-tiled]
+are listed just on itch.io) so it's a bit hard to choose which ones to show. I
 tried to pick the most well-known ones. Let me know if your game should be
 among them!
 
