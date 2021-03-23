@@ -1,4 +1,4 @@
-### Tiled 1.5.0 (16 March 2021)
+### Tiled 1.5.0 (23 March 2021)
 
 * Unified Wang and Terrain tools (backwards incompatible change!)
 * Added support for a per-layer parallax scrolling factor ([#2951](https://github.com/mapeditor/tiled/pull/2951))
