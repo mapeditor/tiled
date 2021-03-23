@@ -346,13 +346,31 @@ void WangDock::setDocument(Document *document)
 void WangDock::editWangSetName(WangSet *wangSet)
 {
     const QModelIndex index = wangSetIndex(wangSet);
-    QItemSelectionModel *selectionModel = mWangSetView->selectionModel();
 
+    QItemSelectionModel *selectionModel = mWangSetView->selectionModel();
     selectionModel->setCurrentIndex(index,
                                     QItemSelectionModel::ClearAndSelect |
                                     QItemSelectionModel::Rows);
 
     mWangSetView->edit(index);
+}
+
+void WangDock::editWangColorName(int colorIndex)
+{
+    const QModelIndex index = mWangColorModel->colorIndex(colorIndex);
+    if (!index.isValid())
+        return;
+
+    const QModelIndex viewIndex = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapFromSource(index);
+    if (!viewIndex.isValid())
+        return;
+
+    QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
+    selectionModel->setCurrentIndex(viewIndex,
+                                    QItemSelectionModel::ClearAndSelect |
+                                    QItemSelectionModel::Rows);
+
+    mWangColorView->edit(viewIndex);
 }
 
 void WangDock::changeEvent(QEvent *event)
@@ -461,6 +479,7 @@ void WangDock::addColor()
         tilesetDocument->undoStack()->push(new ChangeWangSetColorCount(tilesetDocument,
                                                                        mCurrentWangSet,
                                                                        mCurrentWangSet->colorCount() + 1));
+        editWangColorName(mCurrentWangSet->colorCount());
     }
 }
 
