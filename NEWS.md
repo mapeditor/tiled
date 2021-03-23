@@ -52,6 +52,7 @@
 * Linux: "Open Containing Folder" action now also selects the file
 * libtiled-java: Many updates (by Henri Viitanen, [#2207](https://github.com/bjorn/tiled/pull/2207))
 * Ported Tiled to Qt 6 (releases still use 5.15 for now)
+* Updated Bulgarian, Chinese (Simplified), Czech, Finnish, French, Portuguese, Portuguese (Portugal), Russian, Swedish and Turkish translations
 
 ### Tiled 1.4.3 (17 November 2020)
 
