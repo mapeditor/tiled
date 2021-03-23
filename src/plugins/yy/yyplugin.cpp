@@ -853,7 +853,15 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
             auto color = layer->effectiveTintColor();
             color.setAlphaF(color.alphaF() * layer->effectiveOpacity());
 
-            for (const MapObject *mapObject : *objectGroup) {
+            auto objects = objectGroup->objects();
+
+            // Make sure the objects export in the rendering order
+            if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder) {
+                std::stable_sort(objects.begin(), objects.end(),
+                                 [](const MapObject *a, const MapObject *b) { return a->y() < b->y(); });
+            }
+
+            for (const MapObject *mapObject : qAsConst(objects)) {
                 const QString type = mapObject->effectiveType();
 
                 if (type == QLatin1String("view")) {
