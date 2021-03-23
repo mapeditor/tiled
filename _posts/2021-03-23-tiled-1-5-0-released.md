@@ -144,6 +144,8 @@ Many small improvements could not be mentioned above. Here's the full summary of
 * Fixed issue causing export.target to get written out as "."
 * Fixed "Repeat last export on save" when using Save All ([#2969](https://github.com/mapeditor/tiled/issues/2969))
 * Fixed interaction shape for rectangle objects to be more precise ([#2999](https://github.com/mapeditor/tiled/issues/2999))
+* Fixed "AutoMap While Drawing" not applying when using Cut/Delete
+* Fixed path in AutoMap error message when rules file doesn't exist
 * Lua plugin: Don't embed external tilesets, unless enabled as export option ([#2120](https://github.com/mapeditor/tiled/issues/2120))
 * Python plugin: Added missing values to MapObject.Shape enum ([#2898](https://github.com/bjorn/tiled/issues/2898))
 * Python plugin: Fixed linking issue when compiling against Python 3.8
@@ -152,6 +154,7 @@ Many small improvements could not be mentioned above. Here's the full summary of
 * Linux: "Open Containing Folder" action now also selects the file
 * libtiled-java: Many updates (by Henri Viitanen, [#2207](https://github.com/bjorn/tiled/pull/2207))
 * Ported Tiled to Qt 6 (releases still use 5.15 for now)
+* Updated Bulgarian, Chinese (Simplified), Czech, Finnish, French, Portuguese, Portuguese (Portugal), Russian, Swedish and Turkish translations
 
 ## Support Tiled Development <img src="/img/heart.png" style="width: 1em;" title=":heart:" class="emoji" alt=":heart:">
 
