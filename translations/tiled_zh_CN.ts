@@ -903,7 +903,7 @@
     <message>
         <location line="+142"/>
         <source>New World...</source>
-        <translation>新的地图...</translation>
+        <translation>新的世界...</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -1349,7 +1349,7 @@ Line %1, column %2</source>
     <message>
         <location line="+27"/>
         <source>New Map...</source>
-        <translation>创建新地图...</translation>
+        <translation>新建新地图...</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4124,7 +4124,7 @@ Please select specific format.</source>
     <message>
         <location line="-403"/>
         <source>New World</source>
-        <translation type="unfinished"></translation>
+        <translation>新建世界</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -4174,7 +4174,7 @@ Please select specific format.</source>
     <message>
         <location line="+107"/>
         <source>Error Saving World</source>
-        <translation type="unfinished"></translation>
+        <translation>保存世界出错</translation>
     </message>
     <message>
         <location line="+16"/>
