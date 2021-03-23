@@ -43,12 +43,8 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.zip.GZIPInputStream;
@@ -90,16 +86,6 @@ public class TMXMapReader {
     public static final long ALL_FLAGS =
         FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG;
 
-    /**
-     * Set of classes to be bound to the {@link JAXBContext}.
-     * @see #unmarshaller
-     */
-    private static final Set<Class<?>> classesToBeBound = Collections.synchronizedSet(new HashSet<>());
-    static {
-        classesToBeBound.addAll(Arrays.asList(
-            Map.class, TileSet.class, Tile.class, AnimatedTile.class, ObjectGroup.class, ImageLayer.class));
-    }
-
     public final TMXMapReaderSettings settings = new TMXMapReaderSettings();
 
     private Map map;
@@ -116,7 +102,7 @@ public class TMXMapReader {
     private java.util.Map<String, TileSet> cachedTilesets;
 
     /**
-     * Unmarshaller capable of unmarshalling all classes listed in {@link #classesToBeBound}.
+     * Unmarshaller capable of unmarshalling all classes available from context
      * @see #unmarshalClass(Node, Class)
      */
     private final Unmarshaller unmarshaller;
@@ -129,13 +115,10 @@ public class TMXMapReader {
     /**
      * Constructor for TMXMapReader.
      */
-    public TMXMapReader()
-    {
-        try {
-            unmarshaller = JAXBContext.newInstance(classesToBeBound.toArray(new Class[0])).createUnmarshaller();
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
-        }
+    public TMXMapReader() throws JAXBException {
+            unmarshaller = JAXBContext.newInstance(
+                Map.class, TileSet.class, Tile.class,
+                AnimatedTile.class, ObjectGroup.class, ImageLayer.class).createUnmarshaller();
     }
 
     String getError() {
