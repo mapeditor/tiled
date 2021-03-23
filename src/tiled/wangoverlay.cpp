@@ -579,7 +579,7 @@ void paintWangOverlay(QPainter *painter,
     painter->restore();
 }
 
-QIcon wangSetIcon(WangSet::Type type)
+static QIcon paintWangSetIcon(WangSet::Type type)
 {
     static const auto iconSize = Utils::dpiScaled(QSize(32, 32));
 
@@ -622,6 +622,26 @@ QIcon wangSetIcon(WangSet::Type type)
                      WO_Shadow | WO_Outline);
 
     return QIcon(pixmap);
+}
+
+QIcon wangSetIcon(WangSet::Type type)
+{
+    switch (type) {
+    case WangSet::Corner: {
+        static QIcon icon = paintWangSetIcon(type);
+        return icon;
+    }
+    case WangSet::Edge: {
+        static QIcon icon = paintWangSetIcon(type);
+        return icon;
+    }
+    case WangSet::Mixed: {
+        static QIcon icon = paintWangSetIcon(type);
+        return icon;
+    }
+    }
+
+    return QIcon();
 }
 
 } // namespace Tiled

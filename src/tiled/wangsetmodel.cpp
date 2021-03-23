@@ -23,13 +23,13 @@
 #include "containerhelpers.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "wangset.h"
-#include "tileset.h"
 #include "tile.h"
+#include "tileset.h"
 #include "tilesetdocument.h"
 #include "tilesetdocumentsmodel.h"
-#include "tileset.h"
 #include "tilesetwangsetmodel.h"
+#include "wangoverlay.h"
+#include "wangset.h"
 
 #include <QApplication>
 #include <QFont>
@@ -121,6 +121,8 @@ QVariant WangSetModel::data(const QModelIndex &index, int role) const
         case Qt::DecorationRole:
             if (Tile *tile = wangSet->imageTile())
                 return tile->image();
+            else
+                return wangSetIcon(wangSet->type());
             break;
         case WangSetRole:
             return QVariant::fromValue(wangSet);
