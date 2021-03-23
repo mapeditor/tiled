@@ -16,7 +16,7 @@ on:
 
 env:
   QT_VERSION: 5.15.2
-  QTCREATOR_VERSION: 4.14.1
+  QTCREATOR_VERSION: 4.14.2
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
   TILED_SNAPSHOT: ${{ !startsWith(github.ref, 'refs/tags/v') }}
 

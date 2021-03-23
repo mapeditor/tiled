@@ -9,7 +9,7 @@ env:
   - secure: VgouZ5cStqlgODwIuLIvIBN5gkmrP95agCS3BorLm7g/iXM4cwuaV+bov9FiSlnzcnWfpsNMsFt5xDU2Oc17N0Kyx531MIA1H5h9xdzj/IhjhLcOOqYeXt3lN2quRE2maIZDSrPVr3eY0o6xdcNkeK0jpX/mgIiSHwXOclXv+6o=
   - QT_INSTALL_DIR=~/Qt
   - QT_VERSION=5.15.2
-  - QTCREATOR_VERSION=4.14.1
+  - QTCREATOR_VERSION=4.14.2
 
 cache:
   directories:
