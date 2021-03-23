@@ -8,6 +8,8 @@ QtGuiApplication {
     builtByDefault: Environment.getEnv("BUILD_TILEDQUICK") == "true"
     condition: Qt.core.versionMajor >= 6 || Qt.core.versionMinor > 10
 
+    readonly property bool qtcRunnable: builtByDefault
+
     Depends {
         name: "Qt"
         submodules: ["core", "quick", "widgets"]
