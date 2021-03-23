@@ -311,6 +311,18 @@ jobs:
           draft: true
           prerelease: false
 
+      - name: Download Windows 64-bit installer
+        id: download-win64-installer
+        uses: actions/download-artifact@v2
+        with:
+          name: Tiled-win64.msi
+
+      - name: Download Windows 32-bit installer
+        id: download-win32-installer
+        uses: actions/download-artifact@v2
+        with:
+          name: Tiled-win32.msi
+
       - name: Download Linux AppImage
         id: download-appimage
         uses: actions/download-artifact@v2
@@ -322,6 +334,22 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: Tiled-macos.app
+
+      - name: Upload Windows 64-bit installer
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Tiled-win64.msi
+          asset_name: Tiled-${{ needs.version.outputs.version }}-win64.msi
+          asset_content_type: applictaion/x-msi
+
+      - name: Upload Windows 32-bit installer
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Tiled-win32.msi
+          asset_name: Tiled-${{ needs.version.outputs.version }}-win32.msi
+          asset_content_type: applictaion/x-msi
 
       - name: Upload Linux AppImage
         uses: actions/upload-release-asset@v1
