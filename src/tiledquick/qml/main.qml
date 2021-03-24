@@ -91,9 +91,12 @@ ApplicationWindow {
             // fits both vertically and horizontally.
             // If we need to upscale, we also want to choose the smaller ratio, as we want
             // both to fit.
-            mapContainer.scale = Math.max(widthRatio, heightRatio)
-            mapContainer.x = (mapView.width / 2) - ((mapItem.width * mapContainer.scale) / 2)
-            mapContainer.y = (mapView.height / 2) - ((mapItem.height * mapContainer.scale) / 2)
+            let scale = Math.min(widthRatio, heightRatio)
+            containerAnimation.stop()
+            containerAnimation.scale = scale
+            containerAnimation.x = (mapView.width / 2) - ((mapItem.width * scale) / 2)
+            containerAnimation.y = (mapView.height / 2) - ((mapItem.height * scale) / 2)
+            containerAnimation.start()
         }
     }
 
