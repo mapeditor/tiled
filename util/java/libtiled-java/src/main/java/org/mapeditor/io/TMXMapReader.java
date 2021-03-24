@@ -116,9 +116,9 @@ public class TMXMapReader {
      * Constructor for TMXMapReader.
      */
     public TMXMapReader() throws JAXBException {
-            unmarshaller = JAXBContext.newInstance(
-                Map.class, TileSet.class, Tile.class,
-                AnimatedTile.class, ObjectGroup.class, ImageLayer.class).createUnmarshaller();
+        unmarshaller = JAXBContext.newInstance(
+            Map.class, TileSet.class, Tile.class,
+            AnimatedTile.class, ObjectGroup.class, ImageLayer.class).createUnmarshaller();
     }
 
     String getError() {
@@ -164,15 +164,11 @@ public class TMXMapReader {
     }
 
     private <T> T unmarshalClass(Node node, Class<T> type) throws JAXBException {
-        JAXBElement<T> element;
-        try {
-            element = unmarshaller.unmarshal(node, type);
-        } catch (JAXBException e) {
-            throw new RuntimeException(
-                "Please, add class to classesToBeBound set if it is not known to this context", e);
-        }
-
-        return element.getValue();
+        // we expect that all classes are already bounded to JAXBContext, so we don't need to create unmarshaller
+        // dynamicaly cause it's kinda heavy operation
+        // if you got exception wich tells that SomeClass is not known to this context - just add it to the list
+        // passed to JAXBContext constructor
+        return unmarshaller.unmarshal(node, type).getValue();
     }
 
     private BufferedImage unmarshalImage(Node t, URL baseDir) throws IOException {

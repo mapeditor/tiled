@@ -46,10 +46,12 @@ import org.mapeditor.core.StaggerIndex;
 import org.mapeditor.core.TileLayer;
 import org.mapeditor.core.TileSet;
 
+import javax.xml.bind.JAXBException;
+
 public class MapReaderTest {
 
     @Test
-    public void testAcceptValidFilenames() {
+    public void testAcceptValidFilenames() throws JAXBException {
         // Arrange
         TMXMapReader reader = new TMXMapReader();
 
