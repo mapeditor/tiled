@@ -348,6 +348,7 @@ tiled.registerTool(shortName : string, tool : object) : object
         :widths: 1, 2
 
         **name** : string, Name of the tool as shown on the tool bar.
+        **icon** : string, "File name of an icon. If set, the icon is shown on the tool bar and the name becomes the tool tip."
         **map** : :ref:`script-map`, Currently active tile map.
         **selectedTile** : :ref:`script-tile`, The last clicked tile for the active map. See also the ``currentBrush`` property of :ref:`script-mapeditor`.
         **preview** : :ref:`script-map`, Get or set the preview for tile layer edits.
