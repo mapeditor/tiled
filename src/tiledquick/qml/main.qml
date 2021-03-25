@@ -59,6 +59,7 @@ ApplicationWindow {
         }
     }
 
+    // File
     Action {
         id: openAction
         text: qsTr("Open...")
@@ -76,12 +77,39 @@ ApplicationWindow {
         onTriggered: Qt.quit()
     }
 
+    // View
+    Action {
+        id: fitMapInViewAction
+        text: qsTr("Fit Map In View")
+        shortcut: "Ctrl+/"
+        onTriggered: {
+            // The amount that the map would need to be scaled by to fit within the view.
+            let widthRatio = mapView.width / mapItem.width
+            let heightRatio = mapView.height / mapItem.height
+            // If we need to downscale the map to fit in the view, choose the lesser ratio
+            // because that will result in the largest downscaling, which ensures the map
+            // fits both vertically and horizontally.
+            // If we need to upscale, we also want to choose the smaller ratio, as we want
+            // both to fit.
+            let scale = Math.min(widthRatio, heightRatio)
+            containerAnimation.stop()
+            containerAnimation.scale = scale
+            containerAnimation.x = (mapView.width / 2) - ((mapItem.width * scale) / 2)
+            containerAnimation.y = (mapView.height / 2) - ((mapItem.height * scale) / 2)
+            containerAnimation.start()
+        }
+    }
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("File")
             MenuItem { action: openAction }
             MenuSeparator {}
             MenuItem { action: exitAction }
+        }
+        Menu {
+            title: qsTr("View")
+            MenuItem { action: fitMapInViewAction }
         }
         Menu {
             title: qsTr("Help")
