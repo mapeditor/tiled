@@ -59,6 +59,16 @@
 
 using namespace Tiled;
 
+static QTextStream& stdOut()
+{
+    static QTextStream ts(stdout);
+    return ts;
+}
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,14,0)
+using Qt::endl;
+#endif
+
 namespace {
 
 class CommandLineHandler : public CommandLineParser
@@ -248,8 +258,8 @@ void CommandLineHandler::showVersion()
 {
     if (!showedVersion) {
         showedVersion = true;
-        qInfo().noquote() << QApplication::applicationDisplayName()
-                          << QApplication::applicationVersion();
+        stdOut() << QApplication::applicationDisplayName() << " "
+                 << QApplication::applicationVersion() << endl;
         quit = true;
     }
 }
@@ -306,9 +316,9 @@ void CommandLineHandler::showExportFormats()
     }
     formats.sort(Qt::CaseSensitive);
 
-    qInfo().noquote() << tr("Map export formats:");
+    stdOut() << tr("Map export formats:") << endl;
     for (const QString &name : formats)
-        qInfo(" %s", qUtf8Printable(name));
+        stdOut() << " " << name << endl;
 
     formats.clear();
     const auto tilesetFormats = PluginManager::objects<TilesetFormat>();
@@ -318,9 +328,9 @@ void CommandLineHandler::showExportFormats()
     }
     formats.sort(Qt::CaseSensitive);
 
-    qInfo().noquote() << tr("Tileset export formats:");
+    stdOut() << tr("Tileset export formats:") << endl;
     for (const QString &name : formats)
-        qInfo(" %s", qUtf8Printable(name));
+        stdOut() << " " << name << endl;
 
     quit = true;
 }
