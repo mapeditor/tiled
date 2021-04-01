@@ -19,6 +19,11 @@ contains(QT_CONFIG, opengl):minQtVersion(6, 0, 0) {
     QT += openglwidgets
 }
 
+contains(QT_CONFIG, dbus) {
+    QT += dbus
+    DEFINES += TILED_ENABLE_DBUS
+}
+
 DEFINES += TILED_VERSION=$${TILED_VERSION}
 
 DEFINES += QT_NO_CAST_FROM_ASCII \
