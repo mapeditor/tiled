@@ -14,6 +14,7 @@ Project {
     property bool useRPaths: true
     property bool windowsInstaller: false
     property bool enableZstd: false
+    property bool sentry: false
     property string openSslPath: Environment.getEnv("OPENSSL_PATH")
 
     references: [

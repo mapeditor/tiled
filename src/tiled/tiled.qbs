@@ -7,6 +7,7 @@ QtGuiApplication {
     name: "tiled"
     targetName: name
     version: project.version
+    consoleApplication: false
 
     Depends { name: "libtiled" }
     Depends { name: "translations" }
@@ -19,10 +20,17 @@ QtGuiApplication {
 
     property bool qtcRunnable: true
 
-    cpp.includePaths: [
-        ".",
-        "../../zstd/lib"
-    ]
+    cpp.includePaths: {
+        var paths = ["."];
+
+        if (project.enableZstd)
+            paths.push("../../zstd/lib");
+
+        if (project.sentry)
+            paths.push("../../sentry-native/install/include");
+
+        return paths;
+    }
 
     cpp.useRPaths: project.useRPaths
     cpp.rpaths: {
@@ -56,10 +64,17 @@ QtGuiApplication {
         if (qbs.targetOS.contains("linux") && Qt.dbus.present)
             defs.push("TILED_ENABLE_DBUS");
 
+        if (project.sentry)
+            defs.push("TILED_SENTRY");
+
         return defs;
     }
 
-    consoleApplication: false
+    Properties {
+        condition: project.sentry
+        cpp.dynamicLibraries: base.concat(["sentry"])
+        cpp.libraryPaths: base.concat(["../../sentry-native/install/lib"])
+    }
 
     Group {
         name: "Precompiled header"
