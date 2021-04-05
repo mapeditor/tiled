@@ -6,12 +6,12 @@
     <message>
         <location filename="../src/tiled/aboutdialog.ui" line="+14"/>
         <source>About Tiled</source>
-        <translation>เกี่ยวกับ Tiled</translation>
+        <translation>เกี่ยวกับไทล์</translation>
     </message>
     <message>
         <location line="+96"/>
         <source>Donate ↗</source>
-        <translation>บริจาค</translation>
+        <translation>บริจาค ↗</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -36,12 +36,12 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>เพิ่มคุณสมบัติ</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>ชื่อคุณสมบัติ</translation>
     </message>
 </context>
 <context>
@@ -49,12 +49,12 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+399"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>รูปแบบการส่งออกคือ --export-map [format] &lt;source&gt; &lt;target&gt;</translation>
     </message>
     <message>
         <location line="-240"/>
         <source>Format not recognized (see --export-formats)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่รู้จักฟอร์แมตนี้ (ดูที่ --export-formats)</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -74,7 +74,7 @@
     <message>
         <location line="+13"/>
         <source>Failed to export map to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>การส่งออกแผนที่ไปยังไฟล์เป้าหมายผิดพลาด</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -107,7 +107,7 @@
     <message>
         <location line="+43"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>ปิด</translation>
     </message>
 </context>
 <context>
@@ -115,7 +115,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="-297"/>
         <source>Display the version</source>
-        <translation type="unfinished"></translation>
+        <translation>แสดงเวอร์ชัน</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -204,7 +204,7 @@
     <message>
         <location line="+2"/>
         <source>Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>ตัวเลือก:</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -223,7 +223,7 @@
         <location line="+14"/>
         <location line="+74"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>ค้นหา...</translation>
     </message>
     <message>
         <location line="-61"/>
@@ -243,7 +243,7 @@
     <message>
         <location line="+20"/>
         <source>Arguments:</source>
-        <translation type="unfinished"></translation>
+        <translation>อากิวเม้นต์:</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -261,7 +261,7 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+158"/>
         <source>CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ CSV (*.csv)</translation>
     </message>
 </context>
 <context>
@@ -269,7 +269,7 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+79"/>
         <source>Defold files (*.tilemap)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ Defold (*.tilemap)</translation>
     </message>
 </context>
 <context>
@@ -277,7 +277,7 @@
     <message>
         <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+137"/>
         <source>Defold collection (*.collection)</source>
-        <translation type="unfinished"></translation>
+        <translation>Defold คอลเลคชัน (*.collection)</translation>
     </message>
 </context>
 <context>
@@ -295,17 +295,17 @@
     <message>
         <location line="+25"/>
         <source>Visit https://www.mapeditor.org/donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>ดูที่ https://www.mapeditor.org/donate ↗</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a supporter!</source>
-        <translation type="unfinished"></translation>
+        <translation>ฉันเป็นผู้สนับสนุนเรียบร้อยแล้ว!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>ไว้ทีหลัง</translation>
     </message>
 </context>
 <context>
@@ -336,7 +336,7 @@
     <message>
         <location filename="../src/tiled/exportasimagedialog.ui" line="+14"/>
         <source>Export As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>ส่งออกเป็นรูปภาพ</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -346,17 +346,17 @@
     <message>
         <location line="+6"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>ชื่อ:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ค้นหา...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>ตั้งค่า</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -408,7 +408,7 @@
         <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+55"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+724"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่สามารถเปิดไฟล์เพื่อเขียน</translation>
     </message>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+135"/>
@@ -465,7 +465,7 @@
     <message>
         <location line="+16"/>
         <source>Flare map files (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์แมพ Flare (*.txt)</translation>
     </message>
 </context>
 <context>
@@ -473,7 +473,7 @@
     <message>
         <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+381"/>
         <source>GameMaker room files (*.room.gmx)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ room GameMaker (*.room.gmx)</translation>
     </message>
 </context>
 <context>
@@ -494,22 +494,22 @@
     <message>
         <location line="+15"/>
         <source>JSON map files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ JSON map (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ JavaScript map (*.js)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+15"/>
         <source>JSON map files [Tiled 1.1] (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ JSON map [Tiled 1.1] (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files [Tiled 1.1] (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ JavaScript map [Tiled 1.1] (*.js)</translation>
     </message>
 </context>
 <context>
@@ -530,12 +530,12 @@
     <message>
         <location line="+14"/>
         <source>JSON template files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์เทมเพลต JSON (*.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
         <source>JSON template files [Tiled 1.1] (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์เทมเพลต JSON [Tiled 1.1] (*.json)</translation>
     </message>
 </context>
 <context>
@@ -556,12 +556,12 @@
     <message>
         <location line="+14"/>
         <source>JSON tileset files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ไทล์เซต JSON (*.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
         <source>JSON tileset files [Tiled 1.1] (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ไทล์เซต JSON [Tiled 1.1] (*.json)</translation>
     </message>
 </context>
 <context>
@@ -569,7 +569,7 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="-20"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ Lua (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -577,7 +577,7 @@
     <message>
         <location line="+45"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ Lua (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -600,12 +600,12 @@
     <message>
         <location line="+12"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ช่วยเหลือ</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Map</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;แมพ</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -630,7 +630,7 @@
     <message>
         <location line="+45"/>
         <source>&amp;Project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;โปรเจกต์</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -670,7 +670,7 @@
     <message>
         <location line="+8"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>เกี่ยวกับ Qt</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -700,17 +700,17 @@
     <message>
         <location line="+9"/>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ปิด</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>ซูมเข้า</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>ซูมออก</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -720,7 +720,7 @@
     <message>
         <location line="+147"/>
         <source>Save All</source>
-        <translation type="unfinished"></translation>
+        <translation>บันทึกทั้งหมด</translation>
     </message>
     <message>
         <location line="+127"/>
@@ -765,12 +765,12 @@
     <message>
         <location line="+5"/>
         <source>Save Project As...</source>
-        <translation type="unfinished"></translation>
+        <translation>บันทึกโปรเจกต์เป็น</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Refresh Folders</source>
-        <translation type="unfinished"></translation>
+        <translation>รีเฟรชโฟลเดอร์</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -811,7 +811,7 @@
     <message>
         <location line="-8"/>
         <source>User Manual ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>คู่มือผู้ใช้ ↗</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -841,12 +841,12 @@
     <message>
         <location line="+11"/>
         <source>Full Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>เต็มหน้าจอ</translation>
     </message>
     <message>
         <location line="-194"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>ตัด (&amp;T)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -881,7 +881,7 @@
     <message>
         <location line="+7"/>
         <source>Commands</source>
-        <translation type="unfinished"></translation>
+        <translation>คำสั่ง</translation>
     </message>
     <message>
         <location line="+90"/>
@@ -891,7 +891,7 @@
     <message>
         <location line="+29"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>ไทล์เซต</translation>
     </message>
     <message>
         <location line="+120"/>
@@ -926,7 +926,7 @@
     <message>
         <location line="+3"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>ลบ</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -971,7 +971,7 @@
     <message>
         <location line="+8"/>
         <source>Community Forum ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>ฟอรัมชุมชน ↗</translation>
     </message>
     <message>
         <location line="-92"/>
@@ -1001,7 +1001,7 @@
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+825"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ทั้งหมด (*)</translation>
     </message>
 </context>
 <context>
@@ -1009,7 +1009,7 @@
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="+184"/>
         <source>Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>ไทล์</translation>
     </message>
 </context>
 <context>
@@ -1022,7 +1022,7 @@
     <message>
         <location line="+19"/>
         <source>Not a tileset file.</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่ใช่ไฟล์ไทล์เซต</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -1039,7 +1039,7 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>File not found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่พบไฟล์: %1</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1102,7 +1102,7 @@ Line %1, column %2</source>
         <location line="-358"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-40"/>
         <source>Unknown encoding: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่รู้จักการเข้ารหัส: %1</translation>
     </message>
     <message>
         <location line="-407"/>
@@ -1148,7 +1148,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/newmapdialog.ui" line="+14"/>
         <source>New Map</source>
-        <translation type="unfinished"></translation>
+        <translation>แมพใหม่</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -1166,40 +1166,40 @@ Line %1, column %2</source>
         <location line="+26"/>
         <source> tiles</source>
         <extracomment>Remember starting with a space.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation> ไทล์</translation>
     </message>
     <message>
         <location line="-38"/>
         <source>Fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>คงที่</translation>
     </message>
     <message>
         <location line="+54"/>
         <location line="+77"/>
         <source>Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>สูง:</translation>
     </message>
     <message>
         <location line="-42"/>
         <source>Infinite</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่มีที่สิ้นสุด</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Tile size</source>
-        <translation type="unfinished"></translation>
+        <translation>ขนาดไทล์</translation>
     </message>
     <message>
         <location line="+16"/>
         <location line="+26"/>
         <source> px</source>
         <extracomment>Remember starting with a space.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation> พิกเซล</translation>
     </message>
     <message>
         <location line="-202"/>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>แมพ</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -1223,12 +1223,12 @@ Line %1, column %2</source>
         <location filename="../src/tiled/newtilesetdialog.ui" line="+14"/>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="+259"/>
         <source>New Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>ไทล์เซตใหม่</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>ไทล์เซต</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -1268,12 +1268,12 @@ Line %1, column %2</source>
     <message>
         <location line="+129"/>
         <source>Tile width:</source>
-        <translation type="unfinished"></translation>
+        <translation>ความกว้างไทล์:</translation>
     </message>
     <message>
         <location line="+38"/>
         <source>Pick color from image</source>
-        <translation type="unfinished"></translation>
+        <translation>เลือกสีจากรูปภาพ</translation>
     </message>
     <message>
         <location line="-138"/>
@@ -1282,12 +1282,12 @@ Line %1, column %2</source>
         <location line="+16"/>
         <source> px</source>
         <extracomment>Remember starting with a space.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation> พิกเซล</translation>
     </message>
     <message>
         <location line="-142"/>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>รูป</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -1307,7 +1307,7 @@ Line %1, column %2</source>
     <message>
         <location line="-45"/>
         <source>Tile height:</source>
-        <translation type="unfinished"></translation>
+        <translation>ความสูงไทล์:</translation>
     </message>
     <message>
         <location line="+91"/>
@@ -1322,7 +1322,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>แก้ไขไทล์เซต</translation>
     </message>
 </context>
 <context>
@@ -1335,7 +1335,7 @@ Line %1, column %2</source>
     <message>
         <location line="+110"/>
         <source>Open File...</source>
-        <translation type="unfinished"></translation>
+        <translation>เปิดไฟล์...</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -1345,7 +1345,7 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>New Tileset...</source>
-        <translation type="unfinished"></translation>
+        <translation>ไทล์เซตใหม่...</translation>
     </message>
 </context>
 <context>
@@ -1353,7 +1353,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+89"/>
         <source>New Tileset...</source>
-        <translation type="unfinished"></translation>
+        <translation>ไทล์เซตใหม่...</translation>
     </message>
 </context>
 <context>
@@ -1366,7 +1366,7 @@ Line %1, column %2</source>
     <message>
         <location line="+9"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>ตัวกรอง</translation>
     </message>
 </context>
 <context>
@@ -1374,12 +1374,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/libtiled/objecttypes.cpp" line="+251"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่สามารถเปิดไฟล์เพื่อเขียน</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Could not open file.</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่สามารถเปิดไฟล์</translation>
     </message>
     <message>
         <location line="-89"/>
@@ -1437,13 +1437,13 @@ Line %1, column %2</source>
     <message>
         <location line="+6"/>
         <source>X:</source>
-        <translation type="unfinished"></translation>
+        <translation>X:</translation>
     </message>
     <message>
         <location line="+10"/>
         <location line="+46"/>
         <source> tiles</source>
-        <translation type="unfinished"></translation>
+        <translation> ไทล์</translation>
     </message>
     <message>
         <location line="-30"/>
@@ -1454,22 +1454,22 @@ Line %1, column %2</source>
     <message>
         <location line="-39"/>
         <source>Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <location line="+46"/>
         <source>Layers:</source>
-        <translation type="unfinished"></translation>
+        <translation>เลเยอร์:</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>All Visible Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>เลเยอร์ที่มองเห็นทั้งหมด</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>เลเยอร์ทั้งหมด</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1502,70 +1502,70 @@ Line %1, column %2</source>
     <message>
         <location line="+13"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>ทั่วไป</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Saving and Loading</source>
-        <translation type="unfinished"></translation>
+        <translation>บันทึกและโหลด</translation>
     </message>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+85"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1241"/>
         <source>Base64 (uncompressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>ฐาน64 (ไม่บีบอัด)</translation>
     </message>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="-1"/>
         <source>XML (deprecated)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML (เลิกใช้แล้ว)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Base64 (gzip compressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>ฐาน64 (บีบอัดแบบ gzip)</translation>
     </message>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Base64 (zlib compressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>ฐาน64 (บีบอัดแบบ zlib)</translation>
     </message>
     <message>
         <location line="-2"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+4"/>
         <source>CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV</translation>
     </message>
     <message>
         <location line="+4"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="-2"/>
         <source>Base64 (Zstandard compressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>ฐาน64 (บีบอัดแบบ Zstandard )</translation>
     </message>
     <message>
         <location line="+3"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+14"/>
         <source>Right Down</source>
-        <translation type="unfinished"></translation>
+        <translation>ล่างขวา</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Right Up</source>
-        <translation type="unfinished"></translation>
+        <translation>บนขวา</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Left Down</source>
-        <translation type="unfinished"></translation>
+        <translation>ล่างซ้าย</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Left Up</source>
-        <translation type="unfinished"></translation>
+        <translation>บนซ้าย</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+23"/>
@@ -1626,7 +1626,7 @@ Line %1, column %2</source>
     <message>
         <location line="+132"/>
         <source>Grid color:</source>
-        <translation type="unfinished"></translation>
+        <translation>สีเส้นกริด:</translation>
     </message>
     <message>
         <location line="-47"/>
@@ -1636,7 +1636,7 @@ Line %1, column %2</source>
     <message>
         <location line="-19"/>
         <source> pixels</source>
-        <translation type="unfinished"></translation>
+        <translation> พิกเซล</translation>
     </message>
     <message>
         <location line="-103"/>
@@ -1691,28 +1691,28 @@ Line %1, column %2</source>
     <message>
         <location line="+24"/>
         <source>Keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>คีย์บอร์ด</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+6"/>
         <source>Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>ธีม</translation>
     </message>
     <message>
         <location line="+106"/>
         <source>Extensions</source>
-        <translation type="unfinished"></translation>
+        <translation>ส่วนขยาย</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>ไดเรกทอรี:</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>เปิด...</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+65"/>
@@ -1744,17 +1744,17 @@ Line %1, column %2</source>
     <message>
         <location line="-109"/>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>อัพเดท</translation>
     </message>
     <message>
         <location line="+136"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>ปลั๊กอิน</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Enabled Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>เปิดปลั๊กอิน</translation>
     </message>
 </context>
 <context>
@@ -1762,7 +1762,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.ui" line="+14"/>
         <source>Project Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>คุณสมบัติโปรเจกต์</translation>
     </message>
 </context>
 <context>
@@ -1770,12 +1770,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/python/pythonplugin.cpp" line="+274"/>
         <source>-- Using script %1 to read %2</source>
-        <translation type="unfinished"></translation>
+        <translation>--ใช้สคริปต์ %1 เพื่ออ่าน %2</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>-- Using script %1 to write %2</source>
-        <translation type="unfinished"></translation>
+        <translation>--ใช้สคริปต์ %1 เพื่อเขียน %2</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -1803,13 +1803,13 @@ Line %1, column %2</source>
         <location line="+10"/>
         <location line="+25"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>จริง</translation>
     </message>
     <message>
         <location line="-25"/>
         <location line="+25"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>เท็จ</translation>
     </message>
 </context>
 <context>
@@ -1817,12 +1817,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1705"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>จริง</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>เท็จ</translation>
     </message>
 </context>
 <context>
@@ -1838,7 +1838,7 @@ Line %1, column %2</source>
     <message>
         <location line="+614"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -1846,22 +1846,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+4740"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>แดง</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation>เขียว</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>ฟ้า</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Alpha</source>
-        <translation type="unfinished"></translation>
+        <translation>ความโปร่งใส</translation>
     </message>
 </context>
 <context>
@@ -1967,7 +1967,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+209"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -1985,7 +1985,7 @@ Line %1, column %2</source>
     <message>
         <location line="+13"/>
         <source>Pixel Size</source>
-        <translation type="unfinished"></translation>
+        <translation>ขนาดพิกเซล</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -2036,7 +2036,7 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>Country</source>
-        <translation type="unfinished"></translation>
+        <translation>ประเทศ</translation>
     </message>
 </context>
 <context>
@@ -2044,17 +2044,17 @@ Line %1, column %2</source>
     <message>
         <location line="+409"/>
         <source>(%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>(%1, %2)</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -2062,17 +2062,17 @@ Line %1, column %2</source>
     <message>
         <location line="-319"/>
         <source>(%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>(%1, %2)</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -2080,7 +2080,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="-150"/>
         <source>[%1, %2, %3] (%4)</source>
-        <translation type="unfinished"></translation>
+        <translation>[%1, %2, %3] (%4)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2090,7 +2090,7 @@ Line %1, column %2</source>
     <message>
         <location line="+33"/>
         <source>[%1, %2]</source>
-        <translation type="unfinished"></translation>
+        <translation>[%1, %2]</translation>
     </message>
 </context>
 <context>
@@ -2098,27 +2098,27 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1701"/>
         <source>[(%1, %2), %3 x %4]</source>
-        <translation type="unfinished"></translation>
+        <translation>[(%1, %2), %3 x %4]</translation>
     </message>
     <message>
         <location line="+156"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>ความกว้าง</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>ความสูง</translation>
     </message>
 </context>
 <context>
@@ -2126,27 +2126,27 @@ Line %1, column %2</source>
     <message>
         <location line="-611"/>
         <source>[(%1, %2), %3 x %4]</source>
-        <translation type="unfinished"></translation>
+        <translation>[(%1, %2), %3 x %4]</translation>
     </message>
     <message>
         <location line="+120"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>ความกว้าง</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>ความสูง</translation>
     </message>
 </context>
 <context>
@@ -2154,17 +2154,17 @@ Line %1, column %2</source>
     <message>
         <location line="-534"/>
         <source>%1 x %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 x %2</translation>
     </message>
     <message>
         <location line="+130"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>ความกว้าง</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>ความสูง</translation>
     </message>
 </context>
 <context>
@@ -2178,7 +2178,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>[%1, %2, %3, %4]</source>
-        <translation type="unfinished"></translation>
+        <translation>[%1, %2, %3, %4]</translation>
     </message>
     <message>
         <location line="+45"/>
@@ -2206,17 +2206,17 @@ Line %1, column %2</source>
     <message>
         <location line="-2280"/>
         <source>%1 x %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 x %2</translation>
     </message>
     <message>
         <location line="+96"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>ความกว้าง</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>ความสูง</translation>
     </message>
 </context>
 <context>
@@ -2224,12 +2224,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qttreepropertybrowser.cpp" line="+513"/>
         <source>Property</source>
-        <translation type="unfinished"></translation>
+        <translation>คุณสมบัติ</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>ค่า</translation>
     </message>
 </context>
 <context>
@@ -2300,12 +2300,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/resizedialog.ui" line="+14"/>
         <source>Resize</source>
-        <translation type="unfinished"></translation>
+        <translation>ปรับขนาด</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>ขนาด</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2313,17 +2313,17 @@ Line %1, column %2</source>
         <location line="+32"/>
         <location line="+23"/>
         <source> tiles</source>
-        <translation type="unfinished"></translation>
+        <translation> ไทล์</translation>
     </message>
     <message>
         <location line="-75"/>
         <source>Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>ความกว้าง:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>ความสูง:</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -2333,12 +2333,12 @@ Line %1, column %2</source>
     <message>
         <location line="+6"/>
         <source>X:</source>
-        <translation type="unfinished"></translation>
+        <translation>X:</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -2437,7 +2437,7 @@ Line %1, column %2</source>
         <location line="+21"/>
         <location filename="../src/tiled/tilecollisiondock.cpp" line="+354"/>
         <source>Not an object</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่ใช่ออบเจกต์</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2530,7 +2530,7 @@ Line %1, column %2</source>
         <location line="+54"/>
         <location filename="../src/tiled/tilesetdock.cpp" line="+904"/>
         <source>Not a tile</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่ใช่ไทล์</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2587,7 +2587,7 @@ Line %1, column %2</source>
     <message>
         <location line="+21"/>
         <source>Invalid ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID ไม่ถูกต้อง</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2655,7 +2655,7 @@ Line %1, column %2</source>
     <message>
         <location line="-122"/>
         <source>Could not resize &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่สามารถปรับขนาด &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -3020,7 +3020,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/abstracttiletool.cpp" line="+177"/>
         <source>empty</source>
-        <translation type="unfinished"></translation>
+        <translation>ว่างเปล่า</translation>
     </message>
 </context>
 <context>
@@ -3059,7 +3059,7 @@ Line %1, column %2</source>
     <message>
         <location line="-78"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ทั้งหมด (*)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3088,12 +3088,12 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>ข้อความ</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>ช็อตคัท</translation>
     </message>
 </context>
 <context>
@@ -3193,7 +3193,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+269"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>ไทล์เซต</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4413,7 +4413,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+13"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>ลบ %n ออบเจ็กต์</numerusform>
         </translation>
     </message>
@@ -4546,22 +4546,22 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Show/&amp;Hide Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>แสดง/&amp;ซ่อน เลเยอร์</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lock/&amp;Unlock Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>ล็อค/&amp;ปลดล็อค เลเยอร์</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show/&amp;Hide Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>แสดง/&amp;ซ่อน เลเยอร์อื่น</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lock/&amp;Unlock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>ล็อค/&amp;ปลดล็อค เลเยอร์อื่น</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4581,12 +4581,12 @@ Please select specific format.</source>
     <message>
         <location line="+33"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>ตัด</translation>
     </message>
     <message>
         <location line="+65"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>ลบ</translation>
     </message>
     <message numerus="yes">
         <location line="+423"/>
@@ -4639,8 +4639,8 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+17"/>
         <source>Add %n Tileset(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>เพิ่ม %n ไทล์เซ็ต</numerusform>
         </translation>
     </message>
     <message>
@@ -6504,7 +6504,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/worlddocument.cpp" line="+43"/>
         <source>untitled.world</source>
-        <translation type="unfinished"></translation>
+        <translation>untitled.world</translation>
     </message>
 </context>
 <context>
@@ -7120,12 +7120,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/utils.cpp" line="+50"/>
         <source>Image files</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์รูป</translation>
     </message>
     <message>
         <location line="+402"/>
         <source>Copy File Path</source>
-        <translation type="unfinished"></translation>
+        <translation>คัดลอกที่ตั้้งไฟล์</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -7164,7 +7164,7 @@ Please select specific format.</source>
         <location line="+1"/>
         <location line="+3"/>
         <source>size</source>
-        <translation type="unfinished"></translation>
+        <translation>ขนาด</translation>
     </message>
     <message>
         <location line="-1"/>
@@ -7195,7 +7195,7 @@ Please select specific format.</source>
         <location line="+1"/>
         <location line="+3"/>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>ชื่อ</translation>
     </message>
     <message>
         <location line="-1"/>
@@ -7262,7 +7262,7 @@ Please select specific format.</source>
         <location line="+19"/>
         <location filename="../src/tiledquick/qml/main.qml" line="+46"/>
         <source>Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>เปิด...</translation>
     </message>
     <message>
         <location line="+65"/>
@@ -7273,22 +7273,22 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiledquick/qml/main.qml" line="-123"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>ออก</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>ช่วยเหลือ</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>About Tiled Quick</source>
-        <translation type="unfinished"></translation>
+        <translation>เกี่ยวกับ Tiled Quick</translation>
     </message>
 </context>
 </TS>
