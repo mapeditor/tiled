@@ -2,6 +2,8 @@ include(../plugin.pri)
 
 DEFINES += YY_LIBRARY
 
-SOURCES += yyplugin.cpp
-HEADERS += yyplugin.h \
+SOURCES += jsonwriter.cpp \
+    yyplugin.cpp
+HEADERS += jsonwriter.h \
+    yyplugin.h \
     yy_global.h
