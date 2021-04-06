@@ -73,7 +73,7 @@ jobs:
         qbs setup-toolchains --detect
         qbs config defaultProfile x86_64-linux-gnu-gcc-9
 
-    - name: Build Sentry
+    - name: Build Sentry Native
       run: |
         curl -sLO https://github.com/getsentry/sentry-native/releases/download/0.4.8/sentry-native.zip
         mkdir sentry-native
@@ -91,8 +91,10 @@ jobs:
     - name: Upload symbols to Sentry
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_ORG: mapeditor
+        SENTRY_PROJECT: tiled
       run: |
-        sentry-cli upload-dif --org mapeditor --project tiled .
+        sentry-cli upload-dif .
 
     - name: Build AppImage
       run: |
@@ -392,3 +394,13 @@ jobs:
           asset_path: Tiled-macos.zip
           asset_name: Tiled-${{ needs.version.outputs.version }}-macos.zip
           asset_content_type: application/zip
+
+      - name: Notify Sentry about release
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: mapeditor
+          SENTRY_PROJECT: tiled
+        run: |
+          curl -sL https://sentry.io/get-cli/ | bash
+          sentry-cli releases new tiled@${{ needs.version.outputs.version }}
+          sentry-cli releases deploys tiled@${{ needs.version.outputs.version }} new -e releases
