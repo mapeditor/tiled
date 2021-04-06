@@ -62,11 +62,10 @@ jobs:
       run: |
         curl -sL https://sentry.io/get-cli/ | bash
 
-    - name: Install CMake
-      run: |
-        curl -sLO https://github.com/Kitware/CMake/releases/download/v3.20.0/cmake-3.20.0-linux-x86_64.sh
-        chmod +x ./cmake-3.20.0-linux-x86_64.sh
-        ./cmake-3.20.0-linux-x86_64.sh --skip-license
+    - name: Setup CMake
+      uses: jwlawson/actions-setup-cmake@v1.8
+      with:
+        cmake-version: '3.19'
 
     - name: Setup Qbs
       run: |
