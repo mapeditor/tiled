@@ -52,7 +52,7 @@ Name
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.4</div>
+   <div class="new new-prev">Since Tiled 1.4</div>
 
 Object Alignment
    The alignment to use for :ref:`tile objects <insert-tile-tool>` referring
@@ -83,8 +83,8 @@ Orientation
    *Isometric*. This value, along with the **Grid Width** and
    **Grid Height** properties, is taken into account by overlays
    rendered on top of the tiles. This helps for example when specifying
-   :ref:`terrain-information` or editing :ref:`wang-sets`. It also
-   affects the orientation used by the :ref:`tile-collision-editor`.
+   :ref:`terrain-information`. It also affects the orientation used by
+   the :ref:`tile-collision-editor`.
 
 Columns
    This is a read-only property for tilesets based on a tileset image,
@@ -139,15 +139,6 @@ the :ref:`terrain-tool`. See the section about
 .. raw:: html
 
    <div class="new new-prev">Since Tiled 1.1</div>
-
-.. _wang-sets:
-
-Wang Sets
----------
-
-A tileset can contain any number of Wang sets for use with the
-:ref:`wang-tool`. See :ref:`defining-wang-tile-info` for more
-information.
 
 .. _tile-collision-editor:
 
@@ -239,9 +230,9 @@ changing the value in the :guilabel:`Frame Duration` field and then clicking
    There are many ways in which the tileset editor can be made more
    efficient, for example:
 
-   **Wang Sets**
+   **Terrain Sets**
 
-   - Make it easier to set up Wang tiles (`#1729 <https://github.com/bjorn/tiled/issues/1729>`__)
+   - Make it easier to set up terrain (`#1729 <https://github.com/bjorn/tiled/issues/1729>`__)
 
    **Tile Collision Editor**
 

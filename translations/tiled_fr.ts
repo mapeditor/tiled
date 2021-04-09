@@ -21,12 +21,12 @@
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+49"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2020 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2021 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;&amp;Eacute;diteur de cartes Tiled&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2020 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(Voir le fichier AUTHORS pour la liste compl&amp;egrave;te des contributeurs)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2021 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(Voir le fichier AUTHORS pour la liste compl&amp;egrave;te des contributeurs)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Vous avez la possibilit&amp;eacute; de modifier ou redistribuer ce programme selon les termes de la GPL (version 2 ou sup&amp;eacute;rieure). Une copie de la GPL est contenue dans le fichier &apos;COPYING&apos; distribu&amp;eacute; avec Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
@@ -2770,7 +2770,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+132"/>
         <source>Only object and tile layers supported.</source>
-        <translation>Seules les calques de tuiles et d&apos;objets sont supportées.</translation>
+        <translation>Seuls les calques de tuiles et d&apos;objets sont supportées.</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -2800,7 +2800,7 @@ Ligne %1, colonne %2</translation>
         <location line="+69"/>
         <location line="+68"/>
         <source>Bad layer tile data</source>
-        <translation>Mauvaise données de calque de tuiles</translation>
+        <translation>Mauvaises données de calque de tuiles</translation>
     </message>
     <message>
         <location line="+72"/>
@@ -2994,7 +2994,7 @@ Ligne %1, colonne %2</translation>
         <location line="+6"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Déplacer un Objet vers le Calque</numerusform>
+            <numerusform>Déplacer %n Objet vers le Calque</numerusform>
             <numerusform>Déplacer %n Objets vers le Calque</numerusform>
         </translation>
     </message>
@@ -3261,7 +3261,7 @@ Ligne %1, colonne %2</translation>
         <location line="+84"/>
         <location line="+8"/>
         <source>Locate File...</source>
-        <translation>Rechercher un Fichier ...</translation>
+        <translation>Localiser un Fichier ...</translation>
     </message>
     <message>
         <location line="-5"/>

@@ -184,7 +184,7 @@ void OriginIndicator::paint(QPainter *painter,
                             const QStyleOptionGraphicsItem *,
                             QWidget *)
 {
-    static const QLine lines[] = {
+    static constexpr QLine lines[] = {
         QLine(-8,0, 8,0),
         QLine(0,-8, 0,8),
     };

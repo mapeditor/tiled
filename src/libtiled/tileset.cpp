@@ -30,7 +30,6 @@
 #include "tileset.h"
 
 #include "imagecache.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilesetmanager.h"
 #include "wangset.h"
@@ -65,8 +64,6 @@ Tileset::Tileset(QString name, int tileWidth, int tileHeight,
     mExpectedColumnCount(0),
     mExpectedRowCount(0),
     mNextTileId(0),
-    mMaximumTerrainDistance(0),
-    mTerrainDistancesDirty(false),
     mStatus(LoadingReady)
 {
     Q_ASSERT(tileSpacing >= 0);
@@ -77,7 +74,6 @@ Tileset::~Tileset()
 {
     TilesetManager::instance()->removeTileset(this);
     qDeleteAll(mTiles);
-    qDeleteAll(mTerrainTypes);
     qDeleteAll(mWangSets);
 }
 
@@ -450,235 +446,6 @@ int Tileset::rowCountForHeight(int height) const
     return (height - mMargin + mTileSpacing) / (mTileHeight + mTileSpacing);
 }
 
-/**
- * Adds a new terrain type.
- *
- * @param name      the name of the terrain
- * @param imageTile the id of the tile that represents the terrain visually
- * @return the created Terrain instance
- */
-Terrain *Tileset::addTerrain(const QString &name, int imageTileId)
-{
-    Terrain *terrain = new Terrain(terrainCount(), this, name,
-                                   imageTileId);
-    insertTerrain(terrainCount(), terrain);
-    return terrain;
-}
-
-/**
- * Adds the \a terrain type at the given \a index.
- *
- * The terrain should already have this tileset associated with it.
- */
-void Tileset::insertTerrain(int index, Terrain *terrain)
-{
-    Q_ASSERT(terrain->tileset() == this);
-
-    mTerrainTypes.insert(index, terrain);
-
-    // Reassign terrain IDs
-    for (int terrainId = index; terrainId < mTerrainTypes.size(); ++terrainId)
-        mTerrainTypes.at(terrainId)->mId = terrainId;
-
-    // Adjust tile terrain references
-    for (Tile *tile : qAsConst(mTiles)) {
-        for (int corner = 0; corner < 4; ++corner) {
-            const int terrainId = tile->cornerTerrainId(corner);
-            if (terrainId >= index)
-                tile->setCornerTerrainId(corner, terrainId + 1);
-        }
-    }
-
-    mTerrainDistancesDirty = true;
-}
-
-/**
- * Removes the terrain type at the given \a index and returns it. The
- * caller becomes responsible for the lifetime of the terrain type.
- *
- * This will cause the terrain ids of subsequent terrains to shift up to
- * fill the space and the terrain information of all tiles in this tileset
- * will be updated accordingly.
- */
-Terrain *Tileset::takeTerrainAt(int index)
-{
-    Terrain *terrain = mTerrainTypes.takeAt(index);
-
-    // Reassign terrain IDs
-    for (int terrainId = index; terrainId < mTerrainTypes.size(); ++terrainId)
-        mTerrainTypes.at(terrainId)->mId = terrainId;
-
-    // Clear and adjust tile terrain references
-    for (Tile *tile : qAsConst(mTiles)) {
-        for (int corner = 0; corner < 4; ++corner) {
-            const int terrainId = tile->cornerTerrainId(corner);
-            if (terrainId == index)
-                tile->setCornerTerrainId(corner, 0xFF);
-            else if (terrainId > index)
-                tile->setCornerTerrainId(corner, terrainId - 1);
-        }
-    }
-
-    mTerrainDistancesDirty = true;
-
-    return terrain;
-}
-
-/**
- * Swaps a terrain type at \a index with another index.
- */
-void Tileset::swapTerrains(int index, int swapIndex)
-{
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-    mTerrainTypes.swap(index, swapIndex);
-#else
-    mTerrainTypes.swapItemsAt(index, swapIndex);
-#endif
-
-    // Reassign terrain IDs
-    mTerrainTypes.at(index)->mId = index;
-    mTerrainTypes.at(swapIndex)->mId = swapIndex;
-
-    // Clear and adjust tile terrain references
-    for (Tile *tile : qAsConst(mTiles)) {
-        for (int corner = 0; corner < 4; ++corner) {
-            const int terrainId = tile->cornerTerrainId(corner);
-            if (terrainId == index)
-                tile->setCornerTerrainId(corner, swapIndex);
-            else if (terrainId == swapIndex)
-                tile->setCornerTerrainId(corner, index);
-        }
-    }
-
-    mTerrainDistancesDirty = true;
-}
-
-/**
- * Returns the transition penalty(/distance) between 2 terrains. -1 if no
- * transition is possible.
- */
-int Tileset::terrainTransitionPenalty(int terrainType0, int terrainType1) const
-{
-    if (mTerrainDistancesDirty)
-        const_cast<Tileset*>(this)->recalculateTerrainDistances();
-
-    terrainType0 = terrainType0 == 255 ? -1 : terrainType0;
-    terrainType1 = terrainType1 == 255 ? -1 : terrainType1;
-
-    // Do some magic, since we don't have a transition array for no-terrain
-    if (terrainType0 == -1 && terrainType1 == -1)
-        return 0;
-    if (terrainType0 == -1)
-        return mTerrainTypes.at(terrainType1)->transitionDistance(terrainType0);
-    return mTerrainTypes.at(terrainType0)->transitionDistance(terrainType1);
-}
-
-int Tileset::maximumTerrainDistance() const
-{
-    if (mTerrainDistancesDirty)
-        const_cast<Tileset*>(this)->recalculateTerrainDistances();
-
-    return mMaximumTerrainDistance;
-}
-
-// some fancy expressions which can search for a value in each byte of a word simultaneously
-inline bool hasZeroByte(int value)
-{
-    return (value - 0x01010101UL) & ~value & 0x80808080UL;
-}
-
-inline bool hasByteEqualTo(int value, int byteValue)
-{
-    return hasZeroByte(value ^ (~0UL / 255 * byteValue));
-}
-
-/**
- * Calculates the transition distance matrix for all terrain types.
- */
-void Tileset::recalculateTerrainDistances()
-{
-    // Terrain distances are the number of transitions required before one terrain may meet another
-    // Terrains that have no transition path have a distance of -1
-    int maximumDistance = 1;
-
-    for (int i = 0; i < terrainCount(); ++i) {
-        Terrain *type = terrain(i);
-        QVector<int> distance(terrainCount() + 1, -1);
-
-        // Check all tiles for transitions to other terrain types
-        for (const Tile *tile : qAsConst(mTiles)) {
-            if (!hasByteEqualTo(tile->terrain(), i))
-                continue;
-
-            // This tile has transitions, add the transitions as neighbours (distance 1)
-            int tl = tile->cornerTerrainId(0);
-            int tr = tile->cornerTerrainId(1);
-            int bl = tile->cornerTerrainId(2);
-            int br = tile->cornerTerrainId(3);
-
-            // Terrain on diagonally opposite corners are not actually a neighbour
-            if (tl == i || br == i) {
-                distance[tr + 1] = 1;
-                distance[bl + 1] = 1;
-            }
-            if (tr == i || bl == i) {
-                distance[tl + 1] = 1;
-                distance[br + 1] = 1;
-            }
-        }
-
-        // terrain has at least one tile of its own type
-        distance[i + 1] = 0;
-
-        type->setTransitionDistances(distance);
-    }
-
-    // Calculate indirect transition distances
-    bool bNewConnections;
-    do {
-        bNewConnections = false;
-
-        // For each combination of terrain types
-        for (int i = 0; i < terrainCount(); ++i) {
-            Terrain *t0 = terrain(i);
-            for (int j = 0; j < terrainCount(); ++j) {
-                if (i == j)
-                    continue;
-                Terrain *t1 = terrain(j);
-
-                // Scan through each terrain type, and see if we have any in common
-                for (int t = -1; t < terrainCount(); ++t) {
-                    int d0 = t0->transitionDistance(t);
-                    int d1 = t1->transitionDistance(t);
-                    if (d0 == -1 || d1 == -1)
-                        continue;
-
-                    // We have found a common connection
-                    int d = t0->transitionDistance(j);
-                    Q_ASSERT(t1->transitionDistance(i) == d);
-
-                    // If the new path is shorter, record the new distance
-                    if (d == -1 || d0 + d1 < d) {
-                        d = d0 + d1;
-                        t0->setTransitionDistance(j, d);
-                        t1->setTransitionDistance(i, d);
-                        maximumDistance = qMax(maximumDistance, d);
-
-                        // We're making progress, flag for another iteration...
-                        bNewConnections = true;
-                    }
-                }
-            }
-        }
-
-        // Repeat while we are still making new connections (could take a
-        // number of iterations for distant terrain types to connect)
-    } while (bNewConnections);
-
-    mMaximumTerrainDistance = maximumDistance;
-    mTerrainDistancesDirty = false;
-}
-
 void Tileset::addWangSet(std::unique_ptr<WangSet> wangSet)
 {
     Q_ASSERT(wangSet->tileset() == this);
@@ -848,27 +615,21 @@ void Tileset::swap(Tileset &other)
     std::swap(mTiles, other.mTiles);
     std::swap(mSortedTileIds, other.mSortedTileIds);
     std::swap(mNextTileId, other.mNextTileId);
-    std::swap(mTerrainTypes, other.mTerrainTypes);
     std::swap(mWangSets, other.mWangSets);
-    std::swap(mTerrainDistancesDirty, other.mTerrainDistancesDirty);
     std::swap(mStatus, other.mStatus);
     std::swap(mBackgroundColor, other.mBackgroundColor);
     std::swap(mFormat, other.mFormat);
 
     // Don't swap mWeakPointer, since it's a reference to this.
 
-    // Update back references from tiles and terrains
+    // Update back references from tiles and Wang sets
     for (auto tile : qAsConst(mTiles))
         tile->mTileset = this;
-    for (auto terrain : qAsConst(mTerrainTypes))
-        terrain->mTileset = this;
     for (auto wangSet : qAsConst(mWangSets))
         wangSet->setTileset(this);
 
     for (auto tile : qAsConst(other.mTiles))
         tile->mTileset = &other;
-    for (auto terrain : qAsConst(other.mTerrainTypes))
-        terrain->mTileset = &other;
     for (auto wangSet : qAsConst(other.mWangSets))
         wangSet->setTileset(&other);
 }
@@ -885,7 +646,6 @@ SharedTileset Tileset::clone() const
     c->mGridSize = mGridSize;
     c->mColumnCount = mColumnCount;
     c->mNextTileId = mNextTileId;
-    c->mTerrainDistancesDirty = mTerrainDistancesDirty;
     c->mStatus = mStatus;
     c->mBackgroundColor = mBackgroundColor;
     c->mFormat = mFormat;
@@ -902,10 +662,6 @@ SharedTileset Tileset::clone() const
     }
 
     c->mSortedTileIds = mSortedTileIds;
-
-    c->mTerrainTypes.reserve(mTerrainTypes.size());
-    for (Terrain *terrain : mTerrainTypes)
-        c->mTerrainTypes.append(terrain->clone(c.data()));
 
     c->mWangSets.reserve(mWangSets.size());
     for (WangSet *wangSet : mWangSets)

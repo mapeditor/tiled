@@ -28,7 +28,6 @@
 #include "objecttemplate.h"
 #include "properties.h"
 #include "templatemanager.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -878,14 +877,18 @@ void VariantToMapConverter::readMapEditorSettings(Map &map, const QVariantMap &e
     map.setChunkSize(QSize(chunkWidth, chunkHeight));
 
     const QVariantMap exportVariant = editorSettings[QStringLiteral("export")].toMap();
-    map.exportFileName = QDir::cleanPath(mDir.filePath(exportVariant[QStringLiteral("target")].toString()));
+    const QString target = exportVariant[QStringLiteral("target")].toString();
+    if (!target.isEmpty() && target != QLatin1String("."))
+        map.exportFileName = QDir::cleanPath(mDir.filePath(target));
     map.exportFormat = exportVariant[QStringLiteral("format")].toString();
 }
 
 void VariantToMapConverter::readTilesetEditorSettings(Tileset &tileset, const QVariantMap &editorSettings)
 {
     const QVariantMap exportVariant = editorSettings[QStringLiteral("export")].toMap();
-    tileset.exportFileName = QDir::cleanPath(mDir.filePath(exportVariant[QStringLiteral("target")].toString()));
+    const QString target = exportVariant[QStringLiteral("target")].toString();
+    if (!target.isEmpty() && target != QLatin1String("."))
+        tileset.exportFileName = QDir::cleanPath(mDir.filePath(target));
     tileset.exportFormat = exportVariant[QStringLiteral("format")].toString();
 }
 

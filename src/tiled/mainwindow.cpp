@@ -65,7 +65,6 @@
 #include "resizedialog.h"
 #include "scriptmanager.h"
 #include "templatesdock.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -1177,9 +1176,7 @@ void MainWindow::saveAll()
             mDocumentManager->switchToDocument(document.data());
             if (!mDocumentManager->saveDocumentAs(document.data()))
                 return;
-        } else if (!document->save(fileName, &error)) {
-            mDocumentManager->switchToDocument(document.data());
-            QMessageBox::critical(this, tr("Error Saving File"), error);
+        } else if (!mDocumentManager->saveDocument(document.data(), fileName)) {
             return;
         }
     }

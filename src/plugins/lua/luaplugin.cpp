@@ -31,7 +31,6 @@
 #include "objecttemplate.h"
 #include "properties.h"
 #include "savefile.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -291,8 +290,6 @@ static bool includeTile(const Tile *tile)
         return true;
     if (tile->isAnimated())
         return true;
-    if (tile->terrain() != 0xFFFFFFFF)
-        return true;
     if (tile->probability() != 1.0)
         return true;
 
@@ -378,20 +375,6 @@ void LuaWriter::writeTileset(const Tileset &tileset,
 
     writeProperties(tileset.properties());
 
-    mWriter.writeStartTable("terrains");
-    for (int i = 0; i < tileset.terrainCount(); ++i) {
-        const Terrain *t = tileset.terrain(i);
-        mWriter.writeStartTable();
-
-        mWriter.writeKeyAndValue("name", t->name());
-        mWriter.writeKeyAndValue("tile", t->imageTileId());
-
-        writeProperties(t->properties());
-
-        mWriter.writeEndTable();
-    }
-    mWriter.writeEndTable();
-
     mWriter.writeStartTable("wangsets");
     for (int i = 0; i < tileset.wangSetCount(); ++i)
         writeWangSet(*tileset.wangSet(i));
@@ -421,16 +404,6 @@ void LuaWriter::writeTileset(const Tileset &tileset,
                 mWriter.writeKeyAndValue("width", tileSize.width());
                 mWriter.writeKeyAndValue("height", tileSize.height());
             }
-        }
-
-        unsigned terrain = tile->terrain();
-        if (terrain != 0xFFFFFFFF) {
-            mWriter.writeStartTable("terrain");
-            mWriter.setSuppressNewlines(true);
-            for (int i = 0; i < 4; ++i )
-                mWriter.writeValue(tile->cornerTerrainId(i));
-            mWriter.writeEndTable();
-            mWriter.setSuppressNewlines(false);
         }
 
         if (tile->probability() != 1.0)

@@ -23,13 +23,14 @@
 
 #include "changeevents.h"
 #include "changewangsetdata.h"
+#include "documentmanager.h"
 #include "wangcolormodel.h"
 #include "wangcolorview.h"
-#include "wangsetview.h"
+#include "wangoverlay.h"
 #include "wangsetmodel.h"
-#include "wangtemplateview.h"
+#include "wangsetview.h"
 #include "wangtemplatemodel.h"
-#include "documentmanager.h"
+#include "wangtemplateview.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "tilesetdocument.h"
@@ -49,6 +50,7 @@
 #include <QUndoStack>
 #include <QToolButton>
 #include <QMenu>
+#include <QPainter>
 
 using namespace Tiled;
 
@@ -145,6 +147,10 @@ WangDock::WangDock(QWidget *parent)
     mNewWangSetButton->setPopupMode(QToolButton::InstantPopup);
     mNewWangSetButton->setMenu(mNewWangSetMenu);
     mNewWangSetButton->setIcon(QIcon(QStringLiteral(":/images/22/add.png")));
+
+    mAddCornerWangSet->setIcon(wangSetIcon(WangSet::Corner));
+    mAddEdgeWangSet->setIcon(wangSetIcon(WangSet::Edge));
+    mAddMixedWangSet->setIcon(wangSetIcon(WangSet::Mixed));
 
     mDuplicateWangSet->setIcon(QIcon(QStringLiteral(":/images/16/stock-duplicate-16.png")));
     mDuplicateWangSet->setEnabled(false);
@@ -292,6 +298,7 @@ void WangDock::setDocument(Document *document)
         setColorView();
         mWangSetToolBar->setVisible(false);
         mWangColorToolBar->setVisible(false);
+        mWangColorView->setReadOnly(true);
 
         mTemplateAndColorView->setTabEnabled(1, false);
         mTemplateAndColorView->tabBar()->hide();
@@ -311,6 +318,7 @@ void WangDock::setDocument(Document *document)
 
         mWangSetToolBar->setVisible(true);
         mWangColorToolBar->setVisible(true);
+        mWangColorView->setReadOnly(false);
 
         mTemplateAndColorView->setTabEnabled(1, true);
         mTemplateAndColorView->tabBar()->show();
@@ -338,13 +346,31 @@ void WangDock::setDocument(Document *document)
 void WangDock::editWangSetName(WangSet *wangSet)
 {
     const QModelIndex index = wangSetIndex(wangSet);
-    QItemSelectionModel *selectionModel = mWangSetView->selectionModel();
 
+    QItemSelectionModel *selectionModel = mWangSetView->selectionModel();
     selectionModel->setCurrentIndex(index,
                                     QItemSelectionModel::ClearAndSelect |
                                     QItemSelectionModel::Rows);
 
     mWangSetView->edit(index);
+}
+
+void WangDock::editWangColorName(int colorIndex)
+{
+    const QModelIndex index = mWangColorModel->colorIndex(colorIndex);
+    if (!index.isValid())
+        return;
+
+    const QModelIndex viewIndex = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapFromSource(index);
+    if (!viewIndex.isValid())
+        return;
+
+    QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
+    selectionModel->setCurrentIndex(viewIndex,
+                                    QItemSelectionModel::ClearAndSelect |
+                                    QItemSelectionModel::Rows);
+
+    mWangColorView->edit(viewIndex);
 }
 
 void WangDock::changeEvent(QEvent *event)
@@ -453,6 +479,7 @@ void WangDock::addColor()
         tilesetDocument->undoStack()->push(new ChangeWangSetColorCount(tilesetDocument,
                                                                        mCurrentWangSet,
                                                                        mCurrentWangSet->colorCount() + 1));
+        editWangColorName(mCurrentWangSet->colorCount());
     }
 }
 
@@ -485,6 +512,8 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
 
         if (auto tilesetDocument = documentManager->findTilesetDocument(sharedTileset))
             mWangColorModel = tilesetDocument->wangColorModel(wangSet);
+
+        mWangColorView->setTileSize(sharedTileset->tileSize());
     }
 
     mCurrentWangSet = wangSet;

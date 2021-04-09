@@ -20,12 +20,13 @@
 
 #include "tilesetwangsetmodel.h"
 
-#include "tilesetdocument.h"
-#include "wangset.h"
-#include "tileset.h"
-#include "tile.h"
 #include "changeevents.h"
 #include "changewangsetdata.h"
+#include "tile.h"
+#include "tileset.h"
+#include "tilesetdocument.h"
+#include "wangoverlay.h"
+#include "wangset.h"
 
 using namespace Tiled;
 
@@ -73,6 +74,8 @@ QVariant TilesetWangSetModel::data(const QModelIndex &index, int role) const
         case Qt::DecorationRole:
             if (Tile *imageTile = wangSet->imageTile())
                 return imageTile->image();
+            else
+                return wangSetIcon(wangSet->type());
             break;
         case WangSetRole:
             return QVariant::fromValue(wangSet);

@@ -46,7 +46,6 @@ class Map;
 class MapObject;
 class MapRenderer;
 class ObjectTemplate;
-class Terrain;
 class Tile;
 class WangSet;
 

@@ -84,18 +84,29 @@ public class TMXMapReader {
     public static final long FLIPPED_VERTICALLY_FLAG =    0x0000000040000000L;
     public static final long FLIPPED_DIAGONALLY_FLAG =    0x0000000020000000L;
 
-    public static final long ALL_FLAGS = FLIPPED_HORIZONTALLY_FLAG
-            | FLIPPED_VERTICALLY_FLAG
-            | FLIPPED_DIAGONALLY_FLAG;
+    public static final long ALL_FLAGS =
+        FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG;
+
+    public final TMXMapReaderSettings settings = new TMXMapReaderSettings();
 
     private Map map;
     private URL xmlPath;
     private String error;
     private final EntityResolver entityResolver = new MapEntityResolver();
     private TreeMap<Integer, TileSet> tilesetPerFirstGid;
-    public final TMXMapReaderSettings settings = new TMXMapReaderSettings();
-    private final java.util.Map<String, TileSet> cachedTilesets = new HashMap<>();
-    private final java.util.Map<Class<?>, Unmarshaller> cachedUnmarshallers = new HashMap<>();
+
+    /**
+     * Map of cached tilesets used when {@link TMXMapReaderSettings#reuseCachedTilesets} option is on.
+     * TODO: case when multiple tilesets have same name but different sources
+     * @see #setCachedTilesets(java.util.Map)
+     */
+    private java.util.Map<String, TileSet> cachedTilesets;
+
+    /**
+     * Unmarshaller capable of unmarshalling all classes available from context
+     * @see #unmarshalClass(Node, Class)
+     */
+    private final Unmarshaller unmarshaller;
 
     public static final class TMXMapReaderSettings {
 
@@ -105,7 +116,10 @@ public class TMXMapReader {
     /**
      * Constructor for TMXMapReader.
      */
-    public TMXMapReader() {
+    public TMXMapReader() throws JAXBException {
+        unmarshaller = JAXBContext.newInstance(
+            Map.class, TileSet.class, Tile.class,
+            AnimatedTile.class, ObjectGroup.class, ImageLayer.class).createUnmarshaller();
     }
 
     String getError() {
@@ -160,14 +174,11 @@ public class TMXMapReader {
     }
 
     private <T> T unmarshalClass(Node node, Class<T> type) throws JAXBException {
-        Unmarshaller unmarshaller = cachedUnmarshallers.get(type);
-        if (unmarshaller == null) {
-            JAXBContext context = JAXBContext.newInstance(type);
-            unmarshaller = context.createUnmarshaller();
-            cachedUnmarshallers.put(type, unmarshaller);
-        }
-        JAXBElement<T> element = unmarshaller.unmarshal(node, type);
-        return element.getValue();
+        // we expect that all classes are already bounded to JAXBContext, so we don't need to create unmarshaller
+        // dynamicaly cause it's kinda heavy operation
+        // if you got exception wich tells that SomeClass is not known to this context - just add it to the list
+        // passed to JAXBContext constructor
+        return unmarshaller.unmarshal(node, type).getValue();
     }
 
     private BufferedImage unmarshalImage(Node t, URL baseDir) throws IOException {
@@ -228,10 +239,7 @@ public class TMXMapReader {
             // There can be only one tileset in a .tsx file.
             tsNode = tsNodeList.item(0);
             if (tsNode != null) {
-                set = unmarshalTileset(tsNode);
-                if (set.getSource() != null) {
-                    System.out.println("Recursive external tilesets are not supported.");
-                }
+                set = unmarshalTileset(tsNode, true);
                 set.setSource(file.toString());
             }
 
@@ -244,9 +252,25 @@ public class TMXMapReader {
     }
 
     private TileSet unmarshalTileset(Node t) throws Exception {
+        return unmarshalTileset(t, false);
+    }
+
+    /**
+     * @param t xml node to begin unmarshalling from
+     * @param isExternalTileset is this a node of external tileset located in separate tsx file
+     */
+    private TileSet unmarshalTileset(Node t, boolean isExternalTileset) throws Exception {
         TileSet set = unmarshalClass(t, TileSet.class);
 
         String source = set.getSource();
+        // if we have a "source" attribute in the external tileset - we ignore it and display a warning
+        if (source != null && isExternalTileset) {
+            source = null;
+            set.setSource(null);
+            System.out.printf("Warning: recursive external tilesets are not supported - " +
+                                  "ignoring source option for tileset %s%n", set.getName());
+        }
+
         if (source != null) {
             source = replacePathSeparator(source);
             URL url = URLHelper.resolve(xmlPath, source);
@@ -268,6 +292,10 @@ public class TMXMapReader {
             final String name = getAttributeValue(t, "name");
 
             if (settings.reuseCachedTilesets) {
+                if (cachedTilesets == null) {
+                    cachedTilesets = new HashMap<>();
+                }
+
                 set = cachedTilesets.get(name);
                 if (set != null)
                     return set;
@@ -1040,5 +1068,13 @@ public class TMXMapReader {
         if (path.isEmpty() || path.lastIndexOf(File.separatorChar) >= 0)
             return path;
         return path.replace("/", File.separator);
+    }
+
+    /**
+     * The ability to set cachedTilesets allows cached tilesets to be shared across multiple readers,
+     * increasing read speed in a multithreaded environment.
+     */
+    public void setCachedTilesets(java.util.Map<String, TileSet> cachedTilesets) {
+        this.cachedTilesets = cachedTilesets;
     }
 }

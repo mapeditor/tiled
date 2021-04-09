@@ -15,6 +15,7 @@ QtGuiApplication {
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt"; submodules: ["core", "widgets", "qml"]; versionAtLeast: "5.6" }
     Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6 }
+    Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux"); required: false }
 
     property bool qtcRunnable: true
 
@@ -45,11 +46,15 @@ QtGuiApplication {
             "QT_NO_URL_CAST_FROM_STRING",
             "_USE_MATH_DEFINES"
         ];
+
         if (project.snapshot)
             defs.push("TILED_SNAPSHOT");
 
         if (project.enableZstd)
             defs.push("TILED_ZSTD_SUPPORT");
+
+        if (qbs.targetOS.contains("linux") && Qt.dbus.present)
+            defs.push("TILED_ENABLE_DBUS");
 
         return defs;
     }
@@ -436,6 +441,8 @@ QtGuiApplication {
         "scriptmanager.h",
         "scriptmodule.cpp",
         "scriptmodule.h",
+        "scriptprocess.cpp",
+        "scriptprocess.h",
         "selectionrectangle.cpp",
         "selectionrectangle.h",
         "selectsametiletool.cpp",

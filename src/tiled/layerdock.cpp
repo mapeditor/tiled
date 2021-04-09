@@ -419,7 +419,8 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
 
     QMenu menu;
 
-    menu.addMenu(handler->createNewLayerMenu(&menu));
+    QMenu *newLayerMenu = handler->createNewLayerMenu(&menu);
+    menu.addMenu(newLayerMenu);
 
     if (proxyIndex.isValid()) {
         menu.addMenu(handler->createGroupLayerMenu(&menu));
@@ -437,6 +438,9 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         menu.addSeparator();
         menu.addAction(handler->actionLayerProperties());
     }
+
+    ActionManager::applyMenuExtensions(newLayerMenu, "NewLayer");
+    ActionManager::applyMenuExtensions(&menu, MenuIds::layerViewLayers);
 
     menu.exec(event->globalPos());
 }

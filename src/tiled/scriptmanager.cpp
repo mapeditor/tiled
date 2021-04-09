@@ -22,6 +22,7 @@
 
 #include "documentmanager.h"
 #include "editablegrouplayer.h"
+#include "editableimagelayer.h"
 #include "editablemap.h"
 #include "editablemapobject.h"
 #include "editableobjectgroup.h"
@@ -45,6 +46,7 @@
 #include "scriptfileinfo.h"
 #include "scriptimage.h"
 #include "scriptmodule.h"
+#include "scriptprocess.h"
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"
@@ -182,15 +184,13 @@ QJSValue ScriptManager::evaluateFile(const QString &fileName)
     if (!fromUtf8(bytes, script))
         script = QTextCodec::codecForUtfText(bytes)->toUnicode(bytes);
 #else
-    // Workaround for Qt 6.0 Alpha bug (QTBUG-87466)
-//    auto encoding = QStringConverter::encodingForData(bytes.constData(), bytes.size());
-//    QStringDecoder decoder(encoding.value_or(QStringConverter::Encoding::Utf8));
-//    script = decoder.decode(bytes);
-//    if (decoder.hasError()) {
-//        Tiled::ERROR(tr("Error decoding file: %1").arg(fileName));
-//        return QJSValue();
-//    }
-    script = QString::fromUtf8(bytes);
+    auto encoding = QStringConverter::encodingForData(bytes.constData(), bytes.size());
+    QStringDecoder decoder(encoding.value_or(QStringConverter::Utf8));
+    script = decoder.decode(bytes);
+    if (decoder.hasError()) {
+        Tiled::ERROR(tr("Error decoding file: %1").arg(fileName));
+        return QJSValue();
+    }
 #endif
 
     Tiled::INFO(tr("Evaluating '%1'").arg(fileName));
@@ -319,6 +319,7 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("BinaryFile"), mEngine->newQMetaObject<ScriptBinaryFile>());
     globalObject.setProperty(QStringLiteral("GroupLayer"), mEngine->newQMetaObject<EditableGroupLayer>());
     globalObject.setProperty(QStringLiteral("Image"), mEngine->newQMetaObject<ScriptImage>());
+    globalObject.setProperty(QStringLiteral("ImageLayer"), mEngine->newQMetaObject<EditableImageLayer>());
     globalObject.setProperty(QStringLiteral("Layer"), mEngine->newQMetaObject<EditableLayer>());
     globalObject.setProperty(QStringLiteral("MapObject"), mEngine->newQMetaObject<EditableMapObject>());
     globalObject.setProperty(QStringLiteral("ObjectGroup"), mEngine->newQMetaObject<EditableObjectGroup>());
@@ -331,6 +332,7 @@ void ScriptManager::initialize()
 #endif
 
     registerFileInfo(mEngine);
+    registerProcess(mEngine);
 
     loadExtensions();
 }

@@ -21,12 +21,12 @@
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+49"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2020 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2021 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Версия %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2020 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(смотрите файл AUTHORS с полным списком участников)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2021 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(смотрите файл AUTHORS с полным списком участников)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Вы можете модифицировать и распространять эту программу в рамках условий лицензии GPL (версии 2 и выше). Копия текста лицензии GPL находится в файле &apos;COPYING&apos;, поставляемым с Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
@@ -1075,7 +1075,7 @@ Line %1, column %2</source>
         <location line="+220"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+65"/>
         <source>Terrains</source>
-        <translation>Участки местности</translation>
+        <translation>Рельефы</translation>
     </message>
     <message>
         <location line="+260"/>
@@ -5615,17 +5615,17 @@ Please select specific format.</source>
     <message>
         <location line="+19"/>
         <source>Terrain Set</source>
-        <translation>Набор местностей</translation>
+        <translation>Набор рельефов</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Terrain Count</source>
-        <translation>Количество местностей</translation>
+        <translation>Количество рельефов</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Terrain</source>
-        <translation>Участок местности</translation>
+        <translation>Рельеф</translation>
     </message>
     <message>
         <location line="+1147"/>
@@ -5928,7 +5928,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Terrain Fill Mode</source>
-        <translation>Заливка участком местности</translation>
+        <translation>Заливка рельефами</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6343,12 +6343,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+763"/>
         <source>Use as Terrain Set Image</source>
-        <translation>Сделать изображением набора местностей</translation>
+        <translation>Сделать изображением набора рельефов</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Use as Terrain Image</source>
-        <translation>Сделать изображением местности</translation>
+        <translation>Сделать изображением рельефа</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6482,12 +6482,12 @@ Please select specific format.</source>
         <location filename="../src/tiled/wangbrush.cpp" line="+111"/>
         <location line="+96"/>
         <source>Terrain Brush</source>
-        <translation>Кисть участков местности</translation>
+        <translation>Рельеф-кисть</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>Missing terrain transition</source>
-        <translation>Не хватает перехода между местностями</translation>
+        <translation>Не хватает перехода между рельефами</translation>
     </message>
 </context>
 <context>
@@ -6504,7 +6504,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/wangdock.cpp" line="+238"/>
         <location line="+319"/>
         <source>Terrains</source>
-        <translation>Местности</translation>
+        <translation>Рельефы</translation>
     </message>
     <message>
         <location line="-318"/>
@@ -6515,17 +6515,17 @@ Please select specific format.</source>
     <message>
         <location line="-13"/>
         <source>Terrain Sets</source>
-        <translation>Наборы местностей</translation>
+        <translation>Наборы рельефов</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Erase Terrain</source>
-        <translation>Стереть местности</translation>
+        <translation>Стереть рельеф</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain Set</source>
-        <translation>Добавить набор местностей</translation>
+        <translation>Добавить набор рельефов</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6545,22 +6545,22 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Duplicate Terrain Set</source>
-        <translation>Дублировать набор местностей</translation>
+        <translation>Дублировать набор рельефов</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain Set</source>
-        <translation>Удалить набор местностей</translation>
+        <translation>Удалить набор рельефов</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain</source>
-        <translation>Добавить местность</translation>
+        <translation>Добавить рельеф</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain</source>
-        <translation>Удалить местность</translation>
+        <translation>Удалить рельеф</translation>
     </message>
 </context>
 <context>
@@ -6568,7 +6568,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+104"/>
         <source>Terrain Set &amp;Properties...</source>
-        <translation>&amp;Свойства набора местности...</translation>
+        <translation>&amp;Свойства набора рельефов...</translation>
     </message>
 </context>
 <context>
@@ -7142,64 +7142,64 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
         <source>Add Terrain Set</source>
-        <translation>Добавить набор местностей</translation>
+        <translation>Добавить набор рельефов</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Terrain Set</source>
-        <translation>Удалить набор местностей</translation>
+        <translation>Удалить набор рельефов</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+37"/>
         <location line="+12"/>
         <location line="+14"/>
         <source>Change Tile Terrain</source>
-        <translation>Изменить участок местности тайла</translation>
+        <translation>Изменить рельеф тайла</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangcolordata.cpp" line="+38"/>
         <source>Change Terrain Name</source>
-        <translation>Переименовать местность</translation>
+        <translation>Переименовать рельеф</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Change Terrain Image</source>
-        <translation>Изменить изображение местности</translation>
+        <translation>Изменить изображение рельефа</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Color</source>
-        <translation>Изменить цвет местности</translation>
+        <translation>Изменить цвет рельефа</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Probability</source>
-        <translation>Изменить вероятность местности</translation>
+        <translation>Изменить вероятность рельефа</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+38"/>
         <source>Change Terrain Set Name</source>
-        <translation>Переименовать набор местностей</translation>
+        <translation>Переименовать набор рельефов</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Change Terrain Set Type</source>
-        <translation>Изменить тип набора местностей</translation>
+        <translation>Изменить тип набора рельефов</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Change Terrain Count</source>
-        <translation>Изменить количество местностей</translation>
+        <translation>Изменить количество рельефов</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>Remove Terrain</source>
-        <translation>Удалить местность</translation>
+        <translation>Удалить рельеф</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Set Terrain Set Image</source>
-        <translation>Установить изображение набора местностей</translation>
+        <translation>Установить изображение набора рельефов</translation>
     </message>
 </context>
 <context>

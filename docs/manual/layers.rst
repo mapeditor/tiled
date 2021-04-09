@@ -157,7 +157,7 @@ factors of all parent layers.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.4</div>
+   <div class="new new-prev">Since Tiled 1.4</div>
 
 .. _tint-color:
 

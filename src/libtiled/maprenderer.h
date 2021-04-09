@@ -188,7 +188,7 @@ public:
      */
     void drawImageLayer(QPainter *painter,
                         const ImageLayer *imageLayer,
-                        const QRectF &exposed = QRectF());
+                        const QRectF &exposed = QRectF()) const;
 
     /**
      * Returns the tile coordinates matching the given pixel position.

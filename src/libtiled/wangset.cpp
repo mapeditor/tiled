@@ -285,7 +285,7 @@ WangId::Index WangId::indexByGrid(int x, int y)
     Q_ASSERT(x >= 0 && x < 3);
     Q_ASSERT(y >= 0 && y < 3);
 
-    const Index map[3][3] = {
+    static constexpr Index map[3][3] = {
         { TopLeft,      Top,        TopRight },
         { Left,         NumIndexes, Right },
         { BottomLeft,   Bottom,     BottomRight },
@@ -693,7 +693,7 @@ void WangSet::recalculateColorDistances()
         }
 
         // Repeat while we are still making new connections (could take a
-        // number of iterations for distant terrain types to connect)
+        // number of iterations for distant colors to connect)
     } while (newConnections);
 
     mMaximumColorDistance = maximumDistance;

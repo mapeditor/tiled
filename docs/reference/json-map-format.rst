@@ -809,5 +809,5 @@ Tiled 1.1
   be stored as JSON files with an :ref:`json-objecttemplate` object.
 
 * :ref:`Tilesets <json-tileset>` can now contain
-  :doc:`Wang tiles </manual/using-wang-tiles>`. They are saved in the
+  :doc:`Terrain Sets </manual/terrain>`. They are saved in the
   new :ref:`json-wangset` object (since Tiled 1.1.5).

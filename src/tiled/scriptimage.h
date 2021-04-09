@@ -128,6 +128,11 @@ public:
     Q_INVOKABLE bool loadFromData(const QByteArray &data, const QByteArray &format = QByteArray())
     { return mImage.loadFromData(data, format); }
 
+    Q_INVOKABLE bool save(const QString &fileName, const QByteArray &format = QByteArray(), int quality = -1)
+    { return mImage.save(fileName, format, quality); }
+
+    Q_INVOKABLE QByteArray saveToData(const QByteArray &format = "PNG", int quality = -1);
+
     Q_INVOKABLE uint color(int i) const
     { return mImage.color(i); }
 
@@ -141,11 +146,11 @@ public:
 
     Q_INVOKABLE void setColorTable(QJSValue colors);
 
-    Q_INVOKABLE ScriptImage *copy(int x, int y, int w, int h) const;
-    Q_INVOKABLE ScriptImage *scaled(int w, int h,
-                                    AspectRatioMode aspectMode = IgnoreAspectRatio,
-                                    TransformationMode mode = FastTransformation) const;
-    Q_INVOKABLE ScriptImage *mirrored(bool horiz, bool vert) const;
+    Q_INVOKABLE Tiled::ScriptImage *copy(int x, int y, int w, int h) const;
+    Q_INVOKABLE Tiled::ScriptImage *scaled(int w, int h,
+                                           AspectRatioMode aspectMode = IgnoreAspectRatio,
+                                           TransformationMode mode = FastTransformation) const;
+    Q_INVOKABLE Tiled::ScriptImage *mirrored(bool horiz, bool vert) const;
 
     const QImage &image() const { return mImage; }
 

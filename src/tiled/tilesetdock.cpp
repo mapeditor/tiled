@@ -40,7 +40,6 @@
 #include "session.h"
 #include "swaptiles.h"
 #include "tabbar.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"

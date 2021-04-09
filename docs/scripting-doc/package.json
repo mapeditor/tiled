@@ -8,8 +8,8 @@
   "types": "./index.d.ts",
   "version": "1.4.3-alpha2",
   "devDependencies": {
-    "typedoc": "^0.19.2",
-    "typescript": "^4.0.5"
+    "typedoc": "^0.20.23",
+    "typescript": "^4.1.3"
   },
   "bugs": {
     "url": "https://github.com/mapeditor/tiled/issues"

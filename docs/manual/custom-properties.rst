@@ -43,7 +43,7 @@ get quoted in JSON and Lua exports.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.4</div>
+   <div class="new new-prev">Since Tiled 1.4</div>
 
 The context menu for custom file properties provides a quick way to open the
 file in its preferred editor. For object references, there is an action to

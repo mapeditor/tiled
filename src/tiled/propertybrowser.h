@@ -232,6 +232,7 @@ private:
     QStringList mFlippingFlagNames;
     QStringList mDrawOrderNames;
     QStringList mWangSetTypeNames;
+    QMap<int, QIcon> mWangSetIcons;
 };
 
 /**

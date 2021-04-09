@@ -198,9 +198,6 @@ QPainterPath OrthogonalRenderer::interactionShape(const MapObject *object) const
     QPainterPath path;
 
     switch (object->shape()) {
-    case MapObject::Rectangle:
-        path.addRect(boundingRect(object));
-        break;
     case MapObject::Polyline: {
         const QPointF &pos = object->position();
         const QPolygonF polygon = object->polygon().translated(pos);
@@ -212,6 +209,7 @@ QPainterPath OrthogonalRenderer::interactionShape(const MapObject *object) const
         path.setFillRule(Qt::WindingFill);
         break;
     }
+    case MapObject::Rectangle:
     case MapObject::Polygon:
     case MapObject::Ellipse:
     case MapObject::Text:

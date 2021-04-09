@@ -27,6 +27,7 @@
 
 namespace Tiled {
 
+class EditableGroupLayer;
 class EditableMap;
 class MapDocument;
 
@@ -42,6 +43,7 @@ class EditableLayer : public EditableObject
     Q_PROPERTY(QPointF offset READ offset WRITE setOffset)
     Q_PROPERTY(QPointF parallaxFactor READ parallaxFactor WRITE setParallaxFactor)
     Q_PROPERTY(Tiled::EditableMap *map READ map)
+    Q_PROPERTY(Tiled::EditableGroupLayer *parentLayer READ parentLayer)
     Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
     Q_PROPERTY(bool isTileLayer READ isTileLayer CONSTANT)
     Q_PROPERTY(bool isObjectLayer READ isObjectLayer CONSTANT)
@@ -65,6 +67,7 @@ public:
     QPointF offset() const;
     QPointF parallaxFactor() const;
     EditableMap *map() const;
+    EditableGroupLayer *parentLayer() const;
     bool isSelected() const;
     bool isTileLayer() const;
     bool isObjectLayer() const;

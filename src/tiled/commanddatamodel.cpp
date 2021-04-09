@@ -252,7 +252,7 @@ QVariant CommandDataModel::headerData(int section, Qt::Orientation orientation,
     if (role != Qt::DisplayRole || orientation != Qt::Horizontal)
         return QVariant();
 
-    const char *sectionLabels[3] = {
+    static constexpr const char *sectionLabels[3] = {
         QT_TR_NOOP("Name"),
         QT_TR_NOOP("Shortcut"),
         QT_TR_NOOP("Enable") };

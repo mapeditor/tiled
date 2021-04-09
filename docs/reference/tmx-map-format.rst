@@ -1,7 +1,7 @@
 TMX Map Format
 ==============
 
-**Version 1.4**
+**Version 1.5**
 
 TMX and TSX are `Tiled <http://www.mapeditor.org>`__'s own formats for storing
 tile maps and tilesets, based on XML. TMX provides a flexible way to describe a

@@ -28,7 +28,7 @@
 
 using namespace Tiled;
 
-static const QPoint aroundTilePoints[WangId::NumIndexes] = {
+static constexpr QPoint aroundTilePoints[WangId::NumIndexes] = {
     QPoint( 0, -1),
     QPoint( 1, -1),
     QPoint( 1,  0),

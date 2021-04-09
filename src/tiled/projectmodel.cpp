@@ -134,7 +134,9 @@ ProjectModel::ProjectModel(QObject *parent)
 ProjectModel::~ProjectModel()
 {
     mFoldersPendingScan.clear();
+#ifndef Q_OS_WASM
     mScanningThread.requestInterruption();
+#endif
     mScanningThread.quit();
     mScanningThread.wait();
 }
@@ -469,8 +471,10 @@ void FolderScanner::scanFolder(const QString &folder)
 
 void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) const
 {
+#ifndef Q_OS_WASM
     if (QThread::currentThread()->isInterruptionRequested())
         return;
+#endif
 
     constexpr QDir::SortFlags sortFlags { QDir::Name | QDir::LocaleAware | QDir::DirsFirst };
     constexpr QDir::Filters filters { QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot };

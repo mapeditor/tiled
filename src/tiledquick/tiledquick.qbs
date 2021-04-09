@@ -1,11 +1,14 @@
 import qbs 1.0
+import qbs.Environment
 import qbs.File
 
 QtGuiApplication {
     name: "tiledquick"
     targetName: name
-    builtByDefault: false
+    builtByDefault: Environment.getEnv("BUILD_TILEDQUICK") == "true"
     condition: Qt.core.versionMajor >= 6 || Qt.core.versionMinor > 10
+
+    readonly property bool qtcRunnable: builtByDefault
 
     Depends {
         name: "Qt"

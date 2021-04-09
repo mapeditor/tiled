@@ -67,7 +67,11 @@ protected:
     };
 
 public:
-    HexagonalRenderer(const Map *map) : OrthogonalRenderer(map) {}
+    HexagonalRenderer(const Map *map)
+        : OrthogonalRenderer(map)
+    {
+        setCellType(HexagonalCells);
+    }
 
     QRect mapBoundingRect() const override;
 

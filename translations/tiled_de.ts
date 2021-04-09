@@ -11,7 +11,7 @@
     <message>
         <location line="+96"/>
         <source>Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Spenden ↗</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -21,12 +21,12 @@
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+49"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2020 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2021 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2020 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(siehe AUTHORS-Datei für eine komplette Liste von Entwicklern)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2021 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(siehe AUTHORS-Datei für eine komplette Liste von Entwicklern)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
@@ -95,7 +95,7 @@
     <message>
         <location line="+14"/>
         <source>Project file &apos;%1&apos; not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektdatei &apos;%1&apos; nicht gefunden.</translation>
     </message>
 </context>
 <context>
@@ -103,7 +103,7 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
         <source>Edit Commands</source>
-        <translation type="unfinished">Befehl bearbeiten</translation>
+        <translation>Befehle bearbeiten</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -225,12 +225,12 @@
         <location line="+14"/>
         <location line="+74"/>
         <source>Browse...</source>
-        <translation type="unfinished">Durchsuchen…</translation>
+        <translation>Durchsuchen…</translation>
     </message>
     <message>
         <location line="-61"/>
         <source>Shortcut:</source>
-        <translation type="unfinished">Tastenkombination:</translation>
+        <translation>Tastenkürzel:</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -240,17 +240,17 @@
     <message>
         <location line="+7"/>
         <source>&amp;Save before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vor dem Ausführen speichern</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Arguments:</source>
-        <translation type="unfinished">Argumente:</translation>
+        <translation>Argumente:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Working Directory:</source>
-        <translation type="unfinished">Arbeitsverzeichnis:</translation>
+        <translation>Arbeitsverzeichnis:</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -292,7 +292,7 @@
     <message>
         <location line="+9"/>
         <source>Thanks for using Tiled! Please consider supporting further development with a small monthly donation.</source>
-        <translation type="unfinished">Vielen Dank, dass sie Tiled benutzen! Sie können die weitere Entwicklung durch eine kleine, monatliche Spende unterstützen.</translation>
+        <translation>Vielen Dank, dass sie Tiled nutzen! Sie können die weitere Entwicklung durch eine kleine, monatliche Spende unterstützen.</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -302,12 +302,12 @@
     <message>
         <location line="+7"/>
         <source>I&apos;m already a supporter!</source>
-        <translation type="unfinished">Ich bin bereits Unterstützer!</translation>
+        <translation>Ich bin bereits Unterstützer!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Maybe later</source>
-        <translation type="unfinished">Vielleicht später</translation>
+        <translation>Vielleicht später</translation>
     </message>
 </context>
 <context>
@@ -424,7 +424,7 @@
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+121"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="-53"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei nicht zum Lesen öffnen.</translation>
     </message>
 </context>
 <context>
@@ -1337,12 +1337,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
         <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation type="unfinished">&lt;font size=&quot;+2&quot;&gt;Keine geöffneten Dateien&lt;/font&gt;</translation>
+        <translation>&lt;font size=&quot;+2&quot;&gt;Keine geöffneten Dateien&lt;/font&gt;</translation>
     </message>
     <message>
         <location line="+110"/>
         <source>Open File...</source>
-        <translation type="unfinished">Datei öffnen…</translation>
+        <translation>Datei öffnen…</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -2907,7 +2907,7 @@ Zeile %1, Spalte %2</translation>
     <message numerus="yes">
         <location line="-40"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Objekt duplizieren</numerusform>
             <numerusform>%n Objekte duplizieren</numerusform>
         </translation>
@@ -2933,17 +2933,17 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+1"/>
         <source>Add Objects</source>
-        <translation type="unfinished">Objekte hinzufügen</translation>
+        <translation>Objekte hinzufügen</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Replace Tile</source>
-        <translation type="unfinished">Kachel ersetzen</translation>
+        <translation>Kachel ersetzen</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Replace With Template</source>
-        <translation type="unfinished">Mit Vorlage ersetzen</translation>
+        <translation>Mit Vorlage ersetzen</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4740,7 +4740,7 @@ Bitte Format angeben.</translation>
         <location line="+14"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="-34"/>
         <source>Orthogonal</source>
-        <translation type="unfinished">Orthogonal</translation>
+        <translation>Rechtwinklig</translation>
     </message>
     <message>
         <location line="+1"/>

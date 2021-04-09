@@ -62,6 +62,7 @@ public:
     WangId currentWangId() const { return mCurrentWangId; }
 
     void editWangSetName(WangSet *wangSet);
+    void editWangColorName(int colorIndex);
 
     void setColorView();
     void hideTemplateColorView();

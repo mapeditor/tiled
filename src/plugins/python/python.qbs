@@ -11,12 +11,17 @@ TiledPlugin {
         if (qbs.targetOS.contains("windows"))
             return File.exists(Environment.getEnv("PYTHONHOME"));
 
-        return pkgConfigPython3.found;
+        return pkgConfigPython3Embed.found || pkgConfigPython3.found;
     }
 
     Probes.PkgConfigProbe {
         id: pkgConfigPython3
         name: "python3"
+    }
+
+    Probes.PkgConfigProbe {
+        id: pkgConfigPython3Embed
+        name: "python3-embed"
     }
 
     PythonProbe {
@@ -25,16 +30,16 @@ TiledPlugin {
     }
 
     Properties {
-        condition: pkgConfigPython3.found
+        condition: pkgConfigPython3Embed.found || pkgConfigPython3.found
         cpp.cxxFlags: {
-            var flags = pkgConfigPython3.cflags
+            var flags = pkgConfigPython3Embed.found ? pkgConfigPython3Embed.cflags : pkgConfigPython3.cflags
             if (qbs.toolchain.contains("gcc"))
                 flags.push("-Wno-cast-function-type")
             return flags
         }
-        cpp.dynamicLibraries: pkgConfigPython3.libraries
-        cpp.libraryPaths: pkgConfigPython3.libraryPaths
-        cpp.linkerFlags: pkgConfigPython3.linkerFlags
+        cpp.dynamicLibraries: pkgConfigPython3Embed.found ? pkgConfigPython3Embed.libraries : pkgConfigPython3.libraries
+        cpp.libraryPaths: pkgConfigPython3Embed.found ? pkgConfigPython3Embed.libraryPaths : pkgConfigPython3.libraryPaths
+        cpp.linkerFlags: pkgConfigPython3Embed.found ? pkgConfigPython3Embed.linkerFlags : pkgConfigPython3.linkerFlags
     }
 
     Properties {

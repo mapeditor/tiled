@@ -20,6 +20,7 @@
 
 #include "tilesetview.h"
 
+#include "actionmanager.h"
 #include "changeevents.h"
 #include "changetilewangid.h"
 #include "map.h"
@@ -653,7 +654,8 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
                     break;
                 }
 
-                wangId.setIndexColor(index, WangId::INDEX_MASK);
+                wangId.setIndexColor(index, mWangColorIndex ? mWangColorIndex
+                                                            : WangId::INDEX_MASK);
             }
         }
 
@@ -825,6 +827,8 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     Preferences *prefs = Preferences::instance();
     connect(toggleGrid, &QAction::toggled,
             prefs, &Preferences::setShowTilesetGrid);
+
+    ActionManager::applyMenuExtensions(&menu, MenuIds::tilesetViewTiles);
 
     menu.exec(event->globalPos());
 }

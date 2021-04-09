@@ -87,16 +87,6 @@ artifacts:
     path: 'tiled-*.7z'
 
 deploy:
-  - provider: GitHub
-    release: Tiled $(TILED_VERSION)
-    auth_token:
-      secure: 57ahePdHlJPeOX8/MqsIg5ho4x512wvAbwRA7TkXAOav/JTHvkTG5gf8k37/883r
-    artifact: /.*\.msi/
-    draft: true
-    on:
-        appveyor_repo_tag: true
-        push_release: true
-
   - provider: FTP
     protocol: sftp
     host: update.mapeditor.org
@@ -107,30 +97,6 @@ deploy:
     artifact: /.*\.(msi|7z)/
     on:
         branch: snapshot
-        push_release: true
-
-  - provider: Webhook
-    url: https://app.signpath.io/API/v1/670574d6-49bf-4a0c-824a-3ae977077079/Integrations/AppVeyor?ProjectKey=tiled&SigningPolicyKey=test-signing
-    authorization:
-        secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
-    on:
-        appveyor_repo_tag: false
-        push_release: true
-
-  - provider: Webhook
-    url: https://app.signpath.io/API/v1/670574d6-49bf-4a0c-824a-3ae977077079/Integrations/AppVeyor?ProjectKey=tiled&SigningPolicyKey=release-signing
-    authorization:
-        secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
-    on:
-        branch: snapshot
-        push_release: true
-
-  - provider: Webhook
-    url: https://app.signpath.io/API/v1/670574d6-49bf-4a0c-824a-3ae977077079/Integrations/AppVeyor?ProjectKey=tiled&SigningPolicyKey=release-signing
-    authorization:
-        secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
-    on:
-        appveyor_repo_tag: true
         push_release: true
 
 notifications:

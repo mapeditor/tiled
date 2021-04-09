@@ -75,7 +75,11 @@ namespace Tiled {
 class TILEDSHARED_EXPORT StaggeredRenderer final : public HexagonalRenderer
 {
 public:
-    StaggeredRenderer(const Map *map) : HexagonalRenderer(map) {}
+    StaggeredRenderer(const Map *map)
+        : HexagonalRenderer(map)
+    {
+        setCellType(OrthogonalCells);
+    }
 
     using HexagonalRenderer::screenToTileCoords;
     QPointF screenToTileCoords(qreal x, qreal y) const override;

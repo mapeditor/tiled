@@ -494,7 +494,7 @@ void WangBrush::doPaint(bool mergeable)
     emit mapDocument()->regionEdited(brushItem()->tileRegion(), tileLayer);
 }
 
-static const QPoint aroundTilePoints[WangId::NumIndexes] = {
+static constexpr QPoint aroundTilePoints[WangId::NumIndexes] = {
     QPoint( 0, -1),
     QPoint( 1, -1),
     QPoint( 1,  0),
@@ -507,7 +507,7 @@ static const QPoint aroundTilePoints[WangId::NumIndexes] = {
 
 //  3 0
 //  2 1
-static const QPoint aroundVertexPoints[WangId::NumCorners] = {
+static constexpr QPoint aroundVertexPoints[WangId::NumCorners] = {
     QPoint( 0, -1),
     QPoint( 0,  0),
     QPoint(-1,  0),

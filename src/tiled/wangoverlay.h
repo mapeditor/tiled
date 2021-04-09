@@ -22,6 +22,8 @@
 
 #include "wangset.h"
 
+#include <QIcon>
+
 class QPainter;
 class QRect;
 
@@ -40,5 +42,7 @@ void paintWangOverlay(QPainter *painter,
                       const WangSet &wangSet,
                       const QRect &rect,
                       WangOverlayOptions options = WO_TransparentFill | WO_Shadow | WO_Outline);
+
+QIcon wangSetIcon(WangSet::Type type);
 
 } // namespace Tiled

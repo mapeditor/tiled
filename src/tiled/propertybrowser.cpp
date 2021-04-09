@@ -57,6 +57,7 @@
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
 #include "wangcolormodel.h"
+#include "wangoverlay.h"
 #include "wangset.h"
 
 #include <QtGroupPropertyManager>
@@ -119,6 +120,10 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     setAllowMultiSelection(true);
 
     retranslateUi();
+
+    mWangSetIcons.insert(WangSet::Corner, wangSetIcon(WangSet::Corner));
+    mWangSetIcons.insert(WangSet::Edge, wangSetIcon(WangSet::Edge));
+    mWangSetIcons.insert(WangSet::Mixed, wangSetIcon(WangSet::Mixed));
 
     connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
             this, &PropertyBrowser::valueChanged);
@@ -394,7 +399,6 @@ static QVariant predefinedPropertyValue(Object *object, const QString &name)
     }
     case Object::LayerType:
     case Object::MapType:
-    case Object::TerrainType:
     case Object::TilesetType:
     case Object::WangSetType:
     case Object::WangColorType:
@@ -585,7 +589,6 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::LayerType:             applyLayerValue(id, val); break;
     case Object::TilesetType:           applyTilesetValue(id, val); break;
     case Object::TileType:              applyTileValue(id, val); break;
-    case Object::TerrainType:           break;
     case Object::WangSetType:           applyWangSetValue(id, val); break;
     case Object::WangColorType:         applyWangColorValue(id, val); break;
     case Object::ObjectTemplateType:    break;
@@ -948,6 +951,7 @@ void PropertyBrowser::addWangSetProperties()
     QtVariantProperty *colorCountProperty = addProperty(ColorCountProperty, QVariant::Int, tr("Terrain Count"), groupProperty);
 
     typeProperty->setAttribute(QLatin1String("enumNames"), mWangSetTypeNames);
+    typeProperty->setAttribute(QLatin1String("enumIcons"), QVariant::fromValue(mWangSetIcons));
 
     colorCountProperty->setAttribute(QLatin1String("minimum"), 0);
     colorCountProperty->setAttribute(QLatin1String("maximum"), WangId::MAX_COLOR_COUNT);
@@ -1656,7 +1660,6 @@ void PropertyBrowser::addProperties()
         break;
     case Object::TilesetType:           addTilesetProperties(); break;
     case Object::TileType:              addTileProperties(); break;
-    case Object::TerrainType:           break;
     case Object::WangSetType:           addWangSetProperties(); break;
     case Object::WangColorType:         addWangColorProperties(); break;
     case Object::ObjectTemplateType:    break;
@@ -1854,8 +1857,6 @@ void PropertyBrowser::updateProperties()
             imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));
         break;
     }
-    case Object::TerrainType:
-        break;
     case Object::WangSetType: {
         const WangSet *wangSet = static_cast<const WangSet*>(mObject);
         mIdToProperty[NameProperty]->setValue(wangSet->name());
@@ -1942,7 +1943,6 @@ void PropertyBrowser::updateCustomProperties()
     }
     case Object::LayerType:
     case Object::MapType:
-    case Object::TerrainType:
     case Object::TilesetType:
     case Object::WangSetType:
     case Object::WangColorType:
