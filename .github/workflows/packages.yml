@@ -91,8 +91,8 @@ jobs:
     - name: Upload symbols to Sentry
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        SENTRY_ORG: mapeditor
-        SENTRY_PROJECT: tiled
+        SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+        SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
       run: |
         sentry-cli upload-dif .
 
@@ -395,12 +395,12 @@ jobs:
           asset_name: Tiled-${{ needs.version.outputs.version }}-macos.zip
           asset_content_type: application/zip
 
-      - name: Notify Sentry about release
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: mapeditor
-          SENTRY_PROJECT: tiled
-        run: |
-          curl -sL https://sentry.io/get-cli/ | bash
-          sentry-cli releases new tiled@${{ needs.version.outputs.version }}
-          sentry-cli releases deploys tiled@${{ needs.version.outputs.version }} new -e releases
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: releases
+          version: ${{ needs.version.outputs.version }}
