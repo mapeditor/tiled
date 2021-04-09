@@ -576,6 +576,15 @@ QtGuiApplication {
         "zoomable.h",
     ]
 
+    Group {
+        name: "Sentry"
+        condition: project.sentry
+        files: [
+            "sentryhelper.cpp",
+            "sentryhelper.h",
+        ]
+    }
+
     Properties {
         condition: qbs.targetOS.contains("macos")
         cpp.frameworks: ["Foundation"]

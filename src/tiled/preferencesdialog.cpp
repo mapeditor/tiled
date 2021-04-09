@@ -27,6 +27,7 @@
 #include "pluginlistmodel.h"
 #include "preferences.h"
 #include "scriptmanager.h"
+#include "sentryhelper.h"
 
 #include <QDesktopServices>
 #include <QSortFilterProxyModel>
@@ -106,6 +107,17 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     connect(mUi->minimizeOutput, &QCheckBox::toggled, preferences, [preferences] (bool value) {
         preferences->setExportOption(Preferences::ExportMinimized, value);
     });
+
+#ifdef TILED_SENTRY
+    connect(mUi->sendCrashReports, &QCheckBox::toggled, [] (bool value) {
+        Sentry::instance()->setUserConsent(value ? Sentry::ConsentGiven : Sentry::ConsentRevoked);
+    });
+    connect(mUi->crashReportingLabel, &QLabel::linkActivated, [] (const QString &link) {
+        QDesktopServices::openUrl(QUrl(link));
+    });
+#else
+    mUi->crashReporting->setVisible(false);
+#endif
 
     connect(mUi->languageCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::languageSelected);
@@ -191,6 +203,10 @@ void PreferencesDialog::fromPreferences()
     mUi->detachTemplateInstances->setChecked(prefs->exportOption(Preferences::DetachTemplateInstances));
     mUi->resolveObjectTypesAndProperties->setChecked(prefs->exportOption(Preferences::ResolveObjectTypesAndProperties));
     mUi->minimizeOutput->setChecked(prefs->exportOption(Preferences::ExportMinimized));
+
+#ifdef TILED_SENTRY
+    mUi->sendCrashReports->setChecked(Sentry::instance()->userConsent() == Sentry::ConsentGiven);
+#endif
 
     // Interface
     if (mUi->openGL->isEnabled())
