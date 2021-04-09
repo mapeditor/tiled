@@ -32,12 +32,13 @@
 
 #include <QtGroupPropertyManager>
 
-#include <QColorDialog>
 #include <QCloseEvent>
+#include <QColorDialog>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPainter>
+#include <QScopedValueRollback>
 #include <QStyledItemDelegate>
 #include <QToolBar>
 
@@ -423,7 +424,7 @@ void ObjectTypesEditor::updateProperties()
 
     mProperties = aggregatedProperties;
 
-    mUpdating = true;
+    QScopedValueRollback<bool> updating(mUpdating, true);
     mVariantManager->clear();
     mNameToProperty.clear();
 
@@ -444,8 +445,6 @@ void ObjectTypesEditor::updateProperties()
         if (!consistent)
             property->setValueColor(Qt::gray);
     }
-
-    mUpdating = false;
 }
 
 void ObjectTypesEditor::propertyValueChanged(QtProperty *property,

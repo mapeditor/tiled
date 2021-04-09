@@ -204,12 +204,12 @@ private:
 
     void retranslateUi();
 
-    bool mUpdating;
-    int mMapObjectFlags;
-    Object *mObject;
-    Document *mDocument;
-    MapDocument *mMapDocument;
-    TilesetDocument *mTilesetDocument;
+    bool mUpdating = false;
+    int mMapObjectFlags = 0;
+    Object *mObject = nullptr;
+    Document *mDocument = nullptr;
+    MapDocument *mMapDocument = nullptr;
+    TilesetDocument *mTilesetDocument = nullptr;
 
     QtVariantPropertyManager *mVariantManager;
     QtGroupPropertyManager *mGroupManager;

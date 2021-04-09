@@ -66,6 +66,7 @@
 #include <QDebug>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QScopedValueRollback>
 
 #include <algorithm>
 
@@ -102,11 +103,6 @@ private:
 
 PropertyBrowser::PropertyBrowser(QWidget *parent)
     : QtTreePropertyBrowser(parent)
-    , mUpdating(false)
-    , mMapObjectFlags(0)
-    , mObject(nullptr)
-    , mDocument(nullptr)
-    , mMapDocument(nullptr)
     , mVariantManager(new VariantPropertyManager(this))
     , mGroupManager(new QtGroupPropertyManager(this))
     , mCustomPropertiesGroup(nullptr)
@@ -1595,7 +1591,7 @@ QtVariantProperty *PropertyBrowser::createCustomProperty(const QString &name, co
             break;
     }
 
-    mUpdating = true;
+    QScopedValueRollback<bool> updating(mUpdating, true);
     QtVariantProperty *property = createProperty(CustomProperty, value.userType(), name);
     property->setValue(value);
     mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
@@ -1604,7 +1600,6 @@ QtVariantProperty *PropertyBrowser::createCustomProperty(const QString &name, co
     if (value.type() == QVariant::Color)
         setExpanded(items(property).constFirst(), false);
 
-    mUpdating = false;
     return property;
 }
 
@@ -1632,9 +1627,8 @@ void PropertyBrowser::setCustomPropertyValue(QtVariantProperty *property,
         if (wasCurrent)
             setCurrentItem(items(property).constFirst());
     } else {
-        mUpdating = true;
+        QScopedValueRollback<bool> updating(mUpdating, true);
         property->setValue(displayValue);
-        mUpdating = false;
     }
 }
 
@@ -1643,7 +1637,7 @@ void PropertyBrowser::addProperties()
     if (!mObject)
         return;
 
-    mUpdating = true;
+    QScopedValueRollback<bool> updating(mUpdating, true);
     SetFixedResizeMode resizeMode(this);
 
     // Add the built-in properties for each object type
@@ -1679,8 +1673,6 @@ void PropertyBrowser::addProperties()
     mCustomPropertiesGroup = mGroupManager->addProperty(tr("Custom Properties"));
     addProperty(mCustomPropertiesGroup);
 
-    mUpdating = false;
-
     updateProperties();
     updateCustomProperties();
 }
@@ -1701,7 +1693,7 @@ void PropertyBrowser::updateProperties()
 {
     Q_ASSERT(mObject);
 
-    mUpdating = true;
+    QScopedValueRollback<bool> updating(mUpdating, true);
 
     switch (mObject->typeId()) {
     case Object::MapType: {
@@ -1874,8 +1866,6 @@ void PropertyBrowser::updateProperties()
     case Object::ObjectTemplateType:
         break;
     }
-
-    mUpdating = false;
 }
 
 void PropertyBrowser::updateCustomProperties()
@@ -1883,9 +1873,7 @@ void PropertyBrowser::updateCustomProperties()
     if (!mObject)
         return;
 
-    const bool wasUpdating = mUpdating;
-    mUpdating = true;
-
+    QScopedValueRollback<bool> updating(mUpdating, true);
     SetFixedResizeMode resizeMode(this);
 
     qDeleteAll(mNameToProperty);
@@ -1978,8 +1966,6 @@ void PropertyBrowser::updateCustomProperties()
         property->setValue(displayValue);
         updateCustomPropertyColor(it.key());
     }
-
-    mUpdating = wasUpdating;
 }
 
 // If there are other objects selected check if their properties are equal. If not give them a gray color.
