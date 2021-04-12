@@ -119,14 +119,17 @@
           <item>
            <widget class="QCheckBox" name="sendCrashReports">
             <property name="text">
-             <string>Enable sending crash reports</string>
+             <string>Enable sending anonymous crash reports</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="crashReportingLabel">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;more information&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;)</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::RichText</enum>
             </property>
             <property name="buddy">
              <cstring>sendCrashReports</cstring>

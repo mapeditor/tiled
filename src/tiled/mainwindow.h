@@ -109,6 +109,8 @@ protected:
     void dragEnterEvent(QDragEnterEvent *) override;
     void dropEvent(QDropEvent *) override;
 
+    void resizeEvent(QResizeEvent *) override;
+
 private:
     void newMap();
     void openFileDialog();
@@ -138,6 +140,8 @@ private:
     void pasteInPlace();
     void delete_();
     void openPreferences();
+    void openCrashReporterPopup();
+    void updatePopupGeometry(QSize size);
 
     void labelVisibilityActionTriggered(QAction *action);
     void zoomIn();
@@ -226,6 +230,8 @@ private:
     IssuesDock *mIssuesDock;
     ObjectTypesEditor *mObjectTypesEditor;
     QPointer<LocatorWidget> mLocatorWidget;
+    QPointer<QWidget> mPopupWidget;
+    double mPopupWidgetShowProgress = 1.0;
 
     QAction *mRecentFiles[Preferences::MaxRecentFiles];
 

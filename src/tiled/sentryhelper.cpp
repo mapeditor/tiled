@@ -66,6 +66,9 @@ Sentry::UserConsent Sentry::userConsent() const
 
 void Sentry::setUserConsent(UserConsent consent)
 {
+    if (userConsent() == consent)
+        return;
+
     switch (consent) {
     case ConsentUnknown:
         sentry_user_consent_reset();
@@ -77,6 +80,8 @@ void Sentry::setUserConsent(UserConsent consent)
         sentry_user_consent_revoke();
         break;
     }
+
+    emit userConsentChanged(consent);
 }
 
 } // namespace Tiled

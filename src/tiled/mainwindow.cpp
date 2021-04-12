@@ -64,6 +64,8 @@
 #include "projectpropertiesdialog.h"
 #include "resizedialog.h"
 #include "scriptmanager.h"
+#include "sentryhelper.h"
+#include "stylehelper.h"
 #include "templatesdock.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -99,6 +101,7 @@
 #include <QUndoGroup>
 #include <QUndoStack>
 #include <QUndoView>
+#include <QVariantAnimation>
 
 #ifdef Q_OS_WIN
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
@@ -857,6 +860,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QTimer::singleShot(500, this, [this,preferences] {
         if (preferences->shouldShowDonationDialog())
             showDonationDialog();
+
+#ifdef TILED_SENTRY
+        if (Sentry::instance()->userConsent() == Sentry::ConsentUnknown)
+            openCrashReporterPopup();
+#endif
     });
 }
 
@@ -968,6 +976,12 @@ void MainWindow::dropEvent(QDropEvent *e)
         else
             openFile(localFile);
     }
+}
+
+void MainWindow::resizeEvent(QResizeEvent *e)
+{
+    if (mPopupWidget)
+        updatePopupGeometry(e->size());
 }
 
 void MainWindow::newMap()
@@ -1543,6 +1557,100 @@ void MainWindow::openPreferences()
     mPreferencesDialog->show();
     mPreferencesDialog->activateWindow();
     mPreferencesDialog->raise();
+}
+
+#ifdef TILED_SENTRY
+static QColor mergedColors(const QColor &colorA, const QColor &colorB, int factor = 50)
+{
+    constexpr int maxFactor = 100;
+    QColor tmp = colorA;
+    tmp.setRed((tmp.red() * factor) / maxFactor + (colorB.red() * (maxFactor - factor)) / maxFactor);
+    tmp.setGreen((tmp.green() * factor) / maxFactor + (colorB.green() * (maxFactor - factor)) / maxFactor);
+    tmp.setBlue((tmp.blue() * factor) / maxFactor + (colorB.blue() * (maxFactor - factor)) / maxFactor);
+    return tmp;
+}
+#endif
+
+void MainWindow::openCrashReporterPopup()
+{
+#ifdef TILED_SENTRY
+    if (mPopupWidget)
+        return;
+
+    auto label = new QLabel;
+    label->setTextFormat(Qt::RichText);
+    label->setText(tr("<html>Enable anonymous crash reporting? <a href=\"https://www.mapeditor.org/crash-reporting\">more information</a></html>"));
+
+    auto yesButton = new QPushButton(tr("&Yes"));
+    auto noButton = new QPushButton(tr("&No"));
+
+    auto layout = new QHBoxLayout;
+    layout->addWidget(label, 1);
+    layout->addSpacing(Utils::dpiScaled(10));
+    layout->addWidget(noButton);
+    layout->addWidget(yesButton);
+    const auto margin = Utils::dpiScaled(5);
+    layout->setContentsMargins(margin * 2, margin, margin, margin);
+
+    auto frame = new QFrame(this);
+    frame->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+    frame->setAutoFillBackground(true);
+    frame->setLayout(layout);
+    frame->setVisible(true);
+
+    // Use a slightly highlighted background color and keep it updated
+    auto updateBackgroundColor = [frame] {
+        QPalette pal = QApplication::palette();
+        auto highlight = pal.highlight().color();
+        pal.setColor(QPalette::Window, mergedColors(pal.window().color(), highlight, 75));
+        pal.setColor(QPalette::Link, pal.link().color());
+        pal.setColor(QPalette::LinkVisited, pal.linkVisited().color());
+        frame->setPalette(pal);
+    };
+    updateBackgroundColor();
+    connect(StyleHelper::instance(), &StyleHelper::styleApplied,
+            frame, updateBackgroundColor);
+
+    connect(label, &QLabel::linkActivated, [] (const QString &link) {
+        QDesktopServices::openUrl(QUrl(link));
+    });
+    connect(yesButton, &QPushButton::clicked, [] {
+        Sentry::instance()->setUserConsent(Sentry::ConsentGiven);
+    });
+    connect(noButton, &QPushButton::clicked, [] {
+        Sentry::instance()->setUserConsent(Sentry::ConsentRevoked);
+    });
+    connect(Sentry::instance(), &Sentry::userConsentChanged, frame, [frame] (Sentry::UserConsent consent) {
+        if (consent != Sentry::ConsentUnknown)
+            frame->deleteLater();
+    });
+
+    mPopupWidget = frame;
+    updatePopupGeometry(size());
+
+    // Show the popup using a smooth animation
+    QVariantAnimation *animation = new QVariantAnimation(this);
+    animation->setDuration(1000);
+    animation->setStartValue(1.0);
+    animation->setEndValue(0.0);
+    animation->setEasingCurve(QEasingCurve::OutCubic);
+    animation->start(QAbstractAnimation::DeleteWhenStopped);
+    connect(animation, &QVariantAnimation::valueChanged, this, [this] (const QVariant &value) {
+        mPopupWidgetShowProgress = value.toDouble();
+        updatePopupGeometry(size());
+    });
+#endif
+}
+
+void MainWindow::updatePopupGeometry(QSize size)
+{
+    if (!mPopupWidget)
+        return;
+    const auto popupSizeHint = mPopupWidget->sizeHint();
+    mPopupWidget->setGeometry(size.width() - popupSizeHint.width(),
+                              0 - popupSizeHint.height() * mPopupWidgetShowProgress,
+                              popupSizeHint.width(),
+                              popupSizeHint.height());
 }
 
 void MainWindow::labelVisibilityActionTriggered(QAction *action)

@@ -21,10 +21,14 @@
 #pragma once
 #ifdef TILED_SENTRY
 
+#include <QObject>
+
 namespace Tiled {
 
-class Sentry
+class Sentry : public QObject
 {
+    Q_OBJECT
+
 public:
     Sentry();
     ~Sentry();
@@ -40,6 +44,9 @@ public:
 
     UserConsent userConsent() const;
     void setUserConsent(UserConsent consent);
+
+signals:
+    void userConsentChanged(UserConsent consent);
 
 private:
     static Sentry *sInstance;
