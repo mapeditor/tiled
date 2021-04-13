@@ -99,18 +99,27 @@ const Map *ExportHelper::prepareExportMap(const Map *map, std::unique_ptr<Map> &
     // Make a copy to which export options are applied
     exportMap = map->clone();
 
-    if (mOptions.testFlag(Preferences::DetachTemplateInstances))
-        for (Layer *layer : exportMap->objectGroups())
-            for (MapObject *object : *static_cast<ObjectGroup*>(layer))
-                if (object->isTemplateInstance())
+    if (mOptions.testFlag(Preferences::DetachTemplateInstances)) {
+        for (Layer *layer : exportMap->objectGroups()) {
+            for (MapObject *object : *static_cast<ObjectGroup*>(layer)) {
+                if (object->isTemplateInstance()) {
+                    // In case of templated tile objects, the map may not yet
+                    // have a reference to the used tileset.
+                    if (Tile *tile = object->cell().tile())
+                        exportMap->addTileset(tile->tileset()->sharedPointer());
+
                     object->detachFromTemplate();
+                }
+            }
+        }
+    }
 
     if (mOptions.testFlag(Preferences::ResolveObjectTypesAndProperties))
         for (Layer *layer : exportMap->objectGroups())
             for (MapObject *object : *static_cast<ObjectGroup*>(layer))
                 resolveTypeAndProperties(object);
 
-    auto tilesets = exportMap->tilesets();
+    const auto tilesets = exportMap->tilesets();    // needs a copy
     for (const SharedTileset &tileset : tilesets) {
         auto exportTileset = prepareExportTileset(tileset, false);
         if (exportTileset != tileset)
