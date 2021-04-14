@@ -5,7 +5,7 @@ title: Libraries and Frameworks
 
 <h1>{{ page.title }}</h1>
 
-<p><i>This list is meant to become an up-to-date reference of maintained libraries offering Tiled map support. Currently many <a href="https://doc.mapeditor.org/en/latest/reference/support-for-tmx-maps/">libraries and frameworks</a> that are listed in theTiled manual are still missing here. Please consider helping out by reviewing one of the listed libraries!</i></p>
+<p><i>This list is meant to become an up-to-date reference of maintained libraries offering Tiled map support. Currently many <a href="https://doc.mapeditor.org/en/latest/reference/support-for-tmx-maps/">libraries and frameworks</a> that are listed in the Tiled manual are still missing here. Please consider helping out by reviewing one of the listed libraries!</i></p>
 
 {% for lib in site.data.libs  %}
   {% if forloop.first %}
@@ -13,13 +13,14 @@ title: Libraries and Frameworks
     <ul>
   {% endif %}
 
-  <li>
-    <p><a href="{{ lib.url }}" style="font-weight: bold;">{{ lib.name }}</a>, {{ lib.status }}, {{ lib.features }}</p>
+  <li class="library">
+    <div><a href="{{ lib.url }}" class="library-name">{{ lib.name }}</a>
+    </div>
     {% if lib.notes %}
-      <div style="color: gray">{{ lib.notes | markdownify }}</div>
+      <div class="library-notes">{{ lib.notes | markdownify }}</div>
     {% endif %}
     {% if lib.wiki %}
-      <p><a href="{{ lib.wiki }}" style="font-style: italic;">More information...</a></p>
+      <a href="{{ lib.wiki }}">More information on Tiled wiki</a>
     {% endif %}
   </li>
 

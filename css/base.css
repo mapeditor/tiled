@@ -729,3 +729,18 @@ a.showcase:hover {
     flex-direction: column;
   }
 }
+
+/* LIBRARIES PAGE */
+
+.library {
+  margin-bottom: 1em;
+}
+
+.library-name {
+  font-size: 1.5rem;
+}
+
+.library-notes > p {
+  margin: 0px;
+  color: #a2a2a2;
+}
