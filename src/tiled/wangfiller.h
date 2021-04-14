@@ -56,7 +56,6 @@ public:
 
     explicit WangFiller(const WangSet &wangSet, const MapRenderer *mapRenderer);
 
-    void setErasingEnabled(bool enabled) { mErasingEnabled = enabled; }
     void setCorrectionsEnabled(bool enabled) { mCorrectionsEnabled = enabled; }
 
     void setDebugPainter(QPainter *painter) { mDebugPainter = painter; }
@@ -89,7 +88,6 @@ private:
     const WangSet &mWangSet;
     const MapRenderer * const mMapRenderer;
     const StaggeredRenderer * const mStaggeredRenderer;
-    bool mErasingEnabled = false;
     bool mCorrectionsEnabled = false;
 
     QPainter *mDebugPainter = nullptr;

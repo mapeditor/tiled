@@ -321,7 +321,7 @@ bool WangFiller::findBestMatch(const TileLayer &target,
     for (int i = 0, i_end = wangIdsAndCells.size(); i < i_end; ++i)
         processCandidate(wangIdsAndCells[i].wangId, wangIdsAndCells[i].cell);
 
-    if (mErasingEnabled)
+    if (mCorrectionsEnabled)
         processCandidate(WangId(), Cell());
 
     // Choose a candidate at random, with consideration for probability

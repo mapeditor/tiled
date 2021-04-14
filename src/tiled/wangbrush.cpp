@@ -615,7 +615,6 @@ void WangBrush::updateBrush()
     SharedTileLayer stamp = SharedTileLayer::create(QString(), 0, 0, 0, 0);
 
     WangFiller wangFiller{ *mWangSet, mapDocument()->renderer() };
-    wangFiller.setErasingEnabled(mCurrentColor == 0);
     wangFiller.setCorrectionsEnabled(true);
     wangFiller.fillRegion(*stamp, *currentLayer, fill.region, std::move(fill.grid));
 
