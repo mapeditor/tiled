@@ -452,6 +452,8 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
         return;
     }
 
+    // TODO: These shortcuts only work while the TilesetView is focused. It
+    // would be preferable if they could be used more globally.
     if (mEditWangSet && mWangBehavior == AssignWholeId && !(event->modifiers() & Qt::ControlModifier)) {
         WangId transformedWangId = mWangId;
 
@@ -661,18 +663,6 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 
     QTableView::mouseReleaseEvent(event);
     return;
-}
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-void TilesetView::enterEvent(QEvent *event)
-#else
-void TilesetView::enterEvent(QEnterEvent *event)
-#endif
-{
-    if (mEditWangSet)
-        setFocus();
-
-    QTableView::enterEvent(event);
 }
 
 void TilesetView::leaveEvent(QEvent *event)
