@@ -135,7 +135,7 @@ WangDock::WangDock(QWidget *parent)
     connect(mWangSetView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             this, &WangDock::refreshCurrentWangSet);
     connect(mWangSetView, &QAbstractItemView::pressed,
-            this, &WangDock::indexPressed);
+            this, &WangDock::wangSetIndexPressed);
 
     connect(mProxyModel, &QAbstractItemModel::rowsInserted,
             this, &WangDock::expandRows);
@@ -204,6 +204,8 @@ WangDock::WangDock(QWidget *parent)
 
     connect(mWangColorView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             this, &WangDock::refreshCurrentWangColor);
+    connect(mWangColorView, &QAbstractItemView::pressed,
+            this, &WangDock::wangColorIndexPressed);
 
     mEraseWangIdsButton = new QPushButton(this);
     mEraseWangIdsButton->setIconSize(Utils::smallIconSize());
@@ -420,16 +422,23 @@ void WangDock::refreshCurrentWangColor()
 
     QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
 
-    int color = mWangColorModel->colorAt(index);
+    const int color = mWangColorModel->colorAt(index);
 
     mEraseWangIdsButton->setChecked(false);
-
-    WangColor *currentWangColor = mCurrentWangSet->colorAt(color).data();
-
-    mDocument->setCurrentObject(currentWangColor);
     mRemoveColor->setEnabled(true);
 
     emit wangColorChanged(color);
+}
+
+void WangDock::wangColorIndexPressed(const QModelIndex &index)
+{
+    const int color = mWangColorModel->colorAt(index);
+    if (!color)
+        return;
+
+    WangColor *currentWangColor = mCurrentWangSet->colorAt(color).data();
+    mDocument->setCurrentObject(currentWangColor);
+
     emit selectWangBrush();
 }
 
@@ -456,7 +465,7 @@ void WangDock::wangSetChanged()
     updateAddColorStatus();
 }
 
-void WangDock::indexPressed(const QModelIndex &index)
+void WangDock::wangSetIndexPressed(const QModelIndex &index)
 {
     if (WangSet *wangSet = mWangSetView->wangSetAt(index))
         mDocument->setCurrentObject(wangSet);
