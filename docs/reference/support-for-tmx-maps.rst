@@ -285,6 +285,9 @@ HTML5 (multiple engines)
    for image sprites.
 -  `TMXjs <https://github.com/cdmckay/tmxjs>`__ A JavaScript, jQuery and
    RequireJS-based TMX (Tile Map XML) parser and renderer.
+-  `glazeJS <https://github.com/rjewson/glazejs>`__ A high performance 2D game
+   engine built in Typescript. It supports the TMX format, rendering tile layers
+   on the GPU via WebGL (`demo <https://rjewson.github.io/glazejs/>`__).
 
 indielib-crossplatform
 ~~~~~~~~~~~~~~~~~~~~~~
