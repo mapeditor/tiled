@@ -84,12 +84,12 @@
     <message>
         <location line="+22"/>
         <source>Failed to load source tileset.</source>
-        <translation type="unfinished"></translation>
+        <translation>โหลดไทล์เซ็ตต้นฉบับไม่สำเร็จ</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Failed to export tileset to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่สามารถส่งออกไทล์เซ็ตไปยังไฟล์เป้าหมาย</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -102,7 +102,7 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
         <source>Edit Commands</source>
-        <translation type="unfinished"></translation>
+        <translation>แก้ไขคำสั่ง</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -361,7 +361,7 @@
     <message>
         <location line="+6"/>
         <source>Only include &amp;visible layers</source>
-        <translation type="unfinished"></translation>
+        <translation>รวมเฉพาะเลเยอร์ที่มองเห็น</translation>
     </message>
     <message>
         <location line="+10"/>
