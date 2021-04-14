@@ -66,25 +66,17 @@ C++
 C#/.NET
 ~~~~~~~
 
+-  `TiledCS <https://github.com/TheBoneJarmer/TiledCS>`__: A dotnet library for loading Tiled tilesets and maps (TMX/TSX or JSON).
 -  `MonoGame.Extended <https://github.com/craftworkgames/MonoGame.Extended>`__
    has a Tiled map loader and renderer that works with MonoGame on all
    platforms that support portable class libraries.
--  `XNA map loader <https://github.com/zachmu/tiled-xna>`__ by Kevin
-   Gadd, extended by Stephen Belanger and Zach Musgrave (has dependency
-   on XNA but supposedly can be turned into a standalone parser easily)
--  `TiledSharp <https://github.com/marshallward/TiledSharp>`__: Yet
-   another C# TMX importer library, with Tiled 0.11 support. TiledSharp
-   is a generic parser which can be used in any framework, but it cannot
-   be used to render the maps. Available via NuGet.
--  `NTiled <https://github.com/patriksvensson/ntiled>`__: Generic parser
-   for 0.9.1 tiled maps. Available via NuGet.
--  `TmxCSharp <https://github.com/gwicksted/TmxCSharp>`__: Useful for
-   multi-layer orthographic tile engines. No framework dependencies,
-   used with a custom OpenTK tile engine soon to be open source, tested
-   with Tiled 0.8.1 (multiple output formats). MIT license.
--  `tmx-mapper-pcl <https://github.com/aalmik/tmx-mapper-pcl>`__: PCL
-   library for parsing Tiled map TMX files. This library could be used
-   with MonoGame and Windows Runtime Universal apps.
+-  The following projects appear to be no longer maintained, but might still be useful:
+   `TiledSharp <https://github.com/marshallward/TiledSharp>`__,
+   `NTiled <https://github.com/patriksvensson/ntiled>`__,
+   `tmx-mapper-pcl <https://github.com/aalmik/tmx-mapper-pcl>`__,
+   `tiled-xna <https://github.com/zachmu/tiled-xna>`__ and
+   `TmxCSharp <https://github.com/gwicksted/TmxCSharp>`__.
+
 
 Clojure
 ~~~~~~~
