@@ -20,7 +20,7 @@
   notes: A modern and helpful cross-platform json-parser for C++, used for parsing JSON Tiled maps. Depends on C++17 and [JSON for Modern C++](https://nlohmann.github.io/json).
 
 - language: C#
-  name: TileCS
+  name: TiledCS
   url: https://github.com/TheBoneJarmer/TiledCS
   updated: 14-04-2021
   notes: A dotnet library for loading Tiled tilesets and maps (TMX/TSX or JSON).
