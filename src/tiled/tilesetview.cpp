@@ -469,9 +469,7 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
         }
 
         if (mWangId != transformedWangId) {
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-
+            setWangId(transformedWangId);
             emit currentWangIdChanged(mWangId);
             return;
         }
