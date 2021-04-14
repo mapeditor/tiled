@@ -608,6 +608,10 @@ void WangBrush::updateBrush()
         fill.region = completeRegion;
     }
 
+    // Don't try to make changes outside of a fixed map
+    if (!mapDocument()->map()->infinite())
+        fill.region &= currentLayer->rect();
+
     SharedTileLayer stamp = SharedTileLayer::create(QString(), 0, 0, 0, 0);
 
     WangFiller wangFiller{ *mWangSet, mapDocument()->renderer() };
@@ -665,13 +669,13 @@ void WangBrush::updateBrushAt(FillRegion &fill, QPoint pos)
 
         switch (mBrushMode) {
         case PaintCorner:
-            for (int i = 0; i < 4; ++i) {
+            for (int i = 0; i < WangId::NumCorners; ++i) {
                 center.desired.setCornerColor(i, mCurrentColor);
                 center.mask.setCornerColor(i, WangId::INDEX_MASK);
             }
             break;
         case PaintEdge:
-            for (int i = 0; i < 4; ++i) {
+            for (int i = 0; i < WangId::NumEdges; ++i) {
                 center.desired.setEdgeColor(i, mCurrentColor);
                 center.mask.setEdgeColor(i, WangId::INDEX_MASK);
             }

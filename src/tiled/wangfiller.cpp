@@ -168,6 +168,10 @@ void WangFiller::fillRegion(TileLayer &target,
     int margin = mWangSet.maximumColorDistance() + (mStaggeredRenderer != nullptr);
     bounds.adjust(-margin, -margin, margin, margin);
 
+    // Don't try to make corrections outside of a fixed map
+    if (!mMapRenderer->map()->infinite())
+        bounds &= back.rect();
+
     // Keep a list of points that need correction
     QVector<QPoint> corrections;
 
