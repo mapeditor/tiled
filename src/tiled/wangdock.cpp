@@ -263,6 +263,7 @@ WangDock::WangDock(QWidget *parent)
     wangViews->setOrientation(Qt::Vertical);
     wangViews->addWidget(wangSetWidget);
     wangViews->addWidget(mTemplateAndColorWidget);
+    wangViews->setCollapsible(1, false);
 
     QVBoxLayout *vertical = new QVBoxLayout(w);
     vertical->setContentsMargins(0, 0, 0, 0);
