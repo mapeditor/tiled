@@ -86,6 +86,13 @@ static QString replaceVariables(const QString &string, bool quoteValues = true)
                 finalString.replace(QLatin1String("%layername"),
                                     replaceString.arg(layer->name()));
             }
+        } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+            QStringList selectedTileIds;
+            for (Tile *tile : tilesetDocument->selectedTiles())
+                selectedTileIds.append(QString::number(tile->id()));
+
+            finalString.replace(QLatin1String("%tileid"),
+                                replaceString.arg(selectedTileIds.join(QLatin1Char(','))));
         }
 
         if (MapObject *currentObject = dynamic_cast<MapObject *>(document->currentObject())) {

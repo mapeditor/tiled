@@ -90,6 +90,13 @@ the following variables:
 ``%layername``
     the name of the currently selected layer.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 21.4</div>
+
+``%tileid``
+    a comma-separated list with the IDs of the selected tiles, if any.
+
 For the working directory field, you can additionally use the following
 variable:
 
