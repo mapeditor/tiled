@@ -52,14 +52,34 @@
 #include <QMenu>
 #include <QPainter>
 #include <QScopedValueRollback>
+#include <QStackedWidget>
+#include <QLabel>
 
 using namespace Tiled;
 
 namespace Tiled {
 
-static WangSet *firstWangSet(MapDocument *MapDocument)
+class NoWangSetWidget : public QWidget
 {
-    for (const SharedTileset &tileset : MapDocument->map()->tilesets())
+    Q_OBJECT
+
+public:
+    explicit NoWangSetWidget(QWidget *parent = nullptr)
+        : QWidget(parent)
+    {
+        QLabel *label = new QLabel(this);
+        label->setWordWrap(true);
+        label->setText(tr("<p>No tileset with Terrain Sets available.</p>"
+                          "<p>Open a tileset with a Terrain Set or set up a new Terrain Set to be able to use the Terrain Brush or the Terrain Fill Mode.</p>"));
+
+        QGridLayout *gridLayout = new QGridLayout(this);
+        gridLayout->addWidget(label, 0, 0, Qt::AlignTop);
+    }
+};
+
+static WangSet *firstWangSet(MapDocument *mapDocument)
+{
+    for (const SharedTileset &tileset : mapDocument->map()->tilesets())
         if (tileset->wangSetCount() > 0)
             return tileset->wangSet(0);
 
@@ -117,27 +137,30 @@ WangDock::WangDock(QWidget *parent)
     , mRemoveWangSet(new QAction(this))
     , mAddColor(new QAction(this))
     , mRemoveColor(new QAction(this))
-    , mDocument(nullptr)
-    , mCurrentWangSet(nullptr)
+    , mStack(new QStackedWidget)
     , mTilesetDocumentFilterModel(new TilesetDocumentsFilterModel(this))
     , mWangColorModel(nullptr)
     , mWangColorFilterModel(new QSortFilterProxyModel(this))
     , mWangSetModel(new WangSetModel(mTilesetDocumentFilterModel, this))
-    , mProxyModel(new HasChildrenFilterModel(this))
+    , mWangSetProxyModel(new HasChildrenFilterModel(this))
     , mWangTemplateModel(new WangTemplateModel(nullptr, this))
 {
     setObjectName(QLatin1String("WangSetDock"));
 
-    QWidget *w = new QWidget(this);
-
-    mWangSetView = new WangSetView(w);
-    mWangSetView->setModel(mProxyModel);
+    mWangSetView = new WangSetView;
+    mWangSetView->setModel(mWangSetProxyModel);
     connect(mWangSetView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             this, &WangDock::refreshCurrentWangSet);
     connect(mWangSetView, &QAbstractItemView::pressed,
             this, &WangDock::wangSetIndexPressed);
 
-    connect(mProxyModel, &QAbstractItemModel::rowsInserted,
+    connect(mWangSetProxyModel, &QAbstractItemModel::rowsRemoved,
+            this, &WangDock::checkAnyWangSets);
+    connect(mWangSetProxyModel, &QAbstractItemModel::rowsInserted,
+            this, &WangDock::checkAnyWangSets);
+    connect(mWangSetProxyModel, &QAbstractItemModel::modelReset,
+            this, &WangDock::checkAnyWangSets);
+    connect(mWangSetProxyModel, &QAbstractItemModel::rowsInserted,
             this, &WangDock::expandRows);
 
     mNewWangSetMenu->addAction(mAddCornerWangSet);
@@ -193,13 +216,13 @@ WangDock::WangDock(QWidget *parent)
     connect(mRemoveColor, &QAction::triggered,
             this, &WangDock::removeColor);
 
-    mWangTemplateView = new WangTemplateView(w);
+    mWangTemplateView = new WangTemplateView;
     mWangTemplateView->setModel(mWangTemplateModel);
 
     connect(mWangTemplateView->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &WangDock::refreshCurrentWangId);
 
-    mWangColorView = new WangColorView(w);
+    mWangColorView = new WangColorView;
     mWangColorView->setModel(mWangColorFilterModel);
 
     connect(mWangColorView->selectionModel(), &QItemSelectionModel::currentRowChanged,
@@ -217,25 +240,25 @@ WangDock::WangDock(QWidget *parent)
     connect(mEraseWangIdsButton, &QPushButton::clicked,
             this, &WangDock::activateErase);
 
-    //WangSetView widget:
-    QWidget *wangSetWidget = new QWidget;
+    // WangSet layout
 
     QHBoxLayout *wangSetHorizontal = new QHBoxLayout;
     wangSetHorizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
     wangSetHorizontal->addWidget(mWangSetToolBar);
 
+    QWidget *wangSetWidget = new QWidget;
     QVBoxLayout *wangSetVertical = new QVBoxLayout(wangSetWidget);
     wangSetVertical->setContentsMargins(0, 0, 0, 0);
     wangSetVertical->addWidget(mWangSetView);
     wangSetVertical->addLayout(wangSetHorizontal);
 
-    //WangColorView widget:
-    mWangColorWidget = new QWidget;
+    // WangColor and templates layout
 
     QHBoxLayout *colorViewHorizontal = new QHBoxLayout;
     colorViewHorizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
     colorViewHorizontal->addWidget(mWangColorToolBar);
 
+    mWangColorWidget = new QWidget;
     QVBoxLayout *colorViewVertical = new QVBoxLayout(mWangColorWidget);
     colorViewVertical->setContentsMargins(0, 0, 0, 0);
     colorViewVertical->addWidget(mWangColorView);
@@ -246,31 +269,32 @@ WangDock::WangDock(QWidget *parent)
     mTemplateAndColorView->addTab(mWangColorWidget, tr("Terrains"));
     mTemplateAndColorView->addTab(mWangTemplateView, tr("Patterns"));
 
-    //Template and color widget.
-    mTemplateAndColorWidget = new QWidget;
-
     QHBoxLayout *templateAndColorHorizontal = new QHBoxLayout;
     templateAndColorHorizontal->addWidget(mEraseWangIdsButton);
     templateAndColorHorizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
 
+    mTemplateAndColorWidget = new QWidget;
     QVBoxLayout *templateAndColorVertical = new QVBoxLayout(mTemplateAndColorWidget);
     templateAndColorVertical->setContentsMargins(0, 0, 0, 0);
     templateAndColorVertical->addWidget(mTemplateAndColorView);
     templateAndColorVertical->addLayout(templateAndColorHorizontal);
 
-    //all together
+    // Splitter combining the WangSet and WangColor views
+
     QSplitter *wangViews = new QSplitter;
     wangViews->setOrientation(Qt::Vertical);
     wangViews->addWidget(wangSetWidget);
     wangViews->addWidget(mTemplateAndColorWidget);
     wangViews->setCollapsible(1, false);
 
-    QVBoxLayout *vertical = new QVBoxLayout(w);
-    vertical->setContentsMargins(0, 0, 0, 0);
-    vertical->addWidget(wangViews);
+    // View stack for showing the "No Terrain Sets defined" widget
+
+    mStack->insertWidget(0, new NoWangSetWidget);
+    mStack->insertWidget(1, wangViews);
+    mStack->setCurrentIndex(1);
 
     hideTemplateColorView();
-    setWidget(w);
+    setWidget(mStack);
     retranslateUi();
 }
 
@@ -292,8 +316,8 @@ void WangDock::setDocument(Document *document)
     if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
         mTilesetDocumentFilterModel->setMapDocument(mapDocument);
 
-        mProxyModel->setEnabled(true);
-        mProxyModel->setSourceModel(mWangSetModel);
+        mWangSetProxyModel->setEnabled(true);
+        mWangSetProxyModel->setSourceModel(mWangSetModel);
         mWangSetView->expandAll();
 
         setCurrentWangSet(firstWangSet(mapDocument));
@@ -309,8 +333,8 @@ void WangDock::setDocument(Document *document)
         TilesetWangSetModel *wangSetModel = tilesetDocument->wangSetModel();
 
         mWangSetView->setTilesetDocument(tilesetDocument);
-        mProxyModel->setEnabled(false);
-        mProxyModel->setSourceModel(wangSetModel);
+        mWangSetProxyModel->setEnabled(false);
+        mWangSetProxyModel->setSourceModel(wangSetModel);
 
         setCurrentWangSet(firstWangSet(tilesetDocument));
 
@@ -337,7 +361,7 @@ void WangDock::setDocument(Document *document)
         connect(tilesetDocument, &Document::changed, this, &WangDock::documentChanged);
 
     } else {
-        mProxyModel->setSourceModel(nullptr);
+        mWangSetProxyModel->setSourceModel(nullptr);
         setCurrentWangSet(nullptr);
         mWangSetToolBar->setVisible(false);
         mWangColorToolBar->setVisible(false);
@@ -474,7 +498,16 @@ void WangDock::expandRows(const QModelIndex &parent, int first, int last)
         return;
 
     for (int row = first; row <= last; ++row)
-        mWangSetView->expand(mProxyModel->index(row, 0, parent));
+        mWangSetView->expand(mWangSetProxyModel->index(row, 0, parent));
+}
+
+void WangDock::checkAnyWangSets()
+{
+    if (mDocument && mDocument->type() == Document::MapDocumentType) {
+        const int rows = mWangSetProxyModel->rowCount();
+        mStack->setCurrentIndex(rows > 0 ? 1 : 0);
+    }
+    refreshCurrentWangSet();
 }
 
 void WangDock::addColor()
@@ -607,7 +640,7 @@ QModelIndex WangDock::wangSetIndex(WangSet *wangSet) const
     else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
         sourceIndex = tilesetDocument->wangSetModel()->index(wangSet);
 
-    return mProxyModel->mapFromSource(sourceIndex);
+    return mWangSetProxyModel->mapFromSource(sourceIndex);
 }
 
 void WangDock::onWangIdUsedChanged(WangId wangId)
@@ -656,4 +689,5 @@ void WangDock::hideTemplateColorView()
     mTemplateAndColorWidget->setVisible(false);
 }
 
+#include "wangdock.moc"
 #include "moc_wangdock.cpp"

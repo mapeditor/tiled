@@ -31,7 +31,7 @@ class WangColorView : public QTreeView
     Q_OBJECT
 
 public:
-    WangColorView(QWidget *parent);
+    WangColorView(QWidget *parent = nullptr);
     ~WangColorView() override;
 
     void setTileSize(QSize size);

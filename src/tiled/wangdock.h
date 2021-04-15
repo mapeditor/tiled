@@ -29,6 +29,7 @@ class QMenu;
 class QModelIndex;
 class QPushButton;
 class QSortFilterProxyModel;
+class QStackedWidget;
 class QTabWidget;
 class QToolBar;
 class QToolButton;
@@ -101,6 +102,7 @@ private:
     void wangSetChanged();
     void wangSetIndexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
+    void checkAnyWangSets();
     void addColor();
     void removeColor();
 
@@ -121,17 +123,18 @@ private:
     QAction *mAddColor;
     QAction *mRemoveColor;
 
-    Document *mDocument;
+    Document *mDocument = nullptr;
+    QStackedWidget *mStack;
     WangSetView *mWangSetView;
     QPushButton *mEraseWangIdsButton;
-    WangSet *mCurrentWangSet;
+    WangSet *mCurrentWangSet = nullptr;
     WangId mCurrentWangId;
     TilesetDocumentsFilterModel *mTilesetDocumentFilterModel;
     WangColorView *mWangColorView;
     WangColorModel *mWangColorModel;
     QSortFilterProxyModel *mWangColorFilterModel;
     WangSetModel *mWangSetModel;
-    HasChildrenFilterModel *mProxyModel;
+    HasChildrenFilterModel *mWangSetProxyModel;
     QWidget *mWangColorWidget;
     WangTemplateView *mWangTemplateView;
     WangTemplateModel *mWangTemplateModel;
