@@ -573,12 +573,6 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
     // Hides the "New Tileset..." special view if it is shown.
     mSuperViewStack->setCurrentIndex(1);
 
-    // Insert view before the tab to make sure it is there when the tab index
-    // changes (happens when first tab is inserted).
-    mViewStack->insertWidget(index, view);
-    mTabBar->insertTab(index, tileset->name());
-    mTabBar->setTabToolTip(index, tileset->fileName());
-
     // Restore state from last time
     const QString fileName = tilesetDocument->externalOrEmbeddedFileName();
     const QVariantMap fileState = Session::current().fileState(fileName);
@@ -598,6 +592,12 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
             view->setDynamicWrapping(dynamicWrapping);
         }
     }
+
+    // Insert view before the tab to make sure it is there when the tab index
+    // changes (happens when first tab is inserted).
+    mViewStack->insertWidget(index, view);
+    mTabBar->insertTab(index, tileset->name());
+    mTabBar->setTabToolTip(index, tileset->fileName());
 
     connect(tilesetDocument, &TilesetDocument::fileNameChanged,
             this, &TilesetDock::tilesetFileNameChanged);
