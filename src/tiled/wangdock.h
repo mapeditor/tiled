@@ -138,7 +138,7 @@ private:
     QTabWidget *mTemplateAndColorView;
     QWidget *mTemplateAndColorWidget;
 
-    bool mInitializing;
+    bool mInitializing = false;
 };
 
 } // namespace Tiled

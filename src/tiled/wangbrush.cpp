@@ -397,7 +397,7 @@ void WangBrush::updateStatusInfo()
 {
     if (brushItem()->isVisible()) {
         QString wangColor;
-        if (mWangSet && mCurrentColor)
+        if (mWangSet && mCurrentColor && mCurrentColor <= mWangSet->colorCount())
             wangColor = mWangSet->colorAt(mCurrentColor)->name();
 
         if (!wangColor.isEmpty())
@@ -421,8 +421,24 @@ void WangBrush::updateStatusInfo()
 void WangBrush::wangSetChanged(const WangSet *wangSet)
 {
     mCurrentColor = 0;
-    mBrushMode = Idle;
     mWangSet = wangSet;
+
+    if (mWangSet) {
+        switch (mWangSet->type()) {
+        case WangSet::Corner:
+            mBrushMode = PaintCorner;
+            break;
+        case WangSet::Edge:
+            mBrushMode = PaintEdge;
+            break;
+        case WangSet::Mixed: {
+            mBrushMode = PaintEdgeAndCorner;
+            break;
+        }
+        }
+    } else {
+        mBrushMode = Idle;
+    }
 }
 
 void WangBrush::captureHoverColor()

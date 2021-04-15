@@ -380,7 +380,7 @@ void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
     if (mSelectedTool) {
         mSelectedTool->mouseMoved(mouseEvent->scenePos(),
-                                mouseEvent->modifiers());
+                                  mouseEvent->modifiers());
         mouseEvent->accept();
     }
 }

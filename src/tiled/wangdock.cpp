@@ -51,6 +51,7 @@
 #include <QToolButton>
 #include <QMenu>
 #include <QPainter>
+#include <QScopedValueRollback>
 
 using namespace Tiled;
 
@@ -124,7 +125,6 @@ WangDock::WangDock(QWidget *parent)
     , mWangSetModel(new WangSetModel(mTilesetDocumentFilterModel, this))
     , mProxyModel(new HasChildrenFilterModel(this))
     , mWangTemplateModel(new WangTemplateModel(nullptr, this))
-    , mInitializing(false)
 {
     setObjectName(QLatin1String("WangSetDock"));
 
@@ -287,7 +287,7 @@ void WangDock::setDocument(Document *document)
         tilesetDocument->disconnect(this);
 
     mDocument = document;
-    mInitializing = true;
+    QScopedValueRollback<bool> initializing(mInitializing, true);
 
     if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
         mTilesetDocumentFilterModel->setMapDocument(mapDocument);
@@ -342,8 +342,6 @@ void WangDock::setDocument(Document *document)
         mWangSetToolBar->setVisible(false);
         mWangColorToolBar->setVisible(false);
     }
-
-    mInitializing = false;
 }
 
 void WangDock::editWangSetName(WangSet *wangSet)
@@ -416,18 +414,16 @@ void WangDock::refreshCurrentWangColor()
 
     if (!selectionModel->currentIndex().isValid()) {
         mEraseWangIdsButton->setChecked(true);
-        emit wangColorChanged(0);
         mRemoveColor->setEnabled(false);
+        emit wangColorChanged(0);
         return;
     }
-
-    QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
-
-    const int color = mWangColorModel->colorAt(index);
 
     mEraseWangIdsButton->setChecked(false);
     mRemoveColor->setEnabled(true);
 
+    QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
+    const int color = mWangColorModel->colorAt(index);
     emit wangColorChanged(color);
 }
 
@@ -497,17 +493,16 @@ void WangDock::removeColor()
 {
     Q_ASSERT(mCurrentWangSet);
 
-    QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
+    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(mDocument);
+    if (!tilesetDocument)
+        return;
 
-    QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
-
-    int color = mWangColorModel->colorAt(index);
-
-    if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
-        tilesetDocument->undoStack()->push(new RemoveWangSetColor(tilesetDocument,
-                                                                  mCurrentWangSet,
-                                                                  color));
-    }
+    const QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
+    const QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
+    const int color = mWangColorModel->colorAt(index);
+    tilesetDocument->undoStack()->push(new RemoveWangSetColor(tilesetDocument,
+                                                              mCurrentWangSet,
+                                                              color));
 }
 
 void WangDock::setCurrentWangSet(WangSet *wangSet)
@@ -527,6 +522,9 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
     }
 
     mCurrentWangSet = wangSet;
+
+    emit currentWangSetChanged(mCurrentWangSet);
+
     mWangTemplateModel->setWangSet(wangSet);
     mWangColorFilterModel->setSourceModel(mWangColorModel);
     mWangColorView->expandAll();
@@ -540,6 +538,11 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
 
         if (!mWangTemplateView->isVisible() && !mWangColorView->isVisible())
             setColorView();
+
+        if (wangSet->colorCount() > 0 && !mWangTemplateView->isVisible()) {
+            const QModelIndex index = mWangColorModel->colorIndex(1);
+            mWangColorView->setCurrentIndex(static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapFromSource(index));
+        }
 
         updateAddColorStatus();
     } else {
@@ -556,8 +559,6 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
 
     mDuplicateWangSet->setEnabled(wangSet);
     mRemoveWangSet->setEnabled(wangSet);
-
-    emit currentWangSetChanged(mCurrentWangSet);
 }
 
 void WangDock::activateErase()
