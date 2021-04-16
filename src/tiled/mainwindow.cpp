@@ -282,6 +282,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionLabelsForAllObjects, "LabelsForAllObjects");
     ActionManager::registerAction(mUi->actionLabelsForSelectedObjects, "LabelsForSelectedObjects");
     ActionManager::registerAction(mUi->actionLoadWorld, "LoadWorld");
+    ActionManager::registerAction(mUi->actionEnableWorlds, "EnableWorlds");
     ActionManager::registerAction(mUi->actionMapProperties, "MapProperties");
     ActionManager::registerAction(mUi->actionNewMap, "NewMap");
     ActionManager::registerAction(mUi->actionNewTileset, "NewTileset");
@@ -434,6 +435,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionHighlightHoveredObject->setChecked(preferences->highlightHoveredObject());
 
     bindToOption(mUi->actionAutoMapWhileDrawing, AutomappingManager::automappingWhileDrawing);
+    bindToOption(mUi->actionEnableWorlds, MapScene::enableWorlds);
 
     mUi->actionHighlightCurrentLayer->setIcon(highlightCurrentLayerIcon);
     mUi->actionHighlightCurrentLayer->setIconVisibleInMenu(false);
@@ -2149,6 +2151,7 @@ void MainWindow::updateActions()
     mUi->actionPasteInPlace->setEnabled(standardActions & Editor::PasteInPlaceAction);
     mUi->actionDelete->setEnabled(standardActions & Editor::DeleteAction);
 
+    mUi->menuWorld->menuAction()->setVisible(mapDocument);
     mUi->menuMap->menuAction()->setVisible(mapDocument);
     mUi->actionAddExternalTileset->setEnabled(mapDocument);
     mUi->actionResizeMap->setEnabled(mapDocument);

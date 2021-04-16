@@ -51,8 +51,11 @@
 
 using namespace Tiled;
 
+SessionOption<bool> MapScene::enableWorlds { "mapScene.enableWorlds", true };
+
 MapScene::MapScene(QObject *parent)
     : QGraphicsScene(parent)
+    , mWorldsEnabled(enableWorlds)
 {
     updateDefaultBackgroundColor();
 
@@ -72,6 +75,8 @@ MapScene::MapScene(QObject *parent)
     // active tool without having to have the current focus.
     qApp->installEventFilter(this);
 
+    mEnableWorldsCallback = enableWorlds.onChange([this] { setWorldsEnabled(enableWorlds); });
+
 #ifdef QT_DEBUG
     mDebugDrawItem = new DebugDrawItem;
     addItem(mDebugDrawItem);
@@ -80,6 +85,8 @@ MapScene::MapScene(QObject *parent)
 
 MapScene::~MapScene()
 {
+    enableWorlds.unregister(mEnableWorldsCallback);
+
     qApp->removeEventFilter(this);
 }
 
@@ -243,6 +250,7 @@ void MapScene::refreshScene()
 
                 auto mapItem = takeOrCreateMapItem(mapDocument, displayMode);
                 mapItem->setPos(mapEntry.rect.topLeft() - currentMapPosition);
+                mapItem->setVisible(mWorldsEnabled || mapDocument == mMapDocument);
                 mapItems.insert(mapDocument.data(), mapItem);
             }
         }
@@ -282,6 +290,17 @@ void MapScene::updateSceneRect()
         sceneRect |= mapItem->boundingRect().translated(mapItem->pos());
 
     setSceneRect(sceneRect);
+}
+
+void MapScene::setWorldsEnabled(bool enabled)
+{
+    if (mWorldsEnabled == enabled)
+        return;
+
+    mWorldsEnabled = enabled;
+
+    for (MapItem *mapItem : qAsConst(mMapItems))
+        mapItem->setVisible(mWorldsEnabled || mapItem->mapDocument() == mMapDocument);
 }
 
 MapItem *MapScene::takeOrCreateMapItem(const MapDocumentPtr &mapDocument, MapItem::DisplayMode displayMode)

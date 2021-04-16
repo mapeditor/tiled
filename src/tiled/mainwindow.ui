@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>26</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -118,22 +118,7 @@
     <property name="title">
      <string>&amp;Map</string>
     </property>
-    <widget class="QMenu" name="menuUnloadWorld">
-     <property name="title">
-      <string>Unload World</string>
-     </property>
-    </widget>
-    <widget class="QMenu" name="menuSaveWorld">
-     <property name="title">
-      <string>Save World</string>
-     </property>
-    </widget>
     <addaction name="actionAddExternalTileset"/>
-    <addaction name="separator"/>
-    <addaction name="actionNewWorld"/>
-    <addaction name="actionLoadWorld"/>
-    <addaction name="menuUnloadWorld"/>
-    <addaction name="menuSaveWorld"/>
     <addaction name="separator"/>
     <addaction name="actionResizeMap"/>
     <addaction name="actionOffsetMap"/>
@@ -219,9 +204,32 @@
     <addaction name="separator"/>
     <addaction name="actionProjectProperties"/>
    </widget>
+   <widget class="QMenu" name="menuWorld">
+    <property name="title">
+     <string>&amp;World</string>
+    </property>
+    <widget class="QMenu" name="menuUnloadWorld">
+     <property name="title">
+      <string>&amp;Unload World</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuSaveWorld">
+     <property name="title">
+      <string>&amp;Save World</string>
+     </property>
+    </widget>
+    <addaction name="actionNewWorld"/>
+    <addaction name="actionLoadWorld"/>
+    <addaction name="separator"/>
+    <addaction name="menuUnloadWorld"/>
+    <addaction name="menuSaveWorld"/>
+    <addaction name="separator"/>
+    <addaction name="actionEnableWorlds"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
+   <addaction name="menuWorld"/>
    <addaction name="menuMap"/>
    <addaction name="menuTileset"/>
    <addaction name="menuProject"/>
@@ -662,12 +670,12 @@
   </action>
   <action name="actionLoadWorld">
    <property name="text">
-    <string>Load World...</string>
+    <string>&amp;Load World...</string>
    </property>
   </action>
   <action name="actionNewWorld">
    <property name="text">
-    <string>New World...</string>
+    <string>&amp;New World...</string>
    </property>
   </action>
   <action name="actionHighlightHoveredObject">
@@ -787,6 +795,14 @@
    </property>
    <property name="text">
     <string>Enable Parallax</string>
+   </property>
+  </action>
+  <action name="actionEnableWorlds">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show &amp;Other Maps</string>
    </property>
   </action>
  </widget>

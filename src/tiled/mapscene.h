@@ -25,6 +25,7 @@
 
 #include "mapdocument.h"
 #include "mapitem.h"
+#include "session.h"
 
 #include <QColor>
 #include <QGraphicsScene>
@@ -78,6 +79,8 @@ public:
     QPointF absolutePositionForLayer(const Layer &layer) const;
     QPointF parallaxOffset(const Layer &layer) const;
 
+    static SessionOption<bool> enableWorlds;
+
 signals:
     void mapDocumentChanged(MapDocument *mapDocument);
 
@@ -110,6 +113,8 @@ private:
     void updateDefaultBackgroundColor();
     void updateSceneRect();
 
+    void setWorldsEnabled(bool enabled);
+
     MapItem *takeOrCreateMapItem(const MapDocumentPtr &mapDocument,
                                  MapItem::DisplayMode displayMode);
 
@@ -122,6 +127,8 @@ private:
     bool mUnderMouse = false;
     bool mShowTileCollisionShapes = false;
     bool mParallaxEnabled = true;
+    bool mWorldsEnabled = true;
+    Session::CallbackIterator mEnableWorldsCallback;
     Qt::KeyboardModifiers mCurrentModifiers = Qt::NoModifier;
     QPointF mLastMousePos;
     QRectF mViewRect;
