@@ -92,6 +92,7 @@ private:
     void propertyChanged(Object *object, const QString &name);
     void propertiesChanged(Object *object);
     void selectedObjectsChanged();
+    void aboutToBeSelectedObjectsChanged();
     void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
     void mapChanged();
     void layerAdded(Layer *layer);
@@ -110,12 +111,14 @@ private:
 
     void addRemoveObjectLabels();
     void addRemoveObjectOutlines();
+    void addRemoveObjectHoverItems();
     void addRemoveObjectReferences();
     void addRemoveObjectReferences(MapObject *object);
 
     MapDocument *mMapDocument;
     QHash<MapObject*, MapObjectLabel*> mObjectLabels;
     QHash<MapObject*, MapObjectOutline*> mObjectOutlines;
+    QHash<MapObject*, MapObjectOutline*> mObjectHoverItems;
     QHash<MapObject*, QList<ObjectReferenceItem*>> mReferencesBySourceObject;
     QHash<MapObject*, QList<ObjectReferenceItem*>> mReferencesByTargetObject;
     std::unique_ptr<MapObjectItem> mHoveredMapObjectItem;

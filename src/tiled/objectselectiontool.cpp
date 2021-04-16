@@ -319,17 +319,6 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
                          parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mOriginIndicator(new OriginIndicator)
-    , mMousePressed(false)
-    , mHoveredObject(nullptr)
-    , mHoveredHandle(nullptr)
-    , mClickedObject(nullptr)
-    , mClickedOriginIndicator(nullptr)
-    , mClickedRotateHandle(nullptr)
-    , mClickedResizeHandle(nullptr)
-    , mResizingLimitHorizontal(false)
-    , mResizingLimitVertical(false)
-    , mMode(Resize)
-    , mAction(NoAction)
 {
     for (int i = 0; i < CornerAnchorCount; ++i)
         mRotateHandles[i] = new RotateHandle(static_cast<AnchorPosition>(i));
@@ -503,6 +492,7 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
     switch (mAction) {
     case Selecting:
         mSelectionRectangle->setRectangle(QRectF(mStart, pos).normalized());
+        mapDocument()->setAboutToBeSelectedObjects(objectsAboutToBeSelected(pos, modifiers));
         break;
     case Moving:
         updateMovingItems(pos, modifiers);
@@ -756,6 +746,10 @@ void ObjectSelectionTool::changeEvent(const ChangeEvent &event)
         break;
     case ChangeEvent::MapObjectsAboutToBeRemoved:
         objectsAboutToBeRemoved(static_cast<const MapObjectsEvent&>(event).mapObjects);
+        break;
+    case ChangeEvent::MapObjectsAdded:
+        if (mAction == Selecting)
+            mapDocument()->setAboutToBeSelectedObjects(objectsAboutToBeSelected(mLastMousePos, mModifiers));
         break;
     default:
         break;
@@ -1097,9 +1091,14 @@ void ObjectSelectionTool::updateHover(const QPointF &pos)
     mapDocument()->setHoveredMapObject((mAction == NoAction) ? hoveredObject : nullptr);
 }
 
-void ObjectSelectionTool::updateSelection(const QPointF &pos,
-                                          Qt::KeyboardModifiers modifiers)
+QList<MapObject*> ObjectSelectionTool::objectsAboutToBeSelected(const QPointF &pos,
+                                                                Qt::KeyboardModifiers modifiers) const
 {
+    QList<MapObject*> selectedObjects;
+
+    if (mAction != Selecting)
+        return selectedObjects;
+
     QRectF rect = QRectF(mStart, pos).normalized();
 
     // Make sure the rect has some contents, otherwise intersects returns false
@@ -1119,6 +1118,14 @@ void ObjectSelectionTool::updateSelection(const QPointF &pos,
 
     filterMapObjects(selectedObjects);
 
+    return selectedObjects;
+}
+
+void ObjectSelectionTool::updateSelection(const QPointF &pos,
+                                          Qt::KeyboardModifiers modifiers)
+{
+    QList<MapObject*> selectedObjects = objectsAboutToBeSelected(pos, modifiers);
+
     if (modifiers & (Qt::ControlModifier | Qt::ShiftModifier)) {
         for (MapObject *object : mapDocument()->selectedObjects())
             if (!selectedObjects.contains(object))
@@ -1127,6 +1134,7 @@ void ObjectSelectionTool::updateSelection(const QPointF &pos,
         setMode(Resize);    // new selection resets edit mode
     }
 
+    mapDocument()->setAboutToBeSelectedObjects({});
     mapDocument()->setSelectedObjects(selectedObjects);
 }
 
@@ -1687,6 +1695,9 @@ void ObjectSelectionTool::refreshCursor()
     }
     case Moving:
         cursorShape = Qt::SizeAllCursor;
+        break;
+    case Selecting:
+        mapDocument()->setAboutToBeSelectedObjects(objectsAboutToBeSelected(mLastMousePos, mModifiers));
         break;
     default:
         break;

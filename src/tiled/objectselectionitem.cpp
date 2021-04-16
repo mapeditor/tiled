@@ -57,11 +57,26 @@ static Preferences::ObjectLabelVisiblity objectLabelVisibility()
 class MapObjectOutline : public QGraphicsObject
 {
 public:
-    MapObjectOutline(MapObject *object, QGraphicsItem *parent = nullptr)
+    enum Role {
+        SelectionIndicator,
+        HoverIndicator
+    };
+
+    MapObjectOutline(MapObject *object, Role role, QGraphicsItem *parent = nullptr)
         : QGraphicsObject(parent)
         , mObject(object)
     {
-        setZValue(1); // makes sure outlines are above labels
+
+        switch (role) {
+        case SelectionIndicator:
+            setZValue(1);       // makes sure outlines are above labels
+            mUpdateTimer = startTimer(100);
+            break;
+        case HoverIndicator:
+            setZValue(-1.0);    // show below selection outlines
+            setOpacity(0.5);
+            break;
+        }
     }
 
     MapObject *mapObject() const { return mObject; }
@@ -80,7 +95,7 @@ private:
     MapObject *mObject;
 
     // Marching ants effect
-    int mUpdateTimer = startTimer(100);
+    int mUpdateTimer = -1;
     int mOffset = 0;
 };
 
@@ -118,14 +133,14 @@ void MapObjectOutline::paint(QPainter *painter,
         QLineF(mBoundingRect.topRight(), mBoundingRect.bottomRight())
     };
 
+    const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
+    const qreal dashLength = std::ceil(Utils::dpiScaled(3) * devicePixelRatio);
+
     // Draw a solid white line
-    QPen pen(Qt::white, 1.0, Qt::SolidLine);
+    QPen pen(Qt::white, devicePixelRatio, Qt::SolidLine);
     pen.setCosmetic(true);
     painter->setPen(pen);
     painter->drawLines(lines, 4);
-
-    const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
-    const qreal dashLength = std::ceil(Utils::dpiScaled(3) * devicePixelRatio);
 
     // Draw a black dashed line above the white line
     pen.setColor(Qt::black);
@@ -253,6 +268,8 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
 
     connect(mapDocument, &MapDocument::selectedObjectsChanged,
             this, &ObjectSelectionItem::selectedObjectsChanged);
+    connect(mapDocument, &MapDocument::aboutToBeSelectedObjectsChanged,
+            this, &ObjectSelectionItem::aboutToBeSelectedObjectsChanged);
 
     connect(mapDocument, &MapDocument::mapChanged,
             this, &ObjectSelectionItem::mapChanged);
@@ -402,6 +419,11 @@ void ObjectSelectionItem::selectedObjectsChanged()
     addRemoveObjectOutlines();
 }
 
+void ObjectSelectionItem::aboutToBeSelectedObjectsChanged()
+{
+    addRemoveObjectHoverItems();
+}
+
 void ObjectSelectionItem::hoveredMapObjectChanged(MapObject *object,
                                                   MapObject *previous)
 {
@@ -538,6 +560,9 @@ void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
 
     for (MapObject *object : objects) {
         if (MapObjectOutline *outlineItem = mObjectOutlines.value(object))
+            outlineItem->syncWithMapObject(renderer);
+
+        if (MapObjectOutline *outlineItem = mObjectHoverItems.value(object))
             outlineItem->syncWithMapObject(renderer);
 
         if (MapObjectLabel *labelItem = mObjectLabels.value(object))
@@ -743,7 +768,7 @@ void ObjectSelectionItem::addRemoveObjectOutlines()
     for (MapObject *mapObject : mMapDocument->selectedObjects()) {
         MapObjectOutline *outlineItem = mObjectOutlines.take(mapObject);
         if (!outlineItem) {
-            outlineItem = new MapObjectOutline(mapObject, this);
+            outlineItem = new MapObjectOutline(mapObject, MapObjectOutline::SelectionIndicator, this);
             outlineItem->syncWithMapObject(renderer);
         }
         outlineItems.insert(mapObject, outlineItem);
@@ -751,6 +776,25 @@ void ObjectSelectionItem::addRemoveObjectOutlines()
 
     qDeleteAll(mObjectOutlines); // delete remaining items
     mObjectOutlines.swap(outlineItems);
+}
+
+void ObjectSelectionItem::addRemoveObjectHoverItems()
+{
+    QHash<MapObject*, MapObjectOutline*> hoverItems;
+    const MapRenderer &renderer = *mMapDocument->renderer();
+
+    for (MapObject *mapObject : mMapDocument->aboutToBeSelectedObjects()) {
+        auto hoverItem = mObjectHoverItems.take(mapObject);
+        if (!hoverItem) {
+            hoverItem = new MapObjectOutline(mapObject, MapObjectOutline::HoverIndicator, this);
+            hoverItem->syncWithMapObject(renderer);
+            hoverItem->setEnabled(false);
+        }
+        hoverItems.insert(mapObject, hoverItem);
+    }
+
+    qDeleteAll(mObjectHoverItems); // delete remaining items
+    mObjectHoverItems.swap(hoverItems);
 }
 
 void ObjectSelectionItem::addRemoveObjectReferences()

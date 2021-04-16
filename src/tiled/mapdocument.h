@@ -232,6 +232,14 @@ public:
      */
     void setSelectedObjects(const QList<MapObject*> &selectedObjects);
 
+    /**
+     * Returns the list of about to be selected objects.
+     */
+    const QList<MapObject*> &aboutToBeSelectedObjects() const
+    { return mAboutToBeSelectedObjects; }
+
+    void setAboutToBeSelectedObjects(const QList<MapObject*> &objects);
+
     QList<Object*> currentObjects() const override;
 
     MapObject *hoveredMapObject() const { return mHoveredMapObject; }
@@ -273,6 +281,8 @@ signals:
      * because it may reference an object that was removed.
      */
     void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
+
+    void aboutToBeSelectedObjectsChanged(const QList<MapObject*> &objects);
 
     /**
      * Emitted when the map view should focus on the given object.
@@ -388,6 +398,7 @@ private:
     QRegion mSelectedArea;
     QList<Layer*> mSelectedLayers;
     QList<MapObject*> mSelectedObjects;
+    QList<MapObject*> mAboutToBeSelectedObjects;
     MapObject *mHoveredMapObject;       /**< Map object with mouse on top. */
     std::unique_ptr<MapRenderer> mRenderer;
     Layer *mCurrentLayer = nullptr;

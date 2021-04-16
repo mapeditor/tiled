@@ -1027,6 +1027,19 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
     }
 }
 
+/**
+ * Sets the list of objects that are about to be selected, for highlighting
+ * purposes.
+ */
+void MapDocument::setAboutToBeSelectedObjects(const QList<MapObject *> &objects)
+{
+    if (mAboutToBeSelectedObjects == objects)
+        return;
+
+    mAboutToBeSelectedObjects = objects;
+    emit aboutToBeSelectedObjectsChanged(objects);
+}
+
 QList<Object*> MapDocument::currentObjects() const
 {
     if (mCurrentObject) {
@@ -1360,12 +1373,18 @@ void MapDocument::deselectObjects(const QList<MapObject *> &objects)
         if (objects.contains(static_cast<MapObject*>(mCurrentObject)))
             setCurrentObject(nullptr);
 
-    int removedCount = 0;
-    for (MapObject *object : objects)
-        removedCount += mSelectedObjects.removeAll(object);
+    int removedSelectedObjects = 0;
+    int removedAboutToBeSelectedObjects = 0;
 
-    if (removedCount > 0)
+    for (MapObject *object : objects) {
+        removedSelectedObjects += mSelectedObjects.removeAll(object);
+        removedAboutToBeSelectedObjects += mAboutToBeSelectedObjects.removeAll(object);
+    }
+
+    if (removedSelectedObjects > 0)
         emit selectedObjectsChanged();
+    if (removedAboutToBeSelectedObjects > 0)
+        emit aboutToBeSelectedObjectsChanged(mAboutToBeSelectedObjects);
 }
 
 void MapDocument::duplicateObjects(const QList<MapObject *> &objects)

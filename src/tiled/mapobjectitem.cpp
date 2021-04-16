@@ -158,14 +158,14 @@ void MapObjectItem::paint(QPainter *painter,
             QLineF(bounds.topRight(), bounds.bottomRight())
         };
 
+        const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
+        const qreal dashLength = std::ceil(Utils::dpiScaled(3) * devicePixelRatio);
+
         // Draw a solid white line
-        QPen pen(Qt::white, 1.0, Qt::SolidLine);
+        QPen pen(Qt::white, devicePixelRatio, Qt::SolidLine);
         pen.setCosmetic(true);
         painter->setPen(pen);
         painter->drawLines(lines, 4);
-
-        const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
-        const qreal dashLength = std::ceil(Utils::dpiScaled(3) * devicePixelRatio);
 
         // Draw a black dashed line above the white line
         pen.setColor(Qt::black);
