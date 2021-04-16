@@ -150,6 +150,7 @@ private:
     void fitInView();
     void setFullScreen(bool fullScreen);
     void toggleClearView(bool clearView);
+    void setLayoutLocked(bool locked);
     void resetToDefaultLayout();
 
     bool newTileset(const QString &path = QString());
@@ -221,6 +222,9 @@ private:
     void exportMapAs(MapDocument *mapDocument);
     void exportTilesetAs(TilesetDocument *tilesetDocument);
 
+    QList<QDockWidget*> allDockWidgets() const;
+    QList<QToolBar*> allToolBars() const;
+
     Ui::MainWindow *mUi;
     Document *mDocument = nullptr;
     Zoomable *mZoomable = nullptr;
@@ -243,6 +247,7 @@ private:
     QAction *mShowObjectTypesEditor;
 
     QAction *mResetToDefaultLayout;
+    QAction *mLockLayout;
 
     void setupQuickStamps();
 

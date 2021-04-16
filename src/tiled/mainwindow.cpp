@@ -116,6 +116,7 @@ using namespace Tiled::Utils;
 namespace preferences {
 static Preference<QByteArray> mainWindowGeometry { "mainwindow/geometry" };
 static Preference<QByteArray> mainWindowState { "mainwindow/state" };
+static Preference<bool> mainWindowLocked { "mainwindow/locked" };
 } // namespace preferences
 
 namespace {
@@ -776,6 +777,16 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mViewsAndToolbarsAction->setMenu(mViewsAndToolbarsMenu);
 
     mResetToDefaultLayout = new QAction(tr("Reset to Default Layout"), this);
+    mLockLayout = new QAction(tr("Lock Layout"), this);
+    mLockLayout->setCheckable(true);
+    QIcon lockIcon;
+    lockIcon.addFile(QLatin1String(":/images/14/locked.png"));
+    lockIcon.addFile(QLatin1String(":/images/16/locked.png"));
+    lockIcon.addFile(QLatin1String(":/images/24/locked.png"));
+    mLockLayout->setIcon(lockIcon);
+
+    ActionManager::registerAction(mResetToDefaultLayout, "ResetToDefaultLayout");
+    ActionManager::registerAction(mLockLayout, "LockLayout");
 
     mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
     mShowObjectTypesEditor->setCheckable(true);
@@ -820,6 +831,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, &MainWindow::currentEditorChanged);
 
     connect(mResetToDefaultLayout, &QAction::triggered, this, &MainWindow::resetToDefaultLayout);
+    connect(mLockLayout, &QAction::toggled, this, &MainWindow::setLayoutLocked);
 
     QShortcut *switchToLeftDocument = new QShortcut(Qt::ALT + Qt::Key_Left, this);
     connect(switchToLeftDocument, &QShortcut::activated,
@@ -1712,21 +1724,18 @@ void MainWindow::toggleClearView(bool clearView)
     if (clearView) {
         mMainWindowStates.insert(this, saveState());
 
-        QList<QDockWidget*> docks = findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
-        QList<QToolBar*> toolBars = findChildren<QToolBar*>(QString(), Qt::FindDirectChildrenOnly);
+        const QList<QDockWidget*> docks = allDockWidgets();
+        const QList<QToolBar*> toolBars = allToolBars();
 
         const auto editors = mDocumentManager->editors();
         for (Editor *editor : editors) {
             if (auto editorWindow = qobject_cast<QMainWindow*>(editor->editorWidget()))
                 mMainWindowStates.insert(editorWindow, editorWindow->saveState());
-
-            docks += editor->dockWidgets();
-            toolBars += editor->toolBars();
         }
 
-        for (auto dock : qAsConst(docks))
+        for (auto dock : docks)
             dock->hide();
-        for (auto toolBar : qAsConst(toolBars))
+        for (auto toolBar : toolBars)
             toolBar->hide();
 
     } else {
@@ -1742,6 +1751,22 @@ void MainWindow::toggleClearView(bool clearView)
 
     if (mapView)
         mapView->setResizeAnchor(QGraphicsView::NoAnchor);
+}
+
+void MainWindow::setLayoutLocked(bool locked)
+{
+    const QList<QDockWidget*> docks = allDockWidgets();
+    const QList<QToolBar*> toolBars = allToolBars();
+
+    QDockWidget::DockWidgetFeatures features = QDockWidget::DockWidgetClosable;
+    if (!locked)
+        features |= QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable;
+
+    for (auto dock : docks)
+        dock->setFeatures(features);
+
+    for (auto toolBar : toolBars)
+        toolBar->setMovable(!locked);
 }
 
 bool MainWindow::newTileset(const QString &path)
@@ -2089,6 +2114,7 @@ void MainWindow::updateViewsAndToolbarsMenu()
     }
 
     mViewsAndToolbarsMenu->addSeparator();
+    mViewsAndToolbarsMenu->addAction(mLockLayout);
     mViewsAndToolbarsMenu->addAction(mResetToDefaultLayout);
 }
 
@@ -2197,6 +2223,7 @@ void MainWindow::writeSettings()
 
     preferences::mainWindowGeometry = saveGeometry();
     preferences::mainWindowState = saveState();
+    preferences::mainWindowLocked = mLockLayout->isChecked();
 
     mDocumentManager->saveState();
 }
@@ -2213,6 +2240,8 @@ void MainWindow::readSettings()
     updateRecentProjectsMenu();
 
     mDocumentManager->restoreState();
+
+    mLockLayout->setChecked(preferences::mainWindowLocked);
 }
 
 void MainWindow::updateWindowTitle()
@@ -2253,6 +2282,7 @@ void MainWindow::retranslateUi()
     mGroupLayerMenu->setTitle(tr("&Group"));
     mViewsAndToolbarsAction->setText(tr("Views and Toolbars"));
     mResetToDefaultLayout->setText(tr("Reset to Default Layout"));
+    mLockLayout->setText(tr("Lock Layout"));
     mShowObjectTypesEditor->setText(tr("Object Types Editor"));
     mActionHandler->retranslateUi();
     CommandManager::instance()->retranslateUi();
@@ -2438,6 +2468,28 @@ void MainWindow::currentEditorChanged(Editor *editor)
 void MainWindow::reloadError(const QString &error)
 {
     QMessageBox::critical(this, tr("Error Reloading Map"), error);
+}
+
+QList<QDockWidget *> MainWindow::allDockWidgets() const
+{
+    QList<QDockWidget*> docks = findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
+
+    const auto editors = mDocumentManager->editors();
+    for (Editor *editor : editors)
+        docks += editor->dockWidgets();
+
+    return docks;
+}
+
+QList<QToolBar *> MainWindow::allToolBars() const
+{
+    QList<QToolBar*> toolBars = findChildren<QToolBar*>(QString(), Qt::FindDirectChildrenOnly);
+
+    const auto editors = mDocumentManager->editors();
+    for (Editor *editor : editors)
+        toolBars += editor->toolBars();
+
+    return toolBars;
 }
 
 #include "moc_mainwindow.cpp"
