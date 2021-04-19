@@ -361,6 +361,7 @@ MapObject *MapObject::clone() const
     MapObject *o = new MapObject(mName, mType, mPos, mSize);
     o->setId(mId);
     o->setProperties(properties());
+    o->setComponents(components());
     o->setTextData(mTextData);
     o->setPolygon(mPolygon);
     o->setShape(mShape);
@@ -384,6 +385,7 @@ void MapObject::copyPropertiesFrom(const MapObject *object)
     setRotation(object->rotation());
     setVisible(object->isVisible());
     setProperties(object->properties());
+    setComponents(object->components());
     setChangedProperties(object->changedProperties());
     setObjectTemplate(object->objectTemplate());
 }

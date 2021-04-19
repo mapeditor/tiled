@@ -269,6 +269,8 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
             this, &ObjectSelectionItem::propertyChanged);
     connect(mapDocument, &Document::propertiesChanged,
             this, &ObjectSelectionItem::propertiesChanged);
+    
+    // TODO: add components?
 
     connect(mapDocument, &MapDocument::selectedObjectsChanged,
             this, &ObjectSelectionItem::selectedObjectsChanged);

@@ -32,6 +32,8 @@
 #include "tileset.h"
 #include "utils.h"
 #include "variantpropertymanager.h"
+#include "preferences.h"
+#include "changecomponents.h"
 
 #include <QAction>
 #include <QEvent>
@@ -42,6 +44,7 @@
 #include <QVBoxLayout>
 #include <QMenu>
 #include <QFileInfo>
+#include <QApplication>
 
 namespace Tiled {
 
@@ -71,9 +74,17 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     connect(mActionRenameProperty, &QAction::triggered,
             this, &PropertiesDock::renameProperty);
 
+    mButtonComponents = new QToolButton(this);
+    mButtonComponents->setEnabled(true);
+    mButtonComponents->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
+    mButtonComponents->setMenu(new QMenu(this));
+    mButtonComponents->setPopupMode(QToolButton::InstantPopup);
+    setupComponentMenu();
+
     Utils::setThemeIcon(mActionAddProperty, "add");
     Utils::setThemeIcon(mActionRemoveProperty, "remove");
     Utils::setThemeIcon(mActionRenameProperty, "rename");
+    Utils::setThemeIcon(mButtonComponents, "add");
 
     QToolBar *toolBar = new QToolBar;
     toolBar->setFloatable(false);
@@ -82,6 +93,11 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     toolBar->addAction(mActionAddProperty);
     toolBar->addAction(mActionRemoveProperty);
     toolBar->addAction(mActionRenameProperty);
+
+    QWidget* spacer = new QWidget();
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    toolBar->addWidget(spacer);
+    toolBar->addWidget(mButtonComponents);
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
@@ -98,6 +114,9 @@ PropertiesDock::PropertiesDock(QWidget *parent)
             this, &PropertiesDock::showContextMenu);
     connect(mPropertyBrowser, &PropertyBrowser::selectedItemsChanged,
             this, &PropertiesDock::updateActions);
+
+    connect(Preferences::instance(), &Preferences::objectTypesChanged,
+            this, &PropertiesDock::setupComponentMenu);
 
     retranslateUi();
 }
@@ -123,6 +142,13 @@ void PropertiesDock::setDocument(Document *document)
                 this, &PropertiesDock::updateActions);
         connect(document, &Document::propertyRemoved,
                 this, &PropertiesDock::updateActions);
+
+        connect(document, &Document::currentObjectChanged,
+                this, &PropertiesDock::setupComponentMenu);
+        connect(document, &Document::componentAdded,
+                this, &PropertiesDock::setupComponentMenu);
+        connect(document, &Document::componentRemoved,
+                this, &PropertiesDock::setupComponentMenu);
 
         currentObjectChanged(document->currentObject());
     } else {
@@ -162,6 +188,19 @@ void PropertiesDock::currentObjectChanged(Object *object)
 
     mPropertyBrowser->setEnabled(object);
     mActionAddProperty->setEnabled(enabled);
+
+    // enable/disable components button
+    {
+        bool isMapObject = false;
+
+        if (object) {
+            isMapObject = mDocument &&
+                    mDocument->type() == Document::MapDocumentType &&
+                    object->typeId() == Object::MapObjectType;
+        }
+
+        mButtonComponents->setEnabled(isMapObject);
+    }
 }
 
 void PropertiesDock::updateActions()
@@ -479,6 +518,76 @@ void PropertiesDock::showContextMenu(const QPoint &pos)
     }
 }
 
+// TODO: move this to object.h/cpp and replace same function in property browser
+static QStringList objectTypeNames()
+{
+    QStringList names;
+    for (const ObjectType &type : Object::objectTypes())
+        names.append(type.name);
+    return names;
+}
+
+void PropertiesDock::setupComponentMenu()
+{
+    QMenu *componentMenu = mButtonComponents->menu();
+
+    componentMenu->clear();
+
+    if (!mDocument || !mDocument->currentObject()) {
+        return;
+    }
+
+    if (mDocument->currentObject()->typeId() != Object::MapObjectType) {
+        return;
+    }
+
+    QSet<QString> listset;
+
+    for (const QString &type : objectTypeNames()) {
+        listset.insert(type);
+    }
+
+    for (const QString &component : mDocument->currentObject()->components().keys()) {
+        listset.insert(component);
+    }
+
+    QSetIterator<QString> it(listset);
+    while (it.hasNext()) {
+        const QString &name = it.next();
+
+        QAction* addAction = componentMenu->addAction(name);
+        addAction->setData(QVariant(name));
+        connect(addAction, &QAction::triggered, this, &PropertiesDock::onComponentChecked);
+
+        addAction->setCheckable(true);
+        addAction->setChecked(mDocument->currentObject()->hasComponent(name));
+    }
+}
+
+void PropertiesDock::onComponentChecked(bool checked)
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action) {
+        const QString &componentName = action->data().toString();
+        QUndoStack *undoStack = mDocument->undoStack();
+
+        if (checked) {
+            undoStack->push(new AddComponent(mDocument,
+                                             mDocument->currentObject(),
+                                             componentName));
+        } else {
+            undoStack->push(new RemoveComponent(mDocument,
+                                                mDocument->currentObject(),
+                                                componentName));
+        }
+
+        // only when holding shift down
+        if (QApplication::queryKeyboardModifiers().testFlag(Qt::ShiftModifier)) {
+            mButtonComponents->click();
+        }
+    }
+}
+
 bool PropertiesDock::event(QEvent *event)
 {
     switch (event->type()) {
@@ -529,6 +638,8 @@ void PropertiesDock::retranslateUi()
 
     mActionRenameProperty->setText(tr("Rename..."));
     mActionRenameProperty->setToolTip(tr("Rename Property"));
+
+    mButtonComponents->setText(tr("Add Component"));
 }
 
 } // namespace Tiled

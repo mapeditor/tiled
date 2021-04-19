@@ -132,6 +132,23 @@ public:
 
     bool isPartOfTileset() const;
 
+    void addComponent(const QString &name);
+
+    void removeComponent(const QString &name)
+    { mComponents.remove(name); }
+
+    bool hasComponent(const QString &name)
+    { return mComponents.contains(name); }
+
+    const Components &components() const
+    { return mComponents; }
+
+    void setComponents(const Components &components)
+    { mComponents = components; }
+
+    Properties &componentProperties(const QString &componentName)
+    { return mComponents[componentName]; }
+
     static void setObjectTypes(const ObjectTypes &objectTypes);
     static const ObjectTypes &objectTypes()
     { return mObjectTypes; }
@@ -139,6 +156,7 @@ public:
 private:
     const TypeId mTypeId;
     Properties mProperties;
+    Components mComponents;
 
     static ObjectTypes mObjectTypes;
 };

@@ -512,6 +512,7 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
     const QString &type = object.type();
 
     addProperties(objectVariant, object.properties());
+    // TODO: add components support
 
     if (const ObjectTemplate *objectTemplate = object.objectTemplate()) {
         QString relativeFileName = mDir.relativeFilePath(objectTemplate->fileName());
@@ -779,3 +780,4 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
         variantMap[QStringLiteral("properties")] = propertiesVariantList;
     }
 }
+

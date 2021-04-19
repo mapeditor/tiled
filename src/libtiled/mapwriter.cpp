@@ -94,6 +94,7 @@ private:
     void writeGroupLayer(QXmlStreamWriter &w, const GroupLayer &groupLayer);
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
+    void writeComponents(QXmlStreamWriter &w, const Components &components);
 
     QDir mDir;      // The directory in which the file is being saved
     GidMapper mGidMapper;
@@ -703,6 +704,7 @@ void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,
 
     writeLayerAttributes(w, objectGroup);
     writeProperties(w, objectGroup.properties());
+    writeComponents(w, objectGroup.components());
 
     for (const MapObject *mapObject : objectGroup.objects())
         writeObject(w, *mapObject);
@@ -768,6 +770,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         w.writeAttribute(QStringLiteral("visible"), QLatin1String(mapObject.isVisible() ? "1" : "0"));
 
     writeProperties(w, mapObject.properties());
+    writeComponents(w, mapObject.components());
 
     switch (mapObject.shape()) {
     case MapObject::Rectangle:
@@ -934,6 +937,32 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
             w.writeCharacters(value);
         else
             w.writeAttribute(QStringLiteral("value"), value);
+
+        w.writeEndElement();
+    }
+
+    w.writeEndElement();
+}
+
+void MapWriterPrivate::writeComponents(QXmlStreamWriter &w,
+                                       const Components &components)
+{
+    if (components.isEmpty())
+        return;
+
+    w.writeStartElement(QStringLiteral("components"));
+
+    QMapIterator<QString, Properties> it(components);
+    while (it.hasNext()) {
+        it.next();
+
+        const QString &componentName = it.key();
+        const Properties &properties = it.value();
+
+        w.writeStartElement(QStringLiteral("component"));
+        w.writeAttribute(QStringLiteral("name"), componentName);
+
+        writeProperties(w, properties);
 
         w.writeEndElement();
     }

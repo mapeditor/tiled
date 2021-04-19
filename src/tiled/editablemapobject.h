@@ -79,6 +79,8 @@ class EditableMapObject : public EditableObject
     Q_PROPERTY(Tiled::EditableMap *map READ map)
 //    Q_PROPERTY(ChangedProperties mChangedProperties)
 
+    // TODO: add components
+
 public:
     // Synchronized with MapObject::Shape
     enum Shape {

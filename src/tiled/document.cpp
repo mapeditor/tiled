@@ -144,6 +144,40 @@ void Document::removeProperty(Object *object, const QString &name)
     emit propertyRemoved(object, name);
 }
 
+void Document::addComponent(Object *object, const QString &name, const Properties &assignProperties)
+{
+    if (!object->hasComponent(name)) {
+        object->addComponent(name);
+
+        Properties &properties = object->componentProperties(name);
+        Tiled::mergeProperties(properties, assignProperties);
+
+        emit componentAdded(object, name);
+    }
+}
+
+void Document::removeComponent(const QString &name, Object *object)
+{
+    if (object->hasComponent(name)) {
+        object->removeComponent(name);
+
+        emit componentRemoved(object, name);
+    }
+}
+
+void Document::setComponentProperty(Object *object,
+                                    const QString &componentName,
+                                    const QString &propertyName,
+                                    const QVariant &value)
+{
+    if (object->hasComponent(componentName)) {
+        Properties &props = object->componentProperties(componentName);
+        props[propertyName] = value;
+
+        emit componentPropertyChanged(object, componentName, propertyName, value);
+    }
+}
+
 void Document::setIgnoreBrokenLinks(bool ignoreBrokenLinks)
 {
     if (mIgnoreBrokenLinks == ignoreBrokenLinks)

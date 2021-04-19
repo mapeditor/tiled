@@ -76,6 +76,8 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset)
     connect(this, &TilesetDocument::propertiesChanged,
             this, &TilesetDocument::onPropertiesChanged);
 
+    // TODO: add components?
+
     connect(mWangSetModel, &TilesetWangSetModel::wangSetRemoved,
             this, &TilesetDocument::onWangSetRemoved);
 }

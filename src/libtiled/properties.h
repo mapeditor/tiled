@@ -105,6 +105,8 @@ private:
  */
 using Properties = QVariantMap;
 
+using Components = QMap<QString, Properties>;
+
 /**
  * Collection of properties with information about the consistency of their
  * presence and value over several property collections.

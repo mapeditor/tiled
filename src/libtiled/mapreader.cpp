@@ -140,6 +140,9 @@ private:
     Properties readProperties();
     void readProperty(Properties *properties);
 
+    Components readComponents();
+    void readComponent(Components *components);
+
     MapReader *p;
 
     QString mError;
@@ -1239,6 +1242,9 @@ std::unique_ptr<MapObject> MapReaderPrivate::readObject()
             xml.skipCurrentElement();
             object->setShape(MapObject::Point);
             object->setPropertyChanged(MapObject::ShapeProperty);
+        } else if (xml.name() == QLatin1String("components")) {
+            Components c = readComponents();
+            object->setComponents(c);
         } else {
             readUnknownElement();
         }
@@ -1451,6 +1457,41 @@ void MapReaderPrivate::readProperty(Properties *properties)
     }
 
     properties->insert(propertyName, variant);
+}
+
+Components MapReaderPrivate::readComponents()
+{
+  Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("components"));
+
+  Components commponents;
+
+  while (xml.readNextStartElement()) {
+    if (xml.name() == QLatin1String("component"))
+      readComponent(&commponents);
+    else
+      readUnknownElement();
+  }
+
+  return commponents;
+}
+
+void MapReaderPrivate::readComponent(Components *components)
+{
+  Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("component"));
+
+  const QXmlStreamAttributes atts = xml.attributes();
+  QString componentName = atts.value(QLatin1String("name")).toString();
+
+  while (xml.readNext() != QXmlStreamReader::Invalid) {
+    if (xml.isEndElement()) {
+      break;
+    } else if (xml.name() == QLatin1String("properties")) {
+      Properties props = readProperties();
+      components->insert(componentName, props);
+    } else if (xml.isStartElement()) {
+      readUnknownElement();
+    }
+  }
 }
 
 
