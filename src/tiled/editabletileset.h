@@ -51,6 +51,7 @@ class EditableTileset : public EditableAsset
     Q_PROPERTY(Alignment objectAlignment READ objectAlignment WRITE setObjectAlignment)
     Q_PROPERTY(QPoint tileOffset READ tileOffset WRITE setTileOffset)
     Q_PROPERTY(Orientation orientation READ orientation WRITE setOrientation)
+    Q_PROPERTY(QColor transparentColor READ transparentColor WRITE setTransparentColor)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
     Q_PROPERTY(bool collection READ isCollection)
     Q_PROPERTY(QList<QObject*> selectedTiles READ selectedTiles WRITE setSelectedTiles)
@@ -102,6 +103,7 @@ public:
     Alignment objectAlignment() const;
     QPoint tileOffset() const;
     Orientation orientation() const;
+    QColor transparentColor() const;
     QColor backgroundColor() const;
     bool isCollection() const;
 
@@ -134,6 +136,7 @@ public slots:
     void setObjectAlignment(Alignment objectAlignment);
     void setTileOffset(QPoint tileOffset);
     void setOrientation(Orientation orientation);
+    void setTransparentColor(const QColor &color);
     void setBackgroundColor(const QColor &color);
 
 private:
@@ -231,6 +234,11 @@ inline QPoint EditableTileset::tileOffset() const
 inline EditableTileset::Orientation EditableTileset::orientation() const
 {
     return static_cast<Orientation>(tileset()->orientation());
+}
+
+inline QColor EditableTileset::transparentColor() const
+{
+    return tileset()->transparentColor();
 }
 
 inline QColor EditableTileset::backgroundColor() const
