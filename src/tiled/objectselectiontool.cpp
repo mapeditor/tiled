@@ -1092,7 +1092,7 @@ void ObjectSelectionTool::updateHover(const QPointF &pos)
 }
 
 QList<MapObject*> ObjectSelectionTool::objectsAboutToBeSelected(const QPointF &pos,
-                                                                Qt::KeyboardModifiers modifiers) const
+                                                                Qt::KeyboardModifiers /*modifiers*/) const
 {
     QList<MapObject*> selectedObjects;
 
@@ -1104,8 +1104,6 @@ QList<MapObject*> ObjectSelectionTool::objectsAboutToBeSelected(const QPointF &p
     // Make sure the rect has some contents, otherwise intersects returns false
     rect.setWidth(qMax<qreal>(1, rect.width()));
     rect.setHeight(qMax<qreal>(1, rect.height()));
-
-    QList<MapObject*> selectedObjects;
 
     const QList<QGraphicsItem *> &items = mapScene()->items(rect);
     for (QGraphicsItem *item : items) {
