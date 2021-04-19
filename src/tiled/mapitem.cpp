@@ -72,6 +72,7 @@ public:
         connect(prefs, &Preferences::showGridChanged, this, [this] (bool visible) { setVisible(visible); });
         connect(prefs, &Preferences::gridColorChanged, this, [this] { update(); });
         connect(prefs, &Preferences::gridMajorChanged, this, [this] { update(); });
+        connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] { update(); });
 
         // New layer may have a different offset
         connect(mapDocument, &MapDocument::currentLayerChanged,
@@ -170,7 +171,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     updateBoundingRect();
 
     mDarkRectangle->setPen(Qt::NoPen);
-    mDarkRectangle->setBrush(Qt::black);
+    mDarkRectangle->setBrush(prefs->backgroundFadeColor());
     mDarkRectangle->setOpacity(darkeningFactor);
     mDarkRectangle->setRect(QRectF(INT_MIN / 512, INT_MIN / 512,
                                    INT_MAX / 256, INT_MAX / 256));

@@ -159,6 +159,11 @@ QColor Preferences::gridColor() const
     return get<QColor>("Interface/GridColor", Qt::black);
 }
 
+QColor Preferences::backgroundFadeColor() const
+{
+    return get<QColor>("Interface/BackgroundFadeColor", Qt::black);
+}
+
 int Preferences::gridFine() const
 {
     return get<int>("Interface/GridFine", 4);
@@ -312,6 +317,12 @@ void Preferences::setGridColor(QColor gridColor)
 {
     setValue(QLatin1String("Interface/GridColor"), gridColor.name());
     emit gridColorChanged(gridColor);
+}
+
+void Preferences::setBackgroundFadeColor(QColor backgroundFadeColor)
+{
+    setValue(QLatin1String("Interface/BackgroundFadeColor"), backgroundFadeColo.name());
+    emit backgroundFadeColorChanged(backgroundFadeColor);
 }
 
 void Preferences::setGridFine(int gridFine)
