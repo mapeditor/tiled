@@ -62,15 +62,21 @@ public:
 
     void languageChanged() override;
 
+    void populateToolBar(QToolBar*) override;
+
 protected:
     void changeEvent(const ChangeEvent &event) override;
 
 private:
+    void languageChangedImpl();
+
     void updateHandles();
     void updateHandlesAndOrigin();
     void updateHandleVisibility();
 
     void objectsAboutToBeRemoved(const QList<MapObject *> &);
+
+    void setSelectionMode(Qt::ItemSelectionMode selectionMode);
 
     enum Action {
         NoAction,
@@ -135,16 +141,8 @@ private:
 
     QList<MapObject*> changingObjects() const;
 
-    struct MovingObject
-    {
-        MapObject *mapObject;
-        QPointF oldScreenPosition;
-
-        QPointF oldPosition;
-        QSizeF oldSize;
-        QPolygonF oldPolygon;
-        qreal oldRotation;
-    };
+    QAction *mSelectIntersected;
+    QAction *mSelectContained;
 
     std::unique_ptr<SelectionRectangle> mSelectionRectangle;
     std::unique_ptr<QGraphicsItem> mOriginIndicator;
@@ -160,12 +158,24 @@ private:
     RotateHandle *mClickedRotateHandle = nullptr;
     ResizeHandle *mClickedResizeHandle = nullptr;
 
+    struct MovingObject
+    {
+        MapObject *mapObject;
+        QPointF oldScreenPosition;
+
+        QPointF oldPosition;
+        QSizeF oldSize;
+        QPolygonF oldPolygon;
+        qreal oldRotation;
+    };
+
     QVector<MovingObject> mMovingObjects;
 
     QPointF mAlignPosition;
     QPointF mOriginPos;
     bool mResizingLimitHorizontal = false;
     bool mResizingLimitVertical = false;
+    Qt::ItemSelectionMode mSelectionMode;
     Mode mMode = Resize;
     Action mAction = NoAction;
     QPointF mStart;
@@ -173,6 +183,8 @@ private:
     QPointF mLastMousePos;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
+
+    static Preference<Qt::ItemSelectionMode> ourSelectionMode;
 };
 
 } // namespace Tiled
