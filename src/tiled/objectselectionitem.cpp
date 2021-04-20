@@ -134,11 +134,12 @@ void MapObjectOutline::paint(QPainter *painter,
     };
 
     const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
-    const qreal dashLength = std::ceil(Utils::dpiScaled(3) * devicePixelRatio);
+    const qreal dashLength = std::ceil(Utils::dpiScaled(2) * devicePixelRatio);
 
     // Draw a solid white line
-    QPen pen(Qt::white, devicePixelRatio, Qt::SolidLine);
+    QPen pen(Qt::white, 1.5 * devicePixelRatio, Qt::SolidLine);
     pen.setCosmetic(true);
+    painter->setRenderHint(QPainter::Antialiasing);
     painter->setPen(pen);
     painter->drawLines(lines, 4);
 
