@@ -262,9 +262,9 @@ void MapItem::updateLayerPositions()
 {
     const MapScene *mapScene = static_cast<MapScene*>(scene());
 
-    for (LayerItem *item : qAsConst(mLayerItems)) {
-        const Layer &layer = *item->layer();
-        item->setPos(layer.offset() + mapScene->parallaxOffset(layer));
+    for (LayerItem *layerItem : qAsConst(mLayerItems)) {
+        const Layer &layer = *layerItem->layer();
+        layerItem->setPos(layer.offset() + mapScene->parallaxOffset(layer));
     }
 
     if (mDisplayMode == Editable) {
@@ -713,6 +713,12 @@ LayerItem *MapItem::createLayerItem(Layer *layer)
     }
 
     Q_ASSERT(layerItem);
+
+    // If we're not yet part of the MapScene, it means this happens in the
+    // MapItem constructor and the layer will be positioned by a call to
+    // updateLayerPositions from the MapScene.
+    if (const MapScene *mapScene = static_cast<MapScene*>(scene()))
+        layerItem->setPos(layer->offset() + mapScene->parallaxOffset(*layer));
 
     layerItem->setVisible(layer->isVisible());
     layerItem->setEnabled(mDisplayMode == Editable);

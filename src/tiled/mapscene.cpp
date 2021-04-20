@@ -313,6 +313,7 @@ MapItem *MapScene::takeOrCreateMapItem(const MapDocumentPtr &mapDocument, MapIte
         connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
         connect(this, &MapScene::parallaxParametersChanged, mapItem, &MapItem::updateLayerPositions);
         addItem(mapItem);
+        mapItem->updateLayerPositions();
     } else {
         mapItem->setDisplayMode(displayMode);
     }
