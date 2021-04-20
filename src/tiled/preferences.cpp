@@ -321,7 +321,7 @@ void Preferences::setGridColor(QColor gridColor)
 
 void Preferences::setBackgroundFadeColor(QColor backgroundFadeColor)
 {
-    setValue(QLatin1String("Interface/BackgroundFadeColor"), backgroundFadeColo.name());
+    setValue(QLatin1String("Interface/BackgroundFadeColor"), backgroundFadeColor.name());
     emit backgroundFadeColorChanged(backgroundFadeColor);
 }
 
