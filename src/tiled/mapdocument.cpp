@@ -1395,10 +1395,11 @@ void MapDocument::duplicateObjects(const QList<MapObject *> &objects)
     QVector<AddMapObjects::Entry> objectsToAdd;
     objectsToAdd.reserve(objects.size());
 
-    for (const MapObject *mapObject : objects) {
+    for (MapObject *mapObject : objects) {
         MapObject *clone = mapObject->clone();
         clone->resetId();
         objectsToAdd.append(AddMapObjects::Entry { clone, mapObject->objectGroup() });
+        objectsToAdd.last().index = mapObject->objectGroup()->objects().indexOf(mapObject) + 1;
     }
 
     auto command = new AddMapObjects(this, objectsToAdd);
