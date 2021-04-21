@@ -807,7 +807,7 @@
     <message>
         <location line="+8"/>
         <source>Show &amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>Показване на &amp;света</translation>
     </message>
     <message>
         <location line="-248"/>
@@ -902,12 +902,12 @@
     <message>
         <location line="+33"/>
         <source>&amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Свят</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>&amp;Open File or Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Отваряне на файл или проект…</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -1686,17 +1686,17 @@ Line %1, column %2</source>
     <message>
         <location line="-133"/>
         <source>Crash Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Докладване на сривове</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Enable sending anonymous crash reports</source>
-        <translation type="unfinished"></translation>
+        <translation>Включване на изпращането на анонимни доклади за сривове</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;още информация&lt;/a&gt;)</translation>
     </message>
     <message>
         <location line="+97"/>
@@ -2771,32 +2771,32 @@ Line %1, column %2</source>
         <location filename="../src/tiled/scriptprocess.cpp" line="+38"/>
         <location line="+10"/>
         <source>Error running %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при изпълнението на %1: %2</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Error running &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при изпълнението на „%1“: %2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Process &apos;%1 %2&apos; finished with exit code %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Процесът „%1 %2“ завърши с код %3.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>The standard output was:</source>
-        <translation type="unfinished"></translation>
+        <translation>На стандартния изход имаше:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>The standard error output was:</source>
-        <translation type="unfinished"></translation>
+        <translation>На стандартния изход за грешки имаше:</translation>
     </message>
     <message>
         <location line="+118"/>
         <source>Access to Process object that was already closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Достъп до процес, който вече е приключил.</translation>
     </message>
 </context>
 <context>
@@ -4217,7 +4217,7 @@ Please select specific format.</source>
         <location line="-1513"/>
         <location line="+1514"/>
         <source>Lock Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Заключване на оформлението</translation>
     </message>
     <message>
         <location line="-1503"/>
@@ -4323,17 +4323,17 @@ Please select specific format.</source>
     <message>
         <location line="+140"/>
         <source>&lt;html&gt;Enable anonymous crash reporting? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Искате ли да включите анонимното докладване на сривове? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;още информация&lt;/a&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Да</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Не</translation>
     </message>
     <message>
         <location line="+241"/>
@@ -4973,7 +4973,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangdock.cpp" line="+72"/>
         <source>&lt;p&gt;No tileset with Terrain Sets available.&lt;/p&gt;&lt;p&gt;Open a tileset with a Terrain Set or set up a new Terrain Set to be able to use the Terrain Brush or the Terrain Fill Mode.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Няма налични плочни набори съдържащи теренен набор.&lt;/p&gt;&lt;p&gt;Отворете плочен набор с теренен набор, или създайте нов теренен набор, за да можете да използвате Теренната четка или Режима за запълване на терен.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -5029,12 +5029,12 @@ Please select specific format.</source>
     <message>
         <location line="+166"/>
         <source>Select Touched Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Избиране на докосваните обекти</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select Enclosed Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Избиране на заградените обекти</translation>
     </message>
     <message numerus="yes">
         <location line="+599"/>
@@ -5827,7 +5827,7 @@ Please select specific format.</source>
     <message>
         <location line="+14"/>
         <source>Error decoding file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при декодирането на файл: %1</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -7299,7 +7299,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/plugins/yy/yyplugin.cpp" line="+163"/>
         <source>GameMaker Studio 2 files (*.yy)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлове на GameMaker Studio 2 (*.yy)</translation>
     </message>
 </context>
 <context>
@@ -7442,7 +7442,7 @@ Please select specific format.</source>
     <message>
         <location line="+8"/>
         <source>Fit Map In View</source>
-        <translation type="unfinished"></translation>
+        <translation>Побиране на картата в изгледа</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -7452,7 +7452,7 @@ Please select specific format.</source>
     <message>
         <location line="+6"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Изглед</translation>
     </message>
     <message>
         <location line="+4"/>
