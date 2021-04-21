@@ -616,12 +616,12 @@
     <message>
         <location line="+95"/>
         <source>&amp;Unload World</source>
-        <translation type="unfinished">Ta bort värld</translation>
+        <translation>&amp;Avlasta Värld</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Save World</source>
-        <translation type="unfinished">Rädda världen</translation>
+        <translation>&amp;Spara Värld</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -631,7 +631,7 @@
     <message>
         <location line="+4"/>
         <source>Show Object &amp;Names</source>
-        <translation>Visa objekt&amp;namn</translation>
+        <translation>Visa objekt &amp;namn</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -646,7 +646,7 @@
     <message>
         <location line="+58"/>
         <source>&amp;Save</source>
-        <translation>S&amp;para</translation>
+        <translation>&amp;Spara</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -661,7 +661,7 @@
     <message>
         <location line="+12"/>
         <source>&amp;Paste</source>
-        <translation>K&amp;listra in</translation>
+        <translation>&amp;Klistra in</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -691,7 +691,7 @@
     <message>
         <location line="+12"/>
         <source>Save &amp;As...</source>
-        <translation>Spara s&amp;om...</translation>
+        <translation>Spara &amp;som...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -701,7 +701,7 @@
     <message>
         <location line="+9"/>
         <source>&amp;Close</source>
-        <translation>S&amp;täng</translation>
+        <translation>&amp;Stäng</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -731,12 +731,12 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation type="unfinished">Läs in värld...</translation>
+        <translation>&amp;Läs in värld...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;New World...</source>
-        <translation type="unfinished">Ny värld...</translation>
+        <translation>&amp;Ny värld...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -807,7 +807,7 @@
     <message>
         <location line="+8"/>
         <source>Show &amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa &amp;Värld</translation>
     </message>
     <message>
         <location line="-248"/>
@@ -902,12 +902,12 @@
     <message>
         <location line="+33"/>
         <source>&amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Värld</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>&amp;Open File or Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Öppna Fil eller Projekt...</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -1686,17 +1686,17 @@ Rad %1, kolumn %2</translation>
     <message>
         <location line="-133"/>
         <source>Crash Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Kraschrapportering</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Enable sending anonymous crash reports</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivera sändning av anonyma kraschrapporter</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;mer information&lt;/a&gt;)</translation>
     </message>
     <message>
         <location line="+97"/>
@@ -2771,32 +2771,32 @@ Rad %1, kolumn %2</translation>
         <location filename="../src/tiled/scriptprocess.cpp" line="+38"/>
         <location line="+10"/>
         <source>Error running %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel vid körning av %1: %2</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Error running &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel vid körning av &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Process &apos;%1 %2&apos; finished with exit code %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Processen &apos;%1 %2&apos; avslutades med avslutningskoden %3.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>The standard output was:</source>
-        <translation type="unfinished"></translation>
+        <translation>Standardutmatningen var:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>The standard error output was:</source>
-        <translation type="unfinished"></translation>
+        <translation>Standardfelutmatningen var:</translation>
     </message>
     <message>
         <location line="+118"/>
         <source>Access to Process object that was already closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Åtkomst till Process-objekt som redan var stängt.</translation>
     </message>
 </context>
 <context>
@@ -4217,7 +4217,7 @@ Var god ange det specifika formatet.</translation>
         <location line="-1513"/>
         <location line="+1514"/>
         <source>Lock Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Låslayout</translation>
     </message>
     <message>
         <location line="-1503"/>
@@ -4323,17 +4323,17 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+140"/>
         <source>&lt;html&gt;Enable anonymous crash reporting? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Aktivera anonym kraschrapportering? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;mer information&lt;/a&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ja</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nej</translation>
     </message>
     <message>
         <location line="+241"/>
@@ -4973,7 +4973,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location filename="../src/tiled/wangdock.cpp" line="+72"/>
         <source>&lt;p&gt;No tileset with Terrain Sets available.&lt;/p&gt;&lt;p&gt;Open a tileset with a Terrain Set or set up a new Terrain Set to be able to use the Terrain Brush or the Terrain Fill Mode.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Ingen brickuppsättning med terränguppsättningar tillgänglig.&lt;/p&gt;&lt;p&gt;Öppna en brickuppsättning med en terränguppsättning eller ställ in en ny terränguppsättning för att kunna använda terrängpenseln eller läget för terrängfyllning.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -5029,12 +5029,12 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+166"/>
         <source>Select Touched Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj rörda objekt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select Enclosed Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj slutna objekt</translation>
     </message>
     <message numerus="yes">
         <location line="+599"/>
@@ -5413,12 +5413,12 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+5"/>
         <source>Output Chunk Width</source>
-        <translation type="unfinished">Bredd på output chunk</translation>
+        <translation>Bredd på utdatasegment</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Output Chunk Height</source>
-        <translation type="unfinished">Höjd på output chunk</translation>
+        <translation>Höjd för utdatasegment</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -5605,7 +5605,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+14"/>
         <source>Object Alignment</source>
-        <translation type="unfinished">Objektgruppering</translation>
+        <translation>Objektinriktning</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5827,7 +5827,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+14"/>
         <source>Error decoding file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel vid avkodning av fil: %1</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6300,7 +6300,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+1"/>
         <source>Dynamically Wrap Tiles</source>
-        <translation type="unfinished">Vikna rutor dynamiskt</translation>
+        <translation>Radbryt dynamiskt rutor</translation>
     </message>
     <message>
         <location line="+252"/>
@@ -6368,7 +6368,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+1"/>
         <source>Dynamically Wrap Tiles</source>
-        <translation type="unfinished">Vikna rutor dynamiskt</translation>
+        <translation>Radbryt dynamiskt rutor</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -6895,7 +6895,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+59"/>
         <source>Change Object Alignment</source>
-        <translation type="unfinished">Ändra objektjustering</translation>
+        <translation>Ändra objektjustering</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -7103,7 +7103,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+10"/>
         <source>Change Chunk Size</source>
-        <translation type="unfinished">Ändra storlek på chunk</translation>
+        <translation>Ändra bitstorlek</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -7291,7 +7291,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+7"/>
         <source>Open with System Editor</source>
-        <translation type="unfinished">Öppna med Systemsredigeraren</translation>
+        <translation>Öppna med systemredigeraren</translation>
     </message>
 </context>
 <context>
@@ -7299,7 +7299,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location filename="../src/plugins/yy/yyplugin.cpp" line="+163"/>
         <source>GameMaker Studio 2 files (*.yy)</source>
-        <translation type="unfinished"></translation>
+        <translation>GameMaker Studio 2-filer (*.yy)</translation>
     </message>
 </context>
 <context>
@@ -7442,7 +7442,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+8"/>
         <source>Fit Map In View</source>
-        <translation type="unfinished"></translation>
+        <translation>Anpassa kartan i vyn</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -7452,7 +7452,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+6"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa</translation>
     </message>
     <message>
         <location line="+4"/>
