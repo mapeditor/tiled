@@ -1,3 +1,34 @@
+### Tiled 1.6.0 (... 2021)
+
+* Added object selection preview
+* Added toggle to select enclosed rather than touched objects (#3023)
+* Added Sentry crash handler to Linux AppImage (disabled by default)
+* Added %tileid variable for custom commands on tilesets (#3026)
+* Added option to lock the position of views and tool bars
+* Added toggle to show/hide other maps in the same world (#2859)
+* Added a helpful text to Terrain Sets view when it is empty (#3015)
+* Allow opening projects from the File menu (#3000)
+* Made the terrains list in the Terrain Sets view not collapsible (#3015)
+* Automatically select the first terrain when selecting a Terrain Set (#3015)
+* When duplicating objects, place the duplicates next to the originals (#2998)
+* Tweaked selection outlines to be a little fatter and adjust to DPI
+* Write --export-formats output to stdout instead of stderr (#3002)
+* Allow hiding objects in the Tile Collision Editor
+* Scripting: Added missing Tileset.transparentColor property
+* Fixed 'Detach templates' export option to add tilesets when needed
+* Fixed Terrain Brush behavior on map edges
+* Fixed Terrain Brush behavior for sets transitioning to nothing
+* Fixed loss of edit focus when hovering tileset while assigning terrain (#3015)
+* Fixed shortcuts for flipping or rotating the current terrain pattern
+* Fixed switching to Terrain Brush when clicked terrain is already selected (#3015)
+* Fixed state of "dynamic wrapping" toggle button on startup
+* Fixed parallax layer positioning when reordering layers (#3009)
+* Windows: Re-enabled code signing by SignPath (was missing for Tiled 1.5)
+* snap: Added 'removable-media' plug, for accessing USB drives
+* snap: "Open Containing Folder" action now also selects the file
+* YY plugin: Fixed plugin loading issue for qmake builds
+* libtiled-java: Optimized for multithreaded usage (by Samuel Manflame, #3004)
+
 ### Tiled 1.5.0 (23 March 2021)
 
 * Unified Wang and Terrain tools (backwards incompatible change!)

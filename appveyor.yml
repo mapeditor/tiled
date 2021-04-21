@@ -1,5 +1,5 @@
 clone_depth: 200
-version: '1.4.{build}'
+version: '1.6.{build}'
 image:
   - Visual Studio 2015
   - Visual Studio 2019
