@@ -616,7 +616,7 @@
     <message>
         <location line="+100"/>
         <source>&amp;Save World</source>
-        <translation>ワールドを保存</translation>
+        <translation type="unfinished">ワールドを保存</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -822,7 +822,7 @@
     <message>
         <location line="+142"/>
         <source>&amp;Unload World</source>
-        <translation>ワールドを閉じる</translation>
+        <translation type="unfinished">ワールドを閉じる</translation>
     </message>
     <message>
         <location line="-67"/>
@@ -912,7 +912,7 @@
     <message>
         <location line="+142"/>
         <source>&amp;New World...</source>
-        <translation>新しいワールド...</translation>
+        <translation type="unfinished">新しいワールド...</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -962,7 +962,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation>ワールドを読み込み...</translation>
+        <translation type="unfinished">ワールドを読み込み...</translation>
     </message>
     <message>
         <location line="+13"/>

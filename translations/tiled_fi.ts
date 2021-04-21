@@ -616,12 +616,12 @@
     <message>
         <location line="+95"/>
         <source>&amp;Unload World</source>
-        <translation>Poista maailma</translation>
+        <translation type="unfinished">Poista maailma</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Save World</source>
-        <translation>Tallenna maailma</translation>
+        <translation type="unfinished">Tallenna maailma</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -731,12 +731,12 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation>Lataa maailma...</translation>
+        <translation type="unfinished">Lataa maailma...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;New World...</source>
-        <translation>Uusi maailma...</translation>
+        <translation type="unfinished">Uusi maailma...</translation>
     </message>
     <message>
         <location line="+8"/>

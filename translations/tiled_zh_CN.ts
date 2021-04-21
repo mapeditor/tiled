@@ -618,7 +618,7 @@
     <message>
         <location line="+100"/>
         <source>&amp;Save World</source>
-        <translation>保存世界</translation>
+        <translation type="unfinished">保存世界</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -824,7 +824,7 @@
     <message>
         <location line="+142"/>
         <source>&amp;Unload World</source>
-        <translation>卸载世界</translation>
+        <translation type="unfinished">卸载世界</translation>
     </message>
     <message>
         <location line="-67"/>
@@ -914,7 +914,7 @@
     <message>
         <location line="+142"/>
         <source>&amp;New World...</source>
-        <translation>新的世界...</translation>
+        <translation type="unfinished">新的世界...</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -964,7 +964,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation>载入世界...</translation>
+        <translation type="unfinished">载入世界...</translation>
     </message>
     <message>
         <location line="+13"/>

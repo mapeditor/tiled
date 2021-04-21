@@ -609,12 +609,12 @@
     <message>
         <location line="+95"/>
         <source>&amp;Unload World</source>
-        <translation>Unload World</translation>
+        <translation type="unfinished">Unload World</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Save World</source>
-        <translation>Save World</translation>
+        <translation type="unfinished">Save World</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -724,12 +724,12 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation>Load World...</translation>
+        <translation type="unfinished">Load World...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;New World...</source>
-        <translation>New World...</translation>
+        <translation type="unfinished">New World...</translation>
     </message>
     <message>
         <location line="+8"/>

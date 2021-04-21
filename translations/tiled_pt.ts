@@ -611,12 +611,12 @@
     <message>
         <location line="+95"/>
         <source>&amp;Unload World</source>
-        <translation>Descarregar Mundo</translation>
+        <translation type="unfinished">Descarregar Mundo</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Save World</source>
-        <translation>Guardar Mundo</translation>
+        <translation type="unfinished">Guardar Mundo</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -711,7 +711,7 @@
     <message>
         <location line="+150"/>
         <source>&amp;New World...</source>
-        <translation>Novo Mundo...</translation>
+        <translation type="unfinished">Novo Mundo...</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -807,7 +807,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation>Carregar Mundo...</translation>
+        <translation type="unfinished">Carregar Mundo...</translation>
     </message>
     <message>
         <location line="+13"/>

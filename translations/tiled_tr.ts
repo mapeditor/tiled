@@ -616,12 +616,12 @@
     <message>
         <location line="+95"/>
         <source>&amp;Unload World</source>
-        <translation>Dünyayı Boşalt</translation>
+        <translation type="unfinished">Dünyayı Boşalt</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Save World</source>
-        <translation>Dünyayı Kaydet</translation>
+        <translation type="unfinished">Dünyayı Kaydet</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -731,12 +731,12 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation>Dünya Yükle...</translation>
+        <translation type="unfinished">Dünya Yükle...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;New World...</source>
-        <translation>Yeni Dünya...</translation>
+        <translation type="unfinished">Yeni Dünya...</translation>
     </message>
     <message>
         <location line="+8"/>

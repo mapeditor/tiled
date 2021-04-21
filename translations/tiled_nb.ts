@@ -617,12 +617,12 @@
     <message>
         <location line="+95"/>
         <source>&amp;Unload World</source>
-        <translation>Last ut verden</translation>
+        <translation type="unfinished">Last ut verden</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Save World</source>
-        <translation>Lagre verden</translation>
+        <translation type="unfinished">Lagre verden</translation>
     </message>
     <message>
         <location line="-86"/>

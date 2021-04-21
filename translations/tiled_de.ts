@@ -626,7 +626,7 @@
     <message>
         <location line="+95"/>
         <source>&amp;Unload World</source>
-        <translation>Welt entladen</translation>
+        <translation type="unfinished">Welt entladen</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -807,7 +807,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation>Welt laden...</translation>
+        <translation type="unfinished">Welt laden...</translation>
     </message>
     <message>
         <location line="+13"/>

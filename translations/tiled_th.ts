@@ -619,7 +619,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Save World</source>
-        <translation>บันทึกโลก</translation>
+        <translation type="unfinished">บันทึกโลก</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -729,12 +729,12 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation>โหลดโลก...</translation>
+        <translation type="unfinished">โหลดโลก...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;New World...</source>
-        <translation>โลกใหม่...</translation>
+        <translation type="unfinished">โลกใหม่...</translation>
     </message>
     <message>
         <location line="+8"/>

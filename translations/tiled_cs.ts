@@ -618,7 +618,7 @@
     <message>
         <location line="+100"/>
         <source>&amp;Save World</source>
-        <translation>Uložit svět</translation>
+        <translation type="unfinished">Uložit svět</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -824,7 +824,7 @@
     <message>
         <location line="+142"/>
         <source>&amp;Unload World</source>
-        <translation>Zavřít svět</translation>
+        <translation type="unfinished">Zavřít svět</translation>
     </message>
     <message>
         <location line="-67"/>
@@ -914,7 +914,7 @@
     <message>
         <location line="+142"/>
         <source>&amp;New World...</source>
-        <translation>Nový svět...</translation>
+        <translation type="unfinished">Nový svět...</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -964,7 +964,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation>Načíst svět...</translation>
+        <translation type="unfinished">Načíst svět...</translation>
     </message>
     <message>
         <location line="+13"/>

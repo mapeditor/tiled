@@ -621,7 +621,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Save World</source>
-        <translation>világ mentése</translation>
+        <translation type="unfinished">világ mentése</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -731,12 +731,12 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation>Világ betöltése...</translation>
+        <translation type="unfinished">Világ betöltése...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;New World...</source>
-        <translation>Új világ...</translation>
+        <translation type="unfinished">Új világ...</translation>
     </message>
     <message>
         <location line="+8"/>
