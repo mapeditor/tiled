@@ -985,10 +985,7 @@ void MainWindow::dropEvent(QDropEvent *e)
         if (localFile.isEmpty())
             continue;
 
-        if (localFile.endsWith(QLatin1String(".tiled-project")))
-            openProjectFile(localFile);
-        else
-            openFile(localFile);
+        openFile(localFile);
     }
 }
 
@@ -1043,9 +1040,8 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     if (fileName.isEmpty())
         return false;
 
-    // Select existing document if this file is already open
-    if (mDocumentManager->switchToDocument(fileName))
-        return true;
+    if (fileName.endsWith(QLatin1String(".tiled-project")))
+        return openProjectFile(fileName);
 
     // HACK: World files can't open as document, but we can instead open the
     // first map in the world.
@@ -1070,6 +1066,10 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
             return openFile(world->firstMap());
         }
     }
+
+    // Select existing document if this file is already open
+    if (mDocumentManager->switchToDocument(fileName))
+        return true;
 
     QString error;
     DocumentPtr document = mDocumentManager->loadDocument(fileName, fileFormat, &error);
@@ -1110,9 +1110,16 @@ void MainWindow::openFileDialog()
 
     FormatHelper<FileFormat> helper(FileFormat::Read, allFilesFilter);
 
+    // Make it clear that world and project files can also be opened here (see openFile)
+    auto filter = helper.filter();
+    filter.append(QStringLiteral(";;"));
+    filter.append(tr("World files (*.world)"));
+    filter.append(QStringLiteral(";;"));
+    filter.append(tr("Tiled Projects (*.tiled-project)"));
+
     const auto fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
                                                          mDocumentManager->fileDialogStartLocation(),
-                                                         helper.filter(),
+                                                         filter,
                                                          &selectedFilter);
     if (fileNames.isEmpty())
         return;
@@ -1399,7 +1406,7 @@ void MainWindow::openProject()
         openProjectFile(fileName);
 }
 
-void MainWindow::openProjectFile(const QString &fileName)
+bool MainWindow::openProjectFile(const QString &fileName)
 {
     Project project;
 
@@ -1407,10 +1414,10 @@ void MainWindow::openProjectFile(const QString &fileName)
         QMessageBox::critical(window(),
                               tr("Error Opening Project"),
                               tr("An error occurred while opening the project."));
-        return;
+        return false;
     }
 
-    switchProject(std::move(project));
+    return switchProject(std::move(project));
 }
 
 void MainWindow::saveProjectAs()
@@ -1477,13 +1484,13 @@ void MainWindow::closeProject()
     switchProject(Project{});
 }
 
-void MainWindow::switchProject(Project project)
+bool MainWindow::switchProject(Project project)
 {
     auto prefs = Preferences::instance();
     emit prefs->aboutToSwitchSession();
 
     if (!closeAllFiles())
-        return;
+        return false;
 
     WorldManager::instance().unloadAllWorlds();
 
@@ -1500,6 +1507,7 @@ void MainWindow::switchProject(Project project)
     restoreSession();
     updateWindowTitle();
     updateActions();
+    return true;
 }
 
 void MainWindow::restoreSession()

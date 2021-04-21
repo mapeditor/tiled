@@ -237,7 +237,7 @@
   </widget>
   <action name="actionOpen">
    <property name="text">
-    <string>&amp;Open...</string>
+    <string>&amp;Open File or Project...</string>
    </property>
   </action>
   <action name="actionSave">

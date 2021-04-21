@@ -127,10 +127,10 @@ private:
     bool closeAllFiles();
 
     void openProject();
-    void openProjectFile(const QString &fileName);
+    bool openProjectFile(const QString &fileName);
     void saveProjectAs();
     void closeProject();
-    void switchProject(Project project);
+    bool switchProject(Project project);
     void restoreSession();
     void projectProperties();
 
