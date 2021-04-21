@@ -616,12 +616,12 @@
     <message>
         <location line="+95"/>
         <source>&amp;Unload World</source>
-        <translation type="unfinished">Dünyayı Boşalt</translation>
+        <translation>Dünyayı &amp;Boşalt</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Save World</source>
-        <translation type="unfinished">Dünyayı Kaydet</translation>
+        <translation>Dünyayı &amp;Kaydet</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -731,12 +731,12 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation type="unfinished">Dünya Yükle...</translation>
+        <translation>Dünya &amp;Yükle...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;New World...</source>
-        <translation type="unfinished">Yeni Dünya...</translation>
+        <translation>Yeni &amp;Dünya...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -751,7 +751,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Close Project</source>
-        <translation>Projeyi &amp;Kapa</translation>
+        <translation>Projeyi &amp;Kapat</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -807,7 +807,7 @@
     <message>
         <location line="+8"/>
         <source>Show &amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>Dünyayı &amp;Göster</translation>
     </message>
     <message>
         <location line="-248"/>
@@ -903,12 +903,12 @@
     <message>
         <location line="+33"/>
         <source>&amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dünya</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>&amp;Open File or Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya veya Proje &amp;Aç...</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -1689,17 +1689,17 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="-133"/>
         <source>Crash Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Çökme Bildirimi</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Enable sending anonymous crash reports</source>
-        <translation type="unfinished"></translation>
+        <translation>Anonim çökme bildirimleri göndermeyi etkinleştir</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;daha fazla bilgi&lt;/a&gt;)</translation>
     </message>
     <message>
         <location line="+97"/>
@@ -2774,32 +2774,32 @@ Satır %1, sütun %2</translation>
         <location filename="../src/tiled/scriptprocess.cpp" line="+38"/>
         <location line="+10"/>
         <source>Error running %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 çalıştırılırken hata oluştu: %2</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Error running &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; çalıştırılırken hata oluştu: %2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Process &apos;%1 %2&apos; finished with exit code %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 %2&apos; işlemi %3 çıkış koduyla tamamlandı.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>The standard output was:</source>
-        <translation type="unfinished"></translation>
+        <translation>Standart çıktı şuydu:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>The standard error output was:</source>
-        <translation type="unfinished"></translation>
+        <translation>Standart hata çıktısı şuydu:</translation>
     </message>
     <message>
         <location line="+118"/>
         <source>Access to Process object that was already closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaten kapatılmış olan İşlem nesnesine erişim.</translation>
     </message>
 </context>
 <context>
@@ -2971,12 +2971,14 @@ Satır %1, sütun %2</translation>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>%n Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
         <translation>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
             <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
@@ -3054,6 +3056,7 @@ Satır %1, sütun %2</translation>
         <location line="+6"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
             <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
@@ -3768,6 +3771,7 @@ Satır %1, sütun %2</translation>
         <source>Move %n Point(s)</source>
         <translation>
             <numerusform>%n Noktayı Taşı</numerusform>
+            <numerusform>%n Noktayı Taşı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3775,6 +3779,7 @@ Satır %1, sütun %2</translation>
         <location line="+94"/>
         <source>Delete %n Node(s)</source>
         <translation>
+            <numerusform>%n Boğumu Sil</numerusform>
             <numerusform>%n Boğumu Sil</numerusform>
         </translation>
     </message>
@@ -3912,12 +3917,14 @@ Onu değiştirmek istiyor musunuz?</translation>
         <source>%n error(s)</source>
         <translation>
             <numerusform>%n hata</numerusform>
+            <numerusform>%n hata</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>%n warning(s)</source>
         <translation>
+            <numerusform>%n uyarı</numerusform>
             <numerusform>%n uyarı</numerusform>
         </translation>
     </message>
@@ -3984,7 +3991,8 @@ Onu değiştirmek istiyor musunuz?</translation>
         <location line="+86"/>
         <source>Drag Layer(s)</source>
         <translation>
-            <numerusform>%n Katmanı Sürükle</numerusform>
+            <numerusform>Katmanı Sürükle</numerusform>
+            <numerusform>Katmanları Sürükle</numerusform>
         </translation>
     </message>
     <message>
@@ -4212,7 +4220,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="-1513"/>
         <location line="+1514"/>
         <source>Lock Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzeni Kilitle</translation>
     </message>
     <message>
         <location line="-1503"/>
@@ -4318,17 +4326,17 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+140"/>
         <source>&lt;html&gt;Enable anonymous crash reporting? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Anonim çökme bildirimi etkinleştirilsin mi? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;daha fazla bilgi&lt;/a&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Evet</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hayır</translation>
     </message>
     <message>
         <location line="+241"/>
@@ -4419,6 +4427,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>%n Nesneyi Döndür</numerusform>
+            <numerusform>%n Nesneyi Döndür</numerusform>
         </translation>
     </message>
     <message>
@@ -4448,6 +4457,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Group %n Layer(s)</source>
         <translation>
             <numerusform>%n Katmanı Grupla</numerusform>
+            <numerusform>%n Katmanı Grupla</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4455,12 +4465,14 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Ungroup %n Layer(s)</source>
         <translation>
             <numerusform>%n Katmanı Gruptan Çıkar</numerusform>
+            <numerusform>%n Katmanı Gruptan Çıkar</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+46"/>
         <source>Duplicate %n Layer(s)</source>
         <translation>
+            <numerusform>%n Katmanı Çoğalt</numerusform>
             <numerusform>%n Katmanı Çoğalt</numerusform>
         </translation>
     </message>
@@ -4479,6 +4491,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+98"/>
         <source>Remove %n Layer(s)</source>
         <translation>
+            <numerusform>%n Katmanı Kaldır</numerusform>
             <numerusform>%n Katmanı Kaldır</numerusform>
         </translation>
     </message>
@@ -4507,12 +4520,14 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>%n Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+13"/>
         <source>Remove %n Object(s)</source>
         <translation>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
             <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
@@ -4521,6 +4536,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4528,12 +4544,14 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Move %n Object(s) Up</source>
         <translation>
             <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
+            <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
         <translation>
+            <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
             <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
         </translation>
     </message>
@@ -4692,12 +4710,14 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>%n Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
         <translation>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
             <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
@@ -4739,6 +4759,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+17"/>
         <source>Add %n Tileset(s)</source>
         <translation>
+            <numerusform>%n Desen Seti Ekle</numerusform>
             <numerusform>%n Desen Seti Ekle</numerusform>
         </translation>
     </message>
@@ -4955,7 +4976,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/wangdock.cpp" line="+72"/>
         <source>&lt;p&gt;No tileset with Terrain Sets available.&lt;/p&gt;&lt;p&gt;Open a tileset with a Terrain Set or set up a new Terrain Set to be able to use the Terrain Brush or the Terrain Fill Mode.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Zemin Setlerine sahip desen seti yok.&lt;/p&gt;&lt;p&gt;Zemin Fırçası veya Zemin Dolgu Modunu kullanabilmek için bir Zemin Seti ile bir desen seti açın veya yeni bir Zemin Seti kurun.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -4985,6 +5006,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Move %n Object(s)</source>
         <translation>
             <numerusform>%n Nesneyi Taşı</numerusform>
+            <numerusform>%n Nesneyi Taşı</numerusform>
         </translation>
     </message>
     <message>
@@ -5010,17 +5032,18 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+166"/>
         <source>Select Touched Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokunulan Nesneleri Seç</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select Enclosed Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapalı Nesneleri Seç</translation>
     </message>
     <message numerus="yes">
         <location line="+599"/>
         <source>Rotate %n Object(s)</source>
         <translation>
+            <numerusform>%n Nesneyi Döndür</numerusform>
             <numerusform>%n Nesneyi Döndür</numerusform>
         </translation>
     </message>
@@ -5028,6 +5051,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+275"/>
         <source>Resize %n Object(s)</source>
         <translation>
+            <numerusform>%n Nesneyi Boyutlandır</numerusform>
             <numerusform>%n Nesneyi Boyutlandır</numerusform>
         </translation>
     </message>
@@ -5144,6 +5168,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
 </context>
@@ -5242,14 +5267,16 @@ Lütfen belirli bir biçim seçin.</translation>
         <location filename="../src/tiled/propertiesdock.cpp" line="+247"/>
         <source>Paste Property/Properties</source>
         <translation>
-            <numerusform>%n Özelliği Yapıştır</numerusform>
+            <numerusform>Özelliği/Özellikleri Yapıştır</numerusform>
+            <numerusform>Özelliği/Özellikleri Yapıştır</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+50"/>
         <source>Remove Property/Properties</source>
         <translation>
-            <numerusform>%n Özelliği Kaldır</numerusform>
+            <numerusform>Özelliği/Özellikleri Kaldır</numerusform>
+            <numerusform>Özelliği/Özellikleri Kaldır</numerusform>
         </translation>
     </message>
     <message>
@@ -5302,7 +5329,8 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="-62"/>
         <source>Convert Property/Properties</source>
         <translation>
-            <numerusform>%n Özelliği Dönüştür</numerusform>
+            <numerusform>Özelliği/Özellikleri Dönüştür</numerusform>
+            <numerusform>Özelliği/Özellikleri Dönüştür</numerusform>
         </translation>
     </message>
     <message>
@@ -5802,7 +5830,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+14"/>
         <source>Error decoding file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyanın kodu çözülürken hata oluştu: %1</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6969,12 +6997,14 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Change %n Object/s Tile</source>
         <translation>
             <numerusform>%n Nesnenin Desenini Değiştir</numerusform>
+            <numerusform>%n Nesnenin Desenini Değiştir</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+69"/>
         <source>Detach %n Template Instance(s)</source>
         <translation>
+            <numerusform>%n Şablon Örneğini Ayır</numerusform>
             <numerusform>%n Şablon Örneğini Ayır</numerusform>
         </translation>
     </message>
@@ -6983,12 +7013,14 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Reset %n Instances</source>
         <translation>
             <numerusform>%n Örneği Sıfırla</numerusform>
+            <numerusform>%n Örneği Sıfırla</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+53"/>
         <source>Replace %n Object(s) With Template</source>
         <translation>
+            <numerusform>%n Nesneyi Şablonla Değiştir</numerusform>
             <numerusform>%n Nesneyi Şablonla Değiştir</numerusform>
         </translation>
     </message>
@@ -7130,6 +7162,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Flip %n Object(s)</source>
         <translation>
             <numerusform>%n Nesneyi Çevir</numerusform>
+            <numerusform>%n Nesneyi Çevir</numerusform>
         </translation>
     </message>
     <message>
@@ -7162,12 +7195,14 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Raise %n Layer(s)</source>
         <translation>
             <numerusform>%n Katmanı Yükselt</numerusform>
+            <numerusform>%n Katmanı Yükselt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
         <translation>
+            <numerusform>%n Katmanı Alçalt</numerusform>
             <numerusform>%n Katmanı Alçalt</numerusform>
         </translation>
     </message>
@@ -7267,7 +7302,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/plugins/yy/yyplugin.cpp" line="+163"/>
         <source>GameMaker Studio 2 files (*.yy)</source>
-        <translation type="unfinished"></translation>
+        <translation>GameMaker Studio 2 dosyaları (*.yy)</translation>
     </message>
 </context>
 <context>
@@ -7410,7 +7445,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+8"/>
         <source>Fit Map In View</source>
-        <translation type="unfinished"></translation>
+        <translation>Haritayı Görünüme Sığdır</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -7420,7 +7455,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+6"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Görünüm</translation>
     </message>
     <message>
         <location line="+4"/>
