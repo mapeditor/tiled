@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="45" height="31" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="37">
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="45" height="31" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="37">
  <properties>
   <property name="enemyTint" type="color" value="#ffa33636"/>
  </properties>
@@ -235,13 +235,12 @@
   </object>
   <object id="2" name="discover chest" type="trigger" x="201" y="200" width="127" height="127">
    <properties>
-    <property name="script" value="chest-discovered.lua"/>
+    <property name="script" type="file" value="chest-discovered.lua"/>
    </properties>
    <ellipse/>
   </object>
   <object id="3" name="unreachable" type="Fixture" x="2" y="158">
    <properties>
-    <property name="friction" type="float" value="1"/>
     <property name="static" type="bool" value="true"/>
    </properties>
    <polygon points="0,0 55,-23 96,-117 110,-61 104,-42 119,-33 116,6 104,9 100,36 60,43 53,58 43,58 34,74 21,69 18,90 0,89"/>
