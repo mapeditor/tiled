@@ -157,6 +157,7 @@
     <addaction name="menuShowObjectNames"/>
     <addaction name="actionShowTileAnimations"/>
     <addaction name="actionShowTileCollisionShapes"/>
+    <addaction name="actionEnableWorlds"/>
     <addaction name="actionEnableParallax"/>
     <addaction name="actionHighlightCurrentLayer"/>
     <addaction name="actionHighlightHoveredObject"/>
@@ -224,7 +225,6 @@
     <addaction name="menuUnloadWorld"/>
     <addaction name="menuSaveWorld"/>
     <addaction name="separator"/>
-    <addaction name="actionEnableWorlds"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -802,7 +802,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show &amp;Other Maps</string>
+    <string>Show &amp;World</string>
    </property>
   </action>
  </widget>
