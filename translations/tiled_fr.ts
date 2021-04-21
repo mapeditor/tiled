@@ -353,7 +353,7 @@
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation>Parcourir... (&amp;B)</translation>
+        <translation>&amp;Parcourir ...</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -616,12 +616,12 @@
     <message>
         <location line="+95"/>
         <source>&amp;Unload World</source>
-        <translation type="unfinished">Décharger le Monde</translation>
+        <translation>&amp;Décharger le Monde</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Save World</source>
-        <translation type="unfinished">Sauvegarder le Monde</translation>
+        <translation>&amp;Sauvegarder le Monde</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -731,12 +731,12 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation type="unfinished">Charger le Monde...</translation>
+        <translation>&amp;Charger le Monde...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;New World...</source>
-        <translation type="unfinished">Nouveau Monde...</translation>
+        <translation>&amp;Nouveau Monde ...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -807,7 +807,7 @@
     <message>
         <location line="+8"/>
         <source>Show &amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher le &amp;Monde</translation>
     </message>
     <message>
         <location line="-248"/>
@@ -857,7 +857,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Offset Map...</source>
-        <translation>Décaler la Carte... (&amp;O)</translation>
+        <translation>&amp;Décaler la Carte ...</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -902,12 +902,12 @@
     <message>
         <location line="+33"/>
         <source>&amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Monde</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>&amp;Open File or Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ouvrir un fichier ou un projet ...</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -1276,7 +1276,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+25"/>
         <source>&amp;Browse...</source>
-        <translation>Parcourir.. (&amp;B)</translation>
+        <translation>&amp;Parcourir ...</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1686,17 +1686,17 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-133"/>
         <source>Crash Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Rapport de plantage</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Enable sending anonymous crash reports</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer l&apos;envoi de rapport de plantage anonymes</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;Plus d&apos;informations&lt;/a&gt;)</translation>
     </message>
     <message>
         <location line="+97"/>
@@ -2771,32 +2771,32 @@ Ligne %1, colonne %2</translation>
         <location filename="../src/tiled/scriptprocess.cpp" line="+38"/>
         <location line="+10"/>
         <source>Error running %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de l&apos;exécution de %1 : %2</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Error running &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de l&apos;exécution de &apos;%1&apos; : %2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Process &apos;%1 %2&apos; finished with exit code %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le processus &apos;%1 %2&apos; s&apos;est terminé avec le code d&apos;erreur %3.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>The standard output was:</source>
-        <translation type="unfinished"></translation>
+        <translation>Le contenu de la sortie standard était :</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>The standard error output was:</source>
-        <translation type="unfinished"></translation>
+        <translation>Le contenu de la sortie d&apos;erreur était :</translation>
     </message>
     <message>
         <location line="+118"/>
         <source>Access to Process object that was already closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;accès au processus objet était déjà fermé.</translation>
     </message>
 </context>
 <context>
@@ -3083,7 +3083,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+1"/>
         <source>Intersect Selection</source>
-        <translation>Intersectionner la Sélection</translation>
+        <translation>Recouper la Sélection</translation>
     </message>
 </context>
 <context>
@@ -4217,7 +4217,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="-1513"/>
         <location line="+1514"/>
         <source>Lock Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Figer la disposition</translation>
     </message>
     <message>
         <location line="-1503"/>
@@ -4323,17 +4323,17 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+140"/>
         <source>&lt;html&gt;Enable anonymous crash reporting? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Activer le rapport de plantage anonyme ? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;Plus d&apos;informations&lt;/a&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Oui</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Non</translation>
     </message>
     <message>
         <location line="+241"/>
@@ -4973,7 +4973,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/wangdock.cpp" line="+72"/>
         <source>&lt;p&gt;No tileset with Terrain Sets available.&lt;/p&gt;&lt;p&gt;Open a tileset with a Terrain Set or set up a new Terrain Set to be able to use the Terrain Brush or the Terrain Fill Mode.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Aucun Jeu de Tuile disponible pour le Terrain donné.&lt;/p&gt;&lt;p&gt;Veuillez ouvrir un Jeu de Tuile avec un Jeu de Terrain ou créez un nouveau Jeu de Terrain afin de pouvoir utiliser la Brosse de Terrain ou le mode de Remplissage de Terrain.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -5029,12 +5029,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+166"/>
         <source>Select Touched Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez les objets modifiés</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select Enclosed Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner les objets inclus</translation>
     </message>
     <message numerus="yes">
         <location line="+599"/>
@@ -5827,7 +5827,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+14"/>
         <source>Error decoding file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors du décodage du fichier : %1</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -7299,7 +7299,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/plugins/yy/yyplugin.cpp" line="+163"/>
         <source>GameMaker Studio 2 files (*.yy)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers GameMaker Studio 2 (*.yy)</translation>
     </message>
 </context>
 <context>
@@ -7442,7 +7442,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+8"/>
         <source>Fit Map In View</source>
-        <translation type="unfinished"></translation>
+        <translation>Recentrer la Carte dans la vue courante</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -7452,7 +7452,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+6"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher</translation>
     </message>
     <message>
         <location line="+4"/>
