@@ -59,10 +59,6 @@ jobs:
         ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools icu | tee -a $GITHUB_PATH
         ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
 
-    - name: Install sentry-cli
-      run: |
-        curl -sL https://sentry.io/get-cli/ | bash
-
     - name: Setup CMake
       uses: jwlawson/actions-setup-cmake@v1.8
       with:
@@ -90,11 +86,13 @@ jobs:
         qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.enableZstd:true projects.Tiled.sentry:true qbs.debugInformation:true modules.cpp.separateDebugInformation:true
 
     - name: Upload symbols to Sentry
+      if: ${{ secrets.SENTRY_AUTH_TOKEN }}
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
         SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
       run: |
+        curl -sL https://sentry.io/get-cli/ | bash
         sentry-cli upload-dif .
 
     - name: Build AppImage
