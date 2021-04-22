@@ -78,7 +78,7 @@ public:
     QRect boundingRect(const QRect &rect) const override;
 
     void drawGrid(QPainter *painter, const QRectF &exposed,
-                  QColor gridColor, const int gridFine = 0) const override;
+                  QColor gridColor, const int gridMajor = 0) const override;
 
     using MapRenderer::drawTileLayer;
     void drawTileLayer(const RenderTileCallback &renderTile,

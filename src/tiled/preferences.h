@@ -63,6 +63,7 @@ public:
     bool snapToPixels() const;
     QColor gridColor() const;
     int gridFine() const;
+    int gridMajor() const;
     qreal objectLineWidth() const;
 
     bool highlightCurrentLayer() const;
@@ -187,6 +188,7 @@ public slots:
     void setSnapToPixels(bool snapToPixels);
     void setGridColor(QColor gridColor);
     void setGridFine(int gridFine);
+    void setGridMajor(int gridMajor);
     void setObjectLineWidth(qreal lineWidth);
     void setHighlightCurrentLayer(bool highlight);
     void setHighlightHoveredObject(bool highlight);
@@ -210,6 +212,7 @@ signals:
     void snapToPixelsChanged(bool snapToPixels);
     void gridColorChanged(QColor gridColor);
     void gridFineChanged(int gridFine);
+    void gridMajorChanged(int gridMajor);
     void objectLineWidthChanged(qreal lineWidth);
     void highlightCurrentLayerChanged(bool highlight);
     void highlightHoveredObjectChanged(bool highlight);

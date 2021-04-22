@@ -224,7 +224,7 @@ QPainterPath OrthogonalRenderer::interactionShape(const MapObject *object) const
 }
 
 void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
-                                  QColor gridColor, const int gridFine) const
+                                  QColor gridColor, const int gridMajor) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -256,7 +256,7 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
 
         for (int x = startX; x < endX; x += tileWidth)
         {
-            painter->setPen(gridFine != 0 && tick % gridFine == 0 ? finePen : gridPen);
+            painter->setPen(gridMajor != 0 && tick % gridMajor == 0 ? finePen : gridPen);
             painter->drawLine(x, startY, x, endY - 1);
             tick++;
         }
@@ -270,7 +270,7 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
 
         for (int y = startY; y < endY; y += tileHeight)
         {
-            painter->setPen(gridFine != 0 && tick % gridFine == 0 ? finePen : gridPen);
+            painter->setPen(gridMajor != 0 && tick % gridMajor == 0 ? finePen : gridPen);
             painter->drawLine(startX, y, endX - 1, y);
             tick++;
         }

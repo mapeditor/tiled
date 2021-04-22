@@ -125,6 +125,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setGridColor);
     connect(mUi->gridFine, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
             preferences, &Preferences::setGridFine);
+    connect(mUi->gridMajor, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            preferences, &Preferences::setGridMajor);
     connect(mUi->objectLineWidth, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
             preferences, &Preferences::setObjectLineWidth);
     connect(mUi->openGL, &QCheckBox::toggled,
@@ -222,6 +224,7 @@ void PreferencesDialog::fromPreferences()
     mUi->languageCombo->setCurrentIndex(languageIndex);
     mUi->gridColor->setColor(prefs->gridColor());
     mUi->gridFine->setValue(prefs->gridFine());
+    mUi->gridMajor->setValue(prefs->gridMajor());
     mUi->objectLineWidth->setValue(prefs->objectLineWidth());
 
     // Updates
