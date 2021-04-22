@@ -94,7 +94,7 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     toolBar->addAction(mActionRemoveProperty);
     toolBar->addAction(mActionRenameProperty);
 
-    QWidget* spacer = new QWidget();
+    QWidget *spacer = new QWidget;
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     toolBar->addWidget(spacer);
     toolBar->addWidget(mButtonComponents);
@@ -190,17 +190,11 @@ void PropertiesDock::currentObjectChanged(Object *object)
     mActionAddProperty->setEnabled(enabled);
 
     // enable/disable components button
-    {
-        bool isMapObject = false;
+    const bool isMapObject = object && mDocument &&
+            mDocument->type() == Document::MapDocumentType &&
+            object->typeId() == Object::MapObjectType;
 
-        if (object) {
-            isMapObject = mDocument &&
-                    mDocument->type() == Document::MapDocumentType &&
-                    object->typeId() == Object::MapObjectType;
-        }
-
-        mButtonComponents->setEnabled(isMapObject);
-    }
+    mButtonComponents->setEnabled(isMapObject);
 }
 
 void PropertiesDock::updateActions()
@@ -533,30 +527,26 @@ void PropertiesDock::setupComponentMenu()
 
     componentMenu->clear();
 
-    if (!mDocument || !mDocument->currentObject()) {
+    if (!mDocument || !mDocument->currentObject())
         return;
-    }
 
-    if (mDocument->currentObject()->typeId() != Object::MapObjectType) {
+    if (mDocument->currentObject()->typeId() != Object::MapObjectType)
         return;
-    }
 
-    QSet<QString> listset;
+    QSet<QString> componentNames;
 
-    for (const QString &type : objectTypeNames()) {
-        listset.insert(type);
-    }
+    for (const QString &type : objectTypeNames())
+        componentNames.insert(type);
 
-    for (const QString &component : mDocument->currentObject()->components().keys()) {
-        listset.insert(component);
-    }
+    for (const QString &component : mDocument->currentObject()->components().keys())
+        componentNames.insert(component);
 
-    QSetIterator<QString> it(listset);
+    QSetIterator<QString> it(componentNames);
     while (it.hasNext()) {
         const QString &name = it.next();
 
-        QAction* addAction = componentMenu->addAction(name);
-        addAction->setData(QVariant(name));
+        QAction *addAction = componentMenu->addAction(name);
+        addAction->setData(name);
         connect(addAction, &QAction::triggered, this, &PropertiesDock::onComponentChecked);
 
         addAction->setCheckable(true);
@@ -581,10 +571,9 @@ void PropertiesDock::onComponentChecked(bool checked)
                                                 componentName));
         }
 
-        // only when holding shift down
-        if (QApplication::queryKeyboardModifiers().testFlag(Qt::ShiftModifier)) {
+        // Reopen the menu when holding Shift down
+        if (QApplication::queryKeyboardModifiers().testFlag(Qt::ShiftModifier))
             mButtonComponents->click();
-        }
     }
 }
 

@@ -137,7 +137,7 @@ public:
     void removeComponent(const QString &name)
     { mComponents.remove(name); }
 
-    bool hasComponent(const QString &name)
+    bool hasComponent(const QString &name) const
     { return mComponents.contains(name); }
 
     const Components &components() const

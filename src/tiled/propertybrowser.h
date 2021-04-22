@@ -228,7 +228,7 @@ private:
     MapDocument *mMapDocument = nullptr;
     TilesetDocument *mTilesetDocument = nullptr;
 
-    VariantEditorFactory *mVariantFactory;
+    VariantEditorFactory *mVariantEditorFactory;
 
     // manager owning the properties
     QtVariantPropertyManager *mVariantManager;

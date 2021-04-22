@@ -150,11 +150,8 @@ void Object::addComponent(const QString &name)
         }
     }
 
-    if (type) {
-        mComponents[name] = Properties {};
-        Properties &props = mComponents[name];
-        props = type->defaultProperties;
-    }
+    if (type)
+        mComponents[name] = type->defaultProperties;
 }
 
 void Object::setObjectTypes(const ObjectTypes &objectTypes)

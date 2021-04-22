@@ -39,6 +39,7 @@ public:
 
     void undo() override;
     void redo() override;
+
 private:
     Document *mDocument;
     Object *mObject;
@@ -67,5 +68,4 @@ private:
     const QVariant mNewValue;
 };
 
-}
-
+} // namespace Tiled
