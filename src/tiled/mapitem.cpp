@@ -107,7 +107,7 @@ public:
         Preferences *prefs = Preferences::instance();
         mMapDocument->renderer()->drawGrid(painter,
                                            option->exposedRect.translated(-mOffset),
-                                           prefs->gridColor());
+                                           prefs->gridColor(), prefs->gridFine());
     }
 
     void updateOffset()

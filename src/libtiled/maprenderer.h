@@ -133,7 +133,7 @@ public:
      * \a painter.
      */
     virtual void drawGrid(QPainter *painter, const QRectF &rect,
-                          QColor gridColor = Qt::black) const = 0;
+                          QColor gridColor = Qt::black, const int gridFine = 0) const = 0;
 
     typedef std::function<void(QPoint, const QPointF &)> RenderTileCallback;
 

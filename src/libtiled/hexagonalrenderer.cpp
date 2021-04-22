@@ -138,7 +138,7 @@ QRect HexagonalRenderer::boundingRect(const QRect &rect) const
 }
 
 void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
-                                 QColor gridColor) const
+                                 QColor gridColor, const int _gridFine) const
 {
     QRect rect = exposed.toAlignedRect();
     if (rect.isNull())
