@@ -621,12 +621,12 @@
     <message>
         <location line="+95"/>
         <source>&amp;Unload World</source>
-        <translation type="unfinished">Descarregar Mundo</translation>
+        <translation>Descarregar M&amp;undo</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Save World</source>
-        <translation type="unfinished">Guardar Mundo</translation>
+        <translation>Gu&amp;ardar Mundo</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -706,7 +706,7 @@
     <message>
         <location line="+354"/>
         <source>&amp;New World...</source>
-        <translation type="unfinished">Novo Mundo...</translation>
+        <translation>&amp;Novo Mundo...</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -787,7 +787,7 @@
     <message>
         <location line="+8"/>
         <source>Show &amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>M&amp;ostrar Mundo</translation>
     </message>
     <message>
         <location line="-269"/>
@@ -802,7 +802,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation type="unfinished">Carregar Mundo...</translation>
+        <translation>&amp;Carregar Mundo...</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -947,12 +947,12 @@
     <message>
         <location line="+160"/>
         <source>&amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mundo</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>&amp;Open File or Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Abrir Ficheiro ou Projeto...</translation>
     </message>
     <message>
         <location line="+95"/>
@@ -1686,17 +1686,17 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-133"/>
         <source>Crash Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Relatório de Falha</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Enable sending anonymous crash reports</source>
-        <translation type="unfinished"></translation>
+        <translation>Permitir o envio de relatórios de falha anónimos</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;mais informação&lt;/a&gt;)</translation>
     </message>
     <message>
         <location line="+97"/>
@@ -2771,32 +2771,32 @@ Linha %1, coluna %2</translation>
         <location filename="../src/tiled/scriptprocess.cpp" line="+38"/>
         <location line="+10"/>
         <source>Error running %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ao executar %1: %2</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Error running &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ao executar &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Process &apos;%1 %2&apos; finished with exit code %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Processo &apos;%1 %2&apos; terminou com código de saída %3.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>The standard output was:</source>
-        <translation type="unfinished"></translation>
+        <translation>A saída padrão foi:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>The standard error output was:</source>
-        <translation type="unfinished"></translation>
+        <translation>O erro de saída padrão foi:</translation>
     </message>
     <message>
         <location line="+118"/>
         <source>Access to Process object that was already closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Acesso a objeto de Processo já fechado.</translation>
     </message>
 </context>
 <context>
@@ -4217,7 +4217,7 @@ Por favor, selecione um formato específico.</translation>
         <location line="-1513"/>
         <location line="+1514"/>
         <source>Lock Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Trancar Layout</translation>
     </message>
     <message>
         <location line="-1503"/>
@@ -4323,17 +4323,17 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+140"/>
         <source>&lt;html&gt;Enable anonymous crash reporting? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Permitir relatório de falha anónimo? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;mais informação&lt;/a&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sim</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Não</translation>
     </message>
     <message>
         <location line="+241"/>
@@ -4973,7 +4973,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/wangdock.cpp" line="+72"/>
         <source>&lt;p&gt;No tileset with Terrain Sets available.&lt;/p&gt;&lt;p&gt;Open a tileset with a Terrain Set or set up a new Terrain Set to be able to use the Terrain Brush or the Terrain Fill Mode.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Tileset com Conjunto Terreno não disponível.&lt;/p&gt;&lt;p&gt;Abra um tileset com um Conjunto Terreno ou prepare um novo Conjunto Terreno para ser capaz de usar o Pincel de Terreno ou o Modo de Preenchimento de Terreno.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -5029,12 +5029,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+166"/>
         <source>Select Touched Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecionar Objetos Tocados</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select Enclosed Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecionar Objetos Fechados</translation>
     </message>
     <message numerus="yes">
         <location line="+599"/>
@@ -5827,7 +5827,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+14"/>
         <source>Error decoding file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ao descodificar ficheiro: %1</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6004,7 +6004,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Terrain Fill Mode</source>
-        <translation>Modo de Preenchimento do Terreno</translation>
+        <translation>Modo de Preenchimento de Terreno</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6558,12 +6558,12 @@ Por favor, selecione um formato específico.</translation>
         <location filename="../src/tiled/wangbrush.cpp" line="+111"/>
         <location line="+96"/>
         <source>Terrain Brush</source>
-        <translation>Pincel do Terreno</translation>
+        <translation>Pincel de Terreno</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>Missing terrain transition</source>
-        <translation>Transições do terreno em falta</translation>
+        <translation>Transições de terreno em falta</translation>
     </message>
 </context>
 <context>
@@ -7299,7 +7299,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/plugins/yy/yyplugin.cpp" line="+163"/>
         <source>GameMaker Studio 2 files (*.yy)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiros GameMaker Studio 2 (*.yy)</translation>
     </message>
 </context>
 <context>
@@ -7442,7 +7442,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+8"/>
         <source>Fit Map In View</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustar Mapa à Vista</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -7452,7 +7452,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+6"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista</translation>
     </message>
     <message>
         <location line="+4"/>
