@@ -1,4 +1,4 @@
-### Tiled 1.6.0 (... 2021)
+### Tiled 1.6.0 (23 April 2021)
 
 * Added object selection preview
 * Added toggle to select enclosed rather than touched objects (#3023)
@@ -29,6 +29,7 @@
 * JSON plugin: Write out "version" property as string (#3033)
 * YY plugin: Fixed plugin loading issue for qmake builds
 * libtiled-java: Optimized for multithreaded usage (by Samuel Manflame, #3004)
+* Updated Bulgarian, French, Portuguese (Portugal), Swedish and Turkish translations
 
 ### Tiled 1.5.0 (23 March 2021)
 
