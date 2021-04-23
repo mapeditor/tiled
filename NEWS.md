@@ -23,6 +23,7 @@
 * Fixed switching to Terrain Brush when clicked terrain is already selected (#3015)
 * Fixed state of "dynamic wrapping" toggle button on startup
 * Fixed parallax layer positioning when reordering layers (#3009)
+* Windows: Fixed Swedish translation missing from installer
 * Windows: Re-enabled code signing by SignPath (was missing for Tiled 1.5)
 * snap: Added 'removable-media' plug, for accessing USB drives
 * snap: "Open Containing Folder" action now also selects the file

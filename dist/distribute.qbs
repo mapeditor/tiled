@@ -238,6 +238,7 @@ Product {
                              "pt",
                              "pt_PT",
                              "ru",
+                             "sv",
                              "th",
                              "tr",
                              "zh_CN",
