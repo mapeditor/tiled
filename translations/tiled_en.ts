@@ -609,12 +609,12 @@
     <message>
         <location line="+95"/>
         <source>&amp;Unload World</source>
-        <translation type="unfinished">Unload World</translation>
+        <translation>&amp;Unload World</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Save World</source>
-        <translation type="unfinished">Save World</translation>
+        <translation>&amp;Save World</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -724,12 +724,12 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation type="unfinished">Load World...</translation>
+        <translation>&amp;Load World...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;New World...</source>
-        <translation type="unfinished">New World...</translation>
+        <translation>&amp;New World...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -800,7 +800,7 @@
     <message>
         <location line="+8"/>
         <source>Show &amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>Show &amp;World</translation>
     </message>
     <message>
         <location line="-248"/>
@@ -895,12 +895,12 @@
     <message>
         <location line="+33"/>
         <source>&amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;World</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>&amp;Open File or Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Open File or Project...</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -1675,17 +1675,17 @@ Line %1, column %2</source>
     <message>
         <location line="-133"/>
         <source>Crash Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Crash Reporting</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Enable sending anonymous crash reports</source>
-        <translation type="unfinished"></translation>
+        <translation>Enable sending anonymous crash reports</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;)</translation>
     </message>
     <message>
         <location line="+97"/>
@@ -2760,32 +2760,32 @@ Line %1, column %2</source>
         <location filename="../src/tiled/scriptprocess.cpp" line="+38"/>
         <location line="+10"/>
         <source>Error running %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Error running %1: %2</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Error running &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Error running &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Process &apos;%1 %2&apos; finished with exit code %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Process &apos;%1 %2&apos; finished with exit code %3.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>The standard output was:</source>
-        <translation type="unfinished"></translation>
+        <translation>The standard output was:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>The standard error output was:</source>
-        <translation type="unfinished"></translation>
+        <translation>The standard error output was:</translation>
     </message>
     <message>
         <location line="+118"/>
         <source>Access to Process object that was already closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Access to Process object that was already closed.</translation>
     </message>
 </context>
 <context>
@@ -4206,7 +4206,7 @@ Please select specific format.</translation>
         <location line="-1513"/>
         <location line="+1514"/>
         <source>Lock Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Lock Layout</translation>
     </message>
     <message>
         <location line="-1503"/>
@@ -4312,17 +4312,17 @@ Please select specific format.</translation>
     <message>
         <location line="+140"/>
         <source>&lt;html&gt;Enable anonymous crash reporting? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Enable anonymous crash reporting? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Yes</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;No</translation>
     </message>
     <message>
         <location line="+241"/>
@@ -4962,7 +4962,7 @@ Please select specific format.</translation>
     <message>
         <location filename="../src/tiled/wangdock.cpp" line="+72"/>
         <source>&lt;p&gt;No tileset with Terrain Sets available.&lt;/p&gt;&lt;p&gt;Open a tileset with a Terrain Set or set up a new Terrain Set to be able to use the Terrain Brush or the Terrain Fill Mode.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;No tileset with Terrain Sets available.&lt;/p&gt;&lt;p&gt;Open a tileset with a Terrain Set or set up a new Terrain Set to be able to use the Terrain Brush or the Terrain Fill Mode.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -5018,12 +5018,12 @@ Please select specific format.</translation>
     <message>
         <location line="+166"/>
         <source>Select Touched Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Select Touched Objects</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select Enclosed Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Select Enclosed Objects</translation>
     </message>
     <message numerus="yes">
         <location line="+599"/>
@@ -5816,7 +5816,7 @@ Please select specific format.</translation>
     <message>
         <location line="+14"/>
         <source>Error decoding file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Error decoding file: %1</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -7288,7 +7288,7 @@ Please select specific format.</translation>
     <message>
         <location filename="../src/plugins/yy/yyplugin.cpp" line="+163"/>
         <source>GameMaker Studio 2 files (*.yy)</source>
-        <translation type="unfinished"></translation>
+        <translation>GameMaker Studio 2 files (*.yy)</translation>
     </message>
 </context>
 <context>
@@ -7431,7 +7431,7 @@ Please select specific format.</translation>
     <message>
         <location line="+8"/>
         <source>Fit Map In View</source>
-        <translation type="unfinished"></translation>
+        <translation>Fit Map In View</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -7441,7 +7441,7 @@ Please select specific format.</translation>
     <message>
         <location line="+6"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>View</translation>
     </message>
     <message>
         <location line="+4"/>
