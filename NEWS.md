@@ -30,6 +30,7 @@
 * YY plugin: Fixed plugin loading issue for qmake builds
 * libtiled-java: Optimized for multithreaded usage (by Samuel Manflame, #3004)
 * Updated Bulgarian, French, Portuguese (Portugal), Swedish and Turkish translations
+* Added Thai translation (by Thanachart Monpassorn, currently at 54%)
 
 ### Tiled 1.5.0 (23 March 2021)
 

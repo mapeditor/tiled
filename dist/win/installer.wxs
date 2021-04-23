@@ -220,6 +220,7 @@
               <File Source="$(var.InstallRoot)\translations\tiled_pt.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_pt_PT.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_ru.qm" />
+              <File Source="$(var.InstallRoot)\translations\tiled_th.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_tr.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_zh_CN.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_zh_TW.qm" />
