@@ -22,7 +22,7 @@ environment:
       PYTHONHOME: C:\Python37
       MINGW: C:\Qt\Tools\mingw492_32
       DEFAULT_PROFILE: i686-w64-mingw32-gcc-4_9_2
-      PUSH_RELEASE: false
+      PUSH_RELEASE: true
       PUSH_SNAPSHOT: true
       ENABLE_ZSTD: true
       TILED_ITCH_CHANNEL: winxp-32bit
