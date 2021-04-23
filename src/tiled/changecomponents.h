@@ -26,6 +26,7 @@ private:
     Document *mDocument;
     Object *mObject;
     const QString mName;
+    Properties mProperties;
 
 };
 

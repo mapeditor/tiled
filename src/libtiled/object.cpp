@@ -140,18 +140,9 @@ QVariantMap Object::resolvedProperties() const
     return allProperties;
 }
 
-void Object::addComponent(const QString &name)
+void Object::addComponent(const QString &name, const Properties &properties)
 {
-    const ObjectType *type = nullptr;
-    for (const ObjectType &t : Object::objectTypes()) {
-        if (t.name.compare(name) == 0) {
-            type = &t;
-            break;
-        }
-    }
-
-    if (type)
-        mComponents[name] = type->defaultProperties;
+    mComponents[name] = properties;
 }
 
 void Object::setObjectTypes(const ObjectTypes &objectTypes)

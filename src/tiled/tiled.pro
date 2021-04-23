@@ -94,6 +94,7 @@ SOURCES += aboutdialog.cpp \
     changetilewangid.cpp \
     changewangcolordata.cpp \
     changewangsetdata.cpp \
+    changecomponents.cpp \
     clickablelabel.cpp \
     issuescounter.cpp \
     issuesdock.cpp \
@@ -329,6 +330,7 @@ HEADERS += aboutdialog.h \
     changetilewangid.h \
     changewangcolordata.h \
     changewangsetdata.h \
+    changecomponents.h \
     clickablelabel.h \
     issuescounter.h \
     issuesdock.h \

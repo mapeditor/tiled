@@ -46,6 +46,8 @@
 #include <QFileInfo>
 #include <QApplication>
 
+#include <algorithm>
+
 namespace Tiled {
 
 PropertiesDock::PropertiesDock(QWidget *parent)
@@ -533,15 +535,19 @@ void PropertiesDock::setupComponentMenu()
     if (mDocument->currentObject()->typeId() != Object::MapObjectType)
         return;
 
-    QSet<QString> componentNames;
+    QStringList componentNames;
 
     for (const QString &type : objectTypeNames())
-        componentNames.insert(type);
+        componentNames << type;
 
-    for (const QString &component : mDocument->currentObject()->components().keys())
-        componentNames.insert(component);
+    for (const QString &componentName : mDocument->currentObject()->components().keys()) {
+        if (!componentNames.contains(componentName))
+            componentNames << componentName;
+    }
 
-    QSetIterator<QString> it(componentNames);
+    std::sort(componentNames.begin(), componentNames.end(), std::less<QString>());
+
+    QStringListIterator it(componentNames);
     while (it.hasNext()) {
         const QString &name = it.next();
 

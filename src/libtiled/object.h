@@ -132,7 +132,7 @@ public:
 
     bool isPartOfTileset() const;
 
-    void addComponent(const QString &name);
+    void addComponent(const QString &name, const Properties &properties);
 
     void removeComponent(const QString &name)
     { mComponents.remove(name); }

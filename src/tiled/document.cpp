@@ -144,13 +144,10 @@ void Document::removeProperty(Object *object, const QString &name)
     emit propertyRemoved(object, name);
 }
 
-void Document::addComponent(Object *object, const QString &name, const Properties &assignProperties)
+void Document::addComponent(Object *object, const QString &name, const Properties &properties)
 {
     if (!object->hasComponent(name)) {
-        object->addComponent(name);
-
-        Properties &properties = object->componentProperties(name);
-        Tiled::mergeProperties(properties, assignProperties);
+        object->addComponent(name, properties);
 
         emit componentAdded(object, name);
     }

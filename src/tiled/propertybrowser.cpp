@@ -573,14 +573,8 @@ void PropertyBrowser::removeComponent(Object *object, const QString &componentNa
         mPropertyToId.remove(property);
     }
 
-    // very important
-    unsetFactoryForManager(mComponentVariantManagers[componentName]);
-
     delete mComponents[componentName];
     mComponents.remove(componentName);
-
-    delete mComponentVariantManagers[componentName];
-    mComponentVariantManagers.remove(componentName);
 
     mMapComponentPropertyField.remove(componentName);
 }
@@ -616,6 +610,19 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     if (!mPropertyToId.contains(property))
         return;
 
+    if (isComponentProperty(property)) {
+        QUndoStack *undoStack = mDocument->undoStack();
+
+        undoStack->push(new SetComponentProperty(
+                            mDocument,
+                            mObject,
+                            mMapComponentProperty[property],
+                            property->propertyName(),
+                            fromDisplayValue(val)));
+
+        return;
+    }
+
     const PropertyId id = mPropertyToId.value(property);
 
     if (id == CustomProperty) {
@@ -641,17 +648,11 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
 
 void PropertyBrowser::resetProperty(QtProperty *property)
 {
-    QtVariantPropertyManager *manager = mVariantManager;
-
-    // if component property, use component's property manager
-    if (mMapComponentProperty.contains(property))
-        manager = mComponentVariantManagers[mMapComponentProperty[property]];
-
-    auto typeId = manager->propertyType(property);
+    auto typeId = mVariantManager->propertyType(property);
     if (typeId == QVariant::Color)
-        manager->setValue(property, QColor());
+        mVariantManager->setValue(property, QColor());
     else if (typeId == VariantPropertyManager::displayObjectRefTypeId()) {
-        manager->setValue(property, toDisplayValue(QVariant::fromValue(ObjectRef())));
+        mVariantManager->setValue(property, toDisplayValue(QVariant::fromValue(ObjectRef())));
     } else
         qWarning() << "Resetting of property type not supported right now";
 }
@@ -2088,21 +2089,20 @@ void PropertyBrowser::addComponents()
         return;
 
     QScopedValueRollback<bool> updating(mUpdating, true);
+    Q_UNUSED(updating);
 
     QMapIterator<QString, Properties> it(mObject->components());
     while (it.hasNext()) {
         it.next();
         const QString &componentName = it.key();
-        if (mComponentVariantManagers.contains(componentName))
+        if (mComponents.contains(componentName))
             continue;
 
         QtProperty *component = mGroupManager->addProperty(componentName);
         mComponents.insert(componentName, component);
         addProperty(component);
 
-        QtVariantPropertyManager *manager = new VariantPropertyManager(this);
-        setFactoryForManager(manager, mVariantEditorFactory);
-        mComponentVariantManagers.insert(componentName, manager);
+        QtVariantPropertyManager *manager = mVariantManager;
 
         Properties &componentProperties = mObject->componentProperties(componentName);
 
@@ -2115,10 +2115,9 @@ void PropertyBrowser::addComponents()
             const QString &propertyName = it.key();
 
             const QVariant displayValue = toDisplayValue(it.value());
-            PropertyId id = PropertyId(displayValue.userType());
 
             QtVariantProperty *property = createPropertyInManager(
-                        manager, id, displayValue.userType(), propertyName);
+                        manager, CustomProperty, displayValue.userType(), propertyName);
 
             property->setValue(displayValue);
             property->setEnabled(true);
@@ -2131,13 +2130,9 @@ void PropertyBrowser::addComponents()
                 setExpanded(items(property).constFirst(), false);
 
             mMapComponentProperty.insert(property, componentName);
-            mPropertyToId.insert(property, id);
+            mPropertyToId.insert(property, CustomProperty);
             mMapComponentPropertyField[componentName].insert(propertyName, property);
         }
-
-        // listen for value changes
-        connect(manager, &QtVariantPropertyManager::valueChanged,
-                this, &PropertyBrowser::onComponentValueChanged);
     }
 }
 
@@ -2157,9 +2152,6 @@ void PropertyBrowser::removeComponents()
 
     qDeleteAll(mComponents);
     mComponents.clear();
-
-    qDeleteAll(mComponentVariantManagers);
-    mComponentVariantManagers.clear();
 }
 
 void PropertyBrowser::updateComponents()
@@ -2169,6 +2161,11 @@ void PropertyBrowser::updateComponents()
             mDocument->currentObject()->typeId() == Object::MapObjectType;
     for (QtProperty *component : qAsConst(mComponents))
         component->setEnabled(single);
+}
+
+bool PropertyBrowser::isComponentProperty(QtProperty *propertry)
+{
+    return mMapComponentProperty.contains(propertry);
 }
 
 void PropertyBrowser::onComponentPropertyChanged(Object *object,
@@ -2181,27 +2178,6 @@ void PropertyBrowser::onComponentPropertyChanged(Object *object,
         QtVariantProperty *property = mMapComponentPropertyField[componentName][propertyName];
         property->setValue(toDisplayValue(value));
     }
-}
-
-void PropertyBrowser::onComponentValueChanged(QtProperty *property, const QVariant &value)
-{
-    if (mUpdating)
-        return;
-    if (!mObject || !mDocument)
-        return;
-    if (!mPropertyToId.contains(property))
-        return;
-
-    Q_ASSERT(mMapComponentProperty.contains(property));
-
-    QUndoStack *undoStack = mDocument->undoStack();
-
-    undoStack->push(new SetComponentProperty(
-                        mDocument,
-                        mObject,
-                        mMapComponentProperty[property],
-                        property->propertyName(),
-                        fromDisplayValue(value)));
 }
 
 QVariant PropertyBrowser::toDisplayValue(const QVariant &value) const

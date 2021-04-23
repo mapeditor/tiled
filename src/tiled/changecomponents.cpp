@@ -7,6 +7,23 @@
 
 using namespace Tiled;
 
+static Properties GetObjectTypeProperties(const QString &name)
+{
+    const ObjectType *type = nullptr;
+    for (const ObjectType &t : Object::objectTypes()) {
+        if (t.name.compare(name) == 0) {
+            type = &t;
+            break;
+        }
+    }
+
+    Properties properties;
+    if (type) {
+        properties = type->defaultProperties;
+    }
+    return properties;
+}
+
 AddComponent::AddComponent(Document *document,
                            Object *object,
                            const QString &name,
@@ -26,7 +43,7 @@ void AddComponent::undo()
 
 void AddComponent::redo()
 {
-    mDocument->addComponent(mObject, mName);
+    mDocument->addComponent(mObject, mName, GetObjectTypeProperties(mName));
 }
 
 RemoveComponent::RemoveComponent(Document *document,

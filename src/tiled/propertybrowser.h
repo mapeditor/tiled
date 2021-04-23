@@ -212,9 +212,9 @@ private:
     void addComponents();
     void removeComponents();
     void updateComponents();
+    bool isComponentProperty(QtProperty *propertry);
 
     void onComponentPropertyChanged(Object *object, const QString &componentName, const QString &propertyName, const QVariant &value);
-    void onComponentValueChanged(QtProperty *property, const QVariant &value);
 
     QVariant toDisplayValue(const QVariant &value) const;
     QVariant fromDisplayValue(const QVariant &value) const;
@@ -253,10 +253,6 @@ private:
     // component name -> property group
     // owns components properties
     QHash<QString, QtProperty *> mComponents;
-
-    // owns variant managers
-    // managers own components properites
-    QHash<QString, QtVariantPropertyManager *> mComponentVariantManagers;
 
     // component name -> (property name -> property)
     QHash<QString, QHash<QString, QtVariantProperty *>> mMapComponentPropertyField;
