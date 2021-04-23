@@ -240,7 +240,7 @@
     <message>
         <location line="+7"/>
         <source>&amp;Save before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lagre før kjøring</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -486,7 +486,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-250"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-250"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kunne ikke tolke fil: %1</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -523,7 +523,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+183"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+183"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke tolke fil: %1</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -550,7 +550,7 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-180"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-180"/>
         <source>Error parsing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke tolke fil: %1</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -808,7 +808,7 @@
     <message>
         <location line="+8"/>
         <source>Show &amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>Vis &amp;verden</translation>
     </message>
     <message>
         <location line="-248"/>
@@ -903,12 +903,12 @@
     <message>
         <location line="+33"/>
         <source>&amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Verden</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>&amp;Open File or Project...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Åpne fil eller prosjekt …</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -1687,7 +1687,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="-133"/>
         <source>Crash Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Krasjrapportering</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1712,7 +1712,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+27"/>
         <source>Use s&amp;mooth scrolling</source>
-        <translation type="unfinished"></translation>
+        <translation>Bruk &amp;myk rulling</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2777,7 +2777,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+4"/>
         <source>Error running &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Klarte ikke å kjøre «%1»: %2</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2988,7 +2988,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+2"/>
         <source>Replace Existing Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Erstatt eksisterende objekter</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3018,7 +3018,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+4"/>
         <source>Can&apos;t create template with embedded tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kan ikke opprette mal med innebygd flissett</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -4245,7 +4245,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+105"/>
         <source>Error Saving World</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kunne ikke lagre verden</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -4328,12 +4328,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+2"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ja</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nei</translation>
     </message>
     <message>
         <location line="+241"/>
@@ -5645,12 +5645,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+1"/>
         <source>Rotate</source>
-        <translation type="unfinished"></translation>
+        <translation>Roter</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Prefer Untransformed Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Foretrekk uforandrede flis</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -5686,32 +5686,32 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+19"/>
         <source>Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Terrengsett</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Terrain Count</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Terrengantall</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Terreng</translation>
     </message>
     <message>
         <location line="+1133"/>
         <source>Corner</source>
-        <translation type="unfinished"></translation>
+        <translation>Hjørne</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Kant</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Mixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Blandet</translation>
     </message>
     <message>
         <location line="-1095"/>
@@ -5827,7 +5827,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+14"/>
         <source>Error decoding file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kunne ikke dekode fil: %1</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5895,12 +5895,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+2"/>
         <source>Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Rektangel</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Circle</source>
-        <translation type="unfinished"></translation>
+        <translation>Sirkel</translation>
     </message>
 </context>
 <context>
@@ -6419,12 +6419,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+753"/>
         <source>Use as Terrain Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bruk som terrengsett-bilde</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Use as Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Bruk som terrengbilde</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6558,12 +6558,12 @@ Vennligst velgt et spesifikt format.</translation>
         <location filename="../src/tiled/wangbrush.cpp" line="+111"/>
         <location line="+96"/>
         <source>Terrain Brush</source>
-        <translation type="unfinished"></translation>
+        <translation>Terrengpensel</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>Missing terrain transition</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Manglende terrengovergang</translation>
     </message>
 </context>
 <context>
@@ -6591,52 +6591,52 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="-13"/>
         <source>Terrain Sets</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Terrengsett</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Erase Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Slett terreng</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til terrengsett</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Corner Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nytt hjørnesett</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Edge Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nytt kantsett</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Mixed Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nytt blandet sett</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Dupliser terrengsett</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjern terrengsett</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til terreng</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjern terreng</translation>
     </message>
 </context>
 <context>
@@ -6644,7 +6644,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+104"/>
         <source>Terrain Set &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Terrengsetts&amp;egenskaper …</translation>
     </message>
 </context>
 <context>
@@ -6652,7 +6652,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/worlddocument.cpp" line="+43"/>
         <source>untitled.world</source>
-        <translation type="unfinished"></translation>
+        <translation>navnløs.verden</translation>
     </message>
 </context>
 <context>
@@ -7223,22 +7223,22 @@ Vennligst velgt et spesifikt format.</translation>
         <location line="+12"/>
         <location line="+14"/>
         <source>Change Tile Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Endre flisterreng</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangcolordata.cpp" line="+38"/>
         <source>Change Terrain Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Endre terrengnavn</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Change Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Endre terrengbilde</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Endre terrengfarge</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -7263,7 +7263,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+48"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjern terreng</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -7374,7 +7374,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+1"/>
         <source>duration</source>
-        <translation type="unfinished"></translation>
+        <translation>varighet</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -7442,7 +7442,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+8"/>
         <source>Fit Map In View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tilpass kart til visning</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -7452,7 +7452,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+6"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vis</translation>
     </message>
     <message>
         <location line="+4"/>
