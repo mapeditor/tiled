@@ -616,12 +616,12 @@
     <message>
         <location line="+95"/>
         <source>&amp;Unload World</source>
-        <translation type="unfinished">Выгрузить Мир</translation>
+        <translation>&amp;Выгрузить Мир</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Save World</source>
-        <translation type="unfinished">Сохранить Мир</translation>
+        <translation>Со&amp;хранить Мир</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -731,12 +731,12 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation type="unfinished">Загрузить Мир...</translation>
+        <translation>Загрузить &amp;Мир...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;New World...</source>
-        <translation type="unfinished">Новый Мир...</translation>
+        <translation>&amp;Новый Мир...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -807,7 +807,7 @@
     <message>
         <location line="+8"/>
         <source>Show &amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>Отображать &amp;мир</translation>
     </message>
     <message>
         <location line="-248"/>
@@ -902,12 +902,12 @@
     <message>
         <location line="+33"/>
         <source>&amp;World</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Мир</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>&amp;Open File or Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Открыть файл или проект...</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -1686,17 +1686,17 @@ Line %1, column %2</source>
     <message>
         <location line="-133"/>
         <source>Crash Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Отчеты об ошибках</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Enable sending anonymous crash reports</source>
-        <translation type="unfinished"></translation>
+        <translation>Разрешить отправку анонимных отчетов об ошибках</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;дополнительная информация&lt;/a&gt;)</translation>
     </message>
     <message>
         <location line="+97"/>
@@ -2771,32 +2771,32 @@ Line %1, column %2</source>
         <location filename="../src/tiled/scriptprocess.cpp" line="+38"/>
         <location line="+10"/>
         <source>Error running %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при выполнении %1: %2</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Error running &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при выполнении &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Process &apos;%1 %2&apos; finished with exit code %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Процесс &apos;%1 %2&apos; завершен с кодом выхода %3.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>The standard output was:</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандартный вывод был:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>The standard error output was:</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандартный вывод ошибок был:</translation>
     </message>
     <message>
         <location line="+118"/>
         <source>Access to Process object that was already closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступ к объекту Process, который уже был закрыт.</translation>
     </message>
 </context>
 <context>
@@ -4225,7 +4225,7 @@ Please select specific format.</source>
         <location line="-1513"/>
         <location line="+1514"/>
         <source>Lock Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Зафиксировать панели</translation>
     </message>
     <message>
         <location line="-1503"/>
@@ -4331,17 +4331,17 @@ Please select specific format.</source>
     <message>
         <location line="+140"/>
         <source>&lt;html&gt;Enable anonymous crash reporting? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Включить анонимные сообщения об ошибках? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;дополнительная информация&lt;/a&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Да</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Нет</translation>
     </message>
     <message>
         <location line="+241"/>
@@ -4994,7 +4994,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangdock.cpp" line="+72"/>
         <source>&lt;p&gt;No tileset with Terrain Sets available.&lt;/p&gt;&lt;p&gt;Open a tileset with a Terrain Set or set up a new Terrain Set to be able to use the Terrain Brush or the Terrain Fill Mode.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Нет набора тайлов с наборами рельефов.&lt;/p&gt;&lt;p&gt;Откройте набор тайлов с набором рельефов или создайте новый набор рельефов чтобы использовать рельеф-кисть или режим заливки рельефами.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -5051,12 +5051,12 @@ Please select specific format.</source>
     <message>
         <location line="+166"/>
         <source>Select Touched Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Выделять затронутые объекты</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select Enclosed Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Выделять окруженные объекты</translation>
     </message>
     <message numerus="yes">
         <location line="+599"/>
@@ -5855,7 +5855,7 @@ Please select specific format.</source>
     <message>
         <location line="+14"/>
         <source>Error decoding file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при декодировании файла: %1</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -7334,7 +7334,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/plugins/yy/yyplugin.cpp" line="+163"/>
         <source>GameMaker Studio 2 files (*.yy)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлы GameMaker Studio 2 (*.yy)</translation>
     </message>
 </context>
 <context>
@@ -7477,7 +7477,7 @@ Please select specific format.</source>
     <message>
         <location line="+8"/>
         <source>Fit Map In View</source>
-        <translation type="unfinished"></translation>
+        <translation>Подогнать карту под размер окна</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -7487,7 +7487,7 @@ Please select specific format.</source>
     <message>
         <location line="+6"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Вид</translation>
     </message>
     <message>
         <location line="+4"/>
