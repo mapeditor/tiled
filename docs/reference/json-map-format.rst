@@ -37,7 +37,7 @@ Map
     tilesets,         array,            "Array of :ref:`Tilesets <json-tileset>`"
     tilewidth,        int,              "Map grid width"
     type,             string,           "``map`` (since 1.0)"
-    version,          number,           "The JSON format version"
+    version,          string,           "The JSON format version (previously a number, saved as string since 1.6)"
     width,            int,              "Number of tile columns"
 
 Map Example
@@ -446,7 +446,7 @@ Tileset
     transformations,  :ref:`json-tileset-transformations`, "Allowed transformations (optional)"
     transparentcolor, string,           "Hex-formatted color (#RRGGBB) (optional)"
     type,             string,           "``tileset`` (for tileset files, since 1.0)"
-    version,          number,           "The JSON format version"
+    version,          string,           "The JSON format version (previously a number, saved as string since 1.6)"
     wangsets,         array,            "Array of :ref:`Wang sets <json-wangset>` (since 1.1.5)"
 
 Each tileset has a ``firstgid`` (first global ID) property which
@@ -744,10 +744,16 @@ A point on a polygon or a polyline, relative to the position of the object.
 Changelog
 ---------
 
+Tiled 1.6
+~~~~~~~~~
+
+* The ``version`` property is now written as a string ("1.6") instead of a
+  number (1.5).
+
 Tiled 1.5
 ~~~~~~~~~
 
-* Unified ``cornercolors`` and ``edgecolors`` attributes of :ref:`json-wangset`
+* Unified ``cornercolors`` and ``edgecolors`` properties of :ref:`json-wangset`
   as the new ``colors`` property.
 
 * :ref:`json-wangcolor` can now store ``properties``.
@@ -796,7 +802,7 @@ Tiled 1.2
 * Custom properties are now stored in an array instead of an object
   where the property names were the keys. Each property is now an object
   that stores the name, type and value of the property. The separate
-  ``propertytypes`` and ``tilepropertytypes`` attributes have been
+  ``propertytypes`` and ``tilepropertytypes`` properties have been
   removed.
 
 Tiled 1.1

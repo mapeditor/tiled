@@ -45,7 +45,10 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     QVariantMap mapVariant;
 
     mapVariant[QStringLiteral("type")] = QLatin1String("map");
-    mapVariant[QStringLiteral("version")] = (mVersion == 2) ? 1.5 : 1.1;
+    if (mVersion == 2)
+        mapVariant[QStringLiteral("version")] = QStringLiteral("1.6");
+    else
+        mapVariant[QStringLiteral("version")] = 1.1;
     mapVariant[QStringLiteral("tiledversion")] = QCoreApplication::applicationVersion();
     mapVariant[QStringLiteral("orientation")] = orientationToString(map.orientation());
     mapVariant[QStringLiteral("renderorder")] = renderOrderToString(map.renderOrder());
@@ -161,7 +164,10 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QStringLiteral("type")] = QLatin1String("tileset");
 
         // Include version in external tilesets
-        tilesetVariant[QStringLiteral("version")] = (mVersion == 2) ? 1.5 : 1.1;
+        if (mVersion == 2)
+            tilesetVariant[QStringLiteral("version")] = QStringLiteral("1.6");
+        else
+            tilesetVariant[QStringLiteral("version")] = 1.1;
         tilesetVariant[QStringLiteral("tiledversion")] = QCoreApplication::applicationVersion();
     }
 

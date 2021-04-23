@@ -26,6 +26,7 @@
 * Windows: Re-enabled code signing by SignPath (was missing for Tiled 1.5)
 * snap: Added 'removable-media' plug, for accessing USB drives
 * snap: "Open Containing Folder" action now also selects the file
+* JSON plugin: Write out "version" property as string (#3033)
 * YY plugin: Fixed plugin loading issue for qmake builds
 * libtiled-java: Optimized for multithreaded usage (by Samuel Manflame, #3004)
 
