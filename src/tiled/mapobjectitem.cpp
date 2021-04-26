@@ -111,10 +111,8 @@ void MapObjectItem::setIsHoverIndicator(bool isHoverIndicator)
 
     if (isHoverIndicator) {
         auto totalOffset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*mObject->objectGroup());
-        setOpacity(0.5);
         setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
     } else {
-        setOpacity(1.0);
         setTransform(QTransform());
     }
 
@@ -139,6 +137,10 @@ void MapObjectItem::paint(QPainter *painter,
 {
     const qreal scale = static_cast<MapView*>(widget->parent())->zoomable()->scale();
     const QColor color = mIsHoveredIndicator ? mColor.lighter() : mColor;
+    const qreal previousOpacity = painter->opacity();
+
+    if (mIsHoveredIndicator)
+        painter->setOpacity(0.4);
 
     painter->translate(-pos());
     mMapDocument->renderer()->setPainterScale(scale);
@@ -146,6 +148,8 @@ void MapObjectItem::paint(QPainter *painter,
     painter->translate(pos());
 
     if (mIsHoveredIndicator) {
+        painter->setOpacity(0.6);
+
         // TODO: Code mostly duplicated in MapObjectOutline
         const QPointF pixelPos = mMapDocument->renderer()->pixelToScreenCoords(mObject->position());
         QRectF bounds = mObject->screenBounds(*mMapDocument->renderer());
@@ -174,6 +178,8 @@ void MapObjectItem::paint(QPainter *painter,
         pen.setDashPattern({dashLength, dashLength});
         painter->setPen(pen);
         painter->drawLines(lines, 4);
+
+        painter->setOpacity(previousOpacity);
     }
 }
 

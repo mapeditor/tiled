@@ -102,7 +102,7 @@ ObjectReferenceItem::ObjectReferenceItem(MapObject *source,
     , mArrowHead(new ArrowHead(this))
     , mProperty(property)
 {
-    setZValue(-0.5); // below labels but above hover
+    setZValue(-0.5); // below labels
     updateColor();
 }
 

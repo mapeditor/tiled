@@ -45,8 +45,11 @@
 
 namespace Tiled {
 
-static const qreal labelMargin = 2;
-static const qreal labelDistance = 4;
+static constexpr qreal labelMargin = 2;
+static constexpr qreal labelDistance = 4;
+
+static constexpr qreal selectionZValue = 1.0;   // selection outlines above labels
+static constexpr qreal hoverZValue = 0.5;       // hover below selection
 
 static Preferences::ObjectLabelVisiblity objectLabelVisibility()
 {
@@ -69,12 +72,12 @@ public:
 
         switch (role) {
         case SelectionIndicator:
-            setZValue(1);       // makes sure outlines are above labels
+            setZValue(selectionZValue);
             mUpdateTimer = startTimer(100);
             break;
         case HoverIndicator:
-            setZValue(-1.0);    // show below selection outlines
-            setOpacity(0.5);
+            setZValue(hoverZValue);
+            setOpacity(0.6);
             break;
         }
     }
@@ -327,7 +330,7 @@ void ObjectSelectionItem::updateItemPositions()
     for (MapObjectOutline *outline : qAsConst(mObjectOutlines))
         outline->syncWithMapObject(renderer);
 
-    for (const auto &items : mReferencesBySourceObject) {
+    for (const auto &items : qAsConst(mReferencesBySourceObject)) {
         for (ObjectReferenceItem *item : items) {
             item->syncWithSourceObject(renderer);
             item->syncWithTargetObject(renderer);
@@ -455,7 +458,7 @@ void ObjectSelectionItem::hoveredMapObjectChanged(MapObject *object,
         mHoveredMapObjectItem = std::make_unique<MapObjectItem>(object, mMapDocument, this);
         mHoveredMapObjectItem->setEnabled(false);
         mHoveredMapObjectItem->setIsHoverIndicator(true);
-        mHoveredMapObjectItem->setZValue(-1.0);     // show below selection outlines
+        mHoveredMapObjectItem->setZValue(hoverZValue);  // show below selection outlines
     } else {
         mHoveredMapObjectItem.reset();
     }
@@ -587,7 +590,7 @@ void ObjectSelectionItem::updateItemColors() const
     for (MapObjectLabel *label : mObjectLabels)
         label->updateColor();
 
-    for (const auto &referenceItems : mReferencesBySourceObject)
+    for (const auto &referenceItems : qAsConst(mReferencesBySourceObject))
         for (ObjectReferenceItem *item : referenceItems)
             item->updateColor();
 }
@@ -705,7 +708,7 @@ void ObjectSelectionItem::showObjectReferencesChanged()
 void ObjectSelectionItem::objectLineWidthChanged()
 {
     // Object reference items should redraw when line width is changed
-    for (const auto &items : mReferencesBySourceObject)
+    for (const auto &items : qAsConst(mReferencesBySourceObject))
         for (ObjectReferenceItem *item : items)
             item->update();
 }
@@ -904,7 +907,7 @@ void ObjectSelectionItem::addRemoveObjectReferences(MapObject *object)
     }
 
     // Delete remaining existing items, also removing them from mReferencesByTargetObject
-    for (ObjectReferenceItem *item : existingItems) {
+    for (ObjectReferenceItem *item : qAsConst(existingItems)) {
         auto &itemsByTarget = mReferencesByTargetObject[item->targetObject()];
         itemsByTarget.removeOne(item);
         if (itemsByTarget.isEmpty())
