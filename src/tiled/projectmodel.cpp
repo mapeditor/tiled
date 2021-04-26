@@ -171,6 +171,7 @@ void ProjectModel::addFolder(const QString &folder)
 
     mProject.addFolder(folder);
     mFolders.push_back(std::make_unique<FolderEntry>(folder));
+    mWatcher.addPath(folder);
     scheduleFolderScan(folder);
 
     endInsertRows();
@@ -182,9 +183,14 @@ void ProjectModel::removeFolder(int row)
 {
     const QString folder = mFolders.at(row)->filePath;
 
+    QStringList watchedFilePaths;
+    watchedFilePaths.append(folder);
+    collectDirectories(*mFolders.at(row), watchedFilePaths);
+
     beginRemoveRows(QModelIndex(), row, row);
     mProject.removeFolder(row);
     mFolders.erase(mFolders.begin() + row);
+    mWatcher.removePaths(watchedFilePaths);
     endRemoveRows();
 
     emit folderRemoved(folder);
