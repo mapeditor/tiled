@@ -20,6 +20,7 @@
 
 #include "propertybrowser.h"
 
+#include "changecomponents.h"
 #include "changeimagelayerproperties.h"
 #include "changelayer.h"
 #include "changemapobject.h"
@@ -59,8 +60,6 @@
 #include "wangcolormodel.h"
 #include "wangoverlay.h"
 #include "wangset.h"
-#include "mapobject.h"
-#include "changecomponents.h"
 
 #include "qtcompat_p.h"
 
@@ -111,9 +110,9 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     , mGroupManager(new QtGroupPropertyManager(this))
     , mCustomPropertiesGroup(nullptr)
 {
-    mVariantEditorFactory = new VariantEditorFactory(this);
+    VariantEditorFactory *variantEditorFactory = new VariantEditorFactory(this);
 
-    setFactoryForManager(mVariantManager, mVariantEditorFactory);
+    setFactoryForManager(mVariantManager, variantEditorFactory);
     setResizeMode(ResizeToContents);
     setRootIsDecorated(false);
     setPropertiesWithoutValueMarked(true);
@@ -129,7 +128,7 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
             this, &PropertyBrowser::valueChanged);
 
-    connect(mVariantEditorFactory, &VariantEditorFactory::resetProperty,
+    connect(variantEditorFactory, &VariantEditorFactory::resetProperty,
             this, &PropertyBrowser::resetProperty);
 
     connect(Preferences::instance(), &Preferences::objectTypesChanged,
@@ -144,11 +143,9 @@ void PropertyBrowser::setObject(Object *object)
     if (mObject == object)
         return;
 
-    removeComponents();
     removeProperties();
     mObject = object;
     addProperties();
-    addComponents();
 }
 
 /**
@@ -551,7 +548,7 @@ void PropertyBrowser::propertyChanged(Object *object, const QString &name)
 void PropertyBrowser::propertiesChanged(Object *object)
 {
     if (objectPropertiesRelevant(mDocument, object))
-      updateCustomProperties();
+        updateCustomProperties();
 }
 
 void PropertyBrowser::componentAdded(Object *, const QString &)
@@ -564,19 +561,16 @@ void PropertyBrowser::removeComponent(Object *object, const QString &componentNa
     if (object != mObject)
         return;
 
-    // delete all properties from id map
-    QHashIterator<QString, QtProperty *> it(mComponents);
-    while (it.hasNext()) {
-        it.next();
-        QtProperty *property = it.value();
+    // remove and delete component properties
+    const auto componentProperties = mMapComponentPropertyField.take(componentName);
+    for (QtProperty *property : componentProperties) {
         mMapComponentProperty.remove(property);
         mPropertyToId.remove(property);
+        delete property;
     }
 
-    delete mComponents[componentName];
-    mComponents.remove(componentName);
-
-    mMapComponentPropertyField.remove(componentName);
+    // remove and delete component group property
+    delete mComponents.take(componentName);
 }
 
 void PropertyBrowser::selectedObjectsChanged()
@@ -610,19 +604,6 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     if (!mPropertyToId.contains(property))
         return;
 
-    if (isComponentProperty(property)) {
-        QUndoStack *undoStack = mDocument->undoStack();
-
-        undoStack->push(new SetComponentProperty(
-                            mDocument,
-                            mObject,
-                            mMapComponentProperty[property],
-                            property->propertyName(),
-                            fromDisplayValue(val)));
-
-        return;
-    }
-
     const PropertyId id = mPropertyToId.value(property);
 
     if (id == CustomProperty) {
@@ -631,6 +612,17 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
                                         mDocument->currentObjects(),
                                         property->propertyName(),
                                         fromDisplayValue(val)));
+        return;
+    }
+
+    if (id == ComponentProperty) {
+        QUndoStack *undoStack = mDocument->undoStack();
+        undoStack->push(new SetComponentProperty(
+                            mDocument,
+                            mObject,
+                            mMapComponentProperty.value(property),
+                            property->propertyName(),
+                            fromDisplayValue(val)));
         return;
     }
 
@@ -724,7 +716,6 @@ void PropertyBrowser::addMapProperties()
     addProperty(groupProperty);
 }
 
-// TODO: move this to object.h/cpp
 static QStringList objectTypeNames()
 {
     QStringList names;
@@ -1589,38 +1580,33 @@ void PropertyBrowser::applyWangColorValue(PropertyId id, const QVariant &val)
 QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
                                                    const QString &name)
 {
-    QtVariantProperty *property = createPropertyInManager(mVariantManager, id, type, name);
-
-    mPropertyToId.insert(property, id);
-
-    if (id != CustomProperty) {
-        Q_ASSERT(!mIdToProperty.contains(id));
-        mIdToProperty.insert(id, property);
-    } else {
-        Q_ASSERT(!mNameToProperty.contains(name));
-        mNameToProperty.insert(name, property);
-    }
-
-    return property;
-}
-
-QtVariantProperty *PropertyBrowser::createPropertyInManager(QtVariantPropertyManager *manager,
-                                                            PropertyId id,
-                                                            int type,
-                                                            const QString &name)
-{
-    QtVariantProperty *property = manager->addProperty(type, name);
-
+    QtVariantProperty *property = mVariantManager->addProperty(type, name);
     if (!property) {
-        property = manager->addProperty(QVariant::String, name);
+        // fall back to string property for unsupported property types
+        property = mVariantManager->addProperty(QVariant::String, name);
     }
 
     if (type == QVariant::Bool)
         property->setAttribute(QLatin1String("textVisible"), false);
-    if (type == QVariant::String && id == CustomProperty)
+    if (type == QVariant::String && (id == CustomProperty || id == ComponentProperty))
         property->setAttribute(QLatin1String("multiline"), true);
-    if (type == QVariant::Double && id == CustomProperty)
+    if (type == QVariant::Double && (id == CustomProperty || id == ComponentProperty))
         property->setAttribute(QLatin1String("decimals"), 9);
+
+    mPropertyToId.insert(property, id);
+
+    switch (id) {
+    case CustomProperty:
+        Q_ASSERT(!mNameToProperty.contains(name));
+        mNameToProperty.insert(name, property);
+        break;
+    case ComponentProperty:
+        break;
+    default:
+        Q_ASSERT(!mIdToProperty.contains(id));
+        mIdToProperty.insert(id, property);
+        break;
+    }
 
     return property;
 }
@@ -1633,7 +1619,7 @@ QtVariantProperty *PropertyBrowser::addProperty(PropertyId id, int type,
 
     parent->addSubProperty(property);
 
-    if (id == CustomProperty) {
+    if (id == CustomProperty || id == ComponentProperty) {
         // Collapse custom color properties, to save space
         if (type == QVariant::Color)
             setExpanded(items(property).constFirst(), false);
@@ -1698,7 +1684,10 @@ void PropertyBrowser::setCustomPropertyValue(QtVariantProperty *property,
     }
 }
 
-// called to add properties groups to property browser
+/**
+ * Adds all properties to the property browser. This includes the built-in
+ * properties, custom properties and component properties.
+ */
 void PropertyBrowser::addProperties()
 {
     if (!mObject)
@@ -1742,6 +1731,8 @@ void PropertyBrowser::addProperties()
 
     updateProperties();
     updateCustomProperties();
+
+    addComponents();
 }
 
 void PropertyBrowser::removeProperties()
@@ -1750,9 +1741,13 @@ void PropertyBrowser::removeProperties()
 
     mVariantManager->clear();
     mGroupManager->clear();
+
     mPropertyToId.clear();
     mIdToProperty.clear();
     mNameToProperty.clear();
+    mMapComponentProperty.clear();
+    mMapComponentPropertyField.clear();
+    mComponents.clear();
     mCustomPropertiesGroup = nullptr;
 }
 
@@ -1788,12 +1783,8 @@ void PropertyBrowser::updateProperties()
         const int flags = mapObjectFlags(mapObject);
 
         if (mMapObjectFlags != flags) {
-            // should i add components here
-            // when is this executed
-//            removeComponents();
             removeProperties();
             addProperties();
-//            addComponents();
             return;
         }
 
@@ -2010,7 +2001,7 @@ void PropertyBrowser::updateCustomProperties()
         break;
     }
 
-    // populate cutom properties by object type
+    // populate custom properties by object type
     if (!objectType.isEmpty()) {
         // Inherit properties from the object type
         for (const ObjectType &type : Object::objectTypes()) {
@@ -2089,7 +2080,6 @@ void PropertyBrowser::addComponents()
         return;
 
     QScopedValueRollback<bool> updating(mUpdating, true);
-    Q_UNUSED(updating);
 
     QMapIterator<QString, Properties> it(mObject->components());
     while (it.hasNext()) {
@@ -2102,8 +2092,6 @@ void PropertyBrowser::addComponents()
         mComponents.insert(componentName, component);
         addProperty(component);
 
-        QtVariantPropertyManager *manager = mVariantManager;
-
         Properties &componentProperties = mObject->componentProperties(componentName);
 
         mMapComponentPropertyField.insert(componentName, QHash<QString, QtVariantProperty *>());
@@ -2113,45 +2101,19 @@ void PropertyBrowser::addComponents()
         while (it.hasNext()) {
             it.next();
             const QString &propertyName = it.key();
-
             const QVariant displayValue = toDisplayValue(it.value());
 
-            QtVariantProperty *property = createPropertyInManager(
-                        manager, CustomProperty, displayValue.userType(), propertyName);
+            QtVariantProperty *property = addProperty(ComponentProperty,
+                                                      displayValue.userType(),
+                                                      propertyName,
+                                                      component);
 
             property->setValue(displayValue);
-            property->setEnabled(true);
-
-            QtProperty *component = mComponents[componentName];
-            component->addSubProperty(property);
-
-            // collapse color properties
-            if (displayValue.type() == QVariant::Color)
-                setExpanded(items(property).constFirst(), false);
 
             mMapComponentProperty.insert(property, componentName);
-            mPropertyToId.insert(property, CustomProperty);
             mMapComponentPropertyField[componentName].insert(propertyName, property);
         }
     }
-}
-
-void PropertyBrowser::removeComponents()
-{
-    QScopedValueRollback<bool> updating(mUpdating, true);
-
-    if (!mObject)
-        return;
-
-    // reuse the function to clear factories and property id maps
-    for (const QString &name : mObject->components().keys())
-        removeComponent(mObject, name);
-
-    mMapComponentProperty.clear();
-    mMapComponentPropertyField.clear();
-
-    qDeleteAll(mComponents);
-    mComponents.clear();
 }
 
 void PropertyBrowser::updateComponents()
@@ -2161,11 +2123,6 @@ void PropertyBrowser::updateComponents()
             mDocument->currentObject()->typeId() == Object::MapObjectType;
     for (QtProperty *component : qAsConst(mComponents))
         component->setEnabled(single);
-}
-
-bool PropertyBrowser::isComponentProperty(QtProperty *propertry)
-{
-    return mMapComponentProperty.contains(propertry);
 }
 
 void PropertyBrowser::onComponentPropertyChanged(Object *object,

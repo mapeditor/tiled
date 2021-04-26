@@ -22,6 +22,7 @@
 
 #include "actionmanager.h"
 #include "addpropertydialog.h"
+#include "changecomponents.h"
 #include "changeproperties.h"
 #include "clipboardmanager.h"
 #include "documentmanager.h"
@@ -32,8 +33,6 @@
 #include "tileset.h"
 #include "utils.h"
 #include "variantpropertymanager.h"
-#include "preferences.h"
-#include "changecomponents.h"
 
 #include <QAction>
 #include <QEvent>
@@ -46,7 +45,7 @@
 #include <QFileInfo>
 #include <QApplication>
 
-#include <algorithm>
+#include "qtcompat_p.h"
 
 namespace Tiled {
 
@@ -81,7 +80,8 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     mButtonComponents->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
     mButtonComponents->setMenu(new QMenu(this));
     mButtonComponents->setPopupMode(QToolButton::InstantPopup);
-    setupComponentMenu();
+    connect(mButtonComponents->menu(), &QMenu::aboutToShow,
+            this, &PropertiesDock::setupComponentMenu);
 
     Utils::setThemeIcon(mActionAddProperty, "add");
     Utils::setThemeIcon(mActionRemoveProperty, "remove");
@@ -117,9 +117,6 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     connect(mPropertyBrowser, &PropertyBrowser::selectedItemsChanged,
             this, &PropertiesDock::updateActions);
 
-    connect(Preferences::instance(), &Preferences::objectTypesChanged,
-            this, &PropertiesDock::setupComponentMenu);
-
     retranslateUi();
 }
 
@@ -144,13 +141,6 @@ void PropertiesDock::setDocument(Document *document)
                 this, &PropertiesDock::updateActions);
         connect(document, &Document::propertyRemoved,
                 this, &PropertiesDock::updateActions);
-
-        connect(document, &Document::currentObjectChanged,
-                this, &PropertiesDock::setupComponentMenu);
-        connect(document, &Document::componentAdded,
-                this, &PropertiesDock::setupComponentMenu);
-        connect(document, &Document::componentRemoved,
-                this, &PropertiesDock::setupComponentMenu);
 
         currentObjectChanged(document->currentObject());
     } else {
@@ -514,49 +504,39 @@ void PropertiesDock::showContextMenu(const QPoint &pos)
     }
 }
 
-// TODO: move this to object.h/cpp and replace same function in property browser
-static QStringList objectTypeNames()
-{
-    QStringList names;
-    for (const ObjectType &type : Object::objectTypes())
-        names.append(type.name);
-    return names;
-}
-
 void PropertiesDock::setupComponentMenu()
 {
     QMenu *componentMenu = mButtonComponents->menu();
-
     componentMenu->clear();
 
-    if (!mDocument || !mDocument->currentObject())
+    if (!mDocument)
         return;
 
-    if (mDocument->currentObject()->typeId() != Object::MapObjectType)
+    Object *object = mDocument->currentObject();
+    if (!object)
+        return;
+
+    if (object->typeId() != Object::MapObjectType)
         return;
 
     QStringList componentNames;
 
-    for (const QString &type : objectTypeNames())
-        componentNames << type;
+    for (const ObjectType &type : Object::objectTypes())
+        componentNames.append(type.name);
 
-    for (const QString &componentName : mDocument->currentObject()->components().keys()) {
-        if (!componentNames.contains(componentName))
-            componentNames << componentName;
-    }
+    for (auto it = object->components().keyBegin(); it != object->components().keyEnd(); ++it)
+        if (!componentNames.contains(*it))
+            componentNames.append(*it);
 
-    std::sort(componentNames.begin(), componentNames.end(), std::less<QString>());
+    componentNames.sort();
 
-    QStringListIterator it(componentNames);
-    while (it.hasNext()) {
-        const QString &name = it.next();
-
+    for (const QString &name : qAsConst(componentNames)) {
         QAction *addAction = componentMenu->addAction(name);
         addAction->setData(name);
         connect(addAction, &QAction::triggered, this, &PropertiesDock::onComponentChecked);
 
         addAction->setCheckable(true);
-        addAction->setChecked(mDocument->currentObject()->hasComponent(name));
+        addAction->setChecked(object->hasComponent(name));
     }
 }
 

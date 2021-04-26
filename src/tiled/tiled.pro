@@ -77,6 +77,7 @@ SOURCES += aboutdialog.cpp \
     brushitem.cpp \
     bucketfilltool.cpp \
     capturestamphelper.cpp \
+    changecomponents.cpp \
     changeimagelayerproperties.cpp \
     changelayer.cpp \
     changemapobject.cpp \
@@ -94,7 +95,6 @@ SOURCES += aboutdialog.cpp \
     changetilewangid.cpp \
     changewangcolordata.cpp \
     changewangsetdata.cpp \
-    changecomponents.cpp \
     clickablelabel.cpp \
     issuescounter.cpp \
     issuesdock.cpp \
@@ -312,6 +312,7 @@ HEADERS += aboutdialog.h \
     brushitem.h \
     bucketfilltool.h \
     capturestamphelper.h \
+    changecomponents.h \
     changeevents.h \
     changeimagelayerproperties.h \
     changelayer.h \
@@ -330,7 +331,6 @@ HEADERS += aboutdialog.h \
     changetilewangid.h \
     changewangcolordata.h \
     changewangsetdata.h \
-    changecomponents.h \
     clickablelabel.h \
     issuescounter.h \
     issuesdock.h \

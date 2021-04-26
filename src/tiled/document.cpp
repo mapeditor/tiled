@@ -148,7 +148,6 @@ void Document::addComponent(Object *object, const QString &name, const Propertie
 {
     if (!object->hasComponent(name)) {
         object->addComponent(name, properties);
-
         emit componentAdded(object, name);
     }
 }
@@ -157,7 +156,6 @@ void Document::removeComponent(const QString &name, Object *object)
 {
     if (object->hasComponent(name)) {
         object->removeComponent(name);
-
         emit componentRemoved(object, name);
     }
 }
@@ -170,7 +168,6 @@ void Document::setComponentProperty(Object *object,
     if (object->hasComponent(componentName)) {
         Properties &props = object->componentProperties(componentName);
         props[propertyName] = value;
-
         emit componentPropertyChanged(object, componentName, propertyName, value);
     }
 }

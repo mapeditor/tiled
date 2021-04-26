@@ -7,7 +7,7 @@
 
 using namespace Tiled;
 
-static Properties GetObjectTypeProperties(const QString &name)
+static Properties objectTypeProperties(const QString &name)
 {
     const ObjectType *type = nullptr;
     for (const ObjectType &t : Object::objectTypes()) {
@@ -17,11 +17,7 @@ static Properties GetObjectTypeProperties(const QString &name)
         }
     }
 
-    Properties properties;
-    if (type) {
-        properties = type->defaultProperties;
-    }
-    return properties;
+    return type ? type->defaultProperties : Properties {};
 }
 
 AddComponent::AddComponent(Document *document,
@@ -32,6 +28,7 @@ AddComponent::AddComponent(Document *document,
     , mDocument(document)
     , mObject(object)
     , mName(name)
+    , mProperties(objectTypeProperties(mName))
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Component"));
 }
@@ -43,8 +40,9 @@ void AddComponent::undo()
 
 void AddComponent::redo()
 {
-    mDocument->addComponent(mObject, mName, GetObjectTypeProperties(mName));
+    mDocument->addComponent(mObject, mName, mProperties);
 }
+
 
 RemoveComponent::RemoveComponent(Document *document,
                                  Object *object,
@@ -69,6 +67,7 @@ void RemoveComponent::redo()
     mDocument->removeComponent(mComponentName, mObject);
 }
 
+
 SetComponentProperty::SetComponentProperty(Document *document,
                                            Object *object,
                                            const QString &componentName,
@@ -82,7 +81,7 @@ SetComponentProperty::SetComponentProperty(Document *document,
     , mPropertyName(propertyName)
     , mNewValue(value)
 {
-    setText(QCoreApplication::translate("Undo Commands", "Set property"));
+    setText(QCoreApplication::translate("Undo Commands", "Set Property"));
 
     Properties &props = mObject->componentProperties(componentName);
     mOldValue = props[propertyName];

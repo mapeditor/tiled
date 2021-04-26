@@ -23,7 +23,6 @@
 #include "changeevents.h"
 #include "map.h"
 #include "properties.h"
-#include "varianteditorfactory.h"
 
 #include <QtTreePropertyBrowser>
 
@@ -146,6 +145,7 @@ private:
         WangColorProbabilityProperty,
         WangSetTypeProperty,
         CustomProperty,
+        ComponentProperty,
         InfiniteProperty,
         TemplateProperty,
         CompressionLevelProperty,
@@ -188,11 +188,6 @@ private:
                                       int type,
                                       const QString &name);
 
-    QtVariantProperty *createPropertyInManager(QtVariantPropertyManager *manager,
-                                               PropertyId id,
-                                               int type,
-                                               const QString &name);
-
     using QtTreePropertyBrowser::addProperty;
     QtVariantProperty *addProperty(PropertyId id,
                                    int type,
@@ -210,9 +205,7 @@ private:
     void updateCustomPropertyColor(const QString &name);
 
     void addComponents();
-    void removeComponents();
     void updateComponents();
-    bool isComponentProperty(QtProperty *propertry);
 
     void onComponentPropertyChanged(Object *object, const QString &componentName, const QString &propertyName, const QVariant &value);
 
@@ -227,8 +220,6 @@ private:
     Document *mDocument = nullptr;
     MapDocument *mMapDocument = nullptr;
     TilesetDocument *mTilesetDocument = nullptr;
-
-    VariantEditorFactory *mVariantEditorFactory;
 
     // manager owning the properties
     QtVariantPropertyManager *mVariantManager;
