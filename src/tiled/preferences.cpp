@@ -164,6 +164,11 @@ int Preferences::gridFine() const
     return get<int>("Interface/GridFine", 4);
 }
 
+int Preferences::gridMajor() const
+{
+    return get<int>("Interface/GridMajor", 10);
+}
+
 qreal Preferences::objectLineWidth() const
 {
     return get<qreal>("Interface/ObjectLineWidth", 2.0);
@@ -313,6 +318,12 @@ void Preferences::setGridFine(int gridFine)
 {
     setValue(QLatin1String("Interface/GridFine"), gridFine);
     emit gridFineChanged(gridFine);
+}
+
+void Preferences::setGridMajor(int gridMajor)
+{
+    setValue(QLatin1String("Interface/GridMajor"), gridMajor);
+    emit gridMajorChanged(gridMajor);
 }
 
 void Preferences::setObjectLineWidth(qreal lineWidth)

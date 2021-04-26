@@ -133,7 +133,7 @@ public:
      * \a painter.
      */
     virtual void drawGrid(QPainter *painter, const QRectF &rect,
-                          QColor gridColor = Qt::black) const = 0;
+                          QColor gridColor = Qt::black, int gridMajor = 0) const = 0;
 
     typedef std::function<void(QPoint, const QPointF &)> RenderTileCallback;
 
@@ -270,7 +270,8 @@ public:
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
 
 protected:
-    static QPen makeGridPen(const QPaintDevice *device, QColor color);
+    static void setupGridPens(const QPaintDevice *device, QColor color,
+                              QPen &gridPen, QPen &majorGridPen);
 
     void setCellType(CellType cellType) { mCellType = cellType; }
 

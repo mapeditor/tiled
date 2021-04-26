@@ -242,7 +242,8 @@ QPolygonF MapRenderer::lineToPolygon(const QPointF &start, const QPointF &end)
     return polygon;
 }
 
-QPen MapRenderer::makeGridPen(const QPaintDevice *device, QColor color)
+void MapRenderer::setupGridPens(const QPaintDevice *device, QColor color,
+                                QPen &gridPen, QPen &majorGridPen)
 {
     const qreal devicePixelRatio = device->devicePixelRatioF();
 
@@ -252,14 +253,18 @@ QPen MapRenderer::makeGridPen(const QPaintDevice *device, QColor color)
     const qreal dpiScale = device->logicalDpiX() / 96.0;
 #endif
 
-    const qreal dashLength = std::ceil(2.0 * dpiScale * devicePixelRatio);
+    const qreal dashLength = std::ceil(2.0 * dpiScale);
 
-    color.setAlpha(128);
+    color.setAlpha(96);
 
-    QPen pen(color);
-    pen.setCosmetic(true);
-    pen.setDashPattern({dashLength, dashLength});
-    return pen;
+    gridPen = QPen(color, 1.0 * devicePixelRatio);
+    gridPen.setCosmetic(true);
+    gridPen.setDashPattern({dashLength, dashLength});
+
+    color.setAlpha(192);
+
+    majorGridPen = gridPen;
+    majorGridPen.setColor(color);
 }
 
 

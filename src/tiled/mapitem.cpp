@@ -71,6 +71,7 @@ public:
         Preferences *prefs = Preferences::instance();
         connect(prefs, &Preferences::showGridChanged, this, [this] (bool visible) { setVisible(visible); });
         connect(prefs, &Preferences::gridColorChanged, this, [this] { update(); });
+        connect(prefs, &Preferences::gridMajorChanged, this, [this] { update(); });
 
         // New layer may have a different offset
         connect(mapDocument, &MapDocument::currentLayerChanged,
@@ -107,7 +108,7 @@ public:
         Preferences *prefs = Preferences::instance();
         mMapDocument->renderer()->drawGrid(painter,
                                            option->exposedRect.translated(-mOffset),
-                                           prefs->gridColor());
+                                           prefs->gridColor(), prefs->gridMajor());
     }
 
     void updateOffset()
