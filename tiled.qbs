@@ -15,6 +15,7 @@ Project {
     property bool windowsInstaller: false
     property bool enableZstd: false
     property bool sentry: false
+    property bool dbus: true
     property string openSslPath: Environment.getEnv("OPENSSL_PATH")
 
     references: [

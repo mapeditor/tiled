@@ -16,7 +16,7 @@ QtGuiApplication {
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt"; submodules: ["core", "widgets", "qml"]; versionAtLeast: "5.6" }
     Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6 }
-    Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux"); required: false }
+    Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
 
     property bool qtcRunnable: true
 
@@ -61,7 +61,7 @@ QtGuiApplication {
         if (project.enableZstd)
             defs.push("TILED_ZSTD_SUPPORT");
 
-        if (qbs.targetOS.contains("linux") && Qt.dbus.present)
+        if (qbs.targetOS.contains("linux") && project.dbus && Qt.dbus.present)
             defs.push("TILED_ENABLE_DBUS");
 
         if (project.sentry)
