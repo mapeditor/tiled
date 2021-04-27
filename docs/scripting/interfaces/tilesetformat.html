@@ -2,158 +2,43 @@
 <html class="default no-js">
 <head>
 	<meta charset="utf-8">
-	<!-- Bootstrap -->
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="UTF-8">
+	<meta name='viewport' content="width=device-width, initial-scale=1" />
+	<meta property="og:image" content="https://www.mapeditor.org/img/tiled-logo-filled.png" />
 	<link href='/favicon.ico' rel='icon' type='image/png'/>
-	<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<link href="/css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
-	<link href="/css/fontawesome.css" rel="stylesheet">
-	<link href="/css/base.css" rel="stylesheet" media="screen">
-	<link rel="me" href="https://plus.google.com/113047271137781766813" />
-	<link rel="publisher" href="https://plus.google.com/104206952440491912596/" />
-	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>    <link rel="stylesheet" href="../assets/css/main.css">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="/css/base.css">
+	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
+	{% seo %}
+	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
+	<link rel="stylesheet" href="../assets/css/main.css">
 	<link rel="stylesheet" href="../assets/css/override.css">
 	<title>TilesetFormat | Tiled Scripting API</title>
 </head>
 <body>
-<nav id="navbar" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0px">
-	<ul class="nav navbar-nav">
-		<li><a href="/"><i class="icon-home"></i> Home</a></li>
-		<li><a href="https://discourse.mapeditor.org/"><i class="icon-group"></i> Forum</a></li>
-		<li><a href="https://doc.mapeditor.org/"><i class="icon-book"></i> Documentation</a></li>
-		<li><a href="/donate"><i class="icon icon-heart"></i> Donate</a></li>
-	</ul>
-	<ul class="nav navbar-nav pull-right">
-		<li><a href="https://github.com/bjorn/tiled"><i class="icon-github-alt"></i> Tiled on GitHub</a></li>
-		<!-- TODO: Just have a row of icons (GitHub, [Twitter,] Google+, IRC?) -->
-	</ul>
-</nav>
-<div class="my-top-box" style="position: relative;">
-	<div class="background">
-		<!-- a centered 0-width inline block -->
-		<div style="display: inline-block; width: 0px;">
-			<!-- the actual map, centered on the parent by using negative offset -->
-			<div style="position: relative; left: -800px; width: 1600px; height: 520px;">
-				<div class="t t34" style="left: 0px; top: 0px;"></div>
-				<div class="t t38" style="left: 40px; top: 0px;"></div>
-				<div class="t t66" style="left: 760px; top: 0px;"></div>
-				<div class="t t68" style="left: 800px; top: 0px;"></div>
-				<div class="t t70" style="left: 840px; top: 0px;"></div>
-				<div class="t t66" style="left: 1000px; top: 0px;"></div>
-				<div class="t t68" style="left: 1040px; top: 0px; width: 80px;"></div>
-				<div class="t t74" style="left: 1120px; top: 0px;"></div>
-				<div class="t t36" style="left: 1160px; top: 0px;"></div>
-				<div class="t t38" style="left: 1200px; top: 0px;"></div>
-				<div class="t t66" style="left: 1320px; top: 0px;"></div>
-				<div class="t t68" style="left: 1360px; top: 0px; width: 120px;"></div>
-				<div class="t t74" style="left: 1480px; top: 0px;"></div>
-				<div class="t t38" style="left: 1520px; top: 0px;"></div>
-				<div class="t t98" style="left: 0px; top: 40px;"></div>
-				<div class="t t102" style="left: 40px; top: 40px;"></div>
-				<div class="t t34" style="left: 80px; top: 40px;"></div>
-				<div class="t t38" style="left: 120px; top: 40px;"></div>
-				<div class="t t98" style="left: 760px; top: 40px;"></div>
-				<div class="t t104" style="left: 800px; top: 40px;"></div>
-				<div class="t t74" style="left: 840px; top: 40px;"></div>
-				<div class="t t38" style="left: 880px; top: 40px;"></div>
-				<div class="t t66" style="left: 1000px; top: 40px;"></div>
-				<div class="t t68" style="left: 1040px; top: 40px; width: 160px;"></div>
-				<div class="t t70" style="left: 1200px; top: 40px;"></div>
-				<div class="t t34" style="left: 1280px; top: 40px;"></div>
-				<div class="t t72" style="left: 1320px; top: 40px;"></div>
-				<div class="t t68" style="left: 1360px; top: 40px; width: 160px;"></div>
-				<div class="t t70" style="left: 1520px; top: 40px;"></div>
-				<div class="t t34" style="left: 40px; top: 80px;"></div>
-				<div class="t t72" style="left: 80px; top: 80px;"></div>
-				<div class="t t70" style="left: 120px; top: 80px;"></div>
-				<div class="t t34" style="left: 720px; top: 80px;"></div>
-				<div class="t t38" style="left: 760px; top: 80px;"></div>
-				<div class="t t66" style="left: 800px; top: 80px;"></div>
-				<div class="t t68" style="left: 840px; top: 80px;"></div>
-				<div class="t t70" style="left: 880px; top: 80px;"></div>
-				<div class="t t34" style="left: 960px; top: 80px;"></div>
-				<div class="t t72" style="left: 1000px; top: 80px;"></div>
-				<div class="t t68" style="left: 1040px; top: 80px;"></div>
-				<div class="t t106" style="left: 1080px; top: 80px;"></div>
-				<div class="t t100" style="left: 1120px; top: 80px; width: 80px;"></div>
-				<div class="t t102" style="left: 1200px; top: 80px;"></div>
-				<div class="t t34" style="left: 1240px; top: 80px;"></div>
-				<div class="t t72" style="left: 1280px; top: 80px;"></div>
-				<div class="t t68" style="left: 1320px; top: 80px; width: 80px;"></div>
-				<div class="t t106" style="left: 1400px; top: 80px;"></div>
-				<div class="t t104" style="left: 1440px; top: 80px;"></div>
-				<div class="t t68" style="left: 1480px; top: 80px;"></div>
-				<div class="t t70" style="left: 1520px; top: 80px;"></div>
-				<div class="t t98" style="left: 40px; top: 120px;"></div>
-				<div class="t t100" style="left: 80px; top: 120px;"></div>
-				<div class="t t102" style="left: 120px; top: 120px;"></div>
-				<div class="t t34" style="left: 680px; top: 120px;"></div>
-				<div class="t t72" style="left: 720px; top: 120px;"></div>
-				<div class="t t74" style="left: 760px; top: 120px;"></div>
-				<div class="t t72" style="left: 800px; top: 120px;"></div>
-				<div class="t t106" style="left: 840px; top: 120px;"></div>
-				<div class="t t102" style="left: 880px; top: 120px;"></div>
-				<div class="t t34" style="left: 920px; top: 120px;"></div>
-				<div class="t t72" style="left: 960px; top: 120px;"></div>
-				<div class="t t68" style="left: 1000px; top: 120px;"></div>
-				<div class="t t106" style="left: 1040px; top: 120px;"></div>
-				<div class="t t102" style="left: 1080px; top: 120px;"></div>
-				<div class="t t34" style="left: 1200px; top: 120px;"></div>
-				<div class="t t72" style="left: 1240px; top: 120px;"></div>
-				<div class="t t68" style="left: 1280px; top: 120px; width: 120px;"></div>
-				<div class="t t74" style="left: 1400px; top: 120px;"></div>
-				<div class="t t72" style="left: 1440px; top: 120px;"></div>
-				<div class="t t106" style="left: 1480px; top: 120px;"></div>
-				<div class="t t102" style="left: 1520px; top: 120px;"></div>
-				<div class="t t34" style="left: 520px; top: 160px;"></div>
-				<div class="t t36" style="left: 560px; top: 160px; width: 120px;"></div>
-				<div class="t t72" style="left: 680px; top: 160px;"></div>
-				<div class="t t106" style="left: 720px; top: 160px;"></div>
-				<div class="t t100" style="left: 760px; top: 160px;"></div>
-				<div class="t t104" style="left: 800px; top: 160px;"></div>
-				<div class="t t74" style="left: 840px; top: 160px;"></div>
-				<div class="t t38" style="left: 880px; top: 160px;"></div>
-				<div class="t t98" style="left: 920px; top: 160px;"></div>
-				<div class="t t104" style="left: 960px; top: 160px;"></div>
-				<div class="t t68" style="left: 1000px; top: 160px;"></div>
-				<div class="t t70" style="left: 1040px; top: 160px;"></div>
-				<div class="t t34" style="left: 1120px; top: 160px;"></div>
-				<div class="t t36" style="left: 1160px; top: 160px;"></div>
-				<div class="t t72" style="left: 1200px; top: 160px;"></div>
-				<div class="t t68" style="left: 1240px; top: 160px; width: 200px;"></div>
-				<div class="t t106" style="left: 1440px; top: 160px;"></div>
-				<div class="t t102" style="left: 1480px; top: 160px;"></div>
-				<div class="tree" style="left: 641px; top: -90px;"></div>
-				<div class="tree" style="left: 683px; top: -44px;"></div>
-				<div class="tree" style="left: 608px; top: -27px;"></div>
-				<div class="tree" style="left: 173px; top: -4px;"></div>
-				<div class="tree" style="left: 228px; top: 52px;"></div>
-				<div class="tree" style="left: 147px; top: 92px;"></div>
-				<div class="tree" style="left: 303px; top: 105px;"></div>
-				<div class="tree" style="left: 238px; top: 122px;"></div>
-			</div>
+<div class="headerbar-container">
+	<nav class="headerbar container">
+		<a href="/" class="headerbar-logo"><img src="/img/tiled-logo-white.png" class="logo" alt="Tiled logo" width="393" height="213" /></a>
+		<div class="headerbar-content">
+			<!-- TOOD: Make the documentation part of the website -->
+			<a class="header-item headerbar-button" href="https://doc.mapeditor.org/en/stable/">Docs</a>
+			{% if page.title == "News" %}
+			<a class="header-item header-item-active headerbar-button" href="/news">News</a>
+			{% else %}
+			<a class="header-item headerbar-button" href="/news">News</a>
+			{% endif%}
+			{% if page.title == "Donate" %}
+			<a class="header-item header-item-active headerbar-button" href="/donate">Donate</a>
+			{% else %}
+			<a class="header-item headerbar-button" href="/donate">Donate</a>
+			{% endif%}
+			<div class="stretch"></div>
+			{% include social_icons.html %}
 		</div>
-	</div>
-	<div class="contents">
-		<div class="container-fluid">
-			<div class="row">
-				<!--
-        <a class='g-plus-link' href='https://plus.google.com/104206952440491912596?prsrc=3' rel='publisher' style='text-decoration:none;'><img alt='' src='https://ssl.gstatic.com/images/icons/gplus-32.png' style='border:0;width:32px;height:32px;'/></a>
-        -->
-				<div class="lead col-md-12">
-					<h1 style="display: none;">Tiled</h1>
-					<a href="/index.html"><img src="/img/tiled-logo-white.png" style="margin-bottom: -40px; margin-left: 2%; width: 200px;"></a><br />
-				</div>
-			</div>
-		</div>
-		<div class="my-navigation">
-			<!--<a class="btn btn-default btn-sm" href="http://blog.mapeditor.org/"><i class="icon-rss"></i> Blog</a>-->
-			<a class="btn btn-default btn-sm" href="https://github.com/bjorn/tiled/issues"><i class="icon-exclamation-sign"></i> Issue Tracker</a>
-			<a class="btn btn-default btn-sm" href="https://discord.gg/39wbTv7"><i class="icon-comments"></i> Tiled on Discord</a>
-		</div>
-	</div>
+	</nav>
 </div>
-<div class="container-fluid">
+<div class="container">
 	<header>
 		<div class="tsd-page-toolbar">
 			<div class="container">
