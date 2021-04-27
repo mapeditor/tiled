@@ -72,7 +72,6 @@ public:
         connect(prefs, &Preferences::showGridChanged, this, [this] (bool visible) { setVisible(visible); });
         connect(prefs, &Preferences::gridColorChanged, this, [this] { update(); });
         connect(prefs, &Preferences::gridMajorChanged, this, [this] { update(); });
-        connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] { update(); });
 
         // New layer may have a different offset
         connect(mapDocument, &MapDocument::currentLayerChanged,
@@ -152,6 +151,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::showTileObjectOutlinesChanged, this, &MapItem::setShowTileObjectOutlines);
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(prefs, &Preferences::objectTypesChanged, this, &MapItem::syncAllObjectItems);
+    connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] (QColor color) { mDarkRectangle->setBrush(color); });
 
     connect(mapDocument.data(), &Document::changed, this, &MapItem::documentChanged);
     connect(mapDocument.data(), &MapDocument::mapChanged, this, &MapItem::mapChanged);
