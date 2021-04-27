@@ -14,7 +14,7 @@
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/main.css">
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>Layer | Tiled Scripting API</title>
+	<title>ImageLayer | Tiled Scripting API</title>
 </head>
 <body>
 <div class="headerbar-container">
@@ -82,10 +82,10 @@
 						<a href="../index.html">Tiled Scripting API</a>
 					</li>
 					<li>
-						<a href="layer.html">Layer</a>
+						<a href="imagelayer.html">ImageLayer</a>
 					</li>
 				</ul>
-				<h1>Interface Layer</h1>
+				<h1>Interface ImageLayer</h1>
 			</div>
 		</div>
 	</header>
@@ -96,18 +96,10 @@
 					<h3>Hierarchy</h3>
 					<ul class="tsd-hierarchy">
 						<li>
-							<a href="../classes/tiledobject.html" class="tsd-signature-type" data-tsd-kind="Class">TiledObject</a>
+							<a href="layer.html" class="tsd-signature-type" data-tsd-kind="Interface">Layer</a>
 							<ul class="tsd-hierarchy">
 								<li>
-									<span class="target">Layer</span>
-									<ul class="tsd-hierarchy">
-										<li>
-											<a href="grouplayer.html" class="tsd-signature-type" data-tsd-kind="Interface">GroupLayer</a>
-										</li>
-										<li>
-											<a href="imagelayer.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageLayer</a>
-										</li>
-									</ul>
+									<span class="target">ImageLayer</span>
 								</li>
 							</ul>
 						</li>
@@ -120,32 +112,35 @@
 							<section class="tsd-index-section ">
 								<h3>Properties</h3>
 								<ul class="tsd-index-list">
-									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="layer.html#asset" class="tsd-kind-icon">asset</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.html#id" class="tsd-kind-icon">id</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.html#isgrouplayer" class="tsd-kind-icon">is<wbr>Group<wbr>Layer</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.html#isimagelayer" class="tsd-kind-icon">is<wbr>Image<wbr>Layer</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.html#isobjectlayer" class="tsd-kind-icon">is<wbr>Object<wbr>Layer</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.html#istilelayer" class="tsd-kind-icon">is<wbr>Tile<wbr>Layer</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.html#locked" class="tsd-kind-icon">locked</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.html#map" class="tsd-kind-icon">map</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.html#name" class="tsd-kind-icon">name</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.html#offset" class="tsd-kind-icon">offset</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.html#opacity" class="tsd-kind-icon">opacity</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="layer.html#readonly" class="tsd-kind-icon">read<wbr>Only</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.html#selected" class="tsd-kind-icon">selected</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.html#visible" class="tsd-kind-icon">visible</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#asset" class="tsd-kind-icon">asset</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#id" class="tsd-kind-icon">id</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imagelayer.html#imagesource" class="tsd-kind-icon">image<wbr>Source</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#isgrouplayer" class="tsd-kind-icon">is<wbr>Group<wbr>Layer</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#isimagelayer" class="tsd-kind-icon">is<wbr>Image<wbr>Layer</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#isobjectlayer" class="tsd-kind-icon">is<wbr>Object<wbr>Layer</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#istilelayer" class="tsd-kind-icon">is<wbr>Tile<wbr>Layer</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#locked" class="tsd-kind-icon">locked</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#map" class="tsd-kind-icon">map</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#name" class="tsd-kind-icon">name</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#offset" class="tsd-kind-icon">offset</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#opacity" class="tsd-kind-icon">opacity</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#readonly" class="tsd-kind-icon">read<wbr>Only</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#selected" class="tsd-kind-icon">selected</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imagelayer.html#transparentcolor" class="tsd-kind-icon">transparent<wbr>Color</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#visible" class="tsd-kind-icon">visible</a></li>
 								</ul>
 							</section>
 							<section class="tsd-index-section ">
 								<h3>Methods</h3>
 								<ul class="tsd-index-list">
-									<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="layer.html#properties" class="tsd-kind-icon">properties</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="layer.html#property" class="tsd-kind-icon">property</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="layer.html#removeproperty" class="tsd-kind-icon">remove<wbr>Property</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="layer.html#resolvedproperties" class="tsd-kind-icon">resolved<wbr>Properties</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="layer.html#resolvedproperty" class="tsd-kind-icon">resolved<wbr>Property</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="layer.html#setproperties" class="tsd-kind-icon">set<wbr>Properties</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="layer.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-interface"><a href="imagelayer.html#loadfromimage" class="tsd-kind-icon">load<wbr>From<wbr>Image</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#properties" class="tsd-kind-icon">properties</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#property" class="tsd-kind-icon">property</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#removeproperty" class="tsd-kind-icon">remove<wbr>Property</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#resolvedproperties" class="tsd-kind-icon">resolved<wbr>Properties</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#resolvedproperty" class="tsd-kind-icon">resolved<wbr>Property</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#setproperties" class="tsd-kind-icon">set<wbr>Properties</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="imagelayer.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a></li>
 								</ul>
 							</section>
 						</div>
@@ -158,7 +153,7 @@
 						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> asset</h3>
 						<div class="tsd-signature tsd-kind-icon">asset<span class="tsd-signature-symbol">:</span> <a href="../classes/asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a></div>
 						<aside class="tsd-sources">
-							<p>Inherited from <a href="../classes/tiledobject.html">TiledObject</a>.<a href="../classes/tiledobject.html#asset">asset</a></p>
+							<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#asset">asset</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -166,11 +161,12 @@
 							</div>
 						</div>
 					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 						<a name="id" class="tsd-anchor"></a>
 						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> id</h3>
 						<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#id">id</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -184,10 +180,23 @@
 						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="imagesource" class="tsd-anchor"></a>
+						<h3>image<wbr>Source</h3>
+						<div class="tsd-signature tsd-kind-icon">image<wbr>Source<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Reference to the image rendered by this layer.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 						<a name="isgrouplayer" class="tsd-anchor"></a>
 						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> is<wbr>Group<wbr>Layer</h3>
 						<div class="tsd-signature tsd-kind-icon">is<wbr>Group<wbr>Layer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#isgrouplayer">isGroupLayer</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -195,11 +204,12 @@
 							</div>
 						</div>
 					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 						<a name="isimagelayer" class="tsd-anchor"></a>
 						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> is<wbr>Image<wbr>Layer</h3>
 						<div class="tsd-signature tsd-kind-icon">is<wbr>Image<wbr>Layer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#isimagelayer">isImageLayer</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -207,11 +217,12 @@
 							</div>
 						</div>
 					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 						<a name="isobjectlayer" class="tsd-anchor"></a>
 						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> is<wbr>Object<wbr>Layer</h3>
 						<div class="tsd-signature tsd-kind-icon">is<wbr>Object<wbr>Layer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#isobjectlayer">isObjectLayer</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -219,11 +230,12 @@
 							</div>
 						</div>
 					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 						<a name="istilelayer" class="tsd-anchor"></a>
 						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> is<wbr>Tile<wbr>Layer</h3>
 						<div class="tsd-signature tsd-kind-icon">is<wbr>Tile<wbr>Layer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#istilelayer">isTileLayer</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -231,11 +243,12 @@
 							</div>
 						</div>
 					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 						<a name="locked" class="tsd-anchor"></a>
 						<h3>locked</h3>
 						<div class="tsd-signature tsd-kind-icon">locked<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#locked">locked</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -245,11 +258,12 @@
 							</div>
 						</div>
 					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 						<a name="map" class="tsd-anchor"></a>
 						<h3>map</h3>
 						<div class="tsd-signature tsd-kind-icon">map<span class="tsd-signature-symbol">:</span> <a href="../classes/tilemap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#map">map</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -258,11 +272,12 @@
 							</div>
 						</div>
 					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 						<a name="name" class="tsd-anchor"></a>
 						<h3>name</h3>
 						<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#name">name</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -270,11 +285,12 @@
 							</div>
 						</div>
 					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 						<a name="offset" class="tsd-anchor"></a>
 						<h3>offset</h3>
 						<div class="tsd-signature tsd-kind-icon">offset<span class="tsd-signature-symbol">:</span> <a href="point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#offset">offset</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -282,11 +298,12 @@
 							</div>
 						</div>
 					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 						<a name="opacity" class="tsd-anchor"></a>
 						<h3>opacity</h3>
 						<div class="tsd-signature tsd-kind-icon">opacity<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#opacity">opacity</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -300,7 +317,7 @@
 						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> read<wbr>Only</h3>
 						<div class="tsd-signature tsd-kind-icon">read<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 						<aside class="tsd-sources">
-							<p>Inherited from <a href="../classes/tiledobject.html">TiledObject</a>.<a href="../classes/tiledobject.html#readonly">readOnly</a></p>
+							<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#readonly">readOnly</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -308,11 +325,12 @@
 							</div>
 						</div>
 					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 						<a name="selected" class="tsd-anchor"></a>
 						<h3>selected</h3>
 						<div class="tsd-signature tsd-kind-icon">selected<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#selected">selected</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -321,10 +339,23 @@
 						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="transparentcolor" class="tsd-anchor"></a>
+						<h3>transparent<wbr>Color</h3>
+						<div class="tsd-signature tsd-kind-icon">transparent<wbr>Color<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Color used as transparent color when rendering the image.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 						<a name="visible" class="tsd-anchor"></a>
 						<h3>visible</h3>
 						<div class="tsd-signature tsd-kind-icon">visible<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#visible">visible</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -336,6 +367,36 @@
 				</section>
 				<section class="tsd-panel-group tsd-member-group ">
 					<h2>Methods</h2>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+						<a name="loadfromimage" class="tsd-anchor"></a>
+						<h3>load<wbr>From<wbr>Image</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+							<li class="tsd-signature tsd-kind-icon">load<wbr>From<wbr>Image<span class="tsd-signature-symbol">(</span>image<span class="tsd-signature-symbol">: </span><a href="../classes/tiledimage.html" class="tsd-signature-type" data-tsd-kind="Class">TiledImage</a>, source<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Sets the image for this layer to the given image, optionally also
+										setting the source of the image.</p>
+									</div>
+									<p><em>Warning: This function has no undo!</em></p>
+								</div>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>image: <a href="../classes/tiledimage.html" class="tsd-signature-type" data-tsd-kind="Class">TiledImage</a></h5>
+									</li>
+									<li>
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> source: <span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
 					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 						<a name="properties" class="tsd-anchor"></a>
 						<h3>properties</h3>
@@ -345,7 +406,7 @@
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="../classes/tiledobject.html">TiledObject</a>.<a href="../classes/tiledobject.html#properties">properties</a></p>
+									<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#properties">properties</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -367,7 +428,7 @@
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="../classes/tiledobject.html">TiledObject</a>.<a href="../classes/tiledobject.html#property">property</a></p>
+									<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#property">property</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -398,7 +459,7 @@
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="../classes/tiledobject.html">TiledObject</a>.<a href="../classes/tiledobject.html#removeproperty">removeProperty</a></p>
+									<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#removeproperty">removeProperty</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -424,7 +485,7 @@
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="../classes/tiledobject.html">TiledObject</a>.<a href="../classes/tiledobject.html#resolvedproperties">resolvedProperties</a></p>
+									<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#resolvedproperties">resolvedProperties</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -446,7 +507,7 @@
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="../classes/tiledobject.html">TiledObject</a>.<a href="../classes/tiledobject.html#resolvedproperty">resolvedProperty</a></p>
+									<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#resolvedproperty">resolvedProperty</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -474,7 +535,7 @@
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="../classes/tiledobject.html">TiledObject</a>.<a href="../classes/tiledobject.html#setproperties">setProperties</a></p>
+									<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#setproperties">setProperties</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -501,7 +562,7 @@
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="../classes/tiledobject.html">TiledObject</a>.<a href="../classes/tiledobject.html#setproperty">setProperty</a></p>
+									<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#setproperty">setProperty</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -583,81 +644,90 @@
 						<li class=" tsd-kind-interface">
 							<a href="imageformat.html" class="tsd-kind-icon">Image<wbr>Format</a>
 						</li>
-						<li class=" tsd-kind-interface">
-							<a href="imagelayer.html" class="tsd-kind-icon">Image<wbr>Layer</a>
-						</li>
 					</ul>
 					<ul class="current">
 						<li class="current tsd-kind-interface">
-							<a href="layer.html" class="tsd-kind-icon">Layer</a>
+							<a href="imagelayer.html" class="tsd-kind-icon">Image<wbr>Layer</a>
 							<ul>
 								<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-									<a href="layer.html#asset" class="tsd-kind-icon">asset</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-interface">
-									<a href="layer.html#id" class="tsd-kind-icon">id</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-interface">
-									<a href="layer.html#isgrouplayer" class="tsd-kind-icon">is<wbr>Group<wbr>Layer</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-interface">
-									<a href="layer.html#isimagelayer" class="tsd-kind-icon">is<wbr>Image<wbr>Layer</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-interface">
-									<a href="layer.html#isobjectlayer" class="tsd-kind-icon">is<wbr>Object<wbr>Layer</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-interface">
-									<a href="layer.html#istilelayer" class="tsd-kind-icon">is<wbr>Tile<wbr>Layer</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-interface">
-									<a href="layer.html#locked" class="tsd-kind-icon">locked</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-interface">
-									<a href="layer.html#map" class="tsd-kind-icon">map</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-interface">
-									<a href="layer.html#name" class="tsd-kind-icon">name</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-interface">
-									<a href="layer.html#offset" class="tsd-kind-icon">offset</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-interface">
-									<a href="layer.html#opacity" class="tsd-kind-icon">opacity</a>
+									<a href="imagelayer.html#asset" class="tsd-kind-icon">asset</a>
 								</li>
 								<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-									<a href="layer.html#readonly" class="tsd-kind-icon">read<wbr>Only</a>
+									<a href="imagelayer.html#id" class="tsd-kind-icon">id</a>
 								</li>
 								<li class=" tsd-kind-property tsd-parent-kind-interface">
-									<a href="layer.html#selected" class="tsd-kind-icon">selected</a>
+									<a href="imagelayer.html#imagesource" class="tsd-kind-icon">image<wbr>Source</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+									<a href="imagelayer.html#isgrouplayer" class="tsd-kind-icon">is<wbr>Group<wbr>Layer</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+									<a href="imagelayer.html#isimagelayer" class="tsd-kind-icon">is<wbr>Image<wbr>Layer</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+									<a href="imagelayer.html#isobjectlayer" class="tsd-kind-icon">is<wbr>Object<wbr>Layer</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+									<a href="imagelayer.html#istilelayer" class="tsd-kind-icon">is<wbr>Tile<wbr>Layer</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+									<a href="imagelayer.html#locked" class="tsd-kind-icon">locked</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+									<a href="imagelayer.html#map" class="tsd-kind-icon">map</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+									<a href="imagelayer.html#name" class="tsd-kind-icon">name</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+									<a href="imagelayer.html#offset" class="tsd-kind-icon">offset</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+									<a href="imagelayer.html#opacity" class="tsd-kind-icon">opacity</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+									<a href="imagelayer.html#readonly" class="tsd-kind-icon">read<wbr>Only</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+									<a href="imagelayer.html#selected" class="tsd-kind-icon">selected</a>
 								</li>
 								<li class=" tsd-kind-property tsd-parent-kind-interface">
-									<a href="layer.html#visible" class="tsd-kind-icon">visible</a>
+									<a href="imagelayer.html#transparentcolor" class="tsd-kind-icon">transparent<wbr>Color</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+									<a href="imagelayer.html#visible" class="tsd-kind-icon">visible</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-interface">
+									<a href="imagelayer.html#loadfromimage" class="tsd-kind-icon">load<wbr>From<wbr>Image</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-									<a href="layer.html#properties" class="tsd-kind-icon">properties</a>
+									<a href="imagelayer.html#properties" class="tsd-kind-icon">properties</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-									<a href="layer.html#property" class="tsd-kind-icon">property</a>
+									<a href="imagelayer.html#property" class="tsd-kind-icon">property</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-									<a href="layer.html#removeproperty" class="tsd-kind-icon">remove<wbr>Property</a>
+									<a href="imagelayer.html#removeproperty" class="tsd-kind-icon">remove<wbr>Property</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-									<a href="layer.html#resolvedproperties" class="tsd-kind-icon">resolved<wbr>Properties</a>
+									<a href="imagelayer.html#resolvedproperties" class="tsd-kind-icon">resolved<wbr>Properties</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-									<a href="layer.html#resolvedproperty" class="tsd-kind-icon">resolved<wbr>Property</a>
+									<a href="imagelayer.html#resolvedproperty" class="tsd-kind-icon">resolved<wbr>Property</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-									<a href="layer.html#setproperties" class="tsd-kind-icon">set<wbr>Properties</a>
+									<a href="imagelayer.html#setproperties" class="tsd-kind-icon">set<wbr>Properties</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-									<a href="layer.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a>
+									<a href="imagelayer.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a>
 								</li>
 							</ul>
 						</li>
 					</ul>
 					<ul class="after-current">
+						<li class=" tsd-kind-interface">
+							<a href="layer.html" class="tsd-kind-icon">Layer</a>
+						</li>
 						<li class=" tsd-kind-interface">
 							<a href="mapeditor.html" class="tsd-kind-icon">Map<wbr>Editor</a>
 						</li>

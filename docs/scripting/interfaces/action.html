@@ -92,6 +92,15 @@
 	<div class="container container-main">
 		<div class="row">
 			<div class="col-8 col-content">
+				<section class="tsd-panel tsd-comment">
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>An action that was registered with {@see tiled.registerAction}.</p>
+						</div>
+						<p>This class is used to change the properties of the action.
+						It can be added to a menu using {@see tiled.extendMenu}.</p>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-hierarchy">
 					<h3>Hierarchy</h3>
 					<ul class="tsd-hierarchy">
@@ -108,8 +117,21 @@
 								<h3>Properties</h3>
 								<ul class="tsd-index-list">
 									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="action.html#checkable" class="tsd-kind-icon">checkable</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="action.html#checked" class="tsd-kind-icon">checked</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="action.html#enabled" class="tsd-kind-icon">enabled</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="action.html#icon" class="tsd-kind-icon">icon</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="action.html#iconvisibleinmenu" class="tsd-kind-icon">icon<wbr>Visible<wbr>InMenu</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="action.html#id" class="tsd-kind-icon">id</a></li>
 									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="action.html#shortcut" class="tsd-kind-icon">shortcut</a></li>
 									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="action.html#text" class="tsd-kind-icon">text</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="action.html#visible" class="tsd-kind-icon">visible</a></li>
+								</ul>
+							</section>
+							<section class="tsd-index-section ">
+								<h3>Methods</h3>
+								<ul class="tsd-index-list">
+									<li class="tsd-kind-method tsd-parent-kind-interface"><a href="action.html#toggle" class="tsd-kind-icon">toggle</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-interface"><a href="action.html#trigger" class="tsd-kind-icon">trigger</a></li>
 								</ul>
 							</section>
 						</div>
@@ -123,6 +145,76 @@
 						<div class="tsd-signature tsd-kind-icon">checkable<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 						<aside class="tsd-sources">
 						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Whether the action can be checked.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="checked" class="tsd-anchor"></a>
+						<h3>checked</h3>
+						<div class="tsd-signature tsd-kind-icon">checked<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Whether the action is checked.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="enabled" class="tsd-anchor"></a>
+						<h3>enabled</h3>
+						<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Whether the action is enabled.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="icon" class="tsd-anchor"></a>
+						<h3>icon</h3>
+						<div class="tsd-signature tsd-kind-icon">icon<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>File name of an icon.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="iconvisibleinmenu" class="tsd-anchor"></a>
+						<h3>icon<wbr>Visible<wbr>InMenu</h3>
+						<div class="tsd-signature tsd-kind-icon">icon<wbr>Visible<wbr>InMenu<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Whether the action should show an icon
+								in a menu.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="id" class="tsd-anchor"></a>
+						<h3>id</h3>
+						<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>The ID this action was registered with.</p>
+							</div>
+							<dl class="tsd-comment-tags">
+								<dt>readonly</dt>
+								<dd></dd>
+							</dl>
+						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 						<a name="shortcut" class="tsd-anchor"></a>
@@ -130,6 +222,11 @@
 						<div class="tsd-signature tsd-kind-icon">shortcut<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 						<aside class="tsd-sources">
 						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>The shortcut (can be assigned a string like &quot;Ctrl+K&quot;).</p>
+							</div>
+						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 						<a name="text" class="tsd-anchor"></a>
@@ -137,6 +234,64 @@
 						<div class="tsd-signature tsd-kind-icon">text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 						<aside class="tsd-sources">
 						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>The text used when the action is part of a menu.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="visible" class="tsd-anchor"></a>
+						<h3>visible</h3>
+						<div class="tsd-signature tsd-kind-icon">visible<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Whether the action is visible.</p>
+							</div>
+						</div>
+					</section>
+				</section>
+				<section class="tsd-panel-group tsd-member-group ">
+					<h2>Methods</h2>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+						<a name="toggle" class="tsd-anchor"></a>
+						<h3>toggle</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+							<li class="tsd-signature tsd-kind-icon">toggle<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Changes the checked state to its opposite state.</p>
+									</div>
+								</div>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+						<a name="trigger" class="tsd-anchor"></a>
+						<h3>trigger</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+							<li class="tsd-signature tsd-kind-icon">trigger<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Triggers the action.</p>
+									</div>
+								</div>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							</li>
+						</ul>
 					</section>
 				</section>
 			</div>
@@ -151,13 +306,28 @@
 				<nav class="tsd-navigation secondary menu-sticky">
 					<ul class="before-current">
 						<li class=" tsd-kind-class">
+							<a href="../classes/asset.html" class="tsd-kind-icon">Asset</a>
+						</li>
+						<li class=" tsd-kind-class">
 							<a href="../classes/binaryfile.html" class="tsd-kind-icon">Binary<wbr>File</a>
+						</li>
+						<li class=" tsd-kind-class">
+							<a href="../classes/mapobject.html" class="tsd-kind-icon">Map<wbr>Object</a>
+						</li>
+						<li class=" tsd-kind-class">
+							<a href="../classes/objectgroup.html" class="tsd-kind-icon">Object<wbr>Group</a>
 						</li>
 						<li class=" tsd-kind-class">
 							<a href="../classes/textfile.html" class="tsd-kind-icon">Text<wbr>File</a>
 						</li>
 						<li class=" tsd-kind-class">
 							<a href="../classes/tilemap.html" class="tsd-kind-icon">Tile<wbr>Map</a>
+						</li>
+						<li class=" tsd-kind-class">
+							<a href="../classes/tiledimage.html" class="tsd-kind-icon">Tiled<wbr>Image</a>
+						</li>
+						<li class=" tsd-kind-class">
+							<a href="../classes/tiledobject.html" class="tsd-kind-icon">Tiled<wbr>Object</a>
 						</li>
 					</ul>
 					<ul class="current">
@@ -168,17 +338,59 @@
 									<a href="action.html#checkable" class="tsd-kind-icon">checkable</a>
 								</li>
 								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="action.html#checked" class="tsd-kind-icon">checked</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="action.html#enabled" class="tsd-kind-icon">enabled</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="action.html#icon" class="tsd-kind-icon">icon</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="action.html#iconvisibleinmenu" class="tsd-kind-icon">icon<wbr>Visible<wbr>InMenu</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="action.html#id" class="tsd-kind-icon">id</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
 									<a href="action.html#shortcut" class="tsd-kind-icon">shortcut</a>
 								</li>
 								<li class=" tsd-kind-property tsd-parent-kind-interface">
 									<a href="action.html#text" class="tsd-kind-icon">text</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="action.html#visible" class="tsd-kind-icon">visible</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-interface">
+									<a href="action.html#toggle" class="tsd-kind-icon">toggle</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-interface">
+									<a href="action.html#trigger" class="tsd-kind-icon">trigger</a>
 								</li>
 							</ul>
 						</li>
 					</ul>
 					<ul class="after-current">
 						<li class=" tsd-kind-interface">
-							<a href="asset.html" class="tsd-kind-icon">Asset</a>
+							<a href="aspectratio.html" class="tsd-kind-icon">Aspect<wbr>Ratio</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="fileformat.html" class="tsd-kind-icon">File<wbr>Format</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="fileinfo.html" class="tsd-kind-icon">File<wbr>Info</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="filepath.html" class="tsd-kind-icon">File<wbr>Path</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="grouplayer.html" class="tsd-kind-icon">Group<wbr>Layer</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="imageformat.html" class="tsd-kind-icon">Image<wbr>Format</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="imagelayer.html" class="tsd-kind-icon">Image<wbr>Layer</a>
 						</li>
 						<li class=" tsd-kind-interface">
 							<a href="layer.html" class="tsd-kind-icon">Layer</a>
@@ -190,7 +402,13 @@
 							<a href="mapformat.html" class="tsd-kind-icon">Map<wbr>Format</a>
 						</li>
 						<li class=" tsd-kind-interface">
+							<a href="menu.html" class="tsd-kind-icon">Menu</a>
+						</li>
+						<li class=" tsd-kind-interface">
 							<a href="objectref.html" class="tsd-kind-icon">Object<wbr>Ref</a>
+						</li>
+						<li class=" tsd-kind-interface tsd-has-type-parameter">
+							<a href="signal.html" class="tsd-kind-icon">Signal</a>
 						</li>
 						<li class=" tsd-kind-interface">
 							<a href="tileset.html" class="tsd-kind-icon">Tileset</a>
@@ -203,6 +421,9 @@
 						</li>
 						<li class=" tsd-kind-interface">
 							<a href="tool.html" class="tsd-kind-icon">Tool</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="transformationmode.html" class="tsd-kind-icon">Transformation<wbr>Mode</a>
 						</li>
 						<li class=" tsd-kind-interface">
 							<a href="point.html" class="tsd-kind-icon">point</a>
@@ -235,6 +456,11 @@
 					<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 					<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 					<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				</ul>
+				<ul class="tsd-legend">
+					<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+					<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+					<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
 				</ul>
 				<ul class="tsd-legend">
 					<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>

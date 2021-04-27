@@ -14,7 +14,7 @@
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/main.css">
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>BinaryFile | Tiled Scripting API</title>
+	<title>TiledObject | Tiled Scripting API</title>
 </head>
 <body>
 <div class="headerbar-container">
@@ -82,10 +82,10 @@
 						<a href="../index.html">Tiled Scripting API</a>
 					</li>
 					<li>
-						<a href="binaryfile.html">BinaryFile</a>
+						<a href="tiledobject.html">TiledObject</a>
 					</li>
 				</ul>
-				<h1>Class BinaryFile</h1>
+				<h1>Class TiledObject</h1>
 			</div>
 		</div>
 	</header>
@@ -95,17 +95,27 @@
 				<section class="tsd-panel tsd-comment">
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The <code>BinaryFile</code> object is used to read and write files in binary mode.</p>
+							<p>The base of most data types in Tiled. Provides the ability to associate
+							custom properties with the data.</p>
 						</div>
-						<p>When using <code>BinaryFile.WriteOnly</code>, you need to call {@link BinaryFile#commit()} when you’re
-						done writing otherwise the operation will be aborted without effect.</p>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-hierarchy">
 					<h3>Hierarchy</h3>
 					<ul class="tsd-hierarchy">
 						<li>
-							<span class="target">BinaryFile</span>
+							<span class="target">TiledObject</span>
+							<ul class="tsd-hierarchy">
+								<li>
+									<a href="mapobject.html" class="tsd-signature-type" data-tsd-kind="Class">MapObject</a>
+								</li>
+								<li>
+									<a href="asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a>
+								</li>
+								<li>
+									<a href="../interfaces/layer.html" class="tsd-signature-type" data-tsd-kind="Interface">Layer</a>
+								</li>
+							</ul>
 						</li>
 					</ul>
 				</section>
@@ -116,27 +126,26 @@
 							<section class="tsd-index-section ">
 								<h3>Constructors</h3>
 								<ul class="tsd-index-list">
-									<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="binaryfile.html#constructor" class="tsd-kind-icon">constructor</a></li>
+									<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="tiledobject.html#constructor" class="tsd-kind-icon">constructor</a></li>
 								</ul>
 							</section>
 							<section class="tsd-index-section ">
 								<h3>Properties</h3>
 								<ul class="tsd-index-list">
-									<li class="tsd-kind-property tsd-parent-kind-class"><a href="binaryfile.html#ateof" class="tsd-kind-icon">at<wbr>Eof</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-class"><a href="binaryfile.html#filepath" class="tsd-kind-icon">file<wbr>Path</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-class"><a href="binaryfile.html#pos" class="tsd-kind-icon">pos</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-class"><a href="binaryfile.html#size" class="tsd-kind-icon">size</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tiledobject.html#asset" class="tsd-kind-icon">asset</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tiledobject.html#readonly" class="tsd-kind-icon">read<wbr>Only</a></li>
 								</ul>
 							</section>
 							<section class="tsd-index-section ">
 								<h3>Methods</h3>
 								<ul class="tsd-index-list">
-									<li class="tsd-kind-method tsd-parent-kind-class"><a href="binaryfile.html#close" class="tsd-kind-icon">close</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-class"><a href="binaryfile.html#read" class="tsd-kind-icon">read</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-class"><a href="binaryfile.html#readall" class="tsd-kind-icon">read<wbr>All</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-class"><a href="binaryfile.html#resize" class="tsd-kind-icon">resize</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-class"><a href="binaryfile.html#seek" class="tsd-kind-icon">seek</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-class"><a href="binaryfile.html#write" class="tsd-kind-icon">write</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tiledobject.html#properties" class="tsd-kind-icon">properties</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tiledobject.html#property" class="tsd-kind-icon">property</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tiledobject.html#removeproperty" class="tsd-kind-icon">remove<wbr>Property</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tiledobject.html#resolvedproperties" class="tsd-kind-icon">resolved<wbr>Properties</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tiledobject.html#resolvedproperty" class="tsd-kind-icon">resolved<wbr>Property</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tiledobject.html#setproperties" class="tsd-kind-icon">set<wbr>Properties</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class"><a href="tiledobject.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a></li>
 								</ul>
 							</section>
 						</div>
@@ -148,27 +157,13 @@
 						<a name="constructor" class="tsd-anchor"></a>
 						<h3>constructor</h3>
 						<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-							<li class="tsd-signature tsd-kind-icon">new <wbr>Binary<wbr>File<span class="tsd-signature-symbol">(</span>filePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, mode<span class="tsd-signature-symbol">?: </span><a href="../modules/binaryfile.html#openmode" class="tsd-signature-type" data-tsd-kind="Type alias">OpenMode</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="binaryfile.html" class="tsd-signature-type" data-tsd-kind="Class">BinaryFile</a></li>
+							<li class="tsd-signature tsd-kind-icon">new <wbr>Tiled<wbr>Object<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="tiledobject.html" class="tsd-signature-type" data-tsd-kind="Class">TiledObject</a></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 								</aside>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Opens a binary file in the given mode.</p>
-									</div>
-								</div>
-								<h4 class="tsd-parameters-title">Parameters</h4>
-								<ul class="tsd-parameters">
-									<li>
-										<h5>filePath: <span class="tsd-signature-type">string</span></h5>
-									</li>
-									<li>
-										<h5><span class="tsd-flag ts-flagOptional">Optional</span> mode: <a href="../modules/binaryfile.html#openmode" class="tsd-signature-type" data-tsd-kind="Type alias">OpenMode</a></h5>
-									</li>
-								</ul>
-								<h4 class="tsd-returns-title">Returns <a href="binaryfile.html" class="tsd-signature-type" data-tsd-kind="Class">BinaryFile</a></h4>
+								<h4 class="tsd-returns-title">Returns <a href="tiledobject.html" class="tsd-signature-type" data-tsd-kind="Class">TiledObject</a></h4>
 							</li>
 						</ul>
 					</section>
@@ -176,50 +171,26 @@
 				<section class="tsd-panel-group tsd-member-group ">
 					<h2>Properties</h2>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-						<a name="ateof" class="tsd-anchor"></a>
-						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> at<wbr>Eof</h3>
-						<div class="tsd-signature tsd-kind-icon">at<wbr>Eof<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<a name="asset" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> asset</h3>
+						<div class="tsd-signature tsd-kind-icon">asset<span class="tsd-signature-symbol">:</span> <a href="asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a></div>
 						<aside class="tsd-sources">
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>True if no more data can be read.</p>
+								<p>The asset this object is part of, or <code>null</code>.</p>
 							</div>
 						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-						<a name="filepath" class="tsd-anchor"></a>
-						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> file<wbr>Path</h3>
-						<div class="tsd-signature tsd-kind-icon">file<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+						<a name="readonly" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> read<wbr>Only</h3>
+						<div class="tsd-signature tsd-kind-icon">read<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 						<aside class="tsd-sources">
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>The path of the file.</p>
-							</div>
-						</div>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-						<a name="pos" class="tsd-anchor"></a>
-						<h3>pos</h3>
-						<div class="tsd-signature tsd-kind-icon">pos<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-						<aside class="tsd-sources">
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<p>The position that data is written to or read from.</p>
-							</div>
-						</div>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-						<a name="size" class="tsd-anchor"></a>
-						<h3>size</h3>
-						<div class="tsd-signature tsd-kind-icon">size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-						<aside class="tsd-sources">
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<p>The size of the file (in bytes).</p>
+								<p>Whether the object is read-only.</p>
 							</div>
 						</div>
 					</section>
@@ -227,10 +198,10 @@
 				<section class="tsd-panel-group tsd-member-group ">
 					<h2>Methods</h2>
 					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-						<a name="close" class="tsd-anchor"></a>
-						<h3>close</h3>
+						<a name="properties" class="tsd-anchor"></a>
+						<h3>properties</h3>
 						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-							<li class="tsd-signature tsd-kind-icon">close<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+							<li class="tsd-signature tsd-kind-icon">properties<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
@@ -238,19 +209,20 @@
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>Closes the file. It is recommended to always call this function as soon as you are finished
-										with the file.</p>
+										<p>Returns all custom properties set on this object.</p>
 									</div>
+									<p>Modifications to the properties will not affect the original object.
+									Does not include inherited values (see {@see resolvedProperties}).</p>
 								</div>
-								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Object</span></h4>
 							</li>
 						</ul>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-						<a name="read" class="tsd-anchor"></a>
-						<h3>read</h3>
+						<a name="property" class="tsd-anchor"></a>
+						<h3>property</h3>
 						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-							<li class="tsd-signature tsd-kind-icon">read<span class="tsd-signature-symbol">(</span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span></li>
+							<li class="tsd-signature tsd-kind-icon">property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
@@ -258,26 +230,29 @@
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>Reads at most <code>size</code> bytes of data from the file and returns it as an {@link ArrayBuffer}.</p>
+										<p>Returns the value of the custom property with the given name, or
+											<code>undefined</code> if no such property is set on the object. Does not
+										include inherited values (see {@see resolvedProperty}).</p>
 									</div>
+									<p><code>file</code> properties are returned as {@see FilePath}.</p>
+									<p><code>object</code> properties are returned as {@see MapObject} when possible,
+									or {@see ObjectRef} when the object could not be found.</p>
 								</div>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
-										<h5>size: <span class="tsd-signature-type">number</span></h5>
-										<div class="tsd-comment tsd-typography">
-										</div>
+										<h5>name: <span class="tsd-signature-type">string</span></h5>
 									</li>
 								</ul>
-								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ArrayBuffer</span></h4>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 							</li>
 						</ul>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-						<a name="readall" class="tsd-anchor"></a>
-						<h3>read<wbr>All</h3>
+						<a name="removeproperty" class="tsd-anchor"></a>
+						<h3>remove<wbr>Property</h3>
 						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-							<li class="tsd-signature tsd-kind-icon">read<wbr>All<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span></li>
+							<li class="tsd-signature tsd-kind-icon">remove<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
@@ -285,35 +260,13 @@
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>Reads all data from the file and returns it as an {@link ArrayBuffer}.</p>
-									</div>
-								</div>
-								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ArrayBuffer</span></h4>
-							</li>
-						</ul>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-						<a name="resize" class="tsd-anchor"></a>
-						<h3>resize</h3>
-						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-							<li class="tsd-signature tsd-kind-icon">resize<span class="tsd-signature-symbol">(</span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-						</ul>
-						<ul class="tsd-descriptions">
-							<li class="tsd-description">
-								<aside class="tsd-sources">
-								</aside>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Sets the file size (in bytes). If <code>size</code> is larger than the file currently is, the new bytes
-										will be set to 0; if <code>size</code> is smaller, the file is truncated.</p>
+										<p>Removes the custom property with the given name.</p>
 									</div>
 								</div>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
-										<h5>size: <span class="tsd-signature-type">number</span></h5>
-										<div class="tsd-comment tsd-typography">
-										</div>
+										<h5>name: <span class="tsd-signature-type">string</span></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -321,10 +274,10 @@
 						</ul>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-						<a name="seek" class="tsd-anchor"></a>
-						<h3>seek</h3>
+						<a name="resolvedproperties" class="tsd-anchor"></a>
+						<h3>resolved<wbr>Properties</h3>
 						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-							<li class="tsd-signature tsd-kind-icon">seek<span class="tsd-signature-symbol">(</span>pos<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+							<li class="tsd-signature tsd-kind-icon">resolved<wbr>Properties<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
@@ -332,15 +285,62 @@
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>Sets the current position to <code>pos</code>.</p>
+										<p>Returns all custom properties set on this object. Modifications to
+											the properties will not affect the original object. Includes values
+										inherited from object types, templates and tiles where applicable.</p>
+									</div>
+								</div>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Object</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="resolvedproperty" class="tsd-anchor"></a>
+						<h3>resolved<wbr>Property</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">resolved<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Returns the value of the custom property with the given name, or
+											<code>undefined</code> if no such property is set. Includes values inherited
+										from object types, templates and tiles where applicable.</p>
 									</div>
 								</div>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
-										<h5>pos: <span class="tsd-signature-type">number</span></h5>
-										<div class="tsd-comment tsd-typography">
-										</div>
+										<h5>name: <span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+						<a name="setproperties" class="tsd-anchor"></a>
+						<h3>set<wbr>Properties</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+							<li class="tsd-signature tsd-kind-icon">set<wbr>Properties<span class="tsd-signature-symbol">(</span>properties<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Replaces all currently set custom properties with a new set of
+										properties.</p>
+									</div>
+								</div>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>properties: <span class="tsd-signature-type">Object</span></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -348,10 +348,10 @@
 						</ul>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-						<a name="write" class="tsd-anchor"></a>
-						<h3>write</h3>
+						<a name="setproperty" class="tsd-anchor"></a>
+						<h3>set<wbr>Property</h3>
 						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-							<li class="tsd-signature tsd-kind-icon">write<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+							<li class="tsd-signature tsd-kind-icon">set<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
@@ -359,17 +359,21 @@
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>Commits all written data to disk and closes the file. Should be called when writing to files
-											in WriteOnly mode. Failing to call this function will result in cancelling the operation,
-										unless safe writing to files is disabled.</p>
+										<p>Sets the value of the custom property with the given name. Supported
+											types are <code>bool</code>, <code>number</code>, <code>string</code>, {@see FilePath},
+										{@see ObjectRef} and {@see MapObject}.</p>
 									</div>
+									<p>When setting a <code>number</code>, the property type will be set to either
+									<code>int</code> or <code>float</code>, depending on whether it is a whole number.</p>
+									<p><em>Note:</em> Support for setting <code>color</code> properties is currently missing.</p>
 								</div>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
-										<h5>data: <span class="tsd-signature-type">ArrayBuffer</span></h5>
-										<div class="tsd-comment tsd-typography">
-										</div>
+										<h5>name: <span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li>
+										<h5>value: <span class="tsd-signature-type">any</span></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -391,48 +395,9 @@
 						<li class=" tsd-kind-class">
 							<a href="asset.html" class="tsd-kind-icon">Asset</a>
 						</li>
-					</ul>
-					<ul class="current">
-						<li class="current tsd-kind-class">
+						<li class=" tsd-kind-class">
 							<a href="binaryfile.html" class="tsd-kind-icon">Binary<wbr>File</a>
-							<ul>
-								<li class=" tsd-kind-constructor tsd-parent-kind-class">
-									<a href="binaryfile.html#constructor" class="tsd-kind-icon">constructor</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-class">
-									<a href="binaryfile.html#ateof" class="tsd-kind-icon">at<wbr>Eof</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-class">
-									<a href="binaryfile.html#filepath" class="tsd-kind-icon">file<wbr>Path</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-class">
-									<a href="binaryfile.html#pos" class="tsd-kind-icon">pos</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-class">
-									<a href="binaryfile.html#size" class="tsd-kind-icon">size</a>
-								</li>
-								<li class=" tsd-kind-method tsd-parent-kind-class">
-									<a href="binaryfile.html#close" class="tsd-kind-icon">close</a>
-								</li>
-								<li class=" tsd-kind-method tsd-parent-kind-class">
-									<a href="binaryfile.html#read" class="tsd-kind-icon">read</a>
-								</li>
-								<li class=" tsd-kind-method tsd-parent-kind-class">
-									<a href="binaryfile.html#readall" class="tsd-kind-icon">read<wbr>All</a>
-								</li>
-								<li class=" tsd-kind-method tsd-parent-kind-class">
-									<a href="binaryfile.html#resize" class="tsd-kind-icon">resize</a>
-								</li>
-								<li class=" tsd-kind-method tsd-parent-kind-class">
-									<a href="binaryfile.html#seek" class="tsd-kind-icon">seek</a>
-								</li>
-								<li class=" tsd-kind-method tsd-parent-kind-class">
-									<a href="binaryfile.html#write" class="tsd-kind-icon">write</a>
-								</li>
-							</ul>
 						</li>
-					</ul>
-					<ul class="after-current">
 						<li class=" tsd-kind-class">
 							<a href="mapobject.html" class="tsd-kind-icon">Map<wbr>Object</a>
 						</li>
@@ -448,9 +413,45 @@
 						<li class=" tsd-kind-class">
 							<a href="tiledimage.html" class="tsd-kind-icon">Tiled<wbr>Image</a>
 						</li>
-						<li class=" tsd-kind-class">
+					</ul>
+					<ul class="current">
+						<li class="current tsd-kind-class">
 							<a href="tiledobject.html" class="tsd-kind-icon">Tiled<wbr>Object</a>
+							<ul>
+								<li class=" tsd-kind-constructor tsd-parent-kind-class">
+									<a href="tiledobject.html#constructor" class="tsd-kind-icon">constructor</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tiledobject.html#asset" class="tsd-kind-icon">asset</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tiledobject.html#readonly" class="tsd-kind-icon">read<wbr>Only</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tiledobject.html#properties" class="tsd-kind-icon">properties</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tiledobject.html#property" class="tsd-kind-icon">property</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tiledobject.html#removeproperty" class="tsd-kind-icon">remove<wbr>Property</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tiledobject.html#resolvedproperties" class="tsd-kind-icon">resolved<wbr>Properties</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tiledobject.html#resolvedproperty" class="tsd-kind-icon">resolved<wbr>Property</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tiledobject.html#setproperties" class="tsd-kind-icon">set<wbr>Properties</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class">
+									<a href="tiledobject.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a>
+								</li>
+							</ul>
 						</li>
+					</ul>
+					<ul class="after-current">
 						<li class=" tsd-kind-interface">
 							<a href="../interfaces/action.html" class="tsd-kind-icon">Action</a>
 						</li>

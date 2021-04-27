@@ -14,7 +14,7 @@
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/main.css">
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>BinaryFile | Tiled Scripting API</title>
+	<title>FilePath | Tiled Scripting API</title>
 </head>
 <body>
 <div class="headerbar-container">
@@ -82,67 +82,43 @@
 						<a href="../index.html">Tiled Scripting API</a>
 					</li>
 					<li>
-						<a href="binaryfile.html">BinaryFile</a>
+						<a href="filepath.html">FilePath</a>
 					</li>
 				</ul>
-				<h1>Namespace BinaryFile</h1>
+				<h1>Interface FilePath</h1>
 			</div>
 		</div>
 	</header>
 	<div class="container container-main">
 		<div class="row">
 			<div class="col-8 col-content">
+				<section class="tsd-panel tsd-hierarchy">
+					<h3>Hierarchy</h3>
+					<ul class="tsd-hierarchy">
+						<li>
+							<span class="target">FilePath</span>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel-group tsd-index-group">
 					<h2>Index</h2>
 					<section class="tsd-panel tsd-index-panel">
 						<div class="tsd-index-content">
 							<section class="tsd-index-section ">
-								<h3>Type aliases</h3>
+								<h3>Properties</h3>
 								<ul class="tsd-index-list">
-									<li class="tsd-kind-type-alias tsd-parent-kind-namespace"><a href="binaryfile.html#openmode" class="tsd-kind-icon">Open<wbr>Mode</a></li>
-								</ul>
-							</section>
-							<section class="tsd-index-section ">
-								<h3>Variables</h3>
-								<ul class="tsd-index-list">
-									<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="binaryfile.html#readonly" class="tsd-kind-icon">Read<wbr>Only</a></li>
-									<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="binaryfile.html#readwrite" class="tsd-kind-icon">Read<wbr>Write</a></li>
-									<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="binaryfile.html#writeonly" class="tsd-kind-icon">Write<wbr>Only</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="filepath.html#url" class="tsd-kind-icon">url</a></li>
 								</ul>
 							</section>
 						</div>
 					</section>
 				</section>
 				<section class="tsd-panel-group tsd-member-group ">
-					<h2>Type aliases</h2>
-					<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-namespace">
-						<a name="openmode" class="tsd-anchor"></a>
-						<h3>Open<wbr>Mode</h3>
-						<div class="tsd-signature tsd-kind-icon">Open<wbr>Mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="binaryfile.html#readonly" class="tsd-signature-type" data-tsd-kind="Variable">ReadOnly</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="binaryfile.html#writeonly" class="tsd-signature-type" data-tsd-kind="Variable">WriteOnly</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="binaryfile.html#readwrite" class="tsd-signature-type" data-tsd-kind="Variable">ReadWrite</a></div>
-						<aside class="tsd-sources">
-						</aside>
-					</section>
-				</section>
-				<section class="tsd-panel-group tsd-member-group ">
-					<h2>Variables</h2>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
-						<a name="readonly" class="tsd-anchor"></a>
-						<h3><span class="tsd-flag ts-flagConst">Const</span> Read<wbr>Only</h3>
-						<div class="tsd-signature tsd-kind-icon">Read<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">1</span><span class="tsd-signature-symbol"> = 1</span></div>
-						<aside class="tsd-sources">
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
-						<a name="readwrite" class="tsd-anchor"></a>
-						<h3><span class="tsd-flag ts-flagConst">Const</span> Read<wbr>Write</h3>
-						<div class="tsd-signature tsd-kind-icon">Read<wbr>Write<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">3</span><span class="tsd-signature-symbol"> = 3</span></div>
-						<aside class="tsd-sources">
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
-						<a name="writeonly" class="tsd-anchor"></a>
-						<h3><span class="tsd-flag ts-flagConst">Const</span> Write<wbr>Only</h3>
-						<div class="tsd-signature tsd-kind-icon">Write<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">2</span><span class="tsd-signature-symbol"> = 2</span></div>
+					<h2>Properties</h2>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="url" class="tsd-anchor"></a>
+						<h3>url</h3>
+						<div class="tsd-signature tsd-kind-icon">url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 						<aside class="tsd-sources">
 						</aside>
 					</section>
@@ -154,39 +130,117 @@
 						<li class=" ">
 							<a href="../index.html">Exports</a>
 						</li>
-						<li class="current tsd-kind-namespace">
-							<a href="binaryfile.html">Binary<wbr>File</a>
-						</li>
-						<li class=" tsd-kind-namespace">
-							<a href="mapobject.html">Map<wbr>Object</a>
-						</li>
-						<li class=" tsd-kind-namespace">
-							<a href="qt.html">Qt</a>
-						</li>
-						<li class=" tsd-kind-namespace">
-							<a href="textfile.html">Text<wbr>File</a>
-						</li>
-						<li class=" tsd-kind-namespace">
-							<a href="tiledimage.html">Tiled<wbr>Image</a>
-						</li>
-						<li class=" tsd-kind-namespace">
-							<a href="tiled.html">tiled</a>
-						</li>
 					</ul>
 				</nav>
 				<nav class="tsd-navigation secondary menu-sticky">
 					<ul class="before-current">
-						<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
-							<a href="binaryfile.html#openmode" class="tsd-kind-icon">Open<wbr>Mode</a>
+						<li class=" tsd-kind-class">
+							<a href="../classes/asset.html" class="tsd-kind-icon">Asset</a>
 						</li>
-						<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-							<a href="binaryfile.html#readonly" class="tsd-kind-icon">Read<wbr>Only</a>
+						<li class=" tsd-kind-class">
+							<a href="../classes/binaryfile.html" class="tsd-kind-icon">Binary<wbr>File</a>
 						</li>
-						<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-							<a href="binaryfile.html#readwrite" class="tsd-kind-icon">Read<wbr>Write</a>
+						<li class=" tsd-kind-class">
+							<a href="../classes/mapobject.html" class="tsd-kind-icon">Map<wbr>Object</a>
 						</li>
-						<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-							<a href="binaryfile.html#writeonly" class="tsd-kind-icon">Write<wbr>Only</a>
+						<li class=" tsd-kind-class">
+							<a href="../classes/objectgroup.html" class="tsd-kind-icon">Object<wbr>Group</a>
+						</li>
+						<li class=" tsd-kind-class">
+							<a href="../classes/textfile.html" class="tsd-kind-icon">Text<wbr>File</a>
+						</li>
+						<li class=" tsd-kind-class">
+							<a href="../classes/tilemap.html" class="tsd-kind-icon">Tile<wbr>Map</a>
+						</li>
+						<li class=" tsd-kind-class">
+							<a href="../classes/tiledimage.html" class="tsd-kind-icon">Tiled<wbr>Image</a>
+						</li>
+						<li class=" tsd-kind-class">
+							<a href="../classes/tiledobject.html" class="tsd-kind-icon">Tiled<wbr>Object</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="action.html" class="tsd-kind-icon">Action</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="aspectratio.html" class="tsd-kind-icon">Aspect<wbr>Ratio</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="fileformat.html" class="tsd-kind-icon">File<wbr>Format</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="fileinfo.html" class="tsd-kind-icon">File<wbr>Info</a>
+						</li>
+					</ul>
+					<ul class="current">
+						<li class="current tsd-kind-interface">
+							<a href="filepath.html" class="tsd-kind-icon">File<wbr>Path</a>
+							<ul>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="filepath.html#url" class="tsd-kind-icon">url</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+					<ul class="after-current">
+						<li class=" tsd-kind-interface">
+							<a href="grouplayer.html" class="tsd-kind-icon">Group<wbr>Layer</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="imageformat.html" class="tsd-kind-icon">Image<wbr>Format</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="imagelayer.html" class="tsd-kind-icon">Image<wbr>Layer</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="layer.html" class="tsd-kind-icon">Layer</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="mapeditor.html" class="tsd-kind-icon">Map<wbr>Editor</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="mapformat.html" class="tsd-kind-icon">Map<wbr>Format</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="menu.html" class="tsd-kind-icon">Menu</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="objectref.html" class="tsd-kind-icon">Object<wbr>Ref</a>
+						</li>
+						<li class=" tsd-kind-interface tsd-has-type-parameter">
+							<a href="signal.html" class="tsd-kind-icon">Signal</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="tileset.html" class="tsd-kind-icon">Tileset</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="tileseteditor.html" class="tsd-kind-icon">Tileset<wbr>Editor</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="tilesetformat.html" class="tsd-kind-icon">Tileset<wbr>Format</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="tool.html" class="tsd-kind-icon">Tool</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="transformationmode.html" class="tsd-kind-icon">Transformation<wbr>Mode</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="point.html" class="tsd-kind-icon">point</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="rect.html" class="tsd-kind-icon">rect</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="region.html" class="tsd-kind-icon">region</a>
+						</li>
+						<li class=" tsd-kind-interface">
+							<a href="size.html" class="tsd-kind-icon">size</a>
+						</li>
+						<li class=" tsd-kind-type-alias">
+							<a href="../index.html#polygon" class="tsd-kind-icon">Polygon</a>
+						</li>
+						<li class=" tsd-kind-variable">
+							<a href="../index.html#__filename" class="tsd-kind-icon">__filename</a>
 						</li>
 					</ul>
 				</nav>

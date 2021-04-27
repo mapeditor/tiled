@@ -14,7 +14,7 @@
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/main.css">
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>Tileset | Tiled Scripting API</title>
+	<title>FileFormat | Tiled Scripting API</title>
 </head>
 <body>
 <div class="headerbar-container">
@@ -82,23 +82,110 @@
 						<a href="../index.html">Tiled Scripting API</a>
 					</li>
 					<li>
-						<a href="tileset.html">Tileset</a>
+						<a href="fileformat.html">FileFormat</a>
 					</li>
 				</ul>
-				<h1>Interface Tileset</h1>
+				<h1>Interface FileFormat</h1>
 			</div>
 		</div>
 	</header>
 	<div class="container container-main">
 		<div class="row">
 			<div class="col-8 col-content">
+				<section class="tsd-panel tsd-comment">
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Common functionality for file format readers and writers.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.4</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-hierarchy">
 					<h3>Hierarchy</h3>
 					<ul class="tsd-hierarchy">
 						<li>
-							<span class="target">Tileset</span>
+							<span class="target">FileFormat</span>
 						</li>
 					</ul>
+				</section>
+				<section class="tsd-panel-group tsd-index-group">
+					<h2>Index</h2>
+					<section class="tsd-panel tsd-index-panel">
+						<div class="tsd-index-content">
+							<section class="tsd-index-section ">
+								<h3>Properties</h3>
+								<ul class="tsd-index-list">
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fileformat.html#canread" class="tsd-kind-icon">can<wbr>Read</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fileformat.html#canwrite" class="tsd-kind-icon">can<wbr>Write</a></li>
+								</ul>
+							</section>
+							<section class="tsd-index-section ">
+								<h3>Methods</h3>
+								<ul class="tsd-index-list">
+									<li class="tsd-kind-method tsd-parent-kind-interface"><a href="fileformat.html#supportsfile" class="tsd-kind-icon">supports<wbr>File</a></li>
+								</ul>
+							</section>
+						</div>
+					</section>
+				</section>
+				<section class="tsd-panel-group tsd-member-group ">
+					<h2>Properties</h2>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="canread" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> can<wbr>Read</h3>
+						<div class="tsd-signature tsd-kind-icon">can<wbr>Read<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Whether this format supports reading files.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="canwrite" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> can<wbr>Write</h3>
+						<div class="tsd-signature tsd-kind-icon">can<wbr>Write<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Whether this format supports writing files.</p>
+							</div>
+						</div>
+					</section>
+				</section>
+				<section class="tsd-panel-group tsd-member-group ">
+					<h2>Methods</h2>
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+						<a name="supportsfile" class="tsd-anchor"></a>
+						<h3>supports<wbr>File</h3>
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+							<li class="tsd-signature tsd-kind-icon">supports<wbr>File<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+								</aside>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Returns whether the file is readable by this format.</p>
+									</div>
+								</div>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>fileName: <span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							</li>
+						</ul>
+					</section>
 				</section>
 			</div>
 			<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -141,9 +228,24 @@
 						<li class=" tsd-kind-interface">
 							<a href="aspectratio.html" class="tsd-kind-icon">Aspect<wbr>Ratio</a>
 						</li>
-						<li class=" tsd-kind-interface">
+					</ul>
+					<ul class="current">
+						<li class="current tsd-kind-interface">
 							<a href="fileformat.html" class="tsd-kind-icon">File<wbr>Format</a>
+							<ul>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="fileformat.html#canread" class="tsd-kind-icon">can<wbr>Read</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="fileformat.html#canwrite" class="tsd-kind-icon">can<wbr>Write</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-interface">
+									<a href="fileformat.html#supportsfile" class="tsd-kind-icon">supports<wbr>File</a>
+								</li>
+							</ul>
 						</li>
+					</ul>
+					<ul class="after-current">
 						<li class=" tsd-kind-interface">
 							<a href="fileinfo.html" class="tsd-kind-icon">File<wbr>Info</a>
 						</li>
@@ -177,13 +279,9 @@
 						<li class=" tsd-kind-interface tsd-has-type-parameter">
 							<a href="signal.html" class="tsd-kind-icon">Signal</a>
 						</li>
-					</ul>
-					<ul class="current">
-						<li class="current tsd-kind-interface">
+						<li class=" tsd-kind-interface">
 							<a href="tileset.html" class="tsd-kind-icon">Tileset</a>
 						</li>
-					</ul>
-					<ul class="after-current">
 						<li class=" tsd-kind-interface">
 							<a href="tileseteditor.html" class="tsd-kind-icon">Tileset<wbr>Editor</a>
 						</li>
