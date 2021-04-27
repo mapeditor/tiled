@@ -62,6 +62,7 @@ public:
     bool snapToFineGrid() const;
     bool snapToPixels() const;
     QColor gridColor() const;
+    QColor backgroundFadeColor() const;
     int gridFine() const;
     int gridMajor() const;
     qreal objectLineWidth() const;
@@ -187,6 +188,7 @@ public slots:
     void setSnapToFineGrid(bool snapToFineGrid);
     void setSnapToPixels(bool snapToPixels);
     void setGridColor(QColor gridColor);
+    void setBackgroundFadeColor(QColor backgroundFadeColor);
     void setGridFine(int gridFine);
     void setGridMajor(int gridMajor);
     void setObjectLineWidth(qreal lineWidth);
@@ -211,6 +213,7 @@ signals:
     void snapToFineGridChanged(bool snapToFineGrid);
     void snapToPixelsChanged(bool snapToPixels);
     void gridColorChanged(QColor gridColor);
+    void backgroundFadeColorChanged(QColor backgroundFadeColor);
     void gridFineChanged(int gridFine);
     void gridMajorChanged(int gridMajor);
     void objectLineWidthChanged(qreal lineWidth);
