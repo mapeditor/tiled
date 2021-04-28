@@ -193,3 +193,5 @@ EditableWangSet *EditableManager::editableWangSet(EditableTileset *tileset, Wang
 }
 
 } // namespace Tiled
+
+#include "moc_editablemanager.cpp"

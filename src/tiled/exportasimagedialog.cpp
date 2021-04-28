@@ -43,7 +43,7 @@ using namespace Tiled;
 
 namespace session {
 static SessionOption<bool> visibleLayersOnly { "exportAsImage.visibleLayersOnly", true };
-static SessionOption<bool> useCurrentScale { "exportAsImage.useCurrentScale", true };
+static SessionOption<bool> useCurrentScale { "exportAsImage.useCurrentScale", false };
 static SessionOption<bool> drawTileGrid { "exportAsImage.drawTileGrid", false };
 static SessionOption<bool> drawObjectLabels { "exportAsImage.drawObjectLabels", false };
 static SessionOption<bool> includeBackgroundColor { "exportAsImage.includeBackgroundColor", false };
@@ -243,3 +243,5 @@ void ExportAsImageDialog::updateAcceptEnabled()
     QPushButton *saveButton = mUi->buttonBox->button(QDialogButtonBox::Save);
     saveButton->setEnabled(!mUi->fileNameEdit->text().isEmpty());
 }
+
+#include "moc_exportasimagedialog.cpp"

@@ -211,3 +211,5 @@ void CommandManager::retranslateUi()
 }
 
 } // namespace Tiled
+
+#include "moc_commandmanager.cpp"

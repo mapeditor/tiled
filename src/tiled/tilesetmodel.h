@@ -38,13 +38,6 @@ class TilesetModel : public QAbstractListModel
 
 public:
     /**
-     * The TerrainRole allows querying the terrain info.
-     */
-    enum UserRoles {
-        TerrainRole = Qt::UserRole
-    };
-
-    /**
      * Constructor.
      *
      * @param tileset the initial tileset to display
@@ -121,7 +114,7 @@ public slots:
      * Tiles that are not from the tileset displayed by this model are simply
      * ignored. All tiles in the list are assumed to be from the same tileset.
      *
-     * \sa TilesetDocument::tileTerrainChanged
+     * \sa TilesetDocument::tileWangSetChanged
      */
     void tilesChanged(const QList<Tile*> &tiles);
 

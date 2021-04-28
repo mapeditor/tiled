@@ -7,13 +7,15 @@ Project {
     qbsSearchPaths: "qbs"
     minimumQbsVersion: "1.8"
 
-    property string version: Environment.getEnv("TILED_VERSION") || "1.4.3";
+    property string version: Environment.getEnv("TILED_VERSION") || "1.6.0";
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT") == "true"
     property bool release: Environment.getEnv("TILED_RELEASE") == "true"
     property bool installHeaders: false
     property bool useRPaths: true
     property bool windowsInstaller: false
     property bool enableZstd: false
+    property bool sentry: false
+    property bool dbus: true
     property string openSslPath: Environment.getEnv("OPENSSL_PATH")
 
     references: [
@@ -23,6 +25,7 @@ Project {
         "docs",
         "src/libtiled",
         "src/libtiledquick",
+        "src/karchive",
         "src/plugins",
         "src/qtpropertybrowser",
         "src/qtsingleapplication",

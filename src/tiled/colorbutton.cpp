@@ -89,3 +89,5 @@ void ColorButton::updateIcon()
 
     setIcon(QIcon(pixmap));
 }
+
+#include "moc_colorbutton.cpp"

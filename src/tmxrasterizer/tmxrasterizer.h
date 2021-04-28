@@ -78,7 +78,7 @@ private:
     QStringList mLayersToHide;
     QStringList mLayersToShow;
 
-    void drawMapLayers(MapRenderer &renderer, QPainter &painter, Map &map, QPoint mapOffset = QPoint(0, 0)) const;
+    void drawMapLayers(const MapRenderer &renderer, QPainter &painter, QPoint mapOffset = QPoint(0, 0)) const;
     int renderMap(const QString &mapFileName, const QString &imageFileName);
     int renderWorld(const QString &worldFileName, const QString &imageFileName);
     int saveImage(const QString &imageFileName, const QImage &image) const;

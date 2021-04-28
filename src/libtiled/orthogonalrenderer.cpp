@@ -198,9 +198,6 @@ QPainterPath OrthogonalRenderer::interactionShape(const MapObject *object) const
     QPainterPath path;
 
     switch (object->shape()) {
-    case MapObject::Rectangle:
-        path.addRect(boundingRect(object));
-        break;
     case MapObject::Polyline: {
         const QPointF &pos = object->position();
         const QPolygonF polygon = object->polygon().translated(pos);
@@ -212,6 +209,7 @@ QPainterPath OrthogonalRenderer::interactionShape(const MapObject *object) const
         path.setFillRule(Qt::WindingFill);
         break;
     }
+    case MapObject::Rectangle:
     case MapObject::Polygon:
     case MapObject::Ellipse:
     case MapObject::Text:
@@ -226,7 +224,7 @@ QPainterPath OrthogonalRenderer::interactionShape(const MapObject *object) const
 }
 
 void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
-                                  QColor gridColor) const
+                                  QColor gridColor, int gridMajor) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -234,32 +232,39 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     if (tileWidth <= 0 || tileHeight <= 0)
         return;
 
-    int startX = qFloor(rect.x() / tileWidth) * tileWidth;
-    int startY = qFloor(rect.y() / tileHeight) * tileHeight;
-    int endX = qCeil(rect.right());
-    int endY = qCeil(rect.bottom());
+    int startX = qFloor(rect.x() / tileWidth);
+    int startY = qFloor(rect.y() / tileHeight);
+    int endX = qCeil(rect.right() / tileWidth);
+    int endY = qCeil(rect.bottom() / tileHeight);
 
     if (!map()->infinite()) {
         startX = qMax(0, startX);
         startY = qMax(0, startY);
-        endX = qMin(endX, map()->width() * tileWidth + 1);
-        endY = qMin(endY, map()->height() * tileHeight + 1);
+        endX = qMin(endX, map()->width());
+        endY = qMin(endY, map()->height());
     }
 
-    QPen gridPen = makeGridPen(painter->device(), gridColor);
+    QPen gridPen, majorGridPen;
+    setupGridPens(painter->device(), gridColor, gridPen, majorGridPen);
 
     if (startY < endY) {
-        gridPen.setDashOffset(startY);
-        painter->setPen(gridPen);
-        for (int x = startX; x < endX; x += tileWidth)
-            painter->drawLine(x, startY, x, endY - 1);
+        gridPen.setDashOffset(startY * tileHeight);
+        majorGridPen.setDashOffset(startY * tileHeight);
+
+        for (int x = startX; x < endX; ++x) {
+            painter->setPen(gridMajor != 0 && x % gridMajor == 0 ? majorGridPen : gridPen);
+            painter->drawLine(x * tileWidth, startY * tileHeight, x * tileWidth, endY * tileHeight);
+        }
     }
 
     if (startX < endX) {
-        gridPen.setDashOffset(startX);
-        painter->setPen(gridPen);
-        for (int y = startY; y < endY; y += tileHeight)
-            painter->drawLine(startX, y, endX - 1, y);
+        gridPen.setDashOffset(startX * tileWidth);
+        majorGridPen.setDashOffset(startX * tileWidth);
+
+        for (int y = startY; y < endY; ++y) {
+            painter->setPen(gridMajor != 0 && y % gridMajor == 0 ? majorGridPen : gridPen);
+            painter->drawLine(startX * tileWidth, y * tileHeight, endX * tileWidth, y * tileHeight);
+        }
     }
 }
 

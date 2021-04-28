@@ -28,9 +28,9 @@
 #include "mapview.h"
 #include "objectgroup.h"
 #include "objectselectiontool.h"
-#include "preferences.h"
 #include "propertiesdock.h"
 #include "replacetileset.h"
+#include "session.h"
 #include "templatemanager.h"
 #include "tilesetmanager.h"
 #include "tilesetdocument.h"
@@ -411,14 +411,14 @@ void TemplatesDock::fixTileset()
     } else if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {
         FormatHelper<TilesetFormat> helper(FileFormat::Read, tr("All Files (*)"));
 
-        Preferences *prefs = Preferences::instance();
-        QString start = prefs->lastPath(Preferences::ExternalTileset);
+        Session &session = Session::current();
+        QString start = session.lastPath(Session::ExternalTileset);
         QString fileName = QFileDialog::getOpenFileName(this, tr("Locate External Tileset"),
                                                         start,
                                                         helper.filter());
 
         if (!fileName.isEmpty()) {
-            prefs->setLastPath(Preferences::ExternalTileset, QFileInfo(fileName).path());
+            session.setLastPath(Session::ExternalTileset, QFileInfo(fileName).path());
 
             QString error;
             auto newTileset = TilesetManager::instance()->loadTileset(fileName, &error);
@@ -441,3 +441,5 @@ MapObject *TemplatesDock::dummyObject() const
 
     return mDummyMapDocument->map()->layerAt(0)->asObjectGroup()->objectAt(0);
 }
+
+#include "moc_templatesdock.cpp"

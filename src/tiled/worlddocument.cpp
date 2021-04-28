@@ -57,3 +57,5 @@ void WorldDocument::onWorldReloaded(const QString &fileName)
 }
 
 } // namespace Tiled
+
+#include "moc_worlddocument.cpp"

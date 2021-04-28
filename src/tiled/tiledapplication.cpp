@@ -84,3 +84,5 @@ void TiledApplication::onMessageReceived(const QString &message)
     for (const QJsonValue &file : files)
         emit fileOpenRequest(file.toString());
 }
+
+#include "moc_tiledapplication.cpp"

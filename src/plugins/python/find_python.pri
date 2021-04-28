@@ -1,6 +1,10 @@
 !contains(DISABLE_PYTHON_PLUGIN, yes) {
     unix {
-        packagesExist(python3) {
+        packagesExist(python3-embed) {
+            HAVE_PYTHON = yes
+            CONFIG += link_pkgconfig
+            PKGCONFIG += python3-embed
+        } else:packagesExist(python3) {
             HAVE_PYTHON = yes
             CONFIG += link_pkgconfig
             PKGCONFIG += python3

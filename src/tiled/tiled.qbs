@@ -7,6 +7,7 @@ QtGuiApplication {
     name: "tiled"
     targetName: name
     version: project.version
+    consoleApplication: false
 
     Depends { name: "libtiled" }
     Depends { name: "translations" }
@@ -15,13 +16,21 @@ QtGuiApplication {
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt"; submodules: ["core", "widgets", "qml"]; versionAtLeast: "5.6" }
     Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6 }
+    Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
 
     property bool qtcRunnable: true
 
-    cpp.includePaths: [
-        ".",
-        "../../zstd/lib"
-    ]
+    cpp.includePaths: {
+        var paths = ["."];
+
+        if (project.enableZstd)
+            paths.push("../../zstd/lib");
+
+        if (project.sentry)
+            paths.push("../../sentry-native/install/include");
+
+        return paths;
+    }
 
     cpp.useRPaths: project.useRPaths
     cpp.rpaths: {
@@ -38,24 +47,34 @@ QtGuiApplication {
     cpp.defines: {
         var defs = [
             "TILED_VERSION=" + version,
-            "QT_DEPRECATED_WARNINGS",
-            "QT_DISABLE_DEPRECATED_BEFORE=0x050900",
+            "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(5,15,0)",
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
             "QT_NO_FOREACH",
             "QT_NO_URL_CAST_FROM_STRING",
             "_USE_MATH_DEFINES"
         ];
+
         if (project.snapshot)
             defs.push("TILED_SNAPSHOT");
 
         if (project.enableZstd)
             defs.push("TILED_ZSTD_SUPPORT");
 
+        if (qbs.targetOS.contains("linux") && project.dbus && Qt.dbus.present)
+            defs.push("TILED_ENABLE_DBUS");
+
+        if (project.sentry)
+            defs.push("TILED_SENTRY");
+
         return defs;
     }
 
-    consoleApplication: false
+    Properties {
+        condition: project.sentry
+        cpp.dynamicLibraries: base.concat(["sentry"])
+        cpp.libraryPaths: base.concat(["../../sentry-native/install/lib"])
+    }
 
     Group {
         name: "Precompiled header"
@@ -435,6 +454,8 @@ QtGuiApplication {
         "scriptmanager.h",
         "scriptmodule.cpp",
         "scriptmodule.h",
+        "scriptprocess.cpp",
+        "scriptprocess.h",
         "selectionrectangle.cpp",
         "selectionrectangle.h",
         "selectsametiletool.cpp",
@@ -554,6 +575,15 @@ QtGuiApplication {
         "zoomable.cpp",
         "zoomable.h",
     ]
+
+    Group {
+        name: "Sentry"
+        condition: project.sentry
+        files: [
+            "sentryhelper.cpp",
+            "sentryhelper.h",
+        ]
+    }
 
     Properties {
         condition: qbs.targetOS.contains("macos")

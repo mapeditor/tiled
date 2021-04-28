@@ -210,3 +210,5 @@ bool XmlObjectTemplateFormat::supportsFile(const QString &fileName) const
 
     return false;
 }
+
+#include "moc_tmxmapformat.cpp"

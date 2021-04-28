@@ -83,3 +83,5 @@ void ProjectPropertiesDialog::accept()
 }
 
 } // namespace Tiled
+
+#include "moc_projectpropertiesdialog.cpp"

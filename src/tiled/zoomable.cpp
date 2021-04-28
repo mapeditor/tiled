@@ -230,3 +230,5 @@ void Zoomable::syncComboBox()
     mComboBox->setCurrentIndex(index);
     mComboBox->setEditText(scaleToString(mScale));
 }
+
+#include "moc_zoomable.cpp"

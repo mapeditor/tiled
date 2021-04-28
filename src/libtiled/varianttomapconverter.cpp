@@ -28,7 +28,6 @@
 #include "objecttemplate.h"
 #include "properties.h"
 #include "templatemanager.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -220,6 +219,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const int columns = variantMap[QStringLiteral("columns")].toInt();
     const QString backgroundColor = variantMap[QStringLiteral("backgroundcolor")].toString();
     const QString objectAlignment = variantMap[QStringLiteral("objectalignment")].toString();
+    const QVariantMap transformations = variantMap[QStringLiteral("transformations")].toMap();
 
     if (tileWidth <= 0 || tileHeight <= 0 ||
             (firstGid == 0 && !mReadingExternalTileset)) {
@@ -234,6 +234,21 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     tileset->setObjectAlignment(alignmentFromString(objectAlignment));
     tileset->setTileOffset(QPoint(tileOffsetX, tileOffsetY));
     tileset->setColumnCount(columns);
+
+    if (!transformations.isEmpty()) {
+        Tileset::TransformationFlags transformationFlags;
+
+        if (transformations[QStringLiteral("hflip")].toBool())
+            transformationFlags |= Tileset::AllowFlipHorizontally;
+        if (transformations[QStringLiteral("vflip")].toBool())
+            transformationFlags |= Tileset::AllowFlipVertically;
+        if (transformations[QStringLiteral("rotate")].toBool())
+            transformationFlags |= Tileset::AllowRotate;
+        if (transformations[QStringLiteral("preferuntransformed")].toBool())
+            transformationFlags |= Tileset::PreferUntransformed;
+
+        tileset->setTransformationFlags(transformationFlags);
+    }
 
     readTilesetEditorSettings(*tileset, variantMap[QStringLiteral("editorsettings")].toMap());
 
@@ -312,7 +327,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
             }
 
             if (terrainWangSet->wangIdIsValid(wangId) && ok)
-                terrainWangSet->addTile(tile, wangId);
+                terrainWangSet->setWangId(tile->id(), wangId);
         }
 
         qreal probability = tileVar[QStringLiteral("probability")].toDouble(&ok);
@@ -420,9 +435,9 @@ std::unique_ptr<WangSet> VariantToMapConverter::toWangSet(const QVariantMap &var
 {
     const QString name = variantMap[QStringLiteral("name")].toString();
     const WangSet::Type type = wangSetTypeFromString(variantMap[QStringLiteral("type")].toString());
-    const int tile = variantMap[QStringLiteral("tile")].toInt();
+    const int tileId = variantMap[QStringLiteral("tile")].toInt();
 
-    std::unique_ptr<WangSet> wangSet { new WangSet(tileset, name, type, tile) };
+    std::unique_ptr<WangSet> wangSet { new WangSet(tileset, name, type, tileId) };
 
     wangSet->setProperties(extractProperties(variantMap));
 
@@ -480,18 +495,7 @@ std::unique_ptr<WangSet> VariantToMapConverter::toWangSet(const QVariantMap &var
             return nullptr;
         }
 
-        const bool fH = wangTileVariantMap[QStringLiteral("hflip")].toBool();
-        const bool fV = wangTileVariantMap[QStringLiteral("vflip")].toBool();
-        const bool fA = wangTileVariantMap[QStringLiteral("dflip")].toBool();
-
-        Tile *tile = tileset->findOrCreateTile(tileId);
-
-        WangTile wangTile(tile, wangId);
-        wangTile.setFlippedHorizontally(fH);
-        wangTile.setFlippedVertically(fV);
-        wangTile.setFlippedAntiDiagonally(fA);
-
-        wangSet->addWangTile(wangTile);
+        wangSet->setWangId(tileId, wangId);
     }
 
 
@@ -562,6 +566,17 @@ std::unique_ptr<Layer> VariantToMapConverter::toLayer(const QVariant &variant)
         const QPointF offset(variantMap[QStringLiteral("offsetx")].toDouble(),
                              variantMap[QStringLiteral("offsety")].toDouble());
         layer->setOffset(offset);
+
+        bool ok;
+        QPointF parallaxFactor(1.0, 1.0);
+        const qreal factorX = variantMap[QStringLiteral("parallaxx")].toDouble(&ok);
+        if (ok)
+            parallaxFactor.setX(factorX);
+        const qreal factorY = variantMap[QStringLiteral("parallaxy")].toDouble(&ok);
+        if (ok)
+            parallaxFactor.setY(factorY);
+
+        layer->setParallaxFactor(parallaxFactor);
     }
 
     return layer;
@@ -862,14 +877,18 @@ void VariantToMapConverter::readMapEditorSettings(Map &map, const QVariantMap &e
     map.setChunkSize(QSize(chunkWidth, chunkHeight));
 
     const QVariantMap exportVariant = editorSettings[QStringLiteral("export")].toMap();
-    map.exportFileName = QDir::cleanPath(mDir.filePath(exportVariant[QStringLiteral("target")].toString()));
+    const QString target = exportVariant[QStringLiteral("target")].toString();
+    if (!target.isEmpty() && target != QLatin1String("."))
+        map.exportFileName = QDir::cleanPath(mDir.filePath(target));
     map.exportFormat = exportVariant[QStringLiteral("format")].toString();
 }
 
 void VariantToMapConverter::readTilesetEditorSettings(Tileset &tileset, const QVariantMap &editorSettings)
 {
     const QVariantMap exportVariant = editorSettings[QStringLiteral("export")].toMap();
-    tileset.exportFileName = QDir::cleanPath(mDir.filePath(exportVariant[QStringLiteral("target")].toString()));
+    const QString target = exportVariant[QStringLiteral("target")].toString();
+    if (!target.isEmpty() && target != QLatin1String("."))
+        tileset.exportFileName = QDir::cleanPath(mDir.filePath(target));
     tileset.exportFormat = exportVariant[QStringLiteral("format")].toString();
 }
 

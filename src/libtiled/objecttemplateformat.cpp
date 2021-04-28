@@ -56,3 +56,5 @@ ObjectTemplateFormat *findSupportingTemplateFormat(const QString &fileName)
 }
 
 } // namespace Tiled
+
+#include "moc_objecttemplateformat.cpp"

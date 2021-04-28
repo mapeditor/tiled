@@ -27,6 +27,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "painttilelayer.h"
 #include "randompicker.h"
 #include "staggeredrenderer.h"
@@ -107,9 +108,9 @@ void WangBrushItem::setInvalidTiles(const QRegion &region)
 
 WangBrush::WangBrush(QObject *parent)
     : AbstractTileTool("WangTool",
-                       tr("Wang Brush"),
+                       tr("Terrain Brush"),
                        QIcon(QLatin1String(
-                                 ":images/24/wangtile-edit.png")),
+                                 ":images/24/terrain-edit.png")),
                        QKeySequence(Qt::Key_G),
                        new WangBrushItem,
                        parent)
@@ -203,12 +204,15 @@ void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 
 void WangBrush::languageChanged()
 {
-    setName(tr("Wang Brush"));
+    setName(tr("Terrain Brush"));
 }
 
 void WangBrush::setColor(int color)
 {
     mCurrentColor = color;
+
+    if (!mWangSet)
+        return;
 
     switch (mWangSet->type()) {
     case WangSet::Corner:
@@ -223,9 +227,9 @@ void WangBrush::setColor(int color)
         bool usedAsEdge = false;
 
         if (mWangSet && color > 0 && color <= mWangSet->colorCount()) {
-            for (const auto &wangTile : mWangSet->wangTilesByWangId()) {
+            for (const WangId wangId : mWangSet->wangIdByTileId()) {
                 for (int i = 0; i < WangId::NumIndexes; ++i) {
-                    if (wangTile.wangId().indexColor(i) == color) {
+                    if (wangId.indexColor(i) == color) {
                         const bool isCorner = WangId::isCorner(i);
                         usedAsCorner |= isCorner;
                         usedAsEdge |= !isCorner;
@@ -255,8 +259,9 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer()) {
-        offsetPos -= layer->totalOffset();
-        brushItem()->setLayerOffset(layer->totalOffset());
+        QPointF layerOffset = mapScene()->absolutePositionForLayer(*layer);
+        offsetPos -= layerOffset;
+        brushItem()->setLayerOffset(layerOffset);
     }
 
     const MapRenderer *renderer = mapDocument()->renderer();
@@ -392,7 +397,7 @@ void WangBrush::updateStatusInfo()
 {
     if (brushItem()->isVisible()) {
         QString wangColor;
-        if (mWangSet && mCurrentColor)
+        if (mWangSet && mCurrentColor && mCurrentColor <= mWangSet->colorCount())
             wangColor = mWangSet->colorAt(mCurrentColor)->name();
 
         if (!wangColor.isEmpty())
@@ -401,7 +406,7 @@ void WangBrush::updateStatusInfo()
         QString extraInfo;
         if (!static_cast<WangBrushItem*>(brushItem())->isValid())
             extraInfo = QStringLiteral(" (%1)")
-                        .arg(tr("Missing Wang tile transition"));
+                        .arg(tr("Missing terrain transition"));
 
         setStatusInfo(QStringLiteral("%1, %2%3%4")
                       .arg(mPaintPoint.x())
@@ -416,8 +421,24 @@ void WangBrush::updateStatusInfo()
 void WangBrush::wangSetChanged(const WangSet *wangSet)
 {
     mCurrentColor = 0;
-    mBrushMode = Idle;
     mWangSet = wangSet;
+
+    if (mWangSet) {
+        switch (mWangSet->type()) {
+        case WangSet::Corner:
+            mBrushMode = PaintCorner;
+            break;
+        case WangSet::Edge:
+            mBrushMode = PaintEdge;
+            break;
+        case WangSet::Mixed: {
+            mBrushMode = PaintEdgeAndCorner;
+            break;
+        }
+        }
+    } else {
+        mBrushMode = Idle;
+    }
 }
 
 void WangBrush::captureHoverColor()
@@ -489,7 +510,7 @@ void WangBrush::doPaint(bool mergeable)
     emit mapDocument()->regionEdited(brushItem()->tileRegion(), tileLayer);
 }
 
-static const QPoint aroundTilePoints[WangId::NumIndexes] = {
+static constexpr QPoint aroundTilePoints[WangId::NumIndexes] = {
     QPoint( 0, -1),
     QPoint( 1, -1),
     QPoint( 1,  0),
@@ -502,7 +523,7 @@ static const QPoint aroundTilePoints[WangId::NumIndexes] = {
 
 //  3 0
 //  2 1
-static const QPoint aroundVertexPoints[WangId::NumCorners] = {
+static constexpr QPoint aroundVertexPoints[WangId::NumCorners] = {
     QPoint( 0, -1),
     QPoint( 0,  0),
     QPoint(-1,  0),
@@ -603,10 +624,13 @@ void WangBrush::updateBrush()
         fill.region = completeRegion;
     }
 
+    // Don't try to make changes outside of a fixed map
+    if (!mapDocument()->map()->infinite())
+        fill.region &= currentLayer->rect();
+
     SharedTileLayer stamp = SharedTileLayer::create(QString(), 0, 0, 0, 0);
 
     WangFiller wangFiller{ *mWangSet, mapDocument()->renderer() };
-    wangFiller.setErasingEnabled(mCurrentColor == 0);
     wangFiller.setCorrectionsEnabled(true);
     wangFiller.fillRegion(*stamp, *currentLayer, fill.region, std::move(fill.grid));
 
@@ -660,13 +684,13 @@ void WangBrush::updateBrushAt(FillRegion &fill, QPoint pos)
 
         switch (mBrushMode) {
         case PaintCorner:
-            for (int i = 0; i < 4; ++i) {
+            for (int i = 0; i < WangId::NumCorners; ++i) {
                 center.desired.setCornerColor(i, mCurrentColor);
                 center.mask.setCornerColor(i, WangId::INDEX_MASK);
             }
             break;
         case PaintEdge:
-            for (int i = 0; i < 4; ++i) {
+            for (int i = 0; i < WangId::NumEdges; ++i) {
                 center.desired.setEdgeColor(i, mCurrentColor);
                 center.mask.setEdgeColor(i, WangId::INDEX_MASK);
             }
@@ -795,3 +819,5 @@ void WangBrush::updateBrushAt(FillRegion &fill, QPoint pos)
 }
 
 } // namespace Tiled
+
+#include "moc_wangbrush.cpp"

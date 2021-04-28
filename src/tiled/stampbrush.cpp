@@ -653,3 +653,5 @@ void StampBrush::invalidateRandomCache()
 {
     mRandomCacheValid = false;
 }
+
+#include "moc_stampbrush.cpp"

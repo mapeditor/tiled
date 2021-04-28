@@ -176,7 +176,7 @@ void AbstractWorldTool::mouseMoved(const QPointF &pos,
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer())
-        offsetPos -= layer->totalOffset();
+        offsetPos -= mapScene()->absolutePositionForLayer(*layer);
 
     const QPoint pixelPos = offsetPos.toPoint();
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
@@ -361,7 +361,7 @@ void AbstractWorldTool::addToWorld(const World *world)
     // Position the map alongside the last map by default
     if (!world->maps.isEmpty()) {
         const QRect &lastWorldRect = world->maps.last().rect;
-        rect.moveTo(lastWorldRect.topRight());
+        rect.moveTo(lastWorldRect.right() + 1, lastWorldRect.top());
     }
 
     QUndoStack *undoStack = DocumentManager::instance()->ensureWorldDocument(world->fileName)->undoStack();
@@ -436,3 +436,5 @@ void AbstractWorldTool::updateSelectionRectangle()
 }
 
 } // namespace Tiled
+
+#include "moc_abstractworldtool.cpp"

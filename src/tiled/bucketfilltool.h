@@ -58,6 +58,7 @@ protected:
 private:
     void clearOverlay();
 
+    Qt::KeyboardModifiers mModifiers;
     bool mLastShiftStatus;
 
     /**

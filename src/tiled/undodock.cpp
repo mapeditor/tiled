@@ -68,3 +68,5 @@ void UndoDock::retranslateUi()
     setWindowTitle(tr("History"));
     mUndoView->setEmptyLabel(tr("<empty>"));
 }
+
+#include "moc_undodock.cpp"

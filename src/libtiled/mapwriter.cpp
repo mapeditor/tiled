@@ -43,7 +43,6 @@
 #include "tiled.h"
 #include "tilelayer.h"
 #include "tileset.h"
-#include "terrain.h"
 #include "wangset.h"
 
 #include <QBuffer>
@@ -195,7 +194,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     const QString orientation = orientationToString(map.orientation());
     const QString renderOrder = renderOrderToString(map.renderOrder());
 
-    w.writeAttribute(QStringLiteral("version"), QLatin1String("1.4"));
+    w.writeAttribute(QStringLiteral("version"), QLatin1String("1.5"));
     w.writeAttribute(QStringLiteral("tiledversion"), QCoreApplication::applicationVersion());
     w.writeAttribute(QStringLiteral("orientation"), orientation);
     w.writeAttribute(QStringLiteral("renderorder"), renderOrder);
@@ -269,19 +268,6 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     w.writeEndElement();
 }
 
-static QString makeTerrainAttribute(const Tile *tile)
-{
-    QString terrain;
-    for (int i = 0; i < 4; ++i ) {
-        if (i > 0)
-            terrain += QLatin1Char(',');
-        int t = tile->cornerTerrainId(i);
-        if (t > -1)
-            terrain += QString::number(t);
-    }
-    return terrain;
-}
-
 static bool includeTile(const Tile *tile)
 {
     if (!tile->type().isEmpty())
@@ -293,8 +279,6 @@ static bool includeTile(const Tile *tile)
     if (tile->objectGroup())
         return true;
     if (tile->isAnimated())
-        return true;
-    if (tile->terrain() != 0xFFFFFFFF)
         return true;
     if (tile->probability() != 1.0)
         return true;
@@ -323,7 +307,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         }
     } else {
         // Include version in external tilesets
-        w.writeAttribute(QStringLiteral("version"), QLatin1String("1.4"));
+        w.writeAttribute(QStringLiteral("version"), QLatin1String("1.5"));
         w.writeAttribute(QStringLiteral("tiledversion"), QCoreApplication::applicationVersion());
     }
 
@@ -383,6 +367,20 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeEndElement();
     }
 
+    const auto transformationFlags = tileset.transformationFlags();
+    if (transformationFlags) {
+        w.writeStartElement(QStringLiteral("transformations"));
+        w.writeAttribute(QStringLiteral("hflip"),
+                         QString::number(transformationFlags.testFlag(Tileset::AllowFlipHorizontally)));
+        w.writeAttribute(QStringLiteral("vflip"),
+                         QString::number(transformationFlags.testFlag(Tileset::AllowFlipVertically)));
+        w.writeAttribute(QStringLiteral("rotate"),
+                         QString::number(transformationFlags.testFlag(Tileset::AllowRotate)));
+        w.writeAttribute(QStringLiteral("preferuntransformed"),
+                         QString::number(transformationFlags.testFlag(Tileset::PreferUntransformed)));
+        w.writeEndElement();
+    }
+
     // Write the tileset properties
     writeProperties(w, tileset.properties());
 
@@ -411,23 +409,6 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeEndElement();
     }
 
-    // Write the terrain types
-    if (tileset.terrainCount() > 0) {
-        w.writeStartElement(QStringLiteral("terraintypes"));
-        for (int i = 0; i < tileset.terrainCount(); ++i) {
-            const Terrain *t = tileset.terrain(i);
-            w.writeStartElement(QStringLiteral("terrain"));
-
-            w.writeAttribute(QStringLiteral("name"), t->name());
-            w.writeAttribute(QStringLiteral("tile"), QString::number(t->imageTileId()));
-
-            writeProperties(w, t->properties());
-
-            w.writeEndElement();
-        }
-        w.writeEndElement();
-    }
-
     // Write the properties for those tiles that have them
     for (const Tile *tile : tileset.tiles()) {
         if (imageSource.isEmpty() || includeTile(tile)) {
@@ -435,8 +416,6 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             w.writeAttribute(QStringLiteral("id"), QString::number(tile->id()));
             if (!tile->type().isEmpty())
                 w.writeAttribute(QStringLiteral("type"), tile->type());
-            if (tile->terrain() != 0xFFFFFFFF)
-                w.writeAttribute(QStringLiteral("terrain"), makeTerrainAttribute(tile));
             if (tile->probability() != 1.0)
                 w.writeAttribute(QStringLiteral("probability"), QString::number(tile->probability()));
             if (!tile->properties().isEmpty())
@@ -521,18 +500,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             const auto wangTiles = ws->sortedWangTiles();
             for (const WangTile &wangTile : wangTiles) {
                 w.writeStartElement(QStringLiteral("wangtile"));
-                w.writeAttribute(QStringLiteral("tileid"), QString::number(wangTile.tile()->id()));
+                w.writeAttribute(QStringLiteral("tileid"), QString::number(wangTile.tileId()));
                 w.writeAttribute(QStringLiteral("wangid"), wangTile.wangId().toString());
-
-                if (wangTile.flippedHorizontally())
-                    w.writeAttribute(QStringLiteral("hflip"), QString::number(1));
-
-                if (wangTile.flippedVertically())
-                    w.writeAttribute(QStringLiteral("vflip"), QString::number(1));
-
-                if (wangTile.flippedAntiDiagonally())
-                    w.writeAttribute(QStringLiteral("dflip"), QString::number(1));
-
                 w.writeEndElement(); // </wangtile>
             }
 
@@ -710,6 +679,12 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
         w.writeAttribute(QStringLiteral("offsetx"), QString::number(offset.x()));
         w.writeAttribute(QStringLiteral("offsety"), QString::number(offset.y()));
     }
+
+    const QPointF parallaxFactor = layer.parallaxFactor();
+    if (parallaxFactor.x() != 1.0)
+        w.writeAttribute(QStringLiteral("parallaxx"), QString::number(parallaxFactor.x()));
+    if (parallaxFactor.y() != 1.0)
+        w.writeAttribute(QStringLiteral("parallaxy"), QString::number(parallaxFactor.y()));
 }
 
 void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,

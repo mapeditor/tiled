@@ -73,9 +73,6 @@ QVariant TilesetModel::data(const QModelIndex &index, int role) const
     if (role == Qt::DecorationRole) {
         if (Tile *tile = tileAt(index))
             return tile->image();
-    } else if (role == TerrainRole) {
-        if (Tile *tile = tileAt(index))
-            return tile->terrain();
     }
 
     return QVariant();
@@ -239,3 +236,5 @@ void TilesetModel::refreshTileIds()
     for (Tile *tile : mTileset->tiles())
         mTileIds.append(tile->id());
 }
+
+#include "moc_tilesetmodel.cpp"

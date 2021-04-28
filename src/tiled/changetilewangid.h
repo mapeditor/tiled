@@ -29,29 +29,22 @@ namespace Tiled {
 
 class TilesetDocument;
 
-// NOTE: This class does not take into account that in fact a single tile can
-// have multiple WangIds assigned to it, up to 8 due to flipping and rotation.
-// However, currently the UI does not support assigning WangIds to flipped or
-// rotated versions of tiles (and it might be preferable to support that as
-// an option on the WangSet).
-
 class ChangeTileWangId : public QUndoCommand
 {
 public:
     struct WangIdChange {
-        WangIdChange(WangId from, WangId to, Tile *tile)
+        WangIdChange(WangId from, WangId to, int tileId)
             : from(from)
             , to(to)
-            , tile(tile)
+            , tileId(tileId)
         {}
 
         WangIdChange()
-            : tile(nullptr)
         {}
 
         WangId from;
         WangId to;
-        Tile *tile;
+        int tileId = 0;
     };
 
     ChangeTileWangId();
@@ -80,6 +73,8 @@ public:
     static void applyChanges(WangSet *wangSet, const QVector<WangIdChange> &changes);
 
 private:
+    Tile *findTile(int tileId) const;
+
     TilesetDocument *mTilesetDocument;
     WangSet *mWangSet;
     QVector<WangIdChange> mChanges;

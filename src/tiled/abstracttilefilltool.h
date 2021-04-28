@@ -101,6 +101,7 @@ protected:
     QVector<SharedTileset> mMissingTilesets;
 
     FillMethod mFillMethod;
+    QRect mFillBounds;
 
     StampActions *mStampActions;
 

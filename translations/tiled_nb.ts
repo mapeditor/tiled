@@ -21,12 +21,12 @@
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+49"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2020 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2021 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Karteditor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versjon %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2020 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(se AUTHORS filen for en full liste av bidragsytere)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2021 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(se AUTHORS filen for en full liste av bidragsytere)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Du kan endre og redistribuere dette programmet under betingelsene til GPL (versjon 2 eller senere). En kopi av GPL finnes i &apos;COPYING&apos; filen som følger med Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
@@ -48,12 +48,12 @@
 <context>
     <name>Command line</name>
     <message>
-        <location filename="../src/tiled/main.cpp" line="+385"/>
+        <location filename="../src/tiled/main.cpp" line="+414"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
         <translation>Eksportsyntaks er --export-map [format] &lt;kilde&gt; &lt;mål&gt;</translation>
     </message>
     <message>
-        <location line="-226"/>
+        <location line="-244"/>
         <source>Format not recognized (see --export-formats)</source>
         <translation>Ukjent format (se --export-formats)</translation>
     </message>
@@ -68,7 +68,7 @@
         <translation>Ingen eksportør funnet for målfilen.</translation>
     </message>
     <message>
-        <location line="+230"/>
+        <location line="+248"/>
         <source>Failed to load source map.</source>
         <translation>Kunne ikke laste inn kildekartet.</translation>
     </message>
@@ -114,7 +114,7 @@
 <context>
     <name>CommandLineHandler</name>
     <message>
-        <location filename="../src/tiled/main.cpp" line="-283"/>
+        <location filename="../src/tiled/main.cpp" line="-301"/>
         <source>Display the version</source>
         <translation>Vis versjonen</translation>
     </message>
@@ -239,8 +239,8 @@
     </message>
     <message>
         <location line="+7"/>
-        <source>&amp;Save map before executing</source>
-        <translation type="unfinished">&amp;Lagre kart før kjøring</translation>
+        <source>&amp;Save before executing</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+20"/>
@@ -261,7 +261,7 @@
 <context>
     <name>Csv::CsvPlugin</name>
     <message>
-        <location filename="../src/plugins/csv/csvplugin.cpp" line="+138"/>
+        <location filename="../src/plugins/csv/csvplugin.cpp" line="+158"/>
         <source>CSV files (*.csv)</source>
         <translation>CSV-filer (*.csv)</translation>
     </message>
@@ -358,7 +358,7 @@
     <message>
         <location line="+10"/>
         <source>Settings</source>
-        <translation>Instillinger</translation>
+        <translation>Innstillinger</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -389,39 +389,40 @@
 <context>
     <name>File Errors</name>
     <message>
-        <location filename="../src/libtiled/mapwriter.cpp" line="+111"/>
-        <location filename="../src/plugins/csv/csvplugin.cpp" line="-83"/>
+        <location filename="../src/libtiled/mapwriter.cpp" line="+110"/>
+        <location filename="../src/plugins/csv/csvplugin.cpp" line="-97"/>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+53"/>
         <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+159"/>
         <location line="+106"/>
         <location line="+29"/>
         <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="-16"/>
-        <location filename="../src/plugins/flare/flareplugin.cpp" line="+303"/>
-        <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+109"/>
-        <location filename="../src/plugins/json/jsonplugin.cpp" line="+98"/>
-        <location line="+175"/>
-        <location line="+104"/>
-        <location filename="../src/plugins/json1/jsonplugin.cpp" line="+98"/>
-        <location line="+175"/>
-        <location line="+104"/>
-        <location filename="../src/plugins/lua/luaplugin.cpp" line="+115"/>
+        <location filename="../src/plugins/flare/flareplugin.cpp" line="+311"/>
+        <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+110"/>
+        <location filename="../src/plugins/json/jsonplugin.cpp" line="+97"/>
+        <location line="+173"/>
+        <location line="+102"/>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="+97"/>
+        <location line="+173"/>
+        <location line="+102"/>
+        <location filename="../src/plugins/lua/luaplugin.cpp" line="+116"/>
         <location line="+45"/>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+242"/>
-        <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+52"/>
+        <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+55"/>
+        <location filename="../src/plugins/yy/yyplugin.cpp" line="+1272"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+724"/>
         <source>Could not open file for writing.</source>
         <translation type="unfinished">Kunne ikke åpne fil for skriving.</translation>
     </message>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+135"/>
-        <location filename="../src/plugins/flare/flareplugin.cpp" line="-247"/>
-        <location filename="../src/plugins/json/jsonplugin.cpp" line="-320"/>
-        <location line="+162"/>
-        <location line="+111"/>
-        <location filename="../src/plugins/json1/jsonplugin.cpp" line="-320"/>
-        <location line="+162"/>
-        <location line="+111"/>
-        <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+118"/>
+        <location filename="../src/plugins/flare/flareplugin.cpp" line="-252"/>
+        <location filename="../src/plugins/json/jsonplugin.cpp" line="-315"/>
+        <location line="+161"/>
+        <location line="+109"/>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="-315"/>
+        <location line="+161"/>
+        <location line="+109"/>
+        <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+121"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="-53"/>
         <source>Could not open file for reading.</source>
         <translation>Kunne ikke åpne fil for lesing.</translation>
@@ -430,7 +431,7 @@
 <context>
     <name>File Types</name>
     <message>
-        <location filename="../src/tiled/objecttypeseditor.cpp" line="+353"/>
+        <location filename="../src/tiled/objecttypeseditor.cpp" line="+355"/>
         <location line="+43"/>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="+59"/>
         <source>Object Types files (*.xml *.json)</source>
@@ -445,7 +446,7 @@
 <context>
     <name>Flare::FlarePlugin</name>
     <message>
-        <location filename="../src/plugins/flare/flareplugin.cpp" line="+94"/>
+        <location filename="../src/plugins/flare/flareplugin.cpp" line="+99"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
         <translation>Feil ved lasting av rutebrett %1, som utvides til %2. Filbane ikke funnet!</translation>
     </message>
@@ -474,7 +475,7 @@
 <context>
     <name>Gmx::GmxPlugin</name>
     <message>
-        <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+381"/>
+        <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+384"/>
         <source>GameMaker room files (*.room.gmx)</source>
         <translation>GameMaker romfiler (*.room.gmx)</translation>
     </message>
@@ -482,10 +483,10 @@
 <context>
     <name>Json::JsonMapFormat</name>
     <message>
-        <location filename="../src/plugins/json/jsonplugin.cpp" line="-252"/>
-        <location filename="../src/plugins/json1/jsonplugin.cpp" line="-252"/>
-        <source>Error parsing file.</source>
-        <translation>Feil ved tolking av fil.</translation>
+        <location filename="../src/plugins/json/jsonplugin.cpp" line="-250"/>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="-250"/>
+        <source>Error parsing file: %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+58"/>
@@ -519,10 +520,10 @@
 <context>
     <name>Json::JsonObjectTemplateFormat</name>
     <message>
-        <location filename="../src/plugins/json/jsonplugin.cpp" line="+187"/>
-        <location filename="../src/plugins/json1/jsonplugin.cpp" line="+187"/>
-        <source>Error parsing file.</source>
-        <translation type="unfinished">Feil ved tolking av fil.</translation>
+        <location filename="../src/plugins/json/jsonplugin.cpp" line="+183"/>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="+183"/>
+        <source>Error parsing file: %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+57"/>
@@ -546,10 +547,10 @@
 <context>
     <name>Json::JsonTilesetFormat</name>
     <message>
-        <location filename="../src/plugins/json/jsonplugin.cpp" line="-182"/>
-        <location filename="../src/plugins/json1/jsonplugin.cpp" line="-182"/>
-        <source>Error parsing file.</source>
-        <translation>Feil ved tolking av fil.</translation>
+        <location filename="../src/plugins/json/jsonplugin.cpp" line="-180"/>
+        <location filename="../src/plugins/json1/jsonplugin.cpp" line="-180"/>
+        <source>Error parsing file: %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+64"/>
@@ -614,17 +615,17 @@
         <translation>&amp;Kart</translation>
     </message>
     <message>
-        <location line="+4"/>
-        <source>Unload World</source>
-        <translation>Last ut verden</translation>
+        <location line="+95"/>
+        <source>&amp;Unload World</source>
+        <translation type="unfinished">Last ut verden</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Save World</source>
-        <translation>Lagre verden</translation>
+        <source>&amp;Save World</source>
+        <translation type="unfinished">Lagre verden</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="-86"/>
         <source>&amp;View</source>
         <translation>O&amp;versikt</translation>
     </message>
@@ -634,7 +635,7 @@
         <translation>Vis Objekt&amp;navn</translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+46"/>
         <source>&amp;Project</source>
         <translation>&amp;Prosjekt</translation>
     </message>
@@ -644,12 +645,7 @@
         <translation>&amp;Nylige prosjekter</translation>
     </message>
     <message>
-        <location line="+31"/>
-        <source>&amp;Open...</source>
-        <translation>&amp;Åpne...</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+58"/>
         <source>&amp;Save</source>
         <translation>&amp;Lagre</translation>
     </message>
@@ -735,12 +731,12 @@
     </message>
     <message>
         <location line="+5"/>
-        <source>Load World...</source>
+        <source>&amp;Load World...</source>
         <translation type="unfinished">Last verden…</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>New World...</source>
+        <source>&amp;New World...</source>
         <translation type="unfinished">Ny verden…</translation>
     </message>
     <message>
@@ -805,7 +801,17 @@
         <translation>Åpne fil i &amp;prosjekt…</translation>
     </message>
     <message>
-        <location line="-229"/>
+        <location line="+11"/>
+        <source>Enable Parallax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Show &amp;World</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-248"/>
         <source>&amp;Never</source>
         <translation>&amp;Aldri</translation>
     </message>
@@ -857,7 +863,7 @@
     <message>
         <location line="+5"/>
         <source>Pre&amp;ferences...</source>
-        <translation>&amp;Instillinger...</translation>
+        <translation>&amp;Innstillinger …</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -875,7 +881,7 @@
         <translation>&amp;Legg Til Eksternt Rutebrett...</translation>
     </message>
     <message>
-        <location line="-375"/>
+        <location line="-384"/>
         <source>&amp;New</source>
         <translation type="unfinished">&amp;Ny</translation>
     </message>
@@ -885,17 +891,27 @@
         <translation>Kommandoer</translation>
     </message>
     <message>
-        <location line="+90"/>
+        <location line="+75"/>
         <source>Snapping</source>
         <translation>Festing</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+30"/>
         <source>Tileset</source>
         <translation type="unfinished">Rutebrett</translation>
     </message>
     <message>
-        <location line="+120"/>
+        <location line="+33"/>
+        <source>&amp;World</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>&amp;Open File or Project...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+79"/>
         <source>Map &amp;Properties...</source>
         <translation>Kart og &amp;egenskaper…</translation>
     </message>
@@ -1000,7 +1016,7 @@
         <translation>Tøm visning</translation>
     </message>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+803"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+824"/>
         <source>All Files (*)</source>
         <translation>Alle Filer (*)</translation>
     </message>
@@ -1008,7 +1024,7 @@
 <context>
     <name>MapDocument</name>
     <message>
-        <location filename="../src/tiled/adjusttileindexes.cpp" line="+187"/>
+        <location filename="../src/tiled/adjusttileindexes.cpp" line="+184"/>
         <source>Tile</source>
         <translation>Rute</translation>
     </message>
@@ -1016,7 +1032,7 @@
 <context>
     <name>MapReader</name>
     <message>
-        <location filename="../src/libtiled/mapreader.cpp" line="+166"/>
+        <location filename="../src/libtiled/mapreader.cpp" line="+168"/>
         <source>Not a map file.</source>
         <translation>Ikke en kartfil.</translation>
     </message>
@@ -1051,31 +1067,37 @@ Linje %1, kolonne %2</translation>
     </message>
     <message>
         <location line="+33"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+62"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+61"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
         <translation>Kartorientering ikke støttet: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location line="+127"/>
-        <location line="+30"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+164"/>
+        <location line="+124"/>
+        <location line="+40"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+165"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
         <translation>Ugyldig rutebrettparametre for rutebrett &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+63"/>
+        <location line="+64"/>
         <source>Invalid tile ID: %1</source>
         <translation>Ugyldig rute-ID: %1</translation>
     </message>
     <message>
-        <location line="+396"/>
+        <location line="+220"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+65"/>
+        <source>Terrains</source>
+        <translation type="unfinished">Terrenger</translation>
+    </message>
+    <message>
+        <location line="+260"/>
         <source>Too many &lt;tile&gt; elements</source>
         <translation>For mange &lt;tile&gt;-elementer</translation>
     </message>
     <message>
         <location line="+58"/>
         <location line="+62"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+647"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+662"/>
         <source>Invalid tile: %1</source>
         <translation>Ugyldig rute: %1</translation>
     </message>
@@ -1086,28 +1108,28 @@ Linje %1, kolonne %2</translation>
     </message>
     <message>
         <location line="+52"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-289"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-293"/>
         <source>Invalid draw order: %1</source>
         <translation>Ugyldig tegnerekkefølge: %1</translation>
     </message>
     <message>
-        <location line="+174"/>
+        <location line="+183"/>
         <source>Invalid points data for polygon</source>
         <translation>Ugyldige punktdata for mangekant</translation>
     </message>
     <message>
-        <location line="-349"/>
+        <location line="-358"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-40"/>
         <source>Unknown encoding: %1</source>
         <translation>Ukjent koding: %1</translation>
     </message>
     <message>
-        <location line="-333"/>
+        <location line="-407"/>
         <source>Error reading embedded image for tile %1</source>
         <translation>Feil under skriving av innebydge bilder for rute %1</translation>
     </message>
     <message>
-        <location line="+328"/>
+        <location line="+402"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
         <source>Compression method &apos;%1&apos; not supported</source>
         <translation>Komprimeringsmetode &apos;%1&apos; er ikke støttet</translation>
@@ -1116,7 +1138,7 @@ Linje %1, kolonne %2</translation>
         <location line="+86"/>
         <location line="+23"/>
         <location line="+30"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+286"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+290"/>
         <location line="+41"/>
         <source>Corrupt layer data for layer &apos;%1&apos;</source>
         <translation>Korrupt lagdata for layer &apos;%1&apos;</translation>
@@ -1134,7 +1156,7 @@ Linje %1, kolonne %2</translation>
         <translation>Rute brukt uten at et rutebrett er spesifisert</translation>
     </message>
     <message>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-523"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-566"/>
         <location line="+27"/>
         <source>Invalid (negative) tile id: %1</source>
         <translation>Ugyldig (negativ) rute-ID: %1</translation>
@@ -1218,7 +1240,7 @@ Linje %1, kolonne %2</translation>
     <name>NewTilesetDialog</name>
     <message>
         <location filename="../src/tiled/newtilesetdialog.ui" line="+14"/>
-        <location filename="../src/tiled/newtilesetdialog.cpp" line="+258"/>
+        <location filename="../src/tiled/newtilesetdialog.cpp" line="+259"/>
         <source>New Tileset</source>
         <translation>Nytt Rutebrett</translation>
     </message>
@@ -1396,23 +1418,12 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>ObjectTypesEditor</name>
     <message>
-        <location filename="../src/tiled/objecttypeseditor-new.ui" line="+14"/>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
         <translation>Objekttype-editor</translation>
     </message>
     <message>
-        <location line="+24"/>
-        <source>&amp;Import...</source>
-        <translation type="unfinished">&amp;Importer…</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>&amp;Export...</source>
-        <translation type="unfinished">&amp;Eksporter…</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/objecttypeseditor.ui" line="+56"/>
+        <location line="+56"/>
         <source>Export...</source>
         <translation>Eksporter…</translation>
     </message>
@@ -1507,7 +1518,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+14"/>
         <source>Preferences</source>
-        <translation>Instillinger</translation>
+        <translation>Innstillinger</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1521,7 +1532,7 @@ Linje %1, kolonne %2</translation>
     </message>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+85"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+1196"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+1228"/>
         <source>Base64 (uncompressed)</source>
         <translation>Base64 (ukomprimert)</translation>
     </message>
@@ -1583,23 +1594,23 @@ Linje %1, kolonne %2</translation>
         <translation>&amp;Last inn rutebrettbilder på nytt når de forandres</translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+116"/>
         <location line="+6"/>
         <source>Interface</source>
         <translation>Grensesnitt</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+105"/>
         <source>&amp;Language:</source>
         <translation>&amp;Språk:</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="-30"/>
         <source>Hardware &amp;accelerated drawing (OpenGL)</source>
         <translation>Maskinvare&amp;akselerert tegning (OpenGL)</translation>
     </message>
     <message>
-        <location line="-149"/>
+        <location line="-214"/>
         <source>Turn this off if you&apos;re having trouble saving your files.</source>
         <translation>Skru dette av hvis du har problemer med å lagre filene dine.</translation>
     </message>
@@ -1634,22 +1645,22 @@ Linje %1, kolonne %2</translation>
         <translation>Bygg inn flissett</translation>
     </message>
     <message>
-        <location line="+82"/>
+        <location line="+177"/>
         <source>Grid color:</source>
         <translation>Rutenettfarge:</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="-47"/>
         <source>Fine grid divisions:</source>
         <translation>Fint rutenett divisjoner:</translation>
     </message>
     <message>
-        <location line="-26"/>
+        <location line="-19"/>
         <source> pixels</source>
         <translation> piksler</translation>
     </message>
     <message>
-        <location line="-103"/>
+        <location line="-148"/>
         <source>Restore previous session on startup</source>
         <translation>Gjenopprett forrige økt ved oppstart</translation>
     </message>
@@ -1664,14 +1675,44 @@ Linje %1, kolonne %2</translation>
         <translation>Minimer utdata</translation>
     </message>
     <message>
-        <location line="+118"/>
+        <location line="+190"/>
         <source>Object line width:</source>
         <translation>Objekt linjebredde:</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="-47"/>
         <source>Mouse wheel &amp;zooms by default</source>
         <translation>Musehjul &amp;forstørrer som forvalg</translation>
+    </message>
+    <message>
+        <location line="-133"/>
+        <source>Crash Reporting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Enable sending anonymous crash reports</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+97"/>
+        <source>Object selection behavior:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+50"/>
+        <source>Middle mouse button uses auto-&amp;scrolling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <source>Use s&amp;mooth scrolling</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+16"/>
@@ -1710,14 +1751,14 @@ Linje %1, kolonne %2</translation>
         <translation>Åpne…</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.cpp" line="+64"/>
-        <location line="+157"/>
+        <location filename="../src/tiled/preferencesdialog.cpp" line="+66"/>
+        <location line="+185"/>
         <source>Native</source>
         <translation>Lokal</translation>
     </message>
     <message>
-        <location line="-156"/>
-        <location line="+157"/>
+        <location line="-184"/>
+        <location line="+185"/>
         <source>Tiled Fusion</source>
         <translation>Tiled Fusion</translation>
     </message>
@@ -1810,7 +1851,7 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>QtBoolPropertyManager</name>
     <message>
-        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1703"/>
+        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1705"/>
         <source>True</source>
         <translation>Sant</translation>
     </message>
@@ -1839,7 +1880,7 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>QtColorPropertyManager</name>
     <message>
-        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+4736"/>
+        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+4740"/>
         <source>Red</source>
         <translation>Rød</translation>
     </message>
@@ -2019,7 +2060,7 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>QtLocalePropertyManager</name>
     <message>
-        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="-3533"/>
+        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="-3537"/>
         <source>%1, %2</source>
         <translation>%1,%2</translation>
     </message>
@@ -2217,7 +2258,7 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>QtTreePropertyBrowser</name>
     <message>
-        <location filename="../src/qtpropertybrowser/src/qttreepropertybrowser.cpp" line="+512"/>
+        <location filename="../src/qtpropertybrowser/src/qttreepropertybrowser.cpp" line="+513"/>
         <source>Property</source>
         <translation>Egenskap</translation>
     </message>
@@ -2342,6 +2383,14 @@ Linje %1, kolonne %2</translation>
     </message>
 </context>
 <context>
+    <name>RpMap::RpMapPlugin</name>
+    <message>
+        <location filename="../src/plugins/rpmap/rpmapplugin.cpp" line="+93"/>
+        <source>RpTool MapTool files (*.rpmap)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Script Errors</name>
     <message>
         <location filename="../src/tiled/editableasset.cpp" line="+92"/>
@@ -2370,13 +2419,13 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="-16"/>
         <location line="+21"/>
-        <location filename="../src/tiled/editablemap.cpp" line="+57"/>
+        <location filename="../src/tiled/editablemap.cpp" line="+65"/>
         <source>Invalid argument</source>
         <translation>Ugyldig argument</translation>
     </message>
     <message>
         <location line="-15"/>
-        <location filename="../src/tiled/editablemap.cpp" line="-67"/>
+        <location filename="../src/tiled/editablemap.cpp" line="-75"/>
         <source>Layer not found</source>
         <translation>Fant ikke laget</translation>
     </message>
@@ -2391,7 +2440,7 @@ Linje %1, kolonne %2</translation>
         <translation>Lag allerede en del av kartet</translation>
     </message>
     <message>
-        <location line="+120"/>
+        <location line="+128"/>
         <source>Merge is currently not supported for detached maps</source>
         <translation>Fletting støttes foreløpig ikke for avhektede kart</translation>
     </message>
@@ -2422,7 +2471,7 @@ Linje %1, kolonne %2</translation>
     </message>
     <message>
         <location line="+21"/>
-        <location filename="../src/tiled/tilecollisiondock.cpp" line="+320"/>
+        <location filename="../src/tiled/tilecollisiondock.cpp" line="+354"/>
         <source>Not an object</source>
         <translation>Ikke et objekt</translation>
     </message>
@@ -2433,7 +2482,7 @@ Linje %1, kolonne %2</translation>
     </message>
     <message>
         <location filename="../src/tiled/editablemapobject.cpp" line="+196"/>
-        <location filename="../src/tiled/editabletile.cpp" line="+246"/>
+        <location filename="../src/tiled/editabletile.cpp" line="+193"/>
         <source>Array expected</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2459,22 +2508,27 @@ Linje %1, kolonne %2</translation>
         <translation>Objektet er allerede en del av et objektlag</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editableterrain.cpp" line="+86"/>
+        <location filename="../src/tiled/editablewangset.cpp" line="+84"/>
+        <source>Wang ID must be an array of length 8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Invalid Wang ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+31"/>
         <source>Tile not from the same tileset</source>
         <translation>Flis ikke fra samme flissett</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editabletile.cpp" line="-79"/>
+        <location filename="../src/tiled/editabletile.cpp" line="-51"/>
         <source>Tileset needs to be an image collection</source>
         <translation>Flissettet må være en bildesamling</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <source>Terrain object or number expected</source>
-        <translation>Terrengobjekt eller nummer forventet</translation>
-    </message>
-    <message>
-        <location line="+41"/>
+        <location line="+28"/>
         <source>ObjectGroup is in use</source>
         <translation type="unfinished">ObjektGruppe i bruk</translation>
     </message>
@@ -2484,7 +2538,7 @@ Linje %1, kolonne %2</translation>
         <translation>Ugyldig verdi (negativ)</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editabletileset.cpp" line="+75"/>
+        <location filename="../src/tiled/editabletileset.cpp" line="+84"/>
         <source>Invalid tile ID</source>
         <translation>Ugyldig tittel-ID</translation>
     </message>
@@ -2499,7 +2553,7 @@ Linje %1, kolonne %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+64"/>
         <source>Can&apos;t set the image of an image collection tileset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2509,8 +2563,8 @@ Linje %1, kolonne %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+54"/>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+891"/>
+        <location line="+69"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+904"/>
         <source>Not a tile</source>
         <translation type="unfinished">Ikke en flis</translation>
     </message>
@@ -2545,13 +2599,19 @@ Linje %1, kolonne %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptedtool.cpp" line="+215"/>
+        <location filename="../src/tiled/scriptedtool.cpp" line="+214"/>
         <source>Invalid tool object (requires string &apos;name&apos; property)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmodule.cpp" line="+215"/>
-        <location line="+18"/>
+        <location filename="../src/tiled/scriptmodule.cpp" line="+162"/>
+        <location line="+48"/>
+        <source>Editor not available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <location line="+22"/>
         <source>Not an open asset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2603,7 +2663,7 @@ Linje %1, kolonne %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+26"/>
         <source>Unknown action</source>
         <translation>Ukjent handling</translation>
     </message>
@@ -2618,7 +2678,7 @@ Linje %1, kolonne %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptfile.cpp" line="+45"/>
+        <location filename="../src/tiled/scriptfile.cpp" line="+47"/>
         <source>BinaryFile constructor needs path of file to be opened.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2647,12 +2707,12 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+15"/>
         <location line="+19"/>
-        <location line="+141"/>
+        <location line="+156"/>
         <source>Could not write to &apos;%1&apos;: %2</source>
         <translation>Kunne ikke skrive til &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location line="-120"/>
+        <location line="-135"/>
         <source>Access to BinaryFile object that was already closed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2662,7 +2722,14 @@ Linje %1, kolonne %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+132"/>
+        <location line="+58"/>
+        <location filename="../src/tiled/scriptprocess.cpp" line="+142"/>
+        <location line="+6"/>
+        <source>Unsupported encoding: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+89"/>
         <source>Access to TextFile object that was already closed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2687,9 +2754,50 @@ Linje %1, kolonne %2</translation>
         <translation>Kunne ikke lese kart</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmanager.cpp" line="+267"/>
+        <location filename="../src/tiled/scriptmanager.cpp" line="+291"/>
         <source>Argument %1 is undefined or the wrong type</source>
         <translation>Argumentet «%1» er udefinert, eller av feil type</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/scriptimage.cpp" line="+95"/>
+        <source>Invalid color name: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Invalid color value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/scriptprocess.cpp" line="+38"/>
+        <location line="+10"/>
+        <source>Error running %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Error running &apos;%1&apos;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Process &apos;%1 %2&apos; finished with exit code %3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>The standard output was:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>The standard error output was:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+118"/>
+        <source>Access to Process object that was already closed.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2710,7 +2818,7 @@ Linje %1, kolonne %2</translation>
         <translation type="unfinished">Flissett må la like marginer.</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+34"/>
         <source>Different tile sizes per layer are not supported.</source>
         <translation>Lagvis flisstørrelse støttes ikke.</translation>
     </message>
@@ -2770,7 +2878,7 @@ Linje %1, kolonne %2</translation>
         <translation>Klarte ikke å åpne fil</translation>
     </message>
     <message>
-        <location filename="../src/plugins/tbin/tbinplugin.cpp" line="-305"/>
+        <location filename="../src/plugins/tbin/tbinplugin.cpp" line="-309"/>
         <source>Unsupported property type</source>
         <translation>Ustøttet egensapstype</translation>
     </message>
@@ -2778,7 +2886,7 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>Tengine::TenginePlugin</name>
     <message>
-        <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+244"/>
+        <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+252"/>
         <source>T-Engine4 map files (*.lua)</source>
         <translation>T-Engine4 kartfiler (*.lua)</translation>
     </message>
@@ -2789,6 +2897,11 @@ Linje %1, kolonne %2</translation>
         <location filename="../src/tiled/texteditordialog.ui" line="+14"/>
         <source>Edit Text</source>
         <translation>Rediger Tekst</translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Monospace</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2823,25 +2936,36 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>Tiled::AbstractObjectTool</name>
     <message>
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="+188"/>
-        <location line="+336"/>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="+187"/>
+        <location line="+501"/>
         <source>Flip Horizontally</source>
         <translation type="unfinished">Vend Om Horisontalt</translation>
     </message>
     <message>
-        <location line="-335"/>
-        <location line="+336"/>
+        <location line="-500"/>
+        <location line="+501"/>
         <source>Flip Vertically</source>
         <translation type="unfinished">Vend Om Vertikalt</translation>
     </message>
     <message>
-        <location line="-253"/>
-        <location line="+200"/>
+        <location line="-363"/>
+        <source>Apply Collision Shapes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+50"/>
+        <location line="+249"/>
         <source>Reset Tile Size</source>
         <translation type="unfinished">Nullstill Rutestørrelse</translation>
     </message>
+    <message>
+        <location line="-214"/>
+        <location line="+228"/>
+        <source>Convert to Polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message numerus="yes">
-        <location line="-13"/>
+        <location line="-40"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Dupliser %n objekt</numerusform>
@@ -2857,12 +2981,27 @@ Linje %1, kolonne %2</translation>
         </translation>
     </message>
     <message>
+        <location line="+10"/>
+        <source>Apply Collision(s) to Selected Tiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Replace Existing Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Add Objects</source>
+        <translation type="unfinished">Legg til objekter</translation>
+    </message>
+    <message>
         <location line="+16"/>
         <source>Replace Tile</source>
         <translation type="unfinished">Erstatt flis</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+14"/>
         <source>Replace With Template</source>
         <translation type="unfinished">Erstatt med mal</translation>
     </message>
@@ -2872,12 +3011,17 @@ Linje %1, kolonne %2</translation>
         <translation type="unfinished">Erstatt med malen &quot;%1&quot;</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+10"/>
         <source>Save As Template</source>
         <translation type="unfinished">Lagre som mal</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+4"/>
+        <source>Can&apos;t create template with embedded tileset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
         <source>Detach</source>
         <translation type="unfinished">Løsne</translation>
     </message>
@@ -2946,7 +3090,7 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>Tiled::AbstractTileTool</name>
     <message>
-        <location filename="../src/tiled/abstracttiletool.cpp" line="+167"/>
+        <location filename="../src/tiled/abstracttiletool.cpp" line="+177"/>
         <source>empty</source>
         <translation type="unfinished">tom</translation>
     </message>
@@ -2980,12 +3124,12 @@ Linje %1, kolonne %2</translation>
     </message>
     <message>
         <location line="+10"/>
-        <location line="+102"/>
+        <location line="+106"/>
         <source>Add &quot;%1&quot; to World &quot;%2&quot;</source>
         <translation>Legg til &quot;%1&quot; i verden &quot;%2&quot;</translation>
     </message>
     <message>
-        <location line="-74"/>
+        <location line="-78"/>
         <source>All Files (*)</source>
         <translation type="unfinished">Alle Filer (*)</translation>
     </message>
@@ -3028,7 +3172,7 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>Tiled::AutoMapper</name>
     <message>
-        <location filename="../src/tiled/automapper.cpp" line="+140"/>
+        <location filename="../src/tiled/automapper.cpp" line="+143"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; (rule map &apos;%1&apos;)</source>
         <translation>Ser bort fra ukjent egenskap &apos;%2&apos; = &apos;%3&apos; (regelkart &apos;%1&apos;)</translation>
     </message>
@@ -3235,7 +3379,7 @@ Linje %1, kolonne %2</translation>
     <name>Tiled::BucketFillTool</name>
     <message>
         <location filename="../src/tiled/bucketfilltool.cpp" line="+44"/>
-        <location line="+135"/>
+        <location line="+137"/>
         <source>Bucket Fill Tool</source>
         <translation type="unfinished">Bøttefyllverktøy</translation>
     </message>
@@ -3243,7 +3387,7 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>Tiled::ClipboardManager</name>
     <message>
-        <location filename="../src/tiled/clipboardmanager.cpp" line="+264"/>
+        <location filename="../src/tiled/clipboardmanager.cpp" line="+266"/>
         <source>Paste Objects</source>
         <translation type="unfinished">Lim Inn Objekter</translation>
     </message>
@@ -3379,7 +3523,7 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>Tiled::CommandProcess</name>
     <message>
-        <location filename="../src/tiled/command.cpp" line="+238"/>
+        <location filename="../src/tiled/command.cpp" line="+245"/>
         <source>Unable to create/open %1</source>
         <translation type="unfinished">Kunne ikke lage/åpne %1</translation>
     </message>
@@ -3394,7 +3538,7 @@ Linje %1, kolonne %2</translation>
         <translation type="unfinished">Kjører: %1</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+34"/>
         <source>The command failed to start.</source>
         <translation type="unfinished">Feil under start av kommandoen.</translation>
     </message>
@@ -3422,7 +3566,7 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>Tiled::CommandsEdit</name>
     <message>
-        <location filename="../src/tiled/commandsedit.cpp" line="+163"/>
+        <location filename="../src/tiled/commandsedit.cpp" line="+165"/>
         <source>Select Executable</source>
         <translation type="unfinished">Velg kjørbar fil</translation>
     </message>
@@ -3471,12 +3615,12 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>Tiled::CreatePolygonObjectTool</name>
     <message>
-        <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+161"/>
+        <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+167"/>
         <source>Insert Polygon</source>
         <translation type="unfinished">Sett Inn Mangekant</translation>
     </message>
     <message>
-        <location line="+122"/>
+        <location line="+125"/>
         <source>Connect Polylines</source>
         <translation type="unfinished">Knytt sammen polylinjer</translation>
     </message>
@@ -3534,17 +3678,17 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>Tiled::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+653"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+652"/>
         <source>Unrecognized file format.</source>
         <translation type="unfinished">Ukjent filformat.</translation>
     </message>
     <message>
-        <location line="+66"/>
+        <location line="+67"/>
         <source>Save File As</source>
         <translation>Lagre fil som</translation>
     </message>
     <message>
-        <location line="+210"/>
+        <location line="+214"/>
         <location line="+20"/>
         <source>%1:
 
@@ -3569,7 +3713,7 @@ Linje %1, kolonne %2</translation>
         <translation type="unfinished">Lukk faner til høyre</translation>
     </message>
     <message>
-        <location line="+287"/>
+        <location line="+311"/>
         <source>Tileset Columns Changed</source>
         <translation type="unfinished">Rutebrettkolonner Forandret</translation>
     </message>
@@ -3610,8 +3754,8 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>Tiled::EditPolygonTool</name>
     <message>
-        <location filename="../src/tiled/editpolygontool.cpp" line="+58"/>
-        <location line="+282"/>
+        <location filename="../src/tiled/editpolygontool.cpp" line="+59"/>
+        <location line="+272"/>
         <source>Edit Polygons</source>
         <translation type="unfinished">Rediger Mangekanter</translation>
     </message>
@@ -3621,7 +3765,7 @@ Linje %1, kolonne %2</translation>
         <translation type="unfinished">Del opp segment</translation>
     </message>
     <message numerus="yes">
-        <location line="+265"/>
+        <location line="+268"/>
         <source>Move %n Point(s)</source>
         <translation type="unfinished">
             <numerusform>Flytt Punkt</numerusform>
@@ -3665,7 +3809,7 @@ Linje %1, kolonne %2</translation>
     <name>Tiled::Eraser</name>
     <message>
         <location filename="../src/tiled/eraser.cpp" line="+35"/>
-        <location line="+58"/>
+        <location line="+62"/>
         <source>Eraser</source>
         <translation type="unfinished">Hviskelær</translation>
     </message>
@@ -3735,12 +3879,12 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::FileEdit</name>
     <message>
-        <location filename="../src/tiled/fileedit.cpp" line="+48"/>
+        <location filename="../src/tiled/fileedit.cpp" line="+50"/>
         <source>Choose</source>
         <translation>Velg</translation>
     </message>
     <message>
-        <location line="+84"/>
+        <location line="+81"/>
         <source>Choose a Folder</source>
         <translation>Velg en mappe</translation>
     </message>
@@ -3753,7 +3897,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::ImageCache</name>
     <message>
-        <location filename="../src/libtiled/imagecache.cpp" line="+205"/>
+        <location filename="../src/libtiled/imagecache.cpp" line="+221"/>
         <source>Recursive metatile map detected: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3766,7 +3910,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::IssuesCounter</name>
     <message numerus="yes">
-        <location filename="../src/tiled/issuescounter.cpp" line="+109"/>
+        <location filename="../src/tiled/issuescounter.cpp" line="+110"/>
         <source>%n error(s)</source>
         <translation type="unfinished">
             <numerusform>%s feil</numerusform>
@@ -3808,7 +3952,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::LayerDock</name>
     <message>
-        <location filename="../src/tiled/layerdock.cpp" line="+241"/>
+        <location filename="../src/tiled/layerdock.cpp" line="+237"/>
         <source>Layers</source>
         <translation type="unfinished">Lag</translation>
     </message>
@@ -3841,7 +3985,7 @@ Do you want to replace it?</source>
         <translation type="unfinished">Låst</translation>
     </message>
     <message numerus="yes">
-        <location line="+82"/>
+        <location line="+86"/>
         <source>Drag Layer(s)</source>
         <translation type="unfinished">
             <numerusform>Dra lag</numerusform>
@@ -3892,8 +4036,8 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::LayerOffsetTool</name>
     <message>
-        <location filename="../src/tiled/layeroffsettool.cpp" line="+43"/>
-        <location line="+100"/>
+        <location filename="../src/tiled/layeroffsettool.cpp" line="+44"/>
+        <location line="+97"/>
         <source>Offset Layers</source>
         <translation type="unfinished">Forskyv Lag</translation>
     </message>
@@ -3901,7 +4045,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::LocatorWidget</name>
     <message>
-        <location filename="../src/tiled/locatorwidget.cpp" line="+322"/>
+        <location filename="../src/tiled/locatorwidget.cpp" line="+327"/>
         <source>Filename</source>
         <translation type="unfinished">Filnavn</translation>
     </message>
@@ -3931,10 +4075,10 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::MainWindow</name>
     <message>
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="-261"/>
-        <location filename="../src/tiled/documentmanager.cpp" line="-602"/>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="-286"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="-630"/>
         <location line="+26"/>
-        <location filename="../src/tiled/mainwindow.cpp" line="+1358"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+1441"/>
         <source>untitled</source>
         <translation type="unfinished">ukjent tittel</translation>
     </message>
@@ -3950,7 +4094,6 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="-96"/>
-        <location filename="../src/tiled/mainwindow.cpp" line="-220"/>
         <source>Error Saving File</source>
         <translation type="unfinished">Feil ved lagring av fil</translation>
     </message>
@@ -3970,14 +4113,14 @@ Do you want to replace it?</source>
         <translation type="unfinished">Det er ikke sikkert Tiled kan gjenkjenne filen din under lasting. Er du sikker på at du vil lagre med dette filetternavnet?</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="-997"/>
-        <location line="+893"/>
-        <location line="+614"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="-1295"/>
+        <location line="+960"/>
+        <location line="+731"/>
         <source>All Files (*)</source>
         <translation type="unfinished">Alle Filer (*)</translation>
     </message>
     <message>
-        <location line="-1485"/>
+        <location line="-1669"/>
         <source>Export As...</source>
         <translation type="unfinished">Eksporter Som...</translation>
     </message>
@@ -4004,7 +4147,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Det gitte filnavnet har ikke en kjent filtype.</translation>
     </message>
     <message>
-        <location line="+154"/>
+        <location line="+156"/>
         <source>Undo</source>
         <translation type="unfinished">Angre</translation>
     </message>
@@ -4014,40 +4157,42 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Gjenta</translation>
     </message>
     <message>
-        <location line="+150"/>
-        <location line="+1599"/>
+        <location line="+152"/>
+        <location line="+1785"/>
         <source>&amp;Layer</source>
         <translation type="unfinished">&amp;Lag</translation>
     </message>
     <message>
-        <location line="-1515"/>
-        <location line="+34"/>
+        <location line="-1698"/>
+        <location line="+35"/>
         <source>All Files (*);;</source>
         <translation type="unfinished">Alle filer (*);;</translation>
     </message>
     <message>
-        <location line="-33"/>
-        <location line="+34"/>
+        <location line="-34"/>
+        <location line="+35"/>
+        <location line="+487"/>
         <source>World files (*.world)</source>
         <translation>Verdensfiler (*.world)</translation>
     </message>
     <message>
-        <location line="-32"/>
+        <location line="-520"/>
         <source>Load World</source>
         <translation type="unfinished">Last inn verden</translation>
     </message>
     <message>
         <location line="+8"/>
+        <location line="+450"/>
         <source>Error Loading World</source>
         <translation type="unfinished">Feil ved innlasting av verden</translation>
     </message>
     <message>
-        <location line="+28"/>
-        <source>New Map</source>
-        <translation type="unfinished">Nytt Kart</translation>
+        <location line="-421"/>
+        <source>New World</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+13"/>
         <source>Error Creating World</source>
         <translation>Klarte ikke å skape verden</translation>
     </message>
@@ -4058,24 +4203,30 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+118"/>
-        <location line="+1339"/>
+        <location line="+1516"/>
         <source>Views and Toolbars</source>
         <translation type="unfinished">Oversikt og Verktøyslinjer</translation>
     </message>
     <message>
-        <location line="-1336"/>
-        <location line="+1337"/>
+        <location line="-1513"/>
+        <location line="+1514"/>
         <source>Reset to Default Layout</source>
         <translation type="unfinished">Tilbakestill til forvalgt oppsett</translation>
     </message>
     <message>
-        <location line="-1335"/>
-        <location line="+1336"/>
+        <location line="-1513"/>
+        <location line="+1514"/>
+        <source>Lock Layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-1503"/>
+        <location line="+1504"/>
         <source>Object Types Editor</source>
         <translation type="unfinished">Objekttype-editor</translation>
     </message>
     <message>
-        <location line="-1097"/>
+        <location line="-1211"/>
         <source>Error Opening File</source>
         <translation type="unfinished">Feil ved åpning av fil</translation>
     </message>
@@ -4087,12 +4238,17 @@ Vennligst velgt et spesifikt format.</translation>
 %2</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+33"/>
         <source>Open File</source>
         <translation type="unfinished">Åpne fil</translation>
     </message>
     <message>
-        <location line="+110"/>
+        <location line="+105"/>
+        <source>Error Saving World</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
         <source>Unsaved Changes</source>
         <translation type="unfinished">Ulagrede Forandringer</translation>
     </message>
@@ -4128,13 +4284,14 @@ Vennligst velgt et spesifikt format.</translation>
         <translation>Klarte ikke å eksportere flissett</translation>
     </message>
     <message>
-        <location line="+56"/>
-        <location line="+52"/>
+        <location line="-225"/>
+        <location line="+281"/>
+        <location line="+46"/>
         <source>Tiled Projects (*.tiled-project)</source>
         <translation>Tiled-prosjekter (*.tiled-project)</translation>
     </message>
     <message>
-        <location line="-50"/>
+        <location line="-44"/>
         <source>Open Project</source>
         <translation>Åpne prosjekt</translation>
     </message>
@@ -4149,7 +4306,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+31"/>
         <source>Save Project As</source>
         <translation>Lagre prosjekt som</translation>
     </message>
@@ -4164,7 +4321,22 @@ Vennligst velgt et spesifikt format.</translation>
         <translation>En feil inntraff under lagring av prosjekt.</translation>
     </message>
     <message>
-        <location line="+278"/>
+        <location line="+140"/>
+        <source>&lt;html&gt;Enable anonymous crash reporting? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Yes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;No</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+241"/>
         <source>Add External Tileset(s)</source>
         <translation type="unfinished">Legg Til Eksternt Rutebrett</translation>
     </message>
@@ -4179,7 +4351,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Automatisk Kartleggingsadvarsel</translation>
     </message>
     <message>
-        <location line="+286"/>
+        <location line="+292"/>
         <source>[*]%1%2</source>
         <translation type="unfinished">[*]%1%2</translation>
     </message>
@@ -4194,7 +4366,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">&amp;Grupper</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+33"/>
         <source>Some export files already exist:</source>
         <translation type="unfinished">Noen eksportfiler finnes allerede:</translation>
     </message>
@@ -4228,7 +4400,12 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::MapDocument</name>
     <message>
-        <location filename="../src/tiled/mapdocument.cpp" line="+235"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="+131"/>
+        <source>Map format &apos;%s&apos; not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+104"/>
         <source>untitled.tmx</source>
         <translation type="unfinished">untitled.tmx</translation>
     </message>
@@ -4298,6 +4475,7 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+28"/>
+        <location filename="../src/tiled/tileseteditor.cpp" line="+948"/>
         <source>Copy of %1</source>
         <translation type="unfinished">Kopi av %1</translation>
     </message>
@@ -4315,7 +4493,7 @@ Vennligst velgt et spesifikt format.</translation>
         </translation>
     </message>
     <message>
-        <location line="+345"/>
+        <location line="+358"/>
         <source>Tile</source>
         <translation type="unfinished">Rute</translation>
     </message>
@@ -4335,7 +4513,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation>Klarte ikke å laste inn mal &apos;%1&apos;</translation>
     </message>
     <message numerus="yes">
-        <location line="+78"/>
+        <location line="+85"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Dupliser %n objekt</numerusform>
@@ -4424,18 +4602,18 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+335"/>
+        <location line="+340"/>
         <source>Layer via Copy</source>
         <translation type="unfinished">Lag via Kopi</translation>
     </message>
     <message>
-        <location line="-334"/>
-        <location line="+334"/>
+        <location line="-339"/>
+        <location line="+339"/>
         <source>Layer via Cut</source>
         <translation type="unfinished">Lag via Klipp Ut</translation>
     </message>
     <message>
-        <location line="-333"/>
+        <location line="-338"/>
         <source>&amp;Group Layers</source>
         <translation type="unfinished">&amp;Grupper lag</translation>
     </message>
@@ -4520,12 +4698,12 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Klipp Ut</translation>
     </message>
     <message>
-        <location line="+65"/>
+        <location line="+67"/>
         <source>Delete</source>
         <translation type="unfinished">Slett</translation>
     </message>
     <message numerus="yes">
-        <location line="+423"/>
+        <location line="+426"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Dupliser %n objekt</numerusform>
@@ -4554,12 +4732,17 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::MapEditor</name>
     <message>
-        <location filename="../src/tiled/mapeditor.cpp" line="+735"/>
+        <location filename="../src/tiled/mapeditor.cpp" line="+720"/>
         <source>Paste in Place</source>
         <translation type="unfinished">Lim inn på stedet</translation>
     </message>
     <message>
-        <location line="+198"/>
+        <location line="+193"/>
+        <source>Unrecognized tileset format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <location line="+5"/>
         <source>Error Reading Tileset</source>
         <translation type="unfinished">Feil Under Lesing Av Rutebrett</translation>
@@ -4786,6 +4969,14 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
 </context>
 <context>
+    <name>Tiled::NoWangSetWidget</name>
+    <message>
+        <location filename="../src/tiled/wangdock.cpp" line="+72"/>
+        <source>&lt;p&gt;No tileset with Terrain Sets available.&lt;/p&gt;&lt;p&gt;Open a tileset with a Terrain Set or set up a new Terrain Set to be able to use the Terrain Brush or the Terrain Fill Mode.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Tiled::ObjectRefEdit</name>
     <message>
         <location filename="../src/tiled/objectrefedit.cpp" line="+54"/>
@@ -4801,14 +4992,14 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::ObjectSelectionTool</name>
     <message>
-        <location filename="../src/tiled/objectselectiontool.cpp" line="+316"/>
-        <location line="+413"/>
+        <location filename="../src/tiled/objectselectiontool.cpp" line="+321"/>
+        <location line="+438"/>
         <source>Select Objects</source>
         <translation type="unfinished">Velg Objekter</translation>
     </message>
     <message numerus="yes">
-        <location line="-289"/>
-        <location line="+742"/>
+        <location line="-296"/>
+        <location line="+802"/>
         <source>Move %n Object(s)</source>
         <translation type="unfinished">
             <numerusform>Flytt Objekt</numerusform>
@@ -4816,7 +5007,7 @@ Vennligst velgt et spesifikt format.</translation>
         </translation>
     </message>
     <message>
-        <location line="-615"/>
+        <location line="-674"/>
         <source>Unnamed object</source>
         <translation type="unfinished">Ikke navngitt objekt</translation>
     </message>
@@ -4835,8 +5026,18 @@ Vennligst velgt et spesifikt format.</translation>
         <source>%1) %2</source>
         <translation type="unfinished">%1) %2</translation>
     </message>
+    <message>
+        <location line="+166"/>
+        <source>Select Touched Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Select Enclosed Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message numerus="yes">
-        <location line="+707"/>
+        <location line="+599"/>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>Roter %n objekt</numerusform>
@@ -4876,12 +5077,12 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+301"/>
+        <location line="+299"/>
         <source>Rename Property</source>
         <translation type="unfinished">Endre Navn På Egenskap</translation>
     </message>
     <message>
-        <location line="-244"/>
+        <location line="-242"/>
         <location line="+105"/>
         <source>Error Writing Object Types</source>
         <translation type="unfinished">Feil Under Skriving Av Objekttyper</translation>
@@ -4909,7 +5110,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Eksporter Objekttyper</translation>
     </message>
     <message>
-        <location line="+147"/>
+        <location line="+145"/>
         <source>Name:</source>
         <translation type="unfinished">Navn:</translation>
     </message>
@@ -4971,21 +5172,39 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::PreferencesDialog</name>
     <message>
-        <location filename="../src/tiled/preferencesdialog.cpp" line="-161"/>
-        <location line="+158"/>
+        <location filename="../src/tiled/preferencesdialog.cpp" line="-188"/>
+        <location line="+185"/>
         <source>System default</source>
         <translation type="unfinished">Systemstandard</translation>
+    </message>
+    <message>
+        <location line="-177"/>
+        <location line="+182"/>
+        <source>Select From Any Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-181"/>
+        <location line="+182"/>
+        <source>Prefer Selected Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-181"/>
+        <location line="+182"/>
+        <source>Selected Layers Only</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Tiled::ProjectDock</name>
     <message>
-        <location filename="../src/tiled/projectdock.cpp" line="+124"/>
+        <location filename="../src/tiled/projectdock.cpp" line="+126"/>
         <source>Choose Folder</source>
         <translation>Velg mappe</translation>
     </message>
     <message>
-        <location line="+66"/>
+        <location line="+51"/>
         <source>Project</source>
         <translation>Prosjekt</translation>
     </message>
@@ -4993,7 +5212,7 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::ProjectModel</name>
     <message>
-        <location filename="../src/tiled/projectmodel.cpp" line="+271"/>
+        <location filename="../src/tiled/projectmodel.cpp" line="+277"/>
         <source>(Refreshing)</source>
         <translation>(Gjenoppfrisker)</translation>
     </message>
@@ -5064,12 +5283,12 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+208"/>
+        <location line="+209"/>
         <source>Rename Property</source>
         <translation type="unfinished">Endre Navn På Egenskap</translation>
     </message>
     <message>
-        <location line="-149"/>
+        <location line="-150"/>
         <source>Go to Object</source>
         <translation>Gå til objekt</translation>
     </message>
@@ -5094,7 +5313,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Konverter Til</translation>
     </message>
     <message>
-        <location line="+128"/>
+        <location line="+129"/>
         <source>Rename...</source>
         <translation type="unfinished">Endre Navn...</translation>
     </message>
@@ -5130,49 +5349,49 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::PropertyBrowser</name>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="-1398"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-1435"/>
         <source>Map</source>
         <translation type="unfinished">Kart</translation>
     </message>
     <message>
         <location line="+5"/>
-        <location line="+233"/>
+        <location line="+238"/>
         <source>Orientation</source>
         <translation type="unfinished">Orientering</translation>
     </message>
     <message>
-        <location line="-228"/>
-        <location line="+100"/>
-        <location line="+179"/>
+        <location line="-233"/>
+        <location line="+103"/>
+        <location line="+194"/>
         <source>Width</source>
         <translation type="unfinished">Bredde</translation>
     </message>
     <message>
-        <location line="-278"/>
-        <location line="+100"/>
-        <location line="+179"/>
+        <location line="-296"/>
+        <location line="+103"/>
+        <location line="+194"/>
         <source>Height</source>
         <translation type="unfinished">Høyde</translation>
     </message>
     <message>
-        <location line="-278"/>
-        <location line="+249"/>
+        <location line="-296"/>
+        <location line="+267"/>
         <source>Tile Width</source>
         <translation type="unfinished">Rutebredde</translation>
     </message>
     <message>
-        <location line="-248"/>
-        <location line="+249"/>
+        <location line="-266"/>
+        <location line="+267"/>
         <source>Tile Height</source>
         <translation type="unfinished">Rutehøyde</translation>
     </message>
     <message>
-        <location line="-248"/>
+        <location line="-266"/>
         <source>Infinite</source>
         <translation type="unfinished">Uendelig</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+5"/>
         <source>Tile Side Length (Hex)</source>
         <translation type="unfinished">Rute Sidelengde (Heksagonal)</translation>
     </message>
@@ -5213,63 +5432,63 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+174"/>
+        <location line="+176"/>
         <source>Background Color</source>
         <translation type="unfinished">Bakgrunnsfarge</translation>
     </message>
     <message>
-        <location line="-142"/>
+        <location line="-144"/>
         <source>Object</source>
         <translation type="unfinished">Objekt</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+46"/>
-        <location line="+144"/>
+        <location line="+159"/>
         <source>ID</source>
         <translation type="unfinished">ID</translation>
     </message>
     <message>
-        <location line="-189"/>
+        <location line="-204"/>
         <source>Template</source>
         <translation type="unfinished">Mal</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+45"/>
-        <location line="+79"/>
-        <location line="+99"/>
-        <location line="+8"/>
-        <location line="+21"/>
+        <location line="+81"/>
+        <location line="+112"/>
+        <location line="+24"/>
         <source>Name</source>
         <translation type="unfinished">Navn</translation>
     </message>
     <message>
-        <location line="-249"/>
-        <location line="+188"/>
+        <location line="-259"/>
+        <location line="+203"/>
+        <location line="+35"/>
         <source>Type</source>
         <translation type="unfinished">Type</translation>
     </message>
     <message>
-        <location line="-184"/>
+        <location line="-234"/>
         <location line="+39"/>
         <source>Visible</source>
         <translation type="unfinished">Synlig</translation>
     </message>
     <message>
         <location line="-37"/>
-        <location line="+1284"/>
+        <location line="+1318"/>
         <source>X</source>
         <translation type="unfinished">X</translation>
     </message>
     <message>
-        <location line="-1283"/>
-        <location line="+1284"/>
+        <location line="-1317"/>
+        <location line="+1318"/>
         <source>Y</source>
         <translation type="unfinished">Y</translation>
     </message>
     <message>
-        <location line="-1273"/>
+        <location line="-1307"/>
         <source>Rotation</source>
         <translation type="unfinished">Omdreining</translation>
     </message>
@@ -5300,13 +5519,13 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+36"/>
-        <location line="+184"/>
+        <location line="+38"/>
+        <location line="+192"/>
         <source>Color</source>
         <translation type="unfinished">Farge</translation>
     </message>
     <message>
-        <location line="-209"/>
+        <location line="-219"/>
         <source>Locked</source>
         <translation type="unfinished">Låst</translation>
     </message>
@@ -5331,6 +5550,11 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Vertikal forskyvning</translation>
     </message>
     <message>
+        <location line="+2"/>
+        <source>Parallax Factor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+5"/>
         <source>Tile Layer</source>
         <translation type="unfinished">Rutelag</translation>
@@ -5352,19 +5576,19 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <location line="+70"/>
+        <location line="+83"/>
         <location line="+48"/>
         <source>Image</source>
         <translation type="unfinished">Bilde</translation>
     </message>
     <message>
-        <location line="-113"/>
-        <location line="+74"/>
+        <location line="-126"/>
+        <location line="+87"/>
         <source>Transparent Color</source>
         <translation type="unfinished">Gjennomsiktig Farge</translation>
     </message>
     <message>
-        <location line="-67"/>
+        <location line="-80"/>
         <source>Group Layer</source>
         <translation type="unfinished">Grupper lag</translation>
     </message>
@@ -5404,7 +5628,32 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Kolonner</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+3"/>
+        <source>Allowed Transformations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Flip Horizontally</source>
+        <translation type="unfinished">Vend Om Horisontalt</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Flip Vertically</source>
+        <translation type="unfinished">Vend Om Vertikalt</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Rotate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Prefer Untransformed Tiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
         <source>Source</source>
         <translation type="unfinished">Kilde</translation>
     </message>
@@ -5425,57 +5674,62 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+13"/>
-        <location line="+60"/>
+        <location line="+55"/>
         <source>Probability</source>
         <translation type="unfinished">Sannsynlighet</translation>
     </message>
     <message>
-        <location line="-57"/>
+        <location line="-52"/>
         <source>Relative chance this tile will be picked</source>
         <translation type="unfinished">Relativ sjanse for at denne ruten blir plukket</translation>
     </message>
     <message>
         <location line="+19"/>
-        <source>Terrain</source>
-        <translation type="unfinished">Terreng</translation>
+        <source>Terrain Set</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+8"/>
-        <source>Wang Set</source>
-        <translation type="unfinished">Wang-sett</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Edge Count</source>
-        <translation type="unfinished">Kantantall</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Corner Count</source>
-        <translation type="unfinished">Hjørneantall</translation>
+        <location line="+6"/>
+        <source>Terrain Count</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+16"/>
-        <source>Wang Color</source>
-        <translation type="unfinished">Wang-farge</translation>
+        <source>Terrain</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+1133"/>
+        <source>Corner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Edge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Mixed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-1095"/>
         <source>Change Infinite Property</source>
         <translation type="unfinished">Endre uendelig-egenskap</translation>
     </message>
     <message>
-        <location line="+337"/>
+        <location line="+340"/>
         <source>Error Reading Tileset</source>
         <translation type="unfinished">Feil Under Lesing Av Rutebrett</translation>
     </message>
     <message>
-        <location line="+306"/>
+        <location line="+330"/>
         <source>Custom Properties</source>
         <translation type="unfinished">Egendefinerte Egenskaper</translation>
     </message>
     <message>
-        <location line="+365"/>
+        <location line="+362"/>
         <source>Odd</source>
         <translation type="unfinished">Oddetall</translation>
     </message>
@@ -5566,17 +5820,22 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::ScriptManager</name>
     <message>
-        <location filename="../src/tiled/scriptmanager.cpp" line="-100"/>
+        <location filename="../src/tiled/scriptmanager.cpp" line="-114"/>
         <source>Error opening file: %1</source>
         <translation>Feil ved åpning av fil: %1</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+14"/>
+        <source>Error decoding file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>Evaluating &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+59"/>
+        <location line="+63"/>
         <source>Stack traceback:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5591,7 +5850,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation>Tilbakestiller skriptmotor</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+45"/>
         <source>Script files changed: %1</source>
         <translation type="unfinished">Skriptfiler endret: %1</translation>
     </message>
@@ -5605,7 +5864,7 @@ Vennligst velgt et spesifikt format.</translation>
     <name>Tiled::SelectSameTileTool</name>
     <message>
         <location filename="../src/tiled/selectsametiletool.cpp" line="+31"/>
-        <location line="+26"/>
+        <location line="+36"/>
         <source>Select Same Tile</source>
         <translation type="unfinished">Velg Samme Rute</translation>
     </message>
@@ -5614,7 +5873,7 @@ Vennligst velgt et spesifikt format.</translation>
     <name>Tiled::ShapeFillTool</name>
     <message>
         <location filename="../src/tiled/shapefilltool.cpp" line="+41"/>
-        <location line="+80"/>
+        <location line="+91"/>
         <source>Shape Fill Tool</source>
         <translation type="unfinished">Mønsterfyll-verktøy</translation>
     </message>
@@ -5627,6 +5886,21 @@ Vennligst velgt et spesifikt format.</translation>
         <location line="+1"/>
         <source>Circle Fill</source>
         <translation type="unfinished">Sirkelfyll</translation>
+    </message>
+    <message>
+        <location line="+33"/>
+        <source>%1, %2 - %3: (%4 x %5)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Rectangle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Circle</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5711,8 +5985,8 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::StampActions</name>
     <message>
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="-120"/>
-        <location filename="../src/tiled/stampactions.cpp" line="+87"/>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="-260"/>
+        <location filename="../src/tiled/stampactions.cpp" line="+86"/>
         <source>Rotate Left</source>
         <translation type="unfinished">Roter til venstre</translation>
     </message>
@@ -5729,8 +6003,8 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Wang Fill Mode</source>
-        <translation type="unfinished">Wang-utfyllingsmodus</translation>
+        <source>Terrain Fill Mode</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5747,7 +6021,7 @@ Vennligst velgt et spesifikt format.</translation>
     <name>Tiled::StampBrush</name>
     <message>
         <location filename="../src/tiled/stampbrush.cpp" line="+49"/>
-        <location line="+162"/>
+        <location line="+183"/>
         <source>Stamp Brush</source>
         <translation type="unfinished">Stempelpensel</translation>
     </message>
@@ -5755,7 +6029,7 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::TemplateManager</name>
     <message>
-        <location filename="../src/libtiled/templatemanager.cpp" line="+99"/>
+        <location filename="../src/libtiled/templatemanager.cpp" line="+106"/>
         <source>Unable to reload template file: %1</source>
         <translation>Klarte ikke å laste inn malfil igjen: %1</translation>
     </message>
@@ -5763,7 +6037,7 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::TemplatesDock</name>
     <message>
-        <location filename="../src/tiled/templatesdock.cpp" line="+289"/>
+        <location filename="../src/tiled/templatesdock.cpp" line="+300"/>
         <source>Open Tileset</source>
         <translation type="unfinished">Åpne flissett</translation>
     </message>
@@ -5779,7 +6053,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Finn flissett</translation>
     </message>
     <message>
-        <location line="+63"/>
+        <location line="+76"/>
         <source>Template Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5800,56 +6074,6 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::TerrainBrush</name>
-    <message>
-        <location filename="../src/tiled/terrainbrush.cpp" line="+48"/>
-        <location line="+122"/>
-        <source>Terrain Brush</source>
-        <translation type="unfinished">Terrengpensel</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::TerrainDock</name>
-    <message>
-        <location filename="../src/tiled/terraindock.cpp" line="+335"/>
-        <source>Terrains</source>
-        <translation type="unfinished">Terrenger</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Erase Terrain</source>
-        <translation type="unfinished">Hvisk Terreng</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Add Terrain Type</source>
-        <translation type="unfinished">Legg til terrengtype</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Remove Terrain Type</source>
-        <translation type="unfinished">Fjern terrengtype</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Move Terrain Type Up</source>
-        <translation type="unfinished">Flytt terrenglag opp</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Move Terrain Type Down</source>
-        <translation type="unfinished">Flytt terrenglag nedover</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::TerrainView</name>
-    <message>
-        <location filename="../src/tiled/terrainview.cpp" line="+111"/>
-        <source>Terrain &amp;Properties...</source>
-        <translation type="unfinished">Terreng&amp;egenskaper...</translation>
-    </message>
-</context>
-<context>
     <name>Tiled::TileAnimationEditor</name>
     <message>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="-49"/>
@@ -5860,7 +6084,7 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::TileCollisionDock</name>
     <message>
-        <location filename="../src/tiled/tilecollisiondock.cpp" line="-515"/>
+        <location filename="../src/tiled/tilecollisiondock.cpp" line="-538"/>
         <source>Hidden</source>
         <translation>Skjult</translation>
     </message>
@@ -5880,7 +6104,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Objektliste</translation>
     </message>
     <message>
-        <location line="+380"/>
+        <location line="+403"/>
         <source>Delete</source>
         <translation type="unfinished">Slett</translation>
     </message>
@@ -5891,6 +6115,11 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+108"/>
+        <source>Detect Bounding Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
         <source>Duplicate Objects</source>
         <translation type="unfinished">Dupliser Objekter</translation>
     </message>
@@ -5998,23 +6227,23 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="-289"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-297"/>
         <source>All Files (*)</source>
         <translation type="unfinished">Alle Filer (*)</translation>
     </message>
     <message>
         <location line="+11"/>
-        <location line="+128"/>
+        <location line="+132"/>
         <source>Replace Tileset</source>
         <translation type="unfinished">Erstatt Rutebrett</translation>
     </message>
     <message>
-        <location line="-113"/>
+        <location line="-117"/>
         <source>Error Reading Tileset</source>
         <translation type="unfinished">Feil Under Lesing Av Rutebrett</translation>
     </message>
     <message>
-        <location line="+38"/>
+        <location line="+42"/>
         <source>Remove Tileset</source>
         <translation type="unfinished">Fjern Rutebrett</translation>
     </message>
@@ -6074,7 +6303,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+248"/>
+        <location line="+252"/>
         <location line="+17"/>
         <source>Export Tileset</source>
         <translation type="unfinished">Eksporter Rutebrett</translation>
@@ -6088,12 +6317,18 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::TilesetDocument</name>
     <message>
-        <location filename="../src/tiled/tilesetdocument.cpp" line="+222"/>
+        <location filename="../src/tiled/tilesetdocument.cpp" line="+101"/>
+        <location line="+38"/>
+        <source>Tileset format &apos;%s&apos; not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+83"/>
         <source>untitled.tsx</source>
         <translation type="unfinished">utentittel.tsx</translation>
     </message>
     <message>
-        <location line="+203"/>
+        <location line="+209"/>
         <source>Failed to load tileset image &apos;%1&apos;</source>
         <translation type="unfinished">Klarte ikke å laste inn flissettbilde &apos;%1&apos;</translation>
     </message>
@@ -6106,21 +6341,21 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::TilesetEditor</name>
     <message>
-        <location filename="../src/tiled/tileseteditor.cpp" line="+184"/>
-        <location line="+500"/>
+        <location filename="../src/tiled/tileseteditor.cpp" line="-775"/>
+        <location line="+481"/>
         <source>Tileset</source>
         <translation type="unfinished">Rutebrett</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+23"/>
-        <location line="+31"/>
+        <location line="+29"/>
         <location line="+19"/>
         <source>Add Tiles</source>
         <translation type="unfinished">Legg Til Ruter</translation>
     </message>
     <message>
-        <location line="-72"/>
+        <location line="-70"/>
         <location line="+190"/>
         <source>Remove Tiles</source>
         <translation type="unfinished">Fjern Ruter</translation>
@@ -6136,7 +6371,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+47"/>
         <source>Apply this action to all tiles</source>
         <translation type="unfinished">Bruk denne handlingen for alle fliser</translation>
     </message>
@@ -6156,7 +6391,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Kunne ikke laste inn &quot;%1&quot;.</translation>
     </message>
     <message>
-        <location line="+118"/>
+        <location line="+120"/>
         <source>Tiles to be removed are in use by open maps!</source>
         <translation type="unfinished">Flis som skal fjernes brukes av åpne kart!</translation>
     </message>
@@ -6166,14 +6401,9 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Fjern alle referanser til disse rutene?</translation>
     </message>
     <message>
-        <location line="+82"/>
-        <source>New Terrain</source>
-        <translation type="unfinished">Nytt terreng</translation>
-    </message>
-    <message>
-        <location line="+89"/>
-        <source>New Wang Set</source>
-        <translation type="unfinished">Nytt Wang-sett</translation>
+        <location line="+76"/>
+        <source>Unnamed Set</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6187,24 +6417,14 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::TilesetView</name>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+1316"/>
-        <source>Add Terrain Type</source>
-        <translation>Legg til terrengtype</translation>
+        <location filename="../src/tiled/tilesetview.cpp" line="+753"/>
+        <source>Use as Terrain Set Image</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>Set Terrain Image</source>
-        <translation type="unfinished">Sett Terrengbilde</translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Set Wang Set Image</source>
-        <translation type="unfinished">Valg bilde for Wang-sett</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Set Wang Color Image</source>
-        <translation type="unfinished">Velg farge for Wang-bilde</translation>
+        <source>Use as Terrain Image</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6254,7 +6474,7 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::VariantPropertyManager</name>
     <message>
-        <location filename="../src/tiled/variantpropertymanager.cpp" line="+163"/>
+        <location filename="../src/tiled/variantpropertymanager.cpp" line="+171"/>
         <source>%1: </source>
         <translation>%1: </translation>
     </message>
@@ -6335,34 +6555,21 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::WangBrush</name>
     <message>
-        <location filename="../src/tiled/wangbrush.cpp" line="+112"/>
-        <location line="+68"/>
-        <source>Wang Brush</source>
-        <translation type="unfinished">Wang-pensel</translation>
+        <location filename="../src/tiled/wangbrush.cpp" line="+111"/>
+        <location line="+96"/>
+        <source>Terrain Brush</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+149"/>
-        <source>Missing Wang tile transition</source>
-        <translation type="unfinished">Manglende Wang-flisovergang</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::WangColorModel</name>
-    <message>
-        <location filename="../src/tiled/wangcolormodel.cpp" line="+143"/>
-        <source>Edge Colors</source>
-        <translation type="unfinished">Hjørnefarger</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Corner Colors</source>
-        <translation type="unfinished">Hjørnefarger</translation>
+        <location line="+202"/>
+        <source>Missing terrain transition</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Tiled::WangColorView</name>
     <message>
-        <location filename="../src/tiled/wangcolorview.cpp" line="+183"/>
+        <location filename="../src/tiled/wangcolorview.cpp" line="+144"/>
         <source>Pick Custom Color</source>
         <translation type="unfinished">Velg egendefinert farge</translation>
     </message>
@@ -6370,59 +6577,74 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::WangDock</name>
     <message>
-        <location filename="../src/tiled/wangdock.cpp" line="+226"/>
-        <location line="+327"/>
+        <location filename="../src/tiled/wangdock.cpp" line="+197"/>
+        <location line="+361"/>
+        <source>Terrains</source>
+        <translation type="unfinished">Terrenger</translation>
+    </message>
+    <message>
+        <location line="-360"/>
+        <location line="+361"/>
         <source>Patterns</source>
         <translation type="unfinished">Mønster</translation>
     </message>
     <message>
-        <location line="-326"/>
-        <location line="+327"/>
-        <source>Colors</source>
-        <translation type="unfinished">Farger</translation>
-    </message>
-    <message>
-        <location line="-10"/>
-        <source>Wang Sets</source>
-        <translation type="unfinished">Wang-sett</translation>
+        <location line="-13"/>
+        <source>Terrain Sets</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>Erase WangIds</source>
-        <translation type="unfinished">Slett Wang-IDer</translation>
+        <source>Erase Terrain</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Add Wang Set</source>
-        <translation type="unfinished">Legg til Wang-sett</translation>
+        <source>Add Terrain Set</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Remove Wang Set</source>
-        <translation type="unfinished">Fjern Wang-sett</translation>
+        <source>New Corner Set</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Add Edge Color</source>
-        <translation type="unfinished">Legg til kantfarge</translation>
+        <source>New Edge Set</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Add Corner Color</source>
-        <translation type="unfinished">Legg til hjørnefarge</translation>
+        <source>New Mixed Set</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Remove Color</source>
-        <translation type="unfinished">Fjern farge</translation>
+        <source>Duplicate Terrain Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Remove Terrain Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Add Terrain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Remove Terrain</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Tiled::WangSetView</name>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+104"/>
-        <source>Wang Set &amp;Properties...</source>
-        <translation type="unfinished">Wang-setts&amp;egenskaper…</translation>
+        <source>Terrain Set &amp;Properties...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6473,7 +6695,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Verdenen inneholdt ingen gyldige kart eller mønstre: %1</translation>
     </message>
     <message>
-        <location line="+89"/>
+        <location line="+91"/>
         <source>World doesn&apos;t support saving</source>
         <translation type="unfinished">Verdenen støtter ikke lagring.</translation>
     </message>
@@ -6487,7 +6709,7 @@ Vennligst velgt et spesifikt format.</translation>
     <name>Tiled::WorldMoveMapTool</name>
     <message>
         <location filename="../src/tiled/worldmovemaptool.cpp" line="+84"/>
-        <location line="+167"/>
+        <location line="+170"/>
         <source>World Tool</source>
         <translation>Verdensverktøy</translation>
     </message>
@@ -6536,7 +6758,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation>Legg til objekter</translation>
     </message>
     <message>
-        <location line="+51"/>
+        <location line="+58"/>
         <source>Remove Object</source>
         <translation>Fjern Objekt</translation>
     </message>
@@ -6606,7 +6828,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation>Hvisk</translation>
     </message>
     <message>
-        <location filename="../src/tiled/bucketfilltool.cpp" line="-16"/>
+        <location filename="../src/tiled/bucketfilltool.cpp" line="-18"/>
         <source>Fill Area</source>
         <translation>Fyll Område</translation>
     </message>
@@ -6681,6 +6903,11 @@ Vennligst velgt et spesifikt format.</translation>
         <translation>Endre rutenettstørrelse</translation>
     </message>
     <message>
+        <location line="+20"/>
+        <source>Change Tileset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/tiled/movelayer.cpp" line="+41"/>
         <source>Lower Layer</source>
         <translation>Senk Lag</translation>
@@ -6697,39 +6924,14 @@ Vennligst velgt et spesifikt format.</translation>
         <translation>Endre Mangekant</translation>
     </message>
     <message>
-        <location line="+23"/>
-        <source>Toggle Polygon/Polyline</source>
-        <translation>Veksle polygon/polylinje</translation>
-    </message>
-    <message>
-        <location line="+17"/>
+        <location line="+28"/>
         <source>Split Polyline</source>
         <translation>Del polylinje</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/addremoveterrain.cpp" line="+66"/>
-        <source>Add Terrain</source>
-        <translation>Legg Til Terreng</translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Remove Terrain</source>
-        <translation>Fjern Terreng</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+38"/>
         <source>Change Image Layer Properties</source>
         <translation>Endre Bildelagegenskaper</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/changetileterrain.cpp" line="+138"/>
-        <source>Change Tile Terrain</source>
-        <translation>Endre Ruteterreng</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/changeterrain.cpp" line="+56"/>
-        <source>Change Terrain Image</source>
-        <translation>Endre Terrengbilde</translation>
     </message>
     <message>
         <location filename="../src/tiled/changelayer.cpp" line="+31"/>
@@ -6768,6 +6970,11 @@ Vennligst velgt et spesifikt format.</translation>
         <translation>Endre Lagforskyvning</translation>
     </message>
     <message>
+        <location line="+21"/>
+        <source>Change Layer Parallax Factor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+20"/>
         <source>Change Tile Layer Size</source>
         <translation type="unfinished"></translation>
@@ -6791,7 +6998,7 @@ Vennligst velgt et spesifikt format.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+65"/>
+        <location line="+69"/>
         <source>Detach %n Template Instance(s)</source>
         <translation>
             <numerusform>Løsne %n malinstans</numerusform>
@@ -6815,18 +7022,13 @@ Vennligst velgt et spesifikt format.</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/tiled/changeterrain.cpp" line="-21"/>
-        <source>Change Terrain Name</source>
-        <translation>Endre terrengnavn</translation>
-    </message>
-    <message>
         <location filename="../src/tiled/addremovetiles.cpp" line="+62"/>
         <source>Add Tiles</source>
         <translation>Legg Til Ruter</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location filename="../src/tiled/tileseteditor.cpp" line="-240"/>
+        <location filename="../src/tiled/tileseteditor.cpp" line="-145"/>
         <source>Remove Tiles</source>
         <translation>Fjern Ruter</translation>
     </message>
@@ -6894,7 +7096,7 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+10"/>
-        <location filename="../src/tiled/tilesetchanges.cpp" line="-58"/>
+        <location filename="../src/tiled/tilesetchanges.cpp" line="-78"/>
         <source>Change Background Color</source>
         <translation>Endre Bakgrunnsfarge</translation>
     </message>
@@ -6936,7 +7138,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation>Endre Rutesannsynlighet</translation>
     </message>
     <message>
-        <location filename="../src/tiled/adjusttileindexes.cpp" line="-139"/>
+        <location filename="../src/tiled/adjusttileindexes.cpp" line="-137"/>
         <location line="+92"/>
         <source>Adjust Tile Indexes</source>
         <translation>Juster Ruteindekser</translation>
@@ -6953,7 +7155,7 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="-922"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-946"/>
         <source>Flip %n Object(s)</source>
         <translation>
             <numerusform>Vend Objekt</numerusform>
@@ -6971,61 +7173,9 @@ Vennligst velgt et spesifikt format.</translation>
         <translation>Bytt fliser</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetdocument.cpp" line="-389"/>
+        <location filename="../src/tiled/tilesetdocument.cpp" line="-397"/>
         <source>Reload Tileset</source>
         <translation>Last inn flisesett på nytt</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/addremovewangset.cpp" line="+64"/>
-        <source>Add Wang Set</source>
-        <translation>Legg til Wang-sett</translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>Remove Wang Set</source>
-        <translation>Fjern Wang-sett</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/changetilewangid.cpp" line="+35"/>
-        <location line="+12"/>
-        <location line="+14"/>
-        <source>Change Tile WangId</source>
-        <translation>Endre flisens Wang-ID</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/changewangsetdata.cpp" line="+37"/>
-        <source>Change Wang Set edge count</source>
-        <translation>Endre kantantall for Wang-sett</translation>
-    </message>
-    <message>
-        <location line="+66"/>
-        <source>Change Wang Set corner count</source>
-        <translation>Endre hjørneantall for Wang-sett</translation>
-    </message>
-    <message>
-        <location line="+63"/>
-        <source>Remove Wang Color</source>
-        <translation>Fjern Wang-farge</translation>
-    </message>
-    <message>
-        <location line="+90"/>
-        <source>Set Wang Set Image</source>
-        <translation>Valg bilde for Wang-sett</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/moveterrain.cpp" line="+60"/>
-        <source>Move Terrain Up</source>
-        <translation>Flytt terreng oppover</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Move Terrain Down</source>
-        <translation>Flytt terreng nedover</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/renamewangset.cpp" line="+34"/>
-        <source>Change Wang Set Name</source>
-        <translation>Endre navn på Wang-sett</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetemplate.cpp" line="+34"/>
@@ -7033,12 +7183,12 @@ Vennligst velgt et spesifikt format.</translation>
         <translation>Erstatt mal</translation>
     </message>
     <message>
-        <location filename="../src/tiled/shapefilltool.cpp" line="-19"/>
+        <location filename="../src/tiled/shapefilltool.cpp" line="-57"/>
         <source>Shape Fill</source>
         <translation>Mønsterfyll</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/tiled/mapdocument.cpp" line="-770"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="-790"/>
         <source>Raise %n Layer(s)</source>
         <translation>
             <numerusform>Hev %n lag</numerusform>
@@ -7058,16 +7208,78 @@ Vennligst velgt et spesifikt format.</translation>
         <source>Change Tile Size</source>
         <translation>Endre flisstørrelse</translation>
     </message>
+    <message>
+        <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
+        <source>Add Terrain Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Remove Terrain Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/changetilewangid.cpp" line="+37"/>
+        <location line="+12"/>
+        <location line="+14"/>
+        <source>Change Tile Terrain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/changewangcolordata.cpp" line="+38"/>
+        <source>Change Terrain Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>Change Terrain Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Change Terrain Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Change Terrain Probability</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/changewangsetdata.cpp" line="+38"/>
+        <source>Change Terrain Set Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Change Terrain Set Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Change Terrain Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+48"/>
+        <source>Remove Terrain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+32"/>
+        <source>Set Terrain Set Image</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Utils</name>
     <message>
-        <location filename="../src/tiled/utils.cpp" line="+47"/>
+        <location filename="../src/tiled/utils.cpp" line="+54"/>
         <source>Image files</source>
         <translation>Bildefiler</translation>
     </message>
     <message>
-        <location line="+387"/>
+        <location line="+422"/>
         <source>Copy File Path</source>
         <translation type="unfinished">Kopier Filbane</translation>
     </message>
@@ -7079,6 +7291,14 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+7"/>
         <source>Open with System Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Yy::YyPlugin</name>
+    <message>
+        <location filename="../src/plugins/yy/yyplugin.cpp" line="+163"/>
+        <source>GameMaker Studio 2 files (*.yy)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7137,8 +7357,24 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+1"/>
+        <location line="+3"/>
         <source>name</source>
         <translation>navn</translation>
+    </message>
+    <message>
+        <location line="-1"/>
+        <source>If used only specified layers are shown. Can be repeated to show multiple specified layers only.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>If used tile animations are advanced by the specified duration.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>duration</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+2"/>
@@ -7151,7 +7387,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation>Bildefil å sende ut.</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+24"/>
         <source>Invalid size specified: &quot;%1&quot;</source>
         <translation>Ugyldig størrelse angitt: &quot;%1&quot;</translation>
     </message>
@@ -7164,6 +7400,11 @@ Vennligst velgt et spesifikt format.</translation>
         <location line="+9"/>
         <source>Invalid scale specified: &quot;%1&quot;</source>
         <translation>Ugyldig skala angitt: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Invalid advance-animations specified: &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+57"/>
@@ -7183,20 +7424,25 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+19"/>
-        <location filename="../src/tiledquick/qml/main.qml" line="+46"/>
+        <location filename="../src/tiledquick/qml/main.qml" line="+53"/>
         <source>Open...</source>
         <translation>Åpne…</translation>
     </message>
     <message>
         <location line="+65"/>
-        <location filename="../src/tiledquick/qml/main.qml" line="+133"/>
+        <location filename="../src/tiledquick/qml/main.qml" line="+142"/>
         <source>No map file loaded</source>
         <translation>Ingen kartfil innlastet</translation>
     </message>
     <message>
-        <location filename="../src/tiledquick/qml/main.qml" line="-123"/>
+        <location filename="../src/tiledquick/qml/main.qml" line="-132"/>
         <source>Exit</source>
         <translation>Avslutt</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Fit Map In View</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+7"/>
@@ -7205,6 +7451,11 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+6"/>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Help</source>
         <translation>Hjelp</translation>
     </message>

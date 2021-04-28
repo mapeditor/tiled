@@ -176,5 +176,7 @@
         <file>images/scalable/replace.svg</file>
         <file>images/24/detect-bounding-box.png</file>
         <file>images/48/detect-bounding-box.png</file>
+        <file>images/scalable/select_touch.svg</file>
+        <file>images/scalable/select_enclose.svg</file>
     </qresource>
 </RCC>

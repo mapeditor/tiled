@@ -149,3 +149,5 @@ void FileEdit::buttonClicked()
 }
 
 } // namespace Tiled
+
+#include "moc_fileedit.cpp"

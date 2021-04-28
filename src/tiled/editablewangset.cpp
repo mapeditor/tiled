@@ -100,7 +100,7 @@ void EditableWangSet::setWangId(EditableTile *editableTile, QJSValue value)
     if (auto doc = tilesetDocument())
         asset()->push(new ChangeTileWangId(doc, wangSet(), editableTile->tile(), wangId));
     else if (!checkReadOnly())
-        wangSet()->addTile(editableTile->tile(), wangId);
+        wangSet()->setWangId(editableTile->id(), wangId);
 }
 
 void EditableWangSet::setName(const QString &name)

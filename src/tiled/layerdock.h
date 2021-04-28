@@ -69,9 +69,9 @@ private:
     QSlider *mOpacitySlider;
     QToolButton *mNewLayerButton;
     LayerView *mLayerView;
-    MapDocument *mMapDocument;
-    bool mUpdatingSlider;
-    bool mChangingLayerOpacity;
+    MapDocument *mMapDocument = nullptr;
+    bool mUpdatingSlider = false;
+    bool mChangingLayerOpacity = false;
 };
 
 /**

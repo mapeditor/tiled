@@ -11,16 +11,36 @@ apps:
   tiled:
     command: desktop-launch ${SNAP}/usr/bin/tiled
     common-id: org.mapeditor.Tiled.desktop
-    plugs: [home, opengl, unity7, network]
+    plugs:
+      - desktop
+      - desktop-legacy
+      - wayland
+      - unity7
+      - home
+      - removable-media
+      - opengl
+      - network
   tmxviewer:
     command: desktop-launch ${SNAP}/usr/bin/tmxviewer
-    plugs: [home, unity7]
+    plugs:
+      - desktop
+      - desktop-legacy
+      - wayland
+      - unity7
+      - home
+      - removable-media
   tmxrasterizer:
     command: desktop-launch ${SNAP}/usr/bin/tmxrasterizer
-    plugs: [home, unity7]
+    plugs:
+      - unity7
+      - home
+      - removable-media
   terraingenerator:
     command: desktop-launch ${SNAP}/usr/bin/terraingenerator
-    plugs: [home, unity7]
+    plugs:
+      - unity7
+      - home
+      - removable-media
 
 parts:
   tiled:

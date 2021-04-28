@@ -31,6 +31,7 @@
 #include "pluginmanager.h"
 #include "preferences.h"
 #include "scriptmanager.h"
+#include "sentryhelper.h"
 #include "stylehelper.h"
 #include "tiledapplication.h"
 #include "tileset.h"
@@ -58,6 +59,12 @@
 #endif // Q_OS_WIN
 
 using namespace Tiled;
+
+static QTextStream& stdOut()
+{
+    static QTextStream ts(stdout);
+    return ts;
+}
 
 namespace {
 
@@ -248,8 +255,8 @@ void CommandLineHandler::showVersion()
 {
     if (!showedVersion) {
         showedVersion = true;
-        qInfo().noquote() << QApplication::applicationDisplayName()
-                          << QApplication::applicationVersion();
+        stdOut() << QApplication::applicationDisplayName() << " "
+                 << QApplication::applicationVersion() << Qt::endl;
         quit = true;
     }
 }
@@ -306,9 +313,9 @@ void CommandLineHandler::showExportFormats()
     }
     formats.sort(Qt::CaseSensitive);
 
-    qInfo().noquote() << tr("Map export formats:");
+    stdOut() << tr("Map export formats:") << Qt::endl;
     for (const QString &name : formats)
-        qInfo(" %s", qUtf8Printable(name));
+        stdOut() << " " << name << Qt::endl;
 
     formats.clear();
     const auto tilesetFormats = PluginManager::objects<TilesetFormat>();
@@ -318,9 +325,9 @@ void CommandLineHandler::showExportFormats()
     }
     formats.sort(Qt::CaseSensitive);
 
-    qInfo().noquote() << tr("Tileset export formats:");
+    stdOut() << tr("Tileset export formats:") << Qt::endl;
     for (const QString &name : formats)
-        qInfo(" %s", qUtf8Printable(name));
+        stdOut() << " " << name << Qt::endl;
 
     quit = true;
 }
@@ -371,6 +378,10 @@ int main(int argc, char *argv[])
 #endif
 
     TiledApplication a(argc, argv);
+
+#ifdef TILED_SENTRY
+    Sentry sentry;
+#endif
 
     initializeMetatypes();
 
@@ -497,7 +508,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (!filesToOpen.isEmpty() && !commandLine.newInstance) {
+    if (a.isRunning() && !filesToOpen.isEmpty() && !commandLine.newInstance) {
         // Files need to be absolute paths because the already running Tiled
         // instance likely does not have the same working directory.
         QJsonDocument doc(QJsonArray::fromStringList(filesToOpen));

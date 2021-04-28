@@ -84,3 +84,5 @@ void TilesetParametersEdit::buttonClicked()
 }
 
 } // namespace Tiled
+
+#include "moc_tilesetparametersedit.cpp"

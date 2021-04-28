@@ -63,3 +63,5 @@ void Plugin::removeObject(QObject *object)
 }
 
 } // namespace Tiled
+
+#include "moc_plugin.cpp"

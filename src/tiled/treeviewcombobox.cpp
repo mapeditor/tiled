@@ -170,3 +170,5 @@ TreeViewComboBoxView *TreeViewComboBox::view() const
 }
 
 } // namespace Tiled
+
+#include "moc_treeviewcombobox.cpp"

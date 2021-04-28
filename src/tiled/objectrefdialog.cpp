@@ -221,3 +221,5 @@ void ObjectRefDialog::onSelectedObjectChanged(MapObject *object)
 
 } // namespace Tiled
 
+
+#include "moc_objectrefdialog.cpp"

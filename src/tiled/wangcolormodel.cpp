@@ -76,10 +76,8 @@ QVariant WangColorModel::data(const QModelIndex &index, int role) const
         if (Tile *tile =  mWangSet->tileset()->findTile(wangColorAt(index)->imageId()))
             return tile->image();
         break;
-    case Qt::BackgroundRole:
-        return QBrush(wangColorAt(index)->color());
     case ColorRole:
-        return colorAt(index);
+        return wangColorAt(index)->color();
     }
 
     return QVariant();
@@ -157,3 +155,5 @@ void WangColorModel::emitDataChanged(WangColor *wangColor)
     const QModelIndex i = colorIndex(wangColor->colorIndex());
     emit dataChanged(i, i);
 }
+
+#include "moc_wangcolormodel.cpp"

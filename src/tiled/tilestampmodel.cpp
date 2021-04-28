@@ -335,3 +335,5 @@ void TileStampModel::clear()
 }
 
 } // namespace Tiled
+
+#include "moc_tilestampmodel.cpp"

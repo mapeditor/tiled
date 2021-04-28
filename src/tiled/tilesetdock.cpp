@@ -40,7 +40,6 @@
 #include "session.h"
 #include "swaptiles.h"
 #include "tabbar.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
@@ -574,12 +573,6 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
     // Hides the "New Tileset..." special view if it is shown.
     mSuperViewStack->setCurrentIndex(1);
 
-    // Insert view before the tab to make sure it is there when the tab index
-    // changes (happens when first tab is inserted).
-    mViewStack->insertWidget(index, view);
-    mTabBar->insertTab(index, tileset->name());
-    mTabBar->setTabToolTip(index, tileset->fileName());
-
     // Restore state from last time
     const QString fileName = tilesetDocument->externalOrEmbeddedFileName();
     const QVariantMap fileState = Session::current().fileState(fileName);
@@ -599,6 +592,12 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
             view->setDynamicWrapping(dynamicWrapping);
         }
     }
+
+    // Insert view before the tab to make sure it is there when the tab index
+    // changes (happens when first tab is inserted).
+    mViewStack->insertWidget(index, view);
+    mTabBar->insertTab(index, tileset->name());
+    mTabBar->setTabToolTip(index, tileset->fileName());
 
     connect(tilesetDocument, &TilesetDocument::fileNameChanged,
             this, &TilesetDock::tilesetFileNameChanged);
@@ -679,10 +678,15 @@ void TilesetDock::replaceTileset()
     if (currentIndex == -1)
         return;
 
+    replaceTilesetAt(currentIndex);
+}
+
+void TilesetDock::replaceTilesetAt(int index)
+{
     if (!mMapDocument)
         return;
 
-    auto &sharedTileset = mTilesets.at(currentIndex);
+    auto &sharedTileset = mTilesets.at(index);
     int mapTilesetIndex = mMapDocument->map()->tilesets().indexOf(sharedTileset);
     if (mapTilesetIndex == -1)
         return;
@@ -695,8 +699,8 @@ void TilesetDock::replaceTileset()
 
     FormatHelper<TilesetFormat> helper(FileFormat::Read, filter);
 
-    Preferences *prefs = Preferences::instance();
-    QString start = prefs->lastPath(Preferences::ExternalTileset);
+    Session &session = Session::current();
+    QString start = session.lastPath(Session::ExternalTileset);
 
     const auto fileName =
             QFileDialog::getOpenFileName(this, tr("Replace Tileset"),
@@ -707,7 +711,7 @@ void TilesetDock::replaceTileset()
     if (fileName.isEmpty())
         return;
 
-    prefs->setLastPath(Preferences::ExternalTileset, QFileInfo(fileName).path());
+    session.setLastPath(Session::ExternalTileset, QFileInfo(fileName).path());
 
     lastUsedTilesetFilter = selectedFilter;
 
@@ -927,8 +931,12 @@ void TilesetDock::tabContextMenuRequested(const QPoint &pos)
     const QString fileName = mTilesetDocuments.at(index)->fileName();
     Utils::addFileManagerActions(menu, fileName);
 
-    if (!menu.isEmpty())
-        menu.exec(mTabBar->mapToGlobal(pos));
+    menu.addSeparator();
+    menu.addAction(mEditTileset->icon(), mEditTileset->text(), this, [tileset = mTilesets.at(index)] {
+        DocumentManager::instance()->openTileset(tileset);
+    });
+
+    menu.exec(mTabBar->mapToGlobal(pos));
 }
 
 void TilesetDock::setCurrentTileset(const SharedTileset &tileset)
@@ -1070,9 +1078,9 @@ void TilesetDock::exportTileset()
 
     FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite);
 
-    Preferences *prefs = Preferences::instance();
+    Session &session = Session::current();
 
-    QString suggestedFileName = prefs->lastPath(Preferences::ExternalTileset);
+    QString suggestedFileName = session.lastPath(Session::ExternalTileset);
     suggestedFileName += QLatin1Char('/');
     suggestedFileName += externalTileset->name();
 
@@ -1090,8 +1098,8 @@ void TilesetDock::exportTileset()
     if (fileName.isEmpty())
         return;
 
-    prefs->setLastPath(Preferences::ExternalTileset,
-                       QFileInfo(fileName).path());
+    session.setLastPath(Session::ExternalTileset,
+                        QFileInfo(fileName).path());
 
     TilesetFormat *format = helper.formatByNameFilter(selectedFilter);
     if (!format)
@@ -1192,6 +1200,9 @@ void TilesetDock::refreshTilesetMenu()
         if (i == currentIndex)
             action->setChecked(true);
     }
+
+    mTilesetMenu->addSeparator();
+    mTilesetMenu->addAction(ActionManager::action("AddExternalTileset"));
 }
 
 void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)

@@ -28,7 +28,7 @@
 
 #include "compression.h"
 
-#if defined(Q_OS_WIN) && defined(Q_CC_MSVC)
+#if (defined(Q_OS_WIN) && defined(Q_CC_MSVC)) || defined(Q_OS_WASM)
 #include "QtZlib/zlib.h"
 #else
 #include <zlib.h>

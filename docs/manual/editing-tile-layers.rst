@@ -12,7 +12,7 @@ it when you're not going to use it.
 Stamp Brush
 -----------
 
-Shortcut: ``B``
+Shortcut: ``B`` |stock-tool-clone|
 
 The primary tool for editing tile layers is the Stamp Brush. It can be
 used to paint single tiles as well as larger "stamps", which is where it
@@ -34,10 +34,10 @@ The Stamp Brush has some extra features:
    on the tile stamp, as well as the probability set on each tile in the
    *Tileset Editor*.
 
--  Activate the *Wang Fill Mode* using the Wang tile button on the tool bar
-   to have the Stamp Brush paint using the Wang methods. This makes adjacent
-   tiles match edge and corner colors to be placed. Wang tiles are described
-   in detail in :doc:`using-wang-tiles`.
+-  Activate the *Terrain Fill Mode* using the Terrain tile |terrain| button on
+   the tool bar to have the Stamp Brush paint using random terrain tiles. This makes
+   adjacent tiles match edge and corner terrains to be placed. Terrain tiles are
+   described in detail in :doc:`terrain`.
 
 -  In combination with the *Tile Stamps* view, it can also place
    randomly from a set of predefined tile stamps. This can be more
@@ -54,17 +54,16 @@ The Stamp Brush has some extra features:
 Terrain Brush
 -------------
 
-Shortcut: ``T``
+Shortcut: ``T`` |terrain-edit|
 
-The Terrain Brush allows for efficient editing with a certain type of
-corner-based terrain transitions. Setting it up requires associating
-terrain information with your tiles, which is described in detail in
-:doc:`Using the Terrain Tool <using-the-terrain-tool>`.
+The Terrain Brush allows for efficient editing with certain types of terrain
+transitions (corner-based, edge-based or a combination). Setting it up
+requires associating terrain information with your tiles, which is described
+in detail in :doc:`terrain`.
 
-Similarly to the :ref:`stamp-tool`, you can draw lines by holding
-``Shift``. When holding ``Ctrl``, the size of the editing area is
-reduced to one corner (this currently doesn't work well in combination
-with drawing lines).
+Similarly to the :ref:`stamp-tool`, you can draw lines by holding ``Shift``.
+When holding ``Ctrl``, the size of the edited area is increased to cover an
+entire tile rather than just one corner or edge.
 
 .. raw:: html
 
@@ -74,48 +73,27 @@ When holding ``Alt``, the editing operations are also applied at a 180
 degree rotation. This is especially useful when editing strategic maps
 where two sides need to have equal opportunities. The modifier works
 well in combination with either ``Shift`` for drawing lines or ``Ctrl``
-for reducing the edited area.
+for increasing the edited area.
 
 .. raw:: html
 
    <div class="new new-prev">Since Tiled 1.1</div>
-
-.. _wang-tool:
-
-Wang Brush
-----------
-
-Shortcut: ``G``
-
-The Wang Brush works in a very similar way to the :ref:`terrain-tool`, except
-it uses Wang sets. Key differences are:
-
--  Wang tiles support edges as well as corners, whereas terrains only support
-   corners. This makes Wang tiles useful for drawing paths, or fences.
--  The default size is to edit one edge/corner. Holding ``Ctrl`` expands it
-   to the whole tile.
--  If the transition cannot be made on the immediately affected tiles,
-   the operation is aborted.
-
-To use the tool, a color must be selected from the Wang color view.
-Wang tiles and this tool are described in detail in :doc:`using-wang-tiles`.
 
 .. _bucket-fill-tool:
 
 Bucket Fill Tool
 ----------------
 
-Shortcut: ``F``
+Shortcut: ``F`` |stock-tool-bucket-fill|
 
 The Bucket Fill Tool provides a quick way of filling empty areas or
 areas covered with the same tiles. The currently active tile stamp will
 be repeated in the filled area. It can also be used in combination with
-the *Random Mode*, or *Wang Fill Mode*.
+the *Random Mode*, or *Terrain Fill Mode*.
 
 When holding ``Shift``, the tool fills the currently selected area
 regardless of its contents. This is useful for filling custom areas that
-have been selected previously using one or more `Selection
-Tools <#selection-tools>`__.
+have been selected previously using one or more :ref:`tile-selection-tools`.
 
 You can also flip and rotate the current stamp as described for the
 :ref:`stamp-tool`.
@@ -129,7 +107,7 @@ You can also flip and rotate the current stamp as described for the
 Shape Fill Tool
 ---------------
 
-Shortcut: ``P``
+Shortcut: ``P`` |rectangle-fill|
 
 This tool provides a quick way to fill rectangles or ellipses with a certain
 tile or pattern. Hold ``Shift`` to fill an exact square or circle.
@@ -142,26 +120,32 @@ You can also flip and rotate the current stamp as described for the
 Eraser
 ------
 
-Shortcut: ``E``
+Shortcut: ``E`` |stock-tool-eraser|
 
 A simple eraser tool. Left click erases single tiles and right click can
 be used to quickly erase rectangular areas.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.5</div>
+
 -  Holding ``Shift`` erases on all layers.
+
+.. _tile-selection-tools:
 
 Selection Tools
 ---------------
 
 There are various tile selection tools that all work in similar fashion:
 
--  **Rectangular Select** allows selection of rectangular areas
-   (shortcut: ``R``)
+-  |stock-tool-rect-select| **Rectangular Select** allows selection of
+   rectangular areas (shortcut: ``R``)
 
--  **Magic Wand** allows selection of connected areas filled with the
-   same tile (shortcut: ``W``)
+-  |stock-tool-fuzzy-select-22| **Magic Wand** allows selection of connected
+   areas filled with the same tile (shortcut: ``W``)
 
--  **Select Same Tile** allows selection of same-tiles across the entire
-   layer (shortcut: ``S``)
+-  |stock-tool-by-color-select| **Select Same Tile** allows selection of
+   same-tiles across the entire layer (shortcut: ``S``)
 
 By default, each of these tools replaces the currently selected area.
 The following modifiers can be used to change this behavior:
@@ -186,3 +170,13 @@ it again later. The following shortcuts work for this purpose:
 
 Tile stamps can also be stored by name and extended with variations
 using the *Tile Stamps* view.
+
+.. |rectangle-fill| image:: ../../src/tiled/images/22/rectangle-fill.png
+.. |stock-tool-bucket-fill| image:: ../../src/tiled/images/22/stock-tool-bucket-fill.png
+.. |stock-tool-clone| image:: ../../src/tiled/images/22/stock-tool-clone.png
+.. |stock-tool-eraser| image:: ../../src/tiled/images/22/stock-tool-eraser.png
+.. |stock-tool-rect-select| image:: ../../src/tiled/images/22/stock-tool-rect-select.png
+.. |stock-tool-by-color-select| image:: ../../src/tiled/images/22/stock-tool-by-color-select.png
+.. |stock-tool-fuzzy-select-22| image:: ../../src/tiled/images/22/stock-tool-fuzzy-select-22.png
+.. |terrain-edit| image:: ../../src/tiled/images/24/terrain-edit.png
+.. |terrain| image:: ../../src/tiled/images/24/terrain.png

@@ -25,6 +25,7 @@
 
 #include "mapdocument.h"
 #include "mapitem.h"
+#include "session.h"
 
 #include <QColor>
 #include <QGraphicsScene>
@@ -62,6 +63,7 @@ public:
     void setMapDocument(MapDocument *map);
 
     void setShowTileCollisionShapes(bool enabled);
+    void setParallaxEnabled(bool enabled);
 
     QRectF mapBoundingRect() const;
 
@@ -71,10 +73,20 @@ public:
 
     DebugDrawItem *debugDrawItem() const;
 
+    const QRectF &viewRect() const;
+    void setViewRect(const QRectF &rect);
+
+    QPointF absolutePositionForLayer(const Layer &layer) const;
+    QPointF parallaxOffset(const Layer &layer) const;
+
+    static SessionOption<bool> enableWorlds;
+
 signals:
     void mapDocumentChanged(MapDocument *mapDocument);
 
     void sceneRefreshed();
+
+    void parallaxParametersChanged();
 
 protected:
     bool event(QEvent *event) override;
@@ -101,6 +113,8 @@ private:
     void updateDefaultBackgroundColor();
     void updateSceneRect();
 
+    void setWorldsEnabled(bool enabled);
+
     MapItem *takeOrCreateMapItem(const MapDocumentPtr &mapDocument,
                                  MapItem::DisplayMode displayMode);
 
@@ -112,8 +126,12 @@ private:
     DebugDrawItem *mDebugDrawItem = nullptr;
     bool mUnderMouse = false;
     bool mShowTileCollisionShapes = false;
+    bool mParallaxEnabled = true;
+    bool mWorldsEnabled = true;
+    Session::CallbackIterator mEnableWorldsCallback;
     Qt::KeyboardModifiers mCurrentModifiers = Qt::NoModifier;
     QPointF mLastMousePos;
+    QRectF mViewRect;
     QColor mDefaultBackgroundColor;
 };
 
@@ -136,6 +154,11 @@ inline MapItem *MapScene::mapItem(MapDocument *mapDocument) const
 inline DebugDrawItem *MapScene::debugDrawItem() const
 {
     return mDebugDrawItem;
+}
+
+inline const QRectF &MapScene::viewRect() const
+{
+    return mViewRect;
 }
 
 } // namespace Tiled

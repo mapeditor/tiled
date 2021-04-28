@@ -57,6 +57,7 @@
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
 #include "wangcolormodel.h"
+#include "wangoverlay.h"
 #include "wangset.h"
 
 #include <QtGroupPropertyManager>
@@ -65,16 +66,43 @@
 #include <QDebug>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QScopedValueRollback>
+
+#include <algorithm>
 
 namespace Tiled {
 
+namespace {
+
+/**
+ * Makes sure the resize mode is set to Fixed during its lifetime. Used to work
+ * around performance issues caused by the view continuously making sure its
+ * name column is adjusted to the contents.
+ */
+class SetFixedResizeMode
+{
+public:
+    SetFixedResizeMode(QtTreePropertyBrowser *browser)
+        : mBrowser(browser)
+        , mPreviousResizeMode(browser->resizeMode())
+    {
+        mBrowser->setResizeMode(QtTreePropertyBrowser::Fixed);
+    }
+
+    ~SetFixedResizeMode()
+    {
+        mBrowser->setResizeMode(mPreviousResizeMode);
+    }
+
+private:
+    QtTreePropertyBrowser * const mBrowser;
+    QtTreePropertyBrowser::ResizeMode const mPreviousResizeMode;
+};
+
+}
+
 PropertyBrowser::PropertyBrowser(QWidget *parent)
     : QtTreePropertyBrowser(parent)
-    , mUpdating(false)
-    , mMapObjectFlags(0)
-    , mObject(nullptr)
-    , mDocument(nullptr)
-    , mMapDocument(nullptr)
     , mVariantManager(new VariantPropertyManager(this))
     , mGroupManager(new QtGroupPropertyManager(this))
     , mCustomPropertiesGroup(nullptr)
@@ -88,6 +116,10 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     setAllowMultiSelection(true);
 
     retranslateUi();
+
+    mWangSetIcons.insert(WangSet::Corner, wangSetIcon(WangSet::Corner));
+    mWangSetIcons.insert(WangSet::Edge, wangSetIcon(WangSet::Edge));
+    mWangSetIcons.insert(WangSet::Mixed, wangSetIcon(WangSet::Mixed));
 
     connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
             this, &PropertyBrowser::valueChanged);
@@ -109,7 +141,6 @@ void PropertyBrowser::setObject(Object *object)
 
     removeProperties();
     mObject = object;
-
     addProperties();
 }
 
@@ -204,11 +235,9 @@ bool PropertyBrowser::isCustomPropertyItem(const QtBrowserItem *item) const
  */
 bool PropertyBrowser::allCustomPropertyItems(const QList<QtBrowserItem *> &items) const
 {
-    for (QtBrowserItem *item : items)
-        if (mPropertyToId[item->property()] != CustomProperty)
-            return false;
-
-    return true;
+    return std::all_of(items.begin(), items.end(), [this] (QtBrowserItem *item) {
+        return mPropertyToId[item->property()] == CustomProperty;
+    });
 }
 
 /**
@@ -275,6 +304,10 @@ void PropertyBrowser::documentChanged(const ChangeEvent &change)
         break;
     case ChangeEvent::ObjectGroupChanged:
         if (mObject == static_cast<const ObjectGroupChangeEvent&>(change).objectGroup)
+            updateProperties();
+        break;
+    case ChangeEvent::WangSetChanged:
+        if (mObject == static_cast<const WangSetChangeEvent&>(change).wangSet)
             updateProperties();
         break;
     default:
@@ -362,7 +395,6 @@ static QVariant predefinedPropertyValue(Object *object, const QString &name)
     }
     case Object::LayerType:
     case Object::MapType:
-    case Object::TerrainType:
     case Object::TilesetType:
     case Object::WangSetType:
     case Object::WangColorType:
@@ -553,7 +585,6 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::LayerType:             applyLayerValue(id, val); break;
     case Object::TilesetType:           applyTilesetValue(id, val); break;
     case Object::TileType:              applyTileValue(id, val); break;
-    case Object::TerrainType:           break;
     case Object::WangSetType:           applyWangSetValue(id, val); break;
     case Object::WangColorType:         applyWangColorValue(id, val); break;
     case Object::ObjectTemplateType:    break;
@@ -728,6 +759,8 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
 
     addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), parent);
     addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), parent);
+
+    addProperty(ParallaxFactorProperty, QVariant::PointF, tr("Parallax Factor"), parent);
 }
 
 void PropertyBrowser::addTileLayerProperties()
@@ -829,6 +862,19 @@ void PropertyBrowser::addTilesetProperties()
     QtVariantProperty *columnsProperty = addProperty(ColumnCountProperty, QVariant::Int, tr("Columns"), groupProperty);
     columnsProperty->setAttribute(QLatin1String("minimum"), 1);
 
+    QtVariantProperty *transformationsGroupProperty = mVariantManager->addProperty(VariantPropertyManager::unstyledGroupTypeId(), tr("Allowed Transformations"));
+
+    QtVariantProperty *flipHorizontallyProperty = addProperty(AllowFlipHorizontallyProperty, QVariant::Bool, tr("Flip Horizontally"), transformationsGroupProperty);
+    QtVariantProperty *flipVerticallyProperty = addProperty(AllowFlipVerticallyProperty, QVariant::Bool, tr("Flip Vertically"), transformationsGroupProperty);
+    QtVariantProperty *rotateProperty = addProperty(AllowRotateProperty, QVariant::Bool, tr("Rotate"), transformationsGroupProperty);
+    QtVariantProperty *randomProperty = addProperty(PreferUntransformedProperty, QVariant::Bool, tr("Prefer Untransformed Tiles"), transformationsGroupProperty);
+    flipHorizontallyProperty->setEnabled(mTilesetDocument);
+    flipVerticallyProperty->setEnabled(mTilesetDocument);
+    rotateProperty->setEnabled(mTilesetDocument);
+    randomProperty->setEnabled(mTilesetDocument);
+
+    groupProperty->addSubProperty(transformationsGroupProperty);
+
     // Next properties we should add only for non 'Collection of Images' tilesets
     if (!tileset->isCollection()) {
         QtVariantProperty *parametersProperty =
@@ -892,15 +938,16 @@ void PropertyBrowser::addTileProperties()
 
 void PropertyBrowser::addWangSetProperties()
 {
-    QtProperty *groupProperty = mGroupManager->addProperty(tr("Wang Set"));
+    QtProperty *groupProperty = mGroupManager->addProperty(tr("Terrain Set"));
     QtVariantProperty *nameProperty = addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
     QtVariantProperty *typeProperty = addProperty(WangSetTypeProperty,
                                                   QtVariantPropertyManager::enumTypeId(),
                                                   tr("Type"),
                                                   groupProperty);
-    QtVariantProperty *colorCountProperty = addProperty(ColorCountProperty, QVariant::Int, tr("Color Count"), groupProperty);
+    QtVariantProperty *colorCountProperty = addProperty(ColorCountProperty, QVariant::Int, tr("Terrain Count"), groupProperty);
 
     typeProperty->setAttribute(QLatin1String("enumNames"), mWangSetTypeNames);
+    typeProperty->setAttribute(QLatin1String("enumIcons"), QVariant::fromValue(mWangSetIcons));
 
     colorCountProperty->setAttribute(QLatin1String("minimum"), 0);
     colorCountProperty->setAttribute(QLatin1String("maximum"), WangId::MAX_COLOR_COUNT);
@@ -913,7 +960,7 @@ void PropertyBrowser::addWangSetProperties()
 
 void PropertyBrowser::addWangColorProperties()
 {
-    QtProperty *groupProperty = mGroupManager->addProperty(tr("Wang Color"));
+    QtProperty *groupProperty = mGroupManager->addProperty(tr("Terrain"));
     QtVariantProperty *nameProperty = addProperty(NameProperty,
                                                   QVariant::String,
                                                   tr("Name"),
@@ -1182,6 +1229,9 @@ QUndoCommand *PropertyBrowser::applyLayerValueTo(PropertyBrowser::PropertyId id,
         command = new SetLayerOffset(mMapDocument, layer, offset);
         break;
     }
+    case ParallaxFactorProperty:
+        command = new SetLayerParallaxFactor(mMapDocument, layer, val.toPointF());
+        break;
     default:
         switch (layer->layerType()) {
         case Layer::TileLayerType:
@@ -1349,6 +1399,44 @@ void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
         undoStack->push(new ChangeTilesetBackgroundColor(mTilesetDocument,
                                                          val.value<QColor>()));
         break;
+    case AllowFlipHorizontallyProperty:
+    case AllowFlipVerticallyProperty:
+    case AllowRotateProperty:
+    case PreferUntransformedProperty: {
+        Q_ASSERT(mTilesetDocument);
+
+        Tileset::TransformationFlag flag = Tileset::NoTransformation;
+        switch (id) {
+        case AllowFlipHorizontallyProperty:
+            flag = Tileset::AllowFlipHorizontally;
+            break;
+        case AllowFlipVerticallyProperty:
+            flag = Tileset::AllowFlipVertically;
+            break;
+        case AllowRotateProperty:
+            flag = Tileset::AllowRotate;
+            break;
+        case PreferUntransformedProperty:
+            flag = Tileset::PreferUntransformed;
+            break;
+        default:
+            return;
+        }
+
+        auto flags = tileset->transformationFlags();
+
+#if QT_VERSION >= 0x050700
+        flags.setFlag(flag, val.toBool());
+#else
+        if (val.toBool())
+            flags |= flag;
+        else
+            flags &= ~flag;
+#endif
+
+        undoStack->push(new ChangeTilesetTransformationFlags(mTilesetDocument, flags));
+        break;
+    }
     default:
         break;
     }
@@ -1503,7 +1591,7 @@ QtVariantProperty *PropertyBrowser::createCustomProperty(const QString &name, co
             break;
     }
 
-    mUpdating = true;
+    QScopedValueRollback<bool> updating(mUpdating, true);
     QtVariantProperty *property = createProperty(CustomProperty, value.userType(), name);
     property->setValue(value);
     mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
@@ -1512,7 +1600,6 @@ QtVariantProperty *PropertyBrowser::createCustomProperty(const QString &name, co
     if (value.type() == QVariant::Color)
         setExpanded(items(property).constFirst(), false);
 
-    mUpdating = false;
     return property;
 }
 
@@ -1540,9 +1627,8 @@ void PropertyBrowser::setCustomPropertyValue(QtVariantProperty *property,
         if (wasCurrent)
             setCurrentItem(items(property).constFirst());
     } else {
-        mUpdating = true;
+        QScopedValueRollback<bool> updating(mUpdating, true);
         property->setValue(displayValue);
-        mUpdating = false;
     }
 }
 
@@ -1551,7 +1637,8 @@ void PropertyBrowser::addProperties()
     if (!mObject)
         return;
 
-    mUpdating = true;
+    QScopedValueRollback<bool> updating(mUpdating, true);
+    SetFixedResizeMode resizeMode(this);
 
     // Add the built-in properties for each object type
     switch (mObject->typeId()) {
@@ -1567,7 +1654,6 @@ void PropertyBrowser::addProperties()
         break;
     case Object::TilesetType:           addTilesetProperties(); break;
     case Object::TileType:              addTileProperties(); break;
-    case Object::TerrainType:           break;
     case Object::WangSetType:           addWangSetProperties(); break;
     case Object::WangColorType:         addWangColorProperties(); break;
     case Object::ObjectTemplateType:    break;
@@ -1587,14 +1673,14 @@ void PropertyBrowser::addProperties()
     mCustomPropertiesGroup = mGroupManager->addProperty(tr("Custom Properties"));
     addProperty(mCustomPropertiesGroup);
 
-    mUpdating = false;
-
     updateProperties();
     updateCustomProperties();
 }
 
 void PropertyBrowser::removeProperties()
 {
+    SetFixedResizeMode resizeMode(this);
+
     mVariantManager->clear();
     mGroupManager->clear();
     mPropertyToId.clear();
@@ -1607,7 +1693,7 @@ void PropertyBrowser::updateProperties()
 {
     Q_ASSERT(mObject);
 
-    mUpdating = true;
+    QScopedValueRollback<bool> updating(mUpdating, true);
 
     switch (mObject->typeId()) {
     case Object::MapType: {
@@ -1694,6 +1780,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[TintColorProperty]->setValue(layer->tintColor());
         mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
         mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
+        mIdToProperty[ParallaxFactorProperty]->setValue(layer->parallaxFactor());
 
         switch (layer->layerType()) {
         case Layer::TileLayerType:
@@ -1742,6 +1829,12 @@ void PropertyBrowser::updateProperties()
             mIdToProperty[SpacingProperty]->setValue(tileset->tileSpacing());
             mIdToProperty[ColorProperty]->setValue(tileset->transparentColor());
         }
+
+        const auto flags = tileset->transformationFlags();
+        mIdToProperty[AllowFlipHorizontallyProperty]->setValue(flags.testFlag(Tileset::AllowFlipHorizontally));
+        mIdToProperty[AllowFlipVerticallyProperty]->setValue(flags.testFlag(Tileset::AllowFlipVertically));
+        mIdToProperty[AllowRotateProperty]->setValue(flags.testFlag(Tileset::AllowRotate));
+        mIdToProperty[PreferUntransformedProperty]->setValue(flags.testFlag(Tileset::PreferUntransformed));
         break;
     }
     case Object::TileType: {
@@ -1756,8 +1849,6 @@ void PropertyBrowser::updateProperties()
             imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));
         break;
     }
-    case Object::TerrainType:
-        break;
     case Object::WangSetType: {
         const WangSet *wangSet = static_cast<const WangSet*>(mObject);
         mIdToProperty[NameProperty]->setValue(wangSet->name());
@@ -1775,8 +1866,6 @@ void PropertyBrowser::updateProperties()
     case Object::ObjectTemplateType:
         break;
     }
-
-    mUpdating = false;
 }
 
 void PropertyBrowser::updateCustomProperties()
@@ -1784,8 +1873,8 @@ void PropertyBrowser::updateCustomProperties()
     if (!mObject)
         return;
 
-    bool wasUpdating = mUpdating;
-    mUpdating = true;
+    QScopedValueRollback<bool> updating(mUpdating, true);
+    SetFixedResizeMode resizeMode(this);
 
     qDeleteAll(mNameToProperty);
     mNameToProperty.clear();
@@ -1842,7 +1931,6 @@ void PropertyBrowser::updateCustomProperties()
     }
     case Object::LayerType:
     case Object::MapType:
-    case Object::TerrainType:
     case Object::TilesetType:
     case Object::WangSetType:
     case Object::WangColorType:
@@ -1878,8 +1966,6 @@ void PropertyBrowser::updateCustomProperties()
         property->setValue(displayValue);
         updateCustomPropertyColor(it.key());
     }
-
-    mUpdating = wasUpdating;
 }
 
 // If there are other objects selected check if their properties are equal. If not give them a gray color.
@@ -2016,3 +2102,5 @@ void PropertyBrowser::retranslateUi()
 }
 
 } // namespace Tiled
+
+#include "moc_propertybrowser.cpp"

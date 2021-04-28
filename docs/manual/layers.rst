@@ -9,9 +9,10 @@ foreground or background graphics. The order of the layers determines
 the rendering order of your content.
 
 Layers can be hidden, made only partially visible and can be locked. Layers
-also have an offset, which can be used to position them independently of each
-other, for example to fake depth. Finally their contents can be tinted by
-multiplying with a custom :ref:`tint color <tint-color>`.
+also have an offset and a :ref:`parallax scrolling factor <parallax-factor>`,
+which can be used to position them independently of each other, for example to
+fake depth. Finally their contents can be tinted by multiplying with a custom
+:ref:`tint color <tint-color>`.
 
 .. figure:: images/layers/lock-visibility-toggle.png
    :alt: Layers View
@@ -127,7 +128,36 @@ groups.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.4</div>
+   <div class="new">New in Tiled 1.5</div>
+
+.. _parallax-factor:
+
+Parallax Scrolling Factor
+-------------------------
+
+The parallax scrolling factor determines the amount by which the layer moves in
+relation to the camera.
+
+By default its value is 1, which means its position on the screen changes at
+the same rate as the position of the camera (in opposite direction). A lower
+value makes it move slower, simulating a layer that is further away, whereas
+a higher value makes it move faster, simulating a layer positioned in between
+the screen and the camera.
+
+A value of 0 makes the layer not move at all, which can be useful to include
+some pieces of your ingame UI or to mark its general viewport boundaries.
+
+Negative values make the layer move in opposite direction, though this is rarely
+useful.
+
+When the parallax scrolling factor is set on a group layer, it applies to all
+its child layers. The effective parallax scrolling factor of a layer is
+determined by multiplying the parallax scrolling factor by the scrolling
+factors of all parent layers.
+
+.. raw:: html
+
+   <div class="new new-prev">Since Tiled 1.4</div>
 
 .. _tint-color:
 

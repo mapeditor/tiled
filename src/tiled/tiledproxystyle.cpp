@@ -1510,3 +1510,5 @@ QIcon TiledProxyStyle::standardIcon(QStyle::StandardPixmap standardIcon,
         return QProxyStyle::standardIcon(standardIcon, option, widget);
     }
 }
+
+#include "moc_tiledproxystyle.cpp"

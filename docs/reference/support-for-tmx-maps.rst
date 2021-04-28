@@ -66,25 +66,17 @@ C++
 C#/.NET
 ~~~~~~~
 
+-  `TiledCS <https://github.com/TheBoneJarmer/TiledCS>`__: A dotnet library for loading Tiled tilesets and maps (TMX/TSX or JSON).
 -  `MonoGame.Extended <https://github.com/craftworkgames/MonoGame.Extended>`__
    has a Tiled map loader and renderer that works with MonoGame on all
    platforms that support portable class libraries.
--  `XNA map loader <https://github.com/zachmu/tiled-xna>`__ by Kevin
-   Gadd, extended by Stephen Belanger and Zach Musgrave (has dependency
-   on XNA but supposedly can be turned into a standalone parser easily)
--  `TiledSharp <https://github.com/marshallward/TiledSharp>`__: Yet
-   another C# TMX importer library, with Tiled 0.11 support. TiledSharp
-   is a generic parser which can be used in any framework, but it cannot
-   be used to render the maps. Available via NuGet.
--  `NTiled <https://github.com/patriksvensson/ntiled>`__: Generic parser
-   for 0.9.1 tiled maps. Available via NuGet.
--  `TmxCSharp <https://github.com/gwicksted/TmxCSharp>`__: Useful for
-   multi-layer orthographic tile engines. No framework dependencies,
-   used with a custom OpenTK tile engine soon to be open source, tested
-   with Tiled 0.8.1 (multiple output formats). MIT license.
--  `tmx-mapper-pcl <https://github.com/aalmik/tmx-mapper-pcl>`__: PCL
-   library for parsing Tiled map TMX files. This library could be used
-   with MonoGame and Windows Runtime Universal apps.
+-  The following projects appear to be no longer maintained, but might still be useful:
+   `TiledSharp <https://github.com/marshallward/TiledSharp>`__,
+   `NTiled <https://github.com/patriksvensson/ntiled>`__,
+   `tmx-mapper-pcl <https://github.com/aalmik/tmx-mapper-pcl>`__,
+   `tiled-xna <https://github.com/zachmu/tiled-xna>`__ and
+   `TmxCSharp <https://github.com/gwicksted/TmxCSharp>`__.
+
 
 Clojure
 ~~~~~~~
@@ -150,9 +142,9 @@ Python
 ~~~~~~
 
 -  `pytiled-parser <https://github.com/Beefy-Swain/pytiled_parser>`__: Python parser
-   for TMX maps
+   for JSON maps(No support for TMX format as of v1.0.0)
 -  `Arcade <http://arcade.academy>`__: 2D game library that uses pytiled-parser for 
-   easy loading of TMX maps into a game. `Arcade TMX Examples <http://arcade.academy/examples/index.html#tmx-files-tiled-map-editor>`_
+   easy loading of JSON maps into a game.(No support for TMX format as of v2.6.0) `Arcade Tiled Examples <http://arcade.academy/examples/index.html#tmx-files-tiled-map-editor>`_
 -  `pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>`__: library
    for programmatic manipulation of TMX maps
 -  `python-tmx <http://python-tmx.nongnu.org>`__: a simple library for
@@ -236,7 +228,7 @@ Flixel
 Game Maker
 ~~~~~~~~~~
 
--  Tiled ships with a plug-in that can :ref:`export a map to a GameMaker: Studio 1.4 room file <gamemaker-export>`
+-  Tiled ships with plugins for exporting to :ref:`GameMaker: Studio 1.4 <gamemaker-export>` and :ref:`GameMaker Studio 2.3 <gamemaker2-export>` room files.
 -  `Tiled2GM Converter <http://gmc.yoyogames.com/index.php?showtopic=539494>`__ by Dmi7ry
 
 Godot
@@ -293,6 +285,9 @@ HTML5 (multiple engines)
    for image sprites.
 -  `TMXjs <https://github.com/cdmckay/tmxjs>`__ A JavaScript, jQuery and
    RequireJS-based TMX (Tile Map XML) parser and renderer.
+-  `glazeJS <https://github.com/rjewson/glazejs>`__ A high performance 2D game
+   engine built in Typescript. It supports the TMX format, rendering tile layers
+   on the GPU via WebGL (`demo <https://rjewson.github.io/glazejs/>`__).
 
 indielib-crossplatform
 ~~~~~~~~~~~~~~~~~~~~~~

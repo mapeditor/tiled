@@ -97,6 +97,13 @@ AddMapObjects::AddMapObjects(Document *document,
                           parent)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Objects"));
+
+    // Sort the objects by decreasing insertion index, which makes sure that
+    // later insertion positions aren't affected by earlier inserts.
+    std::stable_sort(mEntries.begin(), mEntries.end(),
+              [] (const AddMapObjects::Entry &a, const AddMapObjects::Entry &b) {
+        return a.index > b.index;
+    });
 }
 
 void AddMapObjects::undo()

@@ -62,7 +62,6 @@
 #include "shapefilltool.h"
 #include "stampbrush.h"
 #include "templatesdock.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tileselectiontool.h"
 #include "tilesetdock.h"
@@ -299,6 +298,8 @@ MapEditor::MapEditor(QObject *parent)
     connect(prefs, &Preferences::languageChanged, this, &MapEditor::retranslateUi);
     connect(prefs, &Preferences::showTileCollisionShapesChanged,
             this, &MapEditor::showTileCollisionShapesChanged);
+    connect(prefs, &Preferences::parallaxEnabledChanged,
+            this, &MapEditor::parallaxEnabledChanged);
     connect(prefs, &Preferences::aboutToSwitchSession,
             this, [this] { if (mCurrentMapDocument) saveDocumentState(mCurrentMapDocument); });
 
@@ -335,6 +336,7 @@ void MapEditor::addDocument(Document *document)
 
     auto prefs = Preferences::instance();
     scene->setShowTileCollisionShapes(prefs->showTileCollisionShapes());
+    scene->setParallaxEnabled(prefs->parallaxEnabled());
     scene->setMapDocument(mapDocument);
     view->setScene(scene);
 
@@ -577,7 +579,6 @@ void MapEditor::resetLayout()
     // they are hidden by default.
     mUndoDock->setVisible(false);
     mTemplatesDock->setVisible(false);
-    mWangDock->setVisible(false);
     mTileStampsDock->setVisible(false);
 }
 
@@ -997,8 +998,14 @@ void MapEditor::retranslateUi()
 
 void MapEditor::showTileCollisionShapesChanged(bool enabled)
 {
-    for (auto mapView : qAsConst(mWidgetForMap))
+    for (MapView *mapView : qAsConst(mWidgetForMap))
         mapView->mapScene()->setShowTileCollisionShapes(enabled);
+}
+
+void MapEditor::parallaxEnabledChanged(bool enabled)
+{
+    for (MapView *mapView : qAsConst(mWidgetForMap))
+        mapView->mapScene()->setParallaxEnabled(enabled);
 }
 
 void MapEditor::setCurrentTileset(const SharedTileset &tileset)

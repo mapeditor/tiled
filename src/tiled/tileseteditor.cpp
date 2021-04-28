@@ -162,7 +162,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mShowAnimationEditor->setIconVisibleInMenu(false);
     editCollision->setIcon(QIcon(QLatin1String(":images/48/tile-collision-editor.png")));
     editCollision->setIconVisibleInMenu(false);
-    editWang->setIcon(QIcon(QLatin1String(":images/24/wangtile.png")));
+    editWang->setIcon(QIcon(QLatin1String(":images/24/terrain.png")));
     editWang->setIconVisibleInMenu(false);
     mDynamicWrappingToggle->setCheckable(true);
     mDynamicWrappingToggle->setIcon(QIcon(QLatin1String("://images/scalable/wrap.svg")));
@@ -175,8 +175,8 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTilesetToolBar->addAction(mAddTiles);
     mTilesetToolBar->addAction(mRemoveTiles);
     mTilesetToolBar->addSeparator();
-    mTilesetToolBar->addAction(editCollision);
     mTilesetToolBar->addAction(editWang);
+    mTilesetToolBar->addAction(editCollision);
     mTilesetToolBar->addAction(mShowAnimationEditor);
     mTilesetToolBar->addSeparator();
     mTilesetToolBar->addAction(mDynamicWrappingToggle);
@@ -672,8 +672,8 @@ static bool hasTileInTileset(const QUrl &imageSource, const Tileset &tileset)
 
 void TilesetEditor::openAddTilesDialog()
 {
-    Preferences *prefs = Preferences::instance();
-    const QString startLocation = QFileInfo(prefs->lastPath(Preferences::ImageFile)).absolutePath();
+    const Session &session = Session::current();
+    const QString startLocation = session.lastPath(Session::ImageFile);
     const QString filter = Utils::readableImageFormatsFilter();
     const auto urls = QFileDialog::getOpenFileUrls(mMainWindow->window(),
                                                    tr("Add Tiles"),
@@ -689,8 +689,6 @@ void TilesetEditor::addTiles(const QList<QUrl> &urls)
     Tileset *tileset = currentTileset();
     if (!tileset)
         return;
-
-    Preferences *prefs = Preferences::instance();
 
     struct LoadedFile {
         QUrl imageSource;
@@ -741,8 +739,10 @@ void TilesetEditor::addTiles(const QList<QUrl> &urls)
         return;
 
     const QString lastLocalFile = urls.last().toLocalFile();
-    if (!lastLocalFile.isEmpty())
-        prefs->setLastPath(Preferences::ImageFile, lastLocalFile);
+    if (!lastLocalFile.isEmpty()) {
+        Session &session = Session::current();
+        session.setLastPath(Session::ImageFile, QFileInfo(lastLocalFile).path());
+    }
 
     QList<Tile*> tiles;
     tiles.reserve(loadedFiles.size());
@@ -918,14 +918,15 @@ void TilesetEditor::wangColorChanged(int color)
         view->setWangColor(color);
 }
 
-void TilesetEditor::addWangSet()
+void TilesetEditor::addWangSet(WangSet::Type type)
 {
     Tileset *tileset = currentTileset();
     if (!tileset)
         return;
 
-    WangSet *wangSet = new WangSet(tileset, QString(), WangSet::Mixed, -1);
-    wangSet->setName(tr("New Wang Set"));
+    WangSet *wangSet = new WangSet(tileset, QString(), type);
+    wangSet->setName(tr("Unnamed Set"));
+    wangSet->setColorCount(1);
 
     mCurrentTilesetDocument->undoStack()->push(new AddWangSet(mCurrentTilesetDocument,
                                                               wangSet));

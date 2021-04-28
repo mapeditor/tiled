@@ -74,13 +74,12 @@ TmxRasterizer::TmxRasterizer():
 {
 }
 
-void TmxRasterizer::drawMapLayers(MapRenderer &renderer,
+void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
                                   QPainter &painter,
-                                  Map &map,
                                   QPoint mapOffset) const
 {
     // Perform a similar rendering than found in exportasimagedialog.cpp
-    LayerIterator iterator(&map);
+    LayerIterator iterator(renderer.map());
     while (const Layer *layer = iterator.next()) {
         if (!shouldDrawLayer(layer))
             continue;
@@ -204,7 +203,7 @@ int TmxRasterizer::renderMap(const QString &mapFileName,
     painter.translate(margins.left(), margins.top());
     painter.translate(-mapOffset);
 
-    drawMapLayers(*renderer, painter, *map);
+    drawMapLayers(*renderer, painter);
     map.reset();
     return saveImage(imageFileName, image);
 }
@@ -297,7 +296,7 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
             TilesetManager::instance()->advanceTileAnimations(mAdvanceAnimations);
         
         std::unique_ptr<MapRenderer> renderer = createRenderer(*map);
-        drawMapLayers(*renderer, painter, *map, mapEntry.rect.topLeft());
+        drawMapLayers(*renderer, painter, mapEntry.rect.topLeft());
         TilesetManager::instance()->resetTileAnimations();
     }
 

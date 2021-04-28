@@ -92,7 +92,6 @@ public:
     void setWangColor(int color);
 
     QModelIndex hoveredIndex() const { return mHoveredIndex; }
-    int hoveredCorner() const { return mHoveredCorner; }
 
     QIcon imageMissingIcon() const;
 
@@ -111,11 +110,6 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    void enterEvent(QEvent *) override;
-#else
-    void enterEvent(QEnterEvent *) override;
-#endif
     void leaveEvent(QEvent *) override;
     void wheelEvent(QWheelEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
@@ -139,10 +133,8 @@ private:
     void setHandScrolling(bool handScrolling);
 
     enum WangBehavior {
-        WholeId,        // Assigning templates
-        Corner,         // Assigning color to corners
-        Edge,           // Assigning color to edges
-        EdgeAndCorner,  // Assigning color to edges and corners
+        AssignWholeId,      // Assigning templates
+        AssignHoveredIndex, // Assigning color to hovered index
     };
 
     enum WrapBehavior {
@@ -151,20 +143,17 @@ private:
         WrapFixed,
     };
 
-    static WangBehavior wangBehaviorFromWangSetType(WangSet::Type type);
-
     Zoomable *mZoomable;
     TilesetDocument *mTilesetDocument = nullptr;
     bool mDrawGrid;
     bool mMarkAnimatedTiles = true;
     bool mEditWangSet = false;
     WrapBehavior mWrapBehavior = WrapDefault;
-    WangBehavior mWangBehavior = WholeId;
+    WangBehavior mWangBehavior = AssignWholeId;
     WangSet *mWangSet = nullptr;
     WangId mWangId;
     int mWangColorIndex = 0;
     QModelIndex mHoveredIndex;
-    int mHoveredCorner = 0;
     bool mWangIdChanged = false;
 
     bool mHandScrolling = false;

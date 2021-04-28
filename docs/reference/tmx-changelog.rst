@@ -17,6 +17,14 @@ Tiled 1.5
    hex format. This is because the number of colors supported in a Wang set was
    increased from 15 to 255.
 
+-  Valid transformations of tiles in a set (flipping, rotation) are specified
+   in a :ref:`tmx-tileset-transformations` element. The partial support for the
+   ``vflip``, ``hflip`` and ``dflip`` attributes on the :ref:`tmx-wangtile`
+   element has been removed.
+
+-  The :ref:`tmx-wangset` element has replaced the now deprecated
+   :ref:`tmx-terraintypes` element.
+
 Tiled 1.4
 ---------
 
@@ -77,7 +85,7 @@ Tiled 1.1
 
       <object id="3" template="diamond.tx" x="200" y="100"/>
 
--  Tilesets can now contain :doc:`Wang tiles </manual/using-wang-tiles>`.
+-  Tilesets can now contain :doc:`Terrain Sets </manual/terrain>`.
    They are saved in the new :ref:`tmx-wangsets` element.
 
 -  A new :ref:`tmx-point` child element was added to :ref:`tmx-object`, which

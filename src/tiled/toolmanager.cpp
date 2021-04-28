@@ -318,3 +318,5 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
                 this, &ToolManager::statusInfoChanged);
     }
 }
+
+#include "moc_toolmanager.cpp"

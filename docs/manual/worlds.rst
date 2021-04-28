@@ -65,7 +65,7 @@ Worlds are reloaded automatically when their file is changed on disk.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.4</div>
+   <div class="new new-prev">Since Tiled 1.4</div>
 
 Editing Worlds
 --------------
@@ -135,6 +135,12 @@ added. The offset exists mainly to allow multiple sets of maps in the same
 world to be positioned relative to each other. The final value becomes the
 position (in pixels) of each map.
 
+.. figure:: images/world-alchemic-cutie.png
+   :alt: World of Alchemic Cutie
+
+   The island from `Alchemic Cutie <https://alchemiccutie.com/>`__, using
+   patterns to automatically show each map at the right location.
+
 A world definition can use a combination of manually defined maps and
 patterns.
 
@@ -156,5 +162,5 @@ values are in pixels.
 
 .. note::
 
-    In the future, I will probably change this option to allow specifying a
-    distance around the current map in which other maps are loaded.
+    In the future, a property could be added to allow specifying a distance
+    around the current map in which other maps are loaded.

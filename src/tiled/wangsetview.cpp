@@ -101,7 +101,7 @@ void WangSetView::contextMenuEvent(QContextMenuEvent *event)
     QIcon propIcon(QLatin1String(":images/16/document-properties.png"));
 
     QAction *wangSetProperties = menu.addAction(propIcon,
-                                             tr("Wang Set &Properties..."));
+                                             tr("Terrain Set &Properties..."));
     Utils::setThemeIcon(wangSetProperties, "document-properties");
 
     connect(wangSetProperties, &QAction::triggered,
@@ -124,3 +124,5 @@ void WangSetView::editWangSetProperties()
 void WangSetView::adjustScale()
 {
 }
+
+#include "moc_wangsetview.cpp"

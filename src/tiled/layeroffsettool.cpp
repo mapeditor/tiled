@@ -26,6 +26,7 @@
 #include "layermodel.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "snaphelper.h"
 
 #include <QApplication>
@@ -59,12 +60,9 @@ void LayerOffsetTool::mouseLeft()
     setStatusInfo(QString());
 }
 
-void LayerOffsetTool::activate(MapScene *)
+void LayerOffsetTool::deactivate(MapScene *mapScene)
 {
-}
-
-void LayerOffsetTool::deactivate(MapScene *)
-{
+    AbstractTool::deactivate(mapScene);
     finishDrag();
 }
 
@@ -86,7 +84,7 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer())
-        offsetPos -= layer->totalOffset();
+        offsetPos -= mapScene()->absolutePositionForLayer(*layer);
 
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = qFloor(tilePosF.x());
@@ -248,3 +246,5 @@ void LayerOffsetTool::finishDrag()
 
     undoStack->endMacro();
 }
+
+#include "moc_layeroffsettool.cpp"

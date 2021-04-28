@@ -81,8 +81,8 @@ signals:
     void wangSetRemoved(WangSet *wangSet);
 
     /**
-     * Emitted when either the name, image, edgeCount, or corner count
-     * of a wangSet changed.
+     * Emitted when either the name, image, colorCount or type of a wangSet
+     * changed.
      */
     void wangSetChanged(Tileset *tileset, int index);
 

@@ -132,11 +132,23 @@ public:
     void clearRecentFiles();
 
     void setOpenFiles(const QStringList &fileNames);
-    void setActiveFile(const QString &fileNames);
+    void setActiveFile(const QString &fileName);
 
     QVariantMap fileState(const QString &fileName) const;
     void setFileState(const QString &fileName, const QVariantMap &fileState);
     void setFileStateValue(const QString &fileName, const QString &name, const QVariant &value);
+
+    enum FileType {
+        ExportedFile,
+        ExternalTileset,
+        ImageFile,
+        ObjectTemplateFile,
+        ObjectTypesFile,
+        WorldFile,
+    };
+
+    QString lastPath(FileType fileType) const;
+    void setLastPath(FileType fileType, const QString &path);
 
     template <typename T>
     T get(const char *key, const T &defaultValue = T()) const
@@ -160,7 +172,10 @@ public:
                 cb();
     }
 
-    bool isSet(const char *key) const { return settings->contains(QLatin1String(key)); }
+    bool isSet(const char *key) const
+    {
+        return settings->contains(QLatin1String(key));
+    }
 
     static QString defaultFileName();
     static QString defaultFileNameForProject(const QString &projectFile);

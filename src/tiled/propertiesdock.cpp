@@ -20,6 +20,7 @@
 
 #include "propertiesdock.h"
 
+#include "actionmanager.h"
 #include "addpropertydialog.h"
 #include "changeproperties.h"
 #include "clipboardmanager.h"
@@ -27,7 +28,6 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "propertybrowser.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tileset.h"
 #include "utils.h"
@@ -455,6 +455,7 @@ void PropertiesDock::showContextMenu(const QPoint &pos)
         convertMenu->setEnabled(!convertMenu->actions().isEmpty());
     }
 
+    ActionManager::applyMenuExtensions(&contextMenu, MenuIds::propertiesViewProperties);
 
     const QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
     const QAction *selectedItem = contextMenu.exec(globalPos);
@@ -531,3 +532,5 @@ void PropertiesDock::retranslateUi()
 }
 
 } // namespace Tiled
+
+#include "moc_propertiesdock.cpp"

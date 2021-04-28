@@ -134,6 +134,11 @@ bool Preferences::showObjectReferences() const
     return get("Interface/ShowObjectReferences", true);
 }
 
+bool Preferences::parallaxEnabled() const
+{
+    return get("Interface/ParallaxEnabled", true);
+}
+
 bool Preferences::snapToGrid() const
 {
     return get("Interface/SnapToGrid", false);
@@ -154,9 +159,19 @@ QColor Preferences::gridColor() const
     return get<QColor>("Interface/GridColor", Qt::black);
 }
 
+QColor Preferences::backgroundFadeColor() const
+{
+    return get<QColor>("Interface/BackgroundFadeColor", Qt::black);
+}
+
 int Preferences::gridFine() const
 {
     return get<int>("Interface/GridFine", 4);
+}
+
+int Preferences::gridMajor() const
+{
+    return get<int>("Interface/GridMajor", 10);
 }
 
 qreal Preferences::objectLineWidth() const
@@ -274,6 +289,12 @@ void Preferences::setShowObjectReferences(bool enabled)
     emit showObjectReferencesChanged(enabled);
 }
 
+void Preferences::setParallaxEnabled(bool enabled)
+{
+    setValue(QLatin1String("Interface/ParallaxEnabled"), enabled);
+    emit parallaxEnabledChanged(enabled);
+}
+
 void Preferences::setSnapToGrid(bool snapToGrid)
 {
     setValue(QLatin1String("Interface/SnapToGrid"), snapToGrid);
@@ -298,10 +319,22 @@ void Preferences::setGridColor(QColor gridColor)
     emit gridColorChanged(gridColor);
 }
 
+void Preferences::setBackgroundFadeColor(QColor backgroundFadeColor)
+{
+    setValue(QLatin1String("Interface/BackgroundFadeColor"), backgroundFadeColor.name());
+    emit backgroundFadeColorChanged(backgroundFadeColor);
+}
+
 void Preferences::setGridFine(int gridFine)
 {
     setValue(QLatin1String("Interface/GridFine"), gridFine);
     emit gridFineChanged(gridFine);
+}
+
+void Preferences::setGridMajor(int gridMajor)
+{
+    setValue(QLatin1String("Interface/GridMajor"), gridMajor);
+    emit gridMajorChanged(gridMajor);
 }
 
 void Preferences::setObjectLineWidth(qreal lineWidth)
@@ -453,76 +486,6 @@ void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
     emit objectTypesChanged();
 }
 
-static QString lastPathKey(Preferences::FileType fileType)
-{
-    QString key = QLatin1String("LastPaths/");
-
-    switch (fileType) {
-    case Preferences::ExportedFile:
-        key.append(QStringLiteral("ExportedFile"));
-        break;
-    case Preferences::ExternalTileset:
-        key.append(QStringLiteral("ExternalTileset"));
-        break;
-    case Preferences::ImageFile:
-        key.append(QStringLiteral("Images"));
-        break;
-    case Preferences::ObjectTemplateFile:
-        key.append(QStringLiteral("ObjectTemplates"));
-        break;
-    case Preferences::ObjectTypesFile:
-        key.append(QStringLiteral("ObjectTypes"));
-        break;
-    case Preferences::ProjectFile:
-        key.append(QStringLiteral("Project"));
-        break;
-    case Preferences::WorldFile:
-        key.append(QStringLiteral("WorldFile"));
-        break;
-    }
-
-    return key;
-}
-
-/**
- * Returns the last location of a file chooser for the given file type. As long
- * as it was set using setLastPath().
- *
- * When no last path for this file type exists yet, the path of the currently
- * selected map is returned.
- *
- * When no map is open, the user's 'Documents' folder is returned.
- */
-QString Preferences::lastPath(FileType fileType) const
-{
-    QString path = value(lastPathKey(fileType)).toString();
-
-    if (path.isEmpty()) {
-        DocumentManager *documentManager = DocumentManager::instance();
-        Document *document = documentManager->currentDocument();
-        if (document)
-            path = QFileInfo(document->fileName()).path();
-    }
-
-    if (path.isEmpty()) {
-        path = QStandardPaths::writableLocation(
-                    QStandardPaths::DocumentsLocation);
-    }
-
-    return path;
-}
-
-/**
- * \see lastPath()
- */
-void Preferences::setLastPath(FileType fileType, const QString &path)
-{
-    if (path.isEmpty())
-        return;
-
-    setValue(lastPathKey(fileType), path);
-}
-
 QDate Preferences::firstRun() const
 {
     return get<QDate>("Install/FirstRun");
@@ -584,10 +547,22 @@ QStringList Preferences::recentProjects() const
     return get<QStringList>("Project/RecentProjects");
 }
 
+QString Preferences::recentProjectPath() const
+{
+    QString path;
+
+    const auto recents = recentProjects();
+    if (!recents.isEmpty())
+        path = QFileInfo(recents.first()).path();
+
+    if (path.isEmpty())
+        path = homeLocation();
+
+    return path;
+}
+
 void Preferences::addRecentProject(const QString &fileName)
 {
-    setLastPath(ProjectFile, fileName);
-
     auto files = get<QStringList>("Project/RecentProjects");
     addToRecentFileList(fileName, files);
     setValue(QLatin1String("Project/RecentProjects"), files);
@@ -715,6 +690,11 @@ void Preferences::setWheelZoomsByDefault(bool mode)
     setValue(QLatin1String("Interface/WheelZoomsByDefault"), mode);
 }
 
+QString Preferences::homeLocation()
+{
+    return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+}
+
 QString Preferences::dataLocation()
 {
     return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
@@ -781,3 +761,5 @@ void Preferences::objectTypesFileChangedOnDisk()
     if (ObjectTypesSerializer().readObjectTypes(fileInfo.filePath(), objectTypes))
         setObjectTypes(objectTypes);
 }
+
+#include "moc_preferences.cpp"

@@ -138,8 +138,10 @@ QRect HexagonalRenderer::boundingRect(const QRect &rect) const
 }
 
 void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
-                                 QColor gridColor) const
+                                 QColor gridColor, int gridMajor) const
 {
+    Q_UNUSED(gridMajor)  // Unclear how this should apply to hexagonal maps
+
     QRect rect = exposed.toAlignedRect();
     if (rect.isNull())
         return;
@@ -184,7 +186,9 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
     QVector<QLine> lines;
     lines.reserve(8);
 
-    QPen gridPen = makeGridPen(painter->device(), gridColor);
+    QPen _gridPen, gridPen; // always use major grid pen for hex maps
+    setupGridPens(painter->device(), gridColor, _gridPen, gridPen);
+
     painter->setPen(gridPen);
 
     if (p.staggerX) {
@@ -449,13 +453,13 @@ QPointF HexagonalRenderer::screenToTileCoords(qreal x, qreal y) const
         }
     }
 
-    static const QPoint offsetsStaggerX[4] = {
+    static constexpr QPoint offsetsStaggerX[4] = {
         QPoint( 0,  0),
         QPoint(+1, -1),
         QPoint(+1,  0),
         QPoint(+2,  0),
     };
-    static const QPoint offsetsStaggerY[4] = {
+    static constexpr QPoint offsetsStaggerY[4] = {
         QPoint( 0,  0),
         QPoint(-1, +1),
         QPoint( 0, +1),

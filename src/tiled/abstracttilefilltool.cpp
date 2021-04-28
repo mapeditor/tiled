@@ -183,7 +183,7 @@ void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
         mRandomAndMissingCacheValid = true;
     }
 
-    const QRect fillBounds = fillRegion.boundingRect();
+    mFillBounds = fillRegion.boundingRect();
     auto preview = SharedMap::create(mapDocument()->map()->orientation(),
                                      mapDocument()->map()->size(),
                                      mapDocument()->map()->tileSize());
@@ -194,7 +194,7 @@ void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
         break;
     case RandomFill: {
         std::unique_ptr<TileLayer> previewLayer {
-            new TileLayer(QString(), fillBounds.topLeft(), fillBounds.size())
+            new TileLayer(QString(), mFillBounds.topLeft(), mFillBounds.size())
         };
         randomFill(*previewLayer, fillRegion);
         preview->addLayer(previewLayer.release());
@@ -206,7 +206,7 @@ void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
             return;
 
         std::unique_ptr<TileLayer> previewLayer {
-            new TileLayer(QString(), fillBounds.topLeft(), fillBounds.size())
+            new TileLayer(QString(), mFillBounds.topLeft(), mFillBounds.size())
         };
 
         wangFill(*previewLayer, *tileLayer, fillRegion);
@@ -331,3 +331,5 @@ void AbstractTileFillTool::invalidateRandomAndMissingCache()
 {
     mRandomAndMissingCacheValid = false;
 }
+
+#include "moc_abstracttilefilltool.cpp"

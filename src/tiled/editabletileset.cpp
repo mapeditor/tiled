@@ -280,6 +280,21 @@ void EditableTileset::setOrientation(Orientation orientation)
         tileset()->setOrientation(static_cast<Tileset::Orientation>(orientation));
 }
 
+void EditableTileset::setTransparentColor(const QColor &color)
+{
+    if (auto doc = tilesetDocument()) {
+        TilesetParameters parameters(*tileset());
+        parameters.transparentColor = color;
+
+        push(new ChangeTilesetParameters(doc, parameters));
+    } else if (!checkReadOnly()) {
+        tileset()->setTransparentColor(color);
+
+        if (!tileSize().isEmpty() && !image().isEmpty())
+            tileset()->loadImage();
+    }
+}
+
 void EditableTileset::setBackgroundColor(const QColor &color)
 {
     if (auto doc = tilesetDocument())
@@ -363,3 +378,5 @@ void EditableTileset::wangSetRemoved(WangSet *wangSet)
 }
 
 } // namespace Tiled
+
+#include "moc_editabletileset.cpp"

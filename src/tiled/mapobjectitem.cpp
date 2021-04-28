@@ -88,7 +88,7 @@ void MapObjectItem::syncWithMapObject()
             setZValue(pixelPos.y());
 
         if (mIsHoveredIndicator) {
-            auto totalOffset = objectGroup->totalOffset();
+            auto totalOffset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*objectGroup);
             setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
         }
     }
@@ -110,11 +110,9 @@ void MapObjectItem::setIsHoverIndicator(bool isHoverIndicator)
     mIsHoveredIndicator = isHoverIndicator;
 
     if (isHoverIndicator) {
-        auto totalOffset = mObject->objectGroup()->totalOffset();
-        setOpacity(0.5);
+        auto totalOffset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*mObject->objectGroup());
         setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
     } else {
-        setOpacity(1.0);
         setTransform(QTransform());
     }
 
@@ -139,6 +137,10 @@ void MapObjectItem::paint(QPainter *painter,
 {
     const qreal scale = static_cast<MapView*>(widget->parent())->zoomable()->scale();
     const QColor color = mIsHoveredIndicator ? mColor.lighter() : mColor;
+    const qreal previousOpacity = painter->opacity();
+
+    if (mIsHoveredIndicator)
+        painter->setOpacity(0.4);
 
     painter->translate(-pos());
     mMapDocument->renderer()->setPainterScale(scale);
@@ -146,6 +148,8 @@ void MapObjectItem::paint(QPainter *painter,
     painter->translate(pos());
 
     if (mIsHoveredIndicator) {
+        painter->setOpacity(0.6);
+
         // TODO: Code mostly duplicated in MapObjectOutline
         const QPointF pixelPos = mMapDocument->renderer()->pixelToScreenCoords(mObject->position());
         QRectF bounds = mObject->screenBounds(*mMapDocument->renderer());
@@ -158,14 +162,15 @@ void MapObjectItem::paint(QPainter *painter,
             QLineF(bounds.topRight(), bounds.bottomRight())
         };
 
+        const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
+        const qreal dashLength = std::ceil(Utils::dpiScaled(2) * devicePixelRatio);
+
         // Draw a solid white line
-        QPen pen(Qt::white, 1.0, Qt::SolidLine);
+        QPen pen(Qt::white, 1.5 * devicePixelRatio, Qt::SolidLine);
         pen.setCosmetic(true);
+        painter->setRenderHint(QPainter::Antialiasing);
         painter->setPen(pen);
         painter->drawLines(lines, 4);
-
-        const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
-        const qreal dashLength = std::ceil(Utils::dpiScaled(3) * devicePixelRatio);
 
         // Draw a black dashed line above the white line
         pen.setColor(Qt::black);
@@ -173,6 +178,8 @@ void MapObjectItem::paint(QPainter *painter,
         pen.setDashPattern({dashLength, dashLength});
         painter->setPen(pen);
         painter->drawLines(lines, 4);
+
+        painter->setOpacity(previousOpacity);
     }
 }
 

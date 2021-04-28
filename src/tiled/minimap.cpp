@@ -67,11 +67,8 @@ void MiniMap::setMapDocument(MapDocument *map)
     if (mMapDocument) {
         mMapDocument->disconnect(this);
 
-        if (MapView *mapView = dm->viewForDocument(mMapDocument)) {
-            mapView->zoomable()->disconnect(this);
-            mapView->horizontalScrollBar()->disconnect(this);
-            mapView->verticalScrollBar()->disconnect(this);
-        }
+        if (MapView *mapView = dm->viewForDocument(mMapDocument))
+            mapView->disconnect(this);
     }
 
     mMapDocument = map;
@@ -80,11 +77,8 @@ void MiniMap::setMapDocument(MapDocument *map)
         connect(mMapDocument->undoStack(), &QUndoStack::indexChanged,
                 this, &MiniMap::scheduleMapImageUpdate);
 
-        if (MapView *mapView = dm->viewForDocument(mMapDocument)) {
-            connect(mapView->horizontalScrollBar(), &QAbstractSlider::valueChanged, this, [this] { update(); });
-            connect(mapView->verticalScrollBar(), &QAbstractSlider::valueChanged, this, [this] { update(); });
-            connect(mapView->zoomable(), &Zoomable::scaleChanged, this, [this] { update(); });
-        }
+        if (MapView *mapView = dm->viewForDocument(mMapDocument))
+            connect(mapView, &MapView::viewRectChanged, this, [this] { update(); });
     }
 
     scheduleMapImageUpdate();
@@ -216,7 +210,7 @@ void MiniMap::redrawTimeout()
 void MiniMap::wheelEvent(QWheelEvent *event)
 {
     if (event->angleDelta().y()) {
-#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
+#if QT_VERSION < QT_VERSION_CHECK(5,14,0)
         centerViewOnLocalPixel(event->pos(), event->angleDelta().y());
 #else
         centerViewOnLocalPixel(event->position(), event->angleDelta().y());
@@ -299,7 +293,7 @@ QRect MiniMap::viewportRect() const
         return QRect(0, 0, 1, 1);
 
     const QRectF mapRect = mapView->mapScene()->mapBoundingRect();
-    const QRectF viewRect = mapView->mapToScene(mapView->viewport()->geometry()).boundingRect();
+    const QRectF viewRect = mapView->viewRect();
     return QRect((viewRect.x() - mapRect.x()) / mapRect.width() * mImageRect.width() + mImageRect.x(),
                  (viewRect.y() - mapRect.y()) / mapRect.height() * mImageRect.height() + mImageRect.y(),
                  viewRect.width() / mapRect.width() * mImageRect.width(),
@@ -320,3 +314,5 @@ QPointF MiniMap::mapToScene(QPointF p) const
     return QPointF(p.x() * (mapRect.width() / mImageRect.width()) + mapRect.x(),
                    p.y() * (mapRect.height() / mImageRect.height()) + mapRect.y());
 }
+
+#include "moc_minimap.cpp"

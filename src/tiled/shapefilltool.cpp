@@ -72,16 +72,24 @@ ShapeFillTool::ShapeFillTool(QObject *parent)
 
 void ShapeFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
+    // Right-click cancels drawing a shape
+    if (mToolBehavior == MakingShape && event->button() == Qt::RightButton) {
+        mToolBehavior = Free;
+        clearOverlay();
+        updateStatusInfo();
+        return;
+    }
+
     AbstractTileFillTool::mousePressed(event);
     if (event->isAccepted())
         return;
 
-    if (mToolBehavior != Free)
-        return;
-
-    if (event->button() == Qt::LeftButton) {
+    // Left-click starts drawing a shape
+    if (mToolBehavior == Free && event->button() == Qt::LeftButton) {
         mStartCorner = tilePosition();
         mToolBehavior = MakingShape;
+        updateFillOverlay();
+        updateStatusInfo();
     }
 }
 
@@ -107,11 +115,14 @@ void ShapeFillTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         mapDocument()->undoStack()->endMacro();
 
         clearOverlay();
+        updateStatusInfo();
     }
 }
 
-void ShapeFillTool::modifiersChanged(Qt::KeyboardModifiers)
+void ShapeFillTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
+    mModifiers = modifiers;
+
     if (mToolBehavior == MakingShape)
         updateFillOverlay();
 }
@@ -146,6 +157,20 @@ void ShapeFillTool::tilePositionChanged(QPoint tilePos)
         AbstractTileFillTool::tilePositionChanged(tilePos);
 }
 
+void ShapeFillTool::updateStatusInfo()
+{
+    if (!isBrushVisible() || mToolBehavior != MakingShape) {
+        AbstractTileFillTool::updateStatusInfo();
+        return;
+    }
+
+    const QPoint pos = tilePosition();
+    setStatusInfo(tr("%1, %2 - %3: (%4 x %5)")
+                  .arg(pos.x()).arg(pos.y())
+                  .arg(mCurrentShape == Rect ? tr("Rectangle") : tr("Circle"))
+                  .arg(mFillBounds.width()).arg(mFillBounds.height()));
+}
+
 void ShapeFillTool::setCurrentShape(Shape shape)
 {
     mCurrentShape = shape;
@@ -153,29 +178,34 @@ void ShapeFillTool::setCurrentShape(Shape shape)
 
 void ShapeFillTool::updateFillOverlay()
 {
-    int width = tilePosition().x() - mStartCorner.x();
-    int height = tilePosition().y() - mStartCorner.y();
+    int dx = tilePosition().x() - mStartCorner.x();
+    int dy = tilePosition().y() - mStartCorner.y();
 
-    if (QApplication::keyboardModifiers() & Qt::ShiftModifier) {
-        int min = std::min(std::abs(width), std::abs(height));
-        width = ((width > 0) - (width < 0)) * min;
-        height = ((height > 0) - (height < 0)) * min;
+    if (mModifiers & Qt::ShiftModifier) {
+        const int min = std::min(std::abs(dx), std::abs(dy));
+        dx = ((dx > 0) - (dx < 0)) * min;
+        dy = ((dy > 0) - (dy < 0)) * min;
     }
 
-    int left = std::min(mStartCorner.x(), mStartCorner.x() + width);
-    int top = std::min(mStartCorner.y(), mStartCorner.y() + height);
-
-    QRect boundingRect(left, top, std::abs(width), std::abs(height));
+    const QRect boundingRect(mStartCorner, mStartCorner + QPoint(dx, dy));
 
     switch (mCurrentShape) {
-    case Rect:
-        updatePreview(boundingRect);
+    case Rect: {
+        QRect area = boundingRect.normalized();
+        if (area.width() == 0)
+            area.adjust(-1, 0, 1, 0);
+        if (area.height() == 0)
+            area.adjust(0, -1, 0, 1);
+        updatePreview(area);
         break;
+    }
     case Circle:
-        updatePreview(ellipseRegion(mStartCorner.x(),
-                                    mStartCorner.y(),
-                                    mStartCorner.x() + width,
-                                    mStartCorner.y() + height));
+        updatePreview(ellipseRegion(boundingRect.left(),
+                                    boundingRect.top(),
+                                    boundingRect.right(),
+                                    boundingRect.bottom()));
         break;
     }
 }
+
+#include "moc_shapefilltool.cpp"

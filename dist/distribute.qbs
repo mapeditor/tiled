@@ -46,7 +46,7 @@ Product {
         }
         property string postfix: {
             var suffix = "";
-            if (qbs.targetOS.contains("windows") && qbs.debugInformation)
+            if (qbs.targetOS.contains("windows") && qbs.debugInformation && Qt.core.versionMajor < 6 && Qt.core.versionMinor < 15)
                 suffix += "d";
             return suffix + cpp.dynamicLibrarySuffix;
         }
@@ -82,7 +82,7 @@ Product {
             }
 
             if (qbs.targetOS.contains("windows")) {
-                if (Qt.core.versionMinor < 7 &&
+                if (Qt.core.versionMajor < 6 && Qt.core.versionMinor < 7 &&
                         !(Qt.core.versionMinor == 6 &&
                           Qt.core.versionPatch >= 3)) {
                     list.push("icuin54.dll",
@@ -238,6 +238,8 @@ Product {
                              "pt",
                              "pt_PT",
                              "ru",
+                             "sv",
+                             "th",
                              "tr",
                              "zh_CN",
                              "zh_TW"];

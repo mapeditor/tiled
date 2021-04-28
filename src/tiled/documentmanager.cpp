@@ -41,7 +41,6 @@
 #include "projectmanager.h"
 #include "session.h"
 #include "tabbar.h"
-#include "terrain.h"
 #include "tilesetdocument.h"
 #include "tilesetdocumentsmodel.h"
 #include "tilesetmanager.h"
@@ -62,7 +61,6 @@
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QStackedLayout>
-#include <QStandardPaths>
 #include <QTabBar>
 #include <QTabWidget>
 #include <QUndoGroup>
@@ -158,10 +156,13 @@ DocumentManager::DocumentManager(QObject *parent)
             auto renderer = mapDocument->renderer();
             auto mapView = viewForDocument(mapDocument);
             auto pos = renderer->tileToScreenCoords(jump.tilePos);
-            mapView->forceCenterOn(pos);
 
-            if (auto layer = mapDocument->map()->findLayerById(jump.layerId))
+            if (auto layer = mapDocument->map()->findLayerById(jump.layerId)) {
                 mapDocument->switchSelectedLayers({ layer });
+                mapView->forceCenterOn(pos, *layer);
+            } else {
+                mapView->forceCenterOn(pos);
+            }
         }
     };
 
@@ -224,11 +225,6 @@ DocumentManager::DocumentManager(QObject *parent)
             switch (select.objectType) {
             case Object::MapObjectType:
                 // todo: no way to know to which tile this object belongs
-                break;
-            case Object::TerrainType:
-                // todo: select the terrain
-                if (select.id < tilesetDocument->tileset()->terrainCount())
-                    obj = tilesetDocument->tileset()->terrain(select.id);
                 break;
             case Object::TilesetType:
                 obj = tilesetDocument->tileset().data();
@@ -687,6 +683,7 @@ bool DocumentManager::saveDocument(Document *document, const QString &fileName)
 
     QString error;
     if (!document->save(fileName, &error)) {
+        switchToDocument(document);
         QMessageBox::critical(mWidget->window(), QCoreApplication::translate("Tiled::MainWindow", "Error Saving File"), error);
         return false;
     }
@@ -1293,7 +1290,7 @@ QString DocumentManager::fileDialogStartLocation() const
     if (!project.fileName().isEmpty())
         return QFileInfo(project.fileName()).path();
 
-    return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    return Preferences::homeLocation();
 }
 
 void DocumentManager::onWorldUnloaded(const QString &worldFile)
@@ -1406,3 +1403,5 @@ void DocumentManager::abortMultiDocumentClose()
 {
     mMultiDocumentClose = false;
 }
+
+#include "moc_documentmanager.cpp"

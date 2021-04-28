@@ -64,6 +64,8 @@ ScriptModule::~ScriptModule()
     for (const auto &pair : mRegisteredActions)
         ActionManager::unregisterAction(pair.second.get(), pair.first);
 
+    ActionManager::clearMenuExtensions();
+
     IssuesModel::instance().removeIssuesWithContext(this);
 }
 
@@ -412,16 +414,16 @@ static Id toId(QJSValue value)
 
 void ScriptModule::extendMenu(const QByteArray &idName, QJSValue items)
 {
-    MenuExtension extension;
-    extension.menuId = Id(idName);
+    ActionManager::MenuExtension extension;
+    Id menuId(idName);
 
-    if (!ActionManager::findMenu(extension.menuId)) {
+    if (!ActionManager::hasMenu(menuId)) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Unknown menu"));
         return;
     }
 
     auto addItem = [&] (QJSValue item) -> bool {
-        MenuItem menuItem;
+        ActionManager::MenuItem menuItem;
 
         const QJSValue action = item.property(QStringLiteral("action"));
 
@@ -459,21 +461,7 @@ void ScriptModule::extendMenu(const QByteArray &idName, QJSValue items)
         return;
     }
 
-    // Apply the extension
-    QMenu *menu = ActionManager::menu(extension.menuId);
-    QAction *before = nullptr;
-
-    for (MenuItem &item : extension.items) {
-        if (item.beforeAction)
-            before = ActionManager::findAction(item.beforeAction);
-
-        if (item.isSeparator)
-            menu->insertSeparator(before)->setParent(this);
-        else
-            menu->insertAction(before, ActionManager::action(item.action));
-    }
-
-    mMenuExtensions.append(extension);
+    ActionManager::registerMenuExtension(menuId, extension);
 }
 
 void ScriptModule::trigger(const QByteArray &actionName) const

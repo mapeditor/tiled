@@ -20,6 +20,7 @@
 
 #include "tilesetview.h"
 
+#include "actionmanager.h"
 #include "changeevents.h"
 #include "changetilewangid.h"
 #include "map.h"
@@ -265,10 +266,11 @@ void TileDelegate::drawWangOverlay(QPainter *painter,
 
     if (mTilesetView->hoveredIndex() == index) {
         qreal opacity = painter->opacity();
-        painter->setOpacity(0.9);
+        painter->setOpacity(0.5);
         paintWangOverlay(painter, mTilesetView->wangId(),
                          *wangSet,
-                         targetRect);
+                         targetRect,
+                         WangOverlayOptions());
         painter->setOpacity(opacity);
     }
 
@@ -450,39 +452,25 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
         return;
     }
 
-    if (mEditWangSet && !(event->modifiers() & Qt::ControlModifier)) {
+    // TODO: These shortcuts only work while the TilesetView is focused. It
+    // would be preferable if they could be used more globally.
+    if (mEditWangSet && mWangBehavior == AssignWholeId && !(event->modifiers() & Qt::ControlModifier)) {
+        WangId transformedWangId = mWangId;
 
         if (event->key() == Qt::Key_Z) {
             if (event->modifiers() & Qt::ShiftModifier)
-                mWangId.rotate(-1);
+                transformedWangId.rotate(-1);
             else
-                mWangId.rotate(1);
-
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-
-            emit currentWangIdChanged(mWangId);
-
-            return;
+                transformedWangId.rotate(1);
+        } else if (event->key() == Qt::Key_X) {
+            transformedWangId.flipHorizontally();
+        } else if (event->key() == Qt::Key_Y) {
+            transformedWangId.flipVertically();
         }
-        if (event->key() == Qt::Key_X) {
-            mWangId.flipHorizontally();
 
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-
+        if (mWangId != transformedWangId) {
+            setWangId(transformedWangId);
             emit currentWangIdChanged(mWangId);
-
-            return;
-        }
-        if (event->key() == Qt::Key_Y) {
-            mWangId.flipVertically();
-
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-
-            emit currentWangIdChanged(mWangId);
-
             return;
         }
     }
@@ -516,15 +504,8 @@ void TilesetView::setWangSet(WangSet *wangSet)
  */
 void TilesetView::setWangId(WangId wangId)
 {
-    mWangBehavior = WholeId;
-    mWangColorIndex = 0;
-
-    if (!mWangSet || wangId == mWangId)
-        return;
-
-    Q_ASSERT(mWangSet->wangIdIsValid(wangId));
-
     mWangId = wangId;
+    mWangBehavior = AssignWholeId;
 
     if (mEditWangSet && hoveredIndex().isValid())
         update(hoveredIndex());
@@ -536,15 +517,8 @@ void TilesetView::setWangId(WangId wangId)
  */
 void TilesetView::setWangColor(int color)
 {
-    if (!color)
-        setWangId(WangId());
-
-    // When a specific color is set, we no longer set the whole ID.
-    mWangBehavior = wangBehaviorFromWangSetType(mWangSet->type());
-
-    Q_ASSERT(color <= mWangSet->colorCount());
-
     mWangColorIndex = color;
+    mWangBehavior = AssignHoveredIndex;
 }
 
 QIcon TilesetView::imageMissingIcon() const
@@ -598,7 +572,7 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
 
         WangId wangId;
 
-        if (mWangBehavior == WholeId) {
+        if (mWangBehavior == AssignWholeId) {
             wangId = mWangId;
         } else {
             QRect tileRect = visualRect(mHoveredIndex);
@@ -610,45 +584,48 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
             QPointF tileLocalPosF((qreal) tileLocalPos.x() / tileRect.width(),
                                   (qreal) tileLocalPos.y() / tileRect.height());
 
-            switch (mWangBehavior) {
-            case WholeId:
-                break;  // can't happen due to check above
-            case Edge:
-                tileLocalPosF -= QPointF(0.5, 0.5);
+            const int x = qBound(0, qFloor(tileLocalPosF.x() * 3), 2);
+            const int y = qBound(0, qFloor(tileLocalPosF.y() * 3), 2);
+            WangId::Index index = WangId::indexByGrid(x, y);
 
-                if (tileLocalPosF.x() < tileLocalPosF.y()) {
-                    if (tileLocalPosF.x() > -tileLocalPosF.y())
-                        wangId.setIndexColor(WangId::Bottom, mWangColorIndex);
-                    else
-                        wangId.setIndexColor(WangId::Left, mWangColorIndex);
-                } else {
-                    if (tileLocalPosF.x() > -tileLocalPosF.y())
-                        wangId.setIndexColor(WangId::Right, mWangColorIndex);
-                    else
-                        wangId.setIndexColor(WangId::Top, mWangColorIndex);
+            if (index != WangId::NumIndexes) {  // center is dead zone
+                switch (mWangSet->type()) {
+                case WangSet::Edge:
+                    tileLocalPosF -= QPointF(0.5, 0.5);
+
+                    if (tileLocalPosF.x() < tileLocalPosF.y()) {
+                        if (tileLocalPosF.x() > -tileLocalPosF.y())
+                            index = WangId::Bottom;
+                        else
+                            index = WangId::Left;
+                    } else {
+                        if (tileLocalPosF.x() > -tileLocalPosF.y())
+                            index = WangId::Right;
+                        else
+                            index = WangId::Top;
+                    }
+                    break;
+                case WangSet::Corner:
+                    if (tileLocalPosF.x() > 0.5) {
+                        if (tileLocalPosF.y() > 0.5)
+                            index = WangId::BottomRight;
+                        else
+                            index = WangId::TopRight;
+                    } else {
+                        if (tileLocalPosF.y() > 0.5)
+                            index = WangId::BottomLeft;
+                        else
+                            index = WangId::TopLeft;
+                    }
+                    break;
+                case WangSet::Mixed:
+                    break;
                 }
-                break;
-            case Corner:
-                if (tileLocalPosF.x() > 0.5) {
-                    if (tileLocalPosF.y() > 0.5)
-                        wangId.setIndexColor(WangId::BottomRight, mWangColorIndex);
-                    else
-                        wangId.setIndexColor(WangId::TopRight, mWangColorIndex);
-                } else {
-                    if (tileLocalPosF.y() > 0.5)
-                        wangId.setIndexColor(WangId::BottomLeft, mWangColorIndex);
-                    else
-                        wangId.setIndexColor(WangId::TopLeft, mWangColorIndex);
-                }
-                break;
-            case EdgeAndCorner:
-                int x = qBound(0, qFloor(tileLocalPosF.x() * 3), 2);
-                int y = qBound(0, qFloor(tileLocalPosF.y() * 3), 2);
-                wangId.setGridColor(x, y, mWangColorIndex);
+
+                wangId.setIndexColor(index, mWangColorIndex ? mWangColorIndex
+                                                            : WangId::INDEX_MASK);
             }
         }
-
-        Q_ASSERT(mWangSet->wangIdIsValid(wangId));
 
         if (previousHoveredIndex != mHoveredIndex || wangId != mWangId) {
             mWangId = wangId;
@@ -686,18 +663,6 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
     return;
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-void TilesetView::enterEvent(QEvent *event)
-#else
-void TilesetView::enterEvent(QEnterEvent *event)
-#endif
-{
-    if (mEditWangSet)
-        setFocus();
-
-    QTableView::enterEvent(event);
-}
-
 void TilesetView::leaveEvent(QEvent *event)
 {
     if (mHoveredIndex.isValid()) {
@@ -710,18 +675,20 @@ void TilesetView::leaveEvent(QEvent *event)
 }
 
 /**
- * Override to support zooming in and out using the mouse wheel.
+ * Override to support zooming in and out using the mouse wheel, as well as to
+ * make the scrolling speed independent of Ctrl modifier and zoom level.
  */
 void TilesetView::wheelEvent(QWheelEvent *event)
 {
+    auto hor = horizontalScrollBar();
+    auto ver = verticalScrollBar();
+
     bool wheelZoomsByDefault = !dynamicWrapping() && Preferences::instance()->wheelZoomsByDefault();
     bool control = event->modifiers() & Qt::ControlModifier;
 
     if ((wheelZoomsByDefault != control) && event->angleDelta().y()) {
-        auto hor = horizontalScrollBar();
-        auto ver = verticalScrollBar();
 
-#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
+#if QT_VERSION < QT_VERSION_CHECK(5,14,0)
         const QPointF &viewportPos = event->posF();
 #else
         const QPointF &viewportPos = event->position();
@@ -750,7 +717,14 @@ void TilesetView::wheelEvent(QWheelEvent *event)
         return;
     }
 
-    QTableView::wheelEvent(event);
+    QPoint delta = event->pixelDelta();
+    if (delta.isNull())
+        delta = Utils::dpiScaled(event->angleDelta());
+
+    if (delta.x())
+        hor->setValue(hor->value() - delta.x());
+    if (delta.y())
+        ver->setValue(ver->value() - delta.y());
 }
 
 /**
@@ -776,11 +750,11 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                                               QItemSelectionModel::Clear);
 
             if (mWangSet) {
-                QAction *setImage = menu.addAction(tr("Set Wang Set Image"));
+                QAction *setImage = menu.addAction(tr("Use as Terrain Set Image"));
                 connect(setImage, &QAction::triggered, this, &TilesetView::selectWangSetImage);
             }
-            if (mWangBehavior != WholeId && mWangColorIndex) {
-                QAction *setImage = menu.addAction(tr("Set Wang Color Image"));
+            if (mWangBehavior != AssignWholeId && mWangColorIndex) {
+                QAction *setImage = menu.addAction(tr("Use as Terrain Image"));
                 connect(setImage, &QAction::triggered, this, &TilesetView::selectWangColorImage);
             }
         } else if (mTilesetDocument) {
@@ -811,6 +785,8 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     connect(toggleGrid, &QAction::toggled,
             prefs, &Preferences::setShowTilesetGrid);
 
+    ActionManager::applyMenuExtensions(&menu, MenuIds::tilesetViewTiles);
+
     menu.exec(event->globalPos());
 }
 
@@ -828,9 +804,6 @@ void TilesetView::onChange(const ChangeEvent &change)
         if (mEditWangSet && wangSetChange.wangSet == mWangSet &&
                 (wangSetChange.properties & WangSetChangeEvent::TypeProperty)) {
             viewport()->update();
-
-            if (mWangBehavior != WholeId)
-                mWangBehavior = wangBehaviorFromWangSetType(mWangSet->type());
         }
         break;
     }
@@ -920,12 +893,14 @@ void TilesetView::applyWangId()
         return;
 
     WangId previousWangId = mWangSet->wangIdOfTile(tile);
-    WangId newWangId = mWangId;
+    WangId newWangId = previousWangId;
 
-    if (mWangBehavior != WholeId) {
+    if (mWangBehavior == AssignWholeId) {
+        newWangId = mWangId;
+    } else {
         for (int i = 0; i < WangId::NumIndexes; ++i) {
-            if (!newWangId.indexColor(i))
-                newWangId.setIndexColor(i, previousWangId.indexColor(i));
+            if (mWangId.indexColor(i))
+                newWangId.setIndexColor(i, mWangColorIndex);
         }
     }
 
@@ -988,14 +963,4 @@ void TilesetView::updateBackgroundColor()
     setPalette(p);
 }
 
-TilesetView::WangBehavior TilesetView::wangBehaviorFromWangSetType(WangSet::Type type)
-{
-    switch (type) {
-    case WangSet::Corner:
-        return Corner;
-    case WangSet::Edge:
-        return Edge;
-    default:
-        return EdgeAndCorner;
-    }
-}
+#include "moc_tilesetview.cpp"

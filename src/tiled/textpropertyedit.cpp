@@ -181,3 +181,5 @@ void TextPropertyEdit::onButtonClicked()
 }
 
 } // namespace Tiled
+
+#include "moc_textpropertyedit.cpp"

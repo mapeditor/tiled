@@ -83,3 +83,5 @@ MapObject *CreateTextObjectTool::createNewMapObject()
 }
 
 } // namespace Tiled
+
+#include "moc_createtextobjecttool.cpp"

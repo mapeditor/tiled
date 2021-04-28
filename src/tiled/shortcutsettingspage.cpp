@@ -130,7 +130,7 @@ void ActionsModel::refreshConflicts()
     for (const auto &actionId : qAsConst(mActions)) {
         if (auto action = ActionManager::findAction(actionId))
             if (!action->shortcut().isEmpty())
-                actionsByKey.insertMulti(action->shortcut(), actionId);
+                actionsByKey.insert(action->shortcut(), actionId);
     }
 
     QVector<bool> conflicts;
@@ -769,3 +769,4 @@ void ShortcutSettingsPage::exportShortcuts()
 } // namespace Tiled
 
 #include "shortcutsettingspage.moc"
+#include "moc_shortcutsettingspage.cpp"

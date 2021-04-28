@@ -81,7 +81,8 @@ bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
     if (propertyType == filePathTypeId()
             || propertyType == displayObjectRefTypeId()
             || propertyType == tilesetParametersTypeId()
-            || propertyType == alignmentTypeId())
+            || propertyType == alignmentTypeId()
+            || propertyType == unstyledGroupTypeId())
         return true;
     return QtVariantPropertyManager::isPropertyTypeSupported(propertyType);
 }
@@ -95,6 +96,8 @@ int VariantPropertyManager::valueType(int propertyType) const
     if (propertyType == tilesetParametersTypeId())
         return qMetaTypeId<TilesetDocument*>();
     if (propertyType == alignmentTypeId())
+        return propertyType;
+    if (propertyType == unstyledGroupTypeId())
         return propertyType;
     return QtVariantPropertyManager::valueType(propertyType);
 }
@@ -156,6 +159,11 @@ int VariantPropertyManager::alignmentTypeId()
 int VariantPropertyManager::displayObjectRefTypeId()
 {
     return qMetaTypeId<DisplayObjectRef>();
+}
+
+int VariantPropertyManager::unstyledGroupTypeId()
+{
+    return qMetaTypeId<UnstyledGroup>();
 }
 
 QString VariantPropertyManager::objectRefLabel(const MapObject *object) const
@@ -497,3 +505,5 @@ QString VariantPropertyManager::indexVToString(int idx) const
 }
 
 } // namespace Tiled
+
+#include "moc_variantpropertymanager.cpp"

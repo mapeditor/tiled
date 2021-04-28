@@ -581,3 +581,5 @@ void MapObjectModel::emitDataChanged(const QList<MapObject *> &objects,
                          roles);
     }
 }
+
+#include "moc_mapobjectmodel.cpp"

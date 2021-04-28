@@ -359,3 +359,5 @@ bool ScriptTextFile::checkForClosed() const
 }
 
 } // namespace Tiled
+
+#include "moc_scriptfile.cpp"

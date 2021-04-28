@@ -226,7 +226,7 @@ QPainterPath IsometricRenderer::interactionShape(const MapObject *object) const
 }
 
 void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
-                                 QColor gridColor) const
+                                 QColor gridColor, int gridMajor) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -247,17 +247,21 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
         endY = qMin(map()->height(), endY);
     }
 
-    QPen gridPen = makeGridPen(painter->device(), gridColor);
-    painter->setPen(gridPen);
+    QPen gridPen, majorGridPen;
+    setupGridPens(painter->device(), gridColor, gridPen, majorGridPen);
 
     for (int y = startY; y <= endY; ++y) {
         const QPointF start = tileToScreenCoords(startX, y);
         const QPointF end = tileToScreenCoords(endX, y);
+
+        painter->setPen(gridMajor != 0 && y % gridMajor == 0 ? majorGridPen : gridPen);
         painter->drawLine(start, end);
     }
     for (int x = startX; x <= endX; ++x) {
         const QPointF start = tileToScreenCoords(x, startY);
         const QPointF end = tileToScreenCoords(x, endY);
+
+        painter->setPen(gridMajor != 0 && x % gridMajor == 0 ? majorGridPen : gridPen);
         painter->drawLine(start, end);
     }
 }

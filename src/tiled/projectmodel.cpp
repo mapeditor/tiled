@@ -134,7 +134,9 @@ ProjectModel::ProjectModel(QObject *parent)
 ProjectModel::~ProjectModel()
 {
     mFoldersPendingScan.clear();
+#ifndef Q_OS_WASM
     mScanningThread.requestInterruption();
+#endif
     mScanningThread.quit();
     mScanningThread.wait();
 }
@@ -169,6 +171,7 @@ void ProjectModel::addFolder(const QString &folder)
 
     mProject.addFolder(folder);
     mFolders.push_back(std::make_unique<FolderEntry>(folder));
+    mWatcher.addPath(folder);
     scheduleFolderScan(folder);
 
     endInsertRows();
@@ -180,9 +183,14 @@ void ProjectModel::removeFolder(int row)
 {
     const QString folder = mFolders.at(row)->filePath;
 
+    QStringList watchedFilePaths;
+    watchedFilePaths.append(folder);
+    collectDirectories(*mFolders.at(row), watchedFilePaths);
+
     beginRemoveRows(QModelIndex(), row, row);
     mProject.removeFolder(row);
     mFolders.erase(mFolders.begin() + row);
+    mWatcher.removePaths(watchedFilePaths);
     endRemoveRows();
 
     emit folderRemoved(folder);
@@ -469,8 +477,10 @@ void FolderScanner::scanFolder(const QString &folder)
 
 void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) const
 {
+#ifndef Q_OS_WASM
     if (QThread::currentThread()->isInterruptionRequested())
         return;
+#endif
 
     constexpr QDir::SortFlags sortFlags { QDir::Name | QDir::LocaleAware | QDir::DirsFirst };
     constexpr QDir::Filters filters { QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot };
@@ -500,3 +510,4 @@ void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) con
 } // namespace Tiled
 
 #include "projectmodel.moc"
+#include "moc_projectmodel.cpp"

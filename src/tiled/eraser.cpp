@@ -149,3 +149,5 @@ QRect Eraser::eraseArea() const
 
     return QRect(tilePosition(), QSize(1, 1));
 }
+
+#include "moc_eraser.cpp"

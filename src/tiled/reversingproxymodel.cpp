@@ -35,3 +35,5 @@ bool ReversingProxyModel::lessThan(const QModelIndex &sourceLeft,
 }
 
 } // namespace Tiled
+
+#include "moc_reversingproxymodel.cpp"

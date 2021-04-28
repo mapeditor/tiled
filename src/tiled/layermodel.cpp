@@ -617,3 +617,5 @@ void LayerModel::documentChanged(const ChangeEvent &change)
         break;
     }
 }
+
+#include "moc_layermodel.cpp"

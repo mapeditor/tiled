@@ -45,7 +45,6 @@ namespace Tiled {
 
 class FileFormat;
 class TileLayer;
-class Terrain;
 
 class AutomappingManager;
 class ConsoleDock;
@@ -110,6 +109,8 @@ protected:
     void dragEnterEvent(QDragEnterEvent *) override;
     void dropEvent(QDropEvent *) override;
 
+    void resizeEvent(QResizeEvent *) override;
+
 private:
     void newMap();
     void openFileDialog();
@@ -126,10 +127,10 @@ private:
     bool closeAllFiles();
 
     void openProject();
-    void openProjectFile(const QString &fileName);
+    bool openProjectFile(const QString &fileName);
     void saveProjectAs();
     void closeProject();
-    void switchProject(Project project);
+    bool switchProject(Project project);
     void restoreSession();
     void projectProperties();
 
@@ -139,6 +140,8 @@ private:
     void pasteInPlace();
     void delete_();
     void openPreferences();
+    void openCrashReporterPopup();
+    void updatePopupGeometry(QSize size);
 
     void labelVisibilityActionTriggered(QAction *action);
     void zoomIn();
@@ -147,6 +150,7 @@ private:
     void fitInView();
     void setFullScreen(bool fullScreen);
     void toggleClearView(bool clearView);
+    void setLayoutLocked(bool locked);
     void resetToDefaultLayout();
 
     bool newTileset(const QString &path = QString());
@@ -218,6 +222,9 @@ private:
     void exportMapAs(MapDocument *mapDocument);
     void exportTilesetAs(TilesetDocument *tilesetDocument);
 
+    QList<QDockWidget*> allDockWidgets() const;
+    QList<QToolBar*> allToolBars() const;
+
     Ui::MainWindow *mUi;
     Document *mDocument = nullptr;
     Zoomable *mZoomable = nullptr;
@@ -227,6 +234,8 @@ private:
     IssuesDock *mIssuesDock;
     ObjectTypesEditor *mObjectTypesEditor;
     QPointer<LocatorWidget> mLocatorWidget;
+    QPointer<QWidget> mPopupWidget;
+    double mPopupWidgetShowProgress = 1.0;
 
     QAction *mRecentFiles[Preferences::MaxRecentFiles];
 
@@ -238,6 +247,7 @@ private:
     QAction *mShowObjectTypesEditor;
 
     QAction *mResetToDefaultLayout;
+    QAction *mLockLayout;
 
     void setupQuickStamps();
 

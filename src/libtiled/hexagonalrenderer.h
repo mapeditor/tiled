@@ -67,14 +67,18 @@ protected:
     };
 
 public:
-    HexagonalRenderer(const Map *map) : OrthogonalRenderer(map) {}
+    HexagonalRenderer(const Map *map)
+        : OrthogonalRenderer(map)
+    {
+        setCellType(HexagonalCells);
+    }
 
     QRect mapBoundingRect() const override;
 
     QRect boundingRect(const QRect &rect) const override;
 
     void drawGrid(QPainter *painter, const QRectF &exposed,
-                  QColor gridColor) const override;
+                  QColor gridColor, int gridMajor = 0) const override;
 
     using MapRenderer::drawTileLayer;
     void drawTileLayer(const RenderTileCallback &renderTile,

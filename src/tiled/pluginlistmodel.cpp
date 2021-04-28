@@ -111,3 +111,5 @@ bool PluginListModel::setData(const QModelIndex &index, const QVariant &value, i
 
 } // namespace Tiled
 
+
+#include "moc_pluginlistmodel.cpp"

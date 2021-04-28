@@ -190,6 +190,27 @@ void SetLayerOffset::setOffset(const QPointF &offset)
 }
 
 
+SetLayerParallaxFactor::SetLayerParallaxFactor(Document *document,
+                                               Layer *layer,
+                                               const QPointF &parallaxFactor,
+                                               QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mDocument(document)
+    , mLayer(layer)
+    , mOldParallaxFactor(layer->parallaxFactor())
+    , mNewParallaxFactor(parallaxFactor)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Layer Parallax Factor"));
+}
+
+void SetLayerParallaxFactor::setParallaxFactor(const QPointF &parallaxFactor)
+{
+    mLayer->setParallaxFactor(parallaxFactor);
+    emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::ParallaxFactorProperty));
+}
+
+
 SetTileLayerSize::SetTileLayerSize(Document *document,
                                    TileLayer *tileLayer,
                                    QSize size,

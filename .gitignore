@@ -50,6 +50,10 @@ docs/_build/gettext/.doctrees
 docs/_build/doctrees/
 *.mo
 
+# tsdoc generation results
+docs/scripting-doc/out/
+docs/scripting-doc/node_modules
+
 # Work-in-progress worktrees
 wip/
 util/java/tmxviewer-java/target

@@ -21,7 +21,6 @@
 
 #include "wangtemplateview.h"
 
-#include "stylehelper.h"
 #include "utils.h"
 #include "wangoverlay.h"
 #include "wangset.h"
@@ -50,7 +49,7 @@ public:
     WangTemplateDelegate(WangTemplateView *wangtemplateView, QObject *parent = nullptr)
         : QAbstractItemDelegate(parent)
         , mWangTemplateView(wangtemplateView)
-    { }
+    {}
 
     void paint(QPainter *painter,
                const QStyleOptionViewItem &option,
@@ -74,7 +73,7 @@ void WangTemplateDelegate::paint(QPainter *painter,
     painter->setClipRect(option.rect);
 
     if (WangSet *wangSet = mWangTemplateView->wangSet())
-        paintWangOverlay(painter, wangId, *wangSet, option.rect, false);
+        paintWangOverlay(painter, wangId, *wangSet, option.rect, WO_Outline);
 
     // Highlight currently selected tile.
     if (mWangTemplateView->currentIndex() == index) {
@@ -117,23 +116,11 @@ WangTemplateView::WangTemplateView(QWidget *parent)
 
     connect(mZoomable, &Zoomable::scaleChanged,
             this, &WangTemplateView::adjustScale);
-
-    connect(StyleHelper::instance(), &StyleHelper::styleApplied,
-            this, &WangTemplateView::updateBackgroundColor);
 }
 
 qreal WangTemplateView::scale() const
 {
     return mZoomable->scale();
-}
-
-void WangTemplateView::updateBackgroundColor()
-{
-    QColor base = QApplication::palette().dark().color();
-
-    QPalette p = palette();
-    p.setColor(QPalette::Base, base);
-    setPalette(p);
 }
 
 WangSet *WangTemplateView::wangSet() const
@@ -202,3 +189,5 @@ void WangTemplateView::adjustScale()
 {
     scheduleDelayedItemsLayout();
 }
+
+#include "moc_wangtemplateview.cpp"

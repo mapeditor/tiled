@@ -253,3 +253,5 @@ bool ScriptedTilesetFormat::write(const Tileset &tileset, const QString &fileNam
 }
 
 } // namespace Tiled
+
+#include "moc_scriptedfileformat.cpp"

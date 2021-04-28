@@ -57,6 +57,10 @@ WindowsInstallerPackage {
         if (File.exists(Environment.getEnv("PYTHONHOME")))
             defs.push("Python");
 
+        var rpMapEnabled = (Qt.core.versionMajor > 5 || Qt.core.versionMinor >= 12) && !qbs.toolchain.contains("msvc")
+        if (rpMapEnabled)
+            defs.push("RpMap");
+
         if (project.openSslPath) {
             defs.push("OpenSsl111Dir=" + project.openSslPath);
         } else {

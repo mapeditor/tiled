@@ -32,6 +32,7 @@ package org.mapeditor.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -46,10 +47,12 @@ import org.mapeditor.core.StaggerIndex;
 import org.mapeditor.core.TileLayer;
 import org.mapeditor.core.TileSet;
 
+import javax.xml.bind.JAXBException;
+
 public class MapReaderTest {
 
     @Test
-    public void testAcceptValidFilenames() {
+    public void testAcceptValidFilenames() throws JAXBException {
         // Arrange
         TMXMapReader reader = new TMXMapReader();
 
@@ -380,4 +383,15 @@ public class MapReaderTest {
         return new URL("jar:" + url.toString() + "!/" + filename);
     }
 
+    @Test
+    public void testReadmapWithSearchDirectory() throws Exception {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        String resourceName = "relative_paths/relative_paths.tmx";
+        URL url = loader.getResource(resourceName);
+        String parentDirectory = new File(url.getFile()).getParent();
+        InputStream in = loader.getResourceAsStream(resourceName);
+
+        Map map = new TMXMapReader().readMap(in, parentDirectory);
+        assertEquals(1, map.getTileSets().size());
+    }
 }

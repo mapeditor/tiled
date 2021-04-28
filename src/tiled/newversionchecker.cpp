@@ -154,3 +154,5 @@ void NewVersionChecker::finished(QNetworkReply *reply)
 }
 
 } // namespace Tiled
+
+#include "moc_newversionchecker.cpp"

@@ -348,6 +348,7 @@ tiled.registerTool(shortName : string, tool : object) : object
         :widths: 1, 2
 
         **name** : string, Name of the tool as shown on the tool bar.
+        **icon** : string, "File name of an icon. If set, the icon is shown on the tool bar and the name becomes the tool tip."
         **map** : :ref:`script-map`, Currently active tile map.
         **selectedTile** : :ref:`script-tile`, The last clicked tile for the active map. See also the ``currentBrush`` property of :ref:`script-mapeditor`.
         **preview** : :ref:`script-map`, Get or set the preview for tile layer edits.
@@ -790,12 +791,19 @@ Image.fill(index_or_rgb : uint) : void
 Image.fill(color : color) : void
     Fills the image with the given color by string (supports values like "#rrggbb").
 
-Image.load(fileName : string [, format : string]) : void
+Image.load(fileName : string [, format : string]) : bool
     Loads the image from the given file name.
     When no format is given it will be auto-detected (can be "bmp", "png", etc.).
 
-Image.loadFromData(data : ArrayBuffer, format: string)
+Image.loadFromData(data : ArrayBuffer, format: string) : bool
     Loads the image from the given data interpreted with the given format (can be "bmp", png", etc.).
+
+Image.save(fileName : string [, format : string [, quality : int ]]) : bool
+    Saves the image to the given file.
+    When no format is given it will be auto-detected based on the file extension.
+
+Image.saveToData(format : string [, quality : int ]) : ArrayBuffer
+    Saves the image to an ArrayBuffer in the given format (can be "bmp", png", etc.).
 
 Image.color(index : int) : uint
     Returns the 32-bit color value at the given index in the color table.
@@ -893,6 +901,9 @@ Properties
 Functions
 ~~~~~~~~~
 
+new ImageLayer([name : string])
+    Constructs a new image layer.
+
 .. _script-imagelayer-loadFromImage:
 
 ImageLayer.loadFromImage(image : :ref:`script-image` [, source: url]) : void
@@ -914,12 +925,15 @@ Properties
 .. csv-table::
     :widths: 1, 2
 
+    **id** : int |ro|, Unique (map-wide) ID of the layer (since Tiled 1.5).
     **name** : string, Name of the layer.
     **opacity** : number, "Opacity of the layer, from 0 (fully transparent) to 1 (fully opaque)."
     **visible** : bool, Whether the layer is visible (affects child layer visibility for group layers).
     **locked** : bool, Whether the layer is locked (affects whether child layers are locked for group layers).
     **offset** : :ref:`script-point`, Offset in pixels that is applied when this layer is rendered.
-    **map** : :ref:`script-map`, Map that this layer is part of (or ``null`` in case of a standalone layer).
+    **parallaxFactor** : :ref:`script-point`, The parallax factor of the layer (since Tiled 1.5).
+    **map** : :ref:`script-map` |ro|, Map that this layer is part of (or ``null`` in case of a standalone layer).
+    **parentLayer** : :ref:`script-grouplayer` |ro|, "The parent group layer, if any."
     **selected** : bool, Whether the layer is selected.
     **isTileLayer** : bool |ro|, Whether this layer is a :ref:`script-tilelayer`.
     **isObjectLayer** : bool |ro|, Whether this layer is an :ref:`script-objectgroup`.
@@ -1031,13 +1045,15 @@ Properties
 .. csv-table::
     :widths: 1, 2
 
-    **scale** : number, "Get or set the scale of the view."
+    **scale** : number, "The scale of the view."
+    **center** : :ref:`script-point`, "The center of the view."
 
 Functions
 ~~~~~~~~~
 
 MapView.centerOn(x : number, y : number) : void
-    Centers the view at the given location in screen coordinates.
+    Centers the view at the given location in screen coordinates. Same as
+    assigning to the ``center`` property.
 
 .. _script-object:
 
@@ -2102,3 +2118,86 @@ BinaryFile.commit() : void
 BinaryFile.close() : void
     Closes the file. It is recommended to always call this function as soon as
     you are finished with the file.
+
+.. _script-process:
+
+Process
+~~~~~~~
+
+The Process class allows you to start processes, track their output, and so on.
+
+**Properties**
+
+.. csv-table::
+    :widths: 1, 2
+
+    **workingDirectory** : string, "The directory the process will be started in. This only has an effect if set before the process is started."
+    **atEnd** : bool |ro|, "True if there is no more data to be read from the process output, otherwise false."
+    **exitCode** : int |ro|, "The exit code of the process. This is needed for retrieving the exit code from processes started via ``start()``, rather than ``exec()``."
+    **codec**: string, "Sets the text codec to codec. The codec is used for reading and writing from and to the process, respectively. Common codecs are supported, for example: ""UTF-8"", ""UTF-16"", and ""ISO 8859-1""."
+
+**Functions**
+
+new Process()
+    Allocates and returns a new Process object.
+
+Process.close() : void
+    Frees the resources associated with the process. It is recommended to always
+    call this function as soon as you are finished with the process.
+
+Process.closeWriteChannel() : void
+    Schedules the stdin channel of process to be closed. The channel will close
+    once all data has been written to the process. After calling this function,
+    any attempts to write to the process will do nothing.
+
+Process.exec(filePath : string, arguments : [string] [, throwOnError : bool = true]) : number
+    Executes the program at filePath with the given argument list and blocks
+    until the process is finished. If an error occurs (for example, there is no
+    executable file at filePath) and ``throwOnError`` is true (the default),
+    then a JavaScript exception will be thrown. Otherwise, -1 will be returned
+    in case of an error. The normal return code is the exit code of the process.
+
+Process.getEnv(name : string) : string
+    Returns the value of the variable varName in the process' environment.
+
+Process.kill() : void
+    Kills the process, causing it to exit immediately.
+
+Process.readLine() : string
+    Reads and returns one line of text from the process output, without the
+    newline character(s).
+
+Process.readStdErr() : string
+    Reads and returns all data from the process' standard error channel.
+
+Process.readStdOut() : string
+    Reads and returns all data from the process' standard output channel.
+
+Process.setEnv(varName : string, varValue : string) : string
+    Sets the value of variable varName to varValue in the process environment.
+    This only has an effect if called before the process is started.
+
+Process.start(filePath : string, arguments : [string]) : bool
+    Starts the program at filePath with the given list of arguments. Returns
+    true if the process could be started and false otherwise.
+
+    **Note:** This call returns right after starting the process and should be
+    used only if you need to interact with the process while it is running.
+    Most of the time, you want to use ``exec()`` instead.
+
+Process.terminate() : void
+    Tries to terminate the process. This is not guaranteed to make the process
+    exit immediately; if you need that, use ``kill()``.
+
+Process.waitForFinished(int msecs = 30000) : bool
+    Blocks until the process has finished or timeout milliseconds have passed
+    (default is 30000). Returns true if the process has finished and false if
+    the operation has timed out. Calling this function only makes sense for
+    processes started via ``start()`` (as opposed to ``exec()``).
+
+Process.write(text : string) : void
+    Writes text into the process' input channel.
+
+Process.writeLine(text : string) : void
+    Writes text, followed by a newline character, into the process' input
+    channel.

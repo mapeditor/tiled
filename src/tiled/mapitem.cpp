@@ -29,6 +29,7 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "mapview.h"
 #include "objectgroupitem.h"
 #include "objectselectionitem.h"
@@ -70,6 +71,7 @@ public:
         Preferences *prefs = Preferences::instance();
         connect(prefs, &Preferences::showGridChanged, this, [this] (bool visible) { setVisible(visible); });
         connect(prefs, &Preferences::gridColorChanged, this, [this] { update(); });
+        connect(prefs, &Preferences::gridMajorChanged, this, [this] { update(); });
 
         // New layer may have a different offset
         connect(mapDocument, &MapDocument::currentLayerChanged,
@@ -80,12 +82,14 @@ public:
                 this, [this] (const ChangeEvent &change) {
             if (change.type == ChangeEvent::LayerChanged) {
                 auto &layerChange = static_cast<const LayerChangeEvent&>(change);
-                if (layerChange.properties & LayerChangeEvent::OffsetProperty)
+                if (layerChange.properties & LayerChangeEvent::PositionProperties)
                     if (Layer *currentLayer = mMapDocument->currentLayer())
                         if (currentLayer->isParentOrSelf(layerChange.layer))
-                            update();
+                            updateOffset();
             }
         });
+        connect(mapDocument, &MapDocument::currentLayerChanged,
+                this, &TileGridItem::updateOffset);
 
         setVisible(prefs->showGrid());
     }
@@ -98,22 +102,29 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *) override
     {
-        QPointF offset;
-
         // Take into account the offset of the current layer
-        if (Layer *layer = mMapDocument->currentLayer()) {
-            offset = layer->totalOffset();
-            painter->translate(offset);
-        }
+        painter->translate(mOffset);
 
         Preferences *prefs = Preferences::instance();
         mMapDocument->renderer()->drawGrid(painter,
-                                           option->exposedRect.translated(-offset),
-                                           prefs->gridColor());
+                                           option->exposedRect.translated(-mOffset),
+                                           prefs->gridColor(), prefs->gridMajor());
+    }
+
+    void updateOffset()
+    {
+        if (Layer *currentLayer = mMapDocument->currentLayer()) {
+            QPointF offset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*currentLayer);
+            if (mOffset != offset) {
+                mOffset = offset;
+                update();
+            }
+        }
     }
 
 private:
     MapDocument *mMapDocument;
+    QPointF mOffset;
 };
 
 MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
@@ -140,6 +151,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::showTileObjectOutlinesChanged, this, &MapItem::setShowTileObjectOutlines);
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(prefs, &Preferences::objectTypesChanged, this, &MapItem::syncAllObjectItems);
+    connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] (QColor color) { mDarkRectangle->setBrush(color); });
 
     connect(mapDocument.data(), &Document::changed, this, &MapItem::documentChanged);
     connect(mapDocument.data(), &MapDocument::mapChanged, this, &MapItem::mapChanged);
@@ -159,7 +171,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     updateBoundingRect();
 
     mDarkRectangle->setPen(Qt::NoPen);
-    mDarkRectangle->setBrush(Qt::black);
+    mDarkRectangle->setBrush(prefs->backgroundFadeColor());
     mDarkRectangle->setOpacity(darkeningFactor);
     mDarkRectangle->setRect(QRectF(INT_MIN / 512, INT_MIN / 512,
                                    INT_MAX / 256, INT_MAX / 256));
@@ -246,6 +258,22 @@ void MapItem::setShowTileCollisionShapes(bool enabled)
     for (LayerItem *item : qAsConst(mLayerItems))
         if (item->layer()->isTileLayer())
             item->update();
+}
+
+void MapItem::updateLayerPositions()
+{
+    const MapScene *mapScene = static_cast<MapScene*>(scene());
+
+    for (LayerItem *layerItem : qAsConst(mLayerItems)) {
+        const Layer &layer = *layerItem->layer();
+        layerItem->setPos(layer.offset() + mapScene->parallaxOffset(layer));
+    }
+
+    if (mDisplayMode == Editable) {
+        mTileSelectionItem->updatePosition();
+        mTileGridItem->updateOffset();
+        mObjectSelectionItem->updateItemPositions();
+    }
 }
 
 QRectF MapItem::boundingRect() const
@@ -416,8 +444,8 @@ void MapItem::layerRemoved(Layer *layer)
 }
 
 /**
- * A layer has changed. This can mean that the layer visibility, opacity or
- * offset changed.
+ * A layer has changed. This can mean that the layer visibility, opacity,
+ * offset or parallax factor changed.
  */
 void MapItem::layerChanged(const LayerChangeEvent &change)
 {
@@ -452,8 +480,10 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
             multiplier = opacityFactor;
     }
 
+    const QPointF parallaxOffset = static_cast<MapScene*>(scene())->parallaxOffset(*layer);
+
     layerItem->setOpacity(layer->opacity() * multiplier);
-    layerItem->setPos(layer->offset());
+    layerItem->setPos(layer->offset() + parallaxOffset);
 
     updateBoundingRect();   // possible layer offset change
 }
@@ -686,6 +716,12 @@ LayerItem *MapItem::createLayerItem(Layer *layer)
 
     Q_ASSERT(layerItem);
 
+    // If we're not yet part of the MapScene, it means this happens in the
+    // MapItem constructor and the layer will be positioned by a call to
+    // updateLayerPositions from the MapScene.
+    if (const MapScene *mapScene = static_cast<MapScene*>(scene()))
+        layerItem->setPos(layer->offset() + mapScene->parallaxOffset(*layer));
+
     layerItem->setVisible(layer->isVisible());
     layerItem->setEnabled(mDisplayMode == Editable);
 
@@ -800,3 +836,4 @@ void MapItem::updateSelectedLayersHighlight()
 } // namespace Tiled
 
 #include "mapitem.moc"
+#include "moc_mapitem.cpp"

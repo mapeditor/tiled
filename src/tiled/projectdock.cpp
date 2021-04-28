@@ -38,7 +38,6 @@
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <QSet>
-#include <QStandardPaths>
 #include <QTreeView>
 
 namespace Tiled {
@@ -120,7 +119,7 @@ void ProjectDock::addFolderToProject()
         if (!project.folders().isEmpty())
             folder = QFileInfo(project.folders().last()).path();
         else
-            folder = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+            folder = Preferences::homeLocation();
     }
 
     folder = QFileDialog::getExistingDirectory(window(),
@@ -286,6 +285,8 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(ActionManager::action("RefreshProjectFolders"));
     }
 
+    ActionManager::applyMenuExtensions(&menu, MenuIds::projectViewFiles);
+
     if (!menu.isEmpty())
         menu.exec(event->globalPos());
 }
@@ -318,3 +319,4 @@ void ProjectView::restoreExpanded(const QModelIndex &parent)
 } // namespace Tiled
 
 #include "projectdock.moc"
+#include "moc_projectdock.cpp"

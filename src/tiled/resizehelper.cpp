@@ -245,3 +245,5 @@ void ResizeHelper::recalculateMinMaxOffset()
         emit offsetBoundsChanged(mOffsetBounds);
     }
 }
+
+#include "moc_resizehelper.cpp"

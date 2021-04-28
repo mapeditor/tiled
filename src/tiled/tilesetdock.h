@@ -43,7 +43,6 @@ class QToolButton;
 
 namespace Tiled {
 
-class Terrain;
 class Tile;
 class TileLayer;
 class Tileset;
@@ -137,6 +136,7 @@ private:
     void tileAnimationChanged(Tile *tile);
 
     void replaceTileset();
+    void replaceTilesetAt(int index);
     void removeTileset();
     void removeTilesetAt(int index);
 
@@ -185,7 +185,6 @@ private:
     QToolBar *mToolBar;
     Tile *mCurrentTile = nullptr;
     std::unique_ptr<TileLayer> mCurrentTiles;
-    const Terrain *mTerrain;
 
     QAction *mNewTileset;
     QAction *mEmbedTileset;

@@ -23,6 +23,7 @@
 #include "actionmanager.h"
 #include "addremovetileset.h"
 #include "changemapobject.h"
+#include "changepolygon.h"
 #include "changetileobjectgroup.h"
 #include "documentmanager.h"
 #include "mapdocument.h"
@@ -32,9 +33,9 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
-#include "preferences.h"
 #include "raiselowerhelper.h"
 #include "resizemapobject.h"
+#include "session.h"
 #include "templatemanager.h"
 #include "tile.h"
 #include "tmxmapformat.h"
@@ -53,24 +54,29 @@
 
 using namespace Tiled;
 
-static bool isTileObject(MapObject *mapObject)
+static bool isTileObject(const MapObject *mapObject)
 {
     return !mapObject->cell().isEmpty();
 }
 
-static bool isTemplateInstance(MapObject *mapObject)
+static bool isRectangleObject(const MapObject *mapObject)
+{
+    return mapObject->shape() == MapObject::Rectangle && !isTileObject(mapObject);
+}
+
+static bool isTemplateInstance(const MapObject *mapObject)
 {
     return mapObject->isTemplateInstance();
 }
 
-static bool isResizedTileObject(MapObject *mapObject)
+static bool isResizedTileObject(const MapObject *mapObject)
 {
     if (const auto tile = mapObject->cell().tile())
         return mapObject->size() != tile->size();
     return false;
 }
 
-static bool isChangedTemplateInstance(MapObject *mapObject)
+static bool isChangedTemplateInstance(const MapObject *mapObject)
 {
     if (const MapObject *templateObject = mapObject->templateObject()) {
         return mapObject->changedProperties() != 0 ||
@@ -79,6 +85,9 @@ static bool isChangedTemplateInstance(MapObject *mapObject)
     return false;
 }
 
+Preference<AbstractObjectTool::SelectionBehavior> AbstractObjectTool::ourSelectionBehavior {
+    "AbstractObjectTool/SelectionBehavior", AbstractObjectTool::AllLayers
+};
 
 AbstractObjectTool::AbstractObjectTool(Id id,
                                        const QString &name,
@@ -155,7 +164,7 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer())
-        offsetPos -= layer->totalOffset();
+        offsetPos -= mapScene()->absolutePositionForLayer(*layer);
 
     const QPoint pixelPos = offsetPos.toPoint();
 
@@ -189,6 +198,37 @@ void AbstractObjectTool::populateToolBar(QToolBar *toolBar)
     toolBar->addAction(mRotateRight);
 }
 
+AbstractObjectTool::SelectionBehavior AbstractObjectTool::selectionBehavior()
+{
+    const SelectionBehavior behavior = ourSelectionBehavior;
+
+    if (behavior == AllLayers && Preferences::instance()->highlightCurrentLayer())
+        return PreferSelectedLayers;
+
+    return behavior;
+}
+
+void AbstractObjectTool::filterMapObjects(QList<MapObject *> &mapObjects) const
+{
+    const SelectionBehavior behavior = selectionBehavior();
+
+    if (behavior != AllLayers) {
+        const auto &selectedLayers = mapDocument()->selectedLayers();
+
+        QList<MapObject*> filteredList;
+
+        for (MapObject *mapObject : qAsConst(mapObjects)) {
+            if (std::any_of(selectedLayers.begin(), selectedLayers.end(),
+                            [=] (Layer *layer) { return layer->isParentOrSelf(mapObject->objectGroup()); })) {
+                filteredList.append(mapObject);
+            }
+        }
+
+        if (behavior == SelectedLayers || !filteredList.isEmpty())
+            mapObjects.swap(filteredList);
+    }
+}
+
 void AbstractObjectTool::updateEnabledState()
 {
     setEnabled(currentObjectGroup() != nullptr);
@@ -207,6 +247,7 @@ QList<MapObject*> AbstractObjectTool::mapObjectsAt(const QPointF &pos) const
     const QList<QGraphicsItem *> &items = mapScene()->items(pos);
 
     QList<MapObject*> objectList;
+
     for (auto item : items) {
         if (!item->isEnabled())
             continue;
@@ -215,22 +256,45 @@ QList<MapObject*> AbstractObjectTool::mapObjectsAt(const QPointF &pos) const
         if (objectItem && objectItem->mapObject()->objectGroup()->isUnlocked())
             objectList.append(objectItem->mapObject());
     }
+
+    filterMapObjects(objectList);
     return objectList;
 }
 
 MapObject *AbstractObjectTool::topMostMapObjectAt(const QPointF &pos) const
 {
     const QList<QGraphicsItem *> &items = mapScene()->items(pos);
+    const SelectionBehavior behavior = selectionBehavior();
+
+    MapObject *topMost = nullptr;
 
     for (QGraphicsItem *item : items) {
         if (!item->isEnabled())
             continue;
 
         MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item);
-        if (objectItem && objectItem->mapObject()->objectGroup()->isUnlocked())
-            return objectItem->mapObject();
+        if (!objectItem)
+            continue;
+
+        auto mapObject = objectItem->mapObject();
+        if (!mapObject->objectGroup()->isUnlocked())
+            continue;
+
+        // Return immediately when we don't care if the layer is selected
+        if (behavior == AllLayers)
+            return mapObject;
+
+        // Return this object instead of the top-most one if it is from a selected layer
+        for (Layer *layer : mapDocument()->selectedLayers()) {
+            if (layer->isParentOrSelf(mapObject->objectGroup()))
+                return mapObject;
+        }
+
+        if (!topMost && behavior != SelectedLayers)
+            topMost = mapObject;
     }
-    return nullptr;
+
+    return topMost;
 }
 
 void AbstractObjectTool::duplicateObjects()
@@ -316,14 +380,49 @@ void AbstractObjectTool::resetTileSize()
     }
 }
 
+void AbstractObjectTool::convertRectanglesToPolygons()
+{
+    QList<QUndoCommand*> commands;
+
+    for (auto mapObject : mapDocument()->selectedObjects()) {
+        if (!isRectangleObject(mapObject))
+            continue;
+
+        const QSizeF size = mapObject->size();
+        QPolygonF polygon;
+        polygon.reserve(4);
+        polygon.append(QPointF());
+        polygon.append(QPointF(size.width(), 0.0));
+        polygon.append(QPointF(size.width(), size.height()));
+        polygon.append(QPointF(0.0, size.height()));
+
+        commands << new ChangeMapObject(mapDocument(),
+                                        mapObject,
+                                        MapObject::ShapeProperty,
+                                        MapObject::Polygon);
+
+        commands << new ChangePolygon(mapDocument(),
+                                      mapObject,
+                                      polygon, mapObject->polygon());
+    }
+
+    if (!commands.isEmpty()) {
+        QUndoStack *undoStack = mapDocument()->undoStack();
+        undoStack->beginMacro(tr("Convert to Polygon"));
+        for (auto command : qAsConst(commands))
+            undoStack->push(command);
+        undoStack->endMacro();
+    }
+}
+
 static QString saveObjectTemplate(const MapObject *mapObject)
 {
     FormatHelper<ObjectTemplateFormat> helper(FileFormat::ReadWrite);
     QString filter = helper.filter();
     QString selectedFilter = XmlObjectTemplateFormat().nameFilter();
 
-    Preferences *prefs = Preferences::instance();
-    QString suggestedFileName = prefs->lastPath(Preferences::ObjectTemplateFile);
+    Session &session = Session::current();
+    QString suggestedFileName = session.lastPath(Session::ObjectTemplateFile);
     suggestedFileName += QLatin1Char('/');
     if (!mapObject->name().isEmpty())
         suggestedFileName += mapObject->name();
@@ -352,8 +451,7 @@ static QString saveObjectTemplate(const MapObject *mapObject)
         return QString();
     }
 
-    prefs->setLastPath(Preferences::ObjectTemplateFile,
-                       QFileInfo(fileName).path());
+    session.setLastPath(Session::ObjectTemplateFile, QFileInfo(fileName).path());
 
     return fileName;
 }
@@ -534,6 +632,12 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
                                                 tile()->tileset()->isExternal()));
     }
 
+    bool onlyRectangleObjectSelected = std::all_of(selectedObjects.begin(),
+                                                   selectedObjects.end(),
+                                                   isRectangleObject);
+    if (onlyRectangleObjectSelected)
+        menu.addAction(tr("Convert to Polygon"), this, &AbstractObjectTool::convertRectanglesToPolygons);
+
     menu.addSeparator();
 
     // Create action for replacing an object with a template
@@ -614,6 +718,8 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
     Utils::setThemeIcon(removeAction, "edit-delete");
     Utils::setThemeIcon(propertiesAction, "document-properties");
 
+    ActionManager::applyMenuExtensions(&menu, MenuIds::mapViewObjects);
+
     QAction *action = menu.exec(screenPos);
     if (!action)
         return;
@@ -631,3 +737,5 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
         mapDocument()->setSelectedObjects(selectedObjectsCopy);
     }
 }
+
+#include "moc_abstractobjecttool.cpp"

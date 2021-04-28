@@ -80,3 +80,5 @@ TilesetFormat *findSupportingTilesetFormat(const QString &fileName)
 }
 
 } // namespace Tiled
+
+#include "moc_tilesetformat.cpp"

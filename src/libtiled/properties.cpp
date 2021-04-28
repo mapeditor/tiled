@@ -227,3 +227,5 @@ void initializeMetatypes()
 }
 
 } // namespace Tiled
+
+#include "moc_properties.cpp"

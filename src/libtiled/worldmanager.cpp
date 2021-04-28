@@ -200,18 +200,17 @@ std::unique_ptr<World> WorldManager::privateLoadWorld(const QString &fileName,
 
 World *WorldManager::addEmptyWorld(const QString &fileName, QString *errorString)
 {
-    World *world = new World();
+    std::unique_ptr<World> world { new World() };
     world->fileName = fileName;
     world->onlyShowAdjacentMaps = false;
 
     if (mWorlds.contains(fileName)) {
-        if (errorString) {
+        if (errorString)
             *errorString = QLatin1String("World already loaded");
-        }
         return nullptr;
     }
 
-    mWorlds.insert(fileName, world);
+    mWorlds.insert(fileName, world.release());
 
     if (saveWorld(fileName, errorString)) {
         emit worldsChanged();
@@ -615,3 +614,5 @@ QString World::displayName(const QString &fileName)
 }
 
 } // namespace Tiled
+
+#include "moc_worldmanager.cpp"

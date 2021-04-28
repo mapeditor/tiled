@@ -22,6 +22,7 @@
 
 #include "scriptmanager.h"
 
+#include <QBuffer>
 #include <QCoreApplication>
 #include <QJSEngine>
 
@@ -52,6 +53,16 @@ ScriptImage::ScriptImage(const QString &fileName, const QByteArray &format, QObj
     : QObject(parent)
     , mImage(fileName, format.isEmpty() ? nullptr : format.data())
 {}
+
+QByteArray ScriptImage::saveToData(const QByteArray &format, int quality)
+{
+    QByteArray ba;
+    QBuffer buffer(&ba);
+    buffer.open(QIODevice::WriteOnly);
+    if (mImage.save(&buffer, format, quality))
+        return ba;
+    return QByteArray();
+}
 
 QJSValue ScriptImage::colorTable() const
 {
@@ -114,3 +125,5 @@ ScriptImage *ScriptImage::mirrored(bool horiz, bool vert) const
 }
 
 } // namespace Tiled
+
+#include "moc_scriptimage.cpp"

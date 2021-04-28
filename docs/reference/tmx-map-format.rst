@@ -1,7 +1,7 @@
 TMX Map Format
 ==============
 
-**Version 1.4**
+**Version 1.5**
 
 TMX and TSX are `Tiled <http://www.mapeditor.org>`__'s own formats for storing
 tile maps and tilesets, based on XML. TMX provides a flexible way to describe a
@@ -169,7 +169,7 @@ an ``<image>`` tag.
 
 Can contain at most one: :ref:`tmx-image`, :ref:`tmx-tileoffset`,
 :ref:`tmx-grid` (since 1.0), :ref:`tmx-properties`, :ref:`tmx-terraintypes`,
-:ref:`tmx-wangsets` (since 1.1),
+:ref:`tmx-wangsets` (since 1.1), :ref:`tmx-tileset-transformations` (since 1.5)
 
 Can contain any number: :ref:`tmx-tileset-tile`
 
@@ -244,6 +244,20 @@ Can contain any number: :ref:`tmx-terrain`
    visually.
 
 Can contain at most one: :ref:`tmx-properties`
+
+.. _tmx-tileset-transformations:
+
+<transformations>
+~~~~~~~~~~~~~~~~~
+
+This element is used to describe which transformations can be applied to the
+tiles (e.g. to extend a Wang set by transforming existing tiles).
+
+- **hflip:** Whether the tiles in this set can be flipped horizontally (default 0)
+- **vflip:** Whether the tiles in this set can be flipped vertically (default 0)
+- **rotate:** Whether the tiles in this set can be rotated in 90 degree increments (default 0)
+- **preferuntransformed:** Whether untransformed tiles remain preferred, otherwise
+  transformed tiles are used to produce more variations (default 0)
 
 .. _tmx-tileset-tile:
 
@@ -343,15 +357,9 @@ associating it with a certain Wang ID.
    Wang ID was saved as a 32-bit unsigned integer stored in the format
    ``0xCECECECE`` (where each C is a corner color and each E is an edge color,
    in reverse order)."
--  **hflip:** Whether the tile is flipped horizontally. This only affects
-   the tile image, it does not change the meaning of the wangid. See
-   :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
--  **vflip:** Whether the tile is flipped vertically. This only affects
-   the tile image, it does not change the meaning of the wangid. See
-   :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
--  **dflip:** Whether the tile is flipped on its diagonal. This only affects
-   the tile image, it does not change the meaning of the wangid. See
-   :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
+-  *hflip:* Whether the tile is flipped horizontally (removed in Tiled 1.5).
+-  *vflip:* Whether the tile is flipped vertically (removed in Tiled 1.5).
+-  *dflip:* Whether the tile is flipped on its diagonal (removed in Tiled 1.5).
 
 .. _tmx-layer:
 
@@ -372,11 +380,13 @@ tiles.
 -  **height:** The height of the layer in tiles. Always the same as the map height for fixed-size maps.
 -  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to 1.
 -  **visible:** Whether the layer is shown (1) or hidden (0). Defaults to 1.
--  **tintcolor:** A color that is multiplied with any tiles drawn by this layer in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
+-  **tintcolor:** A :ref:`tint color <tint-color>` that is multiplied with any tiles drawn by this layer in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
 -  **offsetx:** Horizontal offset for this layer in pixels. Defaults to 0.
    (since 0.14)
 -  **offsety:** Vertical offset for this layer in pixels. Defaults to 0.
    (since 0.14)
+-  **parallaxx:** Horizontal :ref:`parallax factor <parallax-factor>` for this layer. Defaults to 1. (since 1.5)
+-  **parallaxy:** Vertical :ref:`parallax factor <parallax-factor>` for this layer. Defaults to 1. (since 1.5)
 
 Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-data`
 

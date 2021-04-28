@@ -138,3 +138,5 @@ void EditableObjectGroup::setColor(const QColor &color)
 }
 
 } // namespace Tiled
+
+#include "moc_editableobjectgroup.cpp"

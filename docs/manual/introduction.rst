@@ -20,7 +20,7 @@ distance and their rendering order can be configured.
 The primary tool for editing :ref:`tile layers <tile-layer-introduction>`
 is a stamp brush that allows efficient painting and copying of tile
 areas. It also supports drawing lines and circles. In addition, there
-are several selection tools and a tool that does :doc:`automatic terrain transitions <using-the-terrain-tool>`.
+are several selection tools and a tool that does :doc:`automatic terrain transitions <terrain>`.
 Finally, it can apply changes based on :doc:`pattern-matching <automapping>`
 to automate parts of your work.
 
@@ -45,7 +45,7 @@ Getting Started
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.4</div>
+   <div class="new new-prev">Since Tiled 1.4</div>
 
 Setting up a New Project
 ~~~~~~~~~~~~~~~~~~~~~~~~

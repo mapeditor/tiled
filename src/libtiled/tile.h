@@ -41,41 +41,7 @@
 namespace Tiled {
 
 class ObjectGroup;
-class Terrain;
 class Tileset;
-
-/**
- * Convenience function for creating tile terrain information.
- */
-inline unsigned makeTerrain(int id)
-{
-    id &= 0xFF;
-    return id << 24 | id << 16 | id << 8 | id;
-}
-
-/**
- * Convenience function for creating tile terrain information.
- */
-inline unsigned makeTerrain(int topLeft,
-                            int topRight,
-                            int bottomLeft,
-                            int bottomRight)
-{
-    return (topLeft & 0xFF) << 24 |
-           (topRight & 0xFF) << 16 |
-           (bottomLeft & 0xFF) << 8 |
-           (bottomRight & 0xFF);
-}
-
-/**
- * Returns the given \a terrain with the \a corner modified to \a terrainId.
- */
-inline unsigned setTerrainCorner(unsigned terrain, int corner, int terrainId)
-{
-    unsigned mask = 0xFF << (3 - corner) * 8;
-    unsigned insert = terrainId << (3 - corner) * 8;
-    return (terrain & ~mask) | (insert & mask);
-}
 
 /**
  * A single frame of an animated tile.
@@ -122,14 +88,6 @@ public:
     const QString &type() const;
     void setType(const QString &type);
 
-    Terrain *terrainAtCorner(int corner) const;
-
-    int cornerTerrainId(int corner) const;
-    void setCornerTerrainId(int corner, int terrainId);
-
-    inline unsigned terrain() const;
-    void setTerrain(unsigned terrain);
-
     qreal probability() const;
     void setProbability(qreal probability);
 
@@ -156,7 +114,6 @@ private:
     QUrl mImageSource;
     LoadingStatus mImageStatus;
     QString mType;
-    unsigned mTerrain;
     qreal mProbability;
     std::unique_ptr<ObjectGroup> mObjectGroup;
 
@@ -256,31 +213,6 @@ inline const QString &Tile::type() const
 inline void Tile::setType(const QString &type)
 {
     mType = type;
-}
-
-/**
- * Returns the terrain id at a given corner.
- */
-inline int Tile::cornerTerrainId(int corner) const
-{
-    unsigned t = (terrain() >> (3 - corner)*8) & 0xFF;
-    return t == 0xFF ? -1 : int(t);
-}
-
-/**
- * Set the terrain type of a given corner.
- */
-inline void Tile::setCornerTerrainId(int corner, int terrainId)
-{
-    setTerrain(setTerrainCorner(mTerrain, corner, terrainId));
-}
-
-/**
- * Returns the terrain for each corner of this tile.
- */
-inline unsigned Tile::terrain() const
-{
-    return mTerrain;
 }
 
 /**

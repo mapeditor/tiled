@@ -21,6 +21,8 @@
 #include "scriptmanager.h"
 
 #include "documentmanager.h"
+#include "editablegrouplayer.h"
+#include "editableimagelayer.h"
 #include "editablemap.h"
 #include "editablemapobject.h"
 #include "editableobjectgroup.h"
@@ -44,6 +46,7 @@
 #include "scriptfileinfo.h"
 #include "scriptimage.h"
 #include "scriptmodule.h"
+#include "scriptprocess.h"
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"
@@ -91,6 +94,7 @@ ScriptManager::ScriptManager(QObject *parent)
 {
     qRegisterMetaType<Cell>();
     qRegisterMetaType<EditableAsset*>();
+    qRegisterMetaType<EditableGroupLayer*>();
     qRegisterMetaType<EditableLayer*>();
     qRegisterMetaType<EditableMap*>();
     qRegisterMetaType<EditableMapObject*>();
@@ -180,15 +184,13 @@ QJSValue ScriptManager::evaluateFile(const QString &fileName)
     if (!fromUtf8(bytes, script))
         script = QTextCodec::codecForUtfText(bytes)->toUnicode(bytes);
 #else
-    // Workaround for Qt 6.0 Alpha bug (QTBUG-87466)
-//    auto encoding = QStringConverter::encodingForData(bytes.constData(), bytes.size());
-//    QStringDecoder decoder(encoding.value_or(QStringConverter::Encoding::Utf8));
-//    script = decoder.decode(bytes);
-//    if (decoder.hasError()) {
-//        Tiled::ERROR(tr("Error decoding file: %1").arg(fileName));
-//        return QJSValue();
-//    }
-    script = QString::fromUtf8(bytes);
+    auto encoding = QStringConverter::encodingForData(bytes.constData(), bytes.size());
+    QStringDecoder decoder(encoding.value_or(QStringConverter::Utf8));
+    script = decoder.decode(bytes);
+    if (decoder.hasError()) {
+        Tiled::ERROR(tr("Error decoding file: %1").arg(fileName));
+        return QJSValue();
+    }
 #endif
 
     Tiled::INFO(tr("Evaluating '%1'").arg(fileName));
@@ -314,20 +316,23 @@ void ScriptManager::initialize()
     QJSValue globalObject = mEngine->globalObject();
     globalObject.setProperty(QStringLiteral("tiled"), mEngine->newQObject(mModule));
 #if QT_VERSION >= 0x050800
-    globalObject.setProperty(QStringLiteral("TextFile"), mEngine->newQMetaObject<ScriptTextFile>());
     globalObject.setProperty(QStringLiteral("BinaryFile"), mEngine->newQMetaObject<ScriptBinaryFile>());
+    globalObject.setProperty(QStringLiteral("GroupLayer"), mEngine->newQMetaObject<EditableGroupLayer>());
+    globalObject.setProperty(QStringLiteral("Image"), mEngine->newQMetaObject<ScriptImage>());
+    globalObject.setProperty(QStringLiteral("ImageLayer"), mEngine->newQMetaObject<EditableImageLayer>());
     globalObject.setProperty(QStringLiteral("Layer"), mEngine->newQMetaObject<EditableLayer>());
     globalObject.setProperty(QStringLiteral("MapObject"), mEngine->newQMetaObject<EditableMapObject>());
     globalObject.setProperty(QStringLiteral("ObjectGroup"), mEngine->newQMetaObject<EditableObjectGroup>());
+    globalObject.setProperty(QStringLiteral("TextFile"), mEngine->newQMetaObject<ScriptTextFile>());
     globalObject.setProperty(QStringLiteral("Tile"), mEngine->newQMetaObject<EditableTile>());
     globalObject.setProperty(QStringLiteral("TileLayer"), mEngine->newQMetaObject<EditableTileLayer>());
     globalObject.setProperty(QStringLiteral("TileMap"), mEngine->newQMetaObject<EditableMap>());
     globalObject.setProperty(QStringLiteral("Tileset"), mEngine->newQMetaObject<EditableTileset>());
     globalObject.setProperty(QStringLiteral("WangSet"), mEngine->newQMetaObject<EditableWangSet>());
-    globalObject.setProperty(QStringLiteral("Image"), mEngine->newQMetaObject<ScriptImage>());
 #endif
 
     registerFileInfo(mEngine);
+    registerProcess(mEngine);
 
     loadExtensions();
 }
@@ -368,3 +373,5 @@ void ScriptManager::refreshExtensionsPaths()
 }
 
 } // namespace Tiled
+
+#include "moc_scriptmanager.cpp"

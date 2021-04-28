@@ -28,7 +28,6 @@
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "properties.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -46,7 +45,10 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     QVariantMap mapVariant;
 
     mapVariant[QStringLiteral("type")] = QLatin1String("map");
-    mapVariant[QStringLiteral("version")] = (mVersion == 2) ? 1.4 : 1.1;
+    if (mVersion == 2)
+        mapVariant[QStringLiteral("version")] = QStringLiteral("1.6");
+    else
+        mapVariant[QStringLiteral("version")] = 1.1;
     mapVariant[QStringLiteral("tiledversion")] = QCoreApplication::applicationVersion();
     mapVariant[QStringLiteral("orientation")] = orientationToString(map.orientation());
     mapVariant[QStringLiteral("renderorder")] = renderOrderToString(map.renderOrder());
@@ -162,7 +164,10 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QStringLiteral("type")] = QLatin1String("tileset");
 
         // Include version in external tilesets
-        tilesetVariant[QStringLiteral("version")] = (mVersion == 2) ? 1.4 : 1.1;
+        if (mVersion == 2)
+            tilesetVariant[QStringLiteral("version")] = QStringLiteral("1.6");
+        else
+            tilesetVariant[QStringLiteral("version")] = 1.1;
         tilesetVariant[QStringLiteral("tiledversion")] = QCoreApplication::applicationVersion();
     }
 
@@ -228,8 +233,18 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QStringLiteral("imageheight")] = tileset.imageHeight();
     }
 
-    // Write the properties, terrain, external image, object group and
-    // animation for those tiles that have them.
+    const auto transformationFlags = tileset.transformationFlags();
+    if (transformationFlags) {
+        tilesetVariant[QStringLiteral("transformations")] = QVariantMap {
+            { QStringLiteral("hflip"), transformationFlags.testFlag(Tileset::AllowFlipHorizontally) },
+            { QStringLiteral("vflip"), transformationFlags.testFlag(Tileset::AllowFlipVertically) },
+            { QStringLiteral("rotate"), transformationFlags.testFlag(Tileset::AllowRotate) },
+            { QStringLiteral("preferuntransformed"), transformationFlags.testFlag(Tileset::PreferUntransformed) },
+        };
+    }
+
+    // Write the properties, external image, object group and animation for
+    // those tiles that have them.
 
     // Used for version 1
     QVariantMap tilePropertiesVariant;
@@ -254,12 +269,6 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
 
         if (!tile->type().isEmpty())
             tileVariant[QStringLiteral("type")] = tile->type();
-        if (tile->terrain() != 0xFFFFFFFF) {
-            QVariantList terrainIds;
-            for (int j = 0; j < 4; ++j)
-                terrainIds << QVariant(tile->cornerTerrainId(j));
-            tileVariant[QStringLiteral("terrain")] = terrainIds;
-        }
         if (tile->probability() != 1.0)
             tileVariant[QStringLiteral("probability")] = tile->probability();
         if (!tile->imageSource().isEmpty()) {
@@ -304,21 +313,6 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QStringLiteral("tiles")] = tilesVariantMap;
     else if (!tilesVariant.empty())
         tilesetVariant[QStringLiteral("tiles")] = tilesVariant;
-
-    // Write terrains
-    if (tileset.terrainCount() > 0) {
-        QVariantList terrainsVariant;
-        for (int i = 0; i < tileset.terrainCount(); ++i) {
-            Terrain *terrain = tileset.terrain(i);
-            const Properties &properties = terrain->properties();
-            QVariantMap terrainVariant;
-            terrainVariant[QStringLiteral("name")] = terrain->name();
-            terrainVariant[QStringLiteral("tile")] = terrain->imageTileId();
-            addProperties(terrainVariant, properties);
-            terrainsVariant << terrainVariant;
-        }
-        tilesetVariant[QStringLiteral("terrains")] = terrainsVariant;
-    }
 
     // Write the Wang sets
     if (tileset.wangSetCount() > 0) {
@@ -383,10 +377,7 @@ QVariant MapToVariantConverter::toVariant(const WangSet &wangSet) const
             wangIdVariant.append(QVariant(wangTile.wangId().indexColor(i)));
 
         wangTileVariant[QStringLiteral("wangid")] = wangIdVariant;
-        wangTileVariant[QStringLiteral("tileid")] = wangTile.tile()->id();
-        wangTileVariant[QStringLiteral("hflip")] = wangTile.flippedHorizontally();
-        wangTileVariant[QStringLiteral("vflip")] = wangTile.flippedVertically();
-        wangTileVariant[QStringLiteral("dflip")] = wangTile.flippedAntiDiagonally();
+        wangTileVariant[QStringLiteral("tileid")] = wangTile.tileId();
 
         wangTileVariants.append(wangTileVariant);
     }
@@ -734,6 +725,12 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
         layerVariant[QStringLiteral("offsetx")] = offset.x();
         layerVariant[QStringLiteral("offsety")] = offset.y();
     }
+
+    const QPointF parallaxFactor = layer.parallaxFactor();
+    if (parallaxFactor.x() != 1.0)
+        layerVariant[QStringLiteral("parallaxx")] = parallaxFactor.x();
+    if (parallaxFactor.y() != 1.0)
+        layerVariant[QStringLiteral("parallaxy")] = parallaxFactor.y();
 
     if (layer.tintColor().isValid())
         layerVariant[QStringLiteral("tintcolor")] = colorToString(layer.tintColor());

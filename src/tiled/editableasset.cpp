@@ -123,3 +123,5 @@ void EditableAsset::redo()
 }
 
 } // namespace Tiled
+
+#include "moc_editableasset.cpp"
