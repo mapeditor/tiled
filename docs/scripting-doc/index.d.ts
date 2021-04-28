@@ -52,6 +52,8 @@ interface ObjectRef {
     id: number;
 }
 
+
+
 interface Menu {
   /**
    * ID of a registered action that the menu item will represent.
@@ -320,8 +322,65 @@ interface Action {
   toggle(): void;
 }
 
-declare class ObjectGroup {
+declare class ObjectGroup extends Layer{
+  /**
+   * Array of all objects on this layer.
+   */
+  readonly objects : MapObject[]
 
+  /**
+   * Number of objects on this layer.
+   */
+  readonly objectCount : number
+
+  /**
+   * Color of shape and point objects on this layer (when not set by object type).
+   */
+  color : color
+
+  /**
+   * Constructs a new object layer, which can be added to a TileMap.
+   * @param name
+   */
+  constructor(name? : string)
+
+  /**
+   * Returns a reference to the object at the given index. When the object is removed, the reference turns into a standalone copy of the object.
+   * @param index
+   */
+  objectAt(index : number) : MapObject
+
+  /**
+   * Removes the object at the given index.
+   * @param index
+   */
+  removeObjectAt(index : number) : void
+
+  /**
+   * Removes the given object from this layer. The object reference turns into a standalone copy of the object.
+   * @param object
+   */
+  removeObject(object : MapObject) : void
+
+  /**
+   * Inserts the object at the given index. The object can’t already be part of a layer.
+   * @param index
+   * @param object
+   */
+  insertObjectAt(index : number, object : MapObject) : void
+
+  /**
+   * Adds the given object to the layer. The object can’t already be part of a layer.
+   * @param object
+   */
+  addObject(object : MapObject) : void
+
+}
+
+type TiledObjectPropertyValue = number | string | boolean | ObjectRef | FilePath | MapObject | undefined
+
+interface TiledObjectProperties {
+  [name:string]:TiledObjectPropertyValue
 }
 
 /**
@@ -349,7 +408,7 @@ declare class TiledObject {
    * `object` properties are returned as {@see MapObject} when possible,
    * or {@see ObjectRef} when the object could not be found.
    */
-  property(name: string): any;
+  property(name: string): TiledObjectPropertyValue;
 
   /**
    * Sets the value of the custom property with the given name. Supported
@@ -361,7 +420,7 @@ declare class TiledObject {
    *
    * *Note:* Support for setting `color` properties is currently missing.
    */
-  setProperty(name: string, value: any): void;
+  setProperty(name: string, value: TiledObjectPropertyValue): void;
 
   /**
    * Returns all custom properties set on this object.
@@ -369,13 +428,13 @@ declare class TiledObject {
    * Modifications to the properties will not affect the original object.
    * Does not include inherited values (see {@see resolvedProperties}).
    */
-  properties(): Object;
+  properties(): TiledObjectProperties;
 
   /**
    * Replaces all currently set custom properties with a new set of
    * properties.
    */
-  setProperties(properties: Object): void;
+  setProperties(properties: TiledObjectProperties): void;
 
   /**
    * Removes the custom property with the given name.
@@ -387,14 +446,14 @@ declare class TiledObject {
    * `undefined` if no such property is set. Includes values inherited
    * from object types, templates and tiles where applicable.
    */
-  resolvedProperty(name: string): any;
+  resolvedProperty(name: string): TiledObjectPropertyValue;
 
   /**
    * Returns all custom properties set on this object. Modifications to
    * the properties will not affect the original object. Includes values
    * inherited from object types, templates and tiles where applicable.
    */
-  resolvedProperties(): Object;
+  resolvedProperties(): TiledObjectProperties;
 }
 
 
@@ -407,6 +466,43 @@ declare namespace MapObject {
   const Ellipse: ObjectShape;
   const Text: ObjectShape;
   const Point: ObjectShape;
+}
+
+interface Font {
+  /**
+   * The font family.
+   */
+  family : string
+
+  /**
+   * Font size in pixels.
+   */
+  pixelSize : number
+
+  /**
+   * Whether the font is bold.
+   */
+  bold : boolean
+
+  /**
+   * Whether the font is italic.
+   */
+  italic : boolean
+
+  /**
+   * Whether the text is underlined.
+   */
+  underline : boolean
+
+  /**
+   * Whether the text is striked through.
+   */
+  strikeOut : boolean
+
+  /**
+   * Whether to use kerning when rendering the text.
+   */
+  kerning : boolean
 }
 
 declare class MapObject extends TiledObject {
@@ -483,7 +579,7 @@ declare class MapObject extends TiledObject {
   /**
    * The font of a text object.
    */
-  font: string;
+  font: Font;
 
   /**
    * The alignment of a text object.
@@ -504,7 +600,7 @@ declare class MapObject extends TiledObject {
   /**
    * Tile of the object.
    */
-  tile: string;
+  tile: Tile;
 
   /**
    * Whether the tile is flipped horizontally.
@@ -532,6 +628,12 @@ declare class MapObject extends TiledObject {
    * standalone object).
    */
   readonly map: TileMap;
+
+  /**
+   * Constructs a new map object, which can be added to an ObjectGroup.
+   * @param name
+   */
+  constructor(name? : string)
 }
 
 /**
@@ -1036,9 +1138,94 @@ interface MapFormat {
   outputFiles?: (map: TileMap, fileName: string) => string[];
 }
 
-interface MapEditor {}
+interface MapEditor {
+  /**
+   * Access the Tilesets view
+   */
+  readonly tilesetsView: TilesetsView
+}
 
-interface Layer extends TiledObject {
+interface TilesetsView {
+  /**
+   * Access or change the currently displayed tileset
+   */
+  currentTileset: Tileset
+  /**
+   * A list of the tiles that are selected in the current tileset.
+   */
+  selectedTiles: Tile[]
+}
+
+interface frame {}
+interface Image {}
+
+declare class Tile extends TiledObject{
+  /**
+   * ID of this tile within its tileset.
+   */
+  readonly id : number
+
+  /**
+   * Width of the tile in pixels.
+   */
+  readonly width : number
+
+  /**
+   * Height of the tile in pixels.
+   */
+  readonly height : number
+
+  /**
+   * Size of the tile in pixels.
+   */
+  readonly size : size
+
+  /**
+   * Type of the tile.
+   */
+  type : string
+
+  /**
+   * File name of the tile image (when the tile is part of an image collection tileset).
+   */
+  imageFileName : string
+
+  /**
+   * Probability that the tile gets chosen relative to other tiles.
+   */
+  probability : number
+
+  /**
+   * The ObjectGroup associated with the tile in case collision shapes were defined. Returns null if no collision shapes were defined for this tile.
+   */
+  objectGroup : ObjectGroup
+
+  /**
+   * This tile’s animation as an array of frames.
+   */
+  frames : frame[]
+
+  /**
+   * Indicates whether this tile is animated.
+   */
+  readonly animated : boolean
+
+  /**
+   * The tileset of the tile.
+   */
+  readonly tileset : Tileset
+
+  /**
+   * Sets the image of this tile.
+   *
+   * Warning: This function has no undo and does not affect the saved tileset!
+   * @param image
+   */
+  setImage(image : Image) : void
+
+}
+
+declare class Layer extends TiledObject {
   /**
    * Unique (map-wide) ID of the layer
    *
@@ -1107,7 +1294,113 @@ interface Layer extends TiledObject {
   readonly isImageLayer: boolean;
 }
 
+
+declare namespace TileMap {
+  interface Orientation {}
+  interface LayerDataFormat {}
+  interface RenderOrder {}
+  interface StaggerAxis {}
+  interface StaggerIndex {}
+}
+
+interface SelectedArea {}
+
 declare class TileMap extends Asset {
+  /**
+   * Width of the map in tiles (only relevant for non-infinite maps).
+   */
+  width : number
+
+  /**
+   * Height of the map in tiles (only relevant for non-infinite maps).
+   */
+  height : number
+
+  /**
+   * Size of the map in tiles (only relevant for non-infinite maps).
+   */
+  readonly size : size
+
+  /**
+   * Tile width (used by tile layers).
+   */
+  tileWidth : number
+
+  /**
+   * Tile height (used by tile layers).
+   */
+  tileHeight : number
+
+  /**
+   * Whether this map is infinite.
+   */
+  infinite : boolean
+
+  /**
+   * Length of the side of a hexagonal tile (used by tile layers on hexagonal maps).
+   */
+  hexSideLength : number
+
+  /**
+   * For staggered and hexagonal maps, determines which axis (X or Y) is staggered.
+   */
+  staggerAxis : TileMap.StaggerAxis
+
+  /**
+   * General map orientation
+   */
+  orientation : TileMap.Orientation
+
+  /**
+   * Tile rendering order (only implemented for orthogonal maps)
+   */
+  renderOrder : TileMap.RenderOrder
+
+  /**
+   * For staggered and hexagonal maps, determines whether the even or odd indexes along the staggered axis are shifted.
+   */
+  staggerIndex : TileMap.StaggerIndex
+
+  /**
+   * Background color of the map.
+   */
+  backgroundColor : color
+
+  /**
+   * The format in which the layer data is stored, taken into account by TMX, JSON and Lua map formats.
+   */
+  layerDataFormat : TileMap.LayerDataFormat
+
+  /**
+   * Number of top-level layers the map has.
+   */
+  readonly layerCount : number
+
+  /**
+   * The list of tilesets referenced by this map. To determine which tilesets are actually used, call usedTilesets().
+   */
+  tilesets : Tileset[]
+
+  /**
+   * The selected area of tiles.
+   */
+  selectedArea : SelectedArea
+
+  /**
+   * The current layer.
+   */
+  currentLayer : Layer
+
+  /**
+   * Selected layers.
+   */
+  selectedLayers : Layer[]
+
+  /**
+   * Selected objects.
+   */
+  selectedObjects : MapObject[]
+
   constructor();
 
   public autoMap(rulesFule?: string): void;
@@ -1182,7 +1475,210 @@ declare class TileMap extends Asset {
   public pixelToTile(position: point): point;
 }
 
-interface Tileset {}
+interface cell {}
+
+declare class TileLayer extends Layer {
+  /**
+   * Width of the layer in tiles (only relevant for non-infinite maps).
+   */
+  width : number
+
+  /**
+   * Height of the layer in tiles (only relevant for non-infinite maps).
+   */
+  height : number
+
+  /**
+   * Size of the layer in tiles (has width and height members) (only relevant for non-infinite maps).
+   */
+  size : size
+
+  /**
+   * Constructs a new tile layer, which can be added to a TileMap.
+   * @param name
+   */
+  constructor(name? : string)
+
+  /**
+   * Returns the region of the layer that is covered with tiles.
+   */
+  region() : region
+
+  /**
+   * Resizes the layer, erasing the part of the contents that falls outside of the layer’s new size. The offset parameter can be used to shift the contents by a certain distance in tiles before applying the resize.
+   * @param size
+   * @param offset
+   */
+  resize(size : size, offset : point) : void
+
+  /**
+   * Returns the value of the cell at the given position. Can be used to query the flags and the tile ID, but does not currently allow getting a tile reference.
+   * @param x
+   * @param y
+   */
+  cellAt(x : number, y : number) : cell
+
+  /**
+   * Returns the flags used for the tile at the given position.
+   * @param x
+   * @param y
+   */
+  flagsAt(x : number, y : number) : number
+
+  /**
+   * Returns the tile used at the given position, or null for empty spaces.
+   * @param x
+   * @param y
+   */
+  tileAt(x : number, y : number) : Tile
+
+  /**
+   * Returns an object that enables making modifications to the tile layer.
+   */
+  edit() : TileLayerEdit
+
+}
+
+interface TileLayerEdit {
+  /**
+   * The target layer of this edit object.
+   */
+  readonly target : TileLayer
+
+  /**
+   * Whether applied edits are mergeable with previous edits. Starts out as false and is automatically set to true by apply().
+   */
+  mergeable : boolean
+
+  /**
+   * Sets the tile at the given location, optionally specifying tile flags.
+   * @param x
+   * @param y
+   * @param tile
+   * @param flags
+   */
+  setTile(x : number, y : number, tile : Tile , flags? : number) : void
+
+  /**
+   * Applies all changes made through this object. This object can be reused to make further
+   */
+  apply() : void
+
+
+}
+
+interface WangSet {}
+
+declare namespace Tileset {
+  interface Orientation {}
+  interface Alignment {}
+}
+interface color {}
+
+declare class Tileset extends Asset {
+
+  /**
+   * Name of the tileset.
+   */
+  name : string
+
+  /**
+   * The file name of the image used by this tileset. Empty in case of image collection tilesets.
+   */
+  image : string
+
+  /**
+   * Array of all tiles in this tileset. Note that the index of a tile in this array does not always match with its ID.
+   */
+  readonly tiles : Tile[]
+
+  /**
+   * Array of all Wang sets in this tileset.
+   */
+  readonly wangSets : WangSet[]
+
+  /**
+   * The number of tiles in this tileset.
+   */
+  tileCount : number
+
+  /**
+   * The ID of the next tile that would be added to this tileset. All existing tiles have IDs that are lower than this ID.
+   */
+  nextTileId : number
+
+  /**
+   * Tile width for tiles in this tileset in pixels.
+   */
+  tileWidth : number
+
+  /**
+   * Tile Height for tiles in this tileset in pixels.
+   */
+  tileHeight : number
+
+  /**
+   * Tile size for tiles in this tileset in pixels.
+   */
+  tileSize : size
+
+  /**
+   * Width of the tileset image in pixels.
+   */
+  readonly imageWidth : number
+
+  /**
+   * Height of the tileset image in pixels.
+   */
+  readonly imageHeight : number
+
+  /**
+   * Size of the tileset image in pixels.
+   */
+  readonly imageSize : size
+
+  /**
+   * Spacing between tiles in this tileset in pixels.
+   */
+  readonly tileSpacing : number
+
+  /**
+   * Margin around the tileset in pixels (only used at the top and left sides of the tileset image).
+   */
+  readonly margin : number
+
+  /**
+   * The alignment to use for tile objects (when Unspecified, uses Bottom alignment on isometric maps and BottomLeft alignment for all other maps).
+   */
+  objectAlignment : Tileset.Alignment
+
+  /**
+   * Offset in pixels that is applied when tiles from this tileset are rendered.
+   */
+  tileOffset : point
+
+  /**
+   * The orientation of this tileset (used when rendering overlays and in the tile collision editor).
+   */
+  orientation : Tileset.Orientation
+
+  /**
+   * Background color for this tileset in the Tilesets view.
+   */
+  backgroundColor : color
+
+  /**
+   * Whether this tileset is a collection of images (same as checking whether image is an empty string).
+   */
+  readonly isCollection : boolean
+
+  /**
+   * Selected tiles (in the tileset editor).
+   */
+  selectedTiles : Tile[]
+
+  // Functions missing.
+}
 
 interface TilesetFormat {
   /**
