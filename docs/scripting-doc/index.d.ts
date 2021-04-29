@@ -1637,27 +1637,27 @@ interface cell {
   /**
    * Whether the cell is empty.
    */
-  empty : bool
+  empty : boolean
 
   /**
    * Whether the tile is flipped horizontally.
    */
-  flippedHorizontally : bool
+  flippedHorizontally : boolean
 
   /**
    * Whether the tile is flipped vertically.
    */
-  flippedVertically : bool
+  flippedVertically : boolean
 
   /**
    * Whether the tile is flipped anti-diagonally.
    */
-  flippedAntiDiagonally : bool
+  flippedAntiDiagonally : boolean
 
   /**
    * Whether the tile is rotated by 120 degrees (for hexagonal maps, the anti-diagonal flip is interpreted as a 60-degree rotation).
    */
-  rotatedHexagonal120 : bool
+  rotatedHexagonal120 : boolean
 }
 
 declare class TileLayer extends Layer {
