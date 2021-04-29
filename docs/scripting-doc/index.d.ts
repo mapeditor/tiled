@@ -646,11 +646,8 @@ declare class MapObject extends TiledObject {
 }
 
 /**
- * Inherits `script-object`{.interpreted-text role="ref"}.
- *
  * Represents any top-level data type that can be saved to a file.
- * Currently either a `script-map`{.interpreted-text role="ref"} or a
- * `script-tileset`{.interpreted-text role="ref"}.
+ * Currently either a [[TileMap]] or a [[Tileset]].
  *
  * For assets that are loaded in the editor, all modifications and
  * modifications to their contained parts create undo commands. This
@@ -1747,26 +1744,11 @@ interface TileLayerEdit {
   apply() : void
 }
 
-declare namespace WangSet {
-  type Type = number
-
-  /**
-   * Wang set only uses edges.
-   */
-  const Edge: Type
-
-  /**
-   * Wang set only uses corners.
-   */
-  const Corner: Type
-
-  /**
-   * Wang set uses both corners and edges.
-   */
-  const Mixed: Type
-}
-
 declare class WangSet {
+  static readonly Edge: unique symbol;
+  static readonly Corner: unique symbol;
+  static readonly Mixed: unique symbol;
+
   /**
    * Name of the Wang set.
    */
@@ -1775,7 +1757,7 @@ declare class WangSet {
   /**
    * Type of the Wang set.
    */
-  type : WangSet.Type
+  type : typeof WangSet.Edge | typeof WangSet.Corner | typeof WangSet.Mixed;
 
   /**
    * The tile used to represent the Wang set.

@@ -14,5 +14,6 @@ npx typedoc \
         --disableSources \
         --theme $website_root/docs/typedoc_theme \
         --highlightTheme dark-plus \
-        --out $website_root/docs/scripting index.d.ts
+        --out $website_root/docs/scripting index.d.ts \
+        $2
 
