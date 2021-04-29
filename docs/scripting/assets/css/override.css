@@ -80,6 +80,12 @@
 .tsd-signatures .tsd-signature.current {
   background-color: #4e4e4e;
 }
+.tsd-signature-symbol {
+  color: white;
+}
+.tsd-kind-type-literal {
+  border: none;
+}
 .tsd-navigation.secondary ul.current a {
   border-left: none;
   border-radius: 5px;

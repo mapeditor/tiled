@@ -614,11 +614,11 @@
 								</div>
 								<p>Example function that changes visibility of multiple layers in one
 								step:</p>
-								<pre><code class="language-js"><span style="color: #001080">tileMap</span><span style="color: #000000">.</span><span style="color: #795E26">macro</span><span style="color: #000000">((</span><span style="color: #001080">visible</span><span style="color: #000000"> ? </span><span style="color: #A31515">&quot;Show&quot;</span><span style="color: #000000"> : </span><span style="color: #A31515">&quot;Hide&quot;</span><span style="color: #000000">) + </span><span style="color: #A31515">&quot; Selected Layers&quot;</span><span style="color: #000000">, </span><span style="color: #0000FF">function</span><span style="color: #000000">() {</span>
-<span style="color: #000000">    </span><span style="color: #001080">tileMap</span><span style="color: #000000">.</span><span style="color: #001080">selectedLayers</span><span style="color: #000000">.</span><span style="color: #795E26">forEach</span><span style="color: #000000">(</span><span style="color: #0000FF">function</span><span style="color: #000000">(</span><span style="color: #001080">layer</span><span style="color: #000000">) {</span>
-<span style="color: #000000">        </span><span style="color: #001080">layer</span><span style="color: #000000">.</span><span style="color: #001080">visible</span><span style="color: #000000"> = </span><span style="color: #001080">visible</span>
-<span style="color: #000000">    })</span>
-<span style="color: #000000">})</span>
+								<pre><code class="language-js"><span style="color: #9CDCFE">tileMap</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">macro</span><span style="color: #D4D4D4">((</span><span style="color: #9CDCFE">visible</span><span style="color: #D4D4D4"> ? </span><span style="color: #CE9178">&quot;Show&quot;</span><span style="color: #D4D4D4"> : </span><span style="color: #CE9178">&quot;Hide&quot;</span><span style="color: #D4D4D4">) + </span><span style="color: #CE9178">&quot; Selected Layers&quot;</span><span style="color: #D4D4D4">, </span><span style="color: #569CD6">function</span><span style="color: #D4D4D4">() {</span>
+<span style="color: #D4D4D4">    </span><span style="color: #9CDCFE">tileMap</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">selectedLayers</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">forEach</span><span style="color: #D4D4D4">(</span><span style="color: #569CD6">function</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">layer</span><span style="color: #D4D4D4">) {</span>
+<span style="color: #D4D4D4">        </span><span style="color: #9CDCFE">layer</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">visible</span><span style="color: #D4D4D4"> = </span><span style="color: #9CDCFE">visible</span>
+<span style="color: #D4D4D4">    })</span>
+<span style="color: #D4D4D4">})</span>
 </code></pre>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
