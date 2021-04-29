@@ -1176,7 +1176,6 @@ interface frame {
    */
   duration : number
 }
-interface Image {}
 
 declare class Tile extends TiledObject{
   /**
@@ -1240,7 +1239,7 @@ declare class Tile extends TiledObject{
    * Warning: This function has no undo and does not affect the saved tileset!
    * @param image
    */
-  setImage(image : Image) : void
+  setImage(image : TiledImage) : void
 }
 
 declare class Layer extends TiledObject {
@@ -1939,7 +1938,7 @@ declare class Tileset extends Asset {
    *
    * Warning: This function has no undo!
    */
-  public loadFromImage(image : Image, source?: string) : void
+  public loadFromImage(image : TiledImage, source?: string) : void
 
   /**
    * Adds a new tile to this tileset and returns it. Only works for image collection tilesets.
