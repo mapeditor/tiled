@@ -92,6 +92,7 @@ declare namespace Qt {
     width: number,
     height: number
   ): rect;
+  export function size(width: number, height: number): size;
 
   type Alignment = number;
 
@@ -1164,8 +1165,17 @@ interface TilesetsView {
   selectedTiles: Tile[]
 }
 
-interface frame {}
-interface Image {}
+interface frame {
+  /**
+   * The local tile ID used to represent the frame.
+   */
+  tileId : number
+
+  /**
+   * Duration of the frame in milliseconds.
+   */
+  duration : number
+}
 
 declare class Tile extends TiledObject{
   /**
@@ -1229,8 +1239,7 @@ declare class Tile extends TiledObject{
    * Warning: This function has no undo and does not affect the saved tileset!
    * @param image
    */
-  setImage(image : Image) : void
-
+  setImage(image : TiledImage) : void
 }
 
 declare class Layer extends TiledObject {
@@ -1311,7 +1320,54 @@ declare namespace TileMap {
   interface StaggerIndex {}
 }
 
-interface SelectedArea {}
+interface SelectedArea {
+  readonly boundingRect: rect;
+
+  /**
+   * Returns the selected region.
+   */
+  get() : region
+
+  /**
+   * Sets the selected area to the given rectangle.
+   */
+  set(rect : rect) : void
+
+  /**
+   * Sets the selected area to the given region.
+   */
+  set(region : region) : void
+
+  /**
+   * Adds the given rectangle to the selected area.
+   */
+  add(rect : rect) : void
+
+  /**
+   * Adds the given region to the selected area.
+   */
+  add(region : region) : void
+
+  /**
+   * Subtracts the given rectangle from the selected area.
+   */
+  subtract(rect : rect) : void
+
+  /**
+   * Subtracts the given region from the selected area.
+   */
+  subtract(region : region) : void
+
+  /**
+   * Sets the selected area to the intersection of the current selected area and the given rectangle.
+   */
+  intersect(rect : rect) : void
+
+  /**
+   * Sets the selected area to the intersection of the current selected area and the given region.
+   */
+  intersect(region : region) : void
+}
 
 declare class TileMap extends Asset {
   /**
@@ -1411,24 +1467,113 @@ declare class TileMap extends Asset {
 
   constructor();
 
+  /**
+   * Applies Automapping using the given rules file, or using the default rules file is none is given.
+   *
+   * This operation can only be applied to maps loaded from a file.
+   */
   public autoMap(rulesFule?: string): void;
+
+  /**
+   * Applies Automapping in the given region using the given rules file, or using the default rules file is none is given.
+   *
+   * This operation can only be applied to maps loaded from a file.
+   */
   public autoMap(region: region | rect, rulesFile?: string): void;
+
+  /**
+   * Sets the size of the map in tiles. This does not affect the contents of the map.
+   *
+   * See also resize.
+   */
   public setSize(width: number, height: number): void;
+
+  /**
+   * Sets the tile size of the map in pixels. This affects the rendering of all tile layers.
+   */
   public setTileSize(width: number, height: number): void;
+
+  /**
+   * Returns a reference to the top-level layer at the given index. When the layer gets removed from the map, the reference changes to a standalone copy of the layer.
+   */
   public layerAt(index: number): Layer;
+
+  /**
+   * Removes the top-level layer at the given index. When a reference to the layer still exists, that reference becomes a standalone copy of the layer.
+   */
   public removeLayerAt(index: number): void;
+
+  /**
+   * Removes the given layer from the map. The reference to the layer becomes a standalone copy.
+   */
   public removeLayer(layer: Layer): void;
+
+  /**
+   * Inserts the layer at the given index. The layer can’t already be part of a map.
+   */
   public insertLayerAt(index: number, layer: Layer): void;
+
+  /**
+   * Adds the layer to the map, above all existing layers. The layer can’t already be part of a map.
+   */
   public addLayer(layer: Layer): void;
+
+  /**
+   * Adds the given tileset to the list of tilesets referenced by this map. Returns true if the tileset was added, or false if the tileset was already referenced by this map.
+   */
   public addTileset(tileset: Tileset): boolean;
+
+  /**
+   * Replaces all occurrences of oldTileset with newTileset. Returns true on success, or false when either the old tileset was not referenced by the map, or when the new tileset was already referenced by the map.
+   */
   public replaceTileset(oldTileset: Tileset, newTileset: Tileset): boolean;
+
+  /**
+   * Removes the given tileset from the list of tilesets referenced by this map. Returns true on success, or false when the given tileset was not referenced by this map or when the tileset was still in use by a tile layer or tile object.
+   */
   public removeTileset(tileset: Tileset): boolean;
+
+  /**
+   * Returns the list of tilesets actually used by this map. This is generally a subset of the tilesets referenced by the map (the TileMap.tilesets property).
+   */
   public usedTilesets(): Tileset[];
+
+  /**
+   * Merges the tile layers in the given map with this one. If only a single tile layer exists in the given map, it will be merged with the currentLayer.
+   *
+   * This operation can currently only be applied to maps loaded from a file.
+   *
+   * @param canJoin If true, the operation joins with the previous one on the undo stack when possible. Useful for reducing the amount of undo commands.
+   */
   public merge(map: TileMap, canJoin?: boolean): void;
+
+  /**
+   * Resizes the map to the given size, optionally applying an offset (in tiles).
+   *
+   * This operation can currently only be applied to maps loaded from a file.
+   *
+   * See also setSize.
+   */
   public resize(size: size, offset?: point, removeObjects?: boolean): void;
+
+  /**
+   * Converts the given position from screen to tile coordinates.
+   */
   public screenToTile(x: number, y: number): point;
+
+  /**
+   * Converts the given position from screen to tile coordinates.
+   */
   public screenToTile(position: point): point;
+
+  /**
+   * Converts the given position from tile to screen coordinates.
+   */
   public tileToScreen(x: number, y: number): point;
+
+  /**
+   * Converts the given position from tile to screen coordinates.
+   */
   public tileToScreen(position: point): point;
 
   /**
@@ -1483,7 +1628,37 @@ declare class TileMap extends Asset {
   public tileToPixel(position: point): point;
 }
 
-interface cell {}
+interface cell {
+  /**
+   * The local tile ID of the tile, or -1 if the cell is empty.
+   */
+  tileId : number
+
+  /**
+   * Whether the cell is empty.
+   */
+  empty : boolean
+
+  /**
+   * Whether the tile is flipped horizontally.
+   */
+  flippedHorizontally : boolean
+
+  /**
+   * Whether the tile is flipped vertically.
+   */
+  flippedVertically : boolean
+
+  /**
+   * Whether the tile is flipped anti-diagonally.
+   */
+  flippedAntiDiagonally : boolean
+
+  /**
+   * Whether the tile is rotated by 120 degrees (for hexagonal maps, the anti-diagonal flip is interpreted as a 60-degree rotation).
+   */
+  rotatedHexagonal120 : boolean
+}
 
 declare class TileLayer extends Layer {
   /**
@@ -1544,7 +1719,6 @@ declare class TileLayer extends Layer {
    * Returns an object that enables making modifications to the tile layer.
    */
   edit() : TileLayerEdit
-
 }
 
 interface TileLayerEdit {
@@ -1571,11 +1745,71 @@ interface TileLayerEdit {
    * Applies all changes made through this object. This object can be reused to make further
    */
   apply() : void
-
-
 }
 
-interface WangSet {}
+declare namespace WangSet {
+  type Type = number
+
+  /**
+   * Wang set only uses edges.
+   */
+  const Edge: Type
+
+  /**
+   * Wang set only uses corners.
+   */
+  const Corner: Type
+
+  /**
+   * Wang set uses both corners and edges.
+   */
+  const Mixed: Type
+}
+
+declare class WangSet {
+  /**
+   * Name of the Wang set.
+   */
+  name : string
+
+  /**
+   * Type of the Wang set.
+   */
+  type : WangSet.Type
+
+  /**
+   * The tile used to represent the Wang set.
+   */
+  imageTile : Tile
+
+  /**
+   * The number of colors used by this Wang set.
+   */
+  colorCount : number
+
+  /**
+   * The tileset to which this Wang set belongs.
+   */
+  readonly tileset : Tileset
+
+  /**
+   * Returns the current Wang ID associated with the given tile.
+   *
+   * The Wang ID is given by an array of 8 numbers, indicating the colors associated with each index in the following order: [Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left, TopLeft].
+   * A value of 0 indicates that no color is associated with a given index.
+   */
+  public wangId(tile : Tile) : number[]
+
+  /**
+   * Sets the Wang ID associated with the given tile.
+   *
+   * The Wang ID is given by an array of 8 numbers, indicating the colors associated with each index in the following order: [Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left, TopLeft].
+   * A value of 0 indicates that no color is associated with a given index.
+   *
+   * Make sure the Wang set color count is set before calling this function, because it will raise an error when the Wang ID refers to non-existing colors.
+   */
+  public setWangId(tile : Tile, wangId : number[]) : void
+}
 
 declare namespace Tileset {
   interface Orientation {}
@@ -1685,7 +1919,52 @@ declare class Tileset extends Asset {
    */
   selectedTiles : Tile[]
 
-  // Functions missing.
+  /**
+   * Constructs a new Tileset.
+   * @param name
+   */
+  constructor(name? : string)
+
+  /**
+   * Returns a reference to the tile with the given ID. Raises an error if no such tile exists. When the tile gets removed from the tileset, the reference changes to a standalone copy of the tile.
+   *
+   * Note that the tiles in a tileset are only guaranteed to have consecutive IDs for tileset-image based tilesets. For image collection tilesets there will be gaps when tiles have been removed from the tileset.
+   */
+  public tile(id : number) : Tile
+
+  /**
+   * Sets the tile size for this tileset. If an image has been specified as well, the tileset will be (re)loaded. Can’t be used on image collection tilesets.
+   */
+  public setTileSize(width : number, height : number) : void
+
+  /**
+   * Creates the tiles in this tileset by cutting them out of the given image, using the current tile size, tile spacing and margin parameters. These values should be set before calling this function.
+   *
+   * Optionally sets the source file of the image. This may be useful, but be careful since Tiled will try to reload the tileset from that source when the tileset parameters are changed.
+   *
+   * Warning: This function has no undo!
+   */
+  public loadFromImage(image : TiledImage, source?: string) : void
+
+  /**
+   * Adds a new tile to this tileset and returns it. Only works for image collection tilesets.
+   */
+  public addTile() : Tile
+
+  /**
+   * Removes the given tiles from this tileset. Only works for image collection tilesets.
+   */
+  public removeTiles(tiles : Tile[]) : void
+
+  /**
+   * Add a new Wang set to this tileset with the given name and type.
+   */
+  public addWangSet(name : string, type : number) : WangSet
+
+  /**
+   * Removes the given Wang set from this tileset.
+   */
+  public removeWangSet(wangSet : WangSet) : void
 }
 
 interface TilesetFormat {
@@ -1715,7 +1994,41 @@ interface TilesetFormat {
   write?: (tileset: Tileset, fileName: string) => string | undefined;
 }
 
-interface TilesetEditor {}
+interface MapView {
+  /**
+   * The scale of the view.
+   */
+  scale : number
+
+  /**
+   * The center of the view.
+   */
+  center : point
+
+  /**
+   * Centers the view at the given location in screen coordinates. Same as assigning to the center property.
+   */
+  centerOn(x : number, y : number) : void
+}
+
+interface TileCollisionEditor {
+  /**
+   * Selected objects.
+   */
+  selectedObjects : MapObject[]
+
+  /**
+   * The map view used by the Collision Editor.
+   */
+  view : MapView
+}
+
+interface TilesetEditor {
+  /**
+   * Access the collision editor within the tileset editor.
+   */
+  collisionEditor : TileCollisionEditor
+}
 
 interface Tool {
   /**
@@ -2142,7 +2455,7 @@ declare namespace tiled {
    *
    * @example
    * Example that produces a simple JSON representation of a map:
-   * ``` js
+   * ```js
    * var customMapFormat = {
    *     name: "Custom map format",
    *     extension: "custom",
@@ -2334,5 +2647,4 @@ declare class Process {
    * @param text
    */
   writeLine(text : string) : void
-
 }
