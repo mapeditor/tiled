@@ -13,7 +13,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>MapObject | Tiled Scripting API</title>
+	<title>MapView | Tiled Scripting API</title>
 </head>
 <body>
 <div class="headerbar-container">
@@ -75,93 +75,100 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="mapobject.html">MapObject</a>
+					<a href="mapview.html">MapView</a>
 				</li>
 			</ul>
-			<h1>Namespace MapObject</h1>
+			<h1>Interface MapView</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">MapView</span>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Type aliases</h3>
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias tsd-parent-kind-namespace"><a href="mapobject.html#objectshape" class="tsd-kind-icon">Object<wbr>Shape</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="mapview.html#center" class="tsd-kind-icon">center</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="mapview.html#scale" class="tsd-kind-icon">scale</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
-							<h3>Variables</h3>
+							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="mapobject.html#ellipse" class="tsd-kind-icon">Ellipse</a></li>
-								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="mapobject.html#point" class="tsd-kind-icon">Point</a></li>
-								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="mapobject.html#polygon" class="tsd-kind-icon">Polygon</a></li>
-								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="mapobject.html#polyline" class="tsd-kind-icon">Polyline</a></li>
-								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="mapobject.html#rectangle" class="tsd-kind-icon">Rectangle</a></li>
-								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="mapobject.html#text" class="tsd-kind-icon">Text</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="mapview.html#centeron" class="tsd-kind-icon">center<wbr>On</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Type aliases</h2>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-namespace">
-					<a name="objectshape" class="tsd-anchor"></a>
-					<h3>Object<wbr>Shape</h3>
-					<div class="tsd-signature tsd-kind-icon">Object<wbr>Shape<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="center" class="tsd-anchor"></a>
+					<h3>center</h3>
+					<div class="tsd-signature tsd-kind-icon">center<span class="tsd-signature-symbol">:</span> <a href="point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The center of the view.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="scale" class="tsd-anchor"></a>
+					<h3>scale</h3>
+					<div class="tsd-signature tsd-kind-icon">scale<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The scale of the view.</p>
+						</div>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Variables</h2>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
-					<a name="ellipse" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Ellipse</h3>
-					<div class="tsd-signature tsd-kind-icon">Ellipse<span class="tsd-signature-symbol">:</span> <a href="mapobject.html#objectshape" class="tsd-signature-type" data-tsd-kind="Type alias">ObjectShape</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
-					<a name="point" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Point</h3>
-					<div class="tsd-signature tsd-kind-icon">Point<span class="tsd-signature-symbol">:</span> <a href="mapobject.html#objectshape" class="tsd-signature-type" data-tsd-kind="Type alias">ObjectShape</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
-					<a name="polygon" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Polygon</h3>
-					<div class="tsd-signature tsd-kind-icon">Polygon<span class="tsd-signature-symbol">:</span> <a href="mapobject.html#objectshape" class="tsd-signature-type" data-tsd-kind="Type alias">ObjectShape</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
-					<a name="polyline" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Polyline</h3>
-					<div class="tsd-signature tsd-kind-icon">Polyline<span class="tsd-signature-symbol">:</span> <a href="mapobject.html#objectshape" class="tsd-signature-type" data-tsd-kind="Type alias">ObjectShape</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
-					<a name="rectangle" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Rectangle</h3>
-					<div class="tsd-signature tsd-kind-icon">Rectangle<span class="tsd-signature-symbol">:</span> <a href="mapobject.html#objectshape" class="tsd-signature-type" data-tsd-kind="Type alias">ObjectShape</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
-					<a name="text" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Text</h3>
-					<div class="tsd-signature tsd-kind-icon">Text<span class="tsd-signature-symbol">:</span> <a href="mapobject.html#objectshape" class="tsd-signature-type" data-tsd-kind="Type alias">ObjectShape</a></div>
-					<aside class="tsd-sources">
-					</aside>
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="centeron" class="tsd-anchor"></a>
+					<h3>center<wbr>On</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">center<wbr>On<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Centers the view at the given location in screen coordinates. Same as assigning to the center property.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>x: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>y: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -171,58 +178,28 @@
 					<li class=" ">
 						<a href="../index.html">Exports</a>
 					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="binaryfile.html">Binary<wbr>File</a>
-					</li>
-					<li class="current tsd-kind-namespace">
-						<a href="mapobject.html">Map<wbr>Object</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="qt.html">Qt</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="textfile.html">Text<wbr>File</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="tilemap.html">Tile<wbr>Map</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="tiledimage.html">Tiled<wbr>Image</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="tileset.html">Tileset</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="wangset.html">Wang<wbr>Set</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="tiled.html">tiled</a>
-					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
-						<a href="mapobject.html#objectshape" class="tsd-kind-icon">Object<wbr>Shape</a>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
+						<a href="mapview.html" class="tsd-kind-icon">Map<wbr>View</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="mapview.html#center" class="tsd-kind-icon">center</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="mapview.html#scale" class="tsd-kind-icon">scale</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="mapview.html#centeron" class="tsd-kind-icon">center<wbr>On</a>
+							</li>
+						</ul>
 					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="mapobject.html#ellipse" class="tsd-kind-icon">Ellipse</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="mapobject.html#point" class="tsd-kind-icon">Point</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="mapobject.html#polygon" class="tsd-kind-icon">Polygon</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="mapobject.html#polyline" class="tsd-kind-icon">Polyline</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="mapobject.html#rectangle" class="tsd-kind-icon">Rectangle</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="mapobject.html#text" class="tsd-kind-icon">Text</a>
-					</li>
+				</ul>
+				<ul class="after-current">
 				</ul>
 			</nav>
 		</div>

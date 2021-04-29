@@ -142,15 +142,22 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="tileset.html#addtile" class="tsd-kind-icon">add<wbr>Tile</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="tileset.html#addwangset" class="tsd-kind-icon">add<wbr>Wang<wbr>Set</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="tileset.html#loadfromimage" class="tsd-kind-icon">load<wbr>From<wbr>Image</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="tileset.html#macro" class="tsd-kind-icon">macro</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#properties" class="tsd-kind-icon">properties</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#property" class="tsd-kind-icon">property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#redo" class="tsd-kind-icon">redo</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#removeproperty" class="tsd-kind-icon">remove<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="tileset.html#removetiles" class="tsd-kind-icon">remove<wbr>Tiles</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="tileset.html#removewangset" class="tsd-kind-icon">remove<wbr>Wang<wbr>Set</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#resolvedproperties" class="tsd-kind-icon">resolved<wbr>Properties</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#resolvedproperty" class="tsd-kind-icon">resolved<wbr>Property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#setproperties" class="tsd-kind-icon">set<wbr>Properties</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="tileset.html#settilesize" class="tsd-kind-icon">set<wbr>Tile<wbr>Size</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="tileset.html#tile" class="tsd-kind-icon">tile</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#undo" class="tsd-kind-icon">undo</a></li>
 							</ul>
 						</section>
@@ -163,13 +170,26 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Tileset<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="tileset.html" class="tsd-signature-type" data-tsd-kind="Class">Tileset</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Tileset<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="tileset.html" class="tsd-signature-type" data-tsd-kind="Class">Tileset</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#constructor">constructor</a></p>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Constructs a new Tileset.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> name: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="tileset.html" class="tsd-signature-type" data-tsd-kind="Class">Tileset</a></h4>
 						</li>
 					</ul>
@@ -486,7 +506,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="wangsets" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> wang<wbr>Sets</h3>
-					<div class="tsd-signature tsd-kind-icon">wang<wbr>Sets<span class="tsd-signature-symbol">:</span> <a href="../interfaces/wangset.html" class="tsd-signature-type" data-tsd-kind="Interface">WangSet</a><span class="tsd-signature-symbol">[]</span></div>
+					<div class="tsd-signature tsd-kind-icon">wang<wbr>Sets<span class="tsd-signature-symbol">:</span> <a href="wangset.html" class="tsd-signature-type" data-tsd-kind="Class">WangSet</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -498,6 +518,83 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addtile" class="tsd-anchor"></a>
+					<h3>add<wbr>Tile</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Tile<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="tile.html" class="tsd-signature-type" data-tsd-kind="Class">Tile</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Adds a new tile to this tileset and returns it. Only works for image collection tilesets.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <a href="tile.html" class="tsd-signature-type" data-tsd-kind="Class">Tile</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addwangset" class="tsd-anchor"></a>
+					<h3>add<wbr>Wang<wbr>Set</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Wang<wbr>Set<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="wangset.html" class="tsd-signature-type" data-tsd-kind="Class">WangSet</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Add a new Wang set to this tileset with the given name and type.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>type: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="wangset.html" class="tsd-signature-type" data-tsd-kind="Class">WangSet</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="loadfromimage" class="tsd-anchor"></a>
+					<h3>load<wbr>From<wbr>Image</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">load<wbr>From<wbr>Image<span class="tsd-signature-symbol">(</span>image<span class="tsd-signature-symbol">: </span><a href="tiledimage.html" class="tsd-signature-type" data-tsd-kind="Class">TiledImage</a>, source<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates the tiles in this tileset by cutting them out of the given image, using the current tile size, tile spacing and margin parameters. These values should be set before calling this function.</p>
+								</div>
+								<p>Optionally sets the source file of the image. This may be useful, but be careful since Tiled will try to reload the tileset from that source when the tileset parameters are changed.</p>
+								<p>Warning: This function has no undo!</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>image: <a href="tiledimage.html" class="tsd-signature-type" data-tsd-kind="Class">TiledImage</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> source: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
 					<a name="macro" class="tsd-anchor"></a>
 					<h3>macro</h3>
@@ -657,6 +754,56 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removetiles" class="tsd-anchor"></a>
+					<h3>remove<wbr>Tiles</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Tiles<span class="tsd-signature-symbol">(</span>tiles<span class="tsd-signature-symbol">: </span><a href="tile.html" class="tsd-signature-type" data-tsd-kind="Class">Tile</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Removes the given tiles from this tileset. Only works for image collection tilesets.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>tiles: <a href="tile.html" class="tsd-signature-type" data-tsd-kind="Class">Tile</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removewangset" class="tsd-anchor"></a>
+					<h3>remove<wbr>Wang<wbr>Set</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Wang<wbr>Set<span class="tsd-signature-symbol">(</span>wangSet<span class="tsd-signature-symbol">: </span><a href="wangset.html" class="tsd-signature-type" data-tsd-kind="Class">WangSet</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Removes the given Wang set from this tileset.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>wangSet: <a href="wangset.html" class="tsd-signature-type" data-tsd-kind="Class">WangSet</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="resolvedproperties" class="tsd-anchor"></a>
 					<h3>resolved<wbr>Properties</h3>
@@ -765,6 +912,60 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="settilesize" class="tsd-anchor"></a>
+					<h3>set<wbr>Tile<wbr>Size</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Tile<wbr>Size<span class="tsd-signature-symbol">(</span>width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the tile size for this tileset. If an image has been specified as well, the tileset will be (re)loaded. Can’t be used on image collection tilesets.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>width: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>height: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="tile" class="tsd-anchor"></a>
+					<h3>tile</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">tile<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="tile.html" class="tsd-signature-type" data-tsd-kind="Class">Tile</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns a reference to the tile with the given ID. Raises an error if no such tile exists. When the tile gets removed from the tileset, the reference changes to a standalone copy of the tile.</p>
+								</div>
+								<p>Note that the tiles in a tileset are only guaranteed to have consecutive IDs for tileset-image based tilesets. For image collection tilesets there will be gaps when tiles have been removed from the tileset.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="tile.html" class="tsd-signature-type" data-tsd-kind="Class">Tile</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -888,6 +1089,15 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="tileset.html#wangsets" class="tsd-kind-icon">wang<wbr>Sets</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="tileset.html#addtile" class="tsd-kind-icon">add<wbr>Tile</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="tileset.html#addwangset" class="tsd-kind-icon">add<wbr>Wang<wbr>Set</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="tileset.html#loadfromimage" class="tsd-kind-icon">load<wbr>From<wbr>Image</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
 								<a href="tileset.html#macro" class="tsd-kind-icon">macro</a>
 							</li>
@@ -903,6 +1113,12 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="tileset.html#removeproperty" class="tsd-kind-icon">remove<wbr>Property</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="tileset.html#removetiles" class="tsd-kind-icon">remove<wbr>Tiles</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="tileset.html#removewangset" class="tsd-kind-icon">remove<wbr>Wang<wbr>Set</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="tileset.html#resolvedproperties" class="tsd-kind-icon">resolved<wbr>Properties</a>
 							</li>
@@ -914,6 +1130,12 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="tileset.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="tileset.html#settilesize" class="tsd-kind-icon">set<wbr>Tile<wbr>Size</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="tileset.html#tile" class="tsd-kind-icon">tile</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="tileset.html#undo" class="tsd-kind-icon">undo</a>
