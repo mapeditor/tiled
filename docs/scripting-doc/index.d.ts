@@ -1747,32 +1747,7 @@ interface TileLayerEdit {
   apply() : void
 }
 
-declare class WangSet {
-  /**
-   * Name of the Wang set.
-   */
-  name : string
-
-  /**
-   * Type of the Wang set.
-   */
-  type : Type
-
-  /**
-   * The tile used to represent the Wang set.
-   */
-  imageTile : Tile
-
-  /**
-   * The number of colors used by this Wang set.
-   */
-  colorCount : number
-
-  /**
-   * The tileset to which this Wang set belongs.
-   */
-  readonly tileset : Tileset
-
+declare namespace WangSet {
   type Type = number
 
   /**
@@ -1789,20 +1764,51 @@ declare class WangSet {
    * Wang set uses both corners and edges.
    */
   const Mixed: Type
+}
+
+declare class WangSet {
+  /**
+   * Name of the Wang set.
+   */
+  name : string
 
   /**
-   * Returns the current Wang ID associated with the given tile. The Wang ID is given by an array of 8 numbers, indicating the colors associated with each index in the following order: [Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left, TopLeft].
+   * Type of the Wang set.
+   */
+  type : WangSet.Type
+
+  /**
+   * The tile used to represent the Wang set.
+   */
+  imageTile : Tile
+
+  /**
+   * The number of colors used by this Wang set.
+   */
+  colorCount : number
+
+  /**
+   * The tileset to which this Wang set belongs.
+   */
+  readonly tileset : Tileset
+
+  /**
+   * Returns the current Wang ID associated with the given tile.
    *
+   * The Wang ID is given by an array of 8 numbers, indicating the colors associated with each index in the following order: [Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left, TopLeft].
    * A value of 0 indicates that no color is associated with a given index.
    */
-  public wangId(tile : Tile) : number[8]
+  public wangId(tile : Tile) : number[]
 
   /**
    * Sets the Wang ID associated with the given tile.
    *
+   * The Wang ID is given by an array of 8 numbers, indicating the colors associated with each index in the following order: [Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left, TopLeft].
+   * A value of 0 indicates that no color is associated with a given index.
+   *
    * Make sure the Wang set color count is set before calling this function, because it will raise an error when the Wang ID refers to non-existing colors.
    */
-  public setWangId(tile : Tile, wangId : number[8]) : void
+  public setWangId(tile : Tile, wangId : number[]) : void
 }
 
 declare namespace Tileset {
