@@ -924,11 +924,11 @@ declare namespace TiledImage {
 }
 
 /**
- * @since New in Tiled 1.5
- *
  * Can be used to create, load, save and modify images. Also useful when
  * writing an importer, where the image can be set on a tileset or its
  * tiles ({@see Tileset.loadFromImage} and {@see Tile.setImage}.
+ *
+ * @since 1.5
  */
 declare class TiledImage {
   /**
@@ -1246,7 +1246,7 @@ declare class Layer extends TiledObject {
   /**
    * Unique (map-wide) ID of the layer
    *
-   * @since Tiled 1.5
+   * @since 1.5
    */
   readonly id: number;
 
@@ -2185,6 +2185,7 @@ declare namespace tiled {
   /**
    * List of supported tileset format names. Use {@link tilesetFormat}
    * to get the corresponding format object to read and write files.
+   *
    * @since 1.4
    */
   export const tilesetFormats: string[];
@@ -2192,6 +2193,7 @@ declare namespace tiled {
   /**
    * List of supported map format names. Use {@link mapFormat} to get
    * the corresponding format object to read and write files.
+   *
    * @since 1.4
    */
   export const mapFormats: string[];
@@ -2538,6 +2540,8 @@ declare namespace tiled {
 
 /**
  * The Process class allows you to start processes, track their output, and so on.
+ *
+ * @since 1.5
  */
 declare class Process {
   /**
