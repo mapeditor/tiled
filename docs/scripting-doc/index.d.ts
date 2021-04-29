@@ -1,4 +1,4 @@
-declare const __filename: string;
+// declare const __filename: string; // collides with nodejs types
 
 interface rect {
   /**
@@ -53,8 +53,7 @@ interface ObjectRef {
 }
 
 
-
-interface Menu {
+interface MenuAction {
   /**
    * ID of a registered action that the menu item will represent.
    */
@@ -64,13 +63,17 @@ interface Menu {
    * ID of the action before which this menu item should be added
    * (optional).
    */
-  before: string;
+  before?: string;
+}
 
+interface MenuSeparator {
   /**
    * Set to `true` if this item is a menu separator (optional).
    */
   separator: boolean;
 }
+
+type Menu = MenuAction|MenuSeparator
 
 interface FilePath {
   url: string;
@@ -243,12 +246,17 @@ declare class BinaryFile {
   public readAll(): ArrayBuffer;
 
   /**
-   * Commits all written data to disk and closes the file. Should be called when writing to files
-   * in WriteOnly mode. Failing to call this function will result in cancelling the operation,
-   * unless safe writing to files is disabled.
+   * Writes data into the file at the current position.
    * @param data
    */
   public write(data: ArrayBuffer): void;
+
+  /**
+   * Commits all written data to disk and closes the file. Should be called when writing to files
+   * in WriteOnly mode. Failing to call this function will result in cancelling the operation,
+   * unless safe writing to files is disabled.
+   */
+  public commit(): void;
 
   /**
    * Closes the file. It is recommended to always call this function as soon as you are finished
@@ -791,7 +799,7 @@ interface FileInfo {
   /**
    * Concatenates the given paths using the `/` character.
    */
-  joinPaths(...paths) : string;
+  joinPaths(...paths:string[]) : string;
 
   /**
    * Returns the part of `filePath` that is not the file name, that is,
@@ -825,7 +833,7 @@ interface FileInfo {
 /**
  * Number of child layers the group layer has.
  */
-interface GroupLayer extends Layer {
+declare class GroupLayer extends Layer {
   /**
    * Number of child layers the group layer has.
    */
@@ -834,7 +842,7 @@ interface GroupLayer extends Layer {
   /**
    * Constructs a new group layer.
    */
-  constructor();
+  constructor()
 
   /**
    * Returns a reference to the child layer at the given index.
@@ -1454,25 +1462,25 @@ declare class TileMap extends Asset {
    * @param x
    * @param y
    */
-  public tileToPixel(x: number, y: number): point;
+  public pixelToTile(x: number, y: number): point;
 
   /**
    * Converts the given position from pixel to tile coordinates.
    * @param position
    */
-  public tileToPixel(position: point): point;
-
-  /**
-   * Converts the given position from tile to pixel coordinates.
-   * @param position
-   */
-  public pixelToTile(x: number, y: number): point;
-
-  /**
-   * Converts the given position from tile to pixel coordinates.
-   * @param position
-   */
   public pixelToTile(position: point): point;
+
+  /**
+   * Converts the given position from tile to pixel coordinates.
+   * @param position
+   */
+  public tileToPixel(x: number, y: number): point;
+
+  /**
+   * Converts the given position from tile to pixel coordinates.
+   * @param position
+   */
+  public tileToPixel(position: point): point;
 }
 
 interface cell {}
@@ -1530,7 +1538,7 @@ declare class TileLayer extends Layer {
    * @param x
    * @param y
    */
-  tileAt(x : number, y : number) : Tile
+  tileAt(x : number, y : number) : Tile | null
 
   /**
    * Returns an object that enables making modifications to the tile layer.
@@ -1758,7 +1766,7 @@ interface Tool {
   /**
    * Called when a key was pressed while the tool was active.
    */
-  keyPressed(key, modifiers): void;
+  keyPressed(key:string, modifiers:any): void;
 
   /**
    * Called when the mouse entered the map view.
@@ -1773,27 +1781,27 @@ interface Tool {
   /**
    * Called when the mouse position in the map scene changed.
    */
-  mouseMoved(x: number, y: number, modifiers): void;
+  mouseMoved(x: number, y: number, modifiers:any): void;
 
   /**
    * Called when a mouse button was pressed.
    */
-  mousePressed(button, x: number, y: number, modifiers): void;
+  mousePressed(button:any, x: number, y: number, modifiers:any): void;
 
   /**
    * Called when a mouse button was released.
    */
-  mouseReleased(button, x: number, y: number, modifiers): void;
+  mouseReleased(button:any, x: number, y: number, modifiers:any): void;
 
   /**
    * Called when a mouse button was double-clicked.
    */
-  mouseDoubleClicked(button, x: number, y: number, modifiers): void;
+  mouseDoubleClicked(button:any, x: number, y: number, modifiers:any): void;
 
   /**
    * Called when the active modifier keys changed.
    */
-  modifiersChanged(modifiers): void;
+  modifiersChanged(modifiers:any): void;
 
   /**
    * Called when the language was changed.
@@ -2213,4 +2221,118 @@ declare namespace tiled {
    * The currently active asset has changed.
    */
   export const activeAssetChanged: Signal<Asset>;
+}
+
+/**
+ * The Process class allows you to start processes, track their output, and so on.
+ */
+declare class Process {
+  /**
+   * The directory the process will be started in. This only has an effect if set before the process is started.
+   */
+  workingDirectory : string
+
+  /**
+   * True if there is no more data to be read from the process output, otherwise false.
+   */
+  readonly atEnd : boolean
+
+  /**
+   * The exit code of the process. This is needed for retrieving the exit code from processes started via start(), rather than exec().
+   */
+  readonly exitCode : number
+
+  /**
+   * Sets the text codec to codec. The codec is used for reading and writing from and to the process, respectively. Common codecs are supported, for example: “UTF-8”, “UTF-16”, and “ISO 8859-1”.
+   */
+  codec: string
+
+  /**
+   *   Allocates and returns a new Process object.
+   */
+  constructor()
+
+  /**
+   * Frees the resources associated with the process. It is recommended to always call this function as soon as you are finished with the process.
+   */
+  close() : void
+
+  /**
+   * Schedules the stdin channel of process to be closed. The channel will close once all data has been written to the process. After calling this function, any attempts to write to the process will do nothing.
+   */
+  closeWriteChannel() : void
+
+  /**
+   *   Executes the program at filePath with the given argument list and blocks until the process is finished. If an error occurs (for example, there is no executable file at filePath) and throwOnError is true (the default), then a JavaScript exception will be thrown. Otherwise, -1 will be returned in case of an error. The normal return code is the exit code of the process.
+   * @param filePath
+   * @param arguments
+   * @param throwOnError
+   */
+  exec(filePath : string, arguments : string[] , throwOnError? : boolean) : number
+
+  /**
+   * Returns the value of the variable varName in the process’ environment.
+   * @param name
+   */
+  getEnv(name : string) : string
+
+  /**
+   * Kills the process, causing it to exit immediately.
+   */
+  kill() : void
+
+  /**
+   * Reads and returns one line of text from the process output, without the newline character(s).
+   */
+  readLine() : string
+
+  /**
+   * Reads and returns all data from the process’ standard error channel.
+   */
+  readStdErr() : string
+
+  /**
+   * Reads and returns all data from the process’ standard output channel.
+   */
+  readStdOut() : string
+
+  /**
+   * Sets the value of variable varName to varValue in the process environment. This only has an effect if called before the process is started.
+   * @param varName
+   * @param varValue
+   */
+  setEnv(varName : string, varValue : string) : string
+
+  /**
+   *   Starts the program at filePath with the given list of arguments. Returns true if the process could be started and false otherwise.
+   *
+   *   Note: This call returns right after starting the process and should be used only if you need to interact with the process while it is running. Most of the time, you want to use exec() instead.
+   * @param filePath
+   * @param arguments
+   */
+  start(filePath : string, arguments : string[]) : boolean
+
+  /**
+   * Tries to terminate the process. This is not guaranteed to make the process exit immediately; if you need that, use kill().
+   */
+  terminate() : void
+
+  /**
+   *   Blocks until the process has finished or timeout milliseconds have passed (default is 30000). Returns true if the process has finished and false if the operation has timed out. Calling this function only makes sense for processes started via start() (as opposed to exec()).
+   * @param msecs
+   */
+  waitForFinished( msecs?:number ) : boolean
+
+  /**
+   * Writes text into the process’ input channel.
+   * @param text
+   */
+  write(text : string) : void
+
+  /**
+   * Writes text, followed by a newline character, into the process’ input channel.
+   * @param text
+   */
+  writeLine(text : string) : void
+
 }
