@@ -889,7 +889,7 @@ interface AspectRatio {}
 
 interface TransformationMode {}
 
-declare namespace TiledImage {
+declare namespace Image {
   const Format_Invalid: number;
   const Format_Mono: number;
   const Format_MonoLSB: number;
@@ -929,7 +929,7 @@ declare namespace TiledImage {
  * writing an importer, where the image can be set on a tileset or its
  * tiles ({@see Tileset.loadFromImage} and {@see Tile.setImage}.
  */
-declare class TiledImage {
+declare class Image {
   /**
    * Width of the image in pixels.
    */
@@ -1074,19 +1074,19 @@ declare class TiledImage {
   /**
    * Copies the given rectangle to a new image object.
    */
-  copy(x: number, y: number, width: number, height: number) : TiledImage;
+  copy(x: number, y: number, width: number, height: number) : Image;
 
   /**
    * Returns a scaled copy of this image. Default `aspectRatioMode`
    * behavior is to ignore the aspect ratio. Default `mode` is a fast
    * transformation.
    */
-  scaled(width: number, height: number, aspectRatioMode: AspectRatio, transformationMode: TransformationMode): TiledImage;
+  scaled(width: number, height: number, aspectRatioMode: AspectRatio, transformationMode: TransformationMode): Image;
 
   /**
    * Returns a mirrored copy of this image.
    */
-  mirrored(horizontal: boolean, vertical: boolean) : TiledImage;
+  mirrored(horizontal: boolean, vertical: boolean) : Image;
 
   readonly IgnoreAspectRatio: number;
   readonly KeepAspectRatio: number;
@@ -1113,7 +1113,7 @@ interface ImageLayer extends Layer {
    *
    * *Warning: This function has no undo!*
    */
-  loadFromImage(image: TiledImage, source?: string) : void;
+  loadFromImage(image: Image, source?: string) : void;
 }
 
 interface MapFormat {
@@ -1165,7 +1165,6 @@ interface TilesetsView {
 }
 
 interface frame {}
-interface Image {}
 
 declare class Tile extends TiledObject{
   /**
