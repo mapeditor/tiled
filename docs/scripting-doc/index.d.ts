@@ -2264,7 +2264,7 @@ declare class Process {
 
   /**
    *   Executes the program at filePath with the given argument list and blocks until the process is finished. If an error occurs (for example, there is no executable file at filePath) and throwOnError is true (the default), then a JavaScript exception will be thrown. Otherwise, -1 will be returned in case of an error. The normal return code is the exit code of the process.
-    * @param filePath
+   * @param filePath
    * @param arguments
    * @param throwOnError
    */
