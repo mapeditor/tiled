@@ -14,7 +14,7 @@
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/main.css">
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>Signal | Tiled Scripting API</title>
+	<title>Font | Tiled Scripting API</title>
 </head>
 <body>
 <div class="headerbar-container">
@@ -82,29 +82,21 @@
 						<a href="../index.html">Tiled Scripting API</a>
 					</li>
 					<li>
-						<a href="signal.html">Signal</a>
+						<a href="font.html">Font</a>
 					</li>
 				</ul>
-				<h1>Interface Signal&lt;Arg&gt;</h1>
+				<h1>Interface Font</h1>
 			</div>
 		</div>
 	</header>
 	<div class="container container-main">
 		<div class="row">
 			<div class="col-8 col-content">
-				<section class="tsd-panel tsd-type-parameters">
-					<h3>Type parameters</h3>
-					<ul class="tsd-type-parameters">
-						<li>
-							<h4>Arg</h4>
-						</li>
-					</ul>
-				</section>
 				<section class="tsd-panel tsd-hierarchy">
 					<h3>Hierarchy</h3>
 					<ul class="tsd-hierarchy">
 						<li>
-							<span class="target">Signal</span>
+							<span class="target">Font</span>
 						</li>
 					</ul>
 				</section>
@@ -113,92 +105,105 @@
 					<section class="tsd-panel tsd-index-panel">
 						<div class="tsd-index-content">
 							<section class="tsd-index-section ">
-								<h3>Methods</h3>
+								<h3>Properties</h3>
 								<ul class="tsd-index-list">
-									<li class="tsd-kind-method tsd-parent-kind-interface"><a href="signal.html#connect" class="tsd-kind-icon">connect</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-interface"><a href="signal.html#disconnect" class="tsd-kind-icon">disconnect</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="font.html#bold" class="tsd-kind-icon">bold</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="font.html#family" class="tsd-kind-icon">family</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="font.html#italic" class="tsd-kind-icon">italic</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="font.html#kerning" class="tsd-kind-icon">kerning</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="font.html#pixelsize" class="tsd-kind-icon">pixel<wbr>Size</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="font.html#strikeout" class="tsd-kind-icon">strike<wbr>Out</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-interface"><a href="font.html#underline" class="tsd-kind-icon">underline</a></li>
 								</ul>
 							</section>
 						</div>
 					</section>
 				</section>
 				<section class="tsd-panel-group tsd-member-group ">
-					<h2>Methods</h2>
-					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-						<a name="connect" class="tsd-anchor"></a>
-						<h3>connect</h3>
-						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-							<li class="tsd-signature tsd-kind-icon">connect<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Arg</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-						</ul>
-						<ul class="tsd-descriptions">
-							<li class="tsd-description">
-								<aside class="tsd-sources">
-								</aside>
-								<h4 class="tsd-parameters-title">Parameters</h4>
-								<ul class="tsd-parameters">
-									<li>
-										<h5>callback: <span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Arg</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
-										<ul class="tsd-parameters">
-											<li class="tsd-parameter-signature">
-												<ul class="tsd-signatures tsd-kind-type-literal">
-													<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Arg</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-												</ul>
-												<ul class="tsd-descriptions">
-													<li class="tsd-description">
-														<h4 class="tsd-parameters-title">Parameters</h4>
-														<ul class="tsd-parameters">
-															<li>
-																<h5>arg: <span class="tsd-signature-type">Arg</span></h5>
-															</li>
-														</ul>
-														<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-													</li>
-												</ul>
-											</li>
-										</ul>
-									</li>
-								</ul>
-								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-							</li>
-						</ul>
+					<h2>Properties</h2>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="bold" class="tsd-anchor"></a>
+						<h3>bold</h3>
+						<div class="tsd-signature tsd-kind-icon">bold<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Whether the font is bold.</p>
+							</div>
+						</div>
 					</section>
-					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-						<a name="disconnect" class="tsd-anchor"></a>
-						<h3>disconnect</h3>
-						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-							<li class="tsd-signature tsd-kind-icon">disconnect<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Arg</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-						</ul>
-						<ul class="tsd-descriptions">
-							<li class="tsd-description">
-								<aside class="tsd-sources">
-								</aside>
-								<h4 class="tsd-parameters-title">Parameters</h4>
-								<ul class="tsd-parameters">
-									<li>
-										<h5>callback: <span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Arg</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
-										<ul class="tsd-parameters">
-											<li class="tsd-parameter-signature">
-												<ul class="tsd-signatures tsd-kind-type-literal">
-													<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Arg</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-												</ul>
-												<ul class="tsd-descriptions">
-													<li class="tsd-description">
-														<h4 class="tsd-parameters-title">Parameters</h4>
-														<ul class="tsd-parameters">
-															<li>
-																<h5>arg: <span class="tsd-signature-type">Arg</span></h5>
-															</li>
-														</ul>
-														<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-													</li>
-												</ul>
-											</li>
-										</ul>
-									</li>
-								</ul>
-								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-							</li>
-						</ul>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="family" class="tsd-anchor"></a>
+						<h3>family</h3>
+						<div class="tsd-signature tsd-kind-icon">family<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>The font family.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="italic" class="tsd-anchor"></a>
+						<h3>italic</h3>
+						<div class="tsd-signature tsd-kind-icon">italic<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Whether the font is italic.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="kerning" class="tsd-anchor"></a>
+						<h3>kerning</h3>
+						<div class="tsd-signature tsd-kind-icon">kerning<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Whether to use kerning when rendering the text.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="pixelsize" class="tsd-anchor"></a>
+						<h3>pixel<wbr>Size</h3>
+						<div class="tsd-signature tsd-kind-icon">pixel<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Font size in pixels.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="strikeout" class="tsd-anchor"></a>
+						<h3>strike<wbr>Out</h3>
+						<div class="tsd-signature tsd-kind-icon">strike<wbr>Out<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Whether the text is striked through.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+						<a name="underline" class="tsd-anchor"></a>
+						<h3>underline</h3>
+						<div class="tsd-signature tsd-kind-icon">underline<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Whether the text is underlined.</p>
+							</div>
+						</div>
 					</section>
 				</section>
 			</div>
@@ -214,14 +219,29 @@
 					<ul class="before-current">
 					</ul>
 					<ul class="current">
-						<li class="current tsd-kind-interface tsd-has-type-parameter">
-							<a href="signal.html" class="tsd-kind-icon">Signal</a>
+						<li class="current tsd-kind-interface">
+							<a href="font.html" class="tsd-kind-icon">Font</a>
 							<ul>
-								<li class=" tsd-kind-method tsd-parent-kind-interface">
-									<a href="signal.html#connect" class="tsd-kind-icon">connect</a>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="font.html#bold" class="tsd-kind-icon">bold</a>
 								</li>
-								<li class=" tsd-kind-method tsd-parent-kind-interface">
-									<a href="signal.html#disconnect" class="tsd-kind-icon">disconnect</a>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="font.html#family" class="tsd-kind-icon">family</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="font.html#italic" class="tsd-kind-icon">italic</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="font.html#kerning" class="tsd-kind-icon">kerning</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="font.html#pixelsize" class="tsd-kind-icon">pixel<wbr>Size</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="font.html#strikeout" class="tsd-kind-icon">strike<wbr>Out</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-interface">
+									<a href="font.html#underline" class="tsd-kind-icon">underline</a>
 								</li>
 							</ul>
 						</li>

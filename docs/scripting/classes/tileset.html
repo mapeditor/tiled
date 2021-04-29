@@ -14,7 +14,7 @@
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/main.css">
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>Asset | Tiled Scripting API</title>
+	<title>Tileset | Tiled Scripting API</title>
 </head>
 <body>
 <div class="headerbar-container">
@@ -82,46 +82,24 @@
 						<a href="../index.html">Tiled Scripting API</a>
 					</li>
 					<li>
-						<a href="asset.html">Asset</a>
+						<a href="tileset.html">Tileset</a>
 					</li>
 				</ul>
-				<h1>Class Asset</h1>
+				<h1>Class Tileset</h1>
 			</div>
 		</div>
 	</header>
 	<div class="container container-main">
 		<div class="row">
 			<div class="col-8 col-content">
-				<section class="tsd-panel tsd-comment">
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Inherits <code>script-object</code>{.interpreted-text role=&quot;ref&quot;}.</p>
-						</div>
-						<p>Represents any top-level data type that can be saved to a file.
-							Currently either a <code>script-map</code>{.interpreted-text role=&quot;ref&quot;} or a
-						<code>script-tileset</code>{.interpreted-text role=&quot;ref&quot;}.</p>
-						<p>For assets that are loaded in the editor, all modifications and
-							modifications to their contained parts create undo commands. This
-							includes both modifying functions that are called as well as simply
-						assigning to a writable property.</p>
-					</div>
-				</section>
 				<section class="tsd-panel tsd-hierarchy">
 					<h3>Hierarchy</h3>
 					<ul class="tsd-hierarchy">
 						<li>
-							<a href="tiledobject.html" class="tsd-signature-type" data-tsd-kind="Class">TiledObject</a>
+							<a href="asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a>
 							<ul class="tsd-hierarchy">
 								<li>
-									<span class="target">Asset</span>
-									<ul class="tsd-hierarchy">
-										<li>
-											<a href="tilemap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a>
-										</li>
-										<li>
-											<a href="tileset.html" class="tsd-signature-type" data-tsd-kind="Class">Tileset</a>
-										</li>
-									</ul>
+									<span class="target">Tileset</span>
 								</li>
 							</ul>
 						</li>
@@ -134,33 +112,53 @@
 							<section class="tsd-index-section ">
 								<h3>Constructors</h3>
 								<ul class="tsd-index-list">
-									<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="asset.html#constructor" class="tsd-kind-icon">constructor</a></li>
+									<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#constructor" class="tsd-kind-icon">constructor</a></li>
 								</ul>
 							</section>
 							<section class="tsd-index-section ">
 								<h3>Properties</h3>
 								<ul class="tsd-index-list">
-									<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="asset.html#asset-1" class="tsd-kind-icon">asset</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-class"><a href="asset.html#filename" class="tsd-kind-icon">file<wbr>Name</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-class"><a href="asset.html#istilemap" class="tsd-kind-icon">is<wbr>Tile<wbr>Map</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-class"><a href="asset.html#istileset" class="tsd-kind-icon">is<wbr>Tileset</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-class"><a href="asset.html#modified" class="tsd-kind-icon">modified</a></li>
-									<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="asset.html#readonly" class="tsd-kind-icon">read<wbr>Only</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#asset" class="tsd-kind-icon">asset</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#backgroundcolor" class="tsd-kind-icon">background<wbr>Color</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#filename" class="tsd-kind-icon">file<wbr>Name</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#image" class="tsd-kind-icon">image</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#imageheight" class="tsd-kind-icon">image<wbr>Height</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#imagesize" class="tsd-kind-icon">image<wbr>Size</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#imagewidth" class="tsd-kind-icon">image<wbr>Width</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#iscollection" class="tsd-kind-icon">is<wbr>Collection</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#istilemap" class="tsd-kind-icon">is<wbr>Tile<wbr>Map</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#istileset" class="tsd-kind-icon">is<wbr>Tileset</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#margin" class="tsd-kind-icon">margin</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#modified" class="tsd-kind-icon">modified</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#name" class="tsd-kind-icon">name</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#nexttileid" class="tsd-kind-icon">next<wbr>Tile<wbr>Id</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#objectalignment" class="tsd-kind-icon">object<wbr>Alignment</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#orientation" class="tsd-kind-icon">orientation</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#readonly" class="tsd-kind-icon">read<wbr>Only</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#selectedtiles" class="tsd-kind-icon">selected<wbr>Tiles</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#tilecount" class="tsd-kind-icon">tile<wbr>Count</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#tileheight" class="tsd-kind-icon">tile<wbr>Height</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#tileoffset" class="tsd-kind-icon">tile<wbr>Offset</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#tilesize" class="tsd-kind-icon">tile<wbr>Size</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#tilespacing" class="tsd-kind-icon">tile<wbr>Spacing</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#tilewidth" class="tsd-kind-icon">tile<wbr>Width</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#tiles" class="tsd-kind-icon">tiles</a></li>
+									<li class="tsd-kind-property tsd-parent-kind-class"><a href="tileset.html#wangsets" class="tsd-kind-icon">wang<wbr>Sets</a></li>
 								</ul>
 							</section>
 							<section class="tsd-index-section ">
 								<h3>Methods</h3>
 								<ul class="tsd-index-list">
-									<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="asset.html#macro" class="tsd-kind-icon">macro</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="asset.html#properties" class="tsd-kind-icon">properties</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="asset.html#property" class="tsd-kind-icon">property</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-class"><a href="asset.html#redo" class="tsd-kind-icon">redo</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="asset.html#removeproperty" class="tsd-kind-icon">remove<wbr>Property</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="asset.html#resolvedproperties" class="tsd-kind-icon">resolved<wbr>Properties</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="asset.html#resolvedproperty" class="tsd-kind-icon">resolved<wbr>Property</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="asset.html#setproperties" class="tsd-kind-icon">set<wbr>Properties</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="asset.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a></li>
-									<li class="tsd-kind-method tsd-parent-kind-class"><a href="asset.html#undo" class="tsd-kind-icon">undo</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="tileset.html#macro" class="tsd-kind-icon">macro</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#properties" class="tsd-kind-icon">properties</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#property" class="tsd-kind-icon">property</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#redo" class="tsd-kind-icon">redo</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#removeproperty" class="tsd-kind-icon">remove<wbr>Property</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#resolvedproperties" class="tsd-kind-icon">resolved<wbr>Properties</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#resolvedproperty" class="tsd-kind-icon">resolved<wbr>Property</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#setproperties" class="tsd-kind-icon">set<wbr>Properties</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a></li>
+									<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tileset.html#undo" class="tsd-kind-icon">undo</a></li>
 								</ul>
 							</section>
 						</div>
@@ -172,14 +170,14 @@
 						<a name="constructor" class="tsd-anchor"></a>
 						<h3>constructor</h3>
 						<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-							<li class="tsd-signature tsd-kind-icon">new <wbr>Asset<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a></li>
+							<li class="tsd-signature tsd-kind-icon">new <wbr>Tileset<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="tileset.html" class="tsd-signature-type" data-tsd-kind="Class">Tileset</a></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="tiledobject.html">TiledObject</a>.<a href="tiledobject.html#constructor">constructor</a></p>
+									<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#constructor">constructor</a></p>
 								</aside>
-								<h4 class="tsd-returns-title">Returns <a href="asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a></h4>
+								<h4 class="tsd-returns-title">Returns <a href="tileset.html" class="tsd-signature-type" data-tsd-kind="Class">Tileset</a></h4>
 							</li>
 						</ul>
 					</section>
@@ -187,11 +185,11 @@
 				<section class="tsd-panel-group tsd-member-group ">
 					<h2>Properties</h2>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-						<a name="asset-1" class="tsd-anchor"></a>
+						<a name="asset" class="tsd-anchor"></a>
 						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> asset</h3>
 						<div class="tsd-signature tsd-kind-icon">asset<span class="tsd-signature-symbol">:</span> <a href="asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a></div>
 						<aside class="tsd-sources">
-							<p>Inherited from <a href="tiledobject.html">TiledObject</a>.<a href="tiledobject.html#asset">asset</a></p>
+							<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#asset-1">asset</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -200,10 +198,23 @@
 						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="backgroundcolor" class="tsd-anchor"></a>
+						<h3>background<wbr>Color</h3>
+						<div class="tsd-signature tsd-kind-icon">background<wbr>Color<span class="tsd-signature-symbol">:</span> <a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Background color for this tileset in the Tilesets view.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 						<a name="filename" class="tsd-anchor"></a>
 						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> file<wbr>Name</h3>
 						<div class="tsd-signature tsd-kind-icon">file<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#filename">fileName</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -212,10 +223,71 @@
 						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="image" class="tsd-anchor"></a>
+						<h3>image</h3>
+						<div class="tsd-signature tsd-kind-icon">image<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>The file name of the image used by this tileset. Empty in case of image collection tilesets.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="imageheight" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> image<wbr>Height</h3>
+						<div class="tsd-signature tsd-kind-icon">image<wbr>Height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Height of the tileset image in pixels.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="imagesize" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> image<wbr>Size</h3>
+						<div class="tsd-signature tsd-kind-icon">image<wbr>Size<span class="tsd-signature-symbol">:</span> <a href="../interfaces/size.html" class="tsd-signature-type" data-tsd-kind="Interface">size</a></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Size of the tileset image in pixels.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="imagewidth" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> image<wbr>Width</h3>
+						<div class="tsd-signature tsd-kind-icon">image<wbr>Width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Width of the tileset image in pixels.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="iscollection" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> is<wbr>Collection</h3>
+						<div class="tsd-signature tsd-kind-icon">is<wbr>Collection<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Whether this tileset is a collection of images (same as checking whether image is an empty string).</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 						<a name="istilemap" class="tsd-anchor"></a>
 						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> is<wbr>Tile<wbr>Map</h3>
 						<div class="tsd-signature tsd-kind-icon">is<wbr>Tile<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#istilemap">isTileMap</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -223,11 +295,12 @@
 							</div>
 						</div>
 					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 						<a name="istileset" class="tsd-anchor"></a>
 						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> is<wbr>Tileset</h3>
 						<div class="tsd-signature tsd-kind-icon">is<wbr>Tileset<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 						<aside class="tsd-sources">
+							<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#istileset">isTileset</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -236,14 +309,75 @@
 						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-						<a name="modified" class="tsd-anchor"></a>
-						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> modified</h3>
-						<div class="tsd-signature tsd-kind-icon">modified<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<a name="margin" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> margin</h3>
+						<div class="tsd-signature tsd-kind-icon">margin<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 						<aside class="tsd-sources">
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
+								<p>Margin around the tileset in pixels (only used at the top and left sides of the tileset image).</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+						<a name="modified" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> modified</h3>
+						<div class="tsd-signature tsd-kind-icon">modified<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<aside class="tsd-sources">
+							<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#modified">modified</a></p>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
 								<p>Whether the asset was modified after it was saved or loaded.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="name" class="tsd-anchor"></a>
+						<h3>name</h3>
+						<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Name of the tileset.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="nexttileid" class="tsd-anchor"></a>
+						<h3>next<wbr>Tile<wbr>Id</h3>
+						<div class="tsd-signature tsd-kind-icon">next<wbr>Tile<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>The ID of the next tile that would be added to this tileset. All existing tiles have IDs that are lower than this ID.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="objectalignment" class="tsd-anchor"></a>
+						<h3>object<wbr>Alignment</h3>
+						<div class="tsd-signature tsd-kind-icon">object<wbr>Alignment<span class="tsd-signature-symbol">:</span> <a href="../interfaces/tileset.alignment.html" class="tsd-signature-type" data-tsd-kind="Interface">Alignment</a></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>The alignment to use for tile objects (when Unspecified, uses Bottom alignment on isometric maps and BottomLeft alignment for all other maps).</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="orientation" class="tsd-anchor"></a>
+						<h3>orientation</h3>
+						<div class="tsd-signature tsd-kind-icon">orientation<span class="tsd-signature-symbol">:</span> <a href="../interfaces/tileset.orientation.html" class="tsd-signature-type" data-tsd-kind="Interface">Orientation</a></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>The orientation of this tileset (used when rendering overlays and in the tile collision editor).</p>
 							</div>
 						</div>
 					</section>
@@ -252,7 +386,7 @@
 						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> read<wbr>Only</h3>
 						<div class="tsd-signature tsd-kind-icon">read<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 						<aside class="tsd-sources">
-							<p>Inherited from <a href="tiledobject.html">TiledObject</a>.<a href="tiledobject.html#readonly">readOnly</a></p>
+							<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#readonly">readOnly</a></p>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
@@ -260,18 +394,127 @@
 							</div>
 						</div>
 					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="selectedtiles" class="tsd-anchor"></a>
+						<h3>selected<wbr>Tiles</h3>
+						<div class="tsd-signature tsd-kind-icon">selected<wbr>Tiles<span class="tsd-signature-symbol">:</span> <a href="tile.html" class="tsd-signature-type" data-tsd-kind="Class">Tile</a><span class="tsd-signature-symbol">[]</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Selected tiles (in the tileset editor).</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="tilecount" class="tsd-anchor"></a>
+						<h3>tile<wbr>Count</h3>
+						<div class="tsd-signature tsd-kind-icon">tile<wbr>Count<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>The number of tiles in this tileset.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="tileheight" class="tsd-anchor"></a>
+						<h3>tile<wbr>Height</h3>
+						<div class="tsd-signature tsd-kind-icon">tile<wbr>Height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Tile Height for tiles in this tileset in pixels.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="tileoffset" class="tsd-anchor"></a>
+						<h3>tile<wbr>Offset</h3>
+						<div class="tsd-signature tsd-kind-icon">tile<wbr>Offset<span class="tsd-signature-symbol">:</span> <a href="../interfaces/point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Offset in pixels that is applied when tiles from this tileset are rendered.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="tilesize" class="tsd-anchor"></a>
+						<h3>tile<wbr>Size</h3>
+						<div class="tsd-signature tsd-kind-icon">tile<wbr>Size<span class="tsd-signature-symbol">:</span> <a href="../interfaces/size.html" class="tsd-signature-type" data-tsd-kind="Interface">size</a></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Tile size for tiles in this tileset in pixels.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="tilespacing" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> tile<wbr>Spacing</h3>
+						<div class="tsd-signature tsd-kind-icon">tile<wbr>Spacing<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Spacing between tiles in this tileset in pixels.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="tilewidth" class="tsd-anchor"></a>
+						<h3>tile<wbr>Width</h3>
+						<div class="tsd-signature tsd-kind-icon">tile<wbr>Width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Tile width for tiles in this tileset in pixels.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="tiles" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> tiles</h3>
+						<div class="tsd-signature tsd-kind-icon">tiles<span class="tsd-signature-symbol">:</span> <a href="tile.html" class="tsd-signature-type" data-tsd-kind="Class">Tile</a><span class="tsd-signature-symbol">[]</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Array of all tiles in this tileset. Note that the index of a tile in this array does not always match with its ID.</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+						<a name="wangsets" class="tsd-anchor"></a>
+						<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> wang<wbr>Sets</h3>
+						<div class="tsd-signature tsd-kind-icon">wang<wbr>Sets<span class="tsd-signature-symbol">:</span> <a href="../interfaces/wangset.html" class="tsd-signature-type" data-tsd-kind="Interface">WangSet</a><span class="tsd-signature-symbol">[]</span></div>
+						<aside class="tsd-sources">
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Array of all Wang sets in this tileset.</p>
+							</div>
+						</div>
+					</section>
 				</section>
 				<section class="tsd-panel-group tsd-member-group ">
 					<h2>Methods</h2>
-					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
 						<a name="macro" class="tsd-anchor"></a>
 						<h3>macro</h3>
-						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
 							<li class="tsd-signature tsd-kind-icon">macro&lt;T&gt;<span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
+									<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#macro">macro</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -329,7 +572,7 @@
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="tiledobject.html">TiledObject</a>.<a href="tiledobject.html#properties">properties</a></p>
+									<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#properties">properties</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -351,7 +594,7 @@
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="tiledobject.html">TiledObject</a>.<a href="tiledobject.html#property">property</a></p>
+									<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#property">property</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -373,15 +616,16 @@
 							</li>
 						</ul>
 					</section>
-					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<a name="redo" class="tsd-anchor"></a>
 						<h3>redo</h3>
-						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 							<li class="tsd-signature tsd-kind-icon">redo<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
+									<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#redo">redo</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -403,7 +647,7 @@
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="tiledobject.html">TiledObject</a>.<a href="tiledobject.html#removeproperty">removeProperty</a></p>
+									<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#removeproperty">removeProperty</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -429,7 +673,7 @@
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="tiledobject.html">TiledObject</a>.<a href="tiledobject.html#resolvedproperties">resolvedProperties</a></p>
+									<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#resolvedproperties">resolvedProperties</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -451,7 +695,7 @@
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="tiledobject.html">TiledObject</a>.<a href="tiledobject.html#resolvedproperty">resolvedProperty</a></p>
+									<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#resolvedproperty">resolvedProperty</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -479,7 +723,7 @@
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="tiledobject.html">TiledObject</a>.<a href="tiledobject.html#setproperties">setProperties</a></p>
+									<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#setproperties">setProperties</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -506,7 +750,7 @@
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
-									<p>Inherited from <a href="tiledobject.html">TiledObject</a>.<a href="tiledobject.html#setproperty">setProperty</a></p>
+									<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#setproperty">setProperty</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -531,15 +775,16 @@
 							</li>
 						</ul>
 					</section>
-					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<a name="undo" class="tsd-anchor"></a>
 						<h3>undo</h3>
-						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 							<li class="tsd-signature tsd-kind-icon">undo<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
+									<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#undo">undo</a></p>
 								</aside>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
@@ -567,58 +812,118 @@
 					</ul>
 					<ul class="current">
 						<li class="current tsd-kind-class">
-							<a href="asset.html" class="tsd-kind-icon">Asset</a>
+							<a href="tileset.html" class="tsd-kind-icon">Tileset</a>
 							<ul>
 								<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-									<a href="asset.html#constructor" class="tsd-kind-icon">constructor</a>
+									<a href="tileset.html#constructor" class="tsd-kind-icon">constructor</a>
 								</li>
 								<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-									<a href="asset.html#asset-1" class="tsd-kind-icon">asset</a>
+									<a href="tileset.html#asset" class="tsd-kind-icon">asset</a>
 								</li>
 								<li class=" tsd-kind-property tsd-parent-kind-class">
-									<a href="asset.html#filename" class="tsd-kind-icon">file<wbr>Name</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-class">
-									<a href="asset.html#istilemap" class="tsd-kind-icon">is<wbr>Tile<wbr>Map</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-class">
-									<a href="asset.html#istileset" class="tsd-kind-icon">is<wbr>Tileset</a>
-								</li>
-								<li class=" tsd-kind-property tsd-parent-kind-class">
-									<a href="asset.html#modified" class="tsd-kind-icon">modified</a>
+									<a href="tileset.html#backgroundcolor" class="tsd-kind-icon">background<wbr>Color</a>
 								</li>
 								<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-									<a href="asset.html#readonly" class="tsd-kind-icon">read<wbr>Only</a>
+									<a href="tileset.html#filename" class="tsd-kind-icon">file<wbr>Name</a>
 								</li>
-								<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-									<a href="asset.html#macro" class="tsd-kind-icon">macro</a>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#image" class="tsd-kind-icon">image</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#imageheight" class="tsd-kind-icon">image<wbr>Height</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#imagesize" class="tsd-kind-icon">image<wbr>Size</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#imagewidth" class="tsd-kind-icon">image<wbr>Width</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#iscollection" class="tsd-kind-icon">is<wbr>Collection</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+									<a href="tileset.html#istilemap" class="tsd-kind-icon">is<wbr>Tile<wbr>Map</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+									<a href="tileset.html#istileset" class="tsd-kind-icon">is<wbr>Tileset</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#margin" class="tsd-kind-icon">margin</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+									<a href="tileset.html#modified" class="tsd-kind-icon">modified</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#name" class="tsd-kind-icon">name</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#nexttileid" class="tsd-kind-icon">next<wbr>Tile<wbr>Id</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#objectalignment" class="tsd-kind-icon">object<wbr>Alignment</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#orientation" class="tsd-kind-icon">orientation</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+									<a href="tileset.html#readonly" class="tsd-kind-icon">read<wbr>Only</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#selectedtiles" class="tsd-kind-icon">selected<wbr>Tiles</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#tilecount" class="tsd-kind-icon">tile<wbr>Count</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#tileheight" class="tsd-kind-icon">tile<wbr>Height</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#tileoffset" class="tsd-kind-icon">tile<wbr>Offset</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#tilesize" class="tsd-kind-icon">tile<wbr>Size</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#tilespacing" class="tsd-kind-icon">tile<wbr>Spacing</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#tilewidth" class="tsd-kind-icon">tile<wbr>Width</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#tiles" class="tsd-kind-icon">tiles</a>
+								</li>
+								<li class=" tsd-kind-property tsd-parent-kind-class">
+									<a href="tileset.html#wangsets" class="tsd-kind-icon">wang<wbr>Sets</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+									<a href="tileset.html#macro" class="tsd-kind-icon">macro</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-									<a href="asset.html#properties" class="tsd-kind-icon">properties</a>
+									<a href="tileset.html#properties" class="tsd-kind-icon">properties</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-									<a href="asset.html#property" class="tsd-kind-icon">property</a>
-								</li>
-								<li class=" tsd-kind-method tsd-parent-kind-class">
-									<a href="asset.html#redo" class="tsd-kind-icon">redo</a>
+									<a href="tileset.html#property" class="tsd-kind-icon">property</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-									<a href="asset.html#removeproperty" class="tsd-kind-icon">remove<wbr>Property</a>
+									<a href="tileset.html#redo" class="tsd-kind-icon">redo</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-									<a href="asset.html#resolvedproperties" class="tsd-kind-icon">resolved<wbr>Properties</a>
+									<a href="tileset.html#removeproperty" class="tsd-kind-icon">remove<wbr>Property</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-									<a href="asset.html#resolvedproperty" class="tsd-kind-icon">resolved<wbr>Property</a>
+									<a href="tileset.html#resolvedproperties" class="tsd-kind-icon">resolved<wbr>Properties</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-									<a href="asset.html#setproperties" class="tsd-kind-icon">set<wbr>Properties</a>
+									<a href="tileset.html#resolvedproperty" class="tsd-kind-icon">resolved<wbr>Property</a>
 								</li>
 								<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-									<a href="asset.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a>
+									<a href="tileset.html#setproperties" class="tsd-kind-icon">set<wbr>Properties</a>
 								</li>
-								<li class=" tsd-kind-method tsd-parent-kind-class">
-									<a href="asset.html#undo" class="tsd-kind-icon">undo</a>
+								<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+									<a href="tileset.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a>
+								</li>
+								<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+									<a href="tileset.html#undo" class="tsd-kind-icon">undo</a>
 								</li>
 							</ul>
 						</li>
