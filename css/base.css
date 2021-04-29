@@ -4,9 +4,11 @@
   box-sizing: border-box;
 }
 
+html, body, button, input, select, textarea {
+  font-family: 'Roboto', sans-serif;
+}
 html, body {
   margin: 0;
-  font-family: 'Roboto', sans-serif;
   line-height: 1.5;
   background-color: #3e3e3e;
   color: #d2d2d2;
@@ -114,12 +116,12 @@ iframe.video {
 .headerbar-container {
   background-color: #1e1e22;
 }
-footer {
+footer.media-content {
   margin-top: 3em;
   background-color: #1e1e22;
 }
 @media screen {
-  footer {
+  footer.media-content {
     box-shadow: 0 50vh 0 50vh #1e1e22;
   }
 }
@@ -127,7 +129,7 @@ footer.media-content {
   padding: 1em 0;
   text-align: left;
 }
-footer nav li {
+footer.media-content nav li {
   list-style-type: none;
 }
 .footer-content {

@@ -1,18 +1,104 @@
-.tsd-page-title {
-    padding: 20px 0px
-}
-
+/* page toolbar non-fixed and unset its colors */
 .tsd-page-toolbar {
-    position: relative;
+  position: relative;
+  color: inherit;
+  background: transparent;
+  border-bottom: none;
+  background-color: rgb(70, 70, 70);
 }
-
 .tsd-page-toolbar--hide {
-    transform: none;
+  transform: none;
 }
 
-/* reset to page wide defaults */
-body {
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 14px;
-    background-color: #e8e8e8;
+/* restore link colors */
+.tsd-page-toolbar a, .tsd-navigation a {
+	color: #d2d2d2;
+  border: none;
+}
+.tsd-page-toolbar a:hover, .tsd-navigation a:hover {
+	color: #cad2ff;
+}
+
+.tsd-navigation.primary > ul {
+  padding: 0.5em;
+  background-color: rgb(70, 70, 70);
+  border-radius: 5px;
+}
+.tsd-navigation.primary > ul, .tsd-navigation.primary li {
+  border: none;
+}
+.tsd-navigation.primary a {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* avoid search input overlapping top navigation  */
+#tsd-search .field input {
+	top: 0;
+}
+
+/* disable white background and shadow on title and panels */
+.tsd-page-title {
+  background: transparent;
+  box-shadow: none;
+  padding-top: 2em;
+}
+.tsd-panel {
+  background-color: rgb(70, 70, 70);
+  box-shadow: none;
+  border-radius: 5px;
+}
+
+/* no lines below headers */
+.tsd-panel > h1, .tsd-panel > h2, .tsd-panel > h3, .tsd-index-panel h3 {
+  border-bottom: none;
+}
+
+/* tweaked color scheme for dark style */
+.tsd-index-panel a,
+.tsd-index-panel .tsd-parent-kind-module a, .tsd-index-panel .tsd-kind-module a, .tsd-member a[data-tsd-kind] {
+  color: #cc84ff;
+}
+.tsd-index-panel .tsd-parent-kind-interface a, .tsd-index-panel .tsd-kind-interface a, .tsd-member a[data-tsd-kind="Interface"] {
+  color: #98c029;
+}
+.tsd-index-panel .tsd-parent-kind-enum a, .tsd-index-panel .tsd-kind-enum a {
+  color: #cea016;
+}
+.tsd-index-panel .tsd-parent-kind-class a, .tsd-index-panel .tsd-kind-class a, .tsd-member a[data-tsd-kind="Class"] {
+  color: #58acff;
+}
+.tsd-index-panel .tsd-is-private a {
+  color: #b0b0b0;
+}
+.tsd-sources, .tsd-sources a {
+  color: #939292;
+}
+.tsd-panel > .tsd-signatures, .tsd-signature {
+  border-color: #878383;
+}
+.tsd-signatures .tsd-signature.current {
+  background-color: #4e4e4e;
+}
+.tsd-navigation.secondary ul.current a {
+  border-left: none;
+  border-radius: 5px;
+}
+.tsd-navigation.secondary ul.current a:hover {
+  background-color: rgb(70, 70, 70);
+  text-decoration: none;
+}
+footer.with-border-bottom {
+  border: none;
+  padding-top: 1px; /* fixes margin-top of h2 */
+  background-color: transparent;
+}
+footer {
+  border: none;
+}
+.tsd-select .tsd-select-list li, .tsd-select .tsd-select-list li:nth-child(2n) {
+  background-color: #292929;
+}
+.tsd-select .tsd-select-list li:hover {
+  background-color: #1c1c1c;
 }

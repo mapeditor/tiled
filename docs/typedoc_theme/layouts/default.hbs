@@ -2,14 +2,26 @@
 <html class="default no-js">
 <head>
     <meta charset="utf-8">
-    {{> shared_includes}}
     <link rel="stylesheet" href="{{relativeURL "assets/css/main.css"}}">
+    {{> shared_includes}}
     <link rel="stylesheet" href="{{relativeURL "assets/css/override.css"}}">
     <title>{{#ifCond model.name '==' project.name}}{{project.name}}{{else}}{{model.name}} | {{project.name}}{{/ifCond}}</title>
 </head>
 <body>
 
-{{> shared_body_header}}
+  <div class="headerbar-container">
+    <nav class="headerbar container">
+      <a href="/" class="headerbar-logo"><img src="/img/tiled-logo-white.png" class="logo" alt="Tiled logo" width="393" height="213" /></a>
+      <div class="headerbar-content">
+        <a class="header-item headerbar-button" href="https://doc.mapeditor.org/en/stable/">Docs</a>
+        <a class="header-item headerbar-button" href="/news">News</a>
+        <a class="header-item headerbar-button" href="/donate">Donate</a>
+        <div class="stretch"></div>
+
+        {{> social_icons}}
+      </div>
+    </nav>
+  </div>
 
 {{> header}}
 
@@ -44,6 +56,23 @@
 <script src="{{relativeURL "assets/js/main.js"}}"></script>
 
 {{> analytics}}
+
+  <footer class="media-content">
+    <div class="footer-content container">
+      <p>Tiled - Copyright © 2008-2021 Thorbjørn Lindeijer<br> and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a></p>
+      <nav style="display: flex; justify-content: center; align-items: top; margin-left: 1em;">
+        <ul style="float: right; border-left: 2px solid #ececec; padding: 0 1em">
+          <li><a href="https://discourse.mapeditor.org/">Forum</a></li>
+          <li><a href="https://doc.mapeditor.org/en/stable/">Documentation</a></li>
+          <li><a href="/news">News</a></li>
+          <li><a href="/donate">Donate</a></li>
+          <li><a href="https://discord.gg/39wbTv7">Discord</a></li>
+          <li><a href="https://twitter.com/TiledApp">Twitter</a></li>
+          <li><a href="https://github.com/mapeditor/tiled">GitHub</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
 
 </body>
 </html>
