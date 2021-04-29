@@ -1538,7 +1538,7 @@ declare class TileLayer extends Layer {
    * @param x
    * @param y
    */
-  tileAt(x : number, y : number) : Tile | undefined
+  tileAt(x : number, y : number) : Tile | null
 
   /**
    * Returns an object that enables making modifications to the tile layer.
