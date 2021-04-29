@@ -1632,7 +1632,7 @@ interface cell {
   /**
    * The local tile ID of the tile, or -1 if the cell is empty.
    */
-  tileId : int
+  tileId : number
 
   /**
    * Whether the cell is empty.
@@ -1766,7 +1766,7 @@ declare class WangSet {
   /**
    * The number of colors used by this Wang set.
    */
-  colorCount : int
+  colorCount : number
 
   /**
    * The tileset to which this Wang set belongs.
@@ -1795,14 +1795,14 @@ declare class WangSet {
    *
    * A value of 0 indicates that no color is associated with a given index.
    */
-  public wangId(tile : Tile) : int[8]
+  public wangId(tile : Tile) : number[8]
 
   /**
    * Sets the Wang ID associated with the given tile.
    *
    * Make sure the Wang set color count is set before calling this function, because it will raise an error when the Wang ID refers to non-existing colors.
    */
-  public setWangId(tile : Tile, wangId : int[8]) : void
+  public setWangId(tile : Tile, wangId : number[8]) : void
 }
 
 declare namespace Tileset {
@@ -1924,12 +1924,12 @@ declare class Tileset extends Asset {
    *
    * Note that the tiles in a tileset are only guaranteed to have consecutive IDs for tileset-image based tilesets. For image collection tilesets there will be gaps when tiles have been removed from the tileset.
    */
-  public tile(id : int) : Tile
+  public tile(id : number) : Tile
 
   /**
    * Sets the tile size for this tileset. If an image has been specified as well, the tileset will be (re)loaded. Can’t be used on image collection tilesets.
    */
-  public setTileSize(width : int, height : int) : void
+  public setTileSize(width : number, height : number) : void
 
   /**
    * Creates the tiles in this tileset by cutting them out of the given image, using the current tile size, tile spacing and margin parameters. These values should be set before calling this function.
@@ -1953,7 +1953,7 @@ declare class Tileset extends Asset {
   /**
    * Add a new Wang set to this tileset with the given name and type.
    */
-  public addWangSet(name : string, type : int) : WangSet
+  public addWangSet(name : string, type : number) : WangSet
 
   /**
    * Removes the given Wang set from this tileset.
