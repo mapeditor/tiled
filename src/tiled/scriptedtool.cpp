@@ -133,7 +133,7 @@ void ScriptedTool::mouseEntered()
 void ScriptedTool::mouseLeft()
 {
     AbstractTileTool::mouseLeft();
-    call(QStringLiteral("mouseEntered"));
+    call(QStringLiteral("mouseLeft"));
 }
 
 void ScriptedTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
