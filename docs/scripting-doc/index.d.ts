@@ -887,7 +887,7 @@ interface AspectRatio {}
 
 interface TransformationMode {}
 
-declare namespace TiledImage {
+declare namespace Image {
   const Format_Invalid: number;
   const Format_Mono: number;
   const Format_MonoLSB: number;
@@ -927,7 +927,7 @@ declare namespace TiledImage {
  *
  * @since 1.5
  */
-declare class TiledImage {
+declare class Image {
   /**
    * Width of the image in pixels.
    */
@@ -1072,19 +1072,19 @@ declare class TiledImage {
   /**
    * Copies the given rectangle to a new image object.
    */
-  copy(x: number, y: number, width: number, height: number) : TiledImage;
+  copy(x: number, y: number, width: number, height: number) : Image;
 
   /**
    * Returns a scaled copy of this image. Default `aspectRatioMode`
    * behavior is to ignore the aspect ratio. Default `mode` is a fast
    * transformation.
    */
-  scaled(width: number, height: number, aspectRatioMode: AspectRatio, transformationMode: TransformationMode): TiledImage;
+  scaled(width: number, height: number, aspectRatioMode: AspectRatio, transformationMode: TransformationMode): Image;
 
   /**
    * Returns a mirrored copy of this image.
    */
-  mirrored(horizontal: boolean, vertical: boolean) : TiledImage;
+  mirrored(horizontal: boolean, vertical: boolean) : Image;
 
   readonly IgnoreAspectRatio: number;
   readonly KeepAspectRatio: number;
@@ -1111,7 +1111,7 @@ interface ImageLayer extends Layer {
    *
    * *Warning: This function has no undo!*
    */
-  loadFromImage(image: TiledImage, source?: string) : void;
+  loadFromImage(image: Image, source?: string) : void;
 }
 
 interface MapFormat {
@@ -1236,7 +1236,7 @@ declare class Tile extends TiledObject{
    * Warning: This function has no undo and does not affect the saved tileset!
    * @param image
    */
-  setImage(image : TiledImage) : void
+  setImage(image : Image) : void
 }
 
 declare class Layer extends TiledObject {
@@ -1926,7 +1926,7 @@ declare class Tileset extends Asset {
    *
    * Warning: This function has no undo!
    */
-  public loadFromImage(image : TiledImage, source?: string) : void
+  public loadFromImage(image : Image, source?: string) : void
 
   /**
    * Adds a new tile to this tileset and returns it. Only works for image collection tilesets.
