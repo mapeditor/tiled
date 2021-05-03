@@ -85,6 +85,39 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>An object representing an event.</p>
+					</div>
+					<p>Functions can be connected to the signal object, after which they will get
+						called when the signal is emitted. The <a href="../modules/tiled.html">tiled</a> module provides several
+					useful signals, like <a href="../modules/tiled.html#assetabouttobesaved">tiled.assetAboutToBeSaved</a>.</p>
+					<p>Properties usually will have related signals which can be used to detect
+					changes to that property, but most of those are currently not implemented.</p>
+					<p>To connect to a signal, call its <a href="signal.html#connect">connect</a> function and
+						pass in a function object. In the following example, newly created maps
+					automatically get their first tile layer removed:</p>
+					<pre><code class="language-js"><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">assetCreated</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">connect</span><span style="color: #D4D4D4">(</span><span style="color: #569CD6">function</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">asset</span><span style="color: #D4D4D4">) {</span>
+<span style="color: #D4D4D4">    </span><span style="color: #C586C0">if</span><span style="color: #D4D4D4"> (</span><span style="color: #9CDCFE">asset</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">layerCount</span><span style="color: #D4D4D4"> &gt; </span><span style="color: #B5CEA8">0</span><span style="color: #D4D4D4">) {</span>
+<span style="color: #D4D4D4">        </span><span style="color: #9CDCFE">asset</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">removeLayerAt</span><span style="color: #D4D4D4">(</span><span style="color: #B5CEA8">0</span><span style="color: #D4D4D4">)</span>
+<span style="color: #D4D4D4">        </span><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">log</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&quot;assetCreated: Removed automatically added tile layer.&quot;</span><span style="color: #D4D4D4">)</span>
+<span style="color: #D4D4D4">    }</span>
+<span style="color: #D4D4D4">})</span>
+</code></pre>
+					<p>In some cases it will be necessary to later disconnect the function from
+						the signal again. This can be done by defining the function separately
+					and passing it into the <a href="signal.html#disconnect">disconnect</a> function:</p>
+					<pre><code class="language-js"><span style="color: #569CD6">function</span><span style="color: #D4D4D4"> </span><span style="color: #DCDCAA">onAssetCreated</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">asset</span><span style="color: #D4D4D4">) {</span>
+<span style="color: #D4D4D4">    </span><span style="color: #6A9955">// Do something...</span>
+<span style="color: #D4D4D4">}</span>
+
+<span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">assetCreated</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">connect</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">onAssetCreated</span><span style="color: #D4D4D4">)</span>
+<span style="color: #6A9955">// ...</span>
+<span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">assetCreated</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">disconnect</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">onAssetCreated</span><span style="color: #D4D4D4">)</span>
+</code></pre>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-type-parameters">
 				<h3>Type parameters</h3>
 				<ul class="tsd-type-parameters">

@@ -101,7 +101,7 @@
 										<a href="grouplayer.html" class="tsd-signature-type" data-tsd-kind="Class">GroupLayer</a>
 									</li>
 									<li>
-										<a href="../interfaces/imagelayer.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageLayer</a>
+										<a href="imagelayer.html" class="tsd-signature-type" data-tsd-kind="Class">ImageLayer</a>
 									</li>
 									<li>
 										<a href="tilelayer.html" class="tsd-signature-type" data-tsd-kind="Class">TileLayer</a>
@@ -214,7 +214,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether this layer is a {@see GroupLayer}.</p>
+							<p>Whether this layer is a <a href="grouplayer.html">GroupLayer</a>.</p>
 						</div>
 					</div>
 				</section>
@@ -226,7 +226,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether this layer is an {@see ImageLayer}.</p>
+							<p>Whether this layer is an <a href="imagelayer.html">ImageLayer</a>.</p>
 						</div>
 					</div>
 				</section>
@@ -238,7 +238,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether this layer is an {@see ObjectLayer}.</p>
+							<p>Whether this layer is an <a href="objectgroup.html">ObjectGroup</a>.</p>
 						</div>
 					</div>
 				</section>
@@ -250,7 +250,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether this layer is a {@see TileLayer}.</p>
+							<p>Whether this layer is a <a href="tilelayer.html">TileLayer</a>.</p>
 						</div>
 					</div>
 				</section>
@@ -262,9 +262,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether
-								the layer is locked (affects whether child layers are locked for group
-							layers).</p>
+							<p>Whether the layer is locked (affects whether child layers are locked for group layers).</p>
 						</div>
 					</div>
 				</section>
@@ -276,8 +274,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Map that this layer is
-							part of (or <code>null</code> in case of a standalone layer).</p>
+							<p>Map that this layer is part of (or <code>null</code> in case of a standalone layer).</p>
 						</div>
 					</div>
 				</section>
@@ -313,8 +310,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Opacity of the layer, from 0 (fully transparent) to 1 (fully
-							opaque).</p>
+							<p>Opacity of the layer, from 0 (fully transparent) to 1 (fully opaque).</p>
 						</div>
 					</div>
 				</section>
@@ -351,8 +347,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether the layer is visible (affects
-							child layer visibility for group layers).</p>
+							<p>Whether the layer is visible (affects child layer visibility for group layers).</p>
 						</div>
 					</div>
 				</section>
@@ -375,7 +370,7 @@
 									<p>Returns all custom properties set on this object.</p>
 								</div>
 								<p>Modifications to the properties will not affect the original object.
-								Does not include inherited values (see {@see resolvedProperties}).</p>
+								Does not include inherited values (see <a href="layer.html#resolvedproperties">resolvedProperties</a>).</p>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/tiledobjectproperties.html" class="tsd-signature-type" data-tsd-kind="Interface">TiledObjectProperties</a></h4>
 						</li>
@@ -396,11 +391,11 @@
 								<div class="lead">
 									<p>Returns the value of the custom property with the given name, or
 										<code>undefined</code> if no such property is set on the object. Does not
-									include inherited values (see {@see resolvedProperty}).</p>
+									include inherited values (see <a href="layer.html#resolvedproperty">resolvedProperty</a>).</p>
 								</div>
-								<p><code>file</code> properties are returned as {@see FilePath}.</p>
-								<p><code>object</code> properties are returned as {@see MapObject} when possible,
-								or {@see ObjectRef} when the object could not be found.</p>
+								<p><code>file</code> properties are returned as <a href="../interfaces/filepath.html">FilePath</a>.</p>
+								<p><code>object</code> properties are returned as <a href="mapobject.html">MapObject</a> when possible,
+								or <a href="../interfaces/objectref.html">ObjectRef</a> when the object could not be found.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -529,12 +524,16 @@
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Sets the value of the custom property with the given name. Supported
-										types are <code>bool</code>, <code>number</code>, <code>string</code>, {@see FilePath},
-									{@see ObjectRef} and {@see MapObject}.</p>
+										types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="../interfaces/filepath.html">FilePath</a>,
+									<a href="../interfaces/objectref.html">ObjectRef</a> and <a href="mapobject.html">MapObject</a>.</p>
 								</div>
 								<p>When setting a <code>number</code>, the property type will be set to either
 								<code>int</code> or <code>float</code>, depending on whether it is a whole number.</p>
-								<p><em>Note:</em> Support for setting <code>color</code> properties is currently missing.</p>
+								<dl class="tsd-comment-tags">
+									<dt>note</dt>
+									<dd><p>Support for setting <code>color</code> properties is currently missing.</p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">

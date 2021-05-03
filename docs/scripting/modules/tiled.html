@@ -85,6 +85,14 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The <code>tiled</code> module is the main entry point and provides properties,
+						functions and signals which are documented below.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -512,6 +520,7 @@
 									enabled.</p>
 								</div>
 								<p>Raises a script error if the command is not found.</p>
+								<p>For more control over the executed binary, use <a href="../classes/process.html">Process</a> instead.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -540,7 +549,7 @@
 								<div class="lead">
 									<p>Extends the menu with the given ID. Supports both a list of items or
 										a single item. Available menu IDs can be obtained using the
-									<code>tiled.menus</code> property.</p>
+									<a href="tiled.html#menus">tiled.menus</a> property.</p>
 								</div>
 								<p>If a menu item does not include a <code>before</code> property, the value is
 									inherited from the previous item. When this property is not set at
@@ -553,7 +562,7 @@
 <span style="color: #D4D4D4">]);</span>
 </code></pre>
 								<p>The &quot;CustomAction&quot; will need to have been registered before using
-								{@see registerAction | tiled.registerAction()}.</p>
+								<a href="tiled.html#registeraction">tiled.registerAction()</a>.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -580,7 +589,7 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Creates a {@see FilePath} object with the given URL.</p>
+									<p>Creates a <a href="../interfaces/filepath.html">FilePath</a> object with the given URL.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -632,7 +641,7 @@
 								<div class="lead">
 									<p>Returns the map format object with the given name, or
 										<code>undefined</code> if no object was found. See the
-									{@see mapFormats} property for more info.</p>
+									<a href="tiled.html#mapformats">mapFormats</a> property for more info.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -683,7 +692,7 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Creates an {@see ObjectRef} object with the given ID.</p>
+									<p>Creates an <a href="../interfaces/objectref.html">ObjectRef</a> object with the given ID.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -783,7 +792,7 @@
 <span style="color: #9CDCFE">action</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">shortcut</span><span style="color: #D4D4D4"> = </span><span style="color: #CE9178">&quot;Ctrl+K&quot;</span>
 </code></pre>
 										<p>The shortcut will currently only work when the action is added to a
-										menu using {@see extendMenu | tiled.extendMenu()}.</p>
+										menu using <a href="tiled.html#extendmenu">tiled.extendMenu()</a>.</p>
 									</dd>
 								</dl>
 							</div>
@@ -902,7 +911,7 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Like {@see registerMapFormat}, but registers a custom tileset
+									<p>Like <a href="tiled.html#registermapformat">registerMapFormat</a>, but registers a custom tileset
 									format instead.</p>
 								</div>
 							</div>
@@ -1045,7 +1054,7 @@
 								<div class="lead">
 									<p>Returns the tileset format object with the given name, or
 										<code>undefined</code> if no object was found. See the
-									{@see tilesetFormats} property for more info.</p>
+									<a href="tiled.html#tilesetformats">tilesetFormats</a> property for more info.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1169,25 +1178,7 @@
 						<a href="../index.html">Exports</a>
 					</li>
 					<li class=" tsd-kind-namespace">
-						<a href="binaryfile.html">Binary<wbr>File</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="mapobject.html">Map<wbr>Object</a>
-					</li>
-					<li class=" tsd-kind-namespace">
 						<a href="qt.html">Qt</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="textfile.html">Text<wbr>File</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="tilemap.html">Tile<wbr>Map</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="tiledimage.html">Tiled<wbr>Image</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="tileset.html">Tileset</a>
 					</li>
 					<li class="current tsd-kind-namespace">
 						<a href="tiled.html">tiled</a>

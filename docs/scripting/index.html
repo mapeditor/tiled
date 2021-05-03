@@ -77,6 +77,20 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Tiled can be extended with the use of JavaScript.</p>
+					</div>
+					<p>Scripts can be used to implement <a href="modules/tiled.html#registermapformat">custom map formats</a>,
+						<a href="modules/tiled.html#registeraction">custom actions</a> and <a href="modules/tiled.html#registertool">new tools</a>.
+					Scripts can also <a href="interfaces/signal.html">automate actions based on signals</a>.</p>
+					<p>On startup, Tiled will execute any script files present in
+						<a href="https://doc.mapeditor.org/en/stable/reference/scripting/#script-extensions">extensions</a>.
+						In addition it is possible to run scripts directly from <a href="https://doc.mapeditor.org/en/stable/reference/scripting/#script-console">the console</a>.
+					All scripts share a single JavaScript context.</p>
+				</div>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -84,13 +98,7 @@
 						<section class="tsd-index-section ">
 							<h3>Namespaces</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-namespace"><a href="modules/binaryfile.html" class="tsd-kind-icon">Binary<wbr>File</a></li>
-								<li class="tsd-kind-namespace"><a href="modules/mapobject.html" class="tsd-kind-icon">Map<wbr>Object</a></li>
 								<li class="tsd-kind-namespace"><a href="modules/qt.html" class="tsd-kind-icon">Qt</a></li>
-								<li class="tsd-kind-namespace"><a href="modules/textfile.html" class="tsd-kind-icon">Text<wbr>File</a></li>
-								<li class="tsd-kind-namespace"><a href="modules/tilemap.html" class="tsd-kind-icon">Tile<wbr>Map</a></li>
-								<li class="tsd-kind-namespace"><a href="modules/tiledimage.html" class="tsd-kind-icon">Tiled<wbr>Image</a></li>
-								<li class="tsd-kind-namespace"><a href="modules/tileset.html" class="tsd-kind-icon">Tileset</a></li>
 								<li class="tsd-kind-namespace"><a href="modules/tiled.html" class="tsd-kind-icon">tiled</a></li>
 							</ul>
 						</section>
@@ -100,6 +108,8 @@
 								<li class="tsd-kind-class"><a href="classes/asset.html" class="tsd-kind-icon">Asset</a></li>
 								<li class="tsd-kind-class"><a href="classes/binaryfile.html" class="tsd-kind-icon">Binary<wbr>File</a></li>
 								<li class="tsd-kind-class"><a href="classes/grouplayer.html" class="tsd-kind-icon">Group<wbr>Layer</a></li>
+								<li class="tsd-kind-class"><a href="classes/image.html" class="tsd-kind-icon">Image</a></li>
+								<li class="tsd-kind-class"><a href="classes/imagelayer.html" class="tsd-kind-icon">Image<wbr>Layer</a></li>
 								<li class="tsd-kind-class"><a href="classes/layer.html" class="tsd-kind-icon">Layer</a></li>
 								<li class="tsd-kind-class"><a href="classes/mapobject.html" class="tsd-kind-icon">Map<wbr>Object</a></li>
 								<li class="tsd-kind-class"><a href="classes/objectgroup.html" class="tsd-kind-icon">Object<wbr>Group</a></li>
@@ -108,7 +118,6 @@
 								<li class="tsd-kind-class"><a href="classes/tile.html" class="tsd-kind-icon">Tile</a></li>
 								<li class="tsd-kind-class"><a href="classes/tilelayer.html" class="tsd-kind-icon">Tile<wbr>Layer</a></li>
 								<li class="tsd-kind-class"><a href="classes/tilemap.html" class="tsd-kind-icon">Tile<wbr>Map</a></li>
-								<li class="tsd-kind-class"><a href="classes/tiledimage.html" class="tsd-kind-icon">Tiled<wbr>Image</a></li>
 								<li class="tsd-kind-class"><a href="classes/tiledobject.html" class="tsd-kind-icon">Tiled<wbr>Object</a></li>
 								<li class="tsd-kind-class"><a href="classes/tileset.html" class="tsd-kind-icon">Tileset</a></li>
 								<li class="tsd-kind-class"><a href="classes/wangset.html" class="tsd-kind-icon">Wang<wbr>Set</a></li>
@@ -118,13 +127,10 @@
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-interface"><a href="interfaces/action.html" class="tsd-kind-icon">Action</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/aspectratio.html" class="tsd-kind-icon">Aspect<wbr>Ratio</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/fileformat.html" class="tsd-kind-icon">File<wbr>Format</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/fileinfo.html" class="tsd-kind-icon">File<wbr>Info</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/filepath.html" class="tsd-kind-icon">File<wbr>Path</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/font.html" class="tsd-kind-icon">Font</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/imageformat.html" class="tsd-kind-icon">Image<wbr>Format</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/imagelayer.html" class="tsd-kind-icon">Image<wbr>Layer</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/mapeditor.html" class="tsd-kind-icon">Map<wbr>Editor</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/mapformat.html" class="tsd-kind-icon">Map<wbr>Format</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/mapview.html" class="tsd-kind-icon">Map<wbr>View</a></li>
@@ -140,7 +146,6 @@
 								<li class="tsd-kind-interface"><a href="interfaces/tilesetformat.html" class="tsd-kind-icon">Tileset<wbr>Format</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/tilesetsview.html" class="tsd-kind-icon">Tilesets<wbr>View</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/tool.html" class="tsd-kind-icon">Tool</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/transformationmode.html" class="tsd-kind-icon">Transformation<wbr>Mode</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/cell.html" class="tsd-kind-icon">cell</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/color.html" class="tsd-kind-icon">color</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/frame.html" class="tsd-kind-icon">frame</a></li>
@@ -176,6 +181,14 @@
 					<div class="tsd-signature tsd-kind-icon">Polygon<span class="tsd-signature-symbol">:</span> <a href="interfaces/point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A polygon is not strictly a custom type. It is an array of objects that each
+							have an <code>x</code> and <code>y</code> property, representing the points of the polygon.</p>
+						</div>
+						<p>To modify the polygon of a <a href="classes/mapobject.html">MapObject</a>, change or set up the
+						polygon array and then assign it to <a href="classes/mapobject.html#polygon">MapObject.polygon</a>.</p>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
 					<a name="tiledobjectpropertyvalue" class="tsd-anchor"></a>
@@ -193,25 +206,7 @@
 						<a href="index.html">Exports</a>
 					</li>
 					<li class=" tsd-kind-namespace">
-						<a href="modules/binaryfile.html">Binary<wbr>File</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="modules/mapobject.html">Map<wbr>Object</a>
-					</li>
-					<li class=" tsd-kind-namespace">
 						<a href="modules/qt.html">Qt</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="modules/textfile.html">Text<wbr>File</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="modules/tilemap.html">Tile<wbr>Map</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="modules/tiledimage.html">Tiled<wbr>Image</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="modules/tileset.html">Tileset</a>
 					</li>
 					<li class=" tsd-kind-namespace">
 						<a href="modules/tiled.html">tiled</a>
@@ -228,6 +223,12 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/grouplayer.html" class="tsd-kind-icon">Group<wbr>Layer</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/image.html" class="tsd-kind-icon">Image</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/imagelayer.html" class="tsd-kind-icon">Image<wbr>Layer</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/layer.html" class="tsd-kind-icon">Layer</a>
@@ -254,9 +255,6 @@
 						<a href="classes/tilemap.html" class="tsd-kind-icon">Tile<wbr>Map</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/tiledimage.html" class="tsd-kind-icon">Tiled<wbr>Image</a>
-					</li>
-					<li class=" tsd-kind-class">
 						<a href="classes/tiledobject.html" class="tsd-kind-icon">Tiled<wbr>Object</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -269,9 +267,6 @@
 						<a href="interfaces/action.html" class="tsd-kind-icon">Action</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/aspectratio.html" class="tsd-kind-icon">Aspect<wbr>Ratio</a>
-					</li>
-					<li class=" tsd-kind-interface">
 						<a href="interfaces/fileformat.html" class="tsd-kind-icon">File<wbr>Format</a>
 					</li>
 					<li class=" tsd-kind-interface">
@@ -282,12 +277,6 @@
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/font.html" class="tsd-kind-icon">Font</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/imageformat.html" class="tsd-kind-icon">Image<wbr>Format</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/imagelayer.html" class="tsd-kind-icon">Image<wbr>Layer</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/mapeditor.html" class="tsd-kind-icon">Map<wbr>Editor</a>
@@ -333,9 +322,6 @@
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/tool.html" class="tsd-kind-icon">Tool</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/transformationmode.html" class="tsd-kind-icon">Transformation<wbr>Mode</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/cell.html" class="tsd-kind-icon">cell</a>

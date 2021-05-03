@@ -137,6 +137,12 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="mapobject.html#wordwrap" class="tsd-kind-icon">word<wbr>Wrap</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="mapobject.html#x" class="tsd-kind-icon">x</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="mapobject.html#y" class="tsd-kind-icon">y</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="mapobject.html#ellipse" class="tsd-kind-icon">Ellipse</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="mapobject.html#point" class="tsd-kind-icon">Point</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="mapobject.html#polygon-1" class="tsd-kind-icon">Polygon</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="mapobject.html#polyline" class="tsd-kind-icon">Polyline</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="mapobject.html#rectangle" class="tsd-kind-icon">Rectangle</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="mapobject.html#text-1" class="tsd-kind-icon">Text</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -169,7 +175,7 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Constructs a new map object, which can be added to an ObjectGroup.</p>
+									<p>Constructs a new map object, which can be added to an <a href="objectgroup.html">ObjectGroup</a>.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -338,12 +344,12 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="shape" class="tsd-anchor"></a>
 					<h3>shape</h3>
-					<div class="tsd-signature tsd-kind-icon">shape<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<div class="tsd-signature tsd-kind-icon">shape<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="mapobject.html#rectangle" class="tsd-signature-type" data-tsd-kind="Property">Rectangle</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="mapobject.html#polygon-1" class="tsd-signature-type" data-tsd-kind="Property">Polygon</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="mapobject.html#polyline" class="tsd-signature-type" data-tsd-kind="Property">Polyline</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="mapobject.html#ellipse" class="tsd-signature-type" data-tsd-kind="Property">Ellipse</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="mapobject.html#text-1" class="tsd-signature-type" data-tsd-kind="Property">Text</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="mapobject.html#point" class="tsd-signature-type" data-tsd-kind="Property">Point</a></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>{@see ObjectShape} of the object.</p>
+							<p>Shape of the object.</p>
 						</div>
 					</div>
 				</section>
@@ -386,7 +392,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="textcolor" class="tsd-anchor"></a>
 					<h3>text<wbr>Color</h3>
-					<div class="tsd-signature tsd-kind-icon">text<wbr>Color<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<div class="tsd-signature tsd-kind-icon">text<wbr>Color<span class="tsd-signature-symbol">:</span> <a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -470,8 +476,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether the text of a text object
-							wraps based on the width of the object.</p>
+							<p>Whether the text of a text object wraps based on the width of the object.</p>
 						</div>
 					</div>
 				</section>
@@ -499,6 +504,48 @@
 						</div>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="ellipse" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> <span class="tsd-flag ts-flagStatic">Static</span> Ellipse</h3>
+					<div class="tsd-signature tsd-kind-icon">Ellipse<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="mapobject.html#ellipse" class="tsd-signature-type" data-tsd-kind="Property">Ellipse</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="point" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> <span class="tsd-flag ts-flagStatic">Static</span> Point</h3>
+					<div class="tsd-signature tsd-kind-icon">Point<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="mapobject.html#point" class="tsd-signature-type" data-tsd-kind="Property">Point</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="polygon-1" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> <span class="tsd-flag ts-flagStatic">Static</span> Polygon</h3>
+					<div class="tsd-signature tsd-kind-icon">Polygon<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="mapobject.html#polygon-1" class="tsd-signature-type" data-tsd-kind="Property">Polygon</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="polyline" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> <span class="tsd-flag ts-flagStatic">Static</span> Polyline</h3>
+					<div class="tsd-signature tsd-kind-icon">Polyline<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="mapobject.html#polyline" class="tsd-signature-type" data-tsd-kind="Property">Polyline</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="rectangle" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> <span class="tsd-flag ts-flagStatic">Static</span> Rectangle</h3>
+					<div class="tsd-signature tsd-kind-icon">Rectangle<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="mapobject.html#rectangle" class="tsd-signature-type" data-tsd-kind="Property">Rectangle</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="text-1" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> <span class="tsd-flag ts-flagStatic">Static</span> Text</h3>
+					<div class="tsd-signature tsd-kind-icon">Text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="mapobject.html#text-1" class="tsd-signature-type" data-tsd-kind="Property">Text</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
@@ -518,7 +565,7 @@
 									<p>Returns all custom properties set on this object.</p>
 								</div>
 								<p>Modifications to the properties will not affect the original object.
-								Does not include inherited values (see {@see resolvedProperties}).</p>
+								Does not include inherited values (see <a href="mapobject.html#resolvedproperties">resolvedProperties</a>).</p>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/tiledobjectproperties.html" class="tsd-signature-type" data-tsd-kind="Interface">TiledObjectProperties</a></h4>
 						</li>
@@ -539,11 +586,11 @@
 								<div class="lead">
 									<p>Returns the value of the custom property with the given name, or
 										<code>undefined</code> if no such property is set on the object. Does not
-									include inherited values (see {@see resolvedProperty}).</p>
+									include inherited values (see <a href="mapobject.html#resolvedproperty">resolvedProperty</a>).</p>
 								</div>
-								<p><code>file</code> properties are returned as {@see FilePath}.</p>
-								<p><code>object</code> properties are returned as {@see MapObject} when possible,
-								or {@see ObjectRef} when the object could not be found.</p>
+								<p><code>file</code> properties are returned as <a href="../interfaces/filepath.html">FilePath</a>.</p>
+								<p><code>object</code> properties are returned as <a href="mapobject.html">MapObject</a> when possible,
+								or <a href="../interfaces/objectref.html">ObjectRef</a> when the object could not be found.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -672,12 +719,16 @@
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Sets the value of the custom property with the given name. Supported
-										types are <code>bool</code>, <code>number</code>, <code>string</code>, {@see FilePath},
-									{@see ObjectRef} and {@see MapObject}.</p>
+										types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="../interfaces/filepath.html">FilePath</a>,
+									<a href="../interfaces/objectref.html">ObjectRef</a> and <a href="mapobject.html">MapObject</a>.</p>
 								</div>
 								<p>When setting a <code>number</code>, the property type will be set to either
 								<code>int</code> or <code>float</code>, depending on whether it is a whole number.</p>
-								<p><em>Note:</em> Support for setting <code>color</code> properties is currently missing.</p>
+								<dl class="tsd-comment-tags">
+									<dt>note</dt>
+									<dd><p>Support for setting <code>color</code> properties is currently missing.</p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -789,6 +840,24 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="mapobject.html#y" class="tsd-kind-icon">y</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="mapobject.html#ellipse" class="tsd-kind-icon">Ellipse</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="mapobject.html#point" class="tsd-kind-icon">Point</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="mapobject.html#polygon-1" class="tsd-kind-icon">Polygon</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="mapobject.html#polyline" class="tsd-kind-icon">Polyline</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="mapobject.html#rectangle" class="tsd-kind-icon">Rectangle</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="mapobject.html#text-1" class="tsd-kind-icon">Text</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="mapobject.html#properties" class="tsd-kind-icon">properties</a>

@@ -208,7 +208,7 @@
 									<p>Returns all custom properties set on this object.</p>
 								</div>
 								<p>Modifications to the properties will not affect the original object.
-								Does not include inherited values (see {@see resolvedProperties}).</p>
+								Does not include inherited values (see <a href="tiledobject.html#resolvedproperties">resolvedProperties</a>).</p>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/tiledobjectproperties.html" class="tsd-signature-type" data-tsd-kind="Interface">TiledObjectProperties</a></h4>
 						</li>
@@ -228,11 +228,11 @@
 								<div class="lead">
 									<p>Returns the value of the custom property with the given name, or
 										<code>undefined</code> if no such property is set on the object. Does not
-									include inherited values (see {@see resolvedProperty}).</p>
+									include inherited values (see <a href="tiledobject.html#resolvedproperty">resolvedProperty</a>).</p>
 								</div>
-								<p><code>file</code> properties are returned as {@see FilePath}.</p>
-								<p><code>object</code> properties are returned as {@see MapObject} when possible,
-								or {@see ObjectRef} when the object could not be found.</p>
+								<p><code>file</code> properties are returned as <a href="../interfaces/filepath.html">FilePath</a>.</p>
+								<p><code>object</code> properties are returned as <a href="mapobject.html">MapObject</a> when possible,
+								or <a href="../interfaces/objectref.html">ObjectRef</a> when the object could not be found.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -356,12 +356,16 @@
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Sets the value of the custom property with the given name. Supported
-										types are <code>bool</code>, <code>number</code>, <code>string</code>, {@see FilePath},
-									{@see ObjectRef} and {@see MapObject}.</p>
+										types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="../interfaces/filepath.html">FilePath</a>,
+									<a href="../interfaces/objectref.html">ObjectRef</a> and <a href="mapobject.html">MapObject</a>.</p>
 								</div>
 								<p>When setting a <code>number</code>, the property type will be set to either
 								<code>int</code> or <code>float</code>, depending on whether it is a whole number.</p>
-								<p><em>Note:</em> Support for setting <code>color</code> properties is currently missing.</p>
+								<dl class="tsd-comment-tags">
+									<dt>note</dt>
+									<dd><p>Support for setting <code>color</code> properties is currently missing.</p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">

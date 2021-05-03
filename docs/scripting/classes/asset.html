@@ -88,9 +88,9 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Represents any top-level data type that can be saved to a file.
-						Currently either a <a href="tilemap.html">TileMap</a> or a <a href="tileset.html">Tileset</a>.</p>
+						<p>Represents any top-level data type that can be saved to a file.</p>
 					</div>
+					<p>Currently either a <a href="tilemap.html">TileMap</a> or a <a href="tileset.html">Tileset</a>.</p>
 					<p>For assets that are loaded in the editor, all modifications and
 						modifications to their contained parts create undo commands. This
 						includes both modifying functions that are called as well as simply
@@ -210,7 +210,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether the asset is a {@see TileMap}.</p>
+							<p>Whether the asset is a <a href="tilemap.html">TileMap</a>.</p>
 						</div>
 					</div>
 				</section>
@@ -222,7 +222,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether the asset is a {@see Tileset}.</p>
+							<p>Whether the asset is a <a href="tileset.html">Tileset</a>.</p>
 						</div>
 					</div>
 				</section>
@@ -327,7 +327,7 @@
 									<p>Returns all custom properties set on this object.</p>
 								</div>
 								<p>Modifications to the properties will not affect the original object.
-								Does not include inherited values (see {@see resolvedProperties}).</p>
+								Does not include inherited values (see <a href="asset.html#resolvedproperties">resolvedProperties</a>).</p>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/tiledobjectproperties.html" class="tsd-signature-type" data-tsd-kind="Interface">TiledObjectProperties</a></h4>
 						</li>
@@ -348,11 +348,11 @@
 								<div class="lead">
 									<p>Returns the value of the custom property with the given name, or
 										<code>undefined</code> if no such property is set on the object. Does not
-									include inherited values (see {@see resolvedProperty}).</p>
+									include inherited values (see <a href="asset.html#resolvedproperty">resolvedProperty</a>).</p>
 								</div>
-								<p><code>file</code> properties are returned as {@see FilePath}.</p>
-								<p><code>object</code> properties are returned as {@see MapObject} when possible,
-								or {@see ObjectRef} when the object could not be found.</p>
+								<p><code>file</code> properties are returned as <a href="../interfaces/filepath.html">FilePath</a>.</p>
+								<p><code>object</code> properties are returned as <a href="mapobject.html">MapObject</a> when possible,
+								or <a href="../interfaces/objectref.html">ObjectRef</a> when the object could not be found.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -378,8 +378,11 @@
 								<div class="lead">
 									<p>Redoes the last change that was undone.</p>
 								</div>
-								<p>Note that the undo system is only enabled for assets loaded
-								in the editor!</p>
+								<dl class="tsd-comment-tags">
+									<dt>note</dt>
+									<dd><p>The undo system is only enabled for assets loaded in the editor!</p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
@@ -502,12 +505,16 @@
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Sets the value of the custom property with the given name. Supported
-										types are <code>bool</code>, <code>number</code>, <code>string</code>, {@see FilePath},
-									{@see ObjectRef} and {@see MapObject}.</p>
+										types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="../interfaces/filepath.html">FilePath</a>,
+									<a href="../interfaces/objectref.html">ObjectRef</a> and <a href="mapobject.html">MapObject</a>.</p>
 								</div>
 								<p>When setting a <code>number</code>, the property type will be set to either
 								<code>int</code> or <code>float</code>, depending on whether it is a whole number.</p>
-								<p><em>Note:</em> Support for setting <code>color</code> properties is currently missing.</p>
+								<dl class="tsd-comment-tags">
+									<dt>note</dt>
+									<dd><p>Support for setting <code>color</code> properties is currently missing.</p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -536,8 +543,11 @@
 								<div class="lead">
 									<p>Undoes the last applied change.</p>
 								</div>
-								<p>Note that the undo system is only enabled for assets loaded
-								in the editor!</p>
+								<dl class="tsd-comment-tags">
+									<dt>note</dt>
+									<dd><p>The undo system is only enabled for assets loaded in the editor!</p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>

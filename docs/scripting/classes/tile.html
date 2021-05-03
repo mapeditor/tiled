@@ -124,6 +124,10 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tile.html#tileset" class="tsd-kind-icon">tileset</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tile.html#type" class="tsd-kind-icon">type</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tile.html#width" class="tsd-kind-icon">width</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="tile.html#flippedantidiagonally" class="tsd-kind-icon">Flipped<wbr>Anti<wbr>Diagonally</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="tile.html#flippedhorizontally" class="tsd-kind-icon">Flipped<wbr>Horizontally</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="tile.html#flippedvertically" class="tsd-kind-icon">Flipped<wbr>Vertically</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="tile.html#rotatedhexagonal120" class="tsd-kind-icon">Rotated<wbr>Hexagonal120</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -320,6 +324,34 @@
 						</div>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="flippedantidiagonally" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> <span class="tsd-flag ts-flagStatic">Static</span> Flipped<wbr>Anti<wbr>Diagonally</h3>
+					<div class="tsd-signature tsd-kind-icon">Flipped<wbr>Anti<wbr>Diagonally<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">4</span></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="flippedhorizontally" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> <span class="tsd-flag ts-flagStatic">Static</span> Flipped<wbr>Horizontally</h3>
+					<div class="tsd-signature tsd-kind-icon">Flipped<wbr>Horizontally<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">1</span></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="flippedvertically" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> <span class="tsd-flag ts-flagStatic">Static</span> Flipped<wbr>Vertically</h3>
+					<div class="tsd-signature tsd-kind-icon">Flipped<wbr>Vertically<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">2</span></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="rotatedhexagonal120" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> <span class="tsd-flag ts-flagStatic">Static</span> Rotated<wbr>Hexagonal120</h3>
+					<div class="tsd-signature tsd-kind-icon">Rotated<wbr>Hexagonal120<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">8</span></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
@@ -339,7 +371,7 @@
 									<p>Returns all custom properties set on this object.</p>
 								</div>
 								<p>Modifications to the properties will not affect the original object.
-								Does not include inherited values (see {@see resolvedProperties}).</p>
+								Does not include inherited values (see <a href="tile.html#resolvedproperties">resolvedProperties</a>).</p>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/tiledobjectproperties.html" class="tsd-signature-type" data-tsd-kind="Interface">TiledObjectProperties</a></h4>
 						</li>
@@ -360,11 +392,11 @@
 								<div class="lead">
 									<p>Returns the value of the custom property with the given name, or
 										<code>undefined</code> if no such property is set on the object. Does not
-									include inherited values (see {@see resolvedProperty}).</p>
+									include inherited values (see <a href="tile.html#resolvedproperty">resolvedProperty</a>).</p>
 								</div>
-								<p><code>file</code> properties are returned as {@see FilePath}.</p>
-								<p><code>object</code> properties are returned as {@see MapObject} when possible,
-								or {@see ObjectRef} when the object could not be found.</p>
+								<p><code>file</code> properties are returned as <a href="../interfaces/filepath.html">FilePath</a>.</p>
+								<p><code>object</code> properties are returned as <a href="mapobject.html">MapObject</a> when possible,
+								or <a href="../interfaces/objectref.html">ObjectRef</a> when the object could not be found.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -456,7 +488,7 @@
 					<a name="setimage" class="tsd-anchor"></a>
 					<h3>set<wbr>Image</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Image<span class="tsd-signature-symbol">(</span>image<span class="tsd-signature-symbol">: </span><a href="tiledimage.html" class="tsd-signature-type" data-tsd-kind="Class">TiledImage</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Image<span class="tsd-signature-symbol">(</span>image<span class="tsd-signature-symbol">: </span><a href="image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -466,12 +498,16 @@
 								<div class="lead">
 									<p>Sets the image of this tile.</p>
 								</div>
-								<p>Warning: This function has no undo and does not affect the saved tileset!</p>
+								<dl class="tsd-comment-tags">
+									<dt>warning</dt>
+									<dd><p>This function has no undo and does not affect the saved tileset!</p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>image: <a href="tiledimage.html" class="tsd-signature-type" data-tsd-kind="Class">TiledImage</a></h5>
+									<h5>image: <a href="image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a></h5>
 									<div class="tsd-comment tsd-typography">
 									</div>
 								</li>
@@ -521,12 +557,16 @@
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Sets the value of the custom property with the given name. Supported
-										types are <code>bool</code>, <code>number</code>, <code>string</code>, {@see FilePath},
-									{@see ObjectRef} and {@see MapObject}.</p>
+										types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="../interfaces/filepath.html">FilePath</a>,
+									<a href="../interfaces/objectref.html">ObjectRef</a> and <a href="mapobject.html">MapObject</a>.</p>
 								</div>
 								<p>When setting a <code>number</code>, the property type will be set to either
 								<code>int</code> or <code>float</code>, depending on whether it is a whole number.</p>
-								<p><em>Note:</em> Support for setting <code>color</code> properties is currently missing.</p>
+								<dl class="tsd-comment-tags">
+									<dt>note</dt>
+									<dd><p>Support for setting <code>color</code> properties is currently missing.</p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -599,6 +639,18 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="tile.html#width" class="tsd-kind-icon">width</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="tile.html#flippedantidiagonally" class="tsd-kind-icon">Flipped<wbr>Anti<wbr>Diagonally</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="tile.html#flippedhorizontally" class="tsd-kind-icon">Flipped<wbr>Horizontally</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="tile.html#flippedvertically" class="tsd-kind-icon">Flipped<wbr>Vertically</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="tile.html#rotatedhexagonal120" class="tsd-kind-icon">Rotated<wbr>Hexagonal120</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="tile.html#properties" class="tsd-kind-icon">properties</a>
