@@ -3,7 +3,6 @@
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="../assets/css/main.css">
-	<meta charset="UTF-8">
 	<meta name='viewport' content="width=device-width, initial-scale=1" />
 	<meta property="og:image" content="https://www.mapeditor.org/img/tiled-logo-filled.png" />
 	<link href='/favicon.ico' rel='icon' type='image/png'/>
@@ -159,16 +158,6 @@
 									<p>Opens a text file in the given mode.</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>filePath: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mode: <span class="tsd-signature-symbol">typeof </span><a href="textfile.html#readonly" class="tsd-signature-type" data-tsd-kind="Property">ReadOnly</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="textfile.html#writeonly" class="tsd-signature-type" data-tsd-kind="Property">WriteOnly</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="textfile.html#readwrite" class="tsd-signature-type" data-tsd-kind="Property">ReadWrite</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="textfile.html#append" class="tsd-signature-type" data-tsd-kind="Property">Append</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="textfile.html" class="tsd-signature-type" data-tsd-kind="Class">TextFile</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -257,7 +246,6 @@
 									<p>Closes the file. It is recommended to always call this function as soon as you are finished with the file.</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -276,7 +264,6 @@
 									<p>Commits all written text to disk and closes the file. Should be called when writing to files in WriteOnly mode. Failing to call this function will result in cancelling the operation, unless safe writing to files is disabled.</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -295,7 +282,6 @@
 									<p>Reads all data from the file and returns it.</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -315,7 +301,6 @@
 									newline characters.</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -334,7 +319,6 @@
 									<p>Truncates the file, that is, gives it the size of zero, removing all content.</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -353,15 +337,6 @@
 									<p>Writes a string to the file.</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>text: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -380,15 +355,6 @@
 									<p>Writes a string to the file and appends a newline character.</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>text: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>

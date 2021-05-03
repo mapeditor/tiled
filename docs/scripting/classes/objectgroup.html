@@ -3,7 +3,6 @@
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="../assets/css/main.css">
-	<meta charset="UTF-8">
 	<meta name='viewport' content="width=device-width, initial-scale=1" />
 	<meta property="og:image" content="https://www.mapeditor.org/img/tiled-logo-filled.png" />
 	<link href='/favicon.ico' rel='icon' type='image/png'/>
@@ -178,15 +177,6 @@
 									<p>Constructs a new object layer, which can be added to a TileMap.</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> name: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="objectgroup.html" class="tsd-signature-type" data-tsd-kind="Class">ObjectGroup</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -434,15 +424,6 @@
 									<p>Adds the given object to the layer. The object can’t already be part of a layer.</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>object: <a href="mapobject.html" class="tsd-signature-type" data-tsd-kind="Class">MapObject</a></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -461,18 +442,6 @@
 									<p>Inserts the object at the given index. The object can’t already be part of a layer.</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>index: <span class="tsd-signature-type">number</span></h5>
-								</li>
-								<li>
-									<h5>object: <a href="mapobject.html" class="tsd-signature-type" data-tsd-kind="Class">MapObject</a></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -491,15 +460,6 @@
 									<p>Returns a reference to the object at the given index. When the object is removed, the reference turns into a standalone copy of the object.</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>index: <span class="tsd-signature-type">number</span></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="mapobject.html" class="tsd-signature-type" data-tsd-kind="Class">MapObject</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -521,7 +481,6 @@
 								<p>Modifications to the properties will not affect the original object.
 								Does not include inherited values (see <a href="objectgroup.html#resolvedproperties">resolvedProperties</a>).</p>
 							</div>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/tiledobjectproperties.html" class="tsd-signature-type" data-tsd-kind="Interface">TiledObjectProperties</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -546,13 +505,6 @@
 								<p><code>object</code> properties are returned as <a href="mapobject.html">MapObject</a> when possible,
 								or <a href="../interfaces/objectref.html">ObjectRef</a> when the object could not be found.</p>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../index.html#tiledobjectpropertyvalue" class="tsd-signature-type" data-tsd-kind="Type alias">TiledObjectPropertyValue</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -571,15 +523,6 @@
 									<p>Removes the given object from this layer. The object reference turns into a standalone copy of the object.</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>object: <a href="mapobject.html" class="tsd-signature-type" data-tsd-kind="Class">MapObject</a></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -598,15 +541,6 @@
 									<p>Removes the object at the given index.</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>index: <span class="tsd-signature-type">number</span></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -626,13 +560,6 @@
 									<p>Removes the custom property with the given name.</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -654,7 +581,6 @@
 									inherited from object types, templates and tiles where applicable.</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/tiledobjectproperties.html" class="tsd-signature-type" data-tsd-kind="Interface">TiledObjectProperties</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -676,13 +602,6 @@
 									from object types, templates and tiles where applicable.</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../index.html#tiledobjectpropertyvalue" class="tsd-signature-type" data-tsd-kind="Type alias">TiledObjectPropertyValue</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -703,13 +622,6 @@
 									properties.</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>properties: <a href="../interfaces/tiledobjectproperties.html" class="tsd-signature-type" data-tsd-kind="Interface">TiledObjectProperties</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -738,16 +650,6 @@
 									</dd>
 								</dl>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>value: <a href="../index.html#tiledobjectpropertyvalue" class="tsd-signature-type" data-tsd-kind="Type alias">TiledObjectPropertyValue</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
