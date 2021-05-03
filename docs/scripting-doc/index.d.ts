@@ -1,5 +1,26 @@
+/**
+ * Tiled can be extended with the use of JavaScript.
+ *
+ * Scripts can be used to implement {@link tiled.registerMapFormat | custom map formats},
+ * {@link tiled.registerAction | custom actions} and {@link tiled.registerTool | new tools}.
+ * Scripts can also {@link Signal | automate actions based on signals}.
+ *
+ * On startup, Tiled will execute any script files present in
+ * [extensions](https://doc.mapeditor.org/en/stable/reference/scripting/#script-extensions).
+ * In addition it is possible to run scripts directly from [the console](https://doc.mapeditor.org/en/stable/reference/scripting/#script-console).
+ * All scripts share a single JavaScript context.
+ */
+
+/**
+ * The file path of the current file being evaluated. Only available during
+ * initial evaluation of the file and not when later functions in that file
+ * get called. If you need it there, copy the value to local scope.
+ */
 // declare const __filename: string; // collides with nodejs types
 
+/**
+ * {@link Qt.rect} can be used to create a rectangle.
+ */
 interface rect {
   /**
    * X coordinate of the rectangle.
@@ -29,6 +50,9 @@ interface region {
   readonly boundingRect: rect;
 }
 
+/**
+ * {@link Qt.point} can be used to create a point object.
+ */
 interface point {
   /**
    * X coordinate of the point.
@@ -41,17 +65,42 @@ interface point {
   y: number;
 }
 
+/**
+ * {@link Qt.size} can be used to create a size object.
+ */
 interface size {
+  /**
+   * Width.
+   */
   width: number;
+
+  /**
+   * Height.
+   */
   height: number;
 }
 
+/**
+ * A polygon is not strictly a custom type. It is an array of objects that each
+ * have an ``x`` and ``y`` property, representing the points of the polygon.
+ *
+ * To modify the polygon of a {@link MapObject}, change or set up the
+ * polygon array and then assign it to {@link MapObject.polygon}.
+ */
 type Polygon = point[];
 
+/**
+ * The value of a property of type 'object', which refers to a
+ * {@link MapObject} by its ID. Generally only used as a fallback when an
+ * object property cannot be resolved to an actual object. Can be created with
+ * {@link tiled.objectRef}.
+ */
 interface ObjectRef {
-    id: number;
+  /**
+   * The ID of the referenced object.
+   */
+  id: number;
 }
-
 
 interface MenuAction {
   /**
@@ -75,15 +124,66 @@ interface MenuSeparator {
 
 type Menu = MenuAction|MenuSeparator
 
+/**
+ * Used as the value for custom 'file' properties. Can be created with
+ * {@link tiled.filePath}.
+ */
 interface FilePath {
+  /**
+   * The URL of the file.
+   */
   url: string;
 }
 
+/**
+ * An object representing an event.
+ *
+ * Functions can be connected to the signal object, after which they will get
+ * called when the signal is emitted. The {@link tiled} module provides several
+ * useful signals, like {@link tiled.assetAboutToBeSaved}.
+ *
+ * Properties usually will have related signals which can be used to detect
+ * changes to that property, but most of those are currently not implemented.
+ *
+ * To connect to a signal, call its {@link Signal.connect | connect} function and
+ * pass in a function object. In the following example, newly created maps
+ * automatically get their first tile layer removed:
+ *
+ * ```js
+ * tiled.assetCreated.connect(function(asset) {
+ *     if (asset.layerCount > 0) {
+ *         asset.removeLayerAt(0)
+ *         tiled.log("assetCreated: Removed automatically added tile layer.")
+ *     }
+ * })
+ * ```
+ *
+ * In some cases it will be necessary to later disconnect the function from
+ * the signal again. This can be done by defining the function separately
+ * and passing it into the {@link Signal.disconnect | disconnect} function:
+ *
+ * ```js
+ * function onAssetCreated(asset) {
+ *     // Do something...
+ * }
+ *
+ * tiled.assetCreated.connect(onAssetCreated)
+ * // ...
+ * tiled.assetCreated.disconnect(onAssetCreated)
+ * ```
+ */
 interface Signal<Arg> {
   connect(callback: (arg: Arg) => void): void;
   disconnect(callback: (arg: Arg) => void): void;
 }
 
+/**
+ * A global object with useful enums and functions from Qt.
+ *
+ * Only a small subset of available members in the `Qt` object are documented here.
+ * See the [Qt QML Type reference](https://doc.qt.io/qt-5/qml-qtqml-qt.html) for the full documentation
+ * (keep in mind, that the QtQuick module is not currently loaded).
+ */
 declare namespace Qt {
   export function point(x: number, y: number): point;
   export function rect(
@@ -94,6 +194,10 @@ declare namespace Qt {
   ): rect;
   export function size(width: number, height: number): size;
 
+  /**
+   * Alignment is given by a set of flags.
+   * To align to the top while horizontally centering, the value can be set to `Qt.AlignTop | Qt.AlignHCenter`.
+   */
   type Alignment = number;
 
   const AlignLeft: Alignment;
@@ -106,26 +210,20 @@ declare namespace Qt {
   const AlignCenter: Alignment;
 }
 
-declare namespace TextFile {
-  export const ReadOnly = 1;
-  export const WriteOnly = 2;
-  export const ReadWrite = 3;
-  export const Append = 4;
-
-  type OpenMode =
-    | typeof ReadOnly
-    | typeof WriteOnly
-    | typeof ReadWrite
-    | typeof Append;
-}
-
 /**
  * The `TextFile` object is used to read and write files in text mode.
  *
- * When using `TextFile.WriteOnly`, you need to call {@link TextFile#commit()} when you’re
+ * When using {@link TextFile.WriteOnly}, you need to call {@link commit} when you’re
  * done writing otherwise the operation will be aborted without effect.
+ *
+ * To read and write files in binary mode, use {@link BinaryFile} instead.
  */
 declare class TextFile {
+  static readonly ReadOnly: unique symbol;
+  static readonly WriteOnly: unique symbol;
+  static readonly ReadWrite: unique symbol;
+  static readonly Append: unique symbol;
+
   /**
    * The path of the file.
    */
@@ -144,7 +242,7 @@ declare class TextFile {
   /**
    * Opens a text file in the given mode.
    */
-  constructor(filePath: string, mode?: BinaryFile.OpenMode);
+  constructor(filePath: string, mode?: typeof TextFile.ReadOnly | typeof TextFile.WriteOnly | typeof TextFile.ReadWrite | typeof TextFile.Append);
 
   /**
    * Reads one line of text from the file and returns it. The returned string does not contain the
@@ -185,21 +283,19 @@ declare class TextFile {
   public close(): void;
 }
 
-declare namespace BinaryFile {
-  export const ReadOnly = 1;
-  export const WriteOnly = 2;
-  export const ReadWrite = 3;
-
-  type OpenMode = typeof ReadOnly | typeof WriteOnly | typeof ReadWrite;
-}
-
 /**
  * The `BinaryFile` object is used to read and write files in binary mode.
  *
- * When using `BinaryFile.WriteOnly`, you need to call {@link BinaryFile#commit()} when you’re
+ * When using {@link BinaryFile.WriteOnly}, you need to call {@link commit} when you’re
  * done writing otherwise the operation will be aborted without effect.
+ *
+ * To read and write files in text mode, use {@link TextFile} instead.
  */
 declare class BinaryFile {
+  static readonly ReadOnly: unique symbol;
+  static readonly WriteOnly: unique symbol;
+  static readonly ReadWrite: unique symbol;
+
   /**
    * The path of the file.
    */
@@ -220,7 +316,7 @@ declare class BinaryFile {
   /**
    * Opens a binary file in the given mode.
    */
-  constructor(filePath: string, mode?: BinaryFile.OpenMode);
+  constructor(filePath: string, mode?: typeof BinaryFile.ReadOnly | typeof BinaryFile.WriteOnly | typeof BinaryFile.ReadWrite);
 
   /**
    * Sets the file size (in bytes). If `size` is larger than the file currently is, the new bytes
@@ -236,13 +332,13 @@ declare class BinaryFile {
   public seek(pos: number): void;
 
   /**
-   * Reads at most `size` bytes of data from the file and returns it as an {@link ArrayBuffer}.
+   * Reads at most `size` bytes of data from the file and returns it as an `ArrayBuffer`.
    * @param size
    */
   public read(size: number): ArrayBuffer;
 
   /**
-   * Reads all data from the file and returns it as an {@link ArrayBuffer}.
+   * Reads all data from the file and returns it as an `ArrayBuffer`.
    */
   public readAll(): ArrayBuffer;
 
@@ -267,17 +363,16 @@ declare class BinaryFile {
 }
 
 /**
- * An action that was registered with {@see tiled.registerAction}.
+ * An action that was registered with {@link tiled.registerAction}.
  *
  * This class is used to change the properties of the action.
- * It can be added to a menu using {@see tiled.extendMenu}.
+ * It can be added to a menu using {@link tiled.extendMenu}.
  */
 interface Action {
   /**
    * The ID this action was registered with.
-   * @readonly
    */
-  id: string;
+  readonly id: string;
 
   /**
    * The text used when the action is part of a menu.
@@ -331,7 +426,11 @@ interface Action {
   toggle(): void;
 }
 
-declare class ObjectGroup extends Layer{
+/**
+ * The "ObjectGroup" is a type of layer that can contain objects. It will
+ * henceforth be referred to as a layer.
+ */
+declare class ObjectGroup extends Layer {
   /**
    * Array of all objects on this layer.
    */
@@ -410,24 +509,24 @@ declare class TiledObject {
   /**
    * Returns the value of the custom property with the given name, or
    * `undefined` if no such property is set on the object. Does not
-   * include inherited values (see {@see resolvedProperty}).
+   * include inherited values (see {@link resolvedProperty}).
    *
-   * `file` properties are returned as {@see FilePath}.
+   * `file` properties are returned as {@link FilePath}.
    *
-   * `object` properties are returned as {@see MapObject} when possible,
-   * or {@see ObjectRef} when the object could not be found.
+   * `object` properties are returned as {@link MapObject} when possible,
+   * or {@link ObjectRef} when the object could not be found.
    */
   property(name: string): TiledObjectPropertyValue;
 
   /**
    * Sets the value of the custom property with the given name. Supported
-   * types are `bool`, `number`, `string`, {@see FilePath},
-   * {@see ObjectRef} and {@see MapObject}.
+   * types are `bool`, `number`, `string`, {@link FilePath},
+   * {@link ObjectRef} and {@link MapObject}.
    *
    * When setting a `number`, the property type will be set to either
    * `int` or `float`, depending on whether it is a whole number.
    *
-   * *Note:* Support for setting `color` properties is currently missing.
+   * @note Support for setting `color` properties is currently missing.
    */
   setProperty(name: string, value: TiledObjectPropertyValue): void;
 
@@ -435,7 +534,7 @@ declare class TiledObject {
    * Returns all custom properties set on this object.
    *
    * Modifications to the properties will not affect the original object.
-   * Does not include inherited values (see {@see resolvedProperties}).
+   * Does not include inherited values (see {@link resolvedProperties}).
    */
   properties(): TiledObjectProperties;
 
@@ -465,17 +564,6 @@ declare class TiledObject {
   resolvedProperties(): TiledObjectProperties;
 }
 
-
-declare namespace MapObject {
-  type ObjectShape = number;
-
-  const Rectangle: ObjectShape;
-  const Polygon: ObjectShape;
-  const Polyline: ObjectShape;
-  const Ellipse: ObjectShape;
-  const Text: ObjectShape;
-  const Point: ObjectShape;
-}
 
 interface Font {
   /**
@@ -515,15 +603,22 @@ interface Font {
 }
 
 declare class MapObject extends TiledObject {
+  static readonly Rectangle: unique symbol
+  static readonly Polygon: unique symbol
+  static readonly Polyline: unique symbol
+  static readonly Ellipse: unique symbol
+  static readonly Text: unique symbol
+  static readonly Point: unique symbol
+
   /**
    * Unique (map-wide) ID of the object.
    */
   readonly id: number;
 
   /**
-   * {@see ObjectShape} of the object.
+   * Shape of the object.
    */
-  shape: MapObject.ObjectShape;
+  shape: typeof MapObject.Rectangle | typeof MapObject.Polygon | typeof MapObject.Polyline | typeof MapObject.Ellipse | typeof MapObject.Text | typeof MapObject.Point
 
   /**
    * Name of the object.
@@ -596,15 +691,14 @@ declare class MapObject extends TiledObject {
   textAlignment: Qt.Alignment;
 
   /**
-   * Whether the text of a text object
-   * wraps based on the width of the object.
+   * Whether the text of a text object wraps based on the width of the object.
    */
   wordWrap: boolean;
 
   /**
    * Color of a text object.
    */
-  textColor: string;
+  textColor: color;
 
   /**
    * Tile of the object.
@@ -639,7 +733,7 @@ declare class MapObject extends TiledObject {
   readonly map: TileMap;
 
   /**
-   * Constructs a new map object, which can be added to an ObjectGroup.
+   * Constructs a new map object, which can be added to an {@link ObjectGroup}.
    * @param name
    */
   constructor(name? : string)
@@ -647,7 +741,8 @@ declare class MapObject extends TiledObject {
 
 /**
  * Represents any top-level data type that can be saved to a file.
- * Currently either a [[TileMap]] or a [[Tileset]].
+ *
+ * Currently either a {@link TileMap} or a {@link Tileset}.
  *
  * For assets that are loaded in the editor, all modifications and
  * modifications to their contained parts create undo commands. This
@@ -666,12 +761,12 @@ declare class Asset extends TiledObject {
   readonly modified: boolean;
 
   /**
-   * Whether the asset is a {@see TileMap}.
+   * Whether the asset is a {@link TileMap}.
    */
   readonly isTileMap: boolean;
 
   /**
-   * Whether the asset is a {@see Tileset}.
+   * Whether the asset is a {@link Tileset}.
    */
   readonly isTileset: boolean;
 
@@ -698,16 +793,14 @@ declare class Asset extends TiledObject {
   /**
    * Undoes the last applied change.
    *
-   * Note that the undo system is only enabled for assets loaded
-   * in the editor!
+   * @note The undo system is only enabled for assets loaded in the editor!
    */
   undo(): void;
 
   /**
    * Redoes the last change that was undone.
    *
-   * Note that the undo system is only enabled for assets loaded
-   * in the editor!
+   * @note The undo system is only enabled for assets loaded in the editor!
    */
   redo(): void;
 }
@@ -738,7 +831,7 @@ interface FileFormat {
  * Offers various operations on file paths, such as turning absolute paths
  * into relative ones, splitting a path into its components, and so on.
  */
-interface FileInfo {
+interface FileInfo {  // TODO: namespace instead of interface?
   /**
    * Returns the file name of `filePath` up to (but not including) the
    * first '.' character.
@@ -822,14 +915,13 @@ interface FileInfo {
 
   /**
    * On Windows, returns `filePath` with all `/` characters replaced by
-   * `\`. On other operating systems, it returns the input
-   * unmodified.
+   * `\`. On other operating systems, it returns the input unmodified.
    */
   toNativeSeparators(filePath: string): string;
 }
 
 /**
- * Number of child layers the group layer has.
+ * A layer that groups several other layers.
  */
 declare class GroupLayer extends Layer {
   /**
@@ -840,7 +932,7 @@ declare class GroupLayer extends Layer {
   /**
    * Constructs a new group layer.
    */
-  constructor()
+  constructor(name? : string)
 
   /**
    * Returns a reference to the child layer at the given index.
@@ -864,9 +956,8 @@ declare class GroupLayer extends Layer {
    * Inserts the layer at the given index. The layer can't already be
    * part of a map.
    *
-   * When adding a {@see TileLayer} to a
-   * map, the layer's width and height are automatically initialized to
-   * the size of the map (since Tiled 1.4.2).
+   * When adding a {@link TileLayer} to a map, the layer's width and height
+   * are automatically initialized to the size of the map (since Tiled 1.4.2).
    */
   insertLayerAt(index: number, layer: Layer): void;
 
@@ -874,84 +965,82 @@ declare class GroupLayer extends Layer {
    * Adds the layer to the group, above all existing layers. The layer
    * can't already be part of a map.
    *
-   * When adding a {@see TileLayer} to a
-   * map, the layer's width and height are automatically initialized to
-   * the size of the map (since Tiled 1.4.2).
+   * When adding a {@link TileLayer} to a map, the layer's width and height
+   * are automatically initialized to the size of the map (since Tiled 1.4.2).
    */
   addLayer(layer: Layer): void;
-}
-
-interface ImageFormat {}
-
-interface AspectRatio {}
-
-interface TransformationMode {}
-
-declare namespace Image {
-  const Format_Invalid: number;
-  const Format_Mono: number;
-  const Format_MonoLSB: number;
-  const Format_Indexed8: number;
-  const Format_RGB32: number;
-  const Format_ARGB32: number;
-  const Format_ARGB32_Premultiplied: number;
-  const Format_RGB16: number;
-  const Format_ARGB8565_Premultiplied: number;
-  const Format_RGB666: number;
-  const Format_ARGB6666_Premultiplied: number;
-  const Format_RGB555: number;
-  const Format_ARGB8555_Premultiplied: number;
-  const Format_RGB888: number;
-  const Format_RGB444: number;
-  const Format_ARGB4444_Premultiplied: number;
-  const Format_RGBX8888: number;
-  const Format_RGBA8888: number;
-  const Format_RGBA8888_Premultiplied: number;
-  const Format_BGR30: number;
-  const Format_A2BGR30_Premultiplied: number;
-  const Format_RGB30: number;
-  const Format_A2RGB30_Premultiplied: number;
-  const Format_Alpha8: number;
-  const Format_Grayscale8: number;
-  const Format_RGBX64: number;
-  const Format_RGBA64: number;
-  const Format_RGBA64_Premultiplied: number;
-  const Format_Grayscale16: number;
-  const Format_BGR888: number;
 }
 
 /**
  * Can be used to create, load, save and modify images. Also useful when
  * writing an importer, where the image can be set on a tileset or its
- * tiles ({@see Tileset.loadFromImage} and {@see Tile.setImage}.
+ * tiles ({@link Tileset.loadFromImage} and {@link Tile.setImage}).
  *
  * @since 1.5
  */
 declare class Image {
+  static readonly Format_Invalid: unique symbol
+  static readonly Format_Mono: unique symbol
+  static readonly Format_MonoLSB: unique symbol
+  static readonly Format_Indexed8: unique symbol
+  static readonly Format_RGB32: unique symbol
+  static readonly Format_ARGB32: unique symbol
+  static readonly Format_ARGB32_Premultiplied: unique symbol
+  static readonly Format_RGB16: unique symbol
+  static readonly Format_ARGB8565_Premultiplied: unique symbol
+  static readonly Format_RGB666: unique symbol
+  static readonly Format_ARGB6666_Premultiplied: unique symbol
+  static readonly Format_RGB555: unique symbol
+  static readonly Format_ARGB8555_Premultiplied: unique symbol
+  static readonly Format_RGB888: unique symbol
+  static readonly Format_RGB444: unique symbol
+  static readonly Format_ARGB4444_Premultiplied: unique symbol
+  static readonly Format_RGBX8888: unique symbol
+  static readonly Format_RGBA8888: unique symbol
+  static readonly Format_RGBA8888_Premultiplied: unique symbol
+  static readonly Format_BGR30: unique symbol
+  static readonly Format_A2BGR30_Premultiplied: unique symbol
+  static readonly Format_RGB30: unique symbol
+  static readonly Format_A2RGB30_Premultiplied: unique symbol
+  static readonly Format_Alpha8: unique symbol
+  static readonly Format_Grayscale8: unique symbol
+  static readonly Format_RGBX64: unique symbol
+  static readonly Format_RGBA64: unique symbol
+  static readonly Format_RGBA64_Premultiplied: unique symbol
+  static readonly Format_Grayscale16: unique symbol
+  static readonly Format_BGR888: unique symbol
+
+  static readonly IgnoreAspectRatio: unique symbol
+  static readonly KeepAspectRatio: unique symbol
+  static readonly KeepAspectRatioByExpanding: unique symbol
+
+  static readonly FastTransformation: unique symbol
+  static readonly SmoothTransformation: unique symbol
+
   /**
    * Width of the image in pixels.
    */
-  width: number;
+  readonly width: number;
 
   /**
    * Height of the image in pixels.
    */
-  height: number;
+  readonly height: number;
 
   /**
    * Number of bits used to store a single pixel.
    */
-  depth: number;
+  readonly depth: number;
 
   /**
    * Size of the image in pixels.
    */
-  size: size;
+  readonly size: size;
 
   /**
-   * Format of the image.
+   * Format of the image. The format is defined by one of the `Image.Format_` values.
    */
-  format: ImageFormat;
+  readonly format: number;
 
   /**
    * Constructs an empty image.
@@ -959,32 +1048,33 @@ declare class Image {
   constructor();
 
   /**
-   * Constructs an image of the given size using the given format.
+   * Constructs an image of the given size using the given format. The format is defined by one of the `Image.Format_` values.
    */
-  constructor(width: number, height: number, format: ImageFormat);
+  constructor(width: number, height: number, format: number);
 
   /**
    * Constructs an image from the given data, interpreting it in the
-   * specified format and size.
+   * specified format and size. The format is defined by one of the `Image.Format_` values.
    */
   constructor(
     data: ArrayBuffer,
     width: number,
     height: number,
-    format: ImageFormat
+    format: number
     );
 
   /**
    * Constructs an image from the given data, interpreting it in the
    * specified format and size. The `bytesPerLine` argument
    * specifies the stride and can be useful for referencing a sub-image.
+   * The format is defined by one of the `Image.Format_` values.
    */
   constructor(
     data: ArrayBuffer,
     width: number,
     height: number,
     bytesPerLine: number,
-    format: ImageFormat
+    format: number
     );
 
   /**
@@ -1041,6 +1131,18 @@ declare class Image {
   loadFromData(data: ArrayBuffer, format: string): void;
 
   /**
+   * Saves the image to the given file.
+   *
+   * When no format is given it will be auto-detected based on the file extension.
+   */
+  save(fileName : string, format? : string, quality? : number) : boolean
+
+  /**
+   * Saves the image to an ArrayBuffer in the given format (can be "bmp", png", etc.).
+   */
+  saveToData(format : string, quality? : number) : ArrayBuffer
+
+  /**
    * Returns the 32-bit color value at the given index in the color
    * table.
    */
@@ -1079,22 +1181,17 @@ declare class Image {
    * behavior is to ignore the aspect ratio. Default `mode` is a fast
    * transformation.
    */
-  scaled(width: number, height: number, aspectRatioMode: AspectRatio, transformationMode: TransformationMode): Image;
+  scaled(width: number, height: number,
+         aspectRatioMode?: typeof Image.IgnoreAspectRatio  | typeof Image.KeepAspectRatio  | typeof Image.KeepAspectRatioByExpanding,
+         transformationMode?: typeof Image.FastTransformation  | typeof Image.SmoothTransformation): Image;
 
   /**
    * Returns a mirrored copy of this image.
    */
   mirrored(horizontal: boolean, vertical: boolean) : Image;
-
-  readonly IgnoreAspectRatio: number;
-  readonly KeepAspectRatio: number;
-  readonly KeepAspectRatioByExpanding: number;
-
-  readonly FastTransformation: number;
-  readonly SmoothTransformation: number;
 }
 
-interface ImageLayer extends Layer {
+declare class ImageLayer extends Layer {
   /**
    * Color used as transparent color when rendering the image.
    */
@@ -1106,10 +1203,15 @@ interface ImageLayer extends Layer {
   imageSource: string;
 
   /**
+   * Constructs a new image layer.
+   */
+  constructor(name? : string);
+
+  /**
    * Sets the image for this layer to the given image, optionally also
    * setting the source of the image.
    *
-   * *Warning: This function has no undo!*
+   * @warning This function has no undo!
    */
   loadFromImage(image: Image, source?: string) : void;
 }
@@ -1127,13 +1229,13 @@ interface MapFormat {
 
   /**
    * A function that reads a map from the given file. Can use
-   * {@see TextFile} or {@see BinaryFile} to read the file.
+   * {@link TextFile} or {@link BinaryFile} to read the file.
    */
   read?(fileName: string): TileMap;
 
   /**
    * A function that writes a map to the given
-   * file. Can use {@see TextFile} or {@see BinaryFile} to write the file. * When a non-empty string is returned, it is shown as error message.
+   * file. Can use {@link TextFile} or {@link BinaryFile} to write the file. * When a non-empty string is returned, it is shown as error message.
    */
   write?(map: TileMap, fileName: string): string | undefined;
 
@@ -1145,6 +1247,16 @@ interface MapFormat {
 }
 
 interface MapEditor {
+  /**
+   * Get or set the currently used tile brush.
+   */
+  currentBrush : TileMap
+
+  /**
+   * Access the current map view.
+   */
+  readonly currentMapView : MapView
+
   /**
    * Access the Tilesets view
    */
@@ -1174,7 +1286,12 @@ interface frame {
   duration : number
 }
 
-declare class Tile extends TiledObject{
+declare class Tile extends TiledObject {
+  static readonly FlippedHorizontally: 0x01
+  static readonly FlippedVertically: 0x02
+  static readonly FlippedAntiDiagonally: 0x04
+  static readonly RotatedHexagonal120: 0x08
+
   /**
    * ID of this tile within its tileset.
    */
@@ -1233,7 +1350,7 @@ declare class Tile extends TiledObject{
   /**
    * Sets the image of this tile.
    *
-   * Warning: This function has no undo and does not affect the saved tileset!
+   * @warning This function has no undo and does not affect the saved tileset!
    * @param image
    */
   setImage(image : Image) : void
@@ -1253,21 +1370,17 @@ declare class Layer extends TiledObject {
   name: string;
 
   /**
-   * Opacity of the layer, from 0 (fully transparent) to 1 (fully
-   * opaque).
+   * Opacity of the layer, from 0 (fully transparent) to 1 (fully opaque).
    */
   opacity: any;
 
   /**
-   * Whether the layer is visible (affects
-   * child layer visibility for group layers).
+   * Whether the layer is visible (affects child layer visibility for group layers).
    */
   visible: boolean;
 
   /**
-   * Whether
-   * the layer is locked (affects whether child layers are locked for group
-   * layers).
+   * Whether the layer is locked (affects whether child layers are locked for group layers).
    */
   locked: boolean;
 
@@ -1277,8 +1390,7 @@ declare class Layer extends TiledObject {
   offset: point;
 
   /**
-   * Map that this layer is
-   * part of (or `null` in case of a standalone layer).
+   * Map that this layer is part of (or `null` in case of a standalone layer).
    */
   map: TileMap;
 
@@ -1288,36 +1400,30 @@ declare class Layer extends TiledObject {
   selected: boolean;
 
   /**
-   * Whether this layer is a {@see TileLayer}.
+   * Whether this layer is a {@link TileLayer}.
    */
   readonly isTileLayer: boolean;
 
   /**
-   * Whether this layer is an {@see ObjectLayer}.
+   * Whether this layer is an {@link ObjectGroup}.
    */
   readonly isObjectLayer: boolean;
 
   /**
-   * Whether this layer is a {@see GroupLayer}.
+   * Whether this layer is a {@link GroupLayer}.
    */
   readonly isGroupLayer: boolean;
 
   /**
-   * Whether this layer is an {@see ImageLayer}.
+   * Whether this layer is an {@link ImageLayer}.
    */
   readonly isImageLayer: boolean;
 }
 
-
-declare namespace TileMap {
-  interface Orientation {}
-  interface LayerDataFormat {}
-  interface RenderOrder {}
-  interface StaggerAxis {}
-  interface StaggerIndex {}
-}
-
 interface SelectedArea {
+  /**
+   * Bounding rectangle of the selected area.
+   */
   readonly boundingRect: rect;
 
   /**
@@ -1367,6 +1473,31 @@ interface SelectedArea {
 }
 
 declare class TileMap extends Asset {
+  static readonly Unknown: unique symbol
+  static readonly Orthogonal: unique symbol
+  static readonly Isometric: unique symbol
+  static readonly Staggered: unique symbol
+  static readonly Hexagonal: unique symbol
+
+  static readonly XML: unique symbol
+  static readonly Base64: unique symbol
+  static readonly Base64Gzip: unique symbol
+  static readonly Base64Zlib: unique symbol
+  static readonly Base64Zstandard: unique symbol
+  static readonly CSV: unique symbol
+
+  static readonly RightDown: unique symbol
+  static readonly RightUp: unique symbol
+  static readonly LeftDown: unique symbol
+  static readonly LeftUp: unique symbol
+
+  static readonly StaggerX: unique symbol
+  static readonly StaggerY: unique symbol
+
+  static readonly StaggerOdd: unique symbol
+  static readonly StaggerEven: unique symbol
+
+
   /**
    * Width of the map in tiles (only relevant for non-infinite maps).
    */
@@ -1405,22 +1536,22 @@ declare class TileMap extends Asset {
   /**
    * For staggered and hexagonal maps, determines which axis (X or Y) is staggered.
    */
-  staggerAxis : TileMap.StaggerAxis
+  staggerAxis : typeof TileMap.StaggerX | typeof TileMap.StaggerY
 
   /**
    * General map orientation
    */
-  orientation : TileMap.Orientation
+  orientation : typeof TileMap.Orthogonal | typeof TileMap.Isometric | typeof TileMap.Staggered | typeof TileMap.Hexagonal | typeof TileMap.Unknown
 
   /**
    * Tile rendering order (only implemented for orthogonal maps)
    */
-  renderOrder : TileMap.RenderOrder
+  renderOrder : typeof TileMap.RightDown | typeof TileMap.RightUp | typeof TileMap.LeftDown | typeof TileMap.LeftUp
 
   /**
    * For staggered and hexagonal maps, determines whether the even or odd indexes along the staggered axis are shifted.
    */
-  staggerIndex : TileMap.StaggerIndex
+  staggerIndex : typeof TileMap.StaggerOdd | typeof TileMap.StaggerEven
 
   /**
    * Background color of the map.
@@ -1430,7 +1561,7 @@ declare class TileMap extends Asset {
   /**
    * The format in which the layer data is stored, taken into account by TMX, JSON and Lua map formats.
    */
-  layerDataFormat : TileMap.LayerDataFormat
+  layerDataFormat : typeof TileMap.XML | typeof TileMap.Base64 | typeof TileMap.Base64Gzip | typeof TileMap.Base64Zlib | typeof TileMap.Base64Zstandard | typeof TileMap.CSV
 
   /**
    * Number of top-level layers the map has.
@@ -1462,17 +1593,20 @@ declare class TileMap extends Asset {
    */
   selectedObjects : MapObject[]
 
+  /**
+   * Constructs a new map.
+   */
   constructor();
 
   /**
-   * Applies Automapping using the given rules file, or using the default rules file is none is given.
+   * Applies [Automapping](https://doc.mapeditor.org/en/stable/manual/automapping/) using the given rules file, or using the default rules file is none is given.
    *
    * This operation can only be applied to maps loaded from a file.
    */
   public autoMap(rulesFule?: string): void;
 
   /**
-   * Applies Automapping in the given region using the given rules file, or using the default rules file is none is given.
+   * Applies [Automapping](https://doc.mapeditor.org/en/stable/manual/automapping/) in the given region using the given rules file, or using the default rules file is none is given.
    *
    * This operation can only be applied to maps loaded from a file.
    */
@@ -1481,7 +1615,7 @@ declare class TileMap extends Asset {
   /**
    * Sets the size of the map in tiles. This does not affect the contents of the map.
    *
-   * See also resize.
+   * See also {@link resize}.
    */
   public setSize(width: number, height: number): void;
 
@@ -1549,7 +1683,7 @@ declare class TileMap extends Asset {
    *
    * This operation can currently only be applied to maps loaded from a file.
    *
-   * See also setSize.
+   * See also {@link setSize}.
    */
   public resize(size: size, offset?: point, removeObjects?: boolean): void;
 
@@ -1625,6 +1759,9 @@ declare class TileMap extends Asset {
   public tileToPixel(position: point): point;
 }
 
+/**
+ * A cell on a {@link TileLayer}.
+ */
 interface cell {
   /**
    * The local tile ID of the tile, or -1 if the cell is empty.
@@ -1657,6 +1794,15 @@ interface cell {
   rotatedHexagonal120 : boolean
 }
 
+/**
+ * A tile layer.
+ *
+ * Note that while tile layers have a size, the size is generally ignored on
+ * infinite maps. Even for fixed size maps, nothing in the scripting API stops you
+ * from changing the layer outside of its boundaries and changing the size of the
+ * layer has no effect on its contents. If you want to change the size while
+ * affecting the contents, use the {@link resize} function.
+ */
 declare class TileLayer extends Layer {
   /**
    * Width of the layer in tiles (only relevant for non-infinite maps).
@@ -1669,12 +1815,12 @@ declare class TileLayer extends Layer {
   height : number
 
   /**
-   * Size of the layer in tiles (has width and height members) (only relevant for non-infinite maps).
+   * Size of the layer in tiles (only relevant for non-infinite maps).
    */
   size : size
 
   /**
-   * Constructs a new tile layer, which can be added to a TileMap.
+   * Constructs a new tile layer, which can be added to a {@link TileMap}.
    * @param name
    */
   constructor(name? : string)
@@ -1685,14 +1831,15 @@ declare class TileLayer extends Layer {
   region() : region
 
   /**
-   * Resizes the layer, erasing the part of the contents that falls outside of the layer’s new size. The offset parameter can be used to shift the contents by a certain distance in tiles before applying the resize.
+   * Resizes the layer, erasing the part of the contents that falls outside of the layer’s new size.
+   * The offset parameter can be used to shift the contents by a certain distance in tiles before applying the resize.
    * @param size
    * @param offset
    */
   resize(size : size, offset : point) : void
 
   /**
-   * Returns the value of the cell at the given position. Can be used to query the flags and the tile ID, but does not currently allow getting a tile reference.
+   * Returns the value of the cell at the given position. Can be used to query the flags and the tile ID, but does not currently allow getting a tile reference (see {@link tileAt}).
    * @param x
    * @param y
    */
@@ -1718,6 +1865,13 @@ declare class TileLayer extends Layer {
   edit() : TileLayerEdit
 }
 
+/**
+ * This object enables modifying the tiles on a tile layer. Tile layers can't be
+ * modified directly for reasons of efficiency. The {@link apply}
+ * function needs to be called when you're done making changes.
+ *
+ * An instance of this object is created by calling {@link TileLayer.edit}.
+ */
 interface TileLayerEdit {
   /**
    * The target layer of this edit object.
@@ -1725,7 +1879,7 @@ interface TileLayerEdit {
   readonly target : TileLayer
 
   /**
-   * Whether applied edits are mergeable with previous edits. Starts out as false and is automatically set to true by apply().
+   * Whether applied edits are mergeable with previous edits. Starts out as false and is automatically set to true by {@link apply}.
    */
   mergeable : boolean
 
@@ -1739,11 +1893,14 @@ interface TileLayerEdit {
   setTile(x : number, y : number, tile : Tile , flags? : number) : void
 
   /**
-   * Applies all changes made through this object. This object can be reused to make further
+   * Applies all changes made through this object. This object can be reused to make further changes.
    */
   apply() : void
 }
 
+/**
+ * @since 1.5
+ */
 declare class WangSet {
   static readonly Edge: unique symbol;
   static readonly Corner: unique symbol;
@@ -1793,13 +1950,22 @@ declare class WangSet {
   public setWangId(tile : Tile, wangId : number[]) : void
 }
 
-declare namespace Tileset {
-  interface Orientation {}
-  interface Alignment {}
-}
 interface color {}
 
 declare class Tileset extends Asset {
+  static readonly Unspecified: unique symbol
+  static readonly TopLeft: unique symbol
+  static readonly Top: unique symbol
+  static readonly TopRight: unique symbol
+  static readonly Left: unique symbol
+  static readonly Center: unique symbol
+  static readonly Right: unique symbol
+  static readonly BottomLeft: unique symbol
+  static readonly Bottom: unique symbol
+  static readonly BottomRight: unique symbol
+
+  static readonly Orthogonal: unique symbol
+  static readonly Isometric: unique symbol
 
   /**
    * Name of the tileset.
@@ -1874,7 +2040,7 @@ declare class Tileset extends Asset {
   /**
    * The alignment to use for tile objects (when Unspecified, uses Bottom alignment on isometric maps and BottomLeft alignment for all other maps).
    */
-  objectAlignment : Tileset.Alignment
+  objectAlignment : typeof Tileset.Unspecified | typeof Tileset.TopLeft | typeof Tileset.Top | typeof Tileset.TopRight | typeof Tileset.Left | typeof Tileset.Center | typeof Tileset.Right | typeof Tileset.BottomLeft | typeof Tileset.Bottom | typeof Tileset.BottomRight
 
   /**
    * Offset in pixels that is applied when tiles from this tileset are rendered.
@@ -1884,7 +2050,7 @@ declare class Tileset extends Asset {
   /**
    * The orientation of this tileset (used when rendering overlays and in the tile collision editor).
    */
-  orientation : Tileset.Orientation
+  orientation : typeof Tileset.Orthogonal | typeof Tileset.Isometric
 
   /**
    * Background color for this tileset in the Tilesets view.
@@ -1924,7 +2090,7 @@ declare class Tileset extends Asset {
    *
    * Optionally sets the source file of the image. This may be useful, but be careful since Tiled will try to reload the tileset from that source when the tileset parameters are changed.
    *
-   * Warning: This function has no undo!
+   * @warning This function has no undo!
    */
   public loadFromImage(image : Image, source?: string) : void
 
@@ -1963,19 +2129,22 @@ interface TilesetFormat {
   /**
    * A function that reads a tileset from the given file.
    *
-   * Can use {@see TextFile} or {@see BinaryFile} to read the file.
+   * Can use {@link TextFile} or {@link BinaryFile} to read the file.
    */
   read?: (fileName: string) => Tileset;
 
   /**
    * A function that writes a tileset to the given file.
    *
-   * Can use {@see TextFile} or {@see BinaryFile} to write the file.
+   * Can use {@link TextFile} or {@link BinaryFile} to write the file.
    * When a non-empty string is returned, it is shown as error message.
    */
   write?: (tileset: Tileset, fileName: string) => string | undefined;
 }
 
+/**
+ * The view displaying the map.
+ */
 interface MapView {
   /**
    * The scale of the view.
@@ -2003,6 +2172,12 @@ interface TileCollisionEditor {
    * The map view used by the Collision Editor.
    */
   view : MapView
+
+  /**
+   * Focuses the given object in the collision editor view and makes sure its
+   * visible in its objects list. Does not automatically select the object.
+   */
+  focusObject(object : MapObject) : void
 }
 
 interface TilesetEditor {
@@ -2019,12 +2194,17 @@ interface Tool {
   name: string;
 
   /**
+   * File name of an icon. If set, the icon is shown on the tool bar and the name becomes the tool tip.
+   */
+  icon: string;
+
+  /**
    * Currently active tile map.
    */
   map: TileMap;
 
   /**
-   * The last clicked tile for the active map. See also the {@see MapEditor.* currentBrush | currentBrush} property.
+   * The last clicked tile for the active map. See also the {@link MapEditor.currentBrush} property.
    */
   selectedTile: any;
 
@@ -2126,6 +2306,10 @@ interface Tool {
   updateEnabledState(): void;
 }
 
+/**
+ * The ``tiled`` module is the main entry point and provides properties,
+ * functions and signals which are documented below.
+ */
 declare namespace tiled {
   /**
    * Currently used version of Tiled.
@@ -2195,8 +2379,6 @@ declare namespace tiled {
    * includes most actions you would normally trigger through the menu or
    * by using their shortcut.
    *
-   *
-   *
    * Actions that are checkable will toggle when triggered.
    * @param action The action to trigger. Use the
    *               {@link actions | tiled.actions} property to get a list
@@ -2210,6 +2392,8 @@ declare namespace tiled {
    * enabled.
    *
    * Raises a script error if the command is not found.
+   *
+   * For more control over the executed binary, use {@link Process} instead.
    */
   export function executeCommand(name: string, inTerminal: boolean): void;
 
@@ -2281,14 +2465,14 @@ declare namespace tiled {
   /**
    * Extends the menu with the given ID. Supports both a list of items or
    * a single item. Available menu IDs can be obtained using the
-   * `tiled.menus` property.
+   * {@link tiled.menus} property.
    *
    * If a menu item does not include a `before` property, the value is
    * inherited from the previous item. When this property is not set at
    * all, the items are appended to the end of the menu.
    *
-   * Example that adds a custom action to the \"Edit\" menu, before the
-   * \"Select All\" action and separated by a separator:
+   * Example that adds a custom action to the "Edit" menu, before the
+   * "Select All" action and separated by a separator:
    *
    * ```js
    * tiled.extendMenu("Edit", [
@@ -2297,8 +2481,8 @@ declare namespace tiled {
    * ]);
    * ```
    *
-   * The \"CustomAction\" will need to have been registered before using
-   * {@see registerAction | tiled.registerAction()}.
+   * The "CustomAction" will need to have been registered before using
+   * {@link registerAction | tiled.registerAction()}.
    */
   export function extendMenu(
     shortName: string,
@@ -2322,7 +2506,7 @@ declare namespace tiled {
    * ```
    *
    * The shortcut will currently only work when the action is added to a
-   * menu using {@see extendMenu | tiled.extendMenu()}.
+   * menu using {@link extendMenu | tiled.extendMenu()}.
    */
   export function registerAction(
     id: string,
@@ -2394,7 +2578,7 @@ declare namespace tiled {
   /**
    * Returns the tileset format object with the given name, or
     `undefined` if no object was found. See the
-    {@see tilesetFormats} property for more info.
+    {@link tilesetFormats} property for more info.
    */
   export function tilesetFormat(shortName: string): TilesetFormat;
 
@@ -2407,7 +2591,7 @@ declare namespace tiled {
   /**
    * Returns the map format object with the given name, or
    * `undefined` if no object was found. See the
-   * {@see mapFormats} property for more info.
+   * {@link mapFormats} property for more info.
    */
   export function mapFormat(shortName: string): MapFormat;
 
@@ -2418,12 +2602,12 @@ declare namespace tiled {
   export function mapFormatForFile(fileName: string): MapFormat;
 
   /**
-   * Creates a {@see FilePath} object with the given URL.
+   * Creates a {@link FilePath} object with the given URL.
    */
   export function filePath(path: string): FilePath;
 
   /**
-   * Creates an {@see ObjectRef} object with the given ID.
+   * Creates an {@link ObjectRef} object with the given ID.
    */
   export function objectRef(id: number): ObjectRef;
 
@@ -2480,7 +2664,7 @@ declare namespace tiled {
   ): void;
 
   /**
-   * Like {@see registerMapFormat}, but registers a custom tileset
+   * Like {@link registerMapFormat}, but registers a custom tileset
    * format instead.
    */
   export function registerTilesetFormat(
@@ -2547,7 +2731,7 @@ declare class Process {
   codec: string
 
   /**
-   *   Allocates and returns a new Process object.
+   * Allocates and returns a new Process object.
    */
   constructor()
 
@@ -2562,7 +2746,7 @@ declare class Process {
   closeWriteChannel() : void
 
   /**
-   *   Executes the program at filePath with the given argument list and blocks until the process is finished. If an error occurs (for example, there is no executable file at filePath) and throwOnError is true (the default), then a JavaScript exception will be thrown. Otherwise, -1 will be returned in case of an error. The normal return code is the exit code of the process.
+   * Executes the program at filePath with the given argument list and blocks until the process is finished. If an error occurs (for example, there is no executable file at filePath) and throwOnError is true (the default), then a JavaScript exception will be thrown. Otherwise, -1 will be returned in case of an error. The normal return code is the exit code of the process.
    * @param filePath
    * @param arguments
    * @param throwOnError
@@ -2603,9 +2787,9 @@ declare class Process {
   setEnv(varName : string, varValue : string) : string
 
   /**
-   *   Starts the program at filePath with the given list of arguments. Returns true if the process could be started and false otherwise.
+   * Starts the program at filePath with the given list of arguments. Returns true if the process could be started and false otherwise.
    *
-   *   Note: This call returns right after starting the process and should be used only if you need to interact with the process while it is running. Most of the time, you want to use exec() instead.
+   * Note: This call returns right after starting the process and should be used only if you need to interact with the process while it is running. Most of the time, you want to use exec() instead.
    * @param filePath
    * @param arguments
    */
