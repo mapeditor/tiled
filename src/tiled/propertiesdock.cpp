@@ -49,17 +49,18 @@
 
 namespace Tiled {
 
-class ComponentMenu : public QMenu {
+class ComponentMenu : public QMenu
+{
 public:
-    ComponentMenu(QWidget *parent = 0)
-        : QMenu(parent) {}
+    using QMenu::QMenu;
 
-    virtual void setVisible(bool visible) override
+    void setVisible(bool visible) override
     {
-        QAction *active = activeAction();
-        if (!visible && active != nullptr)
+        // Don't hide the menu when holding Shift down
+        if (!visible && activeAction())
             if (QApplication::queryKeyboardModifiers().testFlag(Qt::ShiftModifier))
-                visible = true;
+                return;
+
         QMenu::setVisible(visible);
     }
 };
@@ -93,7 +94,6 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     mButtonComponents = new QToolButton(this);
     mButtonComponents->setEnabled(true);
     mButtonComponents->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
-
     mButtonComponents->setMenu(new ComponentMenu(this));
     mButtonComponents->setPopupMode(QToolButton::InstantPopup);
     connect(mButtonComponents->menu(), &QMenu::aboutToShow,
