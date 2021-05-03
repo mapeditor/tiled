@@ -3,7 +3,16 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="{{relativeURL "assets/css/main.css"}}">
-    {{> shared_includes}}
+
+    <meta name='viewport' content="width=device-width, initial-scale=1" />
+    <meta property="og:image" content="https://www.mapeditor.org/img/tiled-logo-filled.png" />
+    <link href='/favicon.ico' rel='icon' type='image/png'/>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/base.css">
+    <link href="/atom.xml" rel="alternate" type="application/atom+xml" />
+    <script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
+
     <link rel="stylesheet" href="{{relativeURL "assets/css/override.css"}}">
     <title>{{#ifCond model.name '==' project.name}}{{project.name}}{{else}}{{model.name}} | {{project.name}}{{/ifCond}}</title>
     <meta name="description" content="Documentation for {{project.name}}">
