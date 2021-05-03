@@ -266,13 +266,11 @@ declare class TextFile {
 
   /**
    * Writes a string to the file.
-   * @param text
    */
   public write(text: string): void;
 
   /**
    * Writes a string to the file and appends a newline character.
-   * @param text
    */
   public writeLine(text: string): void;
 
@@ -325,19 +323,16 @@ declare class BinaryFile {
   /**
    * Sets the file size (in bytes). If `size` is larger than the file currently is, the new bytes
    * will be set to 0; if `size` is smaller, the file is truncated.
-   * @param size
    */
   public resize(size: number): void;
 
   /**
    * Sets the current position to `pos`.
-   * @param pos
    */
   public seek(pos: number): void;
 
   /**
    * Reads at most `size` bytes of data from the file and returns it as an `ArrayBuffer`.
-   * @param size
    */
   public read(size: number): ArrayBuffer;
 
@@ -348,7 +343,6 @@ declare class BinaryFile {
 
   /**
    * Writes data into the file at the current position.
-   * @param data
    */
   public write(data: ArrayBuffer): void;
 
@@ -452,38 +446,31 @@ declare class ObjectGroup extends Layer {
 
   /**
    * Constructs a new object layer, which can be added to a TileMap.
-   * @param name
    */
   constructor(name? : string)
 
   /**
    * Returns a reference to the object at the given index. When the object is removed, the reference turns into a standalone copy of the object.
-   * @param index
    */
   objectAt(index : number) : MapObject
 
   /**
    * Removes the object at the given index.
-   * @param index
    */
   removeObjectAt(index : number) : void
 
   /**
    * Removes the given object from this layer. The object reference turns into a standalone copy of the object.
-   * @param object
    */
   removeObject(object : MapObject) : void
 
   /**
    * Inserts the object at the given index. The object can’t already be part of a layer.
-   * @param index
-   * @param object
    */
   insertObjectAt(index : number, object : MapObject) : void
 
   /**
    * Adds the given object to the layer. The object can’t already be part of a layer.
-   * @param object
    */
   addObject(object : MapObject) : void
 
@@ -738,7 +725,6 @@ declare class MapObject extends TiledObject {
 
   /**
    * Constructs a new map object, which can be added to an {@link ObjectGroup}.
-   * @param name
    */
   constructor(name? : string)
 }
@@ -790,7 +776,7 @@ declare class Asset extends TiledObject {
    * })
    * ```
    *
-   * @returns The returned value is whatever the callback function returned.
+   * The returned value is whatever the callback function returned.
    */
   macro<T>(text: string, callback: () => T): T;
 
@@ -1408,7 +1394,6 @@ declare class Tile extends TiledObject {
    * Sets the image of this tile.
    *
    * @warning This function has no undo and does not affect the saved tileset!
-   * @param image
    */
   setImage(image : Image) : void
 }
@@ -1731,7 +1716,7 @@ declare class TileMap extends Asset {
    *
    * This operation can currently only be applied to maps loaded from a file.
    *
-   * @param canJoin If true, the operation joins with the previous one on the undo stack when possible. Useful for reducing the amount of undo commands.
+   * If `canJoin` is true, the operation joins with the previous one on the undo stack when possible. Useful for reducing the amount of undo commands.
    */
   public merge(map: TileMap, canJoin?: boolean): void;
 
@@ -1766,52 +1751,41 @@ declare class TileMap extends Asset {
 
   /**
    * Converts the given position from screen to pixel coordinates.
-   * @param x
-   * @param y
    */
   public screenToPixel(x: number, y: number): point;
 
   /**
    * Converts the given position from screen to pixel coordinates.
-   * @param position
    */
   public screenToPixel(position: point): point;
 
   /**
    * Converts the given position from pixel to screen coordinates.
-   * @param x
-   * @param y
    */
   public pixelToScreen(x: number, y: number): point;
 
   /**
    * Converts the given position from pixel to screen coordinates.
-   * @param position
    */
   public pixelToScreen(position: point): point;
 
   /**
    * Converts the given position from pixel to tile coordinates.
-   * @param x
-   * @param y
    */
   public pixelToTile(x: number, y: number): point;
 
   /**
    * Converts the given position from pixel to tile coordinates.
-   * @param position
    */
   public pixelToTile(position: point): point;
 
   /**
    * Converts the given position from tile to pixel coordinates.
-   * @param position
    */
   public tileToPixel(x: number, y: number): point;
 
   /**
    * Converts the given position from tile to pixel coordinates.
-   * @param position
    */
   public tileToPixel(position: point): point;
 }
@@ -1878,7 +1852,6 @@ declare class TileLayer extends Layer {
 
   /**
    * Constructs a new tile layer, which can be added to a {@link TileMap}.
-   * @param name
    */
   constructor(name? : string)
 
@@ -1890,29 +1863,21 @@ declare class TileLayer extends Layer {
   /**
    * Resizes the layer, erasing the part of the contents that falls outside of the layer’s new size.
    * The offset parameter can be used to shift the contents by a certain distance in tiles before applying the resize.
-   * @param size
-   * @param offset
    */
   resize(size : size, offset : point) : void
 
   /**
    * Returns the value of the cell at the given position. Can be used to query the flags and the tile ID, but does not currently allow getting a tile reference (see {@link tileAt}).
-   * @param x
-   * @param y
    */
   cellAt(x : number, y : number) : cell
 
   /**
    * Returns the flags used for the tile at the given position.
-   * @param x
-   * @param y
    */
   flagsAt(x : number, y : number) : number
 
   /**
    * Returns the tile used at the given position, or null for empty spaces.
-   * @param x
-   * @param y
    */
   tileAt(x : number, y : number) : Tile | null
 
@@ -1942,10 +1907,6 @@ interface TileLayerEdit {
 
   /**
    * Sets the tile at the given location, optionally specifying tile flags.
-   * @param x
-   * @param y
-   * @param tile
-   * @param flags
    */
   setTile(x : number, y : number, tile : Tile , flags? : number) : void
 
@@ -2126,7 +2087,6 @@ declare class Tileset extends Asset {
 
   /**
    * Constructs a new Tileset.
-   * @param name
    */
   constructor(name? : string)
 
@@ -2439,10 +2399,10 @@ declare namespace tiled {
    * includes most actions you would normally trigger through the menu or
    * by using their shortcut.
    *
+   * Use the {@link actions | tiled.actions} property to get a list
+   * of all available actions.
+   *
    * Actions that are checkable will toggle when triggered.
-   * @param action The action to trigger. Use the
-   *               {@link actions | tiled.actions} property to get a list
-   *               of all available actions.
    */
   export function trigger(action: string): void;
 
@@ -2468,7 +2428,6 @@ declare namespace tiled {
    * Closes the given asset without checking for unsaved changes (to
    * confirm the loss of any unsaved changes, set {@link activeAsset} and
    * trigger the "Close" action instead).
-   * @param asset
    */
   export function close(asset: Asset): boolean;
 
@@ -2554,6 +2513,9 @@ declare namespace tiled {
    * called when the action is triggered). The returned action object can
    * be used to set (and update) various properties of the action.
    *
+   * The shortcut will currently only work when the action is added to a
+   * menu using {@link extendMenu | tiled.extendMenu()}.
+   *
    * @example
    * ```js
    * var action = tiled.registerAction("CustomAction", function(action) {
@@ -2564,9 +2526,6 @@ declare namespace tiled {
    * action.checkable = true
    * action.shortcut = "Ctrl+K"
    * ```
-   *
-   * The shortcut will currently only work when the action is added to a
-   * menu using {@link extendMenu | tiled.extendMenu()}.
    */
   export function registerAction(
     id: string,
@@ -2807,15 +2766,11 @@ declare class Process {
 
   /**
    * Executes the program at filePath with the given argument list and blocks until the process is finished. If an error occurs (for example, there is no executable file at filePath) and throwOnError is true (the default), then a JavaScript exception will be thrown. Otherwise, -1 will be returned in case of an error. The normal return code is the exit code of the process.
-   * @param filePath
-   * @param arguments
-   * @param throwOnError
    */
   exec(filePath : string, arguments : string[] , throwOnError? : boolean) : number
 
   /**
    * Returns the value of the variable varName in the process’ environment.
-   * @param name
    */
   getEnv(name : string) : string
 
@@ -2841,8 +2796,6 @@ declare class Process {
 
   /**
    * Sets the value of variable varName to varValue in the process environment. This only has an effect if called before the process is started.
-   * @param varName
-   * @param varValue
    */
   setEnv(varName : string, varValue : string) : string
 
@@ -2850,8 +2803,6 @@ declare class Process {
    * Starts the program at filePath with the given list of arguments. Returns true if the process could be started and false otherwise.
    *
    * Note: This call returns right after starting the process and should be used only if you need to interact with the process while it is running. Most of the time, you want to use exec() instead.
-   * @param filePath
-   * @param arguments
    */
   start(filePath : string, arguments : string[]) : boolean
 
@@ -2861,20 +2812,17 @@ declare class Process {
   terminate() : void
 
   /**
-   *   Blocks until the process has finished or timeout milliseconds have passed (default is 30000). Returns true if the process has finished and false if the operation has timed out. Calling this function only makes sense for processes started via start() (as opposed to exec()).
-   * @param msecs
+   * Blocks until the process has finished or timeout milliseconds have passed (default is 30000). Returns true if the process has finished and false if the operation has timed out. Calling this function only makes sense for processes started via start() (as opposed to exec()).
    */
   waitForFinished( msecs?:number ) : boolean
 
   /**
    * Writes text into the process’ input channel.
-   * @param text
    */
   write(text : string) : void
 
   /**
    * Writes text, followed by a newline character, into the process’ input channel.
-   * @param text
    */
   writeLine(text : string) : void
 }
