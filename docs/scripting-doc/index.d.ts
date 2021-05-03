@@ -5,10 +5,14 @@
  * {@link tiled.registerAction | custom actions} and {@link tiled.registerTool | new tools}.
  * Scripts can also {@link Signal | automate actions based on signals}.
  *
- * On startup, Tiled will execute any script files present in
- * [extensions](https://doc.mapeditor.org/en/stable/reference/scripting/#script-extensions).
- * In addition it is possible to run scripts directly from [the console](https://doc.mapeditor.org/en/stable/reference/scripting/#script-console).
- * All scripts share a single JavaScript context.
+ * See the [Tiled Manual](https://doc.mapeditor.org/en/stable/reference/scripting) for more information on writing or installing extensions.
+ *
+ * ### Type Definitions
+ *
+ * TypeScript type definitions for this API are available by installing the
+ * [`@mapeditor/tiled-api`](https://www.npmjs.com/package/@mapeditor/tiled-api)
+ * package, which allows you to write scripts using TypeScript and can provide
+ * auto-completion in your editor (also when using plain JavaScript).
  */
 
 /**
