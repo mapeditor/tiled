@@ -85,10 +85,14 @@
 					<p>Scripts can be used to implement <a href="modules/tiled.html#registermapformat">custom map formats</a>,
 						<a href="modules/tiled.html#registeraction">custom actions</a> and <a href="modules/tiled.html#registertool">new tools</a>.
 					Scripts can also <a href="interfaces/signal.html">automate actions based on signals</a>.</p>
-					<p>On startup, Tiled will execute any script files present in
-						<a href="https://doc.mapeditor.org/en/stable/reference/scripting/#script-extensions">extensions</a>.
-						In addition it is possible to run scripts directly from <a href="https://doc.mapeditor.org/en/stable/reference/scripting/#script-console">the console</a>.
-					All scripts share a single JavaScript context.</p>
+					<p>See the <a href="https://doc.mapeditor.org/en/stable/reference/scripting">Tiled Manual</a> for more information on writing or installing extensions.</p>
+					<a href="#type-definitions" id="type-definitions" style="color: inherit; text-decoration: none;">
+						<h3>Type Definitions</h3>
+					</a>
+					<p>TypeScript type definitions for this API are available by installing the
+						<a href="https://www.npmjs.com/package/@mapeditor/tiled-api"><code>@mapeditor/tiled-api</code></a>
+						package, which allows you to write scripts using TypeScript and can provide
+					auto-completion in your editor (also when using plain JavaScript).</p>
 				</div>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -137,6 +141,8 @@
 								<li class="tsd-kind-interface"><a href="interfaces/menuaction.html" class="tsd-kind-icon">Menu<wbr>Action</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/menuseparator.html" class="tsd-kind-icon">Menu<wbr>Separator</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/objectref.html" class="tsd-kind-icon">Object<wbr>Ref</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/scriptedmapformat.html" class="tsd-kind-icon">Scripted<wbr>Map<wbr>Format</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/scriptedtilesetformat.html" class="tsd-kind-icon">Scripted<wbr>Tileset<wbr>Format</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/selectedarea.html" class="tsd-kind-icon">Selected<wbr>Area</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/signal.html" class="tsd-kind-icon">Signal</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/tilecollisioneditor.html" class="tsd-kind-icon">Tile<wbr>Collision<wbr>Editor</a></li>
@@ -295,6 +301,12 @@
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/objectref.html" class="tsd-kind-icon">Object<wbr>Ref</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/scriptedmapformat.html" class="tsd-kind-icon">Scripted<wbr>Map<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/scriptedtilesetformat.html" class="tsd-kind-icon">Scripted<wbr>Tileset<wbr>Format</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/selectedarea.html" class="tsd-kind-icon">Selected<wbr>Area</a>

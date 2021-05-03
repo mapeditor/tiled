@@ -13,7 +13,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>TilesetFormat | Tiled Scripting API</title>
+	<title>ScriptedTilesetFormat | Tiled Scripting API</title>
 </head>
 <body>
 <div class="headerbar-container">
@@ -75,10 +75,10 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="tilesetformat.html">TilesetFormat</a>
+					<a href="scriptedtilesetformat.html">ScriptedTilesetFormat</a>
 				</li>
 			</ul>
-			<h1>Interface TilesetFormat</h1>
+			<h1>Interface ScriptedTilesetFormat</h1>
 		</div>
 	</div>
 </header>
@@ -88,26 +88,15 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>An object that can read or write tileset files.</p>
+						<p>The interface that should be implemented for objects passed to <a href="../modules/tiled.html#registertilesetformat">tiled.registerTilesetFormat</a>.</p>
 					</div>
-					<p>Implementations of this interface are returned from <a href="../modules/tiled.html#tilesetformat">tiled.tilesetFormat</a> and <a href="../modules/tiled.html#tilesetformatforfile">tiled.tilesetFormatForFile</a>.</p>
-					<dl class="tsd-comment-tags">
-						<dt>since</dt>
-						<dd><p>1.4</p>
-						</dd>
-					</dl>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="fileformat.html" class="tsd-signature-type" data-tsd-kind="Interface">FileFormat</a>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">TilesetFormat</span>
-							</li>
-						</ul>
+						<span class="target">ScriptedTilesetFormat</span>
 					</li>
 				</ul>
 			</section>
@@ -118,16 +107,15 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="tilesetformat.html#canread" class="tsd-kind-icon">can<wbr>Read</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="tilesetformat.html#canwrite" class="tsd-kind-icon">can<wbr>Write</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptedtilesetformat.html#extension" class="tsd-kind-icon">extension</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptedtilesetformat.html#name" class="tsd-kind-icon">name</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="tilesetformat.html#read" class="tsd-kind-icon">read</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="tilesetformat.html#supportsfile" class="tsd-kind-icon">supports<wbr>File</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="tilesetformat.html#write" class="tsd-kind-icon">write</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="scriptedtilesetformat.html#read" class="tsd-kind-icon">read</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="scriptedtilesetformat.html#write" class="tsd-kind-icon">write</a></li>
 							</ul>
 						</section>
 					</div>
@@ -135,29 +123,27 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="canread" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> can<wbr>Read</h3>
-					<div class="tsd-signature tsd-kind-icon">can<wbr>Read<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="extension" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> extension</h3>
+					<div class="tsd-signature tsd-kind-icon">extension<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="fileformat.html">FileFormat</a>.<a href="fileformat.html#canread">canRead</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether this format supports reading files.</p>
+							<p>The file extension used by the format.</p>
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="canwrite" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> can<wbr>Write</h3>
-					<div class="tsd-signature tsd-kind-icon">can<wbr>Write<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="name" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> name</h3>
+					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="fileformat.html">FileFormat</a>.<a href="fileformat.html#canwrite">canWrite</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether this format supports writing files.</p>
+							<p>Name of the format as shown in the file dialog.</p>
 						</div>
 					</div>
 				</section>
@@ -166,7 +152,7 @@
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="read" class="tsd-anchor"></a>
-					<h3>read</h3>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> read</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
 						<li class="tsd-signature tsd-kind-icon">read<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/tileset.html" class="tsd-signature-type" data-tsd-kind="Class">Tileset</a></li>
 					</ul>
@@ -176,9 +162,9 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Reads the given file as a tileset.</p>
+									<p>A function that reads a tileset from the given file.</p>
 								</div>
-								<p>This function will throw an error if reading is not supported.</p>
+								<p>Can use <a href="../classes/textfile.html">TextFile</a> or <a href="../classes/binaryfile.html">BinaryFile</a> to read the file.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -190,35 +176,9 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="supportsfile" class="tsd-anchor"></a>
-					<h3>supports<wbr>File</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">supports<wbr>File<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="fileformat.html">FileFormat</a>.<a href="fileformat.html#supportsfile">supportsFile</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns whether the given file is readable by this format.</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>fileName: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="write" class="tsd-anchor"></a>
-					<h3>write</h3>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> write</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
 						<li class="tsd-signature tsd-kind-icon">write<span class="tsd-signature-symbol">(</span>tileset<span class="tsd-signature-symbol">: </span><a href="../classes/tileset.html" class="tsd-signature-type" data-tsd-kind="Class">Tileset</a>, fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
@@ -228,10 +188,10 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Writes the given tileset to a file.</p>
+									<p>A function that writes a tileset to the given file.</p>
 								</div>
-								<p>This function will throw an error if writing is not supported.</p>
-								<p>If there is an error writing the file, it will return a description of the error; otherwise, it will return &quot;&quot;.</p>
+								<p>Can use <a href="../classes/textfile.html">TextFile</a> or <a href="../classes/binaryfile.html">BinaryFile</a> to write the file.
+								When a non-empty string is returned, it is shown as error message.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -261,22 +221,19 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="tilesetformat.html" class="tsd-kind-icon">Tileset<wbr>Format</a>
+						<a href="scriptedtilesetformat.html" class="tsd-kind-icon">Scripted<wbr>Tileset<wbr>Format</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="tilesetformat.html#canread" class="tsd-kind-icon">can<wbr>Read</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="scriptedtilesetformat.html#extension" class="tsd-kind-icon">extension</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="tilesetformat.html#canwrite" class="tsd-kind-icon">can<wbr>Write</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="tilesetformat.html#read" class="tsd-kind-icon">read</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="tilesetformat.html#supportsfile" class="tsd-kind-icon">supports<wbr>File</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="scriptedtilesetformat.html#name" class="tsd-kind-icon">name</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="tilesetformat.html#write" class="tsd-kind-icon">write</a>
+								<a href="scriptedtilesetformat.html#read" class="tsd-kind-icon">read</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="scriptedtilesetformat.html#write" class="tsd-kind-icon">write</a>
 							</li>
 						</ul>
 					</li>
