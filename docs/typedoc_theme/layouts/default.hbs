@@ -6,6 +6,8 @@
     {{> shared_includes}}
     <link rel="stylesheet" href="{{relativeURL "assets/css/override.css"}}">
     <title>{{#ifCond model.name '==' project.name}}{{project.name}}{{else}}{{model.name}} | {{project.name}}{{/ifCond}}</title>
+    <meta name="description" content="Documentation for {{project.name}}">
+    <script async src="{{relativeURL "assets/js/search.js"}}" id="search-script"></script>
 </head>
 <body>
 
