@@ -822,9 +822,59 @@ interface FileFormat {
   readonly canWrite: boolean;
 
   /**
-   * Returns whether the file is readable by this format.
+   * Returns whether the given file is readable by this format.
    */
   supportsFile(fileName: string): boolean;
+}
+
+/**
+ * An object that can read or write map files.
+ *
+ * Implementations of this interface are returned from {@link tiled.mapFormat} and {@link tiled.mapFormatForFile}.
+ *
+ * @since 1.4
+ */
+interface MapFormat extends FileFormat {
+  /**
+   * Reads the given file as a map.
+   *
+   * This function will throw an error if reading is not supported.
+   */
+  read(fileName : string) : TileMap
+
+  /**
+   * Writes the given map to a file.
+   *
+   * This function will throw an error if writing is not supported.
+   *
+   * If there is an error writing the file, it will return a description of the error; otherwise, it will return "".
+   */
+  write(map : TileMap, fileName : string) : string
+}
+
+/**
+ * An object that can read or write tileset files.
+ *
+ * Implementations of this interface are returned from {@link tiled.tilesetFormat} and {@link tiled.tilesetFormatForFile}.
+ *
+ * @since 1.4
+ */
+interface TilesetFormat extends FileFormat {
+  /**
+   * Reads the given file as a tileset.
+   *
+   * This function will throw an error if reading is not supported.
+   */
+  read(fileName : string) : Tileset
+
+  /**
+   * Writes the given tileset to a file.
+   *
+   * This function will throw an error if writing is not supported.
+   *
+   * If there is an error writing the file, it will return a description of the error; otherwise, it will return "".
+   */
+  write(tileset : Tileset, fileName : string) : string
 }
 
 /**
@@ -1216,7 +1266,10 @@ declare class ImageLayer extends Layer {
   loadFromImage(image: Image, source?: string) : void;
 }
 
-interface MapFormat {
+/**
+ * The interface that should be implemented for objects passed to {@link tiled.registerMapFormat}.
+ */
+interface ScriptedMapFormat {
   /**
    * Name of the format as shown in the file dialog.
    */
@@ -1243,7 +1296,7 @@ interface MapFormat {
    * A function that returns the list of files that will
    * be written when exporting the given map (optional).
    */
-  outputFiles?: (map: TileMap, fileName: string) => string[];
+  outputFiles?(map: TileMap, fileName: string): string[];
 }
 
 interface MapEditor {
@@ -2115,7 +2168,10 @@ declare class Tileset extends Asset {
   public removeWangSet(wangSet : WangSet) : void
 }
 
-interface TilesetFormat {
+/**
+ * The interface that should be implemented for objects passed to {@link tiled.registerTilesetFormat}.
+ */
+interface ScriptedTilesetFormat {
   /**
    * Name of the format as shown in the file dialog.
    */
@@ -2131,7 +2187,7 @@ interface TilesetFormat {
    *
    * Can use {@link TextFile} or {@link BinaryFile} to read the file.
    */
-  read?: (fileName: string) => Tileset;
+  read?(fileName: string): Tileset;
 
   /**
    * A function that writes a tileset to the given file.
@@ -2139,7 +2195,7 @@ interface TilesetFormat {
    * Can use {@link TextFile} or {@link BinaryFile} to write the file.
    * When a non-empty string is returned, it is shown as error message.
    */
-  write?: (tileset: Tileset, fileName: string) => string | undefined;
+  write?(tileset: Tileset, fileName: string) : string | undefined;
 }
 
 /**
@@ -2660,7 +2716,7 @@ declare namespace tiled {
    */
   export function registerMapFormat(
     shortName: string,
-    mapFormat: MapFormat
+    mapFormat: ScriptedMapFormat
   ): void;
 
   /**
@@ -2669,7 +2725,7 @@ declare namespace tiled {
    */
   export function registerTilesetFormat(
     shortName: string,
-    tilesetFormat: TilesetFormat
+    tilesetFormat: ScriptedTilesetFormat
   ): void;
 
   /**
