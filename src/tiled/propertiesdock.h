@@ -62,6 +62,7 @@ private:
     bool copyProperties();
     void pasteProperties();
     void openAddPropertyDialog();
+    void openAddComponentMenu();
     void addProperty(const QString &name, const QVariant &value);
     void removeProperties();
     void renameProperty();
@@ -76,6 +77,7 @@ private:
     Document *mDocument;
     PropertyBrowser *mPropertyBrowser;
     QAction *mActionAddProperty;
+    QAction *mActionAddComponent;
     QAction *mActionRemoveProperty;
     QAction *mActionRenameProperty;
 
