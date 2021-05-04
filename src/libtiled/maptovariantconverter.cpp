@@ -84,6 +84,7 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     }
 
     addProperties(mapVariant, map.properties());
+    addComponents(mapVariant, map.components());
 
     if (map.orientation() == Map::Hexagonal) {
         mapVariant[QStringLiteral("hexsidelength")] = map.hexSideLength();
@@ -201,6 +202,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QStringLiteral("objectalignment")] = alignmentToString(tileset.objectAlignment());
 
     addProperties(tilesetVariant, tileset.properties());
+    addComponents(tilesetVariant, tileset.components());
 
     const QPoint offset = tileset.tileOffset();
     if (!offset.isNull()) {
@@ -265,6 +267,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
             }
         } else {
             addProperties(tileVariant, properties);
+            addComponents(tileVariant, tile->components());
         }
 
         if (!tile->type().isEmpty())
@@ -341,6 +344,24 @@ QVariant MapToVariantConverter::toVariant(const Properties &properties) const
     return variantMap;
 }
 
+QVariant MapToVariantConverter::toVariant(const Components &components) const
+{
+    Components::const_iterator it = components.constBegin();
+    Components::const_iterator it_end = components.constEnd();
+
+    QVariantList list;
+
+    for (; it != it_end; ++it) {
+        QVariantMap component;
+        component[QStringLiteral("name")] = it.key();
+        addProperties(component, it.value());
+
+        list << component;
+    }
+
+    return list;
+}
+
 QVariant MapToVariantConverter::propertyTypesToVariant(const Properties &properties) const
 {
     QVariantMap variantMap;
@@ -384,6 +405,7 @@ QVariant MapToVariantConverter::toVariant(const WangSet &wangSet) const
     wangSetVariant[QStringLiteral("wangtiles")] = wangTileVariants;
 
     addProperties(wangSetVariant, wangSet.properties());
+    addComponents(wangSetVariant, wangSet.components());
 
     return wangSetVariant;
 }
@@ -396,6 +418,7 @@ QVariant MapToVariantConverter::toVariant(const WangColor &wangColor) const
     colorVariant[QStringLiteral("probability")] = wangColor.probability();
     colorVariant[QStringLiteral("tile")] = wangColor.imageId();
     addProperties(colorVariant, wangColor.properties());
+    addComponents(colorVariant, wangColor.components());
     return colorVariant;
 }
 
@@ -512,7 +535,7 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
     const QString &type = object.type();
 
     addProperties(objectVariant, object.properties());
-    // TODO: add components support
+    addComponents(objectVariant, object.components());
 
     if (const ObjectTemplate *objectTemplate = object.objectTemplate()) {
         QString relativeFileName = mDir.relativeFilePath(objectTemplate->fileName());
@@ -737,6 +760,7 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
         layerVariant[QStringLiteral("tintcolor")] = colorToString(layer.tintColor());
 
     addProperties(layerVariant, layer.properties());
+    addComponents(layerVariant, layer.components());
 }
 
 void MapToVariantConverter::addProperties(QVariantMap &variantMap,
@@ -779,5 +803,13 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
 
         variantMap[QStringLiteral("properties")] = propertiesVariantList;
     }
+}
+
+void MapToVariantConverter::addComponents(QVariantMap &variantMap, const Components &components) const
+{
+    if (components.isEmpty())
+        return;
+
+    variantMap[QStringLiteral("components")] = toVariant(components);
 }
 

@@ -202,12 +202,7 @@ void PropertiesDock::currentObjectChanged(Object *object)
     mActionAddProperty->setEnabled(enabled);
 
     // enable/disable components button
-    const bool isMapObject = object && mDocument &&
-            mDocument->type() == Document::MapDocumentType &&
-            object->typeId() == Object::MapObjectType;
-
-    mActionAddComponent->setEnabled(isMapObject);
-    mButtonComponents->setEnabled(isMapObject);
+    mButtonComponents->setEnabled(object != nullptr);
 }
 
 void PropertiesDock::updateActions()
@@ -536,9 +531,6 @@ void PropertiesDock::setupComponentMenu()
 
     Object *object = mDocument->currentObject();
     if (!object)
-        return;
-
-    if (object->typeId() != Object::MapObjectType)
         return;
 
     QStringList componentNames;

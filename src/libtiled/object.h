@@ -89,6 +89,14 @@ public:
     { Tiled::mergeProperties(mProperties, properties); }
 
     /**
+     * Merges \a components with the existing components.
+     *
+     * Non-existing components are added.
+     * Existing components are overwritten.
+     */
+    void mergeComponents(const Components &components);
+
+    /**
      * Returns the value of the object's \a name property.
      */
     QVariant property(const QString &name) const
