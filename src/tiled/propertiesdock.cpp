@@ -78,12 +78,6 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     connect(mActionAddProperty, &QAction::triggered,
             this, &PropertiesDock::openAddPropertyDialog);
 
-    mActionAddComponent = new QAction(this);
-    mActionAddComponent->setEnabled(false);
-    mActionAddComponent->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
-    connect(mActionAddComponent, &QAction::triggered,
-            this, &PropertiesDock::openAddComponentMenu);
-
     mActionRemoveProperty = new QAction(this);
     mActionRemoveProperty->setEnabled(false);
     mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16/remove.png")));
@@ -105,8 +99,11 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     connect(mButtonComponents->menu(), &QMenu::aboutToShow,
             this, &PropertiesDock::setupComponentMenu);
 
+    mActionAddComponent = new QAction(this);
+    mActionAddComponent->setEnabled(false);
+    mActionAddComponent->setMenu(mButtonComponents->menu());
+
     Utils::setThemeIcon(mActionAddProperty, "add");
-    Utils::setThemeIcon(mActionAddComponent, "add");
     Utils::setThemeIcon(mActionRemoveProperty, "remove");
     Utils::setThemeIcon(mActionRenameProperty, "rename");
     Utils::setThemeIcon(mButtonComponents, "add");
@@ -310,15 +307,6 @@ void PropertiesDock::openAddPropertyDialog()
         addProperty(dialog.propertyName(), dialog.propertyValue());
 }
 
-void PropertiesDock::openAddComponentMenu()
-{
-    setupComponentMenu();
-    QMenu *menu = mButtonComponents->menu();
-    QPoint pos = mActionAddComponent->data().toPoint();
-    const QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
-    menu->exec(globalPos);
-}
-
 void PropertiesDock::addProperty(const QString &name, const QVariant &value)
 {
     if (name.isEmpty())
@@ -462,7 +450,6 @@ void PropertiesDock::showContextMenu(const QPoint &pos)
     } else {
         contextMenu.addAction(mActionAddProperty);
         contextMenu.addAction(mActionAddComponent);
-        mActionAddComponent->setData(pos);
     }
 
     cutAction->setShortcuts(QKeySequence::Cut);
@@ -638,7 +625,7 @@ void PropertiesDock::retranslateUi()
     setWindowTitle(tr("Properties"));
 
     mActionAddProperty->setText(tr("Add Property"));
-    mActionAddComponent->setText(tr("Add Component"));
+    mActionAddComponent->setText(tr("Components"));
 
     mActionRemoveProperty->setText(tr("Remove"));
     mActionRemoveProperty->setToolTip(tr("Remove Property"));
