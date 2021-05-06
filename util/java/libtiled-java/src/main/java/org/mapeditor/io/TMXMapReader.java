@@ -968,7 +968,7 @@ public class TMXMapReader {
         return path.replace("/", File.separator);
     }
 
-    public TMXMapReader setCachedTilesets(TilesetCache tilesetCache) {
+    public TMXMapReader setTilesetCache(TilesetCache tilesetCache) {
         this.tilesetCache = tilesetCache;
         return this;
     }
