@@ -100,7 +100,7 @@ jobs:
         cp LICENSE* COPYING *md Tiled/
         wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
         chmod a+x linuxdeployqt
-        ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so -exclude-libs=libpython3.5m.so.1 -verbose=2
+        ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so -exclude-libs=libpython3.6m.so.1 -verbose=2
         ./linuxdeployqt --appimage-extract
         export PATH=$(readlink -f ./squashfs-root/usr/bin/):$PATH
         ./squashfs-root/usr/bin/appimagetool Tiled/
