@@ -76,20 +76,20 @@ namespace
             tbin::PropertyValue prop;
 
             switch (it.value().userType()) {
-            case QVariant::Bool:
+            case QMetaType::Bool:
                 prop.type = tbin::PropertyValue::Bool;
                 prop.data.b = it.value().toBool();
                 break;
-            case QVariant::Double:
+            case QMetaType::Double:
             case QMetaType::Float:
                 prop.type = tbin::PropertyValue::Float;
                 prop.data.f = it.value().toFloat();
                 break;
-            case QVariant::Int:
+            case QMetaType::Int:
                 prop.type = tbin::PropertyValue::Integer;
                 prop.data.i = it.value().toInt();
                 break;
-            case QVariant::String:
+            case QMetaType::QString:
                 prop.type = tbin::PropertyValue::String;
                 prop.dataStr = it.value().toString().toStdString();
                 break;

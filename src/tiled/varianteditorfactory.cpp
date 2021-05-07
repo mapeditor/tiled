@@ -155,7 +155,7 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
         return editor;
     }
 
-    if (type == QVariant::String) {
+    if (type == QMetaType::QString) {
         bool multiline = manager->attributeValue(property, QLatin1String("multiline")).toBool();
         if (multiline) {
             auto editor = new TextPropertyEdit(parent);
@@ -191,7 +191,7 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
 
     QWidget *editor = QtVariantEditorFactory::createEditor(manager, property, parent);
 
-    if (type == QVariant::Color) {
+    if (type == QMetaType::QColor) {
         // Allow resetting a color property to the invalid color
         ResetWidget *resetWidget = new ResetWidget(property, editor, parent);
         connect(resetWidget, &ResetWidget::resetProperty,

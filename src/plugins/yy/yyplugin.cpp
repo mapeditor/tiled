@@ -389,11 +389,11 @@ static unsigned colorToAbgr(const QColor &color)
 
 static QString toOverriddenPropertyValue(const QVariant &value)
 {
-    switch (value.type()) {
-    case QVariant::Bool:
+    switch (value.userType()) {
+    case QMetaType::Bool:
         return value.toBool() ? QStringLiteral("True") : QStringLiteral("False");
 
-    case QVariant::Color: {
+    case QMetaType::QColor: {
         const unsigned abgr = colorToAbgr(value.value<QColor>());
         return QColor(abgr).name(QColor::HexArgb).replace(QLatin1Char('#'), QLatin1Char('$'));
     }

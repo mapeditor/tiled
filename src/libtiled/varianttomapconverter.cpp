@@ -161,8 +161,8 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
     QVariantMap::const_iterator it_end = propertiesMap.constEnd();
     for (; it != it_end; ++it) {
         int type = nameToType(propertyTypesMap.value(it.key()).toString());
-        if (type == QVariant::Invalid)
-            type = QVariant::String;
+        if (type == QMetaType::UnknownType)
+            type = QMetaType::QString;
 
         const QVariant value = fromExportValue(it.value(), type, mDir);
         properties[it.key()] = value;
@@ -176,8 +176,8 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
         const QString propertyType = propertyVariantMap[QStringLiteral("type")].toString();
         const QVariant propertyValue = propertyVariantMap[QStringLiteral("value")];
         int type = nameToType(propertyType);
-        if (type == QVariant::Invalid)
-            type = QVariant::String;
+        if (type == QMetaType::UnknownType)
+            type = QMetaType::QString;
         properties[propertyName] = fromExportValue(propertyValue, type, mDir);
     }
 

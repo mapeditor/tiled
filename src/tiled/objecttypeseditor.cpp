@@ -464,10 +464,10 @@ QtVariantProperty *ObjectTypesEditor::createProperty(int type,
     QtVariantProperty *property = mVariantManager->addProperty(type, name);
     if (!property) {
         // fall back to string property for unsupported property types
-        property = mVariantManager->addProperty(QVariant::String, name);
+        property = mVariantManager->addProperty(QMetaType::QString, name);
     }
 
-    if (type == QVariant::Bool)
+    if (type == QMetaType::Bool)
         property->setAttribute(QLatin1String("textVisible"), false);
 
     mUi->propertiesView->addProperty(property);

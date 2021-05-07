@@ -47,13 +47,13 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     resize(Utils::dpiScaled(size()));
 
     // Add possible types from QVariant
-    mUi->typeBox->addItem(typeToName(QVariant::Bool),    false);
-    mUi->typeBox->addItem(typeToName(QVariant::Color),   QColor());
-    mUi->typeBox->addItem(typeToName(QVariant::Double),  0.0);
-    mUi->typeBox->addItem(typeToName(filePathTypeId()),  QVariant::fromValue(FilePath()));
-    mUi->typeBox->addItem(typeToName(QVariant::Int),     0);
-    mUi->typeBox->addItem(typeToName(objectRefTypeId()), QVariant::fromValue(ObjectRef()));
-    mUi->typeBox->addItem(typeToName(QVariant::String),  QString());
+    mUi->typeBox->addItem(typeToName(QMetaType::Bool),      false);
+    mUi->typeBox->addItem(typeToName(QMetaType::QColor),    QColor());
+    mUi->typeBox->addItem(typeToName(QMetaType::Double),    0.0);
+    mUi->typeBox->addItem(typeToName(filePathTypeId()),     QVariant::fromValue(FilePath()));
+    mUi->typeBox->addItem(typeToName(QMetaType::Int),       0);
+    mUi->typeBox->addItem(typeToName(objectRefTypeId()),    QVariant::fromValue(ObjectRef()));
+    mUi->typeBox->addItem(typeToName(QMetaType::QString),   QString());
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
