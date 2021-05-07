@@ -189,7 +189,8 @@ Components VariantToMapConverter::toComponents(const QVariant &componentsVariant
 {
     Components components;
 
-    for (QVariant component : componentsVariant.toList()) {
+    const auto componentsVariantList = componentsVariant.toList();
+    for (const QVariant &component : componentsVariantList) {
         QVariantMap componentMap = component.toMap();
         QString name = componentMap[QStringLiteral("name")].toString();
         Properties properties = toProperties(componentMap[QStringLiteral("properties")], QVariant());
