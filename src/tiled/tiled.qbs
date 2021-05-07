@@ -36,8 +36,6 @@ QtGuiApplication {
     cpp.rpaths: {
         if (qbs.targetOS.contains("darwin"))
             return ["@loader_path/../Frameworks"];
-        else if (project.linuxArchive)
-            return ["$ORIGIN/lib"];
         else
             return ["$ORIGIN/../lib"];
     }
@@ -607,8 +605,7 @@ QtGuiApplication {
         condition: !qbs.targetOS.contains("darwin")
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows")
-                    || project.linuxArchive)
+            if (qbs.targetOS.contains("windows"))
                 return ""
             else
                 return "bin"

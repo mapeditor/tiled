@@ -11,8 +11,6 @@ DynamicLibrary {
     cpp.rpaths: {
         if (qbs.targetOS.contains("darwin"))
             return ["@loader_path/../Frameworks"];
-        else if (project.linuxArchive)
-            return ["$ORIGIN/.."]
         else
             return ["$ORIGIN/../.."];
     }
@@ -31,7 +29,7 @@ DynamicLibrary {
     Group {
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows") || project.linuxArchive)
+            if (qbs.targetOS.contains("windows"))
                 return "plugins/tiled"
             else if (qbs.targetOS.contains("macos"))
                 return "Tiled.app/Contents/PlugIns"
