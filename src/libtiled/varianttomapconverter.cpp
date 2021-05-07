@@ -981,7 +981,7 @@ bool VariantToMapConverter::readTileLayerData(TileLayer &tileLayer,
 Properties VariantToMapConverter::extractProperties(const QVariantMap &variantMap) const
 {
     return toProperties(variantMap[QStringLiteral("properties")],
-            variantMap[QStringLiteral("propertytypes")]);
+                        variantMap[QStringLiteral("propertytypes")]);
 }
 
 Components VariantToMapConverter::extractComponents(const QVariantMap &variantMap) const
