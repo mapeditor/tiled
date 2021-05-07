@@ -5,7 +5,7 @@ Project {
     name: "Tiled"
 
     qbsSearchPaths: "qbs"
-    minimumQbsVersion: "1.8"
+    minimumQbsVersion: "1.12"
 
     property string version: Environment.getEnv("TILED_VERSION") || "1.6.0";
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT") == "true"
@@ -38,4 +38,8 @@ Project {
         "tests",
         "translations"
     ]
+
+    AutotestRunner {
+        name: "tests"
+    }
 }
