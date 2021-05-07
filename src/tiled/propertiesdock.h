@@ -76,6 +76,7 @@ private:
     Document *mDocument;
     PropertyBrowser *mPropertyBrowser;
     QAction *mActionAddProperty;
+    QAction *mActionAddComponent;
     QAction *mActionRemoveProperty;
     QAction *mActionRenameProperty;
 

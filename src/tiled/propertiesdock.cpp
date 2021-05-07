@@ -99,6 +99,10 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     connect(mButtonComponents->menu(), &QMenu::aboutToShow,
             this, &PropertiesDock::setupComponentMenu);
 
+    mActionAddComponent = new QAction(this);
+    mActionAddComponent->setEnabled(false);
+    mActionAddComponent->setMenu(mButtonComponents->menu());
+
     Utils::setThemeIcon(mActionAddProperty, "add");
     Utils::setThemeIcon(mActionRemoveProperty, "remove");
     Utils::setThemeIcon(mActionRenameProperty, "rename");
@@ -202,6 +206,7 @@ void PropertiesDock::currentObjectChanged(Object *object)
             mDocument->type() == Document::MapDocumentType &&
             object->typeId() == Object::MapObjectType;
 
+    mActionAddComponent->setEnabled(isMapObject);
     mButtonComponents->setEnabled(isMapObject);
 }
 
@@ -444,6 +449,7 @@ void PropertiesDock::showContextMenu(const QPoint &pos)
         contextMenu.addAction(mActionRenameProperty);
     } else {
         contextMenu.addAction(mActionAddProperty);
+        contextMenu.addAction(mActionAddComponent);
     }
 
     cutAction->setShortcuts(QKeySequence::Cut);
@@ -619,6 +625,7 @@ void PropertiesDock::retranslateUi()
     setWindowTitle(tr("Properties"));
 
     mActionAddProperty->setText(tr("Add Property"));
+    mActionAddComponent->setText(tr("Components"));
 
     mActionRemoveProperty->setText(tr("Remove"));
     mActionRemoveProperty->setToolTip(tr("Remove Property"));
