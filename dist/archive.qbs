@@ -1,7 +1,7 @@
 import qbs
 
 InstallPackage {
-    builtByDefault: false
+    builtByDefault: project.snapshot || project.release
     condition: {
         return ((project.snapshot || project.release) &&
                 (qbs.toolchain.contains("mingw") || qbs.toolchain.contains("msvc")) ||

@@ -10,7 +10,7 @@ import qbs.FileInfo
 Product {
     name: "distribute"
     type: "installable"
-    builtByDefault: false
+    builtByDefault: (project.snapshot || project.release) && qbs.targetOS.contains("windows")
 
     Depends { name: "cpp" }
     Depends { name: "Qt.core" }

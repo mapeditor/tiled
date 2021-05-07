@@ -249,7 +249,7 @@ jobs:
     - name: Build Tiled
       run: |
         export TILED_MSI_VERSION=1.4.${GITHUB_RUN_NUMBER}
-        qbs build --all-products config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:true
+        qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:true
         mv release/installer*/Tiled-*.msi .
 
     - name: Upload Tiled installer

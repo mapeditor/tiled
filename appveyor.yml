@@ -73,7 +73,7 @@ build_script:
   - qbs --version
   - qbs setup-toolchains --detect
   - qbs config defaultProfile %DEFAULT_PROFILE%
-  - qbs build --all-products config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:%ENABLE_ZSTD%
+  - qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:%ENABLE_ZSTD%
   - cd util\java
   - mvn --version
   - mvn clean install
