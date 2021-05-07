@@ -1,4 +1,6 @@
 TEMPLATE=subdirs
 SUBDIRS = \
     mapreader \
-    staggeredrenderer
+    staggeredrenderer \
+    maptovariantconverter \
+    varianttomapconverter
