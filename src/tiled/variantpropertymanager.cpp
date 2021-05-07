@@ -314,7 +314,7 @@ void VariantPropertyManager::setAttribute(QtProperty *property,
     if (mFilePathAttributes.contains(property)) {
         FilePathAttributes &attributes = mFilePathAttributes[property];
         if (attribute == mFilterAttribute) {
-            if (val.type() != QMetaType::QString && !val.canConvert(QMetaType::QString))
+            if (val.userType() != QMetaType::QString && !val.canConvert(QMetaType::QString))
                 return;
             QString filter = val.toString();
             if (attributes.filter == filter)

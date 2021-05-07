@@ -102,8 +102,7 @@ QStringList cleanFilterList(const QString &filter)
     QRegularExpression regexp(QString::fromLatin1(filterRegExp));
     Q_ASSERT(regexp.isValid());
     QString f = filter;
-    QRegularExpressionMatch match;
-    filter.indexOf(regexp, 0, &match);
+    QRegularExpressionMatch match = regexp.match(filter);
     if (match.hasMatch())
         f = match.captured(2);
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)

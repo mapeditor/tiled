@@ -733,12 +733,12 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     const QVariant pointVariant = variantMap[QStringLiteral("point")];
     const QVariant textVariant = variantMap[QStringLiteral("text")];
 
-    if (polygonVariant.type() == QVariant::List) {
+    if (polygonVariant.userType() == QVariant::List) {
         object->setShape(MapObject::Polygon);
         object->setPolygon(toPolygon(polygonVariant));
         object->setPropertyChanged(MapObject::ShapeProperty);
     }
-    if (polylineVariant.type() == QVariant::List) {
+    if (polylineVariant.userType() == QVariant::List) {
         object->setShape(MapObject::Polyline);
         object->setPolygon(toPolygon(polylineVariant));
         object->setPropertyChanged(MapObject::ShapeProperty);
@@ -751,7 +751,7 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
         object->setShape(MapObject::Point);
         object->setPropertyChanged(MapObject::ShapeProperty);
     }
-    if (textVariant.type() == QVariant::Map) {
+    if (textVariant.userType() == QVariant::Map) {
         object->setTextData(toTextData(textVariant.toMap()));
         object->setShape(MapObject::Text);
         object->setPropertyChanged(MapObject::TextProperty);

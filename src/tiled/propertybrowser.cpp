@@ -1597,7 +1597,7 @@ QtVariantProperty *PropertyBrowser::createCustomProperty(const QString &name, co
     mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
 
     // Collapse custom color properties, to save space
-    if (value.type() == QMetaType::QColor)
+    if (value.userType() == QMetaType::QColor)
         setExpanded(items(property).constFirst(), false);
 
     return property;
