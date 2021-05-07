@@ -497,8 +497,8 @@ QAction *TilesetEditor::editWangSetsAction() const
 
 void TilesetEditor::currentWidgetChanged()
 {
-    auto view = static_cast<TilesetView*>(mWidgetStack->currentWidget());
-    setCurrentDocument(view ? view->tilesetDocument() : nullptr);
+    if (!mWidgetStack->currentWidget())
+        setCurrentDocument(nullptr);
 }
 
 void TilesetEditor::selectionChanged()

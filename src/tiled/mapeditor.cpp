@@ -801,8 +801,8 @@ void MapEditor::selectWangBrush()
 
 void MapEditor::currentWidgetChanged()
 {
-    auto mapView = static_cast<MapView*>(mWidgetStack->currentWidget());
-    setCurrentDocument(mapView ? mapView->mapScene()->mapDocument() : nullptr);
+    if (!mWidgetStack->currentWidget())
+        setCurrentDocument(nullptr);
 }
 
 void MapEditor::cursorChanged(const QCursor &cursor)
