@@ -118,9 +118,9 @@ int VariantPropertyManager::attributeType(int propertyType,
 {
     if (propertyType == filePathTypeId()) {
         if (attribute == mFilterAttribute)
-            return QVariant::String;
+            return QMetaType::QString;
         if (attribute == mDirectoryAttribute)
-            return QVariant::Bool;
+            return QMetaType::Bool;
         return 0;
     }
     return QtVariantPropertyManager::attributeType(propertyType, attribute);
@@ -314,7 +314,7 @@ void VariantPropertyManager::setAttribute(QtProperty *property,
     if (mFilePathAttributes.contains(property)) {
         FilePathAttributes &attributes = mFilePathAttributes[property];
         if (attribute == mFilterAttribute) {
-            if (val.type() != QVariant::String && !val.canConvert(QVariant::String))
+            if (val.userType() != QMetaType::QString && !val.canConvert(QMetaType::QString))
                 return;
             QString filter = val.toString();
             if (attributes.filter == filter)
@@ -354,7 +354,7 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
         mValues[property] = QVariant();
         if (type == filePathTypeId())
             mFilePathAttributes[property] = FilePathAttributes();
-    } else if (type == QVariant::String) {
+    } else if (type == QMetaType::QString) {
         mStringAttributes[property] = StringAttributes();
     } else if (type == alignmentTypeId()) {
         const Qt::Alignment align = Qt::AlignLeft | Qt::AlignVCenter;

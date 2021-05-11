@@ -151,6 +151,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::showTileObjectOutlinesChanged, this, &MapItem::setShowTileObjectOutlines);
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(prefs, &Preferences::objectTypesChanged, this, &MapItem::syncAllObjectItems);
+    connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] (QColor color) { mDarkRectangle->setBrush(color); });
 
     connect(mapDocument.data(), &Document::changed, this, &MapItem::documentChanged);
     connect(mapDocument.data(), &MapDocument::mapChanged, this, &MapItem::mapChanged);
@@ -170,7 +171,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     updateBoundingRect();
 
     mDarkRectangle->setPen(Qt::NoPen);
-    mDarkRectangle->setBrush(Qt::black);
+    mDarkRectangle->setBrush(prefs->backgroundFadeColor());
     mDarkRectangle->setOpacity(darkeningFactor);
     mDarkRectangle->setRect(QRectF(INT_MIN / 512, INT_MIN / 512,
                                    INT_MAX / 256, INT_MAX / 256));

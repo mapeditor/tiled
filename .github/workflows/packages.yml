@@ -16,7 +16,7 @@ on:
 
 env:
   QT_VERSION: 5.15.2
-  QTCREATOR_VERSION: 4.14.2
+  QTCREATOR_VERSION: 4.15.0
   SENTRY_VERSION: 0.4.9
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
   TILED_SNAPSHOT: ${{ !startsWith(github.ref, 'refs/tags/v') }}
@@ -39,7 +39,7 @@ jobs:
 
   linux:
     name: Linux (AppImage)
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     needs: version
 
     env:
@@ -100,7 +100,7 @@ jobs:
         cp LICENSE* COPYING *md Tiled/
         wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
         chmod a+x linuxdeployqt
-        ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so -exclude-libs=libpython3.5m.so.1 -verbose=2
+        ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so -exclude-libs=libpython3.6m.so.1 -verbose=2
         ./linuxdeployqt --appimage-extract
         export PATH=$(readlink -f ./squashfs-root/usr/bin/):$PATH
         ./squashfs-root/usr/bin/appimagetool Tiled/
@@ -249,7 +249,7 @@ jobs:
     - name: Build Tiled
       run: |
         export TILED_MSI_VERSION=1.4.${GITHUB_RUN_NUMBER}
-        qbs build --all-products config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:true
+        qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:true
         mv release/installer*/Tiled-*.msi .
 
     - name: Upload Tiled installer

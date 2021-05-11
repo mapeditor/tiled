@@ -59,8 +59,11 @@ void ScriptedAction::setIconFileName(const QString &fileName)
 
     mIconFileName = fileName;
 
-    QString iconFile = QStringLiteral("ext:");
-    iconFile.append(fileName);
+    QString iconFile = fileName;
+
+    const QString ext = QStringLiteral("ext:");
+    if (!iconFile.startsWith(ext))
+        iconFile.prepend(ext);
 
     setIcon(QIcon { iconFile });
 }

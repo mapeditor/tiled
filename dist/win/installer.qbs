@@ -5,7 +5,7 @@ import qbs.TextFile
 import qbs.Environment
 
 WindowsInstallerPackage {
-    builtByDefault: false
+    builtByDefault: project.windowsInstaller
     condition: {
         if (project.windowsInstaller) {
             if (!(qbs.toolchain.contains("mingw") || qbs.toolchain.contains("msvc"))) {

@@ -109,32 +109,32 @@ bool AutoMapper::setupRuleMapProperties()
         const QVariant &value = it.value();
 
         if (name.compare(QLatin1String("DeleteTiles"), Qt::CaseInsensitive) == 0) {
-            if (value.canConvert(QVariant::Bool)) {
+            if (value.canConvert(QMetaType::Bool)) {
                 mOptions.deleteTiles = value.toBool();
                 continue;
             }
         } else if (name.compare(QLatin1String("MatchOutsideMap"), Qt::CaseInsensitive) == 0) {
-            if (value.canConvert(QVariant::Bool)) {
+            if (value.canConvert(QMetaType::Bool)) {
                 mOptions.matchOutsideMap = value.toBool();
                 continue;
             }
         } else if (name.compare(QLatin1String("OverflowBorder"), Qt::CaseInsensitive) == 0) {
-            if (value.canConvert(QVariant::Bool)) {
+            if (value.canConvert(QMetaType::Bool)) {
                 mOptions.overflowBorder = value.toBool();
                 continue;
             }
         } else if (name.compare(QLatin1String("WrapBorder"), Qt::CaseInsensitive) == 0) {
-            if (value.canConvert(QVariant::Bool)) {
+            if (value.canConvert(QMetaType::Bool)) {
                 mOptions.wrapBorder = value.toBool();
                 continue;
             }
         } else if (name.compare(QLatin1String("AutomappingRadius"), Qt::CaseInsensitive) == 0) {
-            if (value.canConvert(QVariant::Int)) {
+            if (value.canConvert(QMetaType::Int)) {
                 mOptions.autoMappingRadius = value.toInt();
                 continue;
             }
         } else if (name.compare(QLatin1String("NoOverlappingRules"), Qt::CaseInsensitive) == 0) {
-            if (value.canConvert(QVariant::Bool)) {
+            if (value.canConvert(QMetaType::Bool)) {
                 mOptions.noOverlappingRules = value.toBool();
                 continue;
             }
@@ -174,7 +174,7 @@ void AutoMapper::setupInputLayerProperties(InputLayer &inputLayer)
         const QVariant &value = it.value();
 
         if (name.compare(QLatin1String("strictempty"), Qt::CaseInsensitive) == 0) {
-            if (value.canConvert(QVariant::Bool)) {
+            if (value.canConvert(QMetaType::Bool)) {
                 inputLayer.strictEmpty = value.toBool();
                 continue;
             }

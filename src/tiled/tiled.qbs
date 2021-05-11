@@ -16,7 +16,7 @@ QtGuiApplication {
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt"; submodules: ["core", "widgets", "qml"]; versionAtLeast: "5.6" }
     Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6 }
-    Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux"); required: false }
+    Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
 
     property bool qtcRunnable: true
 
@@ -36,8 +36,6 @@ QtGuiApplication {
     cpp.rpaths: {
         if (qbs.targetOS.contains("darwin"))
             return ["@loader_path/../Frameworks"];
-        else if (project.linuxArchive)
-            return ["$ORIGIN/lib"];
         else
             return ["$ORIGIN/../lib"];
     }
@@ -61,7 +59,7 @@ QtGuiApplication {
         if (project.enableZstd)
             defs.push("TILED_ZSTD_SUPPORT");
 
-        if (qbs.targetOS.contains("linux") && Qt.dbus.present)
+        if (qbs.targetOS.contains("linux") && project.dbus && Qt.dbus.present)
             defs.push("TILED_ENABLE_DBUS");
 
         if (project.sentry)
@@ -609,8 +607,7 @@ QtGuiApplication {
         condition: !qbs.targetOS.contains("darwin")
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows")
-                    || project.linuxArchive)
+            if (qbs.targetOS.contains("windows"))
                 return ""
             else
                 return "bin"

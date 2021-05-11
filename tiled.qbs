@@ -5,7 +5,7 @@ Project {
     name: "Tiled"
 
     qbsSearchPaths: "qbs"
-    minimumQbsVersion: "1.8"
+    minimumQbsVersion: "1.12"
 
     property string version: Environment.getEnv("TILED_VERSION") || "1.6.0";
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT") == "true"
@@ -15,6 +15,7 @@ Project {
     property bool windowsInstaller: false
     property bool enableZstd: false
     property bool sentry: false
+    property bool dbus: true
     property string openSslPath: Environment.getEnv("OPENSSL_PATH")
 
     references: [
@@ -37,4 +38,8 @@ Project {
         "tests",
         "translations"
     ]
+
+    AutotestRunner {
+        name: "tests"
+    }
 }

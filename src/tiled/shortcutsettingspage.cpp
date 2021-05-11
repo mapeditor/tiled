@@ -447,7 +447,7 @@ ShortcutDelegate::ShortcutDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
     , mItemEditorFactory(new QItemEditorFactory)
 {
-    mItemEditorFactory->registerEditor(QVariant::KeySequence,
+    mItemEditorFactory->registerEditor(QMetaType::QKeySequence,
                                        new QStandardItemEditorCreator<ShortcutEditor>);
 
     setItemEditorFactory(mItemEditorFactory.get());
