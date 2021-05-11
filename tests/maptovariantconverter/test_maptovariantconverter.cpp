@@ -19,7 +19,7 @@ private slots:
 
 private:
     void assignComponent(Object *obj);
-    void assertComponent(QVariantMap &output);
+    void assertComponent(const QVariantMap &output);
 };
 
 void test_MapToVariantConverter::mapToVariant()
@@ -34,21 +34,20 @@ void test_MapToVariantConverter::mapToVariant()
     map->addLayer(new ImageLayer("", 0, 0));
     map->addLayer(new GroupLayer("", 0, 0));
 
-    for (Layer *layer : map->layers()) {
+    for (Layer *layer : map->layers())
         assignComponent(layer);
-    }
 
-    QVariant out = converter.toVariant(*map, QDir());
+    const QVariant out = converter.toVariant(*map, QDir());
     QVERIFY(out.isValid());
 
-    QVariantMap outmap = out.toMap();
+    const QVariantMap outmap = out.toMap();
     assertComponent(outmap);
 
-    QVariantList layers = outmap["layers"].toList();
+    const QVariantList layers = outmap["layers"].toList();
     QVERIFY(layers.size() > 0);
 
-    for (QVariant layer : layers) {
-        QVariantMap layermap = layer.toMap();
+    for (const QVariant &layer : layers) {
+        const QVariantMap layermap = layer.toMap();
         assertComponent(layermap);
     }
 }
@@ -58,9 +57,9 @@ void test_MapToVariantConverter::tilesetToVariant()
     MapToVariantConverter converter;
 
     SharedTileset tileset = Tileset::create("", 32, 32);
-    assignComponent(tileset.get());
+    assignComponent(tileset.data());
 
-    QVariant out = converter.toVariant(*tileset.get(), QDir());
+    QVariant out = converter.toVariant(*tileset, QDir());
     QVariantMap outts = out.toMap();
 
     QVERIFY(out.isValid());
@@ -75,7 +74,7 @@ void test_MapToVariantConverter::assignComponent(Object *obj)
     obj->addComponent(QStringLiteral("ComponentName"), properties);
 }
 
-void test_MapToVariantConverter::assertComponent(QVariantMap &output)
+void test_MapToVariantConverter::assertComponent(const QVariantMap &output)
 {
     auto const &component = output["components"].toList()[0].toMap();
     QCOMPARE(component["name"], "ComponentName");
