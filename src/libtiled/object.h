@@ -91,8 +91,7 @@ public:
     /**
      * Merges \a components with the existing components.
      *
-     * Non-existing components are added.
-     * Existing components are overwritten.
+     * \sa Tiled::mergeProperties
      */
     void mergeComponents(const Components &components);
 
