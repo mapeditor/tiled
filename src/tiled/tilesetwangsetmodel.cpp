@@ -183,11 +183,13 @@ void TilesetWangSetModel::insertWangColor(WangSet *wangSet, const QSharedPointer
     emitWangSetChange(wangSet);
 }
 
-void TilesetWangSetModel::removeWangColorAt(WangSet *wangSet, int color)
+QSharedPointer<WangColor> TilesetWangSetModel::takeWangColorAt(WangSet *wangSet, int color)
 {
     Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
-    wangSet->removeWangColorAt(color);
+    auto wangColor = wangSet->takeWangColorAt(color);
+    emit wangColorRemoved(wangColor.data());
     emitWangSetChange(wangSet);
+    return wangColor;
 }
 
 void TilesetWangSetModel::emitWangSetChange(WangSet *wangSet)

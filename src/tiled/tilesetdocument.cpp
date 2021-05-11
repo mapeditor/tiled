@@ -78,6 +78,8 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset)
 
     connect(mWangSetModel, &TilesetWangSetModel::wangSetRemoved,
             this, &TilesetDocument::onWangSetRemoved);
+    connect(mWangSetModel, &TilesetWangSetModel::wangColorRemoved,
+            this, &TilesetDocument::onWangColorRemoved);
 }
 
 TilesetDocument::~TilesetDocument()
@@ -485,6 +487,12 @@ void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
         setCurrentObject(nullptr);
 
     mWangColorModels.erase(wangSet);
+}
+
+void TilesetDocument::onWangColorRemoved(WangColor *wangColor)
+{
+    if (mCurrentObject == wangColor)
+        setCurrentObject(nullptr);
 }
 
 } // namespace Tiled

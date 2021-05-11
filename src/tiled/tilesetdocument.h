@@ -34,6 +34,7 @@
 namespace Tiled {
 
 class ObjectGroup;
+class WangColor;
 
 class MapDocument;
 class TilesetDocument;
@@ -171,6 +172,7 @@ private:
     void onPropertiesChanged(Object *object);
 
     void onWangSetRemoved(WangSet *wangSet);
+    void onWangColorRemoved(WangColor *wangColor);
 
     SharedTileset mTileset;
     QList<MapDocument*> mMapDocuments;

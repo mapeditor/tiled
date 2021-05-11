@@ -72,13 +72,15 @@ public:
     void setWangSetColorCount(WangSet *wangSet, int value);
     void setWangSetImage(WangSet *wangSet, int tileId);
     void insertWangColor(WangSet *wangSet, const QSharedPointer<WangColor> &wangColor);
-    void removeWangColorAt(WangSet *wangSet, int color);
+    QSharedPointer<WangColor> takeWangColorAt(WangSet *wangSet, int color);
 
 signals:
     void wangSetAboutToBeAdded(Tileset *tileset, int index);
     void wangSetAdded(Tileset *tileset, int index);
     void wangSetAboutToBeRemoved(WangSet *wangSet);
     void wangSetRemoved(WangSet *wangSet);
+
+    void wangColorRemoved(WangColor *wangColor);
 
     /**
      * Emitted when either the name, image, colorCount or type of a wangSet

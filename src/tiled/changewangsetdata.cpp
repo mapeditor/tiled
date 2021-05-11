@@ -136,8 +136,6 @@ RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, WangSet
     , mWangSet(wangSet)
     , mColor(color)
 {
-    mRemovedWangColor = wangSet->colorAt(mColor);
-
     const auto changes = ChangeTileWangId::changesOnRemoveColor(wangSet, color);
     if (!changes.isEmpty())
         new ChangeTileWangId(mTilesetDocument, wangSet, changes, this);
@@ -145,15 +143,13 @@ RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, WangSet
 
 void RemoveWangSetColor::undo()
 {
-    mTilesetDocument->wangSetModel()->insertWangColor(mWangSet, mRemovedWangColor);
-
+    mTilesetDocument->wangSetModel()->insertWangColor(mWangSet, std::move(mRemovedWangColor));
     QUndoCommand::undo();
 }
 
 void RemoveWangSetColor::redo()
 {
-    mTilesetDocument->wangSetModel()->removeWangColorAt(mWangSet, mColor);
-
+    mRemovedWangColor = mTilesetDocument->wangSetModel()->takeWangColorAt(mWangSet, mColor);
     QUndoCommand::redo();
 }
 
