@@ -77,8 +77,8 @@ void test_MapToVariantConverter::assignComponent(Object *obj)
 void test_MapToVariantConverter::assertComponent(const QVariantMap &output)
 {
     auto const &component = output["components"].toList()[0].toMap();
-    QCOMPARE(component["name"], "ComponentName");
-    QCOMPARE(component["properties"].toList()[0].toMap()["name"].toString(), "test_prop");
+    QCOMPARE(component["name"].toString(), QLatin1String("ComponentName"));
+    QCOMPARE(component["properties"].toList()[0].toMap()["name"].toString(), QLatin1String("test_prop"));
     QCOMPARE(component["properties"].toList()[0].toMap()["value"].toInt(), 1);
 }
 
