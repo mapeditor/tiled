@@ -146,6 +146,7 @@ void Document::removeProperty(Object *object, const QString &name)
 
 void Document::addComponent(Object *object, const QString &name, const Properties &properties)
 {
+    // TODO: change object to objectlist
     if (!object->hasComponent(name)) {
         object->addComponent(name, properties);
         emit componentAdded(object, name);
@@ -154,6 +155,7 @@ void Document::addComponent(Object *object, const QString &name, const Propertie
 
 void Document::removeComponent(const QString &name, Object *object)
 {
+    // TODO: change object to object list
     if (object->hasComponent(name)) {
         object->removeComponent(name);
         emit componentRemoved(object, name);

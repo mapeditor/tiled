@@ -533,14 +533,21 @@ void PropertiesDock::setupComponentMenu()
     if (!object)
         return;
 
+    QSet<QString> assignedComponents = componentsCommonToSelectedObjects(false);
+    QSet<QString> unassignedComponents = componentsCommonToSelectedObjects(true);
+
     QStringList componentNames;
 
     for (const ObjectType &type : Object::objectTypes())
         componentNames.append(type.name);
 
-    for (auto it = object->components().keyBegin(); it != object->components().keyEnd(); ++it)
-        if (!componentNames.contains(*it))
-            componentNames.append(*it);
+    QList<Object *> objects = mDocument->currentObjects();
+
+    for (Object *obj : objects) {
+        for (auto it = obj->components().keyBegin(); it != obj->components().keyEnd(); ++it)
+            if (!componentNames.contains(*it))
+                componentNames.append(*it);
+    }
 
     componentNames.sort();
 
@@ -550,8 +557,49 @@ void PropertiesDock::setupComponentMenu()
         connect(addAction, &QAction::triggered, this, &PropertiesDock::onComponentChecked);
 
         addAction->setCheckable(true);
-        addAction->setChecked(object->hasComponent(name));
+        addAction->setChecked(assignedComponents.contains(name));
+
+        addAction->setEnabled(assignedComponents.contains(name) || unassignedComponents.contains(name));
     }
+}
+
+QSet<QString> PropertiesDock::componentsCommonToSelectedObjects(bool inverted)
+{
+    // returns names of components all selected objects have
+    // or none do (if inverted=true)
+    // TODO: this should be moved to util (testable)
+
+    if (mDocument->currentObjects().size() == 0)
+        return QSet<QString>();
+
+    QList<Object *> objects = mDocument->currentObjects();
+
+    QMap<QString, int> countMap;
+
+    for (const ObjectType &type : Object::objectTypes())
+        countMap.insert(type.name, 1);
+
+    for (int i = 0; i < objects.size(); i++) {
+        QMapIterator<QString, Properties> it(objects.at(i)->components());
+        while (it.hasNext()) {
+            it.next();
+            if (countMap.contains(it.key())) {
+                countMap.insert(it.key(), countMap[it.key()] + 1);
+            }
+        }
+    }
+
+    int target = inverted ? 1 : (mDocument->currentObjects().size() + 1);
+
+    QSet<QString> componentNames;
+    QMapIterator<QString, int> it(countMap);
+    while (it.hasNext()) {
+        it.next();
+        if (it.value() == target)
+            componentNames << it.key();
+    }
+
+    return componentNames;
 }
 
 void PropertiesDock::onComponentChecked(bool checked)

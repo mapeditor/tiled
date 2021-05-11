@@ -24,6 +24,7 @@ public:
 
 private:
     Document *mDocument;
+    // TODO: use list to support many objects
     Object *mObject;
     const QString mName;
     Properties mProperties;

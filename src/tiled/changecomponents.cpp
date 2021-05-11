@@ -58,11 +58,14 @@ RemoveComponent::RemoveComponent(Document *document,
 
 void RemoveComponent::undo()
 {
+    // TODO: change component to component list
     mDocument->addComponent(mObject, mComponentName, mProperties);
 }
 
 void RemoveComponent::redo()
 {
+    // TODO: change object to object list
+    // TODO: will storing properties take up a lot of memory space?
     mProperties = mObject->componentProperties(mComponentName);
     mDocument->removeComponent(mComponentName, mObject);
 }

@@ -558,6 +558,10 @@ void PropertyBrowser::componentAdded(Object *, const QString &)
 
 void PropertyBrowser::removeComponent(Object *object, const QString &componentName)
 {
+    // TODO: how to remove components from multiple objects?
+
+
+
     if (object != mObject)
         return;
 
@@ -2076,6 +2080,14 @@ void PropertyBrowser::updateCustomPropertyColor(const QString &name)
 // adds the missing components from object to the browser
 void PropertyBrowser::addComponents()
 {
+    // TODO: multiple objects selected
+    // mdocument current objects
+
+    // TODO:
+    // if more than one object selected
+    // enable componenets they all have
+    // show greyed out components which some have others dont have
+
     if (!mObject)
         return;
 
@@ -2091,6 +2103,9 @@ void PropertyBrowser::addComponents()
         QtProperty *component = mGroupManager->addProperty(componentName);
         mComponents.insert(componentName, component);
         addProperty(component);
+
+        // TODO mark this disabled if all objects DO NOT have component
+        component->setEnabled(false);
 
         Properties &componentProperties = mObject->componentProperties(componentName);
 
