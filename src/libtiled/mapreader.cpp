@@ -297,6 +297,8 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
             mMap->addLayer(std::move(layer));
         else if (xml.name() == QLatin1String("properties"))
             mMap->mergeProperties(readProperties());
+        else if (xml.name() == QLatin1String("components"))
+            mMap->mergeComponents(readComponents());
         else if (xml.name() == QLatin1String("tileset"))
             mMap->addTileset(readTileset());
         else
@@ -422,6 +424,8 @@ SharedTileset MapReaderPrivate::readTileset()
                 readTilesetTransformations(*tileset);
             } else if (xml.name() == QLatin1String("properties")) {
                 tileset->mergeProperties(readProperties());
+            } else if (xml.name() == QLatin1String("components")) {
+                tileset->mergeComponents(readComponents());
             } else if (xml.name() == QLatin1String("image")) {
                 if (tileWidth == 0 || tileHeight == 0) {
                     xml.raiseError(tr("Invalid tileset parameters for tileset"
@@ -526,6 +530,8 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
             tile->mergeProperties(readProperties());
+        } else if (xml.name() == QLatin1String("components")) {
+            tile->mergeComponents(readComponents());
         } else if (xml.name() == QLatin1String("image")) {
             ImageReference imageReference = readImage();
             if (imageReference.hasImage()) {
@@ -724,6 +730,8 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset &tileset)
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("properties"))
                     wc->mergeProperties(readProperties());
+                else if (xml.name() == QLatin1String("components"))
+                    wc->mergeComponents(readComponents());
                 else
                     readUnknownElement();
             }
@@ -759,6 +767,8 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
 
                 if (xml.name() == QLatin1String("properties")) {
                     wangSet->mergeProperties(readProperties());
+                } else if (xml.name() == QLatin1String("components")) {
+                    wangSet->mergeComponents(readComponents());
                 } else if (xml.name() == QLatin1String("wangtile")) {
                     const QXmlStreamAttributes tileAtts = xml.attributes();
                     const int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
@@ -812,6 +822,8 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                     while (xml.readNextStartElement()) {
                         if (xml.name() == QLatin1String("properties"))
                             wc->mergeProperties(readProperties());
+                        else if (xml.name() == QLatin1String("components"))
+                            wc->mergeComponents(readComponents());
                         else
                             readUnknownElement();
                     }
@@ -902,6 +914,8 @@ std::unique_ptr<TileLayer> MapReaderPrivate::readTileLayer()
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties"))
             tileLayer->mergeProperties(readProperties());
+        else if (xml.name() == QLatin1String("components"))
+            tileLayer->mergeComponents(readComponents());
         else if (xml.name() == QLatin1String("data"))
             readTileLayerData(*tileLayer);
         else
@@ -1125,6 +1139,8 @@ std::unique_ptr<ObjectGroup> MapReaderPrivate::readObjectGroup()
             objectGroup->addObject(readObject());
         else if (xml.name() == QLatin1String("properties"))
             objectGroup->mergeProperties(readProperties());
+        else if (xml.name() == QLatin1String("components"))
+            objectGroup->mergeComponents(readComponents());
         else
             readUnknownElement();
     }
@@ -1154,6 +1170,8 @@ std::unique_ptr<ImageLayer> MapReaderPrivate::readImageLayer()
             readImageLayerImage(*imageLayer);
         else if (xml.name() == QLatin1String("properties"))
             imageLayer->mergeProperties(readProperties());
+        else if (xml.name() == QLatin1String("components"))
+            imageLayer->mergeComponents(readComponents());
         else
             readUnknownElement();
     }
@@ -1222,6 +1240,8 @@ std::unique_ptr<MapObject> MapReaderPrivate::readObject()
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
             object->mergeProperties(readProperties());
+        } else if (xml.name() == QLatin1String("components")) {
+            object->mergeComponents(readComponents());
         } else if (xml.name() == QLatin1String("polygon")) {
             object->setPolygon(readPolygon());
             object->setShape(MapObject::Polygon);
@@ -1242,8 +1262,6 @@ std::unique_ptr<MapObject> MapReaderPrivate::readObject()
             xml.skipCurrentElement();
             object->setShape(MapObject::Point);
             object->setPropertyChanged(MapObject::ShapeProperty);
-        } else if (xml.name() == QLatin1String("components")) {
-            object->setComponents(readComponents());
         } else {
             readUnknownElement();
         }
@@ -1381,6 +1399,8 @@ std::unique_ptr<GroupLayer> MapReaderPrivate::readGroupLayer()
             groupLayer->addLayer(std::move(layer));
         else if (xml.name() == QLatin1String("properties"))
             groupLayer->mergeProperties(readProperties());
+        else if (xml.name() == QLatin1String("components"))
+            groupLayer->mergeComponents(readComponents());
         else
             readUnknownElement();
     }

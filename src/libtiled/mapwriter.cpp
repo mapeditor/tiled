@@ -254,6 +254,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
         w.writeEndElement();    // </editorsettings>
     }
 
+    writeComponents(w, map.components());
     writeProperties(w, map.properties());
 
     mGidMapper.clear();
@@ -384,6 +385,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
 
     // Write the tileset properties
     writeProperties(w, tileset.properties());
+    writeComponents(w, tileset.components());
 
     // Write the image element
     const QUrl &imageSource = tileset.imageSource();
@@ -421,6 +423,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 w.writeAttribute(QStringLiteral("probability"), QString::number(tile->probability()));
             if (!tile->properties().isEmpty())
                 writeProperties(w, tile->properties());
+            if (!tile->components().isEmpty())
+                writeComponents(w, tile->components());
             if (imageSource.isEmpty()) {
                 w.writeStartElement(QStringLiteral("image"));
 
@@ -493,6 +497,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                     w.writeAttribute(QStringLiteral("probability"), QString::number(wc->probability()));
 
                     writeProperties(w, wc->properties());
+                    writeComponents(w, wc->components());
 
                     w.writeEndElement();
                 }
@@ -507,6 +512,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             }
 
             writeProperties(w, ws->properties());
+            writeComponents(w, ws->components());
 
             w.writeEndElement(); // </wangset>
         }
@@ -542,6 +548,7 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
     w.writeStartElement(QStringLiteral("layer"));
     writeLayerAttributes(w, tileLayer);
     writeProperties(w, tileLayer.properties());
+    writeComponents(w, tileLayer.components());
 
     QString encoding;
     QString compression;
@@ -894,6 +901,7 @@ void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
     }
 
     writeProperties(w, imageLayer.properties());
+    writeComponents(w, imageLayer.components());
 
     w.writeEndElement();
 }
@@ -905,6 +913,7 @@ void MapWriterPrivate::writeGroupLayer(QXmlStreamWriter &w,
     writeLayerAttributes(w, groupLayer);
 
     writeProperties(w, groupLayer.properties());
+    writeComponents(w, groupLayer.components());
     writeLayers(w, groupLayer.layers());
 
     w.writeEndElement();

@@ -6,5 +6,7 @@ Project {
     references: [
         "mapreader",
         "staggeredrenderer",
+        "maptovariantconverter",
+        "varianttomapconverter"
     ]
 }

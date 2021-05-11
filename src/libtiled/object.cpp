@@ -40,6 +40,18 @@ ObjectTypes Object::mObjectTypes;
 Object::~Object()
 {}
 
+void Object::mergeComponents(const Components &components)
+{
+    QMapIterator<QString, Properties> it(components);
+    while (it.hasNext()) {
+        it.next();
+        auto const &name = it.key();
+        auto const &value = it.value();
+
+        Tiled::mergeProperties(mComponents[name], value);
+    }
+}
+
 /**
  * Returns the value of the property \a name, taking into account that it may
  * be inherited from another object or from the type.

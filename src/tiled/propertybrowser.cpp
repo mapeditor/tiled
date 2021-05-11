@@ -2076,7 +2076,7 @@ void PropertyBrowser::updateCustomPropertyColor(const QString &name)
 // adds the missing components from object to the browser
 void PropertyBrowser::addComponents()
 {
-    if (!mObject || mObject->typeId() != Object::MapObjectType)
+    if (!mObject)
         return;
 
     QScopedValueRollback<bool> updating(mUpdating, true);
@@ -2119,8 +2119,7 @@ void PropertyBrowser::addComponents()
 void PropertyBrowser::updateComponents()
 {
     QScopedValueRollback<bool> updating(mUpdating, true);
-    const bool single = mDocument->currentObjects().size() == 1 &&
-            mDocument->currentObject()->typeId() == Object::MapObjectType;
+    const bool single = mDocument->currentObjects().size() == 1;
     for (QtProperty *component : qAsConst(mComponents))
         component->setEnabled(single);
 }

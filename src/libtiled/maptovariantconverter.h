@@ -65,6 +65,7 @@ public:
 private:
     QVariant toVariant(const Tileset &tileset, int firstGid) const;
     QVariant toVariant(const Properties &properties) const;
+    QVariant toVariant(const Components &components) const;
     QVariant propertyTypesToVariant(const Properties &properties) const;
     QVariant toVariant(const WangSet &wangSet) const;
     QVariant toVariant(const WangColor &wangColor) const;
@@ -86,6 +87,9 @@ private:
 
     void addProperties(QVariantMap &variantMap,
                        const Properties &properties) const;
+
+    void addComponents(QVariantMap &variantMap,
+                       const Components &components) const;
 
     int mVersion;
     QDir mDir;

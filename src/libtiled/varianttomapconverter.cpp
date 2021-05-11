@@ -89,6 +89,7 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
 
     mMap = map.get();
     map->setProperties(extractProperties(variantMap));
+    map->setComponents(extractComponents(variantMap));
 
     const QString bgColor = variantMap[QStringLiteral("backgroundcolor")].toString();
     if (QColor::isValidColor(bgColor))
@@ -182,6 +183,21 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
     }
 
     return properties;
+}
+
+Components VariantToMapConverter::toComponents(const QVariant &componentsVariant) const
+{
+    Components components;
+
+    const auto componentsVariantList = componentsVariant.toList();
+    for (const QVariant &component : componentsVariantList) {
+        const QVariantMap componentMap = component.toMap();
+        QString name = componentMap[QStringLiteral("name")].toString();
+        Properties properties = toProperties(componentMap[QStringLiteral("properties")], QVariant());
+        components[name] = properties;
+    }
+
+    return components;
 }
 
 SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
@@ -967,6 +983,11 @@ Properties VariantToMapConverter::extractProperties(const QVariantMap &variantMa
 {
     return toProperties(variantMap[QStringLiteral("properties")],
                         variantMap[QStringLiteral("propertytypes")]);
+}
+
+Components VariantToMapConverter::extractComponents(const QVariantMap &variantMap) const
+{
+    return toComponents(variantMap[QStringLiteral("components")]);
 }
 
 } // namespace Tiled

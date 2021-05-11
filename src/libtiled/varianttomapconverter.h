@@ -87,6 +87,7 @@ public:
 private:
     Properties toProperties(const QVariant &propertiesVariant,
                             const QVariant &propertyTypesVariant) const;
+    Components toComponents(const QVariant &componentsVariant) const;
     SharedTileset toTileset(const QVariant &variant);
     std::unique_ptr<WangSet> toWangSet(const QVariantMap &variantMap, Tileset *tileset);
     QSharedPointer<WangColor> toWangColor(const QVariantMap &variantMap);
@@ -109,6 +110,7 @@ private:
                            QRect bounds);
 
     Properties extractProperties(const QVariantMap &variantMap) const;
+    Components extractComponents(const QVariantMap &variantMap) const;
 
     Map *mMap;
     QDir mDir;
