@@ -48,7 +48,6 @@ void Object::mergeComponents(const Components &components)
         auto const &name = it.key();
         auto const &value = it.value();
 
-        // overwrites everything
         Tiled::mergeProperties(mComponents[name], value);
     }
 }
