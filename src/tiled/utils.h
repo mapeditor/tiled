@@ -25,6 +25,7 @@
 #include <QIcon>
 #include <QSettings>
 #include <QString>
+#include <QSet>
 
 #include <memory>
 
@@ -35,6 +36,9 @@ class QKeyEvent;
 class QMenu;
 
 namespace Tiled {
+
+class Object;
+
 namespace Utils {
 
 QString readableImageFormatsFilter();
@@ -98,6 +102,8 @@ void addOpenWithSystemEditorAction(QMenu &menu, const QString &fileName);
 
 QSettings::Format jsonSettingsFormat();
 std::unique_ptr<QSettings> jsonSettings(const QString &fileName);
+
+QSet<QString> componentsCommonToSelectedObjects(bool inverted, QList<Object *> objects);
 
 } // namespace Utils
 } // namespace Tiled

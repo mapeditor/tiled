@@ -70,6 +70,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QScopedValueRollback>
+#include <QSetIterator>
 
 #include <algorithm>
 
@@ -551,19 +552,19 @@ void PropertyBrowser::propertiesChanged(Object *object)
         updateCustomProperties();
 }
 
-void PropertyBrowser::componentAdded(Object *, const QString &)
+void PropertyBrowser::componentAdded(QList<Object *> objects, const QString &)
 {
     addComponents();
 }
 
-void PropertyBrowser::removeComponent(Object *object, const QString &componentName)
+void PropertyBrowser::removeComponent(QList<Object *> objects, const QString &componentName)
 {
     // TODO: how to remove components from multiple objects?
 
+//    Object *object = objects.at(0);
 
-
-    if (object != mObject)
-        return;
+//    if (object != mObject)
+//        return;
 
     // remove and delete component properties
     const auto componentProperties = mMapComponentPropertyField.take(componentName);
@@ -2080,18 +2081,13 @@ void PropertyBrowser::updateCustomPropertyColor(const QString &name)
 // adds the missing components from object to the browser
 void PropertyBrowser::addComponents()
 {
-    // TODO: multiple objects selected
-    // mdocument current objects
-
-    // TODO:
-    // if more than one object selected
-    // enable componenets they all have
-    // show greyed out components which some have others dont have
-
     if (!mObject)
         return;
 
     QScopedValueRollback<bool> updating(mUpdating, true);
+
+    QSet<QString> componentsInAllObjects =
+            Utils::componentsCommonToSelectedObjects(false, mDocument->currentObjects());
 
     QMapIterator<QString, Properties> it(mObject->components());
     while (it.hasNext()) {
@@ -2103,9 +2099,7 @@ void PropertyBrowser::addComponents()
         QtProperty *component = mGroupManager->addProperty(componentName);
         mComponents.insert(componentName, component);
         addProperty(component);
-
-        // TODO mark this disabled if all objects DO NOT have component
-        component->setEnabled(false);
+        component->setEnabled(componentsInAllObjects.contains(componentName));
 
         Properties &componentProperties = mObject->componentProperties(componentName);
 
@@ -2134,9 +2128,17 @@ void PropertyBrowser::addComponents()
 void PropertyBrowser::updateComponents()
 {
     QScopedValueRollback<bool> updating(mUpdating, true);
-    const bool single = mDocument->currentObjects().size() == 1;
-    for (QtProperty *component : qAsConst(mComponents))
-        component->setEnabled(single);
+
+    // only enable component properties common to all selected objects
+    QSet<QString> componentsInAllObjects =
+            Utils::componentsCommonToSelectedObjects(false, mDocument->currentObjects());
+
+    QHashIterator<QString, QtProperty *> it(mComponents);
+    while (it.hasNext()) {
+        it.next();
+        QtProperty *component = it.value();
+        component->setEnabled(componentsInAllObjects.contains(it.key()));
+    }
 }
 
 void PropertyBrowser::onComponentPropertyChanged(Object *object,
@@ -2144,6 +2146,8 @@ void PropertyBrowser::onComponentPropertyChanged(Object *object,
                                                  const QString &propertyName,
                                                  const QVariant &value)
 {
+    // TODO: if multiple objects apply to all
+
     if (mObject == object) {
         QScopedValueRollback<bool> updating(mUpdating, true);
         QtVariantProperty *property = mMapComponentPropertyField[componentName][propertyName];

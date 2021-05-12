@@ -86,8 +86,8 @@ private:
     void propertyChanged(Object *object, const QString &name);
     void propertiesChanged(Object *object);
 
-    void componentAdded(Object *object, const QString &name);
-    void removeComponent(Object *object, const QString &name);
+    void componentAdded(QList<Object *> objects, const QString &name);
+    void removeComponent(QList<Object *> objects, const QString &name);
 
     void selectedObjectsChanged();
     void selectedLayersChanged();
@@ -203,6 +203,8 @@ private:
     void updateProperties();
     void updateCustomProperties();
     void updateCustomPropertyColor(const QString &name);
+
+
 
     void addComponents();
     void updateComponents();

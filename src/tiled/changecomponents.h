@@ -15,7 +15,7 @@ class AddComponent : public QUndoCommand
 {
 public:
     AddComponent(Document *document,
-                 Object *object,
+                 QList<Object *> objects,
                  const QString &name,
                  QUndoCommand *parent = nullptr);
 
@@ -25,7 +25,7 @@ public:
 private:
     Document *mDocument;
     // TODO: use list to support many objects
-    Object *mObject;
+    QList<Object *> mObjects;
     const QString mName;
     Properties mProperties;
 
@@ -35,7 +35,7 @@ class RemoveComponent : public QUndoCommand
 {
 public:
     RemoveComponent(Document *document,
-                    Object *object,
+                    QList<Object *> objects,
                     const QString &name,
                     QUndoCommand *parent = nullptr);
 
@@ -44,7 +44,7 @@ public:
 
 private:
     Document *mDocument;
-    Object *mObject;
+    QList<Object *> mObjects;
     const QString mComponentName;
     Properties mProperties;
 };

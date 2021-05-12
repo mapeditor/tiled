@@ -533,8 +533,10 @@ void PropertiesDock::setupComponentMenu()
     if (!object)
         return;
 
-    QSet<QString> assignedComponents = componentsCommonToSelectedObjects(false);
-    QSet<QString> unassignedComponents = componentsCommonToSelectedObjects(true);
+    QSet<QString> assignedComponents =
+            Utils::componentsCommonToSelectedObjects(false, mDocument->currentObjects());
+    QSet<QString> unassignedComponents =
+            Utils::componentsCommonToSelectedObjects(true, mDocument->currentObjects());
 
     QStringList componentNames;
 
@@ -559,7 +561,8 @@ void PropertiesDock::setupComponentMenu()
         addAction->setCheckable(true);
         addAction->setChecked(assignedComponents.contains(name));
 
-        addAction->setEnabled(assignedComponents.contains(name) || unassignedComponents.contains(name));
+        bool isEnabled = assignedComponents.contains(name) || unassignedComponents.contains(name);
+        addAction->setEnabled(isEnabled);
     }
 }
 
@@ -611,11 +614,11 @@ void PropertiesDock::onComponentChecked(bool checked)
 
         if (checked) {
             undoStack->push(new AddComponent(mDocument,
-                                             mDocument->currentObject(),
+                                             mDocument->currentObjects(),
                                              componentName));
         } else {
             undoStack->push(new RemoveComponent(mDocument,
-                                                mDocument->currentObject(),
+                                                mDocument->currentObjects(),
                                                 componentName));
         }
     }

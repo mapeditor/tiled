@@ -22,6 +22,7 @@
 
 #include "mapformat.h"
 #include "preferences.h"
+#include "object.h"
 
 #include <QAction>
 #include <QApplication>
@@ -517,6 +518,41 @@ QSettings::Format jsonSettingsFormat()
 std::unique_ptr<QSettings> jsonSettings(const QString &fileName)
 {
     return std::make_unique<QSettings>(fileName, jsonSettingsFormat());
+}
+
+QSet<QString> componentsCommonToSelectedObjects(bool inverted, QList<Object *> currentObjects)
+{
+    if (currentObjects.size() == 0)
+        return QSet<QString>();
+
+    QList<Object *> objects = currentObjects;
+
+    QMap<QString, int> countMap;
+
+    for (const ObjectType &type : Object::objectTypes())
+        countMap.insert(type.name, 1);
+
+    for (int i = 0; i < objects.size(); i++) {
+        QMapIterator<QString, Properties> it(objects.at(i)->components());
+        while (it.hasNext()) {
+            it.next();
+            if (countMap.contains(it.key())) {
+                countMap.insert(it.key(), countMap[it.key()] + 1);
+            }
+        }
+    }
+
+    int target = inverted ? 1 : (currentObjects.size() + 1);
+
+    QSet<QString> componentNames;
+    QMapIterator<QString, int> it(countMap);
+    while (it.hasNext()) {
+        it.next();
+        if (it.value() == target)
+            componentNames << it.key();
+    }
+
+    return componentNames;
 }
 
 } // namespace Utils

@@ -21,53 +21,57 @@ static Properties objectTypeProperties(const QString &name)
 }
 
 AddComponent::AddComponent(Document *document,
-                           Object *object,
+                           QList<Object *> objects,
                            const QString &name,
                            QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
-    , mObject(object)
+    , mObjects(objects)
     , mName(name)
     , mProperties(objectTypeProperties(mName))
 {
-    setText(QCoreApplication::translate("Undo Commands", "Add Component"));
+    QString caption = QCoreApplication::translate("Undo Commands", "Add Component (%1 objects)");
+    caption = caption.arg(mObjects.size());
+    setText(caption);
 }
 
 void AddComponent::undo()
 {
-    mDocument->removeComponent(mName, mObject);
+    mDocument->removeComponent(mName, mObjects);
 }
 
 void AddComponent::redo()
 {
-    mDocument->addComponent(mObject, mName, mProperties);
+    mDocument->addComponent(mObjects, mName, mProperties);
 }
 
 
 RemoveComponent::RemoveComponent(Document *document,
-                                 Object *object,
+                                 QList<Object *> objects,
                                  const QString &componentName,
                                  QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
-    , mObject(object)
+    , mObjects(objects)
     , mComponentName(componentName)
 {
-    setText(QCoreApplication::translate("Undo Commands", "Remove Component"));
+    QString caption = QCoreApplication::translate("Undo Commands", "Remove Component (%1 objects)");
+    caption = caption.arg(mObjects.size());
+    setText(caption);
 }
 
 void RemoveComponent::undo()
 {
     // TODO: change component to component list
-    mDocument->addComponent(mObject, mComponentName, mProperties);
+    mDocument->addComponent(mObjects, mComponentName, mProperties);
 }
 
 void RemoveComponent::redo()
 {
     // TODO: change object to object list
     // TODO: will storing properties take up a lot of memory space?
-    mProperties = mObject->componentProperties(mComponentName);
-    mDocument->removeComponent(mComponentName, mObject);
+//    mProperties = mObject->componentProperties(mComponentName);
+    mDocument->removeComponent(mComponentName, mObjects);
 }
 
 
