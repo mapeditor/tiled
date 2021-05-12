@@ -62,44 +62,52 @@ RemoveComponent::RemoveComponent(Document *document,
 
 void RemoveComponent::undo()
 {
-    // TODO: change component to component list
     mDocument->addComponent(mObjects, mComponentName, mProperties);
 }
 
 void RemoveComponent::redo()
 {
-    // TODO: change object to object list
-    // TODO: will storing properties take up a lot of memory space?
-//    mProperties = mObject->componentProperties(mComponentName);
     mDocument->removeComponent(mComponentName, mObjects);
 }
 
 
 SetComponentProperty::SetComponentProperty(Document *document,
-                                           Object *object,
+                                           QList<Object *> objects,
                                            const QString &componentName,
                                            const QString &propertyName,
                                            QVariant value,
                                            QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
-    , mObject(object)
+    , mObjects(objects)
     , mComponentName(componentName)
     , mPropertyName(propertyName)
     , mNewValue(value)
 {
     setText(QCoreApplication::translate("Undo Commands", "Set Property"));
 
-    Properties &props = mObject->componentProperties(componentName);
-    mOldValue = props[propertyName];
+    mOldValues.reserve(objects.size());
+
+    for (int i = 0; i < objects.size(); i++) {
+        Object *object = objects.at(i);
+        Properties &props = object->componentProperties(componentName);
+        mOldValues.append(props[mPropertyName]);
+    }
 }
 
 void SetComponentProperty::undo()
 {
-    mDocument->setComponentProperty(mObject, mComponentName, mPropertyName, mOldValue);
+    for (int i = 0; i < mObjects.size(); i++) {
+        Object *object = mObjects.at(i);
+        QVariant oldValue = mOldValues.at(i);
+        mDocument->setComponentProperty(object, mComponentName, mPropertyName, oldValue);
+    }
 }
 
 void SetComponentProperty::redo()
 {
-    mDocument->setComponentProperty(mObject, mComponentName, mPropertyName, mNewValue);
+    for (int i = 0; i < mObjects.size(); i++) {
+        Object *object = mObjects.at(i);
+        mDocument->setComponentProperty(object, mComponentName, mPropertyName, mNewValue);
+    }
 }

@@ -624,7 +624,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
         QUndoStack *undoStack = mDocument->undoStack();
         undoStack->push(new SetComponentProperty(
                             mDocument,
-                            mObject,
+                            mDocument->currentObjects(),
                             mMapComponentProperty.value(property),
                             property->propertyName(),
                             fromDisplayValue(val)));
@@ -2146,8 +2146,6 @@ void PropertyBrowser::onComponentPropertyChanged(Object *object,
                                                  const QString &propertyName,
                                                  const QVariant &value)
 {
-    // TODO: if multiple objects apply to all
-
     if (mObject == object) {
         QScopedValueRollback<bool> updating(mUpdating, true);
         QtVariantProperty *property = mMapComponentPropertyField[componentName][propertyName];
