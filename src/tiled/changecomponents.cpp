@@ -37,7 +37,7 @@ AddComponent::AddComponent(Document *document,
 
 void AddComponent::undo()
 {
-    mDocument->removeComponent(mName, mObjects);
+    mDocument->removeComponent(mObjects, mName);
 }
 
 void AddComponent::redo()
@@ -67,7 +67,7 @@ void RemoveComponent::undo()
 
 void RemoveComponent::redo()
 {
-    mDocument->removeComponent(mComponentName, mObjects);
+    mDocument->removeComponent(mObjects, mComponentName);
 }
 
 

@@ -69,7 +69,6 @@ private:
     void showContextMenu(const QPoint &pos);
 
     void setupComponentMenu();
-    QSet<QString> componentsCommonToSelectedObjects(bool inverted);
     void onComponentChecked(bool checked = false);
 
     void retranslateUi();

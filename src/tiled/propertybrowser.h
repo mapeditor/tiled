@@ -204,8 +204,6 @@ private:
     void updateCustomProperties();
     void updateCustomPropertyColor(const QString &name);
 
-
-
     void addComponents();
     void updateComponents();
 

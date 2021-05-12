@@ -146,12 +146,6 @@ void Document::removeProperty(Object *object, const QString &name)
 
 void Document::addComponent(QList<Object *> objects, const QString &name, const Properties &properties)
 {
-    // TODO: change object to objectlist
-//    if (!object->hasComponent(name)) {
-//        object->addComponent(name, properties);
-//        emit componentAdded(object, name);
-//    }
-
     for (int i = 0; i < objects.size(); i++) {
         Object *o = objects.at(i);
         if (!o->hasComponent(name))
@@ -161,15 +155,8 @@ void Document::addComponent(QList<Object *> objects, const QString &name, const 
     emit componentAdded(objects, name);
 }
 
-// todo: swap name and objects arguments
-void Document::removeComponent(const QString &name, QList<Object *> objects)
+void Document::removeComponent(QList<Object *> objects, const QString &name)
 {
-    // TODO: change object to object list
-//    if (object->hasComponent(name)) {
-//        object->removeComponent(name);
-//        emit componentRemoved(object, name);
-//    }
-
     for (int i = 0; i < objects.size(); i++) {
         Object *o = objects.at(i);
         if (o->hasComponent(name))

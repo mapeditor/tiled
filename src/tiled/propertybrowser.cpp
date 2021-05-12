@@ -559,13 +559,6 @@ void PropertyBrowser::componentAdded(QList<Object *> objects, const QString &)
 
 void PropertyBrowser::removeComponent(QList<Object *> objects, const QString &componentName)
 {
-    // TODO: how to remove components from multiple objects?
-
-//    Object *object = objects.at(0);
-
-//    if (object != mObject)
-//        return;
-
     // remove and delete component properties
     const auto componentProperties = mMapComponentPropertyField.take(componentName);
     for (QtProperty *property : componentProperties) {
