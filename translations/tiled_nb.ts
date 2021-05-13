@@ -103,7 +103,7 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
         <source>Edit Commands</source>
-        <translation type="unfinished">Rediger Kommandoer</translation>
+        <translation type="unfinished">Rediger kommandoer</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -1692,12 +1692,12 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+9"/>
         <source>Enable sending anonymous crash reports</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Skru på forsendelse av anonyme krasjrapporter</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;mer info&lt;/a&gt;)</translation>
     </message>
     <message>
         <location line="+97"/>
@@ -2726,7 +2726,7 @@ Linje %1, kolonne %2</translation>
         <location filename="../src/tiled/scriptprocess.cpp" line="+142"/>
         <location line="+6"/>
         <source>Unsupported encoding: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustøttet koding: %1</translation>
     </message>
     <message>
         <location line="+89"/>
@@ -2761,18 +2761,18 @@ Linje %1, kolonne %2</translation>
     <message>
         <location filename="../src/tiled/scriptimage.cpp" line="+95"/>
         <source>Invalid color name: &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyldig fargenavn: «%2»</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Invalid color value</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyldig fargeverdi</translation>
     </message>
     <message>
         <location filename="../src/tiled/scriptprocess.cpp" line="+38"/>
         <location line="+10"/>
         <source>Error running %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Klarte ikke å kjøre %1: %2</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2901,7 +2901,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+22"/>
         <source>Monospace</source>
-        <translation type="unfinished"></translation>
+        <translation>Fastbredde</translation>
     </message>
 </context>
 <context>
@@ -2950,7 +2950,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="-363"/>
         <source>Apply Collision Shapes</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til kollisjonsformer</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -4189,7 +4189,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="-421"/>
         <source>New World</source>
-        <translation type="unfinished"></translation>
+        <translation>Ny verden</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -5187,13 +5187,13 @@ Vennligst velgt et spesifikt format.</translation>
         <location line="-181"/>
         <location line="+182"/>
         <source>Prefer Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Foretrekk valgte lag</translation>
     </message>
     <message>
         <location line="-181"/>
         <location line="+182"/>
         <source>Selected Layers Only</source>
-        <translation type="unfinished"></translation>
+        <translation>Kun valgte lag</translation>
     </message>
 </context>
 <context>
@@ -5832,7 +5832,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+5"/>
         <source>Evaluating &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Vurderer «%1»</translation>
     </message>
     <message>
         <location line="+63"/>
@@ -5890,7 +5890,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+33"/>
         <source>%1, %2 - %3: (%4 x %5)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, %2 - %3: (%4 x %5)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6055,7 +6055,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+76"/>
         <source>Template Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Mal-redigerer</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -6091,12 +6091,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+5"/>
         <source>Show Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Vis høyre</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Show Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Vis bunn</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -6116,7 +6116,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+108"/>
         <source>Detect Bounding Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Vis avgrensningsboks</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6905,7 +6905,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+20"/>
         <source>Change Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Endre flissett</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+41"/>
@@ -6977,7 +6977,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+20"/>
         <source>Change Tile Layer Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Endre flislagstørrelse</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+12"/>
