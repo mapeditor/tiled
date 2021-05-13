@@ -45,7 +45,7 @@ private:
     Document *mDocument;
     QList<Object *> mObjects;
     const QString mComponentName;
-    Properties mProperties;
+    QList<Properties> mProperties;
 };
 
 class SetComponentProperty : public QUndoCommand

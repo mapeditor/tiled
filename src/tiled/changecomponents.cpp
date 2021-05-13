@@ -62,11 +62,18 @@ RemoveComponent::RemoveComponent(Document *document,
 
 void RemoveComponent::undo()
 {
-    mDocument->addComponent(mObjects, mComponentName, mProperties);
+    for (int i = 0; i < mObjects.size(); i++) {
+        mDocument->addComponent({ mObjects.at(i) }, mComponentName, mProperties.at(i));
+    }
 }
 
 void RemoveComponent::redo()
 {
+    mProperties.reserve(mObjects.size());
+    for (int i = 0; i < mObjects.size(); i++) {
+        mProperties.append(mObjects[i]->componentProperties(mComponentName));
+    }
+
     mDocument->removeComponent(mObjects, mComponentName);
 }
 
