@@ -2080,7 +2080,7 @@ void PropertyBrowser::addComponents()
     QScopedValueRollback<bool> updating(mUpdating, true);
 
     QSet<QString> componentsInAllObjects =
-            Utils::componentsCommonToSelectedObjects(false, mDocument->currentObjects());
+            Object::commonComponents(mDocument->currentObjects());
 
     QMapIterator<QString, Properties> it(mObject->components());
     while (it.hasNext()) {
@@ -2124,7 +2124,7 @@ void PropertyBrowser::updateComponents()
 
     // only enable component properties common to all selected objects
     QSet<QString> componentsInAllObjects =
-            Utils::componentsCommonToSelectedObjects(false, mDocument->currentObjects());
+            Object::commonComponents(mDocument->currentObjects());
 
     QHashIterator<QString, QtProperty *> it(mComponents);
     while (it.hasNext()) {

@@ -533,17 +533,15 @@ void PropertiesDock::setupComponentMenu()
     if (!object)
         return;
 
-    QSet<QString> assignedComponents =
-            Utils::componentsCommonToSelectedObjects(false, mDocument->currentObjects());
-    QSet<QString> unassignedComponents =
-            Utils::componentsCommonToSelectedObjects(true, mDocument->currentObjects());
+    const QList<Object *> objects = mDocument->currentObjects();
+
+    QSet<QString> assignedComponents = Object::commonComponents(objects);
+    QSet<QString> unassignedComponents = Object::commonComponents(objects, true);
 
     QStringList componentNames;
 
     for (const ObjectType &type : Object::objectTypes())
         componentNames.append(type.name);
-
-    QList<Object *> objects = mDocument->currentObjects();
 
     for (Object *obj : objects) {
         for (auto it = obj->components().keyBegin(); it != obj->components().keyEnd(); ++it)

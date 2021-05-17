@@ -103,7 +103,5 @@ void addOpenWithSystemEditorAction(QMenu &menu, const QString &fileName);
 QSettings::Format jsonSettingsFormat();
 std::unique_ptr<QSettings> jsonSettings(const QString &fileName);
 
-QSet<QString> componentsCommonToSelectedObjects(bool inverted, QList<Object *> objects);
-
 } // namespace Utils
 } // namespace Tiled

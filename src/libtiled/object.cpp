@@ -162,4 +162,36 @@ void Object::setObjectTypes(const ObjectTypes &objectTypes)
     mObjectTypes = objectTypes;
 }
 
+QSet<QString> Object::commonComponents(const QList<Object *> &objects,
+                                       bool inverted)
+{
+    QSet<QString> componentNames;
+    if (objects.isEmpty())
+        return componentNames;
+
+    QMap<QString, int> countMap;
+
+    for (const ObjectType &type : Object::objectTypes())
+        countMap.insert(type.name, 0);
+
+    for (Object *object : objects) {
+        QMapIterator<QString, Properties> it(object->components());
+        while (it.hasNext()) {
+            it.next();
+            ++countMap[it.key()];
+        }
+    }
+
+    const int target = inverted ? 0 : objects.size();
+
+    QMapIterator<QString, int> it(countMap);
+    while (it.hasNext()) {
+        it.next();
+        if (it.value() == target)
+            componentNames << it.key();
+    }
+
+    return componentNames;
+}
+
 } // namespace Tiled
