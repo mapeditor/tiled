@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.mapeditor</groupId>
         <artifactId>tiled-parent</artifactId>
-        <version>1.2.3-SNAPSHOT</version>
+        <version>1.4.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>libtiled</artifactId>
@@ -28,9 +28,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>5.7.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -55,7 +55,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.3</version>
+                <version>0.8.6</version>
                 <executions>
                     <execution>
                         <goals>
@@ -169,7 +169,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>add-test-resources</id>
@@ -210,7 +210,7 @@
                 <dependency>
                     <groupId>org.glassfish.jaxb</groupId>
                     <artifactId>jaxb-runtime</artifactId>
-                    <version>2.3.2</version>
+                    <version>2.3.3</version>
                 </dependency>
             </dependencies>
         </profile>
