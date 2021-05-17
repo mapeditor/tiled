@@ -21,7 +21,7 @@ static Properties objectTypeProperties(const QString &name)
 }
 
 AddComponent::AddComponent(Document *document,
-                           QList<Object *> objects,
+                           const QList<Object *> &objects,
                            const QString &name,
                            QUndoCommand *parent)
     : QUndoCommand(parent)
@@ -46,7 +46,7 @@ void AddComponent::redo()
 
 
 RemoveComponent::RemoveComponent(Document *document,
-                                 QList<Object *> objects,
+                                 const QList<Object *> &objects,
                                  const QString &componentName,
                                  QUndoCommand *parent)
     : QUndoCommand(parent)
@@ -60,24 +60,22 @@ RemoveComponent::RemoveComponent(Document *document,
 
 void RemoveComponent::undo()
 {
-    for (int i = 0; i < mObjects.size(); i++) {
+    for (int i = 0; i < mObjects.size(); i++)
         mDocument->addComponent({ mObjects.at(i) }, mComponentName, mProperties.at(i));
-    }
 }
 
 void RemoveComponent::redo()
 {
     mProperties.reserve(mObjects.size());
-    for (int i = 0; i < mObjects.size(); i++) {
+    for (int i = 0; i < mObjects.size(); i++)
         mProperties.append(mObjects[i]->componentProperties(mComponentName));
-    }
 
     mDocument->removeComponent(mObjects, mComponentName);
 }
 
 
 SetComponentProperty::SetComponentProperty(Document *document,
-                                           QList<Object *> objects,
+                                           const QList<Object *> &objects,
                                            const QString &componentName,
                                            const QString &propertyName,
                                            QVariant value,
