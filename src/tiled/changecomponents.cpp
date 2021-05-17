@@ -56,20 +56,20 @@ RemoveComponent::RemoveComponent(Document *document,
 {
     setText(QCoreApplication::translate("Undo Commands", "Remove Component (%1)")
             .arg(componentName));
+
+    mProperties.reserve(mObjects.size());
+    for (int i = 0; i < mObjects.size(); i++)
+        mProperties.append(mObjects[i]->componentProperties(mComponentName));
 }
 
 void RemoveComponent::undo()
 {
-    for (int i = 0; i < mObjects.size(); i++)
+    for (int i = 0; i < mObjects.size(); ++i)
         mDocument->addComponent({ mObjects.at(i) }, mComponentName, mProperties.at(i));
 }
 
 void RemoveComponent::redo()
 {
-    mProperties.reserve(mObjects.size());
-    for (int i = 0; i < mObjects.size(); i++)
-        mProperties.append(mObjects[i]->componentProperties(mComponentName));
-
     mDocument->removeComponent(mObjects, mComponentName);
 }
 
@@ -91,7 +91,7 @@ SetComponentProperty::SetComponentProperty(Document *document,
 
     mOldValues.reserve(objects.size());
 
-    for (int i = 0; i < objects.size(); i++) {
+    for (int i = 0; i < objects.size(); ++i) {
         Object *object = objects.at(i);
         Properties &props = object->componentProperties(componentName);
         mOldValues.append(props[mPropertyName]);
@@ -100,7 +100,7 @@ SetComponentProperty::SetComponentProperty(Document *document,
 
 void SetComponentProperty::undo()
 {
-    for (int i = 0; i < mObjects.size(); i++) {
+    for (int i = 0; i < mObjects.size(); ++i) {
         Object *object = mObjects.at(i);
         QVariant oldValue = mOldValues.at(i);
         mDocument->setComponentProperty(object, mComponentName, mPropertyName, oldValue);
@@ -109,7 +109,7 @@ void SetComponentProperty::undo()
 
 void SetComponentProperty::redo()
 {
-    for (int i = 0; i < mObjects.size(); i++) {
+    for (int i = 0; i < mObjects.size(); ++i) {
         Object *object = mObjects.at(i);
         mDocument->setComponentProperty(object, mComponentName, mPropertyName, mNewValue);
     }
