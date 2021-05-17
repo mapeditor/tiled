@@ -30,9 +30,8 @@ AddComponent::AddComponent(Document *document,
     , mName(name)
     , mProperties(objectTypeProperties(mName))
 {
-    QString caption = QCoreApplication::translate("Undo Commands", "Add Component (%1)");
-    caption = caption.arg(mName);
-    setText(caption);
+    setText(QCoreApplication::translate("Undo Commands", "Add Component (%1)")
+            .arg(name));
 }
 
 void AddComponent::undo()
@@ -55,9 +54,8 @@ RemoveComponent::RemoveComponent(Document *document,
     , mObjects(objects)
     , mComponentName(componentName)
 {
-    QString caption = QCoreApplication::translate("Undo Commands", "Remove Component (%1)");
-    caption = caption.arg(mComponentName);
-    setText(caption);
+    setText(QCoreApplication::translate("Undo Commands", "Remove Component (%1)")
+            .arg(componentName));
 }
 
 void RemoveComponent::undo()

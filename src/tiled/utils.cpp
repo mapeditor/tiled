@@ -22,7 +22,6 @@
 
 #include "mapformat.h"
 #include "preferences.h"
-#include "object.h"
 
 #include <QAction>
 #include <QApplication>

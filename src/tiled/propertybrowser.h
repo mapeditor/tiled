@@ -86,8 +86,8 @@ private:
     void propertyChanged(Object *object, const QString &name);
     void propertiesChanged(Object *object);
 
-    void componentAdded(QList<Object *> objects, const QString &name);
-    void removeComponent(QList<Object *> objects, const QString &name);
+    void componentAdded(const QList<Object *> &objects, const QString &name);
+    void componentRemoved(const QList<Object *> &objects, const QString &name);
 
     void selectedObjectsChanged();
     void selectedLayersChanged();

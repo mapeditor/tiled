@@ -25,7 +25,6 @@
 #include <QIcon>
 #include <QSettings>
 #include <QString>
-#include <QSet>
 
 #include <memory>
 
@@ -36,9 +35,6 @@ class QKeyEvent;
 class QMenu;
 
 namespace Tiled {
-
-class Object;
-
 namespace Utils {
 
 QString readableImageFormatsFilter();

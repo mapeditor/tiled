@@ -70,7 +70,6 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QScopedValueRollback>
-#include <QSetIterator>
 
 #include <algorithm>
 
@@ -229,7 +228,7 @@ void PropertyBrowser::setDocument(Document *document)
         connect(document, &Document::componentAdded,
                 this, &PropertyBrowser::componentAdded);
         connect(document, &Document::componentRemoved,
-                this, &PropertyBrowser::removeComponent);
+                this, &PropertyBrowser::componentRemoved);
         connect(document, &Document::componentPropertyChanged,
                 this, &PropertyBrowser::onComponentPropertyChanged);
     }
@@ -552,12 +551,12 @@ void PropertyBrowser::propertiesChanged(Object *object)
         updateCustomProperties();
 }
 
-void PropertyBrowser::componentAdded(QList<Object *> objects, const QString &)
+void PropertyBrowser::componentAdded(const QList<Object *> &objects, const QString &)
 {
     addComponents();
 }
 
-void PropertyBrowser::removeComponent(QList<Object *> objects, const QString &componentName)
+void PropertyBrowser::componentRemoved(const QList<Object *> &objects, const QString &componentName)
 {
     // remove and delete component properties
     const auto componentProperties = mMapComponentPropertyField.take(componentName);
