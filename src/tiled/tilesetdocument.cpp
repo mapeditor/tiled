@@ -20,6 +20,7 @@
 
 #include "tilesetdocument.h"
 
+#include "changeevents.h"
 #include "editabletileset.h"
 #include "issuesmodel.h"
 #include "map.h"
@@ -78,8 +79,6 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset)
 
     connect(mWangSetModel, &TilesetWangSetModel::wangSetRemoved,
             this, &TilesetDocument::onWangSetRemoved);
-    connect(mWangSetModel, &TilesetWangSetModel::wangColorRemoved,
-            this, &TilesetDocument::onWangColorRemoved);
 }
 
 TilesetDocument::~TilesetDocument()
@@ -344,6 +343,7 @@ void TilesetDocument::removeTiles(const QList<Tile *> &tiles)
         }
     }
 
+    emit changed(TilesEvent(ChangeEvent::TilesAboutToBeRemoved, tiles));
     mTileset->removeTiles(tiles);
     emit tilesRemoved(tiles);
     emit tilesetChanged(mTileset.data());
@@ -483,16 +483,7 @@ void TilesetDocument::onPropertiesChanged(Object *object)
 
 void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
 {
-    if (wangSet == mCurrentObject)
-        setCurrentObject(nullptr);
-
     mWangColorModels.erase(wangSet);
-}
-
-void TilesetDocument::onWangColorRemoved(WangColor *wangColor)
-{
-    if (mCurrentObject == wangColor)
-        setCurrentObject(nullptr);
 }
 
 } // namespace Tiled

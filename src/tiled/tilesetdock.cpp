@@ -558,7 +558,7 @@ void TilesetDock::indexPressed(const QModelIndex &index)
 {
     TilesetView *view = currentTilesetView();
     if (Tile *tile = view->tilesetModel()->tileAt(index))
-        mMapDocument->setCurrentObject(tile);
+        mMapDocument->setCurrentObject(tile, currentTilesetDocument());
 }
 
 void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
@@ -824,8 +824,11 @@ void TilesetDock::setCurrentTile(Tile *tile)
     mCurrentTile = tile;
     emit currentTileChanged(tile);
 
-    if (mMapDocument && tile)
-        mMapDocument->setCurrentObject(tile);
+    if (mMapDocument && tile) {
+        int tilesetIndex = indexOf(mTilesets, tile->tileset());
+        if (tilesetIndex != -1)
+            mMapDocument->setCurrentObject(tile, mTilesetDocuments.at(tilesetIndex));
+    }
 }
 
 void TilesetDock::retranslateUi()

@@ -20,6 +20,7 @@
 
 #include "wangsetmodel.h"
 
+#include "changeevents.h"
 #include "containerhelpers.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -27,7 +28,6 @@
 #include "tileset.h"
 #include "tilesetdocument.h"
 #include "tilesetdocumentsmodel.h"
-#include "tilesetwangsetmodel.h"
 #include "wangoverlay.h"
 #include "wangset.h"
 
@@ -191,15 +191,7 @@ void WangSetModel::onTilesetRowsInserted(const QModelIndex &parent, int first, i
 
         mTilesetDocuments.insert(row, tilesetDocument);
 
-        TilesetWangSetModel *tilesetWangSetModel = tilesetDocument->wangSetModel();
-        connect(tilesetWangSetModel, &TilesetWangSetModel::wangSetAboutToBeAdded,
-                this, &WangSetModel::onWangSetAboutToBeAdded);
-        connect(tilesetWangSetModel, &TilesetWangSetModel::wangSetAdded,
-                this, &WangSetModel::onWangSetAdded);
-        connect(tilesetWangSetModel, &TilesetWangSetModel::wangSetAboutToBeRemoved,
-                this, &WangSetModel::onWangSetAboutToBeRemoved);
-        connect(tilesetWangSetModel, &TilesetWangSetModel::wangSetRemoved,
-                this, &WangSetModel::onWangSetRemoved);
+        connect(tilesetDocument, &Document::changed, this, &WangSetModel::onDocumentChanged);
     }
     endInsertRows();
 }
@@ -211,7 +203,7 @@ void WangSetModel::onTilesetRowsAboutToBeRemoved(const QModelIndex &parent, int 
     beginRemoveRows(QModelIndex(), first, last);
     for (int index = last; index >= first; --index) {
         TilesetDocument *tilesetDocument = mTilesetDocuments.takeAt(index);
-        tilesetDocument->wangSetModel()->disconnect(this);
+        tilesetDocument->disconnect(this);
     }
     endRemoveRows();
 }
@@ -264,32 +256,46 @@ void WangSetModel::onTilesetDataChanged(const QModelIndex &topLeft, const QModel
                      index(bottomRight.row(), bottomRight.column()));
 }
 
-void WangSetModel::onWangSetAboutToBeAdded(Tileset *tileset, int index)
+void WangSetModel::onDocumentChanged(const ChangeEvent &change)
 {
-    QModelIndex parent = this->index(tileset);
-    beginInsertRows(parent, index, index);
-}
+    switch (change.type) {
+    case ChangeEvent::WangSetAboutToBeAdded: {
+        auto wangSetEvent = static_cast<const WangSetEvent&>(change);
 
-void WangSetModel::onWangSetAdded(Tileset *tileset)
-{
-    endInsertRows();
+        QModelIndex parent = this->index(wangSetEvent.tileset);
+        beginInsertRows(parent, wangSetEvent.index, wangSetEvent.index);
+        break;
+    }
+    case ChangeEvent::WangSetAdded: {
+        auto wangSetEvent = static_cast<const WangSetEvent&>(change);
 
-    const QModelIndex index = WangSetModel::index(tileset);
-    emit dataChanged(index, index);
-}
+        endInsertRows();
 
-void WangSetModel::onWangSetAboutToBeRemoved(WangSet *wangSet)
-{
-    QModelIndex parent = index(wangSet->tileset());
-    beginRemoveRows(parent, index(wangSet).row(), index(wangSet).row());
-}
+        const QModelIndex index = WangSetModel::index(wangSetEvent.tileset);
+        emit dataChanged(index, index);
+        break;
+    }
 
-void WangSetModel::onWangSetRemoved(WangSet *wangSet)
-{
-    endRemoveRows();
+    case ChangeEvent::WangSetAboutToBeRemoved: {
+        auto wangSetEvent = static_cast<const WangSetEvent&>(change);
+        auto wangSet = wangSetEvent.tileset->wangSet(wangSetEvent.index);
 
-    const QModelIndex index = WangSetModel::index(wangSet->tileset());
-    emit dataChanged(index, index);
+        QModelIndex parent = index(wangSetEvent.tileset);
+        beginRemoveRows(parent, index(wangSet).row(), index(wangSet).row());
+        break;
+    }
+    case ChangeEvent::WangSetRemoved: {
+        auto wangSetEvent = static_cast<const WangSetEvent&>(change);
+
+        endRemoveRows();
+
+        const QModelIndex index = WangSetModel::index(wangSetEvent.tileset);
+        emit dataChanged(index, index);
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 #include "moc_wangsetmodel.cpp"
