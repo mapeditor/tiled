@@ -144,20 +144,22 @@ void Document::removeProperty(Object *object, const QString &name)
     emit propertyRemoved(object, name);
 }
 
-void Document::addComponent(Object *object, const QString &name, const Properties &properties)
+void Document::addComponent(const QList<Object *> &objects, const QString &name, const Properties &properties)
 {
-    if (!object->hasComponent(name)) {
-        object->addComponent(name, properties);
-        emit componentAdded(object, name);
+    for (Object *object : objects) {
+        if (!object->hasComponent(name))
+            object->addComponent(name, properties);
     }
+
+    emit componentAdded(objects, name);
 }
 
-void Document::removeComponent(const QString &name, Object *object)
+void Document::removeComponent(const QList<Object *> &objects, const QString &name)
 {
-    if (object->hasComponent(name)) {
+    for (Object *object : objects)
         object->removeComponent(name);
-        emit componentRemoved(object, name);
-    }
+
+    emit componentRemoved(objects, name);
 }
 
 void Document::setComponentProperty(Object *object,

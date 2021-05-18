@@ -228,7 +228,7 @@ void PropertyBrowser::setDocument(Document *document)
         connect(document, &Document::componentAdded,
                 this, &PropertyBrowser::componentAdded);
         connect(document, &Document::componentRemoved,
-                this, &PropertyBrowser::removeComponent);
+                this, &PropertyBrowser::componentRemoved);
         connect(document, &Document::componentPropertyChanged,
                 this, &PropertyBrowser::onComponentPropertyChanged);
     }
@@ -551,26 +551,30 @@ void PropertyBrowser::propertiesChanged(Object *object)
         updateCustomProperties();
 }
 
-void PropertyBrowser::componentAdded(Object *, const QString &)
+void PropertyBrowser::componentAdded()
 {
     addComponents();
 }
 
-void PropertyBrowser::removeComponent(Object *object, const QString &componentName)
+void PropertyBrowser::componentRemoved(const QList<Object *> &, const QString &name)
 {
-    if (object != mObject)
-        return;
+    if (mObject && !mObject->hasComponent(name)) {
+        // remove and delete component properties
+        const auto componentProperties = mMapComponentPropertyField.take(name);
+        for (QtProperty *property : componentProperties) {
+            mMapComponentProperty.remove(property);
+            mPropertyToId.remove(property);
+            delete property;
+        }
 
-    // remove and delete component properties
-    const auto componentProperties = mMapComponentPropertyField.take(componentName);
-    for (QtProperty *property : componentProperties) {
-        mMapComponentProperty.remove(property);
-        mPropertyToId.remove(property);
-        delete property;
+        // remove and delete component group property
+        delete mComponents.take(name);
+
+    } else if (!Object::commonComponents(mDocument->currentObjects()).contains(name)) {
+        // object on current but no longer common, then it needs to be disabled
+        if (auto componentProperty = mComponents.value(name))
+            componentProperty->setEnabled(false);
     }
-
-    // remove and delete component group property
-    delete mComponents.take(componentName);
 }
 
 void PropertyBrowser::selectedObjectsChanged()
@@ -619,7 +623,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
         QUndoStack *undoStack = mDocument->undoStack();
         undoStack->push(new SetComponentProperty(
                             mDocument,
-                            mObject,
+                            mDocument->currentObjects(),
                             mMapComponentProperty.value(property),
                             property->propertyName(),
                             fromDisplayValue(val)));
@@ -2081,18 +2085,29 @@ void PropertyBrowser::addComponents()
 
     QScopedValueRollback<bool> updating(mUpdating, true);
 
+    QSet<QString> componentsInAllObjects =
+            Object::commonComponents(mDocument->currentObjects());
+
     QMapIterator<QString, Properties> it(mObject->components());
     while (it.hasNext()) {
         it.next();
         const QString &componentName = it.key();
-        if (mComponents.contains(componentName))
+
+        if (auto componentProperty = mComponents.value(componentName)) {
+            // If the component already exists, we may still need to enable it
+            componentProperty->setEnabled(componentsInAllObjects.contains(componentName));
             continue;
+        }
 
         QtProperty *component = mGroupManager->addProperty(componentName);
         mComponents.insert(componentName, component);
+        // TODO: This function is also called when additional components are
+        // added, in which case they should be inserted at the right position
+        // instead of added to the end.
         addProperty(component);
+        component->setEnabled(componentsInAllObjects.contains(componentName));
 
-        Properties &componentProperties = mObject->componentProperties(componentName);
+        const Properties &componentProperties = mObject->componentProperties(componentName);
 
         mMapComponentPropertyField.insert(componentName, QHash<QString, QtVariantProperty *>());
 
@@ -2119,9 +2134,17 @@ void PropertyBrowser::addComponents()
 void PropertyBrowser::updateComponents()
 {
     QScopedValueRollback<bool> updating(mUpdating, true);
-    const bool single = mDocument->currentObjects().size() == 1;
-    for (QtProperty *component : qAsConst(mComponents))
-        component->setEnabled(single);
+
+    // only enable component properties common to all selected objects
+    QSet<QString> componentsInAllObjects =
+            Object::commonComponents(mDocument->currentObjects());
+
+    QHashIterator<QString, QtProperty *> it(mComponents);
+    while (it.hasNext()) {
+        it.next();
+        QtProperty *component = it.value();
+        component->setEnabled(componentsInAllObjects.contains(it.key()));
+    }
 }
 
 void PropertyBrowser::onComponentPropertyChanged(Object *object,

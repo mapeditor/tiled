@@ -21,78 +21,96 @@ static Properties objectTypeProperties(const QString &name)
 }
 
 AddComponent::AddComponent(Document *document,
-                           Object *object,
+                           const QList<Object *> &objects,
                            const QString &name,
                            QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
-    , mObject(object)
+    , mObjects(objects)
     , mName(name)
     , mProperties(objectTypeProperties(mName))
 {
-    setText(QCoreApplication::translate("Undo Commands", "Add Component"));
+    setText(QCoreApplication::translate("Undo Commands", "Add Component (%1)")
+            .arg(name));
 }
 
 void AddComponent::undo()
 {
-    mDocument->removeComponent(mName, mObject);
+    mDocument->removeComponent(mObjects, mName);
 }
 
 void AddComponent::redo()
 {
-    mDocument->addComponent(mObject, mName, mProperties);
+    mDocument->addComponent(mObjects, mName, mProperties);
 }
 
 
 RemoveComponent::RemoveComponent(Document *document,
-                                 Object *object,
+                                 const QList<Object *> &objects,
                                  const QString &componentName,
                                  QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
-    , mObject(object)
+    , mObjects(objects)
     , mComponentName(componentName)
 {
-    setText(QCoreApplication::translate("Undo Commands", "Remove Component"));
+    setText(QCoreApplication::translate("Undo Commands", "Remove Component (%1)")
+            .arg(componentName));
+
+    mProperties.reserve(mObjects.size());
+    for (int i = 0; i < mObjects.size(); i++)
+        mProperties.append(mObjects[i]->componentProperties(mComponentName));
 }
 
 void RemoveComponent::undo()
 {
-    mDocument->addComponent(mObject, mComponentName, mProperties);
+    for (int i = 0; i < mObjects.size(); ++i)
+        mDocument->addComponent({ mObjects.at(i) }, mComponentName, mProperties.at(i));
 }
 
 void RemoveComponent::redo()
 {
-    mProperties = mObject->componentProperties(mComponentName);
-    mDocument->removeComponent(mComponentName, mObject);
+    mDocument->removeComponent(mObjects, mComponentName);
 }
 
 
 SetComponentProperty::SetComponentProperty(Document *document,
-                                           Object *object,
+                                           const QList<Object *> &objects,
                                            const QString &componentName,
                                            const QString &propertyName,
                                            QVariant value,
                                            QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
-    , mObject(object)
+    , mObjects(objects)
     , mComponentName(componentName)
     , mPropertyName(propertyName)
     , mNewValue(value)
 {
     setText(QCoreApplication::translate("Undo Commands", "Set Property"));
 
-    Properties &props = mObject->componentProperties(componentName);
-    mOldValue = props[propertyName];
+    mOldValues.reserve(objects.size());
+
+    for (int i = 0; i < objects.size(); ++i) {
+        Object *object = objects.at(i);
+        Properties &props = object->componentProperties(componentName);
+        mOldValues.append(props[mPropertyName]);
+    }
 }
 
 void SetComponentProperty::undo()
 {
-    mDocument->setComponentProperty(mObject, mComponentName, mPropertyName, mOldValue);
+    for (int i = 0; i < mObjects.size(); ++i) {
+        Object *object = mObjects.at(i);
+        QVariant oldValue = mOldValues.at(i);
+        mDocument->setComponentProperty(object, mComponentName, mPropertyName, oldValue);
+    }
 }
 
 void SetComponentProperty::redo()
 {
-    mDocument->setComponentProperty(mObject, mComponentName, mPropertyName, mNewValue);
+    for (int i = 0; i < mObjects.size(); ++i) {
+        Object *object = mObjects.at(i);
+        mDocument->setComponentProperty(object, mComponentName, mPropertyName, mNewValue);
+    }
 }

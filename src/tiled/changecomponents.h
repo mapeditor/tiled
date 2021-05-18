@@ -15,7 +15,7 @@ class AddComponent : public QUndoCommand
 {
 public:
     AddComponent(Document *document,
-                 Object *object,
+                 const QList<Object *> &objects,
                  const QString &name,
                  QUndoCommand *parent = nullptr);
 
@@ -24,7 +24,7 @@ public:
 
 private:
     Document *mDocument;
-    Object *mObject;
+    QList<Object *> mObjects;
     const QString mName;
     Properties mProperties;
 
@@ -34,7 +34,7 @@ class RemoveComponent : public QUndoCommand
 {
 public:
     RemoveComponent(Document *document,
-                    Object *object,
+                    const QList<Object *> &objects,
                     const QString &name,
                     QUndoCommand *parent = nullptr);
 
@@ -43,16 +43,16 @@ public:
 
 private:
     Document *mDocument;
-    Object *mObject;
+    QList<Object *> mObjects;
     const QString mComponentName;
-    Properties mProperties;
+    QList<Properties> mProperties;
 };
 
 class SetComponentProperty : public QUndoCommand
 {
 public:
     SetComponentProperty(Document *document,
-                         Object *object,
+                         const QList<Object *> &objects,
                          const QString &componentName,
                          const QString &propertyName,
                          QVariant value,
@@ -62,10 +62,10 @@ public:
     void redo() override;
 private:
     Document *mDocument;
-    Object *mObject;
+    QList<Object *> mObjects;
     const QString mComponentName;
     const QString mPropertyName;
-    QVariant mOldValue;
+    QList<QVariant> mOldValues;
     const QVariant mNewValue;
 };
 

@@ -533,14 +533,21 @@ void PropertiesDock::setupComponentMenu()
     if (!object)
         return;
 
+    const QList<Object *> objects = mDocument->currentObjects();
+
+    QSet<QString> assignedComponents = Object::commonComponents(objects);
+    QSet<QString> unassignedComponents = Object::commonComponents(objects, true);
+
     QStringList componentNames;
 
     for (const ObjectType &type : Object::objectTypes())
         componentNames.append(type.name);
 
-    for (auto it = object->components().keyBegin(); it != object->components().keyEnd(); ++it)
-        if (!componentNames.contains(*it))
-            componentNames.append(*it);
+    for (Object *obj : objects) {
+        for (auto it = obj->components().keyBegin(); it != obj->components().keyEnd(); ++it)
+            if (!componentNames.contains(*it))
+                componentNames.append(*it);
+    }
 
     componentNames.sort();
 
@@ -550,7 +557,10 @@ void PropertiesDock::setupComponentMenu()
         connect(addAction, &QAction::triggered, this, &PropertiesDock::onComponentChecked);
 
         addAction->setCheckable(true);
-        addAction->setChecked(object->hasComponent(name));
+        addAction->setChecked(assignedComponents.contains(name));
+
+        bool isEnabled = assignedComponents.contains(name) || unassignedComponents.contains(name);
+        addAction->setEnabled(isEnabled);
     }
 }
 
@@ -563,11 +573,11 @@ void PropertiesDock::onComponentChecked(bool checked)
 
         if (checked) {
             undoStack->push(new AddComponent(mDocument,
-                                             mDocument->currentObject(),
+                                             mDocument->currentObjects(),
                                              componentName));
         } else {
             undoStack->push(new RemoveComponent(mDocument,
-                                                mDocument->currentObject(),
+                                                mDocument->currentObjects(),
                                                 componentName));
         }
     }
