@@ -85,8 +85,6 @@ public:
      */
     Tile *tileAt(const QModelIndex &index) const;
 
-    int tileIdAt(const QModelIndex &index) const;
-
     /**
      * Returns the index of the given \a tile. The tile is required to be from
      * the tileset used by this model.

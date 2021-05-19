@@ -564,15 +564,6 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
         return;
     }
 
-    if (mRelocateTiles) {
-        const QPoint pos = event->pos();
-        const QModelIndex hoveredIndex = indexAt(pos);
-
-        Tile *tile = tilesetModel()->tileAt(hoveredIndex);
-        if (!tile)
-            return;
-    }
-
     QTableView::mousePressEvent(event);
 }
 

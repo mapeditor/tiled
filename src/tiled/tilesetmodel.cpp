@@ -115,7 +115,6 @@ QStringList TilesetModel::mimeTypes() const
 
 QMimeData *TilesetModel::mimeData(const QModelIndexList &indexes) const
 {
-    QMimeData *mimeData = new QMimeData;
     QByteArray encodedData;
 
 #if QT_VERSION < QT_VERSION_CHECK(6,0,0)
@@ -125,10 +124,14 @@ QMimeData *TilesetModel::mimeData(const QModelIndexList &indexes) const
 #endif
 
     for (const QModelIndex &index : indexes) {
-        if (index.isValid())
-            stream << tileIdAt(index);
+        if (auto tile = tileAt(index))
+            stream << tile->id();
     }
 
+    if (encodedData.isEmpty())
+        return nullptr;
+
+    QMimeData *mimeData = new QMimeData;
     mimeData->setData(QLatin1String(TILES_MIMETYPE), encodedData);
     return mimeData;
 }
@@ -187,13 +190,6 @@ Tile *TilesetModel::tileAt(const QModelIndex &index) const
     }
 
     return nullptr;
-}
-
-int TilesetModel::tileIdAt(const QModelIndex &index) const
-{
-    Q_ASSERT(index.isValid());
-    const int tileIndex = index.column() + index.row() * columnCount();
-    return mTileIds.at(tileIndex);
 }
 
 QModelIndex TilesetModel::tileIndex(const Tile *tile) const
