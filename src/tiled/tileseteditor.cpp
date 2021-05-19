@@ -661,6 +661,7 @@ void TilesetEditor::retranslateUi()
 
     mAddTiles->setText(tr("Add Tiles"));
     mRemoveTiles->setText(tr("Remove Tiles"));
+    mRelocateTiles->setText(tr("Rearrange Tiles"));
     mShowAnimationEditor->setText(tr("Tile Animation Editor"));
     mDynamicWrappingToggle->setText(tr("Dynamically Wrap Tiles"));
 
