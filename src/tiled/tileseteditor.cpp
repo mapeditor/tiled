@@ -277,16 +277,11 @@ void TilesetEditor::addDocument(Document *document)
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-    Tileset *tileset = tilesetDocument->tileset().data();
-    TilesetModel *tilesetModel = new TilesetModel(tileset, tilesetDocument, view);
+    TilesetModel *tilesetModel = new TilesetModel(tilesetDocument, view);
     view->setModel(tilesetModel);
 
     connect(tilesetDocument, &TilesetDocument::tileWangSetChanged,
             tilesetModel, &TilesetModel::tilesChanged);
-    connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
-            tilesetModel, &TilesetModel::tileChanged);
-    connect(tilesetDocument, &TilesetDocument::tileAnimationChanged,
-            tilesetModel, &TilesetModel::tileChanged);
 
     connect(tilesetDocument, &TilesetDocument::tilesetChanged,
             this, &TilesetEditor::tilesetChanged);

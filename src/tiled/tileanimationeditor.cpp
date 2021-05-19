@@ -364,8 +364,7 @@ void TileAnimationEditor::setTile(Tile *tile)
     if (tile) {
         mFrameListModel->setFrames(tile->tileset(), tile->frames());
 
-        TilesetModel *tilesetModel = new TilesetModel(tile->tileset(),
-                                                      mTilesetDocument,
+        TilesetModel *tilesetModel = new TilesetModel(mTilesetDocument,
                                                       mUi->tilesetView);
         mUi->tilesetView->setModel(tilesetModel);
     } else {

@@ -41,9 +41,9 @@ public:
     /**
      * Constructor.
      *
-     * @param tileset the initial tileset to display
+     * @param tilesetDocument the initial tileset to display
      */
-    TilesetModel(Tileset *tileset, TilesetDocument *tilesetDocument, QObject *parent = nullptr);
+    TilesetModel(TilesetDocument *tilesetDocument, QObject *parent = nullptr);
 
     /**
      * Returns the number of rows.
@@ -94,12 +94,7 @@ public:
     /**
      * Returns the tileset associated with this model.
      */
-    Tileset *tileset() const { return mTileset; }
-
-    /**
-     * Sets the tileset associated with this model.
-     */
-    void setTileset(Tileset *tileset);
+    Tileset *tileset() const;
 
     /**
      * Refreshes the list of tile IDs. Should be called after tiles are added
@@ -121,6 +116,7 @@ public slots:
      */
     void tilesChanged(const QList<Tile*> &tiles);
 
+private:
     /**
      * Should be called when anything changes about the given \a tile that
      * affects its display in any views on this model.
@@ -130,10 +126,8 @@ public slots:
      */
     void tileChanged(Tile *tile);
 
-private:
     void refreshTileIds();
 
-    Tileset *mTileset;
     TilesetDocument *mTilesetDocument;
     QList<int> mTileIds;
     int mColumnCountOverride = 0;
