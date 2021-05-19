@@ -248,7 +248,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     // Used for version 2
     QVariantList tilesVariant;
 
-    for (const Tile *tile  : tileset.tiles()) {
+    for (const Tile *tile : tileset.tiles()) {
         const Properties properties = tile->properties();
         QVariantMap tileVariant;
 

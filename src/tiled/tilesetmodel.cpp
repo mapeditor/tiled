@@ -134,8 +134,8 @@ QMimeData *TilesetModel::mimeData(const QModelIndexList &indexes) const
 }
 
 bool TilesetModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
-                  int row, int column,
-                  const QModelIndex &parent)
+                                int row, int column,
+                                const QModelIndex &parent)
 {
     Q_UNUSED(row);
     Q_UNUSED(column);
@@ -152,20 +152,17 @@ bool TilesetModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
     QDataStream stream(&encodedData, QDataStream::ReadOnly);
 #endif
 
+    // assume there is at most one tile selected
     int sourceId;
+    stream >> sourceId;
 
-    while (!stream.atEnd()) {
-        stream >> sourceId;
-
-        // assume there is at most one tile selected
-        break;
-    }
+    if (stream.status() != QDataStream::Ok)
+        return false;
 
     Tile *sourceTile = mTileset->findOrCreateTile(sourceId);
     Tile *destinationTile = tileAt(parent);
-    int destinationIndex = destinationTile
-                         ? mTileIds.indexOf(destinationTile->id())
-                         : mTileIds.size() - 1;
+    int destinationIndex = destinationTile ? mTileIds.indexOf(destinationTile->id())
+                                           : mTileIds.size() - 1;
 
     beginResetModel();
     mTilesetDocument->undoStack()->push(new RelocateTile(mTilesetDocument,
@@ -204,6 +201,11 @@ QModelIndex TilesetModel::tileIndex(const Tile *tile) const
     Q_ASSERT(tile->tileset() == mTileset);
 
     const int columnCount = TilesetModel::columnCount();
+
+    // Can't yield a valid index with column count <= 0
+    if (columnCount <= 0)
+        return QModelIndex();
+
     const int tileIndex = mTileIds.indexOf(tile->id());
     // todo: this assertion was hit when testing tileset image size changes
     Q_ASSERT(tileIndex != -1);
@@ -286,7 +288,8 @@ void TilesetModel::tileChanged(Tile *tile)
 void TilesetModel::refreshTileIds()
 {
     mTileIds.clear();
-    mTileIds = mTileset->sortedTileIds();
+    for (Tile *tile : mTileset->tiles())
+        mTileIds.append(tile->id());
 }
 
 #include "moc_tilesetmodel.cpp"

@@ -410,8 +410,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     }
 
     // Write the properties for those tiles that have them
-    for (int id : tileset.sortedTileIds()) {
-        const Tile *tile = tileset.findTile(id);
+    for (const Tile *tile : tileset.tiles()) {
         if (imageSource.isEmpty() || includeTile(tile)) {
             w.writeStartElement(QStringLiteral("tile"));
             w.writeAttribute(QStringLiteral("id"), QString::number(tile->id()));

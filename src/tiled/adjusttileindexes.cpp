@@ -224,17 +224,15 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
                       adjustAnimationFrames(fromTile->frames()));
     };
 
-    QMapIterator<int, Tile *> iterator{tileset.tiles()};
-
     if (newColumnCount > oldColumnCount) {
         // Increasing column count means information is copied to higher tiles,
         // so we need to iterate backwards.
-        iterator.toBack();
-        while (iterator.hasPrevious())
-            moveMetaData(iterator.previous().value());
+        const auto &tiles = tileset.tiles();
+        for (auto it = tiles.rbegin(); it != tiles.rend(); ++it)
+            moveMetaData(*it);
     } else {
-        while (iterator.hasNext())
-            moveMetaData(iterator.next().value());
+        for (Tile *tile : tileset.tiles())
+            moveMetaData(tile);
     }
 
     // Reset meta data on tiles that nothing was copied to

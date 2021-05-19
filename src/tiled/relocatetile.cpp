@@ -28,18 +28,18 @@
 namespace Tiled {
 
 RelocateTile::RelocateTile(TilesetDocument *tilesetDocument,
-                     Tile *tile,
-                     int location)
+                           Tile *tile,
+                           int location)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Relocate Tile"))
     , mTilesetDocument(tilesetDocument)
     , mTile(tile)
     , mLocation(location)
 {
-    mPrevLocation = mTilesetDocument->tileset()->findTileLocation(tile->id());
+    mPrevLocation = mTilesetDocument->tileset()->findTileLocation(tile);
 }
 
-void RelocateTile::relocate(const Tile *tile, int location)
+void RelocateTile::relocate(Tile *tile, int location)
 {
     mTilesetDocument->relocateTile(tile, location);
 }

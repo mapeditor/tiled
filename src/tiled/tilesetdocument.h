@@ -99,7 +99,7 @@ public:
 
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile*> &tiles);
-    void relocateTile(const Tile *tile, int location);
+    void relocateTile(Tile *tile, int location);
 
     const QList<Tile*> &selectedTiles() const;
     void setSelectedTiles(const QList<Tile*> &selectedTiles);

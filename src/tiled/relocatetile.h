@@ -44,14 +44,14 @@ public:
      * @param location        the target location
      */
     RelocateTile(TilesetDocument *tilesetDocument,
-              Tile *tile,
-              int location);
+                 Tile *tile,
+                 int location);
 
     void undo() { relocate(mTile, mPrevLocation); }
     void redo() { relocate(mTile, mLocation); }
 
 private:
-    void relocate(const Tile *tile, int location);
+    void relocate(Tile *tile, int location);
 
     TilesetDocument *mTilesetDocument;
     Tile *mTile;
