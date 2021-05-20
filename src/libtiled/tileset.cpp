@@ -673,7 +673,7 @@ SharedTileset Tileset::clone() const
         const int id = tile->id();
         Tile *clonedTile = tile->clone(c.data());
 
-        c->mTilesById.insert(id, tile->clone(c.data()));
+        c->mTilesById.insert(id, clonedTile);
         c->mTiles.append(clonedTile);
     }
 
