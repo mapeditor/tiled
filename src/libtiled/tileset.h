@@ -136,6 +136,7 @@ public:
     QSize gridSize() const;
     void setGridSize(QSize gridSize);
 
+    const QMap<int, Tile*> &tilesById() const;
     const QList<Tile*> &tiles() const;
     inline Tile *findTile(int id) const;
     Tile *tileAt(int id) const { return findTile(id); } // provided for Python
@@ -421,6 +422,11 @@ inline QSize Tileset::gridSize() const
 inline void Tileset::setGridSize(QSize gridSize)
 {
     mGridSize = gridSize;
+}
+
+inline const QMap<int, Tile *> &Tileset::tilesById() const
+{
+    return mTilesById;
 }
 
 /**
