@@ -192,6 +192,8 @@ public:
     void deleteTile(int id);
     void relocateTile(Tile *tile, int location);
 
+    bool anyTileOutOfOrder() const;
+
     void setNextTileId(int nextId);
     int nextTileId() const;
     int takeNextTileId();

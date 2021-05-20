@@ -382,9 +382,12 @@ void LuaWriter::writeTileset(const Tileset &tileset,
 
     mWriter.writeKeyAndValue("tilecount", tileset.tileCount());
     mWriter.writeStartTable("tiles");
+
+    const bool includeAllTiles = tileset.anyTileOutOfOrder();
+
     for (const Tile *tile : tileset.tiles()) {
         // For brevity only write tiles with interesting properties
-        if (!includeTile(tile))
+        if (!includeAllTiles && !includeTile(tile))
             continue;
 
         mWriter.writeStartTable();

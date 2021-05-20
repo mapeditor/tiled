@@ -248,6 +248,8 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     // Used for version 2
     QVariantList tilesVariant;
 
+    const bool includeAllTiles = mVersion != 1 && tileset.anyTileOutOfOrder();
+
     for (const Tile *tile : tileset.tiles()) {
         const Properties properties = tile->properties();
         QVariantMap tileVariant;
@@ -288,7 +290,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
             tileVariant[QStringLiteral("animation")] = frameVariants;
         }
 
-        if (!tileVariant.empty()) {
+        if (includeAllTiles || !tileVariant.empty()) {
             if (mVersion == 1) {
                 tilesVariantMap[QString::number(tile->id())] = tileVariant;
             } else {

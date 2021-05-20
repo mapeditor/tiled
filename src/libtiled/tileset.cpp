@@ -546,6 +546,17 @@ void Tileset::relocateTile(Tile *tile, int location)
     mTiles.move(mTiles.indexOf(tile), location);
 }
 
+bool Tileset::anyTileOutOfOrder() const
+{
+    int tileId = 0;
+    for (const Tile *tile : mTiles) {
+        if (tile->id() != tileId)
+            return true;
+        ++tileId;
+    }
+    return false;
+}
+
 /**
  * Sets the \a image to be used for the tile with the given \a id.
  *
