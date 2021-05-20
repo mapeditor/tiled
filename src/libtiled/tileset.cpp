@@ -239,7 +239,7 @@ bool Tileset::loadFromImage(const QImage &image, const QUrl &source)
             } else {
                 auto tile = new Tile(tilePixmap, tileNum, this);
                 mTilesById.insert(tileNum, tile);
-                mTiles.append(tile);
+                mTiles.insert(tileNum, tile);
             }
 
             ++tileNum;
@@ -325,7 +325,7 @@ bool Tileset::loadImage()
         } else {
             auto tile = new Tile(tiles.at(tileNum), tileNum, this);
             mTilesById.insert(tileNum, tile);
-            mTiles.append(tile);
+            mTiles.insert(tileNum, tile);
         }
     }
 
