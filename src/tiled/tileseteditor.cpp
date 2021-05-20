@@ -63,6 +63,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QScopedValueRollback>
 #include <QStackedWidget>
 #include <QUndoGroup>
 
@@ -309,6 +310,9 @@ void TilesetEditor::removeDocument(Document *document)
     Q_ASSERT(tilesetDocument);
     Q_ASSERT(mViewForTileset.contains(tilesetDocument));
 
+    if (tilesetDocument == mCurrentTilesetDocument)
+        setCurrentDocument(nullptr);
+
     tilesetDocument->disconnect(this);
 
     saveDocumentState(tilesetDocument);
@@ -521,9 +525,8 @@ void TilesetEditor::selectionChanged()
         if (Tile *tile = model->tileAt(index))
             selectedTiles.append(tile);
 
-    mSettingSelectedTiles = true;
+    QScopedValueRollback<bool> settingSelectedTiles(mSettingSelectedTiles, true);
     mCurrentTilesetDocument->setSelectedTiles(selectedTiles);
-    mSettingSelectedTiles = false;
 }
 
 void TilesetEditor::currentChanged(const QModelIndex &index)

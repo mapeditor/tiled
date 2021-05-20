@@ -67,7 +67,7 @@ class WangBrush;
 class WangDock;
 class Zoomable;
 
-class MapEditor : public Editor
+class MapEditor final : public Editor
 {
     Q_OBJECT
 

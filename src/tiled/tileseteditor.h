@@ -51,7 +51,7 @@ class UndoDock;
 class WangDock;
 class Zoomable;
 
-class TilesetEditor : public Editor
+class TilesetEditor final : public Editor
 {
     Q_OBJECT
 
