@@ -781,6 +781,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
 
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->showAnimationEditor());
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->relocateTilesAction());
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->editCollisionAction());
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->editWangSetsAction());
     mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);

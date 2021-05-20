@@ -161,6 +161,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16/remove.png")));
     mRelocateTiles->setIcon(QIcon(QLatin1String(":images/22/stock-tool-move-22.png")));
     mRelocateTiles->setCheckable(true);
+    mRelocateTiles->setIconVisibleInMenu(false);
     mShowAnimationEditor->setIcon(QIcon(QLatin1String(":images/24/animation-edit.png")));
     mShowAnimationEditor->setCheckable(true);
     mShowAnimationEditor->setIconVisibleInMenu(false);
