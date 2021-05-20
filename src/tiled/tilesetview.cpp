@@ -289,6 +289,7 @@ TilesetView::TilesetView(QWidget *parent)
     setItemDelegate(new TileDelegate(this, this));
     setShowGrid(false);
     setTabKeyNavigation(false);
+    setDropIndicatorShown(true);
 
     QHeaderView *hHeader = horizontalHeader();
     QHeaderView *vHeader = verticalHeader();
@@ -478,6 +479,28 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
     return QTableView::keyPressEvent(event);
 }
 
+void TilesetView::setRelocateTiles(bool enabled)
+{
+    if (mRelocateTiles == enabled)
+        return;
+
+    mRelocateTiles = enabled;
+
+    QModelIndex currentIndex = selectionModel()->currentIndex();
+    selectionModel()->setCurrentIndex(currentIndex, QItemSelectionModel::Clear);
+
+    if (enabled) {
+        setSelectionMode(QAbstractItemView::SingleSelection);
+        setDragDropMode(QTableView::InternalMove);
+    } else {
+        setSelectionMode(QAbstractItemView::ExtendedSelection);
+        setDragDropMode(QTableView::NoDragDrop);
+    }
+
+    setMouseTracking(true);
+    viewport()->update();
+}
+
 void TilesetView::setEditWangSet(bool enabled)
 {
     if (mEditWangSet == enabled)
@@ -660,7 +683,6 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
     }
 
     QTableView::mouseReleaseEvent(event);
-    return;
 }
 
 void TilesetView::leaveEvent(QEvent *event)

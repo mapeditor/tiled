@@ -132,9 +132,6 @@ private:
     void tilesetChanged(Tileset *tileset);
     void tilesetFileNameChanged(const QString &fileName);
 
-    void tileImageSourceChanged(Tile *tile);
-    void tileAnimationChanged(Tile *tile);
-
     void replaceTileset();
     void replaceTilesetAt(int index);
     void removeTileset();
@@ -170,7 +167,7 @@ private:
     void createTilesetView(int index, TilesetDocument *tilesetDocument);
     void deleteTilesetView(int index);
     void moveTilesetView(int from, int to);
-    void setupTilesetModel(TilesetView *view, Tileset *tileset);
+    void setupTilesetModel(TilesetView *view, TilesetDocument *tilesetDocument);
 
     MapDocument *mMapDocument = nullptr;
 

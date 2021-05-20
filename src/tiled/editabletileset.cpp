@@ -64,7 +64,7 @@ EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
 
 EditableTileset::~EditableTileset()
 {
-    detachTiles(tileset()->tiles().values());
+    detachTiles(tileset()->tiles());
     detachWangSets(tileset()->wangSets());
 
     EditableManager::instance().mEditableTilesets.remove(tileset());

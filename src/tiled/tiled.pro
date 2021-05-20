@@ -210,6 +210,7 @@ SOURCES += aboutdialog.cpp \
     propertybrowser.cpp \
     raiselowerhelper.cpp \
     regionvaluetype.cpp \
+    relocatetile.cpp \
     reparentlayers.cpp \
     replacetemplate.cpp \
     replacetileset.cpp \
@@ -447,6 +448,7 @@ HEADERS += aboutdialog.h \
     randompicker.h \
     rangeset.h \
     regionvaluetype.h \
+    relocatetile.h \
     reparentlayers.h \
     replacetemplate.h \
     replacetileset.h \
