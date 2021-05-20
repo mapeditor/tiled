@@ -1,5 +1,5 @@
 /*
- * relocatetile.cpp
+ * relocatetile.h
  * Copyright 2021, José Miguel Sánchez García <soy.jmi2k@gmail.com>
  *
  * This file is part of Tiled.
@@ -18,30 +18,43 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "relocatetile.h"
+#pragma once
 
-#include "changeevents.h"
-#include "tilesetdocument.h"
+#include "undocommands.h"
 
-#include <QCoreApplication>
+#include <QUndoCommand>
 
 namespace Tiled {
 
-RelocateTile::RelocateTile(TilesetDocument *tilesetDocument,
-                           Tile *tile,
-                           int location)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Relocate Tile"))
-    , mTilesetDocument(tilesetDocument)
-    , mTile(tile)
-    , mLocation(location)
-    , mPrevLocation(tilesetDocument->tileset()->findTileLocation(tile))
-{
-}
+class Tile;
 
-void RelocateTile::relocate(Tile *tile, int location)
+class TilesetDocument;
+
+/**
+ * A command that changes the location of a tile on the tileset.
+ */
+class RelocateTiles : public QUndoCommand
 {
-    mTilesetDocument->relocateTile(tile, location);
-}
+public:
+    /**
+     * Constructor.
+     *
+     * @param tilesetDocument the tileset document that's being edited
+     * @param tile            the source tile
+     * @param location        the target location
+     */
+    RelocateTiles(TilesetDocument *tilesetDocument,
+                  const QList<Tile *> &tiles,
+                  int location);
+
+    void undo();
+    void redo();
+
+private:
+    TilesetDocument * const mTilesetDocument;
+    const QList<Tile *> mTiles;
+    const int mLocation;
+    QList<int> mPrevLocations;
+};
 
 } // namespace Tiled

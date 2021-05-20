@@ -539,11 +539,22 @@ void Tileset::deleteTile(int id)
 }
 
 /**
- * Moves the \a tile from its current position the given \a position.
+ * Moves the \a tiles from their current position the given \a position.
+ *
+ * Returns the previous locations of the moved tiles.
  */
-void Tileset::relocateTile(Tile *tile, int location)
+QList<int> Tileset::relocateTiles(const QList<Tile *> &tiles, int location)
 {
-    mTiles.move(mTiles.indexOf(tile), location);
+    QList<int> prevLocations;
+    for (Tile *tile : tiles) {
+        int fromIndex = mTiles.indexOf(tile);
+        mTiles.move(fromIndex, location);
+        if (fromIndex > location)
+            ++location; // insert the next tile after the previous one
+
+        prevLocations.append(fromIndex);
+    }
+    return prevLocations;
 }
 
 bool Tileset::anyTileOutOfOrder() const

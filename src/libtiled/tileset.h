@@ -191,7 +191,7 @@ public:
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile *> &tiles);
     void deleteTile(int id);
-    void relocateTile(Tile *tile, int location);
+    QList<int> relocateTiles(const QList<Tile *> &tiles, int location);
 
     bool anyTileOutOfOrder() const;
 

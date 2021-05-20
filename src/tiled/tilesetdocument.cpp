@@ -349,10 +349,14 @@ void TilesetDocument::removeTiles(const QList<Tile *> &tiles)
     emit tilesetChanged(mTileset.data());
 }
 
-void TilesetDocument::relocateTile(Tile *tile, int location)
+/**
+ * \sa Tileset::relocateTiles
+ */
+QList<int> TilesetDocument::relocateTiles(const QList<Tile *> &tiles, int location)
 {
-    mTileset->relocateTile(tile, location);
+    const auto prevLocations = mTileset->relocateTiles(tiles, location);
     emit tilesetChanged(mTileset.data());
+    return prevLocations;
 }
 
 void TilesetDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)

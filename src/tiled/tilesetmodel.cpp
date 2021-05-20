@@ -22,7 +22,7 @@
 #include "tilesetmodel.h"
 
 #include "map.h"
-#include "relocatetile.h"
+#include "relocatetiles.h"
 #include "tile.h"
 #include "tiled.h"
 #include "tileset.h"
@@ -159,24 +159,28 @@ bool TilesetModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
     QDataStream stream(&encodedData, QDataStream::ReadOnly);
 #endif
 
-    // assume there is at most one tile selected
-    int sourceId;
-    stream >> sourceId;
+    QList<Tile*> sourceTiles;
 
-    if (stream.status() != QDataStream::Ok)
-        return false;
+    while (!stream.atEnd()) {
+        int sourceId;
+        stream >> sourceId;
 
-    Tile *sourceTile = tileset()->findOrCreateTile(sourceId);
-    Tile *destinationTile = tileAt(parent);
-    int destinationIndex = destinationTile ? mTileIds.indexOf(destinationTile->id())
-                                           : mTileIds.size() - 1;
+        if (stream.status() != QDataStream::Ok)
+            break;
 
-    beginResetModel();
-    mTilesetDocument->undoStack()->push(new RelocateTile(mTilesetDocument,
-                                                         sourceTile,
-                                                         destinationIndex));
-    refreshTileIds();
-    endResetModel();
+        if (Tile *sourceTile = tileset()->findTile(sourceId))
+            sourceTiles.append(sourceTile);
+    }
+
+    if (!sourceTiles.isEmpty()) {
+        Tile *destinationTile = tileAt(parent);
+        int destinationIndex = destinationTile ? mTileIds.indexOf(destinationTile->id())
+                                               : mTileIds.size() - 1;
+
+        mTilesetDocument->undoStack()->push(new RelocateTiles(mTilesetDocument,
+                                                              sourceTiles,
+                                                              destinationIndex));
+    }
 
     return true;
 }
