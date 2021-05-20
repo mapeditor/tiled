@@ -1,6 +1,6 @@
 /*
  * relocatetile.h
- * Copyright 2015, Alexander "theHacker" Münch <git@thehacker.biz>
+ * Copyright 2021, José Miguel Sánchez García <soy.jmi2k@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -53,10 +53,10 @@ public:
 private:
     void relocate(Tile *tile, int location);
 
-    TilesetDocument *mTilesetDocument;
-    Tile *mTile;
-    int mLocation;
-    int mPrevLocation;
+    TilesetDocument * const mTilesetDocument;
+    Tile * const mTile;
+    const int mLocation;
+    const int mPrevLocation;
 };
 
 } // namespace Tiled

@@ -1,6 +1,6 @@
 /*
  * relocatetile.cpp
- * Copyright 2015, Alexander "theHacker" Münch <git@thehacker.biz>
+ * Copyright 2021, José Miguel Sánchez García <soy.jmi2k@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -35,8 +35,8 @@ RelocateTile::RelocateTile(TilesetDocument *tilesetDocument,
     , mTilesetDocument(tilesetDocument)
     , mTile(tile)
     , mLocation(location)
+    , mPrevLocation(tilesetDocument->tileset()->findTileLocation(tile))
 {
-    mPrevLocation = mTilesetDocument->tileset()->findTileLocation(tile);
 }
 
 void RelocateTile::relocate(Tile *tile, int location)
