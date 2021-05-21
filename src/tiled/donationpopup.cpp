@@ -37,6 +37,8 @@ using namespace Tiled;
 DonationPopup::DonationPopup(QWidget *parent)
     : PopupWidget(parent)
 {
+    setTint(Qt::green);
+
     auto label = new QLabel(QCoreApplication::translate("DonationDialog", "Please consider supporting Tiled development with a small monthly donation."));
 
     auto visitDonatePage = new QPushButton(QCoreApplication::translate("DonationDialog", "&Donate ↗"));

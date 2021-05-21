@@ -65,6 +65,8 @@
 
 namespace Tiled {
 
+static Preference<QStringList> scriptingEnabledProjects { "Scripting/EnabledProjects" };
+
 ScriptManager *ScriptManager::mInstance;
 
 ScriptManager &ScriptManager::instance()
@@ -351,11 +353,21 @@ void ScriptManager::refreshExtensionsPaths()
         extensionsPaths.append(mExtensionsPath);
 
     // Add extensions path from project
-    auto &projectExtensionsPath = ProjectManager::instance()->project().mExtensionsPath;
-    if (!projectExtensionsPath.isEmpty()) {
-        const QFileInfo info(projectExtensionsPath);
-        if (info.exists() && info.isDir())
-            extensionsPaths.append(projectExtensionsPath);
+    bool projectExtensionsSuppressed = false;
+    const Project &project = ProjectManager::instance()->project();
+    if (!project.mExtensionsPath.isEmpty()) {
+        const QFileInfo info(project.mExtensionsPath);
+        if (info.exists() && info.isDir()) {
+            if (scriptingEnabledProjects.get().contains(project.fileName(), Qt::CaseInsensitive))
+                extensionsPaths.append(project.mExtensionsPath);
+            else
+                projectExtensionsSuppressed = true;
+        }
+    }
+
+    if (mProjectExtensionsSuppressed != projectExtensionsSuppressed) {
+        mProjectExtensionsSuppressed = projectExtensionsSuppressed;
+        emit projectExtensionsSuppressedChanged(projectExtensionsSuppressed);
     }
 
     extensionsPaths.sort();
@@ -369,6 +381,21 @@ void ScriptManager::refreshExtensionsPaths()
     if (mEngine) {
         Tiled::INFO(tr("Extensions paths changed: %1").arg(mExtensionsPaths.join(QLatin1String(", "))));
         reset();
+    }
+}
+
+void ScriptManager::enableProjectExtensions()
+{
+    const Project &project = ProjectManager::instance()->project();
+    const QString &fileName = project.fileName();
+    if (!fileName.isEmpty()) {
+        QStringList projects = scriptingEnabledProjects;
+        if (!projects.contains(fileName, Qt::CaseInsensitive)) {
+            projects.append(fileName);
+            scriptingEnabledProjects = projects;
+
+            refreshExtensionsPaths();
+        }
     }
 }
 

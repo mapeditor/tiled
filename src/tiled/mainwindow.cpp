@@ -1471,6 +1471,9 @@ void MainWindow::saveProjectAs()
     session.setFileName(Session::defaultFileNameForProject(fileName));
     session.setProject(fileName);
 
+    // Automatically enable extensions for new projects
+    ScriptManager::instance().enableProjectExtensions();
+
     prefs->addRecentProject(fileName);
     prefs->setLastSession(session.fileName());
 
@@ -1510,6 +1513,7 @@ bool MainWindow::switchProject(Project project)
     restoreSession();
     updateWindowTitle();
     updateActions();
+
     return true;
 }
 
@@ -1528,6 +1532,9 @@ void MainWindow::restoreSession()
     WorldManager::instance().loadWorlds(mLoadedWorlds);
 
     mProjectDock->setExpandedPaths(session.expandedProjectPaths);
+
+    if (ScriptManager::instance().projectExtensionsSuppressed())
+        openProjectExtensionsPopup();
 }
 
 void MainWindow::projectProperties()
@@ -1598,15 +1605,15 @@ void MainWindow::openCrashReporterPopup()
     auto noButton = new QPushButton(tr("&No"));
 
     auto layout = new QHBoxLayout;
-    layout->addWidget(label, 1);
+    layout->addWidget(label);
     layout->addSpacing(Utils::dpiScaled(10));
     layout->addWidget(noButton);
     layout->addWidget(yesButton);
     const auto margin = Utils::dpiScaled(5);
     layout->setContentsMargins(margin * 2, margin, margin, margin);
 
-    auto frame = new PopupWidget(this);
-    frame->setLayout(layout);
+    auto popup = new PopupWidget(this);
+    popup->setLayout(layout);
 
     connect(label, &QLabel::linkActivated, [] (const QString &link) {
         QDesktopServices::openUrl(QUrl(link));
@@ -1617,13 +1624,51 @@ void MainWindow::openCrashReporterPopup()
     connect(noButton, &QPushButton::clicked, [] {
         Sentry::instance()->setUserConsent(Sentry::ConsentRevoked);
     });
-    connect(Sentry::instance(), &Sentry::userConsentChanged, frame, [frame] (Sentry::UserConsent consent) {
+    connect(Sentry::instance(), &Sentry::userConsentChanged, popup, [popup] (Sentry::UserConsent consent) {
         if (consent != Sentry::ConsentUnknown)
-            frame->deleteLater();
+            popup->deleteLater();
     });
 
-    showPopup(frame);
+    showPopup(popup);
 #endif
+}
+
+void MainWindow::openProjectExtensionsPopup()
+{
+    if (mPopupWidget)
+        mPopupWidget->close();
+
+    auto label = new QLabel;
+    label->setTextFormat(Qt::RichText);
+    label->setText(tr("The current project contains <a href=\"https://doc.mapeditor.org/en/stable/reference/scripting/\">scripted extensions</a>.<br><i>Make sure you trust those extensions before enabling them!</i>"));
+
+    auto enableButton = new QPushButton(tr("&Enable Extensions"));
+    auto closeButton = new QPushButton(tr("&Close"));
+
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->addWidget(label);
+    layout->addSpacing(Utils::dpiScaled(10));
+    layout->addWidget(enableButton);
+    layout->addWidget(closeButton);
+
+    auto popup = new PopupWidget(this);
+    popup->setLayout(layout);
+    popup->setTint(Qt::yellow);
+
+    connect(label, &QLabel::linkActivated, [] (const QString &link) {
+        QDesktopServices::openUrl(QUrl(link));
+    });
+    connect(enableButton, &QPushButton::clicked, [popup] {
+        ScriptManager::instance().enableProjectExtensions();
+        popup->close();
+    });
+    connect(closeButton, &QPushButton::clicked, [popup] {
+        popup->close();
+    });
+    connect(&ScriptManager::instance(), &ScriptManager::projectExtensionsSuppressedChanged,
+            popup, [popup] (bool suppressed) { if (!suppressed) popup->close(); });
+
+    showPopup(popup);
 }
 
 void MainWindow::showPopup(QWidget *widget)
@@ -1652,9 +1697,10 @@ void MainWindow::updatePopupGeometry(QSize size)
     if (!mPopupWidget)
         return;
     const auto popupSizeHint = mPopupWidget->sizeHint();
-    mPopupWidget->setGeometry(size.width() - popupSizeHint.width(),
+    const auto popupWidth = qMin(popupSizeHint.width(), size.width());
+    mPopupWidget->setGeometry(size.width() - popupWidth,
                               0 - popupSizeHint.height() * mPopupWidgetShowProgress,
-                              popupSizeHint.width(),
+                              popupWidth,
                               popupSizeHint.height());
 }
 

@@ -23,6 +23,7 @@
 #include "stylehelper.h"
 
 #include <QApplication>
+#include <QGraphicsDropShadowEffect>
 
 namespace Tiled {
 
@@ -43,18 +44,34 @@ PopupWidget::PopupWidget(QWidget *parent)
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
     setAutoFillBackground(true);
 
-    // Use a slightly highlighted background color and keep it updated
-    auto updateBackgroundColor = [this] {
-        QPalette pal = QApplication::palette();
-        auto highlight = pal.highlight().color();
-        pal.setColor(QPalette::Window, mergedColors(pal.window().color(), highlight, 75));
-        pal.setColor(QPalette::Link, pal.link().color());
-        pal.setColor(QPalette::LinkVisited, pal.linkVisited().color());
-        setPalette(pal);
-    };
     updateBackgroundColor();
     connect(StyleHelper::instance(), &StyleHelper::styleApplied,
-            this, updateBackgroundColor);
+            this, &PopupWidget::updateBackgroundColor);
+
+    auto dropShadow = new QGraphicsDropShadowEffect;
+    dropShadow->setBlurRadius(10.0);
+    dropShadow->setOffset(2.5);
+    dropShadow->setColor(QColor(0, 0, 0, 64));
+    setGraphicsEffect(dropShadow);
+}
+
+void PopupWidget::setTint(const QColor &tint)
+{
+    if (mTint == tint)
+        return;
+
+    mTint = tint;
+    updateBackgroundColor();
+}
+
+void PopupWidget::updateBackgroundColor()
+{
+    QPalette pal = QApplication::palette();
+    auto tint = mTint.isValid() ? mTint : pal.highlight().color();
+    pal.setColor(QPalette::Window, mergedColors(pal.window().color(), tint, 75));
+    pal.setColor(QPalette::Link, pal.link().color());
+    pal.setColor(QPalette::LinkVisited, pal.linkVisited().color());
+    setPalette(pal);
 }
 
 } // namespace Tiled

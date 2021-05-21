@@ -141,6 +141,7 @@ private:
     void delete_();
     void openPreferences();
     void openCrashReporterPopup();
+    void openProjectExtensionsPopup();
 
     void showPopup(QWidget *widget);
     void updatePopupGeometry(QSize size);

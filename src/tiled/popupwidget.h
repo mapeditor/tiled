@@ -30,6 +30,13 @@ class PopupWidget : public QFrame
 
 public:
     explicit PopupWidget(QWidget *parent = nullptr);
+
+    void setTint(const QColor &tint);
+
+private:
+    void updateBackgroundColor();
+
+    QColor mTint;
 };
 
 } // namespace Tiled
