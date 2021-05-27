@@ -36,7 +36,7 @@
 #include "commandmanager.h"
 #include "consoledock.h"
 #include "documentmanager.h"
-#include "donationdialog.h"
+#include "donationpopup.h"
 #include "exportasimagedialog.h"
 #include "exporthelper.h"
 #include "issuescounter.h"
@@ -202,7 +202,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
     return ExportDetails<Format>(chosenFormat, exportToFileName);
 }
 
-void bindToOption(QAction *checkableAction, SessionOption<bool> &option)
+static void bindToOption(QAction *checkableAction, SessionOption<bool> &option)
 {
     checkableAction->setChecked(option);    // Set initial state
 
@@ -687,7 +687,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mUi->actionDocumentation, &QAction::triggered, this, &MainWindow::openDocumentation);
     connect(mUi->actionForum, &QAction::triggered, this, &MainWindow::openForum);
-    connect(mUi->actionDonate, &QAction::triggered, this, &MainWindow::showDonationDialog);
+    connect(mUi->actionDonate, &QAction::triggered, this, [] {
+        QDesktopServices::openUrl(QUrl(QLatin1String("https://www.mapeditor.org/donate")));
+    });
     connect(mUi->actionAbout, &QAction::triggered, this, &MainWindow::aboutTiled);
     connect(mUi->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
 
@@ -873,13 +875,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(preferences, &Preferences::recentProjectsChanged, this, &MainWindow::updateRecentProjectsMenu);
 
     QTimer::singleShot(500, this, [this,preferences] {
-        if (preferences->shouldShowDonationDialog())
-            showDonationDialog();
-
 #ifdef TILED_SENTRY
         if (Sentry::instance()->userConsent() == Sentry::ConsentUnknown)
             openCrashReporterPopup();
 #endif
+
+        if (preferences->shouldShowDonationReminder())
+            showDonationPopup();
     });
 }
 
@@ -1582,18 +1584,6 @@ void MainWindow::openPreferences()
     mPreferencesDialog->raise();
 }
 
-#ifdef TILED_SENTRY
-static QColor mergedColors(const QColor &colorA, const QColor &colorB, int factor = 50)
-{
-    constexpr int maxFactor = 100;
-    QColor tmp = colorA;
-    tmp.setRed((tmp.red() * factor) / maxFactor + (colorB.red() * (maxFactor - factor)) / maxFactor);
-    tmp.setGreen((tmp.green() * factor) / maxFactor + (colorB.green() * (maxFactor - factor)) / maxFactor);
-    tmp.setBlue((tmp.blue() * factor) / maxFactor + (colorB.blue() * (maxFactor - factor)) / maxFactor);
-    return tmp;
-}
-#endif
-
 void MainWindow::openCrashReporterPopup()
 {
 #ifdef TILED_SENTRY
@@ -1615,24 +1605,8 @@ void MainWindow::openCrashReporterPopup()
     const auto margin = Utils::dpiScaled(5);
     layout->setContentsMargins(margin * 2, margin, margin, margin);
 
-    auto frame = new QFrame(this);
-    frame->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
-    frame->setAutoFillBackground(true);
+    auto frame = new PopupWidget(this);
     frame->setLayout(layout);
-    frame->setVisible(true);
-
-    // Use a slightly highlighted background color and keep it updated
-    auto updateBackgroundColor = [frame] {
-        QPalette pal = QApplication::palette();
-        auto highlight = pal.highlight().color();
-        pal.setColor(QPalette::Window, mergedColors(pal.window().color(), highlight, 75));
-        pal.setColor(QPalette::Link, pal.link().color());
-        pal.setColor(QPalette::LinkVisited, pal.linkVisited().color());
-        frame->setPalette(pal);
-    };
-    updateBackgroundColor();
-    connect(StyleHelper::instance(), &StyleHelper::styleApplied,
-            frame, updateBackgroundColor);
 
     connect(label, &QLabel::linkActivated, [] (const QString &link) {
         QDesktopServices::openUrl(QUrl(link));
@@ -1648,7 +1622,16 @@ void MainWindow::openCrashReporterPopup()
             frame->deleteLater();
     });
 
-    mPopupWidget = frame;
+    showPopup(frame);
+#endif
+}
+
+void MainWindow::showPopup(QWidget *widget)
+{
+    mPopupWidgetShowProgress = 1.0;
+    mPopupWidget = widget;
+
+    widget->setVisible(true);
     updatePopupGeometry(size());
 
     // Show the popup using a smooth animation
@@ -1662,7 +1645,6 @@ void MainWindow::openCrashReporterPopup()
         mPopupWidgetShowProgress = value.toDouble();
         updatePopupGeometry(size());
     });
-#endif
 }
 
 void MainWindow::updatePopupGeometry(QSize size)
@@ -2275,9 +2257,12 @@ void MainWindow::updateWindowTitle()
     }
 }
 
-void MainWindow::showDonationDialog()
+void MainWindow::showDonationPopup()
 {
-    DonationDialog(this).exec();
+    if (mPopupWidget)
+        return;
+
+    showPopup(new DonationPopup(this));
 }
 
 void MainWindow::aboutTiled()

@@ -507,26 +507,26 @@ void Preferences::setPatron(bool isPatron)
     emit isPatronChanged();
 }
 
-bool Preferences::shouldShowDonationDialog() const
+bool Preferences::shouldShowDonationReminder() const
 {
     if (isPatron())
         return false;
     if (runCount() < 7)
         return false;
 
-    const QDate dialogTime = donationDialogTime();
+    const QDate dialogTime = donationReminderTime();
     if (!dialogTime.isValid())
         return false;
 
     return dialogTime.daysTo(QDate::currentDate()) >= 0;
 }
 
-QDate Preferences::donationDialogTime() const
+QDate Preferences::donationReminderTime() const
 {
     return get<QDate>("Install/DonationDialogTime");
 }
 
-void Preferences::setDonationDialogReminder(const QDate &date)
+void Preferences::setDonationReminder(const QDate &date)
 {
     if (date.isValid())
         setPatron(false);

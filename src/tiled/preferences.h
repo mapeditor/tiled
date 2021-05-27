@@ -143,9 +143,9 @@ public:
     bool isPatron() const;
     void setPatron(bool isPatron);
 
-    bool shouldShowDonationDialog() const;
-    QDate donationDialogTime() const;
-    void setDonationDialogReminder(const QDate &date);
+    bool shouldShowDonationReminder() const;
+    QDate donationReminderTime() const;
+    void setDonationReminder(const QDate &date);
 
     enum { MaxRecentFiles = 12 };
     void addRecentFile(const QString &fileName);

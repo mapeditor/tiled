@@ -1,6 +1,6 @@
 /*
- * filechangedwarning.h
- * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindijer.nl>
+ * popupwidget.h
+ * Copyright 2021, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,30 +20,16 @@
 
 #pragma once
 
-#include <QWidget>
-
-class QLabel;
-class QDialogButtonBox;
+#include <QFrame>
 
 namespace Tiled {
 
-class FileChangedWarning : public QWidget
+class PopupWidget : public QFrame
 {
     Q_OBJECT
 
 public:
-    explicit FileChangedWarning(QWidget *parent = nullptr);
-
-signals:
-    void reload();
-    void ignore();
-
-protected:
-    void paintEvent(QPaintEvent *event) override;
-
-private:
-    QLabel *mLabel;
-    QDialogButtonBox *mButtons;
+    explicit PopupWidget(QWidget *parent = nullptr);
 };
 
 } // namespace Tiled
