@@ -48,7 +48,7 @@
 <context>
     <name>Command line</name>
     <message>
-        <location filename="../src/tiled/main.cpp" line="+414"/>
+        <location filename="../src/tiled/main.cpp" line="+410"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
         <translation>Syntaxe pro export je --export-map [formát] &lt;zdroj&gt; &lt;cíl&gt;</translation>
     </message>
@@ -286,30 +286,24 @@
 <context>
     <name>DonationDialog</name>
     <message>
-        <location filename="../src/tiled/donationdialog.ui" line="+14"/>
-        <source>Support Tiled Development</source>
-        <translation>Přispějte na vývoj Tiled</translation>
+        <location filename="../src/tiled/donationpopup.cpp" line="+42"/>
+        <source>Please consider supporting Tiled development with a small monthly donation.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+9"/>
-        <source>Thanks for using Tiled! Please consider supporting further development with a small monthly donation.</source>
-        <translation>Díky za používání Tiled! Prosím, přispějte na vývoj tohoto programu malým měsíčním příspěvkem.</translation>
+        <location line="+2"/>
+        <source>&amp;Donate ↗</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+25"/>
-        <source>Visit https://www.mapeditor.org/donate ↗</source>
-        <translation>Otevřít: https://www.mapeditor.org/donate ↗</translation>
+        <location line="+1"/>
+        <source>I&apos;m a &amp;supporter!</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>I&apos;m already a supporter!</source>
-        <translatorcomment>Slash+suffix is a common shortcut for gender-specific words like &quot;přispěla&quot; (for female users) / &quot;přispěl&quot; (for male ones).</translatorcomment>
-        <translation>Už jsem přispěl/a!</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Maybe later</source>
-        <translation>Možná později</translation>
+        <location line="+1"/>
+        <source>&amp;Maybe later</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -409,7 +403,7 @@
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+116"/>
         <location line="+45"/>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+242"/>
-        <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+55"/>
+        <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+57"/>
         <location filename="../src/plugins/yy/yyplugin.cpp" line="+1272"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+724"/>
         <source>Could not open file for writing.</source>
@@ -424,7 +418,7 @@
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-315"/>
         <location line="+161"/>
         <location line="+109"/>
-        <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+121"/>
+        <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+138"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="-53"/>
         <source>Could not open file for reading.</source>
         <translation>Nepodařilo se otevřít soubor pro čtení.</translation>
@@ -691,7 +685,12 @@
         <translation>Uložit &amp;jako...</translation>
     </message>
     <message>
-        <location line="+194"/>
+        <location line="+189"/>
+        <source>Support Tiled Development ↗</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>Save All</source>
         <translation>Uložit vše</translation>
     </message>
@@ -907,12 +906,7 @@
         <translation>Znovu načíst</translation>
     </message>
     <message>
-        <location line="+16"/>
-        <source>Support Tiled Development</source>
-        <translation>Přispět na vývoj Tiled</translation>
-    </message>
-    <message>
-        <location line="+142"/>
+        <location line="+158"/>
         <source>&amp;New World...</source>
         <translation type="unfinished">Nový svět...</translation>
     </message>
@@ -1601,17 +1595,17 @@ Line %1, column %2</source>
         <translation>Rozhraní</translation>
     </message>
     <message>
-        <location line="+105"/>
+        <location line="+26"/>
         <source>&amp;Language:</source>
         <translation>&amp;Jazyk:</translation>
     </message>
     <message>
-        <location line="-30"/>
+        <location line="+113"/>
         <source>Hardware &amp;accelerated drawing (OpenGL)</source>
         <translation>Hardwarově &amp;akcelerované vykreslování (OpenGL)</translation>
     </message>
     <message>
-        <location line="-214"/>
+        <location line="-278"/>
         <source>Turn this off if you&apos;re having trouble saving your files.</source>
         <translation>Toto vypněte, pokud máte s ukládáním souborů problémy.</translation>
     </message>
@@ -1646,22 +1640,22 @@ Line %1, column %2</source>
         <translation>Vložit sady dlaždic do mapy</translation>
     </message>
     <message>
-        <location line="+177"/>
+        <location line="+98"/>
         <source>Grid color:</source>
         <translation>Barva mřížky:</translation>
     </message>
     <message>
-        <location line="-47"/>
+        <location line="+113"/>
         <source>Fine grid divisions:</source>
         <translation>Dílků jemné mrížky:</translation>
     </message>
     <message>
-        <location line="-19"/>
+        <location line="-66"/>
         <source> pixels</source>
         <translation> px</translation>
     </message>
     <message>
-        <location line="-148"/>
+        <location line="-182"/>
         <source>Restore previous session on startup</source>
         <translatorcomment>To clarify what &quot;session&quot; is, I added a note saying &quot;session (e.g. open files)&quot; </translatorcomment>
         <translation>Při spuštění obnovit minulé sezení (např. otevřené soubory)</translation>
@@ -1677,17 +1671,17 @@ Line %1, column %2</source>
         <translation>Zmenšit výstup</translation>
     </message>
     <message>
-        <location line="+190"/>
+        <location line="+91"/>
         <source>Object line width:</source>
         <translation>Šířka čáry kolem objektů:</translation>
     </message>
     <message>
-        <location line="-47"/>
+        <location line="+30"/>
         <source>Mouse wheel &amp;zooms by default</source>
         <translation>Kolečko myši &amp;zvětšuje a zmenšuje</translation>
     </message>
     <message>
-        <location line="-133"/>
+        <location line="-111"/>
         <source>Crash Reporting</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1702,22 +1696,37 @@ Line %1, column %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+97"/>
+        <location line="+178"/>
         <source>Object selection behavior:</source>
         <translation>Chování výběru objektů:</translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="-40"/>
         <source>Middle mouse button uses auto-&amp;scrolling</source>
         <translation>Prostřední tlačítko myši automaticky &amp;skroluje</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="-53"/>
+        <source>Major grid every:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+33"/>
         <source>Use s&amp;mooth scrolling</source>
         <translation>&amp;Hladké skrolování</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+30"/>
+        <source> tiles</source>
+        <translation type="unfinished"> dlaždic</translation>
+    </message>
+    <message>
+        <location line="+47"/>
+        <source>Background fade color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
         <source>Display news in status bar</source>
         <translation>Ukazovat novinky v stavovém pruhu</translation>
     </message>
@@ -1754,13 +1763,13 @@ Line %1, column %2</source>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+66"/>
-        <location line="+185"/>
+        <location line="+191"/>
         <source>Native</source>
         <translation>Systémové</translation>
     </message>
     <message>
-        <location line="-184"/>
-        <location line="+185"/>
+        <location line="-190"/>
+        <location line="+191"/>
         <source>Tiled Fusion</source>
         <translation>Tiled Fusion</translation>
     </message>
@@ -2566,7 +2575,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+69"/>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+904"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+903"/>
         <source>Not a tile</source>
         <translation>To není dlaždice</translation>
     </message>
@@ -2756,7 +2765,7 @@ Line %1, column %2</source>
         <translation>Chyba při načítání mapy</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmanager.cpp" line="+291"/>
+        <location filename="../src/tiled/scriptmanager.cpp" line="+293"/>
         <source>Argument %1 is undefined or the wrong type</source>
         <translation>Argument %1 je `undefined` nebo má špatný typ</translation>
     </message>
@@ -2888,7 +2897,7 @@ Line %1, column %2</source>
 <context>
     <name>Tengine::TenginePlugin</name>
     <message>
-        <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+252"/>
+        <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+248"/>
         <source>T-Engine4 map files (*.lua)</source>
         <translation>Mapové soubory T-Engine4 (*.lua)</translation>
     </message>
@@ -3676,7 +3685,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Document</name>
     <message>
-        <location filename="../src/tiled/document.cpp" line="+88"/>
+        <location filename="../src/tiled/document.cpp" line="+91"/>
         <source>Custom property &apos;%1&apos; refers to non-existing file &apos;%2&apos;</source>
         <translation>Vlastní vlastnost &apos;%1&apos; odkazuje neexistující soubor &apos;%2&apos;</translation>
     </message>
@@ -3732,7 +3741,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::DonationDialog</name>
     <message>
-        <location filename="../src/tiled/donationdialog.cpp" line="+49"/>
+        <location filename="../src/tiled/donationpopup.cpp" line="+4"/>
         <source>Remind me next week</source>
         <translation>Připomenout za týden</translation>
     </message>
@@ -3747,7 +3756,7 @@ Line %1, column %2</source>
         <translation>Nepřipomínejte</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+27"/>
         <source>Thanks!</source>
         <translation>Děkuji!</translation>
     </message>
@@ -4090,7 +4099,7 @@ Má se přepsat?</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="-286"/>
         <location filename="../src/tiled/documentmanager.cpp" line="-630"/>
         <location line="+26"/>
-        <location filename="../src/tiled/mainwindow.cpp" line="+1441"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+1444"/>
         <source>untitled</source>
         <translation>bezjmena</translation>
     </message>
@@ -4125,14 +4134,14 @@ Má se přepsat?</translation>
         <translation>Bez správné přípony nemusí Tiled správně rozpoznat typ souboru. Chcete soubor opravdu uložit s touto příponou?</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="-1295"/>
-        <location line="+960"/>
-        <location line="+731"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="-1298"/>
+        <location line="+963"/>
+        <location line="+757"/>
         <source>All Files (*)</source>
         <translation>Všechny soubory (*)</translation>
     </message>
     <message>
-        <location line="-1669"/>
+        <location line="-1698"/>
         <source>Export As...</source>
         <translation>Exportovat jako...</translation>
     </message>
@@ -4170,12 +4179,12 @@ Prosím vyberte formát ručně.</translation>
     </message>
     <message>
         <location line="+152"/>
-        <location line="+1785"/>
+        <location line="+1817"/>
         <source>&amp;Layer</source>
         <translation>&amp;Vrstva</translation>
     </message>
     <message>
-        <location line="-1698"/>
+        <location line="-1730"/>
         <location line="+35"/>
         <source>All Files (*);;</source>
         <translation>Všechny soubory (*);;</translation>
@@ -4183,23 +4192,23 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="-34"/>
         <location line="+35"/>
-        <location line="+487"/>
+        <location line="+490"/>
         <source>World files (*.world)</source>
         <translation>Soubory světů (*.world)</translation>
     </message>
     <message>
-        <location line="-520"/>
+        <location line="-523"/>
         <source>Load World</source>
         <translation>Otevření světa</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+450"/>
+        <location line="+453"/>
         <source>Error Loading World</source>
         <translation>Chyba při otevírání světa</translation>
     </message>
     <message>
-        <location line="-421"/>
+        <location line="-424"/>
         <source>New World</source>
         <translation>Nový svět</translation>
     </message>
@@ -4214,31 +4223,31 @@ Prosím vyberte formát ručně.</translation>
         <translation>Chyba při zápisu souboru se světem</translation>
     </message>
     <message>
-        <location line="+118"/>
-        <location line="+1516"/>
+        <location line="+120"/>
+        <location line="+1546"/>
         <source>Views and Toolbars</source>
         <translation>Okna a lišty</translation>
     </message>
     <message>
-        <location line="-1513"/>
-        <location line="+1514"/>
+        <location line="-1543"/>
+        <location line="+1544"/>
         <source>Reset to Default Layout</source>
         <translation>Obnovit výchozí rozložení</translation>
     </message>
     <message>
-        <location line="-1513"/>
-        <location line="+1514"/>
+        <location line="-1543"/>
+        <location line="+1544"/>
         <source>Lock Layout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1503"/>
-        <location line="+1504"/>
+        <location line="-1533"/>
+        <location line="+1534"/>
         <source>Object Types Editor</source>
         <translation>Editor typů objektů</translation>
     </message>
     <message>
-        <location line="-1211"/>
+        <location line="-1240"/>
         <source>Error Opening File</source>
         <translation>Chyba při otevírání souboru</translation>
     </message>
@@ -4333,7 +4342,7 @@ Prosím vyberte formát ručně.</translation>
         <translation>Při ukládání projektu nastala chyba.</translation>
     </message>
     <message>
-        <location line="+140"/>
+        <location line="+135"/>
         <source>&lt;html&gt;Enable anonymous crash reporting? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4348,7 +4357,22 @@ Prosím vyberte formát ručně.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+241"/>
+        <location line="+38"/>
+        <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Enable Extensions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Close</source>
+        <translation type="unfinished">&amp;Zavřít</translation>
+    </message>
+    <message>
+        <location line="+231"/>
         <source>Add External Tileset(s)</source>
         <translation>Přidat externí sadu dlaždic</translation>
     </message>
@@ -4368,7 +4392,7 @@ Prosím vyberte formát ručně.</translation>
         <translation>[*] %1%2</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+28"/>
         <source>&amp;New</source>
         <translation>&amp;Nová</translation>
     </message>
@@ -4491,7 +4515,7 @@ Prosím vyberte formát ručně.</translation>
     </message>
     <message>
         <location line="+28"/>
-        <location filename="../src/tiled/tileseteditor.cpp" line="+948"/>
+        <location filename="../src/tiled/tileseteditor.cpp" line="+968"/>
         <source>Copy of %1</source>
         <translation>Kopie %1</translation>
     </message>
@@ -4756,7 +4780,7 @@ Prosím vyberte formát ručně.</translation>
 <context>
     <name>Tiled::MapEditor</name>
     <message>
-        <location filename="../src/tiled/mapeditor.cpp" line="+720"/>
+        <location filename="../src/tiled/mapeditor.cpp" line="+723"/>
         <source>Paste in Place</source>
         <translation>Vložit na původní pozici</translation>
     </message>
@@ -5201,26 +5225,26 @@ Prosím vyberte formát ručně.</translation>
 <context>
     <name>Tiled::PreferencesDialog</name>
     <message>
-        <location filename="../src/tiled/preferencesdialog.cpp" line="-188"/>
-        <location line="+185"/>
+        <location filename="../src/tiled/preferencesdialog.cpp" line="-194"/>
+        <location line="+191"/>
         <source>System default</source>
         <translation>Systémové nastavení</translation>
     </message>
     <message>
-        <location line="-177"/>
-        <location line="+182"/>
+        <location line="-183"/>
+        <location line="+188"/>
         <source>Select From Any Layer</source>
         <translation>Vybrat z jakékoli vrstvy</translation>
     </message>
     <message>
-        <location line="-181"/>
-        <location line="+182"/>
+        <location line="-187"/>
+        <location line="+188"/>
         <source>Prefer Selected Layers</source>
         <translation>Upřednostnit aktivní vrstvu</translation>
     </message>
     <message>
-        <location line="-181"/>
-        <location line="+182"/>
+        <location line="-187"/>
+        <location line="+188"/>
         <source>Selected Layers Only</source>
         <translation>Pouze z aktivní vrstvy</translation>
     </message>
@@ -5241,7 +5265,7 @@ Prosím vyberte formát ručně.</translation>
 <context>
     <name>Tiled::ProjectModel</name>
     <message>
-        <location filename="../src/tiled/projectmodel.cpp" line="+277"/>
+        <location filename="../src/tiled/projectmodel.cpp" line="+283"/>
         <source>(Refreshing)</source>
         <translation>(Obnovuji)</translation>
     </message>
@@ -5887,7 +5911,7 @@ Prosím vyberte formát ručně.</translation>
         <translation>Soubor se skriptem se změnil: %1</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+38"/>
         <source>Extensions paths changed: %1</source>
         <translation>Cesta k rozšířením se změnila: %1</translation>
     </message>
@@ -6259,18 +6283,18 @@ Prosím vyberte formát ručně.</translation>
 <context>
     <name>Tiled::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="-297"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-300"/>
         <source>All Files (*)</source>
         <translation>Všechny soubory (*)</translation>
     </message>
     <message>
         <location line="+11"/>
-        <location line="+132"/>
+        <location line="+135"/>
         <source>Replace Tileset</source>
         <translation>Záměna sady dlaždic</translation>
     </message>
     <message>
-        <location line="-117"/>
+        <location line="-120"/>
         <source>Error Reading Tileset</source>
         <translation>Chyba při otevírání sady slaždic</translation>
     </message>
@@ -6290,7 +6314,7 @@ Prosím vyberte formát ručně.</translation>
         <translation>Odstranit tuto sadu dlaždic a všechny její dlaždice?</translation>
     </message>
     <message>
-        <location line="+64"/>
+        <location line="+67"/>
         <source>Tilesets</source>
         <translation>Sada dlaždic</translation>
     </message>
@@ -6349,7 +6373,7 @@ Prosím vyberte formát ručně.</translation>
 <context>
     <name>Tiled::TilesetDocument</name>
     <message>
-        <location filename="../src/tiled/tilesetdocument.cpp" line="+101"/>
+        <location filename="../src/tiled/tilesetdocument.cpp" line="+102"/>
         <location line="+38"/>
         <source>Tileset format &apos;%s&apos; not found</source>
         <translation>Formát sady dlaždic &apos;%s&apos; nenalezen</translation>
@@ -6360,7 +6384,7 @@ Prosím vyberte formát ručně.</translation>
         <translation>dlazdice.tsx</translation>
     </message>
     <message>
-        <location line="+209"/>
+        <location line="+220"/>
         <source>Failed to load tileset image &apos;%1&apos;</source>
         <translation>Nepodařilo se načíst obrázek sady dlaždic &apos;%1&apos;</translation>
     </message>
@@ -6373,27 +6397,32 @@ Prosím vyberte formát ručně.</translation>
 <context>
     <name>Tiled::TilesetEditor</name>
     <message>
-        <location filename="../src/tiled/tileseteditor.cpp" line="-775"/>
-        <location line="+481"/>
+        <location filename="../src/tiled/tileseteditor.cpp" line="-789"/>
+        <location line="+480"/>
         <source>Tileset</source>
         <translation>Sada dlaždic</translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+23"/>
+        <location line="+24"/>
         <location line="+29"/>
         <location line="+19"/>
         <source>Add Tiles</source>
         <translation>Přidání dlaždic</translation>
     </message>
     <message>
-        <location line="-70"/>
-        <location line="+190"/>
+        <location line="-71"/>
+        <location line="+191"/>
         <source>Remove Tiles</source>
         <translation>Odstranění dlaždic</translation>
     </message>
     <message>
-        <location line="-189"/>
+        <location line="-190"/>
+        <source>Rearrange Tiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Tile Animation Editor</source>
         <translation>Editor animovaných dlaždic</translation>
     </message>
@@ -6433,7 +6462,7 @@ Prosím vyberte formát ručně.</translation>
         <translation>Odstranit je?</translation>
     </message>
     <message>
-        <location line="+76"/>
+        <location line="+90"/>
         <source>Unnamed Set</source>
         <translation>Nepojmenovaná sada</translation>
     </message>
@@ -6449,7 +6478,7 @@ Prosím vyberte formát ručně.</translation>
 <context>
     <name>Tiled::TilesetView</name>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+753"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+769"/>
         <source>Use as Terrain Set Image</source>
         <translation>Použít jako obrázek sady terénů</translation>
     </message>
@@ -6610,13 +6639,13 @@ Prosím vyberte formát ručně.</translation>
     <name>Tiled::WangDock</name>
     <message>
         <location filename="../src/tiled/wangdock.cpp" line="+197"/>
-        <location line="+361"/>
+        <location line="+363"/>
         <source>Terrains</source>
         <translation>Terény</translation>
     </message>
     <message>
-        <location line="-360"/>
-        <location line="+361"/>
+        <location line="-362"/>
+        <location line="+363"/>
         <source>Patterns</source>
         <translation>Vzory</translation>
     </message>
@@ -6674,7 +6703,7 @@ Prosím vyberte formát ručně.</translation>
 <context>
     <name>Tiled::WangSetView</name>
     <message>
-        <location filename="../src/tiled/wangsetview.cpp" line="+104"/>
+        <location filename="../src/tiled/wangsetview.cpp" line="+116"/>
         <source>Terrain Set &amp;Properties...</source>
         <translation>Vlastnosti &amp;sady terénů...</translation>
     </message>
@@ -7064,7 +7093,7 @@ Prosím vyberte formát ručně.</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location filename="../src/tiled/tileseteditor.cpp" line="-145"/>
+        <location filename="../src/tiled/tileseteditor.cpp" line="-159"/>
         <source>Remove Tiles</source>
         <translation>Odstranění dlaždic</translation>
     </message>
@@ -7210,7 +7239,7 @@ Prosím vyberte formát ručně.</translation>
         <translation>Záměna dlaždic</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetdocument.cpp" line="-397"/>
+        <location filename="../src/tiled/tilesetdocument.cpp" line="-408"/>
         <source>Reload Tileset</source>
         <translation>Znovunačtení sady dlaždic</translation>
     </message>
@@ -7305,9 +7334,14 @@ Prosím vyberte formát ručně.</translation>
         <translation>Odebrání terénu</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+28"/>
         <source>Set Terrain Set Image</source>
         <translation>Nastavení obrázku sady terénu</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/relocatetiles.cpp" line="+33"/>
+        <source>Relocate Tile</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7318,7 +7352,7 @@ Prosím vyberte formát ručně.</translation>
         <translation>Soubory s obrázky</translation>
     </message>
     <message>
-        <location line="+422"/>
+        <location line="+421"/>
         <source>Copy File Path</source>
         <translation>Zkopírovat cestu k couboru</translation>
     </message>
