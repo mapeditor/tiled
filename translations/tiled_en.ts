@@ -282,22 +282,22 @@
     <message>
         <location filename="../src/tiled/donationpopup.cpp" line="+42"/>
         <source>Please consider supporting Tiled development with a small monthly donation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Please consider supporting Tiled development with a small monthly donation.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Donate ↗</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>I&apos;m a &amp;supporter!</source>
-        <translation type="unfinished"></translation>
+        <translation>I&apos;m a &amp;supporter!</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Maybe later</translation>
     </message>
 </context>
 <context>
@@ -709,7 +709,7 @@
     <message>
         <location line="+142"/>
         <source>Support Tiled Development ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Support Tiled Development ↗</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1695,7 +1695,7 @@ Line %1, column %2</source>
     <message>
         <location line="-53"/>
         <source>Major grid every:</source>
-        <translation type="unfinished"></translation>
+        <translation>Major grid every:</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -1705,12 +1705,12 @@ Line %1, column %2</source>
     <message>
         <location line="+30"/>
         <source> tiles</source>
-        <translation type="unfinished"> tiles</translation>
+        <translation> tiles</translation>
     </message>
     <message>
         <location line="+47"/>
         <source>Background fade color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Background fade color:</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -4337,17 +4337,17 @@ Please select specific format.</translation>
     <message>
         <location line="+38"/>
         <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Enable Extensions</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Enable Extensions</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Close</translation>
     </message>
     <message>
         <location line="+231"/>
@@ -6377,7 +6377,7 @@ Please select specific format.</translation>
     <message>
         <location line="-190"/>
         <source>Rearrange Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Rearrange Tiles</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -7292,7 +7292,7 @@ Please select specific format.</translation>
     <message>
         <location filename="../src/tiled/relocatetiles.cpp" line="+33"/>
         <source>Relocate Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Relocate Tile</translation>
     </message>
 </context>
 <context>
