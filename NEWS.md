@@ -1,14 +1,18 @@
 ### Unreleased
 
-* Added basic "major grid" option with stronger lines (with Ilya Arkhanhelsky (#3032)
+* Added basic "major grid" option with stronger lines (with Ilya Arkhanhelsky, #3032)
+* Added ability to rearrange tiles in a tileset (with José Miguel Sánchez García, #2983)
 * Added option to choose background fade color (with SchmidtWC, #3031)
+* Disable project extensions by default, for security reasons (#3058)
 * Render selection preview and hovered item highlight above labels (#3036)
+* Changed the donation reminder to be non-modal
 * docs: Generate scripting API documentation using TypeDoc (with Erik Schilling (#2965) and MrMasterplan (#3040, #3041, #3045))
 * QMake/Qbs: Added a way to disable DBus support (with Dmitry Marakasov, #3039)
 * Scripting: Fixed 'mouseLeft' callback for scripted tools (#3050)
 * Scripting: Fixed loading of icons with explicit "ext:" prefix (#3048)
+* tBIN plugin: Convert 'color', 'object' and 'file' properties on save
 * Python plugin: Linux AppImage now supports Python 3.6 instead of 3.5
-* Fixed potential crash after deleting a WangColor
+* Fixed possible crash in Properties view when switching files
 * Fixed watching/unwatching of folders when adding/removing from project (#3035)
 * Fixed compilation issue with GCC 10 (#3037)
 
