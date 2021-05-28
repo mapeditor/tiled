@@ -744,6 +744,13 @@ A point on a polygon or a polyline, relative to the position of the object.
 Changelog
 ---------
 
+Tiled 1.7
+~~~~~~~~~
+
+* The :ref:`json-tile` objects in a tileset are no longer always saved with
+  increasing IDs. They are now saved in the display order, which can be changed
+  in Tiled.
+
 Tiled 1.6
 ~~~~~~~~~
 
