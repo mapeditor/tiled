@@ -5,8 +5,9 @@ Project {
 
     references: [
         "mapreader",
-        "staggeredrenderer",
         "maptovariantconverter",
+        "object",
+        "staggeredrenderer",
         "varianttomapconverter"
     ]
 }

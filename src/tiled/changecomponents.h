@@ -19,6 +19,12 @@ public:
                  const QString &name,
                  QUndoCommand *parent = nullptr);
 
+    AddComponent(Document *document,
+                 const QList<Object *> &objects,
+                 const QString &name,
+                 Properties properties,
+                 QUndoCommand *parent = nullptr);
+
     void undo() override;
     void redo() override;
 

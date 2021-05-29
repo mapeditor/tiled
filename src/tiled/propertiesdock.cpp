@@ -203,6 +203,7 @@ void PropertiesDock::currentObjectChanged(Object *object)
 
     // enable/disable components button
     mButtonComponents->setEnabled(object != nullptr);
+    mActionAddComponent->setEnabled(object != nullptr);
 }
 
 void PropertiesDock::updateActions()

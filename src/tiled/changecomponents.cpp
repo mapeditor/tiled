@@ -24,11 +24,19 @@ AddComponent::AddComponent(Document *document,
                            const QList<Object *> &objects,
                            const QString &name,
                            QUndoCommand *parent)
+    : AddComponent(document, objects, name, objectTypeProperties(name), parent)
+{ }
+
+AddComponent::AddComponent(Document *document,
+                           const QList<Object *> &objects,
+                           const QString &name,
+                           Properties properties,
+                           QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
     , mObjects(objects)
     , mName(name)
-    , mProperties(objectTypeProperties(mName))
+    , mProperties(properties)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Component (%1)")
             .arg(name));

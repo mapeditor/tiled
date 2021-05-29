@@ -157,6 +157,14 @@ void Object::addComponent(const QString &name, const Properties &properties)
     mComponents[name] = properties;
 }
 
+void Object::setComponentProperty(const QString &componentName, const QString &propertyName, const QVariant &value)
+{
+    if (mComponents.contains(componentName)) {
+        Properties &props = mComponents[componentName];
+        props[propertyName] = value;
+    }
+}
+
 void Object::setObjectTypes(const ObjectTypes &objectTypes)
 {
     mObjectTypes = objectTypes;

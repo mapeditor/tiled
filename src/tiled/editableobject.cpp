@@ -21,6 +21,7 @@
 #include "editableobject.h"
 
 #include "changeproperties.h"
+#include "changecomponents.h"
 #include "editableasset.h"
 #include "editablemanager.h"
 #include "editablemapobject.h"
@@ -69,6 +70,30 @@ void EditableObject::removeProperty(const QString &name)
         asset()->push(new RemoveProperty(doc, { mObject }, name));
     else if (!checkReadOnly())
         mObject->removeProperty(name);
+}
+
+void EditableObject::setComponentProperty(const QString &componentName, const QString &propertyName, const QVariant &value)
+{
+    if (Document *doc = document())
+        asset()->push(new SetComponentProperty(doc, { mObject }, componentName, propertyName, value));
+    else
+        mObject->setComponentProperty(componentName, propertyName, value);
+}
+
+void EditableObject::addComponent(const QString &name, const QVariantMap &properties)
+{
+    if (Document *doc = document())
+        asset()->push(new AddComponent(doc, { mObject }, name, fromScript(properties)));
+    else if (!checkReadOnly())
+        mObject->addComponent(name, properties);
+}
+
+void EditableObject::removeComponent(const QString &name)
+{
+    if (Document *doc = document())
+        asset()->push(new RemoveComponent(doc, { mObject }, name));
+    else if (!checkReadOnly())
+        mObject->removeComponent(name);
 }
 
 Document *EditableObject::document() const
@@ -165,6 +190,17 @@ QVariantMap EditableObject::fromScript(const QVariantMap &value) const
     for (auto i = converted.begin(); i != converted.end(); ++i)
         i.value() = fromScript(i.value());
     return converted;
+}
+
+QVariantMap EditableObject::toScript(const Components &components) const
+{
+    QVariantMap map;
+    QMapIterator<QString, Properties> it(components);
+    while (it.hasNext()) {
+        it.next();
+        map.insert(it.key(), toScript(it.value()));
+    }
+    return map;
 }
 
 } // namespace Tiled

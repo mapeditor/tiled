@@ -63,6 +63,12 @@ public:
     Q_INVOKABLE QVariant resolvedProperty(const QString &name) const;
     Q_INVOKABLE QVariantMap resolvedProperties() const;
 
+    Q_INVOKABLE QVariantMap components() const;
+    Q_INVOKABLE void setComponentProperty(const QString &componentName, const QString &propertyName, const QVariant &value);
+
+    Q_INVOKABLE void addComponent(const QString &name, const QVariantMap &properties);
+    Q_INVOKABLE void removeComponent(const QString &name);
+
     Object *object() const;
     Document *document() const;
 
@@ -77,6 +83,7 @@ private:
     QVariant fromScript(const QVariant &value) const;
     QVariantMap toScript(const QVariantMap &value) const;
     QVariantMap fromScript(const QVariantMap &value) const;
+    QVariantMap toScript(const Components &components) const;
 
     EditableAsset *mAsset;
     Object *mObject;
@@ -106,6 +113,11 @@ inline QVariant EditableObject::resolvedProperty(const QString &name) const
 inline QVariantMap EditableObject::resolvedProperties() const
 {
     return toScript(mObject->resolvedProperties());
+}
+
+inline QVariantMap EditableObject::components() const
+{
+    return toScript(mObject->components());
 }
 
 inline Object *EditableObject::object() const
