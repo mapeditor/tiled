@@ -287,22 +287,22 @@
     <message>
         <location filename="../src/tiled/donationpopup.cpp" line="+42"/>
         <source>Please consider supporting Tiled development with a small monthly donation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, pense em apoiar o desenvolvimento do Tiled com uma pequena doação mensal.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Doar ↗</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>I&apos;m a &amp;supporter!</source>
-        <translation type="unfinished"></translation>
+        <translation>Sou um &amp;apoiante!</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Talvez depois</translation>
     </message>
 </context>
 <context>
@@ -701,7 +701,7 @@
     <message>
         <location line="+212"/>
         <source>Support Tiled Development ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Apoie o Desenvolvimento do Tiled ↗</translation>
     </message>
     <message>
         <location line="+142"/>
@@ -1706,7 +1706,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-53"/>
         <source>Major grid every:</source>
-        <translation type="unfinished"></translation>
+        <translation>Grelha principal cada:</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -1716,12 +1716,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+30"/>
         <source> tiles</source>
-        <translation type="unfinished"> tiles</translation>
+        <translation> tiles</translation>
     </message>
     <message>
         <location line="+47"/>
         <source>Background fade color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cor de desvanecimento do fundo:</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -4348,17 +4348,17 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+38"/>
         <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>O projeto atual contêm &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;extensões de script&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Assegure-se que confia nestas extensões antes de as ativar!&lt;/i&gt;</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Enable Extensions</source>
-        <translation type="unfinished"></translation>
+        <translation>Ativar &amp;Extensões</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Fechar</translation>
+        <translation>&amp;Fechar</translation>
     </message>
     <message>
         <location line="+231"/>
@@ -6388,7 +6388,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="-190"/>
         <source>Rearrange Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Reordenar Tiles</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -7303,7 +7303,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/relocatetiles.cpp" line="+33"/>
         <source>Relocate Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Realocar Tile</translation>
     </message>
 </context>
 <context>
