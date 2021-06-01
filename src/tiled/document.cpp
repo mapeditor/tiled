@@ -121,8 +121,10 @@ void Document::setCurrentObject(Object *object, Document *owningDocument)
         owningDocument = nullptr;
 
     if (mCurrentObjectDocument != owningDocument) {
-        if (mCurrentObjectDocument)
-            mCurrentObjectDocument->disconnect(this);
+        if (mCurrentObjectDocument) {
+            disconnect(mCurrentObjectDocument, &QObject::destroyed, this, &Document::currentObjectDocumentDestroyed);
+            disconnect(mCurrentObjectDocument, &Document::changed, this, &Document::currentObjectDocumentChanged);
+        }
         if (owningDocument) {
             connect(owningDocument, &QObject::destroyed, this, &Document::currentObjectDocumentDestroyed);
             connect(owningDocument, &Document::changed, this, &Document::currentObjectDocumentChanged);
