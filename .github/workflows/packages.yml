@@ -47,10 +47,12 @@ jobs:
         include:
         - arch: 32
           openssl_arch: x86
-          toolchain: win64_msvc2019_64
+          toolchain: win32_msvc2019
+          profile: MSVC2019-x86
         - arch: 64
           openssl_arch: x64
-          toolchain: win32_msvc2019
+          toolchain: win64_msvc2019_64
+          profile: MSVC2019-x64
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
@@ -73,8 +75,7 @@ jobs:
     - name: Setup Qbs
       run: |
         qbs setup-toolchains --detect
-        qbs setup-qt ${QT_PATH}/qmake.exe qt
-        qbs config defaultProfile qt
+        qbs config defaultProfile ${{ matrix.profile }}
 
     # - name: Build Zstandard
     #   run: |
