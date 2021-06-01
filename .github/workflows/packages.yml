@@ -37,166 +37,6 @@ jobs:
         if [[ "$TILED_RELEASE" != 'true' ]]; then echo "::set-output name=version::$(date "+%Y.%m.%d")" ; fi
         echo "::set-output name=release::${TILED_RELEASE}"
 
-  linux:
-    name: Linux (AppImage)
-    runs-on: ubuntu-18.04
-    needs: version
-
-    env:
-      TILED_VERSION: ${{ needs.version.outputs.version }}
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Install dependencies
-      run: |
-        sudo apt update
-        sudo apt install libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev libcurl4-openssl-dev
-
-    - name: Install Qt
-      run: |
-        ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools icu | tee -a $GITHUB_PATH
-        ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
-
-    - name: Setup CMake
-      uses: jwlawson/actions-setup-cmake@v1.8
-      with:
-        cmake-version: '3.19'
-
-    - name: Setup Qbs
-      run: |
-        qbs --version
-        qbs setup-toolchains --detect
-        qbs config defaultProfile x86_64-linux-gnu-gcc-9
-
-    - name: Build Sentry Native
-      run: |
-        curl -sLO https://github.com/getsentry/sentry-native/releases/download/${SENTRY_VERSION}/sentry-native.zip
-        mkdir sentry-native
-        pushd sentry-native
-        unzip -q ../sentry-native.zip
-        cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
-        cmake --build build --parallel
-        sudo cmake --install build --prefix /usr --config RelWithDebInfo
-        popd
-
-    - name: Build Tiled
-      run: |
-        qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.enableZstd:true projects.Tiled.sentry:true qbs.debugInformation:true modules.cpp.separateDebugInformation:true
-
-    - name: Upload symbols to Sentry
-      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
-      env:
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-        SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-      run: |
-        curl -sL https://sentry.io/get-cli/ | bash
-        sentry-cli upload-dif .
-
-    - name: Build AppImage
-      run: |
-        cp LICENSE* COPYING *md Tiled/
-        wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
-        chmod a+x linuxdeployqt
-        ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so -exclude-libs=libpython3.6m.so.1 -verbose=2
-        ./linuxdeployqt --appimage-extract
-        export PATH=$(readlink -f ./squashfs-root/usr/bin/):$PATH
-        ./squashfs-root/usr/bin/appimagetool Tiled/
-        find ./Tiled -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
-
-    - name: Upload Tiled.AppImage
-      uses: actions/upload-artifact@v2
-      with:
-        name: Tiled-x86_64.AppImage
-        path: Tiled-x86_64.AppImage
-
-  snap:
-    name: Linux (snap)
-    runs-on: ubuntu-latest
-    needs: version
-
-    env:
-      TILED_VERSION: ${{ needs.version.outputs.version }}
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Set Tiled version
-      id: version
-      run: |
-        sed -i 's/^version: .*/version: '"${TILED_VERSION}"'/g' snap/snapcraft.yaml
-        sed -i 's/TILED_VERSION = .*/TILED_VERSION = "'"${TILED_VERSION}"'"/g' tiled.pri
-        if [[ "$TILED_RELEASE" == 'true' ]]; then echo "::set-output name=snap_channel::candidate" ; fi
-        if [[ "$TILED_RELEASE" != 'true' ]]; then echo "::set-output name=snap_channel::beta" ; fi
-
-    - name: Build snap
-      id: build
-      uses: snapcore/action-build@v1
-
-    - name: Upload snap artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: tiled_amd64.snap
-        path: tiled_*_amd64.snap
-
-    - name: Release snap (beta channel)
-      uses: snapcore/action-publish@v1
-      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push' && (github.ref == 'refs/heads/snapshot' || needs.version.outputs.release == 'true')
-      with:
-        store_login: ${{ secrets.SNAP_STORE_LOGIN }}
-        snap: ${{ steps.build.outputs.snap }}
-        release: ${{ steps.version.outputs.snap_channel }}
-
-  macos:
-    name: macOS
-    runs-on: macos-latest
-    needs: version
-
-    env:
-      TILED_VERSION: ${{ needs.version.outputs.version }}
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Install Qt
-      run: |
-        sudo ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools | tee -a $GITHUB_PATH
-        sudo ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
-
-    - name: Setup Qbs
-      run: |
-        qbs setup-toolchains --detect
-        qbs config defaultProfile xcode
-
-    - name: Build Zstandard
-      run: |
-        git clone --depth 1 -b master https://github.com/facebook/zstd.git
-        pushd zstd/lib
-        make libzstd.a
-        popd
-
-    - name: Build Tiled
-      run: |
-        qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.enableZstd:true
-
-    - name: Package
-      run: |
-        macdeployqt install/Tiled.app -verbose=2
-        pushd install
-        ruby ../dist/macos/fixup-install-names.rb
-        ditto -c -k --sequesterRsrc --keepParent Tiled.app ../Tiled-macos.zip
-        popd
-
-    - name: Upload Tiled.app
-      uses: actions/upload-artifact@v2
-      with:
-        name: Tiled-macos.app
-        path: Tiled-macos.zip
-
   windows:
     name: Windows (${{ matrix.arch }}-bit)
     runs-on: windows-latest
@@ -207,14 +47,13 @@ jobs:
         include:
         - arch: 32
           openssl_arch: x86
+          toolchain: win64_msvc2019_64
         - arch: 64
           openssl_arch: x64
+          toolchain: win32_msvc2019
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
-      QT_TOOLCHAIN: win${{ matrix.arch }}_mingw81
-      MINGW_VERSION: 8.1.0
-      MINGW_COMPONENT: win${{ matrix.arch }}_mingw810
       OPENSSL_VERSION: 1.1.1
 
     defaults:
@@ -227,29 +66,28 @@ jobs:
 
     - name: Install Qt
       run: |
-        echo "QT_PATH=$(./dist/install-qt.sh --version ${QT_VERSION} --toolchain ${QT_TOOLCHAIN} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools qttranslations)" >> $GITHUB_ENV
-        echo "MINGW_PATH=$(./dist/install-qt.sh --version ${MINGW_VERSION} ${MINGW_COMPONENT})" >> $GITHUB_ENV
+        echo "QT_PATH=$(./dist/install-qt.sh --version ${QT_VERSION} --toolchain ${{ matrix.toolchain }} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools qttranslations)" >> $GITHUB_ENV
         echo "OPENSSL_PATH=$(./dist/install-qt.sh --version ${OPENSSL_VERSION} openssl --arch ${{ matrix.openssl_arch }})" >> $GITHUB_ENV
         ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator >> $GITHUB_PATH
 
     - name: Setup Qbs
       run: |
-        qbs setup-toolchains ${MINGW_PATH}/*-w64-mingw32-gcc.exe mingw
+        qbs setup-toolchains --detect
         qbs setup-qt ${QT_PATH}/qmake.exe qt
         qbs config defaultProfile qt
 
-    - name: Build Zstandard
-      run: |
-        export PATH="${MINGW_PATH}:$PATH"
-        git clone --depth 1 -b master https://github.com/facebook/zstd.git
-        pushd zstd/lib
-        CC=gcc mingw32-make -j2 libzstd.a
-        popd
+    # - name: Build Zstandard
+    #   run: |
+    #     export PATH="${MINGW_PATH}:$PATH"
+    #     git clone --depth 1 -b master https://github.com/facebook/zstd.git
+    #     pushd zstd/lib
+    #     CC=gcc mingw32-make -j2 libzstd.a
+    #     popd
 
     - name: Build Tiled
       run: |
         export TILED_MSI_VERSION=1.4.${GITHUB_RUN_NUMBER}
-        qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:true
+        qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:false
         mv release/installer*/Tiled-*.msi .
 
     - name: Upload Tiled installer
@@ -263,146 +101,3 @@ jobs:
       with:
         name: Tiled-win${{ matrix.arch }}
         path: release/install-root/*
-
-  itch:
-    name: Upload to itch.io (${{ matrix.channel }})
-    runs-on: ubuntu-latest
-    needs: [version, linux, macos, windows]
-
-    if: github.repository == 'mapeditor/tiled' && github.event_name == 'push' && github.ref == 'refs/heads/snapshot'
-
-    strategy:
-      matrix:
-        include:
-        - channel: linux-64bit
-          artifact: Tiled-x86_64.AppImage
-          prepare: chmod +x upload/Tiled-x86_64.AppImage
-
-        - channel: macos
-          artifact: Tiled-macos.app
-          prepare: |
-            pushd upload
-            unzip Tiled-macos.zip
-            rm Tiled-macos.zip
-            popd
-
-        - channel: windows-32bit
-          artifact: Tiled-win32
-
-        - channel: windows-64bit
-          artifact: Tiled-win64
-
-    steps:
-    - name: Download artifact
-      id: download
-      uses: actions/download-artifact@v2
-      with:
-        name: ${{ matrix.artifact }}
-        path: upload
-
-    - name: Prepare artifact
-      if: matrix.prepare
-      run: ${{ matrix.prepare }}
-
-    - name: Download Butler
-      run: |
-        curl -JOL https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
-        unzip butler-linux-amd64.zip
-
-    - name: Push to itch.io
-      env:
-        BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
-        TILED_VERSION: ${{ needs.version.outputs.version }}
-      run: |
-        ITCH_CHANNEL=${{ matrix.channel }}
-        if [[ "$TILED_SNAPSHOT" == 'true' ]]; then ITCH_CHANNEL="${ITCH_CHANNEL}-snapshot" ; fi
-        ./butler push --userversion=${TILED_VERSION} upload thorbjorn/tiled:${ITCH_CHANNEL}
-
-  github:
-    name: Upload to GitHub releases
-    runs-on: ubuntu-latest
-    needs: [version, linux, macos, windows]
-
-    if: github.repository == 'mapeditor/tiled' && github.event_name == 'push' && needs.version.outputs.release == 'true'
-
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Tiled ${{ needs.version.outputs.version }}
-          draft: true
-          prerelease: false
-
-      - name: Download Windows 64-bit installer
-        id: download-win64-installer
-        uses: actions/download-artifact@v2
-        with:
-          name: Tiled-win64.msi
-
-      - name: Download Windows 32-bit installer
-        id: download-win32-installer
-        uses: actions/download-artifact@v2
-        with:
-          name: Tiled-win32.msi
-
-      - name: Download Linux AppImage
-        id: download-appimage
-        uses: actions/download-artifact@v2
-        with:
-          name: Tiled-x86_64.AppImage
-
-      - name: Download macOS app
-        id: download-app
-        uses: actions/download-artifact@v2
-        with:
-          name: Tiled-macos.app
-
-      - name: Upload Windows 64-bit installer
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Tiled-${{ needs.version.outputs.version }}-win64.msi
-          asset_name: Tiled-${{ needs.version.outputs.version }}-win64.msi
-          asset_content_type: applictaion/x-msi
-
-      - name: Upload Windows 32-bit installer
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Tiled-${{ needs.version.outputs.version }}-win32.msi
-          asset_name: Tiled-${{ needs.version.outputs.version }}-win32.msi
-          asset_content_type: applictaion/x-msi
-
-      - name: Upload Linux AppImage
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Tiled-x86_64.AppImage
-          asset_name: Tiled-${{ needs.version.outputs.version }}-x86_64.AppImage
-          asset_content_type: application/vnd.appimage
-
-      - name: Upload macOS app
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Tiled-macos.zip
-          asset_name: Tiled-${{ needs.version.outputs.version }}-macos.zip
-          asset_content_type: application/zip
-
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: releases
-          version: ${{ needs.version.outputs.version }}
