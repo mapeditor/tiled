@@ -38,6 +38,10 @@ typedef enum _PyBindGenWrapperFlags {
 } PyBindGenWrapperFlags;
 #endif
 
+#if PY_VERSION_HEX >= 0x03070000 && !defined(PyEval_ThreadsInitialized)
+#define PyEval_ThreadsInitialized() 1
+#endif
+
 
 #include "pythonplugin.h"
 #include "grouplayer.h"
@@ -4531,6 +4535,21 @@ _wrap_PyTiledLayer_name(PyTiledLayer *self, PyObject *PYBINDGEN_UNUSED(_args), P
 
 
 PyObject *
+_wrap_PyTiledLayer_offset(PyTiledLayer *self, PyObject *PYBINDGEN_UNUSED(_args), PyObject *PYBINDGEN_UNUSED(_kwargs))
+{
+    PyObject *py_retval;
+    PyQPointF *py_QPointF;
+
+    QPointF retval = self->obj->offset();
+    py_QPointF = PyObject_New(PyQPointF, &PyQPointF_Type);
+    py_QPointF->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
+    py_QPointF->obj = new QPointF(retval);
+    py_retval = Py_BuildValue((char *) "N", py_QPointF);
+    return py_retval;
+}
+
+
+PyObject *
 _wrap_PyTiledLayer_opacity(PyTiledLayer *self, PyObject *PYBINDGEN_UNUSED(_args), PyObject *PYBINDGEN_UNUSED(_kwargs))
 {
     PyObject *py_retval;
@@ -4573,6 +4592,23 @@ _wrap_PyTiledLayer_setName(PyTiledLayer *self, PyObject *args, PyObject *kwargs)
         return NULL;
     }
     self->obj->setName(QString::fromUtf8(name));
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledLayer_setOffset(PyTiledLayer *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    PyQPointF *offset;
+    const char *keywords[] = {"offset", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyQPointF_Type, &offset)) {
+        return NULL;
+    }
+    self->obj->setOffset(*((PyQPointF *) offset)->obj);
     Py_INCREF(Py_None);
     py_retval = Py_None;
     return py_retval;
@@ -4705,9 +4741,11 @@ static PyMethodDef PyTiledLayer_methods[] = {
     {(char *) "isVisible", (PyCFunction) _wrap_PyTiledLayer_isVisible, METH_NOARGS, "isVisible()\n\n" },
     {(char *) "map", (PyCFunction) _wrap_PyTiledLayer_map, METH_NOARGS, "map()\n\n" },
     {(char *) "name", (PyCFunction) _wrap_PyTiledLayer_name, METH_NOARGS, "name()\n\n" },
+    {(char *) "offset", (PyCFunction) _wrap_PyTiledLayer_offset, METH_NOARGS, "offset()\n\n" },
     {(char *) "opacity", (PyCFunction) _wrap_PyTiledLayer_opacity, METH_NOARGS, "opacity()\n\n" },
     {(char *) "setLocked", (PyCFunction) _wrap_PyTiledLayer_setLocked, METH_KEYWORDS|METH_VARARGS, "setLocked(locked)\n\ntype: locked: bool" },
     {(char *) "setName", (PyCFunction) _wrap_PyTiledLayer_setName, METH_KEYWORDS|METH_VARARGS, "setName(name)\n\ntype: name: QString" },
+    {(char *) "setOffset", (PyCFunction) _wrap_PyTiledLayer_setOffset, METH_KEYWORDS|METH_VARARGS, "setOffset(offset)\n\ntype: offset: QPointF" },
     {(char *) "setOpacity", (PyCFunction) _wrap_PyTiledLayer_setOpacity, METH_KEYWORDS|METH_VARARGS, "setOpacity(opacity)\n\ntype: opacity: double" },
     {(char *) "setPosition", (PyCFunction) _wrap_PyTiledLayer_setPosition, METH_KEYWORDS|METH_VARARGS, "setPosition(x, y)\n\ntype: x: int\ntype: y: int" },
     {(char *) "setVisible", (PyCFunction) _wrap_PyTiledLayer_setVisible, METH_KEYWORDS|METH_VARARGS, "setVisible(visible)\n\ntype: visible: bool" },

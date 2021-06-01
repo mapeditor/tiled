@@ -331,8 +331,8 @@ cls_layer.add_method('asTileLayer', retval('Tiled::TileLayer*',reference_existin
 cls_layer.add_method('asObjectGroup', retval('Tiled::ObjectGroup*',reference_existing_object=True), [])
 cls_layer.add_method('asImageLayer', retval('Tiled::ImageLayer*',reference_existing_object=True), [])
 cls_layer.add_method('asGroupLayer', retval('Tiled::GroupLayer*',reference_existing_object=True), [])
-cls_layer.add_method('offsetx', 'double', [])
-cls_layer.add_method('offsety', 'double', [])
+cls_layer.add_method('offset', 'QPointF', [])
+cls_layer.add_method('setOffset', None, [('QPointF','offset')])
 
 
 mod.body.writeln("""
