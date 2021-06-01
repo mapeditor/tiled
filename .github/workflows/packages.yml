@@ -87,8 +87,8 @@ jobs:
 
     - name: Build Tiled
       run: |
-        set PATH=%QT_PATH%;%PATH%
-        set TILED_MSI_VERSION=1.4.${GITHUB_RUN_NUMBER}
+        export PATH=${QT_PATH}:${PATH}
+        export TILED_MSI_VERSION=1.4.${GITHUB_RUN_NUMBER}
         qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:false
         mv release/installer*/Tiled-*.msi .
 
