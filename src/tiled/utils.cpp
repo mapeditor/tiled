@@ -113,10 +113,10 @@ QStringList cleanFilterList(const QString &filter)
 }
 
 /**
- * Returns whether the \a fileName has an extension that is matched by
+ * Returns whether the \a filePath has an extension that is matched by
  * the \a nameFilter.
  */
-bool fileNameMatchesNameFilter(const QString &fileName,
+bool fileNameMatchesNameFilter(const QString &filePath,
                                const QString &nameFilter)
 {
 #if QT_VERSION < QT_VERSION_CHECK(5,15,0)
@@ -129,6 +129,7 @@ bool fileNameMatchesNameFilter(const QString &fileName,
 #endif
 
     const QStringList filterList = cleanFilterList(nameFilter);
+    const QString fileName = QFileInfo(filePath).fileName();
     for (const QString &filter : filterList) {
 #if QT_VERSION < QT_VERSION_CHECK(5,15,0)
         rx.setPattern(filter);

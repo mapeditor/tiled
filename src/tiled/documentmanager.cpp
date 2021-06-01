@@ -722,7 +722,7 @@ bool DocumentManager::saveDocumentAs(Document *document)
                                                     &selectedFilter);
 
             if (!fileName.isEmpty() &&
-                !Utils::fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter))
+                !Utils::fileNameMatchesNameFilter(fileName, selectedFilter))
             {
                 QMessageBox messageBox(QMessageBox::Warning,
                                        QCoreApplication::translate("Tiled::MainWindow", "Extension Mismatch"),
