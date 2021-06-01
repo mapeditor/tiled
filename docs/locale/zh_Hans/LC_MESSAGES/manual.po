@@ -710,7 +710,7 @@ msgstr ""
 
 #: ../../manual/custom-properties.rst:67
 msgid "General Setup"
-msgstr ""
+msgstr "通用设置"
 
 #: ../../manual/custom-properties.rst:69
 msgid "Usually you only use a limited set of object types in your game, and each type of object has a fixed set of possible properties, with specific types and default values. To save you time, Tiled allows predefining these properties based on the \"Type\" field for objects. You can set this up using the Object Types Editor, available from the *View* menu."
@@ -1548,7 +1548,7 @@ msgstr ""
 #: ../../manual/export.rst:254
 #: ../../manual/python.rst:2
 msgid "Python Scripts"
-msgstr ""
+msgstr "Python 脚本"
 
 #: ../../manual/export.rst:256
 msgid "It is also possible to write :doc:`Python scripts <python>` to add support for importing or exporting custom map formats."
@@ -1556,23 +1556,23 @@ msgstr ""
 
 #: ../../manual/introduction.rst:2
 msgid "Introduction"
-msgstr ""
+msgstr "介绍"
 
 #: ../../manual/introduction.rst:5
 msgid "About Tiled"
-msgstr ""
+msgstr "关于Tiled"
 
 #: ../../manual/introduction.rst:7
 msgid "**Tiled is a 2D level editor that helps you develop the content of your game. Its primary feature is to edit tile maps of various forms, but it also supports free image placement as well as powerful ways to annotate your level with extra information used by the game. Tiled focuses on general flexibility while trying to stay intuitive.**"
-msgstr ""
+msgstr "** Tiled是帮助你开发游戏内容的2D关卡编辑器。它的主要功能是编辑各种形式的瓦片地图，但它还支持通过放置空图片这种强大的方式来标记游戏的数据。Tiled在保持直观性的同时注重总体的灵活性。**"
 
 #: ../../manual/introduction.rst:13
 msgid "In terms of tile maps, it supports straight rectangular tile layers, but also projected isometric, staggered isometric and staggered hexagonal layers. A tileset can be either a single image containing many tiles, or it can be a collection of individual images. In order to support certain depth faking techniques, tiles and layers can be offset by a custom distance and their rendering order can be configured."
-msgstr ""
+msgstr "就瓦片地图而言，它支持矩形图层，还支持等轴测投影，交错等距和交错六边形图层。瓦片集可以是包含多个瓦片的单个图像，也可以是单个图像的集合。为了支持某些伪深度技术，可以将瓦片和图层偏移自定义距离，并可以配置其渲染顺序。"
 
 #: ../../manual/introduction.rst:20
 msgid "The primary tool for editing :ref:`tile layers <tile-layer-introduction>` is a stamp brush that allows efficient painting and copying of tile areas. It also supports drawing lines and circles. In addition, there are several selection tools and a tool that does :doc:`automatic terrain transitions <using-the-terrain-tool>`. Finally, it can apply changes based on :doc:`pattern-matching <automapping>` to automate parts of your work."
-msgstr ""
+msgstr "编辑:ref:`瓦片图层 <tile-layer-introduction>`的主要工具 是图章画笔，它可以有效地绘画和复制图块区域。它还支持绘制直线和圆。此外，还有几种选择工具和一种可:doc:`自动进行地形转换 <using-the-terrain-tool>`的工具。最后，它可以基于:doc:`模式匹配 <automapping>`应用更改 以使工作的一部分自动化。"
 
 #: ../../manual/introduction.rst:27
 msgid "Tiled also supports :ref:`object layers <object-layer-introduction>`, which traditionally were only for annotating your map with information but more recently they can also be used to place images. You can add rectangle, point, ellipse, polygon, polyline and tile objects. Object placement is not limited to the tile grid and objects can also be scaled or rotated. Object layers offer a lot of flexibility to add almost any information to your level that your game needs."
@@ -1584,27 +1584,27 @@ msgstr ""
 
 #: ../../manual/introduction.rst:42
 msgid "Getting Started"
-msgstr ""
+msgstr "入门"
 
 #: ../../manual/introduction.rst:45
 msgid "Creating a New Map"
-msgstr ""
+msgstr "创建一个新地图"
 
 #: ../../manual/introduction.rst:47
 msgid "When launching Tiled for the first time, we are greeted with the following window:"
-msgstr ""
+msgstr "首次启动Tiled时，会看到以下窗口："
 
 #: ../../manual/introduction.rst:53
-msgid "Tiled Window"
+msgid "Tiled 窗口"
 msgstr ""
 
 #: ../../manual/introduction.rst:55
 msgid "The first thing we'll do is to start a new map with *File -> New -> New Map…* (``Ctrl+N``). The following dialog will pop up:"
-msgstr ""
+msgstr "我们要做的第一件事是创建一张新的地图：点击*文件=>新建=>创建新地图*，也可以直接使用快捷键（``Ctrl+N``），接下来会弹出以下对话框："
 
 #: ../../manual/introduction.rst:62
 msgid "New Map"
-msgstr ""
+msgstr "新地图"
 
 #: ../../manual/introduction.rst:64
 msgid "Here, we choose the initial map size, tile size, orientation, tile layer format, tile render order (only supported for *Orthogonal* maps) and whether the map is :doc:`infinite <using-infinite-maps>` or not. All of these things can be changed later as needed, so it's not important to get it all right the first time."

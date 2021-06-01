@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2020 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2020 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2020 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -45,7 +45,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * data.
  *
  * @see org.mapeditor.core.Map
- * @version 1.2.3
+ * @version 1.4.2
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class TileLayer extends TileLayerData {
@@ -531,7 +531,7 @@ public class TileLayer extends TileLayerData {
      * @param y Tile-space y coordinate
      * @return <code>true</code> if tile at (x, y) is flipped horizontally
      */
-    public boolean isFlippedHorizontaly(int x, int y) {
+    public boolean isFlippedHorizontally(int x, int y) {
         return getBounds().contains(x, y) &&
                 (flags[y][x] & (int)TMXMapReader.FLIPPED_HORIZONTALLY_FLAG) != 0;
     }
@@ -555,7 +555,7 @@ public class TileLayer extends TileLayerData {
      * @param y Tile-space y coordinate
      * @return <code>true</code> if tile at (x, y) is flipped diagonally
      */
-    public boolean isFlippedDiagonaly(int x, int y) {
+    public boolean isFlippedDiagonally(int x, int y) {
         return getBounds().contains(x, y) &&
                 (flags[y][x] & (int)TMXMapReader.FLIPPED_DIAGONALLY_FLAG) != 0;
     }

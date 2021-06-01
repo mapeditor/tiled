@@ -86,6 +86,13 @@ static QString replaceVariables(const QString &string, bool quoteValues = true)
                 finalString.replace(QLatin1String("%layername"),
                                     replaceString.arg(layer->name()));
             }
+        } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+            QStringList selectedTileIds;
+            for (Tile *tile : tilesetDocument->selectedTiles())
+                selectedTileIds.append(QString::number(tile->id()));
+
+            finalString.replace(QLatin1String("%tileid"),
+                                replaceString.arg(selectedTileIds.join(QLatin1Char(','))));
         }
 
         if (MapObject *currentObject = dynamic_cast<MapObject *>(document->currentObject())) {
@@ -242,8 +249,8 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
         mFile.close();
 
         // Add execute permission to the file
-        int chmodRet = QProcess::execute(QStringLiteral(
-                                     "chmod +x \"%1\"").arg(mFile.fileName()));
+        int chmodRet = QProcess::execute(QStringLiteral("chmod"),
+                                         { QStringLiteral("+x"), mFile.fileName() });
         if (chmodRet != 0) {
             reportErrorAndDelete(tr("Unable to add executable permissions to %1")
                                  .arg(mFile.fileName()));
@@ -275,7 +282,13 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
     if (!finalWorkingDirectory.trimmed().isEmpty())
         setWorkingDirectory(finalWorkingDirectory);
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     start(mFinalCommand);
+#else
+    QStringList args = QProcess::splitCommand(mFinalCommand);
+    const QString executable = args.takeFirst();
+    start(executable, args);
+#endif
 }
 
 void CommandProcess::consoleOutput()

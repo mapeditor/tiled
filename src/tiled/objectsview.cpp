@@ -406,3 +406,5 @@ void ObjectsView::updateRow(MapObject *object)
 }
 
 } // namespace Tiled
+
+#include "moc_objectsview.cpp"

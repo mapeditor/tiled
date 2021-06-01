@@ -57,3 +57,5 @@ MapObject *CreatePointObjectTool::createNewMapObject()
     newMapObject->setShape(MapObject::Point);
     return newMapObject;
 }
+
+#include "moc_createpointobjecttool.cpp"

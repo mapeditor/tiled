@@ -30,18 +30,18 @@ namespace Tiled {
 class Layer;
 class MapObject;
 class ObjectGroup;
-class Terrain;
 class Tile;
 class Tileset;
+class WangSet;
 
 class EditableAsset;
 class EditableLayer;
 class EditableMap;
 class EditableMapObject;
 class EditableObjectGroup;
-class EditableTerrain;
 class EditableTile;
 class EditableTileset;
+class EditableWangSet;
 
 /**
  * Manages editable wrappers that are used to expose properties to scripts.
@@ -59,30 +59,31 @@ public:
     EditableLayer *find(Layer *layer) const;
     EditableMapObject *find(MapObject *mapObject) const;
     EditableTile *find(Tile *tile) const;
-    EditableTerrain *find(Terrain *terrain) const;
+    EditableWangSet *find(WangSet *wangSet) const;
 
     void release(Layer *layer);
     void release(MapObject *mapObject);
+    void release(std::unique_ptr<WangSet> wangSet);
 
     EditableLayer *editableLayer(EditableMap *map, Layer *layer);
     EditableObjectGroup *editableObjectGroup(EditableAsset *asset, ObjectGroup *objectGroup);
     EditableMapObject *editableMapObject(EditableAsset *asset, MapObject *mapObject);
     EditableTileset *editableTileset(Tileset *tileset);
     EditableTile *editableTile(EditableTileset *tileset, Tile *tile);
-    EditableTerrain *editableTerrain(EditableTileset *tileset, Terrain *terrain);
+    EditableWangSet *editableWangSet(EditableTileset *tileset, WangSet *wangSet);
 
 private:
     friend class EditableLayer;
     friend class EditableMapObject;
     friend class EditableTileset;
     friend class EditableTile;
-    friend class EditableTerrain;
+    friend class EditableWangSet;
 
     QHash<Layer*, EditableLayer*> mEditableLayers;
     QHash<MapObject*, EditableMapObject*> mEditableMapObjects;
     QHash<Tileset*, EditableTileset*> mEditableTilesets;
     QHash<Tile*, EditableTile*> mEditableTiles;
-    QHash<Terrain*, EditableTerrain*> mEditableTerrains;
+    QHash<WangSet*, EditableWangSet*> mEditableWangSets;
 
     static std::unique_ptr<EditableManager> mInstance;
 };
@@ -103,9 +104,9 @@ inline EditableTile *EditableManager::find(Tile *tile) const
     return mEditableTiles.value(tile);
 }
 
-inline EditableTerrain *EditableManager::find(Terrain *terrain) const
+inline EditableWangSet *EditableManager::find(WangSet *wangSet) const
 {
-    return mEditableTerrains.value(terrain);
+    return mEditableWangSets.value(wangSet);
 }
 
 } // namespace Tiled

@@ -21,10 +21,13 @@
 #include "preferencesdialog.h"
 #include "ui_preferencesdialog.h"
 
+#include "abstractobjecttool.h"
 #include "languagemanager.h"
+#include "mapview.h"
 #include "pluginlistmodel.h"
 #include "preferences.h"
 #include "scriptmanager.h"
+#include "sentryhelper.h"
 
 #include <QDesktopServices>
 #include <QSortFilterProxyModel>
@@ -60,12 +63,15 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->languageCombo->model()->sort(0);
     mUi->languageCombo->insertItem(0, tr("System default"));
 
-    mUi->styleCombo->addItems(QStringList()
-                              << QApplication::translate("PreferencesDialog", "Native")
-                              << QApplication::translate("PreferencesDialog", "Tiled Fusion"));
+    mUi->styleCombo->addItems({ QApplication::translate("PreferencesDialog", "Native"),
+                                QApplication::translate("PreferencesDialog", "Tiled Fusion") });
 
     mUi->styleCombo->setItemData(0, Preferences::SystemDefaultStyle);
     mUi->styleCombo->setItemData(1, Preferences::TiledStyle);
+
+    mUi->objectSelectionBehaviorCombo->addItems({ tr("Select From Any Layer"),
+                                                  tr("Prefer Selected Layers"),
+                                                  tr("Selected Layers Only") });
 
     PluginListModel *pluginListModel = new PluginListModel(this);
     QSortFilterProxyModel *pluginProxyModel = new QSortFilterProxyModel(this);
@@ -102,21 +108,42 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
         preferences->setExportOption(Preferences::ExportMinimized, value);
     });
 
+#ifdef TILED_SENTRY
+    connect(mUi->sendCrashReports, &QCheckBox::toggled, [] (bool value) {
+        Sentry::instance()->setUserConsent(value ? Sentry::ConsentGiven : Sentry::ConsentRevoked);
+    });
+    connect(mUi->crashReportingLabel, &QLabel::linkActivated, [] (const QString &link) {
+        QDesktopServices::openUrl(QUrl(link));
+    });
+#else
+    mUi->crashReporting->setVisible(false);
+#endif
+
     connect(mUi->languageCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::languageSelected);
     connect(mUi->gridColor, &ColorButton::colorChanged,
             preferences, &Preferences::setGridColor);
+    connect(mUi->backgroundFadeColor, &ColorButton::colorChanged,
+            preferences, &Preferences::setBackgroundFadeColor);
     connect(mUi->gridFine, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
             preferences, &Preferences::setGridFine);
+    connect(mUi->gridMajor, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            preferences, &Preferences::setGridMajor);
     connect(mUi->objectLineWidth, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
             preferences, &Preferences::setObjectLineWidth);
     connect(mUi->openGL, &QCheckBox::toggled,
             preferences, &Preferences::setUseOpenGL);
     connect(mUi->wheelZoomsByDefault, &QCheckBox::toggled,
             preferences, &Preferences::setWheelZoomsByDefault);
+    connect(mUi->autoScrolling, &QCheckBox::toggled,
+            this, [] (bool checked) { MapView::ourAutoScrollingEnabled = checked; });
+    connect(mUi->smoothScrolling, &QCheckBox::toggled,
+            this, [] (bool checked) { MapView::ourSmoothScrollingEnabled = checked; });
 
     connect(mUi->styleCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::styleComboChanged);
+    connect(mUi->objectSelectionBehaviorCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, [] (int index) { AbstractObjectTool::ourSelectionBehavior = static_cast<AbstractObjectTool::SelectionBehavior>(index); });
     connect(mUi->baseColor, &ColorButton::colorChanged,
             preferences, &Preferences::setBaseColor);
     connect(mUi->selectionColor, &ColorButton::colorChanged,
@@ -181,10 +208,16 @@ void PreferencesDialog::fromPreferences()
     mUi->resolveObjectTypesAndProperties->setChecked(prefs->exportOption(Preferences::ResolveObjectTypesAndProperties));
     mUi->minimizeOutput->setChecked(prefs->exportOption(Preferences::ExportMinimized));
 
+#ifdef TILED_SENTRY
+    mUi->sendCrashReports->setChecked(Sentry::instance()->userConsent() == Sentry::ConsentGiven);
+#endif
+
     // Interface
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());
+    mUi->autoScrolling->setChecked(MapView::ourAutoScrollingEnabled);
+    mUi->smoothScrolling->setChecked(MapView::ourSmoothScrollingEnabled);
 
     // Not found (-1) ends up at index 0, system default
     int languageIndex = mUi->languageCombo->findData(prefs->language());
@@ -192,7 +225,9 @@ void PreferencesDialog::fromPreferences()
         languageIndex = 0;
     mUi->languageCombo->setCurrentIndex(languageIndex);
     mUi->gridColor->setColor(prefs->gridColor());
+    mUi->backgroundFadeColor->setColor(prefs->backgroundFadeColor());
     mUi->gridFine->setValue(prefs->gridFine());
+    mUi->gridMajor->setValue(prefs->gridMajor());
     mUi->objectLineWidth->setValue(prefs->objectLineWidth());
 
     // Updates
@@ -205,6 +240,7 @@ void PreferencesDialog::fromPreferences()
         styleComboIndex = 1;
 
     mUi->styleCombo->setCurrentIndex(styleComboIndex);
+    mUi->objectSelectionBehaviorCombo->setCurrentIndex(AbstractObjectTool::ourSelectionBehavior);
     mUi->baseColor->setColor(prefs->baseColor());
     mUi->selectionColor->setColor(prefs->selectionColor());
     bool systemStyle = prefs->applicationStyle() == Preferences::SystemDefaultStyle;
@@ -220,6 +256,10 @@ void PreferencesDialog::retranslateUi()
 
     mUi->styleCombo->setItemText(0, QApplication::translate("PreferencesDialog", "Native"));
     mUi->styleCombo->setItemText(1, QApplication::translate("PreferencesDialog", "Tiled Fusion"));
+
+    mUi->objectSelectionBehaviorCombo->setItemText(0, tr("Select From Any Layer"));
+    mUi->objectSelectionBehaviorCombo->setItemText(1, tr("Prefer Selected Layers"));
+    mUi->objectSelectionBehaviorCombo->setItemText(3, tr("Selected Layers Only"));
 }
 
 void PreferencesDialog::styleComboChanged()
@@ -235,3 +275,5 @@ void PreferencesDialog::styleComboChanged()
     mUi->selectionColor->setEnabled(!systemStyle);
     mUi->selectionColorLabel->setEnabled(!systemStyle);
 }
+
+#include "moc_preferencesdialog.cpp"

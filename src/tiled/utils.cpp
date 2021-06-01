@@ -26,6 +26,10 @@
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
+#ifdef TILED_ENABLE_DBUS
+#include <QDBusConnection>
+#include <QDBusMessage>
+#endif
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileInfo>
@@ -37,7 +41,10 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QProcess>
+#include <QRegularExpression>
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
 #include <QRegExp>
+#endif
 #include <QScreen>
 
 #include "qtcompat_p.h"
@@ -92,30 +99,45 @@ QStringList cleanFilterList(const QString &filter)
     const char filterRegExp[] =
     "^(.*)\\(([a-zA-Z0-9_.,*? +;#\\-\\[\\]@\\{\\}/!<>\\$%&=^~:\\|]*)\\)$";
 
-    QRegExp regexp(QString::fromLatin1(filterRegExp));
+    QRegularExpression regexp(QString::fromLatin1(filterRegExp));
     Q_ASSERT(regexp.isValid());
     QString f = filter;
-    int i = regexp.indexIn(f);
-    if (i >= 0)
-        f = regexp.cap(2);
+    QRegularExpressionMatch match = regexp.match(filter);
+    if (match.hasMatch())
+        f = match.captured(2);
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     return f.split(QLatin1Char(' '), QString::SkipEmptyParts);
+#else
+    return f.split(QLatin1Char(' '), Qt::SkipEmptyParts);
+#endif
 }
 
 /**
- * Returns whether the \a fileName has an extension that is matched by
+ * Returns whether the \a filePath has an extension that is matched by
  * the \a nameFilter.
  */
-bool fileNameMatchesNameFilter(const QString &fileName,
+bool fileNameMatchesNameFilter(const QString &filePath,
                                const QString &nameFilter)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
     QRegExp rx;
     rx.setCaseSensitivity(Qt::CaseInsensitive);
     rx.setPatternSyntax(QRegExp::Wildcard);
+#else
+    QRegularExpression rx;
+    rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+#endif
 
     const QStringList filterList = cleanFilterList(nameFilter);
+    const QString fileName = QFileInfo(filePath).fileName();
     for (const QString &filter : filterList) {
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
         rx.setPattern(filter);
         if (rx.exactMatch(fileName))
+#else
+        rx.setPattern(QRegularExpression::wildcardToRegularExpression(filter));
+        if (rx.match(fileName).hasMatch())
+#endif
             return true;
     }
     return false;
@@ -223,7 +245,7 @@ static bool matchingRanges(const QString &word, QStringRef string, int offset, R
 
 int matchingScore(const QStringList &words, QStringRef string)
 {
-    const QStringRef fileName = string.mid(string.lastIndexOf(QLatin1Char('/')) + 1);
+    const auto fileName = string.mid(string.lastIndexOf(QLatin1Char('/')) + 1);
 
     int totalScore = 1;     // no words matches everything
 
@@ -245,7 +267,7 @@ int matchingScore(const QStringList &words, QStringRef string)
 RangeSet<int> matchingRanges(const QStringList &words, QStringRef string)
 {
     const int startOfFileName = string.lastIndexOf(QLatin1Char('/')) + 1;
-    const QStringRef fileName = string.mid(startOfFileName);
+    const auto fileName = string.mid(startOfFileName);
 
     RangeSet<int> result;
 
@@ -419,11 +441,31 @@ static void showInFileManager(const QString &fileName)
                << QLatin1String("tell application \"Finder\" to activate");
     QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
 #else
-    // We cannot select a file here, because xdg-open would open the file
-    // instead of the file browser...
+
+#ifdef TILED_ENABLE_DBUS
+    QDBusMessage message = QDBusMessage::createMethodCall(
+        QStringLiteral("org.freedesktop.FileManager1"),
+        QStringLiteral("/org/freedesktop/FileManager1"),
+        QStringLiteral("org.freedesktop.FileManager1"),
+        QStringLiteral("ShowItems"));
+
+    message.setArguments({
+        QStringList(QUrl::fromLocalFile(fileName).toString()),
+        QString()
+    });
+
+    const QDBusError error = QDBusConnection::sessionBus().call(message);
+
+    if (!error.isValid())
+        return;
+#endif // TILED_ENABLE_DBUS
+
+    // Fall back to xdg-open. We cannot select a file here, because
+    // xdg-open would open the file instead of the file browser...
     QProcess::startDetached(QStringLiteral("xdg-open"),
                             QStringList(QFileInfo(fileName).absolutePath()));
-#endif
+
+#endif // !Q_OS_WIN && !Q_OS_MAC
 }
 
 void addFileManagerActions(QMenu &menu, const QString &fileName)

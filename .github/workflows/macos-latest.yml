@@ -1,11 +1,24 @@
-name: Compile on latest macOS
+name: Compile on latest macOS (Homebrew)
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+    - 'docs/**'
+    - '**.md'
+    - 'appveyor.yml'
+    - '.travis.yml'
+    branches-ignore: [snapshot]
+  pull_request:
+    paths-ignore:
+    - 'docs/**'
+    - '**.md'
+    - 'appveyor.yml'
+    - '.travis.yml'
 
 jobs:
   build:
 
-    runs-on: macOS-latest
+    runs-on: macos-latest
 
     steps:
     - name: Checkout repository
@@ -13,7 +26,6 @@ jobs:
 
     - name: Install dependencies
       run: |
-        brew update
         brew install qbs
         brew link qt5 --force
 
@@ -29,14 +41,16 @@ jobs:
 
     - name: Package
       run: |
+        export TILED_VERSION=$(git describe | cut -c 2-)
         qbs install --install-root install config:release
         macdeployqt install/Tiled.app -verbose=2
         pushd install
         ruby ../dist/macos/fixup-install-names.rb
+        ditto -c -k --sequesterRsrc --keepParent Tiled.app ../Tiled-$TILED_VERSION-macos.zip
         popd
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: Tiled.app
-        path: install/Tiled.app
+        path: Tiled-*-macos.zip

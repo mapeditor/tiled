@@ -48,6 +48,7 @@ HEADERS += $$PWD/compression.h \
     $$PWD/filesystemwatcher.h \
     $$PWD/fileformat.h \
     $$PWD/gidmapper.h \
+    $$PWD/grid.h \
     $$PWD/grouplayer.h \
     $$PWD/hex.h \
     $$PWD/hexagonalrenderer.h \
@@ -77,7 +78,6 @@ HEADERS += $$PWD/compression.h \
     $$PWD/savefile.h \
     $$PWD/staggeredrenderer.h \
     $$PWD/templatemanager.h \
-    $$PWD/terrain.h \
     $$PWD/tile.h \
     $$PWD/tileanimationdriver.h \
     $$PWD/tiled.h \

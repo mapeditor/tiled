@@ -13,6 +13,27 @@ This small library is BSD licensed. See the LICENSE.BSD file for details.
 
 https://www.mapeditor.org/
 
+## Maven
+
+Add into `<dependencies>` of your `pom.xml`:
+
+```xml
+    <dependency>
+      <groupId>org.mapeditor</groupId>
+      <artifactId>libtiled</artifactId>
+      <version>x.y.z</version>
+    </dependency>
+```
+
+Consult the Maven repository for the latest [org.mapeditor/libtiled](https://mvnrepository.com/artifact/org.mapeditor/libtiled) version.
+
+## sbt
+
+Add the following to your `build.sbt`:
+
+```
+libraryDependencies += "org.mapeditor" % "libtiled" % "x.y.z"
+```
 
 ## Building
 

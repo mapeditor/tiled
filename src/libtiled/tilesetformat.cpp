@@ -47,7 +47,7 @@ SharedTileset readTileset(const QString &fileName, QString *error)
 
         if (tileset) {
             tileset->setFileName(fileName);
-            tileset->setFormat(format);
+            tileset->setFormat(format->shortName());
         }
 
         return tileset;
@@ -80,3 +80,5 @@ TilesetFormat *findSupportingTilesetFormat(const QString &fileName)
 }
 
 } // namespace Tiled
+
+#include "moc_tilesetformat.cpp"

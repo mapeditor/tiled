@@ -50,14 +50,11 @@ public:
     QPainterPath interactionShape(const MapObject *object) const override;
 
     void drawGrid(QPainter *painter, const QRectF &rect,
-                  QColor gridColor) const override;
+                  QColor gridColor, int gridMajor = 0) const override;
 
-    void drawTileLayer(QPainter *painter, const TileLayer *layer,
-                       const QRectF &exposed = QRectF()) const override;
-
-    void drawTileLayer(const TileLayer *layer,
-                       const RenderTileCallback &renderTile,
-                       const QRectF &exposed = QRectF()) const override;
+    using MapRenderer::drawTileLayer;
+    void drawTileLayer(const RenderTileCallback &renderTile,
+                       const QRectF &exposed) const override;
 
     void drawTileSelection(QPainter *painter,
                            const QRegion &region,

@@ -161,8 +161,14 @@
                 <?endif?>
 
                 <File Source="$(var.InstallRoot)\plugins\tiled\replicaisland.dll" />
+
+                <?ifdef RpMap ?>
+                <File Source="$(var.InstallRoot)\plugins\tiled\rpmap.dll" />
+                <?endif?>
+
                 <File Source="$(var.InstallRoot)\plugins\tiled\tbin.dll" />
                 <File Source="$(var.InstallRoot)\plugins\tiled\tengine.dll" />
+                <File Source="$(var.InstallRoot)\plugins\tiled\yy.dll" />
               </Component>
             </Directory>
             <Directory Id="platformPlugins" Name="platforms">
@@ -214,6 +220,8 @@
               <File Source="$(var.InstallRoot)\translations\tiled_pt.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_pt_PT.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_ru.qm" />
+              <File Source="$(var.InstallRoot)\translations\tiled_sv.qm" />
+              <File Source="$(var.InstallRoot)\translations\tiled_th.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_tr.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_zh_CN.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_zh_TW.qm" />
@@ -225,8 +233,10 @@
               <File Source="$(var.QtDir)\translations\qt_fr.qm"/>
               <File Source="$(var.QtDir)\translations\qt_he.qm"/>
               <File Source="$(var.QtDir)\translations\qt_ja.qm"/>
+              <File Source="$(var.QtDir)\translations\qt_pl.qm"/>
               <File Source="$(var.QtDir)\translations\qt_pt.qm"/>
               <File Source="$(var.QtDir)\translations\qt_ru.qm"/>
+              <File Source="$(var.QtDir)\translations\qt_sv.qm"/>
               <File Source="$(var.QtDir)\translations\qt_zh_CN.qm"/>
               <File Source="$(var.QtDir)\translations\qt_zh_TW.qm"/>
             </Component>

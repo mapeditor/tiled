@@ -41,8 +41,6 @@ class QToolButton;
 
 namespace Tiled {
 
-class Terrain;
-
 class AbstractTool;
 class BucketFillTool;
 class ComboBoxProxyModel;
@@ -58,8 +56,6 @@ class ReversingProxyModel;
 class ShapeFillTool;
 class StampBrush;
 class TemplatesDock;
-class TerrainBrush;
-class TerrainDock;
 class TileStamp;
 class TileStampManager;
 class TileStampsDock;
@@ -71,7 +67,7 @@ class WangBrush;
 class WangDock;
 class Zoomable;
 
-class MapEditor : public Editor
+class MapEditor final : public Editor
 {
     Q_OBJECT
 
@@ -138,7 +134,6 @@ private:
     void setWangFill(bool value);
 
     void setStamp(const TileStamp &stamp);
-    void selectTerrainBrush();
 
     void selectWangBrush();
 
@@ -156,6 +151,7 @@ private:
     void setupQuickStamps();
     void retranslateUi();
     void showTileCollisionShapesChanged(bool enabled);
+    void parallaxEnabledChanged(bool enabled);
 
     void handleExternalTilesetsAndImages(const QStringList &fileNames,
                                          bool handleImages);
@@ -174,7 +170,6 @@ private:
     ObjectsDock *mObjectsDock;
     TemplatesDock *mTemplatesDock;
     TilesetDock *mTilesetDock;
-    TerrainDock *mTerrainDock;
     WangDock *mWangDock;
     MiniMapDock* mMiniMapDock;
     TileStampsDock *mTileStampsDock;
@@ -190,7 +185,6 @@ private:
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
     ShapeFillTool *mShapeFillTool;
-    TerrainBrush *mTerrainBrush;
     WangBrush *mWangBrush;
     EditPolygonTool *mEditPolygonTool;
 

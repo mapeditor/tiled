@@ -214,24 +214,19 @@ void TileStampManager::loadStamps()
         if (!stampFile.open(QIODevice::ReadOnly))
             continue;
 
-        QByteArray data = stampFile.readAll();
-
-        QJsonDocument document = QJsonDocument::fromBinaryData(data);
-        if (document.isNull()) {
-            // document not valid binary data, maybe it's an JSON text file
-            QJsonParseError error;
-            document = QJsonDocument::fromJson(data, &error);
-            if (error.error != QJsonParseError::NoError) {
-                qDebug().noquote() << "Failed to parse stamp file:" << error.errorString();
-                continue;
-            }
+        QJsonParseError error;
+        const QByteArray data = stampFile.readAll();
+        const QJsonDocument document = QJsonDocument::fromJson(data, &error);
+        if (error.error != QJsonParseError::NoError) {
+            qDebug().noquote() << "Failed to parse stamp file:" << error.errorString();
+            continue;
         }
 
         TileStamp stamp = TileStamp::fromJson(document.object(), stampsDir);
         if (stamp.isEmpty())
             continue;
 
-        stamp.setFileName(iterator.fileInfo().fileName());
+        stamp.setFileName(iterator.fileName());
 
         mTileStampModel->addStamp(stamp);
 
@@ -338,3 +333,5 @@ QString TileStampManager::findStampFileName(const QString &name,
 
     return fileName;
 }
+
+#include "moc_tilestampmanager.cpp"

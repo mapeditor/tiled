@@ -238,82 +238,18 @@ POSSIBILITY OF SUCH DAMAGE.
             </xs:documentation>
         </xs:annotation>
 
-        <xs:sequence>
-            <xs:element name="properties" type="Properties"/>
-            <xs:element name="layer" type="TileLayer" maxOccurs="unbounded"/>
-            <xs:element name="objectgroup" type="ObjectGroup" maxOccurs="unbounded"/>
-            <xs:element name="imagelayer" type="ImageLayer" maxOccurs="unbounded"/>
-            <xs:element name="group" type="Group" maxOccurs="unbounded"/>
-        </xs:sequence>
-
-        <xs:attribute name="id" type="xs:int">
-            <xs:annotation>
-                <xs:documentation>
-                    Unique ID of the layer. Each layer that is added to a map gets a
-                    unique id. Even if a layer is deleted, no layer ever gets the
-                    same ID. Can not be changed in Tiled.
-
-                    @since 1.2
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="name" type="xs:string">
-            <xs:annotation>
-                <xs:documentation>
-                    The name of the group layer.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="offsetx" type="xs:int">
-            <xs:annotation>
-                <xs:documentation>
-                    Rendering offset of the group layer in pixels.
-                    Defaults to 0.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="offsety" type="xs:int">
-            <xs:annotation>
-                <xs:documentation>
-                    Rendering offset of the group layer in pixels.
-                    Defaults to 0.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="x" type="xs:int">
-            <xs:annotation>
-                <xs:documentation>
-                    The x position of the group layer in pixels.
-
-                    @deprecated since 0.15
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="y" type="xs:int">
-            <xs:annotation>
-                <xs:documentation>
-                    The y position of the group layer in pixels.
-
-                    @deprecated since 0.15
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="opacity" type="xs:double">
-            <xs:annotation>
-                <xs:documentation>
-                    The opacity of the layer as a value from 0 to 1.
-                    Defaults to 1.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="visible" type="xs:boolean">
-            <xs:annotation>
-                <xs:documentation>
-                    Whether the layer is shown (1) or hidden (0).
-                    Defaults to 1.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
+        <xs:complexContent>
+            <xs:extension base="Layer">
+                <xs:sequence>
+                    <xs:choice>
+                        <xs:element name="layer" type="TileLayer" maxOccurs="unbounded"/>
+                        <xs:element name="objectgroup" type="ObjectGroup" maxOccurs="unbounded"/>
+                        <xs:element name="imagelayer" type="ImageLayer" maxOccurs="unbounded"/>
+                        <xs:element name="group" type="Group" maxOccurs="unbounded"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="Image">
@@ -506,6 +442,13 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="locked" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Locking flag of the layer (used by Tiled).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="Map">
@@ -531,14 +474,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 <xs:element name="layer" type="TileLayer" maxOccurs="unbounded"/>
                 <xs:element name="objectgroup" type="ObjectGroup" maxOccurs="unbounded"/>
                 <xs:element name="imagelayer" type="ImageLayer" maxOccurs="unbounded"/>
+                <xs:element name="group" type="Group" maxOccurs="unbounded"/>
             </xs:choice>
-            <xs:element name="group" type="Group" maxOccurs="unbounded">
-                <xs:annotation>
-                    <xs:documentation>
-                        @since 1.0
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
         </xs:sequence>
 
         <xs:attribute name="version" type="xs:string" fixed="1.0">
@@ -701,6 +638,13 @@ POSSIBILITY OF SUCH DAMAGE.
 
         <xs:sequence>
             <xs:element name="properties" type="Properties"/>
+            <xs:element name="point" type="Point">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 1.1
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
             <xs:element name="ellipse" type="Ellipse">
                 <xs:annotation>
                     <xs:documentation>
@@ -841,6 +785,15 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:attribute>
             </xs:extension>
         </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Point">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#point">
+                Used to mark an object as a point.
+                The existing x and y attributes are used to determine the position of the point.
+            </xs:documentation>
+        </xs:annotation>
     </xs:complexType>
 
     <xs:complexType name="Polygon">

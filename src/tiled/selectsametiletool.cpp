@@ -68,3 +68,5 @@ void SelectSameTileTool::languageChanged()
 
     AbstractTileSelectionTool::languageChanged();
 }
+
+#include "moc_selectsametiletool.cpp"

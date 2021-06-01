@@ -2,8 +2,8 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2020 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2016 - 2020 Mike Thomas <mikepthomas@outlook.com>
  * Copyright (C) 2020 Adam Hornacek <adam.hornacek@icloud.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ package org.mapeditor.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -46,10 +47,12 @@ import org.mapeditor.core.StaggerIndex;
 import org.mapeditor.core.TileLayer;
 import org.mapeditor.core.TileSet;
 
+import javax.xml.bind.JAXBException;
+
 public class MapReaderTest {
 
     @Test
-    public void testAcceptValidFilenames() {
+    public void testAcceptValidFilenames() throws JAXBException {
         // Arrange
         TMXMapReader reader = new TMXMapReader();
 
@@ -353,21 +356,21 @@ public class MapReaderTest {
         TileLayer layer = (TileLayer) map.getLayer(0);
         assertNotNull(layer.getTileAt(0, 0));
 
-        assertTrue(layer.isFlippedHorizontaly(0, 0));
+        assertTrue(layer.isFlippedHorizontally(0, 0));
         assertFalse(layer.isFlippedVertically(0, 0));
-        assertFalse(layer.isFlippedDiagonaly(0, 0));
+        assertFalse(layer.isFlippedDiagonally(0, 0));
 
-        assertFalse(layer.isFlippedHorizontaly(1, 0));
+        assertFalse(layer.isFlippedHorizontally(1, 0));
         assertTrue(layer.isFlippedVertically(1, 0));
-        assertFalse(layer.isFlippedDiagonaly(1, 0));
+        assertFalse(layer.isFlippedDiagonally(1, 0));
 
-        assertTrue(layer.isFlippedHorizontaly(2, 0));
+        assertTrue(layer.isFlippedHorizontally(2, 0));
         assertTrue(layer.isFlippedVertically(2, 0));
-        assertFalse(layer.isFlippedDiagonaly(2, 0));
+        assertFalse(layer.isFlippedDiagonally(2, 0));
 
-        assertFalse(layer.isFlippedHorizontaly(3, 0));
+        assertFalse(layer.isFlippedHorizontally(3, 0));
         assertFalse(layer.isFlippedVertically(3, 0));
-        assertFalse(layer.isFlippedDiagonaly(3, 0));
+        assertFalse(layer.isFlippedDiagonally(3, 0));
     }
 
     private URL getUrlFromResources(String filename) {
@@ -380,4 +383,15 @@ public class MapReaderTest {
         return new URL("jar:" + url.toString() + "!/" + filename);
     }
 
+    @Test
+    public void testReadmapWithSearchDirectory() throws Exception {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        String resourceName = "relative_paths/relative_paths.tmx";
+        URL url = loader.getResource(resourceName);
+        String parentDirectory = new File(url.getFile()).getParent();
+        InputStream in = loader.getResourceAsStream(resourceName);
+
+        Map map = new TMXMapReader().readMap(in, parentDirectory);
+        assertEquals(1, map.getTileSets().size());
+    }
 }

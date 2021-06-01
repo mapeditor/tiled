@@ -191,3 +191,5 @@ void NewsFeed::setLastRead(const QDateTime &dateTime)
 }
 
 } // namespace Tiled
+
+#include "moc_newsfeed.cpp"

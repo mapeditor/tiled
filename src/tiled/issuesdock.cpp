@@ -190,7 +190,7 @@ IssuesDock::IssuesDock(QWidget *parent)
     auto widget = new QWidget(this);
     auto layout = new QVBoxLayout(widget);
 
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addLayout(toolBarLayout);
     layout->addWidget(mIssuesView);
@@ -227,3 +227,5 @@ void IssuesDock::retranslateUi()
 }
 
 } // namespace Tiled
+
+#include "moc_issuesdock.cpp"

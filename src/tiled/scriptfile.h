@@ -93,6 +93,7 @@ public:
     ~ScriptTextFile() override;
 
     QString filePath() const;
+
     QString codec() const;
     void setCodec(const QString &codec);
 

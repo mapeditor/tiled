@@ -668,3 +668,5 @@ void EditableMap::onCurrentLayerChanged(Layer *)
 }
 
 } // namespace Tiled
+
+#include "moc_editablemap.cpp"

@@ -31,7 +31,7 @@ TabBar::TabBar(QWidget *parent)
 
 void TabBar::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MidButton)
+    if (event->button() == Qt::MiddleButton)
         mPressedIndex = tabAt(event->pos());
 
     QTabBar::mousePressEvent(event);
@@ -39,7 +39,7 @@ void TabBar::mousePressEvent(QMouseEvent *event)
 
 void TabBar::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MidButton && tabsClosable()) {
+    if (event->button() == Qt::MiddleButton && tabsClosable()) {
         if (mPressedIndex != -1 && mPressedIndex == tabAt(event->pos())) {
             emit tabCloseRequested(mPressedIndex);
             return;
@@ -57,7 +57,7 @@ void TabBar::wheelEvent(QWheelEvent *event)
 
     int index = currentIndex();
     if (index != -1) {
-        index += event->delta() > 0 ? -1 : 1;
+        index += event->angleDelta().y() > 0 ? -1 : 1;
         if (index >= 0 && index < count())
             setCurrentIndex(index);
     }

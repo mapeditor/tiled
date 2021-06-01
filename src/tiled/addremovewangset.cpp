@@ -40,7 +40,6 @@ AddRemoveWangSet::AddRemoveWangSet(TilesetDocument *tilesetDocument,
 
 AddRemoveWangSet::~AddRemoveWangSet()
 {
-    delete mWangSet;
 }
 
 void AddRemoveWangSet::removeWangSet()
@@ -52,8 +51,7 @@ void AddRemoveWangSet::removeWangSet()
 void AddRemoveWangSet::addWangSet()
 {
     Q_ASSERT(mWangSet);
-    mTilesetDocument->wangSetModel()->insertWangSet(mIndex, mWangSet);
-    mWangSet = nullptr;
+    mTilesetDocument->wangSetModel()->insertWangSet(mIndex, std::move(mWangSet));
 }
 
 AddWangSet::AddWangSet(TilesetDocument *tilesetDocument, WangSet *wangSet)
@@ -61,7 +59,7 @@ AddWangSet::AddWangSet(TilesetDocument *tilesetDocument, WangSet *wangSet)
                        wangSet->tileset()->wangSetCount(),
                        wangSet)
 {
-    setText(QCoreApplication::translate("Undo Commands", "Add Wang Set"));
+    setText(QCoreApplication::translate("Undo Commands", "Add Terrain Set"));
 }
 
 RemoveWangSet::RemoveWangSet(TilesetDocument *tilesetDocument, WangSet *wangset)
@@ -69,5 +67,5 @@ RemoveWangSet::RemoveWangSet(TilesetDocument *tilesetDocument, WangSet *wangset)
                        tilesetDocument->wangSetModel()->index(wangset).row(),
                        nullptr)
 {
-    setText(QCoreApplication::translate("Undo Commands", "Remove Wang Set"));
+    setText(QCoreApplication::translate("Undo Commands", "Remove Terrain Set"));
 }

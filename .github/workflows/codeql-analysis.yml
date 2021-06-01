@@ -3,16 +3,22 @@ name: "CodeQL"
 on:
   push:
     branches: [master]
+    paths:
+    - '**.cpp'
+    - '**.h'
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [master]
+    paths:
+    - '**.cpp'
+    - '**.h'
   schedule:
     - cron: '0 22 * * 2'
 
 jobs:
   analyse:
     name: Analyse
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
     - name: Checkout repository
@@ -41,10 +47,10 @@ jobs:
     - name: Setup qbs
       run: |
         qbs setup-toolchains --detect
-        qbs setup-qt --detect
+        qbs config defaultProfile gcc
 
     - name: Build
-      run: qbs build profile:qt-5-9-5
+      run: qbs build
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1

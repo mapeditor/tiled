@@ -170,6 +170,31 @@ private:
 };
 
 /**
+ * Used for changing the layer parallax factor.
+ */
+class SetLayerParallaxFactor : public QUndoCommand
+{
+public:
+    SetLayerParallaxFactor(Document *document,
+                           Layer *layer,
+                           const QPointF &parallaxFactor,
+                           QUndoCommand *parent = nullptr);
+
+    void undo() override { setParallaxFactor(mOldParallaxFactor); }
+    void redo() override { setParallaxFactor(mNewParallaxFactor); }
+
+    int id() const override { return Cmd_ChangeLayerOffset; }
+
+private:
+    void setParallaxFactor(const QPointF &parallaxFactor);
+
+    Document *mDocument;
+    Layer *mLayer;
+    QPointF mOldParallaxFactor;
+    QPointF mNewParallaxFactor;
+};
+
+/**
  * Used for changing the tile layer size.
  *
  * Does not affect the contents of the tile layer, as opposed to the

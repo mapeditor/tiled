@@ -22,7 +22,6 @@
 
 #include <QDir>
 #include <QHash>
-#include <QLinkedList>
 #include <QPointF>
 #include <QSettings>
 #include <QSize>
@@ -30,6 +29,7 @@
 #include <QTimer>
 #include <QVariantMap>
 
+#include <list>
 #include <memory>
 
 namespace Tiled {
@@ -132,11 +132,23 @@ public:
     void clearRecentFiles();
 
     void setOpenFiles(const QStringList &fileNames);
-    void setActiveFile(const QString &fileNames);
+    void setActiveFile(const QString &fileName);
 
     QVariantMap fileState(const QString &fileName) const;
     void setFileState(const QString &fileName, const QVariantMap &fileState);
     void setFileStateValue(const QString &fileName, const QString &name, const QVariant &value);
+
+    enum FileType {
+        ExportedFile,
+        ExternalTileset,
+        ImageFile,
+        ObjectTemplateFile,
+        ObjectTypesFile,
+        WorldFile,
+    };
+
+    QString lastPath(FileType fileType) const;
+    void setLastPath(FileType fileType, const QString &path);
 
     template <typename T>
     T get(const char *key, const T &defaultValue = T()) const
@@ -160,7 +172,10 @@ public:
                 cb();
     }
 
-    bool isSet(const char *key) const { return settings->contains(QLatin1String(key)); }
+    bool isSet(const char *key) const
+    {
+        return settings->contains(QLatin1String(key));
+    }
 
     static QString defaultFileName();
     static QString defaultFileNameForProject(const QString &projectFile);
@@ -178,7 +193,7 @@ public:
     QMap<QString, QVariantMap> fileStates;
 
     using ChangedCallback = std::function<void()>;
-    using Callbacks = QLinkedList<ChangedCallback>;
+    using Callbacks = std::list<ChangedCallback>;
     using CallbackIterator = Callbacks::iterator;
 
 private:
@@ -241,7 +256,7 @@ template<typename T>
 Session::CallbackIterator SessionOption<T>::onChange(const Session::ChangedCallback &callback)
 {
     Session::Callbacks &callbacks = Session::mChangedCallbacks[mKey];
-    callbacks.prepend(callback);
+    callbacks.push_front(callback);
     return callbacks.begin();
 }
 

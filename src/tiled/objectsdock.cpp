@@ -60,7 +60,7 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(mFilterEdit);
     layout->addWidget(mObjectsView);
@@ -227,3 +227,5 @@ void ObjectsDock::documentAboutToClose(Document *document)
     if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
         mObjectsView->clearExpandedLayers(mapDocument);
 }
+
+#include "moc_objectsdock.cpp"

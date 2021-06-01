@@ -27,6 +27,7 @@
 
 namespace Tiled {
 
+class EditableGroupLayer;
 class EditableMap;
 class MapDocument;
 
@@ -34,12 +35,15 @@ class EditableLayer : public EditableObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(int id READ id)
     Q_PROPERTY(QString name READ name WRITE setName)
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
     Q_PROPERTY(bool locked READ isLocked WRITE setLocked)
     Q_PROPERTY(QPointF offset READ offset WRITE setOffset)
+    Q_PROPERTY(QPointF parallaxFactor READ parallaxFactor WRITE setParallaxFactor)
     Q_PROPERTY(Tiled::EditableMap *map READ map)
+    Q_PROPERTY(Tiled::EditableGroupLayer *parentLayer READ parentLayer)
     Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
     Q_PROPERTY(bool isTileLayer READ isTileLayer CONSTANT)
     Q_PROPERTY(bool isObjectLayer READ isObjectLayer CONSTANT)
@@ -55,12 +59,15 @@ public:
                   QObject *parent = nullptr);
     ~EditableLayer() override;
 
+    int id() const;
     const QString &name() const;
     qreal opacity() const;
     bool isVisible() const;
     bool isLocked() const;
     QPointF offset() const;
+    QPointF parallaxFactor() const;
     EditableMap *map() const;
+    EditableGroupLayer *parentLayer() const;
     bool isSelected() const;
     bool isTileLayer() const;
     bool isObjectLayer() const;
@@ -81,6 +88,7 @@ public slots:
     void setVisible(bool visible);
     void setLocked(bool locked);
     void setOffset(QPointF offset);
+    void setParallaxFactor(QPointF factor);
     void setSelected(bool selected);
 
 protected:
@@ -90,6 +98,11 @@ private:
     std::unique_ptr<Layer> mDetachedLayer;
 };
 
+
+inline int EditableLayer::id() const
+{
+    return layer()->id();
+}
 
 inline const QString &EditableLayer::name() const
 {
@@ -114,6 +127,11 @@ inline bool EditableLayer::isLocked() const
 inline QPointF EditableLayer::offset() const
 {
     return layer()->offset();
+}
+
+inline QPointF EditableLayer::parallaxFactor() const
+{
+    return layer()->parallaxFactor();
 }
 
 inline bool EditableLayer::isTileLayer() const

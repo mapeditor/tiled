@@ -43,7 +43,7 @@ void SelectionRectangle::setRectangle(const QRectF &rectangle)
 
 QRectF SelectionRectangle::boundingRect() const
 {
-    return mRectangle.adjusted(-1, -1, 2, 2);
+    return mRectangle.adjusted(-2, -2, 4, 4);
 }
 
 void SelectionRectangle::paint(QPainter *painter,
@@ -60,7 +60,8 @@ void SelectionRectangle::paint(QPainter *painter,
             scale = mapView->zoomable()->scale();
     QColor black(Qt::black);
     black.setAlpha(128);
-    QPen pen(black, 2, Qt::DotLine);
+    const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
+    QPen pen(black, 2.0 * devicePixelRatio, Qt::DotLine);
     pen.setCosmetic(true);
     painter->setPen(pen);
     painter->drawRect(mRectangle.translated(1 / scale, 1 / scale));

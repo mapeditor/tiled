@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="4" height="4" tilewidth="24" tileheight="24" infinite="0" nextlayerid="5" nextobjectid="2">
+<map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="4" height="4" tilewidth="24" tileheight="24" infinite="0" nextlayerid="5" nextobjectid="2">
  <properties>
   <property name="NoOverlappingRules" value="1"/>
  </properties>

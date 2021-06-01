@@ -169,7 +169,7 @@ void ResizeHelper::mouseMoveEvent(QMouseEvent *event)
 
 void ResizeHelper::wheelEvent(QWheelEvent *event)
 {
-    if (event->delta() > 0)// zooming in
+    if (event->angleDelta().y() > 0)// zooming in
         mZoom += 0.2;
     else
         mZoom -= 0.2;
@@ -245,3 +245,5 @@ void ResizeHelper::recalculateMinMaxOffset()
         emit offsetBoundsChanged(mOffsetBounds);
     }
 }
+
+#include "moc_resizehelper.cpp"

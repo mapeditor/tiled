@@ -33,6 +33,12 @@
 using namespace Tiled;
 using namespace Csv;
 
+// Bits on the far end of the 32-bit tile ID are used for tile flags
+const unsigned FlippedHorizontallyFlag   = 0x80000000;
+const unsigned FlippedVerticallyFlag     = 0x40000000;
+const unsigned FlippedAntiDiagonallyFlag = 0x20000000;
+const unsigned RotatedHexagonal120Flag   = 0x10000000;
+
 CsvPlugin::CsvPlugin()
 {
 }
@@ -72,7 +78,21 @@ bool CsvPlugin::write(const Map *map, const QString &fileName, Options options)
                 if (tile && tile->hasProperty(QLatin1String("name"))) {
                     device->write(tile->property(QLatin1String("name")).toString().toUtf8());
                 } else {
-                    const int id = tile ? tile->id() : -1;
+                    int id = -1;
+
+                    if (tile) {
+                        id = tile->id();
+
+                        if (cell.flippedHorizontally())
+                            id |= FlippedHorizontallyFlag;
+                        if (cell.flippedVertically())
+                            id |= FlippedVerticallyFlag;
+                        if (cell.flippedAntiDiagonally())
+                            id |= FlippedAntiDiagonallyFlag;
+                        if (cell.rotatedHexagonal120())
+                            id |= RotatedHexagonal120Flag;
+                    }
+
                     device->write(QByteArray::number(id));
                 }
             }

@@ -26,6 +26,7 @@
 #include <QSet>
 #include <QVector>
 
+#include <array>
 #include <memory>
 
 class QGraphicsItem;
@@ -61,15 +62,21 @@ public:
 
     void languageChanged() override;
 
+    void populateToolBar(QToolBar*) override;
+
 protected:
     void changeEvent(const ChangeEvent &event) override;
 
 private:
+    void languageChangedImpl();
+
     void updateHandles();
     void updateHandlesAndOrigin();
     void updateHandleVisibility();
 
     void objectsAboutToBeRemoved(const QList<MapObject *> &);
+
+    void setSelectionMode(Qt::ItemSelectionMode selectionMode);
 
     enum Action {
         NoAction,
@@ -88,8 +95,9 @@ private:
     void updateHandlesImpl(bool resetOriginIndicator);
 
     void updateHover(const QPointF &pos);
-    void updateSelection(const QPointF &pos,
-                         Qt::KeyboardModifiers modifiers);
+    QList<MapObject*> objectsAboutToBeSelected(const QPointF &pos,
+                                               Qt::KeyboardModifiers modifiers) const;
+    void updateSelection(const QPointF &pos, Qt::KeyboardModifiers modifiers);
 
     void startSelecting();
 
@@ -133,6 +141,23 @@ private:
 
     QList<MapObject*> changingObjects() const;
 
+    QAction *mSelectIntersected;
+    QAction *mSelectContained;
+
+    std::unique_ptr<SelectionRectangle> mSelectionRectangle;
+    std::unique_ptr<QGraphicsItem> mOriginIndicator;
+    std::array<RotateHandle*, 4> mRotateHandles;
+    std::array<ResizeHandle*, 8> mResizeHandles;
+    bool mMousePressed = false;
+
+    MapObject *mHoveredObject = nullptr;
+    Handle *mHoveredHandle = nullptr;
+
+    MapObject *mClickedObject = nullptr;
+    OriginIndicator *mClickedOriginIndicator = nullptr;
+    RotateHandle *mClickedRotateHandle = nullptr;
+    ResizeHandle *mClickedResizeHandle = nullptr;
+
     struct MovingObject
     {
         MapObject *mapObject;
@@ -144,33 +169,22 @@ private:
         qreal oldRotation;
     };
 
-    std::unique_ptr<SelectionRectangle> mSelectionRectangle;
-    std::unique_ptr<QGraphicsItem> mOriginIndicator;
-    RotateHandle *mRotateHandles[4];
-    ResizeHandle *mResizeHandles[8];
-    bool mMousePressed;
-
-    MapObject *mHoveredObject;
-    Handle *mHoveredHandle;
-
-    MapObject *mClickedObject;
-    OriginIndicator *mClickedOriginIndicator;
-    RotateHandle *mClickedRotateHandle;
-    ResizeHandle *mClickedResizeHandle;
-
     QVector<MovingObject> mMovingObjects;
 
     QPointF mAlignPosition;
     QPointF mOriginPos;
-    bool mResizingLimitHorizontal;
-    bool mResizingLimitVertical;
-    Mode mMode;
-    Action mAction;
+    bool mResizingLimitHorizontal = false;
+    bool mResizingLimitVertical = false;
+    Qt::ItemSelectionMode mSelectionMode;
+    Mode mMode = Resize;
+    Action mAction = NoAction;
     QPointF mStart;
     QPointF mStartOffset;
     QPointF mLastMousePos;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
+
+    static Preference<Qt::ItemSelectionMode> ourSelectionMode;
 };
 
 } // namespace Tiled

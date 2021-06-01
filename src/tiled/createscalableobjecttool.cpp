@@ -83,3 +83,5 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
     newMapObject->setBounds(objectArea);
     mNewMapObjectItem->syncWithMapObject();
 }
+
+#include "moc_createscalableobjecttool.cpp"

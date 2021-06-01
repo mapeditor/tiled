@@ -155,3 +155,5 @@ void AbstractTileSelectionTool::updateBrushVisibility()
 {
     brushItem()->setVisible(isBrushVisible());
 }
+
+#include "moc_abstracttileselectiontool.cpp"

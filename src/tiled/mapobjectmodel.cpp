@@ -523,8 +523,6 @@ void MapObjectModel::documentChanged(const ChangeEvent &change)
 
         break;
     }
-    case ChangeEvent::TileLayerChanged:
-        break;
     case ChangeEvent::MapObjectsAboutToBeRemoved:
     case ChangeEvent::MapObjectsAdded:
     case ChangeEvent::MapObjectsRemoved:
@@ -561,7 +559,7 @@ void MapObjectModel::documentChanged(const ChangeEvent &change)
 
         break;
     }
-    case ChangeEvent::ObjectGroupChanged:
+    default:
         break;
     }
 }
@@ -580,3 +578,5 @@ void MapObjectModel::emitDataChanged(const QList<MapObject *> &objects,
                          roles);
     }
 }
+
+#include "moc_mapobjectmodel.cpp"

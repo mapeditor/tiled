@@ -24,11 +24,12 @@
 #include "editableimagelayer.h"
 #include "editablemap.h"
 #include "editableobjectgroup.h"
-#include "editableterrain.h"
 #include "editabletile.h"
 #include "editabletilelayer.h"
 #include "editabletileset.h"
+#include "editablewangset.h"
 #include "scriptmanager.h"
+#include "wangset.h"
 
 #include <QQmlEngine>
 
@@ -72,6 +73,18 @@ void EditableManager::release(MapObject *mapObject)
         editable->hold();
     else
         delete mapObject;
+}
+
+/**
+ * Releases the WangSet by either finding an EditableWangSet instance to take
+ * ownership of it or deleting it.
+ */
+void EditableManager::release(std::unique_ptr<WangSet> wangSet)
+{
+    if (EditableWangSet *editable = find(wangSet.get())) {
+        editable->hold();
+        wangSet.release();
+    }
 }
 
 EditableLayer *EditableManager::editableLayer(EditableMap *map, Layer *layer)
@@ -163,20 +176,22 @@ EditableTile *EditableManager::editableTile(EditableTileset *tileset, Tile *tile
     return editableTile;
 }
 
-EditableTerrain *EditableManager::editableTerrain(EditableTileset *tileset, Terrain *terrain)
+EditableWangSet *EditableManager::editableWangSet(EditableTileset *tileset, WangSet *wangSet)
 {
-    if (!terrain)
+    if (!wangSet)
         return nullptr;
 
-    Q_ASSERT(terrain->tileset() == tileset->tileset());
+    Q_ASSERT(wangSet->tileset() == tileset->tileset());
 
-    EditableTerrain* &editableTerrain = mEditableTerrains[terrain];
-    if (becomesNullValue(editableTerrain)) {
-        editableTerrain = new EditableTerrain(tileset, terrain);
-        QQmlEngine::setObjectOwnership(editableTerrain, QQmlEngine::JavaScriptOwnership);
+    EditableWangSet* &editableWangSet = mEditableWangSets[wangSet];
+    if (becomesNullValue(editableWangSet)) {
+        editableWangSet = new EditableWangSet(tileset, wangSet);
+        QQmlEngine::setObjectOwnership(editableWangSet, QQmlEngine::JavaScriptOwnership);
     }
 
-    return editableTerrain;
+    return editableWangSet;
 }
 
 } // namespace Tiled
+
+#include "moc_editablemanager.cpp"

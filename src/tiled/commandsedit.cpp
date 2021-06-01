@@ -73,6 +73,8 @@ CommandsEdit::CommandsEdit(const QVector<Command> &commands, QWidget *parent)
 
     connect(mUi->wdBrowseButton, &QPushButton::clicked,
             this, &CommandsEdit::browseWorkingDirectory);
+
+    updateWidgets(mUi->treeView->currentIndex());
 }
 
 CommandsEdit::~CommandsEdit()
@@ -130,7 +132,7 @@ void CommandsEdit::setWorkingDirectory(const QString &text)
 
 void CommandsEdit::updateWidgets(const QModelIndex &current)
 {
-    bool enable = (current.row() < mModel->rowCount() - 1);
+    bool enable = current.isValid() && (current.row() < mModel->rowCount() - 1);
 
     mUi->saveBox->setEnabled(enable);
     mUi->executableEdit->setEnabled(enable);
@@ -180,3 +182,5 @@ void CommandsEdit::browseWorkingDirectory()
 }
 
 } // namespace Tiled
+
+#include "moc_commandsedit.cpp"

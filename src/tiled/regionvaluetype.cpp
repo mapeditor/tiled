@@ -57,3 +57,5 @@ QString RegionValueType::toString() const
 }
 
 } // namespace Tiled
+
+#include "moc_regionvaluetype.cpp"

@@ -107,3 +107,5 @@ void TemplateManager::pathsChanged(const QStringList &paths)
         }
     }
 }
+
+#include "moc_templatemanager.cpp"

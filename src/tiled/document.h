@@ -24,7 +24,6 @@
 
 #include <QDateTime>
 #include <QObject>
-#include <QPointer>
 #include <QSharedPointer>
 #include <QString>
 #include <QVariant>
@@ -99,6 +98,7 @@ public:
 
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);
+    void setCurrentObject(Object *object, Document *owningDocument);
 
     virtual QList<Object*> currentObjects() const;
 
@@ -152,10 +152,14 @@ protected:
     QDateTime mLastSaved;
 
     Object *mCurrentObject = nullptr;   /**< Current properties object. */
+    Document *mCurrentObjectDocument = nullptr;
 
     std::unique_ptr<EditableAsset> mEditable;
 
 private:
+    void currentObjectDocumentChanged(const ChangeEvent &change);
+    void currentObjectDocumentDestroyed();
+
     const DocumentType mType;
 
     QString mFileName;
@@ -187,6 +191,18 @@ inline QString Document::canonicalFilePath() const
 inline QUndoStack *Document::undoStack() const
 {
     return mUndoStack;
+}
+
+/**
+ * Sets the current object for this document (displayed in the Properties view).
+ *
+ * This version should only be used with objects owned by this document. See
+ * setCurrentObject(Object*, Document*) for setting it to an object from
+ * another document.
+ */
+inline void Document::setCurrentObject(Object *object)
+{
+    setCurrentObject(object, this);
 }
 
 inline bool Document::ignoreBrokenLinks() const

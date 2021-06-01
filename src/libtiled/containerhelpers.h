@@ -30,6 +30,13 @@
 
 #include <algorithm>
 
+/*
+ * These helper functions are necessary with Qt 5, because the QList::indexOf
+ * and QList::contains functions require the argument to be of exactly the
+ * contained type. In Qt 6, they can be different types and just need to be
+ * comparable.
+ */
+
 template<typename Container, typename Value>
 inline int indexOf(const Container &container, Value value)
 {

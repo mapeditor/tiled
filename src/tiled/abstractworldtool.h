@@ -87,12 +87,9 @@ protected:
     QRect mapRect(MapDocument *mapDocument) const;
     const World *constWorld(MapDocument *mapDocument) const;
 
-    MapScene *mapScene() const { return mMapScene; }
-
     void showContextMenu(QGraphicsSceneMouseEvent *);
 
 private:
-    MapScene *mMapScene = nullptr;
     MapDocument *mTargetMap = nullptr;
 
     QAction *mAddAnotherMapToWorldAction;

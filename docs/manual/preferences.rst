@@ -107,6 +107,19 @@ Object line width
     people like it thinner or even thicker. On some systems the DPI-based
     scaling will affect this setting as well.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.5</div>
+
+Object selection behavior
+    By default the :ref:`select-objects-tool` tool selects objects from any
+    layer. With this setting, you can make it prefer to select objects from the
+    currently selected layers, or to only pick objects from the selected
+    layers.
+
+    When the "Highlight Current Layer" option is enabled, Tiled automatically
+    prefers to select objects from the currently selected layers.
+
 Hardware accelerated drawing (OpenGL)
     This enables a rather unoptimized way of rendering the map using
     OpenGL. It's usually not an improvement and may lead to crashes, but
@@ -121,6 +134,24 @@ Mouse wheel zooms by default
     Control (or Command on macOS). It can be a convenient way to
     navigate the map, but it can also interfere with panning on a
     touchpad.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.5</div>
+
+Middle mouse button uses auto-scrolling
+    With this option enabled, the clicking middle mouse button doesn't drag the
+    map directly but instead controls the speed of a continuous panning
+    movement.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.5</div>
+
+Use smooth scrolling
+    This option affects the behavior when scrolling with the arrow keys. When
+    disabled, the view scrolls in steps based on key press events. When enabled
+    (the default), the view scrolls continuously while the keys are held down.
 
 .. raw:: html
 

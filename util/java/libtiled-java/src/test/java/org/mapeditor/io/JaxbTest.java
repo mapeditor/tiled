@@ -2,8 +2,8 @@
  * #%L
  * libtiled
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2020 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2016 - 2020 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -63,7 +63,7 @@ public class JaxbTest {
         MapReader reader = new MapReader();
         Map map = reader.readMap(url.getFile());
 
-        assertEquals("1.2", map.getVersion());
+        assertEquals("1.4", map.getVersion());
 
         TileLayer layer = (TileLayer) map.getLayers().get(0);
         Data data = layer.getData();

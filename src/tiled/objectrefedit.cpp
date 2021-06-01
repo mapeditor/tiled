@@ -62,7 +62,7 @@ ObjectRefEdit::ObjectRefEdit(QWidget *parent)
     mPickObjectButton->setIcon(QIcon(QStringLiteral("://images/scalable/select-object.svg")));
     mPickObjectButton->setToolTip(tr("Select Object on Map"));
 
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(mLineEdit);
     layout->addWidget(mObjectDialogButton);
@@ -156,3 +156,5 @@ void ObjectRefEdit::onEditFinished()
 }
 
 } // namespace Tiled
+
+#include "moc_objectrefedit.cpp"

@@ -25,12 +25,13 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "mapview.h"
 #include "objectgroup.h"
 #include "snaphelper.h"
-#include "tmxmapformat.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tmxmapformat.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -241,9 +242,10 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
         else
             viewPos = QPoint(view->width() / 2, view->height() / 2);
 
-        const QPointF scenePos = view->mapToScene(viewPos);
+        QPointF layerScreenPos = view->mapToScene(viewPos);
+        layerScreenPos -= view->mapScene()->absolutePositionForLayer(*currentObjectGroup);
 
-        insertPos = renderer->screenToPixelCoords(scenePos) - center;
+        insertPos = renderer->screenToPixelCoords(layerScreenPos) - center;
         SnapHelper(renderer).snap(insertPos);
     }
 
@@ -287,3 +289,5 @@ void ClipboardManager::update()
         emit hasPropertiesChanged();
     }
 }
+
+#include "moc_clipboardmanager.cpp"

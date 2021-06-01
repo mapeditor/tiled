@@ -33,6 +33,9 @@
 
 #include <QCoreApplication>
 #include <QDir>
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+#include <QStringView>
+#endif
 
 #include <cmath>
 #include <fstream>
@@ -67,34 +70,51 @@ namespace
         }
     }
 
-    void tiledToTbinProperties(const Tiled::Properties &properties, tbin::Properties &tprops)
+    void tiledToTbinProperties(const Tiled::Properties &properties, tbin::Properties &tprops, const QDir &dir)
     {
         for (auto it = properties.cbegin(), it_end = properties.cend(); it != it_end; ++it) {
+            const auto &name = it.key();
+            auto value = it.value();
+
+            if (value.userType() == Tiled::filePathTypeId()) {
+                Tiled::WARNING(QStringLiteral("tBIN: Saving 'file' property \"%1\" as 'string'.").arg(name));
+                const auto filePath = value.value<Tiled::FilePath>();
+                value = Tiled::toFileReference(filePath.url, dir);
+            } else if (value.userType() == Tiled::objectRefTypeId()) {
+                Tiled::WARNING(QStringLiteral("tBIN: Saving 'object' property \"%1\" as 'int'.").arg(name));
+                const auto objectRef = value.value<Tiled::ObjectRef>();
+                value = Tiled::ObjectRef::toInt(objectRef);
+            } else if (value.userType() == QMetaType::QColor) {
+                Tiled::WARNING(QStringLiteral("tBIN: Saving 'color' property \"%1\" as 'string'.").arg(name));
+                const auto color = value.value<QColor>();
+                value = color.isValid() ? color.name(QColor::HexArgb) : QString();
+            }
+
             tbin::PropertyValue prop;
 
-            switch (it.value().userType()) {
-            case QVariant::Bool:
+            switch (value.userType()) {
+            case QMetaType::Bool:
                 prop.type = tbin::PropertyValue::Bool;
-                prop.data.b = it.value().toBool();
+                prop.data.b = value.toBool();
                 break;
-            case QVariant::Double:
+            case QMetaType::Double:
             case QMetaType::Float:
                 prop.type = tbin::PropertyValue::Float;
-                prop.data.f = it.value().toFloat();
+                prop.data.f = value.toFloat();
                 break;
-            case QVariant::Int:
+            case QMetaType::Int:
                 prop.type = tbin::PropertyValue::Integer;
-                prop.data.i = it.value().toInt();
+                prop.data.i = value.toInt();
                 break;
-            case QVariant::String:
+            case QMetaType::QString:
                 prop.type = tbin::PropertyValue::String;
-                prop.dataStr = it.value().toString().toStdString();
+                prop.dataStr = value.toString().toStdString();
                 break;
             default:
                 throw std::invalid_argument(QT_TRANSLATE_NOOP("TbinMapFormat", "Unsupported property type"));
             }
 
-            tprops.insert(std::make_pair(it.key().toStdString(), prop));
+            tprops.insert(std::make_pair(name.toStdString(), prop));
         }
     }
 }
@@ -159,7 +179,11 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
                     continue;
 
                 const QString name = QString::fromStdString(prop.first);
-                const QVector<QStringRef> strs = name.splitRef('@');
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+                const auto strs = QStringView(name).split(QLatin1Char('@'));
+#else
+                const auto strs = name.splitRef('@');
+#endif
                 if (strs[1] == QLatin1String("TileIndex")) {
                     int index = strs[2].toInt();
                     tbin::Properties dummyProps;
@@ -242,11 +266,11 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
     Q_UNUSED(options)
 
     try {
+        const QDir fileDir(QFileInfo(fileName).dir());
+
         tbin::Map tmap;
         //tmap.id = map->name();
-        tiledToTbinProperties(map->properties(), tmap.props);
-
-        const QDir fileDir(QFileInfo(fileName).dir());
+        tiledToTbinProperties(map->properties(), tmap.props, fileDir);
 
         for (const Tiled::SharedTileset& tilesheet : map->tilesets()) {
             tbin::TileSheet ttilesheet;
@@ -258,7 +282,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
             ttilesheet.sheetSize.y = tilesheet->rowCount();
             ttilesheet.tileSize.x = tilesheet->tileSize().width();
             ttilesheet.tileSize.y = tilesheet->tileSize().height();
-            tiledToTbinProperties(tilesheet->properties(), ttilesheet.props);
+            tiledToTbinProperties(tilesheet->properties(), ttilesheet.props, fileDir);
 
             Tiled::Properties tilesetTileProperties;
             for (auto tile : tilesheet->tiles()) {
@@ -267,7 +291,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                     tilesetTileProperties.insert("@TileIndex@" + QString::number(tile->id()) + "@" + it.key(), it.value());
                 }
             }
-            tiledToTbinProperties(tilesetTileProperties, ttilesheet.props);
+            tiledToTbinProperties(tilesetTileProperties, ttilesheet.props, fileDir);
 
             tmap.tilesheets.push_back(std::move(ttilesheet));
         }
@@ -324,7 +348,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                         tlayer.tiles.push_back(ttile);
                     }
                 }
-                tiledToTbinProperties(layer->properties(), tlayer.props);
+                tiledToTbinProperties(layer->properties(), tlayer.props, fileDir);
                 tmap.layers.push_back(std::move(tlayer));
                 tileLayerIdMap[tmap.layers.back().id] = &tmap.layers.back();
             }
@@ -373,7 +397,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                 tileY = qBound(0, tileY, tiles->layerSize.y - 1);
 
                 std::size_t idx = static_cast<std::size_t>(tileX + tileY * tiles->layerSize.x);
-                tiledToTbinProperties(obj->properties(), tiles->tiles[idx].props);
+                tiledToTbinProperties(obj->properties(), tiles->tiles[idx].props, fileDir);
             }
         }
 

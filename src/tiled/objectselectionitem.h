@@ -77,6 +77,8 @@ public:
                         QGraphicsItem *parent = nullptr);
     ~ObjectSelectionItem() override;
 
+    void updateItemPositions();
+
     const MapRenderer &mapRenderer() const;
 
     // QGraphicsItem interface
@@ -90,11 +92,12 @@ private:
     void propertyChanged(Object *object, const QString &name);
     void propertiesChanged(Object *object);
     void selectedObjectsChanged();
+    void aboutToBeSelectedObjectsChanged();
     void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
     void mapChanged();
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
-    void layerChanged(Layer *layer);
+    void layerChanged(const LayerChangeEvent &event);
     void syncOverlayItems(const QList<MapObject *> &objects);
     void updateItemColors() const;
     void objectsAdded(const QList<MapObject*> &objects);
@@ -108,12 +111,14 @@ private:
 
     void addRemoveObjectLabels();
     void addRemoveObjectOutlines();
+    void addRemoveObjectHoverItems();
     void addRemoveObjectReferences();
     void addRemoveObjectReferences(MapObject *object);
 
     MapDocument *mMapDocument;
     QHash<MapObject*, MapObjectLabel*> mObjectLabels;
     QHash<MapObject*, MapObjectOutline*> mObjectOutlines;
+    QHash<MapObject*, MapObjectOutline*> mObjectHoverItems;
     QHash<MapObject*, QList<ObjectReferenceItem*>> mReferencesBySourceObject;
     QHash<MapObject*, QList<ObjectReferenceItem*>> mReferencesByTargetObject;
     std::unique_ptr<MapObjectItem> mHoveredMapObjectItem;

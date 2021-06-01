@@ -129,11 +129,11 @@ int objectRefTypeId()
 QString typeToName(int type)
 {
     switch (type) {
-    case QVariant::String:
+    case QMetaType::QString:
         return QStringLiteral("string");
-    case QVariant::Double:
+    case QMetaType::Double:
         return QStringLiteral("float");
-    case QVariant::Color:
+    case QMetaType::QColor:
         return QStringLiteral("color");
     default:
         if (type == filePathTypeId())
@@ -147,11 +147,11 @@ QString typeToName(int type)
 int nameToType(const QString &name)
 {
     if (name == QLatin1String("string"))
-        return QVariant::String;
+        return QMetaType::QString;
     if (name == QLatin1String("float"))
-        return QVariant::Double;
+        return QMetaType::Double;
     if (name == QLatin1String("color"))
-        return QVariant::Color;
+        return QMetaType::QColor;
     if (name == QLatin1String("file"))
         return filePathTypeId();
     if (name == QLatin1String("object"))
@@ -164,7 +164,7 @@ QVariant toExportValue(const QVariant &value)
 {
     int type = value.userType();
 
-    if (type == QVariant::Color) {
+    if (type == QMetaType::QColor) {
         const QColor color = value.value<QColor>();
         return color.isValid() ? color.name(QColor::HexArgb) : QString();
     }
@@ -180,7 +180,7 @@ QVariant toExportValue(const QVariant &value)
 
 QVariant fromExportValue(const QVariant &value, int type)
 {
-    if (type == QVariant::Invalid)
+    if (type == QMetaType::UnknownType)
         return value;
 
     if (value.userType() == type)
@@ -227,3 +227,5 @@ void initializeMetatypes()
 }
 
 } // namespace Tiled
+
+#include "moc_properties.cpp"

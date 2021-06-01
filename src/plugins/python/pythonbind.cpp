@@ -3066,10 +3066,6 @@ inittiled_qt(void)
         tmp_value = PyLong_FromLong(QFileDialog::HideNameFilterDetails);
         PyDict_SetItemString((PyObject*) PyQFileDialog_Type.tp_dict, "HideNameFilterDetails", tmp_value);
         Py_DECREF(tmp_value);
-         // QFileDialog::DontUseSheet
-        tmp_value = PyLong_FromLong(QFileDialog::DontUseSheet);
-        PyDict_SetItemString((PyObject*) PyQFileDialog_Type.tp_dict, "DontUseSheet", tmp_value);
-        Py_DECREF(tmp_value);
     }
     return m;
 }
@@ -7594,6 +7590,18 @@ inittiled_Tiled(void)
          // Tiled::MapObject::Polyline
         tmp_value = PyLong_FromLong(Tiled::MapObject::Polyline);
         PyDict_SetItemString((PyObject*) PyTiledMapObject_Type.tp_dict, "Polyline", tmp_value);
+        Py_DECREF(tmp_value);
+         // Tiled::MapObject::Ellipse
+        tmp_value = PyLong_FromLong(Tiled::MapObject::Ellipse);
+        PyDict_SetItemString((PyObject*) PyTiledMapObject_Type.tp_dict, "Ellipse", tmp_value);
+        Py_DECREF(tmp_value);
+         // Tiled::MapObject::Text
+        tmp_value = PyLong_FromLong(Tiled::MapObject::Text);
+        PyDict_SetItemString((PyObject*) PyTiledMapObject_Type.tp_dict, "Text", tmp_value);
+        Py_DECREF(tmp_value);
+         // Tiled::MapObject::Point
+        tmp_value = PyLong_FromLong(Tiled::MapObject::Point);
+        PyDict_SetItemString((PyObject*) PyTiledMapObject_Type.tp_dict, "Point", tmp_value);
         Py_DECREF(tmp_value);
     }
     {

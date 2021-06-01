@@ -26,9 +26,9 @@
 #include "mainwindow.h"
 #include "map.h"
 #include "objectgroup.h"
-#include "preferences.h"
 #include "replacetemplate.h"
 #include "replacetileset.h"
+#include "session.h"
 #include "templatemanager.h"
 #include "templatesdock.h"
 #include "tile.h"
@@ -645,8 +645,8 @@ bool LinkFixer::tryFixLink(const BrokenLink &link, const QString &newFilePath)
 
 QUrl LinkFixer::locateImage(const QString &fileName)
 {
-    Preferences *prefs = Preferences::instance();
-    QString startLocation = QFileInfo(prefs->lastPath(Preferences::ImageFile)).absolutePath();
+    Session &session = Session::current();
+    QString startLocation = session.lastPath(Session::ImageFile);
     startLocation += QLatin1Char('/');
     startLocation += fileName;
 
@@ -657,7 +657,7 @@ QUrl LinkFixer::locateImage(const QString &fileName)
 
     if (newFileUrl.isLocalFile()) {
         QString localFile = newFileUrl.toLocalFile();
-        prefs->setLastPath(Preferences::ImageFile, localFile);
+        session.setLastPath(Session::ImageFile, QFileInfo(localFile).absolutePath());
     }
 
     return newFileUrl;
@@ -667,15 +667,15 @@ QString LinkFixer::locateTileset()
 {
     FormatHelper<TilesetFormat> helper(FileFormat::Read, BrokenLinksWidget::tr("All Files (*)"));
 
-    Preferences *prefs = Preferences::instance();
-    QString start = prefs->lastPath(Preferences::ExternalTileset);
+    Session &session = Session::current();
+    QString start = session.lastPath(Session::ExternalTileset);
     QString fileName = QFileDialog::getOpenFileName(MainWindow::instance(),
                                                     BrokenLinksWidget::tr("Locate External Tileset"),
                                                     start,
                                                     helper.filter());
 
     if (!fileName.isEmpty())
-        prefs->setLastPath(Preferences::ExternalTileset, QFileInfo(fileName).path());
+        session.setLastPath(Session::ExternalTileset, QFileInfo(fileName).path());
 
     return fileName;
 }
@@ -684,15 +684,15 @@ QString LinkFixer::locateObjectTemplate()
 {
     FormatHelper<ObjectTemplateFormat> helper(FileFormat::Read, BrokenLinksWidget::tr("All Files (*)"));
 
-    Preferences *prefs = Preferences::instance();
-    QString start = prefs->lastPath(Preferences::ObjectTemplateFile);
+    Session &session = Session::current();
+    QString start = session.lastPath(Session::ObjectTemplateFile);
     QString fileName = QFileDialog::getOpenFileName(MainWindow::instance(),
                                                     BrokenLinksWidget::tr("Locate Object Template"),
                                                     start,
                                                     helper.filter());
 
     if (!fileName.isEmpty())
-        prefs->setLastPath(Preferences::ObjectTemplateFile, QFileInfo(fileName).path());
+        session.setLastPath(Session::ObjectTemplateFile, QFileInfo(fileName).path());
 
     return fileName;
 }
@@ -777,3 +777,5 @@ void LocateObjectTemplate::operator()() const
 }
 
 } // namespace Tiled
+
+#include "moc_brokenlinks.cpp"

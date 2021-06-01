@@ -20,15 +20,16 @@
 
 #include "wangcolorview.h"
 
+#include "utils.h"
 #include "wangcolormodel.h"
 
-#include <QStyledItemDelegate>
-#include <QContextMenuEvent>
+#include <QAbstractProxyModel>
 #include <QColorDialog>
+#include <QContextMenuEvent>
+#include <QLineEdit>
 #include <QMenu>
 #include <QPainter>
-#include <QLineEdit>
-#include <QSortFilterProxyModel>
+#include <QStyledItemDelegate>
 
 using namespace Tiled;
 
@@ -37,118 +38,61 @@ namespace {
 class WangColorDelegate : public QStyledItemDelegate
 {
 public:
-    WangColorDelegate(WangColorView *wangColorView, QObject *parent = nullptr)
+    WangColorDelegate(QObject *parent = nullptr)
         : QStyledItemDelegate(parent)
-        , mWangColorView(wangColorView)
     {}
 
-    QSize sizeHint(const QStyleOptionViewItem &option,
-                  const QModelIndex &index) const override;
-
-    void paint(QPainter *painter,
-               const QStyleOptionViewItem &option,
-               const QModelIndex &index) const override;
-
-    void setEditorData(QWidget *editor, const QModelIndex &index) const override;
-
-private:
-    WangColorView *mWangColorView;
+protected:
+    void initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const override;
 };
 
-QSize WangColorDelegate::sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const
+void WangColorDelegate::initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const
 {
-    //TODO allow resizing.
-    return QSize(1, 40);
-}
+    QSize decorationSize = option->decorationSize;
+    QPixmap tileImage = index.data(Qt::DecorationRole).value<QPixmap>();
 
-void WangColorDelegate::paint(QPainter *painter,
-                              const QStyleOptionViewItem &option,
-                              const QModelIndex &index) const
-{
-    painter->save();
+    QPixmap pixmap(decorationSize);
+    pixmap.fill(Qt::transparent);
 
-    const QRect &rect = option.rect;
-    const QBrush &brush = index.data(Qt::BackgroundRole).value<QBrush>();
-    QFont font = index.data(Qt::FontRole).value<QFont>();
-    const QPixmap &image = index.data(Qt::DecorationRole).value<QPixmap>();
-    const QString &text = index.data().toString();
+    QPainter painter(&pixmap);
 
-    QFontMetrics fontMetrics(font);
+    // Draw the tile image in the background
+    const QSizeF size = tileImage.size();
+    if (!size.isEmpty()) {
+        const qreal scaleX = decorationSize.width() / size.width();
+        const qreal scaleY = decorationSize.height() / size.height();
+        const qreal scale = std::max(scaleX, scaleY);
+        const QSizeF targetSize = size * scale;
 
-    painter->setClipRect(rect);
-    painter->setPen(Qt::NoPen);
-
-    painter->setBrush(brush);
-    painter->drawRect(rect);
-
-    QRect imageRect = QRect(rect.topLeft(),
-                            QSize(rect.height(),
-                                  rect.height())).adjusted(2, 2, -2, -2);
-
-    if (!image.isNull())
-        painter->drawPixmap(imageRect, image);
-
-    if (index.parent().isValid()) {
-        painter->save();
-
-        QColor darkerColor = brush.color().darker(150);
-        painter->setPen(QPen(darkerColor));
-        if (mWangColorView->selectionModel()->currentIndex() == index) {
-            painter->setBrush(QBrush(darkerColor));
-            painter->setOpacity(0.5);
-        } else {
-            painter->setBrush(Qt::NoBrush);
-        }
-
-        painter->drawRect(rect.adjusted(0, 0, -1, -1));
-
-        painter->restore();
+        painter.setRenderHint(QPainter::SmoothPixmapTransform, scale < 1.0);
+        painter.drawPixmap(QRectF(decorationSize.width() - targetSize.width(),
+                                  decorationSize.height() - targetSize.height(),
+                                  targetSize.width(),
+                                  targetSize.height()),
+                           tileImage, tileImage.rect());
     }
 
-    if (!text.isEmpty()) {
-        QPoint textPos;
-        if (index.parent().isValid() && !image.isNull())
-            textPos = QPoint(imageRect.right() + 6,
-                             rect.center().y() + (fontMetrics.height() / 2) + 2);
-        else
-            textPos = QPoint(rect.left() + 6,
-                             rect.center().y() + (fontMetrics.height() / 2) + 2);
+    // Draw the Wang color on top
+    const QColor wangColor = index.data(WangColorModel::ColorRole).value<QColor>();
+    const QPointF topRight = QPointF(pixmap.width() * 0.75, 0);
+    const QPointF bottomLeft = QPointF(0, pixmap.height() * 0.75);
+    painter.setBrush(wangColor);
+    painter.setPen(Qt::NoPen);
+    painter.drawPolygon(QVector<QPointF> { QPointF(), topRight, bottomLeft });
+    QColor border(Qt::black);
+    border.setAlpha(128);
+    painter.setPen(QPen(border, 2.0));
+    painter.drawLine(topRight, bottomLeft);
 
-        if (index.parent().isValid()) {
-            painter->setBrush(QBrush(brush.color().lighter()));
-            painter->drawRect(QRect(textPos + QPoint(-2, -fontMetrics.height() - 2),
-                                    QPoint(rect.right(), textPos.y() + 2)));
-        }
+    QStyledItemDelegate::initStyleOption(option, index);
 
-        painter->setPen(QPen(Qt::black));
-        painter->setFont(font);
-        painter->drawText(textPos, index.data().toString());
-    }
-
-    painter->restore();
+    // Reset the icon
+    option->features |= QStyleOptionViewItem::HasDecoration;
+    option->decorationSize = decorationSize;
+    option->icon = pixmap;
 }
 
-void WangColorDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
-{
-    QLineEdit *lineEdit = qobject_cast<QLineEdit *>(editor);
-    Q_ASSERT(lineEdit);
-
-    int top = editor->y();
-    int height = editor->geometry().height();
-    int left;
-    if (index.data(Qt::DecorationRole).value<QPixmap>().isNull())
-        left = 2;
-    else
-        left = height;
-    int width = mWangColorView->width() - left;
-
-    lineEdit->setGeometry(left, top, width, height);
-
-    lineEdit->setText(index.data().toString());
-    lineEdit->selectAll();
-}
-
-}
+} // anonymous namespace
 
 WangColorView::WangColorView(QWidget *parent)
     : QTreeView(parent)
@@ -158,24 +102,41 @@ WangColorView::WangColorView(QWidget *parent)
     setItemsExpandable(false);
     setIndentation(0);
     setUniformRowHeights(true);
-    setSelectionMode(QAbstractItemView::NoSelection);
-    setItemDelegate(new WangColorDelegate(this, this));
+    setItemDelegate(new WangColorDelegate(this));
 }
 
 WangColorView::~WangColorView()
 {
 }
 
+void WangColorView::setTileSize(QSize size)
+{
+    static const int minSize = 16;
+    static const int maxSize = Utils::dpiScaled(32);
+    setIconSize(QSize(qBound(minSize, size.width(), maxSize),
+                      qBound(minSize, size.height(), maxSize)));
+}
+
+void WangColorView::setReadOnly(bool readOnly)
+{
+    static const auto defaultTriggers = editTriggers();
+    mReadOnly = readOnly;
+    setEditTriggers(readOnly ? NoEditTriggers : defaultTriggers);
+}
+
 void WangColorView::contextMenuEvent(QContextMenuEvent *event)
 {
-    const QSortFilterProxyModel *filterModel = static_cast<QSortFilterProxyModel *>(model());
-    const WangColorModel *wangColorModel = static_cast<WangColorModel *>(filterModel->sourceModel());
+    if (mReadOnly)
+        return;
+
+    const QAbstractProxyModel *proxyModel = static_cast<QAbstractProxyModel *>(model());
+    const WangColorModel *wangColorModel = static_cast<WangColorModel *>(proxyModel->sourceModel());
     const QModelIndex filterModelIndex = indexAt(event->pos());
 
     if (!wangColorModel || !filterModelIndex.isValid())
         return;
 
-    const QModelIndex index = filterModel->mapToSource(filterModelIndex);
+    const QModelIndex index = proxyModel->mapToSource(filterModelIndex);
     mClickedWangColor = wangColorModel->wangColorAt(index);
 
     QMenu menu;
@@ -208,3 +169,5 @@ void WangColorView::colorPicked(const QColor &color)
 
     mClickedWangColor.clear();
 }
+
+#include "moc_wangcolorview.cpp"

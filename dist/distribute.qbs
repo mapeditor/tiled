@@ -10,7 +10,7 @@ import qbs.FileInfo
 Product {
     name: "distribute"
     type: "installable"
-    builtByDefault: false
+    builtByDefault: (project.snapshot || project.release) && qbs.targetOS.contains("windows")
 
     Depends { name: "cpp" }
     Depends { name: "Qt.core" }
@@ -46,7 +46,7 @@ Product {
         }
         property string postfix: {
             var suffix = "";
-            if (qbs.targetOS.contains("windows") && qbs.debugInformation)
+            if (qbs.targetOS.contains("windows") && qbs.debugInformation && Qt.core.versionMajor < 6 && Qt.core.versionMinor < 15)
                 suffix += "d";
             return suffix + cpp.dynamicLibrarySuffix;
         }
@@ -58,9 +58,11 @@ Product {
                     var major = lib + "." + Qt.core.versionMajor;
                     var minor = major + "." + Qt.core.versionMinor;
                     var patch = minor + "." + Qt.core.versionPatch;
+                    if (File.exists(minor))
+                        result.push(minor)
                     if (File.exists(lib))
                         result.push(lib)
-                    result.push(major, minor, patch);
+                    result.push(major, patch);
                 }
                 return result;
             }
@@ -68,18 +70,19 @@ Product {
             var list = [];
 
             if (!Qt.core.frameworkBuild) {
+                var major = Qt.core.versionMajor;
                 list.push(
-                    "Qt5Core" + postfix,
-                    "Qt5Gui" + postfix,
-                    "Qt5Network" + postfix,
-                    "Qt5Qml" + postfix,
-                    "Qt5Svg" + postfix,
-                    "Qt5Widgets" + postfix
+                    "Qt" + major + "Core" + postfix,
+                    "Qt" + major + "Gui" + postfix,
+                    "Qt" + major + "Network" + postfix,
+                    "Qt" + major + "Qml" + postfix,
+                    "Qt" + major + "Svg" + postfix,
+                    "Qt" + major + "Widgets" + postfix
                 );
             }
 
             if (qbs.targetOS.contains("windows")) {
-                if (Qt.core.versionMinor < 7 &&
+                if (Qt.core.versionMajor < 6 && Qt.core.versionMinor < 7 &&
                         !(Qt.core.versionMinor == 6 &&
                           Qt.core.versionPatch >= 3)) {
                     list.push("icuin54.dll",
@@ -89,8 +92,8 @@ Product {
             } else if (qbs.targetOS.contains("linux")) {
                 list = addQtVersions(list);
                 list = list.concat(addQtVersions([
-                    "Qt5DBus.so",
-                    "Qt5XcbQpa.so",
+                    "Qt" + major + "DBus.so",
+                    "Qt" + major + "XcbQpa.so",
                 ]))
 
                 if (File.exists(prefix + "icudata.so.56")) {
@@ -235,6 +238,8 @@ Product {
                              "pt",
                              "pt_PT",
                              "ru",
+                             "sv",
+                             "th",
                              "tr",
                              "zh_CN",
                              "zh_TW"];
@@ -293,19 +298,23 @@ Product {
         condition: qbs.targetOS.contains("windows") && File.exists(prefix)
 
         prefix: {
-            // Not sure what this check should be exactly, but Qt 5.6.3 was
-            // built against OpenSSL 1.0.2 whereas Qt 5.12.5 was built against
-            // OpenSSL 1.1.1.
-            if (Qt.core.versionMinor >= 12) {
-                if (qbs.architecture === "x86_64")
-                    return "C:/OpenSSL-v111-Win64/"
-                else
-                    return "C:/OpenSSL-v111-Win32/"
+            if (project.openSslPath) {
+                return project.openSslPath + "/";
             } else {
-                if (qbs.architecture === "x86_64")
-                    return "C:/OpenSSL-Win64/"
-                else
-                    return "C:/OpenSSL-Win32/"
+                // Not sure what this check should be exactly, but Qt 5.6.3 was
+                // built against OpenSSL 1.0.2 whereas Qt 5.12.5 was built against
+                // OpenSSL 1.1.1.
+                if (Qt.core.versionMinor >= 12) {
+                    if (qbs.architecture === "x86_64")
+                        return "C:/OpenSSL-v111-Win64/"
+                    else
+                        return "C:/OpenSSL-v111-Win32/"
+                } else {
+                    if (qbs.architecture === "x86_64")
+                        return "C:/OpenSSL-Win64/"
+                    else
+                        return "C:/OpenSSL-Win32/"
+                }
             }
         }
         files: {

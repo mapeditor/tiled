@@ -153,14 +153,14 @@ void AbstractWorldTool::activate(MapScene *scene)
 {
     scene->addItem(mSelectionRectangle.get());
     connect(scene, &MapScene::sceneRefreshed, this, &AbstractWorldTool::updateSelectionRectangle);
-    mMapScene = scene;
+    AbstractTool::activate(scene);
 }
 
 void AbstractWorldTool::deactivate(MapScene *scene)
 {
     scene->removeItem(mSelectionRectangle.get());
     disconnect(scene, &MapScene::sceneRefreshed, this, &AbstractWorldTool::updateSelectionRectangle);
-    mMapScene = nullptr;
+    AbstractTool::deactivate(scene);
 }
 
 void AbstractWorldTool::mouseLeft()
@@ -176,7 +176,7 @@ void AbstractWorldTool::mouseMoved(const QPointF &pos,
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer())
-        offsetPos -= layer->totalOffset();
+        offsetPos -= mapScene()->absolutePositionForLayer(*layer);
 
     const QPoint pixelPos = offsetPos.toPoint();
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
@@ -214,7 +214,7 @@ void AbstractWorldTool::updateEnabledState()
 
 MapDocument *AbstractWorldTool::mapAt(const QPointF &pos) const
 {
-    const QList<QGraphicsItem *> &items = mMapScene->items(pos);
+    const QList<QGraphicsItem *> &items = mapScene()->items(pos);
 
     for (QGraphicsItem *item : items) {
         if (!item->isEnabled())
@@ -361,7 +361,7 @@ void AbstractWorldTool::addToWorld(const World *world)
     // Position the map alongside the last map by default
     if (!world->maps.isEmpty()) {
         const QRect &lastWorldRect = world->maps.last().rect;
-        rect.moveTo(lastWorldRect.topRight());
+        rect.moveTo(lastWorldRect.right() + 1, lastWorldRect.top());
     }
 
     QUndoStack *undoStack = DocumentManager::instance()->ensureWorldDocument(world->fileName)->undoStack();
@@ -424,7 +424,7 @@ void AbstractWorldTool::setTargetMap(MapDocument *mapDocument)
 
 void AbstractWorldTool::updateSelectionRectangle()
 {
-    if (auto item = mMapScene->mapItem(mTargetMap)) {
+    if (auto item = mapScene()->mapItem(mTargetMap)) {
         auto rect = mapRect(mTargetMap);
         rect.moveTo(item->pos().toPoint());
 
@@ -436,3 +436,5 @@ void AbstractWorldTool::updateSelectionRectangle()
 }
 
 } // namespace Tiled
+
+#include "moc_abstractworldtool.cpp"

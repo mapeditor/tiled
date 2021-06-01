@@ -33,7 +33,6 @@ class WangSet;
 
 class MapDocument;
 class StampActions;
-class WangFiller;
 
 class AbstractTileFillTool : public AbstractTileTool
 {
@@ -102,6 +101,7 @@ protected:
     QVector<SharedTileset> mMissingTilesets;
 
     FillMethod mFillMethod;
+    QRect mFillBounds;
 
     StampActions *mStampActions;
 

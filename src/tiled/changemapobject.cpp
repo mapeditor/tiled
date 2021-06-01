@@ -124,7 +124,7 @@ ChangeMapObjectsTile::ChangeMapObjectsTile(Document *document,
         // Update the size if the object's tile is valid and the sizes match
         mUpdateSize.append(tile && object->size() == tile->size());
 
-        mOldChangeStates.append(object->propertyChanged(MapObject::CellProperty));
+        mOldChangedProperties.append(object->changedProperties());
     }
 }
 
@@ -154,10 +154,11 @@ void ChangeMapObjectsTile::restoreTiles()
 {
     for (int i = 0; i < mMapObjects.size(); ++i) {
         setObjectCell(mMapObjects[i], mOldCells[i], mUpdateSize[i]);
-        mMapObjects[i]->setPropertyChanged(MapObject::CellProperty, mOldChangeStates[i]);
+        mMapObjects[i]->setChangedProperties(mOldChangedProperties[i]);
     }
 
-    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, MapObject::CellProperty));
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects,
+                                                  MapObject::CellProperty | MapObject::SizeProperty));
 }
 
 void ChangeMapObjectsTile::changeTiles()
@@ -167,9 +168,12 @@ void ChangeMapObjectsTile::changeTiles()
         cell.setTile(mTile);
         setObjectCell(mMapObjects[i], cell, mUpdateSize[i]);
         mMapObjects[i]->setPropertyChanged(MapObject::CellProperty);
+        if (mUpdateSize[i])
+            mMapObjects[i]->setPropertyChanged(MapObject::SizeProperty);
     }
 
-    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, MapObject::CellProperty));
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects,
+                                                  MapObject::CellProperty | MapObject::SizeProperty));
 }
 
 DetachObjects::DetachObjects(Document *document,

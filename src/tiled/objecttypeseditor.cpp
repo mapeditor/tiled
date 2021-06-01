@@ -25,18 +25,20 @@
 #include "object.h"
 #include "objecttypesmodel.h"
 #include "preferences.h"
+#include "session.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
 
 #include <QtGroupPropertyManager>
 
-#include <QColorDialog>
 #include <QCloseEvent>
+#include <QColorDialog>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPainter>
+#include <QScopedValueRollback>
 #include <QStyledItemDelegate>
 #include <QToolBar>
 
@@ -345,8 +347,8 @@ void ObjectTypesEditor::removePropertyFromSelectedTypes(const QString &name)
 
 void ObjectTypesEditor::importObjectTypes()
 {
-    Preferences *prefs = Preferences::instance();
-    const QString lastPath = prefs->lastPath(Preferences::ObjectTypesFile);
+    Session &session = Session::current();
+    const QString lastPath = session.lastPath(Session::ObjectTypesFile);
     const QString fileName =
             QFileDialog::getOpenFileName(this, tr("Import Object Types"),
                                          lastPath,
@@ -354,7 +356,7 @@ void ObjectTypesEditor::importObjectTypes()
     if (fileName.isEmpty())
         return;
 
-    prefs->setLastPath(Preferences::ObjectTypesFile, fileName);
+    session.setLastPath(Session::ObjectTypesFile, fileName);
 
     ObjectTypesSerializer serializer;
     ObjectTypes objectTypes;
@@ -384,8 +386,8 @@ void ObjectTypesEditor::importObjectTypes()
 
 void ObjectTypesEditor::exportObjectTypes()
 {
-    Preferences *prefs = Preferences::instance();
-    QString lastPath = prefs->lastPath(Preferences::ObjectTypesFile);
+    Session &session = Session::current();
+    QString lastPath = session.lastPath(Session::ObjectTypesFile);
 
     if (!lastPath.endsWith(QLatin1String(".xml")))
         lastPath.append(QStringLiteral("/objecttypes.xml"));
@@ -397,7 +399,7 @@ void ObjectTypesEditor::exportObjectTypes()
     if (fileName.isEmpty())
         return;
 
-    prefs->setLastPath(Preferences::ObjectTypesFile, fileName);
+    session.setLastPath(Session::ObjectTypesFile, fileName);
 
     ObjectTypesSerializer serializer;
     if (!serializer.writeObjectTypes(fileName, Object::objectTypes())) {
@@ -422,7 +424,7 @@ void ObjectTypesEditor::updateProperties()
 
     mProperties = aggregatedProperties;
 
-    mUpdating = true;
+    QScopedValueRollback<bool> updating(mUpdating, true);
     mVariantManager->clear();
     mNameToProperty.clear();
 
@@ -443,8 +445,6 @@ void ObjectTypesEditor::updateProperties()
         if (!consistent)
             property->setValueColor(Qt::gray);
     }
-
-    mUpdating = false;
 }
 
 void ObjectTypesEditor::propertyValueChanged(QtProperty *property,
@@ -464,10 +464,10 @@ QtVariantProperty *ObjectTypesEditor::createProperty(int type,
     QtVariantProperty *property = mVariantManager->addProperty(type, name);
     if (!property) {
         // fall back to string property for unsupported property types
-        property = mVariantManager->addProperty(QVariant::String, name);
+        property = mVariantManager->addProperty(QMetaType::QString, name);
     }
 
-    if (type == QVariant::Bool)
+    if (type == QMetaType::Bool)
         property->setAttribute(QLatin1String("textVisible"), false);
 
     mUi->propertiesView->addProperty(property);
@@ -593,3 +593,5 @@ void ObjectTypesEditor::currentItemChanged(QtBrowserItem *item)
 }
 
 } // namespace Tiled
+
+#include "moc_objecttypeseditor.cpp"

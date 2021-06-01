@@ -7,6 +7,7 @@ QtGuiApplication {
     name: "tiled"
     targetName: name
     version: project.version
+    consoleApplication: false
 
     Depends { name: "libtiled" }
     Depends { name: "translations" }
@@ -14,20 +15,27 @@ QtGuiApplication {
     Depends { name: "qtsingleapplication" }
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt"; submodules: ["core", "widgets", "qml"]; versionAtLeast: "5.6" }
+    Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6 }
+    Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
 
     property bool qtcRunnable: true
 
-    cpp.includePaths: [
-        ".",
-        "../../zstd/lib"
-    ]
+    cpp.includePaths: {
+        var paths = ["."];
+
+        if (project.enableZstd)
+            paths.push("../../zstd/lib");
+
+        if (project.sentry)
+            paths.push("../../sentry-native/install/include");
+
+        return paths;
+    }
 
     cpp.useRPaths: project.useRPaths
     cpp.rpaths: {
         if (qbs.targetOS.contains("darwin"))
             return ["@loader_path/../Frameworks"];
-        else if (project.linuxArchive)
-            return ["$ORIGIN/lib"];
         else
             return ["$ORIGIN/../lib"];
     }
@@ -37,24 +45,34 @@ QtGuiApplication {
     cpp.defines: {
         var defs = [
             "TILED_VERSION=" + version,
-            "QT_DEPRECATED_WARNINGS",
-            "QT_DISABLE_DEPRECATED_BEFORE=0x050900",
+            "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(5,15,0)",
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
             "QT_NO_FOREACH",
             "QT_NO_URL_CAST_FROM_STRING",
             "_USE_MATH_DEFINES"
         ];
+
         if (project.snapshot)
             defs.push("TILED_SNAPSHOT");
 
         if (project.enableZstd)
             defs.push("TILED_ZSTD_SUPPORT");
 
+        if (qbs.targetOS.contains("linux") && project.dbus && Qt.dbus.present)
+            defs.push("TILED_ENABLE_DBUS");
+
+        if (project.sentry)
+            defs.push("TILED_SENTRY");
+
         return defs;
     }
 
-    consoleApplication: false
+    Properties {
+        condition: project.sentry
+        cpp.dynamicLibraries: base.concat(["sentry"])
+        cpp.libraryPaths: base.concat(["../../sentry-native/install/lib"])
+    }
 
     Group {
         name: "Precompiled header"
@@ -87,8 +105,6 @@ QtGuiApplication {
         "addremovelayer.h",
         "addremovemapobject.cpp",
         "addremovemapobject.h",
-        "addremoveterrain.cpp",
-        "addremoveterrain.h",
         "addremovetiles.cpp",
         "addremovetileset.cpp",
         "addremovetileset.h",
@@ -132,8 +148,6 @@ QtGuiApplication {
         "changeproperties.h",
         "changeselectedarea.cpp",
         "changeselectedarea.h",
-        "changeterrain.cpp",
-        "changeterrain.h",
         "changetile.cpp",
         "changetile.h",
         "changetileanimation.cpp",
@@ -144,8 +158,6 @@ QtGuiApplication {
         "changetileobjectgroup.h",
         "changetileprobability.cpp",
         "changetileprobability.h",
-        "changetileterrain.cpp",
-        "changetileterrain.h",
         "changetilewangid.cpp",
         "changetilewangid.h",
         "changewangcolordata.cpp",
@@ -192,13 +204,14 @@ QtGuiApplication {
         "createtextobjecttool.h",
         "createtileobjecttool.cpp",
         "createtileobjecttool.h",
+        "debugdrawitem.cpp",
+        "debugdrawitem.h",
         "document.cpp",
         "document.h",
         "documentmanager.cpp",
         "documentmanager.h",
-        "donationdialog.cpp",
-        "donationdialog.h",
-        "donationdialog.ui",
+        "donationpopup.cpp",
+        "donationpopup.h",
         "editableasset.cpp",
         "editableasset.h",
         "editablegrouplayer.cpp",
@@ -219,14 +232,14 @@ QtGuiApplication {
         "editableobjectgroup.h",
         "editableselectedarea.cpp",
         "editableselectedarea.h",
-        "editableterrain.cpp",
-        "editableterrain.h",
         "editabletile.cpp",
         "editabletile.h",
         "editabletilelayer.cpp",
         "editabletilelayer.h",
         "editabletileset.cpp",
         "editabletileset.h",
+        "editablewangset.cpp",
+        "editablewangset.h",
         "editor.cpp",
         "editor.h",
         "editpolygontool.cpp",
@@ -317,8 +330,6 @@ QtGuiApplication {
         "movemapobject.h",
         "movemapobjecttogroup.cpp",
         "movemapobjecttogroup.h",
-        "moveterrain.cpp",
-        "moveterrain.h",
         "newmapdialog.cpp",
         "newmapdialog.h",
         "newmapdialog.ui",
@@ -374,6 +385,8 @@ QtGuiApplication {
         "pluginlistmodel.h",
         "pointhandle.cpp",
         "pointhandle.h",
+        "popupwidget.cpp",
+        "popupwidget.h",
         "preferences.cpp",
         "preferencesdialog.cpp",
         "preferencesdialog.h",
@@ -400,8 +413,8 @@ QtGuiApplication {
         "rangeset.h",
         "regionvaluetype.cpp",
         "regionvaluetype.h",
-        "renamewangset.cpp",
-        "renamewangset.h",
+        "relocatetiles.cpp",
+        "relocatetiles.h",
         "reparentlayers.cpp",
         "reparentlayers.h",
         "replacetemplate.cpp",
@@ -436,10 +449,14 @@ QtGuiApplication {
         "scriptfileformatwrappers.h",
         "scriptfileinfo.cpp",
         "scriptfileinfo.h",
+        "scriptimage.cpp",
+        "scriptimage.h",
         "scriptmanager.cpp",
         "scriptmanager.h",
         "scriptmodule.cpp",
         "scriptmodule.h",
+        "scriptprocess.cpp",
+        "scriptprocess.h",
         "selectionrectangle.cpp",
         "selectionrectangle.h",
         "selectsametiletool.cpp",
@@ -465,14 +482,6 @@ QtGuiApplication {
         "tabbar.h",
         "templatesdock.cpp",
         "templatesdock.h",
-        "terrainbrush.cpp",
-        "terrainbrush.h",
-        "terraindock.cpp",
-        "terraindock.h",
-        "terrainmodel.cpp",
-        "terrainmodel.h",
-        "terrainview.cpp",
-        "terrainview.h",
         "texteditordialog.cpp",
         "texteditordialog.h",
         "texteditordialog.ui",
@@ -512,8 +521,6 @@ QtGuiApplication {
         "tilesetmodel.h",
         "tilesetparametersedit.cpp",
         "tilesetparametersedit.h",
-        "tilesetterrainmodel.cpp",
-        "tilesetterrainmodel.h",
         "tilesetview.cpp",
         "tilesetview.h",
         "tilesetwangsetmodel.cpp",
@@ -552,6 +559,8 @@ QtGuiApplication {
         "wangdock.h",
         "wangfiller.cpp",
         "wangfiller.h",
+        "wangoverlay.cpp",
+        "wangoverlay.h",
         "wangsetmodel.cpp",
         "wangsetmodel.h",
         "wangsetview.cpp",
@@ -567,6 +576,15 @@ QtGuiApplication {
         "zoomable.cpp",
         "zoomable.h",
     ]
+
+    Group {
+        name: "Sentry"
+        condition: project.sentry
+        files: [
+            "sentryhelper.cpp",
+            "sentryhelper.h",
+        ]
+    }
 
     Properties {
         condition: qbs.targetOS.contains("macos")
@@ -590,8 +608,7 @@ QtGuiApplication {
         condition: !qbs.targetOS.contains("darwin")
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows")
-                    || project.linuxArchive)
+            if (qbs.targetOS.contains("windows"))
                 return ""
             else
                 return "bin"

@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2020 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2020 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2020 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -39,7 +39,7 @@ import java.util.Stack;
  * Based on http://www.xmlsoft.org/html/libxml-xmlwriter.html
  *
  * @deprecated
- * @version 1.2.3
+ * @version 1.4.2
  */
 @Deprecated
 public class XMLWriter {
@@ -235,6 +235,19 @@ public class XMLWriter {
      * writeAttribute.
      *
      * @param name a {@link java.lang.String} object.
+     * @param content a long.
+     * @throws java.io.IOException if any.
+     * @throws org.mapeditor.io.xml.XMLWriterException if any.
+     */
+    public void writeAttribute(String name, long content)
+            throws IOException, XMLWriterException {
+        writeAttribute(name, String.valueOf(content));
+    }
+
+    /**
+     * <p>writeAttribute.</p>
+     *
+     * @param name a {@link java.lang.String} object.
      * @param content a float.
      * @throws java.io.IOException if any.
      * @throws org.mapeditor.io.xml.XMLWriterException if any.
@@ -254,7 +267,14 @@ public class XMLWriter {
      */
     public void writeAttribute(String name, double content)
             throws IOException, XMLWriterException {
-        writeAttribute(name, String.valueOf(content));
+        //TODO: Tiled omits the decimals if it's '.0' so this is for parity
+        long longContent = (long)content;
+        if (longContent == content) {
+            writeAttribute(name, String.valueOf(longContent));
+        }
+        else {
+            writeAttribute(name, String.valueOf(content));
+        }
     }
 
     /**

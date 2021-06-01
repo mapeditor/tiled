@@ -43,7 +43,6 @@ class QToolButton;
 
 namespace Tiled {
 
-class Terrain;
 class Tile;
 class TileLayer;
 class Tileset;
@@ -133,10 +132,8 @@ private:
     void tilesetChanged(Tileset *tileset);
     void tilesetFileNameChanged(const QString &fileName);
 
-    void tileImageSourceChanged(Tile *tile);
-    void tileAnimationChanged(Tile *tile);
-
     void replaceTileset();
+    void replaceTilesetAt(int index);
     void removeTileset();
     void removeTilesetAt(int index);
 
@@ -170,7 +167,7 @@ private:
     void createTilesetView(int index, TilesetDocument *tilesetDocument);
     void deleteTilesetView(int index);
     void moveTilesetView(int from, int to);
-    void setupTilesetModel(TilesetView *view, Tileset *tileset);
+    void setupTilesetModel(TilesetView *view, TilesetDocument *tilesetDocument);
 
     MapDocument *mMapDocument = nullptr;
 
@@ -185,7 +182,6 @@ private:
     QToolBar *mToolBar;
     Tile *mCurrentTile = nullptr;
     std::unique_ptr<TileLayer> mCurrentTiles;
-    const Terrain *mTerrain;
 
     QAction *mNewTileset;
     QAction *mEmbedTileset;

@@ -20,10 +20,13 @@
 
 #include "document.h"
 
+#include "changeevents.h"
+#include "containerhelpers.h"
 #include "editableasset.h"
 #include "logginginterface.h"
 #include "object.h"
 #include "tile.h"
+#include "wangset.h"
 
 #include <QFileInfo>
 #include <QUndoStack>
@@ -101,13 +104,88 @@ bool Document::isModified() const
     return !undoStack()->isClean();
 }
 
-void Document::setCurrentObject(Object *object)
+/**
+ * Sets the current \a object alongside the document owning that object.
+ *
+ * The owning document is necessary because the current object reference may
+ * need to be reset to prevent it from turning into a roaming pointer.
+ */
+void Document::setCurrentObject(Object *object, Document *owningDocument)
 {
     if (object == mCurrentObject)
         return;
 
     mCurrentObject = object;
+
+    if (!object)
+        owningDocument = nullptr;
+
+    if (mCurrentObjectDocument != owningDocument) {
+        if (mCurrentObjectDocument) {
+            disconnect(mCurrentObjectDocument, &QObject::destroyed, this, &Document::currentObjectDocumentDestroyed);
+            disconnect(mCurrentObjectDocument, &Document::changed, this, &Document::currentObjectDocumentChanged);
+        }
+        if (owningDocument) {
+            connect(owningDocument, &QObject::destroyed, this, &Document::currentObjectDocumentDestroyed);
+            connect(owningDocument, &Document::changed, this, &Document::currentObjectDocumentChanged);
+        }
+
+        mCurrentObjectDocument = owningDocument;
+    }
+
     emit currentObjectChanged(object);
+}
+
+/**
+ * Resets the current object when necessary.
+ *
+ * For some changes we'll need to reset the current object. At the moment, this
+ * function only handles those cases where the change comes from a different
+ * document. For example, the current object of a MapDocument might be a tile
+ * from a TilesetDocument. To avoid leaving a roaming pointer, it will need to
+ * be reset when that tile is removed.
+ */
+void Document::currentObjectDocumentChanged(const ChangeEvent &change)
+{
+    switch (change.type) {
+    case ChangeEvent::TilesAboutToBeRemoved: {
+        auto tilesEvent = static_cast<const TilesEvent&>(change);
+
+        if (contains(tilesEvent.tiles, currentObject()))
+            setCurrentObject(nullptr);
+
+        break;
+    }
+    case ChangeEvent::WangSetAboutToBeRemoved: {
+        auto wangSetEvent = static_cast<const WangSetEvent&>(change);
+        auto wangSet = wangSetEvent.tileset->wangSet(wangSetEvent.index);
+
+        if (currentObject() == wangSet)
+            setCurrentObject(nullptr);
+        if (currentObject() && currentObject()->typeId() == Object::WangColorType)
+            if (static_cast<WangColor*>(currentObject())->wangSet() == wangSet)
+                setCurrentObject(nullptr);
+
+        break;
+    }
+    case ChangeEvent::WangColorAboutToBeRemoved: {
+        auto wangColorEvent = static_cast<const WangColorEvent&>(change);
+        auto wangColor = wangColorEvent.wangSet->colorAt(wangColorEvent.color);
+
+        if (currentObject() == wangColor.data())
+            setCurrentObject(nullptr);
+
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void Document::currentObjectDocumentDestroyed()
+{
+    mCurrentObjectDocument = nullptr;   // don't need to disconnect from this
+    setCurrentObject(nullptr);
 }
 
 QList<Object *> Document::currentObjects() const
@@ -159,3 +237,5 @@ void Document::setChangedOnDisk(bool changedOnDisk)
 }
 
 } // namespace Tiled
+
+#include "moc_document.cpp"

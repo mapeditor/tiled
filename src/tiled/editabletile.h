@@ -28,8 +28,8 @@
 namespace Tiled {
 
 class EditableObjectGroup;
-class EditableTerrain;
 class EditableTileset;
+class ScriptImage;
 class TilesetDocument;
 
 class EditableTile : public EditableObject
@@ -42,7 +42,6 @@ class EditableTile : public EditableObject
     Q_PROPERTY(QSize size READ size)
     Q_PROPERTY(QString type READ type WRITE setType)
     Q_PROPERTY(QString imageFileName READ imageFileName WRITE setImageFileName)
-    Q_PROPERTY(QJSValue terrain READ terrain WRITE setTerrain)
     Q_PROPERTY(qreal probability READ probability WRITE setProbability)
     Q_PROPERTY(Tiled::EditableObjectGroup *objectGroup READ objectGroup WRITE setObjectGroup)
     Q_PROPERTY(QJSValue frames READ frames WRITE setFrames)
@@ -77,15 +76,13 @@ public:
     QSize size() const;
     const QString &type() const;
     QString imageFileName() const;
-    QJSValue terrain() const;
     qreal probability() const;
     EditableObjectGroup *objectGroup() const;
     QJSValue frames() const;
     bool isAnimated() const;
     EditableTileset *tileset() const;
 
-    Q_INVOKABLE Tiled::EditableTerrain *terrainAtCorner(Corner corner) const;
-    Q_INVOKABLE void setTerrainAtCorner(Corner corner, Tiled::EditableTerrain *editableTerrain);
+    Q_INVOKABLE void setImage(Tiled::ScriptImage *image);
 
     Tile *tile() const;
 
@@ -98,7 +95,6 @@ public:
 public slots:
     void setType(const QString &type);
     void setImageFileName(const QString &fileName);
-    void setTerrain(QJSValue value);
     void setProbability(qreal probability);
     void setObjectGroup(EditableObjectGroup *editableObjectGroup);
     void setFrames(QJSValue value);

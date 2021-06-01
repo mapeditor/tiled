@@ -74,3 +74,5 @@ bool FilterEdit::event(QEvent *event)
 }
 
 } // namespace Tiled
+
+#include "moc_filteredit.cpp"

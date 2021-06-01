@@ -33,13 +33,10 @@
 #include "tileset.h"
 
 #include <QDateTime>
-#include <QPointer>
 
 #include <memory>
 
 namespace Tiled {
-
-class ObjectTemplateFormat;
 
 class TILEDSHARED_EXPORT ObjectTemplate : public Object
 {
@@ -55,8 +52,8 @@ public:
     const QString &fileName() const;
     void setFileName(const QString &fileName);
 
-    void setFormat(ObjectTemplateFormat *format);
-    ObjectTemplateFormat *format() const;
+    void setFormat(const QString &format);
+    QString format() const;
 
     bool save();
     QDateTime lastSaved() const;
@@ -65,7 +62,7 @@ public:
 
 private:
     QString mFileName;
-    QPointer<ObjectTemplateFormat> mFormat;
+    QString mFormat;
     std::unique_ptr<MapObject> mObject;
     SharedTileset mTileset;
     QDateTime mLastSaved;
@@ -79,6 +76,12 @@ inline const QString &ObjectTemplate::fileName() const
 
 inline void ObjectTemplate::setFileName(const QString &fileName)
 { mFileName = fileName; }
+
+inline void ObjectTemplate::setFormat(const QString &format)
+{ mFormat = format; }
+
+inline QString ObjectTemplate::format() const
+{ return mFormat; }
 
 inline QDateTime ObjectTemplate::lastSaved() const
 { return mLastSaved; }

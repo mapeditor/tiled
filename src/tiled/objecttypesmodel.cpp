@@ -170,3 +170,5 @@ QModelIndex ObjectTypesModel::addNewObjectType()
     endInsertRows();
     return index(0, 0);
 }
+
+#include "moc_objecttypesmodel.cpp"

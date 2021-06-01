@@ -48,33 +48,33 @@ static QPalette createPalette(const QColor &windowColor,
 
     const bool isLight = windowValue > 128;
     const int baseValue = isLight ? windowValue + 48 : windowValue - 24;
+    const int textValue = isLight ? qMax(0, windowValue - 160)
+                                  : qMin(255, windowValue + 160);
 
-    const int lightTextValue = qMin(255, windowValue + 160);
-    const int darkTextValue = qMax(0, windowValue - 160);
-
-    const QColor lightText = QColor(lightTextValue, lightTextValue, lightTextValue);
-    const QColor darkText = QColor(darkTextValue, darkTextValue, darkTextValue);
-    const QColor lightDisabledText = QColor(lightTextValue, lightTextValue, lightTextValue, 128);
-    const QColor darkDisabledText = QColor(darkTextValue, darkTextValue, darkTextValue, 128);
+    const QColor text { textValue, textValue, textValue };
+    const QColor disabledText { textValue, textValue, textValue, 128 };
 
     QPalette palette(fromValue(windowValue));
     palette.setColor(QPalette::Base, fromValueHalfSat(baseValue));
     palette.setColor(QPalette::AlternateBase, fromValueHalfSat(baseValue - 10));
-    palette.setColor(QPalette::WindowText, isLight ? darkText : lightText);
-    palette.setColor(QPalette::ButtonText, isLight ? darkText : lightText);
-    palette.setColor(QPalette::Text, isLight ? darkText : lightText);
+    palette.setColor(QPalette::WindowText, text);
+    palette.setColor(QPalette::ButtonText, text);
+    palette.setColor(QPalette::Text, text);
     palette.setColor(QPalette::Light, fromValueHalfSat(windowValue + 55));
     palette.setColor(QPalette::Dark, fromValueHalfSat(windowValue - 55));
     palette.setColor(QPalette::Mid, fromValue(windowValue - 27));
     palette.setColor(QPalette::Midlight, fromValue(windowValue + 27));
 
-    palette.setColor(QPalette::Disabled, QPalette::WindowText, isLight ? darkDisabledText : lightDisabledText);
-    palette.setColor(QPalette::Disabled, QPalette::ButtonText, isLight ? darkDisabledText : lightDisabledText);
-    palette.setColor(QPalette::Disabled, QPalette::Text, isLight ? darkDisabledText : lightDisabledText);
+    palette.setColor(QPalette::Disabled, QPalette::WindowText, disabledText);
+    palette.setColor(QPalette::Disabled, QPalette::ButtonText, disabledText);
+    palette.setColor(QPalette::Disabled, QPalette::Text, disabledText);
 
     bool highlightIsDark = qGray(highlightColor.rgb()) < 120;
     palette.setColor(QPalette::Highlight, highlightColor);
     palette.setColor(QPalette::HighlightedText, highlightIsDark ? Qt::white : Qt::black);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+    palette.setColor(QPalette::PlaceholderText, disabledText);
+#endif
 
     if (!isLight) {
         const QColor lightskyblue { 0x87, 0xce, 0xfa };
@@ -153,3 +153,5 @@ void StyleHelper::apply()
 }
 
 } // namespace Tiled
+
+#include "moc_stylehelper.cpp"

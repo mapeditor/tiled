@@ -45,12 +45,14 @@
 
 #include <functional>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 inline uint qHash(QPoint key, uint seed = 0) Q_DECL_NOTHROW
 {
     uint h1 = qHash(key.x(), seed);
     uint h2 = qHash(key.y(), seed);
     return ((h1 << 16) | (h1 >> 16)) ^ h2 ^ seed;
 }
+#endif
 
 namespace Tiled {
 
@@ -117,6 +119,8 @@ public:
     void setFlippedVertically(bool v) { v ? _flags |= FlippedVertically : _flags &= ~FlippedVertically; }
     void setFlippedAntiDiagonally(bool v) { v ? _flags |= FlippedAntiDiagonally : _flags &= ~FlippedAntiDiagonally; }
     void setRotatedHexagonal120(bool v) { v ? _flags |= RotatedHexagonal120 : _flags &= ~RotatedHexagonal120; }
+
+    void rotate(RotateDirection direction);
 
     bool checked() const { return _flags & Checked; }
     void setChecked(bool checked) { checked ? _flags |= Checked : _flags &= ~Checked; }

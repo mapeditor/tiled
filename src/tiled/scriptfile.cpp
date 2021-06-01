@@ -35,7 +35,9 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSaveFile>
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
 #include <QTextCodec>
+#endif
 #include <QTextStream>
 
 namespace Tiled {
@@ -246,14 +248,29 @@ QString ScriptTextFile::codec() const
 {
     if (checkForClosed())
         return {};
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     return QString::fromLatin1(m_stream->codec()->name());
+#else
+    return QString::fromLatin1(QStringConverter::nameForEncoding(m_stream->encoding()));
+#endif
 }
 
 void ScriptTextFile::setCodec(const QString &codec)
 {
     if (checkForClosed())
         return;
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     m_stream->setCodec(codec.toLatin1());
+#else
+    auto encoding = QStringConverter::encodingForName(codec.toLatin1());
+    if (!encoding.has_value()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors",
+                                                                         "Unsupported encoding: %1").arg(codec));
+        return;
+    }
+
+    m_stream->setEncoding(encoding.value());
+#endif
 }
 
 QString ScriptTextFile::readLine()
@@ -342,3 +359,5 @@ bool ScriptTextFile::checkForClosed() const
 }
 
 } // namespace Tiled
+
+#include "moc_scriptfile.cpp"

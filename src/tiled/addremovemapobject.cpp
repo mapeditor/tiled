@@ -97,6 +97,13 @@ AddMapObjects::AddMapObjects(Document *document,
                           parent)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Objects"));
+
+    // Sort the objects by decreasing insertion index, which makes sure that
+    // later insertion positions aren't affected by earlier inserts.
+    std::stable_sort(mEntries.begin(), mEntries.end(),
+              [] (const AddMapObjects::Entry &a, const AddMapObjects::Entry &b) {
+        return a.index > b.index;
+    });
 }
 
 void AddMapObjects::undo()
@@ -177,7 +184,9 @@ void RemoveMapObjects::undo()
 
 void RemoveMapObjects::redo()
 {
-    emit mDocument->changed(MapObjectsEvent(ChangeEvent::MapObjectsAboutToBeRemoved, objects(mEntries)));
+    MapObjectsEvent mapObjectsEvent { ChangeEvent::MapObjectsAboutToBeRemoved, objects(mEntries) };
+
+    emit mDocument->changed(mapObjectsEvent);
 
     for (Entry &entry : mEntries) {
         if (entry.index == -1)
@@ -187,6 +196,9 @@ void RemoveMapObjects::redo()
         entry.objectGroup->removeObjectAt(entry.index);
         emit mDocument->changed(MapObjectEvent(ChangeEvent::MapObjectRemoved, entry.objectGroup, entry.index));
     }
+
+    mapObjectsEvent.type = ChangeEvent::MapObjectsRemoved;
+    emit mDocument->changed(mapObjectsEvent);
 
     mOwnsObjects = true;
 }

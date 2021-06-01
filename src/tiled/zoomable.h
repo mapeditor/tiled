@@ -21,12 +21,12 @@
 #pragma once
 
 #include <QObject>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QVector>
 
 class QComboBox;
 class QPinchGesture;
-class QRegExpValidator;
+class QRegularExpressionValidator;
 
 namespace Tiled {
 
@@ -93,8 +93,8 @@ private:
     qreal mGestureStartScale;
     QVector<qreal> mZoomFactors;
     QComboBox *mComboBox;
-    QRegExp mComboRegExp;
-    QRegExpValidator *mComboValidator;
+    QRegularExpression mComboRegExp;
+    QRegularExpressionValidator *mComboValidator;
 };
 
 } // namespace Tiled

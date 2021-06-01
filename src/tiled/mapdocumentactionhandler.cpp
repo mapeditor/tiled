@@ -67,7 +67,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionSelectInverse = new QAction(this);
     mActionSelectInverse->setShortcut(Qt::CTRL + Qt::Key_I);
     mActionSelectNone = new QAction(this);
-    mActionSelectNone->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_A);
+    mActionSelectNone->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_A);
 
     mActionCropToSelection = new QAction(this);
     mActionAutocrop = new QAction(this);
@@ -92,13 +92,13 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionLayerViaCopy->setShortcut(Qt::CTRL + Qt::Key_J);
 
     mActionLayerViaCut = new QAction(this);
-    mActionLayerViaCut->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_J);
+    mActionLayerViaCut->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_J);
 
     mActionGroupLayers = new QAction(this);
     mActionUngroupLayers = new QAction(this);
 
     mActionDuplicateLayers = new QAction(this);
-    mActionDuplicateLayers->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_D);
+    mActionDuplicateLayers->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_D);
     mActionDuplicateLayers->setIcon(
             QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
 
@@ -115,12 +115,12 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionSelectNextLayer->setShortcut(Qt::CTRL + Qt::Key_PageUp);
 
     mActionMoveLayersUp = new QAction(this);
-    mActionMoveLayersUp->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Up);
+    mActionMoveLayersUp->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_Up);
     mActionMoveLayersUp->setIcon(
             QIcon(QLatin1String(":/images/16/go-up.png")));
 
     mActionMoveLayersDown = new QAction(this);
-    mActionMoveLayersDown->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Down);
+    mActionMoveLayersDown->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_Down);
     mActionMoveLayersDown->setIcon(
             QIcon(QLatin1String(":/images/16/go-down.png")));
 
@@ -143,12 +143,12 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionToggleLockSelectedLayers->setIcon(lockedIcon);
 
     mActionToggleOtherLayers = new QAction(this);
-    mActionToggleOtherLayers->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_H);
+    mActionToggleOtherLayers->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_H);
     mActionToggleOtherLayers->setIcon(
             QIcon(QLatin1String(":/images/16/show_hide_others.png")));
 
     mActionToggleLockOtherLayers = new QAction(this);
-    mActionToggleLockOtherLayers->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_L);
+    mActionToggleLockOtherLayers->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_L);
     mActionToggleLockOtherLayers->setIcon(lockedIcon);
 
     mActionLayerProperties = new QAction(this);
@@ -387,6 +387,7 @@ void MapDocumentActionHandler::delete_()
                                          [] (Layer *layer) { return layer->isTileLayer(); });
 
     QList<QUndoCommand*> commands;
+    QList<QPair<QRegion, TileLayer*>> erasedRegions;
 
     if (tileLayerSelected) {
         LayerIterator layerIterator(mMapDocument->map(), Layer::TileLayerType);
@@ -401,6 +402,7 @@ void MapDocumentActionHandler::delete_()
 
             // Delete the selected part of the layer
             commands.append(new EraseTiles(mMapDocument, tileLayer, area));
+            erasedRegions.append({ area, tileLayer });
         }
 
         if (!selectedArea.isEmpty())
@@ -418,10 +420,13 @@ void MapDocumentActionHandler::delete_()
     if (!commands.isEmpty()) {
         QUndoStack *undoStack = mMapDocument->undoStack();
         undoStack->beginMacro(tr("Delete"));
-        for (QUndoCommand *command : commands)
+        for (QUndoCommand *command : qAsConst(commands))
             undoStack->push(command);
         undoStack->endMacro();
     }
+
+    for (auto &erased : qAsConst(erasedRegions))
+        emit mMapDocument->regionEdited(erased.first, erased.second);
 }
 
 void MapDocumentActionHandler::selectAll()
@@ -852,3 +857,5 @@ void MapDocumentActionHandler::updateActions()
 }
 
 } // namespace Tiled
+
+#include "moc_mapdocumentactionhandler.cpp"

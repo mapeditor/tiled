@@ -79,7 +79,6 @@ private:
     void tilesetChanged(Tileset *tileset);
     void tileChanged(Tile *tile);
     void tileTypeChanged(Tile *tile);
-    void terrainChanged(Tileset *tileset, int index);
     void wangSetChanged(Tileset *tileset, int index);
 
     void propertyAdded(Object *object, const QString &name);
@@ -113,6 +112,7 @@ private:
         WordWrapProperty,
         OffsetXProperty,
         OffsetYProperty,
+        ParallaxFactorProperty,
         ColorProperty,
         BackgroundColorProperty,
         TileWidthProperty,
@@ -137,16 +137,20 @@ private:
         TileProbabilityProperty,
         ColumnCountProperty,
         IdProperty,
-        EdgeCountProperty,
-        CornerCountProperty,
+        ColorCountProperty,
         WangColorProbabilityProperty,
+        WangSetTypeProperty,
         CustomProperty,
         InfiniteProperty,
         TemplateProperty,
         CompressionLevelProperty,
         ChunkWidthProperty,
         ChunkHeightProperty,
-        TintColorProperty
+        TintColorProperty,
+        AllowFlipHorizontallyProperty,
+        AllowFlipVerticallyProperty,
+        AllowRotateProperty,
+        PreferUntransformedProperty,
     };
 
     void addMapProperties();
@@ -158,7 +162,6 @@ private:
     void addGroupLayerProperties();
     void addTilesetProperties();
     void addTileProperties();
-    void addTerrainProperties();
     void addWangSetProperties();
     void addWangColorProperties();
 
@@ -173,7 +176,6 @@ private:
     QUndoCommand *applyGroupLayerValueTo(PropertyId id, const QVariant &val, GroupLayer *groupLayer);
     void applyTilesetValue(PropertyId id, const QVariant &val);
     void applyTileValue(PropertyId id, const QVariant &val);
-    void applyTerrainValue(PropertyId id, const QVariant &val);
     void applyWangSetValue(PropertyId id, const QVariant &val);
     void applyWangColorValue(PropertyId id, const QVariant &val);
 
@@ -202,12 +204,12 @@ private:
 
     void retranslateUi();
 
-    bool mUpdating;
-    int mMapObjectFlags;
-    Object *mObject;
-    Document *mDocument;
-    MapDocument *mMapDocument;
-    TilesetDocument *mTilesetDocument;
+    bool mUpdating = false;
+    int mMapObjectFlags = 0;
+    Object *mObject = nullptr;
+    Document *mDocument = nullptr;
+    MapDocument *mMapDocument = nullptr;
+    TilesetDocument *mTilesetDocument = nullptr;
 
     QtVariantPropertyManager *mVariantManager;
     QtGroupPropertyManager *mGroupManager;
@@ -229,6 +231,8 @@ private:
     QStringList mAlignmentNames;
     QStringList mFlippingFlagNames;
     QStringList mDrawOrderNames;
+    QStringList mWangSetTypeNames;
+    QMap<int, QIcon> mWangSetIcons;
 };
 
 /**

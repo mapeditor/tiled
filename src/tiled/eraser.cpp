@@ -38,7 +38,6 @@ Eraser::Eraser(QObject *parent)
                        QKeySequence(Qt::Key_E),
                        nullptr,
                        parent)
-    , mMode(Nothing)
 {
 }
 
@@ -59,7 +58,7 @@ void Eraser::mousePressed(QGraphicsSceneMouseEvent *event)
             mMode = Erase;
             doErase(false);
             return;
-        } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
+        } else if (event->button() == Qt::RightButton && !(event->modifiers() & Qt::ControlModifier)) {
             mStart = tilePosition();
             mMode = RectangleErase;
             return;
@@ -88,6 +87,11 @@ void Eraser::mouseReleased(QGraphicsSceneMouseEvent *event)
     }
 }
 
+void Eraser::modifiersChanged(Qt::KeyboardModifiers modifiers)
+{
+    mAllLayers = modifiers & Qt::ShiftModifier;
+}
+
 void Eraser::languageChanged()
 {
     setName(tr("Eraser"));
@@ -105,17 +109,13 @@ void Eraser::doErase(bool continuation)
     }
     mLastTilePos = tilePos;
 
-    for (Layer *layer : mapDocument()->selectedLayers()) {
-        if (!layer->isTileLayer())
-            continue;
-        if (!layer->isUnlocked())
-            continue;
-
-        auto tileLayer = static_cast<TileLayer*>(layer);
+    auto eraseOnLayer = [&] (TileLayer *tileLayer) {
+        if (!tileLayer->isUnlocked())
+            return;
 
         QRegion eraseRegion = globalEraseRegion.intersected(tileLayer->bounds());
         if (eraseRegion.isEmpty())
-            continue;
+            return;
 
         EraseTiles *erase = new EraseTiles(mapDocument(), tileLayer, eraseRegion);
         erase->setMergeable(continuation);
@@ -124,6 +124,15 @@ void Eraser::doErase(bool continuation)
         emit mapDocument()->regionEdited(eraseRegion, tileLayer);
 
         continuation = true;    // further erases are always continuations
+    };
+
+    if (mAllLayers) {
+        for (Layer *layer : mapDocument()->map()->tileLayers())
+            eraseOnLayer(static_cast<TileLayer*>(layer));
+    } else {
+        for (Layer *layer : mapDocument()->selectedLayers())
+            if (TileLayer *tileLayer = layer->asTileLayer())
+                eraseOnLayer(tileLayer);
     }
 }
 
@@ -140,3 +149,5 @@ QRect Eraser::eraseArea() const
 
     return QRect(tilePosition(), QSize(1, 1));
 }
+
+#include "moc_eraser.cpp"
