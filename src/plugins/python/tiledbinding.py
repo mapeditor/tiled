@@ -323,6 +323,8 @@ cls_layer.add_method('setX', None, [('int','x')])
 cls_layer.add_method('y', 'int', [])
 cls_layer.add_method('setY', None, [('int','y')])
 cls_layer.add_method('setPosition', None, [('int','x'),('int','y')])
+cls_layer.add_method('offset', 'QPointF', [])
+cls_layer.add_method('setOffset', None, [('QPointF','offset')])
 cls_layer.add_method('isTileLayer', 'bool', [])
 cls_layer.add_method('isObjectGroup', 'bool', [])
 cls_layer.add_method('isImageLayer', 'bool', [])
@@ -331,8 +333,6 @@ cls_layer.add_method('asTileLayer', retval('Tiled::TileLayer*',reference_existin
 cls_layer.add_method('asObjectGroup', retval('Tiled::ObjectGroup*',reference_existing_object=True), [])
 cls_layer.add_method('asImageLayer', retval('Tiled::ImageLayer*',reference_existing_object=True), [])
 cls_layer.add_method('asGroupLayer', retval('Tiled::GroupLayer*',reference_existing_object=True), [])
-cls_layer.add_method('offset', 'QPointF', [])
-cls_layer.add_method('setOffset', None, [('QPointF','offset')])
 
 
 mod.body.writeln("""
