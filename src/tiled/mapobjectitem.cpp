@@ -23,7 +23,6 @@
 #include "mapobjectitem.h"
 
 #include "geometry.h"
-#include "isometricrenderer.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "maprenderer.h"
@@ -31,7 +30,6 @@
 #include "mapview.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
-#include "orthogonalrenderer.h"
 #include "tile.h"
 #include "utils.h"
 #include "zoomable.h"
@@ -204,13 +202,7 @@ void MapObjectItem::expandBoundsToCoverTileCollisionObjects(QRectF &bounds)
                   QSize(1, 1),
                   tileset->gridSize());
 
-    std::unique_ptr<MapRenderer> renderer;
-
-    if (tileset->orientation() == Tileset::Orthogonal)
-        renderer = std::make_unique<OrthogonalRenderer>(&map);
-    else
-        renderer = std::make_unique<IsometricRenderer>(&map);
-
+    const auto renderer = MapRenderer::create(&map);
     const QTransform tileTransform = tileCollisionObjectsTransform(*tile);
 
     for (MapObject *object : tile->objectGroup()->objects()) {

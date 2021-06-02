@@ -35,6 +35,7 @@
 #include <QImage>
 
 #include <functional>
+#include <memory>
 
 namespace Tiled {
 
@@ -74,7 +75,7 @@ public:
 
 private:
     const Map *mMap;
-    MapRenderer *mRenderer;
+    std::unique_ptr<MapRenderer> mRenderer;
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QColor mGridColor = Qt::black;
 #else

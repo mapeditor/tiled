@@ -30,15 +30,11 @@
 
 #include "minimaprenderer.h"
 
-#include "hexagonalrenderer.h"
 #include "imagelayer.h"
-#include "isometricrenderer.h"
 #include "map.h"
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "objectgroup.h"
-#include "orthogonalrenderer.h"
-#include "staggeredrenderer.h"
 #include "tilelayer.h"
 
 #include <QPainter>
@@ -49,29 +45,13 @@ using namespace Tiled;
 
 MiniMapRenderer::MiniMapRenderer(const Map *map)
     : mMap(map)
+    , mRenderer(MapRenderer::create(map))
 {
-    switch (map->orientation()) {
-    case Map::Isometric:
-        mRenderer = new IsometricRenderer(map);
-        break;
-    case Map::Staggered:
-        mRenderer = new StaggeredRenderer(map);
-        break;
-    case Map::Hexagonal:
-        mRenderer = new HexagonalRenderer(map);
-        break;
-    case Map::Orthogonal:
-    case Map::Unknown:
-        mRenderer = new OrthogonalRenderer(map);
-        break;
-    }
-
     mRenderer->setFlag(ShowTileObjectOutlines, false);
 }
 
 MiniMapRenderer::~MiniMapRenderer()
 {
-    delete mRenderer;
 }
 
 QSize MiniMapRenderer::mapSize() const

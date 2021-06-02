@@ -32,10 +32,11 @@
 #include "isometricrenderer.h"
 #include "map.h"
 #include "mapobject.h"
+#include "objectgroup.h"
 #include "orthogonalrenderer.h"
+#include "staggeredrenderer.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "objectgroup.h"
 
 #include <QPaintEngine>
 #include <QPainter>
@@ -44,7 +45,6 @@
 #include "qtcompat_p.h"
 
 #include <cmath>
-#include <memory>
 
 using namespace Tiled;
 
@@ -240,6 +240,23 @@ QPolygonF MapRenderer::lineToPolygon(const QPointF &start, const QPointF &end)
     polygon[2] = end - perpendicular + direction;
     polygon[3] = end + perpendicular + direction;
     return polygon;
+}
+
+/**
+ * Returns a MapRenderer instance matching the orientation of the map.
+ */
+std::unique_ptr<MapRenderer> MapRenderer::create(const Map *map)
+{
+    switch (map->orientation()) {
+    case Map::Isometric:
+        return std::make_unique<IsometricRenderer>(map);
+    case Map::Staggered:
+        return std::make_unique<StaggeredRenderer>(map);
+    case Map::Hexagonal:
+        return std::make_unique<HexagonalRenderer>(map);
+    default:
+        return std::make_unique<OrthogonalRenderer>(map);
+    }
 }
 
 void MapRenderer::setupGridPens(const QPaintDevice *device, QColor color,
@@ -461,18 +478,11 @@ static QTransform rotateAt(const QPointF &position, qreal rotation)
 void CellRenderer::paintTileCollisionShapes()
 {
     const Tileset *tileset = mTile->tileset();
-    const Map map(tileset->orientation() == Tileset::Orthogonal ? Map::Orthogonal
-                                                                : Map::Isometric,
+    const bool isIsometric = tileset->orientation() == Tileset::Isometric;
+    const Map map(isIsometric ? Map::Isometric : Map::Orthogonal,
                   QSize(1, 1),
                   tileset->gridSize());
-
-    std::unique_ptr<MapRenderer> renderer;
-
-    const bool isIsometric = tileset->orientation() == Tileset::Isometric;
-    if (isIsometric)
-        renderer = std::make_unique<IsometricRenderer>(&map);
-    else
-        renderer = std::make_unique<OrthogonalRenderer>(&map);
+    const auto renderer = MapRenderer::create(&map);
 
     const qreal lineWidth = mRenderer->objectLineWidth();
     const qreal shadowDist = (lineWidth == 0 ? 1 : lineWidth) / mRenderer->painterScale();

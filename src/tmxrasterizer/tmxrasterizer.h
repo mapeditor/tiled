@@ -42,7 +42,6 @@ class QPainter;
 
 class TmxRasterizer
 {
-
 public:
     TmxRasterizer();
 
@@ -68,13 +67,13 @@ public:
     int render(const QString &fileName, const QString &imageFileName);
 
 private:
-    qreal mScale;
-    int mTileSize;
-    int mSize;
-    int mAdvanceAnimations;
-    bool mUseAntiAliasing;
-    bool mSmoothImages;
-    bool mIgnoreVisibility;
+    qreal mScale = 1.0;
+    int mTileSize = 0;
+    int mSize = 0;
+    int mAdvanceAnimations = 0;
+    bool mUseAntiAliasing = false;
+    bool mSmoothImages = true;
+    bool mIgnoreVisibility = false;
     QStringList mLayersToHide;
     QStringList mLayersToShow;
 

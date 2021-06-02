@@ -34,28 +34,25 @@
 #include "editablemap.h"
 #include "flipmapobjects.h"
 #include "grouplayer.h"
-#include "hexagonalrenderer.h"
 #include "imagelayer.h"
-#include "isometricrenderer.h"
 #include "issuesmodel.h"
 #include "layermodel.h"
 #include "logginginterface.h"
 #include "mapobject.h"
 #include "mapobjectmodel.h"
+#include "maprenderer.h"
 #include "movelayer.h"
 #include "movemapobject.h"
 #include "movemapobjecttogroup.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "offsetlayer.h"
-#include "orthogonalrenderer.h"
 #include "painttilelayer.h"
 #include "rangeset.h"
 #include "reparentlayers.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
 #include "rotatemapobject.h"
-#include "staggeredrenderer.h"
 #include "templatemanager.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -1540,20 +1537,7 @@ void MapDocument::detachObjects(const QList<MapObject *> &objects)
 
 void MapDocument::createRenderer()
 {
-    switch (mMap->orientation()) {
-    case Map::Isometric:
-        mRenderer = std::make_unique<IsometricRenderer>(mMap.get());
-        break;
-    case Map::Staggered:
-        mRenderer = std::make_unique<StaggeredRenderer>(mMap.get());
-        break;
-    case Map::Hexagonal:
-        mRenderer = std::make_unique<HexagonalRenderer>(mMap.get());
-        break;
-    default:
-        mRenderer = std::make_unique<OrthogonalRenderer>(mMap.get());
-        break;
-    }
+    mRenderer = MapRenderer::create(mMap.get());
 }
 
 #include "moc_mapdocument.cpp"
