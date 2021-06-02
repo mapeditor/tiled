@@ -989,11 +989,11 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
 
     switch (id) {
     case TileWidthProperty:
-        command = new ChangeMapProperty(mMapDocument, ChangeMapProperty::TileWidth,
+        command = new ChangeMapProperty(mMapDocument, Map::TileWidthProperty,
                                         val.toInt());
         break;
     case TileHeightProperty:
-        command = new ChangeMapProperty(mMapDocument, ChangeMapProperty::TileHeight,
+        command = new ChangeMapProperty(mMapDocument, Map::TileHeightProperty,
                                         val.toInt());
         break;
     case InfiniteProperty: {
@@ -1017,7 +1017,7 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
             mMapDocument->resizeMap(mapBounds.size(), -mapBounds.topLeft(), false);
         }
 
-        undoStack->push(new ChangeMapProperty(mMapDocument, ChangeMapProperty::Infinite,
+        undoStack->push(new ChangeMapProperty(mMapDocument, Map::InfiniteProperty,
                                               val.toInt()));
         undoStack->endMacro();
         break;
@@ -1028,7 +1028,7 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         break;
     }
     case HexSideLengthProperty: {
-        command = new ChangeMapProperty(mMapDocument, ChangeMapProperty::HexSideLength,
+        command = new ChangeMapProperty(mMapDocument, Map::HexSideLengthProperty,
                                         val.toInt());
         break;
     }
@@ -1056,7 +1056,7 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         command = new ChangeMapProperty(mMapDocument, val.value<QColor>());
         break;
     case CompressionLevelProperty:
-        command = new ChangeMapProperty(mMapDocument, ChangeMapProperty::CompressionLevel, val.toInt());
+        command = new ChangeMapProperty(mMapDocument, Map::CompressionLevelProperty, val.toInt());
         break;
     case ChunkWidthProperty: {
         QSize chunkSize = mMapDocument->map()->chunkSize();

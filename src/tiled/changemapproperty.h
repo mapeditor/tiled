@@ -32,21 +32,6 @@ class MapDocument;
 class ChangeMapProperty : public QUndoCommand
 {
 public:
-    enum Property {
-        TileWidth,
-        TileHeight,
-        Infinite,
-        HexSideLength,
-        StaggerAxis,
-        StaggerIndex,
-        Orientation,
-        RenderOrder,
-        BackgroundColor,
-        LayerDataFormat,
-        CompressionLevel,
-        ChunkSize
-    };
-
     /**
      * Constructs a command that changes the value of the given property.
      *
@@ -55,7 +40,7 @@ public:
      * @param mapDocument       the map document of the map
      * @param backgroundColor   the new color to apply for the background
      */
-    ChangeMapProperty(MapDocument *mapDocument, Property property, int value);
+    ChangeMapProperty(MapDocument *mapDocument, Map::Property property, int value);
 
     /**
      * Constructs a command that changes the map background color.
@@ -120,7 +105,7 @@ private:
     void swap();
 
     MapDocument *mMapDocument;
-    Property mProperty;
+    Map::Property mProperty;
     QColor mBackgroundColor;
     QSize mChunkSize;
     union {

@@ -76,6 +76,21 @@ public:
     QString exportFileName;
     QString exportFormat;
 
+    enum Property {
+        TileWidthProperty,
+        TileHeightProperty,
+        InfiniteProperty,
+        HexSideLengthProperty,
+        StaggerAxisProperty,
+        StaggerIndexProperty,
+        OrientationProperty,
+        RenderOrderProperty,
+        BackgroundColorProperty,
+        LayerDataFormatProperty,
+        CompressionLevelProperty,
+        ChunkSizeProperty
+    };
+
     /**
      * The orientation of the map determines how it should be rendered. An
      * Orthogonal map is using rectangular tiles that are aligned on a

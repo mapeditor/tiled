@@ -1171,6 +1171,12 @@ bool MapDocument::templateAllowed(const ObjectTemplate *objectTemplate) const
 void MapDocument::onChanged(const ChangeEvent &change)
 {
     switch (change.type) {
+    case ChangeEvent::MapChanged: {
+        const auto property = static_cast<const MapChangeEvent&>(change).property;
+        if (property == Map::OrientationProperty)
+            createRenderer();
+        break;
+    }
     case ChangeEvent::MapObjectsAboutToBeRemoved: {
         const auto &mapObjects = static_cast<const MapObjectsEvent&>(change).mapObjects;
 

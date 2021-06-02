@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "map.h"
 #include "mapobject.h"
 #include "wangset.h"
 
@@ -34,6 +35,7 @@ class ChangeEvent
 {
 public:
     enum Type {
+        MapChanged,
         LayerChanged,
         TileLayerChanged,
         MapObjectAboutToBeAdded,
@@ -62,6 +64,17 @@ protected:
     // not virtual, but protected to avoid calling at this level
     ~ChangeEvent()
     {}
+};
+
+class MapChangeEvent : public ChangeEvent
+{
+public:
+    MapChangeEvent(Map::Property property)
+        : ChangeEvent(MapChanged)
+        , property(property)
+    {}
+
+    Map::Property property;
 };
 
 class LayerChangeEvent : public ChangeEvent
