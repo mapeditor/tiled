@@ -63,6 +63,9 @@ CommandManager::CommandManager()
 #elif defined(Q_OS_MAC)
         command.executable = QLatin1String("open");
         command.arguments = QLatin1String("-t %mapfile");
+#elif defined(Q_OS_WIN)
+        command.executable = QLatin1String("notepad.exe");
+        command.arguments = QLatin1String("%mapfile");
 #endif
         if (!command.executable.isEmpty()) {
             command.name = tr("Open in text editor");
