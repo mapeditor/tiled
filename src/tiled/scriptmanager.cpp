@@ -128,7 +128,7 @@ ScriptManager::ScriptManager(QObject *parent)
     connect(ProjectManager::instance(), &ProjectManager::projectChanged,
             this, &ScriptManager::refreshExtensionsPaths);
 
-    const QString configLocation { Preferences::configLocation() };
+    const QString configLocation { Preferences::instance()->configLocation() };
     if (!configLocation.isEmpty()) {
         mExtensionsPath = QDir{configLocation}.filePath(QStringLiteral("extensions"));
 

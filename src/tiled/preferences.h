@@ -49,7 +49,10 @@ public:
 
 private:
     Preferences();
+    Preferences(const QString &fileName);
     ~Preferences() override;
+
+    void initialize();
 
 public:
     bool showGrid() const;
@@ -171,8 +174,8 @@ public:
     { return value(QLatin1String(key), defaultValue).template value<T>(); }
 
     static QString homeLocation();
-    static QString dataLocation();
-    static QString configLocation();
+    QString dataLocation() const;
+    QString configLocation() const;
 
     static QString startupProject();
     static void setStartupProject(const QString &filePath);
@@ -249,6 +252,7 @@ private:
     void objectTypesFileChangedOnDisk();
 
     FileSystemWatcher mWatcher;
+    bool mPortable = false;
 
     QString mObjectTypesFile;
     QDateTime mObjectTypesFileLastSaved;

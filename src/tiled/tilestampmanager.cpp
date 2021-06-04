@@ -48,7 +48,7 @@ using namespace Tiled;
 TileStampManager::TileStampManager(const ToolManager &toolManager,
                                    QObject *parent)
     : QObject(parent)
-    , stampsDirectory("stampsFolder", Preferences::dataLocation() + QLatin1String("/stamps"))
+    , stampsDirectory("stampsFolder", Preferences::instance()->dataLocation() + QLatin1String("/stamps"))
     , mQuickStamps(quickStampKeys().length())
     , mTileStampModel(new TileStampModel(this))
     , mToolManager(toolManager)

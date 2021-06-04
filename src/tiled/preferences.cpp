@@ -29,6 +29,7 @@
 #include "session.h"
 #include "tilesetmanager.h"
 
+#include <QApplication>
 #include <QDir>
 #include <QFileInfo>
 #include <QStandardPaths>
@@ -41,8 +42,13 @@ QString Preferences::mStartupProject;
 
 Preferences *Preferences::instance()
 {
-    if (!mInstance)
-        mInstance = new Preferences;
+    if (!mInstance) {
+        const auto iniFile = QDir(QApplication::applicationDirPath()).filePath(QStringLiteral("tiled.ini"));
+        if (QFileInfo::exists(iniFile) && QFileInfo(iniFile).isFile())
+            mInstance = new Preferences(iniFile);
+        else
+            mInstance = new Preferences;
+    }
     return mInstance;
 }
 
@@ -53,6 +59,27 @@ void Preferences::deleteInstance()
 }
 
 Preferences::Preferences()
+    : QSettings()
+{
+    initialize();
+}
+
+/**
+ * Uses the given settings file in INI format. This constructor is used for
+ * portable installs.
+ */
+Preferences::Preferences(const QString &fileName)
+    : QSettings(fileName, QSettings::IniFormat)
+    , mPortable(true)
+{
+    initialize();
+}
+
+Preferences::~Preferences()
+{
+}
+
+void Preferences::initialize()
 {
     // Make sure the data directory exists
     const QDir dataDir { dataLocation() };
@@ -103,10 +130,6 @@ Preferences::Preferences()
         setValue(QLatin1String("Install/DonationDialogTime"), donationDialogTime.toString(Qt::ISODate));
     }
     setValue(QLatin1String("Install/RunCount"), runCount() + 1);
-}
-
-Preferences::~Preferences()
-{
 }
 
 bool Preferences::showGrid() const
@@ -695,13 +718,20 @@ QString Preferences::homeLocation()
     return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
 }
 
-QString Preferences::dataLocation()
+QString Preferences::dataLocation() const
 {
+    if (mPortable) {
+        const auto configDir = QFileInfo(fileName()).dir();
+        return configDir.filePath(QStringLiteral("data"));
+    }
     return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
 }
 
-QString Preferences::configLocation()
+QString Preferences::configLocation() const
 {
+    if (mPortable)
+        return QFileInfo(fileName()).path();
+
     return QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
 }
 
