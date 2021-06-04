@@ -25,7 +25,7 @@ Rearranging the tiles does not affect their IDs and the tileset image is not mod
 
 ### Portable Configuration
 
-You can now place a `tiled.ini` file alongside the Tiled executable to active a portable configuration mode. When Tiled detects this file, it will store its preferences there, place user data in a "data" folder alongside and load scripted extensions from an "extensions" folder in the same directory. This should allow Tiled to be installed / copied onto a USB drive, to be carried around along with its configuration.
+You can now place a `tiled.ini` file alongside the Tiled executable to activate a portable configuration mode. When Tiled detects this file, it will store its preferences there, place user data in a "data" folder alongside and load scripted extensions from an "extensions" folder in the same directory. This should allow Tiled to be carried around on a USB stick along with its configuration.
 
 ### Security Enhancement
 
