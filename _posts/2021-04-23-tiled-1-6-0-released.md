@@ -66,7 +66,7 @@ Many more small improvements and fixes were made, so see the changelog below for
 
 This new release was made possible by over 300 [patrons][Patreon] and
 [sponsors][sponsors] supporting me on a monthly basis as well as many people
-cIoosing to pay for [Tiled on itch.io][Itch] and some who donated through
+choosing to pay for [Tiled on itch.io][Itch] and some who donated through
 [Liberapay][Liberapay]. To ensure I will be able to keep developing Tiled at
 this pace, please [set up a small monthly donation][donate]!
 
