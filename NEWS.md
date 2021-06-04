@@ -1,4 +1,4 @@
-### Unreleased
+### Tiled 1.7.0 (4 June 2021)
 
 * Added basic "major grid" option with stronger lines (with Ilya Arkhanhelsky, #3032)
 * Added ability to rearrange tiles in a tileset (with José Miguel Sánchez García, #2983)
