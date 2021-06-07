@@ -481,6 +481,9 @@ type TiledObjectPropertyValue = number | string | boolean | ObjectRef | FilePath
 interface TiledObjectProperties {
   [name:string]:TiledObjectPropertyValue
 }
+interface TiledObjectComponents {
+  [name:string]:TiledObjectProperties
+}
 
 /**
  * The base of most data types in Tiled. Provides the ability to associate
@@ -553,6 +556,33 @@ declare class TiledObject {
    * inherited from object types, templates and tiles where applicable.
    */
   resolvedProperties(): TiledObjectProperties;
+
+  /**
+   * Returns all components added to this object, including their properties.
+   */
+  components(): TiledObjectComponents;
+
+  /**
+   * Sets the value of the property with the given name for the given component.
+   * Does nothing if no such component exists.
+   *
+   * See {@link setProperty} regarding supported property values.
+   */
+  setComponentProperty(componentName: string, propertyName: string, value: TiledObjectPropertyValue): void;
+
+  /**
+   * Adds a component with the given name. Does nothing if the component exists
+   * already.
+   *
+   * The component receives all pre-defined properties for the given component.
+   * Any properties passed here will override those values.
+   */
+  addComponent(name: string, properties?: TiledObjectProperties): void;
+
+  /**
+   * Removes the component with the given name.
+   */
+  removeComponent(name: string): void;
 }
 
 
