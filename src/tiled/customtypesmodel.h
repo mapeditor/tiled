@@ -1,5 +1,5 @@
 /*
- * objecttypesmodel.h
+ * customtypesmodel.h
  * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -29,22 +29,22 @@
 
 namespace Tiled {
 
-class CustomPropsModel : public QAbstractTableModel
+class CustomTypesModel : public QAbstractTableModel
 {
     Q_OBJECT
 
 public:
     enum { ColorRole = Qt::UserRole };
 
-    CustomPropsModel(QObject *parent = nullptr)
+    CustomTypesModel(QObject *parent = nullptr)
         : QAbstractTableModel(parent)
     {
     }
 
-    void setCustomProps(const CustomProps &customProps);
-    const CustomProps &customProps() const { return mCustomProps; }
+    void setCustomTypes(const CustomTypes &customTypes);
+    const CustomTypes &customTypes() const { return mCustomTypes; }
 
-    CustomProp customPropAt(const QModelIndex &index) const;
+    CustomType customTypeAt(const QModelIndex &index) const;
 
     int rowCount(const QModelIndex &parent) const override;
     int columnCount(const QModelIndex &parent) const override;
@@ -56,15 +56,15 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    void setCustomPropColor(int objectIndex, const QColor &color);
-    void setCustomPropValues(int objectIndex, const QStringList &values);
-    void removeCustomProps(const QModelIndexList &indexes);
+    void setCustomTypeColor(int objectIndex, const QColor &color);
+    void setCustomTypeValues(int objectIndex, const QStringList &values);
+    void removeCustomTypes(const QModelIndexList &indexes);
 
 public slots:
-    QModelIndex addNewCustomProp();
+    QModelIndex addNewCustomType();
 
 private:
-    CustomProps mCustomProps;
+    CustomTypes mCustomTypes;
 };
 
 } // namespace Tiled

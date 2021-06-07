@@ -58,7 +58,7 @@ class MapEditor;
 class MapScene;
 class MapView;
 class ObjectTypesEditor;
-class CustomPropsEditor;
+class CustomTypesEditor;
 class ProjectDock;
 class ProjectModel;
 class TilesetDocument;
@@ -189,7 +189,7 @@ private:
     void autoMappingWarning(bool automatic);
 
     void onObjectTypesEditorClosed();
-    void onCustomPropsEditorClosed();
+    void onCustomTypesEditorClosed();
     void ensureHasBorderInFullScreen();
 
     /**
@@ -237,7 +237,7 @@ private:
     ProjectDock *mProjectDock;
     IssuesDock *mIssuesDock;
     ObjectTypesEditor *mObjectTypesEditor;
-    CustomPropsEditor *mCustomPropsEditor;
+    CustomTypesEditor *mCustomTypesEditor;
     QPointer<LocatorWidget> mLocatorWidget;
     QPointer<QWidget> mPopupWidget;
     double mPopupWidgetShowProgress = 1.0;
@@ -250,7 +250,7 @@ private:
     QMenu *mViewsAndToolbarsMenu;
     QAction *mViewsAndToolbarsAction;
     QAction *mShowObjectTypesEditor;
-    QAction *mShowCustomPropsEditor;
+    QAction *mShowCustomTypesEditor;
     QAction *mResetToDefaultLayout;
     QAction *mLockLayout;
 

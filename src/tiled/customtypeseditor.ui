@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CustomPropsEditor</class>
- <widget class="QDialog" name="CustomPropsEditor">
+ <class>CustomTypesEditor</class>
+ <widget class="QDialog" name="CustomTypesEditor">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Custom Props Editor</string>
+   <string>Custom Types Editor</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -23,12 +23,12 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="customPropsLayout">
+      <layout class="QVBoxLayout" name="customTypesLayout">
        <property name="spacing">
         <number>0</number>
        </property>
        <item>
-        <widget class="QTableView" name="customPropsTable">
+        <widget class="QTableView" name="customTypesTable">
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>
          </property>
@@ -46,7 +46,7 @@
       </layout>
      </widget>
      <widget class="QWidget" name="layoutWidget1">
-      <layout class="QVBoxLayout" name="propsDetailsLayout">
+      <layout class="QVBoxLayout" name="typeDetailsLayout">
        <property name="spacing">
         <number>0</number>
        </property>

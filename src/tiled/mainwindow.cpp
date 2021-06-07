@@ -57,7 +57,7 @@
 #include "newsbutton.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
-#include "custompropseditor.h"
+#include "customtypeseditor.h"
 #include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
 #include "projectdock.h"
@@ -233,7 +233,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mUi(new Ui::MainWindow)
     , mActionHandler(new MapDocumentActionHandler(this))
     , mObjectTypesEditor(new ObjectTypesEditor(this))
-    , mCustomPropsEditor(new CustomPropsEditor(this))
+    , mCustomTypesEditor(new CustomTypesEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(nullptr)
 {
@@ -798,12 +798,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
     mShowObjectTypesEditor->setCheckable(true);
 
-    mShowCustomPropsEditor = new QAction(tr("Custom Props Editor"), this);
-    mShowCustomPropsEditor->setCheckable(true);
+    mShowCustomTypesEditor = new QAction(tr("Custom Types Editor"), this);
+    mShowCustomTypesEditor->setCheckable(true);
 
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowObjectTypesEditor);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mShowCustomPropsEditor);
+    mUi->menuView->insertAction(mUi->actionShowGrid, mShowCustomTypesEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
 
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->showAnimationEditor());
@@ -823,10 +823,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mObjectTypesEditor, &ObjectTypesEditor::closed,
             this, &MainWindow::onObjectTypesEditorClosed);
 
-    connect(mShowCustomPropsEditor, &QAction::toggled,
-            mCustomPropsEditor, &QWidget::setVisible);
-    connect(mCustomPropsEditor, &CustomPropsEditor::closed,
-            this, &MainWindow::onCustomPropsEditorClosed);
+    connect(mShowCustomTypesEditor, &QAction::toggled,
+            mCustomTypesEditor, &QWidget::setVisible);
+    connect(mCustomTypesEditor, &CustomTypesEditor::closed,
+            this, &MainWindow::onCustomTypesEditorClosed);
 
     connect(ClipboardManager::instance(), &ClipboardManager::hasMapChanged,
             this, &MainWindow::updateActions);
@@ -2024,9 +2024,9 @@ void MainWindow::onObjectTypesEditorClosed()
     mShowObjectTypesEditor->setChecked(false);
 }
 
-void MainWindow::onCustomPropsEditorClosed()
+void MainWindow::onCustomTypesEditorClosed()
 {
-    mShowCustomPropsEditor->setChecked(false);
+    mShowCustomTypesEditor->setChecked(false);
 }
 
 void MainWindow::ensureHasBorderInFullScreen()
@@ -2345,7 +2345,7 @@ void MainWindow::retranslateUi()
     mResetToDefaultLayout->setText(tr("Reset to Default Layout"));
     mLockLayout->setText(tr("Lock Layout"));
     mShowObjectTypesEditor->setText(tr("Object Types Editor"));
-    mShowCustomPropsEditor->setText(tr("Custom Props Editor"));
+    mShowCustomTypesEditor->setText(tr("Custom Types Editor"));
     mActionHandler->retranslateUi();
     CommandManager::instance()->retranslateUi();
 }

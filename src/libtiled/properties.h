@@ -118,9 +118,9 @@ TILEDSHARED_EXPORT void mergeProperties(Properties &target, const Properties &so
 TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties);
 TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json);
 
+TILEDSHARED_EXPORT int customTypeId();
 TILEDSHARED_EXPORT int filePathTypeId();
 TILEDSHARED_EXPORT int objectRefTypeId();
-TILEDSHARED_EXPORT int customTypeId();
 
 TILEDSHARED_EXPORT QString typeToName(int type);
 TILEDSHARED_EXPORT int nameToType(const QString &name);

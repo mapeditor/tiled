@@ -40,21 +40,20 @@
 namespace Tiled {
 
 /**
- * Temporary definition of a custom props type.
- * It has a name, a color and a list of values;
+ * Defines a custom property type.
  */
-struct CustomProp
+struct CustomType
 {
-    CustomProp()
+    CustomType()
         : color(Qt::gray)
     {}
 
-    CustomProp(QString name, const QColor &color)
+    CustomType(QString name, const QColor &color)
         : name(std::move(name))
         , color(color)
     {}
 
-    CustomProp(const CustomProp &prop)
+    CustomType(const CustomType &prop)
     {
         name  = prop.name;
         color = prop.color;
@@ -62,7 +61,7 @@ struct CustomProp
         currentIndex = 0;
     }
 
-    ~CustomProp()
+    ~CustomType()
     {}
 
     QString name;
@@ -83,7 +82,7 @@ struct CustomProp
         values.removeDuplicates();
     }
 
-    QString currentValue()
+    QString currentValue() const
     {
         if (currentIndex !=-1)
             return values.at(currentIndex);
@@ -111,21 +110,26 @@ struct CustomProp
         };
     }
 
-    static CustomProp fromVariant(const QVariant &variant)
+    static CustomType fromVariant(const QVariant &variant)
     {
         const auto hash = variant.toHash();
 
-        CustomProp cProp;
-        cProp.name = hash.value(QStringLiteral("name")).toString();
-        cProp.values = hash.value(QStringLiteral("values")).toStringList();
-        cProp.color = hash.value(QStringLiteral("color")).toString();
+        CustomType customType;
+        customType.name = hash.value(QStringLiteral("name")).toString();
+        customType.values = hash.value(QStringLiteral("values")).toStringList();
+        customType.color = hash.value(QStringLiteral("color")).toString();
 
-        return cProp;
+        return customType;
+    }
+
+    static QString toString(const CustomType &customType)
+    {
+        return customType.currentValue();
     }
 };
 
-typedef QVector<CustomProp> CustomProps;
+typedef QVector<CustomType> CustomTypes;
 
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::CustomProp);
+Q_DECLARE_METATYPE(Tiled::CustomType);

@@ -1,5 +1,5 @@
 /*
- * custompropsmodel.cpp
+ * customtypesmodel.cpp
  * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,42 +18,42 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "custompropsmodel.h"
+#include "customtypesmodel.h"
 
 using namespace Tiled;
 
-static bool customPropLessThan(const CustomProp &a, const CustomProp &b)
+static bool customTypeLessThan(const CustomType &a, const CustomType &b)
 {
     return a.name.toLower() < b.name.toLower();
 }
 
-void CustomPropsModel::setCustomProps(const CustomProps &customProps)
+void CustomTypesModel::setCustomTypes(const CustomTypes &customTypes)
 {
     beginResetModel();
-    mCustomProps = customProps;
-    std::sort(mCustomProps.begin(), mCustomProps.end(), customPropLessThan);
+    mCustomTypes = customTypes;
+    std::sort(mCustomTypes.begin(), mCustomTypes.end(), customTypeLessThan);
     endResetModel();
 }
 
-CustomProp CustomPropsModel::customPropAt(const QModelIndex &index) const
+CustomType CustomTypesModel::customTypeAt(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return CustomProp();
+        return CustomType();
 
-    return mCustomProps.at(index.row());
+    return mCustomTypes.at(index.row());
 }
 
-int CustomPropsModel::rowCount(const QModelIndex &parent) const
+int CustomTypesModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : mCustomProps.size();
+    return parent.isValid() ? 0 : mCustomTypes.size();
 }
 
-int CustomPropsModel::columnCount(const QModelIndex &parent) const
+int CustomTypesModel::columnCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : 2;
 }
 
-QVariant CustomPropsModel::headerData(int section,
+QVariant CustomTypesModel::headerData(int section,
                                       Qt::Orientation orientation,
                                       int role) const
 {
@@ -61,7 +61,7 @@ QVariant CustomPropsModel::headerData(int section,
         if (role == Qt::DisplayRole) {
             switch (section) {
             case 0:
-                return tr("Property");
+                return tr("Type");
             case 1:
                 return tr("Color");
             }
@@ -73,51 +73,51 @@ QVariant CustomPropsModel::headerData(int section,
     return QVariant();
 }
 
-QVariant CustomPropsModel::data(const QModelIndex &index, int role) const
+QVariant CustomTypesModel::data(const QModelIndex &index, int role) const
 {
     // QComboBox requests data for an invalid index when the model is empty
     if (!index.isValid())
         return QVariant();
 
-    const CustomProp &customProp = mCustomProps.at(index.row());
+    const CustomType &customType = mCustomTypes.at(index.row());
 
     if (role == Qt::DisplayRole || role == Qt::EditRole)
         if (index.column() == 0)
-            return customProp.name;
+            return customType.name;
 
     if (role == ColorRole && index.column() == 1)
-        return customProp.color;
+        return customType.color;
 
     return QVariant();
 }
 
-bool CustomPropsModel::setData(const QModelIndex &index,
+bool CustomTypesModel::setData(const QModelIndex &index,
                                const QVariant &value,
                                int role)
 {
     if (role == Qt::EditRole && index.column() == 0) {
         const int oldRow = index.row();
 
-        CustomProp customProp = mCustomProps.at(oldRow);
-        customProp.name = value.toString().trimmed();
+        CustomType customType = mCustomTypes.at(oldRow);
+        customType.name = value.toString().trimmed();
 
-        auto nextCustomProp = std::lower_bound(mCustomProps.constBegin(),
-                                               mCustomProps.constEnd(),
-                                               customProp,
-                                               customPropLessThan);
+        auto nextCustomType = std::lower_bound(mCustomTypes.constBegin(),
+                                               mCustomTypes.constEnd(),
+                                               customType,
+                                               customTypeLessThan);
 
-        const int newRow = nextCustomProp - mCustomProps.constBegin();
+        const int newRow = nextCustomType - mCustomTypes.constBegin();
         // QVector::move works differently from beginMoveRows
         const int moveToRow = newRow > oldRow ? newRow - 1 : newRow;
 
-        mCustomProps[oldRow].name = customProp.name;
+        mCustomTypes[oldRow].name = customType.name;
         emit dataChanged(index, index);
 
         if (moveToRow != oldRow) {
             Q_ASSERT(newRow != oldRow);
             Q_ASSERT(newRow != oldRow + 1);
             beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);
-            mCustomProps.move(oldRow, moveToRow);
+            mCustomTypes.move(oldRow, moveToRow);
             endMoveRows();
         }
         return true;
@@ -125,7 +125,7 @@ bool CustomPropsModel::setData(const QModelIndex &index,
     return false;
 }
 
-Qt::ItemFlags CustomPropsModel::flags(const QModelIndex &index) const
+Qt::ItemFlags CustomTypesModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags f = QAbstractTableModel::flags(index);
     if (index.column() == 0)
@@ -133,22 +133,22 @@ Qt::ItemFlags CustomPropsModel::flags(const QModelIndex &index) const
     return f;
 }
 
-void CustomPropsModel::setCustomPropColor(int objectIndex, const QColor &color)
+void CustomTypesModel::setCustomTypeColor(int objectIndex, const QColor &color)
 {
-    mCustomProps[objectIndex].color = color;
+    mCustomTypes[objectIndex].color = color;
 
     const QModelIndex mi = index(objectIndex, 1);
     emit dataChanged(mi, mi);
 }
 
-void CustomPropsModel::setCustomPropValues(int objectIndex,
-                                               const QStringList &values)
+void CustomTypesModel::setCustomTypeValues(int objectIndex,
+                                           const QStringList &values)
 {
-    mCustomProps[objectIndex].values = values;
-    mCustomProps[objectIndex].validateValues();
+    mCustomTypes[objectIndex].values = values;
+    mCustomTypes[objectIndex].validateValues();
 }
 
-void CustomPropsModel::removeCustomProps(const QModelIndexList &indexes)
+void CustomTypesModel::removeCustomTypes(const QModelIndexList &indexes)
 {
     QVector<int> rows;
     for (const QModelIndex &index : indexes)
@@ -159,17 +159,15 @@ void CustomPropsModel::removeCustomProps(const QModelIndexList &indexes)
     for (int i = rows.size() - 1; i >= 0; --i) {
         const int row = rows.at(i);
         beginRemoveRows(QModelIndex(), row, row);
-        mCustomProps.remove(row);
+        mCustomTypes.remove(row);
         endRemoveRows();
     }
 }
 
-QModelIndex CustomPropsModel::addNewCustomProp()
+QModelIndex CustomTypesModel::addNewCustomType()
 {
     beginInsertRows(QModelIndex(), 0, 0);
-    mCustomProps.prepend(CustomProp());
+    mCustomTypes.prepend(CustomType());
     endInsertRows();
     return index(0, 0);
 }
-
-

@@ -134,19 +134,18 @@ public:
     bool isPartOfTileset() const;
 
     static void setObjectTypes(const ObjectTypes &objectTypes);
-    static void setCustomProps(const CustomProps &customProps);
+    static void setCustomTypes(const CustomTypes &customTypes);
     static const ObjectTypes &objectTypes()
     { return mObjectTypes; }
-    static const CustomProps &customProps()
-    { return mCustomProps; }
+    static const CustomTypes &customTypes()
+    { return mCustomTypes; }
 
 private:
     const TypeId mTypeId;
     Properties mProperties;
 
     static ObjectTypes mObjectTypes;
-
-    static CustomProps mCustomProps;
+    static CustomTypes mCustomTypes;
 };
 
 

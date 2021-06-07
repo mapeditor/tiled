@@ -51,7 +51,7 @@ public:
     QString mObjectTypesFile;
     QString mAutomappingRulesFile;
     QVector<Command> mCommands;
-    QVector<CustomProp> mCustomProps;
+    QVector<CustomType> mCustomTypes;
 
 private:
     QDateTime mLastSaved;

@@ -119,7 +119,7 @@ void aggregateProperties(AggregatedProperties &aggregated, const Properties &pro
 
 int customTypeId()
 {
-    return qMetaTypeId<CustomProp>();
+    return qMetaTypeId<CustomType>();
 }
 
 int filePathTypeId()
@@ -144,6 +144,8 @@ QString typeToName(int type)
   
     default:
         if (type == customTypeId())
+            // todo: we can't just return "custom" here, we need to save the
+            // actual name of the custom type.
             return QStringLiteral("custom");
         if (type == filePathTypeId())
             return QStringLiteral("file");
@@ -180,6 +182,9 @@ QVariant toExportValue(const QVariant &value)
         return color.isValid() ? color.name(QColor::HexArgb) : QString();
     }
 
+    if (type == customTypeId())
+        return CustomType::toString(value.value<CustomType>());
+
     if (type == filePathTypeId())
         return FilePath::toString(value.value<FilePath>());
 
@@ -196,6 +201,10 @@ QVariant fromExportValue(const QVariant &value, int type)
 
     if (value.userType() == type)
         return value;
+
+//    if (type == customTypeId())
+    // todo: to implement this, we'll need the actual name of the custom type
+    // rather than just a type ID.
 
     if (type == filePathTypeId())
         return QVariant::fromValue(FilePath::fromString(value.toString()));

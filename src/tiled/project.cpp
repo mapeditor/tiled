@@ -75,12 +75,12 @@ bool Project::save(const QString &fileName)
     for (const Command &command : qAsConst(mCommands))
         commands.append(QJsonObject::fromVariantHash(command.toVariant()));
 
-    QJsonArray cProps;
-    for (const CustomProp &cProp: qAsConst(mCustomProps))
-        cProps.append(QJsonObject::fromVariantHash(cProp.toVariant()));
+    QJsonArray customTypes;
+    for (const CustomType &type : qAsConst(mCustomTypes))
+        customTypes.append(QJsonObject::fromVariantHash(type.toVariant()));
 
     const QJsonObject project {
-        { QStringLiteral("customProps"), cProps },
+        { QStringLiteral("customTypes"), customTypes },
         { QStringLiteral("folders"), folders },
         { QStringLiteral("extensionsPath"), relative(dir, extensionsPath) },
         { QStringLiteral("objectTypesFile"), dir.relativeFilePath(mObjectTypesFile) },
@@ -127,11 +127,11 @@ bool Project::load(const QString &fileName)
     mAutomappingRulesFile = absolute(dir, project.value(QLatin1String("automappingRulesFile")).toString());
 
 
-    mCustomProps.clear();
-    const QJsonArray properties = project.value(QLatin1String("customProps")).toArray();
-    for (const QJsonValue &propValue : properties) {
-        CustomProp cProp =  CustomProp::fromVariant(propValue.toVariant());
-        mCustomProps.append(cProp);
+    mCustomTypes.clear();
+    const QJsonArray customTypes = project.value(QLatin1String("customTypes")).toArray();
+    for (const QJsonValue &typeValue : customTypes) {
+        CustomType customType = CustomType::fromVariant(typeValue.toVariant());
+        mCustomTypes.append(customType);
     }
 
     mFolders.clear();
@@ -144,11 +144,9 @@ bool Project::load(const QString &fileName)
     for (const QJsonValue &commandValue : commands)
         mCommands.append(Command::fromVariant(commandValue.toVariant()));
 
-
-
     //load actual new custom properties into the preferences
     Preferences *prefs = Preferences::instance();
-    prefs->setCustomProps(mCustomProps);
+    prefs->setCustomTypes(mCustomTypes);
 
     return true;
 }

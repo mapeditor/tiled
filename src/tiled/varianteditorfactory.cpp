@@ -126,10 +126,10 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
 
     if (type == customTypeId()) {
         QComboBox *editor= new QComboBox(parent);
-        CustomProp cProp = manager->value(property).value<CustomProp>();
-        editor->setCurrentText(manager->value(property).value<CustomProp>().currentValue());
+        CustomType customType = manager->value(property).value<CustomType>();
+        editor->setCurrentText(manager->value(property).value<CustomType>().currentValue());
 
-        editor->addItems(cProp.values);
+        editor->addItems(customType.values);
 
         mCreatedEnumProps[property].append(editor);
         mEnumPropToProperty[editor]= property;
@@ -316,10 +316,10 @@ void VariantEditorFactory::enumPropEditTextChanged(const QString &value)
         QtVariantPropertyManager *manager = propertyManager(property);
         if (!manager)
             return;
-        CustomProp cProp = manager->value(property).value<CustomProp>();
-        cProp.setValue(value);
-        manager->setValue(property, QVariant::fromValue(cProp));
-        comboBox->setCurrentText(cProp.currentValue());
+        CustomType customType = manager->value(property).value<CustomType>();
+        customType.setValue(value);
+        manager->setValue(property, QVariant::fromValue(customType));
+        comboBox->setCurrentText(customType.currentValue());
     }
 }
 

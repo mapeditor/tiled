@@ -36,7 +36,7 @@
 namespace Tiled {
 
 ObjectTypes Object::mObjectTypes;
-CustomProps Object::mCustomProps;
+CustomTypes Object::mCustomTypes;
 Object::~Object()
 {}
 
@@ -145,9 +145,9 @@ void Object::setObjectTypes(const ObjectTypes &objectTypes)
     mObjectTypes = objectTypes;
 }
 
-void Object::setCustomProps(const CustomProps &customProps)
+void Object::setCustomTypes(const CustomTypes &customTypes)
 {
-    mCustomProps = customProps;
+    mCustomTypes = customTypes;
 }
 
 

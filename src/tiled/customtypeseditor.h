@@ -23,11 +23,12 @@
 #include "properties.h"
 
 #include <QDialog>
-#include <QTableWidget>
-#include <QTableWidgetItem>
-#include <QStandardItemModel>
+
+class QStandardItemModel;
+class QTableWidgetItem;
+
 namespace Ui {
-class CustomPropsEditor;
+class CustomTypesEditor;
 }
 
 class QtBrowserItem;
@@ -38,15 +39,15 @@ class QtVariantPropertyManager;
 
 namespace Tiled {
 
-class CustomPropsModel;
+class CustomTypesModel;
 
-class CustomPropsEditor : public QDialog
+class CustomTypesEditor : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit CustomPropsEditor(QWidget *parent = nullptr);
-    ~CustomPropsEditor() override;
+    explicit CustomTypesEditor(QWidget *parent = nullptr);
+    ~CustomTypesEditor() override;
 
 signals:
     void closed();
@@ -57,15 +58,15 @@ protected:
     void showEvent(QShowEvent *e) override;
 
 private:
-    void addCustomProp();
-    void selectedCustomPropsChanged();
-    void removeSelectedCustomProps();
-    void customPropIndexClicked(const QModelIndex &index);
-    void applyCustomProps();
-    void customPropsChanged();
-    void loadCustomProps();
-    void debugCustomProps();
-    void saveCustomProps();
+    void addCustomType();
+    void selectedCustomTypesChanged();
+    void removeSelectedCustomTypes();
+    void customTypeIndexClicked(const QModelIndex &index);
+    void applyCustomTypes();
+    void customTypesChanged();
+    void loadCustomTypes();
+    void debugCustomTypes();
+    void saveCustomTypes();
 
     void updateValues();
 
@@ -77,27 +78,26 @@ private:
     void renameValueTo(const QString &name);
 
     void selectFirstCProp();
-    void currentItemChanged(QTableWidgetItem *current,QTableWidgetItem *previous);
-    void itemChanged(QTableWidgetItem *item);
+    void itemChanged(QTableWidgetItem *);
 
     void recalculateValues();
     void retranslateUi();
 
     void createValue(int row, const QString &name);
 
-    Ui::CustomPropsEditor *mUi;
-    CustomPropsModel *mCustomPropsModel;
+    Ui::CustomTypesEditor *mUi;
+    CustomTypesModel *mCustomTypesModel;
     QStandardItemModel *mDetailsModel;
     QtVariantPropertyManager *mVariantManager;
     QtGroupPropertyManager *mGroupManager;
     QStringList mCurrentValues;
 
     bool mUpdating = false;
-    bool mSettingPrefCustomProps = false;
+    bool mSettingPrefCustomTypes = false;
     bool mTouchingValues = false;
 
-    QAction *mAddCustomPropAction;
-    QAction *mRemoveCustomPropAction;
+    QAction *mAddCustomTypeAction;
+    QAction *mRemoveCustomTypeAction;
 
     QAction *mAddValueAction;
     QAction *mRemoveValueAction;
