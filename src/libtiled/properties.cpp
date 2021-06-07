@@ -49,6 +49,7 @@ FilePath FilePath::fromString(const QString &string)
 
 void mergeProperties(Properties &target, const Properties &source)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     // Based on QMap::unite, but using insert instead of insertMulti
     Properties::const_iterator it = source.constEnd();
     const Properties::const_iterator b = source.constBegin();
@@ -56,6 +57,9 @@ void mergeProperties(Properties &target, const Properties &source)
         --it;
         target.insert(it.key(), it.value());
     }
+#else
+    target.insert(source);
+#endif
 }
 
 QJsonArray propertiesToJson(const Properties &properties)

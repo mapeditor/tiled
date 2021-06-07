@@ -156,9 +156,13 @@ public:
     Properties &componentProperties(const QString &componentName)
     { return mComponents[componentName]; }
 
+    void setComponentProperty(const QString &componentName, const QString &propertyName, const QVariant &value);
+
     static void setObjectTypes(const ObjectTypes &objectTypes);
     static const ObjectTypes &objectTypes()
     { return mObjectTypes; }
+
+    static Properties objectTypeProperties(const QString &name);
 
     static QSet<QString> commonComponents(const QList<Object *> &objects,
                                           bool inverted = false);

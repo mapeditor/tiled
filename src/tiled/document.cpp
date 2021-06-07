@@ -229,7 +229,8 @@ void Document::addComponent(const QList<Object *> &objects, const QString &name,
             object->addComponent(name, properties);
     }
 
-    emit componentAdded(objects, name);
+    if (!objects.isEmpty())
+        emit componentAdded(objects, name);
 }
 
 void Document::removeComponent(const QList<Object *> &objects, const QString &name)
@@ -237,7 +238,8 @@ void Document::removeComponent(const QList<Object *> &objects, const QString &na
     for (Object *object : objects)
         object->removeComponent(name);
 
-    emit componentRemoved(objects, name);
+    if (!objects.isEmpty())
+        emit componentRemoved(objects, name);
 }
 
 void Document::setComponentProperty(Object *object,
@@ -246,8 +248,7 @@ void Document::setComponentProperty(Object *object,
                                     const QVariant &value)
 {
     if (object->hasComponent(componentName)) {
-        Properties &props = object->componentProperties(componentName);
-        props[propertyName] = value;
+        object->setComponentProperty(componentName, propertyName, value);
         emit componentPropertyChanged(object, componentName, propertyName, value);
     }
 }

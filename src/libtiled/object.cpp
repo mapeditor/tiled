@@ -157,9 +157,27 @@ void Object::addComponent(const QString &name, const Properties &properties)
     mComponents[name] = properties;
 }
 
+void Object::setComponentProperty(const QString &componentName, const QString &propertyName, const QVariant &value)
+{
+    if (mComponents.contains(componentName)) {
+        Properties &props = mComponents[componentName];
+        props[propertyName] = value;
+    }
+}
+
 void Object::setObjectTypes(const ObjectTypes &objectTypes)
 {
     mObjectTypes = objectTypes;
+}
+
+Properties Object::objectTypeProperties(const QString &name)
+{
+    for (const ObjectType &t : mObjectTypes) {
+        if (t.name.compare(name) == 0)
+            return t.defaultProperties;
+    }
+
+    return {};
 }
 
 QSet<QString> Object::commonComponents(const QList<Object *> &objects,

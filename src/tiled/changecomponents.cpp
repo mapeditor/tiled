@@ -7,28 +7,23 @@
 
 using namespace Tiled;
 
-static Properties objectTypeProperties(const QString &name)
-{
-    const ObjectType *type = nullptr;
-    for (const ObjectType &t : Object::objectTypes()) {
-        if (t.name.compare(name) == 0) {
-            type = &t;
-            break;
-        }
-    }
-
-    return type ? type->defaultProperties : Properties {};
-}
+AddComponent::AddComponent(Document *document,
+                           const QList<Object *> &objects,
+                           const QString &name,
+                           QUndoCommand *parent)
+    : AddComponent(document, objects, name, Object::objectTypeProperties(name), parent)
+{ }
 
 AddComponent::AddComponent(Document *document,
                            const QList<Object *> &objects,
                            const QString &name,
+                           Properties properties,
                            QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
     , mObjects(objects)
     , mName(name)
-    , mProperties(objectTypeProperties(mName))
+    , mProperties(properties)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Component (%1)")
             .arg(name));

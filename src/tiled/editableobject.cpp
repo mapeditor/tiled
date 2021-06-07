@@ -21,6 +21,7 @@
 #include "editableobject.h"
 
 #include "changeproperties.h"
+#include "changecomponents.h"
 #include "editableasset.h"
 #include "editablemanager.h"
 #include "editablemapobject.h"
@@ -51,7 +52,7 @@ void EditableObject::setProperty(const QString &name, const QVariant &value)
 {
     if (Document *doc = document())
         asset()->push(new SetProperty(doc, { mObject }, name, fromScript(value)));
-    else
+    else if (!checkReadOnly())
         mObject->setProperty(name, fromScript(value));
 }
 
@@ -59,7 +60,7 @@ void EditableObject::setProperties(const QVariantMap &properties)
 {
     if (Document *doc = document())
         asset()->push(new ChangeProperties(doc, QString(), mObject, fromScript(properties)));
-    else
+    else if (!checkReadOnly())
         mObject->setProperties(fromScript(properties));
 }
 
@@ -69,6 +70,33 @@ void EditableObject::removeProperty(const QString &name)
         asset()->push(new RemoveProperty(doc, { mObject }, name));
     else if (!checkReadOnly())
         mObject->removeProperty(name);
+}
+
+void EditableObject::setComponentProperty(const QString &componentName, const QString &propertyName, const QVariant &value)
+{
+    if (Document *doc = document())
+        asset()->push(new SetComponentProperty(doc, { mObject }, componentName, propertyName, fromScript(value)));
+    else if (!checkReadOnly())
+        mObject->setComponentProperty(componentName, propertyName, fromScript(value));
+}
+
+void EditableObject::addComponent(const QString &name, const QVariantMap &properties)
+{
+    auto props = Object::objectTypeProperties(name);
+    mergeProperties(props, fromScript(properties));
+
+    if (Document *doc = document())
+        asset()->push(new AddComponent(doc, { mObject }, name, props));
+    else if (!checkReadOnly())
+        mObject->addComponent(name, props);
+}
+
+void EditableObject::removeComponent(const QString &name)
+{
+    if (Document *doc = document())
+        asset()->push(new RemoveComponent(doc, { mObject }, name));
+    else if (!checkReadOnly())
+        mObject->removeComponent(name);
 }
 
 Document *EditableObject::document() const
@@ -165,6 +193,17 @@ QVariantMap EditableObject::fromScript(const QVariantMap &value) const
     for (auto i = converted.begin(); i != converted.end(); ++i)
         i.value() = fromScript(i.value());
     return converted;
+}
+
+QVariantMap EditableObject::toScript(const Components &components) const
+{
+    QVariantMap map;
+    QMapIterator<QString, Properties> it(components);
+    while (it.hasNext()) {
+        it.next();
+        map.insert(it.key(), toScript(it.value()));
+    }
+    return map;
 }
 
 } // namespace Tiled
