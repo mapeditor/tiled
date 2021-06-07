@@ -451,7 +451,6 @@ QtVariantProperty *ObjectTypesEditor::createProperty(int type,
     QtVariantProperty *property = mVariantManager->addProperty(type, name);
     if (!property) {
         // fall back to string property for unsupported property types
-        qDebug() << "test";
         property = mVariantManager->addProperty(QMetaType::QString, name);
     }
 

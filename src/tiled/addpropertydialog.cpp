@@ -58,11 +58,7 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->typeBox->addItem(typeToName(objectRefTypeId()),    QVariant::fromValue(ObjectRef()));
     mUi->typeBox->addItem(typeToName(QMetaType::QString),   QString());
 
-
-    CustomProps customProps = Object::customProps();
-
-
-    for (const CustomProp cProp: customProps) {
+    for (const CustomProp &cProp: Object::customProps()) {
         QVariant var;
         var.setValue(cProp);
         mUi->typeBox->addItem(cProp.name,  var);
@@ -74,9 +70,9 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->typeBox->setCurrentText(session::propertyType);
 
     connect(mUi->name, &QLineEdit::textChanged,
-        this, &AddPropertyDialog::nameChanged);
+            this, &AddPropertyDialog::nameChanged);
     connect(mUi->typeBox, &QComboBox::currentTextChanged,
-        this, &AddPropertyDialog::typeChanged);
+            this, &AddPropertyDialog::typeChanged);
 }
 
 AddPropertyDialog::~AddPropertyDialog()

@@ -159,14 +159,14 @@ int VariantPropertyManager::alignmentTypeId()
     return qMetaTypeId<Qt::Alignment>();
 }
 
-int VariantPropertyManager::unstyledGroupTypeId()
-{
-    return qMetaTypeId<UnstyledGroup>();
-}
-
 int VariantPropertyManager::displayObjectRefTypeId()
 {
     return qMetaTypeId<DisplayObjectRef>();
+}
+
+int VariantPropertyManager::unstyledGroupTypeId()
+{
+    return qMetaTypeId<UnstyledGroup>();
 }
 
 QString VariantPropertyManager::objectRefLabel(const MapObject *object) const
@@ -202,17 +202,10 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
             return tr("%1: Object not found").arg(QString::number(ref.id()));
         }
 
-        if (typeId == filePathTypeId()) {
-            FilePath filePath = value.value<FilePath>();
-            QString fileName = filePath.url.fileName();
-            if (fileName.isEmpty()) {
-                QString path = filePath.url.toLocalFile();
-                if (path.endsWith(QLatin1Char('/')))
-                    path.chop(1);
-                fileName = QFileInfo(path).fileName();
-            }
-            return fileName;
+        if (typeId == customTypeId()) {
+            // todo?
         }
+
         if (typeId == filePathTypeId()) {
             FilePath filePath = value.value<FilePath>();
             QString fileName = filePath.url.fileName();

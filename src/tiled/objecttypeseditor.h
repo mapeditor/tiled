@@ -23,13 +23,8 @@
 #include "properties.h"
 
 #include <QDialog>
-#include <QColorDialog>
-#include <QCloseEvent>
-#include <QFileDialog>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QPainter>
 #include <QStyledItemDelegate>
+
 namespace Ui {
 class ObjectTypesEditor;
 }

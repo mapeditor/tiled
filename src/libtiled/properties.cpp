@@ -117,12 +117,10 @@ void aggregateProperties(AggregatedProperties &aggregated, const Properties &pro
     }
 }
 
-
 int customTypeId()
 {
     return qMetaTypeId<CustomProp>();
 }
-
 
 int filePathTypeId()
 {

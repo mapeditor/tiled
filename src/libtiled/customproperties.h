@@ -45,15 +45,16 @@ namespace Tiled {
  */
 struct CustomProp
 {
-    CustomProp() : color(Qt::gray) {}
+    CustomProp()
+        : color(Qt::gray)
+    {}
 
-    CustomProp(QString name,
-               const QColor &color)
+    CustomProp(QString name, const QColor &color)
         : name(std::move(name))
         , color(color)
     {}
 
-    CustomProp(const CustomProp &prop) 
+    CustomProp(const CustomProp &prop)
     {
         name  = prop.name;
         color = prop.color;
@@ -64,43 +65,46 @@ struct CustomProp
     ~CustomProp()
     {}
 
-
     QString name;
-
     QColor color;
-
     QStringList values;
 
     int currentIndex;
 
-    void addValue(const QString &name){
+    void addValue(const QString &name)
+    {
         values << name;
         validateValues();
     }
-    void validateValues(){
+
+    void validateValues()
+    {
         values.removeAll(QString());
         values.removeDuplicates();
     }
 
-    QString currentValue(){
+    QString currentValue()
+    {
         if (currentIndex !=-1)
-            {return values.at(currentIndex);}
-        else {
-            return QString::fromUtf8("No value");
-        }
+            return values.at(currentIndex);
+
+        return QString::fromUtf8("No value");
     }
 
-    void setValue(const QString&value){
+    void setValue(const QString &value)
+    {
         currentIndex = values.indexOf(value);
     }
 
-    void setIndex(int index){
+    void setIndex(int index)
+    {
         if (index < values.size() && index >= -1)
             currentIndex = index;
     }
     
-    QVariantHash toVariant() const {
-        return QVariantHash {
+    QVariantHash toVariant() const
+    {
+        return {
             { QStringLiteral("name"), name },
             { QStringLiteral("values"), values },
             { QStringLiteral("color"), color },
@@ -111,23 +115,10 @@ struct CustomProp
     {
         const auto hash = variant.toHash();
 
-        auto read = [&] (const QString &prop) {
-            if (hash.contains(prop))
-                return hash.value(prop);
-
-            QString oldProp = prop.at(0).toUpper() + prop.mid(1);
-            return hash.value(oldProp);
-        };
-
-        const QVariant name = read(QStringLiteral("name"));
-        const QVariant values = read(QStringLiteral("values"));
-        const QVariant color= read(QStringLiteral("color"));
-
         CustomProp cProp;
-
-        cProp.color = color.toString();
-        cProp.name = name.toString();
-        cProp.values = values.toStringList();
+        cProp.name = hash.value(QStringLiteral("name")).toString();
+        cProp.values = hash.value(QStringLiteral("values")).toStringList();
+        cProp.color = hash.value(QStringLiteral("color")).toString();
 
         return cProp;
     }
@@ -135,8 +126,6 @@ struct CustomProp
 
 typedef QVector<CustomProp> CustomProps;
 
-
 } // namespace Tiled
-
 
 Q_DECLARE_METATYPE(Tiled::CustomProp);
