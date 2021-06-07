@@ -82,10 +82,13 @@ void EditableObject::setComponentProperty(const QString &componentName, const QS
 
 void EditableObject::addComponent(const QString &name, const QVariantMap &properties)
 {
+    auto props = Object::objectTypeProperties(name);
+    mergeProperties(props, fromScript(properties));
+
     if (Document *doc = document())
-        asset()->push(new AddComponent(doc, { mObject }, name, fromScript(properties)));
+        asset()->push(new AddComponent(doc, { mObject }, name, props));
     else if (!checkReadOnly())
-        mObject->addComponent(name, fromScript(properties));
+        mObject->addComponent(name, props);
 }
 
 void EditableObject::removeComponent(const QString &name)

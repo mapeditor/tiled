@@ -170,6 +170,16 @@ void Object::setObjectTypes(const ObjectTypes &objectTypes)
     mObjectTypes = objectTypes;
 }
 
+Properties Object::objectTypeProperties(const QString &name)
+{
+    for (const ObjectType &t : mObjectTypes) {
+        if (t.name.compare(name) == 0)
+            return t.defaultProperties;
+    }
+
+    return {};
+}
+
 QSet<QString> Object::commonComponents(const QList<Object *> &objects,
                                        bool inverted)
 {

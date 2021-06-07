@@ -162,6 +162,8 @@ public:
     static const ObjectTypes &objectTypes()
     { return mObjectTypes; }
 
+    static Properties objectTypeProperties(const QString &name);
+
     static QSet<QString> commonComponents(const QList<Object *> &objects,
                                           bool inverted = false);
 
