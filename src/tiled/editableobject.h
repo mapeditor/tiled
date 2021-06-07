@@ -66,7 +66,7 @@ public:
     Q_INVOKABLE QVariantMap components() const;
     Q_INVOKABLE void setComponentProperty(const QString &componentName, const QString &propertyName, const QVariant &value);
 
-    Q_INVOKABLE void addComponent(const QString &name, const QVariantMap &properties);
+    Q_INVOKABLE void addComponent(const QString &name, const QVariantMap &properties = {});
     Q_INVOKABLE void removeComponent(const QString &name);
 
     Object *object() const;
