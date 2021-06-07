@@ -823,12 +823,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mObjectTypesEditor, &ObjectTypesEditor::closed,
             this, &MainWindow::onObjectTypesEditorClosed);
 
-
     connect(mShowCustomPropsEditor, &QAction::toggled,
             mCustomPropsEditor, &QWidget::setVisible);
     connect(mCustomPropsEditor, &CustomPropsEditor::closed,
             this, &MainWindow::onCustomPropsEditorClosed);
-
 
     connect(ClipboardManager::instance(), &ClipboardManager::hasMapChanged,
             this, &MainWindow::updateActions);

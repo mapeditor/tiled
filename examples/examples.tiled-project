@@ -2,6 +2,17 @@
     "automappingRulesFile": "",
     "commands": [
     ],
+    "customProps": [
+        {
+            "color": "#a0a0a4",
+            "name": "EnemyType",
+            "values": [
+                "Friendly",
+                "Neutral",
+                "Aggresive"
+            ]
+        }
+    ],
     "extensionsPath": "extensions",
     "folders": [
         ".",

@@ -147,7 +147,7 @@ CustomPropsEditor::CustomPropsEditor(QWidget *parent)
     connect(mUi->actionLoad, &QAction::triggered,
              this, &CustomPropsEditor::loadCustomProps);
     connect(mUi->actionDebug, &QAction::triggered,
-             this, &CustomPropsEditor::loadCustomProps);
+             this, &CustomPropsEditor::debugCustomProps);
     connect(mUi->actionSave, &QAction::triggered,
             this, &CustomPropsEditor::saveCustomProps);
 
@@ -254,16 +254,14 @@ void CustomPropsEditor::applyCustomProps()
 {
     auto &customProps = mCustomPropsModel->customProps();
 
-
     Preferences *prefs = Preferences::instance();
     mSettingPrefCustomProps = true;
     prefs->setCustomProps(customProps);
     mSettingPrefCustomProps = false;
 
-    ProjectManager *pmanager = ProjectManager::instance();
-    Project project = ProjectManager::instance()->project();
+    Project &project = ProjectManager::instance()->project();
     project.mCustomProps = customProps;
-    pmanager->setProject(project);
+    project.save();
 }
 
 void CustomPropsEditor::customPropsChanged()
@@ -297,8 +295,7 @@ void CustomPropsEditor::removeValue()
 {
     QTableWidgetItem *item = mUi->detailsTable->currentItem();
 
-
-    const int maxRow    = mUi->detailsTable->rowCount()-1;
+    const int maxRow = mUi->detailsTable->rowCount()-1;
     mTouchingValues = true;
     if (item) {
         const QString name = item->text();
@@ -313,48 +310,42 @@ void CustomPropsEditor::removeValue()
             }
         }
     }
+
     mUi->detailsTable->setRowCount(maxRow); //remove one row
     mTouchingValues = false;
-
 }
 
 void CustomPropsEditor::loadCustomProps()
 {
-
-  mCustomPropsModel->setCustomProps(Object::customProps());
-  updateValues();
+    mCustomPropsModel->setCustomProps(Object::customProps());
+    updateValues();
 }
 
 void CustomPropsEditor::debugCustomProps()
 {
-
     CustomProps cProps = Object::customProps();
-    for (const CustomProp &prop: cProps)
-    {
+    for (const CustomProp &prop: cProps) {
         qDebug() << prop.name;
         qDebug() << prop.values;
     }
     qDebug() << "model cprops :";
     CustomProps mcProps = mCustomPropsModel->customProps();
-    for (const CustomProp &prop: mcProps)
-    {
+    for (const CustomProp &prop: mcProps) {
         qDebug() << prop.name;
         qDebug() << prop.values;
     }
     qDebug() << "project cprops :";
     CustomProps pcProps = ProjectManager::instance()->project().mCustomProps;
-    for (const CustomProp &prop: pcProps)
-    {
+    for (const CustomProp &prop: pcProps) {
         qDebug() << prop.name;
         qDebug() << prop.values;
     }
-
 }
 
 
 void CustomPropsEditor::saveCustomProps()
 {
-  applyCustomProps();
+    applyCustomProps();
 }
 
 void CustomPropsEditor::updateValues()
@@ -366,7 +357,7 @@ void CustomPropsEditor::updateValues()
     // again.. should just be one. Maybe a more elegant way to do this ?
     if (selectedRows.size() == 1) {
         for (const QModelIndex &index : selectedRows) {
-            CustomProp customProp= mCustomPropsModel->customPropAt(index);
+            CustomProp customProp = mCustomPropsModel->customPropAt(index);
 
             mUi->detailsTable->setRowCount(customProp.values.size());
             int row = 0;
@@ -379,6 +370,7 @@ void CustomPropsEditor::updateValues()
     } else {
         mUi->detailsTable->setRowCount(0);
     }
+
     mTouchingValues = false;
     mAddValueAction->setEnabled(!selectedRows.isEmpty());
     mRemoveValueAction->setEnabled(mUi->detailsTable->rowCount()>0);
@@ -414,28 +406,25 @@ void CustomPropsEditor::selectFirstCProp()
     }
 }
 
-void CustomPropsEditor::currentItemChanged(QTableWidgetItem *current,QTableWidgetItem *previous)
+void CustomPropsEditor::currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
 {
 
 }
 
 void CustomPropsEditor::recalculateValues()
 {
-
     const auto selectionModel = mUi->customPropsTable->selectionModel();
     const auto selectedRows = selectionModel->selectedRows();
 
     QStringList newValues;
-
 
     const int maxRow = mUi->detailsTable->rowCount()-1;
     for (int i = 0; i <= maxRow; ++i) {
         QTableWidgetItem *item = mUi->detailsTable->item(i,0);
         if (item) {
             QString value = item->text();
-            if (!value.isEmpty())  {
+            if (!value.isEmpty())
                 newValues << value;
-            }
         }
     }
     //there should be just one for editing. if more than one - don't do anything
@@ -449,10 +438,8 @@ void CustomPropsEditor::recalculateValues()
     updateValues();
 }
 
-
 void CustomPropsEditor::itemChanged(QTableWidgetItem *item)
 {
-
     if (!mTouchingValues)
         recalculateValues();
 }

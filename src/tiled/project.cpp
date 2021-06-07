@@ -76,9 +76,9 @@ bool Project::save(const QString &fileName)
         commands.append(QJsonObject::fromVariantHash(command.toVariant()));
 
     QJsonArray cProps;
-    for (const CustomProp &cProp: qAsConst(mCustomProps)) {
+    for (const CustomProp &cProp: qAsConst(mCustomProps))
         cProps.append(QJsonObject::fromVariantHash(cProp.toVariant()));
-    }
+
     const QJsonObject project {
         { QStringLiteral("customProps"), cProps },
         { QStringLiteral("folders"), folders },
