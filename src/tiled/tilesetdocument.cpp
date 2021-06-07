@@ -20,6 +20,7 @@
 
 #include "tilesetdocument.h"
 
+#include "changeevents.h"
 #include "editabletileset.h"
 #include "issuesmodel.h"
 #include "map.h"
@@ -344,9 +345,20 @@ void TilesetDocument::removeTiles(const QList<Tile *> &tiles)
         }
     }
 
+    emit changed(TilesEvent(ChangeEvent::TilesAboutToBeRemoved, tiles));
     mTileset->removeTiles(tiles);
     emit tilesRemoved(tiles);
     emit tilesetChanged(mTileset.data());
+}
+
+/**
+ * \sa Tileset::relocateTiles
+ */
+QList<int> TilesetDocument::relocateTiles(const QList<Tile *> &tiles, int location)
+{
+    const auto prevLocations = mTileset->relocateTiles(tiles, location);
+    emit tilesetChanged(mTileset.data());
+    return prevLocations;
 }
 
 void TilesetDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
@@ -483,9 +495,6 @@ void TilesetDocument::onPropertiesChanged(Object *object)
 
 void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
 {
-    if (wangSet == mCurrentObject)
-        setCurrentObject(nullptr);
-
     mWangColorModels.erase(wangSet);
 }
 

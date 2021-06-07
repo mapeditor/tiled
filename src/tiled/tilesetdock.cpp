@@ -373,7 +373,7 @@ void TilesetDock::selectTiles(const QList<Tile *> &tiles)
         if (tilesetIndex != -1) {
             TilesetView *view = tilesetViewAt(tilesetIndex);
             if (!view->model()) // Lazily set up the model
-                setupTilesetModel(view, tileset);
+                setupTilesetModel(view, mTilesetDocuments.at(tilesetIndex));
 
             const TilesetModel *model = view->tilesetModel();
             const QModelIndex modelIndex = model->tileIndex(tile);
@@ -494,7 +494,7 @@ void TilesetDock::updateActions()
         tileset = mTilesets.at(index).data();
 
         if (!view->model()) // Lazily set up the model
-            setupTilesetModel(view, tileset);
+            setupTilesetModel(view, mTilesetDocuments.at(index));
 
         mViewStack->setCurrentIndex(index);
         external = tileset->isExternal();
@@ -558,7 +558,7 @@ void TilesetDock::indexPressed(const QModelIndex &index)
 {
     TilesetView *view = currentTilesetView();
     if (Tile *tile = view->tilesetModel()->tileAt(index))
-        mMapDocument->setCurrentObject(tile);
+        mMapDocument->setCurrentObject(tile, currentTilesetDocument());
 }
 
 void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
@@ -603,10 +603,6 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
             this, &TilesetDock::tilesetFileNameChanged);
     connect(tilesetDocument, &TilesetDocument::tilesetChanged,
             this, &TilesetDock::tilesetChanged);
-    connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
-            this, &TilesetDock::tileImageSourceChanged);
-    connect(tilesetDocument, &TilesetDocument::tileAnimationChanged,
-            this, &TilesetDock::tileAnimationChanged);
 
     connect(view, &TilesetView::clicked,
             this, &TilesetDock::updateCurrentTiles);
@@ -824,8 +820,11 @@ void TilesetDock::setCurrentTile(Tile *tile)
     mCurrentTile = tile;
     emit currentTileChanged(tile);
 
-    if (mMapDocument && tile)
-        mMapDocument->setCurrentObject(tile);
+    if (mMapDocument && tile) {
+        int tilesetIndex = indexOf(mTilesets, tile->tileset());
+        if (tilesetIndex != -1)
+            mMapDocument->setCurrentObject(tile, mTilesetDocuments.at(tilesetIndex));
+    }
 }
 
 void TilesetDock::retranslateUi()
@@ -1035,9 +1034,9 @@ TilesetView *TilesetDock::tilesetViewAt(int index) const
     return static_cast<TilesetView *>(mViewStack->widget(index));
 }
 
-void TilesetDock::setupTilesetModel(TilesetView *view, Tileset *tileset)
+void TilesetDock::setupTilesetModel(TilesetView *view, TilesetDocument *tilesetDocument)
 {
-    view->setModel(new TilesetModel(tileset, view));
+    view->setModel(new TilesetModel(tilesetDocument, view));
 
     QItemSelectionModel *s = view->selectionModel();
     connect(s, &QItemSelectionModel::selectionChanged,
@@ -1166,23 +1165,6 @@ void TilesetDock::tilesetFileNameChanged(const QString &fileName)
     mTabBar->setTabToolTip(index, fileName);
 
     updateActions();
-}
-
-void TilesetDock::tileImageSourceChanged(Tile *tile)
-{
-    int tilesetIndex = mTilesets.indexOf(tile->tileset()->sharedPointer());
-    if (tilesetIndex != -1) {
-        TilesetView *view = tilesetViewAt(tilesetIndex);
-        if (TilesetModel *model = view->tilesetModel())
-            model->tileChanged(tile);
-    }
-}
-
-void TilesetDock::tileAnimationChanged(Tile *tile)
-{
-    if (TilesetView *view = currentTilesetView())
-        if (TilesetModel *model = view->tilesetModel())
-            model->tileChanged(tile);
 }
 
 void TilesetDock::refreshTilesetMenu()

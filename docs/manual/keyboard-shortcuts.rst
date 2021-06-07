@@ -66,7 +66,6 @@ When a tile layer is selected
       clicked center
 
 -  ``T`` - Activate :ref:`terrain-tool`
--  ``G`` - Activate :ref:`wang-tool` (from Tiled 1.1 - 1.4)
 -  ``F`` - Activate :ref:`bucket-fill-tool`
 -  ``P`` - Activate :ref:`shape-fill-tool`
 -  ``E`` - Activate :ref:`eraser-tool`

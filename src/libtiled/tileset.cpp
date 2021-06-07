@@ -120,15 +120,28 @@ void Tileset::setMargin(int margin)
 }
 
 /**
+ * Returns the location of the tile with the given ID.
+ */
+int Tileset::findTileLocation(Tile *tile) const
+{
+    return mTiles.indexOf(tile);
+}
+
+/**
  * Returns the tile with the given ID, creating it when it does not exist yet.
  */
 Tile *Tileset::findOrCreateTile(int id)
 {
-    if (Tile *tile = mTiles.value(id))
+    if (Tile *tile = mTilesById.value(id))
         return tile;
 
     mNextTileId = std::max(mNextTileId, id + 1);
-    return mTiles[id] = new Tile(id, this);
+
+    auto tile = new Tile(id, this);
+    mTilesById[id] = tile;
+    mTiles.append(tile);
+
+    return tile;
 }
 
 /**
@@ -220,11 +233,14 @@ bool Tileset::loadFromImage(const QImage &image, const QUrl &source)
                 tilePixmap.setMask(QBitmap::fromImage(mask));
             }
 
-            auto it = mTiles.find(tileNum);
-            if (it != mTiles.end())
+            auto it = mTilesById.find(tileNum);
+            if (it != mTilesById.end()) {
                 it.value()->setImage(tilePixmap);
-            else
-                mTiles.insert(tileNum, new Tile(tilePixmap, tileNum, this));
+            } else {
+                auto tile = new Tile(tilePixmap, tileNum, this);
+                mTilesById.insert(tileNum, tile);
+                mTiles.insert(tileNum, tile);
+            }
 
             ++tileNum;
         }
@@ -303,11 +319,14 @@ bool Tileset::loadImage()
     auto tiles = ImageCache::cutTiles(p);
 
     for (int tileNum = 0; tileNum < tiles.size(); ++tileNum) {
-        auto it = mTiles.find(tileNum);
-        if (it != mTiles.end())
+        auto it = mTilesById.find(tileNum);
+        if (it != mTilesById.end()) {
             it.value()->setImage(tiles.at(tileNum));
-        else
-            mTiles.insert(tileNum, new Tile(tiles.at(tileNum), tileNum, this));
+        } else {
+            auto tile = new Tile(tiles.at(tileNum), tileNum, this);
+            mTilesById.insert(tileNum, tile);
+            mTiles.insert(tileNum, tile);
+        }
     }
 
     QPixmap blank;
@@ -468,7 +487,8 @@ Tile *Tileset::addTile(const QPixmap &image, const QUrl &source)
     newTile->setImage(image);
     newTile->setImageSource(source);
 
-    mTiles.insert(newTile->id(), newTile);
+    mTilesById.insert(newTile->id(), newTile);
+    mTiles.append(newTile);
     if (mTileHeight < image.height())
         mTileHeight = image.height();
     if (mTileWidth < image.width())
@@ -484,8 +504,9 @@ Tile *Tileset::addTile(const QPixmap &image, const QUrl &source)
 void Tileset::addTiles(const QList<Tile *> &tiles)
 {
     for (Tile *tile : tiles) {
-        Q_ASSERT(tile->tileset() == this && !mTiles.contains(tile->id()));
-        mTiles.insert(tile->id(), tile);
+        Q_ASSERT(tile->tileset() == this && !mTilesById.contains(tile->id()));
+        mTilesById.insert(tile->id(), tile);
+        mTiles.append(tile);
     }
 
     updateTileSize();
@@ -499,8 +520,9 @@ void Tileset::addTiles(const QList<Tile *> &tiles)
 void Tileset::removeTiles(const QList<Tile *> &tiles)
 {
     for (Tile *tile : tiles) {
-        Q_ASSERT(tile->tileset() == this && mTiles.contains(tile->id()));
-        mTiles.remove(tile->id());
+        Q_ASSERT(tile->tileset() == this && mTilesById.contains(tile->id()));
+        mTilesById.remove(tile->id());
+        mTiles.removeOne(tile);
     }
 
     updateTileSize();
@@ -511,7 +533,39 @@ void Tileset::removeTiles(const QList<Tile *> &tiles)
  */
 void Tileset::deleteTile(int id)
 {
-    delete mTiles.take(id);
+    auto tile = mTilesById.take(id);
+    mTiles.removeOne(tile);
+    delete tile;
+}
+
+/**
+ * Moves the \a tiles from their current position the given \a position.
+ *
+ * Returns the previous locations of the moved tiles.
+ */
+QList<int> Tileset::relocateTiles(const QList<Tile *> &tiles, int location)
+{
+    QList<int> prevLocations;
+    for (Tile *tile : tiles) {
+        int fromIndex = mTiles.indexOf(tile);
+        mTiles.move(fromIndex, location);
+        if (fromIndex > location)
+            ++location; // insert the next tile after the previous one
+
+        prevLocations.append(fromIndex);
+    }
+    return prevLocations;
+}
+
+bool Tileset::anyTileOutOfOrder() const
+{
+    int tileId = 0;
+    for (const Tile *tile : mTiles) {
+        if (tile->id() != tileId)
+            return true;
+        ++tileId;
+    }
+    return false;
 }
 
 /**
@@ -526,7 +580,7 @@ void Tileset::setTileImage(Tile *tile,
                            const QUrl &source)
 {
     Q_ASSERT(isCollection());
-    Q_ASSERT(mTiles.value(tile->id()) == tile);
+    Q_ASSERT(mTilesById.value(tile->id()) == tile);
 
     const QSize previousImageSize = tile->image().size();
     const QSize newImageSize = image.size();
@@ -587,6 +641,7 @@ void Tileset::swap(Tileset &other)
     std::swap(mColumnCount, other.mColumnCount);
     std::swap(mExpectedColumnCount, other.mExpectedColumnCount);
     std::swap(mExpectedRowCount, other.mExpectedRowCount);
+    std::swap(mTilesById, other.mTilesById);
     std::swap(mTiles, other.mTiles);
     std::swap(mNextTileId, other.mNextTileId);
     std::swap(mWangSets, other.mWangSets);
@@ -625,14 +680,12 @@ SharedTileset Tileset::clone() const
     c->mFormat = mFormat;
     c->mTransformationFlags = mTransformationFlags;
 
-    QMapIterator<int, Tile*> tileIterator(mTiles);
-    while (tileIterator.hasNext()) {
-        tileIterator.next();
+    for (auto tile : mTiles) {
+        const int id = tile->id();
+        Tile *clonedTile = tile->clone(c.data());
 
-        const int id = tileIterator.key();
-        const Tile *tile = tileIterator.value();
-
-        c->mTiles.insert(id, tile->clone(c.data()));
+        c->mTilesById.insert(id, clonedTile);
+        c->mTiles.append(clonedTile);
     }
 
     c->mWangSets.reserve(mWangSets.size());

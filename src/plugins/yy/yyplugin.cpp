@@ -21,17 +21,14 @@
 #include "yyplugin.h"
 
 #include "grouplayer.h"
-#include "hexagonalrenderer.h"
 #include "imagelayer.h"
-#include "isometricrenderer.h"
 #include "jsonwriter.h"
 #include "logginginterface.h"
 #include "map.h"
 #include "mapobject.h"
+#include "maprenderer.h"
 #include "objectgroup.h"
-#include "orthogonalrenderer.h"
 #include "savefile.h"
-#include "staggeredrenderer.h"
 #include "tile.h"
 #include "tilelayer.h"
 
@@ -1286,22 +1283,7 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
     json.writeMember("parentRoom", QJsonValue(QJsonValue::Null));    // TODO: Provide a way to set this?
 
     Context context;
-
-    switch (map->orientation()) {
-    case Map::Isometric:
-        context.renderer = std::make_unique<IsometricRenderer>(map);
-        break;
-    case Map::Staggered:
-        context.renderer = std::make_unique<StaggeredRenderer>(map);
-        break;
-    case Map::Hexagonal:
-        context.renderer = std::make_unique<HexagonalRenderer>(map);
-        break;
-    case Map::Orthogonal:
-    case Map::Unknown:
-        context.renderer = std::make_unique<OrthogonalRenderer>(map);
-        break;
-    }
+    context.renderer = MapRenderer::create(map);
 
     std::vector<std::unique_ptr<GMRLayer>> layers;
     processLayers(layers, map->layers(), context);

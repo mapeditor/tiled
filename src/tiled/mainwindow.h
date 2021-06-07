@@ -141,6 +141,9 @@ private:
     void delete_();
     void openPreferences();
     void openCrashReporterPopup();
+    void openProjectExtensionsPopup();
+
+    void showPopup(QWidget *widget);
     void updatePopupGeometry(QSize size);
 
     void labelVisibilityActionTriggered(QAction *action);
@@ -168,7 +171,7 @@ private:
     void updateZoomActions();
     void openDocumentation();
     void openForum();
-    void showDonationDialog();
+    void showDonationPopup();
     void aboutTiled();
     void openRecentFile();
     void reopenClosedFile();

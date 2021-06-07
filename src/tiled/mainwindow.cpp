@@ -36,7 +36,7 @@
 #include "commandmanager.h"
 #include "consoledock.h"
 #include "documentmanager.h"
-#include "donationdialog.h"
+#include "donationpopup.h"
 #include "exportasimagedialog.h"
 #include "exporthelper.h"
 #include "issuescounter.h"
@@ -202,7 +202,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
     return ExportDetails<Format>(chosenFormat, exportToFileName);
 }
 
-void bindToOption(QAction *checkableAction, SessionOption<bool> &option)
+static void bindToOption(QAction *checkableAction, SessionOption<bool> &option)
 {
     checkableAction->setChecked(option);    // Set initial state
 
@@ -687,7 +687,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mUi->actionDocumentation, &QAction::triggered, this, &MainWindow::openDocumentation);
     connect(mUi->actionForum, &QAction::triggered, this, &MainWindow::openForum);
-    connect(mUi->actionDonate, &QAction::triggered, this, &MainWindow::showDonationDialog);
+    connect(mUi->actionDonate, &QAction::triggered, this, [] {
+        QDesktopServices::openUrl(QUrl(QLatin1String("https://www.mapeditor.org/donate")));
+    });
     connect(mUi->actionAbout, &QAction::triggered, this, &MainWindow::aboutTiled);
     connect(mUi->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
 
@@ -797,6 +799,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
 
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->showAnimationEditor());
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->relocateTilesAction());
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->editCollisionAction());
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->editWangSetsAction());
     mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);
@@ -872,13 +875,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(preferences, &Preferences::recentProjectsChanged, this, &MainWindow::updateRecentProjectsMenu);
 
     QTimer::singleShot(500, this, [this,preferences] {
-        if (preferences->shouldShowDonationDialog())
-            showDonationDialog();
-
 #ifdef TILED_SENTRY
         if (Sentry::instance()->userConsent() == Sentry::ConsentUnknown)
             openCrashReporterPopup();
 #endif
+
+        if (preferences->shouldShowDonationReminder())
+            showDonationPopup();
     });
 }
 
@@ -1468,6 +1471,9 @@ void MainWindow::saveProjectAs()
     session.setFileName(Session::defaultFileNameForProject(fileName));
     session.setProject(fileName);
 
+    // Automatically enable extensions for new projects
+    ScriptManager::instance().enableProjectExtensions();
+
     prefs->addRecentProject(fileName);
     prefs->setLastSession(session.fileName());
 
@@ -1507,6 +1513,7 @@ bool MainWindow::switchProject(Project project)
     restoreSession();
     updateWindowTitle();
     updateActions();
+
     return true;
 }
 
@@ -1525,6 +1532,9 @@ void MainWindow::restoreSession()
     WorldManager::instance().loadWorlds(mLoadedWorlds);
 
     mProjectDock->setExpandedPaths(session.expandedProjectPaths);
+
+    if (ScriptManager::instance().projectExtensionsSuppressed())
+        openProjectExtensionsPopup();
 }
 
 void MainWindow::projectProperties()
@@ -1581,18 +1591,6 @@ void MainWindow::openPreferences()
     mPreferencesDialog->raise();
 }
 
-#ifdef TILED_SENTRY
-static QColor mergedColors(const QColor &colorA, const QColor &colorB, int factor = 50)
-{
-    constexpr int maxFactor = 100;
-    QColor tmp = colorA;
-    tmp.setRed((tmp.red() * factor) / maxFactor + (colorB.red() * (maxFactor - factor)) / maxFactor);
-    tmp.setGreen((tmp.green() * factor) / maxFactor + (colorB.green() * (maxFactor - factor)) / maxFactor);
-    tmp.setBlue((tmp.blue() * factor) / maxFactor + (colorB.blue() * (maxFactor - factor)) / maxFactor);
-    return tmp;
-}
-#endif
-
 void MainWindow::openCrashReporterPopup()
 {
 #ifdef TILED_SENTRY
@@ -1607,31 +1605,15 @@ void MainWindow::openCrashReporterPopup()
     auto noButton = new QPushButton(tr("&No"));
 
     auto layout = new QHBoxLayout;
-    layout->addWidget(label, 1);
+    layout->addWidget(label);
     layout->addSpacing(Utils::dpiScaled(10));
     layout->addWidget(noButton);
     layout->addWidget(yesButton);
     const auto margin = Utils::dpiScaled(5);
     layout->setContentsMargins(margin * 2, margin, margin, margin);
 
-    auto frame = new QFrame(this);
-    frame->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
-    frame->setAutoFillBackground(true);
-    frame->setLayout(layout);
-    frame->setVisible(true);
-
-    // Use a slightly highlighted background color and keep it updated
-    auto updateBackgroundColor = [frame] {
-        QPalette pal = QApplication::palette();
-        auto highlight = pal.highlight().color();
-        pal.setColor(QPalette::Window, mergedColors(pal.window().color(), highlight, 75));
-        pal.setColor(QPalette::Link, pal.link().color());
-        pal.setColor(QPalette::LinkVisited, pal.linkVisited().color());
-        frame->setPalette(pal);
-    };
-    updateBackgroundColor();
-    connect(StyleHelper::instance(), &StyleHelper::styleApplied,
-            frame, updateBackgroundColor);
+    auto popup = new PopupWidget(this);
+    popup->setLayout(layout);
 
     connect(label, &QLabel::linkActivated, [] (const QString &link) {
         QDesktopServices::openUrl(QUrl(link));
@@ -1642,12 +1624,59 @@ void MainWindow::openCrashReporterPopup()
     connect(noButton, &QPushButton::clicked, [] {
         Sentry::instance()->setUserConsent(Sentry::ConsentRevoked);
     });
-    connect(Sentry::instance(), &Sentry::userConsentChanged, frame, [frame] (Sentry::UserConsent consent) {
+    connect(Sentry::instance(), &Sentry::userConsentChanged, popup, [popup] (Sentry::UserConsent consent) {
         if (consent != Sentry::ConsentUnknown)
-            frame->deleteLater();
+            popup->deleteLater();
     });
 
-    mPopupWidget = frame;
+    showPopup(popup);
+#endif
+}
+
+void MainWindow::openProjectExtensionsPopup()
+{
+    if (mPopupWidget)
+        mPopupWidget->close();
+
+    auto label = new QLabel;
+    label->setTextFormat(Qt::RichText);
+    label->setText(tr("The current project contains <a href=\"https://doc.mapeditor.org/en/stable/reference/scripting/\">scripted extensions</a>.<br><i>Make sure you trust those extensions before enabling them!</i>"));
+
+    auto enableButton = new QPushButton(tr("&Enable Extensions"));
+    auto closeButton = new QPushButton(tr("&Close"));
+
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->addWidget(label);
+    layout->addSpacing(Utils::dpiScaled(10));
+    layout->addWidget(enableButton);
+    layout->addWidget(closeButton);
+
+    auto popup = new PopupWidget(this);
+    popup->setLayout(layout);
+    popup->setTint(Qt::yellow);
+
+    connect(label, &QLabel::linkActivated, [] (const QString &link) {
+        QDesktopServices::openUrl(QUrl(link));
+    });
+    connect(enableButton, &QPushButton::clicked, [popup] {
+        ScriptManager::instance().enableProjectExtensions();
+        popup->close();
+    });
+    connect(closeButton, &QPushButton::clicked, [popup] {
+        popup->close();
+    });
+    connect(&ScriptManager::instance(), &ScriptManager::projectExtensionsSuppressedChanged,
+            popup, [popup] (bool suppressed) { if (!suppressed) popup->close(); });
+
+    showPopup(popup);
+}
+
+void MainWindow::showPopup(QWidget *widget)
+{
+    mPopupWidgetShowProgress = 1.0;
+    mPopupWidget = widget;
+
+    widget->setVisible(true);
     updatePopupGeometry(size());
 
     // Show the popup using a smooth animation
@@ -1661,7 +1690,6 @@ void MainWindow::openCrashReporterPopup()
         mPopupWidgetShowProgress = value.toDouble();
         updatePopupGeometry(size());
     });
-#endif
 }
 
 void MainWindow::updatePopupGeometry(QSize size)
@@ -1669,9 +1697,10 @@ void MainWindow::updatePopupGeometry(QSize size)
     if (!mPopupWidget)
         return;
     const auto popupSizeHint = mPopupWidget->sizeHint();
-    mPopupWidget->setGeometry(size.width() - popupSizeHint.width(),
+    const auto popupWidth = qMin(popupSizeHint.width(), size.width());
+    mPopupWidget->setGeometry(size.width() - popupWidth,
                               0 - popupSizeHint.height() * mPopupWidgetShowProgress,
-                              popupSizeHint.width(),
+                              popupWidth,
                               popupSizeHint.height());
 }
 
@@ -2274,9 +2303,12 @@ void MainWindow::updateWindowTitle()
     }
 }
 
-void MainWindow::showDonationDialog()
+void MainWindow::showDonationPopup()
 {
-    DonationDialog(this).exec();
+    if (mPopupWidget)
+        return;
+
+    showPopup(new DonationPopup(this));
 }
 
 void MainWindow::aboutTiled()

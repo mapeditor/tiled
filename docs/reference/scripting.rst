@@ -27,14 +27,11 @@ JavaScript context.
     A few example scripts and links to existing Tiled extensions are provided
     at the Tiled Extensions repository: https://github.com/mapeditor/tiled-extensions
 
-.. warning::
+.. note::
 
-    Most builds of Tiled use Qt 5.12 or later, which support ECMAScript 7.
-    However, the builds for Windows XP and the snap release of Tiled currently
-    rely on Qt 5.6 and Qt 5.9 respectively. ECMAScript 7 features will not
-    work there and some other functionality is missing as well, like
-    interrupting scripts on API usage errors and the creation of new
-    Tiled-specific objects.
+    The full scripting API and support for ECMAScript 7 features are only
+    available for Tiled builds based on Qt 5.12 or later. This currently
+    excludes the Windows XP and snap releases.
 
 .. _script-extensions:
 
@@ -59,6 +56,17 @@ supported platform is as follows:
 The project-specific folder defaults to "extensions", relative to the
 directory of the ``.tiled-project`` file, but this can be changed in the
 *Project Properties*.
+
+.. warning::
+
+    Since Tiled 1.7, project-specific extensions are only enabled by default
+    for projects you created. When opening any other project, a popup will
+    notify you when the project has a scripted extensions directory, allowing
+    you to enable extensions for that project.
+
+    Always be careful when enabling extensions on projects you haven't
+    created, since extensions have access to your files and can execute
+    processes.
 
 An extension can be placed either directly in an extensions directory, or in a
 sub-directory. All scripts files found in these directories are executed on

@@ -28,14 +28,11 @@
 
 #include "tmxviewer.h"
 
-#include "hexagonalrenderer.h"
-#include "isometricrenderer.h"
 #include "map.h"
 #include "mapobject.h"
 #include "mapreader.h"
+#include "maprenderer.h"
 #include "objectgroup.h"
-#include "orthogonalrenderer.h"
-#include "staggeredrenderer.h"
 #include "tilelayer.h"
 #include "tileset.h"
 
@@ -206,21 +203,7 @@ bool TmxViewer::viewMap(const QString &fileName)
         return false;
     }
 
-    switch (mMap->orientation()) {
-    case Map::Isometric:
-        mRenderer = std::make_unique<IsometricRenderer>(mMap.get());
-        break;
-    case Map::Staggered:
-        mRenderer = std::make_unique<StaggeredRenderer>(mMap.get());
-        break;
-    case Map::Hexagonal:
-        mRenderer = std::make_unique<HexagonalRenderer>(mMap.get());
-        break;
-    case Map::Orthogonal:
-    default:
-        mRenderer = std::make_unique<OrthogonalRenderer>(mMap.get());
-        break;
-    }
+    mRenderer = MapRenderer::create(mMap.get());
 
     mScene->addItem(new MapItem(mMap.get(), mRenderer.get()));
 

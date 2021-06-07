@@ -412,9 +412,10 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeEndElement();
     }
 
-    // Write the properties for those tiles that have them
+    const bool includeAllTiles = imageSource.isEmpty() || tileset.anyTileOutOfOrder();
+
     for (const Tile *tile : tileset.tiles()) {
-        if (imageSource.isEmpty() || includeTile(tile)) {
+        if (includeAllTiles || includeTile(tile)) {
             w.writeStartElement(QStringLiteral("tile"));
             w.writeAttribute(QStringLiteral("id"), QString::number(tile->id()));
             if (!tile->type().isEmpty())

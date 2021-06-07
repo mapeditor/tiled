@@ -258,7 +258,7 @@ public:
 
     void insertWangColor(const QSharedPointer<WangColor> &wangColor);
     void addWangColor(const QSharedPointer<WangColor> &wangColor);
-    void removeWangColorAt(int color);
+    QSharedPointer<WangColor> takeWangColorAt(int color);
 
     const QSharedPointer<WangColor> &colorAt(int index) const;
     const QVector<QSharedPointer<WangColor>> &colors() const { return mColors; }

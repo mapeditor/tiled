@@ -41,6 +41,7 @@ public:
     Zoomable *zoomable() const { return mZoomable; }
 
     WangSet *wangSetAt(const QModelIndex &index) const;
+    TilesetDocument *tilesetDocumentAt(const QModelIndex &index) const;
 
 protected:
     bool event(QEvent *event) override;

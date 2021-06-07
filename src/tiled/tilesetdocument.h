@@ -34,6 +34,7 @@
 namespace Tiled {
 
 class ObjectGroup;
+class WangColor;
 
 class MapDocument;
 class TilesetDocument;
@@ -99,6 +100,7 @@ public:
 
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile*> &tiles);
+    QList<int> relocateTiles(const QList<Tile *> &tiles, int location);
 
     const QList<Tile*> &selectedTiles() const;
     void setSelectedTiles(const QList<Tile*> &selectedTiles);

@@ -263,7 +263,7 @@ void Session::setLastPath(FileType fileType, const QString &path)
 
 QString Session::defaultFileName()
 {
-    return Preferences::dataLocation() + QLatin1String("/default.tiled-session");
+    return Preferences::instance()->dataLocation() + QLatin1String("/default.tiled-session");
 }
 
 QString Session::defaultFileNameForProject(const QString &projectFile)

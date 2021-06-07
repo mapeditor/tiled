@@ -136,9 +136,11 @@ public:
     QSize gridSize() const;
     void setGridSize(QSize gridSize);
 
-    const QMap<int, Tile*> &tiles() const;
+    const QMap<int, Tile*> &tilesById() const;
+    const QList<Tile*> &tiles() const;
     inline Tile *findTile(int id) const;
     Tile *tileAt(int id) const { return findTile(id); } // provided for Python
+    int findTileLocation(Tile *tile) const;
     Tile *findOrCreateTile(int id);
     int tileCount() const;
 
@@ -189,6 +191,9 @@ public:
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile *> &tiles);
     void deleteTile(int id);
+    QList<int> relocateTiles(const QList<Tile *> &tiles, int location);
+
+    bool anyTileOutOfOrder() const;
 
     void setNextTileId(int nextId);
     int nextTileId() const;
@@ -259,7 +264,8 @@ private:
     int mExpectedColumnCount;
     int mExpectedRowCount;
     int mNextTileId;
-    QMap<int, Tile*> mTiles;
+    QMap<int, Tile*> mTilesById;
+    QList<Tile*> mTiles;
     QList<WangSet*> mWangSets;
     LoadingStatus mStatus;
     QColor mBackgroundColor;
@@ -418,10 +424,15 @@ inline void Tileset::setGridSize(QSize gridSize)
     mGridSize = gridSize;
 }
 
+inline const QMap<int, Tile *> &Tileset::tilesById() const
+{
+    return mTilesById;
+}
+
 /**
  * Returns a const reference to the tiles in this tileset.
  */
-inline const QMap<int, Tile *> &Tileset::tiles() const
+inline const QList<Tile*> &Tileset::tiles() const
 {
     return mTiles;
 }
@@ -432,7 +443,7 @@ inline const QMap<int, Tile *> &Tileset::tiles() const
  */
 inline Tile *Tileset::findTile(int id) const
 {
-    return mTiles.value(id);
+    return mTilesById.value(id);
 }
 
 /**

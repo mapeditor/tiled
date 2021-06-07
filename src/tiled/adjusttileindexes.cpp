@@ -224,7 +224,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
                       adjustAnimationFrames(fromTile->frames()));
     };
 
-    QMapIterator<int, Tile *> iterator{tileset.tiles()};
+    QMapIterator<int, Tile *> iterator { tileset.tilesById() };
 
     if (newColumnCount > oldColumnCount) {
         // Increasing column count means information is copied to higher tiles,

@@ -435,19 +435,16 @@ void WangDock::refreshCurrentWangId()
 void WangDock::refreshCurrentWangColor()
 {
     QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
+    const auto currentIndex = selectionModel->currentIndex();
+    int color = 0;
 
-    if (!selectionModel->currentIndex().isValid()) {
-        mEraseWangIdsButton->setChecked(true);
-        mRemoveColor->setEnabled(false);
-        emit wangColorChanged(0);
-        return;
+    if (currentIndex.isValid()) {
+        QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(currentIndex);
+        color = mWangColorModel->colorAt(index);
     }
 
-    mEraseWangIdsButton->setChecked(false);
-    mRemoveColor->setEnabled(true);
-
-    QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
-    const int color = mWangColorModel->colorAt(index);
+    mEraseWangIdsButton->setChecked(color == 0);
+    mRemoveColor->setEnabled(color != 0);
     emit wangColorChanged(color);
 }
 
@@ -458,7 +455,7 @@ void WangDock::wangColorIndexPressed(const QModelIndex &index)
         return;
 
     WangColor *currentWangColor = mCurrentWangSet->colorAt(color).data();
-    mDocument->setCurrentObject(currentWangColor);
+    mDocument->setCurrentObject(currentWangColor, mWangColorModel->tilesetDocument());
 
     emit selectWangBrush();
 }
@@ -488,8 +485,10 @@ void WangDock::wangSetChanged()
 
 void WangDock::wangSetIndexPressed(const QModelIndex &index)
 {
-    if (WangSet *wangSet = mWangSetView->wangSetAt(index))
-        mDocument->setCurrentObject(wangSet);
+    if (WangSet *wangSet = mWangSetView->wangSetAt(index)) {
+        mDocument->setCurrentObject(wangSet,
+                                    mWangSetView->tilesetDocumentAt(index));
+    }
 }
 
 void WangDock::expandRows(const QModelIndex &parent, int first, int last)
@@ -544,11 +543,14 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
         return;
 
     mWangColorModel = nullptr;
+    TilesetDocument *tilesetDocument = nullptr;
+
     if (wangSet) {
         auto sharedTileset = wangSet->tileset()->sharedPointer();
         auto documentManager = DocumentManager::instance();
 
-        if (auto tilesetDocument = documentManager->findTilesetDocument(sharedTileset))
+        tilesetDocument = documentManager->findTilesetDocument(sharedTileset);
+        if (tilesetDocument)
             mWangColorModel = tilesetDocument->wangColorModel(wangSet);
 
         mWangColorView->setTileSize(sharedTileset->tileSize());
@@ -587,8 +589,8 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
         mAddColor->setEnabled(false);
     }
 
-    if (wangSet && !mInitializing)
-        mDocument->setCurrentObject(wangSet);
+    if (wangSet && !mInitializing && tilesetDocument)
+        mDocument->setCurrentObject(wangSet, tilesetDocument);
 
     mDuplicateWangSet->setEnabled(wangSet);
     mRemoveWangSet->setEnabled(wangSet);

@@ -31,6 +31,7 @@
 #include "tiled_global.h"
 
 #include <functional>
+#include <memory>
 
 #include <QPainter>
 #include <QPainterPath>
@@ -268,6 +269,8 @@ public:
     CellType cellType() const { return mCellType; }
 
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
+
+    static std::unique_ptr<MapRenderer> create(const Map *map);
 
 protected:
     static void setupGridPens(const QPaintDevice *device, QColor color,

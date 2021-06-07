@@ -121,7 +121,7 @@ SOURCES += aboutdialog.cpp \
     debugdrawitem.cpp \
     document.cpp \
     documentmanager.cpp \
-    donationdialog.cpp \
+    donationpopup.cpp \
     editableasset.cpp \
     editablegrouplayer.cpp \
     editableimagelayer.cpp \
@@ -200,17 +200,19 @@ SOURCES += aboutdialog.cpp \
     painttilelayer.cpp \
     pluginlistmodel.cpp \
     pointhandle.cpp \
+    popupwidget.cpp \
     preferences.cpp \
+    preferencesdialog.cpp \
     project.cpp \
     projectdock.cpp \
     projectmanager.cpp \
     projectmodel.cpp \
     projectpropertiesdialog.cpp \
-    preferencesdialog.cpp \
     propertiesdock.cpp \
     propertybrowser.cpp \
     raiselowerhelper.cpp \
     regionvaluetype.cpp \
+    relocatetiles.cpp \
     reparentlayers.cpp \
     replacetemplate.cpp \
     replacetileset.cpp \
@@ -357,7 +359,7 @@ HEADERS += aboutdialog.h \
     debugdrawitem.h \
     document.h \
     documentmanager.h \
-    donationdialog.h \
+    donationpopup.h \
     editableasset.h \
     editablegrouplayer.h \
     editableimagelayer.h \
@@ -436,6 +438,7 @@ HEADERS += aboutdialog.h \
     painttilelayer.h \
     pluginlistmodel.h \
     pointhandle.h \
+    popupwidget.h \
     preferences.h \
     preferencesdialog.h \
     project.h \
@@ -449,6 +452,7 @@ HEADERS += aboutdialog.h \
     randompicker.h \
     rangeset.h \
     regionvaluetype.h \
+    relocatetiles.h \
     reparentlayers.h \
     replacetemplate.h \
     replacetileset.h \
@@ -532,7 +536,6 @@ FORMS += aboutdialog.ui \
     addpropertydialog.ui \
     commanddialog.ui \
     commandsedit.ui \
-    donationdialog.ui \
     exportasimagedialog.ui \
     imagecolorpickerwidget.ui \
     mainwindow.ui \

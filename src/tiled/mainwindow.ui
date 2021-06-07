@@ -533,7 +533,7 @@
   </action>
   <action name="actionDonate">
    <property name="text">
-    <string>Support Tiled Development</string>
+    <string>Support Tiled Development ↗</string>
    </property>
   </action>
   <action name="actionSaveAll">

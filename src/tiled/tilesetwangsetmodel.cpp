@@ -30,10 +30,10 @@
 
 using namespace Tiled;
 
-TilesetWangSetModel::TilesetWangSetModel(TilesetDocument *mapDocument,
+TilesetWangSetModel::TilesetWangSetModel(TilesetDocument *tilesetDocument,
                                          QObject *parent):
     QAbstractListModel(parent),
-    mTilesetDocument(mapDocument)
+    mTilesetDocument(tilesetDocument)
 {
 }
 
@@ -79,6 +79,8 @@ QVariant TilesetWangSetModel::data(const QModelIndex &index, int role) const
             break;
         case WangSetRole:
             return QVariant::fromValue(wangSet);
+        case TilesetDocumentRole:
+            return QVariant::fromValue(mTilesetDocument);
         }
     }
 
@@ -124,12 +126,13 @@ void TilesetWangSetModel::insertWangSet(int index, std::unique_ptr<WangSet> wang
 {
     Tileset *tileset = mTilesetDocument->tileset().data();
 
-    emit wangSetAboutToBeAdded(tileset, index);
+    emit mTilesetDocument->changed(WangSetEvent(ChangeEvent::WangSetAboutToBeAdded, tileset, index));
 
     beginInsertRows(QModelIndex(), index, index);
     tileset->insertWangSet(index, std::move(wangSet));
     endInsertRows();
 
+    emit mTilesetDocument->changed(WangSetEvent(ChangeEvent::WangSetAdded, tileset, index));
     emit wangSetAdded(tileset, index);
 }
 
@@ -137,12 +140,13 @@ std::unique_ptr<WangSet> TilesetWangSetModel::takeWangSetAt(int index)
 {
     Tileset *tileset = mTilesetDocument->tileset().data();
 
-    emit wangSetAboutToBeRemoved(tileset->wangSet(index));
+    emit mTilesetDocument->changed(WangSetEvent(ChangeEvent::WangSetAboutToBeRemoved, tileset, index));
 
     beginRemoveRows(QModelIndex(), index, index);
     std::unique_ptr<WangSet> wangSet = tileset->takeWangSetAt(index);
     endRemoveRows();
 
+    emit mTilesetDocument->changed(WangSetEvent(ChangeEvent::WangSetRemoved, tileset, index));
     emit wangSetRemoved(wangSet.get());
 
     return wangSet;
@@ -183,11 +187,14 @@ void TilesetWangSetModel::insertWangColor(WangSet *wangSet, const QSharedPointer
     emitWangSetChange(wangSet);
 }
 
-void TilesetWangSetModel::removeWangColorAt(WangSet *wangSet, int color)
+QSharedPointer<WangColor> TilesetWangSetModel::takeWangColorAt(WangSet *wangSet, int color)
 {
     Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
-    wangSet->removeWangColorAt(color);
+    emit mTilesetDocument->changed(WangColorEvent(ChangeEvent::WangColorAboutToBeRemoved, wangSet, color));
+    auto wangColor = wangSet->takeWangColorAt(color);
+    emit wangColorRemoved(wangColor.data());
     emitWangSetChange(wangSet);
+    return wangColor;
 }
 
 void TilesetWangSetModel::emitWangSetChange(WangSet *wangSet)

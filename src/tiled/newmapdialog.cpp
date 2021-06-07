@@ -21,13 +21,10 @@
 #include "newmapdialog.h"
 #include "ui_newmapdialog.h"
 
-#include "hexagonalrenderer.h"
-#include "isometricrenderer.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "orthogonalrenderer.h"
+#include "maprenderer.h"
 #include "session.h"
-#include "staggeredrenderer.h"
 #include "tilelayer.h"
 #include "utils.h"
 
@@ -195,23 +192,7 @@ void NewMapDialog::refreshPixelSize()
                   mUi->mapHeight->value(),
                   mUi->tileWidth->value(),
                   mUi->tileHeight->value());
-
-    QSize size;
-
-    switch (map.orientation()) {
-    case Map::Isometric:
-        size = IsometricRenderer(&map).mapBoundingRect().size();
-        break;
-    case Map::Staggered:
-        size = StaggeredRenderer(&map).mapBoundingRect().size();
-        break;
-    case Map::Hexagonal:
-        size = HexagonalRenderer(&map).mapBoundingRect().size();
-        break;
-    default:
-        size = OrthogonalRenderer(&map).mapBoundingRect().size();
-        break;
-    }
+    const QSize size = MapRenderer::create(&map)->mapBoundingRect().size();
 
     mUi->pixelSizeLabel->setText(tr("%1 x %2 pixels")
                                  .arg(size.width())

@@ -80,6 +80,9 @@ public:
     void setMarkAnimatedTiles(bool enabled);
     bool markAnimatedTiles() const;
 
+    void setRelocateTiles(bool enabled);
+    bool isRelocateTiles() const { return mRelocateTiles; }
+
     void setEditWangSet(bool enabled);
     bool isEditWangSet() const { return mEditWangSet; }
 
@@ -147,6 +150,7 @@ private:
     TilesetDocument *mTilesetDocument = nullptr;
     bool mDrawGrid;
     bool mMarkAnimatedTiles = true;
+    bool mRelocateTiles = false;
     bool mEditWangSet = false;
     WrapBehavior mWrapBehavior = WrapDefault;
     WangBehavior mWangBehavior = AssignWholeId;

@@ -51,7 +51,7 @@ class UndoDock;
 class WangDock;
 class Zoomable;
 
-class TilesetEditor : public Editor
+class TilesetEditor final : public Editor
 {
     Q_OBJECT
 
@@ -89,6 +89,7 @@ public:
 
     QAction *addTilesAction() const;
     QAction *removeTilesAction() const;
+    QAction *relocateTilesAction() const;
     QAction *editCollisionAction() const;
     QAction *editWangSetsAction() const;
     QAction *showAnimationEditor() const;
@@ -117,6 +118,7 @@ private:
     void addTiles(const QList<QUrl> &urls);
     void removeTiles();
 
+    void setRelocateTiles(bool relocateTiles);
     void setEditCollision(bool editCollision);
     void hasSelectedCollisionObjectsChanged();
 
@@ -147,6 +149,7 @@ private:
 
     QAction *mAddTiles;
     QAction *mRemoveTiles;
+    QAction *mRelocateTiles;
     QAction *mShowAnimationEditor;
     QAction *mDynamicWrappingToggle;
 
@@ -174,6 +177,11 @@ inline QAction *TilesetEditor::addTilesAction() const
 inline QAction *TilesetEditor::removeTilesAction() const
 {
     return mRemoveTiles;
+}
+
+inline QAction *TilesetEditor::relocateTilesAction() const
+{
+    return mRelocateTiles;
 }
 
 inline QAction *TilesetEditor::showAnimationEditor() const

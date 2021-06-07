@@ -51,6 +51,12 @@ WangSetView::WangSetView(QWidget *parent)
     connect(mZoomable, &Zoomable::scaleChanged, this, &WangSetView::adjustScale);
 }
 
+/**
+ * Sets the \a tilesetDocument owning the Wang sets displayed by the view.
+ *
+ * The view needs the TilesetDocument in order to allow making changes to the
+ * Wang sets. When the WangSetView is used in the MapEditor, it remains unset.
+ */
 void WangSetView::setTilesetDocument(TilesetDocument *tilesetDocument)
 {
     mTilesetDocument = tilesetDocument;
@@ -60,6 +66,12 @@ WangSet *WangSetView::wangSetAt(const QModelIndex &index) const
 {
     const QVariant data = model()->data(index, WangSetModel::WangSetRole);
     return data.value<WangSet*>();
+}
+
+TilesetDocument *WangSetView::tilesetDocumentAt(const QModelIndex &index) const
+{
+    const QVariant data = model()->data(index, WangSetModel::TilesetDocumentRole);
+    return data.value<TilesetDocument*>();
 }
 
 bool WangSetView::event(QEvent *event)

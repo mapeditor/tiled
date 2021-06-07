@@ -184,7 +184,9 @@ void RemoveMapObjects::undo()
 
 void RemoveMapObjects::redo()
 {
-    emit mDocument->changed(MapObjectsEvent(ChangeEvent::MapObjectsAboutToBeRemoved, objects(mEntries)));
+    MapObjectsEvent mapObjectsEvent { ChangeEvent::MapObjectsAboutToBeRemoved, objects(mEntries) };
+
+    emit mDocument->changed(mapObjectsEvent);
 
     for (Entry &entry : mEntries) {
         if (entry.index == -1)
@@ -194,6 +196,9 @@ void RemoveMapObjects::redo()
         entry.objectGroup->removeObjectAt(entry.index);
         emit mDocument->changed(MapObjectEvent(ChangeEvent::MapObjectRemoved, entry.objectGroup, entry.index));
     }
+
+    mapObjectsEvent.type = ChangeEvent::MapObjectsRemoved;
+    emit mDocument->changed(mapObjectsEvent);
 
     mOwnsObjects = true;
 }

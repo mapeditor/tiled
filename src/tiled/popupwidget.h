@@ -1,6 +1,6 @@
 /*
- * donationdialog.h
- * Copyright 2015-2019, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * popupwidget.h
+ * Copyright 2021, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,28 +20,23 @@
 
 #pragma once
 
-#include <QDialog>
-
-namespace Ui {
-class DonationDialog;
-}
+#include <QFrame>
 
 namespace Tiled {
 
-class DonationDialog : public QDialog
+class PopupWidget : public QFrame
 {
     Q_OBJECT
 
 public:
-    explicit DonationDialog(QWidget *parent = nullptr);
-    ~DonationDialog();
+    explicit PopupWidget(QWidget *parent = nullptr);
+
+    void setTint(const QColor &tint);
 
 private:
-    void openDonationPage();
-    void sayThanks();
-    void maybeLater(QAction *action);
+    void updateBackgroundColor();
 
-    Ui::DonationDialog *ui;
+    QColor mTint;
 };
 
 } // namespace Tiled

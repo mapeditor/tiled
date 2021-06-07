@@ -352,6 +352,9 @@ void MapEditor::removeDocument(Document *document)
     Q_ASSERT(mapDocument);
     Q_ASSERT(mWidgetForMap.contains(mapDocument));
 
+    if (mapDocument == mCurrentMapDocument)
+        setCurrentDocument(nullptr);
+
     MapView *mapView = mWidgetForMap.take(mapDocument);
     // remove first, to keep it valid while the current widget changes
     mWidgetStack->removeWidget(mapView);

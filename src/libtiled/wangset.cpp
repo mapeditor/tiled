@@ -479,22 +479,23 @@ void WangSet::addWangColor(const QSharedPointer<WangColor> &wangColor)
 }
 
 /**
- * Removes a given \a color.
+ * Removes and returns a given \a color.
  *
  * This can make wangIds invalid, so should only be used from
  * changewangsetdata.h
  */
-void WangSet::removeWangColorAt(int color)
+QSharedPointer<WangColor> WangSet::takeWangColorAt(int color)
 {
     Q_ASSERT(color > 0 && color - 1 < colorCount());
 
-    mColors.at(color - 1)->mWangSet = nullptr;
-    mColors.removeAt(color - 1);
+    auto wangColor = mColors.takeAt(color - 1);
+    wangColor->mWangSet = nullptr;
 
     for (int i = color - 1; i < colorCount(); ++i)
         mColors.at(i)->setColorIndex(i + 1);
 
     mColorDistancesDirty = true;
+    return wangColor;
 }
 
 /**
