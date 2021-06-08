@@ -22,6 +22,7 @@
 #include "ui_commandsedit.h"
 
 #include "commanddatamodel.h"
+#include "session.h"
 #include "utils.h"
 
 #include <QFileDialog>
@@ -162,23 +163,33 @@ void CommandsEdit::updateWidgets(const QModelIndex &current)
 
 void CommandsEdit::browseExecutable()
 {
-    QString caption = tr("Select Executable");
-    QString dir = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
-    QString executableName = QFileDialog::getOpenFileName(this, caption, dir);
+    QString executable = mUi->executableEdit->text();
+    if (executable.isEmpty())
+        executable = Session::current().lastPath(Session::ExecutablePath, QStandardPaths::HomeLocation);
 
-    if (!executableName.isEmpty())
-        mUi->executableEdit->setText(executableName);
+    executable = QFileDialog::getOpenFileName(this, tr("Select Executable"), executable);
+
+    if (!executable.isEmpty()) {
+        mUi->executableEdit->setText(executable);
+        Session::current().setLastPath(Session::ExecutablePath, QFileInfo(executable).filePath());
+    }
 }
 
 void CommandsEdit::browseWorkingDirectory()
 {
-    QString caption = tr("Select Working Directory");
-    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    QString workingDirectoryName = QFileDialog::getExistingDirectory(this, caption, dir,
-                            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    QString workingDirectory = mUi->workingDirectoryEdit->text();
+    if (workingDirectory.isEmpty())
+        workingDirectory = Session::current().lastPath(Session::WorkingDirectory);
 
-    if (!workingDirectoryName.isEmpty())
-        mUi->workingDirectoryEdit->setText(workingDirectoryName);
+    workingDirectory = QFileDialog::getExistingDirectory(this,
+                                                         tr("Select Working Directory"),
+                                                         workingDirectory,
+                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+    if (!workingDirectory.isEmpty()) {
+        mUi->workingDirectoryEdit->setText(workingDirectory);
+        Session::current().setLastPath(Session::WorkingDirectory, workingDirectory);
+    }
 }
 
 } // namespace Tiled

@@ -386,7 +386,6 @@ bool CommandDataModel::dropMimeData(const QMimeData *data, Qt::DropAction, int,
     }
 
     if (data->hasText()) {
-
         // If text is dropped on a valid command, just replace the data
         if (dstRow < mCommands.size())
             return setData(parent, data->text(), Qt::EditRole);
