@@ -46,7 +46,10 @@ FileFormat::Options ExportHelper::formatOptions() const
 SharedTileset ExportHelper::prepareExportTileset(const SharedTileset &tileset,
                                                  bool savingTileset) const
 {
-    if (!mOptions)
+    const bool hasExportSettings = !(tileset->exportFileName.isEmpty()
+                                     && tileset->exportFormat.isEmpty());
+
+    if (!mOptions && !hasExportSettings)
         return tileset;
 
     // When the tileset is embedded we're effectively always saving it
@@ -56,7 +59,8 @@ SharedTileset ExportHelper::prepareExportTileset(const SharedTileset &tileset,
         return tileset; // Leave external tileset alone
 
     if (savingTileset && !(mOptions & (Preferences::DetachTemplateInstances |
-                                       Preferences::ResolveObjectTypesAndProperties))) {
+                                       Preferences::ResolveObjectTypesAndProperties))
+            && !hasExportSettings) {
         // We're saving this tileset as-is, so leave it alone
         return tileset;
     }
@@ -65,6 +69,12 @@ SharedTileset ExportHelper::prepareExportTileset(const SharedTileset &tileset,
     // make other changes to the tileset
     SharedTileset exportTileset = tileset->clone();
     exportTileset->setOriginalTileset(tileset);
+
+    // We don't want to save the export options in the exported file
+    if (hasExportSettings) {
+        exportTileset->exportFileName.clear();
+        exportTileset->exportFormat.clear();
+    }
 
     if (mOptions.testFlag(Preferences::DetachTemplateInstances)) {
         for (Tile *tile : exportTileset->tiles()) {
@@ -92,12 +102,21 @@ SharedTileset ExportHelper::prepareExportTileset(const SharedTileset &tileset,
 
 const Map *ExportHelper::prepareExportMap(const Map *map, std::unique_ptr<Map> &exportMap) const
 {
+    const bool hasExportSettings = !(map->exportFileName.isEmpty()
+                                     && map->exportFormat.isEmpty());
+
     // If no export options are active, return the same map
-    if (!(mOptions & ~Preferences::ExportMinimized))
+    if (!(mOptions & ~Preferences::ExportMinimized) && !hasExportSettings)
         return map;
 
     // Make a copy to which export options are applied
     exportMap = map->clone();
+
+    // We don't want to save the export options in the exported file
+    if (hasExportSettings) {
+        exportMap->exportFileName.clear();
+        exportMap->exportFormat.clear();
+    }
 
     if (mOptions.testFlag(Preferences::DetachTemplateInstances)) {
         for (Layer *layer : exportMap->objectGroups()) {
