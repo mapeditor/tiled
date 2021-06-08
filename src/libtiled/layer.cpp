@@ -223,6 +223,7 @@ Layer *Layer::initializeClone(Layer *clone) const
 {
     clone->mId = mId;
     clone->mOffset = mOffset;
+    clone->mParallaxFactor = mParallaxFactor;
     clone->mOpacity = mOpacity;
     clone->mTintColor = mTintColor;
     clone->mVisible = mVisible;
