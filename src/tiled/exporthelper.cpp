@@ -93,7 +93,7 @@ SharedTileset ExportHelper::prepareExportTileset(const SharedTileset &tileset,
 const Map *ExportHelper::prepareExportMap(const Map *map, std::unique_ptr<Map> &exportMap) const
 {
     // If no export options are active, return the same map
-    if (!mOptions)
+    if (!(mOptions & ~Preferences::ExportMinimized))
         return map;
 
     // Make a copy to which export options are applied
