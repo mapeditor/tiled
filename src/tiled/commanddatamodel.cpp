@@ -106,7 +106,7 @@ int CommandDataModel::columnCount(const QModelIndex &parent) const
  */
 QVariant CommandDataModel::data(const QModelIndex &index, int role) const
 {
-    const bool isNormalRow = index.row() < mCommands.size();
+    const bool isNormalRow = isCommand(index);
     Command command;
     if (isNormalRow)
         command = mCommands[index.row()];
@@ -144,7 +144,7 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
 
     case Qt::CheckStateRole:
         if (isNormalRow && index.column() == EnabledColumn)
-            return command.isEnabled ? 2 : 0;
+            return command.isEnabled ? Qt::Checked : Qt::Unchecked;
         break;
     }
 
@@ -181,39 +181,26 @@ bool CommandDataModel::setData(const QModelIndex &index,
 
         case Qt::CheckStateRole:
             if (index.column() == EnabledColumn) {
-                command.isEnabled = value.toInt() > 0;
+                command.isEnabled = value.toBool();
                 isModified = true;
             }
             break;
         }
-
     } else {
-
         // If final row was edited, insert the new command
         if (role == Qt::EditRole && index.column() == NameColumn) {
             command.name = value.toString();
-            if (!command.name.isEmpty()
-              && command.name != tr("<new command>")) {
-                isModified = true;
+            if (!command.name.isEmpty() && command.name != tr("<new command>"))
                 shouldAppend = true;
-            }
         }
     }
 
-    if (isModified) {
+    if (shouldAppend) {
+        append(command);
+    } else if (isModified) {
         // Write the modified command to our cache
-        if (shouldAppend)
-            mCommands.push_back(command);
-        else
-            mCommands[index.row()] = command;
-
-        // Reset if there could be new rows or reordering, else emit dataChanged
-        if (shouldAppend || index.column() == NameColumn) {
-            beginResetModel();
-            endResetModel();
-        } else {
-            emit dataChanged(index, index);
-        }
+        mCommands[index.row()] = command;
+        emit dataChanged(index, index);
     }
 
     return isModified;
@@ -406,33 +393,25 @@ bool CommandDataModel::dropMimeData(const QMimeData *data, Qt::DropAction, int,
 
 void CommandDataModel::setExecutable(const QModelIndex &index, const QString &value)
 {
-    const bool isNormalRow = index.row() < mCommands.size();
-
-    if (isNormalRow)
+    if (isCommand(index))
         mCommands[index.row()].executable = value;
 }
 
 void CommandDataModel::setArguments(const QModelIndex &index, const QString &value)
 {
-    const bool isNormalRow = index.row() < mCommands.size();
-
-    if (isNormalRow)
+    if (isCommand(index))
         mCommands[index.row()].arguments = value;
 }
 
 void CommandDataModel::setWorkingDirectory(const QModelIndex &index, const QString &value)
 {
-    const bool isNormalRow = index.row() < mCommands.size();
-
-    if (isNormalRow)
+    if (isCommand(index))
         mCommands[index.row()].workingDirectory = value;
 }
 
 void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence &value)
 {
-    const bool isNormalRow = index.row() < mCommands.size();
-
-    if (isNormalRow) {
+    if (isCommand(index)) {
         mCommands[index.row()].shortcut = value;
 
         QModelIndex shortcutIndex = this->index(index.row(), ShortcutColumn);
@@ -442,25 +421,28 @@ void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence 
 
 void CommandDataModel::setShowOutput(const QModelIndex &index, bool value)
 {
-    const bool isNormalRow = index.row() < mCommands.size();
-
-    if (isNormalRow)
+    if (isCommand(index))
         mCommands[index.row()].showOutput = value;
 }
 
 void CommandDataModel::setSaveBeforeExecute(const QModelIndex &index, bool value)
 {
-    const bool isNormalRow = index.row() < mCommands.size();
-
-    if (isNormalRow)
+    if (isCommand(index))
         mCommands[index.row()].saveBeforeExecute = value;
+}
+
+/**
+ * Returns whether the given \a index is a command. Not every valid index is a
+ * command, due to the "<new command>" entry at the bottom.
+ */
+bool CommandDataModel::isCommand(const QModelIndex &index) const
+{
+    return index.isValid() && index.row() < mCommands.size();
 }
 
 Command CommandDataModel::command(const QModelIndex &index) const
 {
-    const bool isNormalRow = index.row() < mCommands.size();
-
-    if (isNormalRow)
+    if (isCommand(index))
         return mCommands[index.row()];
     else
         return Command();

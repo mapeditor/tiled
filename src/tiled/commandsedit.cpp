@@ -91,49 +91,42 @@ const QVector<Command> &CommandsEdit::commands() const
 void CommandsEdit::setShortcut(const QKeySequence &keySequence)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setShortcut(current, keySequence);
+    mModel->setShortcut(current, keySequence);
 }
 
 void CommandsEdit::setSaveBeforeExecute(int state)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setSaveBeforeExecute(current, state);
+    mModel->setSaveBeforeExecute(current, state);
 }
 
 void CommandsEdit::setShowOutput(int state)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setShowOutput(current, state);
+    mModel->setShowOutput(current, state);
 }
-
 
 void CommandsEdit::setExecutable(const QString &text)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setExecutable(current, text);
+    mModel->setExecutable(current, text);
 }
 
 void CommandsEdit::setArguments(const QString &text)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setArguments(current, text);
+    mModel->setArguments(current, text);
 }
 
 void CommandsEdit::setWorkingDirectory(const QString &text)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setWorkingDirectory(current, text);
+    mModel->setWorkingDirectory(current, text);
 }
 
 void CommandsEdit::updateWidgets(const QModelIndex &current)
 {
-    bool enable = current.isValid() && (current.row() < mModel->rowCount() - 1);
+    const bool enable = mModel->isCommand(current);
 
     mUi->saveBox->setEnabled(enable);
     mUi->executableEdit->setEnabled(enable);

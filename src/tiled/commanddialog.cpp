@@ -104,8 +104,6 @@ CommandDataModel *CommandTreeView::model() const
 void CommandTreeView::contextMenuEvent(QContextMenuEvent *event)
 {
     const QModelIndex index = indexAt(event->pos());
-
-    // Generate a run a menu for the index
     if (QMenu *menu = model()->contextMenu(this, index))
         menu->exec(event->globalPos());
 }
