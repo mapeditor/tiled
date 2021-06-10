@@ -116,7 +116,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionSelectNextLayer->setShortcut(Qt::CTRL + Qt::Key_PageUp);
 
     mActionSelectAllLayers = new QAction(this);
-    mActionSelectAllLayers->setShortcut((Qt::CTRL) + Qt::Key_B);
+    mActionSelectAllLayers->setShortcut((Qt::CTRL | Qt::ALT) + Qt::Key_A);
 
     mActionMoveLayersUp = new QAction(this);
     mActionMoveLayersUp->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_Up);
@@ -719,9 +719,8 @@ void MapDocumentActionHandler::selectAllLayers()
         return;
     QList<Layer *> layersToSelect;
 
-    for (Layer *layer : mMapDocument->map()->allLayers()) {
+    for (Layer *layer : mMapDocument->map()->allLayers())
         layersToSelect.append(layer);
-    }
 
     mMapDocument->switchSelectedLayers(layersToSelect);
 }
@@ -849,7 +848,6 @@ void MapDocumentActionHandler::updateActions()
                                                    [] (Layer *layer) { return layer->canMergeDown(); }));
     mActionSelectPreviousLayer->setEnabled(hasPreviousLayer);
     mActionSelectNextLayer->setEnabled(hasNextLayer);
-    mActionSelectAllLayers->setEnabled(true);
     mActionMoveLayersUp->setEnabled(canMoveLayersUp);
     mActionMoveLayersDown->setEnabled(canMoveLayersDown);
     mActionToggleSelectedLayers->setEnabled(!selectedLayers.isEmpty());
