@@ -29,6 +29,7 @@
 #include "documentmanager.h"
 #include "erasetiles.h"
 #include "grouplayer.h"
+#include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -114,6 +115,9 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionSelectNextLayer = new QAction(this);
     mActionSelectNextLayer->setShortcut(Qt::CTRL + Qt::Key_PageUp);
 
+    mActionSelectAllLayers = new QAction(this);
+    mActionSelectAllLayers->setShortcut((Qt::CTRL) + Qt::Key_B);
+
     mActionMoveLayersUp = new QAction(this);
     mActionMoveLayersUp->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_Up);
     mActionMoveLayersUp->setIcon(
@@ -185,6 +189,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionMergeLayersDown, &QAction::triggered, this, &MapDocumentActionHandler::mergeLayersDown);
     connect(mActionSelectPreviousLayer, &QAction::triggered, this, &MapDocumentActionHandler::selectPreviousLayer);
     connect(mActionSelectNextLayer, &QAction::triggered, this, &MapDocumentActionHandler::selectNextLayer);
+    connect(mActionSelectAllLayers, &QAction::triggered, this, &MapDocumentActionHandler::selectAllLayers);
     connect(mActionRemoveLayers, &QAction::triggered, this, &MapDocumentActionHandler::removeLayers);
     connect(mActionMoveLayersUp, &QAction::triggered, this, &MapDocumentActionHandler::moveLayersUp);
     connect(mActionMoveLayersDown, &QAction::triggered, this, &MapDocumentActionHandler::moveLayersDown);
@@ -215,6 +220,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     ActionManager::registerAction(mActionMergeLayersDown, "MergeLayersDown");
     ActionManager::registerAction(mActionSelectPreviousLayer, "SelectPreviousLayer");
     ActionManager::registerAction(mActionSelectNextLayer, "SelectNextLayer");
+    ActionManager::registerAction(mActionSelectAllLayers, "SelectAllLayers");
     ActionManager::registerAction(mActionRemoveLayers, "RemoveLayers");
     ActionManager::registerAction(mActionMoveLayersUp, "MoveLayersUp");
     ActionManager::registerAction(mActionMoveLayersDown, "MoveLayersDown");
@@ -258,6 +264,7 @@ void MapDocumentActionHandler::retranslateUi()
     mActionRemoveLayers->setText(tr("&Remove Layers"));
     mActionSelectPreviousLayer->setText(tr("Select Pre&vious Layer"));
     mActionSelectNextLayer->setText(tr("Select &Next Layer"));
+    mActionSelectAllLayers->setText(tr("Select All Layers"));
     mActionMoveLayersUp->setText(tr("R&aise Layers"));
     mActionMoveLayersDown->setText(tr("&Lower Layers"));
     mActionToggleSelectedLayers->setText(tr("Show/&Hide Layers"));
@@ -706,6 +713,19 @@ void MapDocumentActionHandler::selectNextLayer()
         mMapDocument->switchSelectedLayers({ nextLayer });
 }
 
+void MapDocumentActionHandler::selectAllLayers()
+{
+    if (!mMapDocument)
+        return;
+    QList<Layer *> layersToSelect;
+
+    for (Layer *layer : mMapDocument->map()->allLayers()) {
+        layersToSelect.append(layer);
+    }
+
+    mMapDocument->switchSelectedLayers(layersToSelect);
+}
+
 void MapDocumentActionHandler::moveLayersUp()
 {
     if (mMapDocument)
@@ -829,6 +849,7 @@ void MapDocumentActionHandler::updateActions()
                                                    [] (Layer *layer) { return layer->canMergeDown(); }));
     mActionSelectPreviousLayer->setEnabled(hasPreviousLayer);
     mActionSelectNextLayer->setEnabled(hasNextLayer);
+    mActionSelectAllLayers->setEnabled(true);
     mActionMoveLayersUp->setEnabled(canMoveLayersUp);
     mActionMoveLayersDown->setEnabled(canMoveLayersDown);
     mActionToggleSelectedLayers->setEnabled(!selectedLayers.isEmpty());
