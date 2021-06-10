@@ -52,8 +52,9 @@ DynamicLibrary {
     files: [
         "compression.cpp",
         "compression.h",
-        "customproperties.h",
         "containerhelpers.h",
+        "customtype.cpp",
+        "customtype.h",
         "fileformat.cpp",
         "fileformat.h",
         "filesystemwatcher.cpp",

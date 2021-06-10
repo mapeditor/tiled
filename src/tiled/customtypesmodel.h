@@ -22,7 +22,7 @@
 
 #include <QStringList>
 
-#include "customproperties.h"
+#include "customtype.h"
 #include "properties.h"
 #include "object.h"
 #include <QAbstractTableModel>

@@ -59,11 +59,10 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->typeBox->addItem(typeToName(QMetaType::QString),   QString());
 
     for (const CustomType &customType : Object::customTypes()) {
-        QVariant var;
-        var.setValue(customType);
+        QVariant var = QVariant::fromValue(CustomValue { customType.defaultValue(), customType.id });
         mUi->typeBox->addItem(customType.name, var);
     }
-        
+
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
     // Restore previously used type

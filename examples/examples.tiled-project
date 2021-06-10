@@ -2,14 +2,14 @@
     "automappingRulesFile": "",
     "commands": [
     ],
-    "customProps": [
+    "customTypes": [
         {
             "color": "#a0a0a4",
             "name": "EnemyType",
             "values": [
-                "Friendly",
                 "Neutral",
-                "Aggresive"
+                "Friendly",
+                "Aggressive"
             ]
         }
     ],

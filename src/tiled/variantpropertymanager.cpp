@@ -83,7 +83,7 @@ bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
             || propertyType == tilesetParametersTypeId()
             || propertyType == alignmentTypeId()
             || propertyType == unstyledGroupTypeId()
-            || propertyType == customTypeId())
+            || propertyType == customValueId())
         return true;
     return QtVariantPropertyManager::isPropertyTypeSupported(propertyType);
 }
@@ -92,7 +92,7 @@ int VariantPropertyManager::valueType(int propertyType) const
 {
     if (propertyType == filePathTypeId())
         return propertyType;
-    if (propertyType == customTypeId())
+    if (propertyType == customValueId())
         return propertyType;
     if (propertyType == displayObjectRefTypeId())
         return propertyType;
@@ -169,15 +169,15 @@ int VariantPropertyManager::unstyledGroupTypeId()
     return qMetaTypeId<UnstyledGroup>();
 }
 
-QString VariantPropertyManager::objectRefLabel(const MapObject *object) const
+QString VariantPropertyManager::objectRefLabel(const MapObject &object)
 {
-    QString label = tr("%1: ").arg(object->id());
-    if (!object->name().isEmpty()) {
-        label.append(object->name());
-        if (!object->type().isEmpty())
-            label.append(tr(" (%1)").arg(object->type()));
-    } else if (!object->type().isEmpty())
-        label.append(tr("(%1)").arg(object->type()));
+    QString label = tr("%1: ").arg(object.id());
+    if (!object.name().isEmpty()) {
+        label.append(object.name());
+        if (!object.type().isEmpty())
+            label.append(tr(" (%1)").arg(object.type()));
+    } else if (!object.type().isEmpty())
+        label.append(tr("(%1)").arg(object.type()));
     else
         label.append(tr("Unnamed object"));
 
@@ -197,14 +197,13 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
                 return tr("Unset");
 
             if (auto object = ref.object())
-                return objectRefLabel(object);
+                return objectRefLabel(*object);
 
             return tr("%1: Object not found").arg(QString::number(ref.id()));
         }
 
-        if (typeId == customTypeId()) {
-            // todo?
-        }
+        if (typeId == customValueId())
+            return value.value<CustomValue>().value.toString();
 
         if (typeId == filePathTypeId()) {
             FilePath filePath = value.value<FilePath>();
@@ -245,8 +244,19 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
 {
     if (mValues.contains(property)) {
         QVariant value = mValues[property];
-        QString filePath;
         int typeId = propertyType(property);
+
+        // TODO: Support icons for enum values
+        if (typeId == customValueId())
+            return QIcon();
+
+        if (typeId == displayObjectRefTypeId()) {
+            const DisplayObjectRef ref = value.value<DisplayObjectRef>();
+            if (auto object = ref.object())
+                return ObjectIconManager::instance().iconForObject(*object);
+        }
+
+        QString filePath;
 
         // TODO: Needs a special icon for remote files
         if (typeId == filePathTypeId()) {
@@ -257,12 +267,6 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
         if (typeId == tilesetParametersTypeId()) {
             if (TilesetDocument *tilesetDocument = value.value<TilesetDocument*>())
                 filePath = tilesetDocument->tileset()->imageSource().toLocalFile();
-        }
-
-        if (typeId == displayObjectRefTypeId()) {
-            const DisplayObjectRef ref = value.value<DisplayObjectRef>();
-            if (auto object = ref.object())
-                return ObjectIconManager::instance().iconForObject(object);
         }
 
         // TODO: This assumes the file path is an image reference. It should be
@@ -358,7 +362,7 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
     if (type == filePathTypeId()
             || type == displayObjectRefTypeId()
             || type == tilesetParametersTypeId()
-            || type == customTypeId()) {
+            || type == customValueId()) {
         mValues[property] = QVariant();
         if (type == filePathTypeId())
             mFilePathAttributes[property] = FilePathAttributes();

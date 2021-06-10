@@ -1,6 +1,7 @@
 INCLUDEPATH += $$PWD
 
 SOURCES += $$PWD/compression.cpp \
+    $$PWD/customtype.cpp \
     $$PWD/filesystemwatcher.cpp \
     $$PWD/fileformat.cpp \
     $$PWD/gidmapper.cpp \
@@ -45,6 +46,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/worldmanager.cpp
 HEADERS += $$PWD/compression.h \
     $$PWD/containerhelpers.h \
+    $$PWD/customtype.h \
     $$PWD/filesystemwatcher.h \
     $$PWD/fileformat.h \
     $$PWD/gidmapper.h \

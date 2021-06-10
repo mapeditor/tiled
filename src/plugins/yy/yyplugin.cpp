@@ -395,8 +395,10 @@ static QString toOverriddenPropertyValue(const QVariant &value)
         return QColor(abgr).name(QColor::HexArgb).replace(QLatin1Char('#'), QLatin1Char('$'));
     }
 
-    default:
-        return toExportValue(value).toString();
+    default: {
+        const auto exportValue = ExportValue::fromPropertyValue(value);
+        return exportValue.value.toString();
+    }
     }
 }
 

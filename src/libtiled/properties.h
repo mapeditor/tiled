@@ -39,6 +39,19 @@ class QDir;
 
 namespace Tiled {
 
+class TILEDSHARED_EXPORT CustomValue
+{
+    Q_GADGET
+    Q_PROPERTY(QVariant value MEMBER value)
+    Q_PROPERTY(int typeId MEMBER typeId)
+
+public:
+    QVariant value;
+    int typeId;
+
+    QString typeName() const;
+};
+
 class TILEDSHARED_EXPORT FilePath
 {
     Q_GADGET
@@ -51,7 +64,7 @@ public:
     static FilePath fromString(const QString &string);
 };
 
-struct TILEDSHARED_EXPORT ObjectRef
+class TILEDSHARED_EXPORT ObjectRef
 {
     Q_GADGET
     Q_PROPERTY(int id MEMBER id)
@@ -61,6 +74,17 @@ public:
 
     static int toInt(const ObjectRef &ref) { return ref.id; }
     static ObjectRef fromInt(int id) { return ObjectRef { id }; }
+};
+
+class TILEDSHARED_EXPORT ExportValue
+{
+public:
+    QVariant value;
+    QString typeName;
+    QString customTypeName;
+
+    static ExportValue fromPropertyValue(const QVariant &value, const QString &path = QString());
+    QVariant toPropertyValue(const QString &path = QString()) const;
 };
 
 class TILEDSHARED_EXPORT AggregatedPropertyData
@@ -118,18 +142,12 @@ TILEDSHARED_EXPORT void mergeProperties(Properties &target, const Properties &so
 TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties);
 TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json);
 
-TILEDSHARED_EXPORT int customTypeId();
+TILEDSHARED_EXPORT int customValueId();
 TILEDSHARED_EXPORT int filePathTypeId();
 TILEDSHARED_EXPORT int objectRefTypeId();
 
 TILEDSHARED_EXPORT QString typeToName(int type);
-TILEDSHARED_EXPORT int nameToType(const QString &name);
-
-TILEDSHARED_EXPORT QVariant toExportValue(const QVariant &value);
-TILEDSHARED_EXPORT QVariant fromExportValue(const QVariant &value, int type);
-
-TILEDSHARED_EXPORT QVariant toExportValue(const QVariant &value, const QDir &dir);
-TILEDSHARED_EXPORT QVariant fromExportValue(const QVariant &value, int type, const QDir &dir);
+TILEDSHARED_EXPORT QString typeName(const QVariant &value);
 
 TILEDSHARED_EXPORT void initializeMetatypes();
 

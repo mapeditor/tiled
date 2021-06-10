@@ -28,7 +28,8 @@
 
 #include "properties.h"
 
-#include "customproperties.h"
+#include "customtype.h"
+#include "object.h"
 #include "tiled.h"
 
 #include <QColor>
@@ -67,13 +68,13 @@ QJsonArray propertiesToJson(const Properties &properties)
     const Properties::const_iterator it_end = properties.end();
     for (; it != it_end; ++it) {
         const QString &name = it.key();
-        const QJsonValue value = QJsonValue::fromVariant(toExportValue(it.value()));
-        const QString type = typeToName(it.value().userType());
+        const auto exportValue = ExportValue::fromPropertyValue(it.value());
 
         QJsonObject propertyObject;
         propertyObject.insert(QLatin1String("name"), name);
-        propertyObject.insert(QLatin1String("value"), value);
-        propertyObject.insert(QLatin1String("type"), type);
+        propertyObject.insert(QLatin1String("value"), QJsonValue::fromVariant(exportValue.value));
+        propertyObject.insert(QLatin1String("type"), exportValue.typeName);
+        propertyObject.insert(QLatin1String("customtype"), exportValue.customTypeName);
 
         json.append(propertyObject);
     }
@@ -88,13 +89,13 @@ Properties propertiesFromJson(const QJsonArray &json)
     for (const QJsonValue &property : json) {
         const QJsonObject propertyObject = property.toObject();
         const QString name = propertyObject.value(QLatin1String("name")).toString();
-        const QString typeName = propertyObject.value(QLatin1String("type")).toString();
-        QVariant value = propertyObject.value(QLatin1String("value")).toVariant();
 
-        if (!typeName.isEmpty())
-            value = fromExportValue(value, nameToType(typeName));
+        ExportValue exportValue;
+        exportValue.value = propertyObject.value(QLatin1String("value")).toVariant();
+        exportValue.typeName = propertyObject.value(QLatin1String("type")).toString();
+        exportValue.customTypeName = propertyObject.value(QLatin1String("customtype")).toString();
 
-        properties.insert(name, value);
+        properties.insert(name, exportValue.toPropertyValue());
     }
 
     return properties;
@@ -117,9 +118,9 @@ void aggregateProperties(AggregatedProperties &aggregated, const Properties &pro
     }
 }
 
-int customTypeId()
+int customValueId()
 {
-    return qMetaTypeId<CustomType>();
+    return qMetaTypeId<CustomValue>();
 }
 
 int filePathTypeId()
@@ -134,6 +135,10 @@ int objectRefTypeId()
 
 QString typeToName(int type)
 {
+    // We can't handle the CustomValue purely by its type ID, since we need to
+    // know the name of the custom type.
+    Q_ASSERT(type != customValueId());
+
     switch (type) {
     case QMetaType::QString:
         return QStringLiteral("string");
@@ -141,12 +146,8 @@ QString typeToName(int type)
         return QStringLiteral("float");
     case QMetaType::QColor:
         return QStringLiteral("color");
-  
+
     default:
-        if (type == customTypeId())
-            // todo: we can't just return "custom" here, we need to save the
-            // actual name of the custom type.
-            return QStringLiteral("custom");
         if (type == filePathTypeId())
             return QStringLiteral("file");
         if (type == objectRefTypeId())
@@ -155,7 +156,7 @@ QString typeToName(int type)
     return QLatin1String(QVariant::typeToName(type));
 }
 
-int nameToType(const QString &name)
+static int nameToType(const QString &name)
 {
     if (name == QLatin1String("string"))
         return QMetaType::QString;
@@ -163,8 +164,6 @@ int nameToType(const QString &name)
         return QMetaType::Double;
     if (name == QLatin1String("color"))
         return QMetaType::QColor;
-    if (name == QLatin1String("custom"))
-        return customTypeId();
     if (name == QLatin1String("file"))
         return filePathTypeId();
     if (name == QLatin1String("object"))
@@ -173,68 +172,84 @@ int nameToType(const QString &name)
     return QVariant::nameToType(name.toLatin1().constData());
 }
 
-QVariant toExportValue(const QVariant &value)
+QString typeName(const QVariant &value)
 {
-    int type = value.userType();
+    if (value.userType() == customValueId()) {
+        auto typeId = value.value<CustomValue>().typeId;
+
+        for (const CustomType &customType : Object::customTypes()) {
+            if (customType.id == typeId)
+                return customType.name;
+        }
+    }
+
+    return typeToName(value.userType());
+}
+
+QString CustomValue::typeName() const
+{
+    for (const CustomType &customType : Object::customTypes()) {
+        if (customType.id == typeId)
+            return customType.name;
+    }
+
+    return QString();
+}
+
+ExportValue ExportValue::fromPropertyValue(const QVariant &value, const QString &path)
+{
+    ExportValue exportValue;
+    const int type = value.userType();
+
+    if (type == customValueId()) {
+        const CustomValue customValue = value.value<CustomValue>();
+        exportValue = fromPropertyValue(customValue.value, path);
+        exportValue.customTypeName = customValue.typeName();
+        return exportValue; // early out, we don't want to assign metaTypeName again
+    }
 
     if (type == QMetaType::QColor) {
         const QColor color = value.value<QColor>();
-        return color.isValid() ? color.name(QColor::HexArgb) : QString();
-    }
-
-    if (type == customTypeId())
-        return CustomType::toString(value.value<CustomType>());
-
-    if (type == filePathTypeId())
-        return FilePath::toString(value.value<FilePath>());
-
-    if (type == objectRefTypeId())
-        return ObjectRef::toInt(value.value<ObjectRef>());
-
-    return value;
-}
-
-QVariant fromExportValue(const QVariant &value, int type)
-{
-    if (type == QMetaType::UnknownType)
-        return value;
-
-    if (value.userType() == type)
-        return value;
-
-//    if (type == customTypeId())
-    // todo: to implement this, we'll need the actual name of the custom type
-    // rather than just a type ID.
-
-    if (type == filePathTypeId())
-        return QVariant::fromValue(FilePath::fromString(value.toString()));
-
-    if (type == objectRefTypeId())
-        return QVariant::fromValue(ObjectRef::fromInt(value.toInt()));
-
-    QVariant variant(value);
-    variant.convert(type);
-    return variant;
-}
-
-QVariant toExportValue(const QVariant &value, const QDir &dir)
-{
-    if (value.userType() == filePathTypeId()) {
+        exportValue.value = color.isValid() ? color.name(QColor::HexArgb) : QString();
+    } else if (type == filePathTypeId()) {
         const FilePath filePath = value.value<FilePath>();
-        return toFileReference(filePath.url, dir);
+        exportValue.value = toFileReference(filePath.url, path);
+    } else if (type == objectRefTypeId()) {
+        exportValue.value = ObjectRef::toInt(value.value<ObjectRef>());
+    } else {
+        exportValue.value = value;
     }
 
-    return toExportValue(value);
+    exportValue.typeName = typeToName(type);
+
+    return exportValue;
 }
 
-QVariant fromExportValue(const QVariant &value, int type, const QDir &dir)
+QVariant ExportValue::toPropertyValue(const QString &path) const
 {
-    if (type == filePathTypeId()) {
-        const QUrl url = toUrl(value.toString(), dir);
-        return QVariant::fromValue(FilePath { url });
+    QVariant propertyValue = value;
+    const int metaType = nameToType(typeName);
+
+    if (metaType == filePathTypeId()) {
+        const QUrl url = toUrl(value.toString(), path);
+        propertyValue = QVariant::fromValue(FilePath { url });
+    } else if (metaType == objectRefTypeId()) {
+        propertyValue = QVariant::fromValue(ObjectRef::fromInt(value.toInt()));
+    } else if (value.userType() != metaType && metaType != QMetaType::UnknownType) {
+        propertyValue.convert(metaType);
     }
 
-    return fromExportValue(value, type);
+    // Wrap the value in its custom type when applicable
+    if (!customTypeName.isEmpty()) {
+        for (const CustomType &customType : Object::customTypes()) {
+            if (customType.name == customTypeName) {
+                propertyValue = customType.wrap(value);
+                break;
+            }
+        }
+    }
+
+    return propertyValue;
 }
 
 void initializeMetatypes()

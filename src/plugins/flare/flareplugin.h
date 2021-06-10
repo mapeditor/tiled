@@ -48,6 +48,10 @@ public:
     QString errorString() const override;
 
 private:
+    void writeProperties(QTextStream &out,
+                         const Tiled::Properties &properties,
+                         const QString &mapPath);
+
     QString mError;
 };
 

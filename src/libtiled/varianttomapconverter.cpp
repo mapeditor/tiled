@@ -160,12 +160,12 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
     QVariantMap::const_iterator it = propertiesMap.constBegin();
     QVariantMap::const_iterator it_end = propertiesMap.constEnd();
     for (; it != it_end; ++it) {
-        int type = nameToType(propertyTypesMap.value(it.key()).toString());
-        if (type == QMetaType::UnknownType)
-            type = QMetaType::QString;
+        ExportValue exportValue;
+        exportValue.value = it.value();
+        exportValue.typeName = propertyTypesMap.value(it.key()).toString();
+        // TODO: Support for custom types with propertyCustomTypesMap
 
-        const QVariant value = fromExportValue(it.value(), type, mDir);
-        properties[it.key()] = value;
+        properties[it.key()] = exportValue.toPropertyValue(mDir.path());
     }
 
     // read array-based format (1.2)
@@ -173,12 +173,12 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
     for (const QVariant &propertyVariant : propertiesList) {
         const QVariantMap propertyVariantMap = propertyVariant.toMap();
         const QString propertyName = propertyVariantMap[QStringLiteral("name")].toString();
-        const QString propertyType = propertyVariantMap[QStringLiteral("type")].toString();
-        const QVariant propertyValue = propertyVariantMap[QStringLiteral("value")];
-        int type = nameToType(propertyType);
-        if (type == QMetaType::UnknownType)
-            type = QMetaType::QString;
-        properties[propertyName] = fromExportValue(propertyValue, type, mDir);
+        ExportValue exportValue;
+        exportValue.value = propertyVariantMap[QStringLiteral("value")];
+        exportValue.typeName = propertyVariantMap[QStringLiteral("type")].toString();
+        exportValue.customTypeName = propertyVariantMap[QStringLiteral("customtype")].toString();
+
+        properties[propertyName] = exportValue.toPropertyValue(mDir.path());
     }
 
     return properties;
@@ -733,12 +733,12 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     const QVariant pointVariant = variantMap[QStringLiteral("point")];
     const QVariant textVariant = variantMap[QStringLiteral("text")];
 
-    if (polygonVariant.userType() == QVariant::List) {
+    if (polygonVariant.userType() == QMetaType::QVariantList) {
         object->setShape(MapObject::Polygon);
         object->setPolygon(toPolygon(polygonVariant));
         object->setPropertyChanged(MapObject::ShapeProperty);
     }
-    if (polylineVariant.userType() == QVariant::List) {
+    if (polylineVariant.userType() == QMetaType::QVariantList) {
         object->setShape(MapObject::Polyline);
         object->setPolygon(toPolygon(polylineVariant));
         object->setPropertyChanged(MapObject::ShapeProperty);
@@ -751,7 +751,7 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
         object->setShape(MapObject::Point);
         object->setPropertyChanged(MapObject::ShapeProperty);
     }
-    if (textVariant.userType() == QVariant::Map) {
+    if (textVariant.userType() == QMetaType::QVariantMap) {
         object->setTextData(toTextData(textVariant.toMap()));
         object->setShape(MapObject::Text);
         object->setPropertyChanged(MapObject::TextProperty);

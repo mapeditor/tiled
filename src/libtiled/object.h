@@ -30,7 +30,7 @@
 
 #include "properties.h"
 #include "objecttypes.h"
-#include "customproperties.h"
+#include "customtype.h"
 
 namespace Tiled {
 
@@ -111,7 +111,7 @@ public:
      * Returns the type of the object's \a name property, as a string.
      */
     QString propertyType(const QString &name) const
-    { return typeToName(mProperties.value(name).userType()); }
+    { return typeName(mProperties.value(name)); }
 
     /**
      * Returns whether this object has a property with the given \a name.

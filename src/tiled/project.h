@@ -20,9 +20,8 @@
 
 #pragma once
 
-#include "customproperties.h"
-
 #include "command.h"
+#include "customtype.h"
 #include "properties.h"
 
 #include <QDateTime>
@@ -51,7 +50,7 @@ public:
     QString mObjectTypesFile;
     QString mAutomappingRulesFile;
     QVector<Command> mCommands;
-    QVector<CustomType> mCustomTypes;
+    CustomTypes mCustomTypes;
 
 private:
     QDateTime mLastSaved;
