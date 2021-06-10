@@ -514,6 +514,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mLayerMenu->addSeparator();
     mLayerMenu->addAction(mActionHandler->actionSelectPreviousLayer());
     mLayerMenu->addAction(mActionHandler->actionSelectNextLayer());
+    mLayerMenu->addAction(mActionHandler->actionSelectAllLayers());
     mLayerMenu->addAction(mActionHandler->actionMoveLayersUp());
     mLayerMenu->addAction(mActionHandler->actionMoveLayersDown());
     mLayerMenu->addSeparator();
