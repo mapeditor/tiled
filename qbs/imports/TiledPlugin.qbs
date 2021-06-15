@@ -16,6 +16,7 @@ DynamicLibrary {
     }
     cpp.defines: [
         "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(5,15,0)",
+        "QT_NO_DEPRECATED_WARNINGS",
         "QT_NO_FOREACH",
         "QT_NO_URL_CAST_FROM_STRING"
     ]
