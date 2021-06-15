@@ -44,16 +44,13 @@ namespace Tiled {
 class TILEDSHARED_EXPORT CustomType
 {
 public:
-    CustomType();
-    CustomType(QString name, const QColor &color);
-
+    int id = -1;
     QString name;
-    QColor color;
+    QColor color = Qt::gray;
     QStringList values;
 
     int valueType = QMetaType::QString;
 
-    int id = ++nextId;
     static int nextId;
 
     void addValue(const QString &name);
@@ -65,15 +62,6 @@ public:
     QVariantHash toVariant() const;
     static CustomType fromVariant(const QVariant &variant);
 };
-
-inline CustomType::CustomType()
-    : color(Qt::gray)
-{}
-
-inline CustomType::CustomType(QString name, const QColor &color)
-    : name(std::move(name))
-    , color(color)
-{}
 
 typedef QVector<CustomType> CustomTypes;
 

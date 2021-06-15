@@ -5,11 +5,31 @@
     "customTypes": [
         {
             "color": "#a0a0a4",
+            "id": 1,
+            "name": "BodyType",
+            "values": [
+                "Static",
+                "Dynamic"
+            ]
+        },
+        {
+            "color": "#a0a0a4",
+            "id": 2,
             "name": "EnemyType",
             "values": [
                 "Neutral",
                 "Friendly",
                 "Aggressive"
+            ]
+        },
+        {
+            "color": "#a0a0a4",
+            "id": 3,
+            "name": "State",
+            "values": [
+                "Open",
+                "Closed",
+                "Locked"
             ]
         }
     ],

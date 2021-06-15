@@ -62,6 +62,7 @@ QVariant CustomType::defaultValue() const
 QVariantHash CustomType::toVariant() const
 {
     return {
+        { QStringLiteral("id"), id },
         { QStringLiteral("name"), name },
         { QStringLiteral("values"), values },
         { QStringLiteral("color"), color },
@@ -73,9 +74,12 @@ CustomType CustomType::fromVariant(const QVariant &variant)
     const auto hash = variant.toHash();
 
     CustomType customType;
+    customType.id = hash.value(QStringLiteral("id")).toInt();
     customType.name = hash.value(QStringLiteral("name")).toString();
     customType.values = hash.value(QStringLiteral("values")).toStringList();
     customType.color = hash.value(QStringLiteral("color")).toString();
+
+    nextId = std::max(nextId, customType.id);
 
     return customType;
 }

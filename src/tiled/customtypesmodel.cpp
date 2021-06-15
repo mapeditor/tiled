@@ -167,7 +167,11 @@ void CustomTypesModel::removeCustomTypes(const QModelIndexList &indexes)
 QModelIndex CustomTypesModel::addNewCustomType()
 {
     beginInsertRows(QModelIndex(), 0, 0);
-    mCustomTypes.prepend(CustomType());
+
+    CustomType customType;
+    customType.id = ++CustomType::nextId;
+    mCustomTypes.prepend(customType);
+
     endInsertRows();
     return index(0, 0);
 }

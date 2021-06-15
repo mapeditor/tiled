@@ -315,19 +315,19 @@ void CustomTypesEditor::debugCustomTypes()
 {
     CustomTypes customTypes = Object::customTypes();
     for (const CustomType &type : customTypes) {
-        qDebug() << type.name;
+        qDebug() << type.name << type.id;
         qDebug() << type.values;
     }
     qDebug() << "modelCustomTypes:";
     CustomTypes modelCustomTypes = mCustomTypesModel->customTypes();
     for (const CustomType &type : modelCustomTypes) {
-        qDebug() << type.name;
+        qDebug() << type.name << type.id;
         qDebug() << type.values;
     }
     qDebug() << "projectCustomTypes:";
     CustomTypes projectCustomTypes = ProjectManager::instance()->project().mCustomTypes;
     for (const CustomType &type : projectCustomTypes) {
-        qDebug() << type.name;
+        qDebug() << type.name << type.id;
         qDebug() << type.values;
     }
 }
