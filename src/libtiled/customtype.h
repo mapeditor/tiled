@@ -53,9 +53,6 @@ public:
 
     static int nextId;
 
-    void addValue(const QString &name);
-    void validateValues();
-
     QVariant wrap(QVariant value) const;
     QVariant defaultValue() const;
 

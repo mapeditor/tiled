@@ -32,18 +32,6 @@ namespace Tiled {
 
 int CustomType::nextId = 0;
 
-void CustomType::addValue(const QString &name)
-{
-    values << name;
-    validateValues();
-}
-
-void CustomType::validateValues()
-{
-    values.removeAll(QString());
-    values.removeDuplicates();
-}
-
 QVariant CustomType::wrap(QVariant value) const
 {
     return QVariant::fromValue(CustomValue { value, id });

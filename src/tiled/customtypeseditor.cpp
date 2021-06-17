@@ -33,19 +33,10 @@
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
 
-#include <QDebug>
-#include <QStandardItemModel>
-#include <QtGroupPropertyManager>
-#include <QTableWidget>
-#include <QTableWidgetItem>
-#include <QColorDialog>
 #include <QCloseEvent>
-#include <QFileDialog>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QPainter>
-#include <QString>
-#include <QStringList>
+#include <QColorDialog>
+#include <QScopedValueRollback>
+#include <QStringListModel>
 #include <QStyledItemDelegate>
 #include <QToolBar>
 
@@ -53,12 +44,26 @@
 
 namespace Tiled {
 
+class CustomTypeValuesModel : public QStringListModel
+{
+    Q_OBJECT
+
+public:
+    using QStringListModel::QStringListModel;
+
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const override
+    {
+        if (section == 0 && orientation == Qt::Horizontal && role == Qt::DisplayRole)
+            return CustomTypesEditor::tr("Values");
+        return QStringListModel::headerData(section, orientation, role);
+    }
+};
+
 CustomTypesEditor::CustomTypesEditor(QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::CustomTypesEditor)
     , mCustomTypesModel(new CustomTypesModel(this))
-    , mDetailsModel(new QStandardItemModel(this))
-    , mGroupManager(new QtGroupPropertyManager(this))
+    , mDetailsModel(new CustomTypeValuesModel(this))
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
@@ -71,11 +76,8 @@ CustomTypesEditor::CustomTypesEditor(QWidget *parent)
     horizontalHeader->setSectionResizeMode(1, QHeaderView::Fixed);
     horizontalHeader->resizeSection(1, Utils::dpiScaled(50));
 
-    QStringList labels;
-    labels << QString::fromUtf8("Values");
-    mUi->detailsTable->setColumnCount(1);
-    mUi->detailsTable->setHorizontalHeaderLabels(labels);
-    mUi->detailsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+    mUi->detailsTable->setModel(mDetailsModel);
+    mUi->detailsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     mAddCustomTypeAction = new QAction(this);
     mRemoveCustomTypeAction = new QAction(this);
@@ -106,10 +108,6 @@ CustomTypesEditor::CustomTypesEditor(QWidget *parent)
     customTypesToolBar->setIconSize(Utils::smallIconSize());
     customTypesToolBar->addAction(mAddCustomTypeAction);
     customTypesToolBar->addAction(mRemoveCustomTypeAction);
-    customTypesToolBar->addWidget(stretch);
-    customTypesToolBar->addAction(mUi->actionLoad);
-    customTypesToolBar->addAction(mUi->actionDebug);
-    customTypesToolBar->addAction(mUi->actionSave);
 
     QToolBar *propertiesToolBar = new QToolBar(this);
     propertiesToolBar->setIconSize(Utils::smallIconSize());
@@ -119,11 +117,12 @@ CustomTypesEditor::CustomTypesEditor(QWidget *parent)
     mUi->customTypesLayout->addWidget(customTypesToolBar);
     mUi->typeDetailsLayout->addWidget(propertiesToolBar);
 
-    auto selectionModel = mUi->customTypesTable->selectionModel();
-    connect(selectionModel, &QItemSelectionModel::selectionChanged,
+    connect(mUi->customTypesTable->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, &CustomTypesEditor::selectedCustomTypesChanged);
+    connect(mUi->detailsTable->selectionModel(), &QItemSelectionModel::selectionChanged,
+            this, &CustomTypesEditor::updateActions);
     connect(mCustomTypesModel, &CustomTypesModel::modelReset,
-            this, &CustomTypesEditor::selectFirstCProp);
+            this, &CustomTypesEditor::selectFirstCustomType);
     connect(mUi->customTypesTable, &QAbstractItemView::doubleClicked,
             this, &CustomTypesEditor::customTypeIndexClicked);
 
@@ -135,14 +134,7 @@ CustomTypesEditor::CustomTypesEditor(QWidget *parent)
     connect(mAddValueAction, &QAction::triggered,
                 this, &CustomTypesEditor::addValue);
     connect(mRemoveValueAction, &QAction::triggered,
-            this, &CustomTypesEditor::removeValue);
-
-    connect(mUi->actionLoad, &QAction::triggered,
-             this, &CustomTypesEditor::loadCustomTypes);
-    connect(mUi->actionDebug, &QAction::triggered,
-             this, &CustomTypesEditor::debugCustomTypes);
-    connect(mUi->actionSave, &QAction::triggered,
-            this, &CustomTypesEditor::saveCustomTypes);
+            this, &CustomTypesEditor::removeValues);
 
     connect(mCustomTypesModel, &CustomTypesModel::dataChanged,
             this, &CustomTypesEditor::applyCustomTypes);
@@ -151,8 +143,12 @@ CustomTypesEditor::CustomTypesEditor(QWidget *parent)
     connect(mCustomTypesModel, &CustomTypesModel::rowsRemoved,
             this, &CustomTypesEditor::applyCustomTypes);
 
-    connect(mUi->detailsTable, &QTableWidget::itemChanged,
-            this, &CustomTypesEditor::itemChanged);
+    connect(mDetailsModel, &QAbstractItemModel::dataChanged,
+            this, &CustomTypesEditor::valuesChanged);
+    connect(mDetailsModel, &QAbstractTableModel::rowsInserted,
+            this, &CustomTypesEditor::valuesChanged);
+    connect(mDetailsModel, &QAbstractTableModel::rowsRemoved,
+            this, &CustomTypesEditor::valuesChanged);
 
     Preferences *prefs = Preferences::instance();
     mCustomTypesModel->setCustomTypes(Object::customTypes());
@@ -163,16 +159,6 @@ CustomTypesEditor::CustomTypesEditor(QWidget *parent)
 CustomTypesEditor::~CustomTypesEditor()
 {
     delete mUi;
-}
-
-
-void CustomTypesEditor::showEvent( QShowEvent* event ) {
-    
-    mSettingPrefCustomTypes = false;
-    mCustomTypesModel->setCustomTypes(Object::customTypes());
-    mSettingPrefCustomTypes = true;
-    updateValues();
-    QWidget::showEvent( event );
 }
 
 void CustomTypesEditor::closeEvent(QCloseEvent *event)
@@ -197,8 +183,8 @@ void CustomTypesEditor::changeEvent(QEvent *e)
 
 void CustomTypesEditor::retranslateUi()
 {
-    mAddCustomTypeAction->setText(tr("Add Object Type"));
-    mRemoveCustomTypeAction->setText(tr("Remove Object Type"));
+    mAddCustomTypeAction->setText(tr("Add Property Type"));
+    mRemoveCustomTypeAction->setText(tr("Remove Property Type"));
 
     mAddValueAction->setText(tr("Add Value"));
     mRemoveValueAction->setText(tr("Remove Value"));
@@ -244,10 +230,8 @@ void CustomTypesEditor::applyCustomTypes()
 {
     auto &customTypes = mCustomTypesModel->customTypes();
 
-    Preferences *prefs = Preferences::instance();
-    mSettingPrefCustomTypes = true;
-    prefs->setCustomTypes(customTypes);
-    mSettingPrefCustomTypes = false;
+    QScopedValueRollback<bool> settingPrefCustomTypes(mSettingPrefCustomTypes, true);
+    Preferences::instance()->setCustomTypes(customTypes);
 
     Project &project = ProjectManager::instance()->project();
     project.mCustomTypes = customTypes;
@@ -263,79 +247,47 @@ void CustomTypesEditor::customTypesChanged()
     updateValues();
 }
 
+static QString nextValueText(const CustomType &customType)
+{
+    auto baseText = customType.name;
+    if (!baseText.isEmpty())
+        baseText.append(QLatin1Char(' '));
+
+    // Search for a unique value, starting from the current count
+    int number = customType.values.count();
+    QString valueText;
+    do {
+        valueText = baseText + QString::number(number++);
+    } while (customType.values.contains(valueText));
+
+    return valueText;
+}
+
 void CustomTypesEditor::addValue()
 {
-    const int maxRow = mUi->detailsTable->rowCount();
-    mUi->detailsTable->setRowCount(maxRow+1);
-    QTableWidgetItem *nItem = mUi->detailsTable->item(maxRow,0);
-    mTouchingValues = true;
-    if (!nItem) {
-        QTableWidgetItem *nItem = new QTableWidgetItem(QTableWidgetItem::Type);
-        mUi->detailsTable->setItem(maxRow,0,nItem);
-        mUi->detailsTable->setCurrentItem(nItem);
-        mUi->detailsTable->editItem(nItem);
-    } else {
-        mUi->detailsTable->setCurrentItem(nItem);
-        mUi->detailsTable->editItem(nItem);
-    }
-    mTouchingValues = false;
+    const auto selectionModel = mUi->customTypesTable->selectionModel();
+    const QModelIndexList selectedRows = selectionModel->selectedRows();
+    if (selectedRows.size() != 1)
+        return;
+
+    const int row = mDetailsModel->rowCount();
+    if (!mDetailsModel->insertRow(row))
+        return;
+
+    const CustomType customType = mCustomTypesModel->customTypeAt(selectedRows.first());
+    const QString valueText = nextValueText(customType);
+
+    const auto valueIndex = mDetailsModel->index(row);
+    mUi->detailsTable->setCurrentIndex(valueIndex);
+    mDetailsModel->setData(valueIndex, valueText, Qt::DisplayRole);
+    mUi->detailsTable->edit(valueIndex);
 }
 
-void CustomTypesEditor::removeValue()
+void CustomTypesEditor::removeValues()
 {
-    QTableWidgetItem *item = mUi->detailsTable->currentItem();
-
-    const int maxRow = mUi->detailsTable->rowCount()-1;
-    mTouchingValues = true;
-    if (item) {
-        const QString name = item->text();
-        const int row       = item->row();
-        if (row != maxRow) {
-            // collapse all rows between it and the last row.
-            for (int i = row +1; i <=maxRow; i++) {
-                QTableWidgetItem *cItem =  mUi->detailsTable->item(i,0);
-                QTableWidgetItem *nItem =  mUi->detailsTable->item(i-1,0);
-                if (nItem && cItem)
-                    nItem->setText(cItem->text());
-            }
-        }
-    }
-
-    mUi->detailsTable->setRowCount(maxRow); //remove one row
-    mTouchingValues = false;
-}
-
-void CustomTypesEditor::loadCustomTypes()
-{
-    mCustomTypesModel->setCustomTypes(Object::customTypes());
-    updateValues();
-}
-
-void CustomTypesEditor::debugCustomTypes()
-{
-    CustomTypes customTypes = Object::customTypes();
-    for (const CustomType &type : customTypes) {
-        qDebug() << type.name << type.id;
-        qDebug() << type.values;
-    }
-    qDebug() << "modelCustomTypes:";
-    CustomTypes modelCustomTypes = mCustomTypesModel->customTypes();
-    for (const CustomType &type : modelCustomTypes) {
-        qDebug() << type.name << type.id;
-        qDebug() << type.values;
-    }
-    qDebug() << "projectCustomTypes:";
-    CustomTypes projectCustomTypes = ProjectManager::instance()->project().mCustomTypes;
-    for (const CustomType &type : projectCustomTypes) {
-        qDebug() << type.name << type.id;
-        qDebug() << type.values;
-    }
-}
-
-
-void CustomTypesEditor::saveCustomTypes()
-{
-    applyCustomTypes();
+    const QItemSelection selection = mUi->detailsTable->selectionModel()->selection();
+    for (const QItemSelectionRange &range : selection)
+        mDetailsModel->removeRows(range.top(), range.height());
 }
 
 void CustomTypesEditor::updateValues()
@@ -343,49 +295,34 @@ void CustomTypesEditor::updateValues()
     const auto selectionModel = mUi->customTypesTable->selectionModel();
     const auto selectedRows = selectionModel->selectedRows();
 
-    mTouchingValues = true;
+    QScopedValueRollback<bool> touchingValues(mTouchingValues, true);
     // again.. should just be one. Maybe a more elegant way to do this ?
     if (selectedRows.size() == 1) {
-        for (const QModelIndex &index : selectedRows) {
-            CustomType customType = mCustomTypesModel->customTypeAt(index);
-
-            mUi->detailsTable->setRowCount(customType.values.size());
-            int row = 0;
-            for (const QString &value: customType.values) {
-                QTableWidgetItem *item = new QTableWidgetItem(value,QTableWidgetItem::Type);
-                mUi->detailsTable->setItem(row,0,item);
-                row++;
-            }
-        }
+        const QModelIndex &index = selectedRows.first();
+        const CustomType customType = mCustomTypesModel->customTypeAt(index);
+        mDetailsModel->setStringList(customType.values);
     } else {
-        mUi->detailsTable->setRowCount(0);
+        mDetailsModel->setStringList({});
     }
 
-    mTouchingValues = false;
-    mAddValueAction->setEnabled(!selectedRows.isEmpty());
-    mRemoveValueAction->setEnabled(mUi->detailsTable->rowCount()>0);
-    mTouchingValues = false;
+    updateActions();
 }
 
-void CustomTypesEditor::renameValueTo(const QString &name)
+void CustomTypesEditor::updateActions()
 {
-    if (name.isEmpty())
-        return;
+    const auto typesSelectionModel = mUi->customTypesTable->selectionModel();
+    const auto selectedTypes = typesSelectionModel->selectedRows();
 
-    QTableWidgetItem *item = mUi->detailsTable->currentItem();
-    if (!item)
-        return;
+    const auto valuesSelectionModel = mUi->detailsTable->selectionModel();
+    const auto selectedValues = valuesSelectionModel->selectedRows();
 
-    const QString oldName = item->text();
-    if (oldName == name)
-        return;
-
-    item->setText(name);
+    mAddValueAction->setEnabled(selectedTypes.size() == 1);
+    mRemoveValueAction->setEnabled(!selectedValues.isEmpty());
 }
 
-void CustomTypesEditor::selectFirstCProp()
+void CustomTypesEditor::selectFirstCustomType()
 {
-    QModelIndex firstIndex = mCustomTypesModel->index(0, 0);
+    const QModelIndex firstIndex = mCustomTypesModel->index(0, 0);
     if (firstIndex.isValid()) {
         mUi->customTypesTable->selectionModel()->select(firstIndex,
                                                         QItemSelectionModel::ClearAndSelect |
@@ -401,32 +338,23 @@ void CustomTypesEditor::recalculateValues()
     const auto selectionModel = mUi->customTypesTable->selectionModel();
     const auto selectedRows = selectionModel->selectedRows();
 
-    QStringList newValues;
-
-    const int maxRow = mUi->detailsTable->rowCount()-1;
-    for (int i = 0; i <= maxRow; ++i) {
-        QTableWidgetItem *item = mUi->detailsTable->item(i,0);
-        if (item) {
-            QString value = item->text();
-            if (!value.isEmpty())
-                newValues << value;
-        }
-    }
-    //there should be just one for editing. if more than one - don't do anything
+    // there should be just one for editing. if more than one - don't do anything
     if (selectedRows.size() == 1) {
-        for (const QModelIndex &index : selectedRows) {
-            CustomType customType = mCustomTypesModel->customTypeAt(index);
-            mCustomTypesModel->setCustomTypeValues(index.row(), newValues);
-        }
+        const QModelIndex &index = selectedRows.first();
+        const QStringList newValues = mDetailsModel->stringList();
+        mCustomTypesModel->setCustomTypeValues(index.row(), newValues);
     }
-
-    updateValues();
 }
 
-void CustomTypesEditor::itemChanged(QTableWidgetItem *)
+void CustomTypesEditor::valuesChanged()
 {
-    if (!mTouchingValues)
+    if (!mTouchingValues) {
         recalculateValues();
+        applyCustomTypes();
+    }
 }
 
 } // namespace Tiled
+
+#include "customtypeseditor.moc"
+#include "moc_customtypeseditor.cpp"

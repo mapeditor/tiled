@@ -24,18 +24,11 @@
 
 #include <QDialog>
 
-class QStandardItemModel;
-class QTableWidgetItem;
+class QStringListModel;
 
 namespace Ui {
 class CustomTypesEditor;
 }
-
-class QtBrowserItem;
-class QtGroupPropertyManager;
-class QtProperty;
-class QtVariantProperty;
-class QtVariantPropertyManager;
 
 namespace Tiled {
 
@@ -55,7 +48,6 @@ signals:
 protected:
     void closeEvent(QCloseEvent *) override;
     void changeEvent(QEvent *e) override;
-    void showEvent(QShowEvent *e) override;
 
 private:
     void addCustomType();
@@ -64,21 +56,15 @@ private:
     void customTypeIndexClicked(const QModelIndex &index);
     void applyCustomTypes();
     void customTypesChanged();
-    void loadCustomTypes();
-    void debugCustomTypes();
-    void saveCustomTypes();
 
     void updateValues();
+    void updateActions();
 
-    void openAddValueDialog();
     void addValue();
-    void editValue(const QString &name);
-    void removeValue();
-    void renameValue();
-    void renameValueTo(const QString &name);
+    void removeValues();
 
-    void selectFirstCProp();
-    void itemChanged(QTableWidgetItem *);
+    void selectFirstCustomType();
+    void valuesChanged();
 
     void recalculateValues();
     void retranslateUi();
@@ -87,12 +73,8 @@ private:
 
     Ui::CustomTypesEditor *mUi;
     CustomTypesModel *mCustomTypesModel;
-    QStandardItemModel *mDetailsModel;
-    QtVariantPropertyManager *mVariantManager;
-    QtGroupPropertyManager *mGroupManager;
-    QStringList mCurrentValues;
+    QStringListModel *mDetailsModel;
 
-    bool mUpdating = false;
     bool mSettingPrefCustomTypes = false;
     bool mTouchingValues = false;
 

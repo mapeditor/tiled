@@ -145,7 +145,6 @@ void CustomTypesModel::setCustomTypeValues(int objectIndex,
                                            const QStringList &values)
 {
     mCustomTypes[objectIndex].values = values;
-    mCustomTypes[objectIndex].validateValues();
 }
 
 void CustomTypesModel::removeCustomTypes(const QModelIndexList &indexes)

@@ -51,7 +51,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QTableWidget" name="detailsTable">
+        <widget class="QTreeView" name="detailsTable">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -73,13 +73,12 @@
          <property name="autoFillBackground">
           <bool>false</bool>
          </property>
-         <property name="rowCount">
-          <number>0</number>
+         <property name="rootIsDecorated">
+          <bool>false</bool>
          </property>
-         <property name="columnCount">
-          <number>1</number>
+         <property name="uniformRowHeights">
+          <bool>true</bool>
          </property>
-         <column/>
         </widget>
        </item>
       </layout>
@@ -87,33 +86,6 @@
     </widget>
    </item>
   </layout>
-  <action name="actionSave">
-   <property name="text">
-    <string>Save...</string>
-   </property>
-   <property name="toolTip">
-    <string>Save Custom Props</string>
-   </property>
-  </action>
-  <action name="actionLoad">
-   <property name="text">
-    <string>Load...</string>
-   </property>
-   <property name="iconText">
-    <string>Load</string>
-   </property>
-   <property name="toolTip">
-    <string>Load Button</string>
-   </property>
-  </action>
-  <action name="actionDebug">
-   <property name="text">
-    <string>Debug...</string>
-   </property>
-   <property name="toolTip">
-    <string>Debug</string>
-   </property>
-  </action>
  </widget>
  <resources/>
  <connections/>
