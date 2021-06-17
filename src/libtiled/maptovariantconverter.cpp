@@ -351,7 +351,7 @@ QVariant MapToVariantConverter::propertyTypesToVariant(const Properties &propert
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
         const auto exportValue = ExportValue::fromPropertyValue(it.value());
-        // TODO: Support custom types in json1? Maybe with a propertyCustomTypesToVariant...
+        // TODO: Support custom property types in json1? Maybe with a customPropertyTypesToVariant...
         variantMap[it.key()] = exportValue.typeName;
     }
 
@@ -760,7 +760,7 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
 
             propertiesMap[it.key()] = exportValue.value;
             propertyTypesMap[it.key()] = exportValue.typeName;
-            // TODO: Support custom types in json1? Maybe with a propertyCustomTypesMap...
+            // TODO: Support custom property types in json1? Maybe with a customPropertyTypesMap...
         }
 
         variantMap[QStringLiteral("properties")] = propertiesMap;
@@ -778,8 +778,8 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
             propertyVariantMap[QStringLiteral("value")] = exportValue.value;
             propertyVariantMap[QStringLiteral("type")] = exportValue.typeName;
 
-            if (!exportValue.customTypeName.isEmpty())
-                propertyVariantMap[QStringLiteral("customtype")] = exportValue.customTypeName;
+            if (!exportValue.propertyTypeName.isEmpty())
+                propertyVariantMap[QStringLiteral("propertytype")] = exportValue.propertyTypeName;
 
             propertiesVariantList << propertyVariantMap;
         }

@@ -2,7 +2,7 @@
     "automappingRulesFile": "",
     "commands": [
     ],
-    "customTypes": [
+    "propertyTypes": [
         {
             "color": "#a0a0a4",
             "id": 1,

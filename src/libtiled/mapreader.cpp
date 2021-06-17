@@ -1432,7 +1432,7 @@ void MapReaderPrivate::readProperty(Properties *properties)
 
     ExportValue exportValue;
     exportValue.typeName = atts.value(QLatin1String("type")).toString();
-    exportValue.customTypeName = atts.value(QLatin1String("customtype")).toString();
+    exportValue.propertyTypeName = atts.value(QLatin1String("propertytype")).toString();
 
     QString propertyValue = atts.value(QLatin1String("value")).toString();
 

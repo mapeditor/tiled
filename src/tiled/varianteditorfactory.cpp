@@ -128,9 +128,9 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
         QComboBox *editor = new QComboBox(parent);
         const CustomValue customValue = manager->value(property).value<CustomValue>();
 
-        for (const CustomType &customType : Object::customTypes()) {
-            if (customType.id == customValue.typeId)
-                editor->addItems(customType.values);
+        for (const PropertyType &propertyType : Object::propertyTypes()) {
+            if (propertyType.id == customValue.typeId)
+                editor->addItems(propertyType.values);
         }
 
         editor->setCurrentText(customValue.value.toString());

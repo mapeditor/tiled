@@ -920,8 +920,8 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
                                                                                               : mDir.path());
         if (exportValue.typeName != QLatin1String("string"))
             w.writeAttribute(QStringLiteral("type"), exportValue.typeName);
-        if (!exportValue.customTypeName.isEmpty())
-            w.writeAttribute(QStringLiteral("customtype"), exportValue.customTypeName);
+        if (!exportValue.propertyTypeName.isEmpty())
+            w.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
 
         QString value = exportValue.value.toString();
 

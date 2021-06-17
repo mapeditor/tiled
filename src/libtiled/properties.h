@@ -81,7 +81,7 @@ class TILEDSHARED_EXPORT ExportValue
 public:
     QVariant value;
     QString typeName;
-    QString customTypeName;
+    QString propertyTypeName;
 
     static ExportValue fromPropertyValue(const QVariant &value, const QString &path = QString());
     QVariant toPropertyValue(const QString &path = QString()) const;

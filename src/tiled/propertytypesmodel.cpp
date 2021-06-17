@@ -1,5 +1,5 @@
 /*
- * customtypesmodel.cpp
+ * propertytypesmodel.cpp
  * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,44 +18,44 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "customtypesmodel.h"
+#include "propertytypesmodel.h"
 
 using namespace Tiled;
 
-static bool customTypeLessThan(const CustomType &a, const CustomType &b)
+static bool propertyTypeLessThan(const PropertyType &a, const PropertyType &b)
 {
     return a.name.toLower() < b.name.toLower();
 }
 
-void CustomTypesModel::setCustomTypes(const CustomTypes &customTypes)
+void PropertyTypesModel::setPropertyTypes(const PropertyTypes &propertyTypes)
 {
     beginResetModel();
-    mCustomTypes = customTypes;
-    std::sort(mCustomTypes.begin(), mCustomTypes.end(), customTypeLessThan);
+    mPropertyTypes = propertyTypes;
+    std::sort(mPropertyTypes.begin(), mPropertyTypes.end(), propertyTypeLessThan);
     endResetModel();
 }
 
-CustomType CustomTypesModel::customTypeAt(const QModelIndex &index) const
+PropertyType PropertyTypesModel::propertyTypeAt(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return CustomType();
+        return PropertyType();
 
-    return mCustomTypes.at(index.row());
+    return mPropertyTypes.at(index.row());
 }
 
-int CustomTypesModel::rowCount(const QModelIndex &parent) const
+int PropertyTypesModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : mCustomTypes.size();
+    return parent.isValid() ? 0 : mPropertyTypes.size();
 }
 
-int CustomTypesModel::columnCount(const QModelIndex &parent) const
+int PropertyTypesModel::columnCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : 2;
 }
 
-QVariant CustomTypesModel::headerData(int section,
-                                      Qt::Orientation orientation,
-                                      int role) const
+QVariant PropertyTypesModel::headerData(int section,
+                                        Qt::Orientation orientation,
+                                        int role) const
 {
     if (orientation == Qt::Horizontal) {
         if (role == Qt::DisplayRole) {
@@ -73,51 +73,51 @@ QVariant CustomTypesModel::headerData(int section,
     return QVariant();
 }
 
-QVariant CustomTypesModel::data(const QModelIndex &index, int role) const
+QVariant PropertyTypesModel::data(const QModelIndex &index, int role) const
 {
     // QComboBox requests data for an invalid index when the model is empty
     if (!index.isValid())
         return QVariant();
 
-    const CustomType &customType = mCustomTypes.at(index.row());
+    const PropertyType &propertyType = mPropertyTypes.at(index.row());
 
     if (role == Qt::DisplayRole || role == Qt::EditRole)
         if (index.column() == 0)
-            return customType.name;
+            return propertyType.name;
 
     if (role == ColorRole && index.column() == 1)
-        return customType.color;
+        return propertyType.color;
 
     return QVariant();
 }
 
-bool CustomTypesModel::setData(const QModelIndex &index,
-                               const QVariant &value,
-                               int role)
+bool PropertyTypesModel::setData(const QModelIndex &index,
+                                 const QVariant &value,
+                                 int role)
 {
     if (role == Qt::EditRole && index.column() == 0) {
         const int oldRow = index.row();
 
-        CustomType customType = mCustomTypes.at(oldRow);
-        customType.name = value.toString().trimmed();
+        PropertyType propertyType = mPropertyTypes.at(oldRow);
+        propertyType.name = value.toString().trimmed();
 
-        auto nextCustomType = std::lower_bound(mCustomTypes.constBegin(),
-                                               mCustomTypes.constEnd(),
-                                               customType,
-                                               customTypeLessThan);
+        auto nextPropertyType = std::lower_bound(mPropertyTypes.constBegin(),
+                                                 mPropertyTypes.constEnd(),
+                                                 propertyType,
+                                                 propertyTypeLessThan);
 
-        const int newRow = nextCustomType - mCustomTypes.constBegin();
+        const int newRow = nextPropertyType - mPropertyTypes.constBegin();
         // QVector::move works differently from beginMoveRows
         const int moveToRow = newRow > oldRow ? newRow - 1 : newRow;
 
-        mCustomTypes[oldRow].name = customType.name;
+        mPropertyTypes[oldRow].name = propertyType.name;
         emit dataChanged(index, index);
 
         if (moveToRow != oldRow) {
             Q_ASSERT(newRow != oldRow);
             Q_ASSERT(newRow != oldRow + 1);
             beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);
-            mCustomTypes.move(oldRow, moveToRow);
+            mPropertyTypes.move(oldRow, moveToRow);
             endMoveRows();
         }
         return true;
@@ -125,7 +125,7 @@ bool CustomTypesModel::setData(const QModelIndex &index,
     return false;
 }
 
-Qt::ItemFlags CustomTypesModel::flags(const QModelIndex &index) const
+Qt::ItemFlags PropertyTypesModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags f = QAbstractTableModel::flags(index);
     if (index.column() == 0)
@@ -133,21 +133,21 @@ Qt::ItemFlags CustomTypesModel::flags(const QModelIndex &index) const
     return f;
 }
 
-void CustomTypesModel::setCustomTypeColor(int objectIndex, const QColor &color)
+void PropertyTypesModel::setPropertyTypeColor(int objectIndex, const QColor &color)
 {
-    mCustomTypes[objectIndex].color = color;
+    mPropertyTypes[objectIndex].color = color;
 
     const QModelIndex mi = index(objectIndex, 1);
     emit dataChanged(mi, mi);
 }
 
-void CustomTypesModel::setCustomTypeValues(int objectIndex,
-                                           const QStringList &values)
+void PropertyTypesModel::setPropertyTypeValues(int objectIndex,
+                                               const QStringList &values)
 {
-    mCustomTypes[objectIndex].values = values;
+    mPropertyTypes[objectIndex].values = values;
 }
 
-void CustomTypesModel::removeCustomTypes(const QModelIndexList &indexes)
+void PropertyTypesModel::removePropertyTypes(const QModelIndexList &indexes)
 {
     QVector<int> rows;
     for (const QModelIndex &index : indexes)
@@ -158,18 +158,18 @@ void CustomTypesModel::removeCustomTypes(const QModelIndexList &indexes)
     for (int i = rows.size() - 1; i >= 0; --i) {
         const int row = rows.at(i);
         beginRemoveRows(QModelIndex(), row, row);
-        mCustomTypes.remove(row);
+        mPropertyTypes.remove(row);
         endRemoveRows();
     }
 }
 
-QModelIndex CustomTypesModel::addNewCustomType()
+QModelIndex PropertyTypesModel::addNewPropertyType()
 {
     beginInsertRows(QModelIndex(), 0, 0);
 
-    CustomType customType;
-    customType.id = ++CustomType::nextId;
-    mCustomTypes.prepend(customType);
+    PropertyType propertyType;
+    propertyType.id = ++PropertyType::nextId;
+    mPropertyTypes.prepend(propertyType);
 
     endInsertRows();
     return index(0, 0);

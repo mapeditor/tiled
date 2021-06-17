@@ -28,9 +28,9 @@
 
 #pragma once
 
-#include "properties.h"
 #include "objecttypes.h"
-#include "customtype.h"
+#include "properties.h"
+#include "propertytype.h"
 
 namespace Tiled {
 
@@ -134,18 +134,18 @@ public:
     bool isPartOfTileset() const;
 
     static void setObjectTypes(const ObjectTypes &objectTypes);
-    static void setCustomTypes(const CustomTypes &customTypes);
+    static void setPropertyTypes(const PropertyTypes &propertyTypes);
     static const ObjectTypes &objectTypes()
     { return mObjectTypes; }
-    static const CustomTypes &customTypes()
-    { return mCustomTypes; }
+    static const PropertyTypes &propertyTypes()
+    { return mPropertyTypes; }
 
 private:
     const TypeId mTypeId;
     Properties mProperties;
 
     static ObjectTypes mObjectTypes;
-    static CustomTypes mCustomTypes;
+    static PropertyTypes mPropertyTypes;
 };
 
 

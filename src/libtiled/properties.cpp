@@ -28,8 +28,8 @@
 
 #include "properties.h"
 
-#include "customtype.h"
 #include "object.h"
+#include "propertytype.h"
 #include "tiled.h"
 
 #include <QColor>
@@ -74,7 +74,7 @@ QJsonArray propertiesToJson(const Properties &properties)
         propertyObject.insert(QLatin1String("name"), name);
         propertyObject.insert(QLatin1String("value"), QJsonValue::fromVariant(exportValue.value));
         propertyObject.insert(QLatin1String("type"), exportValue.typeName);
-        propertyObject.insert(QLatin1String("customtype"), exportValue.customTypeName);
+        propertyObject.insert(QLatin1String("propertytype"), exportValue.propertyTypeName);
 
         json.append(propertyObject);
     }
@@ -93,7 +93,7 @@ Properties propertiesFromJson(const QJsonArray &json)
         ExportValue exportValue;
         exportValue.value = propertyObject.value(QLatin1String("value")).toVariant();
         exportValue.typeName = propertyObject.value(QLatin1String("type")).toString();
-        exportValue.customTypeName = propertyObject.value(QLatin1String("customtype")).toString();
+        exportValue.propertyTypeName = propertyObject.value(QLatin1String("propertytype")).toString();
 
         properties.insert(name, exportValue.toPropertyValue());
     }
@@ -136,7 +136,7 @@ int objectRefTypeId()
 QString typeToName(int type)
 {
     // We can't handle the CustomValue purely by its type ID, since we need to
-    // know the name of the custom type.
+    // know the name of the custom property type.
     Q_ASSERT(type != customValueId());
 
     switch (type) {
@@ -177,9 +177,9 @@ QString typeName(const QVariant &value)
     if (value.userType() == customValueId()) {
         auto typeId = value.value<CustomValue>().typeId;
 
-        for (const CustomType &customType : Object::customTypes()) {
-            if (customType.id == typeId)
-                return customType.name;
+        for (const PropertyType &propertyType : Object::propertyTypes()) {
+            if (propertyType.id == typeId)
+                return propertyType.name;
         }
     }
 
@@ -188,9 +188,9 @@ QString typeName(const QVariant &value)
 
 QString CustomValue::typeName() const
 {
-    for (const CustomType &customType : Object::customTypes()) {
-        if (customType.id == typeId)
-            return customType.name;
+    for (const PropertyType &propertyType : Object::propertyTypes()) {
+        if (propertyType.id == typeId)
+            return propertyType.name;
     }
 
     return QString();
@@ -204,7 +204,7 @@ ExportValue ExportValue::fromPropertyValue(const QVariant &value, const QString 
     if (type == customValueId()) {
         const CustomValue customValue = value.value<CustomValue>();
         exportValue = fromPropertyValue(customValue.value, path);
-        exportValue.customTypeName = customValue.typeName();
+        exportValue.propertyTypeName = customValue.typeName();
         return exportValue; // early out, we don't want to assign metaTypeName again
     }
 
@@ -239,11 +239,11 @@ QVariant ExportValue::toPropertyValue(const QString &path) const
         propertyValue.convert(metaType);
     }
 
-    // Wrap the value in its custom type when applicable
-    if (!customTypeName.isEmpty()) {
-        for (const CustomType &customType : Object::customTypes()) {
-            if (customType.name == customTypeName) {
-                propertyValue = customType.wrap(value);
+    // Wrap the value in its custom property type when applicable
+    if (!propertyTypeName.isEmpty()) {
+        for (const PropertyType &propertyType : Object::propertyTypes()) {
+            if (propertyType.name == propertyTypeName) {
+                propertyValue = propertyType.wrap(value);
                 break;
             }
         }

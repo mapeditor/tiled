@@ -1,5 +1,5 @@
 /*
- * customtype.cpp
+ * propertytype.cpp
  * Copyright 2021, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
@@ -26,18 +26,18 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "customtype.h"
+#include "propertytype.h"
 
 namespace Tiled {
 
-int CustomType::nextId = 0;
+int PropertyType::nextId = 0;
 
-QVariant CustomType::wrap(QVariant value) const
+QVariant PropertyType::wrap(QVariant value) const
 {
     return QVariant::fromValue(CustomValue { value, id });
 }
 
-QVariant CustomType::defaultValue() const
+QVariant PropertyType::defaultValue() const
 {
     // todo: should depend on the valueType
 
@@ -47,7 +47,7 @@ QVariant CustomType::defaultValue() const
     return QString();
 }
 
-QVariantHash CustomType::toVariant() const
+QVariantHash PropertyType::toVariant() const
 {
     return {
         { QStringLiteral("id"), id },
@@ -57,19 +57,19 @@ QVariantHash CustomType::toVariant() const
     };
 }
 
-CustomType CustomType::fromVariant(const QVariant &variant)
+PropertyType PropertyType::fromVariant(const QVariant &variant)
 {
     const auto hash = variant.toHash();
 
-    CustomType customType;
-    customType.id = hash.value(QStringLiteral("id")).toInt();
-    customType.name = hash.value(QStringLiteral("name")).toString();
-    customType.values = hash.value(QStringLiteral("values")).toStringList();
-    customType.color = hash.value(QStringLiteral("color")).toString();
+    PropertyType propertyType;
+    propertyType.id = hash.value(QStringLiteral("id")).toInt();
+    propertyType.name = hash.value(QStringLiteral("name")).toString();
+    propertyType.values = hash.value(QStringLiteral("values")).toStringList();
+    propertyType.color = hash.value(QStringLiteral("color")).toString();
 
-    nextId = std::max(nextId, customType.id);
+    nextId = std::max(nextId, propertyType.id);
 
-    return customType;
+    return propertyType;
 }
 
 } // namespace Tiled

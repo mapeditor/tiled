@@ -75,12 +75,12 @@ bool Project::save(const QString &fileName)
     for (const Command &command : qAsConst(mCommands))
         commands.append(QJsonObject::fromVariantHash(command.toVariant()));
 
-    QJsonArray customTypes;
-    for (const CustomType &type : qAsConst(mCustomTypes))
-        customTypes.append(QJsonObject::fromVariantHash(type.toVariant()));
+    QJsonArray propertyTypes;
+    for (const PropertyType &type : qAsConst(mPropertyTypes))
+        propertyTypes.append(QJsonObject::fromVariantHash(type.toVariant()));
 
     const QJsonObject project {
-        { QStringLiteral("customTypes"), customTypes },
+        { QStringLiteral("propertyTypes"), propertyTypes },
         { QStringLiteral("folders"), folders },
         { QStringLiteral("extensionsPath"), relative(dir, extensionsPath) },
         { QStringLiteral("objectTypesFile"), dir.relativeFilePath(mObjectTypesFile) },
@@ -127,11 +127,11 @@ bool Project::load(const QString &fileName)
     mAutomappingRulesFile = absolute(dir, project.value(QLatin1String("automappingRulesFile")).toString());
 
 
-    mCustomTypes.clear();
-    const QJsonArray customTypes = project.value(QLatin1String("customTypes")).toArray();
-    for (const QJsonValue &typeValue : customTypes) {
-        CustomType customType = CustomType::fromVariant(typeValue.toVariant());
-        mCustomTypes.append(customType);
+    mPropertyTypes.clear();
+    const QJsonArray propertyTypes = project.value(QLatin1String("propertyTypes")).toArray();
+    for (const QJsonValue &typeValue : propertyTypes) {
+        PropertyType propertyType = PropertyType::fromVariant(typeValue.toVariant());
+        mPropertyTypes.append(propertyType);
     }
 
     mFolders.clear();
@@ -146,7 +146,7 @@ bool Project::load(const QString &fileName)
 
     //load actual new custom properties into the preferences
     Preferences *prefs = Preferences::instance();
-    prefs->setCustomTypes(mCustomTypes);
+    prefs->setPropertyTypes(mPropertyTypes);
 
     return true;
 }

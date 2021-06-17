@@ -1,7 +1,6 @@
 INCLUDEPATH += $$PWD
 
 SOURCES += $$PWD/compression.cpp \
-    $$PWD/customtype.cpp \
     $$PWD/filesystemwatcher.cpp \
     $$PWD/fileformat.cpp \
     $$PWD/gidmapper.cpp \
@@ -31,6 +30,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/plugin.cpp \
     $$PWD/pluginmanager.cpp \
     $$PWD/properties.cpp \
+    $$PWD/propertytype.cpp \
     $$PWD/savefile.cpp \
     $$PWD/staggeredrenderer.cpp \
     $$PWD/templatemanager.cpp \
@@ -46,7 +46,6 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/worldmanager.cpp
 HEADERS += $$PWD/compression.h \
     $$PWD/containerhelpers.h \
-    $$PWD/customtype.h \
     $$PWD/filesystemwatcher.h \
     $$PWD/fileformat.h \
     $$PWD/gidmapper.h \
@@ -77,6 +76,7 @@ HEADERS += $$PWD/compression.h \
     $$PWD/plugin.h \
     $$PWD/pluginmanager.h \
     $$PWD/properties.h \
+    $$PWD/propertytype.h \
     $$PWD/savefile.h \
     $$PWD/staggeredrenderer.h \
     $$PWD/templatemanager.h \

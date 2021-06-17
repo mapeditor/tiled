@@ -1,6 +1,6 @@
 /*
- * custompropseditor.h
- * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>>
+ * propertytypeseditor.h
+ * Copyright 2016-2021, Thorbjørn Lindeijer <bjorn@lindeijer.nl>>
  *
  * This file is part of Tiled.
  *
@@ -27,20 +27,20 @@
 class QStringListModel;
 
 namespace Ui {
-class CustomTypesEditor;
+class PropertyTypesEditor;
 }
 
 namespace Tiled {
 
-class CustomTypesModel;
+class PropertyTypesModel;
 
-class CustomTypesEditor : public QDialog
+class PropertyTypesEditor : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit CustomTypesEditor(QWidget *parent = nullptr);
-    ~CustomTypesEditor() override;
+    explicit PropertyTypesEditor(QWidget *parent = nullptr);
+    ~PropertyTypesEditor() override;
 
 signals:
     void closed();
@@ -50,12 +50,12 @@ protected:
     void changeEvent(QEvent *e) override;
 
 private:
-    void addCustomType();
-    void selectedCustomTypesChanged();
-    void removeSelectedCustomTypes();
-    void customTypeIndexClicked(const QModelIndex &index);
-    void applyCustomTypes();
-    void customTypesChanged();
+    void addPropertyType();
+    void selectedPropertyTypesChanged();
+    void removeSelectedPropertyTypes();
+    void propertyTypeIndexClicked(const QModelIndex &index);
+    void applyPropertyTypes();
+    void propertyTypesChanged();
 
     void updateValues();
     void updateActions();
@@ -63,7 +63,7 @@ private:
     void addValue();
     void removeValues();
 
-    void selectFirstCustomType();
+    void selectFirstPropertyType();
     void valuesChanged();
 
     void recalculateValues();
@@ -71,15 +71,15 @@ private:
 
     void createValue(int row, const QString &name);
 
-    Ui::CustomTypesEditor *mUi;
-    CustomTypesModel *mCustomTypesModel;
+    Ui::PropertyTypesEditor *mUi;
+    PropertyTypesModel *mPropertyTypesModel;
     QStringListModel *mDetailsModel;
 
-    bool mSettingPrefCustomTypes = false;
+    bool mSettingPrefPropertyTypes = false;
     bool mTouchingValues = false;
 
-    QAction *mAddCustomTypeAction;
-    QAction *mRemoveCustomTypeAction;
+    QAction *mAddPropertyTypeAction;
+    QAction *mRemovePropertyTypeAction;
 
     QAction *mAddValueAction;
     QAction *mRemoveValueAction;

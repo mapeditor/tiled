@@ -509,10 +509,10 @@ void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
     emit objectTypesChanged();
 }
 
-void Preferences::setCustomTypes(const CustomTypes &customTypes)
+void Preferences::setPropertyTypes(const PropertyTypes &propertyTypes)
 {
-    Object::setCustomTypes(customTypes);
-    emit customTypesChanged();
+    Object::setPropertyTypes(propertyTypes);
+    emit propertyTypesChanged();
 }
 
 QDate Preferences::firstRun() const

@@ -135,7 +135,7 @@ public:
     void setUseOpenGL(bool useOpenGL);
 
     void setObjectTypes(const ObjectTypes &objectTypes);
-    void setCustomTypes(const CustomTypes &customTypes);
+    void setPropertyTypes(const PropertyTypes &propertyTypes);
 
     QString objectTypesFile() const;
     void setObjectTypesFile(const QString &filePath);
@@ -237,7 +237,7 @@ signals:
 
     void objectTypesChanged();
 
-    void customTypesChanged();
+    void propertyTypesChanged();
 
     void isPatronChanged();
 

@@ -1,5 +1,5 @@
 /*
- * customtype.h
+ * propertytype.h
  * Copyright 2021, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
@@ -41,7 +41,7 @@ namespace Tiled {
 /**
  * Defines a custom property type.
  */
-class TILEDSHARED_EXPORT CustomType
+class TILEDSHARED_EXPORT PropertyType
 {
 public:
     int id = -1;
@@ -57,11 +57,11 @@ public:
     QVariant defaultValue() const;
 
     QVariantHash toVariant() const;
-    static CustomType fromVariant(const QVariant &variant);
+    static PropertyType fromVariant(const QVariant &variant);
 };
 
-typedef QVector<CustomType> CustomTypes;
+typedef QVector<PropertyType> PropertyTypes;
 
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::CustomType);
+Q_DECLARE_METATYPE(Tiled::PropertyType);

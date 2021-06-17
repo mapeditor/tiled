@@ -48,7 +48,7 @@ static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
     const QString NAME = QStringLiteral("name");
     const QString VALUE = QStringLiteral("value");
     const QString TYPE = QStringLiteral("type");
-    const QString CUSTOM_TYPE = QStringLiteral("customtype");
+    const QString PROPERTY_TYPE = QStringLiteral("propertytype");
     const QString COLOR = QStringLiteral("color");
     const QString PROPERTIES = QStringLiteral("properties");
 
@@ -71,8 +71,8 @@ static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
         propertyJson.insert(TYPE, exportValue.typeName);
         propertyJson.insert(VALUE, QJsonValue::fromVariant(exportValue.value));
 
-        if (!exportValue.customTypeName.isEmpty())
-            propertyJson.insert(CUSTOM_TYPE, exportValue.customTypeName);
+        if (!exportValue.propertyTypeName.isEmpty())
+            propertyJson.insert(PROPERTY_TYPE, exportValue.propertyTypeName);
 
         propertiesJson.append(propertyJson);
     }
@@ -106,7 +106,7 @@ static void fromJson(const QJsonObject &object, ObjectType &objectType, const QD
         ExportValue exportValue;
         exportValue.value = propertyObject.value(QLatin1String("value")).toVariant();
         exportValue.typeName = propertyObject.value(QLatin1String("type")).toString();
-        exportValue.customTypeName = propertyObject.value(QLatin1String("customtype")).toString();
+        exportValue.propertyTypeName = propertyObject.value(QLatin1String("propertytype")).toString();
 
         objectType.defaultProperties.insert(name,
                                             exportValue.toPropertyValue(fileDir.path()));
@@ -148,8 +148,8 @@ static void writeObjectTypesXml(QFileDevice *device,
             writer.writeAttribute(QStringLiteral("name"), it.key());
             writer.writeAttribute(QStringLiteral("type"), exportValue.typeName);
 
-            if (!exportValue.customTypeName.isEmpty())
-                writer.writeAttribute(QStringLiteral("customtype"), exportValue.customTypeName);
+            if (!exportValue.propertyTypeName.isEmpty())
+                writer.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
 
             if (!it.value().isNull()) {
                 const QString value = exportValue.value.toString();
@@ -178,7 +178,7 @@ static void readObjectTypePropertyXml(QXmlStreamReader &xml,
     ExportValue exportValue;
     exportValue.value = atts.value(QLatin1String("default")).toString();
     exportValue.typeName = atts.value(QLatin1String("type")).toString();
-    exportValue.customTypeName = atts.value(QLatin1String("customtype")).toString();
+    exportValue.propertyTypeName = atts.value(QLatin1String("propertytype")).toString();
 
     props.insert(name, exportValue.toPropertyValue(fileDir.path()));
 

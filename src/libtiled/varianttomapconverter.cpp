@@ -163,7 +163,7 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
         ExportValue exportValue;
         exportValue.value = it.value();
         exportValue.typeName = propertyTypesMap.value(it.key()).toString();
-        // TODO: Support for custom types with propertyCustomTypesMap
+        // TODO: Support for custom property types with customPropertyTypesMap
 
         properties[it.key()] = exportValue.toPropertyValue(mDir.path());
     }
@@ -176,7 +176,7 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
         ExportValue exportValue;
         exportValue.value = propertyVariantMap[QStringLiteral("value")];
         exportValue.typeName = propertyVariantMap[QStringLiteral("type")].toString();
-        exportValue.customTypeName = propertyVariantMap[QStringLiteral("customtype")].toString();
+        exportValue.propertyTypeName = propertyVariantMap[QStringLiteral("propertytype")].toString();
 
         properties[propertyName] = exportValue.toPropertyValue(mDir.path());
     }

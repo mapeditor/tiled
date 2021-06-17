@@ -58,9 +58,9 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->typeBox->addItem(typeToName(objectRefTypeId()),    QVariant::fromValue(ObjectRef()));
     mUi->typeBox->addItem(typeToName(QMetaType::QString),   QString());
 
-    for (const CustomType &customType : Object::customTypes()) {
-        QVariant var = QVariant::fromValue(CustomValue { customType.defaultValue(), customType.id });
-        mUi->typeBox->addItem(customType.name, var);
+    for (const PropertyType &propertyType : Object::propertyTypes()) {
+        QVariant var = QVariant::fromValue(CustomValue { propertyType.defaultValue(), propertyType.id });
+        mUi->typeBox->addItem(propertyType.name, var);
     }
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
