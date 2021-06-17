@@ -118,9 +118,9 @@ void aggregateProperties(AggregatedProperties &aggregated, const Properties &pro
     }
 }
 
-int customValueId()
+int propertyValueId()
 {
-    return qMetaTypeId<CustomValue>();
+    return qMetaTypeId<PropertyValue>();
 }
 
 int filePathTypeId()
@@ -135,9 +135,9 @@ int objectRefTypeId()
 
 QString typeToName(int type)
 {
-    // We can't handle the CustomValue purely by its type ID, since we need to
+    // We can't handle the PropertyValue purely by its type ID, since we need to
     // know the name of the custom property type.
-    Q_ASSERT(type != customValueId());
+    Q_ASSERT(type != propertyValueId());
 
     switch (type) {
     case QMetaType::QString:
@@ -174,8 +174,8 @@ static int nameToType(const QString &name)
 
 QString typeName(const QVariant &value)
 {
-    if (value.userType() == customValueId()) {
-        auto typeId = value.value<CustomValue>().typeId;
+    if (value.userType() == propertyValueId()) {
+        auto typeId = value.value<PropertyValue>().typeId;
 
         for (const PropertyType &propertyType : Object::propertyTypes()) {
             if (propertyType.id == typeId)
@@ -186,7 +186,7 @@ QString typeName(const QVariant &value)
     return typeToName(value.userType());
 }
 
-QString CustomValue::typeName() const
+QString PropertyValue::typeName() const
 {
     for (const PropertyType &propertyType : Object::propertyTypes()) {
         if (propertyType.id == typeId)
@@ -201,10 +201,10 @@ ExportValue ExportValue::fromPropertyValue(const QVariant &value, const QString 
     ExportValue exportValue;
     const int type = value.userType();
 
-    if (type == customValueId()) {
-        const CustomValue customValue = value.value<CustomValue>();
-        exportValue = fromPropertyValue(customValue.value, path);
-        exportValue.propertyTypeName = customValue.typeName();
+    if (type == propertyValueId()) {
+        const PropertyValue propertyValue = value.value<PropertyValue>();
+        exportValue = fromPropertyValue(propertyValue.value, path);
+        exportValue.propertyTypeName = propertyValue.typeName();
         return exportValue; // early out, we don't want to assign metaTypeName again
     }
 

@@ -34,7 +34,7 @@ int PropertyType::nextId = 0;
 
 QVariant PropertyType::wrap(QVariant value) const
 {
-    return QVariant::fromValue(CustomValue { value, id });
+    return QVariant::fromValue(PropertyValue { value, id });
 }
 
 QVariant PropertyType::defaultValue() const

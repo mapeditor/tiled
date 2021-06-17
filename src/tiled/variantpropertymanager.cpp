@@ -83,7 +83,7 @@ bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
             || propertyType == tilesetParametersTypeId()
             || propertyType == alignmentTypeId()
             || propertyType == unstyledGroupTypeId()
-            || propertyType == customValueId())
+            || propertyType == propertyValueId())
         return true;
     return QtVariantPropertyManager::isPropertyTypeSupported(propertyType);
 }
@@ -92,7 +92,7 @@ int VariantPropertyManager::valueType(int propertyType) const
 {
     if (propertyType == filePathTypeId())
         return propertyType;
-    if (propertyType == customValueId())
+    if (propertyType == propertyValueId())
         return propertyType;
     if (propertyType == displayObjectRefTypeId())
         return propertyType;
@@ -202,8 +202,8 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
             return tr("%1: Object not found").arg(QString::number(ref.id()));
         }
 
-        if (typeId == customValueId())
-            return value.value<CustomValue>().value.toString();
+        if (typeId == propertyValueId())
+            return value.value<PropertyValue>().value.toString();
 
         if (typeId == filePathTypeId()) {
             FilePath filePath = value.value<FilePath>();
@@ -247,7 +247,7 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
         int typeId = propertyType(property);
 
         // TODO: Support icons for enum values
-        if (typeId == customValueId())
+        if (typeId == propertyValueId())
             return QIcon();
 
         if (typeId == displayObjectRefTypeId()) {
@@ -362,7 +362,7 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
     if (type == filePathTypeId()
             || type == displayObjectRefTypeId()
             || type == tilesetParametersTypeId()
-            || type == customValueId()) {
+            || type == propertyValueId()) {
         mValues[property] = QVariant();
         if (type == filePathTypeId())
             mFilePathAttributes[property] = FilePathAttributes();

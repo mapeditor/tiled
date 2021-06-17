@@ -39,7 +39,7 @@ class QDir;
 
 namespace Tiled {
 
-class TILEDSHARED_EXPORT CustomValue
+class TILEDSHARED_EXPORT PropertyValue
 {
     Q_GADGET
     Q_PROPERTY(QVariant value MEMBER value)
@@ -142,7 +142,7 @@ TILEDSHARED_EXPORT void mergeProperties(Properties &target, const Properties &so
 TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties);
 TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json);
 
-TILEDSHARED_EXPORT int customValueId();
+TILEDSHARED_EXPORT int propertyValueId();
 TILEDSHARED_EXPORT int filePathTypeId();
 TILEDSHARED_EXPORT int objectRefTypeId();
 

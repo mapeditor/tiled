@@ -59,7 +59,7 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->typeBox->addItem(typeToName(QMetaType::QString),   QString());
 
     for (const PropertyType &propertyType : Object::propertyTypes()) {
-        QVariant var = QVariant::fromValue(CustomValue { propertyType.defaultValue(), propertyType.id });
+        QVariant var = QVariant::fromValue(PropertyValue { propertyType.defaultValue(), propertyType.id });
         mUi->typeBox->addItem(propertyType.name, var);
     }
 
