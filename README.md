@@ -75,7 +75,7 @@ Qt 6
 
 For compiling libtiledquick you'll need to install the Vulkan headers:
 
-* On Unbuntu/Debian: `sudo apt install libvulkan-dev`
+* On Ubuntu/Debian: `sudo apt install libvulkan-dev`
 
 ### Working with Visual Studio 2017
 
