@@ -139,6 +139,7 @@ public:
     { return mObjectTypes; }
     static const PropertyTypes &propertyTypes()
     { return mPropertyTypes; }
+    static const PropertyType *propertyType(int typeId);
 
 private:
     const TypeId mTypeId;

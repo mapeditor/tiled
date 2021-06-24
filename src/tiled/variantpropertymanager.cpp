@@ -82,8 +82,7 @@ bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
             || propertyType == displayObjectRefTypeId()
             || propertyType == tilesetParametersTypeId()
             || propertyType == alignmentTypeId()
-            || propertyType == unstyledGroupTypeId()
-            || propertyType == propertyValueId())
+            || propertyType == unstyledGroupTypeId())
         return true;
     return QtVariantPropertyManager::isPropertyTypeSupported(propertyType);
 }
@@ -91,8 +90,6 @@ bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
 int VariantPropertyManager::valueType(int propertyType) const
 {
     if (propertyType == filePathTypeId())
-        return propertyType;
-    if (propertyType == propertyValueId())
         return propertyType;
     if (propertyType == displayObjectRefTypeId())
         return propertyType;
@@ -202,9 +199,6 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
             return tr("%1: Object not found").arg(QString::number(ref.id()));
         }
 
-        if (typeId == propertyValueId())
-            return value.value<PropertyValue>().value.toString();
-
         if (typeId == filePathTypeId()) {
             FilePath filePath = value.value<FilePath>();
             QString fileName = filePath.url.fileName();
@@ -245,10 +239,6 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
     if (mValues.contains(property)) {
         QVariant value = mValues[property];
         int typeId = propertyType(property);
-
-        // TODO: Support icons for enum values
-        if (typeId == propertyValueId())
-            return QIcon();
 
         if (typeId == displayObjectRefTypeId()) {
             const DisplayObjectRef ref = value.value<DisplayObjectRef>();
@@ -361,8 +351,7 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
     const int type = propertyType(property);
     if (type == filePathTypeId()
             || type == displayObjectRefTypeId()
-            || type == tilesetParametersTypeId()
-            || type == propertyValueId()) {
+            || type == tilesetParametersTypeId()) {
         mValues[property] = QVariant();
         if (type == filePathTypeId())
             mFilePathAttributes[property] = FilePathAttributes();

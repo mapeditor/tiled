@@ -1,6 +1,6 @@
 /*
  * propertybrowser.h
- * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2013-2021, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -182,6 +182,8 @@ private:
     QtVariantProperty *createProperty(PropertyId id,
                                       int type,
                                       const QString &name);
+    QtVariantProperty *createCustomProperty(const QString &name,
+                                            const QVariant &value);
 
     using QtTreePropertyBrowser::addProperty;
     QtVariantProperty *addProperty(PropertyId id,
@@ -189,7 +191,7 @@ private:
                                    const QString &name,
                                    QtProperty *parent);
 
-    QtVariantProperty *createCustomProperty(const QString &name, const QVariant &value);
+    QtVariantProperty *addCustomProperty(const QString &name, const QVariant &value);
     void deleteCustomProperty(QtVariantProperty *property);
     void setCustomPropertyValue(QtVariantProperty *property, const QVariant &value);
 
@@ -199,8 +201,8 @@ private:
     void updateCustomProperties();
     void updateCustomPropertyColor(const QString &name);
 
-    QVariant toDisplayValue(const QVariant &value) const;
-    QVariant fromDisplayValue(const QVariant &value) const;
+    QVariant toDisplayValue(QVariant value) const;
+    QVariant fromDisplayValue(QtProperty *property, QVariant value) const;
 
     void retranslateUi();
 
@@ -216,6 +218,7 @@ private:
     QtProperty *mCustomPropertiesGroup;
 
     QHash<QtProperty *, PropertyId> mPropertyToId;
+    QHash<QtProperty *, int> mPropertyToPropertyTypeId;
     QHash<PropertyId, QtVariantProperty *> mIdToProperty;
     QHash<QString, QtVariantProperty *> mNameToProperty;
 

@@ -2,6 +2,12 @@
     "automappingRulesFile": "",
     "commands": [
     ],
+    "extensionsPath": "extensions",
+    "folders": [
+        ".",
+        "../tests"
+    ],
+    "objectTypesFile": "objecttypes.xml",
     "propertyTypes": [
         {
             "color": "#a0a0a4",
@@ -32,11 +38,5 @@
                 "Locked"
             ]
         }
-    ],
-    "extensionsPath": "extensions",
-    "folders": [
-        ".",
-        "../tests"
-    ],
-    "objectTypesFile": "objecttypes.xml"
+    ]
 }

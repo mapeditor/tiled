@@ -32,19 +32,34 @@ namespace Tiled {
 
 int PropertyType::nextId = 0;
 
-QVariant PropertyType::wrap(QVariant value) const
+QVariant PropertyType::wrap(const QVariant &value) const
 {
+    // Convert enum values stored as string, if possible
+    if (value.userType() == QMetaType::QString) {
+        const int index = values.indexOf(value.toString());
+        if (index != -1)
+            return QVariant::fromValue(PropertyValue { index, id });
+    }
+
     return QVariant::fromValue(PropertyValue { value, id });
+}
+
+QVariant PropertyType::unwrap(const QVariant &value) const
+{
+    // Convert enum values to their string (todo: should be optional)
+    if (value.userType() == QMetaType::Int) {
+        const int index = value.toInt();
+        if (index >= 0 && index < values.size())
+            return values.at(index);
+    }
+
+    return value;
 }
 
 QVariant PropertyType::defaultValue() const
 {
     // todo: should depend on the valueType
-
-    if (!values.isEmpty())
-        return values.first();
-
-    return QString();
+    return 0;
 }
 
 QVariantHash PropertyType::toVariant() const

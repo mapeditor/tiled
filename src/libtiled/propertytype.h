@@ -49,11 +49,13 @@ public:
     QColor color = Qt::gray;
     QStringList values;
 
-    int valueType = QMetaType::QString;
+    int valueType = QMetaType::Int;
 
     static int nextId;
 
-    QVariant wrap(QVariant value) const;
+    QVariant wrap(const QVariant &value) const;
+    QVariant unwrap(const QVariant &value) const;
+
     QVariant defaultValue() const;
 
     QVariantHash toVariant() const;

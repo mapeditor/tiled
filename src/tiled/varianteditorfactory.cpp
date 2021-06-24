@@ -29,7 +29,6 @@
 #include "utils.h"
 #include "variantpropertymanager.h"
 
-#include <QDebug>
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QToolButton>
@@ -118,28 +117,6 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
 
         connect(editor, &FileEdit::fileUrlChanged,
                 this, &VariantEditorFactory::fileEditFileUrlChanged);
-        connect(editor, &QObject::destroyed,
-                this, &VariantEditorFactory::slotEditorDestroyed);
-
-        return editor;
-    }
-
-    if (type == propertyValueId()) {
-        QComboBox *editor = new QComboBox(parent);
-        const PropertyValue propertyValue = manager->value(property).value<PropertyValue>();
-
-        for (const PropertyType &propertyType : Object::propertyTypes()) {
-            if (propertyType.id == propertyValue.typeId)
-                editor->addItems(propertyType.values);
-        }
-
-        editor->setCurrentText(propertyValue.value.toString());
-
-        mCreatedEnumProps[property].append(editor);
-        mEnumPropToProperty[editor]= property;
-
-        connect(editor, &QComboBox::currentTextChanged,
-                this, &VariantEditorFactory::enumPropEditTextChanged);
         connect(editor, &QObject::destroyed,
                 this, &VariantEditorFactory::slotEditorDestroyed);
 
@@ -308,21 +285,6 @@ void VariantEditorFactory::textPropertyEditTextChanged(const QString &value)
         if (!manager)
             return;
         manager->setValue(property, value);
-    }
-}
-
-void VariantEditorFactory::enumPropEditTextChanged(const QString &value)
-{
-    auto comboBox = qobject_cast<QComboBox*>(sender());
-    Q_ASSERT(comboBox);
-
-    if (QtProperty *property = mEnumPropToProperty.value(comboBox)) {
-        QtVariantPropertyManager *manager = propertyManager(property);
-        if (!manager)
-            return;
-        PropertyValue propertyValue = manager->value(property).value<PropertyValue>();
-        propertyValue.value = value;
-        manager->setValue(property, QVariant::fromValue(propertyValue));
     }
 }
 

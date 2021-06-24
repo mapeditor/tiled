@@ -186,13 +186,15 @@ QString typeName(const QVariant &value)
     return typeToName(value.userType());
 }
 
+const PropertyType *PropertyValue::type() const
+{
+    return Object::propertyType(typeId);
+}
+
 QString PropertyValue::typeName() const
 {
-    for (const PropertyType &propertyType : Object::propertyTypes()) {
-        if (propertyType.id == typeId)
-            return propertyType.name;
-    }
-
+    if (auto t = Object::propertyType(typeId))
+        return t->name;
     return QString();
 }
 
@@ -203,9 +205,16 @@ ExportValue ExportValue::fromPropertyValue(const QVariant &value, const QString 
 
     if (type == propertyValueId()) {
         const PropertyValue propertyValue = value.value<PropertyValue>();
-        exportValue = fromPropertyValue(propertyValue.value, path);
-        exportValue.propertyTypeName = propertyValue.typeName();
-        return exportValue; // early out, we don't want to assign metaTypeName again
+
+        if (const PropertyType *propertyType = propertyValue.type()) {
+            exportValue = fromPropertyValue(propertyType->unwrap(propertyValue.value), path);
+            exportValue.propertyTypeName = propertyType->name;
+        } else {
+            // the type may have been deleted
+            exportValue = fromPropertyValue(propertyValue.value, path);
+        }
+
+        return exportValue; // early out, we don't want to assign typeName again
     }
 
     if (type == QMetaType::QColor) {
@@ -243,7 +252,7 @@ QVariant ExportValue::toPropertyValue(const QString &path) const
     if (!propertyTypeName.isEmpty()) {
         for (const PropertyType &propertyType : Object::propertyTypes()) {
             if (propertyType.name == propertyTypeName) {
-                propertyValue = propertyType.wrap(value);
+                propertyValue = propertyType.wrap(propertyValue);
                 break;
             }
         }

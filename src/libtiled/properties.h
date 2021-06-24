@@ -39,6 +39,8 @@ class QDir;
 
 namespace Tiled {
 
+class PropertyType;
+
 class TILEDSHARED_EXPORT PropertyValue
 {
     Q_GADGET
@@ -49,6 +51,7 @@ public:
     QVariant value;
     int typeId;
 
+    const PropertyType *type() const;
     QString typeName() const;
 };
 
