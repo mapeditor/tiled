@@ -117,6 +117,7 @@ SOURCES += aboutdialog.cpp \
     createtemplatetool.cpp \
     createtextobjecttool.cpp \
     createtileobjecttool.cpp \
+    custompropertieshelper.cpp \
     debugdrawitem.cpp \
     document.cpp \
     documentmanager.cpp \
@@ -356,6 +357,7 @@ HEADERS += aboutdialog.h \
     createtemplatetool.h \
     createtextobjecttool.h \
     createtileobjecttool.h \
+    custompropertieshelper.h \
     debugdrawitem.h \
     document.h \
     documentmanager.h \

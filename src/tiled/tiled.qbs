@@ -205,6 +205,8 @@ QtGuiApplication {
         "createtextobjecttool.h",
         "createtileobjecttool.cpp",
         "createtileobjecttool.h",
+        "custompropertieshelper.cpp",
+        "custompropertieshelper.h",
         "debugdrawitem.cpp",
         "debugdrawitem.h",
         "document.cpp",

@@ -44,7 +44,7 @@ namespace Tiled {
 class TILEDSHARED_EXPORT PropertyType
 {
 public:
-    int id = -1;
+    int id = 0;
     QString name;
     QColor color = Qt::gray;
     QStringList values;

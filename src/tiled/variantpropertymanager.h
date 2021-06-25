@@ -53,8 +53,8 @@ public:
 class UnstyledGroup {};
 
 /**
- * Extension of the QtVariantPropertyManager that adds support for a filePath
- * data type.
+ * Extension of the QtVariantPropertyManager that adds support for various
+ * additional types and attributes.
  */
 class VariantPropertyManager : public QtVariantPropertyManager
 {

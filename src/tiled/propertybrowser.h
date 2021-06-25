@@ -21,6 +21,7 @@
 #pragma once
 
 #include "changeevents.h"
+#include "custompropertieshelper.h"
 #include "map.h"
 #include "properties.h"
 
@@ -140,7 +141,6 @@ private:
         ColorCountProperty,
         WangColorProbabilityProperty,
         WangSetTypeProperty,
-        CustomProperty,
         InfiniteProperty,
         TemplateProperty,
         CompressionLevelProperty,
@@ -218,9 +218,8 @@ private:
     QtProperty *mCustomPropertiesGroup;
 
     QHash<QtProperty *, PropertyId> mPropertyToId;
-    QHash<QtProperty *, int> mPropertyToPropertyTypeId;
     QHash<PropertyId, QtVariantProperty *> mIdToProperty;
-    QHash<QString, QtVariantProperty *> mNameToProperty;
+    CustomPropertiesHelper mCustomPropertiesHelper;
 
     Properties mCombinedProperties;
 
