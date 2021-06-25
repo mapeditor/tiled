@@ -372,48 +372,6 @@ void PropertyBrowser::wangSetChanged(Tileset *tileset, int index)
         updateProperties();
 }
 
-static QVariant predefinedPropertyValue(Object *object, const QString &name)
-{
-    QString objectType;
-
-    switch (object->typeId()) {
-    case Object::TileType:
-        objectType = static_cast<Tile*>(object)->type();
-        break;
-    case Object::MapObjectType: {
-        auto mapObject = static_cast<MapObject*>(object);
-        objectType = mapObject->type();
-
-        if (Tile *tile = mapObject->cell().tile()) {
-            if (tile->hasProperty(name))
-                return tile->property(name);
-
-            if (objectType.isEmpty())
-                objectType = tile->type();
-        }
-        break;
-    }
-    case Object::LayerType:
-    case Object::MapType:
-    case Object::TilesetType:
-    case Object::WangSetType:
-    case Object::WangColorType:
-    case Object::ObjectTemplateType:
-        break;
-    }
-
-    if (objectType.isEmpty())
-        return QVariant();
-
-    for (const ObjectType &type : Object::objectTypes()) {
-        if (type.name == objectType)
-            if (type.defaultProperties.contains(name))
-                return type.defaultProperties.value(name);
-    }
-
-    return QVariant();
-}
-
 static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &name)
 {
     for (Object *obj : objects) {
@@ -467,12 +425,7 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
         if (propertyValueAffected(mObject, object, name))
             setCustomPropertyValue(property, object->property(name));
     } else {
-        QVariant value;
-        if (mObject->hasProperty(name))
-            value = mObject->property(name);
-        else
-            value = predefinedPropertyValue(mObject, name);
-
+        const QVariant value = mObject->resolvedProperty(name);
         addCustomProperty(name, value);
     }
     updateCustomPropertyColor(name);
@@ -486,9 +439,9 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
     if (!objectPropertiesRelevant(mDocument, object))
         return;
 
-    QVariant predefinedValue = predefinedPropertyValue(mObject, name);
+    const QVariant resolvedValue = mObject->resolvedProperty(name);
 
-    if (!predefinedValue.isValid() &&
+    if (!resolvedValue.isValid() &&
             !anyObjectHasProperty(mDocument->currentObjects(), name)) {
         // It's not a predefined property and no selected object has this
         // property, so delete it.
@@ -513,7 +466,7 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
 
     if (propertyValueAffected(mObject, object, name)) {
         // Property deleted from the current object, so reset the value.
-        setCustomPropertyValue(property, predefinedValue);
+        setCustomPropertyValue(property, resolvedValue);
     }
 
     updateCustomPropertyColor(name);
