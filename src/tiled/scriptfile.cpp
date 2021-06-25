@@ -352,7 +352,11 @@ static bool copyRecursively(const QString &srcFilePath,
         return false;
     }
 #ifdef Q_OS_UNIX
+#if QT_VERSION < QT_VERSION_CHECK(5,14,0)
+    if (srcFileInfo.isSymLink()) {
+#else
     if (srcFileInfo.isSymbolicLink()) {
+#endif
         // For now, disable symlink preserving copying on Windows.
         // MS did a good job to prevent people from using symlinks - even if they are supported.
         if (!createSymLink(storedLinkTarget(srcFilePath), tgtFilePath)) {
