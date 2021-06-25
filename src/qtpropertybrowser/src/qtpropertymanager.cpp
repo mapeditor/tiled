@@ -5016,8 +5016,7 @@ void QtEnumPropertyManager::setValue(QtProperty *property, int val)
 
 /*!
     Sets the given \a property's list of enum names to \a
-    enumNames. The \a property's current value is reset to 0
-    indicating the first item of the list.
+    enumNames. The \a property's current value is bound to a valid index.
 
     If the specified \a enumNames list is empty, the \a property's
     current value is set to -1.
@@ -5036,11 +5035,7 @@ void QtEnumPropertyManager::setEnumNames(QtProperty *property, const QStringList
         return;
 
     data.enumNames = enumNames;
-
-    data.val = -1;
-
-    if (enumNames.count() > 0)
-        data.val = 0;
+    data.val = qBound(-1, data.val, enumNames.count() - 1);
 
     it.value() = data;
 
