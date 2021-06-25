@@ -21,10 +21,20 @@
 #include "custompropertieshelper.h"
 
 #include "object.h"
+#include "preferences.h"
 #include "propertytype.h"
 #include "variantpropertymanager.h"
 
 namespace Tiled {
+
+CustomPropertiesHelper::CustomPropertiesHelper(QtVariantPropertyManager *propertyManager,
+                                               QObject *parent)
+    : QObject(parent)
+    , mPropertyManager(propertyManager)
+{
+    connect(Preferences::instance(), &Preferences::propertyTypesChanged,
+            this, &CustomPropertiesHelper::propertyTypesChanged);
+}
 
 QtVariantProperty *CustomPropertiesHelper::createProperty(const QString &name,
                                                           const QVariant &value)
@@ -62,9 +72,7 @@ QtVariantProperty *CustomPropertiesHelper::createProperty(const QString &name,
 
     if (propertyType) {
         mPropertyTypeIds.insert(property, propertyType->id);
-
-        // TODO: Support icons for enum values
-        property->setAttribute(QLatin1String("enumNames"), propertyType->values);
+        setPropertyAttributes(property, *propertyType);
     } else {
         mPropertyTypeIds.insert(property, 0);
     }
@@ -100,7 +108,7 @@ QVariant CustomPropertiesHelper::toDisplayValue(QVariant value) const
     return value;
 }
 
-QVariant CustomPropertiesHelper::fromDisplayValue(const QtProperty *property,
+QVariant CustomPropertiesHelper::fromDisplayValue(QtProperty *property,
                                                   QVariant value) const
 {
     if (value.userType() == VariantPropertyManager::displayObjectRefTypeId())
@@ -113,4 +121,25 @@ QVariant CustomPropertiesHelper::fromDisplayValue(const QtProperty *property,
     return value;
 }
 
+void CustomPropertiesHelper::propertyTypesChanged()
+{
+    for (const auto &type : Object::propertyTypes()) {
+        QHashIterator<QtProperty *, int> it(mPropertyTypeIds);
+        while (it.hasNext()) {
+            it.next();
+
+            if (it.value() == type.id)
+                setPropertyAttributes(it.key(), type);
+        }
+    }
+}
+
+void CustomPropertiesHelper::setPropertyAttributes(QtProperty *property, const PropertyType &propertyType)
+{
+    // TODO: Support icons for enum values
+    mPropertyManager->setAttribute(property, QStringLiteral("enumNames"), propertyType.values);
+}
+
 } // namespace Tiled
+
+#include "moc_custompropertieshelper.cpp"

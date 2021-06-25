@@ -30,35 +30,38 @@ class QtVariantPropertyManager;
 namespace Tiled {
 
 class MapDocument;
+class PropertyType;
 
-class CustomPropertiesHelper
+class CustomPropertiesHelper : public QObject
 {
+    Q_OBJECT
+
 public:
-    CustomPropertiesHelper(QtVariantPropertyManager *propertyManager);
+    CustomPropertiesHelper(QtVariantPropertyManager *propertyManager,
+                           QObject *parent = nullptr);
 
     QtVariantProperty *createProperty(const QString &name, const QVariant &value);
     void deleteProperty(QtProperty *property);
     void clear();
-    bool hasProperty(const QtProperty *property) const;
+    bool hasProperty(QtProperty *property) const;
     QtVariantProperty *property(const QString &name);
 
     QVariant toDisplayValue(QVariant value) const;
-    QVariant fromDisplayValue(const QtProperty *property, QVariant value) const;
+    QVariant fromDisplayValue(QtProperty *property, QVariant value) const;
 
     void setMapDocument(MapDocument *mapDocument);
 
 private:
+    void propertyTypesChanged();
+    void setPropertyAttributes(QtProperty *property, const PropertyType &propertyType);
+
     QtVariantPropertyManager *mPropertyManager;
     MapDocument *mMapDocument = nullptr;
     QHash<QString, QtVariantProperty *> mProperties;
-    QHash<const QtProperty *, int> mPropertyTypeIds;
+    QHash<QtProperty *, int> mPropertyTypeIds;
 };
 
-inline CustomPropertiesHelper::CustomPropertiesHelper(QtVariantPropertyManager *propertyManager)
-    : mPropertyManager(propertyManager)
-{}
-
-inline bool CustomPropertiesHelper::hasProperty(const QtProperty *property) const
+inline bool CustomPropertiesHelper::hasProperty(QtProperty *property) const
 {
     return mPropertyTypeIds.contains(property);
 }
