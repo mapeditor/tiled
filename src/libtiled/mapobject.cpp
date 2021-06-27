@@ -428,6 +428,9 @@ void MapObject::syncWithTemplate()
 
     if (!propertyChanged(MapObject::VisibleProperty))
         setVisible(base->isVisible());
+
+    // maybe component properties can be detachable (long future)
+    mergeComponents(base->components());
 }
 
 void MapObject::detachFromTemplate()
