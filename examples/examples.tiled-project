@@ -10,7 +10,6 @@
     "objectTypesFile": "objecttypes.xml",
     "propertyTypes": [
         {
-            "color": "#a0a0a4",
             "id": 1,
             "name": "BodyType",
             "values": [
@@ -19,7 +18,6 @@
             ]
         },
         {
-            "color": "#a0a0a4",
             "id": 2,
             "name": "EnemyType",
             "values": [
@@ -29,7 +27,6 @@
             ]
         },
         {
-            "color": "#a0a0a4",
             "id": 3,
             "name": "State",
             "values": [

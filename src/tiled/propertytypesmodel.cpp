@@ -20,11 +20,13 @@
 
 #include "propertytypesmodel.h"
 
+#include "containerhelpers.h"
+
 using namespace Tiled;
 
 static bool propertyTypeLessThan(const PropertyType &a, const PropertyType &b)
 {
-    return a.name.toLower() < b.name.toLower();
+    return QString::localeAwareCompare(a.name, b.name) < 0;
 }
 
 void PropertyTypesModel::setPropertyTypes(const PropertyTypes &propertyTypes)
@@ -48,31 +50,6 @@ int PropertyTypesModel::rowCount(const QModelIndex &parent) const
     return parent.isValid() ? 0 : mPropertyTypes.size();
 }
 
-int PropertyTypesModel::columnCount(const QModelIndex &parent) const
-{
-    return parent.isValid() ? 0 : 2;
-}
-
-QVariant PropertyTypesModel::headerData(int section,
-                                        Qt::Orientation orientation,
-                                        int role) const
-{
-    if (orientation == Qt::Horizontal) {
-        if (role == Qt::DisplayRole) {
-            switch (section) {
-            case 0:
-                return tr("Type");
-            case 1:
-                return tr("Color");
-            }
-        } else if (role == Qt::TextAlignmentRole) {
-            return Qt::AlignLeft;
-        }
-    }
-
-    return QVariant();
-}
-
 QVariant PropertyTypesModel::data(const QModelIndex &index, int role) const
 {
     // QComboBox requests data for an invalid index when the model is empty
@@ -85,9 +62,6 @@ QVariant PropertyTypesModel::data(const QModelIndex &index, int role) const
         if (index.column() == 0)
             return propertyType.name;
 
-    if (role == ColorRole && index.column() == 1)
-        return propertyType.color;
-
     return QVariant();
 }
 
@@ -96,30 +70,7 @@ bool PropertyTypesModel::setData(const QModelIndex &index,
                                  int role)
 {
     if (role == Qt::EditRole && index.column() == 0) {
-        const int oldRow = index.row();
-
-        PropertyType propertyType = mPropertyTypes.at(oldRow);
-        propertyType.name = value.toString().trimmed();
-
-        auto nextPropertyType = std::lower_bound(mPropertyTypes.constBegin(),
-                                                 mPropertyTypes.constEnd(),
-                                                 propertyType,
-                                                 propertyTypeLessThan);
-
-        const int newRow = nextPropertyType - mPropertyTypes.constBegin();
-        // QVector::move works differently from beginMoveRows
-        const int moveToRow = newRow > oldRow ? newRow - 1 : newRow;
-
-        mPropertyTypes[oldRow].name = propertyType.name;
-        emit dataChanged(index, index);
-
-        if (moveToRow != oldRow) {
-            Q_ASSERT(newRow != oldRow);
-            Q_ASSERT(newRow != oldRow + 1);
-            beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);
-            mPropertyTypes.move(oldRow, moveToRow);
-            endMoveRows();
-        }
+        setPropertyTypeName(index.row(), value.toString());
         return true;
     }
     return false;
@@ -127,24 +78,44 @@ bool PropertyTypesModel::setData(const QModelIndex &index,
 
 Qt::ItemFlags PropertyTypesModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags f = QAbstractTableModel::flags(index);
+    Qt::ItemFlags f = QAbstractListModel::flags(index);
     if (index.column() == 0)
         f |= Qt::ItemIsEditable;
     return f;
 }
 
-void PropertyTypesModel::setPropertyTypeColor(int objectIndex, const QColor &color)
+void PropertyTypesModel::setPropertyTypeName(int row, const QString &name)
 {
-    mPropertyTypes[objectIndex].color = color;
+    PropertyType propertyType = mPropertyTypes.at(row);
+    propertyType.name = name.trimmed();
 
-    const QModelIndex mi = index(objectIndex, 1);
-    emit dataChanged(mi, mi);
+    auto nextPropertyType = std::lower_bound(mPropertyTypes.constBegin(),
+                                             mPropertyTypes.constEnd(),
+                                             propertyType,
+                                             propertyTypeLessThan);
+
+    const int newRow = nextPropertyType - mPropertyTypes.constBegin();
+    // QVector::move works differently from beginMoveRows
+    const int moveToRow = newRow > row ? newRow - 1 : newRow;
+
+    mPropertyTypes[row].name = propertyType.name;
+    const auto index = this->index(row);
+    emit nameChanged(index, mPropertyTypes[row]);
+    emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
+
+    if (moveToRow != row) {
+        Q_ASSERT(newRow != row);
+        Q_ASSERT(newRow != row + 1);
+        beginMoveRows(QModelIndex(), row, row, QModelIndex(), newRow);
+        mPropertyTypes.move(row, moveToRow);
+        endMoveRows();
+    }
 }
 
-void PropertyTypesModel::setPropertyTypeValues(int objectIndex,
+void PropertyTypesModel::setPropertyTypeValues(int index,
                                                const QStringList &values)
 {
-    mPropertyTypes[objectIndex].values = values;
+    mPropertyTypes[index].values = values;
 }
 
 void PropertyTypesModel::removePropertyTypes(const QModelIndexList &indexes)
@@ -165,12 +136,29 @@ void PropertyTypesModel::removePropertyTypes(const QModelIndexList &indexes)
 
 QModelIndex PropertyTypesModel::addNewPropertyType()
 {
-    beginInsertRows(QModelIndex(), 0, 0);
+    const int row = mPropertyTypes.size();
+    beginInsertRows(QModelIndex(), row, row);
 
     PropertyType propertyType;
     propertyType.id = ++PropertyType::nextId;
-    mPropertyTypes.prepend(propertyType);
+    propertyType.name = nextPropertyTypeName();
+    mPropertyTypes.append(propertyType);
 
     endInsertRows();
-    return index(0, 0);
+    return index(row, 0);
+}
+
+QString PropertyTypesModel::nextPropertyTypeName() const
+{
+    const auto baseText = tr("Enum");
+
+    // Search for a unique value, starting from the current count
+    int number = mPropertyTypes.count();
+    QString name;
+    do {
+        name = baseText + QString::number(number++);
+    } while (contains_where(mPropertyTypes,
+                            [&] (const PropertyType &type) { return type.name == name; }));
+
+    return name;
 }

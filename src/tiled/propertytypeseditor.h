@@ -53,7 +53,10 @@ private:
     void addPropertyType();
     void selectedPropertyTypesChanged();
     void removeSelectedPropertyTypes();
-    void propertyTypeIndexClicked(const QModelIndex &index);
+    QModelIndex selectedPropertyTypeIndex() const;
+
+    void propertyTypeNameChanged(const QModelIndex &index,
+                                 const PropertyType &type);
     void applyPropertyTypes();
     void propertyTypesChanged();
 
@@ -65,18 +68,17 @@ private:
 
     void selectFirstPropertyType();
     void valuesChanged();
+    void nameChanged(const QString &name);
 
-    void recalculateValues();
     void retranslateUi();
-
-    void createValue(int row, const QString &name);
 
     Ui::PropertyTypesEditor *mUi;
     PropertyTypesModel *mPropertyTypesModel;
-    QStringListModel *mDetailsModel;
+    QStringListModel *mValuesModel;
 
     bool mSettingPrefPropertyTypes = false;
-    bool mTouchingValues = false;
+    bool mSettingName = false;
+    bool mUpdatingValues = false;
 
     QAction *mAddPropertyTypeAction;
     QAction *mRemovePropertyTypeAction;

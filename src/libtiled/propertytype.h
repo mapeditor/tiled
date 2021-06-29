@@ -39,17 +39,14 @@
 namespace Tiled {
 
 /**
- * Defines a custom property type.
+ * Defines a custom property type. Currently this includes only enums.
  */
 class TILEDSHARED_EXPORT PropertyType
 {
 public:
     int id = 0;
     QString name;
-    QColor color = Qt::gray;
     QStringList values;
-
-    int valueType = QMetaType::Int;
 
     static int nextId;
 

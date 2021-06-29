@@ -68,7 +68,6 @@ QVariantHash PropertyType::toVariant() const
         { QStringLiteral("id"), id },
         { QStringLiteral("name"), name },
         { QStringLiteral("values"), values },
-        { QStringLiteral("color"), color },
     };
 }
 
@@ -80,7 +79,6 @@ PropertyType PropertyType::fromVariant(const QVariant &variant)
     propertyType.id = hash.value(QStringLiteral("id")).toInt();
     propertyType.name = hash.value(QStringLiteral("name")).toString();
     propertyType.values = hash.value(QStringLiteral("values")).toStringList();
-    propertyType.color = hash.value(QStringLiteral("color")).toString();
 
     nextId = std::max(nextId, propertyType.id);
 

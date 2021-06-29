@@ -20,24 +20,22 @@
 
 #pragma once
 
-#include <QStringList>
-
-#include "propertytype.h"
-#include "properties.h"
 #include "object.h"
-#include <QAbstractTableModel>
+#include "properties.h"
+#include "propertytype.h"
+
+#include <QAbstractListModel>
+#include <QStringList>
 
 namespace Tiled {
 
-class PropertyTypesModel : public QAbstractTableModel
+class PropertyTypesModel : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
-    enum { ColorRole = Qt::UserRole };
-
     PropertyTypesModel(QObject *parent = nullptr)
-        : QAbstractTableModel(parent)
+        : QAbstractListModel(parent)
     {
     }
 
@@ -47,23 +45,24 @@ public:
     PropertyType propertyTypeAt(const QModelIndex &index) const;
 
     int rowCount(const QModelIndex &parent) const override;
-    int columnCount(const QModelIndex &parent) const override;
-
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role) const override;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    void setPropertyTypeColor(int objectIndex, const QColor &color);
-    void setPropertyTypeValues(int objectIndex, const QStringList &values);
+    void setPropertyTypeName(int row, const QString &name);
+    void setPropertyTypeValues(int index, const QStringList &values);
     void removePropertyTypes(const QModelIndexList &indexes);
+
+signals:
+    void nameChanged(const QModelIndex &index, const PropertyType &type);
 
 public slots:
     QModelIndex addNewPropertyType();
 
 private:
+    QString nextPropertyTypeName() const;
+
     PropertyTypes mPropertyTypes;
 };
 
