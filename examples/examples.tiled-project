@@ -7,5 +7,33 @@
         ".",
         "../tests"
     ],
-    "objectTypesFile": "objecttypes.xml"
+    "objectTypesFile": "objecttypes.xml",
+    "propertyTypes": [
+        {
+            "id": 1,
+            "name": "BodyType",
+            "values": [
+                "Static",
+                "Dynamic"
+            ]
+        },
+        {
+            "id": 2,
+            "name": "EnemyType",
+            "values": [
+                "Neutral",
+                "Friendly",
+                "Aggressive"
+            ]
+        },
+        {
+            "id": 3,
+            "name": "State",
+            "values": [
+                "Open",
+                "Closed",
+                "Locked"
+            ]
+        }
+    ]
 }

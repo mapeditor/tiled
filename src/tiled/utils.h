@@ -76,6 +76,8 @@ void setThemeIcon(T *t, const char *name)
     setThemeIcon(t, QLatin1String(name));
 }
 
+QIcon colorIcon(const QColor &color, QSize size);
+
 void restoreGeometry(QWidget *widget);
 void saveGeometry(QWidget *widget);
 
