@@ -27,7 +27,7 @@ void test_MapObject::test_syncWithTemplate()
     mapObject.setObjectTemplate(&templateObj);
 
     mapObject.syncWithTemplate();
-    QCOMPARE(mapObject.componentProperties("component1")["hp"], 50);
+    QCOMPARE(mapObject.componentProperties("component1")["hp"], QVariant(50));
 
     Properties props2;
     props2["volume"] = 60;
@@ -35,7 +35,7 @@ void test_MapObject::test_syncWithTemplate()
     templateObj.setObject(&obj);
 
     mapObject.syncWithTemplate();
-    QCOMPARE(mapObject.componentProperties("component2")["volume"], 60);
+    QCOMPARE(mapObject.componentProperties("component2")["volume"], QVariant(60));
 }
 
 QTEST_MAIN(test_MapObject)
