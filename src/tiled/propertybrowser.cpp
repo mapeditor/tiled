@@ -2032,20 +2032,28 @@ void PropertyBrowser::addComponents()
     while (it.hasNext()) {
         it.next();
         const QString &componentName = it.key();
+        const bool componentEnabled = componentsInAllObjects.contains(componentName);
+        QtProperty *componentProperty = mComponents.value(componentName);
 
-        if (auto componentProperty = mComponents.value(componentName)) {
+        if (componentProperty) {
             // If the component already exists, we may still need to enable it
-            componentProperty->setEnabled(componentsInAllObjects.contains(componentName));
+            componentProperty->setEnabled(componentEnabled);
             continue;
         }
 
-        QtProperty *component = mGroupManager->addProperty(componentName);
-        mComponents.insert(componentName, component);
-        // TODO: This function is also called when additional components are
-        // added, in which case they should be inserted at the right position
-        // instead of added to the end.
-        addProperty(component);
-        component->setEnabled(componentsInAllObjects.contains(componentName));
+        componentProperty = mGroupManager->addProperty(componentName);
+        componentProperty->setEnabled(componentEnabled);
+
+        // Determine the preceding property
+        QtProperty *afterProperty = mCustomPropertiesGroup;
+        if (!mComponents.isEmpty()) {
+            auto nextComponentIt = qAsConst(mComponents).lowerBound(componentName);
+            if (nextComponentIt != mComponents.constBegin())
+                afterProperty = (--nextComponentIt).value();
+        }
+
+        mComponents.insert(componentName, componentProperty);
+        insertProperty(componentProperty, afterProperty);
 
         const Properties &componentProperties = mObject->componentProperties(componentName);
 
@@ -2058,7 +2066,7 @@ void PropertyBrowser::addComponents()
             const QString &propertyName = it.key();
 
             QtVariantProperty *property = mCustomPropertiesHelper.createProperty(propertyName, it.value());
-            component->addSubProperty(property);
+            componentProperty->addSubProperty(property);
 
             if (mObject->isPartOfTileset())
                 property->setEnabled(mTilesetDocument);
@@ -2081,7 +2089,7 @@ void PropertyBrowser::updateComponents()
     QSet<QString> componentsInAllObjects =
             Object::commonComponents(mDocument->currentObjects());
 
-    QHashIterator<QString, QtProperty *> it(mComponents);
+    QMapIterator<QString, QtProperty *> it(mComponents);
     while (it.hasNext()) {
         it.next();
         QtProperty *component = it.value();

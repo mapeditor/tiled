@@ -28,6 +28,7 @@
 #include <QtTreePropertyBrowser>
 
 #include <QHash>
+#include <QMap>
 
 class QUndoCommand;
 
@@ -244,7 +245,7 @@ private:
 
     // component name -> property group
     // owns components properties
-    QHash<QString, QtProperty *> mComponents;
+    QMap<QString, QtProperty *> mComponents;
 
     // component name -> (property name -> property)
     QHash<QString, QHash<QString, QtVariantProperty *>> mMapComponentPropertyField;
