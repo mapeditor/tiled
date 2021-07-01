@@ -108,7 +108,6 @@ private:
 
     bool mRegisterActions = true;
     bool mSelectEnabledToolPending = false;
-    bool mUpdatingActionToolTip = false;
 };
 
 /**

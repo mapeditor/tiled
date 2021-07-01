@@ -31,12 +31,11 @@
 #include "tiled_global.h"
 
 #include <QColor>
+#include <QDir>
 #include <QMetaType>
 #include <QRectF>
 #include <QString>
 #include <QUrl>
-
-class QDir;
 
 namespace Tiled {
 
@@ -82,10 +81,15 @@ static const char PROPERTIES_MIMETYPE[] = "application/vnd.properties.list";
 
 TILEDSHARED_EXPORT QPointF alignmentOffset(const QRectF &r, Alignment alignment);
 
-TILEDSHARED_EXPORT QString toFileReference(const QUrl &url, const QDir &dir);
-TILEDSHARED_EXPORT QUrl toUrl(const QString &filePathOrUrl, const QDir &dir);
-TILEDSHARED_EXPORT QUrl toUrl(const QString &filePathOrUrl);
+TILEDSHARED_EXPORT QString toFileReference(const QUrl &url, const QString &path = QString());
+TILEDSHARED_EXPORT QUrl toUrl(const QString &filePathOrUrl, const QString &path = QString());
 TILEDSHARED_EXPORT QString urlToLocalFileOrQrc(const QUrl &url);
+
+inline QString toFileReference(const QUrl &url, const QDir &dir)
+{ return toFileReference(url, dir.path()); }
+
+inline QUrl toUrl(const QString &filePathOrUrl, const QDir &dir)
+{ return toUrl(filePathOrUrl, dir.path()); }
 
 inline QString colorToString(const QColor &color)
 {

@@ -25,7 +25,6 @@
 #include "utils.h"
 
 #include <QFileInfo>
-#include <QStandardPaths>
 
 #include "qtcompat_p.h"
 
@@ -197,6 +196,9 @@ static QString lastPathKey(Session::FileType fileType)
     QString key = QLatin1String("last.");
 
     switch (fileType) {
+    case Session::ExecutablePath:
+        key.append(QLatin1String("executablePath"));
+        break;
     case Session::ExportedFile:
         key.append(QLatin1String("exportedFilePath"));
         break;
@@ -212,6 +214,9 @@ static QString lastPathKey(Session::FileType fileType)
     case Session::ObjectTypesFile:
         key.append(QLatin1String("objectTypesPath"));
         break;
+    case Session::WorkingDirectory:
+        key.append(QLatin1String("workingDirectory"));
+        break;
     case Session::WorldFile:
         key.append(QLatin1String("worldFilePath"));
         break;
@@ -223,7 +228,7 @@ static QString lastPathKey(Session::FileType fileType)
 /**
  * Returns the starting location for a file chooser for the given file type.
  */
-QString Session::lastPath(FileType fileType) const
+QString Session::lastPath(FileType fileType, QStandardPaths::StandardLocation fallbackLocation) const
 {
     // First see if we can return the last used location for this file type
     QString path = settings->value(lastPathKey(fileType)).toString();
@@ -231,12 +236,14 @@ QString Session::lastPath(FileType fileType) const
         return path;
 
     // The location of the current document could be helpful
-    const DocumentManager *documentManager = DocumentManager::instance();
-    const Document *document = documentManager->currentDocument();
-    if (document) {
-        path = QFileInfo(document->fileName()).path();
-        if (!path.isEmpty())
-            return path;
+    if (fallbackLocation == QStandardPaths::DocumentsLocation) {
+        const DocumentManager *documentManager = DocumentManager::instance();
+        const Document *document = documentManager->currentDocument();
+        if (document) {
+            path = QFileInfo(document->fileName()).path();
+            if (!path.isEmpty())
+                return path;
+        }
     }
 
     // Try the location of the current project
@@ -246,8 +253,8 @@ QString Session::lastPath(FileType fileType) const
             return path;
     }
 
-    // Finally, we just open the 'Documents' folder
-    return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    // Finally, we just open the fallback location
+    return QStandardPaths::writableLocation(fallbackLocation);
 }
 
 /**

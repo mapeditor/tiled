@@ -51,3 +51,11 @@ inline bool contains(const Container &container, Value value)
                      container.end(),
                      value) != container.end();
 }
+
+template<typename Container, typename Pred>
+inline bool contains_where(const Container &container, Pred pred)
+{
+    return std::find_if(container.begin(),
+                        container.end(),
+                        pred) != container.end();
+}

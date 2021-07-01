@@ -52,11 +52,11 @@ const ObjectIconManager &ObjectIconManager::instance()
     return objectIconManager;
 }
 
-const QIcon &ObjectIconManager::iconForObject(MapObject *object) const
+const QIcon &ObjectIconManager::iconForObject(const MapObject &object) const
 {
-    switch (object->shape()) {
+    switch (object.shape()) {
     case MapObject::Rectangle:
-        return object->isTileObject() ? mImageIcon : mRectangleIcon;
+        return object.isTileObject() ? mImageIcon : mRectangleIcon;
     case MapObject::Polygon:
         return mPolygonIcon;
     case MapObject::Polyline:
@@ -170,7 +170,7 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
             break;
         case Qt::DecorationRole:
             if (index.column() == Name)
-                return ObjectIconManager::instance().iconForObject(mapObject);
+                return ObjectIconManager::instance().iconForObject(*mapObject);
             break;
         case Qt::ForegroundRole:
             if (index.column() == 1) {

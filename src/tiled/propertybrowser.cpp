@@ -1,6 +1,6 @@
 /*
  * propertybrowser.cpp
- * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2013-2021, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -109,6 +109,7 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     , mVariantManager(new VariantPropertyManager(this))
     , mGroupManager(new QtGroupPropertyManager(this))
     , mCustomPropertiesGroup(nullptr)
+    , mCustomPropertiesHelper(mVariantManager)
 {
     VariantEditorFactory *variantEditorFactory = new VariantEditorFactory(this);
 
@@ -170,6 +171,7 @@ void PropertyBrowser::setDocument(Document *document)
     mDocument = document;
     mMapDocument = mapDocument;
     mTilesetDocument = tilesetDocument;
+    mCustomPropertiesHelper.setMapDocument(mapDocument);
 
     if (mapDocument) {
         connect(mapDocument, &MapDocument::mapChanged,
@@ -239,7 +241,7 @@ void PropertyBrowser::setDocument(Document *document)
  */
 bool PropertyBrowser::isCustomPropertyItem(const QtBrowserItem *item) const
 {
-    return item && mPropertyToId[item->property()] == CustomProperty;
+    return mCustomPropertiesHelper.hasProperty(item->property());
 }
 
 /**
@@ -248,7 +250,7 @@ bool PropertyBrowser::isCustomPropertyItem(const QtBrowserItem *item) const
 bool PropertyBrowser::allCustomPropertyItems(const QList<QtBrowserItem *> &items) const
 {
     return std::all_of(items.begin(), items.end(), [this] (QtBrowserItem *item) {
-        return mPropertyToId[item->property()] == CustomProperty;
+        return isCustomPropertyItem(item);
     });
 }
 
@@ -257,7 +259,7 @@ bool PropertyBrowser::allCustomPropertyItems(const QList<QtBrowserItem *> &items
  */
 void PropertyBrowser::selectCustomProperty(const QString &name)
 {
-    QtVariantProperty *property = mNameToProperty.value(name);
+    QtVariantProperty *property = mCustomPropertiesHelper.property(name);
     if (!property)
         return;
 
@@ -272,7 +274,7 @@ void PropertyBrowser::selectCustomProperty(const QString &name)
  */
 void PropertyBrowser::editCustomProperty(const QString &name)
 {
-    QtVariantProperty *property = mNameToProperty.value(name);
+    QtVariantProperty *property = mCustomPropertiesHelper.property(name);
     if (!property)
         return;
 
@@ -384,48 +386,6 @@ void PropertyBrowser::wangSetChanged(Tileset *tileset, int index)
         updateProperties();
 }
 
-static QVariant predefinedPropertyValue(Object *object, const QString &name)
-{
-    QString objectType;
-
-    switch (object->typeId()) {
-    case Object::TileType:
-        objectType = static_cast<Tile*>(object)->type();
-        break;
-    case Object::MapObjectType: {
-        auto mapObject = static_cast<MapObject*>(object);
-        objectType = mapObject->type();
-
-        if (Tile *tile = mapObject->cell().tile()) {
-            if (tile->hasProperty(name))
-                return tile->property(name);
-
-            if (objectType.isEmpty())
-                objectType = tile->type();
-        }
-        break;
-    }
-    case Object::LayerType:
-    case Object::MapType:
-    case Object::TilesetType:
-    case Object::WangSetType:
-    case Object::WangColorType:
-    case Object::ObjectTemplateType:
-        break;
-    }
-
-    if (objectType.isEmpty())
-        return QVariant();
-
-    for (const ObjectType &type : Object::objectTypes()) {
-        if (type.name == objectType)
-            if (type.defaultProperties.contains(name))
-                return type.defaultProperties.value(name);
-    }
-
-    return QVariant();
-}
-
 static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &name)
 {
     for (Object *obj : objects) {
@@ -476,32 +436,27 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
 {
     if (!objectPropertiesRelevant(mDocument, object))
         return;
-    if (QtVariantProperty *property = mNameToProperty.value(name)) {
+    if (QtVariantProperty *property = mCustomPropertiesHelper.property(name)) {
         if (propertyValueAffected(mObject, object, name))
             setCustomPropertyValue(property, object->property(name));
     } else {
-        QVariant value;
-        if (mObject->hasProperty(name))
-            value = mObject->property(name);
-        else
-            value = predefinedPropertyValue(mObject, name);
-
-        createCustomProperty(name, toDisplayValue(value));
+        const QVariant value = mObject->resolvedProperty(name);
+        addCustomProperty(name, value);
     }
     updateCustomPropertyColor(name);
 }
 
 void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
 {
-    auto property = mNameToProperty.value(name);
+    auto property = mCustomPropertiesHelper.property(name);
     if (!property)
         return;
     if (!objectPropertiesRelevant(mDocument, object))
         return;
 
-    QVariant predefinedValue = predefinedPropertyValue(mObject, name);
+    const QVariant resolvedValue = mObject->resolvedProperty(name);
 
-    if (!predefinedValue.isValid() &&
+    if (!resolvedValue.isValid() &&
             !anyObjectHasProperty(mDocument->currentObjects(), name)) {
         // It's not a predefined property and no selected object has this
         // property, so delete it.
@@ -526,7 +481,7 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
 
     if (propertyValueAffected(mObject, object, name)) {
         // Property deleted from the current object, so reset the value.
-        setCustomPropertyValue(property, predefinedValue);
+        setCustomPropertyValue(property, resolvedValue);
     }
 
     updateCustomPropertyColor(name);
@@ -534,7 +489,7 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
 
 void PropertyBrowser::propertyChanged(Object *object, const QString &name)
 {
-    auto property = mNameToProperty.value(name);
+    auto property = mCustomPropertiesHelper.property(name);
     if (!property)
         return;
 
@@ -605,30 +560,31 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
         return;
     if (!mObject || !mDocument)
         return;
+
+    if (mCustomPropertiesHelper.hasProperty(property)) {
+        QUndoStack *undoStack = mDocument->undoStack();
+        const auto objects = mDocument->currentObjects();
+
+        if (mMapComponentProperty.contains(property)) {
+            const auto componentName = mMapComponentProperty.value(property);
+            undoStack->push(new SetComponentProperty(mDocument,
+                                                     objects,
+                                                     componentName,
+                                                     property->propertyName(),
+                                                     fromDisplayValue(property, val)));
+        } else {
+            undoStack->push(new SetProperty(mDocument,
+                                            objects,
+                                            property->propertyName(),
+                                            fromDisplayValue(property, val)));
+        }
+        return;
+    }
+
     if (!mPropertyToId.contains(property))
         return;
 
     const PropertyId id = mPropertyToId.value(property);
-
-    if (id == CustomProperty) {
-        QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->push(new SetProperty(mDocument,
-                                        mDocument->currentObjects(),
-                                        property->propertyName(),
-                                        fromDisplayValue(val)));
-        return;
-    }
-
-    if (id == ComponentProperty) {
-        QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->push(new SetComponentProperty(
-                            mDocument,
-                            mDocument->currentObjects(),
-                            mMapComponentProperty.value(property),
-                            property->propertyName(),
-                            fromDisplayValue(val)));
-        return;
-    }
 
     switch (mObject->typeId()) {
     case Object::MapType:               applyMapValue(id, val); break;
@@ -1584,6 +1540,8 @@ void PropertyBrowser::applyWangColorValue(PropertyId id, const QVariant &val)
 QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
                                                    const QString &name)
 {
+    Q_ASSERT(!mIdToProperty.contains(id));
+
     QtVariantProperty *property = mVariantManager->addProperty(type, name);
     if (!property) {
         // fall back to string property for unsupported property types
@@ -1592,25 +1550,22 @@ QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
 
     if (type == QMetaType::Bool)
         property->setAttribute(QLatin1String("textVisible"), false);
-    if (type == QMetaType::QString && (id == CustomProperty || id == ComponentProperty))
-        property->setAttribute(QLatin1String("multiline"), true);
-    if (type == QMetaType::Double && (id == CustomProperty || id == ComponentProperty))
-        property->setAttribute(QLatin1String("decimals"), 9);
 
     mPropertyToId.insert(property, id);
+    mIdToProperty.insert(id, property);
 
-    switch (id) {
-    case CustomProperty:
-        Q_ASSERT(!mNameToProperty.contains(name));
-        mNameToProperty.insert(name, property);
-        break;
-    case ComponentProperty:
-        break;
-    default:
-        Q_ASSERT(!mIdToProperty.contains(id));
-        mIdToProperty.insert(id, property);
-        break;
-    }
+    return property;
+}
+
+QtVariantProperty *PropertyBrowser::createCustomProperty(const QString &name,
+                                                         const QVariant &value)
+{
+    Q_ASSERT(mObject);
+
+    QtVariantProperty *property = mCustomPropertiesHelper.createCustomProperty(name, value);
+
+    if (mObject->isPartOfTileset())
+        property->setEnabled(mTilesetDocument);
 
     return property;
 }
@@ -1620,22 +1575,11 @@ QtVariantProperty *PropertyBrowser::addProperty(PropertyId id, int type,
                                                 QtProperty *parent)
 {
     QtVariantProperty *property = createProperty(id, type, name);
-
     parent->addSubProperty(property);
-
-    if (id == CustomProperty || id == ComponentProperty) {
-        // Collapse custom color properties, to save space
-        if (type == QMetaType::QColor)
-            setExpanded(items(property).constFirst(), false);
-
-        if (mObject->isPartOfTileset())
-            property->setEnabled(mTilesetDocument);
-    }
-
     return property;
 }
 
-QtVariantProperty *PropertyBrowser::createCustomProperty(const QString &name, const QVariant &value)
+QtVariantProperty *PropertyBrowser::addCustomProperty(const QString &name, const QVariant &value)
 {
     // Determine the property preceding the new property, if any
     const QList<QtProperty *> properties = mCustomPropertiesGroup->subProperties();
@@ -1648,8 +1592,7 @@ QtVariantProperty *PropertyBrowser::createCustomProperty(const QString &name, co
     }
 
     QScopedValueRollback<bool> updating(mUpdating, true);
-    QtVariantProperty *property = createProperty(CustomProperty, value.userType(), name);
-    property->setValue(value);
+    QtVariantProperty *property = createCustomProperty(name, value);
     mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
 
     // Collapse custom color properties, to save space
@@ -1661,9 +1604,7 @@ QtVariantProperty *PropertyBrowser::createCustomProperty(const QString &name, co
 
 void PropertyBrowser::deleteCustomProperty(QtVariantProperty *property)
 {
-    Q_ASSERT(mNameToProperty.contains(property->propertyName()));
-    mNameToProperty.remove(property->propertyName());
-    delete property;
+    mCustomPropertiesHelper.deleteProperty(property);
 }
 
 void PropertyBrowser::setCustomPropertyValue(QtVariantProperty *property,
@@ -1677,7 +1618,7 @@ void PropertyBrowser::setCustomPropertyValue(QtVariantProperty *property,
         const bool wasCurrent = currentItem() && currentItem()->property() == property;
 
         deleteCustomProperty(property);
-        property = createCustomProperty(name, displayValue);
+        property = addCustomProperty(name, value);
         updateCustomPropertyColor(name);
 
         if (wasCurrent)
@@ -1743,12 +1684,12 @@ void PropertyBrowser::removeProperties()
 {
     SetFixedResizeMode resizeMode(this);
 
+    mCustomPropertiesHelper.clear();
     mVariantManager->clear();
     mGroupManager->clear();
 
     mPropertyToId.clear();
     mIdToProperty.clear();
-    mNameToProperty.clear();
     mMapComponentProperty.clear();
     mMapComponentPropertyField.clear();
     mComponents.clear();
@@ -1943,8 +1884,7 @@ void PropertyBrowser::updateCustomProperties()
     QScopedValueRollback<bool> updating(mUpdating, true);
     SetFixedResizeMode resizeMode(this);
 
-    qDeleteAll(mNameToProperty);
-    mNameToProperty.clear();
+    mCustomPropertiesHelper.clear();
 
     Properties combinedProperties = mObject->properties();
     // Add properties from selected objects which mObject does not contain to mCombinedProperties.
@@ -2025,13 +1965,13 @@ void PropertyBrowser::updateCustomProperties()
     while (it.hasNext()) {
         it.next();
 
-        const QVariant displayValue = toDisplayValue(it.value());
+        QtVariantProperty *property = createCustomProperty(it.key(), it.value());
+        mCustomPropertiesGroup->addSubProperty(property);
 
-        QtVariantProperty *property = addProperty(CustomProperty,
-                                                  displayValue.userType(),
-                                                  it.key(),
-                                                  mCustomPropertiesGroup);
-        property->setValue(displayValue);
+        // Collapse custom color properties, to save space
+        if (property->valueType() == QMetaType::QColor)
+            setExpanded(items(property).constFirst(), false);
+
         updateCustomPropertyColor(it.key());
     }
 }
@@ -2039,7 +1979,7 @@ void PropertyBrowser::updateCustomProperties()
 // If there are other objects selected check if their properties are equal. If not give them a gray color.
 void PropertyBrowser::updateCustomPropertyColor(const QString &name)
 {
-    QtVariantProperty *property = mNameToProperty.value(name);
+    QtVariantProperty *property = mCustomPropertiesHelper.property(name);
     if (!property)
         return;
     if (!property->isEnabled())
@@ -2116,14 +2056,16 @@ void PropertyBrowser::addComponents()
         while (it.hasNext()) {
             it.next();
             const QString &propertyName = it.key();
-            const QVariant displayValue = toDisplayValue(it.value());
 
-            QtVariantProperty *property = addProperty(ComponentProperty,
-                                                      displayValue.userType(),
-                                                      propertyName,
-                                                      component);
+            QtVariantProperty *property = mCustomPropertiesHelper.createProperty(propertyName, it.value());
+            component->addSubProperty(property);
 
-            property->setValue(displayValue);
+            if (mObject->isPartOfTileset())
+                property->setEnabled(mTilesetDocument);
+
+            // Collapse custom color properties, to save space
+            if (property->valueType() == QMetaType::QColor)
+                setExpanded(items(property).constFirst(), false);
 
             mMapComponentProperty.insert(property, componentName);
             mMapComponentPropertyField[componentName].insert(propertyName, property);
@@ -2159,20 +2101,14 @@ void PropertyBrowser::onComponentPropertyChanged(Object *object,
     }
 }
 
-QVariant PropertyBrowser::toDisplayValue(const QVariant &value) const
+QVariant PropertyBrowser::toDisplayValue(QVariant value) const
 {
-    if (value.userType() == objectRefTypeId())
-        return QVariant::fromValue(DisplayObjectRef { value.value<ObjectRef>(), mMapDocument });
-
-    return value;
+    return mCustomPropertiesHelper.toDisplayValue(value);
 }
 
-QVariant PropertyBrowser::fromDisplayValue(const QVariant &value) const
+QVariant PropertyBrowser::fromDisplayValue(QtProperty *property, QVariant value) const
 {
-    if (value.userType() == VariantPropertyManager::displayObjectRefTypeId())
-        return QVariant::fromValue(value.value<DisplayObjectRef>().ref);
-
-    return value;
+    return mCustomPropertiesHelper.fromDisplayValue(property, value);
 }
 
 void PropertyBrowser::retranslateUi()

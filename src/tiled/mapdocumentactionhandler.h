@@ -78,6 +78,7 @@ public:
     QAction *actionRemoveLayers() const { return mActionRemoveLayers; }
     QAction *actionSelectPreviousLayer() const { return mActionSelectPreviousLayer; }
     QAction *actionSelectNextLayer() const { return mActionSelectNextLayer; }
+    QAction *actionSelectAllLayers() const { return mActionSelectAllLayers; }
     QAction *actionMoveLayersUp() const { return mActionMoveLayersUp; }
     QAction *actionMoveLayersDown() const { return mActionMoveLayersDown; }
     QAction *actionToggleSelectedLayers() const { return mActionToggleSelectedLayers; }
@@ -120,6 +121,7 @@ public slots:
     void mergeLayersDown();
     void selectPreviousLayer();
     void selectNextLayer();
+    void selectAllLayers();
     void moveLayersUp();
     void moveLayersDown();
     void removeLayers();
@@ -160,6 +162,7 @@ private:
     QAction *mActionRemoveLayers;
     QAction *mActionSelectPreviousLayer;
     QAction *mActionSelectNextLayer;
+    QAction *mActionSelectAllLayers;
     QAction *mActionMoveLayersUp;
     QAction *mActionMoveLayersDown;
     QAction *mActionToggleSelectedLayers;

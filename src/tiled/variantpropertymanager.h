@@ -53,8 +53,8 @@ public:
 class UnstyledGroup {};
 
 /**
- * Extension of the QtVariantPropertyManager that adds support for a filePath
- * data type.
+ * Extension of the QtVariantPropertyManager that adds support for various
+ * additional types and attributes.
  */
 class VariantPropertyManager : public QtVariantPropertyManager
 {
@@ -92,7 +92,8 @@ protected:
 private:
     void slotValueChanged(QtProperty *property, const QVariant &value);
     void slotPropertyDestroyed(QtProperty *property);
-    QString objectRefLabel(const MapObject *object) const;
+
+    static QString objectRefLabel(const MapObject &object);
 
     QMap<const QtProperty *, QVariant> mValues;
 

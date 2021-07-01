@@ -28,8 +28,9 @@
 
 #pragma once
 
-#include "properties.h"
 #include "objecttypes.h"
+#include "properties.h"
+#include "propertytype.h"
 
 namespace Tiled {
 
@@ -117,7 +118,7 @@ public:
      * Returns the type of the object's \a name property, as a string.
      */
     QString propertyType(const QString &name) const
-    { return typeToName(mProperties.value(name).userType()); }
+    { return typeName(mProperties.value(name)); }
 
     /**
      * Returns whether this object has a property with the given \a name.
@@ -159,8 +160,12 @@ public:
     void setComponentProperty(const QString &componentName, const QString &propertyName, const QVariant &value);
 
     static void setObjectTypes(const ObjectTypes &objectTypes);
+    static void setPropertyTypes(const PropertyTypes &propertyTypes);
     static const ObjectTypes &objectTypes()
     { return mObjectTypes; }
+    static const PropertyTypes &propertyTypes()
+    { return mPropertyTypes; }
+    static const PropertyType *propertyType(int typeId);
 
     static Properties objectTypeProperties(const QString &name);
 
@@ -173,6 +178,7 @@ private:
     Components mComponents;
 
     static ObjectTypes mObjectTypes;
+    static PropertyTypes mPropertyTypes;
 };
 
 

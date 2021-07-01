@@ -19,6 +19,8 @@ DynamicLibrary {
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
             "QT_NO_URL_CAST_FROM_STRING",
+            "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(5,15,0)",
+            "QT_NO_DEPRECATED_WARNINGS",
             "_USE_MATH_DEFINES",
         ]
 
@@ -110,6 +112,8 @@ DynamicLibrary {
         "pluginmanager.h",
         "properties.cpp",
         "properties.h",
+        "propertytype.cpp",
+        "propertytype.h",
         "savefile.cpp",
         "savefile.h",
         "staggeredrenderer.cpp",

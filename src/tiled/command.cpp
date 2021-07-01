@@ -129,7 +129,14 @@ QString Command::finalWorkingDirectory() const
  */
 QString Command::finalCommand() const
 {
-    QString finalCommand = QStringLiteral("%1 %2").arg(executable, arguments);
+    QString exe = executable.trimmed();
+
+    // Quote the executable when not already done, to make it work even when
+    // the path contains spaces.
+    if (!exe.startsWith(QLatin1Char('"')) && !exe.startsWith(QLatin1Char('\'')))
+        exe.prepend(QLatin1Char('"')).append(QLatin1Char('"'));
+
+    QString finalCommand = QStringLiteral("%1 %2").arg(exe, arguments);
     return replaceVariables(finalCommand);
 }
 

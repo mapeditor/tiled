@@ -391,11 +391,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     const QUrl &imageSource = tileset.imageSource();
     if (!imageSource.isEmpty()) {
         w.writeStartElement(QStringLiteral("image"));
-        QString source;
-        if (mUseAbsolutePaths)
-            source = imageSource.toString(QUrl::PreferLocalFile);
-        else
-            source = toFileReference(imageSource, mDir);
+        QString source = toFileReference(imageSource, mUseAbsolutePaths ? QString()
+                                                                        : mDir.path());
         w.writeAttribute(QStringLiteral("source"), source);
 
         const QColor transColor = tileset.transparentColor();
@@ -450,11 +447,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                     w.writeCharacters(QString::fromLatin1(buffer.data().toBase64()));
                     w.writeEndElement(); // </data>
                 } else {
-                    QString source;
-                    if (mUseAbsolutePaths)
-                        source = tile->imageSource().toString(QUrl::PreferLocalFile);
-                    else
-                        source = toFileReference(tile->imageSource(), mDir);
+                    QString source = toFileReference(tile->imageSource(), mUseAbsolutePaths ? QString()
+                                                                                            : mDir.path());
                     w.writeAttribute(QStringLiteral("source"), source);
                 }
 
@@ -881,8 +875,8 @@ void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
     if (!imageSource.isEmpty()) {
         w.writeStartElement(QStringLiteral("image"));
 
-        QString source = mUseAbsolutePaths ? imageSource.toString(QUrl::PreferLocalFile)
-                                           : toFileReference(imageSource, mDir);
+        QString source = toFileReference(imageSource, mUseAbsolutePaths ? QString()
+                                                                        : mDir.path());
 
         w.writeAttribute(QStringLiteral("source"), source);
 
@@ -934,14 +928,14 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
         w.writeStartElement(QStringLiteral("property"));
         w.writeAttribute(QStringLiteral("name"), it.key());
 
-        int type = it.value().userType();
-        QString typeName = typeToName(type);
-        if (typeName != QLatin1String("string"))
-            w.writeAttribute(QStringLiteral("type"), typeName);
+        const auto exportValue = ExportValue::fromPropertyValue(it.value(), mUseAbsolutePaths ? QString()
+                                                                                              : mDir.path());
+        if (exportValue.typeName != QLatin1String("string"))
+            w.writeAttribute(QStringLiteral("type"), exportValue.typeName);
+        if (!exportValue.propertyTypeName.isEmpty())
+            w.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
 
-        QVariant exportValue = mUseAbsolutePaths ? toExportValue(it.value())
-                                                 : toExportValue(it.value(), mDir);
-        QString value = exportValue.toString();
+        QString value = exportValue.value.toString();
 
         if (value.contains(QLatin1Char('\n')))
             w.writeCharacters(value);

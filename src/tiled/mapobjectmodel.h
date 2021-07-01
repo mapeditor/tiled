@@ -42,7 +42,7 @@ class ObjectIconManager
 public:
     static const ObjectIconManager &instance();
 
-    const QIcon &iconForObject(MapObject *object) const;
+    const QIcon &iconForObject(const MapObject &object) const;
 
 private:
     ObjectIconManager();

@@ -1,6 +1,6 @@
 /*
- * objecttypes.h
- * Copyright 2011-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * propertytype.h
+ * Copyright 2021, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -29,60 +29,38 @@
 #pragma once
 
 #include <QString>
+#include <QStringList>
 #include <QColor>
 #include <QVector>
+#include <QMetaType>
 
 #include "properties.h"
 
 namespace Tiled {
 
 /**
- * Quick definition of an object type. It has a name and a color.
+ * Defines a custom property type. Currently this includes only enums.
  */
-struct ObjectType
-{
-    ObjectType() : color(Qt::gray) {}
-
-    ObjectType(QString name,
-               const QColor &color,
-               const Properties &properties = Properties())
-        : name(std::move(name))
-        , color(color)
-        , defaultProperties(properties)
-    {}
-
-    QString name;
-    QColor color;
-
-    Properties defaultProperties;
-};
-
-typedef QVector<ObjectType> ObjectTypes;
-
-
-
-class TILEDSHARED_EXPORT ObjectTypesSerializer
+class TILEDSHARED_EXPORT PropertyType
 {
 public:
-    enum Format {
-        Autodetect,
-        Xml,
-        Json
-    };
+    int id = 0;
+    QString name;
+    QStringList values;
 
-    ObjectTypesSerializer(Format format = Autodetect);
+    static int nextId;
 
-    bool writeObjectTypes(const QString &fileName,
-                          const ObjectTypes &objectTypes);
+    QVariant wrap(const QVariant &value) const;
+    QVariant unwrap(const QVariant &value) const;
 
-    bool readObjectTypes(const QString &fileName,
-                         ObjectTypes &objectTypes);
+    QVariant defaultValue() const;
 
-    QString errorString() const { return mError; }
-
-private:
-    Format mFormat;
-    QString mError;
+    QVariantHash toVariant() const;
+    static PropertyType fromVariant(const QVariant &variant);
 };
 
+typedef QVector<PropertyType> PropertyTypes;
+
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::PropertyType);

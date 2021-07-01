@@ -25,6 +25,7 @@
 #include <QPointF>
 #include <QSettings>
 #include <QSize>
+#include <QStandardPaths>
 #include <QStringList>
 #include <QTimer>
 #include <QVariantMap>
@@ -139,15 +140,18 @@ public:
     void setFileStateValue(const QString &fileName, const QString &name, const QVariant &value);
 
     enum FileType {
+        ExecutablePath,
         ExportedFile,
         ExternalTileset,
         ImageFile,
         ObjectTemplateFile,
         ObjectTypesFile,
+        WorkingDirectory,
         WorldFile,
     };
 
-    QString lastPath(FileType fileType) const;
+    QString lastPath(FileType fileType,
+                     QStandardPaths::StandardLocation fallback = QStandardPaths::DocumentsLocation) const;
     void setLastPath(FileType fileType, const QString &path);
 
     template <typename T>

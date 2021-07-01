@@ -30,8 +30,6 @@
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
 
-#include <QtGroupPropertyManager>
-
 #include <QCloseEvent>
 #include <QColorDialog>
 #include <QFileDialog>
@@ -100,7 +98,7 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     , mUi(new Ui::ObjectTypesEditor)
     , mObjectTypesModel(new ObjectTypesModel(this))
     , mVariantManager(new VariantPropertyManager(this))
-    , mGroupManager(new QtGroupPropertyManager(this))
+    , mPropertiesHelper(mVariantManager)
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
@@ -425,8 +423,8 @@ void ObjectTypesEditor::updateProperties()
     mProperties = aggregatedProperties;
 
     QScopedValueRollback<bool> updating(mUpdating, true);
-    mVariantManager->clear();
-    mNameToProperty.clear();
+
+    mPropertiesHelper.clear();
 
     QMapIterator<QString, AggregatedPropertyData> it(aggregatedProperties);
     while (it.hasNext()) {
@@ -435,8 +433,8 @@ void ObjectTypesEditor::updateProperties()
         const QString &name = it.key();
         const AggregatedPropertyData &data = it.value();
 
-        QtVariantProperty *property = createProperty(data.value().userType(), name);
-        property->setValue(data.value());
+        QtProperty *property = mPropertiesHelper.createCustomProperty(name, data.value());
+        mUi->propertiesView->addProperty(property);
 
         bool everywhere = data.presenceCount() == selectedRows.size();
         bool consistent = everywhere && data.valueConsistent();
@@ -455,25 +453,8 @@ void ObjectTypesEditor::propertyValueChanged(QtProperty *property,
     if (!mUi->propertiesView->topLevelItem(property))
         return;
 
-    applyPropertyToSelectedTypes(property->propertyName(), value);
-}
-
-QtVariantProperty *ObjectTypesEditor::createProperty(int type,
-                                                     const QString &name)
-{
-    QtVariantProperty *property = mVariantManager->addProperty(type, name);
-    if (!property) {
-        // fall back to string property for unsupported property types
-        property = mVariantManager->addProperty(QMetaType::QString, name);
-    }
-
-    if (type == QMetaType::Bool)
-        property->setAttribute(QLatin1String("textVisible"), false);
-
-    mUi->propertiesView->addProperty(property);
-    mNameToProperty.insert(name, property);
-
-    return property;
+    const auto val = mPropertiesHelper.fromDisplayValue(property, value);
+    applyPropertyToSelectedTypes(property->propertyName(), val);
 }
 
 void ObjectTypesEditor::openAddPropertyDialog()
@@ -495,7 +476,7 @@ void ObjectTypesEditor::addProperty(const QString &name, const QVariant &value)
 
 void ObjectTypesEditor::editProperty(const QString &name)
 {
-    QtVariantProperty *property = mNameToProperty.value(name);
+    QtVariantProperty *property = mPropertiesHelper.property(name);
     if (!property)
         return;
 
@@ -522,7 +503,7 @@ void ObjectTypesEditor::removeProperty()
     }
 
     mProperties.remove(name);
-    delete mNameToProperty.take(name);
+    mPropertiesHelper.deleteProperty(item->property());
 
     removePropertyFromSelectedTypes(name);
 }

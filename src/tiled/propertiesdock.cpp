@@ -473,6 +473,8 @@ void PropertiesDock::showContextMenu(const QPoint &pos)
             QMetaType::QString
         };
 
+        // todo: could include custom property types
+
         for (int toType : convertTo) {
             bool someDifferentType = false;
             bool allCanConvert = true;

@@ -36,6 +36,7 @@
 namespace Tiled {
 
 ObjectTypes Object::mObjectTypes;
+PropertyTypes Object::mPropertyTypes;
 
 Object::~Object()
 {}
@@ -178,6 +179,24 @@ Properties Object::objectTypeProperties(const QString &name)
     }
 
     return {};
+}
+
+void Object::setPropertyTypes(const PropertyTypes &propertyTypes)
+{
+    mPropertyTypes = propertyTypes;
+}
+
+/**
+ * Returns a pointer to the PropertyType matching the given \a typeId, or
+ * nullptr if it can't be found.
+ */
+const PropertyType *Object::propertyType(int typeId)
+{
+    for (const PropertyType &propertyType : Object::propertyTypes()) {
+        if (propertyType.id == typeId)
+            return &propertyType;
+    }
+    return nullptr;
 }
 
 QSet<QString> Object::commonComponents(const QList<Object *> &objects,

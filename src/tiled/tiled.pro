@@ -118,6 +118,7 @@ SOURCES += aboutdialog.cpp \
     createtemplatetool.cpp \
     createtextobjecttool.cpp \
     createtileobjecttool.cpp \
+    custompropertieshelper.cpp \
     debugdrawitem.cpp \
     document.cpp \
     documentmanager.cpp \
@@ -210,6 +211,8 @@ SOURCES += aboutdialog.cpp \
     projectpropertiesdialog.cpp \
     propertiesdock.cpp \
     propertybrowser.cpp \
+    propertytypeseditor.cpp \
+    propertytypesmodel.cpp \
     raiselowerhelper.cpp \
     regionvaluetype.cpp \
     relocatetiles.cpp \
@@ -356,6 +359,7 @@ HEADERS += aboutdialog.h \
     createtemplatetool.h \
     createtextobjecttool.h \
     createtileobjecttool.h \
+    custompropertieshelper.h \
     debugdrawitem.h \
     document.h \
     documentmanager.h \
@@ -448,6 +452,8 @@ HEADERS += aboutdialog.h \
     projectpropertiesdialog.h \
     propertiesdock.h \
     propertybrowser.h \
+    propertytypeseditor.h \
+    propertytypesmodel.h \
     raiselowerhelper.h \
     randompicker.h \
     rangeset.h \
@@ -548,6 +554,7 @@ FORMS += aboutdialog.ui \
     offsetmapdialog.ui \
     preferencesdialog.ui \
     projectpropertiesdialog.ui \
+    propertytypeseditor.ui \
     resizedialog.ui \
     shortcutsettingspage.ui \
     texteditordialog.ui \

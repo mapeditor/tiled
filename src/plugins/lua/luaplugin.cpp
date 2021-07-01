@@ -270,8 +270,8 @@ void LuaWriter::writeProperties(const Properties &properties)
             mWriter.writeEndTable();
             mWriter.setSuppressNewlines(false);
         } else {
-            const QVariant value = toExportValue(it.value(), mDir);
-            mWriter.writeQuotedKeyAndValue(it.key(), value);
+            const auto exportValue = ExportValue::fromPropertyValue(it.value(), mDir.path());
+            mWriter.writeQuotedKeyAndValue(it.key(), exportValue.value);
         }
     }
 

@@ -30,6 +30,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/plugin.cpp \
     $$PWD/pluginmanager.cpp \
     $$PWD/properties.cpp \
+    $$PWD/propertytype.cpp \
     $$PWD/savefile.cpp \
     $$PWD/staggeredrenderer.cpp \
     $$PWD/templatemanager.cpp \
@@ -75,6 +76,7 @@ HEADERS += $$PWD/compression.h \
     $$PWD/plugin.h \
     $$PWD/pluginmanager.h \
     $$PWD/properties.h \
+    $$PWD/propertytype.h \
     $$PWD/savefile.h \
     $$PWD/staggeredrenderer.h \
     $$PWD/templatemanager.h \

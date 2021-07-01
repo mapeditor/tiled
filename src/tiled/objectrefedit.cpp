@@ -151,7 +151,7 @@ void ObjectRefEdit::onMapObjectPicked(MapObject *object)
 
 void ObjectRefEdit::onEditFinished()
 {
-    auto newValue = fromExportValue(mLineEdit->text(), objectRefTypeId()).value<ObjectRef>();
+    const auto newValue = ObjectRef::fromInt(mLineEdit->text().toInt());
     setValue(DisplayObjectRef { newValue, mValue.mapDocument });
 }
 

@@ -20,18 +20,18 @@
 
 #pragma once
 
+#include "custompropertieshelper.h"
 #include "properties.h"
 
 #include <QDialog>
+#include <QStyledItemDelegate>
 
 namespace Ui {
 class ObjectTypesEditor;
 }
 
 class QtBrowserItem;
-class QtGroupPropertyManager;
 class QtProperty;
-class QtVariantProperty;
 class QtVariantPropertyManager;
 
 namespace Tiled {
@@ -81,15 +81,11 @@ private:
 
     void retranslateUi();
 
-    QtVariantProperty *createProperty(int type,
-                                      const QString &name);
-
     Ui::ObjectTypesEditor *mUi;
     ObjectTypesModel *mObjectTypesModel;
 
     QtVariantPropertyManager *mVariantManager;
-    QtGroupPropertyManager *mGroupManager;
-    QHash<QString, QtVariantProperty *> mNameToProperty;
+    CustomPropertiesHelper mPropertiesHelper;
 
     AggregatedProperties mProperties;
     bool mUpdating = false;

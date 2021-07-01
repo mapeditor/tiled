@@ -39,21 +39,25 @@ QPointF Tiled::alignmentOffset(const QRectF &r, Tiled::Alignment alignment)
     return QPointF();
 }
 
-QString Tiled::toFileReference(const QUrl &url, const QDir &dir)
+QString Tiled::toFileReference(const QUrl &url, const QString &path)
 {
     if (url.isEmpty())
         return QString();
 
     if (url.isLocalFile()) {
-        // Local files are referred to by relative path
         QString localFile = url.toLocalFile();
-        return dir.relativeFilePath(localFile);
+
+        if (path.isEmpty())
+            return localFile;
+
+        // Local files can be referred to by relative path
+        return QDir(path).relativeFilePath(localFile);
     }
 
     return url.toString();
 }
 
-QUrl Tiled::toUrl(const QString &filePathOrUrl, const QDir &dir)
+QUrl Tiled::toUrl(const QString &filePathOrUrl, const QString &path)
 {
     if (filePathOrUrl.isEmpty())
         return QUrl();
@@ -65,24 +69,16 @@ QUrl Tiled::toUrl(const QString &filePathOrUrl, const QDir &dir)
             return url;
     }
 
+    QString filePath = filePathOrUrl;
+
     // Resolve possible relative file reference
-    QString absolutePath = QDir::cleanPath(dir.filePath(filePathOrUrl));
-    if (absolutePath.startsWith(QLatin1String(":/")))
-        return QUrl(QLatin1String("qrc") + absolutePath);
+    if (!path.isEmpty())
+        filePath = QDir::cleanPath(QDir(path).filePath(filePath));
 
-    return QUrl::fromLocalFile(absolutePath);
-}
+    if (filePath.startsWith(QLatin1String(":/")))
+        return QUrl(QLatin1String("qrc") + filePath);
 
-QUrl Tiled::toUrl(const QString &filePathOrUrl)
-{
-    QUrl url(filePathOrUrl);
-
-    if (filePathOrUrl.startsWith(QLatin1String(":/")))
-        url = QUrl(QLatin1String("qrc") + filePathOrUrl);
-    else if (QDir::isAbsolutePath(filePathOrUrl) || url.isRelative())
-        url = QUrl::fromLocalFile(filePathOrUrl);
-
-    return url;
+    return QUrl::fromLocalFile(filePath);
 }
 
 /*
