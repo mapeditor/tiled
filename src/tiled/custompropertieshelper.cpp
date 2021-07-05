@@ -101,9 +101,21 @@ void CustomPropertiesHelper::deleteProperty(QtProperty *property)
     delete property;
 }
 
+void CustomPropertiesHelper::deleteCustomProperties()
+{
+    for (QtVariantProperty *property : qAsConst(mProperties)) {
+        mPropertyTypeIds.remove(property);
+        delete property;
+    }
+    mProperties.clear();
+}
+
+/**
+ * Removes all references to any created properties. Should be called after
+ * clearing the property manager, which deletes all properties.
+ */
 void CustomPropertiesHelper::clear()
 {
-    qDeleteAll(mProperties);
     mProperties.clear();
     mPropertyTypeIds.clear();
 }

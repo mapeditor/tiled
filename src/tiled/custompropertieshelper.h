@@ -43,6 +43,7 @@ public:
     QtVariantProperty *createCustomProperty(const QString &name, const QVariant &value);
     QtVariantProperty *createProperty(const QString &name, const QVariant &value);
     void deleteProperty(QtProperty *property);
+    void deleteCustomProperties();
     void clear();
     bool hasProperty(QtProperty *property) const;
     QtVariantProperty *property(const QString &name);

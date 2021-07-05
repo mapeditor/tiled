@@ -1884,7 +1884,7 @@ void PropertyBrowser::updateCustomProperties()
     QScopedValueRollback<bool> updating(mUpdating, true);
     SetFixedResizeMode resizeMode(this);
 
-    mCustomPropertiesHelper.clear();
+    mCustomPropertiesHelper.deleteCustomProperties();
 
     Properties combinedProperties = mObject->properties();
     // Add properties from selected objects which mObject does not contain to mCombinedProperties.

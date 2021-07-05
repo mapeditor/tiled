@@ -424,7 +424,7 @@ void ObjectTypesEditor::updateProperties()
 
     QScopedValueRollback<bool> updating(mUpdating, true);
 
-    mPropertiesHelper.clear();
+    mPropertiesHelper.deleteCustomProperties();
 
     QMapIterator<QString, AggregatedPropertyData> it(aggregatedProperties);
     while (it.hasNext()) {
