@@ -75,31 +75,51 @@ namespace Tiled {
 namespace {
 
 /**
+ * A helper class instantiated while properties are updated.
+ *
  * Makes sure the resize mode is set to Fixed during its lifetime. Used to work
  * around performance issues caused by the view continuously making sure its
  * name column is adjusted to the contents.
+ *
+ * Also restores the scroll position, which gets reset when properties are
+ * removed and then added back.
  */
-class SetFixedResizeMode
+class UpdatingProperties
 {
 public:
-    SetFixedResizeMode(QtTreePropertyBrowser *browser)
+    UpdatingProperties(QtTreePropertyBrowser *browser, bool &isUpdating, bool force = false)
         : mBrowser(browser)
-        , mPreviousResizeMode(browser->resizeMode())
+        , mForced(force)
+        , mWasUpdating(isUpdating)
+        , mIsUpdating(isUpdating)
     {
-        mBrowser->setResizeMode(QtTreePropertyBrowser::Fixed);
+        if (!isUpdating || force) {
+            isUpdating = true;
+            mPreviousResizeMode = browser->resizeMode();
+            mPreviousScrollPosition = browser->scrollPosition();
+            mBrowser->setResizeMode(QtTreePropertyBrowser::Fixed);
+        }
     }
 
-    ~SetFixedResizeMode()
+    ~UpdatingProperties()
     {
-        mBrowser->setResizeMode(mPreviousResizeMode);
+        if (!mWasUpdating || mForced) {
+            mBrowser->setResizeMode(mPreviousResizeMode);
+            mBrowser->setScrollPosition(mPreviousScrollPosition);
+            mIsUpdating = mWasUpdating;
+        }
     }
 
 private:
     QtTreePropertyBrowser * const mBrowser;
-    QtTreePropertyBrowser::ResizeMode const mPreviousResizeMode;
+    bool const mForced;
+    bool const mWasUpdating;
+    bool &mIsUpdating;
+    QtTreePropertyBrowser::ResizeMode mPreviousResizeMode;
+    int mPreviousScrollPosition;
 };
 
-}
+} // anonymous namespace
 
 PropertyBrowser::PropertyBrowser(QWidget *parent)
     : QtTreePropertyBrowser(parent)
@@ -140,6 +160,7 @@ void PropertyBrowser::setObject(Object *object)
     if (mObject == object)
         return;
 
+    UpdatingProperties updatingProperties(this, mUpdating);
     removeProperties();
     mObject = object;
     addProperties();
@@ -1583,8 +1604,7 @@ void PropertyBrowser::addProperties()
     if (!mObject)
         return;
 
-    QScopedValueRollback<bool> updating(mUpdating, true);
-    SetFixedResizeMode resizeMode(this);
+    Q_ASSERT(mUpdating);
 
     // Add the built-in properties for each object type
     switch (mObject->typeId()) {
@@ -1625,7 +1645,7 @@ void PropertyBrowser::addProperties()
 
 void PropertyBrowser::removeProperties()
 {
-    SetFixedResizeMode resizeMode(this);
+    Q_ASSERT(mUpdating);
 
     mCustomPropertiesHelper.clear();
     mVariantManager->clear();
@@ -1666,6 +1686,7 @@ void PropertyBrowser::updateProperties()
         const int flags = mapObjectFlags(mapObject);
 
         if (mMapObjectFlags != flags) {
+            UpdatingProperties updatingProperties(this, mUpdating, true);
             removeProperties();
             addProperties();
             return;
@@ -1819,8 +1840,7 @@ void PropertyBrowser::updateCustomProperties()
     if (!mObject)
         return;
 
-    QScopedValueRollback<bool> updating(mUpdating, true);
-    SetFixedResizeMode resizeMode(this);
+    UpdatingProperties updatingProperties(this, mUpdating);
 
     mCustomPropertiesHelper.clear();
 
@@ -2036,6 +2056,7 @@ void PropertyBrowser::retranslateUi()
     mWangSetTypeNames.append(tr("Edge"));
     mWangSetTypeNames.append(tr("Mixed"));
 
+    UpdatingProperties updatingProperties(this, mUpdating);
     removeProperties();
     addProperties();
 }
