@@ -433,9 +433,7 @@ void MapObject::syncWithTemplate()
     while (it.hasNext()) {
         it.next();
         if (!hasComponent(it.key())) {
-            addComponent(it.key(), Properties {});
-            Properties& properties = componentProperties(it.key());
-            Tiled::mergeProperties(properties, it.value());
+            addComponent(it.key(), it.value());
         }
     }
 }
