@@ -409,10 +409,7 @@ void MapEditor::setCurrentDocument(Document *document)
             mZoomable->setComboBox(mZoomComboBox.get());
         }
 
-        connect(mCurrentMapDocument, &MapDocument::currentObjectChanged,
-                this, [this, mapDocument] { mPropertiesDock->setDocument(mapDocument); });
-
-        connect(mapView, &MapView::focused,
+        connect(mCurrentMapDocument, &MapDocument::currentObjectSet,
                 this, [this, mapDocument] { mPropertiesDock->setDocument(mapDocument); });
 
         mReversingProxyModel->setSourceModel(mapDocument->layerModel());

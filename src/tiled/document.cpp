@@ -112,8 +112,10 @@ bool Document::isModified() const
  */
 void Document::setCurrentObject(Object *object, Document *owningDocument)
 {
-    if (object == mCurrentObject)
+    if (object == mCurrentObject) {
+        emit currentObjectSet(object);
         return;
+    }
 
     mCurrentObject = object;
 
@@ -133,6 +135,7 @@ void Document::setCurrentObject(Object *object, Document *owningDocument)
         mCurrentObjectDocument = owningDocument;
     }
 
+    emit currentObjectSet(object);
     emit currentObjectChanged(object);
 }
 
