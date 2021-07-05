@@ -359,6 +359,7 @@ void PropertyBrowser::tilesetChanged(Tileset *tileset)
     if (mObject == tileset) {
         updateProperties();
         updateCustomProperties();   // Tileset may have been swapped
+        updateComponents();
     }
 }
 
@@ -508,7 +509,7 @@ void PropertyBrowser::propertiesChanged(Object *object)
 
 void PropertyBrowser::componentAdded()
 {
-    addComponents();
+    updateComponents();
 }
 
 void PropertyBrowser::componentRemoved(const QList<Object *> &, const QString &name)
@@ -541,11 +542,13 @@ void PropertyBrowser::selectedObjectsChanged()
 void PropertyBrowser::selectedLayersChanged()
 {
     updateCustomProperties();
+    updateComponents();
 }
 
 void PropertyBrowser::selectedTilesChanged()
 {
     updateCustomProperties();
+    updateComponents();
 }
 
 void PropertyBrowser::objectTypesChanged()
@@ -1676,8 +1679,7 @@ void PropertyBrowser::addProperties()
 
     updateProperties();
     updateCustomProperties();
-
-    addComponents();
+    updateComponents();
 }
 
 void PropertyBrowser::removeProperties()
@@ -2017,8 +2019,11 @@ void PropertyBrowser::updateCustomPropertyColor(const QString &name)
     property->setValueColor(textColor);
 }
 
-// adds the missing components from object to the browser
-void PropertyBrowser::addComponents()
+/**
+ * Adds any missing components from object to the browser and updates the
+ * enabled state of all components.
+ */
+void PropertyBrowser::updateComponents()
 {
     if (!mObject)
         return;
@@ -2078,22 +2083,6 @@ void PropertyBrowser::addComponents()
             mMapComponentProperty.insert(property, componentName);
             mMapComponentPropertyField[componentName].insert(propertyName, property);
         }
-    }
-}
-
-void PropertyBrowser::updateComponents()
-{
-    QScopedValueRollback<bool> updating(mUpdating, true);
-
-    // only enable component properties common to all selected objects
-    QSet<QString> componentsInAllObjects =
-            Object::commonComponents(mDocument->currentObjects());
-
-    QMapIterator<QString, QtProperty *> it(mComponents);
-    while (it.hasNext()) {
-        it.next();
-        QtProperty *component = it.value();
-        component->setEnabled(componentsInAllObjects.contains(it.key()));
     }
 }
 

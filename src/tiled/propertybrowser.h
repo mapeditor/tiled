@@ -206,7 +206,6 @@ private:
     void updateCustomProperties();
     void updateCustomPropertyColor(const QString &name);
 
-    void addComponents();
     void updateComponents();
 
     void onComponentPropertyChanged(Object *object, const QString &componentName, const QString &propertyName, const QVariant &value);
