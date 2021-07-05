@@ -63,6 +63,7 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QPushButton>
+#include <QScopedValueRollback>
 #include <QStackedWidget>
 #include <QStylePainter>
 #include <QToolBar>
@@ -383,13 +384,13 @@ void TilesetDock::selectTiles(const QList<Tile *> &tiles)
     }
 
     if (!selections.isEmpty()) {
-        mSynchronizingSelection = true;
+        QScopedValueRollback<bool> synchronizingSelection(mSynchronizingSelection, true);
 
         // Mark tiles as selected
         for (auto i = selections.constBegin(); i != selections.constEnd(); ++i) {
             QItemSelectionModel *selectionModel = i.key();
             const QItemSelection &selection = i.value();
-            selectionModel->select(selection, QItemSelectionModel::SelectCurrent);
+            selectionModel->select(selection, QItemSelectionModel::ClearAndSelect);
         }
 
         // Update the current tile (useful for animation and collision editors)
@@ -409,8 +410,6 @@ void TilesetDock::selectTiles(const QList<Tile *> &tiles)
             const int tilesetTabIndex = mTilesets.indexOf(tileset);
             mTabBar->setCurrentIndex(tilesetTabIndex);
         }
-
-        mSynchronizingSelection = false;
     }
 }
 
@@ -806,9 +805,8 @@ void TilesetDock::setCurrentTiles(std::unique_ptr<TileLayer> tiles)
         stamp->addLayer(mCurrentTiles->clone());
         stamp->addTilesets(mCurrentTiles->usedTilesets());
 
-        mEmittingStampCaptured = true;
+        QScopedValueRollback<bool> emittingStampCaptured(mEmittingStampCaptured, true);
         emit stampCaptured(TileStamp(std::move(stamp)));
-        mEmittingStampCaptured = false;
     }
 }
 

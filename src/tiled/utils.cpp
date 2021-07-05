@@ -29,7 +29,6 @@
 #ifdef TILED_ENABLE_DBUS
 #include <QDBusConnection>
 #include <QDBusMessage>
-#include <QPainter>
 #endif
 #include <QDesktopServices>
 #include <QDir>
@@ -41,6 +40,7 @@
 #include <QKeyEvent>
 #include <QMainWindow>
 #include <QMenu>
+#include <QPainter>
 #include <QProcess>
 #include <QRegularExpression>
 #if QT_VERSION < QT_VERSION_CHECK(5,15,0)

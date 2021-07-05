@@ -134,6 +134,7 @@ signals:
                          const QString &oldFileName);
     void modifiedChanged();
 
+    void currentObjectSet(Object *object);
     void currentObjectChanged(Object *object);
 
     /**

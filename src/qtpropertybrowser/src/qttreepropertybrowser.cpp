@@ -52,6 +52,7 @@
 #include <QStyle>
 #include <QPalette>
 #include <QScreen>
+#include <QScrollBar>
 
 #ifndef Q_OS_MAC
 static qreal defaultDpiScale()
@@ -1004,6 +1005,16 @@ int QtTreePropertyBrowser::splitterPosition() const
 void QtTreePropertyBrowser::setSplitterPosition(int position)
 {
     d_ptr->m_treeWidget->header()->resizeSection(0, position);
+}
+
+int QtTreePropertyBrowser::scrollPosition() const
+{
+    return d_ptr->m_treeWidget->verticalScrollBar()->value();
+}
+
+void QtTreePropertyBrowser::setScrollPosition(int value)
+{
+    d_ptr->m_treeWidget->verticalScrollBar()->setValue(value);
 }
 
 /*!
