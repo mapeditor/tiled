@@ -428,6 +428,13 @@ void MapObject::syncWithTemplate()
 
     if (!propertyChanged(MapObject::VisibleProperty))
         setVisible(base->isVisible());
+
+    QMapIterator<QString, Properties> it(base->components());
+    while (it.hasNext()) {
+        it.next();
+        if (!hasComponent(it.key()))
+            addComponent(it.key(), it.value());
+    }
 }
 
 void MapObject::detachFromTemplate()
