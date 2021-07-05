@@ -432,9 +432,8 @@ void MapObject::syncWithTemplate()
     QMapIterator<QString, Properties> it(base->components());
     while (it.hasNext()) {
         it.next();
-        if (!hasComponent(it.key())) {
+        if (!hasComponent(it.key()))
             addComponent(it.key(), it.value());
-        }
     }
 }
 
