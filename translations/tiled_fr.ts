@@ -287,22 +287,22 @@
     <message>
         <location filename="../src/tiled/donationpopup.cpp" line="+42"/>
         <source>Please consider supporting Tiled development with a small monthly donation.</source>
-        <translation type="unfinished"></translation>
+        <translation>S&apos;il vous plaît, veuillez penser à supporter le développement de Tiled avec une petite donation mensuelle.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Faire un &amp;don ↗</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>I&apos;m a &amp;supporter!</source>
-        <translation type="unfinished"></translation>
+        <translation>Je &amp;suis un donateur !</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>Peut-être plus tard (&amp;M)</translation>
     </message>
 </context>
 <context>
@@ -716,7 +716,7 @@
     <message>
         <location line="+142"/>
         <source>Support Tiled Development ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporter le Développement de Tiled ↗</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1706,22 +1706,22 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-53"/>
         <source>Major grid every:</source>
-        <translation type="unfinished"></translation>
+        <translation>Grille majeure tous les :</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Use s&amp;mooth scrolling</source>
-        <translation>Défilement &amp;doux</translation>
+        <translation>Défilement doux (&amp;M)</translation>
     </message>
     <message>
         <location line="+30"/>
         <source> tiles</source>
-        <translation type="unfinished"> tuiles</translation>
+        <translation> tuiles</translation>
     </message>
     <message>
         <location line="+47"/>
         <source>Background fade color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur de dégradé de fond :</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -4348,17 +4348,17 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+38"/>
         <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Le projet courant contient des &lt;a href=&quot;https://doc.mapeditor.org/fr/stable/reference/scripting/&quot;&gt;extensions scriptées&lt;/a&gt;.&lt;br&gt;&lt;i&gt;N&apos;activez que des extensions donc vous avez confiance!&lt;/i&gt;</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Enable Extensions</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer des &amp;Extensions</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">Fermer (&amp;C)</translation>
+        <translation>Fermer (&amp;C)</translation>
     </message>
     <message>
         <location line="+231"/>
@@ -6388,7 +6388,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-190"/>
         <source>Rearrange Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Réarranger des Tuiles</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -7303,7 +7303,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/relocatetiles.cpp" line="+33"/>
         <source>Relocate Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Transférer des Tuiles</translation>
     </message>
 </context>
 <context>
