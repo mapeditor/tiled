@@ -254,9 +254,9 @@ QList<Layer *> AbstractTileTool::targetLayersForStamp(const TileStamp &stamp) co
 
         if (isMultiLayer && !firstLayer->name().isEmpty()) {
             for (Layer *layer : variation.map->tileLayers()) {
-                TileLayer *target = static_cast<TileLayer*>(map.findLayer(layer->name(), Layer::TileLayerType));
-                if (!layers.contains(target))
-                    layers.append(target);
+                if (TileLayer *target = static_cast<TileLayer*>(map.findLayer(layer->name(), Layer::TileLayerType)))
+                    if (!layers.contains(target))
+                        layers.append(target);
             }
         } else {
             if (TileLayer *tileLayer = currentTileLayer())
