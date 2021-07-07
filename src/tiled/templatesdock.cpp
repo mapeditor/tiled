@@ -385,17 +385,7 @@ void TemplatesDock::fixTileset()
         return;
 
     if (tileset->imageStatus() == LoadingError) {
-        // This code opens a new document even if there is a tileset document
-        auto tilesetDocument = DocumentManager::instance()->findTilesetDocument(tileset);
-
-        if (!tilesetDocument) {
-            auto newTilesetDocument = TilesetDocumentPtr::create(tileset);
-            tilesetDocument = newTilesetDocument.data();
-            DocumentManager::instance()->addDocument(newTilesetDocument);
-        } else {
-            DocumentManager::instance()->openTileset(tileset);
-        }
-
+        auto tilesetDocument = DocumentManager::instance()->openTileset(tileset);
         connect(tilesetDocument, &TilesetDocument::tilesetChanged,
                 this, &TemplatesDock::checkTileset, Qt::UniqueConnection);
     } else if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {

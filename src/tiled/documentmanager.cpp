@@ -1164,9 +1164,9 @@ TilesetDocument* DocumentManager::findTilesetDocument(const QString &fileName) c
 }
 
 /**
- * Opens the document for the given \a tileset.
+ * Opens the document for the given \a tileset. Returns the tileset's document.
  */
-void DocumentManager::openTileset(const SharedTileset &tileset)
+TilesetDocument *DocumentManager::openTileset(const SharedTileset &tileset)
 {
     TilesetDocumentPtr tilesetDocument;
     if (auto existingTilesetDocument = findTilesetDocument(tileset))
@@ -1176,6 +1176,8 @@ void DocumentManager::openTileset(const SharedTileset &tileset)
 
     if (!switchToDocument(tilesetDocument.data()))
         addDocument(tilesetDocument);
+
+    return tilesetDocument.data();
 }
 
 void DocumentManager::addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)

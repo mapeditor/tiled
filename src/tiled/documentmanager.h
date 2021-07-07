@@ -132,7 +132,7 @@ public:
     TilesetDocument *findTilesetDocument(const SharedTileset &tileset) const;
     TilesetDocument *findTilesetDocument(const QString &fileName) const;
 
-    void openTileset(const SharedTileset &tileset);
+    TilesetDocument *openTileset(const SharedTileset &tileset);
 
     void abortMultiDocumentClose();
 

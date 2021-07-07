@@ -153,7 +153,7 @@ private:
     void retranslateUi();
 
     void onTilesetRowsInserted(const QModelIndex &parent, int first, int last);
-    void onTilesetRowsAboutToBeRemoved(const QModelIndex &parent, int first, int last);
+    void onTilesetRowsRemoved(const QModelIndex &parent, int first, int last);
     void onTilesetRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row);
     void onTilesetLayoutChanged(const QList<QPersistentModelIndex> &parents, QAbstractItemModel::LayoutChangeHint hint);
     void onTilesetDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
@@ -161,6 +161,7 @@ private:
     void onTabMoved(int from, int to);
     void tabContextMenuRequested(const QPoint &pos);
 
+    int indexOfTileset(const SharedTileset &tileset) const;
     TilesetView *currentTilesetView() const;
     TilesetView *tilesetViewAt(int index) const;
 
@@ -171,8 +172,6 @@ private:
 
     MapDocument *mMapDocument = nullptr;
 
-    // Shared tileset references because the dock wants to add new tiles
-    QVector<SharedTileset> mTilesets;
     QList<TilesetDocument *> mTilesetDocuments;
     TilesetDocumentsFilterModel *mTilesetDocumentsFilterModel;
 
