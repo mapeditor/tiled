@@ -438,7 +438,6 @@ void TileCollisionDock::setTile(Tile *tile)
         mToolManager->setMapDocument(nullptr);
     }
 
-
     emit dummyMapDocumentChanged(mDummyMapDocument.data());
 
     setHasSelectedObjects(false);
