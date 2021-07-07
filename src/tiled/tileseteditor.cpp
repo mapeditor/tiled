@@ -140,8 +140,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
     , mTileAnimationEditor(new TileAnimationEditor(mMainWindow))
-    , mCurrentTilesetDocument(nullptr)
-    , mCurrentTile(nullptr)
 {
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
     mMainWindow->setDockNestingEnabled(true);
