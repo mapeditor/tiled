@@ -159,7 +159,7 @@ void ObjectsView::saveExpandedLayers()
         const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(layer);
         const QModelIndex index = mProxyModel->mapFromSource(sourceIndex);
         if (isExpanded(index))
-            mExpandedLayers[mMapDocument].append(layer);
+            mExpandedLayers[mMapDocument].append(layer->id());
     }
 }
 
@@ -169,10 +169,12 @@ void ObjectsView::restoreExpandedLayers()
         return;
 
     const auto layers = mExpandedLayers.take(mMapDocument);
-    for (Layer *layer : layers) {
-        const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(layer);
-        const QModelIndex index = mProxyModel->mapFromSource(sourceIndex);
-        setExpanded(index, true);
+    for (const int layerId : layers) {
+        if (Layer *layer = mMapDocument->map()->findLayerById(layerId)) {
+            const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(layer);
+            const QModelIndex index = mProxyModel->mapFromSource(sourceIndex);
+            setExpanded(index, true);
+        }
     }
 }
 
