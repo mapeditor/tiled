@@ -85,7 +85,7 @@ private:
 
     MapDocument *mMapDocument = nullptr;
     ReversingRecursiveFilterModel *mProxyModel;
-    QMap<MapDocument*, QList<Layer*> > mExpandedLayers;
+    QMap<MapDocument*, QList<int> > mExpandedLayers;
     bool mSynching = false;
     bool mActiveFilter = false;
 };
