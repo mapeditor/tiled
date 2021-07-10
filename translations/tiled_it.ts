@@ -453,7 +453,7 @@
     <message>
         <location line="+29"/>
         <source>Error mapping tile id %1.</source>
-        <translation>Errore nella mappatura del tile id %1</translation>
+        <translation>Errore nella mappatura del tile id %1.</translation>
     </message>
     <message>
         <location line="+70"/>
