@@ -85,7 +85,7 @@
     <message>
         <location line="+22"/>
         <source>Failed to load source tileset.</source>
-        <translation>Caricamento del tileset fallito</translation>
+        <translation>Caricamento del tileset sorgente fallito.</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -373,7 +373,7 @@
     <message>
         <location line="+7"/>
         <source>Draw object &amp;names</source>
-        <translation>Disegna &amp;nomi oggetti</translation>
+        <translation>Disegna i &amp;nomi degli oggetti</translation>
     </message>
     <message>
         <location line="+7"/>
