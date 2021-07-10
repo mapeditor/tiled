@@ -508,7 +508,7 @@
     <message>
         <location line="+2"/>
         <source>JavaScript map files [Tiled 1.1] (*.js)</source>
-        <translation>File di mappa JSON [Tiled 1.1] (*.json)</translation>
+        <translation>File di mappa JavaScript [Tiled 1.1] (*.js)</translation>
     </message>
 </context>
 <context>
@@ -897,7 +897,7 @@
     <message>
         <location line="+30"/>
         <source>Tileset</source>
-        <translation type="unfinished">Tileset</translation>
+        <translation>Tileset</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -1716,7 +1716,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="+30"/>
         <source> tiles</source>
-        <translation type="unfinished"> tiles</translation>
+        <translation> tile</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -2358,7 +2358,7 @@ Linea %1, colonna %2</translation>
         <location line="+32"/>
         <location line="+23"/>
         <source> tiles</source>
-        <translation type="unfinished"> tiles</translation>
+        <translation> tile</translation>
     </message>
     <message>
         <location line="-75"/>
@@ -3275,7 +3275,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+269"/>
         <source>Tileset</source>
-        <translation type="unfinished">Tileset</translation>
+        <translation>Tileset</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4520,7 +4520,7 @@ Seleziona un formato specifico.</translation>
     <message>
         <location line="+358"/>
         <source>Tile</source>
-        <translation type="unfinished">Tile</translation>
+        <translation>Tile</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -6369,7 +6369,7 @@ Seleziona un formato specifico.</translation>
         <location filename="../src/tiled/tileseteditor.cpp" line="-789"/>
         <location line="+480"/>
         <source>Tileset</source>
-        <translation type="unfinished">Tileset</translation>
+        <translation>Tileset</translation>
     </message>
     <message>
         <location line="+2"/>
