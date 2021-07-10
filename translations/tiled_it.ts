@@ -503,12 +503,12 @@
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+15"/>
         <source>JSON map files [Tiled 1.1] (*.json)</source>
-        <translation>File mappa in JSON [Tiled 1.1] (*.json)</translation>
+        <translation>File di mappa JSON [Tiled 1.1] (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files [Tiled 1.1] (*.js)</source>
-        <translation>File mappa in JavaScript [Tiled 1.1] (*.js)</translation>
+        <translation>File di mappa JSON [Tiled 1.1] (*.json)</translation>
     </message>
 </context>
 <context>
