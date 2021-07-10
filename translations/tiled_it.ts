@@ -530,7 +530,7 @@
     <message>
         <location line="+14"/>
         <source>JSON template files (*.json)</source>
-        <translation>File template in JSON (*.json)</translation>
+        <translation>File di template JSON (*.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
@@ -1616,7 +1616,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="+21"/>
         <source>Repeat last export on save</source>
-        <translation>Ripeti ultimo export al salvataggio</translation>
+        <translation>Ripeti l&apos;ultimo export al salvataggio</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1731,7 +1731,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="+7"/>
         <source>Highlight new version in status bar</source>
-        <translation>Sottolinea nuova versione nella barra di stato</translation>
+        <translation>Mostra la nuova versione nella barra di stato</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -1774,7 +1774,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="-101"/>
         <source>Selection color:</source>
-        <translation>Selezione colore:</translation>
+        <translation>Colore selezione:</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1815,12 +1815,12 @@ Linea %1, colonna %2</translation>
     <message>
         <location filename="../src/plugins/python/pythonplugin.cpp" line="+274"/>
         <source>-- Using script %1 to read %2</source>
-        <translation>-- Usando script %1 per leggere %2</translation>
+        <translation>-- Usando lo script %1 per leggere %2</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>-- Using script %1 to write %2</source>
-        <translation>-- Usando script %1 per leggere %2</translation>
+        <translation>-- Usando lo script %1 per leggere %2</translation>
     </message>
     <message>
         <location line="+12"/>
