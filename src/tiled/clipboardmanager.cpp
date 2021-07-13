@@ -152,6 +152,8 @@ bool ClipboardManager::copySelection(const MapDocument &mapDocument)
                 selectionBounds.height(),
                 map->tileWidth(), map->tileHeight());
     copyMap.setRenderOrder(map->renderOrder());
+    copyMap.setStaggerAxis(map->staggerAxis());
+    copyMap.setStaggerIndex(map->staggerIndex());
 
     bool tileLayerSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),
                                          [] (Layer *layer) { return layer->isTileLayer(); });
