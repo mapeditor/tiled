@@ -402,7 +402,7 @@ void TileAnimationEditor::hideEvent(QHideEvent *)
 
 void TileAnimationEditor::framesEdited()
 {
-    if (mSuppressUndo || !mTilesetDocument)
+    if (mSuppressUndo || !mTilesetDocument || !mTile)
         return;
 
     QScopedValueRollback<bool> applyingChanges(mApplyingChanges, true);
@@ -461,7 +461,8 @@ void TileAnimationEditor::currentObjectChanged(Object *object)
 
 void TileAnimationEditor::addFrameForTileAt(const QModelIndex &index)
 {
-    Q_ASSERT(mTile);
+    if (!mTile)
+        return;
 
     const Tile *tile = mUi->tilesetView->tilesetModel()->tileAt(index);
     mFrameListModel->addTileIdAsFrame(tile->id());
