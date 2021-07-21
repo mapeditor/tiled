@@ -796,10 +796,12 @@ void TilesetDock::setCurrentTiles(std::unique_ptr<TileLayer> tiles)
 
     if (mCurrentTiles && mMapDocument) {
         // Create a tile stamp with these tiles
-        Map *map = mMapDocument->map();
-        std::unique_ptr<Map> stamp { new Map(map->orientation(),
-                                             mCurrentTiles->size(),
-                                             map->tileSize()) };
+        Map::Parameters mapParameters = mMapDocument->map()->parameters();
+        mapParameters.width = mCurrentTiles->width();
+        mapParameters.height = mCurrentTiles->height();
+        mapParameters.infinite = false;
+
+        auto stamp = std::make_unique<Map>(mapParameters);
         stamp->addLayer(mCurrentTiles->clone());
         stamp->addTilesets(mCurrentTiles->usedTilesets());
 

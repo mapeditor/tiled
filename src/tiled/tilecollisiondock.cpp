@@ -388,15 +388,20 @@ void TileCollisionDock::setTile(Tile *tile)
     mActionAutoDetectMask->setEnabled(tile);
 
     if (tile) {
-        Map::Orientation orientation = Map::Orthogonal;
-        QSize tileSize = tile->size();
+        Map::Parameters mapParameters;
+        mapParameters.width = 1;
+        mapParameters.height = 1;
 
         if (tile->tileset()->orientation() == Tileset::Isometric) {
-            orientation = Map::Isometric;
-            tileSize = tile->tileset()->gridSize();
+            mapParameters.orientation = Map::Isometric;
+            mapParameters.tileWidth = tile->tileset()->gridSize().width();
+            mapParameters.tileHeight = tile->tileset()->gridSize().height();
+        } else {
+            mapParameters.tileWidth = tile->width();
+            mapParameters.tileHeight = tile->height();
         }
 
-        std::unique_ptr<Map> map { new Map(orientation, 1, 1, tileSize.width(), tileSize.height()) };
+        auto map = std::make_unique<Map>(mapParameters);
         map->addTileset(tile->sharedTileset());
 
         TileLayer *tileLayer = new TileLayer(QString(), 0, 0, 1, 1);

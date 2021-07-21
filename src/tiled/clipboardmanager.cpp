@@ -147,13 +147,11 @@ bool ClipboardManager::copySelection(const MapDocument &mapDocument)
     const QRect selectionBounds = selectedArea.boundingRect();
 
     // Create a temporary map to write to the clipboard
-    Map copyMap(map->orientation(),
-                selectionBounds.width(),
-                selectionBounds.height(),
-                map->tileWidth(), map->tileHeight());
-    copyMap.setRenderOrder(map->renderOrder());
-    copyMap.setStaggerAxis(map->staggerAxis());
-    copyMap.setStaggerIndex(map->staggerIndex());
+    Map::Parameters mapParameters = map->parameters();
+    mapParameters.width = selectionBounds.width();
+    mapParameters.height = selectionBounds.height();
+    mapParameters.infinite = false;
+    Map copyMap(mapParameters);
 
     bool tileLayerSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),
                                          [] (Layer *layer) { return layer->isTileLayer(); });
