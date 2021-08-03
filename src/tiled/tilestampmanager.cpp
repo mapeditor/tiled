@@ -101,14 +101,14 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
             return stamp;
 
         const Map *map = mapDocument->map();
-        std::unique_ptr<Map> copyMap { new Map(map->orientation(),
-                                               copy->width(), copy->height(),
-                                               map->tileWidth(), map->tileHeight()) };
 
-        // Add tileset references to map
+        Map::Parameters mapParameters = map->parameters();
+        mapParameters.width = copy->width();
+        mapParameters.height = copy->height();
+        mapParameters.infinite = false;
+
+        auto copyMap = std::make_unique<Map>(mapParameters);
         copyMap->addTilesets(copy->usedTilesets());
-
-        copyMap->setRenderOrder(map->renderOrder());
         copyMap->addLayer(std::move(copy));
 
         stamp.addVariation(std::move(copyMap));

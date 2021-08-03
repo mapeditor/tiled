@@ -237,8 +237,17 @@ void TemplatesDock::refreshDummyObject()
         mDummyMapDocument = ourDummyDocuments.value(mObjectTemplate);
 
         if (!mDummyMapDocument) {
-            Map::Orientation orientation = Map::Orthogonal;
-            std::unique_ptr<Map> map { new Map(orientation, 1, 1, 1, 1) };
+            // TODO: Isometric template objects are currently not supported
+            Map::Parameters mapParameters;
+
+            // Setting sizes to 1 makes it render a one-pixel square (the map
+            // border), which serves as a somewhat hacky origin indicator.
+            mapParameters.width = 1;
+            mapParameters.height = 1;
+            mapParameters.tileWidth = 1;
+            mapParameters.tileHeight = 1;
+
+            auto map = std::make_unique<Map>(mapParameters);
 
             MapObject *dummyObject = mObjectTemplate->object()->clone();
             dummyObject->markAsTemplateBase();

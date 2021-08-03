@@ -244,19 +244,14 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("map"));
 
     const QXmlStreamAttributes atts = xml.attributes();
-    const int mapWidth = atts.value(QLatin1String("width")).toInt();
-    const int mapHeight = atts.value(QLatin1String("height")).toInt();
-    const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
-    const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
-    const int infinite = atts.value(QLatin1String("infinite")).toInt();
-    const int hexSideLength = atts.value(QLatin1String("hexsidelength")).toInt();
 
     const QString orientationString =
             atts.value(QLatin1String("orientation")).toString();
-    const Map::Orientation orientation =
-            orientationFromString(orientationString);
 
-    if (orientation == Map::Unknown) {
+    Map::Parameters mapParameters;
+    mapParameters.orientation = orientationFromString(orientationString);
+
+    if (mapParameters.orientation == Map::Unknown) {
         xml.raiseError(tr("Unsupported map orientation: \"%1\"")
                        .arg(orientationString));
     }
@@ -265,27 +260,33 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
     const QString staggerIndex = atts.value(QLatin1String("staggerindex")).toString();
     const QString renderOrder = atts.value(QLatin1String("renderorder")).toString();
 
+    mapParameters.renderOrder = renderOrderFromString(renderOrder);
+    mapParameters.width = atts.value(QLatin1String("width")).toInt();
+    mapParameters.height = atts.value(QLatin1String("height")).toInt();
+    mapParameters.tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
+    mapParameters.tileHeight = atts.value(QLatin1String("tileheight")).toInt();
+    mapParameters.infinite = atts.value(QLatin1String("infinite")).toInt();
+    mapParameters.hexSideLength = atts.value(QLatin1String("hexsidelength")).toInt();
+    mapParameters.staggerAxis = staggerAxisFromString(staggerAxis);
+    mapParameters.staggerIndex = staggerIndexFromString(staggerIndex);
+
+    const QString backgroundColor = atts.value(QLatin1String("backgroundcolor")).toString();
+    if (QColor::isValidColor(backgroundColor))
+        mapParameters.backgroundColor = QColor(backgroundColor);
+
+    mMap = std::make_unique<Map>(mapParameters);
+
     bool compressionLevelOk;
     const int compressionLevel = atts.value(QLatin1String("compressionlevel")).toInt(&compressionLevelOk);
-
     const int nextLayerId = atts.value(QLatin1String("nextlayerid")).toInt();
     const int nextObjectId = atts.value(QLatin1String("nextobjectid")).toInt();
 
-    mMap = std::make_unique<Map>(orientation, mapWidth, mapHeight, tileWidth, tileHeight, infinite);
-    mMap->setHexSideLength(hexSideLength);
-    mMap->setStaggerAxis(staggerAxisFromString(staggerAxis));
-    mMap->setStaggerIndex(staggerIndexFromString(staggerIndex));
-    mMap->setRenderOrder(renderOrderFromString(renderOrder));
     if (compressionLevelOk)
         mMap->setCompressionLevel(compressionLevel);
     if (nextLayerId)
         mMap->setNextLayerId(nextLayerId);
     if (nextObjectId)
         mMap->setNextObjectId(nextObjectId);
-
-    const QString backgroundColor = atts.value(QLatin1String("backgroundcolor")).toString();
-    if (QColor::isValidColor(backgroundColor))
-        mMap->setBackgroundColor(QColor(backgroundColor));
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("editorsettings"))

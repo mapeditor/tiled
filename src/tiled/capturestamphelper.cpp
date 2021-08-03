@@ -44,11 +44,13 @@ TileStamp CaptureStampHelper::endCapture(const MapDocument &mapDocument, QPoint 
     mActive = false;
 
     QRect captured = capturedArea(tilePosition);
-    std::unique_ptr<Map> stamp { new Map(mapDocument.map()->orientation(),
-                                         captured.width(),
-                                         captured.height(),
-                                         mapDocument.map()->tileWidth(),
-                                         mapDocument.map()->tileHeight()) };
+
+    Map::Parameters mapParameters = mapDocument.map()->parameters();
+    mapParameters.width = captured.width();
+    mapParameters.height = captured.height();
+    mapParameters.infinite = false;
+
+    auto stamp = std::make_unique<Map>(mapParameters);
 
     // Iterate all layers to make sure we're adding layers in the right order
     LayerIterator it(mapDocument.map(), Layer::TileLayerType);
@@ -70,17 +72,15 @@ TileStamp CaptureStampHelper::endCapture(const MapDocument &mapDocument, QPoint 
     }
 
     if (stamp->layerCount() > 0) {
-        auto staggerAxis = mapDocument.map()->staggerAxis();
-        auto staggerIndex = mapDocument.map()->staggerIndex();
+        auto staggerIndex = stamp->staggerIndex();
 
         // Gets if the relative stagger should be the same as the base layer
         int staggerIndexOffSet;
-        if (staggerAxis == Map::StaggerX)
+        if (stamp->staggerAxis() == Map::StaggerX)
             staggerIndexOffSet = captured.x() % 2;
         else
             staggerIndexOffSet = captured.y() % 2;
 
-        stamp->setStaggerAxis(staggerAxis);
         stamp->setStaggerIndex(static_cast<Map::StaggerIndex>((staggerIndex + staggerIndexOffSet) % 2));
 
         // Add tileset references to map
