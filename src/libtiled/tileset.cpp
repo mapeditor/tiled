@@ -375,6 +375,11 @@ static bool sameTileImages(const Tileset &subject, const Tileset &candidate)
  */
 SharedTileset Tileset::findSimilarTileset(const QVector<SharedTileset> &tilesets) const
 {
+    // The TilesetManager avoids loading the same external tileset twice, so
+    // for external tilesets we don't need to look for "similar" tilesets.
+    if (isExternal())
+        return SharedTileset();
+
     for (const SharedTileset &candidate : tilesets) {
         Q_ASSERT(candidate != this);
 
