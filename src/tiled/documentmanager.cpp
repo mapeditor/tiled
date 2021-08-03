@@ -457,7 +457,7 @@ void DocumentManager::switchToDocument(MapDocument *mapDocument, QPointF viewCen
 }
 
 /**
- * Switches to the given \a mapDocument, taking tilsets into accout
+ * Switches to the given \a mapDocument, taking tilesets into accout
  */
 void DocumentManager::switchToDocumentAndHandleSimiliarTileset(MapDocument *mapDocument, QPointF viewCenter, qreal scale)
 {
