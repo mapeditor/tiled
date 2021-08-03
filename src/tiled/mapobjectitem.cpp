@@ -197,11 +197,14 @@ void MapObjectItem::expandBoundsToCoverTileCollisionObjects(QRectF &bounds)
         return;
 
     const Tileset *tileset = cell.tileset();
-    const Map map(tileset->orientation() == Tileset::Orthogonal ? Map::Orthogonal
-                                                                : Map::Isometric,
-                  QSize(1, 1),
-                  tileset->gridSize());
 
+    Map::Parameters mapParameters;
+    mapParameters.orientation = tileset->orientation() == Tileset::Orthogonal ? Map::Orthogonal
+                                                                              : Map::Isometric;
+    mapParameters.tileWidth = tileset->gridSize().width();
+    mapParameters.tileHeight = tileset->gridSize().height();
+
+    const Map map(mapParameters);
     const auto renderer = MapRenderer::create(&map);
     const QTransform tileTransform = tileCollisionObjectsTransform(*tile);
 

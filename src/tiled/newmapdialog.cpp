@@ -150,10 +150,15 @@ MapDocumentPtr NewMapDialog::createMap()
     session::mapTileWidth = mUi->tileWidth->value();
     session::mapTileHeight = mUi->tileHeight->value();
 
-    std::unique_ptr<Map> map { new Map(session::mapOrientation,
-                                       session::mapWidth, session::mapHeight,
-                                       session::mapTileWidth, session::mapTileHeight,
-                                       !session::fixedSize) };
+    Map::Parameters mapParameters;
+    mapParameters.orientation = session::mapOrientation;
+    mapParameters.width = session::mapWidth;
+    mapParameters.height = session::mapHeight;
+    mapParameters.tileWidth = session::mapTileWidth;
+    mapParameters.tileHeight = session::mapTileHeight;
+    mapParameters.infinite = !session::fixedSize;
+
+    auto map = std::make_unique<Map>(mapParameters);
 
     map->setLayerDataFormat(session::layerDataFormat);
     map->setRenderOrder(session::renderOrder);
@@ -187,11 +192,14 @@ MapDocumentPtr NewMapDialog::createMap()
 
 void NewMapDialog::refreshPixelSize()
 {
-    const Map map(comboBoxValue<Map::Orientation>(mUi->orientation),
-                  mUi->mapWidth->value(),
-                  mUi->mapHeight->value(),
-                  mUi->tileWidth->value(),
-                  mUi->tileHeight->value());
+    Map::Parameters mapParameters;
+    mapParameters.orientation = comboBoxValue<Map::Orientation>(mUi->orientation);
+    mapParameters.width = mUi->mapWidth->value();
+    mapParameters.height = mUi->mapHeight->value();
+    mapParameters.tileWidth = mUi->tileWidth->value();
+    mapParameters.tileHeight = mUi->tileHeight->value();
+
+    const Map map(mapParameters);
     const QSize size = MapRenderer::create(&map)->mapBoundingRect().size();
 
     mUi->pixelSizeLabel->setText(tr("%1 x %2 pixels")

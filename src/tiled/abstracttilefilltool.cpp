@@ -184,9 +184,7 @@ void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
     }
 
     mFillBounds = fillRegion.boundingRect();
-    auto preview = SharedMap::create(mapDocument()->map()->orientation(),
-                                     mapDocument()->map()->size(),
-                                     mapDocument()->map()->tileSize());
+    auto preview = SharedMap::create(mapDocument()->map()->parameters());
 
     switch (mFillMethod) {
     case TileFill:

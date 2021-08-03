@@ -55,9 +55,10 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     const QVariantMap variantMap = variant.toMap();
     const QString orientationString = variantMap[QStringLiteral("orientation")].toString();
 
-    Map::Orientation orientation = orientationFromString(orientationString);
+    Map::Parameters mapParameters;
+    mapParameters.orientation = orientationFromString(orientationString);
 
-    if (orientation == Map::Unknown) {
+    if (mapParameters.orientation == Map::Unknown) {
         mError = tr("Unsupported map orientation: \"%1\"")
                 .arg(orientationString);
         return nullptr;
@@ -70,16 +71,21 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     const int nextLayerId = variantMap[QStringLiteral("nextlayerid")].toInt();
     const int nextObjectId = variantMap[QStringLiteral("nextobjectid")].toInt();
 
-    std::unique_ptr<Map> map(new Map(orientation,
-                                     variantMap[QStringLiteral("width")].toInt(),
-                                     variantMap[QStringLiteral("height")].toInt(),
-                                     variantMap[QStringLiteral("tilewidth")].toInt(),
-                                     variantMap[QStringLiteral("tileheight")].toInt(),
-                                     variantMap[QStringLiteral("infinite")].toInt()));
-    map->setHexSideLength(variantMap[QStringLiteral("hexsidelength")].toInt());
-    map->setStaggerAxis(staggerAxisFromString(staggerAxis));
-    map->setStaggerIndex(staggerIndexFromString(staggerIndex));
-    map->setRenderOrder(renderOrderFromString(renderOrder));
+    mapParameters.renderOrder = renderOrderFromString(renderOrder);
+    mapParameters.width = variantMap[QStringLiteral("width")].toInt();
+    mapParameters.height = variantMap[QStringLiteral("height")].toInt();
+    mapParameters.tileWidth = variantMap[QStringLiteral("tilewidth")].toInt();
+    mapParameters.tileHeight = variantMap[QStringLiteral("tileheight")].toInt();
+    mapParameters.infinite = variantMap[QStringLiteral("infinite")].toInt();
+    mapParameters.hexSideLength = variantMap[QStringLiteral("hexsidelength")].toInt();
+    mapParameters.staggerAxis = staggerAxisFromString(staggerAxis);
+    mapParameters.staggerIndex = staggerIndexFromString(staggerIndex);
+
+    const QString bgColor = variantMap[QStringLiteral("backgroundcolor")].toString();
+    if (QColor::isValidColor(bgColor))
+        mapParameters.backgroundColor = QColor(bgColor);
+
+    auto map = std::make_unique<Map>(mapParameters);
     if (nextLayerId)
         map->setNextLayerId(nextLayerId);
     if (nextObjectId)
@@ -89,10 +95,6 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
 
     mMap = map.get();
     map->setProperties(extractProperties(variantMap));
-
-    const QString bgColor = variantMap[QStringLiteral("backgroundcolor")].toString();
-    if (QColor::isValidColor(bgColor))
-        map->setBackgroundColor(QColor(bgColor));
 
     const auto tilesetVariants = variantMap[QStringLiteral("tilesets")].toList();
     for (const QVariant &tilesetVariant : tilesetVariants) {

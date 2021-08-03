@@ -61,7 +61,14 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
     }
 
     // default to values of the original Flare alpha game.
-    auto map = std::make_unique<Map>(Map::Isometric, 256, 256, 64, 32);
+    Map::Parameters mapParameters;
+    mapParameters.orientation = Map::Isometric;
+    mapParameters.width = 256;
+    mapParameters.height = 256;
+    mapParameters.tileWidth = 64;
+    mapParameters.tileHeight = 32;
+
+    auto map = std::make_unique<Map>(mapParameters);
 
     QTextStream stream (&file);
     QString line;

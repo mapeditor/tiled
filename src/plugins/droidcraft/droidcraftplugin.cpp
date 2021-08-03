@@ -60,7 +60,12 @@ std::unique_ptr<Tiled::Map> DroidcraftPlugin::read(const QString &fileName)
     // Build 48 x 48 map
     // Create a Map -> Create a Tileset -> Add Tileset to map
     // -> Create a TileLayer -> Fill layer -> Add TileLayer to Map
-    std::unique_ptr<Map> map { new Map(Map::Orthogonal, 48, 48, 32, 32) };
+    Map::Parameters mapParameters;
+    mapParameters.width = 48;
+    mapParameters.height = 48;
+    mapParameters.tileWidth = 32;
+    mapParameters.tileHeight = 32;
+    auto map = std::make_unique<Map>(mapParameters);
 
     SharedTileset mapTileset(Tileset::create("tileset", 32, 32));
     mapTileset->loadFromImage(QImage(":/tileset.png"), QUrl("qrc://tileset.png"));
