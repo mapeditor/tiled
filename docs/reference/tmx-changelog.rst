@@ -7,9 +7,9 @@ Below are described the changes/additions that were made to the
 Tiled 1.7
 ---------
 
--  The :ref:`tmx-tile` elements in a tileset are no longer always saved with
-   increasing IDs. They are now saved in the display order, which can be changed
-   in Tiled.
+-  The :ref:`tmx-tileset-tile` elements in a tileset are no longer always saved
+   with increasing IDs. They are now saved in the display order, which can be
+   changed in Tiled.
 
 Tiled 1.5
 ---------
