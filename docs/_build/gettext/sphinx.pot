@@ -16,20 +16,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../../index.rst:10
-#: ../../index.rst:10
-msgid "User Manual"
+#: ../../_templates/layout.html:61
+msgid "Search within %(docstitle)s"
 msgstr ""
 
-#: ../../index.rst:32
-#: ../../index.rst:32
-msgid "Reference"
+#: ../../_templates/layout.html:83
+msgid "About these documents"
 msgstr ""
 
-#: ../../index.rst:2
-msgid "Tiled Documentation"
+#: ../../_templates/layout.html:86
+msgid "Index"
 msgstr ""
 
-#: ../../index.rst:6
-msgid "If you're not finding what you're looking for on these pages, please don't hesitate to ask questions on the `Tiled Forum <https://discourse.mapeditor.org>`_ or the `Tiled Discord <https://discord.gg/39wbTv7>`_."
+#: ../../_templates/layout.html:89
+msgid "Search"
+msgstr ""
+
+#: ../../_templates/layout.html:92
+msgid "Copyright"
 msgstr ""
