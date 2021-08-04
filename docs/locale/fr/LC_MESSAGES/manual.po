@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2021-07-11 17:34+0000\n"
+"PO-Revision-Date: 2021-08-04 12:08+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
 "\n"
@@ -1685,8 +1685,8 @@ msgid ""
 "except it uses Wang sets. Key differences are:"
 msgstr ""
 "La Brosse Wang marche de la même façon que :ref:`l'outil de terrain <terrain-"
-"tool>`, sauf qu'elle utilise des sets Wang. Les différences principales sont "
-":"
+"tool>`, sauf qu'elle utilise des collections Wang. Les différences "
+"principales sont :"
 
 #: ../../manual/editing-tile-layers.rst:93
 msgid ""
@@ -2043,8 +2043,8 @@ msgstr ""
 "Longueur de Grille** et **Hauteur de Grille**, est prise en compte par les "
 "éléments affichés au dessus des tuiles. C'est utile lors de la spécification "
 "de :ref:`l'information de terrain <terrain-information>` ou lors de "
-"l'édition de :ref:`sets Wang <wang-sets>`, par exemple. Cela affecte aussi "
-"l'orientation utilisée par :ref:`l'éditeur de collision de tuile <tile-"
+"l'édition de :ref:`collections Wang <wang-sets>`, par exemple. Cela affecte "
+"aussi l'orientation utilisée par :ref:`l'éditeur de collision de tuile <tile-"
 "collision-editor>`."
 
 #: ../../manual/editing-tilesets.rst:77
@@ -2159,17 +2159,21 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:131
 msgid "Wang Sets"
-msgstr ""
+msgstr "Collections Wang"
 
 #: ../../manual/editing-tilesets.rst:133
 msgid ""
 "A tileset can contain any number of Wang sets for use with the :ref"
 ":`wang-tool`. See :ref:`defining-wang-tile-info` for more information."
 msgstr ""
+"Un jeu de tuiles peut contenir tout nombre de collections Wang à utiliser "
+"avec l'ref:`outil Wang <wang-tool>`. Visitez la page sur la :ref:`définition "
+"des informations des tuiles Wang <defining-wang-tile-info>` pour plus "
+"d'informations."
 
 #: ../../manual/editing-tilesets.rst:140 ../../manual/editing-tilesets.rst:155
 msgid "Tile Collision Editor"
-msgstr ""
+msgstr "Éditeur de Collision de Tuiles"
 
 #: ../../manual/editing-tilesets.rst:142
 msgid ""
