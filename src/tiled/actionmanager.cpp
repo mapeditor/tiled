@@ -51,7 +51,7 @@ void ActionManager::registerAction(QAction *action, Id id)
 {
     auto d = instance();
 
-    Q_ASSERT_X(!d->mIdToActions.contains(id, action), "ActionManager::registerAction", "duplicate action");
+    Q_ASSERT_X(!d->mIdToActions.contains(id, action), "ActionManager::registerAction", "action already registered");
     d->mIdToActions.insert(id, action);
     d->mLastKnownShortcuts.insert(id, action->shortcut());
 
