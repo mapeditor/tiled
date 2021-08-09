@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-04 15:34+0200\n"
+"POT-Creation-Date: 2021-08-09 11:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -153,7 +153,7 @@ msgid "index must not contain an underscore."
 msgstr ""
 
 #: ../../manual/automapping.rst:115
-msgid "index must not start with *not*"
+msgid "index must not start with *not*."
 msgstr ""
 
 #: ../../manual/automapping.rst:116
@@ -374,7 +374,7 @@ msgid "The Mana World Examples"
 msgstr ""
 
 #: ../../manual/automapping.rst:320
-msgid "The Mana world examples will demonstrate quite a lot of different Automapping features. At first a shoreline will be constructed, by first adding all the straight parts and afterwards another rule will correct the corners to make them also fit the given tileset. After the shoreline has been added, the waters will be marked as unwalkable for the game engine. Last but not least the grass should be tiles should be made random by using 5 different grasss tiles."
+msgid "The Mana World examples will demonstrate quite a lot of different Automapping features. At first a shoreline will be constructed, by first adding all the straight parts and afterwards another rule will correct the corners to make them also fit the given tileset. After the shoreline has been added, the waters will be marked as unwalkable for the game engine. Last but not least the grass should be tiles should be made random by using 5 different grass tiles."
 msgstr ""
 
 #: ../../manual/automapping.rst:330
@@ -414,7 +414,6 @@ msgid "So basically the meaning we will define in the input region is: *All tile
 msgstr ""
 
 #: ../../manual/automapping.rst:367
-#: ../../manual/automapping.rst:429
 #: ../../manual/automapping.rst:537
 #: ../../manual/automapping.rst:584
 #: ../../manual/automapping.rst:634
@@ -463,11 +462,15 @@ msgid "Both the tiles in the top right corner and in the lower left corner are d
 msgstr ""
 
 #: ../../manual/automapping.rst:422
-msgid "We can see 3 different tiles for the lower left corner, which is straight shore line, bent inside and bend outside shore lines."
+msgid "We can see 3 different tiles for the lower left corner, which is straight shore line, bent inside and bent outside shore lines."
 msgstr ""
 
 #: ../../manual/automapping.rst:425
 msgid "Also we see 3 different inputs for the top right corner, which also is straight, bent in or out shore line."
+msgstr ""
+
+#: ../../manual/automapping.rst:429
+msgid "Input and Output Regions"
 msgstr ""
 
 #: ../../manual/automapping.rst:431
@@ -475,16 +478,15 @@ msgid "So with this rule we want to put the bent in shore line tile in the top l
 msgstr ""
 
 #: ../../manual/automapping.rst:440
-msgid "Therefore we will need different input and output regions. In the figure we can see the both tilelayers regions input and regions output. The input section covers just these two tiles as we discussed. The output region covers just the single tile we want to output. Though the input and output region do not overlap, the united region of both the input and the output region is still one coherent region, so it's one rule and works."
+msgid "Therefore we will need different input and output regions. In the figure we can see the both tile layers regions input and regions output. The input section covers just these two tiles as we discussed. The output region covers just the single tile we want to output. Though the input and output region do not overlap, the united region of both the input and the output region is still one coherent region, so it's one rule and works."
 msgstr ""
 
 #: ../../manual/automapping.rst:448
-msgid "Output regions can be larger than absolutely required, since when there are no tiles in the Output section, the tiles in the working map are not overwritten but just kept as is, hence the Output region could also be sized as the united region of both the output and input region."
+msgid "Output regions can be larger than absolutely required, since where there are no tiles in an output region, the tiles in the working map are not overwritten but just kept as is, hence each output region could also be sized as the united region of both the output and input region."
 msgstr ""
 
 #: ../../manual/automapping.rst:454
-#: ../../manual/automapping.rst:512
-msgid "regions\\_input"
+msgid "Input Layers"
 msgstr ""
 
 #: ../../manual/automapping.rst:456
@@ -492,7 +494,7 @@ msgid "Now we want to put all the nine possible patterns we observed as possible
 msgstr ""
 
 #: ../../manual/automapping.rst:460
-msgid "Nine TileLayers?! what a mess, we'll do it a better way."
+msgid "Nine TileLayers?! What a mess, we'll do it a better way."
 msgstr ""
 
 #: ../../manual/automapping.rst:462
@@ -504,11 +506,11 @@ msgid "So let's try a smart way: All input layers have the same name, so at each
 msgstr ""
 
 #: ../../manual/automapping.rst:483
-msgid "outputs"
+msgid "Output Layer"
 msgstr ""
 
 #: ../../manual/automapping.rst:485
-msgid "The output is straight forward, since only one tile is needed. No randomness is needed, hence the index is not needed to be varied, so it's kept empty. The desired output layer is called Ground, so the over all name of the single output layer will be output Ground. At this single layer at the correct location the correct tile is placed."
+msgid "The output is straight forward, since only one tile is needed. No randomness is needed, hence the index is not needed to be varied, so it's kept empty. The desired output layer is called Ground, so the over all name of the single output layer will be output\\_Ground. The correct tile is placed at the correct location with this layer."
 msgstr ""
 
 #: ../../manual/automapping.rst:496
@@ -517,6 +519,10 @@ msgstr ""
 
 #: ../../manual/automapping.rst:498
 msgid "This is for corners bent the other way round. Basically it has the same concepts, just other tiles."
+msgstr ""
+
+#: ../../manual/automapping.rst:512
+msgid "regions\\_input"
 msgstr ""
 
 #: ../../manual/automapping.rst:514
@@ -568,7 +574,7 @@ msgid "Random Grass Tiles"
 msgstr ""
 
 #: ../../manual/automapping.rst:566
-msgid "In this example we will shuffle all grass tiles, so one grass tiles will be replaced with another randomly chosen tile."
+msgid "In this example we will shuffle all grass tiles, so each grass tile will be replaced with a randomly chosen tile."
 msgstr ""
 
 #: ../../manual/automapping.rst:569
@@ -604,7 +610,7 @@ msgid "output5\\_Ground"
 msgstr ""
 
 #: ../../manual/automapping.rst:608
-msgid "An alternating wall"
+msgid "An Alternating Wall"
 msgstr ""
 
 #: ../../manual/automapping.rst:610
@@ -616,7 +622,7 @@ msgid "In my opinion a dedicated set layer is much easier to use for the rough d
 msgstr ""
 
 #: ../../manual/automapping.rst:623
-msgid "The structure of the input, output and region layer is very similar to the example of the straight shoreline in The Mana World examples. The main difference is the different size. Since the wall contains multiple tiles in height, the height of the rulelayers is different as well. Vertically the tiles are also alternating. As you can see in the following figure, every second tile displaying the base board of the wall has a notch for example."
+msgid "The structure of the input, output and region layer is very similar to the example of the straight shoreline in The Mana World examples. The main difference is the different size. Since the wall contains multiple tiles in height, the height of the rule layers are different as well. Vertically the tiles are also alternating. As you can see in the following figure, every second tile displaying the base board of the wall has a notch for example."
 msgstr ""
 
 #: ../../manual/automapping.rst:638
@@ -640,7 +646,7 @@ msgid "Only the lowest 2 coordinates contain the brown tile. The upper coordinat
 msgstr ""
 
 #: ../../manual/automapping.rst:656
-msgid "The output consists of only one layer as well called *Output\\_Walls*. It contains the actual wall tiles."
+msgid "The output consists of only one layer as well called *output\\_Walls*. It contains the actual wall tiles."
 msgstr ""
 
 #: ../../manual/automapping.rst:661
@@ -660,7 +666,7 @@ msgid "Hence when we use the rule as discussed now, we will get not the desired 
 msgstr ""
 
 #: ../../manual/automapping.rst:676
-msgid "Since the overlapping is not desired, we can turn it off by adding a map property to the rulemap *NoOverlappingRules* and setting it to *true*"
+msgid "Since the overlapping is not desired, we can turn it off by adding the map property *NoOverlappingRules* to the rulemap and setting it to *true*."
 msgstr ""
 
 #: ../../manual/automapping.rst:679
@@ -1155,7 +1161,7 @@ msgid "Terrain Information"
 msgstr ""
 
 #: ../../manual/editing-tilesets.rst:135
-msgid "Terrain information can be added to a tileset to enable the use of the the :ref:`terrain-tool`. See the section about :ref:`defining terrain information <define-terrain-information>`."
+msgid "Terrain information can be added to a tileset to enable the use of the :ref:`terrain-tool`. See the section about :ref:`defining terrain information <define-terrain-information>`."
 msgstr ""
 
 #: ../../manual/editing-tilesets.rst:146
