@@ -33,7 +33,7 @@ TiledPlugin {
         condition: pkgConfigPython3Embed.found || pkgConfigPython3.found
         cpp.cxxFlags: {
             var flags = pkgConfigPython3Embed.found ? pkgConfigPython3Embed.cflags : pkgConfigPython3.cflags
-            if (qbs.toolchain.contains("gcc"))
+            if (qbs.toolchain.contains("gcc") && !qbs.toolchain.contains("clang"))
                 flags.push("-Wno-cast-function-type")
             return flags
         }
