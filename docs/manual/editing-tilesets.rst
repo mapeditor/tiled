@@ -133,7 +133,7 @@ Terrain Information
 -------------------
 
 Terrain information can be added to a tileset to enable the use of the
-the :ref:`terrain-tool`. See the section about
+:ref:`terrain-tool`. See the section about
 :ref:`defining terrain information <define-terrain-information>`.
 
 .. raw:: html
