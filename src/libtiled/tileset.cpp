@@ -50,21 +50,14 @@ SharedTileset Tileset::create(const QString &name, int tileWidth, int tileHeight
 }
 
 Tileset::Tileset(QString name, int tileWidth, int tileHeight,
-                 int tileSpacing, int margin):
-    Object(TilesetType),
-    mName(std::move(name)),
-    mTileWidth(tileWidth),
-    mTileHeight(tileHeight),
-    mTileSpacing(tileSpacing),
-    mMargin(margin),
-    mObjectAlignment(Unspecified),
-    mOrientation(Orthogonal),
-    mGridSize(tileWidth, tileHeight),
-    mColumnCount(0),
-    mExpectedColumnCount(0),
-    mExpectedRowCount(0),
-    mNextTileId(0),
-    mStatus(LoadingReady)
+                 int tileSpacing, int margin)
+    : Object(TilesetType)
+    , mName(std::move(name))
+    , mTileWidth(tileWidth)
+    , mTileHeight(tileHeight)
+    , mTileSpacing(tileSpacing)
+    , mMargin(margin)
+    , mGridSize(tileWidth, tileHeight)
 {
     Q_ASSERT(tileSpacing >= 0);
     Q_ASSERT(margin >= 0);

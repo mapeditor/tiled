@@ -184,7 +184,7 @@ protected:
 private:
     QList<MapObject*> mObjects;
     QColor mColor;
-    DrawOrder mDrawOrder;
+    DrawOrder mDrawOrder = TopDownOrder;
 };
 
 
