@@ -56,7 +56,12 @@ ClipboardManager::ClipboardManager()
     , mHasMap(false)
     , mHasProperties(false)
 {
-    connect(mClipboard, &QClipboard::dataChanged, this, &ClipboardManager::update);
+    // Connection queued to avoid a potential crash in QXcbClipboard::mimeData
+    // in direct response to QClipboard::emitChanged (see QTBUG-22552).
+    connect(mClipboard, &QClipboard::dataChanged,
+            this, &ClipboardManager::update,
+            Qt::QueuedConnection);
+
     update();
 }
 
