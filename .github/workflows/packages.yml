@@ -405,4 +405,4 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
           environment: releases
-          version: ${{ needs.version.outputs.version }}
+          version: tiled@${{ needs.version.outputs.version }}
