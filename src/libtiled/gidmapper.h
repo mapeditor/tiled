@@ -73,7 +73,7 @@ public:
 private:
     QMap<unsigned, SharedTileset> mFirstGidToTileset;
 
-    mutable unsigned mInvalidTile;
+    mutable unsigned mInvalidTile = 0;
 };
 
 
