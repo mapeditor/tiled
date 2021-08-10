@@ -72,16 +72,12 @@ TileStamp CaptureStampHelper::endCapture(const MapDocument &mapDocument, QPoint 
     }
 
     if (stamp->layerCount() > 0) {
-        auto staggerIndex = stamp->staggerIndex();
+        // Adjust the stagger index when the capture starts at an odd offset
+        const auto staggerIndex = stamp->staggerIndex();
+        const int staggerOffSet = (stamp->staggerAxis() == Map::StaggerX ? captured.x()
+                                                                         : captured.y()) % 2;
 
-        // Gets if the relative stagger should be the same as the base layer
-        int staggerIndexOffSet;
-        if (stamp->staggerAxis() == Map::StaggerX)
-            staggerIndexOffSet = captured.x() % 2;
-        else
-            staggerIndexOffSet = captured.y() % 2;
-
-        stamp->setStaggerIndex(static_cast<Map::StaggerIndex>((staggerIndex + staggerIndexOffSet) % 2));
+        stamp->setStaggerIndex(static_cast<Map::StaggerIndex>((staggerIndex + staggerOffSet) % 2));
 
         // Add tileset references to map
         stamp->addTilesets(stamp->usedTilesets());
