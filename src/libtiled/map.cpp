@@ -416,15 +416,20 @@ void Map::normalizeTileLayerPositionsAndMapSize()
     while (auto tileLayer = static_cast<TileLayer*>(it.next()))
         contentRect |= tileLayer->region().boundingRect();
 
-    if (!contentRect.isEmpty()) {
-        QPoint offset = contentRect.topLeft();
+    if (!contentRect.topLeft().isNull()) {
         it.toFront();
         while (auto tileLayer = static_cast<TileLayer*>(it.next()))
-            tileLayer->setPosition(tileLayer->position() - offset);
+            tileLayer->setPosition(tileLayer->position() - contentRect.topLeft());
 
-        setWidth(contentRect.width());
-        setHeight(contentRect.height());
+        // Adjust the stagger index when layers are moved by odd amounts
+        const int staggerOffSet = (staggerAxis() == Map::StaggerX ? contentRect.x()
+                                                                  : contentRect.y()) % 2;
+
+        setStaggerIndex(static_cast<Map::StaggerIndex>((staggerIndex() + staggerOffSet) % 2));
     }
+
+    setWidth(contentRect.width());
+    setHeight(contentRect.height());
 }
 
 /**
