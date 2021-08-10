@@ -1,3 +1,15 @@
+### Tiled 1.7.2 (10 August 2021)
+
+* Avoid automatically replacing external tilesets with "similar" ones
+* Fixed copying and capturing stamps on staggered maps (with Alexander Dorogov, #2874)
+* Fixed possible crash in Tile Animation Editor
+* Fixed data loss when saving maps with tilesets that failed to load (#3106)
+* Fixed creating multi-layer tile stamp from selection (#2899)
+* Scripting: Automatically reset object ID when adding to avoid duplicate IDs
+* Linux: Possible workaround for crash in clipboard manager
+* Updated to Sentry 0.4.12
+* Updated Italian translation
+
 ### Tiled 1.7.1 (9 July 2021)
 
 * Don't save export target and format to exported files
