@@ -33,6 +33,8 @@
 #include "tiled.h"
 #include "tileset.h"
 
+#include <algorithm>
+
 using namespace Tiled;
 
 // Bits on the far end of the 32-bit global tile ID are used for tile flags
@@ -47,7 +49,6 @@ const unsigned RotatedHexagonal120Flag   = 0x10000000;
  * incrementally.
  */
 GidMapper::GidMapper()
-    : mInvalidTile(0)
 {
 }
 
@@ -101,8 +102,11 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
             const SharedTileset &tileset = i.value();
 
             result.setTile(tileset.data(), tileId);
-
             ok = true;
+
+            // Adjust the next tile ID, in order to preserve tile references
+            // even to tilesets that failed to load.
+            tileset->setNextTileId(std::max(tileset->nextTileId(), tileId + 1));
         }
     }
 
