@@ -86,32 +86,26 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
         stamp = fillTool->stamp();
     } else if (auto mapDocument = qobject_cast<MapDocument*>(DocumentManager::instance()->currentDocument())) {
         // try making a stamp from the current tile selection
-        const auto tileLayer = dynamic_cast<TileLayer*>(mapDocument->currentLayer());
-        if (!tileLayer)
+        const QRegion &selectedArea = mapDocument->selectedArea();
+        if (selectedArea.isEmpty())
             return stamp;
 
-        QRegion selection = mapDocument->selectedArea().intersected(tileLayer->bounds());
-        if (selection.isEmpty())
-            return stamp;
-
-        selection.translate(-tileLayer->position());
-        auto copy = tileLayer->copy(selection);
-
-        if (copy->isEmpty())
-            return stamp;
-
+        const QRect selectionBounds = selectedArea.boundingRect();
         const Map *map = mapDocument->map();
 
         Map::Parameters mapParameters = map->parameters();
-        mapParameters.width = copy->width();
-        mapParameters.height = copy->height();
+        mapParameters.width = selectionBounds.width();
+        mapParameters.height = selectionBounds.height();
         mapParameters.infinite = false;
-
         auto copyMap = std::make_unique<Map>(mapParameters);
-        copyMap->addTilesets(copy->usedTilesets());
-        copyMap->addLayer(std::move(copy));
 
-        stamp.addVariation(std::move(copyMap));
+        map->copyLayers(mapDocument->selectedLayers(), selectedArea, *copyMap);
+
+        if (map->layerCount() > 0) {
+            copyMap->normalizeTileLayerPositionsAndMapSize();
+            copyMap->addTilesets(copyMap->usedTilesets());
+            stamp.addVariation(std::move(copyMap));
+        }
     }
 
     return stamp;

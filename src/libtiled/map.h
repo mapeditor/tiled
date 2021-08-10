@@ -287,6 +287,12 @@ public:
 
     std::unique_ptr<Map> clone() const;
 
+    void copyLayers(const QList<Layer*> &layers,
+                    const QRegion &tileRegion,
+                    Map &targetMap) const;
+
+    void normalizeTileLayerPositionsAndMapSize();
+
     bool isStaggered() const;
 
     LayerDataFormat layerDataFormat() const;
