@@ -164,7 +164,9 @@ Managing Tile Stamps
 It can often be useful to store the current tile stamp somewhere to use
 it again later. The following shortcuts work for this purpose:
 
--  ``Ctrl + 1-9`` - Store current tile stamp (similar to ``Ctrl + C``)
+-  ``Ctrl + 1-9`` - Store current tile stamp. When no tile drawing tool is
+   selected, tries to capture the current tile selection (similar to
+   ``Ctrl + C``).
 -  ``1-9`` - Recall the stamp stored at this location (similar to
    ``Ctrl + V``)
 
