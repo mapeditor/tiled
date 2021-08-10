@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Tiled 1.7.1 released
+title: Tiled 1.7.1 Released
 author:
   name: Thorbjørn Lindeijer
   twitter: thorbjorn81
