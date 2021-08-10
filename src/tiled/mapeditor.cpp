@@ -683,25 +683,6 @@ void MapEditor::updateActiveUndoStack()
     }
 }
 
-static void normalizeTileLayerPositionsAndMapSize(Map *map)
-{
-    LayerIterator it(map, Layer::TileLayerType);
-
-    QRect contentRect;
-    while (auto tileLayer = static_cast<TileLayer*>(it.next()))
-        contentRect |= tileLayer->region().boundingRect();
-
-    if (!contentRect.isEmpty()) {
-        QPoint offset = contentRect.topLeft();
-        it.toFront();
-        while (auto tileLayer = static_cast<TileLayer*>(it.next()))
-            tileLayer->setPosition(tileLayer->position() - offset);
-
-        map->setWidth(contentRect.width());
-        map->setHeight(contentRect.height());
-    }
-}
-
 void MapEditor::paste(ClipboardManager::PasteFlags flags)
 {
     if (!mCurrentMapDocument)
@@ -729,7 +710,7 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
         } else {
             // Reset selection and paste into the stamp brush
             MapDocumentActionHandler::instance()->selectNone();
-            normalizeTileLayerPositionsAndMapSize(mapPtr);
+            mapPtr->normalizeTileLayerPositionsAndMapSize();
             setStamp(TileStamp(std::move(map))); // TileStamp takes ownership
             mToolManager->selectTool(mStampBrush);
         }

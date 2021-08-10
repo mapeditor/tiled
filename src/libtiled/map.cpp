@@ -364,6 +364,70 @@ std::unique_ptr<Map> Map::clone() const
 }
 
 /**
+ * Copies the given \a tileRegion of the \a layers to \a targetMap.
+ *
+ * When there is no intersection with between the tile region and a tile
+ * layer's bounds, the layer is not added to the target map.
+ *
+ * Currently only copies tile layers.
+ */
+void Map::copyLayers(const QList<Layer *> &layers,
+                     const QRegion &tileRegion,
+                     Map &targetMap) const
+{
+    LayerIterator layerIterator(this);
+    while (Layer *layer = layerIterator.next()) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            if (!layers.contains(layer))    // ignore unselected tile layers
+                continue;
+
+            const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
+            const QRegion area = tileRegion.intersected(tileLayer->bounds());
+            if (area.isEmpty())                     // nothing to copy
+                continue;
+
+            // Copy the selected part of the layer
+            auto copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
+            copyLayer->setName(tileLayer->name());
+            copyLayer->setPosition(area.boundingRect().topLeft());
+
+            targetMap.addLayer(std::move(copyLayer));
+            break;
+        }
+        case Layer::ObjectGroupType: // todo: maybe it makes sense to group selected objects by layer
+        case Layer::ImageLayerType:
+        case Layer::GroupLayerType:
+            break;  // nothing to do
+        }
+    }
+}
+
+/**
+ * Determines the unified content area of all tile layers and then repositions
+ * those layers to eliminate unnecessary offset. Also sets the size of the map
+ * to encompass the final tile layer contents exactly.
+ */
+void Map::normalizeTileLayerPositionsAndMapSize()
+{
+    LayerIterator it(this, Layer::TileLayerType);
+
+    QRect contentRect;
+    while (auto tileLayer = static_cast<TileLayer*>(it.next()))
+        contentRect |= tileLayer->region().boundingRect();
+
+    if (!contentRect.isEmpty()) {
+        QPoint offset = contentRect.topLeft();
+        it.toFront();
+        while (auto tileLayer = static_cast<TileLayer*>(it.next()))
+            tileLayer->setPosition(tileLayer->position() - offset);
+
+        setWidth(contentRect.width());
+        setHeight(contentRect.height());
+    }
+}
+
+/**
  * Returns a list of MapObjects to be updated in the map scene
  */
 QList<MapObject*> Map::replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
