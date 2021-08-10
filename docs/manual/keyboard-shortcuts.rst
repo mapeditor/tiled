@@ -72,8 +72,9 @@ When a tile layer is selected
 -  ``R`` - Activate Rectangular Select
 -  ``W`` - Activate Magic Wand
 -  ``S`` - Activate Select Same Tile
--  ``Ctrl + 1-9`` - Store current tile selection (similar to
-   ``Ctrl + C``)
+-  ``Ctrl + 1-9`` - Store current tile stamp. When no tile drawing tool is
+   selected, tries to capture the current tile selection (similar to
+   ``Ctrl + C``).
 -  ``1-9`` recall the previous selection (similar to ``Ctrl + V``)
 -  ``Ctrl + A`` - Select the whole layer
 -  ``Ctrl + Shift + A`` - Select nothing
