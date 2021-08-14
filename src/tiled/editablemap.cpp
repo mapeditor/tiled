@@ -395,44 +395,32 @@ void EditableMap::autoMap(const RegionValueType &region, const QString &rulesFil
 
 QPointF EditableMap::screenToTile(qreal x, qreal y) const
 {
-    if (auto renderer = this->renderer())
-        return renderer->screenToTileCoords(x, y);
-    return QPointF(x, y);
+    return renderer()->screenToTileCoords(x, y);
 }
 
 QPointF EditableMap::tileToScreen(qreal x, qreal y) const
 {
-    if (auto renderer = this->renderer())
-        return renderer->tileToScreenCoords(x, y);
-    return QPointF(x, y);
+    return renderer()->tileToScreenCoords(x, y);
 }
 
 QPointF EditableMap::screenToPixel(qreal x, qreal y) const
 {
-    if (auto renderer = this->renderer())
-        return renderer->screenToPixelCoords(x, y);
-    return QPointF(x, y);
+    return renderer()->screenToPixelCoords(x, y);
 }
 
 QPointF EditableMap::pixelToScreen(qreal x, qreal y) const
 {
-    if (auto renderer = this->renderer())
-        return renderer->pixelToScreenCoords(x, y);
-    return QPointF(x, y);
+    return renderer()->pixelToScreenCoords(x, y);
 }
 
 QPointF EditableMap::pixelToTile(qreal x, qreal y) const
 {
-    if (auto renderer = this->renderer())
-        return renderer->pixelToTileCoords(x, y);
-    return QPointF(x, y);
+    return renderer()->pixelToTileCoords(x, y);
 }
 
 QPointF EditableMap::tileToPixel(qreal x, qreal y) const
 {
-    if (auto renderer = this->renderer())
-        return renderer->tileToPixelCoords(x, y);
-    return QPointF(x, y);
+    return renderer()->tileToPixelCoords(x, y);
 }
 
 void EditableMap::setSize(int width, int height)
@@ -448,7 +436,7 @@ void EditableMap::setSize(int width, int height)
 void EditableMap::setTileWidth(int value)
 {
     if (auto doc = mapDocument())
-        push(new ChangeMapProperty(doc, ChangeMapProperty::TileWidth, value));
+        push(new ChangeMapProperty(doc, Map::TileWidthProperty, value));
     else if (!checkReadOnly())
         map()->setTileWidth(value);
 }
@@ -456,7 +444,7 @@ void EditableMap::setTileWidth(int value)
 void EditableMap::setTileHeight(int value)
 {
     if (auto doc = mapDocument())
-        push(new ChangeMapProperty(doc, ChangeMapProperty::TileHeight, value));
+        push(new ChangeMapProperty(doc, Map::TileHeightProperty, value));
     else if (!checkReadOnly())
         map()->setTileHeight(value);
 }
@@ -481,7 +469,7 @@ void EditableMap::setTileSize(int width, int height)
 void EditableMap::setInfinite(bool value)
 {
     if (auto doc = mapDocument())
-        push(new ChangeMapProperty(doc, ChangeMapProperty::Infinite, value));
+        push(new ChangeMapProperty(doc, Map::InfiniteProperty, value));
     else if (!checkReadOnly())
         map()->setInfinite(value);
 }
@@ -489,7 +477,7 @@ void EditableMap::setInfinite(bool value)
 void EditableMap::setHexSideLength(int value)
 {
     if (auto doc = mapDocument())
-        push(new ChangeMapProperty(doc, ChangeMapProperty::HexSideLength, value));
+        push(new ChangeMapProperty(doc, Map::HexSideLengthProperty, value));
     else if (!checkReadOnly())
         map()->setHexSideLength(value);
 }
@@ -512,10 +500,12 @@ void EditableMap::setStaggerIndex(StaggerIndex value)
 
 void EditableMap::setOrientation(Orientation value)
 {
-    if (auto doc = mapDocument())
+    if (auto doc = mapDocument()) {
         push(new ChangeMapProperty(doc, static_cast<Map::Orientation>(value)));
-    else if (!checkReadOnly())
+    } else if (!checkReadOnly()) {
         map()->setOrientation(static_cast<Map::Orientation>(value));
+        mRenderer.reset();
+    }
 }
 
 void EditableMap::setRenderOrder(RenderOrder value)
@@ -604,6 +594,10 @@ void EditableMap::setSelectedObjects(const QList<QObject *> &objects)
 void EditableMap::documentChanged(const ChangeEvent &change)
 {
     switch (change.type) {
+    case ChangeEvent::MapChanged:
+        if (static_cast<const MapChangeEvent&>(change).property == Map::OrientationProperty)
+            mRenderer.reset();
+        break;
     case ChangeEvent::MapObjectsAdded:
         attachMapObjects(static_cast<const MapObjectsEvent&>(change).mapObjects);
         break;
@@ -667,4 +661,14 @@ void EditableMap::onCurrentLayerChanged(Layer *)
     emit currentLayerChanged();
 }
 
+MapRenderer *EditableMap::renderer() const
+{
+    if (!mRenderer)
+        mRenderer = MapRenderer::create(map());
+
+    return mRenderer.get();
+}
+
 } // namespace Tiled
+
+#include "moc_editablemap.cpp"

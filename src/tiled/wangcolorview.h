@@ -31,8 +31,11 @@ class WangColorView : public QTreeView
     Q_OBJECT
 
 public:
-    WangColorView(QWidget *parent);
+    WangColorView(QWidget *parent = nullptr);
     ~WangColorView() override;
+
+    void setTileSize(QSize size);
+    void setReadOnly(bool readOnly);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
@@ -45,6 +48,7 @@ private:
     void colorPicked(const QColor &color);
 
     QSharedPointer<WangColor> mClickedWangColor;
+    bool mReadOnly = false;
 };
 
 } // namespace Tiled

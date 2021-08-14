@@ -36,13 +36,14 @@ class MapDocument;
 
 /**
  * Changes the polygon of a MapObject.
- *
- * This class expects the polygon to be already changed, and takes the previous
- * polygon in the constructor.
  */
 class ChangePolygon : public QUndoCommand
 {
 public:
+    /**
+     * This constructor expects the polygon to be already changed, and needs
+     * the \a oldPolygon.
+     */
     ChangePolygon(Document *document,
                   MapObject *mapObject,
                   const QPolygonF &oldPolygon);
@@ -62,21 +63,6 @@ private:
     QPolygonF mOldPolygon;
     QPolygonF mNewPolygon;
     bool mOldChangeState;
-};
-
-// TODO: Merge into ChangePolygon
-class TogglePolygonPolyline : public QUndoCommand
-{
-public:
-    TogglePolygonPolyline(MapObject *mapObject);
-
-    void undo() override { toggle(); }
-    void redo() override { toggle(); }
-
-private:
-    void toggle();
-
-    MapObject *mMapObject;
 };
 
 class SplitPolyline : public QUndoCommand

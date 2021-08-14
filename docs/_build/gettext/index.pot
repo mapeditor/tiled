@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2019, Tiled Documentation Writers
+# Copyright (C) 2021, Tiled Documentation Writers
 # This file is distributed under the same license as the Tiled package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Tiled 1.4\n"
+"Project-Id-Version: Tiled 1.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-10 10:03+0200\n"
+"POT-Creation-Date: 2021-08-04 15:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,13 +16,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../../index.rst:8
-#: ../../index.rst:8
+#: ../../index.rst:10
+#: ../../index.rst:10
 msgid "User Manual"
 msgstr ""
 
-#: ../../index.rst:30
-#: ../../index.rst:30
+#: ../../index.rst:32
+#: ../../index.rst:32
 msgid "Reference"
 msgstr ""
 
@@ -30,6 +30,6 @@ msgstr ""
 msgid "Tiled Documentation"
 msgstr ""
 
-#: ../../index.rst:5
-msgid "If you're not finding what you're looking for in these pages, please don't hesitate to ask questions on the `Tiled Forum <http://discourse.mapeditor.org>`_."
+#: ../../index.rst:6
+msgid "If you're not finding what you're looking for on these pages, please don't hesitate to ask questions on the `Tiled Forum <https://discourse.mapeditor.org>`_ or the `Tiled Discord <https://discord.gg/39wbTv7>`_."
 msgstr ""

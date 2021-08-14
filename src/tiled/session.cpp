@@ -20,6 +20,7 @@
 
 #include "session.h"
 
+#include "documentmanager.h"
 #include "preferences.h"
 #include "utils.h"
 
@@ -163,9 +164,9 @@ void Session::setOpenFiles(const QStringList &fileNames)
     scheduleSync();
 }
 
-void Session::setActiveFile(const QString &fileNames)
+void Session::setActiveFile(const QString &fileName)
 {
-    activeFile = fileNames;
+    activeFile = fileName;
     scheduleSync();
 }
 
@@ -190,9 +191,86 @@ void Session::setFileStateValue(const QString &fileName, const QString &name, co
     }
 }
 
+static QString lastPathKey(Session::FileType fileType)
+{
+    QString key = QLatin1String("last.");
+
+    switch (fileType) {
+    case Session::ExecutablePath:
+        key.append(QLatin1String("executablePath"));
+        break;
+    case Session::ExportedFile:
+        key.append(QLatin1String("exportedFilePath"));
+        break;
+    case Session::ExternalTileset:
+        key.append(QLatin1String("externalTilesetPath"));
+        break;
+    case Session::ImageFile:
+        key.append(QLatin1String("imagePath"));
+        break;
+    case Session::ObjectTemplateFile:
+        key.append(QLatin1String("objectTemplatePath"));
+        break;
+    case Session::ObjectTypesFile:
+        key.append(QLatin1String("objectTypesPath"));
+        break;
+    case Session::WorkingDirectory:
+        key.append(QLatin1String("workingDirectory"));
+        break;
+    case Session::WorldFile:
+        key.append(QLatin1String("worldFilePath"));
+        break;
+    }
+
+    return key;
+}
+
+/**
+ * Returns the starting location for a file chooser for the given file type.
+ */
+QString Session::lastPath(FileType fileType, QStandardPaths::StandardLocation fallbackLocation) const
+{
+    // First see if we can return the last used location for this file type
+    QString path = settings->value(lastPathKey(fileType)).toString();
+    if (!path.isEmpty())
+        return path;
+
+    // The location of the current document could be helpful
+    if (fallbackLocation == QStandardPaths::DocumentsLocation) {
+        const DocumentManager *documentManager = DocumentManager::instance();
+        const Document *document = documentManager->currentDocument();
+        if (document) {
+            path = QFileInfo(document->fileName()).path();
+            if (!path.isEmpty())
+                return path;
+        }
+    }
+
+    // Try the location of the current project
+    if (!project.isEmpty()) {
+        path = QFileInfo(project).path();
+        if (!path.isEmpty())
+            return path;
+    }
+
+    // Finally, we just open the fallback location
+    return QStandardPaths::writableLocation(fallbackLocation);
+}
+
+/**
+ * \see lastPath()
+ */
+void Session::setLastPath(FileType fileType, const QString &path)
+{
+    if (path.isEmpty())
+        return;
+
+    settings->setValue(lastPathKey(fileType), path);
+}
+
 QString Session::defaultFileName()
 {
-    return Preferences::dataLocation() + QLatin1String("/default.tiled-session");
+    return Preferences::instance()->dataLocation() + QLatin1String("/default.tiled-session");
 }
 
 QString Session::defaultFileNameForProject(const QString &projectFile)

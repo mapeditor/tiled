@@ -183,10 +183,8 @@ void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
         mRandomAndMissingCacheValid = true;
     }
 
-    const QRect fillBounds = fillRegion.boundingRect();
-    auto preview = SharedMap::create(mapDocument()->map()->orientation(),
-                                     mapDocument()->map()->size(),
-                                     mapDocument()->map()->tileSize());
+    mFillBounds = fillRegion.boundingRect();
+    auto preview = SharedMap::create(mapDocument()->map()->parameters());
 
     switch (mFillMethod) {
     case TileFill:
@@ -194,7 +192,7 @@ void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
         break;
     case RandomFill: {
         std::unique_ptr<TileLayer> previewLayer {
-            new TileLayer(QString(), fillBounds.topLeft(), fillBounds.size())
+            new TileLayer(QString(), mFillBounds.topLeft(), mFillBounds.size())
         };
         randomFill(*previewLayer, fillRegion);
         preview->addLayer(previewLayer.release());
@@ -206,7 +204,7 @@ void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
             return;
 
         std::unique_ptr<TileLayer> previewLayer {
-            new TileLayer(QString(), fillBounds.topLeft(), fillBounds.size())
+            new TileLayer(QString(), mFillBounds.topLeft(), mFillBounds.size())
         };
 
         wangFill(*previewLayer, *tileLayer, fillRegion);
@@ -285,12 +283,9 @@ void AbstractTileFillTool::wangFill(TileLayer &tileLayerToFill,
     if (!mWangSet)
         return;
 
-    WangFiller wangFiller(mWangSet,
-                          dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
-                          mapDocument()->map()->staggerAxis());
+    WangFiller wangFiller(*mWangSet, mapDocument()->renderer());
 
-    auto stamp = wangFiller.fillRegion(backgroundTileLayer, region);
-    tileLayerToFill.setCells(0, 0, stamp.get());
+    wangFiller.fillRegion(tileLayerToFill, backgroundTileLayer, region);
 }
 
 void AbstractTileFillTool::fillWithStamp(Map &map,
@@ -334,3 +329,5 @@ void AbstractTileFillTool::invalidateRandomAndMissingCache()
 {
     mRandomAndMissingCacheValid = false;
 }
+
+#include "moc_abstracttilefilltool.cpp"

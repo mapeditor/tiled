@@ -25,6 +25,8 @@
 
 #include <QCoreApplication>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 
 ChangeTileWangId::ChangeTileWangId()
@@ -32,7 +34,7 @@ ChangeTileWangId::ChangeTileWangId()
     , mWangSet(nullptr)
     , mMergeable(false)
 {
-    setText(QCoreApplication::translate("Undo Commands", "Change Tile WangId"));
+    setText(QCoreApplication::translate("Undo Commands", "Change Tile Terrain"));
 }
 
 ChangeTileWangId::ChangeTileWangId(TilesetDocument *tilesetDocument,
@@ -44,8 +46,8 @@ ChangeTileWangId::ChangeTileWangId(TilesetDocument *tilesetDocument,
     , mMergeable(true)
 {
     Q_ASSERT(mWangSet);
-    setText(QCoreApplication::translate("Undo Commands", "Change Tile WangId"));
-    mChanges.append(WangIdChange(mWangSet->wangIdOfTile(tile), wangId, tile));
+    setText(QCoreApplication::translate("Undo Commands", "Change Tile Terrain"));
+    mChanges.append(WangIdChange(mWangSet->wangIdOfTile(tile), wangId, tile->id()));
 }
 
 ChangeTileWangId::ChangeTileWangId(TilesetDocument *tilesetDocument,
@@ -58,7 +60,7 @@ ChangeTileWangId::ChangeTileWangId(TilesetDocument *tilesetDocument,
     , mChanges(changes)
     , mMergeable(true)
 {
-    setText(QCoreApplication::translate("Undo Commands", "Change Tile WangId"));
+    setText(QCoreApplication::translate("Undo Commands", "Change Tile Terrain"));
 }
 
 void ChangeTileWangId::undo()
@@ -74,8 +76,9 @@ void ChangeTileWangId::undo()
     while (changes.hasPrevious()) {
         const WangIdChange &wangIdChange = changes.previous();
 
-        changedTiles.append(wangIdChange.tile);
-        mWangSet->addTile(wangIdChange.tile, wangIdChange.from);
+        if (Tile *tile = findTile(wangIdChange.tileId))
+            changedTiles.append(tile);
+        mWangSet->setWangId(wangIdChange.tileId, wangIdChange.from);
     }
 
     emit mTilesetDocument->tileWangSetChanged(changedTiles);
@@ -88,11 +91,10 @@ void ChangeTileWangId::redo()
 
     QList<Tile *> changedTiles;
 
-    const auto& changes = mChanges;
-    for (const WangIdChange &wangIdChange : changes) {
-        changedTiles.append(wangIdChange.tile);
-
-        mWangSet->addTile(wangIdChange.tile, wangIdChange.to);
+    for (const WangIdChange &wangIdChange : qAsConst(mChanges)) {
+        if (Tile *tile = findTile(wangIdChange.tileId))
+            changedTiles.append(tile);
+        mWangSet->setWangId(wangIdChange.tileId, wangIdChange.to);
     }
 
     emit mTilesetDocument->tileWangSetChanged(changedTiles);
@@ -115,4 +117,61 @@ bool ChangeTileWangId::mergeWith(const QUndoCommand *other)
     mMergeable = o->mMergeable;
 
     return true;
+}
+
+QVector<ChangeTileWangId::WangIdChange> ChangeTileWangId::changesOnSetColorCount(
+        const WangSet *wangSet, int colorCount)
+{
+    QVector<WangIdChange> changes;
+
+    QHashIterator<int, WangId> it(wangSet->wangIdByTileId());
+    while (it.hasNext()) {
+        it.next();
+        WangId newWangId = it.value();
+
+        for (int i = 0; i < WangId::NumIndexes; ++i)
+            if (newWangId.indexColor(i) > colorCount)
+                newWangId.setIndexColor(i, 0);
+
+        if (it.value() != newWangId)
+            changes.append(WangIdChange(it.value(), newWangId, it.key()));
+    }
+
+    return changes;
+}
+
+QVector<ChangeTileWangId::WangIdChange> ChangeTileWangId::changesOnRemoveColor(
+        const WangSet *wangSet, int removedColor)
+{
+    QVector<WangIdChange> changes;
+
+    QHashIterator<int, WangId> it(wangSet->wangIdByTileId());
+    while (it.hasNext()) {
+        it.next();
+        WangId newWangId = it.value();
+
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
+            const int color = newWangId.indexColor(i);
+            if (color == removedColor)
+                newWangId.setIndexColor(i, 0);
+            else if (color > removedColor)
+                newWangId.setIndexColor(i, color - 1);
+        }
+
+        if (it.value() != newWangId)
+            changes.append(WangIdChange(it.value(), newWangId, it.key()));
+    }
+
+    return changes;
+}
+
+void ChangeTileWangId::applyChanges(WangSet *wangSet, const QVector<WangIdChange> &changes)
+{
+    for (const WangIdChange &change : changes)
+        wangSet->setWangId(change.tileId, change.to);
+}
+
+Tile *ChangeTileWangId::findTile(int tileId) const
+{
+    return mTilesetDocument->tileset()->findTile(tileId);
 }

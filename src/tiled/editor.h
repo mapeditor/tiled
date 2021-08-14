@@ -43,7 +43,7 @@ public:
         DeleteAction        = 0x10
     };
     Q_DECLARE_FLAGS(StandardActions, StandardAction)
-    Q_FLAGS(StandardActions)
+    Q_FLAG(StandardActions)
 
     explicit Editor(QObject *parent = nullptr);
 

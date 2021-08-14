@@ -98,7 +98,7 @@
      <item row="5" column="0" colspan="3">
       <widget class="QCheckBox" name="saveBox">
        <property name="text">
-        <string>&amp;Save map before executing</string>
+        <string>&amp;Save before executing</string>
        </property>
       </widget>
      </item>
@@ -170,5 +170,22 @@
   <tabstop>saveBox</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>clearButton</sender>
+   <signal>clicked()</signal>
+   <receiver>keySequenceEdit</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>649</x>
+     <y>169</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>603</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

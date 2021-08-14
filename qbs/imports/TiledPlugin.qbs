@@ -11,14 +11,12 @@ DynamicLibrary {
     cpp.rpaths: {
         if (qbs.targetOS.contains("darwin"))
             return ["@loader_path/../Frameworks"];
-        else if (project.linuxArchive)
-            return ["$ORIGIN/.."]
         else
             return ["$ORIGIN/../.."];
     }
     cpp.defines: [
-        "QT_DEPRECATED_WARNINGS",
-        "QT_DISABLE_DEPRECATED_BEFORE=0x050900",
+        "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(5,15,0)",
+        "QT_NO_DEPRECATED_WARNINGS",
         "QT_NO_FOREACH",
         "QT_NO_URL_CAST_FROM_STRING"
     ]
@@ -32,7 +30,7 @@ DynamicLibrary {
     Group {
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows") || project.linuxArchive)
+            if (qbs.targetOS.contains("windows"))
                 return "plugins/tiled"
             else if (qbs.targetOS.contains("macos"))
                 return "Tiled.app/Contents/PlugIns"

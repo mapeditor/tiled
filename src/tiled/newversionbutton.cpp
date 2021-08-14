@@ -101,3 +101,5 @@ void NewVersionButton::updateVisiblity()
 }
 
 } // namespace Tiled
+
+#include "moc_newversionbutton.cpp"

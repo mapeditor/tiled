@@ -24,7 +24,11 @@
 
 #include "utils.h"
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>
+#else
+#include <QScreen>
+#endif
 #include <QMouseEvent>
 
 using namespace Tiled;
@@ -58,8 +62,13 @@ bool ImageColorPickerWidget::selectColor(const QString &image)
     mScaleX = 1;
     mScaleY = 1;
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QRectF rct = QApplication::desktop()->availableGeometry(this);
-    double maxW = rct.width() * (2.0/3.0), maxH = rct.height() * (2.0/3.0);
+#else
+    QRectF rct = screen()->availableGeometry();
+#endif
+    const qreal maxW = rct.width() * (2.0/3.0);
+    const qreal maxH = rct.height() * (2.0/3.0);
 
     if (mImage.width() > maxW || mImage.height() > maxH) {
         pix = pix.scaled((int)maxW, (int)maxH, Qt::KeepAspectRatio);
@@ -106,5 +115,11 @@ void ImageColorPickerWidget::onMouseRelease(QMouseEvent * event)
 
 void ImageColorPickerWidget::resizeEvent(QResizeEvent *)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     move(QApplication::desktop()->availableGeometry(parentWidget()).center() - rect().center());
+#else
+    move(screen()->availableGeometry().center() - rect().center());
+#endif
 }
+
+#include "moc_imagecolorpickerwidget.cpp"

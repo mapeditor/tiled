@@ -1310,12 +1310,14 @@ public:
 
     struct Data
     {
-        Data() : regExp(QString(QLatin1Char('*')),  Qt::CaseSensitive, QRegExp::Wildcard),
-            echoMode(QLineEdit::Normal), readOnly(false)
+        Data() :
+            regExp(QStringLiteral(".*"), QRegularExpression::CaseInsensitiveOption),
+            echoMode(QLineEdit::Normal),
+            readOnly(false)
         {
         }
         QString val;
-        QRegExp regExp;
+        QRegularExpression regExp;
         int echoMode;
         bool readOnly;
     };
@@ -1355,7 +1357,7 @@ public:
 */
 
 /*!
-    \fn void QtStringPropertyManager::regExpChanged(QtProperty *property, const QRegExp &regExp)
+    \fn void QtStringPropertyManager::regExpChanged(QtProperty *property, const QRegularExpression &regExp)
 
     This signal is emitted whenever a property created by this manager
     changes its currenlty set regular expression, passing a pointer to
@@ -1404,9 +1406,9 @@ QString QtStringPropertyManager::value(const QtProperty *property) const
 
     \sa setRegExp()
 */
-QRegExp QtStringPropertyManager::regExp(const QtProperty *property) const
+QRegularExpression QtStringPropertyManager::regExp(const QtProperty *property) const
 {
-    return getData<QRegExp>(d_ptr->m_values, &QtStringPropertyManagerPrivate::Data::regExp, property, QRegExp());
+    return getData<QRegularExpression>(d_ptr->m_values, &QtStringPropertyManagerPrivate::Data::regExp, property, QRegularExpression());
 }
 
 /*!
@@ -1477,7 +1479,7 @@ void QtStringPropertyManager::setValue(QtProperty *property, const QString &val)
     if (data.val == val)
         return;
 
-    if (data.regExp.isValid() && !data.regExp.exactMatch(val))
+    if (data.regExp.isValid() && !data.regExp.match(val).hasMatch())
         return;
 
     data.val = val;
@@ -1493,7 +1495,7 @@ void QtStringPropertyManager::setValue(QtProperty *property, const QString &val)
 
     \sa regExp(), setValue(), regExpChanged()
 */
-void QtStringPropertyManager::setRegExp(QtProperty *property, const QRegExp &regExp)
+void QtStringPropertyManager::setRegExp(QtProperty *property, const QRegularExpression &regExp)
 {
     const QtStringPropertyManagerPrivate::PropertyValueMap::iterator it = d_ptr->m_values.find(property);
     if (it == d_ptr->m_values.end())
@@ -5014,8 +5016,7 @@ void QtEnumPropertyManager::setValue(QtProperty *property, int val)
 
 /*!
     Sets the given \a property's list of enum names to \a
-    enumNames. The \a property's current value is reset to 0
-    indicating the first item of the list.
+    enumNames. The \a property's current value is bound to a valid index.
 
     If the specified \a enumNames list is empty, the \a property's
     current value is set to -1.
@@ -5034,11 +5035,7 @@ void QtEnumPropertyManager::setEnumNames(QtProperty *property, const QStringList
         return;
 
     data.enumNames = enumNames;
-
-    data.val = -1;
-
-    if (enumNames.count() > 0)
-        data.val = 0;
+    data.val = qBound(-1, data.val, enumNames.count() - 1);
 
     it.value() = data;
 
@@ -5362,8 +5359,8 @@ void QtFlagPropertyManager::setFlagNames(QtProperty *property, const QStringList
     while (itProp.hasNext()) {
         QtProperty *prop = itProp.next();
         if (prop) {
-            delete prop;
             d_ptr->m_flagToProperty.remove(prop);
+            delete prop;
         }
     }
     d_ptr->m_propertyToFlags[property].clear();
@@ -5403,8 +5400,8 @@ void QtFlagPropertyManager::uninitializeProperty(QtProperty *property)
     while (itProp.hasNext()) {
         QtProperty *prop = itProp.next();
         if (prop) {
-            delete prop;
             d_ptr->m_flagToProperty.remove(prop);
+            delete prop;
         }
     }
     d_ptr->m_propertyToFlags.remove(property);
@@ -6067,7 +6064,11 @@ void QtFontPropertyManager::setValue(QtProperty *property, const QFont &val)
         return;
 
     const QFont oldVal = it.value();
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     if (oldVal == val && oldVal.resolve() == val.resolve())
+#else
+    if (oldVal == val && oldVal.resolveMask() == val.resolveMask())
+#endif
         return;
 
     it.value() = val;

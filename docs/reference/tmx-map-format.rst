@@ -1,19 +1,19 @@
 TMX Map Format
 ==============
 
-**Version 1.4**
+**Version 1.5**
 
-The TMX (Tile Map XML) map format used by
-`Tiled <http://www.mapeditor.org>`__ is a flexible way to describe a
+TMX and TSX are `Tiled <http://www.mapeditor.org>`__'s own formats for storing
+tile maps and tilesets, based on XML. TMX provides a flexible way to describe a
 tile based map. It can describe maps with any tile size, any amount of
 layers, any number of tile sets and it allows custom properties to be
 set on most elements. Beside tile layers, it can also contain groups of
 objects that can be placed freely.
 
 Note that there are many :doc:`libraries and frameworks <support-for-tmx-maps>`
-available that can work with TMX maps.
+available that can work with TMX maps and TSX tilesets.
 
-In this document we'll go through each element found in this map format.
+In this document we'll go through each element found in these file formats.
 The elements are mentioned in the headers and the list of attributes of
 the elements are listed right below, followed by a short explanation.
 Attributes or elements that are deprecated or unsupported by the current
@@ -21,20 +21,21 @@ version of Tiled are formatted in italics. All optional attributes are
 either marked as optional, or have a default value to imply that they are
 optional.
 
-Have a look at the :doc:`changelog <tmx-changelog>` when you're
-interested in what changed between Tiled versions.
+Have a look at the :doc:`changelog <tmx-changelog>` when you're interested
+in what changed between Tiled versions.
 
-*A DTD-file (Document Type Definition) is served at
-http://mapeditor.org/dtd/1.0/map.dtd. This file is not up-to-date but
-might be useful for XML-namespacing anyway.*
+.. note::
 
-*Note to implementors: When parsing TMX files, follow XML parsing guidelines.
-If an invalid element is found, it should generally be ignored (or cause a
-warning). When there are multiple copies of an element that should only appear
-once, use the first parsed option. Unknown attributes or element tags should
-also be ignored. These behaviors make adding future features easier without breaking
-backwards compatibility, and allows custom variants and additions to work with
-existing tools.*
+    A DTD-file (Document Type Definition) is served at
+    http://mapeditor.org/dtd/1.0/map.dtd. This file is not up-to-date but might
+    be useful for XML-namespacing anyway.
+
+.. note::
+
+    For compatibility reasons, it is recommended to ignore unknown elements and
+    attributes (or raise a warning). This makes it easier to add features
+    without breaking backwards compatibility, and allows custom variants and
+    additions to work with existing tools.
 
 .. _tmx-map:
 
@@ -168,7 +169,7 @@ an ``<image>`` tag.
 
 Can contain at most one: :ref:`tmx-image`, :ref:`tmx-tileoffset`,
 :ref:`tmx-grid` (since 1.0), :ref:`tmx-properties`, :ref:`tmx-terraintypes`,
-:ref:`tmx-wangsets` (since 1.1),
+:ref:`tmx-wangsets` (since 1.1), :ref:`tmx-tileset-transformations` (since 1.5)
 
 Can contain any number: :ref:`tmx-tileset-tile`
 
@@ -244,6 +245,20 @@ Can contain any number: :ref:`tmx-terrain`
 
 Can contain at most one: :ref:`tmx-properties`
 
+.. _tmx-tileset-transformations:
+
+<transformations>
+~~~~~~~~~~~~~~~~~
+
+This element is used to describe which transformations can be applied to the
+tiles (e.g. to extend a Wang set by transforming existing tiles).
+
+- **hflip:** Whether the tiles in this set can be flipped horizontally (default 0)
+- **vflip:** Whether the tiles in this set can be flipped vertically (default 0)
+- **rotate:** Whether the tiles in this set can be rotated in 90 degree increments (default 0)
+- **preferuntransformed:** Whether untransformed tiles remain preferred, otherwise
+  transformed tiles are used to produce more variations (default 0)
+
 .. _tmx-tileset-tile:
 
 <tile>
@@ -307,35 +322,24 @@ number of Wang tiles using these colors.
 
 Can contain at most one: :ref:`tmx-properties`
 
-Can contain up to 15 (each): :ref:`tmx-wangcornercolor`, :ref:`tmx-wangedgecolor`
+Can contain up to 255: :ref:`tmx-wangcolor` (since Tiled 1.5)
 
 Can contain any number: :ref:`tmx-wangtile`
 
-.. _tmx-wangcornercolor:
+.. _tmx-wangcolor:
 
-<wangcornercolor>
-'''''''''''''''''
+<wangcolor>
+'''''''''''
 
-A color that can be used to define the corner of a Wang tile.
-
--  **name:** The name of this color.
--  **color:** The color in ``#RRGGBB`` format (example: ``#c17d11``).
--  **tile:** The tile ID of the tile representing this color.
--  **probability:** The relative probability that this color is chosen
-   over others in case of multiple options. (defaults to 0)
-
-.. _tmx-wangedgecolor:
-
-<wangedgecolor>
-'''''''''''''''''
-
-A color that can be used to define the edge of a Wang tile.
+A color that can be used to define the corner and/or edge of a Wang tile.
 
 -  **name:** The name of this color.
 -  **color:** The color in ``#RRGGBB`` format (example: ``#c17d11``).
 -  **tile:** The tile ID of the tile representing this color.
 -  **probability:** The relative probability that this color is chosen
    over others in case of multiple options. (defaults to 0)
+
+Can contain at most one: :ref:`tmx-properties`
 
 .. _tmx-wangtile:
 
@@ -346,19 +350,16 @@ Defines a Wang tile, by referring to a tile in the tileset and
 associating it with a certain Wang ID.
 
 -  **tileid:** The tile ID.
--  **wangid:** The Wang ID, which is a 32-bit unsigned integer stored
-   in the format ``0xCECECECE`` (where each C is a corner color and
-   each E is an edge color, from right to left clockwise, starting with
-   the top edge)
--  **hflip:** Whether the tile is flipped horizontally. This only affects
-   the tile image, it does not change the meaning of the wangid. See
-   :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
--  **vflip:** Whether the tile is flipped vertically. This only affects
-   the tile image, it does not change the meaning of the wangid. See
-   :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
--  **dflip:** Whether the tile is flipped on its diagonal. This only affects
-   the tile image, it does not change the meaning of the wangid. See
-   :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
+-  **wangid:** "The Wang ID, given by a comma-separated list of indexes
+   (starting from 1, because 0 means _unset_) referring to the Wang colors in
+   the Wang set in the following order: top, top right, right, bottom right,
+   bottom, bottom left, left, top left (since Tiled 1.5). Before Tiled 1.5, the
+   Wang ID was saved as a 32-bit unsigned integer stored in the format
+   ``0xCECECECE`` (where each C is a corner color and each E is an edge color,
+   in reverse order)."
+-  *hflip:* Whether the tile is flipped horizontally (removed in Tiled 1.5).
+-  *vflip:* Whether the tile is flipped vertically (removed in Tiled 1.5).
+-  *dflip:* Whether the tile is flipped on its diagonal (removed in Tiled 1.5).
 
 .. _tmx-layer:
 
@@ -379,11 +380,13 @@ tiles.
 -  **height:** The height of the layer in tiles. Always the same as the map height for fixed-size maps.
 -  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to 1.
 -  **visible:** Whether the layer is shown (1) or hidden (0). Defaults to 1.
--  **tintcolor:** A color that is multiplied with any tiles drawn by this layer in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
+-  **tintcolor:** A :ref:`tint color <tint-color>` that is multiplied with any tiles drawn by this layer in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
 -  **offsetx:** Horizontal offset for this layer in pixels. Defaults to 0.
    (since 0.14)
 -  **offsety:** Vertical offset for this layer in pixels. Defaults to 0.
    (since 0.14)
+-  **parallaxx:** Horizontal :ref:`parallax factor <parallax-factor>` for this layer. Defaults to 1. (since 1.5)
+-  **parallaxy:** Vertical :ref:`parallax factor <parallax-factor>` for this layer. Defaults to 1. (since 1.5)
 
 Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-data`
 
@@ -736,8 +739,8 @@ Can contain any number: :ref:`tmx-layer`,
 
 Wraps any number of custom properties. Can be used as a child of the
 ``map``, ``tileset``, ``tile`` (when part of a ``tileset``),
-``terrain``, ``layer``, ``objectgroup``, ``object``, ``imagelayer`` and
-``group`` elements.
+``terrain``, ``wangset``, ``wangcolor``, ``layer``, ``objectgroup``,
+``object``, ``imagelayer`` and ``group`` elements.
 
 Can contain any number: :ref:`tmx-property`
 

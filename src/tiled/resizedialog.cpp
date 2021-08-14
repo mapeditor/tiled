@@ -98,3 +98,5 @@ void ResizeDialog::updateOffsetBounds(const QRect &bounds)
     mUi->offsetXSpinBox->setRange(bounds.left(), bounds.right());
     mUi->offsetYSpinBox->setRange(bounds.top(), bounds.bottom());
 }
+
+#include "moc_resizedialog.cpp"

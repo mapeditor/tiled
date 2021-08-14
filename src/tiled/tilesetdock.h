@@ -43,7 +43,6 @@ class QToolButton;
 
 namespace Tiled {
 
-class Terrain;
 class Tile;
 class TileLayer;
 class Tileset;
@@ -133,10 +132,8 @@ private:
     void tilesetChanged(Tileset *tileset);
     void tilesetFileNameChanged(const QString &fileName);
 
-    void tileImageSourceChanged(Tile *tile);
-    void tileAnimationChanged(Tile *tile);
-
     void replaceTileset();
+    void replaceTilesetAt(int index);
     void removeTileset();
     void removeTilesetAt(int index);
 
@@ -156,7 +153,7 @@ private:
     void retranslateUi();
 
     void onTilesetRowsInserted(const QModelIndex &parent, int first, int last);
-    void onTilesetRowsAboutToBeRemoved(const QModelIndex &parent, int first, int last);
+    void onTilesetRowsRemoved(const QModelIndex &parent, int first, int last);
     void onTilesetRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row);
     void onTilesetLayoutChanged(const QList<QPersistentModelIndex> &parents, QAbstractItemModel::LayoutChangeHint hint);
     void onTilesetDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
@@ -164,18 +161,17 @@ private:
     void onTabMoved(int from, int to);
     void tabContextMenuRequested(const QPoint &pos);
 
+    int indexOfTileset(const SharedTileset &tileset) const;
     TilesetView *currentTilesetView() const;
     TilesetView *tilesetViewAt(int index) const;
 
     void createTilesetView(int index, TilesetDocument *tilesetDocument);
     void deleteTilesetView(int index);
     void moveTilesetView(int from, int to);
-    void setupTilesetModel(TilesetView *view, Tileset *tileset);
+    void setupTilesetModel(TilesetView *view, TilesetDocument *tilesetDocument);
 
     MapDocument *mMapDocument = nullptr;
 
-    // Shared tileset references because the dock wants to add new tiles
-    QVector<SharedTileset> mTilesets;
     QList<TilesetDocument *> mTilesetDocuments;
     TilesetDocumentsFilterModel *mTilesetDocumentsFilterModel;
 
@@ -185,7 +181,6 @@ private:
     QToolBar *mToolBar;
     Tile *mCurrentTile = nullptr;
     std::unique_ptr<TileLayer> mCurrentTiles;
-    const Terrain *mTerrain;
 
     QAction *mNewTileset;
     QAction *mEmbedTileset;

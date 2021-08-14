@@ -76,7 +76,7 @@ the following variables:
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.4</div>
+   <div class="new new-prev">Since Tiled 1.4</div>
 
 ``%projectpath``
     the path in which the current project is located.
@@ -89,6 +89,13 @@ the following variables:
 
 ``%layername``
     the name of the currently selected layer.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 21.4</div>
+
+``%tileid``
+    a comma-separated list with the IDs of the selected tiles, if any.
 
 For the working directory field, you can additionally use the following
 variable:

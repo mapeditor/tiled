@@ -20,6 +20,7 @@
 
 #include "propertiesdock.h"
 
+#include "actionmanager.h"
 #include "addpropertydialog.h"
 #include "changeproperties.h"
 #include "clipboardmanager.h"
@@ -27,7 +28,6 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "propertybrowser.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tileset.h"
 #include "utils.h"
@@ -85,7 +85,7 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(mPropertyBrowser);
     layout->addWidget(toolBar);
@@ -421,14 +421,16 @@ void PropertiesDock::showContextMenu(const QPoint &pos)
 
     if (convertMenu) {
         const int convertTo[] = {
-            QVariant::Bool,
-            QVariant::Color,
-            QVariant::Double,
+            QMetaType::Bool,
+            QMetaType::QColor,
+            QMetaType::Double,
             filePathTypeId(),
             objectRefTypeId(),
-            QVariant::Int,
-            QVariant::String
+            QMetaType::Int,
+            QMetaType::QString
         };
+
+        // todo: could include custom property types
 
         for (int toType : convertTo) {
             bool someDifferentType = false;
@@ -455,6 +457,7 @@ void PropertiesDock::showContextMenu(const QPoint &pos)
         convertMenu->setEnabled(!convertMenu->actions().isEmpty());
     }
 
+    ActionManager::applyMenuExtensions(&contextMenu, MenuIds::propertiesViewProperties);
 
     const QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
     const QAction *selectedItem = contextMenu.exec(globalPos);
@@ -531,3 +534,5 @@ void PropertiesDock::retranslateUi()
 }
 
 } // namespace Tiled
+
+#include "moc_propertiesdock.cpp"

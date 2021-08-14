@@ -161,8 +161,14 @@
                 <?endif?>
 
                 <File Source="$(var.InstallRoot)\plugins\tiled\replicaisland.dll" />
+
+                <?ifdef RpMap ?>
+                <File Source="$(var.InstallRoot)\plugins\tiled\rpmap.dll" />
+                <?endif?>
+
                 <File Source="$(var.InstallRoot)\plugins\tiled\tbin.dll" />
                 <File Source="$(var.InstallRoot)\plugins\tiled\tengine.dll" />
+                <File Source="$(var.InstallRoot)\plugins\tiled\yy.dll" />
               </Component>
             </Directory>
             <Directory Id="platformPlugins" Name="platforms">
@@ -214,6 +220,8 @@
               <File Source="$(var.InstallRoot)\translations\tiled_pt.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_pt_PT.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_ru.qm" />
+              <File Source="$(var.InstallRoot)\translations\tiled_sv.qm" />
+              <File Source="$(var.InstallRoot)\translations\tiled_th.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_tr.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_zh_CN.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_zh_TW.qm" />
@@ -225,8 +233,10 @@
               <File Source="$(var.QtDir)\translations\qt_fr.qm"/>
               <File Source="$(var.QtDir)\translations\qt_he.qm"/>
               <File Source="$(var.QtDir)\translations\qt_ja.qm"/>
+              <File Source="$(var.QtDir)\translations\qt_pl.qm"/>
               <File Source="$(var.QtDir)\translations\qt_pt.qm"/>
               <File Source="$(var.QtDir)\translations\qt_ru.qm"/>
+              <File Source="$(var.QtDir)\translations\qt_sv.qm"/>
               <File Source="$(var.QtDir)\translations\qt_zh_CN.qm"/>
               <File Source="$(var.QtDir)\translations\qt_zh_TW.qm"/>
             </Component>
@@ -336,7 +346,15 @@
                   <File Name="window1.png" />
                   <File Name="window2.png" />
                   <File Name="window3.png" />
+                  <File Name="objs.tsx" />
                 </Component>
+                <Directory Id="sticker_knight_map_templates" Name="templates">
+                  <Component Id="StickerKnightExampleMapTemplates" Guid="{5DA0A837-561F-4772-AD8F-2831D19B3B86}">
+                    <File Name="block.tx" />
+                    <File Name="diamond.tx" />
+                    <File Name="hero.tx" />
+                  </Component>
+                </Directory>
               </Directory>
               <Directory Id="sticker_knight_ui" Name="ui">
                 <Component Id="StickerKnightExampleUi" Guid="{C8569B5C-20AF-482D-B46C-F20794BF646D}">
@@ -398,6 +416,7 @@
       <ComponentRef Id='AutomappingExample' />
       <ComponentRef Id='StickerKnightExample' />
       <ComponentRef Id='StickerKnightExampleMap' />
+      <ComponentRef Id='StickerKnightExampleMapTemplates' />
       <ComponentRef Id='StickerKnightExampleUi' />
       <ComponentRef Id='PythonPluginExample' />
       <ComponentRef Id='PythonPluginExampleLib' />

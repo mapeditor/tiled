@@ -101,3 +101,5 @@ void TileLayerEdit::apply()
 }
 
 } // namespace Tiled
+
+#include "moc_tilelayeredit.cpp"

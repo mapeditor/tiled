@@ -31,12 +31,11 @@
 #include "tiled_global.h"
 
 #include <QColor>
+#include <QDir>
 #include <QMetaType>
 #include <QRectF>
 #include <QString>
 #include <QUrl>
-
-class QDir;
 
 namespace Tiled {
 
@@ -71,6 +70,7 @@ enum LoadingStatus {
 };
 
 const int CHUNK_SIZE = 16;
+const int CHUNK_BITS = 4;
 const int CHUNK_SIZE_MIN = 4;
 const int CHUNK_MASK = CHUNK_SIZE - 1;
 
@@ -81,10 +81,15 @@ static const char PROPERTIES_MIMETYPE[] = "application/vnd.properties.list";
 
 TILEDSHARED_EXPORT QPointF alignmentOffset(const QRectF &r, Alignment alignment);
 
-TILEDSHARED_EXPORT QString toFileReference(const QUrl &url, const QDir &dir);
-TILEDSHARED_EXPORT QUrl toUrl(const QString &filePathOrUrl, const QDir &dir);
-TILEDSHARED_EXPORT QUrl toUrl(const QString &filePathOrUrl);
+TILEDSHARED_EXPORT QString toFileReference(const QUrl &url, const QString &path = QString());
+TILEDSHARED_EXPORT QUrl toUrl(const QString &filePathOrUrl, const QString &path = QString());
 TILEDSHARED_EXPORT QString urlToLocalFileOrQrc(const QUrl &url);
+
+inline QString toFileReference(const QUrl &url, const QDir &dir)
+{ return toFileReference(url, dir.path()); }
+
+inline QUrl toUrl(const QString &filePathOrUrl, const QDir &dir)
+{ return toUrl(filePathOrUrl, dir.path()); }
 
 inline QString colorToString(const QColor &color)
 {
@@ -96,10 +101,14 @@ inline QString colorToString(const QColor &color)
 inline QMargins maxMargins(const QMargins &a,
                            const QMargins &b)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     return QMargins(qMax(a.left(), b.left()),
                     qMax(a.top(), b.top()),
                     qMax(a.right(), b.right()),
                     qMax(a.bottom(), b.bottom()));
+#else
+    return a | b;
+#endif
 }
 
 TILEDSHARED_EXPORT QString alignmentToString(Alignment);

@@ -6,7 +6,10 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain("mapeditor.org");
     QCoreApplication::setApplicationName("TiledQuick");
 
+    // High-DPI scaling is always enabled in Qt 6
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
 
     // We don't need the scaling factor to be rounded
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)

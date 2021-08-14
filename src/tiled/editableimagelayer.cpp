@@ -22,6 +22,7 @@
 
 #include "changeimagelayerproperties.h"
 #include "editablemap.h"
+#include "scriptimage.h"
 
 namespace Tiled {
 
@@ -64,4 +65,12 @@ void EditableImageLayer::setImageSource(const QUrl &imageSource)
     }
 }
 
+void EditableImageLayer::setImage(ScriptImage *image, const QUrl &source)
+{
+    // WARNING: This function has no undo!
+    imageLayer()->loadFromImage(QPixmap::fromImage(image->image()), source);
+}
+
 } // namespace Tiled
+
+#include "moc_editableimagelayer.cpp"

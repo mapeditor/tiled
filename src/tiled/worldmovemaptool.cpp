@@ -192,15 +192,18 @@ void WorldMoveMapTool::mouseMoved(const QPointF &pos,
     }
 
     // calculate new drag offset
-    const MapRenderer *renderer = mDraggingMap->renderer();
-    const QPoint newOffset = renderer->screenToPixelCoords(pos - mDragStartScenePos).toPoint();
-    mDragOffset = renderer->pixelToScreenCoords(snapPoint(newOffset, mDraggingMap)).toPoint();
+    const QRect currentMapRect = mapRect(mDraggingMap);
+    const QPoint offset = (pos - mDragStartScenePos).toPoint();
+
+    QPoint newPos = currentMapRect.topLeft() + offset;
+    if (!(modifiers & Qt::ControlModifier))
+        newPos = snapPoint(newPos, mDraggingMap);
+
+    mDragOffset = newPos - currentMapRect.topLeft();
 
     // update preview
     mDraggingMapItem->setPos(mDraggedMapStartPos + mDragOffset);
     updateSelectionRectangle();
-
-    auto newPos = mapRect(mDraggingMap).topLeft() + mDragOffset;
 
     setStatusInfo(tr("Move map to %1, %2 (offset: %3, %4)")
                   .arg(newPos.x())
@@ -279,3 +282,5 @@ void WorldMoveMapTool::abortMoving()
 }
 
 } // namespace Tiled
+
+#include "moc_worldmovemaptool.cpp"

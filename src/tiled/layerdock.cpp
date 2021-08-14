@@ -42,6 +42,7 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QMenu>
+#include <QScopedValueRollback>
 #include <QSlider>
 #include <QStyledItemDelegate>
 #include <QToolBar>
@@ -56,16 +57,13 @@ LayerDock::LayerDock(QWidget *parent):
     QDockWidget(parent),
     mOpacityLabel(new QLabel),
     mOpacitySlider(new QSlider(Qt::Horizontal)),
-    mLayerView(new LayerView),
-    mMapDocument(nullptr),
-    mUpdatingSlider(false),
-    mChangingLayerOpacity(false)
+    mLayerView(new LayerView)
 {
     setObjectName(QLatin1String("layerDock"));
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     QHBoxLayout *opacityLayout = new QHBoxLayout;
     mOpacitySlider->setRange(0, 100);
@@ -173,14 +171,13 @@ void LayerDock::updateOpacitySlider()
     mOpacitySlider->setEnabled(enabled);
     mOpacityLabel->setEnabled(enabled);
 
-    mUpdatingSlider = true;
+    QScopedValueRollback<bool> updating(mUpdatingSlider, true);
     if (enabled) {
         qreal opacity = mMapDocument->currentLayer()->opacity();
         mOpacitySlider->setValue(qRound(opacity * 100));
     } else {
         mOpacitySlider->setValue(100);
     }
-    mUpdatingSlider = false;
 }
 
 void LayerDock::documentChanged(const ChangeEvent &change)
@@ -228,11 +225,10 @@ void LayerDock::sliderValueChanged(int opacity)
 
     if (static_cast<int>(layer->opacity() * 100) != opacity) {
         LayerModel *layerModel = mMapDocument->layerModel();
-        mChangingLayerOpacity = true;
+        QScopedValueRollback<bool> updating(mChangingLayerOpacity, true);
         layerModel->setData(layerModel->index(layer),
                             qreal(opacity) / 100,
                             LayerModel::OpacityRole);
-        mChangingLayerOpacity = false;
     }
 }
 
@@ -357,12 +353,11 @@ void LayerView::currentLayerChanged(Layer *layer)
     const QModelIndex index = mProxyModel->mapFromSource(layerModel->index(layer));
     const QModelIndex current = currentIndex();
     if (current.parent() != index.parent() || current.row() != index.row()) {
-        mUpdatingViewSelection = true;
+        QScopedValueRollback<bool> updating(mUpdatingViewSelection, true);
         selectionModel()->setCurrentIndex(index,
                                           QItemSelectionModel::Clear |
                                           QItemSelectionModel::SelectCurrent |
                                           QItemSelectionModel::Rows);
-        mUpdatingViewSelection = false;
     }
 }
 
@@ -380,9 +375,8 @@ void LayerView::selectedLayersChanged()
         selection.select(index, index);
     }
 
-    mUpdatingViewSelection = true;
+    QScopedValueRollback<bool> updating(mUpdatingViewSelection, true);
     selectionModel()->select(selection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
-    mUpdatingViewSelection = false;
 }
 
 void LayerView::layerRemoved(Layer *layer)
@@ -419,7 +413,8 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
 
     QMenu menu;
 
-    menu.addMenu(handler->createNewLayerMenu(&menu));
+    QMenu *newLayerMenu = handler->createNewLayerMenu(&menu);
+    menu.addMenu(newLayerMenu);
 
     if (proxyIndex.isValid()) {
         menu.addMenu(handler->createGroupLayerMenu(&menu));
@@ -437,6 +432,9 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         menu.addSeparator();
         menu.addAction(handler->actionLayerProperties());
     }
+
+    ActionManager::applyMenuExtensions(newLayerMenu, "NewLayer");
+    ActionManager::applyMenuExtensions(&menu, MenuIds::layerViewLayers);
 
     menu.exec(event->globalPos());
 }
@@ -487,9 +485,9 @@ void LayerView::selectionChanged(const QItemSelection &selected,
             layers.append(layer);
     }
 
-    mUpdatingSelectedLayers = true;
+    QScopedValueRollback<bool> updating(mUpdatingSelectedLayers, true);
     mMapDocument->setSelectedLayers(layers);
-    mUpdatingSelectedLayers = false;
 }
 
 #include "layerdock.moc"
+#include "moc_layerdock.cpp"

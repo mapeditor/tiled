@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+ <tileset firstgid="1" source="../objs.tsx"/>
+ <object type="coin" gid="17" width="64" height="64"/>
+</template>

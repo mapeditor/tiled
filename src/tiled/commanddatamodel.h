@@ -73,6 +73,7 @@ public:
     void setShowOutput(const QModelIndex &index, bool value);
     void setSaveBeforeExecute(const QModelIndex &index, bool value);
 
+    bool isCommand(const QModelIndex &index) const;
     Command command(const QModelIndex &index) const;
 
 public slots:

@@ -48,6 +48,7 @@ static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
     const QString NAME = QStringLiteral("name");
     const QString VALUE = QStringLiteral("value");
     const QString TYPE = QStringLiteral("type");
+    const QString PROPERTY_TYPE = QStringLiteral("propertytype");
     const QString COLOR = QStringLiteral("color");
     const QString PROPERTIES = QStringLiteral("properties");
 
@@ -63,15 +64,15 @@ static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
     while (it.hasNext()) {
         it.next();
 
-        int type = it.value().userType();
-
-        const QString typeName = typeToName(type);
-        const QVariant exportValue = toExportValue(it.value(), fileDir);
+        const auto exportValue = ExportValue::fromPropertyValue(it.value(), fileDir.path());
 
         QJsonObject propertyJson;
         propertyJson.insert(NAME, it.key());
-        propertyJson.insert(TYPE, typeName);
-        propertyJson.insert(VALUE, QJsonValue::fromVariant(exportValue));
+        propertyJson.insert(TYPE, exportValue.typeName);
+        propertyJson.insert(VALUE, QJsonValue::fromVariant(exportValue.value));
+
+        if (!exportValue.propertyTypeName.isEmpty())
+            propertyJson.insert(PROPERTY_TYPE, exportValue.propertyTypeName);
 
         propertiesJson.append(propertyJson);
     }
@@ -101,15 +102,14 @@ static void fromJson(const QJsonObject &object, ObjectType &objectType, const QD
     for (const QJsonValue &property : properties) {
         const QJsonObject propertyObject = property.toObject();
         const QString name = propertyObject.value(QLatin1String("name")).toString();
-        const QString typeName = propertyObject.value(QLatin1String("type")).toString();
-        QVariant value = propertyObject.value(QLatin1String("value")).toVariant();
 
-        if (!typeName.isEmpty()) {
-            int type = nameToType(typeName);
-            value = fromExportValue(value, type, fileDir);
-        }
+        ExportValue exportValue;
+        exportValue.value = propertyObject.value(QLatin1String("value")).toVariant();
+        exportValue.typeName = propertyObject.value(QLatin1String("type")).toString();
+        exportValue.propertyTypeName = propertyObject.value(QLatin1String("propertytype")).toString();
 
-        objectType.defaultProperties.insert(name, value);
+        objectType.defaultProperties.insert(name,
+                                            exportValue.toPropertyValue(fileDir.path()));
     }
 }
 
@@ -142,14 +142,17 @@ static void writeObjectTypesXml(QFileDevice *device,
         while (it.hasNext()) {
             it.next();
 
-            int type = it.value().userType();
+            const auto exportValue = ExportValue::fromPropertyValue(it.value(), fileDir.path());
 
             writer.writeStartElement(QStringLiteral("property"));
             writer.writeAttribute(QStringLiteral("name"), it.key());
-            writer.writeAttribute(QStringLiteral("type"), typeToName(type));
+            writer.writeAttribute(QStringLiteral("type"), exportValue.typeName);
+
+            if (!exportValue.propertyTypeName.isEmpty())
+                writer.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
 
             if (!it.value().isNull()) {
-                const QString value = toExportValue(it.value(), fileDir).toString();
+                const QString value = exportValue.value.toString();
                 writer.writeAttribute(QStringLiteral("default"), value);
             }
 
@@ -170,16 +173,14 @@ static void readObjectTypePropertyXml(QXmlStreamReader &xml,
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("property"));
 
     const QXmlStreamAttributes atts = xml.attributes();
-    QString name(atts.value(QLatin1String("name")).toString());
-    QString typeName(atts.value(QLatin1String("type")).toString());
-    QVariant defaultValue(atts.value(QLatin1String("default")).toString());
+    const QString name = atts.value(QLatin1String("name")).toString();
 
-    if (!typeName.isEmpty()) {
-        int type = nameToType(typeName);
-        defaultValue = fromExportValue(defaultValue, type, fileDir);
-    }
+    ExportValue exportValue;
+    exportValue.value = atts.value(QLatin1String("default")).toString();
+    exportValue.typeName = atts.value(QLatin1String("type")).toString();
+    exportValue.propertyTypeName = atts.value(QLatin1String("propertytype")).toString();
 
-    props.insert(name, defaultValue);
+    props.insert(name, exportValue.toPropertyValue(fileDir.path()));
 
     xml.skipCurrentElement();
 }

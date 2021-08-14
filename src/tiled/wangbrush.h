@@ -25,19 +25,24 @@
 
 namespace Tiled {
 
+struct FillRegion;
+
 class WangBrush : public AbstractTileTool
 {
     Q_OBJECT
 
 public:
     enum BrushMode {
-        PaintVertex,
+        PaintCorner,
         PaintEdge,
-        Idle //no valid color selected
+        PaintEdgeAndCorner,
+        Idle // no valid color selected
     };
 
     WangBrush(QObject *parent = nullptr);
     ~WangBrush();
+
+    void activate(MapScene *scene) override;
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
@@ -47,52 +52,54 @@ public:
 
     void languageChanged() override;
 
-    //Sets to edge mode, with color
-    void setEdgeColor(int color);
-    //Sets to color mode, with color
-    void setCornerColor(int color);
+    void setColor(int color);
+
+signals:
+    void colorCaptured(int color);
+
+public slots:
+    void wangSetChanged(const WangSet *wangSet);
 
 protected:
     void tilePositionChanged(QPoint tilePos) override;
     void mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDocument) override;
     void updateStatusInfo() override;
 
-signals:
-    void colorCaptured(int color, bool isEdge);
-
-public slots:
-    void wangColorChanged(int color, bool edge);
-    void wangSetChanged(WangSet *wangSet);
-
 private:
     enum BrushBehavior {
-        Free,
-        Paint
+        Free,               // Hovering
+        Paint,              // Painting (left mouse button pressed)
+        Line,               // Drawing a line (left mouse button pressed)
     };
 
-    //sets the current wang color to the corner/edge currently hovered
+    // sets the current wang color to the corner/edge currently hovered
     void captureHoverColor();
 
-    //called when something has changed which requires an update.
+    // called when something has changed which requires an update.
     void stateChanged();
 
     void beginPaint();
     void doPaint(bool mergeable);
     void updateBrush();
+    void updateBrushAt(FillRegion &fill, QPoint pos);
 
-    //The point painting happens around
-    //In tile mode, this is that tile
-    //In vertex mode, this is that vertex
-    //In edge mode, this is a tile with that edge
-    //With mEdge being the direction of the edge (0 being top 3 being left)
+    // The point painting happens around
+    // In tile mode, this is that tile
+    // In corner mode, this means the top-left corner of that tile
+    // In edge mode, this is a tile with that edge
+    // With mWangIndex being the direction of the edge
+    QPoint mPrevPaintPoint;
     QPoint mPaintPoint;
-    WangId::Edge mEdgeDir;
+    QPoint mLineStartPos;
+    WangId::Index mWangIndex = WangId::Top;
 
-    WangSet *mWangSet;
-    int mCurrentColor;
-    BrushMode mBrushMode;
-    bool mIsTileMode;
-    BrushBehavior mBrushBehavior;
+    const WangSet *mWangSet = nullptr;
+    int mCurrentColor = 0;
+    BrushMode mBrushMode = Idle;
+    bool mIsTileMode = false;
+    bool mRotationalSymmetry = false;
+    bool mLineStartSet = false;
+    BrushBehavior mBrushBehavior = Free;
 };
 
 } // namespace Tiled

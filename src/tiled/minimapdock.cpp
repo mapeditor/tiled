@@ -58,3 +58,5 @@ void MiniMapDock::retranslateUi()
 {
     setWindowTitle(tr("Mini-map"));
 }
+
+#include "moc_minimapdock.cpp"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="7" height="3" tilewidth="24" tileheight="24" infinite="0" nextlayerid="4" nextobjectid="1">
+<map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="7" height="3" tilewidth="24" tileheight="24" infinite="0" nextlayerid="4" nextobjectid="1">
  <properties>
   <property name="AutomappingRadius" value="3"/>
   <property name="DeleteTiles" value="yes"/>

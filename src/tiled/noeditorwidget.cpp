@@ -137,3 +137,5 @@ void NoEditorWidget::adjustToStyle()
 }
 
 } // namespace Tiled
+
+#include "moc_noeditorwidget.cpp"

@@ -21,13 +21,15 @@
 #include "editabletileset.h"
 
 #include "addremovetiles.h"
+#include "addremovewangset.h"
 #include "editablemanager.h"
-#include "editableterrain.h"
 #include "editabletile.h"
+#include "editablewangset.h"
+#include "scriptimage.h"
 #include "scriptmanager.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
-#include "tilesetterrainmodel.h"
+#include "tilesetwangsetmodel.h"
 
 #include <QCoreApplication>
 
@@ -56,15 +58,22 @@ EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
     connect(tilesetDocument, &TilesetDocument::tilesAdded, this, &EditableTileset::attachTiles);
     connect(tilesetDocument, &TilesetDocument::tilesRemoved, this, &EditableTileset::detachTiles);
     connect(tilesetDocument, &TilesetDocument::tileObjectGroupChanged, this, &EditableTileset::tileObjectGroupChanged);
-    connect(tilesetDocument->terrainModel(), &TilesetTerrainModel::terrainAdded, this, &EditableTileset::terrainAdded);
+    connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetAdded, this, &EditableTileset::wangSetAdded);
+    connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetRemoved, this, &EditableTileset::wangSetRemoved);
 }
 
 EditableTileset::~EditableTileset()
 {
-    detachTiles(tileset()->tiles().values());
-    detachTerrains(tileset()->terrains());
+    detachTiles(tileset()->tiles());
+    detachWangSets(tileset()->wangSets());
 
     EditableManager::instance().mEditableTilesets.remove(tileset());
+}
+
+void EditableTileset::loadFromImage(ScriptImage *image, const QString &source)
+{
+    // WARNING: This function has no undo!
+    tileset()->loadFromImage(image->image(), source);
 }
 
 EditableTile *EditableTileset::tile(int id)
@@ -88,13 +97,13 @@ QList<QObject*> EditableTileset::tiles()
     return tiles;
 }
 
-QList<QObject *> EditableTileset::terrains()
+QList<QObject *> EditableTileset::wangSets()
 {
     auto &editableManager = EditableManager::instance();
-    QList<QObject*> terrains;
-    for (Terrain *terrain : tileset()->terrains())
-        terrains.append(editableManager.editableTerrain(this, terrain));
-    return terrains;
+    QList<QObject*> wangSets;
+    for (WangSet *wangSet : tileset()->wangSets())
+        wangSets.append(editableManager.editableWangSet(this, wangSet));
+    return wangSets;
 }
 
 QList<QObject *> EditableTileset::selectedTiles()
@@ -159,6 +168,38 @@ void EditableTileset::removeTiles(const QList<QObject *> &tiles)
     } else if (!checkReadOnly()) {
         tileset()->removeTiles(plainTiles);
         detachTiles(plainTiles);
+    }
+}
+
+EditableWangSet *EditableTileset::addWangSet(const QString &name, int type)
+{
+    auto wangSet = std::make_unique<WangSet>(tileset(), name, static_cast<WangSet::Type>(type));
+    EditableWangSet *editable = nullptr;
+
+    if (auto doc = tilesetDocument()) {
+        push(new AddWangSet(doc, wangSet.release()));
+        editable = EditableManager::instance().editableWangSet(this, tileset()->wangSets().last());
+    } else if (!checkReadOnly()) {
+        tileset()->addWangSet(std::move(wangSet));
+        editable = EditableManager::instance().editableWangSet(this, tileset()->wangSets().last());
+    }
+
+    return editable;
+}
+
+void EditableTileset::removeWangSet(EditableWangSet *editableWangSet)
+{
+    if (!editableWangSet) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+
+    if (auto doc = tilesetDocument()) {
+        push(new RemoveWangSet(doc, editableWangSet->wangSet()));
+    } else if (!checkReadOnly()) {
+        const int index = tileset()->wangSets().indexOf(editableWangSet->wangSet());
+        auto wangSet = tileset()->takeWangSetAt(index);
+        EditableManager::instance().release(std::move(wangSet));
     }
 }
 
@@ -239,6 +280,21 @@ void EditableTileset::setOrientation(Orientation orientation)
         tileset()->setOrientation(static_cast<Tileset::Orientation>(orientation));
 }
 
+void EditableTileset::setTransparentColor(const QColor &color)
+{
+    if (auto doc = tilesetDocument()) {
+        TilesetParameters parameters(*tileset());
+        parameters.transparentColor = color;
+
+        push(new ChangeTilesetParameters(doc, parameters));
+    } else if (!checkReadOnly()) {
+        tileset()->setTransparentColor(color);
+
+        if (!tileSize().isEmpty() && !image().isEmpty())
+            tileset()->loadImage();
+    }
+}
+
 void EditableTileset::setBackgroundColor(const QColor &color)
 {
     if (auto doc = tilesetDocument())
@@ -286,11 +342,11 @@ void EditableTileset::detachTiles(const QList<Tile *> &tiles)
     }
 }
 
-void EditableTileset::detachTerrains(const QList<Terrain *> &terrains)
+void EditableTileset::detachWangSets(const QList<WangSet *> &wangSets)
 {
     const auto &editableManager = EditableManager::instance();
-    for (Terrain *terrain: terrains) {
-        if (auto editable = editableManager.find(terrain)) {
+    for (WangSet *wangSet : wangSets) {
+        if (auto editable = editableManager.find(wangSet)) {
             Q_ASSERT(editable->tileset() == this);
             editable->detach();
         }
@@ -306,10 +362,21 @@ void EditableTileset::tileObjectGroupChanged(Tile *tile)
             editable->detachObjectGroup();
 }
 
-void EditableTileset::terrainAdded(Tileset *tileset, int terrainId)
+void EditableTileset::wangSetAdded(Tileset *tileset, int index)
 {
-    if (auto editable = EditableManager::instance().find(tileset->terrain(terrainId)))
+    Q_ASSERT(this->tileset() == tileset);
+
+    WangSet *wangSet = tileset->wangSet(index);
+
+    if (auto editable = EditableManager::instance().find(wangSet))
         editable->attach(this);
 }
 
+void EditableTileset::wangSetRemoved(WangSet *wangSet)
+{
+    detachWangSets({ wangSet });
+}
+
 } // namespace Tiled
+
+#include "moc_editabletileset.cpp"

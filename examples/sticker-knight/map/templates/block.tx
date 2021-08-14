@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+ <tileset firstgid="1" source="../objs.tsx"/>
+ <object name="block" gid="44" width="96" height="96">
+  <properties>
+   <property name="bodyType" value="dynamic"/>
+   <property name="density" type="float" value="2"/>
+   <property name="friction" type="float" value="0.45"/>
+  </properties>
+ </object>
+</template>

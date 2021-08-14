@@ -84,3 +84,5 @@ void CommandButton::retranslateUi()
 {
     setToolTip(tr("Execute Command"));
 }
+
+#include "moc_commandbutton.cpp"

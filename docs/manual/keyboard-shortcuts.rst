@@ -66,15 +66,15 @@ When a tile layer is selected
       clicked center
 
 -  ``T`` - Activate :ref:`terrain-tool`
--  ``G`` - Activate :ref:`wang-tool` (since Tiled 1.1)
 -  ``F`` - Activate :ref:`bucket-fill-tool`
 -  ``P`` - Activate :ref:`shape-fill-tool`
 -  ``E`` - Activate :ref:`eraser-tool`
 -  ``R`` - Activate Rectangular Select
 -  ``W`` - Activate Magic Wand
 -  ``S`` - Activate Select Same Tile
--  ``Ctrl + 1-9`` - Store current tile selection (similar to
-   ``Ctrl + C``)
+-  ``Ctrl + 1-9`` - Store current tile stamp. When no tile drawing tool is
+   selected, tries to capture the current tile selection (similar to
+   ``Ctrl + C``).
 -  ``1-9`` recall the previous selection (similar to ``Ctrl + V``)
 -  ``Ctrl + A`` - Select the whole layer
 -  ``Ctrl + Shift + A`` - Select nothing

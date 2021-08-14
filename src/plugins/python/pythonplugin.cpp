@@ -357,7 +357,7 @@ QString PythonMapFormat::nameFilter() const
     }
 
     // have fun
-    PyObject *pinst = PyEval_CallFunction(pfun, "()");
+    PyObject *pinst = PyObject_CallFunction(pfun, "()");
     if (!pinst) {
         PySys_WriteStderr("** Uncaught exception in script **\n");
     } else {
@@ -385,7 +385,7 @@ QString PythonMapFormat::shortName() const
     }
 
     // have fun
-    PyObject *pinst = PyEval_CallFunction(pfun, "()");
+    PyObject *pinst = PyObject_CallFunction(pfun, "()");
     if (!pinst) {
         PySys_WriteStderr("** Uncaught exception in script **\n");
     } else {

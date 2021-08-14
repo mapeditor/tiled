@@ -20,99 +20,10 @@
 
 #pragma once
 
-#include <QObject>
-
-#include <memory>
-
-class QFileDevice;
-class QTextStream;
+class QJSEngine;
 
 namespace Tiled {
 
-class ScriptBinaryFile : public QObject
-{
-    Q_OBJECT
-
-    Q_PROPERTY(QString filePath READ filePath)
-    Q_PROPERTY(bool atEof READ atEof)
-    Q_PROPERTY(qint64 size READ size)
-    Q_PROPERTY(qint64 pos READ pos)
-
-public:
-    enum OpenMode {
-        ReadOnly = 1,
-        WriteOnly = 2,
-        ReadWrite = ReadOnly | WriteOnly
-    };
-    Q_ENUM(OpenMode)
-
-    Q_INVOKABLE ScriptBinaryFile(); // workaround for Qt issue
-    Q_INVOKABLE ScriptBinaryFile(const QString &filePath,
-                                 OpenMode mode = ReadOnly);
-    ~ScriptBinaryFile() override;
-
-    QString filePath() const;
-    bool atEof() const;
-    qint64 size() const;
-    qint64 pos() const;
-
-    Q_INVOKABLE void resize(qint64 size);
-    Q_INVOKABLE void seek(qint64 pos);
-    Q_INVOKABLE QByteArray read(qint64 size);
-    Q_INVOKABLE QByteArray readAll();
-    Q_INVOKABLE void write(const QByteArray &data);
-    Q_INVOKABLE void commit();
-    Q_INVOKABLE void close();
-
-private:
-    bool checkForClosed() const;
-
-    std::unique_ptr<QFileDevice> m_file;
-};
-
-class ScriptTextFile : public QObject
-{
-    Q_OBJECT
-
-    Q_PROPERTY(QString filePath READ filePath)
-    Q_PROPERTY(bool atEof READ atEof)
-    Q_PROPERTY(QString codec READ codec WRITE setCodec)
-
-public:
-    enum OpenMode {
-        ReadOnly = 1,
-        WriteOnly = 2,
-        ReadWrite = ReadOnly | WriteOnly,
-        Append = 4
-    };
-    Q_ENUM(OpenMode)
-
-    Q_INVOKABLE ScriptTextFile();   // workaround for Qt issue
-    Q_INVOKABLE ScriptTextFile(const QString &filePath,
-                               OpenMode mode = ReadOnly);
-    ~ScriptTextFile() override;
-
-    QString filePath() const;
-    QString codec() const;
-    void setCodec(const QString &codec);
-
-    Q_INVOKABLE QString readLine();
-    Q_INVOKABLE QString readAll();
-    bool atEof() const;
-    Q_INVOKABLE void truncate();
-    Q_INVOKABLE void write(const QString &string);
-    Q_INVOKABLE void writeLine(const QString &string);
-    Q_INVOKABLE void commit();
-    Q_INVOKABLE void close();
-
-private:
-    bool checkForClosed() const;
-
-    std::unique_ptr<QFileDevice> m_file;
-    std::unique_ptr<QTextStream> m_stream;
-};
+void registerFile(QJSEngine *jsEngine);
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::ScriptBinaryFile*)
-Q_DECLARE_METATYPE(Tiled::ScriptTextFile*)

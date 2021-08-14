@@ -1,5 +1,5 @@
 clone_depth: 200
-version: '1.4.{build}'
+version: '1.7.{build}'
 image:
   - Visual Studio 2015
   - Visual Studio 2019
@@ -13,30 +13,49 @@ environment:
   BUTLER_API_KEY:
     secure: j7JM5L6KeqpnQukzJLsm7J6oV92SpmyEZLSoED1pZ3gQ79VIkdxtbQmTkqUNZPsz
   matrix:
-    - QTDIR: C:\Qt\5.12\mingw73_64
+    - QTDIR: C:\Qt\5.15\msvc2019_64
       PYTHONHOME: C:\Python37-x64
-      MINGW: C:\Qt\Tools\mingw730_64
-      DEFAULT_PROFILE: x86_64-w64-mingw32
-      PUSH_RELEASE: true
-      TILED_ITCH_CHANNEL: windows-64bit
-    - QTDIR: C:\Qt\5.6\mingw49_32
+      DEFAULT_PROFILE: MSVC2019-x64
+      PUSH_RELEASE: false
+      ENABLE_ZSTD: false
+    - QTDIR: C:\Qt\5.6.3\mingw49_32
       PYTHONHOME: C:\Python37
       MINGW: C:\Qt\Tools\mingw492_32
-      DEFAULT_PROFILE: i686-w64-mingw32
-      PUSH_RELEASE: false
+      DEFAULT_PROFILE: i686-w64-mingw32-gcc-4_9_2
+      PUSH_RELEASE: true
+      PUSH_SNAPSHOT: true
+      ENABLE_ZSTD: true
       TILED_ITCH_CHANNEL: winxp-32bit
+    - QTDIR: C:\Qt\5.15\mingw81_64
+      PYTHONHOME: C:\Python37-x64
+      MINGW: C:\Qt\Tools\mingw810_64
+      DEFAULT_PROFILE: x86_64-w64-mingw32-gcc-8_1_0
+      PUSH_RELEASE: true
+      ENABLE_ZSTD: true
+      TILED_ITCH_CHANNEL: windows-64bit
+    - QTDIR: C:\Qt\5.15\mingw81_32
+      PYTHONHOME: C:\Python37
+      MINGW: C:\Qt\Tools\mingw810_32
+      DEFAULT_PROFILE: i686-w64-mingw32-gcc-8_1_0
+      PUSH_RELEASE: true
+      ENABLE_ZSTD: true
+      TILED_ITCH_CHANNEL: windows-32bit
 
 matrix:
   exclude:
     - image: Visual Studio 2015
-      QTDIR: C:\Qt\5.12\mingw73_64
+      QTDIR: C:\Qt\5.15\msvc2019_64
+    - image: Visual Studio 2015
+      QTDIR: C:\Qt\5.15\mingw81_64
+    - image: Visual Studio 2015
+      QTDIR: C:\Qt\5.15\mingw81_32
     - image: Visual Studio 2019
-      QTDIR: C:\Qt\5.6\mingw49_32
+      QTDIR: C:\Qt\5.6.3\mingw49_32
 
 configuration: Release
 
 install:
-  - choco install -y qbs --version 1.13.1
+  - choco install -y qbs --version 1.19.0
   - nuget install secure-file -ExcludeVersion
   - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
 
@@ -47,17 +66,14 @@ build_script:
   - if defined TILED_SNAPSHOT set TILED_VERSION=%DATE:~10,4%.%DATE:~4,2%.%DATE:~7,2%
   - if defined TILED_SNAPSHOT set TILED_MSI_VERSION=%APPVEYOR_BUILD_VERSION%
   - if defined TILED_SNAPSHOT set TILED_ITCH_CHANNEL=%TILED_ITCH_CHANNEL%-snapshot
-  - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] set PUSH_TO_ITCH=true
+  - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] if defined PUSH_SNAPSHOT set PUSH_TO_ITCH=true
   - echo Building Tiled %TILED_VERSION% (%TILED_ITCH_CHANNEL%) from %COMMITNOW%
   - git clone --depth 1 -b master https://github.com/facebook/zstd.git
-  - cd zstd/lib
-  - set CC=gcc
-  - mingw32-make -j2 libzstd.a
-  - cd ../../
+  - if defined MINGW cd zstd/lib & set CC=gcc & mingw32-make -j2 libzstd.a & cd ../../
   - qbs --version
   - qbs setup-toolchains --detect
   - qbs config defaultProfile %DEFAULT_PROFILE%
-  - qbs build --all-products config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:true
+  - qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:%ENABLE_ZSTD%
   - cd util\java
   - mvn --version
   - mvn clean install
@@ -80,16 +96,6 @@ artifacts:
     path: 'tiled-*.7z'
 
 deploy:
-  - provider: GitHub
-    release: Tiled $(TILED_VERSION)
-    auth_token:
-      secure: 57ahePdHlJPeOX8/MqsIg5ho4x512wvAbwRA7TkXAOav/JTHvkTG5gf8k37/883r
-    artifact: /.*\.msi/
-    draft: true
-    on:
-        appveyor_repo_tag: true
-        push_release: true
-
   - provider: FTP
     protocol: sftp
     host: update.mapeditor.org

@@ -38,14 +38,8 @@ int WangTemplateModel::rowCount(const QModelIndex &parent) const
     if (!mWangSet)
         return 0;
 
-    int rows = mWangSet->edgeColorCount() * mWangSet->cornerColorCount();
-    rows *= rows;
-    rows *= rows;
-    rows &= ~(1 << 31);
-
     // arbitrary large cap on how many rows can be displayed.
-    // could eventually be moved to pagination...
-    return std::min(rows, 0xffff);
+    return static_cast<int>(std::min<quint64>(0xffff, mWangSet->completeSetSize()));
 }
 
 QVariant WangTemplateModel::data(const QModelIndex &index, int role) const
@@ -59,15 +53,15 @@ QVariant WangTemplateModel::data(const QModelIndex &index, int role) const
 WangId WangTemplateModel::wangIdAt(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return 0;
+        return {};
 
-    const int idIndex = index.row();
-
-    if (WangSet *set = wangSet())
+    if (WangSet *set = wangSet()) {
+        const int idIndex = index.row();
         if (idIndex < rowCount())
             return set->templateWangIdAt(idIndex);
+    }
 
-    return 0;
+    return {};
 }
 
 QModelIndex WangTemplateModel::wangIdIndex(WangId wangId) const
@@ -77,32 +71,42 @@ QModelIndex WangTemplateModel::wangIdIndex(WangId wangId) const
 
     Q_ASSERT(mWangSet->wangIdIsValid(wangId));
 
-    int edges = mWangSet->edgeColorCount();
-    int corners = mWangSet->cornerColorCount();
+    const int colors = mWangSet->colorCount();
+    int row = 0;
+    int multiplier = 1;
 
-    //as this is a model of template tiles, a valid wangId can't have wildcards
-    if (edges > 1) {
-        if (wangId.hasEdgeWildCards())
-            return QModelIndex();
-
-        wangId = wangId - 0x01010101;
-    }
-    if (corners > 1) {
+    switch (mWangSet->type()) {
+    case WangSet::Corner:
+        // As this is a model of template tiles, a valid WangId can't have wildcards
         if (wangId.hasCornerWildCards())
             return QModelIndex();
 
-        wangId = wangId - 0x10101010;
-    }
+        for (int i = 0; i < WangId::NumCorners; ++i) {
+            row += (wangId.cornerColor(i) - 1) * multiplier;
+            multiplier *= colors;
+        }
 
-    int row = 0;
-    int cornerEdgePermutations = edges * corners;
+        break;
+    case WangSet::Edge:
+        if (wangId.hasEdgeWildCards())
+            return QModelIndex();
 
-    for (int i = 0; i < 8; ++i) {
-        int belowPermutations = qPow(cornerEdgePermutations, i/2) * ((i&1)? edges : 1);
-        if (i&1)
-            row += wangId.cornerColor(i/2) * belowPermutations;
-        else
-            row += wangId.edgeColor(i/2) * belowPermutations;
+        for (int i = 0; i < WangId::NumEdges; ++i) {
+            row += (wangId.edgeColor(i) - 1) * multiplier;
+            multiplier *= colors;
+        }
+
+        break;
+    case WangSet::Mixed:
+        if (wangId.hasWildCards())
+            return QModelIndex();
+
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
+            row += (wangId.indexColor(i) - 1) * multiplier;
+            multiplier *= colors;
+        }
+
+        break;
     }
 
     return index(row, 0);
@@ -120,3 +124,5 @@ void WangTemplateModel::wangSetChanged()
     beginResetModel();
     endResetModel();
 }
+
+#include "moc_wangtemplatemodel.cpp"

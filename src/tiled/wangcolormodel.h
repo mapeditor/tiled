@@ -22,7 +22,7 @@
 
 #include "wangset.h"
 
-#include <QAbstractItemModel>
+#include <QAbstractListModel>
 
 namespace Tiled {
 
@@ -30,28 +30,20 @@ class Tileset;
 
 class TilesetDocument;
 
-class WangColorModel : public QAbstractItemModel
+class WangColorModel : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
     enum UserRoles {
         ColorRole = Qt::UserRole,
-        // where Edge is 0 and Corner is 1
-        EdgeOrCornerRole = Qt::UserRole + 1
     };
 
     WangColorModel(TilesetDocument *tilesetDocument,
                    WangSet *wangSet,
                    QObject *parent = nullptr);
 
-    QModelIndex index(int row, int column,
-                      const QModelIndex &parent = QModelIndex()) const override;
-
-    QModelIndex parent(const QModelIndex &child) const override;
-
-    QModelIndex edgeIndex(int color) const;
-    QModelIndex cornerIndex(int color) const;
+    QModelIndex colorIndex(int color) const;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -68,7 +60,6 @@ public:
 
     void resetModel();
 
-    bool isEdgeColorAt(const QModelIndex &index) const;
     int colorAt(const QModelIndex &index) const;
 
     QSharedPointer<WangColor> wangColorAt(const QModelIndex &index) const;
@@ -79,11 +70,6 @@ public:
     void setProbability(WangColor *wangColor, qreal probability);
 
 private:
-    enum IndexTypeId {
-        CornerIndexId = 1,
-        EdgeIndexId = 2
-    };
-
     void emitDataChanged(WangColor *wangColor);
 
     TilesetDocument *mTilesetDocument;

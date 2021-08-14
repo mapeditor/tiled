@@ -1,6 +1,6 @@
 /*
  * propertybrowser.h
- * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2013-2021, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -21,6 +21,7 @@
 #pragma once
 
 #include "changeevents.h"
+#include "custompropertieshelper.h"
 #include "map.h"
 #include "properties.h"
 
@@ -79,7 +80,6 @@ private:
     void tilesetChanged(Tileset *tileset);
     void tileChanged(Tile *tile);
     void tileTypeChanged(Tile *tile);
-    void terrainChanged(Tileset *tileset, int index);
     void wangSetChanged(Tileset *tileset, int index);
 
     void propertyAdded(Object *object, const QString &name);
@@ -113,6 +113,7 @@ private:
         WordWrapProperty,
         OffsetXProperty,
         OffsetYProperty,
+        ParallaxFactorProperty,
         ColorProperty,
         BackgroundColorProperty,
         TileWidthProperty,
@@ -137,16 +138,19 @@ private:
         TileProbabilityProperty,
         ColumnCountProperty,
         IdProperty,
-        EdgeCountProperty,
-        CornerCountProperty,
+        ColorCountProperty,
         WangColorProbabilityProperty,
-        CustomProperty,
+        WangSetTypeProperty,
         InfiniteProperty,
         TemplateProperty,
         CompressionLevelProperty,
         ChunkWidthProperty,
         ChunkHeightProperty,
-        TintColorProperty
+        TintColorProperty,
+        AllowFlipHorizontallyProperty,
+        AllowFlipVerticallyProperty,
+        AllowRotateProperty,
+        PreferUntransformedProperty,
     };
 
     void addMapProperties();
@@ -158,7 +162,6 @@ private:
     void addGroupLayerProperties();
     void addTilesetProperties();
     void addTileProperties();
-    void addTerrainProperties();
     void addWangSetProperties();
     void addWangColorProperties();
 
@@ -173,13 +176,14 @@ private:
     QUndoCommand *applyGroupLayerValueTo(PropertyId id, const QVariant &val, GroupLayer *groupLayer);
     void applyTilesetValue(PropertyId id, const QVariant &val);
     void applyTileValue(PropertyId id, const QVariant &val);
-    void applyTerrainValue(PropertyId id, const QVariant &val);
     void applyWangSetValue(PropertyId id, const QVariant &val);
     void applyWangColorValue(PropertyId id, const QVariant &val);
 
     QtVariantProperty *createProperty(PropertyId id,
                                       int type,
                                       const QString &name);
+    QtVariantProperty *createCustomProperty(const QString &name,
+                                            const QVariant &value);
 
     using QtTreePropertyBrowser::addProperty;
     QtVariantProperty *addProperty(PropertyId id,
@@ -187,7 +191,7 @@ private:
                                    const QString &name,
                                    QtProperty *parent);
 
-    QtVariantProperty *createCustomProperty(const QString &name, const QVariant &value);
+    QtVariantProperty *addCustomProperty(const QString &name, const QVariant &value);
     void deleteCustomProperty(QtVariantProperty *property);
     void setCustomPropertyValue(QtVariantProperty *property, const QVariant &value);
 
@@ -197,17 +201,17 @@ private:
     void updateCustomProperties();
     void updateCustomPropertyColor(const QString &name);
 
-    QVariant toDisplayValue(const QVariant &value) const;
-    QVariant fromDisplayValue(const QVariant &value) const;
+    QVariant toDisplayValue(QVariant value) const;
+    QVariant fromDisplayValue(QtProperty *property, QVariant value) const;
 
     void retranslateUi();
 
-    bool mUpdating;
-    int mMapObjectFlags;
-    Object *mObject;
-    Document *mDocument;
-    MapDocument *mMapDocument;
-    TilesetDocument *mTilesetDocument;
+    bool mUpdating = false;
+    int mMapObjectFlags = 0;
+    Object *mObject = nullptr;
+    Document *mDocument = nullptr;
+    MapDocument *mMapDocument = nullptr;
+    TilesetDocument *mTilesetDocument = nullptr;
 
     QtVariantPropertyManager *mVariantManager;
     QtGroupPropertyManager *mGroupManager;
@@ -215,7 +219,7 @@ private:
 
     QHash<QtProperty *, PropertyId> mPropertyToId;
     QHash<PropertyId, QtVariantProperty *> mIdToProperty;
-    QHash<QString, QtVariantProperty *> mNameToProperty;
+    CustomPropertiesHelper mCustomPropertiesHelper;
 
     Properties mCombinedProperties;
 
@@ -229,6 +233,8 @@ private:
     QStringList mAlignmentNames;
     QStringList mFlippingFlagNames;
     QStringList mDrawOrderNames;
+    QStringList mWangSetTypeNames;
+    QMap<int, QIcon> mWangSetIcons;
 };
 
 /**

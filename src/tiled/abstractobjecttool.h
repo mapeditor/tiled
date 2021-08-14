@@ -21,6 +21,7 @@
 #pragma once
 
 #include "abstracttool.h"
+#include "preferences.h"
 
 class QAction;
 
@@ -41,6 +42,15 @@ class AbstractObjectTool : public AbstractTool
     Q_INTERFACES(Tiled::AbstractTool)
 
 public:
+    enum SelectionBehavior {
+        AllLayers,
+        PreferSelectedLayers,
+        SelectedLayers
+    };
+    Q_ENUM(SelectionBehavior)
+
+    static Preference<SelectionBehavior> ourSelectionBehavior;
+
     /**
      * Constructs an abstract object tool with the given \a name and \a icon.
      */
@@ -49,9 +59,6 @@ public:
                        const QIcon &icon,
                        const QKeySequence &shortcut,
                        QObject *parent = nullptr);
-
-    void activate(MapScene *scene) override;
-    void deactivate(MapScene *scene) override;
 
     void keyPressed(QKeyEvent *event) override;
     void mouseLeft() override;
@@ -62,6 +69,9 @@ public:
 
     void populateToolBar(QToolBar*) override;
 
+    static SelectionBehavior selectionBehavior();
+    void filterMapObjects(QList<MapObject*> &mapObjects) const;
+
 protected:
     /**
      * Overridden to only enable this tool when the currently selected layer is
@@ -69,7 +79,6 @@ protected:
      */
     void updateEnabledState() override;
 
-    MapScene *mapScene() const { return mMapScene; }
     ObjectGroup *currentObjectGroup() const;
     QList<MapObject*> mapObjectsAt(const QPointF &pos) const;
     MapObject *topMostMapObjectAt(const QPointF &pos) const;
@@ -77,7 +86,9 @@ protected:
 private:
     void duplicateObjects();
     void removeObjects();
+    void applyCollisionsToSelectedTiles(bool replace);
     void resetTileSize();
+    void convertRectanglesToPolygons();
     void saveSelectedObject();
     void detachSelectedObjects();
     void replaceObjectsWithTemplate();
@@ -96,8 +107,6 @@ private:
 
     void showContextMenu(MapObject *clickedObject,
                          QPoint screenPos);
-
-    MapScene *mMapScene;
 
     QAction *mFlipHorizontal;
     QAction *mFlipVertical;

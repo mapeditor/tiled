@@ -110,3 +110,5 @@ void EditableGroupLayer::addLayer(EditableLayer *editableLayer)
 }
 
 } // namespace Tiled
+
+#include "moc_editablegrouplayer.cpp"

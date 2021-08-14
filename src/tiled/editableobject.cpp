@@ -98,7 +98,6 @@ static Map *mapForObject(Object *object)
     case Object::MapType:
         return static_cast<Map*>(object);
     case Object::ObjectTemplateType:
-    case Object::TerrainType:
     case Object::TilesetType:
     case Object::TileType:
     case Object::WangSetType:
@@ -169,3 +168,5 @@ QVariantMap EditableObject::fromScript(const QVariantMap &value) const
 }
 
 } // namespace Tiled
+
+#include "moc_editableobject.cpp"

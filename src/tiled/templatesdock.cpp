@@ -28,9 +28,9 @@
 #include "mapview.h"
 #include "objectgroup.h"
 #include "objectselectiontool.h"
-#include "preferences.h"
 #include "propertiesdock.h"
 #include "replacetileset.h"
+#include "session.h"
 #include "templatemanager.h"
 #include "tilesetmanager.h"
 #include "tilesetdocument.h"
@@ -47,6 +47,7 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QPushButton>
+#include <QScopedValueRollback>
 #include <QSplitter>
 #include <QToolBar>
 #include <QUndoStack>
@@ -127,7 +128,7 @@ TemplatesDock::TemplatesDock(QWidget *parent)
     editorLayout->addLayout(toolsLayout);
     editorLayout->addWidget(mDescriptionLabel);
     editorLayout->addWidget(mMapView);
-    editorLayout->setMargin(0);
+    editorLayout->setContentsMargins(0, 0, 0, 0);
     editorLayout->setSpacing(0);
 
     auto *widget = new QWidget;
@@ -236,8 +237,17 @@ void TemplatesDock::refreshDummyObject()
         mDummyMapDocument = ourDummyDocuments.value(mObjectTemplate);
 
         if (!mDummyMapDocument) {
-            Map::Orientation orientation = Map::Orthogonal;
-            std::unique_ptr<Map> map { new Map(orientation, 1, 1, 1, 1) };
+            // TODO: Isometric template objects are currently not supported
+            Map::Parameters mapParameters;
+
+            // Setting sizes to 1 makes it render a one-pixel square (the map
+            // border), which serves as a somewhat hacky origin indicator.
+            mapParameters.width = 1;
+            mapParameters.height = 1;
+            mapParameters.tileWidth = 1;
+            mapParameters.tileHeight = 1;
+
+            auto map = std::make_unique<Map>(mapParameters);
 
             MapObject *dummyObject = mObjectTemplate->object()->clone();
             dummyObject->markAsTemplateBase();
@@ -359,25 +369,14 @@ void TemplatesDock::applyChanges()
 
     checkTileset();
 
-    ourEmittingChanged = true;
+    QScopedValueRollback<bool> emittingChanged(ourEmittingChanged, true);
     emit TemplateManager::instance()->objectTemplateChanged(mObjectTemplate);
-    ourEmittingChanged = false;
 }
 
 void TemplatesDock::focusInEvent(QFocusEvent *event)
 {
-    Q_UNUSED(event)
     mPropertiesDock->setDocument(mDummyMapDocument.data());
-}
-
-void TemplatesDock::focusOutEvent(QFocusEvent *event)
-{
-    Q_UNUSED(event)
-
-    if (hasFocus() || !mDummyMapDocument)
-        return;
-
-    mDummyMapDocument->setSelectedObjects(QList<MapObject*>());
+    QDockWidget::focusInEvent(event);
 }
 
 void TemplatesDock::retranslateUi()
@@ -395,30 +394,20 @@ void TemplatesDock::fixTileset()
         return;
 
     if (tileset->imageStatus() == LoadingError) {
-        // This code opens a new document even if there is a tileset document
-        auto tilesetDocument = DocumentManager::instance()->findTilesetDocument(tileset);
-
-        if (!tilesetDocument) {
-            auto newTilesetDocument = TilesetDocumentPtr::create(tileset);
-            tilesetDocument = newTilesetDocument.data();
-            DocumentManager::instance()->addDocument(newTilesetDocument);
-        } else {
-            DocumentManager::instance()->openTileset(tileset);
-        }
-
+        auto tilesetDocument = DocumentManager::instance()->openTileset(tileset);
         connect(tilesetDocument, &TilesetDocument::tilesetChanged,
                 this, &TemplatesDock::checkTileset, Qt::UniqueConnection);
     } else if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {
         FormatHelper<TilesetFormat> helper(FileFormat::Read, tr("All Files (*)"));
 
-        Preferences *prefs = Preferences::instance();
-        QString start = prefs->lastPath(Preferences::ExternalTileset);
+        Session &session = Session::current();
+        QString start = session.lastPath(Session::ExternalTileset);
         QString fileName = QFileDialog::getOpenFileName(this, tr("Locate External Tileset"),
                                                         start,
                                                         helper.filter());
 
         if (!fileName.isEmpty()) {
-            prefs->setLastPath(Preferences::ExternalTileset, QFileInfo(fileName).path());
+            session.setLastPath(Session::ExternalTileset, QFileInfo(fileName).path());
 
             QString error;
             auto newTileset = TilesetManager::instance()->loadTileset(fileName, &error);
@@ -441,3 +430,5 @@ MapObject *TemplatesDock::dummyObject() const
 
     return mDummyMapDocument->map()->layerAt(0)->asObjectGroup()->objectAt(0);
 }
+
+#include "moc_templatesdock.cpp"

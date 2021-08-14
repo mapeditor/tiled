@@ -72,7 +72,7 @@ ConsoleDock::ConsoleDock(QWidget *parent)
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
     mPlainTextEdit->setReadOnly(true);
@@ -214,3 +214,5 @@ void ConsoleDock::retranslateUi()
 }
 
 } // namespace Tiled
+
+#include "moc_consoledock.cpp"

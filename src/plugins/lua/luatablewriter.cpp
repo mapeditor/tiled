@@ -140,13 +140,13 @@ void LuaTableWriter::writeQuotedKeyAndValue(const QString &key,
     write(quote(key).toUtf8());
     write(m_minimize ? "]=" : "] = ");
 
-    switch (value.type()) {
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
-    case QVariant::Double:
-    case QVariant::Bool:
+    switch (value.userType()) {
+    case QMetaType::Int:
+    case QMetaType::UInt:
+    case QMetaType::LongLong:
+    case QMetaType::ULongLong:
+    case QMetaType::Double:
+    case QMetaType::Bool:
         write(value.toString().toLatin1());
         break;
     default:

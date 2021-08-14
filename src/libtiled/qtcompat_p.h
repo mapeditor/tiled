@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <qglobal.h>
+#include <QTextStream>
 
 #if QT_VERSION < QT_VERSION_CHECK(5,7,0)
 namespace QtPrivate
@@ -58,4 +58,14 @@ void qAsConst(const T &&) Q_DECL_EQ_DELETE;
 #    endif
 #endif
 
+#endif
+
+#if QT_VERSION < QT_VERSION_CHECK(5,14,0)
+namespace Qt {
+using ::endl;
+}
+#endif
+
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+using QStringRef = QStringView;
 #endif

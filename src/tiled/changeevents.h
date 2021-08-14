@@ -20,18 +20,22 @@
 
 #pragma once
 
+#include "map.h"
 #include "mapobject.h"
+#include "wangset.h"
 
 #include <QList>
 
 namespace Tiled {
 
 class Layer;
+class WangSet;
 
 class ChangeEvent
 {
 public:
     enum Type {
+        MapChanged,
         LayerChanged,
         TileLayerChanged,
         MapObjectAboutToBeAdded,
@@ -43,12 +47,34 @@ public:
         MapObjectsChanged,
         MapObjectsRemoved,
         ObjectGroupChanged,
+        TilesAboutToBeRemoved,
+        WangSetAboutToBeAdded,
+        WangSetAboutToBeRemoved,
+        WangSetAdded,
+        WangSetRemoved,
+        WangSetChanged,
+        WangColorAboutToBeRemoved,
     } type;
 
 protected:
     ChangeEvent(Type type)
         : type(type)
     {}
+
+    // not virtual, but protected to avoid calling at this level
+    ~ChangeEvent()
+    {}
+};
+
+class MapChangeEvent : public ChangeEvent
+{
+public:
+    MapChangeEvent(Map::Property property)
+        : ChangeEvent(MapChanged)
+        , property(property)
+    {}
+
+    Map::Property property;
 };
 
 class LayerChangeEvent : public ChangeEvent
@@ -60,7 +86,9 @@ public:
         VisibleProperty         = 1 << 2,
         LockedProperty          = 1 << 3,
         OffsetProperty          = 1 << 4,
-        TintColorProperty       = 1 << 5,
+        ParallaxFactorProperty  = 1 << 5,
+        TintColorProperty       = 1 << 6,
+        PositionProperties      = OffsetProperty | ParallaxFactorProperty,
         AllProperties           = 0xFF
     };
 
@@ -150,6 +178,60 @@ public:
 
     ObjectGroup *objectGroup;
     int index;
+};
+
+class TilesEvent : public ChangeEvent
+{
+public:
+    TilesEvent(Type type, QList<Tile *> tiles)
+        : ChangeEvent(type)
+        , tiles(std::move(tiles))
+    {}
+
+    QList<Tile *> tiles;
+};
+
+class WangSetEvent : public ChangeEvent
+{
+public:
+    WangSetEvent(Type type, Tileset *tileset, int index)
+        : ChangeEvent(type)
+        , tileset(tileset)
+        , index(index)
+    {}
+
+    Tileset *tileset;
+    int index;
+};
+
+class WangSetChangeEvent : public ChangeEvent
+{
+public:
+    enum WangSetProperty {
+        TypeProperty            = 1 << 0,
+    };
+
+    WangSetChangeEvent(WangSet *wangSet, int properties)
+        : ChangeEvent(WangSetChanged)
+        , wangSet(wangSet)
+        , properties(properties)
+    {}
+
+    WangSet *wangSet;
+    int properties;
+};
+
+class WangColorEvent : public ChangeEvent
+{
+public:
+    WangColorEvent(Type type, WangSet *wangSet, int color)
+        : ChangeEvent(type)
+        , wangSet(wangSet)
+        , color(color)
+    {}
+
+    WangSet *wangSet;
+    int color;
 };
 
 } // namespace Tiled

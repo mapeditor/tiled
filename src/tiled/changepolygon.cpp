@@ -71,18 +71,6 @@ void ChangePolygon::redo()
 }
 
 
-TogglePolygonPolyline::TogglePolygonPolyline(MapObject *mapObject)
-    : mMapObject(mapObject)
-{
-    setText(QCoreApplication::translate("Undo Commands", "Toggle Polygon/Polyline"));
-}
-
-void TogglePolygonPolyline::toggle()
-{
-    mMapObject->setShape((mMapObject->shape() == MapObject::Polygon) ? MapObject::Polyline : MapObject::Polygon);
-}
-
-
 SplitPolyline::SplitPolyline(MapDocument *mapDocument,
                              MapObject *mapObject,
                              int index)

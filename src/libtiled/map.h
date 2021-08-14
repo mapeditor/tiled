@@ -76,6 +76,21 @@ public:
     QString exportFileName;
     QString exportFormat;
 
+    enum Property {
+        TileWidthProperty,
+        TileHeightProperty,
+        InfiniteProperty,
+        HexSideLengthProperty,
+        StaggerAxisProperty,
+        StaggerIndexProperty,
+        OrientationProperty,
+        RenderOrderProperty,
+        BackgroundColorProperty,
+        LayerDataFormatProperty,
+        CompressionLevelProperty,
+        ChunkSizeProperty
+    };
+
     /**
      * The orientation of the map determines how it should be rendered. An
      * Orthogonal map is using rectangular tiles that are aligned on a
@@ -132,22 +147,43 @@ public:
         StaggerEven = 1
     };
 
+    struct Parameters
+    {
+        Orientation orientation = Orthogonal;
+        RenderOrder renderOrder = RightDown;
+        int width = 0;
+        int height = 0;
+        int tileWidth = 0;
+        int tileHeight = 0;
+        bool infinite = false;
+        int hexSideLength = 0;
+        StaggerAxis staggerAxis = StaggerY;
+        StaggerIndex staggerIndex = StaggerOdd;
+        QColor backgroundColor;
+    };
+
+    struct EditorSettings
+    {
+        int compressionLevel = -1;
+        QSize chunkSize = QSize(CHUNK_SIZE, CHUNK_SIZE);
+        LayerDataFormat layerDataFormat = Base64Zlib;
+    };
+
     Map();
+    Map(const Parameters &parameters);
 
     /**
      * Constructor taking map orientation, size and tile size as parameters.
+     *
+     * @deprecated Only kept around for the Python API!
      */
     Map(Orientation orientation,
         int width, int height,
-        int tileWidth, int tileHeight,
-        bool infinite = false);
-
-    Map(Orientation orientation,
-        QSize size,
-        QSize tileSize,
-        bool infinite = false);
+        int tileWidth, int tileHeight);
 
     ~Map();
+
+    const Parameters &parameters() const;
 
     Orientation orientation() const;
     void setOrientation(Orientation orientation);
@@ -251,6 +287,12 @@ public:
 
     std::unique_ptr<Map> clone() const;
 
+    void copyLayers(const QList<Layer*> &layers,
+                    const QRegion &tileRegion,
+                    Map &targetMap) const;
+
+    void normalizeTileLayerPositionsAndMapSize();
+
     bool isStaggered() const;
 
     LayerDataFormat layerDataFormat() const;
@@ -277,47 +319,43 @@ private:
 
     void recomputeDrawMargins() const;
 
-    Orientation mOrientation = Orthogonal;
-    RenderOrder mRenderOrder = RightDown;
-    int mCompressionLevel = -1;
-    int mWidth = 0;
-    int mHeight = 0;
-    int mTileWidth = 0;
-    int mTileHeight = 0;
-    bool mInfinite = false;
-    int mHexSideLength = 0;
-    StaggerAxis mStaggerAxis = StaggerY;
-    StaggerIndex mStaggerIndex = StaggerOdd;
-    QColor mBackgroundColor;
-    QSize mChunkSize = QSize(CHUNK_SIZE, CHUNK_SIZE);
+    Parameters mParameters;
+    EditorSettings mEditorSettings;
+
     mutable QMargins mDrawMargins;
     mutable bool mDrawMarginsDirty = true;
+
     QList<Layer*> mLayers;
     QVector<SharedTileset> mTilesets;
-    LayerDataFormat mLayerDataFormat = Base64Zlib;
+
     int mNextLayerId = 1;
     int mNextObjectId = 1;
 };
 
 
+inline const Map::Parameters &Map::parameters() const
+{
+    return mParameters;
+}
+
 inline Map::Orientation Map::orientation() const
 {
-    return mOrientation;
+    return mParameters.orientation;
 }
 
 inline void Map::setOrientation(Map::Orientation orientation)
 {
-    mOrientation = orientation;
+    mParameters.orientation = orientation;
 }
 
 inline Map::RenderOrder Map::renderOrder() const
 {
-    return mRenderOrder;
+    return mParameters.renderOrder;
 }
 
 inline void Map::setRenderOrder(Map::RenderOrder renderOrder)
 {
-    mRenderOrder = renderOrder;
+    mParameters.renderOrder = renderOrder;
 }
 
 /**
@@ -325,12 +363,12 @@ inline void Map::setRenderOrder(Map::RenderOrder renderOrder)
  */
 inline int Map::compressionLevel() const
 {
-    return mCompressionLevel;
+    return mEditorSettings.compressionLevel;
 }
 
 inline void Map::setCompressionLevel(int compressionLevel)
 {
-    mCompressionLevel = compressionLevel;
+    mEditorSettings.compressionLevel = compressionLevel;
 }
 
 /**
@@ -338,7 +376,7 @@ inline void Map::setCompressionLevel(int compressionLevel)
  */
 inline int Map::width() const
 {
-    return mWidth;
+    return mParameters.width;
 }
 
 /**
@@ -346,7 +384,7 @@ inline int Map::width() const
  */
 inline void Map::setWidth(int width)
 {
-    mWidth = width;
+    mParameters.width = width;
 }
 
 /**
@@ -354,7 +392,7 @@ inline void Map::setWidth(int width)
  */
 inline int Map::height() const
 {
-    return mHeight;
+    return mParameters.height;
 }
 
 /**
@@ -362,7 +400,7 @@ inline int Map::height() const
  */
 inline void Map::setHeight(int height)
 {
-    mHeight = height;
+    mParameters.height = height;
 }
 
 /**
@@ -370,7 +408,7 @@ inline void Map::setHeight(int height)
  */
 inline QSize Map::size() const
 {
-    return QSize(mWidth, mHeight);
+    return QSize(mParameters.width, mParameters.height);
 }
 
 /**
@@ -378,7 +416,7 @@ inline QSize Map::size() const
  */
 inline int Map::tileWidth() const
 {
-    return mTileWidth;
+    return mParameters.tileWidth;
 }
 
 /**
@@ -386,7 +424,7 @@ inline int Map::tileWidth() const
  */
 inline void Map::setTileWidth(int width)
 {
-    mTileWidth = width;
+    mParameters.tileWidth = width;
 }
 
 /**
@@ -394,7 +432,7 @@ inline void Map::setTileWidth(int width)
  */
 inline int Map::tileHeight() const
 {
-    return mTileHeight;
+    return mParameters.tileHeight;
 }
 
 /**
@@ -402,7 +440,7 @@ inline int Map::tileHeight() const
  */
 inline void Map::setTileHeight(int height)
 {
-    mTileHeight = height;
+    mParameters.tileHeight = height;
 }
 
 /**
@@ -410,52 +448,52 @@ inline void Map::setTileHeight(int height)
  */
 inline QSize Map::tileSize() const
 {
-    return QSize(mTileWidth, mTileHeight);
+    return QSize(mParameters.tileWidth, mParameters.tileHeight);
 }
 
 inline bool Map::infinite() const
 {
-    return mInfinite;
+    return mParameters.infinite;
 }
 
 inline void Map::setInfinite(bool infinite)
 {
-    mInfinite = infinite;
+    mParameters.infinite = infinite;
 }
 
 inline int Map::hexSideLength() const
 {
-    return mHexSideLength;
+    return mParameters.hexSideLength;
 }
 
 inline void Map::setHexSideLength(int hexSideLength)
 {
-    mHexSideLength = hexSideLength;
+    mParameters.hexSideLength = hexSideLength;
 }
 
 inline Map::StaggerAxis Map::staggerAxis() const
 {
-    return mStaggerAxis;
+    return mParameters.staggerAxis;
 }
 
 inline void Map::setStaggerAxis(StaggerAxis staggerAxis)
 {
-    mStaggerAxis = staggerAxis;
+    mParameters.staggerAxis = staggerAxis;
 }
 
 inline Map::StaggerIndex Map::staggerIndex() const
 {
-    return mStaggerIndex;
+    return mParameters.staggerIndex;
 }
 
 inline void Map::setStaggerIndex(StaggerIndex staggerIndex)
 {
-    mStaggerIndex = staggerIndex;
+    mParameters.staggerIndex = staggerIndex;
 }
 
 inline void Map::invertStaggerIndex()
 {
-    mStaggerIndex = static_cast<StaggerIndex>(!mStaggerIndex);
+    mParameters.staggerIndex = static_cast<StaggerIndex>(!mParameters.staggerIndex);
 }
 
 inline void Map::invalidateDrawMargins()
@@ -569,12 +607,12 @@ inline const QVector<SharedTileset> &Map::tilesets() const
  */
 inline const QColor &Map::backgroundColor() const
 {
-    return mBackgroundColor;
+    return mParameters.backgroundColor;
 }
 
 inline void Map::setBackgroundColor(QColor color)
 {
-    mBackgroundColor = color;
+    mParameters.backgroundColor = color;
 }
 
 /**
@@ -582,12 +620,12 @@ inline void Map::setBackgroundColor(QColor color)
  */
 inline QSize Map::chunkSize() const
 {
-    return mChunkSize;
+    return mEditorSettings.chunkSize;
 }
 
 inline void Map::setChunkSize(QSize size)
 {
-    mChunkSize = size;
+    mEditorSettings.chunkSize = size;
 }
 
 /**
@@ -600,12 +638,12 @@ inline bool Map::isStaggered() const
 
 inline Map::LayerDataFormat Map::layerDataFormat() const
 {
-    return mLayerDataFormat;
+    return mEditorSettings.layerDataFormat;
 }
 
 inline void Map::setLayerDataFormat(Map::LayerDataFormat format)
 {
-    mLayerDataFormat = format;
+    mEditorSettings.layerDataFormat = format;
 }
 
 /**

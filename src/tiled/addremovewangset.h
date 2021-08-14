@@ -22,6 +22,8 @@
 
 #include <QUndoCommand>
 
+#include <memory>
+
 namespace Tiled {
 
 class WangSet;
@@ -43,7 +45,7 @@ protected:
 private:
     TilesetDocument *mTilesetDocument;
     int mIndex;
-    WangSet *mWangSet;
+    std::unique_ptr<WangSet> mWangSet;
 };
 
 class AddWangSet : public AddRemoveWangSet

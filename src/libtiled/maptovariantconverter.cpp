@@ -28,7 +28,6 @@
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "properties.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -46,7 +45,10 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     QVariantMap mapVariant;
 
     mapVariant[QStringLiteral("type")] = QLatin1String("map");
-    mapVariant[QStringLiteral("version")] = (mVersion == 2) ? 1.4 : 1.1;
+    if (mVersion == 2)
+        mapVariant[QStringLiteral("version")] = QStringLiteral("1.6");
+    else
+        mapVariant[QStringLiteral("version")] = 1.1;
     mapVariant[QStringLiteral("tiledversion")] = QCoreApplication::applicationVersion();
     mapVariant[QStringLiteral("orientation")] = orientationToString(map.orientation());
     mapVariant[QStringLiteral("renderorder")] = renderOrderToString(map.renderOrder());
@@ -162,7 +164,10 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QStringLiteral("type")] = QLatin1String("tileset");
 
         // Include version in external tilesets
-        tilesetVariant[QStringLiteral("version")] = (mVersion == 2) ? 1.4 : 1.1;
+        if (mVersion == 2)
+            tilesetVariant[QStringLiteral("version")] = QStringLiteral("1.6");
+        else
+            tilesetVariant[QStringLiteral("version")] = 1.1;
         tilesetVariant[QStringLiteral("tiledversion")] = QCoreApplication::applicationVersion();
     }
 
@@ -228,8 +233,18 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QStringLiteral("imageheight")] = tileset.imageHeight();
     }
 
-    // Write the properties, terrain, external image, object group and
-    // animation for those tiles that have them.
+    const auto transformationFlags = tileset.transformationFlags();
+    if (transformationFlags) {
+        tilesetVariant[QStringLiteral("transformations")] = QVariantMap {
+            { QStringLiteral("hflip"), transformationFlags.testFlag(Tileset::AllowFlipHorizontally) },
+            { QStringLiteral("vflip"), transformationFlags.testFlag(Tileset::AllowFlipVertically) },
+            { QStringLiteral("rotate"), transformationFlags.testFlag(Tileset::AllowRotate) },
+            { QStringLiteral("preferuntransformed"), transformationFlags.testFlag(Tileset::PreferUntransformed) },
+        };
+    }
+
+    // Write the properties, external image, object group and animation for
+    // those tiles that have them.
 
     // Used for version 1
     QVariantMap tilePropertiesVariant;
@@ -239,7 +254,9 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     // Used for version 2
     QVariantList tilesVariant;
 
-    for (const Tile *tile  : tileset.tiles()) {
+    const bool includeAllTiles = mVersion != 1 && tileset.anyTileOutOfOrder();
+
+    for (const Tile *tile : tileset.tiles()) {
         const Properties properties = tile->properties();
         QVariantMap tileVariant;
 
@@ -254,12 +271,6 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
 
         if (!tile->type().isEmpty())
             tileVariant[QStringLiteral("type")] = tile->type();
-        if (tile->terrain() != 0xFFFFFFFF) {
-            QVariantList terrainIds;
-            for (int j = 0; j < 4; ++j)
-                terrainIds << QVariant(tile->cornerTerrainId(j));
-            tileVariant[QStringLiteral("terrain")] = terrainIds;
-        }
         if (tile->probability() != 1.0)
             tileVariant[QStringLiteral("probability")] = tile->probability();
         if (!tile->imageSource().isEmpty()) {
@@ -285,7 +296,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
             tileVariant[QStringLiteral("animation")] = frameVariants;
         }
 
-        if (!tileVariant.empty()) {
+        if (includeAllTiles || !tileVariant.empty()) {
             if (mVersion == 1) {
                 tilesVariantMap[QString::number(tile->id())] = tileVariant;
             } else {
@@ -304,21 +315,6 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QStringLiteral("tiles")] = tilesVariantMap;
     else if (!tilesVariant.empty())
         tilesetVariant[QStringLiteral("tiles")] = tilesVariant;
-
-    // Write terrains
-    if (tileset.terrainCount() > 0) {
-        QVariantList terrainsVariant;
-        for (int i = 0; i < tileset.terrainCount(); ++i) {
-            Terrain *terrain = tileset.terrain(i);
-            const Properties &properties = terrain->properties();
-            QVariantMap terrainVariant;
-            terrainVariant[QStringLiteral("name")] = terrain->name();
-            terrainVariant[QStringLiteral("tile")] = terrain->imageTileId();
-            addProperties(terrainVariant, properties);
-            terrainsVariant << terrainVariant;
-        }
-        tilesetVariant[QStringLiteral("terrains")] = terrainsVariant;
-    }
 
     // Write the Wang sets
     if (tileset.wangSetCount() > 0) {
@@ -340,8 +336,8 @@ QVariant MapToVariantConverter::toVariant(const Properties &properties) const
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
-        const QVariant value = toExportValue(it.value(), mDir);
-        variantMap[it.key()] = value;
+        const auto exportValue = ExportValue::fromPropertyValue(it.value(), mDir.path());
+        variantMap[it.key()] = exportValue.value;
     }
 
     return variantMap;
@@ -353,8 +349,11 @@ QVariant MapToVariantConverter::propertyTypesToVariant(const Properties &propert
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
-    for (; it != it_end; ++it)
-        variantMap[it.key()] = typeToName(it.value().userType());
+    for (; it != it_end; ++it) {
+        const auto exportValue = ExportValue::fromPropertyValue(it.value());
+        // TODO: Support custom property types in json1? Maybe with a customPropertyTypesToVariant...
+        variantMap[it.key()] = exportValue.typeName;
+    }
 
     return variantMap;
 }
@@ -365,25 +364,13 @@ QVariant MapToVariantConverter::toVariant(const WangSet &wangSet) const
     QVariantMap wangSetVariant;
 
     wangSetVariant[QStringLiteral("name")] = wangSet.name();
+    wangSetVariant[QStringLiteral("type")] = wangSetTypeToString(wangSet.type());
     wangSetVariant[QStringLiteral("tile")] = wangSet.imageTileId();
 
-    QVariantList edgeColorVariants;
-    if (wangSet.edgeColorCount() > 1) {
-        for (int i = 1; i <= wangSet.edgeColorCount(); ++i) {
-            if (WangColor *wc = wangSet.edgeColorAt(i).data())
-                edgeColorVariants.append(toVariant(*wc));
-        }
-    }
-    wangSetVariant[QStringLiteral("edgecolors")] = edgeColorVariants;
-
-    QVariantList cornerColorVariants;
-    if (wangSet.cornerColorCount() > 1) {
-        for (int i = 1; i <= wangSet.cornerColorCount(); ++i) {
-            if (WangColor *wc = wangSet.cornerColorAt(i).data())
-                cornerColorVariants.append(toVariant(*wc));
-        }
-    }
-    wangSetVariant[QStringLiteral("cornercolors")] = cornerColorVariants;
+    QVariantList colorVariants;
+    for (int i = 1; i <= wangSet.colorCount(); ++i)
+        colorVariants.append(toVariant(*wangSet.colorAt(i)));
+    wangSetVariant[QStringLiteral("colors")] = colorVariants;
 
     QVariantList wangTileVariants;
     const auto wangTiles = wangSet.sortedWangTiles();
@@ -391,14 +378,11 @@ QVariant MapToVariantConverter::toVariant(const WangSet &wangSet) const
         QVariantMap wangTileVariant;
 
         QVariantList wangIdVariant;
-        for (int i = 0; i < 8; ++i)
+        for (int i = 0; i < WangId::NumIndexes; ++i)
             wangIdVariant.append(QVariant(wangTile.wangId().indexColor(i)));
 
         wangTileVariant[QStringLiteral("wangid")] = wangIdVariant;
-        wangTileVariant[QStringLiteral("tileid")] = wangTile.tile()->id();
-        wangTileVariant[QStringLiteral("hflip")] = wangTile.flippedHorizontally();
-        wangTileVariant[QStringLiteral("vflip")] = wangTile.flippedVertically();
-        wangTileVariant[QStringLiteral("dflip")] = wangTile.flippedAntiDiagonally();
+        wangTileVariant[QStringLiteral("tileid")] = wangTile.tileId();
 
         wangTileVariants.append(wangTileVariant);
     }
@@ -416,6 +400,7 @@ QVariant MapToVariantConverter::toVariant(const WangColor &wangColor) const
     colorVariant[QStringLiteral("name")] = wangColor.name();
     colorVariant[QStringLiteral("probability")] = wangColor.probability();
     colorVariant[QStringLiteral("tile")] = wangColor.imageId();
+    addProperties(colorVariant, wangColor.properties());
     return colorVariant;
 }
 
@@ -746,6 +731,12 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
         layerVariant[QStringLiteral("offsety")] = offset.y();
     }
 
+    const QPointF parallaxFactor = layer.parallaxFactor();
+    if (parallaxFactor.x() != 1.0)
+        layerVariant[QStringLiteral("parallaxx")] = parallaxFactor.x();
+    if (parallaxFactor.y() != 1.0)
+        layerVariant[QStringLiteral("parallaxy")] = parallaxFactor.y();
+
     if (layer.tintColor().isValid())
         layerVariant[QStringLiteral("tintcolor")] = colorToString(layer.tintColor());
 
@@ -765,11 +756,11 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
         Properties::const_iterator it = properties.constBegin();
         Properties::const_iterator it_end = properties.constEnd();
         for (; it != it_end; ++it) {
-            int type = it.value().userType();
-            const QVariant value = toExportValue(it.value(), mDir);
+            const auto exportValue = ExportValue::fromPropertyValue(it.value(), mDir.path());
 
-            propertiesMap[it.key()] = value;
-            propertyTypesMap[it.key()] = typeToName(type);
+            propertiesMap[it.key()] = exportValue.value;
+            propertyTypesMap[it.key()] = exportValue.typeName;
+            // TODO: Support custom property types in json1? Maybe with a customPropertyTypesMap...
         }
 
         variantMap[QStringLiteral("properties")] = propertiesMap;
@@ -780,13 +771,16 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
         Properties::const_iterator it = properties.constBegin();
         Properties::const_iterator it_end = properties.constEnd();
         for (; it != it_end; ++it) {
-            int type = it.value().userType();
-            const QVariant value = toExportValue(it.value(), mDir);
+            const auto exportValue = ExportValue::fromPropertyValue(it.value(), mDir.path());
 
             QVariantMap propertyVariantMap;
             propertyVariantMap[QStringLiteral("name")] = it.key();
-            propertyVariantMap[QStringLiteral("value")] = value;
-            propertyVariantMap[QStringLiteral("type")] = typeToName(type);
+            propertyVariantMap[QStringLiteral("value")] = exportValue.value;
+            propertyVariantMap[QStringLiteral("type")] = exportValue.typeName;
+
+            if (!exportValue.propertyTypeName.isEmpty())
+                propertyVariantMap[QStringLiteral("propertytype")] = exportValue.propertyTypeName;
+
             propertiesVariantList << propertyVariantMap;
         }
 

@@ -125,12 +125,12 @@ void ActionsModel::refreshConflicts()
     if (!mConflictsDirty)
         return;
 
-    QMap<QKeySequence, Id> actionsByKey;
+    QMultiMap<QKeySequence, Id> actionsByKey;
 
     for (const auto &actionId : qAsConst(mActions)) {
         if (auto action = ActionManager::findAction(actionId))
             if (!action->shortcut().isEmpty())
-                actionsByKey.insertMulti(action->shortcut(), actionId);
+                actionsByKey.insert(action->shortcut(), actionId);
     }
 
     QVector<bool> conflicts;
@@ -386,7 +386,7 @@ ShortcutEditor::ShortcutEditor(QWidget *parent)
     mResetButton->setIcon(QIcon(QLatin1String("://images/scalable/edit-undo-symbolic.svg")));
 
     auto layout = new QHBoxLayout(this);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(mKeySequenceEdit);
     layout->addWidget(clearButton);
@@ -447,7 +447,7 @@ ShortcutDelegate::ShortcutDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
     , mItemEditorFactory(new QItemEditorFactory)
 {
-    mItemEditorFactory->registerEditor(QVariant::KeySequence,
+    mItemEditorFactory->registerEditor(QMetaType::QKeySequence,
                                        new QStandardItemEditorCreator<ShortcutEditor>);
 
     setItemEditorFactory(mItemEditorFactory.get());
@@ -769,3 +769,4 @@ void ShortcutSettingsPage::exportShortcuts()
 } // namespace Tiled
 
 #include "shortcutsettingspage.moc"
+#include "moc_shortcutsettingspage.cpp"

@@ -32,7 +32,6 @@ class WangSet;
 
 class MapDocument;
 class StampActions;
-class WangFiller;
 
 /**
  * Implements a tool that bucket fills (flood fills) a region with a repeatable
@@ -59,6 +58,7 @@ protected:
 private:
     void clearOverlay();
 
+    Qt::KeyboardModifiers mModifiers;
     bool mLastShiftStatus;
 
     /**

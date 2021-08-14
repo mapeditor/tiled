@@ -34,10 +34,10 @@
 namespace Tiled {
 
 class ObjectGroup;
+class WangColor;
 
 class MapDocument;
 class TilesetDocument;
-class TilesetTerrainModel;
 class TilesetWangSetModel;
 class WangColorModel;
 
@@ -69,7 +69,7 @@ public:
                                    TilesetFormat *format,
                                    QString *error = nullptr);
 
-    FileFormat *writerFormat() const override;
+    TilesetFormat *writerFormat() const override;
     void setWriterFormat(TilesetFormat *format);
 
     QString lastExportFileName() const override;
@@ -96,16 +96,17 @@ public:
     void setTilesetName(const QString &name);
     void setTilesetTileOffset(QPoint tileOffset);
     void setTilesetObjectAlignment(Alignment objectAlignment);
+    void setTilesetTransformationFlags(Tileset::TransformationFlags flags);
 
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile*> &tiles);
+    QList<int> relocateTiles(const QList<Tile *> &tiles, int location);
 
     const QList<Tile*> &selectedTiles() const;
     void setSelectedTiles(const QList<Tile*> &selectedTiles);
 
     QList<Object*> currentObjects() const override;
 
-    TilesetTerrainModel *terrainModel() const { return mTerrainModel; }
     TilesetWangSetModel *wangSetModel() const { return mWangSetModel; }
 
     WangColorModel *wangColorModel(WangSet *wangSet);
@@ -140,15 +141,13 @@ signals:
     void tileImageSourceChanged(Tile *tile);
 
     /**
-     * Notifies tileset models about changes to tile terrain information.
+     * Notifies tileset models about changes to tile Wang information.
      * All the \a tiles need to be from the same tileset.
      */
-    void tileTerrainChanged(const QList<Tile*> &tiles);
-
     void tileWangSetChanged(const QList<Tile*> &tiles);
 
     /**
-     * Emitted when the terrain probability of a tile changed.
+     * Emitted when the probability of a tile changed.
      */
     void tileProbabilityChanged(Tile *tile);
 
@@ -173,13 +172,11 @@ private:
     void onPropertyChanged(Object *object, const QString &name);
     void onPropertiesChanged(Object *object);
 
-    void onTerrainRemoved(Terrain *terrain);
     void onWangSetRemoved(WangSet *wangSet);
 
     SharedTileset mTileset;
     QList<MapDocument*> mMapDocuments;
 
-    TilesetTerrainModel *mTerrainModel;
     TilesetWangSetModel *mWangSetModel;
     std::unordered_map<WangSet*, std::unique_ptr<WangColorModel>> mWangColorModels;
 

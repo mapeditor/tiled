@@ -20,9 +20,10 @@
 
 #include "colorbutton.h"
 
+#include "utils.h"
+
 #include <QColorDialog>
 #include <QEvent>
-#include <QPainter>
 #include <QStyle>
 
 using namespace Tiled;
@@ -30,7 +31,7 @@ using namespace Tiled;
 ColorButton::ColorButton(QWidget *parent)
     : QToolButton(parent)
 {
-    int defaultIconSize = style()->pixelMetric(QStyle::PM_ButtonIconSize);
+    const int defaultIconSize = style()->pixelMetric(QStyle::PM_ButtonIconSize);
     setIconSize(QSize(defaultIconSize * 2, defaultIconSize));
     setColor(Qt::white);
 
@@ -55,7 +56,7 @@ void ColorButton::changeEvent(QEvent *e)
 
     switch (e->type()) {
     case QEvent::StyleChange: {
-        int defaultIconSize = style()->pixelMetric(QStyle::PM_ButtonIconSize);
+        const int defaultIconSize = style()->pixelMetric(QStyle::PM_ButtonIconSize);
         setIconSize(QSize(defaultIconSize * 2, defaultIconSize));
         updateIcon();
         break;
@@ -67,25 +68,14 @@ void ColorButton::changeEvent(QEvent *e)
 
 void ColorButton::pickColor()
 {
-    QColor newColor = QColorDialog::getColor(mColor, this);
+    const QColor newColor = QColorDialog::getColor(mColor, this);
     if (newColor.isValid())
         setColor(newColor);
 }
 
 void ColorButton::updateIcon()
 {
-    QSize size(iconSize());
-    size.rwidth() -= 2;
-    size.rheight() -= 2;
-
-    QPixmap pixmap(size);
-    pixmap.fill(mColor);
-
-    QPainter painter(&pixmap);
-    QColor border(Qt::black);
-    border.setAlpha(128);
-    painter.setPen(border);
-    painter.drawRect(0, 0, pixmap.width() - 1, pixmap.height() - 1);
-
-    setIcon(QIcon(pixmap));
+    setIcon(Utils::colorIcon(mColor, iconSize()));
 }
+
+#include "moc_colorbutton.cpp"

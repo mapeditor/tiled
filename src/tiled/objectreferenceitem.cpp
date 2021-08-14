@@ -67,7 +67,7 @@ QRectF ArrowHead::boundingRect() const
 
 void ArrowHead::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    constexpr QPointF arrowHead[4] = {
+    static constexpr QPointF arrowHead[4] = {
         QPointF(0.0, 0.0),
         QPointF(-2 * arrowHeadSize, arrowHeadSize),
         QPointF(-1.5 * arrowHeadSize, 0.0),
@@ -102,7 +102,7 @@ ObjectReferenceItem::ObjectReferenceItem(MapObject *source,
     , mArrowHead(new ArrowHead(this))
     , mProperty(property)
 {
-    setZValue(-0.5); // below labels but above hover
+    setZValue(-0.5); // below labels
     updateColor();
 }
 
@@ -196,7 +196,7 @@ void ObjectReferenceItem::paint(QPainter *painter, const QStyleOptionGraphicsIte
     painter->drawLine(start, end);
 }
 
-QPointF ObjectReferenceItem::objectCenter(MapObject *object, const MapRenderer &renderer)
+QPointF ObjectReferenceItem::objectCenter(MapObject *object, const MapRenderer &renderer) const
 {
     QPointF screenPos = renderer.pixelToScreenCoords(object->position());
 
@@ -208,7 +208,10 @@ QPointF ObjectReferenceItem::objectCenter(MapObject *object, const MapRenderer &
         screenPos = bounds.center();
     }
 
-    return screenPos + object->objectGroup()->totalOffset();
+    if (auto mapScene = qobject_cast<MapScene*>(scene()))
+        screenPos += mapScene->absolutePositionForLayer(*object->objectGroup());
+
+    return screenPos;
 }
 
 } // namespace Tiled

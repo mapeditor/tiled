@@ -60,6 +60,7 @@ struct ObjectType
 typedef QVector<ObjectType> ObjectTypes;
 
 
+
 class TILEDSHARED_EXPORT ObjectTypesSerializer
 {
 public:

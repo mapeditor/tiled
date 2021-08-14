@@ -68,3 +68,5 @@ NewVersionDialog::~NewVersionDialog()
 }
 
 } // namespace Tiled
+
+#include "moc_newversiondialog.cpp"

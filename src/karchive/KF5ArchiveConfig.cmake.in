@@ -1,0 +1,11 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(Qt5Core @REQUIRED_QT_VERSION@)
+
+
+set(KArchive_HAVE_BZIP2 "@BZIP2_FOUND@")
+set(KArchive_HAVE_LZMA  "@LIBLZMA_FOUND@")
+
+include("${CMAKE_CURRENT_LIST_DIR}/KF5ArchiveTargets.cmake")
+@PACKAGE_INCLUDE_QCHTARGETS@

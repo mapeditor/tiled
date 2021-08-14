@@ -795,7 +795,11 @@ void TiledProxyStyle::drawControl(ControlElement element,
             }
             int x, y, w, h;
             menuitem->rect.getRect(&x, &y, &w, &h);
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+            int tab = menuitem->reservedShortcutWidth;
+#else
             int tab = menuitem->tabWidth;
+#endif
             QColor discol;
             if (dis) {
                 discol = menuitem->palette.text().color();
@@ -806,7 +810,11 @@ void TiledProxyStyle::drawControl(ControlElement element,
 
             QRect textRect(xpos, y + windowsItemVMargin, w - xm - windowsRightBorder - tab + 1, h - 2 * windowsItemVMargin);
             QRect vTextRect = visualRect(opt->direction, menuitem->rect, textRect);
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+            QStringView s(menuitem->text);
+#else
             QStringRef s(&menuitem->text);
+#endif
             if (!s.isEmpty()) {                     // draw text
                 p->save();
                 int t = s.indexOf(QLatin1Char('\t'));
@@ -1502,3 +1510,5 @@ QIcon TiledProxyStyle::standardIcon(QStyle::StandardPixmap standardIcon,
         return QProxyStyle::standardIcon(standardIcon, option, widget);
     }
 }
+
+#include "moc_tiledproxystyle.cpp"

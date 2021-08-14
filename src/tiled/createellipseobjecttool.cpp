@@ -54,3 +54,5 @@ MapObject *CreateEllipseObjectTool::createNewMapObject()
     newMapObject->setShape(MapObject::Ellipse);
     return newMapObject;
 }
+
+#include "moc_createellipseobjecttool.cpp"

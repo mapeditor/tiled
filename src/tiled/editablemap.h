@@ -206,6 +206,7 @@ private:
     MapRenderer *renderer() const;
 
     std::unique_ptr<Map> mDetachedMap;
+    mutable std::unique_ptr<MapRenderer> mRenderer;
     bool mReadOnly;
 
     EditableSelectedArea *mSelectedArea;
@@ -356,11 +357,6 @@ inline Map *EditableMap::map() const
 inline MapDocument *EditableMap::mapDocument() const
 {
     return static_cast<MapDocument*>(document());
-}
-
-inline MapRenderer *EditableMap::renderer() const
-{
-    return mapDocument() ? mapDocument()->renderer() : nullptr;
 }
 
 } // namespace Tiled

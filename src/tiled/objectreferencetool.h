@@ -24,6 +24,7 @@
 #include "mapdocument.h"
 
 #include <QList>
+#include <QPointer>
 
 namespace Tiled {
 

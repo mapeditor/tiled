@@ -33,7 +33,6 @@
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
-#include "terrain.h"
 #include "wangset.h"
 
 namespace Tiled {
@@ -178,9 +177,6 @@ SelectCustomProperty::SelectCustomProperty(QString fileName,
         break;
     case Object::ObjectTemplateType:
         break;
-    case Object::TerrainType:
-        id = static_cast<const Terrain*>(object)->id();
-        break;
     case Object::TilesetType:
         break;
     case Object::TileType:
@@ -205,3 +201,5 @@ SelectTile::SelectTile(const Tile *tile)
 {}
 
 } // namespace Tiled
+
+#include "moc_logginginterface.cpp"

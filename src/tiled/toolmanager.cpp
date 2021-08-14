@@ -26,6 +26,7 @@
 
 #include <QAction>
 #include <QShortcut>
+#include <QWidget>
 
 using namespace Tiled;
 
@@ -317,3 +318,5 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
                 this, &ToolManager::statusInfoChanged);
     }
 }
+
+#include "moc_toolmanager.cpp"

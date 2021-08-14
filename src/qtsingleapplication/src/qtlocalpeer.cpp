@@ -42,6 +42,7 @@
 #include "qtlocalpeer.h"
 #include <QCoreApplication>
 #include <QDataStream>
+#include <QRegularExpression>
 #include <QTime>
 
 #if defined(Q_OS_WIN)
@@ -78,11 +79,15 @@ QtLocalPeer::QtLocalPeer(QObject* parent, const QString &appId)
 #endif
         prefix = id.section(QLatin1Char('/'), -1);
     }
-    prefix.remove(QRegExp(QLatin1String("[^a-zA-Z]")));
+    prefix.remove(QRegularExpression(QLatin1String("[^a-zA-Z]")));
     prefix.truncate(6);
 
     QByteArray idc = id.toUtf8();
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     quint16 idNum = qChecksum(idc.constData(), idc.size());
+#else
+    quint16 idNum = qChecksum(idc);
+#endif
     socketName = QLatin1String("qtsingleapp-") + prefix
                  + QLatin1Char('-') + QString::number(idNum, 16);
 
@@ -176,8 +181,17 @@ void QtLocalPeer::receiveConnection()
     if (!socket)
         return;
 
-    while (socket->bytesAvailable() < (int)sizeof(quint32))
+    while (true) {
+        if (socket->state() == QLocalSocket::UnconnectedState) {
+            qWarning("QtLocalPeer: Peer disconnected");
+            delete socket;
+            return;
+        }
+        if (socket->bytesAvailable() >= qint64(sizeof(quint32)))
+            break;
         socket->waitForReadyRead();
+    }
+
     QDataStream ds(socket);
     QByteArray uMsg;
     quint32 remaining;

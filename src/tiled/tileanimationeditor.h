@@ -79,15 +79,15 @@ private:
 
     Ui::TileAnimationEditor *mUi;
 
-    TilesetDocument *mTilesetDocument;
-    Tile *mTile;
+    TilesetDocument *mTilesetDocument = nullptr;
+    Tile *mTile = nullptr;
     FrameListModel *mFrameListModel;
-    bool mApplyingChanges;
-    bool mSuppressUndo;
+    bool mApplyingChanges = false;
+    bool mSuppressUndo = false;
 
     TileAnimationDriver *mPreviewAnimationDriver;
-    int mPreviewFrameIndex;
-    int mPreviewUnusedTime;
+    int mPreviewFrameIndex = 0;
+    int mPreviewUnusedTime = 0;
 };
 
 } // namespace Tiled

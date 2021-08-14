@@ -38,7 +38,6 @@ Tile::Tile(int id, Tileset *tileset):
     mId(id),
     mTileset(tileset),
     mImageStatus(LoadingReady),
-    mTerrain(-1),
     mProbability(1.0),
     mCurrentFrameIndex(0),
     mUnusedTime(0)
@@ -50,7 +49,6 @@ Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
     mTileset(tileset),
     mImage(image),
     mImageStatus(image.isNull() ? LoadingError : LoadingReady),
-    mTerrain(-1),
     mProbability(1.0),
     mCurrentFrameIndex(0),
     mUnusedTime(0)
@@ -89,26 +87,6 @@ const Tile *Tile::currentFrameTile() const
 QPoint Tile::offset() const
 {
     return mTileset->tileOffset();
-}
-
-/**
- * Returns the Terrain of a given corner.
- */
-Terrain *Tile::terrainAtCorner(int corner) const
-{
-    return mTileset->terrain(cornerTerrainId(corner));
-}
-
-/**
- * Set the terrain for each corner of the tile.
- */
-void Tile::setTerrain(unsigned terrain)
-{
-    if (mTerrain == terrain)
-        return;
-
-    mTerrain = terrain;
-    mTileset->markTerrainDistancesDirty();
 }
 
 /**
@@ -199,7 +177,6 @@ Tile *Tile::clone(Tileset *tileset) const
     c->mImageSource = mImageSource;
     c->mImageStatus = mImageStatus;
     c->mType = mType;
-    c->mTerrain = mTerrain;
     c->mProbability = mProbability;
 
     if (mObjectGroup)

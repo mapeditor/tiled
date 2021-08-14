@@ -422,9 +422,11 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         for (const QPoint &p : points)
             bounds |= QRect(p, p);
 
-        SharedMap preview = SharedMap::create(mapDocument()->map()->orientation(),
-                                              bounds.size(),
-                                              mapDocument()->map()->tileSize());
+        Map::Parameters mapParameters = mapDocument()->map()->parameters();
+        mapParameters.width = bounds.width();
+        mapParameters.height = bounds.height();
+        mapParameters.infinite = false;
+        SharedMap preview = SharedMap::create(mapParameters);
 
         std::unique_ptr<TileLayer> previewLayer {
             new TileLayer(QString(), bounds.topLeft(), bounds.size())
@@ -453,28 +455,20 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
             paintedRegion += QRect(p, p);
 
         const QRect bounds = paintedRegion.boundingRect();
-        SharedMap preview = SharedMap::create(mapDocument()->map()->orientation(),
-                                              bounds.size(),
-                                              mapDocument()->map()->tileSize());
+
+        Map::Parameters mapParameters = mapDocument()->map()->parameters();
+        mapParameters.width = bounds.width();
+        mapParameters.height = bounds.height();
+        mapParameters.infinite = false;
+        SharedMap preview = SharedMap::create(mapParameters);
 
         std::unique_ptr<TileLayer> previewLayer {
             new TileLayer(QString(), bounds.topLeft(), bounds.size())
         };
 
-        WangFiller wangFiller(mWangSet,
-                              dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
-                              mapDocument()->map()->staggerAxis());
+        WangFiller wangFiller(*mWangSet, mapDocument()->renderer());
 
-        for (const QPoint &p : points) {
-            Cell cell = wangFiller.findFittingCell(*tileLayer,
-                                                   *previewLayer,
-                                                   paintedRegion,
-                                                   p);
-
-            previewLayer->setCell(p.x() - bounds.left(),
-                                  p.y() - bounds.top(),
-                                  cell);
-        }
+        wangFiller.fillRegion(*previewLayer, *tileLayer, paintedRegion);
 
         preview->addLayer(std::move(previewLayer));
         preview->addTileset(mWangSet->tileset()->sharedPointer());
@@ -555,9 +549,12 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         }
 
         const QRect bounds = paintedRegion.boundingRect();
-        SharedMap preview = SharedMap::create(mapDocument()->map()->orientation(),
-                                              bounds.size(),
-                                              mapDocument()->map()->tileSize());
+
+        Map::Parameters mapParameters = mapDocument()->map()->parameters();
+        mapParameters.width = bounds.width();
+        mapParameters.height = bounds.height();
+        mapParameters.infinite = false;
+        SharedMap preview = SharedMap::create(mapParameters);
 
         for (const PaintOperation &op : operations) {
             LayerIterator layerIterator(op.stamp, Layer::TileLayerType);
@@ -664,3 +661,5 @@ void StampBrush::invalidateRandomCache()
 {
     mRandomCacheValid = false;
 }
+
+#include "moc_stampbrush.cpp"

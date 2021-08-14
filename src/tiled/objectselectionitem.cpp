@@ -27,6 +27,7 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "objectgroup.h"
 #include "objectreferenceitem.h"
 #include "preferences.h"
@@ -44,8 +45,11 @@
 
 namespace Tiled {
 
-static const qreal labelMargin = 2;
-static const qreal labelDistance = 4;
+static constexpr qreal labelMargin = 2;
+static constexpr qreal labelDistance = 4;
+
+static constexpr qreal selectionZValue = 1.0;   // selection outlines above labels
+static constexpr qreal hoverZValue = 0.5;       // hover below selection
 
 static Preferences::ObjectLabelVisiblity objectLabelVisibility()
 {
@@ -56,11 +60,26 @@ static Preferences::ObjectLabelVisiblity objectLabelVisibility()
 class MapObjectOutline : public QGraphicsObject
 {
 public:
-    MapObjectOutline(MapObject *object, QGraphicsItem *parent = nullptr)
+    enum Role {
+        SelectionIndicator,
+        HoverIndicator
+    };
+
+    MapObjectOutline(MapObject *object, Role role, QGraphicsItem *parent = nullptr)
         : QGraphicsObject(parent)
         , mObject(object)
     {
-        setZValue(1); // makes sure outlines are above labels
+
+        switch (role) {
+        case SelectionIndicator:
+            setZValue(selectionZValue);
+            mUpdateTimer = startTimer(100);
+            break;
+        case HoverIndicator:
+            setZValue(hoverZValue);
+            setOpacity(0.6);
+            break;
+        }
     }
 
     MapObject *mapObject() const { return mObject; }
@@ -79,18 +98,20 @@ private:
     MapObject *mObject;
 
     // Marching ants effect
-    int mUpdateTimer = startTimer(100);
+    int mUpdateTimer = -1;
     int mOffset = 0;
 };
 
 void MapObjectOutline::syncWithMapObject(const MapRenderer &renderer)
 {
-    const QPointF pixelPos = renderer.pixelToScreenCoords(mObject->position());
+    QPointF pixelPos = renderer.pixelToScreenCoords(mObject->position());
     QRectF bounds = mObject->screenBounds(renderer);
-
     bounds.translate(-pixelPos);
 
-    setPos(pixelPos + mObject->objectGroup()->totalOffset());
+    if (auto mapScene = static_cast<MapScene*>(scene()))
+        pixelPos += mapScene->absolutePositionForLayer(*mObject->objectGroup());
+
+    setPos(pixelPos);
     setRotation(mObject->rotation());
 
     if (mBoundingRect != bounds) {
@@ -115,14 +136,15 @@ void MapObjectOutline::paint(QPainter *painter,
         QLineF(mBoundingRect.topRight(), mBoundingRect.bottomRight())
     };
 
+    const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
+    const qreal dashLength = std::ceil(Utils::dpiScaled(2) * devicePixelRatio);
+
     // Draw a solid white line
-    QPen pen(Qt::white, 1.0, Qt::SolidLine);
+    QPen pen(Qt::white, 1.5 * devicePixelRatio, Qt::SolidLine);
     pen.setCosmetic(true);
+    painter->setRenderHint(QPainter::Antialiasing);
     painter->setPen(pen);
     painter->drawLines(lines, 4);
-
-    const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
-    const qreal dashLength = std::ceil(Utils::dpiScaled(3) * devicePixelRatio);
 
     // Draw a black dashed line above the white line
     pen.setColor(Qt::black);
@@ -184,7 +206,10 @@ void MapObjectLabel::syncWithMapObject(const MapRenderer &renderer)
     // Center the object name on the object bounding box
     QPointF pos((bounds.left() + bounds.right()) / 2, bounds.top());
 
-    setPos(pos + mObject->objectGroup()->totalOffset());
+    if (auto mapScene = static_cast<MapScene*>(scene()))
+        pos += mapScene->absolutePositionForLayer(*mObject->objectGroup());
+
+    setPos(pos);
 
     if (mBoundingRect != boundingRect) {
         prepareGeometryChange();
@@ -247,6 +272,8 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
 
     connect(mapDocument, &MapDocument::selectedObjectsChanged,
             this, &ObjectSelectionItem::selectedObjectsChanged);
+    connect(mapDocument, &MapDocument::aboutToBeSelectedObjectsChanged,
+            this, &ObjectSelectionItem::aboutToBeSelectedObjectsChanged);
 
     connect(mapDocument, &MapDocument::mapChanged,
             this, &ObjectSelectionItem::mapChanged);
@@ -289,6 +316,31 @@ ObjectSelectionItem::~ObjectSelectionItem()
 {
 }
 
+void ObjectSelectionItem::updateItemPositions()
+{
+    // A bit of a heavy function, should be called when something changes that
+    // could affect the position of any overlay item (like map change or when
+    // parallax mode is enabled).
+
+    const MapRenderer &renderer = *mMapDocument->renderer();
+
+    for (MapObjectLabel *label : qAsConst(mObjectLabels))
+        label->syncWithMapObject(renderer);
+
+    for (MapObjectOutline *outline : qAsConst(mObjectOutlines))
+        outline->syncWithMapObject(renderer);
+
+    for (const auto &items : qAsConst(mReferencesBySourceObject)) {
+        for (ObjectReferenceItem *item : items) {
+            item->syncWithSourceObject(renderer);
+            item->syncWithTargetObject(renderer);
+        }
+    }
+
+    if (mHoveredMapObjectItem)
+        mHoveredMapObjectItem->syncWithMapObject();
+}
+
 const MapRenderer &ObjectSelectionItem::mapRenderer() const
 {
     return *mMapDocument->renderer();
@@ -298,7 +350,7 @@ void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
 {
     switch (event.type) {
     case ChangeEvent::LayerChanged:
-        layerChanged(static_cast<const LayerChangeEvent&>(event).layer);
+        layerChanged(static_cast<const LayerChangeEvent&>(event));
         break;
     case ChangeEvent::MapObjectsChanged:
         syncOverlayItems(static_cast<const MapObjectsChangeEvent&>(event).mapObjects);
@@ -371,6 +423,11 @@ void ObjectSelectionItem::selectedObjectsChanged()
     addRemoveObjectOutlines();
 }
 
+void ObjectSelectionItem::aboutToBeSelectedObjectsChanged()
+{
+    addRemoveObjectHoverItems();
+}
+
 void ObjectSelectionItem::hoveredMapObjectChanged(MapObject *object,
                                                   MapObject *previous)
 {
@@ -401,7 +458,7 @@ void ObjectSelectionItem::hoveredMapObjectChanged(MapObject *object,
         mHoveredMapObjectItem = std::make_unique<MapObjectItem>(object, mMapDocument, this);
         mHoveredMapObjectItem->setEnabled(false);
         mHoveredMapObjectItem->setIsHoverIndicator(true);
-        mHoveredMapObjectItem->setZValue(-1.0);     // show below selection outlines
+        mHoveredMapObjectItem->setZValue(hoverZValue);  // show below selection outlines
     } else {
         mHoveredMapObjectItem.reset();
     }
@@ -409,7 +466,7 @@ void ObjectSelectionItem::hoveredMapObjectChanged(MapObject *object,
 
 void ObjectSelectionItem::mapChanged()
 {
-    syncOverlayItems(mMapDocument->selectedObjects());
+    updateItemPositions();
 }
 
 static void collectObjects(const GroupLayer &groupLayer, QList<MapObject*> &objects)
@@ -470,27 +527,34 @@ void ObjectSelectionItem::layerAboutToBeRemoved(GroupLayer *parentLayer, int ind
     }
 }
 
-void ObjectSelectionItem::layerChanged(Layer *layer)
+void ObjectSelectionItem::layerChanged(const LayerChangeEvent &event)
 {
-    ObjectGroup *objectGroup = layer->asObjectGroup();
-    GroupLayer *groupLayer = layer->asGroupLayer();
+    ObjectGroup *objectGroup = event.layer->asObjectGroup();
+    GroupLayer *groupLayer = event.layer->asGroupLayer();
     if (!(objectGroup || groupLayer))
         return;
 
     // If labels for all objects are visible, some labels may need to be added
-    // removed based on layer visibility.
-    if (objectLabelVisibility() == Preferences::AllObjectLabels)
-        addRemoveObjectLabels();
+    // or removed based on layer visibility.
+    if (event.properties & LayerChangeEvent::VisibleProperty) {
+        if (objectLabelVisibility() == Preferences::AllObjectLabels)
+            addRemoveObjectLabels();
+
+        if (Preferences::instance()->showObjectReferences())
+            addRemoveObjectReferences();
+    }
 
     // If an object or group layer changed, that means its offset may have
     // changed, which affects the outlines of selected objects on that layer
     // and the positions of any name labels that are shown.
-    if (objectGroup) {
-        syncOverlayItems(objectGroup->objects());
-    } else {
-        QList<MapObject*> affectedObjects;
-        collectObjects(*groupLayer, affectedObjects);
-        syncOverlayItems(affectedObjects);
+    if (event.properties & LayerChangeEvent::OffsetProperty) {
+        if (objectGroup) {
+            syncOverlayItems(objectGroup->objects());
+        } else {
+            QList<MapObject*> affectedObjects;
+            collectObjects(*groupLayer, affectedObjects);
+            syncOverlayItems(affectedObjects);
+        }
     }
 }
 
@@ -500,6 +564,9 @@ void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
 
     for (MapObject *object : objects) {
         if (MapObjectOutline *outlineItem = mObjectOutlines.value(object))
+            outlineItem->syncWithMapObject(renderer);
+
+        if (MapObjectOutline *outlineItem = mObjectHoverItems.value(object))
             outlineItem->syncWithMapObject(renderer);
 
         if (MapObjectLabel *labelItem = mObjectLabels.value(object))
@@ -523,7 +590,7 @@ void ObjectSelectionItem::updateItemColors() const
     for (MapObjectLabel *label : mObjectLabels)
         label->updateColor();
 
-    for (const auto &referenceItems : mReferencesBySourceObject)
+    for (const auto &referenceItems : qAsConst(mReferencesBySourceObject))
         for (ObjectReferenceItem *item : referenceItems)
             item->updateColor();
 }
@@ -557,9 +624,10 @@ void ObjectSelectionItem::objectsAboutToBeRemoved(const QList<MapObject *> &obje
             delete mObjectLabels.take(object);
 
     for (MapObject *object : objects) {
+        // Remove any references originating from this object
         auto it = mReferencesBySourceObject.find(object);
         if (it != mReferencesBySourceObject.end()) {
-            QList<ObjectReferenceItem*> &items = *it;
+            const QList<ObjectReferenceItem*> &items = *it;
             for (auto item : items) {
                 auto &itemsByTarget = mReferencesByTargetObject[item->targetObject()];
                 itemsByTarget.removeOne(item);
@@ -569,6 +637,21 @@ void ObjectSelectionItem::objectsAboutToBeRemoved(const QList<MapObject *> &obje
                 delete item;
             }
             mReferencesBySourceObject.erase(it);
+        }
+
+        // Remove any references pointing to this object
+        it = mReferencesByTargetObject.find(object);
+        if (it != mReferencesByTargetObject.end()) {
+            const QList<ObjectReferenceItem*> &items = *it;
+            for (auto item : items) {
+                auto &itemsBySource = mReferencesBySourceObject[item->sourceObject()];
+                itemsBySource.removeOne(item);
+                if (itemsBySource.isEmpty())
+                    mReferencesBySourceObject.remove(item->sourceObject());
+
+                delete item;
+            }
+            mReferencesByTargetObject.erase(it);
         }
     }
 }
@@ -625,7 +708,7 @@ void ObjectSelectionItem::showObjectReferencesChanged()
 void ObjectSelectionItem::objectLineWidthChanged()
 {
     // Object reference items should redraw when line width is changed
-    for (const auto &items : mReferencesBySourceObject)
+    for (const auto &items : qAsConst(mReferencesBySourceObject))
         for (ObjectReferenceItem *item : items)
             item->update();
 }
@@ -689,7 +772,7 @@ void ObjectSelectionItem::addRemoveObjectOutlines()
     for (MapObject *mapObject : mMapDocument->selectedObjects()) {
         MapObjectOutline *outlineItem = mObjectOutlines.take(mapObject);
         if (!outlineItem) {
-            outlineItem = new MapObjectOutline(mapObject, this);
+            outlineItem = new MapObjectOutline(mapObject, MapObjectOutline::SelectionIndicator, this);
             outlineItem->syncWithMapObject(renderer);
         }
         outlineItems.insert(mapObject, outlineItem);
@@ -697,6 +780,25 @@ void ObjectSelectionItem::addRemoveObjectOutlines()
 
     qDeleteAll(mObjectOutlines); // delete remaining items
     mObjectOutlines.swap(outlineItems);
+}
+
+void ObjectSelectionItem::addRemoveObjectHoverItems()
+{
+    QHash<MapObject*, MapObjectOutline*> hoverItems;
+    const MapRenderer &renderer = *mMapDocument->renderer();
+
+    for (MapObject *mapObject : mMapDocument->aboutToBeSelectedObjects()) {
+        auto hoverItem = mObjectHoverItems.take(mapObject);
+        if (!hoverItem) {
+            hoverItem = new MapObjectOutline(mapObject, MapObjectOutline::HoverIndicator, this);
+            hoverItem->syncWithMapObject(renderer);
+            hoverItem->setEnabled(false);
+        }
+        hoverItems.insert(mapObject, hoverItem);
+    }
+
+    qDeleteAll(mObjectHoverItems); // delete remaining items
+    mObjectHoverItems.swap(hoverItems);
 }
 
 void ObjectSelectionItem::addRemoveObjectReferences()
@@ -805,7 +907,7 @@ void ObjectSelectionItem::addRemoveObjectReferences(MapObject *object)
     }
 
     // Delete remaining existing items, also removing them from mReferencesByTargetObject
-    for (ObjectReferenceItem *item : existingItems) {
+    for (ObjectReferenceItem *item : qAsConst(existingItems)) {
         auto &itemsByTarget = mReferencesByTargetObject[item->targetObject()];
         itemsByTarget.removeOne(item);
         if (itemsByTarget.isEmpty())
@@ -816,3 +918,5 @@ void ObjectSelectionItem::addRemoveObjectReferences(MapObject *object)
 }
 
 } // namespace Tiled
+
+#include "moc_objectselectionitem.cpp"

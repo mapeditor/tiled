@@ -43,7 +43,6 @@
 #include "tiled.h"
 #include "tilelayer.h"
 #include "tileset.h"
-#include "terrain.h"
 #include "wangset.h"
 
 #include <QBuffer>
@@ -195,7 +194,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     const QString orientation = orientationToString(map.orientation());
     const QString renderOrder = renderOrderToString(map.renderOrder());
 
-    w.writeAttribute(QStringLiteral("version"), QLatin1String("1.4"));
+    w.writeAttribute(QStringLiteral("version"), QLatin1String("1.5"));
     w.writeAttribute(QStringLiteral("tiledversion"), QCoreApplication::applicationVersion());
     w.writeAttribute(QStringLiteral("orientation"), orientation);
     w.writeAttribute(QStringLiteral("renderorder"), renderOrder);
@@ -269,19 +268,6 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     w.writeEndElement();
 }
 
-static QString makeTerrainAttribute(const Tile *tile)
-{
-    QString terrain;
-    for (int i = 0; i < 4; ++i ) {
-        if (i > 0)
-            terrain += QLatin1Char(',');
-        int t = tile->cornerTerrainId(i);
-        if (t > -1)
-            terrain += QString::number(t);
-    }
-    return terrain;
-}
-
 static bool includeTile(const Tile *tile)
 {
     if (!tile->type().isEmpty())
@@ -293,8 +279,6 @@ static bool includeTile(const Tile *tile)
     if (tile->objectGroup())
         return true;
     if (tile->isAnimated())
-        return true;
-    if (tile->terrain() != 0xFFFFFFFF)
         return true;
     if (tile->probability() != 1.0)
         return true;
@@ -323,7 +307,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         }
     } else {
         // Include version in external tilesets
-        w.writeAttribute(QStringLiteral("version"), QLatin1String("1.4"));
+        w.writeAttribute(QStringLiteral("version"), QLatin1String("1.5"));
         w.writeAttribute(QStringLiteral("tiledversion"), QCoreApplication::applicationVersion());
     }
 
@@ -383,6 +367,20 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeEndElement();
     }
 
+    const auto transformationFlags = tileset.transformationFlags();
+    if (transformationFlags) {
+        w.writeStartElement(QStringLiteral("transformations"));
+        w.writeAttribute(QStringLiteral("hflip"),
+                         QString::number(transformationFlags.testFlag(Tileset::AllowFlipHorizontally)));
+        w.writeAttribute(QStringLiteral("vflip"),
+                         QString::number(transformationFlags.testFlag(Tileset::AllowFlipVertically)));
+        w.writeAttribute(QStringLiteral("rotate"),
+                         QString::number(transformationFlags.testFlag(Tileset::AllowRotate)));
+        w.writeAttribute(QStringLiteral("preferuntransformed"),
+                         QString::number(transformationFlags.testFlag(Tileset::PreferUntransformed)));
+        w.writeEndElement();
+    }
+
     // Write the tileset properties
     writeProperties(w, tileset.properties());
 
@@ -390,11 +388,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     const QUrl &imageSource = tileset.imageSource();
     if (!imageSource.isEmpty()) {
         w.writeStartElement(QStringLiteral("image"));
-        QString source;
-        if (mUseAbsolutePaths)
-            source = imageSource.toString(QUrl::PreferLocalFile);
-        else
-            source = toFileReference(imageSource, mDir);
+        QString source = toFileReference(imageSource, mUseAbsolutePaths ? QString()
+                                                                        : mDir.path());
         w.writeAttribute(QStringLiteral("source"), source);
 
         const QColor transColor = tileset.transparentColor();
@@ -411,32 +406,14 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeEndElement();
     }
 
-    // Write the terrain types
-    if (tileset.terrainCount() > 0) {
-        w.writeStartElement(QStringLiteral("terraintypes"));
-        for (int i = 0; i < tileset.terrainCount(); ++i) {
-            const Terrain *t = tileset.terrain(i);
-            w.writeStartElement(QStringLiteral("terrain"));
+    const bool includeAllTiles = imageSource.isEmpty() || tileset.anyTileOutOfOrder();
 
-            w.writeAttribute(QStringLiteral("name"), t->name());
-            w.writeAttribute(QStringLiteral("tile"), QString::number(t->imageTileId()));
-
-            writeProperties(w, t->properties());
-
-            w.writeEndElement();
-        }
-        w.writeEndElement();
-    }
-
-    // Write the properties for those tiles that have them
     for (const Tile *tile : tileset.tiles()) {
-        if (imageSource.isEmpty() || includeTile(tile)) {
+        if (includeAllTiles || includeTile(tile)) {
             w.writeStartElement(QStringLiteral("tile"));
             w.writeAttribute(QStringLiteral("id"), QString::number(tile->id()));
             if (!tile->type().isEmpty())
                 w.writeAttribute(QStringLiteral("type"), tile->type());
-            if (tile->terrain() != 0xFFFFFFFF)
-                w.writeAttribute(QStringLiteral("terrain"), makeTerrainAttribute(tile));
             if (tile->probability() != 1.0)
                 w.writeAttribute(QStringLiteral("probability"), QString::number(tile->probability()));
             if (!tile->properties().isEmpty())
@@ -465,11 +442,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                     w.writeCharacters(QString::fromLatin1(buffer.data().toBase64()));
                     w.writeEndElement(); // </data>
                 } else {
-                    QString source;
-                    if (mUseAbsolutePaths)
-                        source = tile->imageSource().toString(QUrl::PreferLocalFile);
-                    else
-                        source = toFileReference(tile->imageSource(), mDir);
+                    QString source = toFileReference(tile->imageSource(), mUseAbsolutePaths ? QString()
+                                                                                            : mDir.path());
                     w.writeAttribute(QStringLiteral("source"), source);
                 }
 
@@ -500,54 +474,29 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             w.writeStartElement(QStringLiteral("wangset"));
 
             w.writeAttribute(QStringLiteral("name"), ws->name());
+            w.writeAttribute(QStringLiteral("type"), wangSetTypeToString(ws->type()));
             w.writeAttribute(QStringLiteral("tile"), QString::number(ws->imageTileId()));
 
-            if (ws->edgeColorCount() > 1) {
-                for (int i = 1; i <= ws->edgeColorCount(); ++i) {
-                    if (WangColor *wc = ws->edgeColorAt(i).data()) {
-                        w.writeStartElement(QStringLiteral("wangedgecolor"));
+            for (int i = 1; i <= ws->colorCount(); ++i) {
+                if (WangColor *wc = ws->colorAt(i).data()) {
+                    w.writeStartElement(QStringLiteral("wangcolor"));
 
-                        w.writeAttribute(QStringLiteral("name"), wc->name());
-                        w.writeAttribute(QStringLiteral("color"), colorToString(wc->color()));
-                        w.writeAttribute(QStringLiteral("tile"), QString::number(wc->imageId()));
-                        w.writeAttribute(QStringLiteral("probability"), QString::number(wc->probability()));
+                    w.writeAttribute(QStringLiteral("name"), wc->name());
+                    w.writeAttribute(QStringLiteral("color"), colorToString(wc->color()));
+                    w.writeAttribute(QStringLiteral("tile"), QString::number(wc->imageId()));
+                    w.writeAttribute(QStringLiteral("probability"), QString::number(wc->probability()));
 
-                        w.writeEndElement();
-                    }
-                }
-            }
+                    writeProperties(w, wc->properties());
 
-            if (ws->cornerColorCount() > 1) {
-                for (int i = 1; i <= ws->cornerColorCount(); ++i) {
-                    if (WangColor *wc = ws->cornerColorAt(i).data()) {
-                        w.writeStartElement(QStringLiteral("wangcornercolor"));
-
-                        w.writeAttribute(QStringLiteral("name"), wc->name());
-                        w.writeAttribute(QStringLiteral("color"), colorToString(wc->color()));
-                        w.writeAttribute(QStringLiteral("tile"), QString::number(wc->imageId()));
-                        w.writeAttribute(QStringLiteral("probability"), QString::number(wc->probability()));
-
-                        w.writeEndElement();
-                    }
+                    w.writeEndElement();
                 }
             }
 
             const auto wangTiles = ws->sortedWangTiles();
             for (const WangTile &wangTile : wangTiles) {
                 w.writeStartElement(QStringLiteral("wangtile"));
-                w.writeAttribute(QStringLiteral("tileid"), QString::number(wangTile.tile()->id()));
-                w.writeAttribute(QStringLiteral("wangid"),
-                                 QLatin1String("0x") + QString::number(wangTile.wangId(), 16));
-
-                if (wangTile.flippedHorizontally())
-                    w.writeAttribute(QStringLiteral("hflip"), QString::number(1));
-
-                if (wangTile.flippedVertically())
-                    w.writeAttribute(QStringLiteral("vflip"), QString::number(1));
-
-                if (wangTile.flippedAntiDiagonally())
-                    w.writeAttribute(QStringLiteral("dflip"), QString::number(1));
-
+                w.writeAttribute(QStringLiteral("tileid"), QString::number(wangTile.tileId()));
+                w.writeAttribute(QStringLiteral("wangid"), wangTile.wangId().toString());
                 w.writeEndElement(); // </wangtile>
             }
 
@@ -725,6 +674,12 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
         w.writeAttribute(QStringLiteral("offsetx"), QString::number(offset.x()));
         w.writeAttribute(QStringLiteral("offsety"), QString::number(offset.y()));
     }
+
+    const QPointF parallaxFactor = layer.parallaxFactor();
+    if (parallaxFactor.x() != 1.0)
+        w.writeAttribute(QStringLiteral("parallaxx"), QString::number(parallaxFactor.x()));
+    if (parallaxFactor.y() != 1.0)
+        w.writeAttribute(QStringLiteral("parallaxy"), QString::number(parallaxFactor.y()));
 }
 
 void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,
@@ -910,8 +865,8 @@ void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
     if (!imageSource.isEmpty()) {
         w.writeStartElement(QStringLiteral("image"));
 
-        QString source = mUseAbsolutePaths ? imageSource.toString(QUrl::PreferLocalFile)
-                                           : toFileReference(imageSource, mDir);
+        QString source = toFileReference(imageSource, mUseAbsolutePaths ? QString()
+                                                                        : mDir.path());
 
         w.writeAttribute(QStringLiteral("source"), source);
 
@@ -961,14 +916,14 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
         w.writeStartElement(QStringLiteral("property"));
         w.writeAttribute(QStringLiteral("name"), it.key());
 
-        int type = it.value().userType();
-        QString typeName = typeToName(type);
-        if (typeName != QLatin1String("string"))
-            w.writeAttribute(QStringLiteral("type"), typeName);
+        const auto exportValue = ExportValue::fromPropertyValue(it.value(), mUseAbsolutePaths ? QString()
+                                                                                              : mDir.path());
+        if (exportValue.typeName != QLatin1String("string"))
+            w.writeAttribute(QStringLiteral("type"), exportValue.typeName);
+        if (!exportValue.propertyTypeName.isEmpty())
+            w.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
 
-        QVariant exportValue = mUseAbsolutePaths ? toExportValue(it.value())
-                                                 : toExportValue(it.value(), mDir);
-        QString value = exportValue.toString();
+        QString value = exportValue.value.toString();
 
         if (value.contains(QLatin1Char('\n')))
             w.writeCharacters(value);

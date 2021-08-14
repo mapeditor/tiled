@@ -30,7 +30,7 @@ the suggested file name will be based on that.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.4</div>
+   <div class="new new-prev">Since Tiled 1.4</div>
 
 To be able to select your templates for editing or instantiating you'll
 generally want to use the :doc:`Project view <projects>`, so make sure to save
@@ -79,7 +79,7 @@ as an overridden property and won't be changed when the template changes.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.4</div>
+   <div class="new new-prev">Since Tiled 1.4</div>
 
 If a template file changes on disk, it is automatically reloaded and any
 changes will be reflected in the *Template Editor* as well as on any template

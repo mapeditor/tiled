@@ -37,13 +37,11 @@ class QToolBar;
 
 namespace Tiled {
 
-class Terrain;
 class Tile;
 class Tileset;
 
 class PropertiesDock;
 class TemplatesDock;
-class TerrainDock;
 class TileAnimationEditor;
 class TileCollisionDock;
 class TilesetDocument;
@@ -53,7 +51,7 @@ class UndoDock;
 class WangDock;
 class Zoomable;
 
-class TilesetEditor : public Editor
+class TilesetEditor final : public Editor
 {
     Q_OBJECT
 
@@ -91,7 +89,7 @@ public:
 
     QAction *addTilesAction() const;
     QAction *removeTilesAction() const;
-    QAction *editTerrainAction() const;
+    QAction *relocateTilesAction() const;
     QAction *editCollisionAction() const;
     QAction *editWangSetsAction() const;
     QAction *showAnimationEditor() const;
@@ -120,9 +118,7 @@ private:
     void addTiles(const QList<QUrl> &urls);
     void removeTiles();
 
-    void setEditTerrain(bool editTerrain);
-    void currentTerrainChanged(const Terrain *terrain);
-
+    void setRelocateTiles(bool relocateTiles);
     void setEditCollision(bool editCollision);
     void hasSelectedCollisionObjectsChanged();
 
@@ -130,17 +126,14 @@ private:
 
     void updateAddRemoveActions();
 
-    void addTerrainType();
-    void removeTerrainType();
-    void setTerrainImage(Tile *tile);
-
     void currentWangSetChanged(WangSet *wangSet);
     void currentWangIdChanged(WangId wangId);
-    void wangColorChanged(int color, bool edge);
-    void addWangSet();
+    void wangColorChanged(int color);
+    void addWangSet(WangSet::Type type);
+    void duplicateWangSet();
     void removeWangSet();
     void setWangSetImage(Tile *tile);
-    void setWangColorImage(Tile *tile, bool isEdge, int index);
+    void setWangColorImage(Tile *tile, int index);
     void setWangColorColor(WangColor *wangColor, const QColor &color);
 
     void onAnimationEditorClosed();
@@ -156,12 +149,12 @@ private:
 
     QAction *mAddTiles;
     QAction *mRemoveTiles;
+    QAction *mRelocateTiles;
     QAction *mShowAnimationEditor;
     QAction *mDynamicWrappingToggle;
 
     PropertiesDock *mPropertiesDock;
     UndoDock *mUndoDock;
-    TerrainDock *mTerrainDock;
     TileCollisionDock *mTileCollisionDock;
     TemplatesDock *mTemplatesDock;
     WangDock *mWangDock;
@@ -170,9 +163,9 @@ private:
     TileAnimationEditor *mTileAnimationEditor;
 
     QHash<TilesetDocument*, TilesetView*> mViewForTileset;
-    TilesetDocument *mCurrentTilesetDocument;
+    TilesetDocument *mCurrentTilesetDocument = nullptr;
 
-    Tile *mCurrentTile;
+    Tile *mCurrentTile = nullptr;
     bool mSettingSelectedTiles = false;
 };
 
@@ -184,6 +177,11 @@ inline QAction *TilesetEditor::addTilesAction() const
 inline QAction *TilesetEditor::removeTilesAction() const
 {
     return mRemoveTiles;
+}
+
+inline QAction *TilesetEditor::relocateTilesAction() const
+{
+    return mRelocateTiles;
 }
 
 inline QAction *TilesetEditor::showAnimationEditor() const

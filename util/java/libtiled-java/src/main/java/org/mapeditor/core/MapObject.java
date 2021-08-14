@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2020 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2020 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2020 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -45,7 +45,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 /**
  * An object occupying an {@link org.mapeditor.core.ObjectGroup}.
  *
- * @version 1.2.3
+ * @version 1.4.2
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class MapObject extends MapObjectData implements Cloneable {
@@ -56,6 +56,9 @@ public class MapObject extends MapObjectData implements Cloneable {
     private Image image;
     private Image scaledImage;
     private Tile tile;
+    private boolean flipHorizontal;
+    private boolean flipVertical;
+    private boolean flipDiagonal;
 
     /**
      * Constructor for MapObject.
@@ -63,9 +66,11 @@ public class MapObject extends MapObjectData implements Cloneable {
     public MapObject() {
         super();
         this.properties = new Properties();
-        this.name = "Object";
+        this.name = "";
         this.type = "";
         this.imageSource = "";
+        this.flipHorizontal = false;
+        this.flipVertical = false;
     }
 
     /**
@@ -204,6 +209,15 @@ public class MapObject extends MapObjectData implements Cloneable {
     public void setTile(Tile tile) {
         this.tile = tile;
     }
+
+    public boolean getFlipHorizontal() { return flipHorizontal; }
+    public void setFlipHorizontal(boolean flip) { this.flipHorizontal = flip; }
+
+    public boolean getFlipVertical() { return flipVertical; }
+    public void setFlipVertical(boolean flip) { this.flipVertical = flip; }
+
+    public boolean getFlipDiagonal() { return flipDiagonal; }
+    public void setFlipDiagonal(boolean flip) { this.flipDiagonal = flip; }
 
     /**
      * Returns the image to be used when drawing this object. This image is

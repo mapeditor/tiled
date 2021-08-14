@@ -22,6 +22,7 @@
 #include "ui_commandsedit.h"
 
 #include "commanddatamodel.h"
+#include "session.h"
 #include "utils.h"
 
 #include <QFileDialog>
@@ -90,49 +91,42 @@ const QVector<Command> &CommandsEdit::commands() const
 void CommandsEdit::setShortcut(const QKeySequence &keySequence)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setShortcut(current, keySequence);
+    mModel->setShortcut(current, keySequence);
 }
 
 void CommandsEdit::setSaveBeforeExecute(int state)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setSaveBeforeExecute(current, state);
+    mModel->setSaveBeforeExecute(current, state);
 }
 
 void CommandsEdit::setShowOutput(int state)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setShowOutput(current, state);
+    mModel->setShowOutput(current, state);
 }
-
 
 void CommandsEdit::setExecutable(const QString &text)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setExecutable(current, text);
+    mModel->setExecutable(current, text);
 }
 
 void CommandsEdit::setArguments(const QString &text)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setArguments(current, text);
+    mModel->setArguments(current, text);
 }
 
 void CommandsEdit::setWorkingDirectory(const QString &text)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setWorkingDirectory(current, text);
+    mModel->setWorkingDirectory(current, text);
 }
 
 void CommandsEdit::updateWidgets(const QModelIndex &current)
 {
-    bool enable = current.isValid() && (current.row() < mModel->rowCount() - 1);
+    const bool enable = mModel->isCommand(current);
 
     mUi->saveBox->setEnabled(enable);
     mUi->executableEdit->setEnabled(enable);
@@ -162,23 +156,35 @@ void CommandsEdit::updateWidgets(const QModelIndex &current)
 
 void CommandsEdit::browseExecutable()
 {
-    QString caption = tr("Select Executable");
-    QString dir = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
-    QString executableName = QFileDialog::getOpenFileName(this, caption, dir);
+    QString executable = mUi->executableEdit->text();
+    if (executable.isEmpty())
+        executable = Session::current().lastPath(Session::ExecutablePath, QStandardPaths::HomeLocation);
 
-    if (!executableName.isEmpty())
-        mUi->executableEdit->setText(executableName);
+    executable = QFileDialog::getOpenFileName(this, tr("Select Executable"), executable);
+
+    if (!executable.isEmpty()) {
+        mUi->executableEdit->setText(executable);
+        Session::current().setLastPath(Session::ExecutablePath, QFileInfo(executable).filePath());
+    }
 }
 
 void CommandsEdit::browseWorkingDirectory()
 {
-    QString caption = tr("Select Working Directory");
-    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    QString workingDirectoryName = QFileDialog::getExistingDirectory(this, caption, dir,
-                            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    QString workingDirectory = mUi->workingDirectoryEdit->text();
+    if (workingDirectory.isEmpty())
+        workingDirectory = Session::current().lastPath(Session::WorkingDirectory);
 
-    if (!workingDirectoryName.isEmpty())
-        mUi->workingDirectoryEdit->setText(workingDirectoryName);
+    workingDirectory = QFileDialog::getExistingDirectory(this,
+                                                         tr("Select Working Directory"),
+                                                         workingDirectory,
+                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+    if (!workingDirectory.isEmpty()) {
+        mUi->workingDirectoryEdit->setText(workingDirectory);
+        Session::current().setLastPath(Session::WorkingDirectory, workingDirectory);
+    }
 }
 
 } // namespace Tiled
+
+#include "moc_commandsedit.cpp"

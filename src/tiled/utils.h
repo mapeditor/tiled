@@ -28,6 +28,8 @@
 
 #include <memory>
 
+#include "qtcompat_p.h"
+
 class QAction;
 class QKeyEvent;
 class QMenu;
@@ -73,6 +75,8 @@ void setThemeIcon(T *t, const char *name)
 {
     setThemeIcon(t, QLatin1String(name));
 }
+
+QIcon colorIcon(const QColor &color, QSize size);
 
 void restoreGeometry(QWidget *widget);
 void saveGeometry(QWidget *widget);

@@ -18,6 +18,8 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
 #include "wangsetmodel.h"
 
 #include <QTreeView>
@@ -39,6 +41,7 @@ public:
     Zoomable *zoomable() const { return mZoomable; }
 
     WangSet *wangSetAt(const QModelIndex &index) const;
+    TilesetDocument *tilesetDocumentAt(const QModelIndex &index) const;
 
 protected:
     bool event(QEvent *event) override;

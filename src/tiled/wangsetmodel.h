@@ -28,15 +28,22 @@ namespace Tiled {
 class Tileset;
 class WangSet;
 
+class ChangeEvent;
 class TilesetDocument;
 
+/**
+ * This model displays the Wang sets in a given list of tilesets, which are
+ * provided by another model.
+ */
 class WangSetModel : public QAbstractItemModel
 {
     Q_OBJECT
 
 public:
+    // Synchronized with TilesetWangSetModel
     enum UserRoles {
-        WangSetRole = Qt::UserRole
+        WangSetRole = Qt::UserRole,
+        TilesetDocumentRole,
     };
 
     WangSetModel(QAbstractItemModel *tilesetDocumentModel,
@@ -69,10 +76,7 @@ private:
     void onTilesetLayoutChanged(const QList<QPersistentModelIndex> &parents, QAbstractItemModel::LayoutChangeHint hint);
     void onTilesetDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
-    void onWangSetAboutToBeAdded(Tileset *tileset);
-    void onWangSetAdded(Tileset *tileset);
-    void onWangSetAboutToBeRemoved(WangSet *wangSet);
-    void onWangSetRemoved(WangSet *wangSet);
+    void onDocumentChanged(const ChangeEvent &change);
 
     QAbstractItemModel *mTilesetDocumentsModel;
     QList<TilesetDocument*> mTilesetDocuments;

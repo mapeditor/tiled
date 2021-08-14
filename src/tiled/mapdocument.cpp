@@ -34,33 +34,29 @@
 #include "editablemap.h"
 #include "flipmapobjects.h"
 #include "grouplayer.h"
-#include "hexagonalrenderer.h"
 #include "imagelayer.h"
-#include "isometricrenderer.h"
 #include "issuesmodel.h"
 #include "layermodel.h"
 #include "logginginterface.h"
 #include "mapobject.h"
 #include "mapobjectmodel.h"
+#include "maprenderer.h"
 #include "movelayer.h"
 #include "movemapobject.h"
 #include "movemapobjecttogroup.h"
 #include "objectgroup.h"
+#include "objecttemplate.h"
 #include "offsetlayer.h"
-#include "orthogonalrenderer.h"
 #include "painttilelayer.h"
 #include "rangeset.h"
 #include "reparentlayers.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
 #include "rotatemapobject.h"
-#include "staggeredrenderer.h"
 #include "templatemanager.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
-#include "tmxmapformat.h"
 
 #include <QFileInfo>
 #include <QRect>
@@ -126,11 +122,12 @@ MapDocument::~MapDocument()
 
 bool MapDocument::save(const QString &fileName, QString *error)
 {
-    MapFormat *mapFormat = mWriterFormat;
-
-    TmxMapFormat tmxMapFormat;
-    if (!mapFormat)
-        mapFormat = &tmxMapFormat;
+    MapFormat *mapFormat = writerFormat();
+    if (!mapFormat) {
+        if (error)
+            *error = tr("Map format '%s' not found").arg(mWriterFormat);
+        return false;
+    }
 
     if (!mapFormat->write(map(), fileName)) {
         if (error)
@@ -183,22 +180,24 @@ MapDocumentPtr MapDocument::load(const QString &fileName,
 
 MapFormat *MapDocument::readerFormat() const
 {
-    return mReaderFormat;
+    return findFileFormat<MapFormat>(mReaderFormat, FileFormat::Read);
 }
 
 void MapDocument::setReaderFormat(MapFormat *format)
 {
-    mReaderFormat = format;
+    Q_ASSERT(format->hasCapabilities(FileFormat::Read));
+    mReaderFormat = format->shortName();
 }
 
-FileFormat *MapDocument::writerFormat() const
+MapFormat *MapDocument::writerFormat() const
 {
-    return mWriterFormat;
+    return findFileFormat<MapFormat>(mWriterFormat, FileFormat::Write);
 }
 
 void MapDocument::setWriterFormat(MapFormat *format)
 {
-    mWriterFormat = format;
+    Q_ASSERT(format->hasCapabilities(FileFormat::Write));
+    mWriterFormat = format->shortName();
 }
 
 QString MapDocument::lastExportFileName() const
@@ -213,8 +212,6 @@ void MapDocument::setLastExportFileName(const QString &fileName)
 
 MapFormat *MapDocument::exportFormat() const
 {
-    if (map()->exportFormat.isEmpty())
-        return nullptr;
     return findFileFormat<MapFormat>(map()->exportFormat);
 }
 
@@ -1027,6 +1024,19 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
     }
 }
 
+/**
+ * Sets the list of objects that are about to be selected, for highlighting
+ * purposes.
+ */
+void MapDocument::setAboutToBeSelectedObjects(const QList<MapObject *> &objects)
+{
+    if (mAboutToBeSelectedObjects == objects)
+        return;
+
+    mAboutToBeSelectedObjects = objects;
+    emit aboutToBeSelectedObjectsChanged(objects);
+}
+
 QList<Object*> MapDocument::currentObjects() const
 {
     if (mCurrentObject) {
@@ -1161,6 +1171,12 @@ bool MapDocument::templateAllowed(const ObjectTemplate *objectTemplate) const
 void MapDocument::onChanged(const ChangeEvent &change)
 {
     switch (change.type) {
+    case ChangeEvent::MapChanged: {
+        const auto property = static_cast<const MapChangeEvent&>(change).property;
+        if (property == Map::OrientationProperty)
+            createRenderer();
+        break;
+    }
     case ChangeEvent::MapObjectsAboutToBeRemoved: {
         const auto &mapObjects = static_cast<const MapObjectsEvent&>(change).mapObjects;
 
@@ -1360,12 +1376,18 @@ void MapDocument::deselectObjects(const QList<MapObject *> &objects)
         if (objects.contains(static_cast<MapObject*>(mCurrentObject)))
             setCurrentObject(nullptr);
 
-    int removedCount = 0;
-    for (MapObject *object : objects)
-        removedCount += mSelectedObjects.removeAll(object);
+    int removedSelectedObjects = 0;
+    int removedAboutToBeSelectedObjects = 0;
 
-    if (removedCount > 0)
+    for (MapObject *object : objects) {
+        removedSelectedObjects += mSelectedObjects.removeAll(object);
+        removedAboutToBeSelectedObjects += mAboutToBeSelectedObjects.removeAll(object);
+    }
+
+    if (removedSelectedObjects > 0)
         emit selectedObjectsChanged();
+    if (removedAboutToBeSelectedObjects > 0)
+        emit aboutToBeSelectedObjectsChanged(mAboutToBeSelectedObjects);
 }
 
 void MapDocument::duplicateObjects(const QList<MapObject *> &objects)
@@ -1376,10 +1398,11 @@ void MapDocument::duplicateObjects(const QList<MapObject *> &objects)
     QVector<AddMapObjects::Entry> objectsToAdd;
     objectsToAdd.reserve(objects.size());
 
-    for (const MapObject *mapObject : objects) {
+    for (MapObject *mapObject : objects) {
         MapObject *clone = mapObject->clone();
         clone->resetId();
         objectsToAdd.append(AddMapObjects::Entry { clone, mapObject->objectGroup() });
+        objectsToAdd.last().index = mapObject->objectGroup()->objects().indexOf(mapObject) + 1;
     }
 
     auto command = new AddMapObjects(this, objectsToAdd);
@@ -1520,18 +1543,7 @@ void MapDocument::detachObjects(const QList<MapObject *> &objects)
 
 void MapDocument::createRenderer()
 {
-    switch (mMap->orientation()) {
-    case Map::Isometric:
-        mRenderer = std::make_unique<IsometricRenderer>(mMap.get());
-        break;
-    case Map::Staggered:
-        mRenderer = std::make_unique<StaggeredRenderer>(mMap.get());
-        break;
-    case Map::Hexagonal:
-        mRenderer = std::make_unique<HexagonalRenderer>(mMap.get());
-        break;
-    default:
-        mRenderer = std::make_unique<OrthogonalRenderer>(mMap.get());
-        break;
-    }
+    mRenderer = MapRenderer::create(mMap.get());
 }
+
+#include "moc_mapdocument.cpp"

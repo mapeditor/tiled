@@ -89,7 +89,7 @@ private:
                             const QVariant &propertyTypesVariant) const;
     SharedTileset toTileset(const QVariant &variant);
     std::unique_ptr<WangSet> toWangSet(const QVariantMap &variantMap, Tileset *tileset);
-    QSharedPointer<WangColor> toWangColor(const QVariantMap &variantMap, bool isEdge);
+    QSharedPointer<WangColor> toWangColor(const QVariantMap &variantMap);
     std::unique_ptr<ObjectTemplate> toObjectTemplate(const QVariant &variant);
     std::unique_ptr<Layer> toLayer(const QVariant &variant);
     std::unique_ptr<TileLayer> toTileLayer(const QVariantMap &variantMap);

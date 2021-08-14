@@ -85,6 +85,9 @@ void CreatePolygonObjectTool::activate(MapScene *scene)
             this, &CreatePolygonObjectTool::updateHandles);
     connect(mapDocument(), &MapDocument::layerRemoved,
             this, &CreatePolygonObjectTool::layerRemoved);
+
+    connect(scene, &MapScene::parallaxParametersChanged,
+            this, &CreatePolygonObjectTool::updateHandles);
 }
 
 void CreatePolygonObjectTool::deactivate(MapScene *scene)
@@ -96,6 +99,9 @@ void CreatePolygonObjectTool::deactivate(MapScene *scene)
                this, &CreatePolygonObjectTool::updateHandles);
     disconnect(mapDocument(), &MapDocument::layerRemoved,
                this, &CreatePolygonObjectTool::layerRemoved);
+
+    disconnect(scene, &MapScene::parallaxParametersChanged,
+               this, &CreatePolygonObjectTool::updateHandles);
 
     qDeleteAll(mHandles);
     mHandles.clear();
@@ -175,11 +181,11 @@ void CreatePolygonObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
 
         QPointF objectScreenPos = renderer->pixelToScreenCoords(object->position());
         QTransform rotate = rotateAt(objectScreenPos, object->rotation());
-        QPointF totalOffset = object->objectGroup()->totalOffset();
+        QPointF totalOffset = mapScene()->absolutePositionForLayer(*object->objectGroup());
 
         QPointF pixelPos = object->polygon().at(pointIndex) + object->position();
         screenPos = rotate.map(renderer->pixelToScreenCoords(pixelPos));
-        screenPos += (totalOffset - mNewMapObjectItem->mapObject()->objectGroup()->totalOffset());
+        screenPos += (totalOffset - mapScene()->absolutePositionForLayer(*mNewMapObjectItem->mapObject()->objectGroup()));
     }
 
     // Take rotation of current object into account
@@ -263,10 +269,13 @@ void CreatePolygonObjectTool::applySegment()
                 otherPolygon.translate(clickedObject->position());
                 otherPolygon = renderer->pixelToScreenCoords(otherPolygon);
 
+                // FIXME: This doesn't correctly handle joining polylines while
+                // different parallax factors are active.
                 QPointF clickedObjectScreenPos = renderer->pixelToScreenCoords(clickedObject->position());
+                QPointF clickedObjectOffset = mapScene()->absolutePositionForLayer(*clickedObject->objectGroup());
                 QTransform clickedObjectRotate = rotateAt(clickedObjectScreenPos, clickedObject->rotation());
                 otherPolygon = clickedObjectRotate.map(otherPolygon);
-                otherPolygon.translate(clickedObject->objectGroup()->totalOffset() - newObject->objectGroup()->totalOffset());
+                otherPolygon.translate(clickedObjectOffset - newObject->objectGroup()->totalOffset());
 
                 QPointF objectScreenPos = renderer->pixelToScreenCoords(newObject->position());
                 QTransform rotate = rotateAt(objectScreenPos, -newObject->rotation());
@@ -423,7 +432,7 @@ void CreatePolygonObjectTool::updateHandles()
 
         QPointF objectScreenPos = renderer->pixelToScreenCoords(object->position());
         QTransform rotate = rotateAt(objectScreenPos, object->rotation());
-        QPointF totalOffset = object->objectGroup()->totalOffset();
+        QPointF totalOffset = mapScene()->absolutePositionForLayer(*object->objectGroup());
 
         auto createHandle = [&,object,renderer](int pointIndex) {
             PointHandle *handle = new PointHandle(object, pointIndex);
@@ -568,7 +577,8 @@ void CreatePolygonObjectTool::extend(MapObject *mapObject, bool extendingFirst)
 
     mMode = extendingFirst ? ExtendingAtBegin : ExtendingAtEnd;
 
-    newMapObjectGroup()->setOffset(mapObject->objectGroup()->totalOffset());
+    QPointF offset = mapScene()->absolutePositionForLayer(*mapObject->objectGroup());
+    newMapObjectGroup()->setOffset(offset);
     objectGroupItem()->setPos(newMapObjectGroup()->offset());
 
     mNewMapObjectItem = new MapObjectItem(mapObject, mapDocument(), objectGroupItem());
@@ -596,7 +606,7 @@ void CreatePolygonObjectTool::changeEvent(const ChangeEvent &event)
 
     switch (event.type) {
     case ChangeEvent::LayerChanged:
-        if (static_cast<const LayerChangeEvent&>(event).properties & LayerChangeEvent::OffsetProperty)
+        if (static_cast<const LayerChangeEvent&>(event).properties & LayerChangeEvent::PositionProperties)
             updateHandles();
         break;
     case ChangeEvent::MapObjectsChanged:
@@ -620,3 +630,5 @@ void CreatePolygonObjectTool::setHoveredHandle(PointHandle *handle)
     if (handle)
         handle->setHighlighted(true);
 }
+
+#include "moc_createpolygonobjecttool.cpp"

@@ -65,7 +65,7 @@ public:
         PasteInPlace        = 0x2,
     };
     Q_DECLARE_FLAGS(PasteFlags, PasteFlag)
-    Q_FLAGS(PasteFlags)
+    Q_FLAG(PasteFlags)
 
     void pasteObjectGroup(const ObjectGroup *objectGroup,
                           MapDocument *mapDocument,

@@ -44,8 +44,8 @@ function help() {
 usage: install-qt [options] [components]
 
 Examples
-  ./install-qt.sh --version 5.12.4 qtbase
-  ./install-qt.sh --version 5.12.4 --target android --toolchain android_arm64_v8a qtbase
+  ./install-qt.sh --version 5.13.1 qtbase
+  ./install-qt.sh --version 5.14.0 --target android --toolchain any qtbase qtscript
 
 Positional arguments
   components
@@ -59,10 +59,13 @@ Positional arguments
         target and toolchain.
 
 Options
-  --directory <directory>
+  -d, --directory <directory>
         Root directory where to install the components.
         Maps to C:/Qt on Windows, /opt/Qt on Linux, /usr/local/Qt on Mac
         by default.
+
+  -f, --force
+        Force download and do not attempt to re-use an existing installation.
 
   --host <host-os>
         The host operating system. Can be one of linux_x64, mac_x64,
@@ -78,13 +81,13 @@ Options
 
             linux_x64
                 android
-                    android_armv7, android_arm64_v8a
+                    any, android_armv7, android_arm64_v8a
                 desktop
                     gcc_64 (default)
 
             mac_x64
                 android
-                    android_armv7, android_arm64_v8a
+                    any, android_armv7, android_arm64_v8a
                 desktop
                     clang_64 (default),
                 ios
@@ -92,9 +95,12 @@ Options
 
             windows_x86
                 android
-                    android_armv7, android_arm64_v8a
+                    any, android_armv7, android_arm64_v8a
                 desktop
                     win64_mingw73, win64_msvc2017_64 (default)
+
+  --arch <arch>
+        The CPU architecture to use when installing openssl (x86 or x64).
 
   --version <version>
         The desired Qt version. Currently supported are all versions
@@ -106,6 +112,9 @@ EOF
 TARGET_PLATFORM=desktop
 COMPONENTS=
 VERSION=
+FORCE_DOWNLOAD=false
+MD5_TOOL=md5sum
+ARCH=
 
 case "$OSTYPE" in
     *linux*)
@@ -117,6 +126,7 @@ case "$OSTYPE" in
         HOST_OS=mac_x64
         INSTALL_DIR=/usr/local/Qt
         TOOLCHAIN=clang_64
+        MD5_TOOL="md5 -r"
         ;;
     msys)
         HOST_OS=windows_x86
@@ -135,6 +145,9 @@ while [ $# -gt 0 ]; do
             INSTALL_DIR="$2"
             shift
             ;;
+        --force|-f)
+            FORCE_DOWNLOAD=true
+            ;;
         --host)
             HOST_OS="$2"
             shift
@@ -144,7 +157,11 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         --toolchain)
-            TOOLCHAIN="$2"
+            TOOLCHAIN=$(echo $2 | tr '[A-Z]' '[a-z]')
+            shift
+            ;;
+        --arch)
+            ARCH="$2"
             shift
             ;;
         --version)
@@ -195,6 +212,24 @@ case "$TARGET_PLATFORM" in
         ;;
 esac
 
+HASH=$(echo "${OSTYPE} ${TARGET_PLATFORM} ${TOOLCHAIN} ${VERSION} ${INSTALL_DIR}" | ${MD5_TOOL} | head -c 16)
+HASH_FILEPATH="${INSTALL_DIR}/${HASH}.manifest"
+INSTALLATION_IS_VALID=false
+if ! ${FORCE_DOWNLOAD} && [ -f "${HASH_FILEPATH}" ]; then
+    INSTALLATION_IS_VALID=true
+    while read filepath; do
+        if [ ! -e "${filepath}" ]; then
+            INSTALLATION_IS_VALID=false
+            break
+        fi
+    done <"${HASH_FILEPATH}"
+fi
+
+if ${INSTALLATION_IS_VALID}; then
+    echo "Already installed. Skipping download." >&2
+    exit 0
+fi
+
 DOWNLOAD_DIR=`mktemp -d 2>/dev/null || mktemp -d -t 'install-qt'`
 
 #
@@ -204,9 +239,7 @@ function compute_url(){
     local COMPONENT=$1
     local CURL="curl -s -L"
     local BASE_URL="http://download.qt.io/online/qtsdkrepository/${HOST_OS}/${TARGET_PLATFORM}"
-
     if [[ "${COMPONENT}" =~ "qtcreator" ]]; then
-
         REMOTE_BASE="tools_qtcreator/qt.tools.qtcreator"
         REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "${VERSION}[0-9\-]*${COMPONENT}\.7z" | tail -1)"
 
@@ -214,43 +247,47 @@ function compute_url(){
             echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
             return 0
         fi
+    elif [[ "${COMPONENT}" =~ "mingw" ]]; then
+        REMOTE_BASE="tools_mingw/qt.tools.${COMPONENT}"
+        REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "${VERSION}[[:alnum:]_.\-]*rev0.7z" | tail -1)"
 
+        if [ ! -z "${REMOTE_PATH}" ]; then
+            echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
+            return 0
+        fi
+    elif [[ "${COMPONENT}" =~ "openssl" ]]; then
+        if [ -z "${ARCH}" ]; then
+            echo "No architecture specified for openssl (x86 or x64)." >&2
+            exit 1
+        fi
+
+        REMOTE_BASE="tools_${COMPONENT}_${ARCH}/qt.tools.${COMPONENT}.win_${ARCH}"
+        REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "[[:alnum:]_.\-]*${ARCH}.7z" | tail -1)"
+
+        if [ ! -z "${REMOTE_PATH}" ]; then
+            echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
+            return 0
+        fi
     else
-        # New repository format (>=5.9.6)
-        REMOTE_BASE="qt5_${VERSION//./}/qt.qt5.${VERSION//./}.${TOOLCHAIN}"
-        REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "[[:alnum:]_.\-]*7z" | grep "${COMPONENT}" | tail -1)"
-        echo "$BASE_URL/$REMOTE_BASE/$REMOTE_PATH" >&2
+        REMOTE_BASES=(
+            # New repository format (>=5.9.6)
+            "qt5_${VERSION//./}/qt.qt5.${VERSION//./}.${TOOLCHAIN}"
+            "qt5_${VERSION//./}/qt.qt5.${VERSION//./}.${COMPONENT}.${TOOLCHAIN}"
+            # Multi-abi Android since 5.14
+            "qt5_${VERSION//./}/qt.qt5.${VERSION//./}.${TARGET_PLATFORM}"
+            "qt5_${VERSION//./}/qt.qt5.${VERSION//./}.${COMPONENT}.${TARGET_PLATFORM}"
+            # Older repository format (<5.9.0)
+            "qt5_${VERSION//./}/qt.${VERSION//./}.${TOOLCHAIN}"
+            "qt5_${VERSION//./}/qt.${VERSION//./}.${COMPONENT}.${TOOLCHAIN}"
+        )
 
-        if [ ! -z "${REMOTE_PATH}" ]; then
-            echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
-            return 0
-        fi
-
-        REMOTE_BASE="qt5_${VERSION//./}/qt.qt5.${VERSION//./}.${COMPONENT}.${TOOLCHAIN}"
-        REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "[[:alnum:]_.\-]*7z" | grep "${COMPONENT}" | tail -1)"
-
-        if [ ! -z "${REMOTE_PATH}" ]; then
-            echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
-            return 0
-        fi
-
-        # Older repository format (>=5.9.0)
-        REMOTE_BASE="qt5_${VERSION//./}/qt.${VERSION//./}.${TOOLCHAIN}"
-        REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "[[:alnum:]_.\-]*7z" | grep "${COMPONENT}" | tail -1)"
-
-        if [ ! -z "${REMOTE_PATH}" ]; then
-            echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
-            return 0
-        fi
-
-        REMOTE_BASE="qt5_${VERSION//./}/qt.${VERSION//./}.${COMPONENT}.${TOOLCHAIN}"
-        REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "[[:alnum:]_.\-]*7z" | grep "${COMPONENT}" | tail -1)"
-
-        if [ ! -z "${REMOTE_PATH}" ]; then
-            echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
-            return 0
-        fi
-
+        for REMOTE_BASE in ${REMOTE_BASES[*]}; do
+            REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "[[:alnum:]_.\-]*7z" | grep "${COMPONENT}" | tail -1)"
+            if [ ! -z "${REMOTE_PATH}" ]; then
+                echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
+                return 0
+            fi
+        done
     fi
 
     echo "Could not determine a remote URL for ${COMPONENT} with version ${VERSION}">&2
@@ -258,14 +295,15 @@ function compute_url(){
 }
 
 mkdir -p ${INSTALL_DIR}
+rm -f "${HASH_FILEPATH}"
 
 for COMPONENT in ${COMPONENTS}; do
 
     URL="$(compute_url ${COMPONENT})"
-
     echo "Downloading ${COMPONENT}..." >&2
     curl --progress-bar -L -o ${DOWNLOAD_DIR}/package.7z ${URL} >&2
     7z x -y -o${INSTALL_DIR} ${DOWNLOAD_DIR}/package.7z >/dev/null 2>&1
+    7z l -ba -slt -y ${DOWNLOAD_DIR}/package.7z | tr '\\' '/' | sed -n -e "s|^Path\ =\ |${INSTALL_DIR}/|p" >> "${HASH_FILEPATH}" 2>/dev/null
     rm -f ${DOWNLOAD_DIR}/package.7z
 
     #
@@ -280,6 +318,8 @@ for COMPONENT in ${COMPONENTS}; do
             SUBDIR="${TOOLCHAIN/win64_/}"
         elif [[ "${TOOLCHAIN}" =~ "win32_msvc" ]]; then
             SUBDIR="${TOOLCHAIN/win32_/}"
+        elif [[ "${TOOLCHAIN}" =~ "any" ]] && [[ "${TARGET_PLATFORM}" == "android" ]]; then
+            SUBDIR="android"
         else
             SUBDIR="${TOOLCHAIN}"
         fi
@@ -288,11 +328,27 @@ for COMPONENT in ${COMPONENTS}; do
         echo "[Paths]" > ${CONF_FILE}
         echo "Prefix = .." >> ${CONF_FILE}
 
+        # Adjust the license to be able to run qmake
+        # sed with -i requires intermediate file on Mac OS
+        PRI_FILE="${INSTALL_DIR}/${VERSION}/${SUBDIR}/mkspecs/qconfig.pri"
+        sed -i.bak 's/Enterprise/OpenSource/g' "${PRI_FILE}"
+        sed -i.bak 's/licheck.*//g' "${PRI_FILE}"
+        rm "${PRI_FILE}.bak"
+
         # Print the directory so that the caller can
         # adjust the PATH variable.
         echo $(dirname "${CONF_FILE}")
     elif [[ "${COMPONENT}" =~ "qtcreator" ]]; then
-        echo "${INSTALL_DIR}/Tools/QtCreator/bin"
+        if [ "${HOST_OS}" == "mac_x64" ]; then
+            echo "${INSTALL_DIR}/Qt Creator.app/Contents/MacOS"
+        else
+            echo "${INSTALL_DIR}/Tools/QtCreator/bin"
+        fi
+    elif [[ "${COMPONENT}" =~ "win32_mingw" ]]; then
+        echo "${INSTALL_DIR}/Tools/mingw810_32/bin"
+    elif [[ "${COMPONENT}" =~ "win64_mingw" ]]; then
+        echo "${INSTALL_DIR}/Tools/mingw810_64/bin"
+    elif [[ "${COMPONENT}" =~ "openssl" ]]; then
+        echo "${INSTALL_DIR}/Tools/OpenSSL/Win_${ARCH}/bin"
     fi
-
 done

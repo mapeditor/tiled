@@ -246,3 +246,5 @@ PluginFile *PluginManager::pluginByFileName(const QString &fileName)
 }
 
 } // namespace Tiled
+
+#include "moc_pluginmanager.cpp"

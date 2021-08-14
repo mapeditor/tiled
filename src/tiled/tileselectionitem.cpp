@@ -25,6 +25,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 
 #include <QApplication>
 #include <QPainter>
@@ -45,9 +46,16 @@ TileSelectionItem::TileSelectionItem(MapDocument *mapDocument,
     connect(mapDocument, &MapDocument::selectedAreaChanged,
             this, &TileSelectionItem::selectionChanged);
     connect(mapDocument, &MapDocument::currentLayerChanged,
-            this, &TileSelectionItem::currentLayerChanged);
+            this, &TileSelectionItem::updatePosition);
 
     updateBoundingRect();
+}
+
+void TileSelectionItem::updatePosition()
+{
+    if (auto currentLayer = mMapDocument->currentLayer())
+        if (auto mapScene = static_cast<MapScene*>(scene()))
+            setPos(mapScene->absolutePositionForLayer(*currentLayer));
 }
 
 QRectF TileSelectionItem::boundingRect() const
@@ -73,10 +81,10 @@ void TileSelectionItem::documentChanged(const ChangeEvent &change)
     switch (change.type) {
     case ChangeEvent::LayerChanged: {
         const auto &layerChange = static_cast<const LayerChangeEvent&>(change);
-        if (layerChange.properties & LayerChangeEvent::OffsetProperty)
+        if (layerChange.properties & LayerChangeEvent::PositionProperties)
             if (auto currentLayer = mMapDocument->currentLayer())
                 if (currentLayer->isParentOrSelf(layerChange.layer))
-                    setPos(currentLayer->totalOffset());
+                    updatePosition();
         break;
     }
     default:
@@ -95,12 +103,6 @@ void TileSelectionItem::selectionChanged(const QRegion &newSelection,
     update(mMapDocument->renderer()->boundingRect(changedArea));
 }
 
-void TileSelectionItem::currentLayerChanged(Layer *layer)
-{
-    if (layer)
-        setPos(layer->totalOffset());
-}
-
 void TileSelectionItem::updateBoundingRect()
 {
     const QRect b = mMapDocument->selectedArea().boundingRect();
@@ -109,3 +111,5 @@ void TileSelectionItem::updateBoundingRect()
     // Adjust for border drawn at tile selection edges
     mBoundingRect.adjust(-1, -1, 1, 1);
 }
+
+#include "moc_tileselectionitem.cpp"

@@ -1,3 +1,146 @@
+### Tiled 1.7.2 (10 August 2021)
+
+* Avoid automatically replacing external tilesets with "similar" ones
+* Fixed copying and capturing stamps on staggered maps (with Alexander Dorogov, #2874)
+* Fixed possible crash in Tile Animation Editor
+* Fixed data loss when saving maps with tilesets that failed to load (#3106)
+* Fixed creating multi-layer tile stamp from selection (#2899)
+* Scripting: Automatically reset object ID when adding to avoid duplicate IDs
+* Linux: Possible workaround for crash in clipboard manager
+* Updated to Sentry 0.4.12
+* Updated Italian translation
+
+### Tiled 1.7.1 (9 July 2021)
+
+* Don't save export target and format to exported files
+* Fixed crashes resulting from the Tile Animation Editor
+* Fixed possible crash when pasting multi-layer stamp (#3097)
+* Fixed possible crash when restoring expanded layers in Objects view
+* Fixed parallax factor getting lost when layer is cloned (#3077)
+* Fixed an issue with synchronizing selected tiles to current stamp (#3095)
+* Commands: Fixed possible crash in Edit Commands window
+* Commands: Automatically quote the command executable
+* Commands: Improved starting directory for executable file chooser
+* Commands: Fixed the 'Clear' button to reset the shortcut
+* Updated to Sentry 0.4.11
+* Updated French translation
+
+### Tiled 1.7.0 (4 June 2021)
+
+* Added basic "major grid" option with stronger lines (with Ilya Arkhanhelsky, #3032)
+* Added ability to rearrange tiles in a tileset (with José Miguel Sánchez García, #2983)
+* Added option to choose background fade color (with SchmidtWC, #3031)
+* Added portable mode, enabled when a "tiled.ini" is detected alongside the Tiled executable (#2945) 
+* Disable project extensions by default, for security reasons (#3058)
+* Render selection preview and hovered item highlight above labels (#3036)
+* Changed the donation reminder to be non-modal
+* docs: Generate scripting API documentation using TypeDoc (with Erik Schilling (#2965) and MrMasterplan (#3040, #3041, #3045))
+* QMake/Qbs: Added a way to disable DBus support (with Dmitry Marakasov, #3039)
+* Scripting: Fixed 'mouseLeft' callback for scripted tools (#3050)
+* Scripting: Fixed loading of icons with explicit "ext:" prefix (#3048)
+* Scripting: Made TileMap coordinate conversion functions always work (#3054)
+* tBIN plugin: Convert 'color', 'object' and 'file' properties on save
+* Python plugin: Added Layer.offset and Layer.setOffset (with sverx, #3073)
+* Python plugin: Linux AppImage now supports Python 3.6 instead of 3.5
+* Windows: Add a default "Open in text editor" command based on notepad.exe
+* Fixed possible crash in Properties view when switching files
+* Fixed watching/unwatching of folders when adding/removing from project (#3035)
+* Fixed determining desired file format by extension on export
+* Fixed compilation issue with GCC 10 (#3037)
+* Updated Bulgarian, Portuguese (Portugal), Russian and Turkish translations
+
+### Tiled 1.6.0 (23 April 2021)
+
+* Added object selection preview
+* Added toggle to select enclosed rather than touched objects (#3023)
+* Added Sentry crash handler to Linux AppImage (disabled by default)
+* Added %tileid variable for custom commands on tilesets (#3026)
+* Added option to lock the position of views and tool bars
+* Added toggle to show/hide other maps in the same world (#2859)
+* Added a helpful text to Terrain Sets view when it is empty (#3015)
+* Allow opening projects from the File menu (#3000)
+* Made the terrains list in the Terrain Sets view not collapsible (#3015)
+* Automatically select the first terrain when selecting a Terrain Set (#3015)
+* When duplicating objects, place the duplicates next to the originals (#2998)
+* Tweaked selection outlines to be a little fatter and adjust to DPI
+* Write --export-formats output to stdout instead of stderr (#3002)
+* Allow hiding objects in the Tile Collision Editor
+* Scripting: Added missing Tileset.transparentColor property
+* Fixed 'Detach templates' export option to add tilesets when needed
+* Fixed Terrain Brush behavior on map edges
+* Fixed Terrain Brush behavior for sets transitioning to nothing
+* Fixed loss of edit focus when hovering tileset while assigning terrain (#3015)
+* Fixed shortcuts for flipping or rotating the current terrain pattern
+* Fixed switching to Terrain Brush when clicked terrain is already selected (#3015)
+* Fixed state of "dynamic wrapping" toggle button on startup
+* Fixed parallax layer positioning when reordering layers (#3009)
+* Windows: Fixed Swedish translation missing from installer
+* Windows: Re-enabled code signing by SignPath (was missing for Tiled 1.5)
+* snap: Added 'removable-media' plug, for accessing USB drives
+* snap: "Open Containing Folder" action now also selects the file
+* JSON plugin: Write out "version" property as string (#3033)
+* YY plugin: Fixed plugin loading issue for qmake builds
+* libtiled-java: Optimized for multithreaded usage (by Samuel Manflame, #3004)
+* Updated Bulgarian, French, Portuguese (Portugal), Swedish and Turkish translations
+* Added Thai translation (by Thanachart Monpassorn, currently at 54%)
+
+### Tiled 1.5.0 (23 March 2021)
+
+* Unified Wang and Terrain tools (backwards incompatible change!)
+* Added support for a per-layer parallax scrolling factor ([#2951](https://github.com/mapeditor/tiled/pull/2951))
+* Added export to GameMaker Studio 2.3 ([#1642](https://github.com/mapeditor/tiled/issues/1642))
+* Added option to change object selection behavior ([#2865](https://github.com/mapeditor/tiled/pull/2865))
+* Added Monospace option to the multi-line text editor
+* Added option to auto-scroll on middle click
+* Added smooth scrolling option for arrow keys
+* Added a 'Convert to Polygon' action for rectangle objects
+* Added support for drawing with a blob tileset
+* Added 'Duplicate Terrain Set' action
+* Added Terrain Set type (Corner, Edge or Mixed)
+* Added support for rotating and flipping Terrain tiles (by Christof Petig, [#2912](https://github.com/mapeditor/tiled/pull/2912))
+* Added support for exporting to [RPTools MapTool](https://www.rptools.net/toolbox/maptool/) RpMap files (by Christof Petig, [#2926](https://github.com/mapeditor/tiled/pull/2926))
+* Added Ctrl+Shift to toggle Snap to Fine Grid (by sverx, [#2895](https://github.com/bjorn/tiled/pull/2895))
+* Eraser: Added Shift to erase on all layers (by Michael Aganier, [#2897](https://github.com/bjorn/tiled/pull/2897))
+* Automatically add .world extension to new World files
+* Shape Fill Tool now displays the size of the current shape ([#2808](https://github.com/mapeditor/tiled/issues/2808))
+* Tile Collision Editor: Added action to add an auto-detected bounding box collision rectangle (by Robin Macharg, [#1960](https://github.com/bjorn/tiled/pull/1960))
+* Tile Collision Editor: Added context menu action to copy selected collision objects to all other selected tiles (by Robin Macharg, [#1960](https://github.com/bjorn/tiled/pull/1960))
+* Tilesets view: Added "Edit Tileset" action to tab context menu
+* Tilesets view: Added "Add External Tileset" action to tilesets menu
+* Scripting: Added initial API for creating and modifying Terrain Sets
+* Scripting: Added API for working with images ([#2787](https://github.com/mapeditor/tiled/pull/2787))
+* Scripting: Added API for launching other processes ([#2783](https://github.com/mapeditor/tiled/issues/2783))
+* Scripting: Added MapView.center property
+* Scripting: Added missing Layer.id and Layer.parentLayer properties
+* Scripting: Enable extending most context menus
+* Scripting: Fixed reset of file formats on script reload ([#2911](https://github.com/mapeditor/tiled/issues/2911))
+* Scripting: Fixed missing GroupLayer and ImageLayer constructors
+* Scripting: Added default icon for scripted actions
+* Enabled high-DPI scaling on Linux and changed rounding policy
+* Remember last file dialog locations in the session instead of globally
+* Fixed loading extension path from project config (by Peter Ruibal, [#2956](https://github.com/mapeditor/tiled/pull/2956))
+* Fixed performance issues when using a lot of custom properties
+* Fixed storing template instance size when overriding the tile ([#2889](https://github.com/mapeditor/tiled/issues/2889))
+* Fixed removal of object reference arrow when deleting target object ([#2944](https://github.com/mapeditor/tiled/issues/2944))
+* Fixed updating of object references when layer visibility changes
+* Fixed map positioning issues in the World Tool ([#2970](https://github.com/mapeditor/tiled/issues/2970))
+* Fixed handling of Shift modifiers in Bucket and Shape Fill tools ([#2883](https://github.com/mapeditor/tiled/issues/2883))
+* Fixed scrolling speed in Tileset view when holding Ctrl
+* Fixed issue causing export.target to get written out as "."
+* Fixed "Repeat last export on save" when using Save All ([#2969](https://github.com/mapeditor/tiled/issues/2969))
+* Fixed interaction shape for rectangle objects to be more precise ([#2999](https://github.com/mapeditor/tiled/issues/2999))
+* Fixed "AutoMap While Drawing" not applying when using Cut/Delete
+* Fixed path in AutoMap error message when rules file doesn't exist
+* Lua plugin: Don't embed external tilesets, unless enabled as export option ([#2120](https://github.com/mapeditor/tiled/issues/2120))
+* Python plugin: Added missing values to MapObject.Shape enum ([#2898](https://github.com/bjorn/tiled/issues/2898))
+* Python plugin: Fixed linking issue when compiling against Python 3.8
+* CSV plugin: Include flipping flags in exported tile IDs
+* GMX plugin: Take tile object alignment into account
+* Linux: "Open Containing Folder" action now also selects the file
+* libtiled-java: Many updates (by Henri Viitanen, [#2207](https://github.com/bjorn/tiled/pull/2207))
+* Ported Tiled to Qt 6 (releases still use 5.15 for now)
+* Updated Bulgarian, Chinese (Simplified), Czech, Finnish, French, Portuguese, Portuguese (Portugal), Russian, Swedish and Turkish translations
+
 ### Tiled 1.4.3 (17 November 2020)
 
 * Fixed running Tiled on macOS Big Sur (#2845)

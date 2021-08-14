@@ -79,3 +79,5 @@ MapFormat *findSupportingMapFormat(const QString &fileName)
 }
 
 } // namespace Tiled
+
+#include "moc_mapformat.cpp"

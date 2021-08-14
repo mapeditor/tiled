@@ -45,18 +45,12 @@ static QColor multiplyColors(QColor color1, QColor color2)
                             color1.alphaF() * color2.alphaF());
 }
 
-Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
-    Object(LayerType),
-    mName(name),
-    mId(0),
-    mLayerType(type),
-    mX(x),
-    mY(y),
-    mOpacity(1.0),
-    mVisible(true),
-    mMap(nullptr),
-    mParentLayer(nullptr),
-    mLocked(false)
+Layer::Layer(TypeFlag type, const QString &name, int x, int y)
+    : Object(LayerType)
+    , mName(name)
+    , mLayerType(type)
+    , mX(x)
+    , mY(y)
 {
 }
 
@@ -190,6 +184,17 @@ QPointF Layer::totalOffset() const
     return offset;
 }
 
+QPointF Layer::effectiveParallaxFactor() const
+{
+    auto factor = mParallaxFactor;
+    const Layer *layer = this;
+    while ((layer = layer->parentLayer())) {
+        factor.rx() *= layer->parallaxFactor().rx();
+        factor.ry() *= layer->parallaxFactor().ry();
+    }
+    return factor;
+}
+
 /**
  * Returns whether this layer can be merged down onto the layer below.
  */
@@ -218,6 +223,7 @@ Layer *Layer::initializeClone(Layer *clone) const
 {
     clone->mId = mId;
     clone->mOffset = mOffset;
+    clone->mParallaxFactor = mParallaxFactor;
     clone->mOpacity = mOpacity;
     clone->mTintColor = mTintColor;
     clone->mVisible = mVisible;

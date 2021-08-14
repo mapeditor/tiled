@@ -42,8 +42,6 @@ public:
 
     qreal scale() const;
 
-    void updateBackgroundColor();
-
     WangTemplateModel *wangTemplateModel() const
     { return static_cast<WangTemplateModel *>(model()); }
 

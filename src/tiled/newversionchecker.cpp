@@ -32,8 +32,13 @@ static const char versionInfoUrl[] = "https://www.mapeditor.org/versions.json";
 
 static bool versionLessThan(const QString &a, const QString &b)
 {
-    const QVector<QStringRef> aParts = a.splitRef(QLatin1Char('.'));
-    const QVector<QStringRef> bParts = b.splitRef(QLatin1Char('.'));
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+    const auto aParts = QStringView(a).split(QLatin1Char('.'));
+    const auto bParts = QStringView(b).split(QLatin1Char('.'));
+#else
+    const auto aParts = a.splitRef(QLatin1Char('.'));
+    const auto bParts = b.splitRef(QLatin1Char('.'));
+#endif
     const int commonLength = std::min(aParts.size(), bParts.size());
 
     for (int i = 0; i < commonLength; ++i) {
@@ -149,3 +154,5 @@ void NewVersionChecker::finished(QNetworkReply *reply)
 }
 
 } // namespace Tiled
+
+#include "moc_newversionchecker.cpp"

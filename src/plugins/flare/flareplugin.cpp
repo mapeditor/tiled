@@ -36,6 +36,9 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QStringList>
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+#include <QStringView>
+#endif
 #include <QTextStream>
 
 #include <memory>
@@ -58,7 +61,14 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
     }
 
     // default to values of the original Flare alpha game.
-    auto map = std::make_unique<Map>(Map::Isometric, 256, 256, 64, 32);
+    Map::Parameters mapParameters;
+    mapParameters.orientation = Map::Isometric;
+    mapParameters.width = 256;
+    mapParameters.height = 256;
+    mapParameters.tileWidth = 64;
+    mapParameters.tileHeight = 32;
+
+    auto map = std::make_unique<Map>(mapParameters);
 
     QTextStream stream (&file);
     QString line;
@@ -78,6 +88,11 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
 
     while (!stream.atEnd()) {
         line = stream.readLine();
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+        const QStringView lineView(line);
+#else
+        const QStringRef lineView(&line);
+#endif
 
         if (!line.length())
             continue;
@@ -94,8 +109,8 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
             //get map properties
             int epos = line.indexOf(QChar('='));
             if (epos != -1) {
-                const QStringRef key = line.leftRef(epos).trimmed();
-                const QStringRef value = line.midRef(epos + 1, -1).trimmed();
+                const auto key = lineView.left(epos).trimmed();
+                const auto value = lineView.mid(epos + 1, -1).trimmed();
                 if (key == QLatin1String("width"))
                     map->setWidth(value.toInt());
                 else if (key == QLatin1String("height"))
@@ -107,7 +122,7 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
                 else if (key == QLatin1String("orientation"))
                     map->setOrientation(orientationFromString(value.toString()));
                 else if (key == QLatin1String("background_color")){
-                    QVector<QStringRef> rgbaList = value.split(',');
+                    auto rgbaList = value.split(',');
 
                     if (!rgbaList.isEmpty())
                         backgroundColor.setRed(rgbaList.takeFirst().toInt());
@@ -126,10 +141,10 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
         } else if (sectionName == QLatin1String("tilesets")) {
             tilesetsSectionFound = true;
             int epos = line.indexOf(QChar('='));
-            const QStringRef key = line.leftRef(epos).trimmed();
-            const QStringRef value = line.midRef(epos + 1, -1).trimmed();
+            const auto key = lineView.left(epos).trimmed();
+            const auto value = lineView.mid(epos + 1, -1).trimmed();
             if (key == QLatin1String("tileset")) {
-                const QVector<QStringRef> list = value.split(QChar(','));
+                const auto list = value.split(QChar(','));
 
                 QString absoluteSource(list.first().toString());
                 if (QDir::isRelativePath(absoluteSource))
@@ -171,8 +186,8 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
             tilelayerSectionFound = true;
             int epos = line.indexOf(QChar('='));
             if (epos != -1) {
-                const QStringRef key = line.leftRef(epos).trimmed();
-                const QStringRef value = line.midRef(epos + 1, -1).trimmed();
+                const auto key = lineView.left(epos).trimmed();
+                const auto value = lineView.mid(epos + 1, -1).trimmed();
 
                 if (key == QLatin1String("type")) {
                     tilelayer = new TileLayer(value.toString(), 0, 0,
@@ -220,18 +235,18 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
                 continue;
 
             if (startsWith == QChar('#')) {
-                QString name = line.midRef(1).trimmed().toString();
+                QString name = lineView.mid(1).trimmed().toString();
                 mapobject->setName(name);
             }
 
             int epos = line.indexOf(QChar('='));
             if (epos != -1) {
-                const QStringRef key = line.leftRef(epos).trimmed();
-                const QStringRef value = line.midRef(epos + 1, -1).trimmed();
+                const auto key = lineView.left(epos).trimmed();
+                const auto value = lineView.mid(epos + 1, -1).trimmed();
                 if (key == QLatin1String("type")) {
                     mapobject->setType(value.toString());
                 } else if (key == QLatin1String("location")) {
-                    const QVector<QStringRef> loc = value.split(QChar(','));
+                    const auto loc = value.split(QChar(','));
                     qreal x,y;
                     qreal w,h;
                     if (map->orientation() == Map::Orthogonal) {
@@ -305,11 +320,13 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName, Options 
     }
 
     QTextStream out(file.device());
-    QColor backgroundColor = map->backgroundColor();
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     out.setCodec("UTF-8");
+#endif
 
     const int mapWidth = map->width();
     const int mapHeight = map->height();
+    const QColor backgroundColor = map->backgroundColor();
 
     // write [header]
     out << "[header]\n";
@@ -320,19 +337,15 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName, Options 
     out << "orientation=" << orientationToString(map->orientation()) << "\n";
     out << "background_color=" << backgroundColor.red() << "," << backgroundColor.green() << "," << backgroundColor.blue() << "," << backgroundColor.alpha() << "\n";
 
-    const QDir mapDir = QFileInfo(fileName).absoluteDir();
+    const QString mapPath = QFileInfo(fileName).absolutePath();
 
     // write all properties for this map
-    Properties::const_iterator it = map->properties().constBegin();
-    Properties::const_iterator it_end = map->properties().constEnd();
-    for (; it != it_end; ++it) {
-        out << it.key() << "=" << toExportValue(it.value(), mapDir).toString() << "\n";
-    }
+    writeProperties(out, map->properties(), mapPath);
     out << "\n";
 
     out << "[tilesets]\n";
     for (const SharedTileset &tileset : map->tilesets()) {
-        QString source = toFileReference(tileset->imageSource(), mapDir);
+        QString source = toFileReference(tileset->imageSource(), mapPath);
         out << "tileset=" << source
             << "," << tileset->tileWidth()
             << "," << tileset->tileHeight()
@@ -362,11 +375,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName, Options 
                 out << "\n";
             }
             //Write all properties for this layer
-            Properties::const_iterator it = tileLayer->properties().constBegin();
-            Properties::const_iterator it_end = tileLayer->properties().constEnd();
-            for (; it != it_end; ++it) {
-                out << it.key() << "=" << toExportValue(it.value(), mapDir).toString() << "\n";
-            }
+            writeProperties(out, tileLayer->properties(), mapPath);
             out << "\n";
         }
         if (ObjectGroup *group = layer->asObjectGroup()) {
@@ -395,10 +404,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName, Options 
                     out << "," << w << "," << h << "\n";
 
                     // write all properties for this object
-                    QVariantMap propsMap = o->properties();
-                    for (QVariantMap::const_iterator it = propsMap.constBegin(); it != propsMap.constEnd(); ++it) {
-                        out << it.key() << "=" << toExportValue(it.value(), mapDir).toString() << "\n";
-                    }
+                    writeProperties(out, o->properties(), mapPath);
                     out << "\n";
                 }
             }
@@ -411,6 +417,16 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName, Options 
     }
 
     return true;
+}
+
+void FlarePlugin::writeProperties(QTextStream &out, const Properties &properties, const QString &mapPath)
+{
+    Properties::const_iterator it = properties.constBegin();
+    Properties::const_iterator it_end = properties.constEnd();
+    for (; it != it_end; ++it) {
+        const auto exportValue = ExportValue::fromPropertyValue(it.value(), mapPath);
+        out << it.key() << "=" << exportValue.value.toString() << "\n";
+    }
 }
 
 } // namespace Flare

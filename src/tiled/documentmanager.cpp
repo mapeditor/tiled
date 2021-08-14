@@ -41,7 +41,6 @@
 #include "projectmanager.h"
 #include "session.h"
 #include "tabbar.h"
-#include "terrain.h"
 #include "tilesetdocument.h"
 #include "tilesetdocumentsmodel.h"
 #include "tilesetmanager.h"
@@ -62,7 +61,6 @@
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QStackedLayout>
-#include <QStandardPaths>
 #include <QTabBar>
 #include <QTabWidget>
 #include <QUndoGroup>
@@ -121,7 +119,7 @@ DocumentManager::DocumentManager(QObject *parent)
     vertical->addWidget(mTabBar);
     vertical->addWidget(mFileChangedWarning);
     vertical->addWidget(mBrokenLinksWidget);
-    vertical->setMargin(0);
+    vertical->setContentsMargins(0, 0, 0, 0);
     vertical->setSpacing(0);
 
     mEditorStack = new QStackedLayout;
@@ -158,10 +156,13 @@ DocumentManager::DocumentManager(QObject *parent)
             auto renderer = mapDocument->renderer();
             auto mapView = viewForDocument(mapDocument);
             auto pos = renderer->tileToScreenCoords(jump.tilePos);
-            mapView->forceCenterOn(pos);
 
-            if (auto layer = mapDocument->map()->findLayerById(jump.layerId))
+            if (auto layer = mapDocument->map()->findLayerById(jump.layerId)) {
                 mapDocument->switchSelectedLayers({ layer });
+                mapView->forceCenterOn(pos, *layer);
+            } else {
+                mapView->forceCenterOn(pos);
+            }
         }
     };
 
@@ -224,11 +225,6 @@ DocumentManager::DocumentManager(QObject *parent)
             switch (select.objectType) {
             case Object::MapObjectType:
                 // todo: no way to know to which tile this object belongs
-                break;
-            case Object::TerrainType:
-                // todo: select the terrain
-                if (select.id < tilesetDocument->tileset()->terrainCount())
-                    obj = tilesetDocument->tileset()->terrain(select.id);
                 break;
             case Object::TilesetType:
                 obj = tilesetDocument->tileset().data();
@@ -461,7 +457,7 @@ void DocumentManager::switchToDocument(MapDocument *mapDocument, QPointF viewCen
 }
 
 /**
- * Switches to the given \a mapDocument, taking tilsets into accout
+ * Switches to the given \a mapDocument, taking tilesets into accout
  */
 void DocumentManager::switchToDocumentAndHandleSimiliarTileset(MapDocument *mapDocument, QPointF viewCenter, qreal scale)
 {
@@ -646,13 +642,9 @@ DocumentPtr DocumentManager::loadDocument(const QString &fileName,
 
     if (!fileFormat) {
         // Try to find a plugin that implements support for this format
-        const auto formats = PluginManager::objects<FileFormat>();
-        for (FileFormat *format : formats) {
-            if (format->supportsFile(fileName)) {
-                fileFormat = format;
-                break;
-            }
-        }
+        fileFormat = PluginManager::find<FileFormat>([&](FileFormat *format) {
+            return format->hasCapabilities(FileFormat::Read) && format->supportsFile(fileName);
+        });
     }
 
     if (!fileFormat) {
@@ -691,6 +683,7 @@ bool DocumentManager::saveDocument(Document *document, const QString &fileName)
 
     QString error;
     if (!document->save(fileName, &error)) {
+        switchToDocument(document);
         QMessageBox::critical(mWidget->window(), QCoreApplication::translate("Tiled::MainWindow", "Error Saving File"), error);
         return false;
     }
@@ -729,7 +722,7 @@ bool DocumentManager::saveDocumentAs(Document *document)
                                                     &selectedFilter);
 
             if (!fileName.isEmpty() &&
-                !Utils::fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter))
+                !Utils::fileNameMatchesNameFilter(fileName, selectedFilter))
             {
                 QMessageBox messageBox(QMessageBox::Warning,
                                        QCoreApplication::translate("Tiled::MainWindow", "Extension Mismatch"),
@@ -928,9 +921,13 @@ bool DocumentManager::reloadDocumentAt(int index)
     QString error;
 
     if (auto mapDocument = oldDocument.objectCast<MapDocument>()) {
+        auto readerFormat = mapDocument->readerFormat();
+        if (!readerFormat)
+            return false;
+
         // TODO: Consider fixing the reload to avoid recreating the MapDocument
         auto newDocument = MapDocument::load(oldDocument->fileName(),
-                                             mapDocument->readerFormat(),
+                                             readerFormat,
                                              &error);
         if (!newDocument) {
             emit reloadError(tr("%1:\n\n%2").arg(oldDocument->fileName(), error));
@@ -1167,9 +1164,9 @@ TilesetDocument* DocumentManager::findTilesetDocument(const QString &fileName) c
 }
 
 /**
- * Opens the document for the given \a tileset.
+ * Opens the document for the given \a tileset. Returns the tileset's document.
  */
-void DocumentManager::openTileset(const SharedTileset &tileset)
+TilesetDocument *DocumentManager::openTileset(const SharedTileset &tileset)
 {
     TilesetDocumentPtr tilesetDocument;
     if (auto existingTilesetDocument = findTilesetDocument(tileset))
@@ -1179,6 +1176,8 @@ void DocumentManager::openTileset(const SharedTileset &tileset)
 
     if (!switchToDocument(tilesetDocument.data()))
         addDocument(tilesetDocument);
+
+    return tilesetDocument.data();
 }
 
 void DocumentManager::addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
@@ -1293,7 +1292,7 @@ QString DocumentManager::fileDialogStartLocation() const
     if (!project.fileName().isEmpty())
         return QFileInfo(project.fileName()).path();
 
-    return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    return Preferences::homeLocation();
 }
 
 void DocumentManager::onWorldUnloaded(const QString &worldFile)
@@ -1406,3 +1405,5 @@ void DocumentManager::abortMultiDocumentClose()
 {
     mMultiDocumentClose = false;
 }
+
+#include "moc_documentmanager.cpp"

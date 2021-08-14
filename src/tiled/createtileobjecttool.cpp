@@ -83,3 +83,5 @@ MapObject *CreateTileObjectTool::createNewMapObject()
     newMapObject->setSize(tile()->size());
     return newMapObject;
 }
+
+#include "moc_createtileobjecttool.cpp"

@@ -30,6 +30,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/plugin.cpp \
     $$PWD/pluginmanager.cpp \
     $$PWD/properties.cpp \
+    $$PWD/propertytype.cpp \
     $$PWD/savefile.cpp \
     $$PWD/staggeredrenderer.cpp \
     $$PWD/templatemanager.cpp \
@@ -48,6 +49,7 @@ HEADERS += $$PWD/compression.h \
     $$PWD/filesystemwatcher.h \
     $$PWD/fileformat.h \
     $$PWD/gidmapper.h \
+    $$PWD/grid.h \
     $$PWD/grouplayer.h \
     $$PWD/hex.h \
     $$PWD/hexagonalrenderer.h \
@@ -74,10 +76,10 @@ HEADERS += $$PWD/compression.h \
     $$PWD/plugin.h \
     $$PWD/pluginmanager.h \
     $$PWD/properties.h \
+    $$PWD/propertytype.h \
     $$PWD/savefile.h \
     $$PWD/staggeredrenderer.h \
     $$PWD/templatemanager.h \
-    $$PWD/terrain.h \
     $$PWD/tile.h \
     $$PWD/tileanimationdriver.h \
     $$PWD/tiled.h \

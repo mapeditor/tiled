@@ -53,3 +53,5 @@ MapObject *CreateRectangleObjectTool::createNewMapObject()
     newMapObject->setShape(MapObject::Rectangle);
     return newMapObject;
 }
+
+#include "moc_createrectangleobjecttool.cpp"

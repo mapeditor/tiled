@@ -26,6 +26,7 @@
 #include "abstracttool.h"
 #include "addremovemapobject.h"
 #include "containerhelpers.h"
+#include "debugdrawitem.h"
 #include "documentmanager.h"
 #include "map.h"
 #include "mapobject.h"
@@ -50,8 +51,11 @@
 
 using namespace Tiled;
 
+SessionOption<bool> MapScene::enableWorlds { "mapScene.enableWorlds", true };
+
 MapScene::MapScene(QObject *parent)
     : QGraphicsScene(parent)
+    , mWorldsEnabled(enableWorlds)
 {
     updateDefaultBackgroundColor();
 
@@ -70,10 +74,19 @@ MapScene::MapScene(QObject *parent)
     // Install an event filter so that we can get key events on behalf of the
     // active tool without having to have the current focus.
     qApp->installEventFilter(this);
+
+    mEnableWorldsCallback = enableWorlds.onChange([this] { setWorldsEnabled(enableWorlds); });
+
+#ifdef QT_DEBUG
+    mDebugDrawItem = new DebugDrawItem;
+    addItem(mDebugDrawItem);
+#endif
 }
 
 MapScene::~MapScene()
 {
+    enableWorlds.unregister(mEnableWorldsCallback);
+
     qApp->removeEventFilter(this);
 }
 
@@ -110,6 +123,15 @@ void MapScene::setShowTileCollisionShapes(bool enabled)
     mShowTileCollisionShapes = enabled;
     for (auto mapItem : qAsConst(mMapItems))
         mapItem->setShowTileCollisionShapes(enabled);
+}
+
+void MapScene::setParallaxEnabled(bool enabled)
+{
+    if (mParallaxEnabled == enabled)
+        return;
+
+    mParallaxEnabled = enabled;
+    emit parallaxParametersChanged();
 }
 
 /**
@@ -153,6 +175,44 @@ void MapScene::setSelectedTool(AbstractTool *tool)
 }
 
 /**
+ * Sets the area of the scene that is currently visible in the MapView.
+ */
+void MapScene::setViewRect(const QRectF &rect)
+{
+    if (mViewRect == rect)
+        return;
+
+    mViewRect = rect;
+
+    if (mParallaxEnabled)
+        emit parallaxParametersChanged();
+}
+
+/**
+ * Returns the position the given layer is supposed to have, taking into
+ * account its offset and the parallax factor along with the current view rect.
+ */
+QPointF MapScene::absolutePositionForLayer(const Layer &layer) const
+{
+    return layer.totalOffset() + parallaxOffset(layer);
+}
+
+/**
+ * Returns the parallax offset of the given layer, taking into account its
+ * parallax factor in combination with the current view rect.
+ */
+QPointF MapScene::parallaxOffset(const Layer &layer) const
+{
+    if (!mParallaxEnabled)
+        return {};
+
+    const QPointF parallaxFactor = layer.effectiveParallaxFactor();
+    const QPointF viewCenter = mViewRect.center();
+    return QPointF((1.0 - parallaxFactor.x()) * viewCenter.x(),
+                   (1.0 - parallaxFactor.y()) * viewCenter.y());
+}
+
+/**
  * Refreshes the map scene.
  */
 void MapScene::refreshScene()
@@ -190,6 +250,7 @@ void MapScene::refreshScene()
 
                 auto mapItem = takeOrCreateMapItem(mapDocument, displayMode);
                 mapItem->setPos(mapEntry.rect.topLeft() - currentMapPosition);
+                mapItem->setVisible(mWorldsEnabled || mapDocument == mMapDocument);
                 mapItems.insert(mapDocument.data(), mapItem);
             }
         }
@@ -231,6 +292,17 @@ void MapScene::updateSceneRect()
     setSceneRect(sceneRect);
 }
 
+void MapScene::setWorldsEnabled(bool enabled)
+{
+    if (mWorldsEnabled == enabled)
+        return;
+
+    mWorldsEnabled = enabled;
+
+    for (MapItem *mapItem : qAsConst(mMapItems))
+        mapItem->setVisible(mWorldsEnabled || mapItem->mapDocument() == mMapDocument);
+}
+
 MapItem *MapScene::takeOrCreateMapItem(const MapDocumentPtr &mapDocument, MapItem::DisplayMode displayMode)
 {
     // Try to reuse an existing map item
@@ -239,7 +311,9 @@ MapItem *MapScene::takeOrCreateMapItem(const MapDocumentPtr &mapDocument, MapIte
         mapItem = new MapItem(mapDocument, displayMode);
         mapItem->setShowTileCollisionShapes(mShowTileCollisionShapes);
         connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
+        connect(this, &MapScene::parallaxParametersChanged, mapItem, &MapItem::updateLayerPositions);
         addItem(mapItem);
+        mapItem->updateLayerPositions();
     } else {
         mapItem->setDisplayMode(displayMode);
     }
@@ -326,7 +400,7 @@ void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
     if (mSelectedTool) {
         mSelectedTool->mouseMoved(mouseEvent->scenePos(),
-                                mouseEvent->modifiers());
+                                  mouseEvent->modifiers());
         mouseEvent->accept();
     }
 }
@@ -466,3 +540,5 @@ bool MapScene::eventFilter(QObject *, QEvent *event)
 
     return false;
 }
+
+#include "moc_mapscene.cpp"

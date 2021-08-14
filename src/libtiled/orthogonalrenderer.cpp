@@ -198,9 +198,6 @@ QPainterPath OrthogonalRenderer::interactionShape(const MapObject *object) const
     QPainterPath path;
 
     switch (object->shape()) {
-    case MapObject::Rectangle:
-        path.addRect(boundingRect(object));
-        break;
     case MapObject::Polyline: {
         const QPointF &pos = object->position();
         const QPolygonF polygon = object->polygon().translated(pos);
@@ -212,6 +209,7 @@ QPainterPath OrthogonalRenderer::interactionShape(const MapObject *object) const
         path.setFillRule(Qt::WindingFill);
         break;
     }
+    case MapObject::Rectangle:
     case MapObject::Polygon:
     case MapObject::Ellipse:
     case MapObject::Text:
@@ -226,7 +224,7 @@ QPainterPath OrthogonalRenderer::interactionShape(const MapObject *object) const
 }
 
 void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
-                                  QColor gridColor) const
+                                  QColor gridColor, int gridMajor) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -234,91 +232,62 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     if (tileWidth <= 0 || tileHeight <= 0)
         return;
 
-    int startX = qFloor(rect.x() / tileWidth) * tileWidth;
-    int startY = qFloor(rect.y() / tileHeight) * tileHeight;
-    int endX = qCeil(rect.right());
-    int endY = qCeil(rect.bottom());
+    int startX = qFloor(rect.x() / tileWidth);
+    int startY = qFloor(rect.y() / tileHeight);
+    int endX = qCeil(rect.right() / tileWidth);
+    int endY = qCeil(rect.bottom() / tileHeight);
 
     if (!map()->infinite()) {
         startX = qMax(0, startX);
         startY = qMax(0, startY);
-        endX = qMin(endX, map()->width() * tileWidth + 1);
-        endY = qMin(endY, map()->height() * tileHeight + 1);
+        endX = qMin(endX, map()->width());
+        endY = qMin(endY, map()->height());
     }
 
-    QPen gridPen = makeGridPen(painter->device(), gridColor);
+    QPen gridPen, majorGridPen;
+    setupGridPens(painter->device(), gridColor, gridPen, majorGridPen);
 
     if (startY < endY) {
-        gridPen.setDashOffset(startY);
-        painter->setPen(gridPen);
-        for (int x = startX; x < endX; x += tileWidth)
-            painter->drawLine(x, startY, x, endY - 1);
+        gridPen.setDashOffset(startY * tileHeight);
+        majorGridPen.setDashOffset(startY * tileHeight);
+
+        for (int x = startX; x < endX; ++x) {
+            painter->setPen(gridMajor != 0 && x % gridMajor == 0 ? majorGridPen : gridPen);
+            painter->drawLine(x * tileWidth, startY * tileHeight, x * tileWidth, endY * tileHeight);
+        }
     }
 
     if (startX < endX) {
-        gridPen.setDashOffset(startX);
-        painter->setPen(gridPen);
-        for (int y = startY; y < endY; y += tileHeight)
-            painter->drawLine(startX, y, endX - 1, y);
+        gridPen.setDashOffset(startX * tileWidth);
+        majorGridPen.setDashOffset(startX * tileWidth);
+
+        for (int y = startY; y < endY; ++y) {
+            painter->setPen(gridMajor != 0 && y % gridMajor == 0 ? majorGridPen : gridPen);
+            painter->drawLine(startX * tileWidth, y * tileHeight, endX * tileWidth, y * tileHeight);
+        }
     }
 }
 
-void OrthogonalRenderer::drawTileLayer(QPainter *painter,
-                                       const TileLayer *layer,
+void OrthogonalRenderer::drawTileLayer(const RenderTileCallback &renderTile,
                                        const QRectF &exposed) const
 {
-    CellRenderer renderer(painter, this, layer->effectiveTintColor());
-    auto tileRenderFunction = [&renderer](const Cell &cell, const QPointF &pos, const QSizeF &size) {
-        renderer.render(cell, pos, size, CellRenderer::BottomLeft);
-    };
-    drawTileLayer(layer, tileRenderFunction, exposed);
-}
-
-void OrthogonalRenderer::drawTileLayer(const TileLayer *layer,
-                                       const RenderTileCallback &renderTile,
-                                       const QRectF &exposed) const
-{
-
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
+
     if (tileWidth <= 0 || tileHeight <= 0)
         return;
 
-    const QPointF layerPos(layer->x() * tileWidth,
-                           layer->y() * tileHeight);
-
-    QRect bounds = layer->localBounds();
-    int startX = bounds.left();
-    int startY = bounds.top();
-    int endX = bounds.right();
-    int endY = bounds.bottom();
-
-    if (!exposed.isNull()) {
-        QMargins drawMargins = layer->drawMargins();
-        drawMargins.setTop(drawMargins.top() - tileHeight);
-        drawMargins.setRight(drawMargins.right() - tileWidth);
-
-        QRectF rect = exposed.adjusted(-drawMargins.right(),
-                                       -drawMargins.bottom(),
-                                       drawMargins.left(),
-                                       drawMargins.top());
-
-        rect.translate(-layerPos);
-
-        startX = qMax(qFloor(rect.x() / tileWidth), startX);
-        startY = qMax(qFloor(rect.y() / tileHeight), startY);
-        endX = qMin(qCeil(rect.right()) / tileWidth, endX);
-        endY = qMin(qCeil(rect.bottom()) / tileHeight, endY);
-    }
+    int startX = qFloor(exposed.x() / tileWidth);
+    int startY = qFloor(exposed.y() / tileHeight);
+    int endX = qCeil(exposed.right()) / tileWidth;
+    int endY = qCeil(exposed.bottom()) / tileHeight;
 
     // Return immediately when there is nothing to draw
     if (startX > endX || startY > endY)
         return;
 
-    Map::RenderOrder renderOrder = map()->renderOrder();
-
     int incX = 1, incY = 1;
-    switch (renderOrder) {
+    switch (map()->renderOrder()) {
     case Map::RightUp:
         std::swap(startY, endY);
         incY = -1;
@@ -340,17 +309,9 @@ void OrthogonalRenderer::drawTileLayer(const TileLayer *layer,
     endX += incX;
     endY += incY;
 
-    for (int y = startY; y != endY; y += incY) {
-        for (int x = startX; x != endX; x += incX) {
-            const Cell &cell = layer->cellAt(x, y);
-            if (cell.isEmpty())
-                continue;
-
-            const Tile *tile = cell.tile();
-            const QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
-            renderTile(cell, layerPos + QPointF(x * tileWidth, (y + 1) * tileHeight), size);
-        }
-    }
+    for (int y = startY; y != endY; y += incY)
+        for (int x = startX; x != endX; x += incX)
+            renderTile(QPoint(x, y), QPointF(x * tileWidth, (y + 1) * tileHeight));
 }
 
 void OrthogonalRenderer::drawTileSelection(QPainter *painter,

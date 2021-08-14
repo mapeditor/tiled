@@ -111,3 +111,5 @@ TileLayerEdit *EditableTileLayer::edit()
 }
 
 } // namespace Tiled
+
+#include "moc_editabletilelayer.cpp"

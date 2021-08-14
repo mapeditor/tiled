@@ -159,3 +159,5 @@ void NewsButton::retranslateUi()
 }
 
 } // namespace Tiled
+
+#include "moc_newsbutton.cpp"

@@ -22,6 +22,8 @@
 #include "addpropertydialog.h"
 #include "ui_addpropertydialog.h"
 
+#include "object.h"
+#include "preferences.h"
 #include "documentmanager.h"
 #include "properties.h"
 #include "session.h"
@@ -46,14 +48,20 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
 
+
     // Add possible types from QVariant
-    mUi->typeBox->addItem(typeToName(QVariant::Bool),    false);
-    mUi->typeBox->addItem(typeToName(QVariant::Color),   QColor());
-    mUi->typeBox->addItem(typeToName(QVariant::Double),  0.0);
-    mUi->typeBox->addItem(typeToName(filePathTypeId()),  QVariant::fromValue(FilePath()));
-    mUi->typeBox->addItem(typeToName(QVariant::Int),     0);
-    mUi->typeBox->addItem(typeToName(objectRefTypeId()), QVariant::fromValue(ObjectRef()));
-    mUi->typeBox->addItem(typeToName(QVariant::String),  QString());
+    mUi->typeBox->addItem(typeToName(QMetaType::Bool),      false);
+    mUi->typeBox->addItem(typeToName(QMetaType::QColor),    QColor());
+    mUi->typeBox->addItem(typeToName(QMetaType::Double),    0.0);
+    mUi->typeBox->addItem(typeToName(filePathTypeId()),     QVariant::fromValue(FilePath()));
+    mUi->typeBox->addItem(typeToName(QMetaType::Int),       0);
+    mUi->typeBox->addItem(typeToName(objectRefTypeId()),    QVariant::fromValue(ObjectRef()));
+    mUi->typeBox->addItem(typeToName(QMetaType::QString),   QString());
+
+    for (const PropertyType &propertyType : Object::propertyTypes()) {
+        QVariant var = QVariant::fromValue(PropertyValue { propertyType.defaultValue(), propertyType.id });
+        mUi->typeBox->addItem(propertyType.name, var);
+    }
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
@@ -90,3 +98,5 @@ void AddPropertyDialog::typeChanged(const QString &text)
 {
     session::propertyType = text;
 }
+
+#include "moc_addpropertydialog.cpp"

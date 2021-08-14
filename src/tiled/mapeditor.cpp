@@ -62,9 +62,6 @@
 #include "shapefilltool.h"
 #include "stampbrush.h"
 #include "templatesdock.h"
-#include "terrain.h"
-#include "terrainbrush.h"
-#include "terraindock.h"
 #include "tile.h"
 #include "tileselectiontool.h"
 #include "tilesetdock.h"
@@ -153,7 +150,6 @@ MapEditor::MapEditor(QObject *parent)
     , mObjectsDock(new ObjectsDock(mMainWindow))
     , mTemplatesDock(new TemplatesDock(mMainWindow))
     , mTilesetDock(new TilesetDock(mMainWindow))
-    , mTerrainDock(new TerrainDock(mMainWindow))
     , mWangDock(new WangDock(mMainWindow))
     , mMiniMapDock(new MiniMapDock(mMainWindow))
     , mLayerComboBox(new TreeViewComboBox)
@@ -179,7 +175,6 @@ MapEditor::MapEditor(QObject *parent)
     mToolSpecificToolBar->setObjectName(QLatin1String("toolSpecificToolBar"));
 
     mStampBrush = new StampBrush(this);
-    mTerrainBrush = new TerrainBrush(this);
     mWangBrush = new WangBrush(this);
     mBucketFillTool = new BucketFillTool(this);
     mEditPolygonTool = new EditPolygonTool(this);
@@ -193,7 +188,6 @@ MapEditor::MapEditor(QObject *parent)
     CreateObjectTool *textObjectsTool = new CreateTextObjectTool(this);
 
     mToolsToolBar->addAction(mToolManager->registerTool(mStampBrush));
-    mToolsToolBar->addAction(mToolManager->registerTool(mTerrainBrush));
     mToolsToolBar->addAction(mToolManager->registerTool(mWangBrush));
     mToolsToolBar->addAction(mToolManager->registerTool(mBucketFillTool));
     mToolsToolBar->addAction(mToolManager->registerTool(mShapeFillTool));
@@ -275,13 +269,6 @@ MapEditor::MapEditor(QObject *parent)
     connect(mBucketFillTool, &BucketFillTool::wangFillChanged, this, &MapEditor::setWangFill);
     connect(mShapeFillTool, &ShapeFillTool::wangFillChanged, this, &MapEditor::setWangFill);
 
-    connect(mTerrainDock, &TerrainDock::currentTerrainChanged,
-            mTerrainBrush, &TerrainBrush::setTerrain);
-    connect(mTerrainDock, &TerrainDock::selectTerrainBrush,
-            this, &MapEditor::selectTerrainBrush);
-    connect(mTerrainBrush, &TerrainBrush::terrainCaptured,
-            mTerrainDock, &TerrainDock::setCurrentTerrain);
-
     connect(mWangDock, &WangDock::currentWangSetChanged,
             mBucketFillTool, &BucketFillTool::setWangSet);
     connect(mWangDock, &WangDock::currentWangSetChanged,
@@ -293,7 +280,7 @@ MapEditor::MapEditor(QObject *parent)
     connect(mWangDock, &WangDock::selectWangBrush,
             this, &MapEditor::selectWangBrush);
     connect(mWangDock, &WangDock::wangColorChanged,
-            mWangBrush, &WangBrush::wangColorChanged);
+            mWangBrush, &WangBrush::setColor);
     connect(mWangBrush, &WangBrush::colorCaptured,
             mWangDock, &WangDock::onColorCaptured);
 
@@ -311,6 +298,8 @@ MapEditor::MapEditor(QObject *parent)
     connect(prefs, &Preferences::languageChanged, this, &MapEditor::retranslateUi);
     connect(prefs, &Preferences::showTileCollisionShapesChanged,
             this, &MapEditor::showTileCollisionShapesChanged);
+    connect(prefs, &Preferences::parallaxEnabledChanged,
+            this, &MapEditor::parallaxEnabledChanged);
     connect(prefs, &Preferences::aboutToSwitchSession,
             this, [this] { if (mCurrentMapDocument) saveDocumentState(mCurrentMapDocument); });
 
@@ -347,6 +336,7 @@ void MapEditor::addDocument(Document *document)
 
     auto prefs = Preferences::instance();
     scene->setShowTileCollisionShapes(prefs->showTileCollisionShapes());
+    scene->setParallaxEnabled(prefs->parallaxEnabled());
     scene->setMapDocument(mapDocument);
     view->setScene(scene);
 
@@ -361,6 +351,9 @@ void MapEditor::removeDocument(Document *document)
     MapDocument *mapDocument = qobject_cast<MapDocument*>(document);
     Q_ASSERT(mapDocument);
     Q_ASSERT(mWidgetForMap.contains(mapDocument));
+
+    if (mapDocument == mCurrentMapDocument)
+        setCurrentDocument(nullptr);
 
     MapView *mapView = mWidgetForMap.take(mapDocument);
     // remove first, to keep it valid while the current widget changes
@@ -400,7 +393,6 @@ void MapEditor::setCurrentDocument(Document *document)
     mUndoDock->setStack(document ? document->undoStack() : nullptr);
     mObjectsDock->setMapDocument(mapDocument);
     mTilesetDock->setMapDocument(mapDocument);
-    mTerrainDock->setDocument(mapDocument);
     mWangDock->setDocument(mapDocument);
     mMiniMapDock->setMapDocument(mapDocument);
 
@@ -417,10 +409,7 @@ void MapEditor::setCurrentDocument(Document *document)
             mZoomable->setComboBox(mZoomComboBox.get());
         }
 
-        connect(mCurrentMapDocument, &MapDocument::currentObjectChanged,
-                this, [this, mapDocument] { mPropertiesDock->setDocument(mapDocument); });
-
-        connect(mapView, &MapView::focused,
+        connect(mCurrentMapDocument, &MapDocument::currentObjectSet,
                 this, [this, mapDocument] { mPropertiesDock->setDocument(mapDocument); });
 
         mReversingProxyModel->setSourceModel(mapDocument->layerModel());
@@ -483,7 +472,6 @@ QList<QDockWidget *> MapEditor::dockWidgets() const
         mObjectsDock,
         mTemplatesDock,
         mTilesetDock,
-        mTerrainDock,
         mWangDock,
         mMiniMapDock,
         mTileStampsDock
@@ -583,17 +571,14 @@ void MapEditor::resetLayout()
     mMainWindow->tabifyDockWidget(mMiniMapDock, mObjectsDock);
     mMainWindow->tabifyDockWidget(mObjectsDock, mLayerDock);
 
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mWangDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
-    mMainWindow->tabifyDockWidget(mTerrainDock, mWangDock);
     mMainWindow->tabifyDockWidget(mWangDock, mTilesetDock);
 
     // These dock widgets may not be immediately useful to many people, so
     // they are hidden by default.
     mUndoDock->setVisible(false);
     mTemplatesDock->setVisible(false);
-    mWangDock->setVisible(false);
     mTileStampsDock->setVisible(false);
 }
 
@@ -698,25 +683,6 @@ void MapEditor::updateActiveUndoStack()
     }
 }
 
-static void normalizeTileLayerPositionsAndMapSize(Map *map)
-{
-    LayerIterator it(map, Layer::TileLayerType);
-
-    QRect contentRect;
-    while (auto tileLayer = static_cast<TileLayer*>(it.next()))
-        contentRect |= tileLayer->region().boundingRect();
-
-    if (!contentRect.isEmpty()) {
-        QPoint offset = contentRect.topLeft();
-        it.toFront();
-        while (auto tileLayer = static_cast<TileLayer*>(it.next()))
-            tileLayer->setPosition(tileLayer->position() - offset);
-
-        map->setWidth(contentRect.width());
-        map->setHeight(contentRect.height());
-    }
-}
-
 void MapEditor::paste(ClipboardManager::PasteFlags flags)
 {
     if (!mCurrentMapDocument)
@@ -744,7 +710,7 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
         } else {
             // Reset selection and paste into the stamp brush
             MapDocumentActionHandler::instance()->selectNone();
-            normalizeTileLayerPositionsAndMapSize(mapPtr);
+            mapPtr->normalizeTileLayerPositionsAndMapSize();
             setStamp(TileStamp(std::move(map))); // TileStamp takes ownership
             mToolManager->selectTool(mStampBrush);
         }
@@ -809,11 +775,6 @@ void MapEditor::setStamp(const TileStamp &stamp)
     mTilesetDock->selectTilesInStamp(stamp);
 }
 
-void MapEditor::selectTerrainBrush()
-{
-    mToolManager->selectTool(mTerrainBrush);
-}
-
 void MapEditor::selectWangBrush()
 {
     mToolManager->selectTool(mWangBrush);
@@ -821,8 +782,8 @@ void MapEditor::selectWangBrush()
 
 void MapEditor::currentWidgetChanged()
 {
-    auto mapView = static_cast<MapView*>(mWidgetStack->currentWidget());
-    setCurrentDocument(mapView ? mapView->mapScene()->mapDocument() : nullptr);
+    if (!mWidgetStack->currentWidget())
+        setCurrentDocument(nullptr);
 }
 
 void MapEditor::cursorChanged(const QCursor &cursor)
@@ -910,7 +871,7 @@ void MapEditor::handleExternalTilesetsAndImages(const QStringList &fileNames,
             tileset = tilesetFormat->read(fileName);
             if (tileset) {
                 tileset->setFileName(fileName);
-                tileset->setFormat(tilesetFormat);
+                tileset->setFormat(tilesetFormat->shortName());
                 tilesets.append(tileset);
                 continue;
             } else {
@@ -1002,7 +963,7 @@ void MapEditor::setupQuickStamps()
         connect(createStamp, &QShortcut::activated, [=] { mTileStampManager->createQuickStamp(i); });
 
         // Set up shortcut for extending this quick stamp
-        QShortcut *extendStamp = new QShortcut(Qt::CTRL + Qt::SHIFT + key, mMainWindow);
+        QShortcut *extendStamp = new QShortcut((Qt::CTRL | Qt::SHIFT) + key, mMainWindow);
         connect(extendStamp, &QShortcut::activated, [=] { mTileStampManager->extendQuickStamp(i); });
     }
 
@@ -1018,8 +979,14 @@ void MapEditor::retranslateUi()
 
 void MapEditor::showTileCollisionShapesChanged(bool enabled)
 {
-    for (auto mapView : qAsConst(mWidgetForMap))
+    for (MapView *mapView : qAsConst(mWidgetForMap))
         mapView->mapScene()->setShowTileCollisionShapes(enabled);
+}
+
+void MapEditor::parallaxEnabledChanged(bool enabled)
+{
+    for (MapView *mapView : qAsConst(mWidgetForMap))
+        mapView->mapScene()->setParallaxEnabled(enabled);
 }
 
 void MapEditor::setCurrentTileset(const SharedTileset &tileset)
@@ -1059,3 +1026,5 @@ AbstractTool *MapEditor::selectedTool() const {
 }
 
 } // namespace Tiled
+
+#include "moc_mapeditor.cpp"

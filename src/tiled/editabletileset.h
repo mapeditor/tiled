@@ -26,6 +26,8 @@
 namespace Tiled {
 
 class EditableTile;
+class EditableWangSet;
+class ScriptImage;
 class TilesetDocument;
 
 class EditableTileset : public EditableAsset
@@ -35,7 +37,7 @@ class EditableTileset : public EditableAsset
     Q_PROPERTY(QString name READ name WRITE setName)
     Q_PROPERTY(QString image READ image WRITE setImage)
     Q_PROPERTY(QList<QObject*> tiles READ tiles)
-    Q_PROPERTY(QList<QObject*> terrains READ terrains)
+    Q_PROPERTY(QList<QObject*> wangSets READ wangSets)
     Q_PROPERTY(int tileCount READ tileCount)
     Q_PROPERTY(int nextTileId READ nextTileId)
     Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth)
@@ -49,6 +51,7 @@ class EditableTileset : public EditableAsset
     Q_PROPERTY(Alignment objectAlignment READ objectAlignment WRITE setObjectAlignment)
     Q_PROPERTY(QPoint tileOffset READ tileOffset WRITE setTileOffset)
     Q_PROPERTY(Orientation orientation READ orientation WRITE setOrientation)
+    Q_PROPERTY(QColor transparentColor READ transparentColor WRITE setTransparentColor)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
     Q_PROPERTY(bool collection READ isCollection)
     Q_PROPERTY(QList<QObject*> selectedTiles READ selectedTiles WRITE setSelectedTiles)
@@ -100,18 +103,25 @@ public:
     Alignment objectAlignment() const;
     QPoint tileOffset() const;
     Orientation orientation() const;
+    QColor transparentColor() const;
     QColor backgroundColor() const;
     bool isCollection() const;
 
+    Q_INVOKABLE void loadFromImage(Tiled::ScriptImage *image,
+                                   const QString &source = QString());
+
     Q_INVOKABLE Tiled::EditableTile *tile(int id);
     QList<QObject*> tiles();
-    QList<QObject*> terrains();
+    QList<QObject*> wangSets();
 
     QList<QObject*> selectedTiles();
     void setSelectedTiles(const QList<QObject*> &tiles);
 
     Q_INVOKABLE Tiled::EditableTile *addTile();
     Q_INVOKABLE void removeTiles(const QList<QObject*> &tiles);
+
+    Q_INVOKABLE Tiled::EditableWangSet *addWangSet(const QString &name, int type);
+    Q_INVOKABLE void removeWangSet(Tiled::EditableWangSet *wangSet);
 
     TilesetDocument *tilesetDocument() const;
     Tileset *tileset() const;
@@ -126,6 +136,7 @@ public slots:
     void setObjectAlignment(Alignment objectAlignment);
     void setTileOffset(QPoint tileOffset);
     void setOrientation(Orientation orientation);
+    void setTransparentColor(const QColor &color);
     void setBackgroundColor(const QColor &color);
 
 private:
@@ -133,11 +144,12 @@ private:
 
     void attachTiles(const QList<Tile*> &tiles);
     void detachTiles(const QList<Tile*> &tiles);
-    void detachTerrains(const QList<Terrain*> &terrains);
+    void detachWangSets(const QList<WangSet*> &wangSets);
 
     void tileObjectGroupChanged(Tile *tile);
 
-    void terrainAdded(Tileset *tileset, int terrainId);
+    void wangSetAdded(Tileset *tileset, int index);
+    void wangSetRemoved(WangSet *wangSet);
 
     bool mReadOnly = false;
     SharedTileset mTileset;
@@ -222,6 +234,11 @@ inline QPoint EditableTileset::tileOffset() const
 inline EditableTileset::Orientation EditableTileset::orientation() const
 {
     return static_cast<Orientation>(tileset()->orientation());
+}
+
+inline QColor EditableTileset::transparentColor() const
+{
+    return tileset()->transparentColor();
 }
 
 inline QColor EditableTileset::backgroundColor() const
