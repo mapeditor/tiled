@@ -95,7 +95,7 @@
     <message>
         <location line="+14"/>
         <source>Project file &apos;%1&apos; not found.</source>
-        <translation>Файл проекту «%1» не знайдено.</translation>
+        <translation>Файл проєкту «%1» не знайдено.</translation>
     </message>
 </context>
 <context>
@@ -761,12 +761,12 @@
     <message>
         <location line="+5"/>
         <source>Add Folder to Project...</source>
-        <translation>Додати теку до проекту...</translation>
+        <translation>Додати теку до проєкту...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save Project As...</source>
-        <translation>Зберегти проект як...</translation>
+        <translation>Зберегти проєкт як...</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1807,7 +1807,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.ui" line="+14"/>
         <source>Project Properties</source>
-        <translation>Властивості проекту</translation>
+        <translation>Властивості проєкту</translation>
     </message>
 </context>
 <context>
