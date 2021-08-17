@@ -15,7 +15,6 @@ be used in any map. Tilesets can be modified at any time.
 [![Build Status](https://api.travis-ci.com/mapeditor/tiled.svg?branch=master&status=passed)](https://travis-ci.com/github/mapeditor/tiled)
 [![Build status](https://ci.appveyor.com/api/projects/status/ceb79jn5cf99y3qd/branch/master?svg=true)](https://ci.appveyor.com/project/bjorn/tiled/branch/master)
 [![Snap](https://snapcraft.io/tiled/badge.svg)](https://snapcraft.io/tiled)
-[![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=52019)](https://www.bountysource.com/trackers/52019-tiled?utm_source=52019&utm_medium=shield&utm_campaign=TRACKER_BADGE)
 [![Translation status](https://hosted.weblate.org/widgets/tiled/-/shields-badge.svg)](https://hosted.weblate.org/engage/tiled/?utm_source=widget)
 [![Open Source Helpers](https://www.codetriage.com/mapeditor/tiled/badges/users.svg)](https://www.codetriage.com/mapeditor/tiled)
 
