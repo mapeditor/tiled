@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-04 15:34+0200\n"
-"PO-Revision-Date: 2020-06-04 14:41+0000\n"
+"PO-Revision-Date: 2021-08-20 07:32+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/reference/"
 "fr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.8-dev\n"
 "Generated-By: Babel 2.5.1\n"
 
 #: ../../reference/json-map-format.rst:2
@@ -1500,9 +1500,8 @@ msgid "Scripting"
 msgstr "Description"
 
 #: ../../reference/scripting.rst:11
-#, fuzzy
 msgid "Introduction"
-msgstr "rotation"
+msgstr "Introduction"
 
 #: ../../reference/scripting.rst:13
 msgid ""
