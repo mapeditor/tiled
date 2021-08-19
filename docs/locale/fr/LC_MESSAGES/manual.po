@@ -6,17 +6,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2021-08-09 11:20+0200\n"
-"PO-Revision-Date: 2021-08-04 12:08+0000\n"
+"PO-Revision-Date: 2021-08-20 07:32+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
+"\n"
 "Language: fr\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/tiled/manual/fr/>\n"
-"Plural-Forms: nplurals=2; plural=n > 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.8-dev\n"
 "Generated-By: Babel 2.8.0\n"
 
 #: ../../manual/automapping.rst:3
@@ -28,7 +29,6 @@ msgid "What is Automapping?"
 msgstr "Qu'est-ce que l'Automapping ?"
 
 #: ../../manual/automapping.rst:8
-#, fuzzy
 msgid ""
 "Automapping is an advanced tool to automatically search certain "
 "combinations of tiles across layers in a map and to replace these parts "
@@ -36,36 +36,32 @@ msgid ""
 " and Automapping will generate a complex scenario from them, which would "
 "have taken much more time if manually crafted."
 msgstr ""
-"L'Automapping est un outil avancé permettant de rechercher des "
-"combinaisons de tuiles dans les calques d'une carte et de remplacer ces "
-"parties par d'autres combinaisons de tuiles. Cela permet à l'utilisateur "
-"de dessiner des structures avec un gain de temps significatif car "
-"l'Automapping sera capable de générer des scénarios complexes, qui "
-"auraient requis bien plus de temps s'ils avaient été créés manuellement."
+"L'Automapping est un outil avancé permettant de rechercher des combinaisons "
+"de tuiles dans les calques d'une carte et de remplacer ces parties par "
+"d'autres combinaisons de tuiles. Cela permet à l'utilisateur de dessiner des "
+"structures avec un gain de temps significatif car l'Automapping sera capable "
+"de générer des scénarios complexes, qui auraient requis bien plus de temps "
+"s'ils avaient été créés manuellement."
 
 #: ../../manual/automapping.rst:14
-#, fuzzy
 msgid ""
 "The goal of Automapping is that you only need to draw within one layer "
 "and everything else is setup for you. This brings some advantages:"
 msgstr ""
-"Le but de l'Automapping est donc que vous n'avez qu'à dessiner que dans "
-"un seul calque puis tout sera créé pour vous. Cela apporte quelques "
-"avantages :"
+"Le but de l'Automapping est donc que vous n'avez qu'à dessiner que dans un "
+"seul calque puis tout sera créé pour vous. Cela apporte quelques avantages :"
 
 #: ../../manual/automapping.rst:17
 msgid "**Working speed** - you need less time to setup a map."
 msgstr "**Vitesse de travail** - moins de temps requis pour créer une carte."
 
 #: ../../manual/automapping.rst:18
-#, fuzzy
 msgid ""
 "**Less errors** - the main reason is to reduce the error rate. If you "
 "have setup the rules properly, there are no hidden errors."
 msgstr ""
-"** Moins d'erreurs** - le but principal est de réduire la quantité "
-"d'erreurs. Si les règles ont été créées convenablement, il n'y a aucune "
-"erreur cachée."
+"**Moins d'erreurs** - le but principal est de réduire la quantité d'erreurs. "
+"Si les règles ont été créées convenablement, il n'y a aucune erreur cachée."
 
 #: ../../manual/automapping.rst:22
 msgid "External Links"
@@ -100,15 +96,14 @@ msgid "Setting it Up"
 msgstr "Mise en Place"
 
 #: ../../manual/automapping.rst:32
-#, fuzzy
 msgid ""
 "The Automapping feature looks for a text file called 'rules.txt' in the "
 "folder where the current map is located. Each line in this text file is "
 "either"
 msgstr ""
-"La fonctionnalité d'Automapping cherche un fichier texte nommé "
-"'rules.txt' dans le dossier contenant la carte en cours d'édition. Chaque"
-" ligne dans ce fichier texte est soit"
+"La fonctionnalité d'Automapping cherche un fichier texte nommé 'rules.txt' "
+"dans le dossier contenant la carte en cours d'édition. Chaque ligne dans ce "
+"fichier texte est soit"
 
 #: ../../manual/automapping.rst:36
 msgid "a path to a **rulefile**"
@@ -127,14 +122,13 @@ msgid "or is a comment which is indicated by **#** or **//**"
 msgstr "ou un commentaire qui est indiqué par **#** ou **//**"
 
 #: ../../manual/automapping.rst:41
-#, fuzzy
 msgid ""
 "A **rulefile** is a standard map file, which can be read and written by "
 "tiled (\\*.tmx). In one rulefile there can be multiple defined rules."
 msgstr ""
-"Un **fichier de règles** est un fichier de carte standard, qui peut être "
-"lu et écrit par Tiled (\\*.tmx). Il peut y avoir plusieurs règles dans un"
-" fichier de règles."
+"Un **fichier de règles** est un fichier de carte standard, qui peut être lu "
+"et écrit par Tiled (\\*.tmx). Il peut y avoir plusieurs règles dans un "
+"fichier de règles."
 
 #: ../../manual/automapping.rst:44
 msgid "An automapping **rulefile** consists of 4 major parts:"
@@ -178,7 +172,6 @@ msgid "Defining the Regions"
 msgstr "Définir les Régions"
 
 #: ../../manual/automapping.rst:58
-#, fuzzy
 msgid ""
 "There must be either a tile layer called **regions** or there must be "
 "both tile layers **regions\\_input** and **regions\\_output**. Using the "
@@ -192,17 +185,16 @@ msgid ""
 " that coordinate belongs to a rule or if it doesn't."
 msgstr ""
 "Il doit y avoir soit un calque de tuiles nommé **regions**, ou il doit y "
-"avoir deux calques de tuiles nommés **regions\\_input** et "
-"**regions\\_output**. En utilisant le calque **regions**, la région "
-"définie pour l'entrée et la sortie est la même. En utilisant les calques "
-"**regions\\_input** et **regions\\_output** différents, cela permet "
-"d'avoir des régions différentes pour la section d'entrée et la section de"
-" sortie. Le(s) calque(s) de région est(sont) seulement utilisé(s) pour "
-"baliser des régions dans laquelle une règle d'Automapping existe. Par "
-"conséquent, peu importe les tuiles utilisées sur ce calque car ces tuiles"
-" sont utilisés pour définir une région. Vous n'avez qu'à donc placer ou "
-"ne pas placer de tuile à une coordonnée pour indiquer si cette coordonnée"
-" appartient à une règle ou non."
+"avoir deux calques de tuiles nommés **regions\\_input** et **regions\\_output"
+"**. En utilisant le calque **regions**, la région définie pour l'entrée et "
+"la sortie est la même. L'utilisation de différents calques **regions\\_input"
+"** et **regions\\_output** permet d'avoir des régions différentes pour la "
+"section d'entrée et la section de sortie. Le(s) calque(s) de région est(sont)"
+" seulement utilisé(s) pour baliser des régions dans laquelle une règle "
+"d'Automapping existe. Par conséquent, peu importe les tuiles utilisées sur "
+"ce calque car ces tuiles sont utilisés pour définir une région. Vous n'avez "
+"donc qu'à placer ou ne pas placer de tuile à une coordonnée pour indiquer si "
+"cette coordonnée appartient à une règle ou non."
 
 #: ../../manual/automapping.rst:69
 msgid ""
@@ -222,7 +214,6 @@ msgid "Multiple Rules in One Rulefile"
 msgstr "Plusieurs Règles dans Un Fichier de Règles"
 
 #: ../../manual/automapping.rst:77
-#, fuzzy
 msgid ""
 "Multiple rules are possible in one rulemap. However, if you want to have "
 "the rules applied in a certain sequence, you should use multiple "
@@ -236,20 +227,20 @@ msgid ""
 " threads/processors. So if you want to rely on a certain sequence, use "
 "different rulemaps and order these in the rules.txt"
 msgstr ""
-"Bien sûr, il est possible d'avoir plusieurs règles dans une carte de "
-"règles. Si vous voulez que les règles soient appliquées dans une séquence"
-" donnée, vous devez utiliser plusieurs **fichiers de règles** et définir "
-"la séquence dans le fichier **rules.txt**. Pour le moment, il y a aussi "
-"une certaine séquence dans un fichier de carte de règles. De façon "
-"générale, les régions avec une valeur Y sont exécutées en premier. S'il y"
-" a des régions ayant une même valeur de Y, alors la valeur X est prise en"
-" compte. Sur les cartes orthogonales, ce procédé d'ordonnancement est le "
-"même que pour la lecture dans la majorité des pays de l'Ouest (Gauche à "
-"droite, haut en bas). L'ordre dans une carte de règles peut être changé "
-"plus tard, lorsque Tiled sera capable d'utiliser plusieurs "
-"processus/processeurs. Donc, si vous voulez compter sur une certaine "
-"séquence, veuillez utiliser plusieurs cartes de règles différentes et "
-"ordonnez les dans le fichier rules.txt."
+"Il est possible d'avoir plusieurs règles dans une carte de règles. "
+"Cependant, si vous voulez que les règles soient appliquées dans une séquence "
+"donnée, vous devez utiliser plusieurs **fichiers de règles** et définir la "
+"séquence dans le fichier **rules.txt**. Pour le moment, il y a aussi une "
+"certaine séquence dans un fichier de carte de règles. De façon générale, les "
+"régions avec une valeur Y petite sont exécutées en premier. S'il y a des "
+"régions ayant une même valeur de Y, alors la valeur X est prise en compte. "
+"Sur les cartes orthogonales, ce procédé d'ordonnancement est le même que "
+"pour la lecture dans la majorité des pays de l'Ouest (Gauche à droite, haut "
+"en bas). L'ordre dans une carte de règles peut être changé plus tard, "
+"lorsque Tiled sera capable d'utiliser plusieurs processus/processeurs. Donc, "
+"si vous voulez compter sur une certaine séquence, veuillez utiliser "
+"plusieurs cartes de règles différentes et ordonnez les dans le fichier rules."
+"txt"
 
 #: ../../manual/automapping.rst:90
 msgid "Definition of Inputs"
@@ -315,9 +306,8 @@ msgid "index must not contain an underscore."
 msgstr "L'index ne peut pas contenir un tiret du bas."
 
 #: ../../manual/automapping.rst:115
-#, fuzzy
 msgid "index must not start with *not*."
-msgstr "L'index ne doit pas commencer par *not*"
+msgstr "L'index ne doit pas commencer par *not*."
 
 #: ../../manual/automapping.rst:116
 msgid "index may be empty."
@@ -347,11 +337,10 @@ msgid "Definition of Outputs"
 msgstr "Définition des Sorties"
 
 #: ../../manual/automapping.rst:129
-#, fuzzy
 msgid "Outputs are generally defined by layers whichs name follows this scheme:"
 msgstr ""
-"Les sorties sont généralement définies par des calques dont le nom suit "
-"ce procédé"
+"Les sorties sont généralement définies par des calques dont le nom suit ce "
+"procédé :"
 
 #: ../../manual/automapping.rst:131
 msgid "**output[index]\\_name**"
@@ -401,14 +390,13 @@ msgstr ""
 "travail."
 
 #: ../../manual/automapping.rst:151
-#, fuzzy
 msgid ""
 "Note that the output is not being checked for overlapping on itself. This"
 " can be achieved by setting the map property **NoOverlappingRules** to "
 "true."
 msgstr ""
-"Veuillez noter qu'aucun test de recoupement n'est effectué sur la sortie."
-" Cela peut être activé en changeant la propriété de carte "
+"Veuillez noter qu'aucun test de recoupement n'est effectué sur la sortie. "
+"Cela peut être activé en changeant la propriété de carte "
 "**NoOverlappingRules** à true."
 
 #: ../../manual/automapping.rst:156 ../../manual/export-gmx.rst:102
@@ -416,21 +404,18 @@ msgid "Map Properties"
 msgstr "Propriétés de Carte"
 
 #: ../../manual/automapping.rst:158
-#, fuzzy
 msgid ""
 "The following map properties can be used to customize the behavior of the"
 " rules in a **rulefile**:"
 msgstr ""
-"Il y a trois différentes propriétés de carte, qui peuvent être utilisées "
-"pour ajouter des informations supplémentaires à un **fichier de règles** "
-":"
+"Il y a trois différentes propriétés de carte qui peuvent être utilisées pour "
+"personnaliser le comportement des règles d'un **fichier de règles** :"
 
 #: ../../manual/automapping.rst:170
 msgid "DeleteTiles"
-msgstr ""
+msgstr "DeleteTiles"
 
 #: ../../manual/automapping.rst:162
-#, fuzzy
 msgid ""
 "This map property is a boolean property: it can be true or false. If "
 "rules of this rulefile get applied at some location in your map, this map"
@@ -441,36 +426,33 @@ msgid ""
 "rules. Since when not all tiles are cleared before, you will have still "
 "tiles from before at these places, which are not covered by any tile."
 msgstr ""
-"**DeleteTiles** - Cette propriété de carte est une propriété booléenne : "
-"elle peut être true ou false. Si des règles de ce fichier de règles sont "
-"appliquées à une certaine partie de votre carte, cette propriété de carte"
-" détermine si toutes les autres tuiles sont supprimées avant d'appliquer "
-"la règle. Imaginez une carte ayant plusieurs calques. Tous les calques ne"
-" sont pas complètement remplis. Dans ce cas-ci, toutes les tuiles de tous"
-" les calques doivent être effacés, comme ça seules les tuiles définies "
-"par les règles restent. Car si les tuiles ne sont pas supprimées avant ce"
-" procédé, il restera des tuiles d'avant à ces endroits, qui ne seront "
-"couverts par aucune tuile."
+"Cette propriété de carte est une propriété booléenne : elle peut être true "
+"ou false. Si des règles de ce fichier de règles sont appliquées à une "
+"certaine partie de votre carte, cette propriété de carte détermine si toutes "
+"les autres tuiles sont supprimées avant d'appliquer la règle. Imaginez une "
+"carte ayant plusieurs calques. Tous les calques ne sont pas complètement "
+"remplis. Dans ce cas-ci, toutes les tuiles de tous les calques doivent être "
+"effacés, comme ça seules les tuiles définies par les règles restent. Car si "
+"les tuiles ne sont pas supprimées avant ce procédé, il restera des tuiles "
+"d'avant à ces endroits, qui ne seront couverts par aucune tuile."
 
 #: ../../manual/automapping.rst:175
-#, fuzzy
 msgid "AutomappingRadius"
-msgstr "Automapping"
+msgstr "AutomappingRadius"
 
 #: ../../manual/automapping.rst:173
-#, fuzzy
 msgid ""
 "This map property is a number: 1, 2, 3 ... It determines how many tiles "
 "around your changes will be checked as well for redoing the Automapping "
 "at live Automapping."
 msgstr ""
-"**AutomappingRadius** - Cette propriété de carte est un nombre : 1, 2, "
-"3... Il détermine combien de tuiles autour de vos changements seront "
-"aussi testées pour refaire l'Automapping lors de l'Automapping en direct."
+"Cette propriété de carte est un nombre : 1, 2, 3... Elle détermine combien "
+"de tuiles autour de vos changements seront aussi testées pour refaire "
+"l'Automapping lors de l'Automapping en direct."
 
 #: ../../manual/automapping.rst:190
 msgid "MatchOutsideMap"
-msgstr ""
+msgstr "MatchOutsideMap"
 
 #: ../../manual/automapping.rst:182
 msgid ""
@@ -481,16 +463,26 @@ msgid ""
 "boundaries are simply considered empty unless one of either "
 "**OverflowBorder** or **WrapBorder** are also true."
 msgstr ""
+"Cette propriété de carte détermine si les règles peuvent trouver une "
+"correspondance même si leur région d'entrée est partiellement en dehors de "
+"la carte. Par défaut c'est ``false`` pour les cartes bornées et ``true`` "
+"pour les cartes infinies. Dans certains cas cela peut être utile de "
+"l'activer pour les cartes bornées. Les tuiles en dehors des limites de la "
+"carte sont simplement traitées comme vides sauf si **OverflowBorder** ou "
+"**WrapBorder** sont aussi true."
 
 #: ../../manual/automapping.rst:189
 msgid ""
 "Tiled 1.0 and 1.1 behaved as if this property was ``true``, whereas older"
 " versions of Tiled have behaved as if this property was ``false``."
 msgstr ""
+"Tiled 1.0 et 1.1 agissaient comme si cette propriété était ``true``, tandis "
+"que les versions de Tiled antérieures agissaient comme si cette propriété "
+"était ``false``."
 
 #: ../../manual/automapping.rst:203
 msgid "OverflowBorder"
-msgstr ""
+msgstr "OverflowBorder"
 
 #: ../../manual/automapping.rst:197
 msgid ""
@@ -500,6 +492,11 @@ msgid ""
 "the nearest inbound tiles, effectively \"overflowing\" the map's borders "
 "to the outside region."
 msgstr ""
+"Cette propriété de carte personnalise le comportement attendu par ma "
+"propriété **MatchOutsideMap**. Lorsque cette propriété est ``true``, les "
+"tuiles en dehors des limites de la carte sont considérées comme des copies "
+"de la tuile dans la zone valide de la carte la plus proche, ce qui \"déborde"
+"\" les bords de la carte sur la région extérieure."
 
 #: ../../manual/automapping.rst:202 ../../manual/automapping.rst:215
 msgid ""
@@ -507,10 +504,13 @@ msgid ""
 " this property has no effect on infinite maps (since there is no notion "
 "of border)."
 msgstr ""
+"Quand cette propriété est ``true``, elle implique **MatchOutsideMap**. "
+"Veuillez noter que cette propriété n'a aucun effet sur les cartes infinies ("
+"car il n'y a pas de notion de bord)."
 
 #: ../../manual/automapping.rst:219
 msgid "WrapBorder"
-msgstr ""
+msgstr "WrapBorder"
 
 #: ../../manual/automapping.rst:210
 msgid ""
@@ -519,37 +519,41 @@ msgid ""
 "effectively \"wraps\" around itself, making tiles on one border of the "
 "map influence the regions on the other border and vice versa."
 msgstr ""
+"Cette propriété de carte personnalise le comportement attendu par ma "
+"propriété **MatchOutsideMap**. Lorsque cette propriété est ``true``, la "
+"carte \"s'enroule\" autour d'elle même, ce qui veut dire que les tuiles sur "
+"un bord de la carte influence les régions sur le bord opposé et vice versa."
 
 #: ../../manual/automapping.rst:218
 msgid ""
 "If both **WrapBorder** and **OverflowBorder** are ``true``, "
 "**WrapBorder** takes precedence over **OverflowBorder**."
 msgstr ""
+"Si **WrapBorder** et **OverflowBorder** sont tous les deux ``true``, "
+"**WrapBorder** est prioritaire sur **OverflowBorder**."
 
 #: ../../manual/automapping.rst:223
 msgid "NoOverlappingRules"
-msgstr ""
+msgstr "NoOverlappingRules"
 
 #: ../../manual/automapping.rst:222
-#, fuzzy
 msgid ""
 "This map property is a boolean property: A rule is not allowed to overlap"
 " on itself."
 msgstr ""
-"**NoOverlappingRules** - Cette propriété de carte est une propriété "
-"booléenne : Une règle est pas autorisée à se recouper sur elle-même."
+"Cette propriété de carte est une propriété booléenne : Une règle est pas "
+"autorisée à se recouper sur elle-même."
 
 #: ../../manual/automapping.rst:225
-#, fuzzy
 msgid ""
 "These properties are map wide, meaning it applies to all rules which are "
 "part of the rulemap. If you need rules with different properties you can "
 "use multiple rulemaps."
 msgstr ""
-"Ces propriétés concernent la carte en entier, ce qui veut dire qu'elles "
-"sont appliquées à toutes les règles faisant partie de la carte de règles."
-" Si vous avez besoin de règles avec des propriétés différentes, vous "
-"pouvez utiliser plusieurs cartes de règles."
+"Ces propriétés concernent la carte en entier, ce qui veut dire qu'elles sont "
+"appliquées à toutes les règles faisant partie de la carte de règles. Si vous "
+"avez besoin de règles avec des propriétés différentes, vous pouvez utiliser "
+"plusieurs cartes de règles."
 
 #: ../../manual/automapping.rst:230 ../../manual/export-gmx.rst:126
 msgid "Layer Properties"
@@ -557,11 +561,11 @@ msgstr "Propriétés des Calques"
 
 #: ../../manual/automapping.rst:232
 msgid "The following properties are supported on a per-layer basis:"
-msgstr ""
+msgstr "Les propriétés suivantes son supportées sur un base par calque :"
 
 #: ../../manual/automapping.rst:244
 msgid "StrictEmpty"
-msgstr ""
+msgstr "StrictEmpty"
 
 #: ../../manual/automapping.rst:235
 msgid ""
@@ -569,6 +573,9 @@ msgid ""
 "and **inputnot** layers to customize the behavior for empty tiles within "
 "the input region."
 msgstr ""
+"Cette propriété de calque est une propriété booléenne. Elle peut être "
+"ajoutée à des calques **input** et **inputnot** pour personnaliser le "
+"comportement pour les tuiles vides dans la région d'entrée."
 
 #: ../../manual/automapping.rst:239
 msgid ""
@@ -578,6 +585,12 @@ msgid ""
 "location. And when an \"inputnot\" layer contains an empty tile within "
 "the input region, it means an empty tile is not allowed at that location."
 msgstr ""
+"Dans le mode \"StrictEmpty\", les tuiles vides dans la région d'entrée "
+"correspondent à des tuiles vides dans le calque donné. Donc si un calque "
+"\"input\" contient une tuile vide dans sa région d'entrée, cela veut dire "
+"qu'une tuile vide est autorisée à cet endroit. Et si un calque \"inputnot\" "
+"contient une tuile vide dans sa région d'entrée, cela veut dire qu'une tuile "
+"vide est interdite à cet endroit."
 
 #: ../../manual/automapping.rst:247
 msgid "Examples"
@@ -660,7 +673,6 @@ msgid "The Mana World Examples"
 msgstr "Exemples de The Mana World"
 
 #: ../../manual/automapping.rst:320
-#, fuzzy
 msgid ""
 "The Mana World examples will demonstrate quite a lot of different "
 "Automapping features. At first a shoreline will be constructed, by first "
@@ -673,11 +685,10 @@ msgstr ""
 "Les exemples de The Mana World montre le fonctionnement de beaucoup de "
 "fonctionnalités d'Automapping. En premier un littoral sera construit, en "
 "ajoutant en premier les parties droites puis ensuite une autre règle "
-"corrigera les coins pour qu'ils suivent le jeu de tuiles courant. Après "
-"la construction du littoral, les milieux aquatiques seront marqués comme "
+"corrigera les coins pour qu'ils suivent le jeu de tuiles courant. Après la "
+"construction du littoral, les milieux aquatiques seront marqués comme "
 "infranchissable pour le moteur de jeu. En dernier, l'herbe doit être "
-"constituée de tuiles aléatoires en utilisant 5 tuiles d'herbe "
-"différentes."
+"constituée de tuiles aléatoires en utilisant 5 tuiles d'herbe différentes."
 
 #: ../../manual/automapping.rst:330
 msgid "This is what we want to draw."
@@ -722,15 +733,14 @@ msgstr ""
 "l'herbe au Sud et de l'eau au Nord."
 
 #: ../../manual/automapping.rst:360
-#, fuzzy
 msgid ""
 "So basically the meaning we will define in the input region is: *All "
 "tiles which are south of a water tile and are not water tiles themselves,"
 " will be replaced by a shoreline tile*"
 msgstr ""
-"Basiquement, la signification que nous allons définir dans la région est "
-": *Toutes les tuiles qui sont au Sud d'une tuile d'eau et qui ne sont pas"
-" une tuile d'eau elle-même seront remplacées par une tuile de littoral*"
+"Basiquement, la signification que nous allons définir dans la région est : *"
+"Toutes les tuiles qui sont au Sud d'une tuile d'eau et qui ne sont pas une "
+"tuile d'eau elles-même seront remplacées par une tuile de littoral*"
 
 #: ../../manual/automapping.rst:367 ../../manual/automapping.rst:537
 #: ../../manual/automapping.rst:584 ../../manual/automapping.rst:634
@@ -819,16 +829,14 @@ msgstr ""
 "est listé après dans rules.txt)"
 
 #: ../../manual/automapping.rst:414
-#, fuzzy
 msgid ""
 "The shoreline may have some more corners nearby, which means there may be"
 " more different tiles than the straight corner lines. In the figure we "
 "see all inputs which should be covered."
 msgstr ""
-"Le littoral peut avoir plus de coins proche, ce qui veut dire qu'il peut "
-"y avoir des tuiles différentes que les tuiles de littoral droites. Dans "
-"cette image nous allons voir toutes les entrées qui doivent être "
-"couvertes."
+"Le littoral peut avoir plus de coins proche, ce qui veut dire qu'il peut y "
+"avoir des tuiles différentes que les tuiles de littoral droites. Dans cette "
+"image nous allons voir toutes les entrées qui doivent être couvertes."
 
 #: ../../manual/automapping.rst:418
 msgid ""
@@ -841,7 +849,6 @@ msgstr ""
 "dans le coin en haut à gauche."
 
 #: ../../manual/automapping.rst:422
-#, fuzzy
 msgid ""
 "We can see 3 different tiles for the lower left corner, which is straight"
 " shore line, bent inside and bent outside shore lines."
@@ -860,25 +867,23 @@ msgstr ""
 
 #: ../../manual/automapping.rst:429
 msgid "Input and Output Regions"
-msgstr ""
+msgstr "Régions d'Entrée et de Sortie"
 
 #: ../../manual/automapping.rst:431
-#, fuzzy
 msgid ""
 "So with this rule we want to put the bent in shore line tile in the top "
 "left corner, we don't care which tile was there before. Also we don't "
 "care about the tile in the lower right corner. (probably water, but can "
 "be any decorative watertile, so just ignore it)."
 msgstr ""
-"Avec cette règle, nous voulons donc placer un littoral courbé à "
-"l'intérieur dans le coin en haut à gauche, voilà ce pourquoi on ne prête "
-"pas attention à la tuile qui s'y trouve actuellement. Nous ne prêtons pas"
-" non plus attention à la tuile dans le coin en bas à droite. "
-"(probablement de l'eau, mais cela peut aussi être une tuile d'eau "
-"décorative, donc ignorez-la)."
+"Avec cette règle, nous voulons donc placer une tuile de littoral courbé à "
+"l'intérieur dans le coin en haut à gauche, voilà pourquoi on ne prête pas "
+"attention à la tuile qui s'y trouve actuellement. Nous ne prêtons pas non "
+"plus attention à la tuile dans le coin en bas à droite. (probablement de "
+"l'eau, mais cela peut aussi être une tuile d'eau décorative, donc ignorez-"
+"la)."
 
 #: ../../manual/automapping.rst:440
-#, fuzzy
 msgid ""
 "Therefore we will need different input and output regions. In the figure "
 "we can see the both tile layers regions input and regions output. The "
@@ -888,34 +893,31 @@ msgid ""
 " the output region is still one coherent region, so it's one rule and "
 "works."
 msgstr ""
-"Nous aurons donc besoin de régions d'entrée et de sortie différentes. "
-"Dans cette image nous pouvons voir les deux calques de tuiles d'entrée et"
-" de sortie. La section d'entrée couvre juste ces deux tuiles tel que nous"
-" avons pu le voir. La région de sortie ne couvre que la seule tuile que "
-"nous voulons en sortie. Même si les régions d'entrée et de sortie ne se "
-"superposent pas, la région unie des régions d'entrée et de sortie est "
-"quand même une région cohérente, donc on a besoin d'une seule règle pour "
-"que cela marche."
+"Nous aurons donc besoin de régions d'entrée et de sortie différentes. Dans "
+"cette image nous pouvons voir les deux calques de tuiles d'entrée et de "
+"sortie. La section d'entrée couvre juste ces deux tuiles tel que nous avons "
+"pu le voir. La région de sortie ne couvre que la seule tuile que nous "
+"voulons en sortie. Même si les régions d'entrée et de sortie ne se "
+"superposent pas, la région unie des régions d'entrée et de sortie est quand "
+"même une région cohérente, donc on a besoin d'une seule règle pour que cela "
+"marche."
 
 #: ../../manual/automapping.rst:448
-#, fuzzy
 msgid ""
 "Output regions can be larger than absolutely required, since where there "
 "are no tiles in an output region, the tiles in the working map are not "
 "overwritten but just kept as is, hence each output region could also be "
 "sized as the united region of both the output and input region."
 msgstr ""
-"Les régions de sortie peuvent être plus grandes que strictement "
-"nécessaire, car quand il n'y a aucune tuile dans la section de sortie, "
-"les tuiles dans la carte de travail ne sont pas remplacées mais sont "
-"gardées telles quelle, voilà pourquoi les régions de sortie peuvent être "
-"redimensionnées de façon à ce qu'elles soient la région unie entre les "
-"régions d'entrée et de sortie."
+"Les régions de sortie peuvent être plus grandes que strictement nécessaire, "
+"car quand il n'y a aucune tuile dans la section de sortie, les tuiles dans "
+"la carte de travail ne sont pas remplacées mais sont gardées telles quelle, "
+"voilà pourquoi les régions de sortie peuvent être redimensionnées de façon à "
+"ce qu'elles soient la région unie entre les régions d'entrée et de sortie."
 
 #: ../../manual/automapping.rst:454
-#, fuzzy
 msgid "Input Layers"
-msgstr "Modifier les Niveaux de Tiled"
+msgstr "Calques d'Entrée"
 
 #: ../../manual/automapping.rst:456
 msgid ""
@@ -929,12 +931,10 @@ msgstr ""
 "*input1\\_Ground* à *input9\\_Ground*"
 
 #: ../../manual/automapping.rst:460
-#, fuzzy
 msgid "Nine TileLayers?! What a mess, we'll do it a better way."
 msgstr "Neuf calques de tuiles ? ! Quel bazar, on va réordonner tout ça."
 
 #: ../../manual/automapping.rst:462
-#, fuzzy
 msgid ""
 "Also, consider having not just 3 possible tiles at the 2 locations but 4."
 " Then we would need 4\\*4=16 tilelayers to get all conditions. Another "
@@ -944,13 +944,12 @@ msgid ""
 "tilelayers. It's not getting better..."
 msgstr ""
 "Veuillez aussi considérer ne pas avoir que 3 tuiles possibles à ces deux "
-"endroit, mais 4. Alors nous aurons besoin de 4\\*4=16 calques de tuiles "
-"pour satisfaire toutes les conditions. Un autre désavantage arrive "
-"lorsqu'on considère avoir plus de locations requises : Essayez d'avoir "
-"plus que 2 locations requises pour construire une entrée de règle. Donc "
-"pour 3 locations, alors toutes les locations peuvent avoir les 3 "
-"possibilités, donc vous aurez besoin de 3\\*3\\*3=27 calques de tuiles. "
-"Ça ne s'arrange pas..."
+"endroits, mais 4. Alors nous aurons besoin de 4\\*4=16 calques de tuiles "
+"pour satisfaire toutes les conditions. Un autre désavantage arrive lorsqu'on "
+"considère avoir plus de locations requises : Essayez d'avoir plus que 2 "
+"locations requises pour construire une entrée de règle. Donc pour 3 "
+"locations, alors toutes les locations peuvent avoir les 3 possibilités, donc "
+"vous aurez besoin de 3\\*3\\*3=27 calques de tuiles. Ça ne s'arrange pas..."
 
 #: ../../manual/automapping.rst:469
 msgid ""
@@ -962,12 +961,10 @@ msgstr ""
 "tuiles différentes sont valides."
 
 #: ../../manual/automapping.rst:483
-#, fuzzy
 msgid "Output Layer"
-msgstr "outputs"
+msgstr "Calque de Sortie"
 
 #: ../../manual/automapping.rst:485
-#, fuzzy
 msgid ""
 "The output is straight forward, since only one tile is needed. No "
 "randomness is needed, hence the index is not needed to be varied, so it's"
@@ -975,11 +972,11 @@ msgid ""
 "name of the single output layer will be output\\_Ground. The correct tile"
 " is placed at the correct location with this layer."
 msgstr ""
-"La sortie est simple, puisqu'une seule tuile est requise. Nous avons "
-"besoin d'aucun caractère aléatoire, donc l'index ne doit pas être changé,"
-" donc il reste vide. Le calque de sortie désiré est nommé Ground, donc le"
-" nom du calque de sortie sera output\\_Ground. Dans ce calque, seule la "
-"tuile correcte est placée à l'emplacement correct."
+"La sortie est simple, puisqu'une seule tuile est requise. Nous avons besoin "
+"d'aucun caractère aléatoire, donc l'index ne doit pas être changé, donc il "
+"reste vide. Le calque de sortie désiré est nommé Ground, donc le nom du "
+"calque de sortie sera output\\_Ground. La tuile correcte est placée à "
+"l'emplacement correct dans ce calque."
 
 #: ../../manual/automapping.rst:496
 msgid "The Other Corners on a Shore Line"
@@ -1006,17 +1003,16 @@ msgid "Adding Collision Tiles"
 msgstr "Ajouter des Tuiles de Collision"
 
 #: ../../manual/automapping.rst:520
-#, fuzzy
 msgid ""
 "The Mana World uses an extra tile layer called *Collision* to have "
 "information about whether a player is able to walk on certain tiles or "
 "not. That layer is invisible to the player, but the game engine parses "
 "it, whether there is a tile or there is no tile."
 msgstr ""
-"The Mana World utilise un calque de tuiles supplémentaire nommé "
-"*Collision* pour avoir des informations sur si le joueur est capable de "
-"marcher sur certaines tuiles ou non. Ce calque est invisible pour le "
-"joueur, mais le moteur de jeu l'utilise, qu'il y aie une tuile ou non."
+"The Mana World utilise un calque de tuiles supplémentaire nommé *Collision* "
+"pour avoir des informations sur si le joueur est capable de marcher sur "
+"certaines tuiles ou non. Ce calque est invisible pour le joueur, mais le "
+"moteur de jeu l'utilise, qu'il y aie une tuile ou non."
 
 #: ../../manual/automapping.rst:525
 msgid ""
@@ -1077,7 +1073,6 @@ msgstr ""
 "collision puis enlever des parties de celle-ci et cetera."
 
 #: ../../manual/automapping.rst:556
-#, fuzzy
 msgid ""
 "So we need to also remove the collision tiles from positions, which are "
 "not marked by a collision any more. This can be done by adding the map "
@@ -1087,27 +1082,26 @@ msgid ""
 "tiles and the history of if there has been a collision tile placed is "
 "neglected."
 msgstr ""
-"Nous devons donc enlever les tuiles de collision de ces positions qui ne "
+"Nous devons donc enlever les tuiles de collision de ces positions, qui ne "
 "sont plus marquées par une collision. Cela peut être fait en ajoutant la "
 "propriété de carte *DeleteTiles* et en la changeant en *yes* ou *true*. "
-"Ainsi, toutes les parties du calque *Collision* seront effacées avant que"
-" l'Automapping soit mis en place, donc les tuiles de collision seront "
+"Ainsi, toutes les parties du calque *Collision* seront effacées avant que "
+"l'Automapping soit mis en place, donc les tuiles de collision seront "
 "seulement placées sur les tuiles vraiment infranchissables et tout "
-"questionnement sur la possibilité qu'une vieille tuile de collision "
-"existe est oublié."
+"questionnement sur la possibilité qu'une vieille tuile de collision existe "
+"est oublié."
 
 #: ../../manual/automapping.rst:564
 msgid "Random Grass Tiles"
 msgstr "Tuiles d'Herbe Aléatoires"
 
 #: ../../manual/automapping.rst:566
-#, fuzzy
 msgid ""
 "In this example we will shuffle all grass tiles, so each grass tile will "
 "be replaced with a randomly chosen tile."
 msgstr ""
-"Dans cet exemple nous allons mélanger toutes les tuiles d'herbe, pour que"
-" toute tuile d'herbe soit chacune remplacée par une tuile choisie "
+"Dans cet exemple nous allons mélanger toutes les tuiles d'herbe, pour que "
+"toute tuile d'herbe soit chacune remplacée par une tuile choisie "
 "aléatoirement."
 
 #: ../../manual/automapping.rst:569
@@ -1131,15 +1125,14 @@ msgstr ""
 " de tous les autres calques pour que ce processus soit aléatoire."
 
 #: ../../manual/automapping.rst:577
-#, fuzzy
 msgid ""
 "The following rule might look the same, but there are different grass "
 "tiles. Each grass tile is in both one of the input and one of the output "
 "layers (the order of the layers doesn't matter)."
 msgstr ""
-"La règle suivante peut avoir l'air d'afficher la même chose, mais ce sont"
-" bien des tuiles d'herbe différentes. Chaque tuile d'herbe est dans un "
-"des calques d'entrée et de sortie (l'ordre des calques importe peu)."
+"La règle suivante peut avoir l'air d'afficher la même chose, mais ce sont "
+"bien des tuiles d'herbe différentes. Chaque tuile d'herbe est dans un des "
+"calques d'entrée et de sortie (l'ordre des calques importe peu)."
 
 #: ../../manual/automapping.rst:596
 msgid "output1\\_Ground"
@@ -1162,7 +1155,6 @@ msgid "output5\\_Ground"
 msgstr "output5\\_Ground"
 
 #: ../../manual/automapping.rst:608
-#, fuzzy
 msgid "An Alternating Wall"
 msgstr "Un Mur Alternatif"
 
@@ -1187,7 +1179,6 @@ msgstr ""
 "des tuiles décoratives l'entrée doit utiliser les décorations."
 
 #: ../../manual/automapping.rst:623
-#, fuzzy
 msgid ""
 "The structure of the input, output and region layer is very similar to "
 "the example of the straight shoreline in The Mana World examples. The "
@@ -1197,13 +1188,13 @@ msgid ""
 "following figure, every second tile displaying the base board of the wall"
 " has a notch for example."
 msgstr ""
-"La structure des calques d'entrée, de sortie et de région est très "
-"similaire à l'exemple du littoral droit de The Mana World. La différence "
-"principale est la taille différente. Comme le mur contient plusieurs "
-"tuiles de hauteur, la hauteur des calques de règles est aussi différente."
-" Les tuiles sont aussi alternantes verticalement. Comme vous pouvez le "
-"voir sur l'image suivante, toutes les secondes tuiles qui affichent la "
-"planche à la base du mur ont une fente, par exemple."
+"La structure des calques d'entrée, de sortie et de région est très similaire "
+"à l'exemple du littoral droit de The Mana World. La différence principale "
+"est la taille différente. Comme le mur contient plusieurs tuiles de hauteur, "
+"la hauteur des calques de règles est aussi différente. Les tuiles sont aussi "
+"alternantes verticalement. Comme vous pouvez le voir sur l'image suivante, "
+"toutes les secondes tuiles qui affichent la planche à la base du mur ont une "
+"fente, par exemple."
 
 #: ../../manual/automapping.rst:638
 msgid "output\\_Walls"
@@ -1236,20 +1227,18 @@ msgstr ""
 "marron, cette règle est respectée.*"
 
 #: ../../manual/automapping.rst:651
-#, fuzzy
 msgid ""
 "Only the lowest 2 coordinates contain the brown tile. The upper "
 "coordinates contain no tile. (It is not an invisible tile, just no tile "
 "at all.) The input layer called *Input\\_set* is depicted in the middle "
 "of the figure."
 msgstr ""
-"Seules les 2 coordonnées les plus basses contiennent les tuiles marron. "
-"Les coordonnées du haut ne contiennent aucune tuile. (Pas de tuile "
-"invisible, juste aucune tuile du tout.) Le calque d'entrée nommé "
-"*input\\_set* est décrit au milieu de l'image."
+"Seules les 2 coordonnées les plus basses contiennent les tuiles marron. Les "
+"coordonnées du haut ne contiennent aucune tuile. (Pas de tuile invisible, "
+"juste aucune tuile du tout.) Le calque d'entrée nommé *input\\_set* est "
+"décrit au milieu de l'image."
 
 #: ../../manual/automapping.rst:656
-#, fuzzy
 msgid ""
 "The output consists of only one layer as well called *output\\_Walls*. It"
 " contains the actual wall tiles."
@@ -1262,46 +1251,42 @@ msgid "Vertically the tiles are alternating."
 msgstr "Les tuiles sont alternantes verticalement."
 
 #: ../../manual/automapping.rst:666
-#, fuzzy
 msgid ""
 "A broken version of the rule, because *NoOverlappingRules* was not yet "
 "set."
 msgstr ""
-"Une version défectueuse de la règle, où *NoOverlappingRules* n'a pas "
-"encore été ajouté."
+"Une version défectueuse de la règle, car *NoOverlappingRules* n'a pas encore "
+"été ajouté."
 
 #: ../../manual/automapping.rst:668
-#, fuzzy
 msgid ""
 "When trying to match the input layer to the desired set layer (right "
 "picture of the figure at the beginning of the example, you will see it "
 "matches all the way along, with no regard of the vertical adjustment."
 msgstr ""
-"Lorsqu'on essaye de correspondre le calque d'entrée au calque désiré "
-"(image de droite de l'image tout au début de l'exemple), vous allez voir "
-"qu'il correspond jusqu'au bout, peu importe l'ajustement vertical."
+"Lorsqu'on essaye de correspondre le calque d'entrée au calque désiré (image "
+"de droite de l'image tout au début de l'exemple), vous allez voir qu'il "
+"correspond jusqu'au bout, peu importe l'ajustement vertical."
 
 #: ../../manual/automapping.rst:672
-#, fuzzy
 msgid ""
 "Hence when we use the rule as discussed now, we will get not the desired "
 "result, because this rule overlaps itself. The overlapping problem is "
 "shown in figure above."
 msgstr ""
-"Voilà pourquoi nous utilisons cette règle telle qu'on vient de voir, nous"
-" aurons le résultat attendu, mais la règle se superpose à elle-même. Le "
-"problème de superposition est montré dans l'image ci-dessus."
+"Voilà pourquoi quand nous utilisons cette règle telle qu'on vient de le "
+"voir, nous n'aurons pas le résultat attendu, parce que la règle se superpose "
+"à elle-même. Le problème de superposition est montré dans l'image ci-dessus."
 
 #: ../../manual/automapping.rst:676
-#, fuzzy
 msgid ""
 "Since the overlapping is not desired, we can turn it off by adding the "
 "map property *NoOverlappingRules* to the rulemap and setting it to "
 "*true*."
 msgstr ""
 "Comme la superposition est pas désirée, nous pouvons la désactiver en "
-"ajoutant la propriété de carte *NoOverlappingRules* à la carte de règles "
-"et la mettre à *true*"
+"ajoutant la propriété de carte *NoOverlappingRules* à la carte de règles et "
+"la mettre à *true*."
 
 #: ../../manual/automapping.rst:679
 msgid "Keep in mind that the map property applies for all rules on that rule map."
@@ -1380,7 +1365,7 @@ msgstr "**int** (un nombre entier)"
 
 #: ../../manual/custom-properties.rst:31
 msgid "**object** (a reference to an object) - *Since Tiled 1.4*"
-msgstr ""
+msgstr "**object** (une référence vers un objet) - *Depuis Tiled 1.4*"
 
 #: ../../manual/custom-properties.rst:32
 msgid "**string** (any text, including multi-line text)"
@@ -1407,6 +1392,10 @@ msgid ""
 "the file in its preferred editor. For object references, there is an "
 "action to quickly jump to the referenced object."
 msgstr ""
+"Le menu de contexte pour les propriétés de fichiers personnalisées offre un "
+"façon rapide d'ouvrir le fichier dans votre éditeur préféré. Pour les "
+"références d'objet, il y a une action pour sauter rapidement vers l'objet "
+"référencé."
 
 #: ../../manual/custom-properties.rst:59
 msgid "Tile Property Inheritance"
@@ -1465,7 +1454,6 @@ msgid "Object Types Editor"
 msgstr "Éditeur de Type d'Objet"
 
 #: ../../manual/custom-properties.rst:92
-#, fuzzy
 msgid ""
 "By default, Tiled stores these object types globally. However, since "
 "you'll often want to share them with other people in your project, you "
@@ -1473,11 +1461,11 @@ msgid ""
 " types file :doc:`for your project <projects>`. A simple XML or JSON file"
 " with self-explanatory contents is used to store your object types."
 msgstr ""
-"Par défaut, Tiled stocke ces types d'objets dans les paramètres "
-"d'utilisateur. Cependant, comme vous voudrez souvent les partager avec "
-"les autres personnes de votre projet, vous pouvez exporter ces types "
-"d'objets ou modifier le répertoire d'enregistrement des fichiers de types"
-" d'objets. Un simple fichier XML ou JSON avec un contenu auto-explicatif "
+"Par défaut, Tiled stocke ces types d'objets de façon globale. Cependant, "
+"comme vous voudrez souvent les partager avec les autres personnes de votre "
+"projet, vous pouvez exporter ces types d'objets ou modifier le répertoire "
+"d'enregistrement des fichiers de types d'objets :doc:`pour votre projet "
+"<projects>`. Un simple fichier XML ou JSON avec un contenu auto-explicatif "
 "est utilisé pour stocker vos types d'objets."
 
 #: ../../manual/custom-properties.rst:98
@@ -1602,17 +1590,16 @@ msgstr ""
 #: ../../manual/custom-properties.rst:152 ../../manual/editing-tilesets.rst:247
 #: ../../manual/layers.rst:196 ../../manual/objects.rst:383
 #: ../../manual/projects.rst:83
-#, fuzzy
 msgid ""
 "If you like any of these plans, please help me getting around to it "
 "faster by `sponsoring Tiled development "
 "<https://www.mapeditor.org/donate>`__. The more support I receive the "
 "more time I can afford to spend improving Tiled!"
 msgstr ""
-"Si vous aimez au moins un seul de ces points, s'il-vous-plaît aidez-moi à"
-" y arriver plus vite en `devenant un mécène "
-"<https://www.patreon.com/bjorn>`__. Plus je recevrai de soutien, plus "
-"j'aurais les moyens de passer du temps à améliorer Tiled !"
+"Si vous aimez au moins un seul de ces points, s'il-vous-plaît aidez-moi à y "
+"arriver plus vite en `supportant le développement de Tiled <https://www."
+"mapeditor.org/donate>`__. Plus je recevrai de soutien, plus j'aurais les "
+"moyens de passer du temps à améliorer Tiled !"
 
 #: ../../manual/editing-tile-layers.rst:2
 msgid "Editing Tile Layers"
@@ -1639,9 +1626,8 @@ msgid "Stamp Brush"
 msgstr "Brosse Tampon"
 
 #: ../../manual/editing-tile-layers.rst:15
-#, fuzzy
 msgid "Shortcut: ``B`` |stock-tool-clone|"
-msgstr "Raccourci : ``B``"
+msgstr "Raccourci : ``B`` |stock-tool-clone|"
 
 #: ../../manual/editing-tile-layers.rst:17
 msgid ""
@@ -1693,19 +1679,17 @@ msgstr ""
 "Tuiles*."
 
 #: ../../manual/editing-tile-layers.rst:37
-#, fuzzy
 msgid ""
 "Activate the *Terrain Fill Mode* using the Terrain tile |terrain| button "
 "on the tool bar to have the Stamp Brush paint using random terrain tiles."
 " This makes adjacent tiles match edge and corner terrains to be placed. "
 "Terrain tiles are described in detail in :doc:`terrain`."
 msgstr ""
-"Activez le *Mode de Remplissage Wang* en utilisant le bouton de tuile "
-"Wang dans la barre d'outils afin que la Brosse Tampon remplisse en "
-"utilisant les méthodes Wang. Ceci force les couleurs des coins et "
-"contours des tuiles adjacentes à s'accorder avec celles de la tuile "
-"placée. Les tuiles Wang sont couvertes plus en détail dans :doc:`using-"
-"wang-tiles`."
+"Activez le *Mode de Remplissage de Terrain* en utilisant le bouton de tuile "
+"de terrain |terrain| dans la barre d'outils afin que la Brosse Tampon "
+"utilise des tuiles aléatoires. Ceci force les coins et contours des tuiles "
+"adjacentes à s'accorder avec celles de la tuile placée. Les tuiles de "
+"terrain sont couvertes plus en détail :doc:`ici <terrain>`."
 
 #: ../../manual/editing-tile-layers.rst:42
 msgid ""
@@ -1736,26 +1720,22 @@ msgid "Terrain Brush"
 msgstr "Brosse de Terrain"
 
 #: ../../manual/editing-tile-layers.rst:57
-#, fuzzy
 msgid "Shortcut: ``T`` |terrain-edit|"
-msgstr "Raccourci : ``T``"
+msgstr "Raccourci : ``T`` |terrain-edit|"
 
 #: ../../manual/editing-tile-layers.rst:59
-#, fuzzy
 msgid ""
 "The Terrain Brush allows for efficient editing with certain types of "
 "terrain transitions (corner-based, edge-based or a combination). Setting "
 "it up requires associating terrain information with your tiles, which is "
 "described in detail in :doc:`terrain`."
 msgstr ""
-"La Brosse de Terrain permet une édition efficace avec un certain type de "
-"transitions de terrain basée sur le coin. La mettre en place requiert "
-"d'associer les informations de terrain avec vos tuiles, ce qui est décrit"
-" en détail dans :doc:`Utiliser Les Outils de Terrain <using-the-terrain-"
-"tool>`."
+"La Brosse de Terrain permet une édition efficace avec certain types de "
+"transitions de terrain (basés sur les coins, côtés ou une combinaison des "
+"deux). La mettre en place requiert d'associer les informations de terrain "
+"avec vos tuiles, ce qui est décrit en détail :doc:`ici <terrain>`."
 
 #: ../../manual/editing-tile-layers.rst:64
-#, fuzzy
 msgid ""
 "Similarly to the :ref:`stamp-tool`, you can draw lines by holding "
 "``Shift``. When holding ``Ctrl``, the size of the edited area is "
@@ -1763,11 +1743,10 @@ msgid ""
 msgstr ""
 "Comme pour :ref:`l'outil tampon <stamp-tool>`, vous pouvez dessiner des "
 "lignes en maintenant enfoncée la touche ``Maj``. En maintenant la touche "
-"``Ctrl`` enfoncée, la taille de la zone d'édition est réduite à un coin "
-"(actuellement cela ne fonctionne pas très bien avec le dessin de lignes)."
+"``Ctrl`` enfoncée, la taille de la zone d'édition est augmentée pour couvrir "
+"la tuile en entier plutôt qu'un seul coin ou côté."
 
 #: ../../manual/editing-tile-layers.rst:72
-#, fuzzy
 msgid ""
 "When holding ``Alt``, the editing operations are also applied at a 180 "
 "degree rotation. This is especially useful when editing strategic maps "
@@ -1775,12 +1754,12 @@ msgid ""
 " in combination with either ``Shift`` for drawing lines or ``Ctrl`` for "
 "increasing the edited area."
 msgstr ""
-"En maintenant ``Alt``, les opérations d'édition sont également appliquées"
-" avec une rotation de 180 degrés. C'est particulièrement utile lors de "
-"l'édition de cartes stratégiques où les deux côtés doivent avoir des "
-"chances équitables. Le modificateur marche bien en combinaison avec les "
-"touches ``Maj`` pour dessiner des lignes ou ``Ctrl`` pour réduire la zone"
-" d'édition."
+"En maintenant ``Alt``, les opérations d'édition sont également appliquées "
+"avec une rotation de 180 degrés. C'est particulièrement utile lors de "
+"l'édition de cartes stratégiques où les deux côtés doivent avoir des chances "
+"équitables. Le modificateur marche bien en combinaison avec les touches "
+"``Maj`` pour dessiner des lignes ou ``Ctrl`` pour augmenter la zone "
+"d'édition."
 
 #: ../../manual/editing-tile-layers.rst:85
 msgid "Bucket Fill Tool"
@@ -1788,10 +1767,9 @@ msgstr "Outil de Seau de Remplissage"
 
 #: ../../manual/editing-tile-layers.rst:87
 msgid "Shortcut: ``F`` |stock-tool-bucket-fill|"
-msgstr ""
+msgstr "Raccourci : ``F`` |stock-tool-bucket-fill|"
 
 #: ../../manual/editing-tile-layers.rst:89
-#, fuzzy
 msgid ""
 "The Bucket Fill Tool provides a quick way of filling empty areas or areas"
 " covered with the same tiles. The currently active tile stamp will be "
@@ -1799,13 +1777,12 @@ msgid ""
 "*Random Mode*, or *Terrain Fill Mode*."
 msgstr ""
 "L'Outil de Seau de Remplissage fournit une manière rapide de remplir les "
-"zones vides ou les zones couvertes par les mêmes tuiles. Le tampon de "
-"tuile actuellement sélectionné sera répété dans la zone de remplissage. "
-"Il peut également être utilisé en combinaison avec le *Mode Aléatoire* ou"
-" le *Mode de Remplissage Wang*."
+"zones vides ou les zones couvertes par les mêmes tuiles. Le tampon de tuile "
+"actuellement sélectionné sera répété dans la zone de remplissage. Il peut "
+"également être utilisé en combinaison avec le *Mode Aléatoire* ou le *Mode "
+"de Remplissage de Terrain*."
 
 #: ../../manual/editing-tile-layers.rst:94
-#, fuzzy
 msgid ""
 "When holding ``Shift``, the tool fills the currently selected area "
 "regardless of its contents. This is useful for filling custom areas that "
@@ -1813,9 +1790,9 @@ msgid ""
 "tools`."
 msgstr ""
 "En maintenant la touche ``Maj`` enfoncée, l'outil remplit la zone "
-"sélectionnée sans prêter attention à son contenu. C'est utile pour "
-"remplir des zones personnalisées qui ont été précédemment sélectionnées "
-"en utilisant un ou plusieurs `Outils de Sélections <#selection-tools>`__."
+"sélectionnée sans prêter attention à son contenu. C'est utile pour remplir "
+"des zones personnalisées qui ont été précédemment sélectionnées en utilisant "
+"un ou plusieurs `outils de sélection <tile-selection-tools>`."
 
 #: ../../manual/editing-tile-layers.rst:98
 #: ../../manual/editing-tile-layers.rst:115
@@ -1827,13 +1804,12 @@ msgstr ""
 " la :ref:`brosse tampon <stamp-tool>`."
 
 #: ../../manual/editing-tile-layers.rst:108
-#, fuzzy
 msgid "Shape Fill Tool"
-msgstr "Outil de Seau de Remplissage"
+msgstr "Outil de Remplissage de Forme"
 
 #: ../../manual/editing-tile-layers.rst:110
 msgid "Shortcut: ``P`` |rectangle-fill|"
-msgstr ""
+msgstr "Raccourci : ``P`` |rectangle-fill|"
 
 #: ../../manual/editing-tile-layers.rst:112
 msgid ""
@@ -1841,15 +1817,17 @@ msgid ""
 "certain tile or pattern. Hold ``Shift`` to fill an exact square or "
 "circle."
 msgstr ""
+"Cet outil offre une façon rapide de remplir des rectangles ou des ellipses "
+"avec une certaine tuile ou patterne. Maintenez la touche ``Maj`` pour "
+"remplir un carré ou cercle exact."
 
 #: ../../manual/editing-tile-layers.rst:121
 msgid "Eraser"
 msgstr "Gomme"
 
 #: ../../manual/editing-tile-layers.rst:123
-#, fuzzy
 msgid "Shortcut: ``E`` |stock-tool-eraser|"
-msgstr "Raccourci : ``E``"
+msgstr "Raccourci : ``E`` |stock-tool-eraser|"
 
 #: ../../manual/editing-tile-layers.rst:125
 msgid ""
@@ -1862,7 +1840,7 @@ msgstr ""
 
 #: ../../manual/editing-tile-layers.rst:132
 msgid "Holding ``Shift`` erases on all layers."
-msgstr ""
+msgstr "Maintenez la touche ``Maj`` pour effacer sur tous les calques."
 
 #: ../../manual/editing-tile-layers.rst:137
 msgid "Selection Tools"
@@ -1875,31 +1853,29 @@ msgstr ""
 "manière similaire :"
 
 #: ../../manual/editing-tile-layers.rst:141
-#, fuzzy
 msgid ""
 "|stock-tool-rect-select| **Rectangular Select** allows selection of "
 "rectangular areas (shortcut: ``R``)"
 msgstr ""
-"**Sélection Rectangulaire** permet la sélection de zones rectangulaires "
-"(raccourci : ``R``)"
+"|stock-tool-rect-select| **Sélection Rectangulaire** permet la sélection de "
+"zones rectangulaires (raccourci : ``R``)"
 
 #: ../../manual/editing-tile-layers.rst:144
-#, fuzzy
 msgid ""
 "|stock-tool-fuzzy-select-22| **Magic Wand** allows selection of connected"
 " areas filled with the same tile (shortcut: ``W``)"
 msgstr ""
-"**Baguette Magique** permet la sélection de zones connectées remplies par"
-" la même tuile (raccourci : ``W``)"
+"|stock-tool-fuzzy-select-22| **Baguette Magique** permet la sélection de "
+"zones connectées remplies par la même tuile (raccourci : ``W``)"
 
 #: ../../manual/editing-tile-layers.rst:147
-#, fuzzy
 msgid ""
 "|stock-tool-by-color-select| **Select Same Tile** allows selection of "
 "same-tiles across the entire layer (shortcut: ``S``)"
 msgstr ""
-"**Sélectionner la Même Tuile** permet la sélection des tuiles identiques "
-"à travers le niveau entier (raccourci : ``S``)"
+"|stock-tool-by-color-select| **Sélectionner la Même Tuile** permet la "
+"sélection des tuiles identiques à travers le calque en entier (raccourci : "
+"``S``)"
 
 #: ../../manual/editing-tile-layers.rst:150
 msgid ""
@@ -1959,8 +1935,8 @@ msgid ""
 "``1-9`` - Recall the stamp stored at this location (similar to ``Ctrl + "
 "V``)"
 msgstr ""
-"``1-9`` - Resélectionne le tampon stocké à cette emplacement (similaire à"
-" ``Ctrl+V``)"
+"``1-9`` - Sélectionne le tampon stocké à cette emplacement (similaire à ``"
+"Ctrl + V``)"
 
 #: ../../manual/editing-tile-layers.rst:171
 msgid ""
@@ -2087,7 +2063,7 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:66
 msgid "Object Alignment"
-msgstr ""
+msgstr "Alignement d'Objet"
 
 #: ../../manual/editing-tilesets.rst:58
 msgid ""
@@ -2096,6 +2072,10 @@ msgid ""
 "relative to the position of the object (the origin) and is also the "
 "location around which the rotation is applied."
 msgstr ""
+"L'alignement à utiliser pour les :ref:`tuiles objet <insert-tile-tool>` font "
+"référence à des tuiles de ce jeu de tuiles. Cela affecte le placement de la "
+"tuile par rapport à la position de l'objet (l'origine) et est aussi la "
+"position autour de laquelle la rotation est appliquée."
 
 #: ../../manual/editing-tilesets.rst:63
 msgid ""
@@ -2104,6 +2084,11 @@ msgid ""
 "Right*. When unspecified, tile object alignment is generally *Bottom "
 "Left*, except for Isometric maps where it is *Bottom*."
 msgstr ""
+"Les valeurs possibles sont : *Non spécifié*, *En Haut à Gauche*, *En Haut*, *"
+"En Haut à Droite*, *A Gauche*, *Centre*, *A Droite*, *En Bas à Gauche*, *En "
+"Bas* et *En Bas à Droite*. Lorsque c'est non spécifié, l'alignement des "
+"tuiles objet est généralement *En Bas à Gauche*, sauf pour les cartes "
+"isométriques où c'est *En Bas*."
 
 #: ../../manual/editing-tilesets.rst:71
 msgid "Drawing Offset"
@@ -2137,7 +2122,6 @@ msgid "Orientation"
 msgstr "Orientation"
 
 #: ../../manual/editing-tilesets.rst:82
-#, fuzzy
 msgid ""
 "When the tileset contains isometric tiles, you can set this to "
 "*Isometric*. This value, along with the **Grid Width** and **Grid "
@@ -2146,14 +2130,13 @@ msgid ""
 "information`. It also affects the orientation used by the :ref:`tile-"
 "collision-editor`."
 msgstr ""
-"Quand le jeu de tuiles contient des tuiles isométriques, vous pouvez "
-"changer ceci en *isométrique*. Cette valeur, en tandem avec les "
-"propriétés **Longueur de Grille** et **Hauteur de Grille**, est prise en "
-"compte par les éléments affichés au dessus des tuiles. C'est utile lors "
-"de la spécification de :ref:`l'information de terrain <terrain-"
-"information>` ou lors de l'édition de :ref:`collections Wang <wang-"
-"sets>`, par exemple. Cela affecte aussi l'orientation utilisée par "
-":ref:`l'éditeur de collision de tuile <tile-collision-editor>`."
+"Quand le jeu de tuiles contient des tuiles isométriques, vous pouvez changer "
+"ceci en *Isométrique*. Cette valeur, en tandem avec les propriétés **"
+"Longueur de Grille** et **Hauteur de Grille**, est prise en compte par les "
+"éléments affichés au dessus des tuiles. C'est utile lors de la spécification "
+"de :ref:`l'information de terrain <terrain-information>`. Cela affecte aussi "
+"l'orientation utilisée par :ref:`l'éditeur de collision de tuile <tile-"
+"collision-editor>`."
 
 #: ../../manual/editing-tilesets.rst:92
 msgid "Columns"
@@ -2256,16 +2239,15 @@ msgid "Terrain Information"
 msgstr "Information de Terrain"
 
 #: ../../manual/editing-tilesets.rst:135
-#, fuzzy
 msgid ""
 "Terrain information can be added to a tileset to enable the use of the "
 ":ref:`terrain-tool`. See the section about :ref:`defining terrain "
 "information <define-terrain-information>`."
 msgstr ""
-"L'information de terrain peut être ajoutée à un jeu de tuiles pour "
-"activer l'utilisation de :ref:`l'outil de terrain <terrain-tool>`. "
-"Visitez la section sur la :ref:`définition de l'information de terrain "
-"<define-terrain-information>`."
+"L'information de terrain peut être ajoutée à un jeu de tuiles pour activer "
+"l'utilisation de :ref:`l'outil de terrain <terrain-tool>`. Visitez la "
+"section sur la :ref:`définition de l'information de terrain <define-terrain-"
+"information>`."
 
 #: ../../manual/editing-tilesets.rst:146 ../../manual/editing-tilesets.rst:161
 msgid "Tile Collision Editor"
@@ -2278,6 +2260,11 @@ msgid ""
 "open a view where you can create and edit shapes on the tile. You can "
 "also associate custom properties with each shape."
 msgstr ""
+"L'éditeur de collision de tuiles est disponible en cliquant sur le bouton "
+"d'Éditeur de Collision de Tuiles |tile-collision-editor-icon| sur la barre "
+"d'outils. Cela va ouvrir une vue dans laquelle vous pouvez créer et éditer "
+"des formes sur la tuile. Vous pouvez aussi associer des propriétés "
+"personnalisées avec chaque forme."
 
 #: ../../manual/editing-tilesets.rst:153
 msgid ""
@@ -2286,6 +2273,11 @@ msgid ""
 " them to add certain hot-spots to your sprites like for particle emitters"
 " or the source of gunshots."
 msgstr ""
+"Normalement ces formes définissent les informations de collision pour une "
+"certaine image ou pour une tuile représentant la géométrie du niveau, mais "
+"bien sûr vous pouvez aussi les utiliser pour ajouter certaines zones "
+"sensibles à vos images pour par exemple des émetteurs de particules ou la "
+"source de coups de feu."
 
 #: ../../manual/editing-tilesets.rst:167
 msgid ""
@@ -2294,16 +2286,23 @@ msgid ""
 "*Show Tile Collision Shapes* in the *View* menu. The collision shapes are"
 " rendered for both tile layers and tile objects."
 msgstr ""
+"Afin de savoir rapidement si vos tuiles ont les bonnes zones de collision "
+"mises en place, elles peuvent être affichées sur la carte. Pour activer "
+"ceci, vérifier *Montrer les Formes de Collision des Tuiles* dans le menu "
+"*Vue*. Les formes de collision sont rendues pour les calques de tuiles et "
+"les objets tuiles."
 
 #: ../../manual/editing-tilesets.rst:175
 msgid ""
 "Collision shapes rendered on the map. This map is from `Owyn's Adventure "
 "<https://store.steampowered.com/app/1020940/Owyns_Adventure/>`__."
 msgstr ""
+"Formes de collision affichées sur la carte. Cette carte vient de `Owyn's "
+"Adventure <https://store.steampowered.com/app/1020940/Owyns_Adventure/>`__."
 
 #: ../../manual/editing-tilesets.rst:181 ../../manual/editing-tilesets.rst:194
 msgid "Tile Animation Editor"
-msgstr ""
+msgstr "Éditeur d'Animation de Tuile"
 
 #: ../../manual/editing-tilesets.rst:183
 msgid ""
@@ -2312,6 +2311,10 @@ msgid ""
 "its frames. Open it by clicking the *Tile Animation Editor* |tile-"
 "animation-editor-icon| button."
 msgstr ""
+"L'éditeur d'animation de tuile permet la définition d'une simple animation "
+"qui se répète pour chaque tuile en référant d'autres tuiles dans le jeu de "
+"tuiles en tant que ses trames. Ouvrez-le en cliquant sur le bouton "
+"|animation-editor-icon| *Éditeur d'Animation de Tuile*."
 
 #: ../../manual/editing-tilesets.rst:187
 msgid ""
@@ -2319,10 +2322,16 @@ msgid ""
 "getting a feeling of what it would look like in-game. The preview can be "
 "turned on or off via *View > Show Tile Animations*."
 msgstr ""
+"Les animations de tuiles peuvent être prévisualisées en temps réel sur "
+"Tiled, ce qui est utile pour voir de façon grossière ce à quoi elles vont "
+"ressembler en jeu. La prévisualisation peut être activée ou désactivée à "
+"travers *Vue > Montrer l'Animation des Tuiles*."
 
 #: ../../manual/editing-tilesets.rst:196
 msgid "The following steps allow to add or edit a tile animation:"
 msgstr ""
+"Les étapes suivantes permettent d'ajouter ou d'éditer une animation de tuile "
+":"
 
 #: ../../manual/editing-tilesets.rst:198
 msgid ""
@@ -2330,6 +2339,10 @@ msgid ""
 "Animation Editor* window show the (initially empty) animation associated "
 "with that tile, along with all other tiles from the tileset."
 msgstr ""
+"Sélectionnez la tuile dans la fenêtre principale de Tiled. Cela va forcer la "
+"fenêtre *Éditeur d'Animation de Tuile* à afficher l'animation (initialement "
+"vide) associée à cette tuile, ainsi que toutes les autres tuiles de ce jeu "
+"de tuiles."
 
 #: ../../manual/editing-tilesets.rst:202
 msgid ""
@@ -2338,18 +2351,24 @@ msgid ""
 "the same time. Each new frame gets a default duration of 100 ms (or other"
 " value when set using the :guilabel:`Frame Duration` field at the top)."
 msgstr ""
+"Glissez les tuiles depuis la vue du jeu de tuiles dans l'Éditeur d'Animation "
+"de Tuile das la liste à gauche pour ajouter les trames d'animation. Vous "
+"pouvez glisser plusieurs tuiles en même temps. chaque nouvelle trame a une "
+"durée par défaut de 100 ms (ou une autre valeur utilisant le champ "
+":guilabel:`Durée de la Trame` en haut)."
 
 #: ../../manual/editing-tilesets.rst:207
 msgid "Double-click on the duration of a frame to change it."
-msgstr ""
+msgstr "Double-cliquez sur la durée d'une trame pour la changer."
 
 #: ../../manual/editing-tilesets.rst:209
 msgid "Drag frames around in the list to reorder them."
-msgstr ""
+msgstr "Glissez les trames à travers la liste pour les réordonner."
 
 #: ../../manual/editing-tilesets.rst:211
 msgid "A preview of the animation shows in the bottom left corner."
 msgstr ""
+"Une prévisualisation de l'animation est visible dans le coin en bas à gauche."
 
 #: ../../manual/editing-tilesets.rst:213
 msgid ""
@@ -2357,72 +2376,77 @@ msgid ""
 " changing the value in the :guilabel:`Frame Duration` field and then "
 "clicking :guilabel:`Apply`."
 msgstr ""
+"Vous pouvez changer la durée de plusieurs trames à la fois en les "
+"sélectionnant, en changeant la valeur dans le champ :guilabel:`Durée de la "
+"Trame` et enfin en cliquant sur :guilabel:`Appliquer`."
 
 #: ../../manual/editing-tilesets.rst:230
 msgid ""
 "There are many ways in which the tileset editor can be made more "
 "efficient, for example:"
 msgstr ""
+"Il y a possiblement plein de moyens de rendre d'éditeur de jeu de tuiles "
+"plus efficace, par exemple :"
 
 #: ../../manual/editing-tilesets.rst:233
-#, fuzzy
 msgid "**Terrain Sets**"
-msgstr "Brosse de Terrain"
+msgstr "**Collections de Terrain**"
 
 #: ../../manual/editing-tilesets.rst:235
-#, fuzzy
 msgid ""
 "Make it easier to set up terrain (`#1729 "
 "<https://github.com/bjorn/tiled/issues/1729>`__)"
 msgstr ""
-"La mise en place de tuiles Wang est plus facile (`#1729 "
-"<https://github.com/bjorn/tiled/issues/1729>`__)"
+"La mise en place de tuiles de terrain est plus facile (`#1729 <https://github"
+".com/bjorn/tiled/issues/1729>`__)"
 
 #: ../../manual/editing-tilesets.rst:237
 msgid "**Tile Collision Editor**"
-msgstr ""
+msgstr "**Éditeur de Collision de Tuiles**"
 
 #: ../../manual/editing-tilesets.rst:239
 msgid ""
 "Allow setting collisions for multiple tiles at once (`#1322 "
 "<https://github.com/bjorn/tiled/issues/1322>`__)"
 msgstr ""
+"Ajout de la possibilité d'ajouter des collisions pour plusieurs tuiles à la "
+"fois (`#1322 <https://github.com/bjorn/tiled/issues/1322>`__)"
 
 #: ../../manual/editing-tilesets.rst:240
-#, fuzzy
 msgid ""
 "Render tile collision shapes to the tileset view (`#1281 "
 "<https://github.com/bjorn/tiled/issues/1281>`__)"
 msgstr ""
-"La mise en place de tuiles Wang est plus facile (`#1729 "
-"<https://github.com/bjorn/tiled/issues/1729>`__)"
+"Visualisation des formes de collision de tuiles dans la vue de jeu de tuiles "
+"(`#1281 <https://github.com/bjorn/tiled/issues/1281>`__)"
 
 #: ../../manual/editing-tilesets.rst:242
 msgid "**Tile Animation Editor**"
-msgstr ""
+msgstr "**Éditeur d'Animation de Tuiles**"
 
 #: ../../manual/editing-tilesets.rst:244
 msgid ""
 "Support multiple named animations per tile (`#986 "
 "<https://github.com/bjorn/tiled/issues/986>`__)"
 msgstr ""
+"Support de plusieurs animations nommées par tuile (`#986 <https://github.com/"
+"bjorn/tiled/issues/986>`__)"
 
 #: ../../manual/editing-tilesets.rst:245
-#, fuzzy
 msgid ""
 "Make it easier to define animations spanning multiple tiles (`#811 "
 "<https://github.com/bjorn/tiled/issues/811>`__)"
 msgstr ""
-"La mise en place de tuiles Wang est plus facile (`#1729 "
-"<https://github.com/bjorn/tiled/issues/1729>`__)"
+"La définition d'animations affichées sur plusieurs tuiles a été rendue plus "
+"facile (`#811 <https://github.com/bjorn/tiled/issues/811>`__)"
 
 #: ../../manual/export.rst:18
 msgid "Supported Formats"
-msgstr ""
+msgstr "Formats Supportés"
 
 #: ../../manual/export.rst:2
 msgid "Export Formats"
-msgstr ""
+msgstr "Exporter des Formats"
 
 #: ../../manual/export.rst:4
 msgid ""
@@ -2431,6 +2455,11 @@ msgid ""
 "number of additional file and export formats, as well as :ref:`exporting "
 "a map to an image <export-as-image>`."
 msgstr ""
+"Même s'il y a de nombreuses :doc:`bibliothèques et environnements </"
+"reference/support-for-tmx-maps>` qui travaillent directement avec des cartes "
+"Tiled, Tiled supporte aussi un nombre de fichiers et de formats "
+"d'exportation supplémentaires, ainsi que :ref:`l'exportation de la carte "
+"vers une image <export-as-image>`."
 
 #: ../../manual/export.rst:9
 msgid ""
@@ -2439,6 +2468,11 @@ msgid ""
 "first time. Exporting can also be automated using the ``--export-map`` "
 "and ``--export-tileset`` command-line parameters."
 msgstr ""
+"L'exportation peut être effectuée en cliquant sur *Fichier > Exporter*. "
+"Lorsque l'action de menu est lancée plusieurs fois, Tiled ne demandera le "
+"nom du fichier que la première fois. L'exportation peut aussi être "
+"automatisée en utilisant les paramètres de ligne de commande ``--export-map``"
+" et ``--export-tileset``."
 
 #: ../../manual/export.rst:14
 msgid ""
@@ -2446,6 +2480,9 @@ msgid ""
 " tilesets before they are exported (without affecting the map or tileset "
 "itself)."
 msgstr ""
+"Quelques :ref:`options d'exportation <export-options>` sont disponibles, qui "
+"sont appliquées aux cartes et jeux de tuiles avant qu'ils ne soient exportés "
+"(sans affecter la carte ou le jeu de tuiles lui-même)."
 
 #: ../../manual/export.rst:33
 msgid ""
@@ -2454,21 +2491,27 @@ msgid ""
 " a headless X server such as `Xvfb`_. In this case you would run Tiled "
 "from the command-line as follows:"
 msgstr ""
+"Lors d'une exportation via ligne de commande sur Linux, Tiled aura quand "
+"même besoin d'un serveur X pour fonctionner. Pour automatiser des "
+"exportations dans un environnement sans interface graphique, vous pouvez "
+"utiliser un serveur X sans interface graphique tel que `Xvfb`_. Dans ce cas-"
+"ci, vous voulez lancer Tiled à travers une ligne de commande comme ceci :"
 
 #: ../../manual/export-custom.rst:2
-#, fuzzy
 msgid "Custom Export Formats"
-msgstr "Propriétés Personnalisées"
+msgstr "Formats d'Exportation Personnalisés"
 
 #: ../../manual/export-custom.rst:4
 msgid ""
 "Tiled provides several options for extending it with support for "
 "additional file formats."
 msgstr ""
+"Tiled offre plusieurs options pour être étendu avec un support pour des "
+"formats de fichiers supplémentaires."
 
 #: ../../manual/export-custom.rst:12
 msgid "Using JavaScript"
-msgstr ""
+msgstr "Utiliser JavaScript"
 
 #: ../../manual/export-custom.rst:14
 msgid ""
@@ -2478,20 +2521,28 @@ msgid ""
 " or `tiled.registerTilesetFormat "
 "<https://www.mapeditor.org/docs/scripting/modules/tiled.html#registertilesetformat>`__."
 msgstr ""
+"Tiled est :doc:`extensible en utilisant JavaScript </reference/scripting>` "
+"et il est possible d'ajouter de nouveaux formats en utilisant `"
+"tiled.registerMapFormat <https://www.mapeditor.org/docs/scripting/modules/"
+"tiled.html#registermapformat>`__ ou `tiled.registerTilesetFormat <https://www"
+".mapeditor.org/docs/scripting/modules/tiled.html#registertilesetformat>`__."
 
 #: ../../manual/export-custom.rst:20
 msgid "Using Python"
-msgstr ""
+msgstr "Utiliser Python"
 
 #: ../../manual/export-custom.rst:22
 msgid ""
 "It is also possible to write :doc:`Python scripts <python>` to add "
 "support for importing or exporting custom map formats."
 msgstr ""
+"Il est aussi possible d'écrire des :doc:`scripts Python <python>` pour "
+"ajouter un support pour l'importation et l'exportation de formats de cartes "
+"personnalisés."
 
 #: ../../manual/export-custom.rst:26
 msgid "Using C++"
-msgstr ""
+msgstr "Utiliser C++"
 
 #: ../../manual/export-custom.rst:28
 msgid ""
@@ -2500,6 +2551,11 @@ msgid ""
 "style comments in the ``libtiled`` source code), but there are over a "
 "dozen examples you can look at."
 msgstr ""
+"Pour l'instant, toutes les options d'exportation distribuées avec Tiled sont "
+"écrites en tant que greffons de Tiled en C++. L'API pour de tels greffons "
+"n'est pas documentée (mis à part des commentaires dans le style de Doxygen "
+"dans le code source de ``libtiled``), mais il y a plus d'une douzaine "
+"d'exemples que vous pouvez étudier."
 
 #: ../../manual/export-custom.rst:35
 msgid ""
@@ -2511,20 +2567,30 @@ msgid ""
 "useful for others, it is recommended you open a pull request to have it "
 "shipped with Tiled."
 msgstr ""
+"Pour des raisons de compatibilité binaire, un greffon en C++ a besoin d'être "
+"compilé pour la même plateforme, par le même compilateur et avec les mêmes "
+"versions de Qt et de Tiled que le plugin est censé supporter. Généralement, "
+"le moyen le plus facile d't arriver est de compiler le greffon en même temps "
+"que Tiled, ce qui est fait avec tous les greffons actuels. Si vous écrivez "
+"un greffon en C++ qui peut être utile pour d'autres utilisateurs, il est "
+"recommandé d'ouvrir une requête de fusion pour qu'il soit distribué avec "
+"Tiled."
 
 #: ../../manual/export-defold.rst:2
 msgid "Defold"
-msgstr ""
+msgstr "Defold"
 
 #: ../../manual/export-defold.rst:4
 msgid ""
 "Tiled can export to `Defold <https://defold.com/>`__ using one of the two"
 " supplied plugins. Both are disabled by default."
 msgstr ""
+"Tiled peut exporter vers `Defold <https://defold.com/>`__ en utilisant un "
+"des deux greffons fournis. Ils sont tous deux désactivés par défaut."
 
 #: ../../manual/export-defold.rst:8
 msgid "defold"
-msgstr ""
+msgstr "defold"
 
 #: ../../manual/export-defold.rst:10
 msgid ""
@@ -2532,16 +2598,21 @@ msgid ""
 "<https://www.defold.com/manuals/tilemap/>`__ (\\*.tilemap). It only "
 "supports tile layers and only a single tileset may be used."
 msgstr ""
+"Ce greffon exporte une carte en tant que `Carte de Tuiles Defold <https://www"
+".defold.com/manuals/tilemap/>`__ (\\*.tilemap). Il supporte seulement des "
+"calques de tuiles et seulement un seul jeu de tuiles peut être utilisé."
 
 #: ../../manual/export-defold.rst:13
 msgid ""
 "Upon export, the ``tile_set`` property of the Tile Map is left empty, so "
 "it will need to be set up in Defold after each export."
 msgstr ""
+"Lors de l'exportation, la propriété ``tile_set`` de la carte de tuiles est "
+"laissée vide, donc elle doit être remplie dans Defold après chaque export."
 
 #: ../../manual/export-defold.rst:21
 msgid "defoldcollection"
-msgstr ""
+msgstr "defoldcollection"
 
 #: ../../manual/export-defold.rst:23
 msgid ""
@@ -2549,25 +2620,29 @@ msgid ""
 "<https://www.defold.com/manuals/building-blocks/>`__ (\\*.collection), "
 "while also creating multiple .tilemap files."
 msgstr ""
+"Ce greffon exporte une carte en tant que `Collection Defold <https://www."
+"defold.com/manuals/building-blocks/>`__ (\\*.collection), et créée aussi "
+"plusieurs fichiers .tilemap."
 
 #: ../../manual/export-defold.rst:27
 msgid "It supports:"
-msgstr ""
+msgstr "Il supporte :"
 
 #: ../../manual/export-defold.rst:29
 msgid ""
 "Group layers (**only top-level group layers are supported, not nested "
 "ones!**)"
 msgstr ""
+"Les calques de groupes (**seuls les calques de groupes à la racine sont "
+"supportés, pas ceux qui sont imbriqués!**)"
 
 #: ../../manual/export-defold.rst:30
-#, fuzzy
 msgid "Multiple Tilesets per Tilemap"
-msgstr "Plusieurs Règles dans Un Fichier de Règles"
+msgstr "Plusieurs Jeux de Tuiles par Carte de Tuiles"
 
 #: ../../manual/export-defold.rst:32
 msgid "Upon export:"
-msgstr ""
+msgstr "Lors de l'exportation :"
 
 #: ../../manual/export-defold.rst:34
 msgid ""
@@ -2577,6 +2652,11 @@ msgid ""
 "your project's ``/tilesources/`` directory. If one is found, manual "
 "adjustments won't be necessary."
 msgstr ""
+"La propriété ``Path`` de chaque jeu de tuiles peut avoir à être modifié "
+"manuellement dans Defold après chaque exportation. Cependant, Tiled va "
+"essayer de trouver le fichier .tilesource correspondant avec le nom du jeu "
+"de tuiles dans Tiled dans le répertoire ``/tilesources/`` de votre projet. "
+"Si un fichier est trouvé, un ajustement manuel ne sera pas nécessaire."
 
 #: ../../manual/export-defold.rst:40
 msgid ""
@@ -2585,6 +2665,10 @@ msgid ""
 " GameObject in the Collection. This is useful when working with "
 ":doc:`Worlds <worlds>`."
 msgstr ""
+"Si vous créez des propriétes personnalisées pour votre carte nommées "
+"``x-offset`` et ``y-offset``, ces valeurs seront utilisées en tant que "
+"coordonnées pour votre GameObject de haut niveau dans la collection. C'est "
+"utile si vous travaillez avec des :doc:`Mondes <worlds>`."
 
 #: ../../manual/export-defold.rst:45
 msgid ""
@@ -2592,26 +2676,35 @@ msgid ""
 "ranging between 0 and 0.1. The plugin supports the use of 9999 Group "
 "Layers and 9999 Tile Layers per Group Layer."
 msgstr ""
+"Tous les calques d'une carte de tuiles auront une propriété d'index Z "
+"assignée avec des valeurs fluctuant entre 0 et 0.1. Le greffon supporte "
+"l'utilisation de 9999 calques de groupes et 9999 calques de tuiles par "
+"calque de groupes."
 
 #: ../../manual/export-defold.rst:49
 msgid ""
 "When any additional information from the map is needed, the map can be "
 "exported in :ref:`Lua format <lua-export>` and loaded as Defold script."
 msgstr ""
+"Quand toute information supplémentaire est nécessaire pour la carte, elle "
+"peut être exportée dans un :ref:`format Lua <lua-export>` et chargée en tant "
+"que script Defold."
 
 #: ../../manual/export-generic.rst:2
 msgid "Generic File Formats"
-msgstr ""
+msgstr "Formats de Fichiers Génériques"
 
 #: ../../manual/export-generic.rst:4
 msgid ""
 "Tiled supports exporting to several generic file formats which are not "
 "targeting any specific framework."
 msgstr ""
+"Tiled supporte l'exportation vers plusieurs formats de fichiers génériques "
+"qui ne visent pas une plateforme spécifique."
 
 #: ../../manual/export-generic.rst:8
 msgid "JSON"
-msgstr ""
+msgstr "JSON"
 
 #: ../../manual/export-generic.rst:10
 msgid ""
@@ -2621,10 +2714,16 @@ msgid ""
 "all Tiled features. Especially in the browser and when using JavaScript "
 "in general, the JSON format is easier to load."
 msgstr ""
+":doc:`Le format JSON </reference/json-map-format>` est le format de fichier "
+"supplémentaire le plus commun supporté par Tiled. Il peut être utilisé "
+"plutôt que le TMX depuis que Tiled peut ouvrir des cartes et jeux de tuiles "
+"en JSON et le format supporte toutes les fonctionnalités de Tiled. Le format "
+"JSON est plus facile à charger, surtout dans un navigateur et lors de "
+"l'utilisation de JavaScript en général."
 
 #: ../../manual/export-generic.rst:19
 msgid "Lua"
-msgstr ""
+msgstr "Lua"
 
 #: ../../manual/export-generic.rst:21
 msgid ""
@@ -2633,6 +2732,11 @@ msgid ""
 "framework like `LÖVE`_ (with `Simple Tiled Implementation`_), `Solar2D`_ "
 "(with `ponytiled`_ or `Dusk Engine`_) or `Defold`_."
 msgstr ""
+"Les cartes et jeux de tuiles peuvent être exportés en tant que code Lua. "
+"Cette option d'exportation supporte la majorité des fonctionnalités de Tiled "
+"et est utile lors de l'utilisation d'un environnement basé sur Lua tel que "
+"`LÖVE`_ (avec `Simple Implémentation avec Tiled`_), `Solar2D`_ "
+"(avec`ponytiled`_ ou `Dusk Engine`_) ou `Defold`_."
 
 #: ../../manual/export-generic.rst:26
 msgid ""
@@ -2640,6 +2744,10 @@ msgid ""
 " does affect how a property value is exported) and information related to"
 " :doc:`object templates <using-templates>`."
 msgstr ""
+"Pour l'instant, les types de propriétés personnalisés ne sont pas "
+"implémentés (cependant le type affecte la façon dont la valeur de la "
+"propriété est exportée), ainsi que les informations liées aux :doc:`modèles "
+"d'objet <using-templates>`."
 
 #: ../../manual/export-generic.rst:31
 msgid "CSV"
@@ -3094,9 +3202,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/export-yy.rst:55
-#, fuzzy
 msgid "Exporting a Tiled Map"
-msgstr "Créer une Nouvelle Carte"
+msgstr "Exporter une Carte Tiled"
 
 #: ../../manual/export-yy.rst:57
 msgid ""
@@ -3248,9 +3355,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/export-yy.rst:157
-#, fuzzy
 msgid "Tile Graphics"
-msgstr "Propriétés des Tuiles"
+msgstr "Graphismes des Tuiles"
 
 #: ../../manual/export-yy.rst:159
 msgid ""
@@ -3352,9 +3458,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/export-yy.rst:208
-#, fuzzy
 msgid "Special Cases and Custom Properties"
-msgstr "Propriétés Personnalisées"
+msgstr "Cas Spéciaux et Propriétés Personnalisées"
 
 #: ../../manual/export-yy.rst:211
 msgid "Rooms"
@@ -3423,9 +3528,8 @@ msgid "Viewports and Cameras"
 msgstr ""
 
 #: ../../manual/export-yy.rst:246 ../../manual/export-yy.rst:300
-#, fuzzy
 msgid "**General**"
-msgstr "Général"
+msgstr "**Général**"
 
 #: ../../manual/export-yy.rst:248
 msgid "bool ``inheritViewSettings`` (default: false)"
@@ -3486,9 +3590,8 @@ msgid "bool ``inherit`` (default: false)"
 msgstr ""
 
 #: ../../manual/export-yy.rst:304
-#, fuzzy
 msgid "**Camera Properties**"
-msgstr "Propriétés des Calques"
+msgstr "**Propriétés de la Caméra**"
 
 #: ../../manual/export-yy.rst:306
 msgid ""
@@ -3497,9 +3600,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/export-yy.rst:309
-#, fuzzy
 msgid "**Viewport Properties**"
-msgstr "Propriétés des Tuiles"
+msgstr "**Propriétés de la Fenêtre d'Affichage**"
 
 #: ../../manual/export-yy.rst:313
 msgid "int ``wport`` (default: 1366)"
@@ -3603,7 +3705,6 @@ msgstr ""
 "être configuré."
 
 #: ../../manual/introduction.rst:20
-#, fuzzy
 msgid ""
 "The primary tool for editing :ref:`tile layers <tile-layer-introduction>`"
 " is a stamp brush that allows efficient painting and copying of tile "
@@ -3613,13 +3714,12 @@ msgid ""
 ":`pattern-matching <automapping>` to automate parts of your work."
 msgstr ""
 "L'outil principal pour éditer les :ref:`calques de tuiles <tile-layer-"
-"introduction>` est un pinceau tampon qui permet un remplissage et une "
-"copie efficace de zones de tuiles. Il supporte aussi le dessin de lignes "
-"et de cercles. De plus, il y a plusieurs outils de sélection et un outil "
-"qui fait des :doc:`transitions automatiques de terrain <using-the-"
-"terrain-tool>`. Finalement, il peut appliquer des changements basés sur "
-"une `correspondance de motif`_ pour automatiser des parties de votre "
-"travail."
+"introduction>` est un pinceau tampon qui permet un remplissage et une copie "
+"efficace de zones de tuiles. Il supporte aussi le dessin de lignes et de "
+"cercles. De plus, il y a plusieurs outils de sélection et un outil qui fait "
+"des :doc:`transitions automatiques de terrain <terrain>`. Finalement, il "
+"peut appliquer des changements basés sur une :doc:`correspondance de motif "
+"<automapping>` pour automatiser des parties de votre travail."
 
 #: ../../manual/introduction.rst:27
 msgid ""
@@ -3642,7 +3742,6 @@ msgstr ""
 "n'importe quelle information à votre niveau dont votre jeu a besoin."
 
 #: ../../manual/introduction.rst:35
-#, fuzzy
 msgid ""
 "Other things worth mentioning are the support for adding custom map or "
 "tileset formats through plugins, :doc:`extending Tiled "
@@ -3650,10 +3749,12 @@ msgid ""
 ":ref:`tile animation support <tile-animation-editor>` and the :ref:`tile "
 "collision editor <tile-collision-editor>`."
 msgstr ""
-"D'autres choses qui valent d'être mentionné sont le support d'ajout de "
-"format de tileset ou de carte au travers de plugins, la mémoire du tampon"
-" de tuile, le support d'animation de tuile et l'éditeur de collision de "
-"tuile."
+"D'autres choses qui valent d'être mentionnées sont le support d'ajout de "
+"format de jeu de tuiles ou de carte personnalisés au travers de greffons, "
+":doc:`l'extension de Tiled </reference/scripting>` via JavaScript, la "
+"mémoire du tampon de tuile, :ref:`le support d'animation de tuile <tile-"
+"animation-editor>` et :doc:`l'éditeur de collision de tuile <tile-collision-"
+"editor>`."
 
 #: ../../manual/introduction.rst:44
 msgid "Getting Started"
@@ -3704,14 +3805,12 @@ msgid "Creating a New Map"
 msgstr "Créer une Nouvelle Carte"
 
 #: ../../manual/introduction.rst:79
-#, fuzzy
 msgid ""
 "To create a new map, choose *File -> New -> New Map…* (``Ctrl+N``). The "
 "following dialog will pop up:"
 msgstr ""
-"La première chose que nous ferons est de commencer une nouvelle carte "
-"avec *Fichier -> Nouveau -> Nouvelle Carte...* (``Ctrl+N``). La boite de "
-"dialogue suivante apparaîtra :"
+"Pour créer une nouvelle carte, choisissez *Fichier -> Nouveau -> Nouvelle "
+"Carte...* (``Ctrl+N``). La boite de dialogue suivante va apparaître :"
 
 #: ../../manual/introduction.rst:86
 msgid "New Map"
@@ -3757,7 +3856,6 @@ msgid "New Tileset"
 msgstr "Nouveau Jeu de Tuile"
 
 #: ../../manual/introduction.rst:111
-#, fuzzy
 msgid ""
 "Click the :guilabel:`Browse…` button and select the "
 ":file:`tmw_desert_spacing.png` tileset from the examples shipping with "
@@ -3766,12 +3864,13 @@ msgid ""
 " a one pixel *spacing* in between the tiles (this is pretty rare "
 "actually, usually you should leave these values on 0)."
 msgstr ""
-"Cliquez sur le bouton *Parcourir...* et sélectionnez le jeu de tuile `` "
-"tmw_desert_spacing.png`` à partir des exemples de chargement avec Tiled "
-"(ou utilisez un des vôtres si vous le souhaitez). Cet exemple de jeu de "
-"tuile a une taille de 32x32. Il y a aussi une *marge* d'un pixel autour "
-"de la tuile et un pixel *d'espace* entre les tuiles (c'est assez rare en "
-"fait, vous devrez généralement laisser ces valeurs sur 0)."
+"Cliquez sur le bouton :guilabel:`Parcourir...` et sélectionnez le "
+":file:`tmw_desert_spacing.png` jeu de tuiles à partir des exemples fournis "
+"avec Tiled (ou utilisez un des vôtres si vous le souhaitez). Cet exemple de "
+"jeu de tuiles utilise des tuiles de taille 32x32. Il y a aussi une *marge* "
+"d'un pixel autour de la tuile et un *espacement* d'un pixel entre les tuiles "
+"(c'est assez rare normalement, vous devrez généralement laisser ces valeurs "
+"à 0)."
 
 #: ../../manual/introduction.rst:120
 msgid ""
@@ -3834,6 +3933,8 @@ msgid ""
 "Most of the below shortcuts can be changed in the :ref:`Preferences "
 "<keyboard-options>`."
 msgstr ""
+"La majorité des raccourcis clavier ci-dessous peuvent être changés dans les "
+":ref:`Préférences <keyboard-options>`."
 
 #: ../../manual/keyboard-shortcuts.rst:9
 msgid "On Mac, replace ``Ctrl`` with the ``Command`` key."
@@ -3844,14 +3945,13 @@ msgid ""
 "``Right Click on Tile`` - Captures the tile under the mouse (drag to "
 "capture larger areas)."
 msgstr ""
-"``Click droit sur une tuile`` - Copie la tuile sous la souris (faites "
-"glisser pour copier des zones plus grandes)."
+"``Click Droit sur une Tuile`` - Copie la tuile sous la souris (glisser pour "
+"copier des zones plus grandes)."
 
 #: ../../manual/keyboard-shortcuts.rst:16
 msgid "``Ctrl + MouseWheel`` - Zoom in/out on tileset and map"
 msgstr ""
-"``Ctrl + Roulette de la souris`` - Zoom avant / arrière sur le jeu de "
-"tuile et la carte"
+"``Ctrl + Roulette`` - Zoom avant / arrière sur le jeu de tuiles et la carte"
 
 #: ../../manual/keyboard-shortcuts.rst:17
 msgid "``Ctrl + Plus/Minus`` - Zoom in/out on map"
@@ -3859,25 +3959,25 @@ msgstr "``Ctrl + Plus / Moins`` - Zoom avant / arrière sur la carte"
 
 #: ../../manual/keyboard-shortcuts.rst:18
 msgid "``Ctrl + 0`` - Reset zoom on map"
-msgstr "`` Ctrl + 0`` - Réinitialiser le zoom sur la carte"
+msgstr "``Ctrl + 0`` - Réinitialiser le zoom sur la carte"
 
 #: ../../manual/keyboard-shortcuts.rst:19
 msgid "``Ctrl + Object Move`` - Toggles \"Snap to Grid\" temporarily"
 msgstr ""
-"``Ctrl + Mouvement d'un objet``- Active temporairement ''Aligner sur la "
+"``Ctrl + Mouvement d'un Objet``- Active temporairement ''Aligner sur la "
 "Grille''"
 
 #: ../../manual/keyboard-shortcuts.rst:20
 msgid "``Ctrl + Object Resize`` - Keep aspect ratio"
 msgstr ""
-"``Ctrl + Changement de taille d'un objet`` - Conserve les proportions de "
+"``Ctrl + Changement de Taille d'un Objet`` - Conserve les proportions de "
 "l'objet"
 
 #: ../../manual/keyboard-shortcuts.rst:21
 msgid "``Alt + Object Resize`` - Toggles \"Snap to Grid\" temporarily"
 msgstr ""
-"``Alt + Changement de taille d'un objet`` - Active temporairement "
-"''Aligner sur la Grille''"
+"``Alt + Changement de Taille d'un Objet`` - Active temporairement ''Aligner "
+"sur la Grille''"
 
 #: ../../manual/keyboard-shortcuts.rst:22
 msgid "``Middle Click`` or ``Space Bar`` - Hold to pan the map view"
@@ -3907,7 +4007,7 @@ msgstr "``H`` - Basculer la surbrillance du calque actuel"
 
 #: ../../manual/keyboard-shortcuts.rst:28
 msgid "``A`` - Invokes :doc:`automapping`"
-msgstr ""
+msgstr "``A`` - Invoquer :doc:`l'automapping <automapping>`"
 
 #: ../../manual/keyboard-shortcuts.rst:29
 msgid ""
@@ -3915,12 +4015,11 @@ msgid ""
 " coordinates)"
 msgstr ""
 "``Alt + C`` - Copie la position actuelle du curseur de la souris dans le "
-"presse-papiers (en coordonnées de tuiles)"
+"presse-papiers (en tant que coordonnées de tuiles)"
 
 #: ../../manual/keyboard-shortcuts.rst:31
-#, fuzzy
 msgid "``Ctrl + D`` - Duplicate selected objects"
-msgstr "``Ctrl + Shift + D`` - Dupliquer le calque actif"
+msgstr "``Ctrl + D`` - Dupliquer les objets sélectionnés"
 
 #: ../../manual/keyboard-shortcuts.rst:32
 msgid "``Ctrl + Shift + D`` - Duplicate active layer"
@@ -3931,90 +4030,84 @@ msgid "``F2`` - Rename (if applicable in context)"
 msgstr "``F2`` - Renommer (si applicable dans le contexte)"
 
 #: ../../manual/keyboard-shortcuts.rst:34
-#, fuzzy
 msgid "``Tab`` - Hide docks and tool bars"
-msgstr ""
-"``Tab`` - Cache les fenêtres subsidiaires et les barres d'outils (depuis "
-"Tiled 1.0)"
+msgstr "``Tab`` - Cacher les fenêtres subsidiaires et les barres d'outils"
 
 #: ../../manual/keyboard-shortcuts.rst:35
 msgid "``Ctrl + PgUp`` - Select previous layer (above current layer)"
 msgstr ""
-"``Ctrl + PgHaut`` - Sélectionne le calque précédent (au-dessus du calque "
+"``Ctrl + PgHaut`` - Sélectionner le calque précédent (au-dessus du calque "
 "actuel)"
 
 #: ../../manual/keyboard-shortcuts.rst:36
 msgid "``Ctrl + PgDown`` - Select next layer (below current layer)"
 msgstr ""
-"``Ctrl + PgBas`` - Sélectionne le prochain calque (en-dessous du calque "
+"``Ctrl + PgBas`` - Sélectionner le prochain calque (en-dessous du calque "
 "actuel)"
 
 #: ../../manual/keyboard-shortcuts.rst:37
 msgid "``Ctrl + Shift + Up`` - Move current layer up"
-msgstr "``Ctrl + Maj + Haut`` - Monte le calque actuel"
+msgstr "``Ctrl + Maj + Haut`` - Monter le calque actuel"
 
 #: ../../manual/keyboard-shortcuts.rst:38
 msgid "``Ctrl + Shift + Down`` - Move current layer down"
-msgstr "``Ctrl + Maj + Bas`` - Descend le calque actuel"
+msgstr "``Ctrl + Maj + Bas`` - Descendre le calque actuel"
 
 #: ../../manual/keyboard-shortcuts.rst:39
 msgid ""
 "``Ctrl + Shift + H`` - Show/Hide all other layers (only active layer "
 "visible / all layers visible)"
 msgstr ""
-"``Ctrl + Maj + H`` - Montre/Cache tous les autres calques (seul le calque"
-" actif reste visible/tous les calques deviennent visible)"
+"``Ctrl + Maj + H`` - Montrer/Cacher tous les autres calques (seul le calque "
+"actif reste visible/tous les calques deviennent visible)"
 
 #: ../../manual/keyboard-shortcuts.rst:41
 msgid "``Ctrl + Tab`` - Switch to left document"
-msgstr "``Ctrl + Tab`` - Passe au document à gauche"
+msgstr "``Ctrl + Tab`` - Passer au document à gauche"
 
 #: ../../manual/keyboard-shortcuts.rst:42
 msgid "``Ctrl + Shift + Tab`` - Switch to right document"
-msgstr "``Ctrl + Maj + Tab`` - Passe au document à droite"
+msgstr "``Ctrl + Maj + Tab`` - Passer au document à droite"
 
 #: ../../manual/keyboard-shortcuts.rst:43
 msgid "``Alt + Left`` - Switch to left document"
-msgstr "``Alt + Gauche`` - Passe au document à gauche"
+msgstr "``Alt + Gauche`` - Passer au document à gauche"
 
 #: ../../manual/keyboard-shortcuts.rst:44
 msgid "``Alt + Right`` - Switch to right document"
-msgstr "``Alt + Droite`` - Passe au document à droite"
+msgstr "``Alt + Droite`` - Passer au document à droite"
 
 #: ../../manual/keyboard-shortcuts.rst:45
-#, fuzzy
 msgid "``]`` - Select next tileset"
-msgstr "``Del`` - Supprimer (tuiles ou objets)"
+msgstr "``]`` - Sélectionner le jeu de tuiles suivant"
 
 #: ../../manual/keyboard-shortcuts.rst:46
-#, fuzzy
 msgid "``[`` - Select previous tileset"
-msgstr "``Del`` - Supprimer (tuiles ou objets)"
+msgstr "``[`` - Sélectionner le jeu de tuiles précédent"
 
 #: ../../manual/keyboard-shortcuts.rst:47
 msgid "``Ctrl + G`` - Toggle displaying of the tile grid"
-msgstr "``Ctrl + G`` - Active / Désactive l'affichage de la grille de tuile"
+msgstr "``Ctrl + G`` - Activer / Désactiver l'affichage de la grille de tuile"
 
 #: ../../manual/keyboard-shortcuts.rst:48
 msgid "``Ctrl + W`` - Close current document"
-msgstr "``Ctrl + W`` - Ferme le document actuel"
+msgstr "``Ctrl + W`` - Fermer le document actuel"
 
 #: ../../manual/keyboard-shortcuts.rst:49
 msgid "``Ctrl + Shift + W`` - Close all documents"
-msgstr "``Ctrl + Alt + W`` - Ferme tous les documents"
+msgstr "``Ctrl + Maj + W`` - Fermer tous les documents"
 
 #: ../../manual/keyboard-shortcuts.rst:50
 msgid "``Ctrl + E`` - Export current document"
-msgstr "``Ctrl + E`` - Exporte le document actuel"
+msgstr "``Ctrl + E`` - Exporter le document actuel"
 
 #: ../../manual/keyboard-shortcuts.rst:51
 msgid "``Ctrl + Shift + E`` - Export current document to another file"
-msgstr "``Ctrl + Maj + E`` - Exporte le document actuel vers un autre fichier"
+msgstr "``Ctrl + Maj + E`` - Exporter le document actuel vers un autre fichier"
 
 #: ../../manual/keyboard-shortcuts.rst:52
-#, fuzzy
 msgid "``Ctrl + Q`` - Quit Tiled"
-msgstr "``Ctrl + Tab`` - Passe au document à gauche"
+msgstr "``Ctrl + Q`` - Arrêter Tiled"
 
 #: ../../manual/keyboard-shortcuts.rst:53
 msgid "``Ctrl + R`` - Reload current document"
@@ -4025,9 +4118,9 @@ msgid ""
 "``Ctrl + T`` - Force-reload all tilesets used by the current map (mainly "
 "useful when not using the automatic reloading)"
 msgstr ""
-"``Ctrl + T`` - Forcer le rechargement de tous les jeux de tuile utilisés "
-"par la carte actuelle (principalement utile quand le rechargement "
-"automatique n'est pas utilisé)"
+"``Ctrl + T`` - Forcer le rechargement de tous les jeux de tuiles utilisés "
+"par la carte actuelle (principalement utilisé quand le rechargement "
+"automatique n'est pas activé)"
 
 #: ../../manual/keyboard-shortcuts.rst:58
 msgid "When a tile layer is selected"
@@ -4035,94 +4128,97 @@ msgstr "Quand un calque de tuiles est sélectionné"
 
 #: ../../manual/keyboard-shortcuts.rst:60
 msgid "``D`` - Toggle Random Mode"
-msgstr ""
+msgstr "``D`` - Activer / Désactiver le Mode Aléatoire"
 
 #: ../../manual/keyboard-shortcuts.rst:61
 msgid "``B`` - Activate :ref:`stamp-tool`"
-msgstr "``B`` - Active la :ref:`Brosse Tampon <stamp-tool>`"
+msgstr "``B`` - Activer la :ref:`Brosse Tampon <stamp-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:63
 msgid ""
 "``Shift + Click`` - Line mode, places tiles on a line between two clicked"
 " locations"
 msgstr ""
+"``Maj + Click`` - Mode ligne, permet de placer des tuiles sur une ligne "
+"entre deux position cliquées"
 
 #: ../../manual/keyboard-shortcuts.rst:65
 msgid ""
 "``Ctrl + Shift + Click`` - Circle mode, places tiles around the clicked "
 "center"
 msgstr ""
+"``Ctrl + Maj + Click`` - Mode cercle, permet de placer des tuiles autour du "
+"centre cliqué"
 
 #: ../../manual/keyboard-shortcuts.rst:68
 msgid "``T`` - Activate :ref:`terrain-tool`"
-msgstr "``T`` - Active :ref:`l'Outil de Terrain <terrain-tool>`"
+msgstr "``T`` - Activer :ref:`l'Outil de Terrain <terrain-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:69
 msgid "``F`` - Activate :ref:`bucket-fill-tool`"
-msgstr "``F`` - Active le :ref:`Seau de Remplissage <bucket-fill-tool>`"
+msgstr "``F`` - Activer le :ref:`Seau de Remplissage <bucket-fill-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:70
-#, fuzzy
 msgid "``P`` - Activate :ref:`shape-fill-tool`"
-msgstr "``F`` - Active le :ref:`Seau de Remplissage <bucket-fill-tool>`"
+msgstr ""
+"``P`` - Activer le :ref:`Seau de Remplissage de Formes <shape-fill-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:71
 msgid "``E`` - Activate :ref:`eraser-tool`"
-msgstr "``E`` - Active la :ref:`Gomme <eraser-tool>`"
+msgstr "``E`` - Activer la :ref:`Gomme <eraser-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:72
-#, fuzzy
 msgid "``R`` - Activate Rectangular Select"
-msgstr "``R`` - Active l'outil de Sélection Rectangulaire"
+msgstr "``R`` - Activer la Sélection Rectangulaire"
 
 #: ../../manual/keyboard-shortcuts.rst:73
-#, fuzzy
 msgid "``W`` - Activate Magic Wand"
-msgstr "``W`` - Active l'outil de Baguette Magique"
+msgstr "``W`` - Activer la Baguette Magique"
 
 #: ../../manual/keyboard-shortcuts.rst:74
-#, fuzzy
 msgid "``S`` - Activate Select Same Tile"
-msgstr "``S`` - Active l'outil de Sélection de Même Tuile"
+msgstr "``S`` - Activer la Sélection de Même Tuile"
 
 #: ../../manual/keyboard-shortcuts.rst:75
 msgid "``Ctrl + 1-9`` - Store current tile selection (similar to ``Ctrl + C``)"
 msgstr ""
-"``Ctrl + 1-9`` - Stocke la sélection de tuile courante (similaire à "
-"``Ctrl + C``)"
+"``Ctrl + 1-9`` - Stocker la sélection de tuile courante (similaire à ``Ctrl +"
+" C``)"
 
 #: ../../manual/keyboard-shortcuts.rst:77
 msgid "``1-9`` recall the previous selection (similar to ``Ctrl + V``)"
-msgstr "``1-9`` - Resélectionne la sélection précédente (similaire à ``Ctrl + V``)"
+msgstr ""
+"``1-9`` - Sélectionne une sélection précédente (similaire à ``Ctrl + V``)"
 
 #: ../../manual/keyboard-shortcuts.rst:78
 msgid "``Ctrl + A`` - Select the whole layer"
-msgstr ""
+msgstr "``Ctrl + A`` - Sélectionner le calque en entier"
 
 #: ../../manual/keyboard-shortcuts.rst:79
 msgid "``Ctrl + Shift + A`` - Select nothing"
-msgstr ""
+msgstr "``Ctrl + Maj + A`` - Ne rien sélectionner du tout"
 
 #: ../../manual/keyboard-shortcuts.rst:81
 msgid "Changing the active stamp:"
-msgstr ""
+msgstr "Changer le tampon actuel :"
 
 #: ../../manual/keyboard-shortcuts.rst:83
 msgid "``X`` - Flip active stamp horizontally"
-msgstr ""
+msgstr "``X`` - Renverser le tampon actif horizontalement"
 
 #: ../../manual/keyboard-shortcuts.rst:84
-#, fuzzy
 msgid "``Y`` - Flip active stamp vertically"
-msgstr "``B`` - Active l'outil de Brosse Tampon"
+msgstr "``Y`` - Renverser le tampon actif verticalement"
 
 #: ../../manual/keyboard-shortcuts.rst:85
 msgid "``Z`` - Rotate active stamp clockwise"
-msgstr ""
+msgstr "``Z`` - Tourner le tampon actif dans le sens des aiguilles d'une montre"
 
 #: ../../manual/keyboard-shortcuts.rst:86
 msgid "``Shift + Z`` - Rotate active stamp counterclockwise"
 msgstr ""
+"``Maj + Z`` - Tourner le tampon actif dans le sens inverse des aiguilles "
+"d'une montre"
 
 #: ../../manual/keyboard-shortcuts.rst:90
 msgid "When an object layer is selected"
@@ -4130,95 +4226,95 @@ msgstr "Quand un calque d'objets est sélectionné"
 
 #: ../../manual/keyboard-shortcuts.rst:92
 msgid "``S`` - Activate :ref:`select-objects-tool`"
-msgstr "``S`` - Active la :ref:`Sélection d'Objet <select-objects-tool>`"
+msgstr "``S`` - Activer la :ref:`Sélection d'Objet <select-objects-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:94
 msgid "``PgUp`` - Raise selected objects (with Manual object drawing order)"
 msgstr ""
-"``PgHaut`` - Déplace les objets sélectionnés vers le haut (avec l'ordre "
+"``PgHaut`` - Déplacer les objets sélectionnés vers le haut (avec l'ordre "
 "d'affichage d'objet manuel)"
 
 #: ../../manual/keyboard-shortcuts.rst:96
 msgid "``PgDown`` - Lower selected objects (with Manual object drawing order)"
 msgstr ""
-"``PgBas`` - Déplace les objets sélectionnés vers le bas (avec l'ordre "
+"``PgBas`` - Déplacer les objets sélectionnés vers le bas (avec l'ordre "
 "d'affichage d'objet manuel)"
 
 #: ../../manual/keyboard-shortcuts.rst:98
 msgid "``Home`` - Move selected objects to Top (with Manual object drawing order)"
 msgstr ""
+"``Menu`` - Déplacer les objets sélectionnés tout en haut (avec l'ordre "
+"d'affichage d'objet manuel)"
 
 #: ../../manual/keyboard-shortcuts.rst:100
 msgid ""
 "``End`` - Move selected objects to Bottom (with Manual object drawing "
 "order)"
 msgstr ""
+"``Fin`` - Déplacer les objets sélectionnés tout en bas (avec l'ordre "
+"d'affichage d'objet manuel)"
 
 #: ../../manual/keyboard-shortcuts.rst:103
-#, fuzzy
 msgid "``O`` - Activate :ref:`edit-polygons-tool`"
-msgstr "``P`` - Active :ref:`l'Insertion de Polygone<insert-polygon-tool>`"
+msgstr "``O`` - Activer :ref:`l'Édition de Polygone <edit-polygons-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:104
 msgid "``R`` - Activate :ref:`insert-rectangle-tool`"
-msgstr "``R`` - Active la :ref:`Sélection Rectangulaire <insert-rectangle-tool>`"
+msgstr "``R`` - Activer :ref:`l'Insertion de Rectangle <insert-rectangle-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:105
 msgid "``I`` - Activate :ref:`insert-point-tool`"
-msgstr "``I`` - Active :ref:`l'Insertion de Point<insert-point-tool>`"
+msgstr "``I`` - Activer :ref:`l'Insertion de Point <insert-point-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:106
 msgid "``C`` - Activate :ref:`insert-ellipse-tool`"
-msgstr "``C`` - Active :ref:`l'Insertion d'Ellipse <insert-ellipse-tool>`"
+msgstr "``C`` - Activer :ref:`l'Insertion d'Ellipse <insert-ellipse-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:107
 msgid "``P`` - Activate :ref:`insert-polygon-tool`"
-msgstr "``P`` - Active :ref:`l'Insertion de Polygone<insert-polygon-tool>`"
+msgstr "``P`` - Activer :ref:`l'Insertion de Polygone <insert-polygon-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:109
 msgid "``Enter`` - Finish creating object"
-msgstr ""
+msgstr "``Entrée`` - Finir la création de l'objet"
 
 #: ../../manual/keyboard-shortcuts.rst:110
 msgid "``Escape`` - Cancel creating object"
-msgstr ""
+msgstr "``Échap`` - Annuler la création de l'objet"
 
 #: ../../manual/keyboard-shortcuts.rst:112
 msgid "``T`` - Activate :ref:`insert-tile-tool`"
-msgstr "``T`` - Active :ref:`l'Insertion de Tuile <insert-tile-tool>`"
+msgstr "``T`` - Activer :ref:`l'Insertion de Tuile <insert-tile-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:113
 msgid "``V`` - Activate :ref:`insert-template-tool` (since Tiled 1.1)"
 msgstr ""
-"``V`` - Active :ref:`l'Insertion de Modèle <insert-template-tool>` "
-"(depuis Tiled 1.1)"
+"``V`` - Activer :ref:`l'Insertion de Modèle <insert-template-tool>` (depuis "
+"Tiled 1.1)"
 
 #: ../../manual/keyboard-shortcuts.rst:114
-#, fuzzy
 msgid "``E`` - Activate :ref:`insert-text-tool`"
-msgstr "``T`` - Active :ref:`l'Insertion de Tuile <insert-tile-tool>`"
+msgstr "``E`` - Activer :ref:`l'Insertion de Texte <insert-text-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:115
 msgid "``Ctrl + A`` - Select all objects in the current object layer"
-msgstr "``Ctrl + A`` - Sélectionne tous les objets du calque d'objets actuel"
+msgstr "``Ctrl + A`` - Sélectionner tous les objets du calque d'objets actuel"
 
 #: ../../manual/keyboard-shortcuts.rst:116
-#, fuzzy
 msgid "``Ctrl + Shift + A`` - Clear object selection"
-msgstr "``Ctrl + Alt + W`` - Ferme tous les documents"
+msgstr "``Ctrl + Maj + A`` - Vider la sélection d'objet"
 
 #: ../../manual/keyboard-shortcuts.rst:119
-#, fuzzy
 msgid "In the Properties dialog"
-msgstr "Ajouter la Boîte de Dialogue de Propriété"
+msgstr "Dans la Boite de Dialogue de Propriétés"
 
 #: ../../manual/keyboard-shortcuts.rst:121
 msgid "``Del`` or ``Backspace`` - Deletes a property"
-msgstr ""
+msgstr "``Suppr`` ou ``Retour Arrière`` - Supprimer une propriété"
 
 #: ../../manual/layers.rst:2
 msgid "Working with Layers"
-msgstr ""
+msgstr "Travailler avec des Calques"
 
 #: ../../manual/layers.rst:4
 msgid ""
@@ -4253,9 +4349,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/layers.rst:28
-#, fuzzy
 msgid "Layer Types"
-msgstr "Propriétés des Calques"
+msgstr "Types de Calques"
 
 #: ../../manual/layers.rst:35
 msgid ""
@@ -4433,9 +4528,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/layers.rst:165
-#, fuzzy
 msgid "Tinting Layers"
-msgstr "Modifier les Niveaux de Tiled"
+msgstr "Calques de Teinte"
 
 #: ../../manual/layers.rst:167
 msgid ""
@@ -4565,9 +4659,8 @@ msgid "Insert Point"
 msgstr ""
 
 #: ../../manual/objects.rst:64
-#, fuzzy
 msgid "Shortcut: ``I``"
-msgstr "Raccourci: ``T``"
+msgstr "Raccourci : ``I``"
 
 #: ../../manual/objects.rst:66
 msgid ""
@@ -4701,9 +4794,8 @@ msgid "Insert Template"
 msgstr ""
 
 #: ../../manual/objects.rst:171 ../../manual/using-templates.rst:50
-#, fuzzy
 msgid "Shortcut: ``V``"
-msgstr "Raccourci: ``T``"
+msgstr "Raccourci : ``V``"
 
 #: ../../manual/objects.rst:173
 msgid ""
@@ -5113,9 +5205,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/preferences.rst:68
-#, fuzzy
 msgid "Embed tilesets"
-msgstr "Modifier des Jeux de Tuiles"
+msgstr "Intégrer les jeux de tuiles"
 
 #: ../../manual/preferences.rst:66
 msgid ""
@@ -5146,9 +5237,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/preferences.rst:82
-#, fuzzy
 msgid "Minimize output"
-msgstr "Définition des Sorties"
+msgstr "Minimiser la sortie"
 
 #: ../../manual/preferences.rst:81
 msgid ""
@@ -5287,9 +5377,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/preferences.rst:177
-#, fuzzy
 msgid "Keyboard"
-msgstr "Raccourcis Clavier"
+msgstr "Clavier"
 
 #: ../../manual/preferences.rst:179
 msgid ""
@@ -5405,9 +5494,8 @@ msgid "The directory is loaded in addition to the global extensions."
 msgstr ""
 
 #: ../../manual/projects.rst:33
-#, fuzzy
 msgid "Object Types File"
-msgstr "Éditeur de Type d'Objet"
+msgstr "Fichier de Types d'Objet"
 
 #: ../../manual/projects.rst:28
 msgid ""
@@ -5424,9 +5512,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/projects.rst:38
-#, fuzzy
 msgid "Automapping Rules File"
-msgstr "Automapping"
+msgstr "Fichier de Règles d'Automapping"
 
 #: ../../manual/projects.rst:36
 msgid ""
@@ -5436,9 +5523,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/projects.rst:43
-#, fuzzy
 msgid "Sessions"
-msgstr "regions"
+msgstr "Sessions"
 
 #: ../../manual/projects.rst:45
 msgid ""
@@ -5624,9 +5710,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/terrain.rst:2
-#, fuzzy
 msgid "Using Terrains"
-msgstr "Brosse de Terrain"
+msgstr "Utiliser des Terrains"
 
 #: ../../manual/terrain.rst:4
 msgid ""
@@ -5654,9 +5739,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/terrain.rst:30
-#, fuzzy
 msgid "Corner Set"
-msgstr "Paramètres Généraux"
+msgstr "Collection de Coins"
 
 #: ../../manual/terrain.rst:28
 msgid ""
@@ -5709,9 +5793,8 @@ msgid "Define the Terrain Information"
 msgstr ""
 
 #: ../../manual/terrain.rst:64
-#, fuzzy
 msgid "Creating the Terrain Set"
-msgstr "Brosse de Terrain"
+msgstr "Créer la Collection de Terrains"
 
 #: ../../manual/terrain.rst:66
 msgid ""
@@ -5733,9 +5816,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/terrain.rst:83
-#, fuzzy
 msgid "Adding a Terrain Set"
-msgstr "Brosse de Terrain"
+msgstr "Ajouter une Collection de Terrain"
 
 #: ../../manual/terrain.rst:85
 msgid ""
@@ -5746,9 +5828,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/terrain.rst:91
-#, fuzzy
 msgid "Adding Terrains"
-msgstr "Ajout de Propriétés"
+msgstr "Ajouter des Terrains"
 
 #: ../../manual/terrain.rst:93
 msgid ""
@@ -5766,9 +5847,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/terrain.rst:106
-#, fuzzy
 msgid "Our Terrains"
-msgstr "Brosse de Terrain"
+msgstr "Nos Terrains"
 
 #: ../../manual/terrain.rst:110
 msgid ""
@@ -5824,9 +5904,8 @@ msgid "We're done marking the terrain of our tiles."
 msgstr ""
 
 #: ../../manual/terrain.rst:147
-#, fuzzy
 msgid "Patterns View"
-msgstr "Propriétés de la Vue"
+msgstr "Vue de Modèles"
 
 #: ../../manual/terrain.rst:149
 msgid ""
@@ -5886,9 +5965,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/terrain.rst:188
-#, fuzzy
 msgid "Drawing cobblestone"
-msgstr "Décalage de Dessin"
+msgstr "Dessiner des pavés"
 
 #: ../../manual/terrain.rst:190
 msgid ""
@@ -5899,9 +5977,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/terrain.rst:198
-#, fuzzy
 msgid "Drawing dirt"
-msgstr "Décalage de Dessin"
+msgstr "Dessiner de la terre"
 
 #: ../../manual/terrain.rst:202
 msgid ""
@@ -6014,9 +6091,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/terrain.rst:286
-#, fuzzy
 msgid "Tile Transformations"
-msgstr "Information de Terrain"
+msgstr "Transformations de Tuile"
 
 #: ../../manual/terrain.rst:288
 msgid ""
@@ -6205,9 +6281,8 @@ msgid "The path to the working directory."
 msgstr ""
 
 #: ../../manual/using-commands.rst:47
-#, fuzzy
 msgid "Shortcut"
-msgstr "Raccourci: ``T``"
+msgstr "Raccourci"
 
 #: ../../manual/using-commands.rst:46
 msgid ""
@@ -6387,9 +6462,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/using-infinite-maps.rst:18
-#, fuzzy
 msgid "Creating an Infinite Map"
-msgstr "Créer une Nouvelle Carte"
+msgstr "Créer une Carte Infinie"
 
 #: ../../manual/using-infinite-maps.rst:20
 msgid ""
@@ -6556,22 +6630,20 @@ msgid ""
 msgstr ""
 
 #: ../../manual/using-templates.rst:107
-#, fuzzy
 msgid ""
 "Resetting overridden properties individually (`#1725 "
 "<https://github.com/bjorn/tiled/issues/1725>`__)."
 msgstr ""
-"**Propriétés Liste**, qui seraient des propriétés ayant une liste de "
-"valeurs (`#1493 <https://github.com/bjorn/tiled/issues/1493>`__)."
+"Réinitialiser les propriétés forcées individuellement (`#1725 <https://github"
+".com/bjorn/tiled/issues/1725>`__)."
 
 #: ../../manual/using-templates.rst:108
-#, fuzzy
 msgid ""
 "Locking template properties (`#1726 "
 "<https://github.com/bjorn/tiled/issues/1726>`__)."
 msgstr ""
-"**Propriétés Liste**, qui seraient des propriétés ayant une liste de "
-"valeurs (`#1493 <https://github.com/bjorn/tiled/issues/1493>`__)."
+"Verrouiller les propriétés de modèle (`#1726 <https://github.com/bjorn/tiled/"
+"issues/1726>`__)."
 
 #: ../../manual/using-templates.rst:109
 msgid ""
@@ -6607,9 +6679,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/worlds.rst:22
-#, fuzzy
 msgid "Defining a World"
-msgstr "Définir les Régions"
+msgstr "Définir un Monde"
 
 #: ../../manual/worlds.rst:24
 msgid ""
@@ -6646,9 +6717,8 @@ msgid "Worlds are reloaded automatically when their file is changed on disk."
 msgstr ""
 
 #: ../../manual/worlds.rst:71
-#, fuzzy
 msgid "Editing Worlds"
-msgstr "Modifier des Jeux de Tuiles"
+msgstr "Éditer des Mondes"
 
 #: ../../manual/worlds.rst:73
 msgid ""
@@ -6657,9 +6727,8 @@ msgid ""
 msgstr ""
 
 #: ../../manual/worlds.rst:81
-#, fuzzy
 msgid "Adding Maps"
-msgstr "Ajout de Propriétés"
+msgstr "Ajouter des Cartes"
 
 #: ../../manual/worlds.rst:77
 msgid ""
@@ -7007,4 +7076,3 @@ msgstr ""
 #~ msgstr ""
 #~ "``T`` - Active :doc:`l'outil de Brosse"
 #~ " de Terrain <using-the-terrain-tool>`"
-
