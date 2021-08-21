@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-04 15:34+0200\n"
-"PO-Revision-Date: 2021-08-20 07:32+0000\n"
+"PO-Revision-Date: 2021-08-22 06:33+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/reference/"
 "fr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.8-dev\n"
+"X-Generator: Weblate 4.8.1-dev\n"
 "Generated-By: Babel 2.5.1\n"
 
 #: ../../reference/json-map-format.rst:2
@@ -40,8 +40,9 @@ msgid ""
 "The fields found in the JSON format differ slightly from those in the :doc:"
 "`tmx-map-format`, but the meanings should remain the same."
 msgstr ""
-"Les attributs trouvés en format JSON diffère légèrement de ceux trouvés "
-"dans :doc:`tmx-map-format`, mais leurs sens restent les mêmes."
+"Les attributs trouvés en format JSON diffère légèrement de ceux trouvés dans "
+":doc:`le format de carte tmx <tmx-map-format>`, mais leurs sens restent les "
+"mêmes."
 
 #: ../../reference/json-map-format.rst:11
 msgid "The following fields can be found in a Tiled JSON file:"
@@ -78,7 +79,7 @@ msgstr "Couleur en hexadécimal (#RRGGBB or #AARRGGBB) (optionnel)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "compressionlevel"
-msgstr ""
+msgstr "compressionlevel"
 
 #: ../../reference/json-map-format.rst:1
 msgid "int"
@@ -89,6 +90,8 @@ msgid ""
 "The compression level to use for tile layer data (defaults to -1, which "
 "means to use the algorithm default)"
 msgstr ""
+"Le niveau de compression à utiliser pour les données du calque de tuiles (-1 "
+"par défaut, ce qui veut dire que l'algorithme par défaut est utilisé)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "height"
@@ -96,15 +99,17 @@ msgstr "height"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Number of tile rows"
-msgstr "Nombre de lignes de tuile"
+msgstr "Nombre de lignes de tuiles"
 
 #: ../../reference/json-map-format.rst:1
 msgid "hexsidelength"
-msgstr ""
+msgstr "hexsidelength"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Length of the side of a hex tile in pixels (hexagonal maps only)"
 msgstr ""
+"Longueur d'un côté d'une tuile hexagonale en pixels (seulement pour les "
+"cartes hexagonales)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "infinite"
@@ -127,19 +132,16 @@ msgid "array"
 msgstr "array"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`Layers <json-layer>`"
-msgstr "Tableau de (:ref:`calques <json-layer>`)"
+msgstr "Tableau de :ref:`Calques <json-layer>`"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "nextlayerid"
-msgstr "nextobjectid"
+msgstr "nextlayerid"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Auto-increments for each layer"
-msgstr "Incrémente automatiquement pour chaque objet placé"
+msgstr "Incrémente automatiquement pour chaque calque"
 
 #: ../../reference/json-map-format.rst:1
 msgid "nextobjectid"
@@ -155,16 +157,17 @@ msgstr "orientation"
 
 #: ../../reference/json-map-format.rst:1
 msgid "``orthogonal``, ``isometric``, ``staggered`` or ``hexagonal``"
-msgstr "``orthogonal``, ``isometric``, ``staggered`` ou ``hexagonal``"
+msgstr ""
+"``orthogonal`` (orthogonale), ``isometric`` (isométrique), ``staggered`` "
+"(échelonnée) ou ``hexagonal`` (hexagonale)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "properties"
 msgstr "properties"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`Properties <json-property>`"
-msgstr "Tableau de (:ref:`calques <json-layer>`)"
+msgstr "Tableau de :ref:`Propriétés <json-property>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "renderorder"
@@ -175,22 +178,27 @@ msgid ""
 "``right-down`` (the default), ``right-up``, ``left-down`` or ``left-up`` "
 "(currently only supported for orthogonal maps)"
 msgstr ""
+"``right-down`` (bas-droite, par défaut), ``right-up`` (haut-droite), ``left-"
+"down`` (bas-gauche) ou ``left-up`` (haut gauche) (seulement supporté pour "
+"les cartes orthogonales pour le moment)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "staggeraxis"
-msgstr ""
+msgstr "staggeraxis"
 
 #: ../../reference/json-map-format.rst:1
 msgid "``x`` or ``y`` (staggered / hexagonal maps only)"
-msgstr ""
+msgstr "``x`` ou ``y`` (seulement pour les cartes échelonnées / hexagonales)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "staggerindex"
-msgstr ""
+msgstr "staggerindex"
 
 #: ../../reference/json-map-format.rst:1
 msgid "``odd`` or ``even`` (staggered / hexagonal maps only)"
 msgstr ""
+"``odd`` (impair) ou ``even`` (pair) (seulement pour les cartes échelonnées / "
+"hexagonales)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "tiledversion"
@@ -213,9 +221,8 @@ msgid "tilesets"
 msgstr "tilesets"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`Tilesets <json-tileset>`"
-msgstr "Tableau de :ref:`jeux de tuiles <json-tileset>`"
+msgstr "Tableau de :ref:`Jeux de Tuiles <json-tileset>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "tilewidth"
@@ -231,7 +238,7 @@ msgstr "type"
 
 #: ../../reference/json-map-format.rst:1
 msgid "``map`` (since 1.0)"
-msgstr "``map`` (depuis la 1.0)"
+msgstr "``map`` (depuis la version 1.0)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "version"
@@ -241,6 +248,8 @@ msgstr "version"
 msgid ""
 "The JSON format version (previously a number, saved as string since 1.6)"
 msgstr ""
+"La version du format JSON (auparavant un nombre, sauvegardé en tant que "
+"chaîne de caractères depuis la version 1.6)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "width"
@@ -248,7 +257,7 @@ msgstr "width"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Number of tile columns"
-msgstr "Nombre de colonne de tuiles"
+msgstr "Nombre de colonnes de tuiles"
 
 #: ../../reference/json-map-format.rst:44
 msgid "Map Example"
@@ -259,24 +268,27 @@ msgid "Layer"
 msgstr "Calque"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "chunks"
-msgstr "<chunk>"
+msgstr "chunks"
 
 #: ../../reference/json-map-format.rst:1
 #, fuzzy
 msgid "Array of :ref:`chunks <json-chunk>` (optional). ``tilelayer`` only."
-msgstr "Tableau de :ref:`terrains <json-terrain>` (optionnel)"
+msgstr ""
+"Tableau de :ref:`groupes <json-chunk>` (optionnel). Seulement pour les ``"
+"calques de tuiles``."
 
 #: ../../reference/json-map-format.rst:1
 msgid "compression"
-msgstr ""
+msgstr "compression"
 
 #: ../../reference/json-map-format.rst:1
 msgid ""
 "``zlib``, ``gzip``, ``zstd`` (since Tiled 1.3) or empty (default). "
 "``tilelayer`` only."
 msgstr ""
+"``zlib``, ``gzip``, ``zstd`` (depuis Tiled 1.3) ou vide (par défaut). "
+"Seulement pour les ``calques de tuiles``."
 
 #: ../../reference/json-map-format.rst:1
 msgid "data"
@@ -284,13 +296,14 @@ msgstr "data"
 
 #: ../../reference/json-map-format.rst:1
 msgid "array or string"
-msgstr ""
+msgstr "tableau ou chaîne de caractères"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid ""
 "Array of ``unsigned int`` (GIDs) or base64-encoded data. ``tilelayer`` only."
-msgstr "Tableau de GIDs. Seulement ``tilelayer``."
+msgstr ""
+"Tableau ``d'entiers non-signés`` (GIDs) ou données encodées en base64. "
+"Seulement pour les ``calques de tuiles``."
 
 #: ../../reference/json-map-format.rst:1
 msgid "draworder"
@@ -298,16 +311,18 @@ msgstr "draworder"
 
 #: ../../reference/json-map-format.rst:1
 msgid "``topdown`` (default) or ``index``. ``objectgroup`` only."
-msgstr "``topdown`` (défaut) ou ``index``. Seulement ``objectgroup``."
+msgstr ""
+"``topdown`` (haut en bas, par défaut) ou ``index``. Seulement pour les ``"
+"groupes d'objets``."
 
 #: ../../reference/json-map-format.rst:1
 msgid "encoding"
-msgstr ""
+msgstr "encoding"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "``csv`` (default) or ``base64``. ``tilelayer`` only."
-msgstr "``topdown`` (défaut) ou ``index``. Seulement ``objectgroup``."
+msgstr ""
+"``csv`` (par défaut) ou ``base64``. Seulement pour les ``calques de tuiles``."
 
 #: ../../reference/json-map-format.rst:1
 msgid "Row count. Same as map height for fixed-size maps."
@@ -320,9 +335,8 @@ msgid "id"
 msgstr "id"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Incremental ID - unique across all layers"
-msgstr "ID incrémental - unique pour tous les objets"
+msgstr "ID incrémental - unique pour tous les calques"
 
 #: ../../reference/json-map-format.rst:1
 msgid "image"
@@ -330,12 +344,12 @@ msgstr "image"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Image used by this layer. ``imagelayer`` only."
-msgstr ""
+msgstr "Image utilisée pour ce calque. Seulement pour les ``calques d'images``."
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`layers <json-layer>`. ``group`` only."
-msgstr "Tableau de :ref: `calques <json-layer>`. ``group`` sur"
+msgstr ""
+"Tableau de :ref: `calques <json-layer>`. Seulement pour les ``groupes``."
 
 #: ../../reference/json-map-format.rst:1
 msgid "name"
@@ -343,7 +357,7 @@ msgstr "name"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Name assigned to this layer"
-msgstr "Nom assigné à cette couche"
+msgstr "Nom assigné à ce calque"
 
 #: ../../reference/json-map-format.rst:1
 msgid "objects"
@@ -351,31 +365,29 @@ msgstr "objects"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Array of :ref:`objects <json-object>`. ``objectgroup`` only."
-msgstr "Tableau d':ref:`objets <json-object>`. Uniquement ``objectgroup``."
+msgstr ""
+"Tableau :ref:`d'objets <json-object>`. Seulement pour les ``groupes "
+"d'objets``."
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "offsetx"
-msgstr "tileoffset"
+msgstr "offsetx"
 
 #: ../../reference/json-map-format.rst:1
 msgid "double"
-msgstr ""
+msgstr "double"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Horizontal layer offset in pixels (default: 0)"
-msgstr "Décalage horizontal d'un calque en tuiles. Toujours 0."
+msgstr "Décalage horizontal du calque en pixels (0 par défaut)"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "offsety"
-msgstr "tileoffset"
+msgstr "offsety"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Vertical layer offset in pixels (default: 0)"
-msgstr "Décalage vertical du calque en tuiles. Toujours 0."
+msgstr "Décalage vertical du calque en pixels (0 par défaut)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "opacity"
@@ -387,27 +399,31 @@ msgstr "Valeur comprise entre 0 et 1"
 
 #: ../../reference/json-map-format.rst:1
 msgid "parallaxx"
-msgstr ""
+msgstr "parallaxx"
 
 #: ../../reference/json-map-format.rst:1
 msgid ""
 "Horizontal :ref:`parallax factor <parallax-factor>` for this layer (default: "
 "1). (since Tiled 1.5)"
 msgstr ""
+":ref:`Facteur de parallaxe <parallax-factor>` horizontal pour ce calque (1 "
+"par défaut). (Depuis Tiled 1.5)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "parallaxy"
-msgstr ""
+msgstr "parallaxy"
 
 #: ../../reference/json-map-format.rst:1
 msgid ""
 "Vertical :ref:`parallax factor <parallax-factor>` for this layer (default: "
 "1). (since Tiled 1.5)"
 msgstr ""
+":ref:`Facteur de parallaxe <parallax-factor>` vertical pour ce calque (1 par "
+"défaut). (Depuis Tiled 1.5)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "startx"
-msgstr ""
+msgstr "startx"
 
 #: ../../reference/json-map-format.rst:1
 msgid "X coordinate where layer content starts (for infinite maps)"
