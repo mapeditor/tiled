@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-04 15:34+0200\n"
-"PO-Revision-Date: 2021-08-22 06:33+0000\n"
+"PO-Revision-Date: 2021-08-24 03:33+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/reference/"
 "fr/>\n"
@@ -75,7 +75,7 @@ msgstr "string"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)"
-msgstr "Couleur en hexadécimal (#RRGGBB or #AARRGGBB) (optionnel)"
+msgstr "Couleur en hexadécimal (#RRVVBB or #AARRVVBB) (optionnel)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "compressionlevel"
@@ -230,7 +230,7 @@ msgstr "tilewidth"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Map grid width"
-msgstr "Largeur de la grille de la carte"
+msgstr "Longueur de la grille de la carte"
 
 #: ../../reference/json-map-format.rst:1
 msgid "type"
@@ -272,10 +272,9 @@ msgid "chunks"
 msgstr "chunks"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`chunks <json-chunk>` (optional). ``tilelayer`` only."
 msgstr ""
-"Tableau de :ref:`groupes <json-chunk>` (optionnel). Seulement pour les ``"
+"Tableau de :ref:`partitions <json-chunk>` (optionnel). Seulement pour les ``"
 "calques de tuiles``."
 
 #: ../../reference/json-map-format.rst:1
@@ -348,8 +347,7 @@ msgstr "Image utilisée pour ce calque. Seulement pour les ``calques d'images``.
 
 #: ../../reference/json-map-format.rst:1
 msgid "Array of :ref:`layers <json-layer>`. ``group`` only."
-msgstr ""
-"Tableau de :ref: `calques <json-layer>`. Seulement pour les ``groupes``."
+msgstr "Tableau de :ref:`calques <json-layer>`. Seulement pour les ``groupes``."
 
 #: ../../reference/json-map-format.rst:1
 msgid "name"
@@ -428,18 +426,20 @@ msgstr "startx"
 #: ../../reference/json-map-format.rst:1
 msgid "X coordinate where layer content starts (for infinite maps)"
 msgstr ""
+"Coordonnée X avec laquelle le contenu commence (pour les cartes infinies)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "starty"
-msgstr ""
+msgstr "starty"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Y coordinate where layer content starts (for infinite maps)"
 msgstr ""
+"Coordonnée Y avec laquelle le contenu commence (pour les cartes infinies)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "tintcolor"
-msgstr ""
+msgstr "tintcolor"
 
 #: ../../reference/json-map-format.rst:1
 msgid ""
@@ -447,15 +447,19 @@ msgid ""
 "multiplied with any graphics drawn by this layer or any child layers "
 "(optional)."
 msgstr ""
+":ref:`Couleur de teinte <tint-color>` formatée en hexadécimal (#RRVVBB ou "
+"#AARRVVBB) qui est multipliée par tout graphisme dessiné par ce calque ou "
+"tout calque enfant (optionnel)."
 
 #: ../../reference/json-map-format.rst:1
 msgid "transparentcolor"
-msgstr ""
+msgstr "transparentcolor"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Hex-formatted color (#RRGGBB) (optional). ``imagelayer`` only."
-msgstr "Couleur en hexadécimal (#RRGGBB or #AARRGGBB) (optionnel)"
+msgstr ""
+"Couleur en hexadécimal (#RRVVBB) (optionnel). Seulement pour les ``calques "
+"d'images``."
 
 #: ../../reference/json-map-format.rst:1
 msgid "``tilelayer``, ``objectgroup``, ``imagelayer`` or ``group``"
@@ -500,42 +504,40 @@ msgid "Object Layer Example"
 msgstr "Exemple de Calque d'Objets"
 
 #: ../../reference/json-map-format.rst:160
-#, fuzzy
 msgid "Chunk"
-msgstr "<chunk>"
+msgstr "Fragments"
 
 #: ../../reference/json-map-format.rst:162
 msgid ""
 "Chunks are used to store the tile layer data for :doc:`infinite maps </"
 "manual/using-infinite-maps>`."
 msgstr ""
+"Les fragments sont utilisés afin de stocker les données d'un calque de "
+"tuiles pour des :doc:`cartes infinies </manual/using-infinite-maps>`."
 
 #: ../../reference/json-map-format.rst:1
 msgid "Array of ``unsigned int`` (GIDs) or base64-encoded data"
-msgstr ""
+msgstr "Tableau ``d'entiers non-signés`` (GIDs) ou données encodées en base64"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Height in tiles"
-msgstr ""
+msgstr "Hauteur en tuiles"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Width in tiles"
-msgstr ""
+msgstr "Longueur en tuiles"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "X coordinate in tiles"
-msgstr "Coordonnée x en pixels"
+msgstr "Coordonnée X en tuiles"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Y coordinate in tiles"
-msgstr "Coordonnée x en pixels"
+msgstr "Coordonnée Y en tuiles"
 
 #: ../../reference/json-map-format.rst:176
-#, fuzzy
 msgid "Chunk Example"
-msgstr "Exemple de Point"
+msgstr "Exemple de Fragment"
 
 #: ../../reference/json-map-format.rst:191
 msgid "Object"
@@ -554,23 +556,20 @@ msgid "gid"
 msgstr "gid"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Global tile ID, only if object represents a tile"
-msgstr "GID, seulement si l'objet vient d'un Jeu de Tuiles"
+msgstr "ID de tuile global, seulement si l'objet représente une tuile"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Height in pixels."
-msgstr "Hauteur de l'image source en pixels"
+msgstr "Hauteur en pixels."
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Incremental ID, unique across all objects"
-msgstr "ID incrémental - unique pour tous les objets"
+msgstr "ID incrémental, unique pour tous les objets"
 
 #: ../../reference/json-map-format.rst:1
 msgid "String assigned to name field in editor"
-msgstr "Chaîne de caractère assigné au champ de nom dans l'éditeur"
+msgstr "Chaîne de caractères assignée au champ de nom dans l'éditeur"
 
 #: ../../reference/json-map-format.rst:1
 msgid "point"
@@ -585,18 +584,16 @@ msgid "polygon"
 msgstr "polygon"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`Points <json-point>`, in case the object is a polygon"
-msgstr "Tableau d':ref:`objets <json-object>`. Uniquement ``objectgroup``."
+msgstr "Tableau de :ref:`Points <json-point>`, si l'objet est un polygone"
 
 #: ../../reference/json-map-format.rst:1
 msgid "polyline"
 msgstr "polyline"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`Points <json-point>`, in case the object is a polyline"
-msgstr "Tableau d':ref:`objets <json-object>`. Uniquement ``objectgroup``."
+msgstr "Tableau de :ref:`Points <json-point>`, si l'objet est une polyligne"
 
 #: ../../reference/json-map-format.rst:1
 msgid "rotation"
@@ -607,15 +604,16 @@ msgid "Angle in degrees clockwise"
 msgstr "Angle en degrés dans le sens des aiguilles d'une montre"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "template"
-msgstr "<template>"
+msgstr "template"
 
 #: ../../reference/json-map-format.rst:1
 msgid ""
 "Reference to a template file, in case object is a :doc:`template instance </"
 "manual/using-templates>`"
 msgstr ""
+"Référence à un fichier de modèle, si l'objet est une :doc:`instance d'un "
+"modèle </manual/using-templates>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "text"
@@ -623,11 +621,11 @@ msgstr "text"
 
 #: ../../reference/json-map-format.rst:1
 msgid ":ref:`json-object-text`"
-msgstr ""
+msgstr ":ref:`objet texte JSON <json-object-text>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Only used for text objects"
-msgstr ""
+msgstr "Seulement utilisés pour les objets texte"
 
 #: ../../reference/json-map-format.rst:1
 msgid "String assigned to type field in editor"
@@ -638,19 +636,16 @@ msgid "Whether object is shown in editor."
 msgstr "Si l'objet est affiché dans l'éditeur."
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Width in pixels."
-msgstr "Longueur de l'image source en pixels"
+msgstr "Longueur en pixels."
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "X coordinate in pixels"
-msgstr "Coordonnée x en pixels"
+msgstr "Coordonnée X en pixels"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Y coordinate in pixels"
-msgstr "Coordonnée x en pixels"
+msgstr "Coordonnée Y en pixels"
 
 #: ../../reference/json-map-format.rst:216
 msgid "Object Example"
@@ -683,101 +678,106 @@ msgstr "Exemple de Texte"
 #: ../../reference/json-map-format.rst:397
 #: ../../reference/json-map-format.rst:1
 msgid "Text"
-msgstr ""
+msgstr "Texte"
 
 #: ../../reference/json-map-format.rst:1
 msgid "bold"
-msgstr ""
+msgstr "bold"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Whether to use a bold font (default: ``false``)"
-msgstr ""
+msgstr "Si la police doit être en gras (``false`` par défaut)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "color"
-msgstr ""
+msgstr "color"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Hex-formatted color (#RRGGBB or #AARRGGBB) (default: ``#000000``)"
-msgstr "Couleur en hexadécimal (#RRGGBB or #AARRGGBB) (optionnel)"
+msgstr "Couleur en hexadécimal (#RRVVBB ou #AARRVVBB) (``#000000`` par défaut)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "fontfamily"
-msgstr ""
+msgstr "fontfamily"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Font family (default: ``sans-serif``)"
-msgstr ""
-"**fontfamily :** La famille de police utilisée (\"sans-serif\" par défaut)"
+msgstr "La famille de police utilisée (``sans-serif`` par défaut)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "halign"
-msgstr ""
+msgstr "halign"
 
 #: ../../reference/json-map-format.rst:1
 msgid ""
 "Horizontal alignment (``center``, ``right``, ``justify`` or ``left`` "
 "(default))"
 msgstr ""
+"Alignement horizontal (``center`` (centré), ``right`` (droite), ``justify`` "
+"(justifié) ou ``left`` (gauche, par défaut))"
 
 #: ../../reference/json-map-format.rst:1
 msgid "italic"
-msgstr ""
+msgstr "italic"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Whether to use an italic font (default: ``false``)"
-msgstr ""
+msgstr "Si la police doit être en italique (``false`` par défaut)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "kerning"
-msgstr ""
+msgstr "kerning"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Whether to use kerning when placing characters (default: ``true``)"
 msgstr ""
+"S'il faut utiliser du crénage lors du placement des caractères (``true`` par "
+"défaut)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "pixelsize"
-msgstr ""
+msgstr "pixelsize"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Pixel size of font (default: 16)"
-msgstr ""
+msgstr "Taille en pixels de la police (16 par défaut)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "strikeout"
-msgstr ""
+msgstr "strikeout"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Whether to strike out the text (default: ``false``)"
-msgstr ""
+msgstr "Si le texte doit être barré (``false`` par défaut)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "underline"
-msgstr ""
+msgstr "underline"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Whether to underline the text (default: ``false``)"
-msgstr ""
+msgstr "Si le texte doit être souligné (``false`` par défaut)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "valign"
-msgstr ""
+msgstr "valign"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Vertical alignment (``center``, ``bottom`` or ``top`` (default))"
 msgstr ""
+"Alignement vertical (``center`` (centré), ``bottom`` (bas) ou ``top`` (haut, "
+"par défaut))"
 
 #: ../../reference/json-map-format.rst:1
 msgid "wrap"
-msgstr ""
+msgstr "wrap"
 
 #: ../../reference/json-map-format.rst:1
 msgid ""
 "Whether the text is wrapped within the object bounds (default: ``false``)"
 msgstr ""
+"Si le texte est enroulé à l'intérieur des bords de l'objet (``false`` par "
+"défaut)"
 
 #: ../../reference/json-map-format.rst:420
 msgid "Tileset"
@@ -804,13 +804,12 @@ msgid "grid"
 msgstr "grid"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid ":ref:`json-tileset-grid`"
-msgstr "Tableau de :ref:`jeux de tuiles <json-tileset>`"
+msgstr ":ref:`grille de jeu de tuiles JSON <json-tileset-grid>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "(optional)"
-msgstr ""
+msgstr "(optionnel)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Image used for tiles in this set"
@@ -846,7 +845,7 @@ msgstr "Nom donné à ce jeu de tuiles"
 
 #: ../../reference/json-map-format.rst:1
 msgid "objectalignment"
-msgstr ""
+msgstr "objectalignment"
 
 #: ../../reference/json-map-format.rst:1
 msgid ""
@@ -854,15 +853,19 @@ msgid ""
 "``top``, ``topright``, ``left``, ``center``, ``right``, ``bottomleft``, "
 "``bottom`` or ``bottomright``) (since 1.4)"
 msgstr ""
+"Alignement à utiliser pour les objets tuiles (``unspecified`` (non spécifié, "
+"par défaut), ``topleft`` (en haut à gauche), ``top`` (en haut), ``topright`` "
+"(en haut à droite), ``left`` (à gauche), ``center`` (au centre), ``right`` ("
+"à droite), ``bottomleft`` (en bas à gauche), ``bottom`` (en bas) ou "
+"``bottomright`` (en bas à droite)) (depuis la 1.4)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "source"
-msgstr ""
+msgstr "source"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "The external file that contains this tilesets data"
-msgstr "Le nombre de tuiles dans ce jeu de tuiles"
+msgstr "Le fichier externe qui contient les données de ce jeu de tuiles"
 
 #: ../../reference/json-map-format.rst:1
 msgid "spacing"
@@ -877,9 +880,8 @@ msgid "terrains"
 msgstr "terrains"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`Terrains <json-terrain>` (optional)"
-msgstr "Tableau de :ref:`terrains <json-terrain>` (optionnel)"
+msgstr "Tableau de :ref:`Terrains <json-terrain>` (optionnel)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "tilecount"
@@ -898,54 +900,50 @@ msgid "tileoffset"
 msgstr "tileoffset"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid ":ref:`json-tileset-tileoffset`"
-msgstr "Tableau de :ref:`jeux de tuiles <json-tileset>`"
+msgstr ""
+":ref:`décalage de tuiles de jeu de tuiles JSON <json-tileset-tileoffset>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "tiles"
 msgstr "tiles"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`Tiles <json-tile>` (optional)"
-msgstr "Tableau de :ref:`terrains <json-terrain>` (optionnel)"
+msgstr "Tableau de :ref:`Tuiles <json-tile>` (optionnel)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Maximum width of tiles in this set"
-msgstr "La longueur maximale des tuiles de cette collection"
+msgstr "Longueur maximale des tuiles de cette collection"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "transformations"
-msgstr "<animation>"
+msgstr "transformations"
 
 #: ../../reference/json-map-format.rst:1
 msgid ":ref:`json-tileset-transformations`"
 msgstr ""
+":ref:`transformations de jeu de tuiles JSON <json-tileset-transformations>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Allowed transformations (optional)"
-msgstr ""
+msgstr "Transformations autorisées (optionnel)"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Hex-formatted color (#RRGGBB) (optional)"
-msgstr "Couleur en hexadécimal (#RRGGBB or #AARRGGBB) (optionnel)"
+msgstr "Couleur en hexadécimal (#RRVVBB) (optionnel)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "``tileset`` (for tileset files, since 1.0)"
-msgstr "``tileset`` (pour des fichiers de jeu de tuiles, depuis 1.0)"
+msgstr "``tileset`` (pour des fichiers de jeu de tuiles, depuis la 1.0)"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "wangsets"
-msgstr "<wangsets>"
+msgstr "wangsets"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`Wang sets <json-wangset>` (since 1.1.5)"
-msgstr "Tableau de :ref:`jeux de tuiles <json-tileset>`"
+msgstr "Tableau de :ref:`collections Wang <json-wangset>` (depuis la 1.1.5)"
 
 #: ../../reference/json-map-format.rst:452
 msgid ""
@@ -955,93 +953,100 @@ msgid ""
 "local tile ID by subtracting the ``firstgid`` from the global tile ID. The "
 "first tileset always has a ``firstgid`` value of 1."
 msgstr ""
+"Tous les jeux de tuiles ont une propriété ``firstgid`` (premier ID global) "
+"qui vous donne l'ID global de sa première tuile (celle qui a pour ID de "
+"tuile local 0). Cela vous permet de correspondre les IDs globaux à son vrai "
+"jeu de tuiles, et ensuite de calculer l'ID de tuile local en soustrayant "
+"``firstgid`` de son ID de tuile global. Le premier jeu de tuiles a toujours "
+"une valeur ``firstgid`` égale à 1."
 
 #: ../../reference/json-map-format.rst:462
 msgid "Grid"
-msgstr ""
+msgstr "Grille"
 
 #: ../../reference/json-map-format.rst:464
 msgid ""
 "Specifies common grid settings used for tiles in a tileset. See :ref:`tmx-"
 "grid` in the TMX Map Format."
 msgstr ""
+"Spécifie les paramètres communs de la grille utilisés pour les tuiles d'un "
+"jeu de tuiles. Visitez :ref:`grille <tmx-grid>` dans le Format de Carte TMX."
 
 #: ../../reference/json-map-format.rst:1
 msgid "Cell height of tile grid"
-msgstr ""
+msgstr "Hauteur d'une cellule de la grille de tuiles"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "``orthogonal`` (default) or ``isometric``"
-msgstr "``topdown`` (défaut) ou ``index``. Seulement ``objectgroup``."
+msgstr "``orthogonal`` (orthogonale, par défaut) ou ``isometric`` (isométrique)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Cell width of tile grid"
-msgstr ""
+msgstr "Longueur d'une cellule de la grille de tuiles"
 
 #: ../../reference/json-map-format.rst:478
-#, fuzzy
 msgid "Tile Offset"
-msgstr "Jeu de Tuiles"
+msgstr "Décalage de Tuile"
 
 #: ../../reference/json-map-format.rst:480
-#, fuzzy
 msgid "See :ref:`tmx-tileoffset` in the TMX Map Format."
-msgstr "Voir :ref:`tmx-tileoffset` (optionnel)"
+msgstr ""
+"Visitez :ref:`décalage de tuile <tmx-tileoffset>` dans le Format de Carte "
+"TMX."
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Horizontal offset in pixels"
-msgstr "**x :** Décalage horizontal en pixels"
+msgstr "Décalage horizontal en pixels"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Vertical offset in pixels (positive is down)"
-msgstr "**y :** Décalage vertical en pixels (positif en bas)"
+msgstr "Décalage vertical en pixels (positif en bas)"
 
 #: ../../reference/json-map-format.rst:492
-#, fuzzy
 msgid "Transformations"
-msgstr "<animation>"
+msgstr "Transformations"
 
 #: ../../reference/json-map-format.rst:494
 msgid "See :ref:`tmx-tileset-transformations` in the TMX Map Format."
 msgstr ""
+"Visitez :ref:`transformations de jeu de tuiles <tmx-tileset-transformations>`"
+" dans le Format de Carte TMX."
 
 #: ../../reference/json-map-format.rst:1
 msgid "hflip"
-msgstr ""
+msgstr "hflip"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Tiles can be flipped horizontally"
-msgstr ""
+msgstr "Si les tuiles peuvent être retournées horizontalement"
 
 #: ../../reference/json-map-format.rst:1
 msgid "vflip"
-msgstr ""
+msgstr "vflip"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Tiles can be flipped vertically"
-msgstr ""
+msgstr "Si les tuiles peuvent être retournées verticalement"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "rotate"
-msgstr "rotation"
+msgstr "rotate"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Tiles can be rotated in 90-degree increments"
-msgstr ""
+msgstr "Si les tuiles peuvent être tournées par incréments de 90 degrés"
 
 #: ../../reference/json-map-format.rst:1
 msgid "preferuntransformed"
-msgstr ""
+msgstr "preferuntransformed"
 
 #: ../../reference/json-map-format.rst:1
 msgid ""
 "Whether untransformed tiles remain preferred, otherwise transformed tiles "
 "are used to produce more variations"
 msgstr ""
+"Si les tuiles non transformées sont préférée, sinon les tuiles transformées "
+"sont utilisées pour produire plus de variations"
 
 #: ../../reference/json-map-format.rst:506
 msgid "Tileset Example"
@@ -1052,88 +1057,79 @@ msgid "Tile (Definition)"
 msgstr "Tuile (Définition)"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "animation"
-msgstr "<animation>"
+msgstr "animation"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`Frames <json-frame>`"
-msgstr "Tableau de (:ref:`calques <json-layer>`)"
+msgstr "Tableau de :ref:`Trames <json-frame>`"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Local ID of the tile"
-msgstr "ID local de la tuile représentant le terrain"
+msgstr "ID local de la tuile"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Image representing this tile (optional)"
-msgstr "**gid :** Une référence vers une tuile (optionnel)."
+msgstr "Image représentant cette tuile (optionnel)"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Height of the tile image in pixels"
-msgstr "Hauteur de l'image source en pixels"
+msgstr "Hauteur de l'image de la tuile en pixels"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Width of the tile image in pixels"
-msgstr "Longueur de l'image source en pixels"
+msgstr "Longueur de l'image de la tuile en pixels"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "objectgroup"
-msgstr "<objectgroup>"
+msgstr "objectgroup"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid ":ref:`json-layer`"
-msgstr "Tableau de (:ref:`calques <json-layer>`)"
+msgstr ":ref:`calque <json-layer>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid ""
 "Layer with type ``objectgroup``, when collision shapes are specified "
 "(optional)"
 msgstr ""
+"Calque de type ``groupe d'objets``, si des formes de collisions sont "
+"spécifiées (optionnel)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "probability"
-msgstr ""
+msgstr "probability"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid ""
 "Percentage chance this tile is chosen when competing with others in the "
 "editor (optional)"
 msgstr ""
-"**probability :** Un pourcentage indiquant la probabilité que cette tuile "
-"soit choisie quand elle est en compétition avec d'autres tuiles lors de "
-"l'utilisation de l'outil de terrain. (optionnel)"
+"Pourcentage indiquant la probabilité que cette tuile soit choisie quand elle "
+"est en compétition avec d'autres tuiles dans l'éditeur (optionnel)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "terrain"
 msgstr "terrain"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Index of terrain for each corner of tile (optional)"
-msgstr "index du terrain pour chaque coin de la tuile"
+msgstr "Index du terrain pour chaque coin de la tuile (optionnel)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "The type of the tile (optional)"
-msgstr ""
+msgstr "Le type de la tuile (optionnel)"
 
 #: ../../reference/json-map-format.rst:550
-#, fuzzy
 msgid ""
 "A tileset that associates information with each tile, like its image path or "
 "terrain type, may include a ``tiles`` array property. Each tile has an "
 "``id`` property, which specifies the local ID within the tileset."
 msgstr ""
 "Un jeu de tuiles qui associe des informations avec chaque tuile, tel que le "
-"chemin de son image ou le type de terrain, peut inclure un objet JSON \"tuile"
-"\". Claque clé est l'ID local d'une tuile du jeu de tuiles."
+"chemin de son image ou le type de terrain, peut inclure un propriété JSON "
+"``tiles``. Chaque tuile a une propriété ``id`` qui spécifie son ID local "
+"dans le jeu de tuiles."
 
 #: ../../reference/json-map-format.rst:554
 msgid ""
@@ -1144,7 +1140,7 @@ msgid ""
 msgstr ""
 "Pour des informations sur le terrain, chaque valeur est un tableau de 4 "
 "valeurs dans lequel chaque élément est l'index d'un :ref:`terrain <json-"
-"terrain>` pour le coin de cette tuile. L'ordre est indices est : en haut à "
+"terrain>` pour un coin de cette tuile. L'ordre est indices est : en haut à "
 "gauche, en haut à droite, en bas à gauche, en bas à droite."
 
 #: ../../reference/json-map-format.rst:559
@@ -1155,28 +1151,24 @@ msgid "Example:"
 msgstr "Exemple :"
 
 #: ../../reference/json-map-format.rst:599
-#, fuzzy
 msgid "Frame"
-msgstr "<frame>"
+msgstr "Trame"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "duration"
-msgstr "rotation"
+msgstr "duration"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Frame duration in milliseconds"
-msgstr ""
+msgstr "Longueur de la trame en millisecondes"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "tileid"
-msgstr "tilewidth"
+msgstr "tileid"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Local tile ID representing this frame"
-msgstr "ID local de la tuile représentant le terrain"
+msgstr "ID local de la tuile représentant cette trame"
 
 #: ../../reference/json-map-format.rst:611
 msgid "Terrain"
@@ -1196,107 +1188,95 @@ msgstr "ID local de la tuile représentant le terrain"
 
 #: ../../reference/json-map-format.rst:642
 msgid "Wang Set"
-msgstr ""
+msgstr "Collection Wang"
 
 #: ../../reference/json-map-format.rst:1
 msgid "colors"
-msgstr ""
+msgstr "colors"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`Wang colors <json-wangcolor>`"
-msgstr "Tableau de (:ref:`calques <json-layer>`)"
+msgstr "Tableau de :ref:`couleurs Wang <json-wangcolor>`"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Name of the Wang set"
-msgstr "**name** : Le nom de l'ensemble Wang."
+msgstr "Nom de la collection Wang"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Local ID of tile representing the Wang set"
-msgstr "ID local de la tuile représentant le terrain"
+msgstr "ID local de la tuile représentant la collection Wang"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "wangtiles"
-msgstr "<wangtile>"
+msgstr "wangtiles"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`Wang tiles <json-wangtile>`"
-msgstr "Tableau de :ref:`jeux de tuiles <json-tileset>`"
+msgstr "Tableau de :ref:`tuiles Wang <json-wangtile>`"
 
 #: ../../reference/json-map-format.rst:657
 msgid "Wang Color"
-msgstr ""
+msgstr "Couleur Wang"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Hex-formatted color (#RRGGBB or #AARRGGBB)"
-msgstr "Couleur en hexadécimal (#RRGGBB or #AARRGGBB) (optionnel)"
+msgstr "Couleur en hexadécimal (#RRVVBB or #AARRVVBB)"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Name of the Wang color"
-msgstr "Nom du terrain"
+msgstr "Nom de la couleur Wang"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Probability used when randomizing"
-msgstr ""
+msgstr "Probabilité utilisée lors de la sélection aléatoire"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Local ID of tile representing the Wang color"
-msgstr "ID local de la tuile représentant le terrain"
+msgstr "ID local de la tuile représentant la couleur Wang"
 
 #: ../../reference/json-map-format.rst:683
 msgid "Wang Tile"
-msgstr ""
+msgstr "Tuile Wang"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Local ID of tile"
-msgstr "ID local de la tuile représentant le terrain"
+msgstr "ID local de la tuile"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "wangid"
-msgstr "<wangtile>"
+msgstr "wangid"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Array of Wang color indexes (``uchar[8]``)"
-msgstr ""
+msgstr "Tableau d'index de couleurs Wang (``uchar[8]``)"
 
 #: ../../reference/json-map-format.rst:704
-#, fuzzy
 msgid "Object Template"
-msgstr "Exemple d'Objet"
+msgstr "Modèle d'Objet"
 
 #: ../../reference/json-map-format.rst:706
 msgid ""
 "An object template is written to its own file and referenced by any "
 "instances of that template."
 msgstr ""
+"Un modèle d'objet est écrit dans son propre fichier et est référencé par "
+"toute instance de la modèle."
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "``template``"
-msgstr "<template>"
+msgstr "``template``"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "tileset"
-msgstr "tilesets"
+msgstr "tileset"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid ":ref:`json-tileset`"
-msgstr "Tableau de :ref:`jeux de tuiles <json-tileset>`"
+msgstr ":ref:`jeu de tuiles <json-tileset>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "External tileset used by the template (optional)"
-msgstr ""
+msgstr "Jeu de tuiles externe utilisé par le modèle (optionnel)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "object"
@@ -1304,62 +1284,56 @@ msgstr "object"
 
 #: ../../reference/json-map-format.rst:1
 msgid ":ref:`json-object`"
-msgstr ""
+msgstr ":ref:`objet JSON <json-object>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "The object instantiated by this template"
-msgstr ""
+msgstr "L'objet instancié par ce modèle"
 
 #: ../../reference/json-map-format.rst:720
-#, fuzzy
 msgid "Property"
-msgstr "<property>"
+msgstr "Propriété"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Name of the property"
-msgstr "**name :** Le nom de cette propriété."
+msgstr "Nom de cette propriété"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid ""
 "Type of the property (``string`` (default), ``int``, ``float``, ``bool``, "
 "``color`` or ``file`` (since 0.16, with ``color`` and ``file`` added in "
 "0.17))"
 msgstr ""
-"**type :** Le type de cette propriété. Peut être ``string`` (chaîne de "
-"caractères, par défaut), ``int`` (entier), ``float`` (flottant), ``bool`` "
-"(booléen), ``color`` (couleur) ou ``file`` (depuis la 0.16, avec les options "
-"``color`` et ``file`` ajoutées dans la 0.17)."
+"Type de cette propriété (``string`` (chaîne de caractères, par défaut), "
+"``int`` (entier), ``float`` (flottant), ``bool`` (booléen), ``color`` "
+"(couleur) ou ``file`` (fichier, depuis la 0.16, avec les options ``color`` "
+"et ``file`` ajoutées dans la 0.17))"
 
 #: ../../reference/json-map-format.rst:1
 msgid "value"
-msgstr ""
+msgstr "value"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Value of the property"
-msgstr "**value :** La valeur de la propriété."
+msgstr "Valeur de la propriété"
 
 #: ../../reference/json-map-format.rst:733
-#, fuzzy
 msgid "Point"
-msgstr "point"
+msgstr "Point"
 
 #: ../../reference/json-map-format.rst:735
 msgid ""
 "A point on a polygon or a polyline, relative to the position of the object."
 msgstr ""
+"Un point d'un polygone ou d'une polyligne, relatif à la position de l'objet."
 
 #: ../../reference/json-map-format.rst:745
-#, fuzzy
 msgid "Changelog"
-msgstr "Notes de Version de TMX"
+msgstr "Notes de Version"
 
 #: ../../reference/json-map-format.rst:748 ../../reference/tmx-changelog.rst:8
-#, fuzzy
 msgid "Tiled 1.7"
-msgstr "Tiled 1.1"
+msgstr "Tiled 1.7"
 
 #: ../../reference/json-map-format.rst:750
 msgid ""
@@ -1367,62 +1341,73 @@ msgid ""
 "increasing IDs. They are now saved in the display order, which can be "
 "changed in Tiled."
 msgstr ""
+"Les objets :ref:`tuile <json-tile>` dans un jeu de tuiles ne sont plus "
+"sauvegardés avec un ID incrémental. Ils sont maintenant sauvegardé dans "
+"l'ordre d'affichage, ce qui peut être configuré dans Tiled."
 
 #: ../../reference/json-map-format.rst:755
-#, fuzzy
 msgid "Tiled 1.6"
-msgstr "Tiled 1.1"
+msgstr "Tiled 1.6"
 
 #: ../../reference/json-map-format.rst:757
 msgid ""
 "The ``version`` property is now written as a string (\"1.6\") instead of a "
 "number (1.5)."
 msgstr ""
+"La propriété ``version`` est maintenant écrite en tant que chaîne de "
+"caractères (\"1.6\") plutôt qu'un nombre (1.5)."
 
 #: ../../reference/json-map-format.rst:761 ../../reference/tmx-changelog.rst:15
-#, fuzzy
 msgid "Tiled 1.5"
-msgstr "Tiled 1.1"
+msgstr "Tiled 1.5"
 
 #: ../../reference/json-map-format.rst:763
 msgid ""
 "Unified ``cornercolors`` and ``edgecolors`` properties of :ref:`json-"
 "wangset` as the new ``colors`` property."
 msgstr ""
+"Les propriétés ``cornercolors`` et ``edgecolors`` d'une :ref:`collection "
+"Wang <json-wangset>` ont été unifiées dans la nouvelle propriété ``colors``."
 
 #: ../../reference/json-map-format.rst:766
 msgid ":ref:`json-wangcolor` can now store ``properties``."
 msgstr ""
+"Les :ref:`couleurs Wang <json-wangcolor>` peuvent maintenant stocker des "
+"propriétés dans ``properties``."
 
 #: ../../reference/json-map-format.rst:768
 msgid ""
 "Added ``transformations`` property to :ref:`json-tileset` (see :ref:`json-"
 "tileset-transformations`)."
 msgstr ""
+"Ajout de la propriété ``transformations`` aux :ref:`jeux de tuiles <json-"
+"tileset>` (voir :ref:`transformations de jeu de tuiles <json-tileset-"
+"transformations>`)."
 
 #: ../../reference/json-map-format.rst:771
 msgid ""
 "Removed ``dflip``, ``hflip`` and ``vflip`` properties from :ref:`json-"
 "wangtile` (no longer supported)."
 msgstr ""
+"Suppression des propriétés ``dflip``, ``hflip`` et ``vflip`` des :ref:`"
+"tuiles Wang <json-wangtile>` (support abandonné)."
 
 #: ../../reference/json-map-format.rst:775 ../../reference/tmx-changelog.rst:36
-#, fuzzy
 msgid "Tiled 1.4"
-msgstr "Tiled 1.1"
+msgstr "Tiled 1.4"
 
 #: ../../reference/json-map-format.rst:777
 msgid "Added ``objectalignment`` to the :ref:`json-tileset` object."
 msgstr ""
+"Ajout de ``objectalignment`` à l'objet :ref:`jeu de tuiles <json-tileset>`."
 
 #: ../../reference/json-map-format.rst:778
 msgid "Added ``tintcolor`` to the :ref:`json-layer` object."
-msgstr ""
+msgstr "Ajout de ``tintcolor`` à l'objet :ref:`calque <json-layer>`."
 
 #: ../../reference/json-map-format.rst:781 ../../reference/tmx-changelog.rst:47
-#, fuzzy
 msgid "Tiled 1.3"
-msgstr "Tiled 1.1"
+msgstr "Tiled 1.3"
 
 #: ../../reference/json-map-format.rst:783
 msgid ""
@@ -1430,31 +1415,40 @@ msgid ""
 "`json-tileset` objects, which is used to store editor specific settings that "
 "are generally not relevant when loading a map or tileset."
 msgstr ""
+"Ajout de la propriété ``editorsettings`` aux objets :ref:`carte <json-map>` "
+"et :ref:`jeu de tuiles <json-tileset>` à la racine, qui est utilisée pour "
+"stocker des paramètres spécifiques à l'éditeur qui ne sont généralement pas "
+"utiles lors du chargement d'une carte ou d'un jeu de tuiles."
 
 #: ../../reference/json-map-format.rst:787
 msgid ""
 "Added support for Zstandard compression for tile layer data (``\"compression"
 "\": \"zstd\"`` on :ref:`tile layer objects <json-layer>`)."
 msgstr ""
+"Ajout du support pour la compression Zstandard pour les données d'un calque "
+"de tuiles (``\"compression\" : \"zstd\"`` pour les :ref:`objets calques de "
+"tuiles <json-layer>`)."
 
 #: ../../reference/json-map-format.rst:790
 msgid ""
 "Added the ``compressionlevel`` property to the :ref:`json-map` object, which "
 "stores the compression level to use for compressed tile layer data."
 msgstr ""
+"Ajout de la propriété ``compressionlevel`` à l'objet :ref:`carte <json-map>`"
+", qui stocke le niveau de compression à utiliser pour les données des "
+"calques de tuiles."
 
 #: ../../reference/json-map-format.rst:794 ../../reference/tmx-changelog.rst:65
-#, fuzzy
 msgid "Tiled 1.2"
-msgstr "Tiled 1.1"
+msgstr "Tiled 1.2"
 
 #: ../../reference/json-map-format.rst:796
 msgid "Added ``nextlayerid`` to the :ref:`json-map` object."
-msgstr ""
+msgstr "Ajout de ``nextlayerid`` à l'objet :ref:`carte <json-map>`."
 
 #: ../../reference/json-map-format.rst:798
 msgid "Added ``id`` to the :ref:`json-layer` object."
-msgstr ""
+msgstr "Ajout de ``id`` à l'objet :ref:`calque <json-layer>`."
 
 #: ../../reference/json-map-format.rst:800
 msgid ""
@@ -1463,6 +1457,11 @@ msgid ""
 "object, now they are stored as ``id`` property of each :ref:`Tile <json-"
 "tile>` object."
 msgstr ""
+"Les tuiles dans un :ref:`jeu de tuiles <json-tileset>` sont maintenant "
+"stockées dans un tableau plutôt qu'un objet. Avant les IDs des tuiles "
+"étaient stockées en tant que clés chaînes de caractères des objets \"tuiles\""
+", maintenant elles sont stockées en tant que propriété ``id`` de chaque "
+"objet :ref:`Tuile <json-tile>`."
 
 #: ../../reference/json-map-format.rst:805
 msgid ""
@@ -1470,6 +1469,9 @@ msgid ""
 "instead of being included as ``tileproperties`` in the :ref:`json-tileset` "
 "object."
 msgstr ""
+"Les propriétés personnalisées des tuiles sont maintenant stockées dans "
+"chaque :ref:`Tuile <json-tile>` plutôt qu'être inclus en tant que "
+"``tileproperties`` dans l'objet :ref:`jeu de tuiles <json-tileset>`."
 
 #: ../../reference/json-map-format.rst:809
 msgid ""
@@ -1478,6 +1480,11 @@ msgid ""
 "name, type and value of the property. The separate ``propertytypes`` and "
 "``tilepropertytypes`` properties have been removed."
 msgstr ""
+"Les propriétés personnalisées sont maintenant stockées dans un tableau "
+"plutôt que dans un objet où le nom des propriétés étaient leur clé. Chaque "
+"propriété est maintenant un objet qui stocke son nom, son type et la valeur "
+"de la propriété. Les propriétés séparés ``propertytypes`` et "
+"``tilepropertytypes`` ont été enlevées."
 
 #: ../../reference/json-map-format.rst:816 ../../reference/tmx-changelog.rst:76
 msgid "Tiled 1.1"
@@ -1488,32 +1495,32 @@ msgid ""
 "Added a :ref:`chunked data format <json-chunk>`, currently used for :doc:"
 "`infinite maps </manual/using-infinite-maps>`."
 msgstr ""
+"Ajout d'un :ref:`format de données fragmenté <json-chunk>`, couramment "
+"utilisé pour les :doc:`cartes infinies </manual/using-infinite-maps>`."
 
 #: ../../reference/json-map-format.rst:821
-#, fuzzy
 msgid ""
 ":doc:`Templates </manual/using-templates>` were added. Templates can be "
 "stored as JSON files with an :ref:`json-objecttemplate` object."
 msgstr ""
-"Des :doc:`modèles </manual/using-templates>` ont été ajoutés, un modèle est "
-"un :ref:`fichier externe <tmx-template-files>` référencé par des objets "
-"d'instance de modèle :"
+"Les :doc:`modèles </manual/using-templates>` ont été ajoutés. Les modèles "
+"peuvent être stocké en tant que fichiers JSON avec un objet :ref:`modèle "
+"<json-objecttemplate>`."
 
 #: ../../reference/json-map-format.rst:824
-#, fuzzy
 msgid ""
 ":ref:`Tilesets <json-tileset>` can now contain :doc:`Terrain Sets </manual/"
 "terrain>`. They are saved in the new :ref:`json-wangset` object (since Tiled "
 "1.1.5)."
 msgstr ""
-"Les jeux de tuiles peuvent maintenant contenir des :doc:`tuiles Wang </"
-"manual/using-wang-tiles>`. Elles sont sauvegardées dans le nouvel élément :"
-"ref:`tmx-wangsets`."
+"Les :ref:`jeux de tuiles <json-tileset>` peuvent maintenant contenir des "
+":doc:`Collections de Terrains </manual/terrain>`. Elles sont sauvegardées "
+"dans le nouvel objet :ref:`collection Wang <json-wangset>` (depuis Tiled 1.1."
+"5)."
 
 #: ../../reference/scripting.rst:8
-#, fuzzy
 msgid "Scripting"
-msgstr "Description"
+msgstr "Création de Script"
 
 #: ../../reference/scripting.rst:11
 msgid "Introduction"
@@ -1524,6 +1531,9 @@ msgid ""
 "Tiled can be extended with the use of JavaScript. See the `Tiled Scripting "
 "API`_ for a reference of all available functionality."
 msgstr ""
+"Tiled peut être étendu avec l'utilisation de JavaScript. Visitez `l'API de "
+"Création de Script Tiled`_ pour une référence de toutes les fonctionnalités "
+"disponibles."
 
 #: ../../reference/scripting.rst:16
 msgid ""
@@ -1531,6 +1541,9 @@ msgid ""
 "api`_ NPM package, which can provide auto-completion in your editor. The API "
 "reference is generated based on these definitions."
 msgstr ""
+"Les définitions TypeScript de l'API sont disponibles dans le paquet NPM `@"
+"mapeditor/tiled-api`_, qui peut fournir une auto-complétion dans votre "
+"éditeur. La référence de l'API est générée suivant ces définitions."
 
 #: ../../reference/scripting.rst:20
 msgid ""
@@ -1539,6 +1552,10 @@ msgid ""
 "directly from :ref:`the console <script-console>`. All scripts share a "
 "single JavaScript context."
 msgstr ""
+"Au lancement, Tiled va exécuter n'importe quel fichier de script présent "
+"dans les :ref:`dossiers d'extension <script-extensions>`. De plus il est "
+"possible de lancer des scripts directement depuis :ref:`la console <script-"
+"console>`. Tous les scripts partagent un seul contexte JavaScript."
 
 #: ../../reference/scripting.rst:27
 msgid ""
@@ -1546,6 +1563,9 @@ msgid ""
 "the Tiled Extensions repository: https://github.com/mapeditor/tiled-"
 "extensions"
 msgstr ""
+"Quelques exemples de scripts et des liens vers des extensions de Tiled sont "
+"fournis dans le répertoire d'Extensions Tiled : https://github.com/mapeditor/"
+"tiled-extensions"
 
 #: ../../reference/scripting.rst:32
 msgid ""
@@ -1553,16 +1573,22 @@ msgid ""
 "available for Tiled builds based on Qt 5.12 or later. This currently "
 "excludes the Windows XP and snap releases."
 msgstr ""
+"Le support pour l'entièreté de l'API de la création de script pour les "
+"fonctionnalités de ECMAScript 7 est seulement disponible pour les versions "
+"de Tiled basées sur Qt 5.12 ou ultérieur. Pour le moment, cela exclut les "
+"versions pour Windows XP et snap."
 
 #: ../../reference/scripting.rst:39
 msgid "Scripted Extensions"
-msgstr ""
+msgstr "Extensions Scriptées"
 
 #: ../../reference/scripting.rst:41
 msgid ""
 "Extensions can be placed in a system-specific or :doc:`project-specific </"
 "manual/projects>` location."
 msgstr ""
+"Les extensions peuvent être placées dans une location pour un système "
+"spécifique ou un :doc:`projet spécifique </manual/projects>`."
 
 #: ../../reference/scripting.rst:44
 msgid ""
@@ -1570,30 +1596,34 @@ msgid ""
 "`Preferences dialog </manual/preferences>`. The usual location on each "
 "supported platform is as follows:"
 msgstr ""
+"Le dossier pour les extensions pour un système spécifique peut être ouvert "
+"depuis l'onglet Greffons dans la :doc:`fenêtre de Préférences </manual/"
+"preferences>`. La location usuelle de chaque plateforme supportée est comme "
+"ceci :"
 
 #: ../../reference/scripting.rst:49
 msgid "**Windows**"
-msgstr ""
+msgstr "**Windows**"
 
 #: ../../reference/scripting.rst:0
 msgid ":file:`C:/Users/<USER>/AppData/Local/Tiled/extensions/`"
-msgstr ""
+msgstr ":file:`C:/Users/<USER>/AppData/Local/Tiled/extensions/`"
 
 #: ../../reference/scripting.rst:51
 msgid "**macOS**"
-msgstr ""
+msgstr "**macOS**"
 
 #: ../../reference/scripting.rst:0
 msgid ":file:`~/Library/Preferences/Tiled/extensions/`"
-msgstr ""
+msgstr ":file:`~/Library/Preferences/Tiled/extensions/`"
 
 #: ../../reference/scripting.rst:53
 msgid "**Linux**"
-msgstr ""
+msgstr "**Linux**"
 
 #: ../../reference/scripting.rst:0
 msgid ":file:`~/.config/tiled/extensions/`"
-msgstr ""
+msgstr ":file:`~/.config/tiled/extensions/`"
 
 #: ../../reference/scripting.rst:56
 msgid ""
@@ -1601,6 +1631,9 @@ msgid ""
 "directory of the ``.tiled-project`` file, but this can be changed in the "
 "*Project Properties*."
 msgstr ""
+"Les dossier spécifiques à chaque projet est nommé \"extensions\" par défaut, "
+"relativement au dossier du fichier ``.tiled-project``, mais cela peut être "
+"changé dans les *Propriétés du Projet*."
 
 #: ../../reference/scripting.rst:62
 msgid ""
@@ -1609,12 +1642,20 @@ msgid ""
 "you when the project has a scripted extensions directory, allowing you to "
 "enable extensions for that project."
 msgstr ""
+"Depuis Tiled 1.7, les extensions spécifiques à un projet sont seulement "
+"activées par défaut pour les projets que vous avez créés. Lorsque vous "
+"ouvrez tout autre projet, un popup vous notifiera lorsqu'un projet a un "
+"dossier d'extensions scriptées, qui vous permet ensuite d'activer les "
+"extensions pour ce projet."
 
 #: ../../reference/scripting.rst:67
 msgid ""
 "Always be careful when enabling extensions on projects you haven't created, "
 "since extensions have access to your files and can execute processes."
 msgstr ""
+"Faites toujours attention lors de l'activation d'extensions pour des projets "
+"que vous n'avez pas créés, car les extensions ont accès à vos fichiers et "
+"peuvent lancer des processus."
 
 #: ../../reference/scripting.rst:71
 msgid ""
@@ -1622,6 +1663,9 @@ msgid ""
 "a sub-directory. All scripts files found in these directories are executed "
 "on startup."
 msgstr ""
+"Une extension peut être placée directement dans un dossier extensions, ou "
+"dans un sous-dossier. Tous les scripts trouvés dans ces dossiers sont lancés "
+"au lancement de l'application."
 
 #: ../../reference/scripting.rst:75
 msgid ""
@@ -1631,46 +1675,63 @@ msgid ""
 "when installing extensions. It also makes it quick to iterate on a script "
 "until it works as intended."
 msgstr ""
+"Quand tout script chargé est changé ou lorsque n'importe quel fichier est "
+"ajouté/enlevé du dossier extensions, le moteur de script est automatiquement "
+"réinitialisé et les scripts sont rechargés. De cette façon, il n'y a pas "
+"besoin de relancer Tiled lors de l'installation d'extensions. C'est aussi "
+"plus rapide lors de l'édition d'un script jusqu'à ce qu'il marche comme "
+"prévu."
 
 #: ../../reference/scripting.rst:81
 msgid ""
 "Apart from scripts, extensions can include images that can be used as the "
 "icon for scripted actions or tools."
 msgstr ""
+"Mis à part les scripts, les extensions peuvent inclure des images qui "
+"peuvent être utilisées en tant qu'icônes pour les actions scriptées ou les "
+"outils."
 
 #: ../../reference/scripting.rst:87
 msgid "Console View"
-msgstr ""
+msgstr "Vue Console"
 
 #: ../../reference/scripting.rst:89
 msgid ""
 "In the Console view (*View > Views and Toolbars > Console*) you will find a "
 "text entry where you can write or paste scripts to evaluate them."
 msgstr ""
+"Dans la vue Console (*Vue > Vues et Barres d'Outils > Console*) vous allez "
+"voir une entrée de texte où vous pouvez écrire ou coller des scripts pour "
+"les évaluer."
 
 #: ../../reference/scripting.rst:92
 msgid ""
 "You can use the Up/Down keys to navigate through previously entered script "
 "expressions."
 msgstr ""
+"Vous pouvez utiliser les touches Haut/Bas pour naviguer entre les "
+"expressions de scripts entrées précédemment."
 
 #: ../../reference/scripting.rst:96
 msgid "API Reference"
-msgstr ""
+msgstr "Référence de l'API"
 
 #: ../../reference/scripting.rst:98
 msgid "See the `Tiled Scripting API`_."
-msgstr ""
+msgstr "Visitez `l'API de Création de Script Tiled`_."
 
 #: ../../reference/scripting.rst:100
 msgid ""
 "The following global variable is currently not documented in the generated "
 "documentation, since it conflicts with nodejs types:"
 msgstr ""
+"La variable globale suivant n'est pour le moment pas documentée dans la "
+"documentation générée, car elle génère des conflits avec des types de nodejs "
+":"
 
 #: ../../reference/scripting.rst:106
 msgid "__filename"
-msgstr ""
+msgstr "__filename"
 
 #: ../../reference/scripting.rst:104
 msgid ""
@@ -1678,10 +1739,14 @@ msgid ""
 "initial evaluation of the file and not when later functions in that file get "
 "called. If you need it there, copy the value to local scope."
 msgstr ""
+"Le chemin du fichier couramment évalué. Seulement disponible pendant "
+"l'évaluation initiale du fichier et non lorsque des fonctions de ce fichier "
+"sont appelées plus tard. Si vous en avez besoin, copiez cette valeur dans "
+"une variable locale."
 
 #: ../../reference/support-for-tmx-maps.rst:2
 msgid "Libraries and Frameworks"
-msgstr "Bibliothèques et Systèmes"
+msgstr "Bibliothèques et Environnements"
 
 #: ../../reference/support-for-tmx-maps.rst:4
 msgid ""
@@ -1692,16 +1757,16 @@ msgid ""
 msgstr ""
 "Il y a beaucoup de bibliothèques disponibles pour lire et/ou écrire des "
 "cartes Tiled (stockées au format :doc:`tmx-map-format` ou `json-map-format`) "
-"ainsi que de nombreux systèmes de développement qui incluent un support pour "
-"les cartes Tiled. Cette liste est divisée en deux sections :"
+"ainsi que de nombreux environnements de développement qui incluent un "
+"support pour les cartes Tiled. Cette liste est divisée en deux sections :"
 
 #: ../../reference/support-for-tmx-maps.rst:9
 msgid "`Support by Language <#support-by-language>`__"
-msgstr "`Supportées par le Langage <#support-by-language>`__"
+msgstr "`Support par Langage <#support-by-language>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:10
 msgid "`Support by Framework <#support-by-framework>`__"
-msgstr "`Supportées par le Framework <#support-by-framework>`__"
+msgstr "`Support par Environnement <#support-by-framework>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:12
 msgid ""
@@ -1710,20 +1775,20 @@ msgid ""
 "particular game engine / graphics library who would rather pass on having to "
 "write their own tile map renderer."
 msgstr ""
-"La première liste est pour les développeurs qui ont planifié d'implémenter "
-"leur propre générateur de rendu. La seconde liste est pour les développeurs "
-"qui utilisent déjà (ou envisagent) un moteur de jeu particulier / des "
+"La première liste est pour les développeurs qui ont prévu d'implémenter leur "
+"propre générateur de rendu. La seconde liste est pour les développeurs qui "
+"utilisent déjà (ou envisagent d'utiliser) un moteur de jeu particulier / des "
 "bibliothèques graphiques et qui voudraient plutôt éviter de devoir écrire "
-"leur propre générateur de rendu de carte de tuile."
+"leur propre générateur de rendu de carte de tuiles."
 
 #: ../../reference/support-for-tmx-maps.rst:19
 msgid ""
 "For updates to this page please open a pull request or issue `on GitHub "
 "<https://github.com/bjorn/tiled/issues>`__, thanks!"
 msgstr ""
-"Pour apporter des mises à jours à cette page, veuillez ouvrir une *pull "
-"request* (demande de tirage) ou un rapport de bug `sur github <https://"
-"github.com/bjorn/tiled/issues>`__, merci !"
+"Pour apporter des mises à jours à cette page, veuillez ouvrir une pull "
+"request (demande de tirage) ou un rapport de bug `sur GitHub <https://github."
+"com/bjorn/tiled/issues>`__, merci !"
 
 #: ../../reference/support-for-tmx-maps.rst:23
 msgid "Support by Language"
@@ -1735,9 +1800,9 @@ msgid ""
 "support. They can be used universally and should not require a specific game "
 "engine or graphics library."
 msgstr ""
-"Typiquement ces librairies incluent seulement un analyseur TMX, mais aucun "
-"support de rendu. Elles peuvent être utilisées universellement et ne "
-"devraient pas nécessiter de moteur de jeu particulier ou de librairie "
+"Typiquement, ces bibliothèques incluent seulement un analyseur TMX, mais "
+"aucun support de rendu. Elles peuvent être utilisées universellement et ne "
+"devraient pas nécessiter de moteur de jeu particulier ou de bibliothèque "
 "graphique."
 
 #: ../../reference/support-for-tmx-maps.rst:30
@@ -1745,13 +1810,12 @@ msgid "C"
 msgstr "C"
 
 #: ../../reference/support-for-tmx-maps.rst:32
-#, fuzzy
 msgid ""
 "`cute tiled <https://github.com/RandyGaul/cute_headers>`__ - JSON map loader "
 "with examples (zlib/Public Domain)."
 msgstr ""
-"`TMX <https://github.com/baylej/tmx/>`__ - Exemples de chargeurs de carte "
-"TMX avec Allegro5 et SDL2 (BSD)."
+"`cute tiled <https://github.com/RandyGaul/cute_headers>`__ - Chargeur de "
+"cartes JSON avec des exemples (zlib/Domaine Public)."
 
 #: ../../reference/support-for-tmx-maps.rst:33
 msgid ""
@@ -1769,8 +1833,8 @@ msgstr "C++"
 msgid ""
 "`C++/TinyXML based tmxparser <https://github.com/sainteos/tmxparser>`__ (BSD)"
 msgstr ""
-"`Analyseur TMX (tmxparser) basé sur du C++/TinyXML <https://github.com/"
-"andrewrk/tmxparser>`__ (BSD)"
+"`tmxparser basé sur du C++/TinyXML <https://github.com/andrewrk/tmxparser>`"
+"__ (BSD)"
 
 #: ../../reference/support-for-tmx-maps.rst:40
 msgid ""
@@ -1785,8 +1849,8 @@ msgid ""
 "`C++11x/TinyXml2 libtmx-parser <https://github.com/halsafar/libtmx-"
 "parser>`__ by halsafar. (zlib/tinyxml2)"
 msgstr ""
-"`C++11x/TinyXml2 analyseur libtmx <https://github.com/halsafar/libtmx-"
-"parser>`__ par halsafar. (zlib/tinyxml2)"
+"`libtmx-parser basé sur du C++11x/TinyXml2 <https://github.com/halsafar/"
+"libtmx-parser>`__ par halsafar. (zlib/tinyxml2)"
 
 #: ../../reference/support-for-tmx-maps.rst:46
 msgid ""
@@ -1794,9 +1858,9 @@ msgid ""
 "reading only (ISC licence). See `documentation <http://jube.github.io/libtmx/"
 "index.html>`__."
 msgstr ""
-"`C++11/TinyXml2 libtmx <https://github.com/jube/libtmx>`__ par jube, "
-"uniquement pour lire (licence ISC). voire `documentation <http://jube.github."
-"io/libtmx/index.html>`__."
+"`libtmx basé sur du C++11/TinyXml2 <https://github.com/jube/libtmx>`__ par "
+"jube, uniquement pour lire (licence ISC). Voir la `documentation <http://jube"
+".github.io/libtmx/index.html>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:49
 msgid ""
@@ -1804,8 +1868,8 @@ msgid ""
 "tmx tileset data loader. Intended to be used with TSXParser for external "
 "tileset loading. (No internal tileset support)"
 msgstr ""
-"`TMXParser <https://github.com/solar-storm-studios/TMXParser>`__ Général \\*."
-"tmx chargeur de données de jeu de tuiles. Prévu pour être utilisé avec "
+"`TMXParser <https://github.com/solar-storm-studios/TMXParser>`__ Chargeur de "
+"données de jeux de tuiles \\*.tmx général. Prévu pour être utilisé avec "
 "TSXParser pour un chargement extérieur de jeu de tuiles. (Pas de support "
 "interne de jeu de tuiles)"
 
@@ -1814,8 +1878,8 @@ msgid ""
 "`TSXParser <https://github.com/solar-storm-studios/TSXParser>`__ General \\*."
 "tsx tileset data loader. Intended to be used with TMXParser."
 msgstr ""
-"`TSXParser <https://github.com/solar-storm-studios/TSXParser>`__ Général \\*."
-"tsx charger de données de jeu de tuiles. Prévu pour être utilisé avec "
+"`TSXParser <https://github.com/solar-storm-studios/TSXParser>`__ Chargeur de "
+"données de jeu de tuiles \\*.tsx général. Prévu pour être utilisé avec "
 "TMXParser."
 
 #: ../../reference/support-for-tmx-maps.rst:55
@@ -1825,10 +1889,10 @@ msgid ""
 "(check the `website <http://www.midnightpacific.com/portfolio/tmxloader-for-"
 "tiled-map-editor/>`__ for details)."
 msgstr ""
-"`TMXLoader <https://bitbucket.org/martingrant/tmxloader>`__ basé sur "
-"`RapidXml <http://rapidxml.sourceforge.net/>`__. Fonctionnalités limitées "
-"(allez sur le `site web <http://www.midnightpacific.com/portfolio/tmxloader-"
-"for-tiled-map-editor/>`__ pour plus de détails)."
+"`TMXLoader <https://bitbucket.org/martingrant/tmxloader>`__ basé sur `"
+"RapidXml <http://rapidxml.sourceforge.net/>`__. Fonctionnalités limitées ("
+"visitez le `site web <http://www.midnightpacific.com/portfolio/"
+"tmxloader-for-tiled-map-editor/>`__ pour plus de détails)."
 
 #: ../../reference/support-for-tmx-maps.rst:60
 msgid ""
@@ -1837,9 +1901,9 @@ msgid ""
 "for SFML and SDL2 rendering. Currently has full tmx support up to 0.16. "
 "(Zlib/libpng)"
 msgstr ""
-"`tmxlite <https://github.com/fallahn/tmxlite>`__ C++14 analyseur de carte "
+"`tmxlite <https://github.com/fallahn/tmxlite>`__ Analyseur de carte en C++14 "
 "avec support pour cartes compressées mais aucun lien extérieur n'est requis. "
-"Inclut des exemples pour du rendus SFML et SDL2. Actuellement il y a un "
+"Inclut des exemples pour des rendus SFML et SDL2. Actuellement il y a un "
 "support complet pour tmx à jour jusqu'à la 0.16. (Zlib/libpng)"
 
 #: ../../reference/support-for-tmx-maps.rst:64
@@ -1847,19 +1911,20 @@ msgid ""
 "`Tileson <https://github.com/SSBMTonberry/tileson>`__ - A Tiled JSON parser "
 "for modern C++ (C++17) by Robin Berg Pettersen (BSD)"
 msgstr ""
+"`Tileson <https://github.com/SSBMTonberry/tileson>`__ - Un analyseur de JSON "
+"de Tiled pour du C++ moderne (C++17) par Robin Berg Pettersen (BSD)"
 
 #: ../../reference/support-for-tmx-maps.rst:67
 msgid "C#/.NET"
 msgstr "C#/.NET"
 
 #: ../../reference/support-for-tmx-maps.rst:69
-#, fuzzy
 msgid ""
 "`TiledCS <https://github.com/TheBoneJarmer/TiledCS>`__: A dotnet library for "
 "loading Tiled tilesets and maps (TMX/TSX or JSON)."
 msgstr ""
-"`SKTiled <https://github.com/mfessenden/SKTiled>`__ - Un système en Swift "
-"pour travailler avec des ressources Tiled dans SpriteKit."
+"`TiledCS <https://github.com/TheBoneJarmer/TiledCS>`__ : Une bibliothèque "
+"dotnet pour charger des cartes et jeux de tuiles Tiled (TMX/TSX ou JSON)."
 
 #: ../../reference/support-for-tmx-maps.rst:70
 msgid ""
@@ -1868,8 +1933,8 @@ msgid ""
 "platforms that support portable class libraries."
 msgstr ""
 "`MonoGame.Extended <https://github.com/craftworkgames/MonoGame.Extended>`__ "
-"Possède un chargeur de map Tiled et un générateur de rendu qui fonctionne "
-"avec MonoGame sur toutes les plate-formes supportant les classes de "
+"possède un chargeur de carte Tiled et un générateur de rendu qui fonctionne "
+"avec MonoGame sur toutes les plateformes supportant les classes de "
 "bibliothèques portables."
 
 #: ../../reference/support-for-tmx-maps.rst:73
@@ -1880,10 +1945,16 @@ msgid ""
 "github.com/aalmik/tmx-mapper-pcl>`__, `tiled-xna <https://github.com/zachmu/"
 "tiled-xna>`__ and `TmxCSharp <https://github.com/gwicksted/TmxCSharp>`__."
 msgstr ""
+"Les projets suivants n'ont plus l'air d'être maintenus, mais ils peuvent "
+"être quand même utiles : `TiledSharp <https://github.com/marshallward/"
+"TiledSharp>`__, `NTiled <https://github.com/patriksvensson/ntiled>`__, `tmx-"
+"mapper-pcl <https://github.com/aalmik/tmx-mapper-pcl>`__, `tiled-xna "
+"<https://github.com/zachmu/tiled-xna>`__ et `TmxCSharp <https://github.com/"
+"gwicksted/TmxCSharp>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:82
 msgid "Clojure"
-msgstr ""
+msgstr "Clojure"
 
 #: ../../reference/support-for-tmx-maps.rst:83
 msgid ""
@@ -1892,6 +1963,10 @@ msgid ""
 "coerces numbers when necessary. Works on both the JVM and in browsers via "
 "ClojureScript."
 msgstr ""
+"`tile-soup <https://github.com/oakes/tile-soup>`__ : Analyse et valide un "
+"fichier TMX dans une carte. Décode automatiquement les données formatées en "
+"Base64 ou en CSV et contraint les nombres quand nécessaire. Marche sur la "
+"JVM et dans les navigateurs via ClojureScript."
 
 #: ../../reference/support-for-tmx-maps.rst:86
 msgid "D"
@@ -1905,9 +1980,10 @@ msgid ""
 "<https://github.com/Jebbs/DSFML/>`__"
 msgstr ""
 "`tiledMap.d <https://gist.github.com/gdm85/9896961>`__ un exemple simple "
-"d'une seule couche et d'un seul tileset pour charger une carte et ses "
-"tileset en `langage D <http://dlang.org/>`__. Il contient aussi un rendu "
-"logique et basique en utilisant `DSFML <https://github.com/Jebbs/DSFML/>`__"
+"d'un seul calque et d'un seul jeu de tuiles pour charger une carte et ses "
+"jeux de tuiles en `langage D <http://dlang.org/>`__. Il contient aussi un "
+"rendu logique et basique en utilisant `DSFML <https://github.com/Jebbs/DSFML/"
+">`__"
 
 #: ../../reference/support-for-tmx-maps.rst:92
 msgid ""
@@ -1923,10 +1999,8 @@ msgid "Go"
 msgstr "Go"
 
 #: ../../reference/support-for-tmx-maps.rst:98
-#, fuzzy
 msgid "`github.com/lafriks/go-tiled <https://github.com/lafriks/go-tiled>`__"
-msgstr ""
-"`github.com/salviati/go-tmx/tmx <https://github.com/salviati/go-tmx>`__"
+msgstr "`github.com/lafriks/go-tiled <https://github.com/lafriks/go-tiled>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:99
 msgid "`github.com/salviati/go-tmx/tmx <https://github.com/salviati/go-tmx>`__"
@@ -1963,9 +2037,9 @@ msgid ""
 "libtiled-java <https://github.com/bjorn/tiled/tree/master/util/java/libtiled-"
 "java>`__."
 msgstr ""
-"Une bibliothèque pour charger des fichiers TMX est inclue avec Tiled à `util/"
-"java/libtiled-java <https://github.com/bjorn/tiled/tree/master/util/java/"
-"libtiled-java>`__."
+"Une bibliothèque pour charger des fichiers TMX est inclue avec Tiled dans `"
+"util/java/libtiled-java <https://github.com/bjorn/tiled/tree/master/util/"
+"java/libtiled-java>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:113
 msgid ""
@@ -1973,10 +2047,14 @@ msgid ""
 "reader that conveys the information in Tiled files via a hand-crafted class "
 "structure, but does not load image data."
 msgstr ""
+"`TiledReader <http://www.alexheyman.org/tiledreader/>`__ est un simple "
+"lecteur de TMX qui transfère les informations des fichiers Tiled via une "
+"structure de classe faite à la main, mais il ne charge pas les données des "
+"images."
 
 #: ../../reference/support-for-tmx-maps.rst:114
 msgid "Android-Specific:"
-msgstr "Spécificités Android :"
+msgstr "Spécifique aux Androids :"
 
 #: ../../reference/support-for-tmx-maps.rst:116
 msgid ""
@@ -1994,9 +2072,9 @@ msgid ""
 "android/index>`__ is a port of the libtiled-java to be used on Android "
 "phones."
 msgstr ""
-"`libtiled-java port <http://chiselapp.com/user/devnewton/repository/libtiled-"
-"android/index>`__  est une déclinaison de la libtiled-java pour être utilisé "
-"sur les téléphones Android."
+"`libtiled-java port <http://chiselapp.com/user/devnewton/repository/"
+"libtiled-android/index>`__ est une déclinaison de la bibliothèque libtiled-"
+"java utilisée pour les téléphones Android."
 
 #: ../../reference/support-for-tmx-maps.rst:124
 msgid "PHP"
@@ -2007,8 +2085,8 @@ msgid ""
 "`PHP TMX Viewer <https://github.com/sebbu2/php-tmx-viewer>`__ by sebbu : "
 "render the map as an image (allow some modifications as well)"
 msgstr ""
-"`PHP TMX Viewer <https://github.com/sebbu2/php-tmx-viewer>`__ par sebbu: "
-"rendu de la carte comme une image (autorise aussi quelques modifications)"
+"`PHP TMX Viewer <https://github.com/sebbu2/php-tmx-viewer>`__ par sebbu : "
+"rend la carte en tant qu'image (autorise aussi quelques modifications)"
 
 #: ../../reference/support-for-tmx-maps.rst:130
 msgid "Pike"
@@ -2019,8 +2097,8 @@ msgid ""
 "`TMX parser <https://gitlab.com/tmx-parser/tmx-parser>`__: a simple loader "
 "for TMX maps (CSV format only)."
 msgstr ""
-"`TMX parser <https://gitlab.com/tmx-parser/tmx-parser>`__: un simple "
-"chargeur pour les cartes TMX (format CSV uniquement)."
+"`TMX parser <https://gitlab.com/tmx-parser/tmx-parser>`__ : un simple "
+"chargeur de carte TMX (uniquement en format CSV)."
 
 #: ../../reference/support-for-tmx-maps.rst:136
 msgid "Processing"
@@ -2032,7 +2110,7 @@ msgid ""
 "your Processing sketch."
 msgstr ""
 "`linux-man/ptmx <https://github.com/linux-man/ptmx>`__ : Ajout de cartes "
-"Tiled pour vos dessins de transformations."
+"Tiled pour vos dessins Processing."
 
 #: ../../reference/support-for-tmx-maps.rst:142
 msgid "Python"
@@ -2043,6 +2121,9 @@ msgid ""
 "`pytiled-parser <https://github.com/Beefy-Swain/pytiled_parser>`__: Python "
 "parser for JSON maps(No support for TMX format as of v1.0.0)"
 msgstr ""
+"`pytiled-parser <https://github.com/Beefy-Swain/pytiled_parser>`__ : "
+"Analyseur Python pour les cartes en JSON (Pas de support pour le format TMX "
+"dans la version v1.0.0)"
 
 #: ../../reference/support-for-tmx-maps.rst:146
 msgid ""
@@ -2051,21 +2132,25 @@ msgid ""
 "v2.6.0) `Arcade Tiled Examples <http://arcade.academy/examples/index."
 "html#tmx-files-tiled-map-editor>`_"
 msgstr ""
+"`Arcade <http://arcade.academy>`__ : Bibliothèque de jeu 2D qui utilise "
+"pytiled-parser pour charger des cartes JSON dans un jeu. (Pas de support "
+"pour le format TMX dans la version v2.6.0) `Exemples de Tiled dans Arcade "
+"<http://arcade.academy/examples/index.html#tmx-files-tiled-map-editor>`_"
 
 #: ../../reference/support-for-tmx-maps.rst:148
 msgid ""
 "`pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>`__: library for "
 "programmatic manipulation of TMX maps"
 msgstr ""
-"`pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>`__: bibliothèque pour "
-"des manipulations programmées de cartes TMX"
+"`pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>`__ : bibliothèque "
+"pour des manipulations programmées de cartes TMX"
 
 #: ../../reference/support-for-tmx-maps.rst:150
 msgid ""
 "`python-tmx <http://python-tmx.nongnu.org>`__: a simple library for reading "
 "and writing TMX files."
 msgstr ""
-"`python-tmx <http://python-tmx.nongnu.org>`__: une bibliothèque simple pour "
+"`python-tmx <http://python-tmx.nongnu.org>`__ : une bibliothèque simple pour "
 "lire et écrire des fichiers TMX."
 
 #: ../../reference/support-for-tmx-maps.rst:154
@@ -2086,12 +2171,12 @@ msgid ""
 "spritesets (own format) and orthogonal TMX maps."
 msgstr ""
 "`librpg <https://github.com/JumpLink/librpg>`__ Une bibliothèque pour "
-"charger et gérer les spritesets (format propre) et des cartes TMX "
-"orthogonales."
+"charger et gérer des collection d'images (dans son propre format) et des "
+"cartes TMX orthogonales."
 
 #: ../../reference/support-for-tmx-maps.rst:165
 msgid "Support by Framework"
-msgstr "Supportées par le Framework"
+msgstr "Support par Environnement"
 
 #: ../../reference/support-for-tmx-maps.rst:167
 msgid ""
@@ -2112,9 +2197,9 @@ msgid ""
 "`rendering TMX maps <http://www.andengine.org/blog/2010/07/andengine-"
 "tiledmaps-in-the-tmx-format/>`__"
 msgstr ""
-"`AndEngine <http://www.andengine.org/>`__ supporté par Nicolas Gramlich "
-"`rendus de cartes TMX <http://www.andengine.org/blog/2010/07/andengine-"
-"tiledmaps-in-the-tmx-format/>`__"
+"`AndEngine <http://www.andengine.org/>`__ par Nicolas Gramlich supporte les `"
+"rendus de cartes TMX <http://www.andengine.org/blog/2010/07/"
+"andengine-tiledmaps-in-the-tmx-format/>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:179
 msgid "Allegro"
@@ -2125,12 +2210,12 @@ msgid ""
 "`allegro\\_tiled <https://github.com/dradtke/allegro_tiled>`__ integrates "
 "Tiled support with `Allegro 5 <http://alleg.sourceforge.net/>`__."
 msgstr ""
-"`allegro\\_tiled <https://github.com/dradtke/allegro_tiled>`__ intègre les "
-"supports de Tiled avec `Allegro 5 <http://alleg.sourceforge.net/>`__."
+"`allegro\\_tiled <https://github.com/dradtke/allegro_tiled>`__ intègre un "
+"support Tiled avec `Allegro 5 <http://alleg.sourceforge.net/>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:186
 msgid "Castle Game Engine (Object Pascal)"
-msgstr ""
+msgstr "Castle Game Engine (Pascal Objet)"
 
 #: ../../reference/support-for-tmx-maps.rst:188
 msgid ""
@@ -2138,10 +2223,13 @@ msgid ""
 "Tiled maps (see the `CastleTiledMap unit <https://castle-engine.io/apidoc-"
 "unstable/html/CastleTiledMap.html>`__)"
 msgstr ""
+"`Castle Game Engine <https://castle-engine.io/>`__ a un support pour des "
+"cartes Tiled (voir la `section CastleTiledMap <https://castle-engine.io/"
+"apidoc-unstable/html/CastleTiledMap.html>`__)"
 
 #: ../../reference/support-for-tmx-maps.rst:191
 msgid "Cell2D"
-msgstr ""
+msgstr "Cell2D"
 
 #: ../../reference/support-for-tmx-maps.rst:193
 msgid ""
@@ -2150,6 +2238,10 @@ msgid ""
 "tiledreader/>`__, but currently has more built-in support for orthogonal "
 "maps than for other orientations."
 msgstr ""
+"La bibliothèque Java `Cell2D <https://www.cell2d.org/>`__ supporte les "
+"cartes Tiled via un accès à `TiledReader <http://www.alexheyman.org/"
+"tiledreader/>`__, mais a couramment un meilleur support intégré pour les "
+"cartes orthogonales que les autres types d'orientation."
 
 #: ../../reference/support-for-tmx-maps.rst:196
 msgid "cocos2d"
@@ -2183,8 +2275,8 @@ msgid ""
 "supports loading TMX maps through `CCTiledMap <http://cocos2d.spritebuilder."
 "com/docs/api/Classes/CCTiledMap.html>`__"
 msgstr ""
-"`cocos2d-objc (Objective-C, Swift) <http://www.cocos2d-objc.org/>`__ "
-"(précédemment connu comme: cocos2d-iphone, cocos2d-swift, cocos2d-"
+"`cocos2d-objc (Objective-C, Swift) <http://www.cocos2d-objc.org/>`__ ("
+"précédemment connu comme : cocos2d-iphone, cocos2d-swift, cocos2d-"
 "spritebuilder) supporte le chargement de cartes TMX à travers `CCTiledMap "
 "<http://cocos2d.spritebuilder.com/docs/api/Classes/CCTiledMap.html>`__"
 
@@ -2195,9 +2287,9 @@ msgid ""
 "hex variations. No longer in development."
 msgstr ""
 "`TilemapKit <http://tilemapkit.com>`__ est un système de placement de tuiles "
-"pour Cocos2D. Il supporte tous les types de cartes à tuiles TMX, cela inclue "
-"les variations échelonnées de cartes isométriques et héxagonales. N'est plus "
-"en développement."
+"pour Cocos2D. Il supporte tous les types de cartes de tuiles TMX, incluant "
+"les cartes isométriques, hexagonales et ses variations échelonnées. N'est "
+"plus en développement."
 
 #: ../../reference/support-for-tmx-maps.rst:215
 msgid "Construct 2 - Scirra"
@@ -2210,9 +2302,9 @@ msgid ""
 "inside the editor. `Official Note <https://www.scirra.com/construct2/"
 "releases/r149>`__"
 msgstr ""
-"`Construct 2 <http://www.scirra.com>`__, depuis la version Beta 149, "
-"supporte officiellement les cartes TMX et l'import par un simple dépôt du "
-"fichier dans l'éditeur. `Note Officielle <https://www.scirra.com/construct2/"
+"`Construct 2 <http://www.scirra.com>`__, supporte officiellement les cartes "
+"TMX et l'import par un simple dépôt du fichier dans l'éditeur depuis la "
+"version Beta 149. `Note Officielle <https://www.scirra.com/construct2/"
 "releases/r149>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:223
@@ -2232,39 +2324,38 @@ msgid "Game Maker"
 msgstr "Game Maker"
 
 #: ../../reference/support-for-tmx-maps.rst:231
-#, fuzzy
 msgid ""
 "Tiled ships with plugins for exporting to :ref:`GameMaker: Studio 1.4 "
 "<gamemaker-export>` and :ref:`GameMaker Studio 2.3 <gamemaker2-export>` room "
 "files."
 msgstr ""
-"Tiled est fourni avec un greffon qui peut :ref:`exporter une carte vers une "
-"salle GameMaker: Studio 1.4 <gamemaker-export>`"
+"Tiled est fourni avec un greffon qui peut exporter une carte vers un fichier "
+"de salle pour :ref:`GameMaker : Studio 1.4 <gamemaker-export>`et :ref:`"
+"GameMaker Studio 2.3 <gamemaker2-export>`."
 
 #: ../../reference/support-for-tmx-maps.rst:232
 msgid ""
 "`Tiled2GM Converter <http://gmc.yoyogames.com/index.php?showtopic=539494>`__ "
 "by Dmi7ry"
 msgstr ""
-"`Convertisseur Timed2GM <http://gmc.yoyogames.com/index.php?"
-"showtopic=539494>`__ par Dmi7ry"
+"`Tiled2GM Converter <http://gmc.yoyogames.com/index.php?showtopic=539494>`__ "
+"par Dmi7ry"
 
 #: ../../reference/support-for-tmx-maps.rst:235
 msgid "Godot"
 msgstr "Godot"
 
 #: ../../reference/support-for-tmx-maps.rst:237
-#, fuzzy
 msgid ""
 "`Tiled Map Importer <https://godotengine.org/asset-library/asset/25>`__ "
 "imports each map as Godot scene which can be instanced or inherited (`forum "
 "announcement <http://discourse.mapeditor.org/t/importer-plugin-for-godot-"
 "engine/1833/1>`__)."
 msgstr ""
-"`Importeur de Carte Tiled <https://godotengine.org/asset-library/"
-"asset/25>`__ importe chaque carte en tant que scène Godot qui peut être "
-"instanciée ou hérédité (`annonce du forum <http://discourse.mapeditor.org/t/"
-"importer-plugin-for-godot-engine/1833/1>`__)"
+"`Tiled Map Importer <https://godotengine.org/asset-library/asset/25>`__ "
+"importe chaque carte en tant que scène Godot qui peut être instanciée ou "
+"héréditée (`annonce du forum <http://discourse.mapeditor.org/t/"
+"importer-plugin-for-godot-engine/1833/1>`__)."
 
 #: ../../reference/support-for-tmx-maps.rst:238
 msgid ""
@@ -2274,17 +2365,23 @@ msgid ""
 "discourse.mapeditor.org/t/tiled-editor-map-and-tileset-integration-with-"
 "godot-3-2/4347>`__)."
 msgstr ""
+"`Tiled To Godot Export <https://github.com/MikeMnD/tiled-to-godot-export>`__ "
+"est une :doc:`extension JavaScript </reference/scripting>` pour Tiled qui "
+"exporte des cartes de tuiles et des jeux de tuiles dans le format Godot 3.2 "
+"(`annonce du forum <https://discourse.mapeditor.org/t/"
+"tiled-editor-map-and-tileset-integration-with-godot-3-2/4347>`__)."
 
 #: ../../reference/support-for-tmx-maps.rst:241
-#, fuzzy
 msgid "Grid Engine"
-msgstr "AndEngine"
+msgstr "Grid Engine"
 
 #: ../../reference/support-for-tmx-maps.rst:243
 msgid ""
 "Planimeter's `Grid Engine <https://www.planimeter.org/grid-sdk/>`__ supports "
 "Tiled Lua-exported maps."
 msgstr ""
+"`Grid Engine <https://www.planimeter.org/grid-sdk/>`__ de Planimeter "
+"supporte les cartes Tiled exportées en Lua."
 
 #: ../../reference/support-for-tmx-maps.rst:246
 msgid "Haxe"
@@ -2327,13 +2424,12 @@ msgid "HTML5 (multiple engines)"
 msgstr "HTML5 (plusieurs moteurs)"
 
 #: ../../reference/support-for-tmx-maps.rst:261
-#, fuzzy
 msgid ""
 "`Canvas Engine <https://github.com/RSamaium/CanvasEngine>`__ A framework to "
 "create video games in HTML5 Canvas"
 msgstr ""
-"`Canvas Engine <http://canvasengine.net>`__ Un système pour créer des jeux "
-"vidéos en HTLM5 Canvas"
+"`Canvas Engine <https://github.com/RSamaium/CanvasEngine>`__ Un "
+"environnement pour créer des jeux vidéos dans une Canvas HTML5"
 
 #: ../../reference/support-for-tmx-maps.rst:263
 msgid ""
@@ -2358,8 +2454,8 @@ msgid ""
 "github.com/Kibo/TiledMapBuilder>`__."
 msgstr ""
 "`Crafty <http://craftyjs.com>`__ Moteur de Jeu en JavaScript HTML5 ; "
-"supporte le chargement de cartes Tiled à travers un composant externe "
-"`TiledMapBuilder <https://github.com/Kibo/TiledMapBuilder>`__."
+"supporte le chargement de cartes Tiled à travers le composant externe `"
+"TiledMapBuilder <https://github.com/Kibo/TiledMapBuilder>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:270
 msgid ""
@@ -2368,7 +2464,7 @@ msgid ""
 "development"
 msgstr ""
 "`GameJs <http://gamejs.org>`__ Une bibliothèque en JavaScript pour de la "
-"programmation de jeu vidéo : un encapsuleur simple pour dessiner sur une "
+"programmation de jeu vidéo ; un encapsuleur simple pour dessiner sur une "
 "toile HTML5 et d'autres modules utiles pour le développement de jeu vidéo"
 
 #: ../../reference/support-for-tmx-maps.rst:273
@@ -2389,6 +2485,10 @@ msgid ""
 "Mac, Windows and Linux. Has `a plugin for rendering Tiled <https://www."
 "panda2.io/plugins>`__ maps, both orthogonal and isometric."
 msgstr ""
+"`Panda 2 <https://www.panda2.io/>`__, une Plateforme de Développement de Jeu "
+"en HTML5 pour Mac, Windows et Linux. A un `greffon pour afficher des cartes "
+"Tiled <https://www.panda2.io/plugins>`__, qu'elles soient orthogonales ou "
+"isométriques."
 
 #: ../../reference/support-for-tmx-maps.rst:277
 msgid ""
@@ -2396,9 +2496,10 @@ msgid ""
 "supporting both JavaScript and TypeScript (`Tiled tutorial <http://www."
 "gamedevacademy.org/html5-phaser-tutorial-top-down-games-with-tiled/>`__)"
 msgstr ""
-"`Phaser <http://www.phaser.io>`__ Un système libre rapide, gratuit et "
-"amusant qui supporte le JavaScript et le TypeScript (`tutoriel Tiled <http://"
-"www.gamedevacademy.org/html5-phaser-tutorial-top-down-games-with-tiled/>`__)"
+"`Phaser <http://www.phaser.io>`__ Un environnement libre rapide, gratuit et "
+"amusant qui supporte le JavaScript et le TypeScript (`tutoriel Tiled "
+"<http://www.gamedevacademy.org/"
+"html5-phaser-tutorial-top-down-games-with-tiled/>`__)"
 
 #: ../../reference/support-for-tmx-maps.rst:280
 msgid ""
@@ -2413,8 +2514,8 @@ msgid ""
 "`Platypus Engine <https://github.com/PBS-KIDS/Platypus/>`__ A robust "
 "orthogonal tile game engine with game entity library."
 msgstr ""
-"`Platypus Engine <https://github.com/PBS-KIDS/Platypus/>`__ Un moteur de jeu "
-"de tuiles orthogonales robuste avec une bibliothèque d'entités de jeu."
+"`Platypus Engine <https://github.com/PBS-KIDS/Platypus/>`__ Un moteur de "
+"tuiles orthogonales robuste avec une bibliothèque d'entités de jeu."
 
 #: ../../reference/support-for-tmx-maps.rst:284
 msgid ""
@@ -2438,6 +2539,10 @@ msgid ""
 "engine built in Typescript. It supports the TMX format, rendering tile "
 "layers on the GPU via WebGL (`demo <https://rjewson.github.io/glazejs/>`__)."
 msgstr ""
+"`glazeJS <https://github.com/rjewson/glazejs>`__ Un moteur de jeu 2D à "
+"hautes performances créé avec Typescript. Il supporte le format TMX, et "
+"créée un rendu de calques de tuiles sur le GPU via WebGL (`démo "
+"<https://rjewson.github.io/glazejs/>`__)."
 
 #: ../../reference/support-for-tmx-maps.rst:293
 msgid "indielib-crossplatform"
@@ -2450,8 +2555,8 @@ msgid ""
 "parser/>`__ by KonoM (BSD)"
 msgstr ""
 "`indielib cross-platform <http://www.indielib.com>`__ supporte le chargement "
-"de cartes TMX à travers `l'analyseur tmx basé sur C++/TinyXML <http://code."
-"google.com/p/tmx-parser/>`__ par KonoM (BSD)"
+"de cartes TMX à travers `tmx-parser basé sur C++/TinyXML <http://code.google."
+"com/p/tmx-parser/>`__ par KonoM (BSD)"
 
 #: ../../reference/support-for-tmx-maps.rst:300
 msgid "LibGDX"
@@ -2464,7 +2569,7 @@ msgid ""
 "maps>`__ a packer, loader and renderer for TMX maps"
 msgstr ""
 "`libgdx <http://libgdx.badlogicgames.com/>`__, une bibliothèque de jeu "
-"Android/PC/HTML5 basé sur du Java, `fournit <https://github.com/libgdx/"
+"Android/PC/HTML5 basée sur du Java, `fournit <https://github.com/libgdx/"
 "libgdx/wiki/Tile-maps>`__ un emballeur, chargeur et rendeur de cartes TMX"
 
 #: ../../reference/support-for-tmx-maps.rst:308
@@ -2500,12 +2605,14 @@ msgstr "MOAI SDK"
 msgid ""
 "`Hanappe <https://github.com/makotok/Hanappe>`__ Framework for MOAI SDK."
 msgstr ""
-"`Hanappe <https://github.com/makotok/Hanappe>`__ Système pour le SDK MOAI."
+"`Hanappe <https://github.com/makotok/Hanappe>`__ Environnement pour le SDK "
+"MOAI."
 
 #: ../../reference/support-for-tmx-maps.rst:325
 msgid "`Rapanui <https://github.com/ymobe/rapanui>`__ Framework for MOAI SDK."
 msgstr ""
-"`Rapanui <https://github.com/ymobe/rapanui>`__ Système pour le SDK MOAI."
+"`Rapanui <https://github.com/ymobe/rapanui>`__ Environnement pour le SDK "
+"MOAI."
 
 #: ../../reference/support-for-tmx-maps.rst:329
 msgid "Monkey X"
@@ -2526,10 +2633,10 @@ msgid ""
 "Monkey X that contains a module for loading and rendering TMX files. "
 "Supports orthogonal and isometric maps as both CSV and Base64 (uncompressed)."
 msgstr ""
-"`Diddy <https://code.google.com/p/diddy/>`__ est un système extensif pour "
-"Monkey X qui contient un module de chargement et de rendu de fichier TMX. "
-"Supporte les cartes orthogonales et isométriques en tant que CSV et Base64 "
-"(non compressé)."
+"`Diddy <https://code.google.com/p/diddy/>`__ est un environnement extensif "
+"pour Monkey X qui contient un module de chargement et de génération de rendu "
+"de fichier TMX. Supporte les cartes orthogonales et isométriques en tant que "
+"CSV et Base64 (non compressé)."
 
 #: ../../reference/support-for-tmx-maps.rst:339
 msgid "Node.js"
@@ -2555,22 +2662,21 @@ msgid ""
 "Daivuk/onut/tree/master/samples/TiledMap>`__ samples)"
 msgstr ""
 "`Oak Nut Engine <http://daivuk.github.io/onut/>`__ supporte les cartes Tiled "
-"à travers du Javascript et du C++. (voir des exemples de Cartes Tiled en "
-"`Javascript <https://github.com/Daivuk/onut/tree/master/samplesJS/"
-"TiledMap>`__ ou en `C++ <https://github.com/Daivuk/onut/tree/master/samples/"
-"TiledMap>`__ samples)"
+"à travers du Javascript et du C++. (voir des échantillons de TiledMap en `"
+"Javascript <https://github.com/Daivuk/onut/tree/master/samplesJS/TiledMap>`"
+"__ ou en `C++ <https://github.com/Daivuk/onut/tree/master/samples/"
+"TiledMap>`__)"
 
 #: ../../reference/support-for-tmx-maps.rst:351
 msgid "Orx Portable Game Engine"
 msgstr "Orx Portable Game Engine"
 
 #: ../../reference/support-for-tmx-maps.rst:353
-#, fuzzy
 msgid ""
 "`TMX to ORX Converter <https://wiki.orx-project.org/en/tutorials/tools/"
 "tmx_to_orx>`__ Tutorial and converter download for Orx."
 msgstr ""
-"`Convertisseur TMX en ORX <http://orx-project.org/wiki/tutorials/community/"
+"`TMX to ORX Converter <http://orx-project.org/wiki/tutorials/community/"
 "sausage/tmx_to_orx>`__ Téléchargement du tutoriel et du convertisseur pour "
 "Orx."
 
@@ -2580,8 +2686,7 @@ msgstr "Pygame"
 
 #: ../../reference/support-for-tmx-maps.rst:360
 msgid "`Pygame map loader <http://www.pygame.org/project/1158/>`__ by dr0id"
-msgstr ""
-"`Chargeur de carte Pygame <http://www.pygame.org/project/1158/>`__ par dr0id"
+msgstr "`Pygame map loader <http://www.pygame.org/project/1158/>`__ par dr0id"
 
 #: ../../reference/support-for-tmx-maps.rst:361
 #: ../../reference/support-for-tmx-maps.rst:377
@@ -2633,15 +2738,14 @@ msgid "RPG Maker MV"
 msgstr "RPG Maker MV"
 
 #: ../../reference/support-for-tmx-maps.rst:389
-#, fuzzy
 msgid ""
 "`Tiled Plugin for RPG Maker MV <https://archeia.itch.io/tiled-plugin-for-rpg-"
 "maker-mv>`__ by `Dr.Yami <http://yami.moe/>`__ & Archeia, from `RPG Maker "
 "Web <https://forums.rpgmakerweb.com>`__"
 msgstr ""
-"`Greffon Tiled <https://forums.rpgmakerweb.com/index.php?threads/tiled-"
-"plugin-version-1-3-0-released.50752/>`__ par `Dr.Yami <http://yami.moe/>`__ "
-"et Archeia, de `RPG Maker Web <https://forums.rpgmakerweb.com>`__"
+"`Greffon Tiled pour RPG Maker MV <https://archeia.itch.io/tiled-plugin-for-"
+"rpg-maker-mv>`__ par `Dr.Yami <http://yami.moe/>`__ & Archeia, de `RPG Maker "
+"Web <https://forums.rpgmakerweb.com>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:395
 msgid "SDL"
@@ -2697,36 +2801,35 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:419
 msgid "Solar2D (formerly Corona SDK)"
-msgstr ""
+msgstr "Solar2D (avant connu sous le nom de Corona SDK)"
 
 #: ../../reference/support-for-tmx-maps.rst:421
-#, fuzzy
 msgid ""
 "`ponytiled <https://github.com/ponywolf/ponytiled>`__ is a simple Tiled Map "
 "Loader for Solar2D (`forum announcement <http://discourse.mapeditor.org/t/"
 "new-lua-coronasdk-framework-ponytiled/1826>`__)"
 msgstr ""
 "`ponytiled <https://github.com/ponywolf/ponytiled>`__ est un simple Chargeur "
-"de Cartes Tiled pour le SDK Corona (`annonce sur le forum <http://discourse."
+"de Cartes Tiled pour Solar2D (`annonce sur le forum <http://discourse."
 "mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826>`__)"
 
 #: ../../reference/support-for-tmx-maps.rst:424
-#, fuzzy
 msgid ""
 "`Dusk Engine <https://github.com/GymbylCoding/Dusk-Engine>`__ is a fully "
 "featured Tiled map game engine for Solar2D (no longer maintained, but may "
 "still be useful)"
 msgstr ""
 "`Dusk Engine <https://github.com/GymbylCoding/Dusk-Engine>`__ est un moteur "
-"de cartes Tiled plein de fonctionnalités pour le SDK Corona"
+"de cartes Tiled plein de fonctionnalités pour solar2D (n'est plus maintenu, "
+"mais peut quand même être utile)"
 
 #: ../../reference/support-for-tmx-maps.rst:426
-#, fuzzy
 msgid ""
 "`Berry <https://github.com/ldurniat/Berry>`__ is a simple Tiled Map Loader "
 "for Solar2D."
 msgstr ""
-"`HaxePunk <https://github.com/HaxePunk/tiled>`__ Chargeur Tiled pour HaxePunk"
+"`Berry <https://github.com/ldurniat/Berry>`__ est un simple Chargeur de "
+"Cartes Tiled pour Solar2D."
 
 #: ../../reference/support-for-tmx-maps.rst:428
 msgid ""
@@ -2734,6 +2837,9 @@ msgid ""
 "supports loading Tiled maps, and also handles things like path-finding for "
 "you."
 msgstr ""
+"`Qiso <https://qiso.qweb.co.uk>`__ est un moteur isométrique pour Solar2D "
+"qui supporte le chargement de cartes Tiled, et peut aussi gérer des choses "
+"telles que la recherche de chemin pour vous."
 
 #: ../../reference/support-for-tmx-maps.rst:431
 msgid "Sprite Kit Framework"
@@ -2746,7 +2852,7 @@ msgid ""
 "into any Sprite Kit project. Supports iOS and OSX."
 msgstr ""
 "`SKTilemap <https://github.com/TomLinthwaite/SKTilemap>`__ a été créé à "
-"partir de zéro en Swift. Il est mis à jour, rempli de fonctionnalités et "
+"partir de rien en Swift. Il est mis à jour, rempli de fonctionnalités et "
 "facile à intégrer dans n'importe quel projet Sprite Kit. Supporte l'iOS et "
 "OSX."
 
@@ -2781,9 +2887,8 @@ msgstr ""
 "rendu des cartes TMX."
 
 #: ../../reference/support-for-tmx-maps.rst:449
-#, fuzzy
 msgid "Unity"
-msgstr "Unity 3D"
+msgstr "Unity"
 
 #: ../../reference/support-for-tmx-maps.rst:451
 msgid ""
@@ -2791,30 +2896,32 @@ msgid ""
 "collection of C# Unity scripts that can automatically import Tiled map "
 "editor files directly into your Unity projects."
 msgstr ""
+"`SuperTiled2Unity <https://seanba.itch.io/supertiled2unity>`__ est une "
+"collection de scripts C# Unity qui peut automatiquement importer des "
+"fichiers de cartes de Tiled directement dans vos projets Unity."
 
 #: ../../reference/support-for-tmx-maps.rst:452
-#, fuzzy
 msgid ""
 "`Tiled TMX Importer <https://assetstore.unity.com/packages/tools/sprite-"
 "management/tiled-tmx-importer-102928>`__, imports into Unity 2017.2's new "
 "native Tilemap system."
 msgstr ""
-"`Tiled TMX Importer <https://www.assetstore.unity3d.com/en/#!/"
-"content/102928>`__, importe dans le nouveau système de Jeu de Tuiles natif "
+"`Tiled TMX Importer <https://www.assetstore.unity3d.com/en/#!/content/"
+"102928>`__, qui importe dans le nouveau système de Jeu de Tuiles natif "
 "d'Unity 2017.2."
 
 #: ../../reference/support-for-tmx-maps.rst:453
-#, fuzzy
 msgid ""
 "`Tiled to Unity <https://assetstore.unity.com/packages/tools/integration/"
 "tiled-to-unity-17260>`__ is a 3D pipeline for Tiled maps. It uses prefabs as "
 "tiles, and can place decorations dynamically on tiles. Supports multiple "
 "layers (including object layers)."
 msgstr ""
-"`Tiled To Unity <https://www.assetstore.unity3d.com/#/content/17260/>`__ est "
-"un pipeline 3D pour des cartes Tiled. Il utilise des préfabs en tant que "
-"tuiles, et peut placer des décorations sur des tuiles dynamiquement. "
-"Supporte les couches multiples (incluant les couches d'objets)."
+"`Tiled To Unity <https://assetstore.unity.com/packages/tools/integration/"
+"tiled-to-unity-17260>`__ est un pipeline 3D pour des cartes Tiled. Il "
+"utilise des préfabs en tant que tuiles, et peut placer des décorations sur "
+"des tuiles dynamiquement. Supporte plusieurs calques (incluant les calques "
+"d'objets)."
 
 #: ../../reference/support-for-tmx-maps.rst:458
 msgid ""
@@ -2823,12 +2930,18 @@ msgid ""
 "you to drag and drop TMX files into your scene, make edits, and save back "
 "out as TMX files. MIT license."
 msgstr ""
+"`Tuesday <https://github.com/ShreveportArcade/Tuesday>`__ : Un sérialiseur "
+"et désérialiseur ainsi qu'une collection de scripts d'éditeur Unity qui vous "
+"permet de glisser-poser des fichiers TMX dans votre scène, les éditer, et "
+"sauvegarder les changements en tant que fichiers TMX. Licence MIT."
 
 #: ../../reference/support-for-tmx-maps.rst:462
 msgid ""
 "`UniTiled <https://yjaffal.itch.io/unitiled>`__, a native TMX importer for "
 "Unity."
 msgstr ""
+"`UniTiled <https://yjaffal.itch.io/unitiled>`__, un importeur TMX natif pour "
+"Unity."
 
 #: ../../reference/support-for-tmx-maps.rst:463
 msgid ""
@@ -2837,7 +2950,7 @@ msgid ""
 msgstr ""
 "`X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supporte presque "
 "toutes les fonctionnalités de Tiled 0.11. Importe des fichiers TMX/XML en "
-"tant que des Objets d'Image ou de Filets."
+"tant que des Objets d'Image ou des Filets."
 
 #: ../../reference/support-for-tmx-maps.rst:466
 msgid ""
@@ -2846,8 +2959,8 @@ msgid ""
 "orthello-pro/tilemaps>`__."
 msgstr ""
 "`Orthello Pro <http://www.wyrmtale.com/products/unity3d-components/orthello-"
-"pro>`__ (Système 2D) offre un `support de cartes Tiled <http://www.wyrmtale."
-"com/orthello-pro/tilemaps>`__."
+"pro>`__ (Système 2D) offre un `support pour les cartes Tiled <http://www."
+"wyrmtale.com/orthello-pro/tilemaps>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:472
 msgid "Unreal Engine 4"
@@ -2879,7 +2992,7 @@ msgstr ""
 "nativement en tant que partie de la sous-bibliothèque `Urho2D <http://urho3d."
 "github.io/documentation/1.4/_urho2_d.html>`__ (`Documentation <http://urho3d."
 "github.io/documentation/1.4/class_urho3_d_1_1_tile_map2_d.html>`__, `Exemple "
-"HTML5 <http://urho3d.github.io/samples/36_Urho2DTileMap.html>`__)."
+"en HTML5 <http://urho3d.github.io/samples/36_Urho2DTileMap.html>`__)."
 
 #: ../../reference/support-for-tmx-maps.rst:490
 msgid "XNA"
@@ -2892,6 +3005,10 @@ msgid ""
 "loads TMX maps into the FlatRedBall engine, providing rich integration with "
 "its features."
 msgstr ""
+"`FlatRedBall <http://flatredball.com/>`__ L'outil de glue est distribué avec "
+"un `greffon Tiled <http://flatredball.com/documentation/tools/tiled-plugin/>`"
+"__ qui charge les cartes TMX dans le moteur FlatRedBall, qui fournit une "
+"intégration riche avec ses fonctionnalités."
 
 #: ../../reference/support-for-tmx-maps.rst:495
 msgid ""
@@ -2899,8 +3016,8 @@ msgid ""
 "Dylan Wolf, XNA library for loading and rendering TMX maps"
 msgstr ""
 "`XTiled <https://bitbucket.org/vinull/xtiled>`__ par Michael C. Neel et "
-"Dylan Wolf, une bibliothèque XNA qui permet de charger et de rendre des "
-"cartes TMX"
+"Dylan Wolf, une bibliothèque XNA qui permet de charger et de générer un "
+"rendu de cartes TMX"
 
 #: ../../reference/support-for-tmx-maps.rst:497
 msgid ""
@@ -2928,6 +3045,10 @@ msgid ""
 "with increasing IDs. They are now saved in the display order, which can be "
 "changed in Tiled."
 msgstr ""
+"Les éléments :ref:`tuiles d'un jeu de tuiles <tmx-tileset-tile>` dans un jeu "
+"de tuiles ne sont plus sauvegardés avec un ID incrémental. Ils sont "
+"maintenant sauvegardé dans l'ordre d'affichage, ce qui peut être configuré "
+"dans Tiled."
 
 #: ../../reference/tmx-changelog.rst:17
 msgid ""
@@ -2936,6 +3057,11 @@ msgid ""
 "wangcolor` element to define a Wang color. This new element also stores :ref:"
 "`tmx-properties`."
 msgstr ""
+"Les couleurs qui font partie d'une :ref:`collection Wang <tmx-wangset>` ne "
+"sont plus séparées en couleurs de coins et de contours. À la place, il y a "
+"maintenant un seul élément :ref:`couleur Wang <tmx-wangcolor>` pour définir "
+"une couleur Wang. Ce nouvel élément stocke aussi les :ref:`propriétés <tmx-"
+"properties>`."
 
 #: ../../reference/tmx-changelog.rst:22
 msgid ""
@@ -2944,6 +3070,11 @@ msgid ""
 "hex format. This is because the number of colors supported in a Wang set was "
 "increased from 15 to 255."
 msgstr ""
+"L'attribut ``wangid`` de l'élément :ref:`tuile Wang <tmx-wangtile>` est "
+"maintenant stocké en tant qu'une liste de valeurs séparées par des virgules, "
+"plutôt qu'un nombre en 32-bits non-signé dans un format hexadécimal. C'est "
+"parce que le nombre de couleurs supportées dans une collection Wang a été "
+"augmenté de 15 à 255."
 
 #: ../../reference/tmx-changelog.rst:27
 msgid ""
@@ -2952,21 +3083,28 @@ msgid ""
 "``vflip``, ``hflip`` and ``dflip`` attributes on the :ref:`tmx-wangtile` "
 "element has been removed."
 msgstr ""
+"Les transformations valides des tuiles d'une collection (retournement, "
+"rotation) sont spécifiées dans un élément :ref:`transformations de jeu de "
+"tuiles <tmx-tileset-transformations>`. Le support partiel des attributs "
+"``vflip``, ``hflip`` et ``dflip`` de l'élément :ref:`tuile Wang <tmx-"
+"wangtile>` a été enlevé."
 
 #: ../../reference/tmx-changelog.rst:32
 msgid ""
 "The :ref:`tmx-wangset` element has replaced the now deprecated :ref:`tmx-"
 "terraintypes` element."
 msgstr ""
+"L'élément :ref:`collection Wang <tmx-wangset>` a remplacé l'élément :ref:`"
+"type de terrain <tmx-terraintypes>` qui est maintenant déprécié."
 
 #: ../../reference/tmx-changelog.rst:38
-#, fuzzy
 msgid ""
 "Added the ``objectalignment`` attribute to the :ref:`tmx-tileset` element, "
 "allowing the tileset to control the alignment used for tile objects."
 msgstr ""
-"Ajout de l'attribut ``id`` aux éléments ``object`` qui stocke un ID unique "
-"par carte pour cet objet."
+"Ajout de l'attribut ``objectalignment`` à l'élément :ref:`jeu de tuiles <tmx-"
+"tileset>`, qui permet au jeu de tuiles de contrôler l'alignement utilisé "
+"pour les objets tuiles."
 
 #: ../../reference/tmx-changelog.rst:41
 msgid ""
@@ -2974,56 +3112,73 @@ msgid ""
 "objectgroup`, :ref:`tmx-imagelayer` and :ref:`tmx-group` elements, allowing "
 "for a number of graphical effects like darkening or coloring a layer."
 msgstr ""
+"Ajout de l'attribut ``tintcolor`` aux éléments :ref:`calque <tmx-layer>`, "
+":ref:`groupe d'objets <tmx-objectgroup>`, :ref:`calque d'images <tmx-"
+"imagelayer>` et :ref:`groupe <tmx-group>`, ce qui permet d'ajouter de "
+"nombreux effets graphiques tel que l'assombrissement ou la coloration d'un "
+"calque."
 
 #: ../../reference/tmx-changelog.rst:49
 msgid ""
 "Added an :ref:`tmx-editorsettings` element, which is used to store editor "
 "specific settings that are generally not relevant when loading a map."
 msgstr ""
+"Ajout d'un élément :ref:`options de l'éditeur <tmx-editorsettings>`, qui est "
+"utilisé pour stocker des options spécifiques à l'éditeur qui sont "
+"généralement inutiles lors du chargement d'une carte."
 
 #: ../../reference/tmx-changelog.rst:52
 msgid ""
 "Added support for Zstandard compression for tile layer data (``compression="
 "\"zstd\"`` on :ref:`tmx-data` elements)."
 msgstr ""
+"Ajout du support pour la compression en Zstandard pour les données d'un "
+"calque de tuiles (``compression=\"zstd\"`` pour les éléments :ref:`données "
+"<tmx-data>`)."
 
 #: ../../reference/tmx-changelog.rst:55
 msgid ""
 "Added the ``compressionlevel`` attribute to the :ref:`tmx-map` element, "
 "which stores the compression level to use for compressed tile layer data."
 msgstr ""
+"Ajout de l'attribut ``compressionlevel`` à l'élément :ref:`carte <json-map>`"
+", qui stocke le niveau de compression à utiliser pour les données des "
+"calques de tuiles."
 
 #: ../../reference/tmx-changelog.rst:59
-#, fuzzy
 msgid "Tiled 1.2.1"
-msgstr "Tiled 1.1"
+msgstr "Tiled 1.2.1"
 
 #: ../../reference/tmx-changelog.rst:61
 msgid ""
 "Text objects can now get their horizontal alignment saved as ``justify``. "
 "This option existed in the UI before but wasn't saved properly."
 msgstr ""
+"Les objets de texte peuvent maintenant avoir un alignement horizontal "
+"sauvegardé en tant que ``justify``. Cette option existait dans l'UI "
+"auparavant mais elle n'était pas sauvegardée proprement."
 
 #: ../../reference/tmx-changelog.rst:67
-#, fuzzy
 msgid ""
 "Added an ``id`` attribute to the :ref:`tmx-layer`, :ref:`tmx-objectgroup`, :"
 "ref:`tmx-imagelayer` and :ref:`tmx-group` elements, which stores a map-"
 "unique ID of the layer."
 msgstr ""
-"Ajout de l'attribut ``id`` aux éléments ``object`` qui stocke un ID unique "
-"par carte pour cet objet."
+"Ajout de l'attribut ``id`` aux éléments :ref:`calque <tmx-layer>`, :ref:`"
+"groupe d'objets <tmx-objectgroup>`, :ref:`calque d'images <tmx-imagelayer>` "
+"et :ref:`groupe <tmx-group>`, qui stocke un ID unique par carte pour cet "
+"objet."
 
 #: ../../reference/tmx-changelog.rst:71
-#, fuzzy
 msgid ""
 "Added a ``nextlayerid`` attribute to the :ref:`tmx-map` element, which "
 "stores the next available ID for new layers. This number is stored to "
 "prevent reuse of the same ID after layers have been removed."
 msgstr ""
-"Ajout de l'attribut ``nextobjectid`` à l'élément ``map`` qui stocke le "
-"prochain ID disponible pour de nouveaux objets. Ce nombre est stocké pour "
-"prévenir la réutilisation du même ID après que des objets aie été supprimés."
+"Ajout de l'attribut ``nextlayerid`` à l'élément :ref:`carte <tmx-map>` qui "
+"stocke le prochain ID disponible pour les nouveaux calques. Ce nombre est "
+"stocké pour prévenir la réutilisation du même ID après que des calques aient "
+"été supprimés."
 
 #: ../../reference/tmx-changelog.rst:78
 msgid ""
@@ -3031,6 +3186,9 @@ msgid ""
 "map is considered unbounded. Tile layer data for infinite maps is stored in "
 "chunks."
 msgstr ""
+"Ajout d'un attribut :ref:`map.infinite <tmx-map>`, qui indique si la carte "
+"est considérée sans bords. Les données des calques de tuiles pour les cartes "
+"infinies sont stockées en tant qu'échantillons."
 
 #: ../../reference/tmx-changelog.rst:82
 msgid ""
@@ -3038,10 +3196,10 @@ msgid ""
 "the similar content as :ref:`tmx-data`, except it stores the data of the "
 "area specified by its ``x``, ``y``, ``width`` and ``height`` attributes."
 msgstr ""
-"Un nouvel élément :ref:`tmx-chunk` a été ajouté pour les cartes infinies qui "
-"contiennent un contenu proche de :ref:`tmx-data`, mis à part le fait qu'il "
-"stocke les données de l'aire spécifiée par ses attributs ``x``, ``y``, "
-"``width`` et ``height``."
+"Un nouvel élément :ref:`échantillon <tmx-chunk>` a été ajouté pour les "
+"cartes infinies qui contiennent un contenu proche de :ref:`données <tmx-"
+"data>`, mis à part le fait qu'il stocke les données de l'aire spécifiée par "
+"ses attributs ``x``, ``y``, ``width`` et ``height``."
 
 #: ../../reference/tmx-changelog.rst:87
 msgid ""
@@ -3053,20 +3211,22 @@ msgstr ""
 "d'instance de modèle :"
 
 #: ../../reference/tmx-changelog.rst:95
-#, fuzzy
 msgid ""
 "Tilesets can now contain :doc:`Terrain Sets </manual/terrain>`. They are "
 "saved in the new :ref:`tmx-wangsets` element."
 msgstr ""
-"Les jeux de tuiles peuvent maintenant contenir des :doc:`tuiles Wang </"
-"manual/using-wang-tiles>`. Elles sont sauvegardées dans le nouvel élément :"
-"ref:`tmx-wangsets`."
+"Les jeux de tuiles peuvent maintenant contenir des :doc:`Collections de "
+"Terrain </manual/terrain>`. Elles sont sauvegardées dans le nouvel élément "
+":ref:`collection Wang <tmx-wangsets>`."
 
 #: ../../reference/tmx-changelog.rst:98
 msgid ""
 "A new :ref:`tmx-point` child element was added to :ref:`tmx-object`, which "
 "marks point objects. Point objects do not have a size or rotation."
 msgstr ""
+"Un nouvel élément enfant :ref:`point <tmx-point>` a été ajouté à l'élément "
+":ref:`objet <tmx-object>`, qui annote les objets points. Les objets points "
+"n'ont ni taille ni orientation."
 
 #: ../../reference/tmx-changelog.rst:102
 msgid "Tiled 1.0"
@@ -3077,25 +3237,25 @@ msgid ""
 "A new :ref:`tmx-group` element was added which is a group layer that can "
 "have other layers as child elements. This means layers now form a hierarchy."
 msgstr ""
-"Un nouveau élément :ref:`tmx-group` a été ajouté, ce qui est un groupe de "
-"calques qui peut avoir d'autres calques en tant qu'éléments fils. Cela veut "
-"dire que les calques forment maintenant une hiérarchie."
+"Un nouveau élément :ref:`groupe <tmx-group>` a été ajouté, qui est un groupe "
+"de calques qui peut avoir d'autres calques en tant qu'éléments fils. Cela "
+"veut dire que les calques forment maintenant une hiérarchie."
 
 #: ../../reference/tmx-changelog.rst:106
 msgid ""
 "Added Text objects, identified by a new :ref:`tmx-text` element which is "
 "used as a child of the :ref:`tmx-object` element."
 msgstr ""
-"Ajout d'objets de Texte, identifié par un nouvel élément :ref:`tmx-text` qui "
-"est utilisé en tant qu'enfant de l'élément :ref:`tmx-object`."
+"Ajout d'objets texte, identifié par un nouvel élément :ref:`texte <tmx-text>`"
+" qui est utilisé en tant qu'enfant de l'élément :ref:`objet <tmx-object>`."
 
 #: ../../reference/tmx-changelog.rst:108
 msgid ""
 "Added a :ref:`tile.type <tmx-tileset-tile>` attribute for supporting :ref:"
 "`typed-tiles`."
 msgstr ""
-"Ajout de l'attribut :ref:`tile.type <tmx-tileset-tile>` pour le support de :"
-"ref:`typed-tiles`."
+"Ajout de l'attribut :ref:`tile.type <tmx-tileset-tile>` pour le support de "
+":ref:`types de tuiles <typed-tiles>`."
 
 #: ../../reference/tmx-changelog.rst:112
 msgid "Tiled 0.18"
@@ -3135,9 +3295,9 @@ msgid ""
 "type of the value. Currently supported types are ``string`` (the default), "
 "``int``, ``float`` and ``bool``."
 msgstr ""
-"L'élément :ref:`tmx-property` a gagné un attribut ``type`` qui stocke le "
-"type de la valeur. Les types couramment supportés sont ``string`` (par "
-"défaut), ``int``, ``float`` et ``bool``."
+"L'élément :ref:`propriété <tmx-property>` a gagné un attribut ``type`` qui "
+"stocke le type de la valeur. Les types couramment supportés sont ``string`` ("
+"par défaut), ``int``, ``float`` et ``bool``."
 
 #: ../../reference/tmx-changelog.rst:132
 msgid "Tiled 0.15"
@@ -3150,9 +3310,9 @@ msgid ""
 "used. This change was made for consistency with the other layer types."
 msgstr ""
 "Les attributs ``offsetx`` et ``offsety`` sont maintenant utilisés pour les "
-"éléments :ref:`tmx-imagelayer`, ce qui remplace les attributs ``x`` et ``y`` "
-"utilisés précédemment. Ce changement a été effectué pour garder une "
-"consistance entre les différents types de calques."
+"éléments :ref:`calque d'images <tmx-imagelayer>`, ce qui remplace les "
+"attributs ``x`` et ``y`` utilisés précédemment. Ce changement a été effectué "
+"pour garder une consistance entre les différents types de calques."
 
 #: ../../reference/tmx-changelog.rst:138
 msgid ""
@@ -3181,10 +3341,10 @@ msgid ""
 "specifies the number of tile columns in the tileset. For image collection "
 "tilesets it is editable and is used when displaying the tileset."
 msgstr ""
-"Ajout de l'attribut ``columns`` à l'élément :ref:`tmx-tileset` qui spécifie "
-"le nombre de colonnes de tuiles dans le jeu de tuiles. Pour les jeux de "
-"tuiles de collection d'images, la valeur est éditable et est utilisée quand "
-"le jeu de tuiles est affiché."
+"Ajout de l'attribut ``columns`` à l'élément :ref:`jeu de tuiles <tmx-"
+"tileset>` qui spécifie le nombre de colonnes de tuiles dans le jeu de "
+"tuiles. Pour les jeux de tuiles de collection d'images, la valeur est "
+"éditable et est utilisée quand le jeu de tuiles est affiché."
 
 #: ../../reference/tmx-changelog.rst:148
 msgid ""
@@ -3192,9 +3352,9 @@ msgid ""
 "take the format ``#AARRGGBB`` when its alpha value differs from 255. "
 "Previously the alpha value was silently discarded."
 msgstr ""
-"L'attribut ``backgroundcolor`` de l'élément :ref:`tmx-map` supporte le "
-"format ``#AARRVVBB`` lorsque la valeur de son alpha diffère de 255. La "
-"valeur d'alpha était ignorée silencieusement auparavant."
+"L'attribut ``backgroundcolor`` de l'élément :ref:`carte <tmx-map>` supporte "
+"le format ``#AARRVVBB`` lorsque la valeur de son alpha diffère de 255. "
+"Auparavant, la valeur d'alpha était ignorée silencieusement."
 
 #: ../../reference/tmx-changelog.rst:153
 msgid "Tiled 0.14"
@@ -3208,7 +3368,7 @@ msgid ""
 msgstr ""
 "Ajout des attributs optionnels ``offsetx`` et ``offsety`` aux éléments "
 "``layer`` et ``objectgroup``. Ceux-ci spécifient un décalage en pixels "
-"appliqué lors du rendu du calque. 0 par défaut."
+"appliqué lors du rendu du calque. Les valeurs par défaut sont 0."
 
 #: ../../reference/tmx-changelog.rst:161
 msgid "Tiled 0.13"
@@ -3375,8 +3535,8 @@ msgid ""
 "Terrain information was added to tileset definitions (this is generally not "
 "very relevant for games):"
 msgstr ""
-"Ajout d'informations sur le terrain dans la description des jeux de tuiles "
-"(ceci est généralement peu relevant pour les jeux) :"
+"Ajout d'informations sur le terrain dans la description des jeux de tuiles ("
+"ceci est généralement peu utile pour les jeux) :"
 
 #: ../../reference/tmx-changelog.rst:262
 msgid ""
@@ -3455,12 +3615,10 @@ msgid "TMX Map Format"
 msgstr "Format de Carte TMX"
 
 #: ../../reference/tmx-map-format.rst:4
-#, fuzzy
 msgid "**Version 1.5**"
-msgstr "**Version 1.1**"
+msgstr "**Version 1.5**"
 
 #: ../../reference/tmx-map-format.rst:6
-#, fuzzy
 msgid ""
 "TMX and TSX are `Tiled <http://www.mapeditor.org>`__'s own formats for "
 "storing tile maps and tilesets, based on XML. TMX provides a flexible way to "
@@ -3469,25 +3627,25 @@ msgid ""
 "be set on most elements. Beside tile layers, it can also contain groups of "
 "objects that can be placed freely."
 msgstr ""
-"Le format de carte TMX (Tile Map XML) utilisé par `Tiled <http://www."
-"mapeditor.org>`__ est un moyen flexible de décrire une carte faite de "
-"tuiles. Il peut décrire des cartes avec n'importe quelle taille de tuile, "
-"n'importe quel nombre de calques, n'importe quel nombre de jeux de sets et "
-"il supporte l'ajout de propriétés customisées pour la majorité des éléments. "
-"Mis à part les calques de tuiles, il peut aussi contenir des groupes "
-"d'objets qui peuvent être placés librement."
+"Les formats TMX et TSX sont les formats utilisés par `Tiled <http://www."
+"mapeditor.org>`__ pour stocker les cartes de tuiles et les jeux de tuiles, "
+"basés sur le XML. Le format TMX fournit un moyen flexible de décrire une "
+"carte basée sur des tuiles. Il peut décrire des cartes avec n'importe quelle "
+"taille de tuile, tout nombre de calques, tout nombre de collection de tuiles "
+"et il autorise l'ajout de propriétés personnalisées pour la majorité des "
+"éléments. Mis à part les calques de tuiles, il peut aussi contenir des "
+"groupes d'objets qui peuvent être placés librement."
 
 #: ../../reference/tmx-map-format.rst:13
-#, fuzzy
 msgid ""
 "Note that there are many :doc:`libraries and frameworks <support-for-tmx-"
 "maps>` available that can work with TMX maps and TSX tilesets."
 msgstr ""
-"Veuillez noter qu'il y a beaucoup de :doc:`systèmes et bibliothèques "
-"<support-for-tmx-maps>` disponibles qui supportent les cartes TMX."
+"Veuillez noter qu'il y a beaucoup de :doc:`bibliothèques et d'environnements "
+"<support-for-tmx-maps>` disponibles qui supportent les cartes TMX et les "
+"jeux de tuiles TSX."
 
 #: ../../reference/tmx-map-format.rst:16
-#, fuzzy
 msgid ""
 "In this document we'll go through each element found in these file formats. "
 "The elements are mentioned in the headers and the list of attributes of the "
@@ -3496,11 +3654,13 @@ msgid ""
 "Tiled are formatted in italics. All optional attributes are either marked as "
 "optional, or have a default value to imply that they are optional."
 msgstr ""
-"Dans ce document, nous allons énumérer tous les éléments inclus dans ce "
-"format de carte. Les éléments mentionnés dans les en-têtes et la liste des "
-"attributs de ces éléments sont listés ci-dessous, suivi d'une courte "
-"explication. Les attributs et les éléments qui sont obsolètes ou non "
-"supportés par la version courante de Tiled sont en italique."
+"Dans ce document, nous allons énumérer tous les éléments inclus dans ces "
+"formats de fichier. Les éléments sont mentionnés dans les en-têtes et la "
+"liste des attributs de ces éléments sont listés ci-dessous, suivi d'une "
+"courte explication. Les attributs et les éléments qui sont obsolètes ou non "
+"supportés par la version courante de Tiled sont en italique. Tous les "
+"attributs optionnels sont soit marqués en tant qu'optionnels, soit ils ont "
+"une valeur par défaut qui implique le fait qu'ils sont optionnels."
 
 #: ../../reference/tmx-map-format.rst:24
 msgid ""
@@ -3511,15 +3671,14 @@ msgstr ""
 "intéressés par les changements entre les différentes versions de Tiled."
 
 #: ../../reference/tmx-map-format.rst:29
-#, fuzzy
 msgid ""
 "A DTD-file (Document Type Definition) is served at http://mapeditor.org/"
 "dtd/1.0/map.dtd. This file is not up-to-date but might be useful for XML-"
 "namespacing anyway."
 msgstr ""
-"*Un fichier DTD (Définition de Type de Document) est fourni dans http://"
-"mapeditor.org/dtd/1.0/map.dtd. Ce fichier n'est pas à jour mais peut être "
-"utile pour les espaces de noms XML.*"
+"Un fichier DTD (Définition de Type de Document) est fourni dans "
+"http://mapeditor.org/dtd/1.0/map.dtd. Ce fichier n'est pas à jour mais peut "
+"être utile pour les espaces de noms en XML."
 
 #: ../../reference/tmx-map-format.rst:35
 msgid ""
@@ -3528,6 +3687,11 @@ msgid ""
 "without breaking backwards compatibility, and allows custom variants and "
 "additions to work with existing tools."
 msgstr ""
+"Pour des raisons de compatibilité, il est recommandé d'ignorer les éléments "
+"et attributs inconnus (ou d'afficher un avertissement). Cela rend l'ajout de "
+"fonctionnalités plus facile sans casser la rétrocompatibilité, et permet des "
+"variations personnalisées et des additions avec lesquelles travailler avec "
+"les outils existants."
 
 #: ../../reference/tmx-map-format.rst:43
 msgid "<map>"
@@ -3542,14 +3706,13 @@ msgstr ""
 "incrémenté pour refléter les sorties mineures de Tiled."
 
 #: ../../reference/tmx-map-format.rst:47
-#, fuzzy
 msgid ""
 "**tiledversion:** The Tiled version used to save the file (since Tiled "
 "1.0.1). May be a date (for snapshot builds). (optional)"
 msgstr ""
 "**tiledversion :** La version de Tiled utilisée lors de la sauvegarde du "
 "fichier (depuis Tiled 1.0.1). Peut être une date (pour les versions "
-"instantanées)."
+"instantanées). (optionnel)"
 
 #: ../../reference/tmx-map-format.rst:49
 msgid ""
@@ -3566,18 +3729,20 @@ msgid ""
 "``left-up``. In all cases, the map is drawn row-by-row. (only supported for "
 "orthogonal maps at the moment)"
 msgstr ""
-"**renderorde r:** L'ordre dans lequel les tuiles d'un calque de tuiles sont "
-"rendus. Les valeurs valides sont ``right-down`` (en bas à droite, par "
-"défaut), ``right-up`` (en haut à droite), ``left-down`` (en bas à gauche) et "
-"``left-up`` (en haut à droite). Dans tous les cas, la carte est dessinée "
-"ligne par ligne. (seulement supporté pour les cartes orthogonales pour le "
-"moment)"
+"**renderorder :** L'ordre dans lequel les tuiles d'un calque de tuiles sont "
+"rendus. Les valeurs valides sont ``right-down`` (en bas à droite, par défaut)"
+", ``right-up`` (en haut à droite), ``left-down`` (en bas à gauche) et ``left-"
+"up`` (en haut à droite). Dans tous les cas, la carte est dessinée ligne par "
+"ligne. (seulement supporté pour les cartes orthogonales pour le moment)"
 
 #: ../../reference/tmx-map-format.rst:55
 msgid ""
 "**compressionlevel:** The compression level to use for tile layer data "
 "(defaults to -1, which means to use the algorithm default)."
 msgstr ""
+"**compressionlevel :** Le niveau de compression à utiliser pour les données "
+"d'un calque de tuiles (-1 par défaut, ce qui veut dire que l'algorithme par "
+"défaut est utilisé)."
 
 #: ../../reference/tmx-map-format.rst:57
 msgid "**width:** The map width in tiles."
@@ -3623,7 +3788,6 @@ msgstr ""
 "la 0.11)"
 
 #: ../../reference/tmx-map-format.rst:69
-#, fuzzy
 msgid ""
 "**backgroundcolor:** The background color of the map. (optional, may include "
 "alpha value since 0.15 in the form ``#AARRGGBB``. Defaults to fully "
@@ -3631,21 +3795,20 @@ msgid ""
 msgstr ""
 "**backgroundcolor :** La couleur d'arrière-plan de la carte. (optionnel, "
 "peut inclure une valeur de transparence depuis la 0.15 de la forme "
-"``#AARRVVBB``)"
+"``#AARRVVBB``. Complètement transparent par défaut.)"
 
 #: ../../reference/tmx-map-format.rst:72
-#, fuzzy
 msgid ""
 "**nextlayerid:** Stores the next available ID for new layers. This number is "
 "stored to prevent reuse of the same ID after layers have been removed. "
 "(since 1.2) (defaults to the highest layer id in the file + 1)"
 msgstr ""
-"**nextobjectid :** Stocke le prochain ID disponible pour de nouveaux objets. "
+"**nextlayerid :** Stocke le prochain ID disponible pour de nouveaux calques. "
 "Ce nombre est stocké pour empêcher la réutilisation du même ID après que des "
-"objets ont été supprimés. (depuis la 0.11)"
+"calques ont été supprimés. (depuis la 1.2) (le plus grand id de calque dans "
+"le fichier + 1 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:76
-#, fuzzy
 msgid ""
 "**nextobjectid:** Stores the next available ID for new objects. This number "
 "is stored to prevent reuse of the same ID after objects have been removed. "
@@ -3653,7 +3816,8 @@ msgid ""
 msgstr ""
 "**nextobjectid :** Stocke le prochain ID disponible pour de nouveaux objets. "
 "Ce nombre est stocké pour empêcher la réutilisation du même ID après que des "
-"objets ont été supprimés. (depuis la 0.11)"
+"objets ont été supprimés. (depuis la 0.11) (le plus grand id d'objet dans le "
+"fichier + 1 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:80
 msgid ""
@@ -3661,6 +3825,10 @@ msgid ""
 "size and can grow in all directions. Its layer data is stored in chunks. "
 "(``0`` for false, ``1`` for true, defaults to 0)"
 msgstr ""
+"**infinite :** Si la carte est infinie. Une carte infinie n'a pas de taille "
+"fixe et peut grandir dans toutes les directions. Ses données de calques sont "
+"stockées en tant qu'échantillons. (``0`` pour faux, ``1`` pour vrai, 0 par "
+"défaut)"
 
 #: ../../reference/tmx-map-format.rst:84
 msgid ""
@@ -3692,68 +3860,75 @@ msgid ""
 "The ``staggered`` orientation refers to an isometric map using staggered "
 "axes."
 msgstr ""
+"L'orientation ``staggered`` réfère à une carte isométrique utilisant des "
+"axes échelonnés."
 
 #: ../../reference/tmx-map-format.rst:98 ../../reference/tmx-map-format.rst:246
 #: ../../reference/tmx-map-format.rst:323
 #: ../../reference/tmx-map-format.rst:342
 #: ../../reference/tmx-map-format.rst:553
 #: ../../reference/tmx-map-format.rst:730
-#, fuzzy
 msgid "Can contain at most one: :ref:`tmx-properties`"
-msgstr "Peut contenir : :ref:`tmx-properties`"
+msgstr "Peut contenir au plus un : :ref:`propriété <tmx-properties>`"
 
 #: ../../reference/tmx-map-format.rst:100
-#, fuzzy
 msgid ""
 "Can contain any number: :ref:`tmx-tileset`, :ref:`tmx-layer`, :ref:`tmx-"
 "objectgroup`, :ref:`tmx-imagelayer`, :ref:`tmx-group` (since 1.0), :ref:`tmx-"
 "editorsettings` (since 1.3)"
 msgstr ""
-"Peut contenir : :ref:`tmx-properties`, :ref:`tmx-tileset`, :ref:`tmx-"
-"layer`, :ref:`tmx-objectgroup`, :ref:`tmx-imagelayer`, :ref:`tmx-group` "
-"(depuis la 1.0)"
+"Peut contenir tout nombre de : :ref:`jeu de tuiles <tmx-tileset>`, :ref:`"
+"calque <tmx-layer>`, :ref:`calque d'objets <tmx-objectgroup>`, :ref:`calque "
+"d'images <tmx-imagelayer>`, :ref:`groupe <tmx-group>` (depuis la 1.0), :ref:`"
+"options d'éditeur <tmx-editorsettings>` (depuis la 1.3)"
 
 #: ../../reference/tmx-map-format.rst:107
 msgid "<editorsettings>"
-msgstr ""
+msgstr "<editorsettings>"
 
 #: ../../reference/tmx-map-format.rst:109
 msgid ""
 "This element contains various editor-specific settings, which are generally "
 "not relevant when reading a map."
 msgstr ""
+"Cet élément contient plusieurs options spécifiques à l'éditeur, qui sont "
+"généralement inutiles lors de la lecture d'une carte."
 
 #: ../../reference/tmx-map-format.rst:112
-#, fuzzy
 msgid "Can contain: :ref:`tmx-chunksize`, :ref:`tmx-export`"
-msgstr "Peut contenir : :ref:`tmx-tileset`, :ref:`tmx-object`"
+msgstr ""
+"Peut contenir : :ref:`taille d'échantillon <tmx-chunksize>`, :ref:`objet "
+"<tmx-object>`"
 
 #: ../../reference/tmx-map-format.rst:117
-#, fuzzy
 msgid "<chunksize>"
-msgstr "<chunk>"
+msgstr "<chunksize>"
 
 #: ../../reference/tmx-map-format.rst:119
-#, fuzzy
 msgid "**width:** The width of chunks used for infinite maps (default to 16)."
-msgstr "**width :** La longueur de cet objet en pixels (0 par défaut)."
+msgstr ""
+"**width :** La longueur des échantillons utilisés pour les cartes infinies ("
+"16 par défaut)."
 
 #: ../../reference/tmx-map-format.rst:120
-#, fuzzy
 msgid "**height:** The width of chunks used for infinite maps (default to 16)."
-msgstr "**height :** La hauteur de cet objet en pixels (0 par défaut)."
+msgstr ""
+"**height :** La hauteur des échantillons utilisés pour les cartes infinies ("
+"16 par défaut)."
 
 #: ../../reference/tmx-map-format.rst:125
 msgid "<export>"
-msgstr ""
+msgstr "<export>"
 
 #: ../../reference/tmx-map-format.rst:127
 msgid "**target:** The last file this map was exported to."
-msgstr ""
+msgstr "**target :** Le dernier fichier dans lequel cette carte a été exportée."
 
 #: ../../reference/tmx-map-format.rst:128
 msgid "**format:** The short name of the last format this map was exported as."
 msgstr ""
+"**format :** Le nom court du dernier format dans lequel cette carte a été "
+"exporté."
 
 #: ../../reference/tmx-map-format.rst:133
 msgid "<tileset>"
@@ -3765,7 +3940,7 @@ msgid ""
 "to the first tile in this tileset)."
 msgstr ""
 "**firstgid :** Le premier ID de tuile global du jeu de tuiles (cet ID global "
-"correspond à l'ID de la première tuile du jeu de tuiles)."
+"correspond à la première tuile du jeu de tuiles)."
 
 #: ../../reference/tmx-map-format.rst:137
 msgid ""
@@ -3775,15 +3950,15 @@ msgid ""
 "firstgid attribute missing and this source attribute is also not there. "
 "These two attributes are kept in the TMX map, since they are map specific.)"
 msgstr ""
-"**source :** Si ce jeu de tuiles est stocké dans un fichier TSX (Tile Set "
-"XML) externe, cet attribut réfère ce fichier. Ce fichier TSX a la même "
-"structure que l'élément ``<tileset>`` décrit ici. (L'attribut firstgid est "
-"manquant et l'attribut source est aussi absent. Ces deux attributs sont "
+"**source :** Si ce jeu de tuiles est stocké dans un fichier TSX (Jeu de "
+"Tuiles XML) externe, cet attribut réfère ce fichier. Ce fichier TSX a la "
+"même structure que l'élément ``<tileset>`` décrit ici. (L'attribut firstgid "
+"est manquant et l'attribut source est aussi absent. Ces deux attributs sont "
 "gardés dans la carte TMX car ils sont spécifiques aux cartes.)"
 
 #: ../../reference/tmx-map-format.rst:143
 msgid "**name:** The name of this tileset."
-msgstr "**name :** Le nom du jeu de tuiles."
+msgstr "**name :** Le nom de ce jeu de tuiles."
 
 #: ../../reference/tmx-map-format.rst:144
 msgid "**tilewidth:** The (maximum) width of the tiles in this tileset."
@@ -3794,22 +3969,20 @@ msgid "**tileheight:** The (maximum) height of the tiles in this tileset."
 msgstr "**tileheight :** La hauteur (maximale) des tuiles de ce jeu de tuiles."
 
 #: ../../reference/tmx-map-format.rst:146
-#, fuzzy
 msgid ""
 "**spacing:** The spacing in pixels between the tiles in this tileset "
 "(applies to the tileset image, defaults to 0)"
 msgstr ""
-"**spacing :** L'espacement entre les tuiles de ce jeu de tuiles en pixels "
-"(s'applique à l'image du jeu de tuiles)."
+"**spacing :** L'espacement entre les tuiles de ce jeu de tuiles en pixels ("
+"s'applique à l'image du jeu de tuiles, 0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:148
-#, fuzzy
 msgid ""
 "**margin:** The margin around the tiles in this tileset (applies to the "
 "tileset image, defaults to 0)"
 msgstr ""
 "**margin :** La marge autour des tuiles de ce jeu de tuiles (s'applique à "
-"l'image du jeu de tuiles)."
+"l'image du jeu de tuiles, 0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:150
 msgid "**tilecount:** The number of tiles in this tileset (since 0.13)"
@@ -3821,9 +3994,9 @@ msgid ""
 "**columns:** The number of tile columns in the tileset. For image collection "
 "tilesets it is editable and is used when displaying the tileset. (since 0.15)"
 msgstr ""
-"**column s:** Le nombre de colonnes de tuiles de ce jeu de tuiles. "
-"Modifiable pour les jeux de tuiles de collection d'images, est utilisé lors "
-"de l'affichage du jeu de tuiles. (depuis la 0.15)"
+"**columns :** Le nombre de colonnes de tuiles de ce jeu de tuiles. "
+"Modifiable pour les jeux de tuiles de collection d'images, et est utilisé "
+"lors de l'affichage du jeu de tuiles. (depuis la 0.15)"
 
 #: ../../reference/tmx-map-format.rst:154
 msgid ""
@@ -3834,6 +4007,14 @@ msgid ""
 "unspecified, tile objects use ``bottomleft`` in orthogonal mode and "
 "``bottom`` in isometric mode. (since 1.4)"
 msgstr ""
+"**objectalignment :** Contrôle l'alignement des objets tuiles. Les valeurs "
+"valides sont ``unspecified`` (non spécifié), ``topleft`` (en haut à gauche), "
+"``top`` (en haut), ``topright`` (en haut à droite), ``left`` (à gauche), "
+"``center`` (au centre), ``right`` (à droite), ``bottomleft`` (en bas à "
+"gauche), ``bottom`` (en bas) et ``bottomright`` (en bas à droite). La valeur "
+"par défaut est ``unspecified`` pour des raisons de compatibilité. Lorsque "
+"c'est non spécifié, les objets tuiles utilisent ``bottomleft`` en mode "
+"orthogonal et ``bottom`` en mode isométrique. (depuis la 1.4)"
 
 #: ../../reference/tmx-map-format.rst:161
 msgid ""
@@ -3853,36 +4034,39 @@ msgid ""
 "Image collection tilesets have no ``<image>`` tag. Instead, each tile has an "
 "``<image>`` tag."
 msgstr ""
+"Les jeux de tuiles de collection n'ont pas de tag ``<image>``. À la place, "
+"chaque tuile a un tag ``<image>``."
 
 #: ../../reference/tmx-map-format.rst:170
-#, fuzzy
 msgid ""
 "Can contain at most one: :ref:`tmx-image`, :ref:`tmx-tileoffset`, :ref:`tmx-"
 "grid` (since 1.0), :ref:`tmx-properties`, :ref:`tmx-terraintypes`, :ref:`tmx-"
 "wangsets` (since 1.1), :ref:`tmx-tileset-transformations` (since 1.5)"
 msgstr ""
-"Peut contenir : :ref:`tmx-tileoffset`, :ref:`tmx-grid` (depuis la 1.0), :ref:"
-"`tmx-properties`, :ref:`tmx-image`, :ref:`tmx-terraintypes`, :ref:`tmx-"
-"tileset-tile`, :ref:`tmx-wangsets` (depuis la 1.1)"
+"Peut contenir au plus un : :ref:`image <tmx-image>`, :ref:`décalage de jeu "
+"de tuiles <tmx-tileoffset>`, :ref:`grille <tmx-grid>` (depuis la 1.0), :ref:`"
+"propriétés <tmx-properties>`, :ref:`types de terrains <tmx-terraintypes>`, "
+":ref:`collections Wang <tmx-wangsets>` (depuis la 1.1), :ref:`"
+"transformations de jeu de tuiles <tmx-tileset-transformations>` (depuis la 1."
+"5)"
 
 #: ../../reference/tmx-map-format.rst:174
-#, fuzzy
 msgid "Can contain any number: :ref:`tmx-tileset-tile`"
-msgstr "Peut contenir : :ref:`tmx-tilelayer-tile`"
+msgstr ""
+"Peut contenir tout nombre de : :ref:`tuile de jeu de tuiles <tmx-tileset-"
+"tile>`"
 
 #: ../../reference/tmx-map-format.rst:179
 msgid "<tileoffset>"
 msgstr "<tileoffset>"
 
 #: ../../reference/tmx-map-format.rst:181
-#, fuzzy
 msgid "**x:** Horizontal offset in pixels. (defaults to 0)"
-msgstr "**x :** Décalage horizontal en pixels"
+msgstr "**x :** Décalage horizontal en pixels. (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:182
-#, fuzzy
 msgid "**y:** Vertical offset in pixels (positive is down, defaults to 0)"
-msgstr "**y :** Décalage vertical en pixels (positif en bas)"
+msgstr "**y :** Décalage vertical en pixels (positif en bas, 0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:184
 msgid ""
@@ -3892,20 +4076,20 @@ msgid ""
 msgstr ""
 "Cet élément est utilisé pour spécifier un décalage en pixels à appliquer "
 "lors du dessin d'une tuile de ce jeu de tuiles. Aucun décalage n'est "
-"appliqué s'il n'est pas présent."
+"appliqué si cet élément n'est pas présent."
 
 #: ../../reference/tmx-map-format.rst:191
 msgid "<grid>"
 msgstr "<grid>"
 
 #: ../../reference/tmx-map-format.rst:193
-#, fuzzy
 msgid ""
 "**orientation:** Orientation of the grid for the tiles in this tileset "
 "(``orthogonal`` or ``isometric``, defaults to ``orthogonal``)"
 msgstr ""
 "**orientation :** Orientation de la grille pour les tuiles de ce jeu de "
-"tuiles (``orthogonal`` ou ``isometric``)"
+"tuiles (``orthogonal`` (orthogonale) ou ``isometric`` (isométrique), "
+"``orthogonal`` par défaut)"
 
 #: ../../reference/tmx-map-format.rst:195
 msgid "**width:** Width of a grid cell"
@@ -3939,31 +4123,29 @@ msgstr ""
 "``png``, ``gif``, ``jpg``, ``bmp``, etc."
 
 #: ../../reference/tmx-map-format.rst:210
-#, fuzzy
 msgid "*id:* Used by some versions of Tiled Java. Deprecated and unsupported."
 msgstr ""
-"*id :* Utilisé par quelques versions de Tiled Java. Obsolète et non supporté "
-"par Tiled Qt."
+"*id :* Utilisé par quelques versions de Tiled en Java. Obsolète et non "
+"supporté."
 
 #: ../../reference/tmx-map-format.rst:211
-#, fuzzy
 msgid ""
 "**source:** The reference to the tileset image file (Tiled supports most "
 "common image formats). Only used if the image is not embedded."
 msgstr ""
 "**source :** La référence du fichier d'image du jeu de tuiles (Tiled "
-"supporte la majorité des formats d'image communs)."
+"supporte la majorité des formats d'image communs). Seulement utilisé si "
+"l'image n'est pas intégrée."
 
 #: ../../reference/tmx-map-format.rst:213
-#, fuzzy
 msgid ""
 "**trans:** Defines a specific color that is treated as transparent (example "
 "value: \"#FF00FF\" for magenta). Including the \"#\" is optional and Tiled "
 "leaves it out for compatibility reasons. (optional)"
 msgstr ""
-"**trans :** Définit une couleur spécifique traitée comme transparence "
-"(exemple : \"#FF00FF\" pour du magenta). Jusqu'à Tiled 0.12, cette valeur "
-"est écrite sans ``#`` mais un changement est prévu."
+"**trans :** Définit une couleur spécifique traitée comme transparence ("
+"exemple : \"#FF00FF\" pour du magenta). L'ajout du ``#`` est optionnel et "
+"Tiled l'ignore pour des raisons de compatibilité. (optionnel)"
 
 #: ../../reference/tmx-map-format.rst:216
 msgid ""
@@ -3991,9 +4173,8 @@ msgstr ""
 "(Python)."
 
 #: ../../reference/tmx-map-format.rst:225
-#, fuzzy
 msgid "Can contain at most one: :ref:`tmx-data`"
-msgstr "Peut contenir : :ref:`tmx-data`"
+msgstr "Peut contenir au plus : :ref:`données <tmx-data>`"
 
 #: ../../reference/tmx-map-format.rst:230
 msgid "<terraintypes>"
@@ -4008,9 +4189,8 @@ msgstr ""
 "depuis l'attribut ``terrain`` ou l'élément ``tile``."
 
 #: ../../reference/tmx-map-format.rst:235
-#, fuzzy
 msgid "Can contain any number: :ref:`tmx-terrain`"
-msgstr "Peut contenir : :ref:`tmx-terrain`"
+msgstr "Peut contenir tout nombre de : :ref:`terrain <tmx-terrain>`"
 
 #: ../../reference/tmx-map-format.rst:240
 msgid "<terrain>"
@@ -4028,42 +4208,50 @@ msgstr ""
 "visuellement."
 
 #: ../../reference/tmx-map-format.rst:251
-#, fuzzy
 msgid "<transformations>"
-msgstr "<animation>"
+msgstr "<transformations>"
 
 #: ../../reference/tmx-map-format.rst:253
 msgid ""
 "This element is used to describe which transformations can be applied to the "
 "tiles (e.g. to extend a Wang set by transforming existing tiles)."
 msgstr ""
+"Cet élément est utilisé pour décrire quelles transformations peuvent être "
+"appliquées aux tuiles (pour par exemple étendre une collection Wang en "
+"transformant les tuiles existantes)."
 
 #: ../../reference/tmx-map-format.rst:256
 msgid ""
 "**hflip:** Whether the tiles in this set can be flipped horizontally "
 "(default 0)"
 msgstr ""
+"**hflip :** Si les tuiles de ce jeu de tuiles peuvent être retournées "
+"horizontalement (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:257
 msgid ""
 "**vflip:** Whether the tiles in this set can be flipped vertically (default "
 "0)"
 msgstr ""
+"**vflip :** Si les tuiles de ce jeu de tuiles peuvent être retournées "
+"verticalement (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:258
-#, fuzzy
 msgid ""
 "**rotate:** Whether the tiles in this set can be rotated in 90 degree "
 "increments (default 0)"
 msgstr ""
-"**rotation :** La rotation de cet objet en degrés dans le sens des aiguilles "
-"d'une montre (0 par défaut)."
+"**rotation :** Si les tuiles de ce jeu de tuiles peuvent être tournées en "
+"utilisant des incréments de 90 degrés (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:259
 msgid ""
 "**preferuntransformed:** Whether untransformed tiles remain preferred, "
 "otherwise transformed tiles are used to produce more variations (default 0)"
 msgstr ""
+"**preferuntransformed :** Si les tuiles non transformées sont préférées, "
+"sinon les tuiles transformées sont utilisées pour produire plus de "
+"variations (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:265
 #: ../../reference/tmx-map-format.rst:512
@@ -4072,7 +4260,7 @@ msgstr "<tile>"
 
 #: ../../reference/tmx-map-format.rst:267
 msgid "**id:** The local tile ID within its tileset."
-msgstr "**id :** L'id local de la tuile dans son jeu de tuiles."
+msgstr "**id :** L'ID local de la tuile dans son jeu de tuiles."
 
 #: ../../reference/tmx-map-format.rst:268
 msgid ""
@@ -4080,7 +4268,7 @@ msgid ""
 "objects. (optional) (since 1.0)"
 msgstr ""
 "**type :** Le type de la tuile. Réfère à un type d'objet et est utilisé par "
-"des tuiles objets. (optionnel) (depuis la 1.0)"
+"des objets tuiles. (optionnel) (depuis la 1.0)"
 
 #: ../../reference/tmx-map-format.rst:270
 msgid ""
@@ -4092,11 +4280,10 @@ msgstr ""
 "**terrain :** Définit le type de terrain de chaque coin de la tuile, donné "
 "en tant qu'index appartenant au tableau de types de terrain séparés par des "
 "virgules dans l'ordre en haut à gauche, en haut à droite, en bas à gauche, "
-"en bas à droite. Une valeur est oubliée veut dire que ce coin n'a aucun "
-"terrain. (optionnel)"
+"en bas à droite. Une valeur oubliée veut dire que ce coin n'a aucun terrain. "
+"(optionnel)"
 
 #: ../../reference/tmx-map-format.rst:274
-#, fuzzy
 msgid ""
 "**probability:** A percentage indicating the probability that this tile is "
 "chosen when it competes with others while editing with the terrain tool. "
@@ -4104,16 +4291,16 @@ msgid ""
 msgstr ""
 "**probability :** Un pourcentage indiquant la probabilité que cette tuile "
 "soit choisie quand elle est en compétition avec d'autres tuiles lors de "
-"l'utilisation de l'outil de terrain. (optionnel)"
+"l'utilisation de l'outil de terrain. (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:278
-#, fuzzy
 msgid ""
 "Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-image` (since "
 "0.9), :ref:`tmx-objectgroup`, :ref:`tmx-animation`"
 msgstr ""
-"Peut contenir : :ref:`tmx-properties`, :ref:`tmx-image` (depuis la 0.9), :"
-"ref:`tmx-objectgroup`, :ref:`tmx-animation`"
+"Peut contenir au plus un : :ref:`propriétés <tmx-properties>`, :ref:`image "
+"<tmx-image`> (depuis la 0.9), :ref:`groupe d'objets <tmx-objectgroup>`, "
+":ref:`animation <tmx-animation>`"
 
 #: ../../reference/tmx-map-format.rst:284
 msgid "<animation>"
@@ -4133,9 +4320,8 @@ msgstr ""
 "pour une tuile."
 
 #: ../../reference/tmx-map-format.rst:291
-#, fuzzy
 msgid "Can contain any number: :ref:`tmx-frame`"
-msgstr "Peut contenir : :ref:`tmx-frame`"
+msgstr "Peut contenir tout nombre de : :ref:`trame <tmx-frame>`"
 
 #: ../../reference/tmx-map-format.rst:296
 msgid "<frame>"
@@ -4145,7 +4331,8 @@ msgstr "<frame>"
 msgid ""
 "**tileid:** The local ID of a tile within the parent :ref:`tmx-tileset`."
 msgstr ""
-"**tileid :** L'ID local d'une tuile appartenant au :ref:`tmx-tileset` parent."
+"**tileid :** L'ID local d'une tuile appartenant au :ref:`jeu de tuiles <tmx-"
+"tileset>` parent."
 
 #: ../../reference/tmx-map-format.rst:300
 msgid ""
@@ -4161,12 +4348,11 @@ msgstr "<wangsets>"
 
 #: ../../reference/tmx-map-format.rst:308
 msgid "Contains the list of Wang sets defined for this tileset."
-msgstr "Contient la liste d'ensembles Wang définis pour ce jeu de tuiles."
+msgstr "Contient la liste de collections Wang définies pour ce jeu de tuiles."
 
 #: ../../reference/tmx-map-format.rst:310
-#, fuzzy
 msgid "Can contain any number: :ref:`tmx-wangset`"
-msgstr "Peut contenir : :ref:`tmx-wangset`"
+msgstr "Peut contenir tout nombre de : :ref:`collection Wang <tmx-wangset>`"
 
 #: ../../reference/tmx-map-format.rst:315
 msgid "<wangset>"
@@ -4181,60 +4367,53 @@ msgstr ""
 "n'importe quel nombre de tuiles Wang qui utilisent ces couleurs."
 
 #: ../../reference/tmx-map-format.rst:320
-#, fuzzy
 msgid "**name:** The name of the Wang set."
-msgstr "**name** : Le nom de l'ensemble Wang."
+msgstr "**name :** Le nom de l'ensemble Wang."
 
 #: ../../reference/tmx-map-format.rst:321
-#, fuzzy
 msgid "**tile:** The tile ID of the tile representing this Wang set."
-msgstr "**tile** : L'ID de tuile de la tuile qui représente cet ensemble Wang."
+msgstr "**tile :** L'ID de tuile de la tuile qui représente cet ensemble Wang."
 
 #: ../../reference/tmx-map-format.rst:325
-#, fuzzy
 msgid "Can contain up to 255: :ref:`tmx-wangcolor` (since Tiled 1.5)"
-msgstr "Peut contenir : :ref:`tmx-wangset`"
+msgstr ""
+"Peut contenir jusqu'à 255 : :ref:`couleur Wang <tmx-wangcolor>` (depuis "
+"Tiled 1.5)"
 
 #: ../../reference/tmx-map-format.rst:327
-#, fuzzy
 msgid "Can contain any number: :ref:`tmx-wangtile`"
-msgstr "Peut contenir : :ref:`tmx-wangset`"
+msgstr "Peut contenir tout nombre de : :ref:`tuile Wang <tmx-wangtile>`"
 
 #: ../../reference/tmx-map-format.rst:332
-#, fuzzy
 msgid "<wangcolor>"
-msgstr "<wangedgecolor>"
+msgstr "<wangcolor>"
 
 #: ../../reference/tmx-map-format.rst:334
-#, fuzzy
 msgid ""
 "A color that can be used to define the corner and/or edge of a Wang tile."
-msgstr "Une couleur utilisable pour définir le coin d'une tuile Wang."
+msgstr ""
+"Une couleur utilisable pour définir le coin et/ou bord d'une tuile Wang."
 
 #: ../../reference/tmx-map-format.rst:336
-#, fuzzy
 msgid "**name:** The name of this color."
-msgstr "**name** : Le nom de cette couleur."
+msgstr "**name :** Le nom de cette couleur."
 
 #: ../../reference/tmx-map-format.rst:337
-#, fuzzy
 msgid "**color:** The color in ``#RRGGBB`` format (example: ``#c17d11``)."
 msgstr ""
-"**color** : La couleur dans le format ``#RRVVBB`` (exemple : ``#c17d11``)."
+"**color :** La couleur dans le format ``#RRVVBB`` (exemple : ``#c17d11``)."
 
 #: ../../reference/tmx-map-format.rst:338
-#, fuzzy
 msgid "**tile:** The tile ID of the tile representing this color."
-msgstr "**tile** : L'ID de tuile de la tuile représentant cette couleur."
+msgstr "**tile :** L'ID de tuile de la tuile représentant cette couleur."
 
 #: ../../reference/tmx-map-format.rst:339
-#, fuzzy
 msgid ""
 "**probability:** The relative probability that this color is chosen over "
 "others in case of multiple options. (defaults to 0)"
 msgstr ""
-"**probability** : La probabilité relative que cette couleur soit choisie "
-"parmi d'autres s'il y a plusieurs options."
+"**probability :** La probabilité relative que cette couleur soit choisie "
+"parmi d'autres s'il y a plusieurs options. (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:347
 msgid "<wangtile>"
@@ -4249,9 +4428,8 @@ msgstr ""
 "l'associant à un ID Wang."
 
 #: ../../reference/tmx-map-format.rst:352
-#, fuzzy
 msgid "**tileid:** The tile ID."
-msgstr "**tileid** : L'ID de la tuile."
+msgstr "**tileid :** L'ID de la tuile."
 
 #: ../../reference/tmx-map-format.rst:353
 msgid ""
@@ -4263,61 +4441,72 @@ msgid ""
 "``0xCECECECE`` (where each C is a corner color and each E is an edge color, "
 "in reverse order).\""
 msgstr ""
+"**wangid :** \"L'ID Wang est donné par une liste d'index séparés par des "
+"virgules (en commençant par 1, car 0 veut dire _non associé_) référant à des "
+"couleurs Wang dans la collection Wang dans l'ordre suivant : en haut, en "
+"haut à droite, à droite, en bas à droite, en bas, en bas à gauche, à gauche, "
+"en haut à gauche (depuis Tiled 1.5). Avant Tiled 1.5, l'ID Wang était "
+"sauvegardé en tant qu'entier non-signé de 32-bits stocké dans le format "
+"``0xCECECECE`` (où chaque C est une couleur de coin et chaque E une couleur "
+"de bord, dans l'ordre inverse).\""
 
 #: ../../reference/tmx-map-format.rst:360
 msgid ""
 "*hflip:* Whether the tile is flipped horizontally (removed in Tiled 1.5)."
 msgstr ""
+"*hflip :* Si la tuile peut être retournée horizontalement (enlevé dans Tiled "
+"1.5)."
 
 #: ../../reference/tmx-map-format.rst:361
 msgid "*vflip:* Whether the tile is flipped vertically (removed in Tiled 1.5)."
 msgstr ""
+"*vflip :* Si la tuile peut être retournée verticalement (enlevé dans Tiled 1."
+"5)."
 
 #: ../../reference/tmx-map-format.rst:362
 msgid ""
 "*dflip:* Whether the tile is flipped on its diagonal (removed in Tiled 1.5)."
 msgstr ""
+"*dflip :* Si la tuile peut être retournée diagonalement (enlevé dans Tiled 1."
+"5)."
 
 #: ../../reference/tmx-map-format.rst:367
 msgid "<layer>"
 msgstr "<layer>"
 
 #: ../../reference/tmx-map-format.rst:369
-#, fuzzy
 msgid ""
 "All :ref:`tmx-tileset` tags shall occur before the first :ref:`tmx-layer` "
 "tag so that parsers may rely on having the tilesets before needing to "
 "resolve tiles."
 msgstr ""
-"Toutes les balises ``<tileset>`` doivent être avant la première balise "
-"``<layer>`` pour que les analyseurs puisse avoir les jeux de tuiles avant de "
-"résoudre les tuiles."
+"Toutes les balises :ref:`jeu de tuiles <tmx-tileset>` doivent être avant la "
+"première balise :ref:`calque <tmx-layer>` pour que les analyseurs puissent "
+"avoir les jeux de tuiles avant de résoudre les tuiles."
 
 #: ../../reference/tmx-map-format.rst:373
 #: ../../reference/tmx-map-format.rst:526
 #: ../../reference/tmx-map-format.rst:687
 #: ../../reference/tmx-map-format.rst:713
-#, fuzzy
 msgid ""
 "**id:** Unique ID of the layer. Each layer that added to a map gets a unique "
 "id. Even if a layer is deleted, no layer ever gets the same ID. Can not be "
 "changed in Tiled. (since Tiled 1.2)"
 msgstr ""
-"**id :** ID unique ce cet objet. Chaque objet qui est placé dans une carte "
+"**id :** ID unique de ce calque. Chaque calque qui est ajouté dans une carte "
 "obtient un id unique. Même si un objet a été supprimé, aucun objet ne reçoit "
-"le même ID. Ne peut être changé dans Tiled. (depuis Tiled 0.11)"
+"le même ID. Ne peut être changé dans Tiled. (depuis Tiled 1.2)"
 
 #: ../../reference/tmx-map-format.rst:376
-#, fuzzy
 msgid "**name:** The name of the layer. (defaults to \"\")"
-msgstr "**name :** Le nom du calque."
+msgstr "**name :** Le nom de ce calque. (\"\" par défaut)"
 
 #: ../../reference/tmx-map-format.rst:377
 msgid ""
 "*x:* The x coordinate of the layer in tiles. Defaults to 0 and can not be "
 "changed in Tiled."
 msgstr ""
-"*x :* La coordonnée x du calque en tuiles. 0 par défaut et ne peut pas être "
+"*x :* La coordonnée X du calque en tuiles. 0 par défaut et ne peut pas être "
 "modifié dans Tiled."
 
 #: ../../reference/tmx-map-format.rst:378
@@ -4325,7 +4514,7 @@ msgid ""
 "*y:* The y coordinate of the layer in tiles. Defaults to 0 and can not be "
 "changed in Tiled."
 msgstr ""
-"*y :* La coordonnée y du calque en tuiles. 0 par défaut et ne peut pas être "
+"*y :* La coordonnée Y du calque en tuiles. 0 par défaut et ne peut pas être "
 "modifié dans Tiled."
 
 #: ../../reference/tmx-map-format.rst:379
@@ -4363,64 +4552,70 @@ msgid ""
 "**tintcolor:** A :ref:`tint color <tint-color>` that is multiplied with any "
 "tiles drawn by this layer in ``#AARRGGBB`` or ``#RRGGBB`` format (optional)."
 msgstr ""
+"**tintcolor :** Une :ref:`couleur de teinte <tint-color>` qui est multipliée "
+"par toutes les tuiles dessinées dans ce calque dans le format ``#AARRVVBB`` "
+"ou ``#RRVVBB`` (optionnel)."
 
 #: ../../reference/tmx-map-format.rst:384
-#, fuzzy
 msgid ""
 "**offsetx:** Horizontal offset for this layer in pixels. Defaults to 0. "
 "(since 0.14)"
 msgstr ""
-"**offsetx :** Décalage horizontal de rendu de ce calque en pixels. 0 par "
-"défaut. (depuis la 0.14)"
+"**offsetx :** Décalage horizontal de ce calque en pixels. 0 par défaut. ("
+"depuis la 0.14)"
 
 #: ../../reference/tmx-map-format.rst:386
-#, fuzzy
 msgid ""
 "**offsety:** Vertical offset for this layer in pixels. Defaults to 0. (since "
 "0.14)"
 msgstr ""
-"**offsety :** Décalage vertical de rendu de ce calque en pixels. 0 par "
-"défaut. (depuis la 0.14)"
+"**offsety :** Décalage vertical de ce calque en pixels. 0 par défaut. ("
+"depuis la 0.14)"
 
 #: ../../reference/tmx-map-format.rst:388
 msgid ""
 "**parallaxx:** Horizontal :ref:`parallax factor <parallax-factor>` for this "
 "layer. Defaults to 1. (since 1.5)"
 msgstr ""
+"**parallaxx :** :ref:`Facteur de parallaxe <parallax-factor>` horizontal "
+"pour ce calque. 1 par défaut. (depuis la 1.5)"
 
 #: ../../reference/tmx-map-format.rst:389
 msgid ""
 "**parallaxy:** Vertical :ref:`parallax factor <parallax-factor>` for this "
 "layer. Defaults to 1. (since 1.5)"
 msgstr ""
+"**parallaxy :** :ref:`Facteur de parallaxe <parallax-factor>` vertical pour "
+"ce calque. 1 par défaut. (depuis la 1.5)"
 
 #: ../../reference/tmx-map-format.rst:391
-#, fuzzy
 msgid "Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-data`"
-msgstr "Peut contenir : :ref:`tmx-properties`, :ref:`tmx-data`"
+msgstr ""
+"Peut contenir au plus un : :ref:`propriétés <tmx-properties>`, :ref:`données "
+"<tmx-data>`"
 
 #: ../../reference/tmx-map-format.rst:396
 msgid "<data>"
 msgstr "<data>"
 
 #: ../../reference/tmx-map-format.rst:398
-#, fuzzy
 msgid ""
 "**encoding:** The encoding used to encode the tile layer data. When used, it "
 "can be \"base64\" and \"csv\" at the moment. (optional)"
 msgstr ""
 "**encoding :** L'encodage utilisé pour encoder les données du calque de "
-"tuiles. Peut être \"base64\" ou \"csv\" pour le moment s'il est utilisé."
+"tuiles. Peut être \"base64\" ou \"csv\" pour le moment s'il est utilisé. "
+"(optionnel)"
 
 #: ../../reference/tmx-map-format.rst:400
-#, fuzzy
 msgid ""
 "**compression:** The compression used to compress the tile layer data. Tiled "
 "supports \"gzip\", \"zlib\" and (as a compile-time option since Tiled 1.3) "
 "\"zstd\"."
 msgstr ""
 "**compression :** L'algorithme de compression utilisée pour compresser les "
-"données du calque de tuiles. Tiled supporte \"gzip\" et \"zlib\"."
+"données du calque de tuiles. Tiled supporte \"gzip\" et \"zlib\" et (en tant "
+"qu'option lors de la compilation depuis Tiled 1.3) \"ztsd\"."
 
 #: ../../reference/tmx-map-format.rst:404
 msgid ""
@@ -4441,11 +4636,12 @@ msgid ""
 "interpreted as an array of unsigned 32-bit integers using little-endian byte "
 "ordering."
 msgstr ""
-"Les données de calque encodées en base64 et optionnellement compressées sont "
-"plus difficiles à analyser. Tout d'abord, vous devez utiliser un décodeur de "
-"base64, puis vous pouvez avoir besoin de le décompresser. Maintenant que "
-"vous avez un tableau d'octets qui doit être interprété comme une liste "
-"d'entiers non signés de 32 bits en utilisant l'ordre d'octets little endian."
+"Les données de calque encodées en base64 et celles qui sont optionnellement "
+"compressées sont plus difficiles à analyser. Tout d'abord, vous devez "
+"utiliser un décodeur de base64, puis vous pouvez avoir besoin de le "
+"décompresser. Maintenant que vous avez un tableau d'octets, qui doit être "
+"interprété comme une liste d'entiers non signés de 32-bits en utilisant "
+"l'ordre d'octets little endian."
 
 #: ../../reference/tmx-map-format.rst:414
 msgid ""
@@ -4457,17 +4653,18 @@ msgid ""
 "always stored with increasing ``firstgid``\\ s."
 msgstr ""
 "Peu importe le format que vous choisissez pour vos données de calque, vous "
-"vous retrouverez avec des \"IDs de tuiles globaux\" (gids). Ils sont globaux "
-"car ils réfèrent à une tuile parmi tous les jeux de tuiles utilisé par la "
-"carte. Pour trouver le jeu de tuiles qui contient cette tuile, vous devez "
-"trouver le jeu de tuiles avec la valeur ``firstgid`` la plus grande qui est "
-"plus petite ou égale au gid. Les jeux de tuiles sont toujours stockées dans "
-"un ordre croissant de ``firstgid``."
+"vous retrouverez toujours avec des \"IDs de tuiles globaux\" (gids). Ils "
+"sont globaux car ils réfèrent à une tuile parmi tous les jeux de tuiles "
+"utilisés par la carte. Pour trouver le jeu de tuiles qui contient cette "
+"tuile, vous devez trouver le jeu de tuiles avec la valeur ``firstgid`` la "
+"plus grande qui est plus petite ou égale au gid. Les jeux de tuiles sont "
+"toujours stockées dans un ordre croissant de ``firstgid``."
 
 #: ../../reference/tmx-map-format.rst:421
-#, fuzzy
 msgid "Can contain any number: :ref:`tmx-tilelayer-tile`, :ref:`tmx-chunk`"
-msgstr "Peut contenir : :ref:`tmx-tilelayer-tile`, :ref:`tmx-chunk`"
+msgstr ""
+"Peut contenir tout nombre de : :ref:`tuile de calque de tuiles <tmx-"
+"tilelayer-tile>`, :ref:`échantillon <tmx-chunk>`"
 
 #: ../../reference/tmx-map-format.rst:426
 msgid "Tile flipping"
@@ -4485,7 +4682,7 @@ msgstr ""
 "retournement. Le 32ème bit est utilisé pour déterminer si la tuile est "
 "retournée horizontalement, le 31ème bit est utilisé pour les tuiles "
 "retournées verticalement et le 30ème bit détermine si la tuile est retournée "
-"(anti)diagonalement, ce qui permet de tourner des tuiles. Ces trois bits "
+"(anti)diagonalement, ce qui permet de tourner la tuiles. Ces trois bits "
 "doivent être lus et supprimés avant de savoir à quel jeu de tuile cette "
 "tuile appartient."
 
@@ -4495,7 +4692,7 @@ msgid ""
 "y axis swap) is done first, followed by the horizontal and vertical flips."
 msgstr ""
 "Lors du rendu d'une tuile, l'ordre des opérations est important. Le "
-"retournement diagonale (axes x/y renversés) est faite en premier, suivi par "
+"retournement diagonal (axes x/y renversés) est fait en premier, suivi par "
 "les retournements horizontaux et verticaux."
 
 #: ../../reference/tmx-map-format.rst:439
@@ -4518,19 +4715,19 @@ msgstr "<chunk>"
 
 #: ../../reference/tmx-map-format.rst:498
 msgid "**x:** The x coordinate of the chunk in tiles."
-msgstr "**x :** La coordonnée x du tronçon en tuiles."
+msgstr "**x :** La coordonnée X de l'échantillon en tuiles."
 
 #: ../../reference/tmx-map-format.rst:499
 msgid "**y:** The y coordinate of the chunk in tiles."
-msgstr "**y :** La coordonnée y du tronçon en tuiles."
+msgstr "**y :** La coordonnée Y de l'échantillon en tuiles."
 
 #: ../../reference/tmx-map-format.rst:500
 msgid "**width:** The width of the chunk in tiles."
-msgstr "**width :** La longueur du tronçon en tuiles."
+msgstr "**width :** La longueur de l'échantillon en tuiles."
 
 #: ../../reference/tmx-map-format.rst:501
 msgid "**height:** The height of the chunk in tiles."
-msgstr "**height :** La hauteur du tronçon en tuiles."
+msgstr "**height :** La hauteur de l'échantillon en tuiles."
 
 #: ../../reference/tmx-map-format.rst:503
 msgid ""
@@ -4539,14 +4736,15 @@ msgid ""
 "of the area specified in the attributes."
 msgstr ""
 "Cette fonctionnalité est pour le moment seulement implémentée pour les "
-"cartes infinies. Le contenu d'un élément tronçon est le même que celui de "
-"l'élément ``data``, sauf qu'il stocke les données de l'aire spécifié dans "
-"les attributs."
+"cartes infinies. Le contenu d'un élément échantillon est le même que celui "
+"de l'élément ``data``, sauf qu'il stocke les données de l'aire spécifié dans "
+"ses attributs."
 
 #: ../../reference/tmx-map-format.rst:507
-#, fuzzy
 msgid "Can contain any number: :ref:`tmx-tilelayer-tile`"
-msgstr "Peut contenir : :ref:`tmx-tilelayer-tile`"
+msgstr ""
+"Peut contenir tout nombre de : :ref:`tuile de calque de tuiles <tmx-"
+"tilelayer-tile>`"
 
 #: ../../reference/tmx-map-format.rst:514
 msgid "**gid:** The global tile ID (default: 0)."
@@ -4559,7 +4757,7 @@ msgid ""
 "the most inefficient way of storing the tile layer data, and should "
 "generally be avoided."
 msgstr ""
-"Ne pas confondre avec l'élément ``tile`` dans un ``tileset``, cet élément "
+"À ne pas confondre avec l'élément ``tile`` dans un ``tileset``, cet élément "
 "définit la valeur d'une tuile simple dans un calque de tuiles. C'est "
 "cependant le moyen le plus inefficace de stocker les données de calque de "
 "tuiles, et doit être évité de façon générale."
@@ -4569,23 +4767,23 @@ msgid "<objectgroup>"
 msgstr "<objectgroup>"
 
 #: ../../reference/tmx-map-format.rst:529
-#, fuzzy
 msgid "**name:** The name of the object group. (defaults to \"\")"
-msgstr "**name :** Le nom du groupe d'objets."
+msgstr "**name :** Le nom du groupe d'objets. (\"\" par défaut)"
 
 #: ../../reference/tmx-map-format.rst:530
-#, fuzzy
 msgid ""
 "**color:** The color used to display the objects in this group. (defaults to "
 "gray (\"#a0a0a4\"))"
-msgstr "**color :** La couleur utilisée pour afficher les objets de ce groupe."
+msgstr ""
+"**color :** La couleur utilisée pour afficher les objets de ce groupe. (gris "
+"(\"#a0a0a4\") par défaut)"
 
 #: ../../reference/tmx-map-format.rst:532
 msgid ""
 "*x:* The x coordinate of the object group in tiles. Defaults to 0 and can no "
 "longer be changed in Tiled."
 msgstr ""
-"*x :* La coordonnée x de ce groupe d'objets en tuiles. 0 par défaut et ne "
+"*x :* La coordonnée X de ce groupe d'objets en tuiles. 0 par défaut et ne "
 "peut plus être changé dans Tiled."
 
 #: ../../reference/tmx-map-format.rst:534
@@ -4593,7 +4791,7 @@ msgid ""
 "*y:* The y coordinate of the object group in tiles. Defaults to 0 and can no "
 "longer be changed in Tiled."
 msgstr ""
-"*y :* La coordonnée y de ce groupe d'objets en tuiles. 0 par défaut et ne "
+"*y :* La coordonnée Y de ce groupe d'objets en tuiles. 0 par défaut et ne "
 "peut plus être changé dans Tiled."
 
 #: ../../reference/tmx-map-format.rst:536
@@ -4607,60 +4805,55 @@ msgstr "*height :* La hauteur du groupe d'objets en tuiles. Vide de sens."
 #: ../../reference/tmx-map-format.rst:538
 #: ../../reference/tmx-map-format.rst:699
 #: ../../reference/tmx-map-format.rst:721
-#, fuzzy
 msgid ""
 "**opacity:** The opacity of the layer as a value from 0 to 1. (defaults to 1)"
 msgstr ""
-"**opacity :** L'opacité du calque en tant que valeur entre 0 et 1. 1 par "
-"défaut."
+"**opacity :** L'opacité du calque en tant que valeur entre 0 et 1. (1 par "
+"défaut)"
 
 #: ../../reference/tmx-map-format.rst:540
 #: ../../reference/tmx-map-format.rst:701
 #: ../../reference/tmx-map-format.rst:723
-#, fuzzy
 msgid ""
 "**visible:** Whether the layer is shown (1) or hidden (0). (defaults to 1)"
 msgstr ""
-"**visible :** Détermine si le calque est visible (1) ou caché (0). 1 par "
-"défaut."
+"**visible :** Détermine si le calque est visible (1) ou caché (0). (1 par "
+"défaut)"
 
 #: ../../reference/tmx-map-format.rst:541
-#, fuzzy
 msgid ""
 "**tintcolor:** A color that is multiplied with any tile objects drawn by "
 "this layer, in ``#AARRGGBB`` or ``#RRGGBB`` format (optional)."
 msgstr ""
-"**color :** Couleur du texte dans le format ``#AARRVVBB`` ou ``#RRVVBB`` "
-"(#000000 par défaut)"
+"**tintcolor :** Une couleur qui est multipliée par tous les objets tuiles "
+"dessinés dans ce calque, dans le format ``#AARRVVBB`` ou ``#RRVVBB`` "
+"(optionnel)."
 
 #: ../../reference/tmx-map-format.rst:542
-#, fuzzy
 msgid ""
 "**offsetx:** Horizontal offset for this object group in pixels. (defaults to "
 "0) (since 0.14)"
 msgstr ""
-"**offsetx :** Décalage horizontal de rendu de ce groupe d'objets en pixels. "
-"0 par défaut. (depuis la 0.14)"
+"**offsetx :** Décalage horizontal de ce groupe d'objets en pixels. (0 par "
+"défaut) (depuis la 0.14)"
 
 #: ../../reference/tmx-map-format.rst:544
-#, fuzzy
 msgid ""
 "**offsety:** Vertical offset for this object group in pixels. (defaults to "
 "0) (since 0.14)"
 msgstr ""
-"**offsety :** Décalage vertical de rendu de ce groupe d'objets en pixels. 0 "
-"par défaut. (depuis la 0.14)"
+"**offsety :** Décalage vertical de ce groupe d'objets en pixels. (0 par "
+"défaut) (depuis la 0.14)"
 
 #: ../../reference/tmx-map-format.rst:546
-#, fuzzy
 msgid ""
 "**draworder:** Whether the objects are drawn according to the order of "
 "appearance (\"index\") or sorted by their y-coordinate (\"topdown\"). "
 "(defaults to \"topdown\")"
 msgstr ""
 "**draworder :** Détermine si les objets sont rendus en suivant l'ordre "
-"d'apparition (\"index\") ou en suivant leur coordonnée y (\"topdown\"). "
-"\"topdown\" par défaut."
+"d'apparition (\"index\") ou en suivant leur coordonnée Y (\"topdown\"). ("
+"\"topdown\" par défaut)"
 
 #: ../../reference/tmx-map-format.rst:550
 msgid ""
@@ -4671,9 +4864,8 @@ msgstr ""
 "appelé \"calque d'objets\" dans Tiled."
 
 #: ../../reference/tmx-map-format.rst:555
-#, fuzzy
 msgid "Can contain any number: :ref:`tmx-object`"
-msgstr "Peut contenir : :ref:`tmx-property`"
+msgstr "Peut contenir tout nombre de : :ref:`objet <tmx-object>`"
 
 #: ../../reference/tmx-map-format.rst:560
 msgid "<object>"
@@ -4690,67 +4882,61 @@ msgstr ""
 "le même ID. Ne peut être changé dans Tiled. (depuis Tiled 0.11)"
 
 #: ../../reference/tmx-map-format.rst:565
-#, fuzzy
 msgid ""
 "**name:** The name of the object. An arbitrary string. (defaults to \"\")"
-msgstr "**name :** Le nom de l'objet. Une chaîne de caractères arbitraire."
+msgstr ""
+"**name :** Le nom de cet objet. Une chaîne de caractères arbitraire. (\"\" "
+"par défaut)"
 
 #: ../../reference/tmx-map-format.rst:566
-#, fuzzy
 msgid ""
 "**type:** The type of the object. An arbitrary string. (defaults to \"\")"
-msgstr "**type :** Le type de l'objet. Une chaîne de caractères arbitraire."
+msgstr ""
+"**type :** Le type de cet objet. Une chaîne de caractères arbitraire. (\"\" "
+"par défaut)"
 
 #: ../../reference/tmx-map-format.rst:567
-#, fuzzy
 msgid "**x:** The x coordinate of the object in pixels. (defaults to 0)"
-msgstr "**x :** La coordonnée x de cet objet en pixels."
+msgstr "**x :** La coordonnée X de cet objet en pixels. (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:568
-#, fuzzy
 msgid "**y:** The y coordinate of the object in pixels. (defaults to 0)"
-msgstr "**y :** La coordonnée y de cet objet en pixels."
+msgstr "**y :** La coordonnée Y de cet objet en pixels. (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:569
-#, fuzzy
 msgid "**width:** The width of the object in pixels. (defaults to 0)"
-msgstr "**width :** La longueur de cet objet en pixels (0 par défaut)."
+msgstr "**width :** La longueur de cet objet en pixels. (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:570
-#, fuzzy
 msgid "**height:** The height of the object in pixels. (defaults to 0)"
-msgstr "**height :** La hauteur de cet objet en pixels (0 par défaut)."
+msgstr "**height :** La hauteur de cet objet en pixels. (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:571
-#, fuzzy
 msgid ""
 "**rotation:** The rotation of the object in degrees clockwise around (x, y). "
 "(defaults to 0)"
 msgstr ""
 "**rotation :** La rotation de cet objet en degrés dans le sens des aiguilles "
-"d'une montre (0 par défaut)."
+"d'une montre autour de (x, y). (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:573
-#, fuzzy
 msgid "**gid:** A reference to a tile. (optional)"
-msgstr "**gid :** Une référence vers une tuile (optionnel)."
+msgstr "**gid :** Une référence vers une tuile. (optionnel)"
 
 #: ../../reference/tmx-map-format.rst:574
-#, fuzzy
 msgid ""
 "**visible:** Whether the object is shown (1) or hidden (0). (defaults to 1)"
 msgstr ""
-"**visible :** Détermine si l'objet est visible (1) ou caché (0). 1 par "
-"défaut."
+"**visible :** Détermine si l'objet est visible (1) ou caché (0). (1 par "
+"défaut)"
 
 #: ../../reference/tmx-map-format.rst:576
-#, fuzzy
 msgid ""
 "**template:** A reference to a :ref:`template file <tmx-template-files>`. "
 "(optional)"
 msgstr ""
 "**template :** Une référence vers un :ref:`fichier de modèle <tmx-template-"
-"files>` (optionnel)."
+"files>`. (optionnel)"
 
 #: ../../reference/tmx-map-format.rst:578
 msgid ""
@@ -4772,12 +4958,11 @@ msgid ""
 "You generally use objects to add custom information to your tile map, such "
 "as spawn points, warps, exits, etc."
 msgstr ""
-"Des objets sont souvent utilisés pour ajouter des informations personnalisés "
-"à votre carte de tuiles tel que des points de spawn, des téléporteurs, des "
-"sorties, etc."
+"Les objets sont souvent utilisés pour ajouter des informations personnalisés "
+"à votre carte de tuiles tel que des points d'apparition, des téléporteurs, "
+"des sorties, etc."
 
 #: ../../reference/tmx-map-format.rst:587
-#, fuzzy
 msgid ""
 "When the object has a ``gid`` set, then it is represented by the image of "
 "the tile with that global ID. The image alignment currently depends on the "
@@ -4785,11 +4970,12 @@ msgid ""
 "while in isometric it's aligned to the bottom-center. The image will rotate "
 "around the bottom-left or bottom-center, respectively."
 msgstr ""
-"Quand l'objet a un attribut ``gid`` utilisé, alors il est représenté par "
-"l'image de la tuile ayant cet ID global. L'alignement de l'image correspond "
-"couramment à l'orientation de la carte. Il est aligné en bas à gauche pour "
-"une direction orthogonale tandis qu'il est aligné en bas au centre pour une "
-"direction isométrique."
+"Quand l'objet a un attribut ``gid``, alors il est représenté par l'image de "
+"la tuile ayant cet ID global. L'alignement de l'image correspond couramment "
+"à l'orientation de la carte. Il est aligné en bas à gauche pour une "
+"direction orthogonale tandis qu'il est aligné en bas au centre pour une "
+"direction isométrique. L'image va être tournée respectivement autour d'en "
+"bas à gauche ou d'en bas au centre."
 
 #: ../../reference/tmx-map-format.rst:593
 msgid ""
@@ -4797,20 +4983,21 @@ msgid ""
 "from the specified template, properties saved with the object will have "
 "higher priority, i.e. they will override the template properties."
 msgstr ""
-"Quand l'objet a un attribut ``template`` utilisé, il va copier toutes les "
+"Quand l'objet a un attribut ``template``, il va emprunter toutes les "
 "propriétés du modèle spécifié, avec les propriétés sauvegardées dans l'objet "
-"ayant la priorité, i.e. elles remplaceront les propriétés du modèle."
+"ayant la priorité la plus haute, ce qui veut dire qu'elles remplaceront les "
+"propriétés du modèle."
 
 #: ../../reference/tmx-map-format.rst:598
-#, fuzzy
 msgid ""
 "Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since "
 "0.9), :ref:`tmx-point` (since 1.1), :ref:`tmx-polygon`, :ref:`tmx-"
 "polyline`, :ref:`tmx-text` (since 1.0)"
 msgstr ""
-"Peut contenir : :ref:`tmx-properties`, :ref:`tmx-ellipse` (depuis la 0.9), :"
-"ref:`tmx-polygon`, :ref:`tmx-polyline`, :ref:`tmx-text` (depuis la 1.0), "
-"*image*"
+"Peut contenir au plus un : :ref:`propriétés <tmx-properties>`, :ref:`ellipse "
+"<tmx-ellipse>` (depuis la 0.9), :ref:`point <tmx-point>` (depuis la 1.1), "
+":ref:`polygone <tmx-polygon>`, :ref:`polyligne <tmx-polyline>`, :ref:`texte "
+"<tmx-text>` (depuis la 1.0)"
 
 #: ../../reference/tmx-map-format.rst:605
 msgid "<ellipse>"
@@ -4873,97 +5060,87 @@ msgid "<text>"
 msgstr "<text>"
 
 #: ../../reference/tmx-map-format.rst:647
-#, fuzzy
 msgid "**fontfamily:** The font family used (defaults to \"sans-serif\")"
 msgstr ""
 "**fontfamily :** La famille de police utilisée (\"sans-serif\" par défaut)"
 
 #: ../../reference/tmx-map-format.rst:648
-#, fuzzy
 msgid ""
 "**pixelsize:** The size of the font in pixels (not using points, because "
 "other sizes in the TMX format are also using pixels) (defaults to 16)"
 msgstr ""
 "**pixelsize :** La taille de la police en pixels (pas d'utilisation de "
-"points, car d'autres tailles dans le format TMX utilisent aussi des pixels) "
-"(16 par défaut)"
+"points, car d'autres tailles dans le format TMX utilisent aussi des pixels) ("
+"16 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:651
-#, fuzzy
 msgid ""
 "**wrap:** Whether word wrapping is enabled (1) or disabled (0). (defaults to "
 "0)"
 msgstr ""
-"**wrap :** Détermine si l'ajustement de texte est activé (1) ou désactivé "
-"(0). 0 par défaut."
+"**wrap :** Détermine si l'ajustement de texte est activé (1) ou désactivé (0)"
+". (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:653
-#, fuzzy
 msgid ""
 "**color:** Color of the text in ``#AARRGGBB`` or ``#RRGGBB`` format "
 "(defaults to #000000)"
 msgstr ""
-"**color :** Couleur du texte dans le format ``#AARRVVBB`` ou ``#RRVVBB`` "
-"(#000000 par défaut)"
+"**color :** Couleur du texte dans le format ``#AARRVVBB`` ou ``#RRVVBB`` (#"
+"000000 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:655
-#, fuzzy
 msgid "**bold:** Whether the font is bold (1) or not (0). (defaults to 0)"
 msgstr ""
-"**bold :** Détermine si le texte est en gras (1) ou non (0). 0 par défaut."
+"**bold :** Détermine si le texte est en gras (1) ou non (0). (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:656
-#, fuzzy
 msgid "**italic:** Whether the font is italic (1) or not (0). (defaults to 0)"
 msgstr ""
-"**italic :** Détermine si le texte est en italique (1) ou non (0). 0 par "
-"défaut."
+"**italic :** Détermine si le texte est en italique (1) ou non (0). (0 par "
+"défaut)"
 
 #: ../../reference/tmx-map-format.rst:657
-#, fuzzy
 msgid ""
 "**underline:** Whether a line should be drawn below the text (1) or not (0). "
 "(defaults to 0)"
 msgstr ""
 "**underline :** Détermine si une ligne doit être dessinée sous le texte (1) "
-"ou non (0). 0 par défaut."
+"ou non (0). (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:659
-#, fuzzy
 msgid ""
 "**strikeout:** Whether a line should be drawn through the text (1) or not "
 "(0). (defaults to 0)"
 msgstr ""
 "**strikeout :** Détermine si une ligne doit être dessinée à travers le texte "
-"(1) ou non (0). 0 par défaut."
+"(1) ou non (0). (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:661
-#, fuzzy
 msgid ""
 "**kerning:** Whether kerning should be used while rendering the text (1) or "
 "not (0). (defaults to 1)"
 msgstr ""
-"**kerning :** Détermine si le texte doit être justifié (1) ou non (0). 1 par "
-"défaut."
+"**kerning :** Détermine si le crénage doit être utilisé (1) lors du rendu du "
+"texte ou non (0). (1 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:663
-#, fuzzy
 msgid ""
 "**halign:** Horizontal alignment of the text within the object (``left``, "
 "``center``, ``right`` or ``justify``, defaults to ``left``) (since Tiled "
 "1.2.1)"
 msgstr ""
-"**halign :** Alignement horizontal du texte dans l'objet (``left`` (gauche, "
-"par défaut), ``center`` (centré) ou ``right`` (droite))"
+"**halign :** Alignement horizontal du texte dans l'objet (``left`` (gauche), "
+"``center`` (centré), ``right`` (droite) ou ``justify`` (justifié), ``left`` "
+"par défaut) (depuis Tiled 1.2.1)"
 
 #: ../../reference/tmx-map-format.rst:666
-#, fuzzy
 msgid ""
 "**valign:** Vertical alignment of the text within the object (``top`` , "
 "``center`` or ``bottom``, defaults to ``top``)"
 msgstr ""
-"**valign :** Alignement vertical du texte dans l'objet (``top`` (haut, par "
-"défaut), ``center`` (centré) ou ``bottom`` (bas))"
+"**valign :** Alignement vertical du texte dans l'objet (``top`` (haut), "
+"``center`` (centré) ou ``bottom`` (bas), ``top`` par défaut)"
 
 #: ../../reference/tmx-map-format.rst:669
 msgid ""
@@ -4982,131 +5159,135 @@ msgid ""
 "Similarly, ``top`` alignment of the word \"cat\" will leave some space above "
 "the \"t\" with most fonts, because this space is used for diacritics."
 msgstr ""
+"Pour des raisons d'alignement, le bas du texte est la hauteur descendante de "
+"la police, et le haut du texte est la hauteur ascendante de la police. Par "
+"exemple, l'alignement ``bottom`` du mot \"chat\" va laisser de la place sous "
+"le texte, même si cet espace n'est pas utilisé pour ce mot pour la plupart "
+"des polices. De la même façon, l'alignement ``top`` du mot \"chat\" va "
+"laisser un peu d'espace au dessus du \"t\" pour la plupart des polices, car "
+"cet espace est utilisé pour des diacritiques."
 
 #: ../../reference/tmx-map-format.rst:679
 msgid ""
 "If the text is larger than the object's bounds, it is clipped to the bounds "
 "of the object."
 msgstr ""
+"Si le texte est plus grand que les bords de l'objet, il est coupé aux bords "
+"de l'objet."
 
 #: ../../reference/tmx-map-format.rst:685
 msgid "<imagelayer>"
 msgstr "<imagelayer>"
 
 #: ../../reference/tmx-map-format.rst:690
-#, fuzzy
 msgid "**name:** The name of the image layer. (defaults to \"\")"
-msgstr "**name:** Le nom du calque d'images."
+msgstr "**name :** Le nom du calque d'images. (\"\" par défaut)"
 
 #: ../../reference/tmx-map-format.rst:691
-#, fuzzy
 msgid ""
 "**offsetx:** Horizontal offset of the image layer in pixels. (defaults to 0) "
 "(since 0.15)"
 msgstr ""
-"**offsetx :** Décalage horizontal de rendu de ce calque d'images en pixels. "
-"0 par défaut. (depuis la 0.14)"
+"**offsetx :** Décalage horizontal de ce calque d'images en pixels. (0 par "
+"défaut) (depuis la 0.15)"
 
 #: ../../reference/tmx-map-format.rst:693
-#, fuzzy
 msgid ""
 "**offsety:** Vertical offset of the image layer in pixels. (defaults to 0) "
 "(since 0.15)"
 msgstr ""
-"**offsety :** Décalage vertical de rendu de ce calque d'images en pixels. 0 "
-"par défaut. (depuis la 0.14)"
+"**offsety :** Décalage vertical de ce calque d'images en pixels. (0 par "
+"défaut) (depuis la 0.15)"
 
 #: ../../reference/tmx-map-format.rst:695
-#, fuzzy
 msgid ""
 "*x:* The x position of the image layer in pixels. (defaults to 0, deprecated "
 "since 0.15)"
 msgstr ""
-"*x :* La position x du calque d'images en pixels. (obsolète depuis la 0.15)"
+"*x :* La position X du calque d'images en pixels. (0 par défaut, obsolète "
+"depuis la 0.15)"
 
 #: ../../reference/tmx-map-format.rst:697
-#, fuzzy
 msgid ""
 "*y:* The y position of the image layer in pixels. (defaults to 0, deprecated "
 "since 0.15)"
 msgstr ""
-"*y :* La position y du calque d'images en pixels. (obsolète depuis la 0.15)"
+"*y :* La position Y du calque d'images en pixels. (0 par défaut, obsolète "
+"depuis la 0.15)"
 
 #: ../../reference/tmx-map-format.rst:702
-#, fuzzy
 msgid ""
 "**tintcolor:** A color that is multiplied with the image drawn by this layer "
 "in ``#AARRGGBB`` or ``#RRGGBB`` format (optional)."
 msgstr ""
-"**color :** Couleur du texte dans le format ``#AARRVVBB`` ou ``#RRVVBB`` "
-"(#000000 par défaut)"
+"**tintcolor :** Une couleur qui est multipliée par l'image dessinée dans ce "
+"calque, dans le format ``#AARRVVBB`` ou ``#RRVVBB`` (optionnel)."
 
 #: ../../reference/tmx-map-format.rst:704
 msgid "A layer consisting of a single image."
 msgstr "Un calque contenant une seule image."
 
 #: ../../reference/tmx-map-format.rst:706
-#, fuzzy
 msgid "Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-image`"
-msgstr "Peut contenir : :ref:`tmx-properties`, :ref:`tmx-image`"
+msgstr ""
+"Peut contenir au moins un : :ref:`propriétés <tmx-properties>`, :ref:`image "
+"<tmx-image>`"
 
 #: ../../reference/tmx-map-format.rst:711
 msgid "<group>"
 msgstr "<group>"
 
 #: ../../reference/tmx-map-format.rst:716
-#, fuzzy
 msgid "**name:** The name of the group layer. (defaults to \"\")"
-msgstr "**name :** Le nom du calque de groupe."
+msgstr "**name :** Le nom du calque de groupes. (\"\" par défaut)"
 
 #: ../../reference/tmx-map-format.rst:717
-#, fuzzy
 msgid ""
 "**offsetx:** Horizontal offset of the group layer in pixels. (defaults to 0)"
 msgstr ""
-"**offsetx :** Décalage horizontal de rendu de ce groupe de calques en "
-"pixels. 0 par défaut."
+"**offsetx :** Décalage horizontal de ce groupe de calques en pixels. (0 par "
+"défaut)"
 
 #: ../../reference/tmx-map-format.rst:719
-#, fuzzy
 msgid ""
 "**offsety:** Vertical offset of the group layer in pixels. (defaults to 0)"
 msgstr ""
-"**offsety :** Décalage vertical de rendu de ce groupe de calques en pixels. "
-"0 par défaut."
+"**offsety :** Décalage vertical de ce groupe de calques en pixels. (0 par "
+"défaut)"
 
 #: ../../reference/tmx-map-format.rst:724
 msgid ""
 "**tintcolor:** A color that is multiplied with any graphics drawn by any "
 "child layers, in ``#AARRGGBB`` or ``#RRGGBB`` format (optional)."
 msgstr ""
+"**tintcolor :** Une couleur qui est multipliée par tout graphisme dessinée "
+"dans tout calque enfant, dans le format ``#AARRVVBB`` ou ``#RRVVBB`` "
+"(optionnel)."
 
 #: ../../reference/tmx-map-format.rst:726
-#, fuzzy
 msgid ""
 "A group layer, used to organize the layers of the map in a hierarchy. Its "
 "attributes ``offsetx``, ``offsety``, ``opacity``, ``visible`` and "
 "``tintcolor`` recursively affect child layers."
 msgstr ""
 "Un groupe de calques est utilisé pour organiser les calques d'une carte dans "
-"une hiérarchie. Ses attributs ``offsetx``, ``offsety``, ``opacity`` "
-"et``visible`` affectent ses calques fils récursivement."
+"une hiérarchie. Ses attributs ``offsetx``, ``offsety``, ``opacity``, "
+"``visible`` et ``tintcolor`` affectent ses calques fils récursivement."
 
 #: ../../reference/tmx-map-format.rst:732
-#, fuzzy
 msgid ""
 "Can contain any number: :ref:`tmx-layer`, :ref:`tmx-objectgroup`, :ref:`tmx-"
 "imagelayer`, :ref:`tmx-group`"
 msgstr ""
-"Peut contenir : :ref:`tmx-properties`, :ref:`tmx-layer`, :ref:`tmx-"
-"objectgroup`, :ref:`tmx-imagelayer`, :ref:`tmx-group`"
+"Peut contenir tout nombre de : :ref:`calque <tmx-layer>`, :ref:`groupe "
+"d'objets <tmx-objectgroup>`, :ref:`calque d'images <tmx-imagelayer>`, :ref:`"
+"groupe <tmx-group>`"
 
 #: ../../reference/tmx-map-format.rst:738
 msgid "<properties>"
 msgstr "<properties>"
 
 #: ../../reference/tmx-map-format.rst:740
-#, fuzzy
 msgid ""
 "Wraps any number of custom properties. Can be used as a child of the "
 "``map``, ``tileset``, ``tile`` (when part of a ``tileset``), ``terrain``, "
@@ -5115,13 +5296,12 @@ msgid ""
 msgstr ""
 "Contient n'importe quel nombre de propriétés personnalisées. Peut être "
 "utilisé en tant que fils des éléments ``map``, ``tileset``, ``tile`` (quand "
-"il appartient à un ``tileset``), ``terrain``, ``layer``, ``objectgroup``, "
-"``object``, ``imagelayer`` et ``group``."
+"il appartient à un ``tileset``), ``terrain``, ``wangset``, ``wangcolor``, "
+"``layer``, ``objectgroup``, ``object``, ``imagelayer`` et ``group``."
 
 #: ../../reference/tmx-map-format.rst:745
-#, fuzzy
 msgid "Can contain any number: :ref:`tmx-property`"
-msgstr "Peut contenir : :ref:`tmx-property`"
+msgstr "Peut contenir tout nombre de : :ref:`propriété <tmx-property>`"
 
 #: ../../reference/tmx-map-format.rst:750
 msgid "<property>"
@@ -5132,7 +5312,6 @@ msgid "**name:** The name of the property."
 msgstr "**name :** Le nom de cette propriété."
 
 #: ../../reference/tmx-map-format.rst:753
-#, fuzzy
 msgid ""
 "**type:** The type of the property. Can be ``string`` (default), ``int``, "
 "``float``, ``bool``, ``color``, ``file`` or ``object`` (since 0.16, with "
@@ -5140,8 +5319,9 @@ msgid ""
 msgstr ""
 "**type :** Le type de cette propriété. Peut être ``string`` (chaîne de "
 "caractères, par défaut), ``int`` (entier), ``float`` (flottant), ``bool`` "
-"(booléen), ``color`` (couleur) ou ``file`` (depuis la 0.16, avec les options "
-"``color`` et ``file`` ajoutées dans la 0.17)."
+"(booléen), ``color`` (couleur), ``file`` (fichier) ou ``object`` (objet) ("
+"depuis la 0.16, avec les options ``color`` et ``file`` ajoutées dans la "
+"0.17, et ``object`` ajoutée dans la 1.4)."
 
 #: ../../reference/tmx-map-format.rst:756
 msgid ""
@@ -5149,16 +5329,21 @@ msgid ""
 "number is 0, default boolean is \"false\", default color is #00000000, "
 "default file is \".\" (the current file's parent directory))"
 msgstr ""
+"**value :** La valeur de cette propriété. (La chaîne de caractères par "
+"défaut est \"\", le nombre par défaut est 0, le booléen par défaut est "
+"\"false\", la couleur par défaut est #00000000, le fichier par défaut est \"."
+"\" (le dossier parent du fichier courant))"
 
 #: ../../reference/tmx-map-format.rst:760
 msgid "Boolean properties have a value of either \"true\" or \"false\"."
 msgstr ""
-"Les valeurs booléennes ont une valeur qui est soit \"true\" (vrai) ou \"false"
-"\" (faux)."
+"Les valeurs booléennes ont une valeur qui est soit \"true\" (vrai), soit "
+"\"false\" (faux)."
 
 #: ../../reference/tmx-map-format.rst:762
 msgid "Color properties are stored in the format ``#AARRGGBB``."
-msgstr "Les propriétés de couleur sont stockés dans la forme ``#AARRGGBB``."
+msgstr ""
+"Les propriétés de couleur sont stockés en utilisant le format ``#AARRVVBB``."
 
 #: ../../reference/tmx-map-format.rst:764
 msgid ""
@@ -5175,6 +5360,11 @@ msgid ""
 "referenced). When used on objects in the Tile Collision Editor, they can "
 "only refer to other objects on the same tile."
 msgstr ""
+"Les propriétés d'objets peuvent référencer n'importe quel objet dans la même "
+"carte et sont stockés en tant qu'entier (l'ID de l'objet référencé, ou 0 "
+"lorsqu'aucun objet n'est référencé). Lorsque des objets sont utilisés dans "
+"l'Éditeur de collision de Tuiles, elles peuvent seulement référencer "
+"d'autres objets sur la même tuile."
 
 #: ../../reference/tmx-map-format.rst:772
 msgid ""
@@ -5186,7 +5376,7 @@ msgid ""
 msgstr ""
 "Quand une propriété de chaîne de caractères contient des retours à la ligne, "
 "la version courante de Tiled montrera la valeur en tant que caractères "
-"contenu dans l'élément ``property`` à la place d'être dans l'attribut "
+"contenus dans l'élément ``property`` à la place d'être dans l'attribut "
 "``value``. Il est possible qu'une future version du format TMX fasse en "
 "sorte que les valeurs des propriétés soient sauvegardées dans l'élément "
 "plutôt qu'en tant qu'un attribut."
@@ -5213,33 +5403,33 @@ msgid ""
 "and a :ref:`tileset <tmx-tileset>` element that points to an external "
 "tileset, if the object is a tile object."
 msgstr ""
-"L'élément racine du modèle contient l':ref:`objet de carte <tmx-object>` "
+"L'élément racine du modèle contient :ref:`l'objet de carte <tmx-object>` "
 "sauvegardé et un élément :ref:`jeu de tuiles <tmx-tileset>` qui pointe à un "
-"jeu de tuiles externe, si l'objet est un objet de tuile."
+"jeu de tuiles externe, si l'objet est un objet tuile."
 
 #: ../../reference/tmx-map-format.rst:795
 msgid "Example of a template file:"
 msgstr "Exemple d'un fichier de modèle :"
 
 #: ../../reference/tmx-map-format.rst:805
-#, fuzzy
 msgid "Can contain at most one: :ref:`tmx-tileset`, :ref:`tmx-object`"
-msgstr "Peut contenir : :ref:`tmx-tileset`, :ref:`tmx-object`"
+msgstr ""
+"Peut contenir au plus un : :ref:`jeu de tuiles <tmx-tileset>`, :ref:`objet "
+"<tmx-object>`"
 
 #: ../../reference/tmx-map-format.rst:812
 msgid "Creative Commons License"
 msgstr "Licence Creative Commons"
 
 #: ../../reference/tmx-map-format.rst:814
-#, fuzzy
 msgid ""
 "The **TMX Map Format** by https://www.mapeditor.org is licensed under a "
 "`Creative Commons Attribution-ShareAlike 3.0 Unported License <http://"
 "creativecommons.org/licenses/by-sa/3.0/>`__."
 msgstr ""
-"Le **Format de Carte TMX** de http://www.mapeditor.org est licensé sous une "
-"`Licence Creative Commons Attribution-ShareAlike 3.0 Unported <http://"
-"creativecommons.org/licenses/by-sa/3.0/>`__."
+"Le **Format de Carte TMX** de http://www.mapeditor.org est licensé sous une `"
+"Licence Creative Commons Attribution-ShareAlike 3.0 Unported "
+"<http://creativecommons.org/licenses/by-sa/3.0/>`__."
 
 #~ msgid "String key-value pairs"
 #~ msgstr "Les paires clés-valeurs en chaîne de caractères"
