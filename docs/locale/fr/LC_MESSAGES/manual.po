@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2021-08-09 11:20+0200\n"
-"PO-Revision-Date: 2021-08-20 07:32+0000\n"
+"PO-Revision-Date: 2021-08-24 03:33+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
 "\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.8-dev\n"
+"X-Generator: Weblate 4.8.1-dev\n"
 "Generated-By: Babel 2.8.0\n"
 
 #: ../../manual/automapping.rst:3
@@ -5123,7 +5123,7 @@ msgstr ""
 
 #: ../../manual/preferences.rst:12
 msgid "**Windows**"
-msgstr ""
+msgstr "**Windows**"
 
 #: ../../manual/preferences.rst:12
 msgid "Registry key ``HKEY_CURRENT_USER\\SOFTWARE\\mapeditor.org\\Tiled``"
@@ -5131,7 +5131,7 @@ msgstr ""
 
 #: ../../manual/preferences.rst:14
 msgid "**macOS**"
-msgstr ""
+msgstr "**macOS**"
 
 #: ../../manual/preferences.rst:14
 msgid ":file:`~/Library/Preferences/org.mapeditor.Tiled.plist`"
@@ -5139,7 +5139,7 @@ msgstr ""
 
 #: ../../manual/preferences.rst:16
 msgid "**Linux**"
-msgstr ""
+msgstr "**Linux**"
 
 #: ../../manual/preferences.rst:16
 msgid ":file:`~/.config/mapeditor.org/tiled.conf`"
@@ -5700,7 +5700,7 @@ msgstr ""
 
 #: ../../manual/python.rst:136
 msgid "API Reference"
-msgstr ""
+msgstr "Référence de l'API"
 
 #: ../../manual/python.rst:138
 msgid ""
