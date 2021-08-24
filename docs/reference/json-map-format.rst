@@ -645,11 +645,11 @@ Wang Set
     :header: Field, Type, Description
     :widths: 1, 1, 4
 
-    colors,           array,            "Array of :ref:`Wang colors <json-wangcolor>`"
+    colors,           array,            "Array of :ref:`Wang colors <json-wangcolor>` (since 1.5)"
     name,             string,           "Name of the Wang set"
     properties,       array,            "Array of :ref:`Properties <json-property>`"
     tile,             int,              "Local ID of tile representing the Wang set"
-    type,             string,           "``corner``, ``edge`` or ``mixed``"
+    type,             string,           "``corner``, ``edge`` or ``mixed`` (since 1.5)"
     wangtiles,        array,            "Array of :ref:`Wang tiles <json-wangtile>`"
 
 .. _json-wangcolor:
@@ -664,7 +664,7 @@ Wang Color
     color,            string,           "Hex-formatted color (#RRGGBB or #AARRGGBB)"
     name,             string,           "Name of the Wang color"
     probability,      double,           "Probability used when randomizing"
-    properties,       array,            "Array of :ref:`Properties <json-property>`"
+    properties,       array,            "Array of :ref:`Properties <json-property>` (since 1.5)"
     tile,             int,              "Local ID of tile representing the Wang color"
 
 Example:
@@ -762,7 +762,7 @@ Tiled 1.5
 ~~~~~~~~~
 
 * Unified ``cornercolors`` and ``edgecolors`` properties of :ref:`json-wangset`
-  as the new ``colors`` property.
+  as the new ``colors`` property and added a ``type`` field.
 
 * :ref:`json-wangcolor` can now store ``properties``.
 
