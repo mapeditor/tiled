@@ -649,6 +649,7 @@ Wang Set
     name,             string,           "Name of the Wang set"
     properties,       array,            "Array of :ref:`Properties <json-property>`"
     tile,             int,              "Local ID of tile representing the Wang set"
+    type,             string,           "``corner``, ``edge`` or ``mixed``"
     wangtiles,        array,            "Array of :ref:`Wang tiles <json-wangtile>`"
 
 .. _json-wangcolor:
