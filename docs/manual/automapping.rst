@@ -322,7 +322,7 @@ Automapping features. At first a shoreline will be constructed, by first
 adding all the straight parts and afterwards another rule will correct
 the corners to make them also fit the given tileset. After the shoreline
 has been added, the waters will be marked as unwalkable for the game
-engine. Last but not least the grass should be tiles should be made
+engine. Last but not least the grass should be made
 random by using 5 different grass tiles.
 
 .. figure:: images/automapping/TheManaWorld/before.png
@@ -650,7 +650,7 @@ the 3x2 tiles above here are no brown tiles, this rule matches.*
 
 Only the lowest 2 coordinates contain the brown tile. The upper
 coordinates contain no tile. (It is not an invisible tile, just no tile
-at all.) The input layer called *Input\_set* is depicted in the middle
+at all.) The input layer called *input\_set* is depicted in the middle
 of the figure.
 
 The output consists of only one layer as well called *output\_Walls*. It
@@ -666,7 +666,7 @@ contains the actual wall tiles.
    A broken version of the rule, because *NoOverlappingRules* was not yet set.
 
 When trying to match the input layer to the desired set layer (right
-picture of the figure at the beginning of the example, you will see it
+picture of the figure at the beginning of the example), you will see it
 matches all the way along, with no regard of the vertical adjustment.
 
 Hence when we use the rule as discussed now, we will get not the desired

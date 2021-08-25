@@ -88,7 +88,7 @@ When a tile layer is selected
 -  ``Ctrl + 1-9`` - Store current tile stamp. When no tile drawing tool is
    selected, tries to capture the current tile selection (similar to
    ``Ctrl + C``).
--  ``1-9`` recall the previous selection (similar to ``Ctrl + V``)
+-  ``1-9`` - Recall a previously stored tile stamp (similar to ``Ctrl + V``)
 -  ``Ctrl + A`` - Select the whole layer
 
 Changing the active stamp:

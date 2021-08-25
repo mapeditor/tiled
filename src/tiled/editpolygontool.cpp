@@ -574,7 +574,7 @@ void EditPolygonTool::finishMoving(const QPointF &pos)
         return;
 
     QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(tr("Move %n Point(s)", "", mSelectedHandles.size()));
+    undoStack->beginMacro(tr("Move %n Node(s)", "", mSelectedHandles.size()));
 
     // TODO: This isn't really optimal. Would be better to have a single undo
     // command that supports changing multiple map objects.
