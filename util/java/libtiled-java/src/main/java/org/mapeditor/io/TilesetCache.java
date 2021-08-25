@@ -30,21 +30,15 @@ package org.mapeditor.io;
 
 import org.mapeditor.core.TileSet;
 
-public interface TilesetCache
-{
-    /**
-     * @return <code>true</code> if tileset is not in the cache and needs to be loaded <code>false</code> otherwise
-     */
-    boolean needToLoadTileset(String tilesetName);
+public interface TilesetCache {
+
+    interface TilesetLoader {
+        TileSet load() throws Exception;
+    }
 
     /**
-     * Called when tileset is loaded and ready to be cached
+     * Gets tileset from cache or uses supplied loader to load tileset if tileset is not in cache
+     * @return tileset or null if tileset is not in the cache and can't be loaded
      */
-    void tilesetLoadingFinished(TileSet loadedTileset);
-
-    /**
-     * Get tileset from cache
-     * @return cached tileset or null if tileset is not in the cache
-     */
-    TileSet getTileset(String tilesetName);
+    TileSet getTileset(String tilesetName, TilesetLoader tilesetLoader);
 }

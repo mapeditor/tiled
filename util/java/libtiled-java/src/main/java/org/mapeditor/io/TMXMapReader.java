@@ -273,19 +273,17 @@ public class TMXMapReader {
             final String name = getAttributeValue(t, "name");
 
             if (tilesetCache != null) {
-                if (tilesetCache.needToLoadTileset(name)) {
-                    TileSet tileSet = processTileset(t, name);
-                    tilesetCache.tilesetLoadingFinished(tileSet);
-                }
-                return tilesetCache.getTileset(name);
+                return tilesetCache.getTileset(name, () -> processTileset(t));
             }
 
-            return processTileset(t, name);
+            return processTileset(t);
         }
     }
 
-    private TileSet processTileset(Node t, String name) throws Exception {
+    private TileSet processTileset(Node t) throws Exception {
         TileSet set = new TileSet();
+
+        final String name = getAttributeValue(t, "name");
         set.setName(name);
 
         final int tileWidth = getAttribute(t, "tilewidth", map != null ? map.getTileWidth() : 0);
