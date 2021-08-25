@@ -53,12 +53,6 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
 
     auto filesGroupProperty = groupPropertyManager->addProperty(tr("Files"));
 
-    mObjectTypesFileProperty = variantPropertyManager->addProperty(filePathTypeId(), tr("Object types"));
-    mObjectTypesFileProperty->setValue(project.mObjectTypesFile);
-    mObjectTypesFileProperty->setAttribute(QStringLiteral("filter"),
-                                           QCoreApplication::translate("File Types", "Object Types files (*.xml *.json)"));
-    filesGroupProperty->addSubProperty(mObjectTypesFileProperty);
-
     mAutomappingRulesFileProperty = variantPropertyManager->addProperty(filePathTypeId(), tr("Automapping rules"));
     mAutomappingRulesFileProperty->setValue(project.mAutomappingRulesFile);
     mAutomappingRulesFileProperty->setAttribute(QStringLiteral("filter"),
@@ -76,7 +70,6 @@ ProjectPropertiesDialog::~ProjectPropertiesDialog()
 void ProjectPropertiesDialog::accept()
 {
     mProject.mExtensionsPath = mExtensionPathProperty->value().toString();
-    mProject.mObjectTypesFile = mObjectTypesFileProperty->value().toString();
     mProject.mAutomappingRulesFile = mAutomappingRulesFileProperty->value().toString();
 
     QDialog::accept();

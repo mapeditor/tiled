@@ -26,7 +26,6 @@
 #include <QObject>
 #include <QSettings>
 
-#include "filesystemwatcher.h"
 #include "map.h"
 #include "objecttypes.h"
 
@@ -136,10 +135,6 @@ public:
 
     void setObjectTypes(const ObjectTypes &objectTypes);
     void setPropertyTypes(const PropertyTypes &propertyTypes);
-
-    QString objectTypesFile() const;
-    void setObjectTypesFile(const QString &filePath);
-    void setObjectTypesFileLastSaved(const QDateTime &time);
 
     QDate firstRun() const;
     int runCount() const;
@@ -252,9 +247,6 @@ signals:
 private:
     void addToRecentFileList(const QString &fileName, QStringList &files);
 
-    void objectTypesFileChangedOnDisk();
-
-    FileSystemWatcher mWatcher;
     bool mPortable = false;
 
     QString mObjectTypesFile;

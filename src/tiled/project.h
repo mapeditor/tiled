@@ -21,8 +21,9 @@
 #pragma once
 
 #include "command.h"
-#include "propertytype.h"
+#include "objecttypes.h"
 #include "properties.h"
+#include "propertytype.h"
 
 #include <QDateTime>
 #include <QStringList>
@@ -47,10 +48,10 @@ public:
     const QDateTime &lastSaved() const;
 
     QString mExtensionsPath;
-    QString mObjectTypesFile;
     QString mAutomappingRulesFile;
     QVector<Command> mCommands;
     PropertyTypes mPropertyTypes;
+    ObjectTypes mObjectTypes;
 
 private:
     QDateTime mLastSaved;

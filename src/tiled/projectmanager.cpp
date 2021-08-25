@@ -20,6 +20,7 @@
 
 #include "projectmanager.h"
 
+#include "preferences.h"
 #include "projectmodel.h"
 
 namespace Tiled {
@@ -40,6 +41,11 @@ ProjectManager::ProjectManager(QObject *parent)
 void ProjectManager::setProject(Project project)
 {
     mProjectModel->setProject(std::move(project));
+
+    Preferences *prefs = Preferences::instance();
+    prefs->setPropertyTypes(mProjectModel->project().mPropertyTypes);
+    prefs->setObjectTypes(mProjectModel->project().mObjectTypes);
+
     emit projectChanged();
 }
 

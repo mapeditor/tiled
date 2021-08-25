@@ -86,18 +86,12 @@ void Preferences::initialize()
     if (!dataDir.exists())
         dataDir.mkpath(QStringLiteral("."));
 
-    connect(&mWatcher, &FileSystemWatcher::fileChanged,
-            this, &Preferences::objectTypesFileChangedOnDisk);
-
     SaveFile::setSafeSavingEnabled(safeSavingEnabled());
 
     // Backwards compatibility check since 'FusionStyle' was removed from the
     // preferences dialog.
     if (applicationStyle() == FusionStyle)
         setApplicationStyle(TiledStyle);
-
-    // Read object types from the default location (custom location moved to project)
-    setObjectTypesFile(QString());
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(reloadTilesetsOnChange());
@@ -755,47 +749,6 @@ QString Preferences::startupProject()
 void Preferences::setStartupProject(const QString &filePath)
 {
     mStartupProject = filePath;
-}
-
-QString Preferences::objectTypesFile() const
-{
-    return mObjectTypesFile;
-}
-
-void Preferences::setObjectTypesFile(const QString &fileName)
-{
-    QString newObjectTypesFile = fileName;
-    if (newObjectTypesFile.isEmpty())
-        newObjectTypesFile = dataLocation() + QLatin1String("/objecttypes.xml");
-
-    if (mObjectTypesFile == newObjectTypesFile)
-        return;
-
-    if (!mObjectTypesFile.isEmpty())
-        mWatcher.removePath(mObjectTypesFile);
-
-    mObjectTypesFile = newObjectTypesFile;
-    mWatcher.addPath(newObjectTypesFile);
-
-    ObjectTypes objectTypes;
-    ObjectTypesSerializer().readObjectTypes(mObjectTypesFile, objectTypes);
-    setObjectTypes(objectTypes);
-}
-
-void Preferences::setObjectTypesFileLastSaved(const QDateTime &time)
-{
-    mObjectTypesFileLastSaved = time;
-}
-
-void Preferences::objectTypesFileChangedOnDisk()
-{
-    const QFileInfo fileInfo { objectTypesFile() };
-    if (fileInfo.lastModified() == mObjectTypesFileLastSaved)
-        return;
-
-    ObjectTypes objectTypes;
-    if (ObjectTypesSerializer().readObjectTypes(fileInfo.filePath(), objectTypes))
-        setObjectTypes(objectTypes);
 }
 
 #include "moc_preferences.cpp"

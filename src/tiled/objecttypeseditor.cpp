@@ -25,6 +25,8 @@
 #include "object.h"
 #include "objecttypesmodel.h"
 #include "preferences.h"
+#include "project.h"
+#include "projectmanager.h"
 #include "session.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
@@ -283,27 +285,12 @@ void ObjectTypesEditor::applyObjectTypes()
 {
     auto &objectTypes = mObjectTypesModel->objectTypes();
 
-    Preferences *prefs = Preferences::instance();
-    mSettingPrefObjectTypes = true;
-    prefs->setObjectTypes(objectTypes);
-    mSettingPrefObjectTypes = false;
+    QScopedValueRollback<bool> settingPrefPropertyTypes(mSettingPrefObjectTypes, true);
+    Preferences::instance()->setObjectTypes(objectTypes);
 
-    QString objectTypesFile = prefs->objectTypesFile();
-    QDir objectTypesDir = QFileInfo(objectTypesFile).dir();
-
-    if (!objectTypesDir.exists())
-        objectTypesDir.mkpath(QLatin1String("."));
-
-    ObjectTypesSerializer serializer;
-    if (!serializer.writeObjectTypes(objectTypesFile, objectTypes)) {
-        QMessageBox::critical(this, tr("Error Writing Object Types"),
-                              tr("Error writing to %1:\n%2")
-                              .arg(prefs->objectTypesFile(),
-                                   serializer.errorString()));
-        return;
-    }
-
-    prefs->setObjectTypesFileLastSaved(QFileInfo(objectTypesFile).lastModified());
+    Project &project = ProjectManager::instance()->project();
+    project.mObjectTypes = objectTypes;
+    project.save();
 }
 
 void ObjectTypesEditor::objectTypesChanged()
