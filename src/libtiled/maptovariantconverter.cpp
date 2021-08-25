@@ -332,11 +332,12 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
 QVariant MapToVariantConverter::toVariant(const Properties &properties) const
 {
     QVariantMap variantMap;
+    const ExportContext context(mDir.path());
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
-        const auto exportValue = ExportValue::fromPropertyValue(it.value(), mDir.path());
+        const auto exportValue = context.toExportValue(it.value());
         variantMap[it.key()] = exportValue.value;
     }
 
@@ -346,11 +347,12 @@ QVariant MapToVariantConverter::toVariant(const Properties &properties) const
 QVariant MapToVariantConverter::propertyTypesToVariant(const Properties &properties) const
 {
     QVariantMap variantMap;
+    const ExportContext context;  // path irrelevant since only typeName is used
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
-        const auto exportValue = ExportValue::fromPropertyValue(it.value());
+        const auto exportValue = context.toExportValue(it.value());
         // TODO: Support custom property types in json1? Maybe with a customPropertyTypesToVariant...
         variantMap[it.key()] = exportValue.typeName;
     }
@@ -749,6 +751,8 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
     if (properties.isEmpty())
         return;
 
+    const ExportContext context(mDir.path());
+
     if (mVersion == 1) {
         QVariantMap propertiesMap;
         QVariantMap propertyTypesMap;
@@ -756,7 +760,7 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
         Properties::const_iterator it = properties.constBegin();
         Properties::const_iterator it_end = properties.constEnd();
         for (; it != it_end; ++it) {
-            const auto exportValue = ExportValue::fromPropertyValue(it.value(), mDir.path());
+            const auto exportValue = context.toExportValue(it.value());
 
             propertiesMap[it.key()] = exportValue.value;
             propertyTypesMap[it.key()] = exportValue.typeName;
@@ -771,7 +775,7 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
         Properties::const_iterator it = properties.constBegin();
         Properties::const_iterator it_end = properties.constEnd();
         for (; it != it_end; ++it) {
-            const auto exportValue = ExportValue::fromPropertyValue(it.value(), mDir.path());
+            const auto exportValue = context.toExportValue(it.value());
 
             QVariantMap propertyVariantMap;
             propertyVariantMap[QStringLiteral("name")] = it.key();

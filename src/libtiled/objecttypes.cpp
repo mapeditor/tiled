@@ -43,7 +43,7 @@
 
 namespace Tiled {
 
-static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
+static QJsonObject toJson(const ObjectType &objectType, const ExportContext &context)
 {
     const QString NAME = QStringLiteral("name");
     const QString VALUE = QStringLiteral("value");
@@ -64,12 +64,13 @@ static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
     while (it.hasNext()) {
         it.next();
 
-        const auto exportValue = ExportValue::fromPropertyValue(it.value(), fileDir.path());
+        const auto exportValue = context.toExportValue(it.value());
 
-        QJsonObject propertyJson;
-        propertyJson.insert(NAME, it.key());
-        propertyJson.insert(TYPE, exportValue.typeName);
-        propertyJson.insert(VALUE, QJsonValue::fromVariant(exportValue.value));
+        QJsonObject propertyJson {
+            { NAME, it.key() },
+            { TYPE, exportValue.typeName },
+            { VALUE, QJsonValue::fromVariant(exportValue.value) },
+        };
 
         if (!exportValue.propertyTypeName.isEmpty())
             propertyJson.insert(PROPERTY_TYPE, exportValue.propertyTypeName);
@@ -82,15 +83,15 @@ static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
     return json;
 }
 
-static QJsonArray toJson(const ObjectTypes &objectTypes, const QDir &fileDir)
+QJsonArray toJson(const ObjectTypes &objectTypes, const ExportContext &context)
 {
     QJsonArray json;
     for (const ObjectType &objectType : objectTypes)
-        json.append(toJson(objectType, fileDir));
+        json.append(toJson(objectType, context));
     return json;
 }
 
-static void fromJson(const QJsonObject &object, ObjectType &objectType, const QDir &fileDir)
+static void fromJson(const QJsonObject &object, ObjectType &objectType, const ExportContext &context)
 {
     objectType.name = object.value(QLatin1String("name")).toString();
 
@@ -108,21 +109,20 @@ static void fromJson(const QJsonObject &object, ObjectType &objectType, const QD
         exportValue.typeName = propertyObject.value(QLatin1String("type")).toString();
         exportValue.propertyTypeName = propertyObject.value(QLatin1String("propertytype")).toString();
 
-        objectType.defaultProperties.insert(name,
-                                            exportValue.toPropertyValue(fileDir.path()));
+        objectType.defaultProperties.insert(name, context.toPropertyValue(exportValue));
     }
 }
 
-static void fromJson(const QJsonArray &array, ObjectTypes &objectTypes, const QDir &fileDir)
+void fromJson(const QJsonArray &array, ObjectTypes &objectTypes, const ExportContext &context)
 {
     for (const QJsonValue &value : array) {
         objectTypes.append(ObjectType());
-        fromJson(value.toObject(), objectTypes.last(), fileDir);
+        fromJson(value.toObject(), objectTypes.last(), context);
     }
 }
 
 static void writeObjectTypesXml(QFileDevice *device,
-                                const QDir &fileDir,
+                                const ExportContext &context,
                                 const ObjectTypes &objectTypes)
 {
     QXmlStreamWriter writer(device);
@@ -142,7 +142,7 @@ static void writeObjectTypesXml(QFileDevice *device,
         while (it.hasNext()) {
             it.next();
 
-            const auto exportValue = ExportValue::fromPropertyValue(it.value(), fileDir.path());
+            const auto exportValue = context.toExportValue(it.value());
 
             writer.writeStartElement(QStringLiteral("property"));
             writer.writeAttribute(QStringLiteral("name"), it.key());
@@ -168,7 +168,7 @@ static void writeObjectTypesXml(QFileDevice *device,
 
 static void readObjectTypePropertyXml(QXmlStreamReader &xml,
                                       Properties &props,
-                                      const QDir &fileDir)
+                                      const ExportContext &context)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("property"));
 
@@ -180,13 +180,13 @@ static void readObjectTypePropertyXml(QXmlStreamReader &xml,
     exportValue.typeName = atts.value(QLatin1String("type")).toString();
     exportValue.propertyTypeName = atts.value(QLatin1String("propertytype")).toString();
 
-    props.insert(name, exportValue.toPropertyValue(fileDir.path()));
+    props.insert(name, context.toPropertyValue(exportValue));
 
     xml.skipCurrentElement();
 }
 
 static void readObjectTypesXml(QFileDevice *device,
-                               const QDir &fileDir,
+                               const ExportContext &context,
                                ObjectTypes &objectTypes,
                                QString &error)
 {
@@ -209,7 +209,7 @@ static void readObjectTypesXml(QFileDevice *device,
             Properties props;
             while (reader.readNextStartElement()) {
                 if (reader.name() == QLatin1String("property")){
-                    readObjectTypePropertyXml(reader, props, fileDir);
+                    readObjectTypePropertyXml(reader, props, context);
                 } else {
                     reader.skipCurrentElement();
                 }
@@ -254,16 +254,16 @@ bool ObjectTypesSerializer::writeObjectTypes(const QString &fileName,
         return false;
     }
 
-    const QDir fileDir(QFileInfo(fileName).path());
+    const ExportContext context(QFileInfo(fileName).path());
 
     Format format = mFormat;
     if (format == Autodetect)
         format = detectFormat(fileName);
 
     if (format == Xml) {
-        writeObjectTypesXml(file.device(), fileDir, objectTypes);
+        writeObjectTypesXml(file.device(), context, objectTypes);
     } else {
-        QJsonDocument document(toJson(objectTypes, fileDir));
+        QJsonDocument document(toJson(objectTypes, context));
         file.device()->write(document.toJson());
     }
 
@@ -287,14 +287,14 @@ bool ObjectTypesSerializer::readObjectTypes(const QString &fileName,
         return false;
     }
 
-    const QDir fileDir(QFileInfo(fileName).path());
+    const ExportContext context(QFileInfo(fileName).path());
 
     Format format = mFormat;
     if (format == Autodetect)
         format = detectFormat(fileName);
 
     if (format == Xml) {
-        readObjectTypesXml(&file, fileDir, objectTypes, mError);
+        readObjectTypesXml(&file, context, objectTypes, mError);
     } else {
         QJsonParseError jsonError;
         const QByteArray json = file.readAll();
@@ -302,7 +302,7 @@ bool ObjectTypesSerializer::readObjectTypes(const QString &fileName,
         if (document.isNull())
             mError = jsonError.errorString();
         else
-            fromJson(document.array(), objectTypes, fileDir);
+            fromJson(document.array(), objectTypes, context);
     }
 
     return mError.isEmpty();

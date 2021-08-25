@@ -64,7 +64,7 @@ void mergeProperties(Properties &target, const Properties &source)
 #endif
 }
 
-QJsonArray propertiesToJson(const Properties &properties)
+QJsonArray propertiesToJson(const Properties &properties, const ExportContext &context)
 {
     QJsonArray json;
 
@@ -72,7 +72,7 @@ QJsonArray propertiesToJson(const Properties &properties)
     const Properties::const_iterator it_end = properties.end();
     for (; it != it_end; ++it) {
         const QString &name = it.key();
-        const auto exportValue = ExportValue::fromPropertyValue(it.value());
+        const auto exportValue = context.toExportValue(it.value());
 
         QJsonObject propertyObject;
         propertyObject.insert(QLatin1String("name"), name);
@@ -86,7 +86,7 @@ QJsonArray propertiesToJson(const Properties &properties)
     return json;
 }
 
-Properties propertiesFromJson(const QJsonArray &json)
+Properties propertiesFromJson(const QJsonArray &json, const ExportContext &context)
 {
     Properties properties;
 
@@ -99,7 +99,7 @@ Properties propertiesFromJson(const QJsonArray &json)
         exportValue.typeName = propertyObject.value(QLatin1String("type")).toString();
         exportValue.propertyTypeName = propertyObject.value(QLatin1String("propertytype")).toString();
 
-        properties.insert(name, exportValue.toPropertyValue());
+        properties.insert(name, context.toPropertyValue(exportValue));
     }
 
     return properties;
@@ -181,10 +181,8 @@ QString typeName(const QVariant &value)
     if (value.userType() == propertyValueId()) {
         auto typeId = value.value<PropertyValue>().typeId;
 
-        for (const PropertyType &propertyType : Object::propertyTypes()) {
-            if (propertyType.id == typeId)
-                return propertyType.name;
-        }
+        if (const PropertyType *propertyType = findTypeById(Object::propertyTypes(), typeId))
+            return propertyType->name;
     }
 
     return typeToName(value.userType());
@@ -192,75 +190,71 @@ QString typeName(const QVariant &value)
 
 const PropertyType *PropertyValue::type() const
 {
-    return Object::propertyType(typeId);
+    return findTypeById(Object::propertyTypes(), typeId);
 }
 
-QString PropertyValue::typeName() const
+/**
+ * When just a path is given, the global property types are used.
+ */
+ExportContext::ExportContext(const QString &path)
+    : ExportContext(Object::propertyTypes(), path)
 {
-    if (auto t = Object::propertyType(typeId))
-        return t->name;
-    return QString();
 }
 
-ExportValue ExportValue::fromPropertyValue(const QVariant &value, const QString &path)
+ExportValue ExportContext::toExportValue(const QVariant &value) const
 {
     ExportValue exportValue;
-    const int type = value.userType();
+    const int metaType = value.userType();
 
-    if (type == propertyValueId()) {
+    if (metaType == propertyValueId()) {
         const PropertyValue propertyValue = value.value<PropertyValue>();
 
-        if (const PropertyType *propertyType = propertyValue.type()) {
-            exportValue = fromPropertyValue(propertyType->unwrap(propertyValue.value), path);
+        if (const PropertyType *propertyType = findTypeById(mTypes, propertyValue.typeId)) {
+            exportValue = toExportValue(propertyType->unwrap(propertyValue.value));
             exportValue.propertyTypeName = propertyType->name;
         } else {
             // the type may have been deleted
-            exportValue = fromPropertyValue(propertyValue.value, path);
+            exportValue = toExportValue(propertyValue.value);
         }
 
         return exportValue; // early out, we don't want to assign typeName again
     }
 
-    if (type == QMetaType::QColor) {
+    if (metaType == QMetaType::QColor) {
         const QColor color = value.value<QColor>();
         exportValue.value = color.isValid() ? color.name(QColor::HexArgb) : QString();
-    } else if (type == filePathTypeId()) {
+    } else if (metaType == filePathTypeId()) {
         const FilePath filePath = value.value<FilePath>();
-        exportValue.value = toFileReference(filePath.url, path);
-    } else if (type == objectRefTypeId()) {
+        exportValue.value = toFileReference(filePath.url, mPath);
+    } else if (metaType == objectRefTypeId()) {
         exportValue.value = ObjectRef::toInt(value.value<ObjectRef>());
     } else {
         exportValue.value = value;
     }
 
-    exportValue.typeName = typeToName(type);
+    exportValue.typeName = typeToName(metaType);
 
     return exportValue;
 }
 
-QVariant ExportValue::toPropertyValue(const QString &path) const
+QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
 {
-    QVariant propertyValue = value;
-    const int metaType = nameToType(typeName);
+    QVariant propertyValue = exportValue.value;
+    const int metaType = nameToType(exportValue.typeName);
 
     if (metaType == filePathTypeId()) {
-        const QUrl url = toUrl(value.toString(), path);
+        const QUrl url = toUrl(exportValue.value.toString(), mPath);
         propertyValue = QVariant::fromValue(FilePath { url });
     } else if (metaType == objectRefTypeId()) {
-        propertyValue = QVariant::fromValue(ObjectRef::fromInt(value.toInt()));
-    } else if (value.userType() != metaType && metaType != QMetaType::UnknownType) {
+        propertyValue = QVariant::fromValue(ObjectRef::fromInt(exportValue.value.toInt()));
+    } else if (exportValue.value.userType() != metaType && metaType != QMetaType::UnknownType) {
         propertyValue.convert(metaType);
     }
 
     // Wrap the value in its custom property type when applicable
-    if (!propertyTypeName.isEmpty()) {
-        for (const PropertyType &propertyType : Object::propertyTypes()) {
-            if (propertyType.name == propertyTypeName) {
-                propertyValue = propertyType.wrap(propertyValue);
-                break;
-            }
-        }
-    }
+    if (!exportValue.propertyTypeName.isEmpty())
+        if (const PropertyType *propertyType = findTypeByName(mTypes, exportValue.propertyTypeName))
+            propertyValue = propertyType->wrap(propertyValue);
 
     return propertyValue;
 }

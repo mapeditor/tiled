@@ -138,7 +138,7 @@ private:
     QVector<Frame> readAnimationFrames();
 
     Properties readProperties();
-    void readProperty(Properties *properties);
+    void readProperty(Properties *properties, const ExportContext &context);
 
     MapReader *p;
 
@@ -1413,10 +1413,11 @@ Properties MapReaderPrivate::readProperties()
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("properties"));
 
     Properties properties;
+    const ExportContext context(mPath.path());
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("property"))
-            readProperty(&properties);
+            readProperty(&properties, context);
         else
             readUnknownElement();
     }
@@ -1424,7 +1425,7 @@ Properties MapReaderPrivate::readProperties()
     return properties;
 }
 
-void MapReaderPrivate::readProperty(Properties *properties)
+void MapReaderPrivate::readProperty(Properties *properties, const ExportContext &context)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("property"));
 
@@ -1450,7 +1451,7 @@ void MapReaderPrivate::readProperty(Properties *properties)
 
     exportValue.value = propertyValue;
 
-    properties->insert(propertyName, exportValue.toPropertyValue(mPath.path()));
+    properties->insert(propertyName, context.toPropertyValue(exportValue));
 }
 
 

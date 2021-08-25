@@ -52,7 +52,6 @@ public:
     int typeId;
 
     const PropertyType *type() const;
-    QString typeName() const;
 };
 
 class TILEDSHARED_EXPORT FilePath
@@ -85,9 +84,28 @@ public:
     QVariant value;
     QString typeName;
     QString propertyTypeName;
+};
 
-    static ExportValue fromPropertyValue(const QVariant &value, const QString &path = QString());
-    QVariant toPropertyValue(const QString &path = QString()) const;
+class TILEDSHARED_EXPORT ExportContext
+{
+public:
+    explicit ExportContext(const QString &path = QString());
+    ExportContext(const QVector<PropertyType> &types, const QString &path)
+        : mTypes(types)
+        , mPath(path)
+    {}
+
+    // need to prevent this one since we're only holding a reference to the types
+    ExportContext(const QVector<PropertyType> &&types, const QString &path) = delete;
+
+    const QString &path() const { return mPath; }
+
+    ExportValue toExportValue(const QVariant &value) const;
+    QVariant toPropertyValue(const ExportValue &exportValue) const;
+
+private:
+    const QVector<PropertyType> &mTypes;
+    const QString mPath;
 };
 
 class TILEDSHARED_EXPORT AggregatedPropertyData
@@ -142,8 +160,8 @@ using AggregatedProperties = QMap<QString, AggregatedPropertyData>;
 TILEDSHARED_EXPORT void aggregateProperties(AggregatedProperties &aggregated, const Properties &properties);
 TILEDSHARED_EXPORT void mergeProperties(Properties &target, const Properties &source);
 
-TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties);
-TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json);
+TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties, const ExportContext &context = ExportContext());
+TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json, const ExportContext &context = ExportContext());
 
 TILEDSHARED_EXPORT int propertyValueId();
 TILEDSHARED_EXPORT int filePathTypeId();

@@ -50,7 +50,7 @@ public:
 private:
     void writeProperties(QTextStream &out,
                          const Tiled::Properties &properties,
-                         const QString &mapPath);
+                         const Tiled::ExportContext &context);
 
     QString mError;
 };
