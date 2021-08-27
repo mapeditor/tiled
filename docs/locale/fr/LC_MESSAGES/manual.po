@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2021-08-09 11:20+0200\n"
-"PO-Revision-Date: 2021-08-24 03:33+0000\n"
+"PO-Revision-Date: 2021-08-28 07:34+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
 "\n"
@@ -1504,13 +1504,13 @@ msgid ""
 " those possibly overridden values visible when having a tile object "
 "instance selected, again allowing you to override them."
 msgstr ""
-"Si vous utilisez des :ref:`tuiles objets <insert-tile-tool>`, vous pouvez"
-" indiquer le type sur la tuile pour éviter d'avoir à l'indiquer sur "
-"chaque instance de l'objet. Mettre en place le type sur la tuile rend les"
-" propriétés prédéfinies visibles quand la tuile est sélectionnée, "
-"permettant de modifier les valeurs. Cela rend également possible "
-"l'affichage des valeurs modifiées lorsque l'on a une instance d'un objet "
-"tuile sélectionnée, permettant de les modifier une nouvelle fois."
+"Si vous utilisez des :ref:`objets tuiles <insert-tile-tool>`, vous pouvez "
+"indiquer le type sur la tuile pour éviter d'avoir à l'indiquer sur chaque "
+"instance de l'objet. Mettre en place le type sur la tuile rend les "
+"propriétés prédéfinies visibles quand la tuile est sélectionnée, permettant "
+"de modifier les valeurs. Cela rend également possible l'affichage des "
+"valeurs modifiées lorsque l'on a une instance d'un objet tuile sélectionnée, "
+"permettant de les modifier une nouvelle fois."
 
 #: ../../manual/custom-properties.rst:123
 msgid ""
@@ -2072,9 +2072,9 @@ msgid ""
 "relative to the position of the object (the origin) and is also the "
 "location around which the rotation is applied."
 msgstr ""
-"L'alignement à utiliser pour les :ref:`tuiles objet <insert-tile-tool>` font "
-"référence à des tuiles de ce jeu de tuiles. Cela affecte le placement de la "
-"tuile par rapport à la position de l'objet (l'origine) et est aussi la "
+"L'alignement à utiliser pour les :ref:`objets tuiles <insert-tile-tool>` "
+"font référence à des tuiles de ce jeu de tuiles. Cela affecte le placement "
+"de la tuile par rapport à la position de l'objet (l'origine) et est aussi la "
 "position autour de laquelle la rotation est appliquée."
 
 #: ../../manual/editing-tilesets.rst:63
@@ -2087,7 +2087,7 @@ msgstr ""
 "Les valeurs possibles sont : *Non spécifié*, *En Haut à Gauche*, *En Haut*, *"
 "En Haut à Droite*, *A Gauche*, *Centre*, *A Droite*, *En Bas à Gauche*, *En "
 "Bas* et *En Bas à Droite*. Lorsque c'est non spécifié, l'alignement des "
-"tuiles objet est généralement *En Bas à Gauche*, sauf pour les cartes "
+"objets tuiles est généralement *En Bas à Gauche*, sauf pour les cartes "
 "isométriques où c'est *En Bas*."
 
 #: ../../manual/editing-tilesets.rst:71
@@ -2100,10 +2100,9 @@ msgid ""
 "tileset (as part of tile layers or as tile objects). This is can be "
 "useful to make your tiles align to the grid."
 msgstr ""
-"Un décalage de dessin en pixels, appliqué lors du rendu de n'importe "
-"quelle tuile du jeu de tuiles (dans les couches de tuiles ou en tant "
-"qu'objets de tuiles). Cela peut être utile pour aligner vos tuiles à la "
-"grille."
+"Un décalage de dessin en pixels, appliqué lors du rendu de n'importe quelle "
+"tuile du jeu de tuiles (dans les couches de tuiles ou en tant qu'objets "
+"tuiles). Cela peut être utile pour aligner vos tuiles à la grille."
 
 #: ../../manual/editing-tilesets.rst:75
 msgid "Background Color"
@@ -2665,7 +2664,7 @@ msgid ""
 " GameObject in the Collection. This is useful when working with "
 ":doc:`Worlds <worlds>`."
 msgstr ""
-"Si vous créez des propriétes personnalisées pour votre carte nommées "
+"Si vous créez des propriétés personnalisées pour votre carte nommées "
 "``x-offset`` et ``y-offset``, ces valeurs seront utilisées en tant que "
 "coordonnées pour votre GameObject de haut niveau dans la collection. C'est "
 "utile si vous travaillez avec des :doc:`Mondes <worlds>`."
@@ -2751,7 +2750,7 @@ msgstr ""
 
 #: ../../manual/export-generic.rst:31
 msgid "CSV"
-msgstr ""
+msgstr "CSV"
 
 #: ../../manual/export-generic.rst:33
 msgid ""
@@ -2759,6 +2758,10 @@ msgid ""
 "Maps containing multiple tile layers will export as multiple files, "
 "called ``base_<layer-name>.csv``."
 msgstr ""
+"L'exportation en CSV ne supporte que les :doc:`calques de tuiles <editing-"
+"tile-layers>`. Les cartes contenant plusieurs calques de tuiles seront "
+"exportées en tant que plusieurs fichiers, nommés ``base_<nom-du-calque>."
+"csv``."
 
 #: ../../manual/export-generic.rst:37
 msgid ""
@@ -2767,6 +2770,11 @@ msgid ""
 "Using multiple tilesets will lead to ambiguous IDs, unless the custom "
 "``name`` property is used. Empty cells get the value ``-1``."
 msgstr ""
+"Chaque tuile est écrite en tant que son ID, sauf si la tuile a une propriété "
+"personnalisée nommée ``nom``, où dans ce cas cette valeur sera utilisée pour "
+"écrire la tuile. L'utilisation de plusieurs jeux de tuiles va mener à des "
+"IDs ambigus, sauf si la propriété personnalisée ``nom`` est utilisée. Les "
+"tuiles vides ont une valeur de ``-1``."
 
 #: ../../manual/export-generic.rst:42
 msgid ""
@@ -2774,10 +2782,14 @@ msgid ""
 "states are exported using bitflags in the ID, in the same way as done in "
 "the :doc:`/reference/tmx-map-format`."
 msgstr ""
+"Quand les tuiles sont retournées horizontalement, verticalement ou "
+"diagonalement, ces états sont exportés en utilisant des drapeaux de bits "
+"dans l'ID, de la même façon que le :doc:`format de carte TMX </reference/tmx-"
+"map-format>`."
 
 #: ../../manual/export-gmx.rst:4
 msgid "GameMaker: Studio 1.4"
-msgstr ""
+msgstr "GameMaker : Studio 1.4"
 
 #: ../../manual/export-gmx.rst:6
 msgid ""
@@ -2785,6 +2797,10 @@ msgid ""
 "and Tiled ships with a plugin to export maps in this format. Currently "
 "only orthogonal maps will export correctly."
 msgstr ""
+"GameMaker : Studio 1.4 un format personnalisé basé sur le XML pour stocker "
+"ses salles, et Tiled est distribué avec un greffon qui permet d'exporter des "
+"cartes dans ce format. Pour le moment, seules les cartes orthogonales seront "
+"exportées correctement."
 
 #: ../../manual/export-gmx.rst:10
 msgid ""
@@ -2792,6 +2808,10 @@ msgid ""
 "\"tile\" elements. These support horizontal and vertical flipping, but no"
 " rotation. For tile objects, scaling is also supported."
 msgstr ""
+"Les calques de tuiles et les objets tuiles (quand aucun type n'est donné) "
+"seront exportés en tant qu'éléments \"tile\". Ceux-ci supportent le "
+"retournement horizontal et vertical, mais pas de rotation. Pour les objets "
+"tuiles, l'agrandissement est aussi supporté."
 
 #: ../../manual/export-gmx.rst:16
 msgid ""
@@ -2799,10 +2819,13 @@ msgid ""
 "in the GameMaker project. Otherwise GameMaker will pop up an error for "
 "each tile while loading the exported ``room.gmx`` file."
 msgstr ""
+"Les jeux de tuiles doivent être nommés de façon à être correspondantes aux "
+"arrières-plans dans le projet GameMaker. Sinon, GameMaker va afficher une "
+"erreur pour chaque tuile lors du chargement du fichier ``room.gmx`` exporté."
 
 #: ../../manual/export-gmx.rst:21 ../../manual/export-yy.rst:125
 msgid "Object Instances"
-msgstr ""
+msgstr "Instances d'Objet"
 
 #: ../../manual/export-gmx.rst:23
 msgid ""
@@ -2811,32 +2834,41 @@ msgid ""
 "for tile objects also flipping and scaling is supported (though flipping "
 "in combination with rotation doesn't appear to work in GameMaker)."
 msgstr ""
+"Les instances d'objet de GameMaker sont créées en mettant le nom \"object\" "
+"dans le champ \"Type\" de l'objet dans Tiled. La rotation est supportée ici, "
+"et pour les objets tuiles le retournement et l'agrandissement sont aussi "
+"supportés (cependant la combinaison du retournement et de la rotation n'a "
+"pas l'air de marcher dans GameMaker)."
 
 #: ../../manual/export-gmx.rst:32
 msgid ""
 "The following custom properties can be set on objects to affect the "
 "exported instance:"
 msgstr ""
+"Les propriétés personnalisées suivantes peuvent être ajoutées aux objets "
+"pour affecter leur instance exportée :"
 
 #: ../../manual/export-gmx.rst:35
 msgid "string ``code`` (instance creation code, default: \"\")"
 msgstr ""
+"La chaîne de caractères (string) ``code`` (code de création d'instance, \"\" "
+"par défaut)"
 
 #: ../../manual/export-gmx.rst:36 ../../manual/export-yy.rst:101
 msgid "float ``scaleX`` (default: derived from tile or 1.0)"
-msgstr ""
+msgstr "Le flottant (float) ``scaleX`` (déduit de la tuile ou 1.0 par défaut)"
 
 #: ../../manual/export-gmx.rst:37 ../../manual/export-yy.rst:102
 msgid "float ``scaleY`` (default: derived from tile or 1.0)"
-msgstr ""
+msgstr "Le flottant (float) ``scaleY`` (déduit de la tuile ou 1.0 par défaut)"
 
 #: ../../manual/export-gmx.rst:38 ../../manual/export-yy.rst:104
 msgid "int ``originX`` (default: 0)"
-msgstr ""
+msgstr "L'entier (int) ``originX`` (0 par défaut)"
 
 #: ../../manual/export-gmx.rst:39 ../../manual/export-yy.rst:105
 msgid "int ``originY`` (default: 0)"
-msgstr ""
+msgstr "L'entier (int) ``originY`` (0 par défaut)"
 
 #: ../../manual/export-gmx.rst:41 ../../manual/export-yy.rst:108
 msgid ""
@@ -2845,6 +2877,11 @@ msgid ""
 "generally be easier to use a tile object, in which case it is "
 "automatically derived from the tile size and the object size."
 msgstr ""
+"Les propriétés ``scaleX`` et ``scaleY`` peuvent être utilisées pour "
+"remplacer l'agrandissement de l'instance. Cependant, si l'agrandissement est "
+"important, alors il est généralement plus facile d'utiliser un objet tuile, "
+"qui dans ce cas sera automatiquement dérivé de la taille de la tuile et de "
+"la taille de l'objet."
 
 #: ../../manual/export-gmx.rst:46
 msgid ""
@@ -2853,6 +2890,10 @@ msgid ""
 "the top-left. This origin is taken into account when determining the "
 "position of the exported instance."
 msgstr ""
+"Les propriétés ``originX`` et ``originY`` peuvent être utilisées pour donner "
+"l'origine de l'objet défini dans GameMaker à Tiled en tant que décalage "
+"depuis en haut à gauche. Cette origine est prise en compte lors de la "
+"détermination de la position de l'instance exportée."
 
 #: ../../manual/export-gmx.rst:53
 msgid ""
@@ -2861,10 +2902,15 @@ msgid ""
 "objects with the type set on the tile, and in Tiled 1.1 you can also use "
 ":doc:`object templates <using-templates>`."
 msgstr ""
+"Bien sûr, donner le type et/ou les propriétés au dessus manuellement pour "
+"chaque instance va vite devenir ennuyeux. Depuis Tiled 1.0.2, vous pouvez "
+"utiliser des objets tuile avec le type donné sur la tuile à la place, et "
+"dans Tiled 1.1 vous pouvez aussi utiliser des :doc:`modèles d'objet <using-"
+"templates>`."
 
 #: ../../manual/export-gmx.rst:63 ../../manual/export-yy.rst:289
 msgid "Views"
-msgstr ""
+msgstr "Vues"
 
 #: ../../manual/export-gmx.rst:69
 msgid ""
@@ -2874,56 +2920,63 @@ msgid ""
 "starts depends on whether the object is visible. The use of views is "
 "automatically enabled when any views are defined."
 msgstr ""
+"Les vues peuvent être définies en utilisant des :ref:`objets rectangles "
+"<insert-rectangle-tool>` dont le Type a été changé en ``view``. La position "
+"et la taille va être convertie en pixels. La visibilité de la vue au début "
+"de la salle dépend de la visibilité de l'objet. L'utilisation des vues est "
+"automatiquement activée quand toute vue est définie."
 
 #: ../../manual/export-gmx.rst:75 ../../manual/export-yy.rst:297
 msgid ""
 "The following custom properties can be used to define the various other "
 "properties of the view:"
 msgstr ""
+"Les propriétés personnalisées suivantes peuvent être utilisées pour définir "
+"les propriétés variées de la vue :"
 
 #: ../../manual/export-gmx.rst:78
 msgid "**Port on screen**"
-msgstr ""
+msgstr "**Position sur l'écran**"
 
 #: ../../manual/export-gmx.rst:80 ../../manual/export-yy.rst:311
 msgid "int ``xport`` (default: 0)"
-msgstr ""
+msgstr "L'entier (int) ``xport`` (0 par défaut)"
 
 #: ../../manual/export-gmx.rst:81 ../../manual/export-yy.rst:312
 msgid "int ``yport`` (default: 0)"
-msgstr ""
+msgstr "L'entier (int) ``yport`` (0 par défaut)"
 
 #: ../../manual/export-gmx.rst:82
 msgid "int ``wport`` (default: 1024)"
-msgstr ""
+msgstr "L'entier (int) ``wport`` (1024 par défaut)"
 
 #: ../../manual/export-gmx.rst:83 ../../manual/export-yy.rst:314
 msgid "int ``hport`` (default: 768)"
-msgstr ""
+msgstr "L'entier (int) ``hport`` (768 par défaut)"
 
 #: ../../manual/export-gmx.rst:85 ../../manual/export-yy.rst:316
 msgid "**Object following**"
-msgstr ""
+msgstr "**Suivi d'objet**"
 
 #: ../../manual/export-gmx.rst:87
 msgid "string ``objName``"
-msgstr ""
+msgstr "La chaîne de caractères (string) ``objName``"
 
 #: ../../manual/export-gmx.rst:88 ../../manual/export-yy.rst:319
 msgid "int ``hborder`` (default: 32)"
-msgstr ""
+msgstr "L'entier (int) ``hborder`` (32 par défaut)"
 
 #: ../../manual/export-gmx.rst:89 ../../manual/export-yy.rst:320
 msgid "int ``vborder`` (default: 32)"
-msgstr ""
+msgstr "L'entier (int) ``vborder`` (32 par défaut)"
 
 #: ../../manual/export-gmx.rst:90 ../../manual/export-yy.rst:321
 msgid "int ``hspeed`` (default: -1)"
-msgstr ""
+msgstr "L'entier (int) ``hspeed`` (-1 par défaut)"
 
 #: ../../manual/export-gmx.rst:91 ../../manual/export-yy.rst:322
 msgid "int ``vspeed`` (default: -1)"
-msgstr ""
+msgstr "L'entier (int) ``vspeed`` (-1 par défaut)"
 
 #: ../../manual/export-gmx.rst:95 ../../manual/export-yy.rst:326
 msgid ""
@@ -2933,6 +2986,11 @@ msgid ""
 "views with similar settings, you can set up :doc:`templates <using-"
 "templates>` for them."
 msgstr ""
+"Lorsque vous définissez des vues dans Tiled, il est utile d'ajouter ``view`` "
+"en tant que type d'objet dans :ref:`l'Éditeur de Types d'Objet <predefining-"
+"properties>`, ce qui permet d'avoir un accès facile aux propriétés ci-"
+"dessus. Si vous utilisez des vues avec des options similaires, vous pouvez "
+"mettre en place un :doc:`modèle <using-templates>` pour celles-ci."
 
 #: ../../manual/export-gmx.rst:105 ../../manual/export-yy.rst:219
 #: ../../manual/keyboard-shortcuts.rst:12 ../../manual/preferences.rst:21
@@ -2941,59 +2999,65 @@ msgstr "Général"
 
 #: ../../manual/export-gmx.rst:107
 msgid "int ``speed`` (default: 30)"
-msgstr ""
+msgstr "L'entier (int) ``speed`` (30 par défaut)"
 
 #: ../../manual/export-gmx.rst:108 ../../manual/export-yy.rst:235
 msgid "bool ``persistent`` (default: false)"
-msgstr ""
+msgstr "Le booléen (bool) ``persistent`` (false par défaut)"
 
 #: ../../manual/export-gmx.rst:109 ../../manual/export-yy.rst:236
 msgid "bool ``clearDisplayBuffer`` (default: true)"
-msgstr ""
+msgstr "Le booléen (bool) ``clearDisplayBuffer`` (true par défaut)"
 
 #: ../../manual/export-gmx.rst:110 ../../manual/export-yy.rst:250
 msgid "bool ``clearViewBackground`` (default: false)"
-msgstr ""
+msgstr "Le booléen (bool) ``clearViewBackground`` (false par défaut)"
 
 #: ../../manual/export-gmx.rst:111
 msgid "string ``code`` (map creation code, default: \"\")"
 msgstr ""
+"La chaîne de caractères (string) ``code`` (code de création de carte, \"\" "
+"par défaut)"
 
 #: ../../manual/export-gmx.rst:114 ../../manual/export-yy.rst:258
 msgid "Physics"
-msgstr ""
+msgstr "Propriétés Physiques"
 
 #: ../../manual/export-gmx.rst:116 ../../manual/export-yy.rst:261
 msgid "bool ``PhysicsWorld`` (default: false)"
-msgstr ""
+msgstr "Le booléen (bool) ``PhysicsWorld`` (false par défaut)"
 
 #: ../../manual/export-gmx.rst:117
 msgid "int ``PhysicsWorldTop`` (default: 0)"
-msgstr ""
+msgstr "L'entier (int) ``PhysicsWorldTop`` (0 par défaut)"
 
 #: ../../manual/export-gmx.rst:118
 msgid "int ``PhysicsWorldLeft`` (default: 0)"
-msgstr ""
+msgstr "L'entier (int) ``PhysicsWorldLeft`` (0 par défaut)"
 
 #: ../../manual/export-gmx.rst:119
 msgid "int ``PhysicsWorldRight`` (default: width of map in pixels)"
 msgstr ""
+"L'entier (int) ``PhysicsWorldRight`` (longueur de la carte en pixels par "
+"défaut)"
 
 #: ../../manual/export-gmx.rst:120
 msgid "int ``PhysicsWorldBottom`` (default: height of map in pixels)"
 msgstr ""
+"L'entier (int) ``PhysicsWorldBottom`` (hauteur de la carte en pixels par "
+"défaut)"
 
 #: ../../manual/export-gmx.rst:121 ../../manual/export-yy.rst:262
 msgid "float ``PhysicsWorldGravityX`` (default: 0.0)"
-msgstr ""
+msgstr "Le flottant (float) ``PhysicsWorldGravityX`` (0.0 par défaut)"
 
 #: ../../manual/export-gmx.rst:122 ../../manual/export-yy.rst:263
 msgid "float ``PhysicsWorldGravityY`` (default: 10.0)"
-msgstr ""
+msgstr "Le flottant (float) ``PhysicsWorldGravityY`` (10.0 par défaut)"
 
 #: ../../manual/export-gmx.rst:123 ../../manual/export-yy.rst:264
 msgid "float ``PhysicsWorldPixToMeters`` (default: 0.1)"
-msgstr ""
+msgstr "Le flottant (float) ``PhysicsWorldPixToMeters`` (0.1 par défaut)"
 
 #: ../../manual/export-gmx.rst:128
 msgid ""
@@ -3003,20 +3067,30 @@ msgid ""
 "and counting up from there. If you want to set a custom depth value you "
 "can set the following property on the layer:"
 msgstr ""
+"Les calques de tuiles et les calques d'objets peuvent tous deux produire des "
+"éléments \"tile\" dans le fichier de salle exporté. Leur profondeur est mise "
+"en place automatiquement, avec les tuiles du calque le plus en bas ayant une "
+"valeur de 10000000 (la valeur de GameMaker par défaut) et elle augmente à "
+"partir de cette valeur. Si vous voulez mettre en place une valeur de "
+"profondeur par défaut, vous pouvez changer la propriété suivante sur le "
+"calque :"
 
 #: ../../manual/export-gmx.rst:134
 msgid "int ``depth`` (default: 10000000 + N)"
-msgstr ""
+msgstr "L'entier (int) ``depth`` (10000000 + N par défaut)"
 
 #: ../../manual/export-image.rst:4
 msgid "Export as Image"
-msgstr ""
+msgstr "Exporter en Tant qu'Image"
 
 #: ../../manual/export-image.rst:6
 msgid ""
 "Maps can be exported as image. Tiled supports most common image formats. "
 "Choose *File -> Export as Image...* to open the relevant dialog."
 msgstr ""
+"Les cartes peuvent être exportées en tant qu'image. Tiled supporte la "
+"plupart des formats d'image communs. Choisissez *fichier -> Exporter en Tant "
+"qu'Image...* pour ouvrir la boîte de dialogue concernée."
 
 #: ../../manual/export-image.rst:9
 msgid ""
@@ -3024,6 +3098,10 @@ msgid ""
 "current zoom level* option is provided to allow exporting the map at the "
 "size it's currently displayed at."
 msgstr ""
+"Comme l'exportation de carte résulte parfois en une image énorme, "
+"l'utilisation de l'option *Utiliser le niveau de zoom actuel* est donnée "
+"pour permettre l'exportation de la carte dans la taille à laquelle elle est "
+"couramment affichée."
 
 #: ../../manual/export-image.rst:13
 msgid ""
@@ -3034,72 +3112,88 @@ msgid ""
 ":doc:`entire worlds <worlds>` to an image. On Linux this tool can be set "
 "up for generating thumbnail previews of maps in the file manager."
 msgstr ""
+"Si vous voulez convertir une carte en tant qu'image de façon répétée, lancer "
+"l'exportation manuellement n'est pas très pratique. Pour ce cas-ci, un outil "
+"appelé ``tmxrasterizer`` est distribué avec Tiled, qui permet de générer un "
+"rendu de n'importe quel format de carte supporté en tant qu'image, "
+"contrairement à son nom. Il est aussi capable de générer un rendu pour des "
+":doc:`mondes entiers <worlds>` en tant qu'image. Sur Linux, cet outil peut "
+"être utilisé pour générer des miniatures de prévisualisation de cartes pour "
+"le gestionnaire de fichier."
 
 #: ../../manual/export-other.rst:2
 msgid "Other Formats"
-msgstr ""
+msgstr "Autres Formats"
 
 #: ../../manual/export-other.rst:4
 msgid "A few other plugins ship with Tiled to support various games or tools:"
 msgstr ""
+"D'autres greffons fournis avec Tiled supportent des jeux ou outils variés :"
 
 #: ../../manual/export-other.rst:7
 msgid "droidcraft"
-msgstr ""
+msgstr "droidcraft"
 
 #: ../../manual/export-other.rst:7
 msgid "Adds support for editing `DroidCraft`_ maps (\\*.dat)"
-msgstr ""
+msgstr "Ajoute un support pour éditer des cartes `DroidCraft`_ (\\*.dat)"
 
 #: ../../manual/export-other.rst:10
 msgid "flare"
-msgstr ""
+msgstr "flare"
 
 #: ../../manual/export-other.rst:10
 msgid "Adds support for editing `Flare Engine`_ maps (\\*.txt)"
-msgstr ""
+msgstr "Ajoute un support pour éditer des cartes de `Flare Engine`_ (\\*.txt)"
 
 #: ../../manual/export-other.rst:13
 msgid "replicaisland"
-msgstr ""
+msgstr "replicaisland"
 
 #: ../../manual/export-other.rst:13
 msgid "Adds support for editing `Replica Island`_ maps (\\*.bin)"
-msgstr ""
+msgstr "Ajoute un support pour éditer des cartes de `Replica Island`_ (\\*.bin)"
 
 #: ../../manual/export-other.rst:24
 msgid "rpmap"
-msgstr ""
+msgstr "rpmap"
 
 #: ../../manual/export-other.rst:20
 msgid ""
 "Adds support for exporting Tiled maps as RpMap (\\*.rpmap), the format "
 "used by `MapTool`_."
 msgstr ""
+"Ajoute un support pour exporter des cartes Tiled en tant que RpMap (\\*."
+"rpmap), le format utilisé par `MapTool`_."
 
 #: ../../manual/export-other.rst:23
 msgid ""
 "Currently, support is limited to maps using \"Image Collection\" tilesets"
 " since MapTool doesn't support tileset images."
 msgstr ""
+"Le support est limité aux cartes utilisant des jeux de tuiles \"Collection d'"
+"Images\" pour le moment vu que MapTool ne supporte pas les images de jeu de "
+"tuiles."
 
 #: ../../manual/export-other.rst:27
 msgid "tengine"
-msgstr ""
+msgstr "tengine"
 
 #: ../../manual/export-other.rst:27
 msgid "Adds support for exporting to `T-Engine4`_ maps (\\*.lua)"
-msgstr ""
+msgstr "Ajoute un support pour exporter en tant que carte `T-Engine` (\\*.lua)"
 
 #: ../../manual/export-other.rst:29
 msgid ""
 "These plugins are disabled by default. They can be enabled in *Edit > "
 "Preferences > Plugins*."
 msgstr ""
+"Ces greffons sont désactivés par défaut. Ils peuvent être activés dans *"
+"Édition > Préférences > Greffons*."
 
 #: ../../manual/export-tbin.rst:6
 msgid "tBIN"
-msgstr ""
+msgstr "tBIN"
 
 #: ../../manual/export-tbin.rst:8
 msgid ""
@@ -3108,6 +3202,10 @@ msgid ""
 "spawned many `community mods "
 "<https://www.nexusmods.com/stardewvalley/?>`__."
 msgstr ""
+"Le format de carte tBIN est un format binaire utilisé par `l'Éditeur de "
+"Carte de Tuiles tIDE`_. tIDE est utilisé par `Stardew Valley`_, un jeu à "
+"succès qui a amené la création de nombreux `modules créés par la communauté "
+"<https://www.nexusmods.com/stardewvalley/?>`__."
 
 #: ../../manual/export-tbin.rst:12
 msgid ""
@@ -3118,6 +3216,12 @@ msgid ""
 " layers in general, nor external tilesets), so you need to know what you "
 "are doing."
 msgstr ""
+"Tiled est distribué avec un greffon qui active l'édition directe de cartes "
+"de Stardew Valley (et de toute autre carte utilisant le format tBIN). Ce "
+"greffon doit être activé dans *Édition > Préférences > Greffons*. Il n'est "
+"pas activé par défaut car il ne sauvegardera pas tout (surtout il ne "
+"supporte par les calques d'objets en général, ni les jeux de tuiles externes)"
+", donc vous devez savoir ce que vous êtes en train de faire."
 
 #: ../../manual/export-tbin.rst:21
 msgid ""
@@ -3126,20 +3230,27 @@ msgid ""
 "are created that match the location of the tile, on which such properties"
 " are then stored."
 msgstr ""
+"Le format tBIN supporte l'utilisation de propriétés personnalisées sur les "
+"tuiles d'un calque de tuiles. Comme Tiled ne le supporte pas directement, "
+"des objets \"TileData\" sont créés qui correspondent à la position de la "
+"tuile, sur lesquels ces propriétés sont stockées."
 
 #: ../../manual/export-tbin.rst:29
 msgid "One of the farm maps from Stardew Valley opened in Tiled."
-msgstr ""
+msgstr "Une des cartes de ferme de Stardew Valley ouverte dans Tiled."
 
 #: ../../manual/export-yy.rst:8
 msgid "GameMaker Studio 2.3"
-msgstr ""
+msgstr "GameMaker Studio 2.3"
 
 #: ../../manual/export-yy.rst:10
 msgid ""
 "GameMaker Studio 2.3 uses a JSON-based format to store its rooms, and "
 "Tiled ships with a plugin to export maps in this format."
 msgstr ""
+"GameMaker Studio 2.3 utilise un format basé sur le JSON pour stocker ses "
+"salles, et Tiled est distribué avec un greffon qui exporte les cartes dans "
+"ce format."
 
 #: ../../manual/export-yy.rst:13
 msgid ""
@@ -3151,6 +3262,14 @@ msgid ""
 "graphics, sprite graphics or views. :ref:`Image layers <yy-image-layers>`"
 " get exported as background layers."
 msgstr ""
+"Ce greffon va faire de son mieux pour exporter la carte aussi fidèlement que "
+"possible, correspondant les fonctionnalités diverses de Tiled à celles de "
+"GameMaker. Les :ref:`calques de tuiles <yy-tile-layers>` sont exportés en "
+"tant calques de tuiles si possible, mais peuvent devenir des calques de "
+"ressources si nécessaire. Les :ref:`objets <yy-object-layers>` peuvent être "
+"exportées en tant qu'instances, mais aussi en tant que graphismes de tuile, "
+"graphismes d'image ou vues. Les :ref:`calques d'images <yy-image-layers>` "
+"sont exportés en tant que calques d'arrière-plan."
 
 #: ../../manual/export-yy.rst:23
 msgid ""
@@ -3158,6 +3277,10 @@ msgid ""
 "time (2.3.1) the easiest way to export a Tiled map to your GameMaker "
 "Project is to replace an already existing ``room.yy`` file."
 msgstr ""
+"Comme l'action \"Ajouter Existant\" de GameMaker ne marche pas dans la "
+"version courante (2.3.1), la façon la plus facile d'exporter une carte Tiled "
+"dans votre Projet GameMaker est de remplacer un fichier `room.yy` déjà "
+"existant."
 
 #: ../../manual/export-yy.rst:27
 msgid ""
@@ -3169,10 +3292,17 @@ msgid ""
 "GameMaker will detect that the file got changed and propose to reload the"
 " updated one."
 msgstr ""
+"Si vous voulez faire cela pendant que GameMaker est lancé et que le projet "
+"est ouvert, vous devez désactiver \"Utiliser l'écriture sécurisée des "
+"fichiers\" dans les préférences de Tiled (Sous *Édition -> Préférences -> "
+"Général -> Sauvegarde et Chargement*). Sinon GameMaker va détecter que le "
+"fichier de salle a été supprimé et va proposer de le restaurer à partir de "
+"la mémoire. Sans \"écriture sécurisée\" GameMaker va détecter que le fichier "
+"a été changé et va proposer de recharger la nouvelle version."
 
 #: ../../manual/export-yy.rst:37
 msgid "References to Existing Assets"
-msgstr ""
+msgstr "Référence aux Ressources Existantes"
 
 #: ../../manual/export-yy.rst:39
 msgid ""
@@ -3180,6 +3310,9 @@ msgid ""
 "sprites, tilesets and objects used by the map are expected to be already "
 "available in the GameMaker project."
 msgstr ""
+"Comme Tiled ne fait qu'exporter une carte en tant que salle GameMaker pour "
+"le moment, toutes images, jeux de tuiles ou objets utilisés par la carte "
+"sont supposés être déjà existants dans le projet GameMaker."
 
 #: ../../manual/export-yy.rst:43
 msgid ""
@@ -3188,18 +3321,27 @@ msgid ""
 "explicitly specified using a custom ``sprite`` property (supported on "
 "tilesets, tiles from image collection tilesets and image layers)."
 msgstr ""
+"Pour les images, le nom de l'image doit être dérivé du nom du fichier de "
+"l'image en enlevant son extension de fichier. Si nécessaire, le nom de "
+"l'image peut être explicitement spécifié en une propriété personnalisée "
+"``sprite`` (supportée pour les jeux de tuiles, les tuiles de jeux de tuiles "
+"de collection d'images et les calques d'images)."
 
 #: ../../manual/export-yy.rst:48
 msgid ""
 "For tilesets, the tileset name entered in Tiled must match the name of "
 "the tileset asset in GameMaker."
 msgstr ""
+"Pour les jeux de tuiles, le nom du jeu de tuiles entré dans Tiled doit "
+"correspondre au nom du jeu de tuiles ressource dans GameMaker."
 
 #: ../../manual/export-yy.rst:51
 msgid ""
 "For object instances, the name of the object should be set in the *Type* "
 "field."
 msgstr ""
+"Pour les instances d'objet, le nom de l'objet doit être spécifié dans le "
+"champ *Type*."
 
 #: ../../manual/export-yy.rst:55
 msgid "Exporting a Tiled Map"
@@ -3210,14 +3352,19 @@ msgid ""
 "A Tiled map contains tile layers, object layers, image layers and group "
 "layers. All these layer types are supported."
 msgstr ""
+"Une carte Tiled contient des calques de tuiles, des calques d'objets, des "
+"calques d'images et des groupes de calques. Tous ces types de calques sont "
+"supportés."
 
 #: ../../manual/export-yy.rst:63 ../../manual/layers.rst:33
 msgid "Tile Layers"
-msgstr ""
+msgstr "Calques de Tuiles"
 
 #: ../../manual/export-yy.rst:65
 msgid "When possible, a tile layer will get exported as a tile layer."
 msgstr ""
+"Si possible, une carte de tuiles va être exportée en tant que calque de "
+"tuiles."
 
 #: ../../manual/export-yy.rst:67
 msgid ""
@@ -3225,6 +3372,10 @@ msgid ""
 " as a group with a child tile layer for each tileset, since GameMaker "
 "supports only one tileset per tile layer."
 msgstr ""
+"Quand plusieurs jeux de tuiles sont utilisés dans le même calque, le calque "
+"est exporté en tant qu'un groupe avec un calque de tuiles enfant pour chaque "
+"jeu de tuiles, comme GameMaker ne supporte qu'un seul jeu de tuiles par "
+"calque de tuiles."
 
 #: ../../manual/export-yy.rst:71
 msgid ""
@@ -3234,16 +3385,25 @@ msgid ""
 "layer type is more flexible, though for tile graphics it does not support"
 " rotation."
 msgstr ""
+"Quand la taille des tuiles d'un jeu de tuiles ne correspond pas à la taille "
+"de la grille de la carte, ou quand l'orientation de la carte n'est pas "
+"orthogonale (isométrique ou hexagonale, par exemple), les tuiles seront "
+"exportées en tant que calque de ressources à la place. Ce type de calque est "
+"plus flexible, cependant il ne supporte pas la rotation des graphismes des "
+"tuiles."
 
 #: ../../manual/export-yy.rst:76
 msgid ""
 "When the layer includes tiles from a collection of images tileset, these "
 "will get exported to an asset layer as sprite graphics."
 msgstr ""
+"Quand le calque inclut des tuiles venant d'un jeu de tuiles de collection "
+"d'images, celles-ci seront exportées dans un calque de ressources en tant "
+"que graphismes d'image."
 
 #: ../../manual/export-yy.rst:82 ../../manual/layers.rst:55
 msgid "Object Layers"
-msgstr ""
+msgstr "Calques d'Objets"
 
 #: ../../manual/export-yy.rst:84
 msgid ""
@@ -3251,6 +3411,10 @@ msgid ""
 "forms. As such the export looks at each object to see how it should be "
 "exported to the GameMaker room."
 msgstr ""
+"Les calques d'objets dans Tiled sont très flexibles puisque les objets "
+"peuvent prendre un grand nombre de formes différentes. Pour cette raison, "
+"l'exportation examine chaque objet pour voir comment il doit être exporté "
+"dans la salle GameMaker."
 
 #: ../../manual/export-yy.rst:88
 msgid ""
@@ -3259,6 +3423,10 @@ msgid ""
 "Except, when the type is \"view\", the object is interpreted as :ref:`a "
 "view <yy-views>`."
 msgstr ""
+"Quand un objet a un *Type*, il est exporté en tant qu'instance sur un calque "
+"d'instance, où le type réfère au nom de l'objet à instancier. Cependant, si "
+"le type est \"view\", l'objet est interprété en tant que :ref:`vue <yy-"
+"views>`."
 
 #: ../../manual/export-yy.rst:93
 msgid ""
@@ -3266,24 +3434,32 @@ msgid ""
 "as either a tile graphic or a sprite graphic, depending on whether the "
 "tile is from a tileset image or a collection of images."
 msgstr ""
+"Quand un objet n'a aucun Type, mais que c'est un objet tuile, alors il est "
+"exporté soit en tant que graphisme de tuile ou graphisme d'image, dépendant "
+"de si la tuile appartient à une image de jeu de tuiles ou à une collection "
+"d'images."
 
 #: ../../manual/export-yy.rst:97
 msgid ""
 "The following custom properties can be set on objects to affect the "
 "exported instance or sprite asset:"
 msgstr ""
+"Les propriétés personnalisées suivantes peuvent être ajoutées aux objets "
+"pour affecter l'instance exportée ou l'image ressource :"
 
 #: ../../manual/export-yy.rst:100
 msgid "color ``colour`` (default: based on layer tint color)"
 msgstr ""
+"La couleur (color) ``colour`` (basé sur la couleur de teinte du calque par "
+"défaut)"
 
 #: ../../manual/export-yy.rst:103
 msgid "bool ``inheritItemSettings`` (default: false)"
-msgstr ""
+msgstr "Le booléen (bool) ``inheritItemSettings`` (false par défaut)"
 
 #: ../../manual/export-yy.rst:106
 msgid "bool ``ignore`` (default: whether the object is hidden)"
-msgstr ""
+msgstr "Le booléen (bool) ``ignore`` (si l'objet est caché par défaut)"
 
 #: ../../manual/export-yy.rst:113
 msgid ""
@@ -3292,6 +3468,10 @@ msgid ""
 "the top-left. This origin is taken into account when determining the "
 "position of the exported instance."
 msgstr ""
+"Les propriétés ``originX`` et ``originY`` peuvent être utilisées pour donner "
+"l'origine de l'image définie dans GameMaker à Tiled en tant que décalage "
+"depuis en haut à gauche. Cette origine est prise en compte lors de la "
+"détermination de la position de l'instance exportée."
 
 #: ../../manual/export-yy.rst:120
 msgid ""
@@ -3299,28 +3479,34 @@ msgid ""
 "instance will get old fast. Instead you can use tile objects with the "
 "type set on the tile or use :doc:`object templates <using-templates>`."
 msgstr ""
+"Bien sûr, donner le type et/ou les propriétés au dessus manuellement pour "
+"chaque instance va vite devenir ennuyeux. À la place, vous pouvez utiliser "
+"des objets tuile avec le type donné sur la tuile ou utiliser des :doc:`"
+"modèles d'objet <using-templates>`."
 
 #: ../../manual/export-yy.rst:127
 msgid ""
 "The following additional custom properties can be set on objects that are"
 " exported as object instances:"
 msgstr ""
+"Les propriétés personnalisées additionnelles suivantes peuvent être ajoutées "
+"à des objets qui sont exportés en tant qu'instances d'objet :"
 
 #: ../../manual/export-yy.rst:130
 msgid "bool ``hasCreationCode`` (default: false)"
-msgstr ""
+msgstr "Le booléen (bool) ``hasCreationCode`` (false par défaut)"
 
 #: ../../manual/export-yy.rst:131
 msgid "int ``imageIndex`` (default: 0)"
-msgstr ""
+msgstr "L'entier (int) ``imageIndex`` (0 par défaut)"
 
 #: ../../manual/export-yy.rst:132
 msgid "float ``imageSpeed`` (default: 1.0)"
-msgstr ""
+msgstr "Le flottant (float) ``imageSpeed`` (1.0 par défaut)"
 
 #: ../../manual/export-yy.rst:133
 msgid "int ``creationOrder`` (default: 0)"
-msgstr ""
+msgstr "L'entier (int) ``creationOrder`` (0 par défaut)"
 
 #: ../../manual/export-yy.rst:135
 msgid ""
@@ -3328,6 +3514,10 @@ msgid ""
 "\"InstanceCreationCode_[inst_name].gml\" in the room folder which you can"
 " create inside GameMaker itself or with an external text editor."
 msgstr ""
+"La propriété ``hasCreationCode`` peut être mise à true. Cela réfère au "
+"fichier \"InstanceCreationCode_[nom_d'instance].gml\" dans le dossier de la "
+"salle que vous pouvez créer dans GameMaker lui-même ou avec un éditeur de "
+"texte externe."
 
 #: ../../manual/export-yy.rst:139
 msgid ""
@@ -3338,6 +3528,12 @@ msgid ""
 "objects with negative values will be created before objects without a "
 "``creationOrder`` property)."
 msgstr ""
+"Par défaut l'ordre de la création de l'instance dépend de la position des "
+"objets dans le calque et de la hiérarchie des objets dans Tiled. Cela peut "
+"être changé en utilisant la propriété personnalisée ``creationOrder``. Les "
+"objets ayant des valeurs plus petites seront créés avant les objets ayant "
+"des valeurs plus grandes (donc les objets avec des valeurs négatives seront "
+"créés avant les objets sans propriété ``creationOrder``)."
 
 #: ../../manual/export-yy.rst:145
 msgid ""
@@ -3345,6 +3541,9 @@ msgid ""
 "override the variable definitions that got set up inside GameMaker for "
 "the object."
 msgstr ""
+"Les propriétés personnalisées additionnelles qui ne sont pas documentées ici "
+"peuvent être utilisées pour remplacer les définitions des variables qui ont "
+"été mises en place dans GameMaker pour l'objet."
 
 #: ../../manual/export-yy.rst:151
 msgid ""
@@ -3353,16 +3552,24 @@ msgid ""
 "supported. As a workaround you can use the creation code to override "
 "variables of a parent object."
 msgstr ""
+"Pour le moment seules les définitions de variables de l'objet lui-même "
+"peuvent être remplacées. Le remplacement de définitions de variables "
+"d'objets parents n'est pas supporté. Vous pouvez utiliser le code de "
+"création pour remplacer les variables d'un objet parent en tant que "
+"palliatif."
 
 #: ../../manual/export-yy.rst:157
 msgid "Tile Graphics"
-msgstr "Graphismes des Tuiles"
+msgstr "Graphismes de Tuile"
 
 #: ../../manual/export-yy.rst:159
 msgid ""
 "For objects exported as tile graphics (aka GMS 1.4 tiles), it should be "
 "noted that rotation is not supported on asset layers."
 msgstr ""
+"Pour les objets exportées en tant que graphismes de tuile (tuiles GMS 1.4), "
+"il doit être noté que la rotation n'est pas supportée pour les calques de "
+"ressources."
 
 #: ../../manual/export-yy.rst:162
 msgid ""
@@ -3371,32 +3578,39 @@ msgid ""
 "required, a collection of images tileset should be used, so that the "
 "objects can be exported as sprite graphics instead."
 msgstr ""
+"Quand une rotation de 90 degrés avec un alignement de grille suffit, ces "
+"tuiles doivent être placées dans des calques de tuiles à la place. Quand un "
+"placement libre avec une rotation est requis, alors un jeu de tuiles de "
+"collection d'images doit être utilisé, pour que les objets exportés soient "
+"exportés en tant que graphismes d'image à la place."
 
 #: ../../manual/export-yy.rst:168
 msgid "Sprite Graphics"
-msgstr ""
+msgstr "Graphismes d'Image"
 
 #: ../../manual/export-yy.rst:170
 msgid ""
 "The following additional custom properties can be set on objects that are"
 " exported as sprite graphics:"
 msgstr ""
+"Les propriétés personnalisées additionnelles suivantes peuvent être ajoutées "
+"aux objets qui sont exportés en tant que graphismes d'image :"
 
 #: ../../manual/export-yy.rst:173
 msgid "float ``headPosition`` (default: 0.0)"
-msgstr ""
+msgstr "Le flottant (float) ``headPosition`` (0.0 par défaut)"
 
 #: ../../manual/export-yy.rst:174
 msgid "float ``animationSpeed`` (default: 1.0)"
-msgstr ""
+msgstr "Le flottant (float) ``animationSpeed`` (1.0 par défaut)"
 
 #: ../../manual/export-yy.rst:179 ../../manual/layers.rst:97
 msgid "Image Layers"
-msgstr ""
+msgstr "Calques d'Images"
 
 #: ../../manual/export-yy.rst:181
 msgid "Image layers are exported as background layers."
-msgstr ""
+msgstr "Les calques d'images sont exportés en tant que calques d'arrière-plan."
 
 #: ../../manual/export-yy.rst:183
 msgid ""
@@ -3404,6 +3618,10 @@ msgid ""
 "of the corresponding sprite asset. Alternatively the custom property "
 "``sprite`` can be used to explicitly set the name of the sprite asset."
 msgstr ""
+"Le nom de fichier de l'image source est présumé être le même que le nom de "
+"l'image ressource correspondante. Alternativement, la propriété "
+"personnalisée ``sprite`` peut être utilisée pour explicitement donner le nom "
+"de l'image ressource."
 
 #: ../../manual/export-yy.rst:187
 msgid ""
@@ -3411,44 +3629,52 @@ msgid ""
 "layer without an image but with only a tint color. Such layers will get "
 "exported as a background layer with just the color set."
 msgstr ""
+"Même s'il n'y a pas de support visuel dans Tiled, il est possible de créer "
+"un calque d'images sans image mais seulement avec une couleur de teinte. De "
+"tels calques seront exportés en tant que calque d'arrière-plan avec juste la "
+"couleur mise en place."
 
 #: ../../manual/export-yy.rst:191
 msgid ""
 "The following custom properties can be set on image layers to affect the "
 "exported background layers:"
 msgstr ""
+"Les propriétés personnalisées suivantes peuvent être ajoutées aux calques "
+"d'images pour affecter les calques d'arrière-plan exportés :"
 
 #: ../../manual/export-yy.rst:194 ../../manual/export-yy.rst:274
 msgid "string ``sprite`` (default: based on image filename)"
 msgstr ""
+"La chaîne de caractères (string) ``sprite`` (basé sur le nom de fichier de "
+"l'image par défaut)"
 
 #: ../../manual/export-yy.rst:195
 msgid "bool ``htiled`` (default: false)"
-msgstr ""
+msgstr "Le booléen (bool) ``htiled`` (false par défaut)"
 
 #: ../../manual/export-yy.rst:196
 msgid "bool ``vtiled`` (default: false)"
-msgstr ""
+msgstr "Le booléen (bool) ``vtiled`` (false par défaut)"
 
 #: ../../manual/export-yy.rst:197
 msgid "bool ``stretch`` (default: false)"
-msgstr ""
+msgstr "Le booléen (bool) ``stretch`` (false par défaut)"
 
 #: ../../manual/export-yy.rst:198
 msgid "float ``hspeed`` (default: 0.0)"
-msgstr ""
+msgstr "Le flottant (float) ``hspeed`` (0.0 par défaut)"
 
 #: ../../manual/export-yy.rst:199
 msgid "float ``vspeed`` (default: 0.0)"
-msgstr ""
+msgstr "Le flottant (float) ``vspeed`` (0.0 par défaut)"
 
 #: ../../manual/export-yy.rst:200
 msgid "float ``animationFPS`` (default: 15.0)"
-msgstr ""
+msgstr "Le flottant (float) ``animationFPS`` (15.0 par défaut)"
 
 #: ../../manual/export-yy.rst:201
 msgid "int ``animationSpeedtype`` (default: 0)"
-msgstr ""
+msgstr "L'entier (int) ``animationSpeedtype`` (0 par défaut)"
 
 #: ../../manual/export-yy.rst:203
 msgid ""
@@ -3456,6 +3682,9 @@ msgid ""
 "no visual effect inside Tiled you will see the effect in the exported "
 "room inside GameMaker."
 msgstr ""
+"Même si les propriétés personnalisées telles que ``htiled`` et ``vtiled`` "
+"n'ont pas d'effet visuel dans Tiled, vous verrez l'effet dans la salle "
+"exportée dans GameMaker."
 
 #: ../../manual/export-yy.rst:208
 msgid "Special Cases and Custom Properties"
@@ -3463,7 +3692,7 @@ msgstr "Cas Spéciaux et Propriétés Personnalisées"
 
 #: ../../manual/export-yy.rst:211
 msgid "Rooms"
-msgstr ""
+msgstr "Salles"
 
 #: ../../manual/export-yy.rst:213
 msgid ""
@@ -3471,50 +3700,59 @@ msgid ""
 "background layer with the according color is exported as the bottommost "
 "layer."
 msgstr ""
+"Si une ``Couleur d'Arrière-Plan`` est donnée dans les propriétés de la carte "
+"Tiled, un calque d'arrière-plan supplémentaire avec cette couleur sera "
+"exportée en tant que calque le plus en bas."
 
 #: ../../manual/export-yy.rst:216
 msgid "The following custom properties can be set under *Map -> Map Properties*."
 msgstr ""
+"Les propriétés personnalisées suivantes peuvent être données dans *Carte -> "
+"Propriétés de Carte*."
 
 #: ../../manual/export-yy.rst:221
 msgid "string ``parent`` (default: \"Rooms\")"
-msgstr ""
+msgstr "La chaîne de caractères (string) ``parent`` (\"Rooms\" par défaut)"
 
 #: ../../manual/export-yy.rst:222
 msgid "bool ``inheritLayers`` (default: false)"
-msgstr ""
+msgstr "Le booléen ``inheritLayers`` (false par défaut)"
 
 #: ../../manual/export-yy.rst:223
 msgid "string ``tags`` (default: \"\")"
-msgstr ""
+msgstr "La chaîne de caractères (string) ``tags`` (\"\" par défaut)"
 
 #: ../../manual/export-yy.rst:225
 msgid ""
 "The ``parent`` property is used to define the parent folder inside "
 "GameMakers asset browser."
 msgstr ""
+"La propriété ``parent`` est utilisée pour définir le dossier parent dans le "
+"navigateur de ressources de GameMaker."
 
 #: ../../manual/export-yy.rst:228
 msgid ""
 "The ``tags`` property is used to assign tags to the room. Multiple tags "
 "can be separated by commas."
 msgstr ""
+"La propriété ``tags`` est utilisée pour assigner des étiquettes à la salle. "
+"Plusieurs étiquettes doivent être séparées par une virgule."
 
 #: ../../manual/export-yy.rst:232
 msgid "Room Settings"
-msgstr ""
+msgstr "Options de Salle"
 
 #: ../../manual/export-yy.rst:234
 msgid "bool ``inheritRoomSettings`` (default: false)"
-msgstr ""
+msgstr "Le booléen ``inheritRoomSettings`` (false par défaut)"
 
 #: ../../manual/export-yy.rst:237
 msgid "bool ``inheritCode`` (default: false)"
-msgstr ""
+msgstr "Le booléen ``inheritCode`` (false par défaut)"
 
 #: ../../manual/export-yy.rst:238
 msgid "string ``creationCodeFile`` (default: \"\")"
-msgstr ""
+msgstr "La chaîne de caractères (string) ``creationCodeFile`` (\"\" par défaut)"
 
 #: ../../manual/export-yy.rst:240
 msgid ""
@@ -3522,10 +3760,13 @@ msgid ""
 "existing creation code file, e.g.: "
 "\"${project_dir}/rooms/room_name/RoomCreationCode.gml\"."
 msgstr ""
+"La propriété ``creationCodeFile`` est utilisée pour définir le chemin vers "
+"un fichier de code de création existant, par exemple : \"${project_dir}/"
+"rooms/room_name/RoomCreationCode.gml\"."
 
 #: ../../manual/export-yy.rst:244
 msgid "Viewports and Cameras"
-msgstr ""
+msgstr "Fenêtres d'Affichage et Caméras"
 
 #: ../../manual/export-yy.rst:246 ../../manual/export-yy.rst:300
 msgid "**General**"
@@ -3533,29 +3774,33 @@ msgstr "**Général**"
 
 #: ../../manual/export-yy.rst:248
 msgid "bool ``inheritViewSettings`` (default: false)"
-msgstr ""
+msgstr "Le booléen ``inheritViewSettings`` (false par défaut)"
 
 #: ../../manual/export-yy.rst:249
 msgid "bool ``enableViews`` (default: true when any \"view\" objects were found)"
 msgstr ""
+"Le booléen ``enableViews`` (true si tout objet \"view\" a été trouvé par "
+"défaut)"
 
 #: ../../manual/export-yy.rst:252
 msgid "**Viewport 0 - Viewport 7**"
-msgstr ""
+msgstr "**Fenêtre d'Affichage 0 - Fenêtre d'Affichage 7**"
 
 #: ../../manual/export-yy.rst:254
 msgid ""
 "You can configure up to 8 viewports by using view objects (see :ref:`yy-"
 "views`)."
 msgstr ""
+"Vous pouvez configurer jusqu'à 8 fenêtres d'affichage en utilisant des "
+"objets vue (voir :ref:`yy-views`)."
 
 #: ../../manual/export-yy.rst:260
 msgid "bool ``inheritPhysicsSettings`` (default: false)"
-msgstr ""
+msgstr "Le booléen ``inheritPhysicsSettings`` (false par défaut)"
 
 #: ../../manual/export-yy.rst:267
 msgid "Sprite References"
-msgstr ""
+msgstr "Références d'Images"
 
 #: ../../manual/export-yy.rst:269
 msgid ""
@@ -3565,16 +3810,24 @@ msgid ""
 "collection tilesets and image layers to explicitly specify the sprite "
 "name:"
 msgstr ""
+"Comme :ref:`mentionné ci-dessus <yy-asset-references>`, les références vers "
+"des images sont généralement dérivées du nom de la ressource d'image depuis "
+"le nom du fichier d'image. Les propriétés suivantes peuvent être données sur "
+"des jeux de tuiles, des tuiles d'un jeu de tuiles de collection d'images et "
+"des calques d'images pour explicitement spécifier le nom de l'image :"
 
 #: ../../manual/export-yy.rst:279
 msgid "Paths"
-msgstr ""
+msgstr "Chemins"
 
 #: ../../manual/export-yy.rst:283
 msgid ""
 "Paths are not supported yet, but it's planned to export polyline and "
 "polygon objects as paths on path layers in a future update."
 msgstr ""
+"Les chemins ne sont pas encoure supportés, mais il est prévu d'exporter les "
+"objets polyligne et polygones en tant que chemins sur des calques de chemins "
+"dans une future mise à jour."
 
 #: ../../manual/export-yy.rst:291
 msgid ""
@@ -3584,10 +3837,15 @@ msgid ""
 "starts depends on whether the object is visible. The use of views is "
 "automatically enabled when any views are defined."
 msgstr ""
+"Les vues peuvent être définies en tant :ref:`qu'objets rectangles <insert-"
+"rectangle-tool>` où le *Type* a été changé en \"view\". La position et la "
+"taille seront converties en pixels. La visibilité de la vue quand la salle "
+"commence dépend de la visibilité de l'objet. L'utilisation de vues est "
+"automatiquement activée si toute vue est définie."
 
 #: ../../manual/export-yy.rst:302
 msgid "bool ``inherit`` (default: false)"
-msgstr ""
+msgstr "Le booléen (bool)``inherit`` (false par défaut)"
 
 #: ../../manual/export-yy.rst:304
 msgid "**Camera Properties**"
@@ -3598,6 +3856,8 @@ msgid ""
 "The Camera Properties are automatically derived from the position and "
 "size of the view object."
 msgstr ""
+"Les Propriétés de la Caméra sont automatiquement dérivées de la position et "
+"de la taille de l'objet vue."
 
 #: ../../manual/export-yy.rst:309
 msgid "**Viewport Properties**"
@@ -3605,53 +3865,65 @@ msgstr "**Propriétés de la Fenêtre d'Affichage**"
 
 #: ../../manual/export-yy.rst:313
 msgid "int ``wport`` (default: 1366)"
-msgstr ""
+msgstr "L'entier (int) ``wport`` (1366 par défaut)"
 
 #: ../../manual/export-yy.rst:318
 msgid "string ``objectId``"
-msgstr ""
+msgstr "La chaîne de caractères ``objectId``"
 
 #: ../../manual/export-yy.rst:333
 msgid "Layers"
-msgstr ""
+msgstr "Calques"
 
 #: ../../manual/export-yy.rst:335
 msgid "All layer types support the following custom properties:"
 msgstr ""
+"Tous les types de calques supportent les propriétés personnalisées suivantes "
+":"
 
 #: ../../manual/export-yy.rst:337
 msgid "int ``depth`` (default: auto-assigned, like in GameMaker)"
 msgstr ""
+"L'entier (int) ``depth`` (assigné automatiquement par défaut, comme dans "
+"GameMaker)"
 
 #: ../../manual/export-yy.rst:338
 msgid "bool ``visible`` (default: derived from layer)"
-msgstr ""
+msgstr "Le booléen (bool) ``visible`` (dérivé du calque par défaut)"
 
 #: ../../manual/export-yy.rst:339
 msgid "bool ``hierarchyFrozen`` (default: layer locked state)"
 msgstr ""
+"Le booléen (bool) ``hierarchyFrozen`` (l'état de verrouillage du calque par "
+"défaut)"
 
 #: ../../manual/export-yy.rst:340
 msgid "bool ``noExport`` (default: false)"
-msgstr ""
+msgstr "Le booléen (bool) ``noExport`` (false par défaut)"
 
 #: ../../manual/export-yy.rst:342
 msgid ""
 "The ``depth`` property can be used to assign a specific depth value to a "
 "layer."
 msgstr ""
+"La propriété ``depth`` peut être utilisée pour assigner une valeur de "
+"profondeur spécifique à un calque."
 
 #: ../../manual/export-yy.rst:345
 msgid ""
 "The ``visible`` property can be used to override the \"Visible\" state of"
 " the layer if needed."
 msgstr ""
+"La propriété ``visible`` peut être utilisée pour remplacer l'état \"Visible\""
+" du calque si besoin."
 
 #: ../../manual/export-yy.rst:348
 msgid ""
 "The ``hierarchyFrozen`` property can be used to override the \"Locked\" "
 "state of the layer if needed."
 msgstr ""
+"La propriété ``hierarchyFrozen`` peut être utilisé pour remplacer l'état "
+"\"Verrouillé\" du calque si besoin."
 
 #: ../../manual/export-yy.rst:351
 msgid ""
@@ -3661,6 +3933,12 @@ msgid ""
 "not want exported to GameMaker. Note that any views defined on this layer"
 " will then also get ignored."
 msgstr ""
+"La propriété ``noExport`` peut être utilisée pour annuler l'exportation d'un "
+"calque en entier, incluant tous ses calques enfants. C'est utile si vous "
+"utilisez un calque pour des commentaires (comme l'addition d'une image d"
+"'arrière-plan ou d'objets texte) que vous ne voulez pas exporter dans "
+"GameMaker. Veuillez noter que toute vue définie dans ce calque sera aussi "
+"ignorée."
 
 #: ../../manual/introduction.rst:2
 msgid "Introduction"
@@ -3762,7 +4040,7 @@ msgstr "Pour Débuter"
 
 #: ../../manual/introduction.rst:51
 msgid "Setting up a New Project"
-msgstr ""
+msgstr "Mettre en Place un Nouveau Projet"
 
 #: ../../manual/introduction.rst:53
 msgid ""
@@ -3783,6 +4061,11 @@ msgid ""
 "it is recommended to first set up a Tiled project. This is however an "
 "entirely optional step that can be skipped when desired."
 msgstr ""
+"Pour que toutes nos ressources soient facilement accessibles depuis la vue "
+":guilabel:`Projet` ainsi que pour être capable de passer d'un projet à un "
+"autre rapidement, il est recommandé de d'abord mettre en place un projet "
+"Tiled. C'est cependant une étape complètement optionnelle qui peut être "
+"passée si vous le voulez."
 
 #: ../../manual/introduction.rst:66
 msgid ""
@@ -3790,6 +4073,9 @@ msgid ""
 "recommended location is the root of your project, but you can place it "
 "anywhere you want."
 msgstr ""
+"Choisissez *Projet -> Sauver le Projet en tant que...* pour sauvegarder un "
+"nouveau fichier de projet. La location recommandée est la racine de votre "
+"projet, mais vous pouvez le placer où vous voulez."
 
 #: ../../manual/introduction.rst:70
 msgid ""
@@ -3799,6 +4085,12 @@ msgid ""
 "click in the Project view and choose *Add Folder to Project...* to add "
 "the relevant folders."
 msgstr ""
+"Ensuite, nous allons ajouter au moins un dossier, que ce soit un dossier de "
+"\"ressources\" ou simplement la racine de votre projet, mais vous pouvez "
+"aussi choisir d'ajouter plusieurs dossiers de haut niveau tels que \"tilesets"
+"\" (jeux de tuiles), \"maps\" (cartes), \"templates\" (modèles), etc. Faites "
+"un clic droit sur la vue Projet et choisissez *Ajouter un Dossier au "
+"Projet...* pour ajouter les dossiers utiles."
 
 #: ../../manual/introduction.rst:77
 msgid "Creating a New Map"
@@ -3814,7 +4106,7 @@ msgstr ""
 
 #: ../../manual/introduction.rst:86
 msgid "New Map"
-msgstr "Nouvelle carte"
+msgstr "Nouvelle Carte"
 
 #: ../../manual/introduction.rst:88
 msgid ""
@@ -3837,6 +4129,10 @@ msgid ""
 "had added to your project. This will make it quickly accessible using "
 "*File -> Open File in Project* (``Ctrl+P``)."
 msgstr ""
+"Si vous créez un projet, faites en sorte de sauvegarder la carte dans un "
+"dossier que vous avez ajouté à votre projet. Cela va la rendre facilement "
+"accessible en utilisant *Fichier -> Ouvrir un Fichier dans le Projet* "
+"(``Ctrl+P``)."
 
 #: ../../manual/introduction.rst:100
 msgid ""
@@ -3881,6 +4177,13 @@ msgid ""
 "definitions, collision shapes, etc., since that information is then "
 "shared between all your maps."
 msgstr ""
+"Nous laissons l'option :guilabel:`Embarquer dans la carte` désactivée. Ceci "
+"est recommandé, car il va permettre l'utilisation du jeu de tuiles par "
+"plusieurs cartes sans avoir à donner ses propriétés une nouvelle fois. C'est "
+"aussi une bonne chose de stocker le jeu de tuiles dans son propre fichier si "
+"vous voulez par la suite ajouter des propriétés de tuiles, des définitions "
+"de terrain, des formes de collision, etc., car cette information est "
+"partagée entre toutes vos cartes."
 
 #: ../../manual/introduction.rst:127
 msgid "After saving the tileset, Tiled should look as follows:"
@@ -3888,17 +4191,19 @@ msgstr "Après avoir sauvegardé le jeu de tuiles, Tiled devrait ressembler à c
 
 #: ../../manual/introduction.rst:132
 msgid "Tileset Created"
-msgstr "Jeu de Tuiles Ajouté"
+msgstr "Jeu de Tuiles Créé"
 
 #: ../../manual/introduction.rst:134
 msgid ""
 "Since we don't want to do anything else with the tileset for now, just "
 "switch back to the map file:"
 msgstr ""
+"Comme nous ne voulons pas faire grand chose de plus avec le jeu de tuiles "
+"pour le moment, revenez sur le fichier de carte :"
 
 #: ../../manual/introduction.rst:140
 msgid "Tileset Usable on the Map"
-msgstr ""
+msgstr "Jeu de Tuiles Utilisable sur la Carte"
 
 #: ../../manual/introduction.rst:142
 msgid ""
@@ -4325,6 +4630,12 @@ msgid ""
 "foreground or background graphics. The order of the layers determines the"
 " rendering order of your content."
 msgstr ""
+"Une carte Tiled supporte des types de contenus variés, et ce contenu est "
+"organisé dans de différents calques variés. Les calques les plus communs "
+"sont les ``Calques de Tuiles <#tile-layers>`__ et les `Calques d'Objets "
+"<#object-layers>`__. Il existe aussi des `Calques d'Images <#image-layers>`"
+"__ pour inclure de simples graphismes d'avant-plan ou d'arrière-plan. "
+"L'ordre des calques détermine l'ordre de rendu de votre contenu."
 
 #: ../../manual/layers.rst:11
 msgid ""
@@ -4334,12 +4645,20 @@ msgid ""
 "each other, for example to fake depth. Finally their contents can be "
 "tinted by multiplying with a custom :ref:`tint color <tint-color>`."
 msgstr ""
+"Les calques peuvent être cachés, rendus partiellement visible et peuvent "
+"être verrouillés. Les calques ont aussi un décalage et un :ref:`facteur de "
+"défilement de parallaxe <parallax-factor>`, qui peut être utilisé pour les "
+"disposer de façon indépendante des autres, pour par exemple simuler de la "
+"profondeur. Finalement, leur contenu peut être teinté en le multipliant par "
+"une :ref:`couleur de teinte <tint-color>` personnalisée."
 
 #: ../../manual/layers.rst:20
 msgid ""
 "The eye and lock icon toggle the visibility and locked state of a layer "
 "respectively."
 msgstr ""
+"L'icône d’œil et de cadenas activent/désactivent respectivement la "
+"visibilité et l'état de verrouillage du calque."
 
 #: ../../manual/layers.rst:23
 msgid ""
@@ -4347,6 +4666,9 @@ msgid ""
 "hierarchy. This makes it more comfortable to work with a large amount of "
 "layers."
 msgstr ""
+"Vous pouvez utiliser des `Groupes de Calques <#group-layers>`__ pour "
+"organiser les calques dans une hiérarchie. Cela permet de rendre le travail "
+"avec beaucoup de calques plus confortable."
 
 #: ../../manual/layers.rst:28
 msgid "Layer Types"
@@ -4361,6 +4683,13 @@ msgid ""
 "flipped vertically, horizontally or anti-diagonally (to support rotation "
 "in 90-degree increments)."
 msgstr ""
+"Les calques de tuiles fournissent un moyen efficace de stocker une grande "
+"aire remplie de données de tuiles. Ces données sont un simple tableau de "
+"références de tuiles et ne peuvent donc pas stocker d'informations "
+"additionnelles pour chaque location. Les seules données supplémentaires qui "
+"sont stockées sont quelques drapeaux, qui permettent au graphismes des "
+"tuiles d'être retournées verticalement, horizontalement ou anti-"
+"diagonalement (pour supporter la rotation par incréments de 90 degrés)."
 
 #: ../../manual/layers.rst:42
 msgid ""
@@ -4368,6 +4697,9 @@ msgid ""
 "which specifies the position and rendering order of the tiles based on "
 "the orientation and various other properties."
 msgstr ""
+"L'information requise pour générer un rendu pour chaque calque de tuiles est "
+"stocké dans la carte, qui spécifie la position et l'ordre de rendu des "
+"tuiles basé sur l'orientation et des propriétés de tuiles diverses."
 
 #: ../../manual/layers.rst:46
 msgid ""
@@ -4377,6 +4709,12 @@ msgid ""
 "any kind of object that does not need custom properties and is always "
 "aligned to the grid can also be placed on a tile layer."
 msgstr ""
+"Même s'ils ne peuvent que référer des tuiles, les calques de tuiles peuvent "
+"être utiles pour définir des morceaux d'informations non-graphiques dans "
+"votre niveau. Les informations de collision peuvent souvent être portées en "
+"utilisant un jeu de tuiles spécial, et tout objet qui n'a pas besoin de "
+"propriété personnalisée et qui est toujours aligné avec la grille peut aussi "
+"être placé sur un calque de tuiles."
 
 #: ../../manual/layers.rst:57
 msgid ""
@@ -4385,36 +4723,46 @@ msgid ""
 "resized and rotated. They can also have individual custom properties. "
 "There are many kinds of objects:"
 msgstr ""
+"Les calques d'objets sont utiles car ils peuvent stocker beaucoup de types "
+"d'informations qui ne rentrent pas dans un calque de tuiles. Les objets "
+"peuvent être positionnés librement, redimmensionnés et tournés. Ils peuvent "
+"aussi avoir des propriétés personnalisées individuelles. Il y a plein de "
+"types d'objets :"
 
 #: ../../manual/layers.rst:62
 msgid "**Rectangle** - for marking custom rectangular areas"
-msgstr ""
+msgstr "**Rectangle** - pour baliser des aires rectangulaires"
 
 #: ../../manual/layers.rst:63
 msgid "**Ellipse** - for marking custom ellipse or circular areas"
 msgstr ""
+"**Ellipse** - pour baliser des aires d'ellipse ou circulaires personnalisées"
 
 #: ../../manual/layers.rst:64
 msgid "**Point** - for marking exact locations (since Tiled 1.1)"
-msgstr ""
+msgstr "**Point** - pour baliser des locations exactes (depuis Tiled 1.1)"
 
 #: ../../manual/layers.rst:65
 msgid ""
 "**Polygon** - for when a rectangle or ellipse doesn't cut it (often a "
 "collision area)"
 msgstr ""
+"**Polygone** - pour quand un rectangle ou un cercle n'est pas suffisant ("
+"souvent une aire de collision)"
 
 #: ../../manual/layers.rst:67
 msgid "**Polyline** - can be a path to follow or a wall to collide with"
-msgstr ""
+msgstr "**Polyligne** - peut être un chemin à suivre ou un mur de collision"
 
 #: ../../manual/layers.rst:68
 msgid "**Tile** - for freely placing, scaling and rotating your tile graphics"
 msgstr ""
+"**Tuile** - pour placer, redimensionner et tourner librement votre graphisme "
+"de tuile"
 
 #: ../../manual/layers.rst:70
 msgid "**Text** - for custom text or notes (since Tiled 1.0)"
-msgstr ""
+msgstr "**Texte** - pour des notes ou un texte personnalisé (depuis Tiled 1.0)"
 
 #: ../../manual/layers.rst:72
 msgid ""
@@ -4425,6 +4773,13 @@ msgid ""
 "<predefining-properties>` for this object type. For tile objects, the "
 "type can be :ref:`inherited from their tile <tile-property-inheritance>`."
 msgstr ""
+"Tous les objets peuvent être nommés, ce qui va montrer le nom de l'objet "
+"dans une étiquette au-dessus de lui-même (seulement activé pour les objets "
+"sélectionnés par défaut). Les objets peuvent aussi recevoir un *type*, ce "
+"qui est utile car cela permet de personnaliser la couleur de leur étiquette "
+"et les :ref:`propriétés personnalisées <predefining-properties>` de ce type "
+"d'objet. Pour les objets tuile, le type peut être :ref:`hérité de leur tuile "
+"<tile-property-inheritance>`."
 
 #: ../../manual/layers.rst:80
 msgid ""
@@ -4436,6 +4791,14 @@ msgid ""
 "If you're using a different coordinate space for objects in your "
 "isometric game, you'll need to convert these coordinates accordingly."
 msgstr ""
+"Pour la majorité des types de cartes, les objets sont positionnées dans des "
+"pixels entiers. La seule exception à ceci sont les cartes isométriques (pas "
+"isométriques échelonnées). Pour les cartes isométriques, il a été jugé utile "
+"de stocker ses positions dans des coordonnées spatiales projetées. Pour "
+"ceci, les tuiles isométriques sont supposées représenter des carrés projetés "
+"avec les deux côtés égaux à la *hauteur de la tuile*. si vous utilisez un "
+"espace coordonné différent pour les objets dans votre jeu isométrique, vous "
+"aurez besoin de convertir ces coordonnées respectivement."
 
 #: ../../manual/layers.rst:88
 msgid ""
@@ -4445,6 +4808,11 @@ msgid ""
 "This is based on the assumption that these objects are generally used to "
 "mark areas on the map."
 msgstr ""
+"La longueur et la hauteur de l'objet est aussi stockés majoritairement en "
+"tant que pixels. Pour les cartes isométriques, tous les objets de formes ("
+"rectangle, point, ellipse, polygone et polyligne) sont projetés dans le même "
+"espace coordonné décrit ci-dessus. C'est basé sur l'hypothèse que ces objets "
+"sont généralement utilisés pour baliser des aires sur la carte."
 
 #: ../../manual/layers.rst:99
 msgid ""
@@ -4454,6 +4822,12 @@ msgid ""
 ":ref:`Tile Object <insert-tile-tool>`, you gain the ability to freely "
 "scale and rotate the image."
 msgstr ""
+"Les calques d'images fournissent un moyen d'inclure une seule image en tant "
+"qu'avant-plan ou arrière-plan de votre carte rapidement. Ils ne sont pour "
+"l'instant pas très utiles, parce que si vous voulez à la place ajouter "
+"l'image en tant que Jeu de Tuiles et la placer en tant :ref:`qu'Objet Tuile "
+"<insert-tile-tool>`, vous avec la possibilité de redimensionner et de "
+"tourner l'image librement."
 
 #: ../../manual/layers.rst:104
 msgid ""
@@ -4462,10 +4836,15 @@ msgid ""
 "Tiled 1.1 this can also be achieved by locking the object layer "
 "containing the tile object you'd like to avoid interacting with."
 msgstr ""
+"Le seul avantage à utiliser un calque d'images est qu'il évite la sélection /"
+" le glissement de l'image lors de l'utilisation de l'outil de Sélection "
+"d'Objets. Cependant, depuis Tiled 1.1, cela peut aussi être fait en "
+"verrouillant le calque d'objets contenant l'objet tuile avec lequel vous "
+"voulez éviter d’interagir."
 
 #: ../../manual/layers.rst:116
 msgid "Group Layers"
-msgstr ""
+msgstr "Groupes de Calques"
 
 #: ../../manual/layers.rst:118
 msgid ""
@@ -4473,12 +4852,18 @@ msgid ""
 "into a hierarchy. This is mainly useful when your map contains a large "
 "amount of layers."
 msgstr ""
+"Les groupes de calques marchent comme des dossiers et peuvent être utilisés "
+"pour organiser les calques dans une hiérarchie. C'est surtout utile lorsque "
+"votre carte contient un grand nombre de calques."
 
 #: ../../manual/layers.rst:122
 msgid ""
 "The visibility, opacity, offset, lock and :ref:`tint color <tint-color>` "
 "of a group layer affects all child layers."
 msgstr ""
+"La visibilité, l'opacité, le décalage, le verrouillage et la :ref:`couleur "
+"de teinte <tint-color>` d'un groupe de calques affectent tous ses calques "
+"enfants."
 
 #: ../../manual/layers.rst:125
 msgid ""
@@ -4486,16 +4871,21 @@ msgid ""
 "Raise Layer / Lower Layer actions also allow moving layers in and out of "
 "groups."
 msgstr ""
+"Les calques peuvent être facilement glissés dans ou en dehors de groupes "
+"avec la souris. Les actions Monter le Calque / Descendre le Calque vous "
+"permettent aussi de déplacer les calques dans ou en dehors des groupes."
 
 #: ../../manual/layers.rst:136
 msgid "Parallax Scrolling Factor"
-msgstr ""
+msgstr "Facteur de Défilement de Parallaxe"
 
 #: ../../manual/layers.rst:138
 msgid ""
 "The parallax scrolling factor determines the amount by which the layer "
 "moves in relation to the camera."
 msgstr ""
+"Le facteur de défilement de parallaxe détermine la distance par laquelle le "
+"calque bouge par rapport à la caméra."
 
 #: ../../manual/layers.rst:141
 msgid ""
@@ -4505,6 +4895,11 @@ msgid ""
 "away, whereas a higher value makes it move faster, simulating a layer "
 "positioned in between the screen and the camera."
 msgstr ""
+"Par défaut sa valeur est 1, ce qui veut dire que sa position sur l'écran "
+"change à la même vitesse que la position de la caméra (dans la direction "
+"opposée). Une valeur plus petite le fera bouger plus lentement, simulant un "
+"calque qui est éloigné, là où une valeur plus grande le fera bouger plus "
+"rapidement, simulant un calque entre l'écran et la caméra."
 
 #: ../../manual/layers.rst:147
 msgid ""
@@ -4512,12 +4907,17 @@ msgid ""
 "include some pieces of your ingame UI or to mark its general viewport "
 "boundaries."
 msgstr ""
+"Une valeur de 0 ne fait pas bouger le calque du tout, ce qui peut être utile "
+"pour inclure des éléments de votre interface graphique en jeu ou pour "
+"baliser les bords de la fenêtre d'affichage générale."
 
 #: ../../manual/layers.rst:150
 msgid ""
 "Negative values make the layer move in opposite direction, though this is"
 " rarely useful."
 msgstr ""
+"Des valeurs négatives bougent le calque dans la direction opposée, cependant "
+"c'est rarement utile."
 
 #: ../../manual/layers.rst:153
 msgid ""
@@ -4526,10 +4926,14 @@ msgid ""
 " is determined by multiplying the parallax scrolling factor by the "
 "scrolling factors of all parent layers."
 msgstr ""
+"Quand le facteur de défilement de parallaxe est donné sur un groupe de "
+"calques, il s'applique à tous ses calques enfants. Le facteur de défilement "
+"de parallaxe effectif est déterminé en multipliant le facteur de défilement "
+"de parallaxe par le facteur de défilement de tous les calques parents."
 
 #: ../../manual/layers.rst:165
 msgid "Tinting Layers"
-msgstr "Calques de Teinte"
+msgstr "Teindre des Calques"
 
 #: ../../manual/layers.rst:167
 msgid ""
@@ -4537,6 +4941,9 @@ msgid ""
 "images are rendered. This includes tiles, tile objects and the image of "
 "an :ref:`Image Layer <image-layers>`."
 msgstr ""
+"Quand vous définissez la propriété *Couleur de Teinte* d'un calque, cela "
+"affecte la façon dont les calques sont rendus. Cela inclut les tuiles, les "
+"objets tuiles et les images dans un :ref:`Calque d'Images <image-layers>`."
 
 #: ../../manual/layers.rst:171
 msgid ""
@@ -4544,26 +4951,37 @@ msgid ""
 "darken or colorize your graphics in various ways without needing to set "
 "up separate images for it."
 msgstr ""
+"Chaque valeur de couleur de pixel est multipliée par la couleur de teinte. "
+"De cette façon vous pouvez assombrir ou colorier vos graphismes de plusieurs "
+"façons sans avoir besoin de mettre en place des images séparées pour cela."
 
 #: ../../manual/layers.rst:178
 msgid "A gray tileset rendered in a different color for each layer."
 msgstr ""
+"Un jeu de tuiles gris rendu dans une couleur différente pour chaque calque."
 
 #: ../../manual/layers.rst:180
 msgid ""
 "The tint color can also be set on a :ref:`Group Layer <group-layers>`, in"
 " which case it is inherited by all layers in the group."
 msgstr ""
+"La couleur de teinte peut aussi être définie sur un :ref:`Groupe de Calques "
+"<group-layers>`, et dans ce cas elle est héritée par tous les calques de ce "
+"groupe."
 
 #: ../../manual/layers.rst:187
 msgid "There are many ways in which the layers can be made more powerful:"
 msgstr ""
+"Il y a plusieurs moyens par lesquels les calques peuvent être rendus plus "
+"puissants :"
 
 #: ../../manual/layers.rst:189
 msgid ""
 "Ability to lock individual objects (`#828 "
 "<https://github.com/bjorn/tiled/issues/828>`__)."
 msgstr ""
+"Capacité de verrouiller des objets individuels (`#828 <https://github.com/"
+"bjorn/tiled/issues/828>`__)."
 
 #: ../../manual/layers.rst:191
 msgid ""
@@ -4572,10 +4990,14 @@ msgid ""
 "one map could accommodate layers of different tile sizes and maybe even "
 "of different orientation."
 msgstr ""
+"Déplacement de certaines propriétés globales de la carte vers le Calque de "
+"Tuiles (`#149 <https://github.com/bjorn/tiled/issues/149>`__). Ça peut être "
+"utile si une carte gère des calques utilisant des tuiles de taille "
+"différente et peut-être même d'orientation différente."
 
 #: ../../manual/objects.rst:2
 msgid "Working with Objects"
-msgstr ""
+msgstr "Travailler avec des Objets"
 
 #: ../../manual/objects.rst:4
 msgid ""
@@ -4584,6 +5006,11 @@ msgid ""
 "coordinates (like spawn points) in your source code or maintaining "
 "additional data files for storing gameplay elements."
 msgstr ""
+"En utilisant des objets, vous pouvez ajouter un grand nombre d'informations "
+"à votre carte à utiliser dans votre jeu. Ils peuvent remplacer des "
+"alternatives ennuyeuses telles que l'écriture en brut de coordonnées (tel "
+"que des points d'apparition) dans votre code source ou la maintenance de "
+"fichiers de données supplémentaires pour stocker des éléments de jeu."
 
 #: ../../manual/objects.rst:9
 msgid ""
@@ -4592,6 +5019,11 @@ msgid ""
 "cases they can replace the use of tile layers entirely, as demonstrated "
 "by the \"Sticker Knight\" example shipping with Tiled."
 msgstr ""
+"En utilisant des *objets tuile*, des objets de types variés peuvent être "
+"facile à reconnaître ou ils peuvent être utilisés pour des raisons purement "
+"graphiques. Dans certains cas ils peuvent entièrement remplacer "
+"l'utilisation de calques de tuiles, comme démontrés dans l'exemple \"Sticker "
+"Knight\" fourni avec Tiled."
 
 #: ../../manual/objects.rst:14
 msgid ""
@@ -4599,20 +5031,25 @@ msgid ""
 "can also be used to create :ref:`connections between objects <connecting-"
 "objects>`."
 msgstr ""
+"Tous les objets peuvent avoir des :doc:`propriétés personnalisées <custom-"
+"properties>`, qui peuvent aussi être utilisées pour créer des :ref:`"
+"connexions entre les objets <connecting-objets>`."
 
 #: ../../manual/objects.rst:18
 msgid ""
 "To start using objects, add an :ref:`Object Layer <object-layer-"
 "introduction>` to your map."
 msgstr ""
+"Pour commencer à utiliser des objets, ajoutez un :ref:`Calque d'Objets "
+"<object-layer-introduction>` à votre carte."
 
 #: ../../manual/objects.rst:22
 msgid "Placement Tools"
-msgstr ""
+msgstr "Outils de Placement"
 
 #: ../../manual/objects.rst:24
 msgid "Each type of object has its own placement tool."
-msgstr ""
+msgstr "Chaque type d'objet a son propre outil de placement."
 
 #: ../../manual/objects.rst:30
 msgid ""
@@ -4621,14 +5058,19 @@ msgid ""
 "click to cancel placement of the object. Press ``Escape`` again to switch"
 " to the :ref:`select-objects-tool` tool."
 msgstr ""
+"Une prévisualisation de l'objet que vous être en train de placer est "
+"affichée lorsque vous passez votre souris sur la carte. Lors du placement "
+"d'un objet, vous pouvez appuyer sur ``Échap`` ou faire un clic droit pour "
+"annuler le placement de l'objet. Appuyez sur ``Échap`` une nouvelle fois "
+"pour sélectionner `l'outil de sélection d'objet <sleect-objects-tool>`."
 
 #: ../../manual/objects.rst:38
 msgid "Insert Rectangle"
-msgstr ""
+msgstr "Insérer un Rectangle"
 
 #: ../../manual/objects.rst:40
 msgid "Shortcut: ``R``"
-msgstr ""
+msgstr "Raccourci : ``R``"
 
 #: ../../manual/objects.rst:42
 msgid ""
@@ -4638,6 +5080,11 @@ msgid ""
 "custom properties to them. They are also often used for specifying "
 "collision boxes."
 msgstr ""
+"Le rectangle est le premier type d'objet supporté par Tiled, voilà pourquoi "
+"les objets sont des rectangles par défaut dans le :doc:`format de carte TMX "
+"</reference/tmx-map-format>`. Ils sont utiles pour baliser des aires "
+"rectangulaires et pour leur assigner des propriétés personnalisées. Ils sont "
+"souvent utilisés pour spécifier des boîtes de collision."
 
 #: ../../manual/objects.rst:47
 msgid ""
@@ -4645,6 +5092,9 @@ msgid ""
 "``Shift`` makes it square and holding ``Ctrl`` snaps its size to the tile"
 " size."
 msgstr ""
+"Placez un rectangle en cliquant et glissant dans n'importe quelle direction. "
+"Maintenir ``Maj`` force un carré et maintenir ``Ctrl`` force sa taille en "
+"tant que la taille d'une tuile."
 
 #: ../../manual/objects.rst:51
 msgid ""
@@ -4653,10 +5103,14 @@ msgid ""
 "small square around its position. This is mainly to keep it visible and "
 "selectable."
 msgstr ""
+"Les objets rectangles ont comme origine leur coin en haut à gauche. "
+"Cependant, si le rectangle est vide (la longueur et la hauteur sont égales à "
+"0), il est rendu en tant qu'un petit carré autour de sa position. C'est "
+"surtout pour que l'objet soit visible et sélectionnable."
 
 #: ../../manual/objects.rst:62
 msgid "Insert Point"
-msgstr ""
+msgstr "Insérer un Point"
 
 #: ../../manual/objects.rst:64
 msgid "Shortcut: ``I``"
@@ -4668,14 +5122,18 @@ msgid ""
 "represent a location, and cannot be resized or rotated. Simply click on "
 "the map to position a point object."
 msgstr ""
+"Les points sont les objets les plus simples que vous pouvez placer sur une "
+"carte. Ils représentent seulement un endroit, et ne peuvent être "
+"redimensionnés ou tournés. Faites un simple clic sur la carte pour placer un "
+"objet point."
 
 #: ../../manual/objects.rst:73
 msgid "Insert Ellipse"
-msgstr ""
+msgstr "Insérer une Ellipse"
 
 #: ../../manual/objects.rst:75
 msgid "Shortcut: ``C``"
-msgstr ""
+msgstr "Raccourci : ``C``"
 
 #: ../../manual/objects.rst:77
 msgid ""
@@ -4683,20 +5141,26 @@ msgid ""
 "that they are rendered as an ellipse. Useful for when your area or "
 "collision shape needs to represent a circle or ellipse."
 msgstr ""
+"Les ellipses marchent de la même manière que les `rectangles <#insert-"
+"rectangle>`__, mis à part le fait qu'ils soient exportés en tant "
+"qu'ellipses. Ils sont utiles pour quand votre aire ou forme de collision a "
+"besoin de représenter un cercle ou une ellipse."
 
 #: ../../manual/objects.rst:84
 msgid "Insert Polygon"
-msgstr ""
+msgstr "Insérer un Polygone"
 
 #: ../../manual/objects.rst:86
 msgid "Shortcut: ``P``"
-msgstr ""
+msgstr "Raccourci : ``P``"
 
 #: ../../manual/objects.rst:88
 msgid ""
 "Polygons are the most flexible way of defining the shape of an area. They"
 " are most commonly used for defining collision shapes."
 msgstr ""
+"Les polygones sont le moyen le plus flexible de définir une forme pour une "
+"aire. Ils sont le plus souvent utilisés pour définir des formes de collision."
 
 #: ../../manual/objects.rst:91
 msgid ""
@@ -4707,22 +5171,33 @@ msgid ""
 " to finish creating the polygon. You can press ``Escape`` to cancel the "
 "creation of the polygon."
 msgstr ""
+"Lors du placement d'un polygone, le premier clic détermine la position de "
+"l'objet ainsi que la position du premier point du polygone. Les clics "
+"suivants sont utilisés pour ajouter des points supplémentaires au polygone. "
+"Les polygones ont besoin d'avoir au moins trois points. Cliquez sur le "
+"premier point une nouvelle fois pour finir le polygone. Vous pouvez appuyer "
+"sur ``Échap`` pour annuler la création d'un polygone."
 
 #: ../../manual/objects.rst:98
 msgid ""
 "When you want to change a polygon after it has been placed, you need to "
 "use the :ref:`edit-polygons-tool` tool."
 msgstr ""
+"Lorsque vous voulez changer un polygone après qu'il aie été placé, vous "
+"devez utiliser :ref:`l'outil d'édition de polygone <edit-polygons-tool>`."
 
 #: ../../manual/objects.rst:102
 msgid "Polylines"
-msgstr ""
+msgstr "Polylignes"
 
 #: ../../manual/objects.rst:104
 msgid ""
 "Polylines are created by not closing a polygon. Right-click or press "
 "Enter while creating a polygon to finish it as a polyline."
 msgstr ""
+"Les polylignes sont créées en ne fermant pas un polygone. Faites un clic "
+"droit ou appuyez sur Entrée lors de la création d'un polygone pour le finir "
+"en tant qu'une polyligne."
 
 #: ../../manual/objects.rst:107
 msgid ""
@@ -4730,6 +5205,9 @@ msgid ""
 "can represent collision walls, they are also often used to represent "
 "paths to be followed."
 msgstr ""
+"Les polylignes sont rendues en tant qu'une ligne et ont besoin d'au moins "
+"deux points. Même si elles peuvent représenter des murs de collision, elles "
+"peuvent aussi être utilisées pour représenter des chemins à suivre."
 
 #: ../../manual/objects.rst:115
 msgid ""
@@ -4739,14 +5217,22 @@ msgid ""
 "object. The other polyline object needs to be selected as well, since the"
 " interactive dots only show on selected polylines."
 msgstr ""
+"Vous pouvez étendre une polyligne existante par n'importe quel bout "
+"lorsqu'elle est sélectionnée en cliquant sur les points affichés. Il est "
+"ainsi possible de finir une polyligne en la connectant à n'importe quel bout "
+"d'un autre objet polyligne. L'autre objet polyligne doit aussi être "
+"sélectionné, car les points d'interaction ne sont visibles que sur les "
+"polylignes sélectionnées."
 
 #: ../../manual/objects.rst:121
 msgid "The :ref:`edit-polygons-tool` tool is used to edit polylines as well."
 msgstr ""
+":ref:`L'outil d'édition de polygone <edit-polygons-tool>` est aussi utilisé "
+"pour éditer des polylignes."
 
 #: ../../manual/objects.rst:126
 msgid "Insert Tile"
-msgstr ""
+msgstr "Insérer une Tuile"
 
 #: ../../manual/objects.rst:128
 msgid "Shortcut: ``T``"
@@ -4761,6 +5247,13 @@ msgid ""
 "special information, like a chest with defined contents or an NPC with "
 "defined script."
 msgstr ""
+"Les tuiles peuvent être insérées en tant qu'objets pour avoir une "
+"flexibilité totale dans le placement, le redimensionnement et la rotation de "
+"l'image de tuile sur votre carte. Comme tous les objets, les objets tuile "
+"peuvent aussi avoir des propriétés personnalisées qui leur sont associées. "
+"C'est utile pour le placement d'objets interactifs reconnaissables qui ont "
+"besoin d'informations spéciales, tel qu'un coffre avec un contenu défini ou "
+"un PNJ avec un script défini."
 
 #: ../../manual/objects.rst:137
 msgid ""
@@ -4769,6 +5262,10 @@ msgid ""
 "placing the object, move to position it and release to finish placing the"
 " object."
 msgstr ""
+"Pour placer un objet tuile, tout d'abord sélectionnez la tuile que vous "
+"voulez placer dans la vue *Jeux de Tuiles*. Ensuite, utilisez le bouton "
+"gauche de la souris sur la carte pour commencer à placer l'objet, bougez "
+"pour le placer et relâchez pour finir de placer l'objet."
 
 #: ../../manual/objects.rst:145
 msgid ""
@@ -4777,6 +5274,11 @@ msgid ""
 "right-click on a tile in the *Tilesets* view, and choose *Replace Tile of"
 " Selected Objects*."
 msgstr ""
+"Pour changer la tuile utilisée par des objets tuile existants, sélectionnez "
+"tous les objets que vous voulez changer en utilisant :ref:`l'outil de "
+"sélection d'objet <select-object-tool>` et ensuite faites un clic droit sur "
+"une tuile dans la vue *Jeux de Tuiles*, et choisissez *Remplacer la Tuile "
+"des Objets Sélectionnés*."
 
 #: ../../manual/objects.rst:154
 msgid ""
@@ -4788,10 +5290,18 @@ msgid ""
 " makes the alignment of tile objects consistent with that of "
 ":ref:`rectangle objects <insert-rectangle-tool>`."
 msgstr ""
+"Vous pouvez personnaliser l'alignement des objets tuile en utilisant la "
+"propriété *Alignement d'Objet* sur le *Jeu de Tuiles*. Pour des raisons de "
+"compatibilité cette propriété est définie en tant que *Non Spécifié* par "
+"défaut, dans ce cas les objets tuiles sont alignés en bas à gauche pour "
+"toutes les orientations sauf pour les cartes *Isométriques*, où ils sont "
+"alignés en bas au centre. Définir cette propriété en tant que *En Haut à "
+"Gauche* rend l'alignement des objets tuiles consistant avec celui des :ref:`"
+"objets rectangulaires <insert-rectangle-tool>`."
 
 #: ../../manual/objects.rst:169
 msgid "Insert Template"
-msgstr ""
+msgstr "Insérer un Modèle"
 
 #: ../../manual/objects.rst:171 ../../manual/using-templates.rst:50
 msgid "Shortcut: ``V``"
@@ -4802,14 +5312,17 @@ msgid ""
 "Can be used to quickly insert multiple instances of the template selected"
 " in the Templates view. See :ref:`creating-template-instances`."
 msgstr ""
+"Peut être utiliser pour rapidement insérer plusieurs instances d'un modèle "
+"sélectionné dans la vue Modèles. Voir :ref:`créer des instances de modèle "
+"<creating-template-instances>`."
 
 #: ../../manual/objects.rst:179
 msgid "Insert Text"
-msgstr ""
+msgstr "Insérer un Texte"
 
 #: ../../manual/objects.rst:181
 msgid "Shortcut: ``X``"
-msgstr ""
+msgstr "Raccourci : ``X``"
 
 #: ../../manual/objects.rst:183
 msgid ""
@@ -4818,6 +5331,11 @@ msgid ""
 "area, making them useful for both quick notes as well as text used in the"
 " game."
 msgstr ""
+"Les objets textes peuvent être utilisés pour ajouter des textes avec "
+"plusieurs lignes arbitraires dans vos cartes. Vous pouvez configurer "
+"diverses propriétés de police ainsi que l'aire d'enveloppement / de coupe, "
+"ce qui les rend utile pour des notes rapides ainsi que pour du texte utilisé "
+"dans le jeu."
 
 #: ../../manual/objects.rst:191
 msgid "Select Objects"
