@@ -270,9 +270,9 @@ public class TMXMapReader {
                 return ext;
             }
         } else {
-            final String name = getAttributeValue(t, "name");
 
             if (tilesetCache != null) {
+                final String name = getAttributeValue(t, "name");
                 return tilesetCache.getTileset(name, () -> processTileset(t));
             }
 
