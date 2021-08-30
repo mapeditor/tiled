@@ -266,7 +266,14 @@ void MapItem::updateLayerPositions()
 
     for (LayerItem *layerItem : qAsConst(mLayerItems)) {
         const Layer &layer = *layerItem->layer();
-        layerItem->setPos(layer.offset() + mapScene->parallaxOffset(layer));
+        QPointF parallaxOffset = mapScene->parallaxOffset(layer);
+
+        // If this is a group layer, we don't want to apply any parallax -- that'll be
+        // taken care of by the effective parallax offset calculated for the leaf layers.
+        // If we don't do this, it doubles up bad.
+        if (layer.layerType() == Layer::GroupLayerType) parallaxOffset = QPointF(0, 0);
+
+        layerItem->setPos(layer.offset() + parallaxOffset);
     }
 
     if (mDisplayMode == Editable) {
