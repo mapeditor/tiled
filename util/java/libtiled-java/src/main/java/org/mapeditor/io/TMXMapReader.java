@@ -44,7 +44,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
@@ -54,7 +53,6 @@ import java.util.zip.InflaterInputStream;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
@@ -87,31 +85,19 @@ public class TMXMapReader {
     public static final long ALL_FLAGS =
         FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG;
 
-    public final TMXMapReaderSettings settings = new TMXMapReaderSettings();
-
     private Map map;
     private URL xmlPath;
     private String error;
     private final EntityResolver entityResolver = new MapEntityResolver();
     private TreeMap<Integer, TileSet> tilesetPerFirstGid;
 
-    /**
-     * Map of cached tilesets used when {@link TMXMapReaderSettings#reuseCachedTilesets} option is on.
-     * TODO: case when multiple tilesets have same name but different sources
-     * @see #setCachedTilesets(java.util.Map)
-     */
-    private java.util.Map<String, TileSet> cachedTilesets;
+    private TilesetCache tilesetCache;
 
     /**
      * Unmarshaller capable of unmarshalling all classes available from context
      * @see #unmarshalClass(Node, Class)
      */
     private final Unmarshaller unmarshaller;
-
-    public static final class TMXMapReaderSettings {
-
-        public boolean reuseCachedTilesets = false;
-    }
 
     /**
      * Constructor for TMXMapReader.
@@ -284,92 +270,88 @@ public class TMXMapReader {
                 return ext;
             }
         } else {
-            final int tileWidth = getAttribute(t, "tilewidth", map != null ? map.getTileWidth() : 0);
-            final int tileHeight = getAttribute(t, "tileheight", map != null ? map.getTileHeight() : 0);
-            final int tileSpacing = getAttribute(t, "spacing", 0);
-            final int tileMargin = getAttribute(t, "margin", 0);
 
-            final String name = getAttributeValue(t, "name");
-
-            if (settings.reuseCachedTilesets) {
-                if (cachedTilesets == null) {
-                    cachedTilesets = new HashMap<>();
-                }
-
-                set = cachedTilesets.get(name);
-                if (set != null)
-                    return set;
-
-                set = new TileSet();
-                cachedTilesets.put(name, set);
-            } else {
-                set = new TileSet();
+            if (tilesetCache != null) {
+                final String name = getAttributeValue(t, "name");
+                return tilesetCache.getTileset(name, () -> processTileset(t));
             }
 
-            set.setName(name);
-
-            boolean hasTilesetImage = false;
-            NodeList children = t.getChildNodes();
-
-            for (int i = 0; i < children.getLength(); i++) {
-                Node child = children.item(i);
-
-                if (child.getNodeName().equalsIgnoreCase("image")) {
-                    if (hasTilesetImage) {
-                        System.out.println("Ignoring illegal image element after tileset image.");
-                        continue;
-                    }
-
-                    String imgSource = getAttributeValue(child, "source");
-                    String transStr = getAttributeValue(child, "trans");
-
-                    if (imgSource != null) {
-                        // Not a shared image, but an entire set in one image
-                        // file. There should be only one image element in this
-                        // case.
-                        hasTilesetImage = true;
-
-                        URL sourcePath;
-                        if (!new File(imgSource).isAbsolute()) {
-                            imgSource = replacePathSeparator(imgSource);
-                            sourcePath = URLHelper.resolve(xmlPath, imgSource);
-                        } else {
-                            sourcePath = makeUrl(imgSource);
-                        }
-
-                        if (transStr != null) {
-                            if (transStr.startsWith("#")) {
-                                transStr = transStr.substring(1);
-                            }
-
-                            int colorInt = Integer.parseInt(transStr, 16);
-                            Color color = new Color(colorInt);
-                            set.setTransparentColor(color);
-                        }
-
-                        set.importTileBitmap(sourcePath, new BasicTileCutter(
-                                tileWidth, tileHeight, tileSpacing, tileMargin));
-                    }
-                } else if (child.getNodeName().equalsIgnoreCase("tile")) {
-                    Tile tile = unmarshalTile(set, child, xmlPath);
-                    if (!hasTilesetImage || tile.getId() > set.getMaxTileId()) {
-                        set.addTile(tile);
-                    } else {
-                        Tile myTile = set.getTile(tile.getId());
-                        myTile.setProperties(tile.getProperties());
-                        //TODO: there is the possibility here of overlaying images,
-                        //      which some people may want
-                    }
-                } else if (child.getNodeName().equalsIgnoreCase("tileoffset")) {
-                   TileOffset tileoffset = new TileOffset();
-                   tileoffset.setX(Integer.valueOf(getAttributeValue(child, "x")));
-                   tileoffset.setY(Integer.valueOf(getAttributeValue(child, "y")));
-                   set.setTileoffset(tileoffset);
-                }
-            }
-
-            return set;
+            return processTileset(t);
         }
+    }
+
+    private TileSet processTileset(Node t) throws Exception {
+        TileSet set = new TileSet();
+
+        final String name = getAttributeValue(t, "name");
+        set.setName(name);
+
+        final int tileWidth = getAttribute(t, "tilewidth", map != null ? map.getTileWidth() : 0);
+        final int tileHeight = getAttribute(t, "tileheight", map != null ? map.getTileHeight() : 0);
+        final int tileSpacing = getAttribute(t, "spacing", 0);
+        final int tileMargin = getAttribute(t, "margin", 0);
+
+        boolean hasTilesetImage = false;
+        NodeList children = t.getChildNodes();
+
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+
+            if (child.getNodeName().equalsIgnoreCase("image")) {
+                if (hasTilesetImage) {
+                    System.out.println("Ignoring illegal image element after tileset image.");
+                    continue;
+                }
+
+                String imgSource = getAttributeValue(child, "source");
+                String transStr = getAttributeValue(child, "trans");
+
+                if (imgSource != null) {
+                    // Not a shared image, but an entire set in one image
+                    // file. There should be only one image element in this
+                    // case.
+                    hasTilesetImage = true;
+
+                    URL sourcePath;
+                    if (!new File(imgSource).isAbsolute()) {
+                        imgSource = replacePathSeparator(imgSource);
+                        sourcePath = URLHelper.resolve(xmlPath, imgSource);
+                    } else {
+                        sourcePath = makeUrl(imgSource);
+                    }
+
+                    if (transStr != null) {
+                        if (transStr.startsWith("#")) {
+                            transStr = transStr.substring(1);
+                        }
+
+                        int colorInt = Integer.parseInt(transStr, 16);
+                        Color color = new Color(colorInt);
+                        set.setTransparentColor(color);
+                    }
+
+                    set.importTileBitmap(sourcePath, new BasicTileCutter(
+                        tileWidth, tileHeight, tileSpacing, tileMargin));
+                }
+            } else if (child.getNodeName().equalsIgnoreCase("tile")) {
+                Tile tile = unmarshalTile(set, child, xmlPath);
+                if (!hasTilesetImage || tile.getId() > set.getMaxTileId()) {
+                    set.addTile(tile);
+                } else {
+                    Tile myTile = set.getTile(tile.getId());
+                    myTile.setProperties(tile.getProperties());
+                    //TODO: there is the possibility here of overlaying images,
+                    //      which some people may want
+                }
+            } else if (child.getNodeName().equalsIgnoreCase("tileoffset")) {
+                TileOffset tileoffset = new TileOffset();
+                tileoffset.setX(Integer.valueOf(getAttributeValue(child, "x")));
+                tileoffset.setY(Integer.valueOf(getAttributeValue(child, "y")));
+                set.setTileoffset(tileoffset);
+            }
+        }
+
+        return set;
     }
 
     private MapObject readMapObject(Node t) throws Exception {
@@ -1070,11 +1052,8 @@ public class TMXMapReader {
         return path.replace("/", File.separator);
     }
 
-    /**
-     * The ability to set cachedTilesets allows cached tilesets to be shared across multiple readers,
-     * increasing read speed in a multithreaded environment.
-     */
-    public void setCachedTilesets(java.util.Map<String, TileSet> cachedTilesets) {
-        this.cachedTilesets = cachedTilesets;
+    public TMXMapReader setTilesetCache(TilesetCache tilesetCache) {
+        this.tilesetCache = tilesetCache;
+        return this;
     }
 }
