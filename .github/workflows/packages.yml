@@ -230,7 +230,11 @@ jobs:
         echo "QT_PATH=$(./dist/install-qt.sh --version ${QT_VERSION} --toolchain ${QT_TOOLCHAIN} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools qttranslations)" >> $GITHUB_ENV
         echo "MINGW_PATH=$(./dist/install-qt.sh --version ${MINGW_VERSION} ${MINGW_COMPONENT})" >> $GITHUB_ENV
         echo "OPENSSL_PATH=$(./dist/install-qt.sh --version ${OPENSSL_VERSION} openssl --arch ${{ matrix.openssl_arch }})" >> $GITHUB_ENV
-        ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator >> $GITHUB_PATH
+
+    - name: Install Qbs
+      uses: crazy-max/ghaction-chocolatey@v1.5.0
+      with:
+        args: install qbs -y
 
     - name: Setup Qbs
       run: |
