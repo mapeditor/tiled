@@ -661,7 +661,7 @@
     <message>
         <location line="+9"/>
         <source>&amp;About Tiled</source>
-        <translation>À propos de &amp;Tiled</translation>
+        <translation>À Propos de &amp;Tiled</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -997,7 +997,7 @@
     <message>
         <location line="+11"/>
         <source>No Snapping</source>
-        <translation>Pas de Suivi</translation>
+        <translation>Pas de Suivi de Grille</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1621,7 +1621,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+10"/>
         <source>Export Options</source>
-        <translation>Exporter les Options</translation>
+        <translation>Options d&apos;Exportation</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1671,17 +1671,17 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+91"/>
         <source>Object line width:</source>
-        <translation>Largeur de lignes pour les objets :</translation>
+        <translation>Épaisseur de la ligne des objets :</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Mouse wheel &amp;zooms by default</source>
-        <translation>La molette de la souris &amp;zoom par défaut</translation>
+        <translation>La molette de la souris &amp;zoome par défaut</translation>
     </message>
     <message>
         <location line="-111"/>
         <source>Crash Reporting</source>
-        <translation>Rapport de plantage</translation>
+        <translation>Rapport de Plantage</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1701,17 +1701,17 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-40"/>
         <source>Middle mouse button uses auto-&amp;scrolling</source>
-        <translation>Utiliser le bouton du milieu de la souris pour le défilement automatique</translation>
+        <translation>Le clic milieu de la &amp;souris active le défilement automatique</translation>
     </message>
     <message>
         <location line="-53"/>
         <source>Major grid every:</source>
-        <translation>Grille majeure tous les :</translation>
+        <translation>Grille majeure toutes les :</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Use s&amp;mooth scrolling</source>
-        <translation>Défilement doux (&amp;M)</translation>
+        <translation>Utiliser un défilement doux (&amp;M)</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -1726,7 +1726,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+19"/>
         <source>Display news in status bar</source>
-        <translation>Afficher les nouveautés dans la barre de status</translation>
+        <translation>Afficher les nouveautés dans la barre d&apos;état</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1789,7 +1789,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-109"/>
         <source>Updates</source>
-        <translation>Mises à jour</translation>
+        <translation>Mises à Jour</translation>
     </message>
     <message>
         <location line="+136"/>
@@ -3771,7 +3771,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-22"/>
         <source>Split Segment</source>
-        <translation>Séparer les Segments</translation>
+        <translation>Séparer le Segment</translation>
     </message>
     <message numerus="yes">
         <location line="+268"/>
@@ -3811,7 +3811,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-365"/>
         <source>Extend Polyline</source>
-        <translation>Étendre les Polylignes</translation>
+        <translation>Étendre la Polyligne</translation>
     </message>
 </context>
 <context>
@@ -5206,19 +5206,19 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="-183"/>
         <location line="+188"/>
         <source>Select From Any Layer</source>
-        <translation>Depuis n&apos;importe quel Calque</translation>
+        <translation>Depuis N&apos;Importe Quel Calque</translation>
     </message>
     <message>
         <location line="-187"/>
         <location line="+188"/>
         <source>Prefer Selected Layers</source>
-        <translation>De préférence depuis les Calques sélectionnés</translation>
+        <translation>De Préférence Depuis les Calques Sélectionnés</translation>
     </message>
     <message>
         <location line="-187"/>
         <location line="+188"/>
         <source>Selected Layers Only</source>
-        <translation>Depuis les Calques sélectionnés uniquement</translation>
+        <translation>Uniquement Depuis les Calques Sélectionnés</translation>
     </message>
 </context>
 <context>
@@ -7497,7 +7497,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+2"/>
         <source>About Tiled Quick</source>
-        <translation>À propos de Tiled Quick</translation>
+        <translation>À Propos de Tiled Quick</translation>
     </message>
 </context>
 </TS>
