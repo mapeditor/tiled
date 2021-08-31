@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2021-08-09 11:20+0200\n"
-"PO-Revision-Date: 2021-08-28 07:34+0000\n"
+"PO-Revision-Date: 2021-09-01 03:33+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
 "\n"
@@ -5339,21 +5339,24 @@ msgstr ""
 
 #: ../../manual/objects.rst:191
 msgid "Select Objects"
-msgstr ""
+msgstr "Sélectionner des Objets"
 
 #: ../../manual/objects.rst:193
 msgid "Shortcut: ``S``"
-msgstr ""
+msgstr "Raccourci : ``S``"
 
 #: ../../manual/objects.rst:195
 msgid ""
 "When you're not inserting new objects, you're generally using the Select "
 "Objects tool. It packs a lot of functionality, which is outlined below."
 msgstr ""
+"Quand vous n'êtes pas en train d'insérer de nouveaux objets, vous utilisez "
+"généralement l'outil de Sélection d'Objet. Il comprend beaucoup de "
+"fonctionnalités qui sont mises en avant ci-dessous."
 
 #: ../../manual/objects.rst:199
 msgid "Selecting and Deselecting"
-msgstr ""
+msgstr "Sélectionner et Désélectionner"
 
 #: ../../manual/objects.rst:201
 msgid ""
@@ -5362,6 +5365,11 @@ msgid ""
 "``Shift`` or ``Ctrl`` while clicking, you can add/remove single objects "
 "to/from the selection. Press ``Escape`` to deselect all objects."
 msgstr ""
+"Vous pouvez sélectionner des objets en cliquant dessus ou en glissant un "
+"lasso rectangulaire, ce qui sélectionne tout objet intersectant avec cette "
+"aire. En maintenant ``Maj`` ou ``Ctrl`` tout en cliquant, vous pouvez "
+"ajouter/enlever des objets seuls dans/de la sélection. Appuyez sur ``Échap`` "
+"pour désélectionner tous les objets."
 
 #: ../../manual/objects.rst:206
 msgid ""
@@ -5369,6 +5377,9 @@ msgid ""
 "moved. When this prevents you from starting a rectangular selection, you "
 "can hold ``Shift`` to force the selection rectangle."
 msgstr ""
+"Lors de l'appui et du glissement d'un objet, cet objet sera sélectionné et "
+"déplacé. Cela vous empêche de créer une sélection rectangulaire, mais vous "
+"pouvez maintenir ``Maj`` pour forcer la sélection rectangulaire."
 
 #: ../../manual/objects.rst:214
 msgid ""
@@ -5379,16 +5390,26 @@ msgid ""
 "of all objects at the clicked location, so you may directly select the "
 "desired object."
 msgstr ""
+"Par défaut vous interagissez avec l'objet le plus en haut à gauche. quand "
+"vous avez besoin de sélectionner un objet en dessous d'un autre objet, "
+"sélectionnez tout d'abord le premier objet puis maintenez ``Alt`` en "
+"cliquant au même endroit pour sélectionner des objets en-dessous. Vous "
+"pouvez aussi maintenir ``Alt`` en ouvrant le menu contextuel pour avoir une "
+"liste de tous les objets à l'endroit cliqué, pour que vous puissiez ensuite "
+"sélectionner l'objet désiré directement."
 
 #: ../../manual/objects.rst:225
 msgid ""
 "You can quickly switch to the :ref:`edit-polygons-tool` tool by double-"
 "clicking on the polygon or polyline you want to edit."
 msgstr ""
+"Vous pouvez passer à :ref:`l'outil d'édition de polygone <edit-polygons-"
+"tool>` rapidement en double-cliquant sur le polygone ou la polyligne que "
+"vous voulez éditer."
 
 #: ../../manual/objects.rst:229
 msgid "Moving"
-msgstr ""
+msgstr "Déplacement"
 
 #: ../../manual/objects.rst:231
 msgid ""
@@ -5396,6 +5417,9 @@ msgid ""
 "by dragging any one of them. Hold ``Ctrl`` to toggle snapping to the tile"
 " grid."
 msgstr ""
+"Vous pouvez simplement glissez tout objet seul, ou glisser tous les objets "
+"sélectionnés en glissant l'un d'eux. Maintenez ``Ctrl`` pour activer le "
+"suivi de grille de tuiles."
 
 #: ../../manual/objects.rst:235
 msgid ""
@@ -5403,6 +5427,10 @@ msgid ""
 " regardless of where you click on the map. This is useful when the "
 "selected objects are small or covered by other objects."
 msgstr ""
+"Maintenez ``Alt`` pour forcer une opération de mouvement sur les objets "
+"couramment sélectionnés, peu importe où vous cloquez sur la carte. C'est "
+"utile quand les objets sélectionnés sont petits ou couverts par d'autres "
+"objets."
 
 #: ../../manual/objects.rst:239
 msgid ""
@@ -5410,10 +5438,14 @@ msgid ""
 "this moves the objects pixel by pixel. Hold ``Shift`` while using the "
 "arrow keys to move the objects by distance of one tile."
 msgstr ""
+"Les objets sélectionnés peuvent aussi être déplacés avec les flèches "
+"directionnelles. Par défaut cela mouve les objets pixel par pixel. Maintenez "
+"``Maj`` en utilisant les flèches directionnelles pour déplacer les objets "
+"d'une distance égale à la taille d'une tuile."
 
 #: ../../manual/objects.rst:244
 msgid "Resizing"
-msgstr ""
+msgstr "Redimensionnement"
 
 #: ../../manual/objects.rst:246
 msgid ""
@@ -5421,6 +5453,10 @@ msgid ""
 "Hold ``Ctrl`` to keep the aspect ratio of the object and/or ``Shift`` to "
 "place the resize origin in the center."
 msgstr ""
+"Vous pouvez utiliser les poignées de redimensionnement pour redimensionner "
+"un ou plusieurs objets sélectionnés. Maintenez ``Ctrl`` pour garder le même "
+"rapport hauteur/largeur de l'objet et/ou ``Maj`` pour placer l'origine du "
+"redimensionnement au centre."
 
 #: ../../manual/objects.rst:250
 msgid ""
@@ -5429,10 +5465,15 @@ msgid ""
 "aspect ratio is constant because there would be no way to make that work "
 "for rotated objects without full support for transformations."
 msgstr ""
+"Veuillez noter que vous ne pouvez changer que la longueur et la hauteur "
+"indépendamment lors du redimensionnement d'un seul objet. Lorsque plusieurs "
+"objets sont sélectionnés, le rapport hauteur/longueur est constant car il "
+"est impossible de le faire marcher pour les objets tournés sans un support "
+"total pour les transformations."
 
 #: ../../manual/objects.rst:256
 msgid "Rotating"
-msgstr ""
+msgstr "Rotation"
 
 #: ../../manual/objects.rst:258
 msgid ""
@@ -5441,16 +5482,24 @@ msgid ""
 "another position if necessary. Hold ``Shift`` to rotate in 15-degree "
 "increments. Click any selected object again to go back to resize mode."
 msgstr ""
+"Pour tourner, cliquez sur tout objet sélectionné pour changer les poignées "
+"de redimensionnement en poignées de rotation. Avant de tourner, vous pouvez "
+"glisser l'origine de la rotation à une autre position si nécessaire. "
+"Maintenez ``Maj`` pour tourner par incréments de 15 degrés. Cliquez sur tout "
+"objet sélectionné une fois de plus pour revenir dans le mode "
+"redimensionnement."
 
 #: ../../manual/objects.rst:263
 msgid ""
 "You can also rotate the selected objects in 90-degree steps by pressing "
 "``Z`` or ``Shift + Z``."
 msgstr ""
+"Vous pouvez aussi tourner les objets sélectionnés par incréments de 90 "
+"degrés en maintenant ``Z`` ou ``Maj + Z``."
 
 #: ../../manual/objects.rst:267
 msgid "Changing Stacking Order"
-msgstr ""
+msgstr "Changement de l'Ordre d’Empilage"
 
 #: ../../manual/objects.rst:269
 msgid ""
@@ -5459,22 +5508,26 @@ msgid ""
 "control the stacking order of the selected objects within their object "
 "layer using the following keys:"
 msgstr ""
+"Si le :ref:`Calque d'Objets <object-layer-introduction>` actif a une "
+"propriété Ordre d'Affichage mise à Manuel (De Haut en Bas par défaut), vous "
+"pouvez contrôler l'ordre d'empilage des objets sélectionnés dans le calque "
+"d'objets en utilisant les touches suivantes :"
 
 #: ../../manual/objects.rst:274
 msgid "``PgUp`` - Raise selected objects"
-msgstr ""
+msgstr "``PgHaut`` - Déplacer les objets sélectionnés vers le haut"
 
 #: ../../manual/objects.rst:275
 msgid "``PgDown`` - Lower selected objects"
-msgstr ""
+msgstr "``PgBas`` - Déplacer les objets sélectionnés vers le bas"
 
 #: ../../manual/objects.rst:276
 msgid "``Home`` - Move selected objects to Top"
-msgstr ""
+msgstr "``Menu`` - Déplacer les objets sélectionnés tout en haut"
 
 #: ../../manual/objects.rst:277
 msgid "``End`` - Move selected objects to Bottom"
-msgstr ""
+msgstr "``Fin`` - Déplacer les objets sélectionnés tout en bas"
 
 #: ../../manual/objects.rst:279
 msgid ""
@@ -5482,10 +5535,13 @@ msgid ""
 "multiple Object Layers, the context menu also contains actions to move "
 "the selected objects to another layer."
 msgstr ""
+"Vous pouvez aussi trouver ces actions dans le menu contextuel. quand vous "
+"avez plusieurs Canques d'Objets, le menu contextuel contient aussi des "
+"actions pour déplacer les objets sélectionnés vers un autre calque."
 
 #: ../../manual/objects.rst:284
 msgid "Flipping Objects"
-msgstr ""
+msgstr "Retourner des Objets"
 
 #: ../../manual/objects.rst:286
 msgid ""
@@ -5493,10 +5549,13 @@ msgid ""
 "vertically by pressing ``Y``. For tile objects, this also flips their "
 "images."
 msgstr ""
+"Vous pouvez retourner des objets sélectionnés horizontalement en appuyant "
+"sur ``X`` ou verticalement en appuyant sur ``Y``. Pour les objets tuiles, "
+"cela retourne aussi leurs images."
 
 #: ../../manual/objects.rst:293
 msgid "Edit Polygons"
-msgstr ""
+msgstr "Éditer des Polygones"
 
 #: ../../manual/objects.rst:295
 msgid "Shortcut: ``E``"
@@ -5511,6 +5570,12 @@ msgid ""
 "``Escape`` to deselect all nodes, or to switch back to the :ref:`select-"
 "objects-tool` tool."
 msgstr ""
+"Les polygones et polylignes ont leurs propres besoins d'édition et sont doc "
+"couverts par un outil différent, qui permet de sélectionner et de déplacer "
+"leurs nœuds. Vous pouvez sélectionner et déplacer les nœuds de plusieurs "
+"polygones à la fois. Cliquez un segment et sélectionnez les nœuds à ses deux "
+"extrémités. Appuyez sur ``Échap`` pour désélectionner tous les nœuds, ou "
+"pour revenir à :ref:`l'outil de sélection d'objets <select-objects-tool>`."
 
 #: ../../manual/objects.rst:304
 msgid ""
@@ -5518,6 +5583,10 @@ msgid ""
 " the context menu. The ``Delete`` key can also be used to delete the "
 "selected nodes, or the selected objects if no nodes are selected."
 msgstr ""
+"Les nœuds peuvent être supprimés en les sélectionnant et en choisissant \" "
+"\tSupprimer les Nœuds\" depuis le menu contextuel. La touche ``Suppr`` peut "
+"aussi être utilisée pour supprimer les nœuds sélectionnés, ou les objets "
+"sélectionnés si aucun nœud est sélectionné."
 
 #: ../../manual/objects.rst:308
 msgid ""
@@ -5527,6 +5596,11 @@ msgid ""
 "\"Split Segments\". Alternatively, you can simply double-click a segment "
 "to split it at that location."
 msgstr ""
+"Quand vous sélectionnez plusieurs nœuds à la suite dans le même polygone, "
+"vous pouvez les fusionner en choisissant \"Fusionner les Nœuds\" depuis le "
+"menu contextuel. Vous pouvez aussi scinder les segments entre les nœuds en "
+"choisissant \"Séparer les Segments\". Alternativement, vous pouvez tout "
+"simplement double-cliquer un segment pour le séparer à l'endroit cliqué."
 
 #: ../../manual/objects.rst:314
 msgid ""
@@ -5535,6 +5609,10 @@ msgid ""
 "convert a polygon into a polyline, or turn one polyline object in two "
 "polyline objects."
 msgstr ""
+"Vous pouvez supprimer un segment quand deux nœuds consécutifs sont "
+"sélectionnés en choisissant \"Supprimer le Segment\" dans le menu "
+"contextuel. Cela va convertir un polygone en polyligne, ou transformer un "
+"objet polyligne en deux objets polylignes."
 
 #: ../../manual/objects.rst:323
 msgid ""
@@ -5543,10 +5621,14 @@ msgid ""
 " the :ref:`insert-polygon-tool` tool and clicking on either end of an "
 "already selected polyline."
 msgstr ""
+"Il est possible d'étendre une polyligne pour chacun de ses bouts, soit en "
+"faisant un clic droit sur ces nœuds en choisissant \"Étendre la Polyligne\", "
+"ou en passant par :ref:`l'outil d'insertion de polygone <insert-polygone-"
+"tool>` et en cliquant sur un des bouts d'une polyligne déjà sélectionnée."
 
 #: ../../manual/objects.rst:336
 msgid "Connecting Objects"
-msgstr ""
+msgstr "Connecter des Objets"
 
 #: ../../manual/objects.rst:338
 msgid ""
@@ -5556,36 +5638,50 @@ msgid ""
 "object. This property can then be set to the desired target object in "
 "several ways."
 msgstr ""
+"Il peut souvent être utile de connecter un objet avec un autre, comme quand "
+"un interrupteur doit ouvrir une porte ou un PNJ doit suivre un chemin donné. "
+"Pour faire cela, ajoutez une propriété personnalisée de type ``object`` "
+"(objet) à l'objet source. Cette propriété peut être assignée à l'objet cible "
+"désiré de plusieurs façons."
 
 #: ../../manual/objects.rst:343
 msgid ""
 "Make sure the property value is selected, as seen on the following "
 "screenshot:"
 msgstr ""
+"Faites attention à ce que la valeur de la propriété soit sélectionnée, comme "
+"dans la capture d'écran suivante :"
 
 #: ../../manual/objects.rst:348
 msgid "Object Connection Property"
-msgstr ""
+msgstr "Propriété de Connexion d'Objet"
 
 #: ../../manual/objects.rst:350
 msgid "Then, you can set the connection by either:"
 msgstr ""
+"Ensuite, vous pouvez mettre en place la connexion en faisant d'une des "
+"actions suivantes :"
 
 #: ../../manual/objects.rst:352
 msgid "Typing in the ID of the target object."
-msgstr ""
+msgstr "Écrire l'ID de l'objet cible."
 
 #: ../../manual/objects.rst:354
 msgid ""
 "Clicking the icon with the window and magnifier, to open a dialog where "
 "you can filter all objects on the map to find your target object."
 msgstr ""
+"Cliquer l'icône avec la fenêtre et la loupe pour ouvrir une boîte de "
+"dialogue là où vous pouvez filtrer tous les objets de la carte pour trouver "
+"votre objet cible."
 
 #: ../../manual/objects.rst:357
 msgid ""
 "Clicking the arrow icon and then clicking an object on the map to set it "
 "as the target object."
 msgstr ""
+"Cliquez sur l'icône de flèche et ensuite cliquez l'objet sur la carte pour "
+"l'enregistrer en tant qu'objet cible."
 
 #: ../../manual/objects.rst:360
 msgid ""
@@ -5595,6 +5691,12 @@ msgid ""
 "of the object layer). You can toggle the display of these arrows using "
 "*View -> Show Object References*."
 msgstr ""
+"Comme montré dans la capture d'écran ci-dessus, toute connexion entre objets "
+"est affichée comme des flèches qui prennent la couleur de leur objet cible ("
+"défini comme une partie des :ref:`types d'objets <predefining-properties>` "
+"ou par la couleur de leur calque d'objets). Vous pouvez activer/désactiver "
+"l'affichage de ces flèches en utilisant *Vue -> Montrer les Références des "
+"Objets*."
 
 #: ../../manual/objects.rst:366
 msgid ""
@@ -5602,12 +5704,17 @@ msgid ""
 "can jump there by right-clicking the property and selecting *Go to "
 "Object*."
 msgstr ""
+"Si vous voulez vous rendre sur l'objet cible mais qu'il est très loin, vous "
+"pouvez sauter vers celui-ci en faisant un clic droit sur la propriété et en "
+"sélectionnant *Aller à l'Objet*."
 
 #: ../../manual/objects.rst:372
 msgid ""
 "Here are some ideas about improvements that could be made to the above "
 "tools:"
 msgstr ""
+"Voici quelques idées d'améliorations qui peuvent être apportées aux outils "
+"ci-dessus :"
 
 #: ../../manual/objects.rst:375
 msgid ""
@@ -5615,6 +5722,9 @@ msgid ""
 " and polylines, like allowing to rotate and scale the selected nodes "
 "(`#1487 <https://github.com/bjorn/tiled/issues/1487>`__)."
 msgstr ""
+"Quelques améliorations peuvent toujours être faites sur le support d'édition "
+"des polygones et polylignes, tel que la rotation et le redimensionnement des "
+"nœuds sélectionnés (`#1487 <https://github.com/bjorn/tiled/issues/1487>`__)."
 
 #: ../../manual/objects.rst:379
 msgid ""
@@ -5622,10 +5732,14 @@ msgid ""
 "new users without requiring them to carefully read the manual (`#1855 "
 "<https://github.com/bjorn/tiled/issues/1855>`__)."
 msgstr ""
+"Les outils peuvent afficher des instructions d'usage courtes dans la barre "
+"d'état, pour aider les nouveaux utilisateurs sans avoir à les forcer à lire "
+"le manuel assidûment (`#1855 <https://github.com/bjorn/tiled/issues/"
+"1855>`__)."
 
 #: ../../manual/preferences.rst:2
 msgid "User Preferences"
-msgstr ""
+msgstr "Préférences Utilisateur"
 
 #: ../../manual/preferences.rst:4
 msgid ""
@@ -5634,10 +5748,16 @@ msgid ""
 "whether to draw the grid, what kind snapping to do or the last used "
 "settings when creating a new map are simply remembered persistently."
 msgstr ""
+"Il n'y a que quelques options dans les Préférences, qui sont accessibles à "
+"travers le menu *Édition > Préférences*. La plupart des autres options, tel "
+"que le type de suivi à faire ou les dernières options utilisées lors de la "
+"création d'une nouvelle carte sont simplement gardés de façon persistante."
 
 #: ../../manual/preferences.rst:9
 msgid "The preferences are stored in a system-dependent format and location:"
 msgstr ""
+"Les préférences sont stockées dans un format et emplacement dépendant du "
+"système :"
 
 #: ../../manual/preferences.rst:12
 msgid "**Windows**"
@@ -5646,6 +5766,7 @@ msgstr "**Windows**"
 #: ../../manual/preferences.rst:12
 msgid "Registry key ``HKEY_CURRENT_USER\\SOFTWARE\\mapeditor.org\\Tiled``"
 msgstr ""
+"La clé de registre ``HKEY_CURRENT_USER\\SOFTWARE\\mapeditor.org\\Tiled``"
 
 #: ../../manual/preferences.rst:14
 msgid "**macOS**"
@@ -5653,7 +5774,7 @@ msgstr "**macOS**"
 
 #: ../../manual/preferences.rst:14
 msgid ":file:`~/Library/Preferences/org.mapeditor.Tiled.plist`"
-msgstr ""
+msgstr ":file:`~/Library/Preferences/org.mapeditor.Tiled.plist`"
 
 #: ../../manual/preferences.rst:16
 msgid "**Linux**"
@@ -5661,11 +5782,11 @@ msgstr "**Linux**"
 
 #: ../../manual/preferences.rst:16
 msgid ":file:`~/.config/mapeditor.org/tiled.conf`"
-msgstr ""
+msgstr ":file:`~/.config/mapeditor.org/tiled.conf`"
 
 #: ../../manual/preferences.rst:29
 msgid "Saving and Loading"
-msgstr ""
+msgstr "Sauvegarde et Chargement"
 
 #: ../../manual/preferences.rst:36
 msgid "Include DTD reference in saved maps"
@@ -5682,25 +5803,27 @@ msgstr ""
 
 #: ../../manual/preferences.rst:40
 msgid "Reload tileset images when they change"
-msgstr ""
+msgstr "Recharger les images de jeu de tuiles lorsqu'elles changent"
 
 #: ../../manual/preferences.rst:39
 msgid ""
 "This is very useful while working on the tiles or when the tiles might "
 "change as a result of a source control system."
 msgstr ""
+"C'est très utile si vous travaillez avec des tuiles ou si les tuiles peuvent "
+"changer à cause du résultat d'un système de contrôle de source."
 
 #: ../../manual/preferences.rst:43
 msgid "Open last files on startup"
-msgstr ""
+msgstr "Restaurer la dernière session au lancer de l'application"
 
 #: ../../manual/preferences.rst:43
 msgid "Generally a useful thing to keep enabled."
-msgstr ""
+msgstr "Généralement une chose utile à laisser activé."
 
 #: ../../manual/preferences.rst:51
 msgid "Use safe writing of files"
-msgstr ""
+msgstr "Utiliser l'écriture sécurisée des fichiers"
 
 #: ../../manual/preferences.rst:46
 msgid ""
@@ -5711,16 +5834,25 @@ msgid ""
 " folder or a network drive, in which case it helps to disable this "
 "feature."
 msgstr ""
+"Cette option force les fichiers à être écrits dans un fichier temporaire, et "
+"si tout est bien allé, d'être interchangé avec le fichier cible. Cela évite "
+"une perte de données à cause d'erreurs lors de la sauvegarde ou d'espace "
+"disque insuffisant. Malheureusement, cela peut causer des problèmes lors de "
+"la sauvegarde de fichiers sur un dossier Dropbox ou un disque en ligne, dans "
+"ce cas il peut être utile de désactiver cette fonctionnalité."
 
 #: ../../manual/preferences.rst:60
 msgid "Export Options"
-msgstr ""
+msgstr "Options d'Exportation"
 
 #: ../../manual/preferences.rst:62
 msgid ""
 "The following export options are applied each time a map or tileset gets "
 "exported, without affecting the map or tileset itself."
 msgstr ""
+"Les options d'exportation suivantes sont appliquées à chaque fois qu'une "
+"carte ou jeu de tuiles est exporté, sans affecter la carte ou le jeu de "
+"tuiles lui-même."
 
 #: ../../manual/preferences.rst:68
 msgid "Embed tilesets"
@@ -5731,10 +5863,13 @@ msgid ""
 "All tilesets are embedded in the exported map. Useful for example when "
 "you are exporting to JSON and loading an external tileset is not desired."
 msgstr ""
+"Tous les jeux de tuiles sont intégrés dans la carte exportée. C'est utile "
+"pour si par exemple vous voulez exporter faire un export en JSON et le "
+"chargement d'un jeu de tuiles externe n'est pas désiré."
 
 #: ../../manual/preferences.rst:73
 msgid "Detach templates"
-msgstr ""
+msgstr "Détacher les modèles"
 
 #: ../../manual/preferences.rst:71
 msgid ""
@@ -5742,10 +5877,13 @@ msgid ""
 "templates feature but can't or don't want to load the external template "
 "object files."
 msgstr ""
+"Toutes les instances de modèles sont détachées. C'est utile si vous voulez "
+"utiliser la fonctionnalité de modèles mais vous ne pouvez ou voulez pas "
+"charger les fichiers d'objets modèles externes."
 
 #: ../../manual/preferences.rst:78
 msgid "Resolve object types and properties"
-msgstr ""
+msgstr "Résoudre les types et propriétés d'objet"
 
 #: ../../manual/preferences.rst:76
 msgid ""
@@ -5753,6 +5891,9 @@ msgid ""
 "properties are inherited from a tile (in case of a tile object) and from "
 "the default properties of their type."
 msgstr ""
+"Stocke les types et propriétés d'objet effectives dans chaque objet. Les "
+"propriétés d'objet sont hérités d'une tuile (dans le cas d'un objet tuile) "
+"et des propriétés pas défaut de leur type."
 
 #: ../../manual/preferences.rst:82
 msgid "Minimize output"
@@ -5763,48 +5904,57 @@ msgid ""
 "Omits unnecessary whitespace in the output file. This option is supported"
 " for XML (TMX and TSX), JSON and Lua formats."
 msgstr ""
+"Évite l'ajout de blancs non nécessaires dans le fichier de sortie. Cette "
+"option est supportée pour les formats XML (TMX et TSX), JSON et Lua."
 
 #: ../../manual/preferences.rst:84
 msgid ""
 "These options are also available as options when exporting using the "
 "command-line."
 msgstr ""
+"Ces options sont aussi disponibles en tant qu'options lors de l'exportation "
+"en utilisant la ligne de commande."
 
 #: ../../manual/preferences.rst:88 ../../manual/preferences.rst:91
 msgid "Interface"
-msgstr ""
+msgstr "Interface"
 
 #: ../../manual/preferences.rst:95
 msgid "Language"
-msgstr ""
+msgstr "Langue"
 
 #: ../../manual/preferences.rst:94
 msgid ""
 "By default the language tries to match that of the system, but if it "
 "picks the wrong one you can change it here."
 msgstr ""
+"Par défaut la langue essaye d'utiliser celle du système, mais si elle "
+"choisit la mauvaise vous pouvez toujours la changer ici."
 
 #: ../../manual/preferences.rst:98
 msgid "Grid colour"
-msgstr ""
+msgstr "Couleur de la grille"
 
 #: ../../manual/preferences.rst:98
 msgid "Because black is not always the best color for the grid."
-msgstr ""
+msgstr "Car le noir n'est pas toujours la meilleure couleur pour la grille."
 
 #: ../../manual/preferences.rst:103
 msgid "Fine grid divisions"
-msgstr ""
+msgstr "Division de la grille fine"
 
 #: ../../manual/preferences.rst:101
 msgid ""
 "The tile grid can be divided further using this setting, which affects "
 "the \"Snap to Fine Grid\" setting in the *View > Snapping* menu."
 msgstr ""
+"La grille de tuiles peut être divisée encore plus en utilisant cette option, "
+"ce qui affecte l'option \"Suivre la Grille Fine\" dans le menu *Vue > Suivi "
+"de Grille*."
 
 #: ../../manual/preferences.rst:108
 msgid "Object line width"
-msgstr ""
+msgstr "Épaisseur de la ligne des objets"
 
 #: ../../manual/preferences.rst:106
 msgid ""
@@ -5812,10 +5962,14 @@ msgid ""
 "like it thinner or even thicker. On some systems the DPI-based scaling "
 "will affect this setting as well."
 msgstr ""
+"Les formes sont rendues avec une ligne de 2 pixels d'épaisseur par défaut, "
+"mais certaines personnes aiment avoir une ligne plus fine ou même plus "
+"épaisse. Sur certains systèmes le redimensionnement basé sur le PPP va aussi "
+"affecter cette option."
 
 #: ../../manual/preferences.rst:121
 msgid "Object selection behavior"
-msgstr ""
+msgstr "Comportement de la sélection des objets"
 
 #: ../../manual/preferences.rst:115
 msgid ""
@@ -5824,6 +5978,11 @@ msgid ""
 "the currently selected layers, or to only pick objects from the selected "
 "layers."
 msgstr ""
+"Par défaut :ref:`l'outil de sélection d'objets <select-objects-tool>` "
+"sélectionne les objets de n'importe quel calque. Avec cette option, vous "
+"pouvez forcer une préférence de sélection d'objets dans les calques "
+"couramment sélectionnés, ou de seulement choisir des objets dans les calques "
+"sélectionnés."
 
 #: ../../manual/preferences.rst:120
 msgid ""
@@ -5831,10 +5990,13 @@ msgid ""
 "automatically prefers to select objects from the currently selected "
 "layers."
 msgstr ""
+"Quand l'option \"Surligner le Calque Courant\" est activée, Tiled préfère "
+"automatiquement la sélection d'objets depuis les calques couramment "
+"sélectionnés."
 
 #: ../../manual/preferences.rst:126
 msgid "Hardware accelerated drawing (OpenGL)"
-msgstr ""
+msgstr "Utilisation de l'accélération matérielle (OpenGL)"
 
 #: ../../manual/preferences.rst:124
 msgid ""
@@ -5842,10 +6004,14 @@ msgid ""
 "It's usually not an improvement and may lead to crashes, but in some "
 "scenarios it can make editing more responsive."
 msgstr ""
+"Ceci active une façon assez non-optimisée de rendre la carte en utilisant "
+"OpenGL. Ce n'est souvent pas une amélioration et cela peut mener à des "
+"plantages, mais dans certains scénarios cela peut rendre l'édition plus "
+"réactive."
 
 #: ../../manual/preferences.rst:136
 msgid "Mouse wheel zooms by default"
-msgstr ""
+msgstr "La molette de la souris zoome par défaut"
 
 #: ../../manual/preferences.rst:133
 msgid ""
@@ -5853,10 +6019,14 @@ msgid ""
 "Control (or Command on macOS). It can be a convenient way to navigate the"
 " map, but it can also interfere with panning on a touchpad."
 msgstr ""
+"Cette option force la molette de la souris à zoomer sans avoir besoin de "
+"maintenir la touche Contrôle (ou Commande sur macOS). Cela peut être un "
+"moyen utile de naviguer sur la carte, mais cela peut aussi interférer avec "
+"le déplacement sur un pavé tactile."
 
 #: ../../manual/preferences.rst:145
 msgid "Middle mouse button uses auto-scrolling"
-msgstr ""
+msgstr "Le clic milieu de la souris active le défilement automatique"
 
 #: ../../manual/preferences.rst:143
 msgid ""
@@ -5864,10 +6034,12 @@ msgid ""
 "the map directly but instead controls the speed of a continuous panning "
 "movement."
 msgstr ""
+"Quand cette option est activée, le clic milieu de la souris ne glisse pas la "
+"carte directement mais contrôle la vitesse d'un mouvement continu à la place."
 
 #: ../../manual/preferences.rst:154
 msgid "Use smooth scrolling"
-msgstr ""
+msgstr "Utiliser un défilement doux"
 
 #: ../../manual/preferences.rst:152
 msgid ""
@@ -5876,10 +6048,14 @@ msgid ""
 "enabled (the default), the view scrolls continuously while the keys are "
 "held down."
 msgstr ""
+"Cette option affecte le comportement lors du défilement avec les flèches "
+"directionnelles. Quand elle est désactivée, la vue défile en pas basé sur "
+"les évènements d'appui de touche. Quand elle est activée (par défaut), le "
+"vue défile continuellement tant que la touche est maintenue."
 
 #: ../../manual/preferences.rst:161
 msgid "Updates"
-msgstr ""
+msgstr "Mises à Jour"
 
 #: ../../manual/preferences.rst:163
 msgid ""
@@ -5887,12 +6063,19 @@ msgid ""
 "updates in the status bar. Here you can disable this functionality. It is"
 " recommended to keep at least one of these enabled."
 msgstr ""
+"Par défaut, Tiled vérifie les nouveautés et si de nouvelles versions "
+"existent et souligne toutes mises à jour dans la barre d'état. Vous pouvez "
+"désactiver cette fonctionnalité ici. Il est recommandé de garder au moins "
+"une de ces options activées."
 
 #: ../../manual/preferences.rst:167
 msgid ""
 "If you disable displaying of new versions, you can still manually check "
 "whether a new version is available by opening the *About Tiled* dialog."
 msgstr ""
+"Si vous désactivez l'affichage de nouvelles versions, vous pouvez toujours "
+"vérifier manuellement si une nouvelle version est disponible en ouvrant la "
+"boîte de dialogue *À Propos de Tiled*."
 
 #: ../../manual/preferences.rst:177
 msgid "Keyboard"
@@ -5903,12 +6086,16 @@ msgid ""
 "Here you can add, remove or change the keyboard shortcuts of most "
 "available actions."
 msgstr ""
+"Ici vous pouvez ajouter, enlever ou changer les raccourcis clavier de la "
+"majorité des actions."
 
 #: ../../manual/preferences.rst:182
 msgid ""
 "Conflicting keybindings are highlighted in red. They will not work until "
 "you resolve the conflict."
 msgstr ""
+"Les raccourcis conflictuels sont en rouge. ils ne marcheront que si vous "
+"résolvez le conflit."
 
 #: ../../manual/preferences.rst:185
 msgid ""
@@ -5916,10 +6103,14 @@ msgid ""
 "functionality to save the keybindings somewhere, so that you can easily "
 "recover that setup or copy it to other Tiled installations."
 msgstr ""
+"Si vous personnalisez plusieurs raccourcis, il est recommandé d'utiliser la "
+"fonctionnalité d'exportation pour sauvegarder vos raccourcis quelque part, "
+"pour que vous puissiez récupérer votre configuration ou la copier sur "
+"d'autres installations de Tiled."
 
 #: ../../manual/preferences.rst:191
 msgid "Theme"
-msgstr ""
+msgstr "Thème"
 
 #: ../../manual/preferences.rst:193
 msgid ""
@@ -5928,6 +6119,10 @@ msgid ""
 " with Qt. On macOS, this style can also be used, but because it looks so "
 "out of place the default is \"Native\" there."
 msgstr ""
+"Sur Windows et Linux, le style utilisé par défaut par Tiled est \"Tiled "
+"Fusion\". C'est une version personnalisée du style \"Fusion\" qui est "
+"distribué avec Qt. Sur macOS, ce style peut aussi être utilisé, mais le "
+"style par défaut est \"Native\" car il a n'a vraiment pas l'air à sa place."
 
 #: ../../manual/preferences.rst:198
 msgid ""
@@ -5936,6 +6131,11 @@ msgid ""
 "some other adjustments are made to keep things readable. You can also "
 "choose a custom selection color."
 msgstr ""
+"Le style \"Tiled Fusion\" permet la personnalisation de la couleur de base. "
+"Si vous choisissez une couleur de base foncée, le texte devient "
+"automatiquement blanc et quelques autres ajustements sont faits pour que le "
+"tout soit lisible. Vous pouvez aussi choisir une couleur de sélection "
+"personnalisée."
 
 #: ../../manual/preferences.rst:203
 msgid ""
@@ -5944,16 +6144,22 @@ msgid ""
 "base color and selection color can't be changed when using this style, as"
 " they depend on the system."
 msgstr ""
+"Le style \"Native\" essaye de s'accorder avec le système d'exploitation, et "
+"est disponible car il est dans quelques cas préférable au style "
+"personnalisé. La couleur de base et la couleur de sélection ne peuvent pas "
+"être changés en utilisant ce style car elles dépendent du système."
 
 #: ../../manual/preferences.rst:209
 msgid "Plugins"
-msgstr ""
+msgstr "Greffons"
 
 #: ../../manual/preferences.rst:211
 msgid ""
 "Here you can choose which plugins are enabled, as well as opening the "
 ":doc:`scripted extensions </reference/scripting>` folder."
 msgstr ""
+"Ici vous pouvez choisir quels greffons sont actifs, ainsi qu'ouvrir le "
+"dossier :doc:`d'extensions scriptées </reference/scripting>`."
 
 #: ../../manual/preferences.rst:214
 msgid ""
@@ -5961,6 +6167,10 @@ msgid ""
 "plugins are enabled by default, while more specific ones need to be "
 "manually enabled."
 msgstr ""
+"Les greffons ajoutent un support pour des formats de fichiers de cartes et/"
+"ou de jeux de tuiles. Quelques greffons génériques sont activés par défaut, "
+"quand ceux qui sont un peu plus spécifiques doivent être activés "
+"manuellement."
 
 #: ../../manual/preferences.rst:217
 msgid ""
@@ -5968,18 +6178,24 @@ msgid ""
 "When a plugin fails to load, try hovering its icon to see if the tool tip"
 " displays a useful error message."
 msgstr ""
+"Il n'y a pas besoin de redémarrer Tiled lors de l'activation ou de la "
+"désactivation de greffons. Quand le chargement d'un greffon échoue, essayez "
+"de passer votre souris sur son icône pour voir si l'infobulle affiche un "
+"message d'erreur utile."
 
 #: ../../manual/preferences.rst:221
 msgid "See :doc:`export` for more information about supported file formats."
 msgstr ""
+"Voir :doc:`l'exportation <export>` pour plus d'informations sur les formats "
+"de fichier supportés."
 
 #: ../../manual/projects.rst:6
 msgid "Projects"
-msgstr ""
+msgstr "Projets"
 
 #: ../../manual/projects.rst:9
 msgid "What's in a Project"
-msgstr ""
+msgstr "Ce qu'il y a dans un Projet"
 
 #: ../../manual/projects.rst:11
 msgid ""
@@ -5987,6 +6203,9 @@ msgid ""
 " assets belonging to that project. In addition, it provides an anchor for"
 " the :ref:`session file <sessions>`."
 msgstr ""
+"Un projet Tiled définit la liste des dossiers contenant les ressources "
+"appartenant à ce projet en premier lieu. De plus, il fournit une base pour "
+"le :ref:`fichier de session <sessions>`."
 
 #: ../../manual/projects.rst:15
 msgid ""
@@ -5994,10 +6213,13 @@ msgid ""
 "properties, which can be changed through the *Project -> Project "
 "Properties...* dialog."
 msgstr ""
+"Mis à part la liste de dossiers, un projet comprend les propriétés "
+"suivantes, qui peuvent être changées dans la boîte de dialogue *Projet -> "
+"Propriétés de Projet...*."
 
 #: ../../manual/projects.rst:25
 msgid "Extensions Directory"
-msgstr ""
+msgstr "Dossier d'Extensions"
 
 #: ../../manual/projects.rst:20
 msgid ""
@@ -6006,10 +6228,14 @@ msgid ""
 "you have a directory called \"extensions\" alonside your project file it "
 "will be picked up automatically."
 msgstr ""
+"Un dossier spécifique au projet dans lequel vous pouvez mettre des :doc:`"
+"extensions Tiled</reference/scripting>`. Sa valeur est simplement "
+"``extensions`` par défaut, donc si vous avez un dossier nommé \"extensions\" "
+"à côté de votre fichier de projet, il sera choisi automatiquement."
 
 #: ../../manual/projects.rst:25
 msgid "The directory is loaded in addition to the global extensions."
-msgstr ""
+msgstr "Le dossier est chargé en plus des extensions globales."
 
 #: ../../manual/projects.rst:33
 msgid "Object Types File"
@@ -6022,12 +6248,18 @@ msgid ""
 "properties>`, to make sure any types you define are saved to the right "
 "location."
 msgstr ""
+"Réfère au fichier définissant les types d'objet. Faites attention à "
+"spécifier ce fichier avant d'ouvrir :ref:`l'Éditeur de Types d'Objet "
+"<predefining-properties>`, pour être sûr que tous les types que vous avez "
+"définis sont sauvegardés au bon endroit."
 
 #: ../../manual/projects.rst:32
 msgid ""
 "When left unspecified, object type definitions are saved to a global "
 "location."
 msgstr ""
+"Lorsque cette option n'est pas spécifiée, les définitions de types d'objet "
+"sont sauvegardées dans une location globale."
 
 #: ../../manual/projects.rst:38
 msgid "Automapping Rules File"
@@ -6039,6 +6271,9 @@ msgid ""
 "maps while this project is loaded. It is ignored for maps that have a "
 "``rules.txt`` file saved alongside them."
 msgstr ""
+"Réfère à un fichier de règles :doc:`d'automapping <automapping>`qui doit "
+"être utilisé pour toutes les cartes tant que ce projet est chargé. Ignoré "
+"pour les cartes qui ont un fichier ``rules.txt`` sauvegardé à côté d'elles."
 
 #: ../../manual/projects.rst:43
 msgid "Sessions"
@@ -6051,6 +6286,11 @@ msgid ""
 " and stores your last opened files, part of their last editor state, last"
 " used parameters in dialogs, etc."
 msgstr ""
+"Chaque fichier de projet a un fichier *.tiled-session* associé stocké avec "
+"lui. Le fichier de session ne doit généralement pas être partagé avec "
+"d'autres personnes et stocke vos derniers fichiers ouverts, une partie de "
+"leur dernier état dans l'éditeur, les derniers paramètres utilisés dans les "
+"boîtes de dialogue, etc."
 
 #: ../../manual/projects.rst:50
 msgid ""
@@ -6058,10 +6298,14 @@ msgid ""
 "session, so you can easily resume where you left off. When no project is "
 "loaded a global session file is used."
 msgstr ""
+"Lors d'un changement de projet Tiled passe à la session associée "
+"automatiquement, pour que vous puissiez facilement reprendre là où vous vous "
+"êtes arrêtés. Quand aucun projet n'est chargé, un fichier de session global "
+"est utilisé."
 
 #: ../../manual/projects.rst:55
 msgid "Opening a File in the Project"
-msgstr ""
+msgstr "Ouvrir un Fichier dans le Projet"
 
 #: ../../manual/projects.rst:57
 msgid ""
@@ -6070,20 +6314,29 @@ msgid ""
 " project. Use *File -> Open File in Project* (``Ctrl+P``) to open the "
 "file filter and just type the name of the file you'd like to open."
 msgstr ""
+"Un autre avantage de la mise en place d'un projet est que vous pouvez "
+"rapidement ouvrir n'importe quel fichier avec une extension reconnue dans un "
+"des dossiers du projet. Utilisez *Fichier -> Ouvrir un Fichier dans le "
+"Projet* (``Ctrl + P``) pour ouvrir le filtre de fichiers et juste entrer le "
+"nom du fichier que vous voulez ouvrir."
 
 #: ../../manual/projects.rst:65
 msgid "Open File in Project"
-msgstr ""
+msgstr "Ouvrir un Fichier dans le Projet"
 
 #: ../../manual/projects.rst:70
 msgid "There are many ways in which the projects could be made more powerful:"
 msgstr ""
+"Il y a plusieurs moyens par lesquels les projets peuvent être rendus plus "
+"puissants :"
 
 #: ../../manual/projects.rst:72
 msgid ""
 "Make the project accessible through the :doc:`scripting API "
 "</reference/scripting>`."
 msgstr ""
+"Rendre le projet accessible depuis :doc:`l'API de création de script </"
+"reference/scripting>`."
 
 #: ../../manual/projects.rst:75
 msgid ""
@@ -6091,6 +6344,9 @@ msgid ""
 " reduce the chance of accidentally doing something your project doesn't "
 "support."
 msgstr ""
+"Autoriser la désactivation de fonctionnalités sur une base par projet, pour "
+"simplifier l'interface utilisateur et réduire les chances d’accidentellement "
+"faire quelque chose que votre projet ne supporte pas."
 
 #: ../../manual/projects.rst:79
 msgid ""
@@ -6098,10 +6354,13 @@ msgid ""
 "images, tilesets and templates can be made more efficient (potentially "
 "replacing the system file dialog)."
 msgstr ""
+"Reconnaître les différentes ressources de votre projet pour que la sélection "
+"d'images, de jeux de tuiles et de modèles puisse être plus efficace ("
+"potentiellement en remplaçant la boîte de dialogue de fichiers système)."
 
 #: ../../manual/python.rst:2
 msgid "Python Scripts"
-msgstr ""
+msgstr "Scripts Python"
 
 #: ../../manual/python.rst:6
 msgid ""
@@ -6111,6 +6370,12 @@ msgid ""
 "map formats. It is fully documented and works out of the box on all "
 "platforms. It should be preferred over the Python plugin when possible."
 msgstr ""
+"Depuis Tiled 1.3, Tiled peut être :doc:`\"tendu en utilisant du JavaScript </"
+"reference/scripting>`. L'API JavaScript fournit plus d'opportunités "
+"d'étendre les fonctionnalités de Tiled que l'ajout de formats de cartes "
+"personnalisés. Elle est complètement documentée et marche directement sur "
+"toutes les plateformes. Elle doit être préférée au greffon en Python si "
+"possible."
 
 #: ../../manual/python.rst:12
 msgid ""
@@ -6119,6 +6384,10 @@ msgid ""
 "compile Tiled yourself and the scripts are easy to deploy to any "
 "platform."
 msgstr ""
+"Tiled est distribué avec un greffon qui vous permet d'utiliser du Python 3 "
+"pour ajouter un support pour des formats de cartes personnalisés. C'est "
+"utile surtout car vous n'avez pas besoin de compiler Tiled vous-même et les "
+"scripts sont faciles à déployer sur toutes les plateformes."
 
 #: ../../manual/python.rst:17
 msgid ""
@@ -6127,10 +6396,14 @@ msgid ""
 "Tiled after adding or changing scripts (though the directory needs to "
 "exist when you start Tiled)."
 msgstr ""
+"Pour que les scripts soient chargés, ils doivent être placé dans ``~/.tiled``"
+". Tiled vérifie si ce répertoire change, donc il n'y a pas besoin de "
+"relancer Tiled après avoir ajouté ou changé des scripts (cependant le "
+"répertoire doit exister avant de lancer Tiled)."
 
 #: ../../manual/python.rst:22
 msgid "There are several `example scripts`_ available in the repository."
-msgstr ""
+msgstr "Il y a plusieurs `scripts d'exemple`_ disponibles dans le dépôt."
 
 #: ../../manual/python.rst:26
 msgid ""
@@ -6138,12 +6411,18 @@ msgid ""
 "(``cmd.exe``), which should  start in your home folder by default, then "
 "type ``mkdir .tiled`` to create the folder."
 msgstr ""
+"Pour créer le dossier ``~/.tiled`` sur Windows, ouvrez l'invite de commande "
+"(``cmd.exe``), qui doit commencer dans votre dossier personnel par défaut, "
+"puis entrez ``mkdir .tiled`` pour créer le dossier."
 
 #: ../../manual/python.rst:30
 msgid ""
 "On Linux, folders starting with a dot are hidden by default. In most file"
 " managers you can toggle showing of hidden files using ``Ctrl+H``."
 msgstr ""
+"Sur Linux, les dossiers commençant avec un point sont cachés par défaut. "
+"Dans la plupart des explorateurs de fichiers vous pouvez activer la "
+"visibilité des fichiers cachés en utilisant ``Ctrl+H``."
 
 #: ../../manual/python.rst:35
 msgid ""
@@ -6152,6 +6431,10 @@ msgid ""
 "of this plugin may cause a crash (`#2091`_). To use the Python plugin, "
 "first enable it in the Preferences."
 msgstr ""
+"Depuis Tiled 1.2.4, les greffons en Python sont désactivés par défaut, car "
+"le chargement de ce greffon peut causer un plantage dépendant de la version "
+"de Python installée sur le système (`#2091`_). Pour utiliser le greffon en "
+"Python, veuillez tout d'abord l'activer dans les Préférences."
 
 #: ../../manual/python.rst:42
 msgid ""
@@ -6160,13 +6443,19 @@ msgid ""
 "https://www.python.org/). You will also need to check the box \"Add "
 "Python 3.7 to PATH\" in the installer:"
 msgstr ""
+"Sur Windows, Python n'est pas installé par défaut. Pour que le greffon en "
+"Python de Tiled marche, il faut installer Python 3.7 (récupérez-le depuis "
+"https://www.python.org/). Vous aurez aussi besoin de cocher la case \"Add "
+"Python 3.7 to PATH\" (Ajouter Python 3.7 à PATH) dans le programme "
+"d'installation :"
 
 #: ../../manual/python.rst:49
+#, fuzzy
 msgid ""
 "On Linux you will also need to install the appropriate package. However, "
 "currently Linux builds are done on Ubuntu 18.04 against Python 3.6, and "
 "you'd need to install the same version somehow."
-msgstr ""
+msgstr "Sur Linux vous aurez aussi besoin d'installer le paquet approprié."
 
 #: ../../manual/python.rst:53
 msgid ""
@@ -6175,20 +6464,26 @@ msgid ""
 "with Python 2.7 by default. If you rely on this plugin on macOS you'll "
 "need to use Tiled 1.1 for now."
 msgstr ""
+"Le greffon en Python n'est couramment pas activé pour les versions de macOS. "
+"Nous devons trouver comment utiliser Python 3, tandis que macOS ne distribue "
+"que Python 2.7 par défaut. Si vous utilisez ce greffons sur macOS vous aurez "
+"besoin d'utiliser Tiled 1.1 pour le moment."
 
 #: ../../manual/python.rst:59
 msgid "Example Export Plugin"
-msgstr ""
+msgstr "Exemple de Greffon d'Exportation"
 
 #: ../../manual/python.rst:61
 msgid "Suppose you'd like to have a map exported in the following format:"
-msgstr ""
+msgstr "Supposez que vous voulez une carte exportée dans le format suivant :"
 
 #: ../../manual/python.rst:78
 msgid ""
 "You can achieve this by saving the following ``example.py`` script in the"
 " scripts directory:"
 msgstr ""
+"Vous pouvez réalisez ceci en sauvegardant le script ``example.py`` suivant "
+"dans le dossier de scripts :"
 
 #: ../../manual/python.rst:117
 msgid ""
@@ -6196,6 +6491,9 @@ msgid ""
 "going to *File > Export*, which allows you to export the map using the "
 "above script."
 msgstr ""
+"Ensuite vous pourrez voir une entrée \"Example files\" dans la liste de "
+"types dans *Fichier > Exporter*, qui vous permet d'exporter la carte en "
+"utilisant le script ci-dessus."
 
 #: ../../manual/python.rst:123
 msgid ""
@@ -6204,10 +6502,14 @@ msgid ""
 " Python plugin would be very appreciated. See `open issues related to "
 "Python support`_."
 msgstr ""
+"Cet exemple ne supporte pas l'utilisation des groupes de calques, et en fait "
+"l'API de création de script ne les supportent pas encore.Toute aide pour "
+"maintenir le greffon en Python serait vraiment appréciée. Voir `tickets "
+"ouverts liés au support Python`_."
 
 #: ../../manual/python.rst:129
 msgid "Debugging Your Script"
-msgstr ""
+msgstr "Déboguer Votre Script"
 
 #: ../../manual/python.rst:131
 msgid ""
@@ -6215,6 +6517,9 @@ msgid ""
 " the Console, which can be enabled in *View > Views and Toolbars > "
 "Console*."
 msgstr ""
+"Toute erreur rencontrée lors de l'analyse ou du lancer du script sont "
+"affichées dans la Console, qui peut être activée dans *Vue > Vues et Barres "
+"d'Outils > Console*."
 
 #: ../../manual/python.rst:136
 msgid "API Reference"
@@ -6226,6 +6531,9 @@ msgid ""
 "now please check out the `source file`_ for available classes and "
 "methods."
 msgstr ""
+"Ce serait bien d'avoir une référence complète de l'API documentée ici, mais "
+"pour le moment veuillez voir le `fichier source`_ pour les classes et "
+"méthodes disponibles."
 
 #: ../../manual/terrain.rst:2
 msgid "Using Terrains"
@@ -6240,6 +6548,13 @@ msgid ""
 " various transitions or connections quickly gets tedious. The :ref"
 ":`terrain-tool` was added to make editing tile maps easier in such cases."
 msgstr ""
+"Lors de l'édition d'une carte de tuiles, des fois nous ne pensons pas à des "
+"*tuiles* mais plus à des *terrains* - des aires de tuiles avec des "
+"transitions dans d'autres types de tuiles. Par exemple nous voulons dessiner "
+"un carré d'herbe, une route ou une plateforme donnée. Dans ce cas, choisir "
+"les bonnes tuiles pour les transitions différentes ou les connections peut "
+"rapidement devenir pénible. :ref:`L'outil de terrain <terrain-tool>` a été "
+"ajouté pour rendre l'édition de carte plus facile dans ce genre de cas."
 
 #: ../../manual/terrain.rst:13
 msgid ""
@@ -6248,6 +6563,11 @@ msgid ""
 "were unified and extended in Tiled 1.5. As a result, *terrain information"
 " defined in Tiled 1.5 can't be used by older versions.*"
 msgstr ""
+"Même si Tiled supporte les terrains depuis la version 0.9 et a plus tard "
+"supporté une fonctionnalité similaire nommée \"tuiles Wang\" depuis la "
+"version 1.1, les deux fonctionnalités ont été unifiées et étendues dans "
+"Tiled 1.5. En résultat, *les informations de terrain définies dans Tiled 1.5 "
+"ne peuvent pas être utilisées dans les versions antérieures.*"
 
 #: ../../manual/terrain.rst:18
 msgid ""
@@ -6255,6 +6575,10 @@ msgid ""
 "Sets* - sets of tiles labelled according to their terrain layouts. Tiled "
 "supports the following terrain sets:"
 msgstr ""
+"La Brosse de Terrain s'appuie sur le jeu de tuiles s'il comprend une ou "
+"plusieurs *Collections de Terrain* - des collections de tuiles étiquetées "
+"par rapport à leurs agencements de terrain. Tiled supporte les collections "
+"de terrain suivantes :"
 
 #: ../../manual/terrain.rst:30
 msgid "Corner Set"
@@ -6266,10 +6590,13 @@ msgid ""
 "transition from one type of terrain to another in between. A complete set"
 " with 2 terrains has 16 tiles."
 msgstr ""
+"Les tuiles qui ont besoin de correspondre les tuiles voisines à leurs coins, "
+"avec une transition d'un type de terrain vers un autre au milieu. Une "
+"collection complète avec 2 terrains a 16 tuiles."
 
 #: ../../manual/terrain.rst:40
 msgid "Edge Set"
-msgstr ""
+msgstr "Collection de Bords"
 
 #: ../../manual/terrain.rst:38
 msgid ""
@@ -6277,10 +6604,13 @@ msgid ""
 " for roads, fences or platforms. A complete set with 2 terrains has 16 "
 "tiles."
 msgstr ""
+"Les tuiles qui ont besoin de correspondre les tuiles voisines à leurs côtés. "
+"Ceci est commun pour des routes, des clôtures ou des plateformes. Une "
+"collection complète avec 2 terrains a 16 tuiles."
 
 #: ../../manual/terrain.rst:47
 msgid "Mixed Set"
-msgstr ""
+msgstr "Collection Mixte"
 
 #: ../../manual/terrain.rst:43
 msgid ""
@@ -6290,6 +6620,11 @@ msgid ""
 "256 tiles, but reduced sets like the 47-tile `Blob tileset`_ can be used "
 "with this type as well."
 msgstr ""
+"Les tuiles qui ont besoin de correspondre les tuiles voisines en utilisant "
+"leurs coins et leurs côtés. Cela permet de fournir plus de variations, au "
+"coût d'avoir besoin de beaucoup plus de tuiles. Une collection complète avec "
+"2 terrains a 256 tuiles, mais des collection réduites telles que le `jeu de "
+"tuiles Blob`_ de 47 tuiles peuvent aussi être utilisées avec ce type."
 
 #: ../../manual/terrain.rst:49
 msgid ""
@@ -6298,6 +6633,11 @@ msgid ""
 "edits. When necessary, it also adjusts neighboring tiles to make sure "
 "they correctly connect to the modified area."
 msgstr ""
+"Basé sur les informations d'une collection de terrain, :ref:`l'outil de "
+"terrain <terrain-tool>` peut comprendre la carte et automatiquement choisir "
+"les bonnes tuiles lors de l'édition. Si nécessaire, il peut aussi ajuster "
+"les tuiles voisines pour faire en sorte qu'elles soient connectées "
+"correctement à l'aire modifiée."
 
 #: ../../manual/terrain.rst:54
 msgid ""
@@ -6305,10 +6645,14 @@ msgid ""
 ":ref:`shape-fill-tool`, also have a mode where they can :ref:`fill an "
 "area with random terrain <terrain-fill-mode>`."
 msgstr ""
+":ref:`L'outil tampon <stamp-tool>`, ainsi que :ref:`l'outil seau de "
+"remplissage <bucket-fill-tool>` et :ref:`l'outil de remplissage de forme "
+"<shape-fill-tool>` ont aussi un mode dans lequel ils peuvent :ref:`remplir "
+"une aire avec un terrain aléatoire <terrain-fill-mode>`."
 
 #: ../../manual/terrain.rst:61
 msgid "Define the Terrain Information"
-msgstr ""
+msgstr "Définir les Informations de Terrain"
 
 #: ../../manual/terrain.rst:64
 msgid "Creating the Terrain Set"
@@ -6320,10 +6664,13 @@ msgid ""
 "and have the tileset selected, you can do this by clicking the small "
 "*Edit Tileset* button below the Tilesets view."
 msgstr ""
+"Tout d'abord, passez au fichier de jeu de tuiles. Si vous regardez la carte "
+"et que le jeu de tuiles est sélectionné, vous pouvez faire ça en cliquant le "
+"petit bouton *Éditer le Jeu de Tuiles* sous la vue Jeux de Tuiles."
 
 #: ../../manual/terrain.rst:73
 msgid "Edit Tileset button"
-msgstr ""
+msgstr "Le bouton Éditer le Jeu de Tuiles"
 
 #: ../../manual/terrain.rst:75
 msgid ""
