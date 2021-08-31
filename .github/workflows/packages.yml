@@ -17,6 +17,7 @@ on:
 env:
   QT_VERSION: 5.15.2
   QTCREATOR_VERSION: 5.0.0
+  QBS_VERSION: 1.19.2
   SENTRY_VERSION: 0.4.12
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
   TILED_SNAPSHOT: ${{ !startsWith(github.ref, 'refs/tags/v') }}
@@ -232,9 +233,8 @@ jobs:
         echo "OPENSSL_PATH=$(./dist/install-qt.sh --version ${OPENSSL_VERSION} openssl --arch ${{ matrix.openssl_arch }})" >> $GITHUB_ENV
 
     - name: Install Qbs
-      uses: crazy-max/ghaction-chocolatey@v1.5.0
-      with:
-        args: install qbs -y
+      run: |
+        choco install -y qbs --version ${QBS_VERSION}
 
     - name: Setup Qbs
       run: |
