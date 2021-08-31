@@ -198,6 +198,22 @@ QPointF MapScene::absolutePositionForLayer(const Layer &layer) const
 }
 
 /**
+ * Returns the position for a layer item.
+ *
+ * Since layer items are in a hierarchy where translation of the parent layer
+ * item affects the child layer items, the local offset is used instead of the
+ * total offset.
+ *
+ * Similarly, since the effective parallax factor is applied, this factor is
+ * ignored for group layers.
+ */
+QPointF MapScene::layerItemPosition(const Layer &layer) const
+{
+    return layer.offset() + (layer.isGroupLayer() ? QPointF()
+                                                  : parallaxOffset(layer));
+}
+
+/**
  * Returns the parallax offset of the given layer, taking into account its
  * parallax factor in combination with the current view rect.
  */
