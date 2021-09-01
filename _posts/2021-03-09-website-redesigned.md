@@ -4,7 +4,7 @@ title: Website Redesigned
 author:
   name: Thorbjørn Lindeijer
   twitter: thorbjorn81
-tags: release
+tags: website
 ---
 
 The new Tiled website went live today, mentioning some of the features added
