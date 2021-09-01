@@ -23,7 +23,6 @@
 #include "commandlineparser.h"
 #include "exporthelper.h"
 #include "languagemanager.h"
-#include "logginginterface.h"
 #include "mainwindow.h"
 #include "mapdocument.h"
 #include "mapformat.h"
@@ -108,30 +107,6 @@ private:
                                                            help);
     }
 };
-
-static const QtMessageHandler QT_DEFAULT_MESSAGE_HANDLER = qInstallMessageHandler(nullptr);
-
-static void messagesToConsole(QtMsgType type, const QMessageLogContext &context, const QString &msg)
-{
-    QString txt;
-    switch (type) {
-    case QtFatalMsg:
-        // program will quit so no point routing to the Console window
-        break;
-    case QtInfoMsg:
-    case QtDebugMsg:
-        INFO(qFormatLogMessage(type, context, msg));
-        break;
-    case QtWarningMsg:
-        WARNING(qFormatLogMessage(type, context, msg));
-        break;
-    case QtCriticalMsg:
-        ERROR(qFormatLogMessage(type, context, msg));
-        break;
-    }
-
-    (*QT_DEFAULT_MESSAGE_HANDLER)(type, context, msg);
-}
 
 static void initializePluginsAndExtensions()
 {
@@ -348,8 +323,6 @@ int main(int argc, char *argv[])
         freopen_s(&dummy, "CONOUT$", "w", stderr);
     }
 #endif
-
-    qInstallMessageHandler(messagesToConsole);
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor);

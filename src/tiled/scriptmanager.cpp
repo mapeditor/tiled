@@ -310,30 +310,42 @@ void ScriptManager::reset()
 
 void ScriptManager::initialize()
 {
-    mEngine = new QQmlEngine(this);
+    auto engine = new QQmlEngine(this);
+
+    // We'll report errors in the Console view instead
+    engine->setOutputWarningsToStandardError(false);
+    connect(engine, &QQmlEngine::warnings, this, &ScriptManager::onScriptWarnings);
+
+    mEngine = engine;
     mModule = new ScriptModule(this);
 
-    QJSValue globalObject = mEngine->globalObject();
-    globalObject.setProperty(QStringLiteral("tiled"), mEngine->newQObject(mModule));
+    QJSValue globalObject = engine->globalObject();
+    globalObject.setProperty(QStringLiteral("tiled"), engine->newQObject(mModule));
 #if QT_VERSION >= 0x050800
-    globalObject.setProperty(QStringLiteral("GroupLayer"), mEngine->newQMetaObject<EditableGroupLayer>());
-    globalObject.setProperty(QStringLiteral("Image"), mEngine->newQMetaObject<ScriptImage>());
-    globalObject.setProperty(QStringLiteral("ImageLayer"), mEngine->newQMetaObject<EditableImageLayer>());
-    globalObject.setProperty(QStringLiteral("Layer"), mEngine->newQMetaObject<EditableLayer>());
-    globalObject.setProperty(QStringLiteral("MapObject"), mEngine->newQMetaObject<EditableMapObject>());
-    globalObject.setProperty(QStringLiteral("ObjectGroup"), mEngine->newQMetaObject<EditableObjectGroup>());
-    globalObject.setProperty(QStringLiteral("Tile"), mEngine->newQMetaObject<EditableTile>());
-    globalObject.setProperty(QStringLiteral("TileLayer"), mEngine->newQMetaObject<EditableTileLayer>());
-    globalObject.setProperty(QStringLiteral("TileMap"), mEngine->newQMetaObject<EditableMap>());
-    globalObject.setProperty(QStringLiteral("Tileset"), mEngine->newQMetaObject<EditableTileset>());
-    globalObject.setProperty(QStringLiteral("WangSet"), mEngine->newQMetaObject<EditableWangSet>());
+    globalObject.setProperty(QStringLiteral("GroupLayer"), engine->newQMetaObject<EditableGroupLayer>());
+    globalObject.setProperty(QStringLiteral("Image"), engine->newQMetaObject<ScriptImage>());
+    globalObject.setProperty(QStringLiteral("ImageLayer"), engine->newQMetaObject<EditableImageLayer>());
+    globalObject.setProperty(QStringLiteral("Layer"), engine->newQMetaObject<EditableLayer>());
+    globalObject.setProperty(QStringLiteral("MapObject"), engine->newQMetaObject<EditableMapObject>());
+    globalObject.setProperty(QStringLiteral("ObjectGroup"), engine->newQMetaObject<EditableObjectGroup>());
+    globalObject.setProperty(QStringLiteral("Tile"), engine->newQMetaObject<EditableTile>());
+    globalObject.setProperty(QStringLiteral("TileLayer"), engine->newQMetaObject<EditableTileLayer>());
+    globalObject.setProperty(QStringLiteral("TileMap"), engine->newQMetaObject<EditableMap>());
+    globalObject.setProperty(QStringLiteral("Tileset"), engine->newQMetaObject<EditableTileset>());
+    globalObject.setProperty(QStringLiteral("WangSet"), engine->newQMetaObject<EditableWangSet>());
 #endif
 
-    registerFile(mEngine);
-    registerFileInfo(mEngine);
-    registerProcess(mEngine);
+    registerFile(engine);
+    registerFileInfo(engine);
+    registerProcess(engine);
 
     loadExtensions();
+}
+
+void ScriptManager::onScriptWarnings(const QList<QQmlError> &warnings)
+{
+    for (const auto &warning : warnings)
+        Tiled::ERROR(warning.toString());
 }
 
 void ScriptManager::scriptFilesChanged(const QStringList &scriptFiles)

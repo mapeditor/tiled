@@ -24,6 +24,7 @@
 
 #include <QJSValue>
 #include <QObject>
+#include <QQmlError>
 #include <QStringList>
 
 class QJSEngine;
@@ -83,6 +84,8 @@ private:
 
     void reset();
     void initialize();
+
+    void onScriptWarnings(const QList<QQmlError> &warnings);
 
     void scriptFilesChanged(const QStringList &scriptFiles);
 
