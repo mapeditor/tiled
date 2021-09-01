@@ -165,7 +165,6 @@ public:
     { return mObjectTypes; }
     static const PropertyTypes &propertyTypes()
     { return mPropertyTypes; }
-    static const PropertyType *propertyType(int typeId);
 
     static Properties objectTypeProperties(const QString &name);
 

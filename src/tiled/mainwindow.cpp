@@ -593,7 +593,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionLoadWorld, &QAction::triggered, this, [this] {
         Session &session = Session::current();
         QString lastPath = session.lastPath(Session::WorldFile);
-        QString filter = tr("All Files (*);;");
+        QString filter = tr("All Files (*)");
+        filter.append(QStringLiteral(";;"));
         QString worldFilesFilter = tr("World files (*.world)");
         filter.append(worldFilesFilter);
         QString worldFile = QFileDialog::getOpenFileName(this, tr("Load World"), lastPath,
@@ -628,7 +629,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionNewWorld, &QAction::triggered, this, [this] {
         Session &session = Session::current();
         QString lastPath = session.lastPath(Session::WorldFile);
-        QString filter = tr("All Files (*);;");
+        QString filter = tr("All Files (*)");
+        filter.append(QStringLiteral(";;"));
         QString worldFilesFilter = tr("World files (*.world)");
         filter.append(worldFilesFilter);
         QString worldFile;

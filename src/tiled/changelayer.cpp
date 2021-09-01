@@ -110,8 +110,8 @@ void SetLayerLocked::swap()
 
 
 SetLayerTintColor::SetLayerTintColor(Document *document,
-                                 Layer *layer,
-                                 QColor tintColor)
+                                     Layer *layer,
+                                     QColor tintColor)
     : mDocument(document)
     , mLayer(layer)
     , mOldTintColor(layer->tintColor())

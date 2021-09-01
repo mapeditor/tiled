@@ -274,6 +274,7 @@ struct Context
     std::vector<GMPath> paths;
     std::vector<InstanceCreation> instanceCreationOrder;
     std::unique_ptr<MapRenderer> renderer;
+    ExportContext exportContext;
 
     QString makeUnique(const QString &name) const
     {
@@ -384,7 +385,7 @@ static unsigned colorToAbgr(const QColor &color)
             (qRed(rgba) & 0xffu);
 }
 
-static QString toOverriddenPropertyValue(const QVariant &value)
+static QString toOverriddenPropertyValue(const QVariant &value, const ExportContext &context)
 {
     switch (value.userType()) {
     case QMetaType::Bool:
@@ -396,7 +397,7 @@ static QString toOverriddenPropertyValue(const QVariant &value)
     }
 
     default: {
-        const auto exportValue = ExportValue::fromPropertyValue(value);
+        const auto exportValue = context.toExportValue(value);
         return exportValue.value.toString();
     }
     }
@@ -982,7 +983,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                         GMOverriddenProperty &prop = instance.properties.back();
                         prop.propertyId = it.key();
                         prop.objectId = instance.objectId;
-                        prop.value = toOverriddenPropertyValue(it.value());
+                        prop.value = toOverriddenPropertyValue(it.value(), context.exportContext);
                     }
                 }
                 else if (mapObject->isTileObject())

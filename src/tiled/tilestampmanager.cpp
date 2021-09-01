@@ -86,32 +86,26 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
         stamp = fillTool->stamp();
     } else if (auto mapDocument = qobject_cast<MapDocument*>(DocumentManager::instance()->currentDocument())) {
         // try making a stamp from the current tile selection
-        const auto tileLayer = dynamic_cast<TileLayer*>(mapDocument->currentLayer());
-        if (!tileLayer)
+        const QRegion &selectedArea = mapDocument->selectedArea();
+        if (selectedArea.isEmpty())
             return stamp;
 
-        QRegion selection = mapDocument->selectedArea().intersected(tileLayer->bounds());
-        if (selection.isEmpty())
-            return stamp;
-
-        selection.translate(-tileLayer->position());
-        auto copy = tileLayer->copy(selection);
-
-        if (copy->isEmpty())
-            return stamp;
-
+        const QRect selectionBounds = selectedArea.boundingRect();
         const Map *map = mapDocument->map();
-        std::unique_ptr<Map> copyMap { new Map(map->orientation(),
-                                               copy->width(), copy->height(),
-                                               map->tileWidth(), map->tileHeight()) };
 
-        // Add tileset references to map
-        copyMap->addTilesets(copy->usedTilesets());
+        Map::Parameters mapParameters = map->parameters();
+        mapParameters.width = selectionBounds.width();
+        mapParameters.height = selectionBounds.height();
+        mapParameters.infinite = false;
+        auto copyMap = std::make_unique<Map>(mapParameters);
 
-        copyMap->setRenderOrder(map->renderOrder());
-        copyMap->addLayer(std::move(copy));
+        map->copyLayers(mapDocument->selectedLayers(), selectedArea, *copyMap);
 
-        stamp.addVariation(std::move(copyMap));
+        if (map->layerCount() > 0) {
+            copyMap->normalizeTileLayerPositionsAndMapSize();
+            copyMap->addTilesets(copyMap->usedTilesets());
+            stamp.addVariation(std::move(copyMap));
+        }
     }
 
     return stamp;

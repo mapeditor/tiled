@@ -1543,6 +1543,13 @@ declare class Layer extends TiledObject {
   opacity: any;
 
   /**
+   * Tint color of the layer. Will be used to tint any images rendered by this
+   * layer or by any child layers. Affects tile layers, image layers and tile
+   * objects.
+   */
+  tintColor: color;
+
+  /**
    * Whether the layer is visible (affects child layer visibility for group layers).
    */
   visible: boolean;

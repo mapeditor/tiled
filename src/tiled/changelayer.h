@@ -125,8 +125,8 @@ class SetLayerTintColor : public QUndoCommand
 {
 public:
     SetLayerTintColor(Document *document,
-                    Layer *layer,
-                    QColor tintColor);
+                      Layer *layer,
+                      QColor tintColor);
 
     void undo() override { setTintColor(mOldTintColor); }
     void redo() override { setTintColor(mNewTintColor); }

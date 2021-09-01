@@ -76,19 +76,12 @@ QSizeF TextData::textSize() const
 
 MapObject::MapObject(const QString &name, const QString &type,
                      const QPointF &pos,
-                     const QSizeF &size):
-    Object(MapObjectType),
-    mId(0),
-    mShape(Rectangle),
-    mName(name),
-    mType(type),
-    mPos(pos),
-    mSize(size),
-    mObjectTemplate(nullptr),
-    mObjectGroup(nullptr),
-    mRotation(0.0),
-    mVisible(true),
-    mTemplateBase(false)
+                     const QSizeF &size)
+    : Object(MapObjectType)
+    , mName(name)
+    , mType(type)
+    , mPos(pos)
+    , mSize(size)
 {
 }
 

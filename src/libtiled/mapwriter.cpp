@@ -922,14 +922,16 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
 
     w.writeStartElement(QStringLiteral("properties"));
 
+    const ExportContext context(mUseAbsolutePaths ? QString()
+                                                  : mDir.path());
+
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
         w.writeStartElement(QStringLiteral("property"));
         w.writeAttribute(QStringLiteral("name"), it.key());
 
-        const auto exportValue = ExportValue::fromPropertyValue(it.value(), mUseAbsolutePaths ? QString()
-                                                                                              : mDir.path());
+        const auto exportValue = context.toExportValue(it.value());
         if (exportValue.typeName != QLatin1String("string"))
             w.writeAttribute(QStringLiteral("type"), exportValue.typeName);
         if (!exportValue.propertyTypeName.isEmpty())

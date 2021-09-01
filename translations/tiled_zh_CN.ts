@@ -293,12 +293,12 @@
     <message>
         <location line="+2"/>
         <source>&amp;Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>赞助(&amp;D) ↗</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>I&apos;m a &amp;supporter!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">我是协作者!(&amp;s)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -613,7 +613,7 @@
     <message>
         <location line="+100"/>
         <source>&amp;Save World</source>
-        <translation type="unfinished">保存世界</translation>
+        <translation>保存世界(&amp;S)</translation>
     </message>
     <message>
         <location line="-86"/>
@@ -688,7 +688,7 @@
     <message>
         <location line="+189"/>
         <source>Support Tiled Development ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>赞助Tiled开发组 ↗</translation>
     </message>
     <message>
         <location line="+5"/>

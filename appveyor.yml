@@ -13,7 +13,7 @@ environment:
   BUTLER_API_KEY:
     secure: j7JM5L6KeqpnQukzJLsm7J6oV92SpmyEZLSoED1pZ3gQ79VIkdxtbQmTkqUNZPsz
   matrix:
-    - QTDIR: C:\Qt\5.12\msvc2017_64
+    - QTDIR: C:\Qt\5.15\msvc2019_64
       PYTHONHOME: C:\Python37-x64
       DEFAULT_PROFILE: MSVC2019-x64
       PUSH_RELEASE: false
@@ -44,7 +44,7 @@ environment:
 matrix:
   exclude:
     - image: Visual Studio 2015
-      QTDIR: C:\Qt\5.12\msvc2017_64
+      QTDIR: C:\Qt\5.15\msvc2019_64
     - image: Visual Studio 2015
       QTDIR: C:\Qt\5.15\mingw81_64
     - image: Visual Studio 2015
@@ -55,7 +55,7 @@ matrix:
 configuration: Release
 
 install:
-  - choco install -y qbs --version 1.19.0
+  - choco install -y qbs --version 1.19.2
   - nuget install secure-file -ExcludeVersion
   - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
 

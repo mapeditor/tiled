@@ -105,17 +105,25 @@ void EditableObjectGroup::insertObjectAt(int index, EditableMapObject *editableM
         return;
     }
 
-    if (editableMapObject->mapObject()->objectGroup()) {
+    auto mapObject = editableMapObject->mapObject();
+
+    if (mapObject->objectGroup()) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Object already part of an object layer"));
         return;
     }
 
+    // Avoid duplicate IDs by resetting when needed
+    if (Map *map = objectGroup()->map()) {
+        if (mapObject->id() != 0 && map->findObjectById(mapObject->id()))
+            mapObject->resetId();
+    }
+
     if (auto doc = document()) {
-        AddRemoveMapObjects::Entry entry { editableMapObject->mapObject(), objectGroup() };
+        AddRemoveMapObjects::Entry entry { mapObject, objectGroup() };
         entry.index = index;
         asset()->push(new AddMapObjects(doc, { entry }));
     } else {
-        objectGroup()->insertObject(index, editableMapObject->mapObject());
+        objectGroup()->insertObject(index, mapObject);
         editableMapObject->release();   // now owned by the object group
     }
 }

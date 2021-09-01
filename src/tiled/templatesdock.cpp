@@ -237,8 +237,17 @@ void TemplatesDock::refreshDummyObject()
         mDummyMapDocument = ourDummyDocuments.value(mObjectTemplate);
 
         if (!mDummyMapDocument) {
-            Map::Orientation orientation = Map::Orthogonal;
-            std::unique_ptr<Map> map { new Map(orientation, 1, 1, 1, 1) };
+            // TODO: Isometric template objects are currently not supported
+            Map::Parameters mapParameters;
+
+            // Setting sizes to 1 makes it render a one-pixel square (the map
+            // border), which serves as a somewhat hacky origin indicator.
+            mapParameters.width = 1;
+            mapParameters.height = 1;
+            mapParameters.tileWidth = 1;
+            mapParameters.tileHeight = 1;
+
+            auto map = std::make_unique<Map>(mapParameters);
 
             MapObject *dummyObject = mObjectTemplate->object()->clone();
             dummyObject->markAsTemplateBase();
@@ -385,17 +394,7 @@ void TemplatesDock::fixTileset()
         return;
 
     if (tileset->imageStatus() == LoadingError) {
-        // This code opens a new document even if there is a tileset document
-        auto tilesetDocument = DocumentManager::instance()->findTilesetDocument(tileset);
-
-        if (!tilesetDocument) {
-            auto newTilesetDocument = TilesetDocumentPtr::create(tileset);
-            tilesetDocument = newTilesetDocument.data();
-            DocumentManager::instance()->addDocument(newTilesetDocument);
-        } else {
-            DocumentManager::instance()->openTileset(tileset);
-        }
-
+        auto tilesetDocument = DocumentManager::instance()->openTileset(tileset);
         connect(tilesetDocument, &TilesetDocument::tilesetChanged,
                 this, &TemplatesDock::checkTileset, Qt::UniqueConnection);
     } else if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {

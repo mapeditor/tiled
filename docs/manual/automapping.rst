@@ -112,7 +112,7 @@ layers having the same index are taken into account for forming one
 condition. Each of these conditions are checked individually.
 
 #. index must not contain an underscore.
-#. index must not start with *not*
+#. index must not start with *not*.
 #. index may be empty.
 
 If there are tiles in the standard input layers one of these tiles must
@@ -317,13 +317,13 @@ working map:
 The Mana World Examples
 -----------------------
 
-The Mana world examples will demonstrate quite a lot of different
+The Mana World examples will demonstrate quite a lot of different
 Automapping features. At first a shoreline will be constructed, by first
 adding all the straight parts and afterwards another rule will correct
 the corners to make them also fit the given tileset. After the shoreline
 has been added, the waters will be marked as unwalkable for the game
-engine. Last but not least the grass should be tiles should be made
-random by using 5 different grasss tiles.
+engine. Last but not least the grass should be made
+random by using 5 different grass tiles.
 
 .. figure:: images/automapping/TheManaWorld/before.png
 
@@ -420,13 +420,13 @@ directly adjacent to the desired (slightly transparent) tile in the top
 left corner.
 
 We can see 3 different tiles for the lower left corner, which is
-straight shore line, bent inside and bend outside shore lines.
+straight shore line, bent inside and bent outside shore lines.
 
 Also we see 3 different inputs for the top right corner, which also is
 straight, bent in or out shore line.
 
-regions
-^^^^^^^
+Input and Output Regions
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 So with this rule we want to put the bent in shore line tile in the top
 left corner, we don't care which tile was there before. Also
@@ -438,26 +438,26 @@ but can be any decorative watertile, so just ignore it).
 +-----------------------------------------------------------------+------------------------------------------------------------------+-------------------------------------------------------------------+
 
 Therefore we will need different input and output regions. In the figure
-we can see the both tilelayers regions input and regions output. The
+we can see the both tile layers regions input and regions output. The
 input section covers just these two tiles as we discussed. The output
 region covers just the single tile we want to output. Though the input
 and output region do not overlap, the united region of both the input
 and the output region is still one coherent region, so it's one rule and
 works.
 
-Output regions can be larger than absolutely required, since when there
-are no tiles in the Output section, the tiles in the working map are not
-overwritten but just kept as is, hence the Output region could also be
+Output regions can be larger than absolutely required, since where there
+are no tiles in an output region, the tiles in the working map are not
+overwritten but just kept as is, hence each output region could also be
 sized as the united region of both the output and input region.
 
-regions\_input
-^^^^^^^^^^^^^^
+Input Layers
+^^^^^^^^^^^^
 
 Now we want to put all the nine possible patterns we observed as
 possible input for this rule. We could of course define nine different
 layers *input1\_Ground* up to *input9\_Ground*
 
-Nine TileLayers?! what a mess, we'll do it a better way.
+Nine TileLayers?! What a mess, we'll do it a better way.
 
 Also, consider having not just 3 possible tiles at the 2 locations but 4.
 Then we would need 4\*4=16 tilelayers to get all conditions. Another
@@ -479,14 +479,14 @@ each position any of the three different tiles is valid.
 | .. image:: images/automapping/TheManaWorld/2/input_Ground3.png   | input\_Ground   |
 +------------------------------------------------------------------+-----------------+
 
-outputs
-^^^^^^^
+Output Layer
+^^^^^^^^^^^^
 
 The output is straight forward, since only one tile is needed. No
 randomness is needed, hence the index is not needed to be varied, so
 it's kept empty. The desired output layer is called Ground, so the over
-all name of the single output layer will be output Ground. At this
-single layer at the correct location the correct tile is placed.
+all name of the single output layer will be output\_Ground. The correct
+tile is placed at the correct location with this layer.
 
 +------------------------------------------------------------------+
 | .. image:: images/automapping/TheManaWorld/2/output_Ground.png   |
@@ -563,8 +563,8 @@ tiles and the history of if there has been a collision tile placed is neglected.
 Random Grass Tiles
 ~~~~~~~~~~~~~~~~~~
 
-In this example we will shuffle all grass tiles, so one grass tiles will
-be replaced with another randomly chosen tile.
+In this example we will shuffle all grass tiles, so each grass tile will
+be replaced with a randomly chosen tile.
 
 As input we will choose all of our grass tiles. This is done by having
 each tile in its own input layer, so each grass tile gets accepted for
@@ -604,7 +604,7 @@ output layers (the order of the layers doesn't matter).
 | .. image:: images/automapping/TheManaWorld/5/5.png                            | output5\_Ground   |
 +-------------------------------------------------------------------------------+-------------------+
 
-An alternating wall
+An Alternating Wall
 -------------------
 
 This example will demonstrate how a wall as a transition between a
@@ -623,7 +623,7 @@ decorative tiles the input should use the decoration.
 The structure of the input, output and region layer is very similar to
 the example of the straight shoreline in The Mana World examples. The
 main difference is the different size. Since the wall contains multiple
-tiles in height, the height of the rulelayers is different as well.
+tiles in height, the height of the rule layers are different as well.
 Vertically the tiles are also alternating. As you can see in the
 following figure, every second tile displaying the base board of the
 wall has a notch for example.
@@ -650,10 +650,10 @@ the 3x2 tiles above here are no brown tiles, this rule matches.*
 
 Only the lowest 2 coordinates contain the brown tile. The upper
 coordinates contain no tile. (It is not an invisible tile, just no tile
-at all.) The input layer called *Input\_set* is depicted in the middle
+at all.) The input layer called *input\_set* is depicted in the middle
 of the figure.
 
-The output consists of only one layer as well called *Output\_Walls*. It
+The output consists of only one layer as well called *output\_Walls*. It
 contains the actual wall tiles.
 
 .. figure:: images/automapping/LoneCoder/desired.png
@@ -666,14 +666,14 @@ contains the actual wall tiles.
    A broken version of the rule, because *NoOverlappingRules* was not yet set.
 
 When trying to match the input layer to the desired set layer (right
-picture of the figure at the beginning of the example, you will see it
+picture of the figure at the beginning of the example), you will see it
 matches all the way along, with no regard of the vertical adjustment.
 
 Hence when we use the rule as discussed now, we will get not the desired
 result, because this rule overlaps itself. The overlapping problem is shown
 in figure above.
 
-Since the overlapping is not desired, we can turn it off by adding a map
-property to the rulemap *NoOverlappingRules* and setting it to *true*
+Since the overlapping is not desired, we can turn it off by adding the map
+property *NoOverlappingRules* to the rulemap and setting it to *true*.
 
 Keep in mind that the map property applies for all rules on that rule map.

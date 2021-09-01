@@ -12,7 +12,7 @@ A Tiled project file primarily defines the list of folders containing the
 assets belonging to that project. In addition, it provides an anchor for the
 :ref:`session file <sessions>`.
 
-Apart from to the list of folders, a project currently has the following
+Apart from the list of folders, a project currently has the following
 properties, which can be changed through the *Project -> Project
 Properties...* dialog.
 

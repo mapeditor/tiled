@@ -12,9 +12,9 @@ Using JavaScript
 ~~~~~~~~~~~~~~~~
 
 Tiled is :doc:`extendable using JavaScript </reference/scripting>` and it is
-possible to add custom export formats using :ref:`tiled.registerMapFormat
-<script-registerMapFormat>` or :ref:`tiled.registerTilesetFormat
-<script-registerTilesetFormat>`.
+possible to add custom export formats using `tiled.registerMapFormat
+<https://www.mapeditor.org/docs/scripting/modules/tiled.html#registermapformat>`__ or `tiled.registerTilesetFormat
+<https://www.mapeditor.org/docs/scripting/modules/tiled.html#registertilesetformat>`__.
 
 Using Python
 ~~~~~~~~~~~~

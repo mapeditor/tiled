@@ -150,9 +150,13 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
 
         auto &firstLayer = tmap.layers[0];
 
-        map = std::make_unique<Tiled::Map>(Tiled::Map::Orthogonal,
-                                           QSize(firstLayer.layerSize.x, firstLayer.layerSize.y),
-                                           QSize(firstLayer.tileSize.x, firstLayer.tileSize.y));
+        Tiled::Map::Parameters mapParameters;
+        mapParameters.width = firstLayer.layerSize.x;
+        mapParameters.height = firstLayer.layerSize.y;
+        mapParameters.tileWidth = firstLayer.tileSize.x;
+        mapParameters.tileHeight = firstLayer.tileSize.y;
+
+        map = std::make_unique<Tiled::Map>(mapParameters);
 
         tbinToTiledProperties(tmap.props, *map);
 

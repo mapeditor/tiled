@@ -71,8 +71,11 @@ std::unique_ptr<Tiled::Map> ReplicaIslandPlugin::read(const QString &fileName)
         return nullptr;
     }
 
-    // Create our map, setting width and height to 0 until we load a layer.
-    std::unique_ptr<Map> map { new Map(Map::Orthogonal, 0, 0, 32, 32) };
+    // Create our map, leaving width and height to 0 until we load a layer.
+    Map::Parameters mapParameters;
+    mapParameters.tileWidth = 32;
+    mapParameters.tileHeight = 32;
+    auto map = std::make_unique<Map>(mapParameters);
     map->setProperty("background_index", QString::number(backgroundIndex));
 
     // Load our Tilesets.

@@ -48,7 +48,6 @@ ObjectGroup::ObjectGroup(const QString &name)
 
 ObjectGroup::ObjectGroup(const QString &name, int x, int y)
     : Layer(ObjectGroupType, name, x, y)
-    , mDrawOrder(TopDownOrder)
 {
 }
 

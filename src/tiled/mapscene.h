@@ -77,6 +77,7 @@ public:
     void setViewRect(const QRectF &rect);
 
     QPointF absolutePositionForLayer(const Layer &layer) const;
+    QPointF layerItemPosition(const Layer &layer) const;
     QPointF parallaxOffset(const Layer &layer) const;
 
     static SessionOption<bool> enableWorlds;

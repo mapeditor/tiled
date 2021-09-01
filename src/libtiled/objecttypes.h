@@ -28,8 +28,9 @@
 
 #pragma once
 
-#include <QString>
 #include <QColor>
+#include <QJsonArray>
+#include <QString>
 #include <QVector>
 
 #include "properties.h"
@@ -84,5 +85,8 @@ private:
     Format mFormat;
     QString mError;
 };
+
+TILEDSHARED_EXPORT QJsonArray toJson(const ObjectTypes &objectTypes, const ExportContext &context);
+TILEDSHARED_EXPORT void fromJson(const QJsonArray &array, ObjectTypes &objectTypes, const ExportContext &context);
 
 } // namespace Tiled

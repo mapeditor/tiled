@@ -266,7 +266,7 @@ void MapItem::updateLayerPositions()
 
     for (LayerItem *layerItem : qAsConst(mLayerItems)) {
         const Layer &layer = *layerItem->layer();
-        layerItem->setPos(layer.offset() + mapScene->parallaxOffset(layer));
+        layerItem->setPos(mapScene->layerItemPosition(layer));
     }
 
     if (mDisplayMode == Editable) {
@@ -480,10 +480,8 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
             multiplier = opacityFactor;
     }
 
-    const QPointF parallaxOffset = static_cast<MapScene*>(scene())->parallaxOffset(*layer);
-
     layerItem->setOpacity(layer->opacity() * multiplier);
-    layerItem->setPos(layer->offset() + parallaxOffset);
+    layerItem->setPos(static_cast<MapScene*>(scene())->layerItemPosition(*layer));
 
     updateBoundingRect();   // possible layer offset change
 }
@@ -720,7 +718,7 @@ LayerItem *MapItem::createLayerItem(Layer *layer)
     // MapItem constructor and the layer will be positioned by a call to
     // updateLayerPositions from the MapScene.
     if (const MapScene *mapScene = static_cast<MapScene*>(scene()))
-        layerItem->setPos(layer->offset() + mapScene->parallaxOffset(*layer));
+        layerItem->setPos(mapScene->layerItemPosition(*layer));
 
     layerItem->setVisible(layer->isVisible());
     layerItem->setEnabled(mDisplayMode == Editable);

@@ -138,7 +138,7 @@ QVariant CustomPropertiesHelper::fromDisplayValue(QtProperty *property,
         value = QVariant::fromValue(value.value<DisplayObjectRef>().ref);
 
     if (const auto typeId = mPropertyTypeIds.value(property))
-        if (auto type = Object::propertyType(typeId))
+        if (auto type = findTypeById(Object::propertyTypes(), typeId))
             value = type->wrap(value);
 
     return value;

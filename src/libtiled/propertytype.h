@@ -28,13 +28,12 @@
 
 #pragma once
 
-#include <QString>
 #include <QStringList>
-#include <QColor>
+#include <QVariant>
 #include <QVector>
 #include <QMetaType>
 
-#include "properties.h"
+#include "tiled_global.h"
 
 namespace Tiled {
 
@@ -60,6 +59,9 @@ public:
 };
 
 typedef QVector<PropertyType> PropertyTypes;
+
+TILEDSHARED_EXPORT const PropertyType *findTypeById(const QVector<PropertyType> &types, int typeId);
+TILEDSHARED_EXPORT const PropertyType *findTypeByName(const QVector<PropertyType> &types, const QString &name);
 
 } // namespace Tiled
 

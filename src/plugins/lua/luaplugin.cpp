@@ -260,17 +260,19 @@ void LuaWriter::writeProperties(const Properties &properties)
 {
     mWriter.writeStartTable("properties");
 
+    const ExportContext context(mDir.path());
+
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
+        const auto exportValue = context.toExportValue(it.value());
         if (it.value().userType() == objectRefTypeId()) {
             mWriter.writeStartTable(it.key());
             mWriter.setSuppressNewlines(true);
-            mWriter.writeKeyAndValue("id", it.value().value<ObjectRef>().id);
+            mWriter.writeKeyAndValue("id", exportValue.value.toInt());
             mWriter.writeEndTable();
             mWriter.setSuppressNewlines(false);
         } else {
-            const auto exportValue = ExportValue::fromPropertyValue(it.value(), mDir.path());
             mWriter.writeQuotedKeyAndValue(it.key(), exportValue.value);
         }
     }

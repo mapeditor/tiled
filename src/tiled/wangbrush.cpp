@@ -111,7 +111,7 @@ WangBrush::WangBrush(QObject *parent)
                        tr("Terrain Brush"),
                        QIcon(QLatin1String(
                                  ":images/24/terrain-edit.png")),
-                       QKeySequence(Qt::Key_G),
+                       QKeySequence(Qt::Key_T),
                        new WangBrushItem,
                        parent)
 {

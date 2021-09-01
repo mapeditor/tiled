@@ -56,7 +56,12 @@ ClipboardManager::ClipboardManager()
     , mHasMap(false)
     , mHasProperties(false)
 {
-    connect(mClipboard, &QClipboard::dataChanged, this, &ClipboardManager::update);
+    // Connection queued to avoid a potential crash in QXcbClipboard::mimeData
+    // in direct response to QClipboard::emitChanged (see QTBUG-22552).
+    connect(mClipboard, &QClipboard::dataChanged,
+            this, &ClipboardManager::update,
+            Qt::QueuedConnection);
+
     update();
 }
 
@@ -147,43 +152,17 @@ bool ClipboardManager::copySelection(const MapDocument &mapDocument)
     const QRect selectionBounds = selectedArea.boundingRect();
 
     // Create a temporary map to write to the clipboard
-    Map copyMap(map->orientation(),
-                selectionBounds.width(),
-                selectionBounds.height(),
-                map->tileWidth(), map->tileHeight());
-    copyMap.setRenderOrder(map->renderOrder());
+    Map::Parameters mapParameters = map->parameters();
+    mapParameters.width = selectionBounds.width();
+    mapParameters.height = selectionBounds.height();
+    mapParameters.infinite = false;
+    Map copyMap(mapParameters);
 
     bool tileLayerSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),
                                          [] (Layer *layer) { return layer->isTileLayer(); });
 
-    if (tileLayerSelected) {
-        LayerIterator layerIterator(map);
-        while (Layer *layer = layerIterator.next()) {
-            switch (layer->layerType()) {
-            case Layer::TileLayerType: {
-                if (!selectedLayers.contains(layer))    // ignore unselected tile layers
-                    continue;
-
-                const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
-                const QRegion area = selectedArea.intersected(tileLayer->bounds());
-                if (area.isEmpty())                     // nothing to copy
-                    continue;
-
-                // Copy the selected part of the layer
-                auto copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
-                copyLayer->setName(tileLayer->name());
-                copyLayer->setPosition(area.boundingRect().topLeft());
-
-                copyMap.addLayer(std::move(copyLayer));
-                break;
-            }
-            case Layer::ObjectGroupType: // todo: maybe it makes to group selected objects by layer
-            case Layer::ImageLayerType:
-            case Layer::GroupLayerType:
-                break;  // nothing to do
-            }
-        }
-    }
+    if (tileLayerSelected)
+        map->copyLayers(selectedLayers, selectedArea, copyMap);
 
     if (!selectedObjects.isEmpty()) {
         bool objectGroupSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),

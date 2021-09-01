@@ -28,6 +28,8 @@
 
 #include "propertytype.h"
 
+#include "properties.h"
+
 namespace Tiled {
 
 int PropertyType::nextId = 0;
@@ -83,6 +85,32 @@ PropertyType PropertyType::fromVariant(const QVariant &variant)
     nextId = std::max(nextId, propertyType.id);
 
     return propertyType;
+}
+
+/**
+ * Returns a pointer to the PropertyType matching the given \a typeId, or
+ * nullptr if it can't be found.
+ */
+const PropertyType *findTypeById(const QVector<PropertyType> &types, int typeId)
+{
+    for (const PropertyType &propertyType : types) {
+        if (propertyType.id == typeId)
+            return &propertyType;
+    }
+    return nullptr;
+}
+
+/**
+ * Returns a pointer to the PropertyType matching the given \a name, or
+ * nullptr if it can't be found.
+ */
+const PropertyType *findTypeByName(const QVector<PropertyType> &types, const QString &name)
+{
+    for (const PropertyType &propertyType : types) {
+        if (propertyType.name == name)
+            return &propertyType;
+    }
+    return nullptr;
 }
 
 } // namespace Tiled

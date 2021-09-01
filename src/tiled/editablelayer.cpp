@@ -129,6 +129,14 @@ void EditableLayer::setOpacity(qreal opacity)
         layer()->setOpacity(opacity);
 }
 
+void EditableLayer::setTintColor(const QColor &color)
+{
+    if (auto doc = document())
+        asset()->push(new SetLayerTintColor(doc, layer(), color));
+    else if (!checkReadOnly())
+        layer()->setTintColor(color);
+}
+
 void EditableLayer::setVisible(bool visible)
 {
     if (auto doc = document())

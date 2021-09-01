@@ -55,9 +55,10 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     const QVariantMap variantMap = variant.toMap();
     const QString orientationString = variantMap[QStringLiteral("orientation")].toString();
 
-    Map::Orientation orientation = orientationFromString(orientationString);
+    Map::Parameters mapParameters;
+    mapParameters.orientation = orientationFromString(orientationString);
 
-    if (orientation == Map::Unknown) {
+    if (mapParameters.orientation == Map::Unknown) {
         mError = tr("Unsupported map orientation: \"%1\"")
                 .arg(orientationString);
         return nullptr;
@@ -70,16 +71,21 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     const int nextLayerId = variantMap[QStringLiteral("nextlayerid")].toInt();
     const int nextObjectId = variantMap[QStringLiteral("nextobjectid")].toInt();
 
-    std::unique_ptr<Map> map(new Map(orientation,
-                                     variantMap[QStringLiteral("width")].toInt(),
-                                     variantMap[QStringLiteral("height")].toInt(),
-                                     variantMap[QStringLiteral("tilewidth")].toInt(),
-                                     variantMap[QStringLiteral("tileheight")].toInt(),
-                                     variantMap[QStringLiteral("infinite")].toInt()));
-    map->setHexSideLength(variantMap[QStringLiteral("hexsidelength")].toInt());
-    map->setStaggerAxis(staggerAxisFromString(staggerAxis));
-    map->setStaggerIndex(staggerIndexFromString(staggerIndex));
-    map->setRenderOrder(renderOrderFromString(renderOrder));
+    mapParameters.renderOrder = renderOrderFromString(renderOrder);
+    mapParameters.width = variantMap[QStringLiteral("width")].toInt();
+    mapParameters.height = variantMap[QStringLiteral("height")].toInt();
+    mapParameters.tileWidth = variantMap[QStringLiteral("tilewidth")].toInt();
+    mapParameters.tileHeight = variantMap[QStringLiteral("tileheight")].toInt();
+    mapParameters.infinite = variantMap[QStringLiteral("infinite")].toInt();
+    mapParameters.hexSideLength = variantMap[QStringLiteral("hexsidelength")].toInt();
+    mapParameters.staggerAxis = staggerAxisFromString(staggerAxis);
+    mapParameters.staggerIndex = staggerIndexFromString(staggerIndex);
+
+    const QString bgColor = variantMap[QStringLiteral("backgroundcolor")].toString();
+    if (QColor::isValidColor(bgColor))
+        mapParameters.backgroundColor = QColor(bgColor);
+
+    auto map = std::make_unique<Map>(mapParameters);
     if (nextLayerId)
         map->setNextLayerId(nextLayerId);
     if (nextObjectId)
@@ -90,10 +96,6 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     mMap = map.get();
     map->setProperties(extractProperties(variantMap));
     map->setComponents(extractComponents(variantMap));
-
-    const QString bgColor = variantMap[QStringLiteral("backgroundcolor")].toString();
-    if (QColor::isValidColor(bgColor))
-        map->setBackgroundColor(QColor(bgColor));
 
     const auto tilesetVariants = variantMap[QStringLiteral("tilesets")].toList();
     for (const QVariant &tilesetVariant : tilesetVariants) {
@@ -155,6 +157,8 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
 {
     Properties properties;
 
+    const ExportContext context(mDir.path());
+
     // read object-based format (1.0)
     const QVariantMap propertiesMap = propertiesVariant.toMap();
     const QVariantMap propertyTypesMap = propertyTypesVariant.toMap();
@@ -166,7 +170,7 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
         exportValue.typeName = propertyTypesMap.value(it.key()).toString();
         // TODO: Support for custom property types with customPropertyTypesMap
 
-        properties[it.key()] = exportValue.toPropertyValue(mDir.path());
+        properties[it.key()] = context.toPropertyValue(exportValue);
     }
 
     // read array-based format (1.2)
@@ -179,7 +183,7 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
         exportValue.typeName = propertyVariantMap[QStringLiteral("type")].toString();
         exportValue.propertyTypeName = propertyVariantMap[QStringLiteral("propertytype")].toString();
 
-        properties[propertyName] = exportValue.toPropertyValue(mDir.path());
+        properties[propertyName] = context.toPropertyValue(exportValue);
     }
 
     return properties;

@@ -61,7 +61,14 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
     }
 
     // default to values of the original Flare alpha game.
-    auto map = std::make_unique<Map>(Map::Isometric, 256, 256, 64, 32);
+    Map::Parameters mapParameters;
+    mapParameters.orientation = Map::Isometric;
+    mapParameters.width = 256;
+    mapParameters.height = 256;
+    mapParameters.tileWidth = 64;
+    mapParameters.tileHeight = 32;
+
+    auto map = std::make_unique<Map>(mapParameters);
 
     QTextStream stream (&file);
     QString line;
@@ -330,15 +337,15 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName, Options 
     out << "orientation=" << orientationToString(map->orientation()) << "\n";
     out << "background_color=" << backgroundColor.red() << "," << backgroundColor.green() << "," << backgroundColor.blue() << "," << backgroundColor.alpha() << "\n";
 
-    const QString mapPath = QFileInfo(fileName).absolutePath();
+    const ExportContext context(QFileInfo(fileName).absolutePath());
 
     // write all properties for this map
-    writeProperties(out, map->properties(), mapPath);
+    writeProperties(out, map->properties(), context);
     out << "\n";
 
     out << "[tilesets]\n";
     for (const SharedTileset &tileset : map->tilesets()) {
-        QString source = toFileReference(tileset->imageSource(), mapPath);
+        QString source = toFileReference(tileset->imageSource(), context.path());
         out << "tileset=" << source
             << "," << tileset->tileWidth()
             << "," << tileset->tileHeight()
@@ -368,7 +375,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName, Options 
                 out << "\n";
             }
             //Write all properties for this layer
-            writeProperties(out, tileLayer->properties(), mapPath);
+            writeProperties(out, tileLayer->properties(), context);
             out << "\n";
         }
         if (ObjectGroup *group = layer->asObjectGroup()) {
@@ -397,7 +404,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName, Options 
                     out << "," << w << "," << h << "\n";
 
                     // write all properties for this object
-                    writeProperties(out, o->properties(), mapPath);
+                    writeProperties(out, o->properties(), context);
                     out << "\n";
                 }
             }
@@ -412,12 +419,12 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName, Options 
     return true;
 }
 
-void FlarePlugin::writeProperties(QTextStream &out, const Properties &properties, const QString &mapPath)
+void FlarePlugin::writeProperties(QTextStream &out, const Properties &properties, const ExportContext &context)
 {
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
-        const auto exportValue = ExportValue::fromPropertyValue(it.value(), mapPath);
+        const auto exportValue = context.toExportValue(it.value());
         out << it.key() << "=" << exportValue.value.toString() << "\n";
     }
 }

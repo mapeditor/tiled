@@ -223,8 +223,8 @@ private:
     void flipPolygonObject(const QTransform &flipTransform);
     void flipTileObject(const QTransform &flipTransform);
 
-    int mId;
-    Shape mShape;
+    int mId = 0;
+    Shape mShape = Rectangle;
     QString mName;
     QString mType;
     QPointF mPos;
@@ -232,11 +232,11 @@ private:
     TextData mTextData;
     QPolygonF mPolygon;
     Cell mCell;
-    const ObjectTemplate *mObjectTemplate;
-    ObjectGroup *mObjectGroup;
-    qreal mRotation;
-    bool mVisible;
-    bool mTemplateBase;
+    const ObjectTemplate *mObjectTemplate = nullptr;
+    ObjectGroup *mObjectGroup = nullptr;
+    qreal mRotation = 0.0;
+    bool mVisible = true;
+    bool mTemplateBase = false;
     ChangedProperties mChangedProperties;
 };
 

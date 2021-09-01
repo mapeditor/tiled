@@ -50,21 +50,14 @@ SharedTileset Tileset::create(const QString &name, int tileWidth, int tileHeight
 }
 
 Tileset::Tileset(QString name, int tileWidth, int tileHeight,
-                 int tileSpacing, int margin):
-    Object(TilesetType),
-    mName(std::move(name)),
-    mTileWidth(tileWidth),
-    mTileHeight(tileHeight),
-    mTileSpacing(tileSpacing),
-    mMargin(margin),
-    mObjectAlignment(Unspecified),
-    mOrientation(Orthogonal),
-    mGridSize(tileWidth, tileHeight),
-    mColumnCount(0),
-    mExpectedColumnCount(0),
-    mExpectedRowCount(0),
-    mNextTileId(0),
-    mStatus(LoadingReady)
+                 int tileSpacing, int margin)
+    : Object(TilesetType)
+    , mName(std::move(name))
+    , mTileWidth(tileWidth)
+    , mTileHeight(tileHeight)
+    , mTileSpacing(tileSpacing)
+    , mMargin(margin)
+    , mGridSize(tileWidth, tileHeight)
 {
     Q_ASSERT(tileSpacing >= 0);
     Q_ASSERT(margin >= 0);
@@ -375,6 +368,11 @@ static bool sameTileImages(const Tileset &subject, const Tileset &candidate)
  */
 SharedTileset Tileset::findSimilarTileset(const QVector<SharedTileset> &tilesets) const
 {
+    // The TilesetManager avoids loading the same external tileset twice, so
+    // for external tilesets we don't need to look for "similar" tilesets.
+    if (isExternal())
+        return SharedTileset();
+
     for (const SharedTileset &candidate : tilesets) {
         Q_ASSERT(candidate != this);
 

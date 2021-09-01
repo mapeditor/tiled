@@ -163,9 +163,9 @@ private:
     TileAnimationEditor *mTileAnimationEditor;
 
     QHash<TilesetDocument*, TilesetView*> mViewForTileset;
-    TilesetDocument *mCurrentTilesetDocument;
+    TilesetDocument *mCurrentTilesetDocument = nullptr;
 
-    Tile *mCurrentTile;
+    Tile *mCurrentTile = nullptr;
     bool mSettingSelectedTiles = false;
 };
 
