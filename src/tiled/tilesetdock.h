@@ -69,7 +69,6 @@ class TilesetDock : public QDockWidget
 
 public:
     TilesetDock(QWidget *parent = nullptr);
-
     ~TilesetDock() override;
 
     /**
@@ -82,6 +81,7 @@ public:
      */
     Tile *currentTile() const { return mCurrentTile; }
 
+    bool hasTileset(const SharedTileset &tileset) const;
     void setCurrentTileset(const SharedTileset &tileset);
     SharedTileset currentTileset() const;
     TilesetDocument *currentTilesetDocument() const;

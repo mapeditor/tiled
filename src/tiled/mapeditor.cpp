@@ -921,6 +921,8 @@ void MapEditor::handleExternalTilesetsAndImages(const QStringList &fileNames,
         for (; it != end; ++it)
             undoStack->push(new AddTileset(mCurrentMapDocument, *it));
         undoStack->endMacro();
+
+        mTilesetDock->setCurrentTileset(tilesets.last());
     }
 }
 

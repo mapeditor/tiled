@@ -21,14 +21,18 @@
 #include "projectdock.h"
 
 #include "actionmanager.h"
+#include "addremovetileset.h"
 #include "documentmanager.h"
 #include "mapdocumentactionhandler.h"
+#include "mapeditor.h"
 #include "objecttemplate.h"
 #include "preferences.h"
 #include "projectmanager.h"
 #include "projectmodel.h"
 #include "session.h"
 #include "templatemanager.h"
+#include "tilesetdock.h"
+#include "tilesetmanager.h"
 #include "utils.h"
 
 #include <QBoxLayout>
@@ -39,6 +43,7 @@
 #include <QScrollBar>
 #include <QSet>
 #include <QTreeView>
+#include <QUndoStack>
 
 namespace Tiled {
 
@@ -262,13 +267,38 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
         if (QFileInfo { filePath }.isFile()) {
             Utils::addOpenWithSystemEditorAction(menu, filePath);
 
+            auto mapDocumentActionHandler = MapDocumentActionHandler::instance();
+            auto mapDocument = mapDocumentActionHandler->mapDocument();
+
+            // Add template-specific actions
             auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(filePath);
             if (objectTemplate->object()) {
                 menu.addSeparator();
-                auto action = menu.addAction(tr("Select Template Instances"), [objectTemplate] {
-                    MapDocumentActionHandler::instance()->selectAllInstances(objectTemplate);
-                });
-                action->setEnabled(MapDocumentActionHandler::instance()->mapDocument() != nullptr);
+                menu.addAction(tr("Select Template Instances"), [=] {
+                    mapDocumentActionHandler->selectAllInstances(objectTemplate);
+                })->setEnabled(mapDocument != nullptr);
+            }
+            // Add tileset-specific actions
+            else if (auto tileset = TilesetManager::instance()->loadTileset(filePath)) {
+                if (mapDocument) {
+                    auto documentManager = DocumentManager::instance();
+                    auto mapEditor = static_cast<MapEditor*>(documentManager->editor(Document::MapDocumentType));
+                    auto tilesetDock = mapEditor->tilesetDock();
+
+                    const bool mapHasTileset = mapDocument->map()->tilesets().contains(tileset);
+                    const bool tilesetVisibleInDock = tilesetDock->hasTileset(tileset);
+
+                    menu.addSeparator();
+
+                    menu.addAction(tr("Select in Tilesets View"), [=] {
+                        tilesetDock->setCurrentTileset(tileset);
+                    })->setEnabled(tilesetVisibleInDock);
+
+                    menu.addAction(tr("Add Tileset to Map"), [=] {
+                        mapDocument->undoStack()->push(new AddTileset(mapDocument, tileset));
+                        tilesetDock->setCurrentTileset(tileset);
+                    })->setEnabled(!mapHasTileset);
+                }
             }
         }
 

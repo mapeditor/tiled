@@ -73,9 +73,8 @@ ObjectTemplate *TemplateManager::loadObjectTemplate(const QString &fileName, QSt
         if (!newTemplate)
             newTemplate = std::make_unique<ObjectTemplate>(fileName);
 
-        // If the file exists, watch it, regardless of whether the parse was successful.
-        if (QFile::exists(fileName))
-            mWatcher->addPath(fileName);
+        // Watch the file, regardless of whether the parse was successful.
+        mWatcher->addPath(fileName);
 
         objectTemplate = newTemplate.get();
         mObjectTemplates.insert(fileName, newTemplate.release());
