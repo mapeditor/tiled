@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2021-08-09 11:20+0200\n"
-"PO-Revision-Date: 2021-09-01 03:33+0000\n"
+"PO-Revision-Date: 2021-09-04 06:35+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
 "\n"
@@ -147,25 +147,25 @@ msgid ""
 "The definition of inputs describes which kind of pattern the working map "
 "will be searched for."
 msgstr ""
-"La définition des entrées décrit quels types de modèles la carte de "
-"travail cherchera."
+"La définition des entrées décrit quel type de motif la carte de travail "
+"cherchera."
 
 #: ../../manual/automapping.rst:50
 msgid ""
 "The definition of outputs describes how the working map is changed when "
 "an input pattern is found."
 msgstr ""
-"La définition des sorties décrit de quelle manière la carte de travail "
-"sera changée lorsqu'un modèle d'entrée a été trouvé."
+"La définition des sorties décrit de quelle manière la carte de travail sera "
+"changée lorsqu'un motif d'entrée a été trouvé."
 
 #: ../../manual/automapping.rst:52
 msgid ""
 "The map properties are used to fine-tune the input pattern localization "
 "and the output of all rules within this rules file."
 msgstr ""
-"Les propriétés de carte sont utilisées pour affiner la localisation des "
-"modèles d'entrée et la sortie de toutes les règles comprises dans ce "
-"fichier de règles."
+"Les propriétés de carte sont utilisées pour affiner la localisation du motif "
+"d'entrée et la sortie de toutes les règles comprises dans ce fichier de "
+"règles."
 
 #: ../../manual/automapping.rst:56
 msgid "Defining the Regions"
@@ -686,7 +686,7 @@ msgstr ""
 "fonctionnalités d'Automapping. En premier un littoral sera construit, en "
 "ajoutant en premier les parties droites puis ensuite une autre règle "
 "corrigera les coins pour qu'ils suivent le jeu de tuiles courant. Après la "
-"construction du littoral, les milieux aquatiques seront marqués comme "
+"construction du littoral, les milieux aquatiques seront balisés comme "
 "infranchissable pour le moteur de jeu. En dernier, l'herbe doit être "
 "constituée de tuiles aléatoires en utilisant 5 tuiles d'herbe différentes."
 
@@ -925,10 +925,10 @@ msgid ""
 " input for this rule. We could of course define nine different layers "
 "*input1\\_Ground* up to *input9\\_Ground*"
 msgstr ""
-"Maintenant nous voulons ajouter toutes les neuf dispositions possibles "
-"que nous avons pu observer comme entrée possible pour cette règle. Nous "
-"pouvons bien sûr définir neuf calques différents nommés de "
-"*input1\\_Ground* à *input9\\_Ground*"
+"Maintenant nous voulons ajouter tous les neuf motifs possibles que nous "
+"avons pu observer comme entrée possible pour cette règle. Nous pouvons bien "
+"sûr définir neuf calques différents nommés de *input1\\_Ground* à *"
+"input9\\_Ground*"
 
 #: ../../manual/automapping.rst:460
 msgid "Nine TileLayers?! What a mess, we'll do it a better way."
@@ -1083,7 +1083,7 @@ msgid ""
 "neglected."
 msgstr ""
 "Nous devons donc enlever les tuiles de collision de ces positions, qui ne "
-"sont plus marquées par une collision. Cela peut être fait en ajoutant la "
+"sont plus balisées avec une collision. Cela peut être fait en ajoutant la "
 "propriété de carte *DeleteTiles* et en la changeant en *yes* ou *true*. "
 "Ainsi, toutes les parties du calque *Collision* seront effacées avant que "
 "l'Automapping soit mis en place, donc les tuiles de collision seront "
@@ -1709,11 +1709,11 @@ msgid ""
 "``Z`` and ``Shift+Z`` respectively. These actions can also be triggered "
 "from the Tool Options tool bar."
 msgstr ""
-"Vous pouvez retourner le tampon de tuile courant "
-"horizontalement/verticalement en appuyant sur ``X`` et ``Y`` "
-"respectivement. Vous pouvez aussi tourner à gauche/droite en appuyant sur"
-" ``Z`` ou ``Maj+Z`` respectivement. Ces actions peuvent aussi être "
-"réalisées à partir de la barre d'outils Option d'Outil."
+"Vous pouvez inverser le tampon de tuile courant horizontalement/"
+"verticalement en appuyant sur ``X`` et ``Y`` respectivement. Vous pouvez "
+"aussi pivoter à gauche/droite en appuyant sur ``Z`` ou ``Maj+Z`` "
+"respectivement. Ces actions peuvent aussi être réalisées à partir de la "
+"barre d'outils Option d'Outil."
 
 #: ../../manual/editing-tile-layers.rst:55
 msgid "Terrain Brush"
@@ -1800,8 +1800,8 @@ msgid ""
 "You can also flip and rotate the current stamp as described for the :ref"
 ":`stamp-tool`."
 msgstr ""
-"Vous pouvez aussi tourner ou retourner le tampon actuel comme décrit pour"
-" la :ref:`brosse tampon <stamp-tool>`."
+"Vous pouvez aussi inverser ou pivoter le tampon actuel comme décrit pour la "
+":ref:`brosse tampon <stamp-tool>`."
 
 #: ../../manual/editing-tile-layers.rst:108
 msgid "Shape Fill Tool"
@@ -1818,8 +1818,8 @@ msgid ""
 "circle."
 msgstr ""
 "Cet outil offre une façon rapide de remplir des rectangles ou des ellipses "
-"avec une certaine tuile ou patterne. Maintenez la touche ``Maj`` pour "
-"remplir un carré ou cercle exact."
+"avec une certaine tuile ou motif. Maintenez la touche ``Maj`` pour remplir "
+"un carré ou cercle exact."
 
 #: ../../manual/editing-tile-layers.rst:121
 msgid "Eraser"
@@ -2782,7 +2782,7 @@ msgid ""
 "states are exported using bitflags in the ID, in the same way as done in "
 "the :doc:`/reference/tmx-map-format`."
 msgstr ""
-"Quand les tuiles sont retournées horizontalement, verticalement ou "
+"Quand les tuiles sont inversées horizontalement, verticalement ou "
 "diagonalement, ces états sont exportés en utilisant des drapeaux de bits "
 "dans l'ID, de la même façon que le :doc:`format de carte TMX </reference/tmx-"
 "map-format>`."
@@ -2809,9 +2809,9 @@ msgid ""
 " rotation. For tile objects, scaling is also supported."
 msgstr ""
 "Les calques de tuiles et les objets tuiles (quand aucun type n'est donné) "
-"seront exportés en tant qu'éléments \"tile\". Ceux-ci supportent le "
-"retournement horizontal et vertical, mais pas de rotation. Pour les objets "
-"tuiles, l'agrandissement est aussi supporté."
+"seront exportés en tant qu'éléments \"tile\". Ceux-ci supportent l'inversion "
+"horizontale et verticale, mais pas de rotation. Pour les objets tuiles, "
+"l'agrandissement est aussi supporté."
 
 #: ../../manual/export-gmx.rst:16
 msgid ""
@@ -2836,9 +2836,9 @@ msgid ""
 msgstr ""
 "Les instances d'objet de GameMaker sont créées en mettant le nom \"object\" "
 "dans le champ \"Type\" de l'objet dans Tiled. La rotation est supportée ici, "
-"et pour les objets tuiles le retournement et l'agrandissement sont aussi "
-"supportés (cependant la combinaison du retournement et de la rotation n'a "
-"pas l'air de marcher dans GameMaker)."
+"et pour les objets tuiles le inversions et l'agrandissement sont aussi "
+"supportés (cependant la combinaison de l'inversion et de la rotation n'a pas "
+"l'air de marcher dans GameMaker)."
 
 #: ../../manual/export-gmx.rst:32
 msgid ""
@@ -4509,20 +4509,20 @@ msgstr "Changer le tampon actuel :"
 
 #: ../../manual/keyboard-shortcuts.rst:83
 msgid "``X`` - Flip active stamp horizontally"
-msgstr "``X`` - Renverser le tampon actif horizontalement"
+msgstr "``X`` - Inverser le tampon actif horizontalement"
 
 #: ../../manual/keyboard-shortcuts.rst:84
 msgid "``Y`` - Flip active stamp vertically"
-msgstr "``Y`` - Renverser le tampon actif verticalement"
+msgstr "``Y`` - Inverser le tampon actif verticalement"
 
 #: ../../manual/keyboard-shortcuts.rst:85
 msgid "``Z`` - Rotate active stamp clockwise"
-msgstr "``Z`` - Tourner le tampon actif dans le sens des aiguilles d'une montre"
+msgstr "``Z`` - Pivoter le tampon actif dans le sens des aiguilles d'une montre"
 
 #: ../../manual/keyboard-shortcuts.rst:86
 msgid "``Shift + Z`` - Rotate active stamp counterclockwise"
 msgstr ""
-"``Maj + Z`` - Tourner le tampon actif dans le sens inverse des aiguilles "
+"``Maj + Z`` - Pivoter le tampon actif dans le sens inverse des aiguilles "
 "d'une montre"
 
 #: ../../manual/keyboard-shortcuts.rst:90
@@ -4688,8 +4688,8 @@ msgstr ""
 "références de tuiles et ne peuvent donc pas stocker d'informations "
 "additionnelles pour chaque location. Les seules données supplémentaires qui "
 "sont stockées sont quelques drapeaux, qui permettent au graphismes des "
-"tuiles d'être retournées verticalement, horizontalement ou anti-"
-"diagonalement (pour supporter la rotation par incréments de 90 degrés)."
+"tuiles d'être inversés verticalement, horizontalement ou anti-diagonalement ("
+"pour supporter la rotation par incréments de 90 degrés)."
 
 #: ../../manual/layers.rst:42
 msgid ""
@@ -4725,7 +4725,7 @@ msgid ""
 msgstr ""
 "Les calques d'objets sont utiles car ils peuvent stocker beaucoup de types "
 "d'informations qui ne rentrent pas dans un calque de tuiles. Les objets "
-"peuvent être positionnés librement, redimmensionnés et tournés. Ils peuvent "
+"peuvent être positionnés librement, redimensionnés et pivotés. Ils peuvent "
 "aussi avoir des propriétés personnalisées individuelles. Il y a plein de "
 "types d'objets :"
 
@@ -4827,7 +4827,7 @@ msgstr ""
 "l'instant pas très utiles, parce que si vous voulez à la place ajouter "
 "l'image en tant que Jeu de Tuiles et la placer en tant :ref:`qu'Objet Tuile "
 "<insert-tile-tool>`, vous avec la possibilité de redimensionner et de "
-"tourner l'image librement."
+"pivoter l'image librement."
 
 #: ../../manual/layers.rst:104
 msgid ""
@@ -5124,7 +5124,7 @@ msgid ""
 msgstr ""
 "Les points sont les objets les plus simples que vous pouvez placer sur une "
 "carte. Ils représentent seulement un endroit, et ne peuvent être "
-"redimensionnés ou tournés. Faites un simple clic sur la carte pour placer un "
+"redimensionnés ou pivotés. Faites un simple clic sur la carte pour placer un "
 "objet point."
 
 #: ../../manual/objects.rst:73
@@ -5468,7 +5468,7 @@ msgstr ""
 "Veuillez noter que vous ne pouvez changer que la longueur et la hauteur "
 "indépendamment lors du redimensionnement d'un seul objet. Lorsque plusieurs "
 "objets sont sélectionnés, le rapport hauteur/longueur est constant car il "
-"est impossible de le faire marcher pour les objets tournés sans un support "
+"est impossible de le faire marcher pour les objets pivotés sans un support "
 "total pour les transformations."
 
 #: ../../manual/objects.rst:256
@@ -5482,10 +5482,10 @@ msgid ""
 "another position if necessary. Hold ``Shift`` to rotate in 15-degree "
 "increments. Click any selected object again to go back to resize mode."
 msgstr ""
-"Pour tourner, cliquez sur tout objet sélectionné pour changer les poignées "
+"Pour pivoter, cliquez sur tout objet sélectionné pour changer les poignées "
 "de redimensionnement en poignées de rotation. Avant de tourner, vous pouvez "
 "glisser l'origine de la rotation à une autre position si nécessaire. "
-"Maintenez ``Maj`` pour tourner par incréments de 15 degrés. Cliquez sur tout "
+"Maintenez ``Maj`` pour pivoter par incréments de 15 degrés. Cliquez sur tout "
 "objet sélectionné une fois de plus pour revenir dans le mode "
 "redimensionnement."
 
@@ -5494,7 +5494,7 @@ msgid ""
 "You can also rotate the selected objects in 90-degree steps by pressing "
 "``Z`` or ``Shift + Z``."
 msgstr ""
-"Vous pouvez aussi tourner les objets sélectionnés par incréments de 90 "
+"Vous pouvez aussi pivoter les objets sélectionnés par incréments de 90 "
 "degrés en maintenant ``Z`` ou ``Maj + Z``."
 
 #: ../../manual/objects.rst:267
@@ -5541,7 +5541,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:284
 msgid "Flipping Objects"
-msgstr "Retourner des Objets"
+msgstr "Inverser des Objets"
 
 #: ../../manual/objects.rst:286
 msgid ""
@@ -5549,9 +5549,9 @@ msgid ""
 "vertically by pressing ``Y``. For tile objects, this also flips their "
 "images."
 msgstr ""
-"Vous pouvez retourner des objets sélectionnés horizontalement en appuyant "
-"sur ``X`` ou verticalement en appuyant sur ``Y``. Pour les objets tuiles, "
-"cela retourne aussi leurs images."
+"Vous pouvez inverser des objets sélectionnés horizontalement en appuyant sur "
+"``X`` ou verticalement en appuyant sur ``Y``. Pour les objets tuiles, cela "
+"inverse aussi leurs images."
 
 #: ../../manual/objects.rst:293
 msgid "Edit Polygons"
@@ -5723,8 +5723,9 @@ msgid ""
 "(`#1487 <https://github.com/bjorn/tiled/issues/1487>`__)."
 msgstr ""
 "Quelques améliorations peuvent toujours être faites sur le support d'édition "
-"des polygones et polylignes, tel que la rotation et le redimensionnement des "
-"nœuds sélectionnés (`#1487 <https://github.com/bjorn/tiled/issues/1487>`__)."
+"des polygones et polylignes, tel que la possibilité de pivoter et de "
+"redimensionner les nœuds sélectionnés (`#1487 <https://github.com/bjorn/"
+"tiled/issues/1487>`__)."
 
 #: ../../manual/objects.rst:379
 msgid ""
@@ -5790,7 +5791,7 @@ msgstr "Sauvegarde et Chargement"
 
 #: ../../manual/preferences.rst:36
 msgid "Include DTD reference in saved maps"
-msgstr ""
+msgstr "Inclure les références DTD dans les cartes sauvegardées"
 
 #: ../../manual/preferences.rst:32
 msgid ""
@@ -5800,6 +5801,11 @@ msgid ""
 "DTD is likely out of date (there is a somewhat more up-to-date XSD file "
 "available in the repository)."
 msgstr ""
+"Cette option n'est pas activée par défaut car elle est très peu utile et "
+"peut causer des problèmes dans certains environnements. N'hésitez pas à "
+"l'activer si ça aide pour par exemple la validation, mais veuillez noter que "
+"les DTD référencé est sûrement obsolète (il y a un fichier XSD un peu plus "
+"mis à jour disponible dans le dépôt)."
 
 #: ../../manual/preferences.rst:40
 msgid "Reload tileset images when they change"
@@ -6450,12 +6456,15 @@ msgstr ""
 "d'installation :"
 
 #: ../../manual/python.rst:49
-#, fuzzy
 msgid ""
 "On Linux you will also need to install the appropriate package. However, "
 "currently Linux builds are done on Ubuntu 18.04 against Python 3.6, and "
 "you'd need to install the same version somehow."
-msgstr "Sur Linux vous aurez aussi besoin d'installer le paquet approprié."
+msgstr ""
+"Sur Linux vous aurez aussi besoin d'installer le paquet approprié. "
+"Cependant, les versions de Linux courantes faites sur Ubuntu 18.04 utilisent "
+"Python 3.6, donc vous aurez besoin d'installer la nouvelle version d'une "
+"certaine manière."
 
 #: ../../manual/python.rst:53
 msgid ""
@@ -6679,6 +6688,11 @@ msgid ""
 " Sets* view will become visible, with a button to add a new set. In this "
 "example, we'll define a *Corner Set*."
 msgstr ""
+"Ensuite, activez le mode d'édition de terrain en cliquant sur le bouton *"
+"Collections de Terrains* |terrain| sur la barre d'outils. Avec ce mode "
+"activé, les *Collection de Terrains* seront visibles, avec un bouton pour "
+"ajouter une nouvelle collection. Dans cet exemple, nous allons définir une *"
+"Collection de Coins*."
 
 #: ../../manual/terrain.rst:83
 msgid "Adding a Terrain Set"
@@ -6691,6 +6705,12 @@ msgid ""
 "\"Desert Ground\". We can also set one of the tiles as the icon of the "
 "set by right-clicking a tile and choosing \"Use as Terrain Set Image\"."
 msgstr ""
+"Lors de l'ajout d'une collection de terrains, le nom de la nouvelle "
+"collection est automatiquement sélectionné. Donnez un nom reconnaissable à "
+"la collection, dans cet exemple nous allons écrire \"Desert Ground\". Nous "
+"pouvons aussi utiliser une des tuiles comme l'icône de la collection en "
+"faisant un clic droit sur une tuile et en choisissant \"Utiliser comme "
+"l'Icône de la Collection de Terrains\"."
 
 #: ../../manual/terrain.rst:91
 msgid "Adding Terrains"
@@ -6701,6 +6721,9 @@ msgid ""
 "The new set will have one terrain added by default. If we already know we"
 " need additional ones, click the *Add Terrain* button to add more."
 msgstr ""
+"La nouvelle collection aura un terrain ajouté par d\"faut. Si nous savons "
+"déjà qu'il en faudra plus, cliquez sur le bouton *Ajouter un Terrain* pour "
+"en ajouter plus."
 
 #: ../../manual/terrain.rst:96
 msgid ""
@@ -6710,6 +6733,13 @@ msgid ""
 "Custom Color\". To assign an icon, select the terrain and then right-"
 "click a tile, choosing \"Use as Terrain Image\"."
 msgstr ""
+"Chaque terrain a un nom, une couleur, et peut avoir une de ses tuiles en "
+"tant qu'icône pour le rendre plus reconnaissable. Double-cliquez sur le "
+"terrain pour éditer son nom. Pour changer sa couleur, faites un clic droit "
+"sur le terrain et choisissez \"Choisir une Couleur Personnalisée\". Pour "
+"assigner un icône, sélectionnez le terrain et faites in clic droit sur une "
+"tuiles, puis choisissez \"Utiliser comme l'Icône de la Collection de "
+"Terrains\"."
 
 #: ../../manual/terrain.rst:106
 msgid "Our Terrains"
@@ -6721,14 +6751,19 @@ msgid ""
 "tiles\". If you have tiles transitioning to nothing, it should be enough "
 "to not mark those areas."
 msgstr ""
+"Nous n'aurons généralement pas besoin de définir un terrain explicitement "
+"pour les \"tuiles vides\". Si vous avez des tuiles qui transitionnent vers "
+"rien, ne pas baliser ces aires devrait suffire."
 
 #: ../../manual/terrain.rst:114
 msgid "With our terrains set up we're ready to mark each of our tiles."
 msgstr ""
+"Maintenant que nos terrains sont mis en place, nous sommes prêts à baliser "
+"chacune de nos tuiles."
 
 #: ../../manual/terrain.rst:117
 msgid "Marking the Tiles"
-msgstr ""
+msgstr "Baliser les Tuiles"
 
 #: ../../manual/terrain.rst:119
 msgid ""
@@ -6739,16 +6774,28 @@ msgid ""
 "Properties view (right-click the terrain set and choose *Terrain Set "
 "Properties...*)."
 msgstr ""
+"Veuillez noter que pour une *Collection de Coins*, nous ne pouvons baliser "
+"que les coins des tuiles. Pour une *Collection de Bords*, nous sommes "
+"limités au balisage des côtés de nos tuiles. si nous avons besoin des deux "
+"nous devons utiliser une *Collection Mixte*. Si nous découvrons que nous "
+"avons choisi le mauvais type de collection de terrains, nous pouvons "
+"toujours changer le type dans la vue Propriétés (clic droit sur la "
+"collection de terrains puis choisir *Propriétés de la Collection de "
+"Terrains...*)."
 
 #: ../../manual/terrain.rst:125
 msgid ""
 "With the terrain we want to mark selected, click and drag to mark the "
 "regions of the tiles that match this terrain."
 msgstr ""
+"Quand le terrain que nous voulons baliser est sélectionné, cliquez et "
+"glissez pour baliser les régions des tuiles qui correspondent à ce terrain."
 
 #: ../../manual/terrain.rst:131
 msgid "Here we have marked all the sandy corners in our example tileset."
 msgstr ""
+"Ici nous avons balisé tous les coins sablonneux de notre jeu de tuiles "
+"d'exemple."
 
 #: ../../manual/terrain.rst:133
 msgid ""
@@ -6757,20 +6804,27 @@ msgid ""
 "type from a corner or select the correct terrain type and paint over it. "
 "Each corner can only have one type of terrain associated with it."
 msgstr ""
+"Si vous faites une erreur, vous n'avez qu'à utiliser l'action Annuler (ou "
+"appuyez sur ``Ctrl+Z``). Ou si vous remarquez une erreur plus tard, utilisez "
+"soit *Effacer le Terrain* pour enlever un type de terrain d'un coin ou "
+"sélectionnez le type de terrain correct et peignez au dessus de l'erreur. "
+"Chaque coin peut avoir un type de terrain qui lui est associé."
 
 #: ../../manual/terrain.rst:138
 msgid ""
 "Now do the same for each of the other terrain types. Eventually you'll "
 "have marked all tiles apart from the special objects."
 msgstr ""
+"Maintenant faites la même chose pour chacun de vos autres types de terrain. "
+"Éventuellement vous aurez balisé toutes les tuiles sauf les objets spéciaux."
 
 #: ../../manual/terrain.rst:144
 msgid "We're done marking the terrain of our tiles."
-msgstr ""
+msgstr "Nous avons fini de baliser les terrains de nos tuiles."
 
 #: ../../manual/terrain.rst:147
 msgid "Patterns View"
-msgstr "Vue de Modèles"
+msgstr "Vue de Motifs"
 
 #: ../../manual/terrain.rst:149
 msgid ""
@@ -6781,14 +6835,23 @@ msgid ""
 " that it is not necessary for a terrain set to have all possible "
 "patterns, especially when using more than 2 terrains."
 msgstr ""
+"À côté de l'onglet *Terrains* se trouve un onglet *Motifs*. Cette vue peut "
+"être utile lors du balisage de collections entières, car elle peut mettre en "
+"avant les motifs toujours manquants. Chaque motif qui apparaît déjà sur une "
+"tuile du jeu de tuiles est assombri, pour que les motifs manquants sortent "
+"du lot. Veuillez noter qu'il n'est pas nécessaire pour une collection de "
+"terrains d'avoir tous les motifs possibles, surtout si vous utilisez plus "
+"que 2 terrains."
 
 #: ../../manual/terrain.rst:159
 msgid "Patterns view, showing all possible combinations in the set."
 msgstr ""
+"Vue de motifs, qui montre toutes les combinaisons possibles dans la "
+"collection."
 
 #: ../../manual/terrain.rst:162
 msgid "Editing with the Terrain Brush"
-msgstr ""
+msgstr "Édition avec la Brosse de Terrain"
 
 #: ../../manual/terrain.rst:164
 msgid ""
@@ -6797,6 +6860,11 @@ msgid ""
 "*Terrain Sets* window. Select the terrain set we have just set up, so we "
 "can use its terrains."
 msgstr ""
+"Maintenant vous pouvez désactiver le mode *Collections de Terrains* |terrain|"
+" en cliquant sur le bouton dans la barre d'outils une nouvelle fois. Ensuite "
+"retournez sur la carte et activez la fenêtre *Collection de Terrains*. "
+"Sélectionnez la collection de terrains que nous venons de mettre en place, "
+"pour que nous puissions utiliser ses terrains."
 
 #: ../../manual/terrain.rst:169
 msgid ""
@@ -6806,6 +6874,11 @@ msgid ""
 " we also have no transitions to \"nothing\" in our tileset). There are "
 "two ways out of this:"
 msgstr ""
+"Cliquez sur le terrain Sand (sable) et essayez de peindre. Vous devez tout "
+"de suite remarquer qu'il ne se passe rien. C'est parce qu'il n'y a aucune "
+"autre tuile dans la carte pour le moment, donc le terrain ne sait pas trop "
+"comment aider (car nous n'avons pas de transition vers \"rien\" dans notre "
+"jeu de tuiles. Il y a deux moyens de se sortir de cette situation :"
 
 #: ../../manual/terrain.rst:174
 msgid ""
@@ -6814,6 +6887,10 @@ msgid ""
 "selected terrain, though this is not convenient for painting larger "
 "areas."
 msgstr ""
+"Nous pouvons maintenir ``Ctrl`` (``Commande`` sur un Mac) pour peindre une "
+"aire un peu plus grande. De cette façon nous allons peindre au moins une "
+"seule tuile remplie avec le terrain sélectionné, cependant ce n'est pas très "
+"utile pour remplir des aires plus grandes."
 
 #: ../../manual/terrain.rst:178
 msgid ""
@@ -6822,12 +6899,18 @@ msgid ""
 "window for a moment, select the sand tile and then use the :ref:`bucket-"
 "fill-tool`."
 msgstr ""
+"Supposons que nous allons créer une carte de désert, c'est mieux de "
+"commencer en remplissant la carte entière de sable. Vous n'avez qu'à "
+"retourner sur la fenêtre *Jeux de Tuiles* pour un momet, sélectionnez la "
+"tuile de sable et utiliser le :ref:`seau de remplissage <bucket-fill-tool>`."
 
 #: ../../manual/terrain.rst:182
 msgid ""
 "Once we've painted some sand, let's select the Cobblestone terrain. Now "
 "you can see the tool in action!"
 msgstr ""
+"Maintenant que nous avons du sable, sélectionnons le terrain Cobblestone "
+"(pavé). Maintenant nous pouvons voir l'outil en action !"
 
 #: ../../manual/terrain.rst:188
 msgid "Drawing cobblestone"
@@ -6840,6 +6923,10 @@ msgid ""
 "cobblestone, the Terrain tool first inserts transitions to sand and from "
 "there to cobblestone. Neat!"
 msgstr ""
+"Enfin, regardez ce qu'il se passe quand vous essayez de dessiner de la terre "
+"sur le pavé. Comme il n'y a pas de transition de la terre directement vers "
+"le pavé, l'outil de Terrain insère tout d'abord les transitions vers le "
+"sable puis vers le pavé. Stylé !"
 
 #: ../../manual/terrain.rst:198
 msgid "Drawing dirt"
@@ -6853,10 +6940,14 @@ msgid ""
 "useful when there are no transitions to nothing in the selected Terrain "
 "Set."
 msgstr ""
+"Un bouton *Effacer le Terrain* est fourni au cas où vos tuiles de terrain "
+"transitionnent vers rien. Cela permet aussi d'effacer des parties de votre "
+"terrain lors du choix des bonnes tuiles. Ce mode ne fait rien d'utile s'il "
+"n'y a pas de transition à rien dans la collection de Terrain sélectionnée."
 
 #: ../../manual/terrain.rst:210
 msgid "Terrain Fill Mode"
-msgstr ""
+msgstr "Mode de Remplissage de Terrain"
 
 #: ../../manual/terrain.rst:212
 msgid ""
@@ -6866,10 +6957,17 @@ msgid ""
 "randomly chosen from all those in the selected Terrain Set, making sure "
 "to match all adjacent edges and/or corners."
 msgstr ""
+":ref:`L'outil tampon <stamp-tool>`, :ref:`l'outil seau de remplissage "
+"<bucket-fill-tool>` et :ref:`l'outil de remplissage de forme <shape-fill-"
+"tool>` ont un *Mode de Remplissage de Terrain*, qui peut être utilisé pour "
+"peindre ou remplir une aire avec des terrains aléatoires. Quand ce mode est "
+"activé, chaque cellule sera choisie aléatoirement entre toutes celles de la "
+"Collection de Terrain sélectionnée, en faisant en sorte de correspondre tous "
+"les bords et/ou coins."
 
 #: ../../manual/terrain.rst:220
 msgid "Stamp Brush with Terrain Fill Mode Enabled"
-msgstr ""
+msgstr "La Brosse Tampon avec le Mode de Remplissage de Terrain Activé"
 
 #: ../../manual/terrain.rst:222
 msgid ""
@@ -6879,10 +6977,15 @@ msgid ""
 "there are multiple variations of the same tile, in which case it will "
 "randomize between those."
 msgstr ""
+"Veuillez noter que vu que ce mode fait en sorte que les tuiles nouvellement "
+"placées correspondent aux tuiles déjà existantes, généralement rien ne va "
+"changer lorsque vous peignez avec la Brosse Tampon sur un terrain existant. "
+"La seule exception est si vous avez plusieurs variations de la même tuile, "
+"qui dans ce cas va faire une sélection aléatoire entre celles-ci."
 
 #: ../../manual/terrain.rst:229
 msgid "Bucket Fill with Terrain Fill Mode Enabled"
-msgstr ""
+msgstr "Le Seau de Remplissage avec le Mode de Remplissage de Terrain Activé"
 
 #: ../../manual/terrain.rst:231
 msgid ""
@@ -6890,10 +6993,13 @@ msgid ""
 "to connect to any existing tiles. Internally the area is completely "
 "randomized."
 msgstr ""
+"Lors du remplissage d'une forme ou d'une aire, seuls les bords de l'aire "
+"remplie ont besoin d'être connectés avec des tuiles existantes. Internement, "
+"l'aire est complètement aléatoire."
 
 #: ../../manual/terrain.rst:235
 msgid "Tile and Terrain Probability"
-msgstr ""
+msgstr "Probabilité de Tuile et de Terrain"
 
 #: ../../manual/terrain.rst:237
 msgid ""
@@ -6903,22 +7009,32 @@ msgid ""
 "change the frequency with which a certain tile or terrain is chosen "
 "compared to other valid options."
 msgstr ""
+"Le :ref:`Mode de Remplissage de Terrain <terrain-fill-mode>` et la Brosse de "
+"Terrain vont par défaut considérer toutes les tuiles correspondantes avec "
+"une probabilité égale. Les tuiles individuelles ainsi que les terrains ont "
+"une propriété *Probabilité*, qui peut être utilisée pour changer la "
+"fréquence à laquelle une certaine tuile ou terrain est choisie comparée aux "
+"autres options valides."
 
 #: ../../manual/terrain.rst:243
 msgid ""
 "The relative probability of a tile is the product of its own propability "
 "and the probability of the terrain at each corner and/or side."
 msgstr ""
+"La probabilité relative d'une tuile est le produit de sa propre probabilité "
+"et de la probabilité d'un terrain pour chaque coin et/ou bord."
 
 #: ../../manual/terrain.rst:248
 msgid ""
 "Left shows \"path\" with probability 0.1, right shows \"path\" with "
 "probability 10."
 msgstr ""
+"À gauche une image où \"path\" (chemin) a une probabilité de 0.1, et à "
+"droite une image où \"path\" a une probabilité de 10."
 
 #: ../../manual/terrain.rst:252
 msgid "Probability for Variations"
-msgstr ""
+msgstr "Probabilité des Variations"
 
 #: ../../manual/terrain.rst:254
 msgid ""
@@ -6927,6 +7043,11 @@ msgid ""
 "example tileset contains several bushes and other decorations which we "
 "may randomly want to scatter across the desert."
 msgstr ""
+"Une utilisation commune de la probabilité, surtout au niveau des tuiles "
+"individuelles, est de rendre certaines variations d'une tuile moins communes "
+"que d'autres. Notre jeu de tuiles d'exemple contient plusieurs buissons et "
+"d'autres décorations que nous voudrons aléatoirement éparpiller dans le "
+"désert."
 
 #: ../../manual/terrain.rst:259
 msgid ""
@@ -6938,14 +7059,21 @@ msgid ""
 "*Probability* property of the tiles we need to exit the *Terrain Sets* "
 "mode."
 msgstr ""
+"Pour ce faire, nous devons tout d'abord toutes les baliser en tant que "
+"tuiles \"sand\" (sable), car c'est le terrain de base. Ensuite, pour les "
+"rendre moins communes que les autres tuiles de sable, nous pouvons mettre "
+"leur probabilité à 0.01. Cette valeur veut dire qu'elles sont 100 fois plus "
+"rarement choisies que les tuiles de sables normales (qui ont toujours une "
+"probabilité de 1). Pour éditer la propriété *Probabilité* des tuiles nous "
+"devons sortir du mode *Collections de Terrains*."
 
 #: ../../manual/terrain.rst:268
 msgid "Setting low probability on decoration tiles."
-msgstr ""
+msgstr "Assignation d'une probabilité basse aux tuiles de décoration."
 
 #: ../../manual/terrain.rst:272
 msgid "Random decorative tiles appearing with low probability."
-msgstr ""
+msgstr "Tuiles décoratives aléatoires apparaissant avec une probabilité basse."
 
 #: ../../manual/terrain.rst:276
 msgid ""
@@ -6954,6 +7082,10 @@ msgid ""
 "tools aware of the terrain of a certain tile, which is taken into account"
 " when modifying neighboring tiles."
 msgstr ""
+"Il est aussi possible de mettre la probabilité à 0, ce qui désactive l'usage "
+"automatique d'une tuile entièrement. Cela peut être utile car les outils "
+"sont toujours conscients du terrain d'une certaine tuile, ce qui est pris en "
+"compte lors de la modification de tuiles voisines."
 
 #: ../../manual/terrain.rst:286
 msgid "Tile Transformations"
@@ -6966,40 +7098,48 @@ msgid ""
 "would otherwise not be available in a tileset. This can be enabled in the"
 " *Tileset Properties*."
 msgstr ""
+"Tiled supporte les tuiles inversées et pivotées. Lors de l'utilisation des "
+"terrains, les tuiles peuvent être automatiquement inversées et/ou pivotées "
+"pour créer des variations qui ne seraient normalement pas disponibles dans "
+"un jeu de tuiles. Cela peut être activé dans les *Propriétés du Jeu de "
+"Tuiles*."
 
 #: ../../manual/terrain.rst:293
 msgid "The following transformation-related options are available:"
-msgstr ""
+msgstr "Les transformations et options liées suivants sont disponibles :"
 
 #: ../../manual/terrain.rst:296
 msgid "Flip Horizontally"
-msgstr ""
+msgstr "Inverser Horizontalement"
 
 #: ../../manual/terrain.rst:296
 msgid "Allow tiles to be flipped horizontally."
-msgstr ""
+msgstr "Autorise les tuiles à être inversées horizontalement."
 
 #: ../../manual/terrain.rst:300
 msgid "Flip Vertically"
-msgstr ""
+msgstr "Inverser Verticalement"
 
 #: ../../manual/terrain.rst:299
 msgid ""
 "Allow tiles to be flipped vertically. This would be left disabled when "
 "the graphics contain shadows in vertical direction, for example."
 msgstr ""
+"Autorise les tuiles à être inversées horizontalement. Cela doit être "
+"désactivé quand les graphismes contiennent des ombres dans une position "
+"verticale, par exemple."
 
 #: ../../manual/terrain.rst:303
 msgid "Rotate"
-msgstr ""
+msgstr "Rotation"
 
 #: ../../manual/terrain.rst:303
 msgid "Allow tiles to be rotated (by 90, 180 or 270-degrees)."
-msgstr ""
+msgstr "Autorise la rotation des tuiles (par 90, 180 ou 270 degrés)."
 
 #: ../../manual/terrain.rst:310
 msgid "Prefer Untransformed Tiles"
-msgstr ""
+msgstr "Préférer les Tuiles Non Transformées"
 
 #: ../../manual/terrain.rst:306
 msgid ""
@@ -7009,22 +7149,31 @@ msgid ""
 "Leaving this option disabled allows transformations to be used to create "
 "more variation."
 msgstr ""
+"Quand les transformations sont activées, il peut arriver qu'un certain motif "
+"puisse être rempli soit par une tuile normale ou par une tuile transformée. "
+"Quand cette option est activée, les tuiles non transformées seront toujours "
+"prioritaires. Laisser cette option désactivée permet l'utilisation de "
+"transformations pour créer plus de variations."
 
 #: ../../manual/terrain.rst:315
 msgid ""
 "With rotations enabled, the normally 47-tiles `Blob tileset`_ can be "
 "reduced to a mere 15 tiles."
 msgstr ""
+"Quand les rotations sont activées, le `jeu de tuiles Blob`_ qui a "
+"normalement 47 tuiles peut être réduit à seulement 15 tuiles."
 
 #: ../../manual/terrain.rst:320
 msgid "Final Words"
-msgstr ""
+msgstr "Derniers Mots"
 
 #: ../../manual/terrain.rst:322
 msgid ""
 "Now you should have a pretty good idea about how to use this tool in your"
 " own project. A few things to keep in mind:"
 msgstr ""
+"Maintenant vous devez avoir une assez bonne idée de comment utiliser cet "
+"outil pour votre propre projet. Voici quelques astuces à garder en tête :"
 
 #: ../../manual/terrain.rst:325
 msgid ""
@@ -7033,6 +7182,11 @@ msgid ""
 " tileset. If you have tiles in different tilesets that you want to "
 "transition to one another, you will need to merge the tilesets into one."
 msgstr ""
+"Pour qu'un terrain interagisse avec un autre, ils doivent être dans la même *"
+"Collection de Terrains*. Cela veut aussi dire que toutes les tuiles doivent "
+"faire partie du même jeu de tuiles. Si vous avez des tuiles dans des jeux de "
+"tuiles différents avec lesquelles vous voulez créer une transition de l'une "
+"à l'autre, vous aurez besoin de fusionner les jeux de tuiles en un."
 
 #: ../../manual/terrain.rst:330
 msgid ""
@@ -7040,6 +7194,9 @@ msgid ""
 "want to avoid using embedded tilesets so that terrain information can be "
 "shared among several maps."
 msgstr ""
+"Comme la définition des informations de terrain peut être laborieuse, vous "
+"voudrez éviter d'utiliser des jeux de tuiles intégrés pour que l'information "
+"de terrain puisse être partagée entre plusieurs cartes."
 
 #: ../../manual/terrain.rst:334
 msgid ""
@@ -7047,6 +7204,10 @@ msgid ""
 " terrain overlay is displayed correctly, set up the *Orientation*, *Grid "
 "Width* and *Grid Height* in the tileset properties."
 msgstr ""
+"L'outil de Terrain marche bien aussi avec les cartes isométriques. Pour "
+"faire en sorte que les informations de terrain soient affichées "
+"correctement, mettez en place *l'Orientation*, la *Largeur de la Grille* et "
+"la *Hauteur de la Grille* dans les propriétés du jeu de tuiles."
 
 #: ../../manual/terrain.rst:338
 msgid ""
@@ -7057,6 +7218,12 @@ msgid ""
 "but also more complicated way of automatic tile placement, check out "
 ":doc:`automapping`."
 msgstr ""
+"L'outil peut gérer tout nombre de terrain (jusqu'à 255) et chaque coin de la "
+"tuile peut avoir un différent type de terrain. Cependant, il y a d'autres "
+"moyens de gérer les transitions que cet outil ne peut gérer. Aussi, il n'est "
+"pas capable d'éditer plusieurs calques à la fois. Pour un moyen plus "
+"flexible mais plus compliqué de placer des tuiles automatiquement, visitez "
+"la page sur :doc:`l'automapping <automapping>`."
 
 #: ../../manual/terrain.rst:344
 msgid ""
@@ -7064,16 +7231,21 @@ msgid ""
 "/terrain-transitions>`__ that contain transitions that are compatible "
 "with this tool on `OpenGameArt.org <http://opengameart.org/>`__."
 msgstr ""
+"Il y a une `collection de jeux de tuiles <http://opengameart.org/content/"
+"terrain-transitions>`__ qui contiennent des transitions qui sont compatibles "
+"avec cet outil sur `OpenGameArt.org <http://opengameart.org/>`__."
 
 #: ../../manual/using-commands.rst:2
 msgid "Using Commands"
-msgstr ""
+msgstr "Utiliser les Commandes"
 
 #: ../../manual/using-commands.rst:4
 msgid ""
 "The Command Button allows you to create and run shell commands (other "
 "programs) from Tiled."
 msgstr ""
+"Le Bouton de Commande vous permet de créer et de lancer des commandes shell ("
+"d'autres programmes) depuis Tiled."
 
 #: ../../manual/using-commands.rst:7
 msgid ""
@@ -7082,10 +7254,15 @@ msgid ""
 "Or you could setup multiple commands for the same game that load "
 "different checkpoints or configurations."
 msgstr ""
+"Vous pouvez mettre en place autant de commandes que vous le voulez. C'est "
+"utile si vous éditez des cartes pour plusieurs jeux et que vous voulez "
+"lancer des commandes pour chaque jeu. Ou vous pouvez mettre en place "
+"plusieurs commandes pour le même jeu qui charge différents points de "
+"chargement ou différentes configurations."
 
 #: ../../manual/using-commands.rst:13
 msgid "The Command Button"
-msgstr ""
+msgstr "Le Bouton de Commande"
 
 #: ../../manual/using-commands.rst:15
 msgid ""
@@ -7096,54 +7273,69 @@ msgid ""
 "open the Edit Commands dialog. You can also find all the commands in the "
 "File menu."
 msgstr ""
+"Il est situé sur la barre d'outils principale, à droite du bouton rétablir. "
+"Cliquer dessus va lancer la commande par défaut (la première commande dans "
+"la liste de commandes). Cliquer sur la flèche à côté du bouton va afficher "
+"un menu qui vous permet de lancer toute commande que vous avez mise en "
+"place, ainsi qu'une option pour ouvrir la boîte de dialogue d'Édition de "
+"Commandes. Vous pouvez aussi trouver toutes les commandes dans le menu "
+"Fichier."
 
 #: ../../manual/using-commands.rst:22
 msgid ""
 "Apart from this, you can set up custom keyboard shortcuts for each "
 "command."
 msgstr ""
+"Mis à part cela, vous pouvez ajouter des raccourcis clavier personnalisés "
+"pour chaque commande."
 
 #: ../../manual/using-commands.rst:26
 msgid "Editing Commands"
-msgstr ""
+msgstr "Éditer les Commandes"
 
 #: ../../manual/using-commands.rst:28
 msgid ""
 "The 'Edit Commands' dialog contains a list of commands. Each command has "
 "several properties:"
 msgstr ""
+"La boîte de dialogue 'Éditer les commandes' contient une liste de commandes. "
+"Chaque commande a plusieurs propriétés :"
 
 #: ../../manual/using-commands.rst:32
 msgid ""
 "The name of the command as it will be shown in the drop down list, so you"
 " can easily identify it."
 msgstr ""
+"Le nom de la commande comme il sera affiché dans la liste déroulante, pour "
+"que vous puissiez l'identifier facilement."
 
 #: ../../manual/using-commands.rst:37
 msgid "Executable"
-msgstr ""
+msgstr "Exécutable"
 
 #: ../../manual/using-commands.rst:36
 msgid ""
 "The executable to run. It should either be a full path or the name of an "
 "executable in the system PATH."
 msgstr ""
+"L'exécutable à lancer. Il doit être soit un chemin absolu ou le nom de "
+"l'exécutable dans le PATH du système."
 
 #: ../../manual/using-commands.rst:40
 msgid "Arguments"
-msgstr ""
+msgstr "Arguments"
 
 #: ../../manual/using-commands.rst:40
 msgid "The arguments for running the executable."
-msgstr ""
+msgstr "Les arguments pour lancer l'exécutable."
 
 #: ../../manual/using-commands.rst:43
 msgid "Working directory"
-msgstr ""
+msgstr "Répertoire de travail"
 
 #: ../../manual/using-commands.rst:43
 msgid "The path to the working directory."
-msgstr ""
+msgstr "Le chemin vers le répertoire de travail."
 
 #: ../../manual/using-commands.rst:47
 msgid "Shortcut"
@@ -7154,10 +7346,12 @@ msgid ""
 "A custom key sequence to trigger the command. You can use 'Clear' to "
 "reset the shortcut."
 msgstr ""
+"Une séquence de touches personnalisées pour lancer la commande. Vous pouvez "
+"utiliser 'Vider' pour réinitialiser le raccourci."
 
 #: ../../manual/using-commands.rst:52
 msgid "Output in Debug Console"
-msgstr ""
+msgstr "Sortie dans la Console de Débogage"
 
 #: ../../manual/using-commands.rst:50
 msgid ""
@@ -7165,157 +7359,181 @@ msgid ""
 "will be displayed in the Debug Console. You can find the Debug Console in"
 " *View > Views and Toolbars > Debug Console*."
 msgstr ""
+"Si cette option est activée, alors la sortie (stdout et stderr) de cette "
+"commande sera affichée dans la Console de Débogage. Vous pouvez trouver la "
+"console de Débogage dans *Vue > Vues et Barres d'Outils > Console*."
 
 #: ../../manual/using-commands.rst:56
 msgid "Save map before executing"
-msgstr ""
+msgstr "Sauvegarder la carte avant l'exécution"
 
 #: ../../manual/using-commands.rst:55
 msgid ""
 "If this is enabled, then the current map will be saved before executing "
 "the command."
 msgstr ""
+"Si cette option est activée, la carte courante sera sauvegardée avant "
+"l'exécution de la commande."
 
 #: ../../manual/using-commands.rst:60
 msgid "Enabled"
-msgstr ""
+msgstr "Activé"
 
 #: ../../manual/using-commands.rst:59
 msgid ""
 "A quick way to disable commands and remove them from the drop down list. "
 "The default command is the first enabled command."
 msgstr ""
+"Un moyen rapide de désactiver les commandes et de les enlever de la liste "
+"déroulante. La commande par défaut est la première commande activée."
 
 #: ../../manual/using-commands.rst:62
 msgid ""
 "Note that if the executable or any of its arguments contain spaces, these"
 " parts need to be quoted."
 msgstr ""
+"Veuillez noter que si l'exécutable ou n'importe lequel de ses arguments "
+"contient des espaces, ces parties doivent être entre guillemets."
 
 #: ../../manual/using-commands.rst:66
 msgid "Substituted Variables"
-msgstr ""
+msgstr "Variables Substituées"
 
 #: ../../manual/using-commands.rst:68
 msgid ""
 "In the executable, arguments and working directory fields, you can use "
 "the following variables:"
 msgstr ""
+"Dans l'exécutable, les arguments et les champs du répertoire de travail, "
+"vous pouvez utiliser les variables suivantes :"
 
 #: ../../manual/using-commands.rst:72
 msgid "``%mapfile``"
-msgstr ""
+msgstr "``%mapfile``"
 
 #: ../../manual/using-commands.rst:72
 msgid "the full path of the current file (either map or tileset)."
 msgstr ""
+"le chemin absolu du fichier courant (soit une carte ou un jeu de tuiles)."
 
 #: ../../manual/using-commands.rst:75
 msgid "``%mappath``"
-msgstr ""
+msgstr "``%mappath``"
 
 #: ../../manual/using-commands.rst:75
 msgid "the path in which the current file is located."
-msgstr ""
+msgstr "le chemin dans lequel le fichier courant est situé."
 
 #: ../../manual/using-commands.rst:82
 msgid "``%projectpath``"
-msgstr ""
+msgstr "``%projectpath``"
 
 #: ../../manual/using-commands.rst:82
 msgid "the path in which the current project is located."
-msgstr ""
+msgstr "le chemin dans lequel le projet courant est situé."
 
 #: ../../manual/using-commands.rst:85
 #, python-format
 msgid "``%objecttype``"
-msgstr ""
+msgstr "``%objecttype``"
 
 #: ../../manual/using-commands.rst:85
 msgid "the type of the currently selected object, if any."
-msgstr ""
+msgstr "le type de l'objet couramment sélectionné, s'il y en a un."
 
 #: ../../manual/using-commands.rst:88
 #, python-format
 msgid "``%objectid``"
-msgstr ""
+msgstr "``%objectid``"
 
 #: ../../manual/using-commands.rst:88
 msgid "the ID of the currently selected object, if any."
-msgstr ""
+msgstr "l'ID de l'objet couramment sélectionné, s'il y en a un."
 
 #: ../../manual/using-commands.rst:91
 msgid "``%layername``"
-msgstr ""
+msgstr "``%layername``"
 
 #: ../../manual/using-commands.rst:91
 msgid "the name of the currently selected layer."
-msgstr ""
+msgstr "le nom du calque couramment sélectionné."
 
 #: ../../manual/using-commands.rst:98
 msgid "``%tileid``"
-msgstr ""
+msgstr "``%tileid``"
 
 #: ../../manual/using-commands.rst:98
 msgid "a comma-separated list with the IDs of the selected tiles, if any."
 msgstr ""
+"une liste d'IDs des tuiles sélectionnés séparés par des virgules, s'il y en "
+"a."
 
 #: ../../manual/using-commands.rst:100
 msgid ""
 "For the working directory field, you can additionally use the following "
 "variable:"
 msgstr ""
+"Pour le champ de répertoire de travail, vous pouvez additionnellement "
+"utiliser la variable suivante :"
 
 #: ../../manual/using-commands.rst:105
 #, python-format
 msgid "``%executablepath``"
-msgstr ""
+msgstr "``%executablepath``"
 
 #: ../../manual/using-commands.rst:104
 msgid "the path to the executable."
-msgstr ""
+msgstr "le chemin vers l'exécutable."
 
 #: ../../manual/using-commands.rst:108
 msgid "Example Commands"
-msgstr ""
+msgstr "Commandes d'Exemple"
 
 #: ../../manual/using-commands.rst:110
 msgid ""
 "Launching a custom game called \"mygame\" with a -loadmap parameter and "
 "the mapfile:"
 msgstr ""
+"Lancement d'un jeu personnalisé nommé \"mygame\" avec un paramètre -loadmap "
+"et le fichier de carte :"
 
 #: ../../manual/using-commands.rst:117
 msgid ""
 "On Mac, remember that Apps are folders, so you need to run the actual "
 "executable from within the ``Contents/MacOS`` folder:"
 msgstr ""
+"Sur Mac, rappelez-vous que les applications sont des dossiers, donc vous "
+"devez lancer l'exécutable actuel dans le dossier ``Contents/MacOS`` :"
 
 #: ../../manual/using-commands.rst:124
 msgid ""
 "Or use ``open`` (and note the quotes since one of the arguments contains "
 "spaces):"
 msgstr ""
+"Ou utilisez ``open`` (et veuillez noter les guillemets vu que l'un des "
+"arguments contient des espaces) :"
 
 #: ../../manual/using-commands.rst:131
 msgid "Some systems also have a command to open files in the appropriate program:"
 msgstr ""
+"Quelques systèmes ont aussi une commande pour ouvrir des fichiers dans le "
+"programme approprié :"
 
 #: ../../manual/using-commands.rst:134
 msgid "OSX: ``open %mapfile``"
-msgstr ""
+msgstr "OSX : ``open %mapfile``"
 
 #: ../../manual/using-commands.rst:135
 msgid "GNOME systems like Ubuntu: ``gnome-open %mapfile``"
-msgstr ""
+msgstr "Systèmes GNOME tel qu'Ubuntu : ``gnome-open %mapfile``"
 
 #: ../../manual/using-commands.rst:136
 msgid "FreeDesktop.org standard: ``xdg-open %mapfile``"
-msgstr ""
+msgstr "Norme FreeDesktop.org : ``xdg-open %mapfile``"
 
 #: ../../manual/using-infinite-maps.rst:6
 msgid "Using Infinite Maps"
-msgstr ""
+msgstr "Utiliser des Cartes Infinies"
 
 #: ../../manual/using-infinite-maps.rst:8
 msgid ""
@@ -7325,6 +7543,11 @@ msgid ""
 "the map. The bounds of a particular layer get expanded whenever tiles are"
 " painted outside the current bounds."
 msgstr ""
+"Les cartes infinies vous libère des bords de la carte. La toile est "
+"\"extensible automatiquement\", ce qui veut plus ou moins dire que vous avez "
+"une grille infinie qui peut être peinte dans se préoccuper de la largeur ou "
+"hauteur de la carte. Les bords d'un calque particulier sont étendus quand "
+"des tuiles sont peintes en dehors des bords courants."
 
 #: ../../manual/using-infinite-maps.rst:18
 msgid "Creating an Infinite Map"
@@ -7335,14 +7558,16 @@ msgid ""
 "In the order to create an infinite map, make sure the 'Infinite' option "
 "is selected in New Map dialog."
 msgstr ""
+"Pour créer une carte infinie, faites en sorte que l'option 'Infinie' soit "
+"sélectionnée dans la boîte de dialogue de Nouvelle Carte."
 
 #: ../../manual/using-infinite-maps.rst:27
 msgid "The newly created map will then have an infinite canvas."
-msgstr ""
+msgstr "La carte nouvellement créée aura ensuite une toile infinie."
 
 #: ../../manual/using-infinite-maps.rst:30
 msgid "Editing the Infinite Map"
-msgstr ""
+msgstr "Éditer la Carte Infinie"
 
 #: ../../manual/using-infinite-maps.rst:32
 msgid ""
@@ -7351,10 +7576,15 @@ msgid ""
 "current bounds of that particular tile layer. These bounds get increased "
 "upon further painting of that tile layer."
 msgstr ""
+"Mis à part :ref:`l'outil seau de remplissage <bucket-fill-tool>` tous les "
+"outils marchent exactement de la même façon qu'avec des cartes à taille "
+"fixe. L'Outil Seau de Remplissage remplit les bords courants d'un calque de "
+"tuiles particulier. Ces bords sont agrandis lors d'un dessin supplémentaire "
+"de ce calque de tuiles."
 
 #: ../../manual/using-infinite-maps.rst:41
 msgid "Conversion from Infinite to Finite Map and Vice Versa"
-msgstr ""
+msgstr "Conversion d'une Carte Infinie vers une Carte Finie et Vice Versa"
 
 #: ../../manual/using-infinite-maps.rst:43
 msgid ""
@@ -7363,22 +7593,26 @@ msgid ""
 "height of the final map are chosen on the basis of bounds of all the tile"
 " layers."
 msgstr ""
+"Dans les propriétés de carte, vous pouvez activer/désactiver si la carte "
+"doit être infinie ou non. Lors de la conversion d'une carte infinie vers une "
+"carte finie, la largeur et hauteur de la carte finale sont choisies basées "
+"sur les bords de tous les calques de tuiles."
 
 #: ../../manual/using-infinite-maps.rst:51
 msgid "The Initial Infinite Map"
-msgstr ""
+msgstr "La Carte Infinie Initiale"
 
 #: ../../manual/using-infinite-maps.rst:56
 msgid "Unchecking the Infinite property in Map Properties"
-msgstr ""
+msgstr "Désactiver la propriété Infinie dans les Propriétés de Carte"
 
 #: ../../manual/using-infinite-maps.rst:61
 msgid "The Converted Map"
-msgstr ""
+msgstr "La Carte Convertie"
 
 #: ../../manual/using-templates.rst:6
 msgid "Using Templates"
-msgstr ""
+msgstr "Utiliser des Modèles"
 
 #: ../../manual/using-templates.rst:8
 msgid ""
@@ -7387,6 +7621,11 @@ msgid ""
 "properties. This can save a lot of tedious work of setting up the object "
 "type and properties, or even just finding the right tile in the tileset."
 msgstr ""
+"Tout objet créé peut être sauvegardé en tant que modèle. Ces modèles peuvent "
+"ensuite être instanciés autre part en tant qu'objets qui héritent les "
+"propriétés du modèle. Cela peut vous sauver de beaucoup de travail pénible "
+"pour mettre en place le type de l'objet et ses propriétés, ou même de juste "
+"trouver la bonne tuile dans le jeu de tuiles."
 
 #: ../../manual/using-templates.rst:13
 msgid ""
@@ -7394,10 +7633,13 @@ msgid ""
 "directories. You can save templates in either XML or JSON format, just "
 "like map and tileset files."
 msgstr ""
+"Chaque modèle est stocké dans son propre fichier, qui peut être organisé "
+"dans des répertoires. Vous pouvez sauvegarder les modèles dans le format XML "
+"ou JSON, comme tout fichier de carte ou de jeu de tuiles."
 
 #: ../../manual/using-templates.rst:21
 msgid "Creating Templates"
-msgstr ""
+msgstr "Créer des Modèles"
 
 #: ../../manual/using-templates.rst:23
 msgid ""
@@ -7406,6 +7648,11 @@ msgid ""
 " and the format to save the template in. If the object already has a name"
 " the suggested file name will be based on that."
 msgstr ""
+"Un modèle peut être créé en faisant un clic droit sur tout objet dans la "
+"carte et en sélectionnant \"Sauvegarder en tant que Modèle\". Il vous sera "
+"demandé de choisir un nom de fichier et le format dans lequel sauvegarder le "
+"modèle. Si l'objet a déjà un nom, le nom de fichier suggéré sera basé sur "
+"lui."
 
 #: ../../manual/using-templates.rst:35
 msgid ""
@@ -7414,6 +7661,11 @@ msgid ""
 " save your templates in a folder that is part of your project. Dragging "
 "in a template from a file manager is also possible."
 msgstr ""
+"Pour être capable de sélectionner vos modèles pour édition ou pour les "
+"instancier, vous voudrez généralement utiliser la :doc:`vue Projet "
+"<projects>`, donc faites attention à sauvegarder vos modèles dans un dossier "
+"qui fait partie de votre projet. Il est aussi possible de glisser un modèle "
+"depuis un explorateur de fichiers."
 
 #: ../../manual/using-templates.rst:40
 msgid ""
@@ -7421,10 +7673,14 @@ msgid ""
 "embedded tileset, because :ref:`template files <tmx-template-files>` do "
 "not support referring to such tilesets."
 msgstr ""
+"Vous ne pouvez pas créer un modèle à partir d'un objet tuile qui utilise une "
+"tuile d'un jeu de tuiles intégré, car les :ref:`fichiers de modèle <tmx-"
+"template-files>` ne supporte pas le référencement vers de tels jeux de "
+"tuiles."
 
 #: ../../manual/using-templates.rst:48
 msgid "Creating Template Instances"
-msgstr ""
+msgstr "Créer des Instances de Modèle"
 
 #: ../../manual/using-templates.rst:52
 msgid ""
@@ -7433,10 +7689,14 @@ msgid ""
 "tool by selecting a template and clicking on the map. The latter is more "
 "convenient when you want to create many instances."
 msgstr ""
+"L'instanciation de modèle fonctionne soit en glissant-déposant le modèle "
+"depuis la vue Projet dans la carte, soit en utilisant l'outil \"Insérer un "
+"Modèle\" en sélectionnant un modèle et en cliquant sur la carte. La seconde "
+"option est plus pratique quand vous voulez créer plein d'instances."
 
 #: ../../manual/using-templates.rst:61
 msgid "Editing Templates"
-msgstr ""
+msgstr "Éditer des Modèles"
 
 #: ../../manual/using-templates.rst:63
 msgid ""
@@ -7445,6 +7705,11 @@ msgid ""
 "dragging the template file on the *Template Editor* view. The template "
 "can also be selected using the *Open File in Project* action."
 msgstr ""
+"L'édition de modèle est faite à partir de la vue *Éditeur de Modèle*. Un "
+"modèle peut être ouvert en le sélectionnant dans la vue Projet ou en "
+"glissant le fichier de modèle dans la vue *Éditeur de Modèle*. Le modèle "
+"peut aussi être sélectionné en utilisant l'action *Ouvrir un Fichier dans le "
+"Projet*."
 
 #: ../../manual/using-templates.rst:68
 msgid ""
@@ -7452,12 +7717,17 @@ msgid ""
 "*Properties* view will show the template's properties, where they can be "
 "edited."
 msgstr ""
+"Lors de la sélection du modèle dans la vue *Éditeur de Modèle*, la vue "
+"*Propriétés* va montrer les propriétés du modèle, là où elles peuvent être "
+"éditées."
 
 #: ../../manual/using-templates.rst:71
 msgid ""
 "Any changes to the template are saved automatically and are immediately "
 "reflected on all template instances."
 msgstr ""
+"Tout changement dans le modèle est sauvegardé automatiquement et est "
+"immédiatement appliqué à toutes les instances de ce modèle."
 
 #: ../../manual/using-templates.rst:77
 msgid ""
@@ -7465,6 +7735,9 @@ msgid ""
 "marked as an overridden property and won't be changed when the template "
 "changes."
 msgstr ""
+"Si une propriété d'une instance de modèle est changée, elle va être balisée "
+"en tant que propriété modifiée en interne et ne sera pas changée quand le "
+"modèle change."
 
 #: ../../manual/using-templates.rst:84
 msgid ""
@@ -7472,20 +7745,27 @@ msgid ""
 "changes will be reflected in the *Template Editor* as well as on any "
 "template instances."
 msgstr ""
+"Si un fichier de modèle change sur le disque, il est automatiquement "
+"rechargé et tout changement sera appliqué dans l'*Éditeur de Modèle* ainsi "
+"que dans toutes les instances de ce modèle."
 
 #: ../../manual/using-templates.rst:89
 msgid "Detaching Template Instances"
-msgstr ""
+msgstr "Détacher des Instances de Modèle"
 
 #: ../../manual/using-templates.rst:91
 msgid ""
 "Detaching a template instance will disconnect it from its template, so "
 "any further edits to the template will not affect the detached instance."
 msgstr ""
+"Détacher une instance de modèle la déconnectera de son modèle, donc tout "
+"changement du modèle futur ne sera pas affecté à l'instance détachée."
 
 #: ../../manual/using-templates.rst:94
 msgid "To detach an instance, right click on it and select *Detach*."
 msgstr ""
+"Pour détacher une instance, faites un clic droit sur elle et sélectionnez "
+"*Détacher*."
 
 #: ../../manual/using-templates.rst:100
 msgid ""
@@ -7493,6 +7773,9 @@ msgid ""
 "like to use them, you can enable the *Detach templates* :ref:`export "
 "option <export-options>`."
 msgstr ""
+"Si votre chargeur de carte ne supporte pas les instances d'objet mais vous "
+"voulez toujours les utiliser, vous pouvez activer :ref:`l'option "
+"d'exportation <export-options>` *Détacher les modèles*."
 
 #: ../../manual/using-templates.rst:107
 msgid ""
@@ -7515,6 +7798,8 @@ msgid ""
 "Handling wrong file paths (`#1732 "
 "<https://github.com/bjorn/tiled/issues/1732>`__)."
 msgstr ""
+"Gestion des mauvais chemins de fichier (`#1732 <https://github.com/bjorn/"
+"tiled/issues/1732>`__)."
 
 #: ../../manual/using-templates.rst:110
 msgid ""
@@ -7522,10 +7807,13 @@ msgid ""
 "template or a sub-folder (`#1723 "
 "<https://github.com/bjorn/tiled/issues/1723>`__)."
 msgstr ""
+"Gestion du dossier de modèles, par exemple en déplaçant, renommant ou "
+"supprimant un modèle ou un sous-dossier (`#1723 <https://github.com/bjorn/"
+"tiled/issues/1723>`__)."
 
 #: ../../manual/worlds.rst:6
 msgid "Working with Worlds"
-msgstr ""
+msgstr "Travailler avec des Mondes"
 
 #: ../../manual/worlds.rst:8
 msgid ""
@@ -7536,12 +7824,21 @@ msgid ""
 " be able to quickly switch between editing different maps. Defining a "
 "world allows you to do exactly that."
 msgstr ""
+"Des fois, un jeu a un monde vaste qui est séparé en plusieurs cartes pour "
+"que le monde soit plus gérable par le jeu (moins d'utilisation de mémoire) "
+"ou plus facile à éditer par plusieurs personnes (éviter les conflits de "
+"fusion). Il serait utile si les cartes d'un tel monde soient visibles dans "
+"la même vue, et d'être capable de rapidement passer d'une carte à une autre "
+"pour l'édition. La définition d'un monde vous permet de faire exactement "
+"cela."
 
 #: ../../manual/worlds.rst:18
 msgid ""
 "Many maps from `The Mana World <https://www.themanaworld.org/>`__ shown "
 "at once."
 msgstr ""
+"Plein de cartes de `The Mana World <https://www.themanaworld.org/>`__ "
+"montrées en même temps."
 
 #: ../../manual/worlds.rst:22
 msgid "Defining a World"
@@ -7553,6 +7850,10 @@ msgid ""
 "Tiled which maps are part of the world and at what location. Worlds can "
 "be created by using the *Map > New World...* action."
 msgstr ""
+"Un monde est défini dans un fichier ``.world``, qui est un fichier JSON qui "
+"renseigne Tiled sur quelles cartes font partie du monde et à quel endroit. "
+"Les mondes peuvent être créés en utilisant l'action *Carte > Nouveau "
+"Monde...*."
 
 #: ../../manual/worlds.rst:28
 msgid ""
@@ -7560,6 +7861,9 @@ msgid ""
 " world definition, which defines the global position (in pixels) of three"
 " maps:"
 msgstr ""
+"Vous pouvez aussi créer des `fichiers .world` à la main. Voici un exemple "
+"simple de la définition d'un monde, qui définit la position globale (en "
+"pixels) de trois cartes :"
 
 #: ../../manual/worlds.rst:54
 msgid ""
@@ -7567,6 +7871,10 @@ msgid ""
 "World...* from the menu. Multiple worlds can be loaded at the same time, "
 "and worlds will be automatically loaded again when Tiled is restarted."
 msgstr ""
+"Lorsqu'il est défini, un monde doit être chargé en choisissant *Carte > "
+"Charger un Monde...* depuis le menu. Plusieurs mondes peuvent être chargés à "
+"l fois, et les mondes seront automatiquement chargés une nouvelle fois "
+"lorsque Tiled sera relancé."
 
 #: ../../manual/worlds.rst:58
 msgid ""
@@ -7576,10 +7884,18 @@ msgid ""
 "maps to open them for editing, which will switch files while keeping the "
 "view in the same position."
 msgstr ""
+"Quand une carte est ouverte, Tiled vérifie si elle fait partie d'un des "
+"mondes chargés. Si c'est le cas, toutes les autres cartes du même monde sont "
+"aussi chargées et affichées à côté de la carte ouverte. Vous pouvez cliquer "
+"sur n'importe quelle des autres cartes pour les ouvrir en mode édition, ce "
+"qui va changer le fichier courant tout en gardant la vue sur la même "
+"position."
 
 #: ../../manual/worlds.rst:64
 msgid "Worlds are reloaded automatically when their file is changed on disk."
 msgstr ""
+"Les mondes sont automatiquement rechargés quand leur fichier est changé sur "
+"le disque."
 
 #: ../../manual/worlds.rst:71
 msgid "Editing Worlds"
@@ -7590,6 +7906,9 @@ msgid ""
 "Once you have loaded a world, you can select the 'World Tool' from the "
 "toolbar to add, remove and move maps within the world."
 msgstr ""
+"Lorsque vous avez chargé un monde, vous pouvez sélectionner 'l'Outil Monde' "
+"depuis la barre d'outils pour ajouter, enlever ou déplacer des cartes dans "
+"le monde."
 
 #: ../../manual/worlds.rst:81
 msgid "Adding Maps"
@@ -7603,10 +7922,16 @@ msgid ""
 "the current world' button from the toolbar. Alternatively, both actions "
 "can be accessed by rightclicking in the  map editor."
 msgstr ""
+"Cliquez sur le bouton 'Ajouter la carte courante à un monde chargé' sur la "
+"barre d'outils, depuis le menu déroulant sélectionnez le monde auquel vous "
+"voulez ajouter cette carte. Pour ajouter une carte différente au monde "
+"courant, vous pouvez utiliser le bouton 'Ajouter une autre carte dans le "
+"monde courant' depuis la barre d'outils. Alternativement, les deux actions "
+"peuvent être accédées en faisant un clic droit sur l'éditeur de carte."
 
 #: ../../manual/worlds.rst:86
 msgid "Removing Maps"
-msgstr ""
+msgstr "Enlever des Cartes"
 
 #: ../../manual/worlds.rst:84
 msgid ""
@@ -7614,26 +7939,36 @@ msgid ""
 "toolbar. Alternatively, rightclick a map in the map editor and select the"
 " 'Remove ... from World ...' action from the context menu."
 msgstr ""
+"Appuyez sur le bouton 'Supprimer la carte courante du monde courant' dans la "
+"barre d'outils. Alternativement, faites un clic droit sur l'éditeur de carte "
+"et sélectionnez l'action 'Supprimer ... du Monde ...' depuis le menu "
+"contextuel."
 
 #: ../../manual/worlds.rst:93
 msgid "Moving Maps"
-msgstr ""
+msgstr "Déplacer des Cartes"
 
 #: ../../manual/worlds.rst:89
 msgid ""
 "Simply drag around maps within the map editor. You can abort moving a map"
 " by hitting 'Escape' or by right-clicking."
 msgstr ""
+"Glissez tout simplement les cartes dans l'éditeur de carte. vous pouvez "
+"annuler le déplacement d'une carte en appuyant sur 'Échap' ou en faisant un "
+"clic droit."
 
 #: ../../manual/worlds.rst:92
 msgid ""
 "Alternatively you can use the arrow keys to move the current selected map"
 " - holding Shift will perform bigger steps."
 msgstr ""
+"Alternativement vous pouvez utiliser les flèches directionnelles pour "
+"déplacer la carte couramment sélectionnée - maintenir Maj va réaliser des "
+"pas plus grands."
 
 #: ../../manual/worlds.rst:98
 msgid "Saving World files"
-msgstr ""
+msgstr "Sauvegarder des fichiers de Monde"
 
 #: ../../manual/worlds.rst:96
 msgid ""
@@ -7641,10 +7976,14 @@ msgid ""
 "menu. Worlds will also automatically be saved if you launch any external "
 "tool that has the 'Save Map Before Executing' option enabled."
 msgstr ""
+"Vous pouvez sauvegarder des fichiers de monde modifiés en utilisant le menu *"
+"Carte > Sauvegarder le Monde*. Les mondes seront aussi automatiquement "
+"sauvegardés si vous lancez tout outil externe qui a l'option 'Sauvegarder la "
+"carte avant l'exécution' activée."
 
 #: ../../manual/worlds.rst:101
 msgid "Using Pattern Matching"
-msgstr ""
+msgstr "Utiliser la Correspondance de Motif"
 
 #: ../../manual/worlds.rst:103
 msgid ""
@@ -7653,6 +7992,10 @@ msgid ""
 "regular expression can be used in combination with a multiplier and an "
 "offset."
 msgstr ""
+"Pour les projets dans lesquels les cartes suivent un certain style de "
+"nommage qui permet la définition de la position de chaque carte dans le "
+"monde en utilisant le nom de fichier, une expression régulière peut être "
+"utilisée en combinaison avec un multiplicateur et un décalage."
 
 #: ../../manual/worlds.rst:109
 msgid ""
@@ -7660,10 +8003,13 @@ msgid ""
 "matching, nor can it be modified. World files with patterns have to be "
 "manually edited."
 msgstr ""
+"Pour le moment aucune interface n'existe pour définir un monde en utilisant "
+"une correspondance de motif dans Tiled, et elle ne peut non plus être "
+"modifiée. Les motifs de fichiers monde doivent être édités manuellement."
 
 #: ../../manual/worlds.rst:113
 msgid "Here is an example:"
-msgstr ""
+msgstr "Voici un exemple :"
 
 #: ../../manual/worlds.rst:130
 msgid ""
@@ -7675,22 +8021,34 @@ msgid ""
 "sets of maps in the same world to be positioned relative to each other. "
 "The final value becomes the position (in pixels) of each map."
 msgstr ""
+"L'expression régulière est respectée pour tous les fichiers placés dans le "
+"même répertoire que le fichier de monde. Il capture deux nombres, le premier "
+"est gardé en tant que ``x`` et le deuxième en tant que ``y``. Ceux-ci sont "
+"ensuite multipliés par ``multiplierX`` et ``multiplierY`` respectivement, et "
+"enfin ``offsetX`` et ``offsetY`` sont ajoutés. Le décalage existe surtout "
+"pour permettre plusieurs collections de cartes du même monde d'être "
+"positionnées par rapport aux autres. La valeur finale devient la position ("
+"en pixels) de chaque carte."
 
 #: ../../manual/worlds.rst:141
 msgid ""
 "The island from `Alchemic Cutie <https://alchemiccutie.com/>`__, using "
 "patterns to automatically show each map at the right location."
 msgstr ""
+"L'île de `Alchemic Cutie <https://alchemiccutie.com/>`__, en utilisant des "
+"motifs pour afficher chaque carte au bon endroit automatiquement."
 
 #: ../../manual/worlds.rst:144
 msgid ""
 "A world definition can use a combination of manually defined maps and "
 "patterns."
 msgstr ""
+"Une définition de monde peut utiliser une combinaison de cartes manuellement "
+"définies et de motifs."
 
 #: ../../manual/worlds.rst:148
 msgid "Showing Only Direct Neighbors"
-msgstr ""
+msgstr "Seulement Montrer les Voisins Directs"
 
 #: ../../manual/worlds.rst:150
 msgid ""
@@ -7699,6 +8057,10 @@ msgid ""
 "Maybe there is not enough memory, or rendering the entire map is too "
 "slow."
 msgstr ""
+"Tiled fait bien attention à ne charger chaque carte, jeu de tuiles et image "
+"qu'une seule fois, mais parfois le monde est juste trop grand pour être "
+"chargé complètement. Peut-être qu'il n'y a pas assez de mémoire, ou le rendu "
+"de la carte entière est trop lent."
 
 #: ../../manual/worlds.rst:154
 msgid ""
@@ -7706,6 +8068,9 @@ msgid ""
 " current map. Add ``\"onlyShowAdjacentMaps\": true`` to the top-level "
 "JSON object."
 msgstr ""
+"Dans ce cas, il y a une option pour seulement charger les voisins directs de "
+"la carte courante. Ajoutez ``\"onlyShowAdjacentMaps\": true`` dans l'objet "
+"JSON à la racine."
 
 #: ../../manual/worlds.rst:157
 msgid ""
@@ -7715,12 +8080,20 @@ msgid ""
 "``mapWidth`` and ``mapHeight``, which default to the defined multipliers "
 "for convenience. All values are in pixels."
 msgstr ""
+"Pour que ceci soit possible, les positions mais aussi les tailles de chaque "
+"carte doivent être définies. Pour les cartes individuelles, c'est fait à "
+"travers les propriétés ``width`` et ``height``. Pour les motifs, les "
+"propriétés sont ``mapWidth`` et ``mapHeight``, qui sont les multiplicateurs "
+"définis par défaut par convenance. Toutes les valeurs sont en pixels."
 
 #: ../../manual/worlds.rst:165
 msgid ""
 "In the future, a property could be added to allow specifying a distance "
 "around the current map in which other maps are loaded."
 msgstr ""
+"Dans le futur, une propriété peut être ajoutée pour permettre la "
+"spécification de la distance autour de la carte courante dans laquelle les "
+"autres cartes sont chargées."
 
 #~ msgid "Converting Rules From 0.8 and Below"
 #~ msgstr "Convertir des Règles Depuis 0.8 et Antérieur"
