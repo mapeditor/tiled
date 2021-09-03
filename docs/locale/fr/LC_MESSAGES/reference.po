@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-04 15:34+0200\n"
-"PO-Revision-Date: 2021-09-01 03:33+0000\n"
+"PO-Revision-Date: 2021-09-04 06:35+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/reference/"
 "fr/>\n"
@@ -1018,7 +1018,7 @@ msgstr "hflip"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Tiles can be flipped horizontally"
-msgstr "Si les tuiles peuvent être retournées horizontalement"
+msgstr "Si les tuiles peuvent être inversées horizontalement"
 
 #: ../../reference/json-map-format.rst:1
 msgid "vflip"
@@ -1026,7 +1026,7 @@ msgstr "vflip"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Tiles can be flipped vertically"
-msgstr "Si les tuiles peuvent être retournées verticalement"
+msgstr "Si les tuiles peuvent être inversées verticalement"
 
 #: ../../reference/json-map-format.rst:1
 msgid "rotate"
@@ -1034,7 +1034,7 @@ msgstr "rotate"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Tiles can be rotated in 90-degree increments"
-msgstr "Si les tuiles peuvent être tournées par incréments de 90 degrés"
+msgstr "Si les tuiles peuvent être pivotées par incréments de 90 degrés"
 
 #: ../../reference/json-map-format.rst:1
 msgid "preferuntransformed"
@@ -3083,11 +3083,11 @@ msgid ""
 "``vflip``, ``hflip`` and ``dflip`` attributes on the :ref:`tmx-wangtile` "
 "element has been removed."
 msgstr ""
-"Les transformations valides des tuiles d'une collection (retournement, "
-"rotation) sont spécifiées dans un élément :ref:`transformations de jeu de "
-"tuiles <tmx-tileset-transformations>`. Le support partiel des attributs "
-"``vflip``, ``hflip`` et ``dflip`` de l'élément :ref:`tuile Wang <tmx-"
-"wangtile>` a été enlevé."
+"Les transformations valides des tuiles d'une collection (inversion, rotation)"
+" sont spécifiées dans un élément :ref:`transformations de jeu de tuiles <tmx-"
+"tileset-transformations>`. Le support partiel des attributs ``vflip``, "
+"``hflip`` et ``dflip`` de l'élément :ref:`tuile Wang <tmx-wangtile>` a été "
+"enlevé."
 
 #: ../../reference/tmx-changelog.rst:32
 msgid ""
@@ -3452,17 +3452,17 @@ msgid ""
 "image is expected to be flipped without affecting its position, same way as "
 "flipped tiles."
 msgstr ""
-"Les objets de tuiles peuvent maintenant être renversées horizontalement et "
+"Les objets de tuiles peuvent maintenant être inversées horizontalement et "
 "verticalement. Ceci est stocké dans l'attribut ``gid`` en utilisant le même "
-"mécanisme que les tuiles normales. L'image est supposée être renversée sans "
-"affecter sa position, comme les tuiles renversées."
+"mécanisme que les tuiles normales. L'image est supposée être inversée sans "
+"affecter sa position, comme les tuiles inversées."
 
 #: ../../reference/tmx-changelog.rst:200
 msgid ""
 "Objects can be rotated freely. The rotation is stored in degrees as a "
 "``rotation`` attribute, with positive rotation going clockwise."
 msgstr ""
-"Les objets peuvent être tournés librement. La rotation est stockée en degrés "
+"Les objets peuvent être pivotés librement. La rotation est stockée en degrés "
 "dans l'attribut ``rotation``, avec une valeur positive indiquant une "
 "rotation dans le sens des aiguilles d'une montre."
 
@@ -3607,8 +3607,8 @@ msgid ""
 msgstr ""
 "Ajout du support pour une rotation de tuile en incréments de 90 degrés en "
 "utilisant le troisième bit le plus important de l'id de tuile global. Ce "
-"nouveau bit indique un \"renversement non diagonal\", ce qui échange les "
-"axes x et y lors du rendu de la tuile."
+"nouveau bit indique une \"inversion non diagonale\", ce qui échange les axes "
+"x et y lors du rendu de la tuile."
 
 #: ../../reference/tmx-map-format.rst:2
 msgid "TMX Map Format"
@@ -4225,7 +4225,7 @@ msgid ""
 "**hflip:** Whether the tiles in this set can be flipped horizontally "
 "(default 0)"
 msgstr ""
-"**hflip :** Si les tuiles de ce jeu de tuiles peuvent être retournées "
+"**hflip :** Si les tuiles de ce jeu de tuiles peuvent être inversées "
 "horizontalement (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:257
@@ -4233,7 +4233,7 @@ msgid ""
 "**vflip:** Whether the tiles in this set can be flipped vertically (default "
 "0)"
 msgstr ""
-"**vflip :** Si les tuiles de ce jeu de tuiles peuvent être retournées "
+"**vflip :** Si les tuiles de ce jeu de tuiles peuvent être inversées "
 "verticalement (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:258
@@ -4241,7 +4241,7 @@ msgid ""
 "**rotate:** Whether the tiles in this set can be rotated in 90 degree "
 "increments (default 0)"
 msgstr ""
-"**rotation :** Si les tuiles de ce jeu de tuiles peuvent être tournées en "
+"**rotation :** Si les tuiles de ce jeu de tuiles peuvent être pivotées en "
 "utilisant des incréments de 90 degrés (0 par défaut)"
 
 #: ../../reference/tmx-map-format.rst:259
@@ -4454,20 +4454,20 @@ msgstr ""
 msgid ""
 "*hflip:* Whether the tile is flipped horizontally (removed in Tiled 1.5)."
 msgstr ""
-"*hflip :* Si la tuile peut être retournée horizontalement (enlevé dans Tiled "
-"1.5)."
+"*hflip :* Si la tuile peut être inversée horizontalement (enlevé dans Tiled 1"
+".5)."
 
 #: ../../reference/tmx-map-format.rst:361
 msgid "*vflip:* Whether the tile is flipped vertically (removed in Tiled 1.5)."
 msgstr ""
-"*vflip :* Si la tuile peut être retournée verticalement (enlevé dans Tiled 1."
+"*vflip :* Si la tuile peut être inversée verticalement (enlevé dans Tiled 1."
 "5)."
 
 #: ../../reference/tmx-map-format.rst:362
 msgid ""
 "*dflip:* Whether the tile is flipped on its diagonal (removed in Tiled 1.5)."
 msgstr ""
-"*dflip :* Si la tuile peut être retournée diagonalement (enlevé dans Tiled 1."
+"*dflip :* Si la tuile peut être inversée diagonalement (enlevé dans Tiled 1."
 "5)."
 
 #: ../../reference/tmx-map-format.rst:367
@@ -4668,7 +4668,7 @@ msgstr ""
 
 #: ../../reference/tmx-map-format.rst:426
 msgid "Tile flipping"
-msgstr "Retournement de tuile"
+msgstr "Inversion de tuile"
 
 #: ../../reference/tmx-map-format.rst:428
 msgid ""
@@ -4678,22 +4678,22 @@ msgid ""
 "(anti) diagonally, enabling tile rotation. These bits have to be read and "
 "cleared before you can find out which tileset a tile belongs to."
 msgstr ""
-"Les trois bits de poids le plus fort du gid stocke les états de "
-"retournement. Le 32ème bit est utilisé pour déterminer si la tuile est "
-"retournée horizontalement, le 31ème bit est utilisé pour les tuiles "
-"retournées verticalement et le 30ème bit détermine si la tuile est retournée "
-"(anti)diagonalement, ce qui permet de tourner la tuiles. Ces trois bits "
-"doivent être lus et supprimés avant de savoir à quel jeu de tuile cette "
-"tuile appartient."
+"Les trois bits de poids le plus fort du gid stocke les états d'inversion. Le "
+"32ème bit est utilisé pour déterminer si la tuile est inversée "
+"horizontalement, le 31ème bit est utilisé pour les tuiles inversées "
+"verticalement et le 30ème bit détermine si la tuile est inversée (anti)"
+"diagonalement, ce qui permet de pivoter la tuile. Ces trois bits doivent "
+"être lus et supprimés avant de savoir à quel jeu de tuiles cette tuile "
+"appartient."
 
 #: ../../reference/tmx-map-format.rst:435
 msgid ""
 "When rendering a tile, the order of operation matters. The diagonal flip (x/"
 "y axis swap) is done first, followed by the horizontal and vertical flips."
 msgstr ""
-"Lors du rendu d'une tuile, l'ordre des opérations est important. Le "
-"retournement diagonal (axes x/y renversés) est fait en premier, suivi par "
-"les retournements horizontaux et verticaux."
+"Lors du rendu d'une tuile, l'ordre des opérations est important. L'inversion "
+"diagonale (axes x/y renversés) est faite en premier, suivie par les "
+"inversions horizontales et verticales."
 
 #: ../../reference/tmx-map-format.rst:439
 msgid "The following C++ pseudo-code should make it all clear:"
@@ -4974,7 +4974,7 @@ msgstr ""
 "la tuile ayant cet ID global. L'alignement de l'image correspond couramment "
 "à l'orientation de la carte. Il est aligné en bas à gauche pour une "
 "direction orthogonale tandis qu'il est aligné en bas au centre pour une "
-"direction isométrique. L'image va être tournée respectivement autour d'en "
+"direction isométrique. L'image va être pivotée respectivement autour d'en "
 "bas à gauche ou d'en bas au centre."
 
 #: ../../reference/tmx-map-format.rst:593
