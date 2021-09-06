@@ -141,10 +141,10 @@ Processing
 Python
 ~~~~~~
 
--  `pytiled-parser <https://github.com/Beefy-Swain/pytiled_parser>`__: Python parser
+-  `pytiled-parser <https://github.com/benjamin-kirkbride/pytiled_parser>`__: Python parser
    for JSON maps(No support for TMX format as of v1.0.0)
--  `Arcade <http://arcade.academy>`__: 2D game library that uses pytiled-parser for 
-   easy loading of JSON maps into a game.(No support for TMX format as of v2.6.0) `Arcade Tiled Examples <http://arcade.academy/examples/index.html#tmx-files-tiled-map-editor>`_
+-  `Arcade <https://api.arcade.academy>`__: 2D game library that uses pytiled-parser for 
+   easy loading of JSON maps into a game.(No support for TMX format as of v2.6.0) `Arcade Tiled Examples <https://api.arcade.academy/en/latest/examples/index.html#using-tiled-map-editor-to-create-maps>`_
 -  `pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>`__: library
    for programmatic manipulation of TMX maps
 -  `python-tmx <http://python-tmx.nongnu.org>`__: a simple library for
