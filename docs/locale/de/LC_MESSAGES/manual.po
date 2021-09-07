@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-09 11:20+0200\n"
+"POT-Creation-Date: 2021-09-07 13:45+0200\n"
 "PO-Revision-Date: 2019-05-20 20:50+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language: de\n"
@@ -511,8 +511,8 @@ msgid ""
 "adding all the straight parts and afterwards another rule will correct "
 "the corners to make them also fit the given tileset. After the shoreline "
 "has been added, the waters will be marked as unwalkable for the game "
-"engine. Last but not least the grass should be tiles should be made "
-"random by using 5 different grass tiles."
+"engine. Last but not least the grass should be made random by using 5 "
+"different grass tiles."
 msgstr ""
 
 #: ../../manual/automapping.rst:330
@@ -907,7 +907,7 @@ msgstr ""
 msgid ""
 "Only the lowest 2 coordinates contain the brown tile. The upper "
 "coordinates contain no tile. (It is not an invisible tile, just no tile "
-"at all.) The input layer called *Input\\_set* is depicted in the middle "
+"at all.) The input layer called *input\\_set* is depicted in the middle "
 "of the figure."
 msgstr ""
 
@@ -930,7 +930,7 @@ msgstr ""
 #: ../../manual/automapping.rst:668
 msgid ""
 "When trying to match the input layer to the desired set layer (right "
-"picture of the figure at the beginning of the example, you will see it "
+"picture of the figure at the beginning of the example), you will see it "
 "matches all the way along, with no regard of the vertical adjustment."
 msgstr ""
 
@@ -1408,16 +1408,20 @@ msgid ""
 msgstr ""
 
 #: ../../manual/editing-tile-layers.rst:167
-msgid "``Ctrl + 1-9`` - Store current tile stamp (similar to ``Ctrl + C``)"
+#: ../../manual/keyboard-shortcuts.rst:88
+msgid ""
+"``Ctrl + 1-9`` - Store current tile stamp. When no tile drawing tool is "
+"selected, tries to capture the current tile selection (similar to ``Ctrl "
+"+ C``)."
 msgstr ""
 
-#: ../../manual/editing-tile-layers.rst:168
+#: ../../manual/editing-tile-layers.rst:170
 msgid ""
 "``1-9`` - Recall the stamp stored at this location (similar to ``Ctrl + "
 "V``)"
 msgstr ""
 
-#: ../../manual/editing-tile-layers.rst:171
+#: ../../manual/editing-tile-layers.rst:173
 msgid ""
 "Tile stamps can also be stored by name and extended with variations using"
 " the *Tile Stamps* view."
@@ -2421,10 +2425,10 @@ msgstr ""
 #: ../../manual/export-yy.rst:27
 msgid ""
 "If you want to do this while GameMaker is running with the open project "
-"you'll need to deactivate \"Use save writing of files\" in the Tiled "
+"you'll need to deactivate \"Use safe writing of files\" in the Tiled "
 "preferences (Under *Edit -> Preferences -> General -> Saving and "
 "Loading*). Otherwise GameMaker will detect that the room file got deleted"
-" and will propose to restore it from memory. Without \"save writing\" "
+" and will propose to restore it from memory. Without \"safe writing\" "
 "GameMaker will detect that the file got changed and propose to reload the"
 " updated one."
 msgstr ""
@@ -3127,337 +3131,383 @@ msgid ""
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:9
-msgid "On Mac, replace ``Ctrl`` with the ``Command`` key."
+msgid "On macOS, replace ``Ctrl`` with the ``Command`` key."
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:14
-msgid ""
-"``Right Click on Tile`` - Captures the tile under the mouse (drag to "
-"capture larger areas)."
+msgid "``Ctrl + N`` - Create a new map"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:15
+msgid "``Ctrl + O`` - Open any file or project"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:16
-msgid "``Ctrl + MouseWheel`` - Zoom in/out on tileset and map"
+msgid "``Ctrl + P`` - Open a file in the current project"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:17
-msgid "``Ctrl + Plus/Minus`` - Zoom in/out on map"
+msgid "``Ctrl + Shift + T`` - Reopen a recently closed file"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:18
-msgid "``Ctrl + 0`` - Reset zoom on map"
+msgid "``Ctrl + S`` - Save current document"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:19
-msgid "``Ctrl + Object Move`` - Toggles \"Snap to Grid\" temporarily"
+msgid "``Ctrl + Alt + S`` - Save current document to another file"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:20
-msgid "``Ctrl + Object Resize`` - Keep aspect ratio"
+msgid "``Ctrl + Shift + S`` - Save all documents"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:21
-msgid "``Alt + Object Resize`` - Toggles \"Snap to Grid\" temporarily"
+msgid "``Ctrl + E`` - Export current document"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:22
-msgid "``Middle Click`` or ``Space Bar`` - Hold to pan the map view"
+msgid "``Ctrl + Shift + E`` - Export current document to another file"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:23
-msgid "``Ctrl + X`` - Cut (tiles, objects or properties)"
+msgid "``Ctrl + R`` - Reload current document"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:24
-msgid "``Ctrl + C`` - Copy (tiles, objects or properties)"
+msgid "``Ctrl + W`` - Close current document"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:25
-msgid "``Ctrl + V`` - Paste (tiles, objects or properties)"
+msgid "``Ctrl + Shift + W`` - Close all documents"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:26
-msgid "``Del`` - Delete (tiles or objects)"
+msgid "``Ctrl + Q`` - Quit Tiled"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:27
-msgid "``H`` - Toggle highlighting of the current layer"
+msgid "``Ctrl + MouseWheel`` - Zoom in/out on tileset and map"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:28
-msgid "``A`` - Invokes :doc:`automapping`"
+msgid "``Ctrl + Plus/Minus`` - Zoom in/out on map"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:29
+msgid "``Ctrl + 0`` - Reset zoom on map"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:30
+msgid "``Ctrl + /`` - Adjust zoom to fit map in view"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:31
+msgid "``Ctrl + Object Move`` - Toggles \"Snap to Grid\" temporarily"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:32
+msgid "``Ctrl + Object Resize`` - Keep aspect ratio"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:33
+msgid "``Alt + Object Resize`` - Toggles \"Snap to Grid\" temporarily"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:34
+msgid "``Middle Click`` or ``Space Bar`` - Hold to pan the map view"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:35
+msgid "``Ctrl + X`` - Cut (tiles, objects or properties)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:36
+msgid "``Ctrl + C`` - Copy (tiles, objects or properties)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:37
+msgid "``Ctrl + V`` - Paste (tiles, objects or properties)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:38
+msgid "``Del`` - Delete (tiles, objects, properties or layers)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:39
+msgid "``Ctrl + G`` - Toggle displaying of the tile grid"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:40
+msgid "``H`` - Toggle highlighting of the current layer"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:41
+msgid "``Ctrl + M`` - Invokes :doc:`automapping`"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:42
 msgid ""
 "``Alt + C`` - Copy current position of mouse cursor to clipboard (in tile"
 " coordinates)"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:31
+#: ../../manual/keyboard-shortcuts.rst:44
 msgid "``Ctrl + D`` - Duplicate selected objects"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:32
-msgid "``Ctrl + Shift + D`` - Duplicate active layer"
+#: ../../manual/keyboard-shortcuts.rst:45
+msgid ""
+"``Ctrl + J`` - Create a new layer and copy the currently selected objects"
+" or tiles to it"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:33
+#: ../../manual/keyboard-shortcuts.rst:46
+msgid ""
+"``Ctrl + Shift + J`` - Create a new layer and move currently selected "
+"objects or tiles to it"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:47
+msgid "``Ctrl + Shift + D`` - Duplicate selected layers"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:48
 msgid "``F2`` - Rename (if applicable in context)"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:34
+#: ../../manual/keyboard-shortcuts.rst:49
 msgid "``Tab`` - Hide docks and tool bars"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:35
+#: ../../manual/keyboard-shortcuts.rst:50
 msgid "``Ctrl + PgUp`` - Select previous layer (above current layer)"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:36
+#: ../../manual/keyboard-shortcuts.rst:51
 msgid "``Ctrl + PgDown`` - Select next layer (below current layer)"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:37
-msgid "``Ctrl + Shift + Up`` - Move current layer up"
+#: ../../manual/keyboard-shortcuts.rst:52
+msgid "``Ctrl + Shift + Up`` - Move selected layers up"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:38
-msgid "``Ctrl + Shift + Down`` - Move current layer down"
+#: ../../manual/keyboard-shortcuts.rst:53
+msgid "``Ctrl + Shift + Down`` - Move selected layers down"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:39
+#: ../../manual/keyboard-shortcuts.rst:54
+msgid "``Ctrl + H`` - Show/Hide selected layers"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:55
+msgid "``Ctrl + L`` - Lock/Unlock selected layers"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:56
 msgid ""
 "``Ctrl + Shift + H`` - Show/Hide all other layers (only active layer "
 "visible / all layers visible)"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:41
-msgid "``Ctrl + Tab`` - Switch to left document"
+#: ../../manual/keyboard-shortcuts.rst:58
+msgid "``Ctrl + Shift + L`` - Lock/Unlock all other layers"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:42
-msgid "``Ctrl + Shift + Tab`` - Switch to right document"
+#: ../../manual/keyboard-shortcuts.rst:59
+msgid "``Ctrl + Tab`` / ``Alt + Left`` - Switch to left document"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:43
-msgid "``Alt + Left`` - Switch to left document"
+#: ../../manual/keyboard-shortcuts.rst:60
+msgid "``Ctrl + Shift + Tab`` / ``Alt + Right`` - Switch to right document"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:44
-msgid "``Alt + Right`` - Switch to right document"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:45
+#: ../../manual/keyboard-shortcuts.rst:61
 msgid "``]`` - Select next tileset"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:46
+#: ../../manual/keyboard-shortcuts.rst:62
 msgid "``[`` - Select previous tileset"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:47
-msgid "``Ctrl + G`` - Toggle displaying of the tile grid"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:48
-msgid "``Ctrl + W`` - Close current document"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:49
-msgid "``Ctrl + Shift + W`` - Close all documents"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:50
-msgid "``Ctrl + E`` - Export current document"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:51
-msgid "``Ctrl + Shift + E`` - Export current document to another file"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:52
-msgid "``Ctrl + Q`` - Quit Tiled"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:53
-msgid "``Ctrl + R`` - Reload current document"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:54
+#: ../../manual/keyboard-shortcuts.rst:63
 msgid ""
 "``Ctrl + T`` - Force-reload all tilesets used by the current map (mainly "
 "useful when not using the automatic reloading)"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:58
+#: ../../manual/keyboard-shortcuts.rst:65
+msgid "``Ctrl + Shift + A`` - Clear any object and tile selection"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:68
 msgid "When a tile layer is selected"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:60
+#: ../../manual/keyboard-shortcuts.rst:70
+msgid ""
+"``Right Click on Tile`` - Captures the tile under the mouse (drag to "
+"capture larger areas)."
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:72
+msgid ""
+"``Ctrl + Right Click on Tile`` - Selects the layer containing the top-"
+"most tile under the mouse."
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:73
 msgid "``D`` - Toggle Random Mode"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:61
+#: ../../manual/keyboard-shortcuts.rst:74
 msgid "``B`` - Activate :ref:`stamp-tool`"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:63
+#: ../../manual/keyboard-shortcuts.rst:76
 msgid ""
 "``Shift + Click`` - Line mode, places tiles on a line between two clicked"
 " locations"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:65
+#: ../../manual/keyboard-shortcuts.rst:78
 msgid ""
 "``Ctrl + Shift + Click`` - Circle mode, places tiles around the clicked "
 "center"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:68
+#: ../../manual/keyboard-shortcuts.rst:81
 msgid "``T`` - Activate :ref:`terrain-tool`"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:69
+#: ../../manual/keyboard-shortcuts.rst:82
 msgid "``F`` - Activate :ref:`bucket-fill-tool`"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:70
+#: ../../manual/keyboard-shortcuts.rst:83
 msgid "``P`` - Activate :ref:`shape-fill-tool`"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:71
+#: ../../manual/keyboard-shortcuts.rst:84
 msgid "``E`` - Activate :ref:`eraser-tool`"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:72
+#: ../../manual/keyboard-shortcuts.rst:85
 msgid "``R`` - Activate Rectangular Select"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:73
+#: ../../manual/keyboard-shortcuts.rst:86
 msgid "``W`` - Activate Magic Wand"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:74
+#: ../../manual/keyboard-shortcuts.rst:87
 msgid "``S`` - Activate Select Same Tile"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:75
-msgid "``Ctrl + 1-9`` - Store current tile selection (similar to ``Ctrl + C``)"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:77
-msgid "``1-9`` recall the previous selection (similar to ``Ctrl + V``)"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:78
-msgid "``Ctrl + A`` - Select the whole layer"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:79
-msgid "``Ctrl + Shift + A`` - Select nothing"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:81
-msgid "Changing the active stamp:"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:83
-msgid "``X`` - Flip active stamp horizontally"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:84
-msgid "``Y`` - Flip active stamp vertically"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:85
-msgid "``Z`` - Rotate active stamp clockwise"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:86
-msgid "``Shift + Z`` - Rotate active stamp counterclockwise"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:90
-msgid "When an object layer is selected"
+#: ../../manual/keyboard-shortcuts.rst:91
+msgid "``1-9`` - Recall a previously stored tile stamp (similar to ``Ctrl + V``)"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:92
-msgid "``S`` - Activate :ref:`select-objects-tool`"
+msgid "``Ctrl + A`` - Select the whole layer"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:94
-msgid "``PgUp`` - Raise selected objects (with Manual object drawing order)"
+msgid "Changing the active stamp:"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:96
-msgid "``PgDown`` - Lower selected objects (with Manual object drawing order)"
+msgid "``X`` - Flip active stamp horizontally"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:97
+msgid "``Y`` - Flip active stamp vertically"
 msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:98
+msgid "``Z`` - Rotate active stamp clockwise"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:99
+msgid "``Shift + Z`` - Rotate active stamp counterclockwise"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:103
+msgid "When an object layer is selected"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:105
+msgid "``S`` - Activate :ref:`select-objects-tool`"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:107
+msgid "``PgUp`` - Raise selected objects (with Manual object drawing order)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:109
+msgid "``PgDown`` - Lower selected objects (with Manual object drawing order)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:111
 msgid "``Home`` - Move selected objects to Top (with Manual object drawing order)"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:100
+#: ../../manual/keyboard-shortcuts.rst:113
 msgid ""
 "``End`` - Move selected objects to Bottom (with Manual object drawing "
 "order)"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:103
+#: ../../manual/keyboard-shortcuts.rst:116
 msgid "``O`` - Activate :ref:`edit-polygons-tool`"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:104
+#: ../../manual/keyboard-shortcuts.rst:117
 msgid "``R`` - Activate :ref:`insert-rectangle-tool`"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:105
+#: ../../manual/keyboard-shortcuts.rst:118
 msgid "``I`` - Activate :ref:`insert-point-tool`"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:106
+#: ../../manual/keyboard-shortcuts.rst:119
 msgid "``C`` - Activate :ref:`insert-ellipse-tool`"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:107
+#: ../../manual/keyboard-shortcuts.rst:120
 msgid "``P`` - Activate :ref:`insert-polygon-tool`"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:109
+#: ../../manual/keyboard-shortcuts.rst:122
 msgid "``Enter`` - Finish creating object"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:110
+#: ../../manual/keyboard-shortcuts.rst:123
 msgid "``Escape`` - Cancel creating object"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:112
+#: ../../manual/keyboard-shortcuts.rst:125
 msgid "``T`` - Activate :ref:`insert-tile-tool`"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:113
+#: ../../manual/keyboard-shortcuts.rst:126
 msgid "``V`` - Activate :ref:`insert-template-tool` (since Tiled 1.1)"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:114
+#: ../../manual/keyboard-shortcuts.rst:127
 msgid "``E`` - Activate :ref:`insert-text-tool`"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:115
-msgid "``Ctrl + A`` - Select all objects in the current object layer"
+#: ../../manual/keyboard-shortcuts.rst:128
+msgid "``Ctrl + A`` - Select all objects on the selected layers"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:116
-msgid "``Ctrl + Shift + A`` - Clear object selection"
-msgstr ""
-
-#: ../../manual/keyboard-shortcuts.rst:119
+#: ../../manual/keyboard-shortcuts.rst:131
 msgid "In the Properties dialog"
 msgstr ""
 
-#: ../../manual/keyboard-shortcuts.rst:121
-msgid "``Del`` or ``Backspace`` - Deletes a property"
+#: ../../manual/keyboard-shortcuts.rst:133
+msgid "``Backspace`` - Deletes a property"
 msgstr ""
 
 #: ../../manual/layers.rst:2
@@ -4261,7 +4311,7 @@ msgstr ""
 msgid ""
 "There are only a few options located in the Preferences, accessible "
 "though the menu via *Edit > Preferences*. Most other options, like "
-"whether to draw the grid, what kind snapping to do or the last used "
+"whether to draw the grid, what kind of snapping to do or the last used "
 "settings when creating a new map are simply remembered persistently."
 msgstr ""
 
@@ -4297,42 +4347,31 @@ msgstr ""
 msgid "Saving and Loading"
 msgstr ""
 
-#: ../../manual/preferences.rst:36
-msgid "Include DTD reference in saved maps"
-msgstr ""
-
-#: ../../manual/preferences.rst:32
-msgid ""
-"This option is not enabled by default, since it is of very little use "
-"whereas it can in some environments cause problems. Feel free to enable "
-"it if it helps with validation for example, but note that the referenced "
-"DTD is likely out of date (there is a somewhat more up-to-date XSD file "
-"available in the repository)."
-msgstr ""
-
-#: ../../manual/preferences.rst:40
+#: ../../manual/preferences.rst:33
 msgid "Reload tileset images when they change"
 msgstr ""
 
-#: ../../manual/preferences.rst:39
+#: ../../manual/preferences.rst:32
 msgid ""
 "This is very useful while working on the tiles or when the tiles might "
 "change as a result of a source control system."
 msgstr ""
 
-#: ../../manual/preferences.rst:43
-msgid "Open last files on startup"
+#: ../../manual/preferences.rst:37
+msgid "Restore previous session on startup"
 msgstr ""
 
-#: ../../manual/preferences.rst:43
-msgid "Generally a useful thing to keep enabled."
+#: ../../manual/preferences.rst:36
+msgid ""
+"When disabled, Tiled always starts with an empty session. This can be "
+"useful when you frequently switch projects."
 msgstr ""
 
-#: ../../manual/preferences.rst:51
+#: ../../manual/preferences.rst:45
 msgid "Use safe writing of files"
 msgstr ""
 
-#: ../../manual/preferences.rst:46
+#: ../../manual/preferences.rst:40
 msgid ""
 "This setting causes files to be written to a temporary file, and when all"
 " went well, to be swapped with the target file. This avoids data getting "
@@ -4342,112 +4381,123 @@ msgid ""
 "feature."
 msgstr ""
 
-#: ../../manual/preferences.rst:60
+#: ../../manual/preferences.rst:50
+msgid "Repeat last export on save"
+msgstr ""
+
+#: ../../manual/preferences.rst:48
+msgid ""
+"With this feature enabled, any time you save a map or tileset that was "
+"previously exported it will automatically be exported again to the same "
+"location and format."
+msgstr ""
+
+#: ../../manual/preferences.rst:59
 msgid "Export Options"
 msgstr ""
 
-#: ../../manual/preferences.rst:62
+#: ../../manual/preferences.rst:61
 msgid ""
 "The following export options are applied each time a map or tileset gets "
 "exported, without affecting the map or tileset itself."
 msgstr ""
 
-#: ../../manual/preferences.rst:68
+#: ../../manual/preferences.rst:67
 msgid "Embed tilesets"
 msgstr ""
 
-#: ../../manual/preferences.rst:66
+#: ../../manual/preferences.rst:65
 msgid ""
 "All tilesets are embedded in the exported map. Useful for example when "
 "you are exporting to JSON and loading an external tileset is not desired."
 msgstr ""
 
-#: ../../manual/preferences.rst:73
+#: ../../manual/preferences.rst:72
 msgid "Detach templates"
 msgstr ""
 
-#: ../../manual/preferences.rst:71
+#: ../../manual/preferences.rst:70
 msgid ""
 "All template instances are detached. Useful when you want to use the "
 "templates feature but can't or don't want to load the external template "
 "object files."
 msgstr ""
 
-#: ../../manual/preferences.rst:78
+#: ../../manual/preferences.rst:77
 msgid "Resolve object types and properties"
 msgstr ""
 
-#: ../../manual/preferences.rst:76
+#: ../../manual/preferences.rst:75
 msgid ""
 "Stores effective object type and properties with each object. Object "
 "properties are inherited from a tile (in case of a tile object) and from "
 "the default properties of their type."
 msgstr ""
 
-#: ../../manual/preferences.rst:82
+#: ../../manual/preferences.rst:81
 msgid "Minimize output"
 msgstr ""
 
-#: ../../manual/preferences.rst:81
+#: ../../manual/preferences.rst:80
 msgid ""
 "Omits unnecessary whitespace in the output file. This option is supported"
 " for XML (TMX and TSX), JSON and Lua formats."
 msgstr ""
 
-#: ../../manual/preferences.rst:84
+#: ../../manual/preferences.rst:83
 msgid ""
 "These options are also available as options when exporting using the "
 "command-line."
 msgstr ""
 
-#: ../../manual/preferences.rst:88 ../../manual/preferences.rst:91
+#: ../../manual/preferences.rst:87 ../../manual/preferences.rst:90
 msgid "Interface"
 msgstr ""
 
-#: ../../manual/preferences.rst:95
+#: ../../manual/preferences.rst:94
 msgid "Language"
 msgstr ""
 
-#: ../../manual/preferences.rst:94
+#: ../../manual/preferences.rst:93
 msgid ""
 "By default the language tries to match that of the system, but if it "
 "picks the wrong one you can change it here."
 msgstr ""
 
-#: ../../manual/preferences.rst:98
+#: ../../manual/preferences.rst:97
 msgid "Grid colour"
 msgstr ""
 
-#: ../../manual/preferences.rst:98
+#: ../../manual/preferences.rst:97
 msgid "Because black is not always the best color for the grid."
 msgstr ""
 
-#: ../../manual/preferences.rst:103
+#: ../../manual/preferences.rst:102
 msgid "Fine grid divisions"
 msgstr ""
 
-#: ../../manual/preferences.rst:101
+#: ../../manual/preferences.rst:100
 msgid ""
 "The tile grid can be divided further using this setting, which affects "
 "the \"Snap to Fine Grid\" setting in the *View > Snapping* menu."
 msgstr ""
 
-#: ../../manual/preferences.rst:108
+#: ../../manual/preferences.rst:107
 msgid "Object line width"
 msgstr ""
 
-#: ../../manual/preferences.rst:106
+#: ../../manual/preferences.rst:105
 msgid ""
 "Shapes are by default rendered with a 2 pixel wide line, but some people "
 "like it thinner or even thicker. On some systems the DPI-based scaling "
 "will affect this setting as well."
 msgstr ""
 
-#: ../../manual/preferences.rst:121
+#: ../../manual/preferences.rst:120
 msgid "Object selection behavior"
 msgstr ""
 
-#: ../../manual/preferences.rst:115
+#: ../../manual/preferences.rst:114
 msgid ""
 "By default the :ref:`select-objects-tool` tool selects objects from any "
 "layer. With this setting, you can make it prefer to select objects from "
@@ -4455,51 +4505,51 @@ msgid ""
 "layers."
 msgstr ""
 
-#: ../../manual/preferences.rst:120
+#: ../../manual/preferences.rst:119
 msgid ""
 "When the \"Highlight Current Layer\" option is enabled, Tiled "
 "automatically prefers to select objects from the currently selected "
 "layers."
 msgstr ""
 
-#: ../../manual/preferences.rst:126
+#: ../../manual/preferences.rst:125
 msgid "Hardware accelerated drawing (OpenGL)"
 msgstr ""
 
-#: ../../manual/preferences.rst:124
+#: ../../manual/preferences.rst:123
 msgid ""
 "This enables a rather unoptimized way of rendering the map using OpenGL. "
 "It's usually not an improvement and may lead to crashes, but in some "
 "scenarios it can make editing more responsive."
 msgstr ""
 
-#: ../../manual/preferences.rst:136
+#: ../../manual/preferences.rst:135
 msgid "Mouse wheel zooms by default"
 msgstr ""
 
-#: ../../manual/preferences.rst:133
+#: ../../manual/preferences.rst:132
 msgid ""
 "This option causes the mouse wheel to zoom without the need to hold "
 "Control (or Command on macOS). It can be a convenient way to navigate the"
 " map, but it can also interfere with panning on a touchpad."
 msgstr ""
 
-#: ../../manual/preferences.rst:145
+#: ../../manual/preferences.rst:144
 msgid "Middle mouse button uses auto-scrolling"
 msgstr ""
 
-#: ../../manual/preferences.rst:143
+#: ../../manual/preferences.rst:142
 msgid ""
 "With this option enabled, the clicking middle mouse button doesn't drag "
 "the map directly but instead controls the speed of a continuous panning "
 "movement."
 msgstr ""
 
-#: ../../manual/preferences.rst:154
+#: ../../manual/preferences.rst:153
 msgid "Use smooth scrolling"
 msgstr ""
 
-#: ../../manual/preferences.rst:152
+#: ../../manual/preferences.rst:151
 msgid ""
 "This option affects the behavior when scrolling with the arrow keys. When"
 " disabled, the view scrolls in steps based on key press events. When "
@@ -4507,51 +4557,51 @@ msgid ""
 "held down."
 msgstr ""
 
-#: ../../manual/preferences.rst:161
+#: ../../manual/preferences.rst:160
 msgid "Updates"
 msgstr ""
 
-#: ../../manual/preferences.rst:163
+#: ../../manual/preferences.rst:162
 msgid ""
 "By default, Tiled checks for news and new versions and highlights any "
 "updates in the status bar. Here you can disable this functionality. It is"
 " recommended to keep at least one of these enabled."
 msgstr ""
 
-#: ../../manual/preferences.rst:167
+#: ../../manual/preferences.rst:166
 msgid ""
 "If you disable displaying of new versions, you can still manually check "
 "whether a new version is available by opening the *About Tiled* dialog."
 msgstr ""
 
-#: ../../manual/preferences.rst:177
+#: ../../manual/preferences.rst:176
 msgid "Keyboard"
 msgstr ""
 
-#: ../../manual/preferences.rst:179
+#: ../../manual/preferences.rst:178
 msgid ""
 "Here you can add, remove or change the keyboard shortcuts of most "
 "available actions."
 msgstr ""
 
-#: ../../manual/preferences.rst:182
+#: ../../manual/preferences.rst:181
 msgid ""
 "Conflicting keybindings are highlighted in red. They will not work until "
 "you resolve the conflict."
 msgstr ""
 
-#: ../../manual/preferences.rst:185
+#: ../../manual/preferences.rst:184
 msgid ""
 "If you customize multiple shortcuts, it is recommended to use the export "
 "functionality to save the keybindings somewhere, so that you can easily "
 "recover that setup or copy it to other Tiled installations."
 msgstr ""
 
-#: ../../manual/preferences.rst:191
+#: ../../manual/preferences.rst:190
 msgid "Theme"
 msgstr ""
 
-#: ../../manual/preferences.rst:193
+#: ../../manual/preferences.rst:192
 msgid ""
 "On Windows and Linux, the default style used by Tiled is \"Tiled "
 "Fusion\". This is a customized version of the \"Fusion\" style that ships"
@@ -4559,7 +4609,7 @@ msgid ""
 "out of place the default is \"Native\" there."
 msgstr ""
 
-#: ../../manual/preferences.rst:198
+#: ../../manual/preferences.rst:197
 msgid ""
 "The \"Tiled Fusion\" style allows customizing the base color. When "
 "choosing a dark base color, the text automatically switches to white and "
@@ -4567,7 +4617,7 @@ msgid ""
 "choose a custom selection color."
 msgstr ""
 
-#: ../../manual/preferences.rst:203
+#: ../../manual/preferences.rst:202
 msgid ""
 "The \"Native\" style tries to fit in with the operating system, and is "
 "available since it is in some cases preferable to the custom style. The "
@@ -4575,31 +4625,31 @@ msgid ""
 " they depend on the system."
 msgstr ""
 
-#: ../../manual/preferences.rst:209
+#: ../../manual/preferences.rst:208
 msgid "Plugins"
 msgstr ""
 
-#: ../../manual/preferences.rst:211
+#: ../../manual/preferences.rst:210
 msgid ""
 "Here you can choose which plugins are enabled, as well as opening the "
 ":doc:`scripted extensions </reference/scripting>` folder."
 msgstr ""
 
-#: ../../manual/preferences.rst:214
+#: ../../manual/preferences.rst:213
 msgid ""
 "Plugins add support for map and/or tileset file formats. Some generic "
 "plugins are enabled by default, while more specific ones need to be "
 "manually enabled."
 msgstr ""
 
-#: ../../manual/preferences.rst:217
+#: ../../manual/preferences.rst:216
 msgid ""
 "There is no need to restart Tiled when enabling or disabling plugins. "
 "When a plugin fails to load, try hovering its icon to see if the tool tip"
 " displays a useful error message."
 msgstr ""
 
-#: ../../manual/preferences.rst:221
+#: ../../manual/preferences.rst:220
 msgid "See :doc:`export` for more information about supported file formats."
 msgstr ""
 
@@ -4620,7 +4670,7 @@ msgstr ""
 
 #: ../../manual/projects.rst:15
 msgid ""
-"Apart from to the list of folders, a project currently has the following "
+"Apart from the list of folders, a project currently has the following "
 "properties, which can be changed through the *Project -> Project "
 "Properties...* dialog."
 msgstr ""
@@ -4766,7 +4816,7 @@ msgstr ""
 #: ../../manual/python.rst:26
 msgid ""
 "To create the ``~/.tiled`` folder on Windows, open command prompt "
-"(``cmd.exe``), which should  start in your home folder by default, then "
+"(``cmd.exe``), which should start in your home folder by default, then "
 "type ``mkdir .tiled`` to create the folder."
 msgstr ""
 
@@ -5440,14 +5490,14 @@ msgid ""
 msgstr ""
 
 #: ../../manual/using-commands.rst:52
-msgid "Output in Debug Console"
+msgid "Show output in Console view"
 msgstr ""
 
 #: ../../manual/using-commands.rst:50
 msgid ""
 "If this is enabled, then the output (stdout and stderr) of this command "
-"will be displayed in the Debug Console. You can find the Debug Console in"
-" *View > Views and Toolbars > Debug Console*."
+"will be displayed in the Console. You can find the Console in *View > "
+"Views and Toolbars > Console*."
 msgstr ""
 
 #: ../../manual/using-commands.rst:56
@@ -5881,7 +5931,7 @@ msgid ""
 "from the dropdown menu select the world you want to add it to. To add a "
 "different map to the current world, you can use the 'Add another map to "
 "the current world' button from the toolbar. Alternatively, both actions "
-"can be accessed by rightclicking in the  map editor."
+"can be accessed by rightclicking in the map editor."
 msgstr ""
 
 #: ../../manual/worlds.rst:86
@@ -6122,5 +6172,184 @@ msgstr ""
 #~ "the the :ref:`terrain-tool`. See the "
 #~ "section about :ref:`defining terrain "
 #~ "information <define-terrain-information>`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The Mana World examples will demonstrate"
+#~ " quite a lot of different Automapping"
+#~ " features. At first a shoreline will"
+#~ " be constructed, by first adding all"
+#~ " the straight parts and afterwards "
+#~ "another rule will correct the corners"
+#~ " to make them also fit the "
+#~ "given tileset. After the shoreline has"
+#~ " been added, the waters will be "
+#~ "marked as unwalkable for the game "
+#~ "engine. Last but not least the "
+#~ "grass should be tiles should be "
+#~ "made random by using 5 different "
+#~ "grass tiles."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Only the lowest 2 coordinates contain"
+#~ " the brown tile. The upper "
+#~ "coordinates contain no tile. (It is "
+#~ "not an invisible tile, just no "
+#~ "tile at all.) The input layer "
+#~ "called *Input\\_set* is depicted in the"
+#~ " middle of the figure."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "When trying to match the input "
+#~ "layer to the desired set layer "
+#~ "(right picture of the figure at "
+#~ "the beginning of the example, you "
+#~ "will see it matches all the way"
+#~ " along, with no regard of the "
+#~ "vertical adjustment."
+#~ msgstr ""
+
+#~ msgid "``Ctrl + 1-9`` - Store current tile stamp (similar to ``Ctrl + C``)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "If you want to do this while "
+#~ "GameMaker is running with the open "
+#~ "project you'll need to deactivate \"Use"
+#~ " save writing of files\" in the "
+#~ "Tiled preferences (Under *Edit -> "
+#~ "Preferences -> General -> Saving and "
+#~ "Loading*). Otherwise GameMaker will detect "
+#~ "that the room file got deleted and"
+#~ " will propose to restore it from "
+#~ "memory. Without \"save writing\" GameMaker "
+#~ "will detect that the file got "
+#~ "changed and propose to reload the "
+#~ "updated one."
+#~ msgstr ""
+
+#~ msgid "On Mac, replace ``Ctrl`` with the ``Command`` key."
+#~ msgstr ""
+
+#~ msgid "``Del`` - Delete (tiles or objects)"
+#~ msgstr ""
+
+#~ msgid "``A`` - Invokes :doc:`automapping`"
+#~ msgstr ""
+
+#~ msgid "``Ctrl + Shift + D`` - Duplicate active layer"
+#~ msgstr ""
+
+#~ msgid "``Ctrl + Shift + Up`` - Move current layer up"
+#~ msgstr ""
+
+#~ msgid "``Ctrl + Shift + Down`` - Move current layer down"
+#~ msgstr ""
+
+#~ msgid "``Ctrl + Tab`` - Switch to left document"
+#~ msgstr ""
+
+#~ msgid "``Ctrl + Shift + Tab`` - Switch to right document"
+#~ msgstr ""
+
+#~ msgid "``Alt + Left`` - Switch to left document"
+#~ msgstr ""
+
+#~ msgid "``Alt + Right`` - Switch to right document"
+#~ msgstr ""
+
+#~ msgid "``Ctrl + 1-9`` - Store current tile selection (similar to ``Ctrl + C``)"
+#~ msgstr ""
+
+#~ msgid "``1-9`` recall the previous selection (similar to ``Ctrl + V``)"
+#~ msgstr ""
+
+#~ msgid "``Ctrl + Shift + A`` - Select nothing"
+#~ msgstr ""
+
+#~ msgid "``Ctrl + A`` - Select all objects in the current object layer"
+#~ msgstr ""
+
+#~ msgid "``Ctrl + Shift + A`` - Clear object selection"
+#~ msgstr ""
+
+#~ msgid "``Del`` or ``Backspace`` - Deletes a property"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "There are only a few options "
+#~ "located in the Preferences, accessible "
+#~ "though the menu via *Edit > "
+#~ "Preferences*. Most other options, like "
+#~ "whether to draw the grid, what "
+#~ "kind snapping to do or the last"
+#~ " used settings when creating a new"
+#~ " map are simply remembered persistently."
+#~ msgstr ""
+
+#~ msgid "Include DTD reference in saved maps"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This option is not enabled by "
+#~ "default, since it is of very "
+#~ "little use whereas it can in some"
+#~ " environments cause problems. Feel free "
+#~ "to enable it if it helps with "
+#~ "validation for example, but note that"
+#~ " the referenced DTD is likely out "
+#~ "of date (there is a somewhat more"
+#~ " up-to-date XSD file available "
+#~ "in the repository)."
+#~ msgstr ""
+
+#~ msgid "Open last files on startup"
+#~ msgstr ""
+
+#~ msgid "Generally a useful thing to keep enabled."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Apart from to the list of folders,"
+#~ " a project currently has the "
+#~ "following properties, which can be "
+#~ "changed through the *Project -> Project"
+#~ " Properties...* dialog."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "To create the ``~/.tiled`` folder on "
+#~ "Windows, open command prompt (``cmd.exe``),"
+#~ " which should  start in your home "
+#~ "folder by default, then type ``mkdir "
+#~ ".tiled`` to create the folder."
+#~ msgstr ""
+
+#~ msgid "Output in Debug Console"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "If this is enabled, then the "
+#~ "output (stdout and stderr) of this "
+#~ "command will be displayed in the "
+#~ "Debug Console. You can find the "
+#~ "Debug Console in *View > Views and"
+#~ " Toolbars > Debug Console*."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Click the 'Add the current map to"
+#~ " a loaded world' button on the "
+#~ "toolbar, from the dropdown menu select"
+#~ " the world you want to add it"
+#~ " to. To add a different map to"
+#~ " the current world, you can use "
+#~ "the 'Add another map to the "
+#~ "current world' button from the toolbar."
+#~ " Alternatively, both actions can be "
+#~ "accessed by rightclicking in the  map"
+#~ " editor."
 #~ msgstr ""
 
