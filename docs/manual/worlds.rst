@@ -78,7 +78,7 @@ Adding Maps
     from the dropdown menu select the world you want to add it to. To add a
     different map to the current world, you can use the 'Add another map to
     the current world' button from the toolbar. Alternatively, both actions
-    can be accessed by rightclicking in the  map editor.
+    can be accessed by rightclicking in the map editor.
 
 Removing Maps
     Hit the 'Remove the current map from the current world' button on the 

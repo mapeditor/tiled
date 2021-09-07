@@ -3,7 +3,7 @@ User Preferences
 
 There are only a few options located in the Preferences, accessible
 though the menu via *Edit > Preferences*. Most other options, like
-whether to draw the grid, what kind snapping to do or the last used
+whether to draw the grid, what kind of snapping to do or the last used
 settings when creating a new map are simply remembered persistently.
 
 The preferences are stored in a system-dependent format and location:
@@ -28,19 +28,13 @@ General
 Saving and Loading
 ~~~~~~~~~~~~~~~~~~
 
-Include DTD reference in saved maps
-    This option is not enabled by default, since it is of very little
-    use whereas it can in some environments cause problems. Feel free to
-    enable it if it helps with validation for example, but note that the
-    referenced DTD is likely out of date (there is a somewhat more up-to-date
-    XSD file available in the repository).
-
 Reload tileset images when they change
     This is very useful while working on the tiles or when the tiles
     might change as a result of a source control system.
 
-Open last files on startup
-    Generally a useful thing to keep enabled.
+Restore previous session on startup
+    When disabled, Tiled always starts with an empty session. This can be
+    useful when you frequently switch projects.
 
 Use safe writing of files
     This setting causes files to be written to a temporary file, and
@@ -49,6 +43,11 @@ Use safe writing of files
     disk space. Unfortunately, it is known to cause issues when saving
     files to a Dropbox folder or a network drive, in which case it helps
     to disable this feature.
+
+Repeat last export on save
+    With this feature enabled, any time you save a map or tileset that was
+    previously exported it will automatically be exported again to the same
+    location and format.
 
 .. raw:: html
 

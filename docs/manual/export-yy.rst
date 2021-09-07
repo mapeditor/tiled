@@ -25,10 +25,10 @@ as background layers.
    to replace an already existing ``room.yy`` file.
 
    If you want to do this while GameMaker is running with the open project
-   you'll need to deactivate "Use save writing of files" in the Tiled
+   you'll need to deactivate "Use safe writing of files" in the Tiled
    preferences (Under *Edit -> Preferences -> General -> Saving and Loading*).
    Otherwise GameMaker will detect that the room file got deleted and will
-   propose to restore it from memory. Without "save writing" GameMaker will
+   propose to restore it from memory. Without "safe writing" GameMaker will
    detect that the file got changed and propose to reload the updated one.
 
 .. _yy-asset-references:

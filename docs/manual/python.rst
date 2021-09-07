@@ -24,7 +24,7 @@ There are several `example scripts`_ available in the repository.
 .. note::
 
     To create the ``~/.tiled`` folder on Windows, open command prompt
-    (``cmd.exe``), which should  start in your home folder by default, then
+    (``cmd.exe``), which should start in your home folder by default, then
     type ``mkdir .tiled`` to create the folder.
 
     On Linux, folders starting with a dot are hidden by default. In most file
