@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2021-09-07 13:45+0200\n"
-"PO-Revision-Date: 2021-09-04 06:35+0000\n"
+"PO-Revision-Date: 2021-09-07 15:45+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
+"\n"
 "Language: fr\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/tiled/manual/fr/>\n"
-"Plural-Forms: nplurals=2; plural=n > 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.8.1-dev\n"
 "Generated-By: Babel 2.8.0\n"
 
 #: ../../manual/automapping.rst:3
@@ -678,7 +679,6 @@ msgid "The Mana World Examples"
 msgstr "Exemples de The Mana World"
 
 #: ../../manual/automapping.rst:320
-#, fuzzy
 msgid ""
 "The Mana World examples will demonstrate quite a lot of different "
 "Automapping features. At first a shoreline will be constructed, by first "
@@ -688,14 +688,13 @@ msgid ""
 "engine. Last but not least the grass should be made random by using 5 "
 "different grass tiles."
 msgstr ""
-"Les exemples de The Mana World montre le fonctionnement de beaucoup de "
-"fonctionnalités d'Automapping. En premier un littoral sera construit, en "
+"Les exemples de The Mana World vont démontrer le fonctionnement de beaucoup "
+"de fonctionnalités d'Automapping. En premier un littoral sera construit, en "
 "ajoutant en premier les parties droites puis ensuite une autre règle "
-"corrigera les coins pour qu'ils suivent le jeu de tuiles courant. Après "
-"la construction du littoral, les milieux aquatiques seront balisés comme "
+"corrigera les coins pour qu'ils suivent le jeu de tuiles courant. Après la "
+"construction du littoral, les milieux aquatiques seront balisés comme "
 "infranchissable pour le moteur de jeu. En dernier, l'herbe doit être "
-"constituée de tuiles aléatoires en utilisant 5 tuiles d'herbe "
-"différentes."
+"constituée de tuiles aléatoires en utilisant 5 tuiles d'herbe différentes."
 
 #: ../../manual/automapping.rst:330
 msgid "This is what we want to draw."
@@ -1237,17 +1236,16 @@ msgstr ""
 "marron, cette règle est respectée.*"
 
 #: ../../manual/automapping.rst:651
-#, fuzzy
 msgid ""
 "Only the lowest 2 coordinates contain the brown tile. The upper "
 "coordinates contain no tile. (It is not an invisible tile, just no tile "
 "at all.) The input layer called *input\\_set* is depicted in the middle "
 "of the figure."
 msgstr ""
-"Seules les 2 coordonnées les plus basses contiennent les tuiles marron. "
-"Les coordonnées du haut ne contiennent aucune tuile. (Pas de tuile "
-"invisible, juste aucune tuile du tout.) Le calque d'entrée nommé "
-"*input\\_set* est décrit au milieu de l'image."
+"Seules les 2 coordonnées les plus basses contiennent les tuiles marron. Les "
+"coordonnées du haut ne contiennent aucune tuile. (Pas de tuile invisible, "
+"juste aucune tuile du tout.) Le calque d'entrée nommé *input\\_set* est "
+"représenté au milieu de l'image."
 
 #: ../../manual/automapping.rst:656
 msgid ""
@@ -1270,15 +1268,14 @@ msgstr ""
 "encore été ajouté."
 
 #: ../../manual/automapping.rst:668
-#, fuzzy
 msgid ""
 "When trying to match the input layer to the desired set layer (right "
 "picture of the figure at the beginning of the example), you will see it "
 "matches all the way along, with no regard of the vertical adjustment."
 msgstr ""
-"Lorsqu'on essaye de correspondre le calque d'entrée au calque désiré "
-"(image de droite de l'image tout au début de l'exemple), vous allez voir "
-"qu'il correspond jusqu'au bout, peu importe l'ajustement vertical."
+"Lorsqu'on essaye de correspondre le calque d'entrée au calque désiré (image "
+"de droite de l'image tout au début de l'exemple), vous allez voir qu'il "
+"correspond jusqu'au bout, peu importe l'ajustement vertical."
 
 #: ../../manual/automapping.rst:672
 msgid ""
@@ -1903,7 +1900,7 @@ msgstr ""
 
 #: ../../manual/editing-tile-layers.rst:153
 msgid "Holding ``Shift`` expands the current selection with the new area"
-msgstr "Maintenir 'Shift' élargit la sélection actuelle avec la nouvelle zone"
+msgstr "Maintenir 'Maj' élargit la sélection actuelle avec la nouvelle zone"
 
 #: ../../manual/editing-tile-layers.rst:154
 msgid "Holding ``Ctrl`` subtracts the new area from the current selection"
@@ -1914,8 +1911,8 @@ msgid ""
 "Holding ``Ctrl`` and ``Shift`` selects the intersection of the new area "
 "with the current selection"
 msgstr ""
-"Maintenir \"Ctrl\" et \"Shift\" sélectionne l'intersection de la nouvelle"
-" zone avec la sélection actuelle"
+"Maintenir \"Ctrl\" et \"Maj\" sélectionne l'intersection de la nouvelle zone "
+"avec la sélection actuelle"
 
 #: ../../manual/editing-tile-layers.rst:158
 msgid ""
@@ -1941,14 +1938,14 @@ msgstr ""
 
 #: ../../manual/editing-tile-layers.rst:167
 #: ../../manual/keyboard-shortcuts.rst:88
-#, fuzzy
 msgid ""
 "``Ctrl + 1-9`` - Store current tile stamp. When no tile drawing tool is "
 "selected, tries to capture the current tile selection (similar to ``Ctrl "
 "+ C``)."
 msgstr ""
-"``Ctrl + 1-9`` - Stocker la sélection de tuile courante (similaire à "
-"``Ctrl + C``)"
+"``Ctrl + 1-9`` - Stocker la sélection de tuile courante. Quand aucun outil "
+"de dessin de tuile n'est sélectionné, il essaye de capturer la sélection de "
+"tuile courante (similaire à ``Ctrl + C``)."
 
 #: ../../manual/editing-tile-layers.rst:170
 msgid ""
@@ -3317,7 +3314,6 @@ msgstr ""
 "déjà existant."
 
 #: ../../manual/export-yy.rst:27
-#, fuzzy
 msgid ""
 "If you want to do this while GameMaker is running with the open project "
 "you'll need to deactivate \"Use safe writing of files\" in the Tiled "
@@ -3327,14 +3323,13 @@ msgid ""
 "GameMaker will detect that the file got changed and propose to reload the"
 " updated one."
 msgstr ""
-"Si vous voulez faire cela pendant que GameMaker est lancé et que le "
-"projet est ouvert, vous devez désactiver \"Utiliser l'écriture sécurisée "
-"des fichiers\" dans les préférences de Tiled (Sous *Édition -> "
-"Préférences -> Général -> Sauvegarde et Chargement*). Sinon GameMaker va "
-"détecter que le fichier de salle a été supprimé et va proposer de le "
-"restaurer à partir de la mémoire. Sans \"écriture sécurisée\" GameMaker "
-"va détecter que le fichier a été changé et va proposer de recharger la "
-"nouvelle version."
+"Si vous voulez faire cela pendant que GameMaker est lancé et que le projet "
+"est ouvert, vous devez désactiver \"Utiliser l'écriture sécurisée des "
+"fichiers\" dans les préférences de Tiled (Sous *Édition -> Préférences -> "
+"Général -> Sauvegarde et Chargement*). Sinon GameMaker va détecter que le "
+"fichier de salle a été supprimé et va proposer de le restaurer à partir de "
+"la mémoire. Sans \"écriture sécurisée\" GameMaker va détecter que le fichier "
+"a été changé et va proposer de recharger la nouvelle version."
 
 #: ../../manual/export-yy.rst:37
 msgid "References to Existing Assets"
@@ -4282,44 +4277,37 @@ msgstr ""
 "les :ref:`Préférences <keyboard-options>`."
 
 #: ../../manual/keyboard-shortcuts.rst:9
-#, fuzzy
 msgid "On macOS, replace ``Ctrl`` with the ``Command`` key."
-msgstr "Sur Mac, remplacez ``Ctrl``par la touche ``Command``."
+msgstr "Sur macOS, remplacez ``Ctrl``par la touche ``Command``."
 
 #: ../../manual/keyboard-shortcuts.rst:14
-#, fuzzy
 msgid "``Ctrl + N`` - Create a new map"
-msgstr "``Ctrl + 0`` - Réinitialiser le zoom sur la carte"
+msgstr "``Ctrl + N`` - Créer une nouvelle carte"
 
 #: ../../manual/keyboard-shortcuts.rst:15
-#, fuzzy
 msgid "``Ctrl + O`` - Open any file or project"
-msgstr "``Ctrl + C`` - Copier (tuiles, objets ou propriétés)"
+msgstr "``Ctrl + O`` - Ouvrir n'importe quel fichier ou projet"
 
 #: ../../manual/keyboard-shortcuts.rst:16
-#, fuzzy
 msgid "``Ctrl + P`` - Open a file in the current project"
-msgstr "``Ctrl + A`` - Sélectionner tous les objets du calque d'objets actuel"
+msgstr "``Ctrl + P`` - Ouvrir un fichier dans le projet courant"
 
 #: ../../manual/keyboard-shortcuts.rst:17
-#, fuzzy
 msgid "``Ctrl + Shift + T`` - Reopen a recently closed file"
-msgstr "``Ctrl + Maj + Haut`` - Monter le calque actuel"
+msgstr "``Ctrl + Maj + T`` - Rouvrir un fichier récemment fermé"
 
 #: ../../manual/keyboard-shortcuts.rst:18
-#, fuzzy
 msgid "``Ctrl + S`` - Save current document"
-msgstr "``Ctrl + W`` - Fermer le document actuel"
+msgstr "``Ctrl + S`` - Sauvegarder le document actuel"
 
 #: ../../manual/keyboard-shortcuts.rst:19
-#, fuzzy
 msgid "``Ctrl + Alt + S`` - Save current document to another file"
-msgstr "``Ctrl + Maj + E`` - Exporter le document actuel vers un autre fichier"
+msgstr ""
+"``Ctrl + Alt + S`` - Sauvegarder le document actuel vers un autre fichier"
 
 #: ../../manual/keyboard-shortcuts.rst:20
-#, fuzzy
 msgid "``Ctrl + Shift + S`` - Save all documents"
-msgstr "``Ctrl + Maj + W`` - Fermer tous les documents"
+msgstr "``Ctrl + Maj + S`` - Sauvegarder tous les documents"
 
 #: ../../manual/keyboard-shortcuts.rst:21
 msgid "``Ctrl + E`` - Export current document"
@@ -4348,44 +4336,43 @@ msgstr "``Ctrl + Q`` - Arrêter Tiled"
 #: ../../manual/keyboard-shortcuts.rst:27
 msgid "``Ctrl + MouseWheel`` - Zoom in/out on tileset and map"
 msgstr ""
-"``Ctrl + Roulette`` - Zoom avant / arrière sur le jeu de tuiles et la "
+"``Ctrl + Roulette`` - Zoomer en avant/arrière sur le jeu de tuiles et la "
 "carte"
 
 #: ../../manual/keyboard-shortcuts.rst:28
 msgid "``Ctrl + Plus/Minus`` - Zoom in/out on map"
-msgstr "``Ctrl + Plus / Moins`` - Zoom avant / arrière sur la carte"
+msgstr "``Ctrl + Plus/Moins`` - Zoomer en avant/arrière sur la carte"
 
 #: ../../manual/keyboard-shortcuts.rst:29
 msgid "``Ctrl + 0`` - Reset zoom on map"
 msgstr "``Ctrl + 0`` - Réinitialiser le zoom sur la carte"
 
 #: ../../manual/keyboard-shortcuts.rst:30
-#, fuzzy
 msgid "``Ctrl + /`` - Adjust zoom to fit map in view"
-msgstr "``Ctrl + 0`` - Réinitialiser le zoom sur la carte"
+msgstr "``Ctrl + /`` - Ajuster le zoom pour que la carte rentre dans la vue"
 
 #: ../../manual/keyboard-shortcuts.rst:31
 msgid "``Ctrl + Object Move`` - Toggles \"Snap to Grid\" temporarily"
 msgstr ""
-"``Ctrl + Mouvement d'un Objet``- Active temporairement ''Aligner sur la "
+"``Ctrl + Mouvement d'un Objet``- Activer temporairement ''Aligner sur la "
 "Grille''"
 
 #: ../../manual/keyboard-shortcuts.rst:32
 msgid "``Ctrl + Object Resize`` - Keep aspect ratio"
 msgstr ""
-"``Ctrl + Changement de Taille d'un Objet`` - Conserve les proportions de "
+"``Ctrl + Changement de Taille d'un Objet`` - Conserver les proportions de "
 "l'objet"
 
 #: ../../manual/keyboard-shortcuts.rst:33
 msgid "``Alt + Object Resize`` - Toggles \"Snap to Grid\" temporarily"
 msgstr ""
-"``Alt + Changement de Taille d'un Objet`` - Active temporairement "
-"''Aligner sur la Grille''"
+"``Alt + Changement de Taille d'un Objet`` - Activer temporairement ''Aligner "
+"sur la Grille''"
 
 #: ../../manual/keyboard-shortcuts.rst:34
 msgid "``Middle Click`` or ``Space Bar`` - Hold to pan the map view"
 msgstr ""
-"``Click Milieu`` ou ``Barre Espace`` - Maintenez pour afficher la vue "
+"``Click Milieu`` ou ``Barre Espace`` - Maintenir pour afficher la vue "
 "cartographique"
 
 #: ../../manual/keyboard-shortcuts.rst:35
@@ -4401,9 +4388,8 @@ msgid "``Ctrl + V`` - Paste (tiles, objects or properties)"
 msgstr "``Ctrl + V`` - Coller (tuiles, objets ou propriétés)"
 
 #: ../../manual/keyboard-shortcuts.rst:38
-#, fuzzy
 msgid "``Del`` - Delete (tiles, objects, properties or layers)"
-msgstr "``Ctrl + V`` - Coller (tuiles, objets ou propriétés)"
+msgstr "``Del`` - Supprimer (tuiles, objets, propriétés ou calques)"
 
 #: ../../manual/keyboard-shortcuts.rst:39
 msgid "``Ctrl + G`` - Toggle displaying of the tile grid"
@@ -4414,16 +4400,15 @@ msgid "``H`` - Toggle highlighting of the current layer"
 msgstr "``H`` - Basculer la surbrillance du calque actuel"
 
 #: ../../manual/keyboard-shortcuts.rst:41
-#, fuzzy
 msgid "``Ctrl + M`` - Invokes :doc:`automapping`"
-msgstr "``A`` - Invoquer :doc:`l'automapping <automapping>`"
+msgstr "``Ctrl + M`` - Invoquer :doc:`l'automapping <automapping>`"
 
 #: ../../manual/keyboard-shortcuts.rst:42
 msgid ""
 "``Alt + C`` - Copy current position of mouse cursor to clipboard (in tile"
 " coordinates)"
 msgstr ""
-"``Alt + C`` - Copie la position actuelle du curseur de la souris dans le "
+"``Alt + C`` - Copier la position actuelle du curseur de la souris dans le "
 "presse-papiers (en tant que coordonnées de tuiles)"
 
 #: ../../manual/keyboard-shortcuts.rst:44
@@ -4435,17 +4420,20 @@ msgid ""
 "``Ctrl + J`` - Create a new layer and copy the currently selected objects"
 " or tiles to it"
 msgstr ""
+"``Ctrl + J`` - Créer un nouveau calque et copier les objets et tuiles "
+"couramment sélectionnés dans celui-ci"
 
 #: ../../manual/keyboard-shortcuts.rst:46
 msgid ""
 "``Ctrl + Shift + J`` - Create a new layer and move currently selected "
 "objects or tiles to it"
 msgstr ""
+"``Ctrl + Maj + J`` - Créer un nouveau calque et déplacer les objets et "
+"tuiles couramment sélectionnés dans celui-ci"
 
 #: ../../manual/keyboard-shortcuts.rst:47
-#, fuzzy
 msgid "``Ctrl + Shift + D`` - Duplicate selected layers"
-msgstr "``Ctrl + Shift + D`` - Dupliquer le calque actif"
+msgstr "``Ctrl + Maj + D`` - Dupliquer les calques sélectionnés"
 
 #: ../../manual/keyboard-shortcuts.rst:48
 msgid "``F2`` - Rename (if applicable in context)"
@@ -4468,24 +4456,20 @@ msgstr ""
 "actuel)"
 
 #: ../../manual/keyboard-shortcuts.rst:52
-#, fuzzy
 msgid "``Ctrl + Shift + Up`` - Move selected layers up"
-msgstr "``Ctrl + Maj + Haut`` - Monter le calque actuel"
+msgstr "``Ctrl + Maj + Haut`` - Monter les calques sélectionnés"
 
 #: ../../manual/keyboard-shortcuts.rst:53
-#, fuzzy
 msgid "``Ctrl + Shift + Down`` - Move selected layers down"
-msgstr "``Ctrl + Maj + Bas`` - Descendre le calque actuel"
+msgstr "``Ctrl + Maj + Bas`` - Descendre les calques sélectionnés"
 
 #: ../../manual/keyboard-shortcuts.rst:54
-#, fuzzy
 msgid "``Ctrl + H`` - Show/Hide selected layers"
-msgstr "``Ctrl + D`` - Dupliquer les objets sélectionnés"
+msgstr "``Ctrl + H`` - Afficher/Cacher les calques sélectionnés"
 
 #: ../../manual/keyboard-shortcuts.rst:55
-#, fuzzy
 msgid "``Ctrl + L`` - Lock/Unlock selected layers"
-msgstr "``Ctrl + D`` - Dupliquer les objets sélectionnés"
+msgstr "``Ctrl + L`` - Verrouiller/Déverrouiller les calques sélectionnés"
 
 #: ../../manual/keyboard-shortcuts.rst:56
 msgid ""
@@ -4496,19 +4480,16 @@ msgstr ""
 "calque actif reste visible/tous les calques deviennent visible)"
 
 #: ../../manual/keyboard-shortcuts.rst:58
-#, fuzzy
 msgid "``Ctrl + Shift + L`` - Lock/Unlock all other layers"
-msgstr "``Ctrl + Shift + D`` - Dupliquer le calque actif"
+msgstr "``Ctrl + Maj + L`` - Verrouiller/Déverrouiller tous les autres calques"
 
 #: ../../manual/keyboard-shortcuts.rst:59
-#, fuzzy
 msgid "``Ctrl + Tab`` / ``Alt + Left`` - Switch to left document"
-msgstr "``Ctrl + Tab`` - Passer au document à gauche"
+msgstr "``Ctrl + Tab`` / ``Alt + Gauche`` - Passer au document à gauche"
 
 #: ../../manual/keyboard-shortcuts.rst:60
-#, fuzzy
 msgid "``Ctrl + Shift + Tab`` / ``Alt + Right`` - Switch to right document"
-msgstr "``Ctrl + Maj + Tab`` - Passer au document à droite"
+msgstr "``Ctrl + Maj + Tab`` / ``Alt + Droite`` - Passer au document à droite"
 
 #: ../../manual/keyboard-shortcuts.rst:61
 msgid "``]`` - Select next tileset"
@@ -4528,9 +4509,8 @@ msgstr ""
 "automatique n'est pas activé)"
 
 #: ../../manual/keyboard-shortcuts.rst:65
-#, fuzzy
 msgid "``Ctrl + Shift + A`` - Clear any object and tile selection"
-msgstr "``Ctrl + Maj + A`` - Vider la sélection d'objet"
+msgstr "``Ctrl + Maj + A`` - Vider toute sélection d'objet ou de tuile"
 
 #: ../../manual/keyboard-shortcuts.rst:68
 msgid "When a tile layer is selected"
@@ -4541,18 +4521,20 @@ msgid ""
 "``Right Click on Tile`` - Captures the tile under the mouse (drag to "
 "capture larger areas)."
 msgstr ""
-"``Click Droit sur une Tuile`` - Copie la tuile sous la souris (glisser "
-"pour copier des zones plus grandes)."
+"``Clic Droit sur une Tuile`` - Copier la tuile sous la souris (glisser pour "
+"copier des zones plus grandes)."
 
 #: ../../manual/keyboard-shortcuts.rst:72
 msgid ""
 "``Ctrl + Right Click on Tile`` - Selects the layer containing the top-"
 "most tile under the mouse."
 msgstr ""
+"``Ctrl + Clic Droit sur une Tuile`` - Sélectionner le calque contenant la "
+"tuile la plus en haut sous la souris."
 
 #: ../../manual/keyboard-shortcuts.rst:73
 msgid "``D`` - Toggle Random Mode"
-msgstr "``D`` - Activer / Désactiver le Mode Aléatoire"
+msgstr "``D`` - Activer/Désactiver le Mode Aléatoire"
 
 #: ../../manual/keyboard-shortcuts.rst:74
 msgid "``B`` - Activate :ref:`stamp-tool`"
@@ -4603,9 +4585,10 @@ msgid "``S`` - Activate Select Same Tile"
 msgstr "``S`` - Activer la Sélection de Même Tuile"
 
 #: ../../manual/keyboard-shortcuts.rst:91
-#, fuzzy
 msgid "``1-9`` - Recall a previously stored tile stamp (similar to ``Ctrl + V``)"
-msgstr "``1-9`` - Sélectionne une sélection précédente (similaire à ``Ctrl + V``)"
+msgstr ""
+"``1-9`` - Rappeler un tampon de tuiles stocké précédemment (similaire à ``"
+"Ctrl + V``)"
 
 #: ../../manual/keyboard-shortcuts.rst:92
 msgid "``Ctrl + A`` - Select the whole layer"
@@ -4710,18 +4693,16 @@ msgid "``E`` - Activate :ref:`insert-text-tool`"
 msgstr "``E`` - Activer :ref:`l'Insertion de Texte <insert-text-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:128
-#, fuzzy
 msgid "``Ctrl + A`` - Select all objects on the selected layers"
-msgstr "``Ctrl + A`` - Sélectionner tous les objets du calque d'objets actuel"
+msgstr "``Ctrl + A`` - Sélectionner tous les objets des calques sélectionnés"
 
 #: ../../manual/keyboard-shortcuts.rst:131
 msgid "In the Properties dialog"
 msgstr "Dans la Boite de Dialogue de Propriétés"
 
 #: ../../manual/keyboard-shortcuts.rst:133
-#, fuzzy
 msgid "``Backspace`` - Deletes a property"
-msgstr "``Suppr`` ou ``Retour Arrière`` - Supprimer une propriété"
+msgstr "``Retour Arrière`` - Supprimer une propriété"
 
 #: ../../manual/layers.rst:2
 msgid "Working with Layers"
@@ -5863,18 +5844,17 @@ msgid "User Preferences"
 msgstr "Préférences Utilisateur"
 
 #: ../../manual/preferences.rst:4
-#, fuzzy
 msgid ""
 "There are only a few options located in the Preferences, accessible "
 "though the menu via *Edit > Preferences*. Most other options, like "
 "whether to draw the grid, what kind of snapping to do or the last used "
 "settings when creating a new map are simply remembered persistently."
 msgstr ""
-"Il n'y a que quelques options dans les Préférences, qui sont accessibles "
-"à travers le menu *Édition > Préférences*. La plupart des autres options,"
-" tel que le type de suivi à faire ou les dernières options utilisées lors"
-" de la création d'une nouvelle carte sont simplement gardés de façon "
-"persistante."
+"Il n'y a que quelques options dans les Préférences qui sont accessibles à "
+"travers le menu *Édition > Préférences*. La plupart des autres options, tel "
+"que si la grille est dessinée, le type de suivi à faire ou les dernières "
+"options utilisées lors de la création d'une nouvelle carte sont simplement "
+"gardés de façon persistante."
 
 #: ../../manual/preferences.rst:9
 msgid "The preferences are stored in a system-dependent format and location:"
@@ -5924,13 +5904,15 @@ msgstr ""
 
 #: ../../manual/preferences.rst:37
 msgid "Restore previous session on startup"
-msgstr ""
+msgstr "Rétablir la session précédente lors du démarrage"
 
 #: ../../manual/preferences.rst:36
 msgid ""
 "When disabled, Tiled always starts with an empty session. This can be "
 "useful when you frequently switch projects."
 msgstr ""
+"Lorsque ceci est désactivé, Tiled commencera toujours avec une session vide. "
+"Cela pet être utile quand vous changez de projet souvent."
 
 #: ../../manual/preferences.rst:45
 msgid "Use safe writing of files"
@@ -5955,7 +5937,7 @@ msgstr ""
 
 #: ../../manual/preferences.rst:50
 msgid "Repeat last export on save"
-msgstr ""
+msgstr "Répéter la dernière exportation lors de la sauveegarde"
 
 #: ../../manual/preferences.rst:48
 msgid ""
@@ -5963,6 +5945,9 @@ msgid ""
 "previously exported it will automatically be exported again to the same "
 "location and format."
 msgstr ""
+"Quand cette fonctionnalité est activée, à chaque fois que vous sauvegardez "
+"une carte ou un jeu de tuiles qui a été exporté précédemment, il sera "
+"exporté une nouvelle fois au même endroit et dans le même format."
 
 #: ../../manual/preferences.rst:59
 msgid "Export Options"
@@ -6333,15 +6318,14 @@ msgstr ""
 "pour le :ref:`fichier de session <sessions>`."
 
 #: ../../manual/projects.rst:15
-#, fuzzy
 msgid ""
 "Apart from the list of folders, a project currently has the following "
 "properties, which can be changed through the *Project -> Project "
 "Properties...* dialog."
 msgstr ""
 "Mis à part la liste de dossiers, un projet comprend les propriétés "
-"suivantes, qui peuvent être changées dans la boîte de dialogue *Projet ->"
-" Propriétés de Projet...*."
+"suivantes, qui peuvent être changées dans la boîte de dialogue *Projet -> "
+"Propriétés de Projet...*."
 
 #: ../../manual/projects.rst:25
 msgid "Extensions Directory"
@@ -6535,15 +6519,14 @@ msgid "There are several `example scripts`_ available in the repository."
 msgstr "Il y a plusieurs `scripts d'exemple`_ disponibles dans le dépôt."
 
 #: ../../manual/python.rst:26
-#, fuzzy
 msgid ""
 "To create the ``~/.tiled`` folder on Windows, open command prompt "
 "(``cmd.exe``), which should start in your home folder by default, then "
 "type ``mkdir .tiled`` to create the folder."
 msgstr ""
-"Pour créer le dossier ``~/.tiled`` sur Windows, ouvrez l'invite de "
-"commande (``cmd.exe``), qui doit commencer dans votre dossier personnel "
-"par défaut, puis entrez ``mkdir .tiled`` pour créer le dossier."
+"Pour créer le dossier ``~/.tiled`` sur Windows, ouvrez l'invite de commande "
+"(``cmd.exe``), qui doit commencer dans votre dossier personnel par défaut, "
+"puis entrez ``mkdir .tiled`` pour créer le dossier."
 
 #: ../../manual/python.rst:30
 msgid ""
@@ -7486,20 +7469,18 @@ msgstr ""
 "pouvez utiliser 'Vider' pour réinitialiser le raccourci."
 
 #: ../../manual/using-commands.rst:52
-#, fuzzy
 msgid "Show output in Console view"
-msgstr "Sortie dans la Console de Débogage"
+msgstr "Montrer la sortie dans la Console de Débogage"
 
 #: ../../manual/using-commands.rst:50
-#, fuzzy
 msgid ""
 "If this is enabled, then the output (stdout and stderr) of this command "
 "will be displayed in the Console. You can find the Console in *View > "
 "Views and Toolbars > Console*."
 msgstr ""
 "Si cette option est activée, alors la sortie (stdout et stderr) de cette "
-"commande sera affichée dans la Console de Débogage. Vous pouvez trouver "
-"la console de Débogage dans *Vue > Vues et Barres d'Outils > Console*."
+"commande sera affichée dans la Console de Débogage. Vous pouvez trouver la "
+"console de Débogage dans *Vue > Vues et Barres d'Outils > Console*."
 
 #: ../../manual/using-commands.rst:56
 msgid "Save map before executing"
@@ -8053,7 +8034,6 @@ msgid "Adding Maps"
 msgstr "Ajouter des Cartes"
 
 #: ../../manual/worlds.rst:77
-#, fuzzy
 msgid ""
 "Click the 'Add the current map to a loaded world' button on the toolbar, "
 "from the dropdown menu select the world you want to add it to. To add a "
@@ -8061,13 +8041,12 @@ msgid ""
 "the current world' button from the toolbar. Alternatively, both actions "
 "can be accessed by rightclicking in the map editor."
 msgstr ""
-"Cliquez sur le bouton 'Ajouter la carte courante à un monde chargé' sur "
-"la barre d'outils, depuis le menu déroulant sélectionnez le monde auquel "
-"vous voulez ajouter cette carte. Pour ajouter une carte différente au "
-"monde courant, vous pouvez utiliser le bouton 'Ajouter une autre carte "
-"dans le monde courant' depuis la barre d'outils. Alternativement, les "
-"deux actions peuvent être accédées en faisant un clic droit sur l'éditeur"
-" de carte."
+"Cliquez sur le bouton 'Ajouter la carte courante à un monde chargé' sur la "
+"barre d'outils, depuis le menu déroulant sélectionnez le monde auquel vous "
+"voulez ajouter cette carte. Pour ajouter une carte différente au monde "
+"courant, vous pouvez utiliser le bouton 'Ajouter une autre carte dans le "
+"monde courant' depuis la barre d'outils. Alternativement, les deux actions "
+"peuvent être accédées en faisant un clic droit sur l'éditeur de carte."
 
 #: ../../manual/worlds.rst:86
 msgid "Removing Maps"
@@ -8506,4 +8485,3 @@ msgstr ""
 
 #~ msgid "Generally a useful thing to keep enabled."
 #~ msgstr "Généralement une chose utile à laisser activé."
-
