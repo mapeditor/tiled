@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-07 13:45+0200\n"
-"PO-Revision-Date: 2021-09-04 06:35+0000\n"
+"PO-Revision-Date: 2021-09-07 15:45+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tiled/reference/"
+"fr/>\n"
 "Language: fr\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/tiled/reference/fr/>\n"
-"Plural-Forms: nplurals=2; plural=n > 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.8.1-dev\n"
 "Generated-By: Babel 2.8.0\n"
 
 #: ../../reference/json-map-format.rst:2
@@ -1192,9 +1193,8 @@ msgid "colors"
 msgstr "colors"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`Wang colors <json-wangcolor>` (since 1.5)"
-msgstr "Tableau de :ref:`couleurs Wang <json-wangcolor>`"
+msgstr "Tableau de :ref:`couleurs Wang <json-wangcolor>` (depuis la 1.5)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Name of the Wang set"
@@ -1206,7 +1206,7 @@ msgstr "ID local de la tuile représentant la collection Wang"
 
 #: ../../reference/json-map-format.rst:1
 msgid "``corner``, ``edge`` or ``mixed`` (since 1.5)"
-msgstr ""
+msgstr "``corner`` (coin), ``edge`` (bord) ou ``mixed`` (mixte) (depuis la 1.5)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "wangtiles"
@@ -1233,9 +1233,8 @@ msgid "Probability used when randomizing"
 msgstr "Probabilité utilisée lors de la sélection aléatoire"
 
 #: ../../reference/json-map-format.rst:1
-#, fuzzy
 msgid "Array of :ref:`Properties <json-property>` (since 1.5)"
-msgstr "Tableau de :ref:`Propriétés <json-property>`"
+msgstr "Tableau de :ref:`Propriétés <json-property>` (depuis la 1.5)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Local ID of tile representing the Wang color"
@@ -1371,14 +1370,13 @@ msgid "Tiled 1.5"
 msgstr "Tiled 1.5"
 
 #: ../../reference/json-map-format.rst:764
-#, fuzzy
 msgid ""
 "Unified ``cornercolors`` and ``edgecolors`` properties of :ref:`json-"
 "wangset` as the new ``colors`` property and added a ``type`` field."
 msgstr ""
 "Les propriétés ``cornercolors`` et ``edgecolors`` d'une :ref:`collection "
-"Wang <json-wangset>` ont été unifiées dans la nouvelle propriété "
-"``colors``."
+"Wang <json-wangset>` ont été unifiées dans la nouvelle propriété ``colors`` "
+"et un champ ``type`` a été ajouté."
 
 #: ../../reference/json-map-format.rst:767
 msgid ":ref:`json-wangcolor` can now store ``properties``."
@@ -1589,9 +1587,9 @@ msgid ""
 "excludes the Windows XP and snap releases."
 msgstr ""
 "Le support pour l'entièreté de l'API de création de script pour les "
-"fonctionnalités de ECMAScript 7 est seulement disponible pour les "
-"versions de Tiled basées sur Qt 5.12 ou ultérieur. Pour le moment, cela "
-"exclut les versions pour Windows XP et les versions instantanées."
+"fonctionnalités de ECMAScript 7 est seulement disponible pour les versions "
+"de Tiled basées sur Qt 5.12 ou ultérieur. Pour le moment, cela exclut les "
+"versions pour Windows XP et snap."
 
 #: ../../reference/scripting.rst:39
 msgid "Scripted Extensions"
@@ -2143,18 +2141,16 @@ msgid "Python"
 msgstr "Python"
 
 #: ../../reference/support-for-tmx-maps.rst:144
-#, fuzzy
 msgid ""
 "`pytiled-parser <https://github.com/benjamin-"
 "kirkbride/pytiled_parser>`__: Python parser for JSON maps(No support for "
 "TMX format as of v1.0.0)"
 msgstr ""
-"`pytiled-parser <https://github.com/Beefy-Swain/pytiled_parser>`__ : "
-"Analyseur Python pour les cartes en JSON (Pas de support pour le format "
-"TMX dans la version v1.0.0)"
+"`pytiled-parser <https://github.com/benjamin-kirkbride/pytiled_parser>`__ : "
+"Analyseur Python pour les cartes en JSON (Pas de support pour le format TMX "
+"dans la version v1.0.0)"
 
 #: ../../reference/support-for-tmx-maps.rst:146
-#, fuzzy
 msgid ""
 "`Arcade <https://api.arcade.academy>`__: 2D game library that uses "
 "pytiled-parser for easy loading of JSON maps into a game.(No support for "
@@ -2162,10 +2158,11 @@ msgid ""
 "<https://api.arcade.academy/en/latest/examples/index.html#using-tiled-"
 "map-editor-to-create-maps>`_"
 msgstr ""
-"`Arcade <http://arcade.academy>`__ : Bibliothèque de jeu 2D qui utilise "
-"pytiled-parser pour charger des cartes JSON dans un jeu. (Pas de support "
-"pour le format TMX dans la version v2.6.0) `Exemples de Tiled dans Arcade"
-" <http://arcade.academy/examples/index.html#tmx-files-tiled-map-editor>`_"
+"`Arcade <https://api.arcade.academy>`__ : Bibliothèque de jeu 2D qui utilise "
+"pytiled-parser pour facilement charger des cartes JSON dans un jeu. (Pas de "
+"support pour le format TMX dans la version v2.6.0) `Exemples de Tiled dans "
+"Arcade <https://api.arcade.academy/en/latest/examples/index.html#using-tiled-"
+"map-editor-to-create-maps>`_"
 
 #: ../../reference/support-for-tmx-maps.rst:148
 msgid ""
@@ -5756,4 +5753,3 @@ msgstr ""
 #~ "`La version originale <http://code.google.com/p"
 #~ "/tmx-parser/>`__ par KonoM n'est plus "
 #~ "développée."
-
