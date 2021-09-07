@@ -39,10 +39,9 @@ public:
     {
     }
 
-    void setPropertyTypes(const PropertyTypes &propertyTypes);
-    const PropertyTypes &propertyTypes() const { return mPropertyTypes; }
+    void setPropertyTypes(PropertyTypes *propertyTypes);
 
-    PropertyType propertyTypeAt(const QModelIndex &index) const;
+    PropertyType *propertyTypeAt(const QModelIndex &index) const;
 
     int rowCount(const QModelIndex &parent) const override;
 
@@ -63,7 +62,7 @@ public slots:
 private:
     QString nextPropertyTypeName() const;
 
-    PropertyTypes mPropertyTypes;
+    PropertyTypes *mPropertyTypes = nullptr;
 };
 
 } // namespace Tiled

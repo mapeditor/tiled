@@ -34,22 +34,105 @@ namespace Tiled {
 
 int PropertyType::nextId = 0;
 
+/**
+ * This function returns a PropertyValue instance, which stores the internal
+ * value along with the type.
+ */
 QVariant PropertyType::wrap(const QVariant &value) const
+{
+    return QVariant::fromValue(PropertyValue { value, id });
+}
+
+/**
+ * This function is called with the value stored in a PropertyValue. It is
+ * supposed to prepare the value for saving.
+ *
+ * The default implementation just returns the value as-is.
+ */
+QVariant PropertyType::unwrap(const QVariant &value) const
+{
+    return value;
+}
+
+QVariantHash PropertyType::toVariant(const ExportContext &) const
+{
+    return {
+        { QStringLiteral("type"), typeToString(type) },
+        { QStringLiteral("id"), id },
+        { QStringLiteral("name"), name },
+    };
+}
+
+std::unique_ptr<PropertyType> PropertyType::createFromVariant(const QVariant &variant, const ExportContext &context)
+{
+    std::unique_ptr<PropertyType> propertyType;
+
+    const auto hash = variant.toHash();
+
+    const int id = hash.value(QStringLiteral("id")).toInt();
+    const QString name = hash.value(QStringLiteral("name")).toString();
+    const PropertyType::Type type = PropertyType::typeFromString(hash.value(QStringLiteral("type")).toString());
+
+    switch (type) {
+    case PropertyType::PT_Invalid:
+        break;
+    case PropertyType::PT_Class:
+        propertyType = std::make_unique<ClassPropertyType>(name);
+        break;
+    case PropertyType::PT_Enum:
+        propertyType = std::make_unique<EnumPropertyType>(name);
+        break;
+    }
+
+    if (propertyType) {
+        propertyType->fromVariant(hash, context);
+        propertyType->id = id;
+        nextId = std::max(nextId, id);
+    }
+
+    return propertyType;
+}
+
+PropertyType::Type PropertyType::typeFromString(const QString &string)
+{
+    if (string == QLatin1String("enum") || string.isEmpty())    // empty check for compatibility
+        return PT_Enum;
+    if (string == QLatin1String("class"))
+        return PT_Class;
+    return PT_Invalid;
+}
+
+QString PropertyType::typeToString(Type type)
+{
+    switch (type) {
+    case PT_Class:
+        return QStringLiteral("class");
+    case PT_Enum:
+        return QStringLiteral("enum");
+    case PT_Invalid:
+        break;
+    }
+    return QStringLiteral("invalid");
+}
+
+// EnumPropertyType
+
+QVariant EnumPropertyType::wrap(const QVariant &value) const
 {
     // Convert enum values stored as string, if possible
     if (value.userType() == QMetaType::QString) {
         const int index = values.indexOf(value.toString());
         if (index != -1)
-            return QVariant::fromValue(PropertyValue { index, id });
+            return PropertyType::wrap(index);
     }
 
-    return QVariant::fromValue(PropertyValue { value, id });
+    return PropertyType::wrap(value);
 }
 
-QVariant PropertyType::unwrap(const QVariant &value) const
+QVariant EnumPropertyType::unwrap(const QVariant &value) const
 {
-    // Convert enum values to their string (todo: should be optional)
-    if (value.userType() == QMetaType::Int) {
+    // Convert enum values to their string if desired
+    if (value.userType() == QMetaType::Int && storageType == StringValue) {
         const int index = value.toInt();
         if (index >= 0 && index < values.size())
             return values.at(index);
@@ -58,44 +141,103 @@ QVariant PropertyType::unwrap(const QVariant &value) const
     return value;
 }
 
-QVariant PropertyType::defaultValue() const
+QVariant EnumPropertyType::defaultValue() const
 {
-    // todo: should depend on the valueType
     return 0;
 }
 
-QVariantHash PropertyType::toVariant() const
+QVariantHash EnumPropertyType::toVariant(const ExportContext &context) const
 {
-    return {
-        { QStringLiteral("id"), id },
-        { QStringLiteral("name"), name },
-        { QStringLiteral("values"), values },
-    };
+    auto variant = PropertyType::toVariant(context);
+    variant.insert(QStringLiteral("values"), values);
+    variant.insert(QStringLiteral("storageType"), storageTypeToString(storageType));
+    return variant;
 }
 
-PropertyType PropertyType::fromVariant(const QVariant &variant)
+void EnumPropertyType::fromVariant(const QVariantHash &variant, const ExportContext &)
 {
-    const auto hash = variant.toHash();
-
-    PropertyType propertyType;
-    propertyType.id = hash.value(QStringLiteral("id")).toInt();
-    propertyType.name = hash.value(QStringLiteral("name")).toString();
-    propertyType.values = hash.value(QStringLiteral("values")).toStringList();
-
-    nextId = std::max(nextId, propertyType.id);
-
-    return propertyType;
+    storageType = storageTypeFromString(variant.value(QStringLiteral("storageType")).toString());
+    values = variant.value(QStringLiteral("values")).toStringList();
 }
+
+EnumPropertyType::StorageType EnumPropertyType::storageTypeFromString(const QString &string)
+{
+    if (string == QLatin1String("int"))
+        return IntValue;
+    return StringValue;
+}
+
+QString EnumPropertyType::storageTypeToString(StorageType type)
+{
+    switch (type) {
+    case IntValue:
+        return QStringLiteral("int");
+    case StringValue:
+        return QStringLiteral("string");
+    }
+}
+
+// ClassPropertyType
+
+QVariant ClassPropertyType::defaultValue() const
+{
+    return QVariantMap();
+}
+
+QVariantHash ClassPropertyType::toVariant(const ExportContext &context) const
+{
+    QVariantList members;
+
+    QMapIterator<QString,QVariant> it(this->members);
+    while (it.hasNext()) {
+        it.next();
+
+        const auto exportValue = context.toExportValue(it.value());
+
+        QVariantHash member {
+            { QStringLiteral("name"), it.key() },
+            { QStringLiteral("type"), exportValue.typeName },
+            { QStringLiteral("value"), exportValue.value },
+        };
+
+        if (!exportValue.propertyTypeName.isEmpty())
+            member.insert(QStringLiteral("propertyType"), exportValue.propertyTypeName);
+
+        members.append(member);
+    }
+
+    auto variant = PropertyType::toVariant(context);
+    variant.insert(QStringLiteral("members"), members);
+    return variant;
+}
+
+void ClassPropertyType::fromVariant(const QVariantHash &variant, const ExportContext &context)
+{
+    const auto membersList = variant.value(QStringLiteral("members")).toList();
+    for (const auto &member : membersList) {
+        const QVariantHash hash = member.toHash();
+        const QString name = hash.value(QStringLiteral("name")).toString();
+
+        ExportValue exportValue;
+        exportValue.value = hash.value(QStringLiteral("value"));
+        exportValue.typeName = hash.value(QStringLiteral("type")).toString();
+        exportValue.propertyTypeName = hash.value(QStringLiteral("propertyType")).toString();
+
+        members.insert(name, context.toPropertyValue(exportValue));
+    }
+}
+
+// Helper functions
 
 /**
  * Returns a pointer to the PropertyType matching the given \a typeId, or
  * nullptr if it can't be found.
  */
-const PropertyType *findTypeById(const QVector<PropertyType> &types, int typeId)
+const PropertyType *findTypeById(const PropertyTypes &types, int typeId)
 {
-    for (const PropertyType &propertyType : types) {
-        if (propertyType.id == typeId)
-            return &propertyType;
+    for (const auto &propertyType : types) {
+        if (propertyType->id == typeId)
+            return propertyType.get();
     }
     return nullptr;
 }
@@ -104,11 +246,11 @@ const PropertyType *findTypeById(const QVector<PropertyType> &types, int typeId)
  * Returns a pointer to the PropertyType matching the given \a name, or
  * nullptr if it can't be found.
  */
-const PropertyType *findTypeByName(const QVector<PropertyType> &types, const QString &name)
+const PropertyType *findTypeByName(const PropertyTypes &types, const QString &name)
 {
-    for (const PropertyType &propertyType : types) {
-        if (propertyType.name == name)
-            return &propertyType;
+    for (const auto &propertyType : types) {
+        if (propertyType->name == name)
+            return propertyType.get();
     }
     return nullptr;
 }

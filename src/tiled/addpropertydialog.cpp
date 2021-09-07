@@ -48,7 +48,6 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
 
-
     // Add possible types from QVariant
     mUi->typeBox->addItem(typeToName(QMetaType::Bool),      false);
     mUi->typeBox->addItem(typeToName(QMetaType::QColor),    QColor());
@@ -58,9 +57,9 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->typeBox->addItem(typeToName(objectRefTypeId()),    QVariant::fromValue(ObjectRef()));
     mUi->typeBox->addItem(typeToName(QMetaType::QString),   QString());
 
-    for (const PropertyType &propertyType : Object::propertyTypes()) {
-        QVariant var = QVariant::fromValue(PropertyValue { propertyType.defaultValue(), propertyType.id });
-        mUi->typeBox->addItem(propertyType.name, var);
+    for (const auto &propertyType : Object::propertyTypes()) {
+        const QVariant var = propertyType->wrap(propertyType->defaultValue());
+        mUi->typeBox->addItem(propertyType->name, var);
     }
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);

@@ -128,16 +128,26 @@ void CustomPropertiesHelper::propertyTypesChanged()
         while (it.hasNext()) {
             it.next();
 
-            if (it.value() == type.id)
-                setPropertyAttributes(it.key(), type);
+            if (it.value() == type->id)
+                setPropertyAttributes(it.key(), *type);
         }
     }
 }
 
 void CustomPropertiesHelper::setPropertyAttributes(QtProperty *property, const PropertyType &propertyType)
 {
-    // TODO: Support icons for enum values
-    mPropertyManager->setAttribute(property, QStringLiteral("enumNames"), propertyType.values);
+    switch (propertyType.type) {
+    case Tiled::PropertyType::PT_Invalid:
+    case Tiled::PropertyType::PT_Class:
+        break;
+    case Tiled::PropertyType::PT_Enum: {
+        const auto &enumType = static_cast<const EnumPropertyType&>(propertyType);
+
+        // TODO: Support icons for enum values
+        mPropertyManager->setAttribute(property, QStringLiteral("enumNames"), enumType.values);
+        break;
+    }
+    }
 }
 
 } // namespace Tiled

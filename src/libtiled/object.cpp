@@ -36,7 +36,7 @@
 namespace Tiled {
 
 ObjectTypes Object::mObjectTypes;
-PropertyTypes Object::mPropertyTypes;
+const PropertyTypes *Object::mPropertyTypes;
 Object::~Object()
 {}
 
@@ -145,9 +145,18 @@ void Object::setObjectTypes(const ObjectTypes &objectTypes)
     mObjectTypes = objectTypes;
 }
 
-void Object::setPropertyTypes(const PropertyTypes &propertyTypes)
+void Object::setPropertyTypes(const PropertyTypes *propertyTypes)
 {
     mPropertyTypes = propertyTypes;
+}
+
+const PropertyTypes &Object::propertyTypes()
+{
+    if (mPropertyTypes)
+        return *mPropertyTypes;
+
+    static PropertyTypes noTypes;
+    return noTypes;
 }
 
 } // namespace Tiled

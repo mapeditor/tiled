@@ -30,12 +30,16 @@
 
 #include <QStringList>
 #include <QVariant>
-#include <QVector>
 #include <QMetaType>
 
 #include "tiled_global.h"
 
+#include <memory>
+#include <vector>
+
 namespace Tiled {
+
+class ExportContext;
 
 /**
  * Defines a custom property type. Currently this includes only enums.
@@ -43,26 +47,84 @@ namespace Tiled {
 class TILEDSHARED_EXPORT PropertyType
 {
 public:
+    enum Type {
+        PT_Invalid,
+        PT_Class,
+        PT_Enum
+    };
+
+    const Type type;
     int id = 0;
     QString name;
-    QStringList values;
+
+    virtual ~PropertyType() = default;
+
+    virtual QVariant wrap(const QVariant &value) const;
+    virtual QVariant unwrap(const QVariant &value) const;
+
+    virtual QVariant defaultValue() const = 0;
+
+    virtual QVariantHash toVariant(const ExportContext &) const;
+    virtual void fromVariant(const QVariantHash &variant, const ExportContext &) = 0;
 
     static int nextId;
 
-    QVariant wrap(const QVariant &value) const;
-    QVariant unwrap(const QVariant &value) const;
+    static std::unique_ptr<PropertyType> createFromVariant(const QVariant &variant,
+                                                           const ExportContext &context);
 
-    QVariant defaultValue() const;
+    static Type typeFromString(const QString &string);
+    static QString typeToString(Type type);
 
-    QVariantHash toVariant() const;
-    static PropertyType fromVariant(const QVariant &variant);
+protected:
+    PropertyType(Type type, const QString &name)
+        : type(type)
+        , name(name)
+    {}
 };
 
-using PropertyTypes = QVector<PropertyType>;
+class TILEDSHARED_EXPORT EnumPropertyType : public PropertyType
+{
+public:
+    enum StorageType {
+        IntValue,
+        StringValue
+    };
 
-TILEDSHARED_EXPORT const PropertyType *findTypeById(const QVector<PropertyType> &types, int typeId);
-TILEDSHARED_EXPORT const PropertyType *findTypeByName(const QVector<PropertyType> &types, const QString &name);
+    StorageType storageType = StringValue;   // TODO: Allow user to change this
+    QStringList values;
+
+    EnumPropertyType(const QString &name) : PropertyType(PT_Enum, name) {}
+
+    QVariant wrap(const QVariant &value) const override;
+    QVariant unwrap(const QVariant &value) const override;
+
+    QVariant defaultValue() const override;
+
+    QVariantHash toVariant(const ExportContext &) const override;
+    void fromVariant(const QVariantHash &variant, const ExportContext &) override;
+
+    static StorageType storageTypeFromString(const QString &string);
+    static QString storageTypeToString(StorageType type);
+};
+
+class TILEDSHARED_EXPORT ClassPropertyType : public PropertyType
+{
+public:
+    QVariantMap members;
+
+    ClassPropertyType(const QString &name) : PropertyType(PT_Class, name) {}
+
+    QVariant defaultValue() const override;
+
+    QVariantHash toVariant(const ExportContext &context) const override;
+    void fromVariant(const QVariantHash &variant, const ExportContext & ) override;
+};
+
+using PropertyTypes = std::vector<std::unique_ptr<PropertyType>>;
+
+TILEDSHARED_EXPORT const PropertyType *findTypeById(const PropertyTypes &types, int typeId);
+TILEDSHARED_EXPORT const PropertyType *findTypeByName(const PropertyTypes &types, const QString &name);
 
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::PropertyType);
+Q_DECLARE_METATYPE(Tiled::PropertyType*);

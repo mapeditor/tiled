@@ -132,7 +132,8 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
             this, &PropertyTypesEditor::nameChanged);
 
     Preferences *prefs = Preferences::instance();
-    mPropertyTypesModel->setPropertyTypes(Object::propertyTypes());
+    // TODO: Explicit set which PropertyTypes are edited by this dialog
+//    mPropertyTypesModel->setPropertyTypes(Object::propertyTypes());
     connect(prefs, &Preferences::propertyTypesChanged,
             this, &PropertyTypesEditor::propertyTypesChanged);
     retranslateUi();
@@ -225,13 +226,10 @@ void PropertyTypesEditor::propertyTypeNameChanged(const QModelIndex &index, cons
 
 void PropertyTypesEditor::applyPropertyTypes()
 {
-    auto &propertyTypes = mPropertyTypesModel->propertyTypes();
-
     QScopedValueRollback<bool> settingPrefPropertyTypes(mSettingPrefPropertyTypes, true);
-    Preferences::instance()->setPropertyTypes(propertyTypes);
+    emit Preferences::instance()->propertyTypesChanged();
 
     Project &project = ProjectManager::instance()->project();
-    project.mPropertyTypes = propertyTypes;
     project.save();
 }
 
@@ -240,11 +238,12 @@ void PropertyTypesEditor::propertyTypesChanged()
     // ignore signal if we caused it
     if (mSettingPrefPropertyTypes)
         return;
-    mPropertyTypesModel->setPropertyTypes(Object::propertyTypes());
+    // TODO: Do appropriate signals in case of reload for the model
+//    mPropertyTypesModel->setPropertyTypes(Object::propertyTypes());
     updateValues();
 }
 
-static QString nextValueText(const PropertyType &propertyType)
+static QString nextValueText(const EnumPropertyType &propertyType)
 {
     auto baseText = propertyType.name;
     if (!baseText.isEmpty())
@@ -266,12 +265,15 @@ void PropertyTypesEditor::addValue()
     if (!selectedTypeIndex.isValid())
         return;
 
+    const PropertyType *propertyType = mPropertyTypesModel->propertyTypeAt(selectedTypeIndex);
+    if (!propertyType || propertyType->type != PropertyType::PT_Enum)
+        return;
+
     const int row = mValuesModel->rowCount();
     if (!mValuesModel->insertRow(row))
         return;
 
-    const PropertyType propertyType = mPropertyTypesModel->propertyTypeAt(selectedTypeIndex);
-    const QString valueText = nextValueText(propertyType);
+    const QString valueText = nextValueText(*static_cast<const EnumPropertyType*>(propertyType));
 
     const auto valueIndex = mValuesModel->index(row);
     mUi->valuesView->setCurrentIndex(valueIndex);
@@ -289,12 +291,18 @@ void PropertyTypesEditor::removeValues()
 void PropertyTypesEditor::updateValues()
 {
     const auto selectedTypeIndex = selectedPropertyTypeIndex();
-    const PropertyType propertyType = mPropertyTypesModel->propertyTypeAt(selectedTypeIndex);
+    const PropertyType *propertyType = mPropertyTypesModel->propertyTypeAt(selectedTypeIndex);
+    if (!propertyType)
+        return;
 
-    QScopedValueRollback<bool> touchingValues(mUpdatingValues, true);
+    if (propertyType->type == PropertyType::PT_Enum) {
+        const auto &enumType = *static_cast<const EnumPropertyType*>(propertyType);
 
-    mValuesModel->setStringList(propertyType.values);
-    mUi->nameEdit->setText(propertyType.name);
+        QScopedValueRollback<bool> touchingValues(mUpdatingValues, true);
+        mValuesModel->setStringList(enumType.values);
+    }
+
+    mUi->nameEdit->setText(propertyType->name);
     mUi->nameEdit->setEnabled(selectedTypeIndex.isValid());
 
     updateActions();

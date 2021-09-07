@@ -509,7 +509,7 @@ void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
     emit objectTypesChanged();
 }
 
-void Preferences::setPropertyTypes(const PropertyTypes &propertyTypes)
+void Preferences::setPropertyTypes(const PropertyTypes *propertyTypes)
 {
     Object::setPropertyTypes(propertyTypes);
     emit propertyTypesChanged();

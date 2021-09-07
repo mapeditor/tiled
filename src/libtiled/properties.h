@@ -28,7 +28,7 @@
 
 #pragma once
 
-#include "tiled_global.h"
+#include "propertytype.h"
 
 #include <QJsonArray>
 #include <QObject>
@@ -90,13 +90,13 @@ class TILEDSHARED_EXPORT ExportContext
 {
 public:
     explicit ExportContext(const QString &path = QString());
-    ExportContext(const QVector<PropertyType> &types, const QString &path)
+    ExportContext(const PropertyTypes &types, const QString &path)
         : mTypes(types)
         , mPath(path)
     {}
 
     // need to prevent this one since we're only holding a reference to the types
-    ExportContext(const QVector<PropertyType> &&types, const QString &path) = delete;
+    ExportContext(const PropertyTypes &&types, const QString &path) = delete;
 
     const QString &path() const { return mPath; }
 
@@ -104,7 +104,7 @@ public:
     QVariant toPropertyValue(const ExportValue &exportValue) const;
 
 private:
-    const QVector<PropertyType> &mTypes;
+    const PropertyTypes &mTypes;
     const QString mPath;
 };
 
