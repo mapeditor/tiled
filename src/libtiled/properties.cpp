@@ -181,7 +181,7 @@ QString typeName(const QVariant &value)
     if (value.userType() == propertyValueId()) {
         auto typeId = value.value<PropertyValue>().typeId;
 
-        if (const PropertyType *propertyType = findTypeById(Object::propertyTypes(), typeId))
+        if (const PropertyType *propertyType = Object::propertyTypes().findTypeById(typeId))
             return propertyType->name;
     }
 
@@ -190,7 +190,7 @@ QString typeName(const QVariant &value)
 
 const PropertyType *PropertyValue::type() const
 {
-    return findTypeById(Object::propertyTypes(), typeId);
+    return Object::propertyTypes().findTypeById(typeId);
 }
 
 /**
@@ -209,7 +209,7 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
     if (metaType == propertyValueId()) {
         const PropertyValue propertyValue = value.value<PropertyValue>();
 
-        if (const PropertyType *propertyType = findTypeById(mTypes, propertyValue.typeId)) {
+        if (const PropertyType *propertyType = mTypes.findTypeById(propertyValue.typeId)) {
             exportValue = toExportValue(propertyType->unwrap(propertyValue.value));
             exportValue.propertyTypeName = propertyType->name;
         } else {
@@ -253,7 +253,7 @@ QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
 
     // Wrap the value in its custom property type when applicable
     if (!exportValue.propertyTypeName.isEmpty())
-        if (const PropertyType *propertyType = findTypeByName(mTypes, exportValue.propertyTypeName))
+        if (const PropertyType *propertyType = mTypes.findTypeByName(exportValue.propertyTypeName))
             propertyValue = propertyType->wrap(propertyValue);
 
     return propertyValue;

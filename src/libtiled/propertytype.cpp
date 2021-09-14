@@ -173,8 +173,9 @@ QString EnumPropertyType::storageTypeToString(StorageType type)
     case IntValue:
         return QStringLiteral("int");
     case StringValue:
-        return QStringLiteral("string");
+        break;
     }
+    return QStringLiteral("string");
 }
 
 // ClassPropertyType
@@ -233,9 +234,9 @@ void ClassPropertyType::fromVariant(const QVariantHash &variant, const ExportCon
  * Returns a pointer to the PropertyType matching the given \a typeId, or
  * nullptr if it can't be found.
  */
-const PropertyType *findTypeById(const PropertyTypes &types, int typeId)
+const PropertyType *PropertyTypes::findTypeById(int typeId) const
 {
-    for (const auto &propertyType : types) {
+    for (const auto &propertyType : mTypes) {
         if (propertyType->id == typeId)
             return propertyType.get();
     }
@@ -246,9 +247,9 @@ const PropertyType *findTypeById(const PropertyTypes &types, int typeId)
  * Returns a pointer to the PropertyType matching the given \a name, or
  * nullptr if it can't be found.
  */
-const PropertyType *findTypeByName(const PropertyTypes &types, const QString &name)
+const PropertyType *PropertyTypes::findTypeByName(const QString &name) const
 {
-    for (const auto &propertyType : types) {
+    for (const auto &propertyType : mTypes) {
         if (propertyType->name == name)
             return propertyType.get();
     }

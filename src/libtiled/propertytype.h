@@ -32,6 +32,7 @@
 #include <QVariant>
 #include <QMetaType>
 
+#include "containerhelpers.h"
 #include "tiled_global.h"
 
 #include <memory>
@@ -42,7 +43,7 @@ namespace Tiled {
 class ExportContext;
 
 /**
- * Defines a custom property type. Currently this includes only enums.
+ * The base class for custom property types.
  */
 class TILEDSHARED_EXPORT PropertyType
 {
@@ -82,6 +83,9 @@ protected:
     {}
 };
 
+/**
+ * A user-defined enum, for use as custom property.
+ */
 class TILEDSHARED_EXPORT EnumPropertyType : public PropertyType
 {
 public:
@@ -107,6 +111,9 @@ public:
     static QString storageTypeToString(StorageType type);
 };
 
+/**
+ * A user-defined class, for use as custom property.
+ */
 class TILEDSHARED_EXPORT ClassPropertyType : public PropertyType
 {
 public:
@@ -120,10 +127,63 @@ public:
     void fromVariant(const QVariantHash &variant, const ExportContext & ) override;
 };
 
-using PropertyTypes = std::vector<std::unique_ptr<PropertyType>>;
+/**
+ * Container class for property types.
+ */
+class TILEDSHARED_EXPORT PropertyTypes
+{
+    using Types = std::vector<std::unique_ptr<PropertyType>>;
 
-TILEDSHARED_EXPORT const PropertyType *findTypeById(const PropertyTypes &types, int typeId);
-TILEDSHARED_EXPORT const PropertyType *findTypeByName(const PropertyTypes &types, const QString &name);
+public:
+    void add(std::unique_ptr<PropertyType> type);
+    void clear();
+    size_t count() const;
+    void removeAt(int index);
+    PropertyType &typeAt(int index);
+    void moveType(int from, int to);
+
+    const PropertyType *findTypeById(int typeId) const;
+    const PropertyType *findTypeByName(const QString &name) const;
+
+    // Enable easy iteration over types with range-based for
+    Types::iterator begin() { return mTypes.begin(); }
+    Types::iterator end() { return mTypes.end(); }
+    Types::const_iterator begin() const { return mTypes.begin(); }
+    Types::const_iterator end() const { return mTypes.end(); }
+
+private:
+    Types mTypes;
+};
+
+inline void PropertyTypes::add(std::unique_ptr<PropertyType> type)
+{
+    mTypes.push_back(std::move(type));
+}
+
+inline void PropertyTypes::clear()
+{
+    mTypes.clear();
+}
+
+inline size_t PropertyTypes::count() const
+{
+    return mTypes.size();
+}
+
+inline void PropertyTypes::removeAt(int index)
+{
+    mTypes.erase(mTypes.begin() + index);
+}
+
+inline PropertyType &PropertyTypes::typeAt(int index)
+{
+    return *mTypes.at(index);
+}
+
+inline void PropertyTypes::moveType(int from, int to)
+{
+    move(mTypes, from, to);
+}
 
 } // namespace Tiled
 

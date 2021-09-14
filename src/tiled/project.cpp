@@ -132,7 +132,7 @@ bool Project::load(const QString &fileName)
     const QJsonArray propertyTypes = project.value(QLatin1String("propertyTypes")).toArray();
     for (const QJsonValue &typeValue : propertyTypes) {
         if (auto propertyType = PropertyType::createFromVariant(typeValue.toVariant(), context))
-            mPropertyTypes.push_back(std::move(propertyType));
+            mPropertyTypes.add(std::move(propertyType));
     }
 
     mFolders.clear();
