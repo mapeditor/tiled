@@ -1267,7 +1267,9 @@ YyPlugin::YyPlugin()
 
 bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
 {
-    SaveFile file(fileName);
+    // Not using SaveFile here, because GameMaker's reload functionality does
+    // not work correctly when the file is replaced.
+    QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
@@ -1275,7 +1277,7 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
 
     const QString baseName = QFileInfo(fileName).completeBaseName();
 
-    JsonWriter json(file.device());
+    JsonWriter json(&file);
 
     json.setMinimize(options.testFlag(WriteMinimized));
 
@@ -1402,7 +1404,9 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
     json.writeEndObject();
     json.writeEndDocument();
 
-    if (!file.commit()) {
+    file.flush();
+
+    if (file.error() != QFileDevice::NoError) {
         mError = file.errorString();
         return false;
     }
