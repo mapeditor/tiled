@@ -565,7 +565,7 @@ a.showcase:hover {
 /* SPONSORS */
 
 .sponsor {
-  width: 24%;
+  width: 19%;
   padding: 1%;
   opacity: 0.7;
   transition: opacity .1s ease-out, transform .1s ease-out;
@@ -578,13 +578,19 @@ a.showcase:hover {
   width: 100%;
   border-radius: 5px;
 }
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1100px) {
+  .sponsor {
+    width: 24%;
+    padding: 1%;
+  }
+}
+@media screen and (max-width: 800px) {
   .sponsor {
     width: 32%;
     padding: 1.25%;
   }
 }
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 500px) {
   .sponsor {
     width: 49%;
     padding: 1.5%;
