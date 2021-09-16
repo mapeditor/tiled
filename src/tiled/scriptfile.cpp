@@ -267,6 +267,7 @@ bool removeFileRecursively(const QFileInfo &f, QString *errorMessage)
     return true;
 }
 
+#ifdef Q_OS_UNIX
 /*!
  * Returns the stored link target of the symbolic link \a{filePath}.
  * Unlike QFileInfo::symLinkTarget, this will not make the link target an absolute path.
@@ -275,7 +276,6 @@ static QByteArray storedLinkTarget(const QString &filePath)
 {
     QByteArray result;
 
-#ifdef Q_OS_UNIX
     const QByteArray nativeFilePath = QFile::encodeName(filePath);
     ssize_t len;
     while (true) {
@@ -301,25 +301,17 @@ static QByteArray storedLinkTarget(const QString &filePath)
         if (len == sb.st_size)
             break;
     }
-#else
-    Q_UNUSED(filePath);
-#endif // Q_OS_UNIX
 
     return result;
 }
 
 static bool createSymLink(const QByteArray &path1, const QString &path2)
 {
-#ifdef Q_OS_UNIX
     const QByteArray newPath = QFile::encodeName(path2);
     unlink(newPath.constData());
     return symlink(path1.constData(), newPath.constData()) == 0;
-#else
-    Q_UNUSED(path1);
-    Q_UNUSED(path2);
-    return false;
-#endif // Q_OS_UNIX
 }
+#endif // Q_OS_UNIX
 
 /*!
   Copies the directory specified by \a srcFilePath recursively to \a tgtFilePath.
