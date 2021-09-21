@@ -79,6 +79,13 @@ Product {
                     "Qt" + major + "Svg" + postfix,
                     "Qt" + major + "Widgets" + postfix
                 );
+
+                if (Qt.core.versionMajor >= 6) {
+                    list.push(
+                        "Qt" + major + "OpenGL" + postfix,
+                        "Qt" + major + "OpenGLWidgets" + postfix
+                    );
+                }
             }
 
             if (qbs.targetOS.contains("windows")) {
@@ -305,7 +312,7 @@ Product {
                 // Not sure what this check should be exactly, but Qt 5.6.3 was
                 // built against OpenSSL 1.0.2 whereas Qt 5.12.5 was built against
                 // OpenSSL 1.1.1.
-                if (Qt.core.versionMinor >= 12) {
+                if (Qt.core.versionMinor >= 12 || Qt.core.versionMajor >= 6) {
                     if (qbs.architecture === "x86_64")
                         return "C:/OpenSSL-v111-Win64/"
                     else
@@ -319,7 +326,7 @@ Product {
             }
         }
         files: {
-            if (Qt.core.versionMinor >= 12) {
+            if (Qt.core.versionMinor >= 12 || Qt.core.versionMajor >= 6) {
                 if (qbs.architecture === "x86_64")
                     return [ "libcrypto-1_1-x64.dll", "libssl-1_1-x64.dll" ]
                 else

@@ -37,6 +37,7 @@ WindowsInstallerPackage {
             "Version=" + version,
             "InstallRoot=" + qbs.installRoot,
             "QtDir=" + FileInfo.joinPaths(Qt.core.binPath, ".."),
+            "QtVersionMajor=" + Qt.core.versionMajor,
             "RootDir=" + project.sourceDirectory
         ];
 
@@ -51,7 +52,7 @@ WindowsInstallerPackage {
             }
         }
 
-        if (Qt.core.versionMinor >= 10)
+        if (Qt.core.versionMinor >= 10 || Qt.core.versionMajor >= 6)
             defs.push("WindowsVistaStyle")
 
         if (File.exists(Environment.getEnv("PYTHONHOME")))
@@ -67,7 +68,7 @@ WindowsInstallerPackage {
             // Not sure what this check should be exactly, but Qt 5.6.3 was
             // built against OpenSSL 1.0.2 whereas Qt 5.12.5 was built against
             // OpenSSL 1.1.1.
-            if (Qt.core.versionMinor >= 12) {
+            if (Qt.core.versionMajor >= 6 || Qt.core.versionMinor >= 12) {
                 var openSslDir = "C:\\OpenSSL-v111-Win" + bits
                 if (File.exists(openSslDir))
                     defs.push("OpenSsl111Dir=" + openSslDir);

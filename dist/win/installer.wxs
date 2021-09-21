@@ -84,12 +84,16 @@
             <File Source="$(var.InstallRoot)\tmxrasterizer.exe" />
             <File Source="$(var.InstallRoot)\tmxviewer.exe" />
             <File Source="$(var.RootDir)\dist\win\qt.conf" />
-            <File Source="$(var.QtDir)\bin\Qt5Core.dll"/>
-            <File Source="$(var.QtDir)\bin\Qt5Gui.dll"/>
-            <File Source="$(var.QtDir)\bin\Qt5Network.dll"/>
-            <File Source="$(var.QtDir)\bin\Qt5Qml.dll"/>
-            <File Source="$(var.QtDir)\bin\Qt5Svg.dll"/>
-            <File Source="$(var.QtDir)\bin\Qt5Widgets.dll"/>
+            <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Core.dll"/>
+            <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Gui.dll"/>
+            <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Network.dll"/>
+            <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Qml.dll"/>
+            <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Svg.dll"/>
+            <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Widgets.dll"/>
+            <?if $(var.QtVersionMajor) = 6 ?>
+              <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)OpenGL.dll"/>
+              <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)OpenGLWidgets.dll"/>
+            <?endif ?>
 
             <?ifdef MingwDir ?>
               <?if $(var.Platform) = x64 ?>
