@@ -47,7 +47,7 @@ MiniMapRenderer::MiniMapRenderer(const Map *map)
     : mMap(map)
     , mRenderer(MapRenderer::create(map))
 {
-    mRenderer->setFlag(ShowTileObjectOutlines, false);
+    mRenderer->setFlag(ShowTileAnimations, false);
 }
 
 MiniMapRenderer::~MiniMapRenderer()

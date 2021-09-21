@@ -333,7 +333,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
 {
     const Tile *tile = cell.tile();
 
-    if (tile)
+    if (tile && mRenderer->testFlag(ShowTileAnimations))
         tile = tile->currentFrameTile();
 
     if (!tile || tile->image().isNull()) {
