@@ -230,6 +230,22 @@ if ${INSTALLATION_IS_VALID}; then
     exit 0
 fi
 
+MIRRORS="\
+    http://ftp.acc.umu.se/mirror/qt.io/qtproject \
+    http://qt.mirrors.tds.net/qt \
+    http://ftp.fau.de/qtproject \
+    http://download.qt.io \
+"
+
+for MIRROR in ${MIRRORS}; do
+    if curl "${MIRROR}/online" -s -f -o /dev/null; then
+        break;
+    else
+        echo "Server ${MIRROR} not availabe. Trying next alternative..." >&2
+        MIRROR=""
+    fi
+done
+
 DOWNLOAD_DIR=`mktemp -d 2>/dev/null || mktemp -d -t 'install-qt'`
 
 #
@@ -238,19 +254,25 @@ DOWNLOAD_DIR=`mktemp -d 2>/dev/null || mktemp -d -t 'install-qt'`
 function compute_url(){
     local COMPONENT=$1
     local CURL="curl -s -L"
-    local BASE_URL="http://download.qt.io/online/qtsdkrepository/${HOST_OS}/${TARGET_PLATFORM}"
+    local BASE_URL="${MIRROR}/online/qtsdkrepository/${HOST_OS}/${TARGET_PLATFORM}"
+    local ANDROID_ARCH=$(echo ${TOOLCHAIN##android_})
+
     if [[ "${COMPONENT}" =~ "qtcreator" ]]; then
-        REMOTE_BASE="tools_qtcreator/qt.tools.qtcreator"
-        REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "${VERSION}[0-9\-]*${COMPONENT}\.7z" | tail -1)"
 
-        if [ ! -z "${REMOTE_PATH}" ]; then
-            echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
-            return 0
+        if [[ "${HOST_OS}" == "windows_x86" ]]; then
+            # newer QtC versions do not supported x86 version anymore
+            HOST_OS="windows_x64"
         fi
-    elif [[ "${COMPONENT}" =~ "mingw" ]]; then
-        REMOTE_BASE="tools_mingw/qt.tools.${COMPONENT}"
-        REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "${VERSION}[[:alnum:]_.\-]*rev0.7z" | tail -1)"
 
+        SHORT_VERSION=${VERSION%??}
+        BASE_URL="${MIRROR}/official_releases/qtcreator"
+        REMOTE_PATH="${SHORT_VERSION}/${VERSION}/installer_source/${HOST_OS}/qtcreator.7z"
+        echo "${BASE_URL}/${REMOTE_PATH}"
+        return 0
+    elif [[ "${COMPONENT}" =~ "mingw" ]]; then
+        REMOTE_BASE="tools_mingw/qt.tools.${TOOLCHAIN}${VERSION//./}"
+
+        REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "[[:alnum:]_.\-]*7z" | grep -v "meta" | head -1)"
         if [ ! -z "${REMOTE_PATH}" ]; then
             echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
             return 0
@@ -270,6 +292,11 @@ function compute_url(){
         fi
     else
         REMOTE_BASES=(
+            # New repository format (>=6.0.0)
+            "qt6_${VERSION//./}/qt.qt6.${VERSION//./}.${TOOLCHAIN}"
+            "qt6_${VERSION//./}/qt.qt6.${VERSION//./}.${COMPONENT}.${TOOLCHAIN}"
+            "qt6_${VERSION//./}_${ANDROID_ARCH}/qt.qt6.${VERSION//./}.${TOOLCHAIN}"
+            "qt6_${VERSION//./}_${ANDROID_ARCH}/qt.qt6.${VERSION//./}.${COMPONENT}.${TOOLCHAIN}"
             # New repository format (>=5.9.6)
             "qt5_${VERSION//./}/qt.qt5.${VERSION//./}.${TOOLCHAIN}"
             "qt5_${VERSION//./}/qt.qt5.${VERSION//./}.${COMPONENT}.${TOOLCHAIN}"
@@ -294,16 +321,39 @@ function compute_url(){
     exit 1
 }
 
+function version {
+  echo "$@" | awk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }';
+}
+
 mkdir -p ${INSTALL_DIR}
 rm -f "${HASH_FILEPATH}"
 
 for COMPONENT in ${COMPONENTS}; do
 
+    if [[ "${COMPONENT}" =~ "qtcreator" ]] && [[ "${HOST_OS}" != "mac_x64" ]]; then
+        UNPACK_DIR="${INSTALL_DIR}/Tools/QtCreator"
+        mkdir -p ${UNPACK_DIR}
+    else
+        UNPACK_DIR="${INSTALL_DIR}"
+    fi
+
+    if [ "$(version "${VERSION}")" -ge "$(version "6.0.0")" ]; then
+        if [[ "${COMPONENT}" =~ "qtscript" ]] || [[ "${COMPONENT}" =~ "qtscxml" ]] || [[ "${COMPONENT}" =~ "qtx11extras" ]]; then
+            echo "Component ${COMPONENT} was removed in Qt6, skipping" >&2
+            continue
+        fi
+    else
+        if [[ "${COMPONENT}" =~ "qt5compat" ]]; then
+            echo "Component ${COMPONENT} is not present in Qt ${VERSION}, skipping" >&2
+            continue
+        fi
+    fi
+
     URL="$(compute_url ${COMPONENT})"
-    echo "Downloading ${COMPONENT}..." >&2
+    echo "Downloading ${COMPONENT} ${URL}..." >&2
     curl --progress-bar -L -o ${DOWNLOAD_DIR}/package.7z ${URL} >&2
-    7z x -y -o${INSTALL_DIR} ${DOWNLOAD_DIR}/package.7z >/dev/null 2>&1
-    7z l -ba -slt -y ${DOWNLOAD_DIR}/package.7z | tr '\\' '/' | sed -n -e "s|^Path\ =\ |${INSTALL_DIR}/|p" >> "${HASH_FILEPATH}" 2>/dev/null
+    7z x -y -o${UNPACK_DIR} ${DOWNLOAD_DIR}/package.7z >/dev/null 2>&1
+    7z l -ba -slt -y ${DOWNLOAD_DIR}/package.7z | tr '\\' '/' | sed -n -e "s|^Path\ =\ |${UNPACK_DIR}/|p" >> "${HASH_FILEPATH}" 2>/dev/null
     rm -f ${DOWNLOAD_DIR}/package.7z
 
     #
@@ -320,17 +370,28 @@ for COMPONENT in ${COMPONENTS}; do
             SUBDIR="${TOOLCHAIN/win32_/}"
         elif [[ "${TOOLCHAIN}" =~ "any" ]] && [[ "${TARGET_PLATFORM}" == "android" ]]; then
             SUBDIR="android"
+        elif [ "${HOST_OS}" == "mac_x64" ] && [ ! "${VERSION}" \< "6.1.2" ]; then
+            SUBDIR="macos"
         else
             SUBDIR="${TOOLCHAIN}"
         fi
 
-        CONF_FILE="${INSTALL_DIR}/${VERSION}/${SUBDIR}/bin/qt.conf"
-        echo "[Paths]" > ${CONF_FILE}
-        echo "Prefix = .." >> ${CONF_FILE}
+        if [ "${TARGET_PLATFORM}" == "android" ] && [ ! "${VERSION}" \< "6.0.0" ]; then
+            CONF_FILE="${UNPACK_DIR}/${VERSION}/${SUBDIR}/bin/target_qt.conf"
+            sed -i "s|target|../$TOOLCHAIN|g" "${CONF_FILE}"
+            sed -i "/HostPrefix/ s|$|gcc_64|g" "${CONF_FILE}"
+            ANDROID_QMAKE_FILE="${UNPACK_DIR}/${VERSION}/${SUBDIR}/bin/qmake"
+            QMAKE_FILE="${UNPACK_DIR}/${VERSION}/gcc_64/bin/qmake"
+            sed -i "s|\/home\/qt\/work\/install\/bin\/qmake|$QMAKE_FILE|g" "${ANDROID_QMAKE_FILE}"
+        else
+            CONF_FILE="${UNPACK_DIR}/${VERSION}/${SUBDIR}/bin/qt.conf"
+            echo "[Paths]" > ${CONF_FILE}
+            echo "Prefix = .." >> ${CONF_FILE}
+        fi
 
         # Adjust the license to be able to run qmake
         # sed with -i requires intermediate file on Mac OS
-        PRI_FILE="${INSTALL_DIR}/${VERSION}/${SUBDIR}/mkspecs/qconfig.pri"
+        PRI_FILE="${UNPACK_DIR}/${VERSION}/${SUBDIR}/mkspecs/qconfig.pri"
         sed -i.bak 's/Enterprise/OpenSource/g' "${PRI_FILE}"
         sed -i.bak 's/licheck.*//g' "${PRI_FILE}"
         rm "${PRI_FILE}.bak"
@@ -338,17 +399,20 @@ for COMPONENT in ${COMPONENTS}; do
         # Print the directory so that the caller can
         # adjust the PATH variable.
         echo $(dirname "${CONF_FILE}")
+    elif [[ "${COMPONENT}" =~ "mingw" ]]; then
+        if [[ "${TOOLCHAIN}" =~ "win64_mingw" ]]; then
+            echo "${UNPACK_DIR}/Tools/mingw${VERSION//./}_64/bin"
+        elif [[ "${TOOLCHAIN}" =~ "win32_mingw" ]]; then
+            echo "${UNPACK_DIR}/Tools/mingw${VERSION//./}_32/bin"
+        fi
     elif [[ "${COMPONENT}" =~ "qtcreator" ]]; then
         if [ "${HOST_OS}" == "mac_x64" ]; then
-            echo "${INSTALL_DIR}/Qt Creator.app/Contents/MacOS"
+            echo "${UNPACK_DIR}/Qt Creator.app/Contents/MacOS"
         else
-            echo "${INSTALL_DIR}/Tools/QtCreator/bin"
+            echo "${UNPACK_DIR}/bin"
         fi
-    elif [[ "${COMPONENT}" =~ "win32_mingw" ]]; then
-        echo "${INSTALL_DIR}/Tools/mingw810_32/bin"
-    elif [[ "${COMPONENT}" =~ "win64_mingw" ]]; then
-        echo "${INSTALL_DIR}/Tools/mingw810_64/bin"
     elif [[ "${COMPONENT}" =~ "openssl" ]]; then
         echo "${INSTALL_DIR}/Tools/OpenSSL/Win_${ARCH}/bin"
     fi
+
 done
