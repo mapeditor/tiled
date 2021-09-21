@@ -141,7 +141,7 @@
     <message>
         <location line="+25"/>
         <source>Minimize the exported file by omitting unnecessary whitespace</source>
-        <translation type="unfinished"></translation>
+        <translation>Зменшити експортований файл, опускаючи непотрібні пробіли</translation>
     </message>
     <message>
         <location line="+70"/>
@@ -240,7 +240,7 @@
     <message>
         <location line="+7"/>
         <source>&amp;Save before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Зберегти перед виконанням</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -292,7 +292,7 @@
     <message>
         <location line="+2"/>
         <source>&amp;Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Зробити пожертву ↗</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -302,7 +302,7 @@
     <message>
         <location line="+1"/>
         <source>&amp;Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Можливо пізніше</translation>
     </message>
 </context>
 <context>
@@ -430,7 +430,7 @@
         <location line="+43"/>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="+59"/>
         <source>Object Types files (*.xml *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файли типів об’єктів (*.xml *.json)</translation>
     </message>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="+6"/>
@@ -631,12 +631,12 @@
     <message>
         <location line="+46"/>
         <source>&amp;Project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Проєкт</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Останні Проєкти</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -716,7 +716,7 @@
     <message>
         <location line="+142"/>
         <source>Support Tiled Development ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Підтримати розробку Tiled ↗</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -746,17 +746,17 @@
     <message>
         <location line="+30"/>
         <source>&amp;Open Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Відкрити Проєкт...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Close Project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Закрити Проєкт</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Clear Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистити Останні проєкти</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -781,7 +781,7 @@
     <message>
         <location line="+5"/>
         <source>Reopen Closed File</source>
-        <translation type="unfinished"></translation>
+        <translation>Знову відкрити закритий файл</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -792,17 +792,17 @@
     <message>
         <location line="+12"/>
         <source>Project &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Властивості Проєкту...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open File in &amp;Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити Файл в &amp;Проєкті...</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Enable Parallax</source>
-        <translation type="unfinished"></translation>
+        <translation>Увімкнути Паралакс</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -907,7 +907,7 @@
     <message>
         <location line="+30"/>
         <source>&amp;Open File or Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Відкрити Файл або Проєкт...</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -1098,7 +1098,7 @@ Line %1, column %2</source>
     <message>
         <location line="-26"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;: &quot;%4&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося розпізнати плитку за координатами (%1,%2) на прошарку &apos;%3&apos;: &quot;%4&quot;</translation>
     </message>
     <message>
         <location line="+52"/>
@@ -1195,7 +1195,7 @@ Line %1, column %2</source>
     <message>
         <location line="-42"/>
         <source>Infinite</source>
-        <translation type="unfinished"></translation>
+        <translation>Нескінченний</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1348,12 +1348,12 @@ Line %1, column %2</source>
     <message>
         <location line="+110"/>
         <source>Open File...</source>
-        <translation type="unfinished">Відкрити файл...</translation>
+        <translation>Відкрити Файл...</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>New Map...</source>
-        <translation type="unfinished">Нова карта...</translation>
+        <translation>Нова Карта...</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1631,7 +1631,7 @@ Line %1, column %2</source>
     <message>
         <location line="+14"/>
         <source>Detach templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Від&apos;єднувати шаблони</translation>
     </message>
     <message>
         <location line="-7"/>
@@ -1656,17 +1656,17 @@ Line %1, column %2</source>
     <message>
         <location line="-182"/>
         <source>Restore previous session on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Відновлювати попередню сесію під час запуску</translation>
     </message>
     <message>
         <location line="+51"/>
         <source>Omits unnecessary whitespace when supported by the output format</source>
-        <translation type="unfinished"></translation>
+        <translation>Пропускає непотрібні пробіли, якщо формат вихідних даних це підтримує</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Minimize output</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Мінімізувати вихідні дані</translation>
     </message>
     <message>
         <location line="+91"/>
@@ -1681,22 +1681,22 @@ Line %1, column %2</source>
     <message>
         <location line="-111"/>
         <source>Crash Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Звіти про збої</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Enable sending anonymous crash reports</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Увімкнути надсилання анонімних звітів про збої</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;детальніше&lt;/a&gt;)</translation>
     </message>
     <message>
         <location line="+178"/>
         <source>Object selection behavior:</source>
-        <translation type="unfinished"></translation>
+        <translation>Поведінка вибору об&apos;єктів:</translation>
     </message>
     <message>
         <location line="-40"/>
@@ -1706,7 +1706,7 @@ Line %1, column %2</source>
     <message>
         <location line="-53"/>
         <source>Major grid every:</source>
-        <translation type="unfinished"></translation>
+        <translation>Основна сітка кожних:</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -1726,12 +1726,12 @@ Line %1, column %2</source>
     <message>
         <location line="+19"/>
         <source>Display news in status bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Відображати новини в рядку стану</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Highlight new version in status bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Підсвічувати нову версію в рядку стану</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -2436,7 +2436,7 @@ Line %1, column %2</source>
         <location line="-15"/>
         <location filename="../src/tiled/editablemap.cpp" line="-75"/>
         <source>Layer not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Прошарок не знайдено</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -2446,7 +2446,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editablemap.cpp" line="+20"/>
         <source>Layer already part of a map</source>
-        <translation type="unfinished"></translation>
+        <translation>Прошарок вже є частиною карти</translation>
     </message>
     <message>
         <location line="+128"/>
@@ -2461,7 +2461,7 @@ Line %1, column %2</source>
     <message>
         <location line="+4"/>
         <source>Invalid size</source>
-        <translation type="unfinished"></translation>
+        <translation>Некоректний розмір</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -2471,34 +2471,34 @@ Line %1, column %2</source>
     <message>
         <location line="+185"/>
         <source>Not a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Не є прошарком</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Layer not from this map</source>
-        <translation type="unfinished"></translation>
+        <translation>Прошарок не з цієї карти</translation>
     </message>
     <message>
         <location line="+21"/>
         <location filename="../src/tiled/tilecollisiondock.cpp" line="+354"/>
         <source>Not an object</source>
-        <translation type="unfinished"></translation>
+        <translation>Не є об&apos;єктом</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Object not from this map</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єкт не з цієї карти</translation>
     </message>
     <message>
         <location filename="../src/tiled/editablemapobject.cpp" line="+196"/>
         <location filename="../src/tiled/editabletile.cpp" line="+193"/>
         <source>Array expected</source>
-        <translation type="unfinished"></translation>
+        <translation>Очікується масив</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Invalid coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Некоректна координата</translation>
     </message>
     <message>
         <location filename="../src/tiled/editableobject.cpp" line="+82"/>
@@ -2509,12 +2509,12 @@ Line %1, column %2</source>
         <location filename="../src/tiled/editableobjectgroup.cpp" line="-14"/>
         <location filename="../src/tiled/tilecollisiondock.cpp" line="+16"/>
         <source>Object not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єкт не знайдено</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Object already part of an object layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єкт вже є частиною прошарку об&apos;єктів</translation>
     </message>
     <message>
         <location filename="../src/tiled/editablewangset.cpp" line="+84"/>
@@ -2529,12 +2529,12 @@ Line %1, column %2</source>
     <message>
         <location line="+31"/>
         <source>Tile not from the same tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Плитка не з цього набору плиток</translation>
     </message>
     <message>
         <location filename="../src/tiled/editabletile.cpp" line="-51"/>
         <source>Tileset needs to be an image collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Набір плиток має бути колекцією зображень</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -3264,12 +3264,12 @@ Line %1, column %2</source>
     <message>
         <location line="+28"/>
         <source>File not found: &apos;%1&apos; (referenced by &apos;%2&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл не знайдено: &apos;%1&apos; (на нього посилається &apos;%2&apos;)</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Opening rules map &apos;%1&apos; failed: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося відкрити карту правил &apos;%1&apos;: %2</translation>
     </message>
 </context>
 <context>
@@ -4512,7 +4512,7 @@ Please select specific format.</source>
         <location line="+28"/>
         <location filename="../src/tiled/tileseteditor.cpp" line="+968"/>
         <source>Copy of %1</source>
-        <translation>Копія  %1</translation>
+        <translation>Копія %1</translation>
     </message>
     <message>
         <location line="+38"/>
