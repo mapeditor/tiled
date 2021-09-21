@@ -97,7 +97,9 @@ Options
                 android
                     any, android_armv7, android_arm64_v8a
                 desktop
-                    win64_mingw73, win64_msvc2017_64 (default)
+                    win64_mingw73, win64_mingw81, win64_mingw,
+                    win64_msvc2015_64 (default), win64_msvc2017_64,
+                    win64_msvc2019_64, win64_msvc2019_arm64
 
   --arch <arch>
         The CPU architecture to use when installing openssl (x86 or x64).
@@ -270,7 +272,7 @@ function compute_url(){
         echo "${BASE_URL}/${REMOTE_PATH}"
         return 0
     elif [[ "${COMPONENT}" =~ "mingw" ]]; then
-        REMOTE_BASE="tools_mingw/qt.tools.${TOOLCHAIN}${VERSION//./}"
+        REMOTE_BASE="tools_${COMPONENT}/qt.tools.${TOOLCHAIN}${VERSION//./}"
 
         REMOTE_PATH="$(${CURL} ${BASE_URL}/${REMOTE_BASE}/ | grep -o -E "[[:alnum:]_.\-]*7z" | grep -v "meta" | head -1)"
         if [ ! -z "${REMOTE_PATH}" ]; then
@@ -295,6 +297,7 @@ function compute_url(){
             # New repository format (>=6.0.0)
             "qt6_${VERSION//./}/qt.qt6.${VERSION//./}.${TOOLCHAIN}"
             "qt6_${VERSION//./}/qt.qt6.${VERSION//./}.${COMPONENT}.${TOOLCHAIN}"
+            "qt6_${VERSION//./}/qt.qt6.${VERSION//./}.addons.${COMPONENT}.${TOOLCHAIN}"
             "qt6_${VERSION//./}_${ANDROID_ARCH}/qt.qt6.${VERSION//./}.${TOOLCHAIN}"
             "qt6_${VERSION//./}_${ANDROID_ARCH}/qt.qt6.${VERSION//./}.${COMPONENT}.${TOOLCHAIN}"
             # New repository format (>=5.9.6)
