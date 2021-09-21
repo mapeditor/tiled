@@ -223,6 +223,7 @@
               <File Source="$(var.InstallRoot)\translations\tiled_sv.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_th.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_tr.qm" />
+              <File Source="$(var.InstallRoot)\translations\tiled_uk.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_zh_CN.qm" />
               <File Source="$(var.InstallRoot)\translations\tiled_zh_TW.qm" />
 
@@ -237,6 +238,7 @@
               <File Source="$(var.QtDir)\translations\qt_pt.qm"/>
               <File Source="$(var.QtDir)\translations\qt_ru.qm"/>
               <File Source="$(var.QtDir)\translations\qt_sv.qm"/>
+              <File Source="$(var.QtDir)\translations\qt_uk.qm"/>
               <File Source="$(var.QtDir)\translations\qt_zh_CN.qm"/>
               <File Source="$(var.QtDir)\translations\qt_zh_TW.qm"/>
             </Component>

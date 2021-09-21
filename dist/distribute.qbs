@@ -241,6 +241,7 @@ Product {
                              "sv",
                              "th",
                              "tr",
+                             "uk",
                              "zh_CN",
                              "zh_TW"];
 
