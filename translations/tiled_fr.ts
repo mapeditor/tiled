@@ -661,7 +661,7 @@
     <message>
         <location line="+9"/>
         <source>&amp;About Tiled</source>
-        <translation>À propos de &amp;Tiled</translation>
+        <translation>À Propos de &amp;Tiled</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -731,7 +731,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation>&amp;Charger le Monde...</translation>
+        <translation>&amp;Charger un Monde...</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -997,7 +997,7 @@
     <message>
         <location line="+11"/>
         <source>No Snapping</source>
-        <translation>Pas de Suivi</translation>
+        <translation>Pas de Suivi de Grille</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1585,7 +1585,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+23"/>
         <source>&amp;Reload tileset images when they change</source>
-        <translation>&amp;Recharger les image du jeu de tuiles lorsqu&apos;elles sont modifiées</translation>
+        <translation>&amp;Recharger les images du jeu de tuiles lorsqu&apos;elles sont modifiées</translation>
     </message>
     <message>
         <location line="+116"/>
@@ -1621,7 +1621,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+10"/>
         <source>Export Options</source>
-        <translation>Exporter les Options</translation>
+        <translation>Options d&apos;Exportation</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1671,17 +1671,17 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+91"/>
         <source>Object line width:</source>
-        <translation>Largeur de lignes pour les objets :</translation>
+        <translation>Épaisseur de la ligne des objets :</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Mouse wheel &amp;zooms by default</source>
-        <translation>La molette de la souris &amp;zoom par défaut</translation>
+        <translation>La molette de la souris &amp;zoome par défaut</translation>
     </message>
     <message>
         <location line="-111"/>
         <source>Crash Reporting</source>
-        <translation>Rapport de plantage</translation>
+        <translation>Rapport de Plantage</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1701,17 +1701,17 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-40"/>
         <source>Middle mouse button uses auto-&amp;scrolling</source>
-        <translation>Utiliser le bouton du milieu de la souris pour le défilement automatique</translation>
+        <translation>Le clic milieu de la &amp;souris active le défilement automatique</translation>
     </message>
     <message>
         <location line="-53"/>
         <source>Major grid every:</source>
-        <translation>Grille majeure tous les :</translation>
+        <translation>Grille majeure toutes les :</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Use s&amp;mooth scrolling</source>
-        <translation>Défilement doux (&amp;M)</translation>
+        <translation>Utiliser un défilement doux (&amp;M)</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -1726,7 +1726,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+19"/>
         <source>Display news in status bar</source>
-        <translation>Afficher les nouveautés dans la barre de status</translation>
+        <translation>Afficher les nouveautés dans la barre d&apos;état</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1789,7 +1789,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-109"/>
         <source>Updates</source>
-        <translation>Mises à jour</translation>
+        <translation>Mises à Jour</translation>
     </message>
     <message>
         <location line="+136"/>
@@ -2554,12 +2554,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+55"/>
         <source>Can only add tiles to an image collection tileset</source>
-        <translation>Vous ne pouvez ajouter des tuiles qu&apos;à un jeu de tuiles de collection d&apos;images</translation>
+        <translation>Vous pouvez seulement ajouter des tuiles à un jeu de tuiles de collection d&apos;images</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Can only remove tiles from an image collection tileset</source>
-        <translation>Vous ne pouvez enlever des tuiles qu&apos;à un jeu de tuiles de collection d&apos;images</translation>
+        <translation>Vous pouvez seulement enlever des tuiles à un jeu de tuiles de collection d&apos;images</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -2755,7 +2755,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+17"/>
         <source>Error reading tileset</source>
-        <translation>Erreur lors de la lecture de jeu de tuiles</translation>
+        <translation>Erreur lors de la lecture du jeu de tuiles</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -2948,13 +2948,13 @@ Ligne %1, colonne %2</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+187"/>
         <location line="+501"/>
         <source>Flip Horizontally</source>
-        <translation>Retourner Horizontalement</translation>
+        <translation>Inverser Horizontalement</translation>
     </message>
     <message>
         <location line="-500"/>
         <location line="+501"/>
         <source>Flip Vertically</source>
-        <translation>Retourner Verticalement</translation>
+        <translation>Inverser Verticalement</translation>
     </message>
     <message>
         <location line="-363"/>
@@ -3027,7 +3027,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+4"/>
         <source>Can&apos;t create template with embedded tileset</source>
-        <translation>Impossible de créer un modèle avec un Jeu de Tuiles embarqué</translation>
+        <translation>Impossible de créer un modèle avec un jeu de tuiles embarqué</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -3724,7 +3724,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+311"/>
         <source>Tileset Columns Changed</source>
-        <translation>Nombre de Colonnes du Jeu de Tuiles Modifiées</translation>
+        <translation>Nombre de Colonnes Modifiées du Jeu de Tuiles</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3771,7 +3771,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-22"/>
         <source>Split Segment</source>
-        <translation>Séparer les Segments</translation>
+        <translation>Séparer le Segment</translation>
     </message>
     <message numerus="yes">
         <location line="+268"/>
@@ -3811,7 +3811,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-365"/>
         <source>Extend Polyline</source>
-        <translation>Étendre les Polylignes</translation>
+        <translation>Étendre la Polyligne</translation>
     </message>
 </context>
 <context>
@@ -4764,7 +4764,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+193"/>
         <source>Unrecognized tileset format.</source>
-        <translation>Format de Jeu de Tuiles non reconnu.</translation>
+        <translation>Format de jeu de tuiles non reconnu.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4998,7 +4998,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/wangdock.cpp" line="+72"/>
         <source>&lt;p&gt;No tileset with Terrain Sets available.&lt;/p&gt;&lt;p&gt;Open a tileset with a Terrain Set or set up a new Terrain Set to be able to use the Terrain Brush or the Terrain Fill Mode.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Aucun Jeu de Tuile disponible pour le Terrain donné.&lt;/p&gt;&lt;p&gt;Veuillez ouvrir un Jeu de Tuile avec un Jeu de Terrain ou créez un nouveau Jeu de Terrain afin de pouvoir utiliser la Brosse de Terrain ou le mode de Remplissage de Terrain.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Aucun jeu de tuile disponible pour les Collections de Terrains disponibles.&lt;/p&gt;&lt;p&gt;Veuillez ouvrir un jeu de tuiles ayant une Collection de Terrains ou créez une nouvelle Collection de Terrains afin de pouvoir utiliser la Brosse de Terrain ou le Mode Remplissage de Terrain.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -5206,19 +5206,19 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="-183"/>
         <location line="+188"/>
         <source>Select From Any Layer</source>
-        <translation>Depuis n&apos;importe quel Calque</translation>
+        <translation>Depuis N&apos;Importe Quel Calque</translation>
     </message>
     <message>
         <location line="-187"/>
         <location line="+188"/>
         <source>Prefer Selected Layers</source>
-        <translation>De préférence depuis les Calques sélectionnés</translation>
+        <translation>De Préférence Depuis les Calques Sélectionnés</translation>
     </message>
     <message>
         <location line="-187"/>
         <location line="+188"/>
         <source>Selected Layers Only</source>
-        <translation>Depuis les Calques sélectionnés uniquement</translation>
+        <translation>Uniquement Depuis les Calques Sélectionnés</translation>
     </message>
 </context>
 <context>
@@ -5520,7 +5520,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+5"/>
         <source>Flipping</source>
-        <translation>Retournement</translation>
+        <translation>Inversion</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -5675,7 +5675,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+1"/>
         <source>Prefer Untransformed Tiles</source>
-        <translation>Aucune de préférence</translation>
+        <translation>Préférer les Tuiles Non Transformées</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -5711,7 +5711,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+19"/>
         <source>Terrain Set</source>
-        <translation>Jeux de Terrains</translation>
+        <translation>Collection de Terrains</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -5746,7 +5746,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+340"/>
         <source>Error Reading Tileset</source>
-        <translation>Erreur à la Lecture du Jeu de Tuiles</translation>
+        <translation>Erreur lors de la Lecture du Jeu de Tuiles</translation>
     </message>
     <message>
         <location line="+330"/>
@@ -6013,13 +6013,13 @@ Veuillez sélectionner un format spécifique.</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="-260"/>
         <location filename="../src/tiled/stampactions.cpp" line="+86"/>
         <source>Rotate Left</source>
-        <translation>Tourner vers la Gauche</translation>
+        <translation>Pivoter vers la Gauche</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/stampactions.cpp" line="+1"/>
         <source>Rotate Right</source>
-        <translation>Tourner vers la Droite</translation>
+        <translation>Pivoter vers la Droite</translation>
     </message>
     <message>
         <location filename="../src/tiled/stampactions.cpp" line="-5"/>
@@ -6034,12 +6034,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+1"/>
         <source>Flip Horizontally</source>
-        <translation>Retourner Horizontalement</translation>
+        <translation>Inverser Horizontalement</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation>Retourner Verticalement</translation>
+        <translation>Inverser Verticalement</translation>
     </message>
 </context>
 <context>
@@ -6433,7 +6433,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+90"/>
         <source>Unnamed Set</source>
-        <translation>Jeu de Tuile sans nom</translation>
+        <translation>Jeu de Tuiles Sans Nom</translation>
     </message>
 </context>
 <context>
@@ -6449,12 +6449,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+769"/>
         <source>Use as Terrain Set Image</source>
-        <translation>Utiliser l&apos;Image comme Jeu de Terrain</translation>
+        <translation>Utiliser comme l&apos;Icône de la Collection de Terrains</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Use as Terrain Image</source>
-        <translation>Utiliser l&apos;Image comme Terrain</translation>
+        <translation>Utiliser en tant qu&apos;Image de Terrain</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6621,7 +6621,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-13"/>
         <source>Terrain Sets</source>
-        <translation>Jeux de Terrains</translation>
+        <translation>Collections de Terrains</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6631,32 +6631,32 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+1"/>
         <source>Add Terrain Set</source>
-        <translation>Ajouter un Jeu de Terrains</translation>
+        <translation>Ajouter une Collection de Terrains</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Corner Set</source>
-        <translation>Nouveau Jeu de Coins</translation>
+        <translation>Nouvelle Collection de Coins</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Edge Set</source>
-        <translation>Nouveau Jeu de Côtés</translation>
+        <translation>Nouvelle Collection de Côtés</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Mixed Set</source>
-        <translation>Nouveau Jeu Mélangé</translation>
+        <translation>Nouvelle Collection Mixte</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Terrain Set</source>
-        <translation>Dupliquer le Jeu de Terrains</translation>
+        <translation>Dupliquer la Collection de Terrains</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain Set</source>
-        <translation>Enlever le Jeu de Terrains</translation>
+        <translation>Enlever la Collection de Terrains</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6674,7 +6674,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+116"/>
         <source>Terrain Set &amp;Properties...</source>
-        <translation>&amp;Propriétés du Jeu de Terrains...</translation>
+        <translation>&amp;Propriétés de la Collection de Terrains...</translation>
     </message>
 </context>
 <context>
@@ -6920,7 +6920,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+36"/>
         <source>Change Columns</source>
-        <translation>Modifier Colonnes</translation>
+        <translation>Changer les Colonnes</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -6930,12 +6930,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+18"/>
         <source>Change Grid Size</source>
-        <translation>Changement de la Taille de la Grille</translation>
+        <translation>Changer la Taille de la Grille</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Change Tileset</source>
-        <translation>Changement du Jeu de Tuiles</translation>
+        <translation>Changer le Jeu de Tuiles</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+41"/>
@@ -7188,14 +7188,14 @@ Veuillez sélectionner un format spécifique.</translation>
         <location filename="../src/tiled/propertybrowser.cpp" line="-946"/>
         <source>Flip %n Object(s)</source>
         <translation>
-            <numerusform>Retourner %n Objet</numerusform>
-            <numerusform>Retourner %n Objets</numerusform>
+            <numerusform>Inverser %n Objet</numerusform>
+            <numerusform>Inverser %n Objets</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/tiled/changetile.cpp" line="+33"/>
         <source>Change Tile Type</source>
-        <translation>Changement de Type de Tuile</translation>
+        <translation>Changer le Type de Tuile</translation>
     </message>
     <message>
         <location filename="../src/tiled/swaptiles.cpp" line="+36"/>
@@ -7205,7 +7205,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/tilesetdocument.cpp" line="-408"/>
         <source>Reload Tileset</source>
-        <translation>Rechargement du Jeu de Tuiles</translation>
+        <translation>Recharger le Jeu de Tuiles</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetemplate.cpp" line="+34"/>
@@ -7215,7 +7215,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/shapefilltool.cpp" line="-57"/>
         <source>Shape Fill</source>
-        <translation>Remplissage de Forme</translation>
+        <translation>Remplir la Forme</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/mapdocument.cpp" line="-790"/>
@@ -7241,12 +7241,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
         <source>Add Terrain Set</source>
-        <translation>Ajouter un Jeu de Terrains</translation>
+        <translation>Ajouter la Collection de Terrains</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Terrain Set</source>
-        <translation>Enlever le Jeu de Terrains</translation>
+        <translation>Enlever la Collection de Terrains</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+37"/>
@@ -7278,12 +7278,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+38"/>
         <source>Change Terrain Set Name</source>
-        <translation>Changer le Nom d&apos;un Jeu de Terrains</translation>
+        <translation>Changer le Nom de la Collection de Terrains</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Change Terrain Set Type</source>
-        <translation>Changer le Type d&apos;un Jeu de Terrains</translation>
+        <translation>Changer le Type de la Collection de Terrains</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -7298,7 +7298,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+28"/>
         <source>Set Terrain Set Image</source>
-        <translation>Choisir une Image pour un Jeu de Terrains</translation>
+        <translation>Choisir une Image pour la Collection de Terrains</translation>
     </message>
     <message>
         <location filename="../src/tiled/relocatetiles.cpp" line="+33"/>
@@ -7497,7 +7497,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+2"/>
         <source>About Tiled Quick</source>
-        <translation>À propos de Tiled Quick</translation>
+        <translation>À Propos de Tiled Quick</translation>
     </message>
 </context>
 </TS>

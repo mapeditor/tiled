@@ -46,10 +46,10 @@ Shortcut
     A custom key sequence to trigger the command. You can use 'Clear'
     to reset the shortcut.
 
-Output in Debug Console
+Show output in Console view
     If this is enabled, then the output (stdout and stderr) of this
-    command will be displayed in the Debug Console. You can find the
-    Debug Console in *View > Views and Toolbars > Debug Console*.
+    command will be displayed in the Console. You can find the
+    Console in *View > Views and Toolbars > Console*.
 
 Save map before executing
     If this is enabled, then the current map will be saved before

@@ -48,7 +48,8 @@ class ImageLayer;
 
 enum RenderFlag {
     ShowTileObjectOutlines = 0x1,
-    ShowTileCollisionShapes = 0x2
+    ShowTileCollisionShapes = 0x2,
+    ShowTileAnimations = 0x4,
 };
 
 Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
@@ -281,7 +282,7 @@ protected:
 private:
     const Map *mMap;
 
-    RenderFlags mFlags;
+    RenderFlags mFlags = ShowTileAnimations;
     CellType mCellType = OrthogonalCells;
     qreal mObjectLineWidth = 2;
     qreal mPainterScale = 1;

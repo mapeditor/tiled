@@ -22,14 +22,11 @@ as background layers.
 
    Since GameMaker's "Add Existing" action doesn't work at this point in time
    (2.3.1) the easiest way to export a Tiled map to your GameMaker Project is
-   to replace an already existing ``room.yy`` file.
+   to overwrite an already existing ``room.yy`` file.
 
-   If you want to do this while GameMaker is running with the open project
-   you'll need to deactivate "Use save writing of files" in the Tiled
-   preferences (Under *Edit -> Preferences -> General -> Saving and Loading*).
-   Otherwise GameMaker will detect that the room file got deleted and will
-   propose to restore it from memory. Without "save writing" GameMaker will
-   detect that the file got changed and propose to reload the updated one.
+   Starting with Tiled 1.8, it is no longer necessary to deactivate the "Use
+   safe writing of files" option, since the GameMaker export now ignores it to
+   avoid reload issues in GameMaker.
 
 .. _yy-asset-references:
 

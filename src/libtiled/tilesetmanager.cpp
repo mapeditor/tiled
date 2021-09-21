@@ -176,10 +176,12 @@ void TilesetManager::setReloadTilesetsOnChange(bool enabled)
 void TilesetManager::setAnimateTiles(bool enabled)
 {
     // TODO: Avoid running the driver when there are no animated tiles
-    if (enabled)
+    if (enabled) {
         mAnimationDriver->start();
-    else
+    } else {
         mAnimationDriver->stop();
+        resetTileAnimations();
+    }
 }
 
 bool TilesetManager::animateTiles() const
@@ -216,8 +218,10 @@ void TilesetManager::filesChanged(const QStringList &fileNames)
 }
 
 /**
- * Resets all tile animations. Used to keep animations synchronized when they
- * are edited.
+ * Resets all tile animations.
+ *
+ * Used when playback is disabled, as well as to keep animations synchronized
+ * when they are edited.
  */
 void TilesetManager::resetTileAnimations()
 {

@@ -771,6 +771,401 @@ static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
     context.renderer->drawTileLayer(tileRenderFunction, rect);
 }
 
+static std::unique_ptr<GMRLayer> processTileLayer(const TileLayer *tileLayer,
+                                                  Context &context)
+{
+    std::unique_ptr<GMRLayer> gmrLayer;
+
+    std::vector<std::unique_ptr<GMRLayer>> gmrLayers;
+    std::vector<GMRGraphic> assets;
+
+    // For orthogonal maps we try to use GMRTileLayer, for performance
+    // reasons and because it supports tile rotation.
+    //
+    // GMRTileLayer can't support other orientations, or image
+    // collection tilesets or tiles using a different grid size than
+    // tile size. Such tiles are exported to a GMRAssetLayer instead.
+    //
+    if (tileLayer->map()->orientation() == Map::Orthogonal) {
+        auto tilesets = tileLayer->usedTilesets().values();
+        std::sort(tilesets.begin(), tilesets.end(),
+                  [] (const SharedTileset &a, const SharedTileset &b) {
+            return a->name() < b->name();
+        });
+
+        for (const auto &tileset : qAsConst(tilesets)) {
+            if (tileset->isCollection())
+                continue;
+            if (tileset->tileSize() != tileLayer->map()->tileSize())
+                continue;
+
+            auto gmrTileLayer = std::make_unique<GMRTileLayer>();
+            gmrTileLayer->name = sanitizeName(QStringLiteral("%1_%2").arg(tileLayer->name(), tileset->name()));
+            fillTileLayer(*gmrTileLayer, tileLayer, tileset.data());
+            gmrLayers.push_back(std::move(gmrTileLayer));
+        }
+    }
+
+    createAssetsFromTiles(assets, tileLayer, context);
+
+    if (!assets.empty()) {
+        auto gmrAssetLayer = std::make_unique<GMRAssetLayer>();
+        gmrAssetLayer->name = sanitizeName(QStringLiteral("%1_Assets").arg(tileLayer->name()));
+        gmrAssetLayer->assets = std::move(assets);
+        gmrLayers.push_back(std::move(gmrAssetLayer));
+    }
+
+    if (gmrLayers.size() == 1) {
+        // If one layer was set up, that's the layer we'll use.
+        gmrLayer = std::move(gmrLayers.front());
+    } else if (gmrLayers.empty()) {
+        // When no layers are set up, the tile layer is exported as an
+        // empty tile layer.
+        gmrLayer = std::make_unique<GMRTileLayer>();
+    } else {
+        // When multiple layers have been created, they will be exported
+        // as children of a group layer.
+        gmrLayer = std::make_unique<GMRLayer>();
+        gmrLayer->layers = std::move(gmrLayers);
+    }
+
+    return gmrLayer;
+}
+
+static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGroup,
+                                                    Context &context)
+{
+    std::unique_ptr<GMRLayer> gmrLayer;
+
+    std::vector<GMRGraphic> assets;
+    std::vector<GMRInstance> instances;
+    std::vector<GMPath> paths;
+
+    const bool frozen = !objectGroup->isUnlocked();
+    auto color = objectGroup->effectiveTintColor();
+    color.setAlphaF(color.alphaF() * objectGroup->effectiveOpacity());
+    const auto layerOffset = objectGroup->totalOffset().toPoint();
+
+    auto objects = objectGroup->objects();
+
+    // Make sure the objects export in the rendering order
+    if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder) {
+        std::stable_sort(objects.begin(), objects.end(),
+                         [](const MapObject *a, const MapObject *b) { return a->y() < b->y(); });
+    }
+
+    for (const MapObject *mapObject : qAsConst(objects)) {
+        const QString type = mapObject->effectiveType();
+
+        if (type == QLatin1String("view")) {
+            // GM only has 8 views so drop anything more than that
+            if (context.views.size() > 7) {
+                Tiled::ERROR(QLatin1String("YY plugin: Can't export more than 8 views."),
+                             Tiled::JumpToObject { mapObject });
+                continue;
+            }
+
+            context.views.emplace_back();
+            GMRView &view = context.views.back();
+
+            view.inherit = optionalProperty(mapObject, "inherit", false);
+            view.visible = mapObject->isVisible();
+            // Note: GM only supports ints for positioning
+            // so views could be off if user doesn't align to whole number
+            view.xview = qRound(mapObject->x());
+            view.yview = qRound(mapObject->y());
+            view.wview = qRound(mapObject->width());
+            view.hview = qRound(mapObject->height());
+            // Round these incase user adds properties as floats and not ints
+            view.xport = qRound(optionalProperty(mapObject, "xport", 0.0));
+            view.yport = qRound(optionalProperty(mapObject, "yport", 0.0));
+            view.wport = qRound(optionalProperty(mapObject, "wport", 1024.0));
+            view.hport = qRound(optionalProperty(mapObject, "hport", 768.0));
+            view.hborder = qRound(optionalProperty(mapObject, "hborder", 32.0));
+            view.vborder = qRound(optionalProperty(mapObject, "vborder", 32.0));
+            view.hspeed = qRound(optionalProperty(mapObject, "hspeed", -1.0));
+            view.vspeed = qRound(optionalProperty(mapObject, "vspeed", -1.0));
+            view.objectId = optionalProperty(mapObject, "objectId", QString());
+        }
+        else if (!type.isEmpty())
+        {
+            instances.emplace_back();
+            GMRInstance &instance = instances.back();
+
+            auto props = mapObject->resolvedProperties();
+
+            // The type is used to refer to the name of the object
+            instance.isDnd = takeProperty(props, "isDnd", instance.isDnd);
+            instance.objectId = sanitizeName(type);
+
+            QPointF origin(takeProperty(props, "originX", 0.0),
+                           takeProperty(props, "originY", 0.0));
+
+            if (!mapObject->cell().isEmpty()) {
+                props.remove(QStringLiteral("sprite")); // ignore this, probably inherited from tile
+
+                // For tile objects we can support scaling and flipping, though
+                // flipping in combination with rotation didn't work in GameMaker 1.4 (maybe works in 2?).
+                if (auto tile = mapObject->cell().tile()) {
+                    const QSize tileSize = tile->size();
+                    instance.scaleX = mapObject->width() / tileSize.width();
+                    instance.scaleY = mapObject->height() / tileSize.height();
+
+                    origin = QPointF(origin.x() * instance.scaleX,
+                                     origin.y() * instance.scaleY);
+
+                    if (mapObject->cell().flippedHorizontally()) {
+                        instance.scaleX *= -1.0;
+                        origin.rx() += mapObject->width() - 2 * origin.x();
+                    }
+                    if (mapObject->cell().flippedVertically()) {
+                        instance.scaleY *= -1.0;
+                        origin.ry() += mapObject->height() - 2 * origin.y();
+                    }
+                }
+
+                // Tile objects don't necessarily have top-left origin in Tiled,
+                // so the position needs to be translated for top-left origin in
+                // GameMaker, taking into account the rotation.
+                origin -= alignmentOffset(mapObject->bounds(), mapObject->alignment());
+            }
+
+            // Allow overriding the scale using custom properties
+            instance.scaleX = takeProperty(props, "scaleX", instance.scaleX);
+            instance.scaleY = takeProperty(props, "scaleY", instance.scaleY);
+
+            // Adjust the position based on the origin
+            QTransform transform;
+            transform.rotate(mapObject->rotation());
+            const QPointF pos = mapObject->position() + transform.map(origin);
+
+            // TODO: Support creation code - takeProperty(props, "code", QString());
+            // Would need to be written out as a separate file
+            instance.hasCreationCode = takeProperty(props, "hasCreationCode", instance.hasCreationCode);
+            instance.colour = takeProperty(props, "colour", color);
+            instance.rotation = -mapObject->rotation();
+            instance.imageIndex = takeProperty(props, "imageIndex", instance.imageIndex);
+            instance.imageSpeed = takeProperty(props, "imageSpeed", instance.imageSpeed);
+            // TODO: instance.inheritedItemId
+            instance.frozen = frozen;
+            instance.ignore = takeProperty(props, "ignore", !mapObject->isVisible());
+            instance.inheritItemSettings = takeProperty(props, "inheritItemSettings", instance.inheritItemSettings);
+            instance.x = qRound(pos.x());
+            instance.y = qRound(pos.y());
+
+            // Include object ID in the name when necessary because duplicates are not allowed
+            if (mapObject->name().isEmpty()) {
+                instance.name = QStringLiteral("inst_%1").arg(mapObject->id());
+            } else {
+                instance.name = context.makeUnique(sanitizeName(mapObject->name()));
+                context.usedNames.insert(instance.name);
+            }
+
+            instance.tags = readTags(mapObject);
+            props.remove(QStringLiteral("tags"));
+
+            context.instanceCreationOrder.emplace_back();
+            InstanceCreation &instanceCreation = context.instanceCreationOrder.back();
+            instanceCreation.name = instance.name;
+            instanceCreation.creationOrder = takeProperty(props, "creationOrder", 0);
+
+            // Remaining unknown custom properties are assumed to
+            // override properties defined on the GameMaker object.
+            for (auto it = props.constBegin(); it != props.constEnd(); ++it) {
+                instance.properties.emplace_back();
+                GMOverriddenProperty &prop = instance.properties.back();
+                prop.propertyId = it.key();
+                prop.objectId = instance.objectId;
+                prop.value = toOverriddenPropertyValue(it.value(), context.exportContext);
+            }
+        }
+        else if (mapObject->isTileObject())
+        {
+            const Cell &cell = mapObject->cell();
+            const Tile *tile = cell.tile();
+            if (!tile)
+                continue;
+
+            const bool isSprite = !tile->imageSource().isEmpty();
+
+            assets.emplace_back(isSprite);
+            GMRGraphic &g = assets.back();
+
+            QPointF origin(optionalProperty(mapObject, "originX", 0.0),
+                           optionalProperty(mapObject, "originY", 0.0));
+
+            if (isSprite) {
+                g.spriteId = spriteId(tile, tile->imageSource());
+                g.headPosition = optionalProperty(mapObject, "headPosition", 0.0);
+                g.rotation = -mapObject->rotation();
+
+                const QSize tileSize = tile->size();
+                g.scaleX = mapObject->width() / tileSize.width();
+                g.scaleY = mapObject->height() / tileSize.height();
+
+                origin = QPointF(origin.x() * g.scaleX,
+                                 origin.y() * g.scaleY);
+
+                if (cell.flippedHorizontally()) {
+                    g.scaleX *= -1;
+                    origin.rx() += mapObject->width() - 2 * origin.x();
+                }
+                if (cell.flippedVertically()) {
+                    g.scaleY *= -1;
+                    origin.ry() += mapObject->height() - 2 * origin.y();
+                }
+
+                // Allow overriding the scale using custom properties
+                g.scaleX = optionalProperty(mapObject, "scaleX", g.scaleX);
+                g.scaleY = optionalProperty(mapObject, "scaleY", g.scaleY);
+
+                g.animationSpeed = optionalProperty(mapObject, "animationSpeed", 1.0);
+            } else {
+                initializeTileGraphic(g, mapObject->size().toSize(), cell, tile);
+
+                if (mapObject->rotation() != 0.0) {
+                    Tiled::WARNING(QStringLiteral("YY plugin: Sub-sprite graphics don't support rotation (object %1).").arg(mapObject->id()),
+                                   Tiled::JumpToObject { mapObject });
+                }
+            }
+
+            // Tile objects don't necessarily have top-left origin in Tiled,
+            // so the position needs to be translated for top-left origin in
+            // GameMaker, taking into account the rotation.
+            origin -= alignmentOffset(mapObject->bounds(), mapObject->alignment());
+
+            // Adjust the position based on the origin
+            QTransform transform;
+            transform.rotate(mapObject->rotation());
+            const QPointF pos = mapObject->position() + transform.map(origin);
+
+            g.colour = optionalProperty(mapObject, "colour", color);
+            // TODO: g.inheritedItemId
+            g.frozen = frozen;
+            g.ignore = optionalProperty(mapObject, "ignore", !mapObject->isVisible());
+            g.inheritItemSettings = optionalProperty(mapObject, "inheritItemSettings", g.inheritItemSettings);
+            g.x = pos.x();
+            g.y = pos.y();
+
+            // Include object ID in the name when necessary because duplicates are not allowed
+            if (mapObject->name().isEmpty()) {
+                if (isSprite)
+                    g.name = QStringLiteral("graphic_%1").arg(mapObject->id());
+                else
+                    g.name = QStringLiteral("tile_%1").arg(mapObject->id());
+            } else {
+                g.name = context.makeUnique(sanitizeName(mapObject->name()));
+                context.usedNames.insert(g.name);
+            }
+
+            g.tags = readTags(mapObject);
+        }
+        else if (mapObject->shape() == MapObject::Polygon || mapObject->shape() == MapObject::Polyline)
+        {
+            paths.emplace_back();
+            GMPath &p = paths.back();
+
+            p.kind = optionalProperty(mapObject, "smooth", false);
+            p.closed = mapObject->shape() == MapObject::Polygon;
+            p.precision = optionalProperty(mapObject, "precision", 4);
+
+            QTransform transform;
+            transform.rotate(mapObject->rotation());
+            const QPointF offset = mapObject->position() + layerOffset;
+            transform.translate(offset.x(), offset.y());
+
+            p.points = transform.map(mapObject->polygon());
+
+            p.name = sanitizeName(mapObject->name());
+            if (p.name.isEmpty())
+                p.name = QStringLiteral("Path%1").arg(mapObject->id());
+
+            p.tags = readTags(mapObject);
+
+            context.paths.push_back(p);
+
+            Tiled::WARNING(QStringLiteral("YY plugin: Exporting of paths is not supported yet"),
+                           Tiled::JumpToObject { mapObject });
+        }
+        else
+        {
+            Tiled::WARNING(QStringLiteral("YY plugin: Ignoring non-tile object %1 without type.").arg(mapObject->id()),
+                           Tiled::JumpToObject { mapObject });
+
+        }
+    }
+
+    std::vector<std::unique_ptr<GMRLayer>> gmrLayers;
+
+    if (!assets.empty()) {
+        auto gmrAssetLayer = std::make_unique<GMRAssetLayer>();
+        gmrAssetLayer->name = sanitizeName(QStringLiteral("%1_Assets").arg(objectGroup->name()));
+        gmrAssetLayer->assets = std::move(assets);
+        gmrLayers.push_back(std::move(gmrAssetLayer));
+    }
+
+    if (!instances.empty()) {
+        auto gmrInstancesLayer = std::make_unique<GMRInstanceLayer>();
+        gmrInstancesLayer->name = sanitizeName(QStringLiteral("%1_Instances").arg(objectGroup->name()));
+        gmrInstancesLayer->instances = std::move(instances);
+        gmrLayers.push_back(std::move(gmrInstancesLayer));
+    }
+
+    // TODO: Supporting path layers will require writing out a separate
+    // file for each path.
+    for (GMPath &path : paths) {
+        auto gmrPathLayer = std::make_unique<GMRPathLayer>();
+        gmrPathLayer->name = path.name;
+        gmrPathLayer->pathId = path.name;
+        // TODO: colour of path layer?
+        gmrLayers.push_back(std::move(gmrPathLayer));
+    }
+
+    if (gmrLayers.size() == 1) {
+        // If one layer was set up, that's the layer we'll use.
+        gmrLayer = std::move(gmrLayers.front());
+    } else if (gmrLayers.empty()) {
+        // When no layers are set up, the object layer is exported as
+        // an empty instance layer (could also have been an asset
+        // layer...).
+        gmrLayer = std::make_unique<GMRInstanceLayer>();
+    } else {
+        // When multiple layers have been created, they will be exported
+        // as children of a group layer.
+        gmrLayer = std::make_unique<GMRLayer>();
+        gmrLayer->layers = std::move(gmrLayers);
+    }
+
+    return gmrLayer;
+}
+
+static std::unique_ptr<GMRLayer> processImageLayer(const ImageLayer *imageLayer)
+{
+    auto gmrBackgroundLayer = std::make_unique<GMRBackgroundLayer>();
+
+    gmrBackgroundLayer->spriteId = spriteId(imageLayer, imageLayer->imageSource());
+
+    auto color = imageLayer->effectiveTintColor();
+    color.setAlphaF(color.alphaF() * imageLayer->effectiveOpacity());
+    gmrBackgroundLayer->colour = optionalProperty(imageLayer, "colour", color);
+
+    const auto layerOffset = imageLayer->totalOffset().toPoint();
+    gmrBackgroundLayer->x = layerOffset.x();
+    gmrBackgroundLayer->y = layerOffset.y();
+
+    gmrBackgroundLayer->htiled = optionalProperty(imageLayer, "htiled", gmrBackgroundLayer->htiled);
+    gmrBackgroundLayer->vtiled = optionalProperty(imageLayer, "vtiled", gmrBackgroundLayer->vtiled);
+    gmrBackgroundLayer->hspeed = optionalProperty(imageLayer, "hspeed", gmrBackgroundLayer->hspeed);
+    gmrBackgroundLayer->vspeed = optionalProperty(imageLayer, "vspeed", gmrBackgroundLayer->vspeed);
+    gmrBackgroundLayer->stretch = optionalProperty(imageLayer, "stretch", gmrBackgroundLayer->stretch);
+    gmrBackgroundLayer->animationFPS = optionalProperty(imageLayer, "animationFPS", gmrBackgroundLayer->animationFPS);
+    gmrBackgroundLayer->animationSpeedType = optionalProperty(imageLayer, "animationSpeedType", gmrBackgroundLayer->animationSpeedType);
+    gmrBackgroundLayer->userdefinedAnimFPS = imageLayer->resolvedProperty(QStringLiteral("animationFPS")).isValid();
+
+    // Workaround compilation issue with mingw49
+    return std::unique_ptr<GMRLayer>(std::move(gmrBackgroundLayer));
+}
+
 static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
                           const QList<Layer *> &layers,
                           Context &context)
@@ -781,392 +1176,17 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
         if (layer->resolvedProperty("noExport").toBool())
             continue;
 
-        const auto layerOffset = layer->totalOffset().toPoint();
-
         std::unique_ptr<GMRLayer> gmrLayer;
 
         switch (layer->layerType()) {
-        case Layer::TileLayerType: {
-            const auto tileLayer = static_cast<const TileLayer*>(layer);
-
-            std::vector<std::unique_ptr<GMRLayer>> gmrLayers;
-            std::vector<GMRGraphic> assets;
-
-            // For orthogonal maps we try to use GMRTileLayer, for performance
-            // reasons and because it supports tile rotation.
-            //
-            // GMRTileLayer can't support other orientations, or image
-            // collection tilesets or tiles using a different grid size than
-            // tile size. Such tiles are exported to a GMRAssetLayer instead.
-            //
-            if (layer->map()->orientation() == Map::Orthogonal) {
-                auto tilesets = tileLayer->usedTilesets().values();
-                std::sort(tilesets.begin(), tilesets.end(),
-                          [] (const SharedTileset &a, const SharedTileset &b) {
-                    return a->name() < b->name();
-                });
-
-                for (const auto &tileset : qAsConst(tilesets)) {
-                    if (tileset->isCollection())
-                        continue;
-                    if (tileset->tileSize() != layer->map()->tileSize())
-                        continue;
-
-                    auto gmrTileLayer = std::make_unique<GMRTileLayer>();
-                    gmrTileLayer->name = sanitizeName(QStringLiteral("%1_%2").arg(layer->name(), tileset->name()));
-                    fillTileLayer(*gmrTileLayer, tileLayer, tileset.data());
-                    gmrLayers.push_back(std::move(gmrTileLayer));
-                }
-            }
-
-            createAssetsFromTiles(assets, tileLayer, context);
-
-            if (!assets.empty()) {
-                auto gmrAssetLayer = std::make_unique<GMRAssetLayer>();
-                gmrAssetLayer->name = sanitizeName(QStringLiteral("%1_Assets").arg(layer->name()));
-                gmrAssetLayer->assets = std::move(assets);
-                gmrLayers.push_back(std::move(gmrAssetLayer));
-            }
-
-            if (gmrLayers.size() == 1) {
-                // If one layer was set up, that's the layer we'll use.
-                gmrLayer = std::move(gmrLayers.front());
-            } else if (gmrLayers.empty()) {
-                // When no layers are set up, the tile layer is exported as an
-                // empty tile layer.
-                gmrLayer = std::make_unique<GMRTileLayer>();
-            } else {
-                // When multiple layers have been created, they will be exported
-                // as children of a group layer.
-                gmrLayer = std::make_unique<GMRLayer>();
-                gmrLayer->layers = std::move(gmrLayers);
-            }
+        case Layer::TileLayerType:
+            gmrLayer = processTileLayer(static_cast<const TileLayer*>(layer), context);
             break;
-        }
-        case Layer::ObjectGroupType: {
-            std::vector<GMRGraphic> assets;
-            std::vector<GMRInstance> instances;
-            std::vector<GMPath> paths;
-
-            auto objectGroup = static_cast<const ObjectGroup*>(layer);
-            const bool frozen = !layer->isUnlocked();
-            auto color = layer->effectiveTintColor();
-            color.setAlphaF(color.alphaF() * layer->effectiveOpacity());
-
-            auto objects = objectGroup->objects();
-
-            // Make sure the objects export in the rendering order
-            if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder) {
-                std::stable_sort(objects.begin(), objects.end(),
-                                 [](const MapObject *a, const MapObject *b) { return a->y() < b->y(); });
-            }
-
-            for (const MapObject *mapObject : qAsConst(objects)) {
-                const QString type = mapObject->effectiveType();
-
-                if (type == QLatin1String("view")) {
-                    // GM only has 8 views so drop anything more than that
-                    if (context.views.size() > 7) {
-                        Tiled::ERROR(QLatin1String("YY plugin: Can't export more than 8 views."),
-                                     Tiled::JumpToObject { mapObject });
-                        continue;
-                    }
-
-                    context.views.emplace_back();
-                    GMRView &view = context.views.back();
-
-                    view.inherit = optionalProperty(mapObject, "inherit", false);
-                    view.visible = mapObject->isVisible();
-                    // Note: GM only supports ints for positioning
-                    // so views could be off if user doesn't align to whole number
-                    view.xview = qRound(mapObject->x());
-                    view.yview = qRound(mapObject->y());
-                    view.wview = qRound(mapObject->width());
-                    view.hview = qRound(mapObject->height());
-                    // Round these incase user adds properties as floats and not ints
-                    view.xport = qRound(optionalProperty(mapObject, "xport", 0.0));
-                    view.yport = qRound(optionalProperty(mapObject, "yport", 0.0));
-                    view.wport = qRound(optionalProperty(mapObject, "wport", 1024.0));
-                    view.hport = qRound(optionalProperty(mapObject, "hport", 768.0));
-                    view.hborder = qRound(optionalProperty(mapObject, "hborder", 32.0));
-                    view.vborder = qRound(optionalProperty(mapObject, "vborder", 32.0));
-                    view.hspeed = qRound(optionalProperty(mapObject, "hspeed", -1.0));
-                    view.vspeed = qRound(optionalProperty(mapObject, "vspeed", -1.0));
-                    view.objectId = optionalProperty(mapObject, "objectId", QString());
-                }
-                else if (!type.isEmpty())
-                {
-                    instances.emplace_back();
-                    GMRInstance &instance = instances.back();
-
-                    auto props = mapObject->resolvedProperties();
-
-                    // The type is used to refer to the name of the object
-                    instance.isDnd = takeProperty(props, "isDnd", instance.isDnd);
-                    instance.objectId = sanitizeName(type);
-
-                    QPointF origin(takeProperty(props, "originX", 0.0),
-                                   takeProperty(props, "originY", 0.0));
-
-                    if (!mapObject->cell().isEmpty()) {
-                        props.remove(QStringLiteral("sprite")); // ignore this, probably inherited from tile
-
-                        // For tile objects we can support scaling and flipping, though
-                        // flipping in combination with rotation didn't work in GameMaker 1.4 (maybe works in 2?).
-                        if (auto tile = mapObject->cell().tile()) {
-                            const QSize tileSize = tile->size();
-                            instance.scaleX = mapObject->width() / tileSize.width();
-                            instance.scaleY = mapObject->height() / tileSize.height();
-
-                            origin = QPointF(origin.x() * instance.scaleX,
-                                             origin.y() * instance.scaleY);
-
-                            if (mapObject->cell().flippedHorizontally()) {
-                                instance.scaleX *= -1.0;
-                                origin.rx() += mapObject->width() - 2 * origin.x();
-                            }
-                            if (mapObject->cell().flippedVertically()) {
-                                instance.scaleY *= -1.0;
-                                origin.ry() += mapObject->height() - 2 * origin.y();
-                            }
-                        }
-
-                        // Tile objects don't necessarily have top-left origin in Tiled,
-                        // so the position needs to be translated for top-left origin in
-                        // GameMaker, taking into account the rotation.
-                        origin -= alignmentOffset(mapObject->bounds(), mapObject->alignment());
-                    }
-
-                    // Allow overriding the scale using custom properties
-                    instance.scaleX = takeProperty(props, "scaleX", instance.scaleX);
-                    instance.scaleY = takeProperty(props, "scaleY", instance.scaleY);
-
-                    // Adjust the position based on the origin
-                    QTransform transform;
-                    transform.rotate(mapObject->rotation());
-                    const QPointF pos = mapObject->position() + transform.map(origin);
-
-                    // TODO: Support creation code - takeProperty(props, "code", QString());
-                    // Would need to be written out as a separate file
-                    instance.hasCreationCode = takeProperty(props, "hasCreationCode", instance.hasCreationCode);
-                    instance.colour = takeProperty(props, "colour", color);
-                    instance.rotation = -mapObject->rotation();
-                    instance.imageIndex = takeProperty(props, "imageIndex", instance.imageIndex);
-                    instance.imageSpeed = takeProperty(props, "imageSpeed", instance.imageSpeed);
-                    // TODO: instance.inheritedItemId
-                    instance.frozen = frozen;
-                    instance.ignore = takeProperty(props, "ignore", !mapObject->isVisible());
-                    instance.inheritItemSettings = takeProperty(props, "inheritItemSettings", instance.inheritItemSettings);
-                    instance.x = qRound(pos.x());
-                    instance.y = qRound(pos.y());
-
-                    // Include object ID in the name when necessary because duplicates are not allowed
-                    if (mapObject->name().isEmpty()) {
-                        instance.name = QStringLiteral("inst_%1").arg(mapObject->id());
-                    } else {
-                        instance.name = context.makeUnique(sanitizeName(mapObject->name()));
-                        context.usedNames.insert(instance.name);
-                    }
-
-                    instance.tags = readTags(mapObject);
-                    props.remove(QStringLiteral("tags"));
-
-                    context.instanceCreationOrder.emplace_back();
-                    InstanceCreation &instanceCreation = context.instanceCreationOrder.back();
-                    instanceCreation.name = instance.name;
-                    instanceCreation.creationOrder = takeProperty(props, "creationOrder", 0);
-
-                    // Remaining unknown custom properties are assumed to
-                    // override properties defined on the GameMaker object.
-                    for (auto it = props.constBegin(); it != props.constEnd(); ++it) {
-                        instance.properties.emplace_back();
-                        GMOverriddenProperty &prop = instance.properties.back();
-                        prop.propertyId = it.key();
-                        prop.objectId = instance.objectId;
-                        prop.value = toOverriddenPropertyValue(it.value(), context.exportContext);
-                    }
-                }
-                else if (mapObject->isTileObject())
-                {
-                    const Cell &cell = mapObject->cell();
-                    const Tile *tile = cell.tile();
-                    if (!tile)
-                        continue;
-
-                    const bool isSprite = !tile->imageSource().isEmpty();
-
-                    assets.emplace_back(isSprite);
-                    GMRGraphic &g = assets.back();
-
-                    QPointF origin(optionalProperty(mapObject, "originX", 0.0),
-                                   optionalProperty(mapObject, "originY", 0.0));
-
-                    if (isSprite) {
-                        g.spriteId = spriteId(tile, tile->imageSource());
-                        g.headPosition = optionalProperty(mapObject, "headPosition", 0.0);
-                        g.rotation = -mapObject->rotation();
-
-                        const QSize tileSize = tile->size();
-                        g.scaleX = mapObject->width() / tileSize.width();
-                        g.scaleY = mapObject->height() / tileSize.height();
-
-                        origin = QPointF(origin.x() * g.scaleX,
-                                         origin.y() * g.scaleY);
-
-                        if (cell.flippedHorizontally()) {
-                            g.scaleX *= -1;
-                            origin.rx() += mapObject->width() - 2 * origin.x();
-                        }
-                        if (cell.flippedVertically()) {
-                            g.scaleY *= -1;
-                            origin.ry() += mapObject->height() - 2 * origin.y();
-                        }
-
-                        // Allow overriding the scale using custom properties
-                        g.scaleX = optionalProperty(mapObject, "scaleX", g.scaleX);
-                        g.scaleY = optionalProperty(mapObject, "scaleY", g.scaleY);
-
-                        g.animationSpeed = optionalProperty(mapObject, "animationSpeed", 1.0);
-                    } else {
-                        initializeTileGraphic(g, mapObject->size().toSize(), cell, tile);
-
-                        if (mapObject->rotation() != 0.0) {
-                            Tiled::WARNING(QStringLiteral("YY plugin: Sub-sprite graphics don't support rotation (object %1).").arg(mapObject->id()),
-                                           Tiled::JumpToObject { mapObject });
-                        }
-                    }
-
-                    // Tile objects don't necessarily have top-left origin in Tiled,
-                    // so the position needs to be translated for top-left origin in
-                    // GameMaker, taking into account the rotation.
-                    origin -= alignmentOffset(mapObject->bounds(), mapObject->alignment());
-
-                    // Adjust the position based on the origin
-                    QTransform transform;
-                    transform.rotate(mapObject->rotation());
-                    const QPointF pos = mapObject->position() + transform.map(origin);
-
-                    g.colour = optionalProperty(mapObject, "colour", color);
-                    // TODO: g.inheritedItemId
-                    g.frozen = frozen;
-                    g.ignore = optionalProperty(mapObject, "ignore", !mapObject->isVisible());
-                    g.inheritItemSettings = optionalProperty(mapObject, "inheritItemSettings", g.inheritItemSettings);
-                    g.x = pos.x();
-                    g.y = pos.y();
-
-                    // Include object ID in the name when necessary because duplicates are not allowed
-                    if (mapObject->name().isEmpty()) {
-                        if (isSprite)
-                            g.name = QStringLiteral("graphic_%1").arg(mapObject->id());
-                        else
-                            g.name = QStringLiteral("tile_%1").arg(mapObject->id());
-                    } else {
-                        g.name = context.makeUnique(sanitizeName(mapObject->name()));
-                        context.usedNames.insert(g.name);
-                    }
-
-                    g.tags = readTags(mapObject);
-                }
-                else if (mapObject->shape() == MapObject::Polygon || mapObject->shape() == MapObject::Polyline)
-                {
-                    paths.emplace_back();
-                    GMPath &p = paths.back();
-
-                    p.kind = optionalProperty(mapObject, "smooth", false);
-                    p.closed = mapObject->shape() == MapObject::Polygon;
-                    p.precision = optionalProperty(mapObject, "precision", 4);
-
-                    QTransform transform;
-                    transform.rotate(mapObject->rotation());
-                    const QPointF offset = mapObject->position() + layerOffset;
-                    transform.translate(offset.x(), offset.y());
-
-                    p.points = transform.map(mapObject->polygon());
-
-                    p.name = sanitizeName(mapObject->name());
-                    if (p.name.isEmpty())
-                        p.name = QStringLiteral("Path%1").arg(mapObject->id());
-
-                    p.tags = readTags(mapObject);
-
-                    context.paths.push_back(p);
-
-                    Tiled::WARNING(QStringLiteral("YY plugin: Exporting of paths is not supported yet"),
-                                   Tiled::JumpToObject { mapObject });
-                }
-                else
-                {
-                    Tiled::WARNING(QStringLiteral("YY plugin: Ignoring non-tile object %1 without type.").arg(mapObject->id()),
-                                   Tiled::JumpToObject { mapObject });
-
-                }
-            }
-
-            std::vector<std::unique_ptr<GMRLayer>> gmrLayers;
-
-            if (!assets.empty()) {
-                auto gmrAssetLayer = std::make_unique<GMRAssetLayer>();
-                gmrAssetLayer->name = sanitizeName(QStringLiteral("%1_Assets").arg(layer->name()));
-                gmrAssetLayer->assets = std::move(assets);
-                gmrLayers.push_back(std::move(gmrAssetLayer));
-            }
-
-            if (!instances.empty()) {
-                auto gmrInstancesLayer = std::make_unique<GMRInstanceLayer>();
-                gmrInstancesLayer->name = sanitizeName(QStringLiteral("%1_Instances").arg(layer->name()));
-                gmrInstancesLayer->instances = std::move(instances);
-                gmrLayers.push_back(std::move(gmrInstancesLayer));
-            }
-
-            // TODO: Supporting path layers will require writing out a separate
-            // file for each path.
-            for (GMPath &path : paths) {
-                auto gmrPathLayer = std::make_unique<GMRPathLayer>();
-                gmrPathLayer->name = path.name;
-                gmrPathLayer->pathId = path.name;
-                // TODO: colour of path layer?
-                gmrLayers.push_back(std::move(gmrPathLayer));
-            }
-
-            if (gmrLayers.size() == 1) {
-                // If one layer was set up, that's the layer we'll use.
-                gmrLayer = std::move(gmrLayers.front());
-            } else if (gmrLayers.empty()) {
-                // When no layers are set up, the object layer is exported as
-                // an empty instance layer (could also have been an asset
-                // layer...).
-                gmrLayer = std::make_unique<GMRInstanceLayer>();
-            } else {
-                // When multiple layers have been created, they will be exported
-                // as children of a group layer.
-                gmrLayer = std::make_unique<GMRLayer>();
-                gmrLayer->layers = std::move(gmrLayers);
-            }
+        case Layer::ObjectGroupType:
+            gmrLayer = processObjectGroup(static_cast<const ObjectGroup*>(layer), context);
             break;
-        }
         case Layer::ImageLayerType: {
-            auto imageLayer = static_cast<const ImageLayer*>(layer);
-            auto gmrBackgroundLayer = std::make_unique<GMRBackgroundLayer>();
-
-            gmrBackgroundLayer->spriteId = spriteId(imageLayer, imageLayer->imageSource());
-
-            auto color = layer->effectiveTintColor();
-            color.setAlphaF(color.alphaF() * layer->effectiveOpacity());
-            gmrBackgroundLayer->colour = optionalProperty(layer, "colour", color);
-
-            gmrBackgroundLayer->x = layerOffset.x();
-            gmrBackgroundLayer->y = layerOffset.y();
-
-            gmrBackgroundLayer->htiled = optionalProperty(layer, "htiled", gmrBackgroundLayer->htiled);
-            gmrBackgroundLayer->vtiled = optionalProperty(layer, "vtiled", gmrBackgroundLayer->vtiled);
-            gmrBackgroundLayer->hspeed = optionalProperty(layer, "hspeed", gmrBackgroundLayer->hspeed);
-            gmrBackgroundLayer->vspeed = optionalProperty(layer, "vspeed", gmrBackgroundLayer->vspeed);
-            gmrBackgroundLayer->stretch = optionalProperty(layer, "stretch", gmrBackgroundLayer->stretch);
-            gmrBackgroundLayer->animationFPS = optionalProperty(layer, "animationFPS", gmrBackgroundLayer->animationFPS);
-            gmrBackgroundLayer->animationSpeedType = optionalProperty(layer, "animationSpeedType", gmrBackgroundLayer->animationSpeedType);
-            gmrBackgroundLayer->userdefinedAnimFPS = layer->resolvedProperty(QStringLiteral("animationFPS")).isValid();
-
-            gmrLayer = std::move(gmrBackgroundLayer);
+            gmrLayer = processImageLayer(static_cast<const ImageLayer*>(layer));
             break;
         }
         case Layer::GroupLayerType:
@@ -1267,7 +1287,9 @@ YyPlugin::YyPlugin()
 
 bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
 {
-    SaveFile file(fileName);
+    // Not using SaveFile here, because GameMaker's reload functionality does
+    // not work correctly when the file is replaced.
+    QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
@@ -1275,7 +1297,7 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
 
     const QString baseName = QFileInfo(fileName).completeBaseName();
 
-    JsonWriter json(file.device());
+    JsonWriter json(&file);
 
     json.setMinimize(options.testFlag(WriteMinimized));
 
@@ -1402,7 +1424,9 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
     json.writeEndObject();
     json.writeEndDocument();
 
-    if (!file.commit()) {
+    file.flush();
+
+    if (file.error() != QFileDevice::NoError) {
         mError = file.errorString();
         return false;
     }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-04 15:34+0200\n"
+"POT-Creation-Date: 2021-09-07 13:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,6 +104,7 @@ msgstr ""
 msgid "backgroundcolor"
 msgstr ""
 
+#: ../../reference/json-map-format.rst:1
 #: ../../reference/json-map-format.rst:1
 #: ../../reference/json-map-format.rst:1
 #: ../../reference/json-map-format.rst:1
@@ -334,7 +335,6 @@ msgstr ""
 #: ../../reference/json-map-format.rst:1
 #: ../../reference/json-map-format.rst:1
 #: ../../reference/json-map-format.rst:1
-#: ../../reference/json-map-format.rst:1
 msgid "Array of :ref:`Properties <json-property>`"
 msgstr ""
 
@@ -398,6 +398,7 @@ msgstr ""
 msgid "Map grid width"
 msgstr ""
 
+#: ../../reference/json-map-format.rst:1
 #: ../../reference/json-map-format.rst:1
 #: ../../reference/json-map-format.rst:1
 #: ../../reference/json-map-format.rst:1
@@ -1252,8 +1253,8 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:559
 #: ../../reference/json-map-format.rst:621
-#: ../../reference/json-map-format.rst:669
-#: ../../reference/json-map-format.rst:692
+#: ../../reference/json-map-format.rst:670
+#: ../../reference/json-map-format.rst:693
 msgid "Example:"
 msgstr ""
 
@@ -1305,7 +1306,7 @@ msgid "colors"
 msgstr ""
 
 #: ../../reference/json-map-format.rst:1
-msgid "Array of :ref:`Wang colors <json-wangcolor>`"
+msgid "Array of :ref:`Wang colors <json-wangcolor>` (since 1.5)"
 msgstr ""
 
 #: ../../reference/json-map-format.rst:1
@@ -1317,6 +1318,10 @@ msgid "Local ID of tile representing the Wang set"
 msgstr ""
 
 #: ../../reference/json-map-format.rst:1
+msgid "``corner``, ``edge`` or ``mixed`` (since 1.5)"
+msgstr ""
+
+#: ../../reference/json-map-format.rst:1
 msgid "wangtiles"
 msgstr ""
 
@@ -1324,7 +1329,7 @@ msgstr ""
 msgid "Array of :ref:`Wang tiles <json-wangtile>`"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:657
+#: ../../reference/json-map-format.rst:658
 msgid "Wang Color"
 msgstr ""
 
@@ -1341,10 +1346,14 @@ msgid "Probability used when randomizing"
 msgstr ""
 
 #: ../../reference/json-map-format.rst:1
+msgid "Array of :ref:`Properties <json-property>` (since 1.5)"
+msgstr ""
+
+#: ../../reference/json-map-format.rst:1
 msgid "Local ID of tile representing the Wang color"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:683
+#: ../../reference/json-map-format.rst:684
 msgid "Wang Tile"
 msgstr ""
 
@@ -1360,11 +1369,11 @@ msgstr ""
 msgid "Array of Wang color indexes (``uchar[8]``)"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:704
+#: ../../reference/json-map-format.rst:705
 msgid "Object Template"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:706
+#: ../../reference/json-map-format.rst:707
 msgid "An object template is written to its own file and referenced by any instances of that template."
 msgstr ""
 
@@ -1396,7 +1405,7 @@ msgstr ""
 msgid "The object instantiated by this template"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:720
+#: ../../reference/json-map-format.rst:721
 msgid "Property"
 msgstr ""
 
@@ -1417,125 +1426,125 @@ msgstr ""
 msgid "Value of the property"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:733
+#: ../../reference/json-map-format.rst:734
 msgid "Point"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:735
+#: ../../reference/json-map-format.rst:736
 msgid "A point on a polygon or a polyline, relative to the position of the object."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:745
+#: ../../reference/json-map-format.rst:746
 msgid "Changelog"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:748
+#: ../../reference/json-map-format.rst:749
 #: ../../reference/tmx-changelog.rst:8
 msgid "Tiled 1.7"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:750
+#: ../../reference/json-map-format.rst:751
 msgid "The :ref:`json-tile` objects in a tileset are no longer always saved with increasing IDs. They are now saved in the display order, which can be changed in Tiled."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:755
+#: ../../reference/json-map-format.rst:756
 msgid "Tiled 1.6"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:757
+#: ../../reference/json-map-format.rst:758
 msgid "The ``version`` property is now written as a string (\"1.6\") instead of a number (1.5)."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:761
+#: ../../reference/json-map-format.rst:762
 #: ../../reference/tmx-changelog.rst:15
 msgid "Tiled 1.5"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:763
-msgid "Unified ``cornercolors`` and ``edgecolors`` properties of :ref:`json-wangset` as the new ``colors`` property."
+#: ../../reference/json-map-format.rst:764
+msgid "Unified ``cornercolors`` and ``edgecolors`` properties of :ref:`json-wangset` as the new ``colors`` property and added a ``type`` field."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:766
+#: ../../reference/json-map-format.rst:767
 msgid ":ref:`json-wangcolor` can now store ``properties``."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:768
+#: ../../reference/json-map-format.rst:769
 msgid "Added ``transformations`` property to :ref:`json-tileset` (see :ref:`json-tileset-transformations`)."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:771
+#: ../../reference/json-map-format.rst:772
 msgid "Removed ``dflip``, ``hflip`` and ``vflip`` properties from :ref:`json-wangtile` (no longer supported)."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:775
+#: ../../reference/json-map-format.rst:776
 #: ../../reference/tmx-changelog.rst:36
 msgid "Tiled 1.4"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:777
+#: ../../reference/json-map-format.rst:778
 msgid "Added ``objectalignment`` to the :ref:`json-tileset` object."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:778
+#: ../../reference/json-map-format.rst:779
 msgid "Added ``tintcolor`` to the :ref:`json-layer` object."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:781
+#: ../../reference/json-map-format.rst:782
 #: ../../reference/tmx-changelog.rst:47
 msgid "Tiled 1.3"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:783
+#: ../../reference/json-map-format.rst:784
 msgid "Added an ``editorsettings`` property to top-level :ref:`json-map` and :ref:`json-tileset` objects, which is used to store editor specific settings that are generally not relevant when loading a map or tileset."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:787
+#: ../../reference/json-map-format.rst:788
 msgid "Added support for Zstandard compression for tile layer data (``\"compression\": \"zstd\"`` on :ref:`tile layer objects <json-layer>`)."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:790
+#: ../../reference/json-map-format.rst:791
 msgid "Added the ``compressionlevel`` property to the :ref:`json-map` object, which stores the compression level to use for compressed tile layer data."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:794
+#: ../../reference/json-map-format.rst:795
 #: ../../reference/tmx-changelog.rst:65
 msgid "Tiled 1.2"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:796
+#: ../../reference/json-map-format.rst:797
 msgid "Added ``nextlayerid`` to the :ref:`json-map` object."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:798
+#: ../../reference/json-map-format.rst:799
 msgid "Added ``id`` to the :ref:`json-layer` object."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:800
+#: ../../reference/json-map-format.rst:801
 msgid "The tiles in a :ref:`json-tileset` are now stored as an array instead of an object. Previously the tile IDs were stored as string keys of the \"tiles\" object, now they are stored as ``id`` property of each :ref:`Tile <json-tile>` object."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:805
+#: ../../reference/json-map-format.rst:806
 msgid "Custom tile properties are now stored within each :ref:`Tile <json-tile>` instead of being included as ``tileproperties`` in the :ref:`json-tileset` object."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:809
+#: ../../reference/json-map-format.rst:810
 msgid "Custom properties are now stored in an array instead of an object where the property names were the keys. Each property is now an object that stores the name, type and value of the property. The separate ``propertytypes`` and ``tilepropertytypes`` properties have been removed."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:816
+#: ../../reference/json-map-format.rst:817
 #: ../../reference/tmx-changelog.rst:76
 msgid "Tiled 1.1"
 msgstr ""
 
-#: ../../reference/json-map-format.rst:818
+#: ../../reference/json-map-format.rst:819
 msgid "Added a :ref:`chunked data format <json-chunk>`, currently used for :doc:`infinite maps </manual/using-infinite-maps>`."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:821
+#: ../../reference/json-map-format.rst:822
 msgid ":doc:`Templates </manual/using-templates>` were added. Templates can be stored as JSON files with an :ref:`json-objecttemplate` object."
 msgstr ""
 
-#: ../../reference/json-map-format.rst:824
+#: ../../reference/json-map-format.rst:825
 msgid ":ref:`Tilesets <json-tileset>` can now contain :doc:`Terrain Sets </manual/terrain>`. They are saved in the new :ref:`json-wangset` object (since Tiled 1.1.5)."
 msgstr ""
 
@@ -1856,11 +1865,11 @@ msgid "Python"
 msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:144
-msgid "`pytiled-parser <https://github.com/Beefy-Swain/pytiled_parser>`__: Python parser for JSON maps(No support for TMX format as of v1.0.0)"
+msgid "`pytiled-parser <https://github.com/benjamin-kirkbride/pytiled_parser>`__: Python parser for JSON maps(No support for TMX format as of v1.0.0)"
 msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:146
-msgid "`Arcade <http://arcade.academy>`__: 2D game library that uses pytiled-parser for easy loading of JSON maps into a game.(No support for TMX format as of v2.6.0) `Arcade Tiled Examples <http://arcade.academy/examples/index.html#tmx-files-tiled-map-editor>`_"
+msgid "`Arcade <https://api.arcade.academy>`__: 2D game library that uses pytiled-parser for easy loading of JSON maps into a game.(No support for TMX format as of v2.6.0) `Arcade Tiled Examples <https://api.arcade.academy/en/latest/examples/index.html#using-tiled-map-editor-to-create-maps>`_"
 msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:148

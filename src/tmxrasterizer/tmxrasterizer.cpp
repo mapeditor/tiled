@@ -53,7 +53,7 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
                                   QPainter &painter,
                                   QPoint mapOffset) const
 {
-    // Perform a similar rendering than found in exportasimagedialog.cpp
+    // Perform a similar rendering than found in minimaprenderer.cpp
     LayerIterator iterator(renderer.map());
     while (const Layer *layer = iterator.next()) {
         if (!shouldDrawLayer(layer))

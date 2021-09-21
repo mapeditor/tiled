@@ -292,7 +292,7 @@
     <message>
         <location line="+2"/>
         <source>&amp;Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Donera ↗</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -302,7 +302,7 @@
     <message>
         <location line="+1"/>
         <source>&amp;Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kanske senare</translation>
     </message>
 </context>
 <context>
@@ -716,7 +716,7 @@
     <message>
         <location line="+142"/>
         <source>Support Tiled Development ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Stöd Tiledutveckling ↗</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1706,7 +1706,7 @@ Rad %1, kolumn %2</translation>
     <message>
         <location line="-53"/>
         <source>Major grid every:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stort nät varje:</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -1716,7 +1716,7 @@ Rad %1, kolumn %2</translation>
     <message>
         <location line="+30"/>
         <source> tiles</source>
-        <translation type="unfinished"> rutor</translation>
+        <translation> rutor</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -4353,12 +4353,12 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+2"/>
         <source>&amp;Enable Extensions</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Aktivera Tillägg</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Stäng</translation>
+        <translation>&amp;Stäng</translation>
     </message>
     <message>
         <location line="+231"/>
