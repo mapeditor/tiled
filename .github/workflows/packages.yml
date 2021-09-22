@@ -57,7 +57,7 @@ jobs:
 
     - name: Install Qt
       run: |
-        ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools icu | tee -a $GITHUB_PATH
+        ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtsvg qtimageformats qttools icu | tee -a $GITHUB_PATH
         ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
 
     - name: Setup CMake
@@ -165,7 +165,7 @@ jobs:
 
     - name: Install Qt
       run: |
-        sudo ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools | tee -a $GITHUB_PATH
+        sudo ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtsvg qtimageformats qttools | tee -a $GITHUB_PATH
         sudo ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
 
     - name: Setup Qbs
@@ -228,7 +228,7 @@ jobs:
 
     - name: Install Qt
       run: |
-        echo "QT_PATH=$(./dist/install-qt.sh --version ${QT_VERSION} --toolchain ${QT_TOOLCHAIN} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools qttranslations)" >> $GITHUB_ENV
+        echo "QT_PATH=$(./dist/install-qt.sh --version ${QT_VERSION} --toolchain ${QT_TOOLCHAIN} qtbase qtdeclarative qtsvg qtimageformats qttools qttranslations)" >> $GITHUB_ENV
         echo "MINGW_PATH=$(./dist/install-qt.sh --version ${MINGW_VERSION} ${MINGW_COMPONENT})" >> $GITHUB_ENV
         echo "OPENSSL_PATH=$(./dist/install-qt.sh --version ${OPENSSL_VERSION} openssl --arch ${{ matrix.openssl_arch }})" >> $GITHUB_ENV
 
