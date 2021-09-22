@@ -31,6 +31,7 @@
 #include <QStringList>
 #include <QVariant>
 #include <QMetaType>
+#include <QSharedPointer>
 
 #include "containerhelpers.h"
 #include "tiled_global.h"
@@ -184,6 +185,8 @@ inline void PropertyTypes::moveType(int from, int to)
 {
     move(mTypes, from, to);
 }
+
+using SharedPropertyTypes = QSharedPointer<PropertyTypes>;
 
 } // namespace Tiled
 

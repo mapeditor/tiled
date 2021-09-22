@@ -132,8 +132,10 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
             this, &PropertyTypesEditor::nameChanged);
 
     Preferences *prefs = Preferences::instance();
-    // TODO: Explicit set which PropertyTypes are edited by this dialog
-//    mPropertyTypesModel->setPropertyTypes(Object::propertyTypes());
+
+    auto &project = ProjectManager::instance()->project();
+    mPropertyTypesModel->setPropertyTypes(project.propertyTypes());
+
     connect(prefs, &Preferences::propertyTypesChanged,
             this, &PropertyTypesEditor::propertyTypesChanged);
     retranslateUi();
@@ -238,8 +240,10 @@ void PropertyTypesEditor::propertyTypesChanged()
     // ignore signal if we caused it
     if (mSettingPrefPropertyTypes)
         return;
-    // TODO: Do appropriate signals in case of reload for the model
-//    mPropertyTypesModel->setPropertyTypes(Object::propertyTypes());
+
+    auto &project = ProjectManager::instance()->project();
+    mPropertyTypesModel->setPropertyTypes(project.propertyTypes());
+
     updateValues();
 }
 

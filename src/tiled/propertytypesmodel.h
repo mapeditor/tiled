@@ -39,7 +39,7 @@ public:
     {
     }
 
-    void setPropertyTypes(PropertyTypes *propertyTypes);
+    void setPropertyTypes(const SharedPropertyTypes &propertyTypes);
 
     PropertyType *propertyTypeAt(const QModelIndex &index) const;
 
@@ -62,7 +62,7 @@ public slots:
 private:
     QString nextPropertyTypeName() const;
 
-    PropertyTypes *mPropertyTypes = nullptr;
+    SharedPropertyTypes mPropertyTypes;
 };
 
 } // namespace Tiled

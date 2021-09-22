@@ -29,7 +29,7 @@ static bool propertyTypeLessThan(const std::unique_ptr<PropertyType> &a, const s
     return QString::localeAwareCompare(a->name, b->name) < 0;
 }
 
-void PropertyTypesModel::setPropertyTypes(PropertyTypes *propertyTypes)
+void PropertyTypesModel::setPropertyTypes(const SharedPropertyTypes &propertyTypes)
 {
     beginResetModel();
     mPropertyTypes = propertyTypes;
