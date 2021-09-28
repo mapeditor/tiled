@@ -10,10 +10,6 @@
   url: http://fiiish.omnimad.net/
   banner: sponsors/fiiish.png
 
-- name: LeoBoost
-  url: https://www.leoboost.com/buy-instagram-followers
-  banner: sponsors/leoboost.png
-
 - name: VPS Server
   url: https://vpsserver.com/
   banner: sponsors/vpsserver.png
@@ -33,6 +29,10 @@
 - name: Casino Gap
   url: https://casinogap.org/
   banner: sponsors/uk-casino-gap.png
+
+- name: Targeted Web Traffic
+  url: https://www.targetedwebtraffic.com/
+  banner: sponsors/targetedwebtraffic.png
 
 - name: Instagram Likes
   url: https://goread.io/buy-instagram-likes
@@ -113,10 +113,6 @@
 - name: free online pokies at AusCasinos
   url: https://www.auscasinos.com/online-pokies/#free
   banner: sponsors/auscasinos.png
-
-- name: Online Сasino Canada
-  url: https://realcasinoscanada.com/
-  banner: sponsors/realcasinoscanada.png
 
 - name: online slots UK
   url: https://gamblizard.com/slots/
