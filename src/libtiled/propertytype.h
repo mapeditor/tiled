@@ -95,8 +95,9 @@ public:
         StringValue
     };
 
-    StorageType storageType = StringValue;   // TODO: Allow user to change this
+    StorageType storageType = StringValue;  // TODO: Allow user to change this
     QStringList values;
+    bool valuesAsFlags = true;             // TODO: Allow user to change this
 
     EnumPropertyType(const QString &name) : PropertyType(PT_Enum, name) {}
 

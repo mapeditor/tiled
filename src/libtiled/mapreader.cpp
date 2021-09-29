@@ -1448,20 +1448,22 @@ void MapReaderPrivate::readProperty(Properties *properties, const ExportContext 
     exportValue.typeName = atts.value(QLatin1String("type")).toString();
     exportValue.propertyTypeName = atts.value(QLatin1String("propertytype")).toString();
 
-    QString propertyValue = atts.value(QLatin1String("value")).toString();
+    const QString propertyValue = atts.value(QLatin1String("value")).toString();
+    exportValue.value = propertyValue;
 
     while (xml.readNext() != QXmlStreamReader::Invalid) {
         if (xml.isEndElement()) {
             break;
         } else if (xml.isCharacters() && !xml.isWhitespace()) {
             if (propertyValue.isEmpty())
-                propertyValue = xml.text().toString();
+                exportValue.value = xml.text().toString();
         } else if (xml.isStartElement()) {
-            readUnknownElement();
+            if (xml.name() == QLatin1String("properties"))
+                exportValue.value = readProperties();
+            else
+                readUnknownElement();
         }
     }
-
-    exportValue.value = propertyValue;
 
     properties->insert(propertyName, context.toPropertyValue(exportValue));
 }

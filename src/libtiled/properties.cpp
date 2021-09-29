@@ -150,6 +150,8 @@ QString typeToName(int type)
         return QStringLiteral("float");
     case QMetaType::QColor:
         return QStringLiteral("color");
+    case QMetaType::QVariantMap:
+        return QStringLiteral("class");
 
     default:
         if (type == filePathTypeId())
@@ -172,6 +174,8 @@ static int nameToType(const QString &name)
         return filePathTypeId();
     if (name == QLatin1String("object"))
         return objectRefTypeId();
+    if (name == QLatin1String("class"))
+        return propertyValueId();
 
     return QVariant::nameToType(name.toLatin1().constData());
 }
@@ -247,6 +251,8 @@ QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
         propertyValue = QVariant::fromValue(FilePath { url });
     } else if (metaType == objectRefTypeId()) {
         propertyValue = QVariant::fromValue(ObjectRef::fromInt(exportValue.value.toInt()));
+    } else if (metaType == propertyValueId()) {
+        // should be covered by property type below
     } else if (exportValue.value.userType() != metaType && metaType != QMetaType::UnknownType) {
         propertyValue.convert(metaType);
     }

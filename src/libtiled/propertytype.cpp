@@ -28,7 +28,10 @@
 
 #include "propertytype.h"
 
+#include "containerhelpers.h"
 #include "properties.h"
+
+#include <QVector>
 
 namespace Tiled {
 
@@ -121,7 +124,34 @@ QVariant EnumPropertyType::wrap(const QVariant &value) const
 {
     // Convert enum values stored as string, if possible
     if (value.userType() == QMetaType::QString) {
-        const int index = values.indexOf(value.toString());
+        const QString stringValue = value.toString();
+
+        if (valuesAsFlags) {
+            int flags = 0;
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+            const QVector<QStringRef> stringValues = stringValue.splitRef(QLatin1Char(','), QString::SkipEmptyParts);
+#elif QT_VERSION < QT_VERSION_CHECK(6,0,0)
+            const QVector<QStringRef> stringValues = stringValue.splitRef(QLatin1Char(','), Qt::SkipEmptyParts);
+#else
+            const QList<QStringView> stringValues = QStringView(stringValue).split(QLatin1Char(','), Qt::SkipEmptyParts);
+#endif
+
+            for (const auto &stringValue : stringValues) {
+                const int index = indexOf(values, stringValue);
+
+                // In case of any unrecognized flag name we keep the original
+                // string value, to prevent silent data loss.
+                if (index == -1)
+                    return PropertyType::wrap(value);
+
+                flags |= 1 << index;
+            }
+
+            return PropertyType::wrap(flags);
+        }
+
+        const int index = values.indexOf(stringValue);
         if (index != -1)
             return PropertyType::wrap(index);
     }
@@ -133,9 +163,24 @@ QVariant EnumPropertyType::unwrap(const QVariant &value) const
 {
     // Convert enum values to their string if desired
     if (value.userType() == QMetaType::Int && storageType == StringValue) {
-        const int index = value.toInt();
-        if (index >= 0 && index < values.size())
-            return values.at(index);
+        const int intValue = value.toInt();
+
+        if (valuesAsFlags) {
+            QString stringValue;
+
+            for (int i = 0; i < values.size(); ++i) {
+                if (intValue & (1 << i)) {
+                    if (!stringValue.isEmpty())
+                        stringValue.append(QLatin1Char(','));
+                    stringValue.append(values.at(i));
+                }
+            }
+
+            return stringValue;
+        }
+
+        if (intValue >= 0 && intValue < values.size())
+            return values.at(intValue);
     }
 
     return value;
