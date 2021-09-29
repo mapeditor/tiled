@@ -2461,7 +2461,7 @@ declare namespace tiled {
   export const menus: string[];
 
   /**
-   * urrently selected asset, or `null` if no file is open.
+   * Currently selected asset, or `null` if no file is open.
    * Can be assigned any open asset in order to change the active asset.
    */
   export let activeAsset: Asset;
