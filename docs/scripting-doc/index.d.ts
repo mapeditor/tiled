@@ -1815,6 +1815,11 @@ declare class TileMap extends Asset {
   public usedTilesets(): Tileset[];
 
   /**
+   * Removes the given objects from this map. The object references turn into a standalone copy of the object.
+   */
+  public removeObjects(objects : MapObject[]);
+
+  /**
    * Merges the tile layers in the given map with this one. If only a single tile layer exists in the given map, it will be merged with the currentLayer.
    *
    * This operation can currently only be applied to maps loaded from a file.

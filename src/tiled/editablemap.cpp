@@ -21,6 +21,7 @@
 #include "editablemap.h"
 
 #include "addremovelayer.h"
+#include "addremovemapobject.h"
 #include "addremovetileset.h"
 #include "automappingmanager.h"
 #include "changeevents.h"
@@ -314,6 +315,37 @@ QList<QObject *> EditableMap::usedTilesets() const
         if (auto document = TilesetDocument::findDocumentForTileset(tileset))
             editableTilesets.append(document->editable());
     return editableTilesets;
+}
+
+void EditableMap::removeObjects(const QList<QObject*> &objects)
+{
+    QList<MapObject *> mapObjects;
+    mapObjects.reserve(objects.size());
+
+    for (QObject *object : objects) {
+        auto editableMapObject = qobject_cast<EditableMapObject*>(object);
+        if (!editableMapObject) {
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Not an object"));
+            return;
+        }
+        if (editableMapObject->map() != this) {
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Object not from this map"));
+            return;
+        }
+
+        auto mapObject = editableMapObject->mapObject();
+        if (!mapObjects.contains(mapObject))
+            mapObjects.append(mapObject);
+    }
+
+    if (auto doc = mapDocument()) {
+        asset()->push(new RemoveMapObjects(doc, mapObjects));
+    } else {
+        for (MapObject *mapObject : mapObjects) {
+            mapObject->objectGroup()->removeObject(mapObject);
+            EditableManager::instance().release(mapObject);
+        }
+    }
 }
 
 /**
