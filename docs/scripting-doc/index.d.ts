@@ -429,6 +429,10 @@ interface Action {
  * henceforth be referred to as a layer.
  */
 declare class ObjectGroup extends Layer {
+  static readonly UnknownOrder: unique symbol
+  static readonly TopDownOrder: unique symbol
+  static readonly IndexOrder: unique symbol
+
   /**
    * Array of all objects on this layer.
    */
@@ -443,6 +447,14 @@ declare class ObjectGroup extends Layer {
    * Color of shape and point objects on this layer (when not set by object type).
    */
   color : color
+
+  /**
+   * The objects can either be drawn top down (sorted by their y-coordinate) or
+   * by index (manual stacking order).
+   *
+   * The default is top down.
+   */
+  drawOrder : typeof ObjectGroup.TopDownOrder | typeof ObjectGroup.IndexOrder | typeof ObjectGroup.UnknownOrder;
 
   /**
    * Constructs a new object layer, which can be added to a TileMap.

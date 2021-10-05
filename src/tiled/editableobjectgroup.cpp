@@ -145,6 +145,18 @@ void EditableObjectGroup::setColor(const QColor &color)
     }
 }
 
+void EditableObjectGroup::setDrawOrder(DrawOrder drawOrder)
+{
+    if (auto doc = document()) {
+        asset()->push(new ChangeObjectGroupProperties(doc,
+                                                      objectGroup(),
+                                                      color(),
+                                                      static_cast<ObjectGroup::DrawOrder>(drawOrder)));
+    } else {
+        objectGroup()->setDrawOrder(static_cast<ObjectGroup::DrawOrder>(drawOrder));
+    }
+}
+
 } // namespace Tiled
 
 #include "moc_editableobjectgroup.cpp"
