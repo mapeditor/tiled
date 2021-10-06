@@ -2468,6 +2468,20 @@ declare namespace tiled {
   export const arch: string;
 
   /**
+   * The system- and user-specific path where global extensions are installed.
+   *
+   * Note that normally it is not necessary to use this path, since the "ext:"
+   * prefix can be used to refer to files shipping with extensions. Also, there
+   * is a `__filename` property containing the full file path of the currently
+   * evaluated file.
+   *
+   * Also note that a Tiled project can have its own additional extensions
+   * directory, to make it easier to share extensions with a team or keep them
+   * under version control.
+   */
+  export const extensionsPath: string;
+
+  /**
    * Available actions for {@link trigger | tiled.trigger()}.
    */
   export const actions: string[];

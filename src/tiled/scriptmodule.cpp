@@ -98,6 +98,11 @@ QString ScriptModule::arch() const
 #endif
 }
 
+QString ScriptModule::extensionsPath() const
+{
+    return ScriptManager::instance().extensionsPath();
+}
+
 static QStringList idsToNames(const QList<Id> &ids)
 {
     QStringList names;

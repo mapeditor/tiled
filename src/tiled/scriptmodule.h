@@ -55,6 +55,7 @@ class ScriptModule : public QObject
     Q_PROPERTY(QString version READ version)
     Q_PROPERTY(QString platform READ platform)
     Q_PROPERTY(QString arch READ arch)
+    Q_PROPERTY(QString extensionsPath READ extensionsPath)
 
     Q_PROPERTY(QStringList actions READ actions)
     Q_PROPERTY(QStringList menus READ menus)
@@ -74,6 +75,7 @@ public:
     QString version() const;
     QString platform() const;
     QString arch() const;
+    QString extensionsPath() const;
 
     QStringList actions() const;
     QStringList menus() const;
