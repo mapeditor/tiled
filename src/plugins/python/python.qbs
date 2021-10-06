@@ -30,30 +30,40 @@ TiledPlugin {
     }
 
     Properties {
-        condition: pkgConfigPython3Embed.found || pkgConfigPython3.found
+        condition: pkgConfigPython3Embed.found
         cpp.cxxFlags: {
-            var flags = pkgConfigPython3Embed.found ? pkgConfigPython3Embed.cflags : pkgConfigPython3.cflags
+            var flags = pkgConfigPython3Embed.cflags
             if (qbs.toolchain.contains("gcc") && !qbs.toolchain.contains("clang"))
                 flags.push("-Wno-cast-function-type")
             return flags
         }
-        cpp.dynamicLibraries: pkgConfigPython3Embed.found ? pkgConfigPython3Embed.libraries : pkgConfigPython3.libraries
-        cpp.libraryPaths: pkgConfigPython3Embed.found ? pkgConfigPython3Embed.libraryPaths : pkgConfigPython3.libraryPaths
-        cpp.linkerFlags: pkgConfigPython3Embed.found ? pkgConfigPython3Embed.linkerFlags : pkgConfigPython3.linkerFlags
+        cpp.dynamicLibraries: pkgConfigPython3Embed.libraries
+        cpp.libraryPaths: pkgConfigPython3Embed.libraryPaths
+        cpp.linkerFlags: pkgConfigPython3Embed.linkerFlags
     }
 
     Properties {
-        condition: qbs.targetOS.contains("windows") && !qbs.toolchain.contains("mingw")
-        cpp.includePaths: [Environment.getEnv("PYTHONHOME") + "/include"]
-        cpp.libraryPaths: [Environment.getEnv("PYTHONHOME") + "/libs"]
-        cpp.dynamicLibraries: ["python3"]
+        condition: pkgConfigPython3.found
+        cpp.cxxFlags: {
+            var flags = pkgConfigPython3.cflags
+            if (qbs.toolchain.contains("gcc") && !qbs.toolchain.contains("clang"))
+                flags.push("-Wno-cast-function-type")
+            return flags
+        }
+        cpp.dynamicLibraries: pkgConfigPython3.libraries
+        cpp.libraryPaths: pkgConfigPython3.libraryPaths
+        cpp.linkerFlags: pkgConfigPython3.linkerFlags
     }
 
     Properties {
-        condition: qbs.targetOS.contains("windows") && qbs.toolchain.contains("mingw")
+        condition: qbs.targetOS.contains("windows")
         cpp.includePaths: [Environment.getEnv("PYTHONHOME") + "/include"]
         cpp.libraryPaths: [Environment.getEnv("PYTHONHOME") + "/libs"]
-        cpp.dynamicLibraries: [FileInfo.joinPaths(Environment.getEnv("PYTHONHOME"), pythonDllProbe.fileNamePrefix + ".dll")]
+        cpp.dynamicLibraries: {
+            if (qbs.toolchain.contains("mingw"))
+                return [FileInfo.joinPaths(Environment.getEnv("PYTHONHOME"), pythonDllProbe.fileNamePrefix + ".dll")];
+            return ["python3"];
+        }
     }
 
     files: [
