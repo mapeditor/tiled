@@ -64,7 +64,7 @@ bool ScriptedFileFormat::supportsFile(const QString &fileName) const
     QString extension = mObject.property(QStringLiteral("extension")).toString();
     extension.prepend(QLatin1Char('.'));
 
-    return fileName.endsWith(extension);
+    return fileName.endsWith(extension, Qt::CaseInsensitive);
 }
 
 QJSValue ScriptedFileFormat::read(const QString &fileName)
