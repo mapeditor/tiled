@@ -126,7 +126,7 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     , mVariantManager(new VariantPropertyManager(this))
     , mGroupManager(new QtGroupPropertyManager(this))
     , mCustomPropertiesGroup(nullptr)
-    , mCustomPropertiesHelper(mVariantManager)
+    , mCustomPropertiesHelper(this)
 {
     VariantEditorFactory *variantEditorFactory = new VariantEditorFactory(this);
 
@@ -144,6 +144,9 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
 
     connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
             this, &PropertyBrowser::valueChanged);
+
+    connect(&mCustomPropertiesHelper, &CustomPropertiesHelper::propertyValueChanged,
+            this, &PropertyBrowser::customPropertyValueChanged);
 
     connect(variantEditorFactory, &VariantEditorFactory::resetProperty,
             this, &PropertyBrowser::resetProperty);
@@ -541,16 +544,6 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
         return;
     if (!mObject || !mDocument)
         return;
-
-    if (mCustomPropertiesHelper.hasProperty(property)) {
-        QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->push(new SetProperty(mDocument,
-                                        mDocument->currentObjects(),
-                                        property->propertyName(),
-                                        fromDisplayValue(property, val)));
-        return;
-    }
-
     if (!mPropertyToId.contains(property))
         return;
 
@@ -566,6 +559,21 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::WangColorType:         applyWangColorValue(id, val); break;
     case Object::ObjectTemplateType:    break;
     }
+}
+
+void PropertyBrowser::customPropertyValueChanged(const QString &name, const QVariant &value)
+{
+    if (mUpdating)
+        return;
+    if (!mObject || !mDocument)
+        return;
+
+    qDebug() << "customPropertyValueChanged" << name;
+
+    QUndoStack *undoStack = mDocument->undoStack();
+    undoStack->push(new SetProperty(mDocument,
+                                    mDocument->currentObjects(),
+                                    name, value));
 }
 
 void PropertyBrowser::resetProperty(QtProperty *property)

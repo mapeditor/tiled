@@ -23,6 +23,7 @@
 #include <QHash>
 #include <QVariant>
 
+class QtAbstractPropertyBrowser;
 class QtProperty;
 class QtVariantProperty;
 class QtVariantPropertyManager;
@@ -31,13 +32,14 @@ namespace Tiled {
 
 class MapDocument;
 class PropertyType;
+class VariantEditorFactory;
 
 class CustomPropertiesHelper : public QObject
 {
     Q_OBJECT
 
 public:
-    CustomPropertiesHelper(QtVariantPropertyManager *propertyManager,
+    CustomPropertiesHelper(QtAbstractPropertyBrowser *propertyBrowser,
                            QObject *parent = nullptr);
 
     QtVariantProperty *createProperty(const QString &name, const QVariant &value);
@@ -51,11 +53,15 @@ public:
 
     void setMapDocument(MapDocument *mapDocument);
 
+signals:
+    void propertyValueChanged(const QString &name, const QVariant &value);
+
 private:
     QtVariantProperty *createPropertyInternal(const QString &name, const QVariant &value);
     void deletePropertyInternal(QtProperty *property);
 
-    void valueChanged(QtProperty *property, const QVariant &value);
+    void onValueChanged(QtProperty *property, const QVariant &value);
+    void unsetProperty(QtProperty *property);
     void propertyTypesChanged();
 
     void setPropertyAttributes(QtProperty *property, const PropertyType &propertyType);

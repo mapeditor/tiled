@@ -23,19 +23,27 @@
 #include "object.h"
 #include "preferences.h"
 #include "propertytype.h"
+#include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
 
 #include <QScopedValueRollback>
 
 namespace Tiled {
 
-CustomPropertiesHelper::CustomPropertiesHelper(QtVariantPropertyManager *propertyManager,
+CustomPropertiesHelper::CustomPropertiesHelper(QtAbstractPropertyBrowser *propertyBrowser,
                                                QObject *parent)
     : QObject(parent)
-    , mPropertyManager(propertyManager)
+    , mPropertyManager(new VariantPropertyManager(this))
 {
-    connect(propertyManager, &QtVariantPropertyManager::valueChanged,
-            this, &CustomPropertiesHelper::valueChanged);
+    VariantEditorFactory *variantEditorFactory = new VariantEditorFactory(this);
+
+    propertyBrowser->setFactoryForManager(mPropertyManager, variantEditorFactory);
+
+    connect(mPropertyManager, &QtVariantPropertyManager::valueChanged,
+            this, &CustomPropertiesHelper::onValueChanged);
+
+    connect(variantEditorFactory, &VariantEditorFactory::resetProperty,
+            this, &CustomPropertiesHelper::unsetProperty);
 
     connect(Preferences::instance(), &Preferences::propertyTypesChanged,
             this, &CustomPropertiesHelper::propertyTypesChanged);
@@ -168,10 +176,12 @@ QVariant CustomPropertiesHelper::fromDisplayValue(QtProperty *property,
     return value;
 }
 
-void CustomPropertiesHelper::valueChanged(QtProperty *property, const QVariant &value)
+void CustomPropertiesHelper::onValueChanged(QtProperty *property, const QVariant &value)
 {
+    qDebug() << "valueChanged" << property->propertyName() << value;
     if (!mApplyingToChildren) {
         if (auto parent = static_cast<QtVariantProperty*>(mPropertyParents.value(property))) {
+            qDebug() << "applying to parent" << parent->propertyName();
             // Bubble the value up to the parent
 
             auto variantMap = parent->value().toMap();
@@ -181,6 +191,12 @@ void CustomPropertiesHelper::valueChanged(QtProperty *property, const QVariant &
             // recursive class members.
             QScopedValueRollback<bool> updating(mApplyingToParent, true);
             parent->setValue(variantMap);
+
+            property->setModified(!variantMap.isEmpty());
+        } else {
+            // A top-level property changed
+            emit propertyValueChanged(property->propertyName(),
+                                      fromDisplayValue(property, value));
         }
     }
 
@@ -199,12 +215,30 @@ void CustomPropertiesHelper::valueChanged(QtProperty *property, const QVariant &
 
             for (QtProperty *subProperty : subProperties) {
                 const auto name = subProperty->propertyName();
-                if (map.contains(name))
-                    static_cast<QtVariantProperty*>(subProperty)->setValue(toDisplayValue(map.value(name)));
-                else
-                    static_cast<QtVariantProperty*>(subProperty)->setValue(toDisplayValue(members.value(name)));
+                const bool modified = map.contains(name);
+                const auto value = modified ? map.value(name)
+                                            : members.value(name);
+
+                subProperty->setModified(modified);
+                static_cast<QtVariantProperty*>(subProperty)->setValue(toDisplayValue(value));
             }
         }
+    }
+}
+
+void CustomPropertiesHelper::unsetProperty(QtProperty *property)
+{
+    if (!property->isModified())
+        return;
+
+    if (auto parent = static_cast<QtVariantProperty*>(mPropertyParents.value(property))) {
+        auto variantMap = parent->value().toMap();
+        variantMap.remove(property->propertyName());
+
+        if (variantMap.isEmpty())
+            unsetProperty(parent);
+        else
+            parent->setValue(variantMap);
     }
 }
 
