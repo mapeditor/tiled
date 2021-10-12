@@ -2027,6 +2027,8 @@ interface TileLayerEdit {
 
   /**
    * Sets the tile at the given location, optionally specifying tile flags.
+   *
+   * To remove a tile, set it to ``null``.
    */
   setTile(x : number, y : number, tile : Tile , flags? : number) : void
 
