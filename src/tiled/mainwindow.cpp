@@ -1023,9 +1023,6 @@ void MainWindow::newMap()
 
     emit mDocumentManager->documentCreated(mapDocument.data());
 
-    if (!mDocumentManager->saveDocumentAs(mapDocument.data()))
-        return;
-
     mDocumentManager->addDocument(mapDocument);
 }
 

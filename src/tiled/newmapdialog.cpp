@@ -30,7 +30,6 @@
 
 #include <QCoreApplication>
 #include <QMessageBox>
-#include <QPushButton>
 
 #include <memory>
 
@@ -75,8 +74,6 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
 
     mUi->fixedSizeSpacer->changeSize(Utils::dpiScaled(mUi->fixedSizeSpacer->sizeHint().width()), 0,
                                      mUi->fixedSizeSpacer->sizePolicy().horizontalPolicy());
-
-    mUi->buttonBox->button(QDialogButtonBox::Save)->setText(tr("Save As..."));
 
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"), QVariant::fromValue(Map::CSV));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"), QVariant::fromValue(Map::Base64));
