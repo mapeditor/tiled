@@ -174,6 +174,18 @@ QPainterPath MapRenderer::pointInteractionShape(const MapObject *object) const
     return path;
 }
 
+QPointF MapRenderer::snapToGrid(const QPointF &pixelCoords, int subdivisions) const
+{
+    QPointF tileCoords = pixelToTileCoords(pixelCoords);
+    if (subdivisions > 1) {
+        tileCoords = (tileCoords * subdivisions).toPoint();
+        tileCoords /= subdivisions;
+    } else {
+        tileCoords = tileCoords.toPoint();
+    }
+    return tileToPixelCoords(tileCoords);
+}
+
 void MapRenderer::drawTileLayer(QPainter *painter, const TileLayer *layer, const QRectF &exposed) const
 {
     const QSize tileSize = map()->tileSize();

@@ -270,6 +270,34 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
     }
 }
 
+QPointF HexagonalRenderer::snapToGrid(const QPointF &pixelCoords, int subdivisions) const
+{
+    Q_UNUSED(subdivisions)  // not supported
+
+    const QPoint tileCoords = pixelToTileCoords(pixelCoords).toPoint();
+    QPolygonF hex = tileToScreenPolygon(tileCoords);
+
+    const QPointF center = (hex[0] + hex[4]) / 2;
+    if (subdivisions <= 1)
+        return center;
+
+    hex.append(center);
+
+    QPointF nearest;
+    qreal minDist = std::numeric_limits<qreal>::max();
+
+    for (const QPointF &candidate : hex) {
+        const QPointF diff = candidate - pixelCoords;
+        const qreal lengthSquared = diff.x() * diff.x() + diff.y() * diff.y();
+        if (lengthSquared < minDist) {
+            minDist = lengthSquared;
+            nearest = candidate;
+        }
+    }
+
+    return nearest;
+}
+
 void HexagonalRenderer::drawTileLayer(const RenderTileCallback &renderTile,
                                       const QRectF &exposed) const
 {
@@ -442,11 +470,11 @@ QPointF HexagonalRenderer::screenToTileCoords(qreal x, qreal y) const
     }
 
     int nearest = 0;
-    qreal minDist = std::numeric_limits<qreal>::max();
+    float minDist = std::numeric_limits<float>::max();
 
     for (int i = 0; i < 4; ++i) {
         const QVector2D &center = centers[i];
-        const qreal dc = (center - rel).lengthSquared();
+        const float dc = (center - rel).lengthSquared();
         if (dc < minDist) {
             minDist = dc;
             nearest = i;

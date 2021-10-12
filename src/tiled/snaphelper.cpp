@@ -75,15 +75,12 @@ void SnapHelper::toggleFineSnap()
 void SnapHelper::snap(QPointF &pixelPos) const
 {
     if (mSnapMode != NoSnap) {
-        QPointF tileCoords = mRenderer->pixelToTileCoords(pixelPos);
         if (mSnapMode == SnapToFineGrid) {
-            int gridFine = Preferences::instance()->gridFine();
-            tileCoords = (tileCoords * gridFine).toPoint();
-            tileCoords /= gridFine;
+            const int gridFine = Preferences::instance()->gridFine();
+            pixelPos = mRenderer->snapToGrid(pixelPos, gridFine);
         } else {
-            tileCoords = tileCoords.toPoint();
+            pixelPos = mRenderer->snapToGrid(pixelPos);
         }
-        pixelPos = mRenderer->tileToPixelCoords(tileCoords);
     } else if (mSnapToPixels) {
         QPointF screenPos = mRenderer->pixelToScreenCoords(pixelPos);
         pixelPos = mRenderer->screenToPixelCoords(screenPos.toPoint());

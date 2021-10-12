@@ -35,8 +35,8 @@ namespace Tiled {
 /**
  * A hexagonal renderer.
  *
- * Only pointy-topped hexagons are supported at the moment, shifting either the
- * odd or the even rows to the right.
+ * Both pointy-topped and flat-topped hexagons are supported, as well as
+ * shifting either the odd or the even rows/columns to the right.
  *
  * The same problems as present when using the StaggeredRenderer happen with
  * this renderer.
@@ -80,6 +80,9 @@ public:
     void drawGrid(QPainter *painter, const QRectF &exposed,
                   QColor gridColor, int gridMajor = 0) const override;
 
+    QPointF snapToGrid(const QPointF &pixelCoords,
+                       int subdivisions) const override;
+
     using MapRenderer::drawTileLayer;
     void drawTileLayer(const RenderTileCallback &renderTile,
                        const QRectF &exposed) const override;
@@ -108,6 +111,8 @@ public:
     QPoint bottomRight(int x, int y) const;
 
     QPolygonF tileToScreenPolygon(int x, int y) const;
+    QPolygonF tileToScreenPolygon(QPoint tileCoords) const
+    { return tileToScreenPolygon(tileCoords.x(), tileCoords.y()); }
 };
 
 } // namespace Tiled
