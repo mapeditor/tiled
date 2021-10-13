@@ -24,7 +24,13 @@
 
 #include <QDialog>
 
+class QLabel;
+class QStackedLayout;
 class QStringListModel;
+class QTreeView;
+
+class QtBrowserItem;
+class QtTreePropertyBrowser;
 
 namespace Ui {
 class PropertyTypesEditor;
@@ -32,6 +38,7 @@ class PropertyTypesEditor;
 
 namespace Tiled {
 
+class CustomPropertiesHelper;
 class PropertyTypesModel;
 
 class PropertyTypesEditor : public QDialog
@@ -50,41 +57,64 @@ protected:
     void changeEvent(QEvent *e) override;
 
 private:
-    void addPropertyType();
+    void addPropertyType(PropertyType::Type type);
     void selectedPropertyTypesChanged();
     void removeSelectedPropertyTypes();
     QModelIndex selectedPropertyTypeIndex() const;
+
+    void currentMemberItemChanged(QtBrowserItem *item);
 
     void propertyTypeNameChanged(const QModelIndex &index,
                                  const PropertyType &type);
     void applyPropertyTypes();
     void propertyTypesChanged();
 
-    void updateValues();
+    void updateDetails();
     void updateActions();
 
     void addValue();
     void removeValues();
 
+    void openAddMemberDialog();
+    void addMember(const QString &name, const QVariant &value = QVariant());
+    void editMember(const QString &name);
+    void removeMember();
+    void renameMember();
+    void renameMemberTo(const QString &name);
+
     void selectFirstPropertyType();
     void valuesChanged();
     void nameChanged(const QString &name);
+
+    void memberValueChanged(const QString &name, const QVariant &value);
 
     void retranslateUi();
 
     Ui::PropertyTypesEditor *mUi;
     PropertyTypesModel *mPropertyTypesModel;
+    QTreeView *mValuesView;
+    QWidget *mValuesWithToolBarWidget;
     QStringListModel *mValuesModel;
+    QtTreePropertyBrowser *mMembersView;
+    QWidget *mMembersWithToolBarWidget;
+    CustomPropertiesHelper *mPropertiesHelper;
+    QStackedLayout *mValuesAndMembersStack;
+    QLabel *mValuesOrMembersLabel;
 
     bool mSettingPrefPropertyTypes = false;
     bool mSettingName = false;
-    bool mUpdatingValues = false;
+    bool mUpdatingDetails = false;
 
-    QAction *mAddPropertyTypeAction;
+    QAction *mAddEnumPropertyTypeAction;
+    QAction *mAddClassPropertyTypeAction;
     QAction *mRemovePropertyTypeAction;
 
     QAction *mAddValueAction;
     QAction *mRemoveValueAction;
+
+    QAction *mAddMemberAction;
+    QAction *mRemoveMemberAction;
+    QAction *mRenameMemberAction;
 };
 
 } // namespace Tiled

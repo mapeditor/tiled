@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Enums Editor</string>
+   <string>Property Types Editor</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -20,7 +20,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Enums</string>
+      <string>Property Types</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
@@ -66,36 +66,6 @@
         </item>
         <item row="0" column="1">
          <widget class="QLineEdit" name="nameEdit"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="valuesLabel">
-          <property name="text">
-           <string>Values</string>
-          </property>
-          <property name="buddy">
-           <cstring>valuesView</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <layout class="QVBoxLayout" name="typeDetailsLayout">
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QTreeView" name="valuesView">
-            <property name="rootIsDecorated">
-             <bool>false</bool>
-            </property>
-            <property name="uniformRowHeights">
-             <bool>true</bool>
-            </property>
-            <property name="headerHidden">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </item>
        </layout>
       </item>

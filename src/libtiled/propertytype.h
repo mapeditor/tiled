@@ -140,6 +140,7 @@ public:
     void add(std::unique_ptr<PropertyType> type);
     void clear();
     size_t count() const;
+    size_t count(PropertyType::Type type) const;
     void removeAt(int index);
     PropertyType &typeAt(int index);
     void moveType(int from, int to);

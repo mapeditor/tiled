@@ -799,7 +799,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
     mShowObjectTypesEditor->setCheckable(true);
 
-    mShowPropertyTypesEditor = new QAction(tr("Enums Editor"), this);
+    mShowPropertyTypesEditor = new QAction(tr("Property Types Editor"), this);
     mShowPropertyTypesEditor->setCheckable(true);
 
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
@@ -2344,7 +2344,7 @@ void MainWindow::retranslateUi()
     mResetToDefaultLayout->setText(tr("Reset to Default Layout"));
     mLockLayout->setText(tr("Lock Layout"));
     mShowObjectTypesEditor->setText(tr("Object Types Editor"));
-    mShowPropertyTypesEditor->setText(tr("Enums Editor"));
+    mShowPropertyTypesEditor->setText(tr("Property Types Editor"));
     mActionHandler->retranslateUi();
     CommandManager::instance()->retranslateUi();
 }

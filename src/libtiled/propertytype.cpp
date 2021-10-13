@@ -275,6 +275,16 @@ void ClassPropertyType::fromVariant(const QVariantHash &variant, const ExportCon
 
 // Helper functions
 
+size_t PropertyTypes::count(PropertyType::Type type) const
+{
+    size_t count = 0;
+    for (const auto &propertyType : mTypes) {
+        if (propertyType->type == type)
+            ++count;
+    }
+    return count;
+}
+
 /**
  * Returns a pointer to the PropertyType matching the given \a typeId, or
  * nullptr if it can't be found.

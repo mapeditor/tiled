@@ -112,6 +112,9 @@ QtVariantProperty *CustomPropertiesHelper::createPropertyInternal(const QString 
         mPropertyTypeIds.insert(property, 0);
     }
 
+    // Avoids emitting propertyValueChanged
+    QScopedValueRollback<bool> initializing(mApplyingToChildren, true);
+
     property->setValue(toDisplayValue(value));
 
     return property;
@@ -128,7 +131,13 @@ void CustomPropertiesHelper::deleteProperty(QtProperty *property)
 void CustomPropertiesHelper::deletePropertyInternal(QtProperty *property)
 {
     Q_ASSERT(mPropertyTypeIds.contains(property));
+    deleteSubProperties(property);
+    mPropertyTypeIds.remove(property);
+    delete property;
+}
 
+void CustomPropertiesHelper::deleteSubProperties(QtProperty *property)
+{
     const auto subProperties = property->subProperties();
     for (QtProperty *subProperty : subProperties) {
         if (mPropertyParents.value(subProperty) == property) {
@@ -136,10 +145,6 @@ void CustomPropertiesHelper::deletePropertyInternal(QtProperty *property)
             mPropertyParents.remove(subProperty);
         }
     }
-
-    mPropertyTypeIds.remove(property);
-
-    delete property;
 }
 
 void CustomPropertiesHelper::clear()
@@ -263,7 +268,7 @@ void CustomPropertiesHelper::setPropertyAttributes(QtProperty *property, const P
         const auto &classType = static_cast<const ClassPropertyType&>(propertyType);
 
         // Delete any existing sub-properties
-        qDeleteAll(property->subProperties());
+        deleteSubProperties(property);
 
         // Set up new properties
         QMapIterator<QString, QVariant> it(classType.members);

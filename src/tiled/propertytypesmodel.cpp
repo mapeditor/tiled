@@ -122,6 +122,15 @@ void PropertyTypesModel::setPropertyTypeValues(int index,
     enumType.values = values;
 }
 
+void PropertyTypesModel::setPropertyTypeMembers(int index, const QVariantMap &members)
+{
+    auto &propertyType = mPropertyTypes->typeAt(index);
+    Q_ASSERT(propertyType.type == PropertyType::PT_Class);
+
+    auto &classType = static_cast<ClassPropertyType&>(propertyType);
+    classType.members = members;
+}
+
 void PropertyTypesModel::removePropertyTypes(const QModelIndexList &indexes)
 {
     QVector<int> rows;
@@ -138,25 +147,44 @@ void PropertyTypesModel::removePropertyTypes(const QModelIndexList &indexes)
     }
 }
 
-QModelIndex PropertyTypesModel::addNewPropertyType()
+QModelIndex PropertyTypesModel::addNewPropertyType(PropertyType::Type type)
 {
+    std::unique_ptr<PropertyType> propertyType;
+    const auto name = nextPropertyTypeName(type);
+
+    switch (type) {
+    case PropertyType::PT_Invalid:  // should never happen
+        break;
+    case PropertyType::PT_Class:
+        propertyType = std::make_unique<ClassPropertyType>(name);
+        break;
+    case PropertyType::PT_Enum:
+        propertyType = std::make_unique<EnumPropertyType>(name);
+        break;
+    }
+
+    if (!propertyType)
+        return QModelIndex();
+
     const int row = mPropertyTypes->count();
+
     beginInsertRows(QModelIndex(), row, row);
 
-    auto propertyType = std::make_unique<EnumPropertyType>(nextPropertyTypeName());
     propertyType->id = ++PropertyType::nextId;
     mPropertyTypes->add(std::move(propertyType));
 
     endInsertRows();
+
     return index(row, 0);
 }
 
-QString PropertyTypesModel::nextPropertyTypeName() const
+QString PropertyTypesModel::nextPropertyTypeName(PropertyType::Type type) const
 {
-    const auto baseText = tr("Enum");
+    const auto baseText = type == PropertyType::PT_Enum ? tr("Enum")
+                                                        : tr("Class");
 
     // Search for a unique value, starting from the current count
-    auto number = mPropertyTypes->count();
+    auto number = mPropertyTypes->count(type);
     QString name;
     do {
         name = baseText + QString::number(number++);

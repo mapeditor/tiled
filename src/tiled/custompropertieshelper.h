@@ -59,6 +59,7 @@ signals:
 private:
     QtVariantProperty *createPropertyInternal(const QString &name, const QVariant &value);
     void deletePropertyInternal(QtProperty *property);
+    void deleteSubProperties(QtProperty *property);
 
     void onValueChanged(QtProperty *property, const QVariant &value);
     void unsetProperty(QtProperty *property);
