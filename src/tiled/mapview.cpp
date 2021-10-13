@@ -270,7 +270,17 @@ void MapView::updatePanning(int deltaTime)
     QPoint distance;
 
     if (mScrollingMode == AutoScrolling) {
-        distance = (mLastMousePos - mScrollStartPos) * deltaTime / 100;
+        QPoint diff = mLastMousePos - mScrollStartPos;
+
+        // While Shift is held, only scroll on the main axis
+        if (QGuiApplication::keyboardModifiers() & Qt::ShiftModifier) {
+            if (qAbs(diff.x()) < qAbs(diff.y()))
+                diff.setX(0);
+            else
+                diff.setY(0);
+        }
+
+        distance = diff * deltaTime / 100;
     } else if (mPanDirections && ourSmoothScrollingEnabled) {
         if (mPanDirections & Left)
             distance.rx() -= 1;
