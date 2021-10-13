@@ -112,9 +112,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     connect(mUi->sendCrashReports, &QCheckBox::toggled, [] (bool value) {
         Sentry::instance()->setUserConsent(value ? Sentry::ConsentGiven : Sentry::ConsentRevoked);
     });
-    connect(mUi->crashReportingLabel, &QLabel::linkActivated, [] (const QString &link) {
-        QDesktopServices::openUrl(QUrl(link));
-    });
+    mUi->crashReportingLabel->setOpenExternalLinks(true);
 #else
     mUi->crashReporting->setVisible(false);
 #endif

@@ -1612,6 +1612,7 @@ void MainWindow::openCrashReporterPopup()
     auto label = new QLabel;
     label->setTextFormat(Qt::RichText);
     label->setText(tr("<html>Enable anonymous crash reporting? <a href=\"https://www.mapeditor.org/crash-reporting\">more information</a></html>"));
+    label->setOpenExternalLinks(true);
 
     auto yesButton = new QPushButton(tr("&Yes"));
     auto noButton = new QPushButton(tr("&No"));
@@ -1627,9 +1628,6 @@ void MainWindow::openCrashReporterPopup()
     auto popup = new PopupWidget(this);
     popup->setLayout(layout);
 
-    connect(label, &QLabel::linkActivated, [] (const QString &link) {
-        QDesktopServices::openUrl(QUrl(link));
-    });
     connect(yesButton, &QPushButton::clicked, [] {
         Sentry::instance()->setUserConsent(Sentry::ConsentGiven);
     });
@@ -1653,6 +1651,7 @@ void MainWindow::openProjectExtensionsPopup()
     auto label = new QLabel;
     label->setTextFormat(Qt::RichText);
     label->setText(tr("The current project contains <a href=\"https://doc.mapeditor.org/en/stable/reference/scripting/\">scripted extensions</a>.<br><i>Make sure you trust those extensions before enabling them!</i>"));
+    label->setOpenExternalLinks(true);
 
     auto enableButton = new QPushButton(tr("&Enable Extensions"));
     auto closeButton = new QPushButton(tr("&Close"));
@@ -1667,9 +1666,6 @@ void MainWindow::openProjectExtensionsPopup()
     popup->setLayout(layout);
     popup->setTint(Qt::yellow);
 
-    connect(label, &QLabel::linkActivated, [] (const QString &link) {
-        QDesktopServices::openUrl(QUrl(link));
-    });
     connect(enableButton, &QPushButton::clicked, [popup] {
         ScriptManager::instance().enableProjectExtensions();
         popup->close();
