@@ -11,7 +11,7 @@
     <message>
         <location line="+96"/>
         <source>Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>贊助 ↗</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -103,12 +103,12 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
         <source>Edit Commands</source>
-        <translation type="unfinished">編輯命令</translation>
+        <translation>編輯命令</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>關閉</translation>
     </message>
 </context>
 <context>
@@ -194,7 +194,7 @@
     <message>
         <location line="+12"/>
         <source>Unknown short argument %1.%2: %3</source>
-        <translation type="unfinished">未知短參數 %1.%2: %3</translation>
+        <translation>未知短參數 %1.%2: %3</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -211,7 +211,7 @@
     <message>
         <location line="+2"/>
         <source>Display this help</source>
-        <translation type="unfinished">顯示幫助信息</translation>
+        <translation type="unfinished">顯示幫助訊息</translation>
     </message>
 </context>
 <context>
@@ -225,7 +225,7 @@
         <location line="+14"/>
         <location line="+74"/>
         <source>Browse...</source>
-        <translation type="unfinished">瀏覽...</translation>
+        <translation>瀏覽...</translation>
     </message>
     <message>
         <location line="-61"/>
@@ -235,7 +235,7 @@
     <message>
         <location line="+17"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>清除</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -333,27 +333,27 @@
     <message>
         <location filename="../src/tiled/exportasimagedialog.ui" line="+14"/>
         <source>Export As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>匯出成圖片</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Location</source>
-        <translation type="unfinished">位置</translation>
+        <translation>位置</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Name:</source>
-        <translation type="unfinished">名稱:</translation>
+        <translation>名稱:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished">瀏覽(&amp;B)...</translation>
+        <translation>瀏覽(&amp;B)...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Settings</source>
-        <translation type="unfinished">設定</translation>
+        <translation>設定</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -378,7 +378,7 @@
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation type="unfinished">&amp;包括背景顏色</translation>
+        <translation>包括背景顏色 (&amp;I)</translation>
     </message>
 </context>
 <context>
@@ -406,7 +406,7 @@
         <location filename="../src/plugins/yy/yyplugin.cpp" line="+1272"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+724"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">檔案不可寫入.</translation>
+        <translation>檔案不可寫入。</translation>
     </message>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+135"/>
@@ -420,7 +420,7 @@
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+138"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="-53"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">無法讀取檔案.</translation>
+        <translation>無法讀取檔案。</translation>
     </message>
 </context>
 <context>
@@ -1743,12 +1743,12 @@ Line %1, column %2</source>
         <location line="+5"/>
         <location line="+6"/>
         <source>Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>主題</translation>
     </message>
     <message>
         <location line="+106"/>
         <source>Extensions</source>
-        <translation type="unfinished"></translation>
+        <translation>擴充功能</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1790,17 +1790,17 @@ Line %1, column %2</source>
     <message>
         <location line="-109"/>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>更新</translation>
     </message>
     <message>
         <location line="+136"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>外掛程式</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Enabled Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>已啟用的外掛程式</translation>
     </message>
 </context>
 <context>
@@ -2906,7 +2906,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/texteditordialog.ui" line="+14"/>
         <source>Edit Text</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯文字</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -2929,12 +2929,12 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation> 毫秒</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>套用</translation>
     </message>
     <message>
         <location line="+98"/>
@@ -2949,13 +2949,13 @@ Line %1, column %2</source>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+187"/>
         <location line="+501"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished">水平翻轉</translation>
+        <translation>水平翻轉</translation>
     </message>
     <message>
         <location line="-500"/>
         <location line="+501"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished">垂直翻轉</translation>
+        <translation>垂直翻轉</translation>
     </message>
     <message>
         <location line="-363"/>
@@ -2977,15 +2977,15 @@ Line %1, column %2</source>
     <message numerus="yes">
         <location line="-40"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform><byte value="x1d"/>複製<byte value="x1d"/>%n個物件</numerusform>
+        <translation>
+            <numerusform><byte value="x1d"/>複製 <byte value="x1d"/>%n 個物件</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform>移除%n個物件</numerusform>
+        <translation>
+            <numerusform>移除 %n 個物件</numerusform>
         </translation>
     </message>
     <message>
@@ -3001,7 +3001,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>Add Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>新增物件</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -3162,17 +3162,17 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="-400"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>動作</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>文字</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>捷徑</translation>
     </message>
 </context>
 <context>
@@ -3395,7 +3395,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/clipboardmanager.cpp" line="+266"/>
         <source>Paste Objects</source>
-        <translation type="unfinished">貼上物件</translation>
+        <translation>貼上物件</translation>
     </message>
 </context>
 <context>
@@ -3403,22 +3403,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/commandbutton.cpp" line="+55"/>
         <source>Error Executing Command</source>
-        <translation type="unfinished">執行命令時發生錯誤</translation>
+        <translation>執行命令時發生錯誤</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>You do not have any commands setup.</source>
-        <translation type="unfinished">没有設定任何命令.</translation>
+        <translation>没有設定任何命令。</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Edit Commands...</source>
-        <translation type="unfinished">編輯命令...</translation>
+        <translation>編輯命令...</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Execute Command</source>
-        <translation type="unfinished">執行命令</translation>
+        <translation>執行命令</translation>
     </message>
 </context>
 <context>
@@ -3427,12 +3427,12 @@ Line %1, column %2</source>
         <location filename="../src/tiled/commanddatamodel.cpp" line="+127"/>
         <location line="+69"/>
         <source>&lt;new command&gt;</source>
-        <translation type="unfinished">&lt;新<byte value="x1c"/> 命令&gt;</translation>
+        <translation>&lt;新<byte value="x1c"/> 命令&gt;</translation>
     </message>
     <message>
         <location line="-61"/>
         <source>Set a name for this command</source>
-        <translation type="unfinished">設定命令名稱</translation>
+        <translation>設定命令名稱</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3442,62 +3442,62 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Show or hide this command in the command list</source>
-        <translation type="unfinished">在命令列表中顯示或隱藏該<byte value="x1c"/>命令</translation>
+        <translation>在命令列表中顯示或隱藏該<byte value="x1c"/>命令</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add a new command</source>
-        <translation type="unfinished">新增命令</translation>
+        <translation>新增命令</translation>
     </message>
     <message>
         <location line="+114"/>
         <source>Name</source>
-        <translation type="unfinished">名稱</translation>
+        <translation>名稱</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>捷徑</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Enable</source>
-        <translation type="unfinished">啟用</translation>
+        <translation>啟用</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Move Up</source>
-        <translation type="unfinished">上移</translation>
+        <translation>上移</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move Down</source>
-        <translation type="unfinished">下移</translation>
+        <translation>下移</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Execute</source>
-        <translation type="unfinished">執行</translation>
+        <translation>執行</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Execute in Terminal</source>
-        <translation type="unfinished">在终端機中執行</translation>
+        <translation>在终端機中執行</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete</source>
-        <translation type="unfinished">删除</translation>
+        <translation>删除</translation>
     </message>
     <message>
         <location line="+92"/>
         <source>%1 (copy)</source>
-        <translation type="unfinished">%1 (複製)</translation>
+        <translation>%1 (複製)</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>New command</source>
-        <translation type="unfinished">新命令</translation>
+        <translation>新命令</translation>
     </message>
 </context>
 <context>
@@ -3505,12 +3505,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/commanddialog.cpp" line="+53"/>
         <source>Global Commands</source>
-        <translation type="unfinished"></translation>
+        <translation>全域命令</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Project Commands</source>
-        <translation type="unfinished"></translation>
+        <translation>專案命令</translation>
     </message>
 </context>
 <context>
@@ -3518,12 +3518,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/commandmanager.cpp" line="+68"/>
         <source>Open in text editor</source>
-        <translation type="unfinished">在文字編輯器中開啟</translation>
+        <translation>在文字編輯器中開啟</translation>
     </message>
     <message>
         <location line="+142"/>
         <source>Edit Commands...</source>
-        <translation type="unfinished">編輯命令...</translation>
+        <translation>編輯命令...</translation>
     </message>
 </context>
 <context>
@@ -3531,7 +3531,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/command.cpp" line="+245"/>
         <source>Unable to create/open %1</source>
-        <translation type="unfinished">不能建立/開啟%1</translation>
+        <translation>無法建立/開啟 %1</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3546,27 +3546,27 @@ Line %1, column %2</source>
     <message>
         <location line="+34"/>
         <source>The command failed to start.</source>
-        <translation type="unfinished">命令無法啟動.</translation>
+        <translation>命令無法啟動。</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The command crashed.</source>
-        <translation type="unfinished">命令當掉了.</translation>
+        <translation>命令崩潰。</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The command timed out.</source>
-        <translation type="unfinished">命令超時.</translation>
+        <translation>命令逾時。</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>An unknown error occurred.</source>
-        <translation type="unfinished">發生未知錯誤.</translation>
+        <translation>發生未知錯誤。</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error Executing %1</source>
-        <translation type="unfinished">執行錯誤%1</translation>
+        <translation>執行錯誤 %1</translation>
     </message>
 </context>
 <context>
@@ -3657,7 +3657,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createtextobjecttool.cpp" line="+70"/>
         <source>Insert Text</source>
-        <translation type="unfinished"></translation>
+        <translation>插入文字</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3699,19 +3699,19 @@ Line %1, column %2</source>
         <source>%1:
 
 %2</source>
-        <translation type="unfinished">%1:
+        <translation>%1:
 
 %2</translation>
     </message>
     <message>
         <location line="+112"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>關閉</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Close Other Tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>關閉其他分頁</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3734,22 +3734,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/donationpopup.cpp" line="+4"/>
         <source>Remind me next week</source>
-        <translation type="unfinished"></translation>
+        <translation>下周提醒我</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remind me next month</source>
-        <translation type="unfinished"></translation>
+        <translation>下個月提醒我</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Don&apos;t remind me</source>
-        <translation type="unfinished"></translation>
+        <translation>不要再提醒我</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Thanks!</source>
-        <translation type="unfinished"></translation>
+        <translation>謝謝！</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3815,7 +3815,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/eraser.cpp" line="+35"/>
         <location line="+62"/>
         <source>Eraser</source>
-        <translation type="unfinished">橡皮擦</translation>
+        <translation>橡皮擦</translation>
     </message>
 </context>
 <context>
@@ -3823,7 +3823,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/exportasimagedialog.cpp" line="+70"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>匯出</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -3850,7 +3850,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+14"/>
         <source>Out of Memory</source>
-        <translation type="unfinished"></translation>
+        <translation>記憶體不足</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3868,17 +3868,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/filechangedwarning.cpp" line="+39"/>
         <source>File change detected. Discard changes and reload the file?</source>
-        <translation type="unfinished"></translation>
+        <translation>偵測到檔案變更。要捨棄變更並重新載入檔案嗎？</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Reload</source>
-        <translation type="unfinished">重新載入</translation>
+        <translation>重新載入</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ignore</source>
-        <translation type="unfinished"></translation>
+        <translation>忽略</translation>
     </message>
 </context>
 <context>
@@ -3886,17 +3886,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/fileedit.cpp" line="+50"/>
         <source>Choose</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇</translation>
     </message>
     <message>
         <location line="+81"/>
         <source>Choose a Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇資料夾</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Choose a File</source>
-        <translation type="unfinished">選擇檔案</translation>
+        <translation>選擇檔案</translation>
     </message>
 </context>
 <context>
@@ -3917,15 +3917,15 @@ Do you want to replace it?</source>
     <message numerus="yes">
         <location filename="../src/tiled/issuescounter.cpp" line="+110"/>
         <source>%n error(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 個錯誤</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>%n warning(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 個警告</numerusform>
         </translation>
     </message>
 </context>
@@ -3934,22 +3934,22 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/issuesdock.cpp" line="+176"/>
         <source>Show warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示警告</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>清除</translation>
     </message>
     <message>
         <location line="+46"/>
         <source>Issues</source>
-        <translation type="unfinished"></translation>
+        <translation>問題</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>過濾</translation>
     </message>
 </context>
 <context>
@@ -3957,17 +3957,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/layerdock.cpp" line="+237"/>
         <source>Layers</source>
-        <translation type="unfinished">圖層</translation>
+        <translation>圖層</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Opacity:</source>
-        <translation type="unfinished">透明度:</translation>
+        <translation>透明度:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>新圖層</translation>
     </message>
 </context>
 <context>
@@ -3975,12 +3975,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/layermodel.cpp" line="+236"/>
         <source>Layer</source>
-        <translation type="unfinished">圖層</translation>
+        <translation>圖層</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Visible</source>
-        <translation type="unfinished">可見</translation>
+        <translation>可見</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3997,42 +3997,42 @@ Do you want to replace it?</source>
     <message>
         <location line="+142"/>
         <source>Show Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示圖層</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Hide Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>隱藏圖層</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Lock Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>鎖定圖層</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Unlock Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>解鎖圖層</translation>
     </message>
     <message>
         <location line="+61"/>
         <source>Show Other Layers</source>
-        <translation type="unfinished">顯示其他圖層</translation>
+        <translation>顯示其他圖層</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Hide Other Layers</source>
-        <translation type="unfinished">隱藏其它圖層</translation>
+        <translation>隱藏其它圖層</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Lock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>鎖定其他圖層</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Unlock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>解鎖其他圖層</translation>
     </message>
 </context>
 <context>
@@ -4058,7 +4058,7 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/magicwandtool.cpp" line="+33"/>
         <location line="+22"/>
         <source>Magic Wand</source>
-        <translation type="unfinished"></translation>
+        <translation>魔術棒</translation>
     </message>
 </context>
 <context>
@@ -4066,12 +4066,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/maintoolbar.cpp" line="+41"/>
         <source>Main Toolbar</source>
-        <translation type="unfinished">主工具列</translation>
+        <translation>主工具列</translation>
     </message>
     <message>
         <location line="+62"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>新</translation>
     </message>
 </context>
 <context>
@@ -4082,7 +4082,7 @@ Do you want to replace it?</source>
         <location line="+26"/>
         <location filename="../src/tiled/mainwindow.cpp" line="+1444"/>
         <source>untitled</source>
-        <translation type="unfinished"></translation>
+        <translation>未命名</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4097,7 +4097,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="-96"/>
         <source>Error Saving File</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存檔案時發生錯誤</translation>
     </message>
     <message>
         <location line="+41"/>
@@ -4119,12 +4119,12 @@ Do you want to replace it?</source>
         <location line="+963"/>
         <location line="+757"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">全部檔案 (*)</translation>
+        <translation>全部檔案 (*)</translation>
     </message>
     <message>
         <location line="-1698"/>
         <source>Export As...</source>
-        <translation type="unfinished">匯出為...</translation>
+        <translation>匯出為...</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -4151,12 +4151,12 @@ Please select specific format.</source>
     <message>
         <location line="+156"/>
         <source>Undo</source>
-        <translation type="unfinished">復原</translation>
+        <translation>復原</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Redo</source>
-        <translation type="unfinished">取消復原</translation>
+        <translation>取消復原</translation>
     </message>
     <message>
         <location line="+152"/>
@@ -4294,12 +4294,12 @@ Please select specific format.</source>
     <message>
         <location line="-44"/>
         <source>Open Project</source>
-        <translation type="unfinished"></translation>
+        <translation>開啟專案</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Error Opening Project</source>
-        <translation type="unfinished"></translation>
+        <translation>開啟專案時發生錯誤</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4405,7 +4405,7 @@ Please select specific format.</source>
     <message>
         <location line="+81"/>
         <source>Error Reloading Map</source>
-        <translation type="unfinished">重新載入地圖時發生錯誤</translation>
+        <translation>重新載入地圖時發生錯誤</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilecollisiondock.cpp" line="+349"/>
@@ -4701,36 +4701,36 @@ Please select specific format.</source>
     <message>
         <location line="+33"/>
         <source>Cut</source>
-        <translation type="unfinished">剪下</translation>
+        <translation>剪下</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>Delete</source>
-        <translation type="unfinished">删除</translation>
+        <translation>删除</translation>
     </message>
     <message numerus="yes">
         <location line="+426"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform><byte value="x1d"/>複製<byte value="x1d"/>%n個物件</numerusform>
+        <translation>
+            <numerusform><byte value="x1d"/>複製<byte value="x1d"/> %n 個物件</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform>移除%n個物件</numerusform>
+        <translation>
+            <numerusform>移除 %n 個物件</numerusform>
         </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Duplicate Objects</source>
-        <translation type="unfinished">複製物件</translation>
+        <translation>複製物件</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Objects</source>
-        <translation type="unfinished">移除物件</translation>
+        <translation>移除物件</translation>
     </message>
 </context>
 <context>
@@ -4754,7 +4754,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>%1: %2</source>
-        <translation type="unfinished">%1: %2</translation>
+        <translation>%1: %2</translation>
     </message>
     <message numerus="yes">
         <location line="+17"/>
@@ -4766,12 +4766,12 @@ Please select specific format.</source>
     <message>
         <location line="+56"/>
         <source>Tools</source>
-        <translation type="unfinished">工具</translation>
+        <translation>工具</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tool Options</source>
-        <translation type="unfinished"></translation>
+        <translation>工具選項</translation>
     </message>
 </context>
 <context>
@@ -4779,32 +4779,32 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapobjectmodel.cpp" line="+240"/>
         <source>Change Object Name</source>
-        <translation type="unfinished">改變物件名稱</translation>
+        <translation>修改物件名稱</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Change Object Type</source>
-        <translation type="unfinished">改變物件類型</translation>
+        <translation>改變物件類型</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>Name</source>
-        <translation type="unfinished">名稱</translation>
+        <translation>名稱</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Type</source>
-        <translation type="unfinished">類型</translation>
+        <translation>類型</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>ID</source>
-        <translation type="unfinished">ID</translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation>位置</translation>
     </message>
 </context>
 <context>
@@ -4812,7 +4812,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/minimapdock.cpp" line="+59"/>
         <source>Mini-map</source>
-        <translation type="unfinished">迷你地圖</translation>
+        <translation>小地圖</translation>
     </message>
 </context>
 <context>
@@ -4868,7 +4868,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-43"/>
         <location line="+7"/>
         <source>Error</source>
-        <translation type="unfinished">錯誤</translation>
+        <translation>錯誤</translation>
     </message>
     <message>
         <location line="-6"/>
@@ -4907,7 +4907,7 @@ Please select specific format.</source>
     <message>
         <location line="+30"/>
         <source>Update Available</source>
-        <translation type="unfinished"></translation>
+        <translation>有可用更新</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4917,7 +4917,7 @@ Please select specific format.</source>
     <message>
         <location line="+15"/>
         <source>Error checking for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>檢查更新時發生錯誤</translation>
     </message>
 </context>
 <context>
@@ -4925,17 +4925,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/newversiondialog.ui" line="+14"/>
         <source>Update Available</source>
-        <translation type="unfinished"></translation>
+        <translation>有可用更新</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Download ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>下載 ↗</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Release Notes ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>更新日誌 ↗</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -4953,17 +4953,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/newsbutton.cpp" line="+155"/>
         <source>Devlog</source>
-        <translation type="unfinished"></translation>
+        <translation>開發日誌</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>News</source>
-        <translation type="unfinished"></translation>
+        <translation>新聞</translation>
     </message>
     <message>
         <location line="-22"/>
         <source>View All Posts</source>
-        <translation type="unfinished"></translation>
+        <translation>查看所有文章</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4998,14 +4998,14 @@ Please select specific format.</source>
         <location filename="../src/tiled/objectselectiontool.cpp" line="+321"/>
         <location line="+438"/>
         <source>Select Objects</source>
-        <translation type="unfinished">選擇物件</translation>
+        <translation>選擇物件</translation>
     </message>
     <message numerus="yes">
         <location line="-296"/>
         <location line="+802"/>
         <source>Move %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform>移動%n個物件</numerusform>
+        <translation>
+            <numerusform>移動 %n 個物件</numerusform>
         </translation>
     </message>
     <message>
@@ -5021,12 +5021,12 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>&amp;%1) %2</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;%1) %2</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>%1) %2</source>
-        <translation type="unfinished">%1: %2 {1)?}</translation>
+        <translation>%1) %2</translation>
     </message>
     <message>
         <location line="+166"/>
@@ -5073,13 +5073,13 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished">移除屬性</translation>
+        <translation>移除屬性</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+299"/>
         <source>Rename Property</source>
-        <translation type="unfinished">重新命名屬性</translation>
+        <translation>重新命名屬性</translation>
     </message>
     <message>
         <location line="-242"/>
@@ -5101,17 +5101,17 @@ Please select specific format.</source>
     <message>
         <location line="-29"/>
         <source>Import Object Types</source>
-        <translation type="unfinished">匯入物件類型</translation>
+        <translation>匯入物件類型</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>Export Object Types</source>
-        <translation type="unfinished">匯出物件類型</translation>
+        <translation>匯出物件類型</translation>
     </message>
     <message>
         <location line="+145"/>
         <source>Name:</source>
-        <translation type="unfinished">名稱:</translation>
+        <translation>名稱:</translation>
     </message>
 </context>
 <context>
@@ -5119,12 +5119,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/objecttypesmodel.cpp" line="+64"/>
         <source>Type</source>
-        <translation type="unfinished">類型</translation>
+        <translation>類型</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Color</source>
-        <translation type="unfinished">顏色</translation>
+        <translation>顏色</translation>
     </message>
 </context>
 <context>
@@ -5132,7 +5132,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/objectsdock.cpp" line="+171"/>
         <source>Objects</source>
-        <translation type="unfinished">物件</translation>
+        <translation>物件</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5359,14 +5359,14 @@ Please select specific format.</source>
         <location line="+103"/>
         <location line="+194"/>
         <source>Width</source>
-        <translation type="unfinished">寬度</translation>
+        <translation>寬度</translation>
     </message>
     <message>
         <location line="-296"/>
         <location line="+103"/>
         <location line="+194"/>
         <source>Height</source>
-        <translation type="unfinished">高度</translation>
+        <translation>高度</translation>
     </message>
     <message>
         <location line="-296"/>
@@ -5434,14 +5434,14 @@ Please select specific format.</source>
     <message>
         <location line="-144"/>
         <source>Object</source>
-        <translation type="unfinished">物件</translation>
+        <translation>物件</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+46"/>
         <location line="+159"/>
         <source>ID</source>
-        <translation type="unfinished">ID</translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location line="-204"/>
@@ -5455,14 +5455,14 @@ Please select specific format.</source>
         <location line="+112"/>
         <location line="+24"/>
         <source>Name</source>
-        <translation type="unfinished">名稱</translation>
+        <translation>名稱</translation>
     </message>
     <message>
         <location line="-259"/>
         <location line="+203"/>
         <location line="+35"/>
         <source>Type</source>
-        <translation type="unfinished">類型</translation>
+        <translation>類型</translation>
     </message>
     <message>
         <location line="-234"/>
@@ -5474,13 +5474,13 @@ Please select specific format.</source>
         <location line="-37"/>
         <location line="+1318"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="-1317"/>
         <location line="+1318"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="-1307"/>
@@ -5495,7 +5495,7 @@ Please select specific format.</source>
     <message>
         <location line="+6"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>文字</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5505,7 +5505,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation>字型</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5517,7 +5517,7 @@ Please select specific format.</source>
         <location line="+38"/>
         <location line="+192"/>
         <source>Color</source>
-        <translation type="unfinished">顏色</translation>
+        <translation>顏色</translation>
     </message>
     <message>
         <location line="-219"/>
@@ -5527,7 +5527,7 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Opacity</source>
-        <translation type="unfinished">不透明度</translation>
+        <translation>透明度</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -5741,67 +5741,67 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation>左上方</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>正上方</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation>右上方</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>正左邊</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>正中間</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>正右邊</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bottom Left</source>
-        <translation type="unfinished"></translation>
+        <translation>左下方</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>正下方</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation>右下方</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Horizontal</source>
-        <translation type="unfinished">水平</translation>
+        <translation>水平</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Vertical</source>
-        <translation type="unfinished">垂直</translation>
+        <translation>垂直</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Top Down</source>
-        <translation type="unfinished">由上往下</translation>
+        <translation>由上往下</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Manual</source>
-        <translation type="unfinished">手動</translation>
+        <translation>手動</translation>
     </message>
 </context>
 <context>
@@ -5809,7 +5809,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/varianteditorfactory.cpp" line="+66"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>重置</translation>
     </message>
 </context>
 <context>
@@ -5903,7 +5903,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+103"/>
         <source>Remove shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>移除捷徑</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -5916,7 +5916,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/shortcutsettingspage.ui" line="+17"/>
         <source>Keyboard Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>鍵盤快捷鍵</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -5968,7 +5968,7 @@ Please select specific format.</source>
     <message>
         <location line="+33"/>
         <source>Export Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">匯出快捷鍵</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -6073,7 +6073,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="-49"/>
         <source>Delete Frames</source>
-        <translation type="unfinished">刪除畫框</translation>
+        <translation>刪除影格</translation>
     </message>
 </context>
 <context>
@@ -6101,12 +6101,12 @@ Please select specific format.</source>
     <message>
         <location line="+403"/>
         <source>Delete</source>
-        <translation type="unfinished">删除</translation>
+        <translation>删除</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Cut</source>
-        <translation type="unfinished">剪下</translation>
+        <translation>剪下</translation>
     </message>
     <message>
         <location line="+108"/>
@@ -6116,12 +6116,12 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Duplicate Objects</source>
-        <translation type="unfinished">複製物件</translation>
+        <translation>複製物件</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Objects</source>
-        <translation type="unfinished">移除物件</translation>
+        <translation>移除物件</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6411,7 +6411,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetparametersedit.cpp" line="+47"/>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯...</translation>
     </message>
 </context>
 <context>
@@ -6511,12 +6511,12 @@ Please select specific format.</source>
     <message>
         <location line="+139"/>
         <source>Horizontal</source>
-        <translation type="unfinished">水平</translation>
+        <translation>水平</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Vertical</source>
-        <translation type="unfinished">垂直</translation>
+        <translation>垂直</translation>
     </message>
     <message>
         <location line="+115"/>
@@ -6580,7 +6580,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/wangdock.cpp" line="+197"/>
         <location line="+363"/>
         <source>Terrains</source>
-        <translation type="unfinished">地形</translation>
+        <translation>地形</translation>
     </message>
     <message>
         <location line="-362"/>
@@ -6754,17 +6754,17 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Add Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>加入物件</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>Remove Object</source>
-        <translation>删除物件</translation>
+        <translation>移除物件</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Remove Objects</source>
-        <translation type="unfinished">移除物件</translation>
+        <translation>移除物件</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+38"/>
@@ -6779,7 +6779,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changeproperties.cpp" line="+40"/>
         <source>Change Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>修改屬性</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -7278,7 +7278,7 @@ Please select specific format.</source>
     <message>
         <location line="+421"/>
         <source>Copy File Path</source>
-        <translation type="unfinished"></translation>
+        <translation>複製檔案路徑</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -7288,7 +7288,7 @@ Please select specific format.</source>
     <message>
         <location line="+7"/>
         <source>Open with System Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>使用系統編輯器開啟</translation>
     </message>
 </context>
 <context>
@@ -7444,22 +7444,22 @@ Please select specific format.</source>
     <message>
         <location line="+7"/>
         <source>File</source>
-        <translation type="unfinished">檔案</translation>
+        <translation>檔案</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>檢視</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>協助</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>About Tiled Quick</source>
-        <translation type="unfinished"></translation>
+        <translation>關於 Tiled Quick</translation>
     </message>
 </context>
 </TS>
