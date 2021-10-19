@@ -95,11 +95,11 @@ rendered by Tiled.
 The ``staggered`` orientation refers to an isometric map using staggered
 axes.
 
-Can contain at most one: :ref:`tmx-properties`
+Can contain at most one: :ref:`tmx-properties`,
+:ref:`tmx-editorsettings` (since 1.3)
 
 Can contain any number: :ref:`tmx-tileset`, :ref:`tmx-layer`,
-:ref:`tmx-objectgroup`, :ref:`tmx-imagelayer`, :ref:`tmx-group` (since 1.0),
-:ref:`tmx-editorsettings` (since 1.3)
+:ref:`tmx-objectgroup`, :ref:`tmx-imagelayer`, :ref:`tmx-group` (since 1.0)
 
 .. _tmx-editorsettings:
 
@@ -109,7 +109,7 @@ Can contain any number: :ref:`tmx-tileset`, :ref:`tmx-layer`,
 This element contains various editor-specific settings, which are generally
 not relevant when reading a map.
 
-Can contain: :ref:`tmx-chunksize`, :ref:`tmx-export`
+Can contain at most one: :ref:`tmx-chunksize`, :ref:`tmx-export`
 
 .. _tmx-chunksize:
 
@@ -411,84 +411,13 @@ need to decompress it. Now you have an array of bytes, which should be
 interpreted as an array of unsigned 32-bit integers using little-endian
 byte ordering.
 
-Whatever format you choose for your layer data, you will always end up
-with so called "global tile IDs" (gids). They are global, since they may
-refer to a tile from any of the tilesets used by the map. In order to
-find out from which tileset the tile is you need to find the tileset
-with the highest ``firstgid`` that is still lower or equal than the gid.
-The tilesets are always stored with increasing ``firstgid``\ s.
+Whatever format you choose for your layer data, you will always end up with so
+called ":doc:`global-tile-ids`" (gids). They are called "global", since they
+may refer to a tile from any of the tilesets used by the map. The IDs also
+contain :ref:`flipping flags <gid-tile-flipping>`. The tilesets are always
+stored with increasing ``firstgid``\ s.
 
 Can contain any number: :ref:`tmx-tilelayer-tile`, :ref:`tmx-chunk`
-
-.. _tmx-tile-flipping:
-
-Tile flipping
-^^^^^^^^^^^^^
-
-The highest three bits of the gid store the flipped states. Bit 32 is
-used for storing whether the tile is horizontally flipped, bit 31 is
-used for the vertically flipped tiles and bit 30 indicates whether the
-tile is flipped (anti) diagonally, enabling tile rotation. These bits
-have to be read and cleared before you can find out which tileset a tile
-belongs to.
-
-When rendering a tile, the order of operation matters. The diagonal flip
-(x/y axis swap) is done first, followed by the horizontal and vertical
-flips.
-
-The following C++ pseudo-code should make it all clear:
-
-.. code:: cpp
-
-   // Bits on the far end of the 32-bit global tile ID are used for tile flags
-   const unsigned FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
-   const unsigned FLIPPED_VERTICALLY_FLAG   = 0x40000000;
-   const unsigned FLIPPED_DIAGONALLY_FLAG   = 0x20000000;
-
-   ...
-
-   // Extract the contents of the <data> element
-   string tile_data = ...
-
-   unsigned char *data = decompress(base64_decode(tile_data));
-   unsigned tile_index = 0;
-
-   // Here you should check that the data has the right size
-   // (map_width * map_height * 4)
-
-   for (int y = 0; y < map_height; ++y) {
-     for (int x = 0; x < map_width; ++x) {
-       unsigned global_tile_id = data[tile_index] |
-                                 data[tile_index + 1] << 8 |
-                                 data[tile_index + 2] << 16 |
-                                 data[tile_index + 3] << 24;
-       tile_index += 4;
-
-       // Read out the flags
-       bool flipped_horizontally = (global_tile_id & FLIPPED_HORIZONTALLY_FLAG);
-       bool flipped_vertically = (global_tile_id & FLIPPED_VERTICALLY_FLAG);
-       bool flipped_diagonally = (global_tile_id & FLIPPED_DIAGONALLY_FLAG);
-
-       // Clear the flags
-       global_tile_id &= ~(FLIPPED_HORIZONTALLY_FLAG |
-                           FLIPPED_VERTICALLY_FLAG |
-                           FLIPPED_DIAGONALLY_FLAG);
-
-       // Resolve the tile
-       for (int i = tileset_count - 1; i >= 0; --i) {
-         Tileset *tileset = tilesets[i];
-
-         if (tileset->first_gid() <= global_tile_id) {
-           tiles[y][x] = tileset->tileAt(global_tile_id - tileset->first_gid());
-           break;
-         }
-       }
-     }
-   }
-
-(Since the above code was put together on this wiki page and can't be
-directly tested, please make sure to report any errors you encounter
-when basing your parsing code on it, thanks.)
 
 .. _tmx-chunk:
 

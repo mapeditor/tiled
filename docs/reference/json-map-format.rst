@@ -110,6 +110,11 @@ Layer
 Tile Layer Example
 ~~~~~~~~~~~~~~~~~~
 
+The data of a tile layer can be stored as a native JSON array or as
+base64-encoded and optionally compressed binary data, the same as done in the
+:ref:`TMX format <tmx-data>`. The tiles are referenced using
+:doc:`global-tile-ids`.
+
 .. code:: json
 
     {

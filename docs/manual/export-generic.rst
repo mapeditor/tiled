@@ -27,6 +27,10 @@ Currently not included are the type of custom properties (though the
 type does affect how a property value is exported) and information
 related to :doc:`object templates <using-templates>`.
 
+The tiles are referenced using :doc:`/reference/global-tile-ids`, as done in
+the :doc:`TMX </reference/tmx-map-format>` and :doc:`JSON
+</reference/json-map-format>` formats.
+
 CSV
 ---
 
