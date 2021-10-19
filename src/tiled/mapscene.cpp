@@ -377,7 +377,11 @@ bool MapScene::event(QEvent *event)
         if (mSelectedTool)
             mSelectedTool->mouseEntered();
         break;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     case QEvent::Leave:
+#else
+    case QEvent::GraphicsSceneLeave:
+#endif
         mUnderMouse = false;
         if (mSelectedTool)
             mSelectedTool->mouseLeft();
