@@ -292,6 +292,8 @@ void TileCollisionDock::setTilesetDocument(TilesetDocument *tilesetDocument)
                 this, &TileCollisionDock::tileObjectGroupChanged);
         connect(mTilesetDocument, &TilesetDocument::tilesetTileOffsetChanged,
                 this, &TileCollisionDock::tilesetTileOffsetChanged);
+        connect(mTilesetDocument, &TilesetDocument::tilesetChanged,
+                this, &TileCollisionDock::tilesetBackgroundChanged);
     }
 }
 
@@ -400,6 +402,8 @@ void TileCollisionDock::setTile(Tile *tile)
             mapParameters.tileWidth = tile->width();
             mapParameters.tileHeight = tile->height();
         }
+
+        mapParameters.backgroundColor = tile->tileset()->backgroundColor();
 
         auto map = std::make_unique<Map>(mapParameters);
         map->addTileset(tile->sharedTileset());
@@ -539,6 +543,16 @@ void TileCollisionDock::tilesetTileOffsetChanged(Tileset *tileset)
     tileLayer->setOffset(-tileOffset);
 
     emit mDummyMapDocument->changed(LayerChangeEvent(tileLayer, LayerChangeEvent::OffsetProperty));
+}
+
+void TileCollisionDock::tilesetBackgroundChanged(Tileset *tileset)
+{
+    if (!mDummyMapDocument)
+        return;
+
+    mDummyMapDocument->map()->setBackgroundColor(tileset->backgroundColor());
+
+    emit mDummyMapDocument->changed(MapChangeEvent(Map::BackgroundColorProperty));
 }
 
 void TileCollisionDock::cut()
