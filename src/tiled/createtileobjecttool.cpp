@@ -44,12 +44,26 @@ CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
 
 void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
-    const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile()->size();
+    MapObject *newMapObject = mNewMapObjectItem->mapObject();
+
+    if (state() == Preview && tile() && mCell.tile() != tile()) {
+        mCell = Cell(tile());
+        mRotation = 0;
+
+        newMapObject->setCell(mCell);
+        newMapObject->setRotation(mRotation);
+        newMapObject->setSize(tile()->size());
+        mNewMapObjectItem->update();
+        mNewMapObjectItem->syncWithMapObject();
+    }
+
+    // todo: take into account rotation when positioning the preview
+
+    const QSize imgSize = newMapObject->cell().tile()->size();
     const QPointF halfSize(imgSize.width() / 2, imgSize.height() / 2);
     const QRectF screenBounds { pos - halfSize, imgSize };
 
     // These screenBounds assume TopLeft alignment, but the map's object alignment might be different.
-    MapObject *newMapObject = mNewMapObjectItem->mapObject();
     const QPointF offset = alignmentOffset(screenBounds, newMapObject->alignment(mapDocument()->map()));
 
     const MapRenderer *renderer = mapDocument()->renderer();
@@ -77,11 +91,89 @@ MapObject *CreateTileObjectTool::createNewMapObject()
     if (!tile())
         return nullptr;
 
+    if (mCell.tile() != tile()) {
+        mCell = Cell(tile());
+        mRotation = 0;
+    }
+
     MapObject *newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Rectangle);
-    newMapObject->setCell(Cell(tile()));
+    newMapObject->setCell(mCell);
     newMapObject->setSize(tile()->size());
+    newMapObject->setRotation(mRotation);
     return newMapObject;
+}
+
+void CreateTileObjectTool::flipHorizontally()
+{
+    switch (state()) {
+    case Idle:
+        CreateObjectTool::flipHorizontally();
+        break;
+    case Preview:
+    case CreatingObject: {
+        MapObject *newMapObject = mNewMapObjectItem->mapObject();
+        mCell.setFlippedHorizontally(!mCell.flippedHorizontally());
+        newMapObject->setCell(mCell);
+        mNewMapObjectItem->update();
+        break;
+    }
+    }
+}
+
+void CreateTileObjectTool::flipVertically()
+{
+    switch (state()) {
+    case Idle:
+        CreateObjectTool::flipVertically();
+        break;
+    case Preview:
+    case CreatingObject: {
+        MapObject *newMapObject = mNewMapObjectItem->mapObject();
+        mCell.setFlippedVertically(!mCell.flippedVertically());
+        newMapObject->setCell(mCell);
+        mNewMapObjectItem->update();
+        break;
+    }
+    }
+}
+
+void CreateTileObjectTool::rotateLeft()
+{
+    switch (state()) {
+    case Idle:
+        CreateObjectTool::rotateLeft();
+        break;
+    case Preview:
+    case CreatingObject: {
+        MapObject *newMapObject = mNewMapObjectItem->mapObject();
+        mRotation -= 90;
+        if (mRotation < -180)
+            mRotation += 360;
+        newMapObject->setRotation(mRotation);
+        mNewMapObjectItem->syncWithMapObject();
+        break;
+    }
+    }
+}
+
+void CreateTileObjectTool::rotateRight()
+{
+    switch (state()) {
+    case Idle:
+        CreateObjectTool::rotateRight();
+        break;
+    case Preview:
+    case CreatingObject: {
+        MapObject *newMapObject = mNewMapObjectItem->mapObject();
+        mRotation += 90;
+        if (mRotation > 180)
+            mRotation -= 360;
+        newMapObject->setRotation(mRotation);
+        mNewMapObjectItem->syncWithMapObject();
+        break;
+    }
+    }
 }
 
 #include "moc_createtileobjecttool.cpp"

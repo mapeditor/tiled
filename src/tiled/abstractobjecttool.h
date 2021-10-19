@@ -83,6 +83,11 @@ protected:
     QList<MapObject*> mapObjectsAt(const QPointF &pos) const;
     MapObject *topMostMapObjectAt(const QPointF &pos) const;
 
+    virtual void flipHorizontally();
+    virtual void flipVertically();
+    virtual void rotateLeft();
+    virtual void rotateRight();
+
 private:
     void duplicateObjects();
     void removeObjects();
@@ -94,11 +99,6 @@ private:
     void replaceObjectsWithTemplate();
     void resetInstances();
     void changeTile();
-
-    void flipHorizontally();
-    void flipVertically();
-    void rotateLeft();
-    void rotateRight();
 
     void raise();
     void lower();
