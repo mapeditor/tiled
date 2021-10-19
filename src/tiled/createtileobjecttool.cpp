@@ -106,14 +106,14 @@ MapObject *CreateTileObjectTool::createNewMapObject()
 
 void CreateTileObjectTool::flipHorizontally()
 {
+    mCell.setFlippedHorizontally(!mCell.flippedHorizontally());
+
     switch (state()) {
     case Idle:
-        CreateObjectTool::flipHorizontally();
         break;
     case Preview:
     case CreatingObject: {
         MapObject *newMapObject = mNewMapObjectItem->mapObject();
-        mCell.setFlippedHorizontally(!mCell.flippedHorizontally());
         newMapObject->setCell(mCell);
         mNewMapObjectItem->update();
         break;
@@ -123,14 +123,14 @@ void CreateTileObjectTool::flipHorizontally()
 
 void CreateTileObjectTool::flipVertically()
 {
+    mCell.setFlippedVertically(!mCell.flippedVertically());
+
     switch (state()) {
     case Idle:
-        CreateObjectTool::flipVertically();
         break;
     case Preview:
     case CreatingObject: {
         MapObject *newMapObject = mNewMapObjectItem->mapObject();
-        mCell.setFlippedVertically(!mCell.flippedVertically());
         newMapObject->setCell(mCell);
         mNewMapObjectItem->update();
         break;
@@ -140,16 +140,16 @@ void CreateTileObjectTool::flipVertically()
 
 void CreateTileObjectTool::rotateLeft()
 {
+    mRotation -= 90;
+    if (mRotation < -180)
+        mRotation += 360;
+
     switch (state()) {
     case Idle:
-        CreateObjectTool::rotateLeft();
         break;
     case Preview:
     case CreatingObject: {
         MapObject *newMapObject = mNewMapObjectItem->mapObject();
-        mRotation -= 90;
-        if (mRotation < -180)
-            mRotation += 360;
         newMapObject->setRotation(mRotation);
         mNewMapObjectItem->syncWithMapObject();
         break;
@@ -159,16 +159,16 @@ void CreateTileObjectTool::rotateLeft()
 
 void CreateTileObjectTool::rotateRight()
 {
+    mRotation += 90;
+    if (mRotation > 180)
+        mRotation -= 360;
+
     switch (state()) {
     case Idle:
-        CreateObjectTool::rotateRight();
         break;
     case Preview:
     case CreatingObject: {
         MapObject *newMapObject = mNewMapObjectItem->mapObject();
-        mRotation += 90;
-        if (mRotation > 180)
-            mRotation -= 360;
         newMapObject->setRotation(mRotation);
         mNewMapObjectItem->syncWithMapObject();
         break;
