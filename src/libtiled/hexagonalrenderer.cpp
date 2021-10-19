@@ -272,16 +272,13 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
 
 QPointF HexagonalRenderer::snapToGrid(const QPointF &pixelCoords, int subdivisions) const
 {
-    Q_UNUSED(subdivisions)  // not supported
-
     const QPoint tileCoords = pixelToTileCoords(pixelCoords).toPoint();
     QPolygonF hex = tileToScreenPolygon(tileCoords);
 
-    const QPointF center = (hex[0] + hex[4]) / 2;
-    if (subdivisions <= 1)
-        return center;
-
-    hex.append(center);
+    if (subdivisions > 1) {
+        const QPointF center = (hex[0] + hex[4]) / 2;
+        hex.append(center);
+    }
 
     QPointF nearest;
     qreal minDist = std::numeric_limits<qreal>::max();
