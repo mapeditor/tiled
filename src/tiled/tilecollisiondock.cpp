@@ -547,10 +547,7 @@ void TileCollisionDock::tilesetTileOffsetChanged(Tileset *tileset)
 
 void TileCollisionDock::tilesetBackgroundChanged(Tileset *tileset)
 {
-    if (!mMapScene)
-        return;
-
-    mMapScene->setBackgroundBrush(tileset->backgroundColor());
+    mMapScene->setOverrideBackgroundColor(tileset->backgroundColor());
 }
 
 void TileCollisionDock::cut()
