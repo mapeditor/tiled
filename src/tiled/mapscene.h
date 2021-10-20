@@ -76,6 +76,8 @@ public:
     const QRectF &viewRect() const;
     void setViewRect(const QRectF &rect);
 
+    void setOverrideBackgroundColor(QColor backgroundColor);
+
     QPointF absolutePositionForLayer(const Layer &layer) const;
     QPointF layerItemPosition(const Layer &layer) const;
     QPointF parallaxOffset(const Layer &layer) const;
@@ -134,6 +136,7 @@ private:
     QPointF mLastMousePos;
     QRectF mViewRect;
     QColor mDefaultBackgroundColor;
+    QColor mOverrideBackgroundColor = QColor::Invalid;
 };
 
 /**

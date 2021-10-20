@@ -292,6 +292,11 @@ void MapScene::refreshScene()
 
 void MapScene::updateDefaultBackgroundColor()
 {
+    if(mOverrideBackgroundColor.isValid()){
+        setBackgroundBrush(mOverrideBackgroundColor);
+        return;
+    }
+
     mDefaultBackgroundColor = QGuiApplication::palette().dark().color();
 
     if (!mMapDocument || !mMapDocument->map()->backgroundColor().isValid())
@@ -307,6 +312,16 @@ void MapScene::updateSceneRect()
 
     setSceneRect(sceneRect);
 }
+
+void MapScene::setOverrideBackgroundColor(QColor backgroundColor)
+{
+    if(mOverrideBackgroundColor == backgroundColor)
+        return;
+
+    mOverrideBackgroundColor = backgroundColor;
+
+    updateDefaultBackgroundColor();
+};
 
 void MapScene::setWorldsEnabled(bool enabled)
 {
