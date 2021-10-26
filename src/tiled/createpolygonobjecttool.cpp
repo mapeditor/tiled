@@ -57,6 +57,7 @@ CreatePolygonObjectTool::CreatePolygonObjectTool(QObject *parent)
     , mHoveredHandle(nullptr)
     , mClickedHandle(nullptr)
 {
+    mOverlayObjectGroup->setLocked(true);    // prevents selection of overlay object
     mOverlayObjectGroup->addObject(mOverlayPolygonObject);
 
     QColor highlight = QApplication::palette().highlight().color();

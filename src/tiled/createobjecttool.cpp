@@ -52,7 +52,8 @@ CreateObjectTool::CreateObjectTool(Id id, QObject *parent)
     , mNewMapObjectGroup(new ObjectGroup)
     , mObjectGroupItem(new ObjectGroupItem(mNewMapObjectGroup.get()))
 {
-    mObjectGroupItem->setZValue(10000); // same as the BrushItem
+    mNewMapObjectGroup->setLocked(true);    // prevents selection of preview object
+    mObjectGroupItem->setZValue(10000);     // same as the BrushItem
 }
 
 CreateObjectTool::~CreateObjectTool()
@@ -137,9 +138,10 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
 void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::RightButton) {
-        if (mState == CreatingObject)
+        if (mState == CreatingObject) {
             cancelNewMapObject();
-        return;
+            return;
+        }
     }
 
     if (event->button() != Qt::LeftButton) {
