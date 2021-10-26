@@ -57,7 +57,7 @@ QVariant PropertyType::unwrap(const QVariant &value) const
     return value;
 }
 
-QVariantHash PropertyType::toVariant(const ExportContext &) const
+QVariantMap PropertyType::toVariant(const ExportContext &) const
 {
     return {
         { QStringLiteral("type"), typeToString(type) },
@@ -66,15 +66,20 @@ QVariantHash PropertyType::toVariant(const ExportContext &) const
     };
 }
 
-std::unique_ptr<PropertyType> PropertyType::createFromVariant(const QVariant &variant, const ExportContext &context)
+/**
+ * Creates a PropertyType instance based on the given variant.
+ *
+ * After loading all property types, PropertyType::resolveDependencies should
+ * be called on each of them. This two step process allows class members to
+ * refer to other types, regardless of their order.
+ */
+std::unique_ptr<PropertyType> PropertyType::createFromVariant(const QVariantMap &variant)
 {
     std::unique_ptr<PropertyType> propertyType;
 
-    const auto hash = variant.toHash();
-
-    const int id = hash.value(QStringLiteral("id")).toInt();
-    const QString name = hash.value(QStringLiteral("name")).toString();
-    const PropertyType::Type type = PropertyType::typeFromString(hash.value(QStringLiteral("type")).toString());
+    const int id = variant.value(QStringLiteral("id")).toInt();
+    const QString name = variant.value(QStringLiteral("name")).toString();
+    const PropertyType::Type type = PropertyType::typeFromString(variant.value(QStringLiteral("type")).toString());
 
     switch (type) {
     case PropertyType::PT_Invalid:
@@ -88,8 +93,8 @@ std::unique_ptr<PropertyType> PropertyType::createFromVariant(const QVariant &va
     }
 
     if (propertyType) {
-        propertyType->fromVariant(hash, context);
         propertyType->id = id;
+        propertyType->fromVariant(variant);
         nextId = std::max(nextId, id);
     }
 
@@ -191,18 +196,20 @@ QVariant EnumPropertyType::defaultValue() const
     return 0;
 }
 
-QVariantHash EnumPropertyType::toVariant(const ExportContext &context) const
+QVariantMap EnumPropertyType::toVariant(const ExportContext &context) const
 {
     auto variant = PropertyType::toVariant(context);
-    variant.insert(QStringLiteral("values"), values);
     variant.insert(QStringLiteral("storageType"), storageTypeToString(storageType));
+    variant.insert(QStringLiteral("values"), values);
+    variant.insert(QStringLiteral("valuesAsFlags"), valuesAsFlags);
     return variant;
 }
 
-void EnumPropertyType::fromVariant(const QVariantHash &variant, const ExportContext &)
+void EnumPropertyType::fromVariant(const QVariantMap &variant)
 {
     storageType = storageTypeFromString(variant.value(QStringLiteral("storageType")).toString());
     values = variant.value(QStringLiteral("values")).toStringList();
+    valuesAsFlags = variant.value(QStringLiteral("valuesAsFlags"), false).toBool();
 }
 
 EnumPropertyType::StorageType EnumPropertyType::storageTypeFromString(const QString &string)
@@ -230,7 +237,7 @@ QVariant ClassPropertyType::defaultValue() const
     return QVariantMap();
 }
 
-QVariantHash ClassPropertyType::toVariant(const ExportContext &context) const
+QVariantMap ClassPropertyType::toVariant(const ExportContext &context) const
 {
     QVariantList members;
 
@@ -240,7 +247,7 @@ QVariantHash ClassPropertyType::toVariant(const ExportContext &context) const
 
         const auto exportValue = context.toExportValue(it.value());
 
-        QVariantHash member {
+        QVariantMap member {
             { QStringLiteral("name"), it.key() },
             { QStringLiteral("type"), exportValue.typeName },
             { QStringLiteral("value"), exportValue.value },
@@ -257,19 +264,28 @@ QVariantHash ClassPropertyType::toVariant(const ExportContext &context) const
     return variant;
 }
 
-void ClassPropertyType::fromVariant(const QVariantHash &variant, const ExportContext &context)
+void ClassPropertyType::fromVariant(const QVariantMap &variant)
 {
     const auto membersList = variant.value(QStringLiteral("members")).toList();
     for (const auto &member : membersList) {
-        const QVariantHash hash = member.toHash();
-        const QString name = hash.value(QStringLiteral("name")).toString();
+        const QVariantMap map = member.toMap();
+        const QString name = map.value(QStringLiteral("name")).toString();
+
+        members.insert(name, map);
+    }
+}
+
+void ClassPropertyType::resolveDependencies(const ExportContext &context)
+{
+    for (auto &member : members) {
+        const QVariantMap map = member.toMap();
 
         ExportValue exportValue;
-        exportValue.value = hash.value(QStringLiteral("value"));
-        exportValue.typeName = hash.value(QStringLiteral("type")).toString();
-        exportValue.propertyTypeName = hash.value(QStringLiteral("propertyType")).toString();
+        exportValue.value = map.value(QStringLiteral("value"));
+        exportValue.typeName = map.value(QStringLiteral("type")).toString();
+        exportValue.propertyTypeName = map.value(QStringLiteral("propertyType")).toString();
 
-        members.insert(name, context.toPropertyValue(exportValue));
+        member = context.toPropertyValue(exportValue);
     }
 }
 
@@ -309,6 +325,20 @@ const PropertyType *PropertyTypes::findTypeByName(const QString &name) const
             return propertyType.get();
     }
     return nullptr;
+}
+
+void PropertyTypes::loadFrom(const QVariantList &list, const QString &path)
+{
+    clear();
+
+    const ExportContext context(*this, path);
+
+    for (const QVariant &typeValue : list)
+        if (auto propertyType = PropertyType::createFromVariant(typeValue.toMap()))
+            add(std::move(propertyType));
+
+    for (auto &propertyType : mTypes)
+        propertyType->resolveDependencies(context);
 }
 
 } // namespace Tiled

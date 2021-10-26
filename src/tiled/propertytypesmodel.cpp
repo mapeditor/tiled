@@ -29,6 +29,13 @@ static bool propertyTypeLessThan(const std::unique_ptr<PropertyType> &a, const s
     return QString::localeAwareCompare(a->name, b->name) < 0;
 }
 
+PropertyTypesModel::PropertyTypesModel(QObject *parent)
+    : QAbstractListModel(parent)
+    , mEnumIcon(QStringLiteral("://images/scalable/property-type-enum.svg"))
+    , mClassIcon(QStringLiteral("://images/scalable/property-type-class.svg"))
+{
+}
+
 void PropertyTypesModel::setPropertyTypes(const SharedPropertyTypes &propertyTypes)
 {
     beginResetModel();
@@ -61,6 +68,19 @@ QVariant PropertyTypesModel::data(const QModelIndex &index, int role) const
     if (role == Qt::DisplayRole || role == Qt::EditRole)
         if (index.column() == 0)
             return propertyType.name;
+
+    if (role == Qt::DecorationRole) {
+        if (index.column() == 0) {
+            switch (propertyType.type) {
+            case PropertyType::PT_Invalid:
+                break;
+            case PropertyType::PT_Class:
+                return mClassIcon;
+            case PropertyType::PT_Enum:
+                return mEnumIcon;
+            }
+        }
+    }
 
     return QVariant();
 }
@@ -110,25 +130,6 @@ void PropertyTypesModel::setPropertyTypeName(int row, const QString &name)
         propertyTypes.moveType(row, moveToRow);
         endMoveRows();
     }
-}
-
-void PropertyTypesModel::setPropertyTypeValues(int index,
-                                               const QStringList &values)
-{
-    auto &propertyType = mPropertyTypes->typeAt(index);
-    Q_ASSERT(propertyType.type == PropertyType::PT_Enum);
-
-    auto &enumType = static_cast<EnumPropertyType&>(propertyType);
-    enumType.values = values;
-}
-
-void PropertyTypesModel::setPropertyTypeMembers(int index, const QVariantMap &members)
-{
-    auto &propertyType = mPropertyTypes->typeAt(index);
-    Q_ASSERT(propertyType.type == PropertyType::PT_Class);
-
-    auto &classType = static_cast<ClassPropertyType&>(propertyType);
-    classType.members = members;
 }
 
 void PropertyTypesModel::removePropertyTypes(const QModelIndexList &indexes)

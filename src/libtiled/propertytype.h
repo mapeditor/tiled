@@ -66,13 +66,14 @@ public:
 
     virtual QVariant defaultValue() const = 0;
 
-    virtual QVariantHash toVariant(const ExportContext &) const;
-    virtual void fromVariant(const QVariantHash &variant, const ExportContext &) = 0;
+    virtual QVariantMap toVariant(const ExportContext &) const;
+    virtual void fromVariant(const QVariantMap &variant) = 0;
+
+    virtual void resolveDependencies(const ExportContext &) {};
 
     static int nextId;
 
-    static std::unique_ptr<PropertyType> createFromVariant(const QVariant &variant,
-                                                           const ExportContext &context);
+    static std::unique_ptr<PropertyType> createFromVariant(const QVariantMap &variant);
 
     static Type typeFromString(const QString &string);
     static QString typeToString(Type type);
@@ -87,7 +88,7 @@ protected:
 /**
  * A user-defined enum, for use as custom property.
  */
-class TILEDSHARED_EXPORT EnumPropertyType : public PropertyType
+class TILEDSHARED_EXPORT EnumPropertyType final : public PropertyType
 {
 public:
     enum StorageType {
@@ -106,8 +107,8 @@ public:
 
     QVariant defaultValue() const override;
 
-    QVariantHash toVariant(const ExportContext &) const override;
-    void fromVariant(const QVariantHash &variant, const ExportContext &) override;
+    QVariantMap toVariant(const ExportContext &) const override;
+    void fromVariant(const QVariantMap &variant) override;
 
     static StorageType storageTypeFromString(const QString &string);
     static QString storageTypeToString(StorageType type);
@@ -116,7 +117,7 @@ public:
 /**
  * A user-defined class, for use as custom property.
  */
-class TILEDSHARED_EXPORT ClassPropertyType : public PropertyType
+class TILEDSHARED_EXPORT ClassPropertyType final : public PropertyType
 {
 public:
     QVariantMap members;
@@ -125,8 +126,10 @@ public:
 
     QVariant defaultValue() const override;
 
-    QVariantHash toVariant(const ExportContext &context) const override;
-    void fromVariant(const QVariantHash &variant, const ExportContext & ) override;
+    QVariantMap toVariant(const ExportContext &context) const override;
+    void fromVariant(const QVariantMap &variant) override;
+
+    void resolveDependencies(const ExportContext &context) override;
 };
 
 /**
@@ -147,6 +150,8 @@ public:
 
     const PropertyType *findTypeById(int typeId) const;
     const PropertyType *findTypeByName(const QString &name) const;
+
+    void loadFrom(const QVariantList &list, const QString &path = QString());
 
     // Enable easy iteration over types with range-based for
     Types::iterator begin() { return mTypes.begin(); }

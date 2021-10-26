@@ -25,6 +25,7 @@
 #include "propertytype.h"
 
 #include <QAbstractListModel>
+#include <QIcon>
 #include <QStringList>
 
 namespace Tiled {
@@ -34,10 +35,7 @@ class PropertyTypesModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    PropertyTypesModel(QObject *parent = nullptr)
-        : QAbstractListModel(parent)
-    {
-    }
+    PropertyTypesModel(QObject *parent = nullptr);
 
     void setPropertyTypes(const SharedPropertyTypes &propertyTypes);
 
@@ -50,8 +48,6 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     void setPropertyTypeName(int row, const QString &name);
-    void setPropertyTypeValues(int index, const QStringList &values);
-    void setPropertyTypeMembers(int index, const QVariantMap &members);
     void removePropertyTypes(const QModelIndexList &indexes);
 
     QModelIndex addNewPropertyType(PropertyType::Type type);
@@ -63,6 +59,9 @@ private:
     QString nextPropertyTypeName(PropertyType::Type type) const;
 
     SharedPropertyTypes mPropertyTypes;
+
+    QIcon mEnumIcon;
+    QIcon mClassIcon;
 };
 
 } // namespace Tiled

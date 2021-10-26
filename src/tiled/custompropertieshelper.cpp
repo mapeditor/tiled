@@ -183,10 +183,11 @@ QVariant CustomPropertiesHelper::fromDisplayValue(QtProperty *property,
 
 void CustomPropertiesHelper::onValueChanged(QtProperty *property, const QVariant &value)
 {
-    qDebug() << "valueChanged" << property->propertyName() << value;
+    if (!mPropertyTypeIds.contains(property))
+        return;
+
     if (!mApplyingToChildren) {
         if (auto parent = static_cast<QtVariantProperty*>(mPropertyParents.value(property))) {
-            qDebug() << "applying to parent" << parent->propertyName();
             // Bubble the value up to the parent
 
             auto variantMap = parent->value().toMap();
@@ -268,6 +269,7 @@ void CustomPropertiesHelper::setPropertyAttributes(QtProperty *property, const P
         const auto &classType = static_cast<const ClassPropertyType&>(propertyType);
 
         // Delete any existing sub-properties
+        // TODO: this destroys the current value, which is a problem when called from propertyTypesChanged
         deleteSubProperties(property);
 
         // Set up new properties
@@ -285,6 +287,7 @@ void CustomPropertiesHelper::setPropertyAttributes(QtProperty *property, const P
     }
     case Tiled::PropertyType::PT_Enum: {
         const auto &enumType = static_cast<const EnumPropertyType&>(propertyType);
+        // TODO: need to re-create the property when valuesAsFlags changed
         if (enumType.valuesAsFlags) {
             mPropertyManager->setAttribute(property, QStringLiteral("flagNames"), enumType.values);
         } else {

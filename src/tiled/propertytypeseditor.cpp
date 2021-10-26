@@ -64,21 +64,24 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     , mPropertiesHelper(new CustomPropertiesHelper(mMembersView, this))
     , mValuesAndMembersStack(new QStackedLayout)
     , mValuesOrMembersLabel(new QLabel(tr("Values")))
+    , mEnumIcon(QStringLiteral("://images/scalable/property-type-enum.svg"))
+    , mClassIcon(QStringLiteral("://images/scalable/property-type-class.svg"))
 {
     mUi->setupUi(this);
+
+    mNameEditIconAction = mUi->nameEdit->addAction(QIcon(), QLineEdit::LeadingPosition);
 
     mValuesView->setRootIsDecorated(false);
     mValuesView->setUniformRowHeights(true);
     mValuesView->setHeaderHidden(true);
 
-
-    mValuesWithToolBarWidget = new QWidget;
+    mValuesWithToolBarWidget = new QWidget(mUi->groupBox);
     auto valuesWithToolBarLayout = new QVBoxLayout(mValuesWithToolBarWidget);
     valuesWithToolBarLayout->setSpacing(0);
     valuesWithToolBarLayout->setContentsMargins(0, 0, 0, 0);
     valuesWithToolBarLayout->addWidget(mValuesView);
 
-    mMembersWithToolBarWidget = new QWidget;
+    mMembersWithToolBarWidget = new QWidget(mUi->groupBox);
     auto membersWithToolBarLayout = new QVBoxLayout(mMembersWithToolBarWidget);
     membersWithToolBarLayout->setSpacing(0);
     membersWithToolBarLayout->setContentsMargins(0, 0, 0, 0);
@@ -301,6 +304,11 @@ QModelIndex PropertyTypesEditor::selectedPropertyTypeIndex() const
     return selectedRows.size() == 1 ? selectedRows.first() : QModelIndex();
 }
 
+PropertyType *PropertyTypesEditor::selectedPropertyType() const
+{
+    return mPropertyTypesModel->propertyTypeAt(selectedPropertyTypeIndex());
+}
+
 void PropertyTypesEditor::currentMemberItemChanged(QtBrowserItem *item)
 {
     mRemoveMemberAction->setEnabled(item);
@@ -314,6 +322,18 @@ void PropertyTypesEditor::propertyTypeNameChanged(const QModelIndex &index, cons
 
     if (index == selectedPropertyTypeIndex())
         mUi->nameEdit->setText(type.name);
+}
+
+void PropertyTypesEditor::applyMemberToSelectedType(const QString &name, const QVariant &value)
+{
+    PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType || propertyType->type != PropertyType::PT_Class)
+        return;
+
+    auto &classType = static_cast<ClassPropertyType&>(*propertyType);
+    classType.members.insert(name, value);
+
+    applyPropertyTypes();
 }
 
 void PropertyTypesEditor::applyPropertyTypes()
@@ -341,7 +361,7 @@ static QString nextValueText(const EnumPropertyType &propertyType)
 {
     auto baseText = propertyType.name;
     if (!baseText.isEmpty())
-        baseText.append(QLatin1Char(' '));
+        baseText.append(QLatin1Char('_'));
 
     // Search for a unique value, starting from the current count
     int number = propertyType.values.count();
@@ -355,11 +375,7 @@ static QString nextValueText(const EnumPropertyType &propertyType)
 
 void PropertyTypesEditor::addValue()
 {
-    const auto selectedTypeIndex = selectedPropertyTypeIndex();
-    if (!selectedTypeIndex.isValid())
-        return;
-
-    const PropertyType *propertyType = mPropertyTypesModel->propertyTypeAt(selectedTypeIndex);
+    const PropertyType *propertyType = selectedPropertyType();
     if (!propertyType || propertyType->type != PropertyType::PT_Enum)
         return;
 
@@ -384,7 +400,9 @@ void PropertyTypesEditor::removeValues()
 
 void PropertyTypesEditor::openAddMemberDialog()
 {
-    AddPropertyDialog dialog(window());
+    AddPropertyDialog dialog(this);
+    dialog.setWindowTitle(tr("Add Member"));
+
     if (dialog.exec() == AddPropertyDialog::Accepted)
         addMember(dialog.propertyName(), QVariant(dialog.propertyValue()));
 }
@@ -394,8 +412,8 @@ void PropertyTypesEditor::addMember(const QString &name, const QVariant &value)
     if (name.isEmpty())
         return;
 
-//    applyMemberToSelectedTypes(name, value);
-//    updateMembers();
+    applyMemberToSelectedType(name, value);
+    updateDetails();
     editMember(name);
 }
 
@@ -422,17 +440,21 @@ void PropertyTypesEditor::removeMember()
     QList<QtBrowserItem *> items = mMembersView->topLevelItems();
     if (items.count() > 1) {
         const int currentItemIndex = items.indexOf(item);
-        if (item == items.last()) {
+        if (item == items.last())
             mMembersView->setCurrentItem(items.at(currentItemIndex - 1));
-        } else {
+        else
             mMembersView->setCurrentItem(items.at(currentItemIndex + 1));
-        }
     }
 
-//    mProperties.remove(name);
     mPropertiesHelper->deleteProperty(item->property());
 
-//    removePropertyFromSelectedTypes(name);
+    PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType || propertyType->type != PropertyType::PT_Class)
+        return;
+
+    static_cast<ClassPropertyType&>(*propertyType).members.remove(name);
+
+    applyPropertyTypes();
 }
 
 void PropertyTypesEditor::renameMember()
@@ -485,10 +507,17 @@ void PropertyTypesEditor::renameMemberTo(const QString &name)
 
 void PropertyTypesEditor::updateDetails()
 {
-    const auto selectedTypeIndex = selectedPropertyTypeIndex();
-    const PropertyType *propertyType = mPropertyTypesModel->propertyTypeAt(selectedTypeIndex);
-    if (!propertyType)
+    const PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType) {
+        mUi->nameEdit->clear();
+        mUi->nameEdit->setEnabled(false);
+        mValuesWithToolBarWidget->setEnabled(false);
+        mMembersWithToolBarWidget->setEnabled(false);
+        mValuesModel->setStringList(QStringList());
+        mPropertiesHelper->clear();
+        mNameEditIconAction->setIcon(QIcon());
         return;
+    }
 
     switch (propertyType->type) {
     case PropertyType::PT_Enum: {
@@ -496,8 +525,11 @@ void PropertyTypesEditor::updateDetails()
 
         QScopedValueRollback<bool> updatingDetails(mUpdatingDetails, true);
         mValuesModel->setStringList(enumType.values);
+
+        mNameEditIconAction->setIcon(mEnumIcon);
         mValuesAndMembersStack->setCurrentWidget(mValuesWithToolBarWidget);
         mValuesOrMembersLabel->setText(tr("Values"));
+        mValuesWithToolBarWidget->setEnabled(true);
         break;
     }
     case PropertyType::PT_Class: {
@@ -518,9 +550,11 @@ void PropertyTypesEditor::updateDetails()
             mMembersView->addProperty(property);
         }
 
+        mNameEditIconAction->setIcon(mClassIcon);
         mValuesAndMembersStack->setCurrentWidget(mMembersWithToolBarWidget);
         mValuesOrMembersLabel->setText(tr("Members"));
         mAddMemberAction->setEnabled(true);
+        mMembersWithToolBarWidget->setEnabled(true);
         break;
     }
     case PropertyType::PT_Invalid:
@@ -528,21 +562,21 @@ void PropertyTypesEditor::updateDetails()
     }
 
     mUi->nameEdit->setText(propertyType->name);
-    mUi->nameEdit->setEnabled(selectedTypeIndex.isValid());
+    mUi->nameEdit->setEnabled(true);
 
     updateActions();
 }
 
 void PropertyTypesEditor::updateActions()
 {
-    const auto selectedTypeIndex = selectedPropertyTypeIndex();
+    const auto selectedType = selectedPropertyType();
     const auto valuesSelectionModel = mValuesView->selectionModel();
     const auto selectedValues = valuesSelectionModel->selectedRows();
 
-    mAddValueAction->setEnabled(selectedTypeIndex.isValid());
+    mAddValueAction->setEnabled(selectedType);
     mRemoveValueAction->setEnabled(!selectedValues.isEmpty());
 
-    mAddMemberAction->setEnabled(selectedTypeIndex.isValid());
+    mAddMemberAction->setEnabled(selectedType);
 }
 
 void PropertyTypesEditor::selectFirstPropertyType()
@@ -563,12 +597,13 @@ void PropertyTypesEditor::valuesChanged()
     if (mUpdatingDetails)
         return;
 
-    const auto index = selectedPropertyTypeIndex();
-    if (!index.isValid())
+    PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType || propertyType->type != PropertyType::PT_Enum)
         return;
 
     const QStringList newValues = mValuesModel->stringList();
-    mPropertyTypesModel->setPropertyTypeValues(index.row(), newValues);
+    auto &enumType = static_cast<EnumPropertyType&>(*propertyType);
+    enumType.values = newValues;
 
     applyPropertyTypes();
 }
@@ -588,8 +623,7 @@ void PropertyTypesEditor::memberValueChanged(const QString &name, const QVariant
     if (mUpdatingDetails)
         return;
 
-//    applyMemberToSelectedTypes(name, value);
-//    applyPropertyTypes();
+    applyMemberToSelectedType(name, value);
 }
 
 } // namespace Tiled

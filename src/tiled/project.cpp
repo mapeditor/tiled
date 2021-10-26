@@ -79,7 +79,7 @@ bool Project::save(const QString &fileName)
 
     QJsonArray propertyTypes;
     for (const auto &type : qAsConst(*mPropertyTypes))
-        propertyTypes.append(QJsonObject::fromVariantHash(type->toVariant(context)));
+        propertyTypes.append(QJsonObject::fromVariantMap(type->toVariant(context)));
 
     const QJsonObject project {
         { QStringLiteral("propertyTypes"), propertyTypes },
@@ -121,20 +121,13 @@ bool Project::load(const QString &fileName)
     mFileName = fileName;
 
     const QDir dir = QFileInfo(fileName).dir();
-    const ExportContext context(*mPropertyTypes, dir.path());
-
     const QJsonObject project = document.object();
 
     mExtensionsPath = absolute(dir, project.value(QLatin1String("extensionsPath")).toString(QLatin1String("extensions")));
     mObjectTypesFile = absolute(dir, project.value(QLatin1String("objectTypesFile")).toString());
     mAutomappingRulesFile = absolute(dir, project.value(QLatin1String("automappingRulesFile")).toString());
 
-    mPropertyTypes->clear();
-    const QJsonArray propertyTypes = project.value(QLatin1String("propertyTypes")).toArray();
-    for (const QJsonValue &typeValue : propertyTypes) {
-        if (auto propertyType = PropertyType::createFromVariant(typeValue.toVariant(), context))
-            mPropertyTypes->add(std::move(propertyType));
-    }
+    mPropertyTypes->loadFrom(project.value(QLatin1String("propertyTypes")).toArray().toVariantList());
 
     mFolders.clear();
     const QJsonArray folders = project.value(QLatin1String("folders")).toArray();

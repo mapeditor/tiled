@@ -23,6 +23,7 @@
 #include "properties.h"
 
 #include <QDialog>
+#include <QIcon>
 
 class QLabel;
 class QStackedLayout;
@@ -61,11 +62,13 @@ private:
     void selectedPropertyTypesChanged();
     void removeSelectedPropertyTypes();
     QModelIndex selectedPropertyTypeIndex() const;
+    PropertyType *selectedPropertyType() const;
 
     void currentMemberItemChanged(QtBrowserItem *item);
 
     void propertyTypeNameChanged(const QModelIndex &index,
                                  const PropertyType &type);
+    void applyMemberToSelectedType(const QString &name, const QVariant &value);
     void applyPropertyTypes();
     void propertyTypesChanged();
 
@@ -115,6 +118,10 @@ private:
     QAction *mAddMemberAction;
     QAction *mRemoveMemberAction;
     QAction *mRenameMemberAction;
+
+    QIcon mEnumIcon;
+    QIcon mClassIcon;
+    QAction *mNameEditIconAction;
 };
 
 } // namespace Tiled
