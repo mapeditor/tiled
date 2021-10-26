@@ -20,17 +20,14 @@
 
 #pragma once
 
-#include "properties.h"
-
 #include <QDialog>
-#include <QStyledItemDelegate>
+#include <QVariant>
 
 namespace Ui {
 class ObjectTypesEditor;
 }
 
 class QtBrowserItem;
-class QtProperty;
 
 namespace Tiled {
 
@@ -85,7 +82,6 @@ private:
 
     CustomPropertiesHelper *mPropertiesHelper;
 
-    AggregatedProperties mProperties;
     bool mUpdating = false;
     bool mSettingPrefObjectTypes = false;
 

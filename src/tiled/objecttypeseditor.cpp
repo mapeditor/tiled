@@ -26,6 +26,7 @@
 #include "object.h"
 #include "objecttypesmodel.h"
 #include "preferences.h"
+#include "properties.h"
 #include "session.h"
 #include "utils.h"
 
@@ -421,8 +422,6 @@ void ObjectTypesEditor::updateProperties()
 
     mAddPropertyAction->setEnabled(!selectedRows.isEmpty());
 
-    mProperties = aggregatedProperties;
-
     QScopedValueRollback<bool> updating(mUpdating, true);
 
     mPropertiesHelper->clear();
@@ -500,7 +499,6 @@ void ObjectTypesEditor::removeProperty()
         }
     }
 
-    mProperties.remove(name);
     mPropertiesHelper->deleteProperty(item->property());
 
     removePropertyFromSelectedTypes(name);
