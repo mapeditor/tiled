@@ -32,6 +32,7 @@
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
 
+#include <QCheckBox>
 #include <QCloseEvent>
 #include <QComboBox>
 #include <QInputDialog>
@@ -320,7 +321,28 @@ void PropertyTypesEditor::setStorageType(EnumPropertyType::StorageType storageTy
     if (!propertyType || propertyType->type != PropertyType::PT_Enum)
         return;
 
-    static_cast<EnumPropertyType*>(propertyType)->storageType = storageType;
+    auto &enumType = static_cast<EnumPropertyType&>(*propertyType);
+    if (enumType.storageType == storageType)
+        return;
+
+    enumType.storageType = storageType;
+    applyPropertyTypes();
+}
+
+void PropertyTypesEditor::setValuesAsFlags(bool flags)
+{
+    if (mUpdatingDetails)
+        return;
+
+    PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType || propertyType->type != PropertyType::PT_Enum)
+        return;
+
+    auto &enumType = static_cast<EnumPropertyType&>(*propertyType);
+    if (enumType.valuesAsFlags == flags)
+        return;
+
+    enumType.valuesAsFlags = flags;
     applyPropertyTypes();
 }
 
@@ -511,8 +533,9 @@ void PropertyTypesEditor::updateDetails()
     case PropertyType::PT_Enum: {
         const auto &enumType = *static_cast<const EnumPropertyType*>(propertyType);
 
-        mValuesModel->setStringList(enumType.values);
         mStorageTypeComboBox->setCurrentIndex(enumType.storageType);
+        mValuesAsFlagsCheckBox->setChecked(enumType.valuesAsFlags);
+        mValuesModel->setStringList(enumType.values);
 
         selectedValuesChanged(mValuesView->selectionModel()->selection());
         break;
@@ -541,6 +564,7 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
         mUi->formLayout->removeRow(1);
 
     mStorageTypeComboBox = nullptr;
+    mValuesAsFlagsCheckBox = nullptr;
     mValuesView = nullptr;
     mMembersView = nullptr;
 
@@ -589,6 +613,11 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
         connect(mStorageTypeComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
                 this, [this] (int index) { if (index != -1) setStorageType(static_cast<EnumPropertyType::StorageType>(index)); });
 
+        mValuesAsFlagsCheckBox = new QCheckBox(tr("Values are flags"), mUi->groupBox);
+
+        connect(mValuesAsFlagsCheckBox, &QCheckBox::toggled,
+                this, [this] (bool checked) { setValuesAsFlags(checked); });
+
         mValuesView = new QTreeView(this);
         mValuesView->setRootIsDecorated(false);
         mValuesView->setUniformRowHeights(true);
@@ -610,6 +639,7 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
         valuesWithToolBarLayout->addWidget(valuesToolBar);
 
         mUi->formLayout->addRow(tr("Storage type"), mStorageTypeComboBox);
+        mUi->formLayout->addRow(QString(), mValuesAsFlagsCheckBox);
         mUi->formLayout->addRow(tr("Values"), valuesWithToolBarLayout);
         break;
     }

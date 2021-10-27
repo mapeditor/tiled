@@ -196,8 +196,8 @@ private:
                                    QtProperty *parent);
 
     QtVariantProperty *addCustomProperty(const QString &name, const QVariant &value);
-    void deleteCustomProperty(QtVariantProperty *property);
     void setCustomPropertyValue(QtVariantProperty *property, const QVariant &value);
+    void recreateProperty(QtVariantProperty *property, const QVariant &value);
 
     void addProperties();
     void removeProperties();

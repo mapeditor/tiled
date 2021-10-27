@@ -28,6 +28,8 @@
 
 #include <QScopedValueRollback>
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 
 CustomPropertiesHelper::CustomPropertiesHelper(QtAbstractPropertyBrowser *propertyBrowser,
@@ -250,14 +252,16 @@ void CustomPropertiesHelper::unsetProperty(QtProperty *property)
 
 void CustomPropertiesHelper::propertyTypesChanged()
 {
-    for (const auto &type : Object::propertyTypes()) {
-        QHashIterator<QtProperty *, int> it(mPropertyTypeIds);
-        while (it.hasNext()) {
-            it.next();
+    QHashIterator<QString, QtVariantProperty *> it(mProperties);
+    while (it.hasNext()) {
+        it.next();
+        const auto property = it.value();
+        const auto typeId = mPropertyTypeIds.value(property);
+        if (!typeId)
+            continue;
 
-            if (it.value() == type->id)
-                setPropertyAttributes(static_cast<QtVariantProperty*>(it.key()), *type);
-        }
+        if (const auto type = Object::propertyTypes().findTypeById(typeId))
+            setPropertyAttributes(property, *type);
     }
 }
 
@@ -286,7 +290,7 @@ void CustomPropertiesHelper::setPropertyAttributes(QtVariantProperty *property, 
             if (propertyValue.contains(name)) {
                 QScopedValueRollback<bool> initializing(mApplyingToChildren, true);
                 subProperty->setModified(true);
-                subProperty->setValue(propertyValue.value(name));
+                subProperty->setValue(toDisplayValue(propertyValue.value(name)));
             }
 
             property->addSubProperty(subProperty);
@@ -296,7 +300,14 @@ void CustomPropertiesHelper::setPropertyAttributes(QtVariantProperty *property, 
     }
     case Tiled::PropertyType::PT_Enum: {
         const auto &enumType = static_cast<const EnumPropertyType&>(propertyType);
-        // TODO: need to re-create the property when valuesAsFlags changed
+        const bool isFlags = property->propertyType() == QtVariantPropertyManager::flagTypeId();
+
+        // Need to re-create the property when valuesAsFlags changed, but we
+        // don't have access to the view.
+        if (enumType.valuesAsFlags != isFlags) {
+            emit recreateProperty(property, fromDisplayValue(property, property->value()));
+            return;
+        }
 
         // Setting these attributes leads to emission of valueChanged...
         QScopedValueRollback<bool> suppressValueChanged(mApplyingToChildren, true);

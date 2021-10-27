@@ -314,7 +314,7 @@ bool ClassPropertyType::canAddMemberOfType(const PropertyType *propertyType) con
     return true;
 }
 
-// Helper functions
+// PropertyTypes
 
 size_t PropertyTypes::count(PropertyType::Type type) const
 {

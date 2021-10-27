@@ -55,6 +55,7 @@ public:
 
 signals:
     void propertyValueChanged(const QString &name, const QVariant &value);
+    void recreateProperty(QtVariantProperty *property, const QVariant &value);
 
 private:
     QtVariantProperty *createPropertyInternal(const QString &name, const QVariant &value);

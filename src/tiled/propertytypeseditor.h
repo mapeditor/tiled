@@ -25,6 +25,7 @@
 #include <QDialog>
 #include <QIcon>
 
+class QCheckBox;
 class QComboBox;
 class QItemSelection;
 class QStringListModel;
@@ -78,6 +79,7 @@ private:
     void setCurrentPropertyType(PropertyType::Type type);
 
     void setStorageType(EnumPropertyType::StorageType storageType);
+    void setValuesAsFlags(bool flags);
     void addValue();
     void removeValues();
 
@@ -99,6 +101,7 @@ private:
     Ui::PropertyTypesEditor *mUi;
     PropertyTypesModel *mPropertyTypesModel;
     QComboBox *mStorageTypeComboBox = nullptr;
+    QCheckBox *mValuesAsFlagsCheckBox = nullptr;
     QTreeView *mValuesView = nullptr;
     QStringListModel *mValuesModel;
     QtTreePropertyBrowser *mMembersView = nullptr;
