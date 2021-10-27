@@ -12,8 +12,20 @@ npx typedoc \
         --readme none \
         --excludeExternals \
         --disableSources \
-        --theme $website_root/docs/typedoc_theme \
-        --highlightTheme dark-plus \
-        --out $website_root/docs/scripting index.d.ts \
+        --plugin typedoc-plugin-markdown \
+        --theme markdown --out temp-docs \
+        index.d.ts \
         $2
 
+resultMd="$website_root/docs/scripting/README.md"
+resultHtml="$website_root/docs/scripting/README.html"
+rm -f "$resultMd"
+npx concat-md --toc --decrease-title-levels --dir-name-as-title temp-docs >> "$resultMd"
+npx showdown makehtml -i "$resultMd" -o "${resultHtml}.tmp"
+prefix="---
+layout: default
+---
+"
+echo "$prefix" > "$resultHtml"
+cat "${resultHtml}.tmp" >> "$resultHtml"
+rm -f "${resultHtml}.tmp"
