@@ -289,6 +289,31 @@ void ClassPropertyType::resolveDependencies(const ExportContext &context)
     }
 }
 
+bool ClassPropertyType::canAddMemberOfType(const PropertyType *propertyType) const
+{
+    if (propertyType == this)
+        return false;   // Can't add class as member of itself
+
+    if (propertyType->type != PropertyType::PT_Class)
+        return true;    // Can always add non-class members
+
+    // Can't add if any member of the added class can't be added to this type
+    auto classType = static_cast<const ClassPropertyType*>(propertyType);
+    for (auto &member : classType->members) {
+        if (member.userType() != propertyValueId())
+            continue;
+
+        auto propertyType = member.value<PropertyValue>().type();
+        if (!propertyType)
+            continue;
+
+        if (!canAddMemberOfType(propertyType))
+            return false;
+    }
+
+    return true;
+}
+
 // Helper functions
 
 size_t PropertyTypes::count(PropertyType::Type type) const

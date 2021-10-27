@@ -130,6 +130,8 @@ public:
     void fromVariant(const QVariantMap &variant) override;
 
     void resolveDependencies(const ExportContext &context) override;
+
+    bool canAddMemberOfType(const PropertyType *classType) const;
 };
 
 /**

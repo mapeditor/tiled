@@ -288,6 +288,10 @@ void CustomPropertiesHelper::setPropertyAttributes(QtProperty *property, const P
     case Tiled::PropertyType::PT_Enum: {
         const auto &enumType = static_cast<const EnumPropertyType&>(propertyType);
         // TODO: need to re-create the property when valuesAsFlags changed
+
+        // Setting these attributes leads to emission of valueChanged...
+        QScopedValueRollback<bool> suppressValueChanged(mApplyingToChildren, true);
+
         if (enumType.valuesAsFlags) {
             mPropertyManager->setAttribute(property, QStringLiteral("flagNames"), enumType.values);
         } else {

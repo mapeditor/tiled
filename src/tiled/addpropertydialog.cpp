@@ -41,6 +41,18 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::AddPropertyDialog)
 {
+    initialize(nullptr);
+}
+
+AddPropertyDialog::AddPropertyDialog(const ClassPropertyType *parentClassType, QWidget *parent)
+    : QDialog(parent)
+    , mUi(new Ui::AddPropertyDialog)
+{
+    initialize(parentClassType);
+}
+
+void AddPropertyDialog::initialize(const Tiled::ClassPropertyType *parentClassType)
+{
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 #endif
@@ -58,6 +70,10 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->typeBox->addItem(typeToName(QMetaType::QString),   QString());
 
     for (const auto &propertyType : Object::propertyTypes()) {
+        // Avoid suggesting the creation of circular dependencies between types
+        if (parentClassType && !parentClassType->canAddMemberOfType(propertyType.get()))
+            continue;
+
         const QVariant var = propertyType->wrap(propertyType->defaultValue());
         mUi->typeBox->addItem(propertyType->name, var);
     }

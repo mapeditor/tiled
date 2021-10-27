@@ -400,7 +400,11 @@ void PropertyTypesEditor::removeValues()
 
 void PropertyTypesEditor::openAddMemberDialog()
 {
-    AddPropertyDialog dialog(this);
+    const PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType || propertyType->type != PropertyType::PT_Class)
+        return;
+
+    AddPropertyDialog dialog(static_cast<const ClassPropertyType*>(propertyType), this);
     dialog.setWindowTitle(tr("Add Member"));
 
     if (dialog.exec() == AddPropertyDialog::Accepted)
