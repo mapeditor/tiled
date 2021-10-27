@@ -102,6 +102,7 @@ struct GMRView
 struct GMResource
 {
     GMResource(ResourceType type) : resourceType(type) {}
+    virtual ~GMResource() = default;
 
     QString resourceVersion = QStringLiteral("1.0");
     QString name;
@@ -109,7 +110,7 @@ struct GMResource
     ResourceType resourceType;
 };
 
-struct GMRGraphic : GMResource
+struct GMRGraphic final : GMResource
 {
     GMRGraphic(bool isSprite)
         : GMResource(isSprite ? GMRSpriteGraphicType : GMRGraphicType)
@@ -148,7 +149,7 @@ struct GMRGraphic : GMResource
     double y = 0.0;
 };
 
-struct GMOverriddenProperty : GMResource
+struct GMOverriddenProperty final : GMResource
 {
     GMOverriddenProperty() : GMResource(GMOverriddenPropertyType) {}
 
@@ -157,7 +158,7 @@ struct GMOverriddenProperty : GMResource
     QString value;
 };
 
-struct GMRInstance : GMResource
+struct GMRInstance final : GMResource
 {
     GMRInstance() : GMResource(GMRInstanceType) {}
 
@@ -181,7 +182,7 @@ struct GMRInstance : GMResource
     double y = 0.0;
 };
 
-struct GMPath : GMResource
+struct GMPath final : GMResource
 {
     GMPath() : GMResource(GMPathType) {}
 
@@ -206,7 +207,7 @@ struct GMRLayer : GMResource
     bool hierarchyFrozen = false;
 };
 
-struct GMRTileLayer : GMRLayer
+struct GMRTileLayer final : GMRLayer
 {
     GMRTileLayer() : GMRLayer(GMRTileLayerType) {}
 
@@ -218,21 +219,21 @@ struct GMRTileLayer : GMRLayer
     std::vector<unsigned> tiles;
 };
 
-struct GMRAssetLayer : GMRLayer
+struct GMRAssetLayer final : GMRLayer
 {
     GMRAssetLayer() : GMRLayer(GMRAssetLayerType) {}
 
     std::vector<GMRGraphic> assets;
 };
 
-struct GMRInstanceLayer : GMRLayer
+struct GMRInstanceLayer final : GMRLayer
 {
     GMRInstanceLayer() : GMRLayer(GMRInstanceLayerType) {}
 
     std::vector<GMRInstance> instances;
 };
 
-struct GMRPathLayer : GMRLayer
+struct GMRPathLayer final : GMRLayer
 {
     GMRPathLayer() : GMRLayer(GMRPathLayerType) {}
 
@@ -240,7 +241,7 @@ struct GMRPathLayer : GMRLayer
     QColor colour = Qt::red;
 };
 
-struct GMRBackgroundLayer : GMRLayer
+struct GMRBackgroundLayer final : GMRLayer
 {
     GMRBackgroundLayer() : GMRLayer(GMRBackgroundLayerType) {}
 
