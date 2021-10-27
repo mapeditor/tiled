@@ -65,7 +65,7 @@ private:
     void unsetProperty(QtProperty *property);
     void propertyTypesChanged();
 
-    void setPropertyAttributes(QtProperty *property, const PropertyType &propertyType);
+    void setPropertyAttributes(QtVariantProperty *property, const PropertyType &propertyType);
 
     const PropertyType *propertyType(QtProperty *property) const;
 

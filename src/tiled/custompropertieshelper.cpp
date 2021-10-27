@@ -241,7 +241,7 @@ void CustomPropertiesHelper::unsetProperty(QtProperty *property)
         auto variantMap = parent->value().toMap();
         variantMap.remove(property->propertyName());
 
-        if (variantMap.isEmpty())
+        if (variantMap.isEmpty() && mPropertyParents.value(parent))
             unsetProperty(parent);
         else
             parent->setValue(variantMap);
@@ -256,23 +256,25 @@ void CustomPropertiesHelper::propertyTypesChanged()
             it.next();
 
             if (it.value() == type->id)
-                setPropertyAttributes(it.key(), *type);
+                setPropertyAttributes(static_cast<QtVariantProperty*>(it.key()), *type);
         }
     }
 }
 
-void CustomPropertiesHelper::setPropertyAttributes(QtProperty *property, const PropertyType &propertyType)
+void CustomPropertiesHelper::setPropertyAttributes(QtVariantProperty *property, const PropertyType &propertyType)
 {
     switch (propertyType.type) {
     case Tiled::PropertyType::PT_Invalid:
+        break;
     case Tiled::PropertyType::PT_Class: {
         const auto &classType = static_cast<const ClassPropertyType&>(propertyType);
 
         // Delete any existing sub-properties
-        // TODO: this destroys the current value, which is a problem when called from propertyTypesChanged
         deleteSubProperties(property);
 
-        // Set up new properties
+        const auto propertyValue = property->value().toMap();
+
+        // Create a sub-property for each member
         QMapIterator<QString, QVariant> it(classType.members);
         while (it.hasNext()) {
             it.next();
@@ -280,6 +282,13 @@ void CustomPropertiesHelper::setPropertyAttributes(QtProperty *property, const P
             const QVariant &value = it.value();
 
             QtVariantProperty *subProperty = createPropertyInternal(name, value);
+
+            if (propertyValue.contains(name)) {
+                QScopedValueRollback<bool> initializing(mApplyingToChildren, true);
+                subProperty->setModified(true);
+                subProperty->setValue(propertyValue.value(name));
+            }
+
             property->addSubProperty(subProperty);
             mPropertyParents.insert(subProperty, property);
         }
