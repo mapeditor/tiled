@@ -92,8 +92,8 @@ class TILEDSHARED_EXPORT EnumPropertyType final : public PropertyType
 {
 public:
     enum StorageType {
-        IntValue,
-        StringValue
+        StringValue,
+        IntValue
     };
 
     StorageType storageType = StringValue;  // TODO: Allow user to change this

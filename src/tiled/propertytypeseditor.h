@@ -25,8 +25,8 @@
 #include <QDialog>
 #include <QIcon>
 
-class QLabel;
-class QStackedLayout;
+class QComboBox;
+class QItemSelection;
 class QStringListModel;
 class QTreeView;
 
@@ -73,8 +73,11 @@ private:
     void propertyTypesChanged();
 
     void updateDetails();
-    void updateActions();
+    void selectedValuesChanged(const QItemSelection &selected);
 
+    void setCurrentPropertyType(PropertyType::Type type);
+
+    void setStorageType(EnumPropertyType::StorageType storageType);
     void addValue();
     void removeValues();
 
@@ -95,14 +98,11 @@ private:
 
     Ui::PropertyTypesEditor *mUi;
     PropertyTypesModel *mPropertyTypesModel;
-    QTreeView *mValuesView;
-    QWidget *mValuesWithToolBarWidget;
+    QComboBox *mStorageTypeComboBox = nullptr;
+    QTreeView *mValuesView = nullptr;
     QStringListModel *mValuesModel;
-    QtTreePropertyBrowser *mMembersView;
-    QWidget *mMembersWithToolBarWidget;
-    CustomPropertiesHelper *mPropertiesHelper;
-    QStackedLayout *mValuesAndMembersStack;
-    QLabel *mValuesOrMembersLabel;
+    QtTreePropertyBrowser *mMembersView = nullptr;
+    CustomPropertiesHelper *mPropertiesHelper = nullptr;
 
     bool mSettingPrefPropertyTypes = false;
     bool mSettingName = false;
@@ -122,6 +122,8 @@ private:
     QIcon mEnumIcon;
     QIcon mClassIcon;
     QAction *mNameEditIconAction;
+
+    PropertyType::Type mCurrentPropertyType = PropertyType::PT_Invalid;
 };
 
 } // namespace Tiled

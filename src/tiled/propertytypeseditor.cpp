@@ -33,11 +33,10 @@
 #include "variantpropertymanager.h"
 
 #include <QCloseEvent>
+#include <QComboBox>
 #include <QInputDialog>
 #include <QScopedValueRollback>
-#include <QStackedLayout>
 #include <QStringListModel>
-#include <QStyledItemDelegate>
 #include <QToolBar>
 
 #include <QtTreePropertyBrowser>
@@ -58,46 +57,20 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::PropertyTypesEditor)
     , mPropertyTypesModel(new PropertyTypesModel(this))
-    , mValuesView(new QTreeView(this))
     , mValuesModel(new QStringListModel(this))
-    , mMembersView(new QtTreePropertyBrowser(this))
-    , mPropertiesHelper(new CustomPropertiesHelper(mMembersView, this))
-    , mValuesAndMembersStack(new QStackedLayout)
-    , mValuesOrMembersLabel(new QLabel(tr("Values")))
     , mEnumIcon(QStringLiteral("://images/scalable/property-type-enum.svg"))
     , mClassIcon(QStringLiteral("://images/scalable/property-type-class.svg"))
 {
     mUi->setupUi(this);
 
+    mUi->nameLabel->setVisible(false);
+    mUi->nameEdit->setVisible(false);
+
     mNameEditIconAction = mUi->nameEdit->addAction(QIcon(), QLineEdit::LeadingPosition);
-
-    mValuesView->setRootIsDecorated(false);
-    mValuesView->setUniformRowHeights(true);
-    mValuesView->setHeaderHidden(true);
-
-    mValuesWithToolBarWidget = new QWidget(mUi->groupBox);
-    auto valuesWithToolBarLayout = new QVBoxLayout(mValuesWithToolBarWidget);
-    valuesWithToolBarLayout->setSpacing(0);
-    valuesWithToolBarLayout->setContentsMargins(0, 0, 0, 0);
-    valuesWithToolBarLayout->addWidget(mValuesView);
-
-    mMembersWithToolBarWidget = new QWidget(mUi->groupBox);
-    auto membersWithToolBarLayout = new QVBoxLayout(mMembersWithToolBarWidget);
-    membersWithToolBarLayout->setSpacing(0);
-    membersWithToolBarLayout->setContentsMargins(0, 0, 0, 0);
-    membersWithToolBarLayout->addWidget(mMembersView);
-
-    mValuesAndMembersStack->addWidget(mValuesWithToolBarWidget);
-    mValuesAndMembersStack->addWidget(mMembersWithToolBarWidget);
-
-    mUi->formLayout->addRow(mValuesOrMembersLabel, mValuesAndMembersStack);
 
     resize(Utils::dpiScaled(size()));
 
     mUi->propertyTypesView->setModel(mPropertyTypesModel);
-
-    mValuesView->setModel(mValuesModel);
-    mValuesView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     mAddEnumPropertyTypeAction = new QAction(this);
     mAddClassPropertyTypeAction = new QAction(this);
@@ -150,21 +123,8 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     propertyTypesToolBar->addAction(mRemovePropertyTypeAction);
     mUi->propertyTypesLayout->addWidget(propertyTypesToolBar);
 
-    QToolBar *valuesToolBar = createSmallToolBar(mValuesWithToolBarWidget);
-    valuesToolBar->addAction(mAddValueAction);
-    valuesToolBar->addAction(mRemoveValueAction);
-    valuesWithToolBarLayout->addWidget(valuesToolBar);
-
-    QToolBar *membersToolBar = createSmallToolBar(mMembersWithToolBarWidget);
-    membersToolBar->addAction(mAddMemberAction);
-    membersToolBar->addAction(mRemoveMemberAction);
-    membersToolBar->addAction(mRenameMemberAction);
-    membersWithToolBarLayout->addWidget(membersToolBar);
-
     connect(mUi->propertyTypesView->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, &PropertyTypesEditor::selectedPropertyTypesChanged);
-    connect(mValuesView->selectionModel(), &QItemSelectionModel::selectionChanged,
-            this, &PropertyTypesEditor::updateActions);
     connect(mPropertyTypesModel, &PropertyTypesModel::modelReset,
             this, &PropertyTypesEditor::selectFirstPropertyType);
 
@@ -204,12 +164,6 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
             this, &PropertyTypesEditor::valuesChanged);
     connect(mUi->nameEdit, &QLineEdit::textEdited,
             this, &PropertyTypesEditor::nameChanged);
-
-    connect(mPropertiesHelper, &CustomPropertiesHelper::propertyValueChanged,
-            this, &PropertyTypesEditor::memberValueChanged);
-
-    connect(mMembersView, &QtTreePropertyBrowser::currentItemChanged,
-            this, &PropertyTypesEditor::currentMemberItemChanged);
 
     Preferences *prefs = Preferences::instance();
 
@@ -354,7 +308,20 @@ void PropertyTypesEditor::propertyTypesChanged()
     auto &project = ProjectManager::instance()->project();
     mPropertyTypesModel->setPropertyTypes(project.propertyTypes());
 
-    updateDetails();
+    selectedPropertyTypesChanged();
+}
+
+void PropertyTypesEditor::setStorageType(EnumPropertyType::StorageType storageType)
+{
+    if (mUpdatingDetails)
+        return;
+
+    PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType || propertyType->type != PropertyType::PT_Enum)
+        return;
+
+    static_cast<EnumPropertyType*>(propertyType)->storageType = storageType;
+    applyPropertyTypes();
 }
 
 static QString nextValueText(const EnumPropertyType &propertyType)
@@ -511,35 +478,21 @@ void PropertyTypesEditor::renameMemberTo(const QString &name)
 
 void PropertyTypesEditor::updateDetails()
 {
+    QScopedValueRollback<bool> updatingDetails(mUpdatingDetails, true);
+
     const PropertyType *propertyType = selectedPropertyType();
     if (!propertyType) {
-        mUi->nameEdit->clear();
-        mUi->nameEdit->setEnabled(false);
-        mValuesWithToolBarWidget->setEnabled(false);
-        mMembersWithToolBarWidget->setEnabled(false);
-        mValuesModel->setStringList(QStringList());
-        mPropertiesHelper->clear();
-        mNameEditIconAction->setIcon(QIcon());
+        setCurrentPropertyType(PropertyType::PT_Invalid);
         return;
     }
 
+    setCurrentPropertyType(propertyType->type);
+
     switch (propertyType->type) {
-    case PropertyType::PT_Enum: {
-        const auto &enumType = *static_cast<const EnumPropertyType*>(propertyType);
-
-        QScopedValueRollback<bool> updatingDetails(mUpdatingDetails, true);
-        mValuesModel->setStringList(enumType.values);
-
-        mNameEditIconAction->setIcon(mEnumIcon);
-        mValuesAndMembersStack->setCurrentWidget(mValuesWithToolBarWidget);
-        mValuesOrMembersLabel->setText(tr("Values"));
-        mValuesWithToolBarWidget->setEnabled(true);
+    case PropertyType::PT_Invalid:
         break;
-    }
     case PropertyType::PT_Class: {
         const auto &classType = *static_cast<const ClassPropertyType*>(propertyType);
-
-        QScopedValueRollback<bool> updatingDetails(mUpdatingDetails, true);
 
         mPropertiesHelper->clear();
 
@@ -553,34 +506,114 @@ void PropertyTypesEditor::updateDetails()
             QtProperty *property = mPropertiesHelper->createProperty(name, value);
             mMembersView->addProperty(property);
         }
-
-        mNameEditIconAction->setIcon(mClassIcon);
-        mValuesAndMembersStack->setCurrentWidget(mMembersWithToolBarWidget);
-        mValuesOrMembersLabel->setText(tr("Members"));
-        mAddMemberAction->setEnabled(true);
-        mMembersWithToolBarWidget->setEnabled(true);
         break;
     }
-    case PropertyType::PT_Invalid:
+    case PropertyType::PT_Enum: {
+        const auto &enumType = *static_cast<const EnumPropertyType*>(propertyType);
+
+        mValuesModel->setStringList(enumType.values);
+        mStorageTypeComboBox->setCurrentIndex(enumType.storageType);
+
+        selectedValuesChanged(mValuesView->selectionModel()->selection());
         break;
+    }
     }
 
     mUi->nameEdit->setText(propertyType->name);
-    mUi->nameEdit->setEnabled(true);
-
-    updateActions();
 }
 
-void PropertyTypesEditor::updateActions()
+void PropertyTypesEditor::selectedValuesChanged(const QItemSelection &selected)
 {
-    const auto selectedType = selectedPropertyType();
-    const auto valuesSelectionModel = mValuesView->selectionModel();
-    const auto selectedValues = valuesSelectionModel->selectedRows();
+    mRemoveValueAction->setEnabled(!selected.isEmpty());
+}
 
-    mAddValueAction->setEnabled(selectedType);
-    mRemoveValueAction->setEnabled(!selectedValues.isEmpty());
+void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
+{
+    if (mCurrentPropertyType == type)
+        return;
 
-    mAddMemberAction->setEnabled(selectedType);
+    mCurrentPropertyType = type;
+
+    delete mPropertiesHelper;
+    mPropertiesHelper = nullptr;
+
+    while (mUi->formLayout->rowCount() > 1)
+        mUi->formLayout->removeRow(1);
+
+    mStorageTypeComboBox = nullptr;
+    mValuesView = nullptr;
+    mMembersView = nullptr;
+
+    mUi->nameLabel->setVisible(type != PropertyType::PT_Invalid);
+    mUi->nameEdit->setVisible(type != PropertyType::PT_Invalid);
+    mAddValueAction->setEnabled(type == PropertyType::PT_Enum);
+    mAddMemberAction->setEnabled(type == PropertyType::PT_Class);
+
+    switch (type) {
+    case PropertyType::PT_Invalid:
+        mUi->nameEdit->clear();
+        mNameEditIconAction->setIcon(QIcon());
+        break;
+    case PropertyType::PT_Class: {
+        mNameEditIconAction->setIcon(mClassIcon);
+
+        mMembersView = new QtTreePropertyBrowser(this);
+        mPropertiesHelper = new CustomPropertiesHelper(mMembersView, this);
+
+        connect(mPropertiesHelper, &CustomPropertiesHelper::propertyValueChanged,
+                this, &PropertyTypesEditor::memberValueChanged);
+
+        connect(mMembersView, &QtTreePropertyBrowser::currentItemChanged,
+                this, &PropertyTypesEditor::currentMemberItemChanged);
+
+        QToolBar *membersToolBar = createSmallToolBar(mUi->groupBox);
+        membersToolBar->addAction(mAddMemberAction);
+        membersToolBar->addAction(mRemoveMemberAction);
+        membersToolBar->addAction(mRenameMemberAction);
+
+        auto membersWithToolBarLayout = new QVBoxLayout;
+        membersWithToolBarLayout->setSpacing(0);
+        membersWithToolBarLayout->setContentsMargins(0, 0, 0, 0);
+        membersWithToolBarLayout->addWidget(mMembersView);
+        membersWithToolBarLayout->addWidget(membersToolBar);
+
+        mUi->formLayout->addRow(tr("Members"), membersWithToolBarLayout);
+        break;
+    }
+    case PropertyType::PT_Enum: {
+        mNameEditIconAction->setIcon(mEnumIcon);
+
+        mStorageTypeComboBox = new QComboBox(mUi->groupBox);
+        mStorageTypeComboBox->addItems({ tr("String"), tr("Number") });
+
+        connect(mStorageTypeComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                this, [this] (int index) { if (index != -1) setStorageType(static_cast<EnumPropertyType::StorageType>(index)); });
+
+        mValuesView = new QTreeView(this);
+        mValuesView->setRootIsDecorated(false);
+        mValuesView->setUniformRowHeights(true);
+        mValuesView->setHeaderHidden(true);
+        mValuesView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+        mValuesView->setModel(mValuesModel);
+
+        connect(mValuesView->selectionModel(), &QItemSelectionModel::selectionChanged,
+                this, &PropertyTypesEditor::selectedValuesChanged);
+
+        QToolBar *valuesToolBar = createSmallToolBar(mUi->groupBox);
+        valuesToolBar->addAction(mAddValueAction);
+        valuesToolBar->addAction(mRemoveValueAction);
+
+        auto valuesWithToolBarLayout = new QVBoxLayout;
+        valuesWithToolBarLayout->setSpacing(0);
+        valuesWithToolBarLayout->setContentsMargins(0, 0, 0, 0);
+        valuesWithToolBarLayout->addWidget(mValuesView);
+        valuesWithToolBarLayout->addWidget(valuesToolBar);
+
+        mUi->formLayout->addRow(tr("Storage type"), mStorageTypeComboBox);
+        mUi->formLayout->addRow(tr("Values"), valuesWithToolBarLayout);
+        break;
+    }
+    }
 }
 
 void PropertyTypesEditor::selectFirstPropertyType()
