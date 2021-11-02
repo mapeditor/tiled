@@ -2930,9 +2930,9 @@ public:
 
     struct Data
     {
-        Data() : decimals(2) {}
         QPointF val;
-        int decimals;
+        double singleStep = 1.0;
+        int decimals = 2;
     };
 
     void slotDoubleChanged(QtProperty *property, double value);
@@ -3068,6 +3068,18 @@ QPointF QtPointFPropertyManager::value(const QtProperty *property) const
 }
 
 /*!
+    Returns the given \a property's step value.
+
+    The step is typically used to increment or decrement a property value while pressing an arrow key.
+
+    \sa setSingleStep()
+*/
+double QtPointFPropertyManager::singleStep(const QtProperty *property) const
+{
+    return getData<double>(d_ptr->m_values, &QtPointFPropertyManagerPrivate::Data::singleStep, property, 0);
+}
+
+/*!
     Returns the given \a property's precision, in decimals.
 
     \sa setDecimals()
@@ -3114,6 +3126,36 @@ void QtPointFPropertyManager::setValue(QtProperty *property, const QPointF &val)
 
     emit propertyChanged(property);
     emit valueChanged(property, val);
+}
+
+/*!
+    Sets the step value for the given \a property to \a step.
+
+    The step is typically used to increment or decrement a property value while pressing an arrow key.
+
+    \sa singleStep()
+*/
+void QtPointFPropertyManager::setSingleStep(QtProperty *property, double step)
+{
+    const QtPointFPropertyManagerPrivate::PropertyValueMap::iterator it = d_ptr->m_values.find(property);
+    if (it == d_ptr->m_values.end())
+        return;
+
+    QtPointFPropertyManagerPrivate::Data data = it.value();
+
+    if (step < 0)
+        step = 0;
+
+    if (data.singleStep == step)
+        return;
+
+    data.singleStep = step;
+    d_ptr->m_doublePropertyManager->setSingleStep(d_ptr->m_propertyToX[property], step);
+    d_ptr->m_doublePropertyManager->setSingleStep(d_ptr->m_propertyToY[property], step);
+
+    it.value() = data;
+
+    emit singleStepChanged(property, data.singleStep);
 }
 
 /*!

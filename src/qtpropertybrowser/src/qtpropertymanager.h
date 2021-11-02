@@ -414,13 +414,16 @@ public:
     QtDoublePropertyManager *subDoublePropertyManager() const;
 
     QPointF value(const QtProperty *property) const;
+    double singleStep(const QtProperty *property) const;
     int decimals(const QtProperty *property) const;
 
 public Q_SLOTS:
     void setValue(QtProperty *property, const QPointF &val);
+    void setSingleStep(QtProperty *property, double step);
     void setDecimals(QtProperty *property, int prec);
 Q_SIGNALS:
     void valueChanged(QtProperty *property, const QPointF &val);
+    void singleStepChanged(QtProperty *property, double step);
     void decimalsChanged(QtProperty *property, int prec);
 protected:
     QString valueText(const QtProperty *property) const;

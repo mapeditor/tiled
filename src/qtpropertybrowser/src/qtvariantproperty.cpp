@@ -1092,6 +1092,8 @@ QtVariantPropertyManager::QtVariantPropertyManager(QObject *parent)
     d_ptr->m_typeToValueType[QVariant::PointF] = QVariant::PointF;
     d_ptr->m_typeToAttributeToAttributeType[QVariant::PointF][d_ptr->m_decimalsAttribute] =
             QVariant::Int;
+    d_ptr->m_typeToAttributeToAttributeType[QVariant::PointF][d_ptr->m_singleStepAttribute] =
+            QVariant::Double;
     connect(pointFPropertyManager, SIGNAL(valueChanged(QtProperty *, const QPointF &)),
                 this, SLOT(slotValueChanged(QtProperty *, const QPointF &)));
     connect(pointFPropertyManager, SIGNAL(decimalsChanged(QtProperty *, int)),
@@ -1531,6 +1533,8 @@ QVariant QtVariantPropertyManager::attributeValue(const QtProperty *property, co
             return dateManager->minimum(internProp);
         return QVariant();
     } else if (QtPointFPropertyManager *pointFManager = qobject_cast<QtPointFPropertyManager *>(manager)) {
+        if (attribute == d_ptr->m_singleStepAttribute)
+            return pointFManager->singleStep(internProp);
         if (attribute == d_ptr->m_decimalsAttribute)
             return pointFManager->decimals(internProp);
         return QVariant();
@@ -1783,6 +1787,8 @@ void QtVariantPropertyManager::setAttribute(QtProperty *property,
             dateManager->setMinimum(internProp, value.value<QDate>());
         return;
     } else if (QtPointFPropertyManager *pointFManager = qobject_cast<QtPointFPropertyManager *>(manager)) {
+        if (attribute == d_ptr->m_singleStepAttribute)
+            pointFManager->setSingleStep(internProp, value.value<double>());
         if (attribute == d_ptr->m_decimalsAttribute)
             pointFManager->setDecimals(internProp, value.value<int>());
         return;
