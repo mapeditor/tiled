@@ -737,7 +737,9 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
     addProperty(OffsetXProperty, QMetaType::Double, tr("Horizontal Offset"), parent);
     addProperty(OffsetYProperty, QMetaType::Double, tr("Vertical Offset"), parent);
 
-    addProperty(ParallaxFactorProperty, QMetaType::QPointF, tr("Parallax Factor"), parent);
+    QtVariantProperty *parallaxProperty =
+        addProperty(ParallaxFactorProperty, QMetaType::QPointF, tr("Parallax Factor"), parent);
+    parallaxProperty->setAttribute(QLatin1String("singleStep"), 0.1);
 }
 
 void PropertyBrowser::addTileLayerProperties()
