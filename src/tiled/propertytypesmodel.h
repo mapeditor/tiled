@@ -52,6 +52,8 @@ public:
 
     QModelIndex addNewPropertyType(PropertyType::Type type);
 
+    static QIcon iconForPropertyType(PropertyType::Type type);
+
 signals:
     void nameChanged(const QModelIndex &index, const PropertyType &type);
 
@@ -59,9 +61,6 @@ private:
     QString nextPropertyTypeName(PropertyType::Type type) const;
 
     SharedPropertyTypes mPropertyTypes;
-
-    QIcon mEnumIcon;
-    QIcon mClassIcon;
 };
 
 } // namespace Tiled

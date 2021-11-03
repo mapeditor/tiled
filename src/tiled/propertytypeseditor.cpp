@@ -59,8 +59,6 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     , mUi(new Ui::PropertyTypesEditor)
     , mPropertyTypesModel(new PropertyTypesModel(this))
     , mValuesModel(new QStringListModel(this))
-    , mEnumIcon(QStringLiteral("://images/scalable/property-type-enum.svg"))
-    , mClassIcon(QStringLiteral("://images/scalable/property-type-class.svg"))
 {
     mUi->setupUi(this);
 
@@ -573,14 +571,13 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
     mAddValueAction->setEnabled(type == PropertyType::PT_Enum);
     mAddMemberAction->setEnabled(type == PropertyType::PT_Class);
 
+    mNameEditIconAction->setIcon(PropertyTypesModel::iconForPropertyType(type));
+
     switch (type) {
     case PropertyType::PT_Invalid:
         mUi->nameEdit->clear();
-        mNameEditIconAction->setIcon(QIcon());
         break;
     case PropertyType::PT_Class: {
-        mNameEditIconAction->setIcon(mClassIcon);
-
         mMembersView = new QtTreePropertyBrowser(this);
         mPropertiesHelper = new CustomPropertiesHelper(mMembersView, this);
 
@@ -605,8 +602,6 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
         break;
     }
     case PropertyType::PT_Enum: {
-        mNameEditIconAction->setIcon(mEnumIcon);
-
         mStorageTypeComboBox = new QComboBox(mUi->groupBox);
         mStorageTypeComboBox->addItems({ tr("String"), tr("Number") });
 

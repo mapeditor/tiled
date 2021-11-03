@@ -31,8 +31,6 @@ static bool propertyTypeLessThan(const std::unique_ptr<PropertyType> &a, const s
 
 PropertyTypesModel::PropertyTypesModel(QObject *parent)
     : QAbstractListModel(parent)
-    , mEnumIcon(QStringLiteral("://images/scalable/property-type-enum.svg"))
-    , mClassIcon(QStringLiteral("://images/scalable/property-type-class.svg"))
 {
 }
 
@@ -70,16 +68,8 @@ QVariant PropertyTypesModel::data(const QModelIndex &index, int role) const
             return propertyType.name;
 
     if (role == Qt::DecorationRole) {
-        if (index.column() == 0) {
-            switch (propertyType.type) {
-            case PropertyType::PT_Invalid:
-                break;
-            case PropertyType::PT_Class:
-                return mClassIcon;
-            case PropertyType::PT_Enum:
-                return mEnumIcon;
-            }
-        }
+        if (index.column() == 0)
+            return iconForPropertyType(propertyType.type);
     }
 
     return QVariant();
@@ -177,6 +167,23 @@ QModelIndex PropertyTypesModel::addNewPropertyType(PropertyType::Type type)
     endInsertRows();
 
     return index(row, 0);
+}
+
+QIcon PropertyTypesModel::iconForPropertyType(PropertyType::Type type)
+{
+    switch (type) {
+    case PropertyType::PT_Invalid:
+        break;
+    case PropertyType::PT_Class: {
+        static QIcon classIcon(QStringLiteral("://images/scalable/property-type-class.svg"));
+        return classIcon;
+    }
+    case PropertyType::PT_Enum: {
+        static QIcon enumIcon(QStringLiteral("://images/scalable/property-type-enum.svg"));
+        return enumIcon;
+    }
+    }
+    return QIcon();
 }
 
 QString PropertyTypesModel::nextPropertyTypeName(PropertyType::Type type) const

@@ -23,7 +23,6 @@
 #include "properties.h"
 
 #include <QDialog>
-#include <QIcon>
 
 class QCheckBox;
 class QComboBox;
@@ -122,8 +121,6 @@ private:
     QAction *mRemoveMemberAction;
     QAction *mRenameMemberAction;
 
-    QIcon mEnumIcon;
-    QIcon mClassIcon;
     QAction *mNameEditIconAction;
 
     PropertyType::Type mCurrentPropertyType = PropertyType::PT_Invalid;
