@@ -26,7 +26,9 @@
 
 class QCheckBox;
 class QComboBox;
+class QFormLayout;
 class QItemSelection;
+class QLineEdit;
 class QStringListModel;
 class QTreeView;
 
@@ -99,6 +101,8 @@ private:
 
     Ui::PropertyTypesEditor *mUi;
     PropertyTypesModel *mPropertyTypesModel;
+    QFormLayout *mDetailsLayout = nullptr;
+    QLineEdit *mNameEdit = nullptr;
     QComboBox *mStorageTypeComboBox = nullptr;
     QCheckBox *mValuesAsFlagsCheckBox = nullptr;
     QTreeView *mValuesView = nullptr;
@@ -120,8 +124,6 @@ private:
     QAction *mAddMemberAction;
     QAction *mRemoveMemberAction;
     QAction *mRenameMemberAction;
-
-    QAction *mNameEditIconAction;
 
     PropertyType::Type mCurrentPropertyType = PropertyType::PT_Invalid;
 };

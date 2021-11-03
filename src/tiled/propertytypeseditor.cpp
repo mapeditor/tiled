@@ -35,6 +35,7 @@
 #include <QCheckBox>
 #include <QCloseEvent>
 #include <QComboBox>
+#include <QFormLayout>
 #include <QInputDialog>
 #include <QScopedValueRollback>
 #include <QStringListModel>
@@ -61,11 +62,6 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     , mValuesModel(new QStringListModel(this))
 {
     mUi->setupUi(this);
-
-    mUi->nameLabel->setVisible(false);
-    mUi->nameEdit->setVisible(false);
-
-    mNameEditIconAction = mUi->nameEdit->addAction(QIcon(), QLineEdit::LeadingPosition);
 
     resize(Utils::dpiScaled(size()));
 
@@ -161,8 +157,6 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
             this, &PropertyTypesEditor::valuesChanged);
     connect(mValuesModel, &QAbstractItemModel::rowsRemoved,
             this, &PropertyTypesEditor::valuesChanged);
-    connect(mUi->nameEdit, &QLineEdit::textEdited,
-            this, &PropertyTypesEditor::nameChanged);
 
     Preferences *prefs = Preferences::instance();
 
@@ -273,8 +267,8 @@ void PropertyTypesEditor::propertyTypeNameChanged(const QModelIndex &index, cons
     if (mSettingName)
         return;
 
-    if (index == selectedPropertyTypeIndex())
-        mUi->nameEdit->setText(type.name);
+    if (mNameEdit && index == selectedPropertyTypeIndex())
+        mNameEdit->setText(type.name);
 }
 
 void PropertyTypesEditor::applyMemberToSelectedType(const QString &name, const QVariant &value)
@@ -540,12 +534,25 @@ void PropertyTypesEditor::updateDetails()
     }
     }
 
-    mUi->nameEdit->setText(propertyType->name);
+    mNameEdit->setText(propertyType->name);
 }
 
 void PropertyTypesEditor::selectedValuesChanged(const QItemSelection &selected)
 {
     mRemoveValueAction->setEnabled(!selected.isEmpty());
+}
+
+void deleteAllFromLayout(QLayout *layout)
+{
+    for (int i = layout->count() - 1; i >= 0; --i) {
+        QLayoutItem *item = layout->takeAt(i);
+        delete item->widget();
+
+        if (auto layout = item->layout())
+            deleteAllFromLayout(layout);
+
+        delete item;
+    }
 }
 
 void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
@@ -558,24 +565,36 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
     delete mPropertiesHelper;
     mPropertiesHelper = nullptr;
 
-    while (mUi->formLayout->rowCount() > 1)
-        mUi->formLayout->removeRow(1);
+    if (mDetailsLayout) {
+        deleteAllFromLayout(mDetailsLayout);
+        delete mDetailsLayout;
+    }
 
+    mDetailsLayout = new QFormLayout;
+    mUi->horizontalLayout->addLayout(mDetailsLayout);
+
+    mNameEdit = nullptr;
     mStorageTypeComboBox = nullptr;
     mValuesAsFlagsCheckBox = nullptr;
     mValuesView = nullptr;
     mMembersView = nullptr;
 
-    mUi->nameLabel->setVisible(type != PropertyType::PT_Invalid);
-    mUi->nameEdit->setVisible(type != PropertyType::PT_Invalid);
     mAddValueAction->setEnabled(type == PropertyType::PT_Enum);
     mAddMemberAction->setEnabled(type == PropertyType::PT_Class);
 
-    mNameEditIconAction->setIcon(PropertyTypesModel::iconForPropertyType(type));
+    if (type == PropertyType::PT_Invalid)
+        return;
+
+    mNameEdit = new QLineEdit(mUi->groupBox);
+    mNameEdit->addAction(PropertyTypesModel::iconForPropertyType(type), QLineEdit::LeadingPosition);
+
+    connect(mNameEdit, &QLineEdit::textEdited,
+            this, &PropertyTypesEditor::nameChanged);
+
+    mDetailsLayout->addRow(tr("Name"), mNameEdit);
 
     switch (type) {
     case PropertyType::PT_Invalid:
-        mUi->nameEdit->clear();
         break;
     case PropertyType::PT_Class: {
         mMembersView = new QtTreePropertyBrowser(this);
@@ -598,7 +617,7 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
         membersWithToolBarLayout->addWidget(mMembersView);
         membersWithToolBarLayout->addWidget(membersToolBar);
 
-        mUi->formLayout->addRow(tr("Members"), membersWithToolBarLayout);
+        mDetailsLayout->addRow(tr("Members"), membersWithToolBarLayout);
         break;
     }
     case PropertyType::PT_Enum: {
@@ -608,7 +627,7 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
         connect(mStorageTypeComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
                 this, [this] (int index) { if (index != -1) setStorageType(static_cast<EnumPropertyType::StorageType>(index)); });
 
-        mValuesAsFlagsCheckBox = new QCheckBox(tr("Values are flags"), mUi->groupBox);
+        mValuesAsFlagsCheckBox = new QCheckBox(tr("Allow multiple values (flags)"), mUi->groupBox);
 
         connect(mValuesAsFlagsCheckBox, &QCheckBox::toggled,
                 this, [this] (bool checked) { setValuesAsFlags(checked); });
@@ -633,9 +652,9 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
         valuesWithToolBarLayout->addWidget(mValuesView);
         valuesWithToolBarLayout->addWidget(valuesToolBar);
 
-        mUi->formLayout->addRow(tr("Storage type"), mStorageTypeComboBox);
-        mUi->formLayout->addRow(QString(), mValuesAsFlagsCheckBox);
-        mUi->formLayout->addRow(tr("Values"), valuesWithToolBarLayout);
+        mDetailsLayout->addRow(tr("Save as"), mStorageTypeComboBox);
+        mDetailsLayout->addRow(QString(), mValuesAsFlagsCheckBox);
+        mDetailsLayout->addRow(tr("Values"), valuesWithToolBarLayout);
         break;
     }
     }
