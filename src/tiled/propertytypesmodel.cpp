@@ -24,7 +24,7 @@
 
 using namespace Tiled;
 
-static bool propertyTypeLessThan(const std::unique_ptr<PropertyType> &a, const std::unique_ptr<PropertyType> &b)
+static bool propertyTypeLessThan(const PropertyType *a, const PropertyType *b)
 {
     return QString::localeAwareCompare(a->name, b->name) < 0;
 }
@@ -101,7 +101,7 @@ void PropertyTypesModel::setPropertyTypeName(int row, const QString &name)
     const std::unique_ptr<PropertyType> typeWithName = std::make_unique<EnumPropertyType>(name.trimmed());
     auto nextPropertyType = std::lower_bound(propertyTypes.begin(),
                                              propertyTypes.end(),
-                                             typeWithName,
+                                             typeWithName.get(),
                                              propertyTypeLessThan);
 
     const int newRow = nextPropertyType - propertyTypes.begin();
@@ -197,7 +197,7 @@ QString PropertyTypesModel::nextPropertyTypeName(PropertyType::Type type) const
     do {
         name = baseText + QString::number(number++);
     } while (contains_where(*mPropertyTypes,
-                            [&] (const std::unique_ptr<PropertyType> &type) { return type->name == name; }));
+                            [&] (const PropertyType *type) { return type->name == name; }));
 
     return name;
 }

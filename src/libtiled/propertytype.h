@@ -28,10 +28,11 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QVariant>
 #include <QMetaType>
 #include <QSharedPointer>
+#include <QStringList>
+#include <QVariant>
+#include <QVector>
 
 #include "containerhelpers.h"
 #include "tiled_global.h"
@@ -139,9 +140,11 @@ public:
  */
 class TILEDSHARED_EXPORT PropertyTypes
 {
-    using Types = std::vector<std::unique_ptr<PropertyType>>;
+    using Types = QVector<PropertyType*>;
 
 public:
+    ~PropertyTypes();
+
     void add(std::unique_ptr<PropertyType> type);
     void clear();
     size_t count() const;
@@ -167,7 +170,7 @@ private:
 
 inline void PropertyTypes::add(std::unique_ptr<PropertyType> type)
 {
-    mTypes.push_back(std::move(type));
+    mTypes.append(type.release());
 }
 
 inline void PropertyTypes::clear()
@@ -182,7 +185,7 @@ inline size_t PropertyTypes::count() const
 
 inline void PropertyTypes::removeAt(int index)
 {
-    mTypes.erase(mTypes.begin() + index);
+    delete mTypes.takeAt(index);
 }
 
 inline PropertyType &PropertyTypes::typeAt(int index)
@@ -192,7 +195,7 @@ inline PropertyType &PropertyTypes::typeAt(int index)
 
 inline void PropertyTypes::moveType(int from, int to)
 {
-    move(mTypes, from, to);
+    mTypes.move(from, to);
 }
 
 using SharedPropertyTypes = QSharedPointer<PropertyTypes>;

@@ -316,10 +316,15 @@ bool ClassPropertyType::canAddMemberOfType(const PropertyType *propertyType) con
 
 // PropertyTypes
 
+PropertyTypes::~PropertyTypes()
+{
+    qDeleteAll(mTypes);
+}
+
 size_t PropertyTypes::count(PropertyType::Type type) const
 {
     size_t count = 0;
-    for (const auto &propertyType : mTypes) {
+    for (const auto propertyType : mTypes) {
         if (propertyType->type == type)
             ++count;
     }
@@ -332,9 +337,9 @@ size_t PropertyTypes::count(PropertyType::Type type) const
  */
 const PropertyType *PropertyTypes::findTypeById(int typeId) const
 {
-    for (const auto &propertyType : mTypes) {
+    for (const auto propertyType : mTypes) {
         if (propertyType->id == typeId)
-            return propertyType.get();
+            return propertyType;
     }
     return nullptr;
 }
@@ -345,9 +350,9 @@ const PropertyType *PropertyTypes::findTypeById(int typeId) const
  */
 const PropertyType *PropertyTypes::findTypeByName(const QString &name) const
 {
-    for (const auto &propertyType : mTypes) {
+    for (const auto propertyType : mTypes) {
         if (propertyType->name == name)
-            return propertyType.get();
+            return propertyType;
     }
     return nullptr;
 }
@@ -362,7 +367,7 @@ void PropertyTypes::loadFrom(const QVariantList &list, const QString &path)
         if (auto propertyType = PropertyType::createFromVariant(typeValue.toMap()))
             add(std::move(propertyType));
 
-    for (auto &propertyType : mTypes)
+    for (auto propertyType : mTypes)
         propertyType->resolveDependencies(context);
 }
 
