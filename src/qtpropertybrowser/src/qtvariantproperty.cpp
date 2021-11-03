@@ -428,10 +428,11 @@ QtVariantProperty *QtVariantPropertyManagerPrivate::createSubProperty(QtVariantP
     varChild->setStatusTip(internal->statusTip());
     varChild->setWhatsThis(internal->whatsThis());
 
-    parent->insertSubProperty(varChild, after);
-
     m_internalToProperty[internal] = varChild;
     propertyToWrappedProperty()->insert(varChild, internal);
+
+    parent->insertSubProperty(varChild, after);
+
     return varChild;
 }
 
