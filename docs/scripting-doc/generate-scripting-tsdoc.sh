@@ -13,7 +13,7 @@ npx typedoc \
         --excludeExternals \
         --disableSources \
         --plugin typedoc-plugin-markdown \
-        --theme markdown --out temp-docs \
+        --out temp-docs \
         index.d.ts \
         $2
 
