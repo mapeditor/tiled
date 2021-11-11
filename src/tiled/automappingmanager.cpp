@@ -42,8 +42,6 @@ SessionOption<bool> AutomappingManager::automappingWhileDrawing { "automapping.w
 
 AutomappingManager::AutomappingManager(QObject *parent)
     : QObject(parent)
-    , mMapDocument(nullptr)
-    , mLoaded(false)
 {
     connect(&mWatcher, &QFileSystemWatcher::fileChanged,
             this, &AutomappingManager::onFileChanged);
@@ -100,10 +98,11 @@ void AutomappingManager::onMapFileNameChanged()
 }
 
 void AutomappingManager::autoMapInternal(const QRegion &where,
-                                         Layer *touchedLayer)
+                                         const Layer *touchedLayer)
 {
     mError.clear();
     mWarning.clear();
+
     if (!mMapDocument)
         return;
 
@@ -131,10 +130,11 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
 
         QUndoStack *undoStack = mMapDocument->undoStack();
         undoStack->beginMacro(tr("Apply AutoMap rules"));
-        AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, std::move(passedAutoMappers), &region);
+        AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, passedAutoMappers, &region);
         undoStack->push(aw);
         undoStack->endMacro();
     }
+
     for (auto &automapper : qAsConst(mAutoMappers)) {
         mWarning += automapper->warningString();
         mError += automapper->errorString();

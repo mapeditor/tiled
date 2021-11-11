@@ -96,13 +96,12 @@ private:
     bool loadFile(const QString &filePath);
 
     /**
-     * Applies automapping to the Region \a where, considering only layer
-     * \a touchedLayer has changed.
-     * There will only those Automappers be used which have a rule layer
-     * touching the \a touchedLayer
-     * If layer is 0, all Automappers are used.
+     * Applies automapping to the region \a where.
+     *
+     * If a \a touchedLayer is given, only those AutoMappers will be used which
+     * have a rule layer matching the \a touchedLayer.
      */
-    void autoMapInternal(const QRegion &where, Layer *touchedLayer);
+    void autoMapInternal(const QRegion &where, const Layer *touchedLayer);
 
     /**
      * deletes all its data structures
@@ -112,7 +111,7 @@ private:
     /**
      * The current map document.
      */
-    MapDocument *mMapDocument;
+    MapDocument *mMapDocument = nullptr;
 
     /**
      * For each new file of rules a new AutoMapper is setup. In this vector we
@@ -124,7 +123,7 @@ private:
      * This tells you if the rules for the current map document were already
      * loaded.
      */
-    bool mLoaded;
+    bool mLoaded = false;
 
     /**
      * Contains all errors which occurred until canceling.

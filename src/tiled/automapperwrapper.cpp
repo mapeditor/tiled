@@ -1,6 +1,7 @@
 /*
  * automapperwrapper.cpp
  * Copyright 2010-2011, Stefan Beller, stefanbeller@googlemail.com
+ * Copyright 2018-2021, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -30,68 +31,58 @@
 using namespace Tiled;
 
 AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
-                                     QVector<AutoMapper*> autoMappers,
+                                     const QVector<AutoMapper*> &autoMappers,
                                      QRegion *where)
+    : mMapDocument(mapDocument)
 {
-    mMapDocument = mapDocument;
-    Map *map = mMapDocument->map();
+    for (AutoMapper *autoMapper : autoMappers) {
+        autoMapper->prepareAutoMap();
 
-    QSet<QString> touchedTileLayers;
-    int index = 0;
-    while (index < autoMappers.size()) {
-        AutoMapper *a = autoMappers.at(index);
-        if (a->prepareAutoMap()) {
-            touchedTileLayers |= a->touchedTileLayers();
-            index++;
-        } else {
-            autoMappers.remove(index);
+        // Store a copy of each touched tile layer before AutoMapping.
+        for (TileLayer *layer : autoMapper->touchedTileLayers()) {
+            if (mTouchedTileLayers.find(layer) != mTouchedTileLayers.end())
+                continue;
+
+            TouchedLayerData &data = mTouchedTileLayers[layer];
+            data.before.reset(layer->clone());
         }
     }
-    for (const QString &layerName : qAsConst(touchedTileLayers)) {
-        const int layerIndex = map->indexOfLayer(layerName, Layer::TileLayerType);
-        Q_ASSERT(layerIndex != -1);
-        auto clone = std::unique_ptr<TileLayer>(static_cast<TileLayer*>(map->layerAt(layerIndex)->clone()));
-        mLayersBefore.push_back(std::move(clone));
-    }
 
-    for (AutoMapper *a : autoMappers)
-        a->autoMap(where);
+    for (AutoMapper *autoMapper : autoMappers)
+        autoMapper->autoMap(where);
 
-    int beforeIndex = 0;
-    for (const QString &layerName : qAsConst(touchedTileLayers)) {
-        const int layerIndex = map->indexOfLayer(layerName, Layer::TileLayerType);
-        // layer index exists, because AutoMapper is still alive, don't check
-        Q_ASSERT(layerIndex != -1);
-        auto &before = mLayersBefore[beforeIndex];
-        TileLayer *after = static_cast<TileLayer*>(map->layerAt(layerIndex));
+    for (std::pair<TileLayer* const, TouchedLayerData> &pair : mTouchedTileLayers) {
+        auto target = pair.first;
+        auto &before = pair.second.before;
 
         MapDocument::TileLayerChangeFlags flags;
 
-        if (before->drawMargins() != after->drawMargins())
+        if (before->drawMargins() != target->drawMargins())
             flags |= MapDocument::LayerDrawMarginsChanged;
-        if (before->bounds() != after->bounds())
+        if (before->bounds() != target->bounds())
             flags |= MapDocument::LayerBoundsChanged;
 
         if (flags)
-            emit mMapDocument->tileLayerChanged(after, flags);
+            emit mMapDocument->tileLayerChanged(target, flags);
 
         // reduce memory usage by saving only diffs
-        QRect diffRegion = before->computeDiffRegion(after).boundingRect();
-        auto before1 = before->copy(diffRegion);
-        auto after1 = after->copy(diffRegion);
+        pair.second.region = before->computeDiffRegion(target);
+        const QRect diffRect = pair.second.region.boundingRect();
 
-        before1->setPosition(diffRegion.topLeft());
-        after1->setPosition(diffRegion.topLeft());
-        before1->setName(before->name());
-        after1->setName(after->name());
-        mLayersBefore[beforeIndex] = std::move(before1);
-        mLayersAfter.push_back(std::move(after1));
+        auto beforeDiff = before->copy(pair.second.region);
+        beforeDiff->setPosition(diffRect.topLeft());
+        beforeDiff->setName(before->name());
 
-        ++beforeIndex;
+        auto afterDiff = target->copy(pair.second.region);
+        afterDiff->setPosition(diffRect.topLeft());
+        afterDiff->setName(target->name());
+
+        pair.second.before = std::move(beforeDiff);
+        pair.second.after = std::move(afterDiff);
     }
 
-    for (AutoMapper *a : autoMappers)
-        a->cleanAll();
+    for (AutoMapper *autoMapper : autoMappers)
+        autoMapper->finalizeAutoMap();
 }
 
 AutoMapperWrapper::~AutoMapperWrapper()
@@ -100,35 +91,22 @@ AutoMapperWrapper::~AutoMapperWrapper()
 
 void AutoMapperWrapper::undo()
 {
-    Map *map = mMapDocument->map();
-    for (auto &layer : qAsConst(mLayersBefore)) {
-        const int layerIndex = map->indexOfLayer(layer->name(), Layer::TileLayerType);
-        if (layerIndex != -1)
-            patchLayer(layerIndex, *layer);
-    }
+    for (std::pair<TileLayer* const, TouchedLayerData> &pair : mTouchedTileLayers)
+        patchLayer(pair.first, *pair.second.before, pair.second.region);
 }
 
 void AutoMapperWrapper::redo()
 {
-    Map *map = mMapDocument->map();
-    for (auto &layer : qAsConst(mLayersAfter)) {
-        const int layerIndex = map->indexOfLayer(layer->name(), Layer::TileLayerType);
-        if (layerIndex != -1)
-            patchLayer(layerIndex, *layer);
-    }
+    for (std::pair<TileLayer* const, TouchedLayerData> &pair : mTouchedTileLayers)
+        patchLayer(pair.first, *pair.second.after, pair.second.region);
 }
 
-void AutoMapperWrapper::patchLayer(int layerIndex, const TileLayer &layer)
+void AutoMapperWrapper::patchLayer(TileLayer *target, const TileLayer &layer, const QRegion &region)
 {
-    Map *map = mMapDocument->map();
-    QRect b = layer.rect();
+    target->setCells(layer.x() - target->x(),
+                     layer.y() - target->y(),
+                     &layer,
+                     region.translated(-target->position()));
 
-    Q_ASSERT(map->layerAt(layerIndex)->asTileLayer());
-    TileLayer *t = static_cast<TileLayer*>(map->layerAt(layerIndex));
-
-    t->setCells(b.left() - t->x(),
-                b.top() - t->y(),
-                &layer,
-                b.translated(-t->position()));
-    emit mMapDocument->regionChanged(b, t);
+    emit mMapDocument->regionChanged(region, target);
 }
