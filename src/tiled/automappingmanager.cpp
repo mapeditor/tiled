@@ -234,8 +234,11 @@ bool AutomappingManager::loadFile(const QString &filePath)
 }
 
 /**
- * The rules file is determind based on the map location, but can be overridden
- * by passing \a rulesFile.
+ * The rules file is determined based on the map location, or taken from the
+ * current project if a "rules.txt" file does not exist alongside the map (or
+ * when the map is not saved).
+ *
+ * Alternatively, it can can be overridden by passing a non-empty \a rulesFile.
  */
 void AutomappingManager::setMapDocument(MapDocument *mapDocument, const QString &rulesFile)
 {
@@ -260,12 +263,18 @@ void AutomappingManager::setMapDocument(MapDocument *mapDocument, const QString 
     refreshRulesFile(rulesFile);
 }
 
+/**
+ * Needs to be called when the project rules file path is changed.
+ *
+ * It is called automatically when the file name of the current MapDocument
+ * changes.
+ */
 void AutomappingManager::refreshRulesFile(const QString &ruleFileOverride)
 {
     mRulesFileOverride = !ruleFileOverride.isEmpty();
     QString rulesFile = ruleFileOverride;
 
-    if (rulesFile.isEmpty() && mMapDocument) {
+    if (rulesFile.isEmpty() && mMapDocument && !mMapDocument->fileName().isEmpty()) {
         const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
         rulesFile = mapPath + QLatin1String("/rules.txt");
 

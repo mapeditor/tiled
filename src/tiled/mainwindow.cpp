@@ -1558,6 +1558,7 @@ void MainWindow::projectProperties()
         Preferences::instance()->setObjectTypesFile(project.mObjectTypesFile);
 
         ScriptManager::instance().refreshExtensionsPaths();
+        mAutomappingManager->refreshRulesFile();
     }
 }
 

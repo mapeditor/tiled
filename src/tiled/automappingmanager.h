@@ -52,8 +52,9 @@ public:
 
     void setMapDocument(MapDocument *mapDocument, const QString &rulesFile = QString());
 
-    QString errorString() const { return mError; }
+    void refreshRulesFile(const QString &ruleFileOverride = QString());
 
+    QString errorString() const { return mError; }
     QString warningString() const { return mWarning; }
 
     /**
@@ -80,8 +81,6 @@ private:
     void onRegionEdited(const QRegion &where, Layer *touchedLayer);
     void onMapFileNameChanged();
     void onFileChanged();
-
-    void refreshRulesFile(const QString &ruleFileOverride = QString());
 
     /**
      * This function parses a rules file.
