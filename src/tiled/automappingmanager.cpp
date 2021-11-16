@@ -85,7 +85,7 @@ void AutomappingManager::autoMapRegion(const QRegion &region)
     autoMapInternal(region, nullptr);
 }
 
-void AutomappingManager::onRegionEdited(const QRegion &where, Layer *touchedLayer)
+void AutomappingManager::onRegionEdited(const QRegion &where, TileLayer *touchedLayer)
 {
     if (automappingWhileDrawing)
         autoMapInternal(where, touchedLayer);
@@ -98,7 +98,7 @@ void AutomappingManager::onMapFileNameChanged()
 }
 
 void AutomappingManager::autoMapInternal(const QRegion &where,
-                                         const Layer *touchedLayer)
+                                         const TileLayer *touchedLayer)
 {
     mError.clear();
     mWarning.clear();

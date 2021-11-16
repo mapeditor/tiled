@@ -333,11 +333,12 @@ signals:
     void regionChanged(const QRegion &region, TileLayer *tileLayer);
 
     /**
-     * Emitted when a certain region of the map was edited by user input.
+     * Emitted when a certain \a region of the map was edited by user input.
      * The region is given in tile coordinates.
+     *
      * If multiple layers have been edited, multiple signals will be emitted.
      */
-    void regionEdited(const QRegion &region, Layer *layer);
+    void regionEdited(const QRegion &region, TileLayer *layer);
 
     void tileLayerChanged(TileLayer *layer, TileLayerChangeFlags flags);
 

@@ -139,7 +139,7 @@ private:
     /**
      * This stores the current behavior.
      */
-    BrushBehavior mBrushBehavior;
+    BrushBehavior mBrushBehavior = Free;
     Qt::KeyboardModifiers mModifiers;
 
     /**
@@ -149,13 +149,13 @@ private:
      */
     QPoint mStampReference;
 
-    bool mIsRandom;
+    bool mIsRandom = false;
     RandomPicker<Cell> mRandomCellPicker;
 
-    bool mIsWangFill;
-    WangSet *mWangSet;
+    bool mIsWangFill = false;
+    WangSet *mWangSet = nullptr;
 
-    bool mRandomCacheValid;
+    bool mRandomCacheValid = true;
     void updateRandomList();
     void invalidateRandomCache();
 

@@ -948,6 +948,8 @@ void MapDocument::paintTileLayers(const Map &map, bool mergeable,
         sourceLayers.append(static_cast<const TileLayer*>(layer));
 
     const QList<TileLayer *> targetLayers = findTargetLayers(sourceLayers);
+    QHash<TileLayer*, QRegion> localPaintedRegions;
+    auto &regions = paintedRegions ? *paintedRegions : localPaintedRegions;
 
     TileLayer *lastTarget = nullptr;
 
@@ -1021,12 +1023,20 @@ void MapDocument::paintTileLayers(const Map &map, bool mergeable,
         paintCommand->setMergeable(mergeable);
         undoStack()->push(paintCommand);
 
-        if (paintedRegions)
-            (*paintedRegions)[target] |= editedRegion;
-        else
-            emit regionEdited(editedRegion, target);
+        regions[target] |= editedRegion;
 
         mergeable = true; // further paints are always mergeable
+    }
+
+    if (!paintedRegions) {
+        QHashIterator<TileLayer*, QRegion> ri(regions);
+        while (ri.hasNext()) {
+            TileLayer *layer = ri.next().key();
+            if (layer->map() != this->map())  // script might have removed the layer on regionEdited
+                continue;
+
+            emit regionEdited(ri.value(), layer);
+        }
     }
 }
 

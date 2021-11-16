@@ -109,6 +109,8 @@ void Eraser::doErase(bool continuation)
     }
     mLastTilePos = tilePos;
 
+    QList<QPair<QRegion, TileLayer*>> erasedRegions;
+
     auto eraseOnLayer = [&] (TileLayer *tileLayer) {
         if (!tileLayer->isUnlocked())
             return;
@@ -121,7 +123,7 @@ void Eraser::doErase(bool continuation)
         erase->setMergeable(continuation);
 
         mapDocument()->undoStack()->push(erase);
-        emit mapDocument()->regionEdited(eraseRegion, tileLayer);
+        erasedRegions.append({ eraseRegion, tileLayer });
 
         continuation = true;    // further erases are always continuations
     };
@@ -135,6 +137,13 @@ void Eraser::doErase(bool continuation)
                 eraseOnLayer(tileLayer);
     } else if (auto tileLayer = currentTileLayer()) {
         eraseOnLayer(tileLayer);
+    }
+
+    for (auto &erased : qAsConst(erasedRegions)) {
+        if (erased.second->map() != mapDocument()->map())
+            continue;
+
+        emit mapDocument()->regionEdited(erased.first, erased.second);
     }
 }
 

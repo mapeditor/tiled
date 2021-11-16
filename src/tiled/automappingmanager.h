@@ -32,7 +32,7 @@
 
 namespace Tiled {
 
-class Layer;
+class TileLayer;
 
 class AutoMapper;
 class MapDocument;
@@ -78,7 +78,7 @@ signals:
     void warningsOccurred(bool automatic);
 
 private:
-    void onRegionEdited(const QRegion &where, Layer *touchedLayer);
+    void onRegionEdited(const QRegion &where, TileLayer *touchedLayer);
     void onMapFileNameChanged();
     void onFileChanged();
 
@@ -92,7 +92,7 @@ private:
      * If a \a touchedLayer is given, only those AutoMappers will be used which
      * have a rule layer matching the \a touchedLayer.
      */
-    void autoMapInternal(const QRegion &where, const Layer *touchedLayer);
+    void autoMapInternal(const QRegion &where, const TileLayer *touchedLayer);
 
     /**
      * deletes all its data structures

@@ -432,8 +432,12 @@ void MapDocumentActionHandler::delete_()
         undoStack->endMacro();
     }
 
-    for (auto &erased : qAsConst(erasedRegions))
+    for (auto &erased : qAsConst(erasedRegions)) {
+        if (erased.second->map() != mMapDocument->map())
+            continue;
+
         emit mMapDocument->regionEdited(erased.first, erased.second);
+    }
 }
 
 void MapDocumentActionHandler::selectAll()

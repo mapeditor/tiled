@@ -52,11 +52,6 @@ StampBrush::StampBrush(QObject *parent)
                        QKeySequence(Qt::Key_B),
                        nullptr,
                        parent)
-    , mBrushBehavior(Free)
-    , mIsRandom(false)
-    , mIsWangFill(false)
-    , mWangSet(nullptr)
-    , mRandomCacheValid(true)
     , mStampActions(new StampActions(this))
 {
     setUsesSelectedTiles(true);
@@ -80,6 +75,7 @@ StampBrush::~StampBrush()
 
 void StampBrush::deactivate(MapScene *scene)
 {
+    mBrushBehavior = Free;
     mCaptureStampHelper.reset();
     AbstractTileTool::deactivate(scene);
 }
@@ -139,7 +135,6 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
                 break;
             case Free:
                 beginPaint();
-                mBrushBehavior = Paint;
                 break;
             case Capture:
                 break;
