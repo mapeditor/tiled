@@ -86,7 +86,7 @@ jobs:
       run: |
         qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.enableZstd:true projects.Tiled.sentry:true qbs.debugInformation:true modules.cpp.separateDebugInformation:true
 
-    - name: Upload symbols to Sentry
+    - name: Upload symbols and sources to Sentry
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -94,7 +94,7 @@ jobs:
         SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
       run: |
         curl -sL https://sentry.io/get-cli/ | bash
-        sentry-cli upload-dif .
+        sentry-cli upload-dif --include-sources src .
 
     - name: Build AppImage
       run: |
