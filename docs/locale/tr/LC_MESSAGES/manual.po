@@ -6,23 +6,26 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.7\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2021-09-07 13:45+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2021-11-19 06:51+0000\n"
+"Last-Translator: Yusuf Yavuzyigit <yusufyavuzyigit25@gmail.com>\n"
+"Language-Team: Turkish <https://hosted.weblate.org/projects/tiled/manual/tr/>"
+"\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.9.1-dev\n"
 
 #: ../../manual/automapping.rst:3
 msgid "Automapping"
-msgstr ""
+msgstr "Automapleme"
 
 #: ../../manual/automapping.rst:6
 msgid "What is Automapping?"
-msgstr ""
+msgstr "Automapping nedir?"
 
 #: ../../manual/automapping.rst:8
 msgid "Automapping is an advanced tool to automatically search certain combinations of tiles across layers in a map and to replace these parts with another combination. This allows the user to draw structures quickly and Automapping will generate a complex scenario from them, which would have taken much more time if manually crafted."
@@ -31,26 +34,34 @@ msgstr ""
 #: ../../manual/automapping.rst:14
 msgid "The goal of Automapping is that you only need to draw within one layer and everything else is setup for you. This brings some advantages:"
 msgstr ""
+"Automapping'in amacı, yalnızca bir katman içinde çizim yapmanız ve diğer her "
+"şeyin sizin için ayarlanmasıdır. Bu bazı avantajlar sağlar:"
 
 #: ../../manual/automapping.rst:17
 msgid "**Working speed** - you need less time to setup a map."
 msgstr ""
+"**Çalışma hızı** - bir harita oluşturmak için daha az zamana ihtiyacın var."
 
 #: ../../manual/automapping.rst:18
 msgid "**Less errors** - the main reason is to reduce the error rate. If you have setup the rules properly, there are no hidden errors."
 msgstr ""
+"**Daha az hata** - ana sebep hata sayısını azaltmaktır. Eğer kurallar düzgün "
+"oluşturulursa, gizli hatalar olmaz."
 
 #: ../../manual/automapping.rst:22
 msgid "External Links"
-msgstr ""
+msgstr "Dış Bağlantılar"
 
 #: ../../manual/automapping.rst:24
 msgid "`Automapping explained for Tiled 0.9 and later (YouTube) <http://www.youtube.com/watch?v=UUi0lD1pxyQ>`__"
 msgstr ""
+"`Otomatik eşleme, Tiled 0.9 ve sonraki sürümleri için açıklandı (YouTube) "
+"<http://www.youtube.com/watch?v=UUi0lD1pxyQ>`__"
 
 #: ../../manual/automapping.rst:25
 msgid "`Examples on Automapping <https://github.com/stefanbeller/tiled_examples>`__"
 msgstr ""
+"`Automapping Örnekleri <https://github.com/stefanbeller/tiled_examples>`__"
 
 #: ../../manual/automapping.rst:26
 msgid "`Tiled Map Editor Tutorial Part Three: AutoMap (YouTube) <https://youtu.be/A_A6rz7cvG4>`__"
