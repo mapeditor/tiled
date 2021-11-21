@@ -571,7 +571,7 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="-20"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished">Lua 檔案 (*.lua)</translation>
+        <translation>Lua 檔案 (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -579,7 +579,7 @@
     <message>
         <location line="+45"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished">Lua 檔案 (*.lua)</translation>
+        <translation>Lua 檔案 (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -602,7 +602,7 @@
     <message>
         <location line="+12"/>
         <source>&amp;Help</source>
-        <translation>說明(&amp;H)</translation>
+        <translation>說明 (&amp;H)</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -642,7 +642,7 @@
     <message>
         <location line="+9"/>
         <source>&amp;Quit</source>
-        <translation>結束(&amp;Q)</translation>
+        <translation>結束 (&amp;Q)</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -652,7 +652,7 @@
     <message>
         <location line="+12"/>
         <source>&amp;Paste</source>
-        <translation>貼上(&amp;P)</translation>
+        <translation>貼上 (&amp;P)</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -697,7 +697,7 @@
     <message>
         <location line="+8"/>
         <source>User Manual ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>使用手冊 ↗</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -732,7 +732,7 @@
     <message>
         <location line="+11"/>
         <source>Full Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>全螢幕</translation>
     </message>
     <message>
         <location line="+108"/>
@@ -747,7 +747,7 @@
     <message>
         <location line="+9"/>
         <source>Clear Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>清除最近的專案</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -803,7 +803,7 @@
     <message>
         <location line="-277"/>
         <source>&amp;Export</source>
-        <translation type="unfinished"></translation>
+        <translation>匯出 (&amp;E)</translation>
     </message>
     <message>
         <location line="-79"/>
@@ -818,7 +818,7 @@
     <message>
         <location line="+7"/>
         <source>Commands</source>
-        <translation type="unfinished"></translation>
+        <translation>命令</translation>
     </message>
     <message>
         <location line="+142"/>
@@ -923,7 +923,7 @@
     <message>
         <location line="+8"/>
         <source>Community Forum ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>社群論壇 ↗</translation>
     </message>
     <message>
         <location line="-92"/>
@@ -943,7 +943,7 @@
     <message>
         <location line="+10"/>
         <source>Edit Commands...</source>
-        <translation type="unfinished">編輯命令...</translation>
+        <translation>編輯命令...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1003,7 +1003,7 @@
     <message>
         <location line="+5"/>
         <source>Pre&amp;ferences...</source>
-        <translation>参数(&amp;f)...</translation>
+        <translation>選項 (&amp;F)...</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -1228,7 +1228,7 @@ Line %1, column %2</source>
     <message>
         <location line="-10"/>
         <source>Tile render order:</source>
-        <translation>圖塊繪製順序：</translation>
+        <translation type="unfinished">圖塊繪製順序：</translation>
     </message>
 </context>
 <context>
@@ -3347,7 +3347,7 @@ Line %1, column %2</source>
     <message>
         <location line="+90"/>
         <source>Error Loading Image</source>
-        <translation type="unfinished"></translation>
+        <translation>載入圖片時發生錯誤</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -3541,7 +3541,7 @@ Line %1, column %2</source>
     <message>
         <location line="+20"/>
         <source>Executing: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>正在執行：%1</translation>
     </message>
     <message>
         <location line="+34"/>
@@ -3599,7 +3599,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>Execute script</source>
-        <translation type="unfinished"></translation>
+        <translation>執行腳本</translation>
     </message>
 </context>
 <context>
@@ -5012,7 +5012,7 @@ Please select specific format.</source>
     <message>
         <location line="-674"/>
         <source>Unnamed object</source>
-        <translation type="unfinished"></translation>
+        <translation>未命名物件</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5491,7 +5491,7 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Flipping</source>
-        <translation type="unfinished">翻轉</translation>
+        <translation>翻轉</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -5523,7 +5523,7 @@ Please select specific format.</source>
     <message>
         <location line="-219"/>
         <source>Locked</source>
-        <translation type="unfinished"></translation>
+        <translation>已鎖定</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5575,7 +5575,7 @@ Please select specific format.</source>
         <location line="+83"/>
         <location line="+48"/>
         <source>Image</source>
-        <translation type="unfinished">圖像</translation>
+        <translation>圖片</translation>
     </message>
     <message>
         <location line="-126"/>
@@ -5596,7 +5596,7 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Filename</source>
-        <translation type="unfinished"></translation>
+        <translation>檔案名稱</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -5611,12 +5611,12 @@ Please select specific format.</source>
     <message>
         <location line="+14"/>
         <source>Grid Width</source>
-        <translation type="unfinished"></translation>
+        <translation>網格寬度</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Grid Height</source>
-        <translation type="unfinished"></translation>
+        <translation>網格高度</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -5631,12 +5631,12 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished">水平翻轉</translation>
+        <translation>水平翻轉</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished">垂直翻轉</translation>
+        <translation>垂直翻轉</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6172,7 +6172,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilestampsdock.cpp" line="+200"/>
         <source>Delete Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>刪除戳記</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -6464,12 +6464,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/undodock.cpp" line="+68"/>
         <source>History</source>
-        <translation type="unfinished">歷史</translation>
+        <translation>歷史</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&lt;empty&gt;</source>
-        <translation type="unfinished">&lt;空白&gt;</translation>
+        <translation>&lt;空白&gt;</translation>
     </message>
 </context>
 <context>
