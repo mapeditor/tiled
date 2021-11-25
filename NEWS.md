@@ -1,3 +1,35 @@
+### Tiled 1.8 (...)
+
+* Added support for custom enum properties (with svipal, #2941)
+* Added an action for selecting all layers (Ctrl+Alt+A) (#3081)
+* Added actions to select or add tilesets to Project view context menu
+* AutoMapping: Made it find layers within groups (#1771)
+* Scripting: Added File API
+* Scripting: Added missing Layer.tintColor property
+* Scripting: Added tiled.extensionsPath (#3139)
+* Scripting: Added ObjectGroup.drawOrder (#3147)
+* Scripting: Added Map.removeObjects (#3149)
+* Scripting: Treat custom format extensions as case-insensitive (#3141)
+* Tweaked focus behavior in the Template Editor
+* Changed the default Terrain Brush shortcut back to T
+* Reset tile animations when disabling playback and when exporting as image
+* Don't require saving maps upon creation (#1902)
+* Apply transformation actions to the preview while placing tiles (#3091)
+* Allow using object context menu in object creation tools
+* Reduced the step size for the parallax factor property
+* Fixed the logic for handling group layer parallax factors (with LilithSilver, #3125)
+* Fixed debug messages showing in the Console and Issues views
+* Fixed enabled state of File > Export action for tilesets (#3177)
+* Fixed Snap to Grid for hexagonal maps
+* Fixed AutoMapping rules file to update after changing project properties (#3176)
+* Tiled Manual is now available in French
+* YY plugin: Don't use safe writing of files
+* YY plugin: Write out custom "object" properties as instance name (instead of the ID)
+* libtiled-java: Introduced TilesetCache interface (by Samuel Manflame, #3117)
+* Disable the Terrain Set type property when appropriate (avoids crash)
+* Added Ukrainian translation to Windows installer (#3132)
+* Updated Ukrainian and Traditional Chinese translations
+
 ### Tiled 1.7.2 (10 August 2021)
 
 * Avoid automatically replacing external tilesets with "similar" ones
