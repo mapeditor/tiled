@@ -2030,7 +2030,7 @@ interface TileLayerEdit {
    *
    * To remove a tile, set it to ``null``.
    */
-  setTile(x : number, y : number, tile : Tile , flags? : number) : void
+  setTile(x : number, y : number, tile : Tile | null, flags? : number) : void
 
   /**
    * Applies all changes made through this object. This object can be reused to make further changes.
