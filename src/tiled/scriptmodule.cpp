@@ -103,6 +103,11 @@ QString ScriptModule::extensionsPath() const
     return ScriptManager::instance().extensionsPath();
 }
 
+QString ScriptModule::applicationDirPath() const
+{
+    return QCoreApplication::applicationDirPath();
+}
+
 static QStringList idsToNames(const QList<Id> &ids)
 {
     QStringList names;

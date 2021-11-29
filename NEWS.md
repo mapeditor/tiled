@@ -9,6 +9,7 @@
 * Scripting: Added tiled.extensionsPath (#3139)
 * Scripting: Added ObjectGroup.drawOrder (#3147)
 * Scripting: Added Map.removeObjects (#3149)
+* Scripting: Added tiled.applicationDirPath
 * Scripting: Treat custom format extensions as case-insensitive (#3141)
 * Tweaked focus behavior in the Template Editor
 * Changed the default Terrain Brush shortcut back to T
