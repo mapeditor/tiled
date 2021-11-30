@@ -2470,6 +2470,11 @@ declare namespace tiled {
   export const arch: string;
 
   /**
+   * The directory containing the Tiled executable.
+   */
+  export const applicationDirPath: string;
+
+  /**
    * The system- and user-specific path where global extensions are installed.
    *
    * Note that normally it is not necessary to use this path, since the "ext:"
