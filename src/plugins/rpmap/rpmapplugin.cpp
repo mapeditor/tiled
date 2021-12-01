@@ -118,8 +118,10 @@ static void writeGUID(QXmlStreamWriter &writer, QString const &key, QUuid const&
     writer.writeEndElement();
 }
 
-static void writeTile(QXmlStreamWriter &writer, int x, int y, QString const& name, int facing, QString const& md5, bool flipx, bool flipy)
+static void writeTile(QXmlStreamWriter &writer, int x, int y, Tile const* tile, int facing, QString const& md5, bool flipx, bool flipy)
 {
+    const QSize size = tile->size();
+
     writer.writeStartElement(QStringLiteral("entry"));
     writeGUID(writer, QStringLiteral("net.rptools.maptool.model.GUID"), QUuid::createUuid());
     writer.writeStartElement(QStringLiteral("net.rptools.maptool.model.Token"));
@@ -139,8 +141,8 @@ static void writeTile(QXmlStreamWriter &writer, int x, int y, QString const& nam
     writer.writeTextElement(QStringLiteral("anchorX"), QString::number(0));
     writer.writeTextElement(QStringLiteral("anchorY"), QString::number(0));
     writer.writeTextElement(QStringLiteral("snapToScale"), QStringLiteral("false"));
-    writer.writeTextElement(QStringLiteral("width"), QString::number(300));
-    writer.writeTextElement(QStringLiteral("height"), QString::number(300));
+    writer.writeTextElement(QStringLiteral("width"), QString::number(size.width()));
+    writer.writeTextElement(QStringLiteral("height"), QString::number(size.height()));
     writer.writeTextElement(QStringLiteral("isoWidth"), QString::number(0));
     writer.writeTextElement(QStringLiteral("isoHeight"), QString::number(0));
     writer.writeTextElement(QStringLiteral("scaleX"), QString::number(1.0));
@@ -159,7 +161,7 @@ static void writeTile(QXmlStreamWriter &writer, int x, int y, QString const& nam
     writer.writeTextElement(QStringLiteral("vblColorSensitivity"), QString::number(-1));
     writer.writeTextElement(QStringLiteral("alwaysVisibleTolerance"), QString::number(2));
     writer.writeTextElement(QStringLiteral("isAlwaysVisible"), QStringLiteral("false"));
-    writer.writeTextElement(QStringLiteral("name"), name);
+    writer.writeTextElement(QStringLiteral("name"), QStringLiteral("token"));
     writer.writeTextElement(QStringLiteral("ownerType"), QString::number(0));
     writer.writeTextElement(QStringLiteral("tokenShape"), QStringLiteral("TOP_DOWN"));
     writer.writeTextElement(QStringLiteral("tokenType"), QStringLiteral("NPC"));
@@ -248,8 +250,9 @@ void RpMapPlugin::writeTokenMap(QXmlStreamWriter &writer, Tiled::Map const* map)
         if (TileLayer *tileLayer = layer->asTileLayer()) {
             for (int y = 0; y < tileLayer->height(); ++y) {
                 for (int x = 0; x < tileLayer->width(); ++x) {
-                    Cell t = tileLayer->cellAt(x, y);
-                    if (t.isEmpty())
+                    Cell cell = tileLayer->cellAt(x, y);
+                    Tile const* tile = cell.tile();
+                    if (!tile)
                         continue;
 
                     static constexpr uint16_t rotation[8] = { 270, 270, 270, 90, 0, 0, 180, 180 };
@@ -257,9 +260,8 @@ void RpMapPlugin::writeTokenMap(QXmlStreamWriter &writer, Tiled::Map const* map)
                     static constexpr bool flip_horiz[8] = { false, false, true, false,  true, false, false, true };
                     static constexpr bool flip_vert[8] = { false, true, false, false,  false, false, false, false };
 
-                    uint8_t rot_index = (t.flippedVertically() ? 1 : 0) | (t.flippedHorizontally() ? 2 : 0) | (t.flippedAntiDiagonally() ? 4 : 0);
+                    uint8_t rot_index = (cell.flippedVertically() ? 1 : 0) | (cell.flippedHorizontally() ? 2 : 0) | (cell.flippedAntiDiagonally() ? 4 : 0);
                     //int tileid= t.tileId();
-                    Tile const* tile = t.tile();
                     QUrl tileurl = tile->imageSource();
                     if (tileurl.isLocalFile()) {
                         QString tilepath = tileurl.toLocalFile();
@@ -279,7 +281,7 @@ void RpMapPlugin::writeTokenMap(QXmlStreamWriter &writer, Tiled::Map const* map)
                         }
                         assert(it != filename2md5.end());
                         QString md5 = it.value();
-                        writeTile(writer, x*tileWidth, y*tileHeight, QStringLiteral("token"), rotation[rot_index], md5, flip_horiz[rot_index], flip_vert[rot_index]);
+                        writeTile(writer, x*tileWidth, y*tileHeight, tile, rotation[rot_index], md5, flip_horiz[rot_index], flip_vert[rot_index]);
                         ++number_of_tiles;
                     }
                 }
