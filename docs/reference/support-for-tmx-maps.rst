@@ -268,6 +268,7 @@ HTML5 (multiple engines)
 -  `Crafty <http://craftyjs.com>`__ JavaScript HTML5 Game Engine;
    supports loading Tiled maps through an external component
    `TiledMapBuilder <https://github.com/Kibo/TiledMapBuilder>`__.
+-  `Excalibur <https://excaliburjs.com/>`__, an open-source 2D HTML5 game engine, supports loading Tiled maps through the plugin `excalibur-tiled  <https://github.com/excaliburjs/excalibur-tiled>`__.
 -  `GameJs <http://gamejs.org>`__ JavaScript library for game
    programming; a thin wrapper to draw on HTML5 canvas and other useful
    modules for game development
