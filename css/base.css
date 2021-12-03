@@ -21,13 +21,13 @@ h1 {
   font-size: 2em;
   margin: 1em 0;
   padding: 0;
-  background: radial-gradient(farthest-side at bottom left, yellow 10%, orange 25%, transparent 100%) bottom / 100% 5px no-repeat;
+  background: radial-gradient(farthest-side at bottom left, yellow 10%, orange 25%, transparent 100%) bottom / 99% 5px no-repeat;
 }
 h2 {
   font-size: 1.7em;
 }
 h2.big {
-  background: radial-gradient(farthest-side at bottom, yellow 10%, orange 25%, transparent 100%) bottom / 100% 5px no-repeat;
+  background: radial-gradient(farthest-side at bottom, yellow 10%, orange 25%, transparent 100%) bottom / 99% 5px no-repeat;
 }
 h3 {
   font-size: 1.5em;
