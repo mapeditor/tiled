@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "undocommands.h"
+
 #include <QRegion>
 #include <QUndoCommand>
 
@@ -40,6 +42,8 @@ public:
 
     void undo() override;
     void redo() override;
+
+    int id() const override { return Cmd_ChangeSelectedArea; }
 
 private:
     void swapSelection();

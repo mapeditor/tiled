@@ -26,6 +26,7 @@
 #include "logginginterface.h"
 #include "object.h"
 #include "tile.h"
+#include "undocommands.h"
 #include "wangset.h"
 
 #include <QFileInfo>
@@ -46,7 +47,8 @@ Document::Document(DocumentType type, const QString &fileName,
     if (!mCanonicalFilePath.isEmpty())
         sDocumentInstances.insert(mCanonicalFilePath, this);
 
-    connect(mUndoStack, &QUndoStack::cleanChanged, this, &Document::modifiedChanged);
+    connect(mUndoStack, &QUndoStack::indexChanged, this, &Document::updateModifiedChanged);
+    connect(mUndoStack, &QUndoStack::cleanChanged, this, &Document::updateModifiedChanged);
 }
 
 Document::~Document()
@@ -94,14 +96,6 @@ void Document::checkFilePathProperties(const Object *object) const
             }
         }
     }
-}
-
-/**
- * Returns whether the document has unsaved changes.
- */
-bool Document::isModified() const
-{
-    return !undoStack()->isClean();
 }
 
 /**
@@ -189,6 +183,44 @@ void Document::currentObjectDocumentDestroyed()
 {
     mCurrentObjectDocument = nullptr;   // don't need to disconnect from this
     setCurrentObject(nullptr);
+}
+
+void Document::updateModifiedChanged()
+{
+    bool modified = true;
+
+    const QUndoStack &undo = *undoStack();
+    if (undo.isClean()) {
+        modified = false;
+    } else {
+        const int cleanIndex = undo.cleanIndex();
+        if (cleanIndex != -1) {
+            modified = false;
+
+            // if cleanIndex is 2 and index is 5, we check commands 4 to 2
+            int from = undo.index() - 1;
+            int to = cleanIndex;
+
+            // if cleanIndex is 2 but index is 0, we check commands 1 to 0
+            if (from < to) {
+                to = undo.index();
+                from = cleanIndex - 1;
+            }
+
+            for (int index = from; index >= to; --index) {
+                const QUndoCommand *command = undo.command(index);
+                if (command->id() != Cmd_ChangeSelectedArea) {
+                    modified = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (mModified != modified) {
+        mModified = modified;
+        emit modifiedChanged();
+    }
 }
 
 QList<Object *> Document::currentObjects() const

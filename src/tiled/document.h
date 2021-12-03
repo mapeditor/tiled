@@ -161,6 +161,8 @@ private:
     void currentObjectDocumentChanged(const ChangeEvent &change);
     void currentObjectDocumentDestroyed();
 
+    void updateModifiedChanged();
+
     const DocumentType mType;
 
     QString mFileName;
@@ -168,6 +170,7 @@ private:
 
     QUndoStack * const mUndoStack;
 
+    bool mModified = false;
     bool mChangedOnDisk = false;
     bool mIgnoreBrokenLinks = false;
 
@@ -192,6 +195,14 @@ inline QString Document::canonicalFilePath() const
 inline QUndoStack *Document::undoStack() const
 {
     return mUndoStack;
+}
+
+/**
+ * Returns whether the document has unsaved changes.
+ */
+inline bool Document::isModified() const
+{
+    return mModified;
 }
 
 /**
