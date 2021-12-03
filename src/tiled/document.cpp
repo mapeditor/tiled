@@ -187,32 +187,28 @@ void Document::currentObjectDocumentDestroyed()
 
 void Document::updateModifiedChanged()
 {
-    bool modified = true;
-
     const QUndoStack &undo = *undoStack();
-    if (undo.isClean()) {
+    const int cleanIndex = undo.cleanIndex();
+    bool modified = !undo.isClean();
+
+    if (modified && cleanIndex != -1) {
         modified = false;
-    } else {
-        const int cleanIndex = undo.cleanIndex();
-        if (cleanIndex != -1) {
-            modified = false;
 
-            // if cleanIndex is 2 and index is 5, we check commands 4 to 2
-            int from = undo.index() - 1;
-            int to = cleanIndex;
+        // if cleanIndex is 2 and index is 5, we check commands 4 to 2
+        int from = undo.index() - 1;
+        int to = cleanIndex;
 
-            // if cleanIndex is 2 but index is 0, we check commands 1 to 0
-            if (from < to) {
-                to = undo.index();
-                from = cleanIndex - 1;
-            }
+        // if cleanIndex is 2 but index is 0, we check commands 1 to 0
+        if (from < to) {
+            to = undo.index();
+            from = cleanIndex - 1;
+        }
 
-            for (int index = from; index >= to; --index) {
-                const QUndoCommand *command = undo.command(index);
-                if (command->id() != Cmd_ChangeSelectedArea) {
-                    modified = true;
-                    break;
-                }
+        for (int index = from; index >= to; --index) {
+            const QUndoCommand *command = undo.command(index);
+            if (command->id() != Cmd_ChangeSelectedArea) {
+                modified = true;
+                break;
             }
         }
     }
