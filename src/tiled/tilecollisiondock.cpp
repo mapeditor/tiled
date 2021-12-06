@@ -230,6 +230,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     retranslateUi();
     selectedObjectsChanged();   // disables actions
 
+    ActionManager::registerAction(mActionAutoDetectMask, "AutoDetectMask");
     ActionManager::registerAction(mActionDuplicateObjects, "DuplicateObjects");
     ActionManager::registerAction(mActionRemoveObjects, "RemoveObjects");
     ActionManager::registerAction(mActionMoveUp, "MoveObjectsUp");

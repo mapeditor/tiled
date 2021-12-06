@@ -23,13 +23,15 @@
 * Fixed enabled state of File > Export action for tilesets (#3177)
 * Fixed Snap to Grid for hexagonal maps
 * Fixed AutoMapping rules file to update after changing project properties (#3176)
+* Fixed 'Detect Bounding Box' action missing in Keyboard settings
 * Tiled Manual is now available in French
 * YY plugin: Don't use safe writing of files
 * YY plugin: Write out custom "object" properties as instance name (instead of the ID)
+* RpMap plugin: Fixed hardcoded exported tile size (#3184)
 * libtiled-java: Introduced TilesetCache interface (by Samuel Manflame, #3117)
 * Disable the Terrain Set type property when appropriate (avoids crash)
 * Added Ukrainian translation to Windows installer (#3132)
-* Updated Ukrainian and Traditional Chinese translations
+* Updated Korean, Ukrainian and Traditional Chinese translations
 
 ### Tiled 1.7.2 (10 August 2021)
 
