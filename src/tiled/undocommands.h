@@ -31,12 +31,13 @@ namespace Tiled {
 enum UndoCommands {
     Cmd_ChangeLayerOffset,
     Cmd_ChangeLayerOpacity,
+    Cmd_ChangeLayerTintColor,
+    Cmd_ChangeSelectedArea,
     Cmd_ChangeTileTerrain,
     Cmd_ChangeTileWangId,
     Cmd_ChangeTilesetTileOffset,
     Cmd_EraseTiles,
     Cmd_PaintTileLayer,
-    Cmd_ChangeLayerTintColor
 };
 
 /**
