@@ -114,6 +114,7 @@ private:
     void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
 
     void updateDefaultBackgroundColor();
+    void updateBackgroundColor();
     void updateSceneRect();
 
     void setWorldsEnabled(bool enabled);
@@ -136,7 +137,7 @@ private:
     QPointF mLastMousePos;
     QRectF mViewRect;
     QColor mDefaultBackgroundColor;
-    QColor mOverrideBackgroundColor = QColor::Invalid;
+    QColor mOverrideBackgroundColor;
 };
 
 /**
