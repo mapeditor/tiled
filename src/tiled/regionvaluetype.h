@@ -30,6 +30,7 @@ class RegionValueType
     Q_GADGET
 
     Q_PROPERTY(QRect boundingRect READ boundingRect)
+    Q_PROPERTY(QVector<QRect> rects READ rects)
 
 public:
     RegionValueType();
@@ -38,6 +39,9 @@ public:
     explicit RegionValueType(const QRegion &region);
 
     Q_INVOKABLE QString toString() const;
+
+    Q_INVOKABLE bool contains(int x, int y) const;
+    Q_INVOKABLE bool contains(QPoint point) const;
 
     Q_INVOKABLE void add(const QRect &rect);
     Q_INVOKABLE void add(const QRectF &rect);
@@ -50,12 +54,24 @@ public:
     Q_INVOKABLE void intersect(const Tiled::RegionValueType &region);
 
     QRect boundingRect() const;
+    QVector<QRect> rects() const;
+
     const QRegion &region() const;
 
 private:
     QRegion mRegion;
 };
 
+
+inline bool RegionValueType::contains(int x, int y) const
+{
+    return mRegion.contains(QPoint(x, y));
+}
+
+inline bool RegionValueType::contains(QPoint point) const
+{
+    return mRegion.contains(point);
+}
 
 inline void RegionValueType::add(const QRect &rect)
 {

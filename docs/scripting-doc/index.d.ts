@@ -49,9 +49,54 @@ interface rect {
 
 interface region {
   /**
-   * Bounding rectangle of the region.
+   * Bounding rectangle of this region.
    */
   readonly boundingRect: rect;
+
+  /**
+   * Array of rectangles making up this region.
+   */
+  readonly rects : rect[];
+
+  /**
+   * Returns whether this region contains the given point.
+   */
+  contains(x : number, y : number) : boolean;
+
+  /**
+   * Returns whether this region contains the given point.
+   */
+  contains(point : point) : boolean;
+
+  /**
+   * Adds the given rectangle to this region.
+   */
+  add(rect : rect) : void;
+
+  /**
+   * Adds the given region to this region.
+   */
+  add(region : region) : void;
+
+  /**
+   * Subtracts the given rectangle from this region.
+   */
+  subtract(rect : rect) : void;
+
+  /**
+   * Subtracts the given region from this region.
+   */
+  subtract(region : region) : void;
+
+  /**
+   * Sets the selected area to the intersection of the current selected area and the given rectangle.
+   */
+  intersect(rect : rect) : void;
+
+  /**
+   * Sets the selected area to the intersection of the current selected area and the given region.
+   */
+  intersect(region : region) : void;
 }
 
 /**

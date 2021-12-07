@@ -56,6 +56,11 @@ QString RegionValueType::toString() const
     }
 }
 
+QVector<QRect> RegionValueType::rects() const
+{
+    return QVector<QRect>(mRegion.begin(), mRegion.end());
+}
+
 } // namespace Tiled
 
 #include "moc_regionvaluetype.cpp"
