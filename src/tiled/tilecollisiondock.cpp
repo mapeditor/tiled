@@ -293,6 +293,12 @@ void TileCollisionDock::setTilesetDocument(TilesetDocument *tilesetDocument)
                 this, &TileCollisionDock::tileObjectGroupChanged);
         connect(mTilesetDocument, &TilesetDocument::tilesetTileOffsetChanged,
                 this, &TileCollisionDock::tilesetTileOffsetChanged);
+        connect(mTilesetDocument, &TilesetDocument::tilesetChanged,
+                this, &TileCollisionDock::tilesetChanged);
+
+        mMapScene->setOverrideBackgroundColor(mTilesetDocument->tileset()->backgroundColor());
+    } else {
+        mMapScene->setOverrideBackgroundColor(QColor());
     }
 }
 
@@ -540,6 +546,11 @@ void TileCollisionDock::tilesetTileOffsetChanged(Tileset *tileset)
     tileLayer->setOffset(-tileOffset);
 
     emit mDummyMapDocument->changed(LayerChangeEvent(tileLayer, LayerChangeEvent::OffsetProperty));
+}
+
+void TileCollisionDock::tilesetChanged(Tileset *tileset)
+{
+    mMapScene->setOverrideBackgroundColor(tileset->backgroundColor());
 }
 
 void TileCollisionDock::cut()

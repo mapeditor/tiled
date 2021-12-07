@@ -105,6 +105,7 @@ private:
     void documentChanged(const ChangeEvent &change);
     void tileObjectGroupChanged(Tile*);
     void tilesetTileOffsetChanged(Tileset *tileset);
+    void tilesetChanged(Tileset *tileset);
 
     void selectedObjectsChanged();
     void setHasSelectedObjects(bool hasSelectedObjects);

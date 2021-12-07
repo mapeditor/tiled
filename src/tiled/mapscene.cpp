@@ -188,6 +188,15 @@ void MapScene::setViewRect(const QRectF &rect)
         emit parallaxParametersChanged();
 }
 
+void MapScene::setOverrideBackgroundColor(QColor backgroundColor)
+{
+    if (mOverrideBackgroundColor == backgroundColor)
+        return;
+
+    mOverrideBackgroundColor = backgroundColor;
+    updateBackgroundColor();
+};
+
 /**
  * Returns the position the given layer is supposed to have, taking into
  * account its offset and the parallax factor along with the current view rect.
@@ -278,24 +287,37 @@ void MapScene::refreshScene()
     mMapItems.swap(mapItems);
     qDeleteAll(mapItems);       // delete all map items that didn't get reused
 
+    updateBackgroundColor();
     updateSceneRect();
-
-    const Map *map = mMapDocument->map();
-
-    if (map->backgroundColor().isValid())
-        setBackgroundBrush(map->backgroundColor());
-    else
-        setBackgroundBrush(mDefaultBackgroundColor);
 
     emit sceneRefreshed();
 }
 
 void MapScene::updateDefaultBackgroundColor()
 {
-    mDefaultBackgroundColor = QGuiApplication::palette().dark().color();
+    const QColor darkColor = QGuiApplication::palette().dark().color();
+    if (mDefaultBackgroundColor != darkColor) {
+        mDefaultBackgroundColor = darkColor;
+        updateBackgroundColor();
+    }
+}
 
-    if (!mMapDocument || !mMapDocument->map()->backgroundColor().isValid())
-        setBackgroundBrush(mDefaultBackgroundColor);
+void MapScene::updateBackgroundColor()
+{
+    if (mOverrideBackgroundColor.isValid()) {
+        setBackgroundBrush(mOverrideBackgroundColor);
+        return;
+    }
+
+    if (mMapDocument) {
+        const QColor &backgroundColor = mMapDocument->map()->backgroundColor();
+        if (backgroundColor.isValid()) {
+            setBackgroundBrush(backgroundColor);
+            return;
+        }
+    }
+
+    setBackgroundBrush(mDefaultBackgroundColor);
 }
 
 void MapScene::updateSceneRect()
@@ -341,11 +363,7 @@ MapItem *MapScene::takeOrCreateMapItem(const MapDocumentPtr &mapDocument, MapIte
  */
 void MapScene::mapChanged()
 {
-    const Map *map = mMapDocument->map();
-    if (map->backgroundColor().isValid())
-        setBackgroundBrush(map->backgroundColor());
-    else
-        setBackgroundBrush(mDefaultBackgroundColor);
+    updateBackgroundColor();
 }
 
 void MapScene::repaintTileset(Tileset *tileset)
