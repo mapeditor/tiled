@@ -247,9 +247,6 @@ public:
     void addLayer(std::unique_ptr<Layer> layer);
     void addLayer(Layer *layer);
 
-    int indexOfLayer(const QString &layerName,
-                     int layerTypes = Layer::AnyLayerType) const;
-
     Layer *findLayer(const QString &name,
                      int layerTypes = Layer::AnyLayerType) const;
 

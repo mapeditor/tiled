@@ -157,25 +157,6 @@ void Map::addLayer(Layer *layer)
 }
 
 /**
- * Returns the index of the layer given by \a layerName, or -1 if no
- * layer with that name is found.
- *
- * The second optional parameter specifies the layer types which are
- * searched.
- *
- * @deprecated Does not support group layers. Use findLayer() instead.
- */
-int Map::indexOfLayer(const QString &layerName, int layerTypes) const
-{
-    for (int index = 0; index < mLayers.size(); index++)
-        if (layerAt(index)->name() == layerName
-                && (layerTypes & layerAt(index)->layerType()))
-            return index;
-
-    return -1;
-}
-
-/**
  * Returns the first layer with the given \a name, or nullptr if no
  * layer with that name is found.
  *
