@@ -1,0 +1,1081 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Map",
+    "definitions": {
+        "World": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "patterns": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Pattern"
+                    }
+                },
+                "type": {
+                    "type": "string"
+                },
+                "maps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/MapElement"
+                    }
+                },
+                "onlyShowAdjacentMaps": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "type"
+            ],
+            "title": "World"
+        },
+        "MapElement": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "fileName": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "integer"
+                },
+                "width": {
+                    "type": "integer"
+                },
+                "x": {
+                    "type": "integer"
+                },
+                "y": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "fileName",
+                "height",
+                "width",
+                "x",
+                "y"
+            ],
+            "title": "MapElement"
+        },
+        "Pattern": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "regexp": {
+                    "type": "string"
+                },
+                "multiplierX": {
+                    "type": "integer"
+                },
+                "multiplierY": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "multiplierX",
+                "multiplierY",
+                "regexp"
+            ],
+            "title": "Pattern"
+        },
+        "Map": {
+            "description": "A map, which is defined by its layers and can reference several tilesets.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "backgroundcolor": {
+                    "description": "Hex-formatted color (#RRGGBB or #AARRGGBB)",
+                    "type": "string"
+                },
+                "compressionlevel": {
+                    "description": "The compression level to use for tile layer data (defaults to -1, which means to use the algorithm default)",
+                    "type": "integer",
+                    "default": -1
+                },
+                "height": {
+                    "description": "Number of tile rows",
+                    "type": "integer"
+                },
+                "hexsidelength": {
+                    "description": "Length of the side of a hex tile in pixels (hexagonal maps only)",
+                    "type": "integer"
+                },
+                "infinite": {
+                    "description": "Whether the map has infinite dimensions",
+                    "type": "boolean",
+                    "default": false
+                },
+                "layers": {
+                    "description": "Array of layers",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Layer"
+                    }
+                },
+                "nextlayerid": {
+                    "description": "Auto-increments for each new layer",
+                    "type": "integer"
+                },
+                "nextobjectid": {
+                    "description": "Auto-increments for each placed object",
+                    "type": "integer"
+                },
+                "orientation": {
+                    "description": "Orientation of the map",
+                    "$ref": "#/definitions/Orientation"
+                },
+                "properties": {
+                    "description": "Array of properties",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "renderorder": {
+                    "description": "Tile render order (currently only supported for orthogonal maps)",
+                    "type": "string",
+                    "enum": [
+                        "right-down",
+                        "right-up",
+                        "left-down",
+                        "left-up"
+                    ],
+                    "title": "RenderOrder"
+                },
+                "staggeraxis": {
+                    "description": "x or y (staggered / hexagonal maps only)",
+                    "type": "string",
+                    "enum": [
+                        "x",
+                        "y"
+                    ],
+                    "title": "StaggerAxis"
+                },
+                "staggerindex": {
+                    "description": "odd or even (staggered / hexagonal maps only)",
+                    "type": "string",
+                    "enum": [
+                        "odd",
+                        "even"
+                    ],
+                    "title": "StaggerIndex"
+                },
+                "tiledversion": {
+                    "description": "The Tiled version used to save the file",
+                    "type": "string"
+                },
+                "tileheight": {
+                    "description": "Map grid height",
+                    "type": "integer"
+                },
+                "tilesets": {
+                    "description": "Array of tilesets or references to external tilesets",
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/Tileset"
+                            },
+                            {
+                                "$ref": "#/definitions/TilesetReference"
+                            }
+                        ]
+                    }
+                },
+                "tilewidth": {
+                    "description": "Map grid width",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "Type of this object",
+                    "type": "string",
+                    "const": "map"
+                },
+                "version": {
+                    "description": "The JSON format version (previously a number, saved as string since 1.6)",
+                    "type": "string"
+                },
+                "width": {
+                    "description": "Number of tile columns",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "height",
+                "infinite",
+                "layers",
+                "nextlayerid",
+                "nextobjectid",
+                "orientation",
+                "properties",
+                "renderorder",
+                "tileheight",
+                "tilesets",
+                "tilewidth",
+                "type",
+                "version",
+                "width"
+            ],
+            "title": "Map"
+        },
+        "Layer": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "chunks": {
+                    "description": "Array of chunks (optional). tilelayer only.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Chunk"
+                    }
+                },
+                "compression": {
+                    "description": "zlib, gzip, zstd (since Tiled 1.3) or empty (default). tilelayer only.",
+                    "$ref": "#/definitions/Compression"
+                },
+                "data": {
+                    "$ref": "#/definitions/Data"
+                },
+                "draworder": {
+                    "description": "topdown (default) or index. objectgroup only.",
+                    "type": "string",
+                    "enum": [
+                        "topdown",
+                        "index"
+                    ],
+                    "title": "DrawOrder"
+                },
+                "encoding": {
+                    "description": "csv (default) or base64. tilelayer only.",
+                    "$ref": "#/definitions/Encoding"
+                },
+                "height": {
+                    "description": "Row count. Same as map height for fixed-size maps.",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "Incremental ID - unique across all layers",
+                    "type": "integer"
+                },
+                "image": {
+                    "description": "Image used by this layer. imagelayer only.",
+                    "type": "string"
+                },
+                "layers": {
+                    "description": "Array of layers. group only.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Layer"
+                    }
+                },
+                "name": {
+                    "description": "Name assigned to this layer",
+                    "type": "string"
+                },
+                "objects": {
+                    "description": "Array of objects. objectgroup only.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Object"
+                    }
+                },
+                "offsetx": {
+                    "description": "Horizontal layer offset in pixels (default: 0)",
+                    "type": "number"
+                },
+                "offsety": {
+                    "description": "Vertical layer offset in pixels (default: 0)",
+                    "type": "number"
+                },
+                "opacity": {
+                    "description": "Value between 0 and 1",
+                    "type": "number"
+                },
+                "parallaxx": {
+                    "description": "Horizontal parallax factor for this layer (default: 1)",
+                    "type": "number"
+                },
+                "parallaxy": {
+                    "description": "Vertical parallax factor for this layer (default: 1)",
+                    "type": "number"
+                },
+                "startx": {
+                    "description": "X coordinate where layer content starts (for infinite maps)",
+                    "type": "integer"
+                },
+                "starty": {
+                    "description": "Y coordinate where layer content starts (for infinite maps)",
+                    "type": "integer"
+                },
+                "tintcolor": {
+                    "description": "Hex-formatted tint color (#RRGGBB or #AARRGGBB) that is multiplied with any graphics drawn by this layer or any child layers (optional).",
+                    "type": "string"
+                },
+                "transparentcolor": {
+                    "description": "Hex-formatted color (#RRGGBB) (optional). imagelayer only.",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "tilelayer, objectgroup, imagelayer or group",
+                    "type": "string",
+                    "enum": [
+                        "tilelayer",
+                        "objectgroup",
+                        "imagelayer",
+                        "group"
+                    ],
+                    "title": "LayerType"
+                },
+                "visible": {
+                    "description": "Whether layer is shown or hidden in editor",
+                    "type": "boolean"
+                },
+                "width": {
+                    "description": "Column count. Same as map width for fixed-size maps.",
+                    "type": "integer"
+                },
+                "x": {
+                    "description": "Horizontal layer offset in tiles. Always 0.",
+                    "type": "integer"
+                },
+                "y": {
+                    "description": "Vertical layer offset in tiles. Always 0.",
+                    "type": "integer"
+                },
+                "color": {
+                    "description": "Color for objects on this layer, objectgroup only",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "name",
+                "opacity",
+                "type",
+                "visible",
+                "x",
+                "y"
+            ],
+            "title": "Layer"
+        },
+        "Object": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "ellipse": {
+                    "description": "Used to mark an object as an ellipse",
+                    "type": "boolean"
+                },
+                "gid": {
+                    "description": "Global tile ID, only if object represents a tile",
+                    "type": "integer"
+                },
+                "height": {
+                    "description": "Height in pixels.",
+                    "type": "number"
+                },
+                "id": {
+                    "description": "Incremental ID, unique across all objects",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Name of the object",
+                    "type": "string"
+                },
+                "point": {
+                    "description": "Used to mark an object as a point",
+                    "type": "boolean"
+                },
+                "polygon": {
+                    "description": "Array of Points, in case the object is a polygon",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Point"
+                    }
+                },
+                "polyline": {
+                    "description": "Array of Points, in case the object is a polyline",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Point"
+                    }
+                },
+                "properties": {
+                    "description": "Array of Properties",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "rotation": {
+                    "description": "Angle in degrees clockwise",
+                    "type": "number"
+                },
+                "template": {
+                    "description": "Reference to a template file, in case object is a template instance",
+                    "type": "string"
+                },
+                "text": {
+                    "description": "Only used for text objects",
+                    "$ref": "#/definitions/Text"
+                },
+                "type": {
+                    "description": "Type of the object",
+                    "type": "string"
+                },
+                "visible": {
+                    "description": "Whether object is shown in editor",
+                    "type": "boolean"
+                },
+                "width": {
+                    "description": "Width in pixels",
+                    "type": "number"
+                },
+                "x": {
+                    "description": "X coordinate in pixels",
+                    "type": "number"
+                },
+                "y": {
+                    "description": "Y coordinate in pixels",
+                    "type": "number"
+                }
+            },
+            "required": [
+                "id",
+                "x",
+                "y"
+            ],
+            "title": "Object"
+        },
+        "Point": {
+            "description": "A point on a polygon or a polyline, relative to the position of the object",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "x": {
+                    "description": "X coordinate in pixels",
+                    "type": "number"
+                },
+                "y": {
+                    "description": "Y coordinate in pixels",
+                    "type": "number"
+                }
+            },
+            "required": [
+                "x",
+                "y"
+            ],
+            "title": "Point"
+        },
+        "Property": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "description": "Name of the property",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "Type of the property (string (default), int, float, bool, color, file or object)",
+                    "type": "string",
+                    "enum": [
+                        "int",
+                        "string",
+                        "float",
+                        "bool"
+                    ],
+                    "title": "PropertyType"
+                },
+                "value": {
+                    "description": "Value of the property",
+                    "anyOf": [
+                        {
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "value"
+            ],
+            "title": "Property"
+        },
+        "TilesetReference": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "firstgid": {
+                    "description": "GID corresponding to the first tile in the set",
+                    "type": "integer"
+                },
+                "source": {
+                    "description": "The external file that contains this tilesets data",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "firstgid"
+            ],
+            "title": "TilesetReference"
+        },
+        "WangSet": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "colors": {
+                    "description": "Array of Wang colors",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WangColor"
+                    }
+                },
+                "name": {
+                    "description": "Name of the Wang set",
+                    "type": "string"
+                },
+                "properties": {
+                    "description": "Array of properties",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "tile": {
+                    "description": "Local ID of tile representing the Wang set",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "",
+                    "type": "string"
+                },
+                "wangtiles": {
+                    "description": "Array of Wang tiles",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WangTile"
+                    }
+                }
+            },
+            "required": [
+                "colors",
+                "name",
+                "tile",
+                "type",
+                "wangtiles"
+            ],
+            "title": "WangSet"
+        },
+        "WangColor": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "color": {
+                    "description": "Hex-formatted color (#RRGGBB or #AARRGGBB)",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name of the Wang color",
+                    "type": "string"
+                },
+                "probability": {
+                    "description": "Probability used when randomizing",
+                    "type": "number"
+                },
+                "properties": {
+                    "description": "Array of properties",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "tile": {
+                    "description": "Local ID of tile representing the Wang color",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "color",
+                "name",
+                "probability",
+                "tile"
+            ],
+            "title": "WangColor"
+        },
+        "WangTile": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "tileid": {
+                    "description": "Local ID of tile",
+                    "type": "integer"
+                },
+                "wangid": {
+                    "description": "Array of Wang color indexes (uchar[8])",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "required": [
+                "tileid",
+                "wangid"
+            ],
+            "title": "WangTile"
+        },
+        "Tileset": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "backgroundcolor": {
+                    "description": "Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)",
+                    "type": "string"
+                },
+                "columns": {
+                    "description": "The number of tile columns in the tileset",
+                    "type": "integer"
+                },
+                "grid": {
+                    "description": "(optional)",
+                    "$ref": "#/definitions/Grid"
+                },
+                "image": {
+                    "description": "Image used for tiles in this set",
+                    "type": "string"
+                },
+                "imageheight": {
+                    "description": "Height of source image in pixels",
+                    "type": "integer"
+                },
+                "imagewidth": {
+                    "description": "Width of source image in pixels",
+                    "type": "integer"
+                },
+                "margin": {
+                    "description": "Buffer between image edge and first tile (pixels)",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Name given to this tileset",
+                    "type": "string"
+                },
+                "objectalignment": {
+                    "description": "Alignment to use for tile objects (unspecified (default), topleft, top, topright, left, center, right, bottomleft, bottom or bottomright",
+                    "$ref": "#/definitions/Alignment"
+                },
+                "properties": {
+                    "description": "Array of Properties",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "spacing": {
+                    "description": "Spacing between adjacent tiles in image (pixels)",
+                    "type": "integer"
+                },
+                "tilecount": {
+                    "description": "The number of tiles in this tileset",
+                    "type": "integer"
+                },
+                "tiledversion": {
+                    "description": "The Tiled version used to save the file",
+                    "type": "string"
+                },
+                "tileheight": {
+                    "description": "Maximum height of tiles in this set",
+                    "type": "integer"
+                },
+                "tileoffset": {
+                    "description": "(optional)",
+                    "$ref": "#/definitions/TileOffset"
+                },
+                "tiles": {
+                    "description": "Array of Tiles (optional)",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Tile"
+                    }
+                },
+                "tilewidth": {
+                    "description": "Maximum width of tiles in this set",
+                    "type": "integer"
+                },
+                "transformations": {
+                    "description": "Allowed transformations (optional)",
+                    "$ref": "#/definitions/Transformations"
+                },
+                "transparentcolor": {
+                    "description": "Hex-formatted color (#RRGGBB) (optional)",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "tileset (for tileset files, since 1.0)",
+                    "type": "string",
+                    "const": "tileset"
+                },
+                "version": {
+                    "description": "The JSON format version",
+                    "type": "string"
+                },
+                "wangsets": {
+                    "description": "Array of Wang sets",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WangSet"
+                    }
+                }
+            },
+            "required": [
+                "columns",
+                "margin",
+                "name",
+                "spacing",
+                "tilecount",
+                "tiledversion",
+                "tileheight",
+                "tilewidth",
+                "version"
+            ],
+            "title": "Tileset"
+        },
+        "Grid": {
+            "description": "Specifies common grid settings used for tiles in a tileset",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "height": {
+                    "description": "Cell height of tile grid",
+                    "type": "integer"
+                },
+                "orientation": {
+                    "description": "orthogonal (default) or isometric",
+                    "$ref": "#/definitions/Orientation"
+                },
+                "width": {
+                    "description": "Cell width of tile grid",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "height",
+                "orientation",
+                "width"
+            ],
+            "title": "Grid"
+        },
+        "Chunk": {
+            "description": "Chunks are used to store the tile layer data for infinite maps",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/Data"
+                },
+                "height": {
+                    "description": "Height in tiles",
+                    "type": "integer"
+                },
+                "width": {
+                    "description": "Width in tiles",
+                    "type": "integer"
+                },
+                "x": {
+                    "description": "X coordinate in tiles",
+                    "type": "integer"
+                },
+                "y": {
+                    "description": "Y coordinate in tiles",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "data",
+                "height",
+                "width",
+                "x",
+                "y"
+            ],
+            "title": "Chunk"
+        },
+        "Tile": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "animation": {
+                    "description": "Array of Frames",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Frame"
+                    }
+                },
+                "id": {
+                    "description": "Local ID of the tile",
+                    "type": "integer"
+                },
+                "image": {
+                    "description": "Image representing this tile (optional)",
+                    "type": "string"
+                },
+                "imageheight": {
+                    "description": "Height of the tile image in pixels",
+                    "type": "integer"
+                },
+                "imagewidth": {
+                    "description": "Width of the tile image in pixels",
+                    "type": "integer"
+                },
+                "objectgroup": {
+                    "description": "Layer with type objectgroup, when collision shapes are specified (optional)",
+                    "$ref": "#/definitions/ObjectGroup"
+                },
+                "probability": {
+                    "description": "Percentage chance this tile is chosen when competing with others in the editor (optional)",
+                    "type": "number"
+                },
+                "properties": {
+                    "description": "Array of Properties",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "type": {
+                    "description": "The type of the tile (optional)",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id"
+            ],
+            "title": "Tile"
+        },
+        "ObjectGroup": {
+            "type": "object",
+            "additionalProperties": false,
+            "allOf": [{ "$ref": "#/definitions/Layer" }],
+            "properties": {
+                "draworder": {
+                    "type": "string"
+                },
+                "objects": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Object"
+                    }
+                }
+            },
+            "required": [
+                "draworder",
+                "objects"
+            ],
+            "title": "ObjectGroup"
+        },
+        "Data": {
+            "description": "Array of unsigned int (GIDs) or base64-encoded data. tilelayer only.",
+            "anyOf": [
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "type": "string"
+                }
+            ],
+            "title": "Data"
+        },
+        "Orientation": {
+            "type": "string",
+            "enum": [
+                "orthogonal",
+                "isometric",
+                "staggered",
+                "hexagonal"
+            ],
+            "title": "Orientation"
+        },
+        "Encoding": {
+            "type": "string",
+            "enum": [
+                "csv",
+                "base64"
+            ],
+            "title": "Encoding"
+        },
+        "Compression": {
+            "type": "string",
+            "enum": [
+                "",
+                "zlib",
+                "gzip",
+                "zstd"
+            ],
+            "title": "Compression"
+        },
+        "Text": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "bold": {
+                    "description": "Whether to use a bold font (default: false)",
+                    "type": "boolean"
+                },
+                "fontfamily": {
+                    "description": "Font family (default: sans-serif)",
+                    "type": "string"
+                },
+                "halign": {
+                    "description": "Horizontal alignment (center, right, justify or left (default))",
+                    "type": "string",
+                    "enum": [
+                        "center",
+                        "right",
+                        "justify",
+                        "left"
+                    ],
+                    "title": "HorizontalAlignment"
+                },
+                "italic": {
+                    "description": "Whether to use an italic font (default: false)",
+                    "type": "boolean"
+                },
+                "kerning": {
+                    "description": "Whether to use kerning when placing characters (default: true)",
+                    "type": "boolean"
+                },
+                "pixelsize": {
+                    "description": "Pixel size of font (default: 16)",
+                    "type": "integer"
+                },
+                "strikeout": {
+                    "description": "Whether to strike out the text (default: false)",
+                    "type": "boolean"
+                },
+                "text": {
+                    "description": "Text",
+                    "type": "string"
+                },
+                "underline": {
+                    "description": "Whether to underline the text (default: false)",
+                    "type": "boolean"
+                },
+                "valign": {
+                    "description": "Vertical alignment (center, bottom or top (default))",
+                    "type": "string",
+                    "enum": [
+                        "center",
+                        "bottom",
+                        "top"
+                    ],
+                    "title": "VerticalAlignment"
+                },
+                "wrap": {
+                    "description": "Whether the text is wrapped within the object bounds (default: false)",
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "text"
+            ],
+            "title": "Text"
+        },
+        "Alignment": {
+            "type": "string",
+            "enum": [
+                "unspecified",
+                "topleft",
+                "top",
+                "topright",
+                "left",
+                "center",
+                "right",
+                "bottomleft",
+                "bottom",
+                "bottomright"
+            ],
+            "title": "Alignment"
+        },
+        "Transformations": {
+            "description": "Valid transformations when placing terrain tiles",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "hflip": {
+                    "description": "Tiles can be flipped horizontally",
+                    "type": "boolean"
+                },
+                "vflip": {
+                    "description": "Tiles can be flipped vertically",
+                    "type": "boolean"
+                },
+                "rotate": {
+                    "description": "Tiles can be rotated in 90-degree increments",
+                    "type": "boolean"
+                },
+                "preferuntransformed": {
+                    "description": "Whether untransformed tiles remain preferred, otherwise transformed tiles are used to produce more variations",
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "hflip",
+                "vflip",
+                "rotate",
+                "preferuntransformed"
+            ],
+            "title": "Transformations"
+        },
+        "TileOffset": {
+            "description": "An offset applied when drawing tiles from a tileset",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "x": {
+                    "description": "Horizontal offset in pixels",
+                    "type": "integer"
+                },
+                "y": {
+                    "description": "Vertical offset in pixels (positive is down)",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "x",
+                "y"
+            ],
+            "title": "TileOffset"
+        },
+        "Frame": {
+            "description": "An frame of a tile animation",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "duration": {
+                    "description": "Frame duration in milliseconds",
+                    "type": "integer"
+                },
+                "tileid": {
+                    "description": "Local tile ID representing this frame",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "duration",
+                "tileid"
+            ],
+            "title": "Frame"
+        }
+    }
+}
