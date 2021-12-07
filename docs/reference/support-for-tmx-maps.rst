@@ -156,6 +156,12 @@ Ruby
 
 -  `tmx gem <https://github.com/shawn42/tmx>`__ by erisdiscord
 
+Rust
+~~~~
+
+-  `tiled <https://crates.io/crates/tiled>`__, a rust crate for loading TMX maps
+-  `tiled-json-rs <https://crates.io/crates/tiled-json-rs>`__, a crate to parse and interact with Tiled editor JSON files
+
 Vala
 ~~~~
 
@@ -180,8 +186,14 @@ Allegro
 ~~~~~~~
 
 -  `allegro\_tiled <https://github.com/dradtke/allegro_tiled>`__
-   integrates Tiled support with `Allegro
-   5 <http://alleg.sourceforge.net/>`__.
+   integrates Tiled support with `Allegro 5 <http://alleg.sourceforge.net/>`__.
+
+Bevy
+~~~~
+
+-  `bevy_tiled <https://github.com/StarArawn/bevy_tiled>`__, a plugin for rendering Tiled maps
+-  `bevy_tmx <https://github.com/Kurble/bevy_tmx>`__, a plugin that allows you to read .tmx files as scenes
+-  `bevy_ecs_tilemap <https://github.com/StarArawn/bevy_ecs_tilemap>`__, a tilemap rendering plugin that makes tiles entities, with support for TMX maps
 
 Castle Game Engine (Object Pascal)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
