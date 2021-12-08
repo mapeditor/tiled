@@ -860,6 +860,9 @@ void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
     w.writeStartElement(QStringLiteral("imagelayer"));
     writeLayerAttributes(w, imageLayer);
 
+    w.writeAttribute(QStringLiteral("repeatx"), QString::number(imageLayer.repeatX()));
+    w.writeAttribute(QStringLiteral("repeaty"), QString::number(imageLayer.repeatY()));
+
     // Write the image element
     const QUrl &imageSource = imageLayer.imageSource();
     if (!imageSource.isEmpty()) {

@@ -42,11 +42,15 @@ public:
      * @param imageLayer    the image layer to modify
      * @param newColor      the new transparent color to apply
      * @param newSource     the new image source to apply
+     * @param newRepeatX    the new repetition along the X axis to apply
+     * @param newRepeatY    the new repetition along the Y axis to apply
      */
     ChangeImageLayerProperties(MapDocument *mapDocument,
                                ImageLayer *imageLayer,
                                const QColor &newColor,
-                               const QUrl &newSource);
+                               const QUrl &newSource,
+                               bool newRepeatX,
+                               bool newRepeatY);
 
     void undo() override;
     void redo() override;
@@ -58,6 +62,10 @@ private:
     const QColor mRedoColor;
     const QUrl mUndoSource;
     const QUrl mRedoSource;
+    const bool mUndoRepeatX;
+    const bool mRedoRepeatX;
+    const bool mUndoRepeatY;
+    const bool mRedoRepeatY;
 };
 
 } // namespace Tiled

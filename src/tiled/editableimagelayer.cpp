@@ -42,7 +42,9 @@ void EditableImageLayer::setTransparentColor(const QColor &transparentColor)
         asset()->push(new ChangeImageLayerProperties(doc,
                                                      imageLayer(),
                                                      transparentColor,
-                                                     imageSource()));
+                                                     imageSource(),
+                                                     repeatX(),
+                                                     repeatY()));
     } else {
         imageLayer()->setTransparentColor(transparentColor);
         if (!imageSource().isEmpty())
@@ -56,7 +58,9 @@ void EditableImageLayer::setImageSource(const QUrl &imageSource)
         asset()->push(new ChangeImageLayerProperties(doc,
                                                      imageLayer(),
                                                      transparentColor(),
-                                                     imageSource));
+                                                     imageSource,
+                                                     repeatX(),
+                                                     repeatY()));
     } else {
         if (imageSource.isEmpty())
             imageLayer()->resetImage();
@@ -71,6 +75,33 @@ void EditableImageLayer::setImage(ScriptImage *image, const QUrl &source)
     imageLayer()->loadFromImage(QPixmap::fromImage(image->image()), source);
 }
 
+void EditableImageLayer::setRepeatX(bool repeatX)
+{
+    if (auto doc = mapDocument()) {
+        asset()->push(new ChangeImageLayerProperties(doc,
+                                                     imageLayer(),
+                                                     transparentColor(),
+                                                     imageSource(),
+                                                     repeatX,
+                                                     repeatY()));
+    } else {
+        imageLayer()->setRepeatX(repeatX);
+    }
+}
+
+void EditableImageLayer::setRepeatY(bool repeatY)
+{
+    if (auto doc = mapDocument()) {
+        asset()->push(new ChangeImageLayerProperties(doc,
+                                                     imageLayer(),
+                                                     transparentColor(),
+                                                     imageSource(),
+                                                     repeatX(),
+                                                     repeatY));
+    } else {
+        imageLayer()->setRepeatY(repeatY);
+    }
+}
 } // namespace Tiled
 
 #include "moc_editableimagelayer.cpp"

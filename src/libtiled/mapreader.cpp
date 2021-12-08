@@ -1142,6 +1142,9 @@ std::unique_ptr<ImageLayer> MapReaderPrivate::readImageLayer()
     auto imageLayer = std::make_unique<ImageLayer>(name, x, y);
     readLayerAttributes(*imageLayer, atts);
 
+    imageLayer->setRepeatX(atts.value(QLatin1String("repeatx")).toInt());
+    imageLayer->setRepeatY(atts.value(QLatin1String("repeaty")).toInt());
+
     // Image layer pixel position moved from x/y to offsetx/offsety for
     // consistency with other layers. This is here for backwards compatibility.
     if (!atts.hasAttribute(QLatin1String("offsetx")))

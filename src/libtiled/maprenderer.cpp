@@ -82,7 +82,18 @@ MapRenderer::~MapRenderer()
 
 QRectF MapRenderer::boundingRect(const ImageLayer *imageLayer) const
 {
-    return QRectF(QPointF(), imageLayer->image().size());
+    QRectF bounds = QRectF(QPointF(), imageLayer->image().size());
+
+    if (imageLayer->repeatX()) {
+        bounds.setLeft(INT_MIN / 512);
+        bounds.setRight(INT_MAX / 256);
+    }
+    if (imageLayer->repeatY()) {
+        bounds.setTop(INT_MIN / 512);
+        bounds.setBottom(INT_MAX / 256);
+    }
+
+    return bounds;
 }
 
 QPainterPath MapRenderer::pointShape(const QPointF &position) const
@@ -115,7 +126,10 @@ void MapRenderer::drawImageLayer(QPainter *painter,
 {
     Q_UNUSED(exposed)
 
-    painter->drawPixmap(QPointF(), tinted(imageLayer->image(), imageLayer->effectiveTintColor()));
+    painter->save();
+    painter->setBrush(tinted(imageLayer->image(), imageLayer->effectiveTintColor()));
+    painter->drawRect(boundingRect(imageLayer));
+    painter->restore();
 }
 
 void MapRenderer::drawPointObject(QPainter *painter, const QColor &color) const

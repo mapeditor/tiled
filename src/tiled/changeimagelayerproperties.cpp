@@ -33,7 +33,9 @@ ChangeImageLayerProperties::ChangeImageLayerProperties(
         MapDocument *mapDocument,
         ImageLayer *imageLayer,
         const QColor &color,
-        const QUrl &newSource)
+        const QUrl &newSource,
+        bool newRepeatX,
+        bool newRepeatY)
     : QUndoCommand(
           QCoreApplication::translate(
               "Undo Commands", "Change Image Layer Properties"))
@@ -43,6 +45,10 @@ ChangeImageLayerProperties::ChangeImageLayerProperties(
     , mRedoColor(color)
     , mUndoSource(imageLayer->imageSource())
     , mRedoSource(newSource)
+    , mUndoRepeatX(imageLayer->repeatX())
+    , mRedoRepeatX(newRepeatX)
+    , mUndoRepeatY(imageLayer->repeatY())
+    , mRedoRepeatY(newRepeatY)
 {
 }
 
@@ -55,6 +61,9 @@ void ChangeImageLayerProperties::redo()
     else
         mImageLayer->loadFromImage(mRedoSource);
 
+    mImageLayer->setRepeatX(mRedoRepeatX);
+    mImageLayer->setRepeatY(mRedoRepeatY);
+
     emit mMapDocument->imageLayerChanged(mImageLayer);
 }
 
@@ -66,6 +75,9 @@ void ChangeImageLayerProperties::undo()
         mImageLayer->resetImage();
     else
         mImageLayer->loadFromImage(mUndoSource);
+
+    mImageLayer->setRepeatX(mUndoRepeatX);
+    mImageLayer->setRepeatY(mUndoRepeatY);
 
     emit mMapDocument->imageLayerChanged(mImageLayer);
 }

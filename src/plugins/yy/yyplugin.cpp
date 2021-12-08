@@ -1164,8 +1164,10 @@ static std::unique_ptr<GMRLayer> processImageLayer(const ImageLayer *imageLayer)
     gmrBackgroundLayer->x = layerOffset.x();
     gmrBackgroundLayer->y = layerOffset.y();
 
-    gmrBackgroundLayer->htiled = optionalProperty(imageLayer, "htiled", gmrBackgroundLayer->htiled);
-    gmrBackgroundLayer->vtiled = optionalProperty(imageLayer, "vtiled", gmrBackgroundLayer->vtiled);
+    // Give custom properties priority to ensure backwards compatibility
+    gmrBackgroundLayer->htiled = optionalProperty(imageLayer, "htiled", imageLayer->repeatX());
+    gmrBackgroundLayer->vtiled = optionalProperty(imageLayer, "vtiled", imageLayer->repeatY());
+
     gmrBackgroundLayer->hspeed = optionalProperty(imageLayer, "hspeed", gmrBackgroundLayer->hspeed);
     gmrBackgroundLayer->vspeed = optionalProperty(imageLayer, "vspeed", gmrBackgroundLayer->vspeed);
     gmrBackgroundLayer->stretch = optionalProperty(imageLayer, "stretch", gmrBackgroundLayer->stretch);

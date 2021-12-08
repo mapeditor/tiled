@@ -781,6 +781,9 @@ void PropertyBrowser::addImageLayerProperties()
 
     addProperty(ColorProperty, QMetaType::QColor, tr("Transparent Color"), groupProperty);
 
+    addProperty(RepeatXProperty, QMetaType::Bool, tr("Repeat X"), groupProperty);
+    addProperty(RepeatYProperty, QMetaType::Bool, tr("Repeat Y"), groupProperty);
+
     addProperty(groupProperty);
 }
 
@@ -1278,19 +1281,53 @@ QUndoCommand *PropertyBrowser::applyImageLayerValueTo(PropertyId id, const QVari
     case ImageSourceProperty: {
         const FilePath imageSource = val.value<FilePath>();
         const QColor &color = imageLayer->transparentColor();
+        const bool repeatX = imageLayer->repeatX();
+        const bool repeatY = imageLayer->repeatY();
         command = new ChangeImageLayerProperties(mMapDocument,
                                                  imageLayer,
                                                  color,
-                                                 imageSource.url);
+                                                 imageSource.url,
+                                                 repeatX,
+                                                 repeatY);
         break;
     }
     case ColorProperty: {
         const QColor color = val.value<QColor>();
         const QUrl &imageSource = imageLayer->imageSource();
+        const bool repeatX = imageLayer->repeatX();
+        const bool repeatY = imageLayer->repeatY();
         command = new ChangeImageLayerProperties(mMapDocument,
                                                  imageLayer,
                                                  color,
-                                                 imageSource);
+                                                 imageSource,
+                                                 repeatX,
+                                                 repeatY);
+        break;
+    }
+    case RepeatXProperty: {
+        const bool repeatX = val.toBool();
+        const QUrl &imageSource = imageLayer->imageSource();
+        const QColor &color = imageLayer->transparentColor();
+        const bool repeatY = imageLayer->repeatY();
+        command = new ChangeImageLayerProperties(mMapDocument,
+                                                 imageLayer,
+                                                 color,
+                                                 imageSource,
+                                                 repeatX,
+                                                 repeatY);
+        break;
+    }
+    case RepeatYProperty: {
+        const bool repeatY = val.toBool();
+        const QUrl &imageSource = imageLayer->imageSource();
+        const QColor &color = imageLayer->transparentColor();
+        const bool repeatX = imageLayer->repeatX();
+        command = new ChangeImageLayerProperties(mMapDocument,
+                                                 imageLayer,
+                                                 color,
+                                                 imageSource,
+                                                 repeatX,
+                                                 repeatY);
         break;
     }
     default:
@@ -1766,6 +1803,8 @@ void PropertyBrowser::updateProperties()
             const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
             mIdToProperty[ImageSourceProperty]->setValue(QVariant::fromValue(FilePath { imageLayer->imageSource() }));
             mIdToProperty[ColorProperty]->setValue(imageLayer->transparentColor());
+            mIdToProperty[RepeatXProperty]->setValue(imageLayer->repeatX());
+            mIdToProperty[RepeatYProperty]->setValue(imageLayer->repeatY());
             break;
         }
         case Layer::GroupLayerType:
