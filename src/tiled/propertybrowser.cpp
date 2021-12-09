@@ -20,7 +20,7 @@
 
 #include "propertybrowser.h"
 
-#include "changeimagelayerproperties.h"
+#include "changeimagelayerproperty.h"
 #include "changelayer.h"
 #include "changemapobject.h"
 #include "changemapproperty.h"
@@ -1277,26 +1277,26 @@ QUndoCommand *PropertyBrowser::applyImageLayerValueTo(PropertyId id, const QVari
 {
     switch (id) {
     case ImageSourceProperty: {
-        return new ChangeImageLayerProperties(mMapDocument,
-                                              imageLayer,
-                                              val.value<FilePath>().url);
+        return new ChangeImageLayerProperty(mMapDocument,
+                                            imageLayer,
+                                            val.value<FilePath>().url);
     }
     case ColorProperty: {
-        return new ChangeImageLayerProperties(mMapDocument,
-                                              imageLayer,
-                                              val.value<QColor>());
+        return new ChangeImageLayerProperty(mMapDocument,
+                                            imageLayer,
+                                            val.value<QColor>());
     }
     case RepeatXProperty: {
-        return new ChangeImageLayerProperties(mMapDocument,
-                                              imageLayer,
-                                              ChangeImageLayerProperties::RepeatXProperty,
-                                              val.toBool());
+        return new ChangeImageLayerProperty(mMapDocument,
+                                            imageLayer,
+                                            ChangeImageLayerProperty::RepeatXProperty,
+                                            val.toBool());
     }
     case RepeatYProperty: {
-        return new ChangeImageLayerProperties(mMapDocument,
-                                              imageLayer,
-                                              ChangeImageLayerProperties::RepeatYProperty,
-                                              val.toBool());
+        return new ChangeImageLayerProperty(mMapDocument,
+                                            imageLayer,
+                                            ChangeImageLayerProperty::RepeatYProperty,
+                                            val.toBool());
     }
     default:
         return nullptr;

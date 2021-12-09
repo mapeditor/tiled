@@ -32,7 +32,7 @@ class ImageLayer;
 
 class MapDocument;
 
-class ChangeImageLayerProperties : public QUndoCommand
+class ChangeImageLayerProperty : public QUndoCommand
 {
 public:
     enum Property {
@@ -49,9 +49,9 @@ public:
      * @param imageLayer         the image layer to modify
      * @param transparentColor   the new transparent color to apply
      */
-    ChangeImageLayerProperties(MapDocument *mapDocument,
-                               ImageLayer *imageLayer,
-                               const QColor transparentColor);
+    ChangeImageLayerProperty(MapDocument *mapDocument,
+                             ImageLayer *imageLayer,
+                             const QColor transparentColor);
 
     /**
      * Constructs a command that changes the image source.
@@ -60,9 +60,9 @@ public:
      * @param imageLayer    the image layer to modify
      * @param repeat        the new image source to apply
      */
-    ChangeImageLayerProperties(MapDocument *mapDocument,
-                               ImageLayer *imageLayer,
-                               const QUrl imageSource);
+    ChangeImageLayerProperty(MapDocument *mapDocument,
+                             ImageLayer *imageLayer,
+                             const QUrl imageSource);
 
     /**
      * Constructs a command that changes the repetition along an axis.
@@ -74,10 +74,10 @@ public:
      * @param property      the image layer property to modify
      * @param repeat        the new repetition along an axis to apply
      */
-    ChangeImageLayerProperties(MapDocument *mapDocument,
-                               ImageLayer *imageLayer,
-                               ChangeImageLayerProperties::Property property,
-                               bool repeat);
+    ChangeImageLayerProperty(MapDocument *mapDocument,
+                             ImageLayer *imageLayer,
+                             ChangeImageLayerProperty::Property property,
+                             bool repeat);
 
     void undo() override;
     void redo() override;

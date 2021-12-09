@@ -77,7 +77,7 @@ SOURCES += aboutdialog.cpp \
     brushitem.cpp \
     bucketfilltool.cpp \
     capturestamphelper.cpp \
-    changeimagelayerproperties.cpp \
+    changeimagelayerproperty.cpp \
     changelayer.cpp \
     changemapobject.cpp \
     changemapobjectsorder.cpp \
@@ -317,7 +317,7 @@ HEADERS += aboutdialog.h \
     bucketfilltool.h \
     capturestamphelper.h \
     changeevents.h \
-    changeimagelayerproperties.h \
+    changeimagelayerproperty.h \
     changelayer.h \
     changemapobject.h \
     changemapobjectsorder.h \

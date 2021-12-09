@@ -20,7 +20,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "changeimagelayerproperties.h"
+#include "changeimagelayerproperty.h"
 
 #include "mapdocument.h"
 #include "imagelayer.h"
@@ -29,7 +29,7 @@
 
 using namespace Tiled;
 
-ChangeImageLayerProperties::ChangeImageLayerProperties(
+ChangeImageLayerProperty::ChangeImageLayerProperty(
         MapDocument *mapDocument,
         ImageLayer *imageLayer,
         const QColor transparentColor)
@@ -42,7 +42,7 @@ ChangeImageLayerProperties::ChangeImageLayerProperties(
 {
 }
 
-ChangeImageLayerProperties::ChangeImageLayerProperties(
+ChangeImageLayerProperty::ChangeImageLayerProperty(
         MapDocument *mapDocument,
         ImageLayer *imageLayer,
         const QUrl imageSource)
@@ -55,10 +55,10 @@ ChangeImageLayerProperties::ChangeImageLayerProperties(
 {
 }
 
-ChangeImageLayerProperties::ChangeImageLayerProperties(
+ChangeImageLayerProperty::ChangeImageLayerProperty(
         MapDocument *mapDocument,
         ImageLayer *imageLayer,
-        ChangeImageLayerProperties::Property property,
+        ChangeImageLayerProperty::Property property,
         bool repeat)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Image Layer Repeat Property"))
@@ -69,17 +69,17 @@ ChangeImageLayerProperties::ChangeImageLayerProperties(
 {
 }
 
-void ChangeImageLayerProperties::redo()
+void ChangeImageLayerProperty::redo()
 {
     swap();
 }
 
-void ChangeImageLayerProperties::undo()
+void ChangeImageLayerProperty::undo()
 {
     swap();
 }
 
-void ChangeImageLayerProperties::swap()
+void ChangeImageLayerProperty::swap()
 {
     switch (mProperty) {
     case TransparentColorProperty: {

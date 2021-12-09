@@ -20,7 +20,7 @@
 
 #include "editableimagelayer.h"
 
-#include "changeimagelayerproperties.h"
+#include "changeimagelayerproperty.h"
 #include "editablemap.h"
 #include "scriptimage.h"
 
@@ -39,9 +39,9 @@ EditableImageLayer::EditableImageLayer(EditableMap *map, ImageLayer *imageLayer,
 void EditableImageLayer::setTransparentColor(const QColor &transparentColor)
 {
     if (auto doc = mapDocument()) {
-        asset()->push(new ChangeImageLayerProperties(doc,
-                                                     imageLayer(),
-                                                     transparentColor));
+        asset()->push(new ChangeImageLayerProperty(doc,
+                                                   imageLayer(),
+                                                   transparentColor));
     } else {
         imageLayer()->setTransparentColor(transparentColor);
         if (!imageSource().isEmpty())
@@ -52,9 +52,9 @@ void EditableImageLayer::setTransparentColor(const QColor &transparentColor)
 void EditableImageLayer::setImageSource(const QUrl &imageSource)
 {
     if (auto doc = mapDocument()) {
-        asset()->push(new ChangeImageLayerProperties(doc,
-                                                     imageLayer(),
-                                                     imageSource));
+        asset()->push(new ChangeImageLayerProperty(doc,
+                                                   imageLayer(),
+                                                   imageSource));
     } else {
         if (imageSource.isEmpty())
             imageLayer()->resetImage();
@@ -72,10 +72,10 @@ void EditableImageLayer::setImage(ScriptImage *image, const QUrl &source)
 void EditableImageLayer::setRepeatX(bool repeatX)
 {
     if (auto doc = mapDocument()) {
-        asset()->push(new ChangeImageLayerProperties(doc,
-                                                     imageLayer(),
-                                                     ChangeImageLayerProperties::RepeatXProperty,
-                                                     repeatX));
+        asset()->push(new ChangeImageLayerProperty(doc,
+                                                   imageLayer(),
+                                                   ChangeImageLayerProperty::RepeatXProperty,
+                                                   repeatX));
     } else {
         imageLayer()->setRepeatX(repeatX);
     }
@@ -84,10 +84,10 @@ void EditableImageLayer::setRepeatX(bool repeatX)
 void EditableImageLayer::setRepeatY(bool repeatY)
 {
     if (auto doc = mapDocument()) {
-        asset()->push(new ChangeImageLayerProperties(doc,
-                                                     imageLayer(),
-                                                     ChangeImageLayerProperties::RepeatYProperty,
-                                                     repeatY));
+        asset()->push(new ChangeImageLayerProperty(doc,
+                                                   imageLayer(),
+                                                   ChangeImageLayerProperty::RepeatYProperty,
+                                                   repeatY));
     } else {
         imageLayer()->setRepeatY(repeatY);
     }
