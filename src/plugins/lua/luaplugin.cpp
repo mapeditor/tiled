@@ -646,6 +646,9 @@ void LuaWriter::writeImageLayer(const ImageLayer *imageLayer)
     }
 
     writeLayerProperties(imageLayer);
+    mWriter.writeKeyAndValue("repeatx", imageLayer->repeatX());
+    mWriter.writeKeyAndValue("repeaty", imageLayer->repeatY());
+
     writeProperties(imageLayer->properties());
 
     mWriter.writeEndTable();
