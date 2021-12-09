@@ -2374,6 +2374,18 @@ interface TilesetEditor {
   collisionEditor : TileCollisionEditor
 }
 
+/**
+ * This interface can be implemented to define a custom tool. See
+ * {@link tiled.registerTool} for an example.
+ *
+ * The mouse button parameters are numbers from the
+ * [Qt::MouseButton](https://doc.qt.io/qt-5/qt.html#MouseButton-enum) enum.
+ * They can be accessed like `Qt.LeftButton`.
+ *
+ * Whenever there is a keyboard modifiers parameter, they are given as flags
+ * from the [Qt::KeyboarModifiers](https://doc.qt.io/qt-5/qt.html#KeyboardModifier-enum)
+ * enum, available similarly like `Qt.ShiftModifier`.
+ */
 interface Tool {
   /**
    * Name of the tool as shown on the tool bar.
@@ -2388,12 +2400,12 @@ interface Tool {
   /**
    * Currently active tile map.
    */
-  map: TileMap;
+  readonly map: TileMap;
 
   /**
    * The last clicked tile for the active map. See also the {@link MapEditor.currentBrush} property.
    */
-  selectedTile: any;
+  readonly selectedTile: any;
 
   /**
    * Get or set the preview for tile layer edits.
@@ -2403,7 +2415,7 @@ interface Tool {
   /**
    * Mouse cursor position in tile coordinates.
    */
-  tilePosition: point;
+  readonly tilePosition: point;
 
   /**
    * Text shown in the status bar while the tool is active.
@@ -2427,8 +2439,12 @@ interface Tool {
 
   /**
    * Called when a key was pressed while the tool was active.
+   *
+   * The keys are defined by numbers from the
+   * [Qt::Key](https://doc.qt.io/qt-5/qt.html#Key-enum) enum. They can
+   * be accessed like `Qt.Key_Return`.
    */
-  keyPressed(key:string, modifiers:any): void;
+  keyPressed(key: number, modifiers: number): void;
 
   /**
    * Called when the mouse entered the map view.
@@ -2443,27 +2459,27 @@ interface Tool {
   /**
    * Called when the mouse position in the map scene changed.
    */
-  mouseMoved(x: number, y: number, modifiers:any): void;
+  mouseMoved(x: number, y: number, modifiers: number): void;
 
   /**
    * Called when a mouse button was pressed.
    */
-  mousePressed(button:any, x: number, y: number, modifiers:any): void;
+  mousePressed(button: number, x: number, y: number, modifiers: number): void;
 
   /**
    * Called when a mouse button was released.
    */
-  mouseReleased(button:any, x: number, y: number, modifiers:any): void;
+  mouseReleased(button: number, x: number, y: number, modifiers: number): void;
 
   /**
    * Called when a mouse button was double-clicked.
    */
-  mouseDoubleClicked(button:any, x: number, y: number, modifiers:any): void;
+  mouseDoubleClicked(button: number, x: number, y: number, modifiers: number): void;
 
   /**
    * Called when the active modifier keys changed.
    */
-  modifiersChanged(modifiers:any): void;
+  modifiersChanged(modifiers: number): void;
 
   /**
    * Called when the language was changed.
@@ -2481,9 +2497,12 @@ interface Tool {
   tilePositionChanged(): void;
 
   /**
-   * Called when the hovered tile position changed.
+   * Defining this function is necessary to suppress the default updating of
+   * the status bar text.
    *
-   * Used to override the default updating of the status bar text.
+   * This function is called automatically when the hovered tile position
+   * changed, but {@link statusInfo} can be changed in any other function as
+   * well.
    */
   updateStatusInfo(): void;
 
