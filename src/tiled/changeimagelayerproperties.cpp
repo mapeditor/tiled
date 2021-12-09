@@ -32,53 +32,87 @@ using namespace Tiled;
 ChangeImageLayerProperties::ChangeImageLayerProperties(
         MapDocument *mapDocument,
         ImageLayer *imageLayer,
-        const QColor &color,
-        const QUrl &newSource,
-        bool newRepeatX,
-        bool newRepeatY)
-    : QUndoCommand(
-          QCoreApplication::translate(
-              "Undo Commands", "Change Image Layer Properties"))
+        const QColor transparentColor)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Change Image Layer Transparent Color"))
     , mMapDocument(mapDocument)
     , mImageLayer(imageLayer)
-    , mUndoColor(imageLayer->transparentColor())
-    , mRedoColor(color)
-    , mUndoSource(imageLayer->imageSource())
-    , mRedoSource(newSource)
-    , mUndoRepeatX(imageLayer->repeatX())
-    , mRedoRepeatX(newRepeatX)
-    , mUndoRepeatY(imageLayer->repeatY())
-    , mRedoRepeatY(newRepeatY)
+    , mProperty(TransparentColorProperty)
+    , mTransparentColor(transparentColor)
+{
+}
+
+ChangeImageLayerProperties::ChangeImageLayerProperties(
+        MapDocument *mapDocument,
+        ImageLayer *imageLayer,
+        const QUrl imageSource)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Change Image Layer Image Source"))
+    , mMapDocument(mapDocument)
+    , mImageLayer(imageLayer)
+    , mProperty(ImageSourceProperty)
+    , mImageSource(imageSource)
+{
+}
+
+ChangeImageLayerProperties::ChangeImageLayerProperties(
+        MapDocument *mapDocument,
+        ImageLayer *imageLayer,
+        ChangeImageLayerProperties::Property property,
+        bool repeat)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Change Image Layer Repeat Property"))
+    , mMapDocument(mapDocument)
+    , mImageLayer(imageLayer)
+    , mProperty(property)
+    , mRepeat(repeat)
 {
 }
 
 void ChangeImageLayerProperties::redo()
 {
-    mImageLayer->setTransparentColor(mRedoColor);
-
-    if (mRedoSource.isEmpty())
-        mImageLayer->resetImage();
-    else
-        mImageLayer->loadFromImage(mRedoSource);
-
-    mImageLayer->setRepeatX(mRedoRepeatX);
-    mImageLayer->setRepeatY(mRedoRepeatY);
-
-    emit mMapDocument->imageLayerChanged(mImageLayer);
+    swap();
 }
 
 void ChangeImageLayerProperties::undo()
 {
-    mImageLayer->setTransparentColor(mUndoColor);
+    swap();
+}
 
-    if (mUndoSource.isEmpty())
-        mImageLayer->resetImage();
-    else
-        mImageLayer->loadFromImage(mUndoSource);
+void ChangeImageLayerProperties::swap()
+{
+    switch (mProperty) {
+    case TransparentColorProperty: {
+        const QColor color = mImageLayer->transparentColor();
+        mImageLayer->setTransparentColor(mTransparentColor);
+        mTransparentColor = color;
+        break;
+    }
+    case ImageSourceProperty: {
+        const QUrl source = mImageLayer->imageSource();
+        mImageLayer->setSource(mImageSource);
+        mImageSource = source;
 
-    mImageLayer->setRepeatX(mUndoRepeatX);
-    mImageLayer->setRepeatY(mUndoRepeatY);
+        if (mImageSource.isEmpty())
+            mImageLayer->resetImage();
+        else
+            mImageLayer->loadFromImage(mImageSource);
+
+        break;
+    }
+    case RepeatXProperty: {
+        const bool repeatX = mImageLayer->repeatX();
+        mImageLayer->setRepeatX(mRepeat);
+        mRepeat = repeatX;
+        break;
+    }
+    case RepeatYProperty: {
+        const bool repeatY = mImageLayer->repeatY();
+        mImageLayer->setRepeatY(mRepeat);
+        mRepeat = repeatY;
+        break;
+    }
+    }
 
     emit mMapDocument->imageLayerChanged(mImageLayer);
 }
-

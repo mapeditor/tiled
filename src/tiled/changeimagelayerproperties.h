@@ -35,37 +35,64 @@ class MapDocument;
 class ChangeImageLayerProperties : public QUndoCommand
 {
 public:
+    enum Property {
+        TransparentColorProperty,
+        ImageSourceProperty,
+        RepeatXProperty,
+        RepeatYProperty
+    };
+
     /**
-     * Constructs a new 'Change Image Layer Properties' command.
+     * Constructs a command that changes the transparent color.
      *
-     * @param mapDocument   the map document of the layer's map
-     * @param imageLayer    the image layer to modify
-     * @param newColor      the new transparent color to apply
-     * @param newSource     the new image source to apply
-     * @param newRepeatX    the new repetition along the X axis to apply
-     * @param newRepeatY    the new repetition along the Y axis to apply
+     * @param mapDocument        the map document of the image layer's map
+     * @param imageLayer         the image layer to modify
+     * @param transparentColor   the new transparent color to apply
      */
     ChangeImageLayerProperties(MapDocument *mapDocument,
                                ImageLayer *imageLayer,
-                               const QColor &newColor,
-                               const QUrl &newSource,
-                               bool newRepeatX,
-                               bool newRepeatY);
+                               const QColor transparentColor);
+
+    /**
+     * Constructs a command that changes the image source.
+     *
+     * @param mapDocument   the map document of the image layer's map
+     * @param imageLayer    the image layer to modify
+     * @param repeat        the new image source to apply
+     */
+    ChangeImageLayerProperties(MapDocument *mapDocument,
+                               ImageLayer *imageLayer,
+                               const QUrl imageSource);
+
+    /**
+     * Constructs a command that changes the repetition along an axis.
+     *
+     * Can only be used for the properties RepeatXProperty and RepeatYProperty.
+     *
+     * @param mapDocument   the map document of the image layer's map
+     * @param imageLayer    the image layer to modify
+     * @param property      the image layer property to modify
+     * @param repeat        the new repetition along an axis to apply
+     */
+    ChangeImageLayerProperties(MapDocument *mapDocument,
+                               ImageLayer *imageLayer,
+                               ChangeImageLayerProperties::Property property,
+                               bool repeat);
 
     void undo() override;
     void redo() override;
 
 private:
+    void swap();
+
     MapDocument *mMapDocument;
-    ImageLayer *mImageLayer;
-    const QColor mUndoColor;
-    const QColor mRedoColor;
-    const QUrl mUndoSource;
-    const QUrl mRedoSource;
-    const bool mUndoRepeatX;
-    const bool mRedoRepeatX;
-    const bool mUndoRepeatY;
-    const bool mRedoRepeatY;
+    ImageLayer *mImageLayer; 
+    Property mProperty;
+    QUrl mImageSource;
+    union {
+        QColor mTransparentColor;
+        bool mRepeat;
+    };
 };
 
 } // namespace Tiled

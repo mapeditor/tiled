@@ -1275,66 +1275,32 @@ QUndoCommand *PropertyBrowser::applyObjectGroupValueTo(PropertyId id, const QVar
 
 QUndoCommand *PropertyBrowser::applyImageLayerValueTo(PropertyId id, const QVariant &val, ImageLayer *imageLayer)
 {
-    QUndoCommand *command = nullptr;
-
     switch (id) {
     case ImageSourceProperty: {
-        const FilePath imageSource = val.value<FilePath>();
-        const QColor &color = imageLayer->transparentColor();
-        const bool repeatX = imageLayer->repeatX();
-        const bool repeatY = imageLayer->repeatY();
-        command = new ChangeImageLayerProperties(mMapDocument,
-                                                 imageLayer,
-                                                 color,
-                                                 imageSource.url,
-                                                 repeatX,
-                                                 repeatY);
-        break;
+        return new ChangeImageLayerProperties(mMapDocument,
+                                              imageLayer,
+                                              val.value<FilePath>().url);
     }
     case ColorProperty: {
-        const QColor color = val.value<QColor>();
-        const QUrl &imageSource = imageLayer->imageSource();
-        const bool repeatX = imageLayer->repeatX();
-        const bool repeatY = imageLayer->repeatY();
-        command = new ChangeImageLayerProperties(mMapDocument,
-                                                 imageLayer,
-                                                 color,
-                                                 imageSource,
-                                                 repeatX,
-                                                 repeatY);
-        break;
+        return new ChangeImageLayerProperties(mMapDocument,
+                                              imageLayer,
+                                              val.value<QColor>());
     }
     case RepeatXProperty: {
-        const bool repeatX = val.toBool();
-        const QUrl &imageSource = imageLayer->imageSource();
-        const QColor &color = imageLayer->transparentColor();
-        const bool repeatY = imageLayer->repeatY();
-        command = new ChangeImageLayerProperties(mMapDocument,
-                                                 imageLayer,
-                                                 color,
-                                                 imageSource,
-                                                 repeatX,
-                                                 repeatY);
-        break;
+        return new ChangeImageLayerProperties(mMapDocument,
+                                              imageLayer,
+                                              ChangeImageLayerProperties::RepeatXProperty,
+                                              val.toBool());
     }
     case RepeatYProperty: {
-        const bool repeatY = val.toBool();
-        const QUrl &imageSource = imageLayer->imageSource();
-        const QColor &color = imageLayer->transparentColor();
-        const bool repeatX = imageLayer->repeatX();
-        command = new ChangeImageLayerProperties(mMapDocument,
-                                                 imageLayer,
-                                                 color,
-                                                 imageSource,
-                                                 repeatX,
-                                                 repeatY);
-        break;
+        return new ChangeImageLayerProperties(mMapDocument,
+                                              imageLayer,
+                                              ChangeImageLayerProperties::RepeatYProperty,
+                                              val.toBool());
     }
     default:
-        break;
+        return nullptr;
     }
-
-    return command;
 }
 
 QUndoCommand *PropertyBrowser::applyGroupLayerValueTo(PropertyId id, const QVariant &val, GroupLayer *groupLayer)

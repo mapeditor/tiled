@@ -41,10 +41,7 @@ void EditableImageLayer::setTransparentColor(const QColor &transparentColor)
     if (auto doc = mapDocument()) {
         asset()->push(new ChangeImageLayerProperties(doc,
                                                      imageLayer(),
-                                                     transparentColor,
-                                                     imageSource(),
-                                                     repeatX(),
-                                                     repeatY()));
+                                                     transparentColor));
     } else {
         imageLayer()->setTransparentColor(transparentColor);
         if (!imageSource().isEmpty())
@@ -57,10 +54,7 @@ void EditableImageLayer::setImageSource(const QUrl &imageSource)
     if (auto doc = mapDocument()) {
         asset()->push(new ChangeImageLayerProperties(doc,
                                                      imageLayer(),
-                                                     transparentColor(),
-                                                     imageSource,
-                                                     repeatX(),
-                                                     repeatY()));
+                                                     imageSource));
     } else {
         if (imageSource.isEmpty())
             imageLayer()->resetImage();
@@ -80,10 +74,8 @@ void EditableImageLayer::setRepeatX(bool repeatX)
     if (auto doc = mapDocument()) {
         asset()->push(new ChangeImageLayerProperties(doc,
                                                      imageLayer(),
-                                                     transparentColor(),
-                                                     imageSource(),
-                                                     repeatX,
-                                                     repeatY()));
+                                                     ChangeImageLayerProperties::RepeatXProperty,
+                                                     repeatX));
     } else {
         imageLayer()->setRepeatX(repeatX);
     }
@@ -94,9 +86,7 @@ void EditableImageLayer::setRepeatY(bool repeatY)
     if (auto doc = mapDocument()) {
         asset()->push(new ChangeImageLayerProperties(doc,
                                                      imageLayer(),
-                                                     transparentColor(),
-                                                     imageSource(),
-                                                     repeatX(),
+                                                     ChangeImageLayerProperties::RepeatYProperty,
                                                      repeatY));
     } else {
         imageLayer()->setRepeatY(repeatY);
