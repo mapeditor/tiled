@@ -22,6 +22,7 @@
 
 #include <QObject>
 #include <QRegion>
+#include <QVector>
 
 namespace Tiled {
 
