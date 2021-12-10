@@ -33,7 +33,7 @@ class RegionValueType
     Q_PROPERTY(QVector<QRect> rects READ rects)
 
 public:
-    RegionValueType();
+    RegionValueType() = default;
     RegionValueType(int x, int y, int w, int h);
     explicit RegionValueType(const QRect &rect);
     explicit RegionValueType(const QRegion &region);

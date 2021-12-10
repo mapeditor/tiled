@@ -22,10 +22,6 @@
 
 namespace Tiled {
 
-RegionValueType::RegionValueType()
-{
-}
-
 RegionValueType::RegionValueType(int x, int y, int w, int h)
     : mRegion(x, y, w, h)
 {
@@ -58,7 +54,11 @@ QString RegionValueType::toString() const
 
 QVector<QRect> RegionValueType::rects() const
 {
+#if QT_VERSION < 0x050800
+    return mRegion.rects();
+#else
     return QVector<QRect>(mRegion.begin(), mRegion.end());
+#endif
 }
 
 } // namespace Tiled
