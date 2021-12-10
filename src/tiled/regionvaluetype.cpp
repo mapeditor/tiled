@@ -56,6 +56,11 @@ QVector<QRect> RegionValueType::rects() const
 {
 #if QT_VERSION < 0x050800
     return mRegion.rects();
+#elif QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    QVector<QRect> rects;
+    rects.reserve(static_cast<int>(mRegion.end() - mRegion.begin()));
+    for (const QRect &rect : mRegion)
+        rects.append(rect);
 #else
     return QVector<QRect>(mRegion.begin(), mRegion.end());
 #endif

@@ -249,10 +249,12 @@ QVector<QRegion> coherentRegions(const QRegion &region)
     QVector<QRect> rects;
 #if QT_VERSION < 0x050800
     rects = region.rects();
-#else
+#elif QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     rects.reserve(static_cast<int>(region.end() - region.begin()));
     for (const QRect &rect : region)
         rects.append(rect);
+#else
+    rects = QVector<QRect>(region.begin(), region.end());
 #endif
 
     while (!rects.isEmpty()) {
