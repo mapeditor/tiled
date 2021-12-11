@@ -189,15 +189,15 @@ The following custom properties can be set on image layers to affect the
 exported background layers:
 
 * string ``sprite`` (default: based on image filename)
-* bool ``htiled`` (default: false)
-* bool ``vtiled`` (default: false)
+* bool ``htiled`` (default: value of Repeat X property)
+* bool ``vtiled`` (default: value of Repeat Y property)
 * bool ``stretch`` (default: false)
 * float ``hspeed`` (default: 0.0)
 * float ``vspeed`` (default: 0.0)
 * float ``animationFPS`` (default: 15.0)
 * int ``animationSpeedtype`` (default: 0)
 
-Even though the custom properties such as ``htiled`` and ``vtiled`` have no
+Even though the custom properties such as ``hspeed`` and ``vspeed`` have no
 visual effect inside Tiled you will see the effect in the exported room inside
 GameMaker.
 

@@ -97,6 +97,8 @@ Layer
     parallaxx,        double,           "Horizontal :ref:`parallax factor <parallax-factor>` for this layer (default: 1). (since Tiled 1.5)"
     parallaxy,        double,           "Vertical :ref:`parallax factor <parallax-factor>` for this layer (default: 1). (since Tiled 1.5)"
     properties,       array,            "Array of :ref:`Properties <json-property>`"
+    repeatx,          bool,             "Whether the image drawn by this layer is repeated along the X axis. ``imagelayer`` only."
+    repeaty,          bool,             "Whether the image drawn by this layer is repeated along the Y axis. ``imagelayer`` only."
     startx,           int,              "X coordinate where layer content starts (for infinite maps)"
     starty,           int,              "Y coordinate where layer content starts (for infinite maps)"
     tintcolor,        string,           "Hex-formatted :ref:`tint color <tint-color>` (#RRGGBB or #AARRGGBB) that is multiplied with any graphics drawn by this layer or any child layers (optional)."

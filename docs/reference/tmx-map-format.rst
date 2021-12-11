@@ -629,6 +629,9 @@ of the object.
    1)
 -  **visible:** Whether the layer is shown (1) or hidden (0). (defaults to 1)
 -  **tintcolor:** A color that is multiplied with the image drawn by this layer in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
+-  **repeatx:** Whether the image drawn by this layer is repeated along the X axis.
+-  **repeaty:** Whether the image drawn by this layer is repeated along the Y axis.
+
 
 A layer consisting of a single image.
 
