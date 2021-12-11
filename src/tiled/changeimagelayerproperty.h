@@ -62,7 +62,7 @@ public:
      */
     ChangeImageLayerProperty(MapDocument *mapDocument,
                              ImageLayer *imageLayer,
-                             const QUrl imageSource);
+                             const QUrl &imageSource);
 
     /**
      * Constructs a command that changes the repetition along an axis.

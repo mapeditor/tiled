@@ -45,7 +45,7 @@ ChangeImageLayerProperty::ChangeImageLayerProperty(
 ChangeImageLayerProperty::ChangeImageLayerProperty(
         MapDocument *mapDocument,
         ImageLayer *imageLayer,
-        const QUrl imageSource)
+        const QUrl &imageSource)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Image Layer Image Source"))
     , mMapDocument(mapDocument)
@@ -86,18 +86,27 @@ void ChangeImageLayerProperty::swap()
         const QColor color = mImageLayer->transparentColor();
         mImageLayer->setTransparentColor(mTransparentColor);
         mTransparentColor = color;
+
+        if (mImageSource.isEmpty()) {
+            mImageLayer->resetImage();
+        }
+        else {
+            mImageLayer->loadFromImage(mImageSource);
+        }
+
         break;
     }
     case ImageSourceProperty: {
         const QUrl source = mImageLayer->imageSource();
-        mImageLayer->setSource(mImageSource);
-        mImageSource = source;
 
-        if (mImageSource.isEmpty())
+        if (mImageSource.isEmpty()) {
             mImageLayer->resetImage();
-        else
+        }
+        else {
             mImageLayer->loadFromImage(mImageSource);
+        }
 
+        mImageSource = source;
         break;
     }
     case RepeatXProperty: {
