@@ -4,6 +4,12 @@ TMX Changelog
 Below are described the changes/additions that were made to the
 :doc:`tmx-map-format` for recent versions of Tiled.
 
+Tiled 1.8
+---------
+
+-  Added ``repeatx`` and ``repeaty`` attributes to the :ref:`tmx-imagelayer`
+   element.
+
 Tiled 1.7
 ---------
 

@@ -1394,6 +1394,16 @@ declare class ImageLayer extends Layer {
    * Reference to the image rendered by this layer.
    */
   imageSource: string;
+  
+  /**
+   * Whether the image rendered by this layer repeats along the X axis.
+   */
+  repeatX: boolean;
+  
+  /**
+   * Whether the image rendered by this layer repeats along the Y axis.
+   */
+  repeatY: boolean;
 
   /**
    * Constructs a new image layer.

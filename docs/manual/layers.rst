@@ -97,11 +97,15 @@ Image Layers
 ~~~~~~~~~~~~
 
 Image layers provide a way to quickly include a single image as
-foreground or background of your map. They are currently not so useful,
-because if you instead add the image as a Tileset and place it as a :ref:`Tile Object <insert-tile-tool>`,
-you gain the ability to freely scale and rotate the image.
+foreground or background of your map. They currently have limited
+functionality and you may consider adding the image as a Tileset instead and
+place it as a :ref:`Tile Object <insert-tile-tool>`. This way, you gain the
+ability to freely scale and rotate the image.
 
-The only advantage of using an image layer is that it avoids selecting /
+However, image layers can be repeated along the respective axes through their
+*Repeat X* and *Repeat Y* properties.
+
+The other advantage of using an image layer is that it avoids selecting /
 dragging the image while using the Select Objects tool. However, since Tiled
 1.1 this can also be achieved by locking the object layer containing the tile
 object you'd like to avoid interacting with.

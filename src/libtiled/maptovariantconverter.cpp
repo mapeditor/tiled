@@ -666,6 +666,11 @@ QVariant MapToVariantConverter::toVariant(const ImageLayer &imageLayer) const
     if (transColor.isValid())
         imageLayerVariant[QStringLiteral("transparentcolor")] = transColor.name();
 
+    if (imageLayer.repeatX())
+        imageLayerVariant[QStringLiteral("repeatx")] = imageLayer.repeatX();
+    if (imageLayer.repeatY())
+        imageLayerVariant[QStringLiteral("repeaty")] = imageLayer.repeatY();
+
     return imageLayerVariant;
 }
 

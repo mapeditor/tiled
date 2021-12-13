@@ -114,6 +114,26 @@ public:
      */
     bool isEmpty() const override;
 
+    /**
+     * Returns true if the image of this layer repeats along the X axis.
+     */
+    bool repeatX() const { return mRepeatX; }
+
+    /**
+     * Returns true if the image of this layer repeats along the Y axis.
+     */
+    bool repeatY() const { return mRepeatY; }
+
+    /**
+     * Sets whether the image of this layer repeats along the X axis.
+     */
+    void setRepeatX(bool repeatX) { mRepeatX = repeatX; }
+
+    /**
+     * Sets whether the image of this layer repeats along the Y axis.
+     */
+    void setRepeatY(bool repeatY) { mRepeatY = repeatY; }
+
     ImageLayer *clone() const override;
 
 protected:
@@ -123,6 +143,8 @@ private:
     QUrl mImageSource;
     QColor mTransparentColor;
     QPixmap mImage;
+    bool mRepeatX = false;
+    bool mRepeatY = false;
 };
 
 } // namespace Tiled

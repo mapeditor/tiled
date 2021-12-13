@@ -114,6 +114,8 @@ private:
         OffsetXProperty,
         OffsetYProperty,
         ParallaxFactorProperty,
+        RepeatXProperty,
+        RepeatYProperty,
         ColorProperty,
         BackgroundColorProperty,
         TileWidthProperty,
