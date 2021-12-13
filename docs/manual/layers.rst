@@ -159,6 +159,30 @@ its child layers. The effective parallax scrolling factor of a layer is
 determined by multiplying the parallax scrolling factor by the scrolling
 factors of all parent layers.
 
+Parallax Reference Point
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+To match not only the scrolling speed but also the positioning of layers, we
+need to use the same points of reference. In Tiled these are the origin of the
+map (the top-left of its bounding box) and the center of the view. The distance
+between these two points is multiplied by the parallax factor, to determine the
+final position on the screen for each layer. For example:
+
+* If the map's origin is in the center of the view, the distance is (0,0) and
+  none of the parallax factors have any effect.
+
+* When the map is scrolled left by 10 pixels, the distance is -10, so a layer
+  with a parallax factor of 0.5 will be positioned ``0.5 * -10 = -5`` pixels from
+  the center of the view.
+
+Quite often, a viewport transform is used to scroll the entire map. In this
+case, one may need to adjust the position of each layer to take its parallax
+factor into account. For this, we take the map position that is located in the
+center of the view, and multiply this by ``(1 - parallaxFactor)`` to get the layer
+position. When the position in the center is 10, the layers will have normally
+moved 10 pixels to the left (-10), but by positioning the layer at ``(10 * (1 - 0.5)) = 5``, we're
+making sure that it only moves 5 pixels to the left.
+
 .. raw:: html
 
    <div class="new new-prev">Since Tiled 1.4</div>
