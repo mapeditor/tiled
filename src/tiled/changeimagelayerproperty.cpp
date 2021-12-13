@@ -1,5 +1,5 @@
 /*
- * changeimagelayerproperties.cpp
+ * changeimagelayerproperty.cpp
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
  * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2011, Gregory Nickonov <gregory@nickonov.ru>
@@ -87,24 +87,20 @@ void ChangeImageLayerProperty::swap()
         mImageLayer->setTransparentColor(mTransparentColor);
         mTransparentColor = color;
 
-        if (mImageSource.isEmpty()) {
+        if (mImageSource.isEmpty())
             mImageLayer->resetImage();
-        }
-        else {
+        else
             mImageLayer->loadFromImage(mImageSource);
-        }
 
         break;
     }
     case ImageSourceProperty: {
         const QUrl source = mImageLayer->imageSource();
 
-        if (mImageSource.isEmpty()) {
+        if (mImageSource.isEmpty())
             mImageLayer->resetImage();
-        }
-        else {
+        else
             mImageLayer->loadFromImage(mImageSource);
-        }
 
         mImageSource = source;
         break;

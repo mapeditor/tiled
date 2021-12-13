@@ -127,12 +127,10 @@ void MapRenderer::drawImageLayer(QPainter *painter,
     painter->save();
     painter->setBrush(tinted(imageLayer->image(), imageLayer->effectiveTintColor()));
     painter->setPen(Qt::NoPen);
-    if (exposed.isNull()) {
+    if (exposed.isNull())
         painter->drawRect(boundingRect(imageLayer));
-    }
-    else {
+    else
         painter->drawRect(boundingRect(imageLayer) & exposed);
-    }
     painter->restore();
 }
 

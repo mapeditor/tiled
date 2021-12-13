@@ -1,5 +1,5 @@
 /*
- * changeimagelayerproperties.h
+ * changeimagelayerproperty.h
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
  * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2011, Gregory Nickonov <gregory@nickonov.ru>
