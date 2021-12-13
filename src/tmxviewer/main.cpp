@@ -38,7 +38,7 @@
 
 int main(int argc, char *argv[])
 {
-#if defined(Q_OS_WIN) && (!defined(Q_CC_MINGW) || __MINGW32_MAJOR_VERSION >= 5)
+#if defined(Q_OS_WIN) && (!defined(Q_CC_MINGW) || __GNUC__ >= 5)
     // Make console output work on Windows, if running in a console.
     if (AttachConsole(ATTACH_PARENT_PROCESS)) {
         FILE *dummy = nullptr;
@@ -49,15 +49,15 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
-    a.setOrganizationDomain(QLatin1String("mapeditor.org"));
-    a.setApplicationName(QLatin1String("TmxViewer"));
-    a.setApplicationVersion(QLatin1String("1.0"));
+    a.setOrganizationDomain(QStringLiteral("mapeditor.org"));
+    a.setApplicationName(QStringLiteral("TmxViewer"));
+    a.setApplicationVersion(QStringLiteral("1.0"));
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QCoreApplication::translate("main", "Displays a Tiled map (TMX format)."));
     parser.addHelpOption();
     parser.addVersionOption();
-    parser.addPositionalArgument("file", QCoreApplication::translate("main", "Map file to display."));
+    parser.addPositionalArgument(QStringLiteral("file"), QCoreApplication::translate("main", "Map file to display."));
     parser.process(a);
 
     const QStringList args = parser.positionalArguments();
