@@ -132,10 +132,16 @@ void ObjectReferenceTool::mapDocumentChanged(MapDocument *oldDocument,
     }
 }
 
+void ObjectReferenceTool::updateEnabledState()
+{
+    // We want this tool to be usable even if currently no object group is selected.
+    AbstractTool::updateEnabledState(); // clazy:exclude=skipped-base-method
+}
+
 void ObjectReferenceTool::setItemsVisible(bool visible)
 {
     mItemsVisible = visible;
-    for (const auto item : mReferenceItems)
+    for (auto item : qAsConst(mReferenceItems))
         item->setVisible(visible);
 }
 

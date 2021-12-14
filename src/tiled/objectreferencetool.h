@@ -50,6 +50,8 @@ protected:
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;
 
+    void updateEnabledState() override;
+
 private:
     void setItemsVisible(bool visible);
     void startPick();
