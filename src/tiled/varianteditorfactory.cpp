@@ -163,8 +163,8 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
             mCreatedTextPropertyEdits[property].append(editor);
             mTextPropertyEditToProperty[editor] = property;
 
-            connect(editor, &TextPropertyEdit::textChanged,
-                    this, &VariantEditorFactory::textPropertyEditTextChanged);
+            connect(editor, &TextPropertyEdit::editingFinished,
+                    this, &VariantEditorFactory::textPropertyEditTextFinished);
             connect(editor, &QObject::destroyed,
                     this, &VariantEditorFactory::slotEditorDestroyed);
 
@@ -180,8 +180,13 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
             mCreatedComboBoxes[property].append(editor);
             mComboBoxToProperty[editor] = property;
 
-            connect(editor, &QComboBox::currentTextChanged,
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+            connect(editor, static_cast<void (QComboBox::*)(const QString &)>(&QComboBox::activated),
                     this, &VariantEditorFactory::comboBoxPropertyEditTextChanged);
+#else
+            connect(editor, &QComboBox::textActivated,
+                    this, &VariantEditorFactory::comboBoxPropertyTextActivated);
+#endif
             connect(editor, &QObject::destroyed,
                     this, &VariantEditorFactory::slotEditorDestroyed);
 
@@ -275,7 +280,7 @@ void VariantEditorFactory::fileEditFileUrlChanged(const QUrl &value)
     }
 }
 
-void VariantEditorFactory::textPropertyEditTextChanged(const QString &value)
+void VariantEditorFactory::textPropertyEditTextFinished()
 {
     auto textPropertyEdit = qobject_cast<TextPropertyEdit*>(sender());
     Q_ASSERT(textPropertyEdit);
@@ -284,11 +289,11 @@ void VariantEditorFactory::textPropertyEditTextChanged(const QString &value)
         QtVariantPropertyManager *manager = propertyManager(property);
         if (!manager)
             return;
-        manager->setValue(property, value);
+        manager->setValue(property, textPropertyEdit->text());
     }
 }
 
-void VariantEditorFactory::comboBoxPropertyEditTextChanged(const QString &value)
+void VariantEditorFactory::comboBoxPropertyTextActivated(const QString &value)
 {
     auto comboBox = qobject_cast<QComboBox*>(sender());
     Q_ASSERT(comboBox);

@@ -57,7 +57,7 @@ protected:
     void keyReleaseEvent(QKeyEvent *e) override;
 
 private:
-    void textEdited();
+    void editingFinished();
     void validate();
     void buttonClicked();
 

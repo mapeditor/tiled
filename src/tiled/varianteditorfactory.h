@@ -67,8 +67,8 @@ private:
                                       const QString &attribute,
                                       const QVariant &value);
     void fileEditFileUrlChanged(const QUrl &value);
-    void textPropertyEditTextChanged(const QString &value);
-    void comboBoxPropertyEditTextChanged(const QString &value);
+    void textPropertyEditTextFinished();
+    void comboBoxPropertyTextActivated(const QString &value);
     void objectRefEditValueChanged(const DisplayObjectRef &value);
     void slotEditorDestroyed(QObject *object);
 

@@ -142,6 +142,7 @@ TextPropertyEdit::TextPropertyEdit(QWidget *parent)
 
     connect(button, &QToolButton::clicked, this, &TextPropertyEdit::onButtonClicked);
     connect(mLineEdit, &QLineEdit::textChanged, this, &TextPropertyEdit::onTextChanged);
+    connect(mLineEdit, &QLineEdit::editingFinished, this, &TextPropertyEdit::editingFinished);
 }
 
 QString TextPropertyEdit::text() const
@@ -177,6 +178,7 @@ void TextPropertyEdit::onButtonClicked()
     if (newText != mCachedText) {
         setText(newText);
         emit textChanged(mCachedText);
+        emit editingFinished();
     }
 }
 

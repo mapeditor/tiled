@@ -55,8 +55,8 @@ FileEdit::FileEdit(QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_InputMethodEnabled);
 
-    connect(mLineEdit, &QLineEdit::textEdited,
-            this, &FileEdit::textEdited);
+    connect(mLineEdit, &QLineEdit::editingFinished,
+            this, &FileEdit::editingFinished);
     connect(mLineEdit, &QLineEdit::textChanged,
             this, &FileEdit::validate);
     connect(button, &QAbstractButton::clicked,
@@ -101,7 +101,7 @@ void FileEdit::keyReleaseEvent(QKeyEvent *e)
     mLineEdit->event(e);
 }
 
-void FileEdit::textEdited()
+void FileEdit::editingFinished()
 {
     emit fileUrlChanged(fileUrl());
 }

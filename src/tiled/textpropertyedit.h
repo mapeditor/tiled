@@ -49,6 +49,7 @@ public slots:
 
 signals:
     void textChanged(const QString &text);
+    void editingFinished();
 
 private:
     void onTextChanged(const QString &text);
