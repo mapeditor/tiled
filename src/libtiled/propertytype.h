@@ -58,7 +58,7 @@ public:
     static PropertyType fromVariant(const QVariant &variant);
 };
 
-typedef QVector<PropertyType> PropertyTypes;
+using PropertyTypes = QVector<PropertyType>;
 
 TILEDSHARED_EXPORT const PropertyType *findTypeById(const QVector<PropertyType> &types, int typeId);
 TILEDSHARED_EXPORT const PropertyType *findTypeByName(const QVector<PropertyType> &types, const QString &name);

@@ -50,7 +50,7 @@ class Tile;
 class Tileset;
 class WangSet;
 
-typedef QSharedPointer<Tileset> SharedTileset;
+using SharedTileset = QSharedPointer<Tileset>;
 
 /**
  * A tileset, representing a set of tiles.

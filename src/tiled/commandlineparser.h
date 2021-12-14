@@ -30,7 +30,7 @@ namespace Tiled {
 /**
  * C-style callback function taking an arbitrary data pointer.
  */
-typedef void (*Callback)(void *data);
+using Callback = void (*)(void *);
 
 /**
  * A template function that will static-cast the given \a object to a type T

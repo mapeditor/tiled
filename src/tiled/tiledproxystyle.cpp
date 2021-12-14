@@ -74,11 +74,11 @@ template <typename T>
 template <typename T>
         struct QConcatenable<HexString<T> >
 {
-    typedef HexString<T> type;
+    using type = HexString<T>;
     enum { ExactSize = true };
     static int size(const HexString<T> &) { return sizeof(T) * 2; }
     static inline void appendTo(const HexString<T> &str, QChar *&out) { str.write(out); }
-    typedef QString ConvertTo;
+    using ConvertTo = QString;
 };
 
 static QString uniqueName(const QString &key, const QStyleOption *option, QSize size)

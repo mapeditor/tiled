@@ -116,7 +116,7 @@ private:
     QString indexHToString(int idx) const;
     QString indexVToString(int idx) const;
     QMap<const QtProperty *, Qt::Alignment> m_alignValues;
-    typedef QMap<QtProperty *, QtProperty *> PropertyToPropertyMap;
+    using PropertyToPropertyMap = QMap<QtProperty *, QtProperty *>;
     PropertyToPropertyMap m_propertyToAlignH;
     PropertyToPropertyMap m_propertyToAlignV;
     PropertyToPropertyMap m_alignHToProperty;

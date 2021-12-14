@@ -140,7 +140,7 @@ public:
     virtual QPointF snapToGrid(const QPointF &pixelCoords,
                                int subdivisions = 1) const;
 
-    typedef std::function<void(QPoint, const QPointF &)> RenderTileCallback;
+    using RenderTileCallback = std::function<void (QPoint, const QPointF &)>;
 
     /**
      * Draws the given \a layer using the given \a painter.

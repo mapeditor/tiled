@@ -701,7 +701,7 @@ QSet<PointHandle *> EditPolygonTool::clickedHandles() const
     return handles;
 }
 
-typedef QHash<MapObject*, RangeSet<int> > PointIndexesByObject;
+using PointIndexesByObject = QHash<MapObject *, RangeSet<int>>;
 static PointIndexesByObject
 groupIndexesByObject(const QSet<PointHandle*> &handles)
 {

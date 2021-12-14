@@ -36,9 +36,9 @@ class RangeSet
     // This class is based on std::map rather than QMap since std::map's insert
     // method has an overload that takes a hint about where to insert the new
     // pair.
-    typedef typename std::map<Int, Int> Map;
-    typedef typename Map::iterator iterator_;
-    typedef typename Map::const_iterator const_iterator_;
+    using Map = typename std::map<Int, Int>;
+    using iterator_ = typename Map::iterator;
+    using const_iterator_ = typename Map::const_iterator;
 
     Map mMap;
 
@@ -71,7 +71,7 @@ public:
         { return last() - first() + 1; }
     };
 
-    typedef Range const_iterator;
+    using const_iterator = Range;
 
     /**
      * Insert \a value in the set of ranges. Has no effect when the value is

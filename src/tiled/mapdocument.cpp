@@ -1445,8 +1445,8 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
     undoStack()->endMacro();
 }
 
-typedef QHash<ObjectGroup*, RangeSet<int>>           Ranges;
-typedef QHashIterator<ObjectGroup*, RangeSet<int>>   RangesIterator;
+using Ranges = QHash<ObjectGroup *, RangeSet<int>>;
+using RangesIterator = QHashIterator<ObjectGroup *, RangeSet<int>>;
 
 static Ranges computeRanges(const QList<MapObject *> &objects)
 {

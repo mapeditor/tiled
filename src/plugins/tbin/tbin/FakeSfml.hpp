@@ -3,8 +3,8 @@
 
 namespace sf
 {
-    typedef int Int32;
-    typedef unsigned char Uint8;
+    using Int32 = int;
+    using Uint8 = unsigned char;
     struct Vector2i
     {
         Int32 x;

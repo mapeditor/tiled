@@ -595,7 +595,7 @@ std::unique_ptr<TileLayer> VariantToMapConverter::toTileLayer(const QVariantMap 
     const int startY = variantMap[QStringLiteral("starty")].toInt();
     const QVariant dataVariant = variantMap[QStringLiteral("data")];
 
-    typedef std::unique_ptr<TileLayer> TileLayerPtr;
+    using TileLayerPtr = std::unique_ptr<TileLayer>;
     TileLayerPtr tileLayer(new TileLayer(name,
                                          variantMap[QStringLiteral("x")].toInt(),
                                          variantMap[QStringLiteral("y")].toInt(),
@@ -650,7 +650,7 @@ std::unique_ptr<TileLayer> VariantToMapConverter::toTileLayer(const QVariantMap 
 
 std::unique_ptr<ObjectGroup> VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 {
-    typedef std::unique_ptr<ObjectGroup> ObjectGroupPtr;
+    using ObjectGroupPtr = std::unique_ptr<ObjectGroup>;
     ObjectGroupPtr objectGroup(new ObjectGroup(variantMap[QStringLiteral("name")].toString(),
                                                variantMap[QStringLiteral("x")].toInt(),
                                                variantMap[QStringLiteral("y")].toInt()));
@@ -768,7 +768,7 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
 
 std::unique_ptr<ImageLayer> VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
 {
-    typedef std::unique_ptr<ImageLayer> ImageLayerPtr;
+    using ImageLayerPtr = std::unique_ptr<ImageLayer>;
     ImageLayerPtr imageLayer(new ImageLayer(variantMap[QStringLiteral("name")].toString(),
                                             variantMap[QStringLiteral("x")].toInt(),
                                             variantMap[QStringLiteral("y")].toInt()));

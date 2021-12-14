@@ -650,7 +650,7 @@ inline void TileLayer::setCells(int x, int y, const TileLayer *tileLayer)
              QRect(x, y, tileLayer->width(), tileLayer->height()));
 }
 
-typedef QSharedPointer<TileLayer> SharedTileLayer;
+using SharedTileLayer = QSharedPointer<TileLayer>;
 
 } // namespace Tiled
 

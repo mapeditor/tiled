@@ -753,7 +753,7 @@ TILEDSHARED_EXPORT QString compressionToString(Map::LayerDataFormat);
 TILEDSHARED_EXPORT QString renderOrderToString(Map::RenderOrder renderOrder);
 TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);
 
-typedef QSharedPointer<Map> SharedMap;
+using SharedMap = QSharedPointer<Map>;
 
 } // namespace Tiled
 

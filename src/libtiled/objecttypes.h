@@ -58,7 +58,7 @@ struct ObjectType
     Properties defaultProperties;
 };
 
-typedef QVector<ObjectType> ObjectTypes;
+using ObjectTypes = QVector<ObjectType>;
 
 
 
