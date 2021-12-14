@@ -43,7 +43,7 @@ class TILEDSHARED_EXPORT ObjectTemplate : public Object
 public:
     ObjectTemplate();
     ObjectTemplate(const QString &fileName);
-    ~ObjectTemplate();
+    ~ObjectTemplate() override;
 
     const MapObject *object() const;
     void setObject(const MapObject *object);

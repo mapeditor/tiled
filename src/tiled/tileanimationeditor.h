@@ -43,7 +43,7 @@ class TileAnimationEditor : public QDialog
 
 public:
     explicit TileAnimationEditor(QWidget *parent = nullptr);
-    ~TileAnimationEditor();
+    ~TileAnimationEditor() override;
 
     void setTilesetDocument(TilesetDocument *tilesetDocument);
 

@@ -56,7 +56,7 @@ private:
     Q_DISABLE_COPY(TemplateManager)
 
     TemplateManager(QObject *parent = nullptr);
-    ~TemplateManager();
+    ~TemplateManager() override;
 
     void pathsChanged(const QStringList &paths);
 

@@ -97,7 +97,7 @@ class TILEDSHARED_EXPORT WorldManager : public QObject
     Q_OBJECT
 
     WorldManager();
-    ~WorldManager();
+    ~WorldManager() override;
 
 public:
     static WorldManager &instance();

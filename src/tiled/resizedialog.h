@@ -37,7 +37,7 @@ class ResizeDialog : public QDialog
 public:
     ResizeDialog(QWidget *parent = nullptr);
 
-    ~ResizeDialog();
+    ~ResizeDialog() override;
 
     void setOldSize(QSize size);
 

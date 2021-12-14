@@ -34,10 +34,10 @@ class NoEditorWidget : public QWidget
 
 public:
     explicit NoEditorWidget(QWidget *parent = nullptr);
-    ~NoEditorWidget();
+    ~NoEditorWidget() override;
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private:
     void newMap();

@@ -46,7 +46,7 @@ public:
     EditableAsset(Document *document, Object *object, QObject *parent = nullptr);
 
     QString fileName() const;
-    virtual bool isReadOnly() const = 0;
+    bool isReadOnly() const override = 0;
     bool isMap() const;
     bool isTileset() const;
 

@@ -53,7 +53,7 @@ public:
                         const QVector<Entry> &entries,
                         bool ownObjects,
                         QUndoCommand *parent = nullptr);
-    ~AddRemoveMapObjects();
+    ~AddRemoveMapObjects() override;
 
     void releaseObjects();
 

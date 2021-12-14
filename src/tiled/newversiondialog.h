@@ -37,7 +37,7 @@ class NewVersionDialog : public QDialog
 public:
     explicit NewVersionDialog(const NewVersionChecker::VersionInfo &versionInfo,
                               QWidget *parent = nullptr);
-    ~NewVersionDialog();
+    ~NewVersionDialog() override;
 
 private:
     Ui::NewVersionDialog *ui;

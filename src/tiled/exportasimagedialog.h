@@ -47,7 +47,7 @@ public:
                         const QString &fileName,
                         qreal currentScale,
                         QWidget *parent = nullptr);
-    ~ExportAsImageDialog();
+    ~ExportAsImageDialog() override;
 
 public:
     void accept() override;

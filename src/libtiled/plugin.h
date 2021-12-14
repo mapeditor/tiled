@@ -45,7 +45,7 @@ class TILEDSHARED_EXPORT Plugin : public QObject
     Q_OBJECT
 
 public:
-    ~Plugin();
+    ~Plugin() override;
 
     virtual void initialize() = 0;
 

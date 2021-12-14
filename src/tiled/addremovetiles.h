@@ -38,7 +38,7 @@ public:
                    const QList<Tile*> &tiles,
                    bool add);
 
-    ~AddRemoveTiles();
+    ~AddRemoveTiles() override;
 
 protected:
     void addTiles();

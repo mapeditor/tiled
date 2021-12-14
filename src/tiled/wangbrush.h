@@ -40,7 +40,7 @@ public:
     };
 
     WangBrush(QObject *parent = nullptr);
-    ~WangBrush();
+    ~WangBrush() override;
 
     void activate(MapScene *scene) override;
 

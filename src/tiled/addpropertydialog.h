@@ -34,7 +34,7 @@ class AddPropertyDialog : public QDialog
 
 public:
     explicit AddPropertyDialog(QWidget *parent = nullptr);
-    ~AddPropertyDialog();
+    ~AddPropertyDialog() override;
 
     QString propertyName() const;
     QVariant propertyValue() const;

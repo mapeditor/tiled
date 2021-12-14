@@ -42,7 +42,7 @@ class CommandDialog : public QDialog
 
 public:
     CommandDialog(QWidget *parent = nullptr);
-    ~CommandDialog();
+    ~CommandDialog() override;
 
     const QVector<Command> &globalCommands() const;
     const QVector<Command> &projectCommands() const;

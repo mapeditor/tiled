@@ -43,7 +43,7 @@ class TmxViewer : public QGraphicsView
 
 public:
     explicit TmxViewer(QWidget *parent = nullptr);
-    ~TmxViewer();
+    ~TmxViewer() override;
 
     bool viewMap(const QString &fileName);
 

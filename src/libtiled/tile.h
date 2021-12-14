@@ -64,7 +64,7 @@ public:
     Tile(int id, Tileset *tileset);
     Tile(const QPixmap &image, int id, Tileset *tileset);
 
-    ~Tile();
+    ~Tile() override;
 
     int id() const;
 

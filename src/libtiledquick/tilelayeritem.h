@@ -60,7 +60,7 @@ public:
      */
     void syncWithTileLayer();
 
-    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *);
+    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 
 public slots:
     void updateVisibleTiles();
@@ -83,7 +83,7 @@ class TileItem : public QQuickItem
 public:
     TileItem(const Tiled::Cell &cell, QPoint position, MapItem *parent);
 
-    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *);
+    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 
     QPoint position() const;
 

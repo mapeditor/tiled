@@ -49,7 +49,7 @@ class TileStampManager : public QObject
 
 public:
     TileStampManager(const ToolManager &toolManager, QObject *parent = nullptr);
-    ~TileStampManager();
+    ~TileStampManager() override;
 
     static QList<Qt::Key> quickStampKeys();
 

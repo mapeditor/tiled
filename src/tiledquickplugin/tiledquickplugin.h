@@ -32,7 +32,7 @@ class TiledQuickPlugin : public QQmlExtensionPlugin
 #endif
 
 public:
-    void registerTypes(const char *uri);
+    void registerTypes(const char *uri) override;
 };
 
 } // namespace TiledQuick

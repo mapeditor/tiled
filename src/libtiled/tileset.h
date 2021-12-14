@@ -100,7 +100,7 @@ public:
     QString exportFileName;
     QString exportFormat;
 
-    ~Tileset();
+    ~Tileset() override;
 
     const QString &name() const;
     void setName(const QString &name);

@@ -36,7 +36,7 @@ public:
     AddRemoveWangSet(TilesetDocument *tilesetDocument,
                      int index,
                      WangSet *wangSet);
-    ~AddRemoveWangSet();
+    ~AddRemoveWangSet() override;
 
 protected:
     void addWangSet();

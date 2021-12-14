@@ -80,7 +80,7 @@ signals:
 
 private:
     explicit ScriptManager(QObject *parent = nullptr);
-    ~ScriptManager() = default;
+    ~ScriptManager() override = default;
 
     void reset();
     void initialize();

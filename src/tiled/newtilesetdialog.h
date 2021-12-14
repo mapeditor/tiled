@@ -46,7 +46,7 @@ public:
     };
 
     NewTilesetDialog(QWidget *parent = nullptr);
-    ~NewTilesetDialog();
+    ~NewTilesetDialog() override;
 
     void setImagePath(const QString &path);
     void setTileSize(QSize size);

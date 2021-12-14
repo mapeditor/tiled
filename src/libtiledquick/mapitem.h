@@ -48,7 +48,7 @@ class TILEDQUICK_SHARED_EXPORT MapItem : public QQuickItem
 
 public:
     explicit MapItem(QQuickItem *parent = nullptr);
-    ~MapItem();
+    ~MapItem() override;
 
     MapRef map() const;
     void setMap(MapRef map);
@@ -57,7 +57,7 @@ public:
     const QRectF &visibleArea() const;
     void setVisibleArea(const QRectF &visibleArea);
 
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
 
     Q_INVOKABLE QPointF screenToTileCoords(qreal x, qreal y) const;
     Q_INVOKABLE QPointF screenToTileCoords(const QPointF &position) const;
@@ -70,7 +70,7 @@ public:
     Q_INVOKABLE QPointF pixelToTileCoords(qreal x, qreal y) const;
     Q_INVOKABLE QPointF pixelToTileCoords(const QPointF &position) const;
 
-    void componentComplete();
+    void componentComplete() override;
 
 signals:
     void mapChanged();

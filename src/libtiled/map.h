@@ -181,7 +181,7 @@ public:
         int width, int height,
         int tileWidth, int tileHeight);
 
-    ~Map();
+    ~Map() override;
 
     const Parameters &parameters() const;
 

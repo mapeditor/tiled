@@ -41,7 +41,7 @@ public:
                    GroupLayer *parentLayer,
                    QUndoCommand *parent = nullptr);
 
-    ~AddRemoveLayer();
+    ~AddRemoveLayer() override;
 
 protected:
     void addLayer();

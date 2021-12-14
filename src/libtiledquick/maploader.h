@@ -48,7 +48,7 @@ public:
     Q_ENUM(Status)
 
     explicit MapLoader(QObject *parent = nullptr);
-    ~MapLoader();
+    ~MapLoader() override;
 
     QUrl source() const;
     MapRef map() const;

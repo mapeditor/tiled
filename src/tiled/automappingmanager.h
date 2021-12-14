@@ -48,7 +48,7 @@ class AutomappingManager : public QObject
 
 public:
     AutomappingManager(QObject *parent = nullptr);
-    ~AutomappingManager();
+    ~AutomappingManager() override;
 
     void setMapDocument(MapDocument *mapDocument, const QString &rulesFile = QString());
 

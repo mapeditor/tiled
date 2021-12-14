@@ -47,7 +47,7 @@ public:
                     QPoint offset,
                     QUndoCommand *parent = nullptr);
 
-    ~ResizeTileLayer();
+    ~ResizeTileLayer() override;
 
     void undo() override;
     void redo() override;

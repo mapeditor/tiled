@@ -140,7 +140,7 @@ public:
     AutoMapper(MapDocument *mapDocument,
                std::unique_ptr<Map> rulesMap,
                const QString &rulesMapFileName);
-    ~AutoMapper();
+    ~AutoMapper() override;
 
     /**
      * Checks if the passed \a ruleLayerName is used as input layer in this

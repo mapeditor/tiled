@@ -164,7 +164,7 @@ private:
     Q_DISABLE_COPY(PluginManager)
 
     PluginManager();
-    ~PluginManager();
+    ~PluginManager() override;
 
     bool loadPlugin(PluginFile *plugin);
     bool unloadPlugin(PluginFile *plugin);

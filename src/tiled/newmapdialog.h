@@ -39,7 +39,7 @@ class NewMapDialog : public QDialog
 
 public:
     NewMapDialog(QWidget *parent = nullptr);
-    ~NewMapDialog();
+    ~NewMapDialog() override;
 
     /**
      * Shows the dialog and returns the created map. Returns null if the dialog

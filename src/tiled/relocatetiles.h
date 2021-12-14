@@ -47,8 +47,8 @@ public:
                   const QList<Tile *> &tiles,
                   int location);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     TilesetDocument * const mTilesetDocument;

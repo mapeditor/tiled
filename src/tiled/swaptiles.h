@@ -47,8 +47,8 @@ public:
               Tile *tile1,
               Tile *tile2);
 
-    void undo() { swap(); }
-    void redo() { swap(); }
+    void undo() override { swap(); }
+    void redo() override { swap(); }
 
 private:
     void swap();
