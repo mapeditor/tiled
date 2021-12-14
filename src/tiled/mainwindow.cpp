@@ -1762,10 +1762,11 @@ void MainWindow::setFullScreen(bool fullScreen)
 
 void MainWindow::toggleClearView(bool clearView)
 {
-    MapView *mapView = nullptr;
+    MapEditor *mapEditor = nullptr;
+
     if (mDocument && mDocument->type() == Document::MapDocumentType) {
-        auto mapEditor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
-        mapView = mapEditor->currentMapView();
+        mapEditor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
+        MapView *mapView = mapEditor->currentMapView();
         mapView->setResizeAnchor(QGraphicsView::AnchorViewCenter);
     }
 
@@ -1795,10 +1796,12 @@ void MainWindow::toggleClearView(bool clearView)
         mMainWindowStates.clear();
     }
 
-    layout()->activate();
+    if (mapEditor) {
+        mapEditor->editorWidget()->layout()->activate();
 
-    if (mapView)
+        MapView *mapView = mapEditor->currentMapView();
         mapView->setResizeAnchor(QGraphicsView::NoAnchor);
+    }
 }
 
 void MainWindow::setLayoutLocked(bool locked)
