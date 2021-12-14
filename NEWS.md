@@ -36,6 +36,7 @@
 * Fixed command-line output not showing on Windows (#2688)
 * Fixed "Select object on map" when no object layer is selected (#3207)
 * Tiled Manual is now available in French
+* JSON plugin: Added "tmj", "tsj" and "tj" as accepted file extensions
 * YY plugin: Don't use safe writing of files
 * YY plugin: Write out custom "object" properties as instance name (instead of the ID)
 * YY plugin: Determine sprite names by looking for meta files (by krukai, #3213)

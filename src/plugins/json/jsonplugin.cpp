@@ -147,7 +147,7 @@ bool JsonMapFormat::write(const Tiled::Map *map,
 QString JsonMapFormat::nameFilter() const
 {
     if (mSubFormat == Json)
-        return tr("JSON map files (*.json)");
+        return tr("JSON map files (*.tmj *.json)");
     else
         return tr("JavaScript map files (*.js)");
 }
@@ -163,7 +163,8 @@ QString JsonMapFormat::shortName() const
 bool JsonMapFormat::supportsFile(const QString &fileName) const
 {
     if (mSubFormat == Json) {
-        if (!fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive))
+        if (!fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive) &&
+                !fileName.endsWith(QLatin1String(".tmj"), Qt::CaseInsensitive))
             return false;
     } else {
         if (!fileName.endsWith(QLatin1String(".js"), Qt::CaseInsensitive))
@@ -171,32 +172,30 @@ bool JsonMapFormat::supportsFile(const QString &fileName) const
     }
 
     QFile file(fileName);
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QByteArray contents = file.readAll();
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return false;
 
-        if (mSubFormat == JavaScript && contents.size() > 0 && contents[0] != '{') {
-            // Scan past JSONP prefix; look for an open curly at the start of the line
-            int i = contents.indexOf("\n{");
-            if (i > 0) {
-                contents.remove(0, i);
-                contents = contents.trimmed(); // potential trailing whitespace
-                if (contents.endsWith(';')) contents.chop(1);
-                if (contents.endsWith(')')) contents.chop(1);
-            }
+    QByteArray contents = file.readAll();
+
+    if (mSubFormat == JavaScript && contents.size() > 0 && contents[0] != '{') {
+        // Scan past JSONP prefix; look for an open curly at the start of the line
+        int i = contents.indexOf("\n{");
+        if (i > 0) {
+            contents.remove(0, i);
+            contents = contents.trimmed(); // potential trailing whitespace
+            if (contents.endsWith(';')) contents.chop(1);
+            if (contents.endsWith(')')) contents.chop(1);
         }
-
-        const QJsonObject object = QJsonDocument::fromJson(contents).object();
-
-        // This is a good indication, but not present in older map files
-        if (object.value(QLatin1String("type")).toString() == QLatin1String("map"))
-            return true;
-
-        // Guess based on expected property
-        if (object.contains(QLatin1String("orientation")))
-            return true;
     }
 
-    return false;
+    const QJsonObject object = QJsonDocument::fromJson(contents).object();
+
+    // This is a good indication, but not present in older map files
+    if (object.value(QLatin1String("type")).toString() == QLatin1String("map"))
+        return true;
+
+    // Guess based on expected property
+    return object.contains(QLatin1String("orientation"));
 }
 
 QString JsonMapFormat::errorString() const
@@ -239,25 +238,24 @@ Tiled::SharedTileset JsonTilesetFormat::read(const QString &fileName)
 
 bool JsonTilesetFormat::supportsFile(const QString &fileName) const
 {
-    if (fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive)) {
-        QFile file(fileName);
+    if (!fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive) &&
+            !fileName.endsWith(QLatin1String(".tsj"), Qt::CaseInsensitive))
+        return false;
 
-        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            const QJsonObject object = QJsonDocument::fromJson(file.readAll()).object();
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return false;
 
-            // This is a good indication, but not present in older external tilesets
-            if (object.value(QLatin1String("type")).toString() == QLatin1String("tileset"))
-                return true;
+    const QJsonObject object = QJsonDocument::fromJson(file.readAll()).object();
 
-            // Guess based on some expected properties
-            if (object.contains(QLatin1String("name")) &&
-                object.contains(QLatin1String("tilewidth")) &&
-                object.contains(QLatin1String("tileheight")))
-                return true;
-        }
-    }
+    // This is a good indication, but not present in older external tilesets
+    if (object.value(QLatin1String("type")).toString() == QLatin1String("tileset"))
+        return true;
 
-    return false;
+    // Guess based on some expected properties
+    return (object.contains(QLatin1String("name")) &&
+            object.contains(QLatin1String("tilewidth")) &&
+            object.contains(QLatin1String("tileheight")));
 }
 
 bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
@@ -301,7 +299,7 @@ bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
 
 QString JsonTilesetFormat::nameFilter() const
 {
-    return tr("JSON tileset files (*.json)");
+    return tr("JSON tileset files (*.tsj *.json)");
 }
 
 QString JsonTilesetFormat::shortName() const
@@ -350,18 +348,17 @@ std::unique_ptr<Tiled::ObjectTemplate> JsonObjectTemplateFormat::read(const QStr
 
 bool JsonObjectTemplateFormat::supportsFile(const QString &fileName) const
 {
-    if (fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive)) {
-        QFile file(fileName);
+    if (!fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive) &&
+            !fileName.endsWith(QLatin1String(".tj"), Qt::CaseInsensitive))
+        return false;
 
-        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            const QJsonObject object = QJsonDocument::fromJson(file.readAll()).object();
+    QFile file(fileName);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return false;
 
-            if (object.value(QLatin1String("type")).toString() == QLatin1String("template"))
-                return true;
-        }
-    }
+    const QJsonObject object = QJsonDocument::fromJson(file.readAll()).object();
 
-    return false;
+    return object.value(QLatin1String("type")).toString() == QLatin1String("template");
 }
 
 bool JsonObjectTemplateFormat::write(const Tiled::ObjectTemplate *objectTemplate, const QString &fileName)
@@ -403,7 +400,7 @@ bool JsonObjectTemplateFormat::write(const Tiled::ObjectTemplate *objectTemplate
 
 QString JsonObjectTemplateFormat::nameFilter() const
 {
-    return tr("JSON template files (*.json)");
+    return tr("JSON template files (*.tj *.json)");
 }
 
 QString JsonObjectTemplateFormat::shortName() const
