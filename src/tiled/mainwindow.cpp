@@ -357,7 +357,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     redoAction->setPriority(QAction::LowPriority);
     redoAction->setIcon(redoIcon);
     undoAction->setIcon(undoIcon);
-    connect(undoGroup, &QUndoGroup::cleanChanged, this, &MainWindow::updateWindowTitle);
 
     mUi->actionNewMap->setShortcuts(QKeySequence::New);
     mUi->actionOpen->setShortcuts(QKeySequence::Open);
@@ -2465,6 +2464,8 @@ void MainWindow::documentChanged(Document *document)
 
     if (document) {
         connect(document, &Document::fileNameChanged,
+                this, &MainWindow::updateWindowTitle);
+        connect(document, &Document::modifiedChanged,
                 this, &MainWindow::updateWindowTitle);
 
         mProjectDock->selectFile(document->fileName());
