@@ -429,7 +429,7 @@ void AutoMapper::setupWorkMapLayers()
 
         if (!objectGroup) {
             const int index =  mTargetMap->layerCount();
-            ObjectGroup *objectGroup = new ObjectGroup(name, 0, 0);
+            objectGroup = new ObjectGroup(name, 0, 0);
             undoStack->push(new AddLayer(mTargetDocument, index, objectGroup, nullptr));
             mAddedLayers.append(objectGroup);
         }
