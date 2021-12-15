@@ -678,10 +678,9 @@ static bool layerMatchesConditions(const TileLayer &setLayer,
                 }
 
                 // ruleDefinedListYes will be set when there is a tile in at
-                // least one layer. If there is a tile in at least one layer,
-                // only the given tiles in the different listYes layers are
-                // valid. Otherwise, consider all tiles not used elsewhere in
-                // the input as valid.
+                // least one layer. In this case, only the given tiles in the
+                // different listYes layers are valid. Otherwise, consider all
+                // tiles not used elsewhere in the input as valid.
                 bool ruleDefinedListYes = false;
                 bool matchListYes = false;
 

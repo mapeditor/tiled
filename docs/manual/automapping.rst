@@ -123,6 +123,30 @@ rule match. Within one rule you can combine the usage of both input and
 inputnot layers to make rules input conditions as accurate as you need
 or as fuzzy as you need.
 
+.. note::
+
+    Empty tiles within **input** or **inputnot** layers are normally ignored.
+    However, when there are no **inputnot** layers and all of the **input**
+    layers contain an empty tile at a given location, it has a special meaning.
+    In this case, it only matches on any tiles that are not empty, and that
+    also are not one of the other input tiles used in the same rule. This can
+    be useful, because normally to achieve this logic you could need a lot of
+    **inputnot** layers. It is used in the :ref:`automapping-BasicShoreline`
+    example.
+
+    If this special case is not the desired behavior, there are a few possible
+    workarounds:
+
+    * Adding an empty **inputnot** layer. This disables the special behavior,
+      causing empty tiles to be ignored.
+
+    * Defining the **regions_input** and **regions_ouput** separately, reducing
+      your input region such that it does not contain empty tiles.
+
+    * Setting the :ref:`StrictEmpty <automapping-StrictEmpty>` boolean property
+      on the **input** layer to ``true``. This causes the empty tiles to only
+      match against empty tiles.
+
 Definition of Outputs
 ---------------------
 
@@ -149,14 +173,16 @@ is picked. All of the output layers carrying this index will be put out
 into the working map then.
 
 Note that the output is not being checked for overlapping on itself. This
-can be achieved by setting the map property **NoOverlappingRules** to
-true.
+can be achieved by setting the map property
+:ref:`NoOverlappingRules <automapping-NoOverlappingRules>` to ``true``.
 
 Map Properties
 --------------
 
 The following map properties can be used to customize the behavior of
 the rules in a **rulefile**:
+
+.. _automapping-DeleteTiles:
 
 DeleteTiles
    This map property is a boolean property: it can be
@@ -218,9 +244,11 @@ WrapBorder
    If both **WrapBorder** and **OverflowBorder** are ``true``, **WrapBorder** takes
    precedence over **OverflowBorder**.
 
+.. _automapping-NoOverlappingRules:
+
 NoOverlappingRules
-   This map property is a boolean property:
-   A rule is not allowed to overlap on itself.
+   This map property is a boolean property: A rule is not allowed to overlap on
+   itself.
 
 These properties are map wide, meaning it applies to all rules which are
 part of the rulemap. If you need rules with different properties you
@@ -230,6 +258,8 @@ Layer Properties
 ----------------
 
 The following properties are supported on a per-layer basis:
+
+.. _automapping-StrictEmpty:
 
 StrictEmpty
    This layer property is a boolean property. It can be added to
@@ -348,6 +378,8 @@ random by using 5 different grass tiles.
 .. figure:: images/automapping/TheManaWorld/flow5.png
 
    If you look closely at the grass, you'll see they are now randomized.
+
+.. _automapping-BasicShoreline:
 
 Basic Shoreline
 ~~~~~~~~~~~~~~~
@@ -555,10 +587,11 @@ areas with collision and then remove some parts of it again and so on.
 
 So we need to also remove the collision tiles from positions, which are
 not marked by a collision any more. This can be done by adding the map
-property *DeleteTiles* and setting it to *yes* or *true*. Then all the
-parts in the *Collision* layer will be erased before the Automapping
-takes place, so the collision tiles are only placed at real unwalkable
-tiles and the history of if there has been a collision tile placed is neglected.
+property :ref:`DeleteTiles <automapping-DeleteTiles>` and setting it to
+``true``. Then all the parts in the *Collision* layer will be erased before the
+Automapping takes place, so the collision tiles are only placed at real
+unwalkable tiles and the history of if there has been a collision tile placed
+is neglected.
 
 Random Grass Tiles
 ~~~~~~~~~~~~~~~~~~
@@ -663,7 +696,8 @@ contains the actual wall tiles.
 
 .. figure:: images/automapping/LoneCoder/firstattempt.png
 
-   A broken version of the rule, because *NoOverlappingRules* was not yet set.
+   A broken version of the rule, because
+   :ref:`NoOverlappingRules <automapping-NoOverlappingRules>` was not yet set.
 
 When trying to match the input layer to the desired set layer (right
 picture of the figure at the beginning of the example), you will see it
@@ -674,6 +708,7 @@ result, because this rule overlaps itself. The overlapping problem is shown
 in figure above.
 
 Since the overlapping is not desired, we can turn it off by adding the map
-property *NoOverlappingRules* to the rulemap and setting it to *true*.
+property :ref:`NoOverlappingRules <automapping-NoOverlappingRules>` to the
+rulemap and setting it to ``true``.
 
 Keep in mind that the map property applies for all rules on that rule map.
