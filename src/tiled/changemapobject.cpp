@@ -58,9 +58,8 @@ ChangeMapObject::ChangeMapObject(Document *document,
 
 void ChangeMapObject::swap()
 {
-    QVariant oldValue = mMapObject->mapObjectProperty(mProperty);
-    mMapObject->setMapObjectProperty(mProperty, mValue);
-    std::swap(mValue, oldValue);
+    const auto value = std::exchange(mValue, mMapObject->mapObjectProperty(mProperty));
+    mMapObject->setMapObjectProperty(mProperty, value);
 
     mMapObject->setPropertyChanged(mProperty, mNewChangeState);
     std::swap(mOldChangeState, mNewChangeState);

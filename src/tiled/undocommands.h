@@ -29,9 +29,12 @@ namespace Tiled {
  * can be merged.
  */
 enum UndoCommands {
+    Cmd_ChangeLayerLocked,
+    Cmd_ChangeLayerName,
     Cmd_ChangeLayerOffset,
     Cmd_ChangeLayerOpacity,
     Cmd_ChangeLayerTintColor,
+    Cmd_ChangeLayerVisible,
     Cmd_ChangeSelectedArea,
     Cmd_ChangeTileTerrain,
     Cmd_ChangeTileWangId,
