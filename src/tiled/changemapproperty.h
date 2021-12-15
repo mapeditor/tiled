@@ -75,6 +75,14 @@ public:
     ChangeMapProperty(MapDocument *mapDocument, Map::StaggerIndex staggerIndex);
 
     /**
+     * Constructs a command that changes the parallax origin.
+     *
+     * @param mapDocument       the map document of the map
+     * @param parallaxOrigin    the new parallax origin
+     */
+    ChangeMapProperty(MapDocument *mapDocument, const QPointF &parallaxOrigin);
+
+    /**
      * Constructs a command that changes the map orientation.
      *
      * @param mapDocument       the map document of the map
@@ -112,6 +120,7 @@ private:
         int mIntValue;
         Map::StaggerAxis mStaggerAxis;
         Map::StaggerIndex mStaggerIndex;
+        QPointF mParallaxOrigin;
         Map::Orientation mOrientation;
         Map::RenderOrder mRenderOrder;
         Map::LayerDataFormat mLayerDataFormat;

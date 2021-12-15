@@ -104,6 +104,16 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
 }
 
 ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
+                                     const QPointF &parallaxOrigin)
+        : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                                   "Change Parallax Origin"))
+        , mMapDocument(mapDocument)
+        , mProperty(Map::ParallaxOriginProperty)
+        , mParallaxOrigin(parallaxOrigin)
+{
+}
+
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
                                      Map::Orientation orientation)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Orientation"))
@@ -188,6 +198,12 @@ void ChangeMapProperty::swap()
         const Map::StaggerIndex staggerIndex = map->staggerIndex();
         map->setStaggerIndex(mStaggerIndex);
         mStaggerIndex = staggerIndex;
+        break;
+    }
+    case Map::ParallaxOriginProperty: {
+        const QPointF parallaxOrigin = map->parallaxOrigin();
+        map->setParallaxOrigin(mParallaxOrigin);
+        mParallaxOrigin = parallaxOrigin;
         break;
     }
     case Map::RenderOrderProperty: {

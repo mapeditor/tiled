@@ -270,6 +270,15 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
     mapParameters.staggerAxis = staggerAxisFromString(staggerAxis);
     mapParameters.staggerIndex = staggerIndexFromString(staggerIndex);
 
+    bool ok;
+    const qreal parallaxOriginX = atts.value(QLatin1String("parallaxoriginx")).toDouble(&ok);
+    if (ok)
+        mapParameters.parallaxOrigin.setX(parallaxOriginX);
+
+    const qreal parallaxOriginY = atts.value(QLatin1String("parallaxoriginy")).toDouble(&ok);
+    if (ok)
+        mapParameters.parallaxOrigin.setY(parallaxOriginY);
+
     const QString backgroundColor = atts.value(QLatin1String("backgroundcolor")).toString();
     if (QColor::isValidColor(backgroundColor))
         mapParameters.backgroundColor = QColor(backgroundColor);

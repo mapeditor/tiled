@@ -530,6 +530,14 @@ void EditableMap::setStaggerIndex(StaggerIndex value)
         map()->setStaggerIndex(static_cast<Map::StaggerIndex>(value));
 }
 
+void EditableMap::setParallaxOrigin(const QPointF &parallaxOrigin)
+{
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, parallaxOrigin));
+    else if (!checkReadOnly())
+        map()->setParallaxOrigin(parallaxOrigin);
+}
+
 void EditableMap::setOrientation(Orientation value)
 {
     if (auto doc = mapDocument()) {
