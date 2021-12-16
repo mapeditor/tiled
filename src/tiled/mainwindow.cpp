@@ -1219,7 +1219,6 @@ void MainWindow::saveAll()
             continue;
 
         QString fileName(document->fileName());
-        QString error;
 
         if (fileName.isEmpty()) {
             mDocumentManager->switchToDocument(document.data());
