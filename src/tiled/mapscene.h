@@ -108,6 +108,7 @@ protected:
 private:
     void refreshScene();
 
+    void changeEvent(const ChangeEvent &change);
     void mapChanged();
     void repaintTileset(Tileset *tileset);
 

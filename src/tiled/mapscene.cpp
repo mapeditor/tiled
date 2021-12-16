@@ -101,6 +101,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
+        connect(mMapDocument, &MapDocument::changed,
+                this, &MapScene::changeEvent);
         connect(mMapDocument, &MapDocument::mapChanged,
                 this, &MapScene::mapChanged);
         connect(mMapDocument, &MapDocument::tilesetTilePositioningChanged,
@@ -232,7 +234,7 @@ QPointF MapScene::parallaxOffset(const Layer &layer) const
         return {};
 
     const QPointF parallaxFactor = layer.effectiveParallaxFactor();
-    const QPointF viewCenter = mViewRect.center() + mapDocument()->map()->parallaxOrigin();
+    const QPointF viewCenter = mViewRect.center() - mapDocument()->map()->parallaxOrigin();
     return QPointF((1.0 - parallaxFactor.x()) * viewCenter.x(),
                    (1.0 - parallaxFactor.y()) * viewCenter.y());
 }
@@ -356,6 +358,18 @@ MapItem *MapScene::takeOrCreateMapItem(const MapDocumentPtr &mapDocument, MapIte
         mapItem->setDisplayMode(displayMode);
     }
     return mapItem;
+}
+
+void MapScene::changeEvent(const ChangeEvent &change)
+{
+    switch (change.type) {
+    case ChangeEvent::MapChanged:
+        if (static_cast<const MapChangeEvent&>(change).property == Map::ParallaxOriginProperty)
+            emit parallaxParametersChanged();
+        break;
+    default:
+        break;
+    }
 }
 
 /**
