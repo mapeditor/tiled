@@ -38,11 +38,18 @@
 #include "tiled_global.h"
 
 #include <memory>
-#include <vector>
 
 namespace Tiled {
 
 class ExportContext;
+
+class TILEDSHARED_EXPORT ExportValue
+{
+public:
+    QVariant value;
+    QString typeName;
+    QString propertyTypeName;
+};
 
 /**
  * The base class for custom property types.
@@ -62,8 +69,10 @@ public:
 
     virtual ~PropertyType() = default;
 
-    virtual QVariant wrap(const QVariant &value) const;
-    virtual QVariant unwrap(const QVariant &value) const;
+    QVariant wrap(const QVariant &value) const;
+
+    virtual ExportValue toExportValue(const QVariant &value, const ExportContext &) const;
+    virtual QVariant toPropertyValue(const QVariant &value, const ExportContext &) const;
 
     virtual QVariant defaultValue() const = 0;
 
@@ -97,14 +106,14 @@ public:
         IntValue
     };
 
-    StorageType storageType = StringValue;  // TODO: Allow user to change this
+    StorageType storageType = StringValue;
     QStringList values;
-    bool valuesAsFlags = true;             // TODO: Allow user to change this
+    bool valuesAsFlags = false;
 
     EnumPropertyType(const QString &name) : PropertyType(PT_Enum, name) {}
 
-    QVariant wrap(const QVariant &value) const override;
-    QVariant unwrap(const QVariant &value) const override;
+    ExportValue toExportValue(const QVariant &value, const ExportContext &) const override;
+    QVariant toPropertyValue(const QVariant &value, const ExportContext &) const override;
 
     QVariant defaultValue() const override;
 
@@ -124,6 +133,9 @@ public:
     QVariantMap members;
 
     ClassPropertyType(const QString &name) : PropertyType(PT_Class, name) {}
+
+    ExportValue toExportValue(const QVariant &value, const ExportContext &) const override;
+    QVariant toPropertyValue(const QVariant &value, const ExportContext &) const override;
 
     QVariant defaultValue() const override;
 

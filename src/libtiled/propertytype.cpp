@@ -33,6 +33,8 @@
 
 #include <QVector>
 
+#include <algorithm>
+
 namespace Tiled {
 
 int PropertyType::nextId = 0;
@@ -50,11 +52,18 @@ QVariant PropertyType::wrap(const QVariant &value) const
  * This function is called with the value stored in a PropertyValue. It is
  * supposed to prepare the value for saving.
  *
- * The default implementation just returns the value as-is.
+ * The default implementation just calls ExportContext::toExportValue.
  */
-QVariant PropertyType::unwrap(const QVariant &value) const
+ExportValue PropertyType::toExportValue(const QVariant &value, const ExportContext &context) const
 {
-    return value;
+    ExportValue result = context.toExportValue(value);
+    result.propertyTypeName = name;
+    return result;
+}
+
+QVariant PropertyType::toPropertyValue(const QVariant &value, const ExportContext &) const
+{
+    return wrap(value);
 }
 
 QVariantMap PropertyType::toVariant(const ExportContext &) const
@@ -125,7 +134,35 @@ QString PropertyType::typeToString(Type type)
 
 // EnumPropertyType
 
-QVariant EnumPropertyType::wrap(const QVariant &value) const
+ExportValue EnumPropertyType::toExportValue(const QVariant &value, const ExportContext &context) const
+{
+    ExportValue result;
+
+    // Convert enum values to their string if desired
+    if (value.userType() == QMetaType::Int && storageType == StringValue) {
+        const int intValue = value.toInt();
+
+        if (valuesAsFlags) {
+            QString stringValue;
+
+            for (int i = 0; i < values.size(); ++i) {
+                if (intValue & (1 << i)) {
+                    if (!stringValue.isEmpty())
+                        stringValue.append(QLatin1Char(','));
+                    stringValue.append(values.at(i));
+                }
+            }
+
+            return PropertyType::toExportValue(stringValue, context);
+        } else if (intValue >= 0 && intValue < values.size()) {
+            return PropertyType::toExportValue(values.at(intValue), context);
+        }
+    }
+
+    return PropertyType::toExportValue(value, context);
+}
+
+QVariant EnumPropertyType::toPropertyValue(const QVariant &value, const ExportContext &) const
 {
     // Convert enum values stored as string, if possible
     if (value.userType() == QMetaType::QString) {
@@ -148,47 +185,20 @@ QVariant EnumPropertyType::wrap(const QVariant &value) const
                 // In case of any unrecognized flag name we keep the original
                 // string value, to prevent silent data loss.
                 if (index == -1)
-                    return PropertyType::wrap(value);
+                    return wrap(value);
 
                 flags |= 1 << index;
             }
 
-            return PropertyType::wrap(flags);
+            return wrap(flags);
         }
 
         const int index = values.indexOf(stringValue);
         if (index != -1)
-            return PropertyType::wrap(index);
+            return wrap(index);
     }
 
-    return PropertyType::wrap(value);
-}
-
-QVariant EnumPropertyType::unwrap(const QVariant &value) const
-{
-    // Convert enum values to their string if desired
-    if (value.userType() == QMetaType::Int && storageType == StringValue) {
-        const int intValue = value.toInt();
-
-        if (valuesAsFlags) {
-            QString stringValue;
-
-            for (int i = 0; i < values.size(); ++i) {
-                if (intValue & (1 << i)) {
-                    if (!stringValue.isEmpty())
-                        stringValue.append(QLatin1Char(','));
-                    stringValue.append(values.at(i));
-                }
-            }
-
-            return stringValue;
-        }
-
-        if (intValue >= 0 && intValue < values.size())
-            return values.at(intValue);
-    }
-
-    return value;
+    return wrap(value);
 }
 
 QVariant EnumPropertyType::defaultValue() const
@@ -231,6 +241,49 @@ QString EnumPropertyType::storageTypeToString(StorageType type)
 }
 
 // ClassPropertyType
+
+ExportValue ClassPropertyType::toExportValue(const QVariant &value, const ExportContext &context) const
+{
+    ExportValue result;
+    Properties properties = value.toMap();
+
+    QMutableMapIterator<QString, QVariant> it(properties);
+    while (it.hasNext()) {
+        it.next();
+
+        ExportValue exportValue = context.toExportValue(it.value());
+        it.setValue(exportValue.value);
+    }
+
+    return PropertyType::toExportValue(properties, context);
+}
+
+QVariant ClassPropertyType::toPropertyValue(const QVariant &value, const ExportContext &context) const
+{
+    Properties properties = value.toMap();
+
+    QMutableMapIterator<QString, QVariant> it(properties);
+    while (it.hasNext()) {
+        it.next();
+
+        const QVariant classMember = members.value(it.key());
+        if (!classMember.isValid())  // ignore removed members
+            continue;
+
+        QVariant propertyValue = context.toPropertyValue(it.value(), classMember.userType());
+
+        // Wrap the value in its custom property type when applicable
+        if (classMember.userType() == propertyValueId()) {
+            const PropertyValue classMemberValue = classMember.value<PropertyValue>();
+            if (const PropertyType *propertyType = context.types().findTypeById(classMemberValue.typeId))
+                propertyValue = propertyType->toPropertyValue(propertyValue, context);
+        }
+
+        it.setValue(propertyValue);
+    }
+
+    return wrap(properties);
+}
 
 QVariant ClassPropertyType::defaultValue() const
 {
@@ -323,12 +376,9 @@ PropertyTypes::~PropertyTypes()
 
 size_t PropertyTypes::count(PropertyType::Type type) const
 {
-    size_t count = 0;
-    for (const auto propertyType : mTypes) {
-        if (propertyType->type == type)
-            ++count;
-    }
-    return count;
+    return std::count_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *propertyType) {
+        return propertyType->type == type;
+    });
 }
 
 /**
@@ -337,11 +387,10 @@ size_t PropertyTypes::count(PropertyType::Type type) const
  */
 const PropertyType *PropertyTypes::findTypeById(int typeId) const
 {
-    for (const auto propertyType : mTypes) {
-        if (propertyType->id == typeId)
-            return propertyType;
-    }
-    return nullptr;
+    auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+        return type->id == typeId;
+    });
+    return it == mTypes.end() ? nullptr : *it;
 }
 
 /**
@@ -350,11 +399,10 @@ const PropertyType *PropertyTypes::findTypeById(int typeId) const
  */
 const PropertyType *PropertyTypes::findTypeByName(const QString &name) const
 {
-    for (const auto propertyType : mTypes) {
-        if (propertyType->name == name)
-            return propertyType;
-    }
-    return nullptr;
+    auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+        return type->name == name;
+    });
+    return it == mTypes.end() ? nullptr : *it;
 }
 
 void PropertyTypes::loadFrom(const QVariantList &list, const QString &path)

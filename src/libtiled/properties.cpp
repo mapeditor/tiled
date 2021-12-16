@@ -175,7 +175,7 @@ static int nameToType(const QString &name)
     if (name == QLatin1String("object"))
         return objectRefTypeId();
     if (name == QLatin1String("class"))
-        return propertyValueId();
+        return QMetaType::QVariantMap;
 
     return QVariant::nameToType(name.toLatin1().constData());
 }
@@ -214,8 +214,7 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
         const PropertyValue propertyValue = value.value<PropertyValue>();
 
         if (const PropertyType *propertyType = mTypes.findTypeById(propertyValue.typeId)) {
-            exportValue = toExportValue(propertyType->unwrap(propertyValue.value));
-            exportValue.propertyTypeName = propertyType->name;
+            exportValue = propertyType->toExportValue(propertyValue.value, *this);
         } else {
             // the type may have been deleted
             exportValue = toExportValue(propertyValue.value);
@@ -243,26 +242,35 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
 
 QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
 {
-    QVariant propertyValue = exportValue.value;
     const int metaType = nameToType(exportValue.typeName);
-
-    if (metaType == filePathTypeId()) {
-        const QUrl url = toUrl(exportValue.value.toString(), mPath);
-        propertyValue = QVariant::fromValue(FilePath { url });
-    } else if (metaType == objectRefTypeId()) {
-        propertyValue = QVariant::fromValue(ObjectRef::fromInt(exportValue.value.toInt()));
-    } else if (metaType == propertyValueId()) {
-        // should be covered by property type below
-    } else if (exportValue.value.userType() != metaType && metaType != QMetaType::UnknownType) {
-        propertyValue.convert(metaType);
-    }
+    QVariant propertyValue = toPropertyValue(exportValue.value, metaType);
 
     // Wrap the value in its custom property type when applicable
     if (!exportValue.propertyTypeName.isEmpty())
         if (const PropertyType *propertyType = mTypes.findTypeByName(exportValue.propertyTypeName))
-            propertyValue = propertyType->wrap(propertyValue);
+            propertyValue = propertyType->toPropertyValue(propertyValue, *this);
 
     return propertyValue;
+}
+
+QVariant ExportContext::toPropertyValue(const QVariant &value, int metaType) const
+{
+    if (metaType == QMetaType::UnknownType || value.userType() == metaType)
+        return value;   // value possibly already converted
+
+    if (metaType == QMetaType::QVariantMap || metaType == propertyValueId())
+        return value;   // should be covered by property type
+
+    if (metaType == filePathTypeId()) {
+        const QUrl url = toUrl(value.toString(), mPath);
+        return QVariant::fromValue(FilePath { url });
+    }
+
+    if (metaType == objectRefTypeId())
+        return QVariant::fromValue(ObjectRef::fromInt(value.toInt()));
+
+    QVariant convertedValue = value;
+    return convertedValue.convert(metaType) ? convertedValue : value;
 }
 
 void initializeMetatypes()
