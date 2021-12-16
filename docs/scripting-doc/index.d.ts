@@ -1751,6 +1751,11 @@ declare class TileMap extends Asset {
   staggerAxis : typeof TileMap.StaggerX | typeof TileMap.StaggerY
 
   /**
+   * The parallax origin used for reference when applying the respective parallax factor.
+   */
+  parallaxOrigin : point
+
+  /**
    * General map orientation
    */
   orientation : typeof TileMap.Orthogonal | typeof TileMap.Isometric | typeof TileMap.Staggered | typeof TileMap.Hexagonal | typeof TileMap.Unknown
