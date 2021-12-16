@@ -48,7 +48,11 @@ Sentry::Sentry()
     const QString cacheLocation { QStandardPaths::writableLocation(QStandardPaths::CacheLocation) };
     if (!cacheLocation.isEmpty()) {
         const QString databasePath = QDir{cacheLocation}.filePath(QStringLiteral("sentry"));
+#ifdef SENTRY_PLATFORM_WINDOWS
+        sentry_options_set_database_pathw(options, databasePath.toStdWString().constData());
+#else
         sentry_options_set_database_path(options, databasePath.toLocal8Bit().constData());
+#endif
     }
 
     sentry_init(options);
