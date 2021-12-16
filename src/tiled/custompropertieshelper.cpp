@@ -229,6 +229,17 @@ void CustomPropertiesHelper::onValueChanged(QtProperty *property, const QVariant
                                             : members.value(name);
 
                 subProperty->setModified(modified);
+
+                // Avoid setting child class members as modified, just because
+                // the class definition sets different defaults on them.
+                if (!modified) {
+                    auto memberType = propertyType(subProperty);
+                    if (memberType && memberType->type == PropertyType::PT_Class) {
+                        static_cast<QtVariantProperty*>(subProperty)->setValue(QVariantMap());
+                        continue;
+                    }
+                }
+
                 static_cast<QtVariantProperty*>(subProperty)->setValue(toDisplayValue(value));
             }
         }
