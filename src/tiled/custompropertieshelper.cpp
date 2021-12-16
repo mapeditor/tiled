@@ -203,6 +203,7 @@ void CustomPropertiesHelper::onValueChanged(QtProperty *property, const QVariant
             property->setModified(!variantMap.isEmpty());
         } else {
             // A top-level property changed
+            QScopedValueRollback<bool> updating(mEmittingValueChanged, true);
             emit propertyValueChanged(property->propertyName(),
                                       fromDisplayValue(property, value));
         }
@@ -252,6 +253,12 @@ void CustomPropertiesHelper::unsetProperty(QtProperty *property)
 
 void CustomPropertiesHelper::propertyTypesChanged()
 {
+    // When this happens in response to emitting propertyValueChanged, it means
+    // we have triggered a change in a class definition. In this case we should
+    // not update ourselves.
+    if (mEmittingValueChanged)
+        return;
+
     QHashIterator<QString, QtVariantProperty *> it(mProperties);
     while (it.hasNext()) {
         it.next();

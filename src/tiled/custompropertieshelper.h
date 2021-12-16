@@ -77,6 +77,7 @@ private:
     QHash<QtProperty *, QtProperty *> mPropertyParents;
     bool mApplyingToParent = false;
     bool mApplyingToChildren = false;
+    bool mEmittingValueChanged = false;
 };
 
 inline bool CustomPropertiesHelper::hasProperty(QtProperty *property) const
