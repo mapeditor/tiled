@@ -83,10 +83,10 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
 
     bool ok;
     QPointF parallaxOrigin;
-    const qreal parallaxOriginX = variantMap[QStringLiteral("parallaxx")].toDouble(&ok);
+    const qreal parallaxOriginX = variantMap[QStringLiteral("parallaxoriginx")].toDouble(&ok);
     if (ok)
         parallaxOrigin.setX( parallaxOriginX);
-    const qreal parallaxOriginY = variantMap[QStringLiteral("parallaxy")].toDouble(&ok);
+    const qreal parallaxOriginY = variantMap[QStringLiteral("parallaxoriginy")].toDouble(&ok);
     if (ok)
         parallaxOrigin.setY(parallaxOriginY);
     mapParameters.parallaxOrigin = parallaxOrigin;
