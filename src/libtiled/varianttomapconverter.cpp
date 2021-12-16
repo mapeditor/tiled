@@ -81,6 +81,16 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     mapParameters.staggerAxis = staggerAxisFromString(staggerAxis);
     mapParameters.staggerIndex = staggerIndexFromString(staggerIndex);
 
+    bool ok;
+    QPointF parallaxOrigin;
+    const qreal parallaxOriginX = variantMap[QStringLiteral("parallaxx")].toDouble(&ok);
+    if (ok)
+        parallaxOrigin.setX( parallaxOriginX);
+    const qreal parallaxOriginY = variantMap[QStringLiteral("parallaxy")].toDouble(&ok);
+    if (ok)
+        parallaxOrigin.setY(parallaxOriginY);
+    mapParameters.parallaxOrigin = parallaxOrigin;
+
     const QString bgColor = variantMap[QStringLiteral("backgroundcolor")].toString();
     if (QColor::isValidColor(bgColor))
         mapParameters.backgroundColor = QColor(bgColor);
@@ -121,7 +131,6 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
             tileset->loadImage();
     }
 
-    bool ok;
     const int compressionLevel = variantMap[QStringLiteral("compressionlevel")].toInt(&ok);
     if (ok)
         map->setCompressionLevel(compressionLevel);
