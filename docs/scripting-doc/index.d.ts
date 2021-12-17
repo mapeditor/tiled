@@ -47,6 +47,13 @@ interface rect {
   height: number;
 }
 
+/**
+ * Holds a discrete region, usually of a {@link TileLayer}.
+ *
+ * @note When iterating all the locations within a region, don't use
+ * {@link boundingRect} in combination with {@link contains}! It is much faster
+ * to iterate over {@link rects} instead.
+ */
 interface region {
   /**
    * Bounding rectangle of this region.
