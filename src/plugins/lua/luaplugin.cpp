@@ -233,6 +233,13 @@ void LuaWriter::writeMap(const Map *map)
                                  staggerIndexToString(map->staggerIndex()));
     }
 
+    if (!map->parallaxOrigin().isNull()) {
+        mWriter.writeStartTable("parallaxorigin");
+        mWriter.writeKeyAndValue("x", map->parallaxOrigin().x());
+        mWriter.writeKeyAndValue("y", map->parallaxOrigin().y());
+        mWriter.writeEndTable();
+    }
+
     const QColor &backgroundColor = map->backgroundColor();
     if (backgroundColor.isValid())
         writeColor("backgroundcolor", backgroundColor);

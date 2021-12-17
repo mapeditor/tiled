@@ -83,6 +83,7 @@ public:
         HexSideLengthProperty,
         StaggerAxisProperty,
         StaggerIndexProperty,
+        ParallaxOriginProperty,
         OrientationProperty,
         RenderOrderProperty,
         BackgroundColorProperty,
@@ -159,6 +160,7 @@ public:
         int hexSideLength = 0;
         StaggerAxis staggerAxis = StaggerY;
         StaggerIndex staggerIndex = StaggerOdd;
+        QPointF parallaxOrigin;
         QColor backgroundColor;
     };
 
@@ -222,6 +224,9 @@ public:
     StaggerIndex staggerIndex() const;
     void setStaggerIndex(StaggerIndex staggerIndex);
     void invertStaggerIndex();
+
+    QPointF parallaxOrigin() const;
+    void setParallaxOrigin(const QPointF &parallaxOrigin);
 
     QMargins drawMargins() const;
     void invalidateDrawMargins();
@@ -491,6 +496,16 @@ inline void Map::setStaggerIndex(StaggerIndex staggerIndex)
 inline void Map::invertStaggerIndex()
 {
     mParameters.staggerIndex = static_cast<StaggerIndex>(!mParameters.staggerIndex);
+}
+
+inline QPointF Map::parallaxOrigin() const
+{
+    return mParameters.parallaxOrigin;
+}
+
+inline void Map::setParallaxOrigin(const QPointF &parallaxOrigin)
+{
+    mParameters.parallaxOrigin = parallaxOrigin;
 }
 
 inline void Map::invalidateDrawMargins()

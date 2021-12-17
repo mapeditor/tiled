@@ -221,6 +221,11 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
                          staggerIndexToString(map.staggerIndex()));
     }
 
+    if (!map.parallaxOrigin().isNull()) {
+        w.writeAttribute(QStringLiteral("parallaxoriginx"), QString::number(map.parallaxOrigin().x()));
+        w.writeAttribute(QStringLiteral("parallaxoriginy"), QString::number(map.parallaxOrigin().y()));
+    }
+
     if (map.backgroundColor().isValid()) {
         w.writeAttribute(QStringLiteral("backgroundcolor"),
                          colorToString(map.backgroundColor()));

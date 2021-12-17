@@ -94,6 +94,11 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
         mapVariant[QStringLiteral("staggerindex")] = staggerIndexToString(map.staggerIndex());
     }
 
+    if (!map.parallaxOrigin().isNull()) {
+        mapVariant[QStringLiteral("parallaxoriginx")] = map.parallaxOrigin().x();
+        mapVariant[QStringLiteral("parallaxoriginy")] = map.parallaxOrigin().y();
+    }
+
     const QColor bgColor = map.backgroundColor();
     if (bgColor.isValid())
         mapVariant[QStringLiteral("backgroundcolor")] = colorToString(bgColor);

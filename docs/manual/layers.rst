@@ -151,8 +151,8 @@ the screen and the camera.
 A value of 0 makes the layer not move at all, which can be useful to include
 some pieces of your ingame UI or to mark its general viewport boundaries.
 
-Negative values make the layer move in opposite direction, though this is rarely
-useful.
+Negative values make the layer move in opposite direction, though this is
+rarely useful.
 
 When the parallax scrolling factor is set on a group layer, it applies to all
 its child layers. The effective parallax scrolling factor of a layer is
@@ -163,25 +163,30 @@ Parallax Reference Point
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 To match not only the scrolling speed but also the positioning of layers, we
-need to use the same points of reference. In Tiled these are the origin of the
-map (the top-left of its bounding box) and the center of the view. The distance
-between these two points is multiplied by the parallax factor, to determine the
+need to use the same points of reference. In Tiled these are the parallax
+origin and the center of the view. The parallax origin is stored per map and
+defaults to (0,0), which is the top-left of the maps bounding box. The distance
+between these two points is multiplied by the parallax factor to determine the
 final position on the screen for each layer. For example:
 
-* If the map's origin is in the center of the view, the distance is (0,0) and
-  none of the parallax factors have any effect.
+* If the parallax origin is in the center of the view, the distance is (0,0)
+  and none of the parallax factors have any effect. The layers are rendered
+  where they would have been, if parallax was disabled.
 
-* When the map is scrolled left by 10 pixels, the distance is -10, so a layer
-  with a parallax factor of 0.5 will be positioned ``0.5 * -10 = -5`` pixels from
-  the center of the view.
+* Now, when the map is scrolled right by 10 pixels, the distance between the
+  parallax origin and the center of the view is 10. So a layer with a parallax
+  factor of 0.7 will have moved just ``0.7 * 10 = 7`` pixels.
 
 Quite often, a viewport transform is used to scroll the entire map. In this
 case, one may need to adjust the position of each layer to take its parallax
-factor into account. For this, we take the map position that is located in the
-center of the view, and multiply this by ``(1 - parallaxFactor)`` to get the layer
-position. When the position in the center is 10, the layers will have normally
-moved 10 pixels to the left (-10), but by positioning the layer at ``(10 * (1 - 0.5)) = 5``, we're
-making sure that it only moves 5 pixels to the left.
+factor into account. Instead of multiplying the distance with the parallax
+factor directly, we now multiply by ``1 - parallaxFactor`` to get the layer
+position. For example:
+
+* When the camera moves right by 10 pixels, the layer will have moved 10
+  pixels to the left (-10), so by positioning the layer at
+  ``10 * (1 - 0.7) = 3``, we're making sure that it only moves 7 pixels to
+  the left.
 
 .. raw:: html
 

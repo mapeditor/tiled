@@ -66,6 +66,10 @@ in what changed between Tiled versions.
 -  **staggerindex:** For staggered and hexagonal maps, determines whether
    the "even" or "odd" indexes along the staggered axis are shifted.
    (since 0.11)
+-  **parallaxoriginx:** X coordinate of the parallax origin in pixels
+   (defaults to 0). (since 1.8)
+-  **parallaxoriginy:** Y coordinate of the parallax origin in pixels
+   (defaults to 0). (since 1.8)
 -  **backgroundcolor:** The background color of the map. (optional, may
    include alpha value since 0.15 in the form ``#AARRGGBB``. Defaults to
    fully transparent.)

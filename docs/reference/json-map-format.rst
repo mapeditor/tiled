@@ -28,6 +28,8 @@ Map
     nextlayerid,      int,              "Auto-increments for each layer"
     nextobjectid,     int,              "Auto-increments for each placed object"
     orientation,      string,           "``orthogonal``, ``isometric``, ``staggered`` or ``hexagonal``"
+    parallaxoriginx,  double,           "X coordinate of the parallax origin in pixels (since 1.8, default: 0)"
+    parallaxoriginy,  double,           "Y coordinate of the parallax origin in pixels (since 1.8, default: 0)"
     properties,       array,            "Array of :ref:`Properties <json-property>`"
     renderorder,      string,           "``right-down`` (the default), ``right-up``, ``left-down`` or ``left-up`` (currently only supported for orthogonal maps)"
     staggeraxis,      string,           "``x`` or ``y`` (staggered / hexagonal maps only)"
@@ -755,6 +757,7 @@ Changelog
 Tiled 1.8
 ~~~~~~~~~
 
+* Added ``parallaxoriginx`` and ``parallaxoriginy`` properties to :ref:`json-map`.
 * Added ``repeatx`` and ``repeaty`` properties to :ref:`json-layer` (applies
   only to image layers at the moment).
 

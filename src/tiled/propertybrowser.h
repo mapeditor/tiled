@@ -126,6 +126,7 @@ private:
         HexSideLengthProperty,
         StaggerAxisProperty,
         StaggerIndexProperty,
+        ParallaxOriginProperty,
         RenderOrderProperty,
         LayerFormatProperty,
         ImageSourceProperty,

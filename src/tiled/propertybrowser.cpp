@@ -618,6 +618,8 @@ void PropertyBrowser::addMapProperties()
 
     staggerIndexProperty->setAttribute(QLatin1String("enumNames"), mStaggerIndexNames);
 
+    addProperty(ParallaxOriginProperty, QMetaType::QPointF, tr("Parallax Origin"), groupProperty);
+
     QtVariantProperty *layerFormatProperty =
             addProperty(LayerFormatProperty,
                         QtVariantPropertyManager::enumTypeId(),
@@ -1023,6 +1025,10 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
     case StaggerIndexProperty: {
         Map::StaggerIndex staggerIndex = static_cast<Map::StaggerIndex>(val.toInt());
         command = new ChangeMapProperty(mMapDocument, staggerIndex);
+        break;
+    }
+    case ParallaxOriginProperty: {
+        command = new ChangeMapProperty(mMapDocument, val.value<QPointF>());
         break;
     }
     case LayerFormatProperty: {
@@ -1679,6 +1685,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[HexSideLengthProperty]->setValue(map->hexSideLength());
         mIdToProperty[StaggerAxisProperty]->setValue(map->staggerAxis());
         mIdToProperty[StaggerIndexProperty]->setValue(map->staggerIndex());
+        mIdToProperty[ParallaxOriginProperty]->setValue(map->parallaxOrigin());
         mIdToProperty[LayerFormatProperty]->setValue(mLayerFormatValues.indexOf(map->layerDataFormat()));
         mIdToProperty[CompressionLevelProperty]->setValue(map->compressionLevel());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());

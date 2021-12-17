@@ -7,6 +7,8 @@ Below are described the changes/additions that were made to the
 Tiled 1.8
 ---------
 
+-  Added ``parallaxoriginx`` and ``parallaxoriginy`` attributes to the :ref:`tmx-map`
+   element.
 -  Added ``repeatx`` and ``repeaty`` attributes to the :ref:`tmx-imagelayer`
    element.
 
