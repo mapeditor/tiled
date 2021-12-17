@@ -82,14 +82,12 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     mapParameters.staggerIndex = staggerIndexFromString(staggerIndex);
 
     bool ok;
-    QPointF parallaxOrigin;
     const qreal parallaxOriginX = variantMap[QStringLiteral("parallaxoriginx")].toDouble(&ok);
     if (ok)
-        parallaxOrigin.setX( parallaxOriginX);
+        mapParameters.parallaxOrigin.setX( parallaxOriginX);
     const qreal parallaxOriginY = variantMap[QStringLiteral("parallaxoriginy")].toDouble(&ok);
     if (ok)
-        parallaxOrigin.setY(parallaxOriginY);
-    mapParameters.parallaxOrigin = parallaxOrigin;
+        mapParameters.parallaxOrigin.setY(parallaxOriginY);
 
     const QString bgColor = variantMap[QStringLiteral("backgroundcolor")].toString();
     if (QColor::isValidColor(bgColor))
