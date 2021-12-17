@@ -229,8 +229,9 @@ namespace tbin
         ret.tileSize = read< sf::Vector2i >( in );
         ret.props = readProperties( in );
 
-        Tile nullTile; nullTile.staticData.tileIndex = -1;
-        ret.tiles.resize( ret.layerSize.x * ret.layerSize.y, nullTile );
+        Tile nullTile;
+        nullTile.staticData.tileIndex = -1;
+        ret.tiles.resize( static_cast<size_t>(ret.layerSize.x) * ret.layerSize.y, nullTile );
 
         std::string currTilesheet = "";
         for ( int iy = 0; iy < ret.layerSize.y; ++iy )

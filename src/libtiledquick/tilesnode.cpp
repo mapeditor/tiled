@@ -49,6 +49,8 @@ void TilesNode::processTileData(const QVector<TileData> &tileData)
     const QSize s = mMaterial.texture()->textureSize();
     const QRectF r = mMaterial.texture()->normalizedTextureSubRect();
 
+    const float r_x = r.x();
+    const float r_y = r.y();
     const float s_x = r.width() / s.width();
     const float s_y = r.height() / s.height();
 
@@ -66,8 +68,8 @@ void TilesNode::processTileData(const QVector<TileData> &tileData)
         // Taking into account the normalized texture subrectancle
         const float s_width = data.width * s_x;
         const float s_height = data.height * s_y;
-        const float s_tx = r.x() + data.tx * s_x;
-        const float s_ty = r.y() + data.ty * s_y;
+        const float s_tx = r_x + data.tx * s_x;
+        const float s_ty = r_y + data.ty * s_y;
 
         // TopLeft                      // TopRight
         v[0].x = data.x;                v[2].x = data.x + data.width;
