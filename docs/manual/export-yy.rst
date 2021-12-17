@@ -37,10 +37,16 @@ Since Tiled currently only exports a map as a GameMaker room, any sprites,
 tilesets and objects used by the map are expected to be already available in
 the GameMaker project.
 
-For sprites, the sprite name is be derived from the image file name by
-removing the file extension. If necessary, the sprite name can be explicitly
-specified using a custom ``sprite`` property (supported on tilesets, tiles
-from image collection tilesets and image layers).
+For sprites, the sprite name is derived by looking for a ``*.yy`` file in the
+directory of the image file and up to two parent directories. If such a file
+is found, it is assumed to be the associated meta file and its name without
+the file extension is used.
+If no ``*.yy`` file can be found, the name of the image file without its file
+extension is used.
+
+If necessary, the sprite name can be explicitly specified using a custom
+``sprite`` property (supported on tilesets, tiles from image collection
+tilesets and image layers).
 
 For tilesets, the tileset name entered in Tiled must match the name of the
 tileset asset in GameMaker.
