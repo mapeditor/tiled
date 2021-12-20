@@ -174,7 +174,7 @@ public:
     void removeTilesetAt(int index);
     SharedTileset replaceTileset(int index, const SharedTileset &tileset);
 
-    void paintTileLayers(const Map *map, bool mergeable = false,
+    void paintTileLayers(const Map &map, bool mergeable = false,
                          QVector<SharedTileset> *missingTilesets = nullptr,
                          QHash<TileLayer *, QRegion> *paintedRegions = nullptr);
 
@@ -245,8 +245,8 @@ public:
     MapObject *hoveredMapObject() const { return mHoveredMapObject; }
     void setHoveredMapObject(MapObject *object);
 
-    void unifyTilesets(Map *map);
-    void unifyTilesets(Map *map, QVector<SharedTileset> &missingTilesets);
+    void unifyTilesets(Map &map);
+    void unifyTilesets(Map &map, QVector<SharedTileset> &missingTilesets);
 
     bool allowHidingObjects() const { return mAllowHidingObjects; }
     void setAllowHidingObjects(bool value) { mAllowHidingObjects = value; }

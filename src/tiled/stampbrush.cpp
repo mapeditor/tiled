@@ -279,7 +279,7 @@ void StampBrush::updateRandomList()
     mMissingTilesets.clear();
 
     for (const TileStampVariation &variation : mStamp.variations()) {
-        mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
+        mapDocument()->unifyTilesets(*variation.map, mMissingTilesets);
 
         for (auto layer : variation.map->tileLayers())
             for (const Cell &cell : *static_cast<TileLayer*>(layer))
@@ -368,7 +368,7 @@ void StampBrush::doPaint(int flags, QHash<TileLayer*, QRegion> *paintedRegions)
     if (!preview)
         return;
 
-    mapDocument()->paintTileLayers(preview.data(),
+    mapDocument()->paintTileLayers(*preview,
                                    (flags & Mergeable) == Mergeable,
                                    &mMissingTilesets,
                                    paintedRegions);
@@ -483,7 +483,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
 
         for (const QPoint &p : points) {
             Map *map = mStamp.randomVariation().map;
-            mapDocument()->unifyTilesets(map, mMissingTilesets);
+            mapDocument()->unifyTilesets(*map, mMissingTilesets);
 
             Map::StaggerAxis mapStaggerAxis = mapDocument()->map()->staggerAxis();
 

@@ -390,8 +390,8 @@ void EditableMap::merge(EditableMap *editableMap, bool canJoin)
     }
 
     QVector<SharedTileset> missingTilesets;
-    mapDocument()->unifyTilesets(map, missingTilesets);
-    mapDocument()->paintTileLayers(map, canJoin, &missingTilesets);
+    mapDocument()->unifyTilesets(*map, missingTilesets);
+    mapDocument()->paintTileLayers(*map, canJoin, &missingTilesets);
 }
 
 /**

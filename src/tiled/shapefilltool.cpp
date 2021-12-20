@@ -111,7 +111,7 @@ void ShapeFillTool::mouseReleased(QGraphicsSceneMouseEvent *event)
             return;
 
         mapDocument()->undoStack()->beginMacro(QCoreApplication::translate("Undo Commands", "Shape Fill"));
-        mapDocument()->paintTileLayers(preview.data(), false, &mMissingTilesets);
+        mapDocument()->paintTileLayers(*preview, false, &mMissingTilesets);
         mapDocument()->undoStack()->endMacro();
 
         clearOverlay();

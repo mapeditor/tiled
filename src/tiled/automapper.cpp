@@ -451,7 +451,7 @@ void AutoMapper::setupTilesets()
 {
     Q_ASSERT(mAddedTilesets.isEmpty());
 
-    mTargetDocument->unifyTilesets(mRulesMap.get(), mAddedTilesets);
+    mTargetDocument->unifyTilesets(*mRulesMap, mAddedTilesets);
 
     for (const SharedTileset &tileset : qAsConst(mAddedTilesets))
         mTargetDocument->undoStack()->push(new AddTileset(mTargetDocument, tileset));

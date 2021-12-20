@@ -241,7 +241,7 @@ void AbstractTileFillTool::updateRandomListAndMissingTilesets()
         }
     } else {
         for (const TileStampVariation &variation : mStamp.variations()) {
-            mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
+            mapDocument()->unifyTilesets(*variation.map, mMissingTilesets);
             if (mFillMethod == RandomFill) {
                 for (auto layer : variation.map->tileLayers()) {
                     for (const Cell &cell : *static_cast<TileLayer*>(layer)) {

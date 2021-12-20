@@ -693,37 +693,35 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
     if (!map)
         return;
 
-    Map *mapPtr = map.get();
-
     bool tilesetsUnified = false;
 
     if (flags & ClipboardManager::PasteInPlace)
         mCurrentMapDocument->undoStack()->beginMacro(tr("Paste in Place"));
 
-    LayerIterator tileLayerIterator(mapPtr, Layer::TileLayerType);
-    if (tileLayerIterator.next()) {
-        if (flags & ClipboardManager::PasteInPlace) {
-            QVector<SharedTileset> missingTilesets;
-            mCurrentMapDocument->unifyTilesets(mapPtr, missingTilesets);
-            mCurrentMapDocument->paintTileLayers(mapPtr, false, &missingTilesets);
-            tilesetsUnified = missingTilesets.isEmpty();
-        } else {
-            // Reset selection and paste into the stamp brush
-            MapDocumentActionHandler::instance()->selectNone();
-            mapPtr->normalizeTileLayerPositionsAndMapSize();
-            setStamp(TileStamp(std::move(map))); // TileStamp takes ownership
-            mToolManager->selectTool(mStampBrush);
-        }
+    const bool hasTileLayers = LayerIterator(map.get(), Layer::TileLayerType).next();
+    if (hasTileLayers && (flags & ClipboardManager::PasteInPlace)) {
+        QVector<SharedTileset> missingTilesets;
+        mCurrentMapDocument->unifyTilesets(*map, missingTilesets);
+        mCurrentMapDocument->paintTileLayers(*map, false, &missingTilesets);
+        tilesetsUnified = missingTilesets.isEmpty();
     }
 
-    LayerIterator objectGroupIterator(mapPtr, Layer::ObjectGroupType);
+    LayerIterator objectGroupIterator(map.get(), Layer::ObjectGroupType);
     if (ObjectGroup *objectGroup = static_cast<ObjectGroup*>(objectGroupIterator.next())) {
         if (!tilesetsUnified)
-            mCurrentMapDocument->unifyTilesets(mapPtr);
+            mCurrentMapDocument->unifyTilesets(*map);
 
         // todo: Handle multiple object groups
         const MapView *view = currentMapView();
         clipboardManager->pasteObjectGroup(objectGroup, mCurrentMapDocument, view, flags);
+    }
+
+    if (hasTileLayers && !(flags & ClipboardManager::PasteInPlace)) {
+        // Reset selection and paste into the stamp brush
+        MapDocumentActionHandler::instance()->selectNone();
+        map->normalizeTileLayerPositionsAndMapSize();
+        setStamp(TileStamp(std::move(map)));
+        mToolManager->selectTool(mStampBrush);
     }
 
     if (flags & ClipboardManager::PasteInPlace)

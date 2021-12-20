@@ -875,19 +875,19 @@ SharedTileset MapDocument::replaceTileset(int index, const SharedTileset &tilese
  * In this case it is the responsibility of the caller to emit this signal for
  * each affected tile layer.
  */
-void MapDocument::paintTileLayers(const Map *map, bool mergeable,
+void MapDocument::paintTileLayers(const Map &map, bool mergeable,
                                   QVector<SharedTileset> *missingTilesets,
                                   QHash<TileLayer*, QRegion> *paintedRegions)
 {
     TileLayer *currentTileLayer = mCurrentLayer ? mCurrentLayer->asTileLayer() : nullptr;
 
-    LayerIterator it(map, Layer::TileLayerType);
+    LayerIterator it(&map, Layer::TileLayerType);
     const bool isMultiLayer = it.next() && it.next();
 
     it.toFront();
     while (auto tileLayer = static_cast<TileLayer*>(it.next())) {
         TileLayer *targetLayer = currentTileLayer;
-        bool addLayer = false;
+        std::unique_ptr<TileLayer> newLayer;
 
         // When the map contains only a single layer, always paint it into
         // the current layer. This makes sure you can still take pieces from
@@ -896,10 +896,10 @@ void MapDocument::paintTileLayers(const Map *map, bool mergeable,
             targetLayer = static_cast<TileLayer*>(mMap->findLayer(tileLayer->name(), Layer::TileLayerType));
             if (!targetLayer) {
                 // Create a layer with this name
-                targetLayer = new TileLayer(tileLayer->name(), 0, 0,
-                                            mMap->width(),
-                                            mMap->height());
-                addLayer = true;
+                newLayer = std::make_unique<TileLayer>(tileLayer->name(), 0, 0,
+                                                       mMap->width(),
+                                                       mMap->height());
+                targetLayer = newLayer.get();
             }
         }
 
@@ -925,9 +925,9 @@ void MapDocument::paintTileLayers(const Map *map, bool mergeable,
             missingTilesets->clear();
         }
 
-        if (addLayer) {
+        if (newLayer) {
             new AddLayer(this,
-                         mMap->layerCount(), targetLayer, nullptr,
+                         mMap->layerCount(), newLayer.release(), nullptr,
                          paint);
         }
 
@@ -1083,13 +1083,13 @@ void MapDocument::setHoveredMapObject(MapObject *object)
  * in the current map document and all missing tilesets will be added to
  * the current map document.
  */
-void MapDocument::unifyTilesets(Map *map)
+void MapDocument::unifyTilesets(Map &map)
 {
     QList<QUndoCommand*> undoCommands;
     QVector<SharedTileset> availableTilesets = mMap->tilesets();
 
     // Iterate over a copy because map->replaceTileset may invalidate iterator
-    const QVector<SharedTileset> tilesets = map->tilesets();
+    const QVector<SharedTileset> tilesets = map.tilesets();
     for (const SharedTileset &tileset : tilesets) {
         if (availableTilesets.contains(tileset))
             continue;
@@ -1113,7 +1113,7 @@ void MapDocument::unifyTilesets(Map *map)
             }
         }
 
-        map->replaceTileset(tileset, replacement);
+        map.replaceTileset(tileset, replacement);
     }
 
     if (!undoCommands.isEmpty()) {
@@ -1130,7 +1130,7 @@ void MapDocument::unifyTilesets(Map *map)
  * and adds tilesets to \a missingTilesets whenever there is a tileset without
  * replacement in this map.
  */
-void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTilesets)
+void MapDocument::unifyTilesets(Map &map, QVector<SharedTileset> &missingTilesets)
 {
     QVector<SharedTileset> availableTilesets = mMap->tilesets();
     for (const SharedTileset &tileset : qAsConst(missingTilesets))
@@ -1138,7 +1138,7 @@ void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTileset
             availableTilesets.append(tileset);
 
     // Iterate over a copy because map->replaceTileset may invalidate iterator
-    const QVector<SharedTileset> tilesets = map->tilesets();
+    const QVector<SharedTileset> tilesets = map.tilesets();
     for (const SharedTileset &tileset : tilesets) {
         // tileset already added
         if (availableTilesets.contains(tileset))
@@ -1154,7 +1154,7 @@ void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTileset
         }
 
         // replacement tileset found, change given map
-        map->replaceTileset(tileset, replacement);
+        map.replaceTileset(tileset, replacement);
     }
 }
 
