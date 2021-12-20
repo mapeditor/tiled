@@ -117,6 +117,17 @@ QList<QObject *> EditableMap::tilesets() const
     return editableTilesets;
 }
 
+QList<QObject *> EditableMap::layers()
+{
+    QList<QObject *> editables;
+    auto &editableManager = EditableManager::instance();
+
+    for (const auto layer : map()->layers())
+        editables.append(editableManager.editableLayer(this, layer));
+
+    return editables;
+}
+
 EditableLayer *EditableMap::currentLayer()
 {
     if (auto document = mapDocument())

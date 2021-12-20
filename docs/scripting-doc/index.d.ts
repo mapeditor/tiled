@@ -1130,6 +1130,11 @@ declare class GroupLayer extends Layer {
   readonly layerCount: number;
 
   /**
+   * The child layers of this group layer.
+   */
+  readonly layers: Layer[]
+
+  /**
    * Constructs a new group layer.
    */
   constructor(name? : string)
@@ -1793,14 +1798,19 @@ declare class TileMap extends Asset {
   readonly layerCount : number
 
   /**
-   * The list of tilesets referenced by this map. To determine which tilesets are actually used, call usedTilesets().
+   * The list of tilesets referenced by this map. To determine which tilesets are actually used, call {@link usedTilesets}.
    */
-  tilesets : Tileset[]
+  readonly tilesets : Tileset[]
+
+  /**
+   * The top-level layers of this map. To access nested layers, use {@link GroupLayer.layers}.
+   */
+  readonly layers: Layer[]
 
   /**
    * The selected area of tiles.
    */
-  selectedArea : SelectedArea
+  readonly selectedArea : SelectedArea
 
   /**
    * The current layer.
@@ -1889,7 +1899,7 @@ declare class TileMap extends Asset {
   public removeTileset(tileset: Tileset): boolean;
 
   /**
-   * Returns the list of tilesets actually used by this map. This is generally a subset of the tilesets referenced by the map (the TileMap.tilesets property).
+   * Returns the list of tilesets actually used by this map. This is generally a subset of the tilesets referenced by the map (the {@link tilesets} property).
    */
   public usedTilesets(): Tileset[];
 

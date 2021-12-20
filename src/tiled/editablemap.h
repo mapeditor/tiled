@@ -54,6 +54,7 @@ class EditableMap : public EditableAsset
     Q_PROPERTY(LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
     Q_PROPERTY(int layerCount READ layerCount)
     Q_PROPERTY(QList<QObject*> tilesets READ tilesets)
+    Q_PROPERTY(QList<QObject*> layers READ layers)
     Q_PROPERTY(Tiled::EditableSelectedArea *selectedArea READ selectedArea CONSTANT)
     Q_PROPERTY(Tiled::EditableLayer* currentLayer READ currentLayer WRITE setCurrentLayer NOTIFY currentLayerChanged)
     Q_PROPERTY(QList<QObject*> selectedLayers READ selectedLayers WRITE setSelectedLayers NOTIFY selectedLayersChanged)
@@ -128,6 +129,7 @@ public:
     LayerDataFormat layerDataFormat() const;
     int layerCount() const;
     QList<QObject*> tilesets() const;
+    QList<QObject*> layers();
     EditableSelectedArea *selectedArea();
     EditableLayer *currentLayer();
     QList<QObject*> selectedLayers();

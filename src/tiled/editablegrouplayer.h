@@ -30,6 +30,7 @@ class EditableGroupLayer : public EditableLayer
     Q_OBJECT
 
     Q_PROPERTY(int layerCount READ layerCount)
+    Q_PROPERTY(QList<QObject*> layers READ layers)
 
 public:
     Q_INVOKABLE explicit EditableGroupLayer(const QString &name = QString(),
@@ -40,6 +41,7 @@ public:
                        QObject *parent = nullptr);
 
     int layerCount() const;
+    QList<QObject*> layers();
 
     Q_INVOKABLE Tiled::EditableLayer *layerAt(int index);
     Q_INVOKABLE void removeLayerAt(int index);

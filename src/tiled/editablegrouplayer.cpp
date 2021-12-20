@@ -39,6 +39,18 @@ EditableGroupLayer::EditableGroupLayer(EditableMap *map, GroupLayer *groupLayer,
 {
 }
 
+QList<QObject *> EditableGroupLayer::layers()
+{
+    QList<QObject *> editables;
+    auto &editableManager = EditableManager::instance();
+    auto editableMap = map();
+
+    for (const auto layer : groupLayer()->layers())
+        editables.append(editableManager.editableLayer(editableMap, layer));
+
+    return editables;
+}
+
 EditableLayer *EditableGroupLayer::layerAt(int index)
 {
     if (index < 0 || index >= layerCount()) {
