@@ -187,7 +187,7 @@ Chunk Example
 .. code:: json
 
     {
-      "data":[1, 2, 1, 2, 3, 1, 3, 1, 2, 2, 3, 3, 4, 4, 4, 1, ...],
+      "data":[1, 2, 1, 2, 3, 1, 3, 1, 2, 2, 3, 3, 4, 4, 4, 1, ],
       "height":16,
       "width":16,
       "x":0,
@@ -569,38 +569,16 @@ Example:
 
 .. code:: json
 
-    "tiles":[
-      {
-        "id":0,
-        "properties":[
-          {
-            "name":"myProperty1",
-            "type":"string",
-            "value":"myProperty1_value"
-          }],
-        "terrain":[0, 0, 0, 0]
-      },
-      {
-        "id":11,
-        "properties":[
-          {
-            "name":"myProperty2",
-            "type":"string",
-            "value":"myProperty2_value"
-          }],
-        "terrain":[0, 1, 0, 1]
-      },
-      {
-        "id":12,
-        "properties":[
-          {
-            "name":"myProperty3",
-            "type":"string",
-            "value":"myProperty3_value"
-          }],
-        "terrain":[1, 1, 1, 1]
-      }
-    ]
+    {
+      "id":11,
+      "properties":[
+        {
+          "name":"myProperty2",
+          "type":"string",
+          "value":"myProperty2_value"
+        }],
+      "terrain":[0, 1, 0, 1]
+    }
 
 .. _json-frame:
 
@@ -631,19 +609,10 @@ Example:
 
 .. code:: json
 
-    "terrains":[
     {
       "name":"ground",
       "tile":0
-    },
-    {
-      "name":"chasm",
-      "tile":12
-    },
-    {
-      "name":"cliff",
-      "tile":36
-    }],
+    }
 
 .. _json-wangset:
 

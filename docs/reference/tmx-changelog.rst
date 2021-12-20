@@ -233,15 +233,15 @@ Tiled 0.10
 
    .. code:: xml
 
-      <tileset ...>
-      ...
-      <tile id="[n]">
+      <tileset name="Animations">
+        ...
+        <tile id="[n]">
           <animation>
-              <frame tileid="0" duration="100"/>
-              <frame tileid="1" duration="100"/>
-              <frame tileid="2" duration="100"/>
+            <frame tileid="0" duration="100"/>
+            <frame tileid="1" duration="100"/>
+            <frame tileid="2" duration="100"/>
           </animation>
-      </tile>
+        </tile>
       </tileset>
 
 Tiled 0.9
@@ -258,13 +258,13 @@ Tiled 0.9
 
    .. code:: xml
 
-      <tileset ...>
-      ...
-      <terraintypes>
+      <tileset name="Terrain">
+        ...
+        <terraintypes>
           <terrain name="Name" tile="local_id"/>
-      </terraintypes>
-      <tile id="local_id" terrain="[n],[n],[n],[n]" probability="percentage"/>
-      ...
+        </terraintypes>
+        <tile id="local_id" terrain="[n],[n],[n],[n]" probability="percentage"/>
+        ...
       </tileset>
 
 -  There is preliminary support for a "staggered" (isometric) projection
@@ -274,8 +274,8 @@ Tiled 0.9
 
    .. code:: xml
 
-      <imagelayer ...>
-      <image source="..."/>
+      <imagelayer name="...">
+        <image source="..."/>
       </imagelayer>
 
 -  Added ellipse object shape. Same parameters as rectangular objects,
@@ -283,15 +283,15 @@ Tiled 0.9
 
    .. code:: xml
 
-      <object ...>
-      <ellipse/>
+      <object name="..." x="..." y="...">
+        <ellipse/>
       </object>
 
 -  Added map property for specifying the background color:
 
    .. code:: xml
 
-      <map ... backgroundcolor="#RRGGBB">
+      <map backgroundcolor="#RRGGBB">
 
 -  Added initial (non-GUI) support for individual and/or embedded tile
    images (since there is no way to set this up in Tiled Qt but only in
@@ -301,20 +301,21 @@ Tiled 0.9
 
    .. code:: xml
 
-      <tileset ...>
-      <tile id="[n]">
+      <tileset name="Embedded images">
+        ...
+        <tile id="[n]">
           <!-- an embedded image -->
           <image format="png">
-              <data encoding="base64">
-                  ...
-              </data>
+            <data encoding="base64">
+                ...
+            </data>
           </image>
-      </tile>
-      <tile id="[n]">
+        </tile>
+        <tile id="[n]">
           <!-- an individually referenced image for a single tile -->
           <image source="file.png"/>
-      </tile>
-      ...
+        </tile>
+        ...
       </tileset>
 
 Tiled 0.8
@@ -329,8 +330,8 @@ Tiled 0.8
    .. code:: xml
 
       <tileset name="perspective_walls" tilewidth="64" tileheight="64">
-      <tileoffset x="-32" y="0"/>
-      ...
+        <tileoffset x="-32" y="0"/>
+        ...
       </tileset>
 
 -  Support for tile rotation in 90-degree increments was added by using
