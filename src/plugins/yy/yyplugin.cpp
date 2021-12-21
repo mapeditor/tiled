@@ -34,6 +34,7 @@
 
 #include <QCoreApplication>
 #include <QDir>
+#include <QDirIterator>
 #include <QFileInfo>
 #include <QRegularExpression>
 
@@ -50,6 +51,33 @@ static QString sanitizeName(QString name)
 {
     static const QRegularExpression regexp(QLatin1String("[^a-zA-Z0-9]"));
     return name.replace(regexp, QStringLiteral("_"));
+}
+
+/**
+ * Determine the resource identifier associated with the given filepath.
+ * This is achieved by looking for a *.yy meta file and, if found, returning
+ * its name without the extension. The function starts searching the current
+ * directory and up to two parent directories to account for a typical
+ * project directory structure.
+ * If no *.yy file can be found, returns the filename without its extension.
+ */
+static QString determineResourceId(const QString &filePath)
+{
+    constexpr unsigned int searchDepth = 3;
+    QFileInfo fi(filePath);
+    QDir dir(fi.path());
+    dir.setNameFilters(QStringList("*.yy"));
+
+    for (unsigned int i = 0; i < searchDepth; ++i) {
+        if (i > 0 && !dir.cdUp())
+            break;
+
+        const QString yyFile = QDirIterator(dir).next();
+        if (!yyFile.isEmpty())
+            return QFileInfo(yyFile).completeBaseName();
+    }
+
+    return sanitizeName(fi.completeBaseName());
 }
 
 enum ResourceType
@@ -307,9 +335,22 @@ struct Context
         return name;
     }
 
+    QString resourceId(const QString &filePath)
+    {
+        if (filePath.isEmpty())
+            return QString();
+
+        QString &resourceId = resourceIds[filePath];
+        if (resourceId.isEmpty())
+            resourceId = determineResourceId(filePath);
+
+        return resourceId;
+    }
+
 private:
     QSet<QString> usedNames;
     QHash<const MapObject*, QString> instanceNames;
+    QHash<QString, QString> resourceIds;
 };
 
 } // namespace Yy
@@ -389,9 +430,14 @@ static void writeId(JsonWriter &json, const char *member, const QString &id, con
     }
 }
 
-static QString spriteId(const Object *object, const QUrl &imageUrl)
+static QString spriteId(const Object *object, const QUrl &imageUrl, Context &context)
 {
-    return optionalProperty(object, "sprite", sanitizeName(QFileInfo(imageUrl.fileName()).completeBaseName()));
+    // If the custom property "sprite" exist use it instead of crawling the file system
+    const QVariant var = object->resolvedProperty("sprite");
+    if (var.isValid())
+        return var.value<QString>();
+    else
+        return context.resourceId(imageUrl.path());
 }
 
 static unsigned colorToAbgr(const QColor &color)
@@ -679,11 +725,15 @@ static void fillTileLayer(GMRTileLayer &gmrTileLayer, const TileLayer *tileLayer
     }
 }
 
-static void initializeTileGraphic(GMRGraphic &g, QSize size, const Cell &cell, const Tile *tile)
+static void initializeTileGraphic(GMRGraphic &g,
+                                  QSize size,
+                                  const Cell &cell,
+                                  const Tile *tile,
+                                  Context &context)
 {
     const Tileset *tileset = tile->tileset();
 
-    g.spriteId = spriteId(tileset, tileset->imageSource());
+    g.spriteId = spriteId(tileset, tileset->imageSource(), context);
 
     g.w = size.width();
     g.h = size.height();
@@ -740,7 +790,7 @@ static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
         QPointF pos = screenPos + tileset->tileOffset() + layerOffset + origin;
 
         if (isSprite) {
-            g.spriteId = spriteId(tile, tile->imageSource());
+            g.spriteId = spriteId(tile, tile->imageSource(), context);
             g.headPosition = 0.0;
             g.rotation = 0.0;
             g.scaleX = 1.0;
@@ -772,7 +822,7 @@ static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
                 }
             }
         } else {
-            initializeTileGraphic(g, size, cell, tile);
+            initializeTileGraphic(g, size, cell, tile, context);
 
             if (cell.flippedAntiDiagonally()) {
                 Tiled::WARNING(QStringLiteral("YY plugin: Sub-sprite graphics don't support rotated tiles."),
@@ -1012,7 +1062,7 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
                            optionalProperty(mapObject, "originY", 0.0));
 
             if (isSprite) {
-                g.spriteId = spriteId(tile, tile->imageSource());
+                g.spriteId = spriteId(tile, tile->imageSource(), context);
                 g.headPosition = optionalProperty(mapObject, "headPosition", 0.0);
                 g.rotation = -mapObject->rotation();
 
@@ -1038,7 +1088,7 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
 
                 g.animationSpeed = optionalProperty(mapObject, "animationSpeed", 1.0);
             } else {
-                initializeTileGraphic(g, mapObject->size().toSize(), cell, tile);
+                initializeTileGraphic(g, mapObject->size().toSize(), cell, tile, context);
 
                 if (mapObject->rotation() != 0.0) {
                     Tiled::WARNING(QStringLiteral("YY plugin: Sub-sprite graphics don't support rotation (object %1).").arg(mapObject->id()),
@@ -1150,11 +1200,11 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
     return gmrLayer;
 }
 
-static std::unique_ptr<GMRLayer> processImageLayer(const ImageLayer *imageLayer)
+static std::unique_ptr<GMRLayer> processImageLayer(const ImageLayer *imageLayer, Context &context)
 {
     auto gmrBackgroundLayer = std::make_unique<GMRBackgroundLayer>();
 
-    gmrBackgroundLayer->spriteId = spriteId(imageLayer, imageLayer->imageSource());
+    gmrBackgroundLayer->spriteId = spriteId(imageLayer, imageLayer->imageSource(), context);
 
     auto color = imageLayer->effectiveTintColor();
     color.setAlphaF(color.alphaF() * imageLayer->effectiveOpacity());
@@ -1199,7 +1249,7 @@ static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
             gmrLayer = processObjectGroup(static_cast<const ObjectGroup*>(layer), context);
             break;
         case Layer::ImageLayerType: {
-            gmrLayer = processImageLayer(static_cast<const ImageLayer*>(layer));
+            gmrLayer = processImageLayer(static_cast<const ImageLayer*>(layer), context);
             break;
         }
         case Layer::GroupLayerType:
