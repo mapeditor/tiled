@@ -48,6 +48,10 @@ ScriptedTool::ScriptedTool(Id id, QJSValue object, QObject *parent)
     if (iconProperty.isString())
         setIconFileName(iconProperty.toString());
 
+    const QJSValue usesSelectedTilesProperty = mScriptObject.property(QStringLiteral("usesSelectedTiles"));
+    if (usesSelectedTilesProperty.isBool())
+        setUsesSelectedTiles(usesSelectedTilesProperty.toBool());
+
     // Make members of ScriptedTool available through the original object
     auto &scriptManager = ScriptManager::instance();
     auto self = scriptManager.engine()->newQObject(this);

@@ -67,6 +67,8 @@ class AbstractTool : public QObject
     Q_PROPERTY(QString statusInfo READ statusInfo WRITE setStatusInfo NOTIFY statusInfoChanged)
     Q_PROPERTY(QCursor cursor READ cursor WRITE setCursor NOTIFY cursorChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
+    Q_PROPERTY(bool usesSelectedTiles READ usesSelectedTiles WRITE setUsesSelectedTiles)
 
 public:
     /**
@@ -101,6 +103,9 @@ public:
 
     bool isVisible() const;
     void setVisible(bool visible);
+
+    bool usesSelectedTiles() const;
+    void setUsesSelectedTiles(bool usesSelectedTiles);
 
     ToolManager *toolManager() const;
     Tile *tile() const;
@@ -221,6 +226,7 @@ private:
     Id mId;
     bool mEnabled = false;
     bool mVisible = true;
+    bool mUsesSelectedTiles = false;
 
     ToolManager *mToolManager = nullptr;
     MapDocument *mMapDocument = nullptr;
@@ -272,6 +278,16 @@ inline bool AbstractTool::isEnabled() const
 inline bool AbstractTool::isVisible() const
 {
     return mVisible;
+}
+
+inline bool AbstractTool::usesSelectedTiles() const
+{
+    return mUsesSelectedTiles;
+}
+
+inline void AbstractTool::setUsesSelectedTiles(bool usesSelectedTiles)
+{
+    mUsesSelectedTiles = usesSelectedTiles;
 }
 
 /**

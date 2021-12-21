@@ -765,9 +765,7 @@ void MapEditor::setStamp(const TileStamp &stamp)
 
     // When selecting a new stamp, it makes sense to switch to a stamp tool
     AbstractTool *selectedTool = mToolManager->selectedTool();
-    if (selectedTool != mStampBrush
-            && selectedTool != mBucketFillTool
-            && selectedTool != mShapeFillTool)
+    if (!selectedTool || !selectedTool->usesSelectedTiles())
         mToolManager->selectTool(mStampBrush);
 
     mTilesetDock->selectTilesInStamp(stamp);

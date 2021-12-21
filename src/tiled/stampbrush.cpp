@@ -59,6 +59,8 @@ StampBrush::StampBrush(QObject *parent)
     , mRandomCacheValid(true)
     , mStampActions(new StampActions(this))
 {
+    setUsesSelectedTiles(true);
+
     connect(mStampActions->random(), &QAction::toggled, this, &StampBrush::randomChanged);
     connect(mStampActions->wangFill(), &QAction::toggled, this, &StampBrush::wangFillChanged);
 

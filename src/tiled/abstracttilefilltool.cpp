@@ -41,6 +41,8 @@ AbstractTileFillTool::AbstractTileFillTool(Id id,
     , mWangSet(nullptr)
     , mRandomAndMissingCacheValid(true)
 {
+    setUsesSelectedTiles(true);
+
     connect(mStampActions->random(), &QAction::toggled, this, &AbstractTileFillTool::randomChanged);
     connect(mStampActions->wangFill(), &QAction::toggled, this, &AbstractTileFillTool::wangFillChanged);
 

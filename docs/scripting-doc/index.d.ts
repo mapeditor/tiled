@@ -1464,6 +1464,9 @@ interface ScriptedMapFormat {
   outputFiles?(map: TileMap, fileName: string): string[];
 }
 
+/**
+ * The map editor, accessible through {@link tiled.mapEditor}.
+ */
 interface MapEditor {
   /**
    * Get or set the currently used tile brush.
@@ -1476,18 +1479,22 @@ interface MapEditor {
   readonly currentMapView : MapView
 
   /**
-   * Access the Tilesets view
+   * Access the Tilesets view.
    */
   readonly tilesetsView: TilesetsView
 }
 
 interface TilesetsView {
   /**
-   * Access or change the currently displayed tileset
+   * Access or change the currently displayed tileset.
    */
   currentTileset: Tileset
+
   /**
    * A list of the tiles that are selected in the current tileset.
+   *
+   * See {@link MapEditor.currentBrush} for the current tile brush, which is
+   * usually more useful than the list of selected tiles.
    */
   selectedTiles: Tile[]
 }
@@ -2280,7 +2287,10 @@ declare class Tileset extends Asset {
   readonly isCollection : boolean
 
   /**
-   * Selected tiles (in the tileset editor).
+   * Selected tiles in the tileset editor.
+   *
+   * See {@link TilesetView.selectedTiles} for getting the selected tiles in
+   * the Tilesets view.
    */
   selectedTiles : Tile[]
 
@@ -2381,6 +2391,10 @@ interface MapView {
   centerOn(x : number, y : number) : void
 }
 
+/**
+ * The tile collision editor, accessible through
+ * {@link TilesetEditor.collisionEditor}.
+ */
 interface TileCollisionEditor {
   /**
    * Selected objects.
@@ -2399,6 +2413,9 @@ interface TileCollisionEditor {
   focusObject(object : MapObject) : void
 }
 
+/**
+ * The tileset editor, accessible through {@link tiled.tilesetEditor}.
+ */
 interface TilesetEditor {
   /**
    * Access the collision editor within the tileset editor.
@@ -2458,6 +2475,16 @@ interface Tool {
    * Whether this tool is enabled.
    */
   enabled: boolean;
+
+  /**
+   * Whether this tool uses the currently selected tiles. This defaults to
+   * `false`.
+   *
+   * When set to `false` and the currently selected tiles change while this
+   * tool is active, the Stamp Brush is automatically selected. Set this
+   * property to `true` to keep this tool active.
+   */
+  usesSelectedTiles: boolean;
 
   /**
    * Called when the tool was activated.
