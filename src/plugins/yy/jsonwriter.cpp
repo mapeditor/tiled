@@ -195,10 +195,23 @@ QString JsonWriter::quote(const QString &str)
 
     for (const QChar c : str) {
         switch (c.unicode()) {
-        case '\\':  quoted.append(QStringLiteral("\\\\"));  break;
-        case '"':   quoted.append(QStringLiteral("\\\""));  break;
-        case '\n':  quoted.append(QStringLiteral("\\n"));   break;
-        default:    quoted.append(c);
+        // Escape common control characters, quotation mark and reverse solidus
+        case '\b': quoted.append(QStringLiteral("\\b"));  break;
+        case '\f': quoted.append(QStringLiteral("\\f"));  break;
+        case '\n': quoted.append(QStringLiteral("\\n"));  break;
+        case '\r': quoted.append(QStringLiteral("\\r"));  break;
+        case '\t': quoted.append(QStringLiteral("\\t"));  break;
+        case '\"': quoted.append(QStringLiteral("\\\"")); break;
+        case '\\': quoted.append(QStringLiteral("\\\\")); break;
+        default:
+            if (c.unicode() < ' ') {
+                // Encode remaining control characters as "\u00.."
+                quoted.append(QStringLiteral("\\u"));
+                quoted.append(QString::number(c.unicode(), 16).rightJustified(4, QLatin1Char('0')));
+            } else {
+                // Any other unicode character should be fine
+                quoted.append(c);
+            }
         }
     }
 
