@@ -37,7 +37,7 @@
 * Tiled Manual is now available in French
 * YY plugin: Don't use safe writing of files
 * YY plugin: Write out custom "object" properties as instance name (instead of the ID)
-* YY Plugin: Determine sprite names by looking for meta files (#3213)
+* YY plugin: Determine sprite names by looking for meta files (by krukai, #3213)
 * CSV plugin: Improved handling of infinite maps
 * RpMap plugin: Fixed hardcoded exported tile size (#3184)
 * libtiled-java: Introduced TilesetCache interface (by Samuel Manflame, #3117)
