@@ -347,8 +347,8 @@ std::unique_ptr<Map> Map::clone() const
 /**
  * Copies the given \a tileRegion of the \a layers to \a targetMap.
  *
- * When there is no intersection with between the tile region and a tile
- * layer's bounds, the layer is not added to the target map.
+ * Empty layers are included as well, to ensure a more consistent behavior when
+ * copy/pasting multiple layers.
  *
  * Currently only copies tile layers.
  */
@@ -365,13 +365,14 @@ void Map::copyLayers(const QList<Layer *> &layers,
 
             const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
             const QRegion area = tileRegion.intersected(tileLayer->bounds());
-            if (area.isEmpty())                     // nothing to copy
-                continue;
 
             // Copy the selected part of the layer
             auto copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
+            copyLayer->setId(tileLayer->id());
             copyLayer->setName(tileLayer->name());
             copyLayer->setPosition(area.boundingRect().topLeft());
+            copyLayer->setOpacity(tileLayer->opacity());
+            copyLayer->setTintColor(tileLayer->tintColor());
 
             targetMap.addLayer(std::move(copyLayer));
             break;

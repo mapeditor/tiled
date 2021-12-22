@@ -6,6 +6,7 @@
 * Added an action for selecting all layers (Ctrl+Alt+A) (#3081)
 * Added actions to select or add tilesets to Project view context menu
 * AutoMapping: Made it find layers within groups (#1771)
+* Improved multi-layer painting behavior (#3094)
 * Scripting: Added File API
 * Scripting: Added missing Layer.tintColor property
 * Scripting: Added tiled.extensionsPath (#3139)

@@ -65,6 +65,7 @@ class TILEDSHARED_EXPORT Map : public Object
         LayerIterator begin() const;
         LayerIterator end() const;
         bool isEmpty() const;
+        QList<Layer*> toList() const;
 
     private:
         const Map &mMap;
@@ -731,6 +732,19 @@ inline LayerIterator Map::LayerIteratorHelper::end() const
 inline bool Map::LayerIteratorHelper::isEmpty() const
 {
     return LayerIterator(&mMap, mLayerTypes).next() == nullptr;
+}
+
+inline QList<Layer *> Map::LayerIteratorHelper::toList() const
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    return QList<Layer *>(begin(), end());
+#else
+    LayerIterator iterator(&mMap, mLayerTypes);
+    QList<Layer *> layers;
+    while (Layer *layer = iterator.next())
+        layers.append(layer);
+    return layers;
+#endif
 }
 
 

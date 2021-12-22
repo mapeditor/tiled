@@ -21,6 +21,7 @@
 #pragma once
 
 #include "map.h"
+#include "randompicker.h"
 #include "tiled.h"
 
 #include <QDir>
@@ -84,7 +85,7 @@ public:
     int quickStampIndex() const;
     void setQuickStampIndex(int quickStampIndex);
 
-    const TileStampVariation &randomVariation() const;
+    RandomPicker<Map *> randomVariations() const;
 
     TileStamp flipped(FlipDirection direction) const;
     TileStamp rotated(RotateDirection direction) const;

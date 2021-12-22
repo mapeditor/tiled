@@ -60,13 +60,13 @@ TileStamp CaptureStampHelper::endCapture(const MapDocument &mapDocument, QPoint 
 
         // Intersect with the layer and translate to layer coordinates
         QRect capturedFromLayer = captured.intersected(tileLayer->bounds());
-        if (!captured.isValid())
-            continue;
         capturedFromLayer.translate(-tileLayer->position());
 
         auto capture = tileLayer->copy(capturedFromLayer);
         capture->setName(tileLayer->name());
         capture->setPosition(capturedFromLayer.topLeft() - captured.topLeft());
+        capture->setOpacity(tileLayer->opacity());
+        capture->setTintColor(tileLayer->tintColor());
 
         stamp->addLayer(std::move(capture));
     }

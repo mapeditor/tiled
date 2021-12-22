@@ -147,7 +147,7 @@ bool ClipboardManager::copySelection(const MapDocument &mapDocument)
     const Map *map = mapDocument.map();
     const QRegion &selectedArea = mapDocument.selectedArea();
     const QList<MapObject*> selectedObjects = mapDocument.selectedObjectsOrdered();
-    const QList<Layer*> &selectedLayers = mapDocument.selectedLayers();
+    const QList<Layer*> selectedLayers = mapDocument.selectedLayersOrdered();
 
     const QRect selectionBounds = selectedArea.boundingRect();
 

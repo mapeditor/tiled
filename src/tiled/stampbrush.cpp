@@ -254,11 +254,6 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
     }
 }
 
-static TileLayer *findTileLayerByName(const Map &map, const QString &name)
-{
-    return static_cast<TileLayer*>(map.findLayer(name, Layer::TileLayerType));
-}
-
 QList<Layer *> StampBrush::targetLayers() const
 {
     if (mIsRandom || mIsWangFill || mStamp.isEmpty())
@@ -480,11 +475,12 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         QVector<PaintOperation> operations;
         QHash<const Map *, QRegion> regionCache;
         QHash<const Map *, Map *> shiftedCopies;
+        const auto randomVariations = mStamp.randomVariations();
 
         mMissingTilesets.clear();
 
         for (const QPoint &p : points) {
-            Map *map = mStamp.randomVariation().map;
+            Map *map = randomVariations.pick();
             mapDocument()->unifyTilesets(*map, mMissingTilesets);
 
             Map::StaggerAxis mapStaggerAxis = mapDocument()->map()->staggerAxis();
@@ -558,14 +554,27 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         mapParameters.infinite = false;
         SharedMap preview = SharedMap::create(mapParameters);
 
+        QHash<QString, QList<TileLayer*>> targetLayersByName;
+
         for (const PaintOperation &op : operations) {
+            QHash<QString, int> targetLayersIndices;
+
             LayerIterator layerIterator(op.stamp, Layer::TileLayerType);
             while (auto tileLayer = static_cast<TileLayer*>(layerIterator.next())) {
-                TileLayer *target = findTileLayerByName(*preview, tileLayer->name());
-                if (!target) {
+                auto &targetLayerIndex = targetLayersIndices[tileLayer->name()];
+                auto &targetLayers = targetLayersByName[tileLayer->name()];
+                TileLayer *target = nullptr;
+
+                if (targetLayerIndex < targetLayers.size()) {
+                    target = targetLayers[targetLayerIndex];
+                } else {
                     target = new TileLayer(tileLayer->name(), bounds.topLeft(), bounds.size());
+                    targetLayers.append(target);
                     preview->addLayer(target);
                 }
+
+                ++targetLayerIndex;
+
                 target->merge(op.pos - bounds.topLeft() + tileLayer->position(), tileLayer);
             }
         }

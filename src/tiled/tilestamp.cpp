@@ -21,7 +21,6 @@
 #include "tilestamp.h"
 
 #include "maptovariantconverter.h"
-#include "randompicker.h"
 #include "tilelayer.h"
 #include "varianttomapconverter.h"
 
@@ -184,15 +183,15 @@ void TileStamp::setQuickStampIndex(int quickStampIndex)
     d->quickStampIndex = quickStampIndex;
 }
 
-const TileStampVariation &TileStamp::randomVariation() const
+RandomPicker<Map *> TileStamp::randomVariations() const
 {
     Q_ASSERT(!d->variations.isEmpty());
 
-    RandomPicker<const TileStampVariation *> randomPicker;
+    RandomPicker<Map *> randomPicker;
     for (const TileStampVariation &variation : qAsConst(d->variations))
-        randomPicker.add(&variation, variation.probability);
+        randomPicker.add(variation.map, variation.probability);
 
-    return *randomPicker.pick();
+    return randomPicker;
 }
 
 /**

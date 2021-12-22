@@ -855,15 +855,77 @@ SharedTileset MapDocument::replaceTileset(int index, const SharedTileset &tilese
     return oldTileset;
 }
 
+QList<TileLayer *> MapDocument::findTargetLayers(const QList<const TileLayer *> &sourceLayers) const
+{
+    QList<TileLayer *> result;
+    result.reserve(sourceLayers.size());
+
+    // When the map contains only a single layer, always paint it into the
+    // current layer. This makes sure you can still take pieces from one layer
+    // and draw them into another.
+    if (sourceLayers.size() == 1 && mCurrentLayer && mCurrentLayer->isTileLayer()) {
+        result.append(static_cast<TileLayer*>(mCurrentLayer));
+        return result;
+    }
+
+    const int selectedTileLayerCount = std::count_if(selectedLayers().begin(),
+                                                     selectedLayers().end(),
+                                                     [] (const Layer *layer) { return layer->isTileLayer(); });
+
+    // If we have the same number of layers selected that we want to paint,
+    // these are the layers we will target.
+    if (selectedTileLayerCount == sourceLayers.size()) {
+        const auto ordered = selectedLayersOrdered();
+        for (Layer *layer : ordered)
+            if (layer->isTileLayer())
+                result.append(static_cast<TileLayer*>(layer));
+        return result;
+    }
+
+    LayerIterator targetIt(mMap.get(), Layer::TileLayerType);
+
+    auto findTargetLayer = [&] (const QString &name) -> TileLayer* {
+        Layer *startingLayer = targetIt.currentLayer();
+
+        if (startingLayer) {
+            // Search for the next matching layer, starting off where we
+            // stopped last time.
+            while (Layer *layer = targetIt.next())
+                if (layer->name() == name && !contains(result, layer))
+                    return static_cast<TileLayer*>(layer);
+        }
+
+        // Make sure we're at the front
+        targetIt.toFront();
+
+        // Search from the beginning if we previously didn't, in case
+        // the layer order does not match.
+        while (Layer *layer = targetIt.next()) {
+            if (layer == startingLayer) // stop if we reached start again
+                break;
+            if (layer->name() == name && !contains(result, layer))
+                return static_cast<TileLayer*>(layer);
+        }
+
+        return nullptr;
+    };
+
+    // For each source layer, find a target layer with matching name, while
+    // only using each target layer once.
+    for (const TileLayer *sourceLayer : sourceLayers)
+        result.append(findTargetLayer(sourceLayer->name()));
+
+    return result;
+}
+
 /**
  * Paints the tile layers present in the given \a map onto this map. Matches
  * layers by name and creates new layers when they could not be found.
  *
  * In case the \a map only contains a single tile layer, it is always painted
- * into the current tile layer. This happens also for unnamed layers. In these
- * cases, the layers are skipped when the current layer isn't a tile layer.
+ * into the current tile layer.
  *
- * If the matched target layer is locked it is also skipped.
+ * If the matched target layer is locked it is skipped.
  *
  * \a mergeable indicates whether the paint operations performed by this
  * function are mergeable with previous compatible paint operations.
@@ -879,66 +941,93 @@ void MapDocument::paintTileLayers(const Map &map, bool mergeable,
                                   QVector<SharedTileset> *missingTilesets,
                                   QHash<TileLayer*, QRegion> *paintedRegions)
 {
-    TileLayer *currentTileLayer = mCurrentLayer ? mCurrentLayer->asTileLayer() : nullptr;
+    struct PaintPair {
+        const TileLayer *source;
+        TileLayer *target;
+    };
 
-    LayerIterator it(&map, Layer::TileLayerType);
-    const bool isMultiLayer = it.next() && it.next();
+    QList<const TileLayer *> sourceLayers;
+    for (const Layer *layer : map.tileLayers())
+        sourceLayers.append(static_cast<const TileLayer*>(layer));
 
-    it.toFront();
-    while (auto tileLayer = static_cast<TileLayer*>(it.next())) {
-        TileLayer *targetLayer = currentTileLayer;
+    const QList<TileLayer *> targetLayers = findTargetLayers(sourceLayers);
+
+    TileLayer *lastTarget = nullptr;
+
+    for (int i = 0; i < sourceLayers.size(); ++i) {
+        auto source = sourceLayers[i];
+        auto target = targetLayers[i];
+
+        const QRegion editedRegion = source->region();
+        if (editedRegion.isEmpty())
+            continue;
+
         std::unique_ptr<TileLayer> newLayer;
 
-        // When the map contains only a single layer, always paint it into
-        // the current layer. This makes sure you can still take pieces from
-        // one layer and draw them into another.
-        if (isMultiLayer && !tileLayer->name().isEmpty()) {
-            targetLayer = static_cast<TileLayer*>(mMap->findLayer(tileLayer->name(), Layer::TileLayerType));
-            if (!targetLayer) {
-                // Create a layer with this name
-                newLayer = std::make_unique<TileLayer>(tileLayer->name(), 0, 0,
-                                                       mMap->width(),
-                                                       mMap->height());
-                targetLayer = newLayer.get();
-            }
+        if (!target) {
+            // Create a layer with this name
+            newLayer = std::make_unique<TileLayer>(source->name(), 0, 0,
+                                                   mMap->width(),
+                                                   mMap->height());
+            newLayer->setOpacity(source->opacity());
+            newLayer->setTintColor(source->tintColor());
+            target = newLayer.get();
         }
 
-        if (!targetLayer)
+        if (!target->isUnlocked())
             continue;
-        if (!targetLayer->isUnlocked())
-            continue;
-        if (!mMap->infinite() && !targetLayer->rect().intersects(tileLayer->bounds()))
+        if (!mMap->infinite() && !target->rect().intersects(source->bounds()))
             continue;
 
-        PaintTileLayer *paint = new PaintTileLayer(this,
-                                                   targetLayer,
-                                                   tileLayer->x(),
-                                                   tileLayer->y(),
-                                                   tileLayer);
+        PaintTileLayer *paintCommand = new PaintTileLayer(this,
+                                                          target,
+                                                          source->x(),
+                                                          source->y(),
+                                                          source,
+                                                          editedRegion);
 
         if (missingTilesets && !missingTilesets->isEmpty()) {
             for (const SharedTileset &tileset : qAsConst(*missingTilesets)) {
                 if (!mMap->tilesets().contains(tileset))
-                    new AddTileset(this, tileset, paint);
+                    new AddTileset(this, tileset, paintCommand);
             }
 
             missingTilesets->clear();
         }
 
         if (newLayer) {
-            new AddLayer(this,
-                         mMap->layerCount(), newLayer.release(), nullptr,
-                         paint);
+            int index = mMap->layerCount();
+            GroupLayer *parent = nullptr;
+
+            if (lastTarget) {
+                // If we need to create a layer, insert it right after the
+                // previous layer we painted to.
+                index = lastTarget->siblingIndex() + 1;
+                parent = lastTarget->parentLayer();
+            } else {
+                // In case we haven't painted on another layer yet, try to
+                // insert it right before the next layer we'll paint to.
+                auto it = std::find_if(targetLayers.cbegin() + i + 1,
+                                       targetLayers.cend(),
+                                       [] (TileLayer *layer) { return layer != nullptr; });
+                if (it != targetLayers.cend()) {
+                    index = (*it)->siblingIndex();
+                    parent = (*it)->parentLayer();
+                }
+            }
+
+            new AddLayer(this, index, newLayer.release(), parent, paintCommand);
         }
 
-        paint->setMergeable(mergeable);
-        undoStack()->push(paint);
+        lastTarget = target;
 
-        const QRegion editedRegion = tileLayer->region();
+        paintCommand->setMergeable(mergeable);
+        undoStack()->push(paintCommand);
+
         if (paintedRegions)
-            (*paintedRegions)[targetLayer] |= editedRegion;
+            (*paintedRegions)[target] |= editedRegion;
         else
-            emit regionEdited(editedRegion, targetLayer);
+            emit regionEdited(editedRegion, target);
 
         mergeable = true; // further paints are always mergeable
     }
@@ -963,8 +1052,33 @@ void MapDocument::setSelectedArea(const QRegion &selection)
     }
 }
 
+static QList<Layer *> sortLayers(const Map &map, const QList<Layer *> &layers)
+{
+    if (layers.size() < 2)
+        return layers;
+
+    QList<Layer *> sorted;
+    sorted.reserve(layers.size());
+
+    LayerIterator iterator(&map);
+    while (Layer *layer = iterator.next()) {
+        if (layers.contains(layer))
+            sorted.append(layer);
+    }
+
+    return sorted;
+}
+
+QList<Layer *> MapDocument::selectedLayersOrdered() const
+{
+    return sortLayers(*mMap, mSelectedLayers);
+}
+
 static QList<MapObject *> sortObjects(const Map &map, const QList<MapObject *> &objects)
 {
+    if (objects.size() < 2)
+        return objects;
+
     QList<MapObject *> sorted;
     sorted.reserve(objects.size());
 

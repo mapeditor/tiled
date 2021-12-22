@@ -252,6 +252,14 @@ GroupLayer *Layer::asGroupLayer()
 }
 
 
+void LayerIterator::setCurrentLayer(Layer *layer)
+{
+    Q_ASSERT(!layer || layer->map() == mMap);
+
+    mCurrentLayer = layer;
+    mSiblingIndex = layer ? layer->siblingIndex() : -1;
+}
+
 Layer *LayerIterator::next()
 {
     Layer *layer = mCurrentLayer;

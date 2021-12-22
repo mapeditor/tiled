@@ -143,7 +143,8 @@ QList<QObject *> EditableMap::selectedLayers()
     QList<QObject*> selectedLayers;
 
     auto &editableManager = EditableManager::instance();
-    for (Layer *layer : mapDocument()->selectedLayers())
+    const auto selectedLayersOrdered = mapDocument()->selectedLayersOrdered();
+    for (Layer *layer : selectedLayersOrdered)
         selectedLayers.append(editableManager.editableLayer(this, layer));
 
     return selectedLayers;
@@ -157,7 +158,8 @@ QList<QObject *> EditableMap::selectedObjects()
     QList<QObject*> selectedObjects;
 
     auto &editableManager = EditableManager::instance();
-    for (MapObject *object : mapDocument()->selectedObjects())
+    const auto selectedObjectsOrdered = mapDocument()->selectedObjectsOrdered();
+    for (MapObject *object : selectedObjectsOrdered)
         selectedObjects.append(editableManager.editableMapObject(this, object));
 
     return selectedObjects;

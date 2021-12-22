@@ -217,7 +217,7 @@ void AbstractTileTool::updateBrushVisibility()
     if (mBrushVisible) {
         const auto layers = targetLayers();
         for (auto layer : layers) {
-            if (!layer->isHidden()) {
+            if (!layer || !layer->isHidden()) {
                 showBrush = true;
                 break;
             }
@@ -226,6 +226,13 @@ void AbstractTileTool::updateBrushVisibility()
     mBrushItem->setVisible(showBrush);
 }
 
+/**
+ * Returns the target layers. The preview is automatically hidden when none of
+ * the target layers are visible.
+ *
+ * The result may include a nullptr, which indicates a layer is about to be
+ * created (which is assumed to be visible).
+ */
 QList<Layer *> AbstractTileTool::targetLayers() const
 {
     // By default, only a current tile layer is considered the target
@@ -245,24 +252,18 @@ QList<Layer *> AbstractTileTool::targetLayersForStamp(const TileStamp &stamp) co
     if (!mapDocument())
         return layers;
 
-    const Map &map = *mapDocument()->map();
+    QList<const TileLayer *> sourceLayers;
 
     for (const TileStampVariation &variation : stamp.variations()) {
-        LayerIterator it(variation.map, Layer::TileLayerType);
-        const Layer *firstLayer = it.next();
-        const bool isMultiLayer = firstLayer && it.next();
+        for (const Layer *layer : variation.map->tileLayers())
+            sourceLayers.append(static_cast<const TileLayer*>(layer));
 
-        if (isMultiLayer && !firstLayer->name().isEmpty()) {
-            for (Layer *layer : variation.map->tileLayers()) {
-                if (TileLayer *target = static_cast<TileLayer*>(map.findLayer(layer->name(), Layer::TileLayerType)))
-                    if (!layers.contains(target))
-                        layers.append(target);
-            }
-        } else {
-            if (TileLayer *tileLayer = currentTileLayer())
-                if (!layers.contains(tileLayer))
-                    layers.append(tileLayer);
-        }
+        const auto targetLayers = mapDocument()->findTargetLayers(sourceLayers);
+        for (TileLayer *target : targetLayers)
+            if (!layers.contains(target))
+                layers.append(target);
+
+        sourceLayers.clear();
     }
 
     return layers;

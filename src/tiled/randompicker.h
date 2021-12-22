@@ -61,6 +61,9 @@ public:
     {
         Q_ASSERT(!isEmpty());
 
+        if (mThresholds.size() == 1)
+            return mThresholds.first();
+
         std::uniform_real_distribution<Real> dis(0, mSum);
         const Real random = dis(globalRandomEngine());
         auto it = mThresholds.lowerBound(random);

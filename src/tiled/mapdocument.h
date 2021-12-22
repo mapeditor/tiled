@@ -174,6 +174,7 @@ public:
     void removeTilesetAt(int index);
     SharedTileset replaceTileset(int index, const SharedTileset &tileset);
 
+    QList<TileLayer*> findTargetLayers(const QList<const TileLayer *> &sourceLayers) const;
     void paintTileLayers(const Map &map, bool mergeable = false,
                          QVector<SharedTileset> *missingTilesets = nullptr,
                          QHash<TileLayer *, QRegion> *paintedRegions = nullptr);
@@ -224,6 +225,7 @@ public:
     const QList<MapObject*> &selectedObjects() const
     { return mSelectedObjects; }
 
+    QList<Layer*> selectedLayersOrdered() const;
     QList<MapObject*> selectedObjectsOrdered() const;
 
     /**

@@ -302,19 +302,32 @@ void AbstractTileFillTool::fillWithStamp(Map &map,
         return;
 
     const QRect bounds = mask.boundingRect();
+    const auto randomVariations = stamp.randomVariations();
+
+    QHash<QString, QList<TileLayer*>> targetLayersByName;
 
     // Fill the entire map with random variations of the stamp
     for (int y = 0; y < bounds.height(); y += size.height()) {
         for (int x = 0; x < bounds.width(); x += size.width()) {
-            const Map *stampMap = stamp.randomVariation().map;
+            const Map *stampMap = randomVariations.pick();
+            QHash<QString, int> targetLayersIndices;
 
-            for (Layer *layer : stampMap->tileLayers()) {
-                TileLayer *target = static_cast<TileLayer*>(map.findLayer(layer->name(), Layer::TileLayerType));
-                if (!target) {
+            for (const Layer *layer : stampMap->tileLayers()) {
+                auto &targetLayerIndex = targetLayersIndices[layer->name()];
+                auto &targetLayers = targetLayersByName[layer->name()];
+                TileLayer *target = nullptr;
+
+                if (targetLayerIndex < targetLayers.size()) {
+                    target = targetLayers[targetLayerIndex];
+                } else {
                     target = new TileLayer(layer->name(), bounds.topLeft(), bounds.size());
+                    targetLayers.append(target);
                     map.addLayer(target);
                 }
-                target->setCells(x, y, static_cast<TileLayer*>(layer));
+
+                ++targetLayerIndex;
+
+                target->setCells(x, y, static_cast<const TileLayer*>(layer));
             }
         }
     }
