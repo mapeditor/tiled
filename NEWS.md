@@ -1,6 +1,8 @@
 ### Tiled 1.8 (...)
 
 * Added support for custom enum properties (with svipal, #2941)
+* Added parallax origin property to the map (with krukai, #3209)
+* Added Repeat X/Y properties to Image Layers (with krukai, #3205)
 * Added an action for selecting all layers (Ctrl+Alt+A) (#3081)
 * Added actions to select or add tilesets to Project view context menu
 * AutoMapping: Made it find layers within groups (#1771)
@@ -10,7 +12,10 @@
 * Scripting: Added ObjectGroup.drawOrder (#3147)
 * Scripting: Added Map.removeObjects (#3149)
 * Scripting: Added tiled.applicationDirPath
+* Scripting: Added TileMap.layers and GroupLayer.layers, for convenience
+* Scripting: Added region.rects and region.contains(x,y)
 * Scripting: Treat custom format extensions as case-insensitive (#3141)
+* Scripting: Allow tools to stay active when tiles are selected (#3201)
 * Tweaked focus behavior in the Template Editor
 * Changed the default Terrain Brush shortcut back to T
 * Reset tile animations when disabling playback and when exporting as image
@@ -18,15 +23,22 @@
 * Apply transformation actions to the preview while placing tiles (#3091)
 * Allow using object context menu in object creation tools
 * Reduced the step size for the parallax factor property
+* Ignore selection changes when marking a file as modified (#3194)
+* Use the tileset background color in the collision editor (with Benja Appel, #3163)
 * Fixed the logic for handling group layer parallax factors (with LilithSilver, #3125)
 * Fixed debug messages showing in the Console and Issues views
 * Fixed enabled state of File > Export action for tilesets (#3177)
 * Fixed Snap to Grid for hexagonal maps
 * Fixed AutoMapping rules file to update after changing project properties (#3176)
 * Fixed 'Detect Bounding Box' action missing in Keyboard settings
+* Fixed toggling "Clear View" on & off shifting the map
+* Fixed command-line output not showing on Windows (#2688)
+* Fixed "Select object on map" when no object layer is selected (#3207)
 * Tiled Manual is now available in French
 * YY plugin: Don't use safe writing of files
 * YY plugin: Write out custom "object" properties as instance name (instead of the ID)
+* YY Plugin: Determine sprite names by looking for meta files (#3213)
+* CSV plugin: Improved handling of infinite maps
 * RpMap plugin: Fixed hardcoded exported tile size (#3184)
 * libtiled-java: Introduced TilesetCache interface (by Samuel Manflame, #3117)
 * Disable the Terrain Set type property when appropriate (avoids crash)
