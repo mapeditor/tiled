@@ -48,7 +48,7 @@ bool CsvPlugin::write(const Map *map, const QString &fileName, Options options)
     Q_UNUSED(options)
 
     // Get file paths for each layer
-    QStringList layerPaths = outputFiles(map, fileName);
+    const QStringList layerPaths = outputFiles(map, fileName);
 
     // Traverse all tile layers
     int currentLayer = 0;
@@ -64,7 +64,7 @@ bool CsvPlugin::write(const Map *map, const QString &fileName, Options options)
 
         auto device = file.device();
 
-        QRect bounds = map->infinite() ? tileLayer->bounds() : tileLayer->rect();
+        QRect bounds = map->infinite() ? tileLayer->region().boundingRect() : tileLayer->rect();
         bounds.translate(-layer->position());
 
         // Write out tiles either by ID or their name, if given. -1 is "empty"
@@ -112,6 +112,7 @@ bool CsvPlugin::write(const Map *map, const QString &fileName, Options options)
 
         ++currentLayer;
     }
+
     return true;
 }
 
