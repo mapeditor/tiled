@@ -60,8 +60,8 @@ following window:
 
 To make all our assets readily accessible from the :guilabel:`Project` view,
 as well as to be able to quickly switch between multiple projects, it is
-recommended to first set up a Tiled project. This is however an entirely
-optional step that can be skipped when desired.
+recommended to first set up a :doc:`Tiled project <projects>`. This is however
+an entirely optional step that can be skipped when desired.
 
 Choose *Project -> Save Project As...* to save a new project file. The
 recommended location is the root of your project, but you can place it

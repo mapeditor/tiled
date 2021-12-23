@@ -703,7 +703,8 @@ Property
     :widths: 1, 1, 4
 
     name,             string,           "Name of the property"
-    type,             string,           "Type of the property (``string`` (default), ``int``, ``float``, ``bool``, ``color`` or ``file`` (since 0.16, with ``color`` and ``file`` added in 0.17))"
+    type,             string,           "Type of the property (``string`` (default), ``int``, ``float``, ``bool``, ``color``, ``file``, ``object`` or ``class`` (since 0.16, with ``color`` and ``file`` added in 0.17, ``object`` added in 1.4 and ``class`` added in 1.8))"
+    propertytype,     string,           "Name of the :ref:`custom property type <custom-property-types>`, when applicable (since 1.8)"
     value,            value,            "Value of the property"
 
 .. _json-point:
@@ -726,7 +727,13 @@ Changelog
 Tiled 1.8
 ~~~~~~~~~
 
-* Added ``parallaxoriginx`` and ``parallaxoriginy`` properties to :ref:`json-map`.
+* Added support for user-defined custom property types. A reference to the
+  type is saved as the new ``propertytype`` property of :ref:`json-property`.
+* The :ref:`json-property` element can now have an arbitrary JSON object as its
+  ``value``, in case the property value is a class. In this case the ``type``
+  property is set to the new value ``class``.
+* Added ``parallaxoriginx`` and ``parallaxoriginy`` properties to
+  :ref:`json-map`.
 * Added ``repeatx`` and ``repeaty`` properties to :ref:`json-layer` (applies
   only to image layers at the moment).
 
@@ -762,6 +769,7 @@ Tiled 1.4
 
 * Added ``objectalignment`` to the :ref:`json-tileset` object.
 * Added ``tintcolor`` to the :ref:`json-layer` object.
+* Added ``object`` as possible type of :ref:`json-property`.
 
 Tiled 1.3
 ~~~~~~~~~

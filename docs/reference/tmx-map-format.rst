@@ -1,7 +1,7 @@
 TMX Map Format
 ==============
 
-**Version 1.5**
+**Version 1.8**
 
 TMX and TSX are `Tiled <http://www.mapeditor.org>`__'s own formats for storing
 tile maps and tilesets, based on XML. TMX provides a flexible way to describe a
@@ -675,7 +675,7 @@ Can contain any number: :ref:`tmx-layer`,
 Wraps any number of custom properties. Can be used as a child of the
 ``map``, ``tileset``, ``tile`` (when part of a ``tileset``),
 ``terrain``, ``wangset``, ``wangcolor``, ``layer``, ``objectgroup``,
-``object``, ``imagelayer`` and ``group`` elements.
+``object``, ``imagelayer``, ``group`` and ``property`` elements.
 
 Can contain any number: :ref:`tmx-property`
 
@@ -686,8 +686,12 @@ Can contain any number: :ref:`tmx-property`
 
 -  **name:** The name of the property.
 -  **type:** The type of the property. Can be ``string`` (default), ``int``,
-   ``float``, ``bool``, ``color``, ``file`` or ``object`` (since 0.16, with
-   ``color`` and ``file`` added in 0.17, and ``object`` added in 1.4).
+   ``float``, ``bool``, ``color``, ``file``, ``object`` or ``class`` (since
+   0.16, with ``color`` and ``file`` added in 0.17, ``object`` added in 1.4 and
+   ``class`` added in 1.8).
+-  **propertytype:** The name of the
+   :ref:`custom property type <custom-property-types>`, when applicable
+   (since 1.8).
 -  **value:** The value of the property. (default string is "", default
    number is 0, default boolean is "false", default color is #00000000, default
    file is "." (the current file's parent directory))
@@ -709,6 +713,8 @@ will write out the value as characters contained inside the ``property``
 element rather than as the ``value`` attribute. It is possible that a
 future version of the TMX format will switch to always saving property
 values inside the element rather than as an attribute.
+
+Can contain at most one: :ref:`tmx-properties` (since 1.8)
 
 .. _tmx-template-files:
 
