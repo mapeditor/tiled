@@ -1,6 +1,7 @@
 ### Tiled 1.8 (...)
 
 * Added support for custom enum properties (with svipal, #2941)
+* Added support for custom class properties (#489)
 * Added parallax origin property to the map (with krukai, #3209)
 * Added Repeat X/Y properties to Image Layers (with krukai, #3205)
 * Added an action for selecting all layers (Ctrl+Alt+A) (#3081)
