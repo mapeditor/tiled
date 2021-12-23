@@ -149,6 +149,14 @@ void LuaTableWriter::writeQuotedKeyAndValue(const QString &key,
     case QMetaType::Bool:
         write(value.toString().toLatin1());
         break;
+    case QMetaType::QVariantMap: {
+        writeStartTable();
+        const auto map = value.toMap();
+        for (auto it = map.begin(); it != map.end(); ++it)
+            writeQuotedKeyAndValue(it.key(), it.value());
+        writeEndTable();
+        break;
+    }
     default:
         write(quote(value.toString()).toUtf8());
         break;
