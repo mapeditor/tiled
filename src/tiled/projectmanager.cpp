@@ -20,6 +20,7 @@
 
 #include "projectmanager.h"
 
+#include "preferences.h"
 #include "projectmodel.h"
 
 namespace Tiled {
@@ -37,9 +38,16 @@ ProjectManager::ProjectManager(QObject *parent)
 /**
  * Replaces the current project with the given \a project.
  */
-void ProjectManager::setProject(Project project)
+void ProjectManager::setProject(Project _project)
 {
-    mProjectModel->setProject(std::move(project));
+    mProjectModel->setProject(std::move(_project));
+
+    const auto &project = mProjectModel->project(); // _project was moved
+
+    Preferences *prefs = Preferences::instance();
+    prefs->setPropertyTypes(project.propertyTypes());
+    prefs->setObjectTypesFile(project.mObjectTypesFile);
+
     emit projectChanged();
 }
 

@@ -22,10 +22,11 @@
 #include "addpropertydialog.h"
 #include "ui_addpropertydialog.h"
 
+#include "documentmanager.h"
 #include "object.h"
 #include "preferences.h"
-#include "documentmanager.h"
 #include "properties.h"
+#include "propertytypesmodel.h"
 #include "session.h"
 #include "utils.h"
 
@@ -41,6 +42,18 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::AddPropertyDialog)
 {
+    initialize(nullptr);
+}
+
+AddPropertyDialog::AddPropertyDialog(const ClassPropertyType *parentClassType, QWidget *parent)
+    : QDialog(parent)
+    , mUi(new Ui::AddPropertyDialog)
+{
+    initialize(parentClassType);
+}
+
+void AddPropertyDialog::initialize(const Tiled::ClassPropertyType *parentClassType)
+{
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 #endif
@@ -48,19 +61,25 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
 
+    const QIcon plain(QStringLiteral("://images/scalable/property-type-plain.svg"));
 
     // Add possible types from QVariant
-    mUi->typeBox->addItem(typeToName(QMetaType::Bool),      false);
-    mUi->typeBox->addItem(typeToName(QMetaType::QColor),    QColor());
-    mUi->typeBox->addItem(typeToName(QMetaType::Double),    0.0);
-    mUi->typeBox->addItem(typeToName(filePathTypeId()),     QVariant::fromValue(FilePath()));
-    mUi->typeBox->addItem(typeToName(QMetaType::Int),       0);
-    mUi->typeBox->addItem(typeToName(objectRefTypeId()),    QVariant::fromValue(ObjectRef()));
-    mUi->typeBox->addItem(typeToName(QMetaType::QString),   QString());
+    mUi->typeBox->addItem(plain, typeToName(QMetaType::Bool),      false);
+    mUi->typeBox->addItem(plain, typeToName(QMetaType::QColor),    QColor());
+    mUi->typeBox->addItem(plain, typeToName(QMetaType::Double),    0.0);
+    mUi->typeBox->addItem(plain, typeToName(filePathTypeId()),     QVariant::fromValue(FilePath()));
+    mUi->typeBox->addItem(plain, typeToName(QMetaType::Int),       0);
+    mUi->typeBox->addItem(plain, typeToName(objectRefTypeId()),    QVariant::fromValue(ObjectRef()));
+    mUi->typeBox->addItem(plain, typeToName(QMetaType::QString),   QString());
 
-    for (const PropertyType &propertyType : Object::propertyTypes()) {
-        QVariant var = QVariant::fromValue(PropertyValue { propertyType.defaultValue(), propertyType.id });
-        mUi->typeBox->addItem(propertyType.name, var);
+    for (const auto propertyType : Object::propertyTypes()) {
+        // Avoid suggesting the creation of circular dependencies between types
+        if (parentClassType && !parentClassType->canAddMemberOfType(propertyType))
+            continue;
+
+        const QVariant var = propertyType->wrap(propertyType->defaultValue());
+        const QIcon icon = PropertyTypesModel::iconForPropertyType(propertyType->type);
+        mUi->typeBox->addItem(icon, propertyType->name, var);
     }
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);

@@ -126,7 +126,7 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     , mVariantManager(new VariantPropertyManager(this))
     , mGroupManager(new QtGroupPropertyManager(this))
     , mCustomPropertiesGroup(nullptr)
-    , mCustomPropertiesHelper(mVariantManager)
+    , mCustomPropertiesHelper(this)
 {
     VariantEditorFactory *variantEditorFactory = new VariantEditorFactory(this);
 
@@ -144,6 +144,12 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
 
     connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
             this, &PropertyBrowser::valueChanged);
+
+    connect(&mCustomPropertiesHelper, &CustomPropertiesHelper::propertyValueChanged,
+            this, &PropertyBrowser::customPropertyValueChanged);
+
+    connect(&mCustomPropertiesHelper, &CustomPropertiesHelper::recreateProperty,
+            this, &PropertyBrowser::recreateProperty);
 
     connect(variantEditorFactory, &VariantEditorFactory::resetProperty,
             this, &PropertyBrowser::resetProperty);
@@ -483,7 +489,7 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
             }
         }
 
-        deleteCustomProperty(property);
+        mCustomPropertiesHelper.deleteProperty(property);
         return;
     }
 
@@ -541,16 +547,6 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
         return;
     if (!mObject || !mDocument)
         return;
-
-    if (mCustomPropertiesHelper.hasProperty(property)) {
-        QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->push(new SetProperty(mDocument,
-                                        mDocument->currentObjects(),
-                                        property->propertyName(),
-                                        fromDisplayValue(property, val)));
-        return;
-    }
-
     if (!mPropertyToId.contains(property))
         return;
 
@@ -566,6 +562,19 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::WangColorType:         applyWangColorValue(id, val); break;
     case Object::ObjectTemplateType:    break;
     }
+}
+
+void PropertyBrowser::customPropertyValueChanged(const QString &name, const QVariant &value)
+{
+    if (mUpdating)
+        return;
+    if (!mObject || !mDocument)
+        return;
+
+    QUndoStack *undoStack = mDocument->undoStack();
+    undoStack->push(new SetProperty(mDocument,
+                                    mDocument->currentObjects(),
+                                    name, value));
 }
 
 void PropertyBrowser::resetProperty(QtProperty *property)
@@ -1584,11 +1593,6 @@ QtVariantProperty *PropertyBrowser::addCustomProperty(const QString &name, const
     return property;
 }
 
-void PropertyBrowser::deleteCustomProperty(QtVariantProperty *property)
-{
-    mCustomPropertiesHelper.deleteProperty(property);
-}
-
 void PropertyBrowser::setCustomPropertyValue(QtVariantProperty *property,
                                              const QVariant &value)
 {
@@ -1596,19 +1600,24 @@ void PropertyBrowser::setCustomPropertyValue(QtVariantProperty *property,
 
     if (displayValue.userType() != property->valueType()) {
         // Re-creating the property is necessary to change its type
-        const QString name = property->propertyName();
-        const bool wasCurrent = currentItem() && currentItem()->property() == property;
-
-        deleteCustomProperty(property);
-        property = addCustomProperty(name, value);
-        updateCustomPropertyColor(name);
-
-        if (wasCurrent)
-            setCurrentItem(items(property).constFirst());
+        recreateProperty(property, value);
     } else {
         QScopedValueRollback<bool> updating(mUpdating, true);
         property->setValue(displayValue);
     }
+}
+
+void PropertyBrowser::recreateProperty(QtVariantProperty *property, const QVariant &value)
+{
+    const QString name = property->propertyName();
+    const bool wasCurrent = currentItem() && currentItem()->property() == property;
+
+    mCustomPropertiesHelper.deleteProperty(property);
+    property = addCustomProperty(name, value);
+    updateCustomPropertyColor(name);
+
+    if (wasCurrent)
+        setCurrentItem(items(property).constFirst());
 }
 
 void PropertyBrowser::addProperties()

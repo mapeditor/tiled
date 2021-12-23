@@ -45,17 +45,18 @@ public:
     const QStringList &folders() const;
 
     const QDateTime &lastSaved() const;
+    const SharedPropertyTypes &propertyTypes() const;
 
     QString mExtensionsPath;
     QString mObjectTypesFile;
     QString mAutomappingRulesFile;
     QVector<Command> mCommands;
-    PropertyTypes mPropertyTypes;
 
 private:
     QDateTime mLastSaved;
     QString mFileName;
     QStringList mFolders;
+    SharedPropertyTypes mPropertyTypes;
 };
 
 
@@ -72,6 +73,11 @@ inline const QStringList &Project::folders() const
 inline const QDateTime &Project::lastSaved() const
 {
     return mLastSaved;
+}
+
+inline const SharedPropertyTypes &Project::propertyTypes() const
+{
+    return mPropertyTypes;
 }
 
 } // namespace Tiled

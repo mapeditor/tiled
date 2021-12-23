@@ -93,6 +93,7 @@ private:
     void objectTypesChanged();
 
     void valueChanged(QtProperty *property, const QVariant &val);
+    void customPropertyValueChanged(const QString &name, const QVariant &value);
 
     void resetProperty(QtProperty *property);
 
@@ -195,8 +196,8 @@ private:
                                    QtProperty *parent);
 
     QtVariantProperty *addCustomProperty(const QString &name, const QVariant &value);
-    void deleteCustomProperty(QtVariantProperty *property);
     void setCustomPropertyValue(QtVariantProperty *property, const QVariant &value);
+    void recreateProperty(QtVariantProperty *property, const QVariant &value);
 
     void addProperties();
     void removeProperties();

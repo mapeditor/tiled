@@ -22,13 +22,15 @@
 #include "ui_objecttypeseditor.h"
 
 #include "addpropertydialog.h"
+#include "custompropertieshelper.h"
 #include "object.h"
 #include "objecttypesmodel.h"
 #include "preferences.h"
+#include "properties.h"
 #include "session.h"
 #include "utils.h"
-#include "varianteditorfactory.h"
-#include "variantpropertymanager.h"
+
+#include <QtVariantProperty>
 
 #include <QCloseEvent>
 #include <QColorDialog>
@@ -97,10 +99,11 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::ObjectTypesEditor)
     , mObjectTypesModel(new ObjectTypesModel(this))
-    , mVariantManager(new VariantPropertyManager(this))
-    , mPropertiesHelper(mVariantManager)
 {
     mUi->setupUi(this);
+
+    mPropertiesHelper = new CustomPropertiesHelper(mUi->propertiesView, this);
+
     resize(Utils::dpiScaled(size()));
 
     mUi->objectTypesTable->setModel(mObjectTypesModel);
@@ -111,7 +114,6 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     horizontalHeader->setSectionResizeMode(1, QHeaderView::Fixed);
     horizontalHeader->resizeSection(1, Utils::dpiScaled(50));
 
-    mUi->propertiesView->setFactoryForManager(mVariantManager, new VariantEditorFactory(this));
     mUi->propertiesView->setResizeMode(QtTreePropertyBrowser::ResizeToContents);
     mUi->propertiesView->setRootIsDecorated(false);
     mUi->propertiesView->setPropertiesWithoutValueMarked(true);
@@ -193,7 +195,7 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     connect(mObjectTypesModel, &ObjectTypesModel::rowsRemoved,
             this, &ObjectTypesEditor::applyObjectTypes);
 
-    connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
+    connect(mPropertiesHelper, &CustomPropertiesHelper::propertyValueChanged,
             this, &ObjectTypesEditor::propertyValueChanged);
 
     connect(mUi->propertiesView, &QtTreePropertyBrowser::currentItemChanged,
@@ -420,11 +422,9 @@ void ObjectTypesEditor::updateProperties()
 
     mAddPropertyAction->setEnabled(!selectedRows.isEmpty());
 
-    mProperties = aggregatedProperties;
-
     QScopedValueRollback<bool> updating(mUpdating, true);
 
-    mPropertiesHelper.clear();
+    mPropertiesHelper->clear();
 
     QMapIterator<QString, AggregatedPropertyData> it(aggregatedProperties);
     while (it.hasNext()) {
@@ -433,7 +433,7 @@ void ObjectTypesEditor::updateProperties()
         const QString &name = it.key();
         const AggregatedPropertyData &data = it.value();
 
-        QtProperty *property = mPropertiesHelper.createProperty(name, data.value());
+        QtProperty *property = mPropertiesHelper->createProperty(name, data.value());
         mUi->propertiesView->addProperty(property);
 
         bool everywhere = data.presenceCount() == selectedRows.size();
@@ -445,16 +445,13 @@ void ObjectTypesEditor::updateProperties()
     }
 }
 
-void ObjectTypesEditor::propertyValueChanged(QtProperty *property,
+void ObjectTypesEditor::propertyValueChanged(const QString &name,
                                              const QVariant &value)
 {
     if (mUpdating)
         return;
-    if (!mUi->propertiesView->topLevelItem(property))
-        return;
 
-    const auto val = mPropertiesHelper.fromDisplayValue(property, value);
-    applyPropertyToSelectedTypes(property->propertyName(), val);
+    applyPropertyToSelectedTypes(name, value);
 }
 
 void ObjectTypesEditor::openAddPropertyDialog()
@@ -476,7 +473,7 @@ void ObjectTypesEditor::addProperty(const QString &name, const QVariant &value)
 
 void ObjectTypesEditor::editProperty(const QString &name)
 {
-    QtVariantProperty *property = mPropertiesHelper.property(name);
+    QtVariantProperty *property = mPropertiesHelper->property(name);
     if (!property)
         return;
 
@@ -502,8 +499,7 @@ void ObjectTypesEditor::removeProperty()
         }
     }
 
-    mProperties.remove(name);
-    mPropertiesHelper.deleteProperty(item->property());
+    mPropertiesHelper->deleteProperty(item->property());
 
     removePropertyFromSelectedTypes(name);
 }

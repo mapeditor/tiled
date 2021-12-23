@@ -7,8 +7,14 @@ Below are described the changes/additions that were made to the
 Tiled 1.8
 ---------
 
--  Added ``parallaxoriginx`` and ``parallaxoriginy`` attributes to the :ref:`tmx-map`
-   element.
+-  Added support for user-defined custom property types. A reference to the
+   type is saved as the new ``propertytype`` attribute on the
+   :ref:`tmx-property` element.
+-  The :ref:`tmx-property` element can now contain a :ref:`tmx-properties`
+   element, in case the property value is a class. In this case the ``type``
+   attribute is set to the new value ``class``.
+-  Added ``parallaxoriginx`` and ``parallaxoriginy`` attributes to the
+   :ref:`tmx-map` element.
 -  Added ``repeatx`` and ``repeaty`` attributes to the :ref:`tmx-imagelayer`
    element.
 
@@ -50,6 +56,9 @@ Tiled 1.4
    :ref:`tmx-objectgroup`, :ref:`tmx-imagelayer` and :ref:`tmx-group` elements,
    allowing for a number of graphical effects like darkening or coloring a
    layer.
+
+-  Added a new ``object`` property type, which refers to an
+   :ref:`object <tmx-object>` by its ID.
 
 Tiled 1.3
 ---------

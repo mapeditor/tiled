@@ -5,6 +5,7 @@ Project {
 
     references: [
         "mapreader",
+        "properties",
         "staggeredrenderer",
     ]
 }

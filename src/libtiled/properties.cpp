@@ -150,6 +150,8 @@ QString typeToName(int type)
         return QStringLiteral("float");
     case QMetaType::QColor:
         return QStringLiteral("color");
+    case QMetaType::QVariantMap:
+        return QStringLiteral("class");
 
     default:
         if (type == filePathTypeId())
@@ -172,6 +174,8 @@ static int nameToType(const QString &name)
         return filePathTypeId();
     if (name == QLatin1String("object"))
         return objectRefTypeId();
+    if (name == QLatin1String("class"))
+        return QMetaType::QVariantMap;
 
     return QVariant::nameToType(name.toLatin1().constData());
 }
@@ -181,7 +185,7 @@ QString typeName(const QVariant &value)
     if (value.userType() == propertyValueId()) {
         auto typeId = value.value<PropertyValue>().typeId;
 
-        if (const PropertyType *propertyType = findTypeById(Object::propertyTypes(), typeId))
+        if (const PropertyType *propertyType = Object::propertyTypes().findTypeById(typeId))
             return propertyType->name;
     }
 
@@ -190,7 +194,7 @@ QString typeName(const QVariant &value)
 
 const PropertyType *PropertyValue::type() const
 {
-    return findTypeById(Object::propertyTypes(), typeId);
+    return Object::propertyTypes().findTypeById(typeId);
 }
 
 /**
@@ -209,9 +213,8 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
     if (metaType == propertyValueId()) {
         const PropertyValue propertyValue = value.value<PropertyValue>();
 
-        if (const PropertyType *propertyType = findTypeById(mTypes, propertyValue.typeId)) {
-            exportValue = toExportValue(propertyType->unwrap(propertyValue.value));
-            exportValue.propertyTypeName = propertyType->name;
+        if (const PropertyType *propertyType = mTypes.findTypeById(propertyValue.typeId)) {
+            exportValue = propertyType->toExportValue(propertyValue.value, *this);
         } else {
             // the type may have been deleted
             exportValue = toExportValue(propertyValue.value);
@@ -239,24 +242,35 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
 
 QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
 {
-    QVariant propertyValue = exportValue.value;
     const int metaType = nameToType(exportValue.typeName);
-
-    if (metaType == filePathTypeId()) {
-        const QUrl url = toUrl(exportValue.value.toString(), mPath);
-        propertyValue = QVariant::fromValue(FilePath { url });
-    } else if (metaType == objectRefTypeId()) {
-        propertyValue = QVariant::fromValue(ObjectRef::fromInt(exportValue.value.toInt()));
-    } else if (exportValue.value.userType() != metaType && metaType != QMetaType::UnknownType) {
-        propertyValue.convert(metaType);
-    }
+    QVariant propertyValue = toPropertyValue(exportValue.value, metaType);
 
     // Wrap the value in its custom property type when applicable
     if (!exportValue.propertyTypeName.isEmpty())
-        if (const PropertyType *propertyType = findTypeByName(mTypes, exportValue.propertyTypeName))
-            propertyValue = propertyType->wrap(propertyValue);
+        if (const PropertyType *propertyType = mTypes.findTypeByName(exportValue.propertyTypeName))
+            propertyValue = propertyType->toPropertyValue(propertyValue, *this);
 
     return propertyValue;
+}
+
+QVariant ExportContext::toPropertyValue(const QVariant &value, int metaType) const
+{
+    if (metaType == QMetaType::UnknownType || value.userType() == metaType)
+        return value;   // value possibly already converted
+
+    if (metaType == QMetaType::QVariantMap || metaType == propertyValueId())
+        return value;   // should be covered by property type
+
+    if (metaType == filePathTypeId()) {
+        const QUrl url = toUrl(value.toString(), mPath);
+        return QVariant::fromValue(FilePath { url });
+    }
+
+    if (metaType == objectRefTypeId())
+        return QVariant::fromValue(ObjectRef::fromInt(value.toInt()));
+
+    QVariant convertedValue = value;
+    return convertedValue.convert(metaType) ? convertedValue : value;
 }
 
 void initializeMetatypes()

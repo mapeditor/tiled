@@ -1,7 +1,7 @@
 /*
  * varianteditorfactory.cpp
  * Copyright (C) 2006 Trolltech ASA. All rights reserved. (GPLv2)
- * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2013-2021, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -191,8 +191,9 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
 
     QWidget *editor = QtVariantEditorFactory::createEditor(manager, property, parent);
 
-    if (type == QMetaType::QColor) {
-        // Allow resetting a color property to the invalid color
+    if (type == QMetaType::QColor || property->isModified()) {
+        // Allow resetting a color property to the invalid color, or allow
+        // unsetting a class member (todo: resolve conflict...).
         ResetWidget *resetWidget = new ResetWidget(property, editor, parent);
         connect(resetWidget, &ResetWidget::resetProperty,
                 this, &VariantEditorFactory::resetProperty);

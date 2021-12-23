@@ -194,7 +194,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     const QString orientation = orientationToString(map.orientation());
     const QString renderOrder = renderOrderToString(map.renderOrder());
 
-    w.writeAttribute(QStringLiteral("version"), QLatin1String("1.5"));
+    w.writeAttribute(QStringLiteral("version"), QLatin1String("1.8"));
     w.writeAttribute(QStringLiteral("tiledversion"), QCoreApplication::applicationVersion());
     w.writeAttribute(QStringLiteral("orientation"), orientation);
     w.writeAttribute(QStringLiteral("renderorder"), renderOrder);
@@ -312,7 +312,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         }
     } else {
         // Include version in external tilesets
-        w.writeAttribute(QStringLiteral("version"), QLatin1String("1.5"));
+        w.writeAttribute(QStringLiteral("version"), QLatin1String("1.8"));
         w.writeAttribute(QStringLiteral("tiledversion"), QCoreApplication::applicationVersion());
     }
 
@@ -935,12 +935,16 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
         if (!exportValue.propertyTypeName.isEmpty())
             w.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
 
-        QString value = exportValue.value.toString();
+        if (exportValue.value.userType() == QMetaType::QVariantMap) {
+            writeProperties(w, exportValue.value.toMap());
+        } else {
+            const QString value = exportValue.value.toString();
 
-        if (value.contains(QLatin1Char('\n')))
-            w.writeCharacters(value);
-        else
-            w.writeAttribute(QStringLiteral("value"), value);
+            if (value.contains(QLatin1Char('\n')))
+                w.writeCharacters(value);
+            else
+                w.writeAttribute(QStringLiteral("value"), value);
+        }
 
         w.writeEndElement();
     }

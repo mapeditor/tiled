@@ -32,6 +32,10 @@ Object Types File
    When left unspecified, object type definitions are saved to a global
    location.
 
+Property Types
+   Any types defined in the :ref:`Property Types Editor <custom-property-types>`
+   are automatically saved in the project.
+
 Automapping Rules File
    Refers to an :doc:`automapping` rules file that should be used for all maps
    while this project is loaded. It is ignored for maps that have a

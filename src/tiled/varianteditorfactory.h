@@ -1,7 +1,7 @@
 /*
  * varianteditorfactory.h
  * Copyright (C) 2006 Trolltech ASA. All rights reserved. (GPLv2)
- * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2013-2021, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -34,11 +34,12 @@ class TextPropertyEdit;
 class TilesetParametersEdit;
 
 /**
- * Extension of the QtVariantEditorFactory that adds support for a FileEdit,
- * used for editing file references.
+ * Extension of the QtVariantEditorFactory that adds support for:
  *
- * It also adds support for "suggestions" and "multiline" attributes for string
- * values.
+ * - An editor for editing file references
+ * - An editor with a button for changing tileset parameters
+ * - An editor for editing references to objects
+ * - "suggestions" and "multiline" attributes for string values.
  */
 class VariantEditorFactory : public QtVariantEditorFactory
 {

@@ -24,30 +24,35 @@
 
 using namespace Tiled;
 
-static bool propertyTypeLessThan(const PropertyType &a, const PropertyType &b)
+static bool propertyTypeLessThan(const PropertyType *a, const PropertyType *b)
 {
-    return QString::localeAwareCompare(a.name, b.name) < 0;
+    return QString::localeAwareCompare(a->name, b->name) < 0;
 }
 
-void PropertyTypesModel::setPropertyTypes(const PropertyTypes &propertyTypes)
+PropertyTypesModel::PropertyTypesModel(QObject *parent)
+    : QAbstractListModel(parent)
+{
+}
+
+void PropertyTypesModel::setPropertyTypes(const SharedPropertyTypes &propertyTypes)
 {
     beginResetModel();
     mPropertyTypes = propertyTypes;
-    std::sort(mPropertyTypes.begin(), mPropertyTypes.end(), propertyTypeLessThan);
+    std::sort(mPropertyTypes->begin(), mPropertyTypes->end(), propertyTypeLessThan);
     endResetModel();
 }
 
-PropertyType PropertyTypesModel::propertyTypeAt(const QModelIndex &index) const
+PropertyType *PropertyTypesModel::propertyTypeAt(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return PropertyType();
+        return nullptr;
 
-    return mPropertyTypes.at(index.row());
+    return &mPropertyTypes->typeAt(index.row());
 }
 
 int PropertyTypesModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : mPropertyTypes.size();
+    return (parent.isValid() || !mPropertyTypes) ? 0 : mPropertyTypes->count();
 }
 
 QVariant PropertyTypesModel::data(const QModelIndex &index, int role) const
@@ -56,11 +61,16 @@ QVariant PropertyTypesModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    const PropertyType &propertyType = mPropertyTypes.at(index.row());
+    const auto &propertyType = mPropertyTypes->typeAt(index.row());
 
     if (role == Qt::DisplayRole || role == Qt::EditRole)
         if (index.column() == 0)
             return propertyType.name;
+
+    if (role == Qt::DecorationRole) {
+        if (index.column() == 0)
+            return iconForPropertyType(propertyType.type);
+    }
 
     return QVariant();
 }
@@ -86,36 +96,30 @@ Qt::ItemFlags PropertyTypesModel::flags(const QModelIndex &index) const
 
 void PropertyTypesModel::setPropertyTypeName(int row, const QString &name)
 {
-    PropertyType propertyType = mPropertyTypes.at(row);
-    propertyType.name = name.trimmed();
+    auto &propertyTypes = *mPropertyTypes;
 
-    auto nextPropertyType = std::lower_bound(mPropertyTypes.constBegin(),
-                                             mPropertyTypes.constEnd(),
-                                             propertyType,
+    const std::unique_ptr<PropertyType> typeWithName = std::make_unique<EnumPropertyType>(name.trimmed());
+    auto nextPropertyType = std::lower_bound(propertyTypes.begin(),
+                                             propertyTypes.end(),
+                                             typeWithName.get(),
                                              propertyTypeLessThan);
 
-    const int newRow = nextPropertyType - mPropertyTypes.constBegin();
+    const int newRow = nextPropertyType - propertyTypes.begin();
     // QVector::move works differently from beginMoveRows
     const int moveToRow = newRow > row ? newRow - 1 : newRow;
 
-    mPropertyTypes[row].name = propertyType.name;
+    propertyTypes.typeAt(row).name = typeWithName->name;
     const auto index = this->index(row);
-    emit nameChanged(index, mPropertyTypes[row]);
+    emit nameChanged(index, propertyTypes.typeAt(row));
     emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
 
     if (moveToRow != row) {
         Q_ASSERT(newRow != row);
         Q_ASSERT(newRow != row + 1);
         beginMoveRows(QModelIndex(), row, row, QModelIndex(), newRow);
-        mPropertyTypes.move(row, moveToRow);
+        propertyTypes.moveType(row, moveToRow);
         endMoveRows();
     }
-}
-
-void PropertyTypesModel::setPropertyTypeValues(int index,
-                                               const QStringList &values)
-{
-    mPropertyTypes[index].values = values;
 }
 
 void PropertyTypesModel::removePropertyTypes(const QModelIndexList &indexes)
@@ -129,36 +133,71 @@ void PropertyTypesModel::removePropertyTypes(const QModelIndexList &indexes)
     for (int i = rows.size() - 1; i >= 0; --i) {
         const int row = rows.at(i);
         beginRemoveRows(QModelIndex(), row, row);
-        mPropertyTypes.remove(row);
+        mPropertyTypes->removeAt(row);
         endRemoveRows();
     }
 }
 
-QModelIndex PropertyTypesModel::addNewPropertyType()
+QModelIndex PropertyTypesModel::addNewPropertyType(PropertyType::Type type)
 {
-    const int row = mPropertyTypes.size();
+    std::unique_ptr<PropertyType> propertyType;
+    const auto name = nextPropertyTypeName(type);
+
+    switch (type) {
+    case PropertyType::PT_Invalid:  // should never happen
+        break;
+    case PropertyType::PT_Class:
+        propertyType = std::make_unique<ClassPropertyType>(name);
+        break;
+    case PropertyType::PT_Enum:
+        propertyType = std::make_unique<EnumPropertyType>(name);
+        break;
+    }
+
+    if (!propertyType)
+        return QModelIndex();
+
+    const int row = mPropertyTypes->count();
+
     beginInsertRows(QModelIndex(), row, row);
 
-    PropertyType propertyType;
-    propertyType.id = ++PropertyType::nextId;
-    propertyType.name = nextPropertyTypeName();
-    mPropertyTypes.append(propertyType);
+    propertyType->id = ++PropertyType::nextId;
+    mPropertyTypes->add(std::move(propertyType));
 
     endInsertRows();
+
     return index(row, 0);
 }
 
-QString PropertyTypesModel::nextPropertyTypeName() const
+QIcon PropertyTypesModel::iconForPropertyType(PropertyType::Type type)
 {
-    const auto baseText = tr("Enum");
+    switch (type) {
+    case PropertyType::PT_Invalid:
+        break;
+    case PropertyType::PT_Class: {
+        static QIcon classIcon(QStringLiteral("://images/scalable/property-type-class.svg"));
+        return classIcon;
+    }
+    case PropertyType::PT_Enum: {
+        static QIcon enumIcon(QStringLiteral("://images/scalable/property-type-enum.svg"));
+        return enumIcon;
+    }
+    }
+    return QIcon();
+}
+
+QString PropertyTypesModel::nextPropertyTypeName(PropertyType::Type type) const
+{
+    const auto baseText = type == PropertyType::PT_Enum ? tr("Enum")
+                                                        : tr("Class");
 
     // Search for a unique value, starting from the current count
-    int number = mPropertyTypes.count();
+    auto number = mPropertyTypes->count(type);
     QString name;
     do {
         name = baseText + QString::number(number++);
-    } while (contains_where(mPropertyTypes,
-                            [&] (const PropertyType &type) { return type.name == name; }));
+    } while (contains_where(*mPropertyTypes,
+                            [&] (const PropertyType *type) { return type->name == name; }));
 
     return name;
 }

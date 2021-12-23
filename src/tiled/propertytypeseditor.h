@@ -24,7 +24,16 @@
 
 #include <QDialog>
 
+class QCheckBox;
+class QComboBox;
+class QFormLayout;
+class QItemSelection;
+class QLineEdit;
 class QStringListModel;
+class QTreeView;
+
+class QtBrowserItem;
+class QtTreePropertyBrowser;
 
 namespace Ui {
 class PropertyTypesEditor;
@@ -32,6 +41,7 @@ class PropertyTypesEditor;
 
 namespace Tiled {
 
+class CustomPropertiesHelper;
 class PropertyTypesModel;
 
 class PropertyTypesEditor : public QDialog
@@ -50,41 +60,72 @@ protected:
     void changeEvent(QEvent *e) override;
 
 private:
-    void addPropertyType();
+    void addPropertyType(PropertyType::Type type);
     void selectedPropertyTypesChanged();
     void removeSelectedPropertyTypes();
     QModelIndex selectedPropertyTypeIndex() const;
+    PropertyType *selectedPropertyType() const;
+
+    void currentMemberItemChanged(QtBrowserItem *item);
 
     void propertyTypeNameChanged(const QModelIndex &index,
                                  const PropertyType &type);
+    void applyMemberToSelectedType(const QString &name, const QVariant &value);
     void applyPropertyTypes();
     void propertyTypesChanged();
 
-    void updateValues();
-    void updateActions();
+    void updateDetails();
+    void selectedValuesChanged(const QItemSelection &selected);
 
+    void setCurrentPropertyType(PropertyType::Type type);
+
+    void setStorageType(EnumPropertyType::StorageType storageType);
+    void setValuesAsFlags(bool flags);
     void addValue();
     void removeValues();
+
+    void openAddMemberDialog();
+    void addMember(const QString &name, const QVariant &value = QVariant());
+    void editMember(const QString &name);
+    void removeMember();
+    void renameMember();
+    void renameMemberTo(const QString &name);
 
     void selectFirstPropertyType();
     void valuesChanged();
     void nameChanged(const QString &name);
 
+    void memberValueChanged(const QString &name, const QVariant &value);
+
     void retranslateUi();
 
     Ui::PropertyTypesEditor *mUi;
     PropertyTypesModel *mPropertyTypesModel;
+    QFormLayout *mDetailsLayout = nullptr;
+    QLineEdit *mNameEdit = nullptr;
+    QComboBox *mStorageTypeComboBox = nullptr;
+    QCheckBox *mValuesAsFlagsCheckBox = nullptr;
+    QTreeView *mValuesView = nullptr;
     QStringListModel *mValuesModel;
+    QtTreePropertyBrowser *mMembersView = nullptr;
+    CustomPropertiesHelper *mPropertiesHelper = nullptr;
 
     bool mSettingPrefPropertyTypes = false;
     bool mSettingName = false;
-    bool mUpdatingValues = false;
+    bool mUpdatingDetails = false;
 
-    QAction *mAddPropertyTypeAction;
+    QAction *mAddEnumPropertyTypeAction;
+    QAction *mAddClassPropertyTypeAction;
     QAction *mRemovePropertyTypeAction;
 
     QAction *mAddValueAction;
     QAction *mRemoveValueAction;
+
+    QAction *mAddMemberAction;
+    QAction *mRemoveMemberAction;
+    QAction *mRenameMemberAction;
+
+    PropertyType::Type mCurrentPropertyType = PropertyType::PT_Invalid;
 };
 
 } // namespace Tiled

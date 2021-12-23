@@ -28,41 +28,190 @@
 
 #pragma once
 
+#include <QMetaType>
+#include <QSharedPointer>
 #include <QStringList>
 #include <QVariant>
 #include <QVector>
-#include <QMetaType>
 
+#include "containerhelpers.h"
 #include "tiled_global.h"
+
+#include <memory>
 
 namespace Tiled {
 
+class ExportContext;
+
+class TILEDSHARED_EXPORT ExportValue
+{
+public:
+    QVariant value;
+    QString typeName;
+    QString propertyTypeName;
+};
+
 /**
- * Defines a custom property type. Currently this includes only enums.
+ * The base class for custom property types.
  */
 class TILEDSHARED_EXPORT PropertyType
 {
 public:
+    enum Type {
+        PT_Invalid,
+        PT_Class,
+        PT_Enum
+    };
+
+    const Type type;
     int id = 0;
     QString name;
-    QStringList values;
+
+    virtual ~PropertyType() = default;
+
+    QVariant wrap(const QVariant &value) const;
+
+    virtual ExportValue toExportValue(const QVariant &value, const ExportContext &) const;
+    virtual QVariant toPropertyValue(const QVariant &value, const ExportContext &) const;
+
+    virtual QVariant defaultValue() const = 0;
+
+    virtual QVariantMap toVariant(const ExportContext &) const;
+    virtual void fromVariant(const QVariantMap &variant) = 0;
+
+    virtual void resolveDependencies(const ExportContext &) {};
 
     static int nextId;
 
-    QVariant wrap(const QVariant &value) const;
-    QVariant unwrap(const QVariant &value) const;
+    static std::unique_ptr<PropertyType> createFromVariant(const QVariantMap &variant);
 
-    QVariant defaultValue() const;
+    static Type typeFromString(const QString &string);
+    static QString typeToString(Type type);
 
-    QVariantHash toVariant() const;
-    static PropertyType fromVariant(const QVariant &variant);
+protected:
+    PropertyType(Type type, const QString &name)
+        : type(type)
+        , name(name)
+    {}
 };
 
-using PropertyTypes = QVector<PropertyType>;
+/**
+ * A user-defined enum, for use as custom property.
+ */
+class TILEDSHARED_EXPORT EnumPropertyType final : public PropertyType
+{
+public:
+    enum StorageType {
+        StringValue,
+        IntValue
+    };
 
-TILEDSHARED_EXPORT const PropertyType *findTypeById(const QVector<PropertyType> &types, int typeId);
-TILEDSHARED_EXPORT const PropertyType *findTypeByName(const QVector<PropertyType> &types, const QString &name);
+    StorageType storageType = StringValue;
+    QStringList values;
+    bool valuesAsFlags = false;
+
+    EnumPropertyType(const QString &name) : PropertyType(PT_Enum, name) {}
+
+    ExportValue toExportValue(const QVariant &value, const ExportContext &) const override;
+    QVariant toPropertyValue(const QVariant &value, const ExportContext &) const override;
+
+    QVariant defaultValue() const override;
+
+    QVariantMap toVariant(const ExportContext &) const override;
+    void fromVariant(const QVariantMap &variant) override;
+
+    static StorageType storageTypeFromString(const QString &string);
+    static QString storageTypeToString(StorageType type);
+};
+
+/**
+ * A user-defined class, for use as custom property.
+ */
+class TILEDSHARED_EXPORT ClassPropertyType final : public PropertyType
+{
+public:
+    QVariantMap members;
+
+    ClassPropertyType(const QString &name) : PropertyType(PT_Class, name) {}
+
+    ExportValue toExportValue(const QVariant &value, const ExportContext &) const override;
+    QVariant toPropertyValue(const QVariant &value, const ExportContext &) const override;
+
+    QVariant defaultValue() const override;
+
+    QVariantMap toVariant(const ExportContext &context) const override;
+    void fromVariant(const QVariantMap &variant) override;
+
+    void resolveDependencies(const ExportContext &context) override;
+
+    bool canAddMemberOfType(const PropertyType *classType) const;
+};
+
+/**
+ * Container class for property types.
+ */
+class TILEDSHARED_EXPORT PropertyTypes
+{
+    using Types = QVector<PropertyType*>;
+
+public:
+    ~PropertyTypes();
+
+    void add(std::unique_ptr<PropertyType> type);
+    void clear();
+    size_t count() const;
+    size_t count(PropertyType::Type type) const;
+    void removeAt(int index);
+    PropertyType &typeAt(int index);
+    void moveType(int from, int to);
+
+    const PropertyType *findTypeById(int typeId) const;
+    const PropertyType *findTypeByName(const QString &name) const;
+
+    void loadFrom(const QVariantList &list, const QString &path = QString());
+
+    // Enable easy iteration over types with range-based for
+    Types::iterator begin() { return mTypes.begin(); }
+    Types::iterator end() { return mTypes.end(); }
+    Types::const_iterator begin() const { return mTypes.begin(); }
+    Types::const_iterator end() const { return mTypes.end(); }
+
+private:
+    Types mTypes;
+};
+
+inline void PropertyTypes::add(std::unique_ptr<PropertyType> type)
+{
+    mTypes.append(type.release());
+}
+
+inline void PropertyTypes::clear()
+{
+    mTypes.clear();
+}
+
+inline size_t PropertyTypes::count() const
+{
+    return mTypes.size();
+}
+
+inline void PropertyTypes::removeAt(int index)
+{
+    delete mTypes.takeAt(index);
+}
+
+inline PropertyType &PropertyTypes::typeAt(int index)
+{
+    return *mTypes.at(index);
+}
+
+inline void PropertyTypes::moveType(int from, int to)
+{
+    mTypes.move(from, to);
+}
+
+using SharedPropertyTypes = QSharedPointer<PropertyTypes>;
 
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::PropertyType);
+Q_DECLARE_METATYPE(Tiled::PropertyType*);

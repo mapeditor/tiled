@@ -28,7 +28,7 @@
 
 #pragma once
 
-#include "tiled_global.h"
+#include "propertytype.h"
 
 #include <QJsonArray>
 #include <QObject>
@@ -78,33 +78,27 @@ public:
     static ObjectRef fromInt(int id) { return ObjectRef { id }; }
 };
 
-class TILEDSHARED_EXPORT ExportValue
-{
-public:
-    QVariant value;
-    QString typeName;
-    QString propertyTypeName;
-};
-
 class TILEDSHARED_EXPORT ExportContext
 {
 public:
     explicit ExportContext(const QString &path = QString());
-    ExportContext(const QVector<PropertyType> &types, const QString &path)
+    ExportContext(const PropertyTypes &types, const QString &path)
         : mTypes(types)
         , mPath(path)
     {}
 
     // need to prevent this one since we're only holding a reference to the types
-    ExportContext(const QVector<PropertyType> &&types, const QString &path) = delete;
+    ExportContext(const PropertyTypes &&types, const QString &path) = delete;
 
+    const PropertyTypes &types() const { return mTypes; }
     const QString &path() const { return mPath; }
 
     ExportValue toExportValue(const QVariant &value) const;
     QVariant toPropertyValue(const ExportValue &exportValue) const;
+    QVariant toPropertyValue(const QVariant &value, int metaType) const;
 
 private:
-    const QVector<PropertyType> &mTypes;
+    const PropertyTypes &mTypes;
     const QString mPath;
 };
 
@@ -112,14 +106,11 @@ class TILEDSHARED_EXPORT AggregatedPropertyData
 {
 public:
     AggregatedPropertyData()
-        : mPresenceCount(0)
-        , mValueConsistent(true)
     {}
 
     explicit AggregatedPropertyData(const QVariant &value)
         : mValue(value)
         , mPresenceCount(1)
-        , mValueConsistent(true)
     {}
 
     void aggregate(const QVariant &value)
@@ -141,8 +132,8 @@ public:
 
 private:
     QVariant mValue;
-    int mPresenceCount;
-    bool mValueConsistent;
+    int mPresenceCount = 0;
+    bool mValueConsistent = true;
 };
 
 /**

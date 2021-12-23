@@ -5376,8 +5376,8 @@ void QtFlagPropertyManager::setValue(QtProperty *property, int val)
 
 /*!
     Sets the given \a property's list of flag names to \a flagNames. The
-    property's current value is reset to 0 indicating the first item
-    of the list.
+    property's current value is cleared of any flags for which no name is
+    provided.
 
     \sa flagNames(), flagNamesChanged()
 */
@@ -5393,7 +5393,7 @@ void QtFlagPropertyManager::setFlagNames(QtProperty *property, const QStringList
         return;
 
     data.flagNames = flagNames;
-    data.val = 0;
+    data.val &= ((1 << data.flagNames.count()) - 1);
 
     it.value() = data;
 
@@ -5408,13 +5408,15 @@ void QtFlagPropertyManager::setFlagNames(QtProperty *property, const QStringList
     d_ptr->m_propertyToFlags[property].clear();
 
     QStringListIterator itFlag(flagNames);
+    int level = 0;
     while (itFlag.hasNext()) {
         const QString flagName = itFlag.next();
-        QtProperty *prop = d_ptr->m_boolPropertyManager->addProperty();
-        prop->setPropertyName(flagName);
+        QtProperty *prop = d_ptr->m_boolPropertyManager->addProperty(flagName);
+        d_ptr->m_boolPropertyManager->setValue(prop, data.val & (1 << level));
         property->addSubProperty(prop);
         d_ptr->m_propertyToFlags[property].append(prop);
         d_ptr->m_flagToProperty[prop] = property;
+        level++;
     }
 
     emit flagNamesChanged(property, data.flagNames);

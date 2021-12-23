@@ -799,7 +799,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
     mShowObjectTypesEditor->setCheckable(true);
 
-    mShowPropertyTypesEditor = new QAction(tr("Enums Editor"), this);
+    mShowPropertyTypesEditor = new QAction(tr("Property Types Editor"), this);
     mShowPropertyTypesEditor->setCheckable(true);
 
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
@@ -1034,7 +1034,6 @@ void MainWindow::initializeSession()
     bool projectLoaded = !session.project.isEmpty() && project.load(session.project);
 
     if (projectLoaded) {
-        Preferences::instance()->setObjectTypesFile(project.mObjectTypesFile);
         ProjectManager::instance()->setProject(std::move(project));
         updateWindowTitle();
         updateActions();
@@ -1517,7 +1516,6 @@ bool MainWindow::switchProject(Project project)
         prefs->addRecentProject(project.fileName());
     }
 
-    prefs->setObjectTypesFile(project.mObjectTypesFile);
     ProjectManager::instance()->setProject(std::move(project));
 
     restoreSession();
@@ -2344,7 +2342,7 @@ void MainWindow::retranslateUi()
     mResetToDefaultLayout->setText(tr("Reset to Default Layout"));
     mLockLayout->setText(tr("Lock Layout"));
     mShowObjectTypesEditor->setText(tr("Object Types Editor"));
-    mShowPropertyTypesEditor->setText(tr("Enums Editor"));
+    mShowPropertyTypesEditor->setText(tr("Property Types Editor"));
     mActionHandler->retranslateUi();
     CommandManager::instance()->retranslateUi();
 }

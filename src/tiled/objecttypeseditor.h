@@ -20,22 +20,18 @@
 
 #pragma once
 
-#include "custompropertieshelper.h"
-#include "properties.h"
-
 #include <QDialog>
-#include <QStyledItemDelegate>
+#include <QVariant>
 
 namespace Ui {
 class ObjectTypesEditor;
 }
 
 class QtBrowserItem;
-class QtProperty;
-class QtVariantPropertyManager;
 
 namespace Tiled {
 
+class CustomPropertiesHelper;
 class ObjectTypesModel;
 
 class ObjectTypesEditor : public QDialog
@@ -67,7 +63,7 @@ private:
     void exportObjectTypes();
 
     void updateProperties();
-    void propertyValueChanged(QtProperty *property, const QVariant &val);
+    void propertyValueChanged(const QString &name, const QVariant &val);
 
     void openAddPropertyDialog();
     void addProperty(const QString &name, const QVariant &value = QVariant());
@@ -84,10 +80,8 @@ private:
     Ui::ObjectTypesEditor *mUi;
     ObjectTypesModel *mObjectTypesModel;
 
-    QtVariantPropertyManager *mVariantManager;
-    CustomPropertiesHelper mPropertiesHelper;
+    CustomPropertiesHelper *mPropertiesHelper;
 
-    AggregatedProperties mProperties;
     bool mUpdating = false;
     bool mSettingPrefObjectTypes = false;
 
