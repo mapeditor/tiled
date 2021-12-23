@@ -1034,7 +1034,6 @@ void MainWindow::initializeSession()
     bool projectLoaded = !session.project.isEmpty() && project.load(session.project);
 
     if (projectLoaded) {
-        Preferences::instance()->setObjectTypesFile(project.mObjectTypesFile);
         ProjectManager::instance()->setProject(std::move(project));
         updateWindowTitle();
         updateActions();
@@ -1517,7 +1516,6 @@ bool MainWindow::switchProject(Project project)
         prefs->addRecentProject(project.fileName());
     }
 
-    prefs->setObjectTypesFile(project.mObjectTypesFile);
     ProjectManager::instance()->setProject(std::move(project));
 
     restoreSession();
