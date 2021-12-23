@@ -1794,6 +1794,8 @@ void MainWindow::toggleClearView(bool clearView)
         mMainWindowStates.clear();
     }
 
+    layout()->activate();
+
     if (mapEditor) {
         mapEditor->editorWidget()->layout()->activate();
 
