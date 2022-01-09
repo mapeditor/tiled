@@ -287,7 +287,7 @@
     <message>
         <location filename="../src/tiled/donationpopup.cpp" line="+42"/>
         <source>Please consider supporting Tiled development with a small monthly donation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vänligen överväg att stödja Tiled-utvecklingen med en liten månatlig donation.</translation>
     </message>
     <message>
         <location line="+2"/>
