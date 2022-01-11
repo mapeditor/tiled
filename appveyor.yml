@@ -114,6 +114,7 @@ deploy:
         secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
     on:
         appveyor_repo_tag: false
+        branch: master
         push_release: true
 
   - provider: Webhook
