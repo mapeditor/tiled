@@ -59,7 +59,7 @@ jobs:
 
     - name: Install Qt
       run: |
-        ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtsvg qtimageformats qttools icu | tee -a $GITHUB_PATH
+        ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtsvg qtimageformats qttools qttranslations icu | tee -a $GITHUB_PATH
         ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
 
     - name: Setup CMake
