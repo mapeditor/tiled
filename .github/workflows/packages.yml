@@ -263,7 +263,7 @@ jobs:
         path: Tiled-*.msi
 
     - name: Upload Tiled archive
-      uses: actions/upload-artifact@v2.2.4
+      uses: actions/upload-artifact@v2
       with:
         name: Tiled-win${{ matrix.arch }}
         path: release/install-root/*
