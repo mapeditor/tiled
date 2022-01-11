@@ -46,6 +46,7 @@
 * libtiled-java: Introduced TilesetCache interface (by Samuel Manflame, #3117)
 * Disable the Terrain Set type property when appropriate (avoids crash)
 * Added Ukrainian translation to Windows installer (#3132)
+* Updated to Sentry 0.4.13
 * Updated Korean, Ukrainian and Traditional Chinese translations
 
 ### Tiled 1.7.2 (10 August 2021)
