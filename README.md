@@ -12,7 +12,7 @@ Maps, layers, tiles, and objects can all be assigned arbitrary properties.
 Tiled's map format (TMX) is easy to understand and allows multiple tilesets to
 be used in any map. Tilesets can be modified at any time.
 
-[![Build Status](https://api.travis-ci.com/mapeditor/tiled.svg?branch=master&status=passed)](https://travis-ci.com/github/mapeditor/tiled)
+[![Build Packages](https://github.com/mapeditor/tiled/actions/workflows/packages.yml/badge.svg)](https://github.com/mapeditor/tiled/actions/workflows/packages.yml?query=branch%3Amaster+event%3Apush)
 [![Build status](https://ci.appveyor.com/api/projects/status/ceb79jn5cf99y3qd/branch/master?svg=true)](https://ci.appveyor.com/project/bjorn/tiled/branch/master)
 [![Snap](https://snapcraft.io/tiled/badge.svg)](https://snapcraft.io/tiled)
 [![Translation status](https://hosted.weblate.org/widgets/tiled/-/shields-badge.svg)](https://hosted.weblate.org/engage/tiled/?utm_source=widget)
