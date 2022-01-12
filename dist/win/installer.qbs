@@ -38,6 +38,7 @@ WindowsInstallerPackage {
             "InstallRoot=" + qbs.installRoot,
             "QtDir=" + FileInfo.joinPaths(Qt.core.binPath, ".."),
             "QtVersionMajor=" + Qt.core.versionMajor,
+            "QtVersionMinor=" + Qt.core.versionMinor,
             "RootDir=" + project.sourceDirectory
         ];
 

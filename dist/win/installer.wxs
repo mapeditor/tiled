@@ -90,7 +90,7 @@
             <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Qml.dll"/>
             <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Svg.dll"/>
             <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Widgets.dll"/>
-            <?if $(var.QtVersionMajor) = 6 ?>
+            <?if $(var.QtVersionMajor) >= 6 ?>
               <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)OpenGL.dll"/>
               <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)OpenGLWidgets.dll"/>
             <?endif ?>
@@ -203,6 +203,15 @@
               </Component>
             </Directory>
             <?endif?>
+            <?if $(var.QtVersionMajor) >= 6 and $(var.QtVersionMinor) >= 2 ?>
+            <Directory Id="tlsPlugins" Name="tls">
+              <Component Id="TlsPlugins" Guid="{98C9FB27-68C9-4B85-AE3B-B59B3735A38E}">
+                <File Source="$(var.QtDir)\plugins\tls\qcertonlybackend.dll"/>
+                <File Source="$(var.QtDir)\plugins\tls\qopensslbackend.dll"/>
+                <File Source="$(var.QtDir)\plugins\tls\qschannelbackend.dll"/>
+              </Component>
+            </Directory>
+            <?endif ?>
           </Directory>
 
           <Directory Id="dir674F7F6D2030C2EBF39AA06B57EAF368" Name="translations">
@@ -239,7 +248,12 @@
               <File Source="$(var.QtDir)\translations\qt_he.qm"/>
               <File Source="$(var.QtDir)\translations\qt_ja.qm"/>
               <File Source="$(var.QtDir)\translations\qt_pl.qm"/>
-              <File Source="$(var.QtDir)\translations\qt_pt.qm"/>
+              <?if $(var.QtVersionMajor) >= 6 and $(var.QtVersionMinor) >= 2 ?>
+                <File Source="$(var.QtDir)\translations\qt_pt_BR.qm"/>
+                <File Source="$(var.QtDir)\translations\qt_pt_PT.qm"/>
+              <?else ?>
+                <File Source="$(var.QtDir)\translations\qt_pt.qm"/>
+              <?endif ?>
               <File Source="$(var.QtDir)\translations\qt_ru.qm"/>
               <File Source="$(var.QtDir)\translations\qt_sv.qm"/>
               <File Source="$(var.QtDir)\translations\qt_uk.qm"/>
@@ -430,7 +444,10 @@
       <ComponentRef Id='ImageFormatPlugins' />
       <ComponentRef Id='IconEnginePlugins' />
       <?ifdef WindowsVistaStyle ?>
-      <ComponentRef Id='StylePlugins' />
+        <ComponentRef Id='StylePlugins' />
+      <?endif?>
+      <?if $(var.QtVersionMajor) >= 6 and $(var.QtVersionMinor) >= 2 ?>
+        <ComponentRef Id='TlsPlugins' />
       <?endif?>
       <ComponentRef Id='ProgramMenuDir' />
     </Feature>
