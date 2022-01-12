@@ -21,6 +21,13 @@
 #pragma once
 
 #include <QSGGeometryNode>
+
+// Needed to avoid include issue when compiling with mingw_900
+#if defined(Q_OS_WIN) && QT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 #include <QSGTextureMaterial>
 
 #include "tiledquick_global.h"

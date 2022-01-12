@@ -9,6 +9,12 @@ StaticLibrary {
     cpp.includePaths: ["src"]
     cpp.cxxLanguageVersion: "c++14"
 
+    Properties {
+        // needed to work around "too many sections" issue in qteditorfactory.cpp
+        condition: Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 2 && qbs.toolchain.contains("mingw")
+        cpp.cxxFlags: ["-Wa,-mbig-obj"]
+    }
+
     files: [
         "src/qtbuttonpropertybrowser.cpp",
         "src/qtbuttonpropertybrowser.h",

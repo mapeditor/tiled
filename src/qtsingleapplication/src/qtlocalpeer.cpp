@@ -47,6 +47,13 @@
 
 #if defined(Q_OS_WIN)
 #include <QLibrary>
+
+// Needed to avoid include issue when compiling with mingw_900
+#if QT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 #include <qt_windows.h>
 typedef BOOL(WINAPI*PProcessIdToSessionId)(DWORD,DWORD*);
 static PProcessIdToSessionId pProcessIdToSessionId = 0;
