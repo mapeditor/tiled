@@ -104,9 +104,14 @@
 #include <QUndoView>
 #include <QVariantAnimation>
 
-#if defined(Q_OS_WIN) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#ifdef Q_OS_WIN
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QWindow>
+#include <QtGui/qpa/qplatformwindow_p.h>
+#else
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif
+#endif // Q_OS_WIN
 
 #include "locatorwidget.h"
 #include "qtcompat_p.h"
@@ -881,7 +886,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mAutomappingManager, &AutomappingManager::errorsOccurred,
             this, &MainWindow::autoMappingError);
 
-#if defined(Q_OS_WIN) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#ifdef Q_OS_WIN
     connect(preferences, &Preferences::useOpenGLChanged, this, &MainWindow::ensureHasBorderInFullScreen);
 #endif
 
@@ -923,7 +928,7 @@ void MainWindow::commitData(QSessionManager &manager)
 
 bool MainWindow::event(QEvent *event)
 {
-#if defined(Q_OS_WIN) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#ifdef Q_OS_WIN
     if (event->type() == QEvent::WinIdChange)
         ensureHasBorderInFullScreen();
 #endif
@@ -2028,7 +2033,7 @@ void MainWindow::onPropertyTypesEditorClosed()
 
 void MainWindow::ensureHasBorderInFullScreen()
 {
-#if defined(Q_OS_WIN) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#ifdef Q_OS_WIN
     // Workaround issue #1576
     static bool hasBorderInFullScreen = false;
 
@@ -2044,7 +2049,13 @@ void MainWindow::ensureHasBorderInFullScreen()
 
     bool wasFullScreen = isFullScreen();
     setFullScreen(false);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QWindowsWindowFunctions::setHasBorderInFullScreen(window, true);
+#else
+    using QWindowsWindow = QNativeInterface::Private::QWindowsWindow;
+    if (auto windowsWindow = window->nativeInterface<QWindowsWindow>())
+        windowsWindow->setHasBorderInFullScreen(true);
+#endif
     setFullScreen(wasFullScreen);
 
     hasBorderInFullScreen = true;
