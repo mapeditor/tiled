@@ -71,7 +71,7 @@ jobs:
       run: |
         qbs --version
         qbs setup-toolchains --detect
-        qbs config defaultProfile x86_64-linux-gnu-gcc-9
+        qbs config defaultProfile x86_64-linux-gnu-gcc-10
 
     - name: Build Sentry Native
       run: |
