@@ -157,7 +157,7 @@ class TILEDSHARED_EXPORT PropertyTypes
 public:
     ~PropertyTypes();
 
-    void add(std::unique_ptr<PropertyType> type);
+    PropertyType &add(std::unique_ptr<PropertyType> type);
     void clear();
     size_t count() const;
     size_t count(PropertyType::Type type) const;
@@ -180,9 +180,10 @@ private:
     Types mTypes;
 };
 
-inline void PropertyTypes::add(std::unique_ptr<PropertyType> type)
+inline PropertyType &PropertyTypes::add(std::unique_ptr<PropertyType> type)
 {
     mTypes.append(type.release());
+    return *mTypes.last();
 }
 
 inline void PropertyTypes::clear()
