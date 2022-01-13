@@ -2,6 +2,8 @@
 
 #include <QtTest/QtTest>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 
 constexpr auto propertyTypesJson = R"([
