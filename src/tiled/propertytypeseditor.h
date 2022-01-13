@@ -62,7 +62,7 @@ protected:
 private:
     void addPropertyType(PropertyType::Type type);
     void selectedPropertyTypesChanged();
-    void removeSelectedPropertyTypes();
+    void removeSelectedPropertyType();
     QModelIndex selectedPropertyTypeIndex() const;
     PropertyType *selectedPropertyType() const;
 

@@ -37,6 +37,7 @@
 #include <QComboBox>
 #include <QFormLayout>
 #include <QInputDialog>
+#include <QMessageBox>
 #include <QScopedValueRollback>
 #include <QStringListModel>
 #include <QToolBar>
@@ -53,6 +54,13 @@ static QToolBar *createSmallToolBar(QWidget *parent)
     toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     toolBar->setIconSize(Utils::smallIconSize());
     return toolBar;
+}
+
+static bool confirm(const QString &title, const QString& text, QWidget *parent)
+{
+    return QMessageBox::warning(parent, title, text,
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::No) == QMessageBox::Yes;
 }
 
 PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
@@ -128,7 +136,7 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     connect(mAddClassPropertyTypeAction, &QAction::triggered,
             this, [this] { addPropertyType(PropertyType::PT_Class); });
     connect(mRemovePropertyTypeAction, &QAction::triggered,
-            this, &PropertyTypesEditor::removeSelectedPropertyTypes);
+            this, &PropertyTypesEditor::removeSelectedPropertyType);
 
     connect(mAddValueAction, &QAction::triggered,
                 this, &PropertyTypesEditor::addValue);
@@ -229,15 +237,25 @@ void PropertyTypesEditor::selectedPropertyTypesChanged()
     updateDetails();
 }
 
-void PropertyTypesEditor::removeSelectedPropertyTypes()
+void PropertyTypesEditor::removeSelectedPropertyType()
 {
     // Cancel potential editor first, since letting it apply can cause
     // reordering of the types in setData, which would cause the wrong types to
     // get removed.
     mUi->propertyTypesView->closePersistentEditor(mUi->propertyTypesView->currentIndex());
 
-    const QItemSelectionModel *sm = mUi->propertyTypesView->selectionModel();
-    mPropertyTypesModel->removePropertyTypes(sm->selectedRows());
+    const QModelIndex selectedIndex = selectedPropertyTypeIndex();
+    const auto *propertyType = mPropertyTypesModel->propertyTypeAt(selectedIndex);
+    if (!propertyType)
+        return;
+
+    if (!confirm(tr("Remove Type"),
+                 tr("Are you sure you want to remove the type '%1'? This action cannot be undone.")
+                 .arg(propertyType->name), this)) {
+        return;
+    }
+
+    mPropertyTypesModel->removePropertyTypes({ selectedIndex });
 }
 
 /**
@@ -374,6 +392,16 @@ void PropertyTypesEditor::addValue()
 
 void PropertyTypesEditor::removeValues()
 {
+    PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType || propertyType->type != PropertyType::PT_Enum)
+        return;
+
+    if (!confirm(tr("Remove Values"),
+                 tr("Are you sure you want to remove the selected values from enum '%1'? This action cannot be undone.")
+                 .arg(propertyType->name), this)) {
+        return;
+    }
+
     const QItemSelection selection = mValuesView->selectionModel()->selection();
     for (const QItemSelectionRange &range : selection)
         mValuesModel->removeRows(range.top(), range.height());
@@ -419,7 +447,17 @@ void PropertyTypesEditor::removeMember()
     if (!item)
         return;
 
+    PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType || propertyType->type != PropertyType::PT_Class)
+        return;
+
     const QString name = item->property()->propertyName();
+
+    if (!confirm(tr("Remove Member"),
+                 tr("Are you sure you want to remove '%1' from class '%2'? This action cannot be undone.")
+                 .arg(name, propertyType->name), this)) {
+        return;
+    }
 
     // Select a different item before removing the current one
     QList<QtBrowserItem *> items = mMembersView->topLevelItems();
@@ -432,10 +470,6 @@ void PropertyTypesEditor::removeMember()
     }
 
     mPropertiesHelper->deleteProperty(item->property());
-
-    PropertyType *propertyType = selectedPropertyType();
-    if (!propertyType || propertyType->type != PropertyType::PT_Class)
-        return;
 
     static_cast<ClassPropertyType&>(*propertyType).members.remove(name);
 
