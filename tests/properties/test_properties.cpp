@@ -87,6 +87,54 @@ constexpr auto propertyTypesJson = R"([
 ]
 )";
 
+constexpr auto propertyTypesWithCircularReference = R"([
+    {
+        "id": 1,
+        "members": [
+            {
+                "name": "self",
+                "propertyType": "ClassReferencingItself",
+                "type": "class",
+                "value": {}
+            }
+        ],
+        "name": "ClassReferencingItself",
+        "type": "class"
+    }
+]
+)";
+
+constexpr auto propertyTypesWithCircularReference2 = R"([
+    {
+        "id": 1,
+        "members": [
+            {
+                "name": "b",
+                "propertyType": "B",
+                "type": "class",
+                "value": {}
+            }
+        ],
+        "name": "A",
+        "type": "class"
+    },
+    {
+        "id": 2,
+        "members": [
+            {
+                "name": "a",
+                "propertyType": "A",
+                "type": "class",
+                "value": {}
+            }
+        ],
+        "name": "B",
+        "type": "class"
+    }
+]
+)";
+
+
 class test_Properties : public QObject
 {
     Q_OBJECT
@@ -95,6 +143,8 @@ private slots:
     void initTestCase();
 
     void loadAndSavePropertyTypes();
+    void loadCircularReference();
+
     void loadProperties();
     void saveProperties();
 
@@ -156,6 +206,36 @@ void test_Properties::loadAndSavePropertyTypes()
 
     const auto json = QJsonDocument(propertyTypesJsonArray).toJson();
     QCOMPARE(json, propertyTypesJson);
+}
+
+void test_Properties::loadCircularReference()
+{
+    QJsonParseError error;
+    auto doc = QJsonDocument::fromJson(propertyTypesWithCircularReference, &error);
+    QVERIFY(error.error == QJsonParseError::NoError);
+
+    PropertyTypes types;
+    types.loadFrom(doc.array().toVariantList(), QString());
+
+    const auto type = types.findTypeByName(QStringLiteral("ClassReferencingItself"));
+    QVERIFY(type);
+    QCOMPARE(type->type, PropertyType::PT_Class);
+
+    // Verify the circular reference is not present
+    const auto &members = static_cast<const ClassPropertyType*>(type)->members;
+    QVERIFY(!members.contains(QStringLiteral("self")));
+
+    doc = QJsonDocument::fromJson(propertyTypesWithCircularReference2, &error);
+    QVERIFY(error.error == QJsonParseError::NoError);
+
+    types.loadFrom(doc.array().toVariantList(), QString());
+
+    // Verify the back reference is not present
+    const auto b = types.findTypeByName(QStringLiteral("B"));
+    QVERIFY(b);
+    QCOMPARE(b->type, PropertyType::PT_Class);
+    const auto &membersB = static_cast<const ClassPropertyType*>(b)->members;
+    QVERIFY(!membersB.contains(QStringLiteral("a")));
 }
 
 void test_Properties::loadProperties()

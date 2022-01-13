@@ -42,6 +42,7 @@
 namespace Tiled {
 
 class ExportContext;
+class PropertyTypes;
 
 class TILEDSHARED_EXPORT ExportValue
 {
@@ -144,7 +145,8 @@ public:
 
     void resolveDependencies(const ExportContext &context) override;
 
-    bool canAddMemberOfType(const PropertyType *classType) const;
+    bool canAddMemberOfType(const PropertyType *propertyType) const;
+    bool canAddMemberOfType(const PropertyType *propertyType, const PropertyTypes &types) const;
 };
 
 /**

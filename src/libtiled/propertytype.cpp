@@ -29,6 +29,8 @@
 #include "propertytype.h"
 
 #include "containerhelpers.h"
+#include "logginginterface.h"
+#include "object.h"
 #include "properties.h"
 
 #include <QVector>
@@ -330,19 +332,38 @@ void ClassPropertyType::fromVariant(const QVariantMap &variant)
 
 void ClassPropertyType::resolveDependencies(const ExportContext &context)
 {
-    for (auto &member : members) {
-        const QVariantMap map = member.toMap();
+    QMutableMapIterator<QString, QVariant> it(members);
+    while (it.hasNext()) {
+        it.next();
 
+        const QVariantMap map = it.value().toMap();
         ExportValue exportValue;
         exportValue.value = map.value(QStringLiteral("value"));
         exportValue.typeName = map.value(QStringLiteral("type")).toString();
         exportValue.propertyTypeName = map.value(QStringLiteral("propertyType")).toString();
 
-        member = context.toPropertyValue(exportValue);
+        // Remove any members that would result in a circular reference
+        if (!exportValue.propertyTypeName.isEmpty()) {
+            if (auto propertyType = context.types().findTypeByName(exportValue.propertyTypeName)) {
+                if (!canAddMemberOfType(propertyType, context.types())) {
+                    Tiled::ERROR(QStringLiteral("Removed member '%1' from class '%2' since it would cause a circular reference")
+                                 .arg(it.key(), name));
+                    it.remove();
+                    continue;
+                }
+            }
+        }
+
+        it.setValue(context.toPropertyValue(exportValue));
     }
 }
 
 bool ClassPropertyType::canAddMemberOfType(const PropertyType *propertyType) const
+{
+    return canAddMemberOfType(propertyType, Object::propertyTypes());
+}
+
+bool ClassPropertyType::canAddMemberOfType(const PropertyType *propertyType, const PropertyTypes &types) const
 {
     if (propertyType == this)
         return false;   // Can't add class as member of itself
@@ -356,7 +377,7 @@ bool ClassPropertyType::canAddMemberOfType(const PropertyType *propertyType) con
         if (member.userType() != propertyValueId())
             continue;
 
-        auto propertyType = member.value<PropertyValue>().type();
+        auto propertyType = types.findTypeById(member.value<PropertyValue>().typeId);
         if (!propertyType)
             continue;
 
