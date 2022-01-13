@@ -4,6 +4,89 @@
 
 using namespace Tiled;
 
+constexpr auto propertyTypesJson = R"([
+    {
+        "id": 1,
+        "name": "EnumString",
+        "storageType": "string",
+        "type": "enum",
+        "values": [
+            "A",
+            "B",
+            "C"
+        ],
+        "valuesAsFlags": false
+    },
+    {
+        "id": 2,
+        "name": "EnumInt",
+        "storageType": "int",
+        "type": "enum",
+        "values": [
+            "A",
+            "B",
+            "C"
+        ],
+        "valuesAsFlags": false
+    },
+    {
+        "id": 3,
+        "name": "EnumFlagsString",
+        "storageType": "string",
+        "type": "enum",
+        "values": [
+            "A",
+            "B",
+            "C"
+        ],
+        "valuesAsFlags": true
+    },
+    {
+        "id": 4,
+        "name": "EnumFlagsInt",
+        "storageType": "int",
+        "type": "enum",
+        "values": [
+            "A",
+            "B",
+            "C"
+        ],
+        "valuesAsFlags": true
+    },
+    {
+        "id": 5,
+        "members": [
+            {
+                "name": "enumFlagsInt",
+                "propertyType": "EnumFlagsInt",
+                "type": "int",
+                "value": 6
+            },
+            {
+                "name": "enumFlagsString",
+                "propertyType": "EnumFlagsString",
+                "type": "string",
+                "value": "B,C"
+            },
+            {
+                "name": "enumInt",
+                "propertyType": "EnumInt",
+                "type": "int",
+                "value": 0
+            },
+            {
+                "name": "enumString",
+                "propertyType": "EnumString",
+                "type": "string",
+                "value": "A"
+            }
+        ],
+        "name": "ClassWithEnums",
+        "type": "class"
+    }
+]
+)";
+
 class test_Properties : public QObject
 {
     Q_OBJECT
@@ -11,6 +94,7 @@ class test_Properties : public QObject
 private slots:
     void initTestCase();
 
+    void loadAndSavePropertyTypes();
     void loadProperties();
     void saveProperties();
 
@@ -53,6 +137,25 @@ void test_Properties::initTestCase()
     classType.members.insert(QStringLiteral("enumInt"), intValue);
     classType.members.insert(QStringLiteral("enumFlagsString"), flagsStringValue);
     classType.members.insert(QStringLiteral("enumFlagsInt"), flagsIntValue);
+}
+
+void test_Properties::loadAndSavePropertyTypes()
+{
+    QJsonParseError error;
+    auto doc = QJsonDocument::fromJson(propertyTypesJson, &error);
+    QVERIFY(error.error == QJsonParseError::NoError);
+
+    PropertyTypes types;
+    types.loadFrom(doc.array().toVariantList(), QString());
+    QCOMPARE(types.count(), mTypes.count());
+
+    ExportContext context(types, QString());
+    QJsonArray propertyTypesJsonArray;
+    for (const auto &type : qAsConst(types))
+        propertyTypesJsonArray.append(QJsonObject::fromVariantMap(type->toVariant(context)));
+
+    const auto json = QJsonDocument(propertyTypesJsonArray).toJson();
+    QCOMPARE(json, propertyTypesJson);
 }
 
 void test_Properties::loadProperties()
