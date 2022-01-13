@@ -352,6 +352,11 @@ void PropertyTypesEditor::setValuesAsFlags(bool flags)
     if (enumType.valuesAsFlags == flags)
         return;
 
+    if (flags && !checkValueCount(enumType.values.count())) {
+        mValuesAsFlagsCheckBox->setChecked(false);
+        return;
+    }
+
     enumType.valuesAsFlags = flags;
     applyPropertyTypes();
 }
@@ -378,11 +383,16 @@ void PropertyTypesEditor::addValue()
     if (!propertyType || propertyType->type != PropertyType::PT_Enum)
         return;
 
+    const auto &enumType = *static_cast<const EnumPropertyType*>(propertyType);
     const int row = mValuesModel->rowCount();
+
+    if (enumType.valuesAsFlags && !checkValueCount(row + 1))
+        return;
+
     if (!mValuesModel->insertRow(row))
         return;
 
-    const QString valueText = nextValueText(*static_cast<const EnumPropertyType*>(propertyType));
+    const QString valueText = nextValueText(enumType);
 
     const auto valueIndex = mValuesModel->index(row);
     mValuesView->setCurrentIndex(valueIndex);
@@ -405,6 +415,17 @@ void PropertyTypesEditor::removeValues()
     const QItemSelection selection = mValuesView->selectionModel()->selection();
     for (const QItemSelectionRange &range : selection)
         mValuesModel->removeRows(range.top(), range.height());
+}
+
+bool PropertyTypesEditor::checkValueCount(int count)
+{
+    if (count > 32) {
+        QMessageBox::critical(this,
+                              tr("Too Many Values"),
+                              tr("Too many values for enum with values stored as flags. Maximum number of bit flags is 32."));
+        return false;
+    }
+    return true;
 }
 
 void PropertyTypesEditor::openAddMemberDialog()

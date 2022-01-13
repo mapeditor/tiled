@@ -83,6 +83,7 @@ private:
     void setValuesAsFlags(bool flags);
     void addValue();
     void removeValues();
+    bool checkValueCount(int count);
 
     void openAddMemberDialog();
     void addMember(const QString &name, const QVariant &value = QVariant());
