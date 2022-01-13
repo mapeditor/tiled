@@ -28,6 +28,7 @@
 
 #include "properties.h"
 
+#include "logginginterface.h"
 #include "object.h"
 #include "propertytype.h"
 #include "tiled.h"
@@ -246,9 +247,14 @@ QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
     QVariant propertyValue = toPropertyValue(exportValue.value, metaType);
 
     // Wrap the value in its custom property type when applicable
-    if (!exportValue.propertyTypeName.isEmpty())
-        if (const PropertyType *propertyType = mTypes.findTypeByName(exportValue.propertyTypeName))
+    if (!exportValue.propertyTypeName.isEmpty()) {
+        if (const PropertyType *propertyType = mTypes.findTypeByName(exportValue.propertyTypeName)) {
             propertyValue = propertyType->toPropertyValue(propertyValue, *this);
+        } else {
+           Tiled::ERROR(QStringLiteral("Unrecognized property type: '%1'")
+                        .arg(exportValue.propertyTypeName));
+        }
+    }
 
     return propertyValue;
 }
