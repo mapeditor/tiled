@@ -24,8 +24,8 @@
 #include "abstracttool.h"
 #include "bucketfilltool.h"
 #include "documentmanager.h"
-#include "mapdocument.h"
 #include "map.h"
+#include "mapdocument.h"
 #include "preferences.h"
 #include "savefile.h"
 #include "stampbrush.h"
@@ -35,6 +35,7 @@
 #include "tilesetmanager.h"
 #include "tilestampmodel.h"
 #include "toolmanager.h"
+#include "utils.h"
 
 #include <QDebug>
 #include <QDirIterator>
@@ -212,7 +213,7 @@ void TileStampManager::loadStamps()
         const QByteArray data = stampFile.readAll();
         const QJsonDocument document = QJsonDocument::fromJson(data, &error);
         if (error.error != QJsonParseError::NoError) {
-            qDebug().noquote() << "Failed to parse stamp file:" << error.errorString();
+            qDebug().noquote() << "Failed to parse stamp file:" << Utils::Error::jsonParseError(error);
             continue;
         }
 

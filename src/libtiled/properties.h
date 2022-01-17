@@ -49,7 +49,7 @@ class TILEDSHARED_EXPORT PropertyValue
 
 public:
     QVariant value;
-    int typeId;
+    int typeId = 0;
 
     const PropertyType *type() const;
 };

@@ -35,11 +35,11 @@
 
 #include <QVector>
 
+#include "qtcompat_p.h"
+
 #include <algorithm>
 
 namespace Tiled {
-
-int PropertyType::nextId = 0;
 
 /**
  * This function returns a PropertyValue instance, which stores the internal
@@ -68,7 +68,7 @@ QVariant PropertyType::toPropertyValue(const QVariant &value, const ExportContex
     return wrap(value);
 }
 
-QVariantMap PropertyType::toVariant(const ExportContext &) const
+QJsonObject PropertyType::toJson(const ExportContext &) const
 {
     return {
         { QStringLiteral("type"), typeToString(type) },
@@ -78,19 +78,19 @@ QVariantMap PropertyType::toVariant(const ExportContext &) const
 }
 
 /**
- * Creates a PropertyType instance based on the given variant.
+ * Creates a PropertyType instance based on the given JSON object.
  *
  * After loading all property types, PropertyType::resolveDependencies should
  * be called on each of them. This two step process allows class members to
  * refer to other types, regardless of their order.
  */
-std::unique_ptr<PropertyType> PropertyType::createFromVariant(const QVariantMap &variant)
+std::unique_ptr<PropertyType> PropertyType::createFromJson(const QJsonObject &json)
 {
     std::unique_ptr<PropertyType> propertyType;
 
-    const int id = variant.value(QStringLiteral("id")).toInt();
-    const QString name = variant.value(QStringLiteral("name")).toString();
-    const PropertyType::Type type = PropertyType::typeFromString(variant.value(QStringLiteral("type")).toString());
+    const int id = json.value(QStringLiteral("id")).toInt();
+    const QString name = json.value(QStringLiteral("name")).toString();
+    const PropertyType::Type type = PropertyType::typeFromString(json.value(QStringLiteral("type")).toString());
 
     switch (type) {
     case PropertyType::PT_Invalid:
@@ -105,8 +105,7 @@ std::unique_ptr<PropertyType> PropertyType::createFromVariant(const QVariantMap 
 
     if (propertyType) {
         propertyType->id = id;
-        propertyType->fromVariant(variant);
-        nextId = std::max(nextId, id);
+        propertyType->initializeFromJson(json);
     }
 
     return propertyType;
@@ -208,20 +207,22 @@ QVariant EnumPropertyType::defaultValue() const
     return 0;
 }
 
-QVariantMap EnumPropertyType::toVariant(const ExportContext &context) const
+QJsonObject EnumPropertyType::toJson(const ExportContext &context) const
 {
-    auto variant = PropertyType::toVariant(context);
-    variant.insert(QStringLiteral("storageType"), storageTypeToString(storageType));
-    variant.insert(QStringLiteral("values"), values);
-    variant.insert(QStringLiteral("valuesAsFlags"), valuesAsFlags);
-    return variant;
+    auto json = PropertyType::toJson(context);
+    json.insert(QStringLiteral("storageType"), storageTypeToString(storageType));
+    json.insert(QStringLiteral("values"), QJsonArray::fromStringList(values));
+    json.insert(QStringLiteral("valuesAsFlags"), valuesAsFlags);
+    return json;
 }
 
-void EnumPropertyType::fromVariant(const QVariantMap &variant)
+void EnumPropertyType::initializeFromJson(const QJsonObject &json)
 {
-    storageType = storageTypeFromString(variant.value(QStringLiteral("storageType")).toString());
-    values = variant.value(QStringLiteral("values")).toStringList();
-    valuesAsFlags = variant.value(QStringLiteral("valuesAsFlags"), false).toBool();
+    storageType = storageTypeFromString(json.value(QStringLiteral("storageType")).toString());
+    const auto jsonValues = json.value(QStringLiteral("values")).toArray();
+    for (const auto jsonValue : jsonValues)
+        values.append(jsonValue.toString());
+    valuesAsFlags = json.value(QStringLiteral("valuesAsFlags")).toBool();
 }
 
 EnumPropertyType::StorageType EnumPropertyType::storageTypeFromString(const QString &string)
@@ -292,9 +293,9 @@ QVariant ClassPropertyType::defaultValue() const
     return QVariantMap();
 }
 
-QVariantMap ClassPropertyType::toVariant(const ExportContext &context) const
+QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
 {
-    QVariantList members;
+    QJsonArray members;
 
     QMapIterator<QString,QVariant> it(this->members);
     while (it.hasNext()) {
@@ -302,10 +303,10 @@ QVariantMap ClassPropertyType::toVariant(const ExportContext &context) const
 
         const auto exportValue = context.toExportValue(it.value());
 
-        QVariantMap member {
+        QJsonObject member {
             { QStringLiteral("name"), it.key() },
             { QStringLiteral("type"), exportValue.typeName },
-            { QStringLiteral("value"), exportValue.value },
+            { QStringLiteral("value"), QJsonValue::fromVariant(exportValue.value) },
         };
 
         if (!exportValue.propertyTypeName.isEmpty())
@@ -314,16 +315,16 @@ QVariantMap ClassPropertyType::toVariant(const ExportContext &context) const
         members.append(member);
     }
 
-    auto variant = PropertyType::toVariant(context);
-    variant.insert(QStringLiteral("members"), members);
-    return variant;
+    auto json = PropertyType::toJson(context);
+    json.insert(QStringLiteral("members"), members);
+    return json;
 }
 
-void ClassPropertyType::fromVariant(const QVariantMap &variant)
+void ClassPropertyType::initializeFromJson(const QJsonObject &json)
 {
-    const auto membersList = variant.value(QStringLiteral("members")).toList();
-    for (const auto &member : membersList) {
-        const QVariantMap map = member.toMap();
+    const auto jsonMembers = json.value(QStringLiteral("members")).toArray();
+    for (const auto jsonMember : jsonMembers) {
+        const QVariantMap map = jsonMember.toObject().toVariantMap();
         const QString name = map.value(QStringLiteral("name")).toString();
 
         members.insert(name, map);
@@ -402,6 +403,56 @@ size_t PropertyTypes::count(PropertyType::Type type) const
     });
 }
 
+void PropertyTypes::merge(PropertyTypes typesToMerge)
+{
+    QHash<int, QString> oldTypeIdToName;
+    QList<ClassPropertyType*> classesToProcess;
+
+    for (const auto type : typesToMerge)
+        oldTypeIdToName.insert(type->id, type->name);
+
+    while (typesToMerge.count() > 0) {
+        auto typeToImport = typesToMerge.takeAt(0);
+        auto existingIt = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+            return type->name == typeToImport->name;
+        });
+
+        if (typeToImport->type == PropertyType::PT_Class)
+            classesToProcess.append(static_cast<ClassPropertyType*>(typeToImport.get()));
+
+        if (existingIt != mTypes.end()) {
+            // Existing types are replaced, but their ID is retained
+            typeToImport->id = (*existingIt)->id;
+            delete std::exchange(*existingIt, typeToImport.release());
+        } else {
+            // New types are added, but their ID is reset
+            typeToImport->id = 0;
+            add(std::move(typeToImport));
+        }
+    }
+
+    // Update the type IDs for the class members
+    for (auto classType : qAsConst(classesToProcess)) {
+        QMutableMapIterator<QString, QVariant> it(classType->members);
+        while (it.hasNext()) {
+            QVariant &classMember = it.next().value();
+
+            if (classMember.userType() == propertyValueId()) {
+                PropertyValue classMemberValue = classMember.value<PropertyValue>();
+
+                const QString typeName = oldTypeIdToName.value(classMemberValue.typeId);
+                auto type = findTypeByName(typeName);
+                Q_ASSERT(type);
+
+                if (classMemberValue.typeId != type->id) {
+                    classMemberValue.typeId = type->id;
+                    classMember = QVariant::fromValue(classMemberValue);
+                }
+            }
+        }
+    }
+}
+
 /**
  * Returns a pointer to the PropertyType matching the given \a typeId, or
  * nullptr if it can't be found.
@@ -426,18 +477,29 @@ const PropertyType *PropertyTypes::findTypeByName(const QString &name) const
     return it == mTypes.end() ? nullptr : *it;
 }
 
-void PropertyTypes::loadFrom(const QVariantList &list, const QString &path)
+void PropertyTypes::loadFromJson(const QJsonArray &list, const QString &path)
 {
     clear();
 
     const ExportContext context(*this, path);
 
-    for (const QVariant &typeValue : list)
-        if (auto propertyType = PropertyType::createFromVariant(typeValue.toMap()))
+    for (const auto typeValue : list)
+        if (auto propertyType = PropertyType::createFromJson(typeValue.toObject()))
             add(std::move(propertyType));
 
     for (auto propertyType : mTypes)
         propertyType->resolveDependencies(context);
+}
+
+QJsonArray PropertyTypes::toJson(const QString &path) const
+{
+    const ExportContext context(*this, path);
+
+    QJsonArray propertyTypesJson;
+    for (const auto &type : mTypes)
+        propertyTypesJson.append(type->toJson(context));
+
+    return propertyTypesJson;
 }
 
 } // namespace Tiled

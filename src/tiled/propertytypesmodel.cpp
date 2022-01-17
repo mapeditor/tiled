@@ -157,16 +157,25 @@ QModelIndex PropertyTypesModel::addNewPropertyType(PropertyType::Type type)
     if (!propertyType)
         return QModelIndex();
 
+    return addPropertyType(std::move(propertyType));
+}
+
+QModelIndex PropertyTypesModel::addPropertyType(std::unique_ptr<PropertyType> type)
+{
     const int row = mPropertyTypes->count();
 
     beginInsertRows(QModelIndex(), row, row);
-
-    propertyType->id = ++PropertyType::nextId;
-    mPropertyTypes->add(std::move(propertyType));
-
+    mPropertyTypes->add(std::move(type));
     endInsertRows();
 
     return index(row, 0);
+}
+
+void PropertyTypesModel::importPropertyTypes(PropertyTypes typesToImport)
+{
+    beginResetModel();
+    mPropertyTypes->merge(std::move(typesToImport));
+    endResetModel();
 }
 
 QIcon PropertyTypesModel::iconForPropertyType(PropertyType::Type type)

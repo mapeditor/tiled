@@ -136,6 +136,41 @@ constexpr auto propertyTypesWithCircularReference2 = R"([
 ]
 )";
 
+constexpr auto propertyTypesToMerge = R"([
+    {
+        "id": 1,
+        "name": "EnumString",
+        "type": "enum",
+        "values": [ "X", "Y", "Z" ]
+    },
+    {
+        "id": 2,
+        "name": "NewEnumString",
+        "type": "enum",
+        "values": [ "1", "2", "3" ]
+    },
+    {
+        "id": 5,
+        "members": [
+            {
+                "name": "enumString",
+                "propertyType": "EnumString",
+                "type": "string",
+                "value": "Y"
+            },
+            {
+                "name": "newEnumString",
+                "propertyType": "NewEnumString",
+                "type": "string",
+                "value": "2"
+            }
+        ],
+        "name": "NewClass",
+        "type": "class"
+    }
+]
+)";
+
 
 class test_Properties : public QObject
 {
@@ -149,6 +184,7 @@ private slots:
 
     void loadProperties();
     void saveProperties();
+    void mergeProperties();
 
     void cleanupTestCase();
 
@@ -198,15 +234,10 @@ void test_Properties::loadAndSavePropertyTypes()
     QVERIFY(error.error == QJsonParseError::NoError);
 
     PropertyTypes types;
-    types.loadFrom(doc.array().toVariantList(), QString());
+    types.loadFromJson(doc.array(), QString());
     QCOMPARE(types.count(), mTypes.count());
 
-    ExportContext context(types, QString());
-    QJsonArray propertyTypesJsonArray;
-    for (const auto &type : qAsConst(types))
-        propertyTypesJsonArray.append(QJsonObject::fromVariantMap(type->toVariant(context)));
-
-    const auto json = QJsonDocument(propertyTypesJsonArray).toJson();
+    const auto json = QJsonDocument(types.toJson()).toJson();
     QCOMPARE(json, propertyTypesJson);
 }
 
@@ -217,7 +248,7 @@ void test_Properties::loadCircularReference()
     QVERIFY(error.error == QJsonParseError::NoError);
 
     PropertyTypes types;
-    types.loadFrom(doc.array().toVariantList(), QString());
+    types.loadFromJson(doc.array(), QString());
 
     const auto type = types.findTypeByName(QStringLiteral("ClassReferencingItself"));
     QVERIFY(type);
@@ -230,7 +261,7 @@ void test_Properties::loadCircularReference()
     doc = QJsonDocument::fromJson(propertyTypesWithCircularReference2, &error);
     QVERIFY(error.error == QJsonParseError::NoError);
 
-    types.loadFrom(doc.array().toVariantList(), QString());
+    types.loadFromJson(doc.array(), QString());
 
     // Verify the back reference is not present
     const auto b = types.findTypeByName(QStringLiteral("B"));
@@ -316,6 +347,50 @@ void test_Properties::saveProperties()
     QCOMPARE(classExportValue.propertyTypeName, classType->name);
 
     // todo: test saving a class with nested class
+}
+
+void test_Properties::mergeProperties()
+{
+    PropertyTypes types;
+
+    {
+        QJsonParseError error;
+        auto doc = QJsonDocument::fromJson(propertyTypesJson, &error);
+        QVERIFY(error.error == QJsonParseError::NoError);
+
+        types.loadFromJson(doc.array(), QString());
+        QCOMPARE(types.count(), mTypes.count());
+    }
+
+    {
+        QJsonParseError error;
+        auto doc = QJsonDocument::fromJson(propertyTypesToMerge, &error);
+        QVERIFY(error.error == QJsonParseError::NoError);
+
+        PropertyTypes typesToMerge;
+        typesToMerge.loadFromJson(doc.array(), QString());
+        QCOMPARE(typesToMerge.count(), size_t(3));
+
+        types.merge(std::move(typesToMerge));
+        QCOMPARE(types.count(), mTypes.count() + 2);
+    }
+
+    // Verify EnumString was replaced
+    auto enumStringType = static_cast<const EnumPropertyType*>(types.findTypeByName(QStringLiteral("EnumString")));
+    QVERIFY(enumStringType && enumStringType->type == PropertyType::PT_Enum);
+    const auto expectedValues = QStringList { QStringLiteral("X"), QStringLiteral("Y"), QStringLiteral("Z") };
+    QCOMPARE(enumStringType->values, expectedValues);
+
+    // Verify NewEnumString was added and got a new ID
+    auto newEnumStringType = types.findTypeByName(QStringLiteral("NewEnumString"));
+    QVERIFY(newEnumStringType);
+    QCOMPARE(newEnumStringType->id, 6);
+
+    // Verify NewClass was added, and that its member newEnumString has the right type ID
+    auto classType = static_cast<const ClassPropertyType*>(types.findTypeByName(QStringLiteral("NewClass")));
+    QVERIFY(classType && classType->type == PropertyType::PT_Class);
+    const auto classMember = classType->members.value(QStringLiteral("newEnumString")).value<PropertyValue>();
+    QCOMPARE(classMember.typeId, newEnumStringType->id);
 }
 
 void test_Properties::cleanupTestCase()

@@ -21,6 +21,7 @@
 #include "newversionchecker.h"
 
 #include "preferences.h"
+#include "utils.h"
 
 #include <QCoreApplication>
 #include <QJsonDocument>
@@ -132,7 +133,7 @@ void NewVersionChecker::finished(QNetworkReply *reply)
     QJsonObject object = QJsonDocument::fromJson(reply->readAll(), &error).object();
 
     if (error.error != QJsonParseError::NoError || object.isEmpty()) {
-        mErrorString = error.errorString();
+        mErrorString = Utils::Error::jsonParseError(error);
         emit errorStringChanged(mErrorString);
         return;
     }

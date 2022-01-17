@@ -38,6 +38,7 @@ public:
     PropertyTypesModel(QObject *parent = nullptr);
 
     void setPropertyTypes(const SharedPropertyTypes &propertyTypes);
+    SharedPropertyTypes propertyTypes() const;
 
     PropertyType *propertyTypeAt(const QModelIndex &index) const;
 
@@ -51,6 +52,8 @@ public:
     void removePropertyTypes(const QModelIndexList &indexes);
 
     QModelIndex addNewPropertyType(PropertyType::Type type);
+    QModelIndex addPropertyType(std::unique_ptr<PropertyType> type);
+    void importPropertyTypes(PropertyTypes typesToImport);
 
     static QIcon iconForPropertyType(PropertyType::Type type);
 
@@ -62,5 +65,10 @@ private:
 
     SharedPropertyTypes mPropertyTypes;
 };
+
+inline SharedPropertyTypes PropertyTypesModel::propertyTypes() const
+{
+    return mPropertyTypes;
+}
 
 } // namespace Tiled

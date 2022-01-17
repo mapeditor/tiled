@@ -23,6 +23,7 @@
 #include "rangeset.h"
 
 #include <QIcon>
+#include <QJsonParseError>
 #include <QSettings>
 #include <QString>
 
@@ -100,6 +101,10 @@ void addOpenWithSystemEditorAction(QMenu &menu, const QString &fileName);
 
 QSettings::Format jsonSettingsFormat();
 std::unique_ptr<QSettings> jsonSettings(const QString &fileName);
+
+namespace Error {
+QString jsonParseError(QJsonParseError error);
+} // namespace Error
 
 } // namespace Utils
 } // namespace Tiled

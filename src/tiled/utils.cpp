@@ -532,5 +532,12 @@ std::unique_ptr<QSettings> jsonSettings(const QString &fileName)
     return std::make_unique<QSettings>(fileName, jsonSettingsFormat());
 }
 
+QString Error::jsonParseError(QJsonParseError error)
+{
+    return QCoreApplication::translate("File Errors",
+                                       "JSON parse error at offset %1:\n%2.").arg(error.offset).arg(error.errorString());
+
+}
+
 } // namespace Utils
 } // namespace Tiled

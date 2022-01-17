@@ -28,6 +28,8 @@
 #include "project.h"
 #include "projectmanager.h"
 #include "propertytypesmodel.h"
+#include "savefile.h"
+#include "session.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
@@ -35,8 +37,10 @@
 #include <QCheckBox>
 #include <QCloseEvent>
 #include <QComboBox>
+#include <QFileDialog>
 #include <QFormLayout>
 #include <QInputDialog>
+#include <QJsonDocument>
 #include <QMessageBox>
 #include <QScopedValueRollback>
 #include <QStringListModel>
@@ -83,6 +87,8 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     mAddMemberAction = new QAction(this);
     mRemoveMemberAction = new QAction(this);
     mRenameMemberAction = new QAction(this);
+    mExportAction = new QAction(this);
+    mImportAction = new QAction(this);
 
     QIcon addIcon(QStringLiteral(":/images/22/add.png"));
     QIcon removeIcon(QStringLiteral(":/images/22/remove.png"));
@@ -119,6 +125,12 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
 
     auto stretch = new QWidget;
     stretch->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+    QToolBar *importExportToolBar = createSmallToolBar(this);
+    importExportToolBar->addWidget(stretch);
+    importExportToolBar->addAction(mImportAction);
+    importExportToolBar->addAction(mExportAction);
+    mUi->layout->insertWidget(0, importExportToolBar);
 
     QToolBar *propertyTypesToolBar = createSmallToolBar(this);
     propertyTypesToolBar->addAction(mAddEnumPropertyTypeAction);
@@ -165,6 +177,11 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
             this, &PropertyTypesEditor::valuesChanged);
     connect(mValuesModel, &QAbstractItemModel::rowsRemoved,
             this, &PropertyTypesEditor::valuesChanged);
+
+    connect(mImportAction, &QAction::triggered,
+            this, &PropertyTypesEditor::importPropertyTypes);
+    connect(mExportAction, &QAction::triggered,
+            this, &PropertyTypesEditor::exportPropertyTypes);
 
     Preferences *prefs = Preferences::instance();
 
@@ -213,6 +230,11 @@ void PropertyTypesEditor::retranslateUi()
     mAddMemberAction->setText(tr("Add Member"));
     mRemoveMemberAction->setText(tr("Remove Member"));
     mRenameMemberAction->setText(tr("Rename Member"));
+
+    mExportAction->setText(tr("Export..."));
+    mExportAction->setToolTip(tr("Export Property Types"));
+    mImportAction->setText(tr("Import..."));
+    mImportAction->setToolTip(tr("Import Property Types"));
 }
 
 void PropertyTypesEditor::addPropertyType(PropertyType::Type type)
@@ -543,6 +565,75 @@ void PropertyTypesEditor::renameMemberTo(const QString &name)
 
     applyPropertyTypes();
     updateDetails();
+}
+
+void PropertyTypesEditor::importPropertyTypes()
+{
+    Session &session = Session::current();
+    const QString lastPath = session.lastPath(Session::ObjectTypesFile);
+    const QString fileName =
+            QFileDialog::getOpenFileName(this, tr("Import Property Types"),
+                                         lastPath,
+                                         QCoreApplication::translate("File Types", "Property Types files (*.json)"));
+    if (fileName.isEmpty())
+        return;
+
+    session.setLastPath(Session::ObjectTypesFile, fileName);
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        const auto error = QCoreApplication::translate("File Errors", "Could not open file for reading.");
+        QMessageBox::critical(this, tr("Error Reading Property Types"), error);
+        return;
+    }
+
+    QJsonParseError jsonError;
+    const QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &jsonError);
+    if (document.isNull()) {
+        QMessageBox::critical(this, tr("Error Reading Property Types"),
+                              Utils::Error::jsonParseError(jsonError));
+        return;
+    }
+
+    PropertyTypes typesToImport;
+    typesToImport.loadFromJson(document.array(), QFileInfo(fileName).path());
+
+    if (typesToImport.count() > 0) {
+        mPropertyTypesModel->importPropertyTypes(std::move(typesToImport));
+        applyPropertyTypes();
+    }
+}
+
+void PropertyTypesEditor::exportPropertyTypes()
+{
+    Session &session = Session::current();
+    QString lastPath = session.lastPath(Session::ObjectTypesFile);
+
+    if (!lastPath.endsWith(QLatin1String(".json")))
+        lastPath.append(QStringLiteral("/propertytypes.json"));
+
+    const QString fileName =
+            QFileDialog::getSaveFileName(this, tr("Export Property Types"),
+                                         lastPath,
+                                         QCoreApplication::translate("File Types", "Property Types files (*.json)"));
+    if (fileName.isEmpty())
+        return;
+
+    session.setLastPath(Session::ObjectTypesFile, fileName);
+
+    SaveFile file(fileName);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        const auto error = QCoreApplication::translate("File Errors", "Could not open file for writing.");
+        QMessageBox::critical(this, tr("Error Writing Property Types"), error);
+        return;
+    }
+
+    const auto types = mPropertyTypesModel->propertyTypes();
+    file.device()->write(QJsonDocument(types->toJson()).toJson());
+
+    if (!file.commit())
+        QMessageBox::critical(this, tr("Error Writing Property Types"), file.errorString());
 }
 
 void PropertyTypesEditor::updateDetails()

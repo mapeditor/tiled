@@ -92,6 +92,9 @@ private:
     void renameMember();
     void renameMemberTo(const QString &name);
 
+    void importPropertyTypes();
+    void exportPropertyTypes();
+
     void selectFirstPropertyType();
     void valuesChanged();
     void nameChanged(const QString &name);
@@ -125,6 +128,9 @@ private:
     QAction *mAddMemberAction;
     QAction *mRemoveMemberAction;
     QAction *mRenameMemberAction;
+
+    QAction *mExportAction;
+    QAction *mImportAction;
 
     PropertyType::Type mCurrentPropertyType = PropertyType::PT_Invalid;
 };

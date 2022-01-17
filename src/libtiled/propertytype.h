@@ -28,6 +28,8 @@
 
 #pragma once
 
+#include <QJsonArray>
+#include <QJsonObject>
 #include <QMetaType>
 #include <QSharedPointer>
 #include <QStringList>
@@ -77,14 +79,12 @@ public:
 
     virtual QVariant defaultValue() const = 0;
 
-    virtual QVariantMap toVariant(const ExportContext &) const;
-    virtual void fromVariant(const QVariantMap &variant) = 0;
+    virtual QJsonObject toJson(const ExportContext &) const;
+    virtual void initializeFromJson(const QJsonObject &json) = 0;
 
     virtual void resolveDependencies(const ExportContext &) {};
 
-    static int nextId;
-
-    static std::unique_ptr<PropertyType> createFromVariant(const QVariantMap &variant);
+    static std::unique_ptr<PropertyType> createFromJson(const QJsonObject &json);
 
     static Type typeFromString(const QString &string);
     static QString typeToString(Type type);
@@ -118,8 +118,8 @@ public:
 
     QVariant defaultValue() const override;
 
-    QVariantMap toVariant(const ExportContext &) const override;
-    void fromVariant(const QVariantMap &variant) override;
+    QJsonObject toJson(const ExportContext &) const override;
+    void initializeFromJson(const QJsonObject &json) override;
 
     static StorageType storageTypeFromString(const QString &string);
     static QString storageTypeToString(StorageType type);
@@ -140,8 +140,8 @@ public:
 
     QVariant defaultValue() const override;
 
-    QVariantMap toVariant(const ExportContext &context) const override;
-    void fromVariant(const QVariantMap &variant) override;
+    QJsonObject toJson(const ExportContext &context) const override;
+    void initializeFromJson(const QJsonObject &json) override;
 
     void resolveDependencies(const ExportContext &context) override;
 
@@ -157,20 +157,27 @@ class TILEDSHARED_EXPORT PropertyTypes
     using Types = QVector<PropertyType*>;
 
 public:
+    PropertyTypes() = default;
+    PropertyTypes(PropertyTypes&& other) = default;
     ~PropertyTypes();
+
+    PropertyTypes& operator=(PropertyTypes&& other) = default;
 
     PropertyType &add(std::unique_ptr<PropertyType> type);
     void clear();
     size_t count() const;
     size_t count(PropertyType::Type type) const;
     void removeAt(int index);
+    std::unique_ptr<PropertyType> takeAt(int index);
     PropertyType &typeAt(int index);
     void moveType(int from, int to);
+    void merge(PropertyTypes types);
 
     const PropertyType *findTypeById(int typeId) const;
     const PropertyType *findTypeByName(const QString &name) const;
 
-    void loadFrom(const QVariantList &list, const QString &path = QString());
+    void loadFromJson(const QJsonArray &list, const QString &path = QString());
+    QJsonArray toJson(const QString &path = QString()) const;
 
     // Enable easy iteration over types with range-based for
     Types::iterator begin() { return mTypes.begin(); }
@@ -180,10 +187,16 @@ public:
 
 private:
     Types mTypes;
+    int mNextId = 0;
 };
 
 inline PropertyType &PropertyTypes::add(std::unique_ptr<PropertyType> type)
 {
+    if (type->id == 0)
+        type->id = ++mNextId;
+    else
+        mNextId = std::max(mNextId, type->id);
+
     mTypes.append(type.release());
     return *mTypes.last();
 }
@@ -201,6 +214,11 @@ inline size_t PropertyTypes::count() const
 inline void PropertyTypes::removeAt(int index)
 {
     delete mTypes.takeAt(index);
+}
+
+inline std::unique_ptr<PropertyType> PropertyTypes::takeAt(int index)
+{
+    return std::unique_ptr<PropertyType> { mTypes.takeAt(index) };
 }
 
 inline PropertyType &PropertyTypes::typeAt(int index)
