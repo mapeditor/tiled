@@ -35,6 +35,7 @@ namespace Tiled {
 CustomPropertiesHelper::CustomPropertiesHelper(QtAbstractPropertyBrowser *propertyBrowser,
                                                QObject *parent)
     : QObject(parent)
+    , mPropertyBrowser(propertyBrowser)
     , mPropertyManager(new VariantPropertyManager(this))
 {
     VariantEditorFactory *variantEditorFactory = new VariantEditorFactory(this);
@@ -49,6 +50,11 @@ CustomPropertiesHelper::CustomPropertiesHelper(QtAbstractPropertyBrowser *proper
 
     connect(Preferences::instance(), &Preferences::propertyTypesChanged,
             this, &CustomPropertiesHelper::propertyTypesChanged);
+}
+
+CustomPropertiesHelper::~CustomPropertiesHelper()
+{
+    mPropertyBrowser->unsetFactoryForManager(mPropertyManager);
 }
 
 QtVariantProperty *CustomPropertiesHelper::createProperty(const QString &name,

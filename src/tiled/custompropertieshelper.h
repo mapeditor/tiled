@@ -41,6 +41,7 @@ class CustomPropertiesHelper : public QObject
 public:
     CustomPropertiesHelper(QtAbstractPropertyBrowser *propertyBrowser,
                            QObject *parent = nullptr);
+    ~CustomPropertiesHelper() override;
 
     QtVariantProperty *createProperty(const QString &name, const QVariant &value);
     void deleteProperty(QtProperty *property);
@@ -70,6 +71,7 @@ private:
 
     const PropertyType *propertyType(QtProperty *property) const;
 
+    QtAbstractPropertyBrowser *mPropertyBrowser;
     QtVariantPropertyManager *mPropertyManager;
     MapDocument *mMapDocument = nullptr;
     QHash<QString, QtVariantProperty *> mProperties;
