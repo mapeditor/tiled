@@ -22,6 +22,7 @@
 
 #include "changemapobject.h"
 #include "changeproperties.h"
+#include "changetile.h"
 #include "changetileanimation.h"
 #include "changetileobjectgroup.h"
 #include "changetileprobability.h"
@@ -158,6 +159,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
     };
 
     // Adjust tile meta data
+    QMap<QString, QList<Tile*>> tilesChangingTypeByType;
     QList<Tile*> tilesChangingProbability;
     QList<qreal> tileProbabilities;
     QSet<Tile*> tilesToReset;
@@ -175,6 +177,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
 
     auto applyMetaData = [&](Tile *toTile,
                              const Properties &properties,
+                             const QString &type,
                              qreal probability,
                              std::unique_ptr<ObjectGroup> objectGroup,
                              const QVector<Frame> &frames)
@@ -186,6 +189,9 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
                                  properties,
                                  this);
         }
+
+        if (type != toTile->type())
+            tilesChangingTypeByType[type].append(toTile);
 
         if (probability != toTile->probability()) {
             tilesChangingProbability.append(toTile);
@@ -219,6 +225,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
 
         applyMetaData(toTile,
                       fromTile->properties(),
+                      fromTile->type(),
                       fromTile->probability(),
                       std::move(objectGroup),
                       adjustAnimationFrames(fromTile->frames()));
@@ -241,7 +248,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
     QSetIterator<Tile*> resetIterator(tilesToReset);
     while (resetIterator.hasNext()) {
         applyMetaData(resetIterator.next(),
-                      Properties(), 1.0, nullptr, QVector<Frame>());
+                      Properties(), QString(), 1.0, nullptr, QVector<Frame>());
     }
 
     // Translate tile references in Wang sets and Wang colors
@@ -295,6 +302,12 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
 
         if (!changes.isEmpty())
             new ChangeTileWangId(tilesetDocument, wangSet, changes, this);
+    }
+
+    QMapIterator<QString, QList<Tile*>> it(tilesChangingTypeByType);
+    while (it.hasNext()) {
+        it.next();
+        new ChangeTileType(tilesetDocument, it.value(), it.key(), this);
     }
 
     if (!tilesChangingProbability.isEmpty()) {

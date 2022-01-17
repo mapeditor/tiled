@@ -29,8 +29,9 @@ namespace Tiled {
 
 ChangeTileType::ChangeTileType(TilesetDocument *tilesetDocument,
                                const QList<Tile *> &tiles,
-                               const QString &type)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Tile Type"))
+                               const QString &type,
+                               QUndoCommand *parent)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Tile Type"), parent)
     , mTilesetDocument(tilesetDocument)
     , mTiles(tiles)
 {

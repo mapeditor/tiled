@@ -37,7 +37,8 @@ public:
      */
     ChangeTileType(TilesetDocument *tilesetDocument,
                    const QList<Tile*> &tiles,
-                   const QString &type);
+                   const QString &type,
+                   QUndoCommand *parent = nullptr);
 
     void undo() override { swap(); }
     void redo() override { swap(); }
