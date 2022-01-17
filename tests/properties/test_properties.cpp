@@ -238,7 +238,8 @@ void test_Properties::loadAndSavePropertyTypes()
     QCOMPARE(types.count(), mTypes.count());
 
     const auto json = QJsonDocument(types.toJson()).toJson();
-    QCOMPARE(json, propertyTypesJson);
+    QByteArray expectedJson(propertyTypesJson); // needed with Qt 5.6
+    QCOMPARE(json, expectedJson);
 }
 
 void test_Properties::loadCircularReference()
