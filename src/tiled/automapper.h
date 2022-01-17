@@ -313,14 +313,17 @@ private:
     QVector<Layer*> mAddedLayers;
 
     /**
-     * Points to the TileLayer, which defines the input regions ('regions' or
-     * 'regions_input').
+     * The TileLayer that defines the input and output regions ('regions').
+     */
+    const TileLayer *mLayerRegions = nullptr;
+
+    /**
+     * The TileLayer that defines the input regions ('regions_input').
      */
     const TileLayer *mLayerInputRegions = nullptr;
 
     /**
-     * Points to the TileLayer, which defines the output regions ('regions' or
-     * 'regions_output').
+     * The TileLayer that defines the output regions ('regions_output').
      */
     const TileLayer *mLayerOutputRegions = nullptr;
 

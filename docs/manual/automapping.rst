@@ -41,7 +41,7 @@ is either
 A **rulefile** is a standard map file, which can be read and written by
 tiled (\*.tmx). In one rulefile there can be multiple defined rules.
 
-An automapping **rulefile** consists of 4 major parts:
+An Automapping **rulefile** consists of 4 major parts:
 
 #. The definition of regions describes which locations of the rulemap
    are actually used to create Automapping rules.
@@ -55,21 +55,36 @@ An automapping **rulefile** consists of 4 major parts:
 Defining the Regions
 --------------------
 
-There must be either a tile layer called **regions** or there must be
-both tile layers **regions\_input** and **regions\_output**. Using the
-**regions** layer, the region defined for input and output is the same.
-Using the different layers **regions\_input** and **regions\_output**
-delivers the possibility to have different regions for the input section
-and the output section. The region layer(s) are only used to mark
-regions where an Automapping rule exists. Therefore, it does not matter
-which tiles are used in this layer, since these tiles are just used to
-define a region. So either use any tile or no tile at a coordinate to
-indicate if that coordinate belongs to a rule or if it doesn't.
+Up to three special layers can be used to define the input and output region
+of each rule:
+
+* A layer called **regions** defines the shared input and output region for
+  each rule. Using this layer can save some work when the input and output
+  regions are entirely or mostly the same.
+* A layer called **regions\_input** defines just the input region for each
+  rule.
+* A layer called **regions\_output** defines just the output region for each
+  rule.
+
+Since both input and output regions need to be defined, there must be both a
+**regions\_input** and a **regions\_output** layer if there is no **regions**
+layer.
+
+It does not matter which tiles are used to define the regions. So either use
+any tile or no tile at a coordinate to indicate if that coordinate belongs to a
+rule or if it doesn't. Any tiles placed on input or output layers outside of
+the respective region are ignored.
 
 If multiple rules are defined in one rulemap file, the regions must not
 be adjacent. That means there must be at least one tile of unused space
 in between two rules. If the regions are adjacent (coherent) then both
 regions are interpreted as one rule.
+
+.. note::
+
+   If the output tiles are not adjacent to the matching input tiles, the output
+   region can be used to connect the two parts of the rule, since empty output
+   tiles are ignored by default.
 
 Multiple Rules in One Rulefile
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

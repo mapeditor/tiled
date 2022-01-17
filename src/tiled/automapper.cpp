@@ -202,35 +202,28 @@ bool AutoMapper::setupRuleMapLayers()
 
         const QString &layerName = layer->name();
 
+        auto checkRegionsLayer = [&](const QString &layerName, Layer *layer, const TileLayer* &out) -> bool {
+            if (layerName.compare(layer->name(), Qt::CaseInsensitive) != 0)
+                return false;
+
+            if (out) {
+                error += tr("'%1' layer must not occur more than once.").arg(layerName);
+                error += QLatin1Char('\n');
+            }
+            if (TileLayer *tileLayer = layer->asTileLayer()) {
+                out = tileLayer;
+            } else {
+                error += tr("'regions_*' layers must be tile layers.");
+                error += QLatin1Char('\n');
+            }
+
+            return true;
+        };
+
         if (layerName.startsWith(QLatin1String("regions"), Qt::CaseInsensitive)) {
-            bool inputAndOutput = layerName.compare(QLatin1String("regions"), Qt::CaseInsensitive) == 0;
-
-            if (inputAndOutput || layerName.endsWith(QLatin1String("input"), Qt::CaseInsensitive)) {
-                if (mLayerInputRegions) {
-                    error += tr("'regions_input' layer must not occur more than once.");
-                    error += QLatin1Char('\n');
-                }
-                if (TileLayer *tileLayer = layer->asTileLayer()) {
-                    mLayerInputRegions = tileLayer;
-                } else {
-                    error += tr("'regions_*' layers must be tile layers.");
-                    error += QLatin1Char('\n');
-                }
-            }
-
-            if (inputAndOutput || layerName.endsWith(QLatin1String("output"), Qt::CaseInsensitive)) {
-                if (mLayerOutputRegions) {
-                    error += tr("'regions_output' layer must not occur more than once.");
-                    error += QLatin1Char('\n');
-                }
-                if (TileLayer *tileLayer = layer->asTileLayer()) {
-                    mLayerOutputRegions = tileLayer;
-                } else {
-                    error += tr("'regions_*' layers must be tile layers.");
-                    error += QLatin1Char('\n');
-                }
-            }
-
+            checkRegionsLayer(QStringLiteral("regions"), layer, mLayerRegions)
+                    || checkRegionsLayer(QStringLiteral("regions_input"), layer, mLayerInputRegions)
+                    || checkRegionsLayer(QStringLiteral("regions_output"), layer, mLayerOutputRegions);
             continue;
         }
 
@@ -306,10 +299,10 @@ bool AutoMapper::setupRuleMapLayers()
                 .arg(layerName) + QLatin1Char('\n');
     }
 
-    if (!mLayerInputRegions)
+    if (!mLayerRegions && !mLayerInputRegions)
         error += tr("No 'regions' or 'regions_input' layer found.") + QLatin1Char('\n');
 
-    if (!mLayerOutputRegions)
+    if (!mLayerRegions && !mLayerOutputRegions)
         error += tr("No 'regions' or 'regions_output' layer found.") + QLatin1Char('\n');
 
     if (mInputLayers.isEmpty())
@@ -340,11 +333,18 @@ static bool compareRuleRegion(const QRegion &r1, const QRegion &r2)
 bool AutoMapper::setupRuleList()
 {
     Q_ASSERT(mRuleRegions.isEmpty());
-    Q_ASSERT(mLayerInputRegions);
-    Q_ASSERT(mLayerOutputRegions);
+    Q_ASSERT(mLayerRegions || mLayerInputRegions);
+    Q_ASSERT(mLayerRegions || mLayerOutputRegions);
 
-    const QRegion regionInput = mLayerInputRegions->region();
-    const QRegion regionOutput = mLayerOutputRegions->region();
+    QRegion regionInput;
+    QRegion regionOutput;
+
+    if (mLayerRegions)
+        regionInput = regionOutput = mLayerRegions->region();
+    if (mLayerInputRegions)
+        regionInput |= mLayerInputRegions->region();
+    if (mLayerOutputRegions)
+        regionOutput |= mLayerOutputRegions->region();
 
     QVector<QRegion> combinedRegions = coherentRegions(regionInput + regionOutput);
     const QVector<QRegion> rulesInput = coherentRegions(regionInput);
