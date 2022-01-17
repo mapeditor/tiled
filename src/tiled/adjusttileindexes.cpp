@@ -177,7 +177,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
 
     auto applyMetaData = [&](Tile *toTile,
                              const Properties &properties,
-                             const QString& type,
+                             const QString &type,
                              qreal probability,
                              std::unique_ptr<ObjectGroup> objectGroup,
                              const QVector<Frame> &frames)
