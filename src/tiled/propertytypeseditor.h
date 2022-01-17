@@ -97,7 +97,7 @@ private:
 
     void selectFirstPropertyType();
     void valuesChanged();
-    void nameChanged(const QString &name);
+    void nameEditingFinished();
 
     void memberValueChanged(const QString &name, const QVariant &value);
 

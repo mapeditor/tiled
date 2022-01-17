@@ -468,6 +468,18 @@ void PropertyTypesEditor::addMember(const QString &name, const QVariant &value)
     if (name.isEmpty())
         return;
 
+    PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType || propertyType->type != PropertyType::PT_Class)
+        return;
+
+    auto &classType = static_cast<ClassPropertyType&>(*propertyType);
+    if (classType.members.contains(name)) {
+        QMessageBox::critical(this,
+                              tr("Error Adding Member"),
+                              tr("There is already a member named '%1'.").arg(name));
+        return;
+    }
+
     applyMemberToSelectedType(name, value);
     updateDetails();
     editMember(name);
@@ -550,18 +562,22 @@ void PropertyTypesEditor::renameMemberTo(const QString &name)
     if (oldName == name)
         return;
 
-    const auto selectionModel = mUi->propertyTypesView->selectionModel();
-    const auto selectedRows = selectionModel->selectedRows();
+    auto propertyType = selectedPropertyType();
+    if (propertyType->type != PropertyType::PT_Class)
+        return;
 
-    for (const QModelIndex &index : selectedRows) {
-        auto propertyType = mPropertyTypesModel->propertyTypeAt(index);
-        if (propertyType->type != PropertyType::PT_Class)
-            continue;
+    auto &classType = *static_cast<ClassPropertyType*>(propertyType);
+    if (!classType.members.contains(oldName))
+        return;
 
-        auto &classType = *static_cast<ClassPropertyType*>(propertyType);
-        if (classType.members.contains(oldName))
-            classType.members.insert(name, classType.members.take(oldName));
+    if (classType.members.contains(name)) {
+        QMessageBox::critical(this,
+                              tr("Error Renaming Member"),
+                              tr("There is already a member named '%1'.").arg(name));
+        return;
     }
+
+    classType.members.insert(name, classType.members.take(oldName));
 
     applyPropertyTypes();
     updateDetails();
@@ -734,8 +750,8 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
     mNameEdit = new QLineEdit(mUi->groupBox);
     mNameEdit->addAction(PropertyTypesModel::iconForPropertyType(type), QLineEdit::LeadingPosition);
 
-    connect(mNameEdit, &QLineEdit::textEdited,
-            this, &PropertyTypesEditor::nameChanged);
+    connect(mNameEdit, &QLineEdit::editingFinished,
+            this, &PropertyTypesEditor::nameEditingFinished);
 
     mDetailsLayout->addRow(tr("Name"), mNameEdit);
 
@@ -835,14 +851,18 @@ void PropertyTypesEditor::valuesChanged()
     applyPropertyTypes();
 }
 
-void PropertyTypesEditor::nameChanged(const QString &name)
+void PropertyTypesEditor::nameEditingFinished()
 {
     const auto index = selectedPropertyTypeIndex();
     if (!index.isValid())
         return;
 
+    const auto name = mNameEdit->text();
+    const auto type = mPropertyTypesModel->propertyTypeAt(index);
+
     QScopedValueRollback<bool> settingName(mSettingName, true);
-    mPropertyTypesModel->setPropertyTypeName(index.row(), name);
+    if (!mPropertyTypesModel->setPropertyTypeName(index.row(), name))
+        mNameEdit->setText(type->name);
 }
 
 void PropertyTypesEditor::memberValueChanged(const QString &name, const QVariant &value)
