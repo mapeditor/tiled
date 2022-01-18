@@ -368,6 +368,20 @@ void WangDock::setDocument(Document *document)
     }
 }
 
+int WangDock::currentWangColor() const
+{
+    QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
+    const auto currentIndex = selectionModel->currentIndex();
+    int color = 0;
+
+    if (currentIndex.isValid()) {
+        QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(currentIndex);
+        color = mWangColorModel->colorAt(index);
+    }
+
+    return color;
+}
+
 void WangDock::editWangSetName(WangSet *wangSet)
 {
     const QModelIndex index = wangSetIndex(wangSet);
@@ -434,14 +448,7 @@ void WangDock::refreshCurrentWangId()
 
 void WangDock::refreshCurrentWangColor()
 {
-    QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
-    const auto currentIndex = selectionModel->currentIndex();
-    int color = 0;
-
-    if (currentIndex.isValid()) {
-        QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(currentIndex);
-        color = mWangColorModel->colorAt(index);
-    }
+    const int color = currentWangColor();
 
     mEraseWangIdsButton->setChecked(color == 0);
     mRemoveColor->setEnabled(color != 0);

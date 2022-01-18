@@ -20,6 +20,7 @@
 
 #include "editablemanager.h"
 
+#include "documentmanager.h"
 #include "editablegrouplayer.h"
 #include "editableimagelayer.h"
 #include "editablemap.h"
@@ -150,6 +151,9 @@ EditableTileset *EditableManager::editableTileset(Tileset *tileset)
 {
     if (!tileset)
         return nullptr;
+
+    if (auto document = TilesetDocument::findDocumentForTileset(tileset->sharedPointer()))
+        return document->editable();
 
     EditableTileset* &editableTileset = mEditableTilesets[tileset];
     if (becomesNullValue(editableTileset)) {

@@ -1528,6 +1528,36 @@ interface MapEditor {
   currentBrush : TileMap
 
   /**
+   * Gets the currently selected {@link WangSet} in the "Terrain Sets" view.
+   *
+   * @since Tiled 1.8
+   */
+  readonly currentWangSet: WangSet
+
+  /**
+   * The signal emitted when {@link currentWangSet} changes.
+   *
+   * @since Tiled 1.8
+   */
+  readonly currentWangSetChanged: Signal<null>;
+
+  /**
+   * Gets the currently selected Wang color index in the "Terrain Sets" view.
+   * The value 0 is used to represent the eraser mode, and the first Wang color
+   * has index 1.
+   *
+   * @since Tiled 1.8
+   */
+  readonly currentWangColorIndex: number
+
+  /**
+   * The signal emitted when {@link currentWangColorIndex} changes.
+   *
+   * @since Tiled 1.8
+   */
+  readonly currentWangColorIndexChanged: Signal<number>;
+
+  /**
    * Access the current map view.
    */
   readonly currentMapView : MapView
@@ -2234,6 +2264,20 @@ declare class WangSet {
    * Make sure the Wang set color count is set before calling this function, because it will raise an error when the Wang ID refers to non-existing colors.
    */
   public setWangId(tile : Tile, wangId : number[]) : void
+
+  /**
+   * Returns the name of the Wang color at the given index.
+   *
+   * @since Tiled 1.8
+   */
+  public colorName(colorIndex: number) : string
+
+  /**
+   * Sets the name of the Wang color at the given index.
+   *
+   * @since Tiled 1.8
+   */
+  public setColorName(colorIndex: number, name: string) : void
 }
 
 interface color {}

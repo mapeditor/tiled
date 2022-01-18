@@ -21,6 +21,7 @@
 #include "editablewangset.h"
 
 #include "changetilewangid.h"
+#include "changewangcolordata.h"
 #include "changewangsetdata.h"
 #include "editablemanager.h"
 #include "editabletile.h"
@@ -101,6 +102,28 @@ void EditableWangSet::setWangId(EditableTile *editableTile, QJSValue value)
         asset()->push(new ChangeTileWangId(doc, wangSet(), editableTile->tile(), wangId));
     else if (!checkReadOnly())
         wangSet()->setWangId(editableTile->id(), wangId);
+}
+
+QString EditableWangSet::colorName(int colorIndex) const
+{
+    if (colorIndex <= 0 || colorIndex > colorCount()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
+        return QString();
+    }
+    return wangSet()->colorAt(colorIndex)->name();
+}
+
+void EditableWangSet::setColorName(int colorIndex, const QString &name)
+{
+    if (colorIndex <= 0 || colorIndex > colorCount()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
+        return;
+    }
+
+    if (auto doc = tilesetDocument())
+        asset()->push(new ChangeWangColorName(doc, wangSet()->colorAt(colorIndex).data(), name));
+    else if (!checkReadOnly())
+        wangSet()->colorAt(colorIndex)->setName(name);
 }
 
 void EditableWangSet::setName(const QString &name)

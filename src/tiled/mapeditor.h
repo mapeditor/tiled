@@ -44,8 +44,9 @@ namespace Tiled {
 class AbstractTool;
 class BucketFillTool;
 class ComboBoxProxyModel;
-class EditableMap;
 class EditPolygonTool;
+class EditableMap;
+class EditableWangSet;
 class LayerDock;
 class MapDocument;
 class MapView;
@@ -73,6 +74,8 @@ class MapEditor final : public Editor
 
     Q_PROPERTY(Tiled::TilesetDock *tilesetsView READ tilesetDock)
     Q_PROPERTY(Tiled::EditableMap *currentBrush READ currentBrush WRITE setCurrentBrush)
+    Q_PROPERTY(Tiled::EditableWangSet *currentWangSet READ currentWangSet NOTIFY currentWangSetChanged)
+    Q_PROPERTY(int currentWangColorIndex READ currentWangColorIndex NOTIFY currentWangColorIndexChanged)
     Q_PROPERTY(Tiled::MapView *currentMapView READ currentMapView)
 
 public:
@@ -116,12 +119,19 @@ public:
     EditableMap *currentBrush() const;
     void setCurrentBrush(EditableMap *editableMap);
 
+    EditableWangSet *currentWangSet() const;
+    int currentWangColorIndex() const;
+
     void addExternalTilesets(const QStringList &fileNames);
 
     QAction *actionSelectNextTileset() const;
     QAction *actionSelectPreviousTileset() const;
 
     AbstractTool *selectedTool() const;
+
+signals:
+    void currentWangSetChanged();
+    void currentWangColorIndexChanged(int colorIndex);
 
 private:
     void setSelectedTool(AbstractTool *tool);

@@ -108,12 +108,9 @@ QList<QObject *> EditableMap::tilesets() const
     QList<QObject *> editableTilesets;
     auto &editableManager = EditableManager::instance();
 
-    for (const SharedTileset &tileset : map()->tilesets()) {
-        if (auto document = TilesetDocument::findDocumentForTileset(tileset))
-            editableTilesets.append(document->editable());
-        else
-            editableTilesets.append(editableManager.editableTileset(tileset.data()));
-    }
+    for (const SharedTileset &tileset : map()->tilesets())
+        editableTilesets.append(editableManager.editableTileset(tileset.data()));
+
     return editableTilesets;
 }
 

@@ -63,6 +63,9 @@ public:
     Q_INVOKABLE QJSValue wangId(Tiled::EditableTile *tile);
     Q_INVOKABLE void setWangId(Tiled::EditableTile *tile, QJSValue value);
 
+    Q_INVOKABLE QString colorName(int colorIndex) const;
+    Q_INVOKABLE void setColorName(int colorIndex, const QString &name);
+
     void setName(const QString &name);
     void setType(Type type);
     void setImageTile(Tiled::EditableTile *imageTile);

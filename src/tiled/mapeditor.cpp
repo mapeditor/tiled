@@ -34,7 +34,9 @@
 #include "createtextobjecttool.h"
 #include "createtileobjecttool.h"
 #include "documentmanager.h"
+#include "editablemanager.h"
 #include "editablemap.h"
+#include "editablewangset.h"
 #include "editpolygontool.h"
 #include "eraser.h"
 #include "filechangedwarning.h"
@@ -277,6 +279,10 @@ MapEditor::MapEditor(QObject *parent)
             mStampBrush, &StampBrush::setWangSet);
     connect(mWangDock, &WangDock::currentWangSetChanged,
             mWangBrush, &WangBrush::wangSetChanged);
+    connect(mWangDock, &WangDock::currentWangSetChanged,
+            this, &MapEditor::currentWangSetChanged);
+    connect(mWangDock, &WangDock::wangColorChanged,
+            this, &MapEditor::currentWangColorIndexChanged);
     connect(mWangDock, &WangDock::selectWangBrush,
             this, &MapEditor::selectWangBrush);
     connect(mWangDock, &WangDock::wangColorChanged,
@@ -1019,7 +1025,25 @@ void MapEditor::setCurrentBrush(EditableMap *editableMap)
     setStamp(TileStamp(editableMap->map()->clone()));
 }
 
-AbstractTool *MapEditor::selectedTool() const {
+EditableWangSet *MapEditor::currentWangSet() const
+{
+    auto currentWangSet = mWangDock->currentWangSet();
+    auto tileset = currentWangSet->tileset();
+
+    auto &editableManager = EditableManager::instance();
+    if (auto editableTileset = editableManager.editableTileset(tileset))
+        return EditableManager::instance().editableWangSet(editableTileset, currentWangSet);
+
+    return nullptr;
+}
+
+int MapEditor::currentWangColorIndex() const
+{
+    return mWangDock->currentWangColor();
+}
+
+AbstractTool *MapEditor::selectedTool() const
+{
     return mSelectedTool;
 }
 
