@@ -213,6 +213,26 @@ ObjectRef ScriptModule::objectRef(int id) const
     return { id };
 }
 
+QVariant ScriptModule::propertyValue(const QString &typeName, const QVariant &value) const
+{
+    auto type = Object::propertyTypes().findTypeByName(typeName);
+    if (!type) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Unknown type: %1").arg(typeName));
+        return {};
+    }
+
+    switch (type->type) {
+    case PropertyType::PT_Invalid:
+    case PropertyType::PT_Class:
+        break;
+    case PropertyType::PT_Enum:
+        // Call toPropertyValue to support using strings to create a value
+        return type->toPropertyValue(value, ExportContext());
+    }
+
+    return type->wrap(value);
+}
+
 EditableAsset *ScriptModule::open(const QString &fileName) const
 {
     auto documentManager = DocumentManager::maybeInstance();

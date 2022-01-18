@@ -94,6 +94,7 @@ public:
 
     Q_INVOKABLE Tiled::FilePath filePath(const QUrl &path) const;
     Q_INVOKABLE Tiled::ObjectRef objectRef(int id) const;
+    Q_INVOKABLE QVariant propertyValue(const QString &typeName, const QVariant &value) const;
 
     Q_INVOKABLE Tiled::EditableAsset *open(const QString &fileName) const;
     Q_INVOKABLE bool close(Tiled::EditableAsset *asset) const;

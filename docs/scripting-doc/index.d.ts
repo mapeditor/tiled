@@ -62,46 +62,64 @@ interface region {
 
   /**
    * Array of rectangles making up this region.
+   *
+   * @since Tiled 1.8
    */
   readonly rects : rect[];
 
   /**
    * Returns whether this region contains the given point.
+   *
+   * @since Tiled 1.8
    */
   contains(x : number, y : number) : boolean;
 
   /**
    * Returns whether this region contains the given point.
+   *
+   * @since Tiled 1.8
    */
   contains(point : point) : boolean;
 
   /**
    * Adds the given rectangle to this region.
+   *
+   * @since Tiled 1.8
    */
   add(rect : rect) : void;
 
   /**
    * Adds the given region to this region.
+   *
+   * @since Tiled 1.8
    */
   add(region : region) : void;
 
   /**
    * Subtracts the given rectangle from this region.
+   *
+   * @since Tiled 1.8
    */
   subtract(rect : rect) : void;
 
   /**
    * Subtracts the given region from this region.
+   *
+   * @since Tiled 1.8
    */
   subtract(region : region) : void;
 
   /**
    * Sets the selected area to the intersection of the current selected area and the given rectangle.
+   *
+   * @since Tiled 1.8
    */
   intersect(rect : rect) : void;
 
   /**
    * Sets the selected area to the intersection of the current selected area and the given region.
+   *
+   * @since Tiled 1.8
    */
   intersect(region : region) : void;
 }
@@ -156,6 +174,29 @@ interface ObjectRef {
    * The ID of the referenced object.
    */
   id: number;
+}
+
+/**
+ * A property value with a user-defined type. Can be created using {@link tiled.propertyValue}.
+ *
+ * @since Tiled 1.8
+ */
+interface PropertyValue {
+  /**
+   * The actual value. A number for enum property values, or an object for
+   * class property values.
+   */
+  value: object | number;
+
+  /**
+   * The ID of the type of this value.
+   */
+  typeId: number;
+
+  /**
+   * The name of the type of this value.
+   */
+  readonly typeName: string;
 }
 
 interface MenuAction {
@@ -505,6 +546,8 @@ declare class ObjectGroup extends Layer {
    * by index (manual stacking order).
    *
    * The default is top down.
+   *
+   * @since Tiled 1.8
    */
   drawOrder : typeof ObjectGroup.TopDownOrder | typeof ObjectGroup.IndexOrder | typeof ObjectGroup.UnknownOrder;
 
@@ -1024,6 +1067,11 @@ interface FileInfo {  // TODO: namespace instead of interface?
   toNativeSeparators(filePath: string): string;
 }
 
+/**
+ * Offers various file system operations.
+ *
+ * @since Tiled 1.8
+ */
 interface File {  // TODO: namespace instead of interface?
   readonly Dirs: 0x001
   readonly Files: 0x002
@@ -1131,6 +1179,8 @@ declare class GroupLayer extends Layer {
 
   /**
    * The child layers of this group layer.
+   *
+   * @since Tiled 1.8
    */
   readonly layers: Layer[]
 
@@ -1406,14 +1456,18 @@ declare class ImageLayer extends Layer {
    * Reference to the image rendered by this layer.
    */
   imageSource: string;
-  
+
   /**
    * Whether the image rendered by this layer repeats along the X axis.
+   *
+   * @since Tiled 1.8
    */
   repeatX: boolean;
-  
+
   /**
    * Whether the image rendered by this layer repeats along the Y axis.
+   *
+   * @since Tiled 1.8
    */
   repeatY: boolean;
 
@@ -1602,6 +1656,8 @@ declare class Layer extends TiledObject {
    * Tint color of the layer. Will be used to tint any images rendered by this
    * layer or by any child layers. Affects tile layers, image layers and tile
    * objects.
+   *
+   * @since Tiled 1.8
    */
   tintColor: color;
 
@@ -1771,6 +1827,8 @@ declare class TileMap extends Asset {
 
   /**
    * The parallax origin used for reference when applying the respective parallax factor.
+   *
+   * @since Tiled 1.8
    */
   parallaxOrigin : point
 
@@ -1811,6 +1869,8 @@ declare class TileMap extends Asset {
 
   /**
    * The top-level layers of this map. To access nested layers, use {@link GroupLayer.layers}.
+   *
+   * @since Tiled 1.8
    */
   readonly layers: Layer[]
 
@@ -1912,6 +1972,8 @@ declare class TileMap extends Asset {
 
   /**
    * Removes the given objects from this map. The object references turn into a standalone copy of the object.
+   *
+   * @since Tiled 1.8
    */
   public removeObjects(objects : MapObject[]);
 
@@ -2483,6 +2545,8 @@ interface Tool {
    * When set to `false` and the currently selected tiles change while this
    * tool is active, the Stamp Brush is automatically selected. Set this
    * property to `true` to keep this tool active.
+   *
+   * @since Tiled 1.8
    */
   usesSelectedTiles: boolean;
 
@@ -2594,6 +2658,8 @@ declare namespace tiled {
 
   /**
    * The directory containing the Tiled executable.
+   *
+   * @since Tiled 1.8
    */
   export const applicationDirPath: string;
 
@@ -2608,6 +2674,8 @@ declare namespace tiled {
    * Also note that a Tiled project can have its own additional extensions
    * directory, to make it easier to share extensions with a team or keep them
    * under version control.
+   *
+   * @since Tiled 1.8
    */
   export const extensionsPath: string;
 
@@ -2893,6 +2961,29 @@ declare namespace tiled {
    * Creates an {@link ObjectRef} object with the given ID.
    */
   export function objectRef(id: number): ObjectRef;
+
+  /**
+   * Creates a {@link PropertyValue} object with the given type and value.
+   *
+   * When creating an enum value, the name of the value can be used (or string
+   * with comma-separated names, in case of using flags). However, the created
+   * {@link PropertyValue} object will always use numbers for enum values.
+   *
+   * @example
+   * Creating a value of a custom enum:
+   * ```js
+   * var bodyType = tiled.propertyValue("BodyType", "Dynamic")
+   * ```
+   *
+   * @example
+   * Creating a value of a custom class:
+   * ```js
+   * var body = tiled.propertyValue("Body", { type: bodyType, bullet: true })
+   * ```
+   *
+   * @since Tiled 1.8
+   */
+  export function propertyValue(type: string, value: object | number | string): PropertyValue;
 
   /**
    * Registers a new map format that can then be used to open and/or save

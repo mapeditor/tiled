@@ -198,6 +198,13 @@ const PropertyType *PropertyValue::type() const
     return Object::propertyTypes().findTypeById(typeId);
 }
 
+QString PropertyValue::typeName() const
+{
+    if (auto t = type())
+        return t->name;
+    return QString();
+}
+
 /**
  * When just a path is given, the global property types are used.
  */

@@ -46,12 +46,14 @@ class TILEDSHARED_EXPORT PropertyValue
     Q_GADGET
     Q_PROPERTY(QVariant value MEMBER value)
     Q_PROPERTY(int typeId MEMBER typeId)
+    Q_PROPERTY(QString typeName READ typeName)
 
 public:
     QVariant value;
     int typeId = 0;
 
     const PropertyType *type() const;
+    QString typeName() const;
 };
 
 class TILEDSHARED_EXPORT FilePath
