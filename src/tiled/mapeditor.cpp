@@ -1033,6 +1033,9 @@ void MapEditor::setCurrentBrush(EditableMap *editableMap)
 EditableWangSet *MapEditor::currentWangSet() const
 {
     auto currentWangSet = mWangDock->currentWangSet();
+    if (!currentWangSet)
+        return nullptr;
+
     auto tileset = currentWangSet->tileset();
 
     auto &editableManager = EditableManager::instance();
