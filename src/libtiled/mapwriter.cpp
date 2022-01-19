@@ -935,8 +935,11 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
         if (!exportValue.propertyTypeName.isEmpty())
             w.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
 
+        // For class property values, write out the original value, so that the
+        // propertytype attribute can also be written for their members where
+        // applicable.
         if (exportValue.value.userType() == QMetaType::QVariantMap) {
-            writeProperties(w, exportValue.value.toMap());
+            writeProperties(w, it.value().value<PropertyValue>().value.toMap());
         } else {
             const QString value = exportValue.value.toString();
 

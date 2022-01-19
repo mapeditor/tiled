@@ -270,8 +270,11 @@ QVariant ClassPropertyType::toPropertyValue(const QVariant &value, const ExportC
         it.next();
 
         const QVariant classMember = members.value(it.key());
-        if (!classMember.isValid())  // ignore removed members
-            continue;
+        if (!classMember.isValid())
+            continue; // ignore removed members
+
+        if (it.value().userType() == classMember.userType())
+            continue; // leave members alone that already have the expected type
 
         QVariant propertyValue = context.toPropertyValue(it.value(), classMember.userType());
 
