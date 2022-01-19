@@ -2727,12 +2727,23 @@ interface Tool {
    * `false`.
    *
    * When set to `false` and the currently selected tiles change while this
-   * tool is active, the Stamp Brush is automatically selected. Set this
+   * tool is active, the Stamp Brush is automatically activated. Set this
    * property to `true` to keep this tool active.
    *
    * @since 1.8
    */
   usesSelectedTiles: boolean;
+
+  /**
+   * Whether this tool works with Wang sets. This defaults to `false`.
+   *
+   * When set to `false` and a Wang color is clicked while this tool is active,
+   * the Terrain Brush is automatically activated. Set this property to `true`
+   * to keep this tool active.
+   *
+   * @since 1.8
+   */
+  usesWangSets: boolean;
 
   /**
    * Called when the tool was activated.

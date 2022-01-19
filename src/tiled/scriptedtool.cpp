@@ -52,6 +52,10 @@ ScriptedTool::ScriptedTool(Id id, QJSValue object, QObject *parent)
     if (usesSelectedTilesProperty.isBool())
         setUsesSelectedTiles(usesSelectedTilesProperty.toBool());
 
+    const QJSValue usesWangSetsProperty = mScriptObject.property(QStringLiteral("usesWangSets"));
+    if (usesWangSetsProperty.isBool())
+        setUsesWangSets(usesWangSetsProperty.toBool());
+
     // Make members of ScriptedTool available through the original object
     auto &scriptManager = ScriptManager::instance();
     auto self = scriptManager.engine()->newQObject(this);

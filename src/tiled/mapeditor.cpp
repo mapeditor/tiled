@@ -779,6 +779,11 @@ void MapEditor::setStamp(const TileStamp &stamp)
 
 void MapEditor::selectWangBrush()
 {
+    // Don't switch tools when the current tool also uses Wang sets
+    AbstractTool *selectedTool = mToolManager->selectedTool();
+    if (selectedTool && selectedTool->usesWangSets())
+        return;
+
     mToolManager->selectTool(mWangBrush);
 }
 

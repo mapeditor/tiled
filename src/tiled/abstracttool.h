@@ -69,6 +69,7 @@ class AbstractTool : public QObject
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
     Q_PROPERTY(bool usesSelectedTiles READ usesSelectedTiles WRITE setUsesSelectedTiles)
+    Q_PROPERTY(bool usesWangSets READ usesWangSets WRITE setUsesWangSets)
 
 public:
     /**
@@ -106,6 +107,9 @@ public:
 
     bool usesSelectedTiles() const;
     void setUsesSelectedTiles(bool usesSelectedTiles);
+
+    bool usesWangSets() const;
+    void setUsesWangSets(bool usesWangSets);
 
     ToolManager *toolManager() const;
     Tile *tile() const;
@@ -227,6 +231,7 @@ private:
     bool mEnabled = false;
     bool mVisible = true;
     bool mUsesSelectedTiles = false;
+    bool mUsesWangSets = false;
 
     ToolManager *mToolManager = nullptr;
     MapDocument *mMapDocument = nullptr;
@@ -288,6 +293,16 @@ inline bool AbstractTool::usesSelectedTiles() const
 inline void AbstractTool::setUsesSelectedTiles(bool usesSelectedTiles)
 {
     mUsesSelectedTiles = usesSelectedTiles;
+}
+
+inline bool AbstractTool::usesWangSets() const
+{
+    return mUsesWangSets;
+}
+
+inline void AbstractTool::setUsesWangSets(bool usesWangSets)
+{
+    mUsesWangSets = usesWangSets;
 }
 
 /**
