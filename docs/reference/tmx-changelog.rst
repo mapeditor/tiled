@@ -11,8 +11,8 @@ Tiled 1.8
    type is saved as the new ``propertytype`` attribute on the
    :ref:`tmx-property` element.
 -  The :ref:`tmx-property` element can now contain a :ref:`tmx-properties`
-   element, in case the property value is a class. In this case the ``type``
-   attribute is set to the new value ``class``.
+   element, in case the property value is a class and at least one member value
+   has been set. The ``type`` attribute will have the new value ``class``.
 -  Added ``parallaxoriginx`` and ``parallaxoriginy`` attributes to the
    :ref:`tmx-map` element.
 -  Added ``repeatx`` and ``repeaty`` attributes to the :ref:`tmx-imagelayer`

@@ -145,13 +145,19 @@ Can contain at most one: :ref:`tmx-chunksize`, :ref:`tmx-export`
    there. These two attributes are kept in the TMX map, since they are
    map specific.)
 -  **name:** The name of this tileset.
--  **tilewidth:** The (maximum) width of the tiles in this tileset.
+-  **tilewidth:** The (maximum) width of the tiles in this tileset. Irrelevant
+   for image collection tilesets, but stores the maximum tile width.
 -  **tileheight:** The (maximum) height of the tiles in this tileset.
+   Irrelevant for image collection tilesets, but stores the maximum tile
+   height.
 -  **spacing:** The spacing in pixels between the tiles in this tileset
-   (applies to the tileset image, defaults to 0)
+   (applies to the tileset image, defaults to 0). Irrelevant for image
+   collection tilesets.
 -  **margin:** The margin around the tiles in this tileset (applies to the
-   tileset image, defaults to 0)
--  **tilecount:** The number of tiles in this tileset (since 0.13)
+   tileset image, defaults to 0). Irrelevant for image collection tilesets.
+-  **tilecount:** The number of tiles in this tileset (since 0.13). Note that
+   there can be tiles with a higher ID than the tile count, in case the tileset
+   is an image collection from which tiles have been removed.
 -  **columns:** The number of tile columns in the tileset. For image
    collection tilesets it is editable and is used when displaying the
    tileset. (since 0.15)
@@ -162,14 +168,17 @@ Can contain at most one: :ref:`tmx-chunksize`, :ref:`tmx-export`
    reasons. When unspecified, tile objects use ``bottomleft`` in orthogonal mode
    and ``bottom`` in isometric mode. (since 1.4)
 
+A tileset can be either *based on a single image*, which is cut into tiles
+based on the given parameters, or a *collection of images*, in which case each
+tile defines its own image. In the first case there is a single child
+:ref:`tmx-image` element. In the latter case, each child
+:ref:`tmx-tileset-tile` element contains an :ref:`tmx-image` element.
+
 If there are multiple ``<tileset>`` elements, they are in ascending
 order of their ``firstgid`` attribute. The first tileset always has a
 ``firstgid`` value of 1. Since Tiled 0.15, image collection tilesets do
 not necessarily number their tiles consecutively since gaps can occur
 when removing tiles.
-
-Image collection tilesets have no ``<image>`` tag. Instead, each tile has
-an ``<image>`` tag.
 
 Can contain at most one: :ref:`tmx-image`, :ref:`tmx-tileoffset`,
 :ref:`tmx-grid` (since 1.0), :ref:`tmx-properties`, :ref:`tmx-terraintypes`,
@@ -233,6 +242,10 @@ Can contain at most one: :ref:`tmx-data`
 <terraintypes>
 ~~~~~~~~~~~~~~
 
+**Deprecated:** This element has been deprecated since Tiled 1.5, in favour of
+the :ref:`tmx-wangsets` element, which is more flexible. Tilesets containing
+terrain types are automatically saved with a Wang set instead.
+
 This element defines an array of terrain types, which can be referenced
 from the ``terrain`` attribute of the ``tile`` element.
 
@@ -242,6 +255,9 @@ Can contain any number: :ref:`tmx-terrain`
 
 <terrain>
 ^^^^^^^^^
+
+**Deprecated:** This element has been deprecated since Tiled 1.5, in favour of
+the :ref:`tmx-wangcolor` element.
 
 -  **name:** The name of the terrain type.
 -  **tile:** The local tile-id of the tile that represents the terrain
@@ -271,10 +287,11 @@ tiles (e.g. to extend a Wang set by transforming existing tiles).
 -  **id:** The local tile ID within its tileset.
 -  **type:** The type of the tile. Refers to an object type and is used
    by tile objects. (optional) (since 1.0)
--  **terrain:** Defines the terrain type of each corner of the tile,
+-  *terrain:* Defines the terrain type of each corner of the tile,
    given as comma-separated indexes in the terrain types array in the
    order top-left, top-right, bottom-left, bottom-right. Leaving out a
-   value means that corner has no terrain. (optional)
+   value means that corner has no terrain. (deprecated since 1.5 in favour of
+   :ref:`tmx-wangtile`)
 -  **probability:** A percentage indicating the probability that this
    tile is chosen when it competes with others while editing with the
    terrain tool. (defaults to 0)
@@ -318,8 +335,7 @@ Can contain any number: :ref:`tmx-wangset`
 <wangset>
 ^^^^^^^^^
 
-Defines a list of corner colors and a list of edge colors, and any
-number of Wang tiles using these colors.
+Defines a list of colors and any number of Wang tiles using these colors.
 
 -  **name:** The name of the Wang set.
 -  **tile:** The tile ID of the tile representing this Wang set.
@@ -707,6 +723,10 @@ Object properties can reference any object on the same map and are stored as an
 integer (the ID of the referenced object, or 0 when no object is referenced).
 When used on objects in the Tile Collision Editor, they can only refer to
 other objects on the same tile.
+
+Class properties will have their member values stored in a nested
+:ref:`tmx-properties` element. Only the actually set members are saved. When no
+members have been set the ``properties`` element is left out entirely.
 
 When a string property contains newlines, the current version of Tiled
 will write out the value as characters contained inside the ``property``

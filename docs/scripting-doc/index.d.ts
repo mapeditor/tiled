@@ -13,6 +13,8 @@
  * [`@mapeditor/tiled-api`](https://www.npmjs.com/package/@mapeditor/tiled-api)
  * package, which allows you to write scripts using TypeScript and can provide
  * auto-completion in your editor (also when using plain JavaScript).
+ *
+ * This documentation is also generated based on these type definitions.
  */
 
 /**
@@ -23,6 +25,8 @@
 // declare const __filename: string; // collides with nodejs types
 
 /**
+ * A value with `x`, `y`, `width` and `height` attributes.
+ *
  * {@link Qt.rect} can be used to create a rectangle.
  */
 interface rect {
@@ -63,68 +67,70 @@ interface region {
   /**
    * Array of rectangles making up this region.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   readonly rects : rect[];
 
   /**
    * Returns whether this region contains the given point.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   contains(x : number, y : number) : boolean;
 
   /**
    * Returns whether this region contains the given point.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   contains(point : point) : boolean;
 
   /**
    * Adds the given rectangle to this region.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   add(rect : rect) : void;
 
   /**
    * Adds the given region to this region.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   add(region : region) : void;
 
   /**
    * Subtracts the given rectangle from this region.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   subtract(rect : rect) : void;
 
   /**
    * Subtracts the given region from this region.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   subtract(region : region) : void;
 
   /**
    * Sets the selected area to the intersection of the current selected area and the given rectangle.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   intersect(rect : rect) : void;
 
   /**
    * Sets the selected area to the intersection of the current selected area and the given region.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   intersect(region : region) : void;
 }
 
 /**
+ * A value with `x` and `y` attributes.
+ *
  * {@link Qt.point} can be used to create a point object.
  */
 interface point {
@@ -140,6 +146,8 @@ interface point {
 }
 
 /**
+ * A value with `width` and `height` attributes.
+ *
  * {@link Qt.size} can be used to create a size object.
  */
 interface size {
@@ -156,7 +164,7 @@ interface size {
 
 /**
  * A polygon is not strictly a custom type. It is an array of objects that each
- * have an ``x`` and ``y`` property, representing the points of the polygon.
+ * have an `x` and `y` property, representing the points of the polygon.
  *
  * To modify the polygon of a {@link MapObject}, change or set up the
  * polygon array and then assign it to {@link MapObject.polygon}.
@@ -165,9 +173,12 @@ type Polygon = point[];
 
 /**
  * The value of a property of type 'object', which refers to a
- * {@link MapObject} by its ID. Generally only used as a fallback when an
- * object property cannot be resolved to an actual object. Can be created with
- * {@link tiled.objectRef}.
+ * {@link MapObject} by its ID.
+ *
+ * Generally only used as a fallback when an object property cannot be resolved
+ * to an actual object.
+ *
+ * Can be created with {@link tiled.objectRef}.
  */
 interface ObjectRef {
   /**
@@ -177,9 +188,11 @@ interface ObjectRef {
 }
 
 /**
- * A property value with a user-defined type. Can be created using {@link tiled.propertyValue}.
+ * A property value with a user-defined type.
  *
- * @since Tiled 1.8
+ * Can be created using {@link tiled.propertyValue}.
+ *
+ * @since 1.8
  */
 interface PropertyValue {
   /**
@@ -199,6 +212,12 @@ interface PropertyValue {
   readonly typeName: string;
 }
 
+/**
+ * Defines an entry in a menu. Used with {@link tiled.extendMenu}.
+ *
+ * Before an action can be added to a menu, it needs to be registered using
+ * {@link tiled.registerAction}.
+ */
 interface MenuAction {
   /**
    * ID of a registered action that the menu item will represent.
@@ -212,6 +231,9 @@ interface MenuAction {
   before?: string;
 }
 
+/**
+ * Defines a separator in a menu. Used with {@link tiled.extendMenu}.
+ */
 interface MenuSeparator {
   /**
    * Set to `true` if this item is a menu separator (optional).
@@ -219,11 +241,16 @@ interface MenuSeparator {
   separator: boolean;
 }
 
-type Menu = MenuAction|MenuSeparator
+/**
+ * An item in a menu, which is either an action or a separator. Used with
+ * {@link tiled.extendMenu}.
+ */
+type MenuItem = MenuAction|MenuSeparator
 
 /**
- * Used as the value for custom 'file' properties. Can be created with
- * {@link tiled.filePath}.
+ * Used as the value for custom 'file' properties.
+ *
+ * Can be created with {@link tiled.filePath}.
  */
 interface FilePath {
   /**
@@ -282,13 +309,22 @@ interface Signal<Arg> {
  * (keep in mind, that the QtQuick module is not currently loaded).
  */
 declare namespace Qt {
+  /**
+   * Returns a point with the specified `x` and `y` coordinates.
+   */
   export function point(x: number, y: number): point;
+  /**
+   * Returns a rect with the top-left corner at `x`, `y` and the specified `width` and `height`.
+   */
   export function rect(
     x: number,
     y: number,
     width: number,
     height: number
   ): rect;
+  /**
+   * Returns a size with the specified `width` and `height`.
+   */
   export function size(width: number, height: number): size;
 
   /**
@@ -332,7 +368,7 @@ declare class TextFile {
   public readonly atEof: boolean;
 
   /**
-   * The text codec.
+   * The text codec. The codec is used for reading and writing from and to the file, respectively. Common codecs are supported, for example: “UTF-8”, “UTF-16”, and “ISO 8859-1”.
    */
   public codec: string;
 
@@ -547,7 +583,7 @@ declare class ObjectGroup extends Layer {
    *
    * The default is top down.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   drawOrder : typeof ObjectGroup.TopDownOrder | typeof ObjectGroup.IndexOrder | typeof ObjectGroup.UnknownOrder;
 
@@ -583,10 +619,16 @@ declare class ObjectGroup extends Layer {
 
 }
 
-type TiledObjectPropertyValue = number | string | boolean | ObjectRef | FilePath | MapObject | undefined
+/**
+ * A type alias used to describe the possible values in object properties.
+ */
+type TiledObjectPropertyValue = number | string | boolean | ObjectRef | FilePath | MapObject | PropertyValue | undefined
 
+/**
+ * An interface used to describe object properties.
+ */
 interface TiledObjectProperties {
-  [name:string]:TiledObjectPropertyValue
+  [name: string]: TiledObjectPropertyValue
 }
 
 /**
@@ -662,7 +704,10 @@ declare class TiledObject {
   resolvedProperties(): TiledObjectProperties;
 }
 
-
+/**
+ * Defines the font used to render objects which have {@link MapObject.shape}
+ * set to {@link MapObject.Text}.
+ */
 interface Font {
   /**
    * The font family.
@@ -700,6 +745,9 @@ interface Font {
   kerning : boolean
 }
 
+/**
+ * An object that can be part of an {@link ObjectGroup}.
+ */
 declare class MapObject extends TiledObject {
   static readonly Rectangle: unique symbol
   static readonly Polygon: unique symbol
@@ -853,9 +901,22 @@ declare class Asset extends TiledObject {
   readonly fileName: string;
 
   /**
+   * The signal emitted when {@link fileName} changes.
+   *
+   * Its first parameter is the new file name, the second parameter is the old
+   * file name.
+   */
+  readonly fileNameChanged: Signal<string>;
+
+  /**
    * Whether the asset was modified after it was saved or loaded.
    */
   readonly modified: boolean;
+
+  /**
+   * The signal emitted when {@link modified} changes.
+   */
+  readonly modifiedChanged: Signal<null>;
 
   /**
    * Whether the asset is a {@link TileMap}.
@@ -1070,7 +1131,7 @@ interface FileInfo {  // TODO: namespace instead of interface?
 /**
  * Offers various file system operations.
  *
- * @since Tiled 1.8
+ * @since 1.8
  */
 interface File {  // TODO: namespace instead of interface?
   readonly Dirs: 0x001
@@ -1180,7 +1241,7 @@ declare class GroupLayer extends Layer {
   /**
    * The child layers of this group layer.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   readonly layers: Layer[]
 
@@ -1227,9 +1288,11 @@ declare class GroupLayer extends Layer {
 }
 
 /**
- * Can be used to create, load, save and modify images. Also useful when
- * writing an importer, where the image can be set on a tileset or its
- * tiles ({@link Tileset.loadFromImage} and {@link Tile.setImage}).
+ * Can be used to create, load, save and modify images.
+ *
+ * Also useful when writing an importer, where the image can be set on a
+ * tileset ({@link Tileset.loadFromImage}), its tiles ({@link Tile.setImage})
+ * or an image layer ({@link ImageLayer.loadFromImage}).
  *
  * @since 1.5
  */
@@ -1446,6 +1509,9 @@ declare class Image {
   mirrored(horizontal: boolean, vertical: boolean) : Image;
 }
 
+/**
+ * A layer that renders a single referenced image.
+ */
 declare class ImageLayer extends Layer {
   /**
    * Color used as transparent color when rendering the image.
@@ -1460,14 +1526,14 @@ declare class ImageLayer extends Layer {
   /**
    * Whether the image rendered by this layer repeats along the X axis.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   repeatX: boolean;
 
   /**
    * Whether the image rendered by this layer repeats along the Y axis.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   repeatY: boolean;
 
@@ -1519,7 +1585,9 @@ interface ScriptedMapFormat {
 }
 
 /**
- * The map editor, accessible through {@link tiled.mapEditor}.
+ * The map editor.
+ *
+ * Accessible through {@link tiled.mapEditor}.
  */
 interface MapEditor {
   /**
@@ -1530,14 +1598,14 @@ interface MapEditor {
   /**
    * Gets the currently selected {@link WangSet} in the "Terrain Sets" view.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   readonly currentWangSet: WangSet
 
   /**
    * The signal emitted when {@link currentWangSet} changes.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   readonly currentWangSetChanged: Signal<null>;
 
@@ -1546,14 +1614,14 @@ interface MapEditor {
    * The value 0 is used to represent the eraser mode, and the first Wang color
    * has index 1.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   readonly currentWangColorIndex: number
 
   /**
    * The signal emitted when {@link currentWangColorIndex} changes.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   readonly currentWangColorIndexChanged: Signal<number>;
 
@@ -1568,6 +1636,11 @@ interface MapEditor {
   readonly tilesetsView: TilesetsView
 }
 
+/**
+ * The view displaying the tilesets in the map editor.
+ *
+ * Accessible through {@link MapEditor.tilesetsView}.
+ */
 interface TilesetsView {
   /**
    * Access or change the currently displayed tileset.
@@ -1583,6 +1656,11 @@ interface TilesetsView {
   selectedTiles: Tile[]
 }
 
+/**
+ * A single frame in a tile animation.
+ *
+ * See {@link Tile.frames}.
+ */
 interface frame {
   /**
    * The local tile ID used to represent the frame.
@@ -1595,6 +1673,9 @@ interface frame {
   duration : number
 }
 
+/**
+ * A single tile in a tileset.
+ */
 declare class Tile extends TiledObject {
   static readonly FlippedHorizontally: 0x01
   static readonly FlippedVertically: 0x02
@@ -1664,6 +1745,9 @@ declare class Tile extends TiledObject {
   setImage(image : Image) : void
 }
 
+/**
+ * The base class of the various supported layer types.
+ */
 declare class Layer extends TiledObject {
   /**
    * Unique (map-wide) ID of the layer
@@ -1687,7 +1771,7 @@ declare class Layer extends TiledObject {
    * layer or by any child layers. Affects tile layers, image layers and tile
    * objects.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   tintColor: color;
 
@@ -1737,6 +1821,16 @@ declare class Layer extends TiledObject {
   readonly isImageLayer: boolean;
 }
 
+/**
+ * An interface through which the currently selected area can be modified.
+ *
+ * Can be accessed through {@link TileMap.selectedArea}.
+ *
+ * Instead of directly modifying the selected area, it could be preferable to
+ * get the {@link region} of this area, modify that region, and then assign it
+ * back. The necessary methods have been added to the {@link region} type with
+ * Tiled 1.8.
+ */
 interface SelectedArea {
   /**
    * Bounding rectangle of the selected area.
@@ -1789,6 +1883,16 @@ interface SelectedArea {
   intersect(region : region) : void
 }
 
+/**
+ * A tile-map asset.
+ *
+ * Usually this asset defines a specific level or area in a game.
+ *
+ * Contrary to the name, this is not necessary a tile-map. The contents are
+ * defined by the layers that are added to it, which could also include only
+ * image and object layers. Yet, this class has many properties that affect how
+ * the tile layers are rendered.
+ */
 declare class TileMap extends Asset {
   static readonly Unknown: unique symbol
   static readonly Orthogonal: unique symbol
@@ -1858,7 +1962,7 @@ declare class TileMap extends Asset {
   /**
    * The parallax origin used for reference when applying the respective parallax factor.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   parallaxOrigin : point
 
@@ -1900,7 +2004,7 @@ declare class TileMap extends Asset {
   /**
    * The top-level layers of this map. To access nested layers, use {@link GroupLayer.layers}.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   readonly layers: Layer[]
 
@@ -1915,14 +2019,29 @@ declare class TileMap extends Asset {
   currentLayer : Layer
 
   /**
+   * The signal emitted when {@link currentLayer} changes.
+   */
+  readonly currentLayerChanged: Signal<null>;
+
+  /**
    * Selected layers.
    */
   selectedLayers : Layer[]
 
   /**
+   * The signal emitted when {@link selectedLayers} changes.
+   */
+  readonly selectedLayersChanged: Signal<null>;
+
+  /**
    * Selected objects.
    */
   selectedObjects : MapObject[]
+
+  /**
+   * The signal emitted when {@link selectedObjects} changes.
+   */
+  readonly selectedObjectsChanged: Signal<null>;
 
   /**
    * Constructs a new map.
@@ -2003,7 +2122,7 @@ declare class TileMap extends Asset {
   /**
    * Removes the given objects from this map. The object references turn into a standalone copy of the object.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   public removeObjects(objects : MapObject[]);
 
@@ -2125,10 +2244,10 @@ interface cell {
  * A tile layer.
  *
  * Note that while tile layers have a size, the size is generally ignored on
- * infinite maps. Even for fixed size maps, nothing in the scripting API stops you
- * from changing the layer outside of its boundaries and changing the size of the
- * layer has no effect on its contents. If you want to change the size while
- * affecting the contents, use the {@link resize} function.
+ * infinite maps. Even for fixed size maps, nothing in the scripting API stops
+ * you from changing the layer outside of its boundaries and changing the size
+ * of the layer has no effect on its contents. If you want to change the size
+ * while affecting the contents, use the {@link resize} function.
  */
 declare class TileLayer extends Layer {
   /**
@@ -2204,7 +2323,7 @@ interface TileLayerEdit {
   /**
    * Sets the tile at the given location, optionally specifying tile flags.
    *
-   * To remove a tile, set it to ``null``.
+   * To remove a tile, set it to `null`.
    */
   setTile(x : number, y : number, tile : Tile | null, flags? : number) : void
 
@@ -2215,6 +2334,8 @@ interface TileLayerEdit {
 }
 
 /**
+ * Defines a "Terrain Set".
+ *
  * @since 1.5
  */
 declare class WangSet {
@@ -2268,20 +2389,37 @@ declare class WangSet {
   /**
    * Returns the name of the Wang color at the given index.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   public colorName(colorIndex: number) : string
 
   /**
    * Sets the name of the Wang color at the given index.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   public setColorName(colorIndex: number, name: string) : void
 }
 
+/**
+ * A color value.
+ *
+ * A color value can be converted to a string and can also be assigned using a
+ * string. The string is a hexadecimal triplet or quad in the form "#RRGGBB"
+ * and "#AARRGGBB" respectively. For example, the color red corresponds to a
+ * triplet of "#FF0000" and a slightly transparent blue to a quad of
+ * "#800000FF".
+ */
 interface color {}
 
+/**
+ * A container for tiles that can be used by a map.
+ *
+ * Can contain either tiles cut from a single image, using {@link
+ * loadFromImage}, or individual tiles using {@link addTile} and then setting
+ * the image on each tile using {@link Tile.imageFileName} or {@link
+ * Tile.setImage}.
+ */
 declare class Tileset extends Asset {
   static readonly Unspecified: unique symbol
   static readonly TopLeft: unique symbol
@@ -2448,7 +2586,8 @@ declare class Tileset extends Asset {
 }
 
 /**
- * The interface that should be implemented for objects passed to {@link tiled.registerTilesetFormat}.
+ * The interface that should be implemented for objects passed to {@link
+ * tiled.registerTilesetFormat}.
  */
 interface ScriptedTilesetFormat {
   /**
@@ -2478,7 +2617,7 @@ interface ScriptedTilesetFormat {
 }
 
 /**
- * The view displaying the map.
+ * A view displaying a map.
  */
 interface MapView {
   /**
@@ -2492,7 +2631,8 @@ interface MapView {
   center : point
 
   /**
-   * Centers the view at the given location in screen coordinates. Same as assigning to the center property.
+   * Centers the view at the given location in screen coordinates. Same as
+   * assigning to the center property.
    */
   centerOn(x : number, y : number) : void
 }
@@ -2590,7 +2730,7 @@ interface Tool {
    * tool is active, the Stamp Brush is automatically selected. Set this
    * property to `true` to keep this tool active.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   usesSelectedTiles: boolean;
 
@@ -2680,7 +2820,7 @@ interface Tool {
 }
 
 /**
- * The ``tiled`` module is the main entry point and provides properties,
+ * The `tiled` module is the main entry point and provides properties,
  * functions and signals which are documented below.
  */
 declare namespace tiled {
@@ -2703,7 +2843,7 @@ declare namespace tiled {
   /**
    * The directory containing the Tiled executable.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   export const applicationDirPath: string;
 
@@ -2719,7 +2859,7 @@ declare namespace tiled {
    * directory, to make it easier to share extensions with a team or keep them
    * under version control.
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   export const extensionsPath: string;
 
@@ -2881,7 +3021,7 @@ declare namespace tiled {
    */
   export function extendMenu(
     shortName: string,
-    menu: Menu[]
+    menu: MenuItem[]
   ): void;
 
   /**
@@ -3025,7 +3165,7 @@ declare namespace tiled {
    * var body = tiled.propertyValue("Body", { type: bodyType, bullet: true })
    * ```
    *
-   * @since Tiled 1.8
+   * @since 1.8
    */
   export function propertyValue(type: string, value: object | number | string): PropertyValue;
 
@@ -3117,7 +3257,7 @@ declare namespace tiled {
   export const assetAboutToBeClosed: Signal<Asset>;
 
   /**
-   * The currently active asset has changed.
+   * The {@link activeAsset} has changed.
    */
   export const activeAssetChanged: Signal<Asset>;
 }
@@ -3144,7 +3284,7 @@ declare class Process {
   readonly exitCode : number
 
   /**
-   * Sets the text codec to codec. The codec is used for reading and writing from and to the process, respectively. Common codecs are supported, for example: “UTF-8”, “UTF-16”, and “ISO 8859-1”.
+   * The text codec. The codec is used for reading and writing from and to the process, respectively. Common codecs are supported, for example: “UTF-8”, “UTF-16”, and “ISO 8859-1”.
    */
   codec: string
 

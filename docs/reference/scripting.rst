@@ -27,6 +27,17 @@ JavaScript context.
     A few example scripts and links to existing Tiled extensions are provided
     at the Tiled Extensions repository: https://github.com/mapeditor/tiled-extensions
 
+
+JavaScript Host Environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Tiled uses the JavaScript engine shipping with Qt's `QML module`_. The QML
+runtime generally implements the 7th edition of the standard, with some
+additions. See the `JavaScript Host Environment`_ documentation for details.
+
+It may also be helpful to check out the `List of JavaScript Objects and
+Functions`_ that are available.
+
 .. note::
 
     The full scripting API and support for ECMAScript 7 features are only
@@ -106,4 +117,7 @@ __filename
     get called. If you need it there, copy the value to local scope.
 
 .. _Tiled Scripting API: https://www.mapeditor.org/docs/scripting/
+.. _JavaScript Host Environment: https://doc.qt.io/qt-5/qtqml-javascript-hostenvironment.html
+.. _List of JavaScript Objects and Functions: https://doc.qt.io/qt-5/qtqml-javascript-functionlist.html
+.. _QML module: https://doc.qt.io/qt-5/qtqml-index.html
 .. _@mapeditor/tiled-api: https://www.npmjs.com/package/@mapeditor/tiled-api
