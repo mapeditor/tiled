@@ -158,6 +158,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(mapDocument.data(), &MapDocument::regionChanged, this, &MapItem::repaintRegion);
     connect(mapDocument.data(), &MapDocument::tileLayerChanged, this, &MapItem::tileLayerChanged);
     connect(mapDocument.data(), &MapDocument::layerAdded, this, &MapItem::layerAdded);
+    connect(mapDocument.data(), &MapDocument::layerAboutToBeRemoved, this, &MapItem::layerAboutToBeRemoved);
     connect(mapDocument.data(), &MapDocument::layerRemoved, this, &MapItem::layerRemoved);
     connect(mapDocument.data(), &MapDocument::imageLayerChanged, this, &MapItem::imageLayerChanged);
     connect(mapDocument.data(), &MapDocument::selectedLayersChanged, this, &MapItem::updateSelectedLayersHighlight);
@@ -435,6 +436,19 @@ void MapItem::layerAdded(Layer *layer)
         mLayerItems.value(sibling)->setZValue(z++);
 
     updateBoundingRect();
+}
+
+void MapItem::layerAboutToBeRemoved(GroupLayer *parentLayer, int index)
+{
+    // Fix up the Z value of the items of the siblings, before the layer is removed
+    const auto siblings = parentLayer ? parentLayer->layers()
+                                      : mMapDocument->map()->layers();
+    const Layer *layer = siblings.at(index);
+
+    int z = 0;
+    for (auto sibling : siblings)
+        if (sibling != layer)
+            mLayerItems.value(sibling)->setZValue(z++);
 }
 
 void MapItem::layerRemoved(Layer *layer)

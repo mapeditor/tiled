@@ -104,6 +104,7 @@ private:
     void tileLayerChanged(TileLayer *tileLayer, MapDocument::TileLayerChangeFlags flags);
 
     void layerAdded(Layer *layer);
+    void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
     void layerRemoved(Layer *layer);
     void layerChanged(const LayerChangeEvent &change);
     void layerTintColorChanged(Layer *layer);
