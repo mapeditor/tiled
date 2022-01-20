@@ -162,16 +162,16 @@ void MiniMap::renderMapToImage()
         return;
     }
 
-    MapRenderer *renderer = mMapDocument->renderer();
-    const QSize viewSize = contentsRect().size() * devicePixelRatioF();
-    QSize mapSize = renderer->mapBoundingRect().size();
+    MiniMapRenderer miniMapRenderer(mMapDocument->map());
 
+    const QSize mapSize = miniMapRenderer.mapSize();
     if (mapSize.isEmpty()) {
         mMapImage = QImage();
         return;
     }
 
     // Determine the largest possible scale
+    const QSize viewSize = contentsRect().size() * devicePixelRatioF();
     qreal scale = qMin(static_cast<qreal>(viewSize.width()) / mapSize.width(),
                        static_cast<qreal>(viewSize.height()) / mapSize.height());
 
@@ -185,7 +185,6 @@ void MiniMap::renderMapToImage()
     if (imageSize.isEmpty())
         return;
 
-    MiniMapRenderer miniMapRenderer(mMapDocument->map());
     miniMapRenderer.renderToImage(mMapImage, mRenderFlags);
 }
 
@@ -294,10 +293,15 @@ QRect MiniMap::viewportRect() const
 
     const QRectF mapRect = mapView->mapScene()->mapBoundingRect();
     const QRectF viewRect = mapView->viewRect();
-    return QRect((viewRect.x() - mapRect.x()) / mapRect.width() * mImageRect.width() + mImageRect.x(),
-                 (viewRect.y() - mapRect.y()) / mapRect.height() * mImageRect.height() + mImageRect.y(),
-                 viewRect.width() / mapRect.width() * mImageRect.width(),
-                 viewRect.height() / mapRect.height() * mImageRect.height());
+    const QRectF ratioRect = QRectF((viewRect.x() - mapRect.x()) / mapRect.width(),
+                                    (viewRect.y() - mapRect.y()) / mapRect.height(),
+                                    viewRect.width() / mapRect.width(),
+                                    viewRect.height() / mapRect.height());
+
+    return QRect(ratioRect.x() * mImageRect.width() + mImageRect.x(),
+                 ratioRect.y() * mImageRect.height() + mImageRect.y(),
+                 ratioRect.width() * mImageRect.width(),
+                 ratioRect.height() * mImageRect.height());
 }
 
 QPointF MiniMap::mapToScene(QPointF p) const
