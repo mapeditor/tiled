@@ -277,8 +277,9 @@ public:
     static std::unique_ptr<MapRenderer> create(const Map *map);
 
 protected:
-    static void setupGridPens(const QPaintDevice *device, QColor color,
-                              QPen &gridPen, QPen &majorGridPen);
+    void setupGridPens(const QPaintDevice *device, QColor color,
+                       QPen &gridPen, QPen &majorGridPen, int gridSize,
+                       QSize gridMajor) const;
 
     void setCellType(CellType cellType) { mCellType = cellType; }
 

@@ -187,7 +187,7 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
     lines.reserve(8);
 
     QPen _gridPen, gridPen; // always use major grid pen for hex maps
-    setupGridPens(painter->device(), gridColor, _gridPen, gridPen);
+    setupGridPens(painter->device(), gridColor, _gridPen, gridPen, p.tileWidth, gridMajor);
 
     painter->setPen(gridPen);
 

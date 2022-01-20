@@ -245,7 +245,7 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     }
 
     QPen gridPen, majorGridPen;
-    setupGridPens(painter->device(), gridColor, gridPen, majorGridPen);
+    setupGridPens(painter->device(), gridColor, gridPen, majorGridPen, tileWidth, gridMajor);
 
     if (startY < endY) {
         gridPen.setDashOffset(startY * tileHeight);

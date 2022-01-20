@@ -288,7 +288,8 @@ std::unique_ptr<MapRenderer> MapRenderer::create(const Map *map)
 }
 
 void MapRenderer::setupGridPens(const QPaintDevice *device, QColor color,
-                                QPen &gridPen, QPen &majorGridPen)
+                                QPen &gridPen, QPen &majorGridPen, int gridSize,
+                                QSize gridMajor) const
 {
     const qreal devicePixelRatio = device->devicePixelRatioF();
 
@@ -298,15 +299,18 @@ void MapRenderer::setupGridPens(const QPaintDevice *device, QColor color,
     const qreal dpiScale = device->logicalDpiX() / 96.0;
 #endif
 
+    const auto majorGridSize = qMax(gridMajor.width(), gridMajor.height()) * gridSize;
     const qreal dashLength = std::ceil(2.0 * dpiScale);
+    const qreal autoAlpha = qBound(0.0, (gridSize * mPainterScale - 3) / 17.0, 1.0);
+    const qreal majorAutoAlpha = qBound(0.0, (majorGridSize * mPainterScale - 3) / 17.0, 1.0);
 
-    color.setAlpha(96);
+    color.setAlpha(96 * autoAlpha);
 
     gridPen = QPen(color, 1.0 * devicePixelRatio);
     gridPen.setCosmetic(true);
     gridPen.setDashPattern({dashLength, dashLength});
 
-    color.setAlpha(192);
+    color.setAlpha(96 * autoAlpha + 96 * majorAutoAlpha);
 
     majorGridPen = gridPen;
     majorGridPen.setColor(color);
