@@ -52,7 +52,8 @@ public:
     QPainterPath shape(const MapObject *object) const override;
     QPainterPath interactionShape(const MapObject *object) const override;
 
-    void drawGrid(QPainter *painter, const QRectF &rect, QColor grid, int gridMajor) const override;
+    void drawGrid(QPainter *painter, const QRectF &rect,
+                  QColor grid, QSize gridMajor) const override;
 
     using MapRenderer::drawTileLayer;
     void drawTileLayer(const RenderTileCallback &renderTile,

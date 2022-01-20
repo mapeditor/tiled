@@ -125,8 +125,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setBackgroundFadeColor);
     connect(mUi->gridFine, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
             preferences, &Preferences::setGridFine);
-    connect(mUi->gridMajor, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-            preferences, &Preferences::setGridMajor);
+    connect(mUi->gridMajorX, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            preferences, &Preferences::setGridMajorX);
+    connect(mUi->gridMajorY, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            preferences, &Preferences::setGridMajorY);
     connect(mUi->objectLineWidth, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
             preferences, &Preferences::setObjectLineWidth);
     connect(mUi->openGL, &QCheckBox::toggled,
@@ -225,7 +227,8 @@ void PreferencesDialog::fromPreferences()
     mUi->gridColor->setColor(prefs->gridColor());
     mUi->backgroundFadeColor->setColor(prefs->backgroundFadeColor());
     mUi->gridFine->setValue(prefs->gridFine());
-    mUi->gridMajor->setValue(prefs->gridMajor());
+    mUi->gridMajorX->setValue(prefs->gridMajor().width());
+    mUi->gridMajorY->setValue(prefs->gridMajor().height());
     mUi->objectLineWidth->setValue(prefs->objectLineWidth());
 
     // Updates

@@ -67,7 +67,7 @@ public:
     QColor gridColor() const;
     QColor backgroundFadeColor() const;
     int gridFine() const;
-    int gridMajor() const;
+    QSize gridMajor() const;
     qreal objectLineWidth() const;
 
     bool highlightCurrentLayer() const;
@@ -194,7 +194,9 @@ public slots:
     void setGridColor(QColor gridColor);
     void setBackgroundFadeColor(QColor backgroundFadeColor);
     void setGridFine(int gridFine);
-    void setGridMajor(int gridMajor);
+    void setGridMajor(QSize gridMajor);
+    void setGridMajorX(int gridMajorX);
+    void setGridMajorY(int gridMajorY);
     void setObjectLineWidth(qreal lineWidth);
     void setHighlightCurrentLayer(bool highlight);
     void setHighlightHoveredObject(bool highlight);
@@ -219,7 +221,7 @@ signals:
     void gridColorChanged(QColor gridColor);
     void backgroundFadeColorChanged(QColor backgroundFadeColor);
     void gridFineChanged(int gridFine);
-    void gridMajorChanged(int gridMajor);
+    void gridMajorChanged(QSize gridMajor);
     void objectLineWidthChanged(qreal lineWidth);
     void highlightCurrentLayerChanged(bool highlight);
     void highlightHoveredObjectChanged(bool highlight);

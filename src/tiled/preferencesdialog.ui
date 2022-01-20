@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>555</width>
-    <height>646</height>
+    <width>544</width>
+    <height>563</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -178,26 +178,6 @@
           <string>Interface</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Grid color:</string>
-            </property>
-            <property name="buddy">
-             <cstring>gridColor</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Object line width:</string>
-            </property>
-            <property name="buddy">
-             <cstring>objectLineWidth</cstring>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
@@ -208,24 +188,127 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Major grid every:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
+          <item row="0" column="1">
            <widget class="QComboBox" name="languageCombo"/>
           </item>
-          <item row="10" column="0" colspan="5">
-           <widget class="QCheckBox" name="wheelZoomsByDefault">
+          <item row="0" column="2" colspan="2">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Mouse wheel &amp;zooms by default</string>
+             <string>Grid color:</string>
+            </property>
+            <property name="buddy">
+             <cstring>gridColor</cstring>
             </property>
            </widget>
           </item>
-          <item row="6" column="3">
+          <item row="1" column="1">
+           <widget class="Tiled::ColorButton" name="gridColor"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Background fade color:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="Tiled::ColorButton" name="backgroundFadeColor"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Fine grid divisions:</string>
+            </property>
+            <property name="buddy">
+             <cstring>gridFine</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSpinBox" name="gridFine">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>128</number>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Major grid:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QSpinBox" name="gridMajorX">
+              <property name="suffix">
+               <string> tiles</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_9">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>by</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="gridMajorY">
+              <property name="suffix">
+               <string> tiles</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="4" column="3">
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>138</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Object line width:</string>
+            </property>
+            <property name="buddy">
+             <cstring>objectLineWidth</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
            <widget class="QDoubleSpinBox" name="objectLineWidth">
             <property name="suffix">
              <string> pixels</string>
@@ -241,67 +324,7 @@
             </property>
            </widget>
           </item>
-          <item row="12" column="0" colspan="5">
-           <widget class="QCheckBox" name="smoothScrolling">
-            <property name="text">
-             <string>Use s&amp;mooth scrolling</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4">
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="11" column="0" colspan="5">
-           <widget class="QCheckBox" name="autoScrolling">
-            <property name="text">
-             <string>Middle mouse button uses auto-&amp;scrolling</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="3">
-           <widget class="QComboBox" name="objectSelectionBehaviorCombo"/>
-          </item>
-          <item row="5" column="3">
-           <widget class="QSpinBox" name="gridMajor">
-            <property name="suffix">
-             <string> tiles</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="3">
-           <widget class="Tiled::ColorButton" name="gridColor"/>
-          </item>
-          <item row="4" column="3">
-           <widget class="QSpinBox" name="gridFine">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>128</number>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Fine grid divisions:</string>
-            </property>
-            <property name="buddy">
-             <cstring>gridFine</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0">
+          <item row="6" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
              <string>Object selection behavior:</string>
@@ -311,22 +334,36 @@
             </property>
            </widget>
           </item>
-          <item row="9" column="0" colspan="5">
+          <item row="6" column="1">
+           <widget class="QComboBox" name="objectSelectionBehaviorCombo"/>
+          </item>
+          <item row="7" column="0" colspan="2">
            <widget class="QCheckBox" name="openGL">
             <property name="text">
              <string>Hardware &amp;accelerated drawing (OpenGL)</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_8">
+          <item row="8" column="0" colspan="2">
+           <widget class="QCheckBox" name="wheelZoomsByDefault">
             <property name="text">
-             <string>Background fade color:</string>
+             <string>Mouse wheel &amp;zooms by default</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="3">
-           <widget class="Tiled::ColorButton" name="backgroundFadeColor"/>
+          <item row="9" column="0" colspan="2">
+           <widget class="QCheckBox" name="autoScrolling">
+            <property name="text">
+             <string>Middle mouse button uses auto-&amp;scrolling</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="0">
+           <widget class="QCheckBox" name="smoothScrolling">
+            <property name="text">
+             <string>Use s&amp;mooth scrolling</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -559,7 +596,8 @@
   <tabstop>gridColor</tabstop>
   <tabstop>backgroundFadeColor</tabstop>
   <tabstop>gridFine</tabstop>
-  <tabstop>gridMajor</tabstop>
+  <tabstop>gridMajorX</tabstop>
+  <tabstop>gridMajorY</tabstop>
   <tabstop>objectLineWidth</tabstop>
   <tabstop>objectSelectionBehaviorCombo</tabstop>
   <tabstop>openGL</tabstop>

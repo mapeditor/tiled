@@ -130,6 +130,13 @@ void Preferences::initialize()
         setValue(QLatin1String("Install/DonationDialogTime"), donationDialogTime.toString(Qt::ISODate));
     }
     setValue(QLatin1String("Install/RunCount"), runCount() + 1);
+
+    const auto oldGridMajorKey = QStringLiteral("Interface/GridMajor");
+    if (contains(oldGridMajorKey)) {
+        const int gridMajor = value(oldGridMajorKey).toInt();
+        setGridMajor(QSize(gridMajor, gridMajor));
+        remove(oldGridMajorKey);
+    }
 }
 
 bool Preferences::showGrid() const
@@ -192,9 +199,9 @@ int Preferences::gridFine() const
     return get<int>("Interface/GridFine", 4);
 }
 
-int Preferences::gridMajor() const
+QSize Preferences::gridMajor() const
 {
-    return get<int>("Interface/GridMajor", 10);
+    return get<QSize>("Interface/GridMajorSize", QSize(10, 10));
 }
 
 qreal Preferences::objectLineWidth() const
@@ -354,10 +361,20 @@ void Preferences::setGridFine(int gridFine)
     emit gridFineChanged(gridFine);
 }
 
-void Preferences::setGridMajor(int gridMajor)
+void Preferences::setGridMajor(QSize gridMajor)
 {
-    setValue(QLatin1String("Interface/GridMajor"), gridMajor);
+    setValue(QLatin1String("Interface/GridMajorSize"), gridMajor);
     emit gridMajorChanged(gridMajor);
+}
+
+void Preferences::setGridMajorX(int gridMajorX)
+{
+    setGridMajor(QSize(gridMajorX, gridMajor().height()));
+}
+
+void Preferences::setGridMajorY(int gridMajorY)
+{
+    setGridMajor(QSize(gridMajor().width(), gridMajorY));
 }
 
 void Preferences::setObjectLineWidth(qreal lineWidth)

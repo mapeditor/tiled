@@ -78,7 +78,7 @@ public:
     QRect boundingRect(const QRect &rect) const override;
 
     void drawGrid(QPainter *painter, const QRectF &exposed,
-                  QColor gridColor, int gridMajor = 0) const override;
+                  QColor gridColor, QSize gridMajor = QSize()) const override;
 
     QPointF snapToGrid(const QPointF &pixelCoords,
                        int subdivisions) const override;

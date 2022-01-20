@@ -138,7 +138,7 @@ QRect HexagonalRenderer::boundingRect(const QRect &rect) const
 }
 
 void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
-                                 QColor gridColor, int gridMajor) const
+                                 QColor gridColor, QSize gridMajor) const
 {
     Q_UNUSED(gridMajor)  // Unclear how this should apply to hexagonal maps
 

@@ -224,7 +224,7 @@ QPainterPath OrthogonalRenderer::interactionShape(const MapObject *object) const
 }
 
 void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
-                                  QColor gridColor, int gridMajor) const
+                                  QColor gridColor, QSize gridMajor) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -252,7 +252,7 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
         majorGridPen.setDashOffset(startY * tileHeight);
 
         for (int x = startX; x < endX; ++x) {
-            painter->setPen(gridMajor != 0 && x % gridMajor == 0 ? majorGridPen : gridPen);
+            painter->setPen(gridMajor.width() != 0 && x % gridMajor.width() == 0 ? majorGridPen : gridPen);
             painter->drawLine(x * tileWidth, startY * tileHeight, x * tileWidth, endY * tileHeight);
         }
     }
@@ -262,7 +262,7 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
         majorGridPen.setDashOffset(startX * tileWidth);
 
         for (int y = startY; y < endY; ++y) {
-            painter->setPen(gridMajor != 0 && y % gridMajor == 0 ? majorGridPen : gridPen);
+            painter->setPen(gridMajor.height() != 0 && y % gridMajor.height() == 0 ? majorGridPen : gridPen);
             painter->drawLine(startX * tileWidth, y * tileHeight, endX * tileWidth, y * tileHeight);
         }
     }
