@@ -73,7 +73,7 @@ void EditableObjectGroup::removeObjectAt(int index)
 
     if (auto doc = document()) {
         asset()->push(new RemoveMapObjects(doc, mapObject));
-    } else {
+    } else if (!checkReadOnly()) {
         objectGroup()->removeObjectAt(index);
         EditableManager::instance().release(mapObject);
     }
@@ -112,6 +112,9 @@ void EditableObjectGroup::insertObjectAt(int index, EditableMapObject *editableM
         return;
     }
 
+    if (checkReadOnly())
+        return;
+
     // Avoid duplicate IDs by resetting when needed
     if (Map *map = objectGroup()->map()) {
         if (mapObject->id() != 0 && map->findObjectById(mapObject->id()))
@@ -140,7 +143,7 @@ void EditableObjectGroup::setColor(const QColor &color)
                                                       objectGroup(),
                                                       color,
                                                       objectGroup()->drawOrder()));
-    } else {
+    } else if (!checkReadOnly()) {
         objectGroup()->setColor(color);
     }
 }
@@ -152,7 +155,7 @@ void EditableObjectGroup::setDrawOrder(DrawOrder drawOrder)
                                                       objectGroup(),
                                                       color(),
                                                       static_cast<ObjectGroup::DrawOrder>(drawOrder)));
-    } else {
+    } else if (!checkReadOnly()) {
         objectGroup()->setDrawOrder(static_cast<ObjectGroup::DrawOrder>(drawOrder));
     }
 }

@@ -42,7 +42,7 @@ void EditableImageLayer::setTransparentColor(const QColor &transparentColor)
         asset()->push(new ChangeImageLayerProperty(doc,
                                                    imageLayer(),
                                                    transparentColor));
-    } else {
+    } else if (!checkReadOnly()) {
         imageLayer()->setTransparentColor(transparentColor);
         if (!imageSource().isEmpty())
             imageLayer()->loadFromImage(imageSource());
@@ -55,7 +55,7 @@ void EditableImageLayer::setImageSource(const QUrl &imageSource)
         asset()->push(new ChangeImageLayerProperty(doc,
                                                    imageLayer(),
                                                    imageSource));
-    } else {
+    } else if (!checkReadOnly()) {
         if (imageSource.isEmpty())
             imageLayer()->resetImage();
         else
@@ -65,6 +65,9 @@ void EditableImageLayer::setImageSource(const QUrl &imageSource)
 
 void EditableImageLayer::setImage(ScriptImage *image, const QUrl &source)
 {
+    if (checkReadOnly())
+        return;
+
     // WARNING: This function has no undo!
     imageLayer()->loadFromImage(QPixmap::fromImage(image->image()), source);
 }
@@ -76,7 +79,7 @@ void EditableImageLayer::setRepeatX(bool repeatX)
                                                    imageLayer(),
                                                    ChangeImageLayerProperty::RepeatXProperty,
                                                    repeatX));
-    } else {
+    } else if (!checkReadOnly()) {
         imageLayer()->setRepeatX(repeatX);
     }
 }
@@ -88,7 +91,7 @@ void EditableImageLayer::setRepeatY(bool repeatY)
                                                    imageLayer(),
                                                    ChangeImageLayerProperty::RepeatYProperty,
                                                    repeatY));
-    } else {
+    } else if (!checkReadOnly()) {
         imageLayer()->setRepeatY(repeatY);
     }
 }

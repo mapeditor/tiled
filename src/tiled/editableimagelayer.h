@@ -58,7 +58,6 @@ public:
 
 private:
     ImageLayer *imageLayer() const;
-
 };
 
 inline const QColor &EditableImageLayer::transparentColor() const

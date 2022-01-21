@@ -176,18 +176,17 @@ void EditableTileset::removeTiles(const QList<QObject *> &tiles)
 
 EditableWangSet *EditableTileset::addWangSet(const QString &name, int type)
 {
+    if (checkReadOnly())
+        return nullptr;
+
     auto wangSet = std::make_unique<WangSet>(tileset(), name, static_cast<WangSet::Type>(type));
-    EditableWangSet *editable = nullptr;
 
-    if (auto doc = tilesetDocument()) {
+    if (auto doc = tilesetDocument())
         push(new AddWangSet(doc, wangSet.release()));
-        editable = EditableManager::instance().editableWangSet(this, tileset()->wangSets().last());
-    } else if (!checkReadOnly()) {
+    else
         tileset()->addWangSet(std::move(wangSet));
-        editable = EditableManager::instance().editableWangSet(this, tileset()->wangSets().last());
-    }
 
-    return editable;
+    return EditableManager::instance().editableWangSet(this, tileset()->wangSets().last());
 }
 
 void EditableTileset::removeWangSet(EditableWangSet *editableWangSet)
