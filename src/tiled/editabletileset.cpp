@@ -41,6 +41,7 @@ EditableTileset::EditableTileset(const QString &name,
     , mTileset(Tileset::create(name, 0, 0))
 {
     setObject(mTileset.data());
+    EditableManager::instance().mEditableTilesets.insert(tileset(), this);
 }
 
 EditableTileset::EditableTileset(const Tileset *tileset, QObject *parent)
@@ -60,6 +61,8 @@ EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
     connect(tilesetDocument, &TilesetDocument::tileObjectGroupChanged, this, &EditableTileset::tileObjectGroupChanged);
     connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetAdded, this, &EditableTileset::wangSetAdded);
     connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetRemoved, this, &EditableTileset::wangSetRemoved);
+
+    EditableManager::instance().mEditableTilesets.insert(tileset(), this);
 }
 
 EditableTileset::~EditableTileset()
@@ -335,7 +338,7 @@ void EditableTileset::detachTiles(const QList<Tile *> &tiles)
 {
     const auto &editableManager = EditableManager::instance();
     for (Tile *tile : tiles) {
-        if (auto editable = editableManager.find(tile)) {
+        if (EditableTile *editable = editableManager.find(tile)) {
             Q_ASSERT(editable->tileset() == this);
             editable->detach();
         }
