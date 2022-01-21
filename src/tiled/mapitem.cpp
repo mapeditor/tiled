@@ -436,6 +436,7 @@ void MapItem::layerAdded(Layer *layer)
         mLayerItems.value(sibling)->setZValue(z++);
 
     updateBoundingRect();
+    updateSelectedLayersHighlight();
 }
 
 void MapItem::layerAboutToBeRemoved(GroupLayer *parentLayer, int index)
@@ -455,6 +456,7 @@ void MapItem::layerRemoved(Layer *layer)
 {
     deleteLayerItems(layer);
     updateBoundingRect();
+    updateSelectedLayersHighlight();
 }
 
 /**
