@@ -84,6 +84,7 @@ TILEDSHARED_EXPORT QPointF alignmentOffset(const QRectF &r, Alignment alignment)
 TILEDSHARED_EXPORT QString toFileReference(const QUrl &url, const QString &path = QString());
 TILEDSHARED_EXPORT QUrl toUrl(const QString &filePathOrUrl, const QString &path = QString());
 TILEDSHARED_EXPORT QString urlToLocalFileOrQrc(const QUrl &url);
+TILEDSHARED_EXPORT QString filePathRelativeTo(const QDir &dir, const QString &filePath);
 
 inline QString toFileReference(const QUrl &url, const QDir &dir)
 { return toFileReference(url, dir.path()); }

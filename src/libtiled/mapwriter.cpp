@@ -301,9 +301,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
 
         const QString &fileName = tileset.fileName();
         if (!fileName.isEmpty()) {
-            QString source = fileName;
-            if (!mUseAbsolutePaths)
-                source = mDir.relativeFilePath(source);
+            QString source = mUseAbsolutePaths ? fileName
+                                               : filePathRelativeTo(mDir, fileName);
             w.writeAttribute(QStringLiteral("source"), source);
 
             // Tileset is external, so no need to write any of the stuff below
@@ -732,7 +731,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (const ObjectTemplate *objectTemplate = mapObject.objectTemplate()) {
         QString fileName = objectTemplate->fileName();
         if (!mUseAbsolutePaths)
-            fileName = mDir.relativeFilePath(fileName);
+            fileName = filePathRelativeTo(mDir, fileName);
         w.writeAttribute(QStringLiteral("template"), fileName);
     }
 

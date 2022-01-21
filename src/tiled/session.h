@@ -61,8 +61,8 @@ inline QString FileHelper::relative(const QString &fileName) const
 
 inline QString FileHelper::resolve(const QString &fileName) const
 {
-    if (fileName.isEmpty())
-        return QString();
+    if (fileName.isEmpty() || fileName.startsWith(QLatin1String("ext:")))
+        return fileName;
     return QDir::cleanPath(mDir.filePath(fileName));
 }
 

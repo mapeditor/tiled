@@ -325,7 +325,7 @@ void LuaWriter::writeTileset(const Tileset &tileset,
         mWriter.writeKeyAndValue("firstgid", firstGid);
 
         if (tileset.isExternal()) {
-            const QString rel = mDir.relativeFilePath(tileset.fileName());
+            const QString rel = filePathRelativeTo(mDir, tileset.fileName());
             mWriter.writeKeyAndValue("filename", rel);
 
             // For those exporting their tilesets separately, it could be
@@ -333,7 +333,7 @@ void LuaWriter::writeTileset(const Tileset &tileset,
             // well. For consistency I decided to include this separately from
             // the "filename".
             if (!tileset.exportFileName.isEmpty()) {
-                const QString rel = mDir.relativeFilePath(tileset.exportFileName);
+                const QString rel = filePathRelativeTo(mDir, tileset.exportFileName);
                 mWriter.writeKeyAndValue("exportfilename", rel);
             }
 

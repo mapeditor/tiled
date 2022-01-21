@@ -158,7 +158,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
 
         const QString &fileName = tileset.fileName();
         if (!fileName.isEmpty()) {
-            QString source = mDir.relativeFilePath(fileName);
+            const QString source = filePathRelativeTo(mDir, fileName);
             tilesetVariant[QStringLiteral("source")] = source;
 
             // Tileset is external, so no need to write any of the stuff below
@@ -526,7 +526,7 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
     addProperties(objectVariant, object.properties());
 
     if (const ObjectTemplate *objectTemplate = object.objectTemplate()) {
-        QString relativeFileName = mDir.relativeFilePath(objectTemplate->fileName());
+        const QString relativeFileName = filePathRelativeTo(mDir, objectTemplate->fileName());
         objectVariant[QStringLiteral("template")] = relativeFileName;
     }
 
