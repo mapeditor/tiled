@@ -2049,18 +2049,22 @@ declare class TileMap extends Asset {
   constructor();
 
   /**
-   * Applies [Automapping](https://doc.mapeditor.org/en/stable/manual/automapping/) using the given rules file, or using the default rules file is none is given.
+   * Applies [Automapping](https://doc.mapeditor.org/en/stable/manual/automapping/) using the given rules file or rule map file.
    *
-   * This operation can only be applied to maps loaded from a file.
+   * When no rules file nor rule map file is given, Automapping is applied using the default rules file.
+   *
+   * @note This operation can only be applied to maps loaded from a file.
    */
-  public autoMap(rulesFule?: string): void;
+  public autoMap(rulesOrMapFile?: string): void;
 
   /**
-   * Applies [Automapping](https://doc.mapeditor.org/en/stable/manual/automapping/) in the given region using the given rules file, or using the default rules file is none is given.
+   * Applies [Automapping](https://doc.mapeditor.org/en/stable/manual/automapping/) in the given region using the given rules file or rule map file.
    *
-   * This operation can only be applied to maps loaded from a file.
+   * When no rules file nor rule map file is given, Automapping is applied using the default rules file.
+   *
+   * @note This operation can only be applied to maps loaded from a file.
    */
-  public autoMap(region: region | rect, rulesFile?: string): void;
+  public autoMap(region: region | rect, rulesOrMapFile?: string): void;
 
   /**
    * Sets the size of the map in tiles. This does not affect the contents of the map.

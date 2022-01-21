@@ -82,17 +82,9 @@ private:
     void onMapFileNameChanged();
     void onFileChanged();
 
-    /**
-     * This function parses a rules file.
-     * For each path which is a rule, (file extension is tmx) an AutoMapper
-     * object is setup.
-     *
-     * If a file extension is txt, this file will be opened and searched for
-     * rules again.
-     *
-     * @return if the loading was successful: return true if it succeeded.
-     */
     bool loadFile(const QString &filePath);
+    bool loadRulesFile(const QString &filePath);
+    bool loadRuleMap(const QString &filePath);
 
     /**
      * Applies automapping to the region \a where.
