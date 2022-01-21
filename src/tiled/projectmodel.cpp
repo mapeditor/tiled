@@ -284,8 +284,11 @@ QVariant ProjectModel::data(const QModelIndex &index, int role) const
         }
         return name;
     }
-    case Qt::DecorationRole:
-        return mFileIconProvider.icon(QFileInfo(entry->filePath));
+    case Qt::DecorationRole: {
+        if (entry->fileIcon.isNull())
+            entry->fileIcon = mFileIconProvider.icon(QFileInfo(entry->filePath));
+        return entry->fileIcon;
+    }
     case Qt::ToolTipRole:
         return entry->filePath;
     }

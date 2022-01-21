@@ -41,6 +41,7 @@ struct FolderEntry
     {}
 
     QString filePath;
+    QIcon fileIcon;     // initialized on-demand
     std::vector<std::unique_ptr<FolderEntry>> entries;
     FolderEntry *parent = nullptr;
 };
