@@ -407,9 +407,11 @@ int main(int argc, char *argv[])
         }
 
         // Load the source file
-        const std::unique_ptr<Map> sourceMap(readMap(sourceFile, nullptr));
+        const std::unique_ptr<Map> sourceMap(readMap(sourceFile, &errorMsg));
         if (!sourceMap) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to load source map.");
+            if (!errorMsg.isEmpty())
+                qWarning().noquote() << errorMsg;
             return 1;
         }
 
@@ -451,9 +453,11 @@ int main(int argc, char *argv[])
         }
 
         // Load the source file
-        SharedTileset sourceTileset(readTileset(sourceFile, nullptr));
+        SharedTileset sourceTileset(readTileset(sourceFile, &errorMsg));
         if (!sourceTileset) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to load source tileset.");
+            if (!errorMsg.isEmpty())
+                qWarning().noquote() << errorMsg;
             return 1;
         }
 
