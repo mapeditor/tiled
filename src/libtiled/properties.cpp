@@ -183,12 +183,8 @@ static int nameToType(const QString &name)
 
 QString typeName(const QVariant &value)
 {
-    if (value.userType() == propertyValueId()) {
-        auto typeId = value.value<PropertyValue>().typeId;
-
-        if (const PropertyType *propertyType = Object::propertyTypes().findTypeById(typeId))
-            return propertyType->name;
-    }
+    if (value.userType() == propertyValueId())
+        return typeName(value.value<PropertyValue>().value);
 
     return typeToName(value.userType());
 }
