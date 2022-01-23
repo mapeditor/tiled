@@ -52,7 +52,7 @@ C++
 -  `TSXParser <https://github.com/solar-storm-studios/TSXParser>`__
    General \*.tsx tileset data loader. Intended to be used with
    TMXParser.
--  `TMXLoader <https://bitbucket.org/martingrant/tmxloader>`__ based on
+-  `TMXLoader <https://github.com/martygrant/tmxloader>`__ based on
    `RapidXml <http://rapidxml.sourceforge.net/>`__. Limited
    functionality (check the
    `website <http://www.midnightpacific.com/portfolio/tmxloader-for-tiled-map-editor/>`__
