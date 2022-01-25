@@ -1,8 +1,8 @@
 /*
  * changeimagelayerproperty.h
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2011, Gregory Nickonov <gregory@nickonov.ru>
+ * Copyright 2010-2022, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -22,77 +22,66 @@
 
 #pragma once
 
+#include "changevalue.h"
+#include "undocommands.h"
+
 #include <QColor>
-#include <QUndoCommand>
 #include <QUrl>
 
 namespace Tiled {
 
 class ImageLayer;
 
-class MapDocument;
-
-class ChangeImageLayerProperty : public QUndoCommand
+class ChangeImageLayerTransparentColor : public ChangeValue<ImageLayer, QColor>
 {
 public:
-    enum Property {
-        TransparentColorProperty,
-        ImageSourceProperty,
-        RepeatXProperty,
-        RepeatYProperty
-    };
-
-    /**
-     * Constructs a command that changes the transparent color.
-     *
-     * @param mapDocument        the map document of the image layer's map
-     * @param imageLayer         the image layer to modify
-     * @param transparentColor   the new transparent color to apply
-     */
-    ChangeImageLayerProperty(MapDocument *mapDocument,
-                             ImageLayer *imageLayer,
-                             const QColor transparentColor);
-
-    /**
-     * Constructs a command that changes the image source.
-     *
-     * @param mapDocument   the map document of the image layer's map
-     * @param imageLayer    the image layer to modify
-     * @param repeat        the new image source to apply
-     */
-    ChangeImageLayerProperty(MapDocument *mapDocument,
-                             ImageLayer *imageLayer,
-                             const QUrl &imageSource);
-
-    /**
-     * Constructs a command that changes the repetition along an axis.
-     *
-     * Can only be used for the properties RepeatXProperty and RepeatYProperty.
-     *
-     * @param mapDocument   the map document of the image layer's map
-     * @param imageLayer    the image layer to modify
-     * @param property      the image layer property to modify
-     * @param repeat        the new repetition along an axis to apply
-     */
-    ChangeImageLayerProperty(MapDocument *mapDocument,
-                             ImageLayer *imageLayer,
-                             ChangeImageLayerProperty::Property property,
-                             bool repeat);
-
-    void undo() override;
-    void redo() override;
+    ChangeImageLayerTransparentColor(Document *document,
+                                     QList<ImageLayer *> imageLayers,
+                                     const QColor &newColor);
 
 private:
-    void swap();
+    QColor getValue(const ImageLayer *imageLayer) const override;
+    void setValue(ImageLayer *imageLayer, const QColor &value) const override;
+};
 
-    MapDocument *mMapDocument;
-    ImageLayer *mImageLayer; 
-    Property mProperty;
-    QUrl mImageSource;
-    union {
-        QColor mTransparentColor;
-        bool mRepeat;
-    };
+class ChangeImageLayerImageSource : public ChangeValue<ImageLayer, QUrl>
+{
+public:
+    ChangeImageLayerImageSource(Document *document,
+                                QList<ImageLayer *> imageLayers,
+                                const QUrl &imageSource);
+
+private:
+    QUrl getValue(const ImageLayer *imageLayer) const override;
+    void setValue(ImageLayer *imageLayer, const QUrl &value) const override;
+};
+
+class ChangeImageLayerRepeatX : public ChangeValue<ImageLayer, bool>
+{
+public:
+    ChangeImageLayerRepeatX(Document *document,
+                            QList<ImageLayer *> imageLayers,
+                            bool repeatX);
+
+    int id() const override { return Cmd_ChangeImageLayerRepeatX; }
+
+private:
+    bool getValue(const ImageLayer *imageLayer) const override;
+    void setValue(ImageLayer *imageLayer, const bool &value) const override;
+};
+
+class ChangeImageLayerRepeatY : public ChangeValue<ImageLayer, bool>
+{
+public:
+    ChangeImageLayerRepeatY(Document *document,
+                            QList<ImageLayer *> imageLayers,
+                            bool repeatY);
+
+    int id() const override { return Cmd_ChangeImageLayerRepeatY; }
+
+private:
+    bool getValue(const ImageLayer *imageLayer) const override;
+    void setValue(ImageLayer *imageLayer, const bool &value) const override;
 };
 
 } // namespace Tiled

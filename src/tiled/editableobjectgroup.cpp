@@ -139,10 +139,7 @@ void EditableObjectGroup::addObject(EditableMapObject *editableMapObject)
 void EditableObjectGroup::setColor(const QColor &color)
 {
     if (auto doc = document()) {
-        asset()->push(new ChangeObjectGroupProperties(doc,
-                                                      objectGroup(),
-                                                      color,
-                                                      objectGroup()->drawOrder()));
+        asset()->push(new ChangeObjectGroupColor(doc, { objectGroup() }, color));
     } else if (!checkReadOnly()) {
         objectGroup()->setColor(color);
     }
@@ -151,10 +148,9 @@ void EditableObjectGroup::setColor(const QColor &color)
 void EditableObjectGroup::setDrawOrder(DrawOrder drawOrder)
 {
     if (auto doc = document()) {
-        asset()->push(new ChangeObjectGroupProperties(doc,
-                                                      objectGroup(),
-                                                      color(),
-                                                      static_cast<ObjectGroup::DrawOrder>(drawOrder)));
+        asset()->push(new ChangeObjectGroupDrawOrder(doc,
+                                                     { objectGroup() },
+                                                     static_cast<ObjectGroup::DrawOrder>(drawOrder)));
     } else if (!checkReadOnly()) {
         objectGroup()->setDrawOrder(static_cast<ObjectGroup::DrawOrder>(drawOrder));
     }

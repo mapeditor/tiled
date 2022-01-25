@@ -160,7 +160,6 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(mapDocument.data(), &MapDocument::layerAdded, this, &MapItem::layerAdded);
     connect(mapDocument.data(), &MapDocument::layerAboutToBeRemoved, this, &MapItem::layerAboutToBeRemoved);
     connect(mapDocument.data(), &MapDocument::layerRemoved, this, &MapItem::layerRemoved);
-    connect(mapDocument.data(), &MapDocument::imageLayerChanged, this, &MapItem::imageLayerChanged);
     connect(mapDocument.data(), &MapDocument::selectedLayersChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(mapDocument.data(), &MapDocument::tilesetTilePositioningChanged, this, &MapItem::adaptToTilesetTileSizeChanges);
     connect(mapDocument.data(), &MapDocument::tileImageSourceChanged, this, &MapItem::adaptToTileSizeChanges);
@@ -371,6 +370,9 @@ void MapItem::documentChanged(const ChangeEvent &change)
     switch (change.type) {
     case ChangeEvent::LayerChanged:
         layerChanged(static_cast<const LayerChangeEvent&>(change));
+        break;
+    case ChangeEvent::ImageLayerChanged:
+        imageLayerChanged(static_cast<const ImageLayerChangeEvent&>(change).imageLayer());
         break;
     case ChangeEvent::MapObjectAboutToBeRemoved: {
         auto &e = static_cast<const MapObjectEvent&>(change);

@@ -116,7 +116,7 @@ Layer *EditableLayer::release()
 void EditableLayer::setName(const QString &name)
 {
     if (auto doc = document())
-        asset()->push(new SetLayerName(doc, layer(), name));
+        asset()->push(new SetLayerName(doc, { layer() }, name));
     else if (!checkReadOnly())
         layer()->setName(name);
 }
@@ -124,7 +124,7 @@ void EditableLayer::setName(const QString &name)
 void EditableLayer::setOpacity(qreal opacity)
 {
     if (auto doc = document())
-        asset()->push(new SetLayerOpacity(doc, layer(), opacity));
+        asset()->push(new SetLayerOpacity(doc, { layer() }, opacity));
     else if (!checkReadOnly())
         layer()->setOpacity(opacity);
 }
@@ -132,7 +132,7 @@ void EditableLayer::setOpacity(qreal opacity)
 void EditableLayer::setTintColor(const QColor &color)
 {
     if (auto doc = document())
-        asset()->push(new SetLayerTintColor(doc, layer(), color));
+        asset()->push(new SetLayerTintColor(doc, { layer() }, color));
     else if (!checkReadOnly())
         layer()->setTintColor(color);
 }
@@ -140,7 +140,7 @@ void EditableLayer::setTintColor(const QColor &color)
 void EditableLayer::setVisible(bool visible)
 {
     if (auto doc = document())
-        asset()->push(new SetLayerVisible(doc, layer(), visible));
+        asset()->push(new SetLayerVisible(doc, { layer() }, visible));
     else if (!checkReadOnly())
         layer()->setVisible(visible);
 }
@@ -148,7 +148,7 @@ void EditableLayer::setVisible(bool visible)
 void EditableLayer::setLocked(bool locked)
 {
     if (auto doc = document())
-        asset()->push(new SetLayerLocked(doc, layer(), locked));
+        asset()->push(new SetLayerLocked(doc, { layer() }, locked));
     else if (!checkReadOnly())
         layer()->setLocked(locked);
 }
@@ -156,7 +156,7 @@ void EditableLayer::setLocked(bool locked)
 void EditableLayer::setOffset(QPointF offset)
 {
     if (auto doc = document())
-        asset()->push(new SetLayerOffset(doc, layer(), offset));
+        asset()->push(new SetLayerOffset(doc, { layer() }, offset));
     else if (!checkReadOnly())
         layer()->setOffset(offset);
 }
@@ -164,7 +164,7 @@ void EditableLayer::setOffset(QPointF offset)
 void EditableLayer::setParallaxFactor(QPointF factor)
 {
     if (auto doc = document())
-        asset()->push(new SetLayerParallaxFactor(doc, layer(), factor));
+        asset()->push(new SetLayerParallaxFactor(doc, { layer() }, factor));
     else if (!checkReadOnly())
         layer()->setParallaxFactor(factor);
 }

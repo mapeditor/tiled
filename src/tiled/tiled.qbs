@@ -162,6 +162,7 @@ QtGuiApplication {
         "changetileprobability.h",
         "changetilewangid.cpp",
         "changetilewangid.h",
+        "changevalue.h",
         "changewangcolordata.cpp",
         "changewangcolordata.h",
         "changewangsetdata.cpp",

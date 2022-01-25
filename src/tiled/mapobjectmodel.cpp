@@ -261,7 +261,7 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
             const bool visible = (c == Qt::Checked);
             if (visible != layer->isVisible()) {
                 QUndoCommand *command = new SetLayerVisible(mMapDocument,
-                                                            layer,
+                                                            { layer },
                                                             visible);
                 mMapDocument->undoStack()->push(command);
             }
@@ -270,7 +270,8 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
         case Qt::EditRole: {
             const QString newName = value.toString();
             if (layer->name() != newName) {
-                SetLayerName *rename = new SetLayerName(mMapDocument, layer,
+                SetLayerName *rename = new SetLayerName(mMapDocument,
+                                                        { layer },
                                                         newName);
                 mMapDocument->undoStack()->push(rename);
             }

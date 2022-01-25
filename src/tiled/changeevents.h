@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "imagelayer.h"
 #include "map.h"
 #include "mapobject.h"
 #include "wangset.h"
@@ -38,6 +39,7 @@ public:
         MapChanged,
         LayerChanged,
         TileLayerChanged,
+        ImageLayerChanged,
         MapObjectAboutToBeAdded,
         MapObjectAboutToBeRemoved,
         MapObjectAdded,
@@ -111,14 +113,30 @@ class TileLayerChangeEvent : public LayerChangeEvent
 {
 public:
     enum TileLayerProperty {
-        SizeProperty            = 1 << 5,
+        SizeProperty            = 1 << 7,
     };
 
     TileLayerChangeEvent(TileLayer *tileLayer, int properties)
         : LayerChangeEvent(TileLayerChanged, tileLayer, properties)
     {}
 
-    TileLayer *tileLayer() { return static_cast<TileLayer*>(layer); }
+    TileLayer *tileLayer() const { return static_cast<TileLayer*>(layer); }
+};
+
+class ImageLayerChangeEvent : public LayerChangeEvent
+{
+public:
+    enum TileLayerProperty {
+        TransparentColorProperty    = 1 << 7,
+        ImageSourceProperty         = 1 << 8,
+        RepeatProperty              = 1 << 9,
+    };
+
+    ImageLayerChangeEvent(ImageLayer *imageLayer, int properties)
+        : LayerChangeEvent(ImageLayerChanged, imageLayer, properties)
+    {}
+
+    ImageLayer *imageLayer() const { return static_cast<ImageLayer*>(layer); }
 };
 
 class ObjectGroupChangeEvent : public ChangeEvent

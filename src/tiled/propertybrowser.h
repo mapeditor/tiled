@@ -76,7 +76,6 @@ private:
     void documentChanged(const ChangeEvent &change);
     void mapChanged();
     void objectsChanged(const MapObjectsChangeEvent &mapObjectsChange);
-    void imageLayerChanged(ImageLayer *imageLayer);
     void tilesetChanged(Tileset *tileset);
     void tileChanged(Tile *tile);
     void tileTypeChanged(Tile *tile);
@@ -173,11 +172,10 @@ private:
     void applyMapObjectValue(PropertyId id, const QVariant &val);
     QUndoCommand *applyMapObjectValueTo(PropertyId id, const QVariant &val, MapObject *mapObject);
     void applyLayerValue(PropertyId id, const QVariant &val);
-    QUndoCommand *applyLayerValueTo(PropertyId id, const QVariant &val, Layer *layer);
-    QUndoCommand *applyTileLayerValueTo(PropertyId id, const QVariant &val, TileLayer *tileLayer);
-    QUndoCommand *applyObjectGroupValueTo(PropertyId id, const QVariant &val, ObjectGroup *objectGroup);
-    QUndoCommand *applyImageLayerValueTo(PropertyId id, const QVariant &val, ImageLayer *imageLayer);
-    QUndoCommand *applyGroupLayerValueTo(PropertyId id, const QVariant &val, GroupLayer *groupLayer);
+    QUndoCommand *applyTileLayerValueTo(PropertyId id, const QVariant &val, QList<TileLayer *> tileLayers);
+    QUndoCommand *applyObjectGroupValueTo(PropertyId id, const QVariant &val, QList<ObjectGroup *> objectGroups);
+    QUndoCommand *applyImageLayerValueTo(PropertyId id, const QVariant &val, QList<ImageLayer *> imageLayers);
+    QUndoCommand *applyGroupLayerValueTo(PropertyId id, const QVariant &val, QList<GroupLayer *> groupLayers);
     void applyTilesetValue(PropertyId id, const QVariant &val);
     void applyTileValue(PropertyId id, const QVariant &val);
     void applyWangSetValue(PropertyId id, const QVariant &val);

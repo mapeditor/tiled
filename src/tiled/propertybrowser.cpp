@@ -1,6 +1,6 @@
 /*
  * propertybrowser.cpp
- * Copyright 2013-2021, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2013-2022, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -199,8 +199,6 @@ void PropertyBrowser::setDocument(Document *document)
     if (mapDocument) {
         connect(mapDocument, &MapDocument::mapChanged,
                 this, &PropertyBrowser::mapChanged);
-        connect(mapDocument, &MapDocument::imageLayerChanged,
-                this, &PropertyBrowser::imageLayerChanged);
         connect(mapDocument, &MapDocument::tileTypeChanged,
                 this, &PropertyBrowser::tileTypeChanged);
 
@@ -325,6 +323,7 @@ void PropertyBrowser::documentChanged(const ChangeEvent &change)
     switch (change.type) {
     case ChangeEvent::LayerChanged:
     case ChangeEvent::TileLayerChanged:
+    case ChangeEvent::ImageLayerChanged:
         if (mObject == static_cast<const LayerChangeEvent&>(change).layer)
             updateProperties();
         break;
@@ -361,12 +360,6 @@ void PropertyBrowser::objectsChanged(const MapObjectsChangeEvent &mapObjectsChan
 
     if (mapObjectsChange.properties & (MapObject::CustomProperties | MapObject::TypeProperty))
         updateCustomProperties();
-}
-
-void PropertyBrowser::imageLayerChanged(ImageLayer *imageLayer)
-{
-    if (mObject == imageLayer)
-        updateProperties();
 }
 
 void PropertyBrowser::tilesetChanged(Tileset *tileset)
@@ -1179,160 +1172,142 @@ void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
     mDocument->undoStack()->endMacro();
 }
 
-void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
+template <class T>
+QList<T*> layersOfType(const QList<Layer *> &layers, Layer::TypeFlag typeFlag)
 {
-    Layer *currentLayer = static_cast<Layer*>(mObject);
-
-    QUndoCommand *command = applyLayerValueTo(id, val, currentLayer);
-    if (!command)
-        return;
-
-    if (mMapDocument->selectedLayers().size() == 1) {
-        mDocument->undoStack()->push(command);
-        return;
-    }
-
-    mDocument->undoStack()->beginMacro(command->text());
-    mDocument->undoStack()->push(command);
-
-    for (Layer *layer : mMapDocument->selectedLayers()) {
-        if (layer != currentLayer) {
-            if (QUndoCommand *cmd = applyLayerValueTo(id, val, layer))
-                mDocument->undoStack()->push(cmd);
-        }
-    }
-
-    mDocument->undoStack()->endMacro();
+    QList<T*> result;
+    for (Layer *layer : layers)
+        if (layer->layerType() == typeFlag)
+            result.append(static_cast<T*>(layer));
+    return result;
 }
 
-QUndoCommand *PropertyBrowser::applyLayerValueTo(PropertyBrowser::PropertyId id, const QVariant &val, Layer *layer)
+void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
 {
+    const auto &layers = mMapDocument->selectedLayers();
+    if (layers.isEmpty())
+        return;
+
     QUndoCommand *command = nullptr;
 
     switch (id) {
     case NameProperty:
-        command = new SetLayerName(mMapDocument, layer, val.toString());
+        command = new SetLayerName(mMapDocument, layers, val.toString());
         break;
     case VisibleProperty:
-        command = new SetLayerVisible(mMapDocument, layer, val.toBool());
+        command = new SetLayerVisible(mMapDocument, layers, val.toBool());
         break;
     case LockedProperty:
-        command = new SetLayerLocked(mMapDocument, layer, val.toBool());
+        command = new SetLayerLocked(mMapDocument, layers, val.toBool());
         break;
     case OpacityProperty:
-        command = new SetLayerOpacity(mMapDocument, layer, val.toDouble());
+        command = new SetLayerOpacity(mMapDocument, layers, val.toDouble());
         break;
     case TintColorProperty:
-        command = new SetLayerTintColor(mMapDocument, layer, val.value<QColor>());
+        command = new SetLayerTintColor(mMapDocument, layers, val.value<QColor>());
         break;
     case OffsetXProperty:
     case OffsetYProperty: {
-        QPointF offset = layer->offset();
+        QVector<QPointF> offsets;
+        for (const Layer *layer : layers)
+            offsets.append(layer->offset());
 
-        if (id == OffsetXProperty)
-            offset.setX(val.toDouble());
-        else
-            offset.setY(val.toDouble());
+        if (id == OffsetXProperty) {
+            for (QPointF &offset : offsets)
+                offset.setX(val.toDouble());
+        } else {
+            for (QPointF &offset : offsets)
+                offset.setY(val.toDouble());
+        }
 
-        command = new SetLayerOffset(mMapDocument, layer, offset);
+        command = new SetLayerOffset(mMapDocument, layers, offsets);
         break;
     }
     case ParallaxFactorProperty:
-        command = new SetLayerParallaxFactor(mMapDocument, layer, val.toPointF());
+        command = new SetLayerParallaxFactor(mMapDocument, layers, val.toPointF());
         break;
-    default:
-        switch (layer->layerType()) {
+    default: {
+        Layer *currentLayer = static_cast<Layer*>(mObject);
+        switch (currentLayer->layerType()) {
         case Layer::TileLayerType:
-            command = applyTileLayerValueTo(id, val, static_cast<TileLayer*>(layer));
+            command = applyTileLayerValueTo(id, val, layersOfType<TileLayer>(layers, Layer::TileLayerType));
             break;
         case Layer::ObjectGroupType:
-            command = applyObjectGroupValueTo(id, val, static_cast<ObjectGroup*>(layer));
+            command = applyObjectGroupValueTo(id, val, layersOfType<ObjectGroup>(layers, Layer::ObjectGroupType));
             break;
         case Layer::ImageLayerType:
-            command = applyImageLayerValueTo(id, val, static_cast<ImageLayer*>(layer));
+            command = applyImageLayerValueTo(id, val, layersOfType<ImageLayer>(layers, Layer::ImageLayerType));
             break;
         case Layer::GroupLayerType:
-            command = applyGroupLayerValueTo(id, val, static_cast<GroupLayer*>(layer));
+            command = applyGroupLayerValueTo(id, val, layersOfType<GroupLayer>(layers, Layer::GroupLayerType));
             break;
         }
         break;
     }
+    }
 
-    return command;
+    if (command)
+        mDocument->undoStack()->push(command);
 }
 
-QUndoCommand *PropertyBrowser::applyTileLayerValueTo(PropertyId id, const QVariant &val, TileLayer *tileLayer)
+QUndoCommand *PropertyBrowser::applyTileLayerValueTo(PropertyId id, const QVariant &val, QList<TileLayer *> tileLayers)
 {
     Q_UNUSED(id)
     Q_UNUSED(val)
-    Q_UNUSED(tileLayer)
+    Q_UNUSED(tileLayers)
 
     return nullptr;
 }
 
-QUndoCommand *PropertyBrowser::applyObjectGroupValueTo(PropertyId id, const QVariant &val, ObjectGroup *objectGroup)
+QUndoCommand *PropertyBrowser::applyObjectGroupValueTo(PropertyId id, const QVariant &val, QList<ObjectGroup *> objectGroups)
 {
-    QUndoCommand *command = nullptr;
+    if (objectGroups.isEmpty())
+        return nullptr;
 
     switch (id) {
     case ColorProperty: {
         const QColor color = val.value<QColor>();
-        command = new ChangeObjectGroupProperties(mMapDocument,
-                                                  objectGroup,
-                                                  color,
-                                                  objectGroup->drawOrder());
-        break;
+        return new ChangeObjectGroupColor(mMapDocument,
+                                          std::move(objectGroups),
+                                          color);
     }
     case DrawOrderProperty: {
         ObjectGroup::DrawOrder drawOrder = static_cast<ObjectGroup::DrawOrder>(val.toInt());
-        command = new ChangeObjectGroupProperties(mMapDocument,
-                                                  objectGroup,
-                                                  objectGroup->color(),
-                                                  drawOrder);
-        break;
-    }
-    default:
-        break;
-    }
-
-    return command;
-}
-
-QUndoCommand *PropertyBrowser::applyImageLayerValueTo(PropertyId id, const QVariant &val, ImageLayer *imageLayer)
-{
-    switch (id) {
-    case ImageSourceProperty: {
-        return new ChangeImageLayerProperty(mMapDocument,
-                                            imageLayer,
-                                            val.value<FilePath>().url);
-    }
-    case ColorProperty: {
-        return new ChangeImageLayerProperty(mMapDocument,
-                                            imageLayer,
-                                            val.value<QColor>());
-    }
-    case RepeatXProperty: {
-        return new ChangeImageLayerProperty(mMapDocument,
-                                            imageLayer,
-                                            ChangeImageLayerProperty::RepeatXProperty,
-                                            val.toBool());
-    }
-    case RepeatYProperty: {
-        return new ChangeImageLayerProperty(mMapDocument,
-                                            imageLayer,
-                                            ChangeImageLayerProperty::RepeatYProperty,
-                                            val.toBool());
+        return new ChangeObjectGroupDrawOrder(mMapDocument,
+                                              std::move(objectGroups),
+                                              drawOrder);
     }
     default:
         return nullptr;
     }
 }
 
-QUndoCommand *PropertyBrowser::applyGroupLayerValueTo(PropertyId id, const QVariant &val, GroupLayer *groupLayer)
+QUndoCommand *PropertyBrowser::applyImageLayerValueTo(PropertyId id, const QVariant &val, QList<ImageLayer *> imageLayers)
+{
+    if (imageLayers.isEmpty())
+        return nullptr;
+
+    switch (id) {
+    case ImageSourceProperty:
+        return new ChangeImageLayerImageSource(mMapDocument, std::move(imageLayers),
+                                               val.value<FilePath>().url);
+    case ColorProperty:
+        return new ChangeImageLayerTransparentColor(mMapDocument, std::move(imageLayers),
+                                                    val.value<QColor>());
+    case RepeatXProperty:
+        return new ChangeImageLayerRepeatX(mMapDocument, std::move(imageLayers), val.toBool());
+    case RepeatYProperty:
+        return new ChangeImageLayerRepeatY(mMapDocument, std::move(imageLayers), val.toBool());
+    default:
+        return nullptr;
+    }
+}
+
+QUndoCommand *PropertyBrowser::applyGroupLayerValueTo(PropertyId id, const QVariant &val, QList<GroupLayer *> groupLayers)
 {
     Q_UNUSED(id)
     Q_UNUSED(val)
-    Q_UNUSED(groupLayer)
+    Q_UNUSED(groupLayers)
 
     return nullptr;
 }

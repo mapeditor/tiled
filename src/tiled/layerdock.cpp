@@ -455,9 +455,9 @@ void LayerView::keyPressEvent(QKeyEvent *event)
         if (layer) {
             QUndoCommand *command = nullptr;
             if (event->modifiers() & Qt::ControlModifier)
-                command = new SetLayerLocked(mMapDocument, layer, !layer->isLocked());
+                command = new SetLayerLocked(mMapDocument, { layer }, !layer->isLocked());
             else
-                command = new SetLayerVisible(mMapDocument, layer, !layer->isVisible());
+                command = new SetLayerVisible(mMapDocument, { layer }, !layer->isVisible());
             mMapDocument->undoStack()->push(command);
             return;
         }

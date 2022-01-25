@@ -1,8 +1,8 @@
 /*
  * changeimagelayerproperty.cpp
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2011, Gregory Nickonov <gregory@nickonov.ru>
+ * Copyright 2010-2022, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -22,102 +22,103 @@
 
 #include "changeimagelayerproperty.h"
 
-#include "mapdocument.h"
+#include "changeevents.h"
+#include "document.h"
 #include "imagelayer.h"
 
 #include <QCoreApplication>
 
-using namespace Tiled;
+namespace Tiled {
 
-ChangeImageLayerProperty::ChangeImageLayerProperty(
-        MapDocument *mapDocument,
-        ImageLayer *imageLayer,
-        const QColor transparentColor)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Image Layer Transparent Color"))
-    , mMapDocument(mapDocument)
-    , mImageLayer(imageLayer)
-    , mProperty(TransparentColorProperty)
-    , mTransparentColor(transparentColor)
+ChangeImageLayerTransparentColor::ChangeImageLayerTransparentColor(Document *document,
+                                                                   QList<ImageLayer *> imageLayers,
+                                                                   const QColor &newColor)
+    : ChangeValue<ImageLayer, QColor>(document, std::move(imageLayers), newColor)
 {
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Object Layer Transparent Color"));
 }
 
-ChangeImageLayerProperty::ChangeImageLayerProperty(
-        MapDocument *mapDocument,
-        ImageLayer *imageLayer,
-        const QUrl &imageSource)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Image Layer Image Source"))
-    , mMapDocument(mapDocument)
-    , mImageLayer(imageLayer)
-    , mProperty(ImageSourceProperty)
-    , mImageSource(imageSource)
+QColor ChangeImageLayerTransparentColor::getValue(const ImageLayer *imageLayer) const
 {
+    return imageLayer->transparentColor();
 }
 
-ChangeImageLayerProperty::ChangeImageLayerProperty(
-        MapDocument *mapDocument,
-        ImageLayer *imageLayer,
-        ChangeImageLayerProperty::Property property,
-        bool repeat)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Image Layer Repeat Property"))
-    , mMapDocument(mapDocument)
-    , mImageLayer(imageLayer)
-    , mProperty(property)
-    , mRepeat(repeat)
+void ChangeImageLayerTransparentColor::setValue(ImageLayer *imageLayer, const QColor &value) const
 {
+    imageLayer->setTransparentColor(value);
+
+    if (imageLayer->imageSource().isEmpty())
+        imageLayer->resetImage();
+    else
+        imageLayer->loadFromImage(imageLayer->imageSource());
+
+    emit document()->changed(ImageLayerChangeEvent(imageLayer, ImageLayerChangeEvent::TransparentColorProperty));
 }
 
-void ChangeImageLayerProperty::redo()
+
+ChangeImageLayerImageSource::ChangeImageLayerImageSource(Document *document, QList<ImageLayer *> imageLayers, const QUrl &imageSource)
+    : ChangeValue<ImageLayer, QUrl>(document, std::move(imageLayers), imageSource)
 {
-    swap();
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Object Layer Image Source"));
 }
 
-void ChangeImageLayerProperty::undo()
+QUrl ChangeImageLayerImageSource::getValue(const ImageLayer *imageLayer) const
 {
-    swap();
+    return imageLayer->imageSource();
 }
 
-void ChangeImageLayerProperty::swap()
+void ChangeImageLayerImageSource::setValue(ImageLayer *imageLayer, const QUrl &value) const
 {
-    switch (mProperty) {
-    case TransparentColorProperty: {
-        const QColor color = mImageLayer->transparentColor();
-        mImageLayer->setTransparentColor(mTransparentColor);
-        mTransparentColor = color;
+    if (value.isEmpty())
+        imageLayer->resetImage();
+    else
+        imageLayer->loadFromImage(value);
 
-        if (mImageSource.isEmpty())
-            mImageLayer->resetImage();
-        else
-            mImageLayer->loadFromImage(mImageSource);
-
-        break;
-    }
-    case ImageSourceProperty: {
-        const QUrl source = mImageLayer->imageSource();
-
-        if (mImageSource.isEmpty())
-            mImageLayer->resetImage();
-        else
-            mImageLayer->loadFromImage(mImageSource);
-
-        mImageSource = source;
-        break;
-    }
-    case RepeatXProperty: {
-        const bool repeatX = mImageLayer->repeatX();
-        mImageLayer->setRepeatX(mRepeat);
-        mRepeat = repeatX;
-        break;
-    }
-    case RepeatYProperty: {
-        const bool repeatY = mImageLayer->repeatY();
-        mImageLayer->setRepeatY(mRepeat);
-        mRepeat = repeatY;
-        break;
-    }
-    }
-
-    emit mMapDocument->imageLayerChanged(mImageLayer);
+    emit document()->changed(ImageLayerChangeEvent(imageLayer, ImageLayerChangeEvent::ImageSourceProperty));
 }
+
+
+ChangeImageLayerRepeatX::ChangeImageLayerRepeatX(Document *document,
+                                                 QList<ImageLayer *> imageLayers,
+                                                 bool repeatX)
+    : ChangeValue<ImageLayer, bool>(document, std::move(imageLayers), repeatX)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Image Layer Repeat"));
+}
+
+bool ChangeImageLayerRepeatX::getValue(const ImageLayer *imageLayer) const
+{
+    return imageLayer->repeatX();
+}
+
+void ChangeImageLayerRepeatX::setValue(ImageLayer *imageLayer, const bool &value) const
+{
+    imageLayer->setRepeatX(value);
+    emit document()->changed(ImageLayerChangeEvent(imageLayer, ImageLayerChangeEvent::RepeatProperty));
+}
+
+
+ChangeImageLayerRepeatY::ChangeImageLayerRepeatY(Document *document,
+                                                 QList<ImageLayer *> imageLayers,
+                                                 bool repeatY)
+    : ChangeValue<ImageLayer, bool>(document, std::move(imageLayers), repeatY)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Image Layer Repeat"));
+}
+
+bool ChangeImageLayerRepeatY::getValue(const ImageLayer *imageLayer) const
+{
+    return imageLayer->repeatY();
+}
+
+void ChangeImageLayerRepeatY::setValue(ImageLayer *imageLayer, const bool &value) const
+{
+    imageLayer->setRepeatY(value);
+    emit document()->changed(ImageLayerChangeEvent(imageLayer, ImageLayerChangeEvent::RepeatProperty));
+}
+
+} // namespace Tiled

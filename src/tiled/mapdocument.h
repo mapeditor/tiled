@@ -165,8 +165,8 @@ public:
     void moveLayersUp(const QList<Layer *> &layers);
     void moveLayersDown(const QList<Layer *> &layers);
     void removeLayers(const QList<Layer *> &layers);
-    void toggleLayers(const QList<Layer *> &layers);
-    void toggleLockLayers(const QList<Layer *> &layers);
+    void toggleLayers(QList<Layer *> layers);
+    void toggleLockLayers(QList<Layer *> layers);
     void toggleOtherLayers(const QList<Layer *> &layers);
     void toggleLockOtherLayers(const QList<Layer *> &layers);
 
@@ -343,12 +343,6 @@ signals:
     void regionEdited(const QRegion &region, Layer *layer);
 
     void tileLayerChanged(TileLayer *layer, TileLayerChangeFlags flags);
-
-    /**
-     * Should be emitted when changing the image or the transparent color of
-     * an image layer.
-     */
-    void imageLayerChanged(ImageLayer *imageLayer);
 
     void tilesetAboutToBeAdded(int index);
     void tilesetAdded(int index, Tileset *tileset);

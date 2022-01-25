@@ -368,7 +368,7 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
         case Layer::ImageLayerType: {
             // Adjust image layer by changing its offset
             auto imageLayer = static_cast<ImageLayer*>(layer);
-            new SetLayerOffset(this, layer,
+            new SetLayerOffset(this, { layer },
                                imageLayer->offset() + pixelOffset,
                                command);
             break;
@@ -777,17 +777,17 @@ void MapDocument::removeLayers(const QList<Layer *> &layers)
 /**
  * \see LayerModel::toggleLayers
  */
-void MapDocument::toggleLayers(const QList<Layer *> &layers)
+void MapDocument::toggleLayers(QList<Layer *> layers)
 {
-    mLayerModel->toggleLayers(layers);
+    mLayerModel->toggleLayers(std::move(layers));
 }
 
 /**
  * \see LayerModel::toggleLockLayers
  */
-void MapDocument::toggleLockLayers(const QList<Layer *> &layers)
+void MapDocument::toggleLockLayers(QList<Layer *> layers)
 {
-    mLayerModel->toggleLockLayers(layers);
+    mLayerModel->toggleLockLayers(std::move(layers));
 }
 
 /**

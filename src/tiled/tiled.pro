@@ -92,6 +92,7 @@ SOURCES += aboutdialog.cpp \
     changetileobjectgroup.cpp \
     changetileprobability.cpp \
     changetilewangid.cpp \
+    changevalue.h \
     changewangcolordata.cpp \
     changewangsetdata.cpp \
     clickablelabel.cpp \

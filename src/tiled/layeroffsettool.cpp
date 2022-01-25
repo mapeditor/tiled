@@ -1,7 +1,7 @@
 /*
 * layeroffsettool.cpp
 * Copyright 2014, Mattia Basaglia
-* Copyright 2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+* Copyright 2015-2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
 *
 * This file is part of Tiled.
 *
@@ -230,21 +230,19 @@ void LayerOffsetTool::finishDrag()
     if (!mapDocument() || draggedLayers.isEmpty())
         return;
 
-    auto undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(QCoreApplication::translate("Undo Commands",
-                                                      "Change Layer Offset"));
-
     mApplyingChange = true;
+    QList<Layer *> layers;
+    QVector<QPointF> offsets;
+
     for (const DraggingLayer &dragging : qAsConst(draggedLayers)) {
         const QPointF newOffset = dragging.layer->offset();
         dragging.layer->setOffset(dragging.oldOffset);  // restore old offset for undo command
-        undoStack->push(new SetLayerOffset(mapDocument(),
-                                           dragging.layer,
-                                           newOffset));
+        layers.append(dragging.layer);
+        offsets.append(newOffset);
     }
+    auto undoStack = mapDocument()->undoStack();
+    undoStack->push(new SetLayerOffset(mapDocument(), std::move(layers), offsets));
     mApplyingChange = false;
-
-    undoStack->endMacro();
 }
 
 #include "moc_layeroffsettool.cpp"
