@@ -50,6 +50,16 @@ void ChangeWangColorName::redo()
     wangColorModel->setName(mWangColor, mNewName);
 }
 
+bool ChangeWangColorName::mergeWith(const QUndoCommand *other)
+{
+    auto o = static_cast<const ChangeWangColorName*>(other);
+    if (mWangColor != o->mWangColor)
+        return false;
+
+    mNewName = o->mNewName;
+    return true;
+}
+
 
 ChangeWangColorImage::ChangeWangColorImage(TilesetDocument *tilesetDocument,
                                            WangColor *wangColor,

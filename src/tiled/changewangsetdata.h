@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "undocommands.h"
 #include "wangset.h"
 
 #include <QUndoCommand>
@@ -40,6 +41,9 @@ public:
 
     void undo() override;
     void redo() override;
+
+    int id() const override { return Cmd_ChangeWangSetName; }
+    bool mergeWith(const QUndoCommand *other) override;
 
 private:
     TilesetDocument *mTilesetDocument;

@@ -44,6 +44,9 @@ public:
     void undo() override;
     void redo() override;
 
+    int id() const override { return Cmd_ChangeTilesetName; }
+    bool mergeWith(const QUndoCommand *other) override;
+
 private:
     TilesetDocument *mTilesetDocument;
     QString mOldName;

@@ -47,6 +47,16 @@ void RenameTileset::redo()
     mTilesetDocument->setTilesetName(mNewName);
 }
 
+bool RenameTileset::mergeWith(const QUndoCommand *other)
+{
+    auto o = static_cast<const RenameTileset*>(other);
+    if (mTilesetDocument != o->mTilesetDocument)
+        return false;
+
+    mNewName = o->mNewName;
+    return true;
+}
+
 
 ChangeTilesetTileOffset::ChangeTilesetTileOffset(TilesetDocument *tilesetDocument,
                                                  QPoint tileOffset)
@@ -69,7 +79,7 @@ void ChangeTilesetTileOffset::redo()
 
 bool ChangeTilesetTileOffset::mergeWith(const QUndoCommand *other)
 {
-    const ChangeTilesetTileOffset *o = static_cast<const ChangeTilesetTileOffset*>(other);
+    auto o = static_cast<const ChangeTilesetTileOffset*>(other);
     if (mTilesetDocument != o->mTilesetDocument)
         return false;
 

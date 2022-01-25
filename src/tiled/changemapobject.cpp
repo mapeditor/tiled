@@ -56,6 +56,18 @@ ChangeMapObject::ChangeMapObject(Document *document,
     }
 }
 
+bool ChangeMapObject::mergeWith(const QUndoCommand *other)
+{
+    auto o = static_cast<const ChangeMapObject*>(other);
+    if (mDocument == o->mDocument && mMapObject == o->mMapObject && mProperty == o->mProperty) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0)
+        setObsolete(mMapObject->mapObjectProperty(mProperty) == mValue);
+#endif
+        return true;
+    }
+    return false;
+}
+
 void ChangeMapObject::swap()
 {
     const auto value = std::exchange(mValue, mMapObject->mapObjectProperty(mProperty));

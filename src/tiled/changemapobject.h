@@ -22,6 +22,7 @@
 
 #include "mapobject.h"
 #include "tilelayer.h"
+#include "undocommands.h"
 
 #include <QUndoCommand>
 #include <QVector>
@@ -47,6 +48,10 @@ public:
 
     void undo() override { swap(); }
     void redo() override { swap(); }
+
+    int id() const override { return Cmd_ChangeMapObject; }
+
+    bool mergeWith(const QUndoCommand *other) final;
 
 private:
     void swap();

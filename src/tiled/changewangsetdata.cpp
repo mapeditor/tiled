@@ -54,6 +54,16 @@ void RenameWangSet::redo()
     mTilesetDocument->wangSetModel()->setWangSetName(mWangSet, mNewName);
 }
 
+bool RenameWangSet::mergeWith(const QUndoCommand *other)
+{
+    auto o = static_cast<const RenameWangSet*>(other);
+    if (mWangSet != o->mWangSet)
+        return false;
+
+    mNewName = o->mNewName;
+    return true;
+}
+
 
 ChangeWangSetType::ChangeWangSetType(TilesetDocument *tilesetDocument,
                                      WangSet *wangSet,
