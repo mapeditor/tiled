@@ -21,6 +21,7 @@
 #pragma once
 
 #include "object.h"
+#include "undocommands.h"
 
 #include <QString>
 #include <QUndoCommand>
@@ -78,6 +79,10 @@ public:
 
     void undo() override;
     void redo() override;
+
+    int id() const override { return Cmd_SetProperty; }
+
+    bool mergeWith(const QUndoCommand *other) final;
 
 private:
     struct ObjectProperty {

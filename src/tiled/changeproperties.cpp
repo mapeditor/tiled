@@ -104,6 +104,27 @@ void SetProperty::redo()
         mDocument->setProperty(obj, mName, mValue);
 }
 
+bool SetProperty::mergeWith(const QUndoCommand *other)
+{
+    // If the same property is changed of the same layer, the commands can
+    // be trivially merged. The value is already changed on the layer, and
+    // the old value already remembered on this undo command.
+    auto o = static_cast<const SetProperty*>(other);
+    if (mDocument == o->mDocument && mName == o->mName && mObjects == o->mObjects) {
+        mValue = o->mValue;
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0)
+        setObsolete(std::all_of(mProperties.cbegin(), mProperties.cend(),
+                                [this] (const ObjectProperty &p) {
+            return p.existed && p.previousValue == mValue;
+        }));
+#endif
+
+        return true;
+    }
+    return false;
+}
+
 
 RemoveProperty::RemoveProperty(Document *document,
                                const QList<Object*> &objects,
