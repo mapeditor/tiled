@@ -1745,7 +1745,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+22"/>
         <source>by</source>
-        <translation type="unfinished">ile</translation>
+        <translation>ile</translation>
     </message>
     <message>
         <location line="+105"/>
