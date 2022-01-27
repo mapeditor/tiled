@@ -428,7 +428,7 @@
         <location filename="../src/tiled/utils.cpp" line="+537"/>
         <source>JSON parse error at offset %1:
 %2.</source>
-        <translation type="unfinished">Грешка при прочитането на JSON на място %1:
+        <translation>Грешка при прочитането на JSON на място %1:
 %2.</translation>
     </message>
 </context>
@@ -450,7 +450,7 @@
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-8"/>
         <location line="+41"/>
         <source>Property Types files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлове с типове на свойства (*.json)</translation>
     </message>
 </context>
 <context>
@@ -508,7 +508,7 @@
     <message>
         <location line="+15"/>
         <source>JSON map files (*.tmj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлове с карти във формата JSON (*.tmj *.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -545,7 +545,7 @@
     <message>
         <location line="+14"/>
         <source>JSON template files (*.tj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлове с шаблони във формата JSON (*.tj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
@@ -572,7 +572,7 @@
     <message>
         <location line="+14"/>
         <source>JSON tileset files (*.tsj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлове с плочни набори във формата JSON (*.tsj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
@@ -1737,12 +1737,12 @@ Line %1, column %2</source>
     <message>
         <location line="+30"/>
         <source>Major grid:</source>
-        <translation type="unfinished"></translation>
+        <translation>Главна решетка:</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>by</source>
-        <translation type="unfinished"></translation>
+        <translation>на</translation>
     </message>
     <message>
         <location line="+105"/>
@@ -1836,12 +1836,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertytypeseditor.ui" line="+14"/>
         <source>Property Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор на типове на свойства</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Типове на свойства</translation>
     </message>
 </context>
 <context>
@@ -2659,7 +2659,7 @@ Line %1, column %2</source>
     <message>
         <location line="-20"/>
         <source>Unknown type: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестен тип: %1</translation>
     </message>
     <message>
         <location line="+49"/>
@@ -2732,52 +2732,52 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/scriptfile.cpp" line="+252"/>
         <source>The directory %1 could not be deleted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Папката „%1“ не може да бъде изтрита.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>The file %1 could not be deleted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлът „%1“ не може да бъде изтрит.</translation>
     </message>
     <message>
         <location line="+80"/>
         <source>The directory &apos;%1&apos; could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Папката „%1“ не може да бъде създадена.</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>The symlink &apos;%1&apos; could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Символната връзка „%1“ не може да бъде създадена.</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Could not remove file &apos;%1&apos;. %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлът „%1“ не може да бъде премахнат. %2</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Could not copy file &apos;%1&apos; to &apos;%2&apos;. %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлът „%1“ не може да бъде копиран в „%2“. %3</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Could not move &apos;%1&apos; to &apos;%2&apos;: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ не може да се премести в „%2“. %3</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Source file path is a directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пътят на изходния файл сочи към папка.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Destination file path is a directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Целевият път на файла съществува като папка.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Destination file exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Целевият файл съществува.</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -3291,7 +3291,7 @@ Line %1, column %2</source>
     <message>
         <location line="-6"/>
         <source>&apos;%1&apos; layer must not occur more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>Слоят „%1“ не може да се съществува повече от веднъж.</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -3863,9 +3863,9 @@ Line %1, column %2</source>
     <message numerus="yes">
         <location line="+268"/>
         <source>Move %n Node(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Преместване на %n възел</numerusform>
+            <numerusform>Преместване на %n възела</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4367,7 +4367,7 @@ Please select specific format.</source>
         <location line="-655"/>
         <location line="+1549"/>
         <source>Property Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор на типове на свойства</translation>
     </message>
     <message>
         <location line="-938"/>
@@ -4744,7 +4744,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Select All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Избиране на всички слоеве</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5349,12 +5349,12 @@ Please select specific format.</source>
     <message>
         <location line="+16"/>
         <source>Select in Tilesets View</source>
-        <translation type="unfinished"></translation>
+        <translation>Избиране в изгледа за плочни набори</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Add Tileset to Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавяне на плочен набор към картата</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -5512,7 +5512,7 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Parallax Origin</source>
-        <translation type="unfinished"></translation>
+        <translation>Изходна точка на паралакса</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5699,12 +5699,12 @@ Please select specific format.</source>
     <message>
         <location line="-88"/>
         <source>Repeat X</source>
-        <translation type="unfinished"></translation>
+        <translation>Повтаряне по X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Repeat Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Повтаряне по Y</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -5933,166 +5933,166 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-411"/>
         <source>Add Enum</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавяне на изброен тип</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавяне на клас</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+49"/>
         <source>Remove Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Премахване на типа</translation>
     </message>
     <message>
         <location line="-47"/>
         <source>Add Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавяне на стойност</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Премахване на стойността</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+230"/>
         <source>Add Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавяне на член-данна</translation>
     </message>
     <message>
         <location line="-229"/>
         <location line="+280"/>
         <source>Remove Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Премахване на член-данната</translation>
     </message>
     <message>
         <location line="-279"/>
         <location line="+315"/>
         <source>Rename Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Преименуване на член-данната</translation>
     </message>
     <message>
         <location line="-313"/>
         <source>Export...</source>
-        <translation type="unfinished">Изнасяне…</translation>
+        <translation>Изнасяне…</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+397"/>
         <source>Export Property Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Изнасяне на типовете на свойства</translation>
     </message>
     <message>
         <location line="-396"/>
         <source>Import...</source>
-        <translation type="unfinished">Внасяне…</translation>
+        <translation>Внасяне…</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+354"/>
         <source>Import Property Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Внасяне на типове на свойства</translation>
     </message>
     <message>
         <location line="-316"/>
         <source>Are you sure you want to remove the type &apos;%1&apos;? This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Наистина ли искате да премахнете типа „%1“? Това действие е необратимо.</translation>
     </message>
     <message>
         <location line="+156"/>
         <source>Remove Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Премахване на стойностите</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Are you sure you want to remove the selected values from enum &apos;%1&apos;? This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Наистина ли искате да премахнете избраните стойности от изброения тип „%1“? Това действие е необратимо.</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Too Many Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Твърде много стойности</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation type="unfinished"></translation>
+        <translation>Твърде много стойности за изброен тип, чийто стойности се съхраняват като флагове. Максималния брой на флаговете в този вид е 32.</translation>
     </message>
     <message>
         <location line="+31"/>
         <source>Error Adding Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при добавянето на член-данната</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+97"/>
         <source>There is already a member named &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вече има член-данна с име „%1“.</translation>
     </message>
     <message>
         <location line="-64"/>
         <source>Are you sure you want to remove &apos;%1&apos; from class &apos;%2&apos;? This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Наистина ли искате да премахнете „%1“ от класа „%2“? Това действие е необратимо.</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Name:</source>
-        <translation type="unfinished">Име:</translation>
+        <translation>Име:</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Error Renaming Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при преименуването на член-данната</translation>
     </message>
     <message>
         <location line="+27"/>
         <location line="+7"/>
         <source>Error Reading Property Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при четенето на типовете на свойства</translation>
     </message>
     <message>
         <location line="+35"/>
         <location line="+8"/>
         <source>Error Writing Property Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при записа на типовете на свойства</translation>
     </message>
     <message>
         <location line="+104"/>
         <source>Name</source>
-        <translation type="unfinished">Име</translation>
+        <translation>Име</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Members</source>
-        <translation type="unfinished"></translation>
+        <translation>Член-данни</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation>Низ</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Число</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Allow multiple values (flags)</source>
-        <translation type="unfinished"></translation>
+        <translation>Позволяване на множество стойности (флагове)</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Save as</source>
-        <translation type="unfinished"></translation>
+        <translation>Запазване като</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Стойстости</translation>
     </message>
 </context>
 <context>
@@ -6100,22 +6100,22 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertytypesmodel.cpp" line="+215"/>
         <source>Error Renaming Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при преименуването на типа</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The name &apos;%1&apos; is already in use.</source>
-        <translation type="unfinished"></translation>
+        <translation>Името „%1“ вече се ползва.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Enum</source>
-        <translation type="unfinished"></translation>
+        <translation>Изброен тип</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Клас</translation>
     </message>
 </context>
 <context>
@@ -6387,17 +6387,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="-153"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">&amp;Изрязване</translation>
+        <translation>&amp;Изрязване</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Копиране</translation>
+        <translation>&amp;Копиране</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Поставяне</translation>
+        <translation>&amp;Поставяне</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -7437,7 +7437,7 @@ Please select specific format.</source>
     <message>
         <location line="+10"/>
         <source>Change Parallax Origin</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на изходната точка на паралакса</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -7602,28 +7602,28 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changeimagelayerproperty.cpp" line="+38"/>
         <source>Change Object Layer Transparent Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на цвета за прозрачност на слой с обекти</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Change Object Layer Image Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на изображение-източник на слой с обекти</translation>
     </message>
     <message>
         <location line="+25"/>
         <location line="+21"/>
         <source>Change Image Layer Repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на повтарянето на слой с изображения</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeobjectgroupproperties.cpp" line="+36"/>
         <source>Change Object Layer Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на цвета на слой с обекти</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Change Object Layer Draw Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на реда на изчертаване на слой с обекти</translation>
     </message>
 </context>
 <context>
