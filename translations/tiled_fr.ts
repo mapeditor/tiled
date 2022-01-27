@@ -428,7 +428,7 @@
         <location filename="../src/tiled/utils.cpp" line="+537"/>
         <source>JSON parse error at offset %1:
 %2.</source>
-        <translation type="unfinished">Erreur de traitement de JSON au décalage %1 :
+        <translation>Erreur de traitement JSON au caractère %1 :
 %2.</translation>
     </message>
 </context>
@@ -450,7 +450,7 @@
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-8"/>
         <location line="+41"/>
         <source>Property Types files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de Types de Propriété (*.json)</translation>
     </message>
 </context>
 <context>
@@ -508,7 +508,7 @@
     <message>
         <location line="+15"/>
         <source>JSON map files (*.tmj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de carte JSON (*.tmj *.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -545,7 +545,7 @@
     <message>
         <location line="+14"/>
         <source>JSON template files (*.tj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de modèle JSON (*.tj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
@@ -572,7 +572,7 @@
     <message>
         <location line="+14"/>
         <source>JSON tileset files (*.tsj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de jeu de tuiles JSON (*.tsj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
@@ -1737,12 +1737,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+30"/>
         <source>Major grid:</source>
-        <translation type="unfinished"></translation>
+        <translation>Grille majeure :</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>by</source>
-        <translation type="unfinished"></translation>
+        <translation>par</translation>
     </message>
     <message>
         <location line="+105"/>
@@ -1836,12 +1836,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/propertytypeseditor.ui" line="+14"/>
         <source>Property Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditeur de Types de Propriété</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Types de Propriété</translation>
     </message>
 </context>
 <context>
@@ -2659,7 +2659,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-20"/>
         <source>Unknown type: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Type inconnu : %1</translation>
     </message>
     <message>
         <location line="+49"/>
@@ -2732,52 +2732,52 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/scriptfile.cpp" line="+252"/>
         <source>The directory %1 could not be deleted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le dossier %1 n&apos;a pas pu être supprimé.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>The file %1 could not be deleted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier %1 n&apos;a pas pu être supprimé.</translation>
     </message>
     <message>
         <location line="+80"/>
         <source>The directory &apos;%1&apos; could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le dossier &apos;%1&apos; n&apos;a pas pu être créé.</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>The symlink &apos;%1&apos; could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le lien symbolique &apos;%1&apos; n&apos;a pas pu être créé.</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Could not remove file &apos;%1&apos;. %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier &apos;%1&apos; n&apos;a pas pu être supprimé. %2</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Could not copy file &apos;%1&apos; to &apos;%2&apos;. %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier &apos;%1&apos; n&apos;a pas pu être copié vers &apos;%2&apos;. %3</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Could not move &apos;%1&apos; to &apos;%2&apos;: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; n&apos;a pas pu être déplacé vers &apos;%2&apos; : %3</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Source file path is a directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le chemin du fichier source est un dossier.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Destination file path is a directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le chemin du fichier de destination est un dossier.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Destination file exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier de destination existe déjà.</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -3291,7 +3291,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-6"/>
         <source>&apos;%1&apos; layer must not occur more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le calque &apos;%1&apos; ne doit pas exister plus d&apos;une fois.</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -3863,9 +3863,9 @@ Ligne %1, colonne %2</translation>
     <message numerus="yes">
         <location line="+268"/>
         <source>Move %n Node(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Déplacer %n Nœud</numerusform>
+            <numerusform>Déplacer %n Nœuds</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4367,7 +4367,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="-655"/>
         <location line="+1549"/>
         <source>Property Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditeur de Types de Propriété</translation>
     </message>
     <message>
         <location line="-938"/>
@@ -4744,7 +4744,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+1"/>
         <source>Select All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner Tous les Calques</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5349,12 +5349,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+16"/>
         <source>Select in Tilesets View</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner dans la Vue Jeux de Tuiles</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Add Tileset to Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un Jeu de Tuiles dans la Carte</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -5512,7 +5512,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+5"/>
         <source>Parallax Origin</source>
-        <translation type="unfinished"></translation>
+        <translation>Origine du Parallaxe</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5699,12 +5699,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-88"/>
         <source>Repeat X</source>
-        <translation type="unfinished"></translation>
+        <translation>Répéter en X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Repeat Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Répéter en Y</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -5933,166 +5933,166 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-411"/>
         <source>Add Enum</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une Énumération</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une Classe</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+49"/>
         <source>Remove Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer un Type</translation>
     </message>
     <message>
         <location line="-47"/>
         <source>Add Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une Valeur</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer une Valeur</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+230"/>
         <source>Add Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un Membre</translation>
     </message>
     <message>
         <location line="-229"/>
         <location line="+280"/>
         <source>Remove Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer un Membre</translation>
     </message>
     <message>
         <location line="-279"/>
         <location line="+315"/>
         <source>Rename Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Renommer un Membre</translation>
     </message>
     <message>
         <location line="-313"/>
         <source>Export...</source>
-        <translation type="unfinished">Exporter...</translation>
+        <translation>Exporter...</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+397"/>
         <source>Export Property Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter les Types de Propriété</translation>
     </message>
     <message>
         <location line="-396"/>
         <source>Import...</source>
-        <translation type="unfinished">Importer...</translation>
+        <translation>Importer...</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+354"/>
         <source>Import Property Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer des Types de Propriété</translation>
     </message>
     <message>
         <location line="-316"/>
         <source>Are you sure you want to remove the type &apos;%1&apos;? This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Êtes-vous certain de vouloir supprimer le type &apos;%1&apos; ? Cette action est irréversible.</translation>
     </message>
     <message>
         <location line="+156"/>
         <source>Remove Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer des Valeurs</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Are you sure you want to remove the selected values from enum &apos;%1&apos;? This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Êtes-vous certain de vouloir supprimer les valeurs sélectionnées dans l&apos;énumération &apos;%1&apos; ? Cette action est irréversible.</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Too Many Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Trop de Valeurs</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation type="unfinished"></translation>
+        <translation>Trop de valeurs de cette énumération sont stockées en tant que drapeaux. Le nombre maximal de bits de drapeaux est 32.</translation>
     </message>
     <message>
         <location line="+31"/>
         <source>Error Adding Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de l&apos;Ajout d&apos;un Membre</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+97"/>
         <source>There is already a member named &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Un membre nommé &apos;%1&apos; existe déjà.</translation>
     </message>
     <message>
         <location line="-64"/>
         <source>Are you sure you want to remove &apos;%1&apos; from class &apos;%2&apos;? This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Êtes-vous certain de vouloir supprimer &apos;%1&apos; de la classe &apos;%2&apos; ? Cette action est irréversible.</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Name:</source>
-        <translation type="unfinished">Nom :</translation>
+        <translation>Nom :</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Error Renaming Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de Lecture d&apos;un Membre</translation>
     </message>
     <message>
         <location line="+27"/>
         <location line="+7"/>
         <source>Error Reading Property Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de Lecture de Types de Propriété</translation>
     </message>
     <message>
         <location line="+35"/>
         <location line="+8"/>
         <source>Error Writing Property Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur d&apos;Écriture de Types de Propriété</translation>
     </message>
     <message>
         <location line="+104"/>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Members</source>
-        <translation type="unfinished"></translation>
+        <translation>Membres</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation>Chaîne de Caractères</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Allow multiple values (flags)</source>
-        <translation type="unfinished"></translation>
+        <translation>Autoriser plusieurs valeurs (drapeaux)</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Save as</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarder en tant que</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeurs</translation>
     </message>
 </context>
 <context>
@@ -6100,22 +6100,22 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/propertytypesmodel.cpp" line="+215"/>
         <source>Error Renaming Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de Renommage du Type</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The name &apos;%1&apos; is already in use.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le nom &apos;%1&apos; est déjà utilisé.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Enum</source>
-        <translation type="unfinished"></translation>
+        <translation>Énumération</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Classe</translation>
     </message>
 </context>
 <context>
@@ -6387,17 +6387,17 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="-153"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">Couper (&amp;T)</translation>
+        <translation>Couper (&amp;T)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Copier</translation>
+        <translation>&amp;Copier</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">Coller (&amp;P)</translation>
+        <translation>Coller (&amp;P)</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -7437,7 +7437,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+10"/>
         <source>Change Parallax Origin</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer l&apos;Origine du Parallaxe</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -7602,28 +7602,28 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/changeimagelayerproperty.cpp" line="+38"/>
         <source>Change Object Layer Transparent Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer la Couleur de Transparence d&apos;un Calque d&apos;Objets</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Change Object Layer Image Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer l&apos;Image Source d&apos;un Calque d&apos;Objets</translation>
     </message>
     <message>
         <location line="+25"/>
         <location line="+21"/>
         <source>Change Image Layer Repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer la Répétition d&apos;un Calque d&apos;Images</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeobjectgroupproperties.cpp" line="+36"/>
         <source>Change Object Layer Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer la Couleur d&apos;un Calque d&apos;Objets</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Change Object Layer Draw Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer l&apos;Ordre d&apos;Affichage d&apos;un Calque d&apos;Objets</translation>
     </message>
 </context>
 <context>
