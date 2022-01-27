@@ -53,7 +53,6 @@ class LayerModel;
 class MapDocument;
 class MapObjectModel;
 class TileSelectionModel;
-class EditableMap;
 
 using MapDocumentPtr = QSharedPointer<MapDocument>;
 
@@ -118,8 +117,6 @@ public:
      * not allow the GUI to update itself appropriately.
      */
     Map *map() const { return mMap.get(); }
-
-    Tiled::EditableAsset *editable() override;
 
     int layerIndex(const Layer *layer) const;
 
@@ -368,6 +365,9 @@ public slots:
     void updateTemplateInstances(const ObjectTemplate *objectTemplate);
     void selectAllInstances(const ObjectTemplate *objectTemplate);
     void deselectObjects(const QList<MapObject*> &objects);
+
+protected:
+    std::unique_ptr<EditableAsset> createEditable() override;
 
 private:
     void onChanged(const ChangeEvent &change);

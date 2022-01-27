@@ -94,7 +94,8 @@ public:
     QUndoStack *undoStack() const;
     bool isModified() const;
 
-    Q_INVOKABLE virtual Tiled::EditableAsset *editable() = 0;
+    EditableAsset *editable();
+    void setEditable(std::unique_ptr<EditableAsset> editable);
 
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);
@@ -146,6 +147,8 @@ signals:
     void ignoreBrokenLinksChanged(bool ignoreBrokenLinks);
 
 protected:
+    virtual std::unique_ptr<EditableAsset> createEditable() = 0;
+
     void setFileName(const QString &fileName);
 
     void checkFilePathProperties(const Object *object) const;

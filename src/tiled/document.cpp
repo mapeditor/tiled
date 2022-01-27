@@ -60,6 +60,19 @@ Document::~Document()
     }
 }
 
+EditableAsset *Document::editable()
+{
+    if (!mEditable)
+        mEditable = createEditable();
+    return mEditable.get();
+}
+
+void Document::setEditable(std::unique_ptr<EditableAsset> editable)
+{
+    mEditable = std::move(editable);
+    mEditable->setDocument(this);
+}
+
 void Document::setFileName(const QString &fileName)
 {
     if (mFileName == fileName)

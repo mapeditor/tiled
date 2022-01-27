@@ -173,9 +173,19 @@ bool ScriptModule::setActiveAsset(EditableAsset *asset) const
         return false;
     }
 
-    for (const DocumentPtr &document : documentManager->documents())
-        if (document->editable() == asset)
-            return documentManager->switchToDocument(document.data());
+    if (asset->checkReadOnly())
+        return false;
+
+    if (auto document = asset->document())
+        return documentManager->switchToDocument(document);
+
+    if (auto document = asset->createDocument()) {
+        document->setEditable(std::unique_ptr<EditableAsset>(asset));
+        QQmlEngine::setObjectOwnership(asset, QQmlEngine::CppOwnership);
+
+        documentManager->addDocument(document);
+        return true;
+    }
 
     return false;
 }

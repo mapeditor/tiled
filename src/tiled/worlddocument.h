@@ -22,6 +22,7 @@
 #pragma once
 
 #include "document.h"
+#include "editableasset.h"
 
 class WorldManager;
 
@@ -44,7 +45,7 @@ public:
     FileFormat *writerFormat() const override { return nullptr; }
 
     // TODO: Expose worlds in script API
-    EditableAsset *editable() override { return nullptr; }
+    std::unique_ptr<EditableAsset> createEditable() override { return {}; }
 
     // Exporting not supported for worlds
     QString lastExportFileName() const override { return QString(); }

@@ -50,7 +50,9 @@ public:
                    QObject *parent = nullptr);
 
     EditableAsset *asset() const;
+
     virtual bool isReadOnly() const;
+    bool checkReadOnly() const;
 
     Q_INVOKABLE QVariant property(const QString &name) const;
     Q_INVOKABLE void setProperty(const QString &name, const QVariant &value);
@@ -68,9 +70,6 @@ public:
 
     void setAsset(EditableAsset *asset);
     void setObject(Object *object);
-
-protected:
-    bool checkReadOnly() const;
 
 private:
     QVariant toScript(const QVariant &value) const;

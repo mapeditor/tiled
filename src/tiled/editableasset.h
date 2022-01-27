@@ -23,6 +23,7 @@
 #include "editableobject.h"
 
 #include <QJSValue>
+#include <QSharedPointer>
 
 #include <memory>
 
@@ -59,6 +60,11 @@ public:
 
     Document *document() const;
 
+    /**
+     * Creates a document for this asset.
+     */
+    virtual QSharedPointer<Document> createDocument() = 0;
+
 public slots:
     void undo();
     void redo();
@@ -68,13 +74,21 @@ signals:
     void fileNameChanged(const QString &fileName, const QString &oldFileName);
 
 private:
-    Document * const mDocument;
+    friend class Document;
+    void setDocument(Document *document);
+
+    Document *mDocument;
 };
 
 
 inline Document *EditableAsset::document() const
 {
     return mDocument;
+}
+
+inline void EditableAsset::setDocument(Document *document)
+{
+    mDocument = document;
 }
 
 } // namespace Tiled

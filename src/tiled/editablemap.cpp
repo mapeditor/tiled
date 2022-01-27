@@ -641,6 +641,12 @@ void EditableMap::setSelectedObjects(const QList<QObject *> &objects)
     document->setSelectedObjects(plainObjects);
 }
 
+QSharedPointer<Document> EditableMap::createDocument()
+{
+    Q_ASSERT(mDetachedMap);
+    return MapDocumentPtr::create(std::move(mDetachedMap));
+}
+
 void EditableMap::documentChanged(const ChangeEvent &change)
 {
     switch (change.type) {

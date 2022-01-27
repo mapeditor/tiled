@@ -195,6 +195,8 @@ public:
     Map *map() const;
     MapDocument *mapDocument() const;
 
+    QSharedPointer<Document> createDocument() override;
+
 signals:
     void currentLayerChanged();
     void selectedLayersChanged();

@@ -210,6 +210,11 @@ TilesetDocument *EditableTileset::tilesetDocument() const
     return static_cast<TilesetDocument*>(document());
 }
 
+QSharedPointer<Document> EditableTileset::createDocument()
+{
+    return TilesetDocumentPtr::create(mTileset);
+}
+
 void EditableTileset::setName(const QString &name)
 {
     if (auto doc = tilesetDocument())

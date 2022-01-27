@@ -76,6 +76,9 @@ Document *EditableObject::document() const
     return asset() ? asset()->document() : nullptr;
 }
 
+/**
+ * When this object is read-only, raises a script error and returns true.
+ */
 bool EditableObject::checkReadOnly() const
 {
     if (isReadOnly()) {

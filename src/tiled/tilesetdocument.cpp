@@ -259,12 +259,9 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
     emit tilesetChanged(mTileset.data());
 }
 
-EditableTileset *TilesetDocument::editable()
+std::unique_ptr<EditableAsset> TilesetDocument::createEditable()
 {
-    if (!mEditable)
-        mEditable.reset(new EditableTileset(this, this));
-
-    return static_cast<EditableTileset*>(mEditable.get());
+    return std::make_unique<EditableTileset>(this, this);
 }
 
 /**

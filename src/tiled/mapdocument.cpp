@@ -234,12 +234,9 @@ QString MapDocument::displayName() const
     return displayName;
 }
 
-EditableAsset *MapDocument::editable()
+std::unique_ptr<EditableAsset> MapDocument::createEditable()
 {
-    if (!mEditable)
-        mEditable.reset(new EditableMap(this, this));
-
-    return mEditable.get();
+    return std::make_unique<EditableMap>(this, this);
 }
 
 /**

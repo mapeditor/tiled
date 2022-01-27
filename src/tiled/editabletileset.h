@@ -126,6 +126,8 @@ public:
     TilesetDocument *tilesetDocument() const;
     Tileset *tileset() const;
 
+    QSharedPointer<Document> createDocument() override;
+
 public slots:
     void setName(const QString &name);
     void setImage(const QString &imageFilePath);
