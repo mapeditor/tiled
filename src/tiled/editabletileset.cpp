@@ -35,8 +35,7 @@
 
 namespace Tiled {
 
-EditableTileset::EditableTileset(const QString &name,
-                                 QObject *parent)
+EditableTileset::EditableTileset(const QString &name, QObject *parent)
     : EditableAsset(nullptr, nullptr, parent)
     , mTileset(Tileset::create(name, 0, 0))
 {
@@ -47,7 +46,7 @@ EditableTileset::EditableTileset(const QString &name,
 EditableTileset::EditableTileset(const Tileset *tileset, QObject *parent)
     : EditableAsset(nullptr, const_cast<Tileset*>(tileset), parent)
     , mReadOnly(true)
-    , mTileset(tileset->sharedPointer())    // keep alive
+    , mTileset(const_cast<Tileset*>(tileset)->sharedFromThis())    // keep alive
 {
 }
 

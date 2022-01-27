@@ -248,7 +248,7 @@ bool EditableMap::addTileset(EditableTileset *editableTileset)
         ScriptManager::instance().throwNullArgError(0);
         return false;
     }
-    const auto &tileset = editableTileset->tileset()->sharedPointer();
+    const auto &tileset = editableTileset->tileset()->sharedFromThis();
     if (map()->indexOfTileset(tileset) != -1)
         return false;   // can't add existing tileset
 
@@ -276,12 +276,12 @@ bool EditableMap::replaceTileset(EditableTileset *oldEditableTileset,
         return false;
     }
 
-    SharedTileset oldTileset = oldEditableTileset->tileset()->sharedPointer();
+    SharedTileset oldTileset = oldEditableTileset->tileset()->sharedFromThis();
     int indexOfOldTileset = map()->indexOfTileset(oldTileset);
     if (indexOfOldTileset == -1)
         return false;   // can't replace non-existing tileset
 
-    SharedTileset newTileset = newEditableTileset->tileset()->sharedPointer();
+    SharedTileset newTileset = newEditableTileset->tileset()->sharedFromThis();
     int indexOfNewTileset = map()->indexOfTileset(newTileset);
     if (indexOfNewTileset != -1)
         return false;   // can't replace with tileset that is already part of the map (undo broken)
@@ -301,7 +301,7 @@ bool EditableMap::removeTileset(EditableTileset *editableTileset)
         return false;
     }
     Tileset *tileset = editableTileset->tileset();
-    int index = map()->indexOfTileset(tileset->sharedPointer());
+    int index = map()->indexOfTileset(tileset->sharedFromThis());
     if (index == -1)
         return false;   // can't remove non-existing tileset
 

@@ -198,7 +198,7 @@ void BrokenLinksModel::refresh()
                         if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {
                             brokenTemplateTilesets.insert(objectTemplate);
                         } else {
-                            processTileset(tileset->sharedPointer());
+                            processTileset(tileset->sharedFromThis());
                         }
                     }
                 } else {
@@ -338,13 +338,13 @@ void BrokenLinksModel::tilesetChanged(Tileset *tileset)
 void BrokenLinksModel::tilesetAdded(int index, Tileset *tileset)
 {
     Q_UNUSED(index)
-    connectToTileset(tileset->sharedPointer());
+    connectToTileset(tileset->sharedFromThis());
     refresh();
 }
 
 void BrokenLinksModel::tilesetRemoved(Tileset *tileset)
 {
-    disconnectFromTileset(tileset->sharedPointer());
+    disconnectFromTileset(tileset->sharedFromThis());
     refresh();
 }
 
@@ -511,7 +511,7 @@ void LinkFixer::tryFixLinks(const QVector<BrokenLink> &links)
         if (link.type == TilesetImageSource || link.type == TilesetTileImageSource) {
             if (!editingTileset) {
                 // We need to open the tileset document in order to be able to make changes to it...
-                const SharedTileset tileset = link.tileset()->sharedPointer();
+                const SharedTileset tileset = link.tileset()->sharedFromThis();
                 DocumentManager::instance()->openTileset(tileset);
                 return;
             }
@@ -557,7 +557,7 @@ void LinkFixer::tryFixLink(const BrokenLink &link)
         auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument);
         if (!tilesetDocument) {
             // We need to open the tileset document in order to be able to make changes to it...
-            const SharedTileset tileset = link.tileset()->sharedPointer();
+            const SharedTileset tileset = link.tileset()->sharedFromThis();
             DocumentManager::instance()->openTileset(tileset);
             return;
         }
@@ -592,7 +592,7 @@ void LinkFixer::tryFixLink(const BrokenLink &link)
     } else if (link.type == ObjectTemplateTilesetReference) {
         emit DocumentManager::instance()->templateOpenRequested(link.objectTemplate()->fileName());
     } else if (link.type == MapTilesetReference) {
-        tryFixMapTilesetReference(link._tileset->sharedPointer());
+        tryFixMapTilesetReference(link._tileset->sharedFromThis());
     } else if (link.type == ObjectTemplateReference) {
         tryFixObjectTemplateReference(link.objectTemplate());
     }
@@ -635,7 +635,7 @@ bool LinkFixer::tryFixLink(const BrokenLink &link, const QString &newFilePath)
         }
 
     } else if (link.type == MapTilesetReference) {
-        return tryFixMapTilesetReference(link._tileset->sharedPointer(), newFilePath);
+        return tryFixMapTilesetReference(link._tileset->sharedFromThis(), newFilePath);
     } else if (link.type == ObjectTemplateReference) {
         return tryFixObjectTemplateReference(link.objectTemplate(), newFilePath);
     }

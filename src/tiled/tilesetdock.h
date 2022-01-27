@@ -161,7 +161,7 @@ private:
     void onTabMoved(int from, int to);
     void tabContextMenuRequested(const QPoint &pos);
 
-    int indexOfTileset(const SharedTileset &tileset) const;
+    int indexOfTileset(const Tileset *tileset) const;
     TilesetView *currentTilesetView() const;
     TilesetView *tilesetViewAt(int index) const;
 

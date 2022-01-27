@@ -40,15 +40,6 @@
 
 namespace Tiled {
 
-SharedTileset Tileset::create(const QString &name, int tileWidth, int tileHeight, int tileSpacing, int margin)
-{
-    SharedTileset tileset(new Tileset(name, tileWidth, tileHeight,
-                                      tileSpacing, margin));
-    tileset->mWeakPointer = tileset;
-    TilesetManager::instance()->addTileset(tileset.data());
-    return tileset;
-}
-
 Tileset::Tileset(QString name, int tileWidth, int tileHeight,
                  int tileSpacing, int margin)
     : Object(TilesetType)
@@ -61,6 +52,8 @@ Tileset::Tileset(QString name, int tileWidth, int tileHeight,
 {
     Q_ASSERT(tileSpacing >= 0);
     Q_ASSERT(margin >= 0);
+
+    TilesetManager::instance()->addTileset(this);
 }
 
 Tileset::~Tileset()
@@ -612,11 +605,11 @@ void Tileset::setOriginalTileset(const SharedTileset &original)
  * options. In this case, the copy will have a (weak) pointer to the original
  * tileset, to allow issues found during export to refer to this tileset.
  */
-SharedTileset Tileset::originalTileset() const
+SharedTileset Tileset::originalTileset()
 {
     SharedTileset original { mOriginalTileset };
     if (!original)
-        original = sharedPointer();
+        original = sharedFromThis();
     return original;
 }
 

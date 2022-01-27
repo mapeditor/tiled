@@ -87,7 +87,7 @@ EditableTile *EditableMapObject::tile() const
         return nullptr;
 
     Tileset *tileset = mapObject()->cell().tileset();
-    auto tilesetDocument = TilesetDocument::findDocumentForTileset(tileset->sharedPointer());
+    auto tilesetDocument = TilesetDocument::findDocumentForTileset(tileset->sharedFromThis());
     if (!tilesetDocument)
         return nullptr;
 

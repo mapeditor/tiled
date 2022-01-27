@@ -253,7 +253,7 @@ void TemplatesDock::refreshDummyObject()
             dummyObject->markAsTemplateBase();
 
             if (Tileset *tileset = dummyObject->cell().tileset()) {
-                map->addTileset(tileset->sharedPointer());
+                map->addTileset(tileset->sharedFromThis());
                 dummyObject->setPosition({-dummyObject->width() / 2, dummyObject->height() / 2});
             } else {
                 dummyObject->setPosition({-dummyObject->width() / 2, -dummyObject->height()  /2});

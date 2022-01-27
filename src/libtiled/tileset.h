@@ -60,7 +60,7 @@ using SharedTileset = QSharedPointer<Tileset>;
  * addTile, insertTiles and removeTiles). These two use-cases are not meant to
  * be mixed.
  */
-class TILEDSHARED_EXPORT Tileset : public Object
+class TILEDSHARED_EXPORT Tileset : public Object, public QEnableSharedFromThis<Tileset>
 {
 public:
     /**
@@ -73,9 +73,7 @@ public:
     };
 
     /**
-     * Creates a new tileset with the given parameters. Using this function
-     * makes sure the internal weak pointer is initialized, which enables the
-     * sharedPointer() function.
+     * Creates a new tileset with the given parameters.
      *
      * @param name        the name of the tileset
      * @param tileWidth   the width of the tiles in the tileset
@@ -83,15 +81,20 @@ public:
      * @param tileSpacing the spacing between the tiles in the tileset image
      * @param margin      the margin around the tiles in the tileset image
      */
-    static SharedTileset create(const QString &name,
-                                int tileWidth,
-                                int tileHeight,
-                                int tileSpacing = 0,
-                                int margin = 0);
+    template <typename... Args>
+    static SharedTileset create(Args && ...arguments)
+    {
+        return SharedTileset::create(std::forward<Args>(arguments)...);
+    }
 
 private:
+    friend SharedTileset;
+
     /**
-     * Private constructor. Use create() instead.
+     * Private constructor.
+     *
+     * Use Tileset::create() instead, which makes sure the internal weak
+     * pointer is initialized, which enables the sharedPointer() function.
      */
     Tileset(QString name, int tileWidth, int tileHeight,
             int tileSpacing = 0, int margin = 0);
@@ -202,11 +205,14 @@ public:
     void setTileImage(Tile *tile,
                       const QPixmap &image,
                       const QUrl &source = QUrl());
-
-    SharedTileset sharedPointer() const;
+    /**
+     * @deprecated Only kept around for the Python API!
+     */
+    SharedTileset sharedPointer() const
+    { return const_cast<Tileset*>(this)->sharedFromThis(); }
 
     void setOriginalTileset(const SharedTileset &original);
-    SharedTileset originalTileset() const;
+    SharedTileset originalTileset();
 
     void setStatus(LoadingStatus status);
     void setImageStatus(LoadingStatus status);
@@ -272,7 +278,6 @@ private:
     QString mFormat;
     TransformationFlags mTransformationFlags;
 
-    QWeakPointer<Tileset> mWeakPointer;
     QWeakPointer<Tileset> mOriginalTileset;
 };
 
@@ -611,11 +616,6 @@ inline int Tileset::nextTileId() const
 inline int Tileset::takeNextTileId()
 {
     return mNextTileId++;
-}
-
-inline SharedTileset Tileset::sharedPointer() const
-{
-    return SharedTileset(mWeakPointer);
 }
 
 /**

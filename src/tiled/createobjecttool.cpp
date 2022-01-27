@@ -342,7 +342,7 @@ void CreateObjectTool::finishNewMapObject()
                                               newMapObject.get());
 
     if (Tileset *tileset = newMapObject.get()->cell().tileset()) {
-        SharedTileset sharedTileset = tileset->sharedPointer();
+        SharedTileset sharedTileset = tileset->sharedFromThis();
 
         // Make sure this tileset is part of the map
         if (!mapDocument()->map()->tilesets().contains(sharedTileset))

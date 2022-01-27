@@ -1083,18 +1083,18 @@ void DocumentManager::tilesetAdded(int index, Tileset *tileset)
 {
     Q_UNUSED(index)
     MapDocument *mapDocument = static_cast<MapDocument*>(QObject::sender());
-    addToTilesetDocument(tileset->sharedPointer(), mapDocument);
+    addToTilesetDocument(tileset->sharedFromThis(), mapDocument);
 }
 
 void DocumentManager::tilesetRemoved(Tileset *tileset)
 {
     MapDocument *mapDocument = static_cast<MapDocument*>(QObject::sender());
-    removeFromTilesetDocument(tileset->sharedPointer(), mapDocument);
+    removeFromTilesetDocument(tileset->sharedFromThis(), mapDocument);
 }
 
 void DocumentManager::tilesetNameChanged(Tileset *tileset)
 {
-    auto *tilesetDocument = findTilesetDocument(tileset->sharedPointer());
+    auto *tilesetDocument = findTilesetDocument(tileset->sharedFromThis());
     if (tilesetDocument->isEmbedded())
         updateDocumentTab(tilesetDocument);
 }
@@ -1321,7 +1321,7 @@ void DocumentManager::tilesetImagesChanged(Tileset *tileset)
     if (!mayNeedColumnCountAdjustment(*tileset))
         return;
 
-    SharedTileset sharedTileset = tileset->sharedPointer();
+    SharedTileset sharedTileset = tileset->sharedFromThis();
     QList<Document*> affectedDocuments;
 
     for (const auto &document : qAsConst(mDocuments)) {

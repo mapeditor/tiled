@@ -152,7 +152,7 @@ EditableTileset *EditableManager::editableTileset(Tileset *tileset)
     if (!tileset)
         return nullptr;
 
-    if (auto document = TilesetDocument::findDocumentForTileset(tileset->sharedPointer()))
+    if (auto document = TilesetDocument::findDocumentForTileset(tileset->sharedFromThis()))
         return document->editable();
 
     EditableTileset* &editableTileset = mEditableTilesets[tileset];

@@ -1327,7 +1327,7 @@ void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
             return;
         }
 
-        int index = mMapDocument->map()->tilesets().indexOf(tileset->sharedPointer());
+        int index = mMapDocument->map()->tilesets().indexOf(tileset->sharedFromThis());
         if (index != -1)
             undoStack->push(new ReplaceTileset(mMapDocument, index, newTileset));
 

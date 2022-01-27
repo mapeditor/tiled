@@ -107,7 +107,7 @@ SharedTileset TilesetManager::findTileset(const QString &fileName) const
 {
     for (Tileset *tileset : mTilesets)
         if (tileset->fileName() == fileName)
-            return tileset->sharedPointer();
+            return tileset->sharedFromThis();
 
     return SharedTileset();
 }

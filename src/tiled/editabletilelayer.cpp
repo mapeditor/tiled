@@ -94,7 +94,7 @@ int EditableTileLayer::flagsAt(int x, int y) const
 EditableTile *EditableTileLayer::tileAt(int x, int y) const
 {
     if (Tile *tile = cellAt(x, y).tile()) {
-        auto tileset = tile->tileset()->sharedPointer();
+        auto tileset = tile->tileset()->sharedFromThis();
 
         if (auto tilesetDocument = TilesetDocument::findDocumentForTileset(tileset)) {
             EditableTileset *editable = tilesetDocument->editable();

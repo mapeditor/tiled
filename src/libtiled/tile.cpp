@@ -63,7 +63,7 @@ Tile::~Tile()
  */
 QSharedPointer<Tileset> Tile::sharedTileset() const
 {
-    return mTileset->sharedPointer();
+    return mTileset->sharedFromThis();
 }
 
 /**

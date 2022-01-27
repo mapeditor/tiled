@@ -237,7 +237,7 @@ void AbstractTileFillTool::updateRandomListAndMissingTilesets()
 
     if (mFillMethod == WangFill) {
         if (mWangSet) {
-            const SharedTileset &tileset = mWangSet->tileset()->sharedPointer();
+            const SharedTileset &tileset = mWangSet->tileset()->sharedFromThis();
             if (!mapDocument()->map()->tilesets().contains(tileset))
                 mMissingTilesets.append(tileset);
         }

@@ -503,7 +503,7 @@ void WangBrush::doPaint(bool mergeable)
                                                stamp, brushItem()->tileRegion());
 
     if (mWangSet && !contains(mapDocument()->map()->tilesets(), mWangSet->tileset()))
-        new AddTileset(mapDocument(), mWangSet->tileset()->sharedPointer(), paint);
+        new AddTileset(mapDocument(), mWangSet->tileset()->sharedFromThis(), paint);
 
     paint->setMergeable(mergeable);
     mapDocument()->undoStack()->push(paint);

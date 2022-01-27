@@ -78,7 +78,7 @@ EditableMap *ScriptedTool::editableMap() const
 EditableTile *ScriptedTool::editableTile() const
 {
     if (Tile *t = tile()) {
-        auto tileset = t->tileset()->sharedPointer();
+        auto tileset = t->tileset()->sharedFromThis();
 
         if (auto tilesetDocument = TilesetDocument::findDocumentForTileset(tileset)) {
             EditableTileset *editable = tilesetDocument->editable();

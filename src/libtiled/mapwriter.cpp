@@ -177,7 +177,7 @@ void MapWriterPrivate::writeObjectTemplate(const ObjectTemplate *objectTemplate,
     mGidMapper.clear();
     if (Tileset *tileset = objectTemplate->object()->cell().tileset()) {
         unsigned firstGid = 1;
-        mGidMapper.insert(firstGid, tileset->sharedPointer());
+        mGidMapper.insert(firstGid, tileset->sharedFromThis());
         writeTileset(writer, *tileset, firstGid);
     }
 

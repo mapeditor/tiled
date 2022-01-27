@@ -125,7 +125,7 @@ const Map *ExportHelper::prepareExportMap(const Map *map, std::unique_ptr<Map> &
                     // In case of templated tile objects, the map may not yet
                     // have a reference to the used tileset.
                     if (Tile *tile = object->cell().tile())
-                        exportMap->addTileset(tile->tileset()->sharedPointer());
+                        exportMap->addTileset(tile->tileset()->sharedFromThis());
 
                     object->detachFromTemplate();
                 }

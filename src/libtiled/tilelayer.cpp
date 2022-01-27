@@ -29,8 +29,9 @@
 
 #include "tilelayer.h"
 
-#include "tile.h"
+#include "containerhelpers.h"
 #include "hex.h"
+#include "tile.h"
 
 #include <algorithm>
 #include <memory>
@@ -215,7 +216,7 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
             if (oldTileset)
                 mUsedTilesetsDirty = true;
             else if (newTileset)
-                mUsedTilesets.insert(newTileset->sharedPointer());
+                mUsedTilesets.insert(newTileset->sharedFromThis());
         }
     }
 
@@ -593,7 +594,7 @@ bool TileLayer::hasCell(std::function<bool (const Cell &)> condition) const
 
 bool TileLayer::referencesTileset(const Tileset *tileset) const
 {
-    return usedTilesets().contains(tileset->sharedPointer());
+    return ::contains(usedTilesets(), tileset);
 }
 
 void TileLayer::removeReferencesToTileset(Tileset *tileset)
@@ -601,7 +602,7 @@ void TileLayer::removeReferencesToTileset(Tileset *tileset)
     for (Chunk &chunk : mChunks)
         chunk.removeReferencesToTileset(tileset);
 
-    mUsedTilesets.remove(tileset->sharedPointer());
+    mUsedTilesets.remove(tileset->sharedFromThis());
 }
 
 void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
@@ -610,8 +611,8 @@ void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
     for (Chunk &chunk : mChunks)
         chunk.replaceReferencesToTileset(oldTileset, newTileset);
 
-    if (mUsedTilesets.remove(oldTileset->sharedPointer()))
-        mUsedTilesets.insert(newTileset->sharedPointer());
+    if (mUsedTilesets.remove(oldTileset->sharedFromThis()))
+        mUsedTilesets.insert(newTileset->sharedFromThis());
 }
 
 void TileLayer::resize(QSize size, QPoint offset)

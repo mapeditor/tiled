@@ -553,7 +553,7 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
     TilesetDocument *tilesetDocument = nullptr;
 
     if (wangSet) {
-        auto sharedTileset = wangSet->tileset()->sharedPointer();
+        auto sharedTileset = wangSet->tileset()->sharedFromThis();
         auto documentManager = DocumentManager::instance();
 
         tilesetDocument = documentManager->findTilesetDocument(sharedTileset);

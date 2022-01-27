@@ -310,7 +310,7 @@ void StampBrush::setWangSet(WangSet *wangSet)
     if (!wangSet)
         return;
 
-    const SharedTileset &tileset = wangSet->tileset()->sharedPointer();
+    const SharedTileset &tileset = wangSet->tileset()->sharedFromThis();
 
     if (!mapDocument() || !mapDocument()->map()->tilesets().contains(tileset))
        mMissingTilesets.append(tileset);
@@ -468,7 +468,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         wangFiller.fillRegion(*previewLayer, *tileLayer, paintedRegion);
 
         preview->addLayer(std::move(previewLayer));
-        preview->addTileset(mWangSet->tileset()->sharedPointer());
+        preview->addTileset(mWangSet->tileset()->sharedFromThis());
         mPreviewMap = preview;
     } else {
         QRegion paintedRegion;

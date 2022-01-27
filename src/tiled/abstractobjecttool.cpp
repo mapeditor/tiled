@@ -484,7 +484,7 @@ void AbstractObjectTool::detachSelectedObjects()
             templateInstances.append(object);
 
             if (Tile *tile = object->cell().tile())
-                sharedTilesets.insert(tile->tileset()->sharedPointer());
+                sharedTilesets.insert(tile->tileset()->sharedFromThis());
         }
     }
 
@@ -531,7 +531,7 @@ void AbstractObjectTool::changeTile()
     auto changeMapObjectCommand = new ChangeMapObjectsTile(currentMapDocument, tileObjects, tile());
 
     // Make sure the tileset is part of the document
-    SharedTileset sharedTileset = tile()->tileset()->sharedPointer();
+    SharedTileset sharedTileset = tile()->tileset()->sharedFromThis();
     if (!currentMapDocument->map()->tilesets().contains(sharedTileset))
         new AddTileset(currentMapDocument, sharedTileset, changeMapObjectCommand);
 
