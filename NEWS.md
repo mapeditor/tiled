@@ -6,18 +6,14 @@
 * Added Repeat X/Y properties to Image Layers (with krukai, #3205)
 * Added an action for selecting all layers (Ctrl+Alt+A) (#3081)
 * Added actions to select or add tilesets to Project view context menu
+* Added cut/copy/paste actions to Tile Animation Editor
+* Improved undo behavior by merging sequential edits to the same property (#3103)
 * AutoMapping: Made it find layers within groups (#1771)
 * Improved multi-layer painting behavior (#3094)
-* Scripting: Added File API
-* Scripting: Added missing Layer.tintColor property
-* Scripting: Added tiled.extensionsPath (#3139)
-* Scripting: Added ObjectGroup.drawOrder (#3147)
-* Scripting: Added Map.removeObjects (#3149)
-* Scripting: Added tiled.applicationDirPath
-* Scripting: Added TileMap.layers and GroupLayer.layers, for convenience
-* Scripting: Added region.rects and region.contains(x,y)
-* Scripting: Treat custom format extensions as case-insensitive (#3141)
-* Scripting: Allow tools to stay active when tiles are selected (#3201)
+* Separated the X and Y components of the major grid option (#3208)
+* Added automatic fading out of the grid when zooming out a lot
+* AutoMapping: `regions` layer can now be used alongside `region_input/output` layers
+* AutoMapping: Allow setting a rule map as project rules file (#3221)
 * Tweaked focus behavior in the Template Editor
 * Changed the default Terrain Brush shortcut back to T
 * Reset tile animations when disabling playback and when exporting as image
@@ -27,6 +23,20 @@
 * Reduced the step size for the parallax factor property
 * Ignore selection changes when marking a file as modified (#3194)
 * Use the tileset background color in the collision editor (with Benja Appel, #3163)
+* Show the read error when using --export-map/tileset
+* Scripting: Added File API
+* Scripting: Added missing Layer.tintColor property
+* Scripting: Added tiled.extensionsPath (#3139)
+* Scripting: Added ObjectGroup.drawOrder (#3147)
+* Scripting: Added Map.removeObjects (#3149)
+* Scripting: Added tiled.applicationDirPath
+* Scripting: Added TileMap.layers and GroupLayer.layers, for convenience
+* Scripting: Added region.rects and region.contains(x,y)
+* Scripting: Treat custom format extensions as case-insensitive (#3141)
+* Scripting: Allow tools to stay active when tiles or a terrain type are selected (#3201)
+* Scripting: Extended the terrain related API (#2663)
+* Scripting: tiled.activeAsset can be assigned asset created in script (#3160)
+* Scripting: Fixed possible crash after creating tilesets from script (#3229)
 * Fixed the logic for handling group layer parallax factors (with LilithSilver, #3125)
 * Fixed debug messages showing in the Console and Issues views
 * Fixed enabled state of File > Export action for tilesets (#3177)
@@ -36,6 +46,13 @@
 * Fixed toggling "Clear View" on & off shifting the map
 * Fixed command-line output not showing on Windows (#2688)
 * Fixed "Select object on map" when no object layer is selected (#3207)
+* Fixed adjusting of tile types when tileset width changed (by Albert Vaca Cintora, #3237)
+* Fixed missing Qt translations for Linux AppImage
+* Fixed minimap viewport position when layers are offset (#3211)
+* Fixed "Highlight Current Layer" getting confused (#3223)
+* Fixed Terrain Set type property to be disabled when appropriate (avoids crash)
+* Fixed saving broken references to files loaded using "ext:" prefix (#3185)
+* Fixed performance issue in Project view related to file icons
 * Tiled Manual is now available in French
 * JSON plugin: Added "tmj", "tsj" and "tj" as accepted file extensions
 * YY plugin: Don't use safe writing of files
@@ -44,7 +61,6 @@
 * CSV plugin: Improved handling of infinite maps
 * RpMap plugin: Fixed hardcoded exported tile size (#3184)
 * libtiled-java: Introduced TilesetCache interface (by Samuel Manflame, #3117)
-* Disable the Terrain Set type property when appropriate (avoids crash)
 * Added Ukrainian translation to Windows installer (#3132)
 * Updated to Sentry 0.4.13
 * Updated Korean, Ukrainian and Traditional Chinese translations
