@@ -184,13 +184,42 @@ jobs:
       run: |
         qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.enableZstd:true
 
-    - name: Package
+    - name: Deploy Qt
       run: |
         macdeployqt install/Tiled.app -verbose=2
         pushd install
         ruby ../dist/macos/fixup-install-names.rb
-        ditto -c -k --sequesterRsrc --keepParent Tiled.app ../Tiled-macos.zip
-        popd
+
+    - name: Import Certificate
+      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      uses: devbotsxyz/xcode-import-certificate@v1
+      with:
+        certificate-data: ${{ secrets.MACOS_CERTIFICATE }}
+        certificate-passphrase: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+        keychain-password: ${{ secrets.KEYCHAIN_PWD }}
+
+    - name: Sign
+      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      run: |
+        codesign --deep --force --verify --verbose --sign Lindeijer --options runtime install/Tiled.app
+
+    - name: Notarize
+      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      uses: devbotsxyz/xcode-notarize@v1
+      with:
+        product-path: install/Tiled.app
+        appstore-connect-username: ${{ secrets.NOTARIZATION_USERNAME }}
+        appstore-connect-password: ${{ secrets.NOTARIZATION_PASSWORD }}
+
+    - name: Staple
+      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      uses: devbotsxyz/xcode-staple@v1
+      with:
+        product-path: install/Tiled.app
+
+    - name: Create Archive
+      run: |
+        ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled-macos.zip
 
     - name: Upload Tiled.app
       uses: actions/upload-artifact@v2
