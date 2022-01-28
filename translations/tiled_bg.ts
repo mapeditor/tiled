@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="bg">
+<TS version="2.1" language="bg_BG">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -2730,17 +2730,7 @@ Line %1, column %2</source>
         <translation>Обектът не е от този елемент</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptfile.cpp" line="+252"/>
-        <source>The directory %1 could not be deleted.</source>
-        <translation>Папката „%1“ не може да бъде изтрита.</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>The file %1 could not be deleted.</source>
-        <translation>Файлът „%1“ не може да бъде изтрит.</translation>
-    </message>
-    <message>
-        <location line="+80"/>
+        <location filename="../src/tiled/scriptfile.cpp" line="+342"/>
         <source>The directory &apos;%1&apos; could not be created.</source>
         <translation>Папката „%1“ не може да бъде създадена.</translation>
     </message>
@@ -2750,14 +2740,24 @@ Line %1, column %2</source>
         <translation>Символната връзка „%1“ не може да бъде създадена.</translation>
     </message>
     <message>
-        <location line="+25"/>
-        <source>Could not remove file &apos;%1&apos;. %2</source>
-        <translation>Файлът „%1“ не може да бъде премахнат. %2</translation>
+        <location line="-103"/>
+        <source>The directory &apos;%1&apos; could not be deleted.</source>
+        <translation>Папката „%1“ не може да бъде изтрита.</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>The file &apos;%1&apos; could not be deleted.</source>
+        <translation>Файлът „%1“ не може да бъде изтрит.</translation>
+    </message>
+    <message>
+        <location line="+118"/>
+        <source>Could not remove file &apos;%1&apos;: %2</source>
+        <translation>Файлът „%1“ не може да бъде премахнат: %2</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Could not copy file &apos;%1&apos; to &apos;%2&apos;. %3</source>
-        <translation>Файлът „%1“ не може да бъде копиран в „%2“. %3</translation>
+        <source>Could not copy file &apos;%1&apos; to &apos;%2&apos;: %3</source>
+        <translation>Файлът „%1“ не може да бъде копиран в „%2“: %3</translation>
     </message>
     <message>
         <location line="+44"/>

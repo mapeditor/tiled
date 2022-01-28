@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="fr">
+<TS version="2.1" language="fr_FR">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -2730,17 +2730,7 @@ Ligne %1, colonne %2</translation>
         <translation>L&apos;objet ne vient pas de cette ressource</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptfile.cpp" line="+252"/>
-        <source>The directory %1 could not be deleted.</source>
-        <translation>Le dossier %1 n&apos;a pas pu être supprimé.</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>The file %1 could not be deleted.</source>
-        <translation>Le fichier %1 n&apos;a pas pu être supprimé.</translation>
-    </message>
-    <message>
-        <location line="+80"/>
+        <location filename="../src/tiled/scriptfile.cpp" line="+342"/>
         <source>The directory &apos;%1&apos; could not be created.</source>
         <translation>Le dossier &apos;%1&apos; n&apos;a pas pu être créé.</translation>
     </message>
@@ -2750,14 +2740,24 @@ Ligne %1, colonne %2</translation>
         <translation>Le lien symbolique &apos;%1&apos; n&apos;a pas pu être créé.</translation>
     </message>
     <message>
-        <location line="+25"/>
-        <source>Could not remove file &apos;%1&apos;. %2</source>
-        <translation>Le fichier &apos;%1&apos; n&apos;a pas pu être supprimé. %2</translation>
+        <location line="-103"/>
+        <source>The directory &apos;%1&apos; could not be deleted.</source>
+        <translation>Le dossier &apos;%1&apos; n&apos;a pas pu être supprimé.</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>The file &apos;%1&apos; could not be deleted.</source>
+        <translation>Le fichier &apos;%1&apos; n&apos;a pas pu être supprimé.</translation>
+    </message>
+    <message>
+        <location line="+118"/>
+        <source>Could not remove file &apos;%1&apos;: %2</source>
+        <translation>Le fichier &apos;%1&apos; n&apos;a pas pu être supprimé: %2</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Could not copy file &apos;%1&apos; to &apos;%2&apos;. %3</source>
-        <translation>Le fichier &apos;%1&apos; n&apos;a pas pu être copié vers &apos;%2&apos;. %3</translation>
+        <source>Could not copy file &apos;%1&apos; to &apos;%2&apos;: %3</source>
+        <translation>Le fichier &apos;%1&apos; n&apos;a pas pu être copié vers &apos;%2&apos;: %3</translation>
     </message>
     <message>
         <location line="+44"/>

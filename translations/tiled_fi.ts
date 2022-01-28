@@ -2730,17 +2730,7 @@ Rivi %1, sarake %2</translation>
         <translation>Objekti ei ole tästä assetista</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptfile.cpp" line="+252"/>
-        <source>The directory %1 could not be deleted.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>The file %1 could not be deleted.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+80"/>
+        <location filename="../src/tiled/scriptfile.cpp" line="+342"/>
         <source>The directory &apos;%1&apos; could not be created.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2750,13 +2740,23 @@ Rivi %1, sarake %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+25"/>
-        <source>Could not remove file &apos;%1&apos;. %2</source>
+        <location line="-103"/>
+        <source>The directory &apos;%1&apos; could not be deleted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>The file &apos;%1&apos; could not be deleted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+118"/>
+        <source>Could not remove file &apos;%1&apos;: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Could not copy file &apos;%1&apos; to &apos;%2&apos;. %3</source>
+        <source>Could not copy file &apos;%1&apos; to &apos;%2&apos;: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

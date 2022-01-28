@@ -2719,17 +2719,7 @@ Line %1, column %2</source>
         <translation>Object not from this asset</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptfile.cpp" line="+252"/>
-        <source>The directory %1 could not be deleted.</source>
-        <translation>The directory %1 could not be deleted.</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>The file %1 could not be deleted.</source>
-        <translation>The file %1 could not be deleted.</translation>
-    </message>
-    <message>
-        <location line="+80"/>
+        <location filename="../src/tiled/scriptfile.cpp" line="+342"/>
         <source>The directory &apos;%1&apos; could not be created.</source>
         <translation>The directory &apos;%1&apos; could not be created.</translation>
     </message>
@@ -2739,14 +2729,24 @@ Line %1, column %2</source>
         <translation>The symlink &apos;%1&apos; could not be created.</translation>
     </message>
     <message>
-        <location line="+25"/>
-        <source>Could not remove file &apos;%1&apos;. %2</source>
-        <translation>Could not remove file &apos;%1&apos;. %2</translation>
+        <location line="-103"/>
+        <source>The directory &apos;%1&apos; could not be deleted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>The file &apos;%1&apos; could not be deleted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+118"/>
+        <source>Could not remove file &apos;%1&apos;: %2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Could not copy file &apos;%1&apos; to &apos;%2&apos;. %3</source>
-        <translation>Could not copy file &apos;%1&apos; to &apos;%2&apos;. %3</translation>
+        <source>Could not copy file &apos;%1&apos; to &apos;%2&apos;: %3</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+44"/>
