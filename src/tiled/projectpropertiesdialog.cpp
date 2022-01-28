@@ -61,7 +61,7 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
     filesGroupProperty->addSubProperty(mObjectTypesFileProperty);
 
     QString ruleFileFilter = QCoreApplication::translate("File Types", "Automapping Rules files (*.txt)");
-    FormatHelper<MapFormat> helper(FileFormat::Read, std::move(ruleFileFilter));
+    FormatHelper<MapFormat> helper(FileFormat::ReadWrite, std::move(ruleFileFilter));
 
     mAutomappingRulesFileProperty = variantPropertyManager->addProperty(filePathTypeId(), tr("Automapping rules"));
     mAutomappingRulesFileProperty->setValue(project.mAutomappingRulesFile);
