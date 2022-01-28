@@ -249,7 +249,7 @@ bool removeFileRecursively(const QFileInfo &f, QString *errorMessage)
         if (!parent.rmdir(f.fileName())) {
             if (!errorMessage->isEmpty())
                 errorMessage->append(QLatin1Char('\n'));
-            errorMessage->append(QCoreApplication::translate("Script Errors", "The directory %1 could not be deleted.")
+            errorMessage->append(QCoreApplication::translate("Script Errors", "The directory '%1' could not be deleted.")
                                  .arg(QDir::toNativeSeparators(f.absoluteFilePath())));
             return false;
         }
@@ -259,7 +259,7 @@ bool removeFileRecursively(const QFileInfo &f, QString *errorMessage)
         if (!file.remove()) {
             if (!errorMessage->isEmpty())
                 errorMessage->append(QLatin1Char('\n'));
-            errorMessage->append(QCoreApplication::translate("Script Errors", "The file %1 could not be deleted.")
+            errorMessage->append(QCoreApplication::translate("Script Errors", "The file '%1' could not be deleted.")
                                  .arg(QDir::toNativeSeparators(f.absoluteFilePath())));
             return false;
         }
@@ -377,12 +377,12 @@ static bool copyRecursively(const QString &srcFilePath,
         if (targetFile.exists()) {
             targetFile.setPermissions(targetFile.permissions() | QFile::WriteUser);
             if (!targetFile.remove()) {
-                *errorMessage = QCoreApplication::translate("Script Errors", "Could not remove file '%1'. %2")
+                *errorMessage = QCoreApplication::translate("Script Errors", "Could not remove file '%1': %2")
                         .arg(QDir::toNativeSeparators(tgtFilePath), targetFile.errorString());
             }
         }
         if (!file.copy(tgtFilePath)) {
-            *errorMessage = QCoreApplication::translate("Script Errors", "Could not copy file '%1' to '%2'. %3")
+            *errorMessage = QCoreApplication::translate("Script Errors", "Could not copy file '%1' to '%2': %3")
                 .arg(QDir::toNativeSeparators(srcFilePath), QDir::toNativeSeparators(tgtFilePath),
                      file.errorString());
             return false;
