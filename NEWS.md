@@ -37,6 +37,7 @@
 * Scripting: Extended the terrain related API (#2663)
 * Scripting: tiled.activeAsset can be assigned asset created in script (#3160)
 * Scripting: Fixed possible crash after creating tilesets from script (#3229)
+* Scripting: Fixed possible crash in TileMap.autoMap
 * Fixed the logic for handling group layer parallax factors (with LilithSilver, #3125)
 * Fixed keyboard modifiers getting stuck for Terrain Brush
 * Fixed debug messages showing in the Console and Issues views
@@ -54,6 +55,7 @@
 * Fixed Terrain Set type property to be disabled when appropriate (avoids crash)
 * Fixed saving broken references to files loaded using "ext:" prefix (#3185)
 * Fixed performance issue in Project view related to file icons
+* Fixed dynamic wrapping when adding tiles to a collection (#3076)
 * Tiled Manual is now available in French
 * JSON plugin: Added "tmj", "tsj" and "tj" as accepted file extensions
 * YY plugin: Don't use safe writing of files
