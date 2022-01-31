@@ -8,10 +8,10 @@
 * Added actions to select or add tilesets to Project view context menu
 * Added cut/copy/paste actions to Tile Animation Editor
 * Improved undo behavior by merging sequential edits to the same property (#3103)
-* AutoMapping: Made it find layers within groups (#1771)
 * Improved multi-layer painting behavior (#3094)
 * Separated the X and Y components of the major grid option (#3208)
 * Added automatic fading out of the grid when zooming out a lot
+* AutoMapping: Made it find layers within groups (#1771)
 * AutoMapping: `regions` layer can now be used alongside `region_input/output` layers
 * AutoMapping: Allow setting a rule map as project rules file (#3221)
 * Tweaked focus behavior in the Template Editor
@@ -62,7 +62,7 @@
 * RpMap plugin: Fixed hardcoded exported tile size (#3184)
 * libtiled-java: Introduced TilesetCache interface (by Samuel Manflame, #3117)
 * Added Ukrainian translation to Windows installer (#3132)
-* Updated to Sentry 0.4.13
+* Updated to Sentry 0.4.14
 * Updated Korean, Ukrainian and Traditional Chinese translations
 
 ### Tiled 1.7.2 (10 August 2021)
