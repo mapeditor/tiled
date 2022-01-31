@@ -6,12 +6,12 @@
     <message>
         <location filename="../src/tiled/aboutdialog.ui" line="+14"/>
         <source>About Tiled</source>
-        <translation>אודות Tiled</translation>
+        <translation>על אודות Tiled</translation>
     </message>
     <message>
         <location line="+96"/>
         <source>Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>תרומה</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -60,7 +60,7 @@
     <message>
         <location line="+11"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
-        <translation>סיומת הקובץ איננה ייחודית. לא ניתן לקבוע את תבנית הייצוא הנכונה.</translation>
+        <translation>סיומת הקובץ אינה ייחודית. לא ניתן לקבוע את תבנית הייצוא הנכונה.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -116,12 +116,12 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="-303"/>
         <source>Display the version</source>
-        <translation>הצג את הגרסא</translation>
+        <translation>הצגת הגרסה</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Only check validity of arguments</source>
-        <translation>בדוק רק את תקינות הפרמטרים</translation>
+        <translation>בדיקת תקינות משתנים בלבד</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -211,7 +211,7 @@
     <message>
         <location line="+2"/>
         <source>Display this help</source>
-        <translation>הצג עזרה זאת</translation>
+        <translation>הצגת עזרה זו</translation>
     </message>
 </context>
 <context>
@@ -225,7 +225,7 @@
         <location line="+14"/>
         <location line="+74"/>
         <source>Browse...</source>
-        <translation type="unfinished">עיין...</translation>
+        <translation>דפדוף...</translation>
     </message>
     <message>
         <location line="-61"/>
@@ -292,7 +292,7 @@
     <message>
         <location line="+2"/>
         <source>&amp;Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;תרומה</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -348,7 +348,7 @@
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation>&amp;עיון...</translation>
+        <translation>&amp;דפדוף...</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -378,7 +378,7 @@
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation>&amp;כלול צבע רקע</translation>
+        <translation>&amp;הכללת צבע רקע</translation>
     </message>
 </context>
 <context>
@@ -1280,7 +1280,7 @@ Line %1, column %2</source>
     <message>
         <location line="+25"/>
         <source>&amp;Browse...</source>
-        <translation>&amp;עיין...</translation>
+        <translation>&amp;דפדוף...</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -5474,7 +5474,7 @@ Please select specific format.</source>
         <location line="-303"/>
         <location line="+274"/>
         <source>Tile Width</source>
-        <translation type="unfinished">רוחב	אריח</translation>
+        <translation>רוחב אריח</translation>
     </message>
     <message>
         <location line="-273"/>
@@ -5485,7 +5485,7 @@ Please select specific format.</source>
     <message>
         <location line="-273"/>
         <source>Infinite</source>
-        <translation type="unfinished"></translation>
+        <translation>אינסופי</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5500,7 +5500,7 @@ Please select specific format.</source>
     <message>
         <location line="+8"/>
         <source>Stagger Index</source>
-        <translation type="unfinished">דרג אינדקס</translation>
+        <translation>דרג מיפתח</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5541,7 +5541,7 @@ Please select specific format.</source>
     <message>
         <location line="-149"/>
         <source>Object</source>
-        <translation type="unfinished">אובייקט</translation>
+        <translation>עצם</translation>
     </message>
     <message>
         <location line="+2"/>
