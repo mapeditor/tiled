@@ -3334,7 +3334,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/automappingmanager.cpp" line="+113"/>
         <source>No AutoMapping rules provided. Save the map or refer to a rule file in the project properties.</source>
-        <translation type="unfinished"></translation>
+        <translation>AutoMapping kuralı sağlanmadı. Haritayı kaydedin veya proje özelliklerinde bir kural dosyasına bakın.</translation>
     </message>
     <message>
         <location line="+25"/>
