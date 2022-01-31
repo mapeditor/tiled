@@ -109,6 +109,12 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
     const bool automatic = touchedLayer != nullptr;
 
     if (!mLoaded) {
+        if (mRulesFile.isEmpty()) {
+            mError = tr("No AutoMapping rules provided. Save the map or refer to a rule file in the project properties.");
+            emit errorsOccurred(automatic);
+            return;
+        }
+
         if (loadFile(mRulesFile)) {
             mLoaded = true;
         } else {

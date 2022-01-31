@@ -216,10 +216,10 @@ private:
 
     std::unique_ptr<Map> mDetachedMap;
     mutable std::unique_ptr<MapRenderer> mRenderer;
-    bool mReadOnly;
+    bool mReadOnly = false;
 
-    EditableSelectedArea *mSelectedArea;
-    AutomappingManager *mAutomappingManager;
+    EditableSelectedArea *mSelectedArea = nullptr;
+    AutomappingManager *mAutomappingManager = nullptr;
 };
 
 

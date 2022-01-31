@@ -56,15 +56,12 @@ namespace Tiled {
 
 EditableMap::EditableMap(QObject *parent)
     : EditableAsset(nullptr, new Map(), parent)
-    , mReadOnly(false)
-    , mSelectedArea(nullptr)
 {
     mDetachedMap.reset(map());
 }
 
 EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     : EditableAsset(mapDocument, mapDocument->map(), parent)
-    , mReadOnly(false)
     , mSelectedArea(new EditableSelectedArea(mapDocument, this))
 {
     connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
@@ -92,8 +89,6 @@ EditableMap::EditableMap(const Map *map, QObject *parent)
 EditableMap::EditableMap(std::unique_ptr<Map> map, QObject *parent)
     : EditableAsset(nullptr, map.get(), parent)
     , mDetachedMap(std::move(map))
-    , mReadOnly(false)
-    , mSelectedArea(nullptr)
 {
 }
 
