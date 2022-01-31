@@ -2514,7 +2514,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editablegrouplayer.cpp" line="+81"/>
         <location line="+21"/>
-        <location filename="../src/tiled/editablemap.cpp" line="+275"/>
+        <location filename="../src/tiled/editablemap.cpp" line="+270"/>
         <source>Invalid argument</source>
         <translation>유효하지 않은 인수</translation>
     </message>
@@ -3328,7 +3328,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::AutomappingManager</name>
     <message>
-        <location filename="../src/tiled/automappingmanager.cpp" line="+132"/>
+        <location filename="../src/tiled/automappingmanager.cpp" line="+138"/>
         <source>Apply AutoMap rules</source>
         <translation>오토맵 규칙 적용</translation>
     </message>
@@ -3348,7 +3348,12 @@ Line %1, column %2</source>
         <translation>규칙 파일 열기 오류 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="-75"/>
+        <source>No AutoMapping rules provided. Save the map or refer to a rule file in the project properties.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+97"/>
         <source>File not found: &apos;%1&apos; (referenced by &apos;%2&apos;)</source>
         <translation>파일을 찾을 수 없습니다: &apos;%1&apos; (referenced by &apos;%2&apos;)</translation>
     </message>
@@ -6717,7 +6722,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::TilesetView</name>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+769"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+772"/>
         <source>Use as Terrain Set Image</source>
         <translation>지형 셋 이미지 사용</translation>
     </message>

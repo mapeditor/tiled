@@ -2453,7 +2453,7 @@ Satır %1, sütun %2</translation>
         <location filename="../src/tiled/editablegrouplayer.cpp" line="+57"/>
         <location line="+11"/>
         <location line="+29"/>
-        <location filename="../src/tiled/editablemap.cpp" line="+168"/>
+        <location filename="../src/tiled/editablemap.cpp" line="+163"/>
         <location line="+11"/>
         <location line="+31"/>
         <location filename="../src/tiled/editableobjectgroup.cpp" line="+57"/>
@@ -3332,7 +3332,12 @@ Satır %1, sütun %2</translation>
 <context>
     <name>Tiled::AutomappingManager</name>
     <message>
-        <location filename="../src/tiled/automappingmanager.cpp" line="+132"/>
+        <location filename="../src/tiled/automappingmanager.cpp" line="+113"/>
+        <source>No AutoMapping rules provided. Save the map or refer to a rule file in the project properties.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
         <source>Apply AutoMap rules</source>
         <translation>AutoMap kurallarını uygula</translation>
     </message>
@@ -6721,7 +6726,7 @@ Lütfen belirli bir biçim seçin.</translation>
 <context>
     <name>Tiled::TilesetView</name>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+769"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+772"/>
         <source>Use as Terrain Set Image</source>
         <translation>Zemin Seti Resmi Olarak Kullan</translation>
     </message>
