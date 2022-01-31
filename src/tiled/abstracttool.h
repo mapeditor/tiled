@@ -166,8 +166,7 @@ public:
 
     /**
      * Called when the user presses or releases a modifier key resulting
-     * in a change of modifier status, and when the tool is enabled with
-     * a modifier key pressed.
+     * in a change of modifier status, and after the tool is activated.
      */
     virtual void modifiersChanged(Qt::KeyboardModifiers) {}
 

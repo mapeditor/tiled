@@ -38,6 +38,7 @@
 * Scripting: tiled.activeAsset can be assigned asset created in script (#3160)
 * Scripting: Fixed possible crash after creating tilesets from script (#3229)
 * Fixed the logic for handling group layer parallax factors (with LilithSilver, #3125)
+* Fixed keyboard modifiers getting stuck for Terrain Brush
 * Fixed debug messages showing in the Console and Issues views
 * Fixed enabled state of File > Export action for tilesets (#3177)
 * Fixed Snap to Grid for hexagonal maps
