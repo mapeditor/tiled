@@ -3334,7 +3334,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/automappingmanager.cpp" line="+113"/>
         <source>No AutoMapping rules provided. Save the map or refer to a rule file in the project properties.</source>
-        <translation type="unfinished"></translation>
+        <translation>Липсват правила за авто-картиране. Запазете картата или посочете файл с правила в свойствата на проекта.</translation>
     </message>
     <message>
         <location line="+25"/>
