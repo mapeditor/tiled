@@ -129,10 +129,12 @@ void Eraser::doErase(bool continuation)
     if (mAllLayers) {
         for (Layer *layer : mapDocument()->map()->tileLayers())
             eraseOnLayer(static_cast<TileLayer*>(layer));
-    } else {
+    } else if (!mapDocument()->selectedLayers().isEmpty()) {
         for (Layer *layer : mapDocument()->selectedLayers())
             if (TileLayer *tileLayer = layer->asTileLayer())
                 eraseOnLayer(tileLayer);
+    } else if (auto tileLayer = currentTileLayer()) {
+        eraseOnLayer(tileLayer);
     }
 }
 

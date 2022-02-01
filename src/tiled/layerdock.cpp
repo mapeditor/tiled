@@ -489,5 +489,14 @@ void LayerView::selectionChanged(const QItemSelection &selected,
     mMapDocument->setSelectedLayers(layers);
 }
 
+QItemSelectionModel::SelectionFlags LayerView::selectionCommand(const QModelIndex &index, const QEvent *event) const
+{
+    // Prevent deselect by clicking on empty area
+    if (!index.isValid() && event && event->type() == QEvent::MouseButtonRelease)
+        return QItemSelectionModel::NoUpdate;
+
+    return QTreeView::selectionCommand(index, event);
+}
+
 #include "layerdock.moc"
 #include "moc_layerdock.cpp"

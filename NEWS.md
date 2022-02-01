@@ -24,6 +24,7 @@
 * Ignore selection changes when marking a file as modified (#3194)
 * Use the tileset background color in the collision editor (with Benja Appel, #3163)
 * Show the read error when using --export-map/tileset
+* Avoid deselecting all layers when clicking empty area in Layers view (#2806)
 * Scripting: Added File API
 * Scripting: Added missing Layer.tintColor property
 * Scripting: Added tiled.extensionsPath (#3139)
@@ -39,7 +40,7 @@
 * Scripting: Fixed possible crash after creating tilesets from script (#3229)
 * Scripting: Fixed possible crash in TileMap.autoMap
 * Fixed the logic for handling group layer parallax factors (with LilithSilver, #3125)
-* Fixed keyboard modifiers getting stuck for Terrain Brush
+* Fixed keyboard modifiers getting stuck for Terrain Brush (#2678)
 * Fixed debug messages showing in the Console and Issues views
 * Fixed enabled state of File > Export action for tilesets (#3177)
 * Fixed Snap to Grid for hexagonal maps

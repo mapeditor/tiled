@@ -97,6 +97,9 @@ protected:
     void selectionChanged(const QItemSelection &selected,
                           const QItemSelection &deselected) override;
 
+    QItemSelectionModel::SelectionFlags selectionCommand(const QModelIndex &index,
+                                                         const QEvent *event = nullptr) const override;
+
 private:
     void currentRowChanged(const QModelIndex &proxyIndex);
     void indexPressed(const QModelIndex &proxyIndex);
