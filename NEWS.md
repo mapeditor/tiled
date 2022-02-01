@@ -21,6 +21,7 @@
 * Apply transformation actions to the preview while placing tiles (#3091)
 * Allow using object context menu in object creation tools
 * Reduced the step size for the parallax factor property
+* Improved the logic for automatically switching tools (#2807)
 * Ignore selection changes when marking a file as modified (#3194)
 * Use the tileset background color in the collision editor (with Benja Appel, #3163)
 * Show the read error when using --export-map/tileset

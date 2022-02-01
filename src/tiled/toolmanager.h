@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "layer.h"
+
 #include <QActionGroup>
 #include <QObject>
 
@@ -27,8 +29,8 @@ class QAction;
 
 namespace Tiled {
 
-class Tile;
 class ObjectTemplate;
+class Tile;
 
 class AbstractTool;
 class MapDocument;
@@ -92,7 +94,11 @@ private slots:
     void actionTriggered(QAction *action);
     void toolChanged();
     void toolEnabledChanged(bool enabled);
-    void selectEnabledTool();
+
+    void scheduleAutoSwitchTool();
+    void autoSwitchTool();
+
+    void currentLayerChanged(Layer *layer);
 
 private:
     AbstractTool *firstEnabledTool() const;
@@ -100,14 +106,14 @@ private:
 
     QActionGroup *mActionGroup;
     AbstractTool *mSelectedTool = nullptr;
-    AbstractTool *mDisabledTool = nullptr;
-    AbstractTool *mPreviouslyDisabledTool = nullptr;
+    QHash<Layer::TypeFlag, AbstractTool *> mSelectedToolForLayerType;
     MapDocument *mMapDocument = nullptr;
     Tile *mTile = nullptr;
     ObjectTemplate *mObjectTemplate = nullptr;
+    int mLayerType = 0;
 
     bool mRegisterActions = true;
-    bool mSelectEnabledToolPending = false;
+    bool mAutoSwitchToolPending = false;
 };
 
 /**
