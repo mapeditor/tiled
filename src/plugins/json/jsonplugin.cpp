@@ -353,7 +353,7 @@ bool JsonObjectTemplateFormat::supportsFile(const QString &fileName) const
         return false;
 
     QFile file(fileName);
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;
 
     const QJsonObject object = QJsonDocument::fromJson(file.readAll()).object();
