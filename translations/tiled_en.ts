@@ -3323,7 +3323,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/automappingmanager.cpp" line="+113"/>
         <source>No AutoMapping rules provided. Save the map or refer to a rule file in the project properties.</source>
-        <translation type="unfinished"></translation>
+        <translation>No AutoMapping rules provided. Save the map or refer to a rule file in the project properties.</translation>
     </message>
     <message>
         <location line="+25"/>
