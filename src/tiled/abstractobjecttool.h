@@ -39,7 +39,6 @@ class MapObjectItem;
 class AbstractObjectTool : public AbstractTool
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::AbstractTool)
 
 public:
     enum SelectionBehavior {

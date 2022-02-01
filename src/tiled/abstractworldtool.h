@@ -37,7 +37,6 @@ class SelectionRectangle;
 class AbstractWorldTool : public AbstractTool
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::AbstractTool)
 
 public:
     /**

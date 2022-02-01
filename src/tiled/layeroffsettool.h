@@ -28,7 +28,6 @@ namespace Tiled {
 class LayerOffsetTool : public AbstractTool
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::AbstractTool)
 
 public:
     explicit LayerOffsetTool(QObject *parent = nullptr);
