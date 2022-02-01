@@ -2752,12 +2752,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+118"/>
         <source>Could not remove file &apos;%1&apos;: %2</source>
-        <translation>Le fichier &apos;%1&apos; n&apos;a pas pu être supprimé: %2</translation>
+        <translation>Le fichier &apos;%1&apos; n&apos;a pas pu être supprimé : %2</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Could not copy file &apos;%1&apos; to &apos;%2&apos;: %3</source>
-        <translation>Le fichier &apos;%1&apos; n&apos;a pas pu être copié vers &apos;%2&apos;: %3</translation>
+        <translation>Le fichier &apos;%1&apos; n&apos;a pas pu être copié vers &apos;%2&apos; : %3</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -3334,7 +3334,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/automappingmanager.cpp" line="+113"/>
         <source>No AutoMapping rules provided. Save the map or refer to a rule file in the project properties.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune règle d&apos;AutoMapping n&apos;a été fournie. Sauvegardez la carte ou mentionnez un fichier de règles dans les propriétés du projet.</translation>
     </message>
     <message>
         <location line="+25"/>
