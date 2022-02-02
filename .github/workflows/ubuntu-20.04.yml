@@ -26,6 +26,8 @@ jobs:
 
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1
+      with:
+        max-size: 250M
 
     - name: Install dependencies
       run: |
