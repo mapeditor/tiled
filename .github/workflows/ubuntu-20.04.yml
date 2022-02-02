@@ -24,6 +24,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v1
 
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1
+
     - name: Install dependencies
       run: |
         sudo apt update
@@ -37,4 +40,4 @@ jobs:
 
     - name: Build
       run: |
-        qbs build
+        qbs build modules.cpp.compilerWrapper:ccache
