@@ -11,7 +11,10 @@
     "test": "tsc"
   },
   "devDependencies": {
-    "typedoc": "^0.20.36",
+    "concat-md": "^0.3.5",
+    "showdown": "^1.9.1",
+    "typedoc": "^0.22.4",
+    "typedoc-plugin-markdown": "file://../../../typedoc-plugin-markdown/packages/typedoc-plugin-markdown/typedoc-plugin-markdown-v3.11.3.tgz",
     "typescript": "^4.2.4"
   },
   "bugs": {
