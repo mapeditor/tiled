@@ -528,12 +528,29 @@ void ScriptModule::executeCommand(const QString &name, bool inTerminal) const
 
 void ScriptModule::alert(const QString &text, const QString &title) const
 {
-    QMessageBox::warning(MainWindow::instance(), title, text);
+    QMessageBox msgBox(QMessageBox::Warning, title, text, QMessageBox::Ok,
+                       MainWindow::instance());
+
+    // On macOS, QMessageBox hides the title by default
+#ifdef Q_OS_MAC
+    msgBox.QDialog::setWindowTitle(title);
+#endif
+
+    msgBox.exec();
 }
 
 bool ScriptModule::confirm(const QString &text, const QString &title) const
 {
-    return QMessageBox::question(MainWindow::instance(), title, text) == QMessageBox::Yes;
+    QMessageBox msgBox(QMessageBox::Question, title, text,
+                       QMessageBox::Yes | QMessageBox::No,
+                       MainWindow::instance());
+
+    // On macOS, QMessageBox hides the title by default
+#ifdef Q_OS_MAC
+    msgBox.QDialog::setWindowTitle(title);
+#endif
+
+    return msgBox.exec() == QMessageBox::Yes;
 }
 
 QString ScriptModule::prompt(const QString &label, const QString &text, const QString &title) const

@@ -27,19 +27,20 @@
 * Show the read error when using --export-map/tileset
 * Avoid deselecting all layers when clicking empty area in Layers view (#2806)
 * Scripting: Added File API
+* Scripting: Added tiled.applicationDirPath property
+* Scripting: Added tiled.extensionsPath property (#3139)
 * Scripting: Added missing Layer.tintColor property
-* Scripting: Added tiled.extensionsPath (#3139)
-* Scripting: Added ObjectGroup.drawOrder (#3147)
-* Scripting: Added Map.removeObjects (#3149)
-* Scripting: Added tiled.applicationDirPath
-* Scripting: Added TileMap.layers and GroupLayer.layers, for convenience
-* Scripting: Added region.rects and region.contains(x,y)
+* Scripting: Added missing ObjectGroup.drawOrder property (#3147)
+* Scripting: Added TileMap.removeObjects (#3149)
+* Scripting: Added TileMap.layers and GroupLayer.layers properties, for convenience
+* Scripting: Added region.rects property and region.contains(x,y)
 * Scripting: Treat custom format extensions as case-insensitive (#3141)
 * Scripting: Allow tools to stay active when tiles or a terrain type are selected (#3201)
 * Scripting: Extended the terrain related API (#2663)
 * Scripting: tiled.activeAsset can be assigned asset created in script (#3160)
 * Scripting: Fixed possible crash after creating tilesets from script (#3229)
 * Scripting: Fixed possible crash in TileMap.autoMap
+* Scripting: Fixed dialog window titles to show on macOS (#2910)
 * Fixed the logic for handling group layer parallax factors (with LilithSilver, #3125)
 * Fixed keyboard modifiers getting stuck for Terrain Brush (#2678)
 * Fixed debug messages showing in the Console and Issues views
