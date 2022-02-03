@@ -25,6 +25,7 @@
 #include <QJSValue>
 #include <QObject>
 #include <QQmlError>
+#include <QScopedValueRollback>
 #include <QStringList>
 
 class QJSEngine;
@@ -45,6 +46,17 @@ class ScriptManager : public QObject
     Q_PROPERTY(bool projectExtensionsSuppressed READ projectExtensionsSuppressed NOTIFY projectExtensionsSuppressedChanged)
 
 public:
+    /**
+     * While a reset blocker instance exists, resetting of the script engine
+     * is suppressed. This avoids a crash when a reset happens while script
+     * execution is paused by a popup.
+     */
+    struct ResetBlocker : QScopedValueRollback<bool> {
+        ResetBlocker()
+            : QScopedValueRollback<bool>(ScriptManager::instance().mResetBlocked, true)
+        {}
+    };
+
     static ScriptManager &instance();
     static void deleteInstance();
 
@@ -99,6 +111,10 @@ private:
     QStringList mExtensionsPaths;
     int mTempCount = 0;
     bool mProjectExtensionsSuppressed = false;
+
+    friend struct ResetBlocker;
+    bool mResetBlocked = false;
+    QTimer mResetTimer;
 
     static ScriptManager *mInstance;
 };

@@ -53,6 +53,8 @@
 #include "tilesetdock.h"
 #include "tileseteditor.h"
 
+#include <QCoreApplication>
+#include <QDesktopServices>
 #include <QDir>
 #include <QFile>
 #include <QQmlEngine>
@@ -61,8 +63,6 @@
 #include <QTextCodec>
 #endif
 #include <QtDebug>
-#include <QCoreApplication>
-#include <QDesktopServices>
 
 namespace Tiled {
 
@@ -95,6 +95,10 @@ void ScriptManager::deleteInstance()
 ScriptManager::ScriptManager(QObject *parent)
     : QObject(parent)
 {
+    mResetTimer.setInterval(500);
+    mResetTimer.setSingleShot(true);
+    connect(&mResetTimer, &QTimer::timeout, this, &ScriptManager::reset);
+
     qRegisterMetaType<Cell>();
     qRegisterMetaType<EditableAsset*>();
     qRegisterMetaType<EditableGroupLayer*>();
@@ -315,6 +319,13 @@ void ScriptManager::throwNullArgError(int argNumber)
 
 void ScriptManager::reset()
 {
+    // If resetting the script engine is currently blocked, which can happen
+    // while a script is waiting for a popup, try again later.
+    if (mResetBlocked) {
+        mResetTimer.start();
+        return;
+    }
+
     Tiled::INFO(tr("Resetting script engine"));
 
     mWatcher.clear();

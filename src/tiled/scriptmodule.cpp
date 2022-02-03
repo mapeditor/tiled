@@ -525,6 +525,7 @@ void ScriptModule::executeCommand(const QString &name, bool inTerminal) const
 
 void ScriptModule::alert(const QString &text, const QString &title) const
 {
+    ScriptManager::ResetBlocker blocker;
     QMessageBox msgBox(QMessageBox::Warning, title, text, QMessageBox::Ok,
                        MainWindow::instance());
 
@@ -538,6 +539,7 @@ void ScriptModule::alert(const QString &text, const QString &title) const
 
 bool ScriptModule::confirm(const QString &text, const QString &title) const
 {
+    ScriptManager::ResetBlocker blocker;
     QMessageBox msgBox(QMessageBox::Question, title, text,
                        QMessageBox::Yes | QMessageBox::No,
                        MainWindow::instance());
@@ -552,6 +554,7 @@ bool ScriptModule::confirm(const QString &text, const QString &title) const
 
 QString ScriptModule::prompt(const QString &label, const QString &text, const QString &title) const
 {
+    ScriptManager::ResetBlocker blocker;
     return QInputDialog::getText(MainWindow::instance(), title, label, QLineEdit::Normal, text);
 }
 

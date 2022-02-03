@@ -44,6 +44,7 @@
 * Scripting: Fixed possible crash in TileMap.autoMap
 * Scripting: Fixed dialog window titles to show on macOS (#2910)
 * Scripting: Fixed tileset or tile references for maps loaded from script
+* Scripting: Avoid crash when script reload happens during popup (#2991)
 * Fixed the logic for handling group layer parallax factors (with LilithSilver, #3125)
 * Fixed keyboard modifiers getting stuck for Terrain Brush (#2678)
 * Fixed debug messages showing in the Console and Issues views
