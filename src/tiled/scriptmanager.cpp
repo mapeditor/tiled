@@ -62,6 +62,7 @@
 #endif
 #include <QtDebug>
 #include <QCoreApplication>
+#include <QDesktopServices>
 
 namespace Tiled {
 
@@ -344,8 +345,12 @@ void ScriptManager::initialize()
 
 void ScriptManager::onScriptWarnings(const QList<QQmlError> &warnings)
 {
-    for (const auto &warning : warnings)
-        Tiled::ERROR(warning.toString());
+    for (const auto &warning : warnings) {
+        Tiled::ERROR(warning.toString(), [url = warning.url()] {
+            if (!url.isEmpty())
+                QDesktopServices::openUrl(url);
+        });
+    }
 }
 
 void ScriptManager::scriptFilesChanged(const QStringList &scriptFiles)
