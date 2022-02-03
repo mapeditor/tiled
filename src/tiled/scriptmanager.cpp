@@ -53,6 +53,8 @@
 #include "tilesetdock.h"
 #include "tileseteditor.h"
 
+#include <QCoreApplication>
+#include <QDesktopServices>
 #include <QDir>
 #include <QFile>
 #include <QQmlEngine>
@@ -61,8 +63,6 @@
 #include <QTextCodec>
 #endif
 #include <QtDebug>
-#include <QCoreApplication>
-#include <QDesktopServices>
 
 namespace Tiled {
 

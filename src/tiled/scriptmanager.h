@@ -25,6 +25,7 @@
 #include <QJSValue>
 #include <QObject>
 #include <QQmlError>
+#include <QScopedValueRollback>
 #include <QStringList>
 
 class QJSEngine;
@@ -45,6 +46,16 @@ class ScriptManager : public QObject
     Q_PROPERTY(bool projectExtensionsSuppressed READ projectExtensionsSuppressed NOTIFY projectExtensionsSuppressedChanged)
 
 public:
+    /**
+     * While a popup guard instance exists, reloading of scripts is suppressed.
+     * This avoids crash by reload while script execution is blocked by a popup.
+     */
+    struct PopupGuard : QScopedValueRollback<bool> {
+        PopupGuard()
+            : QScopedValueRollback<bool>(ScriptManager::instance().mReloadSuppressed, true)
+        {}
+    };
+
     static ScriptManager &instance();
     static void deleteInstance();
 
@@ -99,6 +110,9 @@ private:
     QStringList mExtensionsPaths;
     int mTempCount = 0;
     bool mProjectExtensionsSuppressed = false;
+
+    friend struct PopupGuard;
+    bool mReloadSuppressed = false;
 
     static ScriptManager *mInstance;
 };
