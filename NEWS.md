@@ -60,6 +60,7 @@
 * Fixed saving broken references to files loaded using "ext:" prefix (#3185)
 * Fixed performance issue in Project view related to file icons
 * Fixed dynamic wrapping when adding tiles to a collection (#3076)
+* Fixed potential crash when changing a WangSet from script
 * Tiled Manual is now available in French
 * JSON plugin: Added "tmj", "tsj" and "tj" as accepted file extensions
 * YY plugin: Don't use safe writing of files

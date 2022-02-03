@@ -100,7 +100,7 @@ private:
     void refreshCurrentWangColor();
     void wangColorIndexPressed(const QModelIndex &index);
     void documentChanged(const ChangeEvent &change);
-    void wangSetChanged();
+    void wangSetChanged(WangSet *wangSet);
     void wangSetIndexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
     void checkAnyWangSets();

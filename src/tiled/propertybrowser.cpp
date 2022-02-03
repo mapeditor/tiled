@@ -388,9 +388,9 @@ void PropertyBrowser::tileTypeChanged(Tile *tile)
     }
 }
 
-void PropertyBrowser::wangSetChanged(Tileset *tileset, int index)
+void PropertyBrowser::wangSetChanged(WangSet *wangSet)
 {
-    if (mObject == tileset->wangSet(index))
+    if (mObject == wangSet)
         updateProperties();
 }
 

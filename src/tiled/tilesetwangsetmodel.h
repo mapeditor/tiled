@@ -91,7 +91,7 @@ signals:
      * Emitted when either the name, image, colorCount or type of a wangSet
      * changed.
      */
-    void wangSetChanged(Tileset *tileset, int index);
+    void wangSetChanged(WangSet *wangSet);
 
 private:
     void emitWangSetChange(WangSet *wangSet);

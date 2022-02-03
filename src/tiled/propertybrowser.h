@@ -79,7 +79,7 @@ private:
     void tilesetChanged(Tileset *tileset);
     void tileChanged(Tile *tile);
     void tileTypeChanged(Tile *tile);
-    void wangSetChanged(Tileset *tileset, int index);
+    void wangSetChanged(WangSet *wangSet);
 
     void propertyAdded(Object *object, const QString &name);
     void propertyRemoved(Object *object, const QString &name);

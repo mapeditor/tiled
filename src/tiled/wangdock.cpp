@@ -479,10 +479,15 @@ void WangDock::documentChanged(const ChangeEvent &change)
     }
 }
 
-void WangDock::wangSetChanged()
+void WangDock::wangSetChanged(WangSet *wangSet)
 {
-    mWangColorModel->resetModel();
-    mWangColorView->expandAll();
+    if (mCurrentWangSet != wangSet)
+        return;
+
+    if (mWangColorModel) {
+        mWangColorModel->resetModel();
+        mWangColorView->expandAll();
+    }
 
     refreshCurrentWangColor();
     refreshCurrentWangId();

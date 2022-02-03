@@ -201,7 +201,7 @@ void TilesetWangSetModel::emitWangSetChange(WangSet *wangSet)
 {
     const QModelIndex index = TilesetWangSetModel::index(wangSet);
     emit dataChanged(index, index);
-    emit wangSetChanged(wangSet->tileset(), index.row());
+    emit wangSetChanged(wangSet);
 }
 
 #include "moc_tilesetwangsetmodel.cpp"
