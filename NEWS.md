@@ -32,6 +32,7 @@
 * Scripting: Added missing Layer.tintColor property
 * Scripting: Added missing ObjectGroup.drawOrder property (#3147)
 * Scripting: Added TileMap.removeObjects (#3149)
+* Scripting: Added TileMap.regionEdited signal
 * Scripting: Added TileMap.layers and GroupLayer.layers properties, for convenience
 * Scripting: Added region.rects property and region.contains(x,y)
 * Scripting: Treat custom format extensions as case-insensitive (#3141)

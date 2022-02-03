@@ -2207,6 +2207,14 @@ declare class TileMap extends Asset {
    * Converts the given position from tile to pixel coordinates.
    */
   public tileToPixel(position: point): point;
+
+  /**
+   * The signal emitted after a region of a {@link TileLayer} was edited.
+   *
+   * This signal is not emitted on undo/redo, nor after changes made in
+   * scripts. It receives the affected {@link TileLayer} as a second parameter.
+   */
+  readonly regionEdited : Signal<region>;
 }
 
 /**
@@ -2340,9 +2348,12 @@ interface TileLayerEdit {
 /**
  * Defines a "Terrain Set".
  *
+ * To create and add a new Wang set to a {@link Tileset}, use {@link
+ * Tileset.addWangSet}.
+ *
  * @since 1.5
  */
-declare class WangSet {
+declare class WangSet extends TiledObject {
   static readonly Edge: unique symbol;
   static readonly Corner: unique symbol;
   static readonly Mixed: unique symbol;
@@ -2581,7 +2592,7 @@ declare class Tileset extends Asset {
   /**
    * Add a new Wang set to this tileset with the given name and type.
    */
-  public addWangSet(name : string, type : number) : WangSet
+  public addWangSet(name : string, type : typeof WangSet.Edge | typeof WangSet.Corner | typeof WangSet.Mixed) : WangSet
 
   /**
    * Removes the given Wang set from this tileset.
