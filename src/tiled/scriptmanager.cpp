@@ -230,13 +230,33 @@ void ScriptManager::loadExtension(const QString &path)
 {
     mWatcher.addPath(path);
 
+    const QStringList nameFilters = {
+        QLatin1String("*.js"),
+        QLatin1String("*.mjs")
+    };
     const QDir dir(path);
-    const QStringList jsFiles = dir.entryList({ QLatin1String("*.js") },
+    const QStringList jsFiles = dir.entryList(nameFilters,
                                               QDir::Files | QDir::Readable);
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
+    bool hasWarned = false;
+#endif
 
     for (const QString &jsFile : jsFiles) {
         const QString absolutePath = dir.filePath(jsFile);
-        evaluateFile(absolutePath);
+        if (absolutePath.endsWith(QLatin1String(".js"), Qt::CaseInsensitive)) {
+            evaluateFile(absolutePath);
+        } else {
+#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
+            if (!hasWarned) {
+                Tiled::WARNING(tr("Importing modules (%1) not supported by this version of Tiled").arg(absolutePath));
+                hasWarned = true;
+            }
+#else
+            Tiled::INFO(tr("Importing module '%1'").arg(absolutePath));
+            checkError(mEngine->importModule(absolutePath));
+#endif
+        }
         mWatcher.addPath(absolutePath);
     }
 }
