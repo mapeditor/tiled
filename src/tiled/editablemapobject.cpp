@@ -28,7 +28,6 @@
 #include "editabletile.h"
 #include "movemapobject.h"
 #include "scriptmanager.h"
-#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 #include <QJSEngine>
@@ -82,18 +81,7 @@ QJSValue EditableMapObject::polygon() const
 
 EditableTile *EditableMapObject::tile() const
 {
-    Tile *tile = mapObject()->cell().tile();
-    if (!tile)
-        return nullptr;
-
-    Tileset *tileset = mapObject()->cell().tileset();
-    auto tilesetDocument = TilesetDocument::findDocumentForTileset(tileset->sharedFromThis());
-    if (!tilesetDocument)
-        return nullptr;
-
-    auto editableTileset = tilesetDocument->editable();
-    auto editableTile = EditableManager::instance().editableTile(editableTileset, tile);
-    return editableTile;
+    return EditableManager::instance().editableTile(mapObject()->cell().tile());
 }
 
 bool EditableMapObject::isSelected() const

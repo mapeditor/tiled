@@ -21,6 +21,7 @@
 #include "tilesetdocument.h"
 
 #include "changeevents.h"
+#include "editablemanager.h"
 #include "editabletileset.h"
 #include "issuesmodel.h"
 #include "map.h"
@@ -33,6 +34,7 @@
 
 #include <QCoreApplication>
 #include <QFileInfo>
+#include <QQmlEngine>
 #include <QUndoStack>
 
 namespace Tiled {
@@ -65,6 +67,13 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset)
 {
     Q_ASSERT(!sTilesetToDocument.contains(tileset));
     sTilesetToDocument.insert(tileset, this);
+
+    // If there already happens to be an editable for this tileset, take
+    // ownership of it.
+    if (auto editable = EditableManager::instance().find(tileset.data())) {
+        setEditable(std::unique_ptr<EditableAsset>(editable));
+        QQmlEngine::setObjectOwnership(editable, QQmlEngine::CppOwnership);
+    }
 
     mCurrentObject = tileset.data();
 

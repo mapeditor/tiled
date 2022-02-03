@@ -164,11 +164,18 @@ EditableTileset *EditableManager::editableTileset(Tileset *tileset)
     return editableTileset;
 }
 
-EditableTile *EditableManager::editableTile(EditableTileset *tileset, Tile *tile)
+EditableTile *EditableManager::editableTile(Tile *tile)
 {
     if (!tile)
         return nullptr;
 
+    EditableTileset *tileset = editableTileset(tile->tileset());
+    return editableTile(tileset, tile);
+}
+
+EditableTile *EditableManager::editableTile(EditableTileset *tileset, Tile *tile)
+{
+    Q_ASSERT(tile);
     Q_ASSERT(tile->tileset() == tileset->tileset());
 
     EditableTile* &editableTile = mEditableTiles[tile];
@@ -180,11 +187,18 @@ EditableTile *EditableManager::editableTile(EditableTileset *tileset, Tile *tile
     return editableTile;
 }
 
-EditableWangSet *EditableManager::editableWangSet(EditableTileset *tileset, WangSet *wangSet)
+EditableWangSet *EditableManager::editableWangSet(WangSet *wangSet)
 {
     if (!wangSet)
         return nullptr;
 
+    EditableTileset *tileset = editableTileset(wangSet->tileset());
+    return editableWangSet(tileset, wangSet);
+}
+
+EditableWangSet *EditableManager::editableWangSet(EditableTileset *tileset, WangSet *wangSet)
+{
+    Q_ASSERT(wangSet);
     Q_ASSERT(wangSet->tileset() == tileset->tileset());
 
     EditableWangSet* &editableWangSet = mEditableWangSets[wangSet];

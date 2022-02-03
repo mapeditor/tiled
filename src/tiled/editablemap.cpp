@@ -48,6 +48,7 @@
 #include "tilesetdocument.h"
 
 #include <QCoreApplication>
+#include <QQmlEngine>
 #include <QUndoStack>
 
 #include "qtcompat_p.h"
@@ -319,8 +320,7 @@ QList<QObject *> EditableMap::usedTilesets() const
 
     QList<QObject *> editableTilesets;
     for (const SharedTileset &tileset : tilesets)
-        if (auto document = TilesetDocument::findDocumentForTileset(tileset))
-            editableTilesets.append(document->editable());
+        editableTilesets.append(EditableManager::instance().editableTileset(tileset.data()));
     return editableTilesets;
 }
 
@@ -641,7 +641,13 @@ void EditableMap::setSelectedObjects(const QList<QObject *> &objects)
 QSharedPointer<Document> EditableMap::createDocument()
 {
     Q_ASSERT(mDetachedMap);
-    return MapDocumentPtr::create(std::move(mDetachedMap));
+
+    auto document = MapDocumentPtr::create(std::move(mDetachedMap));
+    document->setEditable(std::unique_ptr<EditableAsset>(this));
+
+    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
+
+    return document;
 }
 
 void EditableMap::documentChanged(const ChangeEvent &change)

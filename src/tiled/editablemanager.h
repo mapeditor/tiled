@@ -59,6 +59,7 @@ public:
     EditableLayer *find(Layer *layer) const;
     EditableMapObject *find(MapObject *mapObject) const;
     EditableTile *find(Tile *tile) const;
+    EditableTileset *find(Tileset *tileset) const;
     EditableWangSet *find(WangSet *wangSet) const;
 
     void release(Layer *layer);
@@ -69,7 +70,9 @@ public:
     EditableObjectGroup *editableObjectGroup(EditableAsset *asset, ObjectGroup *objectGroup);
     EditableMapObject *editableMapObject(EditableAsset *asset, MapObject *mapObject);
     EditableTileset *editableTileset(Tileset *tileset);
+    EditableTile *editableTile(Tile *tile);
     EditableTile *editableTile(EditableTileset *tileset, Tile *tile);
+    EditableWangSet *editableWangSet(WangSet *wangSet);
     EditableWangSet *editableWangSet(EditableTileset *tileset, WangSet *wangSet);
 
 private:
@@ -102,6 +105,11 @@ inline EditableMapObject *EditableManager::find(MapObject *mapObject) const
 inline EditableTile *EditableManager::find(Tile *tile) const
 {
     return mEditableTiles.value(tile);
+}
+
+inline EditableTileset *EditableManager::find(Tileset *tileset) const
+{
+    return mEditableTilesets.value(tileset);
 }
 
 inline EditableWangSet *EditableManager::find(WangSet *wangSet) const

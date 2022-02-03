@@ -48,7 +48,10 @@ EditableWangSet::~EditableWangSet()
 
 EditableTile *EditableWangSet::imageTile() const
 {
-    return EditableManager::instance().editableTile(tileset(), wangSet()->imageTile());
+    if (Tile *tile = wangSet()->imageTile())
+        return EditableManager::instance().editableTile(tileset(), tile);
+
+    return nullptr;
 }
 
 EditableTileset *EditableWangSet::tileset() const

@@ -1036,13 +1036,7 @@ EditableWangSet *MapEditor::currentWangSet() const
     if (!currentWangSet)
         return nullptr;
 
-    auto tileset = currentWangSet->tileset();
-
-    auto &editableManager = EditableManager::instance();
-    if (auto editableTileset = editableManager.editableTileset(tileset))
-        return EditableManager::instance().editableWangSet(editableTileset, currentWangSet);
-
-    return nullptr;
+    return EditableManager::instance().editableWangSet(currentWangSet);
 }
 
 int MapEditor::currentWangColorIndex() const
