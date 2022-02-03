@@ -62,6 +62,11 @@ jobs:
         ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtsvg qtimageformats qttools qttranslations icu | tee -a $GITHUB_PATH
         ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
 
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        max-size: 250M
+
     - name: Setup CMake
       uses: jwlawson/actions-setup-cmake@v1.8
       with:
@@ -86,7 +91,7 @@ jobs:
 
     - name: Build Tiled
       run: |
-        qbs install --install-root AppDir config:release qbs.installPrefix:/usr projects.Tiled.enableZstd:true projects.Tiled.sentry:true qbs.debugInformation:true modules.cpp.separateDebugInformation:true
+        qbs install --install-root AppDir config:release qbs.installPrefix:/usr projects.Tiled.enableZstd:true projects.Tiled.sentry:true qbs.debugInformation:true modules.cpp.separateDebugInformation:true modules.cpp.compilerWrapper:ccache
 
     - name: Upload symbols to Sentry
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
