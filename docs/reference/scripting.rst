@@ -83,6 +83,16 @@ An extension can be placed either directly in an extensions directory, or in a
 sub-directory. All scripts files found in these directories are executed on
 startup.
 
+.. raw:: html
+
+   <div class="new">Since Tiled 1.8</div>
+
+When using the ``.mjs`` extension, script files are loaded as `JavaScript
+modules`_. They will then be able to use the `import`_ and `export`_ statements
+to split up their functionality over multiple JavaScript files. Such extensions
+also don't pollute the global scope, avoiding potential name collisions between
+different extensions.
+
 When any loaded script is changed or when any files are added/removed from the
 extensions directory, the script engine is automatically reinstantiated and the
 scripts are reloaded. This way there is no need to restart Tiled when
@@ -121,3 +131,6 @@ __filename
 .. _List of JavaScript Objects and Functions: https://doc.qt.io/qt-5/qtqml-javascript-functionlist.html
 .. _QML module: https://doc.qt.io/qt-5/qtqml-index.html
 .. _@mapeditor/tiled-api: https://www.npmjs.com/package/@mapeditor/tiled-api
+.. _JavaScript modules: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
+.. _import: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import
+.. _export: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export
