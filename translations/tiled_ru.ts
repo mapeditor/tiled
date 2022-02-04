@@ -428,7 +428,7 @@
         <location filename="../src/tiled/utils.cpp" line="+537"/>
         <source>JSON parse error at offset %1:
 %2.</source>
-        <translation type="unfinished">Ошибка разбора JSON по смещению %1:
+        <translation>Ошибка разбора JSON по смещению %1:
 %2.</translation>
     </message>
 </context>
@@ -450,7 +450,7 @@
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-8"/>
         <location line="+41"/>
         <source>Property Types files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Файлы типов свойств (*.json)</translation>
     </message>
 </context>
 <context>
@@ -508,7 +508,7 @@
     <message>
         <location line="+15"/>
         <source>JSON map files (*.tmj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON map-файлы (*.tmj *.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -545,7 +545,7 @@
     <message>
         <location line="+14"/>
         <source>JSON template files (*.tj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON шаблон-файлы (*.tj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
@@ -572,7 +572,7 @@
     <message>
         <location line="+14"/>
         <source>JSON tileset files (*.tsj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON файлы с наборами тайлов (*.tsj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
@@ -1732,7 +1732,7 @@ Line %1, column %2</source>
     <message>
         <location line="-59"/>
         <source>Background fade color:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Цвет затухания фона:</translation>
     </message>
     <message>
         <location line="+30"/>
