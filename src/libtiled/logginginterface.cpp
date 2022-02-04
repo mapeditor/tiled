@@ -46,11 +46,11 @@ Issue::Issue()
 
 Issue::Issue(Issue::Severity severity,
              const QString &text,
-             const std::function<void()> &callback,
+             std::function<void()> callback,
              const void *context)
     : mSeverity(severity)
     , mText(text)
-    , mCallback(callback)
+    , mCallback(std::move(callback))
     , mContext(context)
     , mId(mNextIssueId++)
 {
