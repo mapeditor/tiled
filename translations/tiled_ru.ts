@@ -7642,28 +7642,28 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changeimagelayerproperty.cpp" line="+38"/>
         <source>Change Transparent Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить цвет прозрачности</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Change Image Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить исходное изображение</translation>
     </message>
     <message>
         <location line="+25"/>
         <location line="+21"/>
         <source>Change Image Layer Repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить повторение изображения</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeobjectgroupproperties.cpp" line="+36"/>
         <source>Change Object Layer Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить цвет слоя объектов</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Change Object Layer Draw Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить порядок отрисовки слоя объектов</translation>
     </message>
 </context>
 <context>
