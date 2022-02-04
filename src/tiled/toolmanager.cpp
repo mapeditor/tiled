@@ -286,7 +286,7 @@ void ToolManager::scheduleAutoSwitchTool()
     mAutoSwitchToolPending = true;
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    QMetaObject::invokeMethod(this, "selectEnabledTool",
+    QMetaObject::invokeMethod(this, "autoSwitchTool",
                               Qt::QueuedConnection);
 #else
     QMetaObject::invokeMethod(this, &ToolManager::autoSwitchTool,
@@ -332,6 +332,7 @@ void ToolManager::currentLayerChanged(Layer *layer)
         }
 
         mLayerType = layerType;
+        scheduleAutoSwitchTool();
     }
 
     const auto actions = mActionGroup->actions();
@@ -339,8 +340,6 @@ void ToolManager::currentLayerChanged(Layer *layer)
         AbstractTool *tool = action->data().value<AbstractTool*>();
         tool->updateEnabledState();
     }
-
-    scheduleAutoSwitchTool();
 }
 
 AbstractTool *ToolManager::firstEnabledTool() const
