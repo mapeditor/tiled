@@ -135,13 +135,11 @@ bool AutoMapper::setupRuleMapProperties()
             }
         }
 
-        QString warning = tr("Ignoring unknown property '%2' = '%3' (rule map '%1')")
-                      .arg(mRulesMapFileName, name, value.toString());
-
-        WARNING(warning, OpenFile { mRulesMapFileName });
-
-        mWarning += warning;
-        mWarning += QLatin1Char('\n');
+        addWarning(tr("Ignoring unknown property '%2' = '%3' (rule map '%1')")
+                      .arg(mRulesMapFileName,
+                           name,
+                           value.toString()),
+                   SelectCustomProperty { mRulesMapFileName, name, mRulesMap.get() });
     }
 
     // OverflowBorder and WrapBorder make no sense for infinite maps
@@ -175,13 +173,12 @@ void AutoMapper::setupInputLayerProperties(InputLayer &inputLayer)
             }
         }
 
-        QString warning = tr("Ignoring unknown property '%2' = '%3' on layer '%4' (rule map '%1')")
-                      .arg(mRulesMapFileName, name, value.toString(), inputLayer.tileLayer->name());
-
-        WARNING(warning, SelectLayer { inputLayer.tileLayer });
-
-        mWarning += warning;
-        mWarning += QLatin1Char('\n');
+        addWarning(tr("Ignoring unknown property '%2' = '%3' on layer '%4' (rule map '%1')")
+                   .arg(mRulesMapFileName,
+                        name,
+                        value.toString(),
+                        inputLayer.tileLayer->name()),
+                   SelectCustomProperty { mRulesMapFileName, name, inputLayer.tileLayer });
     }
 }
 
@@ -202,6 +199,10 @@ bool AutoMapper::setupRuleMapLayers()
 
         const QString &layerName = layer->name();
 
+        // Ignore commented out layers
+        if (layerName.startsWith(QLatin1String("//")))
+            continue;
+
         auto checkRegionsLayer = [&](const QString &layerName, Layer *layer, const TileLayer* &out) -> bool {
             if (layerName.compare(layer->name(), Qt::CaseInsensitive) != 0)
                 return false;
@@ -221,9 +222,13 @@ bool AutoMapper::setupRuleMapLayers()
         };
 
         if (layerName.startsWith(QLatin1String("regions"), Qt::CaseInsensitive)) {
-            checkRegionsLayer(QStringLiteral("regions"), layer, mLayerRegions)
-                    || checkRegionsLayer(QStringLiteral("regions_input"), layer, mLayerInputRegions)
-                    || checkRegionsLayer(QStringLiteral("regions_output"), layer, mLayerOutputRegions);
+            if (!(checkRegionsLayer(QStringLiteral("regions"), layer, mLayerRegions) ||
+                  checkRegionsLayer(QStringLiteral("regions_input"), layer, mLayerInputRegions) ||
+                  checkRegionsLayer(QStringLiteral("regions_output"), layer, mLayerOutputRegions))) {
+
+                addWarning(tr("Layer '%1' is not recognized as a valid layer for Automapping.").arg(layerName),
+                           SelectLayer { layer });
+            }
             continue;
         }
 
@@ -295,8 +300,8 @@ bool AutoMapper::setupRuleMapLayers()
             continue;
         }
 
-        error += tr("Layer '%1' is not recognized as a valid layer for Automapping.")
-                .arg(layerName) + QLatin1Char('\n');
+        addWarning(tr("Layer '%1' is not recognized as a valid layer for Automapping.").arg(layerName),
+                   SelectLayer { layer });
     }
 
     if (!mLayerRegions && !mLayerInputRegions)
@@ -386,6 +391,9 @@ bool AutoMapper::setupRuleList()
 
 void AutoMapper::prepareAutoMap()
 {
+    mWarning.clear();
+    mError.clear();
+
     setupWorkMapLayers();
     setupTilesets();
 }
@@ -1001,6 +1009,13 @@ void AutoMapper::cleanEmptyLayers()
     }
 
     mAddedLayers.clear();
+}
+
+void AutoMapper::addWarning(const QString &message, std::function<void ()> callback)
+{
+    WARNING(message, std::move(callback));
+    mWarning += message;
+    mWarning += QLatin1Char('\n');
 }
 
 #include "moc_automapper.cpp"

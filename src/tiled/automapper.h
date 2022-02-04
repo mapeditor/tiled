@@ -274,6 +274,9 @@ private:
      */
     void cleanEmptyLayers();
 
+    void addWarning(const QString &text,
+                    std::function<void()> callback = std::function<void()>());
+
     /**
      * where to work in
      */

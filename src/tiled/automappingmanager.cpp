@@ -141,9 +141,9 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
         undoStack->endMacro();
     }
 
-    for (auto &automapper : qAsConst(mAutoMappers)) {
-        mWarning += automapper->warningString();
-        mError += automapper->errorString();
+    for (auto &autoMapper : qAsConst(passedAutoMappers)) {
+        mWarning += autoMapper->warningString();
+        mError += autoMapper->errorString();
     }
 
     if (!mWarning.isEmpty())

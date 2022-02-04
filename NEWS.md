@@ -13,6 +13,7 @@
 * Added automatic fading out of the grid when zooming out a lot
 * AutoMapping: Made it find layers within groups (#1771)
 * AutoMapping: `regions` layer can now be used alongside `region_input/output` layers
+* AutoMapping: Recognize "//" layer name prefix for ignoring layers (#3262)
 * AutoMapping: Allow setting a rule map as project rules file (#3221)
 * Tweaked focus behavior in the Template Editor
 * Changed the default Terrain Brush shortcut back to T
