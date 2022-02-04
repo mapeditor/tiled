@@ -7606,13 +7606,13 @@ Please select specific format.</source>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerproperty.cpp" line="+38"/>
-        <source>Change Object Layer Transparent Color</source>
-        <translation>Промяна на цвета за прозрачност на слой с обекти</translation>
+        <source>Change Transparent Color</source>
+        <translation type="unfinished">Промяна на цвета за прозрачност</translation>
     </message>
     <message>
         <location line="+25"/>
-        <source>Change Object Layer Image Source</source>
-        <translation>Промяна на изображение-източник на слой с обекти</translation>
+        <source>Change Image Source</source>
+        <translation type="unfinished">Промяна на изображение-източник</translation>
     </message>
     <message>
         <location line="+25"/>

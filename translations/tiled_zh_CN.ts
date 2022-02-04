@@ -7571,13 +7571,13 @@ Please select specific format.</source>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerproperty.cpp" line="+38"/>
-        <source>Change Object Layer Transparent Color</source>
-        <translation>更改对象层的透明颜色</translation>
+        <source>Change Transparent Color</source>
+        <translation type="unfinished">更改图像源</translation>
     </message>
     <message>
         <location line="+25"/>
-        <source>Change Object Layer Image Source</source>
-        <translation>更改对象层图像源</translation>
+        <source>Change Image Source</source>
+        <translation type="unfinished">更改对象层图像源</translation>
     </message>
     <message>
         <location line="+25"/>

@@ -7595,13 +7595,13 @@ Please select specific format.</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerproperty.cpp" line="+38"/>
-        <source>Change Object Layer Transparent Color</source>
-        <translation>Change Object Layer Transparent Color</translation>
+        <source>Change Transparent Color</source>
+        <translation>Change Transparent Color</translation>
     </message>
     <message>
         <location line="+25"/>
-        <source>Change Object Layer Image Source</source>
-        <translation>Change Object Layer Image Source</translation>
+        <source>Change Image Source</source>
+        <translation>Change Image Source</translation>
     </message>
     <message>
         <location line="+25"/>

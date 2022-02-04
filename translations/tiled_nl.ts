@@ -7606,12 +7606,12 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerproperty.cpp" line="+38"/>
-        <source>Change Object Layer Transparent Color</source>
+        <source>Change Transparent Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+25"/>
-        <source>Change Object Layer Image Source</source>
+        <source>Change Image Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

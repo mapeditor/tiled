@@ -7574,13 +7574,13 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerproperty.cpp" line="+38"/>
-        <source>Change Object Layer Transparent Color</source>
-        <translation>Nesne Katmanı Saydam Rengini Değiştir</translation>
+        <source>Change Transparent Color</source>
+        <translation type="unfinished">Saydam Rengini Değiştir</translation>
     </message>
     <message>
         <location line="+25"/>
-        <source>Change Object Layer Image Source</source>
-        <translation>Nesne Katmanı Resim Kaynağını Değiştir</translation>
+        <source>Change Image Source</source>
+        <translation type="unfinished">Resim Kaynağını Değiştir</translation>
     </message>
     <message>
         <location line="+25"/>

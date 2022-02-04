@@ -36,7 +36,7 @@ ChangeImageLayerTransparentColor::ChangeImageLayerTransparentColor(Document *doc
     : ChangeValue<ImageLayer, QColor>(document, std::move(imageLayers), newColor)
 {
     setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Object Layer Transparent Color"));
+                                        "Change Transparent Color"));
 }
 
 QColor ChangeImageLayerTransparentColor::getValue(const ImageLayer *imageLayer) const
@@ -61,7 +61,7 @@ ChangeImageLayerImageSource::ChangeImageLayerImageSource(Document *document, QLi
     : ChangeValue<ImageLayer, QUrl>(document, std::move(imageLayers), imageSource)
 {
     setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Object Layer Image Source"));
+                                        "Change Image Source"));
 }
 
 QUrl ChangeImageLayerImageSource::getValue(const ImageLayer *imageLayer) const
