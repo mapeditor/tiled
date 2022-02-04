@@ -1,4 +1,4 @@
-### Tiled 1.8 (...)
+### Tiled 1.8.0 (4 February 2022)
 
 * Added support for custom enum properties (with svipal, #2941)
 * Added support for custom class properties (#489)
