@@ -86,6 +86,13 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>A layer that renders a single referenced image.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -125,7 +132,10 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="imagelayer.html#offset" class="tsd-kind-icon">offset</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="imagelayer.html#opacity" class="tsd-kind-icon">opacity</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="imagelayer.html#readonly" class="tsd-kind-icon">read<wbr>Only</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="imagelayer.html#repeatx" class="tsd-kind-icon">repeatX</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="imagelayer.html#repeaty" class="tsd-kind-icon">repeatY</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="imagelayer.html#selected" class="tsd-kind-icon">selected</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="imagelayer.html#tintcolor" class="tsd-kind-icon">tint<wbr>Color</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="imagelayer.html#transparentcolor" class="tsd-kind-icon">transparent<wbr>Color</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="imagelayer.html#visible" class="tsd-kind-icon">visible</a></li>
 							</ul>
@@ -343,6 +353,40 @@
 						</div>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="repeatx" class="tsd-anchor"></a>
+					<h3>repeatX</h3>
+					<div class="tsd-signature tsd-kind-icon">repeatX<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Whether the image rendered by this layer repeats along the X axis.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="repeaty" class="tsd-anchor"></a>
+					<h3>repeatY</h3>
+					<div class="tsd-signature tsd-kind-icon">repeatY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Whether the image rendered by this layer repeats along the Y axis.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="selected" class="tsd-anchor"></a>
 					<h3>selected</h3>
@@ -354,6 +398,26 @@
 						<div class="lead">
 							<p>Whether the layer is selected.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="tintcolor" class="tsd-anchor"></a>
+					<h3>tint<wbr>Color</h3>
+					<div class="tsd-signature tsd-kind-icon">tint<wbr>Color<span class="tsd-signature-symbol">:</span> <a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#tintcolor">tintColor</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Tint color of the layer. Will be used to tint any images rendered by this
+								layer or by any child layers. Affects tile layers, image layers and tile
+							objects.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -621,8 +685,17 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="imagelayer.html#readonly" class="tsd-kind-icon">read<wbr>Only</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="imagelayer.html#repeatx" class="tsd-kind-icon">repeatX</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="imagelayer.html#repeaty" class="tsd-kind-icon">repeatY</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="imagelayer.html#selected" class="tsd-kind-icon">selected</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="imagelayer.html#tintcolor" class="tsd-kind-icon">tint<wbr>Color</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="imagelayer.html#transparentcolor" class="tsd-kind-icon">transparent<wbr>Color</a>

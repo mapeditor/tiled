@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>TileCollisionEditor | Tiled Scripting API</title>
+	<title>PropertyValue | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -76,10 +76,10 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="tilecollisioneditor.html">TileCollisionEditor</a>
+					<a href="propertyvalue.html">PropertyValue</a>
 				</li>
 			</ul>
-			<h1>Interface TileCollisionEditor</h1>
+			<h1>Interface PropertyValue</h1>
 		</div>
 	</div>
 </header>
@@ -89,16 +89,21 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The tile collision editor, accessible through
-						<a href="tileseteditor.html#collisioneditor">TilesetEditor.collisionEditor</a>.</p>
+						<p>A property value with a user-defined type.</p>
 					</div>
+					<p>Can be created using <a href="../modules/tiled.html#propertyvalue">tiled.propertyValue</a>.</p>
+					<dl class="tsd-comment-tags">
+						<dt>since</dt>
+						<dd><p>1.8</p>
+						</dd>
+					</dl>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">TileCollisionEditor</span>
+						<span class="target">PropertyValue</span>
 					</li>
 				</ul>
 			</section>
@@ -109,14 +114,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="tilecollisioneditor.html#selectedobjects" class="tsd-kind-icon">selected<wbr>Objects</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="tilecollisioneditor.html#view" class="tsd-kind-icon">view</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Methods</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="tilecollisioneditor.html#focusobject" class="tsd-kind-icon">focus<wbr>Object</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="propertyvalue.html#typeid" class="tsd-kind-icon">type<wbr>Id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="propertyvalue.html#typename" class="tsd-kind-icon">type<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="propertyvalue.html#value" class="tsd-kind-icon">value</a></li>
 							</ul>
 						</section>
 					</div>
@@ -125,50 +125,41 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="selectedobjects" class="tsd-anchor"></a>
-					<h3>selected<wbr>Objects</h3>
-					<div class="tsd-signature tsd-kind-icon">selected<wbr>Objects<span class="tsd-signature-symbol">:</span> <a href="../classes/mapobject.html" class="tsd-signature-type" data-tsd-kind="Class">MapObject</a><span class="tsd-signature-symbol">[]</span></div>
+					<a name="typeid" class="tsd-anchor"></a>
+					<h3>type<wbr>Id</h3>
+					<div class="tsd-signature tsd-kind-icon">type<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Selected objects.</p>
+							<p>The ID of the type of this value.</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="view" class="tsd-anchor"></a>
-					<h3>view</h3>
-					<div class="tsd-signature tsd-kind-icon">view<span class="tsd-signature-symbol">:</span> <a href="mapview.html" class="tsd-signature-type" data-tsd-kind="Interface">MapView</a></div>
+					<a name="typename" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> type<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">type<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The map view used by the Collision Editor.</p>
+							<p>The name of the type of this value.</p>
 						</div>
 					</div>
 				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="focusobject" class="tsd-anchor"></a>
-					<h3>focus<wbr>Object</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">focus<wbr>Object<span class="tsd-signature-symbol">(</span>object<span class="tsd-signature-symbol">: </span><a href="../classes/mapobject.html" class="tsd-signature-type" data-tsd-kind="Class">MapObject</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Focuses the given object in the collision editor view and makes sure its
-									visible in its objects list. Does not automatically select the object.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="value" class="tsd-anchor"></a>
+					<h3>value</h3>
+					<div class="tsd-signature tsd-kind-icon">value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The actual value. A number for enum property values, or an object for
+							class property values.</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -185,16 +176,16 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="tilecollisioneditor.html" class="tsd-kind-icon">Tile<wbr>Collision<wbr>Editor</a>
+						<a href="propertyvalue.html" class="tsd-kind-icon">Property<wbr>Value</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="tilecollisioneditor.html#selectedobjects" class="tsd-kind-icon">selected<wbr>Objects</a>
+								<a href="propertyvalue.html#typeid" class="tsd-kind-icon">type<wbr>Id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="tilecollisioneditor.html#view" class="tsd-kind-icon">view</a>
+								<a href="propertyvalue.html#typename" class="tsd-kind-icon">type<wbr>Name</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="tilecollisioneditor.html#focusobject" class="tsd-kind-icon">focus<wbr>Object</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="propertyvalue.html#value" class="tsd-kind-icon">value</a>
 							</li>
 						</ul>
 					</li>

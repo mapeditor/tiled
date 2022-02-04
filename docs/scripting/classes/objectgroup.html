@@ -122,6 +122,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="objectgroup.html#asset" class="tsd-kind-icon">asset</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="objectgroup.html#color" class="tsd-kind-icon">color</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="objectgroup.html#draworder" class="tsd-kind-icon">draw<wbr>Order</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="objectgroup.html#id" class="tsd-kind-icon">id</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="objectgroup.html#isgrouplayer" class="tsd-kind-icon">is<wbr>Group<wbr>Layer</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="objectgroup.html#isimagelayer" class="tsd-kind-icon">is<wbr>Image<wbr>Layer</a></li>
@@ -136,7 +137,11 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="objectgroup.html#opacity" class="tsd-kind-icon">opacity</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="objectgroup.html#readonly" class="tsd-kind-icon">read<wbr>Only</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="objectgroup.html#selected" class="tsd-kind-icon">selected</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="objectgroup.html#tintcolor" class="tsd-kind-icon">tint<wbr>Color</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="objectgroup.html#visible" class="tsd-kind-icon">visible</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="objectgroup.html#indexorder" class="tsd-kind-icon">Index<wbr>Order</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="objectgroup.html#topdownorder" class="tsd-kind-icon">Top<wbr>Down<wbr>Order</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="objectgroup.html#unknownorder" class="tsd-kind-icon">Unknown<wbr>Order</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -206,6 +211,25 @@
 						<div class="lead">
 							<p>Color of shape and point objects on this layer (when not set by object type).</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="draworder" class="tsd-anchor"></a>
+					<h3>draw<wbr>Order</h3>
+					<div class="tsd-signature tsd-kind-icon">draw<wbr>Order<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="objectgroup.html#unknownorder" class="tsd-signature-type" data-tsd-kind="Property">UnknownOrder</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="objectgroup.html#topdownorder" class="tsd-signature-type" data-tsd-kind="Property">TopDownOrder</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="objectgroup.html#indexorder" class="tsd-signature-type" data-tsd-kind="Property">IndexOrder</a></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The objects can either be drawn top down (sorted by their y-coordinate) or
+							by index (manual stacking order).</p>
+						</div>
+						<p>The default is top down.</p>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
@@ -394,6 +418,26 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="tintcolor" class="tsd-anchor"></a>
+					<h3>tint<wbr>Color</h3>
+					<div class="tsd-signature tsd-kind-icon">tint<wbr>Color<span class="tsd-signature-symbol">:</span> <a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#tintcolor">tintColor</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Tint color of the layer. Will be used to tint any images rendered by this
+								layer or by any child layers. Affects tile layers, image layers and tile
+							objects.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="visible" class="tsd-anchor"></a>
 					<h3>visible</h3>
 					<div class="tsd-signature tsd-kind-icon">visible<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
@@ -405,6 +449,27 @@
 							<p>Whether the layer is visible (affects child layer visibility for group layers).</p>
 						</div>
 					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="indexorder" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Index<wbr>Order</h3>
+					<div class="tsd-signature tsd-kind-icon">Index<wbr>Order<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="objectgroup.html#indexorder" class="tsd-signature-type" data-tsd-kind="Property">IndexOrder</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="topdownorder" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Top<wbr>Down<wbr>Order</h3>
+					<div class="tsd-signature tsd-kind-icon">Top<wbr>Down<wbr>Order<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="objectgroup.html#topdownorder" class="tsd-signature-type" data-tsd-kind="Property">TopDownOrder</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="unknownorder" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Unknown<wbr>Order</h3>
+					<div class="tsd-signature tsd-kind-icon">Unknown<wbr>Order<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="objectgroup.html#unknownorder" class="tsd-signature-type" data-tsd-kind="Property">UnknownOrder</a></div>
+					<aside class="tsd-sources">
+					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -679,6 +744,9 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="objectgroup.html#color" class="tsd-kind-icon">color</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="objectgroup.html#draworder" class="tsd-kind-icon">draw<wbr>Order</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="objectgroup.html#id" class="tsd-kind-icon">id</a>
 							</li>
@@ -722,7 +790,19 @@
 								<a href="objectgroup.html#selected" class="tsd-kind-icon">selected</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="objectgroup.html#tintcolor" class="tsd-kind-icon">tint<wbr>Color</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="objectgroup.html#visible" class="tsd-kind-icon">visible</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="objectgroup.html#indexorder" class="tsd-kind-icon">Index<wbr>Order</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="objectgroup.html#topdownorder" class="tsd-kind-icon">Top<wbr>Down<wbr>Order</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="objectgroup.html#unknownorder" class="tsd-kind-icon">Unknown<wbr>Order</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="objectgroup.html#addobject" class="tsd-kind-icon">add<wbr>Object</a>

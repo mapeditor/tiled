@@ -86,6 +86,20 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>This interface can be implemented to define a custom tool. See
+						<a href="../modules/tiled.html#registertool">tiled.registerTool</a> for an example.</p>
+					</div>
+					<p>The mouse button parameters are numbers from the
+						<a href="https://doc.qt.io/qt-5/qt.html#MouseButton-enum">Qt::MouseButton</a> enum.
+					They can be accessed like <code>Qt.LeftButton</code>.</p>
+					<p>Whenever there is a keyboard modifiers parameter, they are given as flags
+						from the <a href="https://doc.qt.io/qt-5/qt.html#KeyboardModifier-enum">Qt::KeyboarModifiers</a>
+					enum, available similarly like <code>Qt.ShiftModifier</code>.</p>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -109,6 +123,8 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="tool.html#selectedtile" class="tsd-kind-icon">selected<wbr>Tile</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="tool.html#statusinfo" class="tsd-kind-icon">status<wbr>Info</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="tool.html#tileposition" class="tsd-kind-icon">tile<wbr>Position</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="tool.html#usesselectedtiles" class="tsd-kind-icon">uses<wbr>Selected<wbr>Tiles</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="tool.html#useswangsets" class="tsd-kind-icon">uses<wbr>Wang<wbr>Sets</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -162,7 +178,7 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="map" class="tsd-anchor"></a>
-					<h3>map</h3>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> map</h3>
 					<div class="tsd-signature tsd-kind-icon">map<span class="tsd-signature-symbol">:</span> <a href="../classes/tilemap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a></div>
 					<aside class="tsd-sources">
 					</aside>
@@ -198,7 +214,7 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="selectedtile" class="tsd-anchor"></a>
-					<h3>selected<wbr>Tile</h3>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> selected<wbr>Tile</h3>
 					<div class="tsd-signature tsd-kind-icon">selected<wbr>Tile<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 					</aside>
@@ -222,7 +238,7 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="tileposition" class="tsd-anchor"></a>
-					<h3>tile<wbr>Position</h3>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> tile<wbr>Position</h3>
 					<div class="tsd-signature tsd-kind-icon">tile<wbr>Position<span class="tsd-signature-symbol">:</span> <a href="point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a></div>
 					<aside class="tsd-sources">
 					</aside>
@@ -230,6 +246,47 @@
 						<div class="lead">
 							<p>Mouse cursor position in tile coordinates.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="usesselectedtiles" class="tsd-anchor"></a>
+					<h3>uses<wbr>Selected<wbr>Tiles</h3>
+					<div class="tsd-signature tsd-kind-icon">uses<wbr>Selected<wbr>Tiles<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Whether this tool uses the currently selected tiles. This defaults to
+							<code>false</code>.</p>
+						</div>
+						<p>When set to <code>false</code> and the currently selected tiles change while this
+							tool is active, the Stamp Brush is automatically activated. Set this
+						property to <code>true</code> to keep this tool active.</p>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="useswangsets" class="tsd-anchor"></a>
+					<h3>uses<wbr>Wang<wbr>Sets</h3>
+					<div class="tsd-signature tsd-kind-icon">uses<wbr>Wang<wbr>Sets<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Whether this tool works with Wang sets. This defaults to <code>false</code>.</p>
+						</div>
+						<p>When set to <code>false</code> and a Wang color is clicked while this tool is active,
+							the Terrain Brush is automatically activated. Set this property to <code>true</code>
+						to keep this tool active.</p>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 			</section>
@@ -275,7 +332,7 @@
 					<a name="keypressed" class="tsd-anchor"></a>
 					<h3>key<wbr>Pressed</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">key<wbr>Pressed<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">key<wbr>Pressed<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -285,6 +342,9 @@
 								<div class="lead">
 									<p>Called when a key was pressed while the tool was active.</p>
 								</div>
+								<p>The keys are defined by numbers from the
+									<a href="https://doc.qt.io/qt-5/qt.html#Key-enum">Qt::Key</a> enum. They can
+								be accessed like <code>Qt.Key_Return</code>.</p>
 							</div>
 						</li>
 					</ul>
@@ -329,7 +389,7 @@
 					<a name="modifierschanged" class="tsd-anchor"></a>
 					<h3>modifiers<wbr>Changed</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">modifiers<wbr>Changed<span class="tsd-signature-symbol">(</span>modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">modifiers<wbr>Changed<span class="tsd-signature-symbol">(</span>modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -347,7 +407,7 @@
 					<a name="mousedoubleclicked" class="tsd-anchor"></a>
 					<h3>mouse<wbr>Double<wbr>Clicked</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">mouse<wbr>Double<wbr>Clicked<span class="tsd-signature-symbol">(</span>button<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">mouse<wbr>Double<wbr>Clicked<span class="tsd-signature-symbol">(</span>button<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -401,7 +461,7 @@
 					<a name="mousemoved" class="tsd-anchor"></a>
 					<h3>mouse<wbr>Moved</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">mouse<wbr>Moved<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">mouse<wbr>Moved<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -419,7 +479,7 @@
 					<a name="mousepressed" class="tsd-anchor"></a>
 					<h3>mouse<wbr>Pressed</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">mouse<wbr>Pressed<span class="tsd-signature-symbol">(</span>button<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">mouse<wbr>Pressed<span class="tsd-signature-symbol">(</span>button<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -437,7 +497,7 @@
 					<a name="mousereleased" class="tsd-anchor"></a>
 					<h3>mouse<wbr>Released</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">mouse<wbr>Released<span class="tsd-signature-symbol">(</span>button<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">mouse<wbr>Released<span class="tsd-signature-symbol">(</span>button<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -499,9 +559,12 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Called when the hovered tile position changed.</p>
+									<p>Defining this function is necessary to suppress the default updating of
+									the status bar text.</p>
 								</div>
-								<p>Used to override the default updating of the status bar text.</p>
+								<p>This function is called automatically when the hovered tile position
+									changed, but <a href="tool.html#statusinfo">statusInfo</a> can be changed in any other function as
+								well.</p>
 							</div>
 						</li>
 					</ul>
@@ -546,6 +609,12 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="tool.html#tileposition" class="tsd-kind-icon">tile<wbr>Position</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="tool.html#usesselectedtiles" class="tsd-kind-icon">uses<wbr>Selected<wbr>Tiles</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="tool.html#useswangsets" class="tsd-kind-icon">uses<wbr>Wang<wbr>Sets</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="tool.html#activated" class="tsd-kind-icon">activated</a>

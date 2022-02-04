@@ -92,10 +92,10 @@
 						<p>A tile layer.</p>
 					</div>
 					<p>Note that while tile layers have a size, the size is generally ignored on
-						infinite maps. Even for fixed size maps, nothing in the scripting API stops you
-						from changing the layer outside of its boundaries and changing the size of the
-						layer has no effect on its contents. If you want to change the size while
-					affecting the contents, use the <a href="tilelayer.html#resize">resize</a> function.</p>
+						infinite maps. Even for fixed size maps, nothing in the scripting API stops
+						you from changing the layer outside of its boundaries and changing the size
+						of the layer has no effect on its contents. If you want to change the size
+					while affecting the contents, use the <a href="tilelayer.html#resize">resize</a> function.</p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
@@ -139,6 +139,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tilelayer.html#readonly" class="tsd-kind-icon">read<wbr>Only</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tilelayer.html#selected" class="tsd-kind-icon">selected</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilelayer.html#size" class="tsd-kind-icon">size</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tilelayer.html#tintcolor" class="tsd-kind-icon">tint<wbr>Color</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tilelayer.html#visible" class="tsd-kind-icon">visible</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilelayer.html#width" class="tsd-kind-icon">width</a></li>
 							</ul>
@@ -384,6 +385,26 @@
 						<div class="lead">
 							<p>Size of the layer in tiles (only relevant for non-infinite maps).</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="tintcolor" class="tsd-anchor"></a>
+					<h3>tint<wbr>Color</h3>
+					<div class="tsd-signature tsd-kind-icon">tint<wbr>Color<span class="tsd-signature-symbol">:</span> <a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#tintcolor">tintColor</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Tint color of the layer. Will be used to tint any images rendered by this
+								layer or by any child layers. Affects tile layers, image layers and tile
+							objects.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
@@ -741,6 +762,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="tilelayer.html#size" class="tsd-kind-icon">size</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="tilelayer.html#tintcolor" class="tsd-kind-icon">tint<wbr>Color</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="tilelayer.html#visible" class="tsd-kind-icon">visible</a>

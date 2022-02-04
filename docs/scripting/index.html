@@ -94,6 +94,7 @@
 						<a href="https://www.npmjs.com/package/@mapeditor/tiled-api"><code>@mapeditor/tiled-api</code></a>
 						package, which allows you to write scripts using TypeScript and can provide
 					auto-completion in your editor (also when using plain JavaScript).</p>
+					<p>This documentation is also generated based on these type definitions.</p>
 				</div>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -132,6 +133,7 @@
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-interface"><a href="interfaces/action.html" class="tsd-kind-icon">Action</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/file.html" class="tsd-kind-icon">File</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/fileformat.html" class="tsd-kind-icon">File<wbr>Format</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/fileinfo.html" class="tsd-kind-icon">File<wbr>Info</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/filepath.html" class="tsd-kind-icon">File<wbr>Path</a></li>
@@ -142,6 +144,7 @@
 								<li class="tsd-kind-interface"><a href="interfaces/menuaction.html" class="tsd-kind-icon">Menu<wbr>Action</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/menuseparator.html" class="tsd-kind-icon">Menu<wbr>Separator</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/objectref.html" class="tsd-kind-icon">Object<wbr>Ref</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/propertyvalue.html" class="tsd-kind-icon">Property<wbr>Value</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/scriptedmapformat.html" class="tsd-kind-icon">Scripted<wbr>Map<wbr>Format</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/scriptedtilesetformat.html" class="tsd-kind-icon">Scripted<wbr>Tileset<wbr>Format</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/selectedarea.html" class="tsd-kind-icon">Selected<wbr>Area</a></li>
@@ -165,7 +168,7 @@
 						<section class="tsd-index-section ">
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias"><a href="index.html#menu" class="tsd-kind-icon">Menu</a></li>
+								<li class="tsd-kind-type-alias"><a href="index.html#menuitem" class="tsd-kind-icon">Menu<wbr>Item</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#polygon" class="tsd-kind-icon">Polygon</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#tiledobjectpropertyvalue" class="tsd-kind-icon">Tiled<wbr>Object<wbr>Property<wbr>Value</a></li>
 							</ul>
@@ -176,11 +179,17 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Type aliases</h2>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
-					<a name="menu" class="tsd-anchor"></a>
-					<h3>Menu</h3>
-					<div class="tsd-signature tsd-kind-icon">Menu<span class="tsd-signature-symbol">:</span> <a href="interfaces/menuaction.html" class="tsd-signature-type" data-tsd-kind="Interface">MenuAction</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/menuseparator.html" class="tsd-signature-type" data-tsd-kind="Interface">MenuSeparator</a></div>
+					<a name="menuitem" class="tsd-anchor"></a>
+					<h3>Menu<wbr>Item</h3>
+					<div class="tsd-signature tsd-kind-icon">Menu<wbr>Item<span class="tsd-signature-symbol">:</span> <a href="interfaces/menuaction.html" class="tsd-signature-type" data-tsd-kind="Interface">MenuAction</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/menuseparator.html" class="tsd-signature-type" data-tsd-kind="Interface">MenuSeparator</a></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>An item in a menu, which is either an action or a separator. Used with
+							<a href="modules/tiled.html#extendmenu">tiled.extendMenu</a>.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
 					<a name="polygon" class="tsd-anchor"></a>
@@ -200,9 +209,14 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
 					<a name="tiledobjectpropertyvalue" class="tsd-anchor"></a>
 					<h3>Tiled<wbr>Object<wbr>Property<wbr>Value</h3>
-					<div class="tsd-signature tsd-kind-icon">Tiled<wbr>Object<wbr>Property<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><a href="interfaces/objectref.html" class="tsd-signature-type" data-tsd-kind="Interface">ObjectRef</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/filepath.html" class="tsd-signature-type" data-tsd-kind="Interface">FilePath</a><span class="tsd-signature-symbol"> | </span><a href="classes/mapobject.html" class="tsd-signature-type" data-tsd-kind="Class">MapObject</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
+					<div class="tsd-signature tsd-kind-icon">Tiled<wbr>Object<wbr>Property<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><a href="interfaces/objectref.html" class="tsd-signature-type" data-tsd-kind="Interface">ObjectRef</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/filepath.html" class="tsd-signature-type" data-tsd-kind="Interface">FilePath</a><span class="tsd-signature-symbol"> | </span><a href="classes/mapobject.html" class="tsd-signature-type" data-tsd-kind="Class">MapObject</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/propertyvalue.html" class="tsd-signature-type" data-tsd-kind="Interface">PropertyValue</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A type alias used to describe the possible values in object properties.</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -274,6 +288,9 @@
 						<a href="interfaces/action.html" class="tsd-kind-icon">Action</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="interfaces/file.html" class="tsd-kind-icon">File</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/fileformat.html" class="tsd-kind-icon">File<wbr>Format</a>
 					</li>
 					<li class=" tsd-kind-interface">
@@ -302,6 +319,9 @@
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/objectref.html" class="tsd-kind-icon">Object<wbr>Ref</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/propertyvalue.html" class="tsd-kind-icon">Property<wbr>Value</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/scriptedmapformat.html" class="tsd-kind-icon">Scripted<wbr>Map<wbr>Format</a>
@@ -358,7 +378,7 @@
 						<a href="interfaces/size.html" class="tsd-kind-icon">size</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="index.html#menu" class="tsd-kind-icon">Menu</a>
+						<a href="index.html#menuitem" class="tsd-kind-icon">Menu<wbr>Item</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="index.html#polygon" class="tsd-kind-icon">Polygon</a>

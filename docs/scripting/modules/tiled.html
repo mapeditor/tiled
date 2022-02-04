@@ -104,12 +104,14 @@
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#actions" class="tsd-kind-icon">actions</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#activeasset" class="tsd-kind-icon">active<wbr>Asset</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#activeassetchanged" class="tsd-kind-icon">active<wbr>Asset<wbr>Changed</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#applicationdirpath" class="tsd-kind-icon">application<wbr>Dir<wbr>Path</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#arch" class="tsd-kind-icon">arch</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#assetabouttobeclosed" class="tsd-kind-icon">asset<wbr>About<wbr>ToBe<wbr>Closed</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#assetabouttobesaved" class="tsd-kind-icon">asset<wbr>About<wbr>ToBe<wbr>Saved</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#assetcreated" class="tsd-kind-icon">asset<wbr>Created</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#assetopened" class="tsd-kind-icon">asset<wbr>Opened</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#assetsaved" class="tsd-kind-icon">asset<wbr>Saved</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#extensionspath" class="tsd-kind-icon">extensions<wbr>Path</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#mapeditor" class="tsd-kind-icon">map<wbr>Editor</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#mapformats" class="tsd-kind-icon">map<wbr>Formats</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#menus" class="tsd-kind-icon">menus</a></li>
@@ -136,6 +138,7 @@
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#objectref" class="tsd-kind-icon">object<wbr>Ref</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#open" class="tsd-kind-icon">open</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#prompt" class="tsd-kind-icon">prompt</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#propertyvalue" class="tsd-kind-icon">property<wbr>Value</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#registeraction" class="tsd-kind-icon">register<wbr>Action</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#registermapformat" class="tsd-kind-icon">register<wbr>Map<wbr>Format</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#registertilesetformat" class="tsd-kind-icon">register<wbr>Tileset<wbr>Format</a></li>
@@ -172,7 +175,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>urrently selected asset, or <code>null</code> if no file is open.
+							<p>Currently selected asset, or <code>null</code> if no file is open.
 							Can be assigned any open asset in order to change the active asset.</p>
 						</div>
 					</div>
@@ -185,8 +188,25 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The currently active asset has changed.</p>
+							<p>The <a href="tiled.html#activeasset">activeAsset</a> has changed.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+					<a name="applicationdirpath" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> application<wbr>Dir<wbr>Path</h3>
+					<div class="tsd-signature tsd-kind-icon">application<wbr>Dir<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The directory containing the Tiled executable.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
@@ -260,6 +280,30 @@
 						<div class="lead">
 							<p>An asset has been saved.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+					<a name="extensionspath" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> extensions<wbr>Path</h3>
+					<div class="tsd-signature tsd-kind-icon">extensions<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The system- and user-specific path where global extensions are installed.</p>
+						</div>
+						<p>Note that normally it is not necessary to use this path, since the &quot;ext:&quot;
+							prefix can be used to refer to files shipping with extensions. Also, there
+							is a <code>__filename</code> property containing the full file path of the currently
+						evaluated file.</p>
+						<p>Also note that a Tiled project can have its own additional extensions
+							directory, to make it easier to share extensions with a team or keep them
+						under version control.</p>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
@@ -479,7 +523,7 @@
 					<a name="extendmenu" class="tsd-anchor"></a>
 					<h3>extend<wbr>Menu</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
-						<li class="tsd-signature tsd-kind-icon">extend<wbr>Menu<span class="tsd-signature-symbol">(</span>shortName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, menu<span class="tsd-signature-symbol">: </span><a href="../index.html#menu" class="tsd-signature-type" data-tsd-kind="Type alias">Menu</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">extend<wbr>Menu<span class="tsd-signature-symbol">(</span>shortName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, menu<span class="tsd-signature-symbol">: </span><a href="../index.html#menuitem" class="tsd-signature-type" data-tsd-kind="Type alias">MenuItem</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -636,6 +680,42 @@
 										given label and optional title. The optional <code>text</code> parameter
 									provides the initial value of the text. Returns the entered text.</p>
 								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="propertyvalue" class="tsd-anchor"></a>
+					<h3>property<wbr>Value</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">property<wbr>Value<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/propertyvalue.html" class="tsd-signature-type" data-tsd-kind="Interface">PropertyValue</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates a <a href="../interfaces/propertyvalue.html">PropertyValue</a> object with the given type and value.</p>
+								</div>
+								<p>When creating an enum value, the name of the value can be used (or string
+									with comma-separated names, in case of using flags). However, the created
+								<a href="../interfaces/propertyvalue.html">PropertyValue</a> object will always use numbers for enum values.</p>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><p>Creating a value of a custom enum:</p>
+										<pre><code class="language-js"><span style="color: #569CD6">var</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">bodyType</span><span style="color: #D4D4D4"> = </span><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">propertyValue</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&quot;BodyType&quot;</span><span style="color: #D4D4D4">, </span><span style="color: #CE9178">&quot;Dynamic&quot;</span><span style="color: #D4D4D4">)</span>
+</code></pre>
+									</dd>
+									<dt>example</dt>
+									<dd><p>Creating a value of a custom class:</p>
+										<pre><code class="language-js"><span style="color: #569CD6">var</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">body</span><span style="color: #D4D4D4"> = </span><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">propertyValue</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&quot;Body&quot;</span><span style="color: #D4D4D4">, { </span><span style="color: #9CDCFE">type:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">bodyType</span><span style="color: #D4D4D4">, </span><span style="color: #9CDCFE">bullet:</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">true</span><span style="color: #D4D4D4"> })</span>
+</code></pre>
+									</dd>
+									<dt>since</dt>
+									<dd><p>1.8</p>
+									</dd>
+								</dl>
 							</div>
 						</li>
 					</ul>
@@ -961,6 +1041,9 @@
 						<a href="tiled.html#activeassetchanged" class="tsd-kind-icon">active<wbr>Asset<wbr>Changed</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="tiled.html#applicationdirpath" class="tsd-kind-icon">application<wbr>Dir<wbr>Path</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
 						<a href="tiled.html#arch" class="tsd-kind-icon">arch</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
@@ -977,6 +1060,9 @@
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
 						<a href="tiled.html#assetsaved" class="tsd-kind-icon">asset<wbr>Saved</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="tiled.html#extensionspath" class="tsd-kind-icon">extensions<wbr>Path</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
 						<a href="tiled.html#mapeditor" class="tsd-kind-icon">map<wbr>Editor</a>
@@ -1040,6 +1126,9 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#prompt" class="tsd-kind-icon">prompt</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="tiled.html#propertyvalue" class="tsd-kind-icon">property<wbr>Value</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#registeraction" class="tsd-kind-icon">register<wbr>Action</a>

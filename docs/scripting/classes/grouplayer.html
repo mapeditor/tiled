@@ -126,6 +126,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="grouplayer.html#isobjectlayer" class="tsd-kind-icon">is<wbr>Object<wbr>Layer</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="grouplayer.html#istilelayer" class="tsd-kind-icon">is<wbr>Tile<wbr>Layer</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="grouplayer.html#layercount" class="tsd-kind-icon">layer<wbr>Count</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="grouplayer.html#layers" class="tsd-kind-icon">layers</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="grouplayer.html#locked" class="tsd-kind-icon">locked</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="grouplayer.html#map" class="tsd-kind-icon">map</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="grouplayer.html#name" class="tsd-kind-icon">name</a></li>
@@ -133,6 +134,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="grouplayer.html#opacity" class="tsd-kind-icon">opacity</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="grouplayer.html#readonly" class="tsd-kind-icon">read<wbr>Only</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="grouplayer.html#selected" class="tsd-kind-icon">selected</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="grouplayer.html#tintcolor" class="tsd-kind-icon">tint<wbr>Color</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="grouplayer.html#visible" class="tsd-kind-icon">visible</a></li>
 							</ul>
 						</section>
@@ -275,6 +277,23 @@
 						</div>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="layers" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> layers</h3>
+					<div class="tsd-signature tsd-kind-icon">layers<span class="tsd-signature-symbol">:</span> <a href="layer.html" class="tsd-signature-type" data-tsd-kind="Class">Layer</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The child layers of this group layer.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="locked" class="tsd-anchor"></a>
 					<h3>locked</h3>
@@ -364,6 +383,26 @@
 						<div class="lead">
 							<p>Whether the layer is selected.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="tintcolor" class="tsd-anchor"></a>
+					<h3>tint<wbr>Color</h3>
+					<div class="tsd-signature tsd-kind-icon">tint<wbr>Color<span class="tsd-signature-symbol">:</span> <a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="layer.html">Layer</a>.<a href="layer.html#tintcolor">tintColor</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Tint color of the layer. Will be used to tint any images rendered by this
+								layer or by any child layers. Affects tile layers, image layers and tile
+							objects.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
@@ -676,6 +715,9 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="grouplayer.html#layercount" class="tsd-kind-icon">layer<wbr>Count</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="grouplayer.html#layers" class="tsd-kind-icon">layers</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="grouplayer.html#locked" class="tsd-kind-icon">locked</a>
 							</li>
@@ -696,6 +738,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="grouplayer.html#selected" class="tsd-kind-icon">selected</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="grouplayer.html#tintcolor" class="tsd-kind-icon">tint<wbr>Color</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="grouplayer.html#visible" class="tsd-kind-icon">visible</a>

@@ -86,6 +86,18 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>A tile-map asset.</p>
+					</div>
+					<p>Usually this asset defines a specific level or area in a game.</p>
+					<p>Contrary to the name, this is not necessary a tile-map. The contents are
+						defined by the layers that are added to it, which could also include only
+						image and object layers. Yet, this class has many properties that affect how
+					the tile layers are rendered.</p>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -115,7 +127,9 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tilemap.html#asset" class="tsd-kind-icon">asset</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#backgroundcolor" class="tsd-kind-icon">background<wbr>Color</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#currentlayer" class="tsd-kind-icon">current<wbr>Layer</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#currentlayerchanged" class="tsd-kind-icon">current<wbr>Layer<wbr>Changed</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tilemap.html#filename" class="tsd-kind-icon">file<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tilemap.html#filenamechanged" class="tsd-kind-icon">file<wbr>Name<wbr>Changed</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#height" class="tsd-kind-icon">height</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#hexsidelength" class="tsd-kind-icon">hex<wbr>Side<wbr>Length</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#infinite" class="tsd-kind-icon">infinite</a></li>
@@ -123,13 +137,19 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tilemap.html#istileset" class="tsd-kind-icon">is<wbr>Tileset</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#layercount" class="tsd-kind-icon">layer<wbr>Count</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#layerdataformat" class="tsd-kind-icon">layer<wbr>Data<wbr>Format</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#layers" class="tsd-kind-icon">layers</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tilemap.html#modified" class="tsd-kind-icon">modified</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tilemap.html#modifiedchanged" class="tsd-kind-icon">modified<wbr>Changed</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#orientation" class="tsd-kind-icon">orientation</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#parallaxorigin" class="tsd-kind-icon">parallax<wbr>Origin</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="tilemap.html#readonly" class="tsd-kind-icon">read<wbr>Only</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#regionedited" class="tsd-kind-icon">region<wbr>Edited</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#renderorder" class="tsd-kind-icon">render<wbr>Order</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#selectedarea" class="tsd-kind-icon">selected<wbr>Area</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#selectedlayers" class="tsd-kind-icon">selected<wbr>Layers</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#selectedlayerschanged" class="tsd-kind-icon">selected<wbr>Layers<wbr>Changed</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#selectedobjects" class="tsd-kind-icon">selected<wbr>Objects</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#selectedobjectschanged" class="tsd-kind-icon">selected<wbr>Objects<wbr>Changed</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#size" class="tsd-kind-icon">size</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#staggeraxis" class="tsd-kind-icon">stagger<wbr>Axis</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="tilemap.html#staggerindex" class="tsd-kind-icon">stagger<wbr>Index</a></li>
@@ -175,6 +195,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tilemap.html#redo" class="tsd-kind-icon">redo</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#removelayer" class="tsd-kind-icon">remove<wbr>Layer</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#removelayerat" class="tsd-kind-icon">remove<wbr>Layer<wbr>At</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#removeobjects" class="tsd-kind-icon">remove<wbr>Objects</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="tilemap.html#removeproperty" class="tsd-kind-icon">remove<wbr>Property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#removetileset" class="tsd-kind-icon">remove<wbr>Tileset</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="tilemap.html#replacetileset" class="tsd-kind-icon">replace<wbr>Tileset</a></li>
@@ -257,6 +278,18 @@
 						</div>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="currentlayerchanged" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Layer<wbr>Changed</h3>
+					<div class="tsd-signature tsd-kind-icon">current<wbr>Layer<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="../interfaces/signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The signal emitted when <a href="tilemap.html#currentlayer">currentLayer</a> changes.</p>
+						</div>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="filename" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> file<wbr>Name</h3>
@@ -268,6 +301,21 @@
 						<div class="lead">
 							<p>File name of the asset.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="filenamechanged" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> file<wbr>Name<wbr>Changed</h3>
+					<div class="tsd-signature tsd-kind-icon">file<wbr>Name<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="../interfaces/signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#filenamechanged">fileNameChanged</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The signal emitted when <a href="tilemap.html#filename">fileName</a> changes.</p>
+						</div>
+						<p>Its first parameter is the new file name, the second parameter is the old
+						file name.</p>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -356,6 +404,23 @@
 						</div>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="layers" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> layers</h3>
+					<div class="tsd-signature tsd-kind-icon">layers<span class="tsd-signature-symbol">:</span> <a href="layer.html" class="tsd-signature-type" data-tsd-kind="Class">Layer</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The top-level layers of this map. To access nested layers, use <a href="grouplayer.html#layers">GroupLayer.layers</a>.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="modified" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> modified</h3>
@@ -369,6 +434,19 @@
 						</div>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="modifiedchanged" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> modified<wbr>Changed</h3>
+					<div class="tsd-signature tsd-kind-icon">modified<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="../interfaces/signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#modifiedchanged">modifiedChanged</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The signal emitted when <a href="tilemap.html#modified">modified</a> changes.</p>
+						</div>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="orientation" class="tsd-anchor"></a>
 					<h3>orientation</h3>
@@ -379,6 +457,23 @@
 						<div class="lead">
 							<p>General map orientation</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="parallaxorigin" class="tsd-anchor"></a>
+					<h3>parallax<wbr>Origin</h3>
+					<div class="tsd-signature tsd-kind-icon">parallax<wbr>Origin<span class="tsd-signature-symbol">:</span> <a href="../interfaces/point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The parallax origin used for reference when applying the respective parallax factor.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
@@ -395,6 +490,20 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="regionedited" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> region<wbr>Edited</h3>
+					<div class="tsd-signature tsd-kind-icon">region<wbr>Edited<span class="tsd-signature-symbol">:</span> <a href="../interfaces/signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/region.html" class="tsd-signature-type" data-tsd-kind="Interface">region</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The signal emitted after a region of a <a href="tilelayer.html">TileLayer</a> was edited.</p>
+						</div>
+						<p>This signal is not emitted on undo/redo, nor after changes made in
+						scripts. It receives the affected <a href="tilelayer.html">TileLayer</a> as a second parameter.</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="renderorder" class="tsd-anchor"></a>
 					<h3>render<wbr>Order</h3>
 					<div class="tsd-signature tsd-kind-icon">render<wbr>Order<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="tilemap.html#rightdown" class="tsd-signature-type" data-tsd-kind="Property">RightDown</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="tilemap.html#rightup" class="tsd-signature-type" data-tsd-kind="Property">RightUp</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="tilemap.html#leftdown" class="tsd-signature-type" data-tsd-kind="Property">LeftDown</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="tilemap.html#leftup" class="tsd-signature-type" data-tsd-kind="Property">LeftUp</a></div>
@@ -408,7 +517,7 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="selectedarea" class="tsd-anchor"></a>
-					<h3>selected<wbr>Area</h3>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> selected<wbr>Area</h3>
 					<div class="tsd-signature tsd-kind-icon">selected<wbr>Area<span class="tsd-signature-symbol">:</span> <a href="../interfaces/selectedarea.html" class="tsd-signature-type" data-tsd-kind="Interface">SelectedArea</a></div>
 					<aside class="tsd-sources">
 					</aside>
@@ -431,6 +540,18 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="selectedlayerschanged" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> selected<wbr>Layers<wbr>Changed</h3>
+					<div class="tsd-signature tsd-kind-icon">selected<wbr>Layers<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="../interfaces/signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The signal emitted when <a href="tilemap.html#selectedlayers">selectedLayers</a> changes.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="selectedobjects" class="tsd-anchor"></a>
 					<h3>selected<wbr>Objects</h3>
 					<div class="tsd-signature tsd-kind-icon">selected<wbr>Objects<span class="tsd-signature-symbol">:</span> <a href="mapobject.html" class="tsd-signature-type" data-tsd-kind="Class">MapObject</a><span class="tsd-signature-symbol">[]</span></div>
@@ -439,6 +560,18 @@
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>Selected objects.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="selectedobjectschanged" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> selected<wbr>Objects<wbr>Changed</h3>
+					<div class="tsd-signature tsd-kind-icon">selected<wbr>Objects<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="../interfaces/signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The signal emitted when <a href="tilemap.html#selectedobjects">selectedObjects</a> changes.</p>
 						</div>
 					</div>
 				</section>
@@ -504,13 +637,13 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="tilesets" class="tsd-anchor"></a>
-					<h3>tilesets</h3>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> tilesets</h3>
 					<div class="tsd-signature tsd-kind-icon">tilesets<span class="tsd-signature-symbol">:</span> <a href="tileset.html" class="tsd-signature-type" data-tsd-kind="Class">Tileset</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The list of tilesets referenced by this map. To determine which tilesets are actually used, call usedTilesets().</p>
+							<p>The list of tilesets referenced by this map. To determine which tilesets are actually used, call <a href="tilemap.html#usedtilesets">usedTilesets</a>.</p>
 						</div>
 					</div>
 				</section>
@@ -702,8 +835,8 @@
 					<a name="automap" class="tsd-anchor"></a>
 					<h3>auto<wbr>Map</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">auto<wbr>Map<span class="tsd-signature-symbol">(</span>rulesFule<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-						<li class="tsd-signature tsd-kind-icon">auto<wbr>Map<span class="tsd-signature-symbol">(</span>region<span class="tsd-signature-symbol">: </span><a href="../interfaces/rect.html" class="tsd-signature-type" data-tsd-kind="Interface">rect</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/region.html" class="tsd-signature-type" data-tsd-kind="Interface">region</a>, rulesFile<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">auto<wbr>Map<span class="tsd-signature-symbol">(</span>rulesOrMapFile<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">auto<wbr>Map<span class="tsd-signature-symbol">(</span>region<span class="tsd-signature-symbol">: </span><a href="../interfaces/rect.html" class="tsd-signature-type" data-tsd-kind="Interface">rect</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/region.html" class="tsd-signature-type" data-tsd-kind="Interface">region</a>, rulesOrMapFile<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -711,9 +844,14 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Applies <a href="https://doc.mapeditor.org/en/stable/manual/automapping/">Automapping</a> using the given rules file, or using the default rules file is none is given.</p>
+									<p>Applies <a href="https://doc.mapeditor.org/en/stable/manual/automapping/">Automapping</a> using the given rules file or rule map file.</p>
 								</div>
-								<p>This operation can only be applied to maps loaded from a file.</p>
+								<p>When no rules file nor rule map file is given, Automapping is applied using the default rules file.</p>
+								<dl class="tsd-comment-tags">
+									<dt>note</dt>
+									<dd><p>This operation can only be applied to maps loaded from a file.</p>
+									</dd>
+								</dl>
 							</div>
 						</li>
 						<li class="tsd-description">
@@ -721,9 +859,14 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Applies <a href="https://doc.mapeditor.org/en/stable/manual/automapping/">Automapping</a> in the given region using the given rules file, or using the default rules file is none is given.</p>
+									<p>Applies <a href="https://doc.mapeditor.org/en/stable/manual/automapping/">Automapping</a> in the given region using the given rules file or rule map file.</p>
 								</div>
-								<p>This operation can only be applied to maps loaded from a file.</p>
+								<p>When no rules file nor rule map file is given, Automapping is applied using the default rules file.</p>
+								<dl class="tsd-comment-tags">
+									<dt>note</dt>
+									<dd><p>This operation can only be applied to maps loaded from a file.</p>
+									</dd>
+								</dl>
 							</div>
 						</li>
 					</ul>
@@ -971,6 +1114,29 @@
 								<div class="lead">
 									<p>Removes the top-level layer at the given index. When a reference to the layer still exists, that reference becomes a standalone copy of the layer.</p>
 								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removeobjects" class="tsd-anchor"></a>
+					<h3>remove<wbr>Objects</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Objects<span class="tsd-signature-symbol">(</span>objects<span class="tsd-signature-symbol">: </span><a href="mapobject.html" class="tsd-signature-type" data-tsd-kind="Class">MapObject</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Removes the given objects from this map. The object references turn into a standalone copy of the object.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.8</p>
+									</dd>
+								</dl>
 							</div>
 						</li>
 					</ul>
@@ -1325,7 +1491,7 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns the list of tilesets actually used by this map. This is generally a subset of the tilesets referenced by the map (the TileMap.tilesets property).</p>
+									<p>Returns the list of tilesets actually used by this map. This is generally a subset of the tilesets referenced by the map (the <a href="tilemap.html#tilesets">tilesets</a> property).</p>
 								</div>
 							</div>
 						</li>
@@ -1360,8 +1526,14 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="tilemap.html#currentlayer" class="tsd-kind-icon">current<wbr>Layer</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="tilemap.html#currentlayerchanged" class="tsd-kind-icon">current<wbr>Layer<wbr>Changed</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="tilemap.html#filename" class="tsd-kind-icon">file<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="tilemap.html#filenamechanged" class="tsd-kind-icon">file<wbr>Name<wbr>Changed</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="tilemap.html#height" class="tsd-kind-icon">height</a>
@@ -1384,14 +1556,26 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="tilemap.html#layerdataformat" class="tsd-kind-icon">layer<wbr>Data<wbr>Format</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="tilemap.html#layers" class="tsd-kind-icon">layers</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="tilemap.html#modified" class="tsd-kind-icon">modified</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="tilemap.html#modifiedchanged" class="tsd-kind-icon">modified<wbr>Changed</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="tilemap.html#orientation" class="tsd-kind-icon">orientation</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="tilemap.html#parallaxorigin" class="tsd-kind-icon">parallax<wbr>Origin</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="tilemap.html#readonly" class="tsd-kind-icon">read<wbr>Only</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="tilemap.html#regionedited" class="tsd-kind-icon">region<wbr>Edited</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="tilemap.html#renderorder" class="tsd-kind-icon">render<wbr>Order</a>
@@ -1403,7 +1587,13 @@
 								<a href="tilemap.html#selectedlayers" class="tsd-kind-icon">selected<wbr>Layers</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="tilemap.html#selectedlayerschanged" class="tsd-kind-icon">selected<wbr>Layers<wbr>Changed</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="tilemap.html#selectedobjects" class="tsd-kind-icon">selected<wbr>Objects</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="tilemap.html#selectedobjectschanged" class="tsd-kind-icon">selected<wbr>Objects<wbr>Changed</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="tilemap.html#size" class="tsd-kind-icon">size</a>
@@ -1524,6 +1714,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="tilemap.html#removelayerat" class="tsd-kind-icon">remove<wbr>Layer<wbr>At</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="tilemap.html#removeobjects" class="tsd-kind-icon">remove<wbr>Objects</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="tilemap.html#removeproperty" class="tsd-kind-icon">remove<wbr>Property</a>
