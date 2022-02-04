@@ -297,7 +297,7 @@
     <message>
         <location line="+1"/>
         <source>I&apos;m a &amp;supporter!</source>
-        <translation type="unfinished"></translation>
+        <translation>Jag är &amp;stödjare!</translation>
     </message>
     <message>
         <location line="+1"/>
