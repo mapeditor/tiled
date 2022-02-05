@@ -7575,12 +7575,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/changeimagelayerproperty.cpp" line="+38"/>
         <source>Change Transparent Color</source>
-        <translation type="unfinished">Saydam Rengini Değiştir</translation>
+        <translation>Saydam Rengini Değiştir</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Change Image Source</source>
-        <translation type="unfinished">Resim Kaynağını Değiştir</translation>
+        <translation>Resim Kaynağını Değiştir</translation>
     </message>
     <message>
         <location line="+25"/>
