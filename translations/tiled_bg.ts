@@ -7607,12 +7607,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changeimagelayerproperty.cpp" line="+38"/>
         <source>Change Transparent Color</source>
-        <translation type="unfinished">Промяна на цвета за прозрачност</translation>
+        <translation>Промяна на цвета за прозрачност</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Change Image Source</source>
-        <translation type="unfinished">Промяна на изображение-източник</translation>
+        <translation>Промяна на изображение-източник</translation>
     </message>
     <message>
         <location line="+25"/>
