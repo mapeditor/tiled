@@ -1,4 +1,4 @@
-### Tiled 1.8.0 (4 February 2022)
+### Tiled 1.8.0 (7 February 2022)
 
 * Added support for custom enum properties (with svipal, #2941)
 * Added support for custom class properties (#489)
@@ -74,7 +74,7 @@
 * libtiled-java: Introduced TilesetCache interface (by Samuel Manflame, #3117)
 * Added Ukrainian translation to Windows installer (#3132)
 * Updated to Sentry 0.4.14
-* Updated Korean, Ukrainian and Traditional Chinese translations
+* Updated Bulgarian, Chinese (Simplified), French, Korean, Portuguese (Brasil), Portuguese (Portugal), Russian, Swedish and Turkish translations
 
 ### Tiled 1.7.2 (10 August 2021)
 
