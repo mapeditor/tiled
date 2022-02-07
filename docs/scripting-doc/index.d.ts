@@ -1,4 +1,6 @@
 /**
+ * @packageDocumentation
+ *
  * Tiled can be extended with the use of JavaScript.
  *
  * Scripts can be used to implement {@link tiled.registerMapFormat | custom map formats},

@@ -6,13 +6,13 @@
     "url": "git+https://github.com/mapeditor/tiled.git"
   },
   "types": "./index.d.ts",
-  "version": "1.6.0",
+  "version": "1.8.0",
   "scripts": {
     "test": "tsc"
   },
   "devDependencies": {
-    "typedoc": "^0.20.36",
-    "typescript": "^4.2.4"
+    "typedoc": "^0.21.7",
+    "typescript": "^4.4.4"
   },
   "bugs": {
     "url": "https://github.com/mapeditor/tiled/issues"
