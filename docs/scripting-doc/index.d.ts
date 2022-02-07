@@ -1,6 +1,4 @@
 /**
- * @packageDocumentation
- *
  * Tiled can be extended with the use of JavaScript.
  *
  * Scripts can be used to implement {@link tiled.registerMapFormat | custom map formats},
@@ -17,6 +15,8 @@
  * auto-completion in your editor (also when using plain JavaScript).
  *
  * This documentation is also generated based on these type definitions.
+ *
+ * @packageDocumentation
  */
 
 /**
