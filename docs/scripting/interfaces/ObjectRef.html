@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>frame | Tiled Scripting API</title>
+	<title>ObjectRef | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -76,10 +76,10 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="frame.html">frame</a>
+					<a href="ObjectRef.html">ObjectRef</a>
 				</li>
 			</ul>
-			<h1>Interface frame</h1>
+			<h1>Interface ObjectRef</h1>
 		</div>
 	</div>
 </header>
@@ -89,16 +89,19 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>A single frame in a tile animation.</p>
+						<p>The value of a property of type &#39;object&#39;, which refers to a
+						<a href="../classes/MapObject.html">MapObject</a> by its ID.</p>
 					</div>
-					<p>See <a href="../classes/Tile.html#frames">Tile.frames</a>.</p>
+					<p>Generally only used as a fallback when an object property cannot be resolved
+					to an actual object.</p>
+					<p>Can be created with <a href="../modules/tiled.html#objectRef">tiled.objectRef</a>.</p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">frame</span>
+						<span class="target">ObjectRef</span>
 					</li>
 				</ul>
 			</section>
@@ -109,8 +112,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="frame.html#duration" class="tsd-kind-icon">duration</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="frame.html#tileId" class="tsd-kind-icon">tile<wbr>Id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ObjectRef.html#id" class="tsd-kind-icon">id</a></li>
 							</ul>
 						</section>
 					</div>
@@ -119,26 +121,14 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="duration" class="tsd-anchor"></a>
-					<h3>duration</h3>
-					<div class="tsd-signature tsd-kind-icon">duration<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="id" class="tsd-anchor"></a>
+					<h3>id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Duration of the frame in milliseconds.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="tileId" class="tsd-anchor"></a>
-					<h3>tile<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">tile<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The local tile ID used to represent the frame.</p>
+							<p>The ID of the referenced object.</p>
 						</div>
 					</div>
 				</section>
@@ -157,13 +147,10 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="frame.html" class="tsd-kind-icon">frame</a>
+						<a href="ObjectRef.html" class="tsd-kind-icon">Object<wbr>Ref</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="frame.html#duration" class="tsd-kind-icon">duration</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="frame.html#tileId" class="tsd-kind-icon">tile<wbr>Id</a>
+								<a href="ObjectRef.html#id" class="tsd-kind-icon">id</a>
 							</li>
 						</ul>
 					</li>

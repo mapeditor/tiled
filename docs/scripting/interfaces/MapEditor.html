@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>frame | Tiled Scripting API</title>
+	<title>MapEditor | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -76,10 +76,10 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="frame.html">frame</a>
+					<a href="MapEditor.html">MapEditor</a>
 				</li>
 			</ul>
-			<h1>Interface frame</h1>
+			<h1>Interface MapEditor</h1>
 		</div>
 	</div>
 </header>
@@ -89,16 +89,16 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>A single frame in a tile animation.</p>
+						<p>The map editor.</p>
 					</div>
-					<p>See <a href="../classes/Tile.html#frames">Tile.frames</a>.</p>
+					<p>Accessible through <a href="../modules/tiled.html#mapEditor">tiled.mapEditor</a>.</p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">frame</span>
+						<span class="target">MapEditor</span>
 					</li>
 				</ul>
 			</section>
@@ -109,8 +109,13 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="frame.html#duration" class="tsd-kind-icon">duration</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="frame.html#tileId" class="tsd-kind-icon">tile<wbr>Id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentBrush" class="tsd-kind-icon">current<wbr>Brush</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentMapView" class="tsd-kind-icon">current<wbr>Map<wbr>View</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentWangColorIndex" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentWangColorIndexChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentWangSet" class="tsd-kind-icon">current<wbr>Wang<wbr>Set</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentWangSetChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#tilesetsView" class="tsd-kind-icon">tilesets<wbr>View</a></li>
 							</ul>
 						</section>
 					</div>
@@ -119,26 +124,108 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="duration" class="tsd-anchor"></a>
-					<h3>duration</h3>
-					<div class="tsd-signature tsd-kind-icon">duration<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="currentBrush" class="tsd-anchor"></a>
+					<h3>current<wbr>Brush</h3>
+					<div class="tsd-signature tsd-kind-icon">current<wbr>Brush<span class="tsd-signature-symbol">:</span> <a href="../classes/TileMap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Duration of the frame in milliseconds.</p>
+							<p>Get or set the currently used tile brush.</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="tileId" class="tsd-anchor"></a>
-					<h3>tile<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">tile<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="currentMapView" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Map<wbr>View</h3>
+					<div class="tsd-signature tsd-kind-icon">current<wbr>Map<wbr>View<span class="tsd-signature-symbol">:</span> <a href="MapView.html" class="tsd-signature-type" data-tsd-kind="Interface">MapView</a></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The local tile ID used to represent the frame.</p>
+							<p>Access the current map view.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="currentWangColorIndex" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Color<wbr>Index</h3>
+					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Gets the currently selected Wang color index in the &quot;Terrain Sets&quot; view.
+								The value 0 is used to represent the eraser mode, and the first Wang color
+							has index 1.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="currentWangColorIndexChanged" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</h3>
+					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The signal emitted when <a href="MapEditor.html#currentWangColorIndex">currentWangColorIndex</a> changes.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="currentWangSet" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Set</h3>
+					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Set<span class="tsd-signature-symbol">:</span> <a href="../classes/WangSet.html" class="tsd-signature-type" data-tsd-kind="Class">WangSet</a></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Gets the currently selected <a href="../classes/WangSet.html">WangSet</a> in the &quot;Terrain Sets&quot; view.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="currentWangSetChanged" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Set<wbr>Changed</h3>
+					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The signal emitted when <a href="MapEditor.html#currentWangSet">currentWangSet</a> changes.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.8</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="tilesetsView" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> tilesets<wbr>View</h3>
+					<div class="tsd-signature tsd-kind-icon">tilesets<wbr>View<span class="tsd-signature-symbol">:</span> <a href="TilesetsView.html" class="tsd-signature-type" data-tsd-kind="Interface">TilesetsView</a></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Access the Tilesets view.</p>
 						</div>
 					</div>
 				</section>
@@ -157,13 +244,28 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="frame.html" class="tsd-kind-icon">frame</a>
+						<a href="MapEditor.html" class="tsd-kind-icon">Map<wbr>Editor</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="frame.html#duration" class="tsd-kind-icon">duration</a>
+								<a href="MapEditor.html#currentBrush" class="tsd-kind-icon">current<wbr>Brush</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="frame.html#tileId" class="tsd-kind-icon">tile<wbr>Id</a>
+								<a href="MapEditor.html#currentMapView" class="tsd-kind-icon">current<wbr>Map<wbr>View</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="MapEditor.html#currentWangColorIndex" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="MapEditor.html#currentWangColorIndexChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="MapEditor.html#currentWangSet" class="tsd-kind-icon">current<wbr>Wang<wbr>Set</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="MapEditor.html#currentWangSetChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="MapEditor.html#tilesetsView" class="tsd-kind-icon">tilesets<wbr>View</a>
 							</li>
 						</ul>
 					</li>

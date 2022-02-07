@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>frame | Tiled Scripting API</title>
+	<title>Signal | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -76,10 +76,10 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="frame.html">frame</a>
+					<a href="Signal.html">Signal</a>
 				</li>
 			</ul>
-			<h1>Interface frame</h1>
+			<h1>Interface Signal&lt;Arg&gt;</h1>
 		</div>
 	</div>
 </header>
@@ -89,16 +89,49 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>A single frame in a tile animation.</p>
+						<p>An object representing an event.</p>
 					</div>
-					<p>See <a href="../classes/Tile.html#frames">Tile.frames</a>.</p>
+					<p>Functions can be connected to the signal object, after which they will get
+						called when the signal is emitted. The <a href="../modules/tiled.html">tiled</a> module provides several
+					useful signals, like <a href="../modules/tiled.html#assetAboutToBeSaved">tiled.assetAboutToBeSaved</a>.</p>
+					<p>Properties usually will have related signals which can be used to detect
+					changes to that property, but most of those are currently not implemented.</p>
+					<p>To connect to a signal, call its <a href="Signal.html#connect">connect</a> function and
+						pass in a function object. In the following example, newly created maps
+					automatically get their first tile layer removed:</p>
+					<pre><code class="language-js"><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">assetCreated</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">connect</span><span style="color: #D4D4D4">(</span><span style="color: #569CD6">function</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">asset</span><span style="color: #D4D4D4">) {</span>
+<span style="color: #D4D4D4">    </span><span style="color: #C586C0">if</span><span style="color: #D4D4D4"> (</span><span style="color: #9CDCFE">asset</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">layerCount</span><span style="color: #D4D4D4"> &gt; </span><span style="color: #B5CEA8">0</span><span style="color: #D4D4D4">) {</span>
+<span style="color: #D4D4D4">        </span><span style="color: #9CDCFE">asset</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">removeLayerAt</span><span style="color: #D4D4D4">(</span><span style="color: #B5CEA8">0</span><span style="color: #D4D4D4">)</span>
+<span style="color: #D4D4D4">        </span><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">log</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&quot;assetCreated: Removed automatically added tile layer.&quot;</span><span style="color: #D4D4D4">)</span>
+<span style="color: #D4D4D4">    }</span>
+<span style="color: #D4D4D4">})</span>
+</code></pre>
+					<p>In some cases it will be necessary to later disconnect the function from
+						the signal again. This can be done by defining the function separately
+					and passing it into the <a href="Signal.html#disconnect">disconnect</a> function:</p>
+					<pre><code class="language-js"><span style="color: #569CD6">function</span><span style="color: #D4D4D4"> </span><span style="color: #DCDCAA">onAssetCreated</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">asset</span><span style="color: #D4D4D4">) {</span>
+<span style="color: #D4D4D4">    </span><span style="color: #6A9955">// Do something...</span>
+<span style="color: #D4D4D4">}</span>
+
+<span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">assetCreated</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">connect</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">onAssetCreated</span><span style="color: #D4D4D4">)</span>
+<span style="color: #6A9955">// ...</span>
+<span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">assetCreated</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">disconnect</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">onAssetCreated</span><span style="color: #D4D4D4">)</span>
+</code></pre>
 				</div>
+			</section>
+			<section class="tsd-panel tsd-type-parameters">
+				<h3>Type parameters</h3>
+				<ul class="tsd-type-parameters">
+					<li>
+						<h4>Arg</h4>
+					</li>
+				</ul>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">frame</span>
+						<span class="target">Signal</span>
 					</li>
 				</ul>
 			</section>
@@ -107,40 +140,42 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="frame.html#duration" class="tsd-kind-icon">duration</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="frame.html#tileId" class="tsd-kind-icon">tile<wbr>Id</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="Signal.html#connect" class="tsd-kind-icon">connect</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="Signal.html#disconnect" class="tsd-kind-icon">disconnect</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="duration" class="tsd-anchor"></a>
-					<h3>duration</h3>
-					<div class="tsd-signature tsd-kind-icon">duration<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Duration of the frame in milliseconds.</p>
-						</div>
-					</div>
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="connect" class="tsd-anchor"></a>
+					<h3>connect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">connect<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Arg</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+						</li>
+					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="tileId" class="tsd-anchor"></a>
-					<h3>tile<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">tile<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The local tile ID used to represent the frame.</p>
-						</div>
-					</div>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="disconnect" class="tsd-anchor"></a>
+					<h3>disconnect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">disconnect<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Arg</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -156,14 +191,14 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="frame.html" class="tsd-kind-icon">frame</a>
+					<li class="current tsd-kind-interface tsd-has-type-parameter">
+						<a href="Signal.html" class="tsd-kind-icon">Signal</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="frame.html#duration" class="tsd-kind-icon">duration</a>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="Signal.html#connect" class="tsd-kind-icon">connect</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="frame.html#tileId" class="tsd-kind-icon">tile<wbr>Id</a>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="Signal.html#disconnect" class="tsd-kind-icon">disconnect</a>
 							</li>
 						</ul>
 					</li>

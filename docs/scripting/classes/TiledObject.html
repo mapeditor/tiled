@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>region | Tiled Scripting API</title>
+	<title>TiledObject | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -76,10 +76,10 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="region.html">region</a>
+					<a href="TiledObject.html">TiledObject</a>
 				</li>
 			</ul>
-			<h1>Interface region</h1>
+			<h1>Class TiledObject</h1>
 		</div>
 	</div>
 </header>
@@ -89,22 +89,33 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Holds a discrete region, usually of a <a href="../classes/TileLayer.html">TileLayer</a>.</p>
+						<p>The base of most data types in Tiled. Provides the ability to associate
+						custom properties with the data.</p>
 					</div>
-					<dl class="tsd-comment-tags">
-						<dt>note</dt>
-						<dd><p>When iterating all the locations within a region, don&#39;t use
-								<a href="region.html#boundingRect">boundingRect</a> in combination with <a href="region.html#contains">contains</a>! It is much faster
-							to iterate over <a href="region.html#rects">rects</a> instead.</p>
-						</dd>
-					</dl>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">region</span>
+						<span class="target">TiledObject</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<a href="MapObject.html" class="tsd-signature-type" data-tsd-kind="Class">MapObject</a>
+							</li>
+							<li>
+								<a href="Asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a>
+							</li>
+							<li>
+								<a href="Tile.html" class="tsd-signature-type" data-tsd-kind="Class">Tile</a>
+							</li>
+							<li>
+								<a href="Layer.html" class="tsd-signature-type" data-tsd-kind="Class">Layer</a>
+							</li>
+							<li>
+								<a href="WangSet.html" class="tsd-signature-type" data-tsd-kind="Class">WangSet</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -113,64 +124,83 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="TiledObject.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="region.html#boundingRect" class="tsd-kind-icon">bounding<wbr>Rect</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="region.html#rects" class="tsd-kind-icon">rects</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="TiledObject.html#asset" class="tsd-kind-icon">asset</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="TiledObject.html#readOnly" class="tsd-kind-icon">read<wbr>Only</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="region.html#add" class="tsd-kind-icon">add</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="region.html#contains" class="tsd-kind-icon">contains</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="region.html#intersect" class="tsd-kind-icon">intersect</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="region.html#subtract" class="tsd-kind-icon">subtract</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TiledObject.html#properties" class="tsd-kind-icon">properties</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TiledObject.html#property" class="tsd-kind-icon">property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TiledObject.html#removeProperty" class="tsd-kind-icon">remove<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TiledObject.html#resolvedProperties" class="tsd-kind-icon">resolved<wbr>Properties</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TiledObject.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TiledObject.html#setProperties" class="tsd-kind-icon">set<wbr>Properties</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TiledObject.html#setProperty" class="tsd-kind-icon">set<wbr>Property</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Tiled<wbr>Object<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="TiledObject.html" class="tsd-signature-type" data-tsd-kind="Class">TiledObject</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="boundingRect" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> bounding<wbr>Rect</h3>
-					<div class="tsd-signature tsd-kind-icon">bounding<wbr>Rect<span class="tsd-signature-symbol">:</span> <a href="rect.html" class="tsd-signature-type" data-tsd-kind="Interface">rect</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="asset" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> asset</h3>
+					<div class="tsd-signature tsd-kind-icon">asset<span class="tsd-signature-symbol">:</span> <a href="Asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Bounding rectangle of this region.</p>
+							<p>The asset this object is part of, or <code>null</code>.</p>
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="rects" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> rects</h3>
-					<div class="tsd-signature tsd-kind-icon">rects<span class="tsd-signature-symbol">:</span> <a href="rect.html" class="tsd-signature-type" data-tsd-kind="Interface">rect</a><span class="tsd-signature-symbol">[]</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="readOnly" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> read<wbr>Only</h3>
+					<div class="tsd-signature tsd-kind-icon">read<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Array of rectangles making up this region.</p>
+							<p>Whether the object is read-only.</p>
 						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.8</p>
-							</dd>
-						</dl>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="add" class="tsd-anchor"></a>
-					<h3>add</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">add<span class="tsd-signature-symbol">(</span>rect<span class="tsd-signature-symbol">: </span><a href="rect.html" class="tsd-signature-type" data-tsd-kind="Interface">rect</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-						<li class="tsd-signature tsd-kind-icon">add<span class="tsd-signature-symbol">(</span>region<span class="tsd-signature-symbol">: </span><a href="region.html" class="tsd-signature-type" data-tsd-kind="Interface">region</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="properties" class="tsd-anchor"></a>
+					<h3>properties</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">properties<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/TiledObjectProperties.html" class="tsd-signature-type" data-tsd-kind="Interface">TiledObjectProperties</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -178,37 +208,19 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Adds the given rectangle to this region.</p>
+									<p>Returns all custom properties set on this object.</p>
 								</div>
-								<dl class="tsd-comment-tags">
-									<dt>since</dt>
-									<dd><p>1.8</p>
-									</dd>
-								</dl>
-							</div>
-						</li>
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Adds the given region to this region.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>since</dt>
-									<dd><p>1.8</p>
-									</dd>
-								</dl>
+								<p>Modifications to the properties will not affect the original object.
+								Does not include inherited values (see <a href="TiledObject.html#resolvedProperties">resolvedProperties</a>).</p>
 							</div>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="contains" class="tsd-anchor"></a>
-					<h3>contains</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">contains<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-						<li class="tsd-signature tsd-kind-icon">contains<span class="tsd-signature-symbol">(</span>point<span class="tsd-signature-symbol">: </span><a href="point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="property" class="tsd-anchor"></a>
+					<h3>property</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../index.html#TiledObjectPropertyValue" class="tsd-signature-type" data-tsd-kind="Type alias">TiledObjectPropertyValue</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -216,37 +228,22 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns whether this region contains the given point.</p>
+									<p>Returns the value of the custom property with the given name, or
+										<code>undefined</code> if no such property is set on the object. Does not
+									include inherited values (see <a href="TiledObject.html#resolvedProperty">resolvedProperty</a>).</p>
 								</div>
-								<dl class="tsd-comment-tags">
-									<dt>since</dt>
-									<dd><p>1.8</p>
-									</dd>
-								</dl>
-							</div>
-						</li>
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns whether this region contains the given point.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>since</dt>
-									<dd><p>1.8</p>
-									</dd>
-								</dl>
+								<p><code>file</code> properties are returned as <a href="../interfaces/FilePath.html">FilePath</a>.</p>
+								<p><code>object</code> properties are returned as <a href="MapObject.html">MapObject</a> when possible,
+								or <a href="../interfaces/ObjectRef.html">ObjectRef</a> when the object could not be found.</p>
 							</div>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="intersect" class="tsd-anchor"></a>
-					<h3>intersect</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">intersect<span class="tsd-signature-symbol">(</span>rect<span class="tsd-signature-symbol">: </span><a href="rect.html" class="tsd-signature-type" data-tsd-kind="Interface">rect</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-						<li class="tsd-signature tsd-kind-icon">intersect<span class="tsd-signature-symbol">(</span>region<span class="tsd-signature-symbol">: </span><a href="region.html" class="tsd-signature-type" data-tsd-kind="Interface">region</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removeProperty" class="tsd-anchor"></a>
+					<h3>remove<wbr>Property</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -254,37 +251,17 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sets the selected area to the intersection of the current selected area and the given rectangle.</p>
+									<p>Removes the custom property with the given name.</p>
 								</div>
-								<dl class="tsd-comment-tags">
-									<dt>since</dt>
-									<dd><p>1.8</p>
-									</dd>
-								</dl>
-							</div>
-						</li>
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Sets the selected area to the intersection of the current selected area and the given region.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>since</dt>
-									<dd><p>1.8</p>
-									</dd>
-								</dl>
 							</div>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="subtract" class="tsd-anchor"></a>
-					<h3>subtract</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">subtract<span class="tsd-signature-symbol">(</span>rect<span class="tsd-signature-symbol">: </span><a href="rect.html" class="tsd-signature-type" data-tsd-kind="Interface">rect</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-						<li class="tsd-signature tsd-kind-icon">subtract<span class="tsd-signature-symbol">(</span>region<span class="tsd-signature-symbol">: </span><a href="region.html" class="tsd-signature-type" data-tsd-kind="Interface">region</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="resolvedProperties" class="tsd-anchor"></a>
+					<h3>resolved<wbr>Properties</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">resolved<wbr>Properties<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/TiledObjectProperties.html" class="tsd-signature-type" data-tsd-kind="Interface">TiledObjectProperties</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -292,25 +269,74 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Subtracts the given rectangle from this region.</p>
+									<p>Returns all custom properties set on this object. Modifications to
+										the properties will not affect the original object. Includes values
+									inherited from object types, templates and tiles where applicable.</p>
 								</div>
-								<dl class="tsd-comment-tags">
-									<dt>since</dt>
-									<dd><p>1.8</p>
-									</dd>
-								</dl>
 							</div>
 						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="resolvedProperty" class="tsd-anchor"></a>
+					<h3>resolved<wbr>Property</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">resolved<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../index.html#TiledObjectPropertyValue" class="tsd-signature-type" data-tsd-kind="Type alias">TiledObjectPropertyValue</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Subtracts the given region from this region.</p>
+									<p>Returns the value of the custom property with the given name, or
+										<code>undefined</code> if no such property is set. Includes values inherited
+									from object types, templates and tiles where applicable.</p>
 								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setProperties" class="tsd-anchor"></a>
+					<h3>set<wbr>Properties</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Properties<span class="tsd-signature-symbol">(</span>properties<span class="tsd-signature-symbol">: </span><a href="../interfaces/TiledObjectProperties.html" class="tsd-signature-type" data-tsd-kind="Interface">TiledObjectProperties</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Replaces all currently set custom properties with a new set of
+									properties.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setProperty" class="tsd-anchor"></a>
+					<h3>set<wbr>Property</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><a href="../index.html#TiledObjectPropertyValue" class="tsd-signature-type" data-tsd-kind="Type alias">TiledObjectPropertyValue</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the value of the custom property with the given name. Supported
+										types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="../interfaces/FilePath.html">FilePath</a>,
+									<a href="../interfaces/ObjectRef.html">ObjectRef</a> and <a href="MapObject.html">MapObject</a>.</p>
+								</div>
+								<p>When setting a <code>number</code>, the property type will be set to either
+								<code>int</code> or <code>float</code>, depending on whether it is a whole number.</p>
 								<dl class="tsd-comment-tags">
-									<dt>since</dt>
-									<dd><p>1.8</p>
+									<dt>note</dt>
+									<dd><p>Support for setting <code>color</code> properties is currently missing.</p>
 									</dd>
 								</dl>
 							</div>
@@ -331,26 +357,38 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="region.html" class="tsd-kind-icon">region</a>
+					<li class="current tsd-kind-class">
+						<a href="TiledObject.html" class="tsd-kind-icon">Tiled<wbr>Object</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="region.html#boundingRect" class="tsd-kind-icon">bounding<wbr>Rect</a>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="TiledObject.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="region.html#rects" class="tsd-kind-icon">rects</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="TiledObject.html#asset" class="tsd-kind-icon">asset</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="region.html#add" class="tsd-kind-icon">add</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="TiledObject.html#readOnly" class="tsd-kind-icon">read<wbr>Only</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="region.html#contains" class="tsd-kind-icon">contains</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="TiledObject.html#properties" class="tsd-kind-icon">properties</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="region.html#intersect" class="tsd-kind-icon">intersect</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="TiledObject.html#property" class="tsd-kind-icon">property</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="region.html#subtract" class="tsd-kind-icon">subtract</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="TiledObject.html#removeProperty" class="tsd-kind-icon">remove<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="TiledObject.html#resolvedProperties" class="tsd-kind-icon">resolved<wbr>Properties</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="TiledObject.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="TiledObject.html#setProperties" class="tsd-kind-icon">set<wbr>Properties</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="TiledObject.html#setProperty" class="tsd-kind-icon">set<wbr>Property</a>
 							</li>
 						</ul>
 					</li>

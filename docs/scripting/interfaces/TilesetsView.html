@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>frame | Tiled Scripting API</title>
+	<title>TilesetsView | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -76,10 +76,10 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="frame.html">frame</a>
+					<a href="TilesetsView.html">TilesetsView</a>
 				</li>
 			</ul>
-			<h1>Interface frame</h1>
+			<h1>Interface TilesetsView</h1>
 		</div>
 	</div>
 </header>
@@ -89,16 +89,16 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>A single frame in a tile animation.</p>
+						<p>The view displaying the tilesets in the map editor.</p>
 					</div>
-					<p>See <a href="../classes/Tile.html#frames">Tile.frames</a>.</p>
+					<p>Accessible through <a href="MapEditor.html#tilesetsView">MapEditor.tilesetsView</a>.</p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">frame</span>
+						<span class="target">TilesetsView</span>
 					</li>
 				</ul>
 			</section>
@@ -109,8 +109,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="frame.html#duration" class="tsd-kind-icon">duration</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="frame.html#tileId" class="tsd-kind-icon">tile<wbr>Id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TilesetsView.html#currentTileset" class="tsd-kind-icon">current<wbr>Tileset</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TilesetsView.html#selectedTiles" class="tsd-kind-icon">selected<wbr>Tiles</a></li>
 							</ul>
 						</section>
 					</div>
@@ -119,27 +119,29 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="duration" class="tsd-anchor"></a>
-					<h3>duration</h3>
-					<div class="tsd-signature tsd-kind-icon">duration<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="currentTileset" class="tsd-anchor"></a>
+					<h3>current<wbr>Tileset</h3>
+					<div class="tsd-signature tsd-kind-icon">current<wbr>Tileset<span class="tsd-signature-symbol">:</span> <a href="../classes/Tileset.html" class="tsd-signature-type" data-tsd-kind="Class">Tileset</a></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Duration of the frame in milliseconds.</p>
+							<p>Access or change the currently displayed tileset.</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="tileId" class="tsd-anchor"></a>
-					<h3>tile<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">tile<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="selectedTiles" class="tsd-anchor"></a>
+					<h3>selected<wbr>Tiles</h3>
+					<div class="tsd-signature tsd-kind-icon">selected<wbr>Tiles<span class="tsd-signature-symbol">:</span> <a href="../classes/Tile.html" class="tsd-signature-type" data-tsd-kind="Class">Tile</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The local tile ID used to represent the frame.</p>
+							<p>A list of the tiles that are selected in the current tileset.</p>
 						</div>
+						<p>See <a href="MapEditor.html#currentBrush">MapEditor.currentBrush</a> for the current tile brush, which is
+						usually more useful than the list of selected tiles.</p>
 					</div>
 				</section>
 			</section>
@@ -157,13 +159,13 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="frame.html" class="tsd-kind-icon">frame</a>
+						<a href="TilesetsView.html" class="tsd-kind-icon">Tilesets<wbr>View</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="frame.html#duration" class="tsd-kind-icon">duration</a>
+								<a href="TilesetsView.html#currentTileset" class="tsd-kind-icon">current<wbr>Tileset</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="frame.html#tileId" class="tsd-kind-icon">tile<wbr>Id</a>
+								<a href="TilesetsView.html#selectedTiles" class="tsd-kind-icon">selected<wbr>Tiles</a>
 							</li>
 						</ul>
 					</li>
