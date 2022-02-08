@@ -851,7 +851,7 @@ declare class MapObject extends TiledObject {
   /**
    * Tile of the object.
    */
-  tile: Tile;
+  tile: Tile | null;
 
   /**
    * Whether the tile is flipped horizontally.
@@ -2130,7 +2130,7 @@ declare class TileMap extends Asset {
    *
    * @since 1.8
    */
-  public removeObjects(objects : MapObject[]);
+  public removeObjects(objects : MapObject[]): void;
 
   /**
    * Merges the tile layers in the given map with this one. If only a single tile layer exists in the given map, it will be merged with the currentLayer.
