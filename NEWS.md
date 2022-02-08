@@ -28,6 +28,7 @@
 * Show the read error when using --export-map/tileset
 * Avoid deselecting all layers when clicking empty area in Layers view (#2806)
 * Scripting: Added File API
+* Scripting: Added support for loading JavaScript `.mjs` modules (#3261)
 * Scripting: Added tiled.applicationDirPath property
 * Scripting: Added tiled.extensionsPath property (#3139)
 * Scripting: Added missing Layer.tintColor property
