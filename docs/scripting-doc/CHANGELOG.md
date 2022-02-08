@@ -1,13 +1,13 @@
-### Changelog
+## Changelog
 
-#### 1.8.1
+### 1.8.1
 
 > 8 February 2022
 
 - Enabled strict mode
 - Fixed strict mode error
 
-#### 1.8.0
+### 1.8.0
 
 > 7 February 2022
 
@@ -16,13 +16,13 @@
 - Updated typescript to 4.4
 - Updated typedoc to 0.21
 
-#### 1.6.0
+### 1.6.0
 
 > 3 May 2021
 
 - First stable release, based on the API provided by Tiled 1.6
 
-#### 1.4.3-alpha
+### 1.4.3-alpha
 
 > 15 December 2020
 
