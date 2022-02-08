@@ -1,12 +1,12 @@
 {
     "release": {
-        "version": "1.7.2",
-        "release_notes": "https://www.mapeditor.org/2021/08/10/tiled-1-7-2-released.html",
+        "version": "1.8.0",
+        "release_notes": "https://www.mapeditor.org/2022/02/07/tiled-1-8-0-released.html",
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     },
     "snapshot":  {
-        "version": "2021.08.10",
-        "release_notes": "https://www.mapeditor.org/2021/08/10/tiled-1-7-2-released.html",
+        "version": "2022.02.07",
+        "release_notes": "https://www.mapeditor.org/2022/02/07/tiled-1-8-0-released.html",
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     }
 }
