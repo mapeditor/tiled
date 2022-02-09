@@ -338,12 +338,7 @@ void IsometricRenderer::drawTileSelection(QPainter *painter,
 {
     QPainterPath path;
 
-#if QT_VERSION < 0x050800
-    const auto rects = region.rects();
-    for (const QRect &r : rects) {
-#else
     for (const QRect &r : region) {
-#endif
         QPolygonF polygon = tileRectToScreenPolygon(r);
         if (QRectF(polygon.boundingRect()).intersects(exposed))
             path.addPolygon(polygon);

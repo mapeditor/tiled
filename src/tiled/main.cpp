@@ -54,7 +54,7 @@
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtGui/private/qguiapplication_p.h>
 #include <QtGui/qpa/qplatformintegration.h>
-#elif QT_VERSION >= 0x050700
+#else
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif
 
@@ -512,7 +512,7 @@ int main(int argc, char *argv[])
     using QWindowsApplication = QNativeInterface::Private::QWindowsApplication;
     if (auto nativeWindowsApp = dynamic_cast<QWindowsApplication *>(QGuiApplicationPrivate::platformIntegration()))
         nativeWindowsApp->setWindowActivationBehavior(QWindowsApplication::AlwaysActivateWindow);
-#elif QT_VERSION >= 0x050700
+#else
     QWindowsWindowFunctions::setWindowActivationBehavior(QWindowsWindowFunctions::AlwaysActivateWindow);
 #endif
 #endif

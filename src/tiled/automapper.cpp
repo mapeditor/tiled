@@ -473,12 +473,7 @@ void AutoMapper::autoMap(QRegion *where)
     // first resize the active area
     if (mOptions.autoMappingRadius) {
         QRegion region;
-#if QT_VERSION < 0x050800
-        const auto rects = where->rects();
-        for (const QRect &r : rects) {
-#else
         for (const QRect &r : *where) {
-#endif
             region += r.adjusted(- mOptions.autoMappingRadius,
                                  - mOptions.autoMappingRadius,
                                  + mOptions.autoMappingRadius,
@@ -520,12 +515,7 @@ void AutoMapper::autoMap(QRegion *where)
     // This needs to be done, so you can rely on the order of the rules at all
     // locations
     QRegion ret;
-#if QT_VERSION < 0x050800
-    const auto rects = where->rects();
-    for (const QRect &rect : rects) {
-#else
     for (const QRect &rect : *where) {
-#endif
         for (const RuleRegion &ruleRegion : mRuleRegions) {
             // at the moment the parallel execution does not work yet
             // TODO: make multithreading available!
@@ -555,12 +545,7 @@ static void collectCellsInRegion(const QVector<InputLayer> &list,
                                  QVarLengthArray<Cell, 8> &cells)
 {
     for (const InputLayer &inputLayer : list) {
-#if QT_VERSION < 0x050800
-        const auto rects = r.rects();
-        for (const QRect &rect : rects) {
-#else
         for (const QRect &rect : r) {
-#endif
             for (int x = rect.left(); x <= rect.right(); ++x) {
                 for (int y = rect.top(); y <= rect.bottom(); ++y) {
                     const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
@@ -651,12 +636,7 @@ static bool layerMatchesConditions(const TileLayer &setLayer,
     if (listNo.isEmpty())
         collectCellsInRegion(listYes, ruleRegion, cells);
 
-#if QT_VERSION < 0x050800
-    const auto rects = ruleRegion.rects();
-    for (const QRect &rect : rects) {
-#else
     for (const QRect &rect : ruleRegion) {
-#endif
         for (int x = rect.left(); x <= rect.right(); ++x) {
             for (int y = rect.top(); y <= rect.bottom(); ++y) {
                 int xd = x + offset.x();
@@ -864,12 +844,7 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
         }
         Q_ASSERT(to);
 
-#if QT_VERSION < 0x050800
-        const auto rects = region.rects();
-        for (const QRect &rect : rects) {
-#else
         for (const QRect &rect : region) {
-#endif
             switch (from->layerType()) {
             case Layer::TileLayerType: {
                 auto fromTileLayer = static_cast<const TileLayer*>(from);

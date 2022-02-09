@@ -71,9 +71,7 @@ public:
         // the old value already remembered on this undo command.
         auto o = static_cast<const ChangeValue*>(other);
         if (mDocument == o->mDocument && mObjects == o->mObjects) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0)
             setObsolete(getValues() == mValues);
-#endif
             return true;
         }
         return false;

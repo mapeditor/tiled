@@ -494,14 +494,7 @@ inline MapObject::ChangedProperties MapObject::changedProperties() const
 
 inline void MapObject::setPropertyChanged(Property property, bool state)
 {
-#if QT_VERSION >= 0x050700
     mChangedProperties.setFlag(property, state);
-#else
-    if (state)
-        mChangedProperties |= property;
-    else
-        mChangedProperties &= ~property;
-#endif
 }
 
 inline bool MapObject::propertyChanged(Property property) const

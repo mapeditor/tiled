@@ -1407,15 +1407,7 @@ void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
         }
 
         auto flags = tileset->transformationFlags();
-
-#if QT_VERSION >= 0x050700
         flags.setFlag(flag, val.toBool());
-#else
-        if (val.toBool())
-            flags |= flag;
-        else
-            flags &= ~flag;
-#endif
 
         undoStack->push(new ChangeTilesetTransformationFlags(mTilesetDocument, flags));
         break;

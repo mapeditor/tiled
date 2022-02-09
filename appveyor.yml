@@ -1,7 +1,6 @@
 clone_depth: 200
 version: '1.8.{build}'
 image:
-  - Visual Studio 2015
   - Visual Studio 2019
 
 cache:
@@ -18,14 +17,6 @@ environment:
       DEFAULT_PROFILE: MSVC2019-x64
       PUSH_RELEASE: false
       ENABLE_ZSTD: false
-    - QTDIR: C:\Qt\5.6.3\mingw49_32
-      PYTHONHOME: C:\Python37
-      MINGW: C:\Qt\Tools\mingw492_32
-      DEFAULT_PROFILE: i686-w64-mingw32-gcc-4_9_2
-      PUSH_RELEASE: true
-      PUSH_SNAPSHOT: true
-      ENABLE_ZSTD: true
-      TILED_ITCH_CHANNEL: winxp-32bit
     - QTDIR: C:\Qt\5.15\mingw81_64
       PYTHONHOME: C:\Python37-x64
       MINGW: C:\Qt\Tools\mingw810_64
@@ -40,17 +31,6 @@ environment:
       PUSH_RELEASE: true
       ENABLE_ZSTD: true
       TILED_ITCH_CHANNEL: windows-32bit
-
-matrix:
-  exclude:
-    - image: Visual Studio 2015
-      QTDIR: C:\Qt\5.15\msvc2019_64
-    - image: Visual Studio 2015
-      QTDIR: C:\Qt\5.15\mingw81_64
-    - image: Visual Studio 2015
-      QTDIR: C:\Qt\5.15\mingw81_32
-    - image: Visual Studio 2019
-      QTDIR: C:\Qt\5.6.3\mingw49_32
 
 configuration: Release
 

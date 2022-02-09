@@ -80,11 +80,7 @@ void JsonWriter::writeValue(double value)
         if (std::ceil(value) == value) {
             writeUnquotedValue(QByteArray::number(value, 'f', 1));
         } else {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
             writeUnquotedValue(QByteArray::number(value, 'g', QLocale::FloatingPointShortest));
-#else
-            writeUnquotedValue(QByteArray::number(value));
-#endif
         }
     } else {
         writeUnquotedValue("null"); // +INF || -INF || NaN (see RFC4627#section2.4)

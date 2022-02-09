@@ -355,12 +355,8 @@ QString ScriptProcess::decode(const QByteArray &bytes) const
 
 void registerProcess(QJSEngine *jsEngine)
 {
-#if QT_VERSION >= 0x050800
     jsEngine->globalObject().setProperty(QStringLiteral("Process"),
                                          jsEngine->newQMetaObject<ScriptProcess>());
-#else
-    Q_UNUSED(jsEngine)
-#endif
 }
 
 } // namespace Tiled

@@ -589,12 +589,7 @@ void WangBrush::updateBrush()
         const int w = mapDocument()->map()->width();
         const int h = mapDocument()->map()->height();
 
-#if QT_VERSION < 0x050800
-        const auto rects = fill.region.rects();
-        for (const QRect &rect : rects) {
-#else
         for (const QRect &rect : fill.region) {
-#endif
             for (int y = rect.top(); y <= rect.bottom(); ++y) {
                 for (int x = rect.left(); x <= rect.right(); ++x) {
                     const QPoint targetPos(w - x - 1, h - y - 1);

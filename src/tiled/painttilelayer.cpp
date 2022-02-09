@@ -115,12 +115,7 @@ void PaintTileLayer::LayerData::mergeWith(const PaintTileLayer::LayerData &o)
                       o.mPaintedRegion.translated(-mSource->position()));
 
     // Copy the newly erased tiles from the other command over
-#if QT_VERSION >= 0x050800
     for (const QRect &rect : newRegion)
-#else
-    const auto rects = newRegion.rects();
-    for (const QRect &rect : rects)
-#endif
         for (int y = rect.top(); y <= rect.bottom(); ++y)
             for (int x = rect.left(); x <= rect.right(); ++x)
                 mErased->setCell(x, y, o.mErased->cellAt(x, y));

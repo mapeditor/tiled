@@ -232,12 +232,7 @@ std::unique_ptr<TileLayer> TileLayer::copy(const QRegion &region) const
                                               0, 0,
                                               regionBounds.width(), regionBounds.height());
 
-#if QT_VERSION < 0x050800
-    const auto rects = regionWithContents.rects();
-    for (const QRect &rect : rects) {
-#else
     for (const QRect &rect : regionWithContents) {
-#endif
         for (int x = rect.left(); x <= rect.right(); ++x)
             for (int y = rect.top(); y <= rect.bottom(); ++y)
                 copied->setCell(x - regionBounds.x(),
@@ -267,12 +262,7 @@ void TileLayer::merge(QPoint pos, const TileLayer *layer)
 void TileLayer::setCells(int x, int y, const TileLayer *layer,
                          const QRegion &area)
 {
-#if QT_VERSION < 0x050800
-    const auto rects = area.rects();
-    for (const QRect &rect : rects)
-#else
     for (const QRect &rect : area)
-#endif
         for (int _x = rect.left(); _x <= rect.right(); ++_x)
             for (int _y = rect.top(); _y <= rect.bottom(); ++_y)
                 setCell(_x, _y, layer->cellAt(_x - x, _y - y));
@@ -286,12 +276,7 @@ void TileLayer::setTiles(const QRegion &area, Tile *tile)
 {
     Q_ASSERT(area.subtracted(QRegion(0, 0, mWidth, mHeight)).isEmpty());
 
-#if QT_VERSION < 0x050800
-    const auto rects = area.rects();
-    for (const QRect &rect : rects) {
-#else
     for (const QRect &rect : area) {
-#endif
         for (int x = rect.left(); x <= rect.right(); ++x) {
             for (int y = rect.top(); y <= rect.bottom(); ++y) {
                 Cell cell = cellAt(x, y);
@@ -306,12 +291,7 @@ void TileLayer::erase(const QRegion &region)
 {
     const QRegion regionWithContents = region.intersected(mBounds);
 
-#if QT_VERSION < 0x050800
-    const auto rects = regionWithContents.rects();
-    for (const QRect &rect : rects)
-#else
     for (const QRect &rect : regionWithContents)
-#endif
         for (int x = rect.left(); x <= rect.right(); ++x)
             for (int y = rect.top(); y <= rect.bottom(); ++y)
                 setCell(x, y, Cell::empty);

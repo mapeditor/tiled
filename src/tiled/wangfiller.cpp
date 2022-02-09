@@ -106,12 +106,7 @@ void WangFiller::fillRegion(TileLayer &target,
 {
     if (mCorrectionsEnabled) {
         // Determine the desired WangId for all tiles in the region.
-#if QT_VERSION < 0x050800
-        const auto rects = region.rects();
-        for (const QRect &rect : rects) {
-#else
         for (const QRect &rect : region) {
-#endif
             for (int y = rect.top(); y <= rect.bottom(); ++y) {
                 for (int x = rect.left(); x <= rect.right(); ++x) {
                     CellInfo info = grid.get(x, y);
@@ -146,12 +141,7 @@ void WangFiller::fillRegion(TileLayer &target,
             grid.set(x, y, info);
         };
 
-#if QT_VERSION < 0x050800
-        const auto rects = region.rects();
-        for (const QRect &rect : rects) {
-#else
         for (const QRect &rect : region) {
-#endif
             for (int x = rect.left(); x <= rect.right(); ++x) {
                 setDesiredWangId(x, rect.top());
                 setDesiredWangId(x, rect.bottom());
@@ -224,12 +214,7 @@ void WangFiller::fillRegion(TileLayer &target,
     };
 
     // First process the initial region
-#if QT_VERSION < 0x050800
-    const auto rects = region.rects();
-    for (const QRect &rect : rects) {
-#else
     for (const QRect &rect : region) {
-#endif
         for (int y = rect.top(); y <= rect.bottom(); ++y)
             for (int x = rect.left(); x <= rect.right(); ++x)
                 resolve(x, y);

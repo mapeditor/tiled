@@ -1,3 +1,7 @@
+### Unreleased
+
+* Raised minimum supported Qt version from 5.6 to 5.9 (drops Windows XP support)
+
 ### Tiled 1.8.0 (7 February 2022)
 
 * Added support for custom enum properties (with svipal, #2941)

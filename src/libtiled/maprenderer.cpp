@@ -239,14 +239,7 @@ void MapRenderer::drawTileLayer(QPainter *painter, const TileLayer *layer, const
 
 void MapRenderer::setFlag(RenderFlag flag, bool enabled)
 {
-#if QT_VERSION >= 0x050700
     mFlags.setFlag(flag, enabled);
-#else
-    if (enabled)
-        mFlags |= flag;
-    else
-        mFlags &= ~flag;
-#endif
 }
 
 /**

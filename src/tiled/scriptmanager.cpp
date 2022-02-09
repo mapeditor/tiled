@@ -373,7 +373,6 @@ void ScriptManager::initialize()
 
     QJSValue globalObject = engine->globalObject();
     globalObject.setProperty(QStringLiteral("tiled"), engine->newQObject(mModule));
-#if QT_VERSION >= 0x050800
     globalObject.setProperty(QStringLiteral("GroupLayer"), engine->newQMetaObject<EditableGroupLayer>());
     globalObject.setProperty(QStringLiteral("Image"), engine->newQMetaObject<ScriptImage>());
     globalObject.setProperty(QStringLiteral("ImageLayer"), engine->newQMetaObject<EditableImageLayer>());
@@ -385,7 +384,6 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("TileMap"), engine->newQMetaObject<EditableMap>());
     globalObject.setProperty(QStringLiteral("Tileset"), engine->newQMetaObject<EditableTileset>());
     globalObject.setProperty(QStringLiteral("WangSet"), engine->newQMetaObject<EditableWangSet>());
-#endif
 
     registerFile(engine);
     registerFileInfo(engine);

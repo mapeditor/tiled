@@ -379,12 +379,7 @@ void HexagonalRenderer::drawTileSelection(QPainter *painter,
 {
     QPainterPath path;
 
-#if QT_VERSION < 0x050800
-    const auto rects = region.rects();
-    for (const QRect &r : rects) {
-#else
     for (const QRect &r : region) {
-#endif
         for (int y = r.top(); y <= r.bottom(); ++y) {
             for (int x = r.left(); x <= r.right(); ++x) {
                 const QPolygonF polygon = tileToScreenPolygon(x, y);

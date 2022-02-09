@@ -113,12 +113,10 @@ bool SetProperty::mergeWith(const QUndoCommand *other)
     if (mDocument == o->mDocument && mName == o->mName && mObjects == o->mObjects) {
         mValue = o->mValue;
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0)
         setObsolete(std::all_of(mProperties.cbegin(), mProperties.cend(),
                                 [this] (const ObjectProperty &p) {
             return p.existed && p.previousValue == mValue;
         }));
-#endif
 
         return true;
     }
