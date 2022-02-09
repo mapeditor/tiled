@@ -329,9 +329,12 @@ static void renderMissingImageMarker(QPainter &painter, const QRectF &rect)
 
 static bool hasOpenGLEngine(const QPainter *painter)
 {
-    const QPaintEngine::Type type = painter->paintEngine()->type();
-    return (type == QPaintEngine::OpenGL ||
-            type == QPaintEngine::OpenGL2);
+    if (auto paintEngine = painter->paintEngine()) {
+        const QPaintEngine::Type type = paintEngine->type();
+        return (type == QPaintEngine::OpenGL ||
+                type == QPaintEngine::OpenGL2);
+    }
+    return false;
 }
 
 CellRenderer::CellRenderer(QPainter *painter, const MapRenderer *renderer, const QColor &tintColor)

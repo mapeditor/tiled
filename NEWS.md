@@ -2,6 +2,11 @@
 
 * Raised minimum supported Qt version from 5.6 to 5.9 (drops Windows XP support)
 
+### Unreleased 1.8 Patch
+
+* Fixed pasted objects not getting selected if a tile layer was also copied
+* Fixed possible crash when trying to determine whether OpenGL is used
+
 ### Tiled 1.8.0 (7 February 2022)
 
 * Added support for custom enum properties (with svipal, #2941)
