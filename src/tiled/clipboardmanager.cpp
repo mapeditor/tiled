@@ -158,11 +158,13 @@ bool ClipboardManager::copySelection(const MapDocument &mapDocument)
     mapParameters.infinite = false;
     Map copyMap(mapParameters);
 
-    bool tileLayerSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),
-                                         [] (Layer *layer) { return layer->isTileLayer(); });
+    if (!selectedArea.isEmpty()) {
+        bool tileLayerSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),
+                                             [] (Layer *layer) { return layer->isTileLayer(); });
 
-    if (tileLayerSelected)
-        map->copyLayers(selectedLayers, selectedArea, copyMap);
+        if (tileLayerSelected)
+            map->copyLayers(selectedLayers, selectedArea, copyMap);
+    }
 
     if (!selectedObjects.isEmpty()) {
         bool objectGroupSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),

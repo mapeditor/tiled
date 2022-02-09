@@ -25,6 +25,7 @@
 #include "addremovetileset.h"
 #include "brokenlinks.h"
 #include "bucketfilltool.h"
+#include "changeselectedarea.h"
 #include "createellipseobjecttool.h"
 #include "createobjecttool.h"
 #include "createpointobjecttool.h"
@@ -723,8 +724,12 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
     }
 
     if (hasTileLayers && !(flags & ClipboardManager::PasteInPlace)) {
-        // Reset selection and paste into the stamp brush
-        MapDocumentActionHandler::instance()->selectNone();
+        // Reset tile selection and paste into the stamp brush
+        if (!mCurrentMapDocument->selectedArea().isEmpty()) {
+            QUndoCommand *command = new ChangeSelectedArea(mCurrentMapDocument, QRegion());
+            mCurrentMapDocument->undoStack()->push(command);
+        }
+
         map->normalizeTileLayerPositionsAndMapSize();
         setStamp(TileStamp(std::move(map)));
         mToolManager->selectTool(mStampBrush);
