@@ -2,6 +2,7 @@
 
 * Fixed pasted objects not getting selected if a tile layer was also copied
 * Fixed possible crash when trying to determine whether OpenGL is used
+* AutoMapping: Fixed crash when an input layer does not exist (#3269)
 
 ### Tiled 1.8.0 (7 February 2022)
 
