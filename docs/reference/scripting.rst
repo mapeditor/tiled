@@ -42,7 +42,7 @@ Functions`_ that are available.
 
     The full scripting API and support for ECMAScript 7 features are only
     available for Tiled builds based on Qt 5.12 or later. This currently
-    excludes the Windows XP and snap releases.
+    excludes the Windows XP and snap releases before Tiled 1.8.1.
 
 .. _script-extensions:
 

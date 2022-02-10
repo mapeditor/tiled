@@ -2,14 +2,16 @@ name: tiled
 adopt-info: tiled
 version: git
 license: GPL-2.0
-base: core18
+base: core20
 
 grade: stable
 confinement: strict
 
 apps:
   tiled:
-    command: desktop-launch ${SNAP}/usr/bin/tiled
+    command-chain: &command-chain
+      - bin/desktop-launch
+    command: usr/bin/tiled
     common-id: org.mapeditor.Tiled.desktop
     plugs:
       - desktop
@@ -21,8 +23,9 @@ apps:
       - opengl
       - network
   tmxviewer:
-    command: desktop-launch ${SNAP}/usr/bin/tmxviewer
-    plugs:
+    command-chain: *command-chain
+    command: usr/bin/tmxviewer
+    plugs: &basic-plugs
       - desktop
       - desktop-legacy
       - wayland
@@ -30,28 +33,23 @@ apps:
       - home
       - removable-media
   tmxrasterizer:
-    command: desktop-launch ${SNAP}/usr/bin/tmxrasterizer
-    plugs:
-      - unity7
-      - home
-      - removable-media
+    command-chain: *command-chain
+    command: usr/bin/tmxrasterizer
+    plugs: *basic-plugs
   terraingenerator:
-    command: desktop-launch ${SNAP}/usr/bin/terraingenerator
-    plugs:
-      - unity7
-      - home
-      - removable-media
+    command-chain: *command-chain
+    command: usr/bin/terraingenerator
+    plugs: *basic-plugs
 
 parts:
   tiled:
     plugin: qmake
-    qt-version: qt5
-    options:
+    qmake-parameters:
       - PREFIX=/usr
       - SYSTEM_ZSTD=yes
       - CONFIG+=release
     parse-info:
-      - org.mapeditor.Tiled.appdata.xml
+      - usr/share/metainfo/org.mapeditor.Tiled.appdata.xml
     source: .
     build-packages:
       - pkg-config

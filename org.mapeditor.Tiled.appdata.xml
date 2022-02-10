@@ -15,11 +15,11 @@
  </keywords>
  <content_rating type="oars-1.0" />
  <releases>
-  <release version="2019.07.05" type="development" date="2019-07-05">
-   <url>https://thorbjorn.itch.io/tiled/devlog/89540/select-tile-layers-by-clicking-them</url>
+  <release version="1.8.0" type="stable" date="2022-02-07">
+   <url>https://www.mapeditor.org/2022/02/07/tiled-1-8-0-released.html</url>
   </release>
-  <release version="1.2.4" type="stable" date="2019-05-15">
-   <url>https://www.mapeditor.org/2019/05/15/tiled-1-2-4-released.html</url>
+  <release version="1.7.2" type="stable" date="2021-08-10">
+   <url>https://www.mapeditor.org/2021/08/10/tiled-1-7-2-released.html</url>
   </release>
  </releases>
  <description>
