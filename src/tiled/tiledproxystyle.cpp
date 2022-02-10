@@ -670,11 +670,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
                     proxy()->drawItemText(painter, menuItem->rect.adjusted(margin, 0, -margin, 0), Qt::AlignLeft | Qt::AlignVCenter,
                                           menuItem->palette, menuItem->state & State_Enabled, menuItem->text,
                                           QPalette::Text);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
                     w = menuItem->fontMetrics.horizontalAdvance(menuItem->text) + margin;
-#else
-                    w = menuItem->fontMetrics.width(menuItem->text) + margin;
-#endif
                 }
                 if (isDark())
                     painter->setPen(lightShade().darker(130));

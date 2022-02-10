@@ -80,7 +80,7 @@ Product {
                     "Qt" + major + "Widgets" + postfix
                 );
 
-                if (Qt.core.versionMajor >= 6) {
+                if (major >= 6) {
                     list.push(
                         "Qt" + major + "OpenGL" + postfix,
                         "Qt" + major + "OpenGLWidgets" + postfix
@@ -88,15 +88,7 @@ Product {
                 }
             }
 
-            if (qbs.targetOS.contains("windows")) {
-                if (Qt.core.versionMajor < 6 && Qt.core.versionMinor < 7 &&
-                        !(Qt.core.versionMinor == 6 &&
-                          Qt.core.versionPatch >= 3)) {
-                    list.push("icuin54.dll",
-                              "icuuc54.dll",
-                              "icudt54.dll");
-                }
-            } else if (qbs.targetOS.contains("linux")) {
+            if (qbs.targetOS.contains("linux")) {
                 list = addQtVersions(list);
                 list = list.concat(addQtVersions([
                     "Qt" + major + "DBus.so",
@@ -309,31 +301,17 @@ Product {
             if (project.openSslPath) {
                 return project.openSslPath + "/";
             } else {
-                // Not sure what this check should be exactly, but Qt 5.6.3 was
-                // built against OpenSSL 1.0.2 whereas Qt 5.12.5 was built against
-                // OpenSSL 1.1.1.
-                if (Qt.core.versionMinor >= 12 || Qt.core.versionMajor >= 6) {
-                    if (qbs.architecture === "x86_64")
-                        return "C:/OpenSSL-v111-Win64/"
-                    else
-                        return "C:/OpenSSL-v111-Win32/"
-                } else {
-                    if (qbs.architecture === "x86_64")
-                        return "C:/OpenSSL-Win64/"
-                    else
-                        return "C:/OpenSSL-Win32/"
-                }
+                if (qbs.architecture === "x86_64")
+                    return "C:/OpenSSL-v111-Win64/"
+                else
+                    return "C:/OpenSSL-v111-Win32/"
             }
         }
         files: {
-            if (Qt.core.versionMinor >= 12 || Qt.core.versionMajor >= 6) {
-                if (qbs.architecture === "x86_64")
-                    return [ "libcrypto-1_1-x64.dll", "libssl-1_1-x64.dll" ]
-                else
-                    return [ "libcrypto-1_1.dll", "libssl-1_1.dll" ]
-            } else {
-                return [ "libeay32.dll", "ssleay32.dll" ]
-            }
+            if (qbs.architecture === "x86_64")
+                return [ "libcrypto-1_1-x64.dll", "libssl-1_1-x64.dll" ]
+            else
+                return [ "libcrypto-1_1.dll", "libssl-1_1.dll" ]
         }
         qbs.install: true
         qbs.installDir: ""

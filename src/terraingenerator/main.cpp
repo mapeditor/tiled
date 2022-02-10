@@ -373,11 +373,7 @@ static bool isEmpty(const QImage &image)
              image.format() == QImage::Format_ARGB32_Premultiplied);
 
     const QRgb *rgb = reinterpret_cast<const QRgb*>(image.constBits());
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    const QRgb * const last = rgb + image.byteCount() / 4;
-#else
     const QRgb * const last = rgb + image.sizeInBytes() / 4;
-#endif
 
     for (; rgb != last; ++rgb)
         if (qAlpha(*rgb) > 0)

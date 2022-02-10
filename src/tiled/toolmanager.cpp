@@ -285,13 +285,8 @@ void ToolManager::scheduleAutoSwitchTool()
 
     mAutoSwitchToolPending = true;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    QMetaObject::invokeMethod(this, "autoSwitchTool",
-                              Qt::QueuedConnection);
-#else
     QMetaObject::invokeMethod(this, &ToolManager::autoSwitchTool,
                               Qt::QueuedConnection);
-#endif
 }
 
 void ToolManager::autoSwitchTool()

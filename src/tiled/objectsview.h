@@ -30,7 +30,7 @@ class MapObject;
 
 class MapDocument;
 class MapObjectModel;
-class ReversingRecursiveFilterModel;
+class ReversingProxyModel;
 
 class ObjectsView : public QTreeView
 {
@@ -84,7 +84,7 @@ private:
     void updateRow(MapObject *object);
 
     MapDocument *mMapDocument = nullptr;
-    ReversingRecursiveFilterModel *mProxyModel;
+    ReversingProxyModel *mProxyModel;
     QMap<MapDocument*, QList<int> > mExpandedLayers;
     bool mSynching = false;
     bool mActiveFilter = false;

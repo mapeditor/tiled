@@ -242,21 +242,11 @@ void ScriptManager::loadExtension(const QString &path)
     const QStringList jsFiles = dir.entryList(nameFilters,
                                               QDir::Files | QDir::Readable);
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
-    bool hasWarned = false;
-#endif
-
     for (const QString &jsFile : jsFiles) {
         const QString absolutePath = dir.filePath(jsFile);
         if (absolutePath.endsWith(QLatin1String(".js"), Qt::CaseInsensitive)) {
             evaluateFile(absolutePath);
         } else {
-#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
-            if (!hasWarned) {
-                Tiled::WARNING(tr("Importing modules (%1) not supported by this version of Tiled").arg(absolutePath));
-                hasWarned = true;
-            }
-#else
             Tiled::INFO(tr("Importing module '%1'").arg(absolutePath));
 
             QJSValue globalObject = mEngine->globalObject();
@@ -279,7 +269,6 @@ void ScriptManager::loadExtension(const QString &path)
             }
 
             globalObject.deleteProperty(QStringLiteral("__filename"));
-#endif
         }
         mWatcher.addPath(absolutePath);
     }
@@ -324,11 +313,7 @@ bool ScriptManager::checkError(QJSValue value, const QString &program)
 
 void ScriptManager::throwError(const QString &message)
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
-    module()->error(message);
-#else
     engine()->throwError(message);
-#endif
 }
 
 void ScriptManager::throwNullArgError(int argNumber)

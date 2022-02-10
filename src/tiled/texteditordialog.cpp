@@ -36,9 +36,6 @@ TextEditorDialog::TextEditorDialog(QWidget *parent)
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-#endif
 
     connect(mUi->monospaceFont, &QAbstractButton::toggled, [this] (bool checked) {
         mUi->plainTextEdit->setStyleSheet(checked ? QStringLiteral("font-family: monospace;")

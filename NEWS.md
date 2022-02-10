@@ -1,6 +1,6 @@
 ### Unreleased
 
-* Raised minimum supported Qt version from 5.6 to 5.9 (drops Windows XP support)
+* Raised minimum supported Qt version from 5.6 to 5.12 (drops Windows XP support)
 
 ### Unreleased 1.8 Patch
 

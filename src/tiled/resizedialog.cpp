@@ -37,9 +37,6 @@ ResizeDialog::ResizeDialog(QWidget *parent)
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-#endif
 
     mUi->removeObjectsCheckBox->setChecked(session::removeObjects);
     connect(mUi->removeObjectsCheckBox, &QCheckBox::toggled,

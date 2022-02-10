@@ -72,9 +72,7 @@ static QPalette createPalette(const QColor &windowColor,
     bool highlightIsDark = qGray(highlightColor.rgb()) < 120;
     palette.setColor(QPalette::Highlight, highlightColor);
     palette.setColor(QPalette::HighlightedText, highlightIsDark ? Qt::white : Qt::black);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
     palette.setColor(QPalette::PlaceholderText, disabledText);
-#endif
 
     if (!isLight) {
         const QColor lightskyblue { 0x87, 0xce, 0xfa };

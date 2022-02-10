@@ -1,7 +1,7 @@
 import qbs 1.0
 
 TiledPlugin {
-    condition: (Qt.core.versionMajor > 5 || Qt.core.versionMinor >= 12) && !qbs.toolchain.contains("msvc")
+    condition: !qbs.toolchain.contains("msvc")
 
     Depends { name: "Qt.core" }
     Depends { name: "karchive" }

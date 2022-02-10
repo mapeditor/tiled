@@ -54,10 +54,6 @@ AddPropertyDialog::AddPropertyDialog(const ClassPropertyType *parentClassType, Q
 
 void AddPropertyDialog::initialize(const Tiled::ClassPropertyType *parentClassType)
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-#endif
-
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
 

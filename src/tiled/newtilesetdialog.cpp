@@ -67,9 +67,6 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     mNameWasEdited(false)
 {
     mUi->setupUi(this);
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-#endif
 
     const QSize tileSize = session::tileSize;
 

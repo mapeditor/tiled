@@ -1,7 +1,7 @@
 import qbs 1.0
 
 StaticLibrary {
-    condition: (Qt.core.versionMajor > 5 || Qt.core.versionMinor >= 12) && !qbs.toolchain.contains("msvc")
+    condition: !qbs.toolchain.contains("msvc")
 
     Depends { name: "cpp" }
     Depends { name: "Qt.core"; versionAtLeast: "5.12" }

@@ -27,7 +27,6 @@
 #include "preferences.h"
 #include "reversingproxymodel.h"
 #include "utils.h"
-#include "reversingrecursivefiltermodel.h"
 
 #include <QAction>
 #include <QGuiApplication>
@@ -45,10 +44,11 @@ static Preference<QVariantList> visibleColumns { "ObjectsDock/VisibleSections", 
 
 ObjectsView::ObjectsView(QWidget *parent)
     : QTreeView(parent)
-    , mProxyModel(new ReversingRecursiveFilterModel(this))
+    , mProxyModel(new ReversingProxyModel(this))
 {
     setMouseTracking(true);
 
+    mProxyModel->setRecursiveFilteringEnabled(true);
     mProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
     mProxyModel->setFilterKeyColumn(-1);
 
