@@ -1,4 +1,4 @@
-### Unreleased 1.8 Patch
+### Tiled 1.8.1 (11 February 2022)
 
 * Fixed pasted objects not getting selected if a tile layer was also copied
 * Fixed possible crash when trying to determine whether OpenGL is used
