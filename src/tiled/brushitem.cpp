@@ -160,6 +160,9 @@ void BrushItem::paint(QPainter *painter,
                       const QStyleOptionGraphicsItem *option,
                       QWidget *)
 {
+    if (!mMapDocument)
+        return;
+
     QColor insideMapHighlight = QApplication::palette().highlight().color();
     insideMapHighlight.setAlpha(64);
     QColor outsideMapHighlight = QColor(255, 0, 0, 64);
@@ -167,7 +170,9 @@ void BrushItem::paint(QPainter *painter,
     QRegion insideMapRegion = mRegion;
     QRegion outsideMapRegion;
 
-    if (!mMapDocument->currentLayer()->isUnlocked()) {
+    const auto currentLayer = mMapDocument->currentLayer();
+
+    if (currentLayer && !currentLayer->isUnlocked()) {
         qSwap(insideMapRegion, outsideMapRegion);
     } else if (!mMapDocument->map()->infinite()) {
         int mapWidth = mMapDocument->map()->width();
