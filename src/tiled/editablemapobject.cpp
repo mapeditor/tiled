@@ -240,9 +240,8 @@ void EditableMapObject::setTextColor(const QColor &textColor)
 void EditableMapObject::setTile(EditableTile *tile)
 {
     if (Document *doc = document()) {
-        QList<MapObject *> mapObjects { mapObject() };
         asset()->push(new ChangeMapObjectsTile(doc,
-                                               mapObjects,
+                                               { mapObject() },
                                                tile ? tile->tile() : nullptr));
     } else if (!checkReadOnly()) {
         Cell cell = mapObject()->cell();
@@ -255,6 +254,11 @@ void EditableMapObject::setTile(EditableTile *tile)
         cell.setTile(tile ? tile->tile() : nullptr);
         mapObject()->setCell(cell);
         mapObject()->setPropertyChanged(MapObject::CellProperty);
+
+        // Make sure the tileset is added to the map
+        if (auto t = tile->tile())
+            if (auto map = mapObject()->map())
+                map->addTileset(t->sharedTileset());
     }
 }
 

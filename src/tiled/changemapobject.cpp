@@ -26,6 +26,7 @@
 
 #include <QCoreApplication>
 
+#include "addremovetileset.h"
 #include "changeevents.h"
 #include "qtcompat_p.h"
 
@@ -134,6 +135,14 @@ ChangeMapObjectsTile::ChangeMapObjectsTile(Document *document,
         mUpdateSize.append(tile && object->size() == tile->size());
 
         mOldChangedProperties.append(object->changedProperties());
+    }
+
+    // Make sure the tileset is part of the document
+    if (tile && document->type() == Document::MapDocumentType) {
+        auto mapDocument = static_cast<MapDocument*>(document);
+        SharedTileset sharedTileset = tile->sharedTileset();
+        if (!mapDocument->map()->tilesets().contains(sharedTileset))
+            new AddTileset(mapDocument, sharedTileset, this);
     }
 }
 

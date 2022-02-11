@@ -73,6 +73,7 @@ void TileLayerEdit::apply()
 
     auto rect = paintedRegion.boundingRect();
     mChanges.resize(rect.size(), -rect.topLeft());
+    const auto tilesets = mChanges.usedTilesets();
 
     if (mTargetLayer->mapDocument()) {
         // Apply the change using an undo command
@@ -85,7 +86,6 @@ void TileLayerEdit::apply()
         paint->setMergeable(mergeable);
 
         // Add any used tilesets that aren't yet part of the target map
-        const auto tilesets = mChanges.usedTilesets();
         const auto existingTilesets = mapDocument->map()->tilesets();
         for (const SharedTileset &tileset : tilesets)
             if (!existingTilesets.contains(tileset))
@@ -93,6 +93,10 @@ void TileLayerEdit::apply()
 
         mTargetLayer->map()->push(paint);
     } else {
+        // Add any used tilesets that aren't yet part of the target map
+        if (auto map = mTargetLayer->tileLayer()->map())
+            map->addTilesets(tilesets);
+
         // Apply the change directly
         mTargetLayer->tileLayer()->setCells(rect.x(), rect.y(), &mChanges, paintedRegion);
     }

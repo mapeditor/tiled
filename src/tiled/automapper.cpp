@@ -448,7 +448,8 @@ void AutoMapper::setupWorkMapLayers()
     // Set up pointers to "set" layers (input layers in mTargetMap). They don't
     // need to be created if not present.
     for (const QString &name : qAsConst(mInputLayers.names))
-        mSetLayers.insert(name, static_cast<TileLayer*>(mTargetMap->findLayer(name, Layer::TileLayerType)));
+        if (auto tileLayer = static_cast<TileLayer*>(mTargetMap->findLayer(name, Layer::TileLayerType)))
+            mSetLayers.insert(name, tileLayer);
 }
 
 /**

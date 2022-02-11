@@ -6,6 +6,10 @@
 
 * Fixed pasted objects not getting selected if a tile layer was also copied
 * Fixed possible crash when trying to determine whether OpenGL is used
+* AutoMapping: Fixed crash when an input layer does not exist (#3269)
+* Scripting: Automatically add tilesets to the map where needed (#3268)
+* snap: Updated from core18 to core20 (now uses Qt 5.12)
+* AppImage: Updated to Sentry 0.4.15
 
 ### Tiled 1.8.0 (7 February 2022)
 
@@ -83,7 +87,7 @@
 * RpMap plugin: Fixed hardcoded exported tile size (#3184)
 * libtiled-java: Introduced TilesetCache interface (by Samuel Manflame, #3117)
 * Added Ukrainian translation to Windows installer (#3132)
-* Updated to Sentry 0.4.14
+* AppImage: Updated to Sentry 0.4.14
 * Updated Bulgarian, Chinese (Simplified), French, Korean, Portuguese (Brasil), Portuguese (Portugal), Russian, Swedish and Turkish translations
 
 ### Tiled 1.7.2 (10 August 2021)
@@ -95,7 +99,7 @@
 * Fixed creating multi-layer tile stamp from selection (#2899)
 * Scripting: Automatically reset object ID when adding to avoid duplicate IDs
 * Linux: Possible workaround for crash in clipboard manager
-* Updated to Sentry 0.4.12
+* AppImage: Updated to Sentry 0.4.12
 * Updated Italian translation
 
 ### Tiled 1.7.1 (9 July 2021)
@@ -110,7 +114,7 @@
 * Commands: Automatically quote the command executable
 * Commands: Improved starting directory for executable file chooser
 * Commands: Fixed the 'Clear' button to reset the shortcut
-* Updated to Sentry 0.4.11
+* AppImage: Updated to Sentry 0.4.11
 * Updated French translation
 
 ### Tiled 1.7.0 (4 June 2021)
