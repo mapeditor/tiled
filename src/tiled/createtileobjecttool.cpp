@@ -47,7 +47,7 @@ void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
     MapObject *newMapObject = mNewMapObjectItem->mapObject();
 
     if (state() == Preview && tile() && mCell.tile() != tile()) {
-        mCell = Cell(tile());
+        setCell(Cell(tile()));
         mRotation = 0;
 
         newMapObject->setCell(mCell);
@@ -92,7 +92,7 @@ MapObject *CreateTileObjectTool::createNewMapObject()
         return nullptr;
 
     if (mCell.tile() != tile()) {
-        mCell = Cell(tile());
+        setCell(Cell(tile()));
         mRotation = 0;
     }
 
@@ -174,6 +174,13 @@ void CreateTileObjectTool::rotateRight()
         break;
     }
     }
+}
+
+void CreateTileObjectTool::setCell(const Cell &cell)
+{
+    mCell = cell;
+    mTileset = cell.tileset() ? cell.tileset()->sharedFromThis()
+                              : SharedTileset();
 }
 
 #include "moc_createtileobjecttool.cpp"
