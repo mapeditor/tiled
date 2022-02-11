@@ -21,6 +21,7 @@
 #include "editablegrouplayer.h"
 
 #include "addremovelayer.h"
+#include "addremovetileset.h"
 #include "editablemanager.h"
 #include "editablemap.h"
 #include "scriptmanager.h"
@@ -108,9 +109,20 @@ void EditableGroupLayer::insertLayerAt(int index, EditableLayer *editableLayer)
         return;
     }
 
+    const auto tilesets = editableLayer->layer()->usedTilesets();
+
     if (MapDocument *doc = mapDocument()) {
-        asset()->push(new AddLayer(doc, index, editableLayer->layer(), groupLayer()));
+        auto command = new AddLayer(doc, index, editableLayer->layer(), groupLayer());
+
+        for (const auto &tileset : tilesets)
+            if (!doc->map()->tilesets().contains(tileset))
+                new AddTileset(doc, tileset, command);
+
+        asset()->push(command);
     } else if (!checkReadOnly()) {
+        if (auto map = groupLayer()->map())
+            map->addTilesets(tilesets);
+
         // ownership moves to the group layer
         groupLayer()->insertLayer(index, editableLayer->release());
     }

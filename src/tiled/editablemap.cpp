@@ -227,9 +227,19 @@ void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
             editableTileLayer->setSize(size());
     }
 
+    const auto tilesets = editableLayer->layer()->usedTilesets();
+
     if (auto doc = mapDocument()) {
-        push(new AddLayer(doc, index, editableLayer->layer(), nullptr));
+        auto command = new AddLayer(doc, index, editableLayer->layer(), nullptr);
+
+        for (const auto &tileset : tilesets)
+            if (!map()->tilesets().contains(tileset))
+                new AddTileset(doc, tileset, command);
+
+        push(command);
     } else if (!checkReadOnly()) {
+        map()->addTilesets(tilesets);
+
         // ownership moves to the map
         map()->insertLayer(index, editableLayer->release());
     }

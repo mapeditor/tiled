@@ -3,6 +3,7 @@
 * Fixed pasted objects not getting selected if a tile layer was also copied
 * Fixed possible crash when trying to determine whether OpenGL is used
 * AutoMapping: Fixed crash when an input layer does not exist (#3269)
+* Scripting: Automatically add tilesets to the map where needed (#3268)
 * snap: Updated from core18 to core20 (now uses Qt 5.12)
 
 ### Tiled 1.8.0 (7 February 2022)

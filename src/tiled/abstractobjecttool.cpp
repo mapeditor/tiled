@@ -529,12 +529,6 @@ void AbstractObjectTool::changeTile()
             tileObjects.append(object);
 
     auto changeMapObjectCommand = new ChangeMapObjectsTile(currentMapDocument, tileObjects, tile());
-
-    // Make sure the tileset is part of the document
-    SharedTileset sharedTileset = tile()->tileset()->sharedFromThis();
-    if (!currentMapDocument->map()->tilesets().contains(sharedTileset))
-        new AddTileset(currentMapDocument, sharedTileset, changeMapObjectCommand);
-
     currentMapDocument->undoStack()->push(changeMapObjectCommand);
 }
 
