@@ -22,6 +22,7 @@
 
 #include "createobjecttool.h"
 #include "tilelayer.h"
+#include "tileset.h"
 
 namespace Tiled {
 
@@ -50,7 +51,10 @@ protected:
 private:
     void languageChangedImpl();
 
+    void setCell(const Cell &cell);
+
     Cell mCell;
+    SharedTileset mTileset; // keeps alive tileset referenced by mCell
     int mRotation = 0;
 };
 
