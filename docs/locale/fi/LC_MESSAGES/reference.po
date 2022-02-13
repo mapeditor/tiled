@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2020-06-04 14:41+0000\n"
+"PO-Revision-Date: 2022-02-23 23:56+0000\n"
 "Last-Translator: Tuomas Lähteenmäki <lahtis@gmail.com>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/tiled/reference/"
 "fi/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.11-dev\n"
 
 #: ../../reference/json-map-format.rst:2
 msgid "JSON Map Format"
@@ -42,7 +42,7 @@ msgstr "Seuraavat kentät löytyvät Tiled JSON-tiedostosta:"
 
 #: ../../reference/json-map-format.rst:14
 msgid "Map"
-msgstr "Map"
+msgstr "Kartta"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -73,7 +73,7 @@ msgstr "Kuvaus"
 
 #: ../../reference/json-map-format.rst:19
 msgid "backgroundcolor"
-msgstr "backgroundcolor"
+msgstr "taustaväri"
 
 #: ../../reference/json-map-format.rst:19
 #: ../../reference/json-map-format.rst:29
@@ -100,7 +100,7 @@ msgstr "Hex-muotoiltu väri (#RRGGBB or #AARRGGBB) (valinnainen)"
 #: ../../reference/json-map-format.rst:88
 #: ../../reference/json-map-format.rst:166
 msgid "height"
-msgstr "height"
+msgstr "korkeus"
 
 #: ../../reference/json-map-format.rst:21
 #: ../../reference/json-map-format.rst:27
@@ -137,7 +137,7 @@ msgstr "Laatta rivien määrä"
 
 #: ../../reference/json-map-format.rst:23
 msgid "infinite"
-msgstr "infinite"
+msgstr "ääretön"
 
 #: ../../reference/json-map-format.rst:23
 #: ../../reference/json-map-format.rst:102
@@ -154,7 +154,7 @@ msgstr "Onko kartalla ääretön ulottuvuus"
 #: ../../reference/json-map-format.rst:25
 #: ../../reference/json-map-format.rst:90
 msgid "layers"
-msgstr "layers"
+msgstr "kerrokset"
 
 #: ../../reference/json-map-format.rst:25
 #: ../../reference/json-map-format.rst:40
@@ -172,7 +172,7 @@ msgstr "Taulokon:ref:`kerrokset<json-layer>`"
 
 #: ../../reference/json-map-format.rst:27
 msgid "nextobjectid"
-msgstr "nextobjectid"
+msgstr "seuraava objekti"
 
 #: ../../reference/json-map-format.rst:27
 msgid "Auto-increments for each placed object"
@@ -207,7 +207,7 @@ msgstr "properties"
 #: ../../reference/json-map-format.rst:410
 #: ../../reference/json-map-format.rst:412
 msgid "object"
-msgstr "object"
+msgstr "objekti"
 
 #: ../../reference/json-map-format.rst:32
 #: ../../reference/json-map-format.rst:178
@@ -219,7 +219,7 @@ msgstr "Merkkijono avain-arvoparit"
 
 #: ../../reference/json-map-format.rst:34
 msgid "renderorder"
-msgstr "renderorder"
+msgstr "renderöinti järjestys"
 
 #: ../../reference/json-map-format.rst:34
 msgid "Rendering direction (orthogonal maps only)"
@@ -227,7 +227,7 @@ msgstr "Renderöinnin suunta (vain ortogonaaliset kartat)"
 
 #: ../../reference/json-map-format.rst:36
 msgid "tiledversion"
-msgstr "tiledversion"
+msgstr "tiled versio"
 
 #: ../../reference/json-map-format.rst:36
 msgid "The Tiled version used to save the file"
@@ -236,7 +236,7 @@ msgstr "Tiled versio, jota käytetään tiedoston tallentamiseen"
 #: ../../reference/json-map-format.rst:38
 #: ../../reference/json-map-format.rst:406
 msgid "tileheight"
-msgstr "tileheight"
+msgstr "laatan korkeus"
 
 #: ../../reference/json-map-format.rst:38
 msgid "Map grid height"
@@ -244,7 +244,7 @@ msgstr "Karttaruudukon korkeus"
 
 #: ../../reference/json-map-format.rst:40
 msgid "tilesets"
-msgstr "tilesets"
+msgstr "laatasto"
 
 #: ../../reference/json-map-format.rst:40
 msgid "Array of :ref:`tilesets <json-tileset>`"
@@ -253,7 +253,7 @@ msgstr "Array of :ref:`tilesets <json-tileset>`"
 #: ../../reference/json-map-format.rst:42
 #: ../../reference/json-map-format.rst:415
 msgid "tilewidth"
-msgstr "tilewidth"
+msgstr "laatan leveys"
 
 #: ../../reference/json-map-format.rst:42
 msgid "Map grid width"
@@ -286,7 +286,7 @@ msgstr "JSON-muotoinen versio"
 #: ../../reference/json-map-format.rst:104
 #: ../../reference/json-map-format.rst:188
 msgid "width"
-msgstr "width"
+msgstr "leveys"
 
 #: ../../reference/json-map-format.rst:48
 msgid "Number of tile columns"
@@ -310,7 +310,7 @@ msgstr "GID-taulukko. ``tilelayer`` vain."
 
 #: ../../reference/json-map-format.rst:86
 msgid "draworder"
-msgstr "draworder"
+msgstr "piirtojärjestys"
 
 #: ../../reference/json-map-format.rst:86
 msgid "``topdown`` (default) or ``index``. ``objectgroup`` only."
@@ -337,7 +337,7 @@ msgstr "Tälle kerrokselle annettu nimi"
 
 #: ../../reference/json-map-format.rst:94
 msgid "objects"
-msgstr "objects"
+msgstr "objektit"
 
 #: ../../reference/json-map-format.rst:94
 msgid "Array of :ref:`objects <json-object>`. ``objectgroup`` only."
@@ -345,7 +345,7 @@ msgstr "Joukon :ref:`objects <json-object>`. ``objectgroup`` ainoastaan."
 
 #: ../../reference/json-map-format.rst:96
 msgid "opacity"
-msgstr "opacity"
+msgstr "läpinäkyvyys"
 
 #: ../../reference/json-map-format.rst:96
 #: ../../reference/json-map-format.rst:180
@@ -405,11 +405,11 @@ msgstr "Objekti taso esimerkki"
 
 #: ../../reference/json-map-format.rst:157
 msgid "Object"
-msgstr "Object"
+msgstr "Objekti"
 
 #: ../../reference/json-map-format.rst:162
 msgid "ellipse"
-msgstr "ellipse"
+msgstr "ellipsi"
 
 #: ../../reference/json-map-format.rst:162
 msgid "Used to mark an object as an ellipse"
@@ -462,7 +462,7 @@ msgstr "polyline"
 
 #: ../../reference/json-map-format.rst:180
 msgid "rotation"
-msgstr "rotation"
+msgstr "kierto"
 
 #: ../../reference/json-map-format.rst:180
 msgid "Angle in degrees clockwise"
@@ -522,11 +522,11 @@ msgstr "Teksti esimerkki"
 
 #: ../../reference/json-map-format.rst:375
 msgid "Tileset"
-msgstr "Tileset"
+msgstr "Laatasto"
 
 #: ../../reference/json-map-format.rst:380
 msgid "columns"
-msgstr "columns"
+msgstr "sarakkeet"
 
 #: ../../reference/json-map-format.rst:380
 msgid "The number of tile columns in the tileset"
@@ -542,7 +542,7 @@ msgstr "GID joka vastaa sarjassa olevaa ensimmäistä laattaa"
 
 #: ../../reference/json-map-format.rst:384
 msgid "grid"
-msgstr "grid"
+msgstr "ruudukko"
 
 #: ../../reference/json-map-format.rst:384
 msgid "See :ref:`tmx-grid` (optional)"
@@ -558,7 +558,7 @@ msgstr "Kuva, jota käytetään tämän joukon laatoille"
 
 #: ../../reference/json-map-format.rst:388
 msgid "imagewidth"
-msgstr "imagewidth"
+msgstr "kuvaleveys"
 
 #: ../../reference/json-map-format.rst:388
 msgid "Width of source image in pixels"
@@ -566,7 +566,7 @@ msgstr "Lähdekuvan leveys pikseleinä"
 
 #: ../../reference/json-map-format.rst:390
 msgid "imageheight"
-msgstr "imageheight"
+msgstr "kuvakorkeus"
 
 #: ../../reference/json-map-format.rst:390
 msgid "Height of source image in pixels"
@@ -574,7 +574,7 @@ msgstr "Lähdekuvan korkeus pikseleinä"
 
 #: ../../reference/json-map-format.rst:392
 msgid "margin"
-msgstr "margin"
+msgstr "marginaali"
 
 #: ../../reference/json-map-format.rst:392
 msgid "Buffer between image edge and first tile (pixels)"
@@ -590,7 +590,7 @@ msgstr "propertytypes"
 
 #: ../../reference/json-map-format.rst:400
 msgid "spacing"
-msgstr "spacing"
+msgstr "välilyönti"
 
 #: ../../reference/json-map-format.rst:400
 msgid "Spacing between adjacent tiles in image (pixels)"
@@ -598,7 +598,7 @@ msgstr "Kuvan vierekkäisten laattojen välinen etäisyys (pikseliä)"
 
 #: ../../reference/json-map-format.rst:402
 msgid "terrains"
-msgstr "terrains"
+msgstr "maastot"
 
 #: ../../reference/json-map-format.rst:402
 msgid "Array of :ref:`terrains <json-terrain>` (optional)"
@@ -606,7 +606,7 @@ msgstr "Taulukko:ref:`terrains <json-terrain>` (valinnainen)"
 
 #: ../../reference/json-map-format.rst:404
 msgid "tilecount"
-msgstr "tilecount"
+msgstr "laatanmäärä"
 
 #: ../../reference/json-map-format.rst:404
 msgid "The number of tiles in this tileset"
@@ -617,8 +617,9 @@ msgid "Maximum height of tiles in this set"
 msgstr "Laattojen enimmäiskorkeus tässä sarjassa"
 
 #: ../../reference/json-map-format.rst:408
+#, fuzzy
 msgid "tileoffset"
-msgstr "tileoffset"
+msgstr "laatta-offset"
 
 #: ../../reference/json-map-format.rst:408
 msgid "See :ref:`tmx-tileoffset` (optional)"
@@ -676,9 +677,9 @@ msgstr ""
 #: ../../reference/json-map-format.rst:462
 msgid "For the terrain information, each value is a length-4 array where each element is the index of a :ref:`terrain <json-terrain>` on one corner of the tile. The order of indices is: top-left, top-right, bottom-left, bottom-right."
 msgstr ""
-"Maastoinformaatiota varten jokaisen pituus arvo on 4 matriisi, jossa kukin "
-"elementti on index: ref: `terrain <json-terrain>` -hakemiston ruudun yhdessä "
-"nurkassa. Indeksien järjestys on: vasen ylhäältä, ylhäältä oikealta, "
+"Maastoinformaatiota varten jokaisen arvon pituus on 4 matriisissa, jossa "
+"kukin elementti on index: ref: `terrain <json-terrain>` -hakemiston ruudun "
+"yhdessä nurkassa. Indeksien järjestys on: vasen ylhäältä, ylhäältä oikealta, "
 "alhaalta vasemmalta ja alhaalta oikealta."
 
 #: ../../reference/json-map-format.rst:467
@@ -709,6 +710,10 @@ msgstr "Kirjastot ja puitteet"
 #: ../../reference/support-for-tmx-maps.rst:4
 msgid "There are many libraries available for reading and/or writing Tiled maps (either stored in the :doc:`tmx-map-format` or the :doc:`json-map-format`) as well as many development frameworks that include support for Tiled maps. This list is divided into two sections:"
 msgstr ""
+"Laattakarttojen lukemiseen ja/tai kirjoittamiseen on saatavana monia "
+"kirjastoja (joko tallennettu :d oc:'tmx-map-format' tai :d oc:'json-map-"
+"format') sekä monia kehityskehyksiä, jotka sisältävät laattakarttojen tuen. "
+"Tämä luettelo on jaettu kahteen osaan:"
 
 #: ../../reference/support-for-tmx-maps.rst:9
 msgid "`Support by Language <#support-by-language>`__"
@@ -716,15 +721,21 @@ msgstr "`Tuki kielittäin <#support-by-language>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:10
 msgid "`Support by Framework <#support-by-framework>`__"
-msgstr ""
+msgstr "`Frameworkin tuki <#support-by-framework>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:12
 msgid "The first list is for developers who plan on implementing their own renderer. The second list is for developers already using (or considering) a particular game engine / graphics library who would rather pass on having to write their own tile map renderer."
 msgstr ""
+"Ensimmäinen lista on kehittäjille, jotka aikovat toteuttaa oman renderöijän. "
+"Toinen lista on kehittäjille, jotka jo käyttävät (tai harkitsevat) tiettyä "
+"pelimoottoria/grafiikkakirjastoa ja jotka haluavat mieluummin olla "
+"kirjoittamatta omaa renderöijää."
 
 #: ../../reference/support-for-tmx-maps.rst:19
 msgid "For updates to this page please open a pull request or issue `on GitHub <https://github.com/bjorn/tiled/issues>`__, thanks!"
 msgstr ""
+"Jos haluat päivityksiä tälle sivulle, avaa pull-pyyntö tai ongelma "
+"'GitHubissa <https://github.com/bjorn/tiled/issues>'__, kiitos!"
 
 #: ../../reference/support-for-tmx-maps.rst:23
 msgid "Support by Language"
@@ -733,6 +744,9 @@ msgstr "Kielituki"
 #: ../../reference/support-for-tmx-maps.rst:25
 msgid "These libraries typically include only a TMX parser, but no rendering support. They can be used universally and should not require a specific game engine or graphics library."
 msgstr ""
+"Nämä kirjastot sisältävät yleensä vain TMX-jäsennyksen, mutta eivät "
+"renderöintitukea. Niitä voidaan käyttää yleisesti, eikä niiden pitäisi "
+"vaatia tiettyä pelimoottoria tai grafiikkakirjastoa."
 
 #: ../../reference/support-for-tmx-maps.rst:30
 msgid "C"
@@ -741,6 +755,8 @@ msgstr "C"
 #: ../../reference/support-for-tmx-maps.rst:32
 msgid "`TMX <https://github.com/baylej/tmx/>`__ - TMX map loader with Allegro5 and SDL2 examples (BSD)."
 msgstr ""
+"`TMX <https://github.com/baylej/tmx/>`__ - TMX-kartanlataaja Allegro5- ja "
+"SDL2-esimerkkien kanssa (BSD)."
 
 #: ../../reference/support-for-tmx-maps.rst:36
 msgid "C++"
@@ -753,42 +769,67 @@ msgstr ""
 #: ../../reference/support-for-tmx-maps.rst:40
 msgid "`C++/TinyXML based tmxparser <https://github.com/sainteos/tmxparser>`__ (BSD)"
 msgstr ""
+"`C++/TinyXML-pohjainen tmxparser <https://github.com/sainteos/tmxparser>`__ "
+"(BSD)"
 
 #: ../../reference/support-for-tmx-maps.rst:41
 msgid "C++/Qt based libtiled, used by Tiled itself and included at `src/libtiled <https://github.com/bjorn/tiled/tree/master/src/libtiled>`__ (BSD)"
 msgstr ""
+"C++/Qt-pohjainen libtiled, jota Tiled itse käyttää ja sisältyy kohtaan 'src/"
+"libtiled <https://github.com/bjorn/tiled/tree/master/src/libtiled>'__ (BSD)"
 
 #: ../../reference/support-for-tmx-maps.rst:44
 msgid "`C++11x/TinyXml2 libtmx-parser <https://github.com/halsafar/libtmx-parser>`__ by halsafar. (zlib/tinyxml2)"
 msgstr ""
+"\"C++11x/TinyXml2 libtmx-parser <https://github.com/halsafar/libtmx-"
+"parser>'__ luonut halsafar. (zlib/tinyxml2)"
 
 #: ../../reference/support-for-tmx-maps.rst:47
 msgid "`C++11/TinyXml2 libtmx <https://github.com/jube/libtmx>`__ by jube, for reading only (ISC licence). See `documentation <http://jube.github.io/libtmx/index.html>`__."
 msgstr ""
+"\"C++11/TinyXml2 libtmx <https://github.com/jube/libtmx>'__ juben mukaan "
+"ainoastaan lukemista varten (ISC-lisenssi). Katso dokumentaatio <http://jube."
+"github.io/libtmx/index.html>__."
 
 #: ../../reference/support-for-tmx-maps.rst:50
 msgid "`TMXParser <https://github.com/solar-storm-studios/TMXParser>`__ General \\*.tmx tileset data loader. Intended to be used with TSXParser for external tileset loading. (No internal tileset support)"
 msgstr ""
+"`TMXParser <https://github.com/solar-storm-studios/TMXParser>`__ General \\*."
+"tmx tileset tietojen lataaja. Tarkoitettu käytettäväksi yhdessä TSXParserin "
+"kanssa ulkoiseen tilesettien lataamiseen. (Ei sisäistä tileset-tukea)"
 
 #: ../../reference/support-for-tmx-maps.rst:53
 msgid "`TSXParser <https://github.com/solar-storm-studios/TSXParser>`__ General \\*.tsx tileset data loader. Intended to be used with TMXParser."
 msgstr ""
+"`TSXParser <https://github.com/solar-storm-studios/TSXParser>`__ General \\*."
+"tsx tileset tietojen lataaja. Tarkoitettu käytettäväksi TMXParserin kanssa."
 
 #: ../../reference/support-for-tmx-maps.rst:56
 msgid "`TMXLoader <https://bitbucket.org/martingrant/tmxloader>`__ based on `RapidXml <http://rapidxml.sourceforge.net/>`__. Limited functionality (check the `website <http://www.midnightpacific.com/portfolio/tmxloader-for-tiled-map-editor/>`__ for details)."
 msgstr ""
+"`TMXLoader <https://bitbucket.org/martingrant/tmxloader>`__ perustuu `"
+"RapidXml <http://rapidxml.sourceforge.net/>`__. Rajoitetut toiminnot ("
+"tarkemmat tiedot saat verkkosivuilta <http://www.midnightpacific.com/"
+"portfolio/tmxloader-for-tiled-map-editor/>`__)."
 
 #: ../../reference/support-for-tmx-maps.rst:61
 msgid "`tmxlite <https://github.com/fallahn/tmxlite>`__ C++14 map parser with compressed map support but no external linking required. Includes examples for SFML and SDL2 rendering. Currently has full tmx support up to 0.16. (Zlib/libpng)"
 msgstr ""
+"`tmxlite <https://github.com/fallahn/tmxlite>`__ C++14-karttojen jäsentäjä, "
+"joka tukee pakattuja karttoja, mutta ei vaadi ulkoista linkitystä. Sisältää "
+"esimerkkejä SFML- ja SDL2-renderöinnille. Tällä hetkellä täysi tmx-tuki 0.16:"
+"een asti. (Zlib/libpng)"
 
 #: ../../reference/support-for-tmx-maps.rst:67
 msgid "C#/.NET"
-msgstr ""
+msgstr "C#/.NET"
 
 #: ../../reference/support-for-tmx-maps.rst:69
 msgid "`MonoGame.Extended <https://github.com/craftworkgames/MonoGame.Extended>`__ has a Tiled map loader and renderer that works with MonoGame on all platforms that support portable class libraries."
 msgstr ""
+"`MonoGame.Extended <https://github.com/craftworkgames/MonoGame.Extended>`__ "
+"on Tiled-kartanlataaja ja -renderöijä, joka toimii MonoGamen kanssa kaikilla "
+"alustoilla, jotka tukevat siirrettäviä luokkakirjastoja."
 
 #: ../../reference/support-for-tmx-maps.rst:72
 msgid "`XNA map loader <https://github.com/zachmu/tiled-xna>`__ by Kevin Gadd, extended by Stephen Belanger and Zach Musgrave (has dependency on XNA but supposedly can be turned into a standalone parser easily)"
@@ -817,30 +858,41 @@ msgstr "D"
 #: ../../reference/support-for-tmx-maps.rst:92
 msgid "`tiledMap.d <https://gist.github.com/gdm85/9896961>`__ simple single-layer and single-tileset example to load a map and its tileset in `D language <http://dlang.org/>`__. It also contains basic rendering logic using `DSFML <https://github.com/Jebbs/DSFML/>`__"
 msgstr ""
+"`tiledMap.d <https://gist.github.com/gdm85/9896961>`__ yksinkertainen yhden "
+"kerroksen ja yhden laattasarjan esimerkki kartan ja sen laattasarjan "
+"lataamiseksi `D-kielellä <http://dlang.org/>`__. Se sisältää myös "
+"perusrenderöintilogiikan käyttäen `DSFML <https://github.com/Jebbs/DSFML/>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:96
 msgid "`dtiled <https://github.com/rcorre/dtiled>`__ can load JSON-formatted Tiled maps. It also provides general tilemap-related functions and algorithms."
 msgstr ""
+"`dtiled <https://github.com/rcorre/dtiled>`__ voi ladata JSON-muotoisia "
+"Tiled-karttoja. Se tarjoaa myös yleisiä laatoituskarttoihin liittyviä "
+"toimintoja ja algoritmeja."
 
 #: ../../reference/support-for-tmx-maps.rst:100
 msgid "Go"
-msgstr ""
+msgstr "Mene"
 
 #: ../../reference/support-for-tmx-maps.rst:102
 msgid "`github.com/salviati/go-tmx/tmx <https://github.com/salviati/go-tmx>`__"
-msgstr ""
+msgstr "`github.com/salviati/go-tmx/tmx <https://github.com/salviati/go-tmx>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:105
 msgid "Haskell"
-msgstr ""
+msgstr "Haskell"
 
 #: ../../reference/support-for-tmx-maps.rst:107
 msgid "`htiled <http://hackage.haskell.org/package/htiled>`__ (TMX) by `Christian Rødli Amble <https://github.com/chrra>`__."
 msgstr ""
+"\"htiled <http://hackage.haskell.org/package/htiled>'__ (TMX) luonut "
+"\"Christian Rødli Amble <https://github.com/chrra>'__."
 
 #: ../../reference/support-for-tmx-maps.rst:109
 msgid "`aeson-tiled <https://hackage.haskell.org/package/aeson-tiled>`__ (JSON) by `Schell Scivally <https://github.com/schell>`__."
 msgstr ""
+"\"aeson-tiled <https://hackage.haskell.org/package/aeson-tiled>'__ (JSON), "
+"kirjoittanut \"Schell Scivally <https://github.com/schell>'__."
 
 #: ../../reference/support-for-tmx-maps.rst:112
 msgid "Java"
@@ -849,18 +901,27 @@ msgstr "Java"
 #: ../../reference/support-for-tmx-maps.rst:114
 msgid "A library for loading TMX files is included with Tiled at `util/java/libtiled-java <https://github.com/bjorn/tiled/tree/master/util/java/libtiled-java>`__."
 msgstr ""
+"Tiledin mukana tuleva kirjasto TMX-tiedostojen lataamista varten löytyy "
+"osoitteesta `util/java/libtiled-java <https://github.com/bjorn/tiled/tree/"
+"master/util/java/libtiled-java>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:116
 msgid "Android-Specific:"
-msgstr ""
+msgstr "Android-spesifinen:"
 
 #: ../../reference/support-for-tmx-maps.rst:118
 msgid "`AndroidTMXLoader <https://github.com/davidmi/Android-TMX-Loader>`__ loads TMX data into an object and renders to an Android Bitmap (limited functionality)"
 msgstr ""
+"`AndroidTMXLoader <https://github.com/davidmi/Android-TMX-Loader>`__ lataa "
+"TMX-tiedot objektiin ja renderöi Android-bittikartaksi (rajoitettu "
+"toiminnallisuus)"
 
 #: ../../reference/support-for-tmx-maps.rst:121
 msgid "`libtiled-java port <http://chiselapp.com/user/devnewton/repository/libtiled-android/index>`__ is a port of the libtiled-java to be used on Android phones."
 msgstr ""
+"'libtiled-java port <http://chiselapp.com/user/devnewton/repository/"
+"libtiled-android/index>'__ on libtiled-javan portti käytettäväksi Android-"
+"puhelimissa."
 
 #: ../../reference/support-for-tmx-maps.rst:126
 msgid "PHP"
@@ -869,6 +930,8 @@ msgstr "PHP"
 #: ../../reference/support-for-tmx-maps.rst:128
 msgid "`PHP TMX Viewer <https://github.com/sebbu2/php-tmx-viewer>`__ by sebbu : render the map as an image (allow some modifications as well)"
 msgstr ""
+"'PHP TMX Viewer <https://github.com/sebbu2/php-tmx-viewer>'__ kirjoittanut "
+"sebbu: hahmonna kartta kuvana (salli myös joitain muutoksia)"
 
 #: ../../reference/support-for-tmx-maps.rst:132
 msgid "Pike"
@@ -877,14 +940,18 @@ msgstr "Pike"
 #: ../../reference/support-for-tmx-maps.rst:134
 msgid "`TMX parser <https://gitlab.com/tmx-parser/tmx-parser>`__: a simple loader for TMX maps (CSV format only)."
 msgstr ""
+"`TMX parser <https://gitlab.com/tmx-parser/tmx-parser>`__: yksinkertainen "
+"lataaja TMX-kartoille (vain CSV-muodossa)."
 
 #: ../../reference/support-for-tmx-maps.rst:138
 msgid "Processing"
-msgstr ""
+msgstr "Käsittely"
 
 #: ../../reference/support-for-tmx-maps.rst:140
 msgid "`linux-man/ptmx <https://github.com/linux-man/ptmx>`__: Add Tiled maps to your Processing sketch."
 msgstr ""
+"`linux-man/ptmx <https://github.com/linux-man/ptmx>`__: Tiled-karttojen "
+"lisääminen käsittelyluonnokseen."
 
 #: ../../reference/support-for-tmx-maps.rst:144
 msgid "Python"
@@ -893,10 +960,14 @@ msgstr "Python"
 #: ../../reference/support-for-tmx-maps.rst:146
 msgid "`pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>`__: library for programmatic manipulation of TMX maps"
 msgstr ""
+"'pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>'__: kirjasto TMX-"
+"karttojen ohjelmallista manipulointia varten"
 
 #: ../../reference/support-for-tmx-maps.rst:148
 msgid "`python-tmx <http://python-tmx.nongnu.org>`__: a simple library for reading and writing TMX files."
 msgstr ""
+"'python-tmx <http://python-tmx.nongnu.org>'__: yksinkertainen kirjasto TMX-"
+"tiedostojen lukemiseen ja kirjoittamiseen."
 
 #: ../../reference/support-for-tmx-maps.rst:152
 msgid "Ruby"
@@ -904,7 +975,7 @@ msgstr "Ruby"
 
 #: ../../reference/support-for-tmx-maps.rst:154
 msgid "`tmx gem <https://github.com/shawn42/tmx>`__ by erisdiscord"
-msgstr ""
+msgstr "'tmx gem <https://github.com/shawn42/tmx>'__ tekijä erisdiscord"
 
 #: ../../reference/support-for-tmx-maps.rst:157
 msgid "Vala"
@@ -913,14 +984,19 @@ msgstr "Vala"
 #: ../../reference/support-for-tmx-maps.rst:159
 msgid "`librpg <https://github.com/JumpLink/librpg>`__ A library to load and handle spritesets (own format) and orthogonal TMX maps."
 msgstr ""
+"`librpg <https://github.com/JumpLink/librpg>`__ Kirjasto, joka lataa ja "
+"käsittelee spritesettejä (oma tiedostomuoto) ja ortogonaalisia TMX-karttoja."
 
 #: ../../reference/support-for-tmx-maps.rst:163
 msgid "Support by Framework"
-msgstr ""
+msgstr "Frameworkin tuki"
 
 #: ../../reference/support-for-tmx-maps.rst:165
 msgid "Following entries are integrated solutions for specific game engines. They are typically of little to no use if you're not using said game engine."
 msgstr ""
+"Seuraavat kohdat ovat integroituja ratkaisuja tiettyjä pelimoottoreita "
+"varten. Niistä on yleensä vain vähän tai ei lainkaan hyötyä, jos et käytä "
+"kyseistä pelimoottoria."
 
 #: ../../reference/support-for-tmx-maps.rst:170
 msgid "AndEngine"
@@ -929,6 +1005,9 @@ msgstr "Lisää Moottori"
 #: ../../reference/support-for-tmx-maps.rst:172
 msgid "`AndEngine <http://www.andengine.org/>`__ by Nicolas Gramlich supports `rendering TMX maps <http://www.andengine.org/blog/2010/07/andengine-tiledmaps-in-the-tmx-format/>`__"
 msgstr ""
+"Nicolas Gramlichin 'AndEngine <http://www.andengine.org/>'__ tukee TMX-"
+"karttojen hahmontamista <http://www.andengine.org/blog/2010/07/"
+"andengine-tiledmaps-in-the-tmx-format/>'__"
 
 #: ../../reference/support-for-tmx-maps.rst:177
 msgid "Allegro"
@@ -937,6 +1016,8 @@ msgstr "Allegro"
 #: ../../reference/support-for-tmx-maps.rst:179
 msgid "`allegro\\_tiled <https://github.com/dradtke/allegro_tiled>`__ integrates Tiled support with `Allegro 5 <http://alleg.sourceforge.net/>`__."
 msgstr ""
+"`allegro\\_tiled <https://github.com/dradtke/allegro_tiled>`__ integroi "
+"Tiled-tuen `Allegro 5 <http://alleg.sourceforge.net/>`__ -ohjelmaan."
 
 #: ../../reference/support-for-tmx-maps.rst:184
 msgid "cocos2d"
@@ -945,18 +1026,31 @@ msgstr "cocos2d"
 #: ../../reference/support-for-tmx-maps.rst:186
 msgid "`cocos2d (Python) <http://python.cocos2d.org/>`__ supports loading `Tiled maps <http://python.cocos2d.org/doc/programming_guide/tiled_map.html>`__ through its ``cocos.tiles`` module."
 msgstr ""
+"`cocos2d (Python) <http://python.cocos2d.org/>`__ tukee `Tiled-karttojen "
+"<http://python.cocos2d.org/doc/programming_guide/tiled_map.html>`__ "
+"lataamista sen ``cocos.tiles``-moduulin kautta."
 
 #: ../../reference/support-for-tmx-maps.rst:190
 msgid "`cocos2d-x (C++) <http://www.cocos2d-x.org/>`__ supports loading TMX maps through the `CCTMXTiledMap <http://www.cocos2d-x.org/reference/native-cpp/V2.1.4/da/d68/classcocos2d_1_1_c_c_t_m_x_tiled_map.html>`__ class."
 msgstr ""
+"`cocos2d-x (C++) <http://www.cocos2d-x.org/>`__ tukee TMX-karttojen "
+"lataamista `CCTMXTiledMap <http://www.cocos2d-x.org/reference/native-cpp/V2.1"
+".4/da/d68/classcocos2d_1_1_c_c_t_m_x_tiled_map.html>`__-luokan kautta."
 
 #: ../../reference/support-for-tmx-maps.rst:194
 msgid "`cocos2d-objc (Objective-C, Swift) <http://www.cocos2d-objc.org/>`__ (previously known as: cocos2d-iphone, cocos2d-swift, cocos2d-spritebuilder) supports loading TMX maps through `CCTiledMap <http://cocos2d.spritebuilder.com/docs/api/Classes/CCTiledMap.html>`__"
 msgstr ""
+"`cocos2d-objc (Objective-C, Swift) <http://www.cocos2d-objc.org/>`__ ("
+"aiemmin tunnettu nimillä: cocos2d-iphone, cocos2d-swift, cocos2d-"
+"spritebuilder) tukee TMX-karttojen lataamista `CCTiledMap <http://cocos2d."
+"spritebuilder.com/docs/api/Classes/CCTiledMap.html>`__ kautta"
 
 #: ../../reference/support-for-tmx-maps.rst:198
 msgid "`TilemapKit <http://tilemapkit.com>`__ is a tilemapping framework for Cocos2D. It supports all TMX tilemap types, including staggered iso and all hex variations. No longer in development."
 msgstr ""
+"TilemapKit <http://tilemapkit.com>__ on Cocos2D:n ruutukarttakehys. Se tukee "
+"kaikkia TMX-ruutukarttatyyppejä, mukaan lukien porrastettu iso ja kaikki "
+"kuusiovariaatiot. Ei enää kehitteillä."
 
 #: ../../reference/support-for-tmx-maps.rst:203
 msgid "Construct 2 - Scirra"
@@ -965,6 +1059,10 @@ msgstr "Construct 2 - Scirra"
 #: ../../reference/support-for-tmx-maps.rst:205
 msgid "`Construct 2 <http://www.scirra.com>`__, since the Beta Release 149, officially supports TMX maps, and importing it by simple dragging the file inside the editor. `Official Note <https://www.scirra.com/construct2/releases/r149>`__"
 msgstr ""
+"`Construct 2 <http://www.scirra.com>`__, Beta julkaisun 149 jälkeen, tukee "
+"virallisesti TMX-karttoja ja sen tuontia yksinkertaisesti vetämällä tiedosto "
+"editorin sisään. \"Virallinen huomautus\" <https://www.scirra.com/construct2/"
+"releases/r149>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:211
 msgid "Corona SDK"
@@ -985,10 +1083,12 @@ msgstr "Flixel"
 #: ../../reference/support-for-tmx-maps.rst:222
 msgid "Lithander demonstrated his `Flash TMX parser combined with Flixel rendering <http://blog.pixelpracht.net/?p=59>`__"
 msgstr ""
+"Lithander esitteli `Flash TMX -jäsennyksensä yhdistettynä Flixelin "
+"renderöintiin <http://blog.pixelpracht.net/?p=59>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:226
 msgid "Game Maker"
-msgstr ""
+msgstr "Game Maker"
 
 #: ../../reference/support-for-tmx-maps.rst:228
 msgid "Tiled ships with a plug-in that can :ref:`export a map to a GameMaker: Studio 1.4 room file <gamemaker-export>`"
@@ -997,6 +1097,8 @@ msgstr ""
 #: ../../reference/support-for-tmx-maps.rst:229
 msgid "`Tiled2GM Converter <http://gmc.yoyogames.com/index.php?showtopic=539494>`__ by Dmi7ry"
 msgstr ""
+"`Tiled2GM Converter <http://gmc.yoyogames.com/index.php?showtopic=539494>`__ "
+"tekijä Dmi7ry"
 
 #: ../../reference/support-for-tmx-maps.rst:232
 msgid "Godot"
@@ -1012,23 +1114,30 @@ msgstr "Haxe"
 
 #: ../../reference/support-for-tmx-maps.rst:242
 msgid "`HaxePunk <https://github.com/HaxePunk/tiled>`__ Tiled Loader for HaxePunk"
-msgstr ""
+msgstr "`HaxePunk <https://github.com/HaxePunk/tiled>`__ HaxePunk Tiled lataaja"
 
 #: ../../reference/support-for-tmx-maps.rst:244
 msgid "`HaxeFlixel <https://github.com/HaxeFlixel/flixel-addons/tree/dev/flixel/addons/editors/tiled>`__"
 msgstr ""
+"`HaxeFlixel <https://github.com/HaxeFlixel/flixel-addons/tree/dev/flixel/"
+"addons/editors/tiled>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:245
 msgid "`OpenFL <https://github.com/Kasoki/openfl-tiled>`__ \"openfl-tiled\" is a library, which gives OpenFL developers the ability to use the Tiled Map Editor."
 msgstr ""
+"`OpenFL <https://github.com/Kasoki/openfl-tiled>`__ \"openfl-tiled\" on "
+"kirjasto, joka antaa OpenFL-kehittäjille mahdollisuuden käyttää Tiled Map "
+"Editoria."
 
 #: ../../reference/support-for-tmx-maps.rst:248
 msgid "`OpenFL + Tiled + Flixel <https://github.com/kasoki/openfl-tiled-flixel>`__ Experimental glue to use \"openfl-tiled\" with HaxeFlixel"
 msgstr ""
+"`OpenFL + Tiled + Flixel <https://github.com/kasoki/openfl-tiled-flixel>`__ "
+"Kokeellinen liima \"openfl-tiled\" käyttämiseen HaxeFlixelin kanssa"
 
 #: ../../reference/support-for-tmx-maps.rst:253
 msgid "HTML5 (multiple engines)"
-msgstr ""
+msgstr "HTML5 (useita moottoreita)"
 
 #: ../../reference/support-for-tmx-maps.rst:255
 msgid "`Canvas Engine <http://canvasengine.net>`__ A framework to create video games in HTML5 Canvas"
@@ -1037,122 +1146,169 @@ msgstr ""
 #: ../../reference/support-for-tmx-maps.rst:257
 msgid "`chesterGL <https://github.com/funkaster/ChesterGL>`__ A simple WebGL/canvas game library"
 msgstr ""
+"`chesterGL <https://github.com/funkaster/ChesterGL>`__ Yksinkertainen WebGL/"
+"canvas-pelikirjasto"
 
 #: ../../reference/support-for-tmx-maps.rst:259
 msgid "`KineticJs-Ext <https://github.com/Wappworks/kineticjs-ext>`__ A multi-canvas based game rendering library"
 msgstr ""
+"`KineticJs-Ext <https://github.com/Wappworks/kineticjs-ext>`__ Multi-canvas-"
+"pohjainen pelien renderöintikirjasto"
 
 #: ../../reference/support-for-tmx-maps.rst:261
 msgid "`melonJS <http://www.melonjs.org>`__ A lightweight HTML5 game engine"
-msgstr ""
+msgstr "`melonJS <http://www.melonjs.org>`__ Kevyt HTML5-pelimoottori"
 
 #: ../../reference/support-for-tmx-maps.rst:262
 msgid "`Platypus Engine <https://github.com/PBS-KIDS/Platypus/>`__ A robust orthogonal tile game engine with game entity library."
 msgstr ""
+"`Platypus Engine <https://github.com/PBS-KIDS/Platypus/>`__ Vankka "
+"ortogonaalinen laattapelimoottori, jossa on peliobjektikirjasto."
 
 #: ../../reference/support-for-tmx-maps.rst:264
 msgid "`sprite.js <https://github.com/batiste/sprite.js>`__ A game framework for image sprites."
 msgstr ""
+"'sprite.js <https://github.com/batiste/sprite.js>'__ Kuvaspriiteille "
+"tarkoitettu pelikehys."
 
 #: ../../reference/support-for-tmx-maps.rst:266
 msgid "`TMXjs <https://github.com/cdmckay/tmxjs>`__ A JavaScript, jQuery and RequireJS-based TMX (Tile Map XML) parser and renderer."
 msgstr ""
+"`TMXjs <https://github.com/cdmckay/tmxjs>`__ JavaScript-, jQuery- ja "
+"RequireJS-pohjainen TMX (Tile Map XML) -parser ja renderöijä."
 
 #: ../../reference/support-for-tmx-maps.rst:268
 msgid "`chem-tmx <https://github.com/andrewrk/chem-tmx>`__ Plugin for `chem <https://github.com/andrewrk/chem/>`__ game engine."
 msgstr ""
+"`chem-tmx <https://github.com/andrewrk/chem-tmx>`__ Liitännäinen `chem "
+"<https://github.com/andrewrk/chem/>`__ pelimoottorille."
 
 #: ../../reference/support-for-tmx-maps.rst:270
 msgid "`GameJs <http://gamejs.org>`__ JavaScript library for game programming; a thin wrapper to draw on HTML5 canvas and other useful modules for game development"
 msgstr ""
+"`GameJs <http://gamejs.org>`__ JavaScript-kirjasto pelien ohjelmointiin; "
+"ohut kääre HTML5-kanvaasille piirtämiseen ja muita hyödyllisiä moduuleja "
+"pelien kehitykseen"
 
 #: ../../reference/support-for-tmx-maps.rst:273
 msgid "`Crafty <http://craftyjs.com>`__ JavaScript HTML5 Game Engine; supports loading Tiled maps through an external component `TiledMapBuilder <https://github.com/Kibo/TiledMapBuilder>`__."
 msgstr ""
+"`Crafty <http://craftyjs.com>`__ JavaScript HTML5 Game Engine; tukee Tiled-"
+"karttojen lataamista ulkoisen komponentin `TiledMapBuilder <https://github."
+"com/Kibo/TiledMapBuilder>`__ kautta."
 
 #: ../../reference/support-for-tmx-maps.rst:276
 msgid "`Phaser <http://www.phaser.io>`__ A fast, free and fun open source framework supporting both JavaScript and TypeScript (`Tiled tutorial <http://www.gamedevacademy.org/html5-phaser-tutorial-top-down-games-with-tiled/>`__)"
 msgstr ""
+"`Phaser <http://www.phaser.io>`__ Nopea, ilmainen ja hauska avoimen "
+"lähdekoodin kehys, joka tukee sekä JavaScriptiä että TypeScriptiä (`Tiled "
+"tutorial <http://www.gamedevacademy.org/"
+"html5-phaser-tutorial-top-down-games-with-tiled/>`__)"
 
 #: ../../reference/support-for-tmx-maps.rst:279
 msgid "`linux-man/p5.tiledmap <https://github.com/linux-man/p5.tiledmap>`__ adds Tiled maps to `p5.js <http://p5js.org/>`__."
 msgstr ""
+"`linux-man/p5.tiledmap <https://github.com/linux-man/p5.tiledmap>`__ lisää "
+"Tiled-kartat tiedostoon `p5.js <http://p5js.org/>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:283
 msgid "indielib-crossplatform"
-msgstr ""
+msgstr "Indielib-crossplatform"
 
 #: ../../reference/support-for-tmx-maps.rst:285
 msgid "`indielib cross-platform <http://www.indielib.com>`__ supports loading TMX maps through the `C++/TinyXML based tmx-parser <http://code.google.com/p/tmx-parser/>`__ by KonoM (BSD)"
 msgstr ""
+"`indielib cross-platform <http://www.indielib.com>`__ tukee TMX-karttojen "
+"lataamista KonoM:n (BSD) `C++/TinyXML-pohjaisen tmx-parserin <http://code."
+"google.com/p/tmx-parser/>`__ kautta"
 
 #: ../../reference/support-for-tmx-maps.rst:290
 msgid "LibGDX"
-msgstr ""
+msgstr "LibGDX"
 
 #: ../../reference/support-for-tmx-maps.rst:292
 msgid "`libgdx <http://libgdx.badlogicgames.com/>`__, a Java-based Android/desktop/HTML5 game library, `provides <https://github.com/libgdx/libgdx/wiki/Tile-maps>`__ a packer, loader and renderer for TMX maps"
 msgstr ""
+"`libgdx <http://libgdx.badlogicgames.com/>`__, Java-pohjainen Android/"
+"desktop/HTML5-pelikirjasto, tarjoaa <https://github.com/libgdx/libgdx/wiki/"
+"Tile-maps>`__ pakkaajan, lataajan ja renderöijän TMX-kartoille"
 
 #: ../../reference/support-for-tmx-maps.rst:298
 msgid "LITIengine"
-msgstr ""
+msgstr "LITIengine"
 
 #: ../../reference/support-for-tmx-maps.rst:300
 msgid "`LITIengine <https://litiengine.com>`__ is a 2D Java Game Engine that supports loading, saving and rendering maps in the .tmx format."
 msgstr ""
+"`LITIengine <https://litiengine.com>`__ on 2D-Java-pelimoottori, joka tukee "
+"karttojen lataamista, tallentamista ja renderöintiä .tmx-muodossa."
 
 #: ../../reference/support-for-tmx-maps.rst:304
 msgid "LÖVE"
-msgstr ""
+msgstr "LÖVE"
 
 #: ../../reference/support-for-tmx-maps.rst:306
 msgid "`Simple Tiled Implementation <https://github.com/Karai17/Simple-Tiled-Implementation>`__ Lua loader for the LÖVE (Love2d) game framework."
 msgstr ""
+"`Simple Tiled Implementation <https://github.com/Karai17/Simple-Tiled-"
+"Implementation>`__ Lua-lataaja LÖVE (Love2d) -pelikehykseen."
 
 #: ../../reference/support-for-tmx-maps.rst:311
 msgid "MOAI SDK"
-msgstr ""
+msgstr "MOAI SDK"
 
 #: ../../reference/support-for-tmx-maps.rst:313
 msgid "`Hanappe <https://github.com/makotok/Hanappe>`__ Framework for MOAI SDK."
-msgstr ""
+msgstr "Hanappe <https:/github.com/makotok/Hanappe Kehys MOAI SDK:lle."
 
 #: ../../reference/support-for-tmx-maps.rst:315
 msgid "`Rapanui <https://github.com/ymobe/rapanui>`__ Framework for MOAI SDK."
-msgstr ""
+msgstr "Rapanui <https:/github.com/ymobe/rapanui Kehys MOAI SDK:lle."
 
 #: ../../reference/support-for-tmx-maps.rst:319
 msgid "Monkey X"
-msgstr ""
+msgstr "Monkey X"
 
 #: ../../reference/support-for-tmx-maps.rst:321
 msgid "`bit.tiled <https://github.com/bitJericho/bit.tiled>`__ Loads TMX file as objects. Aims to be fully compatible with native TMX files."
 msgstr ""
+"`bit.tiled <https://github.com/bitJericho/bit.tiled>`__ Lataa TMX-tiedoston "
+"objekteina. Pyrkii olemaan täysin yhteensopiva natiivien TMX-tiedostojen "
+"kanssa."
 
 #: ../../reference/support-for-tmx-maps.rst:323
 msgid "`Diddy <https://code.google.com/p/diddy/>`__ is an extensive framework for Monkey X that contains a module for loading and rendering TMX files. Supports orthogonal and isometric maps as both CSV and Base64 (uncompressed)."
 msgstr ""
+"`Diddy <https://code.google.com/p/diddy/>`__ on laaja kehys Monkey X:lle, "
+"joka sisältää moduulin TMX-tiedostojen lataamiseen ja esittämiseen. Tukee "
+"ortogonaalisia ja isometrisiä karttoja sekä CSV:nä että Base64:nä "
+"(pakkaamattomana)."
 
 #: ../../reference/support-for-tmx-maps.rst:329
 msgid "Node.js"
-msgstr ""
+msgstr "Node.js"
 
 #: ../../reference/support-for-tmx-maps.rst:331
 msgid "`node-tmx-parser <https://github.com/andrewrk/node-tmx-parser>`__ - loads the TMX file into a JavaScript object"
 msgstr ""
+"`node-tmx-parser <https://github.com/andrewrk/node-tmx-parser>`__ - lataa "
+"TMX-tiedoston JavaScript-olioksi"
 
 #: ../../reference/support-for-tmx-maps.rst:335
 msgid "Oak Nut Engine (onut)"
-msgstr ""
+msgstr "Oak Nut Engine (onut)"
 
 #: ../../reference/support-for-tmx-maps.rst:337
 msgid "`Oak Nut Engine <http://daivuk.github.io/onut/>`__ supports Tiled maps through Javascript and C++. (see TiledMap `Javascript <https://github.com/Daivuk/onut/tree/master/samplesJS/TiledMap>`__ or `C++ <https://github.com/Daivuk/onut/tree/master/samples/TiledMap>`__ samples)"
 msgstr ""
+"`Oak Nut Engine <http://daivuk.github.io/onut/>`__ tukee Tiled-karttoja "
+"Javascriptin ja C++:n avulla. (katso TiledMap `Javascript <https://github."
+"com/Daivuk/onut/tree/master/samplesJS/TiledMap>`__ tai `C++ <https://github."
+"com/Daivuk/onut/tree/master/samples/TiledMap>`__ näytteet)"
 
 #: ../../reference/support-for-tmx-maps.rst:341
 msgid "Orx Portable Game Engine"
-msgstr ""
+msgstr "Orx Portable pelimooottori"
 
 #: ../../reference/support-for-tmx-maps.rst:343
 msgid "`TMX to ORX Converter <http://orx-project.org/wiki/tutorials/community/sausage/tmx_to_orx>`__ Tutorial and converter download for Orx."
@@ -1160,41 +1316,52 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:348
 msgid "Pygame"
-msgstr ""
+msgstr "Pygame"
 
 #: ../../reference/support-for-tmx-maps.rst:350
 msgid "`Pygame map loader <http://www.pygame.org/project/1158/>`__ by dr0id"
 msgstr ""
+"`Pygame-karttalataaja <http://www.pygame.org/project/1158/>`__ luonut dr0id"
 
 #: ../../reference/support-for-tmx-maps.rst:351
 #: ../../reference/support-for-tmx-maps.rst:367
 #: ../../reference/support-for-tmx-maps.rst:373
 msgid "`PyTMX <https://github.com/bitcraft/PyTMX>`__ by Leif Theden (bitcraft)"
 msgstr ""
+"'PyTMX <https://github.com/bitcraft/PyTMX>'__ luonut Leif Theden (bitcraft)"
 
 #: ../../reference/support-for-tmx-maps.rst:353
 msgid "`tmx.py <https://bitbucket.org/r1chardj0n3s/pygame-tutorial/src/a383dd24790d/tmx.py>`__ by Richard Jones, from his `2012 PyCon 'Introduction to Game Development' talk <http://pyvideo.org/video/615/introduction-to-game-development>`__."
 msgstr ""
+"`tmx.py <https://bitbucket.org/r1chardj0n3s/pygame-tutorial/src/a383dd24790d/"
+"tmx.py>`__, kirjoittanut Richard Jones vuoden 2012 PyConin 'Johdatus "
+"pelikehitykseen' -puheestaan <http:// pyvideo.org/video/615/introduction-to-"
+"game-development>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:357
 msgid "`TMX <https://github.com/renfredxh/tmx>`__, a fork of tmx.py and a port to Python3. A demo called pylletTown can be found `here <https://github.com/renfredxh/pylletTown>`__."
 msgstr ""
+"`TMX <https://github.com/renfredxh/tmx>`__, haara tmx.py:stä ja porttaus "
+"Python3:een. Demo nimeltä pylletTown löytyy `täältä <https://github.com/"
+"renfredxh/pylletTown>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:362
 msgid "Pyglet"
-msgstr ""
+msgstr "Pyglet"
 
 #: ../../reference/support-for-tmx-maps.rst:364
 msgid "`JSON map loader/renderer for pyglet <https://github.com/reidrac/pyglet-tiled-json-map>`__ by Juan J. Martínez (reidrac)"
 msgstr ""
+"`JSON-kartta lataaja/renderöija pygletille <https://github.com/reidrac/"
+"pyglet-tiled-json-map>`__, kirjoittanut Juan J. Martínez (reidrac)"
 
 #: ../../reference/support-for-tmx-maps.rst:371
 msgid "PySDL2"
-msgstr ""
+msgstr "PySDL2"
 
 #: ../../reference/support-for-tmx-maps.rst:377
 msgid "RPG Maker MV"
-msgstr ""
+msgstr "RPG Maker MV"
 
 #: ../../reference/support-for-tmx-maps.rst:379
 msgid "`Tiled Plugin <https://forums.rpgmakerweb.com/index.php?threads/tiled-plugin-version-1-3-0-released.50752/>`__ by `Dr.Yami <http://yami.moe/>`__ & Archeia, from `RPG Maker Web <https://forums.rpgmakerweb.com>`__"
@@ -1202,47 +1369,62 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:385
 msgid "SDL"
-msgstr ""
+msgstr "SDL"
 
 #: ../../reference/support-for-tmx-maps.rst:387
 msgid "`C++/TinyXML/SDL based loader <http://usefulgamedev.weebly.com/c-tiled-map-loader.html>`__ example by Rohin Knight (limited functionality)"
 msgstr ""
+"`C++/TinyXML/SDL-pohjainen lataaja <http://usefulgamedev.weebly.com/c-tiled-"
+"map-loader.html>`__ Rohin Knightin esimerkki (rajoitettu toiminnallisuus)"
 
 #: ../../reference/support-for-tmx-maps.rst:392
 msgid "SFML"
-msgstr ""
+msgstr "SFML"
 
 #: ../../reference/support-for-tmx-maps.rst:394
 msgid "`STP <https://github.com/edoren/STP>`__ (SFML TMX Parser) by edoren"
 msgstr ""
+"`STP <https://github.com/edoren/STP>`__ (SFML TMX Parser), tekijä edoren"
 
 #: ../../reference/support-for-tmx-maps.rst:395
 msgid "`C++/SFML Tiled map loader <http://trederia.blogspot.co.uk/2013/05/tiled-map-loader-for-sfml.html>`__ by fallahn. (Zlib/libpng)"
 msgstr ""
+"`C++/SFML Tiled karttalataaja <http://trederia.blogspot.co.uk/2013/05/tiled-"
+"map-loader-for-sfml.html>`__ luonut fallahn. (Zlib/libpng)"
 
 #: ../../reference/support-for-tmx-maps.rst:398
 msgid "`C++/SfTileEngine <https://github.com/Tresky/sf_tile_engine>`__ by Tresky (currently limited functionality)"
 msgstr ""
+"`C++/SfTileEngine <https://github.com/Tresky/sf_tile_engine>`__ luonut "
+"Tresky (tällä hetkellä rajoitettu toiminnallisuus)"
 
 #: ../../reference/support-for-tmx-maps.rst:402
 msgid "Slick2D"
-msgstr ""
+msgstr "Slick2D"
 
 #: ../../reference/support-for-tmx-maps.rst:404
 msgid "`Slick2D <http://slick.ninjacave.com>`__ supports loading TMX maps through `TiledMap <http://slick.ninjacave.com/javadoc/org/newdawn/slick/tiled/TiledMap.html>`__."
 msgstr ""
+"`Slick2D <http://slick.ninjacave.com>`__ tukee TMX-karttojen lataamista `"
+"TiledMapin <http://slick.ninjacave.com/javadoc/org/newdawn/slick/tiled/"
+"TiledMap.html>`__ kautta."
 
 #: ../../reference/support-for-tmx-maps.rst:409
 msgid "Sprite Kit Framework"
-msgstr ""
+msgstr "Sprite Kit Framework"
 
 #: ../../reference/support-for-tmx-maps.rst:411
 msgid "`SKTilemap <https://github.com/TomLinthwaite/SKTilemap>`__ is built from the ground up in Swift. It's up to date, full of features and easy to integrate into any Sprite Kit project. Supports iOS and OSX."
 msgstr ""
+"'SKTilemap <https://github.com/TomLinthwaite/SKTilemap>'__ on rakennettu "
+"alusta alkaen Swiftissä. Se on ajan tasalla, täynnä ominaisuuksia ja helppo "
+"integroida mihin tahansa Sprite Kit -projektiin. Tukee iOS: ää ja OSX: ää."
 
 #: ../../reference/support-for-tmx-maps.rst:414
 msgid "`SKTiled <https://github.com/mfessenden/SKTiled>`__ - A Swift framework for working with Tiled assets in SpriteKit."
 msgstr ""
+"`SKTiled <https://github.com/mfessenden/SKTiled>`__ – Nopea kehys "
+"SpriteKitissä olevien Tiled-resurssien käsittelyyn."
 
 #: ../../reference/support-for-tmx-maps.rst:416
 msgid "`TilemapKit <http://tilemapkit.com>`__ is a tilemapping framework for Sprite Kit. It supports all TMX tilemap types, including staggered iso and all hex variations. No longer in development."
@@ -1251,14 +1433,18 @@ msgstr ""
 #: ../../reference/support-for-tmx-maps.rst:419
 msgid "`JSTileMap <https://github.com/slycrel/JSTileMap>`__ is a lightweight SpriteKit implementation of the TMX format supporting iOS 7 and OS X 10.9 and above."
 msgstr ""
+"`JSTileMap <https://github.com/slycrel/JSTileMap>`__ on TMX-muodon kevyt "
+"SpriteKit-toteutus, joka tukee iOS 7:ää ja OS X 10.9:ää ja uudempia."
 
 #: ../../reference/support-for-tmx-maps.rst:424
 msgid "TERRA Engine (Delphi/Pascal)"
-msgstr ""
+msgstr "TERRA Engine (Delphi/Pascal)"
 
 #: ../../reference/support-for-tmx-maps.rst:426
 msgid "`TERRA Engine <http://pascalgameengine.com/>`__ supports loading and rendering of TMX maps."
 msgstr ""
+"`TERRA Engine <http://pascalgameengine.com/>`__ tukee TMX-karttojen "
+"lataamista ja renderöintiä."
 
 #: ../../reference/support-for-tmx-maps.rst:430
 msgid "Unity 3D"
@@ -1267,6 +1453,9 @@ msgstr ""
 #: ../../reference/support-for-tmx-maps.rst:432
 msgid "`Orthello Pro <http://www.wyrmtale.com/products/unity3d-components/orthello-pro>`__ (2D framework) offers `Tiled map support <http://www.wyrmtale.com/orthello-pro/tilemaps>`__."
 msgstr ""
+"`Orthello Pro <http://www.wyrmtale.com/products/unity3d-components/orthello-"
+"pro>`__ (2D-framework) tarjoaa `Tiled map -tuen <http://www.wyrmtale.com/"
+"orthello-pro/tilemaps>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:436
 msgid "`Tiled To Unity <https://www.assetstore.unity3d.com/#/content/17260/>`__ is a 3D pipeline for Tiled maps. It uses prefabs as tiles, and can place decorations dynamically on tiles. Supports multiple layers (including object layers)."
@@ -1283,6 +1472,9 @@ msgstr ""
 #: ../../reference/support-for-tmx-maps.rst:445
 msgid "`X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supports almost all Tiled 0.11 features. Imports TMX/XML files into Sprite Objects or Meshes."
 msgstr ""
+"`X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ tukee lähes kaikkia "
+"Tiled 0.11:n ominaisuuksia. Tuo TMX/XML-tiedostot Sprite-objekteiksi tai "
+"meshiksi."
 
 #: ../../reference/support-for-tmx-maps.rst:448
 msgid "`Tiled TMX Importer <https://www.assetstore.unity3d.com/en/#!/content/102928>`__, imports into Unity 2017.2's new native Tilemap system."
@@ -1290,23 +1482,31 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:451
 msgid "Unreal Engine 4"
-msgstr ""
+msgstr "Unreal Engine 4"
 
 #: ../../reference/support-for-tmx-maps.rst:453
 msgid "`Paper2D <https://forums.unrealengine.com/showthread.php?3539-Project-Paper2D>`__ provides built-in support for tile maps and tile sets, importing JSON exported from Tiled."
 msgstr ""
+"`Paper2D <https://forums.unrealengine.com/showthread.php?3539-Project-"
+"Paper2D>`__ tarjoaa sisäänrakennetun tuen laattakartoille ja "
+"laattasarjoille, tukee Tiledistä tuotuja JSON-tiedostoja."
 
 #: ../../reference/support-for-tmx-maps.rst:458
 msgid "Urho3D"
-msgstr ""
+msgstr "Urho3D"
 
 #: ../../reference/support-for-tmx-maps.rst:460
 msgid "`Urho3D <http://urho3d.github.io/>`__ natively supports loading Tiled maps as part of the `Urho2D <http://urho3d.github.io/documentation/1.4/_urho2_d.html>`__ sublibrary (`Documentation <http://urho3d.github.io/documentation/1.4/class_urho3_d_1_1_tile_map2_d.html>`__, `HTML5 example <http://urho3d.github.io/samples/36_Urho2DTileMap.html>`__)."
 msgstr ""
+"`Urho3D <http://urho3d.github.io/>`__ tukee natiivisti Tiled-karttojen "
+"lataamista osana `Urho2D <http://urho3d.github.io/documentation/1.4/_urho2_d."
+"html>`__-alakirjastoa (`Dokumentaatio <http://urho3d.github.io/documentation/"
+"1.4/class_urho3_d_1_1_tile_map2_d.html>`__, `HTML5-esimerkki <http://urho3d."
+"github.io/samples/36_Urho2DTileMap.html>`__)."
 
 #: ../../reference/support-for-tmx-maps.rst:469
 msgid "XNA"
-msgstr ""
+msgstr "XNA"
 
 #: ../../reference/support-for-tmx-maps.rst:471
 msgid "`FlatRedBall Engine TMXGlue tool <http://www.flatredball.com/frb/docs/index.php?title=Kain%27s_Tavern#Tiled_Map_Editor.2C_TMX.2C_Glue_and_you.>`__ by Domenic Datti loads TMX maps into the FlatRedBall engine, complete with node networks, pathfinding, and shapecollection support via object layers."
@@ -1319,30 +1519,42 @@ msgstr ""
 #: ../../reference/support-for-tmx-maps.rst:478
 msgid "`XTiled <https://bitbucket.org/vinull/xtiled>`__ by Michael C. Neel and Dylan Wolf, XNA library for loading and rendering TMX maps"
 msgstr ""
+"`XTiled <https://bitbucket.org/vinull/xtiled>`__, Michael C. Neel ja Dylan "
+"Wolf, XNA-kirjasto TMX-karttojen lataamiseen ja renderointiin"
 
 #: ../../reference/support-for-tmx-maps.rst:480
 msgid "`XNA map loader <https://github.com/zachmu/tiled-xna>`__ by Kevin Gadd, extended by Stephen Belanger and Zach Musgrave"
 msgstr ""
+"`XNA-karttalataaja <https://github.com/zachmu/tiled-xna>`__, luonut Kevin "
+"Gadd ja laajentaneet Stephen Belanger ja Zach Musgrave"
 
 #: ../../reference/tmx-changelog.rst:2
 msgid "TMX Changelog"
-msgstr ""
+msgstr "TMX-muutosloki"
 
 #: ../../reference/tmx-changelog.rst:4
 msgid "Below are described the changes/additions that were made to the :doc:`tmx-map-format` for recent versions of Tiled."
 msgstr ""
+"Alla on kuvattu muutokset ja lisäykset, jotka on tehty :doc:tmx-map-format\" "
+"-muotoon Tiledin viimeisille versioille."
 
 #: ../../reference/tmx-changelog.rst:8
 msgid "Tiled 1.1"
-msgstr ""
+msgstr "Tiled 1.1"
 
 #: ../../reference/tmx-changelog.rst:10
 msgid "A new :ref:`tmx-chunk` element was added for infinite maps which contains the similar content as :ref:`tmx-data`, except it stores the data of the area specified by its ``x``, ``y``, ``width`` and ``height`` attributes."
 msgstr ""
+"Uusi :ref:'tmx-chunk' -elementti lisättiin äärettömille kartoille, jotka "
+"sisältävät samansisältöisen sisällön kuin :ref:'tmx-data', paitsi että se "
+"tallentaa x-, 'y'-,'leveys'- ja ''korkeus'- määritteissään määritellyn "
+"alueen tiedot."
 
 #: ../../reference/tmx-changelog.rst:15
 msgid ":doc:`Templates </manual/using-templates>` were added, a template is an :ref:`external file <tmx-template-files>` referenced by template instance objects:"
 msgstr ""
+":doc:`Malleja </manual/using-templates>` lisättiin, malli on :ref:`ulkoinen "
+"tiedosto <tmx-template-files>`, johon malliinstanssiobjektit viittaavat:"
 
 #: ../../reference/tmx-changelog.rst:23
 msgid "Tilesets can now contain :doc:`Wang tiles </manual/using-wang-tiles>`. They are saved in the new :ref:`tmx-wangsets` element."
@@ -1350,107 +1562,154 @@ msgstr ""
 
 #: ../../reference/tmx-changelog.rst:27
 msgid "Tiled 1.0"
-msgstr ""
+msgstr "Tiled 1.0"
 
 #: ../../reference/tmx-changelog.rst:29
 msgid "A new :ref:`tmx-group` element was added which is a group layer that can have other layers as child elements. This means layers now form a hierarchy."
 msgstr ""
+"Lisättiin uusi :ref:'tmx-group'-elementti, joka on ryhmätaso, jonka "
+"alielementtinä voi olla muita tasoja. Tämä tarkoittaa, että tasot "
+"muodostavat nyt hierarkian."
 
 #: ../../reference/tmx-changelog.rst:31
 msgid "Added Text objects, identified by a new :ref:`tmx-text` element which is used as a child of the :ref:`tmx-object` element."
 msgstr ""
+"Lisätty tekstiobjektit, jotka tunnistetaan uudella :ref:'tmx-text'-"
+"elementillä, jota käytetään kohteen \"ref:'tmx-object' alielementtinä."
 
 #: ../../reference/tmx-changelog.rst:33
 msgid "Added a :ref:`tile.type <tmx-tileset-tile>` attribute for supporting :ref:`typed-tiles`."
 msgstr ""
+"Lisätty :ref:`tile.type <tmx-tileset-tile>` -attribuutti :ref:`typed-tiles` -"
+"tyypin tukemiseksi."
 
 #: ../../reference/tmx-changelog.rst:37
 msgid "Tiled 0.18"
-msgstr ""
+msgstr "Tiled 0.18"
 
 #: ../../reference/tmx-changelog.rst:39
 msgid "*No file format changes.*"
-msgstr ""
+msgstr "*Tiedostomuotoon ei ole tehty muutoksia.*"
 
 #: ../../reference/tmx-changelog.rst:42
 msgid "Tiled 0.17"
-msgstr ""
+msgstr "Tiled 0.17"
 
 #: ../../reference/tmx-changelog.rst:44
 msgid "Added ``color`` and ``file`` as possible values for the :ref:`property.type <tmx-property>` attribute."
 msgstr ""
+"Lisätty ``väri`` ja ``tiedosto`` mahdollisiksi arvoiksi attribuutille :ref:`"
+"property.type <tmx-property>."
 
 #: ../../reference/tmx-changelog.rst:46
 msgid "Added support for editing multi-line string properties, which are written out differently."
 msgstr ""
+"Lisätty tuki monirivisten merkkijono-ominaisuuksien muokkaamiselle, jotka "
+"kirjoitetaan eri tavalla."
 
 #: ../../reference/tmx-changelog.rst:50
 msgid "Tiled 0.16"
-msgstr ""
+msgstr "Tiled 0.16"
 
 #: ../../reference/tmx-changelog.rst:52
 msgid "The :ref:`tmx-property` element gained a ``type`` attribute, storing the type of the value. Currently supported types are ``string`` (the default), ``int``, ``float`` and ``bool``."
 msgstr ""
+":ref:'tmx-property' -elementti sai type-määritteen, johon tallennetaan arvon "
+"tyyppi. Tällä hetkellä tuettuja tyyppejä ovat merkkijono (oletusarvo), "
+"''int', ''float' ja ''bool'."
 
 #: ../../reference/tmx-changelog.rst:57
 msgid "Tiled 0.15"
-msgstr ""
+msgstr "Tiled 0.15"
 
 #: ../../reference/tmx-changelog.rst:59
 msgid "The ``offsetx`` and ``offsety`` attributes are now also used for :ref:`tmx-imagelayer` elements, replacing the ``x`` and ``y`` attributes previously used. This change was made for consistency with the other layer types."
 msgstr ""
+"``offsetx``- ja ``offsety``-attribuutteja käytetään nyt myös :ref:`tmx-"
+"imagelayer`-elementeissä, korvaten aiemmin käytetyt ``x``- ja ``y``-"
+"attribuutit. Tämä muutos tehtiin johdonmukaisuuden vuoksi muiden "
+"tasotyyppien kanssa."
 
 #: ../../reference/tmx-changelog.rst:63
 msgid "The tiles in an image collection tileset are no longer guaranteed to be consecutive, because removing tiles from the collection will no longer change the IDs of other tiles."
 msgstr ""
+"Kuvakokoelman laatat eivät enää ole peräkkäisiä, koska laattojen poistaminen "
+"kokoelmasta ei enää muuta muiden laattojen tunnuksia."
 
 #: ../../reference/tmx-changelog.rst:66
 msgid "The pure XML and Gzip-compressed tile layer data formats were deprecated, since they didn't have any advantage over other formats. Remaining formats are CSV, base64 and Zlib-compressed layer data."
 msgstr ""
+"Puhtaat XML- ja Gzip-pakatut laattatasojen tietomuodot poistettiin käytöstä, "
+"koska niillä ei ollut etua muihin muotoihin verrattuna. Muut muodot ovat CSV-"
+", base64- ja Zlib-pakatut kerrostiedot."
 
 #: ../../reference/tmx-changelog.rst:69
 msgid "Added ``columns`` attribute to the :ref:`tmx-tileset` element, which specifies the number of tile columns in the tileset. For image collection tilesets it is editable and is used when displaying the tileset."
 msgstr ""
+"Lisätty 'sarakkeet'-määrite :ref:'tmx-tileset'-elementtiin, joka määrittää "
+"ruutulaattojen määrän ruudukossa. Kuvakokoelman laatoissa sitä voi muokata "
+"ja sitä käytetään laattojen näyttämiseen."
 
 #: ../../reference/tmx-changelog.rst:73
 msgid "The ``backgroundcolor`` attribute of the :ref:`tmx-map` element will now take the format ``#AARRGGBB`` when its alpha value differs from 255. Previously the alpha value was silently discarded."
 msgstr ""
+":ref:'tmx-map' -elementin taustavärin-määrite käyttää nyt muotoa '#"
+"AARRGGBB', kun sen alfa-arvo poikkeaa 255:stä. Aiemmin alfa-arvo hylättiin "
+"äänettömästi."
 
 #: ../../reference/tmx-changelog.rst:78
 msgid "Tiled 0.14"
-msgstr ""
+msgstr "Tiled 0.14"
 
 #: ../../reference/tmx-changelog.rst:80
 msgid "Added optional ``offsetx`` and ``offsety`` attributes to the ``layer`` and ``objectgroup`` elements. These specify an offset in pixels that is to be applied when rendering the layer. The default values are 0."
 msgstr ""
+"Lisätty valinnaisia offsetx- ja offsety-määritteitä elementteihin \"layer\" "
+"ja \"objectgroup\". Nämä määrittävät siirtymän kuvapisteinä, joita käytetään "
+"tasoa hahmonnettaessa. Oletusarvot ovat 0."
 
 #: ../../reference/tmx-changelog.rst:86
 msgid "Tiled 0.13"
-msgstr ""
+msgstr "Tiled 0.13"
 
 #: ../../reference/tmx-changelog.rst:88
 msgid "Added an optional ``tilecount`` attribute to the ``tileset`` element, which is written by Tiled to help parsers determine the amount of memory to allocate for tile data."
 msgstr ""
+"Lisätty valinnainen tilecount-määrite ruutujen elementtiin, jonka on "
+"kirjoittanut Tiled, jotta jäsennykset voivat määrittää ruututiedoille "
+"varattavan muistin määrän."
 
 #: ../../reference/tmx-changelog.rst:93
 msgid "Tiled 0.12"
-msgstr ""
+msgstr "Tiled 0.12"
 
 #: ../../reference/tmx-changelog.rst:95
 msgid "Previously tile objects never had ``width`` and ``height`` properties, though the format technically allowed this. Now these properties are used to store the size the image should be rendered at. The default values for these attributes are the dimensions of the tile image."
 msgstr ""
+"Aiemmin laattaobjekteilla ei koskaan ollut 'leveyttä'' ja 'korkeutta'' "
+"ominaisuuksia, vaikka muoto teknisesti mahdollisti tämän. Nyt näitä "
+"ominaisuuksia käytetään kuvan hahmonnuskoon tallentamiseen. Näiden "
+"määritteiden oletusarvot ovat ruutukuvan mitat."
 
 #: ../../reference/tmx-changelog.rst:102
 msgid "Tiled 0.11"
-msgstr ""
+msgstr "Tiled 0.11"
 
 #: ../../reference/tmx-changelog.rst:104
 msgid "Added ``hexagonal`` to the supported values for the ``orientation`` attribute on the ``map`` element. This also adds ``staggerindex`` (``even`` or ``odd``) and ``staggeraxis`` (``x`` or ``y``) and ``hexsidelength`` (integer value) attributes to the ``map`` element, in order to support the many variations of staggered hexagonal. The new ``staggerindex`` and ``staggeraxis`` attributes are also supported when using the ``staggered`` map orientation."
 msgstr ""
+"Lisätty 'kuusikulmainen'' ''suunta'-määritteen tuettuihin arvoihin "
+"''kartan''elementissä. Tähän lisätään myös \"staggerindex\" ('parillinen' "
+"tai 'pariton') ja ''staggeraxis'' ('x'' tai ''y') ja ''hekssidelength'' "
+"(kokonaislukuarvo) attribuutit \"kartta\"-elementille, jotta voidaan tukea "
+"porrastuneen kuusikulmaisen monia muunnelmia. Uusia staggerindex- ja "
+"staggeraxis-attribuutteja tuetaan myös käytettäessä kartan suuntaa..."
 
 #: ../../reference/tmx-changelog.rst:111
 msgid "Added an ``id`` attribute to the ``object`` element, which stores a map-unique ID of the object."
 msgstr ""
+"Lisätty 'id'-määrite objektielementtiin, johon tallennetaan objektin kartan "
+"yksilöivä tunnus."
 
 #: ../../reference/tmx-changelog.rst:113
 msgid "Added a ``nextobjectid`` attribute to the ``map`` element, which stores the next available ID for new objects. This number is stored to prevent reuse of the same ID after objects have been removed."
@@ -1458,15 +1717,21 @@ msgstr ""
 
 #: ../../reference/tmx-changelog.rst:118
 msgid "Tiled 0.10"
-msgstr ""
+msgstr "Tiled 0.10"
 
 #: ../../reference/tmx-changelog.rst:120
 msgid "Tile objects can now be horizontally or vertically flipped. This is stored in the ``gid`` attribute using the same mechanism as for regular tiles. The image is expected to be flipped without affecting its position, same way as flipped tiles."
 msgstr ""
+"Laattaobjekteja voi nyt kääntää vaaka- tai pystysuunnassa. Tämä tallennetaan "
+"``gid``-attribuuttiin käyttäen samaa mekanismia kuin tavallisille laatoille. "
+"Kuvan odotetaan kääntyvän ilman, että se vaikuttaa sen sijaintiin, samalla "
+"tavalla kuin käännettyjen laattojen."
 
 #: ../../reference/tmx-changelog.rst:125
 msgid "Objects can be rotated freely. The rotation is stored in degrees as a ``rotation`` attribute, with positive rotation going clockwise."
 msgstr ""
+"Kohteita voidaan kääntää vapaasti. Kierto tallennetaan asteina ``rotation``-"
+"attribuutiksi, positiivinen kierto tapahtuu myötäpäivään."
 
 #: ../../reference/tmx-changelog.rst:128
 msgid "The render order of the tiles on tile layers can be configured in a number of ways through a new ``renderorder`` property on the ``map`` element. Valid values are ``right-down`` (the default), ``right-up``, ``left-down`` and ``left-up``. In all cases, the map is drawn row-by-row. This is only supported for orthogonal maps at the moment."
