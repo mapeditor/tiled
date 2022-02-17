@@ -318,17 +318,13 @@ void ToolManager::autoSwitchTool()
 
 void ToolManager::currentLayerChanged(Layer *layer)
 {
-    if (!layer)
-        return;
-
-    auto selectedTool = mSelectedTool;
-    const auto layerType = layer->layerType();
+    const int layerType = layer ? layer->layerType() : 0;
 
     if (mLayerType != layerType) {
-        // Remember the currently used tool for this layer type
-        if (mLayerType && selectedTool) {
+        // Remember the selected tool for the current layer type
+        if (mLayerType && mSelectedTool) {
             mSelectedToolForLayerType.insert(static_cast<Layer::TypeFlag>(mLayerType),
-                                             selectedTool);
+                                             mSelectedTool);
         }
 
         mLayerType = layerType;
