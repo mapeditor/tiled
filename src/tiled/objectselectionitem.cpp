@@ -69,7 +69,6 @@ public:
         : QGraphicsObject(parent)
         , mObject(object)
     {
-
         switch (role) {
         case SelectionIndicator:
             setZValue(selectionZValue);
@@ -625,8 +624,8 @@ void ObjectSelectionItem::objectsAboutToBeRemoved(const QList<MapObject *> &obje
 
     for (MapObject *object : objects) {
         // Remove any references originating from this object
-        auto it = mReferencesBySourceObject.find(object);
-        if (it != mReferencesBySourceObject.end()) {
+        auto it = mReferencesBySourceObject.constFind(object);
+        if (it != mReferencesBySourceObject.constEnd()) {
             const QList<ObjectReferenceItem*> &items = *it;
             for (auto item : items) {
                 auto &itemsByTarget = mReferencesByTargetObject[item->targetObject()];
@@ -640,8 +639,8 @@ void ObjectSelectionItem::objectsAboutToBeRemoved(const QList<MapObject *> &obje
         }
 
         // Remove any references pointing to this object
-        it = mReferencesByTargetObject.find(object);
-        if (it != mReferencesByTargetObject.end()) {
+        it = mReferencesByTargetObject.constFind(object);
+        if (it != mReferencesByTargetObject.constEnd()) {
             const QList<ObjectReferenceItem*> &items = *it;
             for (auto item : items) {
                 auto &itemsBySource = mReferencesBySourceObject[item->sourceObject()];
@@ -816,14 +815,14 @@ void ObjectSelectionItem::addRemoveObjectReferences()
 
         if (mReferencesBySourceObject.contains(sourceObject)) {
             QList<ObjectReferenceItem*> &existingItems = mReferencesBySourceObject[sourceObject];
-            auto it = std::find_if(existingItems.begin(),
-                                   existingItems.end(),
+            auto it = std::find_if(existingItems.constBegin(),
+                                   existingItems.constEnd(),
                                    [=] (ObjectReferenceItem *item) {
                 return item->targetObject() == targetObject
                         && item->property() == property;
             });
 
-            if (it != existingItems.end()) {
+            if (it != existingItems.constEnd()) {
                 items.append(*it);
                 referencesByTargetObject[targetObject].append(*it);
 
@@ -858,7 +857,7 @@ void ObjectSelectionItem::addRemoveObjectReferences()
     }
 
     // delete remaining items
-    for (const auto &items : mReferencesBySourceObject)
+    for (const auto &items : qAsConst(mReferencesBySourceObject))
         qDeleteAll(items);
 
     mReferencesBySourceObject.swap(referencesBySourceObject);
@@ -878,14 +877,14 @@ void ObjectSelectionItem::addRemoveObjectReferences(MapObject *object)
         if (!targetObject)
             return;
 
-        auto it = std::find_if(existingItems.begin(),
-                               existingItems.end(),
+        auto it = std::find_if(existingItems.constBegin(),
+                               existingItems.constEnd(),
                                [=] (ObjectReferenceItem *item) {
             return item->targetObject() == targetObject
                     && item->property() == property;
         });
 
-        if (it != existingItems.end()) {
+        if (it != existingItems.constEnd()) {
             items.append(*it);
             existingItems.erase(it);
             return;
