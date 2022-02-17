@@ -41,7 +41,7 @@ TextEditorDialog::TextEditorDialog(QWidget *parent)
 #endif
 
     connect(mUi->monospaceFont, &QAbstractButton::toggled, [this] (bool checked) {
-        mUi->plainTextEdit->setStyleSheet(checked ? QStringLiteral("font-family: monospace;")
+        mUi->plainTextEdit->setStyleSheet(checked ? QStringLiteral("font-family: monospace, Monaco, Courier;")
                                                   : QString());
         session::monospace.set(checked);
     });
