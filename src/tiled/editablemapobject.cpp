@@ -256,9 +256,10 @@ void EditableMapObject::setTile(EditableTile *tile)
         mapObject()->setPropertyChanged(MapObject::CellProperty);
 
         // Make sure the tileset is added to the map
-        if (auto t = tile->tile())
-            if (auto map = mapObject()->map())
-                map->addTileset(t->sharedTileset());
+        if (tile)
+            if (auto t = tile->tile())
+                if (auto map = mapObject()->map())
+                    map->addTileset(t->sharedTileset());
     }
 }
 
