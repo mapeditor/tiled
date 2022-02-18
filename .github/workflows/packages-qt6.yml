@@ -167,7 +167,7 @@ jobs:
 
   windows:
     name: Windows (64-bit)
-    runs-on: windows-latest
+    runs-on: windows-2019
     needs: version
 
     env:
