@@ -33,11 +33,9 @@ package org.mapeditor.io;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -49,6 +47,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.mapeditor.core.Map;
 import org.mapeditor.core.TileSet;
+import org.mapeditor.util.StreamHelper;
 
 /**
  * The standard map reader for TMX files. Supports reading .tmx, .tmx.gz and
@@ -82,17 +81,9 @@ public class MapReader {
         int fileSeparatorIndex = filename.lastIndexOf(File.separatorChar) + 1;
         String xmlPath = makeUrl(filename.substring(0, fileSeparatorIndex));
 
-        String xmlFile = makeUrl(filename);
-
-        URL url = new URL(xmlFile);
-        InputStream is = url.openStream();
-
-        // Wrap with GZIP decoder for .tmx.gz files
-        if (filename.endsWith(".gz")) {
-            is = new GZIPInputStream(is);
+        try (InputStream in = StreamHelper.openStream(filename)) {
+            return readMap(in, xmlPath);
         }
-
-        return readMap(is, xmlPath);
     }
 
     /**
@@ -113,9 +104,9 @@ public class MapReader {
      * @throws java.io.IOException if any.
      */
     public TileSet readTileset(String filename) throws IOException {
-        String xmlFile = makeUrl(filename);
-        URL url = new URL(xmlFile);
-        return readTileset(url.openStream());
+        try (InputStream in = StreamHelper.openStream(filename)) {
+            return readTileset(in);
+        }
     }
 
     private Map buildMap(Map map, String xmlPath) throws IOException {
@@ -147,7 +138,7 @@ public class MapReader {
     private <T> T unmarshal(InputStream in, Class<T> type) {
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
-            XMLEventReader reader = factory.createXMLEventReader(in);
+            XMLEventReader reader = factory.createXMLEventReader(StreamHelper.buffered(in));
 
             JAXBContext context = JAXBContext.newInstance(type);
             Unmarshaller unmarshaller = context.createUnmarshaller();

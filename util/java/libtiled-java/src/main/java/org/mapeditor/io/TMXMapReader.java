@@ -34,7 +34,6 @@ package org.mapeditor.io;
 import java.awt.Color;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -58,9 +57,21 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.mapeditor.core.*;
+import org.mapeditor.core.AnimatedTile;
+import org.mapeditor.core.Group;
+import org.mapeditor.core.ImageLayer;
+import org.mapeditor.core.Map;
+import org.mapeditor.core.MapObject;
+import org.mapeditor.core.ObjectGroup;
+import org.mapeditor.core.Point;
+import org.mapeditor.core.Properties;
+import org.mapeditor.core.Tile;
+import org.mapeditor.core.TileLayer;
+import org.mapeditor.core.TileOffset;
+import org.mapeditor.core.TileSet;
 import org.mapeditor.util.BasicTileCutter;
 import org.mapeditor.util.ImageHelper;
+import org.mapeditor.util.StreamHelper;
 import org.mapeditor.util.URLHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -213,7 +224,7 @@ public class TMXMapReader {
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             //builder.setErrorHandler(new XMLErrorHandler());
-            Document tsDoc = builder.parse(in, ".");
+            Document tsDoc = builder.parse(StreamHelper.buffered(in), ".");
 
             URL xmlPathSave = xmlPath;
             if (file.getPath().contains("/")) {
@@ -260,14 +271,15 @@ public class TMXMapReader {
         if (source != null) {
             source = replacePathSeparator(source);
             URL url = URLHelper.resolve(xmlPath, source);
-            InputStream in = url.openStream();
-            TileSet ext = unmarshalTilesetFile(in, url);
+            try (InputStream in = StreamHelper.openStream(url)) {
 
-            if (ext == null) {
-                error = "Tileset " + source + " was not loaded correctly!";
-                return set;
-            } else {
-                return ext;
+                TileSet ext = unmarshalTilesetFile(in, url);
+                if (ext == null) {
+                    error = "Tileset " + source + " was not loaded correctly!";
+                    return set;
+                } else {
+                    return ext;
+                }
             }
         } else {
 
@@ -865,7 +877,7 @@ public class TMXMapReader {
             factory.setExpandEntityReferences(false);
             DocumentBuilder builder = factory.newDocumentBuilder();
             builder.setEntityResolver(entityResolver);
-            InputSource insrc = new InputSource(in);
+            InputSource insrc = new InputSource(StreamHelper.buffered(in));
             insrc.setSystemId(xmlPath.toString());
             insrc.setEncoding("UTF-8");
             doc = builder.parse(insrc);
@@ -894,19 +906,15 @@ public class TMXMapReader {
         }
         xmlPath = URLHelper.getParent(url);
 
-        InputStream is = url.openStream();
-
         // Wrap with GZIP decoder for .tmx.gz files
-        if (url.toString().endsWith(".gz")) {
-            is = new GZIPInputStream(is);
+        try (InputStream in = StreamHelper.openStream(url)) {
+            Map unmarshalledMap = unmarshal(in);
+            unmarshalledMap.setFilename(url.toString());
+
+            map = null;
+
+            return unmarshalledMap;
         }
-
-        Map unmarshalledMap = unmarshal(is);
-        unmarshalledMap.setFilename(url.toString());
-
-        map = null;
-
-        return unmarshalledMap;
     }
 
     /**
@@ -957,7 +965,9 @@ public class TMXMapReader {
         URL url = makeUrl(filename);
         xmlPath = URLHelper.getParent(url);
 
-        return unmarshalTilesetFile(url.openStream(), url);
+        try (InputStream in = StreamHelper.openStream(url)) {
+            return unmarshalTilesetFile(in, url);
+        }
     }
 
     /**
