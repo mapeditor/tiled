@@ -27,6 +27,7 @@
 #include "variantpropertymanager.h"
 
 #include <QScopedValueRollback>
+#include <QDebug>
 
 #include "qtcompat_p.h"
 
