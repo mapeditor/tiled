@@ -81,7 +81,6 @@ public class MapReader {
         int fileSeparatorIndex = filename.lastIndexOf(File.separatorChar) + 1;
         String xmlPath = makeUrl(filename.substring(0, fileSeparatorIndex));
 
-        // Wrap with GZIP decoder for .tmx.gz files
         try (InputStream in = StreamHelper.openStream(filename)) {
             return readMap(in, xmlPath);
         }
