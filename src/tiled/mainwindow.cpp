@@ -146,8 +146,7 @@ template <typename Format>
 ExportDetails<Format> chooseExportDetails(const QString &fileName,
                                           const QString &lastExportName,
                                           QString &selectedFilter,
-                                          QWidget *window,
-                                          QFileDialog::Options options = QFileDialog::Options())
+                                          QWidget *window)
 {
     FormatHelper<Format> helper(FileFormat::Write, MainWindow::tr("All Files (*)"));
 
@@ -174,8 +173,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
     QString exportToFileName = QFileDialog::getSaveFileName(window, MainWindow::tr("Export As..."),
                                                     suggestedFilename,
                                                     helper.filter(),
-                                                    &selectedFilter,
-                                                    options);
+                                                    &selectedFilter);
     if (exportToFileName.isEmpty())
         return ExportDetails<Format>();
 
@@ -190,7 +188,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
                     QMessageBox::warning(window, MainWindow::tr("Non-unique file extension"),
                                          MainWindow::tr("Non-unique file extension.\n"
                                                         "Please select specific format."));
-                    return chooseExportDetails<Format>(exportToFileName, lastExportName, selectedFilter, window, options);
+                    return chooseExportDetails<Format>(exportToFileName, lastExportName, selectedFilter, window);
                 } else {
                     chosenFormat = format;
                 }
@@ -2366,8 +2364,7 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
     auto exportDetails = chooseExportDetails<MapFormat>(fileName,
                                                         mapDocument->lastExportFileName(),
                                                         selectedFilter,
-                                                        this,
-                                                        QFileDialog::DontConfirmOverwrite);
+                                                        this);
     if (!exportDetails.isValid())
         return;
 
@@ -2378,34 +2375,30 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
     // Check if writer will overwrite existing files here because some writers
     // could save to multiple files at the same time. For example CSV saves
     // each layer into a separate file.
-    QStringList outputFiles = exportDetails.mFormat->outputFiles(map, exportDetails.mFileName);
-    if (outputFiles.size() > 0) {
-        // Check if any output file already exists
-        QString message =
-                tr("Some export files already exist:") + QLatin1String("\n\n");
+    const QStringList outputFiles = exportDetails.mFormat->outputFiles(map, exportDetails.mFileName);
 
-        bool overwriteHappens = false;
+    // Check if any additional output files already exist
+    QStringList existingFiles;
 
-        for (const QString &outputFile : outputFiles) {
-            if (QFile::exists(outputFile)) {
-                overwriteHappens = true;
-                message += outputFile + QLatin1Char('\n');
-            }
-        }
-        message += QLatin1Char('\n') + tr("Do you want to replace them?");
+    for (const QString &outputFile : outputFiles)
+        if (outputFile != exportDetails.mFileName && QFile::exists(outputFile))
+            existingFiles.append(outputFile);
 
-        // If overwrite happens, warn the user and get confirmation before exporting
-        if (overwriteHappens) {
-            const QMessageBox::StandardButton reply = QMessageBox::warning(
-                                                          this,
-                                                          tr("Overwrite Files"),
-                                                          message,
-                                                          QMessageBox::Yes | QMessageBox::No,
-                                                          QMessageBox::No);
+    // If overwrite happens, warn the user and get confirmation before exporting
+    if (!existingFiles.isEmpty()) {
+        QString message = tr("Some export files already exist:") + QLatin1String("\n\n");
+        message += existingFiles.join(QLatin1Char('\n'));
+        message += QLatin1String("\n\n") + tr("Do you want to replace them?");
 
-            if (reply != QMessageBox::Yes)
-                return;
-        }
+        const QMessageBox::StandardButton reply = QMessageBox::warning(
+                                                      this,
+                                                      tr("Overwrite Files"),
+                                                      message,
+                                                      QMessageBox::Yes | QMessageBox::No,
+                                                      QMessageBox::No);
+
+        if (reply != QMessageBox::Yes)
+            return;
     }
 
     Session &session = Session::current();
