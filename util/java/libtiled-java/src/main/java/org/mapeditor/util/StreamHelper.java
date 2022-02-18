@@ -53,7 +53,7 @@ public class StreamHelper {
 	public static InputStream openStream(String location) throws IOException {
 
 		// (sanity check)
-		if ((location == null) || location.length() < 0) {
+		if (location == null || location.length() < 0) {
 			return null;
 		}
 
