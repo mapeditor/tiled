@@ -2,6 +2,18 @@
 
 * Raised minimum supported Qt version from 5.6 to 5.12 (drops Windows XP support)
 
+### Tiled 1.8.2 (18 February 2022)
+
+* Fixed deactivating of tools when no layer is selected (avoids crash)
+* Fixed monospace font option in multi-line text editor on macOS and Windows (#3007)
+* Fixed ability to reset custom 'color' and 'object' properties (#3270)
+* Fixed updating of layer positions when changing parallax factor of a group (#3175)
+* Scripting: Fixed crash when assigning null to the MapObject.tile property
+* Scripting: Fixed adding of tilesets when adding layers to a loaded map (#3268)
+* JSON format: Fixed layer locked status not getting saved (#2877)
+* macOS: Fixed duplicate overwrite confirmation when using Export As (#3152)
+* FreeBSD: Fixed compile due to missing include (by Dmitry Marakasov, #3271)
+
 ### Tiled 1.8.1 (11 February 2022)
 
 * Fixed pasted objects not getting selected if a tile layer was also copied

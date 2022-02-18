@@ -735,6 +735,8 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
     layerVariant[QStringLiteral("x")] = layer.x();
     layerVariant[QStringLiteral("y")] = layer.y();
     layerVariant[QStringLiteral("visible")] = layer.isVisible();
+    if (layer.isLocked())
+        layerVariant[QStringLiteral("locked")] = true;
     layerVariant[QStringLiteral("opacity")] = layer.opacity();
 
     const QPointF offset = layer.offset();

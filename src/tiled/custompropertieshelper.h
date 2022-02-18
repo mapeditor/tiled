@@ -64,7 +64,7 @@ private:
     void deleteSubProperties(QtProperty *property);
 
     void onValueChanged(QtProperty *property, const QVariant &value);
-    void unsetProperty(QtProperty *property);
+    void resetProperty(QtProperty *property);
     void propertyTypesChanged();
 
     void setPropertyAttributes(QtVariantProperty *property, const PropertyType &propertyType);

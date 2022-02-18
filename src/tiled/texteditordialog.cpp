@@ -24,6 +24,8 @@
 #include "session.h"
 #include "utils.h"
 
+#include <QFontDatabase>
+
 namespace Tiled {
 
 namespace session {
@@ -37,9 +39,9 @@ TextEditorDialog::TextEditorDialog(QWidget *parent)
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
 
-    connect(mUi->monospaceFont, &QAbstractButton::toggled, [this] (bool checked) {
-        mUi->plainTextEdit->setStyleSheet(checked ? QStringLiteral("font-family: monospace;")
-                                                  : QString());
+    connect(mUi->monospaceFont, &QAbstractButton::toggled, this, [this] (bool checked) {
+        mUi->plainTextEdit->setFont(checked ? QFontDatabase::systemFont(QFontDatabase::FixedFont)
+                                            : QGuiApplication::font());
         session::monospace.set(checked);
     });
 

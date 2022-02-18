@@ -46,6 +46,7 @@
 #if defined(Q_OS_UNIX)
 #include <sys/stat.h>
 #include <unistd.h>
+#include <errno.h>
 #endif
 
 #include <memory>

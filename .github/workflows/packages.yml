@@ -234,7 +234,7 @@ jobs:
 
   windows:
     name: Windows (${{ matrix.arch }}-bit)
-    runs-on: windows-latest
+    runs-on: windows-2019
     needs: version
 
     strategy:
