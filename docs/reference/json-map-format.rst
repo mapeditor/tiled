@@ -91,6 +91,7 @@ Layer
     id,               int,              "Incremental ID - unique across all layers"
     image,            string,           "Image used by this layer. ``imagelayer`` only."
     layers,           array,            "Array of :ref:`layers <json-layer>`. ``group`` only."
+    locked,           bool,             "Whether layer is locked in the editor (default: false). (since Tiled 1.8.2)"
     name,             string,           "Name assigned to this layer"
     objects,          array,            "Array of :ref:`objects <json-object>`. ``objectgroup`` only."
     offsetx,          double,           "Horizontal layer offset in pixels (default: 0)"

@@ -571,6 +571,7 @@ std::unique_ptr<Layer> VariantToMapConverter::toLayer(const QVariant &variant)
         layer->setId(variantMap[QStringLiteral("id")].toInt());
         layer->setOpacity(variantMap[QStringLiteral("opacity")].toReal());
         layer->setVisible(variantMap[QStringLiteral("visible")].toBool());
+        layer->setLocked(variantMap[QStringLiteral("locked")].toBool());
         layer->setTintColor(variantMap[QStringLiteral("tintcolor")].value<QColor>());
         layer->setProperties(extractProperties(variantMap));
 
