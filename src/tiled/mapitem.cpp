@@ -499,7 +499,11 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
     }
 
     layerItem->setOpacity(layer->opacity() * multiplier);
-    layerItem->setPos(static_cast<MapScene*>(scene())->layerItemPosition(*layer));
+
+    if (layer->isGroupLayer() && (change.properties & LayerChangeEvent::ParallaxFactorProperty))
+        updateLayerPositions();
+    else
+        layerItem->setPos(static_cast<MapScene*>(scene())->layerItemPosition(*layer));
 
     updateBoundingRect();   // possible layer offset change
 }
