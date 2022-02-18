@@ -46,7 +46,7 @@ CustomPropertiesHelper::CustomPropertiesHelper(QtAbstractPropertyBrowser *proper
             this, &CustomPropertiesHelper::onValueChanged);
 
     connect(variantEditorFactory, &VariantEditorFactory::resetProperty,
-            this, &CustomPropertiesHelper::unsetProperty);
+            this, &CustomPropertiesHelper::resetProperty);
 
     connect(Preferences::instance(), &Preferences::propertyTypesChanged,
             this, &CustomPropertiesHelper::propertyTypesChanged);
@@ -252,19 +252,32 @@ void CustomPropertiesHelper::onValueChanged(QtProperty *property, const QVariant
     }
 }
 
-void CustomPropertiesHelper::unsetProperty(QtProperty *property)
+void CustomPropertiesHelper::resetProperty(QtProperty *property)
 {
-    if (!property->isModified())
-        return;
+    // Reset class property value by removing it
+    if (property->isModified()) {
+        if (auto parent = static_cast<QtVariantProperty*>(mPropertyParents.value(property))) {
+            auto variantMap = parent->value().toMap();
+            variantMap.remove(property->propertyName());
 
-    if (auto parent = static_cast<QtVariantProperty*>(mPropertyParents.value(property))) {
-        auto variantMap = parent->value().toMap();
-        variantMap.remove(property->propertyName());
+            if (variantMap.isEmpty() && mPropertyParents.value(parent))
+                resetProperty(parent);
+            else
+                parent->setValue(variantMap);
 
-        if (variantMap.isEmpty() && mPropertyParents.value(parent))
-            unsetProperty(parent);
-        else
-            parent->setValue(variantMap);
+            return;
+        }
+    }
+
+    // Some other type can reset their value
+    auto typeId = mPropertyManager->propertyType(property);
+
+    if (typeId == QMetaType::QColor)
+        mPropertyManager->setValue(property, QColor());
+    else if (typeId == VariantPropertyManager::displayObjectRefTypeId()) {
+        mPropertyManager->setValue(property, toDisplayValue(QVariant::fromValue(ObjectRef())));
+    } else {
+        qWarning() << "Requested reset of unsupported type" << typeId << "for property" << property->propertyName();
     }
 }
 
