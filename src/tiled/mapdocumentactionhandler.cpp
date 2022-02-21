@@ -395,7 +395,6 @@ void MapDocumentActionHandler::delete_()
     QList<QUndoCommand*> commands;
     QList<QPair<QRegion, TileLayer*>> erasedRegions;
 
-    LayerIterator layerIterator(mMapDocument->map(), Layer::TileLayerType);
     for (Layer *layer : selectedLayers) {
         if (!layer->isTileLayer())
             continue;
