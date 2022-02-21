@@ -361,6 +361,8 @@ void MapDocumentActionHandler::cut()
     QUndoStack *stack = mMapDocument->undoStack();
     stack->beginMacro(tr("Cut"));
     delete_();
+    if (!mMapDocument->selectedArea().isEmpty())
+        mMapDocument->undoStack()->push(new ChangeSelectedArea(mMapDocument, QRegion()));
     stack->endMacro();
 }
 
@@ -390,30 +392,22 @@ void MapDocumentActionHandler::delete_()
     const QList<Layer*> &selectedLayers = mMapDocument->selectedLayers();
     const QList<MapObject*> selectedObjects = mMapDocument->selectedObjectsOrdered();
 
-    bool tileLayerSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),
-                                         [] (Layer *layer) { return layer->isTileLayer(); });
-
     QList<QUndoCommand*> commands;
     QList<QPair<QRegion, TileLayer*>> erasedRegions;
 
-    if (tileLayerSelected) {
-        LayerIterator layerIterator(mMapDocument->map(), Layer::TileLayerType);
-        for (Layer *layer : selectedLayers) {
-            if (!layer->isTileLayer())
-                continue;
+    LayerIterator layerIterator(mMapDocument->map(), Layer::TileLayerType);
+    for (Layer *layer : selectedLayers) {
+        if (!layer->isTileLayer())
+            continue;
 
-            auto tileLayer = static_cast<TileLayer*>(layer);
-            const QRegion area = selectedArea.intersected(tileLayer->bounds());
-            if (area.isEmpty())                     // nothing to delete
-                continue;
+        auto tileLayer = static_cast<TileLayer*>(layer);
+        const QRegion area = selectedArea.intersected(tileLayer->bounds());
+        if (area.isEmpty())                     // nothing to delete
+            continue;
 
-            // Delete the selected part of the layer
-            commands.append(new EraseTiles(mMapDocument, tileLayer, area));
-            erasedRegions.append({ area, tileLayer });
-        }
-
-        if (!selectedArea.isEmpty())
-            commands.append(new ChangeSelectedArea(mMapDocument, QRegion()));
+        // Delete the selected part of the layer
+        commands.append(new EraseTiles(mMapDocument, tileLayer, area));
+        erasedRegions.append({ area, tileLayer });
     }
 
     if (!selectedObjects.isEmpty()) {
