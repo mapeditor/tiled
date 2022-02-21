@@ -14,6 +14,13 @@ TiledPlugin {
         return pkgConfigPython3Embed.found || pkgConfigPython3.found;
     }
 
+    cpp.cxxFlags: {
+        var flags = base
+        if (qbs.toolchain.contains("gcc") && !qbs.toolchain.contains("clang"))
+            flags.push("-Wno-cast-function-type")
+        return flags
+    }
+
     Probes.PkgConfigProbe {
         id: pkgConfigPython3
         name: "python3"
@@ -31,12 +38,7 @@ TiledPlugin {
 
     Properties {
         condition: pkgConfigPython3Embed.found
-        cpp.cxxFlags: {
-            var flags = pkgConfigPython3Embed.cflags
-            if (qbs.toolchain.contains("gcc") && !qbs.toolchain.contains("clang"))
-                flags.push("-Wno-cast-function-type")
-            return flags
-        }
+        cpp.cxxFlags: outer.concat(pkgConfigPython3Embed.cflags)
         cpp.dynamicLibraries: pkgConfigPython3Embed.libraries
         cpp.libraryPaths: pkgConfigPython3Embed.libraryPaths
         cpp.linkerFlags: pkgConfigPython3Embed.linkerFlags
@@ -44,12 +46,7 @@ TiledPlugin {
 
     Properties {
         condition: pkgConfigPython3.found
-        cpp.cxxFlags: {
-            var flags = pkgConfigPython3.cflags
-            if (qbs.toolchain.contains("gcc") && !qbs.toolchain.contains("clang"))
-                flags.push("-Wno-cast-function-type")
-            return flags
-        }
+        cpp.cxxFlags: outer.concat(pkgConfigPython3.cflags)
         cpp.dynamicLibraries: pkgConfigPython3.libraries
         cpp.libraryPaths: pkgConfigPython3.libraryPaths
         cpp.linkerFlags: pkgConfigPython3.linkerFlags
