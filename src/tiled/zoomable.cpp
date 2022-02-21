@@ -126,7 +126,7 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
         break;
     case Qt::GestureStarted:
         mGestureStartScale = mScale;
-        Q_FALLTHROUGH();
+        [[fallthrough]];
     case Qt::GestureUpdated: {
         qreal factor = pinch->totalScaleFactor();
         qreal scale = qBound(mZoomFactors.first(),

@@ -64,7 +64,7 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
         break;
     case Layer::ObjectGroupType:
         mOffsetLayer = layer->clone();
-        Q_FALLTHROUGH();
+        [[fallthrough]];
     case Layer::ImageLayerType:
     case Layer::GroupLayerType: {
         // These layers need offset and bounds converted to pixel units

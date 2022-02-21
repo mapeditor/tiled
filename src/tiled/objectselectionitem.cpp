@@ -747,7 +747,7 @@ void ObjectSelectionItem::addRemoveObjectLabels()
         }
     }
         // We want labels on selected objects regardless layer visibility
-        Q_FALLTHROUGH();
+        [[fallthrough]];
 
     case Preferences::SelectedObjectLabels:
         for (MapObject *object : mMapDocument->selectedObjects())

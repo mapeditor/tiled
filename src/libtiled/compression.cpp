@@ -100,7 +100,7 @@ QByteArray Tiled::decompress(const QByteArray &data,
             switch (ret) {
                 case Z_NEED_DICT:
                     ret = Z_DATA_ERROR;
-                    Q_FALLTHROUGH();
+                    [[fallthrough]];
                 case Z_DATA_ERROR:
                 case Z_MEM_ERROR:
                     inflateEnd(&strm);

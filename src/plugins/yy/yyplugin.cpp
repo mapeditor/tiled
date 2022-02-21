@@ -779,8 +779,7 @@ static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
 
         const bool isSprite = !tile->imageSource().isEmpty();
 
-        assets.emplace_back(isSprite);
-        GMRGraphic &g = assets.back();
+        GMRGraphic &g = assets.emplace_back(isSprite);
 
         QSize size = tile->size();
         QPointF origin(optionalProperty(tile, "originX", 0.0),
@@ -937,8 +936,7 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
                 continue;
             }
 
-            context.views.emplace_back();
-            GMRView &view = context.views.back();
+            GMRView &view = context.views.emplace_back();
 
             view.inherit = optionalProperty(mapObject, "inherit", false);
             view.visible = mapObject->isVisible();
@@ -961,8 +959,7 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
         }
         else if (!type.isEmpty())
         {
-            instances.emplace_back();
-            GMRInstance &instance = instances.back();
+            GMRInstance &instance = instances.emplace_back();
 
             auto props = mapObject->resolvedProperties();
 
@@ -1029,16 +1026,14 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
             instance.tags = readTags(mapObject);
             props.remove(QStringLiteral("tags"));
 
-            context.instanceCreationOrder.emplace_back();
-            InstanceCreation &instanceCreation = context.instanceCreationOrder.back();
+            InstanceCreation &instanceCreation = context.instanceCreationOrder.emplace_back();
             instanceCreation.name = instance.name;
             instanceCreation.creationOrder = takeProperty(props, "creationOrder", 0);
 
             // Remaining unknown custom properties are assumed to
             // override properties defined on the GameMaker object.
             for (auto it = props.constBegin(); it != props.constEnd(); ++it) {
-                instance.properties.emplace_back();
-                GMOverriddenProperty &prop = instance.properties.back();
+                GMOverriddenProperty &prop = instance.properties.emplace_back();
                 prop.propertyId = it.key();
                 prop.objectId = instance.objectId;
                 prop.value = toOverriddenPropertyValue(it.value(), context);
@@ -1053,8 +1048,7 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
 
             const bool isSprite = !tile->imageSource().isEmpty();
 
-            assets.emplace_back(isSprite);
-            GMRGraphic &g = assets.back();
+            GMRGraphic &g = assets.emplace_back(isSprite);
 
             QPointF origin(optionalProperty(mapObject, "originX", 0.0),
                            optionalProperty(mapObject, "originY", 0.0));
@@ -1121,9 +1115,7 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
         }
         else if (mapObject->shape() == MapObject::Polygon || mapObject->shape() == MapObject::Polyline)
         {
-            paths.emplace_back();
-            GMPath &p = paths.back();
-
+            GMPath &p = paths.emplace_back();
             p.kind = optionalProperty(mapObject, "smooth", false);
             p.closed = mapObject->shape() == MapObject::Polygon;
             p.precision = optionalProperty(mapObject, "precision", 4);
