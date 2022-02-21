@@ -47,6 +47,9 @@
 #include <windows.h>
 #endif
 
+#undef min
+#undef max
+
 #include <QOpenGLWidget>
 #endif // QT_NO_OPENGL
 
