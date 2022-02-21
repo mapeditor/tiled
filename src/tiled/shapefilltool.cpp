@@ -191,11 +191,15 @@ void ShapeFillTool::updateFillOverlay()
 
     switch (mCurrentShape) {
     case Rect: {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         QRect area = boundingRect.normalized();
         if (area.width() == 0)
             area.adjust(-1, 0, 1, 0);
         if (area.height() == 0)
             area.adjust(0, -1, 0, 1);
+#else
+        QRect area = QRect::span(mStartCorner, mStartCorner + QPoint(dx, dy));
+#endif
         updatePreview(area);
         break;
     }
