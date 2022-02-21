@@ -8,7 +8,7 @@ DynamicLibrary {
     Depends { name: "cpp" }
     Depends { name: "Qt"; submodules: ["quick"]; versionAtLeast: "5.12" }
 
-    cpp.cxxLanguageVersion: "c++14"
+    cpp.cxxLanguageVersion: "c++17"
     cpp.visibility: "minimal"
     cpp.defines: [
         "TILED_QUICK_LIBRARY",

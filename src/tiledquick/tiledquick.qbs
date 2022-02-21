@@ -21,7 +21,7 @@ QtGuiApplication {
 
     cpp.includePaths: ["."]
     cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../lib"]
-    cpp.cxxLanguageVersion: "c++14"
+    cpp.cxxLanguageVersion: "c++17"
 
     files: [
         "fonts/fonts.qrc",

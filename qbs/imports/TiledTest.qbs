@@ -8,7 +8,7 @@ CppApplication {
     Depends { name: "Qt.testlib" }
     Depends { name: "autotest" }
 
-    cpp.cxxLanguageVersion: "c++14"
+    cpp.cxxLanguageVersion: "c++17"
     cpp.rpaths: FileInfo.joinPaths(cpp.rpathOrigin, "../install-root/usr/local/lib/")
     autotest.workingDir: sourceDirectory
 }

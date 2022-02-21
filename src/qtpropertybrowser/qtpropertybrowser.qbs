@@ -7,7 +7,7 @@ StaticLibrary {
     Depends { name: "Qt"; submodules: ["widgets"] }
 
     cpp.includePaths: ["src"]
-    cpp.cxxLanguageVersion: "c++14"
+    cpp.cxxLanguageVersion: "c++17"
 
     Properties {
         // needed to work around "too many sections" issue in qteditorfactory.cpp

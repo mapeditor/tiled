@@ -8,7 +8,7 @@ QtGuiApplication {
         else
             return ["$ORIGIN/../lib"];
     }
-    cpp.cxxLanguageVersion: "c++14"
+    cpp.cxxLanguageVersion: "c++17"
     cpp.defines: [
         "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(5,15,0)",
         "QT_NO_DEPRECATED_WARNINGS",

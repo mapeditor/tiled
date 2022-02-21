@@ -11,7 +11,7 @@ DynamicLibrary {
         cpp.dynamicLibraries: base.concat(["z"])
     }
 
-    cpp.cxxLanguageVersion: "c++14"
+    cpp.cxxLanguageVersion: "c++17"
     cpp.visibility: "minimal"
     cpp.defines: {
         var defs = [

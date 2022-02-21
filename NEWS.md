@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Raised minimum supported Qt version from 5.6 to 5.12 (drops Windows XP support)
+* Raised minimum C++ version to C++17
 
 ### Tiled 1.8.2 (18 February 2022)
 
