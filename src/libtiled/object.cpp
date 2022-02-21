@@ -31,8 +31,6 @@
 #include "mapobject.h"
 #include "tile.h"
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 ObjectTypes Object::mObjectTypes;

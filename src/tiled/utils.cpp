@@ -48,8 +48,6 @@
 #endif
 #include <QScreen>
 
-#include "qtcompat_p.h"
-
 static QString toImageFileFilter(const QList<QByteArray> &formats)
 {
     QString filter(QCoreApplication::translate("Utils", "Image files"));

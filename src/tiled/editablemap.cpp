@@ -51,8 +51,6 @@
 #include <QQmlEngine>
 #include <QUndoStack>
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 EditableMap::EditableMap(QObject *parent)

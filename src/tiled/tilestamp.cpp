@@ -27,8 +27,6 @@
 #include <QDebug>
 #include <QJsonArray>
 
-#include <qtcompat_p.h>
-
 namespace Tiled {
 
 class TileStampData : public QSharedData

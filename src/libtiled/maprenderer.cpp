@@ -42,8 +42,6 @@
 #include <QPainter>
 #include <QVector2D>
 
-#include "qtcompat_p.h"
-
 #include <cmath>
 
 using namespace Tiled;

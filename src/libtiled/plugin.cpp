@@ -30,8 +30,6 @@
 
 #include "pluginmanager.h"
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 Plugin::~Plugin()

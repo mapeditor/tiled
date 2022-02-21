@@ -35,8 +35,6 @@
 #include <QRegularExpression>
 #include <QXmlStreamWriter>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 using namespace Gmx;
 

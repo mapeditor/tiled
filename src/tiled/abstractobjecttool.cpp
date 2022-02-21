@@ -50,8 +50,6 @@
 
 #include <QtMath>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 static bool isTileObject(const MapObject *mapObject)

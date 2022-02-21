@@ -55,8 +55,6 @@
 #include <QTransform>
 #include <QUndoStack>
 
-#include "qtcompat_p.h"
-
 #include <cmath>
 #include <float.h>
 

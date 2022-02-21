@@ -18,9 +18,10 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "abstractworldtool.h"
 #include "mapitem.h"
 
+#include "abstractworldtool.h"
+#include "changeevents.h"
 #include "documentmanager.h"
 #include "grouplayer.h"
 #include "grouplayeritem.h"
@@ -44,9 +45,6 @@
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
 #include <QWidget>
-
-#include "changeevents.h"
-#include "qtcompat_p.h"
 
 #include <memory>
 

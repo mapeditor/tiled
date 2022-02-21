@@ -40,8 +40,6 @@
 #include <QDebug>
 #include <QRandomGenerator>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 static int wrap(int value, int bound)

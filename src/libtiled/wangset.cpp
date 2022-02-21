@@ -32,8 +32,6 @@
 #include <QStack>
 #include <QtMath>
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 /**

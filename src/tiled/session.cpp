@@ -26,8 +26,6 @@
 
 #include <QFileInfo>
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 FileHelper::FileHelper(const QString &fileName)

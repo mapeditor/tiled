@@ -35,8 +35,6 @@
 #include "tileanimationdriver.h"
 #include "tilesetformat.h"
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 TilesetManager *TilesetManager::mInstance;

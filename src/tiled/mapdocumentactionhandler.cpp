@@ -48,8 +48,6 @@
 #include <QtCore/qmath.h>
 #include <QStyle>
 
-#include "qtcompat_p.h"
-
 #include <algorithm>
 
 namespace Tiled {

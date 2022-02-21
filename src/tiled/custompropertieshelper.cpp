@@ -29,8 +29,6 @@
 #include <QScopedValueRollback>
 #include <QDebug>
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 CustomPropertiesHelper::CustomPropertiesHelper(QtAbstractPropertyBrowser *propertyBrowser,

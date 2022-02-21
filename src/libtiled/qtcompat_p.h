@@ -21,45 +21,6 @@
 
 #include <QTextStream>
 
-#if QT_VERSION < QT_VERSION_CHECK(5,7,0)
-namespace QtPrivate
-{
-template <typename T> struct QAddConst {
-    typedef const T Type;
-};
-}
-
-// this adds const to non-const objects (like std::as_const)
-template <typename T>
-Q_DECL_CONSTEXPR typename QtPrivate::QAddConst<T>::Type &qAsConst(T &t) Q_DECL_NOTHROW { return t; }
-// prevent rvalue arguments:
-template <typename T>
-void qAsConst(const T &&) Q_DECL_EQ_DELETE;
-#endif
-
-// compat for Q_FALLTHROUGH
-#if QT_VERSION < QT_VERSION_CHECK(5,8,0)
-
-#if defined(__has_cpp_attribute)
-#    if __has_cpp_attribute(fallthrough)
-#        define Q_FALLTHROUGH() [[fallthrough]]
-#    elif __has_cpp_attribute(clang::fallthrough)
-#        define Q_FALLTHROUGH() [[clang::fallthrough]]
-#    elif __has_cpp_attribute(gnu::fallthrough)
-#        define Q_FALLTHROUGH() [[gnu::fallthrough]]
-#    endif
-#endif
-
-#ifndef Q_FALLTHROUGH
-#    if defined(__GNUC__) && !defined(__INTEL_COMPILER) && (((__GNUC__ * 100) + __GNUC_MINOR__) >= 700)
-#        define Q_FALLTHROUGH() __attribute__((fallthrough))
-#    else
-#        define Q_FALLTHROUGH() (void)0
-#    endif
-#endif
-
-#endif
-
 #if QT_VERSION < QT_VERSION_CHECK(5,14,0)
 namespace Qt {
 using ::endl;

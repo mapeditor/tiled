@@ -33,8 +33,6 @@
 #include "mapformat.h"
 #include "minimaprenderer.h"
 
-#include "qtcompat_p.h"
-
 #include <QBitmap>
 #include <QCoreApplication>
 #include <QFileInfo>

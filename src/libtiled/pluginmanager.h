@@ -35,8 +35,6 @@
 #include <QObject>
 #include <QString>
 
-#include "qtcompat_p.h"
-
 #include <functional>
 
 class QPluginLoader;

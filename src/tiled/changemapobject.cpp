@@ -28,7 +28,6 @@
 
 #include "addremovetileset.h"
 #include "changeevents.h"
-#include "qtcompat_p.h"
 
 using namespace Tiled;
 

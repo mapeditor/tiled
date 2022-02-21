@@ -21,6 +21,7 @@
 #include "editpolygontool.h"
 
 #include "addremovemapobject.h"
+#include "changeevents.h"
 #include "changemapobject.h"
 #include "changepolygon.h"
 #include "createpolygonobjecttool.h"
@@ -46,9 +47,6 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QUndoStack>
-
-#include "changeevents.h"
-#include "qtcompat_p.h"
 
 #include <cstdlib>
 

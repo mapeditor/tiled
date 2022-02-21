@@ -33,8 +33,6 @@
 #include <QHBoxLayout>
 #include <QToolButton>
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 class ResetWidget : public QWidget

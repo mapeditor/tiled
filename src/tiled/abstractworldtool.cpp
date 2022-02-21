@@ -44,8 +44,6 @@
 #include <QUndoStack>
 #include <QtMath>
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 class AddMapCommand : public QUndoCommand

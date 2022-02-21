@@ -33,8 +33,6 @@
 #include <QPainter>
 #include <QStringList>
 
-#include "qtcompat_p.h"
-
 #include <algorithm>
 
 using namespace Tiled;

@@ -35,8 +35,6 @@
 #include "mapobject.h"
 #include "tile.h"
 
-#include "qtcompat_p.h"
-
 #include <cmath>
 
 using namespace Tiled;

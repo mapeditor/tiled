@@ -42,8 +42,6 @@
 #include <QStyledItemDelegate>
 #include <QToolBar>
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 class ColorDelegate : public QStyledItemDelegate

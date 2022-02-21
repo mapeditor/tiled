@@ -43,8 +43,6 @@
 #include <QPalette>
 #include <QUndoStack>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 CreatePolygonObjectTool::CreatePolygonObjectTool(QObject *parent)

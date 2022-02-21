@@ -25,8 +25,6 @@
 
 #include <QCoreApplication>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 ChangeTileWangId::ChangeTileWangId()

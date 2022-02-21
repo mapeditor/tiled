@@ -35,8 +35,6 @@
 
 #include <QVector>
 
-#include "qtcompat_p.h"
-
 #include <algorithm>
 
 namespace Tiled {

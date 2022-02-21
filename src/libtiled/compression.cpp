@@ -40,8 +40,6 @@
 #include <QByteArray>
 #include <QDebug>
 
-#include "qtcompat_p.h"
-
 #ifdef Z_PREFIX
 #undef compress
 #endif

@@ -35,8 +35,6 @@
 
 #include <QtMath>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 LayerOffsetTool::LayerOffsetTool(QObject *parent)

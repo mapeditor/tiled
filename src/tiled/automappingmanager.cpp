@@ -34,8 +34,6 @@
 #include <QFileSystemWatcher>
 #include <QTextStream>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 SessionOption<bool> AutomappingManager::automappingWhileDrawing { "automapping.whileDrawing", false };

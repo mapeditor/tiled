@@ -34,8 +34,6 @@
 #include <QLatin1String>
 #include <QMenu>
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 CommandManager::CommandManager()

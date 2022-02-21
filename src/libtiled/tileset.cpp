@@ -36,8 +36,6 @@
 
 #include <QBitmap>
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 Tileset::Tileset(QString name, int tileWidth, int tileHeight,

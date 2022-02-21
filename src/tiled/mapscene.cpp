@@ -47,8 +47,6 @@
 #include <QMimeData>
 #include <QPalette>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 SessionOption<bool> MapScene::enableWorlds { "mapScene.enableWorlds", true };

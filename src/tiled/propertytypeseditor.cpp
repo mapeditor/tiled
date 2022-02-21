@@ -48,8 +48,6 @@
 
 #include <QtTreePropertyBrowser>
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 static QToolBar *createSmallToolBar(QWidget *parent)

@@ -39,8 +39,6 @@
 
 #include <QPainter>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 MiniMapRenderer::MiniMapRenderer(const Map *map)

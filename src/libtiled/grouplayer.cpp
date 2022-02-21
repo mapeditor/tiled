@@ -22,8 +22,6 @@
 
 #include "map.h"
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 GroupLayer::GroupLayer(const QString &name, int x, int y):

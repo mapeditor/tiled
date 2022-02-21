@@ -26,8 +26,6 @@
 #include <QMenu>
 #include <QMimeData>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 static const char *commandMimeType = "application/x-tiled-commandptr";

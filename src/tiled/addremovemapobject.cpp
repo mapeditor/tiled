@@ -28,8 +28,6 @@
 
 #include <QCoreApplication>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 AddRemoveMapObjects::AddRemoveMapObjects(Document *document,

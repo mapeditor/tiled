@@ -24,8 +24,6 @@
 #include <QDebug>
 #include <QFileInfo>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 CommandLineParser::CommandLineParser()

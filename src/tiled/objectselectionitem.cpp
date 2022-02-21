@@ -39,8 +39,6 @@
 #include <QTimerEvent>
 #include <QVector2D>
 
-#include "qtcompat_p.h"
-
 #include <cmath>
 
 namespace Tiled {

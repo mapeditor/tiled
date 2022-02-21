@@ -43,6 +43,7 @@
 #include "issuesdock.h"
 #include "languagemanager.h"
 #include "layer.h"
+#include "locatorwidget.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
@@ -112,9 +113,6 @@
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif
 #endif // Q_OS_WIN
-
-#include "locatorwidget.h"
-#include "qtcompat_p.h"
 
 using namespace Tiled;
 using namespace Tiled::Utils;

@@ -67,8 +67,6 @@
 #include <QUndoStack>
 #include <QVBoxLayout>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 

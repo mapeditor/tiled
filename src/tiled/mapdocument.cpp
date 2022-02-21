@@ -25,6 +25,7 @@
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
 #include "brokenlinks.h"
+#include "changeevents.h"
 #include "changelayer.h"
 #include "changemapobject.h"
 #include "changemapobjectsorder.h"
@@ -61,9 +62,6 @@
 #include <QFileInfo>
 #include <QRect>
 #include <QUndoStack>
-
-#include "changeevents.h"
-#include "qtcompat_p.h"
 
 using namespace Tiled;
 

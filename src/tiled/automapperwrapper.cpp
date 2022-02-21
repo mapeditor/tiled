@@ -26,8 +26,6 @@
 #include "tile.h"
 #include "tilelayer.h"
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,

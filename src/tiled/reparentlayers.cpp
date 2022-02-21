@@ -25,8 +25,6 @@
 #include "mapdocument.h"
 #include "map.h"
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 ReparentLayers::ReparentLayers(MapDocument *mapDocument,

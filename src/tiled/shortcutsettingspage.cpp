@@ -43,8 +43,6 @@
 
 #include <memory>
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 /**

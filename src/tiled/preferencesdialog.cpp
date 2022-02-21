@@ -32,8 +32,6 @@
 #include <QDesktopServices>
 #include <QSortFilterProxyModel>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 PreferencesDialog::PreferencesDialog(QWidget *parent)

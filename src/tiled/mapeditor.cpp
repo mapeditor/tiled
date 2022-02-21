@@ -97,8 +97,6 @@
 #include <QToolBar>
 #include <QUndoGroup>
 
-#include "qtcompat_p.h"
-
 #include <memory>
 
 namespace Tiled {

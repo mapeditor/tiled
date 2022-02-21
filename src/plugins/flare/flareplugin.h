@@ -25,8 +25,9 @@
 
 #include "mapformat.h"
 
-#include <QObject>
 #include <QMap>
+#include <QObject>
+#include <QTextStream>
 
 namespace Flare {
 

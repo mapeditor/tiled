@@ -27,8 +27,6 @@
 
 #include <cmath>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 static QString scaleToString(qreal scale)
