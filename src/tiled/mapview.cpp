@@ -50,6 +50,8 @@
 #include <QOpenGLWidget>
 #endif // QT_NO_OPENGL
 
+#include <algorithm>
+
 using namespace Tiled;
 
 Preference<bool> MapView::ourAutoScrollingEnabled { "Interface/AutoScrolling", false };
