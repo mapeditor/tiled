@@ -151,12 +151,16 @@ void TileSelectionTool::languageChanged()
 
 QRect TileSelectionTool::selectedArea() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QRect area = QRect(mSelectionStart, tilePosition()).normalized();
     if (area.width() == 0)
         area.adjust(-1, 0, 1, 0);
     if (area.height() == 0)
         area.adjust(0, -1, 0, 1);
     return area;
+#else
+    return QRect::span(mSelectionStart, tilePosition());
+#endif
 }
 
 void TileSelectionTool::clearSelection()

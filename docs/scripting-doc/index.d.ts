@@ -2903,9 +2903,10 @@ declare namespace tiled {
 
   /**
    * Currently selected asset, or `null` if no file is open.
-   * Can be assigned any open asset in order to change the active asset.
+   * Can be assigned any open asset in order to change the active asset, or
+   * a newly created asset to open it in the editor.
    */
-  export let activeAsset: Asset;
+  export let activeAsset: Asset | null;
 
   /**
    * List of currently opened {@link Asset | assets}.
@@ -3143,26 +3144,26 @@ declare namespace tiled {
     `undefined` if no object was found. See the
     {@link tilesetFormats} property for more info.
    */
-  export function tilesetFormat(shortName: string): TilesetFormat;
+  export function tilesetFormat(shortName: string): TilesetFormat | undefined;
 
   /**
    * Returns the tileset format object that can read the given file, or
     `undefined` if no object was found.
    */
-  export function tilesetFormatForFile(fileName: string): TilesetFormat;
+  export function tilesetFormatForFile(fileName: string): TilesetFormat | undefined;
 
   /**
    * Returns the map format object with the given name, or
    * `undefined` if no object was found. See the
    * {@link mapFormats} property for more info.
    */
-  export function mapFormat(shortName: string): MapFormat;
+  export function mapFormat(shortName: string): MapFormat | undefined;
 
   /**
    * Returns the map format object that can read the given file, or
    * `undefined` if no object was found.
    */
-  export function mapFormatForFile(fileName: string): MapFormat;
+  export function mapFormatForFile(fileName: string): MapFormat | undefined;
 
   /**
    * Creates a {@link FilePath} object with the given URL.

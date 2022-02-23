@@ -150,12 +150,16 @@ void Eraser::doErase(bool continuation)
 QRect Eraser::eraseArea() const
 {
     if (mMode == RectangleErase) {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         QRect rect = QRect(mStart, tilePosition()).normalized();
         if (rect.width() == 0)
             rect.adjust(-1, 0, 1, 0);
         if (rect.height() == 0)
             rect.adjust(0, -1, 0, 1);
         return rect;
+#else
+        return QRect::span(mStart, tilePosition());
+#endif
     }
 
     return QRect(tilePosition(), QSize(1, 1));

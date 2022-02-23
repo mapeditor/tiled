@@ -95,12 +95,16 @@ void CaptureStampHelper::reset()
 
 QRect CaptureStampHelper::capturedArea(QPoint tilePosition) const
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QRect captured = QRect(mCaptureStart, tilePosition).normalized();
     if (captured.width() == 0)
         captured.adjust(-1, 0, 1, 0);
     if (captured.height() == 0)
         captured.adjust(0, -1, 0, 1);
     return captured;
+#else
+    return QRect::span(mCaptureStart, tilePosition);
+#endif
 }
 
 } // namespace Tiled
