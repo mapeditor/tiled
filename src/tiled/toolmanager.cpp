@@ -322,7 +322,7 @@ void ToolManager::currentLayerChanged(Layer *layer)
 
     if (mLayerType != layerType) {
         // Remember the selected tool for the current layer type
-        if (mLayerType && mSelectedTool) {
+        if (mLayerType && mSelectedTool && !mAutoSwitchToolPending) {
             mSelectedToolForLayerType.insert(static_cast<Layer::TypeFlag>(mLayerType),
                                              mSelectedTool);
         }
