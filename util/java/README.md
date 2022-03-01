@@ -19,4 +19,4 @@ Open current folder in terminal (cmd, power shell, etc) and run the command:
 
 As the command run has completed, check the following folders:
 
-`/libtiled-java/target` and `tmx-viewer-java/target` for generated jar files.
+`/libtiled-java/target` and `tmxviewer-java/target` for generated jar files.
