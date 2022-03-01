@@ -43,7 +43,8 @@ QRect IsometricRenderer::mapBoundingRect() const
 {
     if (!map()->infinite()) {
         const int side = map()->height() + map()->width();
-        return QRect(0, 0, side * map()->tileWidth() / 2,
+        return QRect(0, 0,
+                     side * map()->tileWidth() / 2,
                      side * map()->tileHeight() / 2);
     }
 
@@ -58,13 +59,7 @@ QRect IsometricRenderer::mapBoundingRect() const
     if (mapBounds.size() == QSize(0, 0))
         mapBounds.setSize(QSize(1, 1));
 
-    const int origin = mapBounds.x() + mapBounds.y();
-    const int side = mapBounds.width() + mapBounds.height();
-
-    return QRect(origin * map()->tileWidth() / 2,
-                 origin * map()->tileHeight() / 2,
-                 side * map()->tileWidth() / 2,
-                 side * map()->tileHeight() / 2);
+    return boundingRect(mapBounds);
 }
 
 QRect IsometricRenderer::boundingRect(const QRect &rect) const
