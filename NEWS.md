@@ -1,3 +1,10 @@
+### Unreleased 1.8 patch
+
+* Fixed automatic tool switching after deleting layers
+* Fixed map bounding rectangle for infinite isometric maps
+* Fixed tile selection to not get removed when deleting (#3281)
+* Qt 6: Fixed captured or erased area when dragging backwards
+
 ### Tiled 1.8.2 (18 February 2022)
 
 * Fixed deactivating of tools when no layer is selected (avoids crash)
