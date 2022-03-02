@@ -3,6 +3,7 @@
 * Fixed automatic tool switching after deleting layers
 * Fixed map bounding rectangle for infinite isometric maps
 * Fixed tile selection to not get removed when deleting (#3281)
+* macOS: Fixed main window expanding with many open files (#1047)
 * Qt 6: Fixed captured or erased area when dragging backwards
 
 ### Tiled 1.8.2 (18 February 2022)
