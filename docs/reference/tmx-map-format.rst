@@ -99,6 +99,8 @@ rendered by Tiled.
 The ``staggered`` orientation refers to an isometric map using staggered
 axes.
 
+The tilesets used by the map should always be listed before the layers.
+
 Can contain at most one: :ref:`tmx-properties`,
 :ref:`tmx-editorsettings` (since 1.3)
 
@@ -390,9 +392,10 @@ All :ref:`tmx-tileset` tags shall occur before the first :ref:`tmx-layer` tag
 so that parsers may rely on having the tilesets before needing to resolve
 tiles.
 
--  **id:** Unique ID of the layer. Each layer that added to a map gets
-   a unique id. Even if a layer is deleted, no layer ever gets the same
-   ID. Can not be changed in Tiled. (since Tiled 1.2)
+-  **id:** Unique ID of the layer (defaults to 0, with valid IDs being at least
+   1). Each layer that added to a map gets a unique id. Even if a layer is
+   deleted, no layer ever gets the same ID. Can not be changed in Tiled.
+   (since Tiled 1.2)
 -  **name:** The name of the layer. (defaults to "")
 -  *x:* The x coordinate of the layer in tiles. Defaults to 0 and can not be changed in Tiled.
 -  *y:* The y coordinate of the layer in tiles. Defaults to 0 and can not be changed in Tiled.
@@ -472,12 +475,12 @@ should generally be avoided.
 <objectgroup>
 -------------
 
--  **id:** Unique ID of the layer. Each layer that added to a map gets
-   a unique id. Even if a layer is deleted, no layer ever gets the same
-   ID. Can not be changed in Tiled. (since Tiled 1.2)
+-  **id:** Unique ID of the layer (defaults to 0, with valid IDs being at least
+   1). Each layer that added to a map gets a unique id. Even if a layer is
+   deleted, no layer ever gets the same ID. Can not be changed in Tiled.
+   (since Tiled 1.2)
 -  **name:** The name of the object group. (defaults to "")
--  **color:** The color used to display the objects in this group. (defaults
-   to gray ("#a0a0a4"))
+-  **color:** The color used to display the objects in this group. (optional)
 -  *x:* The x coordinate of the object group in tiles. Defaults to 0 and
    can no longer be changed in Tiled.
 -  *y:* The y coordinate of the object group in tiles. Defaults to 0 and
@@ -508,9 +511,10 @@ Can contain any number: :ref:`tmx-object`
 <object>
 ~~~~~~~~
 
--  **id:** Unique ID of the object. Each object that is placed on a map gets
-   a unique id. Even if an object was deleted, no object gets the same
-   ID. Can not be changed in Tiled. (since Tiled 0.11)
+-  **id:** Unique ID of the object (defaults to 0, with valid IDs being at
+   least 1). Each object that is placed on a map gets a unique id. Even if an
+   object was deleted, no object gets the same ID. Can not be changed in Tiled.
+   (since Tiled 0.11)
 -  **name:** The name of the object. An arbitrary string. (defaults to "")
 -  **type:** The type of the object. An arbitrary string. (defaults to "")
 -  **x:** The x coordinate of the object in pixels. (defaults to 0)
@@ -633,9 +637,10 @@ of the object.
 <imagelayer>
 ------------
 
--  **id:** Unique ID of the layer. Each layer that added to a map gets
-   a unique id. Even if a layer is deleted, no layer ever gets the same
-   ID. Can not be changed in Tiled. (since Tiled 1.2)
+-  **id:** Unique ID of the layer (defaults to 0, with valid IDs being at least
+   1). Each layer that added to a map gets a unique id. Even if a layer is
+   deleted, no layer ever gets the same ID. Can not be changed in Tiled.
+   (since Tiled 1.2)
 -  **name:** The name of the image layer. (defaults to "")
 -  **offsetx:** Horizontal offset of the image layer in pixels. (defaults to
    0) (since 0.15)
@@ -661,9 +666,10 @@ Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-image`
 <group>
 -------
 
--  **id:** Unique ID of the layer. Each layer that added to a map gets
-   a unique id. Even if a layer is deleted, no layer ever gets the same
-   ID. Can not be changed in Tiled. (since Tiled 1.2)
+-  **id:** Unique ID of the layer (defaults to 0, with valid IDs being at least
+   1). Each layer that added to a map gets a unique id. Even if a layer is
+   deleted, no layer ever gets the same ID. Can not be changed in Tiled.
+   (since Tiled 1.2)
 -  **name:** The name of the group layer. (defaults to "")
 -  **offsetx:** Horizontal offset of the group layer in pixels. (defaults to
    0)
@@ -763,7 +769,12 @@ Example of a template file:
      <object name="cactus" gid="31" width="81" height="101"/>
     </template>
 
-Can contain at most one: :ref:`tmx-tileset`, :ref:`tmx-object`
+Any tileset reference should always come before the object. Embedded tilesets
+are not supported.
+
+Can contain at most one: :ref:`tmx-tileset`
+
+Should contain exactly one: :ref:`tmx-object`
 
 --------------
 
