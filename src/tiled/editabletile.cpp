@@ -83,6 +83,11 @@ EditableTileset *EditableTile::tileset() const
 
 void EditableTile::setImage(ScriptImage *image)
 {
+    if (!image) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+
     // WARNING: This function has no undo!
     tile()->setImage(QPixmap::fromImage(image->image()));
 }

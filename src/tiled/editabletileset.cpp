@@ -74,6 +74,11 @@ EditableTileset::~EditableTileset()
 
 void EditableTileset::loadFromImage(ScriptImage *image, const QString &source)
 {
+    if (!image) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+
     // WARNING: This function has no undo!
     tileset()->loadFromImage(image->image(), source);
 }
