@@ -43,7 +43,7 @@ EditableWangSet::EditableWangSet(EditableTileset *tileset,
 
 EditableWangSet::~EditableWangSet()
 {
-    EditableManager::instance().mEditableWangSets.remove(wangSet());
+    EditableManager::instance().remove(this);
 }
 
 EditableTile *EditableWangSet::imageTile() const
@@ -179,12 +179,12 @@ void EditableWangSet::detach()
 
     auto &editableManager = EditableManager::instance();
 
-    editableManager.mEditableWangSets.remove(wangSet());
+    editableManager.remove(this);
     setAsset(nullptr);
 
     mDetachedWangSet.reset(wangSet()->clone(nullptr));
     setObject(mDetachedWangSet.get());
-    editableManager.mEditableWangSets.insert(wangSet(), this);
+    editableManager.mEditables.insert(wangSet(), this);
 }
 
 void EditableWangSet::attach(EditableTileset *tileset)

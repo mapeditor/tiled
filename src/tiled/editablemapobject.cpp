@@ -47,7 +47,7 @@ EditableMapObject::EditableMapObject(Shape shape,
     mapObject()->setShape(static_cast<MapObject::Shape>(shape));
 
     mDetachedMapObject.reset(mapObject());
-    EditableManager::instance().mEditableMapObjects.insert(mapObject(), this);
+    EditableManager::instance().mEditables.insert(mapObject(), this);
 }
 
 EditableMapObject::EditableMapObject(EditableAsset *asset,
@@ -59,7 +59,7 @@ EditableMapObject::EditableMapObject(EditableAsset *asset,
 
 EditableMapObject::~EditableMapObject()
 {
-    EditableManager::instance().mEditableMapObjects.remove(mapObject());
+    EditableManager::instance().remove(this);
 }
 
 QJSValue EditableMapObject::polygon() const
@@ -106,12 +106,12 @@ void EditableMapObject::detach()
 {
     Q_ASSERT(asset());
 
-    EditableManager::instance().mEditableMapObjects.remove(mapObject());
+    EditableManager::instance().remove(this);
     setAsset(nullptr);
 
     mDetachedMapObject.reset(mapObject()->clone());
     setObject(mDetachedMapObject.get());
-    EditableManager::instance().mEditableMapObjects.insert(mapObject(), this);
+    EditableManager::instance().mEditables.insert(mapObject(), this);
 }
 
 void EditableMapObject::attach(EditableMap *map)

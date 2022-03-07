@@ -29,6 +29,7 @@ namespace Tiled {
 
 class Layer;
 class MapObject;
+class Object;
 class ObjectGroup;
 class Tile;
 class Tileset;
@@ -38,6 +39,7 @@ class EditableAsset;
 class EditableLayer;
 class EditableMap;
 class EditableMapObject;
+class EditableObject;
 class EditableObjectGroup;
 class EditableTile;
 class EditableTileset;
@@ -62,6 +64,8 @@ public:
     EditableTileset *find(Tileset *tileset) const;
     EditableWangSet *find(WangSet *wangSet) const;
 
+    void remove(EditableObject *editable);
+
     void release(Layer *layer);
     void release(MapObject *mapObject);
     void release(std::unique_ptr<WangSet> wangSet);
@@ -82,39 +86,9 @@ private:
     friend class EditableTile;
     friend class EditableWangSet;
 
-    QHash<Layer*, EditableLayer*> mEditableLayers;
-    QHash<MapObject*, EditableMapObject*> mEditableMapObjects;
-    QHash<Tileset*, EditableTileset*> mEditableTilesets;
-    QHash<Tile*, EditableTile*> mEditableTiles;
-    QHash<WangSet*, EditableWangSet*> mEditableWangSets;
+    QHash<Object*, EditableObject*> mEditables;
 
     static std::unique_ptr<EditableManager> mInstance;
 };
-
-
-inline EditableLayer *EditableManager::find(Layer *layer) const
-{
-    return mEditableLayers.value(layer);
-}
-
-inline EditableMapObject *EditableManager::find(MapObject *mapObject) const
-{
-    return mEditableMapObjects.value(mapObject);
-}
-
-inline EditableTile *EditableManager::find(Tile *tile) const
-{
-    return mEditableTiles.value(tile);
-}
-
-inline EditableTileset *EditableManager::find(Tileset *tileset) const
-{
-    return mEditableTilesets.value(tileset);
-}
-
-inline EditableWangSet *EditableManager::find(WangSet *wangSet) const
-{
-    return mEditableWangSets.value(wangSet);
-}
 
 } // namespace Tiled

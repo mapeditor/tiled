@@ -32,7 +32,7 @@ EditableLayer::EditableLayer(std::unique_ptr<Layer> layer, QObject *parent)
     : EditableObject(nullptr, layer.get(), parent)
 {
     mDetachedLayer = std::move(layer);
-    EditableManager::instance().mEditableLayers.insert(this->layer(), this);
+    EditableManager::instance().mEditables.insert(this->layer(), this);
 }
 
 EditableLayer::EditableLayer(EditableAsset *asset, Layer *layer, QObject *parent)
@@ -42,7 +42,7 @@ EditableLayer::EditableLayer(EditableAsset *asset, Layer *layer, QObject *parent
 
 EditableLayer::~EditableLayer()
 {
-    EditableManager::instance().mEditableLayers.remove(layer());
+    EditableManager::instance().remove(this);
 }
 
 EditableMap *EditableLayer::map() const
@@ -71,13 +71,13 @@ void EditableLayer::detach()
 {
     Q_ASSERT(asset());
 
-    EditableManager::instance().mEditableLayers.remove(layer());
+    EditableManager::instance().remove(this);
     setAsset(nullptr);
 
     mDetachedLayer.reset(layer()->clone());
     mDetachedLayer->resetIds();
     setObject(mDetachedLayer.get());
-    EditableManager::instance().mEditableLayers.insert(layer(), this);
+    EditableManager::instance().mEditables.insert(layer(), this);
 }
 
 /**

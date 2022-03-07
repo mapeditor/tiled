@@ -57,6 +57,8 @@ parts:
     #  - python-dev
       - qttools5-dev-tools
       - qtdeclarative5-dev
+      - qtdeclarative5-private-dev
+      - qtbase5-private-dev
       - zlib1g-dev
       - libzstd-dev
     stage-packages:
