@@ -4,6 +4,7 @@
 * Fixed map bounding rectangle for infinite isometric maps
 * Fixed tile selection to not get removed when deleting (#3281)
 * Scripting: Fixed missing null check in Tileset.loadFromImage and Tile.setImage
+* Scripting: Initialize tile layer size also when added as part of a group layer (#3291)
 * macOS: Fixed main window expanding with many open files (#1047)
 * Qt 6: Fixed captured or erased area when dragging backwards
 
