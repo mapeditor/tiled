@@ -1040,6 +1040,12 @@ void MainWindow::initializeSession()
         ProjectManager::instance()->setProject(std::move(project));
         updateWindowTitle();
         updateActions();
+    } else {
+        // Even if we haven't loaded a project, we still want set the property
+        // types reference, to make sure that when the user starts adding
+        // types, they will be available in the Add Property dialog.
+        const Project &project = ProjectManager::instance()->project();
+        Preferences::instance()->setPropertyTypes(project.propertyTypes());
     }
 
     // Script manager initialization is delayed until after the project has

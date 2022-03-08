@@ -3,6 +3,8 @@
 * Fixed automatic tool switching after deleting layers
 * Fixed map bounding rectangle for infinite isometric maps
 * Fixed tile selection to not get removed when deleting (#3281)
+* Fixed custom types not being usable without opening a project (#3295)
+* Scripting: Avoid possible crash due to garbage collection (#3290)
 * Scripting: Fixed missing null check in Tileset.loadFromImage and Tile.setImage
 * Scripting: Initialize tile layer size also when added as part of a group layer (#3291)
 * macOS: Fixed main window expanding with many open files (#1047)
