@@ -200,6 +200,18 @@ void EditableMap::removeLayer(EditableLayer *editableLayer)
     removeLayerAt(index);
 }
 
+static void initializeSize(Layer *layer, QSize size)
+{
+    if (layer->isTileLayer()) {
+        auto tileLayer = static_cast<TileLayer*>(layer);
+        if (tileLayer->size().isNull())
+            tileLayer->setSize(size);
+    } else if (layer->isGroupLayer()) {
+        for (Layer *childLayer : static_cast<GroupLayer*>(layer)->layers())
+            initializeSize(childLayer, size);
+    }
+}
+
 void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
 {
     if (index < 0 || index > layerCount()) {
@@ -219,11 +231,8 @@ void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
 
     // If this map has a valid size but the tile layer that's getting added
     // doesn't, default the layer's size to the map size.
-    if (editableLayer->isTileLayer()) {
-        auto editableTileLayer = static_cast<EditableTileLayer*>(editableLayer);
-        if (editableTileLayer->size().isNull() && !size().isNull())
-            editableTileLayer->setSize(size());
-    }
+    if (!size().isNull())
+        initializeSize(editableLayer->layer(), size());
 
     const auto tilesets = editableLayer->layer()->usedTilesets();
 

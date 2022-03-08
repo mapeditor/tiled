@@ -14,6 +14,20 @@
     "typedoc": "^0.21.7",
     "typescript": "^4.4.4"
   },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/bjorn"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/tiled"
+    },
+    {
+      "type": "patreon",
+      "url": "https://patreon.com/bjorn"
+    }
+  ],
   "bugs": {
     "url": "https://github.com/mapeditor/tiled/issues"
   },

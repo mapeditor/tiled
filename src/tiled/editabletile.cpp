@@ -45,7 +45,7 @@ EditableTile::EditableTile(EditableTileset *tileset, Tile *tile, QObject *parent
 
 EditableTile::~EditableTile()
 {
-    EditableManager::instance().mEditableTiles.remove(tile());
+    EditableManager::instance().remove(this);
 }
 
 EditableObjectGroup *EditableTile::objectGroup() const
@@ -83,6 +83,11 @@ EditableTileset *EditableTile::tileset() const
 
 void EditableTile::setImage(ScriptImage *image)
 {
+    if (!image) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+
     // WARNING: This function has no undo!
     tile()->setImage(QPixmap::fromImage(image->image()));
 }
@@ -93,19 +98,19 @@ void EditableTile::detach()
 
     auto &editableManager = EditableManager::instance();
 
-    editableManager.mEditableTiles.remove(tile());
+    editableManager.remove(this);
     setAsset(nullptr);
 
     mDetachedTile.reset(tile()->clone(nullptr));
     setObject(mDetachedTile.get());
-    editableManager.mEditableTiles.insert(tile(), this);
+    editableManager.mEditables.insert(tile(), this);
 
     // Move over any attached editable object group
     if (auto editable = editableManager.find(mAttachedObjectGroup)) {
-        editableManager.mEditableLayers.remove(mAttachedObjectGroup);
+        editableManager.remove(editable);
         editable->setAsset(nullptr);
         editable->setObject(tile()->objectGroup());
-        editableManager.mEditableLayers.insert(tile()->objectGroup(), editable);
+        editableManager.mEditables.insert(tile()->objectGroup(), editable);
         mAttachedObjectGroup = tile()->objectGroup();
     } else {
         mAttachedObjectGroup = nullptr;

@@ -13,7 +13,7 @@ win32 {
     DESTDIR = ../../bin
 }
 
-QT += widgets qml
+QT += widgets qml qml-private
 
 contains(QT_CONFIG, opengl):minQtVersion(6, 0, 0) {
     QT += openglwidgets

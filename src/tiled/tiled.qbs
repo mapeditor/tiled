@@ -14,7 +14,7 @@ QtGuiApplication {
     Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
-    Depends { name: "Qt"; submodules: ["core", "widgets", "qml"]; versionAtLeast: "5.12" }
+    Depends { name: "Qt"; submodules: ["core", "widgets", "qml", "qml-private"]; versionAtLeast: "5.12" }
     Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6 }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") && Qt.core.versionMajor >= 6 }

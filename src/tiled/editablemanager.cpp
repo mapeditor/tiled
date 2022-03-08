@@ -34,11 +34,14 @@
 
 #include <QQmlEngine>
 
+#include <QtQml/private/qqmldata_p.h>
+
 namespace Tiled {
 
-static bool becomesNullValue(QObject *object)
+template <typename T>
+static T *checkNull(T *object)
 {
-    return ScriptManager::instance().engine()->newQObject(object).isNull();
+    return QQmlData::wasDeleted(object) ? nullptr : object;
 }
 
 std::unique_ptr<EditableManager> EditableManager::mInstance;
@@ -58,6 +61,38 @@ EditableManager &EditableManager::instance()
 void EditableManager::deleteInstance()
 {
     mInstance.reset();
+}
+
+EditableTileset *Tiled::EditableManager::find(Tileset *tileset) const
+{
+    return static_cast<EditableTileset*>(checkNull(mEditables.value(tileset)));
+}
+
+EditableLayer *EditableManager::find(Layer *layer) const
+{
+    return static_cast<EditableLayer*>(checkNull(mEditables.value(layer)));
+}
+
+EditableMapObject *EditableManager::find(MapObject *mapObject) const
+{
+    return static_cast<EditableMapObject*>(checkNull(mEditables.value(mapObject)));
+}
+
+EditableTile *EditableManager::find(Tile *tile) const
+{
+    return static_cast<EditableTile*>(checkNull(mEditables.value(tile)));
+}
+
+EditableWangSet *EditableManager::find(WangSet *wangSet) const
+{
+    return static_cast<EditableWangSet*>(checkNull(mEditables.value(wangSet)));
+}
+
+void EditableManager::remove(EditableObject *editable)
+{
+    auto it = mEditables.find(editable->object());
+    if (it != mEditables.end() && *it == editable)
+        mEditables.erase(it);
 }
 
 void EditableManager::release(Layer *layer)
@@ -95,26 +130,26 @@ EditableLayer *EditableManager::editableLayer(EditableMap *map, Layer *layer)
 
     Q_ASSERT(!map || layer->map() == map->map());
 
-    EditableLayer* &editableLayer = mEditableLayers[layer];
-    if (becomesNullValue(editableLayer)) {
+    EditableObject* &editable = mEditables[layer];
+    if (QQmlData::wasDeleted(editable)) {
         switch (layer->layerType()) {
         case Layer::TileLayerType:
-            editableLayer = new EditableTileLayer(map, static_cast<TileLayer*>(layer));
+            editable = new EditableTileLayer(map, static_cast<TileLayer*>(layer));
             break;
         case Layer::ObjectGroupType:
-            editableLayer = new EditableObjectGroup(map, static_cast<ObjectGroup*>(layer));
+            editable = new EditableObjectGroup(map, static_cast<ObjectGroup*>(layer));
             break;
         case Layer::ImageLayerType:
-            editableLayer = new EditableImageLayer(map, static_cast<ImageLayer*>(layer));
+            editable = new EditableImageLayer(map, static_cast<ImageLayer*>(layer));
             break;
         case Layer::GroupLayerType:
-            editableLayer = new EditableGroupLayer(map, static_cast<GroupLayer*>(layer));
+            editable = new EditableGroupLayer(map, static_cast<GroupLayer*>(layer));
             break;
         }
-        QQmlEngine::setObjectOwnership(editableLayer, QQmlEngine::JavaScriptOwnership);
+        QQmlEngine::setObjectOwnership(editable, QQmlEngine::JavaScriptOwnership);
     }
 
-    return editableLayer;
+    return static_cast<EditableLayer*>(editable);
 }
 
 EditableObjectGroup *EditableManager::editableObjectGroup(EditableAsset *asset, ObjectGroup *objectGroup)
@@ -122,13 +157,13 @@ EditableObjectGroup *EditableManager::editableObjectGroup(EditableAsset *asset, 
     if (!objectGroup)
         return nullptr;
 
-    EditableLayer* &editableLayer = mEditableLayers[objectGroup];
-    if (becomesNullValue(editableLayer)) {
-        editableLayer = new EditableObjectGroup(asset, objectGroup);
-        QQmlEngine::setObjectOwnership(editableLayer, QQmlEngine::JavaScriptOwnership);
+    EditableObject* &editable = mEditables[objectGroup];
+    if (QQmlData::wasDeleted(editable)) {
+        editable = new EditableObjectGroup(asset, objectGroup);
+        QQmlEngine::setObjectOwnership(editable, QQmlEngine::JavaScriptOwnership);
     }
 
-    return static_cast<EditableObjectGroup*>(editableLayer);
+    return static_cast<EditableObjectGroup*>(editable);
 }
 
 EditableMapObject *EditableManager::editableMapObject(EditableAsset *asset, MapObject *mapObject)
@@ -138,13 +173,13 @@ EditableMapObject *EditableManager::editableMapObject(EditableAsset *asset, MapO
 
     Q_ASSERT(mapObject->objectGroup());
 
-    EditableMapObject* &editableMapObject = mEditableMapObjects[mapObject];
-    if (becomesNullValue(editableMapObject)) {
-        editableMapObject = new EditableMapObject(asset, mapObject);
-        QQmlEngine::setObjectOwnership(editableMapObject, QQmlEngine::JavaScriptOwnership);
+    EditableObject* &editable = mEditables[mapObject];
+    if (QQmlData::wasDeleted(editable)) {
+        editable = new EditableMapObject(asset, mapObject);
+        QQmlEngine::setObjectOwnership(editable, QQmlEngine::JavaScriptOwnership);
     }
 
-    return editableMapObject;
+    return static_cast<EditableMapObject*>(editable);
 }
 
 EditableTileset *EditableManager::editableTileset(Tileset *tileset)
@@ -155,13 +190,13 @@ EditableTileset *EditableManager::editableTileset(Tileset *tileset)
     if (auto document = TilesetDocument::findDocumentForTileset(tileset->sharedFromThis()))
         return document->editable();
 
-    EditableTileset* &editableTileset = mEditableTilesets[tileset];
-    if (becomesNullValue(editableTileset)) {
-        editableTileset = new EditableTileset(tileset);
-        QQmlEngine::setObjectOwnership(editableTileset, QQmlEngine::JavaScriptOwnership);
+    EditableObject* &editable = mEditables[tileset];
+    if (QQmlData::wasDeleted(editable)) {
+        editable = new EditableTileset(tileset);
+        QQmlEngine::setObjectOwnership(editable, QQmlEngine::JavaScriptOwnership);
     }
 
-    return editableTileset;
+    return static_cast<EditableTileset*>(editable);
 }
 
 EditableTile *EditableManager::editableTile(Tile *tile)
@@ -178,13 +213,13 @@ EditableTile *EditableManager::editableTile(EditableTileset *tileset, Tile *tile
     Q_ASSERT(tile);
     Q_ASSERT(tile->tileset() == tileset->tileset());
 
-    EditableTile* &editableTile = mEditableTiles[tile];
-    if (becomesNullValue(editableTile)) {
-        editableTile = new EditableTile(tileset, tile);
-        QQmlEngine::setObjectOwnership(editableTile, QQmlEngine::JavaScriptOwnership);
+    EditableObject* &editable = mEditables[tile];
+    if (QQmlData::wasDeleted(editable)) {
+        editable = new EditableTile(tileset, tile);
+        QQmlEngine::setObjectOwnership(editable, QQmlEngine::JavaScriptOwnership);
     }
 
-    return editableTile;
+    return static_cast<EditableTile*>(editable);
 }
 
 EditableWangSet *EditableManager::editableWangSet(WangSet *wangSet)
@@ -201,13 +236,13 @@ EditableWangSet *EditableManager::editableWangSet(EditableTileset *tileset, Wang
     Q_ASSERT(wangSet);
     Q_ASSERT(wangSet->tileset() == tileset->tileset());
 
-    EditableWangSet* &editableWangSet = mEditableWangSets[wangSet];
-    if (becomesNullValue(editableWangSet)) {
-        editableWangSet = new EditableWangSet(tileset, wangSet);
-        QQmlEngine::setObjectOwnership(editableWangSet, QQmlEngine::JavaScriptOwnership);
+    EditableObject* &editable = mEditables[wangSet];
+    if (QQmlData::wasDeleted(editable)) {
+        editable = new EditableWangSet(tileset, wangSet);
+        QQmlEngine::setObjectOwnership(editable, QQmlEngine::JavaScriptOwnership);
     }
 
-    return editableWangSet;
+    return static_cast<EditableWangSet*>(editable);
 }
 
 } // namespace Tiled

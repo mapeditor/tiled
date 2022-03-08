@@ -104,6 +104,7 @@ DocumentManager::DocumentManager(QObject *parent)
 
     mTabBar->setExpanding(false);
     mTabBar->setDocumentMode(true);
+    mTabBar->setUsesScrollButtons(true);    // defaults to false on macOS
     mTabBar->setTabsClosable(true);
     mTabBar->setMovable(true);
     mTabBar->setContextMenuPolicy(Qt::CustomContextMenu);

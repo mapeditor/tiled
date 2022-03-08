@@ -40,7 +40,7 @@ EditableTileset::EditableTileset(const QString &name, QObject *parent)
     , mTileset(Tileset::create(name, 0, 0))
 {
     setObject(mTileset.data());
-    EditableManager::instance().mEditableTilesets.insert(tileset(), this);
+    EditableManager::instance().mEditables.insert(tileset(), this);
 }
 
 EditableTileset::EditableTileset(const Tileset *tileset, QObject *parent)
@@ -61,7 +61,7 @@ EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
     connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetAdded, this, &EditableTileset::wangSetAdded);
     connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetRemoved, this, &EditableTileset::wangSetRemoved);
 
-    EditableManager::instance().mEditableTilesets.insert(tileset(), this);
+    EditableManager::instance().mEditables.insert(tileset(), this);
 }
 
 EditableTileset::~EditableTileset()
@@ -69,11 +69,16 @@ EditableTileset::~EditableTileset()
     detachTiles(tileset()->tiles());
     detachWangSets(tileset()->wangSets());
 
-    EditableManager::instance().mEditableTilesets.remove(tileset());
+    EditableManager::instance().remove(this);
 }
 
 void EditableTileset::loadFromImage(ScriptImage *image, const QString &source)
 {
+    if (!image) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+
     // WARNING: This function has no undo!
     tileset()->loadFromImage(image->image(), source);
 }
