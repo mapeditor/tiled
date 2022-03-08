@@ -43,11 +43,12 @@ apps:
 
 parts:
   tiled:
-    plugin: qmake
-    qmake-parameters:
-      - PREFIX=/usr
-      - SYSTEM_ZSTD=yes
-      - CONFIG+=release
+    plugin: make
+    override-build: |
+        qbs setup-toolchains --detect
+        qbs config defaultProfile gcc
+        qbs build --jobs "${SNAPCRAFT_PARALLEL_BUILD_COUNT}" config:release qbs.installPrefix:"/usr" projects.Tiled.useRPaths:false
+        qbs install --install-root "${SNAPCRAFT_PART_INSTALL}" config:release
     parse-info:
       - usr/share/metainfo/org.mapeditor.Tiled.appdata.xml
     source: .
@@ -56,6 +57,8 @@ parts:
     # FIXME: Python plugin compiles and loads, but can't find platform libraries
     #  - python-dev
       - qttools5-dev-tools
+      - qbs
+      - libqt5svg5 # cause of an issue in Qbs 1.13 (needs files in distribute.qbs to be present)
       - qtdeclarative5-dev
       - qtdeclarative5-private-dev
       - qtbase5-private-dev
