@@ -134,7 +134,6 @@ jobs:
       id: version
       run: |
         sed -i 's/^version: .*/version: '"${TILED_VERSION}"'/g' snap/snapcraft.yaml
-        sed -i 's/TILED_VERSION = .*/TILED_VERSION = "'"${TILED_VERSION}"'"/g' tiled.pri
         if [[ "$TILED_RELEASE" == 'true' ]]; then echo "::set-output name=snap_channel::candidate" ; fi
         if [[ "$TILED_RELEASE" != 'true' ]]; then echo "::set-output name=snap_channel::beta" ; fi
 

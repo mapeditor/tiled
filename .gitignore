@@ -1,44 +1,11 @@
 # General build artifacts
-build/
-bin/
-lib/
-Makefile*
-*.o
-*.qm
-*.moc
-moc_predefs.h
-moc_*.cpp
-ui_*.h
-qrc_*
-*.qmlc
 default/
-moc_predefs.h
-
-# Build artifacts on Windows
-*.dll
-*.obj
-*.a
-*.lib
-*.exp
-*.intermediate.manifest
-*.exe
-*.ilk
-*.pdb
-*uic_wrapper.bat
-
-# Build artifacts on Mac
-.qmake.stash
-translations/phony_target.app
 
 # Mac stuff
 *.DS_Store
 
 # IDE files
-*.pro.user*
 *.qbs.user*
-
-tests/mapreader/mapreader
-tests/staggeredrenderer/staggeredrenderer
 
 # Ronn html outputs
 man/*.1.html

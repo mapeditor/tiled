@@ -63,6 +63,8 @@ matrix:
     - qbs config defaultProfile x86_64-linux-gnu-gcc-7
     - qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true
     - cp LICENSE* COPYING *md Tiled/
+    after_script:
+    - cppcheck --enable=all -q -Isrc/libtiled `git ls-files src/\*.cpp`
     after_success:
     - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
       -O linuxdeployqt
@@ -76,37 +78,6 @@ matrix:
     - find ./Tiled -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d
       " " -f 2-3 | sort | uniq
     - mv Tiled-x86_64.AppImage Tiled-$TILED_VERSION-x86_64.AppImage
-  - os: linux
-    compiler: clang
-    addons:
-      apt:
-        packages:
-        - binutils
-        - cppcheck
-        - libgl1-mesa-dev
-        - xvfb
-        - zlib1g-dev
-        - libzstd-dev
-    env:
-    - QMAKESPEC=linux-clang
-    - MAKEFLAGS=-j2
-    before_install:
-    - sudo add-apt-repository --yes ppa:beineri/opt-qt563-xenial
-    - sudo apt-get update -qq
-    - sudo apt-get -y install qt56base qt56svg qt56tools
-    - source /opt/qt56/bin/qt56-env.sh
-    - qmake -version
-    script:
-    - qmake "CONFIG+=tiled_zstd"
-    - make
-    - pushd tests/
-    - qmake "CONFIG+=tiled_zstd"
-    - make
-    - for test in `find -executable -type f`; do pushd `dirname $test`; xvfb-run -a
-      ./`basename $test`||exit 1; popd; done
-    - popd
-    after_script:
-    - cppcheck --enable=all -q -Isrc/libtiled `git ls-files src/\*.cpp`
   - os: osx
     osx_image: xcode12
     addons:
