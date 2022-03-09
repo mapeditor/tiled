@@ -42,13 +42,13 @@ DynamicLibrary {
     }
 
     Properties {
-        condition: pkgConfigZstd.found
+        condition: !project.enableZstd && pkgConfigZstd.found
         cpp.cxxFlags: pkgConfigZstd.cflags
         cpp.linkerFlags: pkgConfigZstd.libs
     }
 
     Properties {
-        condition: project.enableZstd && !pkgConfigZstd.found
+        condition: project.enableZstd
         cpp.staticLibraries: ["zstd"]
         cpp.libraryPaths: ["../../zstd/lib"]
         cpp.includePaths: ["../../zstd/lib"]
