@@ -31,6 +31,7 @@
 #include "changetileprobability.h"
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
+#include "compression.h"
 #include "documentmanager.h"
 #include "flipmapobjects.h"
 #include "grouplayer.h"
@@ -2010,18 +2011,18 @@ void PropertyBrowser::retranslateUi()
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
-#ifdef TILED_ZSTD_SUPPORT
-    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (Zstandard compressed)"));
-#endif
-    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
 
     mLayerFormatValues.append(Map::XML);
     mLayerFormatValues.append(Map::Base64);
     mLayerFormatValues.append(Map::Base64Gzip);
     mLayerFormatValues.append(Map::Base64Zlib);
-#ifdef TILED_ZSTD_SUPPORT
-    mLayerFormatValues.append(Map::Base64Zstandard);
-#endif
+
+    if (compressionSupported(Zstandard)) {
+        mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (Zstandard compressed)"));
+        mLayerFormatValues.append(Map::Base64Zstandard);
+    }
+
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
     mLayerFormatValues.append(Map::CSV);
 
     mRenderOrderNames.clear();

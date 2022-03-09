@@ -66,6 +66,20 @@ static void logZlibError(int error)
     }
 }
 
+bool Tiled::compressionSupported(CompressionMethod method)
+{
+    switch (method) {
+    case Gzip:
+    case Zlib:
+#ifdef TILED_ZSTD_SUPPORT
+    case Zstandard:
+#endif
+        return true;
+    default:
+        return false;
+    }
+}
+
 QByteArray Tiled::decompress(const QByteArray &data,
                              int expectedSize,
                              CompressionMethod method)

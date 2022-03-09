@@ -41,6 +41,13 @@ enum CompressionMethod {
 };
 
 /**
+ * Returns whether the given compression method is supported.
+ *
+ * Currently, Gzip and Zlib are always supported, while Zstandard may not be.
+ */
+bool TILEDSHARED_EXPORT compressionSupported(CompressionMethod method);
+
+/**
  * Decompresses either zlib or gzip compressed memory. Returns a null
  * QByteArray if decompressing failed.
  *

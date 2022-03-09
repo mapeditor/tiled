@@ -1,4 +1,5 @@
 import qbs 1.0
+import qbs.Probes as Probes
 
 DynamicLibrary {
     targetName: "tiled"
@@ -9,6 +10,11 @@ DynamicLibrary {
     Properties {
         condition: !qbs.toolchain.contains("msvc")
         cpp.dynamicLibraries: base.concat(["z"])
+    }
+
+    Probes.PkgConfigProbe {
+        id: pkgConfigZstd
+        name: "libzstd"
     }
 
     cpp.cxxLanguageVersion: "c++17"
@@ -24,13 +30,11 @@ DynamicLibrary {
             "_USE_MATH_DEFINES",
         ]
 
-        if (project.enableZstd)
+        if (project.enableZstd || pkgConfigZstd.found)
             defs.push("TILED_ZSTD_SUPPORT");
 
         return defs;
     }
-
-    cpp.includePaths: [ "../../zstd/lib" ]
 
     Properties {
         condition: qbs.targetOS.contains("macos")
@@ -38,9 +42,16 @@ DynamicLibrary {
     }
 
     Properties {
-        condition: project.enableZstd
+        condition: pkgConfigZstd.found
+        cpp.cxxFlags: pkgConfigZstd.cflags
+        cpp.linkerFlags: pkgConfigZstd.libs
+    }
+
+    Properties {
+        condition: project.enableZstd && !pkgConfigZstd.found
         cpp.staticLibraries: ["zstd"]
         cpp.libraryPaths: ["../../zstd/lib"]
+        cpp.includePaths: ["../../zstd/lib"]
     }
 
     Properties {
