@@ -175,8 +175,13 @@ void MiniMap::renderMapToImage()
     qreal scale = qMin(static_cast<qreal>(viewSize.width()) / mapSize.width(),
                        static_cast<qreal>(viewSize.height()) / mapSize.height());
 
+    QSize imageSize = mapSize * scale;
+
+    // Improve the quality if the image size is small
+    if (imageSize.width() < 512 && imageSize.height() < 512)
+        imageSize *= 2;
+
     // Allocate a new image when the size changed
-    const QSize imageSize = mapSize * scale;
     if (mMapImage.size() != imageSize) {
         mMapImage = QImage(imageSize, QImage::Format_ARGB32_Premultiplied);
         updateImageRect();
