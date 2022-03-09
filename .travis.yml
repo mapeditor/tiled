@@ -61,7 +61,7 @@ matrix:
     - qbs --version
     - qbs setup-toolchains --detect
     - qbs config defaultProfile x86_64-linux-gnu-gcc-7
-    - qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true
+    - qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.version:$TILED_VERSION
     - cp LICENSE* COPYING *md Tiled/
     after_script:
     - cppcheck --enable=all -q -Isrc/libtiled `git ls-files src/\*.cpp`
@@ -102,7 +102,7 @@ matrix:
     - qbs setup-toolchains --detect
     - qbs config defaultProfile xcode
     - ccache -zs
-    - qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true modules.cpp.compilerWrapper:ccache
+    - qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION projects.Tiled.staticZstd:true modules.cpp.compilerWrapper:ccache
     - ccache -s
     - macdeployqt install/Tiled.app -verbose=2
     - pushd install

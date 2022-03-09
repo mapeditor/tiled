@@ -21,11 +21,6 @@ DynamicLibrary {
     ]
 
     Properties {
-        condition: qbs.targetOS.contains("macos")
-        cpp.cxxFlags: ["-Wno-unknown-pragmas"]
-    }
-
-    Properties {
         condition: qbs.targetOS.contains("darwin")
         bundle.isBundle: false
         cpp.sonamePrefix: "@rpath"

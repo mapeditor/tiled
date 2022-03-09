@@ -7,14 +7,10 @@ DynamicLibrary {
     Depends { name: "cpp" }
     Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.12" }
 
-    Properties {
-        condition: !qbs.toolchain.contains("msvc")
-        cpp.dynamicLibraries: base.concat(["z"])
-    }
-
     Probes.PkgConfigProbe {
         id: pkgConfigZstd
         name: "libzstd"
+        forStaticBuild: project.staticZstd
     }
 
     cpp.cxxLanguageVersion: "c++17"
@@ -30,28 +26,49 @@ DynamicLibrary {
             "_USE_MATH_DEFINES",
         ]
 
-        if (project.enableZstd || pkgConfigZstd.found)
+        if (project.staticZstd || pkgConfigZstd.found)
             defs.push("TILED_ZSTD_SUPPORT");
 
         return defs;
     }
+    cpp.dynamicLibraries: {
+        var libs = base;
 
-    Properties {
-        condition: qbs.targetOS.contains("macos")
-        cpp.cxxFlags: ["-Wno-unknown-pragmas"]
+        if (!qbs.toolchain.contains("msvc"))
+            libs.push("z");
+
+        if (pkgConfigZstd.found && !project.staticZstd)
+            libs = libs.concat(pkgConfigZstd.libraries);
+
+        return libs;
+    }
+    cpp.staticLibraries: {
+        var libs = base;
+
+        if (project.staticZstd) {
+            if (pkgConfigZstd.found)
+                libs = libs.concat(pkgConfigZstd.libraries);
+            else
+                libs.push("zstd");
+        }
+
+        return libs;
     }
 
     Properties {
-        condition: !project.enableZstd && pkgConfigZstd.found
-        cpp.cxxFlags: pkgConfigZstd.cflags
-        cpp.linkerFlags: pkgConfigZstd.libs
+        condition: pkgConfigZstd.found
+        cpp.cxxFlags: outer.concat(pkgConfigZstd.cflags)
+        cpp.libraryPaths: outer.concat(pkgConfigZstd.libraryPaths)
+        cpp.linkerFlags: outer.concat(pkgConfigZstd.linkerFlags)
     }
 
+    // When libzstd was not found but staticZstd is enabled, assume that zstd
+    // has been compiled in a "zstd" directory at the repository root (this is
+    // done by the autobuilds for Windows and macOS).
     Properties {
-        condition: project.enableZstd
-        cpp.staticLibraries: ["zstd"]
-        cpp.libraryPaths: ["../../zstd/lib"]
-        cpp.includePaths: ["../../zstd/lib"]
+        condition: !pkgConfigZstd.found && project.staticZstd
+        cpp.libraryPaths: outer.concat(["../../zstd/lib"])
+        cpp.includePaths: outer.concat(["../../zstd/lib"])
     }
 
     Properties {

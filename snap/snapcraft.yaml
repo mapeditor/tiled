@@ -47,7 +47,7 @@ parts:
     override-build: |
         qbs setup-toolchains --detect
         qbs config defaultProfile gcc
-        qbs build --jobs "${SNAPCRAFT_PARALLEL_BUILD_COUNT}" config:release qbs.installPrefix:"/usr" projects.Tiled.version:${SNAPCRAFT_PROJECT_VERSION} projects.Tiled.useRPaths:false
+        qbs build --jobs "${SNAPCRAFT_PARALLEL_BUILD_COUNT}" --command-echo-mode command-line config:release qbs.installPrefix:"/usr" projects.Tiled.version:${SNAPCRAFT_PROJECT_VERSION} projects.Tiled.useRPaths:false
         qbs install --install-root "${SNAPCRAFT_PART_INSTALL}" config:release
     parse-info:
       - usr/share/metainfo/org.mapeditor.Tiled.appdata.xml

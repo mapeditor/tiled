@@ -24,7 +24,6 @@ DynamicLibrary {
     Properties {
         condition: qbs.targetOS.contains("macos")
         bundle.isBundle: false
-        cpp.cxxFlags: ["-Wno-unknown-pragmas"]
     }
 
     Group {

@@ -91,7 +91,7 @@ jobs:
 
     - name: Build Tiled
       run: |
-        qbs install --install-root AppDir config:release qbs.installPrefix:/usr projects.Tiled.enableZstd:true projects.Tiled.sentry:true qbs.debugInformation:true modules.cpp.separateDebugInformation:true modules.cpp.compilerWrapper:ccache
+        qbs install --install-root AppDir config:release qbs.installPrefix:/usr projects.Tiled.sentry:true qbs.debugInformation:true modules.cpp.separateDebugInformation:true modules.cpp.compilerWrapper:ccache
 
     - name: Upload symbols to Sentry
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
@@ -149,7 +149,7 @@ jobs:
 
     - name: Build Tiled
       run: |
-        qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.enableZstd:true
+        qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.staticZstd:true
 
     - name: Package
       run: |
@@ -211,7 +211,7 @@ jobs:
     - name: Build Tiled
       run: |
         export TILED_MSI_VERSION=1.4.${GITHUB_RUN_NUMBER}
-        qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:true
+        qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.staticZstd:true
         mv release/installer*/Tiled-*.msi .
 
     - name: Upload Tiled installer

@@ -15,11 +15,6 @@ QtGuiApplication {
         "QT_NO_FOREACH"
     ]
 
-    Properties {
-        condition: qbs.targetOS.contains("macos")
-        cpp.cxxFlags: ["-Wno-unknown-pragmas"]
-    }
-
     Group {
         condition: qbs.targetOS.contains("darwin") && bundle.isBundle
         qbs.install: true
