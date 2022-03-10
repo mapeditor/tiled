@@ -1,6 +1,6 @@
 language: cpp
 sudo: required
-dist: xenial
+dist: bionic
 python: 3.6
 
 env:
