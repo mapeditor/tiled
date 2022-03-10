@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "tilededitor_global.h"
 #include "tileset.h"
 
 #include <QList>
@@ -85,7 +86,7 @@ public:
  * - copy regions of Maps (multiple Layers, the layerlist is a
  *                         lookup-table for matching the Layers)
  */
-class AutoMapper : public QObject
+class TILED_EDITOR_EXPORT AutoMapper : public QObject
 {
     Q_OBJECT
 

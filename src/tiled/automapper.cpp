@@ -59,7 +59,7 @@ AutoMapper::AutoMapper(MapDocument *mapDocument,
                        std::unique_ptr<Map> rulesMap,
                        const QString &rulesMapFileName)
     : mTargetDocument(mapDocument)
-    , mTargetMap(mapDocument ? mapDocument->map() : nullptr)
+    , mTargetMap(mapDocument->map())
     , mRulesMap(std::move(rulesMap))
     , mRulesMapFileName(rulesMapFileName)
 {
