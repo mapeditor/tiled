@@ -7,9 +7,9 @@ author:
 tags: rs-tiled
 ---
 
-Hello! I'm Alejandro Perea, core maintainer of the `rs-tiled` crate, a Rust library to load Tiled maps and tilesets.
+Hello! I'm Alejandro Perea, core maintainer of the [`tiled` crate](https://crates.io/crates/tiled), a Rust library to load Tiled maps and tilesets.
 
-Back in December 2021, [@mattyhall]'s `rs-tiled` crate was [moved into the @mapeditor organization][adoption-issue] on Github. The move was done with the intention of gathering several maintainers and making it officially supported. There are now three more maintainers: [@aleokdev] (me), [@bjorn] (creator of Tiled) and [@PieKing1215].
+Back in December 2021, [@mattyhall]'s `rs-tiled` was [moved into the @mapeditor organization][adoption-issue] on Github. The move was done with the intention of gathering several maintainers and making it officially supported. There are now three more maintainers: [@aleokdev] (me), [@bjorn] (creator of Tiled) and [@PieKing1215].
 
 Since then, we've been figuring out ways to improve the interface of the library and provide a more modern, "rustier" approach to it, while also supporting more Tiled features. Today, we've released version [0.10.0](release-notes) of the crate, our first big milestone. 
 
