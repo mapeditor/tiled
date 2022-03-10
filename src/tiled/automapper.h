@@ -57,19 +57,22 @@ public:
 // Maps layer names to their conditions
 using InputIndex = QMap<QString, InputConditions>;
 
-// Maps an index to a group of input layers
-class InputLayers : public QMap<QString, InputIndex>
+class InputLayers
 {
 public:
-    QSet<QString> names; // all names
+    // Maps an index to a set of input layers
+    QMap<QString, InputIndex> indexes;
+
+    // All input layer names
+    QSet<QString> names;
 };
 
-/**
- * Maps output layers in mRulesMap to their names in mTargetMap.
- */
-class RuleOutput : public QMap<const Layer*, QString>
+// One set of output layers sharing the same index
+class RuleOutput
 {
 public:
+    // Maps output layers in mRulesMap to their names in mTargetMap
+    QMap<const Layer*, QString> layers;
     QString index;
 };
 
@@ -246,11 +249,11 @@ private:
      * This copies multiple TileLayers from one map to another.
      * Only the region \a region is considered for copying.
      * In the destination it will come to the region translated by Offset.
-     * The parameter \a layerTranslation is a map of which layers of the rulesmap
-     * should get copied into which layers of the working map.
+     * The parameter \a ruleOutput contains a map of which layers of the rules
+     * map should get copied into which layers of the working map.
      */
     void copyMapRegion(const QRegion &region, QPoint Offset,
-                       const RuleOutput &layerTranslation);
+                       const RuleOutput &ruleOutput);
 
     /**
      * This goes through all the positions of the mTargetMap and checks if

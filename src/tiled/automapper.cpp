@@ -184,7 +184,7 @@ bool AutoMapper::setupRuleMapLayers()
     Q_ASSERT(mAddedTilesets.isEmpty());
     Q_ASSERT(!mLayerInputRegions);
     Q_ASSERT(!mLayerOutputRegions);
-    Q_ASSERT(mInputLayers.isEmpty());
+    Q_ASSERT(mInputLayers.indexes.isEmpty());
     Q_ASSERT(mInputLayers.names.isEmpty());
 
     QString error;
@@ -270,7 +270,7 @@ bool AutoMapper::setupRuleMapLayers()
             inputLayer.tileLayer = tileLayer;
             setupInputLayerProperties(inputLayer);
 
-            InputConditions &conditions = mInputLayers[index][name];
+            InputConditions &conditions = mInputLayers.indexes[index][name];
             if (isNotList)
                 conditions.listNo.append(inputLayer);
             else
@@ -286,16 +286,16 @@ bool AutoMapper::setupRuleMapLayers()
                 mTouchedObjectGroups.insert(name, nullptr);
 
             bool found = false;
-            for (RuleOutput &translationTable : mOutputLayerGroups) {
-                if (translationTable.index == index) {
-                    translationTable.insert(layer, name);
+            for (RuleOutput &ruleOutput : mOutputLayerGroups) {
+                if (ruleOutput.index == index) {
+                    ruleOutput.layers.insert(layer, name);
                     found = true;
                     break;
                 }
             }
             if (!found) {
                 mOutputLayerGroups.append(RuleOutput());
-                mOutputLayerGroups.last().insert(layer, name);
+                mOutputLayerGroups.last().layers.insert(layer, name);
                 mOutputLayerGroups.last().index = index;
             }
             continue;
@@ -311,7 +311,7 @@ bool AutoMapper::setupRuleMapLayers()
     if (!mLayerRegions && !mLayerOutputRegions)
         error += tr("No 'regions' or 'regions_output' layer found.") + QLatin1Char('\n');
 
-    if (mInputLayers.isEmpty())
+    if (mInputLayers.indexes.isEmpty())
         error += tr("No input_<name> layer found!") + QLatin1Char('\n');
 
     if (mTouchedTileLayers.isEmpty() && mTouchedObjectGroups.isEmpty())
@@ -474,8 +474,8 @@ void AutoMapper::autoMap(QRegion *where)
     if (mOptions.deleteTiles) {
         const QRegion setLayersRegion = computeSetLayersRegion();
         const QRegion regionToErase = setLayersRegion.intersected(*where);
-        for (const RuleOutput &translationTable : qAsConst(mOutputLayerGroups)) {
-            QMapIterator<const Layer*, QString> it(translationTable);
+        for (const RuleOutput &ruleOutput : qAsConst(mOutputLayerGroups)) {
+            QMapIterator<const Layer*, QString> it(ruleOutput.layers);
             while (it.hasNext()) {
                 it.next();
 
@@ -717,7 +717,7 @@ QRect AutoMapper::applyRule(const RuleRegion &ruleRegion, const QRect &where)
     for (int x = minX; x <= maxX; ++x) {
         bool anyMatch = false;
 
-        for (const InputIndex &inputIndex : qAsConst(mInputLayers)) {
+        for (const InputIndex &inputIndex : qAsConst(mInputLayers.indexes)) {
             bool allLayerNamesMatch = true;
 
             QMapIterator<QString, InputConditions> inputIndexIterator(inputIndex);
@@ -752,7 +752,7 @@ QRect AutoMapper::applyRule(const RuleRegion &ruleRegion, const QRect &where)
                 // check if there are no overlaps within this rule.
                 QMap<const Layer*, QRegion> ruleRegionInLayer;
 
-                QMapIterator<const Layer*, QString> it(ruleOutput);
+                QMapIterator<const Layer*, QString> it(ruleOutput.layers);
                 while (it.hasNext()) {
                     const Layer *layer = it.next().key();
 
@@ -804,9 +804,9 @@ QRect AutoMapper::applyRule(const RuleRegion &ruleRegion, const QRect &where)
 }
 
 void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
-                               const RuleOutput &layerTranslation)
+                               const RuleOutput &ruleOutput)
 {
-    for (auto it = layerTranslation.begin(), end = layerTranslation.end(); it != end; ++it) {
+    for (auto it = ruleOutput.layers.begin(), end = ruleOutput.layers.end(); it != end; ++it) {
         const Layer *from = it.key();
         const QString &targetName = it.value();
 
