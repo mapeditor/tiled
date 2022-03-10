@@ -72,7 +72,7 @@ class RuleOutput
 {
 public:
     // Maps output layers in mRulesMap to their names in mTargetMap
-    QMap<const Layer*, QString> layers;
+    QHash<const Layer*, QString> layers;
     QString index;
 };
 
@@ -101,7 +101,7 @@ public:
          * Whether rules can match when their input region is partially outside
          * of the map.
          */
-        bool matchOutsideMap = true;
+        bool matchOutsideMap = false;
 
         /**
          * If "matchOutsideMap" is true, treat the out-of-bounds tiles as if they
@@ -168,7 +168,7 @@ public:
     /**
      * Here is done all the automapping.
      */
-    void autoMap(QRegion *where);
+    void autoMap(const QRegion &where, QRegion *appliedRegion);
 
     /**
      * This cleans all data structures, which are setup via prepareAutoMap,
@@ -256,14 +256,17 @@ private:
                        const RuleOutput &ruleOutput);
 
     /**
-     * This goes through all the positions of the mTargetMap and checks if
-     * there fits the rule given by \a ruleRegion.
+     * This goes through all the positions in \a applyRegion and checks if the
+     * rule given by \a ruleRegion matches there.
      *
-     * If there is a match all output layers are copied to mTargetMap.
+     * If there is a match, all output layers are copied to mTargetMap.
      *
-     * @return a rectangle where the rule actually got applied
+     * When an \a appliedRegion is provided, it is set to the region where
+     * rule outputs have been applied.
      */
-    QRect applyRule(const RuleRegion &ruleRegion, const QRect &where);
+    void applyRule(const RuleRegion &ruleRegion,
+                   const QRegion &applyRegion,
+                   QRegion *appliedRegion = nullptr);
 
     /**
      * Cleans up the data structures filled by setupTilesets(),

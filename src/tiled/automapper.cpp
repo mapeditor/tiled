@@ -89,9 +89,6 @@ bool AutoMapper::ruleLayerNameUsed(const QString &ruleLayerName) const
 
 bool AutoMapper::setupRuleMapProperties()
 {
-    // By default, only infinite maps match rules outside of their boundaries
-    mOptions.matchOutsideMap = mTargetMap->infinite();
-
     QMapIterator<QString, QVariant> it(mRulesMap->properties());
     while (it.hasNext()) {
         it.next();
@@ -142,6 +139,9 @@ bool AutoMapper::setupRuleMapProperties()
     if (mTargetMap->infinite()) {
         mOptions.overflowBorder = false;
         mOptions.wrapBorder = false;
+
+        // Infinite maps have no size, so we always match outside the map
+        mOptions.matchOutsideMap = true;
     }
 
     // Each of the border options imply MatchOutsideMap
@@ -453,45 +453,47 @@ void AutoMapper::setupTilesets()
         mTargetDocument->undoStack()->push(new AddTileset(mTargetDocument, tileset));
 }
 
-void AutoMapper::autoMap(QRegion *where)
+void AutoMapper::autoMap(const QRegion &where, QRegion *appliedRegion)
 {
     if (mOutputLayerGroups.isEmpty())
         return;
 
-    // first resize the active area
+    QRegion applyRegion;
+
+    // first resize the active area if applicable
     if (mOptions.autoMappingRadius) {
-        QRegion region;
-        for (const QRect &r : *where) {
-            region += r.adjusted(- mOptions.autoMappingRadius,
-                                 - mOptions.autoMappingRadius,
-                                 + mOptions.autoMappingRadius,
-                                 + mOptions.autoMappingRadius);
+        for (const QRect &r : where) {
+            applyRegion |= r.adjusted(- mOptions.autoMappingRadius,
+                                      - mOptions.autoMappingRadius,
+                                      + mOptions.autoMappingRadius,
+                                      + mOptions.autoMappingRadius);
         }
-        where->swap(region);
+    } else {
+        applyRegion = where;
     }
 
     // Delete all the relevant area, if the property "DeleteTiles" is set
     if (mOptions.deleteTiles) {
         const QRegion setLayersRegion = computeSetLayersRegion();
-        const QRegion regionToErase = setLayersRegion.intersected(*where);
+        const QRegion regionToErase = setLayersRegion.intersected(applyRegion);
         for (const RuleOutput &ruleOutput : qAsConst(mOutputLayerGroups)) {
-            QMapIterator<const Layer*, QString> it(ruleOutput.layers);
+            QHashIterator<const Layer*, QString> it(ruleOutput.layers);
             while (it.hasNext()) {
                 it.next();
 
                 const QString &name = it.value();
 
                 switch (it.key()->layerType()) {
-                case Tiled::Layer::TileLayerType:
+                case Layer::TileLayerType:
                     mTouchedTileLayers.value(name)->erase(regionToErase);
                     break;
-                case Tiled::Layer::ObjectGroupType:
+                case Layer::ObjectGroupType:
                     eraseRegionObjectGroup(mTargetDocument,
                                            mTouchedObjectGroups.value(name),
                                            regionToErase);
                     break;
-                case Tiled::Layer::ImageLayerType:
-                case Tiled::Layer::GroupLayerType:
+                case Layer::ImageLayerType:
+                case Layer::GroupLayerType:
                     Q_UNREACHABLE();
                     break;
                 }
@@ -499,19 +501,12 @@ void AutoMapper::autoMap(QRegion *where)
         }
     }
 
-    // Increase the given region where the next automapper should work.
-    // This needs to be done, so you can rely on the order of the rules at all
-    // locations
-    QRegion ret;
-    for (const QRect &rect : *where) {
-        for (const RuleRegion &ruleRegion : mRuleRegions) {
-            // at the moment the parallel execution does not work yet
-            // TODO: make multithreading available!
-            // either by dividing the rules or the region to multiple threads
-            ret |= applyRule(ruleRegion, rect);
-        }
+    for (const RuleRegion &ruleRegion : mRuleRegions) {
+        // at the moment the parallel execution does not work yet
+        // TODO: make multithreading available!
+        // either by dividing the rules or the region to multiple threads
+        applyRule(ruleRegion, applyRegion, appliedRegion);
     }
-    *where = where->united(ret);
 }
 
 QRegion AutoMapper::computeSetLayersRegion() const
@@ -626,9 +621,6 @@ static bool layerMatchesConditions(const TileLayer &setLayer,
                 int xd = x + offset.x();
                 int yd = y + offset.y();
 
-                if (!options.matchOutsideMap && !setLayer.contains(xd, yd))
-                    return false;
-
                 // Those two options are guaranteed to be false if the map is infinite,
                 // so no "invalid" width/height accessing here.
                 if (options.wrapBorder) {
@@ -685,36 +677,25 @@ static bool layerMatchesConditions(const TileLayer &setLayer,
     return true;
 }
 
-QRect AutoMapper::applyRule(const RuleRegion &ruleRegion, const QRect &where)
+void AutoMapper::applyRule(const RuleRegion &ruleRegion,
+                           const QRegion &applyRegion,
+                           QRegion *appliedRegion)
 {
     Q_ASSERT(!mOutputLayerGroups.isEmpty());
 
-    QRect ret;
-
     const QRegion &ruleInputRegion = ruleRegion.input;
     const QRegion &ruleOutputRegion = ruleRegion.output;
-    const QRect inputBounds = ruleInputRegion.boundingRect();
-
-    // Since the rule itself is translated, we need to adjust the borders of the
-    // loops. Decrease the size at all sides by one: There must be at least one
-    // tile overlap to the rule.
-    const int minX = where.left() - inputBounds.left() - inputBounds.width() + 1;
-    const int minY = where.top() - inputBounds.top() - inputBounds.height() + 1;
-
-    const int maxX = where.right() - inputBounds.left() + inputBounds.width() - 1;
-    const int maxY = where.bottom() - inputBounds.top() + inputBounds.height() - 1;
 
     // These regions store which parts or the map have already been altered by
     // exactly this rule. We store all the altered parts to make sure there are
     // no overlaps of the same rule applied to (neighbouring) places.
-    QMap<const Layer*, QRegion> appliedRegions;
+    QHash<const Layer*, QRegion> appliedRegions;
 
     const TileLayer dummy(QString(), 0, 0, mTargetMap->width(), mTargetMap->height());
 
     QRandomGenerator *randomGenerator = QRandomGenerator::global();
 
-    for (int y = minY; y <= maxY; ++y)
-    for (int x = minX; x <= maxX; ++x) {
+    auto applyAt = [&] (int x, int y) {
         bool anyMatch = false;
 
         for (const InputIndex &inputIndex : qAsConst(mInputLayers.indexes)) {
@@ -741,66 +722,99 @@ QRect AutoMapper::applyRule(const RuleRegion &ruleRegion, const QRect &where)
             }
         }
 
-        if (anyMatch) {
-            // choose by chance which group of rule_layers should be used:
-            const int r = randomGenerator->generate() % mOutputLayerGroups.size();
-            const RuleOutput &ruleOutput = mOutputLayerGroups.at(r);
+        if (!anyMatch)
+            return;
 
-            if (mOptions.noOverlappingRules) {
-                bool overlap = false;
+        // choose by chance which group of rule_layers should be used:
+        const int r = randomGenerator->generate() % mOutputLayerGroups.size();
+        const RuleOutput &ruleOutput = mOutputLayerGroups.at(r);
 
-                // check if there are no overlaps within this rule.
-                QMap<const Layer*, QRegion> ruleRegionInLayer;
+        if (mOptions.noOverlappingRules) {
+            bool overlap = false;
 
-                QMapIterator<const Layer*, QString> it(ruleOutput.layers);
-                while (it.hasNext()) {
-                    const Layer *layer = it.next().key();
+            // check if there are no overlaps within this rule.
+            QHash<const Layer*, QRegion> ruleRegionInLayer;
 
-                    QRegion outputLayerRegion;
+            QHashIterator<const Layer*, QString> it(ruleOutput.layers);
+            while (it.hasNext()) {
+                const Layer *layer = it.next().key();
 
-                    // TODO: Very slow to re-calculate the entire region for
-                    // each rule output layer here, each time a rule has a match.
-                    switch (layer->layerType()) {
-                    case Layer::TileLayerType:
-                        outputLayerRegion = static_cast<const TileLayer*>(layer)->region();
-                        break;
-                    case Layer::ObjectGroupType:
-                        outputLayerRegion = tileRegionOfObjectGroup(static_cast<const ObjectGroup*>(layer));
-                        break;
-                    case Layer::ImageLayerType:
-                    case Layer::GroupLayerType:
-                        Q_UNREACHABLE();
-                        continue;
-                    }
+                QRegion outputLayerRegion;
 
-                    outputLayerRegion &= ruleOutputRegion;
-                    outputLayerRegion.translate(x, y);
-
-                    ruleRegionInLayer[layer] = outputLayerRegion;
-
-                    if (appliedRegions[layer].intersects(outputLayerRegion)) {
-                        overlap = true;
-                        break;
-                    }
+                // TODO: Very slow to re-calculate the entire region for
+                // each rule output layer here, each time a rule has a match.
+                switch (layer->layerType()) {
+                case Layer::TileLayerType:
+                    outputLayerRegion = static_cast<const TileLayer*>(layer)->region();
+                    break;
+                case Layer::ObjectGroupType:
+                    outputLayerRegion = tileRegionOfObjectGroup(static_cast<const ObjectGroup*>(layer));
+                    break;
+                case Layer::ImageLayerType:
+                case Layer::GroupLayerType:
+                    Q_UNREACHABLE();
+                    continue;
                 }
 
-                if (overlap)
-                    continue;
+                outputLayerRegion &= ruleOutputRegion;
+                outputLayerRegion.translate(x, y);
 
-                // Remember the newly applied region
-                it.toFront();
-                while (it.hasNext()) {
-                    const Layer *layer = it.next().key();
-                    appliedRegions[layer] |= ruleRegionInLayer[layer];
+                ruleRegionInLayer[layer] = outputLayerRegion;
+
+                if (appliedRegions[layer].intersects(outputLayerRegion)) {
+                    overlap = true;
+                    break;
                 }
             }
 
-            copyMapRegion(ruleOutputRegion, QPoint(x, y), ruleOutput);
-            ret |= inputBounds.translated(QPoint(x, y));
+            if (overlap)
+                return;
+
+            // Remember the newly applied region
+            it.toFront();
+            while (it.hasNext()) {
+                const Layer *layer = it.next().key();
+                appliedRegions[layer] |= ruleRegionInLayer[layer];
+            }
         }
+
+        copyMapRegion(ruleOutputRegion, QPoint(x, y), ruleOutput);
+
+        if (appliedRegion)
+            *appliedRegion |= ruleOutputRegion.translated(x, y);
+    };
+
+    const QRect inputBounds = ruleInputRegion.boundingRect();
+
+    // This is really the rule size - 1, since when applying the rule we will
+    // keep at least one tile overlap with the apply region.
+    const int ruleWidth = inputBounds.right() - inputBounds.left();
+    const int ruleHeight = inputBounds.bottom() - inputBounds.top();
+
+    QRegion ruleApplyRegion;
+
+    for (const QRect &rect : applyRegion) {
+        // Expand each rect, making sure that there is at least one tile
+        // overlap with the rule at all sides.
+        ruleApplyRegion |= rect.adjusted(-ruleWidth, -ruleHeight, 0, 0);
     }
 
-    return ret;
+    // When we're not matching a rule outside the map, we reduce the region in
+    // in which it is applied accordingly.
+    if (!mOptions.matchOutsideMap) {
+        ruleApplyRegion &= QRect(0, 0,
+                                 mTargetMap->width() - ruleWidth,
+                                 mTargetMap->height() - ruleHeight);
+    }
+
+    // Translate the region to adjust to the position of the rule.
+    ruleApplyRegion.translate(-inputBounds.topLeft());
+
+    for (const QRect &rect : ruleApplyRegion) {
+        for (int y = rect.top(); y <= rect.bottom(); ++y)
+            for (int x = rect.left(); x <= rect.right(); ++x)
+                applyAt(x, y);
+    }
 }
 
 void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
@@ -813,14 +827,14 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
         Layer *to = nullptr;
 
         switch (from->layerType()) {
-        case Tiled::Layer::TileLayerType:
+        case Layer::TileLayerType:
             to = mTouchedTileLayers.value(targetName);
             break;
-        case Tiled::Layer::ObjectGroupType:
+        case Layer::ObjectGroupType:
             to = mTouchedObjectGroups.value(targetName);
             break;
-        case Tiled::Layer::ImageLayerType:
-        case Tiled::Layer::GroupLayerType:
+        case Layer::ImageLayerType:
+        case Layer::GroupLayerType:
             Q_UNREACHABLE();
             break;
         }

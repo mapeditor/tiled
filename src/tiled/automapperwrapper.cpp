@@ -46,8 +46,26 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         }
     }
 
-    for (AutoMapper *autoMapper : autoMappers)
-        autoMapper->autoMap(where);
+    QRegion appliedRegion;
+    QRegion *appliedRegionPtr = &appliedRegion;
+    const Map *map = mapDocument->map();
+    const QRegion mapRect(0, 0, map->width(), map->height());
+
+    for (AutoMapper *autoMapper : autoMappers) {
+        // stop expanding region when it's already the entire fixed-size map
+        if (appliedRegionPtr && (!map->infinite() && (mapRect - *where).isEmpty()))
+            appliedRegionPtr = nullptr;
+
+        autoMapper->autoMap(*where, appliedRegionPtr);
+
+        if (appliedRegionPtr) {
+            // expand where with modified area
+            *where |= std::exchange(appliedRegion, QRegion());
+
+            if (!map->infinite())       // but keep within map boundaries
+                *where &= mapRect;
+        }
+    }
 
     for (std::pair<TileLayer* const, TouchedLayerData> &pair : mTouchedTileLayers) {
         auto target = pair.first;
