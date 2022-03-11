@@ -6,6 +6,7 @@
 
 ### Unreleased 1.8 patch
 
+* Improved rendering quality of the Mini-map when it's small (#1431)
 * Fixed automatic tool switching after deleting layers
 * Fixed map bounding rectangle for infinite isometric maps
 * Fixed tile selection to not get removed when deleting (#3281)
@@ -13,6 +14,7 @@
 * Scripting: Avoid possible crash due to garbage collection (#3290)
 * Scripting: Fixed missing null check in Tileset.loadFromImage and Tile.setImage
 * Scripting: Initialize tile layer size also when added as part of a group layer (#3291)
+* AutoMapping: Fixed compatibility with "RegionsInput" / "RegionsOutput" layers
 * macOS: Fixed main window expanding with many open files (#1047)
 * Qt 6: Fixed captured or erased area when dragging backwards
 

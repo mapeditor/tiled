@@ -199,32 +199,37 @@ bool AutoMapper::setupRuleMapLayers()
         if (layerName.startsWith(QLatin1String("//")))
             continue;
 
-        auto checkRegionsLayer = [&](const QString &layerName, Layer *layer, const TileLayer* &out) -> bool {
-            if (layerName.compare(layer->name(), Qt::CaseInsensitive) != 0)
-                return false;
+        if (layerName.startsWith(QLatin1String("regions"), Qt::CaseInsensitive)) {
+            QString layerKind;
+            const TileLayer** layerPointer = nullptr;
 
-            if (out) {
-                error += tr("'%1' layer must not occur more than once.").arg(layerName);
+            if (layerName.compare(QLatin1String("regions"), Qt::CaseInsensitive) == 0) {
+                layerKind = QLatin1String("regions");
+                layerPointer = &mLayerRegions;
+            } else if (layerName.endsWith(QLatin1String("input"), Qt::CaseInsensitive)) {
+                layerKind = QLatin1String("regions_input");
+                layerPointer = &mLayerInputRegions;
+            } else if (layerName.endsWith(QLatin1String("output"), Qt::CaseInsensitive)) {
+                layerKind = QLatin1String("regions_output");
+                layerPointer = &mLayerOutputRegions;
+            } else {
+                addWarning(tr("Layer '%1' is not recognized as a valid layer for Automapping.").arg(layerName),
+                           SelectLayer { layer });
+                continue;
+            }
+
+            if (*layerPointer) {
+                error += tr("'%1' layer must not occur more than once.").arg(layerKind);
                 error += QLatin1Char('\n');
             }
+
             if (TileLayer *tileLayer = layer->asTileLayer()) {
-                out = tileLayer;
+                *layerPointer = tileLayer;
             } else {
                 error += tr("'regions_*' layers must be tile layers.");
                 error += QLatin1Char('\n');
             }
 
-            return true;
-        };
-
-        if (layerName.startsWith(QLatin1String("regions"), Qt::CaseInsensitive)) {
-            if (!(checkRegionsLayer(QStringLiteral("regions"), layer, mLayerRegions) ||
-                  checkRegionsLayer(QStringLiteral("regions_input"), layer, mLayerInputRegions) ||
-                  checkRegionsLayer(QStringLiteral("regions_output"), layer, mLayerOutputRegions))) {
-
-                addWarning(tr("Layer '%1' is not recognized as a valid layer for Automapping.").arg(layerName),
-                           SelectLayer { layer });
-            }
             continue;
         }
 
