@@ -78,6 +78,10 @@ C#/.NET
    `tiled-xna <https://github.com/zachmu/tiled-xna>`__ and
    `TmxCSharp <https://github.com/gwicksted/TmxCSharp>`__.
 
+Common Lisp
+~~~~~~~~~~~
+
+-  `cl-tiled <https://github.com/Zulu-Inuoe/cl-tiled/>`__: TMX/TSX and JSON map/tileset loader.
 
 Clojure
 ~~~~~~~
@@ -142,14 +146,13 @@ Processing
 Python
 ~~~~~~
 
--  `pytiled-parser <https://github.com/benjamin-kirkbride/pytiled_parser>`__: Python parser
-   for TMX and JSON maps.
 -  `Arcade <https://api.arcade.academy>`__: 2D game library that uses pytiled-parser for
    easy loading of Tiled maps into a game. `Arcade Tiled Examples <https://api.arcade.academy/en/latest/examples/index.html#using-tiled-map-editor-to-create-maps>`_
--  `pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>`__: library
-   for programmatic manipulation of TMX maps
--  `python-tmx <http://python-tmx.nongnu.org>`__: a simple library for
-   reading and writing TMX files.
+-  `pytiled-parser <https://github.com/benjamin-kirkbride/pytiled_parser>`__: Python parser for TMX and JSON maps.
+-  `pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>`__: library for programmatic manipulation of TMX maps
+-  `pytmxloader <https://bitbucket.org/dr0id/pytmxloader/src/master/>`__: Python library intended to make loading of JSON Tiled maps very easy.
+-  `PyTMX <https://github.com/bitcraft/PyTMX>`__: Python library to read TMX maps.
+-  `ulvl <https://ulvl.github.io/>`__: Simple Python library that can read from, among others, TMX XML files.
 
 Ruby
 ~~~~
