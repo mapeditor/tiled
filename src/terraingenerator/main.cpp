@@ -569,7 +569,7 @@ int main(int argc, char *argv[])
         const Tileset *sourceTileset = sourceWangSet->tileset();
 
         if (const Tile *sourceImageTile = sourceTileset->findTile(sourceTerrain->imageId())) {
-            qWarning() << "Copying terrain image for" << newTerrain->name();
+            qInfo() << "Copying terrain image for" << newTerrain->name();
             Tile *newImageTile = targetTileset->addTile(sourceImageTile->image());
             newImageTile->setProperties(sourceImageTile->properties());
             newTerrain->setImageId(newImageTile->id());
