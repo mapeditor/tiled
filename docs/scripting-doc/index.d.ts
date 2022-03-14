@@ -2038,6 +2038,9 @@ declare class TileMap extends Asset {
 
   /**
    * Selected layers.
+   *
+   * The order of the layers is always bottom to top, with selected group
+   * layers coming after any of their selected children.
    */
   selectedLayers : Layer[]
 
@@ -2048,6 +2051,9 @@ declare class TileMap extends Asset {
 
   /**
    * Selected objects.
+   *
+   * The order of the objects is their display order (when {@link
+   * ObjectGroup.IndexOrder} is used).
    */
   selectedObjects : MapObject[]
 
