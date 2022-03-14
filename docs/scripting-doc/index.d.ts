@@ -1793,9 +1793,20 @@ declare class Layer extends TiledObject {
   offset: point;
 
   /**
-   * Map that this layer is part of (or `null` in case of a standalone layer).
+   * The parallax factor of this layer.
    */
-  map: TileMap;
+  parallaxFactor: point;
+
+  /**
+   * Map that this layer is part of, or `null` in case of a standalone layer.
+   */
+  readonly map: TileMap | null;
+
+  /**
+   * The group layer this layer is part of, or `null` in case the layer is not
+   * grouped.
+   */
+  readonly parentLayer: GroupLayer | null;
 
   /**
    * Whether the layer is selected.
