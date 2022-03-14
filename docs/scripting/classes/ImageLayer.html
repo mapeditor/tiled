@@ -131,6 +131,8 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#name" class="tsd-kind-icon">name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#offset" class="tsd-kind-icon">offset</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#opacity" class="tsd-kind-icon">opacity</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#parallaxFactor" class="tsd-kind-icon">parallax<wbr>Factor</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#parentLayer" class="tsd-kind-icon">parent<wbr>Layer</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#readOnly" class="tsd-kind-icon">read<wbr>Only</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="ImageLayer.html#repeatX" class="tsd-kind-icon">repeatX</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="ImageLayer.html#repeatY" class="tsd-kind-icon">repeatY</a></li>
@@ -290,14 +292,14 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="map" class="tsd-anchor"></a>
-					<h3>map</h3>
-					<div class="tsd-signature tsd-kind-icon">map<span class="tsd-signature-symbol">:</span> <a href="TileMap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a></div>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> map</h3>
+					<div class="tsd-signature tsd-kind-icon">map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="TileMap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="Layer.html">Layer</a>.<a href="Layer.html#map">map</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Map that this layer is part of (or <code>null</code> in case of a standalone layer).</p>
+							<p>Map that this layer is part of, or <code>null</code> in case of a standalone layer.</p>
 						</div>
 					</div>
 				</section>
@@ -337,6 +339,33 @@
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>Opacity of the layer, from 0 (fully transparent) to 1 (fully opaque).</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="parallaxFactor" class="tsd-anchor"></a>
+					<h3>parallax<wbr>Factor</h3>
+					<div class="tsd-signature tsd-kind-icon">parallax<wbr>Factor<span class="tsd-signature-symbol">:</span> <a href="../interfaces/point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Layer.html">Layer</a>.<a href="Layer.html#parallaxFactor">parallaxFactor</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The parallax factor of this layer.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="parentLayer" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> parent<wbr>Layer</h3>
+					<div class="tsd-signature tsd-kind-icon">parent<wbr>Layer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="GroupLayer.html" class="tsd-signature-type" data-tsd-kind="Class">GroupLayer</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Layer.html">Layer</a>.<a href="Layer.html#parentLayer">parentLayer</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The group layer this layer is part of, or <code>null</code> in case the layer is not
+							grouped.</p>
 						</div>
 					</div>
 				</section>
@@ -681,6 +710,12 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="ImageLayer.html#opacity" class="tsd-kind-icon">opacity</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="ImageLayer.html#parallaxFactor" class="tsd-kind-icon">parallax<wbr>Factor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="ImageLayer.html#parentLayer" class="tsd-kind-icon">parent<wbr>Layer</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="ImageLayer.html#readOnly" class="tsd-kind-icon">read<wbr>Only</a>
