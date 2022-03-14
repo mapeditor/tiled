@@ -21,6 +21,7 @@
 #pragma once
 
 #include "filesystemwatcher.h"
+#include "tilededitor_global.h"
 
 #include <QJSValue>
 #include <QObject>
@@ -39,7 +40,7 @@ class ScriptModule;
  *
  * Dependencies: ProjectManager, DocumentManager (optional)
  */
-class ScriptManager : public QObject
+class TILED_EDITOR_EXPORT ScriptManager : public QObject
 {
     Q_OBJECT
 

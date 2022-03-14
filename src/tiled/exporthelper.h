@@ -22,6 +22,7 @@
 
 #include "fileformat.h"
 #include "preferences.h"
+#include "tilededitor_global.h"
 #include "tileset.h"
 
 #include <memory>
@@ -32,7 +33,7 @@ namespace Tiled {
  * Applies certain export options to a map and its tilesets, or to a specific
  * tileset.
  */
-class ExportHelper
+class TILED_EDITOR_EXPORT ExportHelper
 {
 public:
     explicit ExportHelper(Preferences::ExportOptions options = Preferences::instance()->exportOptions())

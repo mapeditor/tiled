@@ -29,6 +29,7 @@
 #include "preferencesdialog.h"
 #include "project.h"
 #include "session.h"
+#include "tilededitor_global.h"
 
 #include <QMainWindow>
 #include <QPointer>
@@ -71,7 +72,7 @@ class Zoomable;
  * Represents the main user interface, including the menu bar. It keeps track
  * of the current file and is also the entry point of all menu actions.
  */
-class MainWindow : public QMainWindow
+class TILED_EDITOR_EXPORT MainWindow : public QMainWindow
 {
     Q_OBJECT
 

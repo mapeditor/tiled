@@ -3,29 +3,20 @@ import qbs.File
 import qbs.FileInfo
 import qbs.TextFile
 
-QtGuiApplication {
-    name: "tiled"
-    targetName: name
-    version: project.version
-    consoleApplication: false
+DynamicLibrary {
+    targetName: "tilededitor"
 
     Depends { name: "libtiled" }
     Depends { name: "translations" }
     Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
-    Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt"; submodules: ["core", "widgets", "qml", "qml-private"]; versionAtLeast: "5.12" }
     Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6 }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") && Qt.core.versionMajor >= 6 }
 
-    property bool qtcRunnable: true
-
     cpp.includePaths: {
         var paths = ["."];
-
-        if (project.staticZstd)
-            paths.push("../../zstd/lib");
 
         if (project.sentry)
             paths.push("../../sentry-native/install/include");
@@ -33,19 +24,14 @@ QtGuiApplication {
         return paths;
     }
 
-    cpp.useRPaths: project.useRPaths
-    cpp.rpaths: {
-        if (qbs.targetOS.contains("darwin"))
-            return ["@loader_path/../Frameworks"];
-        else
-            return ["$ORIGIN/../lib"];
-    }
     cpp.useCxxPrecompiledHeader: qbs.buildVariant != "debug"
     cpp.cxxLanguageVersion: "c++17"
+    cpp.visibility: "minimal"
 
     cpp.defines: {
         var defs = [
-            "TILED_VERSION=" + version,
+            "TILED_EDITOR_LIBRARY",
+            "TILED_VERSION=" + project.version,
             "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(5,15,0)",
             "QT_NO_DEPRECATED_WARNINGS",
             "QT_NO_CAST_FROM_ASCII",
@@ -177,8 +163,6 @@ QtGuiApplication {
         "commanddialog.h",
         "commanddialog.ui",
         "command.h",
-        "commandlineparser.cpp",
-        "commandlineparser.h",
         "commandmanager.cpp",
         "commandmanager.h",
         "commandsedit.cpp",
@@ -300,7 +284,6 @@ QtGuiApplication {
         "locatorwidget.h",
         "magicwandtool.h",
         "magicwandtool.cpp",
-        "main.cpp",
         "maintoolbar.cpp",
         "maintoolbar.h",
         "mainwindow.cpp",
@@ -501,6 +484,7 @@ QtGuiApplication {
         "tiledapplication.cpp",
         "tiledapplication.h",
         "tiled.qrc",
+        "tilededitor_global.h",
         "tiledproxystyle.cpp",
         "tiledproxystyle.h",
         "tilelayeredit.cpp",
@@ -594,19 +578,24 @@ QtGuiApplication {
 
     Properties {
         condition: qbs.targetOS.contains("macos")
-        cpp.frameworks: ["Foundation"]
-        bundle.identifierPrefix: "org.mapeditor"
-        ib.appIconName: "tiled-icon-mac"
-        targetName: "Tiled"
+        bundle.isBundle: false
+        cpp.sonamePrefix: "@rpath"
     }
     Group {
         name: "macOS"
         condition: qbs.targetOS.contains("macos")
         files: [
-            "Info.plist",
             "macsupport.h",
             "macsupport.mm",
         ]
+    }
+
+    Export {
+        Depends { name: "cpp" }
+        Depends { name: "libtiled" }
+        Depends { name: "qtsingleapplication" }
+        Depends { name: "Qt"; submodules: ["qml"] }
+        cpp.includePaths: "."
     }
 
     Group {
@@ -616,186 +605,8 @@ QtGuiApplication {
             if (qbs.targetOS.contains("windows"))
                 return ""
             else
-                return "bin"
+                return "lib"
         }
-        qbs.installSourceBase: product.buildDirectory
-        fileTagsFilter: product.type
-    }
-
-    Group {
-        condition: qbs.targetOS.contains("macos")
-        name: "Public DSA Key File"
-        files: ["../../dist/dsa_pub.pem"]
-        qbs.install: true
-        qbs.installDir: "Tiled.app/Contents/Resources"
-    }
-
-    Group {
-        name: "macOS (icons)"
-        condition: qbs.targetOS.contains("macos")
-        files: ["images/tiled.xcassets"]
-    }
-
-    Group {
-        name: "Desktop file (Linux)"
-        condition: qbs.targetOS.contains("linux")
-        qbs.install: true
-        qbs.installDir: "share/applications"
-        files: [ "../../org.mapeditor.Tiled.desktop" ]
-    }
-
-    Group {
-        name: "AppData file (Linux)"
-        condition: qbs.targetOS.contains("linux")
-        qbs.install: true
-        qbs.installDir: "share/metainfo"
-        files: [ "../../org.mapeditor.Tiled.appdata.xml" ]
-    }
-
-    Group {
-        name: "Thumbnailer (Linux)"
-        condition: qbs.targetOS.contains("linux")
-        qbs.install: true
-        qbs.installDir: "share/thumbnailers"
-        files: [ "../../mime/tiled.thumbnailer" ]
-    }
-
-    Group {
-        name: "MIME info (Linux)"
-        condition: qbs.targetOS.contains("linux")
-        qbs.install: true
-        qbs.installDir: "share/mime/packages"
-        files: [ "../../mime/org.mapeditor.Tiled.xml" ]
-    }
-
-    Group {
-        name: "Man page (Linux)"
-        condition: qbs.targetOS.contains("linux")
-        qbs.install: true
-        qbs.installDir: "share/man/man1"
-        files: [ "../../man/tiled.1" ]
-    }
-
-    Group {
-        name: "Icon 16x16 (Linux)"
-        condition: qbs.targetOS.contains("linux")
-        qbs.install: true
-        qbs.installDir: "share/icons/hicolor/16x16/apps"
-        files: [ "images/16/tiled.png" ]
-    }
-
-    Group {
-        name: "Icon 32x32 (Linux)"
-        condition: qbs.targetOS.contains("linux")
-        qbs.install: true
-        qbs.installDir: "share/icons/hicolor/32x32/apps"
-        files: [ "images/32/tiled.png" ]
-    }
-
-    Group {
-        name: "Icon scalable (Linux)"
-        condition: qbs.targetOS.contains("linux")
-        qbs.install: true
-        qbs.installDir: "share/icons/hicolor/scalable/apps"
-        files: [ "images/scalable/tiled.svg" ]
-    }
-
-    Group {
-        name: "MIME icon 16x16 (Linux)"
-        condition: qbs.targetOS.contains("linux")
-        qbs.install: true
-        qbs.installDir: "share/icons/hicolor/16x16/mimetypes"
-        files: [ "images/16/application-x-tiled.png" ]
-    }
-
-    Group {
-        name: "MIME icon 32x32 (Linux)"
-        condition: qbs.targetOS.contains("linux")
-        qbs.install: true
-        qbs.installDir: "share/icons/hicolor/32x32/mimetypes"
-        files: [ "images/32/application-x-tiled.png" ]
-    }
-
-    Group {
-        name: "MIME icon scalable (Linux)"
-        condition: qbs.targetOS.contains("linux")
-        qbs.install: true
-        qbs.installDir: "share/icons/hicolor/scalable/mimetypes"
-        files: [ "images/scalable/application-x-tiled.svg" ]
-    }
-
-    // This is necessary to install the app bundle (OS X)
-    Group {
-        fileTagsFilter: ["bundle.content"]
-        qbs.install: true
-        qbs.installDir: "."
-        qbs.installSourceBase: product.buildDirectory
-    }
-
-    // Include libtiled.dylib in the app bundle
-    Rule {
-        condition: qbs.targetOS.contains("darwin")
-        inputsFromDependencies: "dynamiclibrary"
-        prepare: {
-            var cmd = new JavaScriptCommand();
-            cmd.description = "preparing " + input.fileName + " for inclusion in " + product.targetName + ".app";
-            cmd.sourceCode = function() { File.copy(input.filePath, output.filePath); };
-            return cmd;
-        }
-
-        Artifact {
-            filePath: input.fileName
-            fileTags: "bundle.input"
-            bundle._bundleFilePath: product.destinationDirectory + "/" + product.targetName + ".app/Contents/Frameworks/" + input.fileName
-        }
-    }
-
-    // Generate the tiled.rc file in order to dynamically specify the version
-    Group {
-        name: "RC file (Windows)"
-        files: [ "tiled.rc.in" ]
-        fileTags: ["rcIn"]
-    }
-    Rule {
-        inputs: ["rcIn"]
-        Artifact {
-            filePath: {
-                var destdir = FileInfo.joinPaths(product.moduleProperty("Qt.core",
-                                                         "generatedFilesDir"), input.fileName);
-                return destdir.replace(/\.[^\.]*$/,'')
-            }
-            fileTags: "rc"
-        }
-        prepare: {
-            var cmd = new JavaScriptCommand();
-            cmd.description = "prepare " + FileInfo.fileName(output.filePath);
-            cmd.highlight = "codegen";
-
-            cmd.sourceCode = function() {
-                var i;
-                var vars = {};
-                var inf = new TextFile(input.filePath);
-                var all = inf.readAll();
-
-                var versionArray = project.version.split(".");
-                if (versionArray.length == 3)
-                    versionArray.push("0");
-
-                // replace vars
-                vars['VERSION'] = project.version;
-                vars['VERSION_CSV'] = versionArray.join(",");
-
-                for (i in vars) {
-                    all = all.replace(new RegExp('@' + i + '@(?!\w)', 'g'), vars[i]);
-                }
-
-                var file = new TextFile(output.filePath, TextFile.WriteOnly);
-                file.truncate();
-                file.write(all);
-                file.close();
-            }
-
-            return cmd;
-        }
+        fileTagsFilter: "dynamiclibrary"
     }
 }

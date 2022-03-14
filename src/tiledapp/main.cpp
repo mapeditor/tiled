@@ -31,7 +31,6 @@
 #include "preferences.h"
 #include "scriptmanager.h"
 #include "sentryhelper.h"
-#include "stylehelper.h"
 #include "tiledapplication.h"
 #include "tileset.h"
 #include "tmxmapformat.h"
@@ -498,7 +497,6 @@ int main(int argc, char *argv[])
             return 0;
     }
 
-    StyleHelper::initialize();
     Session::initialize();
 
     MainWindow w;

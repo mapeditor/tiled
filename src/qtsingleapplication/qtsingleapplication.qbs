@@ -18,7 +18,7 @@ StaticLibrary {
 
     Export {
         Depends { name: "cpp" }
-        Depends { name: "Qt.network" }
+        Depends { name: "Qt.widgets" }
         cpp.includePaths: "src"
     }
 }

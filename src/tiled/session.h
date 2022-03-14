@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "tilededitor_global.h"
+
 #include <QDir>
 #include <QHash>
 #include <QPointF>
@@ -114,7 +116,7 @@ inline QVariant toSettingsValue<QPointF>(const QPointF &point)
 }
 
 
-class Session : protected FileHelper
+class TILED_EDITOR_EXPORT Session : protected FileHelper
 {
     std::unique_ptr<QSettings> settings;
 

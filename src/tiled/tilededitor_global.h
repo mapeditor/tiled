@@ -1,6 +1,6 @@
 /*
- * tiledapplication.h
- * Copyright 2011-2020, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * tilededitor_global.h
+ * Copyright 2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,31 +20,10 @@
 
 #pragma once
 
-#include "projectmanager.h"
-#include "tilededitor_global.h"
+#include <QtCore/qglobal.h>
 
-#include <QtSingleApplication>
-
-namespace Tiled {
-
-class TILED_EDITOR_EXPORT TiledApplication : public QtSingleApplication
-{
-    Q_OBJECT
-
-public:
-    TiledApplication(int &argc, char **argv);
-    ~TiledApplication() override;
-
-protected:
-    bool event(QEvent *) override;
-
-signals:
-    void fileOpenRequest(const QString &file);
-
-private:
-    void onMessageReceived(const QString &message);
-
-    ProjectManager mProjectManager;
-};
-
-} // namespace Tiled
+#if defined(TILED_EDITOR_LIBRARY)
+#  define TILED_EDITOR_EXPORT Q_DECL_EXPORT
+#else
+#  define TILED_EDITOR_EXPORT Q_DECL_IMPORT
+#endif

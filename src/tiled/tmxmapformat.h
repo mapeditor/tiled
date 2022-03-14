@@ -21,19 +21,19 @@
 #pragma once
 
 #include "mapformat.h"
-#include "tilesetformat.h"
 #include "objecttemplateformat.h"
+#include "tilededitor_global.h"
+#include "tilesetformat.h"
 
 namespace Tiled {
 
 class Tileset;
 class MapObject;
 
-
 /**
  * A reader and writer for Tiled's .tmx map format.
  */
-class TmxMapFormat : public MapFormat
+class TILED_EDITOR_EXPORT TmxMapFormat : public MapFormat
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::MapFormat)
@@ -74,11 +74,10 @@ private:
     QString mError;
 };
 
-
 /**
  * A reader and writer for Tiled's .tsx tileset format.
  */
-class TsxTilesetFormat : public TilesetFormat
+class TILED_EDITOR_EXPORT TsxTilesetFormat : public TilesetFormat
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::TilesetFormat)
@@ -103,9 +102,9 @@ private:
 };
 
 /**
- * A reader and writer for Tiled's .tgx template format.
+ * A reader and writer for Tiled's .tx template format.
  */
-class XmlObjectTemplateFormat : public ObjectTemplateFormat
+class TILED_EDITOR_EXPORT XmlObjectTemplateFormat : public ObjectTemplateFormat
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::ObjectTemplateFormat)

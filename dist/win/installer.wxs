@@ -81,6 +81,7 @@
             </File>
             <File Source="$(var.InstallRoot)\terraingenerator.exe" />
             <File Source="$(var.InstallRoot)\tiled.dll" />
+            <File Source="$(var.InstallRoot)\tilededitor.dll" />
             <File Source="$(var.InstallRoot)\tmxrasterizer.exe" />
             <File Source="$(var.InstallRoot)\tmxviewer.exe" />
             <File Source="$(var.RootDir)\dist\win\qt.conf" />

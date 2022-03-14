@@ -122,7 +122,7 @@ bool TmxRasterizer::shouldDrawLayer(const Layer *layer) const
 int TmxRasterizer::render(const QString &fileName,
                           const QString &imageFileName)
 {
-    if (fileName.endsWith(".world", Qt::CaseInsensitive))
+    if (fileName.endsWith(QLatin1String(".world"), Qt::CaseInsensitive))
         return renderWorld(fileName, imageFileName);
     else
         return renderMap(fileName, imageFileName);

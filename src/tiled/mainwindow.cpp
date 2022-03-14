@@ -238,6 +238,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(nullptr)
 {
+    StyleHelper::initialize();
+
     Q_ASSERT(!mInstance);
     mInstance = this;
 

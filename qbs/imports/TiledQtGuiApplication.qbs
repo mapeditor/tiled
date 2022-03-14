@@ -12,28 +12,29 @@ QtGuiApplication {
     cpp.defines: [
         "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(5,15,0)",
         "QT_NO_DEPRECATED_WARNINGS",
-        "QT_NO_FOREACH"
+        "QT_NO_CAST_FROM_ASCII",
+        "QT_NO_CAST_TO_ASCII",
+        "QT_NO_FOREACH",
+        "QT_NO_URL_CAST_FROM_STRING",
     ]
 
     Group {
-        condition: qbs.targetOS.contains("darwin") && bundle.isBundle
-        qbs.install: true
-        qbs.installSourceBase: product.buildDirectory
-        fileTagsFilter: ["bundle.content"]
-    }
-
-    Group {
-        condition: !qbs.targetOS.contains("darwin") || !bundle.isBundle
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows"))
+            if (qbs.targetOS.contains("windows")) {
                 return "";
-            else if (qbs.targetOS.contains("darwin"))
-                return "Tiled.app/Contents/MacOS";
-            else
+            } else if (qbs.targetOS.contains("darwin")) {
+                // Non-bundle applications are installed into the main Tiled.app bundle
+                return bundle.isBundle ? "." : "Tiled.app/Contents/MacOS";
+            } else {
                 return "bin";
+            }
         }
-
-        fileTagsFilter: product.type
+        qbs.installSourceBase: product.buildDirectory
+        fileTagsFilter: {
+            if (qbs.targetOS.contains("darwin") && bundle.isBundle)
+                return ["bundle.content"];
+            return product.type;
+        }
     }
 }

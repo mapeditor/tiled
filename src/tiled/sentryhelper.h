@@ -21,11 +21,13 @@
 #pragma once
 #ifdef TILED_SENTRY
 
+#include "tilededitor_global.h"
+
 #include <QObject>
 
 namespace Tiled {
 
-class Sentry : public QObject
+class TILED_EDITOR_EXPORT Sentry : public QObject
 {
     Q_OBJECT
 

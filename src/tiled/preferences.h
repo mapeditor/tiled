@@ -29,6 +29,7 @@
 #include "filesystemwatcher.h"
 #include "map.h"
 #include "objecttypes.h"
+#include "tilededitor_global.h"
 
 namespace Tiled {
 
@@ -39,7 +40,7 @@ namespace Tiled {
  * Since it derives from QSettings, you can also store/retrieve arbitrary
  * values. The naming style for groups and keys is CamelCase.
  */
-class Preferences : public QSettings
+class TILED_EDITOR_EXPORT Preferences : public QSettings
 {
     Q_OBJECT
 
