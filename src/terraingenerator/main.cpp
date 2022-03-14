@@ -462,7 +462,9 @@ int main(int argc, char *argv[])
             qCritical("Error reading source tileset '%s':\n%s",
                       qUtf8Printable(sourceFileName),
                       qUtf8Printable(reader.errorString()));
+            continue;
         }
+        source->setFileName(sourceFileName);
         sources.append(source);
     }
 
