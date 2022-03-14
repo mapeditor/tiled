@@ -75,22 +75,16 @@ class TILEDSHARED_EXPORT Cell
 public:
     static Cell empty;
 
-    Cell() :
-        _tileset(nullptr),
-        _tileId(-1),
-        _flags(0)
+    Cell() = default;
+
+    explicit Cell(Tile *tile)
+        : _tileset(tile ? tile->tileset() : nullptr)
+        , _tileId(tile ? tile->id() : -1)
     {}
 
-    explicit Cell(Tile *tile) :
-        _tileset(tile ? tile->tileset() : nullptr),
-        _tileId(tile ? tile->id() : -1),
-        _flags(0)
-    {}
-
-    Cell(Tileset *tileset, int tileId) :
-        _tileset(tileset),
-        _tileId(tileId),
-        _flags(0)
+    Cell(Tileset *tileset, int tileId)
+        : _tileset(tileset)
+        , _tileId(tileId)
     {}
 
     bool isEmpty() const { return _tileset == nullptr; }
@@ -140,9 +134,9 @@ private:
         VisualFlags             = FlippedHorizontally | FlippedVertically | FlippedAntiDiagonally | RotatedHexagonal120
     };
 
-    Tileset *_tileset;
-    int _tileId;
-    int _flags;
+    Tileset *_tileset = nullptr;
+    int _tileId = -1;
+    int _flags = 0;
 };
 
 inline Tile *Cell::tile() const
