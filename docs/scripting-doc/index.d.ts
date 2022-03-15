@@ -1793,9 +1793,20 @@ declare class Layer extends TiledObject {
   offset: point;
 
   /**
-   * Map that this layer is part of (or `null` in case of a standalone layer).
+   * The parallax factor of this layer.
    */
-  map: TileMap;
+  parallaxFactor: point;
+
+  /**
+   * Map that this layer is part of, or `null` in case of a standalone layer.
+   */
+  readonly map: TileMap | null;
+
+  /**
+   * The group layer this layer is part of, or `null` in case the layer is not
+   * grouped.
+   */
+  readonly parentLayer: GroupLayer | null;
 
   /**
    * Whether the layer is selected.
@@ -2027,6 +2038,9 @@ declare class TileMap extends Asset {
 
   /**
    * Selected layers.
+   *
+   * The order of the layers is always bottom to top, with selected group
+   * layers coming after any of their selected children.
    */
   selectedLayers : Layer[]
 
@@ -2037,6 +2051,9 @@ declare class TileMap extends Asset {
 
   /**
    * Selected objects.
+   *
+   * The order of the objects is their display order (when {@link
+   * ObjectGroup.IndexOrder} is used).
    */
   selectedObjects : MapObject[]
 
