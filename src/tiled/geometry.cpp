@@ -223,20 +223,12 @@ QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1, bool manhattan)
 /**
  * Checks if a given rectangle \a rect is coherent to another given \a region.
  * 'coherent' means that either the rectangle is overlapping the region or
- * the rectangle contains at least one tile, which is a direct neighbour
- * to a tile, which belongs to the region.
+ * the rectangle contains at least one tile, which is a neighbour to a tile,
+ * which belongs to the region.
  */
 static bool isCoherentTo(const QRect &rect, const QRegion &region)
 {
-    // check if the region is coherent at top or bottom
-    if (region.intersects(rect.adjusted(0, -1, 0, 1)))
-        return true;
-
-    // check if the region is coherent at left or right side
-    if (region.intersects(rect.adjusted(-1, 0, 1, 0)))
-        return true;
-
-    return false;
+    return region.intersects(rect.adjusted(-1, -1, 1, 1));
 }
 
 /**
