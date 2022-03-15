@@ -127,36 +127,6 @@ private:
     bool m_textVisible;
 };
 
-class QtKeySequenceEdit : public QWidget
-{
-    Q_OBJECT
-public:
-    QtKeySequenceEdit(QWidget *parent = 0);
-
-    QKeySequence keySequence() const;
-    bool eventFilter(QObject *o, QEvent *e);
-public Q_SLOTS:
-    void setKeySequence(const QKeySequence &sequence);
-Q_SIGNALS:
-    void keySequenceChanged(const QKeySequence &sequence);
-protected:
-    void focusInEvent(QFocusEvent *e);
-    void focusOutEvent(QFocusEvent *e);
-    void keyPressEvent(QKeyEvent *e);
-    void keyReleaseEvent(QKeyEvent *e);
-    void paintEvent(QPaintEvent *);
-    bool event(QEvent *e);
-private slots:
-    void slotClearShortcut();
-private:
-    void handleKeyEvent(QKeyEvent *e);
-    int translateModifiers(Qt::KeyboardModifiers state, const QString &text) const;
-
-    int m_num;
-    QKeySequence m_keySequence;
-    QLineEdit *m_lineEdit;
-};
-
 QString removeRedundantTrialingZeros(const QString &text);
 
 #if QT_VERSION >= 0x040400
