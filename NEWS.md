@@ -1,5 +1,6 @@
 ### Unreleased
 
+* Scripting: Added -e,--evaluate to run a script from command-line
 * Raised minimum supported Qt version from 5.6 to 5.12 (drops Windows XP support)
 * Raised minimum C++ version to C++17
 * Removed qmake project files (only Qbs supported now)

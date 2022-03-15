@@ -63,6 +63,8 @@ public:
 
     void ensureInitialized();
 
+    void setScriptArguments(const QStringList &arguments);
+
     const QString &extensionsPath() const;
 
     ScriptModule *module() const;
@@ -71,7 +73,7 @@ public:
     QJSValue evaluate(const QString &program,
                       const QString &fileName = QString(), int lineNumber = 1);
 
-    QJSValue evaluateFile(const QString &fileName);
+    void evaluateFileOrLoadModule(const QString &fileName);
 
     /**
      * Create a new global identifier ($0, $1, $2, ...) for the value. Returns
@@ -104,6 +106,8 @@ private:
 
     void loadExtensions();
     void loadExtension(const QString &path);
+
+    QJSValue evaluateFile(const QString &fileName);
 
     QJSEngine *mEngine = nullptr;
     ScriptModule *mModule = nullptr;

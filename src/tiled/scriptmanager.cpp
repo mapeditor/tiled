@@ -150,6 +150,12 @@ void ScriptManager::ensureInitialized()
     }
 }
 
+void ScriptManager::setScriptArguments(const QStringList &arguments)
+{
+    Q_ASSERT(mModule);
+    mModule->setScriptArguments(arguments);
+}
+
 QJSValue ScriptManager::evaluate(const QString &program,
                                  const QString &fileName, int lineNumber)
 {
@@ -162,6 +168,36 @@ QJSValue ScriptManager::evaluate(const QString &program,
 
     globalObject.deleteProperty(QStringLiteral("__filename"));
     return result;
+}
+
+void ScriptManager::evaluateFileOrLoadModule(const QString &fileName)
+{
+    if (fileName.endsWith(QLatin1String(".js"), Qt::CaseInsensitive)) {
+        evaluateFile(fileName);
+    } else {
+        Tiled::INFO(tr("Importing module '%1'").arg(fileName));
+
+        QJSValue globalObject = mEngine->globalObject();
+        globalObject.setProperty(QStringLiteral("__filename"), fileName);
+
+        QJSValue result = mEngine->importModule(fileName);
+
+        // According to the documentation, importModule could return an
+        // error object, though in practice this doesn't appear to happen.
+        if (!checkError(result)) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 1, 0)
+            // This appears to be the way to report exceptions
+            checkError(mEngine->catchError());
+#else
+            // With Qt 5 it seems we need to get a little creative, like
+            // calling evaluate to let that catch a potentially raised
+            // exception.
+            checkError(mEngine->evaluate(QString()));
+#endif
+        }
+
+        globalObject.deleteProperty(QStringLiteral("__filename"));
+    }
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(6,0,0)
@@ -244,32 +280,7 @@ void ScriptManager::loadExtension(const QString &path)
 
     for (const QString &jsFile : jsFiles) {
         const QString absolutePath = dir.filePath(jsFile);
-        if (absolutePath.endsWith(QLatin1String(".js"), Qt::CaseInsensitive)) {
-            evaluateFile(absolutePath);
-        } else {
-            Tiled::INFO(tr("Importing module '%1'").arg(absolutePath));
-
-            QJSValue globalObject = mEngine->globalObject();
-            globalObject.setProperty(QStringLiteral("__filename"), absolutePath);
-
-            QJSValue result = mEngine->importModule(absolutePath);
-
-            // According to the documentation, importModule could return an
-            // error object, though in practice this doesn't appear to happen.
-            if (!checkError(result)) {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 1, 0)
-                // This appears to be the way to report exceptions
-                checkError(mEngine->catchError());
-#else
-                // With Qt 5 it seems we need to get a little creative, like
-                // calling evaluate to let that catch a potentially raised
-                // exception.
-                checkError(mEngine->evaluate(QString()));
-#endif
-            }
-
-            globalObject.deleteProperty(QStringLiteral("__filename"));
-        }
+        evaluateFileOrLoadModule(absolutePath);
         mWatcher.addPath(absolutePath);
     }
 }

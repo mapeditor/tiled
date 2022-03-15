@@ -108,6 +108,16 @@ QString ScriptModule::applicationDirPath() const
     return QCoreApplication::applicationDirPath();
 }
 
+QStringList ScriptModule::scriptArguments() const
+{
+    return mScriptArguments;
+}
+
+void ScriptModule::setScriptArguments(const QStringList &arguments)
+{
+    mScriptArguments = arguments;
+}
+
 static QStringList idsToNames(const QList<Id> &ids)
 {
     QStringList names;
@@ -527,7 +537,7 @@ void ScriptModule::alert(const QString &text, const QString &title) const
 {
     ScriptManager::ResetBlocker blocker;
     QMessageBox msgBox(QMessageBox::Warning, title, text, QMessageBox::Ok,
-                       MainWindow::instance());
+                       MainWindow::maybeInstance());
 
     // On macOS, QMessageBox hides the title by default
 #ifdef Q_OS_MAC
@@ -542,7 +552,7 @@ bool ScriptModule::confirm(const QString &text, const QString &title) const
     ScriptManager::ResetBlocker blocker;
     QMessageBox msgBox(QMessageBox::Question, title, text,
                        QMessageBox::Yes | QMessageBox::No,
-                       MainWindow::instance());
+                       MainWindow::maybeInstance());
 
     // On macOS, QMessageBox hides the title by default
 #ifdef Q_OS_MAC
@@ -555,7 +565,7 @@ bool ScriptModule::confirm(const QString &text, const QString &title) const
 QString ScriptModule::prompt(const QString &label, const QString &text, const QString &title) const
 {
     ScriptManager::ResetBlocker blocker;
-    return QInputDialog::getText(MainWindow::instance(), title, label, QLineEdit::Normal, text);
+    return QInputDialog::getText(MainWindow::maybeInstance(), title, label, QLineEdit::Normal, text);
 }
 
 void ScriptModule::log(const QString &text) const

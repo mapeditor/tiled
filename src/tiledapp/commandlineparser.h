@@ -98,6 +98,12 @@ public:
     bool parse(const QStringList &arguments);
 
     /**
+     * Returns the next argument. When there are no more arguments or the next
+     * argument is an option, a null QString is returned.
+     */
+    QString nextArgument();
+
+    /**
      * Returns the files to open that were found among the arguments.
      */
     const QStringList &filesToOpen() const { return mFilesToOpen; }
@@ -140,6 +146,7 @@ private:
     QVector<Option> mOptions;
     int mLongestArgument;
     QString mCurrentProgramName;
+    QStringList mParsing;
     QStringList mFilesToOpen;
     bool mShowHelp;
 };

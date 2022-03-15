@@ -50,15 +50,15 @@ bool CommandLineParser::parse(const QStringList &arguments)
     mFilesToOpen.clear();
     mShowHelp = false;
 
-    QStringList todo = arguments;
-    mCurrentProgramName = QFileInfo(todo.takeFirst()).fileName();
+    mParsing = arguments;
+    mCurrentProgramName = QFileInfo(mParsing.takeFirst()).fileName();
 
     int index = 0;
     bool noMoreArguments = false;
 
-    while (!todo.isEmpty()) {
+    while (!mParsing.isEmpty()) {
         index++;
-        const QString arg = todo.takeFirst();
+        const QString arg = mParsing.takeFirst();
 
         if (arg.isEmpty())
             continue;
@@ -110,6 +110,14 @@ bool CommandLineParser::parse(const QStringList &arguments)
     }
 
     return true;
+}
+
+QString CommandLineParser::nextArgument()
+{
+    if (mParsing.isEmpty() || mParsing.first().at(0) == QLatin1Char('-'))
+        return QString();
+
+    return mParsing.takeFirst();
 }
 
 void CommandLineParser::showHelp() const

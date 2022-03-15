@@ -98,6 +98,7 @@ public:
     bool addRecentProjectsActions(QMenu *menu) const;
 
     static MainWindow *instance();
+    static MainWindow *maybeInstance();
 
 protected:
     bool event(QEvent *event) override;
@@ -275,6 +276,11 @@ private:
 inline MainWindow *MainWindow::instance()
 {
     Q_ASSERT(mInstance);
+    return mInstance;
+}
+
+inline MainWindow *MainWindow::maybeInstance()
+{
     return mInstance;
 }
 

@@ -57,6 +57,7 @@ class ScriptModule : public QObject
     Q_PROPERTY(QString arch READ arch)
     Q_PROPERTY(QString extensionsPath READ extensionsPath)
     Q_PROPERTY(QString applicationDirPath READ applicationDirPath)
+    Q_PROPERTY(QStringList scriptArguments READ scriptArguments)
 
     Q_PROPERTY(QStringList actions READ actions)
     Q_PROPERTY(QStringList menus READ menus)
@@ -78,6 +79,9 @@ public:
     QString arch() const;
     QString extensionsPath() const;
     QString applicationDirPath() const;
+
+    QStringList scriptArguments() const;
+    void setScriptArguments(const QStringList &arguments);
 
     QStringList actions() const;
     QStringList menus() const;
@@ -148,6 +152,8 @@ private:
     std::map<QString, std::unique_ptr<ScriptedMapFormat>> mRegisteredMapFormats;
     std::map<QString, std::unique_ptr<ScriptedTilesetFormat>> mRegisteredTilesetFormats;
     std::map<Id, std::unique_ptr<ScriptedTool>> mRegisteredTools;
+
+    QStringList mScriptArguments;
 };
 
 } // namespace Tiled

@@ -2909,6 +2909,17 @@ declare namespace tiled {
   export const extensionsPath: string;
 
   /**
+   * A list of arguments passed to a script that is evaluated from the
+   * command-line.
+   *
+   * Scripts can be executed on the command-line using
+   * `tiled --evaluate <script-file> [args]`.
+   *
+   * @since 1.9
+   */
+  export const scriptArguments: string[];
+
+  /**
    * Available actions for {@link trigger | tiled.trigger()}.
    */
   export const actions: string[];

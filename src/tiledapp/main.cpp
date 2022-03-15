@@ -23,6 +23,7 @@
 #include "commandlineparser.h"
 #include "exporthelper.h"
 #include "languagemanager.h"
+#include "logginginterface.h"
 #include "mainwindow.h"
 #include "mapdocument.h"
 #include "mapformat.h"
@@ -99,6 +100,7 @@ private:
     void setExportResolveObjectTypesAndProperties();
     void setExportMinimized();
     void showExportFormats();
+    void evaluateScript();
     void startNewInstance();
 
     // Convenience wrapper around registerOption
@@ -230,6 +232,11 @@ CommandLineHandler::CommandLineHandler()
                 QChar(),
                 QLatin1String("--new-instance"),
                 tr("Start a new instance, even if an instance is already running"));
+
+    option<&CommandLineHandler::evaluateScript>(
+                QLatin1Char('e'),
+                QLatin1String("--evaluate"),
+                tr("Evaluate a script file and quit"));
 }
 
 void CommandLineHandler::showVersion()
@@ -311,6 +318,41 @@ void CommandLineHandler::showExportFormats()
         stdOut() << " " << name << Qt::endl;
 
     quit = true;
+}
+
+void CommandLineHandler::evaluateScript()
+{
+    justQuit(); // always quit after running the script
+
+    const QString scriptFile = nextArgument();
+    if (scriptFile.isEmpty()) {
+        qWarning().noquote() << QCoreApplication::translate("Command line", "Missing file argument, evaluate a script using: --evaluate <script-file> [args]");
+        return;
+    }
+
+    QStringList arguments;
+    for (QString argument = nextArgument(); !argument.isNull(); argument = nextArgument())
+        arguments.append(argument);
+
+    ScriptManager &scriptManager = ScriptManager::instance();
+
+    static bool initialized = false;
+    if (!initialized) {
+        initialized = true;
+
+        PluginManager::instance()->loadPlugins();
+
+        // Output messages to command-line
+        auto& logger = LoggingInterface::instance();
+        QObject::connect(&logger, &LoggingInterface::info, [] (const QString &message) { stdOut() << message << Qt::endl; });
+        QObject::connect(&logger, &LoggingInterface::warning, [] (const QString &message) { qWarning() << message; });
+        QObject::connect(&logger, &LoggingInterface::error, [] (const QString &message) { qWarning() << message; });
+
+        scriptManager.ensureInitialized();
+    }
+
+    scriptManager.setScriptArguments(arguments);
+    scriptManager.evaluateFileOrLoadModule(scriptFile);
 }
 
 void CommandLineHandler::startNewInstance()

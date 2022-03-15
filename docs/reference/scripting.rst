@@ -19,8 +19,9 @@ reference is generated based on these definitions.
 
 On startup, Tiled will execute any script files present in :ref:`extension
 folders <script-extensions>`. In addition it is possible to run scripts
-directly from :ref:`the console <script-console>`. All scripts share a single
-JavaScript context.
+directly from :ref:`the console <script-console>`, as well as to evaluate a
+script file from the :ref:`command-line <script-cli>`. All scripts share a
+single JavaScript context.
 
 .. note::
 
@@ -112,6 +113,33 @@ find a text entry where you can write or paste scripts to evaluate them.
 
 You can use the Up/Down keys to navigate through previously entered
 script expressions.
+
+.. raw:: html
+
+   <div class="new">Since Tiled 1.9</div>
+
+.. _script-cli:
+
+Command Line
+^^^^^^^^^^^^
+
+To execute a script (``.js``) or to load a module (``.mjs``) from the
+command-line, you can pass the ``--evaluate`` option (or ``-e``), followed by
+the file name. Tiled will quit after executing the script.
+
+The UI will not be instantiated while evaluating scripts on the command-line.
+This means functions that rely on the UI being present will do nothing and some
+properties will be ``null``. However, scripts are able to load and save maps
+and tilesets through the available formats (see ``tiled.mapFormats`` and
+``tiled.tilesetFormats``), as well as to make any modifications to these
+assets.
+
+Any additional non-option arguments passed after the script file name are
+available to the script as ``tiled.scriptArguments``.
+
+If you want to evaluate several scripts, use ``--evaluate`` for each file. Note
+that evaluating the same JavaScript module (``.mjs``) does not work, since
+modules are loaded only once.
 
 API Reference
 -------------
