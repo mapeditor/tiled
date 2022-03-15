@@ -38,6 +38,7 @@
 #include <QString>
 #include <QVector>
 
+#include <cstddef>
 #include <iterator>
 
 namespace Tiled {
@@ -316,9 +317,15 @@ inline QPointF Layer::parallaxFactor() const
  * Modifying the layer hierarchy while an iterator is active will lead to
  * undefined results!
  */
-class TILEDSHARED_EXPORT LayerIterator : public std::iterator<std::forward_iterator_tag, Layer*>
+class TILEDSHARED_EXPORT LayerIterator
 {
 public:
+    using iterator_category = std::forward_iterator_tag;
+    using difference_type   = std::ptrdiff_t;
+    using value_type        = Layer*;
+    using pointer           = value_type*;
+    using reference         = value_type&;
+
     LayerIterator(const Map *map, int layerTypes = Layer::AnyLayerType);
     LayerIterator(Layer *start);
 
