@@ -7,6 +7,7 @@
 * Fixed custom types not being usable without opening a project (#3295)
 * Fixed parallax layer positions for other maps in a world
 * Fixed crash when rendering invalid polygon objects
+* Hide "Move Objects to Layer" menu when there's only one object layer
 * Scripting: Avoid possible crash due to garbage collection (#3290)
 * Scripting: Fixed missing null check in Tileset.loadFromImage and Tile.setImage
 * Scripting: Initialize tile layer size also when added as part of a group layer (#3291)
