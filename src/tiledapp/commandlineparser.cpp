@@ -114,7 +114,7 @@ bool CommandLineParser::parse(const QStringList &arguments)
 
 QString CommandLineParser::nextArgument()
 {
-    if (mParsing.isEmpty() || mParsing.first().at(0) == QLatin1Char('-'))
+    if (mParsing.isEmpty() || mParsing.first().startsWith(QLatin1Char('-')))
         return QString();
 
     return mParsing.takeFirst();
