@@ -13,6 +13,7 @@
 * AutoMapping: Fixed compatibility with "RegionsInput" / "RegionsOutput" layers
 * terraingenerator: Fixed crash when source terrain doesn't have an image (#3299)
 * macOS: Fixed main window expanding with many open files (#1047)
+* JSON plugin: Wrap arrays at the map width or chunk width
 * Qt 6: Fixed captured or erased area when dragging backwards
 
 ### Tiled 1.8.2 (18 February 2022)
