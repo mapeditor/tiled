@@ -3124,7 +3124,7 @@ declare namespace tiled {
    *             var objectLayer = this.map.currentLayer
    *
    *             if (objectLayer && objectLayer.isObjectLayer) {
-   *                 var object = new MapObject(++this.counter)
+   *                 var object = new MapObject(MapObject.Rectangle, ++this.counter)
    *                 object.x = Math.min(this.lastX, x)
    *                 object.y = Math.min(this.lastY, y)
    *                 object.width = Math.abs(this.lastX - x)
