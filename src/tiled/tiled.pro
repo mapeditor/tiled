@@ -90,7 +90,6 @@ SOURCES += aboutdialog.cpp \
     changetileanimation.cpp \
     changetileimagesource.cpp \
     changetileobjectgroup.cpp \
-    changetileprobability.cpp \
     changetilewangid.cpp \
     changevalue.h \
     changewangcolordata.cpp \
@@ -331,7 +330,6 @@ HEADERS += aboutdialog.h \
     changetileanimation.h \
     changetileimagesource.h \
     changetileobjectgroup.h \
-    changetileprobability.h \
     changetilewangid.h \
     changewangcolordata.h \
     changewangsetdata.h \

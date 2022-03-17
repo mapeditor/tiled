@@ -1,6 +1,6 @@
 /*
  * changetile.cpp
- * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2015-2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -31,22 +31,50 @@ ChangeTileType::ChangeTileType(TilesetDocument *tilesetDocument,
                                const QList<Tile *> &tiles,
                                const QString &type,
                                QUndoCommand *parent)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Tile Type"), parent)
-    , mTilesetDocument(tilesetDocument)
-    , mTiles(tiles)
+    : ChangeValue(tilesetDocument, tiles, type, parent)
 {
-    mTypes.fill(type, tiles.size());
+    setText(QCoreApplication::translate("Undo Commands", "Change Tile Type"));
 }
 
-void ChangeTileType::swap()
+QString ChangeTileType::getValue(const Tile *tile) const
 {
-    for (int i = 0, size = mTiles.size(); i < size; ++i) {
-        Tile *tile = mTiles.at(i);
+    return tile->type();
+}
 
-        QString oldType = tile->type();
-        mTilesetDocument->setTileType(tile, mTypes.at(i));
-        mTypes[i] = oldType;
-    }
+void ChangeTileType::setValue(Tile *tile, const QString &type) const
+{
+    static_cast<TilesetDocument*>(document())->setTileType(tile, type);
+}
+
+
+ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
+                                             const QList<Tile*>& tiles,
+                                             qreal probability,
+                                             QUndoCommand *parent)
+    : ChangeValue(tilesetDocument, tiles, probability, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Tile Probability"));
+}
+
+ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
+                                             const QList<Tile *> &tiles,
+                                             const QVector<qreal> &probabilities,
+                                             QUndoCommand *parent)
+    : ChangeValue(tilesetDocument, tiles, probabilities, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Tile Probability"));
+}
+
+qreal ChangeTileProbability::getValue(const Tile *tile) const
+{
+    return tile->probability();
+}
+
+void ChangeTileProbability::setValue(Tile *tile, const qreal &probability) const
+{
+    static_cast<TilesetDocument*>(document())->setTileProbability(tile, probability);
 }
 
 } // namespace Tiled

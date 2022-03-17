@@ -158,8 +158,6 @@ QtGuiApplication {
         "changetileimagesource.h",
         "changetileobjectgroup.cpp",
         "changetileobjectgroup.h",
-        "changetileprobability.cpp",
-        "changetileprobability.h",
         "changetilewangid.cpp",
         "changetilewangid.h",
         "changevalue.h",
