@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="79" height="45" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#27b99a" nextlayerid="10" nextobjectid="203">
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="79" height="45" tilewidth="32" tileheight="32" infinite="0" parallaxoriginx="1264" parallaxoriginy="720" backgroundcolor="#27b99a" nextlayerid="12" nextobjectid="203">
  <tileset firstgid="1" source="objs.tsx"/>
- <objectgroup id="1" name="parallax">
-  <object id="95" gid="7" x="-16.2424" y="452.394" width="384" height="128"/>
+ <objectgroup id="11" name="static" parallaxx="0" parallaxy="0">
   <object id="90" gid="16" x="146.97" y="693.727" width="192" height="192"/>
+ </objectgroup>
+ <objectgroup id="10" name="parallax clouds" parallaxx="0.5" parallaxy="0.5">
+  <object id="95" gid="7" x="-16.2424" y="452.394" width="384" height="128"/>
   <object id="91" gid="2147483655" x="373.939" y="627.121" width="384" height="128"/>
   <object id="93" gid="2147483655" x="2105.85" y="510.818" width="384" height="128"/>
   <object id="92" gid="7" x="1453.52" y="651.909" width="384" height="128"/>
   <object id="94" gid="7" x="946.606" y="420.455" width="384" height="128"/>
+ </objectgroup>
+ <objectgroup id="1" name="parallax background" parallaxx="0.8" parallaxy="0.8">
   <object id="105" gid="59" x="66.6667" y="1079" width="837.333" height="320"/>
   <object id="106" gid="59" x="592" y="1055" width="920" height="448"/>
   <object id="107" gid="59" x="1173.54" y="1179.49" width="920" height="352" rotation="-10.4469"/>
