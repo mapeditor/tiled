@@ -354,11 +354,13 @@ void TilesetEditor::setCurrentDocument(Document *document)
 
     mCurrentTilesetDocument = tilesetDocument;
 
-    if (tilesetDocument) {
+    if (tilesetView) {
         mDynamicWrappingToggle->setChecked(tilesetView->dynamicWrapping());
 
         currentChanged(tilesetView->currentIndex());
         selectionChanged();
+    } else {
+        currentChanged(QModelIndex());
     }
 
     updateAddRemoveActions();
@@ -531,11 +533,12 @@ void TilesetEditor::selectionChanged()
 
 void TilesetEditor::currentChanged(const QModelIndex &index)
 {
-    if (!index.isValid())
-        return;
-
-    auto model = static_cast<const TilesetModel*>(index.model());
-    setCurrentTile(model->tileAt(index));
+    if (index.isValid()) {
+        auto model = static_cast<const TilesetModel*>(index.model());
+        setCurrentTile(model->tileAt(index));
+    } else {
+        setCurrentTile(nullptr);
+    }
 }
 
 void TilesetEditor::indexPressed(const QModelIndex &index)

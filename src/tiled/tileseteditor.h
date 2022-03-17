@@ -55,7 +55,7 @@ class TilesetEditor final : public Editor
 {
     Q_OBJECT
 
-    Q_PROPERTY(Tiled::TileCollisionDock *collisionEditor READ collisionEditor)
+    Q_PROPERTY(Tiled::TileCollisionDock *collisionEditor READ collisionEditor CONSTANT)
 
 public:
     explicit TilesetEditor(QObject *parent = nullptr);
