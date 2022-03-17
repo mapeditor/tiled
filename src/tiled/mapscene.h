@@ -126,7 +126,7 @@ private:
     bool eventFilter(QObject *object, QEvent *event) override;
 
     MapDocument *mMapDocument = nullptr;
-    QHash<MapDocument*, MapItem*> mMapItems;
+    QHash<Map*, MapItem*> mMapItems;
     AbstractTool *mSelectedTool = nullptr;
     DebugDrawItem *mDebugDrawItem = nullptr;
     bool mUnderMouse = false;
@@ -154,7 +154,7 @@ inline MapDocument *MapScene::mapDocument() const
  */
 inline MapItem *MapScene::mapItem(MapDocument *mapDocument) const
 {
-    return mMapItems.value(mapDocument);
+    return mapDocument ? mMapItems.value(mapDocument->map()) : nullptr;
 }
 
 inline DebugDrawItem *MapScene::debugDrawItem() const
