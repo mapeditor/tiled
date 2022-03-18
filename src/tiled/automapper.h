@@ -31,6 +31,7 @@
 #include <QVector>
 
 #include <memory>
+#include <vector>
 
 namespace Tiled {
 
@@ -48,35 +49,67 @@ struct InputLayer
     bool strictEmpty;
 };
 
-class InputConditions
+struct InputConditions
 {
-public:
+    InputConditions(const QString &layerName) : layerName(layerName) {}
+
+    QString layerName;
     QVector<InputLayer> listYes;    // "input"
     QVector<InputLayer> listNo;     // "inputnot"
 };
 
-// Maps layer names to their conditions
-using InputIndex = QMap<QString, InputConditions>;
-
-class InputLayers
+struct InputSet
 {
-public:
-    // Maps an index to a set of input layers
-    QMap<QString, InputIndex> indexes;
+    InputSet(const QString &name) : name(name) {}
 
-    // All input layer names
-    QSet<QString> names;
+    QString name;
+    std::vector<InputConditions> layers;
 };
 
 // One set of output layers sharing the same index
-class RuleOutput
+struct OutputSet
 {
-public:
+    OutputSet(const QString &name) : name(name) {}
+
+    QString name;
     // Maps output layers in mRulesMap to their names in mTargetMap
     QHash<const Layer*, QString> layers;
-    QString index;
 };
 
+struct RuleMapSetup
+{
+    /**
+     * The TileLayer that defines the input and output regions ('regions').
+     */
+    const TileLayer *mLayerRegions = nullptr;
+
+    /**
+     * The TileLayer that defines the input regions ('regions_input').
+     */
+    const TileLayer *mLayerInputRegions = nullptr;
+
+    /**
+     * The TileLayer that defines the output regions ('regions_output').
+     */
+    const TileLayer *mLayerOutputRegions = nullptr;
+
+    /**
+     * Holds different input sets. A rule matches when any of its input sets
+     * match.
+     */
+    std::vector<InputSet> mInputSets;
+
+    /**
+     * Holds different output sets. One of the sets is chosen by chance, so
+     * randomness is available.
+     */
+    std::vector<OutputSet> mOutputSets;
+
+    /**
+     * All input layer names.
+     */
+    QSet<QString> mInputLayerNames;
+};
 
 /**
  * This class does all the work for the automapping feature.
@@ -156,7 +189,7 @@ public:
      * Returns a map of name to target layer, which could be touched
      * considering the output layers of the rule map.
      */
-    const QMap<QString, TileLayer *> &touchedTileLayers() const;
+    const QHash<QString, TileLayer *> &touchedTileLayers() const;
 
     /**
      * This needs to be called directly before the autoMap call.
@@ -218,11 +251,6 @@ private:
     void setupTilesets();
 
     /**
-     * Returns the conjunction of all regions of all setlayers.
-     */
-    QRegion computeSetLayersRegion() const;
-
-    /**
      * This copies all tiles from TileLayer \a srcLayer to TileLayer
      * \a dstLayer.
      *
@@ -254,7 +282,7 @@ private:
      * map should get copied into which layers of the working map.
      */
     void copyMapRegion(const QRegion &region, QPoint Offset,
-                       const RuleOutput &ruleOutput);
+                       const OutputSet &ruleOutput);
 
     /**
      * This goes through all the positions in \a applyRegion and checks if the
@@ -322,37 +350,12 @@ private:
      */
     QVector<Layer*> mAddedLayers;
 
-    /**
-     * The TileLayer that defines the input and output regions ('regions').
-     */
-    const TileLayer *mLayerRegions = nullptr;
-
-    /**
-     * The TileLayer that defines the input regions ('regions_input').
-     */
-    const TileLayer *mLayerInputRegions = nullptr;
-
-    /**
-     * The TileLayer that defines the output regions ('regions_output').
-     */
-    const TileLayer *mLayerOutputRegions = nullptr;
-
-    /**
-     * Contains all TileLayer pointers, which names begin with 'input*'.
-     * It is sorted by index and name.
-     */
-    InputLayers mInputLayers;
+    RuleMapSetup mRuleMapSetup;
 
     /**
      * Stores the input and output region for each rule in mRulesMap.
      */
     QVector<RuleRegion> mRuleRegions;
-
-    /**
-     * This list is used to hold different translation tables. One of the
-     * tables is chosen by chance, so randomness is available.
-     */
-    QVector<RuleOutput> mOutputLayerGroups;
 
     /**
      * The name of the processed rules file, used in error reporting.
@@ -368,15 +371,15 @@ private:
      *
      * @see setupWorkMapLayers()
      */
-    QMap<QString, const TileLayer*> mSetLayers;
-    QMap<QString, TileLayer*> mTouchedTileLayers;
-    QMap<QString, ObjectGroup*> mTouchedObjectGroups;
+    QHash<QString, const TileLayer*> mSetLayers;
+    QHash<QString, TileLayer*> mTouchedTileLayers;
+    QHash<QString, ObjectGroup*> mTouchedObjectGroups;
 
     QString mError;
     QString mWarning;
 };
 
-inline const QMap<QString, TileLayer*> &AutoMapper::touchedTileLayers() const
+inline const QHash<QString, TileLayer*> &AutoMapper::touchedTileLayers() const
 {
     return mTouchedTileLayers;
 }
