@@ -40,6 +40,8 @@
 #include <QDebug>
 #include <QRandomGenerator>
 
+#include <algorithm>
+
 using namespace Tiled;
 
 static int wrap(int value, int bound)
@@ -711,27 +713,20 @@ void AutoMapper::applyRule(const RuleRegion &ruleRegion,
     QRandomGenerator *randomGenerator = QRandomGenerator::global();
 
     auto applyAt = [&] (int x, int y) {
-        bool anyMatch = false;
+        const bool match = std::any_of(mRuleMapSetup.mInputSets.cbegin(),
+                                       mRuleMapSetup.mInputSets.cend(),
+                                       [&] (const InputSet &inputIndex) {
 
-        for (const InputSet &inputIndex : qAsConst(mRuleMapSetup.mInputSets)) {
-            bool allLayerNamesMatch = true;
+            return std::all_of(inputIndex.layers.cbegin(),
+                               inputIndex.layers.cend(),
+                               [&] (const InputConditions &conditions) {
 
-            for (const InputConditions &conditions : inputIndex.layers) {
                 const TileLayer &setLayer = conditions.layer ? *conditions.layer : dummy;
+                return layerMatchesConditions(setLayer, conditions, ruleInputRegion, QPoint(x, y), mOptions);
+            });
+        });
 
-                if (!layerMatchesConditions(setLayer, conditions, ruleInputRegion, QPoint(x, y), mOptions)) {
-                    allLayerNamesMatch = false;
-                    break;
-                }
-            }
-
-            if (allLayerNamesMatch) {
-                anyMatch = true;
-                break;
-            }
-        }
-
-        if (!anyMatch)
+        if (!match)
             return;
 
         // choose by chance which group of rule_layers should be used:
@@ -739,15 +734,12 @@ void AutoMapper::applyRule(const RuleRegion &ruleRegion,
         const OutputSet &ruleOutput = mRuleMapSetup.mOutputSets.at(r);
 
         if (mOptions.noOverlappingRules) {
-            bool overlap = false;
-
             // check if there are no overlaps within this rule.
             QHash<const Layer*, QRegion> ruleRegionInLayer;
 
-            QHashIterator<const Layer*, QString> it(ruleOutput.layers);
-            while (it.hasNext()) {
-                const Layer *layer = it.next().key();
-
+            const bool overlap = std::any_of(ruleOutput.layers.keyBegin(),
+                                             ruleOutput.layers.keyEnd(),
+                                             [&] (const Layer *layer) {
                 QRegion outputLayerRegion;
 
                 // TODO: Very slow to re-calculate the entire region for
@@ -762,7 +754,7 @@ void AutoMapper::applyRule(const RuleRegion &ruleRegion,
                 case Layer::ImageLayerType:
                 case Layer::GroupLayerType:
                     Q_UNREACHABLE();
-                    continue;
+                    return false;
                 }
 
                 outputLayerRegion &= ruleOutputRegion;
@@ -770,21 +762,18 @@ void AutoMapper::applyRule(const RuleRegion &ruleRegion,
 
                 ruleRegionInLayer[layer] = outputLayerRegion;
 
-                if (appliedRegions[layer].intersects(outputLayerRegion)) {
-                    overlap = true;
-                    break;
-                }
-            }
+                return appliedRegions[layer].intersects(outputLayerRegion);
+            });
 
             if (overlap)
                 return;
 
             // Remember the newly applied region
-            it.toFront();
-            while (it.hasNext()) {
-                const Layer *layer = it.next().key();
+            std::for_each(ruleOutput.layers.keyBegin(),
+                          ruleOutput.layers.keyEnd(),
+                          [&] (const Layer *layer) {
                 appliedRegions[layer] |= ruleRegionInLayer[layer];
-            }
+            });
         }
 
         copyMapRegion(ruleOutputRegion, QPoint(x, y), ruleOutput);
