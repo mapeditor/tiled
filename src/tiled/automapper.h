@@ -54,8 +54,9 @@ struct InputConditions
     InputConditions(const QString &layerName) : layerName(layerName) {}
 
     QString layerName;
-    QVector<InputLayer> listYes;    // "input"
-    QVector<InputLayer> listNo;     // "inputnot"
+    const TileLayer *layer = nullptr;   // reference to layer in target map
+    QVector<InputLayer> listYes;        // "input"
+    QVector<InputLayer> listNo;         // "inputnot"
 };
 
 struct InputSet

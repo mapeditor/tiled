@@ -454,6 +454,10 @@ void AutoMapper::setupWorkMapLayers()
     for (const QString &name : qAsConst(mRuleMapSetup.mInputLayerNames))
         if (auto tileLayer = static_cast<TileLayer*>(mTargetMap->findLayer(name, Layer::TileLayerType)))
             mSetLayers.insert(name, tileLayer);
+
+    for (InputSet &inputIndex : mRuleMapSetup.mInputSets)
+        for (InputConditions &conditions : inputIndex.layers)
+            conditions.layer = mSetLayers.value(conditions.layerName);
 }
 
 /**
@@ -713,8 +717,7 @@ void AutoMapper::applyRule(const RuleRegion &ruleRegion,
             bool allLayerNamesMatch = true;
 
             for (const InputConditions &conditions : inputIndex.layers) {
-                const QString &layerName = conditions.layerName;
-                const TileLayer &setLayer = *mSetLayers.value(layerName, &dummy);
+                const TileLayer &setLayer = conditions.layer ? *conditions.layer : dummy;
 
                 if (!layerMatchesConditions(setLayer, conditions, ruleInputRegion, QPoint(x, y), mOptions)) {
                     allLayerNamesMatch = false;
