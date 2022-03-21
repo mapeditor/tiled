@@ -67,7 +67,7 @@ QRectF ArrowHead::boundingRect() const
 
 void ArrowHead::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    static constexpr std::array<QPointF, 4> arrowHead = {
+    static constexpr QPointF arrowHead[4] = {
         QPointF(0.0, 0.0),
         QPointF(-2 * arrowHeadSize, arrowHeadSize),
         QPointF(-1.5 * arrowHeadSize, 0.0),
@@ -83,7 +83,7 @@ void ArrowHead::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setBrush(mColor);
     painter->setPen(arrowOutline);
-    painter->drawPolygon(arrowHead.data(), arrowHead.size());
+    painter->drawPolygon(arrowHead, 4);
 }
 
 
