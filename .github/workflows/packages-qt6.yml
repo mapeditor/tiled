@@ -15,7 +15,7 @@ on:
     - '.travis.yml'
 
 env:
-  QT_VERSION: 6.2.3
+  QT_VERSION: 6.2.4
   QTCREATOR_VERSION: 6.0.2
   QBS_VERSION: 1.21.0
   SENTRY_VERSION: 0.4.15
