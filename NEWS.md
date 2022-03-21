@@ -2,6 +2,7 @@
 
 * Improved rendering quality of the Mini-map when it's small (#1431)
 * Fixed automatic tool switching after deleting layers
+* Fixed image layer repeat settings not copied to duplicates (#3307)
 * Fixed map bounding rectangle for infinite isometric maps
 * Fixed tile selection to not get removed when deleting (#3281)
 * Fixed custom types not being usable without opening a project (#3295)
