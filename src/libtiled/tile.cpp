@@ -104,7 +104,7 @@ const QPainterPath &Tile::imageShape() const
         if (mImageRect != image().rect()) {
             QPainterPath rect;
             rect.addRect(mImageRect);
-            mImageShape.value() &= rect;
+            *mImageShape &= rect;
             mImageShape->translate(-mImageRect.topLeft());
         }
     }
