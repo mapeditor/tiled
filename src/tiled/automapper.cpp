@@ -357,31 +357,17 @@ bool AutoMapper::setupRuleList()
         regionOutput |= mLayerOutputRegions->region();
 
     QVector<QRegion> combinedRegions = coherentRegions(regionInput + regionOutput);
-    const QVector<QRegion> rulesInput = coherentRegions(regionInput);
-    const QVector<QRegion> rulesOutput = coherentRegions(regionOutput);
 
     // Combined regions are sorted, in order to have a deterministic order in
     // which the rules are applied.
     std::sort(combinedRegions.begin(), combinedRegions.end(), compareRuleRegion);
 
+    // Then, they are split up in input and output region for each rule.
     mRuleRegions.resize(combinedRegions.size());
 
-    for (const QRegion &region : rulesInput) {
-        for (int i = 0; i < combinedRegions.size(); ++i) {
-            if (region.intersects(combinedRegions[i])) {
-                mRuleRegions[i].input += region;
-                break;
-            }
-        }
-    }
-
-    for (const QRegion &region : rulesOutput) {
-        for (int i = 0; i < combinedRegions.size(); ++i) {
-            if (region.intersects(combinedRegions[i])) {
-                mRuleRegions[i].output += region;
-                break;
-            }
-        }
+    for (int i = 0; i < combinedRegions.size(); ++i) {
+        mRuleRegions[i].input = combinedRegions[i] & regionInput;
+        mRuleRegions[i].output = combinedRegions[i] & regionOutput;
     }
 
 #ifndef QT_NO_DEBUG
