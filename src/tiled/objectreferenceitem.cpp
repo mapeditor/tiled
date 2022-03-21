@@ -33,6 +33,7 @@
 #include <QPen>
 #include <QVector2D>
 
+#include <array>
 #include <cmath>
 
 namespace Tiled {
@@ -67,7 +68,7 @@ QRectF ArrowHead::boundingRect() const
 
 void ArrowHead::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    static constexpr QPointF arrowHead[4] = {
+    static constexpr std::array<QPointF, 4> arrowHead = {
         QPointF(0.0, 0.0),
         QPointF(-2 * arrowHeadSize, arrowHeadSize),
         QPointF(-1.5 * arrowHeadSize, 0.0),
@@ -83,7 +84,7 @@ void ArrowHead::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setBrush(mColor);
     painter->setPen(arrowOutline);
-    painter->drawPolygon(arrowHead, 4);
+    painter->drawPolygon(arrowHead.data(), arrowHead.size());
 }
 
 
