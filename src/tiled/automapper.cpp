@@ -318,12 +318,6 @@ bool AutoMapper::setupRuleMapLayers()
                    SelectLayer { layer });
     }
 
-    if (!setup.mLayerRegions && !setup.mLayerInputRegions)
-        error += tr("No 'regions' or 'regions_input' layer found.") + QLatin1Char('\n');
-
-    if (!setup.mLayerRegions && !setup.mLayerOutputRegions)
-        error += tr("No 'regions' or 'regions_output' layer found.") + QLatin1Char('\n');
-
     if (setup.mInputSets.empty())
         error += tr("No input_<name> or inputnot_<name> layer found!") + QLatin1Char('\n');
 
@@ -358,8 +352,6 @@ bool AutoMapper::setupRuleList()
     const auto &setup = mRuleMapSetup;
 
     Q_ASSERT(mRuleRegions.isEmpty());
-    Q_ASSERT(setup.mLayerRegions || setup.mLayerInputRegions);
-    Q_ASSERT(setup.mLayerRegions || setup.mLayerOutputRegions);
 
     QRegion regionInput;
     QRegion regionOutput;
@@ -370,6 +362,32 @@ bool AutoMapper::setupRuleList()
         regionInput |= setup.mLayerInputRegions->region();
     if (setup.mLayerOutputRegions)
         regionOutput |= setup.mLayerOutputRegions->region();
+
+    // When no input regions have been defined at all, derive them from the
+    // "input" and "inputnot" layers.
+    if (!setup.mLayerRegions && !setup.mLayerInputRegions) {
+        for (const InputSet &inputIndex : qAsConst(mRuleMapSetup.mInputSets)) {
+            for (const InputConditions &conditions : inputIndex.layers) {
+                for (const InputLayer &inputLayer : conditions.listNo)
+                    regionInput |= inputLayer.tileLayer->region();
+                for (const InputLayer &inputLayer : conditions.listYes)
+                    regionInput |= inputLayer.tileLayer->region();
+            }
+        }
+    }
+
+    // When no output regions have been defined at all, derive them from the
+    // "output" layers.
+    if (!setup.mLayerRegions && !setup.mLayerOutputRegions) {
+        for (const OutputSet &ruleOutput : qAsConst(mRuleMapSetup.mOutputSets)) {
+            std::for_each(ruleOutput.layers.keyBegin(),
+                          ruleOutput.layers.keyEnd(),
+                          [&] (const Layer *layer) {
+                if (layer->isTileLayer())
+                    regionOutput |= static_cast<const TileLayer*>(layer)->region();
+            });
+        }
+    }
 
     QVector<QRegion> combinedRegions = coherentRegions(regionInput + regionOutput);
 
