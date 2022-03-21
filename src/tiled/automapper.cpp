@@ -631,12 +631,8 @@ static bool layerMatchesConditions(const TileLayer &setLayer,
 {
     const auto &listYes = conditions.listYes;
     const auto &listNo = conditions.listNo;
-    if (listYes.isEmpty() && listNo.isEmpty())
-        return false;
 
     QVarLengthArray<Cell, 8> cells;
-    if (listNo.isEmpty())
-        collectCellsInRegion(listYes, ruleRegion, cells);
 
     for (const QRect &rect : ruleRegion) {
         for (int x = rect.left(); x <= rect.right(); ++x) {
@@ -687,8 +683,12 @@ static bool layerMatchesConditions(const TileLayer &setLayer,
 
                 if (!ruleDefinedListYes) {
                     // if there were only layers in the listYes, check the exception
-                    if (listNo.isEmpty() && cells.contains(setCell))
-                        return false;
+                    if (listNo.isEmpty()) {
+                        if (cells.isEmpty())
+                            collectCellsInRegion(listYes, ruleRegion, cells);
+                        if (cells.contains(setCell))
+                            return false;
+                    }
                 } else if (!matchListYes) {
                     return false;
                 }

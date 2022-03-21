@@ -9,15 +9,23 @@
 
 * Improved rendering quality of the Mini-map when it's small (#1431)
 * Fixed automatic tool switching after deleting layers
+* Fixed rendering of arrows for object references in class members (#3306)
+* Fixed image layer repeat settings not copied to duplicates (#3307)
 * Fixed map bounding rectangle for infinite isometric maps
 * Fixed tile selection to not get removed when deleting (#3281)
 * Fixed custom types not being usable without opening a project (#3295)
+* Fixed parallax layer positions for other maps in a world
+* Fixed crash when rendering invalid polygon objects
+* Fixed sticky Bucket Fill preview when hovering same tile
+* Hide "Move Objects to Layer" menu when there's only one object layer
 * Scripting: Avoid possible crash due to garbage collection (#3290)
 * Scripting: Fixed missing null check in Tileset.loadFromImage and Tile.setImage
 * Scripting: Initialize tile layer size also when added as part of a group layer (#3291)
+* AutoMapping: Applying rules without "inputnot" layers is now much faster
 * AutoMapping: Fixed compatibility with "RegionsInput" / "RegionsOutput" layers
 * terraingenerator: Fixed crash when source terrain doesn't have an image (#3299)
 * macOS: Fixed main window expanding with many open files (#1047)
+* JSON plugin: Wrap arrays at the map width or chunk width
 * Qt 6: Fixed captured or erased area when dragging backwards
 
 ### Tiled 1.8.2 (18 February 2022)

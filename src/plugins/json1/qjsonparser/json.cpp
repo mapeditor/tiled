@@ -45,7 +45,7 @@
   Creates a JsonWriter.
  */
 JsonWriter::JsonWriter()
-    : m_autoFormatting(false), m_autoFormattingIndent(4, QLatin1Char(' '))
+    : m_autoFormattingIndent(4, QLatin1Char(' '))
 {
 }
 
@@ -59,10 +59,10 @@ JsonWriter::~JsonWriter()
 /*!
   Enables auto formatting if \a enable is \c true, otherwise
   disables it.
- 
+
   When auto formatting is enabled, the writer automatically inserts
   spaces and new lines to make the output more human readable.
- 
+
   The default value is \c false.
  */
 void JsonWriter::setAutoFormatting(bool enable)
@@ -106,6 +106,14 @@ int JsonWriter::autoFormattingIndent() const
     return m_autoFormattingIndent.count(QLatin1Char(' ')) - m_autoFormattingIndent.count(QLatin1Char('\t'));
 }
 
+/*!
+  Will insert a newline while writing out arrays after every \a count elements.
+ */
+void JsonWriter::setAutoFormattingWrapArrayCount(int count)
+{
+    m_autoFormattingWrapArrayCount = count;
+}
+
 /*! \internal
   Inserts escape character \ for characters in string as described in JSON specification.
  */
@@ -146,19 +154,26 @@ static QString escape(const QVariant &variant)
 void JsonWriter::stringify(const QVariant &variant, int depth)
 {
     if (variant.type() == QVariant::List || variant.type() == QVariant::StringList) {
+        const QString indent = m_autoFormattingIndent.repeated(depth);
         m_result += QLatin1Char('[');
         QVariantList list = variant.toList();
         for (int i = 0; i < list.count(); i++) {
             if (i != 0) {
                 m_result += QLatin1Char(',');
-                if (m_autoFormatting)
-                    m_result += QLatin1Char(' ');
+                if (m_autoFormatting) {
+                    if (m_autoFormattingWrapArrayCount && i % m_autoFormattingWrapArrayCount == 0) {
+                        m_result += QLatin1Char('\n');
+                        m_result += indent;
+                    } else {
+                        m_result += QLatin1Char(' ');
+                    }
+                }
             }
             stringify(list[i], depth+1);
         }
         m_result += QLatin1Char(']');
     } else if (variant.type() == QVariant::Map) {
-        QString indent = m_autoFormattingIndent.repeated(depth);
+        const QString indent = m_autoFormattingIndent.repeated(depth);
         QVariantMap map = variant.toMap();
         if (m_autoFormatting && depth != 0) {
             m_result += QLatin1Char('\n');
@@ -249,7 +264,7 @@ void JsonWriter::stringify(const QVariant &variant, int depth)
   \o QVariant::Invalid
   \o JSON null
   \row
-  \o QVariant::ULongLong, QVariant::LongLong, QVariant::Int, QVariant::UInt, 
+  \o QVariant::ULongLong, QVariant::LongLong, QVariant::Int, QVariant::UInt,
   \o JSON number
   \row
   \o QVariant::Char

@@ -24,7 +24,6 @@
 #include "changetileanimation.h"
 #include "changetileimagesource.h"
 #include "changetileobjectgroup.h"
-#include "changetileprobability.h"
 #include "editablemanager.h"
 #include "editableobjectgroup.h"
 #include "editabletileset.h"

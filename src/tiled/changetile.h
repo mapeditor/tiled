@@ -1,6 +1,6 @@
 /*
  * changetile.h
- * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2015-2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,7 +20,9 @@
 
 #pragma once
 
-#include <QUndoCommand>
+#include "changevalue.h"
+#include "undocommands.h"
+
 #include <QVector>
 
 namespace Tiled {
@@ -29,7 +31,7 @@ class Tile;
 
 class TilesetDocument;
 
-class ChangeTileType : public QUndoCommand
+class ChangeTileType : public ChangeValue<Tile, QString>
 {
 public:
     /**
@@ -40,15 +42,31 @@ public:
                    const QString &type,
                    QUndoCommand *parent = nullptr);
 
-    void undo() override { swap(); }
-    void redo() override { swap(); }
+    int id() const override { return Cmd_ChangeTileType; }
 
-private:
-    void swap();
+protected:
+    QString getValue(const Tile *tile) const override;
+    void setValue(Tile *tile, const QString &type) const override;
+};
 
-    TilesetDocument *mTilesetDocument;
-    const QList<Tile*> mTiles;
-    QVector<QString> mTypes;
+class ChangeTileProbability : public ChangeValue<Tile, qreal>
+{
+public:
+    ChangeTileProbability(TilesetDocument *tilesetDocument,
+                          const QList<Tile*> &tiles,
+                          qreal probability,
+                          QUndoCommand *parent = nullptr);
+
+    ChangeTileProbability(TilesetDocument *tilesetDocument,
+                          const QList<Tile*> &tiles,
+                          const QVector<qreal> &probabilities,
+                          QUndoCommand *parent = nullptr);
+
+    int id() const override { return Cmd_ChangeTileProbability; }
+
+protected:
+    qreal getValue(const Tile *tile) const override;
+    void setValue(Tile *tile, const qreal &probability) const override;
 };
 
 } // namespace Tiled

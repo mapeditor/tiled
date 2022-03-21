@@ -25,7 +25,6 @@
 #include "changetile.h"
 #include "changetileanimation.h"
 #include "changetileobjectgroup.h"
-#include "changetileprobability.h"
 #include "changetilewangid.h"
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
@@ -156,7 +155,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
     // Adjust tile meta data
     QMap<QString, QList<Tile*>> tilesChangingTypeByType;
     QList<Tile*> tilesChangingProbability;
-    QList<qreal> tileProbabilities;
+    QVector<qreal> tileProbabilities;
     QSet<Tile*> tilesToReset;
 
     auto adjustAnimationFrames = [&](const QVector<Frame> &frames) -> QVector<Frame> {

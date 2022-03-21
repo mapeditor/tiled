@@ -140,8 +140,8 @@ void MapScene::setParallaxEnabled(bool enabled)
  */
 QRectF MapScene::mapBoundingRect() const
 {
-    if (auto mapItem = mMapItems.value(mMapDocument))
-        return mapItem->boundingRect();
+    if (auto item = mapItem(mMapDocument))
+        return item->boundingRect();
     return QRectF();
 }
 
@@ -231,8 +231,13 @@ QPointF MapScene::parallaxOffset(const Layer &layer) const
     if (!mParallaxEnabled)
         return {};
 
+    Map *map = layer.map();
+
+    QPointF viewCenter = mViewRect.center() - map->parallaxOrigin();
+    if (const MapItem *mapItem = mMapItems.value(map))
+        viewCenter -= mapItem->pos();
+
     const QPointF parallaxFactor = layer.effectiveParallaxFactor();
-    const QPointF viewCenter = mViewRect.center() - mapDocument()->map()->parallaxOrigin();
     return QPointF((1.0 - parallaxFactor.x()) * viewCenter.x(),
                    (1.0 - parallaxFactor.y()) * viewCenter.y());
 }
@@ -242,7 +247,7 @@ QPointF MapScene::parallaxOffset(const Layer &layer) const
  */
 void MapScene::refreshScene()
 {
-    QHash<MapDocument*, MapItem*> mapItems;
+    QHash<Map*, MapItem*> mapItems;
 
     if (!mMapDocument) {
         mMapItems.swap(mapItems);
@@ -276,16 +281,19 @@ void MapScene::refreshScene()
                 auto mapItem = takeOrCreateMapItem(mapDocument, displayMode);
                 mapItem->setPos(mapEntry.rect.topLeft() - currentMapPosition);
                 mapItem->setVisible(mWorldsEnabled || mapDocument == mMapDocument);
-                mapItems.insert(mapDocument.data(), mapItem);
+                mapItems.insert(mapDocument->map(), mapItem);
             }
         }
     } else {
         auto mapItem = takeOrCreateMapItem(mMapDocument->sharedFromThis(), MapItem::Editable);
-        mapItems.insert(mMapDocument, mapItem);
+        mapItems.insert(mMapDocument->map(), mapItem);
     }
 
     mMapItems.swap(mapItems);
     qDeleteAll(mapItems);       // delete all map items that didn't get reused
+
+    for (MapItem *mapItem : qAsConst(mMapItems))
+        mapItem->updateLayerPositions();
 
     updateBackgroundColor();
     updateSceneRect();
@@ -344,14 +352,13 @@ void MapScene::setWorldsEnabled(bool enabled)
 MapItem *MapScene::takeOrCreateMapItem(const MapDocumentPtr &mapDocument, MapItem::DisplayMode displayMode)
 {
     // Try to reuse an existing map item
-    auto mapItem = mMapItems.take(mapDocument.data());
+    auto mapItem = mMapItems.take(mapDocument->map());
     if (!mapItem) {
         mapItem = new MapItem(mapDocument, displayMode);
         mapItem->setShowTileCollisionShapes(mShowTileCollisionShapes);
         connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
         connect(this, &MapScene::parallaxParametersChanged, mapItem, &MapItem::updateLayerPositions);
         addItem(mapItem);
-        mapItem->updateLayerPositions();
     } else {
         mapItem->setDisplayMode(displayMode);
     }

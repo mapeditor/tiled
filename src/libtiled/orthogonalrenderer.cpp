@@ -425,8 +425,11 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             break;
         }
 
+        case MapObject::Polygon:
         case MapObject::Polyline: {
-            QPolygonF screenPolygon = pixelToScreenCoords(object->polygon());
+            const QPolygonF screenPolygon = pixelToScreenCoords(object->polygon());
+            const QPointF pointPos = screenPolygon.isEmpty() ? QPointF()
+                                                             : screenPolygon.first();
 
             QPen thickShadowPen(shadowPen);
             QPen thickLinePen(linePen);
@@ -434,36 +437,21 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             thickLinePen.setWidthF(thickLinePen.widthF() * 4);
 
             painter->setPen(shadowPen);
-            painter->drawPolyline(screenPolygon.translated(shadowOffset));
+            if (shape == MapObject::Polygon)
+                painter->drawPolygon(screenPolygon.translated(shadowOffset));
+            else
+                painter->drawPolyline(screenPolygon.translated(shadowOffset));
             painter->setPen(thickShadowPen);
-            painter->drawPoint(screenPolygon.first() + shadowOffset);
+            painter->drawPoint(pointPos + shadowOffset);
 
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
-            painter->drawPolyline(screenPolygon);
+            if (shape == MapObject::Polygon)
+                painter->drawPolygon(screenPolygon);
+            else
+                painter->drawPolyline(screenPolygon);
             painter->setPen(thickLinePen);
-            painter->drawPoint(screenPolygon.first());
-            break;
-        }
-
-        case MapObject::Polygon: {
-            QPolygonF screenPolygon = pixelToScreenCoords(object->polygon());
-
-            QPen thickShadowPen(shadowPen);
-            QPen thickLinePen(linePen);
-            thickShadowPen.setWidthF(thickShadowPen.widthF() * 4);
-            thickLinePen.setWidthF(thickLinePen.widthF() * 4);
-
-            painter->setPen(shadowPen);
-            painter->drawPolygon(screenPolygon.translated(shadowOffset));
-            painter->setPen(thickShadowPen);
-            painter->drawPoint(screenPolygon.first() + shadowOffset);
-
-            painter->setPen(linePen);
-            painter->setBrush(fillBrush);
-            painter->drawPolygon(screenPolygon);
-            painter->setPen(thickLinePen);
-            painter->drawPoint(screenPolygon.first());
+            painter->drawPoint(pointPos);
             break;
         }
 

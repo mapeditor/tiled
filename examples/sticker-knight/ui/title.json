@@ -1,16 +1,18 @@
 { "backgroundcolor":"#3b97d3",
+ "compressionlevel":-1,
  "height":26,
+ "infinite":false,
  "layers":[
         {
          "draworder":"topdown",
-         "height":26,
-         "name":"background",
+         "id":1,
+         "name":"background-near",
          "objects":[
                 {
                  "gid":7,
                  "height":262.666666666667,
                  "id":11,
-                 "name":"",
+                 "name":"ground",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -33,13 +35,49 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":38,
          "x":0,
          "y":0
         }, 
         {
          "draworder":"topdown",
-         "height":26,
+         "id":6,
+         "name":"background-far",
+         "objects":[
+                {
+                 "gid":6,
+                 "height":600,
+                 "id":8,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":954,
+                 "x":-226,
+                 "y":768
+                }, 
+                {
+                 "gid":2147483654,
+                 "height":546,
+                 "id":35,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":826,
+                 "x":710,
+                 "y":782
+                }],
+         "opacity":0.57,
+         "parallaxx":0.7,
+         "parallaxy":0.7,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
          "name":"clouds",
          "objects":[
                 {
@@ -91,30 +129,6 @@
                  "y":136
                 }, 
                 {
-                 "gid":6,
-                 "height":600,
-                 "id":8,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":954,
-                 "x":-226,
-                 "y":768
-                }, 
-                {
-                 "gid":2147483654,
-                 "height":546,
-                 "id":35,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":826,
-                 "x":710,
-                 "y":782
-                }, 
-                {
                  "gid":2147483656,
                  "height":103.333333333333,
                  "id":36,
@@ -139,15 +153,16 @@
                  "y":353
                 }],
          "opacity":0.490000009536743,
+         "parallaxx":0.5,
+         "parallaxy":0.5,
          "type":"objectgroup",
          "visible":true,
-         "width":38,
          "x":0,
          "y":0
         }, 
         {
          "draworder":"topdown",
-         "height":38,
+         "id":3,
          "name":"title",
          "objects":[
                 {
@@ -163,15 +178,16 @@
                  "y":480
                 }],
          "opacity":1,
+         "parallaxx":1.2,
+         "parallaxy":1.2,
          "type":"objectgroup",
          "visible":true,
-         "width":25,
          "x":0,
          "y":0
         }, 
         {
          "draworder":"topdown",
-         "height":26,
+         "id":4,
          "name":"help",
          "objects":[
                 {
@@ -187,15 +203,16 @@
                  "y":739.425850721188
                 }],
          "opacity":1,
+         "parallaxx":1.05,
+         "parallaxy":1.05,
          "type":"objectgroup",
          "visible":false,
-         "width":38,
          "x":0,
          "y":0
         }, 
         {
          "draworder":"topdown",
-         "height":38,
+         "id":5,
          "name":"buttons",
          "objects":[
                 {
@@ -223,15 +240,20 @@
                  "y":761.206553703963
                 }],
          "opacity":1,
+         "parallaxx":1.1,
+         "parallaxy":1.1,
          "type":"objectgroup",
          "visible":true,
-         "width":26,
          "x":0,
          "y":0
         }],
- "nextobjectid":38,
+ "nextlayerid":8,
+ "nextobjectid":39,
  "orientation":"orthogonal",
+ "parallaxoriginx":608,
+ "parallaxoriginy":416,
  "renderorder":"right-down",
+ "tiledversion":"1.8.2",
  "tileheight":32,
  "tilesets":[
         {
@@ -242,40 +264,53 @@
          "spacing":0,
          "tilecount":7,
          "tileheight":832,
-         "tiles":
-            {
-             "0":
+         "tiles":[
                 {
-                 "image":"buttonHelp.png"
-                },
-             "1":
+                 "id":0,
+                 "image":"buttonHelp.png",
+                 "imageheight":64,
+                 "imagewidth":192
+                }, 
                 {
-                 "image":"buttonStart.png"
-                },
-             "2":
+                 "id":1,
+                 "image":"buttonStart.png",
+                 "imageheight":64,
+                 "imagewidth":192
+                }, 
                 {
-                 "image":"helpBackground.png"
-                },
-             "3":
+                 "id":2,
+                 "image":"helpBackground.png",
+                 "imageheight":416,
+                 "imagewidth":416
+                }, 
                 {
-                 "image":"title.png"
-                },
-             "5":
+                 "id":3,
+                 "image":"title.png",
+                 "imageheight":224,
+                 "imagewidth":448
+                }, 
                 {
-                 "image":"backgroundSet.png"
-                },
-             "6":
+                 "id":5,
+                 "image":"backgroundSet.png",
+                 "imageheight":832,
+                 "imagewidth":1232
+                }, 
                 {
-                 "image":"block.png"
-                },
-             "7":
+                 "id":6,
+                 "image":"block.png",
+                 "imageheight":64,
+                 "imagewidth":64
+                }, 
                 {
-                 "image":"cloud.png"
-                }
-            },
+                 "id":7,
+                 "image":"cloud.png",
+                 "imageheight":128,
+                 "imagewidth":384
+                }],
          "tilewidth":1232
         }],
  "tilewidth":32,
- "version":1,
+ "type":"map",
+ "version":"1.8",
  "width":38
 }

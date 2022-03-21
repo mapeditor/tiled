@@ -72,11 +72,11 @@ class MapEditor final : public Editor
 {
     Q_OBJECT
 
-    Q_PROPERTY(Tiled::TilesetDock *tilesetsView READ tilesetDock)
+    Q_PROPERTY(Tiled::TilesetDock *tilesetsView READ tilesetDock CONSTANT)
     Q_PROPERTY(Tiled::EditableMap *currentBrush READ currentBrush WRITE setCurrentBrush)
     Q_PROPERTY(Tiled::EditableWangSet *currentWangSet READ currentWangSet NOTIFY currentWangSetChanged)
     Q_PROPERTY(int currentWangColorIndex READ currentWangColorIndex NOTIFY currentWangColorIndexChanged)
-    Q_PROPERTY(Tiled::MapView *currentMapView READ currentMapView)
+    Q_PROPERTY(Tiled::MapView *currentMapView READ currentMapView CONSTANT)
 
 public:
     explicit MapEditor(QObject *parent = nullptr);

@@ -28,7 +28,6 @@
 #include "changeproperties.h"
 #include "changetile.h"
 #include "changetileimagesource.h"
-#include "changetileprobability.h"
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
 #include "compression.h"

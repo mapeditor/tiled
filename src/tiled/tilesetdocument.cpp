@@ -375,6 +375,7 @@ QList<Object *> TilesetDocument::currentObjects() const
 {
     if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
         QList<Object*> objects;
+        objects.reserve(mSelectedTiles.size());
         for (Tile *tile : mSelectedTiles)
             objects.append(tile);
         return objects;

@@ -103,6 +103,7 @@ bool JsonMapFormat::write(const Tiled::Map *map,
 
     JsonWriter writer;
     writer.setAutoFormatting(!options.testFlag(WriteMinimized));
+    writer.setAutoFormattingWrapArrayCount(map->infinite() ? map->chunkSize().width() : map->width());
 
     if (!writer.stringify(variant)) {
         // This can only happen due to coding error

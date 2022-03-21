@@ -108,6 +108,8 @@ void BucketFillTool::tilePositionChanged(QPoint tilePos)
 
             if (computeRegion)
                 mFillRegion = regionComputer.computePaintableFillRegion(tilePos);
+            else
+                mFillRegion = QRegion();
         } else {
             // If holding shift, the region is the selection bounds
             mFillRegion = mapDocument()->selectedArea();
