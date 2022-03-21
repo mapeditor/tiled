@@ -87,9 +87,7 @@ public:
 
 private:
     void changeEvent(const ChangeEvent &event);
-    void propertyAdded(Object *object, const QString &name);
     void propertyRemoved(Object *object, const QString &name);
-    void propertyChanged(Object *object, const QString &name);
     void propertiesChanged(Object *object);
     void selectedObjectsChanged();
     void aboutToBeSelectedObjectsChanged();
