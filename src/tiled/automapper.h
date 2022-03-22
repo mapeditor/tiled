@@ -21,6 +21,7 @@
 #pragma once
 
 #include "tilededitor_global.h"
+#include "tilelayer.h"
 #include "tileset.h"
 
 #include <QList>
@@ -54,7 +55,6 @@ struct InputConditions
     InputConditions(const QString &layerName) : layerName(layerName) {}
 
     QString layerName;
-    const TileLayer *layer = nullptr;   // reference to layer in target map
     QVector<InputLayer> listYes;        // "input"
     QVector<InputLayer> listNo;         // "inputnot"
 };
@@ -112,6 +112,35 @@ struct RuleMapSetup
     QSet<QString> mInputLayerNames;
 };
 
+struct RuleInputLayer
+{
+    const TileLayer *targetLayer = nullptr;   // reference to layer in target map
+    int posCount = 0;
+};
+
+struct InputLayerPos
+{
+    int x;                              // the position in the rule map
+    int y;
+    int anyCount = 0;                   // any of these cells
+    int noneCount = 0;                  // none of these cells
+};
+
+struct RuleInputSet
+{
+    std::vector<RuleInputLayer> layers;
+    std::vector<InputLayerPos> positions;
+    std::vector<Cell> cells;
+};
+
+struct Rule
+{
+    QRect inputBounds;
+    QRegion outputRegion;
+    QVector<RuleInputSet> inputSets;
+};
+
+
 /**
  * This class does all the work for the automapping feature.
  * basically it can do the following:
@@ -163,6 +192,8 @@ public:
          */
         int autoMappingRadius = 0;
     };
+
+    using GetCell = const Cell &(int x, int y, const TileLayer &tileLayer);
 
     /**
      * Constructs an AutoMapper.
@@ -250,6 +281,8 @@ private:
 
     void setupWorkMapLayers();
     void setupTilesets();
+    void compileRules();
+    bool compileInputSet(RuleInputSet &index, const InputSet &inputSet, const QRegion &inputRegion);
 
     /**
      * This copies all tiles from TileLayer \a srcLayer to TileLayer
@@ -294,9 +327,10 @@ private:
      * When an \a appliedRegion is provided, it is set to the region where
      * rule outputs have been applied.
      */
-    void applyRule(const RuleRegion &ruleRegion,
+    void applyRule(const Rule &rule,
                    const QRegion &applyRegion,
-                   QRegion *appliedRegion = nullptr);
+                   QRegion *appliedRegion,
+                   GetCell getCell);
 
     /**
      * Cleans up the data structures filled by setupTilesets(),
@@ -359,6 +393,12 @@ private:
     QVector<RuleRegion> mRuleRegions;
 
     /**
+     * Stores the rules found in the mRulesMap in an efficient structure
+     * for matching purposes.
+     */
+    std::vector<Rule> mRules;
+
+    /**
      * The name of the processed rules file, used in error reporting.
      */
     QString mRulesMapFileName;
@@ -376,6 +416,7 @@ private:
     QHash<QString, TileLayer*> mTouchedTileLayers;
     QHash<QString, ObjectGroup*> mTouchedObjectGroups;
 
+    const TileLayer mDummy; // used in case input layers are missing
     QString mError;
     QString mWarning;
 };

@@ -35,7 +35,6 @@
 #include "object.h"
 #include "objectgroup.h"
 #include "tile.h"
-#include "tilelayer.h"
 
 #include <QDebug>
 #include <QRandomGenerator>
@@ -47,6 +46,23 @@ using namespace Tiled;
 static int wrap(int value, int bound)
 {
     return (value % bound + bound) % bound;
+}
+
+static const Cell &getWrappedCell(int x, int y, const TileLayer &tileLayer)
+{
+    return tileLayer.cellAt(wrap(x, tileLayer.width()),
+                            wrap(y, tileLayer.height()));
+}
+
+static const Cell &getBoundCell(int x, int y, const TileLayer &tileLayer)
+{
+    return tileLayer.cellAt(qBound(0, x, tileLayer.width() - 1),
+                            qBound(0, y, tileLayer.height() - 1));
+}
+
+static const Cell &getCell(int x, int y, const TileLayer &tileLayer)
+{
+    return tileLayer.cellAt(x, y);
 }
 
 template<typename Type, typename Container, typename Pred, typename... Args>
@@ -366,8 +382,8 @@ bool AutoMapper::setupRuleList()
     // When no input regions have been defined at all, derive them from the
     // "input" and "inputnot" layers.
     if (!setup.mLayerRegions && !setup.mLayerInputRegions) {
-        for (const InputSet &inputIndex : qAsConst(mRuleMapSetup.mInputSets)) {
-            for (const InputConditions &conditions : inputIndex.layers) {
+        for (const InputSet &inputSet : qAsConst(mRuleMapSetup.mInputSets)) {
+            for (const InputConditions &conditions : inputSet.layers) {
                 for (const InputLayer &inputLayer : conditions.listNo)
                     regionInput |= inputLayer.tileLayer->region();
                 for (const InputLayer &inputLayer : conditions.listYes)
@@ -379,9 +395,9 @@ bool AutoMapper::setupRuleList()
     // When no output regions have been defined at all, derive them from the
     // "output" layers.
     if (!setup.mLayerRegions && !setup.mLayerOutputRegions) {
-        for (const OutputSet &ruleOutput : qAsConst(mRuleMapSetup.mOutputSets)) {
-            std::for_each(ruleOutput.layers.keyBegin(),
-                          ruleOutput.layers.keyEnd(),
+        for (const OutputSet &outputSet : qAsConst(mRuleMapSetup.mOutputSets)) {
+            std::for_each(outputSet.layers.keyBegin(),
+                          outputSet.layers.keyEnd(),
                           [&] (const Layer *layer) {
                 if (layer->isTileLayer())
                     regionOutput |= static_cast<const TileLayer*>(layer)->region();
@@ -420,6 +436,7 @@ void AutoMapper::prepareAutoMap()
 
     setupWorkMapLayers();
     setupTilesets();
+    compileRules();
 }
 
 /**
@@ -474,10 +491,6 @@ void AutoMapper::setupWorkMapLayers()
     for (const QString &name : qAsConst(mRuleMapSetup.mInputLayerNames))
         if (auto tileLayer = static_cast<TileLayer*>(mTargetMap->findLayer(name, Layer::TileLayerType)))
             mSetLayers.insert(name, tileLayer);
-
-    for (InputSet &inputIndex : mRuleMapSetup.mInputSets)
-        for (InputConditions &conditions : inputIndex.layers)
-            conditions.layer = mSetLayers.value(conditions.layerName);
 }
 
 /**
@@ -492,6 +505,134 @@ void AutoMapper::setupTilesets()
 
     for (const SharedTileset &tileset : qAsConst(mAddedTilesets))
         mTargetDocument->undoStack()->push(new AddTileset(mTargetDocument, tileset));
+}
+
+/**
+ * Fills \a cells with the list of all cells which can be found within all
+ * tile layers within the given region.
+ */
+static void collectCellsInRegion(const QVector<InputLayer> &list,
+                                 const QRegion &r,
+                                 QVarLengthArray<Cell, 8> &cells)
+{
+    for (const InputLayer &inputLayer : list) {
+        for (const QRect &rect : r) {
+            for (int x = rect.left(); x <= rect.right(); ++x) {
+                for (int y = rect.top(); y <= rect.bottom(); ++y) {
+                    const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
+                    if (!cells.contains(cell))
+                        cells.append(cell);
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Sets up a small data structure for each rule that is optimized for matching.
+ */
+void AutoMapper::compileRules()
+{
+    Q_ASSERT(mRules.empty());
+
+    mRules.reserve(mRuleRegions.size());
+
+    for (const RuleRegion &ruleRegion : qAsConst(mRuleRegions)) {
+        Rule rule;
+
+        for (const InputSet &inputSet : qAsConst(mRuleMapSetup.mInputSets)) {
+            RuleInputSet index;
+            if (compileInputSet(index, inputSet, ruleRegion.input))
+                rule.inputSets.append(std::move(index));
+        }
+
+        // Discard rules without any input sets, since they can't ever match
+        if (rule.inputSets.isEmpty())
+            continue;
+
+        rule.inputBounds = ruleRegion.input.boundingRect();
+        rule.outputRegion = ruleRegion.output;
+
+        mRules.push_back(std::move(rule));
+    }
+}
+
+/**
+ * Compiles one of a rule's input sets.
+ *
+ * Aborts and returns false, when it detects a missing input layer that
+ * prevents the input set from ever matching.
+ */
+bool AutoMapper::compileInputSet(RuleInputSet &index, const InputSet &inputSet, const QRegion &inputRegion)
+{
+    for (const InputConditions &conditions : inputSet.layers) {
+        QVarLengthArray<Cell, 8> inputCells;
+
+        RuleInputLayer layer;
+        layer.targetLayer = mSetLayers.value(conditions.layerName, &mDummy);
+
+        for (const QRect &rect : inputRegion) {
+            for (int x = rect.left(); x <= rect.right(); ++x) {
+                for (int y = rect.top(); y <= rect.bottom(); ++y) {
+                    InputLayerPos pos;
+
+                    bool emptyAllowed = false;
+
+                    for (const InputLayer &inputLayer : conditions.listYes) {
+                        const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
+                        if (!cell.isEmpty() || inputLayer.strictEmpty) {
+                            ++pos.anyCount;
+                            index.cells.push_back(cell);
+                            emptyAllowed |= cell.isEmpty();
+                        }
+                    }
+
+                    emptyAllowed |= pos.anyCount == 0;
+
+                    for (const InputLayer &inputLayer : conditions.listNo) {
+                        const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
+                        if (!cell.isEmpty() || inputLayer.strictEmpty) {
+                            ++pos.noneCount;
+                            index.cells.push_back(cell);
+                            emptyAllowed &= !cell.isEmpty();
+                        }
+                    }
+
+                    // If no "any" and no "none" tiles are defined at this location, the rule
+                    // will not accept any of the "any" tiles used elsewhere in this rule.
+                    if (pos.anyCount == 0 && conditions.listNo.isEmpty()) {
+                        if (inputCells.isEmpty())
+                            collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
+
+                        for (const Cell &cell : inputCells) {
+                            ++pos.noneCount;
+                            index.cells.push_back(cell);
+                        }
+
+                        emptyAllowed = false;
+                    }
+
+                    // When some "any" tiles have been defined, but they don't
+                    // include the empty tile, we will never match, when this
+                    // input layer is missing.
+                    if (!emptyAllowed && layer.targetLayer == &mDummy)
+                        return false;
+
+                    if (pos.anyCount > 0 || pos.noneCount > 0) {
+                        pos.x = x;
+                        pos.y = y;
+                        index.positions.push_back(pos);
+                        ++layer.posCount;
+                    }
+                }
+            }
+        }
+
+        if (layer.posCount > 0)
+            index.layers.push_back(layer);
+    }
+
+    return true;
 }
 
 void AutoMapper::autoMap(const QRegion &where, QRegion *appliedRegion)
@@ -546,165 +687,53 @@ void AutoMapper::autoMap(const QRegion &where, QRegion *appliedRegion)
         }
     }
 
-    for (const RuleRegion &ruleRegion : mRuleRegions) {
+    // Those two options are guaranteed to be false if the map is infinite,
+    // so no "invalid" width/height accessing here.
+    auto get = mOptions.wrapBorder ? &getWrappedCell :
+                                     mOptions.overflowBorder ? &getBoundCell
+                                                             : &getCell;
+
+    for (const Rule &rule : mRules) {
         // at the moment the parallel execution does not work yet
         // TODO: make multithreading available!
         // either by dividing the rules or the region to multiple threads
-        applyRule(ruleRegion, applyRegion, appliedRegion);
+        applyRule(rule, applyRegion, appliedRegion, get);
     }
 }
 
 /**
- * Fills \a cells with the list of all cells which can be found within all
- * tile layers within the given region.
+ * Checks whether the given \a inputSet matches at the given \a offset.
  */
-static void collectCellsInRegion(const QVector<InputLayer> &list,
-                                 const QRegion &r,
-                                 QVarLengthArray<Cell, 8> &cells)
+static bool matchInputIndex(const RuleInputSet &inputSet, QPoint offset, AutoMapper::GetCell getCell)
 {
-    for (const InputLayer &inputLayer : list) {
-        for (const QRect &rect : r) {
-            for (int x = rect.left(); x <= rect.right(); ++x) {
-                for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                    const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
-                    if (!cells.contains(cell))
-                        cells.append(cell);
+    qsizetype nextPos = 0;
+    qsizetype nextCell = 0;
+
+    for (const RuleInputLayer &layer : inputSet.layers) {
+        for (auto p = std::exchange(nextPos, nextPos + layer.posCount); p < nextPos; ++p) {
+            const InputLayerPos &pos = inputSet.positions[p];
+            const Cell &cell = getCell(pos.x + offset.x(), pos.y + offset.y(), *layer.targetLayer);
+
+            // Match may succeed if any of the "any" tiles are seen, or when
+            // there are no "any" tiles for this location.
+            bool anyMatch = !pos.anyCount;
+
+            for (auto c = std::exchange(nextCell, nextCell + pos.anyCount); c < nextCell; ++c) {
+                const Cell &desired = inputSet.cells[c];
+                if (desired.isEmpty() ? cell.isEmpty() : desired == cell) {
+                    anyMatch = true;
+                    break;
                 }
             }
-        }
-    }
-}
 
-/**
- * This function is one of the core functions for understanding the
- * automapping.
- * In this function a certain region (of the set layer) is compared to
- * several other layers (ruleSet and ruleNotSet).
- * This comparison will determine if a rule of automapping matches,
- * so if this rule is applied at this region given
- * by a QRegion and Offset given by a QPoint.
- *
- * This compares the tile layer setLayer to several others given
- * in the QList listYes (ruleSet) and OList listNo (ruleNotSet).
- * The tile layer setLayer is examined at QRegion ruleRegion + offset
- * The tile layers within listYes and listNo are examined at QRegion ruleRegion.
- *
- * Basically all matches between setLayer and a layer of listYes are considered
- * good, while all matches between setLayer and listNo are considered bad and
- * lead to canceling the comparison, returning false.
- *
- * The comparison is done for each position within the QRegion ruleRegion.
- * If all positions of the region are considered "good" return true.
- *
- * Now there are several cases to distinguish:
- *  - both listYes and listNo are empty:
- *      This should not happen, because with that configuration, absolutely
- *      no condition is given.
- *      return false, assuming this is an errornous rule being applied
- *
- *  - both listYes and listNo are not empty:
- *      When comparing a tile at a certain position of tile layer setLayer
- *      to all available tiles in listYes, there must be at least
- *      one layer, in which there is a match of tiles of setLayer and
- *      listYes to consider this position good.
- *      In listNo there must not be a match to consider this position
- *      good.
- *      If there are no tiles within all available tiles within all layers
- *      of one list, all tiles in setLayer are considered good,
- *      while inspecting this list.
- *      All available tiles are all tiles within the whole rule region in
- *      all tile layers of the list.
- *
- *  - either of both lists are not empty
- *      When comparing a certain position of tile layer setLayer
- *      to all Tiles at the corresponding position this can happen:
- *      A tile of setLayer matches a tile of a layer in the list. Then this
- *      is considered as good, if the layer is from the listYes.
- *      Otherwise it is considered bad.
- *
- *      Exception, when having only the listYes:
- *      if at the examined position there are no tiles within all Layers
- *      of the listYes, all tiles except all used tiles within
- *      the layers of that list are considered good.
- *
- *      This exception was added to have a better functionality
- *      (need of less layers.)
- *      It was not added to the case, when having only listNo layers to
- *      avoid total symmetry between those lists.
- *      It can be turned off by setting the StrictEmpty property on the input
- *      layer.
- *
- * If all positions are considered good, return true.
- * return false otherwise.
- *
- * @return bool, if the tile layer matches the given list of layers.
- */
-static bool layerMatchesConditions(const TileLayer &setLayer,
-                                   const InputConditions &conditions,
-                                   const QRegion &ruleRegion,
-                                   const QPoint offset,
-                                   const AutoMapper::Options &options)
-{
-    const auto &listYes = conditions.listYes;
-    const auto &listNo = conditions.listNo;
+            if (!anyMatch)
+                return false;
 
-    QVarLengthArray<Cell, 8> cells;
-
-    for (const QRect &rect : ruleRegion) {
-        for (int x = rect.left(); x <= rect.right(); ++x) {
-            for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                int xd = x + offset.x();
-                int yd = y + offset.y();
-
-                // Those two options are guaranteed to be false if the map is infinite,
-                // so no "invalid" width/height accessing here.
-                if (options.wrapBorder) {
-                    xd = wrap(xd, setLayer.width());
-                    yd = wrap(yd, setLayer.height());
-                } else if (options.overflowBorder) {
-                    xd = qBound(0, xd, setLayer.width() - 1);
-                    yd = qBound(0, yd, setLayer.height() - 1);
-                }
-
-                const Cell &setCell = setLayer.cellAt(xd, yd);
-
-                // First check listNo. If any tile matches there, we can
-                // immediately know there is no match.
-                for (const InputLayer &inputNotLayer : listNo) {
-                    const Cell &noCell = inputNotLayer.tileLayer->cellAt(x, y);
-                    if ((inputNotLayer.strictEmpty || !noCell.isEmpty()) && setCell == noCell)
-                        return false;
-                }
-
-                // ruleDefinedListYes will be set when there is a tile in at
-                // least one layer. In this case, only the given tiles in the
-                // different listYes layers are valid. Otherwise, consider all
-                // tiles not used elsewhere in the input as valid.
-                bool ruleDefinedListYes = false;
-                bool matchListYes = false;
-
-                for (const InputLayer &inputLayer : listYes) {
-                    const Cell &yesCell = inputLayer.tileLayer->cellAt(x, y);
-                    if (inputLayer.strictEmpty || !yesCell.isEmpty()) {
-                        ruleDefinedListYes = true;
-                        if (setCell == yesCell) {
-                            matchListYes = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!ruleDefinedListYes) {
-                    // if there were only layers in the listYes, check the exception
-                    if (listNo.isEmpty()) {
-                        if (cells.isEmpty())
-                            collectCellsInRegion(listYes, ruleRegion, cells);
-                        if (cells.contains(setCell))
-                            return false;
-                    }
-                } else if (!matchListYes) {
+            // Match fails as soon as any of the "none" tiles is seen
+            for (auto c = std::exchange(nextCell, nextCell + pos.noneCount); c < nextCell; ++c) {
+                const Cell &undesired = inputSet.cells[c];
+                if (undesired.isEmpty() ? cell.isEmpty() : undesired == cell)
                     return false;
-                }
             }
         }
     }
@@ -712,14 +741,18 @@ static bool layerMatchesConditions(const TileLayer &setLayer,
     return true;
 }
 
-void AutoMapper::applyRule(const RuleRegion &ruleRegion,
+static bool matchRule(const Rule &rule, QPoint offset, AutoMapper::GetCell getCell)
+{
+    return std::any_of(rule.inputSets.begin(),
+                       rule.inputSets.end(),
+                       [=] (const RuleInputSet &index) { return matchInputIndex(index, offset, getCell); });
+}
+
+void AutoMapper::applyRule(const Rule &rule,
                            const QRegion &applyRegion,
-                           QRegion *appliedRegion)
+                           QRegion *appliedRegion, GetCell getCell)
 {
     Q_ASSERT(!mRuleMapSetup.mOutputSets.empty());
-
-    const QRegion &ruleInputRegion = ruleRegion.input;
-    const QRegion &ruleOutputRegion = ruleRegion.output;
 
     // These regions store which parts or the map have already been altered by
     // exactly this rule. We store all the altered parts to make sure there are
@@ -731,22 +764,6 @@ void AutoMapper::applyRule(const RuleRegion &ruleRegion,
     QRandomGenerator *randomGenerator = QRandomGenerator::global();
 
     auto applyAt = [&] (int x, int y) {
-        const bool match = std::any_of(mRuleMapSetup.mInputSets.cbegin(),
-                                       mRuleMapSetup.mInputSets.cend(),
-                                       [&] (const InputSet &inputIndex) {
-
-            return std::all_of(inputIndex.layers.cbegin(),
-                               inputIndex.layers.cend(),
-                               [&] (const InputConditions &conditions) {
-
-                const TileLayer &setLayer = conditions.layer ? *conditions.layer : dummy;
-                return layerMatchesConditions(setLayer, conditions, ruleInputRegion, QPoint(x, y), mOptions);
-            });
-        });
-
-        if (!match)
-            return;
-
         // choose by chance which group of rule_layers should be used:
         const int r = randomGenerator->generate() % mRuleMapSetup.mOutputSets.size();
         const OutputSet &ruleOutput = mRuleMapSetup.mOutputSets.at(r);
@@ -775,7 +792,7 @@ void AutoMapper::applyRule(const RuleRegion &ruleRegion,
                     return false;
                 }
 
-                outputLayerRegion &= ruleOutputRegion;
+                outputLayerRegion &= rule.outputRegion;
                 outputLayerRegion.translate(x, y);
 
                 ruleRegionInLayer[layer] = outputLayerRegion;
@@ -794,13 +811,13 @@ void AutoMapper::applyRule(const RuleRegion &ruleRegion,
             });
         }
 
-        copyMapRegion(ruleOutputRegion, QPoint(x, y), ruleOutput);
+        copyMapRegion(rule.outputRegion, QPoint(x, y), ruleOutput);
 
         if (appliedRegion)
-            *appliedRegion |= ruleOutputRegion.translated(x, y);
+            *appliedRegion |= rule.outputRegion.translated(x, y);
     };
 
-    const QRect inputBounds = ruleInputRegion.boundingRect();
+    const QRect inputBounds = rule.inputBounds;
 
     // This is really the rule size - 1, since when applying the rule we will
     // keep at least one tile overlap with the apply region.
@@ -829,7 +846,8 @@ void AutoMapper::applyRule(const RuleRegion &ruleRegion,
     for (const QRect &rect : ruleApplyRegion) {
         for (int y = rect.top(); y <= rect.bottom(); ++y)
             for (int x = rect.left(); x <= rect.right(); ++x)
-                applyAt(x, y);
+                if (matchRule(rule, QPoint(x, y), getCell))
+                    applyAt(x, y);
     }
 }
 
@@ -961,6 +979,7 @@ void AutoMapper::finalizeAutoMap()
 {
     cleanTilesets();
     cleanEmptyLayers();
+    mRules.clear();
 }
 
 void AutoMapper::cleanTilesets()
