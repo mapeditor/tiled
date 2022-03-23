@@ -174,6 +174,7 @@ jobs:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       QT_TOOLCHAIN: win64_mingw
       MINGW_VERSION: 9.0.0
+      MINGW_PATH: "/c/Qt/Tools/mingw1120_64/bin"
       OPENSSL_VERSION: 1.1.1
 
     defaults:
@@ -187,7 +188,7 @@ jobs:
     - name: Install Qt
       run: |
         echo "QT_PATH=$(./dist/install-qt.sh --version ${QT_VERSION} --toolchain ${QT_TOOLCHAIN} qtbase qtdeclarative qtsvg qtimageformats qttools qttranslations)" >> $GITHUB_ENV
-        echo "MINGW_PATH=$(./dist/install-qt.sh --version ${MINGW_VERSION} --toolchain ${QT_TOOLCHAIN} mingw90)" >> $GITHUB_ENV
+        ./dist/install-qt.sh --version ${MINGW_VERSION} --toolchain ${QT_TOOLCHAIN} mingw90
         echo "OPENSSL_PATH=$(./dist/install-qt.sh --version ${OPENSSL_VERSION} openssl --arch x64)" >> $GITHUB_ENV
 
     - name: Install Qbs
