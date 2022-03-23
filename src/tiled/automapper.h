@@ -32,6 +32,7 @@
 #include <QVector>
 
 #include <memory>
+#include <type_traits>
 #include <vector>
 
 namespace Tiled {
@@ -201,7 +202,7 @@ public:
         int autoMappingRadius = 0;
     };
 
-    using GetCell = const Cell &(int x, int y, const TileLayer &tileLayer);
+    using GetCell = std::add_pointer_t<const Cell &(int x, int y, const TileLayer &tileLayer)>;
 
     /**
      * Constructs an AutoMapper.

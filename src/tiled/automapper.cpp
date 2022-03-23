@@ -707,9 +707,9 @@ void AutoMapper::autoMap(const QRegion &where, QRegion *appliedRegion)
 
     // Those two options are guaranteed to be false if the map is infinite,
     // so no "invalid" width/height accessing here.
-    auto get = mOptions.wrapBorder ? &getWrappedCell :
-                                     mOptions.overflowBorder ? &getBoundCell
-                                                             : &getCell;
+    GetCell get = mOptions.wrapBorder ? &getWrappedCell :
+                                        mOptions.overflowBorder ? &getBoundCell
+                                                                : &getCell;
 
     ApplyContext context;
     context.appliedRegion = appliedRegion;
@@ -722,11 +722,41 @@ void AutoMapper::autoMap(const QRegion &where, QRegion *appliedRegion)
             context.appliedRegions.clear();
         }
     } else {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         auto result = QtConcurrent::blockingMapped(mRules, [&] (const Rule &rule) {
             QVector<QPoint> positions;
             matchRule(rule, applyRegion, get, [&] (QPoint pos) { positions.append(pos); });
             return positions;
         });
+#else
+        struct MatchRule
+        {
+            MatchRule(const AutoMapper &autoMapper,
+                      const QRegion &applyRegion,
+                      GetCell getCell)
+                : autoMapper(autoMapper)
+                , applyRegion(applyRegion)
+                , getCell(getCell)
+            {}
+
+            using result_type = QVector<QPoint>;
+
+            QVector<QPoint> operator()(const Rule &rule)
+            {
+                QVector<QPoint> result;
+                autoMapper.matchRule(rule, applyRegion, getCell,
+                                     [&] (QPoint pos) { result.append(pos); });
+                return result;
+            }
+
+            const AutoMapper &autoMapper;
+            const QRegion &applyRegion;
+            const GetCell getCell;
+        };
+
+        const auto result = QtConcurrent::mapped(mRules,
+                                                 MatchRule(*this, applyRegion, get)).results();
+#endif
 
         for (size_t i = 0; i < mRules.size(); ++i) {
             for (const QPoint pos : result[i])
