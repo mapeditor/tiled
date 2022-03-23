@@ -85,6 +85,7 @@
             <File Source="$(var.InstallRoot)\tmxrasterizer.exe" />
             <File Source="$(var.InstallRoot)\tmxviewer.exe" />
             <File Source="$(var.RootDir)\dist\win\qt.conf" />
+            <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Concurrent.dll"/>
             <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Core.dll"/>
             <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Gui.dll"/>
             <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Network.dll"/>

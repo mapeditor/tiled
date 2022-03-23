@@ -140,6 +140,8 @@ struct Rule
     QVector<RuleInputSet> inputSets;
 };
 
+struct ApplyContext;
+
 
 /**
  * This class does all the work for the automapping feature.
@@ -157,7 +159,8 @@ public:
     struct Options
     {
         /**
-         * Determines if all tiles in all touched layers should be deleted first.
+         * Determines whether all tiles in all touched layers should be deleted
+         * first.
          */
         bool deleteTiles = false;
 
@@ -180,9 +183,14 @@ public:
         bool wrapBorder = false;
 
         /**
-         * Determines if a rule is allowed to overlap itself.
+         * Determines whether a rule is allowed to overlap itself.
          */
         bool noOverlappingRules = false;
+
+        /**
+         * Determines whether the rules on the map need to be matched in order.
+         */
+        bool matchInOrder = false;
 
         /**
          * This variable determines, how many overlapping tiles should be used.
@@ -233,6 +241,9 @@ public:
 
     /**
      * Here is done all the automapping.
+     *
+     * When an \a appliedRegion is provided, it is set to the region where
+     * rule outputs have been applied.
      */
     void autoMap(const QRegion &where, QRegion *appliedRegion);
 
@@ -319,18 +330,23 @@ private:
                        const OutputSet &ruleOutput);
 
     /**
-     * This goes through all the positions in \a applyRegion and checks if the
-     * rule given by \a ruleRegion matches there.
+     * This goes through all the positions in \a matchRegion and checks if the
+     * \a rule matches there.
      *
-     * If there is a match, all output layers are copied to mTargetMap.
-     *
-     * When an \a appliedRegion is provided, it is set to the region where
-     * rule outputs have been applied.
+     * Calls \a matched for each matching location.
      */
-    void applyRule(const Rule &rule,
-                   const QRegion &applyRegion,
-                   QRegion *appliedRegion,
-                   GetCell getCell);
+    void matchRule(const Rule &rule,
+                   const QRegion &matchRegion,
+                   GetCell getCell,
+                   const std::function<void (QPoint)> &matched) const;
+
+    /**
+     * Applies the given \a rule at each of the given \a positions.
+     *
+     * Might skip some of the positions to satisfy the NoOverlappingRules
+     * option.
+     */
+    void applyRule(const Rule &rule, QPoint pos, ApplyContext &context);
 
     /**
      * Cleans up the data structures filled by setupTilesets(),

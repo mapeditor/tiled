@@ -38,10 +38,11 @@
 
 #include <QDebug>
 #include <QRandomGenerator>
+#include <QtConcurrent>
 
 #include <algorithm>
 
-using namespace Tiled;
+namespace Tiled {
 
 static int wrap(int value, int bound)
 {
@@ -74,6 +75,18 @@ static inline Type &find_or_emplace(Container &container, Pred pred, Args&&... a
 
     return container.emplace_back(std::forward<Args>(args)...);
 }
+
+struct ApplyContext
+{
+    // These regions store which parts or the map have already been altered by
+    // exactly this rule. We store all the altered parts to make sure there are
+    // no overlaps of the same rule applied to (neighbouring) places.
+    QHash<const Layer*, QRegion> appliedRegions;
+
+    QRandomGenerator *randomGenerator = QRandomGenerator::global();
+
+    QRegion *appliedRegion = nullptr;
+};
 
 /*
  * About the order of the methods in this file.
@@ -152,6 +165,11 @@ bool AutoMapper::setupRuleMapProperties()
         } else if (name.compare(QLatin1String("NoOverlappingRules"), Qt::CaseInsensitive) == 0) {
             if (value.canConvert(QMetaType::Bool)) {
                 mOptions.noOverlappingRules = value.toBool();
+                continue;
+            }
+        } else if (name.compare(QLatin1String("MatchInOrder"), Qt::CaseInsensitive) == 0) {
+            if (value.canConvert(QMetaType::Bool)) {
+                mOptions.matchInOrder = value.toBool();
                 continue;
             }
         }
@@ -693,11 +711,28 @@ void AutoMapper::autoMap(const QRegion &where, QRegion *appliedRegion)
                                      mOptions.overflowBorder ? &getBoundCell
                                                              : &getCell;
 
-    for (const Rule &rule : mRules) {
-        // at the moment the parallel execution does not work yet
-        // TODO: make multithreading available!
-        // either by dividing the rules or the region to multiple threads
-        applyRule(rule, applyRegion, appliedRegion, get);
+    ApplyContext context;
+    context.appliedRegion = appliedRegion;
+
+    if (mOptions.matchInOrder) {
+        for (const Rule &rule : mRules) {
+            matchRule(rule, applyRegion, get, [&] (QPoint pos) {
+                applyRule(rule, pos, context);
+            });
+            context.appliedRegions.clear();
+        }
+    } else {
+        auto result = QtConcurrent::blockingMapped(mRules, [&] (const Rule &rule) {
+            QVector<QPoint> positions;
+            matchRule(rule, applyRegion, get, [&] (QPoint pos) { positions.append(pos); });
+            return positions;
+        });
+
+        for (size_t i = 0; i < mRules.size(); ++i) {
+            for (const QPoint pos : result[i])
+                applyRule(mRules[i], pos, context);
+            context.appliedRegions.clear();
+        }
     }
 }
 
@@ -748,75 +783,11 @@ static bool matchRule(const Rule &rule, QPoint offset, AutoMapper::GetCell getCe
                        [=] (const RuleInputSet &index) { return matchInputIndex(index, offset, getCell); });
 }
 
-void AutoMapper::applyRule(const Rule &rule,
-                           const QRegion &applyRegion,
-                           QRegion *appliedRegion, GetCell getCell)
+void AutoMapper::matchRule(const Rule &rule,
+                           const QRegion &matchRegion,
+                           GetCell getCell,
+                           const std::function<void(QPoint pos)> &matched) const
 {
-    Q_ASSERT(!mRuleMapSetup.mOutputSets.empty());
-
-    // These regions store which parts or the map have already been altered by
-    // exactly this rule. We store all the altered parts to make sure there are
-    // no overlaps of the same rule applied to (neighbouring) places.
-    QHash<const Layer*, QRegion> appliedRegions;
-
-    const TileLayer dummy(QString(), 0, 0, mTargetMap->width(), mTargetMap->height());
-
-    QRandomGenerator *randomGenerator = QRandomGenerator::global();
-
-    auto applyAt = [&] (int x, int y) {
-        // choose by chance which group of rule_layers should be used:
-        const int r = randomGenerator->generate() % mRuleMapSetup.mOutputSets.size();
-        const OutputSet &ruleOutput = mRuleMapSetup.mOutputSets.at(r);
-
-        if (mOptions.noOverlappingRules) {
-            // check if there are no overlaps within this rule.
-            QHash<const Layer*, QRegion> ruleRegionInLayer;
-
-            const bool overlap = std::any_of(ruleOutput.layers.keyBegin(),
-                                             ruleOutput.layers.keyEnd(),
-                                             [&] (const Layer *layer) {
-                QRegion outputLayerRegion;
-
-                // TODO: Very slow to re-calculate the entire region for
-                // each rule output layer here, each time a rule has a match.
-                switch (layer->layerType()) {
-                case Layer::TileLayerType:
-                    outputLayerRegion = static_cast<const TileLayer*>(layer)->region();
-                    break;
-                case Layer::ObjectGroupType:
-                    outputLayerRegion = tileRegionOfObjectGroup(static_cast<const ObjectGroup*>(layer));
-                    break;
-                case Layer::ImageLayerType:
-                case Layer::GroupLayerType:
-                    Q_UNREACHABLE();
-                    return false;
-                }
-
-                outputLayerRegion &= rule.outputRegion;
-                outputLayerRegion.translate(x, y);
-
-                ruleRegionInLayer[layer] = outputLayerRegion;
-
-                return appliedRegions[layer].intersects(outputLayerRegion);
-            });
-
-            if (overlap)
-                return;
-
-            // Remember the newly applied region
-            std::for_each(ruleOutput.layers.keyBegin(),
-                          ruleOutput.layers.keyEnd(),
-                          [&] (const Layer *layer) {
-                appliedRegions[layer] |= ruleRegionInLayer[layer];
-            });
-        }
-
-        copyMapRegion(rule.outputRegion, QPoint(x, y), ruleOutput);
-
-        if (appliedRegion)
-            *appliedRegion |= rule.outputRegion.translated(x, y);
-    };
-
     const QRect inputBounds = rule.inputBounds;
 
     // This is really the rule size - 1, since when applying the rule we will
@@ -824,31 +795,88 @@ void AutoMapper::applyRule(const Rule &rule,
     const int ruleWidth = inputBounds.right() - inputBounds.left();
     const int ruleHeight = inputBounds.bottom() - inputBounds.top();
 
-    QRegion ruleApplyRegion;
+    QRegion ruleMatchRegion;
 
-    for (const QRect &rect : applyRegion) {
+    for (const QRect &rect : matchRegion) {
         // Expand each rect, making sure that there is at least one tile
         // overlap with the rule at all sides.
-        ruleApplyRegion |= rect.adjusted(-ruleWidth, -ruleHeight, 0, 0);
+        ruleMatchRegion |= rect.adjusted(-ruleWidth, -ruleHeight, 0, 0);
     }
 
     // When we're not matching a rule outside the map, we reduce the region in
     // in which it is applied accordingly.
     if (!mOptions.matchOutsideMap) {
-        ruleApplyRegion &= QRect(0, 0,
+        ruleMatchRegion &= QRect(0, 0,
                                  mTargetMap->width() - ruleWidth,
                                  mTargetMap->height() - ruleHeight);
     }
 
     // Translate the region to adjust to the position of the rule.
-    ruleApplyRegion.translate(-inputBounds.topLeft());
+    ruleMatchRegion.translate(-inputBounds.topLeft());
 
-    for (const QRect &rect : ruleApplyRegion) {
+    for (const QRect &rect : ruleMatchRegion) {
         for (int y = rect.top(); y <= rect.bottom(); ++y)
             for (int x = rect.left(); x <= rect.right(); ++x)
-                if (matchRule(rule, QPoint(x, y), getCell))
-                    applyAt(x, y);
+                if (Tiled::matchRule(rule, QPoint(x, y), getCell))
+                    matched(QPoint(x, y));
     }
+}
+
+void AutoMapper::applyRule(const Rule &rule, QPoint pos, ApplyContext &context)
+{
+    Q_ASSERT(!mRuleMapSetup.mOutputSets.empty());
+
+    // choose by chance which group of rule_layers should be used:
+    const int r = context.randomGenerator->generate() % mRuleMapSetup.mOutputSets.size();
+    const OutputSet &ruleOutput = mRuleMapSetup.mOutputSets.at(r);
+
+    if (mOptions.noOverlappingRules) {
+        // check if there are no overlaps within this rule.
+        QHash<const Layer*, QRegion> ruleRegionInLayer;
+
+        const bool overlap = std::any_of(ruleOutput.layers.keyBegin(),
+                                         ruleOutput.layers.keyEnd(),
+                                         [&] (const Layer *layer) {
+            QRegion outputLayerRegion;
+
+            // TODO: Very slow to re-calculate the entire region for
+            // each rule output layer here, each time a rule has a match.
+            switch (layer->layerType()) {
+            case Layer::TileLayerType:
+                outputLayerRegion = static_cast<const TileLayer*>(layer)->region();
+                break;
+            case Layer::ObjectGroupType:
+                outputLayerRegion = tileRegionOfObjectGroup(static_cast<const ObjectGroup*>(layer));
+                break;
+            case Layer::ImageLayerType:
+            case Layer::GroupLayerType:
+                Q_UNREACHABLE();
+                return false;
+            }
+
+            outputLayerRegion &= rule.outputRegion;
+            outputLayerRegion.translate(pos.x(), pos.y());
+
+            ruleRegionInLayer[layer] = outputLayerRegion;
+
+            return context.appliedRegions[layer].intersects(outputLayerRegion);
+        });
+
+        if (overlap)
+            return;
+
+        // Remember the newly applied region
+        std::for_each(ruleOutput.layers.keyBegin(),
+                      ruleOutput.layers.keyEnd(),
+                      [&] (const Layer *layer) {
+            context.appliedRegions[layer] |= ruleRegionInLayer[layer];
+        });
+    }
+
+    copyMapRegion(rule.outputRegion, pos, ruleOutput);
+
+    if (context.appliedRegion)
+        *context.appliedRegion |= rule.outputRegion.translated(pos.x(), pos.y());
 }
 
 void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
@@ -1023,5 +1051,7 @@ void AutoMapper::addWarning(const QString &message, std::function<void ()> callb
     mWarning += message;
     mWarning += QLatin1Char('\n');
 }
+
+} // namespace Tiled
 
 #include "moc_automapper.cpp"
