@@ -18,6 +18,7 @@
 * AutoMapping: Applying rules without "inputnot" layers is now much faster
 * AutoMapping: Optimized calculation of each rule's input/output region
 * AutoMapping: Fixed compatibility with "RegionsInput" / "RegionsOutput" layers
+* AutoMapping: Fixed ability to AutoMap using project rules in unsaved maps
 * CSV plugin: Improved error message and replace reserved characters (#3309)
 * terraingenerator: Fixed crash when source terrain doesn't have an image (#3299)
 * macOS: Fixed main window expanding with many open files (#1047)
