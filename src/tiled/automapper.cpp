@@ -583,6 +583,8 @@ void AutoMapper::compileRules()
  */
 bool AutoMapper::compileInputSet(RuleInputSet &index, const InputSet &inputSet, const QRegion &inputRegion)
 {
+    const QPoint topLeft = inputRegion.boundingRect().topLeft();
+
     for (const InputConditions &conditions : inputSet.layers) {
         QVarLengthArray<Cell, 8> inputCells;
 
@@ -637,8 +639,8 @@ bool AutoMapper::compileInputSet(RuleInputSet &index, const InputSet &inputSet, 
                         return false;
 
                     if (pos.anyCount > 0 || pos.noneCount > 0) {
-                        pos.x = x;
-                        pos.y = y;
+                        pos.x = x - topLeft.x();
+                        pos.y = y - topLeft.y();
                         index.positions.push_back(pos);
                         ++layer.posCount;
                     }
@@ -841,9 +843,6 @@ void AutoMapper::matchRule(const Rule &rule,
                                  mTargetMap->height() - ruleHeight);
     }
 
-    // Translate the region to adjust to the position of the rule.
-    ruleMatchRegion.translate(-inputBounds.topLeft());
-
     for (const QRect &rect : ruleMatchRegion) {
         for (int y = rect.top(); y <= rect.bottom(); ++y)
             for (int x = rect.left(); x <= rect.right(); ++x)
@@ -855,6 +854,9 @@ void AutoMapper::matchRule(const Rule &rule,
 void AutoMapper::applyRule(const Rule &rule, QPoint pos, ApplyContext &context)
 {
     Q_ASSERT(!mRuleMapSetup.mOutputSets.empty());
+
+    // Translate the position to adjust to the location of the rule.
+    pos -= rule.inputBounds.topLeft();
 
     // choose by chance which group of rule_layers should be used:
     const int r = context.randomGenerator->generate() % mRuleMapSetup.mOutputSets.size();
@@ -919,41 +921,32 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
         Layer *to = nullptr;
 
         switch (from->layerType()) {
-        case Layer::TileLayerType:
-            to = mTouchedTileLayers.value(targetName);
+        case Layer::TileLayerType: {
+            auto fromTileLayer = static_cast<const TileLayer*>(from);
+            auto toTileLayer = mTouchedTileLayers.value(targetName);
+            to = toTileLayer;
+            for (const QRect &rect : region) {
+                copyTileRegion(fromTileLayer, rect, toTileLayer,
+                               rect.x() + offset.x(), rect.y() + offset.y());
+            }
             break;
-        case Layer::ObjectGroupType:
-            to = mTouchedObjectGroups.value(targetName);
+        }
+        case Layer::ObjectGroupType: {
+            auto fromObjectGroup = static_cast<const ObjectGroup*>(from);
+            auto toObjectGroup = mTouchedObjectGroups.value(targetName);
+            to = toObjectGroup;
+            for (const QRect &rect : region) {
+                copyObjectRegion(fromObjectGroup, rect, toObjectGroup,
+                                 rect.x() + offset.x(), rect.y() + offset.y());
+            }
             break;
+        }
         case Layer::ImageLayerType:
         case Layer::GroupLayerType:
             Q_UNREACHABLE();
             break;
         }
         Q_ASSERT(to);
-
-        for (const QRect &rect : region) {
-            switch (from->layerType()) {
-            case Layer::TileLayerType: {
-                auto fromTileLayer = static_cast<const TileLayer*>(from);
-                auto toTileLayer = static_cast<TileLayer*>(to);
-                copyTileRegion(fromTileLayer, rect, toTileLayer,
-                               rect.x() + offset.x(), rect.y() + offset.y());
-                break;
-            }
-            case Layer::ObjectGroupType: {
-                auto fromObjectGroup = static_cast<const ObjectGroup*>(from);
-                auto toObjectGroup = static_cast<ObjectGroup*>(to);
-                copyObjectRegion(fromObjectGroup, rect, toObjectGroup,
-                                 rect.x() + offset.x(), rect.y() + offset.y());
-                break;
-            }
-            case Layer::ImageLayerType:
-            case Layer::GroupLayerType:
-                Q_UNREACHABLE();
-                break;
-            }
-        }
 
         // Copy any custom properties set on the output layer
         if (!from->properties().isEmpty()) {
@@ -978,8 +971,8 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, QRect rect,
     int endX = dstX + rect.width();
     int endY = dstY + rect.height();
 
-    int dwidth = dstLayer->width();
-    int dheight = dstLayer->height();
+    const int dwidth = dstLayer->width();
+    const int dheight = dstLayer->height();
 
     if (!mOptions.wrapBorder && !mTargetMap->infinite()) {
         startX = qMax(0, startX);
