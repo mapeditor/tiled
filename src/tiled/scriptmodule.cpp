@@ -111,6 +111,7 @@ QString ScriptModule::applicationDirPath() const
 static QStringList idsToNames(const QList<Id> &ids)
 {
     QStringList names;
+    names.reserve(ids.size());
     for (const Id &id : ids)
         names.append(QLatin1String(id.name()));
 
@@ -190,9 +191,11 @@ bool ScriptModule::setActiveAsset(EditableAsset *asset) const
 QList<QObject *> ScriptModule::openAssets() const
 {
     QList<QObject *> assets;
-    if (auto documentManager = DocumentManager::maybeInstance())
+    if (auto documentManager = DocumentManager::maybeInstance()) {
+        assets.reserve(documentManager->documents().size());
         for (const DocumentPtr &document : documentManager->documents())
             assets.append(document->editable());
+    }
     return assets;
 }
 

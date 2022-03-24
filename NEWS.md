@@ -10,6 +10,7 @@
 * Fixed parallax layer positions for other maps in a world
 * Fixed crash when rendering invalid polygon objects
 * Fixed sticky Bucket Fill preview when hovering same tile
+* Fixed automatically reloaded map becoming the active document
 * Hide "Move Objects to Layer" menu when there's only one object layer
 * Scripting: Avoid possible crash due to garbage collection (#3290)
 * Scripting: Fixed missing null check in Tileset.loadFromImage and Tile.setImage
