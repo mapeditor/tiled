@@ -313,6 +313,11 @@ indielib-crossplatform
    loading TMX maps through the `C++/TinyXML based
    tmx-parser <http://code.google.com/p/tmx-parser/>`__ by KonoM (BSD)
 
+Irrlicht
+~~~~~~~~
+
+-  `Irrlicht <https://irrlicht.sourceforge.io/>`__, a C++ realtime 3D engine, can load TMX files through a `3rd-party library <https://github.com/TheMrCerebro/irrTiled>`__ by TheMrCerebro (Zlib).
+
 LibGDX
 ~~~~~~
 
