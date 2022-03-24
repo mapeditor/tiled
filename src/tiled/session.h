@@ -164,13 +164,15 @@ public:
     template <typename T>
     void set(const char *key, const T &value) const
     {
+        const QLatin1String latin1Key(key);
+        const QString stringKey(latin1Key);
         const auto settingsValue = toSettingsValue(value);
-        if (settings->value(QLatin1String(key)) == settingsValue)
+        if (settings->value(stringKey) == settingsValue)
             return;
 
-        settings->setValue(QLatin1String(key), settingsValue);
+        settings->setValue(stringKey, settingsValue);
 
-        const auto it = Session::mChangedCallbacks.constFind(key);
+        const auto it = Session::mChangedCallbacks.constFind(latin1Key);
         if (it != Session::mChangedCallbacks.constEnd())
             for (const auto &cb : it.value())
                 cb();
@@ -209,7 +211,7 @@ private:
     QTimer mSyncSettingsTimer;
 
     static std::unique_ptr<Session> mCurrent;
-    static QHash<const char*, Callbacks> mChangedCallbacks;
+    static QHash<QLatin1String, Callbacks> mChangedCallbacks;
 };
 
 inline QString Session::fileName() const
@@ -259,7 +261,7 @@ void SessionOption<T>::set(const T &value)
 template<typename T>
 Session::CallbackIterator SessionOption<T>::onChange(const Session::ChangedCallback &callback)
 {
-    Session::Callbacks &callbacks = Session::mChangedCallbacks[mKey];
+    Session::Callbacks &callbacks = Session::mChangedCallbacks[QLatin1String(mKey)];
     callbacks.push_front(callback);
     return callbacks.begin();
 }
@@ -267,7 +269,7 @@ Session::CallbackIterator SessionOption<T>::onChange(const Session::ChangedCallb
 template<typename T>
 void SessionOption<T>::unregister(Session::CallbackIterator it)
 {
-    Session::Callbacks &callbacks = Session::mChangedCallbacks[mKey];
+    Session::Callbacks &callbacks = Session::mChangedCallbacks[QLatin1String(mKey)];
     callbacks.erase(it);
 }
 

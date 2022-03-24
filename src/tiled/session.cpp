@@ -42,6 +42,7 @@ void FileHelper::setFileName(const QString &fileName)
 QStringList FileHelper::relative(const QStringList &fileNames) const
 {
     QStringList result;
+    result.reserve(fileNames.size());
     for (const QString &fileName : fileNames)
         result.append(relative(fileName));
     return result;
@@ -50,12 +51,13 @@ QStringList FileHelper::relative(const QStringList &fileNames) const
 QStringList FileHelper::resolve(const QStringList &fileNames) const
 {
     QStringList result;
+    result.reserve(fileNames.size());
     for (const QString &fileName : fileNames)
         result.append(resolve(fileName));
     return result;
 }
 
-QHash<const char*, Session::Callbacks> Session::mChangedCallbacks;
+QHash<QLatin1String, Session::Callbacks> Session::mChangedCallbacks;
 std::unique_ptr<Session> Session::mCurrent;
 
 Session::Session(const QString &fileName)
