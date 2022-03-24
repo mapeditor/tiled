@@ -537,14 +537,19 @@ void DocumentManager::saveFile()
 }
 
 /**
- * Adds the new or opened \a document to the document manager.
+ * Adds the new or opened \a document to the document manager and makes sure
+ * it is the current document.
  */
 void DocumentManager::addDocument(const DocumentPtr &document)
 {
-    insertDocument(mDocuments.size(), document);
+    const int index = insertDocument(mDocuments.size(), document);
+    switchToDocument(index);
+
+    if (mBrokenLinksModel->hasBrokenLinks())
+        mBrokenLinksWidget->show();
 }
 
-void DocumentManager::insertDocument(int index, const DocumentPtr &document)
+int DocumentManager::insertDocument(int index, const DocumentPtr &document)
 {
     Q_ASSERT(document);
     Q_ASSERT(!mDocuments.contains(document));
@@ -590,12 +595,9 @@ void DocumentManager::insertDocument(int index, const DocumentPtr &document)
     if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(documentPtr))
         connect(tilesetDocument, &TilesetDocument::tilesetNameChanged, this, &DocumentManager::tilesetNameChanged);
 
-    switchToDocument(documentIndex);
-
-    if (mBrokenLinksModel->hasBrokenLinks())
-        mBrokenLinksWidget->show();
-
     emit documentOpened(documentPtr);
+
+    return documentIndex;
 }
 
 /**
@@ -937,7 +939,14 @@ bool DocumentManager::reloadDocumentAt(int index)
         static_cast<MapEditor*>(editor(Document::MapDocumentType))->saveDocumentState(mapDocument.data());
 
         // Replace old tab
-        insertDocument(index, newDocument); // also selects the new document
+        const bool isCurrent = index == mTabBar->currentIndex();
+        insertDocument(index, newDocument);
+        if (isCurrent) {
+            switchToDocument(index);
+
+            if (mBrokenLinksModel->hasBrokenLinks())
+                mBrokenLinksWidget->show();
+        }
         closeDocumentAt(index + 1);
 
         checkTilesetColumns(newDocument.data());

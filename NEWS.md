@@ -17,12 +17,16 @@
 * Fixed parallax layer positions for other maps in a world
 * Fixed crash when rendering invalid polygon objects
 * Fixed sticky Bucket Fill preview when hovering same tile
+* Fixed automatically reloaded map becoming the active document
 * Hide "Move Objects to Layer" menu when there's only one object layer
 * Scripting: Avoid possible crash due to garbage collection (#3290)
 * Scripting: Fixed missing null check in Tileset.loadFromImage and Tile.setImage
 * Scripting: Initialize tile layer size also when added as part of a group layer (#3291)
 * AutoMapping: Applying rules without "inputnot" layers is now much faster
+* AutoMapping: Optimized calculation of each rule's input/output region
 * AutoMapping: Fixed compatibility with "RegionsInput" / "RegionsOutput" layers
+* AutoMapping: Fixed ability to AutoMap using project rules in unsaved maps
+* CSV plugin: Improved error message and replace reserved characters (#3309)
 * terraingenerator: Fixed crash when source terrain doesn't have an image (#3299)
 * macOS: Fixed main window expanding with many open files (#1047)
 * JSON plugin: Wrap arrays at the map width or chunk width

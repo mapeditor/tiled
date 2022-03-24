@@ -57,7 +57,7 @@ void AutomappingManager::autoMap()
     QRegion region = mMapDocument->selectedArea();
 
     if (region.isEmpty()) {
-        Map *map = mMapDocument->map();
+        const Map *map = mMapDocument->map();
 
         if (map->infinite()) {
             LayerIterator iterator(map);
@@ -69,9 +69,7 @@ void AutomappingManager::autoMap()
             }
             region = bounds;
         } else {
-            int w = map->width();
-            int h = map->height();
-            region = QRect(0, 0, w, h);
+            region = QRect(0, 0, map->width(), map->height());
         }
     }
 
@@ -292,11 +290,13 @@ void AutomappingManager::refreshRulesFile(const QString &ruleFileOverride)
     mRulesFileOverride = !ruleFileOverride.isEmpty();
     QString rulesFile = ruleFileOverride;
 
-    if (rulesFile.isEmpty() && mMapDocument && !mMapDocument->fileName().isEmpty()) {
-        const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
-        rulesFile = mapPath + QLatin1String("/rules.txt");
+    if (rulesFile.isEmpty() && mMapDocument) {
+        if (!mMapDocument->fileName().isEmpty()) {
+            const QDir mapDir = QFileInfo(mMapDocument->fileName()).dir();
+            rulesFile = mapDir.filePath(QStringLiteral("rules.txt"));
+        }
 
-        if (!QFileInfo::exists(rulesFile)) {
+        if (rulesFile.isEmpty() || !QFileInfo::exists(rulesFile)) {
             auto &project = ProjectManager::instance()->project();
             if (!project.mAutomappingRulesFile.isEmpty())
                 rulesFile = project.mAutomappingRulesFile;
