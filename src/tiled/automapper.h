@@ -119,24 +119,28 @@ struct RuleInputLayer
     int posCount = 0;
 };
 
-struct InputLayerPos
+struct RuleInputLayerPos
 {
-    int x;                              // the position in the rule map
+    int x;                              // position relative to match location
     int y;
     int anyCount = 0;                   // any of these cells
     int noneCount = 0;                  // none of these cells
 };
 
+/**
+ * An efficient structure for matching purposes. Each data structure has a
+ * single container, which keeps things packed together in memory.
+ */
 struct RuleInputSet
 {
     std::vector<RuleInputLayer> layers;
-    std::vector<InputLayerPos> positions;
+    std::vector<RuleInputLayerPos> positions;
     std::vector<Cell> cells;
 };
 
 struct Rule
 {
-    QRect inputBounds;
+    QRegion inputRegion;
     QRegion outputRegion;
     QVector<RuleInputSet> inputSets;
 };
@@ -265,12 +269,6 @@ public:
     QString warningString() const { return mWarning; }
 
 private:
-    struct RuleRegion
-    {
-        QRegion input;
-        QRegion output;
-    };
-
     /**
      * Reads the map properties of the rulesmap.
      * @return returns true when anything is ok, false when errors occurred.
@@ -405,13 +403,8 @@ private:
     RuleMapSetup mRuleMapSetup;
 
     /**
-     * Stores the input and output region for each rule in mRulesMap.
-     */
-    QVector<RuleRegion> mRuleRegions;
-
-    /**
-     * Stores the rules found in the mRulesMap in an efficient structure
-     * for matching purposes.
+     * Stores the input and output region for each rule in mRulesMap, as well
+     * as the list of RuleInputSet for each rule.
      */
     std::vector<Rule> mRules;
 

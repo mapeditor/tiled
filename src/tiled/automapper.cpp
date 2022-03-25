@@ -385,7 +385,7 @@ bool AutoMapper::setupRuleList()
 {
     const auto &setup = mRuleMapSetup;
 
-    Q_ASSERT(mRuleRegions.isEmpty());
+    Q_ASSERT(mRules.empty());
 
     QRegion regionInput;
     QRegion regionOutput;
@@ -430,16 +430,16 @@ bool AutoMapper::setupRuleList()
     std::sort(combinedRegions.begin(), combinedRegions.end(), compareRuleRegion);
 
     // Then, they are split up in input and output region for each rule.
-    mRuleRegions.resize(combinedRegions.size());
+    mRules.resize(combinedRegions.size());
 
     for (int i = 0; i < combinedRegions.size(); ++i) {
-        mRuleRegions[i].input = combinedRegions[i] & regionInput;
-        mRuleRegions[i].output = combinedRegions[i] & regionOutput;
+        mRules[i].inputRegion = combinedRegions[i] & regionInput;
+        mRules[i].outputRegion = combinedRegions[i] & regionOutput;
     }
 
 #ifndef QT_NO_DEBUG
-    for (const RuleRegion &ruleRegion : mRuleRegions) {
-        const QRegion checkCoherent = ruleRegion.input.united(ruleRegion.output);
+    for (const Rule &rule : mRules) {
+        const QRegion checkCoherent = rule.inputRegion.united(rule.outputRegion);
         Q_ASSERT(coherentRegions(checkCoherent).size() == 1);
     }
 #endif
@@ -551,27 +551,14 @@ static void collectCellsInRegion(const QVector<InputLayer> &list,
  */
 void AutoMapper::compileRules()
 {
-    Q_ASSERT(mRules.empty());
-
-    mRules.reserve(mRuleRegions.size());
-
-    for (const RuleRegion &ruleRegion : qAsConst(mRuleRegions)) {
-        Rule rule;
+    for (Rule &rule: mRules) {
+        rule.inputSets.clear();
 
         for (const InputSet &inputSet : qAsConst(mRuleMapSetup.mInputSets)) {
             RuleInputSet index;
-            if (compileInputSet(index, inputSet, ruleRegion.input))
+            if (compileInputSet(index, inputSet, rule.inputRegion))
                 rule.inputSets.append(std::move(index));
         }
-
-        // Discard rules without any input sets, since they can't ever match
-        if (rule.inputSets.isEmpty())
-            continue;
-
-        rule.inputBounds = ruleRegion.input.boundingRect();
-        rule.outputRegion = ruleRegion.output;
-
-        mRules.push_back(std::move(rule));
     }
 }
 
@@ -594,7 +581,7 @@ bool AutoMapper::compileInputSet(RuleInputSet &index, const InputSet &inputSet, 
         for (const QRect &rect : inputRegion) {
             for (int x = rect.left(); x <= rect.right(); ++x) {
                 for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                    InputLayerPos pos;
+                    RuleInputLayerPos pos;
 
                     bool emptyAllowed = false;
 
@@ -778,7 +765,7 @@ static bool matchInputIndex(const RuleInputSet &inputSet, QPoint offset, AutoMap
 
     for (const RuleInputLayer &layer : inputSet.layers) {
         for (auto p = std::exchange(nextPos, nextPos + layer.posCount); p < nextPos; ++p) {
-            const InputLayerPos &pos = inputSet.positions[p];
+            const RuleInputLayerPos &pos = inputSet.positions[p];
             const Cell &cell = getCell(pos.x + offset.x(), pos.y + offset.y(), *layer.targetLayer);
 
             // Match may succeed if any of the "any" tiles are seen, or when
@@ -820,7 +807,7 @@ void AutoMapper::matchRule(const Rule &rule,
                            GetCell getCell,
                            const std::function<void(QPoint pos)> &matched) const
 {
-    const QRect inputBounds = rule.inputBounds;
+    const QRect inputBounds = rule.inputRegion.boundingRect();
 
     // This is really the rule size - 1, since when applying the rule we will
     // keep at least one tile overlap with the apply region.
@@ -856,7 +843,7 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos, ApplyContext &context)
     Q_ASSERT(!mRuleMapSetup.mOutputSets.empty());
 
     // Translate the position to adjust to the location of the rule.
-    pos -= rule.inputBounds.topLeft();
+    pos -= rule.inputRegion.boundingRect().topLeft();
 
     // choose by chance which group of rule_layers should be used:
     const int r = context.randomGenerator->generate() % mRuleMapSetup.mOutputSets.size();
@@ -1030,7 +1017,6 @@ void AutoMapper::finalizeAutoMap()
 {
     cleanTilesets();
     cleanEmptyLayers();
-    mRules.clear();
 }
 
 void AutoMapper::cleanTilesets()
