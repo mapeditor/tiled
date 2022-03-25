@@ -292,7 +292,7 @@ private:
 
     void setupWorkMapLayers();
     void setupTilesets();
-    void compileRules();
+    void compileRule(Rule &rule) const;
     bool compileInputSet(RuleInputSet &index,
                          const InputSet &inputSet,
                          const QRegion &inputRegion,

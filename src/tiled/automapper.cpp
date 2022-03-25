@@ -493,7 +493,6 @@ void AutoMapper::prepareAutoMap()
 
     setupWorkMapLayers();
     setupTilesets();
-    compileRules();
 }
 
 /**
@@ -588,20 +587,17 @@ static void collectCellsInRegion(const QVector<InputLayer> &list,
 }
 
 /**
- * Sets up a small data structure for each rule that is optimized for matching.
+ * Sets up a small data structure for this rule that is optimized for matching.
  */
-void AutoMapper::compileRules()
+void AutoMapper::compileRule(Rule &rule) const
 {
     CompileContext context;
+    rule.inputSets.clear();
 
-    for (Rule &rule: mRules) {
-        rule.inputSets.clear();
-
-        for (const InputSet &inputSet : qAsConst(mRuleMapSetup.mInputSets)) {
-            RuleInputSet index;
-            if (compileInputSet(index, inputSet, rule.inputRegion, context))
-                rule.inputSets.append(std::move(index));
-        }
+    for (const InputSet &inputSet : qAsConst(mRuleMapSetup.mInputSets)) {
+        RuleInputSet index;
+        if (compileInputSet(index, inputSet, rule.inputRegion, context))
+            rule.inputSets.append(std::move(index));
     }
 }
 
@@ -911,6 +907,11 @@ void AutoMapper::matchRule(const Rule &rule,
                            GetCell getCell,
                            const std::function<void(QPoint pos)> &matched) const
 {
+    // Small hack to compile rules concurrently. Should be fine since
+    // compilation only alters the rule, and each rule is only accessed by a
+    // single thread.
+    compileRule(const_cast<Rule&>(rule));
+
     const QRect inputBounds = rule.inputRegion.boundingRect();
 
     // This is really the rule size - 1, since when applying the rule we will
