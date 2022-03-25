@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="4" height="4" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="2">
+ <properties>
+  <property name="NoOverlappingRules" type="bool" value="true"/>
+ </properties>
+ <tileset firstgid="1" source="../spr_test_tileset.tsx"/>
+ <tileset firstgid="17" source="../automap-tiles.tsx"/>
+ <layer id="1" name="input_in" width="4" height="4">
+  <data encoding="csv">
+17,0,18,2,
+0,0,0,0,
+19,0,20,0,
+4,0,17,3
+</data>
+ </layer>
+ <layer id="2" name="output_in" width="4" height="4">
+  <data encoding="csv">
+0,0,5,5,
+0,0,0,0,
+6,0,7,0,
+6,0,0,0
+</data>
+ </layer>
+ <objectgroup color="#ed333b" id="4" name="//comments">
+  <object id="1" x="310" y="60">
+   <polyline points="0,0 52,0 39,-17 52,0 38,15"/>
+  </object>
+ </objectgroup>
+</map>

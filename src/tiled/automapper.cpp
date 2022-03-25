@@ -76,6 +76,44 @@ static inline Type &find_or_emplace(Container &container, Pred pred, Args&&... a
     return container.emplace_back(std::forward<Args>(args)...);
 }
 
+enum class MatchType {
+    Unknown,
+    Tile,
+    Empty,
+    NonEmpty,
+    Other,
+    Ignore
+};
+
+static MatchType matchType(const Tile *tile)
+{
+    if (!tile)
+        return MatchType::Unknown;
+
+    const QString matchType = tile->resolvedProperty(QStringLiteral("MatchType")).toString();
+    if (matchType == QLatin1String("Empty"))
+        return MatchType::Empty;
+    else if (matchType == QLatin1String("NonEmpty"))
+        return MatchType::NonEmpty;
+    else if (matchType == QLatin1String("Other"))
+        return MatchType::Other;
+    else if (matchType == QLatin1String("Ignore"))
+        return MatchType::Ignore;
+
+    return MatchType::Tile;
+}
+
+/**
+ * The compile context enables re-using temporarily allocated memory while
+ * compiling the rules.
+ */
+struct CompileContext
+{
+    QVector<Cell> anyOf;
+    QVector<Cell> noneOf;
+    QVector<Cell> inputCells;
+};
+
 struct ApplyContext
 {
     // These regions store which parts or the map have already been altered by
@@ -87,6 +125,7 @@ struct ApplyContext
 
     QRegion *appliedRegion = nullptr;
 };
+
 
 /*
  * About the order of the methods in this file.
@@ -528,17 +567,19 @@ void AutoMapper::setupTilesets()
 /**
  * Fills \a cells with the list of all cells which can be found within all
  * tile layers within the given region.
+ *
+ * Only collects tiles with MatchType::Tile.
  */
 static void collectCellsInRegion(const QVector<InputLayer> &list,
                                  const QRegion &r,
-                                 QVarLengthArray<Cell, 8> &cells)
+                                 QVector<Cell> &cells)
 {
     for (const InputLayer &inputLayer : list) {
         for (const QRect &rect : r) {
             for (int x = rect.left(); x <= rect.right(); ++x) {
                 for (int y = rect.top(); y <= rect.bottom(); ++y) {
                     const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
-                    if (!cells.contains(cell))
+                    if (matchType(cell.tile()) == MatchType::Tile && !cells.contains(cell))
                         cells.append(cell);
                 }
             }
@@ -551,12 +592,14 @@ static void collectCellsInRegion(const QVector<InputLayer> &list,
  */
 void AutoMapper::compileRules()
 {
+    CompileContext context;
+
     for (Rule &rule: mRules) {
         rule.inputSets.clear();
 
         for (const InputSet &inputSet : qAsConst(mRuleMapSetup.mInputSets)) {
             RuleInputSet index;
-            if (compileInputSet(index, inputSet, rule.inputRegion))
+            if (compileInputSet(index, inputSet, rule.inputRegion, context))
                 rule.inputSets.append(std::move(index));
         }
     }
@@ -568,12 +611,19 @@ void AutoMapper::compileRules()
  * Aborts and returns false, when it detects a missing input layer that
  * prevents the input set from ever matching.
  */
-bool AutoMapper::compileInputSet(RuleInputSet &index, const InputSet &inputSet, const QRegion &inputRegion)
+bool AutoMapper::compileInputSet(RuleInputSet &index,
+                                 const InputSet &inputSet,
+                                 const QRegion &inputRegion,
+                                 CompileContext &context) const
 {
     const QPoint topLeft = inputRegion.boundingRect().topLeft();
 
+    QVector<Cell> &anyOf = context.anyOf;
+    QVector<Cell> &noneOf = context.noneOf;
+    QVector<Cell> &inputCells = context.inputCells;
+
     for (const InputConditions &conditions : inputSet.layers) {
-        QVarLengthArray<Cell, 8> inputCells;
+        inputCells.clear();
 
         RuleInputLayer layer;
         layer.targetLayer = mSetLayers.value(conditions.layerName, &mDummy);
@@ -581,54 +631,108 @@ bool AutoMapper::compileInputSet(RuleInputSet &index, const InputSet &inputSet, 
         for (const QRect &rect : inputRegion) {
             for (int x = rect.left(); x <= rect.right(); ++x) {
                 for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                    RuleInputLayerPos pos;
-
-                    bool emptyAllowed = false;
+                    anyOf.clear();
+                    noneOf.clear();
 
                     for (const InputLayer &inputLayer : conditions.listYes) {
                         const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
-                        if (!cell.isEmpty() || inputLayer.strictEmpty) {
-                            ++pos.anyCount;
-                            index.cells.push_back(cell);
-                            emptyAllowed |= cell.isEmpty();
+
+                        switch (matchType(cell.tile())) {
+                        case MatchType::Unknown:
+                            if (inputLayer.strictEmpty)
+                                anyOf.append(cell);
+                            break;
+                        case MatchType::Tile:
+                            anyOf.append(cell);
+                            break;
+                        case MatchType::Empty:
+                            anyOf.append(Cell());
+                            break;
+                        case MatchType::NonEmpty:
+                            noneOf.append(Cell());
+                            break;
+                        case MatchType::Other:
+                            // The "any other tile" case is implemented as
+                            // "none of the used tiles".
+                            if (inputCells.isEmpty())
+                                collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
+                            noneOf.append(inputCells);
+                            break;
+                        case MatchType::Ignore:
+                            break;
                         }
                     }
-
-                    emptyAllowed |= pos.anyCount == 0;
 
                     for (const InputLayer &inputLayer : conditions.listNo) {
                         const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
-                        if (!cell.isEmpty() || inputLayer.strictEmpty) {
-                            ++pos.noneCount;
-                            index.cells.push_back(cell);
-                            emptyAllowed &= !cell.isEmpty();
+
+                        switch (matchType(cell.tile())) {
+                        case MatchType::Unknown:
+                            if (inputLayer.strictEmpty)
+                                noneOf.append(cell);
+                            break;
+                        case MatchType::Tile:
+                            noneOf.append(cell);
+                            break;
+                        case MatchType::Empty:
+                            noneOf.append(Cell());
+                            break;
+                        case MatchType::NonEmpty:
+                            anyOf.append(Cell());
+                            break;
+                        case MatchType::Other:
+                            // This is the "not any other tile" case, which is
+                            // implemented as "any of the used tiles"
+                            if (inputCells.isEmpty())
+                                collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
+                            anyOf.append(inputCells);
+                            break;
+                        case MatchType::Ignore:
+                            break;
                         }
                     }
 
-                    // If no "any" and no "none" tiles are defined at this location, the rule
-                    // will not accept any of the "any" tiles used elsewhere in this rule.
-                    if (pos.anyCount == 0 && conditions.listNo.isEmpty()) {
-                        if (inputCells.isEmpty())
-                            collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
-
-                        for (const Cell &cell : inputCells) {
-                            ++pos.noneCount;
-                            index.cells.push_back(cell);
+                    // For backwards compatibility, when the input regions have
+                    // been explicitly defined and no "any" and no "none" tiles
+                    // are defined at this location, the rule will not accept
+                    // any of the "any" tiles used elsewhere in this rule, nor
+                    // the empty tile.
+                    if (mRuleMapSetup.mLayerRegions || mRuleMapSetup.mLayerInputRegions) {
+                        if (anyOf.isEmpty() && conditions.listNo.isEmpty()) {
+                            if (inputCells.isEmpty())
+                                collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
+                            noneOf.append(inputCells);
+                            noneOf.append(Cell());
                         }
-
-                        emptyAllowed = false;
                     }
 
-                    // When some "any" tiles have been defined, but they don't
-                    // include the empty tile, we will never match, when this
-                    // input layer is missing.
-                    if (!emptyAllowed && layer.targetLayer == &mDummy)
-                        return false;
+                    // When the input layer is missing, it is considered empty.
+                    // In this case, we can drop this input set when empty
+                    // tiles are not allowed here.
+                    if (layer.targetLayer == &mDummy) {
+                        const bool emptyAllowed = (anyOf.isEmpty() ||
+                                                   std::any_of(anyOf.cbegin(),
+                                                               anyOf.cend(),
+                                                               [] (const Cell &cell) { return cell.isEmpty(); }))
+                                && std::none_of(noneOf.cbegin(),
+                                                noneOf.cend(),
+                                                [] (const Cell &cell) { return cell.isEmpty(); });
 
-                    if (pos.anyCount > 0 || pos.noneCount > 0) {
+                        if (!emptyAllowed)
+                            return false;
+                    }
+
+                    if (anyOf.size() > 0 || noneOf.size() > 0) {
+                        index.cells.append(anyOf);
+                        index.cells.append(noneOf);
+
+                        RuleInputLayerPos pos;
                         pos.x = x - topLeft.x();
                         pos.y = y - topLeft.y();
-                        index.positions.push_back(pos);
+                        pos.anyCount = anyOf.size();
+                        pos.noneCount = noneOf.size();
+
+                        index.positions.append(pos);
                         ++layer.posCount;
                     }
                 }
@@ -636,7 +740,7 @@ bool AutoMapper::compileInputSet(RuleInputSet &index, const InputSet &inputSet, 
         }
 
         if (layer.posCount > 0)
-            index.layers.push_back(layer);
+            index.layers.append(layer);
     }
 
     return true;

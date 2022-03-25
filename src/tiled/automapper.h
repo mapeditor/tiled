@@ -121,10 +121,10 @@ struct RuleInputLayer
 
 struct RuleInputLayerPos
 {
-    int x;                              // position relative to match location
+    int x;                          // position relative to match location
     int y;
-    int anyCount = 0;                   // any of these cells
-    int noneCount = 0;                  // none of these cells
+    int anyCount;                   // any of these cells
+    int noneCount;                  // none of these cells
 };
 
 /**
@@ -133,9 +133,9 @@ struct RuleInputLayerPos
  */
 struct RuleInputSet
 {
-    std::vector<RuleInputLayer> layers;
-    std::vector<RuleInputLayerPos> positions;
-    std::vector<Cell> cells;
+    QVector<RuleInputLayer> layers;
+    QVector<RuleInputLayerPos> positions;
+    QVector<Cell> cells;
 };
 
 struct Rule
@@ -145,6 +145,7 @@ struct Rule
     QVector<RuleInputSet> inputSets;
 };
 
+struct CompileContext;
 struct ApplyContext;
 
 
@@ -292,7 +293,10 @@ private:
     void setupWorkMapLayers();
     void setupTilesets();
     void compileRules();
-    bool compileInputSet(RuleInputSet &index, const InputSet &inputSet, const QRegion &inputRegion);
+    bool compileInputSet(RuleInputSet &index,
+                         const InputSet &inputSet,
+                         const QRegion &inputRegion,
+                         CompileContext &context) const;
 
     /**
      * This copies all tiles from TileLayer \a srcLayer to TileLayer
