@@ -8,6 +8,7 @@ StaticLibrary {
 
     cpp.includePaths: ["src"]
     cpp.cxxLanguageVersion: "c++17"
+    cpp.visibility: "minimal"
 
     files: [
         "src/qtlocalpeer.cpp",

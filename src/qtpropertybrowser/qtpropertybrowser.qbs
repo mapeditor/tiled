@@ -8,6 +8,7 @@ StaticLibrary {
 
     cpp.includePaths: ["src"]
     cpp.cxxLanguageVersion: "c++17"
+    cpp.visibility: "minimal"
 
     Properties {
         // needed to work around "too many sections" issue in qteditorfactory.cpp
