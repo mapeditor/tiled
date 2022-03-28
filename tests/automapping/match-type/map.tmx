@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="../spr_test_tileset.tsx"/>
  <layer id="1" name="in" width="4" height="4">
   <data encoding="csv">
-3,2,3,3,
+2,3,3,3,
 3,3,3,3,
 0,3,3,3,
 4,4,3,2

@@ -4,8 +4,8 @@
 #include "tilelayer.h"
 #include "mapreader.h"
 
-#include "mapdocument.h"
 #include "automapper.h"
+#include "mapdocument.h"
 
 #include <QtTest/QtTest>
 
@@ -30,6 +30,7 @@ void test_AutoMapping::autoMap_data()
     QTest::newRow("option-overflow-border") << QStringLiteral("option-overflow-border");
     QTest::newRow("option-wrap-border") << QStringLiteral("option-wrap-border");
     QTest::newRow("terrain-corner") << QStringLiteral("terrain-corner");
+    QTest::newRow("match-type") << QStringLiteral("match-type");
 }
 
 void test_AutoMapping::autoMap()
@@ -70,8 +71,12 @@ void test_AutoMapping::autoMap()
 
         QCOMPARE(mapTileLayer->region(), resultTileLayer->region());
 
-        for (auto it = resultTileLayer->begin(); it != resultTileLayer->end(); ++it)
-            QCOMPARE(it.value(), mapTileLayer->cellAt(it.key()));
+        for (auto it = resultTileLayer->begin(); it != resultTileLayer->end(); ++it) {
+            const QPoint pos = it.key();
+            const Cell &expected = it.value();
+            const Cell &seen = mapTileLayer->cellAt(pos);
+            QCOMPARE(expected, seen);
+        }
     }
 }
 
