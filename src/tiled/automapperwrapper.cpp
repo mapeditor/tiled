@@ -29,45 +29,65 @@
 using namespace Tiled;
 
 AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
-                                     const QVector<AutoMapper*> &autoMappers,
-                                     QRegion *where)
+                                     const std::vector<std::unique_ptr<AutoMapper> > &autoMappers,
+                                     const QRegion &where,
+                                     const TileLayer *touchedLayer)
     : mMapDocument(mapDocument)
 {
-    for (AutoMapper *autoMapper : autoMappers) {
+    for (const auto &autoMapper : autoMappers) {
         autoMapper->prepareAutoMap();
 
-        // Store a copy of each touched tile layer before AutoMapping.
-        for (TileLayer *layer : autoMapper->touchedTileLayers()) {
-            if (mTouchedTileLayers.find(layer) != mTouchedTileLayers.end())
+        // Store a copy of each output tile layer before AutoMapping.
+        for (TileLayer *layer : autoMapper->outputTileLayers()) {
+            if (mOutputTileLayers.find(layer) != mOutputTileLayers.end())
                 continue;
 
-            TouchedLayerData &data = mTouchedTileLayers[layer];
+            OutputLayerData &data = mOutputTileLayers[layer];
             data.before.reset(layer->clone());
         }
     }
 
+    // During "AutoMap while drawing", keep track of the touched layers, so we
+    // can skip any rule maps that don't have these layers as input entirely.
+    QList<const TileLayer*> touchedTileLayers;
+    QList<const TileLayer*> *touchedTileLayersPtr = nullptr;
+    if (touchedLayer) {
+        touchedTileLayers.append(touchedLayer);
+        touchedTileLayersPtr = &touchedTileLayers;
+    }
+
+    // use a copy of the region, so each AutoMapper can manipulate it and the
+    // following AutoMappers do see the impact
+    QRegion region(where);
     QRegion appliedRegion;
     QRegion *appliedRegionPtr = &appliedRegion;
     const Map *map = mapDocument->map();
     const QRegion mapRect(0, 0, map->width(), map->height());
 
-    for (AutoMapper *autoMapper : autoMappers) {
+    for (const auto &autoMapper : autoMappers) {
         // stop expanding region when it's already the entire fixed-size map
-        if (appliedRegionPtr && (!map->infinite() && (mapRect - *where).isEmpty()))
+        if (appliedRegionPtr && (!map->infinite() && (mapRect - region).isEmpty()))
             appliedRegionPtr = nullptr;
 
-        autoMapper->autoMap(*where, appliedRegionPtr);
+        if (!touchedTileLayers.isEmpty()) {
+            if (std::none_of(touchedTileLayers.cbegin(),
+                             touchedTileLayers.cend(),
+                             [&] (const TileLayer *tileLayer) { return autoMapper->ruleLayerNameUsed(tileLayer->name()); }))
+                continue;
+        }
+
+        autoMapper->autoMap(region, touchedTileLayersPtr, appliedRegionPtr);
 
         if (appliedRegionPtr) {
             // expand where with modified area
-            *where |= std::exchange(appliedRegion, QRegion());
+            region |= std::exchange(appliedRegion, QRegion());
 
             if (!map->infinite())       // but keep within map boundaries
-                *where &= mapRect;
+                region &= mapRect;
         }
     }
 
-    for (std::pair<TileLayer* const, TouchedLayerData> &pair : mTouchedTileLayers) {
+    for (std::pair<TileLayer* const, OutputLayerData> &pair : mOutputTileLayers) {
         auto target = pair.first;
         auto &before = pair.second.before;
 
@@ -97,7 +117,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         pair.second.after = std::move(afterDiff);
     }
 
-    for (AutoMapper *autoMapper : autoMappers)
+    for (const auto &autoMapper : autoMappers)
         autoMapper->finalizeAutoMap();
 }
 
@@ -107,13 +127,13 @@ AutoMapperWrapper::~AutoMapperWrapper()
 
 void AutoMapperWrapper::undo()
 {
-    for (std::pair<TileLayer* const, TouchedLayerData> &pair : mTouchedTileLayers)
+    for (std::pair<TileLayer* const, OutputLayerData> &pair : mOutputTileLayers)
         patchLayer(pair.first, *pair.second.before, pair.second.region);
 }
 
 void AutoMapperWrapper::redo()
 {
-    for (std::pair<TileLayer* const, TouchedLayerData> &pair : mTouchedTileLayers)
+    for (std::pair<TileLayer* const, OutputLayerData> &pair : mOutputTileLayers)
         patchLayer(pair.first, *pair.second.after, pair.second.region);
 }
 

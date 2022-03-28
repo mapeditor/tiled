@@ -116,6 +116,12 @@ struct CompileContext
 
 struct ApplyContext
 {
+    ApplyContext(QList<const TileLayer*> *touchedTileLayers,
+                 QRegion *appliedRegion)
+        : touchedTileLayers(touchedTileLayers)
+        , appliedRegion(appliedRegion)
+    {}
+
     // These regions store which parts or the map have already been altered by
     // exactly this rule. We store all the altered parts to make sure there are
     // no overlaps of the same rule applied to (neighbouring) places.
@@ -123,7 +129,8 @@ struct ApplyContext
 
     QRandomGenerator *randomGenerator = QRandomGenerator::global();
 
-    QRegion *appliedRegion = nullptr;
+    QList<const TileLayer*> *touchedTileLayers;
+    QRegion *appliedRegion;
 };
 
 
@@ -374,9 +381,9 @@ bool AutoMapper::setupRuleMapLayers()
 
         if (ruleMapLayerName.startsWith(QLatin1String("output"), Qt::CaseInsensitive)) {
             if (layer->isTileLayer())
-                mTouchedTileLayers.insert(layerName, nullptr);
+                mOutputTileLayers.insert(layerName, nullptr);
             else if (layer->isObjectGroup())
-                mTouchedObjectGroups.insert(layerName, nullptr);
+                mOutputObjectGroups.insert(layerName, nullptr);
 
             OutputSet &outputSet = find_or_emplace<OutputSet>(setup.mOutputSets, [&setName] (const OutputSet &set) {
                 return set.name == setName;
@@ -502,9 +509,9 @@ void AutoMapper::setupWorkMapLayers()
 {
     QUndoStack *undoStack = mTargetDocument->undoStack();
 
-    // Set up pointers to touched tile layers (output layers in mTargetMap).
+    // Set up pointers to output tile layers in mTargetMap.
     // They are created when they are not present.
-    QMutableHashIterator<QString, TileLayer*> itTileLayers(mTouchedTileLayers);
+    QMutableHashIterator<QString, TileLayer*> itTileLayers(mOutputTileLayers);
     while (itTileLayers.hasNext()) {
         itTileLayers.next();
 
@@ -523,9 +530,9 @@ void AutoMapper::setupWorkMapLayers()
         itTileLayers.setValue(tileLayer);
     }
 
-    // Set up pointers to touched object layers (output layers in mTargetMap).
+    // Set up pointers to output object layers in mTargetMap.
     // They are created when they are not present.
-    QMutableHashIterator<QString, ObjectGroup*> itObjectGroups(mTouchedObjectGroups);
+    QMutableHashIterator<QString, ObjectGroup*> itObjectGroups(mOutputObjectGroups);
     while (itObjectGroups.hasNext()) {
         itObjectGroups.next();
 
@@ -742,7 +749,9 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
     return true;
 }
 
-void AutoMapper::autoMap(const QRegion &where, QRegion *appliedRegion)
+void AutoMapper::autoMap(const QRegion &where,
+                         QList<const TileLayer*> *touchedTileLayers,
+                         QRegion *appliedRegion)
 {
     QRegion applyRegion;
 
@@ -778,11 +787,11 @@ void AutoMapper::autoMap(const QRegion &where, QRegion *appliedRegion)
 
                 switch (it.key()->layerType()) {
                 case Layer::TileLayerType:
-                    mTouchedTileLayers.value(name)->erase(regionToErase);
+                    mOutputTileLayers.value(name)->erase(regionToErase);
                     break;
                 case Layer::ObjectGroupType:
                     eraseRegionObjectGroup(mTargetDocument,
-                                           mTouchedObjectGroups.value(name),
+                                           mOutputObjectGroups.value(name),
                                            regionToErase);
                     break;
                 case Layer::ImageLayerType:
@@ -800,8 +809,7 @@ void AutoMapper::autoMap(const QRegion &where, QRegion *appliedRegion)
                                         mOptions.overflowBorder ? &getBoundCell
                                                                 : &getCell;
 
-    ApplyContext context;
-    context.appliedRegion = appliedRegion;
+    ApplyContext context(touchedTileLayers, appliedRegion);
 
     if (mOptions.matchInOrder) {
         for (const Rule &rule : mRules) {
@@ -997,14 +1005,15 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos, ApplyContext &context)
         });
     }
 
-    copyMapRegion(rule.outputRegion, pos, ruleOutput);
+    copyMapRegion(rule.outputRegion, pos, ruleOutput, context);
 
     if (context.appliedRegion)
         *context.appliedRegion |= rule.outputRegion.translated(pos.x(), pos.y());
 }
 
 void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
-                               const OutputSet &ruleOutput)
+                               const OutputSet &ruleOutput,
+                               ApplyContext &context)
 {
     for (auto it = ruleOutput.layers.begin(), end = ruleOutput.layers.end(); it != end; ++it) {
         const Layer *from = it.key();
@@ -1015,7 +1024,11 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
         switch (from->layerType()) {
         case Layer::TileLayerType: {
             auto fromTileLayer = static_cast<const TileLayer*>(from);
-            auto toTileLayer = mTouchedTileLayers.value(targetName);
+            auto toTileLayer = mOutputTileLayers.value(targetName);
+
+            if (context.touchedTileLayers && !context.touchedTileLayers->contains(toTileLayer))
+                context.touchedTileLayers->append(toTileLayer);
+
             to = toTileLayer;
             for (const QRect &rect : region) {
                 copyTileRegion(fromTileLayer, rect, toTileLayer,
@@ -1025,7 +1038,7 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
         }
         case Layer::ObjectGroupType: {
             auto fromObjectGroup = static_cast<const ObjectGroup*>(from);
-            auto toObjectGroup = mTouchedObjectGroups.value(targetName);
+            auto toObjectGroup = mOutputObjectGroups.value(targetName);
             to = toObjectGroup;
             for (const QRect &rect : region) {
                 copyObjectRegion(fromObjectGroup, rect, toObjectGroup,

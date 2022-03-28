@@ -225,6 +225,8 @@ public:
                const QString &rulesMapFileName);
     ~AutoMapper() override;
 
+    QString rulesMapFileName() const;
+
     /**
      * Checks if the passed \a ruleLayerName is used as input layer in this
      * instance of AutoMapper.
@@ -235,7 +237,7 @@ public:
      * Returns a map of name to target layer, which could be touched
      * considering the output layers of the rule map.
      */
-    const QHash<QString, TileLayer *> &touchedTileLayers() const;
+    const QHash<QString, TileLayer *> &outputTileLayers() const;
 
     /**
      * This needs to be called directly before the autoMap call.
@@ -251,7 +253,7 @@ public:
      * When an \a appliedRegion is provided, it is set to the region where
      * rule outputs have been applied.
      */
-    void autoMap(const QRegion &where, QRegion *appliedRegion);
+    void autoMap(const QRegion &where, QList<const TileLayer *> *touchedTileLayers, QRegion *appliedRegion);
 
     /**
      * This cleans all data structures, which are setup via prepareAutoMap,
@@ -330,7 +332,8 @@ private:
      * map should get copied into which layers of the working map.
      */
     void copyMapRegion(const QRegion &region, QPoint Offset,
-                       const OutputSet &ruleOutput);
+                       const OutputSet &ruleOutput,
+                       ApplyContext &context);
 
     /**
      * This goes through all the positions in \a matchRegion and checks if the
@@ -427,17 +430,22 @@ private:
      * @see setupWorkMapLayers()
      */
     QHash<QString, const TileLayer*> mSetLayers;
-    QHash<QString, TileLayer*> mTouchedTileLayers;
-    QHash<QString, ObjectGroup*> mTouchedObjectGroups;
+    QHash<QString, TileLayer*> mOutputTileLayers;
+    QHash<QString, ObjectGroup*> mOutputObjectGroups;
 
     const TileLayer mDummy; // used in case input layers are missing
     QString mError;
     QString mWarning;
 };
 
-inline const QHash<QString, TileLayer*> &AutoMapper::touchedTileLayers() const
+inline QString AutoMapper::rulesMapFileName() const
 {
-    return mTouchedTileLayers;
+    return mRulesMapFileName;
+}
+
+inline const QHash<QString, TileLayer*> &AutoMapper::outputTileLayers() const
+{
+    return mOutputTileLayers;
 }
 
 } // namespace Tiled

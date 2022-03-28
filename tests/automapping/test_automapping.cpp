@@ -51,7 +51,7 @@ void test_AutoMapping::autoMap()
     const QSize mapSize = mapDocument.map()->size();
     autoMapper.prepareAutoMap();
     QBENCHMARK {
-        autoMapper.autoMap(QRect(QPoint(), mapSize), nullptr);  // todo: test appliedRegion as well
+        autoMapper.autoMap(QRect(QPoint(), mapSize), nullptr, nullptr);  // todo: test appliedRegion as well
     }
     autoMapper.finalizeAutoMap();
 

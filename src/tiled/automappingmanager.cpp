@@ -119,25 +119,22 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
         }
     }
 
-    QVector<AutoMapper*> passedAutoMappers;
-    for (auto &a : qAsConst(mAutoMappers)) {
-        if (!touchedLayer || a->ruleLayerNameUsed(touchedLayer->name()))
-            passedAutoMappers.append(a.get());
+    // Skip this AutoMapping run if none of the loaded rule maps actually use
+    // the touched layer.
+    if (touchedLayer) {
+        if (std::none_of(mAutoMappers.cbegin(),
+                         mAutoMappers.cend(),
+                         [=] (const std::unique_ptr<AutoMapper> &autoMapper) { return autoMapper->ruleLayerNameUsed(touchedLayer->name()); }))
+            return;
     }
 
-    if (!passedAutoMappers.isEmpty()) {
-        // use a copy of the region, so each automapper can manipulate it and the
-        // following automappers do see the impact
-        QRegion region(where);
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->beginMacro(tr("Apply AutoMap rules"));
+    AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, mAutoMappers, where, touchedLayer);
+    undoStack->push(aw);
+    undoStack->endMacro();
 
-        QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->beginMacro(tr("Apply AutoMap rules"));
-        AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, passedAutoMappers, &region);
-        undoStack->push(aw);
-        undoStack->endMacro();
-    }
-
-    for (auto &autoMapper : qAsConst(passedAutoMappers)) {
+    for (auto &autoMapper : qAsConst(mAutoMappers)) {
         mWarning += autoMapper->warningString();
         mError += autoMapper->errorString();
     }
