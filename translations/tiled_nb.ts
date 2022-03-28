@@ -4015,7 +4015,7 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/issuescounter.cpp" line="+110"/>
         <source>%n error(s)</source>
         <translation type="unfinished">
-            <numerusform>%s feil</numerusform>
+            <numerusform>%n feil</numerusform>
             <numerusform>%n feil</numerusform>
         </translation>
     </message>
@@ -4500,7 +4500,7 @@ Vennligst velgt et spesifikt format.</translation>
     <name>Tiled::MapDocument</name>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+128"/>
-        <source>Map format &apos;%s&apos; not found</source>
+        <source>Map format &apos;%1&apos; not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6648,7 +6648,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/tilesetdocument.cpp" line="+102"/>
         <location line="+38"/>
-        <source>Tileset format &apos;%s&apos; not found</source>
+        <source>Tileset format &apos;%1&apos; not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

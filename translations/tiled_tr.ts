@@ -4495,8 +4495,8 @@ Lütfen belirli bir biçim seçin.</translation>
     <name>Tiled::MapDocument</name>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+128"/>
-        <source>Map format &apos;%s&apos; not found</source>
-        <translation>Harita biçimi &apos;%s&apos; bulunamadı</translation>
+        <source>Map format &apos;%1&apos; not found</source>
+        <translation>Harita biçimi &apos;%1&apos; bulunamadı</translation>
     </message>
     <message>
         <location line="+104"/>
@@ -6623,8 +6623,8 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/tilesetdocument.cpp" line="+102"/>
         <location line="+38"/>
-        <source>Tileset format &apos;%s&apos; not found</source>
-        <translation>Desen seti biçimi &apos;%s&apos; bulunamadı</translation>
+        <source>Tileset format &apos;%1&apos; not found</source>
+        <translation>Desen seti biçimi &apos;%1&apos; bulunamadı</translation>
     </message>
     <message>
         <location line="+83"/>

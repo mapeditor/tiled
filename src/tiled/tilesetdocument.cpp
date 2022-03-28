@@ -108,7 +108,7 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
     auto tilesetFormat = findFileFormat<TilesetFormat>(mTileset->format(), FileFormat::Write);;
     if (!tilesetFormat) {
         if (error)
-            *error = tr("Tileset format '%s' not found").arg(mTileset->format());
+            *error = tr("Tileset format '%1' not found").arg(mTileset->format());
         return false;
     }
 

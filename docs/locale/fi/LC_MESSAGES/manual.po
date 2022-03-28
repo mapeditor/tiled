@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.1\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2019-11-18 08:05+0000\n"
+"PO-Revision-Date: 2022-02-14 22:39+0000\n"
 "Last-Translator: Tuomas Lähteenmäki <lahtis@gmail.com>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/tiled/manual/fi/>"
 "\n"
@@ -17,15 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10-dev\n"
+"X-Generator: Weblate 4.11-dev\n"
 
 #: ../../manual/automapping.rst:3
 msgid "Automapping"
-msgstr "Automaattinen kartoitus"
+msgstr "Automaattikartoitus"
 
 #: ../../manual/automapping.rst:6
 msgid "What is Automapping?"
-msgstr "Mikä on automaattinen kartoitus?"
+msgstr "Mikä on automaattikartoitus?"
 
 #: ../../manual/automapping.rst:8
 msgid "Automapping is an advanced tool to automatically search certain combinations of tiles across layers in a map and to replace these parts by other combination. This allows the user to draw structures with a minimum of time spent and the Automapping will be able to generate a rather complex scenario, which would need lots more time if manually crafted."
@@ -45,8 +45,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:18
 msgid "**Working speed** - you need less time to setup a map."
-msgstr ""
-"**Työskentely nopeus** - tarvitset vähemmän aikaa kartan määrittämiseen."
+msgstr "**Työnopeus** - tarvitset vähemmän aikaa kartan määrittämiseen."
 
 #: ../../manual/automapping.rst:19
 msgid "**Less errors** - the main reason is to reduce the error rate. If you have setup the rules properly, there is no hidden error."
@@ -61,7 +60,7 @@ msgstr "Ulkoiset linkit"
 #: ../../manual/automapping.rst:25
 msgid "`Automapping explained for Tiled 0.9 and later (YouTube) <http://www.youtube.com/watch?v=UUi0lD1pxyQ>`__"
 msgstr ""
-"`Automaattinen kartoitus on selitetty Tiled versiossa 0.9 ja myöhemmin "
+"`Automaattikartoitus on selitetty Tiled 0.9 versiossa tai uudemmassa "
 "(YouTube) <http://www.youtube.com/watch?v=UUi0lD1pxyQ>`__"
 
 #: ../../manual/automapping.rst:26
@@ -73,12 +72,12 @@ msgstr ""
 #: ../../manual/automapping.rst:27
 msgid "`Tiled Map Editor Tutorial Part Three: AutoMap (YouTube) <https://youtu.be/A_A6rz7cvG4>`__"
 msgstr ""
-"`Tiled karttamuokkain Opasohjelman kolmas osa: AutoMap (YouTube) "
+"`Tiled karttamuokkain Opasohjelman kolmas osa: Automaattikartoitus (YouTube) "
 "<https://youtu.be/A_A6rz7cvG4>`__"
 
 #: ../../manual/automapping.rst:31
 msgid "Setting it Up"
-msgstr "Asennus"
+msgstr "Käyttöönotto"
 
 #: ../../manual/automapping.rst:33
 msgid "The Automapping feature is looking for a text file called 'rules.txt' in the folder where the current map is located. Each line in this text file is either"
@@ -99,7 +98,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:40
 msgid "or is a comment which is indicated by **#** or **//**"
-msgstr "tai on kommentti, joka on merkitty **#** or **//**"
+msgstr "tai on kommentti, joka merkitään **#** tai **//**"
 
 #: ../../manual/automapping.rst:42
 msgid "A **rulefile** is a standard map file, which can be read and written by tiled (\\*.tmx). In one rulefile there can be defined multiple rules."
@@ -123,8 +122,7 @@ msgstr ""
 #: ../../manual/automapping.rst:49
 msgid "The definition of inputs describes which kind of pattern the working map will be searched for."
 msgstr ""
-"Syötteen määritelmässä kuvataan, minkä tyyppistä mallia työkartta on "
-"tarkoitus etsiä."
+"Syötteiden määrittelyssä kuvataan, minkälaista mallia työkartasta etsitään."
 
 #: ../../manual/automapping.rst:51
 msgid "The definition of outputs describes how the working map is changed when an input pattern is found."
@@ -135,7 +133,7 @@ msgstr ""
 #: ../../manual/automapping.rst:53
 msgid "The map properties are used to fine-tune the input pattern localization and the output of all rules within this rules file."
 msgstr ""
-"Kartan ominaisuuksien avulla voit hienosäätää syöttö kuvion lokalisointia ja "
+"Kartan ominaisuuksien avulla voit hienosäätää syöttökuvion lokalisointia ja "
 "kaikkien tämän sääntöjen sisältämien sääntöjen tulosteita."
 
 #: ../../manual/automapping.rst:57
@@ -149,10 +147,14 @@ msgstr ""
 #: ../../manual/automapping.rst:70
 msgid "If multiple rules are defined in one rulemap file, the regions must not be adjacent. That means there must be at least one tile of unused space in between two rules. If the regions are adjacent (coherent) then both regions are interpreted as one rule."
 msgstr ""
+"Jos samassa sääntökarttatiedostossa on määritelty useita sääntöjä, alueet "
+"eivät saa olla vierekkäisiä. Tämä tarkoittaa, että kahden säännön välissä on "
+"oltava vähintään yksi laatta käyttämätöntä tilaa. Jos alueet ovat "
+"vierekkäisiä (yhtenäisiä), molemmat alueet tulkitaan yhdeksi säännöksi."
 
 #: ../../manual/automapping.rst:76
 msgid "Multiple Rules in One Rulefile"
-msgstr ""
+msgstr "Useita sääntöjä yhdessä sääntötiedostossa"
 
 #: ../../manual/automapping.rst:78
 msgid "Of course multiple rules are possible in one rulemap. If you want to have the rules applied in a certain sequence, you should use multiple **rulefiles** and define the sequence within the **rules.txt** file. As of now there also is a certain sequence within one rulemapfile. Generally speaking the regions with small y value come first. If there are regions at the same y value, then the x value is taken into account. On orthogonal maps this ordering scheme is the same as for reading in most western countries. (Left to right, top to down). The order within one rulemap may be changed later, once tiled is capable of utilizing multiple threads/processors. So if you want to rely on a certain sequence, use different rulemaps and order these in the rules.txt"
@@ -160,35 +162,50 @@ msgstr ""
 
 #: ../../manual/automapping.rst:91
 msgid "Definition of Inputs"
-msgstr ""
+msgstr "Tuotantopanosten määritelmä"
 
 #: ../../manual/automapping.rst:93
 msgid "Inputs are generally defined by tile layers which name follows this scheme:"
 msgstr ""
+"Tulokset määritetään yleensä laattatasoilla, joiden nimi noudattaa tätä "
+"kaaviota:"
 
 #: ../../manual/automapping.rst:96
 msgid "**input[not][index]\\_name**"
-msgstr ""
+msgstr "**input[not][index]\\_name**"
 
 #: ../../manual/automapping.rst:98
 msgid "where the **[not]** and **[index]** are optional. After the first underscore there will be the name of the input layer. The input layer name can of course include more underscores."
 msgstr ""
+"jossa **[not]** ja **[index]** ovat valinnaisia. Ensimmäisen alaviivan "
+"jälkeen tulee syöttötason nimi. Syöttötason nimi voi tietysti sisältää "
+"enemmän alaviivoja."
 
 #: ../../manual/automapping.rst:102
 msgid "The **name** determines which layer on the working map is examined. So for example the layer *input\\_Ground* will check the layer called *Ground* in the working map for this rule. *input\\_test\\_case* will check the layer *test\\_case* in the working map for this rule."
 msgstr ""
+"**nimi** määrittää, mikä työkartan taso tutkitaan. Joten esimerkiksi taso *"
+"input\\_Ground* tarkistaa tämän säännön työkartassa olevan *Ground*-nimisen "
+"tason. *input\\_test\\_case* tarkistaa tämän säännön työkartan tason *"
+"test\\_case*."
 
 #: ../../manual/automapping.rst:107
 msgid "Multiple layers having the same name and index is explicitly allowed and is intended. Having multiple layers of the same name and index , will allow you to define different possible tiles per coordinate as input."
 msgstr ""
+"Useat tasot, joilla on sama nimi ja indeksi, ovat nimenomaisesti sallittuja "
+"ja tarkoitettuja. Kun sinulla on useita samannimisiä ja -indeksisiä tasoja, "
+"voit määritellä erilaisia mahdollisia laattoja koordinaatteja kohti."
 
 #: ../../manual/automapping.rst:111
 msgid "The index is used to create complete different input conditions. All layers having the same index are taken into account for forming one condition. Each of these conditions are checked individually."
 msgstr ""
+"Indeksiä käytetään täysin erilaisten syöttöehtojen luomiseen. Kaikki tasot, "
+"joilla on sama indeksi, otetaan huomioon yhden ehdon muodostamisessa. Kukin "
+"näistä ehdoista tarkistetaan erikseen."
 
 #: ../../manual/automapping.rst:115
 msgid "index must not contain an underscore."
-msgstr ""
+msgstr "indeksi ei saa sisältää alaviivaa."
 
 #: ../../manual/automapping.rst:116
 msgid "index must not start with *not*"
@@ -196,7 +213,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:117
 msgid "index may be empty."
-msgstr ""
+msgstr "indeksi voi olla tyhjä."
 
 #: ../../manual/automapping.rst:119
 msgid "If there are tiles in the standard input layers one of these tiles must be there to match the rule. The optional **[not]** inverts the meaning of that layer. So if there are **inputnot** layers, the tiles placed on them, must not occur in the working map at the examined region to make a rule match. Within one rule you can combine the usage of both input and inputnot layers to make rules input conditions as accurate as you need or as fuzzy as you need."

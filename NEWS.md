@@ -18,6 +18,7 @@
 * Fixed crash when rendering invalid polygon objects
 * Fixed sticky Bucket Fill preview when hovering same tile
 * Fixed automatically reloaded map becoming the active document
+* Fixed "Map format '%s' not found" error
 * Hide "Move Objects to Layer" menu when there's only one object layer
 * Scripting: Avoid possible crash due to garbage collection (#3290)
 * Scripting: Fixed missing null check in Tileset.loadFromImage and Tile.setImage
@@ -31,6 +32,7 @@
 * macOS: Fixed main window expanding with many open files (#1047)
 * JSON plugin: Wrap arrays at the map width or chunk width
 * Qt 6: Fixed captured or erased area when dragging backwards
+* Updated Finnish translation
 
 ### Tiled 1.8.2 (18 February 2022)
 
