@@ -4500,7 +4500,7 @@ Ole hyvä ja valitse tietty tiedostomuoto.</translation>
     <name>Tiled::MapDocument</name>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+128"/>
-        <source>Map format &apos;%s&apos; not found</source>
+        <source>Map format &apos;%1&apos; not found</source>
         <translation>Karttamuotoa &apos;%s&apos; ei löydy</translation>
     </message>
     <message>
@@ -6648,7 +6648,7 @@ Ole hyvä ja valitse tietty tiedostomuoto.</translation>
     <message>
         <location filename="../src/tiled/tilesetdocument.cpp" line="+102"/>
         <location line="+38"/>
-        <source>Tileset format &apos;%s&apos; not found</source>
+        <source>Tileset format &apos;%1&apos; not found</source>
         <translation>Laattamääritysmuotoa &apos;%s&apos; ei löydy</translation>
     </message>
     <message>

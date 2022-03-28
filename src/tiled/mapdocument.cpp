@@ -125,7 +125,7 @@ bool MapDocument::save(const QString &fileName, QString *error)
     MapFormat *mapFormat = writerFormat();
     if (!mapFormat) {
         if (error)
-            *error = tr("Map format '%s' not found").arg(mWriterFormat);
+            *error = tr("Map format '%1' not found").arg(mWriterFormat);
         return false;
     }
 

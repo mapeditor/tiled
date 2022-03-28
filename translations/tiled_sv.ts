@@ -4500,8 +4500,8 @@ Var god ange det specifika formatet.</translation>
     <name>Tiled::MapDocument</name>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+128"/>
-        <source>Map format &apos;%s&apos; not found</source>
-        <translation>Kartformatet &apos;%s&apos; hittades inte</translation>
+        <source>Map format &apos;%1&apos; not found</source>
+        <translation>Kartformatet &apos;%1&apos; hittades inte</translation>
     </message>
     <message>
         <location line="+104"/>
@@ -6648,8 +6648,8 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location filename="../src/tiled/tilesetdocument.cpp" line="+102"/>
         <location line="+38"/>
-        <source>Tileset format &apos;%s&apos; not found</source>
-        <translation>Rutuppsättningsformat &apos;%s&apos; hittades inte</translation>
+        <source>Tileset format &apos;%1&apos; not found</source>
+        <translation>Rutuppsättningsformat &apos;%1&apos; hittades inte</translation>
     </message>
     <message>
         <location line="+83"/>

@@ -4500,8 +4500,8 @@ Veuillez sélectionner un format spécifique.</translation>
     <name>Tiled::MapDocument</name>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+128"/>
-        <source>Map format &apos;%s&apos; not found</source>
-        <translation>Format de Carte &apos;%s&apos; non trouvé</translation>
+        <source>Map format &apos;%1&apos; not found</source>
+        <translation>Format de Carte &apos;%1&apos; non trouvé</translation>
     </message>
     <message>
         <location line="+104"/>
@@ -6648,8 +6648,8 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/tilesetdocument.cpp" line="+102"/>
         <location line="+38"/>
-        <source>Tileset format &apos;%s&apos; not found</source>
-        <translation>Format de Jeu de Tuiles &apos;%s&apos; non trouvé</translation>
+        <source>Tileset format &apos;%1&apos; not found</source>
+        <translation>Format de Jeu de Tuiles &apos;%1&apos; non trouvé</translation>
     </message>
     <message>
         <location line="+83"/>

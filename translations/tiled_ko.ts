@@ -4550,8 +4550,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="-1490"/>
-        <source>Map format &apos;%s&apos; not found</source>
-        <translation>맵 형식 %s를 찾을 수 없습니다</translation>
+        <source>Map format &apos;%1&apos; not found</source>
+        <translation>맵 형식 %1를 찾을 수 없습니다</translation>
     </message>
     <message numerus="yes">
         <location line="+411"/>
@@ -6629,8 +6629,8 @@ Please select specific format.</source>
     <message>
         <location line="-338"/>
         <location line="+38"/>
-        <source>Tileset format &apos;%s&apos; not found</source>
-        <translation>타일셋 형식 &apos;%s&apos;를 찾을 수 없습니다</translation>
+        <source>Tileset format &apos;%1&apos; not found</source>
+        <translation>타일셋 형식 &apos;%1&apos;를 찾을 수 없습니다</translation>
     </message>
     <message>
         <location line="+312"/>

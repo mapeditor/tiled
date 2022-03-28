@@ -4491,8 +4491,8 @@ Please select specific format.</source>
     <name>Tiled::MapDocument</name>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+128"/>
-        <source>Map format &apos;%s&apos; not found</source>
-        <translation>ไม่พบรูปแบบแผนที่ &apos;%s&apos;</translation>
+        <source>Map format &apos;%1&apos; not found</source>
+        <translation>ไม่พบรูปแบบแผนที่ &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+104"/>
@@ -6619,8 +6619,8 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetdocument.cpp" line="+102"/>
         <location line="+38"/>
-        <source>Tileset format &apos;%s&apos; not found</source>
-        <translation>ไม่พบรูปแบบไทล์เซต &apos;%s&apos;</translation>
+        <source>Tileset format &apos;%1&apos; not found</source>
+        <translation>ไม่พบรูปแบบไทล์เซต &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+83"/>

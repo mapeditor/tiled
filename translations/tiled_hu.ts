@@ -4489,7 +4489,7 @@ Válasszon egy adott formátumot.</translation>
     <name>Tiled::MapDocument</name>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+128"/>
-        <source>Map format &apos;%s&apos; not found</source>
+        <source>Map format &apos;%1&apos; not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6617,7 +6617,7 @@ Válasszon egy adott formátumot.</translation>
     <message>
         <location filename="../src/tiled/tilesetdocument.cpp" line="+102"/>
         <location line="+38"/>
-        <source>Tileset format &apos;%s&apos; not found</source>
+        <source>Tileset format &apos;%1&apos; not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
