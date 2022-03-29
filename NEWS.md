@@ -14,6 +14,7 @@
 * Fixed automatically reloaded map becoming the active document
 * Fixed "Map format '%s' not found" error
 * Fixed updating of "Unload/Save World" menu enabled state
+* Fixed offset of tile collision shapes on isometric maps (#3138)
 * Mark world as modified when map size changes (#3020)
 * Hide "Move Objects to Layer" menu when there's only one object layer
 * Scripting: Avoid possible crash due to garbage collection (#3290)

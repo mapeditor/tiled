@@ -516,6 +516,8 @@ void CellRenderer::paintTileCollisionShapes()
     const bool isIsometric = tileset->orientation() == Tileset::Isometric;
     Map::Parameters mapParameters;
     mapParameters.orientation = isIsometric ? Map::Isometric : Map::Orthogonal;
+    mapParameters.width = 1;
+    mapParameters.height = 1;
     mapParameters.tileWidth = tileset->gridSize().width();
     mapParameters.tileHeight = tileset->gridSize().height();
     const Map map(mapParameters);
