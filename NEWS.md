@@ -7,6 +7,7 @@
 * Fixed map bounding rectangle for infinite isometric maps
 * Fixed tile selection to not get removed when deleting (#3281)
 * Fixed custom types not being usable without opening a project (#3295)
+* Fixed use of custom property types in global object types file (#3301)
 * Fixed parallax layer positions for other maps in a world
 * Fixed crash when rendering invalid polygon objects
 * Fixed sticky Bucket Fill preview when hovering same tile

@@ -785,15 +785,16 @@ void Preferences::setObjectTypesFile(const QString &fileName)
     if (newObjectTypesFile.isEmpty())
         newObjectTypesFile = dataLocation() + QLatin1String("/objecttypes.xml");
 
-    if (mObjectTypesFile == newObjectTypesFile)
-        return;
+    if (mObjectTypesFile != newObjectTypesFile) {
+        if (!mObjectTypesFile.isEmpty())
+            mWatcher.removePath(mObjectTypesFile);
 
-    if (!mObjectTypesFile.isEmpty())
-        mWatcher.removePath(mObjectTypesFile);
+        mObjectTypesFile = newObjectTypesFile;
+        mWatcher.addPath(newObjectTypesFile);
+    }
 
-    mObjectTypesFile = newObjectTypesFile;
-    mWatcher.addPath(newObjectTypesFile);
-
+    // Always reload the object types file, even if its path didn't change,
+    // because it might rely on property types defined in the loaded project.
     ObjectTypes objectTypes;
     ObjectTypesSerializer().readObjectTypes(mObjectTypesFile, objectTypes);
     setObjectTypes(objectTypes);
