@@ -54,7 +54,12 @@ public:
     void setExportFormat(FileFormat *) override {}
 
 private:
+    void onWorldsChanged();
     void onWorldReloaded(const QString &filename);
+    void onWorldSaved(const QString &fileName);
+
+    // Document interface
+    bool isModifiedImpl() const override;
 };
 
 } // namespace Tiled

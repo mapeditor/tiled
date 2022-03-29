@@ -200,26 +200,24 @@ std::unique_ptr<World> WorldManager::privateLoadWorld(const QString &fileName,
 
 World *WorldManager::addEmptyWorld(const QString &fileName, QString *errorString)
 {
-    std::unique_ptr<World> world { new World() };
-    world->fileName = fileName;
-    world->onlyShowAdjacentMaps = false;
-
     if (mWorlds.contains(fileName)) {
         if (errorString)
             *errorString = QLatin1String("World already loaded");
         return nullptr;
     }
 
-    mWorlds.insert(fileName, world.release());
+    auto world = std::make_unique<World>();
+    world->fileName = fileName;
 
-    if (saveWorld(fileName, errorString)) {
-        emit worldsChanged();
+    if (saveWorld(*world, errorString)) {
+        mWorlds.insert(fileName, world.release());
         mFileSystemWatcher.addPath(fileName);
+        emit worldLoaded(fileName);
+        emit worldsChanged();
         return mWorlds.value(fileName);
-    } else {
-        unloadWorld(fileName);
-        return nullptr;
     }
+
+    return nullptr;
 }
 
 /**
@@ -251,6 +249,7 @@ World *WorldManager::loadAndStoreWorld(const QString &fileName, QString *errorSt
         mFileSystemWatcher.addPath(fileName);
 
     mWorlds.insert(fileName, world.release());
+    emit worldLoaded(fileName);
 
     return mWorlds.value(fileName);
 }
@@ -268,14 +267,14 @@ void WorldManager::loadWorlds(const QStringList &fileNames)
             anyWorldLoaded = true;
 
     if (anyWorldLoaded)
-        worldsChanged();
+        emit worldsChanged();
 }
 
 bool WorldManager::saveWorld(const QString &fileName, QString *errorString)
 {
     World *savingWorld = nullptr;
 
-    for (auto world : mWorlds) {
+    for (auto world : qAsConst(mWorlds)) {
         if (world->fileName == fileName) {
             savingWorld = world;
             break;
@@ -288,14 +287,19 @@ bool WorldManager::saveWorld(const QString &fileName, QString *errorString)
         return false;
     }
 
+    return saveWorld(*savingWorld, errorString);
+}
+
+bool WorldManager::saveWorld(World &world, QString *errorString)
+{
+    const QDir worldDir = QFileInfo(world.fileName).dir();
+
     QJsonArray maps;
-    for (const World::MapEntry& map : savingWorld->maps) {
+    for (const World::MapEntry& map : qAsConst(world.maps)) {
         QJsonObject jsonMap;
 
-        QDir dir = QFileInfo(fileName).dir();
-        QFileInfo mapFile = QFileInfo(map.fileName);
+        const QString relativeFileName = QDir::cleanPath(worldDir.relativeFilePath(map.fileName));
 
-        QString relativeFileName = QDir::cleanPath(dir.relativeFilePath(map.fileName));
         jsonMap.insert(QLatin1String("fileName"), relativeFileName);
         jsonMap.insert(QLatin1String("x"), map.rect.x());
         jsonMap.insert(QLatin1String("y"), map.rect.y());
@@ -304,16 +308,16 @@ bool WorldManager::saveWorld(const QString &fileName, QString *errorString)
         maps.push_back(jsonMap);
     }
 
-    mIgnoreFileChangeEventForFile = fileName;
+    mIgnoreFileChangeEventForFile = world.fileName;
 
     QJsonObject document;
     document.insert(QLatin1String("maps"), maps);
     document.insert(QLatin1String("type"), QLatin1String("world"));
-    document.insert(QLatin1String("onlyShowAdjacentMaps"), savingWorld->onlyShowAdjacentMaps);
+    document.insert(QLatin1String("onlyShowAdjacentMaps"), world.onlyShowAdjacentMaps);
 
     QJsonDocument doc(document);
 
-    QFile file(fileName);
+    QFile file(world.fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         if (errorString)
             *errorString = tr("Could not open file for reading.");
@@ -323,6 +327,9 @@ bool WorldManager::saveWorld(const QString &fileName, QString *errorString)
     file.write(doc.toJson());
     file.close();
 
+    world.hasUnsavedChanges = false;
+
+    emit worldSaved(world.fileName);
     return true;
 }
 
@@ -362,9 +369,10 @@ void WorldManager::unloadAllWorlds()
 
 const World *WorldManager::worldForMap(const QString &fileName) const
 {
-    for (auto world : mWorlds)
-        if (world->containsMap(fileName))
-            return world;
+    if (!fileName.isEmpty())
+        for (auto world : mWorlds)
+            if (world->containsMap(fileName))
+                return world;
 
     return nullptr;
 }
@@ -435,7 +443,10 @@ bool WorldManager::addMap(const QString &fileName, const QString &mapFileName, c
 
 void World::setMapRect(int mapIndex, const QRect &rect)
 {
-    maps[mapIndex].rect = rect;
+    if (maps[mapIndex].rect != rect) {
+        maps[mapIndex].rect = rect;
+        hasUnsavedChanges = true;
+    }
 }
 
 void World::removeMap(int mapIndex)

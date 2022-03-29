@@ -65,7 +65,8 @@ struct TILEDSHARED_EXPORT World
     QString fileName;
     QVector<MapEntry> maps;
     QVector<Pattern> patterns;
-    bool onlyShowAdjacentMaps;
+    bool onlyShowAdjacentMaps = false;
+    bool hasUnsavedChanges = false;
 
     int mapIndex(const QString &fileName) const;
     void setMapRect(int mapIndex, const QRect &rect);
@@ -121,10 +122,13 @@ public:
 
 signals:
     void worldsChanged();
+    void worldLoaded(const QString &fileName);
     void worldReloaded(const QString &fileName);
     void worldUnloaded(const QString &fileName);
+    void worldSaved(const QString &fileName);
 
 private:
+    bool saveWorld(World &world, QString *errorString = nullptr);
     World *loadAndStoreWorld(const QString &fileName, QString *errorString = nullptr);
     void reloadWorldFiles(const QStringList &fileNames);
 

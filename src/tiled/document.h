@@ -148,6 +148,9 @@ signals:
 
 protected:
     virtual std::unique_ptr<EditableAsset> createEditable() = 0;
+    virtual bool isModifiedImpl() const;
+
+    void updateIsModified();
 
     void setFileName(const QString &fileName);
 
@@ -163,8 +166,6 @@ protected:
 private:
     void currentObjectDocumentChanged(const ChangeEvent &change);
     void currentObjectDocumentDestroyed();
-
-    void updateModifiedChanged();
 
     const DocumentType mType;
 
