@@ -20,12 +20,4 @@
 0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="3" name="regions" width="7" height="4" opacity="0.58">
-  <data encoding="csv">
-0,0,0,0,0,0,0,
-0,13,13,0,13,13,0,
-0,13,13,0,13,13,0,
-0,0,0,0,0,0,0
-</data>
- </layer>
 </map>

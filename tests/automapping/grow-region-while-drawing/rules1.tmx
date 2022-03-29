@@ -8,25 +8,11 @@
 0,0,0,0,0
 </data>
  </layer>
- <layer id="2" name="output_set" width="5" height="3" visible="0">
+ <layer id="2" name="output_set" width="5" height="3">
   <data encoding="csv">
 0,3,0,4,0,
 0,3,0,4,0,
 0,0,0,4,0
-</data>
- </layer>
- <layer id="3" name="regions_input" width="5" height="3" opacity="0.51">
-  <data encoding="csv">
-0,0,0,13,0,
-0,13,0,13,0,
-0,0,0,0,0
-</data>
- </layer>
- <layer id="4" name="regions_output" width="5" height="3" visible="0" opacity="0.44">
-  <data encoding="csv">
-0,13,0,13,0,
-0,13,0,13,0,
-0,0,0,13,0
 </data>
  </layer>
 </map>

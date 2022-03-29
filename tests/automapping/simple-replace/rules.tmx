@@ -11,14 +11,7 @@
 0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="2" name="output_set" width="7" height="3" visible="0">
-  <data encoding="csv">
-0,0,0,0,0,0,0,
-0,3,0,4,0,5,0,
-0,0,0,0,0,0,0
-</data>
- </layer>
- <layer id="3" name="regions" width="7" height="3" visible="0">
+ <layer id="2" name="output_set" width="7" height="3">
   <data encoding="csv">
 0,0,0,0,0,0,0,
 0,3,0,4,0,5,0,

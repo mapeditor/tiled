@@ -15,18 +15,4 @@
 0,0,0
 </data>
  </layer>
- <layer id="3" name="regions_input" width="3" height="3" opacity="0.51">
-  <data encoding="csv">
-0,0,0,
-0,4,0,
-0,0,0
-</data>
- </layer>
- <layer id="4" name="regions_output" width="3" height="3" opacity="0.44">
-  <data encoding="csv">
-0,0,0,
-0,5,0,
-0,0,0
-</data>
- </layer>
 </map>

@@ -11,14 +11,4 @@
    H4sIAAAAAAAAA2NlQAA2JDY7EpuDgbaAE4nNhcTmRmLz0NgNvEhsPiQ2PxJbgMZuEEViiyGxxZHYjGSYCwBnqTqo5AEAAA==
   </data>
  </layer>
- <layer id="3" name="regions_input" width="11" height="11">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA2NkYGBgZIAARiS2OJq4OBKNTR4bm1iAy1xxNHFxHGK43EuqG7D5HdkORgbsbsAVDuS4gVA4MDKgxgc2fehqAbIRNfjkAQAA
-  </data>
- </layer>
- <layer id="5" name="regions_output" width="11" height="11">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA2NlQAA2JDY7EpuDgbaAE4nNhcTmRmLz0NgNvEhsPiQ2PxJbgMZuEEViiyGxxZHYjGSYCwBnqTqo5AEAAA==
-  </data>
- </layer>
 </map>
