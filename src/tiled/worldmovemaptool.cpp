@@ -56,7 +56,8 @@ class SetMapRectCommand : public QUndoCommand
 {
 public:
     SetMapRectCommand(const QString &mapName, QRect rect)
-        : mMapName(mapName)
+        : QUndoCommand(QCoreApplication::translate("Undo Commands", "Move Map"))
+        , mMapName(mapName)
         , mRect(rect)
     {
         const WorldManager &manager = WorldManager::instance();
@@ -81,12 +82,12 @@ private:
 
 
 WorldMoveMapTool::WorldMoveMapTool(QObject *parent)
-    : AbstractWorldTool("WorldMoveMapTool", tr("World Tool"),
+    : AbstractWorldTool("WorldMoveMapTool",
+                        tr("World Tool"),
                         QIcon(QLatin1String(":images/22/world-move-tool.png")),
                         QKeySequence(Qt::Key_N),
                         parent)
 {
-    languageChanged();
 }
 
 WorldMoveMapTool::~WorldMoveMapTool()
