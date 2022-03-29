@@ -24,13 +24,14 @@ void test_AutoMapping::autoMap_data()
 {
     QTest::addColumn<QString>("directory");
 
-    QTest::newRow("simple-replace") << QStringLiteral("simple-replace");
-    QTest::newRow("simple-2x2-rule") << QStringLiteral("simple-2x2-rule");
+    QTest::newRow("inputnot") << QStringLiteral("inputnot");
+    QTest::newRow("match-type") << QStringLiteral("match-type");
     QTest::newRow("option-no-overlapping-rules") << QStringLiteral("option-no-overlapping-rules");
     QTest::newRow("option-overflow-border") << QStringLiteral("option-overflow-border");
     QTest::newRow("option-wrap-border") << QStringLiteral("option-wrap-border");
+    QTest::newRow("simple-2x2-rule") << QStringLiteral("simple-2x2-rule");
+    QTest::newRow("simple-replace") << QStringLiteral("simple-replace");
     QTest::newRow("terrain-corner") << QStringLiteral("terrain-corner");
-    QTest::newRow("match-type") << QStringLiteral("match-type");
 }
 
 void test_AutoMapping::autoMap()
