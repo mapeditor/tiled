@@ -13,6 +13,7 @@
 * Fixed sticky Bucket Fill preview when hovering same tile
 * Fixed automatically reloaded map becoming the active document
 * Fixed "Map format '%s' not found" error
+* Fixed updating of "Unload/Save World" menu enabled state
 * Hide "Move Objects to Layer" menu when there's only one object layer
 * Scripting: Avoid possible crash due to garbage collection (#3290)
 * Scripting: Fixed missing null check in Tileset.loadFromImage and Tile.setImage

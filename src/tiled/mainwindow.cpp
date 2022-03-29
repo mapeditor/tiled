@@ -670,7 +670,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             });
         }
     });
-    connect(mUi->menuMap, &QMenu::aboutToShow, this, [this] {
+    connect(mUi->menuWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
         mUi->menuSaveWorld->setEnabled(DocumentManager::instance()->isAnyWorldModified());
     });
