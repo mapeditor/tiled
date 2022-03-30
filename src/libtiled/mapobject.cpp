@@ -1,6 +1,6 @@
 /*
  * mapobject.cpp
- * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2022, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2017, Klimov Viktor <vitek.fomino@bk.ru>
  *
@@ -141,7 +141,7 @@ QRectF MapObject::boundsUseTile() const
 
 static void align(QRectF &r, Alignment alignment)
 {
-    r.translate(-alignmentOffset(r, alignment));
+    r.translate(-alignmentOffset(r.size(), alignment));
 }
 
 /**
@@ -315,34 +315,21 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
 }
 
 /**
- * Flip this object in the given \a direction. This doesn't change the size
- * of the object.
+ * Flip this object in the given \a direction around the given \a origin in
+ * screen coordinates. This doesn't change the size of the object.
  */
 void MapObject::flip(FlipDirection direction, const QPointF &origin)
 {
-    //computing new rotation and flip transform
-    QTransform flipTransform;
-    flipTransform.translate(origin.x(), origin.y());
-    qreal newRotation = 0;
-    if (direction == FlipHorizontally) {
-        newRotation = 180.0 - rotation();
-        flipTransform.scale(-1, 1);
-    } else { //direction == FlipVertically
-        flipTransform.scale(1, -1);
-        newRotation = -rotation();
+    if (!mCell.isEmpty() || shape() == Text) {
+        flipInScreenCoordinates(direction, origin);
+    } else {
+        const auto renderer = MapRenderer::create(map());
+        const QPointF pixelOrigin = renderer->screenToPixelCoords(origin);
+
+        flipInPixelCoordinates(direction, pixelOrigin);
     }
-    flipTransform.translate(-origin.x(), -origin.y());
 
-
-    if (!mCell.isEmpty())
-        flipTileObject(flipTransform);
-    else if (!mPolygon.isEmpty())
-        flipPolygonObject(flipTransform);
-    else
-        flipRectObject(flipTransform);
-
-    //installing new rotation after computing new position
-    setRotation(newRotation);
+    setRotation(-rotation());
 }
 
 /**
@@ -437,44 +424,81 @@ void MapObject::detachFromTemplate()
     setObjectTemplate(nullptr);
 }
 
-void MapObject::flipRectObject(const QTransform &flipTransform)
+/**
+ * Tile and text objects are flipped in screen coordinate space. Flipping tile
+ * objects also flips their image.
+ */
+void MapObject::flipInScreenCoordinates(FlipDirection direction, const QPointF &screenOrigin)
 {
-    QPointF oldBottomLeftPoint = QPointF(cos(qDegreesToRadians(rotation() + 90)) * height() + x(),
-                                         sin(qDegreesToRadians(rotation() + 90)) * height() + y());
-    QPointF newPos = flipTransform.map(oldBottomLeftPoint);
+    const auto renderer = MapRenderer::create(map());
+    const QPointF screenPos = renderer->pixelToScreenCoords(position());
+
+    QTransform rotationTransform;
+    rotationTransform.rotate(rotation());
+    QPointF topLeftScreenPos = screenPos + rotationTransform.map(-alignmentOffset(size(), alignment()));
+    QPointF newTopLeftScreenPos = topLeftScreenPos;
+
+    const Alignment flippedAlignment = flipAlignment(alignment(), direction);
+    QPointF flippedAlignmentOffset = -alignmentOffset(size(), flippedAlignment);
+
+    if (direction == FlipHorizontally) {
+        newTopLeftScreenPos.rx() += 2 * (screenOrigin.x() - topLeftScreenPos.x());
+        flippedAlignmentOffset.rx() *= -1;
+
+        if (!mCell.isEmpty())
+            mCell.setFlippedHorizontally(!mCell.flippedHorizontally());
+    } else { // direction == FlipVertically
+        newTopLeftScreenPos.ry() += 2 * (screenOrigin.y() - topLeftScreenPos.y());
+        flippedAlignmentOffset.ry() *= -1;
+
+        if (!mCell.isEmpty())
+            mCell.setFlippedVertically(!mCell.flippedVertically());
+    }
+
+    rotationTransform.reset();
+    rotationTransform.rotate(-rotation());
+    QPointF newScreenPos = newTopLeftScreenPos - rotationTransform.map(flippedAlignmentOffset);
+    QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
 
     setPosition(newPos);
 }
 
-void MapObject::flipPolygonObject(const QTransform &flipTransform)
+/**
+ * Rectangles, ellipses and polygons are flipped in "pixel space", the
+ * coordinate space before isometric projection.
+ *
+ * NOTE: No attempt to handle rotated shapes on isometric maps is made. The
+ * expectation is that due to their weird handling, nobody really does that
+ * anyway.
+ */
+void MapObject::flipInPixelCoordinates(FlipDirection direction, const QPointF &pixelOrigin)
 {
-    QTransform polygonToMapTransform;
-    polygonToMapTransform.translate(x(), y());
-    polygonToMapTransform.rotate(rotation());
+    QTransform flipTransform;
+    if (direction == FlipHorizontally)
+        flipTransform.scale(-1, 1);
+    else // direction == FlipVertically
+        flipTransform.scale(1, -1);
 
-    QPointF localPolygonCenter = mPolygon.boundingRect().center();
-    QTransform polygonFlip;
-    polygonFlip.translate(localPolygonCenter.x(), localPolygonCenter.y());
-    polygonFlip.scale(1, -1);
-    polygonFlip.translate(-localPolygonCenter.x(), -localPolygonCenter.y());
+    QTransform flipAroundOriginTransform;
+    flipAroundOriginTransform.translate(pixelOrigin.x(), pixelOrigin.y());
+    flipAroundOriginTransform = flipTransform * flipAroundOriginTransform;
+    flipAroundOriginTransform.translate(-pixelOrigin.x(), -pixelOrigin.y());
 
-    QPointF oldBottomLeftPoint = polygonToMapTransform.map(polygonFlip.map(QPointF(0, 0)));
-    QPointF newPos = flipTransform.map(oldBottomLeftPoint);
+    if (!mPolygon.isEmpty()) {
+        QTransform polygonToMapTransform;
+        polygonToMapTransform.translate(x(), y());
+        polygonToMapTransform.rotate(rotation());
 
-    setPolygon(polygonFlip.map(mPolygon));
-    setPosition(newPos);
-}
+        setPosition(flipAroundOriginTransform.map(position()));
+        setPolygon(flipTransform.map(mPolygon));
+    } else {
+        QTransform rotationTransform;
+        rotationTransform.rotate(rotation());
 
-void MapObject::flipTileObject(const QTransform &flipTransform)
-{
-    mCell.setFlippedVertically(!mCell.flippedVertically());
-
-    //old tile position is bottomLeftPoint
-    QPointF topLeftTilePoint = QPointF(cos(qDegreesToRadians(rotation() - 90)) * height() + x(),
-                                       sin(qDegreesToRadians(rotation() - 90)) * height() + y());
-    QPointF newPos = flipTransform.map(topLeftTilePoint);
-
-    setPosition(newPos);
+        const QPointF newOrigin = alignmentOffset(size(), flipAlignment(alignment(), direction));
+        const QPointF newPos = flipAroundOriginTransform.map(position() + rotationTransform.map(newOrigin));
+        setPosition(newPos);
+    }
 }
 
 } // namespace Tiled

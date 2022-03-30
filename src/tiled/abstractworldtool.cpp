@@ -143,6 +143,8 @@ AbstractWorldTool::AbstractWorldTool(Id id,
     mRemoveMapFromWorldAction->setShortcut(Qt::SHIFT + Qt::Key_D);
     ActionManager::registerAction(mRemoveMapFromWorldAction, "RemoveMap");
     connect(mRemoveMapFromWorldAction, &QAction::triggered, this, &AbstractWorldTool::removeCurrentMapFromWorld);
+
+    languageChangedImpl();
 }
 
 AbstractWorldTool::~AbstractWorldTool() = default;
@@ -192,6 +194,11 @@ void AbstractWorldTool::mousePressed(QGraphicsSceneMouseEvent *event)
 }
 
 void AbstractWorldTool::languageChanged()
+{
+    languageChangedImpl();
+}
+
+void AbstractWorldTool::languageChangedImpl()
 {
     mAddAnotherMapToWorldAction->setText(tr("Add another map to the current world"));
     mAddMapToWorldAction->setText(tr("Add the current map to a loaded world"));
@@ -275,8 +282,8 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
             const QString targetFilename = targetDocument->fileName();
             menu.addAction(QIcon(QLatin1String(":images/24/world-map-remove-this.png")),
                            tr("Remove \"%1\" from World \"%2\"")
-                           .arg(targetDocument->displayName())
-                           .arg(targetWorld->displayName()),
+                           .arg(targetDocument->displayName(),
+                                targetWorld->displayName()),
                            this, [=] { removeFromWorld(targetFilename); });
         }
     } else {
@@ -285,8 +292,8 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
                 continue;
 
             menu.addAction(tr("Add \"%1\" to World \"%2\"")
-                           .arg(currentDocument->displayName())
-                           .arg(world->displayName()),
+                           .arg(currentDocument->displayName(),
+                                world->displayName()),
                            this, [=] { addToWorld(world); });
         }
     }
@@ -391,8 +398,8 @@ void AbstractWorldTool::populateToolBar(QToolBar *toolBar)
                 continue;
 
             addToWorldMenu->addAction(tr("Add \"%1\" to World \"%2\"")
-                                      .arg(mapDocument()->displayName())
-                                      .arg(world->displayName()),
+                                      .arg(mapDocument()->displayName(),
+                                           world->displayName()),
                                       this, [=] { addToWorld(world); });
         }
     });

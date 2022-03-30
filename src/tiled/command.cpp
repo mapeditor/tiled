@@ -149,11 +149,10 @@ void Command::execute(bool inTerminal) const
     if (saveBeforeExecute) {
         ActionManager::instance()->action("Save")->trigger();
 
-        if (Document *document = DocumentManager::instance()->currentDocument()) {
-            const World *world = WorldManager::instance().worldForMap(document->fileName());
-            if (world && WorldManager::instance().saveWorld(world->fileName))
-                DocumentManager::instance()->ensureWorldDocument(world->fileName)->undoStack()->setClean();
-        }
+        if (Document *document = DocumentManager::instance()->currentDocument())
+            if (document->type() == Document::MapDocumentType)
+                if (const World *world = WorldManager::instance().worldForMap(document->fileName()))
+                    WorldManager::instance().saveWorld(world->fileName);
     }
 
     // Start the process

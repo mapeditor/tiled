@@ -14,11 +14,17 @@
 * Fixed map bounding rectangle for infinite isometric maps
 * Fixed tile selection to not get removed when deleting (#3281)
 * Fixed custom types not being usable without opening a project (#3295)
+* Fixed use of custom property types in global object types file (#3301)
 * Fixed parallax layer positions for other maps in a world
 * Fixed crash when rendering invalid polygon objects
 * Fixed sticky Bucket Fill preview when hovering same tile
 * Fixed automatically reloaded map becoming the active document
 * Fixed "Map format '%s' not found" error
+* Fixed updating of "Unload/Save World" menu enabled state
+* Fixed flipping horizontally to not rotate objects by 180 degrees (#1704)
+* Fixed displacement when flipping horizontally on isometric maps (#2660)
+* Fixed offset of tile collision shapes on isometric maps (#3138)
+* Mark world as modified when map size changes (#3020)
 * Hide "Move Objects to Layer" menu when there's only one object layer
 * Scripting: Avoid possible crash due to garbage collection (#3290)
 * Scripting: Fixed missing null check in Tileset.loadFromImage and Tile.setImage

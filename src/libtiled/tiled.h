@@ -1,6 +1,6 @@
 /*
  * tiled.h
- * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2013-2022, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -79,7 +79,11 @@ static const char FRAMES_MIMETYPE[] = "application/vnd.frame.list";
 static const char LAYERS_MIMETYPE[] = "application/vnd.layer.list";
 static const char PROPERTIES_MIMETYPE[] = "application/vnd.properties.list";
 
-TILEDSHARED_EXPORT QPointF alignmentOffset(const QRectF &r, Alignment alignment);
+TILEDSHARED_EXPORT QPointF alignmentOffset(const QSizeF &size, Alignment alignment);
+TILEDSHARED_EXPORT Alignment flipAlignment(Alignment alignment, FlipDirection direction);
+
+inline QPointF alignmentOffset(const QRectF &r, Alignment alignment)
+{ return alignmentOffset(r.size(), alignment); }
 
 TILEDSHARED_EXPORT QString toFileReference(const QUrl &url, const QString &path = QString());
 TILEDSHARED_EXPORT QUrl toUrl(const QString &filePathOrUrl, const QString &path = QString());

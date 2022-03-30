@@ -283,6 +283,8 @@ DocumentManager::DocumentManager(QObject *parent)
     };
 
     WorldManager& worldManager = WorldManager::instance();
+    connect(&worldManager, &WorldManager::worldLoaded,
+            this, &DocumentManager::onWorldLoaded);
     connect(&worldManager, &WorldManager::worldUnloaded,
             this, &DocumentManager::onWorldUnloaded);
 }
@@ -1255,12 +1257,9 @@ TilesetDocument *DocumentManager::openTilesetFile(const QString &path)
 
 WorldDocument *DocumentManager::ensureWorldDocument(const QString &fileName)
 {
-    if (!mWorldDocuments.contains(fileName)) {
-        WorldDocument* worldDocument = new WorldDocument(fileName);
-        mWorldDocuments.insert(fileName, worldDocument);
-        mUndoGroup->addStack(worldDocument->undoStack());
-    }
-    return mWorldDocuments[fileName];
+    auto document = mWorldDocuments[fileName];
+    Q_ASSERT(document);
+    return document;
 }
 
 bool DocumentManager::isAnyWorldModified() const
@@ -1275,7 +1274,7 @@ bool DocumentManager::isAnyWorldModified() const
 bool DocumentManager::isWorldModified(const QString &fileName) const
 {
     if (const auto worldDocument = mWorldDocuments.value(fileName))
-        return !worldDocument->undoStack()->isClean();
+        return worldDocument->isModified();
     return false;
 }
 
@@ -1303,9 +1302,20 @@ QString DocumentManager::fileDialogStartLocation() const
     return Preferences::homeLocation();
 }
 
+void DocumentManager::onWorldLoaded(const QString &worldFile)
+{
+    Q_ASSERT(!mWorldDocuments.contains(worldFile));
+
+    WorldDocument *worldDocument = new WorldDocument(worldFile);
+    mWorldDocuments.insert(worldFile, worldDocument);
+    mUndoGroup->addStack(worldDocument->undoStack());
+}
+
 void DocumentManager::onWorldUnloaded(const QString &worldFile)
 {
-    delete mWorldDocuments.take(worldFile);
+    auto document = mWorldDocuments.take(worldFile);
+    Q_ASSERT(document);
+    delete document;
 }
 
 static bool mayNeedColumnCountAdjustment(const Tileset &tileset)

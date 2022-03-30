@@ -89,6 +89,8 @@ protected:
     void showContextMenu(QGraphicsSceneMouseEvent *);
 
 private:
+    void languageChangedImpl();
+
     MapDocument *mTargetMap = nullptr;
 
     QAction *mAddAnotherMapToWorldAction;

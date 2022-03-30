@@ -32,8 +32,12 @@ WorldDocument::WorldDocument(const QString &fileName, QObject *parent)
     : Document(WorldDocumentType, fileName, parent)
 {
     WorldManager &worldManager = WorldManager::instance();
+    connect(&worldManager, &WorldManager::worldsChanged,
+            this, &WorldDocument::onWorldsChanged);
     connect(&worldManager, &WorldManager::worldReloaded,
             this, &WorldDocument::onWorldReloaded);
+    connect(&worldManager, &WorldManager::worldSaved,
+            this, &WorldDocument::onWorldSaved);
 }
 
 QString WorldDocument::displayName() const
@@ -50,10 +54,33 @@ bool WorldDocument::save(const QString &fileName, QString *error)
     return WorldManager::instance().saveWorld(fileName, error);
 }
 
+void WorldDocument::onWorldsChanged()
+{
+    if (undoStack()->isClean())
+        updateIsModified(); // force, because map resize isn't affecting world undo stack
+}
+
 void WorldDocument::onWorldReloaded(const QString &fileName)
 {
     if (this->fileName() == fileName)
         undoStack()->clear();
+}
+
+void WorldDocument::onWorldSaved(const QString &fileName)
+{
+    if (this->fileName() != fileName)
+        return;
+
+    if (undoStack()->isClean())
+        updateIsModified(); // force, because map resize isn't affecting world undo stack
+    else
+        undoStack()->setClean();
+}
+
+bool WorldDocument::isModifiedImpl() const
+{
+    const World *world = WorldManager::instance().worlds().value(fileName());
+    return Document::isModifiedImpl() || (world && world->hasUnsavedChanges);
 }
 
 } // namespace Tiled

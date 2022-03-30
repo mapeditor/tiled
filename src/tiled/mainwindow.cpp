@@ -664,13 +664,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             mUi->menuSaveWorld->addAction(world->fileName, this, [this, fileName = world->fileName] {
                 QString error;
                 if (!WorldManager::instance().saveWorld(fileName, &error))
-                    QMessageBox::critical(this, tr("Error Writing World File"), error);
-
-                DocumentManager::instance()->ensureWorldDocument(fileName)->undoStack()->setClean();
+                    QMessageBox::critical(this, tr("Error Saving World"), error);
             });
         }
     });
-    connect(mUi->menuMap, &QMenu::aboutToShow, this, [this] {
+    connect(mUi->menuWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
         mUi->menuSaveWorld->setEnabled(DocumentManager::instance()->isAnyWorldModified());
     });
@@ -1246,8 +1244,6 @@ void MainWindow::saveAll()
             QMessageBox::critical(this, tr("Error Saving World"), error);
             return;
         }
-
-        DocumentManager::instance()->ensureWorldDocument(world->fileName)->undoStack()->setClean();
     }
 }
 
@@ -1300,12 +1296,15 @@ bool MainWindow::confirmSaveWorld(const QString &fileName)
             QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 
     switch (ret) {
-    case QMessageBox::Save:
-        if (!WorldManager::instance().saveWorld(fileName))
+    case QMessageBox::Save: {
+        QString error;
+        if (!WorldManager::instance().saveWorld(fileName, &error)) {
+            QMessageBox::critical(window(), tr("Error Saving World"), error);
             return false;
+        }
 
-        DocumentManager::instance()->ensureWorldDocument(fileName)->undoStack()->setClean();
         return true;
+    }
     case QMessageBox::Discard:
         return true;
     case QMessageBox::Cancel:

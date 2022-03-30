@@ -47,8 +47,8 @@ Document::Document(DocumentType type, const QString &fileName,
     if (!mCanonicalFilePath.isEmpty())
         sDocumentInstances.insert(mCanonicalFilePath, this);
 
-    connect(mUndoStack, &QUndoStack::indexChanged, this, &Document::updateModifiedChanged);
-    connect(mUndoStack, &QUndoStack::cleanChanged, this, &Document::updateModifiedChanged);
+    connect(mUndoStack, &QUndoStack::indexChanged, this, &Document::updateIsModified);
+    connect(mUndoStack, &QUndoStack::cleanChanged, this, &Document::updateIsModified);
 }
 
 Document::~Document()
@@ -198,7 +198,7 @@ void Document::currentObjectDocumentDestroyed()
     setCurrentObject(nullptr);
 }
 
-void Document::updateModifiedChanged()
+bool Document::isModifiedImpl() const
 {
     const QUndoStack &undo = *undoStack();
     const int cleanIndex = undo.cleanIndex();
@@ -225,6 +225,13 @@ void Document::updateModifiedChanged()
             }
         }
     }
+
+    return modified;
+}
+
+void Document::updateIsModified()
+{
+    const bool modified = isModifiedImpl();
 
     if (mModified != modified) {
         mModified = modified;

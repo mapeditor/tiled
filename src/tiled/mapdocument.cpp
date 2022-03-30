@@ -34,6 +34,7 @@
 #include "containerhelpers.h"
 #include "editablemap.h"
 #include "flipmapobjects.h"
+#include "geometry.h"
 #include "grouplayer.h"
 #include "imagelayer.h"
 #include "issuesmodel.h"
@@ -417,14 +418,24 @@ void MapDocument::offsetMap(const QList<Layer*> &layers,
 }
 
 /**
- * Flips the selected objects in the given \a direction.
+ * Flips the selected objects in the given \a direction, around the given
+ * \a origin.
  */
 void MapDocument::flipSelectedObjects(FlipDirection direction)
 {
     if (mSelectedObjects.isEmpty())
         return;
 
-    undoStack()->push(new FlipMapObjects(this, mSelectedObjects, direction));
+    QRectF sharedBounds;
+
+    for (const MapObject *object : qAsConst(mSelectedObjects)) {
+        QPointF screenPos = mRenderer->pixelToScreenCoords(object->position());
+        QRectF bounds = object->screenBounds(*mRenderer);
+        sharedBounds |= rotateAt(screenPos, object->rotation()).mapRect(bounds);
+    }
+
+    const QPointF origin = sharedBounds.center();
+    undoStack()->push(new FlipMapObjects(this, mSelectedObjects, direction, origin));
 }
 
 /**

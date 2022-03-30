@@ -38,6 +38,7 @@
 #include "tilelayer.h"
 #include "tilelayeritem.h"
 #include "tileselectionitem.h"
+#include "worldmanager.h"
 #include "zoomable.h"
 
 #include <QCursor>
@@ -410,6 +411,19 @@ void MapItem::mapChanged()
 
     syncAllObjectItems();
     updateBoundingRect();
+
+    // When this map is part of a world, update that map's rect when necessary
+    const QString mapFileName = mapDocument()->fileName();
+    if (const World *world = WorldManager::instance().worldForMap(mapFileName)) {
+        if (world->canBeModified()) {
+            const QRect currentRectInWorld = world->mapRect(mapFileName);
+            QRect resizedRect = mapDocument()->renderer()->mapBoundingRect();
+            if (currentRectInWorld.size() != resizedRect.size()) {
+                resizedRect.translate(currentRectInWorld.topLeft());
+                WorldManager::instance().setMapRect(mapFileName, resizedRect);
+            }
+        }
+    }
 }
 
 void MapItem::tileLayerChanged(TileLayer *tileLayer, MapDocument::TileLayerChangeFlags flags)
@@ -775,7 +789,7 @@ void MapItem::updateBoundingRect()
         if (layerItem->layer()->isTileLayer())
             boundingRect |= layerItem->boundingRect().translated(layerItem->layer()->totalOffset());
 
-    QRectF mapBoundingRect = mapDocument()->renderer()->mapBoundingRect();
+    const QRectF mapBoundingRect = mapDocument()->renderer()->mapBoundingRect();
 
     // For fixed-size maps, make the bounding rect at least the size of the map
     if (!mMapDocument->map()->infinite())

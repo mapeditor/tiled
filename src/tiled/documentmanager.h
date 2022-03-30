@@ -189,6 +189,7 @@ public slots:
     void saveFile();
 
 private:
+    void onWorldLoaded(const QString &worldFile);
     void onWorldUnloaded(const QString &worldFile);
 
     void currentIndexChanged();
