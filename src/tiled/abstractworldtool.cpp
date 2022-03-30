@@ -145,6 +145,8 @@ AbstractWorldTool::AbstractWorldTool(Id id,
     mRemoveMapFromWorldAction->setShortcut(Qt::SHIFT + Qt::Key_D);
     ActionManager::registerAction(mRemoveMapFromWorldAction, "RemoveMap");
     connect(mRemoveMapFromWorldAction, &QAction::triggered, this, &AbstractWorldTool::removeCurrentMapFromWorld);
+
+    languageChangedImpl();
 }
 
 AbstractWorldTool::~AbstractWorldTool() = default;
@@ -194,6 +196,11 @@ void AbstractWorldTool::mousePressed(QGraphicsSceneMouseEvent *event)
 }
 
 void AbstractWorldTool::languageChanged()
+{
+    languageChangedImpl();
+}
+
+void AbstractWorldTool::languageChangedImpl()
 {
     mAddAnotherMapToWorldAction->setText(tr("Add another map to the current world"));
     mAddMapToWorldAction->setText(tr("Add the current map to a loaded world"));

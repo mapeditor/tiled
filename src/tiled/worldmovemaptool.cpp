@@ -160,10 +160,6 @@ void WorldMoveMapTool::mouseEntered()
 {
 }
 
-void WorldMoveMapTool::mouseLeft()
-{
-}
-
 void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (mDraggingMap)

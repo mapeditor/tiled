@@ -36,9 +36,8 @@ public:
     explicit WorldMoveMapTool(QObject *parent = nullptr);
     ~WorldMoveMapTool() override;
 
-    void keyPressed(QKeyEvent *) override;
+    void keyPressed(QKeyEvent *event) override;
     void mouseEntered() override;
-    void mouseLeft() override;
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
