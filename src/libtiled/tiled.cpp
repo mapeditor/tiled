@@ -1,6 +1,6 @@
 /*
  * tiled.cpp
- * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2017-2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -22,21 +22,56 @@
 
 #include <QDir>
 
-QPointF Tiled::alignmentOffset(const QRectF &r, Tiled::Alignment alignment)
+QPointF Tiled::alignmentOffset(const QSizeF &size, Alignment alignment)
 {
     switch (alignment) {
     case Unspecified:   break;
     case TopLeft:       break;
-    case Top:           return QPointF(r.width() / 2, 0);
-    case TopRight:      return QPointF(r.width(), 0);
-    case Left:          return QPointF(0, r.height() / 2);
-    case Center:        return QPointF(r.width() / 2, r.height() / 2);
-    case Right:         return QPointF(r.width(), r.height() / 2);
-    case BottomLeft:    return QPointF(0, r.height());
-    case Bottom:        return QPointF(r.width() / 2, r.height());
-    case BottomRight:   return QPointF(r.width(), r.height());
+    case Top:           return QPointF(size.width() / 2, 0);
+    case TopRight:      return QPointF(size.width(), 0);
+    case Left:          return QPointF(0, size.height() / 2);
+    case Center:        return QPointF(size.width() / 2, size.height() / 2);
+    case Right:         return QPointF(size.width(), size.height() / 2);
+    case BottomLeft:    return QPointF(0, size.height());
+    case Bottom:        return QPointF(size.width() / 2, size.height());
+    case BottomRight:   return QPointF(size.width(), size.height());
     }
     return QPointF();
+}
+
+Tiled::Alignment Tiled::flipAlignment(Alignment alignment, FlipDirection direction)
+{
+    switch (direction) {
+    case FlipHorizontally:
+        switch (alignment) {
+        case Unspecified:   Q_ASSERT(false); break;
+        case TopLeft:       return TopRight;
+        case Top:           return Top;
+        case TopRight:      return TopLeft;
+        case Left:          return Right;
+        case Center:        return Center;
+        case Right:         return Left;
+        case BottomLeft:    return BottomRight;
+        case Bottom:        return Bottom;
+        case BottomRight:   return BottomLeft;
+        }
+        break;
+    case FlipVertically:
+        switch (alignment) {
+        case Unspecified:   Q_ASSERT(false); break;
+        case TopLeft:       return BottomLeft;
+        case Top:           return Bottom;
+        case TopRight:      return BottomRight;
+        case Left:          return Left;
+        case Center:        return Center;
+        case Right:         return Right;
+        case BottomLeft:    return TopLeft;
+        case Bottom:        return Top;
+        case BottomRight:   return TopRight;
+        }
+        break;
+    }
+    return alignment;
 }
 
 QString Tiled::toFileReference(const QUrl &url, const QString &path)

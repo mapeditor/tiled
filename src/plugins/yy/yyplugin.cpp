@@ -1001,7 +1001,7 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
                 // Tile objects don't necessarily have top-left origin in Tiled,
                 // so the position needs to be translated for top-left origin in
                 // GameMaker, taking into account the rotation.
-                origin -= alignmentOffset(mapObject->bounds(), mapObject->alignment());
+                origin -= alignmentOffset(mapObject->size(), mapObject->alignment());
             }
 
             // Allow overriding the scale using custom properties
@@ -1099,7 +1099,7 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
             // Tile objects don't necessarily have top-left origin in Tiled,
             // so the position needs to be translated for top-left origin in
             // GameMaker, taking into account the rotation.
-            origin -= alignmentOffset(mapObject->bounds(), mapObject->alignment());
+            origin -= alignmentOffset(mapObject->size(), mapObject->alignment());
 
             // Adjust the position based on the origin
             QTransform transform;

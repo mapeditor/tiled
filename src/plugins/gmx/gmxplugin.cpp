@@ -245,7 +245,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
                 // Tile objects don't necessarily have top-left origin in Tiled,
                 // so the position needs to be translated for top-left origin in
                 // GameMaker, taking into account the rotation.
-                origin -= alignmentOffset(object->bounds(), object->alignment());
+                origin -= alignmentOffset(object->size(), object->alignment());
             }
 
             // Allow overriding the scale using custom properties

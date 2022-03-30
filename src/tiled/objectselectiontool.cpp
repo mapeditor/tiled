@@ -814,12 +814,12 @@ void ObjectSelectionTool::updateHandlesAndOrigin()
 // TODO: Check whether this function should be moved into MapObject::bounds
 static void align(QRectF &r, Alignment alignment)
 {
-    r.translate(-alignmentOffset(r, alignment));
+    r.translate(-alignmentOffset(r.size(), alignment));
 }
 
 static void unalign(QRectF &r, Alignment alignment)
 {
-    r.translate(alignmentOffset(r, alignment));
+    r.translate(alignmentOffset(r.size(), alignment));
 }
 
 static QRectF pixelBounds(const MapObject *object)

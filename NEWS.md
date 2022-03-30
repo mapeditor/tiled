@@ -14,6 +14,8 @@
 * Fixed automatically reloaded map becoming the active document
 * Fixed "Map format '%s' not found" error
 * Fixed updating of "Unload/Save World" menu enabled state
+* Fixed flipping horizontally to not rotate objects by 180 degrees (#1704)
+* Fixed displacement when flipping horizontally on isometric maps (#2660)
 * Fixed offset of tile collision shapes on isometric maps (#3138)
 * Mark world as modified when map size changes (#3020)
 * Hide "Move Objects to Layer" menu when there's only one object layer

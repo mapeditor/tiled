@@ -219,9 +219,8 @@ public:
     void markAsTemplateBase();
 
 private:
-    void flipRectObject(const QTransform &flipTransform);
-    void flipPolygonObject(const QTransform &flipTransform);
-    void flipTileObject(const QTransform &flipTransform);
+    void flipInScreenCoordinates(FlipDirection direction, const QPointF &screenOrigin);
+    void flipInPixelCoordinates(FlipDirection direction, const QPointF &pixelOrigin);
 
     int mId = 0;
     Shape mShape = Rectangle;
