@@ -24,6 +24,7 @@
 
 #include <QList>
 #include <QUndoCommand>
+#include <QVector>
 
 namespace Tiled {
 
