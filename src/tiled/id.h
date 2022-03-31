@@ -54,6 +54,9 @@ inline uint qHash(Id id) Q_DECL_NOTHROW
     return id.mId;
 }
 
+QStringList idsToNames(const QList<Id> &ids);
+QList<Id> namesToIds(const QStringList &names);
+
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::Id)

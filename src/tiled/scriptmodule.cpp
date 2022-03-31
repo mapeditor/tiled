@@ -118,18 +118,6 @@ void ScriptModule::setScriptArguments(const QStringList &arguments)
     mScriptArguments = arguments;
 }
 
-static QStringList idsToNames(const QList<Id> &ids)
-{
-    QStringList names;
-    names.reserve(ids.size());
-    for (const Id &id : ids)
-        names.append(QLatin1String(id.name()));
-
-    names.sort();
-
-    return names;
-}
-
 QStringList ScriptModule::actions() const
 {
     return idsToNames(ActionManager::actions());

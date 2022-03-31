@@ -2727,6 +2727,18 @@ interface Tool {
   icon: string;
 
   /**
+   * List of action IDs, specifying the actions that should be added to the
+   * tool-specific tool bar.
+   *
+   * Separators can be added to this tool bar by adding "-" in the list of
+   * actions.
+   *
+   * The actions need to be registered using
+   * {@link registerAction | tiled.registerAction()}.
+   */
+  toolBarActions: string[];
+
+  /**
    * Currently active tile map.
    */
   readonly map: TileMap;

@@ -20,9 +20,11 @@
 
 #include "scriptedtool.h"
 
+#include "actionmanager.h"
 #include "brushitem.h"
 #include "editablemap.h"
 #include "editabletile.h"
+#include "logginginterface.h"
 #include "mapdocument.h"
 #include "pluginmanager.h"
 #include "scriptmanager.h"
@@ -33,6 +35,7 @@
 #include <QJSEngine>
 #include <QKeyEvent>
 #include <QQmlEngine>
+#include <QToolBar>
 
 namespace Tiled {
 
@@ -47,6 +50,15 @@ ScriptedTool::ScriptedTool(Id id, QJSValue object, QObject *parent)
     const QJSValue iconProperty = mScriptObject.property(QStringLiteral("icon"));
     if (iconProperty.isString())
         setIconFileName(iconProperty.toString());
+
+    const QJSValue toolBarActionsProperty = mScriptObject.property(QStringLiteral("toolBarActions"));
+    if (toolBarActionsProperty.isArray()) {
+        QStringList actionNames;
+        const int length = toolBarActionsProperty.property(QStringLiteral("length")).toInt();
+        for (int i = 0; i < length; ++i)
+            actionNames.append(toolBarActionsProperty.property(i).toString());
+        setToolBarActions(actionNames);
+    }
 
     const QJSValue usesSelectedTilesProperty = mScriptObject.property(QStringLiteral("usesSelectedTiles"));
     if (usesSelectedTilesProperty.isBool())
@@ -208,10 +220,16 @@ void ScriptedTool::languageChanged()
     call(QStringLiteral("languageChanged"));
 }
 
-void ScriptedTool::populateToolBar(QToolBar *)
+void ScriptedTool::populateToolBar(QToolBar *toolBar)
 {
-    // todo: consider how to support this (is it enough to have a list of
-    // actions?)
+    for (const Id actionId : mToolBarActions) {
+        if (actionId == "-")
+            toolBar->addSeparator();
+        else if (auto action = ActionManager::findAction(actionId))
+            toolBar->addAction(action);
+        else
+            Tiled::ERROR(QCoreApplication::translate("Script Errors", "Could not find action '%1'").arg(actionId.toString()));
+    }
 }
 
 bool ScriptedTool::validateToolObject(QJSValue value)
@@ -240,6 +258,16 @@ void ScriptedTool::setIconFileName(const QString &fileName)
         iconFile.prepend(ext);
 
     setIcon(QIcon { iconFile });
+}
+
+QStringList ScriptedTool::toolBarActions() const
+{
+    return idsToNames(mToolBarActions);
+}
+
+void ScriptedTool::setToolBarActions(const QStringList &actionNames)
+{
+    mToolBarActions = namesToIds(actionNames);
 }
 
 void ScriptedTool::mapDocumentChanged(MapDocument *oldDocument,
