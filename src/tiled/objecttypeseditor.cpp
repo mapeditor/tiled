@@ -44,6 +44,16 @@
 
 namespace Tiled {
 
+ObjectTypesFilter::ObjectTypesFilter(const QString &lastPath)
+{
+    const QString jsonFilter = QCoreApplication::translate("File Types", "Object Types JSON (*.json)");
+    const QString xmlFilter = QCoreApplication::translate("File Types", "Object Types XML (*.xml)");
+    filter = QStringList { jsonFilter, xmlFilter }.join(QStringLiteral(";;"));
+    selectedFilter = lastPath.endsWith(QLatin1String(".xml"), Qt::CaseInsensitive) ? xmlFilter
+                                                                                   : jsonFilter;
+}
+
+
 class ColorDelegate : public QStyledItemDelegate
 {
 public:
@@ -347,10 +357,12 @@ void ObjectTypesEditor::importObjectTypes()
 {
     Session &session = Session::current();
     const QString lastPath = session.lastPath(Session::ObjectTypesFile);
-    const QString fileName =
-            QFileDialog::getOpenFileName(this, tr("Import Object Types"),
-                                         lastPath,
-                                         QCoreApplication::translate("File Types", "Object Types files (*.xml *.json)"));
+
+    ObjectTypesFilter filter(lastPath);
+    const QString fileName = QFileDialog::getOpenFileName(this, tr("Import Object Types"),
+                                                          lastPath,
+                                                          filter.filter,
+                                                          &filter.selectedFilter);
     if (fileName.isEmpty())
         return;
 
@@ -386,14 +398,15 @@ void ObjectTypesEditor::exportObjectTypes()
 {
     Session &session = Session::current();
     QString lastPath = session.lastPath(Session::ObjectTypesFile);
+    if (!lastPath.endsWith(QLatin1String(".xml")) && !lastPath.endsWith(QLatin1String(".json")))
+        lastPath.append(QStringLiteral("/objecttypes.json"));
 
-    if (!lastPath.endsWith(QLatin1String(".xml")))
-        lastPath.append(QStringLiteral("/objecttypes.xml"));
+    ObjectTypesFilter filter(lastPath);
 
-    const QString fileName =
-            QFileDialog::getSaveFileName(this, tr("Export Object Types"),
-                                         lastPath,
-                                         QCoreApplication::translate("File Types", "Object Types files (*.xml *.json)"));
+    const QString fileName = QFileDialog::getSaveFileName(this, tr("Export Object Types"),
+                                                          lastPath,
+                                                          filter.filter,
+                                                          &filter.selectedFilter);
     if (fileName.isEmpty())
         return;
 

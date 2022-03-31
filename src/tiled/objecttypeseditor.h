@@ -34,6 +34,14 @@ namespace Tiled {
 class CustomPropertiesHelper;
 class ObjectTypesModel;
 
+struct ObjectTypesFilter
+{
+    ObjectTypesFilter(const QString &lastPath = QString());
+
+    QString filter;
+    QString selectedFilter;
+};
+
 class ObjectTypesEditor : public QDialog
 {
     Q_OBJECT

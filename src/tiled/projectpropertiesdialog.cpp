@@ -22,6 +22,7 @@
 #include "ui_projectpropertiesdialog.h"
 
 #include "mapformat.h"
+#include "objecttypeseditor.h"
 #include "project.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
@@ -56,8 +57,7 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
 
     mObjectTypesFileProperty = variantPropertyManager->addProperty(filePathTypeId(), tr("Object types"));
     mObjectTypesFileProperty->setValue(project.mObjectTypesFile);
-    mObjectTypesFileProperty->setAttribute(QStringLiteral("filter"),
-                                           QCoreApplication::translate("File Types", "Object Types files (*.xml *.json)"));
+    mObjectTypesFileProperty->setAttribute(QStringLiteral("filter"), ObjectTypesFilter().filter);
     filesGroupProperty->addSubProperty(mObjectTypesFileProperty);
 
     QString ruleFileFilter = QCoreApplication::translate("File Types", "Automapping Rules files (*.txt)");
