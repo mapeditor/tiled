@@ -15,6 +15,9 @@
  </keywords>
  <content_rating type="oars-1.0" />
  <releases>
+  <release version="1.8.4" type="stable" date="2022-03-31">
+   <url>https://www.mapeditor.org/2022/03/31/tiled-1-8-3-released.html</url>
+  </release>
   <release version="1.8.3" type="stable" date="2022-03-31">
    <url>https://www.mapeditor.org/2022/03/31/tiled-1-8-3-released.html</url>
   </release>
