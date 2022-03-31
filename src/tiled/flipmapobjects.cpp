@@ -23,11 +23,17 @@
 
 #include "changeevents.h"
 #include "document.h"
-#include "mapobject.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
+
+static constexpr MapObject::ChangedProperties propertiesChangedByFlip {
+    MapObject::CellProperty,
+    MapObject::PositionProperty,
+    MapObject::RotationProperty,
+    MapObject::ShapeProperty,
+};
 
 FlipMapObjects::FlipMapObjects(Document *document,
                                const QList<MapObject *> &mapObjects,
@@ -42,15 +48,12 @@ FlipMapObjects::FlipMapObjects(Document *document,
                                         "Flip %n Object(s)",
                                         nullptr, mapObjects.size()));
 
-    mOldCellStates.reserve(mMapObjects.size());
-    mNewCellStates.fill(true, mMapObjects.size());
+    mOldChangedProperties.reserve(mMapObjects.size());
+    mNewChangedProperties.reserve(mMapObjects.size());
 
-    mOldRotationStates.reserve(mMapObjects.size());
-    mNewRotationStates.fill(true, mMapObjects.size());
-
-    for (MapObject *object : mMapObjects) {
-        mOldCellStates.append(object->propertyChanged(MapObject::CellProperty));
-        mOldRotationStates.append(object->propertyChanged(MapObject::RotationProperty));
+    for (const MapObject *object : mMapObjects) {
+        mOldChangedProperties.append(object->changedProperties());
+        mNewChangedProperties.append(object->changedProperties() | propertiesChangedByFlip);
     }
 }
 
@@ -58,18 +61,10 @@ void FlipMapObjects::flip()
 {
     for (int i = 0; i < mMapObjects.size(); ++i) {
         mMapObjects[i]->flip(mFlipDirection, mFlipOrigin);
-
-        mMapObjects[i]->setPropertyChanged(MapObject::CellProperty, mNewCellStates[i]);
-        mMapObjects[i]->setPropertyChanged(MapObject::RotationProperty, mNewRotationStates[i]);
+        mMapObjects[i]->setChangedProperties(mNewChangedProperties[i]);
     }
 
-    mOldRotationStates.swap(mNewRotationStates);
+    mOldChangedProperties.swap(mNewChangedProperties);
 
-    constexpr MapObject::ChangedProperties changedProperties {
-        MapObject::CellProperty,
-        MapObject::PositionProperty,
-        MapObject::RotationProperty,
-        MapObject::ShapeProperty,
-    };
-    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, changedProperties));
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, propertiesChangedByFlip));
 }

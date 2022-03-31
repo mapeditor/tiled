@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "tiled.h"
+#include "mapobject.h"
 
 #include <QList>
 #include <QUndoCommand>
@@ -50,10 +50,8 @@ private:
     FlipDirection mFlipDirection;
     QPointF mFlipOrigin;
 
-    QVector<bool> mOldRotationStates;
-    QVector<bool> mNewRotationStates;
-    QVector<bool> mOldCellStates;
-    QVector<bool> mNewCellStates;
+    QVector<MapObject::ChangedProperties> mOldChangedProperties;
+    QVector<MapObject::ChangedProperties> mNewChangedProperties;
 };
 
 } // namespace Tiled
