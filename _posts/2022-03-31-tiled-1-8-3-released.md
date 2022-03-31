@@ -7,6 +7,9 @@ author:
 tags: release
 ---
 
+**Warning: Tiled 1.8.3 unfortunately introduced a crash upon trying to create
+new objects. A 1.8.4 release will follow soon!**
+
 This release fixes a huge amount of small issues and contains some initial
 [AutoMapping](https://doc.mapeditor.org/en/stable/manual/automapping/)
 optimizations. Upgrading is highly recommended.
