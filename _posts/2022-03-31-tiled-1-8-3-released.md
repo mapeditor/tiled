@@ -19,8 +19,9 @@ degrees](https://github.com/mapeditor/tiled/issues/1704)!
 
 Also notable is that the loading of AutoMapping rule maps is about twice as
 fast now, and applying of rules which do not use an "inputnot" layer is about
-3x as fast. These small speed-ups are back-ported from the next feature
-release, which is focused on [AutoMapping improvements][tiled-1.9-roadmap].
+3x as fast as before. These small speed-ups are back-ported from the next
+feature release, which is focused on [AutoMapping
+improvements][tiled-1.9-roadmap].
 
 Changelog
 ---------
