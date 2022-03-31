@@ -623,7 +623,10 @@ QString Preferences::startupSession() const
         return Session::defaultFileName();
 
     const auto session = get<QString>("Project/LastSession");
-    return session.isEmpty() ? Session::defaultFileName() : session;
+    if (session.isEmpty() || !QFileInfo::exists(session))
+        return Session::defaultFileName();
+
+    return session;
 }
 
 void Preferences::setLastSession(const QString &fileName)

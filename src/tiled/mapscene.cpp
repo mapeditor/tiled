@@ -231,11 +231,11 @@ QPointF MapScene::parallaxOffset(const Layer &layer) const
     if (!mParallaxEnabled)
         return {};
 
-    Map *map = layer.map();
+    QPointF viewCenter = mViewRect.center();
 
-    QPointF viewCenter = mViewRect.center() - map->parallaxOrigin();
+    Map *map = layer.map();
     if (const MapItem *mapItem = mMapItems.value(map))
-        viewCenter -= mapItem->pos();
+        viewCenter -= mapItem->pos() + map->parallaxOrigin();
 
     const QPointF parallaxFactor = layer.effectiveParallaxFactor();
     return QPointF((1.0 - parallaxFactor.x()) * viewCenter.x(),
