@@ -1,14 +1,11 @@
 ---
 layout: post
-title: Tiled 1.8.3 Released
+title: Tiled 1.8.3 and 1.8.4 Released
 author:
   name: Thorbjørn Lindeijer
   twitter: thorbjorn81
 tags: release
 ---
-
-**Warning: Tiled 1.8.3 unfortunately introduced a crash upon trying to create
-new objects. A 1.8.4 release will follow soon!**
 
 This release fixes a huge amount of small issues and contains some initial
 [AutoMapping](https://doc.mapeditor.org/en/stable/manual/automapping/)
@@ -25,6 +22,9 @@ fast now, and applying of rules which do not use an "inputnot" layer is about
 3x as fast as before. These small speed-ups are back-ported from the next
 feature release, which is focused on [AutoMapping
 improvements][tiled-1.9-roadmap].
+
+*Unfortunately, Tiled 1.8.3 introduced a crash upon trying to create new
+objects. This was fixed in Tiled 1.8.4, released on the same day!*
 
 Changelog
 ---------
