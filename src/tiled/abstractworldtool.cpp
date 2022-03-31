@@ -289,18 +289,24 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
                            this, [=] { removeFromWorld(targetFilename); });
         }
     } else {
-        for (const World *world : WorldManager::instance().worlds()) {
-            if (!world->canBeModified())
-                continue;
-
-            menu.addAction(tr("Add \"%1\" to World \"%2\"")
-                           .arg(currentDocument->displayName(),
-                                world->displayName()),
-                           this, [=] { addToWorld(world); });
-        }
+        populateAddToWorldMenu(menu);
     }
 
     menu.exec(screenPos);
+}
+
+void AbstractWorldTool::populateAddToWorldMenu(QMenu &menu)
+{
+    for (const World *world : WorldManager::instance().worlds()) {
+        if (!world->canBeModified())
+            continue;
+
+        auto action = menu.addAction(tr("Add \"%1\" to World \"%2\"")
+                                     .arg(mapDocument()->displayName(),
+                                          world->displayName()),
+                                     this, [=] { addToWorld(world); });
+        action->setEnabled(!mapDocument()->fileName().isEmpty());
+    }
 }
 
 void AbstractWorldTool::addAnotherMapToWorldAtCenter()
@@ -357,12 +363,18 @@ void AbstractWorldTool::removeCurrentMapFromWorld()
 
 void AbstractWorldTool::removeFromWorld(const QString &mapFileName)
 {
+    if (mapFileName.isEmpty())
+        return;
+
     undoStack()->push(new RemoveMapCommand(mapFileName));
 }
 
 void AbstractWorldTool::addToWorld(const World *world)
 {
     MapDocument *document = mapDocument();
+    if (document->fileName().isEmpty())
+        return;
+
     QRect rect = document->renderer()->mapBoundingRect();
 
     // Position the map alongside the last map by default
@@ -392,18 +404,9 @@ void AbstractWorldTool::populateToolBar(QToolBar *toolBar)
     auto addMapToWorldButton = qobject_cast<QToolButton*>(toolBar->widgetForAction(mAddMapToWorldAction));
     auto addToWorldMenu = new QMenu(addMapToWorldButton);
 
-    connect(addToWorldMenu, &QMenu::aboutToShow, [=] {
+    connect(addToWorldMenu, &QMenu::aboutToShow, this, [=] {
         addToWorldMenu->clear();
-
-        for (const World *world : WorldManager::instance().worlds()) {
-            if (!world->canBeModified())
-                continue;
-
-            addToWorldMenu->addAction(tr("Add \"%1\" to World \"%2\"")
-                                      .arg(mapDocument()->displayName(),
-                                           world->displayName()),
-                                      this, [=] { addToWorld(world); });
-        }
+        populateAddToWorldMenu(*addToWorldMenu);
     });
 
     addMapToWorldButton->setPopupMode(QToolButton::InstantPopup);

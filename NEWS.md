@@ -18,6 +18,7 @@
 * Fixed displacement when flipping horizontally on isometric maps (#2660)
 * Fixed offset of tile collision shapes on isometric maps (#3138)
 * Mark world as modified when map size changes (#3020)
+* Prevent unsaved maps from being added to a world (#3317)
 * Hide "Move Objects to Layer" menu when there's only one object layer
 * Scripting: Avoid possible crash due to garbage collection (#3290)
 * Scripting: Fixed missing null check in Tileset.loadFromImage and Tile.setImage
