@@ -1,4 +1,4 @@
-### Unreleased 1.8 patch
+### Tiled 1.8.3 (31 March 2022)
 
 * Improved rendering quality of the Mini-map when it's small (#1431)
 * Fixed automatic tool switching after deleting layers
@@ -32,7 +32,7 @@
 * macOS: Fixed main window expanding with many open files (#1047)
 * JSON plugin: Wrap arrays at the map width or chunk width
 * Qt 6: Fixed captured or erased area when dragging backwards
-* Updated Finnish translation
+* Updated Finnish translation (by Tuomas Lähteenmäki)
 
 ### Tiled 1.8.2 (18 February 2022)
 
