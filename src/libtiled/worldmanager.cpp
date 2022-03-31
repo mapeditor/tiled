@@ -423,6 +423,8 @@ bool WorldManager::removeMap(const QString &fileName)
 
 bool WorldManager::addMap(const QString &fileName, const QString &mapFileName, const QRect &rect)
 {
+    Q_ASSERT(!mapFileName.isEmpty());
+
     if (worldForMap(mapFileName))
         return false;
 

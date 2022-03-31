@@ -23,6 +23,7 @@
 #include "abstracttool.h"
 
 class QAction;
+class QMenu;
 
 namespace Tiled {
 
@@ -90,6 +91,8 @@ protected:
 
 private:
     void languageChangedImpl();
+
+    void populateAddToWorldMenu(QMenu &menu);
 
     MapDocument *mTargetMap = nullptr;
 

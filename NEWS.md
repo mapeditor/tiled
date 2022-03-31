@@ -5,7 +5,7 @@
 * Raised minimum C++ version to C++17
 * Removed qmake project files (only Qbs supported now)
 
-### Unreleased 1.8 patch
+### Tiled 1.8.3 (31 March 2022)
 
 * Improved rendering quality of the Mini-map when it's small (#1431)
 * Fixed automatic tool switching after deleting layers
@@ -25,6 +25,7 @@
 * Fixed displacement when flipping horizontally on isometric maps (#2660)
 * Fixed offset of tile collision shapes on isometric maps (#3138)
 * Mark world as modified when map size changes (#3020)
+* Prevent unsaved maps from being added to a world (#3317)
 * Hide "Move Objects to Layer" menu when there's only one object layer
 * Scripting: Avoid possible crash due to garbage collection (#3290)
 * Scripting: Fixed missing null check in Tileset.loadFromImage and Tile.setImage
@@ -38,7 +39,7 @@
 * macOS: Fixed main window expanding with many open files (#1047)
 * JSON plugin: Wrap arrays at the map width or chunk width
 * Qt 6: Fixed captured or erased area when dragging backwards
-* Updated Finnish translation
+* Updated Finnish translation (by Tuomas Lähteenmäki)
 
 ### Tiled 1.8.2 (18 February 2022)
 
