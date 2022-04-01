@@ -5,6 +5,7 @@
  <project_license>GPL-2.0+ and BSD-2-Clause</project_license>
  <name>Tiled</name>
  <summary>General purpose map editor</summary>
+ <summary xml:lang="de">Leveleditor für allgemeine Zwecke</summary>
  <keywords>
   <keyword>2D</keyword>
   <keyword>mapeditor</keyword>
@@ -40,10 +41,20 @@
    features. It’s built to be easy to use and is suitable for many type of
    games.
   </p>
+  <p xml:lang="de">
+   Tiled ist ein allgemeiner 2D Leveleditor mit mächtigen Funktionen zum bearbeiten von Tiled Maps.
+   Er hat eine einfache Bedienung und ist entwickelt worden, um möglichst viele unterschiedliche Spiele
+   zu unterstützen.
+  </p>
   <p>
    The Tiled map format is supported by a large amount of game engines and
    libraries. In addition, Tiled supports plugins to read and write map formats
    other than its own map format.
+  </p>
+  <p xml:lang="de">
+   Das Tiled Dateiformat wird von vielen Spielengines und Bibliotheken unterstützt.
+   Zudem bietet Tiled eine Pluginunterstützung, durch die auch andere Formate geöffnet
+   und gespeichert werden können.
   </p>
  </description>
  <screenshots>
