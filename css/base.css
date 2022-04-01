@@ -662,6 +662,11 @@ a.showcase:hover {
   }
 }
 
+.progress-bar {
+  height: 10px;
+  width: 10px;
+}
+
 .donation-goals {
   display: flex;
   align-items: stretch;
