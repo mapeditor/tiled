@@ -520,7 +520,7 @@ img.feature-image {
 /* SHOWCASE */
 
 .showcases {
-  max-height: 870px;
+  max-height: 682px;
   overflow-y: hidden;
 }
 .showcase {
@@ -532,9 +532,9 @@ img.feature-image {
   background-color: #4e4e4e;
   background-clip: padding-box;
   border-radius: 5px;
-  width: 350px;
-  height: 266px;
-  margin: 10px;
+  width: 270px;
+  height: 211px;
+  margin: 8px;
   border: 2px solid transparent;
   transition: transform .1s ease-out, border-color .1s ease-out;
 }
@@ -545,7 +545,7 @@ a.showcase:hover {
 }
 .showcase h3 {
   color: #d2d2d2;
-  margin-top: 7px;
+  margin-top: 5px;
   padding-left: 15%;
   padding-right: 15%;
   font-size: 1.3rem;
@@ -554,6 +554,8 @@ a.showcase:hover {
 }
 .showcase-release-info {
   flex: 1;
+  margin-top: -0.5rem;
+  margin-bottom: 5px;
   color: #8f8f8f;
   font-weight: bold;
 }
