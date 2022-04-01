@@ -13,19 +13,18 @@ npx typedoc \
         --excludeExternals \
         --disableSources \
         --plugin typedoc-plugin-markdown \
+        --hideBreadcrumbs true \
+        --hideInPageTOC true \
         --out temp-docs \
         index.d.ts \
         $2
 
-resultMd="$website_root/docs/scripting/README.md"
-resultHtml="$website_root/docs/scripting/README.html"
+resultMd="$website_root/docs/scripting.md"
 rm -f "$resultMd"
-npx concat-md --toc --decrease-title-levels --dir-name-as-title temp-docs >> "$resultMd"
-npx showdown makehtml -i "$resultMd" -o "${resultHtml}.tmp"
+npx concat-md --decrease-title-levels --dir-name-as-title temp-docs >> concatenated.md
 prefix="---
 layout: default
 ---
 "
-echo "$prefix" > "$resultHtml"
-cat "${resultHtml}.tmp" >> "$resultHtml"
-rm -f "${resultHtml}.tmp"
+echo "$prefix" > "$resultMd"
+cat concatenated.md >> "$resultMd"
