@@ -15,13 +15,14 @@ npx typedoc \
         --plugin typedoc-plugin-markdown \
         --hideBreadcrumbs true \
         --hideInPageTOC true \
+        --namedAnchors true \
         --out temp-docs \
         index.d.ts \
         $2
 
 resultMd="$website_root/docs/scripting.md"
 rm -f "$resultMd"
-npx concat-md --decrease-title-levels --dir-name-as-title temp-docs >> concatenated.md
+npx concat-md --decrease-title-levels --dir-name-as-title temp-docs > concatenated.md
 prefix="---
 layout: default
 ---
