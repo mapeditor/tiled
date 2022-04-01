@@ -1,6 +1,7 @@
 ### Tiled 1.8.4 (31 March 2022)
 
 * Fixed crash when trying to create an object
+* Fixed handling of deleted session file
 
 ### Tiled 1.8.3 (31 March 2022)
 
