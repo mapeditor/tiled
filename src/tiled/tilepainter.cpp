@@ -99,7 +99,7 @@ void TilePainter::setCell(int x, int y, const Cell &cell)
 }
 
 void TilePainter::setCells(int x, int y,
-                           TileLayer *tileLayer,
+                           const TileLayer *tileLayer,
                            const QRegion &mask)
 {
     QRegion region = paintableRegion(mask);

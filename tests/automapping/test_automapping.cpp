@@ -48,14 +48,17 @@ void test_AutoMapping::autoMap()
     QVERIFY(rulesMap.get());
 
     MapDocument mapDocument(std::move(inputMap));
-    AutoMapper autoMapper(&mapDocument, std::move(rulesMap), QStringLiteral("rules.tmx"));
+    AutoMapper autoMapper(std::move(rulesMap), QStringLiteral("rules.tmx"));
+    AutoMappingContext context(&mapDocument);
 
     const QSize mapSize = mapDocument.map()->size();
-    autoMapper.prepareAutoMap();
+    autoMapper.prepareAutoMap(context);
     QBENCHMARK {
-        autoMapper.autoMap(QRect(QPoint(), mapSize), nullptr, nullptr);  // todo: test appliedRegion as well
+        autoMapper.autoMap(QRect(QPoint(), mapSize), nullptr, context);  // todo: test appliedRegion as well
     }
-    autoMapper.finalizeAutoMap();
+    for (Layer *layer : qAsConst(context.newLayers))
+        if (!layer->isEmpty())
+            context.targetMap->addLayer(layer);
 
     QCOMPARE(mapDocument.map()->layerCount(), resultMap->layerCount());
 

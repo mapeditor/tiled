@@ -21,6 +21,11 @@
 
 #include "automapperwrapper.h"
 
+#include "addremovelayer.h"
+#include "addremovemapobject.h"
+#include "addremovetileset.h"
+#include "changeproperties.h"
+#include "containerhelpers.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "tile.h"
@@ -29,32 +34,32 @@
 using namespace Tiled;
 
 AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
-                                     const std::vector<std::unique_ptr<AutoMapper> > &autoMappers,
+                                     const std::vector<std::unique_ptr<AutoMapper>> &autoMappers,
                                      const QRegion &where,
                                      const TileLayer *touchedLayer)
     : mMapDocument(mapDocument)
 {
-    for (const auto &autoMapper : autoMappers) {
-        autoMapper->prepareAutoMap();
+    AutoMappingContext context(mapDocument);
 
-        // Store a copy of each output tile layer before AutoMapping.
-        for (TileLayer *layer : autoMapper->outputTileLayers()) {
-            if (mOutputTileLayers.find(layer) != mOutputTileLayers.end())
-                continue;
+    for (const auto &autoMapper : autoMappers)
+        autoMapper->prepareAutoMap(context);
 
-            OutputLayerData &data = mOutputTileLayers[layer];
-            data.before.reset(layer->clone());
-        }
+    // Store a copy of each output tile layer before AutoMapping.
+    for (TileLayer *layer : qAsConst(context.outputTileLayers)) {
+        if (contains(context.newLayers, layer))
+            continue;   // Don't store diff for new layers
+
+        if (mExistingOutputTileLayers.find(layer) != mExistingOutputTileLayers.end())
+            continue;
+
+        OutputLayerData &data = mExistingOutputTileLayers[layer];
+        data.before.reset(layer->clone());
     }
 
     // During "AutoMap while drawing", keep track of the touched layers, so we
     // can skip any rule maps that don't have these layers as input entirely.
-    QList<const TileLayer*> touchedTileLayers;
-    QList<const TileLayer*> *touchedTileLayersPtr = nullptr;
-    if (touchedLayer) {
-        touchedTileLayers.append(touchedLayer);
-        touchedTileLayersPtr = &touchedTileLayers;
-    }
+    if (touchedLayer)
+        context.touchedTileLayers.append(touchedLayer);
 
     // use a copy of the region, so each AutoMapper can manipulate it and the
     // following AutoMappers do see the impact
@@ -69,14 +74,14 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         if (appliedRegionPtr && (!map->infinite() && (mapRect - region).isEmpty()))
             appliedRegionPtr = nullptr;
 
-        if (!touchedTileLayers.isEmpty()) {
-            if (std::none_of(touchedTileLayers.cbegin(),
-                             touchedTileLayers.cend(),
+        if (!context.touchedTileLayers.isEmpty()) {
+            if (std::none_of(context.touchedTileLayers.cbegin(),
+                             context.touchedTileLayers.cend(),
                              [&] (const TileLayer *tileLayer) { return autoMapper->ruleLayerNameUsed(tileLayer->name()); }))
                 continue;
         }
 
-        autoMapper->autoMap(region, touchedTileLayersPtr, appliedRegionPtr);
+        autoMapper->autoMap(region, appliedRegionPtr, context);
 
         if (appliedRegionPtr) {
             // expand where with modified area
@@ -87,9 +92,8 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         }
     }
 
-    for (std::pair<TileLayer* const, OutputLayerData> &pair : mOutputTileLayers) {
-        auto target = pair.first;
-        auto &before = pair.second.before;
+    for (auto& [target, data] : mExistingOutputTileLayers) {
+        auto &before = data.before;
 
         MapDocument::TileLayerChangeFlags flags;
 
@@ -102,23 +106,57 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
             emit mMapDocument->tileLayerChanged(target, flags);
 
         // reduce memory usage by saving only diffs
-        pair.second.region = before->computeDiffRegion(target);
-        const QRect diffRect = pair.second.region.boundingRect();
+        data.region = before->computeDiffRegion(target);
+        const QRect diffRect = data.region.boundingRect();
 
-        auto beforeDiff = before->copy(pair.second.region);
+        auto beforeDiff = before->copy(data.region);
         beforeDiff->setPosition(diffRect.topLeft());
         beforeDiff->setName(before->name());
 
-        auto afterDiff = target->copy(pair.second.region);
+        auto afterDiff = target->copy(data.region);
         afterDiff->setPosition(diffRect.topLeft());
         afterDiff->setName(target->name());
 
-        pair.second.before = std::move(beforeDiff);
-        pair.second.after = std::move(afterDiff);
+        data.before = std::move(beforeDiff);
+        data.after = std::move(afterDiff);
     }
 
-    for (const auto &autoMapper : autoMappers)
-        autoMapper->finalizeAutoMap();
+    // Make sure to add any newly used tilesets to the map
+    for (const SharedTileset &tileset : qAsConst(context.newTilesets))
+        if (context.targetMap->isTilesetUsed(tileset.data()))
+            new AddTileset(mapDocument, tileset, this);
+
+    // Apply any property changes to existing layers
+    QHashIterator<Layer*, Properties> changedPropertiesIt(context.changedProperties);
+    while (changedPropertiesIt.hasNext()) {
+        const auto item = changedPropertiesIt.next();
+        new ChangeProperties(mapDocument, QString(), item.key(), item.value(), this);
+    }
+
+    // Make sure to add any new layers to the map, deleting the ones that
+    // didn't get any output
+    for (Layer *layer : qAsConst(context.newLayers)) {
+        if (layer->isTileLayer() && layer->isEmpty()) {
+            delete layer;
+            continue;
+        }
+
+        if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+            if (std::none_of(context.newMapObjects.cbegin(),
+                             context.newMapObjects.cend(),
+                             [=] (const AddMapObjects::Entry &entry) { return entry.objectGroup == objectGroup; })) {
+                delete layer;
+                continue;
+            }
+        }
+
+        new AddLayer(mapDocument,
+                     context.targetMap->layerCount(),
+                     layer, nullptr, this);
+    }
+
+    // Add any newly placed objects
+    new AddMapObjects(mapDocument, context.newMapObjects, this);
 }
 
 AutoMapperWrapper::~AutoMapperWrapper()
@@ -127,18 +165,25 @@ AutoMapperWrapper::~AutoMapperWrapper()
 
 void AutoMapperWrapper::undo()
 {
-    for (std::pair<TileLayer* const, OutputLayerData> &pair : mOutputTileLayers)
-        patchLayer(pair.first, *pair.second.before, pair.second.region);
+    for (const auto& [target, data] : mExistingOutputTileLayers)
+        patchLayer(target, *data.before, data.region);
+
+    QUndoCommand::undo(); // undo child commands
 }
 
 void AutoMapperWrapper::redo()
 {
-    for (std::pair<TileLayer* const, OutputLayerData> &pair : mOutputTileLayers)
-        patchLayer(pair.first, *pair.second.after, pair.second.region);
+    QUndoCommand::redo(); // redo child commands
+
+    for (const auto& [target, data] : mExistingOutputTileLayers)
+        patchLayer(target, *data.after, data.region);
 }
 
 void AutoMapperWrapper::patchLayer(TileLayer *target, const TileLayer &layer, const QRegion &region)
 {
+    // Performing the same logic as in TilePainter::setCells manually, since
+    // emitting the tileLayerChanged signal already happens in the constructor,
+    // due to AutoMapper::autoMap changing the map in-place.
     target->setCells(layer.x() - target->x(),
                      layer.y() - target->y(),
                      &layer,

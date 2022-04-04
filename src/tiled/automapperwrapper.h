@@ -64,7 +64,7 @@ private:
     };
 
     MapDocument *mMapDocument;
-    std::unordered_map<TileLayer*, OutputLayerData> mOutputTileLayers;
+    std::unordered_map<TileLayer*, OutputLayerData> mExistingOutputTileLayers;
 };
 
 } // namespace Tiled

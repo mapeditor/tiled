@@ -69,7 +69,7 @@ public:
      * Only cells that fall within this mask are set. The mask is applied in
      * map coordinates.
      */
-    void setCells(int x, int y, TileLayer *tileLayer, const QRegion &mask);
+    void setCells(int x, int y, const TileLayer *tileLayer, const QRegion &mask);
 
     /**
      * Draws the cells in the given tile layer at the given coordinates. The

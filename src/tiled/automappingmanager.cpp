@@ -232,7 +232,7 @@ bool AutomappingManager::loadRuleMap(const QString &filePath)
         return false;
     }
 
-    std::unique_ptr<AutoMapper> autoMapper { new AutoMapper(mMapDocument, std::move(rules), filePath) };
+    std::unique_ptr<AutoMapper> autoMapper { new AutoMapper(std::move(rules), filePath) };
 
     mWarning += autoMapper->warningString();
     const QString error = autoMapper->errorString();
@@ -267,10 +267,6 @@ void AutomappingManager::setMapDocument(MapDocument *mapDocument, const QString 
             connect(mMapDocument, &MapDocument::regionEdited,
                     this, &AutomappingManager::onRegionEdited);
         }
-
-        // Cleanup needed because AutoMapper instances hold a pointer to the
-        // MapDocument they apply to.
-        cleanUp();
     }
 
     refreshRulesFile(rulesFile);
