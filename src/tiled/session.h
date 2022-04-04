@@ -23,6 +23,7 @@
 #include <QDir>
 #include <QHash>
 #include <QPointF>
+#include <QSet>
 #include <QSettings>
 #include <QSize>
 #include <QStandardPaths>
