@@ -19,7 +19,7 @@ environment:
       ENABLE_ZSTD: false
     - QTDIR: C:\Qt\6.2\mingw_64
       PYTHONHOME: C:\Python37-x64
-      MINGW: C:\Qt\Tools\mingw900_64
+      MINGW: C:\Qt\Tools\mingw1120_64
       DEFAULT_PROFILE: x86_64-w64-mingw32-gcc-11_2_0
       PUSH_RELEASE: true
       ENABLE_ZSTD: true
