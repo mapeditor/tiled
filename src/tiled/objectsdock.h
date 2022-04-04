@@ -49,7 +49,6 @@ private:
     void aboutToShowMoveToMenu();
     void triggeredMoveToMenu(QAction *action);
     void objectProperties();
-    void documentAboutToClose(Document *document);
     void moveObjectsUp();
     void moveObjectsDown();
 

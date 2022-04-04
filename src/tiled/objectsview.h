@@ -51,11 +51,6 @@ public:
 
     void setFilter(const QString &filter);
 
-public slots:
-    void saveExpandedLayers();
-    void restoreExpandedLayers();
-    void clearExpandedLayers(MapDocument *mapDocument);
-
 protected:
     bool event(QEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
@@ -69,6 +64,9 @@ protected:
                  const QModelIndex &index) const override;
 
 private:
+    void saveExpandedLayers();
+    void restoreExpandedLayers();
+
     void onActivated(const QModelIndex &proxyIndex);
     void onSectionResized(int logicalIndex);
     void selectedObjectsChanged();
@@ -85,7 +83,6 @@ private:
 
     MapDocument *mMapDocument = nullptr;
     ReversingRecursiveFilterModel *mProxyModel;
-    QMap<MapDocument*, QList<int> > mExpandedLayers;
     bool mSynching = false;
     bool mActiveFilter = false;
 };

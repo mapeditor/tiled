@@ -1,3 +1,7 @@
+### Unreleased 1.8 patch
+
+* Made expanded group layers persistent
+
 ### Tiled 1.8.4 (31 March 2022)
 
 * Fixed crash when trying to create an object

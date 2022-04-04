@@ -31,6 +31,7 @@
 
 #include <QList>
 #include <QRegion>
+#include <QSet>
 
 #include <memory>
 
@@ -256,6 +257,9 @@ public:
     bool templateAllowed(const ObjectTemplate *objectTemplate) const;
 
     void checkIssues() override;
+
+    QSet<int> expandedGroupLayers;
+    QSet<int> expandedObjectLayers;
 
 signals:
     /**

@@ -285,6 +285,9 @@ LayerView::LayerView(QWidget *parent)
 
     connect(selectionModel(), &QItemSelectionModel::currentRowChanged, this, &LayerView::currentRowChanged);
 
+    connect(this, &QTreeView::expanded, this, &LayerView::onExpanded);
+    connect(this, &QTreeView::collapsed, this, &LayerView::onCollapsed);
+
     connect(this, &QAbstractItemView::pressed, this, &LayerView::indexPressed);
 }
 
@@ -307,7 +310,8 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        mProxyModel->setSourceModel(mMapDocument->layerModel());
+        auto layerModel = mMapDocument->layerModel();
+        mProxyModel->setSourceModel(layerModel);
 
         connect(mMapDocument, &MapDocument::currentLayerChanged,
                 this, &LayerView::currentLayerChanged);
@@ -315,6 +319,15 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
                 this, &LayerView::selectedLayersChanged);
         connect(mMapDocument, &MapDocument::layerRemoved,
                 this, &LayerView::layerRemoved);
+
+        // Restore expanded layers
+        for (const int layerId : qAsConst(mMapDocument->expandedGroupLayers)) {
+            if (Layer *layer = mMapDocument->map()->findLayerById(layerId)) {
+                const QModelIndex sourceIndex = layerModel->index(layer);
+                const QModelIndex index = mProxyModel->mapFromSource(sourceIndex);
+                setExpanded(index, true);
+            }
+        }
 
         currentLayerChanged(mMapDocument->currentLayer());
         selectedLayersChanged();
@@ -326,6 +339,24 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
 void LayerView::editLayerModelIndex(const QModelIndex &layerModelIndex)
 {
     edit(mProxyModel->mapFromSource(layerModelIndex));
+}
+
+void LayerView::onExpanded(const QModelIndex &proxyIndex)
+{
+    const LayerModel *layerModel = mMapDocument->layerModel();
+    const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
+    if (Layer *layer = layerModel->toLayer(index))
+        if (mMapDocument)
+            mMapDocument->expandedGroupLayers.insert(layer->id());
+}
+
+void LayerView::onCollapsed(const QModelIndex &proxyIndex)
+{
+    const LayerModel *layerModel = mMapDocument->layerModel();
+    const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
+    if (Layer *layer = layerModel->toLayer(index))
+        if (mMapDocument)
+            mMapDocument->expandedGroupLayers.remove(layer->id());
 }
 
 void LayerView::currentRowChanged(const QModelIndex &proxyIndex)
