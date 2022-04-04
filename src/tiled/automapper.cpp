@@ -1092,17 +1092,29 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, QRect rect,
     for (int x = startX; x < endX; ++x) {
         for (int y = startY; y < endY; ++y) {
             const Cell &cell = srcLayer->cellAt(x + offsetX, y + offsetY);
-            if (!cell.isEmpty()) {
-                // this is without graphics update, it's done afterwards for all
-                int xd = x;
-                int yd = y;
 
-                // WrapBorder is only true on finite maps
-                if (mOptions.wrapBorder) {
-                    xd = wrap(xd, dwidth);
-                    yd = wrap(yd, dheight);
-                }
+            // this is without graphics update, it's done afterwards for all
+            int xd = x;
+            int yd = y;
+
+            // WrapBorder is only true on finite maps
+            if (mOptions.wrapBorder) {
+                xd = wrap(xd, dwidth);
+                yd = wrap(yd, dheight);
+            }
+
+            switch (matchType(cell.tile())) {
+            case Tiled::MatchType::Tile:
                 dstLayer->setCell(xd, yd, cell);
+                break;
+            case Tiled::MatchType::Empty:
+                dstLayer->setCell(xd, yd, Cell());
+                break;
+            case Tiled::MatchType::Unknown:
+            case Tiled::MatchType::NonEmpty:
+            case Tiled::MatchType::Other:
+            case Tiled::MatchType::Ignore:
+                break;
             }
         }
     }
