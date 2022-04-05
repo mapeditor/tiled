@@ -138,13 +138,6 @@ struct RuleInputSet
     QVector<Cell> cells;
 };
 
-struct Rule
-{
-    QRegion inputRegion;
-    QRegion outputRegion;
-    QVector<RuleInputSet> inputSets;
-};
-
 struct CompileContext;
 struct ApplyContext;
 
@@ -272,7 +265,7 @@ public:
      */
     void autoMap(const QRegion &where,
                  QRegion *appliedRegion,
-                 AutoMappingContext &context);
+                 AutoMappingContext &context) const;
 
     /**
      * Contains any errors which occurred while interpreting the rules map.
@@ -285,6 +278,12 @@ public:
     QString warningString() const { return mWarning; }
 
 private:
+    struct Rule
+    {
+        QRegion inputRegion;
+        QRegion outputRegion;
+    };
+
     /**
      * Reads the map properties of the rulesmap.
      * @return returns true when anything is ok, false when errors occurred.
@@ -306,10 +305,13 @@ private:
     bool setupRuleList();
 
     void setupWorkMapLayers(AutoMappingContext &context) const;
-    void compileRule(Rule &rule, const AutoMappingContext &context) const;
+    void compileRule(QVector<RuleInputSet> &inputSets,
+                     const Rule &rule,
+                     const AutoMappingContext &context) const;
     bool compileInputSet(RuleInputSet &index,
                          const InputSet &inputSet,
-                         const QRegion &inputRegion, CompileContext &compileContext,
+                         const QRegion &inputRegion,
+                         CompileContext &compileContext,
                          const AutoMappingContext &context) const;
 
     /**
@@ -323,7 +325,7 @@ private:
      * so the maybe existing tile in dst will not be overwritten.
      */
     void copyTileRegion(const TileLayer *srcLayer, QRect rect, TileLayer *dstLayer,
-                        int dstX, int dstY, const AutoMappingContext &context);
+                        int dstX, int dstY, const AutoMappingContext &context) const;
 
     /**
      * This copies all objects from the \a src_lr ObjectGroup to the \a dst_lr
@@ -334,7 +336,7 @@ private:
      */
     void copyObjectRegion(const ObjectGroup *srcLayer, const QRectF &rect,
                           ObjectGroup *dstLayer, int dstX, int dstY,
-                          AutoMappingContext &context);
+                          AutoMappingContext &context) const;
 
 
     /**
@@ -346,7 +348,7 @@ private:
      */
     void copyMapRegion(const QRegion &region, QPoint Offset,
                        const OutputSet &ruleOutput,
-                       AutoMappingContext &context);
+                       AutoMappingContext &context) const;
 
     /**
      * This goes through all the positions in \a matchRegion and checks if the
@@ -367,7 +369,7 @@ private:
      * option.
      */
     void applyRule(const Rule &rule, QPoint pos, ApplyContext &applyContext,
-                   AutoMappingContext &context);
+                   AutoMappingContext &context) const;
 
     void addWarning(const QString &text,
                     std::function<void()> callback = std::function<void()>());

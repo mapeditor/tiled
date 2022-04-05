@@ -556,15 +556,16 @@ static void collectCellsInRegion(const QVector<InputLayer> &list,
 /**
  * Sets up a small data structure for this rule that is optimized for matching.
  */
-void AutoMapper::compileRule(Rule &rule, const AutoMappingContext &context) const
+void AutoMapper::compileRule(QVector<RuleInputSet> &inputSets,
+                             const Rule &rule,
+                             const AutoMappingContext &context) const
 {
     CompileContext compileContext;
-    rule.inputSets.clear();
 
     for (const InputSet &inputSet : qAsConst(mRuleMapSetup.mInputSets)) {
         RuleInputSet index;
         if (compileInputSet(index, inputSet, rule.inputRegion, compileContext, context))
-            rule.inputSets.append(std::move(index));
+            inputSets.append(std::move(index));
     }
 }
 
@@ -712,7 +713,7 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
 
 void AutoMapper::autoMap(const QRegion &where,
                          QRegion *appliedRegion,
-                         AutoMappingContext &context)
+                         AutoMappingContext &context) const
 {
     QRegion applyRegion;
 
@@ -856,10 +857,10 @@ static bool matchInputIndex(const RuleInputSet &inputSet, QPoint offset, AutoMap
     return true;
 }
 
-static bool matchRuleAtOffset(const Rule &rule, QPoint offset, AutoMapper::GetCell getCell)
+static bool matchRuleAtOffset(const QVector<RuleInputSet> &inputSets, QPoint offset, AutoMapper::GetCell getCell)
 {
-    return std::any_of(rule.inputSets.begin(),
-                       rule.inputSets.end(),
+    return std::any_of(inputSets.begin(),
+                       inputSets.end(),
                        [=] (const RuleInputSet &index) { return matchInputIndex(index, offset, getCell); });
 }
 
@@ -869,10 +870,8 @@ void AutoMapper::matchRule(const Rule &rule,
                            const std::function<void(QPoint pos)> &matched,
                            const AutoMappingContext &context) const
 {
-    // Small hack to compile rules concurrently. Should be fine since
-    // compilation only alters the rule, and each rule is only accessed by a
-    // single thread.
-    compileRule(const_cast<Rule&>(rule), context);
+    QVector<RuleInputSet> inputSets;
+    compileRule(inputSets, rule, context);
 
     const QRect inputBounds = rule.inputRegion.boundingRect();
 
@@ -900,14 +899,14 @@ void AutoMapper::matchRule(const Rule &rule,
     for (const QRect &rect : ruleMatchRegion) {
         for (int y = rect.top(); y <= rect.bottom(); ++y)
             for (int x = rect.left(); x <= rect.right(); ++x)
-                if (matchRuleAtOffset(rule, QPoint(x, y), getCell))
+                if (matchRuleAtOffset(inputSets, QPoint(x, y), getCell))
                     matched(QPoint(x, y));
     }
 }
 
 void AutoMapper::applyRule(const Rule &rule, QPoint pos,
                            ApplyContext &applyContext,
-                           AutoMappingContext &context)
+                           AutoMappingContext &context) const
 {
     Q_ASSERT(!mRuleMapSetup.mOutputSets.empty());
 
@@ -969,7 +968,7 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
 
 void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
                                const OutputSet &ruleOutput,
-                               AutoMappingContext &context)
+                               AutoMappingContext &context) const
 {
     for (auto it = ruleOutput.layers.begin(), end = ruleOutput.layers.end(); it != end; ++it) {
         const Layer *from = it.key();
@@ -1029,7 +1028,7 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
 
 void AutoMapper::copyTileRegion(const TileLayer *srcLayer, QRect rect,
                                 TileLayer *dstLayer, int dstX, int dstY,
-                                const AutoMappingContext &context)
+                                const AutoMappingContext &context) const
 {
     int startX = dstX;
     int startY = dstY;
@@ -1083,7 +1082,7 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, QRect rect,
 
 void AutoMapper::copyObjectRegion(const ObjectGroup *srcLayer, const QRectF &rect,
                                   ObjectGroup *dstLayer, int dstX, int dstY,
-                                  AutoMappingContext &context)
+                                  AutoMappingContext &context) const
 {
     const QRectF pixelRect = context.targetDocument->renderer()->tileToPixelCoords(rect);
     const QList<MapObject*> objects = objectsInRegion(srcLayer, pixelRect.toAlignedRect());
