@@ -156,7 +156,12 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
     }
 
     // Add any newly placed objects
-    new AddMapObjects(mapDocument, context.newMapObjects, this);
+    if (!context.newMapObjects.isEmpty())
+        new AddMapObjects(mapDocument, context.newMapObjects, this);
+
+    // Remove any objects that have been scheduled for removal
+    if (!context.mapObjectsToRemove.isEmpty())
+        new RemoveMapObjects(mapDocument, context.mapObjectsToRemove.values(), this);
 }
 
 AutoMapperWrapper::~AutoMapperWrapper()

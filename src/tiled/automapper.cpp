@@ -766,11 +766,24 @@ void AutoMapper::autoMap(const QRegion &where,
                 case Layer::TileLayerType:
                     context.outputTileLayers.value(name)->erase(regionToErase);
                     break;
-                case Layer::ObjectGroupType:
-                    eraseRegionObjectGroup(context.targetDocument,
-                                           context.outputObjectGroups.value(name),
-                                           regionToErase);
+                case Layer::ObjectGroupType: {
+                    const auto objects = objectsToErase(context.targetDocument,
+                                                        context.outputObjectGroups.value(name),
+                                                        regionToErase);
+                    for (MapObject *mapObject : objects) {
+                        auto it = std::find_if(context.newMapObjects.begin(), context.newMapObjects.end(),
+                                               [=] (const AddMapObjects::Entry &entry) { return entry.mapObject == mapObject; });
+
+                        if (it != context.newMapObjects.end()) {
+                            // If this object is still new, delete it again
+                            delete it->mapObject;
+                            context.newMapObjects.erase(it);
+                        } else {
+                            context.mapObjectsToRemove.insert(mapObject);
+                        }
+                    }
                     break;
+                }
                 case Layer::ImageLayerType:
                 case Layer::GroupLayerType:
                     Q_UNREACHABLE();

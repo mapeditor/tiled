@@ -156,6 +156,7 @@ struct TILED_EDITOR_EXPORT AutoMappingContext
     QVector<SharedTileset> newTilesets;
     QVector<Layer*> newLayers;
     QVector<AddMapObjects::Entry> newMapObjects;
+    QSet<MapObject*> mapObjectsToRemove;
     QHash<Layer*, Properties> changedProperties;
 
     QHash<QString, const TileLayer*> inputLayers;

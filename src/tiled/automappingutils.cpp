@@ -1,6 +1,8 @@
 /*
  * automappingutils.cpp
- * Copyright 2012, Stefan Beller, stefanbeller@googlemail.com
+ * Copyright 2012, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2015, Seanba <sean@seanba.com>
+ * Copyright 2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,27 +20,22 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "automappingutils.h"
 
-#include "addremovemapobject.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "objectgroup.h"
 
-#include <QUndoStack>
-
 namespace Tiled {
 
-void eraseRegionObjectGroup(MapDocument *mapDocument,
-                            ObjectGroup *layer,
-                            const QRegion &where)
+QList<MapObject*> objectsToErase(const MapDocument *mapDocument,
+                                 const ObjectGroup *layer,
+                                 const QRegion &where)
 {
-    QUndoStack *undo = mapDocument->undoStack();
+    QList<MapObject*> objectsToErase;
 
-    const auto objects = layer->objects();
-    for (MapObject *obj : objects) {
+    for (MapObject *obj : layer->objects()) {
         // TODO: we are checking bounds, which is only correct for rectangles and
         // tile objects. polygons and polylines are not covered correctly by this
         // erase method (we are in fact deleting too many objects)
@@ -46,10 +43,10 @@ void eraseRegionObjectGroup(MapDocument *mapDocument,
 
         // Convert the boundary of the object into tile space
         const QRectF objBounds = obj->boundsUseTile();
-        QPointF tl = mapDocument->renderer()->pixelToTileCoords(objBounds.topLeft());
-        QPointF tr = mapDocument->renderer()->pixelToTileCoords(objBounds.topRight());
-        QPointF br = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomRight());
-        QPointF bl = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomLeft());
+        const QPointF tl = mapDocument->renderer()->pixelToTileCoords(objBounds.topLeft());
+        const QPointF tr = mapDocument->renderer()->pixelToTileCoords(objBounds.topRight());
+        const QPointF br = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomRight());
+        const QPointF bl = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomLeft());
 
         QRectF objInTileSpace;
         objInTileSpace.setTopLeft(tl);
@@ -59,8 +56,10 @@ void eraseRegionObjectGroup(MapDocument *mapDocument,
 
         const QRect objAlignedRect = objInTileSpace.toAlignedRect();
         if (where.intersects(objAlignedRect))
-            undo->push(new RemoveMapObjects(mapDocument, obj));
+            objectsToErase.append(obj);
     }
+
+    return objectsToErase;
 }
 
 QRegion tileRegionOfObjectGroup(const ObjectGroup *layer)
@@ -75,8 +74,7 @@ QRegion tileRegionOfObjectGroup(const ObjectGroup *layer)
     return ret;
 }
 
-const QList<MapObject*> objectsInRegion(const ObjectGroup *layer,
-                                        const QRegion &where)
+QList<MapObject*> objectsInRegion(const ObjectGroup *layer, const QRegion &where)
 {
     QList<MapObject*> ret;
     for (MapObject *obj : layer->objects()) {
