@@ -243,7 +243,8 @@ void AutoMapper::setupInputLayerProperties(InputLayer &inputLayer)
         const QString &name = it.key();
         const QVariant &value = it.value();
 
-        if (name.compare(QLatin1String("strictempty"), Qt::CaseInsensitive) == 0) {
+        if (name.compare(QLatin1String("strictempty"), Qt::CaseInsensitive) == 0 ||
+                name.compare(QLatin1String("autoempty"), Qt::CaseInsensitive) == 0) {
             if (value.canConvert(QMetaType::Bool)) {
                 inputLayer.strictEmpty = value.toBool();
                 continue;

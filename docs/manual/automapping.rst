@@ -290,12 +290,12 @@ The following properties are supported on a per-layer basis:
 
 .. _automapping-StrictEmpty:
 
-StrictEmpty
+AutoEmpty (alias: StrictEmpty)
    This layer property is a boolean property. It can be added to
    **input** and **inputnot** layers to customize the behavior for
    empty tiles within the input region.
 
-   In "StrictEmpty" mode, empty tiles in the input region match empty tiles
+   In "AutoEmpty" mode, empty tiles in the input region match empty tiles
    in the set layer. So when an "input" layer contains an empty tile within
    the input region, this means an empty tile is allowed at that location.
    And when an "inputnot" layer contains an empty tile within the input region,
