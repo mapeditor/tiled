@@ -232,13 +232,10 @@ public:
      * All data structures, which only rely on the rules map are setup
      * here.
      *
-     * @param mapDocument: the target map.
-     * @param rulesMap: The map containing the automapping rules. The
-     *               AutoMapper takes ownership of this map.
-     * @param rulesMapFileName: The filepath to the rule map.
+     * @param rulesMap The map containing the AutoMapping rules. The
+     *                 AutoMapper takes ownership of this map.
      */
-    AutoMapper(std::unique_ptr<Map> rulesMap,
-               const QString &rulesMapFileName);
+    AutoMapper(std::unique_ptr<Map> rulesMap);
     ~AutoMapper() override;
 
     QString rulesMapFileName() const;
@@ -258,7 +255,7 @@ public:
     void prepareAutoMap(AutoMappingContext &context);
 
     /**
-     * Here is done all the automapping.
+     * Here is done all the AutoMapping.
      *
      * When an \a appliedRegion is provided, it is set to the region where
      * rule outputs have been applied.
@@ -375,32 +372,21 @@ private:
                     std::function<void()> callback = std::function<void()>());
 
     /**
-     * map containing the rules, usually different than mTargetMap
+     * Map containing the rules.
      */
     std::unique_ptr<Map> mRulesMap;
 
     RuleMapSetup mRuleMapSetup;
 
     /**
-     * Stores the input and output region for each rule in mRulesMap, as well
-     * as the list of RuleInputSet for each rule.
+     * Stores the input and output region for each rule in mRulesMap.
      */
     std::vector<Rule> mRules;
-
-    /**
-     * The name of the processed rules file, used in error reporting.
-     */
-    QString mRulesMapFileName;
 
     Options mOptions;
 
     QString mError;
     QString mWarning;
 };
-
-inline QString AutoMapper::rulesMapFileName() const
-{
-    return mRulesMapFileName;
-}
 
 } // namespace Tiled

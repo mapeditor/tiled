@@ -48,7 +48,7 @@ void test_AutoMapping::autoMap()
     QVERIFY(rulesMap.get());
 
     MapDocument mapDocument(std::move(inputMap));
-    AutoMapper autoMapper(std::move(rulesMap), QStringLiteral("rules.tmx"));
+    AutoMapper autoMapper(std::move(rulesMap));
     AutoMappingContext context(&mapDocument);
 
     const QSize mapSize = mapDocument.map()->size();

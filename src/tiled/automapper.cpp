@@ -141,10 +141,8 @@ AutoMappingContext::AutoMappingContext(MapDocument *mapDocument)
  * are put directly below each of these functions.
  */
 
-AutoMapper::AutoMapper(std::unique_ptr<Map> rulesMap,
-                       const QString &rulesMapFileName)
+AutoMapper::AutoMapper(std::unique_ptr<Map> rulesMap)
     : mRulesMap(std::move(rulesMap))
-    , mRulesMapFileName(rulesMapFileName)
 {
     Q_ASSERT(mRulesMap);
 
@@ -160,6 +158,11 @@ AutoMapper::AutoMapper(std::unique_ptr<Map> rulesMap,
 
 AutoMapper::~AutoMapper()
 {
+}
+
+QString AutoMapper::rulesMapFileName() const
+{
+    return mRulesMap->fileName;
 }
 
 bool AutoMapper::ruleLayerNameUsed(const QString &ruleLayerName) const
@@ -214,10 +217,10 @@ bool AutoMapper::setupRuleMapProperties()
         }
 
         addWarning(tr("Ignoring unknown property '%2' = '%3' (rule map '%1')")
-                      .arg(mRulesMapFileName,
+                      .arg(rulesMapFileName(),
                            name,
                            value.toString()),
-                   SelectCustomProperty { mRulesMapFileName, name, mRulesMap.get() });
+                   SelectCustomProperty { rulesMapFileName(), name, mRulesMap.get() });
     }
 
     // Each of the border options imply MatchOutsideMap
@@ -246,11 +249,11 @@ void AutoMapper::setupInputLayerProperties(InputLayer &inputLayer)
         }
 
         addWarning(tr("Ignoring unknown property '%2' = '%3' on layer '%4' (rule map '%1')")
-                   .arg(mRulesMapFileName,
+                   .arg(rulesMapFileName(),
                         name,
                         value.toString(),
                         inputLayer.tileLayer->name()),
-                   SelectCustomProperty { mRulesMapFileName, name, inputLayer.tileLayer });
+                   SelectCustomProperty { rulesMapFileName(), name, inputLayer.tileLayer });
     }
 }
 
@@ -396,7 +399,7 @@ bool AutoMapper::setupRuleMapLayers()
     }
 
     if (!error.isEmpty()) {
-        error = mRulesMapFileName + QLatin1Char('\n') + error;
+        error = rulesMapFileName() + QLatin1Char('\n') + error;
         mError += error;
         return false;
     }

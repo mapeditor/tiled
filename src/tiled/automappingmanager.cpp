@@ -232,7 +232,7 @@ bool AutomappingManager::loadRuleMap(const QString &filePath)
         return false;
     }
 
-    std::unique_ptr<AutoMapper> autoMapper { new AutoMapper(std::move(rules), filePath) };
+    std::unique_ptr<AutoMapper> autoMapper { new AutoMapper(std::move(rules)) };
 
     mWarning += autoMapper->warningString();
     const QString error = autoMapper->errorString();
