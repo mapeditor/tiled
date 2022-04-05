@@ -265,6 +265,20 @@ NoOverlappingRules
    This map property is a boolean property: A rule is not allowed to overlap on
    itself.
 
+.. raw:: html
+
+   <div class="new new-prev">New in Tiled 1.9</div>
+
+MatchInOrder
+   When set to ``true``, each rule is applied immediately after a match is
+   found. This disables concurrent matching of rules, but allows each rule to
+   rely on the fact that the modifications resulting from any previous match
+   have already been applied (as used to be the case before Tiled 1.9).
+
+   Alternatively, split up your rules over multiple rule maps. They are always
+   applied in-order so one rule map can rely on any modifications by previous
+   rule maps having been applied.
+
 These properties are map wide, meaning it applies to all rules which are
 part of the rulemap. If you need rules with different properties you
 can use multiple rulemaps.

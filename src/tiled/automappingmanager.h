@@ -22,10 +22,11 @@
 
 #include "session.h"
 
+#include <QFileSystemWatcher>
 #include <QObject>
 #include <QRegion>
+#include <QRegularExpression>
 #include <QString>
-#include <QFileSystemWatcher>
 
 #include <memory>
 #include <vector>
@@ -131,6 +132,7 @@ private:
     QFileSystemWatcher mWatcher;
 
     QString mRulesFile;
+    QRegularExpression mMapNameFilter;
     bool mRulesFileOverride = false;
 };
 

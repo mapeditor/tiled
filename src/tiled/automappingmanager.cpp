@@ -32,6 +32,8 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
+#include <QScopeGuard>
+#include <QScopedValueRollback>
 #include <QTextStream>
 
 using namespace Tiled;
@@ -41,6 +43,8 @@ SessionOption<bool> AutomappingManager::automappingWhileDrawing { "automapping.w
 AutomappingManager::AutomappingManager(QObject *parent)
     : QObject(parent)
 {
+    mMapNameFilter.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+
     connect(&mWatcher, &QFileSystemWatcher::fileChanged,
             this, &AutomappingManager::onFileChanged);
 }
@@ -119,34 +123,44 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
         }
     }
 
-    QVector<AutoMapper*> passedAutoMappers;
-    for (auto &a : qAsConst(mAutoMappers)) {
-        if (!touchedLayer || a->ruleLayerNameUsed(touchedLayer->name()))
-            passedAutoMappers.append(a.get());
+    // Even if no AutoMapper instance will be executed, we still want to report
+    // any warnings or errors that might have been reported while interpreting
+    // the rule maps.
+    auto reportErrors = qScopeGuard([=] {
+        if (!mWarning.isEmpty())
+            emit warningsOccurred(automatic);
+
+        if (!mError.isEmpty())
+            emit errorsOccurred(automatic);
+    });
+
+    // Determine the list of AutoMappers that is relevant for this map
+    const QString mapFileName = QFileInfo(mMapDocument->fileName()).fileName();
+    QVector<AutoMapper*> autoMappers;
+    autoMappers.reserve(mAutoMappers.size());
+    for (const auto &autoMapper : mAutoMappers) {
+        const auto &mapNameFilter = autoMapper->mapNameFilter();
+        if (!mapNameFilter.isValid() || mapNameFilter.match(mapFileName).hasMatch())
+            autoMappers.append(autoMapper.get());
     }
 
-    if (!passedAutoMappers.isEmpty()) {
-        // use a copy of the region, so each automapper can manipulate it and the
-        // following automappers do see the impact
-        QRegion region(where);
+    if (autoMappers.isEmpty())
+        return;
 
-        QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->beginMacro(tr("Apply AutoMap rules"));
-        AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, passedAutoMappers, &region);
-        undoStack->push(aw);
-        undoStack->endMacro();
+    // Skip this AutoMapping run if none of the loaded rule maps actually use
+    // the touched layer.
+    if (touchedLayer) {
+        if (std::none_of(autoMappers.cbegin(),
+                         autoMappers.cend(),
+                         [=] (AutoMapper *autoMapper) { return autoMapper->ruleLayerNameUsed(touchedLayer->name()); }))
+            return;
     }
 
-    for (auto &autoMapper : qAsConst(passedAutoMappers)) {
-        mWarning += autoMapper->warningString();
-        mError += autoMapper->errorString();
-    }
-
-    if (!mWarning.isEmpty())
-        emit warningsOccurred(automatic);
-
-    if (!mError.isEmpty())
-        emit errorsOccurred(automatic);
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->beginMacro(tr("Apply AutoMap rules"));
+    AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, autoMappers, where, touchedLayer);
+    undoStack->push(aw);
+    undoStack->endMacro();
 }
 
 /**
@@ -160,8 +174,13 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
  */
 bool AutomappingManager::loadFile(const QString &filePath)
 {
-    if (filePath.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive))
+    if (filePath.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive)) {
+        // Restore any potential change to the map name filter after processing
+        // the included rules file.
+        QScopedValueRollback<QRegularExpression> mapNameFilter(mMapNameFilter);
+
         return loadRulesFile(filePath);
+    }
 
     return loadRuleMap(filePath);
 }
@@ -194,13 +213,24 @@ bool AutomappingManager::loadRulesFile(const QString &filePath)
     QTextStream in(&rulesFile);
 
     for (QString line = in.readLine(); !line.isNull(); line = in.readLine()) {
-        QString rulePath = line.trimmed();
-        if (rulePath.isEmpty()
-                || rulePath.startsWith(QLatin1Char('#'))
-                || rulePath.startsWith(QLatin1String("//")))
+        auto trimmedLine = QStringView(line).trimmed();
+        if (trimmedLine.isEmpty()
+                || trimmedLine.startsWith(QLatin1Char('#'))
+                || trimmedLine.startsWith(QLatin1String("//")))
             continue;
 
-        rulePath = absPath.filePath(rulePath);
+        if (trimmedLine.startsWith(QLatin1Char('[')) && trimmedLine.endsWith(QLatin1Char(']'))) {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            auto filter = trimmedLine.mid(1, trimmedLine.length() - 2);
+            mMapNameFilter.setPattern(QRegularExpression::wildcardToRegularExpression(filter.toString()));
+#else
+            auto filter = trimmedLine.sliced(1, trimmedLine.length() - 2);
+            mMapNameFilter.setPattern(QRegularExpression::wildcardToRegularExpression(filter));
+#endif
+            continue;
+        }
+
+        const QString rulePath = absPath.filePath(trimmedLine.toString());
 
         if (!QFileInfo::exists(rulePath)) {
             QString error = tr("File not found: '%1' (referenced by '%2')")
@@ -235,7 +265,7 @@ bool AutomappingManager::loadRuleMap(const QString &filePath)
         return false;
     }
 
-    std::unique_ptr<AutoMapper> autoMapper { new AutoMapper(mMapDocument, std::move(rules), filePath) };
+    std::unique_ptr<AutoMapper> autoMapper { new AutoMapper(std::move(rules), mMapNameFilter) };
 
     mWarning += autoMapper->warningString();
     const QString error = autoMapper->errorString();
@@ -270,10 +300,6 @@ void AutomappingManager::setMapDocument(MapDocument *mapDocument, const QString 
             connect(mMapDocument, &MapDocument::regionEdited,
                     this, &AutomappingManager::onRegionEdited);
         }
-
-        // Cleanup needed because AutoMapper instances hold a pointer to the
-        // MapDocument they apply to.
-        cleanUp();
     }
 
     refreshRulesFile(rulesFile);

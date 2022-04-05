@@ -25,9 +25,9 @@
 
 #include <QMap>
 #include <QUndoCommand>
-#include <QVector>
 
 #include <unordered_map>
+#include <vector>
 
 namespace Tiled {
 
@@ -45,8 +45,9 @@ class AutoMapperWrapper : public QUndoCommand
 {
 public:
     AutoMapperWrapper(MapDocument *mapDocument,
-                      const QVector<AutoMapper *> &autoMappers,
-                      QRegion *where);
+                      const QVector<AutoMapper*> &autoMappers,
+                      const QRegion &where,
+                      const TileLayer *touchedLayer = nullptr);
     ~AutoMapperWrapper() override;
 
     void undo() override;
@@ -55,7 +56,7 @@ public:
 private:
     void patchLayer(TileLayer *target, const TileLayer &layer, const QRegion &region);
 
-    struct TouchedLayerData
+    struct OutputLayerData
     {
         QRegion region;
         std::unique_ptr<TileLayer> before;
@@ -63,7 +64,7 @@ private:
     };
 
     MapDocument *mMapDocument;
-    std::unordered_map<TileLayer*, TouchedLayerData> mTouchedTileLayers;
+    std::unordered_map<TileLayer*, OutputLayerData> mExistingOutputTileLayers;
 };
 
 } // namespace Tiled

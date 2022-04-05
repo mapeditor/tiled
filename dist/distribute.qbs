@@ -72,6 +72,7 @@ Product {
             if (!Qt.core.frameworkBuild) {
                 var major = Qt.core.versionMajor;
                 list.push(
+                    "Qt" + major + "Concurrent" + postfix,
                     "Qt" + major + "Core" + postfix,
                     "Qt" + major + "Gui" + postfix,
                     "Qt" + major + "Network" + postfix,

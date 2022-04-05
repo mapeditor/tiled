@@ -27,6 +27,7 @@
 #include "map.h"
 #include "mapformat.h"
 #include "tiled.h"
+#include "tilededitor_global.h"
 #include "tileset.h"
 
 #include <QList>
@@ -65,7 +66,7 @@ using MapDocumentPtr = QSharedPointer<MapDocument>;
  * selected layer and provides an API for adding and removing map objects. It
  * also owns the QUndoStack.
  */
-class MapDocument : public Document
+class TILED_EDITOR_EXPORT MapDocument : public Document
 {
     Q_OBJECT
 
