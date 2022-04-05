@@ -101,6 +101,9 @@ protected:
                                                          const QEvent *event = nullptr) const override;
 
 private:
+    void onExpanded(const QModelIndex &index);
+    void onCollapsed(const QModelIndex &index);
+
     void currentRowChanged(const QModelIndex &proxyIndex);
     void indexPressed(const QModelIndex &proxyIndex);
     void currentLayerChanged(Layer *layer);

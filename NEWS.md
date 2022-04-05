@@ -6,9 +6,15 @@
 * Raised minimum C++ version to C++17
 * Removed qmake project files (only Qbs supported now)
 
+### Unreleased 1.8 patch
+
+* Made expanded group layers persistent
+* Scripting: Fixed region.rects when compiled against Qt 5.9 to 5.13
+
 ### Tiled 1.8.4 (31 March 2022)
 
 * Fixed crash when trying to create an object
+* Fixed handling of deleted session file
 
 ### Tiled 1.8.3 (31 March 2022)
 

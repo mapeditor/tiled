@@ -115,9 +115,6 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     ActionManager::registerAction(mActionMoveUp, "MoveObjectsUp");
     ActionManager::registerAction(mActionMoveDown, "MoveObjectsDown");
 
-    connect(DocumentManager::instance(), &DocumentManager::documentAboutToClose,
-            this, &ObjectsDock::documentAboutToClose);
-
     connect(mActionMoveUp, &QAction::triggered, this, &ObjectsDock::moveObjectsUp);
     connect(mActionMoveDown, &QAction::triggered, this, &ObjectsDock::moveObjectsDown);
 }
@@ -136,17 +133,14 @@ void ObjectsDock::moveObjectsDown()
 
 void ObjectsDock::setMapDocument(MapDocument *mapDoc)
 {
-    if (mMapDocument) {
-        mObjectsView->saveExpandedLayers();
+    if (mMapDocument)
         mMapDocument->disconnect(this);
-    }
 
     mMapDocument = mapDoc;
 
     mObjectsView->setMapDocument(mapDoc);
 
     if (mMapDocument) {
-        mObjectsView->restoreExpandedLayers();
         connect(mMapDocument, &MapDocument::selectedObjectsChanged,
                 this, &ObjectsDock::updateActions);
     }
@@ -220,12 +214,6 @@ void ObjectsDock::objectProperties()
     const auto &selectedObjects = mMapDocument->selectedObjects();
     mMapDocument->setCurrentObject(selectedObjects.first());
     emit mMapDocument->editCurrentObject();
-}
-
-void ObjectsDock::documentAboutToClose(Document *document)
-{
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
-        mObjectsView->clearExpandedLayers(mapDocument);
 }
 
 #include "moc_objectsdock.cpp"

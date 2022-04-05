@@ -170,10 +170,10 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->setCentralWidget(mWidgetStack);
 
     mToolsToolBar = new QToolBar(mMainWindow);
-    mToolsToolBar->setObjectName(QLatin1String("toolsToolBar"));
+    mToolsToolBar->setObjectName(QStringLiteral("toolsToolBar"));
 
     mToolSpecificToolBar = new QToolBar(mMainWindow);
-    mToolSpecificToolBar->setObjectName(QLatin1String("toolSpecificToolBar"));
+    mToolSpecificToolBar->setObjectName(QStringLiteral("toolSpecificToolBar"));
 
     mStampBrush = new StampBrush(this);
     mWangBrush = new WangBrush(this);
@@ -335,6 +335,13 @@ void MapEditor::addDocument(Document *document)
 {
     MapDocument *mapDocument = qobject_cast<MapDocument*>(document);
     Q_ASSERT(mapDocument);
+
+    // Some file state settings need to be restored before the map becomes current
+    const QVariantMap fileState = Session::current().fileState(mapDocument->fileName());
+    if (!fileState.isEmpty()) {
+        mapDocument->expandedGroupLayers = fromSettingsValue<QSet<int>>(fileState.value(QStringLiteral("expandedGroupLayers")));
+        mapDocument->expandedObjectLayers = fromSettingsValue<QSet<int>>(fileState.value(QStringLiteral("expandedObjectLayers")));
+    }
 
     MapView *view = new MapView(mWidgetStack);
     MapScene *scene = new MapScene(view); // scene is owned by the view
@@ -603,14 +610,17 @@ void MapEditor::saveDocumentState(MapDocument *mapDocument) const
     if (mapDocument->fileName().isEmpty())
         return;
 
-    QVariantMap fileState;
-    fileState.insert(QLatin1String("scale"), mapView->zoomable()->scale());
-
     const QRect viewportRect = mapView->viewport()->rect();
     const QPointF viewCenter = mapView->mapToScene(viewportRect).boundingRect().center();
 
-    fileState.insert(QLatin1String("viewCenter"), toSettingsValue(viewCenter));
-    fileState.insert(QLatin1String("selectedLayer"), globalIndex(mapDocument->currentLayer()));
+    QVariantMap fileState;
+    fileState.insert(QLatin1String("scale"), mapView->zoomable()->scale());
+    fileState.insert(QStringLiteral("viewCenter"), toSettingsValue(viewCenter));
+    fileState.insert(QStringLiteral("selectedLayer"), globalIndex(mapDocument->currentLayer()));
+    if (!mapDocument->expandedGroupLayers.isEmpty())
+        fileState.insert(QStringLiteral("expandedGroupLayers"), toSettingsValue(mapDocument->expandedGroupLayers));
+    if (!mapDocument->expandedObjectLayers.isEmpty())
+        fileState.insert(QStringLiteral("expandedObjectLayers"), toSettingsValue(mapDocument->expandedObjectLayers));
 
     Session::current().setFileState(mapDocument->fileName(), fileState);
 }
@@ -625,14 +635,14 @@ void MapEditor::restoreDocumentState(MapDocument *mapDocument) const
     if (fileState.isEmpty())
         return;
 
-    const qreal scale = fileState.value(QLatin1String("scale")).toReal();
+    const qreal scale = fileState.value(QStringLiteral("scale")).toReal();
     if (scale > 0)
         mapView->zoomable()->setScale(scale);
 
-    const QPointF viewCenter = fromSettingsValue<QPointF>(fileState.value(QLatin1String("viewCenter")));
+    const QPointF viewCenter = fromSettingsValue<QPointF>(fileState.value(QStringLiteral("viewCenter")));
     mapView->forceCenterOn(viewCenter);
 
-    const int layerIndex = fileState.value(QLatin1String("selectedLayer")).toInt();
+    const int layerIndex = fileState.value(QStringLiteral("selectedLayer")).toInt();
     if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
         mapDocument->switchCurrentLayer(layer);
 }

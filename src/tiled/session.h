@@ -25,6 +25,7 @@
 #include <QDir>
 #include <QHash>
 #include <QPointF>
+#include <QSet>
 #include <QSettings>
 #include <QSize>
 #include <QStandardPaths>
@@ -113,6 +114,26 @@ inline QVariant toSettingsValue<QPointF>(const QPointF &point)
         { QLatin1String("x"), point.x() },
         { QLatin1String("y"), point.y() }
     };
+}
+
+template<>
+inline QSet<int> fromSettingsValue<QSet<int>>(const QVariant &value)
+{
+    const auto variantList = value.toList();
+    QSet<int> set;
+    for (const auto &variantValue : variantList)
+        set.insert(variantValue.value<int>());
+    return set;
+}
+
+template<>
+inline QVariant toSettingsValue<QSet<int>>(const QSet<int> &set)
+{
+    QVariantList variantList;
+    variantList.reserve(set.size());
+    for (const int value : set)
+        variantList.append(value);
+    return variantList;
 }
 
 
