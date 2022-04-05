@@ -1,6 +1,7 @@
 /*
  * automappingmanager.h
- * Copyright 2010-2011, Stefan Beller, stefanbeller@googlemail.com
+ * Copyright 2010-2012, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2013-2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *

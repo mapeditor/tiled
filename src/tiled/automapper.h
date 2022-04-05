@@ -1,6 +1,7 @@
 /*
  * automapper.h
- * Copyright 2010-2012, Stefan Beller, stefanbeller@googlemail.com
+ * Copyright 2010-2016, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2016-2022, Thorbjørn Lindijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *

@@ -1,7 +1,7 @@
 /*
  * automapperwrapper.h
- * Copyright 2010-2011, Stefan Beller, stefanbeller@googlemail.com
- * Copyright 2018-2021, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2010-2011, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2018-2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
