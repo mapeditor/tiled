@@ -534,6 +534,22 @@ void AutoMapper::setupWorkMapLayers(AutoMappingContext &context) const
             context.inputLayers.insert(name, tileLayer);
 }
 
+template<typename T>
+static void appendUnique(QVector<T> &values, const T &value)
+{
+    if (!values.contains(value))
+        values.append(value);
+}
+
+template<typename Callback>
+static void forEachPointInRegion(const QRegion &region, Callback callback)
+{
+    for (const QRect &rect : region)
+        for (int y = rect.top(); y <= rect.bottom(); ++y)
+            for (int x = rect.left(); x <= rect.right(); ++x)
+                callback(x, y);
+}
+
 /**
  * Fills \a cells with the list of all cells which can be found within all
  * tile layers within the given region.
@@ -545,15 +561,11 @@ static void collectCellsInRegion(const QVector<InputLayer> &list,
                                  QVector<Cell> &cells)
 {
     for (const InputLayer &inputLayer : list) {
-        for (const QRect &rect : r) {
-            for (int x = rect.left(); x <= rect.right(); ++x) {
-                for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                    const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
-                    if (matchType(cell.tile()) == MatchType::Tile && !cells.contains(cell))
-                        cells.append(cell);
-                }
-            }
-        }
+        forEachPointInRegion(r, [&] (int x, int y) {
+            const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
+            if (matchType(cell.tile()) == MatchType::Tile)
+                appendUnique(cells, cell);
+        });
     }
 }
 
@@ -593,120 +605,119 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
 
     for (const InputConditions &conditions : inputSet.layers) {
         inputCells.clear();
+        bool canMatch = true;
 
         RuleInputLayer layer;
         layer.targetLayer = context.inputLayers.value(conditions.layerName, &context.dummy);
 
-        for (const QRect &rect : inputRegion) {
-            for (int x = rect.left(); x <= rect.right(); ++x) {
-                for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                    anyOf.clear();
-                    noneOf.clear();
+        forEachPointInRegion(inputRegion, [&] (int x, int y) {
+            anyOf.clear();
+            noneOf.clear();
 
-                    for (const InputLayer &inputLayer : conditions.listYes) {
-                        const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
+            for (const InputLayer &inputLayer : conditions.listYes) {
+                const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
 
-                        switch (matchType(cell.tile())) {
-                        case MatchType::Unknown:
-                            if (inputLayer.strictEmpty)
-                                anyOf.append(cell);
-                            break;
-                        case MatchType::Tile:
-                            anyOf.append(cell);
-                            break;
-                        case MatchType::Empty:
-                            anyOf.append(Cell());
-                            break;
-                        case MatchType::NonEmpty:
-                            noneOf.append(Cell());
-                            break;
-                        case MatchType::Other:
-                            // The "any other tile" case is implemented as
-                            // "none of the used tiles".
-                            if (inputCells.isEmpty())
-                                collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
-                            noneOf.append(inputCells);
-                            break;
-                        case MatchType::Ignore:
-                            break;
-                        }
-                    }
-
-                    for (const InputLayer &inputLayer : conditions.listNo) {
-                        const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
-
-                        switch (matchType(cell.tile())) {
-                        case MatchType::Unknown:
-                            if (inputLayer.strictEmpty)
-                                noneOf.append(cell);
-                            break;
-                        case MatchType::Tile:
-                            noneOf.append(cell);
-                            break;
-                        case MatchType::Empty:
-                            noneOf.append(Cell());
-                            break;
-                        case MatchType::NonEmpty:
-                            anyOf.append(Cell());
-                            break;
-                        case MatchType::Other:
-                            // This is the "not any other tile" case, which is
-                            // implemented as "any of the used tiles"
-                            if (inputCells.isEmpty())
-                                collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
-                            anyOf.append(inputCells);
-                            break;
-                        case MatchType::Ignore:
-                            break;
-                        }
-                    }
-
-                    // For backwards compatibility, when the input regions have
-                    // been explicitly defined and no "any" and no "none" tiles
-                    // are defined at this location, the rule will not accept
-                    // any of the "any" tiles used elsewhere in this rule, nor
-                    // the empty tile.
-                    if (mRuleMapSetup.mLayerRegions || mRuleMapSetup.mLayerInputRegions) {
-                        if (anyOf.isEmpty() && conditions.listNo.isEmpty()) {
-                            if (inputCells.isEmpty())
-                                collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
-                            noneOf.append(inputCells);
-                            noneOf.append(Cell());
-                        }
-                    }
-
-                    // When the input layer is missing, it is considered empty.
-                    // In this case, we can drop this input set when empty
-                    // tiles are not allowed here.
-                    if (layer.targetLayer == &context.dummy) {
-                        const bool emptyAllowed = (anyOf.isEmpty() ||
-                                                   std::any_of(anyOf.cbegin(),
-                                                               anyOf.cend(),
-                                                               [] (const Cell &cell) { return cell.isEmpty(); }))
-                                && std::none_of(noneOf.cbegin(),
-                                                noneOf.cend(),
-                                                [] (const Cell &cell) { return cell.isEmpty(); });
-
-                        if (!emptyAllowed)
-                            return false;
-                    }
-
-                    if (anyOf.size() > 0 || noneOf.size() > 0) {
-                        index.cells.append(anyOf);
-                        index.cells.append(noneOf);
-
-                        RuleInputLayerPos pos;
-                        pos.x = x - topLeft.x();
-                        pos.y = y - topLeft.y();
-                        pos.anyCount = anyOf.size();
-                        pos.noneCount = noneOf.size();
-
-                        index.positions.append(pos);
-                        ++layer.posCount;
-                    }
+                switch (matchType(cell.tile())) {
+                case MatchType::Unknown:
+                    if (inputLayer.strictEmpty)
+                        appendUnique(anyOf, cell);
+                    break;
+                case MatchType::Tile:
+                    appendUnique(anyOf, cell);
+                    break;
+                case MatchType::Empty:
+                    appendUnique(anyOf, Cell());
+                    break;
+                case MatchType::NonEmpty:
+                    appendUnique(noneOf, Cell());
+                    break;
+                case MatchType::Other:
+                    // The "any other tile" case is implemented as "none of the
+                    // used tiles".
+                    if (inputCells.isEmpty())
+                        collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
+                    noneOf.append(inputCells);
+                    break;
+                case MatchType::Ignore:
+                    break;
                 }
             }
-        }
+
+            for (const InputLayer &inputLayer : conditions.listNo) {
+                const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
+
+                switch (matchType(cell.tile())) {
+                case MatchType::Unknown:
+                    if (inputLayer.strictEmpty)
+                        noneOf.append(cell);
+                    break;
+                case MatchType::Tile:
+                    appendUnique(noneOf, cell);
+                    break;
+                case MatchType::Empty:
+                    appendUnique(noneOf, Cell());
+                    break;
+                case MatchType::NonEmpty:
+                    appendUnique(anyOf, Cell());
+                    break;
+                case MatchType::Other:
+                    // This is the "not any other tile" case, which is
+                    // implemented as "any of the used tiles"
+                    if (inputCells.isEmpty())
+                        collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
+                    anyOf.append(inputCells);
+                    break;
+                case MatchType::Ignore:
+                    break;
+                }
+            }
+
+            // For backwards compatibility, when the input regions have been
+            // explicitly defined and no "any" and no "none" tiles are defined
+            // at this location, the rule will not accept any of the "any"
+            // tiles used elsewhere in this rule, nor the empty tile.
+            if (mRuleMapSetup.mLayerRegions || mRuleMapSetup.mLayerInputRegions) {
+                if (anyOf.isEmpty() && conditions.listNo.isEmpty()) {
+                    if (inputCells.isEmpty())
+                        collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
+                    noneOf.append(inputCells);
+                    appendUnique(noneOf, Cell());
+                }
+            }
+
+            // When the input layer is missing, it is considered empty. In this
+            // case, we can drop this input set when empty tiles are not
+            // allowed here.
+            if (layer.targetLayer == &context.dummy) {
+                const bool emptyAllowed = (anyOf.isEmpty() ||
+                                           std::any_of(anyOf.cbegin(),
+                                                       anyOf.cend(),
+                                                       [] (const Cell &cell) { return cell.isEmpty(); }))
+                        && std::none_of(noneOf.cbegin(),
+                                        noneOf.cend(),
+                                        [] (const Cell &cell) { return cell.isEmpty(); });
+
+                if (!emptyAllowed)
+                    canMatch = false;
+            }
+
+            if (anyOf.size() > 0 || noneOf.size() > 0) {
+                index.cells.append(anyOf);
+                index.cells.append(noneOf);
+
+                RuleInputLayerPos pos;
+                pos.x = x - topLeft.x();
+                pos.y = y - topLeft.y();
+                pos.anyCount = anyOf.size();
+                pos.noneCount = noneOf.size();
+
+                index.positions.append(pos);
+                ++layer.posCount;
+            }
+        });
+
+        if (!canMatch)
+            return false;
 
         if (layer.posCount > 0)
             index.layers.append(layer);
@@ -900,12 +911,10 @@ void AutoMapper::matchRule(const Rule &rule,
                                  context.targetMap->height() - ruleHeight);
     }
 
-    for (const QRect &rect : ruleMatchRegion) {
-        for (int y = rect.top(); y <= rect.bottom(); ++y)
-            for (int x = rect.left(); x <= rect.right(); ++x)
-                if (matchRuleAtOffset(inputSets, QPoint(x, y), getCell))
-                    matched(QPoint(x, y));
-    }
+    forEachPointInRegion(ruleMatchRegion, [&] (int x, int y) {
+        if (matchRuleAtOffset(inputSets, QPoint(x, y), getCell))
+            matched(QPoint(x, y));
+    });
 }
 
 void AutoMapper::applyRule(const Rule &rule, QPoint pos,
