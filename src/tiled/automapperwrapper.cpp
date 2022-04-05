@@ -34,14 +34,14 @@
 using namespace Tiled;
 
 AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
-                                     const std::vector<std::unique_ptr<AutoMapper>> &autoMappers,
+                                     const QVector<AutoMapper *> &autoMappers,
                                      const QRegion &where,
                                      const TileLayer *touchedLayer)
     : mMapDocument(mapDocument)
 {
     AutoMappingContext context(mapDocument);
 
-    for (const auto &autoMapper : autoMappers)
+    for (const auto autoMapper : autoMappers)
         autoMapper->prepareAutoMap(context);
 
     // Store a copy of each output tile layer before AutoMapping.
@@ -69,7 +69,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
     const Map *map = mapDocument->map();
     const QRegion mapRect(0, 0, map->width(), map->height());
 
-    for (const auto &autoMapper : autoMappers) {
+    for (const auto autoMapper : autoMappers) {
         // stop expanding region when it's already the entire fixed-size map
         if (appliedRegionPtr && (!map->infinite() && (mapRect - region).isEmpty()))
             appliedRegionPtr = nullptr;

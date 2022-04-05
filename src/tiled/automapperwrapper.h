@@ -45,7 +45,7 @@ class AutoMapperWrapper : public QUndoCommand
 {
 public:
     AutoMapperWrapper(MapDocument *mapDocument,
-                      const std::vector<std::unique_ptr<AutoMapper>> &autoMappers,
+                      const QVector<AutoMapper*> &autoMappers,
                       const QRegion &where,
                       const TileLayer *touchedLayer = nullptr);
     ~AutoMapperWrapper() override;

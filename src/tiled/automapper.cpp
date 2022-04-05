@@ -141,8 +141,9 @@ AutoMappingContext::AutoMappingContext(MapDocument *mapDocument)
  * are put directly below each of these functions.
  */
 
-AutoMapper::AutoMapper(std::unique_ptr<Map> rulesMap)
+AutoMapper::AutoMapper(std::unique_ptr<Map> rulesMap, const QRegularExpression &mapNameFilter)
     : mRulesMap(std::move(rulesMap))
+    , mMapNameFilter(mapNameFilter)
 {
     Q_ASSERT(mRulesMap);
 
