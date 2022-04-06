@@ -31,7 +31,7 @@ namespace Tiled {
 
 class Document;
 
-class ChangeProperties : public QUndoCommand
+class ChangeProperties : public QUndoCommand, public ClonableUndoCommand
 {
 public:
     /**
@@ -50,6 +50,8 @@ public:
 
     void undo() override;
     void redo() override;
+
+    ChangeProperties *clone(QUndoCommand *parent) const override;
 
 private:
     void swapProperties();

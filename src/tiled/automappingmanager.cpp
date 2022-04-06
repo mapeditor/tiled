@@ -21,6 +21,7 @@
 
 #include "automappingmanager.h"
 
+#include "automapper.h"
 #include "automapperwrapper.h"
 #include "logginginterface.h"
 #include "map.h"
@@ -157,11 +158,11 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
             return;
     }
 
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Apply AutoMap rules"));
     AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, autoMappers, where, touchedLayer);
-    undoStack->push(aw);
-    undoStack->endMacro();
+    aw->setMergeable(automatic);
+    aw->setText(tr("Apply AutoMap rules"));
+
+    mMapDocument->undoStack()->push(aw);
 }
 
 /**

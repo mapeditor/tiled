@@ -24,13 +24,13 @@
 #include "addremovelayer.h"
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
+#include "automapper.h"
 #include "changeproperties.h"
 #include "containerhelpers.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "tilepainter.h"
 
 using namespace Tiled;
 
@@ -38,7 +38,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
                                      const QVector<AutoMapper *> &autoMappers,
                                      const QRegion &where,
                                      const TileLayer *touchedLayer)
-    : mMapDocument(mapDocument)
+    : PaintTileLayer(mapDocument)
 {
     AutoMappingContext context(mapDocument);
 
@@ -63,7 +63,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         if (appliedRegionPtr && (!map->infinite() && (mapRect - region).isEmpty()))
             appliedRegionPtr = nullptr;
 
-        if (!context.touchedTileLayers.isEmpty()) {
+        if (touchedLayer) {
             if (std::none_of(context.touchedTileLayers.cbegin(),
                              context.touchedTileLayers.cend(),
                              [&] (const TileLayer *tileLayer) { return autoMapper->ruleLayerNameUsed(tileLayer->name()); }))
@@ -81,23 +81,14 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         }
     }
 
-    for (auto& [before, target] : context.originalToOutputLayerMapping) {
-        OutputLayerData &data = mExistingOutputTileLayers[before];
+    // Apply the changes to existing tile layers
+    for (auto& [original, outputLayer] : context.originalToOutputLayerMapping) {
+        const QRegion diffRegion = original->computeDiffRegion(*outputLayer);
+        if (diffRegion.isEmpty())
+            continue;
 
-        // reduce memory usage by saving only diffs
-        data.region = before->computeDiffRegion(*target);
-        const QRect diffRect = data.region.boundingRect();
-
-        auto beforeDiff = before->copy(data.region);
-        beforeDiff->setPosition(diffRect.topLeft());
-        beforeDiff->setName(before->name());
-
-        auto afterDiff = target->copy(data.region);
-        afterDiff->setPosition(diffRect.topLeft());
-        afterDiff->setName(target->name());
-
-        data.before = std::move(beforeDiff);
-        data.after = std::move(afterDiff);
+        paint(original, 0, 0, outputLayer.get(),
+              diffRegion.translated(original->position()));
     }
 
     // Make sure to add any newly used tilesets to the map
@@ -138,30 +129,4 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
     // Remove any objects that have been scheduled for removal
     if (!context.mapObjectsToRemove.isEmpty())
         new RemoveMapObjects(mapDocument, context.mapObjectsToRemove.values(), this);
-}
-
-AutoMapperWrapper::~AutoMapperWrapper()
-{
-}
-
-void AutoMapperWrapper::undo()
-{
-    for (const auto& [target, data] : mExistingOutputTileLayers)
-        patchLayer(target, *data.before, data.region);
-
-    QUndoCommand::undo(); // undo child commands
-}
-
-void AutoMapperWrapper::redo()
-{
-    QUndoCommand::redo(); // redo child commands
-
-    for (const auto& [target, data] : mExistingOutputTileLayers)
-        patchLayer(target, *data.after, data.region);
-}
-
-void AutoMapperWrapper::patchLayer(TileLayer *target, const TileLayer &layer, const QRegion &region)
-{
-    TilePainter painter(mMapDocument, target);
-    painter.setCells(layer.x(), layer.y(), &layer, region);
 }

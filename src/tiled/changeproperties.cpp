@@ -45,14 +45,25 @@ ChangeProperties::ChangeProperties(Document *document,
     }
 }
 
+void ChangeProperties::undo()
+{
+    swapProperties();
+}
+
 void ChangeProperties::redo()
 {
     swapProperties();
 }
 
-void ChangeProperties::undo()
+ChangeProperties *ChangeProperties::clone(QUndoCommand *parent) const
 {
-    swapProperties();
+    auto clone = new ChangeProperties(mDocument,
+                                      QString(),
+                                      mObject,
+                                      mNewProperties,
+                                      parent);
+    clone->setText(text());
+    return clone;
 }
 
 void ChangeProperties::swapProperties()

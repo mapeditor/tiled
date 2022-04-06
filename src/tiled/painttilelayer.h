@@ -44,6 +44,14 @@ class PaintTileLayer : public QUndoCommand
 {
 public:
     /**
+     * Minimal constructor, to be used in combination with paint().
+     *
+     * @param mapDocument the map document that's being edited
+     */
+    PaintTileLayer(MapDocument *mapDocument,
+                   QUndoCommand *parent = nullptr);
+
+    /**
      * Constructor.
      *
      * @param mapDocument the map document that's being edited
@@ -82,6 +90,12 @@ public:
      */
     void setMergeable(bool mergeable);
 
+    void paint(TileLayer *target,
+               int x,
+               int y,
+               const TileLayer *source,
+               const QRegion &paintRegion);
+
     void undo() override;
     void redo() override;
 
@@ -92,11 +106,14 @@ private:
     struct LayerData
     {
         void mergeWith(const LayerData &o);
+        void mergeWith(LayerData &&o);
 
         std::unique_ptr<TileLayer> mSource;
         std::unique_ptr<TileLayer> mErased;
-        int mX, mY;
         QRegion mPaintedRegion;
+
+    private:
+        void copy(const LayerData &o);
     };
 
     MapDocument *mMapDocument;
