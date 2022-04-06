@@ -323,7 +323,7 @@ LibGDX
 
 -  `libgdx <http://libgdx.badlogicgames.com/>`__, a Java-based
    Android/desktop/HTML5 game library,
-   `provides <https://github.com/libgdx/libgdx/wiki/Tile-maps>`__ a
+   `provides <https://libgdx.com/wiki/graphics/2d/tile-maps>`__ a
    packer, loader and renderer for TMX maps
 
 LITIengine
