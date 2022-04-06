@@ -37,7 +37,7 @@ either:
 -  A path to a **rule map**.
 -  A path to another ``.txt`` file which has the same syntax (e.g. in
    another directory).
--  A map filename filter, enclosed in ``[]`` and using ``\*`` as a wildcard.
+-  A map filename filter, enclosed in ``[]`` and using ``*`` as a wildcard.
 -  A comment, when the line starts  with ``#`` or ``//``.
 
 By default, all Automapping rules will run on any map you Automap. The map
