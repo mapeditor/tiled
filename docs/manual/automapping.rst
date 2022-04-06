@@ -29,21 +29,28 @@ External Links
 Setting it Up
 =============
 
-The Automapping feature looks for a text file called 'rules.txt' in
-the folder where the current map is located. Each line in this text file
-is either
+The Automapping feature looks for a text file called ``rules.txt`` in the
+folder where the current map is located. If there isn't one, it uses the
+Automapping rules file set in your Project. Each line in this text file is
+either:
 
--  a path to a **rulefile**
--  or a path to another textfile which has the same syntax (i.e. in
-   another directory)
--  or is a comment which is indicated by **#** or **//**
+-  A path to a **rule map**.
+-  A path to another ``.txt`` file which has the same syntax (e.g. in
+   another directory).
+-  A map filename filter, enclosed in ``[]`` and using ``\*`` as a wildcard.
+-  A comment, when the line starts  with ``#`` or ``//``.
 
-A **rulefile** is a standard map file, which can be read and written by
-tiled (\*.tmx). In one rulefile there can be multiple defined rules.
+By default, all Automapping rules will run on any map you Automap. The map
+filename filters let you restrict which maps rules apply to. For example, any
+rule maps listed after ``[town*]`` will only apply to maps whose filenames
+start with "town". To start applying rules to all maps again, you can use
+``[*]``, which will match any map name.
 
-An Automapping **rulefile** consists of 4 major parts:
+A **rule map** is a standard map file, which can be read and written by Tiled
+(in TMX or JSON format). A rule map can define any number of rules. It consists
+of 4 major parts:
 
-#. The definition of regions describes which locations of the rulemap
+#. The definition of regions describes which locations of the rule map
    are actually used to create Automapping rules.
 #. The definition of inputs describes which kind of pattern the working
    map will be searched for.
@@ -75,10 +82,11 @@ any tile or no tile at a coordinate to indicate if that coordinate belongs to a
 rule or if it doesn't. Any tiles placed on input or output layers outside of
 the respective region are ignored.
 
-If multiple rules are defined in one rulemap file, the regions must not
-be adjacent. That means there must be at least one tile of unused space
-in between two rules. If the regions are adjacent (coherent) then both
-regions are interpreted as one rule.
+If multiple rules are defined in one rule map, the regions must not be
+adjacent. That means there must be at least one tile of unused space in between
+two rules. If the regions are adjacent (coherent) then both regions are
+interpreted as one rule. Since Tiled 1.9, diagonal connections are considered
+adjacent.
 
 .. note::
 
@@ -86,20 +94,29 @@ regions are interpreted as one rule.
    region can be used to connect the two parts of the rule, since empty output
    tiles are ignored by default.
 
-Multiple Rules in One Rulefile
+Multiple Rules in one Rule Map
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Multiple rules are possible in one rulemap. However, if you want to
-have the rules applied in a certain sequence, you should use multiple
-**rulefiles** and define the sequence within the **rules.txt** file. As
-of now there also is a certain sequence within one rulemapfile.
-Generally speaking the regions with small y value come first. If there
-are regions at the same y value, then the x value is taken into account.
-On orthogonal maps this ordering scheme is the same as for reading in
-most western countries (Left to right, top to bottom). The order within
-one rulemap may be changed later, once tiled is capable of utilizing
-multiple threads/processors. So if you want to rely on a certain
-sequence, use different rulemaps and order these in the rules.txt
+Since Tiled 1.9, the rules within one rule map are matched concurrently by
+default, so they can't take into account changes made by other rules defined in
+the same rule map.
+
+If you have some rules that depend on the output of other rules, you have two
+options. The easiest is to use the :ref:`MatchInOrder
+<automapping-MatchInOrder>` option to disable concurrent matching of rules. In
+this case, each match will apply its changes directly, affecting the further
+application of rules (including the current one).
+
+Alternatively, use multiple **rule maps** and define the desired sequence
+within the ``rules.txt`` file. This can provide better performance since it
+still allows the rules within each rule map to be matched concurrently.
+
+Rules are applied (and matched, if using :ref:`MatchInOrder
+<automapping-MatchInOrder>`) in the order in which they appear in the rule map.
+Rules with smaller Y value come first, and if there are rules at the same Y
+value, then the rules with smaller X come first. On orthogonal maps this
+ordering scheme is the same as for reading in most western countries (left to
+right, top to bottom).
 
 Definition of Inputs
 --------------------
@@ -195,13 +212,13 @@ Map Properties
 --------------
 
 The following map properties can be used to customize the behavior of
-the rules in a **rulefile**:
+the rules in a **rule map**:
 
 .. _automapping-DeleteTiles:
 
 DeleteTiles
    This map property is a boolean property: it can be
-   true or false. If rules of this rulefile get applied at some location
+   true or false. If rules of this rule map get applied at some location
    in your map, this map property determines if all other tiles are
    deleted before applying the rules. Consider a map where you have
    multiple layers. Not all layers are filled at all places. In that
@@ -269,6 +286,8 @@ NoOverlappingRules
 
    <div class="new new-prev">New in Tiled 1.9</div>
 
+.. _automapping-MatchInOrder:
+
 MatchInOrder
    When set to ``true``, each rule is applied immediately after a match is
    found. This disables concurrent matching of rules, but allows each rule to
@@ -280,8 +299,8 @@ MatchInOrder
    rule maps having been applied.
 
 These properties are map wide, meaning it applies to all rules which are
-part of the rulemap. If you need rules with different properties you
-can use multiple rulemaps.
+part of the rule map. If you need rules with different properties you
+can use multiple rule maps.
 
 Layer Properties
 ----------------
@@ -462,7 +481,7 @@ corner. The other shoreline corners are constructed the same way. So
 after the example is applied, we would like to have the corners of the
 shoreline get suitable tiles. Since we rely on the other example being
 finished, we will put the rules needed for the corners into another new
-rulefile. (which is listed afterwards in rules.txt)
+rule map (which is listed afterwards in ``rules.txt``).
 
 +-----------------------------------------------------------+-----------------------------------------------------------+-----------------------------------------------------------+
 | .. image:: images/automapping/TheManaWorld/2/pattern1.png | .. image:: images/automapping/TheManaWorld/2/pattern2.png | .. image:: images/automapping/TheManaWorld/2/pattern3.png |
@@ -738,6 +757,6 @@ in figure above.
 
 Since the overlapping is not desired, we can turn it off by adding the map
 property :ref:`NoOverlappingRules <automapping-NoOverlappingRules>` to the
-rulemap and setting it to ``true``.
+rule map and setting it to ``true``.
 
 Keep in mind that the map property applies for all rules on that rule map.
