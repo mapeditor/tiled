@@ -288,7 +288,7 @@
     <message>
         <location filename="../src/tiled/donationpopup.cpp" line="+42"/>
         <source>Please consider supporting Tiled development with a small monthly donation.</source>
-        <translation type="unfinished"></translation>
+        <translation>请考虑每月少量捐款来支持 Tiled 开发。</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -429,7 +429,8 @@
         <location filename="../src/tiled/utils.cpp" line="+537"/>
         <source>JSON parse error at offset %1:
 %2.</source>
-        <translation type="unfinished">JSON文件解析到 %1 时发生错误: %2.</translation>
+        <translation>JSON解析错误 偏移: %1行
+%2列。</translation>
     </message>
 </context>
 <context>
@@ -450,7 +451,7 @@
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-8"/>
         <location line="+41"/>
         <source>Property Types files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>属性类型文件 (*.json)</translation>
     </message>
 </context>
 <context>
@@ -546,7 +547,7 @@
     <message>
         <location line="+14"/>
         <source>JSON template files (*.tj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON 模板文件 (*.tj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
@@ -573,7 +574,7 @@
     <message>
         <location line="+14"/>
         <source>JSON tileset files (*.tsj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON 图块文件 (*.tsj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
@@ -1717,7 +1718,7 @@ Line %1, column %2</source>
     <message>
         <location line="+27"/>
         <source>Middle mouse button uses auto-&amp;scrolling</source>
-        <translation type="unfinished"></translation>
+        <translation>使用鼠标中键自动滚动</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1743,7 +1744,7 @@ Line %1, column %2</source>
     <message>
         <location line="+22"/>
         <source>by</source>
-        <translation type="unfinished"></translation>
+        <translation>by</translation>
     </message>
     <message>
         <location line="+105"/>
@@ -1837,12 +1838,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertytypeseditor.ui" line="+14"/>
         <source>Property Types Editor</source>
-        <translation type="unfinished">属性类型编辑器</translation>
+        <translation>属性类型编辑器</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property Types</source>
-        <translation type="unfinished">属性类型</translation>
+        <translation>属性类型</translation>
     </message>
 </context>
 <context>
@@ -2431,7 +2432,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/rpmap/rpmapplugin.cpp" line="+93"/>
         <source>RpTool MapTool files (*.rpmap)</source>
-        <translation type="unfinished"></translation>
+        <translation>RpTool 地图工具文件(*.rpmap)</translation>
     </message>
 </context>
 <context>
@@ -2558,12 +2559,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editablewangset.cpp" line="-34"/>
         <source>Wang ID must be an array of length 8</source>
-        <translation type="unfinished"></translation>
+        <translation>Wang ID必须是一个长度为8的数组</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Invalid Wang ID</source>
-        <translation type="unfinished"></translation>
+        <translation>无效的Wang ID</translation>
     </message>
     <message>
         <location line="+53"/>
@@ -2763,7 +2764,7 @@ Line %1, column %2</source>
     <message>
         <location line="+44"/>
         <source>Could not move &apos;%1&apos; to &apos;%2&apos;: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>无法将 &apos;%1&apos; 移动到 &apos;%2&apos;: %3</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3119,7 +3120,7 @@ Line %1, column %2</source>
     <message>
         <location line="+4"/>
         <source>Can&apos;t create template with embedded tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>无法使用嵌入式图块集创建模板</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -3289,7 +3290,7 @@ Line %1, column %2</source>
     <message>
         <location line="-6"/>
         <source>&apos;%1&apos; layer must not occur more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; 层不能出现多次。</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -3332,7 +3333,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/automappingmanager.cpp" line="+113"/>
         <source>No AutoMapping rules provided. Save the map or refer to a rule file in the project properties.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">没有提供自动映射规则。保存地图或参考项目属性中的规则文件。</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -3866,8 +3867,8 @@ Line %1, column %2</source>
     <message numerus="yes">
         <location line="+268"/>
         <source>Move %n Node(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>移动%n节点</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4494,7 +4495,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+128"/>
         <source>Map format &apos;%1&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>地图格式 &apos;%1&apos;未找到</translation>
     </message>
     <message>
         <location line="+104"/>
@@ -4732,7 +4733,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Select All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>选择所有图层</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5052,7 +5053,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangdock.cpp" line="+72"/>
         <source>&lt;p&gt;No tileset with Terrain Sets available.&lt;/p&gt;&lt;p&gt;Open a tileset with a Terrain Set or set up a new Terrain Set to be able to use the Terrain Brush or the Terrain Fill Mode.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;没有可用的地形集。&lt;/p&gt;&lt;p&gt;打开一个有地形集的图块集或设置一个新的地形集，以便能够使用地形刷或地形填充模式。&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -5256,13 +5257,13 @@ Please select specific format.</source>
         <location line="-184"/>
         <location line="+189"/>
         <source>Select From Any Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>从任何图层中选择</translation>
     </message>
     <message>
         <location line="-188"/>
         <location line="+189"/>
         <source>Prefer Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>优先选择所选图层</translation>
     </message>
     <message>
         <location line="-188"/>
@@ -5335,7 +5336,7 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Add Tileset to Map</source>
-        <translation type="unfinished"></translation>
+        <translation>将图块集添加到地图</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -5639,7 +5640,7 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Parallax Factor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">视差因子</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -5783,32 +5784,32 @@ Please select specific format.</source>
     <message>
         <location line="+19"/>
         <source>Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>地形集</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Terrain Count</source>
-        <translation type="unfinished"></translation>
+        <translation>地形数</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>地形</translation>
     </message>
     <message>
         <location line="+1114"/>
         <source>Corner</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">转角</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edge</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">边缘</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Mixed</source>
-        <translation type="unfinished"></translation>
+        <translation>混合</translation>
     </message>
     <message>
         <location line="-1076"/>
@@ -5961,7 +5962,7 @@ Please select specific format.</source>
         <location line="+1"/>
         <location line="+397"/>
         <source>Export Property Types</source>
-        <translation type="unfinished"></translation>
+        <translation>导出属性类型</translation>
     </message>
     <message>
         <location line="-396"/>
@@ -5972,7 +5973,7 @@ Please select specific format.</source>
         <location line="+1"/>
         <location line="+354"/>
         <source>Import Property Types</source>
-        <translation type="unfinished"></translation>
+        <translation>导入属性类型</translation>
     </message>
     <message>
         <location line="-316"/>
@@ -5997,7 +5998,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation type="unfinished"></translation>
+        <translation>枚举值太多，其值存储为标志。位标志的最大数量为 32。</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -6029,13 +6030,13 @@ Please select specific format.</source>
         <location line="+27"/>
         <location line="+7"/>
         <source>Error Reading Property Types</source>
-        <translation type="unfinished"></translation>
+        <translation>读取属性类型出错</translation>
     </message>
     <message>
         <location line="+35"/>
         <location line="+8"/>
         <source>Error Writing Property Types</source>
-        <translation type="unfinished"></translation>
+        <translation>写入属性类型出错</translation>
     </message>
     <message>
         <location line="+104"/>
@@ -6060,7 +6061,7 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Allow multiple values (flags)</source>
-        <translation type="unfinished"></translation>
+        <translation>允许多个值 (flags)</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -6177,7 +6178,7 @@ Please select specific format.</source>
     <message>
         <location line="+33"/>
         <source>%1, %2 - %3: (%4 x %5)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, %2 - %3: (%4 x %5)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6291,7 +6292,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Terrain Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>地形填充模式</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6418,7 +6419,7 @@ Please select specific format.</source>
     <message>
         <location line="+108"/>
         <source>Detect Bounding Box</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">检测边界框</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6726,12 +6727,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+772"/>
         <source>Use as Terrain Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>作为地形集图像使用</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Use as Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>作为地形图片使用</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6865,12 +6866,12 @@ Please select specific format.</source>
         <location filename="../src/tiled/wangbrush.cpp" line="+111"/>
         <location line="+96"/>
         <source>Terrain Brush</source>
-        <translation type="unfinished"></translation>
+        <translation>地形刷</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>Missing terrain transition</source>
-        <translation type="unfinished"></translation>
+        <translation>缺少地形过渡</translation>
     </message>
 </context>
 <context>
@@ -6898,52 +6899,52 @@ Please select specific format.</source>
     <message>
         <location line="-13"/>
         <source>Terrain Sets</source>
-        <translation type="unfinished"></translation>
+        <translation>地形集</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Erase Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>擦除地形</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>添加地形集</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Corner Set</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新建转角集</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Edge Set</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新建边缘集</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Mixed Set</source>
-        <translation type="unfinished"></translation>
+        <translation>新建混合集</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>重复的地形集</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>移除地形集</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>添加地形</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>移除地形</translation>
     </message>
 </context>
 <context>
@@ -6951,7 +6952,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+116"/>
         <source>Terrain Set &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>地形集和属性...</translation>
     </message>
 </context>
 <context>
@@ -7201,7 +7202,7 @@ Please select specific format.</source>
     <message>
         <location line="+20"/>
         <source>Change Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>更改图块集</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+33"/>
@@ -7268,7 +7269,7 @@ Please select specific format.</source>
     <message>
         <location line="+22"/>
         <source>Change Layer Parallax Factor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">更改图层视差因子</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -7410,7 +7411,7 @@ Please select specific format.</source>
     <message>
         <location line="+10"/>
         <source>Change Parallax Origin</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">更改视差原点</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -7505,64 +7506,64 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
         <source>Add Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>添加地形集</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Terrain Set</source>
-        <translation type="unfinished"></translation>
+        <translation>移除地形集</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+37"/>
         <location line="+12"/>
         <location line="+14"/>
         <source>Change Tile Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>更改图块地形</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangcolordata.cpp" line="+38"/>
         <source>Change Terrain Name</source>
-        <translation type="unfinished"></translation>
+        <translation>更改地形名称</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Change Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>更改地形图像</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Color</source>
-        <translation type="unfinished"></translation>
+        <translation>更改地形颜色</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>更改地形概率</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+38"/>
         <source>Change Terrain Set Name</source>
-        <translation type="unfinished"></translation>
+        <translation>更改地形集名称</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Change Terrain Set Type</source>
-        <translation type="unfinished"></translation>
+        <translation>更改地形集类型</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Change Terrain Count</source>
-        <translation type="unfinished"></translation>
+        <translation>更改地形数</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>移除地形</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Set Terrain Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>设置地形集图像</translation>
     </message>
     <message>
         <location filename="../src/tiled/relocatetiles.cpp" line="+33"/>
@@ -7694,7 +7695,7 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>If used tile animations are advanced by the specified duration.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">如果使用了图块动画，则按指定的持续时间提前。</translation>
     </message>
     <message>
         <location line="+1"/>
