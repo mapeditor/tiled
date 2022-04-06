@@ -30,6 +30,7 @@
 #include "mapdocument.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tilepainter.h"
 
 using namespace Tiled;
 
@@ -44,20 +45,8 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
     for (const auto autoMapper : autoMappers)
         autoMapper->prepareAutoMap(context);
 
-    // Store a copy of each output tile layer before AutoMapping.
-    for (TileLayer *layer : qAsConst(context.outputTileLayers)) {
-        if (contains(context.newLayers, layer))
-            continue;   // Don't store diff for new layers
-
-        if (mExistingOutputTileLayers.find(layer) != mExistingOutputTileLayers.end())
-            continue;
-
-        OutputLayerData &data = mExistingOutputTileLayers[layer];
-        data.before.reset(layer->clone());
-    }
-
     // During "AutoMap while drawing", keep track of the touched layers, so we
-    // can skip any rule maps that don't have these layers as input entirely.
+    // can skip any rule maps that doesn't have these layers as input entirely.
     if (touchedLayer)
         context.touchedTileLayers.append(touchedLayer);
 
@@ -92,21 +81,11 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         }
     }
 
-    for (auto& [target, data] : mExistingOutputTileLayers) {
-        auto &before = data.before;
-
-        MapDocument::TileLayerChangeFlags flags;
-
-        if (before->drawMargins() != target->drawMargins())
-            flags |= MapDocument::LayerDrawMarginsChanged;
-        if (before->bounds() != target->bounds())
-            flags |= MapDocument::LayerBoundsChanged;
-
-        if (flags)
-            emit mMapDocument->tileLayerChanged(target, flags);
+    for (auto& [before, target] : context.originalToOutputLayerMapping) {
+        OutputLayerData &data = mExistingOutputTileLayers[before];
 
         // reduce memory usage by saving only diffs
-        data.region = before->computeDiffRegion(target);
+        data.region = before->computeDiffRegion(*target);
         const QRect diffRect = data.region.boundingRect();
 
         auto beforeDiff = before->copy(data.region);
@@ -133,26 +112,23 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         new ChangeProperties(mapDocument, QString(), item.key(), item.value(), this);
     }
 
-    // Make sure to add any new layers to the map, deleting the ones that
-    // didn't get any output
-    for (Layer *layer : qAsConst(context.newLayers)) {
-        if (layer->isTileLayer() && layer->isEmpty()) {
-            delete layer;
+    // Add any new non-empty layers to the map
+    auto newLayerIndex = context.targetMap->layerCount();
+    for (auto &layer : context.newLayers) {
+        if (layer->isTileLayer() && layer->isEmpty())
             continue;
-        }
 
         if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
             if (std::none_of(context.newMapObjects.cbegin(),
                              context.newMapObjects.cend(),
                              [=] (const AddMapObjects::Entry &entry) { return entry.objectGroup == objectGroup; })) {
-                delete layer;
                 continue;
             }
         }
 
         new AddLayer(mapDocument,
-                     context.targetMap->layerCount(),
-                     layer, nullptr, this);
+                     newLayerIndex++,
+                     layer.release(), nullptr, this);
     }
 
     // Add any newly placed objects
@@ -186,13 +162,6 @@ void AutoMapperWrapper::redo()
 
 void AutoMapperWrapper::patchLayer(TileLayer *target, const TileLayer &layer, const QRegion &region)
 {
-    // Performing the same logic as in TilePainter::setCells manually, since
-    // emitting the tileLayerChanged signal already happens in the constructor,
-    // due to AutoMapper::autoMap changing the map in-place.
-    target->setCells(layer.x() - target->x(),
-                     layer.y() - target->y(),
-                     &layer,
-                     region.translated(-target->position()));
-
-    emit mMapDocument->regionChanged(region, target);
+    TilePainter painter(mMapDocument, target);
+    painter.setCells(layer.x(), layer.y(), &layer, region);
 }

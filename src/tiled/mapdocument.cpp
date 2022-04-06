@@ -1260,7 +1260,7 @@ void MapDocument::unifyTilesets(Map &map)
  * and adds tilesets to \a missingTilesets whenever there is a tileset without
  * replacement in this map.
  */
-void MapDocument::unifyTilesets(Map &map, QVector<SharedTileset> &missingTilesets)
+void MapDocument::unifyTilesets(Map &map, QVector<SharedTileset> &missingTilesets) const
 {
     QVector<SharedTileset> availableTilesets = mMap->tilesets();
     for (const SharedTileset &tileset : qAsConst(missingTilesets))

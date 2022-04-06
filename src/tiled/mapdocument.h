@@ -247,7 +247,7 @@ public:
     void setHoveredMapObject(MapObject *object);
 
     void unifyTilesets(Map &map);
-    void unifyTilesets(Map &map, QVector<SharedTileset> &missingTilesets);
+    void unifyTilesets(Map &map, QVector<SharedTileset> &missingTilesets) const;
 
     bool allowHidingObjects() const { return mAllowHidingObjects; }
     void setAllowHidingObjects(bool value) { mAllowHidingObjects = value; }

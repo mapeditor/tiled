@@ -506,11 +506,11 @@ public:
     Layer *mergedWith(const Layer *other) const override;
 
     /**
-     * Returns the region where this tile layer and the given tile layer
+     * Returns the region where this tile layer and the \a other tile layer
      * are different. The relative positions of the layers are taken into
      * account. The returned region is relative to this tile layer.
      */
-    QRegion computeDiffRegion(const TileLayer *other) const;
+    QRegion computeDiffRegion(const TileLayer &other) const;
 
     /**
      * Returns true if all tiles in the layer are empty.

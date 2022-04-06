@@ -134,13 +134,6 @@ AutoMappingContext::AutoMappingContext(MapDocument *mapDocument)
 {
 }
 
-/*
- * About the order of the methods in this file.
- * The AutoMapper class has 3 bigger public functions, that is
- * prepareAutoMap(), autoMap() and finalizeAutoMap().
- * These three functions make use of lots of different private methods, which
- * are put directly below each of these functions.
- */
 
 AutoMapper::AutoMapper(std::unique_ptr<Map> rulesMap, const QRegularExpression &mapNameFilter)
     : mRulesMap(std::move(rulesMap))
@@ -496,44 +489,52 @@ void AutoMapper::prepareAutoMap(AutoMappingContext &context)
 void AutoMapper::setupWorkMapLayers(AutoMappingContext &context) const
 {
     // Set up pointers to output tile layers in the target map.
-    // They are created when they are not present.
+    // They are cloned when found in the target map, or created otherwise.
     for (const QString &name : qAsConst(mRuleMapSetup.mOutputTileLayerNames)) {
-        auto tileLayer = context.outputTileLayers.value(name);
-        if (tileLayer)
+        auto &outputTileLayer = context.outputTileLayers[name];
+        if (outputTileLayer)
             continue;
 
-        tileLayer = static_cast<TileLayer*>(context.targetMap->findLayer(name, Layer::TileLayerType));
-
-        if (!tileLayer) {
-            tileLayer = new TileLayer(name, QPoint(), context.targetMap->size());
-            context.newLayers.append(tileLayer);
+        if (const auto layer = context.targetMap->findLayer(name, Layer::TileLayerType)) {
+            auto tileLayer = static_cast<TileLayer*>(layer);
+            auto clone = std::unique_ptr<TileLayer>(tileLayer->clone());
+            outputTileLayer = clone.get();
+            context.originalToOutputLayerMapping[tileLayer] = std::move(clone);
+        } else {
+            auto newLayer = std::make_unique<TileLayer>(name, QPoint(), context.targetMap->size());
+            outputTileLayer = newLayer.get();
+            context.newLayers.push_back(std::move(newLayer));
         }
-
-        context.outputTileLayers.insert(name, tileLayer);
     }
 
     // Set up pointers to output object layers in the target map.
-    // They are created when they are not present.
+    // They are created when they are not present, but not cloned since objects
+    // are not added directly.
     for (const QString &name : qAsConst(mRuleMapSetup.mOutputObjectGroupNames)) {
-        auto objectGroup = context.outputObjectGroups.value(name);
+        auto &objectGroup = context.outputObjectGroups[name];
         if (objectGroup)
             continue;
 
         objectGroup = static_cast<ObjectGroup*>(context.targetMap->findLayer(name, Layer::ObjectGroupType));
 
         if (!objectGroup) {
-            objectGroup = new ObjectGroup(name, 0, 0);
-            context.newLayers.append(objectGroup);
+            auto newLayer = std::make_unique<ObjectGroup>(name, 0, 0);
+            objectGroup = newLayer.get();
+            context.newLayers.push_back(std::move(newLayer));
         }
-
-        context.outputObjectGroups.insert(name, objectGroup);
     }
 
     // Set up pointers to "set" layers (input layers in the target map). They
     // don't need to be created if not present.
-    for (const QString &name : qAsConst(mRuleMapSetup.mInputLayerNames))
-        if (auto tileLayer = static_cast<TileLayer*>(context.targetMap->findLayer(name, Layer::TileLayerType)))
+    for (const QString &name : qAsConst(mRuleMapSetup.mInputLayerNames)) {
+        // Check whether this input layer is also an output layer, in which
+        // case we want to use its copy so we can see changes applied by
+        // earlier rules.
+        if (auto tileLayer = context.outputTileLayers.value(name))
             context.inputLayers.insert(name, tileLayer);
+        else if (auto tileLayer = static_cast<TileLayer*>(context.targetMap->findLayer(name, Layer::TileLayerType)))
+            context.inputLayers.insert(name, tileLayer);
+    }
 }
 
 template<typename T>
@@ -610,7 +611,7 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
         bool canMatch = true;
 
         RuleInputLayer layer;
-        layer.targetLayer = context.inputLayers.value(conditions.layerName, &context.dummy);
+        layer.targetLayer = context.inputLayers.value(conditions.layerName, &dummy);
 
         forEachPointInRegion(inputRegion, [&] (int x, int y) {
             anyOf.clear();
@@ -690,7 +691,7 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
             // When the input layer is missing, it is considered empty. In this
             // case, we can drop this input set when empty tiles are not
             // allowed here.
-            if (layer.targetLayer == &context.dummy) {
+            if (layer.targetLayer == &dummy) {
                 const bool emptyAllowed = (anyOf.isEmpty() ||
                                            std::any_of(anyOf.cbegin(),
                                                        anyOf.cend(),
@@ -1010,8 +1011,7 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
             auto toTileLayer = context.outputTileLayers.value(targetName);
 
             if (!context.touchedTileLayers.isEmpty())
-                if (!context.touchedTileLayers.contains(toTileLayer))
-                    context.touchedTileLayers.append(toTileLayer);
+                appendUnique<const TileLayer*>(context.touchedTileLayers, toTileLayer);
 
             to = toTileLayer;
             for (const QRect &rect : region) {
@@ -1045,7 +1045,12 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
             mergeProperties(mergedProperties, from->properties());
 
             if (mergedProperties != to->properties()) {
-                if (context.newLayers.contains(to))
+                const bool isNewLayer = contains_where(context.newLayers,
+                                                       [to] (const std::unique_ptr<Layer> &l) {
+                    return l.get() == to;
+                });
+
+                if (isNewLayer)
                     to->setProperties(mergedProperties);
                 else
                     context.changedProperties.insert(to, mergedProperties);

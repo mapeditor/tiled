@@ -56,9 +56,13 @@ void test_AutoMapping::autoMap()
     QBENCHMARK {
         autoMapper.autoMap(QRect(QPoint(), mapSize), nullptr, context);  // todo: test appliedRegion as well
     }
-    for (Layer *layer : qAsConst(context.newLayers))
+
+    // Apply the changes done by AutoMapping (only checking tile layers for now)
+    for (auto& [original, outputLayer] : context.originalToOutputLayerMapping)
+        original->setCells(0, 0, outputLayer.get());
+    for (auto &layer : context.newLayers)
         if (!layer->isEmpty())
-            context.targetMap->addLayer(layer);
+            mapDocument.map()->addLayer(std::move(layer));
 
     QCOMPARE(mapDocument.map()->layerCount(), resultMap->layerCount());
 

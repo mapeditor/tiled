@@ -36,6 +36,7 @@
 
 #include <memory>
 #include <type_traits>
+#include <unordered_map>
 #include <vector>
 
 namespace Tiled {
@@ -146,27 +147,43 @@ struct ApplyContext;
 /**
  * A single context is used for running all active AutoMapper instances on a
  * specific target map.
+ *
+ * The AutoMapper does not change the target map directly. Instead, the changes
+ * can be found in the AutoMappingContext and still need to be applied
+ * manually.
+ *
+ * AutoMapping is done as follows:
+ *
+ * - Create a single AutoMappingContext
+ * - Call AutoMapper::prepareAutoMap for each active AutoMapper instance
+ * - Call AutoMapper::autoMap for each active AutoMapper instance
+ * - Apply the changes visible in the AutoMappingContext to the target map
  */
 struct TILED_EDITOR_EXPORT AutoMappingContext
 {
     AutoMappingContext(MapDocument *mapDocument);
 
-    MapDocument *targetDocument;
-    Map *targetMap;
+    const MapDocument * const targetDocument;
+    const Map * const targetMap;
 
-    QVector<SharedTileset> newTilesets;
-    QVector<Layer*> newLayers;
-    QVector<AddMapObjects::Entry> newMapObjects;
+    QVector<SharedTileset> newTilesets;             // New tilesets that might get used
+    std::vector<std::unique_ptr<Layer>> newLayers;  // Layers created in AutoMapper::prepareAutoMap
+    QVector<AddMapObjects::Entry> newMapObjects;    // Objects placed by AutoMapper
     QSet<MapObject*> mapObjectsToRemove;
     QHash<Layer*, Properties> changedProperties;
+
+    // Clones of existing tile layers that might have been changed in AutoMapper::autoMap
+    std::unordered_map<TileLayer*, std::unique_ptr<TileLayer>> originalToOutputLayerMapping;
+
+    // Used to keep track of touched tile layers (only when initially non-empty)
+    QVector<const TileLayer*> touchedTileLayers;
+
+private:
+    friend class AutoMapper;
 
     QHash<QString, const TileLayer*> inputLayers;
     QHash<QString, TileLayer*> outputTileLayers;
     QHash<QString, ObjectGroup*> outputObjectGroups;
-
-    QList<const TileLayer*> touchedTileLayers;  // only used when initially non-empty
-
-    const TileLayer dummy;  // used in case input layers are missing
 };
 
 /**
@@ -392,6 +409,8 @@ private:
 
     QString mError;
     QString mWarning;
+
+    const TileLayer dummy;  // used in case input layers are missing
 };
 
 inline const QRegularExpression &AutoMapper::mapNameFilter() const

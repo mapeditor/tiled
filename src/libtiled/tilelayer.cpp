@@ -702,21 +702,21 @@ Layer *TileLayer::mergedWith(const Layer *other) const
     return merged;
 }
 
-QRegion TileLayer::computeDiffRegion(const TileLayer *other) const
+QRegion TileLayer::computeDiffRegion(const TileLayer &other) const
 {
     QRegion ret;
 
-    const int dx = other->x() - mX;
-    const int dy = other->y() - mY;
+    const int dx = other.x() - mX;
+    const int dy = other.y() - mY;
 
-    const QRect r = bounds().united(other->bounds()).translated(-position());
+    const QRect r = bounds().united(other.bounds()).translated(-position());
 
     for (int y = r.top(); y <= r.bottom(); ++y) {
         for (int x = r.left(); x <= r.right(); ++x) {
-            if (cellAt(x, y) != other->cellAt(x - dx, y - dy)) {
+            if (cellAt(x, y) != other.cellAt(x - dx, y - dy)) {
                 const int rangeStart = x;
                 while (x <= r.right() &&
-                       cellAt(x, y) != other->cellAt(x - dx, y - dy)) {
+                       cellAt(x, y) != other.cellAt(x - dx, y - dy)) {
                     ++x;
                 }
                 const int rangeEnd = x;
