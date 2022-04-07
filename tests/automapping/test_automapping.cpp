@@ -32,6 +32,7 @@ void test_AutoMapping::autoMap_data()
     QTest::newRow("simple-2x2-rule") << QStringLiteral("simple-2x2-rule");
     QTest::newRow("simple-replace") << QStringLiteral("simple-replace");
     QTest::newRow("terrain-corner") << QStringLiteral("terrain-corner");
+    QTest::newRow("mod-and-offset") << QStringLiteral("mod-and-offset");
 }
 
 void test_AutoMapping::autoMap()

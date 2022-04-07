@@ -82,6 +82,18 @@ struct OutputSet
     QHash<const Layer*, QString> layers;
 };
 
+struct RuleOptions
+{
+    QRect area;
+    std::optional<qreal> skipChance;
+    std::optional<unsigned> modX;
+    std::optional<unsigned> modY;
+    std::optional<int> offsetX;
+    std::optional<int> offsetY;
+    std::optional<bool> noOverlappingOutput;
+    std::optional<bool> disabled;
+};
+
 struct RuleMapSetup
 {
     /**
@@ -110,6 +122,8 @@ struct RuleMapSetup
      * randomness is available.
      */
     std::vector<OutputSet> mOutputSets;
+
+    std::vector<RuleOptions> mRuleOptions;
 
     QSet<QString> mInputLayerNames;
     QSet<QString> mOutputTileLayerNames;
@@ -300,14 +314,18 @@ private:
     {
         QRegion inputRegion;
         QRegion outputRegion;
+        qreal skipChance = 0.0;
+        unsigned modX = 1;
+        unsigned modY = 1;
+        int offsetX = 0;
+        int offsetY = 0;
+        bool noOverlappingOutput = false;
+        bool disabled = false;
     };
 
-    /**
-     * Reads the map properties of the rulesmap.
-     * @return returns true when anything is ok, false when errors occurred.
-     */
-    bool setupRuleMapProperties();
+    void setupRuleMapProperties();
     void setupInputLayerProperties(InputLayer &inputLayer);
+    void setupRuleOptions(RuleOptions &ruleOptions, const MapObject *mapObject);
 
     /**
      * Sets up the layers in the rules map, which are used for automapping.
@@ -315,12 +333,7 @@ private:
      * @return returns true when everything is ok, false when errors occurred.
      */
     bool setupRuleMapLayers();
-
-    /**
-     * Searches the rules layer for regions and stores these in \a rules.
-     * @return returns true when anything is ok, false when errors occurred.
-     */
-    bool setupRuleList();
+    void setupRules();
 
     void setupWorkMapLayers(AutoMappingContext &context) const;
     void compileRule(QVector<RuleInputSet> &inputSets,
