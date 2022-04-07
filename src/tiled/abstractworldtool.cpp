@@ -52,7 +52,8 @@ class AddMapCommand : public QUndoCommand
 {
 public:
     AddMapCommand(const QString &worldName, const QString &mapName, const QRect &rect)
-        : mWorldName(worldName)
+        : QUndoCommand(QCoreApplication::translate("Undo Commands", "Add Map to World"))
+        , mWorldName(worldName)
         , mMapName(mapName)
         , mRect(rect)
     {
@@ -78,7 +79,8 @@ class RemoveMapCommand : public QUndoCommand
 {
 public:
     RemoveMapCommand(const QString &mapName)
-        : mMapName(mapName)
+        : QUndoCommand(QCoreApplication::translate("Undo Commands", "Remove Map from World"))
+        , mMapName(mapName)
     {
         const WorldManager &manager = WorldManager::instance();
         const World *world = manager.worldForMap(mMapName);

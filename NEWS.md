@@ -1,6 +1,7 @@
 ### Unreleased 1.8 patch
 
 * Made expanded group layers persistent
+* Fixed missing name for undo commands that add/remove maps from world
 * Scripting: Fixed region.rects when compiled against Qt 5.9 to 5.13
 
 ### Tiled 1.8.4 (31 March 2022)
