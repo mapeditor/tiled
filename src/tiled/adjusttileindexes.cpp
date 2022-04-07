@@ -80,29 +80,22 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
             const QRegion region = tileLayer->region(isFromTileset).translated(-layer->position());
 
             if (!region.isEmpty()) {
-                const QRect boundingRect(region.boundingRect());
-                auto changedLayer = new TileLayer(QString(), 0, 0,
-                                                  boundingRect.width(),
-                                                  boundingRect.height());
+                TileLayer adjustedTileLayer;
 
                 for (const QRect &rect : region) {
                     for (int x = rect.left(); x <= rect.right(); ++x) {
                         for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                            Cell cell = adjustCell(tileLayer->cellAt(x, y));
-                            changedLayer->setCell(x - boundingRect.x(),
-                                                  y - boundingRect.y(),
-                                                  cell);
+                            const Cell cell = adjustCell(tileLayer->cellAt(x, y));
+                            adjustedTileLayer.setCell(x, y, cell);
                         }
                     }
                 }
 
                 new PaintTileLayer(mapDocument, tileLayer,
-                                   boundingRect.x() + tileLayer->x(),
-                                   boundingRect.y() + tileLayer->y(),
-                                   changedLayer,
+                                   0, 0,
+                                   &adjustedTileLayer,
+                                   region.translated(tileLayer->position()),
                                    this);
-
-                delete changedLayer;
             }
 
             break;
