@@ -84,14 +84,31 @@ struct OutputSet
 
 struct RuleOptions
 {
+    enum Enum
+    {
+        SkipChance          = 1 << 0,
+        ModX                = 1 << 1,
+        ModY                = 1 << 2,
+        OffsetX             = 1 << 3,
+        OffsetY             = 1 << 4,
+        NoOverlappingOutput = 1 << 5,
+        Disabled            = 1 << 6
+    };
+
+    qreal skipChance = 0.0;
+    unsigned modX = 1;
+    unsigned modY = 1;
+    int offsetX = 0;
+    int offsetY = 0;
+    bool noOverlappingOutput = false;
+    bool disabled = false;
+};
+
+struct RuleOptionsArea
+{
     QRect area;
-    std::optional<qreal> skipChance;
-    std::optional<unsigned> modX;
-    std::optional<unsigned> modY;
-    std::optional<int> offsetX;
-    std::optional<int> offsetY;
-    std::optional<bool> noOverlappingOutput;
-    std::optional<bool> disabled;
+    RuleOptions options;
+    unsigned setOptions = 0;
 };
 
 struct RuleMapSetup
@@ -123,7 +140,7 @@ struct RuleMapSetup
      */
     std::vector<OutputSet> mOutputSets;
 
-    std::vector<RuleOptions> mRuleOptions;
+    std::vector<RuleOptionsArea> mRuleOptionsAreas;
 
     QSet<QString> mInputLayerNames;
     QSet<QString> mOutputTileLayerNames;
@@ -240,11 +257,6 @@ public:
         bool wrapBorder = false;
 
         /**
-         * Determines whether a rule is allowed to overlap itself.
-         */
-        bool noOverlappingRules = false;
-
-        /**
          * Determines whether the rules on the map need to be matched in order.
          */
         bool matchInOrder = false;
@@ -314,23 +326,17 @@ private:
     {
         QRegion inputRegion;
         QRegion outputRegion;
-        qreal skipChance = 0.0;
-        unsigned modX = 1;
-        unsigned modY = 1;
-        int offsetX = 0;
-        int offsetY = 0;
-        bool noOverlappingOutput = false;
-        bool disabled = false;
+        RuleOptions options;
     };
 
     void setupRuleMapProperties();
     void setupInputLayerProperties(InputLayer &inputLayer);
-    void setupRuleOptions(RuleOptions &ruleOptions, const MapObject *mapObject);
+    void setupRuleOptionsArea(RuleOptionsArea &optionsArea, const MapObject *mapObject);
 
     /**
      * Sets up the layers in the rules map, which are used for automapping.
      * The layers are detected and put in the internal data structures.
-     * @return returns true when everything is ok, false when errors occurred.
+     * @return true when everything is ok, false when errors occurred.
      */
     bool setupRuleMapLayers();
     void setupRules();
@@ -419,6 +425,12 @@ private:
     std::vector<Rule> mRules;
 
     Options mOptions;
+
+    /**
+     * Rule options set on the map, which become the default for all rules
+     * on this map.
+     */
+    RuleOptions mRuleOptions;
 
     QString mError;
     QString mWarning;

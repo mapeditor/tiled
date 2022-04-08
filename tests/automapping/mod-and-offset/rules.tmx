@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.8" tiledversion="1.8.4" orientation="orthogonal" renderorder="right-down" width="7" height="4" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="5">
  <properties>
-  <property name="MatchInOrder" type="bool" value="true"/>
+  <property name="MatchInOrder" type="bool" value="false"/>
+  <property name="modX" type="int" value="2"/>
  </properties>
  <tileset firstgid="1" source="../spr_test_tileset.tsx"/>
  <layer id="1" name="input_set" width="7" height="4">
@@ -21,19 +22,14 @@
 </data>
  </layer>
  <objectgroup color="#62a0ea" id="4" name="rule_options">
-  <object id="1" type="RuleOptions" x="11" y="11" width="25" height="26">
-   <properties>
-    <property name="modX" type="int" value="2"/>
-   </properties>
-  </object>
   <object id="3" type="RuleOptions" x="44" y="12" width="24" height="24">
    <properties>
-    <property name="modX" type="int" value="2"/>
     <property name="offsetX" type="int" value="1"/>
    </properties>
   </object>
   <object id="4" type="RuleOptions" x="75" y="12" width="26" height="24">
    <properties>
+    <property name="modX" type="int" value="1"/>
     <property name="modY" type="int" value="4"/>
    </properties>
   </object>

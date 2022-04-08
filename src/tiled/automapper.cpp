@@ -169,9 +169,69 @@ bool AutoMapper::ruleLayerNameUsed(const QString &ruleLayerName) const
     return mRuleMapSetup.mInputLayerNames.contains(ruleLayerName);
 }
 
+template<typename Type>
+bool checkOption(const QString &propertyName,
+                 const QVariant &propertyValue,
+                 const QLatin1String optionName,
+                 Type &member)
+{
+    if (propertyName.compare(optionName, Qt::CaseInsensitive) == 0) {
+        if (propertyValue.canConvert<Type>()) {
+            member = propertyValue.value<Type>();
+            return true;
+        }
+    }
+    return false;
+}
+
+template<typename Type>
+bool checkRuleOption(const QString &propertyName,
+                     const QVariant &propertyValue,
+                     const QLatin1String optionName,
+                     Type &member,
+                     unsigned &setOptions,
+                     RuleOptions::Enum optionFlag)
+{
+    if (checkOption(propertyName, propertyValue, optionName, member)) {
+        setOptions |= optionFlag;
+        return true;
+    }
+    return false;
+}
+
+static bool checkRuleOptions(const QString &name,
+                             const QVariant &value,
+                             RuleOptions &options,
+                             unsigned &setOptions)
+{
+    if (checkRuleOption(name, value, QLatin1String("Probability"), options.skipChance, setOptions, RuleOptions::SkipChance)) {
+        options.skipChance = 1.0 - options.skipChance;  // inverted so we don't have to keep inverting it later
+        return true;
+    }
+    if (checkRuleOption(name, value, QLatin1String("ModX"), options.modX, setOptions, RuleOptions::ModX)) {
+        options.modX = qMax<unsigned>(1, options.modX); // modulo 0 would crash
+        return true;
+    }
+    if (checkRuleOption(name, value, QLatin1String("ModY"), options.modY, setOptions, RuleOptions::ModY)) {
+        options.modY = qMax<unsigned>(1, options.modY); // modulo 0 would crash
+        return true;
+    }
+    if (checkRuleOption(name, value, QLatin1String("OffsetX"), options.offsetX, setOptions, RuleOptions::OffsetX))
+        return true;
+    if (checkRuleOption(name, value, QLatin1String("OffsetY"), options.offsetY, setOptions, RuleOptions::OffsetY))
+        return true;
+    if (checkRuleOption(name, value, QLatin1String("NoOverlappingOutput"), options.noOverlappingOutput, setOptions, RuleOptions::NoOverlappingOutput))
+        return true;
+    if (checkRuleOption(name, value, QLatin1String("Disabled"), options.disabled, setOptions, RuleOptions::Disabled))
+        return true;
+
+    return false;
+}
+
 void AutoMapper::setupRuleMapProperties()
 {
-    bool ok = true;
+    unsigned setRuleOptions = 0;
+    bool noOverlappingRules = false;
 
     QMapIterator<QString, QVariant> it(mRulesMap->properties());
     while (it.hasNext()) {
@@ -180,42 +240,23 @@ void AutoMapper::setupRuleMapProperties()
         const QString &name = it.key();
         const QVariant &value = it.value();
 
-        if (name.compare(QLatin1String("DeleteTiles"), Qt::CaseInsensitive) == 0) {
-            if (value.canConvert(QMetaType::Bool)) {
-                mOptions.deleteTiles = value.toBool();
-                continue;
-            }
-        } else if (name.compare(QLatin1String("MatchOutsideMap"), Qt::CaseInsensitive) == 0) {
-            if (value.canConvert(QMetaType::Bool)) {
-                mOptions.matchOutsideMap = value.toBool();
-                continue;
-            }
-        } else if (name.compare(QLatin1String("OverflowBorder"), Qt::CaseInsensitive) == 0) {
-            if (value.canConvert(QMetaType::Bool)) {
-                mOptions.overflowBorder = value.toBool();
-                continue;
-            }
-        } else if (name.compare(QLatin1String("WrapBorder"), Qt::CaseInsensitive) == 0) {
-            if (value.canConvert(QMetaType::Bool)) {
-                mOptions.wrapBorder = value.toBool();
-                continue;
-            }
-        } else if (name.compare(QLatin1String("AutomappingRadius"), Qt::CaseInsensitive) == 0) {
-            if (const int autoMappingRadius = value.toInt(&ok); ok) {
-                mOptions.autoMappingRadius = autoMappingRadius;
-                continue;
-            }
-        } else if (name.compare(QLatin1String("NoOverlappingRules"), Qt::CaseInsensitive) == 0) {
-            if (value.canConvert(QMetaType::Bool)) {
-                mOptions.noOverlappingRules = value.toBool();
-                continue;
-            }
-        } else if (name.compare(QLatin1String("MatchInOrder"), Qt::CaseInsensitive) == 0) {
-            if (value.canConvert(QMetaType::Bool)) {
-                mOptions.matchInOrder = value.toBool();
-                continue;
-            }
-        }
+        if (checkOption(name, value, QLatin1String("DeleteTiles"), mOptions.deleteTiles))
+            continue;
+        if (checkOption(name, value, QLatin1String("MatchOutsideMap"), mOptions.matchOutsideMap))
+            continue;
+        if (checkOption(name, value, QLatin1String("OverflowBorder"), mOptions.overflowBorder))
+            continue;
+        if (checkOption(name, value, QLatin1String("WrapBorder"), mOptions.wrapBorder))
+            continue;
+        if (checkOption(name, value, QLatin1String("AutomappingRadius"), mOptions.autoMappingRadius))
+            continue;
+        if (checkOption(name, value, QLatin1String("NoOverlappingRules"), noOverlappingRules))
+            continue;
+        if (checkOption(name, value, QLatin1String("MatchInOrder"), mOptions.matchInOrder))
+            continue;
+
+        if (checkRuleOptions(name, value, mRuleOptions, setRuleOptions))
+            continue;
 
         addWarning(tr("Ignoring unknown property '%2' = '%3' (rule map '%1')")
                       .arg(rulesMapFileName(),
@@ -227,6 +268,10 @@ void AutoMapper::setupRuleMapProperties()
     // Each of the border options imply MatchOutsideMap
     if (mOptions.overflowBorder || mOptions.wrapBorder)
         mOptions.matchOutsideMap = true;
+
+    // For backwards compatibility
+    if (!(setRuleOptions & RuleOptions::NoOverlappingOutput))
+        mRuleOptions.noOverlappingOutput = noOverlappingRules;
 }
 
 void AutoMapper::setupInputLayerProperties(InputLayer &inputLayer)
@@ -257,61 +302,17 @@ void AutoMapper::setupInputLayerProperties(InputLayer &inputLayer)
     }
 }
 
-void AutoMapper::setupRuleOptions(RuleOptions &ruleOptions, const MapObject *mapObject)
+void AutoMapper::setupRuleOptionsArea(RuleOptionsArea &optionsArea, const MapObject *mapObject)
 {
-    bool ok = true;
-
-    QMapIterator<QString, QVariant> it(mapObject->resolvedProperties());
+    QMapIterator<QString, QVariant> it(mapObject->properties());
     while (it.hasNext()) {
         it.next();
 
         const QString &name = it.key();
         const QVariant &value = it.value();
 
-        if (name.compare(QLatin1String("Probability"), Qt::CaseInsensitive) == 0) {
-            if (const qreal probability = value.toReal(&ok); ok) {
-                ruleOptions.skipChance = 1.0 - probability;
-                continue;
-            }
-        }
-
-        if (name.compare(QLatin1String("ModX"), Qt::CaseInsensitive) == 0) {
-            if (const unsigned modX = value.toUInt(&ok); ok) {
-                ruleOptions.modX = qMax<unsigned>(1, modX);
-                continue;
-            }
-        }
-
-        if (name.compare(QLatin1String("ModY"), Qt::CaseInsensitive) == 0) {
-            if (const unsigned modY = value.toUInt(&ok); ok) {
-                ruleOptions.modY = qMax<unsigned>(1, modY);
-                continue;
-            }
-        }
-
-        if (name.compare(QLatin1String("OffsetX"), Qt::CaseInsensitive) == 0) {
-            if (const int offsetX = value.toInt(&ok); ok) {
-                ruleOptions.offsetX = offsetX;
-                continue;
-            }
-        }
-
-        if (name.compare(QLatin1String("OffsetY"), Qt::CaseInsensitive) == 0) {
-            if (const int offsetY = value.toInt(&ok); ok) {
-                ruleOptions.offsetY = offsetY;
-                continue;
-            }
-        }
-
-        if (name.compare(QLatin1String("NoOverlappingOutput"), Qt::CaseInsensitive) == 0) {
-            ruleOptions.noOverlappingOutput = value.toBool();
+        if (checkRuleOptions(name, value, optionsArea.options, optionsArea.setOptions))
             continue;
-        }
-
-        if (name.compare(QLatin1String("Disabled"), Qt::CaseInsensitive) == 0) {
-            ruleOptions.disabled = value.toBool();
-            continue;
-        }
 
         addWarning(tr("Ignoring unknown property '%2' = '%3' for rule options (rule map '%1')")
                    .arg(rulesMapFileName(),
@@ -394,10 +395,10 @@ bool AutoMapper::setupRuleMapLayers()
                         continue;
                     }
 
-                    RuleOptions &options = setup.mRuleOptions.emplace_back();
-                    options.area = QRectF(renderer->pixelToTileCoords(mapObject->bounds().topLeft()),
-                                          renderer->pixelToTileCoords(mapObject->bounds().bottomRight())).toAlignedRect();
-                    setupRuleOptions(options, mapObject);
+                    RuleOptionsArea &optionsArea = setup.mRuleOptionsAreas.emplace_back();
+                    optionsArea.area = QRectF(renderer->pixelToTileCoords(mapObject->bounds().topLeft()),
+                                              renderer->pixelToTileCoords(mapObject->bounds().bottomRight())).toAlignedRect();
+                    setupRuleOptionsArea(optionsArea, mapObject);
                 }
             } else {
                 error += tr("'rule_options' layers must be object layers.");
@@ -506,6 +507,25 @@ static bool compareRuleRegion(const QRegion &r1, const QRegion &r2)
     return p1.y() < p2.y() || (p1.y() == p2.y() && p1.x() < p2.x());
 }
 
+static void mergeRuleOptions(RuleOptions &self, const RuleOptions &other,
+                             const unsigned setOptions)
+{
+    if (setOptions & RuleOptions::SkipChance)
+        self.skipChance = other.skipChance;
+    if (setOptions & RuleOptions::ModX)
+        self.modX = other.modX;
+    if (setOptions & RuleOptions::ModY)
+        self.modY = other.modY;
+    if (setOptions & RuleOptions::OffsetX)
+        self.offsetX = other.offsetX;
+    if (setOptions & RuleOptions::OffsetY)
+        self.offsetY = other.offsetY;
+    if (setOptions & RuleOptions::NoOverlappingOutput)
+        self.noOverlappingOutput = other.noOverlappingOutput;
+    if (setOptions & RuleOptions::Disabled)
+        self.disabled = other.disabled;
+}
+
 void AutoMapper::setupRules()
 {
     const auto &setup = mRuleMapSetup;
@@ -561,19 +581,11 @@ void AutoMapper::setupRules()
         Rule &rule = mRules.emplace_back();
         rule.inputRegion = combinedRegion & regionInput;
         rule.outputRegion = combinedRegion & regionOutput;
-        rule.noOverlappingOutput = mOptions.noOverlappingRules;
+        rule.options = mRuleOptions;
 
-        for (const auto &ruleOptions : setup.mRuleOptions) {
-            if (combinedRegion.intersected(ruleOptions.area) == combinedRegion) {
-                rule.skipChance = ruleOptions.skipChance.value_or(rule.skipChance);
-                rule.modX = ruleOptions.modX.value_or(rule.modX);
-                rule.modY = ruleOptions.modY.value_or(rule.modY);
-                rule.offsetX = ruleOptions.offsetX.value_or(rule.offsetX);
-                rule.offsetY = ruleOptions.offsetY.value_or(rule.offsetY);
-                rule.noOverlappingOutput = ruleOptions.noOverlappingOutput.value_or(rule.noOverlappingOutput);
-                rule.disabled = ruleOptions.disabled.value_or(rule.disabled);
-            }
-        }
+        for (const auto &optionsArea : setup.mRuleOptionsAreas)
+            if (combinedRegion.intersected(optionsArea.area) == combinedRegion)
+                mergeRuleOptions(rule.options, optionsArea.options, optionsArea.setOptions);
     }
 
 #ifndef QT_NO_DEBUG
@@ -918,7 +930,7 @@ void AutoMapper::autoMap(const QRegion &where,
 
     if (mOptions.matchInOrder) {
         for (const Rule &rule : mRules) {
-            if (rule.disabled)
+            if (rule.options.disabled)
                 continue;
 
             matchRule(rule, applyRegion, get, [&] (QPoint pos) {
@@ -929,7 +941,7 @@ void AutoMapper::autoMap(const QRegion &where,
     } else {
         auto collectMatches = [&] (const Rule &rule) {
             QVector<QPoint> positions;
-            if (!rule.disabled)
+            if (!rule.options.disabled)
                 matchRule(rule, applyRegion, get, [&] (QPoint pos) { positions.append(pos); }, context);
             return positions;
         };
@@ -1040,11 +1052,11 @@ void AutoMapper::matchRule(const Rule &rule,
     }
 
     forEachPointInRegion(ruleMatchRegion, [&] (int x, int y) {
-        if ((x + rule.offsetX) % rule.modX != 0)
+        if ((x + rule.options.offsetX) % rule.options.modX != 0)
             return;
-        if ((y + rule.offsetY) % rule.modY != 0)
+        if ((y + rule.options.offsetY) % rule.options.modY != 0)
             return;
-        if (rule.skipChance != 0.0 && randomDouble() < rule.skipChance)
+        if (rule.options.skipChance != 0.0 && randomDouble() < rule.options.skipChance)
             return;
 
         if (matchRuleAtOffset(inputSets, QPoint(x, y), getCell))
@@ -1065,7 +1077,7 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
     const int r = applyContext.randomGenerator->generate() % mRuleMapSetup.mOutputSets.size();
     const OutputSet &ruleOutput = mRuleMapSetup.mOutputSets.at(r);
 
-    if (rule.noOverlappingOutput) {
+    if (rule.options.noOverlappingOutput) {
         // check if there are no overlaps within this rule.
         QHash<const Layer*, QRegion> ruleRegionInLayer;
 
