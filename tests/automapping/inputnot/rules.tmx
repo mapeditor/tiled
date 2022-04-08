@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="4" height="4" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="2">
+<map version="1.8" tiledversion="1.8.4" orientation="orthogonal" renderorder="right-down" width="4" height="4" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="2">
  <properties>
   <property name="MatchOutsideMap" type="bool" value="true"/>
   <property name="NoOverlappingRules" type="bool" value="false"/>
@@ -24,9 +24,9 @@
  </layer>
  <layer id="6" name="inputnot_in" width="4" height="4" tintcolor="#dca0a0">
   <data encoding="csv">
-4,0,5,18,
+4,0,5,19,
 0,0,0,0,
-4,0,19,4,
+4,0,20,4,
 0,0,0,0
 </data>
  </layer>

@@ -103,6 +103,7 @@ public:
 
     Tileset *tileset() const { return _tileset; }
     int tileId() const { return _tileId; }
+    int flags() const { return _flags & VisualFlags; }
 
     bool flippedHorizontally() const { return _flags & FlippedHorizontally; }
     bool flippedVertically() const { return _flags & FlippedVertically; }

@@ -87,7 +87,8 @@ enum class MatchType {
     Empty,
     NonEmpty,
     Other,
-    Ignore
+    Forbid,
+    Ignore,
 };
 
 static MatchType matchType(const Tile *tile)
@@ -102,6 +103,8 @@ static MatchType matchType(const Tile *tile)
         return MatchType::NonEmpty;
     else if (matchType == QLatin1String("Other"))
         return MatchType::Other;
+    else if (matchType == QLatin1String("Forbid"))
+        return MatchType::Forbid;
     else if (matchType == QLatin1String("Ignore"))
         return MatchType::Ignore;
 
@@ -709,10 +712,56 @@ void AutoMapper::compileRule(QVector<RuleInputSet> &inputSets,
 }
 
 /**
+ * After optimization, only one of \a anyOf or \a noneOf can contain any cells.
+ *
+ * Returns whether this combination can match at all. A match is not possible,
+ * when \a anyOf is non-empty, but all cells in \a anyOf are also in \a noneOf.
+ */
+static bool optimizeAnyNoneOf(QVector<Cell> &anyOf, QVector<Cell> &noneOf)
+{
+    auto compareCell = [] (const Cell &a, const Cell &b) {
+        if (a.tileset() != b.tileset())
+            return a.tileset() < b.tileset();
+        if (a.tileId() != b.tileId())
+            return a.tileId() < b.tileId();
+        return a.flags() < b.flags();
+    };
+
+    // First sort and erase duplicates
+    if (!noneOf.isEmpty()) {
+        std::stable_sort(noneOf.begin(), noneOf.end(), compareCell);
+        noneOf.erase(std::unique(noneOf.begin(), noneOf.end()), noneOf.end());
+    }
+
+    // If there are any specific tiles desired, we don't need the noneOf
+    if (!anyOf.isEmpty()) {
+        std::stable_sort(anyOf.begin(), anyOf.end(), compareCell);
+        anyOf.erase(std::unique(anyOf.begin(), anyOf.end()), anyOf.end());
+
+        for (auto i = anyOf.begin(), j = noneOf.begin(); i != anyOf.end() && j != noneOf.end();) {
+            if (compareCell(*i, *j)) {
+                ++i;
+            } else if (compareCell(*j, *i)) {
+                ++j;
+            } else {
+                i = anyOf.erase(i);
+                ++j;
+            }
+        }
+
+        // If now no tiles are allowed anymore, this rule can never match
+        if (anyOf.isEmpty())
+            return false;
+    }
+
+    return true;
+}
+
+/**
  * Compiles one of a rule's input sets.
  *
- * Aborts and returns false, when it detects a missing input layer that
- * prevents the input set from ever matching.
+ * Returns false when it detects a missing input layer would prevent the input
+ * set from ever matching, or when a rule contradicts itself.
  */
 bool AutoMapper::compileInputSet(RuleInputSet &index,
                                  const InputSet &inputSet,
@@ -737,22 +786,24 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
             anyOf.clear();
             noneOf.clear();
 
+            bool forbid = false;
+
             for (const InputLayer &inputLayer : conditions.listYes) {
                 const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
 
                 switch (matchType(cell.tile())) {
                 case MatchType::Unknown:
                     if (inputLayer.strictEmpty)
-                        appendUnique(anyOf, cell);
+                        anyOf.append(cell);
                     break;
                 case MatchType::Tile:
-                    appendUnique(anyOf, cell);
+                    anyOf.append(cell);
                     break;
                 case MatchType::Empty:
-                    appendUnique(anyOf, Cell());
+                    anyOf.append(Cell());
                     break;
                 case MatchType::NonEmpty:
-                    appendUnique(noneOf, Cell());
+                    noneOf.append(Cell());
                     break;
                 case MatchType::Other:
                     // The "any other tile" case is implemented as "none of the
@@ -760,6 +811,9 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                     if (inputCells.isEmpty())
                         collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
                     noneOf.append(inputCells);
+                    break;
+                case MatchType::Forbid:
+                    forbid = true;
                     break;
                 case MatchType::Ignore:
                     break;
@@ -775,13 +829,13 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                         noneOf.append(cell);
                     break;
                 case MatchType::Tile:
-                    appendUnique(noneOf, cell);
+                    noneOf.append(cell);
                     break;
                 case MatchType::Empty:
-                    appendUnique(noneOf, Cell());
+                    noneOf.append(Cell());
                     break;
                 case MatchType::NonEmpty:
-                    appendUnique(anyOf, Cell());
+                    anyOf.append(Cell());
                     break;
                 case MatchType::Other:
                     // This is the "not any other tile" case, which is
@@ -789,6 +843,9 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                     if (inputCells.isEmpty())
                         collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
                     anyOf.append(inputCells);
+                    break;
+                case MatchType::Forbid:
+                    forbid = true;
                     break;
                 case MatchType::Ignore:
                     break;
@@ -804,8 +861,16 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                     if (inputCells.isEmpty())
                         collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
                     noneOf.append(inputCells);
-                    appendUnique(noneOf, Cell());
+                    noneOf.append(Cell());
                 }
+            }
+
+            if (forbid)
+                std::swap(anyOf, noneOf);
+
+            if (!optimizeAnyNoneOf(anyOf, noneOf)) {
+                canMatch = false;
+                return;
             }
 
             // When the input layer is missing, it is considered empty. In this
@@ -1234,10 +1299,7 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, QRect rect,
             case Tiled::MatchType::Empty:
                 dstLayer->setCell(xd, yd, Cell());
                 break;
-            case Tiled::MatchType::Unknown:
-            case Tiled::MatchType::NonEmpty:
-            case Tiled::MatchType::Other:
-            case Tiled::MatchType::Ignore:
+            default:
                 break;
             }
         }
