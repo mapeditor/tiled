@@ -738,6 +738,7 @@ static bool optimizeAnyNoneOf(QVector<Cell> &anyOf, QVector<Cell> &noneOf)
         std::stable_sort(anyOf.begin(), anyOf.end(), compareCell);
         anyOf.erase(std::unique(anyOf.begin(), anyOf.end()), anyOf.end());
 
+        // Remove all "noneOf" tiles from "anyOf" and clear "noneOf"
         for (auto i = anyOf.begin(), j = noneOf.begin(); i != anyOf.end() && j != noneOf.end();) {
             if (compareCell(*i, *j)) {
                 ++i;
@@ -748,6 +749,7 @@ static bool optimizeAnyNoneOf(QVector<Cell> &anyOf, QVector<Cell> &noneOf)
                 ++j;
             }
         }
+        noneOf.clear();
 
         // If now no tiles are allowed anymore, this rule can never match
         if (anyOf.isEmpty())
