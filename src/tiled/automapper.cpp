@@ -1119,9 +1119,9 @@ void AutoMapper::matchRule(const Rule &rule,
     }
 
     forEachPointInRegion(ruleMatchRegion, [&] (int x, int y) {
-        if ((x + rule.options.offsetX) % rule.options.modX != 0)
+        if (rule.options.modX != 1 && (x + rule.options.offsetX) % rule.options.modX != 0)
             return;
-        if ((y + rule.options.offsetY) % rule.options.modY != 0)
+        if (rule.options.modX != 1 && (y + rule.options.offsetY) % rule.options.modY != 0)
             return;
         if (rule.options.skipChance != 0.0 && randomDouble() < rule.options.skipChance)
             return;
