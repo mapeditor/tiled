@@ -193,6 +193,7 @@ struct ApplyContext;
 struct TILED_EDITOR_EXPORT AutoMappingContext
 {
     AutoMappingContext(MapDocument *mapDocument);
+    AutoMappingContext(const AutoMappingContext &) = delete;
 
     const MapDocument * const targetDocument;
     const Map * const targetMap;
