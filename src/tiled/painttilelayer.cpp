@@ -42,18 +42,6 @@ PaintTileLayer::PaintTileLayer(MapDocument *mapDocument,
                                int x,
                                int y,
                                const TileLayer *source,
-                               QUndoCommand *parent)
-    : PaintTileLayer(mapDocument, parent)
-{
-    paint(target, x, y, source,
-          source->region().translated(QPoint(x, y) - source->position()));
-}
-
-PaintTileLayer::PaintTileLayer(MapDocument *mapDocument,
-                               TileLayer *target,
-                               int x,
-                               int y,
-                               const TileLayer *source,
                                const QRegion &paintRegion,
                                QUndoCommand *parent)
     : PaintTileLayer(mapDocument, parent)
@@ -81,6 +69,12 @@ void PaintTileLayer::paint(TileLayer *target,
     data.mPaintedRegion = paintRegion;
 
     mLayerData[target].mergeWith(std::move(data));
+}
+
+void PaintTileLayer::erase(TileLayer *target, const QRegion &eraseRegion)
+{
+    TileLayer empty;
+    paint(target, 0, 0, &empty, eraseRegion);
 }
 
 void PaintTileLayer::undo()
