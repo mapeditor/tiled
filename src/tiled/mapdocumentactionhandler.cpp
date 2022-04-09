@@ -415,8 +415,11 @@ void MapDocumentActionHandler::delete_()
             commands.append(new RemoveMapObjects(mMapDocument, selectedObjects));
     }
 
-    if (!commands.isEmpty()) {
-        QUndoStack *undoStack = mMapDocument->undoStack();
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    if (commands.size() == 1) {
+        commands.first()->setText(tr("Delete"));
+        undoStack->push(commands.first());
+    } else if (commands.size() > 1) {
         undoStack->beginMacro(tr("Delete"));
         for (QUndoCommand *command : qAsConst(commands))
             undoStack->push(command);
