@@ -28,6 +28,8 @@
 #include "painttilelayer.h"
 #include "tilelayer.h"
 
+#include <QCoreApplication>
+
 using namespace Tiled;
 
 Eraser::Eraser(QObject *parent)
