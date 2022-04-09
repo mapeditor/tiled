@@ -9,7 +9,7 @@ tags: release
 
 This is the first preview release of Tiled 1.9, which is focused on the [AutoMapping](https://doc.mapeditor.org/de/latest/manual/automapping/) feature. The downloads for this preview are [available on GitHub](https://github.com/mapeditor/tiled/releases/tag/v1.8.90).
 
-AutoMapping has always been a rather hidden feature with a steep learning curve, but it was appreciated by those who dug into it and has saved many projects an enormous amount of tedious tile placement. In the upcoming Tiled 1.9, the goal is to make AutoMapping more accessible, more powerful and a lot faster. Here's a short demonstration of AutoMapping 
+AutoMapping has always been a rather hidden feature with a steep learning curve, but it was appreciated by those who dug into it and has saved many projects an enormous amount of tedious tile placement. In the upcoming Tiled 1.9, the goal is to make AutoMapping more accessible, more powerful and a lot faster.
 
 _Since the documentation is still largely outdated, read this post for the changes!_
 
@@ -65,7 +65,7 @@ All these options can also be set on the rule map itself, in which case they cha
 
 While it was already possible to use multiple directories for map files so they could have different `rules.txt` files, this wasn't very convenient. Now, it is possible to define a filename filter to make sure certain sets of rules are only applied to certain maps. For example:
 
-```
+```ini
 globalRules.tmx
 
 [town*]
