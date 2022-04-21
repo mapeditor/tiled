@@ -539,7 +539,7 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
                     if (imageReference.source.isEmpty())
                         xml.raiseError(tr("Error reading embedded image for tile %1").arg(id));
                 }
-                tileset.setTileImage(tile, image, imageReference.source);
+                tileset.setTileImage(tile, image, imageReference.source, QRect(imageReference.topLeft, imageReference.size));
             }
         } else if (xml.name() == QLatin1String("objectgroup")) {
             std::unique_ptr<ObjectGroup> objectGroup = readObjectGroup();
@@ -643,6 +643,8 @@ ImageReference MapReaderPrivate::readImage()
     ImageReference image;
     image.source = toUrl(source, mPath);
     image.format = atts.value(QLatin1String("format")).toLatin1();
+    image.topLeft = QPoint(atts.value(QLatin1String("top")).toInt(),
+                       atts.value(QLatin1String("left")).toInt());
     image.size = QSize(atts.value(QLatin1String("width")).toInt(),
                        atts.value(QLatin1String("height")).toInt());
 

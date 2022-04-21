@@ -79,6 +79,9 @@ public:
     const QUrl &imageSource() const;
     void setImageSource(const QUrl &imageSource);
 
+    const QRect &imageSourceRect() const;
+    void setImageSourceRect(const QRect& imageSourceRect);
+
     int width() const;
     int height() const;
     QSize size() const;
@@ -112,6 +115,7 @@ private:
     Tileset *mTileset;
     QPixmap mImage;
     QUrl mImageSource;
+    QRect mImageSourceRect;
     LoadingStatus mImageStatus;
     QString mType;
     qreal mProbability;
@@ -170,6 +174,17 @@ inline const QUrl &Tile::imageSource() const
 inline void Tile::setImageSource(const QUrl &imageSource)
 {
     mImageSource = imageSource;
+}
+
+/**
+  * Return image source rect in pixels
+  */
+inline const QRect& Tile::imageSourceRect() const {
+    return mImageSourceRect;
+}
+
+inline void Tile::setImageSourceRect(const QRect& imageSourceRect) {
+    mImageSourceRect = imageSourceRect;
 }
 
 /**

@@ -908,10 +908,14 @@ void PropertyBrowser::addTileProperties()
 
     const Tile *tile = static_cast<const Tile*>(mObject);
     if (!tile->imageSource().isEmpty()) {
+        QtVariantProperty *imageSourceRectProperty = addProperty(ImageSourceRectProperty,
+                                                            QMetaType::QRect,
+                                                             tr("Image rect"), groupProperty);
+        imageSourceRectProperty->setEnabled(mTilesetDocument);
+
         QtVariantProperty *imageSourceProperty = addProperty(ImageSourceProperty,
                                                              filePathTypeId(),
                                                              tr("Image"), groupProperty);
-
         imageSourceProperty->setAttribute(QLatin1String("filter"),
                                           Utils::readableImageFormatsFilter());
         imageSourceProperty->setEnabled(mTilesetDocument);
@@ -1433,10 +1437,14 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
                                                   mTilesetDocument->selectedTiles(),
                                                   val.toFloat()));
         break;
+    case ImageSourceRectProperty:
+        undoStack->push(new ChangeTileImageSource(mTilesetDocument,
+                                                  tile, tile->imageSource(), val.toRect()));
+        break;
     case ImageSourceProperty: {
         const FilePath filePath = val.value<FilePath>();
         undoStack->push(new ChangeTileImageSource(mTilesetDocument,
-                                                  tile, filePath.url));
+                                                  tile, filePath.url, tile->imageSourceRect()));
         break;
     }
     default:
@@ -1811,8 +1819,10 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[WidthProperty]->setValue(tileSize.width());
         mIdToProperty[HeightProperty]->setValue(tileSize.height());
         mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
-        if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
+        if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty)) {
             imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));
+            mIdToProperty[ImageSourceRectProperty]->setValue(tile->imageSourceRect());
+        }
         break;
     }
     case Object::WangSetType: {

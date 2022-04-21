@@ -30,22 +30,26 @@ namespace Tiled {
 
 ChangeTileImageSource::ChangeTileImageSource(TilesetDocument *tilesetDocument,
                                              Tile *tile,
-                                             const QUrl &imageSource)
+                                             const QUrl &imageSource,
+                                             const QRect &imageRect)
     : mTilesetDocument(tilesetDocument)
     , mTile(tile)
     , mOldImageSource(tile->imageSource())
     , mNewImageSource(imageSource)
+    , mOldImageRect(tile->imageSourceRect())
+    , mNewImageRect(imageRect)
 {
     setText(QCoreApplication::translate("Undo Commands",
                                         "Change Tile Image"));
 }
 
-void ChangeTileImageSource::apply(const QUrl &imageSource)
+void ChangeTileImageSource::apply(const QUrl &imageSource, const QRect& imageRect)
 {
     // todo: make sure remote source loading is triggered
     mTilesetDocument->setTileImage(mTile,
-                                   ImageCache::loadPixmap(imageSource.toLocalFile()),
-                                   imageSource);
+                                   ImageCache::loadPixmap(imageSource.toLocalFile()).copy(imageRect),
+                                   imageSource,
+                                   imageRect);
 }
 
 } // namespace Tiled

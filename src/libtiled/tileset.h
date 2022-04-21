@@ -190,7 +190,7 @@ public:
     void insertWangSet(int index, std::unique_ptr<WangSet> wangSet);
     std::unique_ptr<WangSet> takeWangSetAt(int index);
 
-    Tile *addTile(const QPixmap &image, const QUrl &source = QUrl());
+    Tile *addTile(const QPixmap &image, const QUrl &source = QUrl(), const QRect &rect = QRect());
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile *> &tiles);
     void deleteTile(int id);
@@ -204,7 +204,8 @@ public:
 
     void setTileImage(Tile *tile,
                       const QPixmap &image,
-                      const QUrl &source = QUrl());
+                      const QUrl &source = QUrl(),
+                      const QRect &rect = QRect());
     /**
      * @deprecated Only kept around for the Python API!
      */

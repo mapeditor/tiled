@@ -175,6 +175,7 @@ Tile *Tile::clone(Tileset *tileset) const
     c->setProperties(properties());
 
     c->mImageSource = mImageSource;
+    c->mImageSourceRect = mImageSourceRect;
     c->mImageStatus = mImageStatus;
     c->mType = mType;
     c->mProbability = mProbability;

@@ -112,7 +112,7 @@ public:
     WangColorModel *wangColorModel(WangSet *wangSet);
 
     void setTileType(Tile *tile, const QString &type);
-    void setTileImage(Tile *tile, const QPixmap &image, const QUrl &source);
+    void setTileImage(Tile *tile, const QPixmap &image, const QUrl &source, const QRect& rect);
     void setTileProbability(Tile *tile, qreal probability);
     void swapTileObjectGroup(Tile *tile, std::unique_ptr<ObjectGroup> &objectGroup);
 

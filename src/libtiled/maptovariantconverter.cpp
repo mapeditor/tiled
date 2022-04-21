@@ -287,6 +287,11 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
                 tileVariant[QStringLiteral("imagewidth")] = tileSize.width();
                 tileVariant[QStringLiteral("imageheight")] = tileSize.height();
             }
+            const QPoint topLeft = tile->imageSourceRect().topLeft();
+            if (!topLeft.isNull()) {
+                tileVariant[QStringLiteral("imagetop")] = topLeft.y();
+                tileVariant[QStringLiteral("imageleft")] = topLeft.x();
+            }
         }
         if (tile->objectGroup())
             tileVariant[QStringLiteral("objectgroup")] = toVariant(*tile->objectGroup());

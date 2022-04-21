@@ -584,7 +584,8 @@ void LinkFixer::tryFixLink(const BrokenLink &link)
         } else {
             auto command = new ChangeTileImageSource(tilesetDocument,
                                                      link._tile,
-                                                     newFileUrl);
+                                                     newFileUrl,
+                                                     link._tile->imageSourceRect());
 
             tilesetDocument->undoStack()->push(command);
         }
@@ -629,7 +630,8 @@ bool LinkFixer::tryFixLink(const BrokenLink &link, const QString &newFilePath)
         } else {
             auto command = new ChangeTileImageSource(tilesetDocument,
                                                      link._tile,
-                                                     newSource);
+                                                     newSource,
+                                                     link._tile->imageSourceRect());
 
             tilesetDocument->undoStack()->push(command);
         }

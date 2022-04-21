@@ -549,6 +549,8 @@ Tile (Definition)
     animation,        array,              "Array of :ref:`Frames <json-frame>`"
     id,               int,                "Local ID of the tile"
     image,            string,             "Image representing this tile (optional)"
+    imagetop,         int,                "Horizontal offset of the tile image in pixels"
+    imageleft,        int,                "Vertical offset of the tile image in pixels"
     imageheight,      int,                "Height of the tile image in pixels"
     imagewidth,       int,                "Width of the tile image in pixels"
     objectgroup,      :ref:`json-layer`,  "Layer with type ``objectgroup``, when collision shapes are specified (optional)"

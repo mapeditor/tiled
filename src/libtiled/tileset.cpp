@@ -470,11 +470,12 @@ std::unique_ptr<WangSet> Tileset::takeWangSetAt(int index)
 /**
  * Adds a new tile to the end of the tileset.
  */
-Tile *Tileset::addTile(const QPixmap &image, const QUrl &source)
+Tile *Tileset::addTile(const QPixmap &image, const QUrl &source, const QRect &rect)
 {
     Tile *newTile = new Tile(takeNextTileId(), this);
     newTile->setImage(image);
     newTile->setImageSource(source);
+    newTile->setImageSourceRect(rect);
 
     mTilesById.insert(newTile->id(), newTile);
     mTiles.append(newTile);
@@ -566,7 +567,8 @@ bool Tileset::anyTileOutOfOrder() const
  */
 void Tileset::setTileImage(Tile *tile,
                            const QPixmap &image,
-                           const QUrl &source)
+                           const QUrl &source,
+                           const QRect &rect)
 {
     Q_ASSERT(isCollection());
     Q_ASSERT(mTilesById.value(tile->id()) == tile);
@@ -576,6 +578,7 @@ void Tileset::setTileImage(Tile *tile,
 
     tile->setImage(image);
     tile->setImageSource(source);
+    tile->setImageSourceRect(rect);
 
     if (previousImageSize != newImageSize) {
         // Update our max. tile size

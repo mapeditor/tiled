@@ -32,14 +32,15 @@ bool ImageReference::hasImage() const
 
 QPixmap ImageReference::create() const
 {
+    QPixmap pixmap;
     if (source.isLocalFile())
-        return ImageCache::loadPixmap(source.toLocalFile());
+        pixmap = ImageCache::loadPixmap(source.toLocalFile());
     else if (source.scheme() == QLatin1String("qrc"))
-        return ImageCache::loadPixmap(QLatin1Char(':') + source.path());
+        pixmap = ImageCache::loadPixmap(QLatin1Char(':') + source.path());
     else if (!data.isEmpty())
-        return QPixmap::fromImage(QImage::fromData(data, format));
+        pixmap = QPixmap::fromImage(QImage::fromData(data, format));
 
-    return QPixmap();
+    return pixmap.copy(this->topLeft.x(), this->topLeft.y(), this->size.width(), this->size.height());
 }
 
 } // namespace Tiled

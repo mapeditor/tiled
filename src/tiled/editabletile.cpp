@@ -148,10 +148,30 @@ void EditableTile::setImageFileName(const QString &fileName)
         }
 
         asset()->push(new ChangeTileImageSource(doc, tile(),
-                                                QUrl::fromLocalFile(fileName)));
+                                                QUrl::fromLocalFile(fileName),
+                                                imageRect()));
     } else if (!checkReadOnly()) {
-        tile()->setImage(ImageCache::loadPixmap(fileName));
+        tile()->setImage(ImageCache::loadPixmap(fileName).copy(imageRect()));
         tile()->setImageSource(QUrl::fromLocalFile(fileName));
+        tile()->setImageSourceRect(imageRect());
+    }
+}
+
+void EditableTile::setImageRect(const QRect &rect)
+{
+    if (TilesetDocument *doc = tilesetDocument()) {
+        if (!tileset()->tileset()->isCollection()) {
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Tileset needs to be an image collection"));
+            return;
+        }
+
+        asset()->push(new ChangeTileImageSource(doc, tile(),
+                                                QUrl::fromLocalFile(imageFileName()),
+                                                rect));
+    } else if (!checkReadOnly()) {
+        tile()->setImage(ImageCache::loadPixmap(imageFileName()).copy(rect));
+        tile()->setImageSource(QUrl::fromLocalFile(imageFileName()));
+        tile()->setImageSourceRect(rect);
     }
 }
 
