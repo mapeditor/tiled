@@ -189,6 +189,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     mSelectNextTileset->setShortcut(Qt::Key_BracketRight);
     mSelectPreviousTileset->setShortcut(Qt::Key_BracketLeft);
 
+    ActionManager::registerAction(mEditTileset, "EditTileset");
     ActionManager::registerAction(mSelectNextTileset, "SelectNextTileset");
     ActionManager::registerAction(mSelectPreviousTileset, "SelectPreviousTileset");
 
