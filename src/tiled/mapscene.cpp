@@ -34,6 +34,7 @@
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "preferences.h"
+#include "snaphelper.h"
 #include "stylehelper.h"
 #include "templatemanager.h"
 #include "tilesetmanager.h"
@@ -561,10 +562,13 @@ void MapScene::dropEvent(QGraphicsSceneDragDropEvent *event)
     if (!objectTemplate || !mapDocument()->templateAllowed(objectTemplate))
         return;
 
+    QPointF pos = event->scenePos();
+    SnapHelper(mapDocument()->renderer(), event->modifiers()).snap(pos);
+
     MapObject *newMapObject = new MapObject;
     newMapObject->setObjectTemplate(objectTemplate);
     newMapObject->syncWithTemplate();
-    newMapObject->setPosition(event->scenePos());
+    newMapObject->setPosition(pos);
 
     auto addObjectCommand = new AddMapObjects(mapDocument(),
                                               objectGroup,
