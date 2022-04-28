@@ -2492,12 +2492,23 @@ declare class Tileset extends Asset {
   /**
    * The number of tiles in this tileset.
    */
-  tileCount : number
+  readonly tileCount : number
+
+  /**
+   * The number of tile columns in this tileset.
+   *
+   * Can be changed in case of image-collection tilesets, in which case it
+   * determines the number of columns used in the tileset view when dynamic
+   * wrapping is disabled.
+   *
+   * @since 1.9
+   */
+  columnCount : number
 
   /**
    * The ID of the next tile that would be added to this tileset. All existing tiles have IDs that are lower than this ID.
    */
-  nextTileId : number
+  readonly nextTileId : number
 
   /**
    * Tile width for tiles in this tileset in pixels.
