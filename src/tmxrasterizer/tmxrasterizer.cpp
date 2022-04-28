@@ -102,7 +102,7 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
 
 bool TmxRasterizer::shouldDrawLayer(const Layer *layer) const
 {
-    if (layer->isGroupLayer())
+    if (!(mLayerTypesToShow & layer->layerType()))
         return false;
 
     if (mLayersToHide.contains(layer->name(), Qt::CaseInsensitive))

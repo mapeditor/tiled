@@ -77,6 +77,12 @@ int main(int argc, char *argv[])
                           { QStringLiteral("show-layer"),
                             QCoreApplication::translate("main", "If used only specified layers are shown. Can be repeated to show multiple specified layers only."),
                             QCoreApplication::translate("main", "name") },
+                          { QStringLiteral("hide-tile-layers"),
+                            QCoreApplication::translate("main", "Don't render tile layers.") },
+                          { QStringLiteral("hide-object-layers"),
+                            QCoreApplication::translate("main", "Don't render object layers.") },
+                          { QStringLiteral("hide-image-layers"),
+                            QCoreApplication::translate("main", "Don't render image layers.") },
                           { QStringLiteral("advance-animations"),
                             QCoreApplication::translate("main", "If used tile animations are advanced by the specified duration."),
                             QCoreApplication::translate("main", "duration") }
@@ -101,6 +107,9 @@ int main(int argc, char *argv[])
     w.setIgnoreVisibility(parser.isSet(QLatin1String("ignore-visibility")));
     w.setLayersToHide(parser.values(QLatin1String("hide-layer")));
     w.setLayersToShow(parser.values(QLatin1String("show-layer")));
+    w.setLayerTypeVisible(Layer::TileLayerType, !parser.isSet(QLatin1String("hide-tile-layers")));
+    w.setLayerTypeVisible(Layer::ObjectGroupType, !parser.isSet(QLatin1String("hide-object-layers")));
+    w.setLayerTypeVisible(Layer::ImageLayerType, !parser.isSet(QLatin1String("hide-image-layers")));
 
     if (parser.isSet(QLatin1String("size"))) {
         bool ok;

@@ -14,6 +14,7 @@
 * AutoMapping: Accumulate touched layers in AutoMap While Drawing (#3313)
 * AutoMapping: Support map name filters in rules.txt (#3014)
 * Split up object types file type selection
+* tmxrasterizer: Added options to hide certain layer types (#3343)
 * Raised minimum supported Qt version from 5.6 to 5.12 (drops Windows XP support)
 * Raised minimum C++ version to C++17
 * Removed qmake project files (only Qbs supported now)
