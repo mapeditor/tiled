@@ -2,6 +2,7 @@
 
 * Scripting: Added -e,--evaluate to run a script from command-line
 * Scripting: Added Tool.toolBarActions property (#3318)
+* Scripting: Added access to selected terrain in tileset editor
 * AutoMapping: Applying rules is now 10-30x faster
 * AutoMapping: Explicit "regions" layers are no longer needed and have been deprecated (#1918)
 * AutoMapping: Custom tiles can now match "Empty", "Non-Empty" and "Other" tiles through a "MatchType" property (#3100)

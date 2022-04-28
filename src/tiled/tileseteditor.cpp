@@ -27,6 +27,8 @@
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
 #include "documentmanager.h"
+#include "editablemanager.h"
+#include "editablewangset.h"
 #include "erasetiles.h"
 #include "maintoolbar.h"
 #include "mapdocument.h"
@@ -212,7 +214,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
     connect(mTileAnimationEditor, &TileAnimationEditor::closed, this, &TilesetEditor::onAnimationEditorClosed);
 
-    connect(mWangDock, &WangDock::currentWangSetChanged, this, &TilesetEditor::currentWangSetChanged);
+    connect(mWangDock, &WangDock::currentWangSetChanged, this, &TilesetEditor::onCurrentWangSetChanged);
     connect(mWangDock, &WangDock::currentWangIdChanged, this, &TilesetEditor::currentWangIdChanged);
     connect(mWangDock, &WangDock::wangColorChanged, this, &TilesetEditor::wangColorChanged);
     connect(mWangDock, &WangDock::addWangSetRequested, this, &TilesetEditor::addWangSet);
@@ -499,6 +501,17 @@ QAction *TilesetEditor::editCollisionAction() const
 QAction *TilesetEditor::editWangSetsAction() const
 {
     return mWangDock->toggleViewAction();
+}
+
+EditableWangSet *TilesetEditor::currentWangSet() const
+{
+    auto currentWangSet = mWangDock->currentWangSet();
+    return EditableManager::instance().editableWangSet(currentWangSet);
+}
+
+int TilesetEditor::currentWangColorIndex() const
+{
+    return mWangDock->currentWangColor();
 }
 
 void TilesetEditor::currentWidgetChanged()
@@ -915,28 +928,26 @@ void TilesetEditor::setEditWang(bool editWang)
     }
 }
 
-void TilesetEditor::currentWangSetChanged(WangSet *wangSet)
+void TilesetEditor::onCurrentWangSetChanged(WangSet *wangSet)
 {
-    TilesetView *view = currentTilesetView();
-    if (!view)
-        return;
+    if (TilesetView *view = currentTilesetView())
+        view->setWangSet(wangSet);
 
-    view->setWangSet(wangSet);
+    emit currentWangSetChanged();
 }
 
 void TilesetEditor::currentWangIdChanged(WangId wangId)
 {
-    TilesetView *view = currentTilesetView();
-    if (!view)
-        return;
-
-    view->setWangId(wangId);
+    if (TilesetView *view = currentTilesetView())
+        view->setWangId(wangId);
 }
 
 void TilesetEditor::wangColorChanged(int color)
 {
     if (TilesetView *view = currentTilesetView())
         view->setWangColor(color);
+
+    emit currentWangColorIndexChanged(color);
 }
 
 void TilesetEditor::addWangSet(WangSet::Type type)
