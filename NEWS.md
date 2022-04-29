@@ -4,6 +4,7 @@
 * Improved snapping behavior for scalable objects on staggered maps
 * Allow setting a shortcut on the 'Edit Tileset' action
 * Fixed snapping when dragging templates into a map (#3326)
+* Fixed map selection rectangle in world for infinite maps (#3340)
 * Fixed missing name for undo commands that add/remove maps from world
 * Scripting: Fixed region.rects when compiled against Qt 5.9 to 5.13
 * AppImage: Updated to Sentry 0.4.17

@@ -95,7 +95,7 @@ public:
 
     void redo() override
     {
-        // ensure we're switching to a differnet map in case the current map is removed
+        // ensure we're switching to a different map in case the current map is removed
         DocumentManager *manager = DocumentManager::instance();
         if (manager->currentDocument() && manager->currentDocument()->fileName() == mMapName) {
             const World *world = WorldManager::instance().worldForMap(mMapName);
@@ -247,9 +247,11 @@ bool AbstractWorldTool::mapCanBeMoved(MapDocument *mapDocument) const
 
 QRect AbstractWorldTool::mapRect(MapDocument *mapDocument) const
 {
-    QRect rect = mapDocument->renderer()->mapBoundingRect();
-    if (const World *world = constWorld(mapDocument))
-        rect.translate(world->mapRect(mapDocument->fileName()).topLeft());
+    auto rect = mapDocument->renderer()->mapBoundingRect();
+
+    if (auto item = mapScene()->mapItem(mapDocument))
+        rect.translate(item->pos().toPoint());
+
     return rect;
 }
 
@@ -436,12 +438,10 @@ void AbstractWorldTool::setTargetMap(MapDocument *mapDocument)
 
 void AbstractWorldTool::updateSelectionRectangle()
 {
-    if (auto item = mapScene()->mapItem(mTargetMap)) {
-        auto rect = mapRect(mTargetMap);
-        rect.moveTo(item->pos().toPoint());
-
-        mSelectionRectangle->setVisible(true);
+    if (mTargetMap) {
+        const auto rect = mapRect(mTargetMap);
         mSelectionRectangle->setRectangle(rect);
+        mSelectionRectangle->setVisible(true);
     } else {
         mSelectionRectangle->setVisible(false);
     }

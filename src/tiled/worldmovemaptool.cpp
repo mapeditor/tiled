@@ -136,13 +136,13 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
 
 void WorldMoveMapTool::moveMap(MapDocument *document, QPoint moveBy)
 {
-    if (!document || !mapCanBeMoved(document) || mDraggingMap)
-        return;
-
     QPoint offset = QPoint(document->map()->tileWidth() * static_cast<int>(moveBy.x()),
                            document->map()->tileHeight() * static_cast<int>(moveBy.y()));
-    QRect rect = mapRect(document);
-    rect.setTopLeft(snapPoint(rect.topLeft() + offset, document));
+    QRect rect = document->renderer()->mapBoundingRect();
+    if (const World *world = constWorld(document))
+        rect.moveTo(world->mapRect(document->fileName()).topLeft());
+
+    rect.moveTo(snapPoint(rect.topLeft() + offset, document));
 
     undoStack()->push(new SetMapRectCommand(document->fileName(), rect));
 
@@ -224,8 +224,12 @@ void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         mDraggingMapItem = nullptr;
 
         if (!mDragOffset.isNull()) {
-            const QRect newRect = mapRect(draggedMap).translated(mDragOffset);
-            undoStack()->push(new SetMapRectCommand(draggedMap->fileName(), newRect));
+            QRect rect = draggedMap->renderer()->mapBoundingRect();
+            if (const World *world = constWorld(draggedMap))
+                rect.moveTo(world->mapRect(draggedMap->fileName()).topLeft());
+            rect.translate(mDragOffset);
+
+            undoStack()->push(new SetMapRectCommand(draggedMap->fileName(), rect));
             if (draggedMap == mapDocument()) {
                 // undo camera movement
                 view->forceCenterOn(sceneViewRect.center() - mDragOffset);
