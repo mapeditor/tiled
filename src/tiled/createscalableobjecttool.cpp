@@ -50,13 +50,12 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
 {
     const MapRenderer *renderer = mapDocument()->renderer();
     QPointF pixelCoords = renderer->screenToPixelCoords(pos);
+    SnapHelper(renderer, modifiers).snap(pixelCoords);
 
-    if (state() == Preview) {
-        SnapHelper(renderer, modifiers).snap(pixelCoords);
+    if (state() == Preview)
         mStartPos = pixelCoords;
-    }
 
-    QRectF objectArea(mStartPos, pixelCoords);
+    QRectF objectArea = QRectF(mStartPos, pixelCoords).normalized();
 
     // Holding shift creates circle or square
     if (modifiers & Qt::ShiftModifier) {
@@ -64,14 +63,6 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
         objectArea.setWidth(max * sign(objectArea.width()));
         objectArea.setHeight(max * sign(objectArea.height()));
     }
-
-    // Update the position and size of the new map object
-    QPointF snapSize(objectArea.width(), objectArea.height());
-    SnapHelper(renderer, modifiers).snap(snapSize);
-    objectArea.setWidth(snapSize.x());
-    objectArea.setHeight(snapSize.y());
-
-    objectArea = objectArea.normalized();
 
     // This objectArea assumes TopLeft alignment, but the map's object alignment might be different.
     MapObject *newMapObject = mNewMapObjectItem->mapObject();
