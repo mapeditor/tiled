@@ -41,6 +41,8 @@
 
 using namespace Tiled;
 
+Preference<bool> MapObjectItem::preciseTileObjectSelection { "Interface/PreciseTileObjectSelection", true };
+
 MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
                              QGraphicsItem *parent):
     QGraphicsItem(parent),
@@ -124,6 +126,9 @@ QRectF MapObjectItem::boundingRect() const
 
 QPainterPath MapObjectItem::shape() const
 {
+    if (mObject->isTileObject() && preciseTileObjectSelection)
+        return mObject->tileObjectShape(mMapDocument->map());
+
     QPainterPath path = mMapDocument->renderer()->interactionShape(mObject);
     path.translate(-pos());
     return path;

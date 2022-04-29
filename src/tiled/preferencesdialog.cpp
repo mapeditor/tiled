@@ -23,6 +23,7 @@
 
 #include "abstractobjecttool.h"
 #include "languagemanager.h"
+#include "mapobjectitem.h"
 #include "mapview.h"
 #include "pluginlistmodel.h"
 #include "preferences.h"
@@ -126,6 +127,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setGridMajorY);
     connect(mUi->objectLineWidth, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
             preferences, &Preferences::setObjectLineWidth);
+    connect(mUi->preciseTileObjectSelection, &QCheckBox::toggled,
+            this, [] (bool checked) { MapObjectItem::preciseTileObjectSelection = checked; });
     connect(mUi->openGL, &QCheckBox::toggled,
             preferences, &Preferences::setUseOpenGL);
     connect(mUi->wheelZoomsByDefault, &QCheckBox::toggled,
@@ -208,6 +211,7 @@ void PreferencesDialog::fromPreferences()
 #endif
 
     // Interface
+    mUi->preciseTileObjectSelection->setChecked(MapObjectItem::preciseTileObjectSelection);
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());

@@ -67,7 +67,6 @@ public:
         : QGraphicsObject(parent)
         , mObject(object)
     {
-
         switch (role) {
         case SelectionIndicator:
             setZValue(selectionZValue);

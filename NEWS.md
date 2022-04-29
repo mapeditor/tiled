@@ -1,5 +1,6 @@
 ### Unreleased
 
+* Ignore transparent pixels when selecting tile objects
 * Scripting: Added -e,--evaluate to run a script from command-line
 * Scripting: Added Tool.toolBarActions property (#3318)
 * Scripting: Added Tileset.columnCount property

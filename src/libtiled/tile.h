@@ -32,11 +32,13 @@
 #include "object.h"
 #include "tiled.h"
 
+#include <QPainterPath>
 #include <QPixmap>
 #include <QSharedPointer>
 #include <QUrl>
 
 #include <memory>
+#include <optional>
 
 namespace Tiled {
 
@@ -72,6 +74,7 @@ public:
     QSharedPointer<Tileset> sharedTileset() const;
 
     const QPixmap &image() const;
+    const QPainterPath &imageShape() const;
     void setImage(const QPixmap &image);
 
     const Tile *currentFrameTile() const;
@@ -111,6 +114,7 @@ private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
+    mutable std::optional<QPainterPath> mImageShape;   // cache
     QUrl mImageSource;
     LoadingStatus mImageStatus;
     QString mType;
@@ -155,6 +159,7 @@ inline void Tile::setImage(const QPixmap &image)
 {
     mImage = image;
     mImageStatus = image.isNull() ? LoadingError : LoadingReady;
+    mImageShape.reset();
 }
 
 /**
