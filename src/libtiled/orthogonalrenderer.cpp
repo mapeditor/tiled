@@ -176,7 +176,7 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
     }
     case MapObject::Ellipse: {
         if (bounds.isNull())
-            path.addEllipse(bounds.topLeft(), 20, 20);
+            path.addEllipse(bounds.topLeft(), 10, 10);
         else
             path.addEllipse(bounds);
         break;
