@@ -84,12 +84,11 @@ void MapObjectItem::syncWithMapObject()
     setRotation(mObject->rotation());
 
     if (ObjectGroup *objectGroup = mObject->objectGroup()) {
-        if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
-            setZValue(pixelPos.y());
-
         if (mIsHoveredIndicator) {
             auto totalOffset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*objectGroup);
             setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
+        } else if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder) {
+            setZValue(pixelPos.y());
         }
     }
 
