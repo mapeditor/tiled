@@ -1135,39 +1135,39 @@ interface FileInfo {  // TODO: namespace instead of interface?
  *
  * @since 1.8
  */
-interface File {  // TODO: namespace instead of interface?
-  readonly Dirs: 0x001
-  readonly Files: 0x002
-  readonly Drives: 0x004
-  readonly NoSymLinks: 0x008
-  readonly AllEntries: 0x007
-  readonly TypeMask: 0x00f
-  readonly Readable: 0x010
-  readonly Writable: 0x020
-  readonly Executable: 0x040
-  readonly PermissionMask: 0x070
-  readonly Modified: 0x080
-  readonly Hidden: 0x100
-  readonly System: 0x200
-  readonly AccessMask: 0x3F0
-  readonly AllDirs: 0x400
-  readonly CaseSensitive: 0x800
-  readonly NoDot: 0x2000
-  readonly NoDotDot: 0x4000
-  readonly NoDotAndDotDot: 0x6000
-  readonly NoFilter: -1
-  readonly Name: 0x00
-  readonly Time: 0x01
-  readonly Size: 0x02
-  readonly Unsorted: 0x03
-  readonly SortByMask: 0x03
-  readonly DirsFirst: 0x04
-  readonly Reversed: 0x08
-  readonly IgnoreCase: 0x10
-  readonly DirsLast: 0x20
-  readonly LocaleAware: 0x40
-  readonly Type: 0x80
-  readonly NoSort: -1
+ declare namespace File {
+  export const Dirs: 0x001
+  export const Files: 0x002
+  export const Drives: 0x004
+  export const NoSymLinks: 0x008
+  export const AllEntries: 0x007
+  export const TypeMask: 0x00f
+  export const Readable: 0x010
+  export const Writable: 0x020
+  export const Executable: 0x040
+  export const PermissionMask: 0x070
+  export const Modified: 0x080
+  export const Hidden: 0x100
+  export const System: 0x200
+  export const AccessMask: 0x3F0
+  export const AllDirs: 0x400
+  export const CaseSensitive: 0x800
+  export const NoDot: 0x2000
+  export const NoDotDot: 0x4000
+  export const NoDotAndDotDot: 0x6000
+  export const NoFilter: -1
+  export const Name: 0x00
+  export const Time: 0x01
+  export const Size: 0x02
+  export const Unsorted: 0x03
+  export const SortByMask: 0x03
+  export const DirsFirst: 0x04
+  export const Reversed: 0x08
+  export const IgnoreCase: 0x10
+  export const DirsLast: 0x20
+  export const LocaleAware: 0x40
+  export const Type: 0x80
+  export const NoSort: -1
 
   /**
    * Copies `sourceFilePath` to `targetFilePath`. Any directory components
@@ -1183,12 +1183,12 @@ interface File {  // TODO: namespace instead of interface?
    * destination file timestamp. If you want to replace the newer file, you need to
    * remove it first via {@link File.remove}.
    */
-  copy(sourceFilePath: string, targetFilePath: string): boolean;
+   export function copy(sourceFilePath: string, targetFilePath: string): boolean;
 
   /**
    * Returns true if and only if there is a file at `filePath`.
    */
-  exists(filePath: string): boolean;
+   export function exists(filePath: string): boolean;
 
   /**
    * Returns a list of the directory `path`'s contents non-recursively, filtered by
@@ -1198,20 +1198,20 @@ interface File {  // TODO: namespace instead of interface?
    * The values for `filters` are equivalent to Qt's `QDir::Filter`. The `sortFlags`
    * are equivalent to `QDir::SortFlags`.
    */
-  directoryEntries(path: string, filters?: number, sortFlags?: number): string[];
+   export function directoryEntries(path: string, filters?: number, sortFlags?: number): string[];
 
   /**
    * Returns the time of last modification for the file at `filePath`. The
    * concrete semantics of the returned value are platform-specific. You should
    * only rely on the property that a smaller value indicates an older timestamp.
    */
-  lastModified(filePath: string): Date;
+   export function lastModified(filePath: string): Date;
 
   /**
    * Makes the directory at `path`, creating intermediate directories if necessary.
    * Conceptually equivalent to `mkdir -p`.
    */
-  makePath(path: string): boolean;
+   export function makePath(path: string): boolean;
 
   /**
    * Renames the file `sourceFile` to `targetFile`. Returns `true` if successful;
@@ -1222,13 +1222,13 @@ interface File {  // TODO: namespace instead of interface?
    * If a file with the name `targetFile` already exists, and overwrite is `false`,
    * `move()` returns `false` (that is, the file will not be overwritten).
    */
-  move(sourceFile: string, targetFile: string, overwrite?: boolean): boolean;
+   export function move(sourceFile: string, targetFile: string, overwrite?: boolean): boolean;
 
   /**
    * Removes the file at `filePath`. In case of a directory, it will be removed
    * recursively.
    */
-  remove(filePath: string): boolean;
+   export function remove(filePath: string): boolean;
 }
 
 /**
