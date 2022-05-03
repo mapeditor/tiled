@@ -1041,12 +1041,12 @@ interface TilesetFormat extends FileFormat {
  * Offers various operations on file paths, such as turning absolute paths
  * into relative ones, splitting a path into its components, and so on.
  */
- declare namespace FileInfo {
+declare namespace FileInfo {
   /**
    * Returns the file name of `filePath` up to (but not including) the
    * first '.' character.
    */
-   export function baseName(filePath: string): string;
+  export function baseName(filePath: string): string;
 
   /**
    * Returns a canonicalized `filePath`, i.e. an absolute path without
@@ -1057,50 +1057,50 @@ interface TilesetFormat extends FileFormat {
    * canonical paths are really necessary. In most cases, `cleanPath`
    * should be enough.
    */
-   export function canonicalPath(filePath: string): string;
+  export function canonicalPath(filePath: string): string;
 
   /**
    * Returns `filePath` without redundant separators and with resolved
    * occurrences of `.` and `..` components. For
    * instance, `/usr/local//../bin/` becomes `/usr/bin`.
    */
-   export function cleanPath(filePath: string): string;
+  export function cleanPath(filePath: string): string;
 
   /**
    * Returns the file name of `filePath` up to (but not including) the
    * last `.` character.
    */
-   export function completeBaseName(filePath: string): string;
+  export function completeBaseName(filePath: string): string;
 
   /**
    * Returns the file suffix of `filePath` from (but not including) the
    * last `.` character.
    */
-   export function completeSuffix(filePath: string): string;
+  export function completeSuffix(filePath: string): string;
 
   /**
    * Returns the last component of `filePath`, that is, everything after
    * the last `/` character.
    */
-   export function fileName(filePath: string): string;
+  export function fileName(filePath: string): string;
 
   /**
    * On Windows, returns `filePath` with all `\` characters replaced
    * by `/`. On other operating systems, it returns the input
    * unmodified.
    */
-   export function fromNativeSeparators(filePath: string): string;
+  export function fromNativeSeparators(filePath: string): string;
 
   /**
    * Returns true if `filePath` is an absolute path and false
    * if it is a relative one.
    */
-   export function isAbsolutePath(filePath: string): boolean;
+  export function isAbsolutePath(filePath: string): boolean;
 
   /**
    * Concatenates the given paths using the `/` character.
    */
-   export function joinPaths(...paths:string[]) : string;
+  export function joinPaths(...paths:string[]) : string;
 
   /**
    * Returns the part of `filePath` that is not the file name, that is,
@@ -1109,25 +1109,25 @@ interface TilesetFormat extends FileFormat {
    * `filePath` ends with a `/` character, then the file name is
    * assumed to be empty for the purpose of the above definition.
    */
-   export function path(filePath: string): string;
+  export function path(filePath: string): string;
 
   /**
    * Returns the path to `filePath` relative to the directory `dirPath`.
    * If necessary, `..` components are inserted.
    */
-   export function relativePath(dirPath: string, filePath: string): string;
+  export function relativePath(dirPath: string, filePath: string): string;
 
   /**
    * Returns the file suffix of `filePath` from (but not including) the
    * first `.` character.
    */
-   export function suffix(filePath: string): string;
+  export function suffix(filePath: string): string;
 
   /**
    * On Windows, returns `filePath` with all `/` characters replaced by
    * `\`. On other operating systems, it returns the input unmodified.
    */
-   export function toNativeSeparators(filePath: string): string;
+  export function toNativeSeparators(filePath: string): string;
 }
 
 /**
