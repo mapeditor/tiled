@@ -1135,7 +1135,7 @@ interface FileInfo {  // TODO: namespace instead of interface?
  *
  * @since 1.8
  */
- declare namespace File {
+declare namespace File {
   export const Dirs: 0x001
   export const Files: 0x002
   export const Drives: 0x004
