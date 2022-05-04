@@ -433,7 +433,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                                      QString::number(tileSize.height()));
                 }
 
-                const QPoint tileTopLeft = tile->imageSourceRect().topLeft();
+                const QPoint tileTopLeft = tile->imageRect().topLeft();
                 if(!tileTopLeft.isNull()) {
                     w.writeAttribute(QStringLiteral("top"),
                                      QString::number(tileTopLeft.y()));

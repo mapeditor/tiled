@@ -644,7 +644,7 @@ ImageReference MapReaderPrivate::readImage()
     image.source = toUrl(source, mPath);
     image.format = atts.value(QLatin1String("format")).toLatin1();
     image.topLeft = QPoint(atts.value(QLatin1String("top")).toInt(),
-                       atts.value(QLatin1String("left")).toInt());
+                           atts.value(QLatin1String("left")).toInt());
     image.size = QSize(atts.value(QLatin1String("width")).toInt(),
                        atts.value(QLatin1String("height")).toInt());
 

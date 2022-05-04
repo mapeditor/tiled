@@ -40,7 +40,7 @@ QPixmap ImageReference::create() const
     else if (!data.isEmpty())
         pixmap = QPixmap::fromImage(QImage::fromData(data, format));
 
-    return pixmap.copy(this->topLeft.x(), this->topLeft.y(), this->size.width(), this->size.height());
+    return pixmap.copy(QRect(topLeft, size));
 }
 
 } // namespace Tiled

@@ -475,7 +475,7 @@ Tile *Tileset::addTile(const QPixmap &image, const QUrl &source, const QRect &re
     Tile *newTile = new Tile(takeNextTileId(), this);
     newTile->setImage(image);
     newTile->setImageSource(source);
-    newTile->setImageSourceRect(rect);
+    newTile->setImageRect(rect);
 
     mTilesById.insert(newTile->id(), newTile);
     mTiles.append(newTile);
@@ -559,7 +559,7 @@ bool Tileset::anyTileOutOfOrder() const
 }
 
 /**
- * Sets the \a image to be used for the tile with the given \a id.
+ * Sets the \a image to be used for the given \a tile.
  *
  * This function makes sure the tile width and tile height properties of the
  * tileset reflect the maximum size. It is only expected to be used for
@@ -578,7 +578,7 @@ void Tileset::setTileImage(Tile *tile,
 
     tile->setImage(image);
     tile->setImageSource(source);
-    tile->setImageSourceRect(rect);
+    tile->setImageRect(rect);
 
     if (previousImageSize != newImageSize) {
         // Update our max. tile size

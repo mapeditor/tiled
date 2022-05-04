@@ -36,7 +36,7 @@ ChangeTileImageSource::ChangeTileImageSource(TilesetDocument *tilesetDocument,
     , mTile(tile)
     , mOldImageSource(tile->imageSource())
     , mNewImageSource(imageSource)
-    , mOldImageRect(tile->imageSourceRect())
+    , mOldImageRect(tile->imageRect())
     , mNewImageRect(imageRect)
 {
     setText(QCoreApplication::translate("Undo Commands",

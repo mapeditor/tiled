@@ -142,7 +142,7 @@ inline QString EditableTile::imageFileName() const
 
 inline QRect EditableTile::imageRect() const
 {
-    return tile()->imageSourceRect();
+    return tile()->imageRect();
 }
 
 inline qreal EditableTile::probability() const
