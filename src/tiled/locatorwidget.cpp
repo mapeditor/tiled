@@ -368,14 +368,6 @@ void LocatorWidget::setVisible(bool visible)
 
 void LocatorWidget::setFilterText(const QString &text)
 {
-    // TODO: Only consider previously selected when user explicitly selected it
-    // (rather than leaving at default selected first entry)
-    QString previousSelected;
-
-    const QModelIndex currentIndex = mResultsView->currentIndex();
-    if (currentIndex.isValid())
-        previousSelected = mListModel->data(currentIndex).toString();
-
     const QString normalized = QDir::fromNativeSeparators(text);
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     const QStringList words = normalized.split(QLatin1Char(' '), QString::SkipEmptyParts);
@@ -402,19 +394,8 @@ void LocatorWidget::setFilterText(const QString &text)
     mResultsView->updateMaximumHeight();
 
     // Restore or introduce selection
-    if (!matches.isEmpty()) {
-        int row = 0;
-
-        if (!previousSelected.isEmpty()) {
-            auto it = std::find_if(matches.cbegin(), matches.cend(), [&] (const ProjectModel::Match &match) {
-                return match.relativePath() == previousSelected;
-            });
-            if (it != matches.cend())
-                row = std::distance(matches.cbegin(), it);
-        }
-
-        mResultsView->setCurrentIndex(mListModel->index(row));
-    }
+    if (!matches.isEmpty())
+        mResultsView->setCurrentIndex(mListModel->index(0));
 
     layout()->activate();
     resize(sizeHint());
