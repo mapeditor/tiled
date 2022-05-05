@@ -61,8 +61,8 @@ public:
         Q_ASSERT(mObjects.size() == mValues.size());
     }
 
-    void undo() final { setValues(std::exchange(mValues, getValues())); }
-    void redo() final { setValues(std::exchange(mValues, getValues())); }
+    void undo() override { setValues(std::exchange(mValues, getValues())); }
+    void redo() override { setValues(std::exchange(mValues, getValues())); }
 
     bool mergeWith(const QUndoCommand *other) final
     {

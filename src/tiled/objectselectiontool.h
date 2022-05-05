@@ -113,7 +113,7 @@ private:
     void startRotating(const QPointF &pos);
     void updateRotatingItems(const QPointF &pos,
                              Qt::KeyboardModifiers modifiers);
-    void finishRotating(const QPointF &pos);
+    void finishRotating();
 
     void startResizing();
     void updateResizingItems(const QPointF &pos,

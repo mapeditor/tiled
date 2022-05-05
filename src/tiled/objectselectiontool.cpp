@@ -37,12 +37,12 @@
 #include "preferences.h"
 #include "raiselowerhelper.h"
 #include "resizemapobject.h"
-#include "rotatemapobject.h"
 #include "selectionrectangle.h"
 #include "snaphelper.h"
 #include "tile.h"
 #include "tileset.h"
 #include "toolmanager.h"
+#include "transformmapobjects.h"
 #include "utils.h"
 
 #include <QActionGroup>
@@ -711,7 +711,7 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         finishMovingOrigin();
         break;
     case Rotating:
-        finishRotating(event->scenePos());
+        finishRotating();
         break;
     case Resizing:
         finishResizing(event->scenePos());
@@ -1325,6 +1325,9 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
     if (modifiers & Qt::ControlModifier)
         angleDiff = std::floor((angleDiff + snap / 2) / snap) * snap;
 
+    QVector<TransformState> states;
+    states.reserve(mMovingObjects.size());
+
     for (const MovingObject &object : qAsConst(mMovingObjects)) {
         MapObject *mapObject = object.mapObject;
         const QPointF offset = mapScene()->absolutePositionForLayer(*mapObject->objectGroup());
@@ -1335,42 +1338,29 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         const QPointF newRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
                                 oldRelPos.x() * sn + oldRelPos.y() * cs);
         const QPointF newPixelPos = mOriginPos + newRelPos - offset;
-        const QPointF newPos = renderer->screenToPixelCoords(newPixelPos);
 
-        const qreal newRotation = normalizeRotation(object.oldRotation + angleDiff * 180 / M_PI);
+        states.append(TransformState(mapObject));
+        auto &state = states.last();
 
-        mapObject->setPosition(newPos);
+        state.setPosition(renderer->screenToPixelCoords(newPixelPos));
         if (mapObject->canRotate())
-            mapObject->setRotation(newRotation);
+            state.setRotation(normalizeRotation(object.oldRotation + angleDiff * 180 / M_PI));
     }
 
-    emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::ChangedProperties {
-                                                          MapObject::PositionProperty,
-                                                          MapObject::RotationProperty
-                                                      }));
+    auto command = new TransformMapObjects(mapDocument(), changingObjects(), states);
+    command->setText(tr("Rotate %n Object(s)", "", mMovingObjects.size()));
+
+    mapDocument()->undoStack()->push(command);
 }
 
-void ObjectSelectionTool::finishRotating(const QPointF &pos)
+void ObjectSelectionTool::finishRotating()
 {
     Q_ASSERT(mAction == Rotating);
+
     mAction = NoAction;
-    updateHandles();
-
-    if (mStart == pos) // No rotation at all
-        return;
-
-    QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(tr("Rotate %n Object(s)", "", mMovingObjects.size()));
-
-    for (const MovingObject &object : qAsConst(mMovingObjects)) {
-        MapObject *mapObject = object.mapObject;
-        undoStack->push(new MoveMapObject(mapDocument(), mapObject, object.oldPosition));
-        undoStack->push(new RotateMapObject(mapDocument(), mapObject, object.oldRotation));
-    }
-
-    undoStack->endMacro();
-
     mMovingObjects.clear();
+
+    updateHandles();
 }
 
 

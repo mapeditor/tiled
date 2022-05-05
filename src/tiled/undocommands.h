@@ -39,6 +39,7 @@ enum UndoCommands {
     Cmd_ChangeLayerTintColor,
     Cmd_ChangeLayerVisible,
     Cmd_ChangeMapObject,
+    Cmd_ChangeMapObjectTransform,
     Cmd_ChangeSelectedArea,
     Cmd_ChangeTileProbability,
     Cmd_ChangeTileType,

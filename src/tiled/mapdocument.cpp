@@ -54,11 +54,11 @@
 #include "reparentlayers.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
-#include "rotatemapobject.h"
 #include "templatemanager.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
+#include "transformmapobjects.h"
 
 #include <QFileInfo>
 #include <QRect>
@@ -446,12 +446,11 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
     if (mSelectedObjects.isEmpty())
         return;
 
-    undoStack()->beginMacro(tr("Rotate %n Object(s)", "",
-                               mSelectedObjects.size()));
+    QVector<TransformState> states;
+    states.reserve(mSelectedObjects.size());
 
     // TODO: Rotate them properly as a group
-    const auto &selectedObjects = mSelectedObjects;
-    for (MapObject *mapObject : selectedObjects) {
+    for (MapObject *mapObject : qAsConst(mSelectedObjects)) {
         const qreal oldRotation = mapObject->rotation();
         qreal newRotation = oldRotation;
 
@@ -465,10 +464,13 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
                 newRotation -= 360;
         }
 
-        undoStack()->push(new RotateMapObject(this, mapObject,
-                                              newRotation, oldRotation));
+        states.append(TransformState(mapObject));
+        auto &state = states.last();
+        state.setRotation(newRotation);
     }
-    undoStack()->endMacro();
+
+    auto command = new TransformMapObjects(this, mSelectedObjects, states);
+    command->setText(tr("Rotate %n Object(s)", "", mSelectedObjects.size()));
 }
 
 /**
