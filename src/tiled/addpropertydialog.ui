@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>298</width>
-    <height>87</height>
+    <width>320</width>
+    <height>134</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Add Property</string>
@@ -18,19 +24,29 @@
     <enum>QLayout::SetMinAndMaxSize</enum>
    </property>
    <item row="0" column="0">
-    <widget class="QLineEdit" name="name">
-     <property name="readOnly">
-      <bool>false</bool>
+    <widget class="QComboBox" name="typeBox"/>
+   </item>
+   <item row="0" column="1">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>214</width>
+       <height>18</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QLineEdit" name="name">
      <property name="placeholderText">
       <string>Property name</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="typeBox"/>
-   </item>
-   <item row="1" column="0" colspan="2">
+   <item row="2" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="locale">
       <locale language="English" country="UnitedStates"/>
@@ -46,6 +62,7 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>typeBox</tabstop>
   <tabstop>name</tabstop>
  </tabstops>
  <resources/>
