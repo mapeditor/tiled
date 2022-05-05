@@ -74,6 +74,11 @@ QString ScriptModule::version() const
     return QCoreApplication::applicationVersion();
 }
 
+QString ScriptModule::qtVersion() const
+{
+    return QString::fromLatin1(qVersion());
+}
+
 QString ScriptModule::platform() const
 {
 #if defined(Q_OS_WIN)

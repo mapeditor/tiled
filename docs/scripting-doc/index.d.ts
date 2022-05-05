@@ -2875,6 +2875,11 @@ declare namespace tiled {
   export const version: string;
 
   /**
+   * The version of Qt which Tiled is running against.
+   */
+  export const qtVersion: string;
+
+  /**
    * Operating system. One of `windows`, `macos`, `linux` or
    * `unix` (for any other UNIX-like system).
    */
