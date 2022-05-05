@@ -7,6 +7,7 @@
 * Improved Add Property dialog layout in case of long type names (#3302)
 * Fixed snapping when dragging templates into a map (#3326)
 * Fixed map selection rectangle in world for infinite maps (#3340)
+* Fixed several small issues in the image color picker (#3348)
 * Fixed missing name for undo commands that add/remove maps from world
 * Fixed hover indicator sometimes overlapping selection indicator
 * Fixed removal of terrain info when removing tiles from a collection
