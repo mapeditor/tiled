@@ -9,6 +9,7 @@
 * Fixed map selection rectangle in world for infinite maps (#3340)
 * Fixed several small issues in the image color picker (#3348)
 * Fixed missing name for undo commands that add/remove maps from world
+* Fixed selection issues for tile objects with a non-zero tile offset
 * Fixed hover indicator sometimes overlapping selection indicator
 * Fixed removal of terrain info when removing tiles from a collection
 * Scripting: Fixed region.rects when compiled against Qt 5.9 to 5.13
