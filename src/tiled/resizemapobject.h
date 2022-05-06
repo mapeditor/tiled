@@ -34,12 +34,7 @@ class ResizeMapObject : public QUndoCommand
 public:
     ResizeMapObject(Document *document,
                     MapObject *mapObject,
-                    const QSizeF &oldSize);
-
-    ResizeMapObject(Document *document,
-                    MapObject *mapObject,
-                    const QSizeF &newSize,
-                    const QSizeF &oldSize);
+                    const QSizeF &newSize);
 
     void undo() override;
     void redo() override;
@@ -47,9 +42,9 @@ public:
 private:
     Document *mDocument;
     MapObject *mMapObject;
-    QSizeF mOldSize;
-    QSizeF mNewSize;
-    bool mOldChangeState;
+    const QSizeF mOldSize;
+    const QSizeF mNewSize;
+    const bool mOldChangeState;
 };
 
 } // namespace Tiled

@@ -34,13 +34,7 @@ class MoveMapObject : public QUndoCommand
 public:
     MoveMapObject(Document *document,
                   MapObject *mapObject,
-                  const QPointF &oldPos,
-                  QUndoCommand *parent = nullptr);
-
-    MoveMapObject(Document *document,
-                  MapObject *mapObject,
                   const QPointF &newPos,
-                  const QPointF &oldPos,
                   QUndoCommand *parent = nullptr);
 
     void undo() override;
@@ -49,8 +43,8 @@ public:
 private:
     Document *mDocument;
     MapObject *mMapObject;
-    QPointF mOldPos;
-    QPointF mNewPos;
+    const QPointF mOldPos;
+    const QPointF mNewPos;
 };
 
 } // namespace Tiled

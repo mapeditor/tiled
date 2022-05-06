@@ -353,10 +353,9 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
                 if (removeObjects && !visibleIn(visibleArea, o, *renderer())) {
                     // Remove objects that will fall outside of the map
                     objectsToRemove.append(o);
-                } else {
-                    QPointF oldPos = o->position();
-                    QPointF newPos = oldPos + pixelOffset;
-                    new MoveMapObject(this, o, newPos, oldPos, command);
+                } else if (!pixelOffset.isNull()) {
+                    const QPointF newPos = o->position() + pixelOffset;
+                    new MoveMapObject(this, o, newPos, command);
                 }
             }
             break;

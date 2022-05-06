@@ -365,8 +365,7 @@ void AbstractObjectTool::resetTileSize()
 
         commands << new ResizeMapObject(mapDocument(),
                                         mapObject,
-                                        mapObject->cell().tile()->size(),
-                                        mapObject->size());
+                                        mapObject->cell().tile()->size());
     }
 
     if (!commands.isEmpty()) {

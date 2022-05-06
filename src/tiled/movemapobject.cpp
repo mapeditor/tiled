@@ -30,25 +30,12 @@ using namespace Tiled;
 
 MoveMapObject::MoveMapObject(Document *document,
                              MapObject *mapObject,
-                             const QPointF &oldPos,
-                             QUndoCommand *parent)
-    : MoveMapObject(document,
-                    mapObject,
-                    mapObject->position(),
-                    oldPos,
-                    parent)
-{
-}
-
-MoveMapObject::MoveMapObject(Document *document,
-                             MapObject *mapObject,
                              const QPointF &newPos,
-                             const QPointF &oldPos,
                              QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
     , mMapObject(mapObject)
-    , mOldPos(oldPos)
+    , mOldPos(mapObject->position())
     , mNewPos(newPos)
 {
     setText(QCoreApplication::translate("Undo Commands", "Move Object"));

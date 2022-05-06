@@ -30,21 +30,10 @@ using namespace Tiled;
 
 ResizeMapObject::ResizeMapObject(Document *document,
                                  MapObject *mapObject,
-                                 const QSizeF &oldSize)
-    : ResizeMapObject(document,
-                      mapObject,
-                      mapObject->size(),
-                      oldSize)
-{
-}
-
-ResizeMapObject::ResizeMapObject(Document *document,
-                                 MapObject *mapObject,
-                                 const QSizeF &newSize,
-                                 const QSizeF &oldSize)
+                                 const QSizeF &newSize)
     : mDocument(document)
     , mMapObject(mapObject)
-    , mOldSize(oldSize)
+    , mOldSize(mapObject->size())
     , mNewSize(newSize)
     , mOldChangeState(mapObject->propertyChanged(MapObject::SizeProperty))
 {

@@ -32,7 +32,6 @@
 #include "mapobjectmodel.h"
 #include "maprenderer.h"
 #include "mapscene.h"
-#include "movemapobject.h"
 #include "objectgroup.h"
 #include "preferences.h"
 #include "raiselowerhelper.h"
@@ -456,16 +455,16 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
             moveBy /= Preferences::instance()->gridFine();
     }
 
-    QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(tr("Move %n Object(s)", "", objects.size()));
-    int i = 0;
+    QVector<TransformState> states;
+    states.reserve(objects.size());
+
     for (MapObject *object : objects) {
-        const QPointF oldPos = object->position();
-        const QPointF newPos = oldPos + moveBy;
-        undoStack->push(new MoveMapObject(mapDocument(), object, newPos, oldPos));
-        ++i;
+        states.append(TransformState(object));
+        states.last().setPosition(object->position() + moveBy);
     }
-    undoStack->endMacro();
+
+    auto command = new TransformMapObjects(mapDocument(), objects, states);
+    mapDocument()->undoStack()->push(command);
 }
 
 void ObjectSelectionTool::mouseEntered()
