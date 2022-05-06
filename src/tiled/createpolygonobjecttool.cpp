@@ -296,7 +296,7 @@ void CreatePolygonObjectTool::applySegment()
             } else {
                 mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(),
                                                                    newObject,
-                                                                   newPolygon, newObject->polygon()));
+                                                                   newPolygon));
                 finishExtendingMapObject();
             }
 
@@ -307,7 +307,7 @@ void CreatePolygonObjectTool::applySegment()
         }
     }
 
-    QPolygonF current = newObject->polygon();
+    const QPolygonF current = newObject->polygon();
     QPolygonF next = mOverlayPolygonObject->polygon();
 
     // Ignore press when the mouse is still in the same place
@@ -329,7 +329,7 @@ void CreatePolygonObjectTool::applySegment()
     } else {
         mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(),
                                                            newObject,
-                                                           next, current));
+                                                           next));
     }
 
     // Add a new editable point to the overlay

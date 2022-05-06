@@ -202,10 +202,7 @@ void EditableMapObject::setPolygon(QJSValue polygonValue)
     }
 
     if (Document *doc = document()) {
-        asset()->push(new ChangePolygon(doc,
-                                        mapObject(),
-                                        polygon,
-                                        mapObject()->polygon()));
+        asset()->push(new ChangePolygon(doc, mapObject(), polygon));
     } else if (!checkReadOnly()) {
         mapObject()->setPolygon(polygon);
         mapObject()->setPropertyChanged(MapObject::ShapeProperty);

@@ -104,7 +104,7 @@ private:
     void startMoving(const QPointF &pos, Qt::KeyboardModifiers modifiers);
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
-    void finishMoving(const QPointF &pos);
+    void finishMoving();
 
     void startMovingOrigin(const QPointF &pos);
     void updateMovingOrigin(const QPointF &pos, Qt::KeyboardModifiers modifiers);
@@ -121,7 +121,7 @@ private:
     void updateResizingSingleItem(const QPointF &resizingOrigin,
                                   const QPointF &screenPos,
                                   Qt::KeyboardModifiers modifiers);
-    void finishResizing(const QPointF &pos);
+    void finishResizing();
 
     void setMode(Mode mode);
     void saveSelectionState();
@@ -131,8 +131,7 @@ private:
         Deactivated
     };
 
-    void abortCurrentAction(AbortReason reason = UserInteraction,
-                            const QList<MapObject *> &removedObjects = QList<MapObject*>());
+    void abortCurrentAction(AbortReason reason = UserInteraction);
 
     void refreshCursor();
 

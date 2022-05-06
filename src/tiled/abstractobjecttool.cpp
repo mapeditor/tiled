@@ -401,7 +401,7 @@ void AbstractObjectTool::convertRectanglesToPolygons()
 
         commands << new ChangePolygon(mapDocument(),
                                       mapObject,
-                                      polygon, mapObject->polygon());
+                                      polygon);
     }
 
     if (!commands.isEmpty()) {

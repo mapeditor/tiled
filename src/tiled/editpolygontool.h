@@ -70,7 +70,6 @@ protected:
 
 private:
     void updateHandles();
-    void objectsAboutToBeRemoved(const QList<MapObject *> &objects);
 
     void joinNodes();
     void splitSegments();
@@ -92,9 +91,9 @@ private:
     void startMoving(const QPointF &pos);
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
-    void finishMoving(const QPointF &pos);
+    void finishMoving();
 
-    void abortCurrentAction(const QList<MapObject *> &objects = QList<MapObject*>());
+    void abortCurrentAction();
 
     void showHandleContextMenu(QPoint screenPos);
 

@@ -33,16 +33,19 @@ struct TransformState
     explicit TransformState(const MapObject *mapObject)
         : mPosition(mapObject->position())
         , mSize(mapObject->size())
+        , mPolygon(mapObject->polygon())
         , mRotation(mapObject->rotation())
         , mChangedProperties(mapObject->changedProperties())
     {}
 
     bool operator==(const TransformState &o) const
     {
+        // not comparing mChangedProperties or mPropertiesChangedNow, because
+        // they are not a relevant state difference in themselves.
         return mPosition == o.mPosition &&
                mSize == o.mSize &&
-               mRotation == o.mRotation &&
-               mChangedProperties == o.mChangedProperties;
+               mPolygon == o.mPolygon &&
+               mRotation == o.mRotation;
     }
 
 public:
@@ -52,16 +55,22 @@ public:
     QSizeF size() const;
     void setSize(QSizeF size);
 
+    const QPolygonF &polygon() const;
+    void setPolygon(const QPolygonF &polygon);
+
     qreal rotation() const;
     void setRotation(qreal rotation);
 
     MapObject::ChangedProperties changedProperties() const;
+    MapObject::ChangedProperties propertiesChangedNow() const;
 
 private:
     QPointF mPosition;
     QSizeF mSize;
+    QPolygonF mPolygon;
     qreal mRotation;
     MapObject::ChangedProperties mChangedProperties;
+    MapObject::ChangedProperties mPropertiesChangedNow;
 };
 
 inline QPointF TransformState::position() const
@@ -74,6 +83,11 @@ inline QSizeF TransformState::size() const
     return mSize;
 }
 
+inline const QPolygonF &TransformState::polygon() const
+{
+    return mPolygon;
+}
+
 inline qreal TransformState::rotation() const
 {
     return mRotation;
@@ -84,6 +98,11 @@ inline MapObject::ChangedProperties TransformState::changedProperties() const
     return mChangedProperties;
 }
 
+inline MapObject::ChangedProperties TransformState::propertiesChangedNow() const
+{
+    return mPropertiesChangedNow;
+}
+
 
 class TransformMapObjects : public ChangeValue<MapObject, TransformState>
 {
@@ -92,14 +111,25 @@ public:
                         QList<MapObject *> mapObjects,
                         const QVector<TransformState> &states);
 
+    bool hasAnyChanges() const;
+
     int id() const override { return Cmd_ChangeMapObjectTransform; }
 
     void undo() override;
     void redo() override;
 
+    bool mergeWith(const QUndoCommand *other) final;
+
 private:
     TransformState getValue(const MapObject *mapObject) const override;
     void setValue(MapObject *mapObject, const TransformState &value) const override;
+
+    MapObject::ChangedProperties mChangedProperties;
 };
+
+inline bool TransformMapObjects::hasAnyChanges() const
+{
+    return mChangedProperties;
+}
 
 } // namespace Tiled

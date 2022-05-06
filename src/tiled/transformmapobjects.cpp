@@ -27,17 +27,12 @@
 
 using namespace Tiled;
 
-static constexpr MapObject::ChangedProperties transformProperties {
-    MapObject::PositionProperty,
-    MapObject::SizeProperty,
-    MapObject::RotationProperty,
-};
-
 void TransformState::setPosition(QPointF position)
 {
     if (mPosition != position) {
         mPosition = position;
         mChangedProperties |= MapObject::PositionProperty;
+        mPropertiesChangedNow |= MapObject::PositionProperty;
     }
 }
 
@@ -46,6 +41,16 @@ void TransformState::setSize(QSizeF size)
     if (mSize != size) {
         mSize = size;
         mChangedProperties |= MapObject::SizeProperty;
+        mPropertiesChangedNow |= MapObject::SizeProperty;
+    }
+}
+
+void TransformState::setPolygon(const QPolygonF &polygon)
+{
+    if (mPolygon != polygon) {
+        mPolygon = polygon;
+        mChangedProperties |= MapObject::ShapeProperty;
+        mPropertiesChangedNow |= MapObject::ShapeProperty;
     }
 }
 
@@ -54,6 +59,7 @@ void TransformState::setRotation(qreal rotation)
     if (mRotation != rotation) {
         mRotation = rotation;
         mChangedProperties |= MapObject::RotationProperty;
+        mPropertiesChangedNow |= MapObject::RotationProperty;
     }
 }
 
@@ -64,19 +70,39 @@ TransformMapObjects::TransformMapObjects(Document *document,
                                              std::move(mapObjects),
                                              states)
 {
-    setText(QCoreApplication::translate("Undo Commands", "Transform Object"));
+    for (const TransformState &state : states)
+        mChangedProperties |= state.propertiesChangedNow();
+
+    if (mChangedProperties & MapObject::RotationProperty)
+        setText(QCoreApplication::translate("Tiled::ObjectSelectionTool", "Rotate %n Object(s)", nullptr, states.size()));
+    else if (mChangedProperties & (MapObject::SizeProperty | MapObject::ShapeProperty))
+        setText(QCoreApplication::translate("Tiled::ObjectSelectionTool", "Resize %n Object(s)", nullptr, states.size()));
+    else if (mChangedProperties & MapObject::PositionProperty)
+        setText(QCoreApplication::translate("Tiled::ObjectSelectionTool", "Move %n Object(s)", nullptr, states.size()));
+    else
+        setText(QCoreApplication::translate("Undo Commands", "Transform %n Object(s)", nullptr, states.size()));
 }
 
 void TransformMapObjects::undo()
 {
     ChangeValue<MapObject, TransformState>::undo();
-    emit document()->changed(MapObjectsChangeEvent(objects(), transformProperties));
+    emit document()->changed(MapObjectsChangeEvent(objects(), mChangedProperties));
 }
 
 void TransformMapObjects::redo()
 {
-    ChangeValue<MapObject, TransformState>::undo();
-    emit document()->changed(MapObjectsChangeEvent(objects(), transformProperties));
+    ChangeValue<MapObject, TransformState>::redo();
+    emit document()->changed(MapObjectsChangeEvent(objects(), mChangedProperties));
+}
+
+bool TransformMapObjects::mergeWith(const QUndoCommand *other)
+{
+    // Don't merge when the other command affects different properties
+    auto o = static_cast<const TransformMapObjects*>(other);
+    if (mChangedProperties != o->mChangedProperties)
+        return false;
+
+    return ChangeValue<MapObject, TransformState>::mergeWith(other);
 }
 
 TransformState TransformMapObjects::getValue(const MapObject *mapObject) const
@@ -88,6 +114,7 @@ void TransformMapObjects::setValue(MapObject *mapObject, const TransformState &v
 {
     mapObject->setPosition(value.position());
     mapObject->setSize(value.size());
+    mapObject->setPolygon(value.polygon());
     mapObject->setRotation(value.rotation());
     mapObject->setChangedProperties(value.changedProperties());
 }
