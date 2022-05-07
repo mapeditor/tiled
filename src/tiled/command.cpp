@@ -101,6 +101,11 @@ static QString replaceVariables(const QString &string, bool quoteValues = true)
             finalString.replace(QLatin1String("%objectid"),
                                 replaceString.arg(currentObject->id()));
         }
+
+        if(World *world = (World*)WorldManager::instance().worldForMap(fileName))
+        {
+            finalString.replace(QLatin1String("%worldfile"), replaceString.arg(world->fileName));
+        }
     }
 
     return finalString;
