@@ -2492,12 +2492,23 @@ declare class Tileset extends Asset {
   /**
    * The number of tiles in this tileset.
    */
-  tileCount : number
+  readonly tileCount : number
+
+  /**
+   * The number of tile columns in this tileset.
+   *
+   * Can be changed in case of image-collection tilesets, in which case it
+   * determines the number of columns used in the tileset view when dynamic
+   * wrapping is disabled.
+   *
+   * @since 1.9
+   */
+  columnCount : number
 
   /**
    * The ID of the next tile that would be added to this tileset. All existing tiles have IDs that are lower than this ID.
    */
-  nextTileId : number
+  readonly nextTileId : number
 
   /**
    * Tile width for tiles in this tileset in pixels.
@@ -2700,7 +2711,37 @@ interface TilesetEditor {
   /**
    * Access the collision editor within the tileset editor.
    */
-  collisionEditor : TileCollisionEditor
+  readonly collisionEditor : TileCollisionEditor
+
+  /**
+   * Gets the currently selected {@link WangSet} in the "Terrain Sets" view.
+   *
+   * @since 1.9
+   */
+  readonly currentWangSet: WangSet
+
+  /**
+   * The signal emitted when {@link currentWangSet} changes.
+   *
+   * @since 1.9
+   */
+  readonly currentWangSetChanged: Signal<null>;
+
+  /**
+   * Gets the currently selected Wang color index in the "Terrain Sets" view.
+   * The value 0 is used to represent the eraser mode, and the first Wang color
+   * has index 1.
+   *
+   * @since 1.9
+   */
+  readonly currentWangColorIndex: number
+
+  /**
+   * The signal emitted when {@link currentWangColorIndex} changes.
+   *
+   * @since 1.9
+   */
+  readonly currentWangColorIndexChanged: Signal<number>;
 }
 
 /**

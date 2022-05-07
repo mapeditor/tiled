@@ -41,6 +41,8 @@
 
 using namespace Tiled;
 
+Preference<bool> MapObjectItem::preciseTileObjectSelection { "Interface/PreciseTileObjectSelection", true };
+
 MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
                              QGraphicsItem *parent):
     QGraphicsItem(parent),
@@ -82,12 +84,11 @@ void MapObjectItem::syncWithMapObject()
     setRotation(mObject->rotation());
 
     if (ObjectGroup *objectGroup = mObject->objectGroup()) {
-        if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
-            setZValue(pixelPos.y());
-
         if (mIsHoveredIndicator) {
             auto totalOffset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*objectGroup);
             setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
+        } else if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder) {
+            setZValue(pixelPos.y());
         }
     }
 
@@ -124,6 +125,9 @@ QRectF MapObjectItem::boundingRect() const
 
 QPainterPath MapObjectItem::shape() const
 {
+    if (mObject->isTileObject() && preciseTileObjectSelection)
+        return mObject->tileObjectShape(mMapDocument->map());
+
     QPainterPath path = mMapDocument->renderer()->interactionShape(mObject);
     path.translate(-pos());
     return path;

@@ -1,7 +1,10 @@
 ### Unreleased
 
+* Ignore transparent pixels when selecting tile objects
 * Scripting: Added -e,--evaluate to run a script from command-line
 * Scripting: Added Tool.toolBarActions property (#3318)
+* Scripting: Added Tileset.columnCount property
+* Scripting: Added access to selected terrain in tileset editor
 * AutoMapping: Applying rules is now 10-30x faster
 * AutoMapping: Explicit "regions" layers are no longer needed and have been deprecated (#1918)
 * AutoMapping: Custom tiles can now match "Empty", "Non-Empty" and "Other" tiles through a "MatchType" property (#3100)
@@ -12,6 +15,7 @@
 * AutoMapping: Accumulate touched layers in AutoMap While Drawing (#3313)
 * AutoMapping: Support map name filters in rules.txt (#3014)
 * Split up object types file type selection
+* tmxrasterizer: Added options to hide certain layer types (#3343)
 * Raised minimum supported Qt version from 5.6 to 5.12 (drops Windows XP support)
 * Raised minimum C++ version to C++17
 * Removed qmake project files (only Qbs supported now)
@@ -19,7 +23,14 @@
 ### Unreleased 1.8 patch
 
 * Made expanded group layers persistent
+* Improved snapping behavior for scalable objects on staggered maps
+* Allow setting a shortcut on the 'Edit Tileset' action
+* Fixed snapping when dragging templates into a map (#3326)
+* Fixed map selection rectangle in world for infinite maps (#3340)
+* Fixed missing name for undo commands that add/remove maps from world
+* Fixed hover indicator sometimes overlapping selection indicator
 * Scripting: Fixed region.rects when compiled against Qt 5.9 to 5.13
+* AppImage: Updated to Sentry 0.4.17
 
 ### Tiled 1.8.4 (31 March 2022)
 

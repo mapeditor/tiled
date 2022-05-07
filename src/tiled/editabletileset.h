@@ -39,6 +39,7 @@ class EditableTileset : public EditableAsset
     Q_PROPERTY(QList<QObject*> tiles READ tiles)
     Q_PROPERTY(QList<QObject*> wangSets READ wangSets)
     Q_PROPERTY(int tileCount READ tileCount)
+    Q_PROPERTY(int columnCount READ columnCount WRITE setColumnCount)
     Q_PROPERTY(int nextTileId READ nextTileId)
     Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth)
     Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight)
@@ -91,6 +92,7 @@ public:
     const QString &name() const;
     QString image() const;
     int tileCount() const;
+    int columnCount() const;
     int nextTileId() const;
     int tileWidth() const;
     int tileHeight() const;
@@ -135,6 +137,7 @@ public slots:
     void setTileHeight(int height);
     void setTileSize(QSize size);
     void setTileSize(int width, int height);
+    void setColumnCount(int columnCount);
     void setObjectAlignment(Alignment objectAlignment);
     void setTileOffset(QPoint tileOffset);
     void setOrientation(Orientation orientation);
@@ -176,6 +179,11 @@ inline QString EditableTileset::image() const
 inline int EditableTileset::tileCount() const
 {
     return tileset()->tileCount();
+}
+
+inline int EditableTileset::columnCount() const
+{
+    return tileset()->columnCount();
 }
 
 inline int EditableTileset::nextTileId() const

@@ -267,6 +267,19 @@ void EditableTileset::setTileSize(QSize size)
     }
 }
 
+void EditableTileset::setColumnCount(int columnCount)
+{
+    if (!isCollection()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Can't set column count for image-based tilesets"));
+        return;
+    }
+
+    if (auto doc = tilesetDocument())
+        push(new ChangeTilesetColumnCount(doc, columnCount));
+    else if (!checkReadOnly())
+        tileset()->setColumnCount(columnCount);
+}
+
 void EditableTileset::setObjectAlignment(Alignment alignment)
 {
     if (auto doc = tilesetDocument())

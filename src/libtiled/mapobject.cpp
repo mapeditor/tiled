@@ -208,6 +208,39 @@ QRectF MapObject::screenBounds(const MapRenderer &renderer) const
     return QRectF();
 }
 
+QPainterPath MapObject::tileObjectShape(const Map *map) const
+{
+    const Tile *tile = mCell.tile();
+    const QSize tileSize = tile ? tile->size() : QSize(0, 0);
+
+    if (!tile || tileSize.isEmpty()) {
+        QPainterPath path;
+        path.addRect(QRectF(-alignmentOffset(mSize, alignment(map)), mSize));
+        return path;
+    }
+
+    QTransform transform;
+
+    const QPointF offset = -alignmentOffset(mSize, alignment(map));
+    transform.translate(offset.x(), offset.y());
+    transform.scale(mSize.width() / tileSize.width(),
+                    mSize.height() / tileSize.height());
+
+    const QPointF tileOffset = tile->offset();
+    transform.translate(tileOffset.x(), tileOffset.y());
+
+    if (mCell.flippedHorizontally() || mCell.flippedVertically()) {
+        transform.translate(tileSize.width() / 2, tileSize.height() / 2);
+        transform.scale(mCell.flippedHorizontally() ? -1 : 1,
+                        mCell.flippedVertically() ? -1 : 1);
+        transform.translate(-tileSize.width() / 2, -tileSize.height() / 2);
+    }
+
+    // It might make sense to cache the transformed shape, but this is
+    // non-trivial due to the many factors affecting it.
+    return transform.map(tile->imageShape());
+}
+
 Map *MapObject::map() const
 {
     return mObjectGroup ? mObjectGroup->map() : nullptr;

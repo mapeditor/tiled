@@ -172,6 +172,7 @@ public:
     QRectF bounds() const;
     QRectF boundsUseTile() const;
     QRectF screenBounds(const MapRenderer &renderer) const;
+    QPainterPath tileObjectShape(const Map *map = nullptr) const;
 
     const Cell &cell() const;
     void setCell(const Cell &cell);

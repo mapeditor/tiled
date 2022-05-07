@@ -31,6 +31,8 @@
 #include "objectgroup.h"
 #include "tileset.h"
 
+#include <QBitmap>
+
 using namespace Tiled;
 
 Tile::Tile(int id, Tileset *tileset):
@@ -64,6 +66,26 @@ Tile::~Tile()
 QSharedPointer<Tileset> Tile::sharedTileset() const
 {
     return mTileset->sharedFromThis();
+}
+
+// Using some internal Qt API here, but this is the function that is also used
+// by QGraphicsPixmapItem, so my assumption is that it is better suited for
+// this task than using QPainterPath::addRegion.
+extern QPainterPath qt_regionToPath(const QRegion &region);
+
+const QPainterPath &Tile::imageShape() const
+{
+    if (!mImageShape.has_value()) {
+#if 1
+        const QBitmap mask = mImage.mask();
+        mImageShape = mask.isNull() ? QPainterPath() : qt_regionToPath(mask);
+#else
+        // Public Qt API alternative, which generally produces more
+        // heavy-weight paths since it just uses rectangles.
+        mImageShape.emplace().addRegion(mImage.mask());
+#endif
+    }
+    return *mImageShape;
 }
 
 /**

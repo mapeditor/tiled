@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "preferences.h"
+
 #include <QCoreApplication>
 #include <QGraphicsItem>
 
@@ -77,6 +79,8 @@ public:
      * Sets a new polygon on the associated object.
      */
     void setPolygon(const QPolygonF &polygon);
+
+    static Preference<bool> preciseTileObjectSelection;
 
 private:
     void expandBoundsToCoverTileCollisionObjects(QRectF &bounds);
