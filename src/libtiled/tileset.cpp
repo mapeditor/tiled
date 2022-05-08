@@ -573,8 +573,8 @@ void Tileset::setTileImage(Tile *tile,
     Q_ASSERT(isCollection());
     Q_ASSERT(mTilesById.value(tile->id()) == tile);
 
-    const QSize previousImageSize = tile->image().size();
-    const QSize newImageSize = image.size();
+    const QSize previousImageSize = tile->imageRect().isNull() ? tile->image().size() : tile->imageRect().size();
+    const QSize newImageSize = rect.isNull() ? image.size() : rect.size();
 
     tile->setImage(image);
     tile->setImageSource(source);

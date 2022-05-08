@@ -423,6 +423,18 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             if (!tile->properties().isEmpty())
                 writeProperties(w, tile->properties());
             if (imageSource.isEmpty()) {
+                const QRect imageRect = tile->imageRect();
+                if(!imageRect.isNull()) {
+                    w.writeAttribute(QStringLiteral("x"),
+                                     QString::number(imageRect.x()));
+                    w.writeAttribute(QStringLiteral("y"),
+                                     QString::number(imageRect.y()));
+                    w.writeAttribute(QStringLiteral("width"),
+                                     QString::number(imageRect.width()));
+                    w.writeAttribute(QStringLiteral("height"),
+                                     QString::number(imageRect.height()));
+                }
+
                 w.writeStartElement(QStringLiteral("image"));
 
                 const QSize tileSize = tile->size();
@@ -431,14 +443,6 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                                      QString::number(tileSize.width()));
                     w.writeAttribute(QStringLiteral("height"),
                                      QString::number(tileSize.height()));
-                }
-
-                const QPoint tileTopLeft = tile->imageRect().topLeft();
-                if(!tileTopLeft.isNull()) {
-                    w.writeAttribute(QStringLiteral("top"),
-                                     QString::number(tileTopLeft.y()));
-                    w.writeAttribute(QStringLiteral("left"),
-                                     QString::number(tileTopLeft.x()));
                 }
 
                 if (tile->imageSource().isEmpty()) {

@@ -215,7 +215,7 @@ inline int Tile::height() const
  */
 inline QSize Tile::size() const
 {
-    return mImage.size();
+    return mImageRect.isNull() ?  mImage.size() : mImageRect.size();
 }
 
 /**

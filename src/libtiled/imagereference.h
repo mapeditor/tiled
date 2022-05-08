@@ -35,7 +35,6 @@ public:
 
     QUrl source;
     QColor transparentColor;
-    QPoint topLeft;
     QSize size;
     QByteArray format;
     QByteArray data;

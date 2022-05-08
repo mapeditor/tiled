@@ -103,7 +103,7 @@ QVariant FrameListModel::data(const QModelIndex &index, int role) const
     case Qt::DecorationRole: {
         int tileId = mFrames.at(index.row()).tileId;
         if (Tile *tile = mTileset->findTile(tileId))
-            return tile->image();
+            return QPixmap(tile->image()).copy(tile->imageRect());
     }
     }
 
@@ -661,7 +661,7 @@ bool TileAnimationEditor::updatePreviewPixmap()
     const Frame frame = frames.at(mPreviewFrameIndex);
 
     if (Tile *tile = tileset->findTile(frame.tileId)) {
-        const QPixmap &image = tile->image();
+        QPixmap image = QPixmap(tile->image()).copy(tile->imageRect());
         const qreal scale = mUi->tilesetView->zoomable()->scale();
 
         const int w = qRound(image.width() * scale);

@@ -118,7 +118,7 @@ void TileDelegate::paint(QPainter *painter,
     const qreal zoom = mTilesetView->scale();
     const bool wrapping = mTilesetView->dynamicWrapping();
 
-    QSize tileSize = tileImage.size();
+    QSize tileSize = tile->size();
     if (tileImage.isNull()) {
         Tileset *tileset = model->tileset();
         if (tileset->isCollection()) {
@@ -153,7 +153,7 @@ void TileDelegate::paint(QPainter *painter,
             painter->setRenderHint(QPainter::SmoothPixmapTransform);
 
     if (!tileImage.isNull())
-        painter->drawPixmap(targetRect, tileImage);
+        painter->drawPixmap(targetRect, tileImage, tile->imageRect());
     else
         mTilesetView->imageMissingIcon().paint(painter, targetRect, Qt::AlignBottom | Qt::AlignLeft);
 

@@ -47,7 +47,7 @@ void ChangeTileImageSource::apply(const QUrl &imageSource, const QRect& imageRec
 {
     // todo: make sure remote source loading is triggered
     mTilesetDocument->setTileImage(mTile,
-                                   ImageCache::loadPixmap(imageSource.toLocalFile()).copy(imageRect),
+                                   ImageCache::loadPixmap(imageSource.toLocalFile()),
                                    imageSource,
                                    imageRect);
 }
