@@ -92,10 +92,17 @@ the following variables:
 
 .. raw:: html
 
-   <div class="new">New in Tiled 21.4</div>
+   <div class="new new-prev">Since Tiled 1.6</div>
 
 ``%tileid``
     a comma-separated list with the IDs of the selected tiles, if any.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.9</div>
+
+``%worldfile``
+    the full path of the world the current map is part of, if any.
 
 For the working directory field, you can additionally use the following
 variable:
