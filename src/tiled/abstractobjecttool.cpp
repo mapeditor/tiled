@@ -34,7 +34,6 @@
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "raiselowerhelper.h"
-#include "resizemapobject.h"
 #include "session.h"
 #include "templatemanager.h"
 #include "tile.h"
@@ -363,8 +362,9 @@ void AbstractObjectTool::resetTileSize()
         if (!isResizedTileObject(mapObject))
             continue;
 
-        commands << new ResizeMapObject(mapDocument(),
+        commands << new ChangeMapObject(mapDocument(),
                                         mapObject,
+                                        MapObject::SizeProperty,
                                         mapObject->cell().tile()->size());
     }
 

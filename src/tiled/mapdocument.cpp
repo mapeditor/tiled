@@ -44,7 +44,6 @@
 #include "mapobjectmodel.h"
 #include "maprenderer.h"
 #include "movelayer.h"
-#include "movemapobject.h"
 #include "movemapobjecttogroup.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
@@ -337,6 +336,7 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
     QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
 
     QList<MapObject *> objectsToRemove;
+    QList<MapObject *> objectsToMove;
 
     LayerIterator iterator(map());
     while (Layer *layer = iterator.next()) {
@@ -350,13 +350,11 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
             ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
 
             for (MapObject *o : objectGroup->objects()) {
-                if (removeObjects && !visibleIn(visibleArea, o, *renderer())) {
-                    // Remove objects that will fall outside of the map
+                // Remove objects that will fall outside of the map
+                if (removeObjects && !visibleIn(visibleArea, o, *renderer()))
                     objectsToRemove.append(o);
-                } else if (!pixelOffset.isNull()) {
-                    const QPointF newPos = o->position() + pixelOffset;
-                    new MoveMapObject(this, o, newPos, command);
-                }
+                else if (!pixelOffset.isNull())
+                    objectsToMove.append(o);
             }
             break;
         }
@@ -377,6 +375,15 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
 
     if (!objectsToRemove.isEmpty())
         new RemoveMapObjects(this, objectsToRemove, command);
+
+    if (!objectsToMove.isEmpty()) {
+        QVector<TransformState> states;
+        for (MapObject *o : qAsConst(objectsToMove)) {
+            states.append(TransformState(o));
+            states.last().setPosition(o->position() + pixelOffset);
+        }
+        new TransformMapObjects(this, objectsToMove, states, command);
+    }
 
     new ResizeMap(this, size, command);
     new ChangeSelectedArea(this, movedSelection, command);

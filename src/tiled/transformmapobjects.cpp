@@ -65,10 +65,12 @@ void TransformState::setRotation(qreal rotation)
 
 TransformMapObjects::TransformMapObjects(Document *document,
                                          QList<MapObject *> mapObjects,
-                                         const QVector<TransformState> &states)
+                                         const QVector<TransformState> &states,
+                                         QUndoCommand *parent)
     : ChangeValue<MapObject, TransformState>(document,
                                              std::move(mapObjects),
-                                             states)
+                                             states,
+                                             parent)
 {
     for (const TransformState &state : states)
         mChangedProperties |= state.propertiesChangedNow();

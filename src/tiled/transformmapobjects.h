@@ -113,7 +113,8 @@ class TransformMapObjects : public ChangeValue<MapObject, TransformState>
 public:
     TransformMapObjects(Document *document,
                         QList<MapObject *> mapObjects,
-                        const QVector<TransformState> &states);
+                        const QVector<TransformState> &states,
+                        QUndoCommand *parent = nullptr);
 
     bool hasAnyChanges() const;
 
