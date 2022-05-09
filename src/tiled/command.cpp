@@ -88,18 +88,22 @@ static QString replaceVariables(const QString &string, bool quoteValues = true)
             }
         } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
             QStringList selectedTileIds;
-            for (Tile *tile : tilesetDocument->selectedTiles())
+            for (const Tile *tile : tilesetDocument->selectedTiles())
                 selectedTileIds.append(QString::number(tile->id()));
 
             finalString.replace(QLatin1String("%tileid"),
                                 replaceString.arg(selectedTileIds.join(QLatin1Char(','))));
         }
 
-        if (MapObject *currentObject = dynamic_cast<MapObject *>(document->currentObject())) {
+        if (const MapObject *currentObject = dynamic_cast<MapObject *>(document->currentObject())) {
             finalString.replace(QLatin1String("%objecttype"),
                                 replaceString.arg(currentObject->type()));
             finalString.replace(QLatin1String("%objectid"),
                                 replaceString.arg(currentObject->id()));
+        }
+
+        if (const World *world = WorldManager::instance().worldForMap(fileName)) {
+            finalString.replace(QLatin1String("%worldfile"), replaceString.arg(world->fileName));
         }
     }
 
