@@ -92,9 +92,15 @@ private:
     void startMoving(const QPointF &pos);
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
-    void finishMoving(const QPointF &pos);
+    void finishMoving();
 
-    void abortCurrentAction(const QList<MapObject *> &objects = QList<MapObject*>());
+    enum AbortReason {
+        UserInteraction,
+        ObjectsRemoved,
+        Deactivated
+    };
+
+    void abortCurrentAction(AbortReason reason);
 
     void showHandleContextMenu(QPoint screenPos);
 

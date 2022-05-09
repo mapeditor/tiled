@@ -38,14 +38,11 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
-#include "movemapobject.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "preferences.h"
 #include "properties.h"
 #include "replacetileset.h"
-#include "resizemapobject.h"
-#include "rotatemapobject.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetchanges.h"
@@ -1092,34 +1089,34 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
         break;
     }
     case XProperty: {
-        const QPointF oldPos = mapObject->position();
-        const QPointF newPos(val.toReal(), oldPos.y());
-        command = new MoveMapObject(mDocument, mapObject, newPos, oldPos);
+        command = new ChangeMapObject(mDocument, mapObject,
+                                      MapObject::PositionProperty,
+                                      QPointF(val.toReal(), mapObject->y()));
         break;
     }
     case YProperty: {
-        const QPointF oldPos = mapObject->position();
-        const QPointF newPos(oldPos.x(), val.toReal());
-        command = new MoveMapObject(mDocument, mapObject, newPos, oldPos);
+        command = new ChangeMapObject(mDocument, mapObject,
+                                      MapObject::PositionProperty,
+                                      QPointF(mapObject->x(), val.toReal()));
         break;
     }
     case WidthProperty: {
-        const QSizeF oldSize = mapObject->size();
-        const QSizeF newSize(val.toReal(), oldSize.height());
-        command = new ResizeMapObject(mDocument, mapObject, newSize, oldSize);
+        command = new ChangeMapObject(mDocument, mapObject,
+                                      MapObject::SizeProperty,
+                                      QSizeF(val.toReal(), mapObject->height()));
         break;
     }
     case HeightProperty: {
-        const QSizeF oldSize = mapObject->size();
-        const QSizeF newSize(oldSize.width(), val.toReal());
-        command = new ResizeMapObject(mDocument, mapObject, newSize, oldSize);
+        command = new ChangeMapObject(mDocument, mapObject,
+                                      MapObject::SizeProperty,
+                                      QSizeF(mapObject->width(), val.toReal()));
         break;
     }
     case RotationProperty:
         if (mapObject->canRotate()) {
-            const qreal newRotation = val.toDouble();
-            const qreal oldRotation = mapObject->rotation();
-            command = new RotateMapObject(mDocument, mapObject, newRotation, oldRotation);
+            command = new ChangeMapObject(mDocument, mapObject,
+                                          MapObject::RotationProperty,
+                                          val.toDouble());
         }
         break;
     case FlippingProperty: {

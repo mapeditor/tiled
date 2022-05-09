@@ -40,18 +40,9 @@ class MapDocument;
 class ChangePolygon : public QUndoCommand
 {
 public:
-    /**
-     * This constructor expects the polygon to be already changed, and needs
-     * the \a oldPolygon.
-     */
     ChangePolygon(Document *document,
                   MapObject *mapObject,
-                  const QPolygonF &oldPolygon);
-
-    ChangePolygon(Document *document,
-                  MapObject *mapObject,
-                  const QPolygonF &newPolygon,
-                  const QPolygonF &oldPolygon);
+                  const QPolygonF &newPolygon);
 
     void undo() override;
     void redo() override;

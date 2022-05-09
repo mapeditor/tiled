@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "undocommands.h"
+
 #include <QList>
 #include <QVector>
 #include <QUndoCommand>
@@ -61,20 +63,34 @@ public:
         Q_ASSERT(mObjects.size() == mValues.size());
     }
 
-    void undo() final { setValues(std::exchange(mValues, getValues())); }
-    void redo() final { setValues(std::exchange(mValues, getValues())); }
-
-    bool mergeWith(const QUndoCommand *other) final
+    void undo() override
     {
-        // If the same property is changed of the same layer, the commands can
-        // be trivially merged. The value is already changed on the layer, and
-        // the old value already remembered on this undo command.
+        setValues(std::exchange(mValues, getValues()));
+        QUndoCommand::undo();   // undo child commands
+    }
+
+    void redo() override
+    {
+        QUndoCommand::redo();   // redo child commands
+        setValues(std::exchange(mValues, getValues()));
+    }
+
+    bool mergeWith(const QUndoCommand *other) override
+    {
         auto o = static_cast<const ChangeValue*>(other);
-        if (mDocument == o->mDocument && mObjects == o->mObjects) {
-            setObsolete(getValues() == mValues);
-            return true;
-        }
-        return false;
+        if (mDocument != o->mDocument || mObjects != o->mObjects)
+            return false;
+
+        // In case of child undo commands, we can only merge when all children
+        // can be cloned.
+        if (!cloneChildren(other, this))
+            return false;
+
+        // If the same property is changed on the same objects, the commands
+        // can be trivially merged. The value is already changed on the objects,
+        // and the old value already remembered on this undo command.
+        setObsolete(childCount() == 0 && getValues() == mValues);
+        return true;
     }
 
 protected:
