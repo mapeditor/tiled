@@ -1270,8 +1270,9 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, QRect rect,
     const int dwidth = dstLayer->width();
     const int dheight = dstLayer->height();
 
-    const bool wrapBorder = mOptions.wrapBorder && !context.targetMap->infinite();
-    if (!wrapBorder) {
+    const bool fixedSize = !context.targetMap->infinite();
+    const bool wrapBorder = mOptions.wrapBorder && fixedSize;
+    if (!wrapBorder && fixedSize) {
         startX = qMax(0, startX);
         startY = qMax(0, startY);
         endX = qMin(dwidth, endX);
