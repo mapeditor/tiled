@@ -1093,8 +1093,10 @@ void ObjectSelectionTool::objectsAboutToBeRemoved(const QList<MapObject *> &obje
     if (mHoveredObject && objects.contains(mHoveredObject))
         mHoveredObject = nullptr;
 
-    // This should not be allowed to happen during these actions,
-    Q_ASSERT(mAction != Moving && mAction != Rotating && mAction != Resizing);
+    // Abort move/rotate/resize to avoid crashing
+    // TODO: Would be better if this could be avoided entirely
+    if (mAction == Moving || mAction == Rotating || mAction == Resizing)
+        abortCurrentAction(ObjectsRemoved);
 }
 
 void ObjectSelectionTool::setSelectionMode(Qt::ItemSelectionMode selectionMode)
@@ -1675,32 +1677,32 @@ void ObjectSelectionTool::abortCurrentAction(AbortReason reason)
         break;
     case Moving:
     case Rotating:
-    case Resizing: {
-        // Return the origin indicator to its initial position
-        mOriginIndicator->setPos(mOriginPos);
+    case Resizing:
+        if (reason == UserInteraction) {
+            // Return the origin indicator to its initial position
+            mOriginIndicator->setPos(mOriginPos);
 
-        QVector<TransformState> states;
-        states.reserve(mMovingObjects.size());
+            QVector<TransformState> states;
+            states.reserve(mMovingObjects.size());
 
-        // Reset objects to their old transform
-        for (const MovingObject &object : qAsConst(mMovingObjects)) {
-            states.append(TransformState(object.mapObject));
-            auto &state = states.last();
+            // Reset objects to their old transform
+            for (const MovingObject &object : qAsConst(mMovingObjects)) {
+                states.append(TransformState(object.mapObject));
+                auto &state = states.last();
 
-            state.setPosition(object.oldPosition);
-            state.setSize(object.oldSize);
-            state.setPolygon(object.oldPolygon);
-            state.setRotation(object.oldRotation);
+                state.setPosition(object.oldPosition);
+                state.setSize(object.oldSize);
+                state.setPolygon(object.oldPolygon);
+                state.setRotation(object.oldRotation);
+            }
+
+            auto command = new TransformMapObjects(mapDocument(), changingObjects(), states);
+            if (command->hasAnyChanges())
+                mapDocument()->undoStack()->push(command);
+            else
+                delete command;
         }
-
-        auto command = new TransformMapObjects(mapDocument(), changingObjects(), states);
-        if (command->hasAnyChanges())
-            mapDocument()->undoStack()->push(command);
-        else
-            delete command;
-
         break;
-    }
     }
 
     mMousePressed = false;

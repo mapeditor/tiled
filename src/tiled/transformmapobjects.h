@@ -30,6 +30,10 @@ class Document;
 
 struct TransformState
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0) // required by QVector::reallocData
+    TransformState() = default;
+#endif
+
     explicit TransformState(const MapObject *mapObject)
         : mPosition(mapObject->position())
         , mSize(mapObject->size())
@@ -68,7 +72,7 @@ private:
     QPointF mPosition;
     QSizeF mSize;
     QPolygonF mPolygon;
-    qreal mRotation;
+    qreal mRotation = 0.0;
     MapObject::ChangedProperties mChangedProperties;
     MapObject::ChangedProperties mPropertiesChangedNow;
 };

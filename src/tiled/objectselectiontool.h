@@ -128,10 +128,11 @@ private:
 
     enum AbortReason {
         UserInteraction,
+        ObjectsRemoved,
         Deactivated
     };
 
-    void abortCurrentAction(AbortReason reason = UserInteraction);
+    void abortCurrentAction(AbortReason reason);
 
     void refreshCursor();
 

@@ -118,7 +118,7 @@ void EditPolygonTool::deactivate(MapScene *scene)
     disconnect(scene, &MapScene::parallaxParametersChanged,
                this, &EditPolygonTool::updateHandles);
 
-    abortCurrentAction();
+    abortCurrentAction(Deactivated);
 
     // Delete all handles
     QHashIterator<MapObject*, QList<PointHandle*> > i(mHandles);
@@ -140,7 +140,7 @@ void EditPolygonTool::keyPressed(QKeyEvent *event)
     case Qt::Key_Escape:
         if (mAction != NoAction) {
             // Abort the current action if any is being performed
-            abortCurrentAction();
+            abortCurrentAction(UserInteraction);
         } else if (!mSelectedHandles.isEmpty()) {
             // Clear the handle selection if there is one
             setSelectedHandles(QSet<PointHandle*>());
@@ -450,6 +450,21 @@ void EditPolygonTool::updateHandles()
     }
 }
 
+void EditPolygonTool::objectsAboutToBeRemoved(const QList<MapObject *> &objects)
+{
+    if (mAction == Moving) {
+        // Make sure we're not going to try to still change these objects.
+        // TODO: In addition to avoiding crashes, it would also be good to
+        // disallow other actions while moving.
+        for (MapObject *object : objects) {
+            if (mOldPolygons.contains(object)) {
+                abortCurrentAction(ObjectsRemoved);
+                break;
+            }
+        }
+    }
+}
+
 void EditPolygonTool::updateSelection(QGraphicsSceneMouseEvent *event)
 {
     QRectF rect = QRectF(mStart, event->scenePos()).normalized();
@@ -585,7 +600,7 @@ void EditPolygonTool::finishMoving()
     mOldPolygons.clear();
 }
 
-void EditPolygonTool::abortCurrentAction()
+void EditPolygonTool::abortCurrentAction(AbortReason reason)
 {
     switch (mAction) {
     case NoAction:
@@ -593,16 +608,17 @@ void EditPolygonTool::abortCurrentAction()
     case Selecting:
         mapScene()->removeItem(mSelectionRectangle.get());
         break;
-    case Moving: {
-        auto command = createChangePolygonsCommand(mapDocument(), mOldPolygons);
-        if (command->hasAnyChanges())
-            mapDocument()->undoStack()->push(command);
-        else
-            delete command;
+    case Moving:
+        if (reason == UserInteraction) {
+            auto command = createChangePolygonsCommand(mapDocument(), mOldPolygons);
+            if (command->hasAnyChanges())
+                mapDocument()->undoStack()->push(command);
+            else
+                delete command;
 
-        mOldPolygons.clear();
+            mOldPolygons.clear();
+        }
         break;
-    }
     }
 
     mAction = NoAction;
@@ -768,7 +784,7 @@ void EditPolygonTool::changeEvent(const ChangeEvent &event)
         break;
     }
     case ChangeEvent::MapObjectsAboutToBeRemoved:
-        Q_ASSERT(mAction != Moving);
+        objectsAboutToBeRemoved(static_cast<const MapObjectsEvent&>(event).mapObjects);
         break;
     default:
         break;
