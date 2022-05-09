@@ -50,7 +50,6 @@
 #include "tilesetformat.h"
 #include "tilesetmanager.h"
 #include "tilesetwangsetmodel.h"
-#include "transformmapobjects.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
@@ -1090,34 +1089,34 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
         break;
     }
     case XProperty: {
-        TransformState state(mapObject);
-        state.setPosition(QPointF(val.toReal(), state.position().y()));
-        command = new TransformMapObjects(mDocument, { mapObject }, { state });
+        command = new ChangeMapObject(mDocument, mapObject,
+                                      MapObject::PositionProperty,
+                                      QPointF(val.toReal(), mapObject->y()));
         break;
     }
     case YProperty: {
-        TransformState state(mapObject);
-        state.setPosition(QPointF(state.position().x(), val.toReal()));
-        command = new TransformMapObjects(mDocument, { mapObject }, { state });
+        command = new ChangeMapObject(mDocument, mapObject,
+                                      MapObject::PositionProperty,
+                                      QPointF(mapObject->x(), val.toReal()));
         break;
     }
     case WidthProperty: {
-        TransformState state(mapObject);
-        state.setSize(QSizeF(val.toReal(), state.size().height()));
-        command = new TransformMapObjects(mDocument, { mapObject }, { state });
+        command = new ChangeMapObject(mDocument, mapObject,
+                                      MapObject::SizeProperty,
+                                      QSizeF(val.toReal(), mapObject->height()));
         break;
     }
     case HeightProperty: {
-        TransformState state(mapObject);
-        state.setSize(QSizeF(state.size().width(), val.toReal()));
-        command = new TransformMapObjects(mDocument, { mapObject }, { state });
+        command = new ChangeMapObject(mDocument, mapObject,
+                                      MapObject::SizeProperty,
+                                      QSizeF(mapObject->width(), val.toReal()));
         break;
     }
     case RotationProperty:
         if (mapObject->canRotate()) {
-            TransformState state(mapObject);
-            state.setRotation(val.toDouble());
-            command = new TransformMapObjects(mDocument, { mapObject }, { state });
+            command = new ChangeMapObject(mDocument, mapObject,
+                                          MapObject::RotationProperty,
+                                          val.toDouble());
         }
         break;
     case FlippingProperty: {
