@@ -211,10 +211,14 @@ static bool checkRuleOptions(const QString &name,
         options.skipChance = 1.0 - options.skipChance;  // inverted so we don't have to keep inverting it later
         return true;
     }
-    if (checkRuleOption(name, value, QLatin1String("ModX"), options.modX, setOptions, RuleOptions::ModX))
+    if (checkRuleOption(name, value, QLatin1String("ModX"), options.modX, setOptions, RuleOptions::ModX)) {
+        options.modX = qMax<unsigned>(1, options.modX); // modulo 0 would crash
         return true;
-    if (checkRuleOption(name, value, QLatin1String("ModY"), options.modY, setOptions, RuleOptions::ModY))
+    }
+    if (checkRuleOption(name, value, QLatin1String("ModY"), options.modY, setOptions, RuleOptions::ModY)) {
+        options.modY = qMax<unsigned>(1, options.modY); // modulo 0 would crash
         return true;
+    }
     if (checkRuleOption(name, value, QLatin1String("OffsetX"), options.offsetX, setOptions, RuleOptions::OffsetX))
         return true;
     if (checkRuleOption(name, value, QLatin1String("OffsetY"), options.offsetY, setOptions, RuleOptions::OffsetY))
@@ -1114,17 +1118,20 @@ void AutoMapper::matchRule(const Rule &rule,
                                  context.targetMap->height() - ruleHeight);
     }
 
-    forEachPointInRegion(ruleMatchRegion, [&] (int x, int y) {
-        if (rule.options.modX > 1 && (x + rule.options.offsetX) % rule.options.modX != 0)
-            return;
-        if (rule.options.modY > 1 && (y + rule.options.offsetY) % rule.options.modY != 0)
-            return;
-        if (rule.options.skipChance != 0.0 && randomDouble() < rule.options.skipChance)
-            return;
+    for (const QRect &rect : ruleMatchRegion) {
+        const int startX = rect.left() + (rect.left() + rule.options.offsetX) % rule.options.modX;
+        const int startY = rect.top() + (rect.top() + rule.options.offsetY) % rule.options.modY;
 
-        if (matchRuleAtOffset(inputSets, QPoint(x, y), getCell))
-            matched(QPoint(x, y));
-    });
+        for (int y = startY; y <= rect.bottom(); y += rule.options.modY) {
+            for (int x = startX; x <= rect.right(); x += rule.options.modX) {
+                if (rule.options.skipChance != 0.0 && randomDouble() < rule.options.skipChance)
+                    return;
+
+                if (matchRuleAtOffset(inputSets, QPoint(x, y), getCell))
+                    matched(QPoint(x, y));
+            }
+        }
+    }
 }
 
 void AutoMapper::applyRule(const Rule &rule, QPoint pos,
