@@ -157,16 +157,6 @@ inline const QPixmap &Tile::image() const
 }
 
 /**
- * Sets the image of this tile.
- */
-inline void Tile::setImage(const QPixmap &image)
-{
-    mImage = image;
-    mImageStatus = image.isNull() ? LoadingError : LoadingReady;
-    mImageShape.reset();
-}
-
-/**
  * Returns the URL of the external image that represents this tile.
  * When this tile doesn't refer to an external image, an empty URL is
  * returned.
@@ -187,11 +177,6 @@ inline void Tile::setImageSource(const QUrl &imageSource)
 inline const QRect &Tile::imageRect() const
 {
     return mImageRect;
-}
-
-inline void Tile::setImageRect(const QRect &imageRect)
-{
-    mImageRect = imageRect;
 }
 
 /**

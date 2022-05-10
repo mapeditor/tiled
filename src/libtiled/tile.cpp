@@ -84,8 +84,25 @@ const QPainterPath &Tile::imageShape() const
         // heavy-weight paths since it just uses rectangles.
         mImageShape.emplace().addRegion(mImage.mask());
 #endif
+
+        if (!mImageRect.isNull() && mImageRect != mImage.rect()) {
+            QPainterPath rect;
+            rect.addRect(mImageRect);
+            mImageShape.value() &= rect;
+            mImageShape->translate(-mImageRect.topLeft());
+        }
     }
     return *mImageShape;
+}
+
+/**
+ * Sets the image of this tile.
+ */
+void Tile::setImage(const QPixmap &image)
+{
+    mImage = image;
+    mImageStatus = image.isNull() ? LoadingError : LoadingReady;
+    mImageShape.reset();
 }
 
 /**
@@ -101,6 +118,15 @@ const Tile *Tile::currentFrameTile() const
         return mTileset->findTile(frame.tileId);
     }
     return this;
+}
+
+void Tile::setImageRect(const QRect &imageRect)
+{
+    if (mImageRect == imageRect)
+        return;
+
+    mImageRect = imageRect;
+    mImageShape.reset();
 }
 
 /**
