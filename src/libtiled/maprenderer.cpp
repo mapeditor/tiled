@@ -378,7 +378,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
         flush();
 
     const QPixmap &image = tile->image();
-    const QRect& imageRect = tile->imageRect();
+    const QRect &imageRect = tile->imageRect();
     const QSizeF imageSize = imageRect.isNull() ? image.size() : imageRect.size();
     if (imageSize.isEmpty())
         return;
@@ -394,7 +394,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
     // Calculate the position as if the origin is TopLeft, and correct it later.
     fragment.x = screenPos.x() + (offset.x() * scale.width()) + sizeHalf.x();
     fragment.y = screenPos.y() + (offset.y() * scale.height()) + sizeHalf.y();
-    if(imageRect.isNull()) {
+    if (imageRect.isNull()) {
         fragment.sourceLeft = 0;
         fragment.sourceTop = 0;
         fragment.width = imageSize.width();

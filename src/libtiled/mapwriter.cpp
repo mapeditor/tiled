@@ -424,7 +424,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 writeProperties(w, tile->properties());
             if (imageSource.isEmpty()) {
                 const QRect imageRect = tile->imageRect();
-                if(!imageRect.isNull()) {
+                if (!imageRect.isNull()) {
                     w.writeAttribute(QStringLiteral("x"),
                                      QString::number(imageRect.x()));
                     w.writeAttribute(QStringLiteral("y"),

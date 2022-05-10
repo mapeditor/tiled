@@ -184,7 +184,7 @@ inline const QRect &Tile::imageRect() const
  */
 inline int Tile::width() const
 {
-    return mImage.width();
+    return mImageRect.isNull() ? mImage.width() : mImageRect.width();
 }
 
 /**
@@ -192,7 +192,7 @@ inline int Tile::width() const
  */
 inline int Tile::height() const
 {
-    return mImage.height();
+    return mImageRect.isNull() ? mImage.height() : mImageRect.height();
 }
 
 /**
@@ -200,7 +200,7 @@ inline int Tile::height() const
  */
 inline QSize Tile::size() const
 {
-    return mImageRect.isNull() ?  mImage.size() : mImageRect.size();
+    return mImageRect.isNull() ? mImage.size() : mImageRect.size();
 }
 
 /**

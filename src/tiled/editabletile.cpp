@@ -151,7 +151,7 @@ void EditableTile::setImageFileName(const QString &fileName)
                                                 QUrl::fromLocalFile(fileName),
                                                 imageRect()));
     } else if (!checkReadOnly()) {
-        tile()->setImage(ImageCache::loadPixmap(fileName).copy(imageRect()));
+        tile()->setImage(ImageCache::loadPixmap(fileName));
         tile()->setImageSource(QUrl::fromLocalFile(fileName));
     }
 }
@@ -168,8 +168,6 @@ void EditableTile::setImageRect(const QRect &rect)
                                                 QUrl::fromLocalFile(imageFileName()),
                                                 rect));
     } else if (!checkReadOnly()) {
-        tile()->setImage(ImageCache::loadPixmap(imageFileName()).copy(rect));
-        tile()->setImageSource(QUrl::fromLocalFile(imageFileName()));
         tile()->setImageRect(rect);
     }
 }

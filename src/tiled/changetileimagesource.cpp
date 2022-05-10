@@ -43,7 +43,7 @@ ChangeTileImageSource::ChangeTileImageSource(TilesetDocument *tilesetDocument,
                                         "Change Tile Image"));
 }
 
-void ChangeTileImageSource::apply(const QUrl &imageSource, const QRect& imageRect)
+void ChangeTileImageSource::apply(const QUrl &imageSource, const QRect &imageRect)
 {
     // todo: make sure remote source loading is triggered
     mTilesetDocument->setTileImage(mTile,
