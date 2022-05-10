@@ -541,12 +541,14 @@ private:
 
 inline QPoint TileLayer::iterator::key() const
 {
-    QPoint chunkStart = mChunkPointer.key();
+    const QPoint chunkPos = mChunkPointer.key();
+    QPoint tilePos = QPoint(chunkPos.x() * CHUNK_SIZE,
+                            chunkPos.y() * CHUNK_SIZE);
 
-    int index = mCellPointer - mChunkPointer.value().begin();
-    chunkStart += QPoint(index & CHUNK_MASK, index / CHUNK_SIZE);
+    const auto index = std::distance(mChunkPointer.value().begin(), mCellPointer);
+    tilePos += QPoint(index & CHUNK_MASK, index / CHUNK_SIZE);
 
-    return chunkStart;
+    return tilePos;
 }
 
 inline void TileLayer::iterator::advance()
@@ -562,12 +564,14 @@ inline void TileLayer::iterator::advance()
 
 inline QPoint TileLayer::const_iterator::key() const
 {
-    QPoint chunkStart = mChunkPointer.key();
+    const QPoint chunkPos = mChunkPointer.key();
+    QPoint tilePos = QPoint(chunkPos.x() * CHUNK_SIZE,
+                            chunkPos.y() * CHUNK_SIZE);
 
-    int index = mCellPointer - mChunkPointer.value().begin();
-    chunkStart += QPoint(index & CHUNK_MASK, index / CHUNK_SIZE);
+    const auto index = std::distance(mChunkPointer.value().begin(), mCellPointer);
+    tilePos += QPoint(index & CHUNK_MASK, index / CHUNK_SIZE);
 
-    return chunkStart;
+    return tilePos;
 }
 
 inline void TileLayer::const_iterator::advance()

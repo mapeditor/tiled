@@ -24,15 +24,16 @@ void test_AutoMapping::autoMap_data()
 {
     QTest::addColumn<QString>("directory");
 
+    QTest::newRow("infinite-target-map") << QStringLiteral("infinite-target-map");
     QTest::newRow("inputnot") << QStringLiteral("inputnot");
     QTest::newRow("match-type") << QStringLiteral("match-type");
+    QTest::newRow("mod-and-offset") << QStringLiteral("mod-and-offset");
     QTest::newRow("option-no-overlapping-rules") << QStringLiteral("option-no-overlapping-rules");
     QTest::newRow("option-overflow-border") << QStringLiteral("option-overflow-border");
     QTest::newRow("option-wrap-border") << QStringLiteral("option-wrap-border");
     QTest::newRow("simple-2x2-rule") << QStringLiteral("simple-2x2-rule");
     QTest::newRow("simple-replace") << QStringLiteral("simple-replace");
     QTest::newRow("terrain-corner") << QStringLiteral("terrain-corner");
-    QTest::newRow("mod-and-offset") << QStringLiteral("mod-and-offset");
 }
 
 void test_AutoMapping::autoMap()
@@ -52,15 +53,31 @@ void test_AutoMapping::autoMap()
     AutoMapper autoMapper(std::move(rulesMap));
     AutoMappingContext context(&mapDocument);
 
-    const QSize mapSize = mapDocument.map()->size();
+    QRegion region;
+
+    if (mapDocument.map()->infinite()) {
+        LayerIterator iterator(mapDocument.map());
+
+        QRect bounds;
+        while (Layer *layer = iterator.next()) {
+            if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                bounds = bounds.united(tileLayer->bounds());
+        }
+        region = bounds;
+    } else {
+        region = QRect(QPoint(), mapDocument.map()->size());
+    }
+
     autoMapper.prepareAutoMap(context);
     QBENCHMARK {
-        autoMapper.autoMap(QRect(QPoint(), mapSize), nullptr, context);  // todo: test appliedRegion as well
+        autoMapper.autoMap(region, nullptr, context);  // todo: test appliedRegion as well
     }
 
     // Apply the changes done by AutoMapping (only checking tile layers for now)
-    for (auto& [original, outputLayer] : context.originalToOutputLayerMapping)
-        original->setCells(0, 0, outputLayer.get());
+    for (auto& [original, outputLayer] : context.originalToOutputLayerMapping) {
+        const QRegion diffRegion = original->computeDiffRegion(*outputLayer);
+        original->setCells(0, 0, outputLayer.get(), diffRegion);
+    }
     for (auto &layer : context.newLayers)
         if (!layer->isEmpty())
             mapDocument.map()->addLayer(std::move(layer));
