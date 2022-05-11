@@ -475,14 +475,14 @@ Tile *Tileset::addTile(const QPixmap &image, const QUrl &source, const QRect &re
     Tile *newTile = new Tile(takeNextTileId(), this);
     newTile->setImage(image);
     newTile->setImageSource(source);
-    newTile->setImageRect(rect);
+    newTile->setImageRect(rect.isNull() ? image.rect() : rect);
 
     mTilesById.insert(newTile->id(), newTile);
     mTiles.append(newTile);
-    if (mTileHeight < image.height())
-        mTileHeight = image.height();
-    if (mTileWidth < image.width())
-        mTileWidth = image.width();
+    if (mTileHeight < newTile->height())
+        mTileHeight = newTile->height();
+    if (mTileWidth < newTile->width())
+        mTileWidth = newTile->width();
     return newTile;
 }
 
@@ -574,13 +574,13 @@ void Tileset::setTileImage(Tile *tile,
     Q_ASSERT(mTilesById.value(tile->id()) == tile);
 
     const QSize previousTileSize = tile->size();
-    const QSize newTileSize = rect.isNull() ? image.size() : rect.size();
+    const QRect imageRect = rect.isNull() ? image.rect() : rect;
 
     tile->setImage(image);
     tile->setImageSource(source);
-    tile->setImageRect(rect);
+    tile->setImageRect(imageRect);
 
-    if (previousTileSize != newTileSize) {
+    if (previousTileSize != imageRect.size()) {
         // Update our max. tile size
         if (previousTileSize.height() == mTileHeight ||
                 previousTileSize.width() == mTileWidth) {
@@ -588,10 +588,10 @@ void Tileset::setTileImage(Tile *tile,
             updateTileSize();
         } else {
             // Check if we have a new maximum
-            if (mTileHeight < newTileSize.height())
-                mTileHeight = newTileSize.height();
-            if (mTileWidth < newTileSize.width())
-                mTileWidth = newTileSize.width();
+            if (mTileHeight < imageRect.height())
+                mTileHeight = imageRect.height();
+            if (mTileWidth < imageRect.width())
+                mTileWidth = imageRect.width();
         }
     }
 }

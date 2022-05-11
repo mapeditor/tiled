@@ -548,13 +548,13 @@ Tile (Definition)
 
     animation,        array,              "Array of :ref:`Frames <json-frame>`"
     id,               int,                "Local ID of the tile"
-    image,            string,             "Image representing this tile (optional)"
+    image,            string,             "Image representing this tile (optional, used for image collection tilesets)"
     imageheight,      int,                "Height of the tile image in pixels"
     imagewidth,       int,                "Width of the tile image in pixels"
-    x,                int,                "Horizontal offset of the tile image in pixels (optional)"
-    y,                int,                "Vertical offset of the tile image in pixels (optional)"
-    width,            int,                "Tile width in pixels (optional)"
-    height,           int,                "Tile height in pixels (optional)"
+    x,                int,                "The X position of the sub-rectangle representing this tile (default: 0)"
+    y,                int,                "The Y position of the sub-rectangle representing this tile (default: 0)"
+    width,            int,                "The width of the sub-rectangle representing this tile (defaults to the image width)"
+    height,           int,                "The height of the sub-rectangle representing this tile (defaults to the image height)"
     objectgroup,      :ref:`json-layer`,  "Layer with type ``objectgroup``, when collision shapes are specified (optional)"
     probability,      double,             "Percentage chance this tile is chosen when competing with others in the editor (optional)"
     properties,       array,              "Array of :ref:`Properties <json-property>`"
@@ -728,6 +728,13 @@ A point on a polygon or a polyline, relative to the position of the object.
 
 Changelog
 ---------
+
+Tiled 1.9
+~~~~~~~~~
+
+* Added ``x``, ``y``, ``width`` and ``height`` properties to :ref:`json-tile`,
+  which store the sub-rectangle of a tile's image used to represent this tile.
+  By default the entire image is used.
 
 Tiled 1.8
 ~~~~~~~~~
