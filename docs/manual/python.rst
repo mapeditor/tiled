@@ -120,10 +120,7 @@ above script.
 
 .. note::
 
-    This example does not support the use of group layers, and in fact
-    the script API doesn't support this yet either. Any help with
-    maintaining the Python plugin would be very appreciated. See
-    `open issues related to Python support`_.
+    This example does not support the use of group layers.
 
 Debugging Your Script
 ---------------------
@@ -139,6 +136,10 @@ It would be nice to have the full API reference documented here, but for
 now please check out the `source file`_ for available classes and
 methods.
 
+.. note::
+
+    Any help with maintaining the Python plugin would be very appreciated. See
+    `open issues related to Python support`_
 
 .. _example scripts: https://github.com/bjorn/tiled/tree/master/src/plugins/python/scripts
 .. _source file: https://github.com/bjorn/tiled/blob/master/src/plugins/python/tiledbinding.py
