@@ -573,25 +573,25 @@ void Tileset::setTileImage(Tile *tile,
     Q_ASSERT(isCollection());
     Q_ASSERT(mTilesById.value(tile->id()) == tile);
 
-    const QSize previousImageSize = tile->imageRect().isNull() ? tile->image().size() : tile->imageRect().size();
-    const QSize newImageSize = rect.isNull() ? image.size() : rect.size();
+    const QSize previousTileSize = tile->size();
+    const QSize newTileSize = rect.isNull() ? image.size() : rect.size();
 
     tile->setImage(image);
     tile->setImageSource(source);
     tile->setImageRect(rect);
 
-    if (previousImageSize != newImageSize) {
+    if (previousTileSize != newTileSize) {
         // Update our max. tile size
-        if (previousImageSize.height() == mTileHeight ||
-                previousImageSize.width() == mTileWidth) {
+        if (previousTileSize.height() == mTileHeight ||
+                previousTileSize.width() == mTileWidth) {
             // This used to be the max image; we have to recompute
             updateTileSize();
         } else {
             // Check if we have a new maximum
-            if (mTileHeight < newImageSize.height())
-                mTileHeight = newImageSize.height();
-            if (mTileWidth < newImageSize.width())
-                mTileWidth = newImageSize.width();
+            if (mTileHeight < newTileSize.height())
+                mTileHeight = newTileSize.height();
+            if (mTileWidth < newTileSize.width())
+                mTileWidth = newTileSize.width();
         }
     }
 }

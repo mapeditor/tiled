@@ -46,10 +46,10 @@ private:
 
     TilesetDocument *mTilesetDocument;
     Tile *mTile;
-    QUrl mOldImageSource;
-    QUrl mNewImageSource;
-    QRect mOldImageRect;
-    QRect mNewImageRect;
+    const QUrl mOldImageSource;
+    const QUrl mNewImageSource;
+    const QRect mOldImageRect;
+    const QRect mNewImageRect;
 };
 
 } // namespace Tiled

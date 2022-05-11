@@ -908,17 +908,18 @@ void PropertyBrowser::addTileProperties()
 
     const Tile *tile = static_cast<const Tile*>(mObject);
     if (!tile->imageSource().isEmpty()) {
-        QtVariantProperty *imageRectProperty = addProperty(ImageRectProperty,
-                                                           QMetaType::QRect,
-                                                           tr("Image Rect"), groupProperty);
-        imageRectProperty->setEnabled(mTilesetDocument);
-
         QtVariantProperty *imageSourceProperty = addProperty(ImageSourceProperty,
                                                              filePathTypeId(),
                                                              tr("Image"), groupProperty);
         imageSourceProperty->setAttribute(QLatin1String("filter"),
                                           Utils::readableImageFormatsFilter());
         imageSourceProperty->setEnabled(mTilesetDocument);
+
+        QtVariantProperty *imageRectProperty = addProperty(ImageRectProperty,
+                                                           QMetaType::QRect,
+                                                           tr("Image Rect"), groupProperty);
+        imageRectProperty->setEnabled(mTilesetDocument);
+        imageRectProperty->setAttribute(QLatin1String("constraint"), tile->image().rect());
     }
 
     addProperty(groupProperty);
