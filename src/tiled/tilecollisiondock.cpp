@@ -253,7 +253,7 @@ void TileCollisionDock::autoDetectMask()
     if (!mDummyMapDocument)
         return;
 
-    const QPixmap &pixmap = mTile->image();
+    const QPixmap pixmap = mTile->image().copy(mTile->imageRect());
     const QRect content = pixmap.hasAlphaChannel() ? QRegion(pixmap.mask()).boundingRect()
                                                    : pixmap.rect();
 

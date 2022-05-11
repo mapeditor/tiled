@@ -190,10 +190,9 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
                          tileset->tileHeight() * scale + extra);
         }
 
-        const QPixmap &image = tile->image();
-        QSize tileSize = image.size();
+        QSize tileSize = tile->size();
 
-        if (image.isNull()) {
+        if (tile->image().isNull()) {
             Tileset *tileset = m->tileset();
             if (tileset->isCollection()) {
                 tileSize = QSize(32, 32);

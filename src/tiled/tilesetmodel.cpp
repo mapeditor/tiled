@@ -79,7 +79,7 @@ QVariant TilesetModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DecorationRole) {
         if (Tile *tile = tileAt(index))
-            return tile->image();
+            return tile->image().copy(tile->imageRect());
     }
 
     return QVariant();

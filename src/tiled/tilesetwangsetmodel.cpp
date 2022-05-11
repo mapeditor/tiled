@@ -72,8 +72,8 @@ QVariant TilesetWangSetModel::data(const QModelIndex &index, int role) const
         case Qt::EditRole:
             return wangSet->name();
         case Qt::DecorationRole:
-            if (Tile *imageTile = wangSet->imageTile())
-                return imageTile->image();
+            if (Tile *tile = wangSet->imageTile())
+                return tile->image().copy(tile->imageRect());
             else
                 return wangSetIcon(wangSet->type());
             break;
