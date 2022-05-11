@@ -378,12 +378,11 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
         flush();
 
     const QPixmap &image = tile->image();
-    const QRect &imageRect = tile->imageRect();
-    const QSizeF imageSize = imageRect.isNull() ? image.size() : imageRect.size();
-    if (imageSize.isEmpty())
+    const QRect imageRect = tile->imageRect().isNull() ? image.rect()
+                                                       : tile->imageRect();
+    if (imageRect.isEmpty())
         return;
 
-    const QSizeF scale(size.width() / imageSize.width(), size.height() / imageSize.height());
     const QPoint offset = tile->offset();
     const QPointF sizeHalf = QPointF(size.width() / 2, size.height() / 2);
 
@@ -392,21 +391,14 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
 
     QPainter::PixmapFragment fragment;
     // Calculate the position as if the origin is TopLeft, and correct it later.
-    fragment.x = screenPos.x() + (offset.x() * scale.width()) + sizeHalf.x();
-    fragment.y = screenPos.y() + (offset.y() * scale.height()) + sizeHalf.y();
-    if (imageRect.isNull()) {
-        fragment.sourceLeft = 0;
-        fragment.sourceTop = 0;
-        fragment.width = imageSize.width();
-        fragment.height = imageSize.height();
-    } else {
-        fragment.sourceLeft = imageRect.x();
-        fragment.sourceTop = imageRect.y();
-        fragment.width = imageRect.width();
-        fragment.height = imageRect.height();
-    }
-    fragment.scaleX = flippedHorizontally ? -1 : 1;
-    fragment.scaleY = flippedVertically ? -1 : 1;
+    fragment.scaleX = size.width() / imageRect.width();
+    fragment.scaleY = size.height() / imageRect.height();
+    fragment.x = screenPos.x() + (offset.x() * fragment.scaleX) + sizeHalf.x();
+    fragment.y = screenPos.y() + (offset.y() * fragment.scaleY) + sizeHalf.y();
+    fragment.sourceLeft = imageRect.x();
+    fragment.sourceTop = imageRect.y();
+    fragment.width = imageRect.width();
+    fragment.height = imageRect.height();
     fragment.rotation = 0;
     fragment.opacity = 1;
 
@@ -434,8 +426,8 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
         fragment.x += halfDiff;
     }
 
-    fragment.scaleX = scale.width() * (flippedHorizontally ? -1 : 1);
-    fragment.scaleY = scale.height() * (flippedVertically ? -1 : 1);
+    fragment.scaleX *= flippedHorizontally ? -1 : 1;
+    fragment.scaleY *= flippedVertically ? -1 : 1;
 
     if (mIsOpenGL || (fragment.scaleX > 0 && fragment.scaleY > 0)) {
         mTile = tile;
