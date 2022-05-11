@@ -448,7 +448,8 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
 
     const QRectF target(fragment.width * -0.5, fragment.height * -0.5,
                         fragment.width, fragment.height);
-    const QRectF source(0, 0, fragment.width, fragment.height);
+    const QRectF source(fragment.sourceLeft, fragment.sourceTop,
+                        fragment.width, fragment.height);
 
     mPainter->setTransform(transform);
     mPainter->drawPixmap(target, tinted(image, mTintColor), source);
