@@ -499,6 +499,12 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
 
     Tile *tile = tileset.findOrCreateTile(id);
 
+    const QRect imageRect(atts.value(QLatin1String("x")).toInt(),
+                          atts.value(QLatin1String("y")).toInt(),
+                          atts.value(QLatin1String("width")).toInt(),
+                          atts.value(QLatin1String("height")).toInt());
+    tile->setImageRect(imageRect);
+
     tile->setType(atts.value(QLatin1String("type")).toString());
 
     // Read tile quadrant terrain ids as Wang IDs. This is possible because the
@@ -539,11 +545,7 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
                     if (imageReference.source.isEmpty())
                         xml.raiseError(tr("Error reading embedded image for tile %1").arg(id));
                 }
-                const QRect imageRect(atts.value(QLatin1String("x")).toInt(),
-                                      atts.value(QLatin1String("y")).toInt(),
-                                      atts.value(QLatin1String("width")).toInt(),
-                                      atts.value(QLatin1String("height")).toInt());
-                tileset.setTileImage(tile, image, imageReference.source, imageRect);
+                tileset.setTileImage(tile, image, imageReference.source);
             }
         } else if (xml.name() == QLatin1String("objectgroup")) {
             std::unique_ptr<ObjectGroup> objectGroup = readObjectGroup();

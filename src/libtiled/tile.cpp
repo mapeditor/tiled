@@ -68,6 +68,15 @@ QSharedPointer<Tileset> Tile::sharedTileset() const
     return mTileset->sharedFromThis();
 }
 
+/**
+ * Returns the image of this tile, or the image of its tileset if it doesn't
+ * have an individual one.
+ */
+const QPixmap &Tile::image() const
+{
+    return mImage.isNull() ? mTileset->image() : mImage;
+}
+
 // Using some internal Qt API here, but this is the function that is also used
 // by QGraphicsPixmapItem, so my assumption is that it is better suited for
 // this task than using QPainterPath::addRegion.

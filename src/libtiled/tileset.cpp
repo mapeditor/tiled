@@ -195,55 +195,9 @@ bool Tileset::loadFromImage(const QImage &image, const QUrl &source)
         return false;
     }
 
-    const QSize tileSize = this->tileSize();
-    if (tileSize.isEmpty())
-        return false;
+    mImage = QPixmap::fromImage(image);
 
-    const int margin = this->margin();
-    const int spacing = this->tileSpacing();
-    const int stopWidth = image.width() - tileSize.width();
-    const int stopHeight = image.height() - tileSize.height();
-
-    int tileNum = 0;
-
-    for (int y = margin; y <= stopHeight; y += tileSize.height() + spacing) {
-        for (int x = margin; x <= stopWidth; x += tileSize.width() + spacing) {
-            const QImage tileImage = image.copy(x, y, tileSize.width(), tileSize.height());
-            QPixmap tilePixmap = QPixmap::fromImage(tileImage);
-            const QColor &transparent = mImageReference.transparentColor;
-
-            if (transparent.isValid()) {
-                const QImage mask = tileImage.createMaskFromColor(transparent.rgb());
-                tilePixmap.setMask(QBitmap::fromImage(mask));
-            }
-
-            auto it = mTilesById.find(tileNum);
-            if (it != mTilesById.end()) {
-                it.value()->setImage(tilePixmap);
-            } else {
-                auto tile = new Tile(tilePixmap, tileNum, this);
-                mTilesById.insert(tileNum, tile);
-                mTiles.insert(tileNum, tile);
-            }
-
-            ++tileNum;
-        }
-    }
-
-    // Blank out any remaining tiles to avoid confusion (todo: could be more clear)
-    for (Tile *tile : qAsConst(mTiles)) {
-        if (tile->id() >= tileNum) {
-            QPixmap tilePixmap = QPixmap(tileSize);
-            tilePixmap.fill();
-            tile->setImage(tilePixmap);
-        }
-    }
-
-    mNextTileId = std::max(mNextTileId, tileNum);
-
-    mImageReference.size = image.size();
-    mColumnCount = columnCountForWidth(mImageReference.size.width());
-    mImageReference.status = LoadingReady;
+    initializeTilesetTiles();
 
     return true;
 }
@@ -281,33 +235,41 @@ bool Tileset::loadFromImage(const QString &fileName)
  */
 bool Tileset::loadImage()
 {
-    TilesheetParameters p;
-    p.fileName = Tiled::urlToLocalFileOrQrc(mImageReference.source);
-    p.tileWidth = mTileWidth;
-    p.tileHeight = mTileHeight;
-    p.spacing = mTileSpacing;
-    p.margin = mMargin;
-    p.transparentColor = mImageReference.transparentColor;
-
-    if (p.tileWidth <= 0 || p.tileHeight <= 0) {
+    if (mTileWidth <= 0 || mTileHeight <= 0) {
         mImageReference.status = LoadingError;
         return false;
     }
 
-    QImage image = ImageCache::loadImage(p.fileName);
-    if (image.isNull()) {
+    mImage = ImageCache::loadPixmap(Tiled::urlToLocalFileOrQrc(mImageReference.source));
+    if (mImage.isNull()) {
         mImageReference.status = LoadingError;
         return false;
     }
 
-    auto tiles = ImageCache::cutTiles(p);
+    initializeTilesetTiles();
 
-    for (int tileNum = 0; tileNum < tiles.size(); ++tileNum) {
+    return true;
+}
+
+void Tileset::initializeTilesetTiles()
+{
+    if (mImageReference.transparentColor.isValid())
+        mImage.setMask(mImage.createMaskFromColor(mImageReference.transparentColor));
+
+    QVector<QRect> tileRects;
+
+    for (int y = mMargin; y <= mImage.height() - mTileHeight; y += mTileHeight + mTileSpacing)
+        for (int x = mMargin; x <= mImage.width() - mTileWidth; x += mTileWidth + mTileSpacing)
+            tileRects.append(QRect(x, y, mTileWidth, mTileHeight));
+
+    for (int tileNum = 0; tileNum < tileRects.size(); ++tileNum) {
         auto it = mTilesById.find(tileNum);
         if (it != mTilesById.end()) {
-            it.value()->setImage(tiles.at(tileNum));
+            it.value()->setImage(QPixmap());    // make sure it uses the tileset's image
+            it.value()->setImageRect(tileRects.at(tileNum));
         } else {
-            auto tile = new Tile(tiles.at(tileNum), tileNum, this);
+            auto tile = new Tile(tileNum, this);
+            tile->setImageRect(tileRects.at(tileNum));
             mTilesById.insert(tileNum, tile);
             mTiles.insert(tileNum, tile);
         }
@@ -317,22 +279,21 @@ bool Tileset::loadImage()
 
     // Blank out any remaining tiles to avoid confusion (todo: could be more clear)
     for (Tile *tile : qAsConst(mTiles)) {
-        if (tile->id() >= tiles.size()) {
+        if (tile->id() >= tileRects.size()) {
             if (blank.isNull()) {
                 blank = QPixmap(mTileWidth, mTileHeight);
                 blank.fill();
             }
             tile->setImage(blank);
+            tile->setImageRect(QRect(0, 0, mTileWidth, mTileHeight));
         }
     }
 
-    mNextTileId = std::max<int>(mNextTileId, tiles.size());
+    mNextTileId = std::max<int>(mNextTileId, tileRects.size());
 
-    mImageReference.size = image.size();
+    mImageReference.size = mImage.size();
     mColumnCount = columnCountForWidth(mImageReference.size.width());
     mImageReference.status = LoadingReady;
-
-    return true;
 }
 
 /**
@@ -448,7 +409,7 @@ void Tileset::addWangSet(std::unique_ptr<WangSet> wangSet)
 }
 
 /**
- * Adds a wangSet.
+ * Adds a WangSet.
  */
 void Tileset::insertWangSet(int index, std::unique_ptr<WangSet> wangSet)
 {
@@ -457,10 +418,7 @@ void Tileset::insertWangSet(int index, std::unique_ptr<WangSet> wangSet)
 }
 
 /**
- * @brief Tileset::takeWangSetAt Removes the wangset at a given index
- *                               And returns it to the caller.
- * @param index Index to take at.
- * @return
+ * Removes the WangSet at a given \a index and returns it to the caller.
  */
 std::unique_ptr<WangSet> Tileset::takeWangSetAt(int index)
 {
@@ -567,32 +525,47 @@ bool Tileset::anyTileOutOfOrder() const
  */
 void Tileset::setTileImage(Tile *tile,
                            const QPixmap &image,
-                           const QUrl &source,
-                           const QRect &rect)
+                           const QUrl &source)
 {
     Q_ASSERT(isCollection());
     Q_ASSERT(mTilesById.value(tile->id()) == tile);
 
     const QSize previousTileSize = tile->size();
-    const QRect imageRect = rect.isNull() ? image.rect() : rect;
-
     tile->setImage(image);
     tile->setImageSource(source);
+
+    if (tile->imageRect().isNull())
+        tile->setImageRect(image.rect());
+
+    maybeUpdateTileSize(previousTileSize, tile->size());
+}
+
+void Tileset::setTileImageRect(Tile *tile, const QRect &imageRect)
+{
+    Q_ASSERT(mTilesById.value(tile->id()) == tile);
+
+    const QSize previousTileSize = tile->size();
     tile->setImageRect(imageRect);
 
-    if (previousTileSize != imageRect.size()) {
-        // Update our max. tile size
-        if (previousTileSize.height() == mTileHeight ||
-                previousTileSize.width() == mTileWidth) {
-            // This used to be the max image; we have to recompute
-            updateTileSize();
-        } else {
-            // Check if we have a new maximum
-            if (mTileHeight < imageRect.height())
-                mTileHeight = imageRect.height();
-            if (mTileWidth < imageRect.width())
-                mTileWidth = imageRect.width();
-        }
+    maybeUpdateTileSize(previousTileSize, tile->size());
+}
+
+void Tileset::maybeUpdateTileSize(QSize previousTileSize, QSize newTileSize)
+{
+    if (previousTileSize == newTileSize)
+        return;
+
+    // Update our max. tile size
+    if (previousTileSize.height() == mTileHeight ||
+            previousTileSize.width() == mTileWidth) {
+        // This used to be the max image; we have to recompute
+        updateTileSize();
+    } else {
+        // Check if we have a new maximum
+        if (mTileHeight < newTileSize.height())
+            mTileHeight = newTileSize.height();
+        if (mTileWidth < newTileSize.width())
+            mTileWidth = newTileSize.width();
     }
 }
 

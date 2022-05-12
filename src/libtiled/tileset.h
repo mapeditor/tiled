@@ -177,6 +177,8 @@ public:
     void setImageSource(const QString &url);
     QString imageSourceString() const;
 
+    const QPixmap &image() const;
+
     bool isCollection() const;
 
     int columnCountForWidth(int width) const;
@@ -204,8 +206,9 @@ public:
 
     void setTileImage(Tile *tile,
                       const QPixmap &image,
-                      const QUrl &source = QUrl(),
-                      const QRect &rect = QRect());
+                      const QUrl &source = QUrl());
+    void setTileImageRect(Tile *tile, const QRect &imageRect);
+
     /**
      * @deprecated Only kept around for the Python API!
      */
@@ -254,11 +257,15 @@ public:
     static Orientation orientationFromString(const QString &);
 
 private:
+    void initializeTilesetTiles();
+
+    void maybeUpdateTileSize(QSize oldSize, QSize newSize);
     void updateTileSize();
 
     QString mName;
     QString mFileName;
     ImageReference mImageReference;
+    QPixmap mImage;
     int mTileWidth;
     int mTileHeight;
     int mTileSpacing;
@@ -568,6 +575,11 @@ inline QString Tileset::imageSourceString() const
 {
     const QUrl &url = imageSource();
     return url.isLocalFile() ? url.toLocalFile() : url.toString();
+}
+
+inline const QPixmap &Tileset::image() const
+{
+    return mImage;
 }
 
 /**

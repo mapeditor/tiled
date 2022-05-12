@@ -20,6 +20,7 @@
 
 #include "changetile.h"
 
+#include "mapdocument.h"
 #include "tile.h"
 #include "tilesetdocument.h"
 
@@ -75,6 +76,32 @@ qreal ChangeTileProbability::getValue(const Tile *tile) const
 void ChangeTileProbability::setValue(Tile *tile, const qreal &probability) const
 {
     static_cast<TilesetDocument*>(document())->setTileProbability(tile, probability);
+}
+
+
+ChangeTileImageRect::ChangeTileImageRect(TilesetDocument *tilesetDocument,
+                                         const QList<Tile *> &tiles,
+                                         const QVector<QRect> &rects,
+                                         QUndoCommand *parent)
+    : ChangeValue(tilesetDocument, tiles, rects, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Image Rect"));
+}
+
+QRect ChangeTileImageRect::getValue(const Tile *tile) const
+{
+    return tile->imageRect();
+}
+
+void ChangeTileImageRect::setValue(Tile *tile, const QRect &rect) const
+{
+    tile->tileset()->setTileImageRect(tile, rect);
+
+    emit static_cast<TilesetDocument*>(document())->tileImageSourceChanged(tile);
+
+    for (MapDocument *mapDocument : static_cast<TilesetDocument*>(document())->mapDocuments())
+        emit mapDocument->tileImageSourceChanged(tile);
 }
 
 } // namespace Tiled

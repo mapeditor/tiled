@@ -39,24 +39,6 @@
 
 namespace Tiled {
 
-struct TILEDSHARED_EXPORT TilesheetParameters
-{
-    QString fileName;
-    int tileWidth;
-    int tileHeight;
-    int spacing;
-    int margin;
-    QColor transparentColor;
-
-    bool operator==(const TilesheetParameters &other) const;
-};
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-uint TILEDSHARED_EXPORT qHash(const TilesheetParameters &key, uint seed = 0) Q_DECL_NOTHROW;
-#else
-size_t TILEDSHARED_EXPORT qHash(const TilesheetParameters &key, size_t seed = 0) Q_DECL_NOTHROW;
-#endif
-
 struct LoadedImage
 {
     LoadedImage();
@@ -68,7 +50,6 @@ struct LoadedImage
     QDateTime lastModified;
 };
 
-struct CutTiles;
 struct LoadedPixmap;
 class Map;
 
@@ -77,7 +58,6 @@ class TILEDSHARED_EXPORT ImageCache
 public:
     static LoadedImage loadImage(const QString &fileName);
     static QPixmap loadPixmap(const QString &fileName);
-    static QVector<QPixmap> cutTiles(const TilesheetParameters &parameters);
 
     static void remove(const QString &fileName);
 
@@ -86,7 +66,6 @@ private:
 
     static QHash<QString, LoadedImage> sLoadedImages;
     static QHash<QString, LoadedPixmap> sLoadedPixmaps;
-    static QHash<TilesheetParameters, CutTiles> sCutTiles;
 };
 
 } // namespace Tiled

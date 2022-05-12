@@ -290,7 +290,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
             }
 
             const QRect &imageRect = tile->imageRect();
-            if (!imageRect.isNull() && imageRect != tile->image().rect()) {
+            if (!imageRect.isNull() && imageRect != tile->image().rect() && tileset.isCollection()) {
                 tileVariant[QStringLiteral("x")] = imageRect.x();
                 tileVariant[QStringLiteral("y")] = imageRect.y();
                 tileVariant[QStringLiteral("width")] = imageRect.width();

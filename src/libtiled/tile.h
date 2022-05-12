@@ -149,14 +149,6 @@ inline Tileset *Tile::tileset() const
 }
 
 /**
- * Returns the image of this tile.
- */
-inline const QPixmap &Tile::image() const
-{
-    return mImage;
-}
-
-/**
  * Returns the URL of the external image that represents this tile.
  * When this tile doesn't refer to an external image, an empty URL is
  * returned.
@@ -184,7 +176,7 @@ inline const QRect &Tile::imageRect() const
  */
 inline int Tile::width() const
 {
-    return mImageRect.isNull() ? mImage.width() : mImageRect.width();
+    return mImageRect.width();
 }
 
 /**
@@ -192,7 +184,7 @@ inline int Tile::width() const
  */
 inline int Tile::height() const
 {
-    return mImageRect.isNull() ? mImage.height() : mImageRect.height();
+    return mImageRect.height();
 }
 
 /**
@@ -200,7 +192,7 @@ inline int Tile::height() const
  */
 inline QSize Tile::size() const
 {
-    return mImageRect.isNull() ? mImage.size() : mImageRect.size();
+    return mImageRect.size();
 }
 
 /**

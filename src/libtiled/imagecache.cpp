@@ -39,39 +39,6 @@
 
 namespace Tiled {
 
-bool TilesheetParameters::operator==(const TilesheetParameters &other) const
-{
-    return fileName == other.fileName &&
-            tileWidth == other.tileWidth &&
-            tileHeight == other.tileHeight &&
-            margin == other.margin &&
-            spacing == other.spacing &&
-            transparentColor == other.transparentColor;
-}
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-uint qHash(const TilesheetParameters &key, uint seed) Q_DECL_NOTHROW
-#else
-size_t qHash(const TilesheetParameters &key, size_t seed) Q_DECL_NOTHROW
-#endif
-{
-    auto h = ::qHash(key.fileName, seed);
-    h = ::qHash(key.tileWidth, h);
-    h = ::qHash(key.tileHeight, h);
-    h = ::qHash(key.margin, h);
-    h = ::qHash(key.spacing, h);
-    h = ::qHash(key.transparentColor.rgba(), h);
-    return h;
-}
-
-struct CutTiles
-{
-    operator const QVector<QPixmap> &() const { return tiles; }
-
-    QVector<QPixmap> tiles;
-    QDateTime lastModified;
-};
-
 struct LoadedPixmap
 {
     explicit LoadedPixmap(const LoadedImage &cachedImage);
@@ -101,7 +68,6 @@ LoadedPixmap::LoadedPixmap(const LoadedImage &cachedImage)
 
 QHash<QString, LoadedImage> ImageCache::sLoadedImages;
 QHash<QString, LoadedPixmap> ImageCache::sLoadedPixmaps;
-QHash<TilesheetParameters, CutTiles> ImageCache::sCutTiles;
 
 LoadedImage ImageCache::loadImage(const QString &fileName)
 {
@@ -148,64 +114,10 @@ QPixmap ImageCache::loadPixmap(const QString &fileName)
     return it.value();
 }
 
-static CutTiles cutTilesImpl(const TilesheetParameters &p)
-{
-    Q_ASSERT(p.tileWidth > 0 && p.tileHeight > 0);
-
-    const LoadedImage loadedImage = ImageCache::loadImage(p.fileName);
-    const QImage &image = loadedImage.image;
-    const int stopWidth = image.width() - p.tileWidth;
-    const int stopHeight = image.height() - p.tileHeight;
-
-    CutTiles result;
-    result.lastModified = loadedImage.lastModified;
-
-    for (int y = p.margin; y <= stopHeight; y += p.tileHeight + p.spacing) {
-        for (int x = p.margin; x <= stopWidth; x += p.tileWidth + p.spacing) {
-            const QImage tileImage = image.copy(x, y, p.tileWidth, p.tileHeight);
-            QPixmap tilePixmap = QPixmap::fromImage(tileImage);
-
-            if (p.transparentColor.isValid()) {
-                const QImage mask = tileImage.createMaskFromColor(p.transparentColor.rgb());
-                tilePixmap.setMask(QBitmap::fromImage(mask));
-            }
-
-            result.tiles.append(tilePixmap);
-        }
-    }
-
-    return result;
-}
-
-QVector<QPixmap> ImageCache::cutTiles(const TilesheetParameters &parameters)
-{
-    if (parameters.fileName.isEmpty())
-        return {};
-
-    auto it = sCutTiles.find(parameters);
-
-    bool found = it != sCutTiles.end();
-    bool old = found && it.value().lastModified < QFileInfo(parameters.fileName).lastModified();
-
-    if (old)
-        remove(parameters.fileName);
-    if (old || !found)
-        it = sCutTiles.insert(parameters, cutTilesImpl(parameters));
-
-    return it.value();
-}
-
 void ImageCache::remove(const QString &fileName)
 {
     sLoadedImages.remove(fileName);
     sLoadedPixmaps.remove(fileName);
-
-    // Also remove any previously cut tiles
-    QMutableHashIterator<TilesheetParameters, CutTiles> it(sCutTiles);
-    while (it.hasNext()) {
-        if (it.next().key().fileName == fileName)
-            it.remove();
-    }
 }
 
 QImage ImageCache::renderMap(const QString &fileName)

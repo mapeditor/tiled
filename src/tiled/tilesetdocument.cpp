@@ -411,12 +411,11 @@ void TilesetDocument::setTileType(Tile *tile, const QString &type)
 
 void TilesetDocument::setTileImage(Tile *tile,
                                    const QPixmap &image,
-                                   const QUrl &source,
-                                   const QRect &rect)
+                                   const QUrl &source)
 {
     Q_ASSERT(tile->tileset() == mTileset.data());
 
-    mTileset->setTileImage(tile, image, source, rect);
+    mTileset->setTileImage(tile, image, source);
     emit tileImageSourceChanged(tile);
 
     for (MapDocument *mapDocument : mapDocuments())

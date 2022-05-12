@@ -69,4 +69,19 @@ protected:
     void setValue(Tile *tile, const qreal &probability) const override;
 };
 
+class ChangeTileImageRect : public ChangeValue<Tile, QRect>
+{
+public:
+    ChangeTileImageRect(TilesetDocument *tilesetDocument,
+                        const QList<Tile*> &tiles,
+                        const QVector<QRect> &rects,
+                        QUndoCommand *parent = nullptr);
+
+    int id() const override { return Cmd_ChangeTileImageRect; }
+
+protected:
+    QRect getValue(const Tile *tile) const override;
+    void setValue(Tile *tile, const QRect &rect) const override;
+};
+
 } // namespace Tiled

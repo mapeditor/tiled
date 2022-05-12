@@ -22,7 +22,6 @@
 
 #include <QUndoCommand>
 #include <QUrl>
-#include <QRect>
 
 namespace Tiled {
 
@@ -35,21 +34,18 @@ class ChangeTileImageSource : public QUndoCommand
 public:
     ChangeTileImageSource(TilesetDocument *tilesetDocument,
                           Tile *tile,
-                          const QUrl &imageSource,
-                          const QRect &imageRect);
+                          const QUrl &imageSource);
 
-    void undo() override { apply(mOldImageSource, mOldImageRect); }
-    void redo() override { apply(mNewImageSource, mNewImageRect); }
+    void undo() override { apply(mOldImageSource); }
+    void redo() override { apply(mNewImageSource); }
 
 private:
-    void apply(const QUrl &imageSource, const QRect &imageRect);
+    void apply(const QUrl &imageSource);
 
     TilesetDocument *mTilesetDocument;
     Tile *mTile;
     const QUrl mOldImageSource;
     const QUrl mNewImageSource;
-    const QRect mOldImageRect;
-    const QRect mNewImageRect;
 };
 
 } // namespace Tiled

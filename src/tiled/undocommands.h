@@ -41,6 +41,7 @@ enum UndoCommands {
     Cmd_ChangeMapObject,
     Cmd_ChangeMapObjectTransform,
     Cmd_ChangeSelectedArea,
+    Cmd_ChangeTileImageRect,
     Cmd_ChangeTileProbability,
     Cmd_ChangeTileType,
     Cmd_ChangeTileWangId,

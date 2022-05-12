@@ -410,31 +410,33 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeEndElement();
     }
 
-    const bool includeAllTiles = imageSource.isEmpty() || tileset.anyTileOutOfOrder();
+    const bool isCollection = tileset.isCollection();
+    const bool includeAllTiles = isCollection || tileset.anyTileOutOfOrder();
 
     for (const Tile *tile : tileset.tiles()) {
         if (includeAllTiles || includeTile(tile)) {
             w.writeStartElement(QStringLiteral("tile"));
             w.writeAttribute(QStringLiteral("id"), QString::number(tile->id()));
+
+            const QRect &imageRect = tile->imageRect();
+            if (!imageRect.isNull() && imageRect != tile->image().rect() && isCollection) {
+                w.writeAttribute(QStringLiteral("x"),
+                                 QString::number(imageRect.x()));
+                w.writeAttribute(QStringLiteral("y"),
+                                 QString::number(imageRect.y()));
+                w.writeAttribute(QStringLiteral("width"),
+                                 QString::number(imageRect.width()));
+                w.writeAttribute(QStringLiteral("height"),
+                                 QString::number(imageRect.height()));
+            }
+
             if (!tile->type().isEmpty())
                 w.writeAttribute(QStringLiteral("type"), tile->type());
             if (tile->probability() != 1.0)
                 w.writeAttribute(QStringLiteral("probability"), QString::number(tile->probability()));
             if (!tile->properties().isEmpty())
                 writeProperties(w, tile->properties());
-            if (imageSource.isEmpty()) {
-                const QRect &imageRect = tile->imageRect();
-                if (!imageRect.isNull() && imageRect != tile->image().rect()) {
-                    w.writeAttribute(QStringLiteral("x"),
-                                     QString::number(imageRect.x()));
-                    w.writeAttribute(QStringLiteral("y"),
-                                     QString::number(imageRect.y()));
-                    w.writeAttribute(QStringLiteral("width"),
-                                     QString::number(imageRect.width()));
-                    w.writeAttribute(QStringLiteral("height"),
-                                     QString::number(imageRect.height()));
-                }
-
+            if (isCollection) {
                 w.writeStartElement(QStringLiteral("image"));
 
                 const QSize imageSize = tile->image().isNull() ? tile->size()

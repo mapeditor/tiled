@@ -911,13 +911,13 @@ void PropertyBrowser::addTileProperties()
         imageSourceProperty->setAttribute(QLatin1String("filter"),
                                           Utils::readableImageFormatsFilter());
         imageSourceProperty->setEnabled(mTilesetDocument);
-
-        QtVariantProperty *imageRectProperty = addProperty(ImageRectProperty,
-                                                           QMetaType::QRect,
-                                                           tr("Image Rect"), groupProperty);
-        imageRectProperty->setEnabled(mTilesetDocument);
-        imageRectProperty->setAttribute(QLatin1String("constraint"), tile->image().rect());
     }
+
+    QtVariantProperty *imageRectProperty = addProperty(ImageRectProperty,
+                                                       QMetaType::QRect,
+                                                       tr("Image Rect"), groupProperty);
+    imageRectProperty->setEnabled(mTilesetDocument && tile->tileset()->isCollection());
+    imageRectProperty->setAttribute(QLatin1String("constraint"), tile->image().rect());
 
     addProperty(groupProperty);
 }
@@ -1436,13 +1436,13 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
                                                   val.toFloat()));
         break;
     case ImageRectProperty:
-        undoStack->push(new ChangeTileImageSource(mTilesetDocument,
-                                                  tile, tile->imageSource(), val.toRect()));
+        undoStack->push(new ChangeTileImageRect(mTilesetDocument,
+                                                { tile }, { val.toRect() }));
         break;
     case ImageSourceProperty: {
         const FilePath filePath = val.value<FilePath>();
         undoStack->push(new ChangeTileImageSource(mTilesetDocument,
-                                                  tile, filePath.url, tile->imageRect()));
+                                                  tile, filePath.url));
         break;
     }
     default:
@@ -1627,15 +1627,16 @@ void PropertyBrowser::addProperties()
     case Object::ObjectTemplateType:    break;
     }
 
-    // Make sure the color and font properties are collapsed, to save space
-    if (QtProperty *colorProperty = mIdToProperty.value(ColorProperty))
-        setExpanded(items(colorProperty).constFirst(), false);
-    if (QtProperty *colorProperty = mIdToProperty.value(BackgroundColorProperty))
-        setExpanded(items(colorProperty).constFirst(), false);
-    if (QtProperty *fontProperty = mIdToProperty.value(FontProperty))
-        setExpanded(items(fontProperty).constFirst(), false);
-    if (QtProperty *tintColorProperty = mIdToProperty.value(TintColorProperty))
-        setExpanded(items(tintColorProperty).constFirst(), false);
+    // Make sure certain properties are collapsed, to save space
+    for (const PropertyId id : {
+         ColorProperty,
+         BackgroundColorProperty,
+         FontProperty,
+         TintColorProperty,
+         ImageRectProperty }) {
+        if (QtProperty *property = mIdToProperty.value(id))
+            setExpanded(items(property).constFirst(), false);
+    }
 
     // Add a node for the custom properties
     mCustomPropertiesGroup = mGroupManager->addProperty(tr("Custom Properties"));
@@ -1817,10 +1818,9 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[WidthProperty]->setValue(tileSize.width());
         mIdToProperty[HeightProperty]->setValue(tileSize.height());
         mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
-        if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty)) {
+        if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
             imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));
-            mIdToProperty[ImageRectProperty]->setValue(tile->imageRect());
-        }
+        mIdToProperty[ImageRectProperty]->setValue(tile->imageRect());
         break;
     }
     case Object::WangSetType: {
