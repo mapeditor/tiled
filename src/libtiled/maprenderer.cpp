@@ -38,6 +38,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 
+#include <QCache>
 #include <QPaintEngine>
 #include <QPainter>
 #include <QVector2D>
@@ -46,10 +47,50 @@
 
 using namespace Tiled;
 
+struct TintedKey
+{
+    const qint64 key;
+    const QColor color;
+
+    bool operator==(const TintedKey &o) const
+    {
+        return key == o.key && color == o.color;
+    }
+};
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+uint qHash(const TintedKey &key, uint seed) Q_DECL_NOTHROW
+#else
+size_t qHash(const TintedKey &key, size_t seed) Q_DECL_NOTHROW
+#endif
+{
+    auto h = ::qHash(key.key, seed);
+    h = ::qHash(key.color.rgba(), h);
+    return h;
+}
+
+// Borrowed from qpixmapcache.cpp
+static inline qsizetype cost(const QPixmap &pixmap)
+{
+    // make sure to do a 64bit calculation; qsizetype might be smaller
+    const qint64 costKb = static_cast<qint64>(pixmap.width())
+                        * pixmap.height() * pixmap.depth() / (8 * 1024);
+    const qint64 costMax = std::numeric_limits<qsizetype>::max();
+    // a small pixmap should have at least a cost of 1(kb)
+    return static_cast<qsizetype>(qBound(1LL, costKb, costMax));
+}
+
 static QPixmap tinted(const QPixmap &pixmap, const QColor &color)
 {
-    if (!color.isValid() || color == QColor(255, 255, 255, 255))
+    if (!color.isValid() || color == QColor(255, 255, 255, 255) || pixmap.isNull())
         return pixmap;
+
+    // Cache for up to 100 MB of tinted pixmaps, since tinting is expensive
+    static QCache<TintedKey, QPixmap> cache { 100 * 1024 };
+
+    const TintedKey tintedKey { pixmap.cacheKey(), color };
+    if (auto cached = cache.object(tintedKey))
+        return *cached;
 
     QPixmap resultImage = pixmap;
     QPainter painter(&resultImage);
@@ -71,6 +112,8 @@ static QPixmap tinted(const QPixmap &pixmap, const QColor &color)
     painter.fillRect(resultImage.rect(), color);
 
     painter.end();
+
+    cache.insert(tintedKey, new QPixmap(resultImage), cost(resultImage));
 
     return resultImage;
 }
