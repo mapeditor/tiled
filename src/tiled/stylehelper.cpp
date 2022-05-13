@@ -27,6 +27,7 @@
 #include <QPixmapCache>
 #include <QStyle>
 #include <QStyleFactory>
+#include <QStyleHints>
 
 namespace Tiled {
 
@@ -94,6 +95,7 @@ void StyleHelper::initialize()
 StyleHelper::StyleHelper()
     : mDefaultStyle(QApplication::style()->objectName())
     , mDefaultPalette(QApplication::palette())
+    , mDefaultShowShortcutsInContextMenus(QGuiApplication::styleHints()->showShortcutsInContextMenus())
 {
     apply();
 
@@ -109,12 +111,14 @@ void StyleHelper::apply()
 
     QString desiredStyle;
     QPalette desiredPalette;
+    bool showShortcutsInContextMenus = true;
 
     switch (preferences->applicationStyle()) {
     default:
     case Preferences::SystemDefaultStyle:
         desiredStyle = defaultStyle();
         desiredPalette = defaultPalette();
+        showShortcutsInContextMenus = mDefaultShowShortcutsInContextMenus;
         break;
     case Preferences::FusionStyle:
         desiredStyle = QLatin1String("fusion");
@@ -127,6 +131,12 @@ void StyleHelper::apply()
                                        preferences->selectionColor());
         break;
     }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+    QGuiApplication::styleHints()->setShowShortcutsInContextMenus(showShortcutsInContextMenus);
+#else
+    Q_UNUSED(showShortcutsInContextMenus)
+#endif
 
     if (QApplication::style()->objectName() != desiredStyle) {
         QStyle *style;
