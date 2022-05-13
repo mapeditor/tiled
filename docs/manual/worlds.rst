@@ -23,7 +23,7 @@ Defining a World
 
 A world is defined in a ``.world`` file, which is a JSON file that
 tells Tiled which maps are part of the world and at what location. Worlds
-can be created by using the *Map > New World...* action.
+can be created by using the *World > New World...* action.
 
 You may also create `.world files` by hand. Here is a simple example of a
 world definition, which defines the global position (in pixels) of three maps:
@@ -51,7 +51,7 @@ world definition, which defines the global position (in pixels) of three maps:
         "type": "world"
     }
 
-Once defined, a world needs to be loaded by choosing *Map > Load World...*
+Once defined, a world needs to be loaded by choosing *World > Load World...*
 from the menu. Multiple worlds can be loaded at the same time, and worlds will
 be automatically loaded again when Tiled is restarted.
 
@@ -93,7 +93,7 @@ Moving Maps
     - holding Shift will perform bigger steps.
 
 Saving World files
-    You can save manipulated world files by using the *Map > Save World* 
+    You can save manipulated world files by using the *World > Save World*
     menu. Worlds will also automatically be saved if you launch any external
     tool that has the 'Save Map Before Executing' option enabled.
 

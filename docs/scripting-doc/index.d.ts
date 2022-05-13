@@ -2876,6 +2876,8 @@ declare namespace tiled {
 
   /**
    * The version of Qt which Tiled is running against.
+   *
+   * @since 1.8.5
    */
   export const qtVersion: string;
 
