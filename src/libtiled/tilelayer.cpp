@@ -713,12 +713,20 @@ Layer *TileLayer::mergedWith(const Layer *other) const
     Q_ASSERT(canMergeWith(other));
 
     const TileLayer *o = static_cast<const TileLayer*>(other);
-    const QRect unitedRect = rect().united(o->rect());
-    const QPoint offset = position() - unitedRect.topLeft();
-
     TileLayer *merged = clone();
-    merged->resize(unitedRect.size(), offset);
-    merged->merge(o->position() - unitedRect.topLeft(), o);
+
+    if (map() && !map()->infinite()) {
+        const QRect unitedRect = merged->rect().united(o->rect());
+        const QPoint offset = merged->position() - unitedRect.topLeft();
+        merged->resize(unitedRect.size(), offset);
+        merged->merge(o->position() - unitedRect.topLeft(), o);
+        merged->setPosition(unitedRect.topLeft());
+    } else {
+        const QRegion region = o->region().translated(-position());
+        const QPoint offset = merged->position() - position();
+        merged->setCells(offset.x(), offset.y(), o, region);
+    }
+
     return merged;
 }
 
