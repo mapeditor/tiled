@@ -1405,7 +1405,7 @@ declare class Image {
   constructor(fileName: string, format?: string);
 
   /**
-   * Returns the 32-bit color value.
+   * Returns the 32-bit unsigned color value (in ARGB order).
    */
   pixel(x: number, y: number): number;
 
@@ -1415,8 +1415,8 @@ declare class Image {
   pixelColor(x: number, y: number): string;
 
   /**
-   * Sets the color at the specified location to the given 32-bit color
-   * value or color table index.
+   * Sets the color at the specified location to the given 32-bit unsigned
+   * color value (ARGB) or color table index.
    */
   setPixel(x: number, y: number, index_or_rgb: number): void;
 
@@ -1427,8 +1427,8 @@ declare class Image {
   setPixelColor(x: number, y: number, color: string): void;
 
   /**
-   * Fills the image with the given 32-bit color value or color table
-   * index.
+   * Fills the image with the given 32-bit unsigned color value (ARGB) or color
+   * table index.
    */
   fill(index_or_rgb: number): void;
 
