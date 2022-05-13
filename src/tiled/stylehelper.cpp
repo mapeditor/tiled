@@ -95,7 +95,9 @@ void StyleHelper::initialize()
 StyleHelper::StyleHelper()
     : mDefaultStyle(QApplication::style()->objectName())
     , mDefaultPalette(QApplication::palette())
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     , mDefaultShowShortcutsInContextMenus(QGuiApplication::styleHints()->showShortcutsInContextMenus())
+#endif
 {
     apply();
 
