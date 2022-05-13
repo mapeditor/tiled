@@ -14,6 +14,7 @@
 * Fixed hover indicator sometimes overlapping selection indicator
 * Fixed removal of terrain info when removing tiles from a collection
 * Scripting: Fixed region.rects when compiled against Qt 5.9 to 5.13
+* Scripting: Layer.tintColor is now #ffffff when not set
 * macOS: Show shortcuts in context menus when using Tiled Fusion style (#1978)
 * AppImage: Updated to Sentry 0.4.17
 

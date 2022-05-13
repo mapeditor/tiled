@@ -119,7 +119,8 @@ inline qreal EditableLayer::opacity() const
 
 inline QColor EditableLayer::tintColor() const
 {
-    return layer()->tintColor();
+    return layer()->tintColor().isValid() ? layer()->tintColor()
+                                          : QColor(255, 255, 255, 255);
 }
 
 inline bool EditableLayer::isVisible() const

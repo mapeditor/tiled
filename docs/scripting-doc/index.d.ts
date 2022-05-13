@@ -1773,6 +1773,9 @@ declare class Layer extends TiledObject {
    * layer or by any child layers. Affects tile layers, image layers and tile
    * objects.
    *
+   * Since Tiled 1.8.5, this property is #ffffff when no tint color has been
+   * set on this layer (before it was #000000 in that case).
+   *
    * @since 1.8
    */
   tintColor: color;
