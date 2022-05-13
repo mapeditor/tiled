@@ -1009,6 +1009,11 @@ void MainWindow::dropEvent(QDropEvent *e)
 
 void MainWindow::resizeEvent(QResizeEvent *e)
 {
+    // When the window is maximized, we need to delay restoring the internal
+    // layout until after the second resize event (issue #590).
+    if (!mHasRestoredLayout && (!isMaximized() || e->oldSize().isValid()))
+        restoreLayout();
+
     if (mPopupWidget)
         updatePopupGeometry(e->size());
 }
@@ -2304,13 +2309,24 @@ void MainWindow::readSettings()
         restoreGeometry(geom);
     else
         resize(Utils::dpiScaled(QSize(1200, 700)));
-    restoreState(preferences::mainWindowState);
+
+    // Make sure layout is restored eventually (see resizeEvent)
+    QTimer::singleShot(200, this, &MainWindow::restoreLayout);
+
     updateRecentFilesMenu();
     updateRecentProjectsMenu();
 
-    mDocumentManager->restoreState();
-
     mLockLayout->setChecked(preferences::mainWindowLocked);
+}
+
+void MainWindow::restoreLayout()
+{
+    if (mHasRestoredLayout)
+        return;
+
+    mHasRestoredLayout = true;
+    restoreState(preferences::mainWindowState);
+    mDocumentManager->restoreState();
 }
 
 void MainWindow::updateWindowTitle()
