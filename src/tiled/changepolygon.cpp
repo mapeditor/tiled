@@ -32,22 +32,10 @@ using namespace Tiled;
 
 ChangePolygon::ChangePolygon(Document *document,
                              MapObject *mapObject,
-                             const QPolygonF &oldPolygon)
-    : ChangePolygon(document,
-                    mapObject,
-                    mapObject->polygon(),
-                    oldPolygon)
-{
-    setText(QCoreApplication::translate("Undo Commands", "Change Polygon"));
-}
-
-ChangePolygon::ChangePolygon(Document *document,
-                             MapObject *mapObject,
-                             const QPolygonF &newPolygon,
-                             const QPolygonF &oldPolygon)
+                             const QPolygonF &newPolygon)
     : mDocument(document)
     , mMapObject(mapObject)
-    , mOldPolygon(oldPolygon)
+    , mOldPolygon(mapObject->polygon())
     , mNewPolygon(newPolygon)
     , mOldChangeState(mapObject->propertyChanged(MapObject::ShapeProperty))
 {

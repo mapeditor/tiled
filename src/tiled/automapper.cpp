@@ -1118,17 +1118,20 @@ void AutoMapper::matchRule(const Rule &rule,
                                  context.targetMap->height() - ruleHeight);
     }
 
-    forEachPointInRegion(ruleMatchRegion, [&] (int x, int y) {
-        if (rule.options.modX != 1 && (x + rule.options.offsetX) % rule.options.modX != 0)
-            return;
-        if (rule.options.modX != 1 && (y + rule.options.offsetY) % rule.options.modY != 0)
-            return;
-        if (rule.options.skipChance != 0.0 && randomDouble() < rule.options.skipChance)
-            return;
+    for (const QRect &rect : ruleMatchRegion) {
+        const int startX = rect.left() + (rect.left() + rule.options.offsetX) % rule.options.modX;
+        const int startY = rect.top() + (rect.top() + rule.options.offsetY) % rule.options.modY;
 
-        if (matchRuleAtOffset(inputSets, QPoint(x, y), getCell))
-            matched(QPoint(x, y));
-    });
+        for (int y = startY; y <= rect.bottom(); y += rule.options.modY) {
+            for (int x = startX; x <= rect.right(); x += rule.options.modX) {
+                if (rule.options.skipChance != 0.0 && randomDouble() < rule.options.skipChance)
+                    return;
+
+                if (matchRuleAtOffset(inputSets, QPoint(x, y), getCell))
+                    matched(QPoint(x, y));
+            }
+        }
+    }
 }
 
 void AutoMapper::applyRule(const Rule &rule, QPoint pos,
@@ -1270,8 +1273,9 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, QRect rect,
     const int dwidth = dstLayer->width();
     const int dheight = dstLayer->height();
 
-    const bool wrapBorder = mOptions.wrapBorder && !context.targetMap->infinite();
-    if (!wrapBorder) {
+    const bool fixedSize = !context.targetMap->infinite();
+    const bool wrapBorder = mOptions.wrapBorder && fixedSize;
+    if (!wrapBorder && fixedSize) {
         startX = qMax(0, startX);
         startY = qMax(0, startY);
         endX = qMin(dwidth, endX);

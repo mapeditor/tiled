@@ -44,7 +44,6 @@
 #include "mapobjectmodel.h"
 #include "maprenderer.h"
 #include "movelayer.h"
-#include "movemapobject.h"
 #include "movemapobjecttogroup.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
@@ -54,11 +53,11 @@
 #include "reparentlayers.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
-#include "rotatemapobject.h"
 #include "templatemanager.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
+#include "transformmapobjects.h"
 
 #include <QFileInfo>
 #include <QRect>
@@ -337,6 +336,7 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
     QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
 
     QList<MapObject *> objectsToRemove;
+    QList<MapObject *> objectsToMove;
 
     LayerIterator iterator(map());
     while (Layer *layer = iterator.next()) {
@@ -350,14 +350,11 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
             ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
 
             for (MapObject *o : objectGroup->objects()) {
-                if (removeObjects && !visibleIn(visibleArea, o, *renderer())) {
-                    // Remove objects that will fall outside of the map
+                // Remove objects that will fall outside of the map
+                if (removeObjects && !visibleIn(visibleArea, o, *renderer()))
                     objectsToRemove.append(o);
-                } else {
-                    QPointF oldPos = o->position();
-                    QPointF newPos = oldPos + pixelOffset;
-                    new MoveMapObject(this, o, newPos, oldPos, command);
-                }
+                else if (!pixelOffset.isNull())
+                    objectsToMove.append(o);
             }
             break;
         }
@@ -378,6 +375,15 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
 
     if (!objectsToRemove.isEmpty())
         new RemoveMapObjects(this, objectsToRemove, command);
+
+    if (!objectsToMove.isEmpty()) {
+        QVector<TransformState> states;
+        for (MapObject *o : qAsConst(objectsToMove)) {
+            states.append(TransformState(o));
+            states.last().setPosition(o->position() + pixelOffset);
+        }
+        new TransformMapObjects(this, objectsToMove, states, command);
+    }
 
     new ResizeMap(this, size, command);
     new ChangeSelectedArea(this, movedSelection, command);
@@ -446,12 +452,11 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
     if (mSelectedObjects.isEmpty())
         return;
 
-    undoStack()->beginMacro(tr("Rotate %n Object(s)", "",
-                               mSelectedObjects.size()));
+    QVector<TransformState> states;
+    states.reserve(mSelectedObjects.size());
 
     // TODO: Rotate them properly as a group
-    const auto &selectedObjects = mSelectedObjects;
-    for (MapObject *mapObject : selectedObjects) {
+    for (MapObject *mapObject : qAsConst(mSelectedObjects)) {
         const qreal oldRotation = mapObject->rotation();
         qreal newRotation = oldRotation;
 
@@ -465,10 +470,13 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
                 newRotation -= 360;
         }
 
-        undoStack()->push(new RotateMapObject(this, mapObject,
-                                              newRotation, oldRotation));
+        states.append(TransformState(mapObject));
+        auto &state = states.last();
+        state.setRotation(newRotation);
     }
-    undoStack()->endMacro();
+
+    auto command = new TransformMapObjects(this, mSelectedObjects, states);
+    command->setText(tr("Rotate %n Object(s)", "", mSelectedObjects.size()));
 }
 
 /**

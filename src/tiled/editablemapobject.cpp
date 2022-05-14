@@ -26,7 +26,6 @@
 #include "editablemap.h"
 #include "editableobjectgroup.h"
 #include "editabletile.h"
-#include "movemapobject.h"
 #include "scriptmanager.h"
 
 #include <QCoreApplication>
@@ -154,13 +153,7 @@ void EditableMapObject::setType(QString type)
 
 void EditableMapObject::setPos(QPointF pos)
 {
-    if (Document *doc = document()) {
-        asset()->push(new MoveMapObject(doc, mapObject(),
-                                        pos, mapObject()->position()));
-    } else if (!checkReadOnly()) {
-        mapObject()->setPosition(pos);
-        mapObject()->setPropertyChanged(MapObject::PositionProperty);
-    }
+    setMapObjectProperty(MapObject::PositionProperty, pos);
 }
 
 void EditableMapObject::setSize(QSizeF size)
@@ -202,10 +195,7 @@ void EditableMapObject::setPolygon(QJSValue polygonValue)
     }
 
     if (Document *doc = document()) {
-        asset()->push(new ChangePolygon(doc,
-                                        mapObject(),
-                                        polygon,
-                                        mapObject()->polygon()));
+        asset()->push(new ChangePolygon(doc, mapObject(), polygon));
     } else if (!checkReadOnly()) {
         mapObject()->setPolygon(polygon);
         mapObject()->setPropertyChanged(MapObject::ShapeProperty);

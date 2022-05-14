@@ -32,17 +32,15 @@
 #include "mapobjectmodel.h"
 #include "maprenderer.h"
 #include "mapscene.h"
-#include "movemapobject.h"
 #include "objectgroup.h"
 #include "preferences.h"
 #include "raiselowerhelper.h"
-#include "resizemapobject.h"
-#include "rotatemapobject.h"
 #include "selectionrectangle.h"
 #include "snaphelper.h"
 #include "tile.h"
 #include "tileset.h"
 #include "toolmanager.h"
+#include "transformmapobjects.h"
 #include "utils.h"
 
 #include <QActionGroup>
@@ -457,16 +455,16 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
             moveBy /= Preferences::instance()->gridFine();
     }
 
-    QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(tr("Move %n Object(s)", "", objects.size()));
-    int i = 0;
+    QVector<TransformState> states;
+    states.reserve(objects.size());
+
     for (MapObject *object : objects) {
-        const QPointF oldPos = object->position();
-        const QPointF newPos = oldPos + moveBy;
-        undoStack->push(new MoveMapObject(mapDocument(), object, newPos, oldPos));
-        ++i;
+        states.append(TransformState(object));
+        states.last().setPosition(object->position() + moveBy);
     }
-    undoStack->endMacro();
+
+    auto command = new TransformMapObjects(mapDocument(), objects, states);
+    mapDocument()->undoStack()->push(command);
 }
 
 void ObjectSelectionTool::mouseEntered()
@@ -705,16 +703,16 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         mAction = NoAction;
         break;
     case Moving:
-        finishMoving(event->scenePos());
+        finishMoving();
         break;
     case MovingOrigin:
         finishMovingOrigin();
         break;
     case Rotating:
-        finishRotating(event->scenePos());
+        finishRotating();
         break;
     case Resizing:
-        finishResizing(event->scenePos());
+        finishResizing();
         break;
     }
 
@@ -1095,10 +1093,10 @@ void ObjectSelectionTool::objectsAboutToBeRemoved(const QList<MapObject *> &obje
     if (mHoveredObject && objects.contains(mHoveredObject))
         mHoveredObject = nullptr;
 
-    // Abort move/rotate/resize to avoid crashing...
-    // TODO: This should really not be allowed to happen in the first place
+    // Abort move/rotate/resize to avoid crashing
+    // TODO: Would be better if this could be avoided entirely
     if (mAction == Moving || mAction == Rotating || mAction == Resizing)
-        abortCurrentAction(UserInteraction, objects);
+        abortCurrentAction(ObjectsRemoved);
 }
 
 void ObjectSelectionTool::setSelectionMode(Qt::ItemSelectionMode selectionMode)
@@ -1238,37 +1236,35 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
     const MapRenderer *renderer = mapDocument()->renderer();
     const QPointF diff = snapToGrid(pos - mStart, modifiers);
 
+    QVector<TransformState> states;
+    states.reserve(mMovingObjects.size());
+
     for (const MovingObject &object : qAsConst(mMovingObjects)) {
         const QPointF newPixelPos = object.oldScreenPosition + diff;
         const QPointF newPos = renderer->screenToPixelCoords(newPixelPos);
 
-        object.mapObject->setPosition(newPos);
+        states.append(TransformState(object.mapObject));
+        auto &state = states.last();
+        state.setPosition(newPos);
     }
 
-    emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::PositionProperty));
+    auto command = new TransformMapObjects(mapDocument(), changingObjects(), states);
+    if (command->hasAnyChanges())
+        mapDocument()->undoStack()->push(command);
+    else
+        delete command;
 
     mOriginIndicator->setPos(mOriginPos + diff);
 }
 
-void ObjectSelectionTool::finishMoving(const QPointF &pos)
+void ObjectSelectionTool::finishMoving()
 {
     Q_ASSERT(mAction == Moving);
+
     mAction = NoAction;
-    updateHandles();
-
-    if (mStart == pos) // Move is a no-op
-        return;
-
-    QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(tr("Move %n Object(s)", "", mMovingObjects.size()));
-    for (const MovingObject &object : qAsConst(mMovingObjects)) {
-        undoStack->push(new MoveMapObject(mapDocument(),
-                                          object.mapObject,
-                                          object.oldPosition));
-    }
-    undoStack->endMacro();
-
     mMovingObjects.clear();
+
+    updateHandles();
 }
 
 void ObjectSelectionTool::startMovingOrigin(const QPointF &pos)
@@ -1325,6 +1321,9 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
     if (modifiers & Qt::ControlModifier)
         angleDiff = std::floor((angleDiff + snap / 2) / snap) * snap;
 
+    QVector<TransformState> states;
+    states.reserve(mMovingObjects.size());
+
     for (const MovingObject &object : qAsConst(mMovingObjects)) {
         MapObject *mapObject = object.mapObject;
         const QPointF offset = mapScene()->absolutePositionForLayer(*mapObject->objectGroup());
@@ -1335,42 +1334,30 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         const QPointF newRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
                                 oldRelPos.x() * sn + oldRelPos.y() * cs);
         const QPointF newPixelPos = mOriginPos + newRelPos - offset;
-        const QPointF newPos = renderer->screenToPixelCoords(newPixelPos);
 
-        const qreal newRotation = normalizeRotation(object.oldRotation + angleDiff * 180 / M_PI);
+        states.append(TransformState(mapObject));
+        auto &state = states.last();
 
-        mapObject->setPosition(newPos);
+        state.setPosition(renderer->screenToPixelCoords(newPixelPos));
         if (mapObject->canRotate())
-            mapObject->setRotation(newRotation);
+            state.setRotation(normalizeRotation(object.oldRotation + angleDiff * 180 / M_PI));
     }
 
-    emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::ChangedProperties {
-                                                          MapObject::PositionProperty,
-                                                          MapObject::RotationProperty
-                                                      }));
+    auto command = new TransformMapObjects(mapDocument(), changingObjects(), states);
+    if (command->hasAnyChanges())
+        mapDocument()->undoStack()->push(command);
+    else
+        delete command;
 }
 
-void ObjectSelectionTool::finishRotating(const QPointF &pos)
+void ObjectSelectionTool::finishRotating()
 {
     Q_ASSERT(mAction == Rotating);
+
     mAction = NoAction;
-    updateHandles();
-
-    if (mStart == pos) // No rotation at all
-        return;
-
-    QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(tr("Rotate %n Object(s)", "", mMovingObjects.size()));
-
-    for (const MovingObject &object : qAsConst(mMovingObjects)) {
-        MapObject *mapObject = object.mapObject;
-        undoStack->push(new MoveMapObject(mapDocument(), mapObject, object.oldPosition));
-        undoStack->push(new RotateMapObject(mapDocument(), mapObject, object.oldRotation));
-    }
-
-    undoStack->endMacro();
-
     mMovingObjects.clear();
+
+    updateHandles();
 }
 
 
@@ -1438,6 +1425,9 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
     if (!std::isfinite(scale))
         scale = 1;
 
+    QVector<TransformState> states;
+    states.reserve(mMovingObjects.size());
+
     for (const MovingObject &object : qAsConst(mMovingObjects)) {
         MapObject *mapObject = object.mapObject;
         const QPointF offset = mapScene()->absolutePositionForLayer(*mapObject->objectGroup());
@@ -1451,9 +1441,12 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
         const QSizeF newSize(origSize.width() * scale,
                              origSize.height() * scale);
 
+        states.append(TransformState(object.mapObject));
+        auto &state = states.last();
+
         if (mapObject->polygon().isEmpty() == false) {
             // For polygons, we have to scale in object space.
-            qreal rotation = mapObject->rotation() * M_PI / -180;
+            const qreal rotation = mapObject->rotation() * M_PI / -180;
             const qreal sn = std::sin(rotation);
             const qreal cs = std::cos(rotation);
 
@@ -1468,18 +1461,19 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
                                        scaledPoint.y() * cs + scaledPoint.x() * sn);
                 newPolygon[n] = newPoint;
             }
-            mapObject->setPolygon(newPolygon);
+
+            state.setPolygon(newPolygon);
         }
 
-        mapObject->setSize(newSize);
-        mapObject->setPosition(newPos);
+        state.setSize(newSize);
+        state.setPosition(newPos);
     }
 
-    emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::ChangedProperties {
-                                                          MapObject::PositionProperty,
-                                                          MapObject::SizeProperty,
-                                                          MapObject::ShapeProperty
-                                                      }));
+    auto command = new TransformMapObjects(mapDocument(), changingObjects(), states);
+    if (command->hasAnyChanges())
+        mapDocument()->undoStack()->push(command);
+    else
+        delete command;
 }
 
 void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin,
@@ -1523,6 +1517,8 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
 
     QPointF newPos = oldPos;
     QSizeF newSize = object.oldSize;
+
+    TransformState state { mapObject };
 
     /* In case one of the anchors was used as-is, the desired size can be
      * derived directly from the distance from the origin for rectangle
@@ -1606,7 +1602,7 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
                 newPolygon[n] = QPointF(point.x() * scalingFactor.width(),
                                         point.y() * scalingFactor.height());
             }
-            mapObject->setPolygon(newPolygon);
+            state.setPolygon(newPolygon);
         }
     }
 
@@ -1615,40 +1611,23 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
 
     newPos = renderer->screenToPixelCoords(newPos * rotate);
 
-    mapObject->setSize(newSize);
-    mapObject->setPosition(newPos);
+    state.setSize(newSize);
+    state.setPosition(newPos);
 
-    emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::ChangedProperties {
-                                                          MapObject::PositionProperty,
-                                                          MapObject::SizeProperty,
-                                                          MapObject::ShapeProperty,
-                                                      }));
+    if (state.propertiesChangedNow()) {
+        auto command = new TransformMapObjects(mapDocument(), { mapObject }, { state });
+        mapDocument()->undoStack()->push(command);
+    }
 }
 
-void ObjectSelectionTool::finishResizing(const QPointF &pos)
+void ObjectSelectionTool::finishResizing()
 {
     Q_ASSERT(mAction == Resizing);
+
     mAction = NoAction;
-    updateHandlesAndOrigin();
-
-    if (mStart == pos) // No scaling at all
-        return;
-
-    QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(tr("Resize %n Object(s)", "", mMovingObjects.size()));
-
-    for (const MovingObject &object : qAsConst(mMovingObjects)) {
-        MapObject *mapObject = object.mapObject;
-        undoStack->push(new MoveMapObject(mapDocument(), mapObject, object.oldPosition));
-        undoStack->push(new ResizeMapObject(mapDocument(), mapObject, object.oldSize));
-
-        if (!object.oldPolygon.isEmpty())
-            undoStack->push(new ChangePolygon(mapDocument(), mapObject, object.oldPolygon));
-    }
-
-    undoStack->endMacro();
-
     mMovingObjects.clear();
+
+    updateHandlesAndOrigin();
 }
 
 void ObjectSelectionTool::setMode(Mode mode)
@@ -1685,7 +1664,7 @@ void ObjectSelectionTool::saveSelectionState()
  * The \a removedObjects is used to avoid sending the "objectsChanged" signal
  * for objects that have been removed.
  */
-void ObjectSelectionTool::abortCurrentAction(AbortReason reason, const QList<MapObject *> &removedObjects)
+void ObjectSelectionTool::abortCurrentAction(AbortReason reason)
 {
     switch (mAction) {
     case NoAction:
@@ -1699,28 +1678,30 @@ void ObjectSelectionTool::abortCurrentAction(AbortReason reason, const QList<Map
     case Moving:
     case Rotating:
     case Resizing:
-        // Return the origin indicator to its initial position
-        mOriginIndicator->setPos(mOriginPos);
+        if (reason == UserInteraction) {
+            // Return the origin indicator to its initial position
+            mOriginIndicator->setPos(mOriginPos);
 
-        // Reset objects to their old transform
-        for (const MovingObject &object : qAsConst(mMovingObjects)) {
-            object.mapObject->setPosition(object.oldPosition);
-            object.mapObject->setSize(object.oldSize);
-            object.mapObject->setPolygon(object.oldPolygon);
-            object.mapObject->setRotation(object.oldRotation);
+            QVector<TransformState> states;
+            states.reserve(mMovingObjects.size());
+
+            // Reset objects to their old transform
+            for (const MovingObject &object : qAsConst(mMovingObjects)) {
+                states.append(TransformState(object.mapObject));
+                auto &state = states.last();
+
+                state.setPosition(object.oldPosition);
+                state.setSize(object.oldSize);
+                state.setPolygon(object.oldPolygon);
+                state.setRotation(object.oldRotation);
+            }
+
+            auto command = new TransformMapObjects(mapDocument(), changingObjects(), states);
+            if (command->hasAnyChanges())
+                mapDocument()->undoStack()->push(command);
+            else
+                delete command;
         }
-
-        // Don't emit changed for removed objects
-        for (int i = mMovingObjects.size() - 1; i >= 0; --i)
-            if (removedObjects.contains(mMovingObjects.at(i).mapObject))
-                mMovingObjects.remove(i);
-
-        emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::ChangedProperties {
-                                                              MapObject::PositionProperty,
-                                                              MapObject::SizeProperty,
-                                                              MapObject::RotationProperty,
-                                                              MapObject::ShapeProperty,
-                                                          }));
         break;
     }
 
