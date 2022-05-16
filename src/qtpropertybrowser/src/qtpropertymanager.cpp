@@ -1713,9 +1713,7 @@ QString QtBoolPropertyManager::valueText(const QtProperty *property) const
     if (!data.textVisible)
         return QString();
 
-    static const QString trueText = tr("True");
-    static const QString falseText = tr("False");
-    return data.val ? trueText : falseText;
+    return data.val ? tr("True") : tr("False");
 }
 
 /*!
