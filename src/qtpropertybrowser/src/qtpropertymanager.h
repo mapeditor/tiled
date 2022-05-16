@@ -118,6 +118,8 @@ public:
     bool value(const QtProperty *property) const;
     bool textVisible(const QtProperty *property) const;
 
+    static void resetIcons();
+
 public Q_SLOTS:
     void setValue(QtProperty *property, bool val);
     void setTextVisible(QtProperty *property, bool textVisible);
