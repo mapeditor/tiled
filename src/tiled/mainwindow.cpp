@@ -1010,9 +1010,13 @@ void MainWindow::dropEvent(QDropEvent *e)
 void MainWindow::resizeEvent(QResizeEvent *e)
 {
     // When the window is maximized, we need to delay restoring the internal
-    // layout until after the second resize event (issue #590).
-    if (!mHasRestoredLayout && (!isMaximized() || e->oldSize().isValid()))
-        restoreLayout();
+    // layout until after the second resize event (issue #590). This does not
+    // appear to affect macOS, where only a single resize event is observed.
+    if (!mHasRestoredLayout)
+#ifndef Q_OS_MAC
+        if (!isMaximized() || e->oldSize().isValid())
+#endif
+            restoreLayout();
 
     if (mPopupWidget)
         updatePopupGeometry(e->size());
