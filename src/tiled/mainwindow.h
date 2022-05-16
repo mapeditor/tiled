@@ -216,6 +216,7 @@ private:
 
     void writeSettings();
     void readSettings();
+    void restoreLayout();
 
     void updateRecentFilesMenu();
     void updateRecentProjectsMenu();
@@ -265,6 +266,7 @@ private:
     QPointer<PreferencesDialog> mPreferencesDialog;
 
     QMap<QMainWindow*, QByteArray> mMainWindowStates;
+    bool mHasRestoredLayout = false;
 
     SessionOption<QStringList> mLoadedWorlds { "loadedWorlds" };
 

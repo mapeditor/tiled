@@ -5,6 +5,7 @@
 * Allow setting a shortcut on the 'Edit Tileset' action
 * Always select first entry while using the Open File in Project action
 * Improved Add Property dialog layout in case of long type names (#3302)
+* Fixed restoring of window layout when maximized (#590)
 * Fixed snapping when dragging templates into a map (#3326)
 * Fixed map selection rectangle in world for infinite maps (#3340)
 * Fixed 'Merge Layer Down' action for infinite maps
