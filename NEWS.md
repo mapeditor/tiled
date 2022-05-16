@@ -26,11 +26,20 @@
 * Made expanded group layers persistent
 * Improved snapping behavior for scalable objects on staggered maps
 * Allow setting a shortcut on the 'Edit Tileset' action
+* Always select first entry while using the Open File in Project action
+* Improved Add Property dialog layout in case of long type names (#3302)
+* Fixed restoring of window layout when maximized (#590)
 * Fixed snapping when dragging templates into a map (#3326)
 * Fixed map selection rectangle in world for infinite maps (#3340)
+* Fixed 'Merge Layer Down' action for infinite maps
+* Fixed several small issues in the image color picker (#3348)
 * Fixed missing name for undo commands that add/remove maps from world
+* Fixed selection issues for tile objects with a non-zero tile offset
 * Fixed hover indicator sometimes overlapping selection indicator
+* Fixed removal of terrain info when removing tiles from a collection
 * Scripting: Fixed region.rects when compiled against Qt 5.9 to 5.13
+* Scripting: Layer.tintColor is now #ffffff when not set
+* macOS: Show shortcuts in context menus when using Tiled Fusion style (#1978)
 * AppImage: Updated to Sentry 0.4.17
 
 ### Tiled 1.8.4 (31 March 2022)

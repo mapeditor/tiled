@@ -1,5 +1,15 @@
 ## Changelog
 
+### 1.8.2
+
+> 3 May 2022
+
+- Changed File API to a namespace so it can be accessed in TypeScript (#3346)
+- Strict mode corrections (adding "| null" or "| undefined")
+- Added missing declarations for Layer.parallaxFactor and Layer.parentLayer
+- Added funding options
+- Fixed custom tool example
+
 ### 1.8.1
 
 > 8 February 2022

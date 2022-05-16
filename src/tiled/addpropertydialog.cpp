@@ -87,6 +87,8 @@ void AddPropertyDialog::initialize(const Tiled::ClassPropertyType *parentClassTy
             this, &AddPropertyDialog::nameChanged);
     connect(mUi->typeBox, &QComboBox::currentTextChanged,
             this, &AddPropertyDialog::typeChanged);
+
+    mUi->name->setFocus();
 }
 
 AddPropertyDialog::~AddPropertyDialog()

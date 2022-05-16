@@ -47,9 +47,6 @@ public:
 signals:
     void colorSelected(QColor);
 
-protected:
-    void resizeEvent(QResizeEvent*) override;
-
 private:
     void onMouseMove(QMouseEvent*);
     void onMouseRelease(QMouseEvent*);
@@ -59,6 +56,7 @@ private:
     QColor mSelectedColor;
     QImage mImage;
     QPixmap mPreviewIcon;
+    QSize mScaledImageSize;
     double mScaleX, mScaleY;
 };
 

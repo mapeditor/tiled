@@ -1041,12 +1041,12 @@ interface TilesetFormat extends FileFormat {
  * Offers various operations on file paths, such as turning absolute paths
  * into relative ones, splitting a path into its components, and so on.
  */
-interface FileInfo {  // TODO: namespace instead of interface?
+declare namespace FileInfo {
   /**
    * Returns the file name of `filePath` up to (but not including) the
    * first '.' character.
    */
-  baseName(filePath: string): string;
+  export function baseName(filePath: string): string;
 
   /**
    * Returns a canonicalized `filePath`, i.e. an absolute path without
@@ -1057,50 +1057,50 @@ interface FileInfo {  // TODO: namespace instead of interface?
    * canonical paths are really necessary. In most cases, `cleanPath`
    * should be enough.
    */
-  canonicalPath(filePath: string): string;
+  export function canonicalPath(filePath: string): string;
 
   /**
    * Returns `filePath` without redundant separators and with resolved
    * occurrences of `.` and `..` components. For
    * instance, `/usr/local//../bin/` becomes `/usr/bin`.
    */
-  cleanPath(filePath: string): string;
+  export function cleanPath(filePath: string): string;
 
   /**
    * Returns the file name of `filePath` up to (but not including) the
    * last `.` character.
    */
-  completeBaseName(filePath: string): string;
+  export function completeBaseName(filePath: string): string;
 
   /**
    * Returns the file suffix of `filePath` from (but not including) the
    * last `.` character.
    */
-  completeSuffix(filePath: string): string;
+  export function completeSuffix(filePath: string): string;
 
   /**
    * Returns the last component of `filePath`, that is, everything after
    * the last `/` character.
    */
-  fileName(filePath: string): string;
+  export function fileName(filePath: string): string;
 
   /**
    * On Windows, returns `filePath` with all `\` characters replaced
    * by `/`. On other operating systems, it returns the input
    * unmodified.
    */
-  fromNativeSeparators(filePath: string): string;
+  export function fromNativeSeparators(filePath: string): string;
 
   /**
    * Returns true if `filePath` is an absolute path and false
    * if it is a relative one.
    */
-  isAbsolutePath(filePath: string): boolean;
+  export function isAbsolutePath(filePath: string): boolean;
 
   /**
    * Concatenates the given paths using the `/` character.
    */
-  joinPaths(...paths:string[]) : string;
+  export function joinPaths(...paths:string[]) : string;
 
   /**
    * Returns the part of `filePath` that is not the file name, that is,
@@ -1109,25 +1109,25 @@ interface FileInfo {  // TODO: namespace instead of interface?
    * `filePath` ends with a `/` character, then the file name is
    * assumed to be empty for the purpose of the above definition.
    */
-  path(filePath: string): string;
+  export function path(filePath: string): string;
 
   /**
    * Returns the path to `filePath` relative to the directory `dirPath`.
    * If necessary, `..` components are inserted.
    */
-  relativePath(dirPath: string, filePath: string): string;
+  export function relativePath(dirPath: string, filePath: string): string;
 
   /**
    * Returns the file suffix of `filePath` from (but not including) the
    * first `.` character.
    */
-  suffix(filePath: string): string;
+  export function suffix(filePath: string): string;
 
   /**
    * On Windows, returns `filePath` with all `/` characters replaced by
    * `\`. On other operating systems, it returns the input unmodified.
    */
-  toNativeSeparators(filePath: string): string;
+  export function toNativeSeparators(filePath: string): string;
 }
 
 /**
@@ -1135,39 +1135,39 @@ interface FileInfo {  // TODO: namespace instead of interface?
  *
  * @since 1.8
  */
-interface File {  // TODO: namespace instead of interface?
-  readonly Dirs: 0x001
-  readonly Files: 0x002
-  readonly Drives: 0x004
-  readonly NoSymLinks: 0x008
-  readonly AllEntries: 0x007
-  readonly TypeMask: 0x00f
-  readonly Readable: 0x010
-  readonly Writable: 0x020
-  readonly Executable: 0x040
-  readonly PermissionMask: 0x070
-  readonly Modified: 0x080
-  readonly Hidden: 0x100
-  readonly System: 0x200
-  readonly AccessMask: 0x3F0
-  readonly AllDirs: 0x400
-  readonly CaseSensitive: 0x800
-  readonly NoDot: 0x2000
-  readonly NoDotDot: 0x4000
-  readonly NoDotAndDotDot: 0x6000
-  readonly NoFilter: -1
-  readonly Name: 0x00
-  readonly Time: 0x01
-  readonly Size: 0x02
-  readonly Unsorted: 0x03
-  readonly SortByMask: 0x03
-  readonly DirsFirst: 0x04
-  readonly Reversed: 0x08
-  readonly IgnoreCase: 0x10
-  readonly DirsLast: 0x20
-  readonly LocaleAware: 0x40
-  readonly Type: 0x80
-  readonly NoSort: -1
+declare namespace File {
+  export const Dirs: 0x001
+  export const Files: 0x002
+  export const Drives: 0x004
+  export const NoSymLinks: 0x008
+  export const AllEntries: 0x007
+  export const TypeMask: 0x00f
+  export const Readable: 0x010
+  export const Writable: 0x020
+  export const Executable: 0x040
+  export const PermissionMask: 0x070
+  export const Modified: 0x080
+  export const Hidden: 0x100
+  export const System: 0x200
+  export const AccessMask: 0x3F0
+  export const AllDirs: 0x400
+  export const CaseSensitive: 0x800
+  export const NoDot: 0x2000
+  export const NoDotDot: 0x4000
+  export const NoDotAndDotDot: 0x6000
+  export const NoFilter: -1
+  export const Name: 0x00
+  export const Time: 0x01
+  export const Size: 0x02
+  export const Unsorted: 0x03
+  export const SortByMask: 0x03
+  export const DirsFirst: 0x04
+  export const Reversed: 0x08
+  export const IgnoreCase: 0x10
+  export const DirsLast: 0x20
+  export const LocaleAware: 0x40
+  export const Type: 0x80
+  export const NoSort: -1
 
   /**
    * Copies `sourceFilePath` to `targetFilePath`. Any directory components
@@ -1183,12 +1183,12 @@ interface File {  // TODO: namespace instead of interface?
    * destination file timestamp. If you want to replace the newer file, you need to
    * remove it first via {@link File.remove}.
    */
-  copy(sourceFilePath: string, targetFilePath: string): boolean;
+   export function copy(sourceFilePath: string, targetFilePath: string): boolean;
 
   /**
    * Returns true if and only if there is a file at `filePath`.
    */
-  exists(filePath: string): boolean;
+  export function exists(filePath: string): boolean;
 
   /**
    * Returns a list of the directory `path`'s contents non-recursively, filtered by
@@ -1198,20 +1198,20 @@ interface File {  // TODO: namespace instead of interface?
    * The values for `filters` are equivalent to Qt's `QDir::Filter`. The `sortFlags`
    * are equivalent to `QDir::SortFlags`.
    */
-  directoryEntries(path: string, filters?: number, sortFlags?: number): string[];
+  export function directoryEntries(path: string, filters?: number, sortFlags?: number): string[];
 
   /**
    * Returns the time of last modification for the file at `filePath`. The
    * concrete semantics of the returned value are platform-specific. You should
    * only rely on the property that a smaller value indicates an older timestamp.
    */
-  lastModified(filePath: string): Date;
+  export function lastModified(filePath: string): Date;
 
   /**
    * Makes the directory at `path`, creating intermediate directories if necessary.
    * Conceptually equivalent to `mkdir -p`.
    */
-  makePath(path: string): boolean;
+  export function makePath(path: string): boolean;
 
   /**
    * Renames the file `sourceFile` to `targetFile`. Returns `true` if successful;
@@ -1222,13 +1222,13 @@ interface File {  // TODO: namespace instead of interface?
    * If a file with the name `targetFile` already exists, and overwrite is `false`,
    * `move()` returns `false` (that is, the file will not be overwritten).
    */
-  move(sourceFile: string, targetFile: string, overwrite?: boolean): boolean;
+  export function move(sourceFile: string, targetFile: string, overwrite?: boolean): boolean;
 
   /**
    * Removes the file at `filePath`. In case of a directory, it will be removed
    * recursively.
    */
-  remove(filePath: string): boolean;
+  export function remove(filePath: string): boolean;
 }
 
 /**
@@ -1405,7 +1405,7 @@ declare class Image {
   constructor(fileName: string, format?: string);
 
   /**
-   * Returns the 32-bit color value.
+   * Returns the 32-bit unsigned color value (in ARGB order).
    */
   pixel(x: number, y: number): number;
 
@@ -1415,8 +1415,8 @@ declare class Image {
   pixelColor(x: number, y: number): string;
 
   /**
-   * Sets the color at the specified location to the given 32-bit color
-   * value or color table index.
+   * Sets the color at the specified location to the given 32-bit unsigned
+   * color value (ARGB) or color table index.
    */
   setPixel(x: number, y: number, index_or_rgb: number): void;
 
@@ -1427,8 +1427,8 @@ declare class Image {
   setPixelColor(x: number, y: number, color: string): void;
 
   /**
-   * Fills the image with the given 32-bit color value or color table
-   * index.
+   * Fills the image with the given 32-bit unsigned color value (ARGB) or color
+   * table index.
    */
   fill(index_or_rgb: number): void;
 
@@ -1772,6 +1772,9 @@ declare class Layer extends TiledObject {
    * Tint color of the layer. Will be used to tint any images rendered by this
    * layer or by any child layers. Affects tile layers, image layers and tile
    * objects.
+   *
+   * Since Tiled 1.8.5, this property is #ffffff when no tint color has been
+   * set on this layer (before it was #000000 in that case).
    *
    * @since 1.8
    */
@@ -2926,6 +2929,13 @@ declare namespace tiled {
    * Currently used version of Tiled.
    */
   export const version: string;
+
+  /**
+   * The version of Qt which Tiled is running against.
+   *
+   * @since 1.8.5
+   */
+  export const qtVersion: string;
 
   /**
    * Operating system. One of `windows`, `macos`, `linux` or

@@ -44,8 +44,9 @@ private:
 
     void apply();
 
-    QString mDefaultStyle;
-    QPalette mDefaultPalette;
+    const QString mDefaultStyle;
+    const QPalette mDefaultPalette;
+    const bool mDefaultShowShortcutsInContextMenus = true;
 
     static StyleHelper *mInstance;
 };

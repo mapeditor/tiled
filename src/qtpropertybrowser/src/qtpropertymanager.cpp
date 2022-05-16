@@ -1619,13 +1619,14 @@ public:
     typedef QMap<const QtProperty *, Data> PropertyValueMap;
     PropertyValueMap m_values;
 
-    const QIcon m_checkedIcon;
-    const QIcon m_uncheckedIcon;
+    static QIcon m_checkedIcon;
+    static QIcon m_uncheckedIcon;
 };
 
-QtBoolPropertyManagerPrivate::QtBoolPropertyManagerPrivate() :
-    m_checkedIcon(drawCheckBox(true)),
-    m_uncheckedIcon(drawCheckBox(false))
+QIcon QtBoolPropertyManagerPrivate::m_checkedIcon;
+QIcon QtBoolPropertyManagerPrivate::m_uncheckedIcon;
+
+QtBoolPropertyManagerPrivate::QtBoolPropertyManagerPrivate()
 {
 }
 
@@ -1690,6 +1691,16 @@ bool QtBoolPropertyManager::textVisible(const QtProperty *property) const
 }
 
 /*!
+    Resets the icons used to draw the checked and unchecked states. Should be
+    called after theme changes.
+*/
+void QtBoolPropertyManager::resetIcons()
+{
+    QtBoolPropertyManagerPrivate::m_checkedIcon = QIcon();
+    QtBoolPropertyManagerPrivate::m_uncheckedIcon = QIcon();
+}
+
+/*!
     \reimp
 */
 QString QtBoolPropertyManager::valueText(const QtProperty *property) const
@@ -1702,9 +1713,7 @@ QString QtBoolPropertyManager::valueText(const QtProperty *property) const
     if (!data.textVisible)
         return QString();
 
-    static const QString trueText = tr("True");
-    static const QString falseText = tr("False");
-    return data.val ? trueText : falseText;
+    return data.val ? tr("True") : tr("False");
 }
 
 /*!
@@ -1715,6 +1724,11 @@ QIcon QtBoolPropertyManager::valueIcon(const QtProperty *property) const
     const QtBoolPropertyManagerPrivate::PropertyValueMap::const_iterator it = d_ptr->m_values.constFind(property);
     if (it == d_ptr->m_values.constEnd())
         return QIcon();
+
+    if (QtBoolPropertyManagerPrivate::m_checkedIcon.isNull()) {
+        QtBoolPropertyManagerPrivate::m_checkedIcon = drawCheckBox(true);
+        QtBoolPropertyManagerPrivate::m_uncheckedIcon = drawCheckBox(false);
+    }
 
     return it.value().val ? d_ptr->m_checkedIcon : d_ptr->m_uncheckedIcon;
 }

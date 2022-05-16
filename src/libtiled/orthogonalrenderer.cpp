@@ -156,10 +156,25 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
 
     switch (object->shape()) {
     case MapObject::Rectangle: {
-        if (bounds.isNull())
+        if (bounds.isNull()) {
             path.addRect(object->x() - 10, object->y() - 10, 20, 20);
-        else
+        } else {
+            if (const Tile *tile = object->cell().tile()) {
+                QPointF tileOffset = tile->offset();
+                const QSize tileSize = tile->size();
+                if (!tileSize.isNull()) {
+                    const QSizeF scale {
+                        bounds.width() / tileSize.width(),
+                        bounds.height() / tileSize.height()
+                    };
+                    tileOffset.rx() *= scale.width();
+                    tileOffset.ry() *= scale.height();
+                }
+                bounds.translate(tileOffset);
+            }
+
             path.addRect(bounds);
+        }
         break;
     }
     case MapObject::Polygon:
