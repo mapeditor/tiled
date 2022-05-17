@@ -39,7 +39,7 @@
      <li>macOS: Show shortcuts in context menus when using Tiled Fusion style (#1978)</li>
      <li>AppImage: Updated to Sentry 0.4.17</li>
      <li>Updated Chinese (Simplified) and Portuguese (Portugal) translations</li>
-    <ul>
+    </ul>
    </description>
   </release>
   <release version="1.8.4" type="stable" date="2022-03-31">
