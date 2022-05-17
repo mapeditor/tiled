@@ -58,7 +58,7 @@ parts:
     #  - python-dev
       - qttools5-dev-tools
       - qbs
-      - libqt5svg5 # cause of an issue in Qbs 1.13 (needs files in distribute.qbs to be present)
+      - libqt5svg5-dev
       - qtdeclarative5-dev
       - qtdeclarative5-private-dev
       - qtbase5-private-dev
