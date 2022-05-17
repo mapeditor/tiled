@@ -437,12 +437,13 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
 
                 w.writeStartElement(QStringLiteral("image"));
 
-                const QSize tileSize = tile->size();
-                if (!tileSize.isNull()) {
+                const QSize imageSize = tile->image().isNull() ? tile->size()
+                                                               : tile->image().size();
+                if (!imageSize.isNull()) {
                     w.writeAttribute(QStringLiteral("width"),
-                                     QString::number(tileSize.width()));
+                                     QString::number(imageSize.width()));
                     w.writeAttribute(QStringLiteral("height"),
-                                     QString::number(tileSize.height()));
+                                     QString::number(imageSize.height()));
                 }
 
                 if (tile->imageSource().isEmpty()) {

@@ -282,10 +282,11 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
             const QString rel = toFileReference(tile->imageSource(), mDir);
             tileVariant[QStringLiteral("image")] = rel;
 
-            const QSize tileSize = tile->size();
-            if (!tileSize.isNull()) {
-                tileVariant[QStringLiteral("imagewidth")] = tileSize.width();
-                tileVariant[QStringLiteral("imageheight")] = tileSize.height();
+            const QSize imageSize = tile->image().isNull() ? tile->size()
+                                                           : tile->image().size();
+            if (!imageSize.isNull()) {
+                tileVariant[QStringLiteral("imagewidth")] = imageSize.width();
+                tileVariant[QStringLiteral("imageheight")] = imageSize.height();
             }
 
             const QRect &imageRect = tile->imageRect();

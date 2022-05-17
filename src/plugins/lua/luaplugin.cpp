@@ -410,8 +410,16 @@ void LuaWriter::writeTileset(const Tileset &tileset,
 
         if (!tile->imageSource().isEmpty()) {
             const QString src = toFileReference(tile->imageSource(), mDir);
+            const QRect &imageRect = tile->imageRect();
             const QSize tileSize = tile->size();
+
             mWriter.writeKeyAndValue("image", src);
+
+            if (!imageRect.isNull() && imageRect != tile->image().rect()) {
+                mWriter.writeKeyAndValue("x", imageRect.x());
+                mWriter.writeKeyAndValue("y", imageRect.y());
+            }
+
             if (!tileSize.isNull()) {
                 mWriter.writeKeyAndValue("width", tileSize.width());
                 mWriter.writeKeyAndValue("height", tileSize.height());
