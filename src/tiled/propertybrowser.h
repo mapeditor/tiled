@@ -130,6 +130,7 @@ private:
         RenderOrderProperty,
         LayerFormatProperty,
         ImageSourceProperty,
+        ImageRectProperty,
         TilesetImageParametersProperty,
         FlippingProperty,
         DrawOrderProperty,

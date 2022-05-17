@@ -470,18 +470,19 @@ std::unique_ptr<WangSet> Tileset::takeWangSetAt(int index)
 /**
  * Adds a new tile to the end of the tileset.
  */
-Tile *Tileset::addTile(const QPixmap &image, const QUrl &source)
+Tile *Tileset::addTile(const QPixmap &image, const QUrl &source, const QRect &rect)
 {
     Tile *newTile = new Tile(takeNextTileId(), this);
     newTile->setImage(image);
     newTile->setImageSource(source);
+    newTile->setImageRect(rect.isNull() ? image.rect() : rect);
 
     mTilesById.insert(newTile->id(), newTile);
     mTiles.append(newTile);
-    if (mTileHeight < image.height())
-        mTileHeight = image.height();
-    if (mTileWidth < image.width())
-        mTileWidth = image.width();
+    if (mTileHeight < newTile->height())
+        mTileHeight = newTile->height();
+    if (mTileWidth < newTile->width())
+        mTileWidth = newTile->width();
     return newTile;
 }
 
@@ -558,7 +559,7 @@ bool Tileset::anyTileOutOfOrder() const
 }
 
 /**
- * Sets the \a image to be used for the tile with the given \a id.
+ * Sets the \a image to be used for the given \a tile.
  *
  * This function makes sure the tile width and tile height properties of the
  * tileset reflect the maximum size. It is only expected to be used for
@@ -566,29 +567,31 @@ bool Tileset::anyTileOutOfOrder() const
  */
 void Tileset::setTileImage(Tile *tile,
                            const QPixmap &image,
-                           const QUrl &source)
+                           const QUrl &source,
+                           const QRect &rect)
 {
     Q_ASSERT(isCollection());
     Q_ASSERT(mTilesById.value(tile->id()) == tile);
 
-    const QSize previousImageSize = tile->image().size();
-    const QSize newImageSize = image.size();
+    const QSize previousTileSize = tile->size();
+    const QRect imageRect = rect.isNull() ? image.rect() : rect;
 
     tile->setImage(image);
     tile->setImageSource(source);
+    tile->setImageRect(imageRect);
 
-    if (previousImageSize != newImageSize) {
+    if (previousTileSize != imageRect.size()) {
         // Update our max. tile size
-        if (previousImageSize.height() == mTileHeight ||
-                previousImageSize.width() == mTileWidth) {
+        if (previousTileSize.height() == mTileHeight ||
+                previousTileSize.width() == mTileWidth) {
             // This used to be the max image; we have to recompute
             updateTileSize();
         } else {
             // Check if we have a new maximum
-            if (mTileHeight < newImageSize.height())
-                mTileHeight = newImageSize.height();
-            if (mTileWidth < newImageSize.width())
-                mTileWidth = newImageSize.width();
+            if (mTileHeight < imageRect.height())
+                mTileHeight = imageRect.height();
+            if (mTileWidth < imageRect.width())
+                mTileWidth = imageRect.width();
         }
     }
 }

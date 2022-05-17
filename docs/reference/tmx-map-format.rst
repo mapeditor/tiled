@@ -297,6 +297,10 @@ tiles (e.g. to extend a Wang set by transforming existing tiles).
 -  **probability:** A percentage indicating the probability that this
    tile is chosen when it competes with others while editing with the
    terrain tool. (defaults to 0)
+-  **x:** The X position of the sub-rectangle representing this tile (default: 0)
+-  **y:** The Y position of the sub-rectangle representing this tile (default: 0)
+-  **width:** The width of the sub-rectangle representing this tile (defaults to the image width)
+-  **height:** The height of the sub-rectangle representing this tile (defaults to the image height)
 
 Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-image` (since
 0.9), :ref:`tmx-objectgroup`, :ref:`tmx-animation`

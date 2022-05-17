@@ -42,6 +42,7 @@ class EditableTile : public EditableObject
     Q_PROPERTY(QSize size READ size)
     Q_PROPERTY(QString type READ type WRITE setType)
     Q_PROPERTY(QString imageFileName READ imageFileName WRITE setImageFileName)
+    Q_PROPERTY(QRect imageRect READ imageRect WRITE setImageRect)
     Q_PROPERTY(qreal probability READ probability WRITE setProbability)
     Q_PROPERTY(Tiled::EditableObjectGroup *objectGroup READ objectGroup WRITE setObjectGroup)
     Q_PROPERTY(QJSValue frames READ frames WRITE setFrames)
@@ -76,6 +77,7 @@ public:
     QSize size() const;
     const QString &type() const;
     QString imageFileName() const;
+    QRect imageRect() const;
     qreal probability() const;
     EditableObjectGroup *objectGroup() const;
     QJSValue frames() const;
@@ -95,6 +97,7 @@ public:
 public slots:
     void setType(const QString &type);
     void setImageFileName(const QString &fileName);
+    void setImageRect(const QRect &rect);
     void setProbability(qreal probability);
     void setObjectGroup(EditableObjectGroup *editableObjectGroup);
     void setFrames(QJSValue value);
@@ -135,6 +138,11 @@ inline const QString &EditableTile::type() const
 inline QString EditableTile::imageFileName() const
 {
     return tile()->imageSource().toString(QUrl::PreferLocalFile);
+}
+
+inline QRect EditableTile::imageRect() const
+{
+    return tile()->imageRect();
 }
 
 inline qreal EditableTile::probability() const

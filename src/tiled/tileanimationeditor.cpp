@@ -103,7 +103,7 @@ QVariant FrameListModel::data(const QModelIndex &index, int role) const
     case Qt::DecorationRole: {
         int tileId = mFrames.at(index.row()).tileId;
         if (Tile *tile = mTileset->findTile(tileId))
-            return tile->image();
+            return tile->image().copy(tile->imageRect());
     }
     }
 
@@ -364,6 +364,9 @@ void TileAnimationEditor::setTilesetDocument(TilesetDocument *tilesetDocument)
     if (mTilesetDocument) {
         mUi->tilesetView->setModel(new TilesetModel(mTilesetDocument, mUi->tilesetView));
 
+        connect(mTilesetDocument, &TilesetDocument::tilesetChanged,
+                this, &TileAnimationEditor::tilesetChanged);
+
         connect(mTilesetDocument, &TilesetDocument::tileAnimationChanged,
                 this, &TileAnimationEditor::tileAnimationChanged);
 
@@ -426,6 +429,19 @@ void TileAnimationEditor::framesEdited()
     undoStack->push(new ChangeTileAnimation(mTilesetDocument,
                                             mTile,
                                             mFrameListModel->frames()));
+}
+
+void TileAnimationEditor::tilesetChanged()
+{
+    auto *tilesetDocument = static_cast<TilesetDocument*>(sender());
+    auto *tilesetView = mUi->tilesetView;
+    auto *model = tilesetView->tilesetModel();
+
+    if (tilesetDocument == mTilesetDocument)
+        setTile(nullptr);        // It may be gone
+
+    tilesetView->updateBackgroundColor();
+    model->tilesetChanged();
 }
 
 void TileAnimationEditor::setDefaultFrameTime(int duration)
@@ -645,7 +661,7 @@ bool TileAnimationEditor::updatePreviewPixmap()
     const Frame frame = frames.at(mPreviewFrameIndex);
 
     if (Tile *tile = tileset->findTile(frame.tileId)) {
-        const QPixmap &image = tile->image();
+        const QPixmap image = tile->image().copy(tile->imageRect());
         const qreal scale = mUi->tilesetView->zoomable()->scale();
 
         const int w = qRound(image.width() * scale);

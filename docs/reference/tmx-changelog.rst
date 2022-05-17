@@ -4,6 +4,13 @@ TMX Changelog
 Below are described the changes/additions that were made to the
 :doc:`tmx-map-format` for recent versions of Tiled.
 
+Tiled 1.9
+---------
+
+-  Added ``x``, ``y``, ``width`` and ``height`` attributes to the
+   :ref:`tmx-tileset-tile` element, which store the sub-rectangle of a tile's
+   image used to represent this tile. By default the entire image is used.
+
 Tiled 1.8
 ---------
 

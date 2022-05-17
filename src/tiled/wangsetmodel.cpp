@@ -120,7 +120,7 @@ QVariant WangSetModel::data(const QModelIndex &index, int role) const
             return wangSet->name();
         case Qt::DecorationRole:
             if (Tile *tile = wangSet->imageTile())
-                return tile->image();
+                return tile->image().copy(tile->imageRect());
             else
                 return wangSetIcon(wangSet->type());
             break;

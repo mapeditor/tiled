@@ -74,7 +74,7 @@ QVariant WangColorModel::data(const QModelIndex &index, int role) const
         return wangColorAt(index)->name();
     case Qt::DecorationRole:
         if (Tile *tile =  mWangSet->tileset()->findTile(wangColorAt(index)->imageId()))
-            return tile->image();
+            return tile->image().copy(tile->imageRect());
         break;
     case ColorRole:
         return wangColorAt(index)->color();
