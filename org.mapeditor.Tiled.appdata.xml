@@ -15,6 +15,33 @@
  </keywords>
  <content_rating type="oars-1.0" />
  <releases>
+  <release version="1.8.5" type="stable" date="2022-05-16">
+   <url>https://www.mapeditor.org/2022/05/17/tiled-1-8-5-released.html</url>
+   <description>
+    <ul>
+     <li>Made expanded group layers persistent (#3282)</li>
+     <li>Improved snapping behavior for scalable objects on staggered maps</li>
+     <li>Allow setting a shortcut on the 'Edit Tileset' action</li>
+     <li>Always select first entry while using the Open File in Project action</li>
+     <li>Improved Add Property dialog layout in case of long type names (#3302)</li>
+     <li>Fixed restoring of window layout when maximized (#590)</li>
+     <li>Fixed snapping when dragging templates into a map (#3326)</li>
+     <li>Fixed map selection rectangle in world for infinite maps (#3340)</li>
+     <li>Fixed 'Merge Layer Down' action for infinite maps</li>
+     <li>Fixed several small issues in the image color picker (#3348)</li>
+     <li>Fixed missing name for undo commands that add/remove maps from world</li>
+     <li>Fixed selection issues for tile objects with a non-zero tile offset</li>
+     <li>Fixed hover indicator sometimes overlapping selection indicator</li>
+     <li>Fixed removal of terrain info when removing tiles from a collection</li>
+     <li>Scripting: Fixed region.rects when compiled against Qt 5.9 to 5.13</li>
+     <li>Scripting: Layer.tintColor is now #ffffff when not set</li>
+     <li>macOS: Enabled support for loading SVGs</li>
+     <li>macOS: Show shortcuts in context menus when using Tiled Fusion style (#1978)</li>
+     <li>AppImage: Updated to Sentry 0.4.17</li>
+     <li>Updated Chinese (Simplified) and Portuguese (Portugal) translations</li>
+    <ul>
+   </description>
+  </release>
   <release version="1.8.4" type="stable" date="2022-03-31">
    <url>https://www.mapeditor.org/2022/03/31/tiled-1-8-3-released.html</url>
   </release>

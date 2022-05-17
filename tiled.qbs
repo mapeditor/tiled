@@ -7,7 +7,7 @@ Project {
     qbsSearchPaths: "qbs"
     minimumQbsVersion: "1.12"
 
-    property string version: Environment.getEnv("TILED_VERSION") || "1.8.4";
+    property string version: Environment.getEnv("TILED_VERSION") || "1.8.5";
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT") == "true"
     property bool release: Environment.getEnv("TILED_RELEASE") == "true"
     property bool installHeaders: false

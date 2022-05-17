@@ -1,6 +1,6 @@
-### Unreleased 1.8 patch
+### Tiled 1.8.5 (17 May 2022)
 
-* Made expanded group layers persistent
+* Made expanded group layers persistent (#3282)
 * Improved snapping behavior for scalable objects on staggered maps
 * Allow setting a shortcut on the 'Edit Tileset' action
 * Always select first entry while using the Open File in Project action
@@ -19,6 +19,7 @@
 * macOS: Enabled support for loading SVGs
 * macOS: Show shortcuts in context menus when using Tiled Fusion style (#1978)
 * AppImage: Updated to Sentry 0.4.17
+* Updated Chinese (Simplified) and Portuguese (Portugal) translations
 
 ### Tiled 1.8.4 (31 March 2022)
 
