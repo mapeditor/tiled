@@ -298,7 +298,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionOffsetMap, "OffsetMap");
     ActionManager::registerAction(mUi->actionOpen, "Open");
     ActionManager::registerAction(mUi->actionOpenFileInProject, "OpenFileInProject");
-    ActionManager::registerAction(mUi->actionOpenProject, "OpenProject");
     ActionManager::registerAction(mUi->actionPaste, "Paste");
     ActionManager::registerAction(mUi->actionPasteInPlace, "PasteInPlace");
     ActionManager::registerAction(mUi->actionPreferences, "Preferences");
@@ -683,7 +682,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, &MainWindow::editTilesetProperties);
 
     connect(mUi->actionNewProject, &QAction::triggered, this, &MainWindow::newProject);
-    connect(mUi->actionOpenProject, &QAction::triggered, this, &MainWindow::openProject);
     connect(mUi->actionCloseProject, &QAction::triggered, this, &MainWindow::closeProject);
     connect(mUi->actionAddFolderToProject, &QAction::triggered, mProjectDock, &ProjectDock::addFolderToProject);
     connect(mUi->actionRefreshProjectFolders, &QAction::triggered, mProjectDock, &ProjectDock::refreshProjectFolders);
@@ -731,7 +729,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
     setThemeIcon(mUi->actionNewProject, "document-new");
-    setThemeIcon(mUi->actionOpenProject, "document-open");
     setThemeIcon(mUi->menuRecentProjects, "document-open-recent");
     setThemeIcon(mUi->actionCloseProject, "window-close");
     setThemeIcon(mUi->actionAddFolderToProject, "folder-new");
@@ -1420,19 +1417,6 @@ bool MainWindow::closeAllFiles()
         return true;
     }
     return false;
-}
-
-void MainWindow::openProject()
-{
-    const QString dir = Preferences::instance()->recentProjectPath();
-    const QString projectFilesFilter = tr("Tiled Projects (*.tiled-project)");
-    const QString fileName = QFileDialog::getOpenFileName(window(),
-                                                          tr("Open Project"),
-                                                          dir,
-                                                          projectFilesFilter,
-                                                          nullptr);
-    if (!fileName.isEmpty())
-        openProjectFile(fileName);
 }
 
 bool MainWindow::openProjectFile(const QString &fileName)

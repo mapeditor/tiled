@@ -129,7 +129,6 @@ private:
     void closeFile();
     bool closeAllFiles();
 
-    void openProject();
     bool openProjectFile(const QString &fileName);
     void newProject();
     bool closeProject();

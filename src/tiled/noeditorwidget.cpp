@@ -47,7 +47,6 @@ NoEditorWidget::NoEditorWidget(QWidget *parent) :
 
     ui->versionLabel->setText(QStringLiteral("%1 %2").arg(QGuiApplication::applicationDisplayName(), QGuiApplication::applicationVersion()));
 
-    connect(ui->openProjectButton, &QToolButton::clicked, ActionManager::action("OpenProject"), &QAction::trigger);
     connect(ui->newProjectButton, &QToolButton::clicked, ActionManager::action("NewProject"), &QAction::trigger);
     connect(ui->addFolderToProjectButton, &QToolButton::clicked, ActionManager::action("AddFolderToProject"), &QAction::trigger);
 
@@ -100,14 +99,14 @@ void NoEditorWidget::openFile()
 
 void NoEditorWidget::retranslateUi()
 {
-    ui->openProjectButton->setText(ActionManager::action("OpenProject")->text());
     ui->newProjectButton->setText(ActionManager::action("NewProject")->text());
     ui->addFolderToProjectButton->setText(ActionManager::action("AddFolderToProject")->text());
+    ui->openFileButton->setText(ActionManager::action("Open")->text());
 }
 
 void NoEditorWidget::updateRecentProjectsMenu()
 {
-    auto menu = ui->openProjectButton->menu();
+    auto menu = ui->recentProjectsButton->menu();
     if (!menu)
         menu = new QMenu(this);
 
@@ -115,15 +114,8 @@ void NoEditorWidget::updateRecentProjectsMenu()
 
     bool enabled = MainWindow::instance()->addRecentProjectsActions(menu);
 
-    if (enabled) {
-        ui->openProjectButton->setMenu(menu);
-    } else {
-        ui->openProjectButton->setMenu(nullptr);
-        delete menu;
-    }
-
-    ui->openProjectButton->setPopupMode(enabled ? QToolButton::MenuButtonPopup
-                                                : QToolButton::DelayedPopup);
+    ui->recentProjectsButton->setMenu(menu);
+    ui->recentProjectsButton->setEnabled(enabled);
 }
 
 void NoEditorWidget::adjustToStyle()

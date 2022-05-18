@@ -65,9 +65,12 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QToolButton" name="openProjectButton">
+        <widget class="QToolButton" name="recentProjectsButton">
          <property name="text">
-          <string notr="true">Open Project...</string>
+          <string>Recent Projects</string>
+         </property>
+         <property name="popupMode">
+          <enum>QToolButton::InstantPopup</enum>
          </property>
          <property name="toolButtonStyle">
           <enum>Qt::ToolButtonTextOnly</enum>
@@ -147,7 +150,7 @@
        <item>
         <widget class="QToolButton" name="openFileButton">
          <property name="text">
-          <string>Open File...</string>
+          <string notr="true">Open File...</string>
          </property>
          <property name="toolButtonStyle">
           <enum>Qt::ToolButtonTextOnly</enum>

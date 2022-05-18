@@ -195,7 +195,6 @@
      </property>
     </widget>
     <addaction name="actionNewProject"/>
-    <addaction name="actionOpenProject"/>
     <addaction name="menuRecentProjects"/>
     <addaction name="separator"/>
     <addaction name="actionCloseProject"/>
@@ -711,11 +710,6 @@
     <string>Community Forum ↗</string>
    </property>
   </action>
-  <action name="actionOpenProject">
-   <property name="text">
-    <string>&amp;Open Project...</string>
-   </property>
-  </action>
   <action name="actionCloseProject">
    <property name="text">
     <string>&amp;Close Project</string>
@@ -754,17 +748,6 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+Shift+T</string>
-   </property>
-  </action>
-  <action name="actionWorldMoveMap">
-   <property name="text">
-    <string>Move Map</string>
-   </property>
-   <property name="toolTip">
-    <string>Move Map</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true">Ctrl+Shift+M</string>
    </property>
   </action>
   <action name="actionProjectProperties">
