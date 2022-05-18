@@ -64,6 +64,8 @@
      <property name="title">
       <string>&amp;New</string>
      </property>
+     <addaction name="actionNewProject"/>
+     <addaction name="separator"/>
      <addaction name="actionNewMap"/>
      <addaction name="actionNewTileset"/>
     </widget>
@@ -73,10 +75,19 @@
      </property>
      <addaction name="actionEditCommands"/>
     </widget>
+    <widget class="QMenu" name="menuRecentProjects">
+     <property name="title">
+      <string>&amp;Recent Projects</string>
+     </property>
+     <property name="toolTipsVisible">
+      <bool>true</bool>
+     </property>
+    </widget>
     <addaction name="menuNew"/>
     <addaction name="actionOpen"/>
     <addaction name="actionOpenFileInProject"/>
     <addaction name="menuRecentFiles"/>
+    <addaction name="menuRecentProjects"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
@@ -90,6 +101,7 @@
     <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="actionCloseAll"/>
+    <addaction name="actionCloseProject"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -182,23 +194,6 @@
     <property name="title">
      <string>&amp;Project</string>
     </property>
-    <widget class="QMenu" name="menuRecentProjects">
-     <property name="title">
-      <string>&amp;Recent Projects</string>
-     </property>
-     <property name="icon">
-      <iconset resource="tiled.qrc">
-       <normaloff>:/images/16/document-open-recent.png</normaloff>:/images/16/document-open-recent.png</iconset>
-     </property>
-     <property name="toolTipsVisible">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <addaction name="actionNewProject"/>
-    <addaction name="menuRecentProjects"/>
-    <addaction name="separator"/>
-    <addaction name="actionCloseProject"/>
-    <addaction name="separator"/>
     <addaction name="actionAddFolderToProject"/>
     <addaction name="actionRefreshProjectFolders"/>
     <addaction name="separator"/>

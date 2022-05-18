@@ -1435,9 +1435,6 @@ bool MainWindow::openProjectFile(const QString &fileName)
 
 void MainWindow::newProject()
 {
-    if (!closeProject())
-        return;
-
     QString fileName = Preferences::instance()->recentProjectPath();
     fileName.append(QLatin1Char('/'));
     fileName.append(tr("untitled") + QStringLiteral(".tiled-project"));
