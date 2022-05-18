@@ -276,6 +276,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionDocumentation, "Documentation");
     ActionManager::registerAction(mUi->actionDonate, "Donate");
     ActionManager::registerAction(mUi->actionEditCommands, "EditCommands");
+    ActionManager::registerAction(mUi->actionEnableParallax, "EnableParallax");
+    ActionManager::registerAction(mUi->actionEnableWorlds, "EnableWorlds");
     ActionManager::registerAction(mUi->actionExport, "Export");
     ActionManager::registerAction(mUi->actionExportAs, "ExportAs");
     ActionManager::registerAction(mUi->actionExportAsImage, "ExportAsImage");
@@ -287,9 +289,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionLabelsForAllObjects, "LabelsForAllObjects");
     ActionManager::registerAction(mUi->actionLabelsForSelectedObjects, "LabelsForSelectedObjects");
     ActionManager::registerAction(mUi->actionLoadWorld, "LoadWorld");
-    ActionManager::registerAction(mUi->actionEnableWorlds, "EnableWorlds");
     ActionManager::registerAction(mUi->actionMapProperties, "MapProperties");
     ActionManager::registerAction(mUi->actionNewMap, "NewMap");
+    ActionManager::registerAction(mUi->actionNewProject, "NewProject");
     ActionManager::registerAction(mUi->actionNewTileset, "NewTileset");
     ActionManager::registerAction(mUi->actionNewWorld, "NewWorld");
     ActionManager::registerAction(mUi->actionNoLabels, "NoLabels");
@@ -309,13 +311,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionSave, "Save");
     ActionManager::registerAction(mUi->actionSaveAll, "SaveAll");
     ActionManager::registerAction(mUi->actionSaveAs, "SaveAs");
-    ActionManager::registerAction(mUi->actionSaveProjectAs, "SaveProjectAs");
     ActionManager::registerAction(mUi->actionShowGrid, "ShowGrid");
     ActionManager::registerAction(mUi->actionShowObjectReferences, "ShowObjectReferences");
     ActionManager::registerAction(mUi->actionShowTileAnimations, "ShowTileAnimations");
     ActionManager::registerAction(mUi->actionShowTileCollisionShapes, "ShowTileCollisionShapes");
     ActionManager::registerAction(mUi->actionShowTileObjectOutlines, "ShowTileObjectOutlines");
-    ActionManager::registerAction(mUi->actionEnableParallax, "EnableParallax");
     ActionManager::registerAction(mUi->actionSnapNothing, "SnapNothing");
     ActionManager::registerAction(mUi->actionSnapToFineGrid, "SnapToFineGrid");
     ActionManager::registerAction(mUi->actionSnapToGrid, "SnapToGrid");
@@ -682,8 +682,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionTilesetProperties, &QAction::triggered,
             this, &MainWindow::editTilesetProperties);
 
+    connect(mUi->actionNewProject, &QAction::triggered, this, &MainWindow::newProject);
     connect(mUi->actionOpenProject, &QAction::triggered, this, &MainWindow::openProject);
-    connect(mUi->actionSaveProjectAs, &QAction::triggered, this, &MainWindow::saveProjectAs);
     connect(mUi->actionCloseProject, &QAction::triggered, this, &MainWindow::closeProject);
     connect(mUi->actionAddFolderToProject, &QAction::triggered, mProjectDock, &ProjectDock::addFolderToProject);
     connect(mUi->actionRefreshProjectFolders, &QAction::triggered, mProjectDock, &ProjectDock::refreshProjectFolders);
@@ -730,9 +730,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionFitInView, "zoom-fit-best");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
+    setThemeIcon(mUi->actionNewProject, "document-new");
     setThemeIcon(mUi->actionOpenProject, "document-open");
     setThemeIcon(mUi->menuRecentProjects, "document-open-recent");
-    setThemeIcon(mUi->actionSaveProjectAs, "document-save-as");
     setThemeIcon(mUi->actionCloseProject, "window-close");
     setThemeIcon(mUi->actionAddFolderToProject, "folder-new");
     setThemeIcon(mUi->actionRefreshProjectFolders, "view-refresh");
@@ -1449,31 +1449,18 @@ bool MainWindow::openProjectFile(const QString &fileName)
     return switchProject(std::move(project));
 }
 
-void MainWindow::saveProjectAs()
+void MainWindow::newProject()
 {
-    auto prefs = Preferences::instance();
+    if (!closeProject())
+        return;
 
-    Project &project = ProjectManager::instance()->project();
-    QString fileName = project.fileName();
-    if (fileName.isEmpty()) {
-        if (!project.folders().isEmpty()) {
-            // Try to suggest a name for the project based on folder location
-            const auto path = fileName = QFileInfo(project.folders().first()).path();
-            fileName = path
-                    + QLatin1Char('/')
-                    + QFileInfo(path).fileName()
-                    + QLatin1String(".tiled-project");
-        } else {
-            // Start in a familiar location otherwise
-            fileName = prefs->recentProjectPath();
-            fileName.append(QLatin1Char('/'));
-            fileName.append(tr("untitled") + QLatin1String(".tiled-project"));
-        }
-    }
+    QString fileName = Preferences::instance()->recentProjectPath();
+    fileName.append(QLatin1Char('/'));
+    fileName.append(tr("untitled") + QStringLiteral(".tiled-project"));
 
     const QString projectFilesFilter = tr("Tiled Projects (*.tiled-project)");
     fileName = QFileDialog::getSaveFileName(window(),
-                                            tr("Save Project As"),
+                                            tr("New Project"),
                                             fileName,
                                             projectFilesFilter,
                                             nullptr);
@@ -1487,33 +1474,29 @@ void MainWindow::saveProjectAs()
         fileName.append(QStringLiteral(".tiled-project"));
     }
 
+    Project project;
+    project.addFolder(QFileInfo(fileName).path());
+
     if (!project.save(fileName)) {
         QMessageBox::critical(window(),
                               tr("Error Saving Project"),
                               tr("An error occurred while saving the project."));
+        return;
     }
 
-    Session &session = Session::current();
-    session.setFileName(Session::defaultFileNameForProject(fileName));
-    session.setProject(fileName);
+    switchProject(std::move(project));
 
     // Automatically enable extensions for new projects
     ScriptManager::instance().enableProjectExtensions();
-
-    prefs->addRecentProject(fileName);
-    prefs->setLastSession(session.fileName());
-
-    updateWindowTitle();
-    updateActions();
 }
 
-void MainWindow::closeProject()
+bool MainWindow::closeProject()
 {
     const Project &project = ProjectManager::instance()->project();
     if (project.fileName().isEmpty())
-        return;
+        return true;
 
-    switchProject(Project{});
+    return switchProject(Project{});
 }
 
 bool MainWindow::switchProject(Project project)

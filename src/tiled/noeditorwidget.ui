@@ -75,9 +75,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="saveProjectButton">
+        <widget class="QToolButton" name="newProjectButton">
          <property name="text">
-          <string notr="true">Save Project As...</string>
+          <string notr="true">New Project...</string>
          </property>
          <property name="toolButtonStyle">
           <enum>Qt::ToolButtonTextOnly</enum>

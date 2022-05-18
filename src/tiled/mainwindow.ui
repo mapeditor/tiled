@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>31</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -194,10 +194,10 @@
       <bool>true</bool>
      </property>
     </widget>
+    <addaction name="actionNewProject"/>
     <addaction name="actionOpenProject"/>
     <addaction name="menuRecentProjects"/>
     <addaction name="separator"/>
-    <addaction name="actionSaveProjectAs"/>
     <addaction name="actionCloseProject"/>
     <addaction name="separator"/>
     <addaction name="actionAddFolderToProject"/>
@@ -735,11 +735,6 @@
     <string>Add Folder to Project...</string>
    </property>
   </action>
-  <action name="actionSaveProjectAs">
-   <property name="text">
-    <string>Save Project As...</string>
-   </property>
-  </action>
   <action name="actionRefreshProjectFolders">
    <property name="text">
     <string>Refresh Folders</string>
@@ -803,6 +798,14 @@
    </property>
    <property name="text">
     <string>Show &amp;World</string>
+   </property>
+  </action>
+  <action name="actionNewProject">
+   <property name="text">
+    <string>&amp;New Project...</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+Shift+N</string>
    </property>
   </action>
  </widget>

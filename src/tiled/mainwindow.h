@@ -131,8 +131,8 @@ private:
 
     void openProject();
     bool openProjectFile(const QString &fileName);
-    void saveProjectAs();
-    void closeProject();
+    void newProject();
+    bool closeProject();
     bool switchProject(Project project);
     void restoreSession();
     void projectProperties();

@@ -48,7 +48,7 @@ NoEditorWidget::NoEditorWidget(QWidget *parent) :
     ui->versionLabel->setText(QStringLiteral("%1 %2").arg(QGuiApplication::applicationDisplayName(), QGuiApplication::applicationVersion()));
 
     connect(ui->openProjectButton, &QToolButton::clicked, ActionManager::action("OpenProject"), &QAction::trigger);
-    connect(ui->saveProjectButton, &QToolButton::clicked, ActionManager::action("SaveProjectAs"), &QAction::trigger);
+    connect(ui->newProjectButton, &QToolButton::clicked, ActionManager::action("NewProject"), &QAction::trigger);
     connect(ui->addFolderToProjectButton, &QToolButton::clicked, ActionManager::action("AddFolderToProject"), &QAction::trigger);
 
     connect(ui->newMapButton, &QToolButton::clicked, this, &NoEditorWidget::newMap);
@@ -101,7 +101,7 @@ void NoEditorWidget::openFile()
 void NoEditorWidget::retranslateUi()
 {
     ui->openProjectButton->setText(ActionManager::action("OpenProject")->text());
-    ui->saveProjectButton->setText(ActionManager::action("SaveProjectAs")->text());
+    ui->newProjectButton->setText(ActionManager::action("NewProject")->text());
     ui->addFolderToProjectButton->setText(ActionManager::action("AddFolderToProject")->text());
 }
 
