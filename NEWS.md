@@ -1,3 +1,7 @@
+### Unreleased 1.8 patch
+
+* Keep references between objects when copy/pasting (#3361)
+
 ### Tiled 1.8.5 (17 May 2022)
 
 * Made expanded group layers persistent (#3282)

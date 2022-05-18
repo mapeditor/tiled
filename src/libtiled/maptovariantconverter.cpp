@@ -262,7 +262,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     const bool includeAllTiles = mVersion != 1 && tileset.anyTileOutOfOrder();
 
     for (const Tile *tile : tileset.tiles()) {
-        const Properties properties = tile->properties();
+        const Properties &properties = tile->properties();
         QVariantMap tileVariant;
 
         if (mVersion == 1) {

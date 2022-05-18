@@ -35,6 +35,7 @@
 
 #include <QApplication>
 #include <QClipboard>
+#include <QHash>
 #include <QJsonDocument>
 #include <QMimeData>
 #include <QSet>
@@ -190,6 +191,29 @@ bool ClipboardManager::copySelection(const MapDocument &mapDocument)
     return false;
 }
 
+template <typename Callback>
+static void processObjectReferences(Properties &properties, Callback callback)
+{
+    QMutableMapIterator<QString, QVariant> it(properties);
+    while (it.hasNext()) {
+        QVariant &value = it.next().value();
+
+        if (value.userType() == objectRefTypeId()) {
+            value = QVariant::fromValue(callback(value.value<ObjectRef>()));
+        } else if (value.userType() == propertyValueId()) {
+            auto propertyValue = value.value<PropertyValue>();
+            if (auto type = propertyValue.type()) {
+                if (type->type == PropertyType::PT_Class) {
+                    Properties properties = propertyValue.value.toMap();
+                    processObjectReferences(properties, callback);
+                    propertyValue.value = properties;
+                    value = QVariant::fromValue(propertyValue);
+                }
+            }
+        }
+    }
+}
+
 /**
  * Convenience method that deals with some of the logic related to pasting
  * a group of objects.
@@ -233,14 +257,29 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
     QVector<AddMapObjects::Entry> objectsToAdd;
     objectsToAdd.reserve(objectGroup->objectCount());
 
+    Map *map = mapDocument->map();
+    QHash<int, int> oldIdToNewId;
+
     for (const MapObject *mapObject : objectGroup->objects()) {
         if (flags & PasteNoTileObjects && !mapObject->cell().isEmpty())
             continue;
 
         MapObject *objectClone = mapObject->clone();
-        objectClone->resetId();
+        objectClone->setId(map->takeNextObjectId());
         objectClone->setPosition(objectClone->position() + insertPos);
         objectsToAdd.append(AddMapObjects::Entry { objectClone, currentObjectGroup });
+
+        oldIdToNewId.insert(mapObject->id(), objectClone->id());
+    }
+
+    // Rewire object connections in pasted objects, in case some of them
+    // referred to other pasted objects.
+    for (AddMapObjects::Entry &entry : objectsToAdd) {
+        processObjectReferences(entry.mapObject->properties(), [&] (ObjectRef objectRef) {
+            if (const int newId = oldIdToNewId.value(objectRef.id))
+                objectRef.id = newId;
+            return objectRef;
+        });
     }
 
     auto command = new AddMapObjects(mapDocument, objectsToAdd);

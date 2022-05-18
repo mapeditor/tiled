@@ -97,7 +97,7 @@ void Document::setFileName(const QString &fileName)
 
 void Document::checkFilePathProperties(const Object *object) const
 {
-    auto &props = object->properties();
+    const auto &props = object->properties();
 
     for (auto i = props.begin(), i_end = props.end(); i != i_end; ++i) {
         if (i.value().userType() == filePathTypeId()) {
