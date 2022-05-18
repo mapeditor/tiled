@@ -1,6 +1,7 @@
 ### Unreleased 1.8 patch
 
 * Keep references between objects when copy/pasting (#3361)
+* Improved default translation used in case of multiple options
 
 ### Tiled 1.8.5 (17 May 2022)
 
