@@ -168,8 +168,10 @@ void TileStampsDock::keyPressEvent(QKeyEvent *event)
 
 void TileStampsDock::indexPressed(const QModelIndex &index)
 {
-    const QModelIndex sourceIndex = mProxyModel->mapToSource(index);
-    setStampAtIndex(sourceIndex);
+    if (mTileStampView->pressedMouseButton() != Qt::RightButton) {
+        const QModelIndex sourceIndex = mProxyModel->mapToSource(index);
+        setStampAtIndex(sourceIndex);
+    }
 }
 
 void TileStampsDock::currentRowChanged(const QModelIndex &index)
@@ -336,6 +338,12 @@ bool TileStampView::event(QEvent *event)
     }
 
     return QTreeView::event(event);
+}
+
+void TileStampView::mousePressEvent(QMouseEvent *event)
+{
+    mPressedMouseButton = event->button();
+    QTreeView::mousePressEvent(event);
 }
 
 } // namespace Tiled

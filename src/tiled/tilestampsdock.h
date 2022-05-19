@@ -92,8 +92,14 @@ public:
 
     QSize sizeHint() const override;
 
+    Qt::MouseButton pressedMouseButton() const { return mPressedMouseButton; }
+
 protected:
     bool event(QEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+
+private:
+    Qt::MouseButton mPressedMouseButton = Qt::NoButton;
 };
 
 } // namespace Tiled
