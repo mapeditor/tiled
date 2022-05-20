@@ -2205,6 +2205,10 @@ void MainWindow::updateActions()
 
     const bool hasProject = !project.fileName().isEmpty();
     mUi->actionCloseProject->setEnabled(hasProject);
+    mUi->actionAddFolderToProject->setEnabled(hasProject);
+    mUi->actionRefreshProjectFolders->setEnabled(projectHasFolders);
+    mUi->actionProjectProperties->setEnabled(hasProject);
+    mShowPropertyTypesEditor->setEnabled(hasProject);
 }
 
 void MainWindow::updateZoomable()
