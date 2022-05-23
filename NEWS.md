@@ -4,6 +4,7 @@
 * Improved default translation used in case of multiple options
 * Fixed 'Add Variation' action in Tile Stamps context menu (#3362)
 * Fixed importing of removed shortcuts (#3367)
+* Fixed breaking of alternative shortcuts on import or reset (#3367)
 
 ### Tiled 1.8.5 (17 May 2022)
 

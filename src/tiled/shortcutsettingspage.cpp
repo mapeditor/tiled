@@ -687,26 +687,20 @@ void ShortcutSettingsPage::importShortcuts()
         return;
     }
 
-    QHash<Id, QKeySequence> result;
+    QHash<Id, QList<QKeySequence>> result;
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("shortcut")) {
             const Id id { xml.attributes().value(QLatin1String("id")).toUtf8() };
-            QKeySequence shortcut;
+            auto &shortcuts = result[id];
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("key")) {
                     const QString keyString = xml.attributes().value(QLatin1String("value")).toString();
-                    shortcut = QKeySequence(keyString);
-                    xml.skipCurrentElement();   // skip out of "key" element
-                    xml.skipCurrentElement();   // skip out of "shortcut" element
-                    break;
-                } else {
-                    xml.skipCurrentElement();   // skip unknown element
+                    shortcuts.append(QKeySequence(keyString));
                 }
+                xml.skipCurrentElement();       // skip <key> or unknown element
             }
-
-            result.insert(id, shortcut);
         } else {
             xml.skipCurrentElement();           // skip unknown element
         }
@@ -757,12 +751,12 @@ void ShortcutSettingsPage::exportShortcuts()
 
     for (Id actionId : qAsConst(actions)) {
         const auto action = ActionManager::action(actionId);
-        const auto shortcut = action->shortcut();
+        const auto shortcuts = action->shortcuts();
 
         xml.writeStartElement(QStringLiteral("shortcut"));
         xml.writeAttribute(QStringLiteral("id"), actionId.toString());
 
-        if (!shortcut.isEmpty()) {
+        for (const auto &shortcut : shortcuts) {
             xml.writeEmptyElement(QLatin1String("key"));
             xml.writeAttribute(QStringLiteral("value"), shortcut.toString());
         }
