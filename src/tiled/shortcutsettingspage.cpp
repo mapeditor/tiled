@@ -23,6 +23,7 @@
 
 #include "actionmanager.h"
 #include "savefile.h"
+#include "session.h"
 #include "utils.h"
 
 #include <QAbstractListModel>
@@ -657,12 +658,17 @@ void ShortcutSettingsPage::searchConflicts()
 
 void ShortcutSettingsPage::importShortcuts()
 {
+    Session &session = Session::current();
+    const QString suggestedFileName = session.lastPath(Session::ShortcutSettingsFile);
+
     QString filter = tr("Keyboard Mapping Scheme (*.kms)");
     QString fileName = QFileDialog::getOpenFileName(this, tr("Import Shortcuts"),
-                                                    QString(), filter);
+                                                    suggestedFileName, filter);
 
     if (fileName.isEmpty())
         return;
+
+    session.setLastPath(Session::ShortcutSettingsFile, fileName);
 
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly | QIODevice::Text)) {
@@ -686,11 +692,12 @@ void ShortcutSettingsPage::importShortcuts()
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("shortcut")) {
             const Id id { xml.attributes().value(QLatin1String("id")).toUtf8() };
+            QKeySequence shortcut;
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("key")) {
-                    QString keyString = xml.attributes().value(QLatin1String("value")).toString();
-                    result.insert(id, QKeySequence(keyString));
+                    const QString keyString = xml.attributes().value(QLatin1String("value")).toString();
+                    shortcut = QKeySequence(keyString);
                     xml.skipCurrentElement();   // skip out of "key" element
                     xml.skipCurrentElement();   // skip out of "shortcut" element
                     break;
@@ -698,6 +705,8 @@ void ShortcutSettingsPage::importShortcuts()
                     xml.skipCurrentElement();   // skip unknown element
                 }
             }
+
+            result.insert(id, shortcut);
         } else {
             xml.skipCurrentElement();           // skip unknown element
         }
@@ -709,12 +718,17 @@ void ShortcutSettingsPage::importShortcuts()
 
 void ShortcutSettingsPage::exportShortcuts()
 {
-    QString filter = tr("Keyboard Mapping Scheme (*.kms)");
+    Session &session = Session::current();
+    const QString suggestedFileName = session.lastPath(Session::ShortcutSettingsFile);
+
+    const QString filter = tr("Keyboard Mapping Scheme (*.kms)");
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export Shortcuts"),
-                                                    QString(), filter);
+                                                    suggestedFileName, filter);
 
     if (fileName.isEmpty())
         return;
+
+    session.setLastPath(Session::ShortcutSettingsFile, fileName);
 
     SaveFile file(fileName);
 
