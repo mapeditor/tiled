@@ -5,7 +5,7 @@
   <property name="NoOverlappingRules" type="bool" value="false"/>
  </properties>
  <tileset firstgid="1" source="../spr_test_tileset.tsx"/>
- <tileset firstgid="17" source="../automap-tiles.tsx"/>
+ <tileset firstgid="17" source="../../../src/tiled/resources/automap-tiles.tsx"/>
  <layer id="1" name="inputnot_in" width="4" height="4" tintcolor="#dca0a0">
   <data encoding="csv">
 2,0,2,0,

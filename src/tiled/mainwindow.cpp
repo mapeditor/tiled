@@ -58,12 +58,12 @@
 #include "newsbutton.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
-#include "propertytypeseditor.h"
 #include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
 #include "projectdock.h"
 #include "projectmanager.h"
 #include "projectpropertiesdialog.h"
+#include "propertytypeseditor.h"
 #include "resizedialog.h"
 #include "scriptmanager.h"
 #include "sentryhelper.h"
@@ -72,6 +72,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "tilesetdock.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
 #include "tilesetmanager.h"
@@ -261,6 +262,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionAbout, "About");
     ActionManager::registerAction(mUi->actionAboutQt, "AboutQt");
     ActionManager::registerAction(mUi->actionAddExternalTileset, "AddExternalTileset");
+    ActionManager::registerAction(mUi->actionAddAutomappingRulesTileset, "AddAutomappingRulesTileset");
     ActionManager::registerAction(mUi->actionAddFolderToProject, "AddFolderToProject");
     ActionManager::registerAction(mUi->actionAutoMap, "AutoMap");
     ActionManager::registerAction(mUi->actionAutoMapWhileDrawing, "AutoMapWhileDrawing");
@@ -591,6 +593,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mUi->actionAddExternalTileset, &QAction::triggered,
             this, &MainWindow::addExternalTileset);
+    connect(mUi->actionAddAutomappingRulesTileset, &QAction::triggered,
+            this, &MainWindow::addAutomappingRulesTileset);
     connect(mUi->actionLoadWorld, &QAction::triggered, this, [this] {
         Session &session = Session::current();
         QString lastPath = session.lastPath(Session::WorldFile);
@@ -1882,6 +1886,23 @@ void MainWindow::addExternalTileset()
     mapEditor->addExternalTilesets(fileNames);
 }
 
+void MainWindow::addAutomappingRulesTileset()
+{
+    auto mapDocument = qobject_cast<MapDocument*>(mDocument);
+    if (!mapDocument)
+        return;
+
+    auto tileset = Tiled::readTileset(QStringLiteral("://automap-tiles.tsx"));
+    if (!tileset)   // Should never happen, but better do nothing than crash
+        return;
+
+    if (!mapDocument->map()->tilesets().contains(tileset))
+        mapDocument->undoStack()->push(new AddTileset(mapDocument, tileset));
+
+    auto mapEditor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
+    mapEditor->tilesetDock()->setCurrentTileset(tileset);
+}
+
 void MainWindow::resizeMap()
 {
     auto mapDocument = qobject_cast<MapDocument*>(mDocument);
@@ -2193,6 +2214,7 @@ void MainWindow::updateActions()
     mUi->menuWorld->menuAction()->setVisible(mapDocument);
     mUi->menuMap->menuAction()->setVisible(mapDocument);
     mUi->actionAddExternalTileset->setEnabled(mapDocument);
+    mUi->actionAddAutomappingRulesTileset->setEnabled(mapDocument);
     mUi->actionResizeMap->setEnabled(mapDocument);
     mUi->actionOffsetMap->setEnabled(mapDocument);
     mUi->actionMapProperties->setEnabled(mapDocument);

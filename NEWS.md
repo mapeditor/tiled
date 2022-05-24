@@ -10,9 +10,10 @@
 * Scripting: Added access to selected terrain in tileset editor
 * AutoMapping: Applying rules is now 10-30x faster
 * AutoMapping: Explicit "regions" layers are no longer needed and have been deprecated (#1918)
-* AutoMapping: Custom tiles can now match "Empty", "Non-Empty" and "Other" tiles through a "MatchType" property (#3100)
 * AutoMapping: "AutoMap While Drawing" no longer creates separate undo steps (#2166)
+* AutoMapping: Custom tiles can now match "Empty", "Non-Empty" and "Other" tiles through a "MatchType" property (#3100)
 * AutoMapping: A custom tile with "MatchType" set to "Forbid" can be used instead of "inputnot" layers
+* AutoMapping: Added built-in tileset with these custom rule tiles
 * AutoMapping: Added a number of per-rule options which can be set using rectangle objects
 * AutoMapping: Erase tiles by placing tiles with "MatchType" set to "Empty" on output layers (#3100)
 * AutoMapping: Accumulate touched layers in AutoMap While Drawing (#3313)

@@ -181,5 +181,7 @@
         <file>images/scalable/property-type-class.svg</file>
         <file>images/scalable/property-type-enum.svg</file>
         <file>images/scalable/property-type-plain.svg</file>
+        <file alias="automap-tiles.tsx">resources/automap-tiles.tsx</file>
+        <file alias="automap-tiles.svg">resources/automap-tiles.svg</file>
     </qresource>
 </RCC>

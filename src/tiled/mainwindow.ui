@@ -131,6 +131,7 @@
      <string>&amp;Map</string>
     </property>
     <addaction name="actionAddExternalTileset"/>
+    <addaction name="actionAddAutomappingRulesTileset"/>
     <addaction name="separator"/>
     <addaction name="actionResizeMap"/>
     <addaction name="actionOffsetMap"/>
@@ -784,6 +785,11 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+Shift+N</string>
+   </property>
+  </action>
+  <action name="actionAddAutomappingRulesTileset">
+   <property name="text">
+    <string>Add Automapping Rules Tileset</string>
    </property>
   </action>
  </widget>

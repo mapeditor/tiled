@@ -144,9 +144,11 @@ QString Tiled::urlToLocalFileOrQrc(const QUrl &url)
 
 QString Tiled::filePathRelativeTo(const QDir &dir, const QString &filePath)
 {
-    // We can't refer to files loaded from extensions using relative paths
-    if (filePath.startsWith(QLatin1String("ext:")))
+    // We can't refer to files loaded from extensions or resources using relative paths
+    if (filePath.startsWith(QLatin1String("ext:")) ||
+            filePath.startsWith(QLatin1String(":"))) {
         return filePath;
+    }
 
     return dir.relativeFilePath(filePath);
 }

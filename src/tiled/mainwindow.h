@@ -161,6 +161,7 @@ private:
     bool newTileset(const QString &path = QString());
     void reloadTilesetImages();
     void addExternalTileset();
+    void addAutomappingRulesTileset();
     void resizeMap();
     void offsetMap();
     void editMapProperties();
