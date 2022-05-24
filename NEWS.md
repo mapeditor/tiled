@@ -6,6 +6,7 @@
 * Fixed importing of removed shortcuts (#3367)
 * Fixed breaking of alternative shortcuts on import or reset (#3367)
 * Fixed conflict detection to handle alternative shortcuts (#3368)
+* Defold plugins: Added support for rotated tiles (#3369)
 
 ### Tiled 1.8.5 (17 May 2022)
 

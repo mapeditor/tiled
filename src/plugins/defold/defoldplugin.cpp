@@ -43,6 +43,7 @@ static const char cell_t[] =
     tile: {{tile}}\n\
     h_flip: {{h_flip}}\n\
     v_flip: {{v_flip}}\n\
+    rotate90: {{rotate90}}\n\
   }\n";
 
 static const char layer_t[] =
@@ -70,13 +71,28 @@ static QString replaceTags(QString context, const QVariantHash &map)
     return context;
 }
 
+static void setCellProperties(QVariantHash &cellHash, const Tiled::Cell &cell)
+{
+    cellHash["tile"] = cell.tileId();
+
+    if (cell.flippedAntiDiagonally()) {
+        cellHash["h_flip"] = cell.flippedVertically() ? 1 : 0;
+        cellHash["v_flip"] = cell.flippedHorizontally() ? 0 : 1;
+        cellHash["rotate90"] = 1;
+    } else {
+        cellHash["h_flip"] = cell.flippedHorizontally() ? 1 : 0;
+        cellHash["v_flip"] = cell.flippedVertically() ? 1 : 0;
+        cellHash["rotate90"] = 0;
+    }
+}
+
 DefoldPlugin::DefoldPlugin()
 {
 }
 
 QString DefoldPlugin::nameFilter() const
 {
-    return tr("Defold files (*.tilemap)");
+    return tr("Defold Tile Map (*.tilemap)");
 }
 
 QString DefoldPlugin::shortName() const
@@ -112,9 +128,7 @@ bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName, Options
                 QVariantHash cell_h;
                 cell_h["x"] = x;
                 cell_h["y"] = tileLayer->height() - y - 1;
-                cell_h["tile"] = cell.tileId();
-                cell_h["h_flip"] = cell.flippedHorizontally() ? 1 : 0;
-                cell_h["v_flip"] = cell.flippedVertically() ? 1 : 0;
+                setCellProperties(cell_h, cell);
                 cells.append(replaceTags(QLatin1String(cell_t), cell_h));
             }
         }
