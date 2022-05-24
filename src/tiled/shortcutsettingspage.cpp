@@ -129,19 +129,26 @@ void ActionsModel::refreshConflicts()
     QMultiMap<QKeySequence, Id> actionsByKey;
 
     for (const auto &actionId : qAsConst(mActions)) {
-        if (auto action = ActionManager::findAction(actionId))
-            if (!action->shortcut().isEmpty())
-                actionsByKey.insert(action->shortcut(), actionId);
+        if (auto action = ActionManager::findAction(actionId)) {
+            const auto shortcuts = action->shortcuts();
+            for (const auto &shortcut : shortcuts)
+                actionsByKey.insert(shortcut, actionId);
+        }
     }
 
     QVector<bool> conflicts;
     conflicts.reserve(mActions.size());
 
     for (const auto &actionId : qAsConst(mActions)) {
-        if (auto action = ActionManager::findAction(actionId))
-            conflicts.append(actionsByKey.count(action->shortcut()) > 1);
-        else
+        if (auto action = ActionManager::findAction(actionId)) {
+            const auto shortcuts = action->shortcuts();
+            conflicts.append(std::any_of(shortcuts.begin(), shortcuts.end(),
+                                         [&] (const QKeySequence &shortcut) {
+                return actionsByKey.count(shortcut) > 1;
+            }));
+        } else {
             conflicts.append(false);
+        }
     }
 
     mConflicts.swap(conflicts);
@@ -334,8 +341,16 @@ bool KeySequenceFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &
         return QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
 
     auto source = sourceModel();
-    auto keySequence = source->data(source->index(sourceRow, 2, sourceParent), Qt::EditRole).value<QKeySequence>();
-    return !keySequence.isEmpty() && mKeySequence.matches(keySequence) != QKeySequence::NoMatch;
+    auto actionId = source->data(source->index(sourceRow, 2, sourceParent), ActionsModel::ActionId).value<Id>();
+
+    if (auto action = ActionManager::findAction(actionId)) {
+        const auto shortcuts = action->shortcuts();
+        for (const auto &shortcut : shortcuts)
+            if (mKeySequence.matches(shortcut) != QKeySequence::NoMatch)
+                return true;
+    }
+
+    return false;
 }
 
 
@@ -641,8 +656,8 @@ void ShortcutSettingsPage::hideEvent(QHideEvent *event)
 
 void ShortcutSettingsPage::refreshConflicts()
 {
-    auto current = ui->shortcutsView->currentIndex();
-    bool conflicts = current.isValid() &&
+    const auto current = ui->shortcutsView->currentIndex();
+    const bool conflicts = current.isValid() &&
             mProxyModel->data(current, ActionsModel::HasConflictingShortcut).toBool();
     ui->conflictsLabel->setVisible(conflicts);
 }
