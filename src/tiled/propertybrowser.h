@@ -136,6 +136,8 @@ private:
         DrawOrderProperty,
         FileNameProperty,
         ObjectAlignmentProperty,
+        TileRenderSizeProperty,
+        FillModeProperty,
         TileOffsetProperty,
         MarginProperty,
         SpacingProperty,
@@ -230,6 +232,8 @@ private:
     QStringList mStaggerIndexNames;
     QStringList mOrientationNames;
     QStringList mTilesetOrientationNames;
+    QStringList mTileRenderSizeNames;
+    QStringList mFillModeNames;
     QStringList mLayerFormatNames;
     QList<Map::LayerDataFormat> mLayerFormatValues;
     QStringList mRenderOrderNames;

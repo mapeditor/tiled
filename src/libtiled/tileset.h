@@ -63,6 +63,12 @@ using SharedTileset = QSharedPointer<Tileset>;
 class TILEDSHARED_EXPORT Tileset : public Object, public QEnableSharedFromThis<Tileset>
 {
 public:
+    // Used by TilesetChangeEvent
+    enum Property {
+        FillModeProperty,
+        TileRenderSizeProperty,
+    };
+
     /**
      * The orientation of the tileset determines the projection used in the
      * TileCollisionDock and for the Wang color overlay of the TilesetView.
@@ -70,6 +76,23 @@ public:
     enum Orientation {
         Orthogonal,
         Isometric,
+    };
+
+    /**
+     * The size to use when rendering tiles from this tileset on a tile layer.
+     */
+    enum TileRenderSize {
+        TileSize,
+        GridSize,
+    };
+
+    /**
+     * The fill mode to use when rendering tiles from this tileset. Only
+     * relevant when the tiles are not rendered at their native size.
+     */
+    enum FillMode {
+        Stretch,
+        PreserveAspectFit
     };
 
     /**
@@ -129,6 +152,12 @@ public:
 
     Alignment objectAlignment() const;
     void setObjectAlignment(Alignment objectAlignment);
+
+    TileRenderSize tileRenderSize() const;
+    void setTileRenderSize(TileRenderSize tileRenderSize);
+
+    FillMode fillMode() const;
+    void setFillMode(FillMode fillMode);
 
     QPoint tileOffset() const;
     void setTileOffset(QPoint offset);
@@ -256,6 +285,12 @@ public:
      */
     static Orientation orientationFromString(const QString &);
 
+    static QString tileRenderSizeToString(TileRenderSize tileRenderSize);
+    static TileRenderSize tileRenderSizeFromString(const QString &);
+
+    static QString fillModeToString(FillMode fillMode);
+    static FillMode fillModeFromString(const QString &);
+
 private:
     void initializeTilesetTiles();
 
@@ -273,6 +308,8 @@ private:
     QPoint mTileOffset;
     Alignment mObjectAlignment = Unspecified;
     Orientation mOrientation = Orthogonal;
+    TileRenderSize mTileRenderSize = TileSize;
+    FillMode mFillMode = Stretch;
     QSize mGridSize;
     int mColumnCount = 0;
     int mExpectedColumnCount = 0;
@@ -385,6 +422,26 @@ inline Alignment Tileset::objectAlignment() const
 inline void Tileset::setObjectAlignment(Alignment objectAlignment)
 {
     mObjectAlignment = objectAlignment;
+}
+
+inline Tileset::TileRenderSize Tileset::tileRenderSize() const
+{
+    return mTileRenderSize;
+}
+
+inline void Tileset::setTileRenderSize(TileRenderSize tileRenderSize)
+{
+    mTileRenderSize = tileRenderSize;
+}
+
+inline Tileset::FillMode Tileset::fillMode() const
+{
+    return mFillMode;
+}
+
+inline void Tileset::setFillMode(FillMode fillMode)
+{
+    mFillMode = fillMode;
 }
 
 /**

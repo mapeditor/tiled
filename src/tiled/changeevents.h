@@ -23,6 +23,7 @@
 #include "imagelayer.h"
 #include "map.h"
 #include "mapobject.h"
+#include "tileset.h"
 #include "wangset.h"
 
 #include <QList>
@@ -50,6 +51,7 @@ public:
         MapObjectsRemoved,
         ObjectGroupChanged,
         TilesAboutToBeRemoved,
+        TilesetChanged,
         WangSetAboutToBeAdded,
         WangSetAboutToBeRemoved,
         WangSetAdded,
@@ -196,6 +198,19 @@ public:
 
     ObjectGroup *objectGroup;
     int index;
+};
+
+class TilesetChangeEvent : public ChangeEvent
+{
+public:
+    TilesetChangeEvent(Tileset *tileset, Tileset::Property property)
+        : ChangeEvent(TilesetChanged)
+        , tileset(tileset)
+        , property(property)
+    {}
+
+    Tileset *tileset;
+    Tileset::Property property;
 };
 
 class TilesEvent : public ChangeEvent

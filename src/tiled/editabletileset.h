@@ -50,6 +50,8 @@ class EditableTileset : public EditableAsset
     Q_PROPERTY(int tileSpacing READ tileSpacing)
     Q_PROPERTY(int margin READ margin)
     Q_PROPERTY(Alignment objectAlignment READ objectAlignment WRITE setObjectAlignment)
+    Q_PROPERTY(TileRenderSize tileRenderSize READ tileRenderSize WRITE setTileRenderSize)
+    Q_PROPERTY(FillMode fillMode READ fillMode WRITE setFillMode)
     Q_PROPERTY(QPoint tileOffset READ tileOffset WRITE setTileOffset)
     Q_PROPERTY(Orientation orientation READ orientation WRITE setOrientation)
     Q_PROPERTY(QColor transparentColor READ transparentColor WRITE setTransparentColor)
@@ -80,6 +82,20 @@ public:
     };
     Q_ENUM(Orientation)
 
+    // Synchronized with Tileset::TileRenderSize
+    enum TileRenderSize {
+        TileSize,
+        GridSize,
+    };
+    Q_ENUM(TileRenderSize)
+
+    // Synchronized with Tileset::FillMode
+    enum FillMode {
+        Stretch,
+        PreserveAspectFit
+    };
+    Q_ENUM(FillMode)
+
     Q_INVOKABLE explicit EditableTileset(const QString &name = QString(),
                                          QObject *parent = nullptr);
     explicit EditableTileset(const Tileset *tileset, QObject *parent = nullptr);
@@ -103,6 +119,8 @@ public:
     int tileSpacing() const;
     int margin() const;
     Alignment objectAlignment() const;
+    TileRenderSize tileRenderSize() const;
+    FillMode fillMode() const;
     QPoint tileOffset() const;
     Orientation orientation() const;
     QColor transparentColor() const;
@@ -139,6 +157,8 @@ public slots:
     void setTileSize(int width, int height);
     void setColumnCount(int columnCount);
     void setObjectAlignment(Alignment objectAlignment);
+    void setTileRenderSize(TileRenderSize tileRenderSize);
+    void setFillMode(FillMode fillMode);
     void setTileOffset(QPoint tileOffset);
     void setOrientation(Orientation orientation);
     void setTransparentColor(const QColor &color);
@@ -234,6 +254,16 @@ inline int EditableTileset::margin() const
 inline EditableTileset::Alignment EditableTileset::objectAlignment() const
 {
     return static_cast<Alignment>(tileset()->objectAlignment());
+}
+
+inline EditableTileset::TileRenderSize EditableTileset::tileRenderSize() const
+{
+    return static_cast<TileRenderSize>(tileset()->tileRenderSize());
+}
+
+inline EditableTileset::FillMode EditableTileset::fillMode() const
+{
+    return static_cast<FillMode>(tileset()->fillMode());
 }
 
 inline QPoint EditableTileset::tileOffset() const

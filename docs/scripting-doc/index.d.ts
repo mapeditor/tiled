@@ -2472,6 +2472,12 @@ declare class Tileset extends Asset {
   static readonly Orthogonal: unique symbol
   static readonly Isometric: unique symbol
 
+  static readonly TileSize: unique symbol
+  static readonly GridSize: unique symbol
+
+  static readonly Stretch: unique symbol
+  static readonly PreserveAspectFit: unique symbol
+
   /**
    * Name of the tileset.
    */
@@ -2557,6 +2563,17 @@ declare class Tileset extends Asset {
    * The alignment to use for tile objects (when Unspecified, uses Bottom alignment on isometric maps and BottomLeft alignment for all other maps).
    */
   objectAlignment : typeof Tileset.Unspecified | typeof Tileset.TopLeft | typeof Tileset.Top | typeof Tileset.TopRight | typeof Tileset.Left | typeof Tileset.Center | typeof Tileset.Right | typeof Tileset.BottomLeft | typeof Tileset.Bottom | typeof Tileset.BottomRight
+
+  /**
+   * The size to use when rendering tiles from this tileset on a tile layer.
+   */
+  tileRenderSize: typeof Tileset.GridSize | typeof Tileset.TileSize
+
+  /**
+   * The fill mode to use when rendering tiles from this tileset. Only relevant
+   * when the tiles are not rendered at their native size.
+   */
+  fillMode : typeof Tileset.Stretch | typeof Tileset.PreserveAspectFit
 
   /**
    * Offset in pixels that is applied when tiles from this tileset are rendered.

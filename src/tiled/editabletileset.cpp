@@ -288,6 +288,22 @@ void EditableTileset::setObjectAlignment(Alignment alignment)
         tileset()->setObjectAlignment(static_cast<Tiled::Alignment>(alignment));
 }
 
+void EditableTileset::setTileRenderSize(TileRenderSize tileRenderSize)
+{
+    if (auto doc = tilesetDocument())
+        push(new ChangeTilesetTileRenderSize(doc, static_cast<Tileset::TileRenderSize>(tileRenderSize)));
+    else if (!checkReadOnly())
+        tileset()->setTileRenderSize(static_cast<Tileset::TileRenderSize>(tileRenderSize));
+}
+
+void EditableTileset::setFillMode(FillMode fillMode)
+{
+    if (auto doc = tilesetDocument())
+        push(new ChangeTilesetFillMode(doc, static_cast<Tileset::FillMode>(fillMode)));
+    else if (!checkReadOnly())
+        tileset()->setFillMode(static_cast<Tileset::FillMode>(fillMode));
+}
+
 void EditableTileset::setTileOffset(QPoint tileOffset)
 {
     if (auto doc = tilesetDocument())

@@ -148,10 +148,12 @@ static QMargins computeDrawMargins(const QSet<SharedTileset> &tilesets)
 
     for (const SharedTileset &tileset : tilesets) {
         const QPoint offset = tileset->tileOffset();
-        const QSize tileSize = tileset->tileSize();
 
-        maxTileSize = std::max(maxTileSize, std::max(tileSize.width(),
-                                                     tileSize.height()));
+        if (tileset->tileRenderSize() == Tileset::TileSize) {
+            const QSize tileSize = tileset->tileSize();
+            maxTileSize = std::max(maxTileSize, std::max(tileSize.width(),
+                                                         tileSize.height()));
+        }
 
         offsetMargins = maxMargins(QMargins(-offset.x(),
                                             -offset.y(),

@@ -230,6 +230,8 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const int columns = variantMap[QStringLiteral("columns")].toInt();
     const QString backgroundColor = variantMap[QStringLiteral("backgroundcolor")].toString();
     const QString objectAlignment = variantMap[QStringLiteral("objectalignment")].toString();
+    const QString tileRenderSize = variantMap[QStringLiteral("tilerendersize")].toString();
+    const QString fillMode = variantMap[QStringLiteral("fillmode")].toString();
     const QVariantMap transformations = variantMap[QStringLiteral("transformations")].toMap();
 
     if (tileWidth <= 0 || tileHeight <= 0 ||
@@ -243,6 +245,8 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
                                           spacing, margin));
 
     tileset->setObjectAlignment(alignmentFromString(objectAlignment));
+    tileset->setTileRenderSize(Tileset::tileRenderSizeFromString(tileRenderSize));
+    tileset->setFillMode(Tileset::fillModeFromString(fillMode));
     tileset->setTileOffset(QPoint(tileOffsetX, tileOffsetY));
     tileset->setColumnCount(columns);
 

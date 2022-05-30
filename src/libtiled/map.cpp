@@ -114,12 +114,14 @@ void Map::recomputeDrawMargins() const
     QMargins offsetMargins;
 
     for (const SharedTileset &tileset : mTilesets) {
-        const QPoint offset = tileset->tileOffset();
-        const QSize tileSize = tileset->tileSize();
+        const bool useGridSize = tileset->tileRenderSize() == Tileset::GridSize;
+        const QSize tileSize = useGridSize ? this->tileSize()
+                                           : tileset->tileSize();
 
         maxTileSize = std::max(maxTileSize, std::max(tileSize.width(),
                                                      tileSize.height()));
 
+        const QPoint offset = tileset->tileOffset();
         offsetMargins = maxMargins(QMargins(-offset.x(),
                                             -offset.y(),
                                             offset.x(),

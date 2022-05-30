@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.8" tiledversion="1.8.4" name="automap-tiles" tilewidth="32" tileheight="32" tilecount="5" columns="5">
+<tileset version="1.8" tiledversion="1.8.5" name="automap-tiles" tilewidth="32" tileheight="32" tilecount="5" columns="5" tilerendersize="grid" fillmode="preserve-aspect-fit">
  <image source="automap-tiles.svg" width="160" height="32"/>
  <tile id="0">
   <properties>

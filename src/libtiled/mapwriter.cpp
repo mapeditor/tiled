@@ -339,8 +339,18 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     }
 
     if (tileset.objectAlignment() != Unspecified) {
-        const QString alignment = alignmentToString(tileset.objectAlignment());
-        w.writeAttribute(QStringLiteral("objectalignment"), alignment);
+        w.writeAttribute(QStringLiteral("objectalignment"),
+                         alignmentToString(tileset.objectAlignment()));
+    }
+
+    if (tileset.tileRenderSize() != Tileset::TileSize) {
+        w.writeAttribute(QStringLiteral("tilerendersize"),
+                         Tileset::tileRenderSizeToString(tileset.tileRenderSize()));
+    }
+
+    if (tileset.fillMode() != Tileset::Stretch) {
+        w.writeAttribute(QStringLiteral("fillmode"),
+                         Tileset::fillModeToString(tileset.fillMode()));
     }
 
     // Write editor settings when saving external tilesets

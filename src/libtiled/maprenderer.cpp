@@ -257,8 +257,8 @@ void MapRenderer::drawTileLayer(QPainter *painter, const TileLayer *layer, const
     // the grid size because this has already been taken into account by
     // boundingRect.
     QMargins drawMargins = layer->drawMargins();
-    drawMargins.setTop(drawMargins.top() - tileSize.height());
-    drawMargins.setRight(drawMargins.right() - tileSize.width());
+    drawMargins.setTop(qMax(0, drawMargins.top() - tileSize.height()));
+    drawMargins.setRight(qMax(0, drawMargins.right() - tileSize.width()));
     rect.adjust(-drawMargins.right(),
                 -drawMargins.bottom(),
                 drawMargins.left(),
@@ -269,8 +269,13 @@ void MapRenderer::drawTileLayer(QPainter *painter, const TileLayer *layer, const
     auto tileRenderFunction = [layer, &renderer, tileSize](QPoint tilePos, const QPointF &screenPos) {
         const Cell &cell = layer->cellAt(tilePos - layer->position());
         if (!cell.isEmpty()) {
-            const Tile *tile = cell.tile();
-            const QSize size = (tile && !tile->image().isNull()) ? tile->size() : tileSize;
+            QSize size = tileSize;
+
+            if (cell.tileset()->tileRenderSize() == Tileset::TileSize) {
+                if (const Tile *tile = cell.tile())
+                    size = tile->size();
+            }
+
             renderer.render(cell, screenPos, size, CellRenderer::BottomLeft);
         }
     };
@@ -426,23 +431,33 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
         return;
 
     const QPoint offset = tile->offset();
-    const QPointF sizeHalf = QPointF(size.width() / 2, size.height() / 2);
+    const QPointF sizeHalf { size.width() / 2, size.height() / 2 };
 
     bool flippedHorizontally = cell.flippedHorizontally();
     bool flippedVertically = cell.flippedVertically();
 
     QPainter::PixmapFragment fragment;
     // Calculate the position as if the origin is TopLeft, and correct it later.
-    fragment.scaleX = size.width() / imageRect.width();
-    fragment.scaleY = size.height() / imageRect.height();
-    fragment.x = screenPos.x() + (offset.x() * fragment.scaleX) + sizeHalf.x();
-    fragment.y = screenPos.y() + (offset.y() * fragment.scaleY) + sizeHalf.y();
+    fragment.x = screenPos.x() + sizeHalf.x();
+    fragment.y = screenPos.y() + sizeHalf.y();
     fragment.sourceLeft = imageRect.x();
     fragment.sourceTop = imageRect.y();
     fragment.width = imageRect.width();
     fragment.height = imageRect.height();
+    fragment.scaleX = size.width() / imageRect.width();
+    fragment.scaleY = size.height() / imageRect.height();
     fragment.rotation = 0;
     fragment.opacity = 1;
+
+    const auto fillMode = tile->tileset()->fillMode();
+    if (fillMode == Tileset::PreserveAspectFit) {
+        const auto minScale = std::min(fragment.scaleX, fragment.scaleY);
+        fragment.scaleX = minScale;
+        fragment.scaleY = minScale;
+    }
+
+    fragment.x += offset.x() * fragment.scaleX;
+    fragment.y += offset.y() * fragment.scaleY;
 
     // Correct the position if the origin is BottomLeft.
     if (origin == BottomLeft)

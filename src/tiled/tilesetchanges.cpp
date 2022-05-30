@@ -21,6 +21,8 @@
 
 #include "tilesetchanges.h"
 
+#include "changeevents.h"
+#include "mapdocument.h"
 #include "tilesetdocument.h"
 #include "tilesetmanager.h"
 
@@ -216,6 +218,58 @@ void ChangeTilesetObjectAlignment::swap()
     Alignment objectAlignment = tileset.objectAlignment();
     mTilesetDocument->setTilesetObjectAlignment(mObjectAlignment);
     mObjectAlignment = objectAlignment;
+}
+
+
+ChangeTilesetTileRenderSize::ChangeTilesetTileRenderSize(TilesetDocument *tilesetDocument,
+                                                         Tileset::TileRenderSize tileRenderSize)
+    : ChangeValue<Tileset, Tileset::TileRenderSize>(tilesetDocument,
+                                                    { tilesetDocument->tileset().data() },
+                                                    tileRenderSize)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Change Tile Render Size"));
+}
+
+Tileset::TileRenderSize ChangeTilesetTileRenderSize::getValue(const Tileset *tileset) const
+{
+    return tileset->tileRenderSize();
+}
+
+void ChangeTilesetTileRenderSize::setValue(Tileset *tileset, const Tileset::TileRenderSize &tileRenderSize) const
+{
+    tileset->setTileRenderSize(tileRenderSize);
+
+    const TilesetChangeEvent event { tileset, Tileset::TileRenderSizeProperty };
+    emit document()->changed(event);
+
+    for (MapDocument *mapDocument : static_cast<TilesetDocument*>(document())->mapDocuments())
+        emit mapDocument->changed(event);
+}
+
+
+ChangeTilesetFillMode::ChangeTilesetFillMode(TilesetDocument *tilesetDocument,
+                                             Tileset::FillMode fillMode)
+    : ChangeValue<Tileset, Tileset::FillMode>(tilesetDocument,
+                                              { tilesetDocument->tileset().data() },
+                                              fillMode)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Change Fill Mode"));
+}
+
+Tileset::FillMode ChangeTilesetFillMode::getValue(const Tileset *tileset) const
+{
+    return tileset->fillMode();
+}
+
+void ChangeTilesetFillMode::setValue(Tileset *tileset, const Tileset::FillMode &fillMode) const
+{
+    tileset->setFillMode(fillMode);
+
+    const TilesetChangeEvent event { tileset, Tileset::FillModeProperty };
+    emit document()->changed(event);
+
+    for (MapDocument *mapDocument : static_cast<TilesetDocument*>(document())->mapDocuments())
+        emit mapDocument->changed(event);
 }
 
 

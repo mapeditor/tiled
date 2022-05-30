@@ -21,13 +21,12 @@
 
 #pragma once
 
+#include "changevalue.h"
 #include "tileset.h"
-#include "undocommands.h"
 
 #include <QColor>
 #include <QPoint>
 #include <QSize>
-#include <QUndoCommand>
 
 namespace Tiled {
 
@@ -176,6 +175,27 @@ private:
     Alignment mObjectAlignment;
 };
 
+class ChangeTilesetTileRenderSize : public ChangeValue<Tileset, Tileset::TileRenderSize>
+{
+public:
+    ChangeTilesetTileRenderSize(TilesetDocument *tilesetDocument,
+                                Tileset::TileRenderSize tileRenderSize);
+
+protected:
+    Tileset::TileRenderSize getValue(const Tileset *tileset) const override;
+    void setValue(Tileset *tileset, const Tileset::TileRenderSize &tileRenderSize) const override;
+};
+
+class ChangeTilesetFillMode : public ChangeValue<Tileset, Tileset::FillMode>
+{
+public:
+    ChangeTilesetFillMode(TilesetDocument *tilesetDocument,
+                          Tileset::FillMode fillMode);
+
+protected:
+    Tileset::FillMode getValue(const Tileset *tileset) const override;
+    void setValue(Tileset *tileset, const Tileset::FillMode &fillMode) const override;
+};
 
 class ChangeTilesetGridSize : public QUndoCommand
 {

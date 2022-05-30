@@ -205,6 +205,12 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     if (tileset.objectAlignment() != Unspecified)
         tilesetVariant[QStringLiteral("objectalignment")] = alignmentToString(tileset.objectAlignment());
 
+    if (tileset.tileRenderSize() != Tileset::TileSize)
+        tilesetVariant[QStringLiteral("tilerendersize")] = Tileset::tileRenderSizeToString(tileset.tileRenderSize());
+
+    if (tileset.fillMode() != Tileset::Stretch)
+        tilesetVariant[QStringLiteral("fillmode")] = Tileset::fillModeToString(tileset.fillMode());
+
     addProperties(tilesetVariant, tileset.properties());
 
     const QPoint offset = tileset.tileOffset();

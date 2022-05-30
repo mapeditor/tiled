@@ -331,6 +331,10 @@ void PropertyBrowser::documentChanged(const ChangeEvent &change)
         if (mObject == static_cast<const ObjectGroupChangeEvent&>(change).objectGroup)
             updateProperties();
         break;
+    case ChangeEvent::TilesetChanged:
+        if (mObject == static_cast<const TilesetChangeEvent&>(change).tileset)
+            updateProperties();
+        break;
     case ChangeEvent::WangSetChanged:
         if (mObject == static_cast<const WangSetChangeEvent&>(change).wangSet)
             updateProperties();
@@ -816,11 +820,27 @@ void PropertyBrowser::addTilesetProperties()
                         QtVariantPropertyManager::enumTypeId(),
                         tr("Object Alignment"),
                         groupProperty);
-
     alignmentProperty->setAttribute(QLatin1String("enumNames"), mAlignmentNames);
+    alignmentProperty->setEnabled(mTilesetDocument);
 
     QtVariantProperty *tileOffsetProperty = addProperty(TileOffsetProperty, QMetaType::QPoint, tr("Drawing Offset"), groupProperty);
     tileOffsetProperty->setEnabled(mTilesetDocument);
+
+    QtVariantProperty *tileRenderSizeProperty =
+            addProperty(TileRenderSizeProperty,
+                        QtVariantPropertyManager::enumTypeId(),
+                        tr("Tile Render Size"),
+                        groupProperty);
+    tileRenderSizeProperty->setAttribute(QLatin1String("enumNames"), mTileRenderSizeNames);
+    tileRenderSizeProperty->setEnabled(mTilesetDocument);
+
+    QtVariantProperty *fillModeProperty =
+            addProperty(FillModeProperty,
+                        QtVariantPropertyManager::enumTypeId(),
+                        tr("Fill Mode"),
+                        groupProperty);
+    fillModeProperty->setAttribute(QLatin1String("enumNames"), mFillModeNames);
+    fillModeProperty->setEnabled(mTilesetDocument);
 
     QtVariantProperty *backgroundProperty = addProperty(BackgroundColorProperty, QMetaType::QColor, tr("Background Color"), groupProperty);
     backgroundProperty->setEnabled(mTilesetDocument);
@@ -830,7 +850,6 @@ void PropertyBrowser::addTilesetProperties()
                         QtVariantPropertyManager::enumTypeId(),
                         tr("Orientation"),
                         groupProperty);
-
     orientationProperty->setAttribute(QLatin1String("enumNames"), mTilesetOrientationNames);
 
     QtVariantProperty *gridWidthProperty = addProperty(GridWidthProperty, QMetaType::Int, tr("Grid Width"), groupProperty);
@@ -1339,9 +1358,23 @@ void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
         break;
     case ObjectAlignmentProperty: {
         Q_ASSERT(mTilesetDocument);
-        auto objectAlignment = static_cast<Alignment>(val.toInt());
+        const auto objectAlignment = static_cast<Alignment>(val.toInt());
         undoStack->push(new ChangeTilesetObjectAlignment(mTilesetDocument,
                                                          objectAlignment));
+        break;
+    }
+    case TileRenderSizeProperty: {
+        Q_ASSERT(mTilesetDocument);
+        const auto tileRenderSize = static_cast<Tileset::TileRenderSize>(val.toInt());
+        undoStack->push(new ChangeTilesetTileRenderSize(mTilesetDocument,
+                                                        tileRenderSize));
+        break;
+    }
+    case FillModeProperty: {
+        Q_ASSERT(mTilesetDocument);
+        const auto fillMode = static_cast<Tileset::FillMode>(val.toInt());
+        undoStack->push(new ChangeTilesetFillMode(mTilesetDocument,
+                                                  fillMode));
         break;
     }
     case TileOffsetProperty:
@@ -1786,6 +1819,8 @@ void PropertyBrowser::updateProperties()
 
         mIdToProperty[NameProperty]->setValue(tileset->name());
         mIdToProperty[ObjectAlignmentProperty]->setValue(tileset->objectAlignment());
+        mIdToProperty[TileRenderSizeProperty]->setValue(tileset->tileRenderSize());
+        mIdToProperty[FillModeProperty]->setValue(tileset->fillMode());
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
         mIdToProperty[OrientationProperty]->setValue(tileset->orientation());
         mIdToProperty[GridWidthProperty]->setValue(tileset->gridSize().width());
@@ -2010,6 +2045,14 @@ void PropertyBrowser::retranslateUi()
     mTilesetOrientationNames.clear();
     mTilesetOrientationNames.append(mOrientationNames.at(0));
     mTilesetOrientationNames.append(mOrientationNames.at(1));
+
+    mTileRenderSizeNames.clear();
+    mTileRenderSizeNames.append(tr("Tile Size"));
+    mTileRenderSizeNames.append(tr("Map Grid Size"));
+
+    mFillModeNames.clear();
+    mFillModeNames.append(tr("Stretch"));
+    mFillModeNames.append(tr("Preserve Aspect Ratio"));
 
     mLayerFormatNames.clear();
     mLayerFormatValues.clear();

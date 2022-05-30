@@ -169,6 +169,14 @@ Can contain at most one: :ref:`tmx-chunksize`, :ref:`tmx-export`
    ``bottomright``. The default value is ``unspecified``, for compatibility
    reasons. When unspecified, tile objects use ``bottomleft`` in orthogonal mode
    and ``bottom`` in isometric mode. (since 1.4)
+-  **tilerendersize:** The size to use when rendering tiles from this tileset
+   on a tile layer. Valid values are ``tile`` (the default) and ``grid``. When
+   set to ``grid``, the tile is drawn at the tile grid size of the map. (since 1.9)
+-  **fillmode:** The fill mode to use when rendering tiles from this tileset.
+   Valid values are ``stretch`` (the default) and ``preserve-aspect-fit``. Only
+   relevant when the tiles are not rendered at their native size, so this
+   applies to resized tile objects or in combination with ``tilerendersize`` set
+   to ``grid``. (since 1.9)
 
 A tileset can be either *based on a single image*, which is cut into tiles
 based on the given parameters, or a *collection of images*, in which case each

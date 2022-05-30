@@ -435,6 +435,7 @@ Tileset
 
     backgroundcolor,  string,           "Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)"
     columns,          int,              "The number of tile columns in the tileset"
+    fillmode,         string,           "The fill mode to use when rendering tiles from this tileset (``stretch`` (default) or ``preserve-aspect-fit``) (since 1.9)"
     firstgid,         int,              "GID corresponding to the first tile in the set"
     grid,             :ref:`json-tileset-grid`, "(optional)"
     image,            string,           "Image used for tiles in this set"
@@ -451,6 +452,7 @@ Tileset
     tiledversion,     string,           "The Tiled version used to save the file"
     tileheight,       int,              "Maximum height of tiles in this set"
     tileoffset,       :ref:`json-tileset-tileoffset`, "(optional)"
+    tilerendersize,   string,           "The size to use when rendering tiles from this tileset on a tile layer (``tile`` (default) or ``grid``) (since 1.9)"
     tiles,            array,            "Array of :ref:`Tiles <json-tile>` (optional)"
     tilewidth,        int,              "Maximum width of tiles in this set"
     transformations,  :ref:`json-tileset-transformations`, "Allowed transformations (optional)"
@@ -736,16 +738,22 @@ Tiled 1.9
   which store the sub-rectangle of a tile's image used to represent this tile.
   By default the entire image is used.
 
+* Added ``tilerendersize`` and ``fillmode`` properties to :ref:`json-tileset`,
+  which affect the way tiles are rendered.
+
 Tiled 1.8
 ~~~~~~~~~
 
 * Added support for user-defined custom property types. A reference to the
   type is saved as the new ``propertytype`` property of :ref:`json-property`.
+
 * The :ref:`json-property` element can now have an arbitrary JSON object as its
   ``value``, in case the property value is a class. In this case the ``type``
   property is set to the new value ``class``.
+
 * Added ``parallaxoriginx`` and ``parallaxoriginy`` properties to
   :ref:`json-map`.
+
 * Added ``repeatx`` and ``repeaty`` properties to :ref:`json-layer` (applies
   only to image layers at the moment).
 
@@ -780,7 +788,9 @@ Tiled 1.4
 ~~~~~~~~~
 
 * Added ``objectalignment`` to the :ref:`json-tileset` object.
+
 * Added ``tintcolor`` to the :ref:`json-layer` object.
+
 * Added ``object`` as possible type of :ref:`json-property`.
 
 Tiled 1.3

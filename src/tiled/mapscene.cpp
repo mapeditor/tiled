@@ -373,6 +373,16 @@ void MapScene::changeEvent(const ChangeEvent &change)
         if (static_cast<const MapChangeEvent&>(change).property == Map::ParallaxOriginProperty)
             emit parallaxParametersChanged();
         break;
+    case ChangeEvent::TilesetChanged:{
+        auto &tilesetChange = static_cast<const TilesetChangeEvent&>(change);
+        switch (tilesetChange.property) {
+        case Tileset::FillModeProperty:
+        case Tileset::TileRenderSizeProperty:
+            repaintTileset(tilesetChange.tileset);
+            break;
+        }
+        break;
+    }
     default:
         break;
     }

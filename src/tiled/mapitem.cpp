@@ -349,12 +349,7 @@ void MapItem::repaintRegion(const QRegion &region, TileLayer *tileLayer)
     TileLayerItem *tileLayerItem = static_cast<TileLayerItem*>(mLayerItems.value(tileLayer));
 
     for (const QRect &r : region) {
-        QRectF boundingRect = renderer->boundingRect(r);
-        boundingRect.adjust(-margins.left(),
-                            -margins.top(),
-                            margins.right(),
-                            margins.bottom());
-
+        QRectF boundingRect = renderer->boundingRect(r).marginsAdded(margins);
         tileLayerItem->update(boundingRect);
     }
 }
@@ -392,6 +387,17 @@ void MapItem::documentChanged(const ChangeEvent &change)
         if (sync)
             syncObjectItems(objectGroup->objects());
 
+        break;
+    }
+    case ChangeEvent::TilesetChanged: {
+        auto &tilesetChange = static_cast<const TilesetChangeEvent&>(change);
+        if (tilesetChange.property == Tileset::TileRenderSizeProperty) {
+            // This might affect the draw margins
+            for (QGraphicsItem *item : qAsConst(mLayerItems)) {
+                if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
+                    tli->syncWithTileLayer();
+            }
+        }
         break;
     }
     default:

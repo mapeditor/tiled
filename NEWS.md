@@ -2,6 +2,7 @@
 
 * Ignore transparent pixels when selecting tile objects (#1477)
 * Added support for sub-images in image collection tilesets (#1008)
+* Added Tile Render Size and Fill Mode options to Tileset
 * Added %worldfile variable for custom commands (by Pixel-Nori, #3352)
 * Added 'New Project' action, replacing 'Save Project As' (#3279)
 * Scripting: Added -e,--evaluate to run a script from command-line

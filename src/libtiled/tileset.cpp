@@ -602,6 +602,8 @@ void Tileset::swap(Tileset &other)
     std::swap(mTileOffset, other.mTileOffset);
     std::swap(mObjectAlignment, other.mObjectAlignment);
     std::swap(mOrientation, other.mOrientation);
+    std::swap(mTileRenderSize, other.mTileRenderSize);
+    std::swap(mFillMode, other.mFillMode);
     std::swap(mGridSize, other.mGridSize);
     std::swap(mColumnCount, other.mColumnCount);
     std::swap(mExpectedColumnCount, other.mExpectedColumnCount);
@@ -637,6 +639,8 @@ SharedTileset Tileset::clone() const
     c->mTileOffset = mTileOffset;
     c->mObjectAlignment = mObjectAlignment;
     c->mOrientation = mOrientation;
+    c->mTileRenderSize = mTileRenderSize;
+    c->mFillMode = mFillMode;
     c->mGridSize = mGridSize;
     c->mColumnCount = mColumnCount;
     c->mNextTileId = mNextTileId;
@@ -700,6 +704,42 @@ Tileset::Orientation Tileset::orientationFromString(const QString &string)
     if (string == QLatin1String("isometric"))
         orientation = Isometric;
     return orientation;
+}
+
+QString Tileset::tileRenderSizeToString(TileRenderSize tileRenderSize)
+{
+    switch (tileRenderSize) {
+    case TileSize:
+        return QStringLiteral("tile");
+    case GridSize:
+        return QStringLiteral("grid");
+    }
+    return QString();
+}
+
+Tileset::TileRenderSize Tileset::tileRenderSizeFromString(const QString &string)
+{
+    if (string == QLatin1String("grid"))
+        return GridSize;
+    return TileSize;
+}
+
+QString Tileset::fillModeToString(FillMode fillMode)
+{
+    switch (fillMode) {
+    case Stretch:
+        return QStringLiteral("stretch");
+    case PreserveAspectFit:
+        return QStringLiteral("preserve-aspect-fit");
+    }
+    return QString();
+}
+
+Tileset::FillMode Tileset::fillModeFromString(const QString &string)
+{
+    if (string == QLatin1String("preserve-aspect-fit"))
+        return PreserveAspectFit;
+    return Stretch;
 }
 
 } // namespace Tiled
