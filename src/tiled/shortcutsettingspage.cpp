@@ -23,6 +23,7 @@
 
 #include "actionmanager.h"
 #include "savefile.h"
+#include "session.h"
 #include "utils.h"
 
 #include <QAbstractListModel>
@@ -126,19 +127,26 @@ void ActionsModel::refreshConflicts()
     QMultiMap<QKeySequence, Id> actionsByKey;
 
     for (const auto &actionId : qAsConst(mActions)) {
-        if (auto action = ActionManager::findAction(actionId))
-            if (!action->shortcut().isEmpty())
-                actionsByKey.insert(action->shortcut(), actionId);
+        if (auto action = ActionManager::findAction(actionId)) {
+            const auto shortcuts = action->shortcuts();
+            for (const auto &shortcut : shortcuts)
+                actionsByKey.insert(shortcut, actionId);
+        }
     }
 
     QVector<bool> conflicts;
     conflicts.reserve(mActions.size());
 
     for (const auto &actionId : qAsConst(mActions)) {
-        if (auto action = ActionManager::findAction(actionId))
-            conflicts.append(actionsByKey.count(action->shortcut()) > 1);
-        else
+        if (auto action = ActionManager::findAction(actionId)) {
+            const auto shortcuts = action->shortcuts();
+            conflicts.append(std::any_of(shortcuts.begin(), shortcuts.end(),
+                                         [&] (const QKeySequence &shortcut) {
+                return actionsByKey.count(shortcut) > 1;
+            }));
+        } else {
             conflicts.append(false);
+        }
     }
 
     mConflicts.swap(conflicts);
@@ -331,8 +339,16 @@ bool KeySequenceFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &
         return QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
 
     auto source = sourceModel();
-    auto keySequence = source->data(source->index(sourceRow, 2, sourceParent), Qt::EditRole).value<QKeySequence>();
-    return !keySequence.isEmpty() && mKeySequence.matches(keySequence) != QKeySequence::NoMatch;
+    auto actionId = source->data(source->index(sourceRow, 2, sourceParent), ActionsModel::ActionId).value<Id>();
+
+    if (auto action = ActionManager::findAction(actionId)) {
+        const auto shortcuts = action->shortcuts();
+        for (const auto &shortcut : shortcuts)
+            if (mKeySequence.matches(shortcut) != QKeySequence::NoMatch)
+                return true;
+    }
+
+    return false;
 }
 
 
@@ -638,8 +654,8 @@ void ShortcutSettingsPage::hideEvent(QHideEvent *event)
 
 void ShortcutSettingsPage::refreshConflicts()
 {
-    auto current = ui->shortcutsView->currentIndex();
-    bool conflicts = current.isValid() &&
+    const auto current = ui->shortcutsView->currentIndex();
+    const bool conflicts = current.isValid() &&
             mProxyModel->data(current, ActionsModel::HasConflictingShortcut).toBool();
     ui->conflictsLabel->setVisible(conflicts);
 }
@@ -655,12 +671,17 @@ void ShortcutSettingsPage::searchConflicts()
 
 void ShortcutSettingsPage::importShortcuts()
 {
+    Session &session = Session::current();
+    const QString suggestedFileName = session.lastPath(Session::ShortcutSettingsFile);
+
     QString filter = tr("Keyboard Mapping Scheme (*.kms)");
     QString fileName = QFileDialog::getOpenFileName(this, tr("Import Shortcuts"),
-                                                    QString(), filter);
+                                                    suggestedFileName, filter);
 
     if (fileName.isEmpty())
         return;
+
+    session.setLastPath(Session::ShortcutSettingsFile, fileName);
 
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly | QIODevice::Text)) {
@@ -679,22 +700,19 @@ void ShortcutSettingsPage::importShortcuts()
         return;
     }
 
-    QHash<Id, QKeySequence> result;
+    QHash<Id, QList<QKeySequence>> result;
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("shortcut")) {
             const Id id { xml.attributes().value(QLatin1String("id")).toUtf8() };
+            auto &shortcuts = result[id];
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("key")) {
-                    QString keyString = xml.attributes().value(QLatin1String("value")).toString();
-                    result.insert(id, QKeySequence(keyString));
-                    xml.skipCurrentElement();   // skip out of "key" element
-                    xml.skipCurrentElement();   // skip out of "shortcut" element
-                    break;
-                } else {
-                    xml.skipCurrentElement();   // skip unknown element
+                    const QString keyString = xml.attributes().value(QLatin1String("value")).toString();
+                    shortcuts.append(QKeySequence(keyString));
                 }
+                xml.skipCurrentElement();       // skip <key> or unknown element
             }
         } else {
             xml.skipCurrentElement();           // skip unknown element
@@ -707,12 +725,17 @@ void ShortcutSettingsPage::importShortcuts()
 
 void ShortcutSettingsPage::exportShortcuts()
 {
-    QString filter = tr("Keyboard Mapping Scheme (*.kms)");
+    Session &session = Session::current();
+    const QString suggestedFileName = session.lastPath(Session::ShortcutSettingsFile);
+
+    const QString filter = tr("Keyboard Mapping Scheme (*.kms)");
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export Shortcuts"),
-                                                    QString(), filter);
+                                                    suggestedFileName, filter);
 
     if (fileName.isEmpty())
         return;
+
+    session.setLastPath(Session::ShortcutSettingsFile, fileName);
 
     SaveFile file(fileName);
 
@@ -741,12 +764,12 @@ void ShortcutSettingsPage::exportShortcuts()
 
     for (Id actionId : qAsConst(actions)) {
         const auto action = ActionManager::action(actionId);
-        const auto shortcut = action->shortcut();
+        const auto shortcuts = action->shortcuts();
 
         xml.writeStartElement(QStringLiteral("shortcut"));
         xml.writeAttribute(QStringLiteral("id"), actionId.toString());
 
-        if (!shortcut.isEmpty()) {
+        for (const auto &shortcut : shortcuts) {
             xml.writeEmptyElement(QLatin1String("key"));
             xml.writeAttribute(QStringLiteral("value"), shortcut.toString());
         }

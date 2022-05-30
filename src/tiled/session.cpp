@@ -220,6 +220,9 @@ static QString lastPathKey(Session::FileType fileType)
     case Session::WorldFile:
         key.append(QLatin1String("worldFilePath"));
         break;
+    case Session::ShortcutSettingsFile:
+        key.append(QLatin1String("shortcutSettingsFilePath"));
+        break;
     }
 
     return key;

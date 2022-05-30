@@ -24,6 +24,16 @@
 * Raised minimum C++ version to C++17
 * Removed qmake project files (only Qbs supported now)
 
+### Unreleased 1.8 patch
+
+* Keep references between objects when copy/pasting (#3361)
+* Improved default translation used in case of multiple options
+* Fixed 'Add Variation' action in Tile Stamps context menu (#3362)
+* Fixed importing of removed shortcuts (#3367)
+* Fixed breaking of alternative shortcuts on import or reset (#3367)
+* Fixed conflict detection to handle alternative shortcuts (#3368)
+* Defold plugins: Added support for rotated tiles (#3369)
+
 ### Tiled 1.8.5 (17 May 2022)
 
 * Made expanded group layers persistent (#3282)

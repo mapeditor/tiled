@@ -171,6 +171,7 @@ public:
         ObjectTypesFile,
         WorkingDirectory,
         WorldFile,
+        ShortcutSettingsFile,
     };
 
     QString lastPath(FileType fileType,

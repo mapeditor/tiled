@@ -90,9 +90,9 @@ public:
     bool hasCustomShortcut(Id id) const;
     void resetCustomShortcut(Id id);
     void resetAllCustomShortcuts();
-    QKeySequence defaultShortcut(Id id);
+    QList<QKeySequence> defaultShortcuts(Id id) const;
 
-    void setCustomShortcuts(const QHash<Id, QKeySequence> &shortcuts);
+    void setCustomShortcuts(const QHash<Id, QList<QKeySequence>> &shortcuts);
 
 signals:
     void actionChanged(Id id);
@@ -101,6 +101,7 @@ signals:
 private:
     void readCustomShortcuts();
     void applyShortcut(QAction *action, const QKeySequence &shortcut);
+    void applyShortcuts(QAction *action, const QList<QKeySequence> &shortcuts);
     void updateToolTipWithShortcut(QAction *action);
     void applyMenuExtension(QMenu *menu, const MenuExtension &extension);
 
@@ -109,9 +110,9 @@ private:
     QHash<Id, QVector<MenuExtension>> mIdToMenuExtensions;
     std::unique_ptr<QObject> mMenuSeparatorsParent;
 
-    QHash<Id, QKeySequence> mDefaultShortcuts;      // for resetting to default
+    QHash<Id, QList<QKeySequence>> mDefaultShortcuts;   // for resetting to default
     QHash<Id, QKeySequence> mCustomShortcuts;
-    QHash<Id, QKeySequence> mLastKnownShortcuts;    // for detecting shortcut changes
+    QHash<Id, QList<QKeySequence>> mLastKnownShortcuts; // for detecting shortcut changes
 
     bool mApplyingShortcut = false;
     bool mApplyingToolTipWithShortcut = false;

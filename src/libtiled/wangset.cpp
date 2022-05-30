@@ -976,7 +976,6 @@ WangSet *WangSet::clone(Tileset *tileset) const
 
     // Avoid sharing Wang colors
     for (QSharedPointer<WangColor> &wangColor : c->mColors) {
-        const auto properties = wangColor->properties();
         const auto distanceToColor = wangColor->mDistanceToColor;
 
         wangColor = QSharedPointer<WangColor>::create(wangColor->colorIndex(),
@@ -984,7 +983,7 @@ WangSet *WangSet::clone(Tileset *tileset) const
                                                       wangColor->color(),
                                                       wangColor->imageId(),
                                                       wangColor->probability());
-        wangColor->setProperties(properties);
+        wangColor->setProperties(wangColor->properties());
         wangColor->mWangSet = c;
         wangColor->mDistanceToColor = distanceToColor;
     }

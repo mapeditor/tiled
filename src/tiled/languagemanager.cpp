@@ -55,28 +55,28 @@ LanguageManager::~LanguageManager() = default;
 
 void LanguageManager::installTranslators()
 {
-    mQtTranslator.reset(new QTranslator);
-    mAppTranslator.reset(new QTranslator);
+    mQtTranslator = std::make_unique<QTranslator>();
+    mAppTranslator = std::make_unique<QTranslator>();
 
-    QString language = Preferences::instance()->language();
-    if (language.isEmpty())
-        language = QLocale::system().name();
+    const QString language = Preferences::instance()->language();
+    const QLocale locale = language.isEmpty() ? QLocale()
+                                              : QLocale(language);
 
     const QString qtTranslationsDir =
             QLibraryInfo::location(QLibraryInfo::TranslationsPath);
 
-    if (mQtTranslator->load(QLatin1String("qt_") + language,
+    if (mQtTranslator->load(locale,
+                            QStringLiteral("qt"),
+                            QStringLiteral("_"),
                             qtTranslationsDir)) {
         QCoreApplication::installTranslator(mQtTranslator.get());
-    } else {
-        mQtTranslator.reset();
     }
 
-    if (mAppTranslator->load(QLatin1String("tiled_") + language,
+    if (mAppTranslator->load(locale,
+                             QStringLiteral("tiled"),
+                             QStringLiteral("_"),
                              mTranslationsDir)) {
         QCoreApplication::installTranslator(mAppTranslator.get());
-    } else {
-        mAppTranslator.reset();
     }
 }
 

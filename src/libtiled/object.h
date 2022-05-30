@@ -69,6 +69,11 @@ public:
     const Properties &properties() const { return mProperties; }
 
     /**
+     * Returns the properties of this object.
+     */
+    Properties &properties() { return mProperties; }
+
+    /**
      * Replaces all existing properties with a new set of properties.
      */
     void setProperties(const Properties &properties)

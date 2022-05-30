@@ -46,6 +46,7 @@ R"(  cell {
     tile: {{tile}}
     h_flip: {{h_flip}}
     v_flip: {{v_flip}}
+    rotate90: {{rotate90}}
   }
 )";
 
@@ -134,7 +135,7 @@ DefoldCollectionPlugin::DefoldCollectionPlugin()
 
 QString DefoldCollectionPlugin::nameFilter() const
 {
-    return tr("Defold collection (*.collection)");
+    return tr("Defold Collection (*.collection)");
 }
 
 QString DefoldCollectionPlugin::shortName() const
@@ -195,6 +196,21 @@ static float zIndexForLayer(const Tiled::Map &map, const Tiled::Layer &inLayer, 
         }
     }
     return 0;
+}
+
+static void setCellProperties(QVariantHash &cellHash, const Tiled::Cell &cell)
+{
+    cellHash["tile"] = cell.tileId();
+
+    if (cell.flippedAntiDiagonally()) {
+        cellHash["h_flip"] = cell.flippedVertically() ? 1 : 0;
+        cellHash["v_flip"] = cell.flippedHorizontally() ? 0 : 1;
+        cellHash["rotate90"] = 1;
+    } else {
+        cellHash["h_flip"] = cell.flippedHorizontally() ? 1 : 0;
+        cellHash["v_flip"] = cell.flippedVertically() ? 1 : 0;
+        cellHash["rotate90"] = 0;
+    }
 }
 
 /*
@@ -262,9 +278,7 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
                     QVariantHash cellHash;
                     cellHash["x"] = x;
                     cellHash["y"] = tileLayer->height() - y - 1;
-                    cellHash["tile"] = cell.tileId();
-                    cellHash["h_flip"] = cell.flippedHorizontally() ? 1 : 0;
-                    cellHash["v_flip"] = cell.flippedVertically() ? 1 : 0;
+                    setCellProperties(cellHash, cell);
                     cells.append(replaceTags(QLatin1String(cellTemplate), cellHash));
 
                     // Create a component for this embedded instance only when the first cell of this component is found.
@@ -360,9 +374,7 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
                         QVariantHash cellHash;
                         cellHash["x"] = x;
                         cellHash["y"] = tileLayer->height() - y - 1;
-                        cellHash["tile"] = cell.tileId();
-                        cellHash["h_flip"] = cell.flippedHorizontally() ? 1 : 0;
-                        cellHash["v_flip"] = cell.flippedVertically() ? 1 : 0;
+                        setCellProperties(cellHash, cell);
                         cells.append(replaceTags(QLatin1String(cellTemplate), cellHash));
                         componentCells++;
 
