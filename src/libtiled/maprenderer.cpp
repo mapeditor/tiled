@@ -421,8 +421,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
         flush();
 
     const QPixmap &image = tile->image();
-    const QRect imageRect = tile->imageRect().isNull() ? image.rect()
-                                                       : tile->imageRect();
+    const QRect imageRect = tile->imageRect();
     if (imageRect.isEmpty())
         return;
 

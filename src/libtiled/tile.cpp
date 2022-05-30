@@ -86,15 +86,22 @@ const QPainterPath &Tile::imageShape() const
 {
     if (!mImageShape.has_value()) {
 #if 1
-        const QBitmap mask = mImage.mask();
-        mImageShape = mask.isNull() ? QPainterPath() : qt_regionToPath(mask);
+        const QBitmap mask = image().mask();
+        if (mask.isNull()) {
+            // Can happen when the image has no alpha channel, in which case we
+            // want to be able to select the entire image.
+            mImageShape = QPainterPath();
+            mImageShape->addRect(image().rect());
+        } else {
+            mImageShape = qt_regionToPath(mask);
+        }
 #else
         // Public Qt API alternative, which generally produces more
         // heavy-weight paths since it just uses rectangles.
         mImageShape.emplace().addRegion(mImage.mask());
 #endif
 
-        if (!mImageRect.isNull() && mImageRect != mImage.rect()) {
+        if (mImageRect != image().rect()) {
             QPainterPath rect;
             rect.addRect(mImageRect);
             mImageShape.value() &= rect;
