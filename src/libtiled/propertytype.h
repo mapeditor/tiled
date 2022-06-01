@@ -28,6 +28,7 @@
 
 #pragma once
 
+#include <QColor>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QMetaType>
@@ -132,6 +133,7 @@ class TILEDSHARED_EXPORT ClassPropertyType final : public PropertyType
 {
 public:
     QVariantMap members;
+    QColor color = Qt::gray;
 
     ClassPropertyType(const QString &name) : PropertyType(PT_Class, name) {}
 

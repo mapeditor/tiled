@@ -22,6 +22,7 @@
 #include "ui_propertytypeseditor.h"
 
 #include "addpropertydialog.h"
+#include "colorbutton.h"
 #include "custompropertieshelper.h"
 #include "object.h"
 #include "preferences.h"
@@ -69,6 +70,7 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::PropertyTypesEditor)
     , mPropertyTypesModel(new PropertyTypesModel(this))
+    , mDetailsLayout(new QFormLayout)
     , mValuesModel(new QStringListModel(this))
 {
     mUi->setupUi(this);
@@ -76,6 +78,7 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     resize(Utils::dpiScaled(size()));
 
     mUi->propertyTypesView->setModel(mPropertyTypesModel);
+    mUi->horizontalLayout->addLayout(mDetailsLayout);
 
     mAddEnumPropertyTypeAction = new QAction(this);
     mAddClassPropertyTypeAction = new QAction(this);
@@ -664,9 +667,12 @@ void PropertyTypesEditor::updateDetails()
 
     switch (propertyType->type) {
     case PropertyType::PT_Invalid:
+        Q_UNREACHABLE();
         break;
     case PropertyType::PT_Class: {
         const auto &classType = *static_cast<const ClassPropertyType*>(propertyType);
+
+        mColorButton->setColor(classType.color);
 
         mPropertiesHelper->clear();
 
@@ -702,19 +708,6 @@ void PropertyTypesEditor::selectedValuesChanged(const QItemSelection &selected)
     mRemoveValueAction->setEnabled(!selected.isEmpty());
 }
 
-void deleteAllFromLayout(QLayout *layout)
-{
-    for (int i = layout->count() - 1; i >= 0; --i) {
-        QLayoutItem *item = layout->takeAt(i);
-        delete item->widget();
-
-        if (auto layout = item->layout())
-            deleteAllFromLayout(layout);
-
-        delete item;
-    }
-}
-
 void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
 {
     if (mCurrentPropertyType == type)
@@ -725,15 +718,11 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
     delete mPropertiesHelper;
     mPropertiesHelper = nullptr;
 
-    if (mDetailsLayout) {
-        deleteAllFromLayout(mDetailsLayout);
-        delete mDetailsLayout;
-    }
-
-    mDetailsLayout = new QFormLayout;
-    mUi->horizontalLayout->addLayout(mDetailsLayout);
+    while (mDetailsLayout->rowCount() > 0)
+        mDetailsLayout->removeRow(0);
 
     mNameEdit = nullptr;
+    mColorButton = nullptr;
     mStorageTypeComboBox = nullptr;
     mValuesAsFlagsCheckBox = nullptr;
     mValuesView = nullptr;
@@ -751,12 +740,21 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
     connect(mNameEdit, &QLineEdit::editingFinished,
             this, &PropertyTypesEditor::nameEditingFinished);
 
-    mDetailsLayout->addRow(tr("Name"), mNameEdit);
-
     switch (type) {
     case PropertyType::PT_Invalid:
+        Q_UNREACHABLE();
         break;
     case PropertyType::PT_Class: {
+        mColorButton = new ColorButton(mUi->groupBox);
+        mColorButton->setToolTip(tr("Color"));
+        mColorButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+        connect(mColorButton, &ColorButton::colorChanged,
+                this, &PropertyTypesEditor::colorChanged);
+
+        auto nameAndColor = new QHBoxLayout;
+        nameAndColor->addWidget(mNameEdit);
+        nameAndColor->addWidget(mColorButton);
+
         mMembersView = new QtTreePropertyBrowser(this);
         mPropertiesHelper = new CustomPropertiesHelper(mMembersView, this);
 
@@ -777,6 +775,7 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
         membersWithToolBarLayout->addWidget(mMembersView);
         membersWithToolBarLayout->addWidget(membersToolBar);
 
+        mDetailsLayout->addRow(tr("Name"), nameAndColor);
         mDetailsLayout->addRow(tr("Members"), membersWithToolBarLayout);
         break;
     }
@@ -812,6 +811,7 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
         valuesWithToolBarLayout->addWidget(mValuesView);
         valuesWithToolBarLayout->addWidget(valuesToolBar);
 
+        mDetailsLayout->addRow(tr("Name"), mNameEdit);
         mDetailsLayout->addRow(tr("Save as"), mStorageTypeComboBox);
         mDetailsLayout->addRow(QString(), mValuesAsFlagsCheckBox);
         mDetailsLayout->addRow(tr("Values"), valuesWithToolBarLayout);
@@ -861,6 +861,18 @@ void PropertyTypesEditor::nameEditingFinished()
     QScopedValueRollback<bool> settingName(mSettingName, true);
     if (!mPropertyTypesModel->setPropertyTypeName(index.row(), name))
         mNameEdit->setText(type->name);
+}
+
+void PropertyTypesEditor::colorChanged(const QColor &color)
+{
+    PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType || propertyType->type != PropertyType::PT_Class)
+        return;
+
+    auto &classType = static_cast<ClassPropertyType&>(*propertyType);
+    classType.color = color;
+
+    applyPropertyTypes();
 }
 
 void PropertyTypesEditor::memberValueChanged(const QString &name, const QVariant &value)

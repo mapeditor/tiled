@@ -318,6 +318,7 @@ QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
 
     auto json = PropertyType::toJson(context);
     json.insert(QStringLiteral("members"), members);
+    json.insert(QStringLiteral("color"), color.name(QColor::HexArgb));
     return json;
 }
 
@@ -330,6 +331,10 @@ void ClassPropertyType::initializeFromJson(const QJsonObject &json)
 
         members.insert(name, map);
     }
+
+    const QString colorName = json.value(QLatin1String("color")).toString();
+    if (QColor::isValidColor(colorName))
+        color.setNamedColor(colorName);
 }
 
 void ClassPropertyType::resolveDependencies(const ExportContext &context)

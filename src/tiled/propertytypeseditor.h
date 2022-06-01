@@ -41,6 +41,7 @@ class PropertyTypesEditor;
 
 namespace Tiled {
 
+class ColorButton;
 class CustomPropertiesHelper;
 class PropertyTypesModel;
 
@@ -99,6 +100,7 @@ private:
     void valuesChanged();
     void nameEditingFinished();
 
+    void colorChanged(const QColor &color);
     void memberValueChanged(const QString &name, const QVariant &value);
 
     void retranslateUi();
@@ -107,6 +109,7 @@ private:
     PropertyTypesModel *mPropertyTypesModel;
     QFormLayout *mDetailsLayout = nullptr;
     QLineEdit *mNameEdit = nullptr;
+    ColorButton *mColorButton = nullptr;
     QComboBox *mStorageTypeComboBox = nullptr;
     QCheckBox *mValuesAsFlagsCheckBox = nullptr;
     QTreeView *mValuesView = nullptr;
