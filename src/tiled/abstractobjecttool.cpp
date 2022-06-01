@@ -41,6 +41,7 @@
 #include "utils.h"
 
 #include <QFileDialog>
+#include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
@@ -241,7 +242,11 @@ ObjectGroup *AbstractObjectTool::currentObjectGroup() const
 
 QList<MapObject*> AbstractObjectTool::mapObjectsAt(const QPointF &pos) const
 {
-    const QList<QGraphicsItem *> &items = mapScene()->items(pos);
+    const QTransform viewTransform = mapScene()->views().first()->transform();
+    const QList<QGraphicsItem *> items = mapScene()->items(pos,
+                                                           Qt::IntersectsItemShape,
+                                                           Qt::DescendingOrder,
+                                                           viewTransform);
 
     QList<MapObject*> objectList;
 
@@ -260,7 +265,11 @@ QList<MapObject*> AbstractObjectTool::mapObjectsAt(const QPointF &pos) const
 
 MapObject *AbstractObjectTool::topMostMapObjectAt(const QPointF &pos) const
 {
-    const QList<QGraphicsItem *> &items = mapScene()->items(pos);
+    const QTransform viewTransform = mapScene()->views().first()->transform();
+    const QList<QGraphicsItem *> items = mapScene()->items(pos,
+                                                           Qt::IntersectsItemShape,
+                                                           Qt::DescendingOrder,
+                                                           viewTransform);
     const SelectionBehavior behavior = selectionBehavior();
 
     MapObject *topMost = nullptr;

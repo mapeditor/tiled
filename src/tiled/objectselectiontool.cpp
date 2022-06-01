@@ -1166,7 +1166,11 @@ QList<MapObject*> ObjectSelectionTool::objectsAboutToBeSelected(const QPointF &p
                                                                : Qt::ContainsItemShape;
     }
 
-    const QList<QGraphicsItem *> &items = mapScene()->items(rect, selectionMode);
+    const QTransform viewTransform = mapScene()->views().first()->transform();
+    const QList<QGraphicsItem *> items = mapScene()->items(rect,
+                                                           selectionMode,
+                                                           Qt::DescendingOrder,
+                                                           viewTransform);
     for (QGraphicsItem *item : items) {
         if (!item->isEnabled())
             continue;

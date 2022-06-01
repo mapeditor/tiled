@@ -23,11 +23,8 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
-#include "mapview.h"
 #include "tile.h"
-#include "zoomable.h"
 
-#include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
 using namespace Tiled;
@@ -68,12 +65,9 @@ QRectF TileLayerItem::boundingRect() const
 
 void TileLayerItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *option,
-                          QWidget *widget)
+                          QWidget *)
 {
-    const qreal scale = static_cast<MapView*>(widget->parent())->zoomable()->scale();
-
     MapRenderer *renderer = mMapDocument->renderer();
-    renderer->setPainterScale(scale);
     // TODO: Display a border around the layer when selected
     renderer->drawTileLayer(painter, tileLayer(), option->exposedRect);
 }

@@ -27,12 +27,10 @@
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "mapscene.h"
-#include "mapview.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
 #include "tile.h"
 #include "utils.h"
-#include "zoomable.h"
 
 #include <QPainter>
 
@@ -99,6 +97,8 @@ void MapObjectItem::syncWithMapObject()
     }
 
     setVisible(mObject->isVisible());
+    setFlag(QGraphicsItem::ItemIgnoresTransformations,
+            mObject->shape() == MapObject::Point);
 }
 
 void MapObjectItem::setIsHoverIndicator(bool isHoverIndicator)
@@ -135,26 +135,29 @@ QPainterPath MapObjectItem::shape() const
 
 void MapObjectItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *,
-                          QWidget *widget)
+                          QWidget *)
 {
-    const qreal scale = static_cast<MapView*>(widget->parent())->zoomable()->scale();
+    const auto renderer = mMapDocument->renderer();
+    const qreal painterScale = renderer->painterScale();
     const QColor color = mIsHoveredIndicator ? mColor.lighter() : mColor;
     const qreal previousOpacity = painter->opacity();
+
+    if (flags() & QGraphicsItem::ItemIgnoresTransformations)
+        renderer->setPainterScale(1);
 
     if (mIsHoveredIndicator)
         painter->setOpacity(0.4);
 
     painter->translate(-pos());
-    mMapDocument->renderer()->setPainterScale(scale);
-    mMapDocument->renderer()->drawMapObject(painter, mObject, color);
+    renderer->drawMapObject(painter, mObject, color);
     painter->translate(pos());
 
     if (mIsHoveredIndicator) {
         painter->setOpacity(0.6);
 
         // TODO: Code mostly duplicated in MapObjectOutline
-        const QPointF pixelPos = mMapDocument->renderer()->pixelToScreenCoords(mObject->position());
-        QRectF bounds = mObject->screenBounds(*mMapDocument->renderer());
+        const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
+        QRectF bounds = mObject->screenBounds(*renderer);
         bounds.translate(-pixelPos);
 
         const QLineF lines[4] = {
@@ -183,6 +186,8 @@ void MapObjectItem::paint(QPainter *painter,
 
         painter->setOpacity(previousOpacity);
     }
+
+    renderer->setPainterScale(painterScale);
 }
 
 void MapObjectItem::setPolygon(const QPolygonF &polygon)
