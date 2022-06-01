@@ -652,8 +652,9 @@ void PropertyBrowser::addMapProperties()
 static QStringList objectTypeNames()
 {
     QStringList names;
-    for (const ObjectType &type : Object::objectTypes())
-        names.append(type.name);
+    for (const auto type : Object::propertyTypes())
+        if (type->isClass())
+            names.append(type->name);
     return names;
 }
 
@@ -1947,9 +1948,9 @@ void PropertyBrowser::updateCustomProperties()
 
     if (!objectType.isEmpty()) {
         // Inherit properties from the object type
-        for (const ObjectType &type : Object::objectTypes()) {
-            if (type.name == objectType) {
-                QMapIterator<QString,QVariant> it(type.defaultProperties);
+        if (auto type = Object::propertyTypes().findTypeByName(objectType)) {
+            if (type->isClass()) {
+                QMapIterator<QString,QVariant> it(static_cast<const ClassPropertyType*>(type)->members);
                 while (it.hasNext()) {
                     it.next();
                     if (!mCombinedProperties.contains(it.key()))

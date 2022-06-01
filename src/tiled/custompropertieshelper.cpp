@@ -215,9 +215,7 @@ void CustomPropertiesHelper::onValueChanged(QtProperty *property, const QVariant
     }
 
     if (!mApplyingToParent) {
-        auto type = propertyType(property);
-
-        if (type && type->type == PropertyType::PT_Class) {
+        if (auto type = propertyType(property); type && type->isClass()) {
             // Apply the change to the children
 
             auto &members = static_cast<const ClassPropertyType&>(*type).members;
@@ -239,7 +237,7 @@ void CustomPropertiesHelper::onValueChanged(QtProperty *property, const QVariant
                 // the class definition sets different defaults on them.
                 if (!modified) {
                     auto memberType = propertyType(subProperty);
-                    if (memberType && memberType->type == PropertyType::PT_Class) {
+                    if (memberType && memberType->isClass()) {
                         static_cast<QtVariantProperty*>(subProperty)->setValue(QVariantMap());
                         continue;
                     }

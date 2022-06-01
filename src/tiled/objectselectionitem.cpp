@@ -782,7 +782,7 @@ static void forEachObjectReference(const Properties &properties, Callback callba
         } else if (value.userType() == propertyValueId()) {
             const auto propertyValue = value.value<PropertyValue>();
             if (auto type = propertyValue.type())
-                if (type->type == PropertyType::PT_Class)
+                if (type->isClass())
                     forEachObjectReference(propertyValue.value.toMap(), callback);
         }
     }

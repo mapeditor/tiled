@@ -91,12 +91,12 @@ std::unique_ptr<PropertyType> PropertyType::createFromJson(const QJsonObject &js
     const PropertyType::Type type = PropertyType::typeFromString(json.value(QStringLiteral("type")).toString());
 
     switch (type) {
-    case PropertyType::PT_Invalid:
+    case PT_Invalid:
         break;
-    case PropertyType::PT_Class:
+    case PT_Class:
         propertyType = std::make_unique<ClassPropertyType>(name);
         break;
-    case PropertyType::PT_Enum:
+    case PT_Enum:
         propertyType = std::make_unique<EnumPropertyType>(name);
         break;
     }
@@ -375,7 +375,7 @@ bool ClassPropertyType::canAddMemberOfType(const PropertyType *propertyType, con
     if (propertyType == this)
         return false;   // Can't add class as member of itself
 
-    if (propertyType->type != PropertyType::PT_Class)
+    if (!propertyType->isClass())
         return true;    // Can always add non-class members
 
     // Can't add if any member of the added class can't be added to this type
@@ -423,7 +423,7 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
             return type->name == typeToImport->name;
         });
 
-        if (typeToImport->type == PropertyType::PT_Class)
+        if (typeToImport->isClass())
             classesToProcess.append(static_cast<ClassPropertyType*>(typeToImport.get()));
 
         if (existingIt != mTypes.end()) {

@@ -71,6 +71,9 @@ public:
     int id = 0;
     QString name;
 
+    bool isClass() const { return type == PT_Class; }
+    bool isEnum() const { return type == PT_Enum; }
+
     virtual ~PropertyType() = default;
 
     QVariant wrap(const QVariant &value) const;

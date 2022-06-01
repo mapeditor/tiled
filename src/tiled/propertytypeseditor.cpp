@@ -315,7 +315,7 @@ void PropertyTypesEditor::propertyTypeNameChanged(const QModelIndex &index, cons
 void PropertyTypesEditor::applyMemberToSelectedType(const QString &name, const QVariant &value)
 {
     PropertyType *propertyType = selectedPropertyType();
-    if (!propertyType || propertyType->type != PropertyType::PT_Class)
+    if (!propertyType || !propertyType->isClass())
         return;
 
     auto &classType = static_cast<ClassPropertyType&>(*propertyType);
@@ -351,7 +351,7 @@ void PropertyTypesEditor::setStorageType(EnumPropertyType::StorageType storageTy
         return;
 
     PropertyType *propertyType = selectedPropertyType();
-    if (!propertyType || propertyType->type != PropertyType::PT_Enum)
+    if (!propertyType || !propertyType->isEnum())
         return;
 
     auto &enumType = static_cast<EnumPropertyType&>(*propertyType);
@@ -368,7 +368,7 @@ void PropertyTypesEditor::setValuesAsFlags(bool flags)
         return;
 
     PropertyType *propertyType = selectedPropertyType();
-    if (!propertyType || propertyType->type != PropertyType::PT_Enum)
+    if (!propertyType || !propertyType->isEnum())
         return;
 
     auto &enumType = static_cast<EnumPropertyType&>(*propertyType);
@@ -403,7 +403,7 @@ static QString nextValueText(const EnumPropertyType &propertyType)
 void PropertyTypesEditor::addValue()
 {
     const PropertyType *propertyType = selectedPropertyType();
-    if (!propertyType || propertyType->type != PropertyType::PT_Enum)
+    if (!propertyType || !propertyType->isEnum())
         return;
 
     const auto &enumType = *static_cast<const EnumPropertyType*>(propertyType);
@@ -426,7 +426,7 @@ void PropertyTypesEditor::addValue()
 void PropertyTypesEditor::removeValues()
 {
     PropertyType *propertyType = selectedPropertyType();
-    if (!propertyType || propertyType->type != PropertyType::PT_Enum)
+    if (!propertyType || !propertyType->isEnum())
         return;
 
     if (!confirm(tr("Remove Values"),
@@ -454,7 +454,7 @@ bool PropertyTypesEditor::checkValueCount(int count)
 void PropertyTypesEditor::openAddMemberDialog()
 {
     const PropertyType *propertyType = selectedPropertyType();
-    if (!propertyType || propertyType->type != PropertyType::PT_Class)
+    if (!propertyType || !propertyType->isClass())
         return;
 
     AddPropertyDialog dialog(static_cast<const ClassPropertyType*>(propertyType), this);
@@ -470,7 +470,7 @@ void PropertyTypesEditor::addMember(const QString &name, const QVariant &value)
         return;
 
     PropertyType *propertyType = selectedPropertyType();
-    if (!propertyType || propertyType->type != PropertyType::PT_Class)
+    if (!propertyType || !propertyType->isClass())
         return;
 
     auto &classType = static_cast<ClassPropertyType&>(*propertyType);
@@ -504,7 +504,7 @@ void PropertyTypesEditor::removeMember()
         return;
 
     PropertyType *propertyType = selectedPropertyType();
-    if (!propertyType || propertyType->type != PropertyType::PT_Class)
+    if (!propertyType || !propertyType->isClass())
         return;
 
     const QString name = item->property()->propertyName();
@@ -564,7 +564,7 @@ void PropertyTypesEditor::renameMemberTo(const QString &name)
         return;
 
     auto propertyType = selectedPropertyType();
-    if (propertyType->type != PropertyType::PT_Class)
+    if (!propertyType || !propertyType->isClass())
         return;
 
     auto &classType = *static_cast<ClassPropertyType*>(propertyType);
@@ -839,7 +839,7 @@ void PropertyTypesEditor::valuesChanged()
         return;
 
     PropertyType *propertyType = selectedPropertyType();
-    if (!propertyType || propertyType->type != PropertyType::PT_Enum)
+    if (!propertyType || !propertyType->isEnum())
         return;
 
     const QStringList newValues = mValuesModel->stringList();
@@ -866,7 +866,7 @@ void PropertyTypesEditor::nameEditingFinished()
 void PropertyTypesEditor::colorChanged(const QColor &color)
 {
     PropertyType *propertyType = selectedPropertyType();
-    if (!propertyType || propertyType->type != PropertyType::PT_Class)
+    if (!propertyType || !propertyType->isClass())
         return;
 
     auto &classType = static_cast<ClassPropertyType&>(*propertyType);
