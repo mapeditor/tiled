@@ -1,6 +1,6 @@
 ### Unreleased 1.8 patch
 
-* Keep references between objects when copy/pasting (#3361)
+* Keep references between objects when copy/pasting or duplicating (#3361)
 * Improved default translation used in case of multiple options
 * Fixed 'Add Variation' action in Tile Stamps context menu (#3362)
 * Fixed importing of removed shortcuts (#3367)

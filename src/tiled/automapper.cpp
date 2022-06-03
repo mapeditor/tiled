@@ -34,6 +34,7 @@
 #include "maprenderer.h"
 #include "object.h"
 #include "objectgroup.h"
+#include "objectreferenceshelper.h"
 #include "tile.h"
 #include "tilelayer.h"
 
@@ -951,13 +952,17 @@ void AutoMapper::copyObjectRegion(const ObjectGroup *srcLayer, const QRectF &rec
     QVector<AddMapObjects::Entry> objectsToAdd;
     objectsToAdd.reserve(objects.size());
 
+    ObjectReferencesHelper objectRefs(mTargetMap);
+
     for (MapObject *obj : objects) {
         MapObject *clone = obj->clone();
-        clone->resetId();
+        objectRefs.reassignId(clone);
         clone->setX(clone->x() + pixelOffset.x());
         clone->setY(clone->y() + pixelOffset.y());
         objectsToAdd.append(AddMapObjects::Entry { clone, dstLayer });
     }
+
+    objectRefs.rewire();
 
     mTargetDocument->undoStack()->push(new AddMapObjects(mTargetDocument, objectsToAdd));
 }

@@ -362,6 +362,8 @@ QtGuiApplication {
         "objectrefedit.h",
         "objectreferenceitem.cpp",
         "objectreferenceitem.h",
+        "objectreferenceshelper.cpp",
+        "objectreferenceshelper.h",
         "objectreferencetool.cpp",
         "objectreferencetool.h",
         "objectsdock.cpp",

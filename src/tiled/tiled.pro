@@ -188,6 +188,7 @@ SOURCES += aboutdialog.cpp \
     objectrefdialog.cpp \
     objectrefedit.cpp \
     objectreferenceitem.cpp \
+    objectreferenceshelper.cpp \
     objectreferencetool.cpp \
     objectsdock.cpp \
     objectselectionitem.cpp \
@@ -427,6 +428,7 @@ HEADERS += aboutdialog.h \
     objectrefdialog.h \
     objectrefedit.h \
     objectreferenceitem.h \
+    objectreferenceshelper.h \
     objectreferencetool.h \
     objectsdock.h \
     objectselectionitem.h \
