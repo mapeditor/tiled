@@ -89,7 +89,7 @@ private:
     void selectedLayersChanged();
     void selectedTilesChanged();
 
-    void objectTypesChanged();
+    void propertyTypesChanged();
 
     void valueChanged(QtProperty *property, const QVariant &val);
     void customPropertyValueChanged(const QString &name, const QVariant &value);

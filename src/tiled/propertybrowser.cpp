@@ -151,8 +151,8 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     connect(variantEditorFactory, &VariantEditorFactory::resetProperty,
             this, &PropertyBrowser::resetProperty);
 
-    connect(Preferences::instance(), &Preferences::objectTypesChanged,
-            this, &PropertyBrowser::objectTypesChanged);
+    connect(Preferences::instance(), &Preferences::propertyTypesChanged,
+            this, &PropertyBrowser::propertyTypesChanged);
 }
 
 /**
@@ -529,9 +529,10 @@ void PropertyBrowser::selectedTilesChanged()
     updateCustomProperties();
 }
 
-void PropertyBrowser::objectTypesChanged()
+void PropertyBrowser::propertyTypesChanged()
 {
-    if (mObject && mObject->typeId() == Object::MapObjectType)
+    if (mObject && (mObject->typeId() == Object::MapObjectType ||
+                    mObject->typeId() == Object::TileType))
         updateCustomProperties();
 }
 

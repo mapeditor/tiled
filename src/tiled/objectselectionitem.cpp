@@ -299,7 +299,7 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
     connect(prefs, &Preferences::objectLineWidthChanged,
             this, &ObjectSelectionItem::objectLineWidthChanged);
 
-    connect(prefs, &Preferences::objectTypesChanged,
+    connect(prefs, &Preferences::propertyTypesChanged,
             this, &ObjectSelectionItem::updateItemColors);
 
     if (objectLabelVisibility() == Preferences::AllObjectLabels)

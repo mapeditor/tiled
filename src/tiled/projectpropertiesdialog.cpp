@@ -22,7 +22,6 @@
 #include "ui_projectpropertiesdialog.h"
 
 #include "mapformat.h"
-#include "objecttypeseditor.h"
 #include "project.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
@@ -55,11 +54,6 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
 
     auto filesGroupProperty = groupPropertyManager->addProperty(tr("Files"));
 
-    mObjectTypesFileProperty = variantPropertyManager->addProperty(filePathTypeId(), tr("Object types"));
-    mObjectTypesFileProperty->setValue(project.mObjectTypesFile);
-    mObjectTypesFileProperty->setAttribute(QStringLiteral("filter"), ObjectTypesFilter().filter);
-    filesGroupProperty->addSubProperty(mObjectTypesFileProperty);
-
     QString ruleFileFilter = QCoreApplication::translate("File Types", "Automapping Rules files (*.txt)");
     FormatHelper<MapFormat> helper(FileFormat::ReadWrite, std::move(ruleFileFilter));
 
@@ -79,7 +73,6 @@ ProjectPropertiesDialog::~ProjectPropertiesDialog()
 void ProjectPropertiesDialog::accept()
 {
     mProject.mExtensionsPath = mExtensionPathProperty->value().toString();
-    mProject.mObjectTypesFile = mObjectTypesFileProperty->value().toString();
     mProject.mAutomappingRulesFile = mAutomappingRulesFileProperty->value().toString();
 
     QDialog::accept();

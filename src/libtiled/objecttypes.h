@@ -77,7 +77,8 @@ public:
                           const ObjectTypes &objectTypes);
 
     bool readObjectTypes(const QString &fileName,
-                         ObjectTypes &objectTypes);
+                         ObjectTypes &objectTypes,
+                         const ExportContext &context);
 
     QString errorString() const { return mError; }
 
@@ -88,5 +89,7 @@ private:
 
 TILEDSHARED_EXPORT QJsonArray toJson(const ObjectTypes &objectTypes, const ExportContext &context);
 TILEDSHARED_EXPORT void fromJson(const QJsonArray &array, ObjectTypes &objectTypes, const ExportContext &context);
+
+TILEDSHARED_EXPORT PropertyTypes toPropertyTypes(const ObjectTypes &objectTypes);
 
 } // namespace Tiled

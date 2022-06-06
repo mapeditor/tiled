@@ -1,6 +1,6 @@
 /*
  * propertytypeseditor.h
- * Copyright 2016-2021, Thorbjørn Lindeijer <bjorn@lindeijer.nl>>
+ * Copyright 2016-2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>>
  *
  * This file is part of Tiled.
  *
@@ -44,6 +44,17 @@ namespace Tiled {
 class ColorButton;
 class CustomPropertiesHelper;
 class PropertyTypesModel;
+
+struct PropertyTypesFilter
+{
+    PropertyTypesFilter(const QString &lastPath = QString());
+
+    const QString propertyTypesFilter;
+    const QString objectTypesJsonFilter;
+    const QString objectTypesXmlFilter;
+    QString filters;
+    QString selectedFilter;
+};
 
 class PropertyTypesEditor : public QDialog
 {

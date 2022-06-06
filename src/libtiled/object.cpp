@@ -33,7 +33,6 @@
 
 namespace Tiled {
 
-ObjectTypes Object::mObjectTypes;
 SharedPropertyTypes Object::mPropertyTypes;
 Object::~Object()
 {}
@@ -82,11 +81,9 @@ QVariant Object::resolvedProperty(const QString &name) const
     }
 
     if (!objectType.isEmpty()) {
-        for (const ObjectType &type : qAsConst(mObjectTypes)) {
-            if (type.name == objectType)
-                if (type.defaultProperties.contains(name))
-                    return type.defaultProperties.value(name);
-        }
+        if (auto type = mPropertyTypes->findTypeByName(objectType))
+            if (type->isClass())
+                return static_cast<const ClassPropertyType*>(type)->members.value(name);
     }
 
     return QVariant();
@@ -117,9 +114,11 @@ QVariantMap Object::resolvedProperties() const
     }
 
     if (!objectType.isEmpty()) {
-        for (const ObjectType &type : qAsConst(mObjectTypes)) {
-            if (type.name == objectType)
-                Tiled::mergeProperties(allProperties, type.defaultProperties);
+        if (auto type = mPropertyTypes->findTypeByName(objectType)) {
+            if (type->isClass()) {
+                Tiled::mergeProperties(allProperties,
+                                       static_cast<const ClassPropertyType*>(type)->members);
+            }
         }
     }
     
@@ -136,11 +135,6 @@ QVariantMap Object::resolvedProperties() const
     Tiled::mergeProperties(allProperties, properties());
     
     return allProperties;
-}
-
-void Object::setObjectTypes(const ObjectTypes &objectTypes)
-{
-    mObjectTypes = objectTypes;
 }
 
 void Object::setPropertyTypes(const SharedPropertyTypes &propertyTypes)

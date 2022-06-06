@@ -1,6 +1,6 @@
 /*
  * propertytypeseditor.cpp
- * Copyright 2016-2021, Thorbjørn Lindeijer <bjorn@lindeijer.nl>>
+ * Copyright 2016-2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>>
  *
  * This file is part of Tiled.
  *
@@ -65,6 +65,17 @@ static bool confirm(const QString &title, const QString& text, QWidget *parent)
                                 QMessageBox::Yes | QMessageBox::No,
                                 QMessageBox::No) == QMessageBox::Yes;
 }
+
+PropertyTypesFilter::PropertyTypesFilter(const QString &lastPath)
+    : propertyTypesFilter(QCoreApplication::translate("File Types", "Property Types files (*.json)"))
+    , objectTypesJsonFilter(QCoreApplication::translate("File Types", "Object Types JSON (*.json)"))
+    , objectTypesXmlFilter(QCoreApplication::translate("File Types", "Object Types XML (*.xml)"))
+{
+    filters = QStringList { propertyTypesFilter, objectTypesJsonFilter, objectTypesXmlFilter }.join(QStringLiteral(";;"));
+    selectedFilter = lastPath.endsWith(QLatin1String(".xml"), Qt::CaseInsensitive) ? objectTypesXmlFilter
+                                                                                   : propertyTypesFilter;
+}
+
 
 PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     : QDialog(parent)
@@ -587,33 +598,53 @@ void PropertyTypesEditor::renameMemberTo(const QString &name)
 void PropertyTypesEditor::importPropertyTypes()
 {
     Session &session = Session::current();
-    const QString lastPath = session.lastPath(Session::ObjectTypesFile);
+    const QString lastPath = session.lastPath(Session::PropertyTypesFile);
+
+    PropertyTypesFilter filter(lastPath);
     const QString fileName =
             QFileDialog::getOpenFileName(this, tr("Import Property Types"),
                                          lastPath,
-                                         QCoreApplication::translate("File Types", "Property Types files (*.json)"));
+                                         filter.filters,
+                                         &filter.selectedFilter);
     if (fileName.isEmpty())
         return;
 
-    session.setLastPath(Session::ObjectTypesFile, fileName);
-
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        const auto error = QCoreApplication::translate("File Errors", "Could not open file for reading.");
-        QMessageBox::critical(this, tr("Error Reading Property Types"), error);
-        return;
-    }
-
-    QJsonParseError jsonError;
-    const QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &jsonError);
-    if (document.isNull()) {
-        QMessageBox::critical(this, tr("Error Reading Property Types"),
-                              Utils::Error::jsonParseError(jsonError));
-        return;
-    }
+    session.setLastPath(Session::PropertyTypesFile, fileName);
 
     PropertyTypes typesToImport;
-    typesToImport.loadFromJson(document.array(), QFileInfo(fileName).path());
+
+    if (filter.selectedFilter == filter.objectTypesJsonFilter ||
+            filter.selectedFilter == filter.objectTypesXmlFilter) {
+        ObjectTypesSerializer serializer;
+        ObjectTypes objectTypes;
+        const ExportContext context(*mPropertyTypesModel->propertyTypes(),
+                                    QFileInfo(fileName).path());
+
+        if (serializer.readObjectTypes(fileName, objectTypes, context)) {
+            typesToImport = toPropertyTypes(objectTypes);
+        } else {
+            QMessageBox::critical(this, tr("Error Reading Object Types"),
+                                  serializer.errorString());
+            return;
+        }
+    } else {
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            const auto error = QCoreApplication::translate("File Errors", "Could not open file for reading.");
+            QMessageBox::critical(this, tr("Error Reading Property Types"), error);
+            return;
+        }
+
+        QJsonParseError jsonError;
+        const QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &jsonError);
+        if (document.isNull()) {
+            QMessageBox::critical(this, tr("Error Reading Property Types"),
+                                  Utils::Error::jsonParseError(jsonError));
+            return;
+        }
+
+        typesToImport.loadFromJson(document.array(), QFileInfo(fileName).path());
+    }
 
     if (typesToImport.count() > 0) {
         mPropertyTypesModel->importPropertyTypes(std::move(typesToImport));
@@ -624,7 +655,7 @@ void PropertyTypesEditor::importPropertyTypes()
 void PropertyTypesEditor::exportPropertyTypes()
 {
     Session &session = Session::current();
-    QString lastPath = session.lastPath(Session::ObjectTypesFile);
+    QString lastPath = session.lastPath(Session::PropertyTypesFile);
 
     if (!lastPath.endsWith(QLatin1String(".json")))
         lastPath.append(QStringLiteral("/propertytypes.json"));
@@ -636,7 +667,7 @@ void PropertyTypesEditor::exportPropertyTypes()
     if (fileName.isEmpty())
         return;
 
-    session.setLastPath(Session::ObjectTypesFile, fileName);
+    session.setLastPath(Session::PropertyTypesFile, fileName);
 
     SaveFile file(fileName);
 
