@@ -80,7 +80,6 @@ bool Project::save(const QString &fileName)
         { QStringLiteral("propertyTypes"), propertyTypes },
         { QStringLiteral("folders"), folders },
         { QStringLiteral("extensionsPath"), relative(dir, extensionsPath) },
-        { QStringLiteral("objectTypesFile"), dir.relativeFilePath(mObjectTypesFile) },
         { QStringLiteral("automappingRulesFile"), dir.relativeFilePath(mAutomappingRulesFile) },
         { QStringLiteral("commands"), commands }
     };
