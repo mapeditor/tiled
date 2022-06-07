@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="45" height="31" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="37">
+<map version="1.8" tiledversion="1.8.5" orientation="orthogonal" renderorder="right-down" width="45" height="31" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="38">
  <properties>
   <property name="enemyTint" type="color" value="#ffa33636"/>
  </properties>
@@ -227,13 +227,13 @@
   </data>
  </layer>
  <objectgroup id="3" name="Objects">
-  <object id="1" name="maggots" type="location" x="435" y="74" width="155" height="99">
+  <object id="1" name="maggots" type="Location" x="435" y="74" width="155" height="99">
    <properties>
     <property name="spawncount" type="int" value="5"/>
     <property name="spawntype" value="maggot"/>
    </properties>
   </object>
-  <object id="2" name="discover chest" type="trigger" x="201" y="200" width="127" height="127">
+  <object id="2" name="discover chest" type="Trigger" x="201" y="200" width="127" height="127">
    <properties>
     <property name="script" type="file" value="chest-discovered.lua"/>
    </properties>
@@ -278,6 +278,8 @@
     <property name="text" value="East West"/>
    </properties>
   </object>
-  <object id="36" name="player-start" type="Location" x="192" y="160" width="16" height="16"/>
+  <object id="37" name="player-start" type="Location" x="192" y="160">
+   <point/>
+  </object>
  </objectgroup>
 </map>
