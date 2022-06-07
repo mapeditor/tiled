@@ -47,7 +47,11 @@
                 }
             ],
             "name": "Fixture",
-            "type": "class"
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
         },
         {
             "color": "#ffeeeeec",
@@ -55,7 +59,11 @@
             "members": [
             ],
             "name": "Location",
-            "type": "class"
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
         },
         {
             "color": "#ff729fcf",
@@ -63,7 +71,11 @@
             "members": [
             ],
             "name": "NPC",
-            "type": "class"
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
         },
         {
             "color": "#ff99c1f1",
@@ -106,7 +118,11 @@
                 }
             ],
             "name": "RuleOptions",
-            "type": "class"
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
         },
         {
             "id": 3,
@@ -131,7 +147,11 @@
                 }
             ],
             "name": "Trigger",
-            "type": "class"
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
         }
     ]
 }

@@ -164,8 +164,8 @@ void ExportHelper::resolveTypeAndProperties(MapObject *object) const
 
     // Inherit properties from type
     if (!object->type().isEmpty()) {
-        if (auto type = Object::propertyTypes().findTypeByName(object->type())) {
-            if (type->isClass())
+        if (auto type = Object::propertyTypes().findClassByName(object->type())) {
+            if (type->isTypeFor(*object))
                 mergeProperties(properties, static_cast<const ClassPropertyType*>(type)->members);
         }
     }

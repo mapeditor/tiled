@@ -319,6 +319,7 @@ PropertyTypes toPropertyTypes(const ObjectTypes &objectTypes)
         auto propertyType = std::make_unique<ClassPropertyType>(type.name);
         propertyType->color = type.color;
         propertyType->members = type.defaultProperties;
+        propertyType->usageFlags = ClassPropertyType::MapObjectType | ClassPropertyType::TileType;
         propertyTypes.add(std::move(propertyType));
     }
 

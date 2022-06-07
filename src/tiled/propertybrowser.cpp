@@ -649,12 +649,13 @@ void PropertyBrowser::addMapProperties()
     addProperty(groupProperty);
 }
 
-static QStringList objectTypeNames()
+static QStringList objectTypeNames(ClassPropertyType::ClassUsageFlag usageFlag)
 {
     QStringList names;
     for (const auto type : Object::propertyTypes())
         if (type->isClass())
-            names.append(type->name);
+            if (static_cast<const ClassPropertyType*>(type)->usageFlags & usageFlag)
+                names.append(type->name);
     return names;
 }
 
@@ -686,7 +687,7 @@ void PropertyBrowser::addMapObjectProperties()
 
     QtVariantProperty *typeProperty =
             addProperty(TypeProperty, QMetaType::QString, tr("Type"), groupProperty);
-    typeProperty->setAttribute(QLatin1String("suggestions"), objectTypeNames());
+    typeProperty->setAttribute(QLatin1String("suggestions"), objectTypeNames(ClassPropertyType::MapObjectType));
 
     if (mMapDocument->allowHidingObjects())
         addProperty(VisibleProperty, QMetaType::Bool, tr("Visible"), groupProperty);
@@ -909,7 +910,7 @@ void PropertyBrowser::addTileProperties()
 
     QtVariantProperty *typeProperty =
             addProperty(TypeProperty, QMetaType::QString, tr("Type"), groupProperty);
-    typeProperty->setAttribute(QLatin1String("suggestions"), objectTypeNames());
+    typeProperty->setAttribute(QLatin1String("suggestions"), objectTypeNames(ClassPropertyType::TileType));
     typeProperty->setEnabled(mTilesetDocument);
 
     addProperty(WidthProperty, QMetaType::Int, tr("Width"), groupProperty)->setEnabled(false);
@@ -1944,8 +1945,8 @@ void PropertyBrowser::updateCustomProperties()
 
     if (!objectType.isEmpty()) {
         // Inherit properties from the object type
-        if (auto type = Object::propertyTypes().findTypeByName(objectType)) {
-            if (type->isClass()) {
+        if (auto type = Object::propertyTypes().findClassByName(objectType)) {
+            if (type->isTypeFor(*mObject)) {
                 QMapIterator<QString,QVariant> it(static_cast<const ClassPropertyType*>(type)->members);
                 while (it.hasNext()) {
                     it.next();

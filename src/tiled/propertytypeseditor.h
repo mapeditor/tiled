@@ -29,6 +29,7 @@ class QComboBox;
 class QFormLayout;
 class QItemSelection;
 class QLineEdit;
+class QMenu;
 class QStringListModel;
 class QTreeView;
 
@@ -77,6 +78,7 @@ private:
     void removeSelectedPropertyType();
     QModelIndex selectedPropertyTypeIndex() const;
     PropertyType *selectedPropertyType() const;
+    ClassPropertyType *selectedClassPropertyType() const;
 
     void currentMemberItemChanged(QtBrowserItem *item);
 
@@ -87,9 +89,12 @@ private:
     void propertyTypesChanged();
 
     void updateDetails();
+    void updateClassUsageDetails(const ClassPropertyType &classType);
     void selectedValuesChanged(const QItemSelection &selected);
 
     void setCurrentPropertyType(PropertyType::Type type);
+    void addClassProperties();
+    void addEnumProperties();
 
     void setStorageType(EnumPropertyType::StorageType storageType);
     void setValuesAsFlags(bool flags);
@@ -112,6 +117,7 @@ private:
     void nameEditingFinished();
 
     void colorChanged(const QColor &color);
+    void setUsageFlags(int flags, bool value);
     void memberValueChanged(const QString &name, const QVariant &value);
 
     void retranslateUi();
@@ -120,11 +126,17 @@ private:
     PropertyTypesModel *mPropertyTypesModel;
     QFormLayout *mDetailsLayout = nullptr;
     QLineEdit *mNameEdit = nullptr;
-    ColorButton *mColorButton = nullptr;
+
     QComboBox *mStorageTypeComboBox = nullptr;
     QCheckBox *mValuesAsFlagsCheckBox = nullptr;
     QTreeView *mValuesView = nullptr;
     QStringListModel *mValuesModel;
+
+    ColorButton *mColorButton = nullptr;
+    QCheckBox *mUseAsPropertyCheckBox = nullptr;
+    QCheckBox *mTypeOfCheckBox = nullptr;
+    QPushButton *mTypeOfButton = nullptr;
+    QMenu *mTypeOfMenu;
     QtTreePropertyBrowser *mMembersView = nullptr;
     CustomPropertiesHelper *mPropertiesHelper = nullptr;
 

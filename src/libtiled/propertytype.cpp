@@ -294,6 +294,20 @@ QVariant ClassPropertyType::defaultValue() const
     return QVariantMap();
 }
 
+static const struct  {
+    ClassPropertyType::ClassUsageFlag flag;
+    QLatin1String name;
+} flagsWithNames[] = {
+    { ClassPropertyType::PropertyValueType,    QLatin1String("property") },
+    { ClassPropertyType::MapType,              QLatin1String("map") },
+    { ClassPropertyType::LayerType,            QLatin1String("layer") },
+    { ClassPropertyType::MapObjectType,        QLatin1String("object") },
+    { ClassPropertyType::TileType,             QLatin1String("tile") },
+    { ClassPropertyType::TilesetType,          QLatin1String("tileset") },
+    { ClassPropertyType::WangColorType,        QLatin1String("wangcolor") },
+    { ClassPropertyType::WangSetType,          QLatin1String("wangset") },
+};
+
 QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
 {
     QJsonArray members;
@@ -319,6 +333,16 @@ QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
     auto json = PropertyType::toJson(context);
     json.insert(QStringLiteral("members"), members);
     json.insert(QStringLiteral("color"), color.name(QColor::HexArgb));
+
+    QJsonArray useAs;
+
+    for (auto &entry : flagsWithNames) {
+        if (usageFlags & entry.flag)
+            useAs.append(entry.name);
+    }
+
+    json.insert(QStringLiteral("useAs"), useAs);
+
     return json;
 }
 
@@ -335,6 +359,16 @@ void ClassPropertyType::initializeFromJson(const QJsonObject &json)
     const QString colorName = json.value(QLatin1String("color")).toString();
     if (QColor::isValidColor(colorName))
         color.setNamedColor(colorName);
+
+    const QJsonValue useAsJson = json.value(QLatin1String("useAs"));
+    if (useAsJson.isArray()) {
+        const QJsonArray useAsArray = useAsJson.toArray();
+        usageFlags = 0;
+        for (auto &entry : flagsWithNames) {
+            if (useAsArray.contains(entry.name))
+                usageFlags |= entry.flag;
+        }
+    }
 }
 
 void ClassPropertyType::resolveDependencies(const ExportContext &context)
@@ -393,6 +427,35 @@ bool ClassPropertyType::canAddMemberOfType(const PropertyType *propertyType, con
     }
 
     return true;
+}
+
+bool ClassPropertyType::isTypeFor(const Object &object) const
+{
+    switch (object.typeId()) {
+    case Object::LayerType:
+        return usageFlags & LayerType;
+    case Object::MapObjectType:
+        return usageFlags & MapObjectType;
+    case Object::MapType:
+        return usageFlags & MapType;
+    case Object::TilesetType:
+        return usageFlags & TilesetType;
+    case Object::TileType:
+        return usageFlags & TileType;
+    case Object::WangSetType:
+        return usageFlags & WangSetType;
+    case Object::WangColorType:
+        return usageFlags & WangColorType;
+    }
+    return false;
+}
+
+void ClassPropertyType::setUsageFlags(int flags, bool value)
+{
+    if (value)
+        usageFlags |= flags;
+    else
+        usageFlags &= ~flags;
 }
 
 // PropertyTypes
@@ -481,6 +544,14 @@ const PropertyType *PropertyTypes::findTypeByName(const QString &name) const
         return type->name == name;
     });
     return it == mTypes.end() ? nullptr : *it;
+}
+
+const ClassPropertyType *PropertyTypes::findClassByName(const QString &name) const
+{
+    auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+        return type->name == name && type->isClass();
+    });
+    return static_cast<const ClassPropertyType*>(it == mTypes.end() ? nullptr : *it);
 }
 
 void PropertyTypes::loadFromJson(const QJsonArray &list, const QString &path)

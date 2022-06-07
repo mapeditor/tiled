@@ -42,7 +42,9 @@
 #include <QFormLayout>
 #include <QInputDialog>
 #include <QJsonDocument>
+#include <QMenu>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QScopedValueRollback>
 #include <QStringListModel>
 #include <QToolBar>
@@ -66,6 +68,24 @@ static bool confirm(const QString &title, const QString& text, QWidget *parent)
                                 QMessageBox::No) == QMessageBox::Yes;
 }
 
+class PersistentMenu : public QMenu
+{
+public:
+    using QMenu::QMenu;
+
+    void setVisible(bool visible) override
+    {
+        // Don't hide the menu when over a checkbox
+        if (!visible)
+            if (auto action = activeAction())
+                if (action->isCheckable())
+                    return;
+
+        QMenu::setVisible(visible);
+    }
+};
+
+
 PropertyTypesFilter::PropertyTypesFilter(const QString &lastPath)
     : propertyTypesFilter(QCoreApplication::translate("File Types", "Property Types files (*.json)"))
     , objectTypesJsonFilter(QCoreApplication::translate("File Types", "Object Types JSON (*.json)"))
@@ -83,6 +103,7 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     , mPropertyTypesModel(new PropertyTypesModel(this))
     , mDetailsLayout(new QFormLayout)
     , mValuesModel(new QStringListModel(this))
+    , mTypeOfMenu(new PersistentMenu(this))
 {
     mUi->setupUi(this);
 
@@ -90,6 +111,29 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
 
     mUi->propertyTypesView->setModel(mPropertyTypesModel);
     mUi->horizontalLayout->addLayout(mDetailsLayout);
+
+    const struct  {
+        ClassPropertyType::ClassUsageFlag flag;
+        QString name;
+    } flagsWithNames[] = {
+        { ClassPropertyType::MapType,       tr("Map") },
+        { ClassPropertyType::LayerType,     tr("Layer") },
+        { ClassPropertyType::MapObjectType, tr("Object") },
+        { ClassPropertyType::TileType,      tr("Tile") },
+        { ClassPropertyType::TilesetType,   tr("Tileset") },
+        { ClassPropertyType::WangColorType, tr("Terrain") },
+        { ClassPropertyType::WangSetType,   tr("Terrain Set") },
+    };
+
+    for (auto &entry : flagsWithNames) {
+        auto action = mTypeOfMenu->addAction(entry.name);
+        action->setCheckable(true);
+        action->setData(entry.flag);
+        connect(action, &QAction::toggled,
+                this, [this, flag = entry.flag] (bool checked) {
+            setUsageFlags(flag, checked);
+        });
+    }
 
     mAddEnumPropertyTypeAction = new QAction(this);
     mAddClassPropertyTypeAction = new QAction(this);
@@ -306,6 +350,15 @@ QModelIndex PropertyTypesEditor::selectedPropertyTypeIndex() const
 PropertyType *PropertyTypesEditor::selectedPropertyType() const
 {
     return mPropertyTypesModel->propertyTypeAt(selectedPropertyTypeIndex());
+}
+
+ClassPropertyType *PropertyTypesEditor::selectedClassPropertyType() const
+{
+    PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType || !propertyType->isClass())
+        return nullptr;
+
+    return static_cast<ClassPropertyType*>(propertyType);
 }
 
 void PropertyTypesEditor::currentMemberItemChanged(QtBrowserItem *item)
@@ -704,6 +757,8 @@ void PropertyTypesEditor::updateDetails()
         const auto &classType = *static_cast<const ClassPropertyType*>(propertyType);
 
         mColorButton->setColor(classType.color);
+        mUseAsPropertyCheckBox->setChecked(classType.isPropertyValueType());
+        updateClassUsageDetails(classType);
 
         mPropertiesHelper->clear();
 
@@ -732,6 +787,32 @@ void PropertyTypesEditor::updateDetails()
     }
 
     mNameEdit->setText(propertyType->name);
+}
+
+void PropertyTypesEditor::updateClassUsageDetails(const ClassPropertyType &classType)
+{
+    QScopedValueRollback<bool> updatingDetails(mUpdatingDetails, true);
+
+    mTypeOfCheckBox->setChecked(classType.usageFlags & ClassPropertyType::AnyObjectType);
+
+    QStringList selectedTypes;
+    const auto actions = mTypeOfMenu->actions();
+    for (QAction *typeAction : actions) {
+        const auto flag = typeAction->data().toInt();
+        typeAction->setChecked(classType.usageFlags & flag);
+        if (classType.usageFlags & flag)
+            selectedTypes.append(typeAction->text());
+    }
+
+    if (selectedTypes.isEmpty()) {
+        mTypeOfButton->setText(tr("Select Types"));
+    } else {
+        if (selectedTypes.size() > 3) {
+            selectedTypes.erase(selectedTypes.begin() + 3, selectedTypes.end());
+            selectedTypes.append(QStringLiteral("..."));
+        }
+        mTypeOfButton->setText(selectedTypes.join(QStringLiteral(", ")));
+    }
 }
 
 void PropertyTypesEditor::selectedValuesChanged(const QItemSelection &selected)
@@ -775,80 +856,109 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
     case PropertyType::PT_Invalid:
         Q_UNREACHABLE();
         break;
-    case PropertyType::PT_Class: {
-        mColorButton = new ColorButton(mUi->groupBox);
-        mColorButton->setToolTip(tr("Color"));
-        mColorButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-        connect(mColorButton, &ColorButton::colorChanged,
-                this, &PropertyTypesEditor::colorChanged);
-
-        auto nameAndColor = new QHBoxLayout;
-        nameAndColor->addWidget(mNameEdit);
-        nameAndColor->addWidget(mColorButton);
-
-        mMembersView = new QtTreePropertyBrowser(this);
-        mPropertiesHelper = new CustomPropertiesHelper(mMembersView, this);
-
-        connect(mPropertiesHelper, &CustomPropertiesHelper::propertyValueChanged,
-                this, &PropertyTypesEditor::memberValueChanged);
-
-        connect(mMembersView, &QtTreePropertyBrowser::currentItemChanged,
-                this, &PropertyTypesEditor::currentMemberItemChanged);
-
-        QToolBar *membersToolBar = createSmallToolBar(mUi->groupBox);
-        membersToolBar->addAction(mAddMemberAction);
-        membersToolBar->addAction(mRemoveMemberAction);
-        membersToolBar->addAction(mRenameMemberAction);
-
-        auto membersWithToolBarLayout = new QVBoxLayout;
-        membersWithToolBarLayout->setSpacing(0);
-        membersWithToolBarLayout->setContentsMargins(0, 0, 0, 0);
-        membersWithToolBarLayout->addWidget(mMembersView);
-        membersWithToolBarLayout->addWidget(membersToolBar);
-
-        mDetailsLayout->addRow(tr("Name"), nameAndColor);
-        mDetailsLayout->addRow(tr("Members"), membersWithToolBarLayout);
+    case PropertyType::PT_Class:
+        addClassProperties();
+        break;
+    case PropertyType::PT_Enum:
+        addEnumProperties();
         break;
     }
-    case PropertyType::PT_Enum: {
-        mStorageTypeComboBox = new QComboBox(mUi->groupBox);
-        mStorageTypeComboBox->addItems({ tr("String"), tr("Number") });
+}
 
-        connect(mStorageTypeComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-                this, [this] (int index) { if (index != -1) setStorageType(static_cast<EnumPropertyType::StorageType>(index)); });
+void PropertyTypesEditor::addClassProperties()
+{
+    mColorButton = new ColorButton(mUi->groupBox);
+    mColorButton->setToolTip(tr("Color"));
+    mColorButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    connect(mColorButton, &ColorButton::colorChanged,
+            this, &PropertyTypesEditor::colorChanged);
 
-        mValuesAsFlagsCheckBox = new QCheckBox(tr("Allow multiple values (flags)"), mUi->groupBox);
+    auto nameAndColor = new QHBoxLayout;
+    nameAndColor->addWidget(mNameEdit);
+    nameAndColor->addWidget(mColorButton);
 
-        connect(mValuesAsFlagsCheckBox, &QCheckBox::toggled,
-                this, [this] (bool checked) { setValuesAsFlags(checked); });
+    mMembersView = new QtTreePropertyBrowser(this);
+    mPropertiesHelper = new CustomPropertiesHelper(mMembersView, this);
 
-        mValuesView = new QTreeView(this);
-        mValuesView->setRootIsDecorated(false);
-        mValuesView->setUniformRowHeights(true);
-        mValuesView->setHeaderHidden(true);
-        mValuesView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-        mValuesView->setModel(mValuesModel);
+    connect(mPropertiesHelper, &CustomPropertiesHelper::propertyValueChanged,
+            this, &PropertyTypesEditor::memberValueChanged);
 
-        connect(mValuesView->selectionModel(), &QItemSelectionModel::selectionChanged,
-                this, &PropertyTypesEditor::selectedValuesChanged);
+    connect(mMembersView, &QtTreePropertyBrowser::currentItemChanged,
+            this, &PropertyTypesEditor::currentMemberItemChanged);
 
-        QToolBar *valuesToolBar = createSmallToolBar(mUi->groupBox);
-        valuesToolBar->addAction(mAddValueAction);
-        valuesToolBar->addAction(mRemoveValueAction);
+    mUseAsPropertyCheckBox = new QCheckBox(tr("Property value"));
 
-        auto valuesWithToolBarLayout = new QVBoxLayout;
-        valuesWithToolBarLayout->setSpacing(0);
-        valuesWithToolBarLayout->setContentsMargins(0, 0, 0, 0);
-        valuesWithToolBarLayout->addWidget(mValuesView);
-        valuesWithToolBarLayout->addWidget(valuesToolBar);
+    connect(mUseAsPropertyCheckBox, &QCheckBox::toggled,
+            this, [this] (bool checked) { setUsageFlags(ClassPropertyType::PropertyValueType, checked); });
 
-        mDetailsLayout->addRow(tr("Name"), mNameEdit);
-        mDetailsLayout->addRow(tr("Save as"), mStorageTypeComboBox);
-        mDetailsLayout->addRow(QString(), mValuesAsFlagsCheckBox);
-        mDetailsLayout->addRow(tr("Values"), valuesWithToolBarLayout);
-        break;
-    }
-    }
+    mTypeOfButton = new QPushButton(tr("Select Types"));
+    mTypeOfButton->setAutoDefault(false);
+    mTypeOfButton->setMenu(mTypeOfMenu);
+    mTypeOfCheckBox = new QCheckBox(tr("Type of"));
+
+    connect(mTypeOfCheckBox, &QCheckBox::toggled,
+            this, [this] (bool checked) { setUsageFlags(ClassPropertyType::AnyObjectType, checked); });
+
+    auto usageOptions = new QHBoxLayout;
+    usageOptions->addWidget(mUseAsPropertyCheckBox);
+    usageOptions->addSpacing(Utils::dpiScaled(20));
+    usageOptions->addWidget(mTypeOfCheckBox);
+    usageOptions->addWidget(mTypeOfButton);
+    usageOptions->addStretch();
+
+    QToolBar *membersToolBar = createSmallToolBar(mUi->groupBox);
+    membersToolBar->addAction(mAddMemberAction);
+    membersToolBar->addAction(mRemoveMemberAction);
+    membersToolBar->addAction(mRenameMemberAction);
+
+    auto membersWithToolBarLayout = new QVBoxLayout;
+    membersWithToolBarLayout->setSpacing(0);
+    membersWithToolBarLayout->setContentsMargins(0, 0, 0, 0);
+    membersWithToolBarLayout->addWidget(mMembersView);
+    membersWithToolBarLayout->addWidget(membersToolBar);
+
+    mDetailsLayout->addRow(tr("Name"), nameAndColor);
+    mDetailsLayout->addRow(tr("Use as"), usageOptions);
+    mDetailsLayout->addRow(tr("Members"), membersWithToolBarLayout);
+}
+
+void PropertyTypesEditor::addEnumProperties()
+{
+    mStorageTypeComboBox = new QComboBox(mUi->groupBox);
+    mStorageTypeComboBox->addItems({ tr("String"), tr("Number") });
+
+    connect(mStorageTypeComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, [this] (int index) { if (index != -1) setStorageType(static_cast<EnumPropertyType::StorageType>(index)); });
+
+    mValuesAsFlagsCheckBox = new QCheckBox(tr("Allow multiple values (flags)"), mUi->groupBox);
+
+    connect(mValuesAsFlagsCheckBox, &QCheckBox::toggled,
+            this, [this] (bool checked) { setValuesAsFlags(checked); });
+
+    mValuesView = new QTreeView(this);
+    mValuesView->setRootIsDecorated(false);
+    mValuesView->setUniformRowHeights(true);
+    mValuesView->setHeaderHidden(true);
+    mValuesView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    mValuesView->setModel(mValuesModel);
+
+    connect(mValuesView->selectionModel(), &QItemSelectionModel::selectionChanged,
+            this, &PropertyTypesEditor::selectedValuesChanged);
+
+    QToolBar *valuesToolBar = createSmallToolBar(mUi->groupBox);
+    valuesToolBar->addAction(mAddValueAction);
+    valuesToolBar->addAction(mRemoveValueAction);
+
+    auto valuesWithToolBarLayout = new QVBoxLayout;
+    valuesWithToolBarLayout->setSpacing(0);
+    valuesWithToolBarLayout->setContentsMargins(0, 0, 0, 0);
+    valuesWithToolBarLayout->addWidget(mValuesView);
+    valuesWithToolBarLayout->addWidget(valuesToolBar);
+
+    mDetailsLayout->addRow(tr("Name"), mNameEdit);
+    mDetailsLayout->addRow(tr("Save as"), mStorageTypeComboBox);
+    mDetailsLayout->addRow(QString(), mValuesAsFlagsCheckBox);
+    mDetailsLayout->addRow(tr("Values"), valuesWithToolBarLayout);
 }
 
 void PropertyTypesEditor::selectFirstPropertyType()
@@ -896,14 +1006,25 @@ void PropertyTypesEditor::nameEditingFinished()
 
 void PropertyTypesEditor::colorChanged(const QColor &color)
 {
-    PropertyType *propertyType = selectedPropertyType();
-    if (!propertyType || !propertyType->isClass())
+    if (mUpdatingDetails)
         return;
 
-    auto &classType = static_cast<ClassPropertyType&>(*propertyType);
-    classType.color = color;
+    if (ClassPropertyType *classType = selectedClassPropertyType()) {
+        classType->color = color;
+        applyPropertyTypes();
+    }
+}
 
-    applyPropertyTypes();
+void PropertyTypesEditor::setUsageFlags(int flags, bool value)
+{
+    if (mUpdatingDetails)
+        return;
+
+    if (ClassPropertyType *classType = selectedClassPropertyType()) {
+        classType->setUsageFlags(flags, value);
+        updateClassUsageDetails(*classType);
+        applyPropertyTypes();
+    }
 }
 
 void PropertyTypesEditor::memberValueChanged(const QString &name, const QVariant &value)
