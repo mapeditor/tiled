@@ -100,7 +100,6 @@ static Map *mapForObject(Object *object)
         return static_cast<MapObject*>(object)->map();
     case Object::MapType:
         return static_cast<Map*>(object);
-    case Object::ObjectTemplateType:
     case Object::TilesetType:
     case Object::TileType:
     case Object::WangSetType:

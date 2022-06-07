@@ -555,7 +555,6 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::TileType:              applyTileValue(id, val); break;
     case Object::WangSetType:           applyWangSetValue(id, val); break;
     case Object::WangColorType:         applyWangColorValue(id, val); break;
-    case Object::ObjectTemplateType:    break;
     }
 }
 
@@ -1659,7 +1658,6 @@ void PropertyBrowser::addProperties()
     case Object::TileType:              addTileProperties(); break;
     case Object::WangSetType:           addWangSetProperties(); break;
     case Object::WangColorType:         addWangColorProperties(); break;
-    case Object::ObjectTemplateType:    break;
     }
 
     // Make sure certain properties are collapsed, to save space
@@ -1874,8 +1872,6 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[WangColorProbabilityProperty]->setValue(wangColor->probability());
         break;
     }
-    case Object::ObjectTemplateType:
-        break;
     }
 }
 
@@ -1943,7 +1939,6 @@ void PropertyBrowser::updateCustomProperties()
     case Object::TilesetType:
     case Object::WangSetType:
     case Object::WangColorType:
-    case Object::ObjectTemplateType:
         break;
     }
 
