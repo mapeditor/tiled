@@ -2,6 +2,7 @@
 
 * Keep references between objects when copy/pasting or duplicating (#3361)
 * Improved default translation used in case of multiple options
+* Terrain Brush: Update preview on mouse release (#3381)
 * Fixed 'Add Variation' action in Tile Stamps context menu (#3362)
 * Fixed importing of removed shortcuts (#3367)
 * Fixed breaking of alternative shortcuts on import or reset (#3367)
