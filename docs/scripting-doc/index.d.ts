@@ -2566,12 +2566,16 @@ declare class Tileset extends Asset {
 
   /**
    * The size to use when rendering tiles from this tileset on a tile layer.
+   *
+   * @since 1.9
    */
   tileRenderSize: typeof Tileset.GridSize | typeof Tileset.TileSize
 
   /**
    * The fill mode to use when rendering tiles from this tileset. Only relevant
    * when the tiles are not rendered at their native size.
+   *
+   * @since 1.9
    */
   fillMode : typeof Tileset.Stretch | typeof Tileset.PreserveAspectFit
 
