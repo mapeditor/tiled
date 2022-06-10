@@ -8,13 +8,19 @@ StaticLibrary {
 
     cpp.includePaths: ["src"]
     cpp.cxxLanguageVersion: "c++17"
-    cpp.visibility: "minimal"
-
-    Properties {
-        // needed to work around "too many sections" issue in qteditorfactory.cpp
-        condition: Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 2 && qbs.toolchain.contains("mingw")
-        cpp.cxxFlags: ["-Wa,-mbig-obj"]
+    cpp.cxxFlags: {
+        var flags = base;
+        if (qbs.toolchain.contains("msvc")) {
+            if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 3)
+                flags.push("/permissive-");
+        } else if (qbs.toolchain.contains("mingw")) {
+            // needed to work around "too many sections" issue in qteditorfactory.cpp
+            if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 2)
+                flags.push("-Wa,-mbig-obj");
+        }
+        return flags;
     }
+    cpp.visibility: "minimal"
 
     files: [
         "src/qtbuttonpropertybrowser.cpp",

@@ -6,6 +6,14 @@ DynamicLibrary {
     Depends { name: "Qt"; submodules: "gui" }
 
     cpp.cxxLanguageVersion: "c++17"
+    cpp.cxxFlags: {
+        var flags = base;
+        if (qbs.toolchain.contains("msvc")) {
+            if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 3)
+                flags.push("/permissive-");
+        }
+        return flags;
+    }
     cpp.visibility: "minimal"
     cpp.useRPaths: project.useRPaths
     cpp.rpaths: {
