@@ -19,7 +19,7 @@
  */
 
 #include "scriptmanager.h"
-
+#include "colorbutton.h"
 #include "documentmanager.h"
 #include "editablegrouplayer.h"
 #include "editableimagelayer.h"
@@ -47,6 +47,7 @@
 #include "scriptimage.h"
 #include "scriptmodule.h"
 #include "scriptprocess.h"
+#include "scriptdialog.h"
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"
@@ -59,6 +60,13 @@
 #include <QFile>
 #include <QQmlEngine>
 #include <QStandardPaths>
+#include <QtWidgets/QDoubleSpinBox>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QDialog>
 #if QT_VERSION < QT_VERSION_CHECK(6,0,0)
 #include <QTextCodec>
 #endif
@@ -122,8 +130,17 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<TilesetDock*>();
     qRegisterMetaType<TilesetEditor*>();
     qRegisterMetaType<ScriptMapFormatWrapper*>();
+    qRegisterMetaType<QDoubleSpinBox *>();
     qRegisterMetaType<ScriptTilesetFormatWrapper*>();
     qRegisterMetaType<ScriptImage*>();
+    qRegisterMetaType<QLabel *>();
+    qRegisterMetaType<QCheckBox*>();
+    qRegisterMetaType<QSlider*>();
+    qRegisterMetaType<QFrame*>();
+    qRegisterMetaType<QDialogButtonBox*>();
+    qRegisterMetaType<QPushButton*>();
+    qRegisterMetaType<QDialog*>();
+    qRegisterMetaType<ColorButton*>();
 
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
@@ -384,7 +401,7 @@ void ScriptManager::initialize()
     registerFile(engine);
     registerFileInfo(engine);
     registerProcess(engine);
-
+    registerDialog(engine);
     loadExtensions();
 }
 
