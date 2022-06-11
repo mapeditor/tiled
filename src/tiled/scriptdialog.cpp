@@ -19,24 +19,13 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
+#include "scriptdialog.h"
 #include "scriptmanager.h"
-#include "mainwindow.h"
-#include "colorbutton.h"
-#include <QString>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QDoubleSpinBox>
-#include <QtWidgets/QSlider>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QPushButton>
+
+
 #include <QProcessEnvironment>
 #include <QJSEngine>
-#include <QCoreApplication>
-#include <QDialog>
+
 #if QT_VERSION < QT_VERSION_CHECK(6,0,0)
 #include <QTextCodec>
 #else
@@ -46,40 +35,17 @@
 #include <memory>
 
 namespace Tiled {
-    class NumberInputArgs : QObject {
-        Q_OBJECT
-        Q_PROPERTY(int numberOfDecimals  MEMBER numberOfDecimals)
-        Q_PROPERTY(double maximum MEMBER maximum)
-        Q_PROPERTY(double minimum MEMBER minimum)
-        Q_PROPERTY(double defaultValue MEMBER defaultValue)
-        Q_PROPERTY(QString prefix READ prefix WRITE setPrefix)
-        Q_PROPERTY(QString suffix READ suffix WRITE setSuffix)
-        Q_PROPERTY(QString label  READ label WRITE setLabel)
-    public:
-        Q_INVOKABLE NumberInputArgs();
 
-        // number of decimal places. 0 for integers.
-        int numberOfDecimals;
-        double maximum;
-        double minimum;
-        double defaultValue =0;
-
-        QString prefix() const;
-        QString suffix() const;
-        QString label() const;
-        void setPrefix(const QString &prefix);
-        void setSuffix(const QString &suffix);
-        void setLabel(const QString &label);
-    private:
-        QString m_prefix;
-        QString m_suffix;
-        QString m_label;
-    };
-
-    NumberInputArgs::NumberInputArgs() {
+    NumberInputArgs::NumberInputArgs(): QObject() {
 
     }
-
+    NumberInputArgs::NumberInputArgs(const NumberInputArgs& args): QObject() {
+        maximum = args.maximum;
+        minimum = args.minimum;
+        setPrefix(args.prefix());
+        setSuffix(args.suffix());
+        setLabel(args.label());
+    }
     inline QString NumberInputArgs::prefix() const{
         return m_prefix;
     }
@@ -99,44 +65,18 @@ namespace Tiled {
         m_label = label;
     }
 
-    class ScriptDialog : public QDialog
-{
-    Q_OBJECT
-
-public:
-    Q_INVOKABLE ScriptDialog();
-    ~ScriptDialog() override;
-
-    bool checkForClosed() const;
-
-
-    Q_INVOKABLE void setTitle(const QString &title);
-    Q_INVOKABLE QLabel * addLabel(const QString &text);
-    Q_INVOKABLE QFrame* addSeparator();
-    Q_INVOKABLE QDoubleSpinBox *addNumberInput(const QString &labelText);
-    Q_INVOKABLE QSlider * addSlider(const QString &labelText);
-    Q_INVOKABLE QCheckBox * addCheckbox(const QString &labelText, bool defaultValue);
-    Q_INVOKABLE QPushButton * addButton(const QString &labelText);
-    Q_INVOKABLE Tiled::ColorButton * addColorButton(const QString &labelText);
-    Q_INVOKABLE void setMinimumWidth(const int width);
-    Q_INVOKABLE void close();
-protected:
-    void resizeEvent(QResizeEvent* event) override;
-private:
-    // used to generate unique IDs for all components
-    int m_widgetNumber;
-    QList<QWidget*> m_ScriptWidgets;
-    QGridLayout *m_gridLayout;
-    QWidget *m_verticalLayoutWidget;
-    QVBoxLayout *m_verticalLayout;
-};
 
 ScriptDialog::ScriptDialog(): QDialog(MainWindow::maybeInstance())
 {
+    setAttribute(Qt::WA_DeleteOnClose);
     m_widgetNumber = 0;
     setMinimumSize(400, 400);
-    m_gridLayout = new QGridLayout(this);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    initializeLayout();
+    QMetaObject::connectSlotsByName(this);
+}
+void ScriptDialog::initializeLayout(){
+    m_gridLayout = new QGridLayout(this);
     m_gridLayout->setMargin(0);
     m_gridLayout->setObjectName(QString::fromUtf8("m_gridLayout"));
     m_verticalLayoutWidget = new QWidget(this);
@@ -147,9 +87,28 @@ ScriptDialog::ScriptDialog(): QDialog(MainWindow::maybeInstance())
     m_verticalLayout->setMargin(0);
     m_verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
     m_gridLayout->addLayout(m_verticalLayout, 0, 0, 1, 1);
-    QMetaObject::connectSlotsByName(this);
 }
-
+void ScriptDialog::clear(){
+    m_widgetNumber = 0;
+    QLayoutItem * item;
+    QLayout * sublayout;
+    QWidget * widget;
+    while ((item = m_gridLayout->takeAt(0))) {
+        if ((sublayout = item->layout()) != 0) {/* do the same for sublayout*/}
+        else if ((widget = item->widget()) != 0) {widget->hide(); delete widget;}
+        else {delete item;}
+    }
+    while ((item = m_verticalLayout->takeAt(0))) {
+        if ((sublayout = item->layout()) != 0) {/* do the same for sublayout*/}
+        else if ((widget = item->widget()) != 0) {widget->hide(); delete widget;}
+        else {delete item;}
+    }
+    delete m_gridLayout;
+    delete m_verticalLayout;
+    delete m_verticalLayoutWidget;
+    m_ScriptWidgets.clear();
+    initializeLayout();
+}
 void ScriptDialog::setMinimumWidth(const int width) {
     QDialog::setMinimumWidth(width);
 }
@@ -173,7 +132,6 @@ QLabel * ScriptDialog::addLabel(const QString &text){
 
 QFrame* ScriptDialog::addSeparator(){
     QFrame *line;
-
     line = new QFrame(m_verticalLayoutWidget);
     line->setObjectName(QString::fromUtf8("line%1").arg(m_widgetNumber));
     m_widgetNumber++;
@@ -185,16 +143,16 @@ QFrame* ScriptDialog::addSeparator(){
     return line;
 }
 
-QDoubleSpinBox* ScriptDialog::addNumberInput(const QString &labelText){
+QDoubleSpinBox* ScriptDialog::addNumberInput(const NumberInputArgs &inputArgs){
     QDoubleSpinBox *doubleSpinBox;
-    if (!labelText.isEmpty()){
+    if (!inputArgs.label().isEmpty()){
         QHBoxLayout* horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout").arg(m_widgetNumber));
         m_widgetNumber++;
         QLabel * numberLabel= new QLabel(m_verticalLayoutWidget);
         numberLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
         numberLabel->setObjectName(QString::fromUtf8("numberLabel%1").arg(m_widgetNumber));
-        numberLabel->setText(labelText);
+        numberLabel->setText(inputArgs.label());
         m_widgetNumber++;
         m_ScriptWidgets.append(numberLabel);
         horizontalLayout->addWidget(numberLabel);
@@ -316,5 +274,4 @@ void registerDialog(QJSEngine *jsEngine)
 }
 
 } // namespace Tiled
-
-#include "scriptdialog.moc"
+#include "moc_scriptdialog.cpp"
