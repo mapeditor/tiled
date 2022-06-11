@@ -82,7 +82,7 @@ class ScriptDialog : public QDialog
     Q_OBJECT
 
 public:
-    Q_INVOKABLE ScriptDialog();
+    Q_INVOKABLE ScriptDialog(const QString &title, const int width, const int height);
     ~ScriptDialog() override;
 
     bool checkForClosed() const;
@@ -91,7 +91,8 @@ public:
     Q_INVOKABLE void setTitle(const QString &title);
     Q_INVOKABLE QLabel * addLabel(const QString &text);
     Q_INVOKABLE QFrame* addSeparator();
-    Q_INVOKABLE QDoubleSpinBox *addNumberInput(const NumberInputArgs &inputArgs);
+    Q_INVOKABLE QDoubleSpinBox *addNumberInput(const NumberInputArgs inputArgs);
+    Q_INVOKABLE QDoubleSpinBox *addNumberInput(const QString &labelText);
     Q_INVOKABLE QSlider * addSlider(const QString &labelText);
     Q_INVOKABLE QCheckBox * addCheckbox(const QString &labelText, bool defaultValue);
     Q_INVOKABLE QPushButton * addButton(const QString &labelText);
@@ -99,17 +100,19 @@ public:
     Q_INVOKABLE void setMinimumWidth(const int width);
     Q_INVOKABLE void close();
     Q_INVOKABLE void clear();
+    Q_INVOKABLE void newRow();
 protected:
     void resizeEvent(QResizeEvent* event) override;
 private:
     // used to generate unique IDs for all components
     int m_widgetNumber;
-    QList<QWidget*> m_ScriptWidgets;
     QGridLayout *m_gridLayout;
     QWidget *m_verticalLayoutWidget;
     QVBoxLayout *m_verticalLayout;
     void initializeLayout();
-
+    QHBoxLayout* m_rowLayout;
+    std::string m_lastWidgetTypeName;
+    void checkIfSameType(const char * newTypeName);
 };
 
 void registerDialog(QJSEngine *jsEngine);
@@ -118,4 +121,3 @@ void registerDialog(QJSEngine *jsEngine);
 Q_DECLARE_METATYPE(Tiled::NumberInputArgs);
 Q_DECLARE_METATYPE(Tiled::NumberInputArgs*);
 Q_DECLARE_METATYPE(Tiled::ScriptDialog*);
-
