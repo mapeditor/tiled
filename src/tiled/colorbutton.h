@@ -36,7 +36,7 @@ class ColorButton : public QToolButton
 
 public:
     ColorButton(QWidget *parent = nullptr);
-
+    Q_INVOKABLE void setToolTip(const QString& toolTip);
     QColor color() const { return mColor; }
     void setColor(const QColor &color);
 

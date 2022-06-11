@@ -28,6 +28,9 @@
 
 using namespace Tiled;
 
+void ColorButton::setToolTip(const QString& toolTip){
+    QWidget::setToolTip(toolTip);
+}
 ColorButton::ColorButton(QWidget *parent)
     : QToolButton(parent)
 {

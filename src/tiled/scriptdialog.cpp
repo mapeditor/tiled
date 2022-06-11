@@ -46,15 +46,60 @@
 #include <memory>
 
 namespace Tiled {
-    class DoubleInputArgs : QObject {
+    class NumberInputArgs : QObject {
+        Q_OBJECT
+        Q_PROPERTY(int numberOfDecimals  MEMBER numberOfDecimals)
+        Q_PROPERTY(double maximum MEMBER maximum)
+        Q_PROPERTY(double minimum MEMBER minimum)
+        Q_PROPERTY(double defaultValue MEMBER defaultValue)
+        Q_PROPERTY(QString prefix READ prefix WRITE setPrefix)
+        Q_PROPERTY(QString suffix READ suffix WRITE setSuffix)
+        Q_PROPERTY(QString label  READ label WRITE setLabel)
     public:
+        Q_INVOKABLE NumberInputArgs();
+
+        // number of decimal places. 0 for integers.
         int numberOfDecimals;
         double maximum;
         double minimum;
-        QString &prefix;
+        double defaultValue =0;
+
+        QString prefix() const;
+        QString suffix() const;
+        QString label() const;
+        void setPrefix(const QString &prefix);
+        void setSuffix(const QString &suffix);
+        void setLabel(const QString &label);
+    private:
+        QString m_prefix;
+        QString m_suffix;
+        QString m_label;
     };
 
-class ScriptDialog : public QDialog
+    NumberInputArgs::NumberInputArgs() {
+
+    }
+
+    inline QString NumberInputArgs::prefix() const{
+        return m_prefix;
+    }
+    inline QString NumberInputArgs::suffix() const{
+        return m_suffix;
+    }
+    inline QString NumberInputArgs::label() const{
+        return m_label;
+    }
+    void NumberInputArgs::setPrefix(const QString &prefix){
+        m_prefix = prefix;
+    }
+    void NumberInputArgs::setSuffix(const QString &suffix){
+        m_suffix = suffix;
+    }
+    void NumberInputArgs::setLabel(const QString &label){
+        m_label = label;
+    }
+
+    class ScriptDialog : public QDialog
 {
     Q_OBJECT
 
@@ -68,11 +113,11 @@ public:
     Q_INVOKABLE void setTitle(const QString &title);
     Q_INVOKABLE QLabel * addLabel(const QString &text);
     Q_INVOKABLE QFrame* addSeparator();
-    Q_INVOKABLE QDoubleSpinBox *addDoubleInput(const QString &labelText);
+    Q_INVOKABLE QDoubleSpinBox *addNumberInput(const QString &labelText);
     Q_INVOKABLE QSlider * addSlider(const QString &labelText);
     Q_INVOKABLE QCheckBox * addCheckbox(const QString &labelText, bool defaultValue);
     Q_INVOKABLE QPushButton * addButton(const QString &labelText);
-    Q_INVOKABLE ColorButton * addColorButton(const QString &labelText);
+    Q_INVOKABLE Tiled::ColorButton * addColorButton(const QString &labelText);
     Q_INVOKABLE void setMinimumWidth(const int width);
     Q_INVOKABLE void close();
 protected:
@@ -140,19 +185,19 @@ QFrame* ScriptDialog::addSeparator(){
     return line;
 }
 
-QDoubleSpinBox* ScriptDialog::addDoubleInput(const QString &labelText){
+QDoubleSpinBox* ScriptDialog::addNumberInput(const QString &labelText){
     QDoubleSpinBox *doubleSpinBox;
     if (!labelText.isEmpty()){
         QHBoxLayout* horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout").arg(m_widgetNumber));
         m_widgetNumber++;
-        QLabel * doubleLabel= new QLabel(m_verticalLayoutWidget);
-        doubleLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-        doubleLabel->setObjectName(QString::fromUtf8("doubleLabel%1").arg(m_widgetNumber));
-        doubleLabel->setText(labelText);
+        QLabel * numberLabel= new QLabel(m_verticalLayoutWidget);
+        numberLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+        numberLabel->setObjectName(QString::fromUtf8("numberLabel%1").arg(m_widgetNumber));
+        numberLabel->setText(labelText);
         m_widgetNumber++;
-        m_ScriptWidgets.append(doubleLabel);
-        horizontalLayout->addWidget(doubleLabel);
+        m_ScriptWidgets.append(numberLabel);
+        horizontalLayout->addWidget(numberLabel);
         doubleSpinBox = new QDoubleSpinBox(m_verticalLayoutWidget);
         horizontalLayout->addWidget(doubleSpinBox);
         m_verticalLayout->addLayout(horizontalLayout);
@@ -217,7 +262,7 @@ QPushButton * ScriptDialog::addButton(const QString &labelText){
     return pushButton;
 }
 
-ColorButton* ScriptDialog::addColorButton (const QString &labelText){
+Tiled::ColorButton* ScriptDialog::addColorButton (const QString &labelText){
     ColorButton *colorButton;
     if (!labelText.isEmpty()){
         QHBoxLayout* horizontalLayout = new QHBoxLayout();
@@ -264,6 +309,8 @@ void ScriptDialog::close()
 
 void registerDialog(QJSEngine *jsEngine)
 {
+    jsEngine->globalObject().setProperty(QStringLiteral("NumberInputArgs"),
+                                         jsEngine->newQMetaObject<NumberInputArgs>());
     jsEngine->globalObject().setProperty(QStringLiteral("Dialog"),
                                          jsEngine->newQMetaObject<ScriptDialog>());
 }
