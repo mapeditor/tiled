@@ -66,6 +66,7 @@
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
+#include <QComboBox>
 #include <QDialog>
 #if QT_VERSION < QT_VERSION_CHECK(6,0,0)
 #include <QTextCodec>
@@ -135,6 +136,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<ScriptImage*>();
     qRegisterMetaType<QLabel *>();
     qRegisterMetaType<QCheckBox*>();
+    qRegisterMetaType<QComboBox*>();
     qRegisterMetaType<QSlider*>();
     qRegisterMetaType<QFrame*>();
     qRegisterMetaType<QDialogButtonBox*>();

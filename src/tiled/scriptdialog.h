@@ -34,6 +34,7 @@
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QPushButton>
+#include <QComboBox>
 #include <QCoreApplication>
 #include <QDialog>
 #include "colorbutton.h"
@@ -49,6 +50,7 @@ class ScriptDialog : public QDialog
     Q_OBJECT
 
 public:
+    Q_INVOKABLE ScriptDialog();
     Q_INVOKABLE ScriptDialog(const QString &title, const int width, const int height);
     ~ScriptDialog() override;
 
@@ -62,6 +64,7 @@ public:
     Q_INVOKABLE QFrame* addSeparator(const QString &labelText);
     Q_INVOKABLE QDoubleSpinBox *addNumberInput(const QString &labelText);
     Q_INVOKABLE QSlider * addSlider(const QString &labelText);
+    Q_INVOKABLE QComboBox * addComboBox(const QString &labelText, const QStringList &values);
     Q_INVOKABLE QCheckBox * addCheckbox(const QString &labelText, bool defaultValue);
     Q_INVOKABLE QPushButton * addButton(const QString &labelText);
     Q_INVOKABLE Tiled::ColorButton * addColorButton(const QString &labelText);
@@ -76,6 +79,8 @@ private:
     int m_widgetNumber = 0;
     int m_rowIndex = 0;
     int m_widgetsInRow = 0;
+    int m_leftColumnStretch = 1;
+    int m_rightColumnStretch = 4;
     QGridLayout *m_gridLayout;
     QWidget *m_gridLayoutWidget;
     QLabel *newLabel(const QString& labelText);

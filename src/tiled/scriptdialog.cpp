@@ -37,7 +37,11 @@
 
 namespace Tiled {
 
-ScriptDialog::ScriptDialog(const QString &title, const int width=400, const int height=400): QDialog(MainWindow::maybeInstance())
+ScriptDialog::ScriptDialog(): ScriptDialog(QString(), 450, 450)
+{
+    
+}
+ScriptDialog::ScriptDialog(const QString &title, const int width=450, const int height=450): QDialog(MainWindow::maybeInstance())
 {
     if (title.isEmpty()){
         setTitle(QString::fromUtf8("Script"));
@@ -61,8 +65,9 @@ void ScriptDialog::initializeLayout(){
     m_gridLayout->setMargin(0);
     m_gridLayout->setObjectName(QString::fromUtf8("m_gridLayout"));
     // make the right-hand column more likely to stretch
-    m_gridLayout->setColumnStretch(0, 1);
-    m_gridLayout->setColumnStretch(1, 99);
+    m_gridLayout->setColumnStretch(0, m_leftColumnStretch);
+    m_gridLayout->setColumnStretch(1, m_rightColumnStretch);
+    m_rowIndex = 0;
     addNewRow();
 }
 void ScriptDialog::clear(){
@@ -76,7 +81,6 @@ void ScriptDialog::clear(){
         else {delete item;}
     }
     delete m_gridLayoutWidget;
-    delete m_gridLayout;
     initializeLayout();
 }
 void ScriptDialog::resize(const int width, const int height) {
@@ -107,8 +111,10 @@ QLabel * ScriptDialog::addLabel(const QString &text, bool maxWidth){
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         label->setSizePolicy(sizePolicy);
         m_widgetsInRow++;
-        if (maxWidth)
+        if (maxWidth){
+            label->setWordWrap(true);
             addNewRow();
+        }
     }
     else
         addDialogWidget(label);
@@ -132,7 +138,7 @@ QFrame* ScriptDialog::addSeparator(const QString &labelText){
     line->setFrameShape(QFrame::HLine);
     line->setFrameShadow(QFrame::Sunken);
     line->setContentsMargins(10, 0, 10, 0);
-    m_rowLayout->addWidget(line, 90); // higher stretch
+    m_rowLayout->addWidget(line, m_rightColumnStretch); // higher stretch
     addNewRow();
     return line;
 }
@@ -172,6 +178,19 @@ QCheckBox * ScriptDialog::addCheckbox(const QString &labelText, bool defaultValu
     m_gridLayout->addWidget(checkBox, m_rowIndex, m_widgetsInRow);
     addDialogWidget(checkBox);
     return checkBox;
+}
+QComboBox * ScriptDialog::addComboBox(const QString &labelText, const QStringList &values){
+    QComboBox * comboBox;
+    checkIfSameType(typeid(comboBox).name());
+    moveToColumn2();
+    QLabel *comboBoxLabel = newLabel(labelText);
+    addDialogWidget(comboBoxLabel);
+    comboBox = new QComboBox(m_gridLayoutWidget);
+    comboBox->setObjectName(QString::fromUtf8("comboBox").arg(m_widgetNumber));
+    comboBox->addItems(values);
+    m_gridLayout->addWidget(comboBox, m_rowIndex, m_widgetsInRow);
+    addDialogWidget(comboBox);
+    return comboBox;
 }
 
 QPushButton * ScriptDialog::addButton(const QString &labelText){
@@ -273,7 +292,9 @@ QLabel *ScriptDialog::newLabel(const QString& labelText){
     label->setObjectName(QString::fromUtf8("label%1").arg(m_widgetNumber));
     label->setText(labelText);
     label->setContentsMargins(0,0,0,0);
-    label->setWordWrap(true);
+    label->setWordWrap(false);
+    label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    label->adjustSize();
     m_widgetNumber++;
     return label;
 }
