@@ -141,8 +141,6 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<QPushButton*>();
     qRegisterMetaType<QDialog*>();
     qRegisterMetaType<ColorButton*>();
-    qRegisterMetaType<NumberInputArgs>();
-    qRegisterMetaType<NumberInputArgs*>();
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 

@@ -39,44 +39,11 @@
 #include "colorbutton.h"
 #include <QString>
 #include <QList>
-
+#include <QSize>
+#include <QResizeEvent>
 class QJSEngine;
 
 namespace Tiled {
-
-class NumberInputArgs : public QObject
-{
-    Q_OBJECT
-
-    Q_PROPERTY(int numberOfDecimals  MEMBER numberOfDecimals)
-    Q_PROPERTY(double maximum MEMBER maximum)
-    Q_PROPERTY(double minimum MEMBER minimum)
-    Q_PROPERTY(double defaultValue MEMBER defaultValue)
-    Q_PROPERTY(QString prefix READ prefix WRITE setPrefix)
-    Q_PROPERTY(QString suffix READ suffix WRITE setSuffix)
-    Q_PROPERTY(QString label  READ label WRITE setLabel)
-
-public:
-    Q_INVOKABLE NumberInputArgs();
-    Q_INVOKABLE NumberInputArgs(const NumberInputArgs& args);
-    // number of decimal places. 0 for integers.
-    int numberOfDecimals;
-    double maximum;
-    double minimum;
-    double defaultValue =0;
-
-    QString prefix() const;
-    QString suffix() const;
-    QString label() const;
-    void setPrefix(const QString &prefix);
-    void setSuffix(const QString &suffix);
-    void setLabel(const QString &label);
-private:
-    QString m_prefix;
-    QString m_suffix;
-    QString m_label;
-};
-
 class ScriptDialog : public QDialog
 {
     Q_OBJECT
@@ -90,34 +57,38 @@ public:
 
     Q_INVOKABLE void setTitle(const QString &title);
     Q_INVOKABLE QLabel * addLabel(const QString &text);
+    Q_INVOKABLE QLabel * addLabel(const QString &text, bool maxWidth);
     Q_INVOKABLE QFrame* addSeparator();
-    Q_INVOKABLE QDoubleSpinBox *addNumberInput(const NumberInputArgs inputArgs);
+    Q_INVOKABLE QFrame* addSeparator(const QString &labelText);
     Q_INVOKABLE QDoubleSpinBox *addNumberInput(const QString &labelText);
     Q_INVOKABLE QSlider * addSlider(const QString &labelText);
     Q_INVOKABLE QCheckBox * addCheckbox(const QString &labelText, bool defaultValue);
     Q_INVOKABLE QPushButton * addButton(const QString &labelText);
     Q_INVOKABLE Tiled::ColorButton * addColorButton(const QString &labelText);
-    Q_INVOKABLE void setMinimumWidth(const int width);
+    Q_INVOKABLE void resize(const int width, const int height);
     Q_INVOKABLE void close();
     Q_INVOKABLE void clear();
-    Q_INVOKABLE void newRow();
+    Q_INVOKABLE void addNewRow();
 protected:
     void resizeEvent(QResizeEvent* event) override;
 private:
     // used to generate unique IDs for all components
-    int m_widgetNumber;
+    int m_widgetNumber = 0;
+    int m_rowIndex = 0;
+    int m_widgetsInRow = 0;
     QGridLayout *m_gridLayout;
-    QWidget *m_verticalLayoutWidget;
-    QVBoxLayout *m_verticalLayout;
+    QWidget *m_gridLayoutWidget;
+    QLabel *newLabel(const QString& labelText);
     void initializeLayout();
+    QWidget *m_rowLayoutWidget;
     QHBoxLayout* m_rowLayout;
-    std::string m_lastWidgetTypeName;
-    void checkIfSameType(const char * newTypeName);
+    QString m_lastWidgetTypeName;
+    bool checkIfSameType(const char *newTypeName);
+    void addDialogWidget(QWidget * widget);
+    void moveToColumn2();
 };
 
 void registerDialog(QJSEngine *jsEngine);
 
 } // namespace Tiled
-Q_DECLARE_METATYPE(Tiled::NumberInputArgs);
-Q_DECLARE_METATYPE(Tiled::NumberInputArgs*);
 Q_DECLARE_METATYPE(Tiled::ScriptDialog*);

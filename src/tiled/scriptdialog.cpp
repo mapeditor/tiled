@@ -37,36 +37,6 @@
 
 namespace Tiled {
 
-    NumberInputArgs::NumberInputArgs(): QObject() {
-
-    }
-    NumberInputArgs::NumberInputArgs(const NumberInputArgs& args): QObject() {
-        maximum = args.maximum;
-        minimum = args.minimum;
-        setPrefix(args.prefix());
-        setSuffix(args.suffix());
-        setLabel(args.label());
-    }
-    inline QString NumberInputArgs::prefix() const{
-        return m_prefix;
-    }
-    inline QString NumberInputArgs::suffix() const{
-        return m_suffix;
-    }
-    inline QString NumberInputArgs::label() const{
-        return m_label;
-    }
-    void NumberInputArgs::setPrefix(const QString &prefix){
-        m_prefix = prefix;
-    }
-    void NumberInputArgs::setSuffix(const QString &suffix){
-        m_suffix = suffix;
-    }
-    void NumberInputArgs::setLabel(const QString &label){
-        m_label = label;
-    }
-
-
 ScriptDialog::ScriptDialog(const QString &title, const int width=400, const int height=400): QDialog(MainWindow::maybeInstance())
 {
     if (title.isEmpty()){
@@ -84,17 +54,16 @@ ScriptDialog::ScriptDialog(const QString &title, const int width=400, const int 
     QMetaObject::connectSlotsByName(this);
 }
 void ScriptDialog::initializeLayout(){
-    m_gridLayout = new QGridLayout(this);
+    m_gridLayoutWidget = new QWidget(this);
+    m_gridLayoutWidget->setObjectName(QString::fromUtf8("gridLayoutWidget"));
+    m_gridLayoutWidget->setGeometry(QRect(15, 15, minimumWidth()-30, minimumHeight()-30));
+    m_gridLayout = new QGridLayout(m_gridLayoutWidget);
     m_gridLayout->setMargin(0);
     m_gridLayout->setObjectName(QString::fromUtf8("m_gridLayout"));
-    m_verticalLayoutWidget = new QWidget(this);
-    m_verticalLayoutWidget->setGeometry(QRect(15,15, minimumWidth()-30, minimumHeight()-30));
-    m_verticalLayoutWidget->setObjectName(QString::fromUtf8("m_verticalLayoutWidget"));
-    m_verticalLayoutWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    m_verticalLayout = new QVBoxLayout(m_verticalLayoutWidget);
-    m_verticalLayout->setMargin(0);
-    m_verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-    m_gridLayout->addLayout(m_verticalLayout, 0, 0, 1, 1);
+    // make the right-hand column more likely to stretch
+    m_gridLayout->setColumnStretch(0, 1);
+    m_gridLayout->setColumnStretch(1, 99);
+    addNewRow();
 }
 void ScriptDialog::clear(){
     m_widgetNumber = 0;
@@ -106,148 +75,126 @@ void ScriptDialog::clear(){
         else if ((widget = item->widget()) != 0) {widget->hide(); delete widget;}
         else {delete item;}
     }
-    while ((item = m_verticalLayout->takeAt(0))) {
-        if ((sublayout = item->layout()) != 0) {/* do the same for sublayout*/}
-        else if ((widget = item->widget()) != 0) {widget->hide(); delete widget;}
-        else {delete item;}
-    }
+    delete m_gridLayoutWidget;
     delete m_gridLayout;
-    delete m_verticalLayout;
-    delete m_verticalLayoutWidget;
     initializeLayout();
 }
-void ScriptDialog::setMinimumWidth(const int width) {
-    QDialog::setMinimumWidth(width);
+void ScriptDialog::resize(const int width, const int height) {
+    QSize oldSize = size();
+    QDialog::resize(width, height);
+    QSize newSize = QSize(width, height);
+    m_gridLayout->setGeometry(QRect(15,15, width-30, height-30));
+    m_gridLayoutWidget->setGeometry(QRect(15,15, width-30, height-30));
+    adjustSize();
+    QResizeEvent event = QResizeEvent(newSize, oldSize);
+    resizeEvent(&event);
 }
 void ScriptDialog::resizeEvent(QResizeEvent* event)
 {
     m_gridLayout->invalidate();
+    m_gridLayoutWidget->setGeometry(QRect(15,15, event->size().width()-30, event->size().height()-30));
 }
-QLabel * ScriptDialog::addLabel(const QString &text){
+QLabel * ScriptDialog::addLabel(const QString &text) {
+    addLabel(text, false);
+}
+QLabel * ScriptDialog::addLabel(const QString &text, bool maxWidth){
     QLabel * label;
+    addNewRow();
     checkIfSameType(typeid(label).name());
-    label = new QLabel(m_verticalLayoutWidget);
-    label->setObjectName(QString::fromUtf8("label%1").arg(m_widgetNumber));
-    m_widgetNumber++;
-    label->setContentsMargins(0,0,0,0);
-    label->setText(text);
-    label->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    label->setWordWrap(true);
-    m_rowLayout->addWidget(label);
+    label = newLabel(text);
+    if (m_widgetsInRow == 0) {
+        m_gridLayout->addWidget(label, m_rowIndex, m_widgetsInRow, 1, maxWidth ? -1 : 1); // max width
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        label->setSizePolicy(sizePolicy);
+        m_widgetsInRow++;
+        if (maxWidth)
+            addNewRow();
+    }
+    else
+        addDialogWidget(label);
     return label;
 }
-
 QFrame* ScriptDialog::addSeparator(){
+    addSeparator(QString());
+}
+QFrame* ScriptDialog::addSeparator(const QString &labelText){
     QFrame *line;
-    newRow();
-    line = new QFrame(m_verticalLayoutWidget);
+    addNewRow();
+    m_gridLayout->addLayout(m_rowLayout, m_rowIndex,0, 1, -1); // span entire
+    if(!labelText.isEmpty()){
+        QLabel * separatorLabel = newLabel(labelText);
+        separatorLabel->setWordWrap(false);
+        m_rowLayout->addWidget(separatorLabel, 1);
+    }
+    line = new QFrame(m_gridLayoutWidget);
     line->setObjectName(QString::fromUtf8("line%1").arg(m_widgetNumber));
     m_widgetNumber++;
     line->setFrameShape(QFrame::HLine);
     line->setFrameShadow(QFrame::Sunken);
     line->setContentsMargins(10, 0, 10, 0);
-    m_rowLayout->addWidget(line);
+    m_rowLayout->addWidget(line, 90); // higher stretch
+    addNewRow();
     return line;
-}
-
-QDoubleSpinBox* ScriptDialog::addNumberInput(const NumberInputArgs inputArgs){
-    QDoubleSpinBox *doubleSpinBox;
-    checkIfSameType(typeid(doubleSpinBox).name());
-    if (!inputArgs.label().isEmpty()){
-        QLabel * numberLabel= new QLabel(m_verticalLayoutWidget);
-        numberLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-        numberLabel->setObjectName(QString::fromUtf8("numberLabel%1").arg(m_widgetNumber));
-        numberLabel->setText(inputArgs.label());
-        m_widgetNumber++;
-        m_rowLayout->addWidget(numberLabel);
-    }
-    doubleSpinBox = new QDoubleSpinBox(m_verticalLayoutWidget);
-    m_rowLayout->addWidget(doubleSpinBox);
-    doubleSpinBox->setObjectName(QString::fromUtf8("doubleSpinBox%1").arg(m_widgetNumber));
-    m_widgetNumber++;
-
-    return doubleSpinBox;
 }
 
 QDoubleSpinBox* ScriptDialog::addNumberInput(const QString &labelText){
     QDoubleSpinBox *doubleSpinBox;
     checkIfSameType(typeid(doubleSpinBox).name());
-    if (!labelText.isEmpty()){
-        m_widgetNumber++;
-        QLabel * numberLabel= new QLabel(m_verticalLayoutWidget);
-        numberLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-        numberLabel->setObjectName(QString::fromUtf8("numberLabel%1").arg(m_widgetNumber));
-        numberLabel->setText(labelText);
-        m_widgetNumber++;
-        m_rowLayout->addWidget(numberLabel);
-    }
-
-    doubleSpinBox = new QDoubleSpinBox(m_verticalLayoutWidget);
-    m_verticalLayout->addWidget(doubleSpinBox);
-    m_rowLayout->addWidget(doubleSpinBox);
+    moveToColumn2();
+    QLabel * numberLabel = newLabel(labelText);
+    addDialogWidget(numberLabel);
+    doubleSpinBox = new QDoubleSpinBox(m_gridLayoutWidget);
     doubleSpinBox->setObjectName(QString::fromUtf8("doubleSpinBox%1").arg(m_widgetNumber));
-    m_widgetNumber++;
-
+    addDialogWidget(doubleSpinBox);
     return doubleSpinBox;
 }
 QSlider *ScriptDialog::addSlider(const QString &labelText){
     QSlider *horizontalSlider;
     checkIfSameType(typeid(horizontalSlider).name());
-    if (!labelText.isEmpty()){
-        QLabel * sliderLabel= new QLabel(m_verticalLayoutWidget);
-        sliderLabel->setObjectName(QString::fromUtf8("sliderLabel%1").arg(m_widgetNumber));
-        sliderLabel->setText(labelText);
-        sliderLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-        m_widgetNumber++;
-        m_rowLayout->addWidget(sliderLabel);
-    }
-    horizontalSlider = new QSlider(m_verticalLayoutWidget);
-    m_rowLayout->addWidget(horizontalSlider);
+    moveToColumn2();
+    QLabel * sliderLabel= newLabel(labelText);
+    addDialogWidget(sliderLabel);
+    horizontalSlider = new QSlider(m_gridLayoutWidget);
     horizontalSlider->setOrientation(Qt::Horizontal);
     horizontalSlider->setObjectName(QString::fromUtf8("horizontalSlider%1").arg(m_widgetNumber));
-    m_widgetNumber++;
-
+    horizontalSlider->setContentsMargins(0,0,0,0);
+    addDialogWidget(horizontalSlider);
     return horizontalSlider;
 }
 
 QCheckBox * ScriptDialog::addCheckbox(const QString &labelText, bool defaultValue){
     QCheckBox * checkBox;
     checkIfSameType(typeid(checkBox).name());
-    checkBox = new QCheckBox(labelText, m_verticalLayoutWidget);
+    moveToColumn2();
+    checkBox = new QCheckBox(labelText, m_gridLayoutWidget);
     checkBox->setObjectName(QString::fromUtf8("checkbox").arg(m_widgetNumber));
-    m_widgetNumber++;
     checkBox->setCheckState(defaultValue ? Qt::Checked: Qt::Unchecked);
-    m_verticalLayout->addWidget(checkBox);
+    m_gridLayout->addWidget(checkBox, m_rowIndex, m_widgetsInRow);
+    addDialogWidget(checkBox);
     return checkBox;
 }
 
 QPushButton * ScriptDialog::addButton(const QString &labelText){
     QPushButton *pushButton;
     checkIfSameType(typeid(pushButton).name());
-    pushButton = new QPushButton(m_verticalLayoutWidget);
+    moveToColumn2();
+    pushButton = new QPushButton(m_gridLayoutWidget);
     pushButton->setObjectName(QString::fromUtf8("pushButton").arg(m_widgetNumber));
-    m_widgetNumber++;
-    m_rowLayout->addWidget(pushButton);
+    m_gridLayout->addWidget(pushButton, m_rowIndex, m_widgetsInRow);
     pushButton->setText(labelText);
+    addDialogWidget(pushButton);
     return pushButton;
 }
 
-Tiled::ColorButton* ScriptDialog::addColorButton (const QString &labelText){
+Tiled::ColorButton* ScriptDialog::addColorButton(const QString &labelText){
     ColorButton *colorButton;
     checkIfSameType(typeid(colorButton).name());
-    if (!labelText.isEmpty()){
-
-        QLabel * colorLabel= new QLabel(m_verticalLayoutWidget);
-        colorLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-        colorLabel->setObjectName(QString::fromUtf8("colorLabel%1").arg(m_widgetNumber));
-        colorLabel->setText(labelText);
-        m_widgetNumber++;
-        m_rowLayout->addWidget(colorLabel);
-    }
-    colorButton = new ColorButton(m_verticalLayoutWidget);
-    m_rowLayout->addWidget(colorButton);
+    moveToColumn2();
+    QLabel *colorLabel = newLabel(labelText);
+    addDialogWidget(colorLabel);
+    colorButton = new ColorButton(m_gridLayoutWidget);
     colorButton->setObjectName(QString::fromUtf8("colorButton%1").arg(m_widgetNumber));
-    m_widgetNumber++;
+    addDialogWidget(colorButton);
     return colorButton;
 }
 
@@ -257,23 +204,59 @@ ScriptDialog::~ScriptDialog()
     close();
 }
 
-void ScriptDialog::newRow(){
-    m_rowLayout= new QHBoxLayout();
-    m_rowLayout->setObjectName(QString::fromUtf8("rowLayout%1").arg(m_widgetNumber));
-    m_rowLayout->setContentsMargins(0,0,0,0);
-    m_widgetNumber++;
-    m_verticalLayout->addLayout(m_rowLayout);
-    m_lastWidgetTypeName.clear();
+void ScriptDialog::addDialogWidget(QWidget * widget){
+    if (m_widgetsInRow == 0){
+        // left-hand side element that occupies the first grid column
+        m_gridLayout->addWidget(widget, m_rowIndex, 0);
+    } else {
+        // right-hand side elements, add to the layout inside the second column
+        if (m_widgetsInRow == 1)
+            m_gridLayout->addLayout(m_rowLayout, m_rowIndex, 1, 1, 1);
+        m_rowLayout->addWidget(widget);
+    }
+    m_widgetsInRow++;
 }
 
-void ScriptDialog::checkIfSameType(const char * widgetTypeName){
-    if (m_lastWidgetTypeName.compare(widgetTypeName) != 0){
+/**
+ * Check if the current widget we are trying to add is of the same type
+ * as the last we added. If so, we keep it on the same row
+ *
+ * @param widgetTypeName - the name of the new widget (typeinfo(widget).name())
+ * @return true if the widget was the same as the last type, false if they were different and a new
+ *         row was made
+ */
+bool ScriptDialog::checkIfSameType(const char *widgetTypeName){
+    bool isSameType = true;
+    QLabel exampleLabel;
+    QString widgetTypeNameQt = QString::fromUtf8(widgetTypeName);
+    if (m_widgetsInRow == 1 &&
+        m_lastWidgetTypeName.compare(QString::fromUtf8(typeid(exampleLabel).name())) == 0){
+        isSameType = true;
+    }
+    else if (m_widgetsInRow != 1 &&
+             !m_lastWidgetTypeName.isEmpty() &&
+             m_lastWidgetTypeName.compare(widgetTypeNameQt) != 0){
        // if the widget type is not the same as the last
-       newRow();
-       m_lastWidgetTypeName = widgetTypeName;
+       addNewRow();
+       isSameType = false;
+    }
+    m_lastWidgetTypeName = QString::fromUtf8(widgetTypeName);
+    return isSameType;
+}
+void ScriptDialog::addNewRow(){
+    m_rowIndex++;
+    m_widgetsInRow = 0;
+    m_lastWidgetTypeName.clear();
+    m_rowLayout = new QHBoxLayout(m_gridLayoutWidget);
+    m_rowLayout->setObjectName(QString::fromUtf8("horizontalLayout%1").arg(m_widgetNumber));
+    m_widgetNumber++;
+}
+
+void ScriptDialog::moveToColumn2() {
+    if (m_widgetsInRow == 0){
+        m_widgetsInRow = 1;
     }
 }
-
 void ScriptDialog::setTitle(const QString &title)
 {
     setWindowTitle(title);
@@ -284,11 +267,19 @@ void ScriptDialog::close()
     QDialog::close();
 }
 
+QLabel *ScriptDialog::newLabel(const QString& labelText){
+    QLabel* label = new QLabel(m_gridLayoutWidget);
+    label->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    label->setObjectName(QString::fromUtf8("label%1").arg(m_widgetNumber));
+    label->setText(labelText);
+    label->setContentsMargins(0,0,0,0);
+    label->setWordWrap(true);
+    m_widgetNumber++;
+    return label;
+}
 
 void registerDialog(QJSEngine *jsEngine)
 {
-    jsEngine->globalObject().setProperty(QStringLiteral("NumberInputArgs"),
-                                         jsEngine->newQMetaObject<NumberInputArgs>());
     jsEngine->globalObject().setProperty(QStringLiteral("Dialog"),
                                          jsEngine->newQMetaObject<ScriptDialog>());
 }
