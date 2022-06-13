@@ -96,11 +96,11 @@ void ScriptDialog::resizeEvent(QResizeEvent* event)
     m_gridLayout->invalidate();
     m_gridLayoutWidget->setGeometry(QRect(15,15, event->size().width()-30, event->size().height()-30));
 }
-QLabel * ScriptDialog::addLabel(const QString &text)
+QLabel *ScriptDialog::addLabel(const QString &text)
 {
-    addLabel(text, false);
+    return addLabel(text, false);
 }
-QLabel * ScriptDialog::addLabel(const QString &text, bool maxWidth)
+QLabel *ScriptDialog::addLabel(const QString &text, bool maxWidth)
 {
     QLabel * label;
     addNewRow();
