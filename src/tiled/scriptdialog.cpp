@@ -173,7 +173,7 @@ Tiled::ScriptDialogWidget *ScriptDialog::addSlider(const QString &labelText)
     return new ScriptDialogWidget(sliderLabel, horizontalSlider);
 }
 
-Tiled::ScriptDialogWidget *ScriptDialog::addCheckbox(const QString &labelText, bool defaultValue)
+QCheckBox *ScriptDialog::addCheckBox(const QString &labelText, bool defaultValue)
 {
     QCheckBox * checkBox;
     checkIfSameType(typeid(checkBox).name());
@@ -183,7 +183,7 @@ Tiled::ScriptDialogWidget *ScriptDialog::addCheckbox(const QString &labelText, b
     checkBox->setCheckState(defaultValue ? Qt::Checked: Qt::Unchecked);
     m_gridLayout->addWidget(checkBox, m_rowIndex, m_widgetsInRow);
     addDialogWidget(checkBox);
-    return new ScriptDialogWidget(nullptr, checkBox);
+    return checkBox;
 }
 Tiled::ScriptDialogWidget *ScriptDialog::addComboBox(const QString &labelText, const QStringList &values)
 {
@@ -200,17 +200,16 @@ Tiled::ScriptDialogWidget *ScriptDialog::addComboBox(const QString &labelText, c
     return new ScriptDialogWidget(comboBoxLabel, comboBox);
 }
 
-Tiled::ScriptDialogWidget *ScriptDialog::addButton(const QString &labelText)
+QPushButton *ScriptDialog::addButton(const QString &labelText)
 {
     QPushButton *pushButton;
     checkIfSameType(typeid(pushButton).name());
     moveToColumn2();
-    pushButton = new QPushButton(m_gridLayoutWidget);
-    pushButton->setObjectName(QString::fromUtf8("pushButton").arg(m_widgetNumber));
+    pushButton = new QPushButton(labelText, m_gridLayoutWidget);
+    pushButton->setObjectName(QString::fromUtf8("pushButton%1").arg(m_widgetNumber));
     m_gridLayout->addWidget(pushButton, m_rowIndex, m_widgetsInRow);
-    pushButton->setText(labelText);
     addDialogWidget(pushButton);
-    return new ScriptDialogWidget(nullptr, pushButton);
+    return pushButton;
 }
 
 Tiled::ScriptDialogWidget *ScriptDialog::addColorButton(const QString &labelText)
@@ -278,7 +277,7 @@ void ScriptDialog::addNewRow()
     m_rowIndex++;
     m_widgetsInRow = 0;
     m_lastWidgetTypeName.clear();
-    m_rowLayout = new QHBoxLayout(m_gridLayoutWidget);
+    m_rowLayout = new QHBoxLayout();
     m_rowLayout->setObjectName(QString::fromUtf8("horizontalLayout%1").arg(m_widgetNumber));
     m_widgetNumber++;
 }
@@ -292,11 +291,6 @@ void ScriptDialog::moveToColumn2()
 void ScriptDialog::setTitle(const QString &title)
 {
     setWindowTitle(title);
-}
-
-void ScriptDialog::close()
-{
-    QDialog::close();
 }
 
 QLabel *ScriptDialog::newLabel(const QString& labelText)
@@ -321,6 +315,8 @@ void registerDialog(QJSEngine *jsEngine)
 }
 
 } // namespace Tiled
+Q_DECLARE_METATYPE(QCheckBox*)
+Q_DECLARE_METATYPE(QPushButton*)
 Q_DECLARE_METATYPE(QSlider*)
 Q_DECLARE_METATYPE(QLabel*)
 #include "moc_scriptdialog.cpp"

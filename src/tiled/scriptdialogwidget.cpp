@@ -16,7 +16,8 @@ QString ScriptDialogWidget::getToolTip()
 void ScriptDialogWidget::setToolTip(const QString &labelText)
 {
     mainWidget()->setToolTip(labelText);
-    label->setToolTip(labelText);
+    if (label != nullptr)
+        label->setToolTip(labelText);
 }
 void ScriptDialogWidget::setLabelText(const QString &labelText)
 {

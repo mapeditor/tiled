@@ -65,11 +65,10 @@ public:
     Q_INVOKABLE Tiled::ScriptDialogWidget *addNumberInput(const QString &labelText);
     Q_INVOKABLE Tiled::ScriptDialogWidget *addSlider(const QString &labelText);
     Q_INVOKABLE Tiled::ScriptDialogWidget *addComboBox(const QString &labelText, const QStringList &values);
-    Q_INVOKABLE Tiled::ScriptDialogWidget *addCheckbox(const QString &labelText, bool defaultValue);
-    Q_INVOKABLE Tiled::ScriptDialogWidget *addButton(const QString &labelText);
+    Q_INVOKABLE QCheckBox *addCheckBox(const QString &labelText, bool defaultValue);
+    Q_INVOKABLE QPushButton *addButton(const QString &labelText);
     Q_INVOKABLE Tiled::ScriptDialogWidget *addColorButton(const QString &labelText);
     Q_INVOKABLE void resize(const int width, const int height);
-    Q_INVOKABLE void close();
     Q_INVOKABLE void clear();
     Q_INVOKABLE void addNewRow();
 protected:
