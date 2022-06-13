@@ -3694,6 +3694,10 @@ declare class ColorButton extends Qt.QWidget{
 declare class DialogWidget<T extends Qt.QWidget>{
 
   /**
+   * The widget label for this widget.
+   */
+  label: Qt.QLabel;
+  /**
    * The main widget that you created. For example, after calling 
    * {@link addSlider}, this would be of type {@link Qt.QSlider}.
    */
@@ -3765,7 +3769,13 @@ declare class Dialog{
   */
   addCheckBox(labelText: string, defaultValue: boolean): Qt.QCheckBox;
 
-  addButton(labelText: string): 
+  /**
+   * Add a {@link Qt.QPushButton} widget to the dialog to allow the user 
+   * to press a button that you can respond to the clicked signal of. 
+   * @param labelText 
+   */
+  addButton(labelText: string): Qt.QPushButton; 
+  
   /**
    * Add a {@link Qt.QComboBox} widget (AKA a dropdown) allowing the user to pick 
    * between multiple pre-set values. 
