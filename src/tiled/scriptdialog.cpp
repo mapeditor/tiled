@@ -85,6 +85,8 @@ void ScriptDialog::resize(const int width, const int height)
     QSize newSize = QSize(width, height);
     m_gridLayout->setGeometry(QRect(15,15, width-30, height-30));
     m_gridLayoutWidget->setGeometry(QRect(15,15, width-30, height-30));
+    setMinimumWidth(width);
+    setMinimumHeight(height);
     adjustSize();
     QResizeEvent event = QResizeEvent(newSize, oldSize);
     resizeEvent(&event);
@@ -320,4 +322,5 @@ void registerDialog(QJSEngine *jsEngine)
 
 } // namespace Tiled
 Q_DECLARE_METATYPE(QSlider*)
+Q_DECLARE_METATYPE(QLabel*)
 #include "moc_scriptdialog.cpp"
