@@ -118,17 +118,18 @@ QLabel * ScriptDialog::addLabel(const QString &text, bool maxWidth)
         addDialogWidget(label);
     return label;
 }
-QFrame* ScriptDialog::addSeparator()
+Tiled::ScriptDialogWidget *ScriptDialog::addSeparator()
 {
-    addSeparator(QString());
+    return addSeparator(QString());
 }
-QFrame* ScriptDialog::addSeparator(const QString &labelText)
+Tiled::ScriptDialogWidget *ScriptDialog::addSeparator(const QString &labelText)
 {
     QFrame *line;
     addNewRow();
     m_gridLayout->addLayout(m_rowLayout, m_rowIndex,0, 1, -1); // span entire
+    QLabel * separatorLabel;
     if(!labelText.isEmpty()){
-        QLabel * separatorLabel = newLabel(labelText);
+        separatorLabel= newLabel(labelText);
         separatorLabel->setWordWrap(false);
         m_rowLayout->addWidget(separatorLabel, 1);
     }
@@ -140,10 +141,10 @@ QFrame* ScriptDialog::addSeparator(const QString &labelText)
     line->setContentsMargins(10, 0, 10, 0);
     m_rowLayout->addWidget(line, m_rightColumnStretch); // higher stretch
     addNewRow();
-    return line;
+    return new ScriptDialogWidget(separatorLabel, line);
 }
 
-QDoubleSpinBox* ScriptDialog::addNumberInput(const QString &labelText)
+Tiled::ScriptDialogWidget *ScriptDialog::addNumberInput(const QString &labelText)
 {
     QDoubleSpinBox *doubleSpinBox;
     checkIfSameType(typeid(doubleSpinBox).name());
@@ -153,7 +154,7 @@ QDoubleSpinBox* ScriptDialog::addNumberInput(const QString &labelText)
     doubleSpinBox = new QDoubleSpinBox(m_gridLayoutWidget);
     doubleSpinBox->setObjectName(QString::fromUtf8("doubleSpinBox%1").arg(m_widgetNumber));
     addDialogWidget(doubleSpinBox);
-    return doubleSpinBox;
+    return new ScriptDialogWidget(numberLabel, doubleSpinBox);
 }
 Tiled::ScriptDialogWidget *ScriptDialog::addSlider(const QString &labelText)
 {
@@ -170,7 +171,7 @@ Tiled::ScriptDialogWidget *ScriptDialog::addSlider(const QString &labelText)
     return new ScriptDialogWidget(sliderLabel, horizontalSlider);
 }
 
-QCheckBox * ScriptDialog::addCheckbox(const QString &labelText, bool defaultValue)
+Tiled::ScriptDialogWidget *ScriptDialog::addCheckbox(const QString &labelText, bool defaultValue)
 {
     QCheckBox * checkBox;
     checkIfSameType(typeid(checkBox).name());
@@ -180,9 +181,9 @@ QCheckBox * ScriptDialog::addCheckbox(const QString &labelText, bool defaultValu
     checkBox->setCheckState(defaultValue ? Qt::Checked: Qt::Unchecked);
     m_gridLayout->addWidget(checkBox, m_rowIndex, m_widgetsInRow);
     addDialogWidget(checkBox);
-    return checkBox;
+    return new ScriptDialogWidget(nullptr, checkBox);
 }
-QComboBox * ScriptDialog::addComboBox(const QString &labelText, const QStringList &values)
+Tiled::ScriptDialogWidget *ScriptDialog::addComboBox(const QString &labelText, const QStringList &values)
 {
     QComboBox * comboBox;
     checkIfSameType(typeid(comboBox).name());
@@ -194,10 +195,10 @@ QComboBox * ScriptDialog::addComboBox(const QString &labelText, const QStringLis
     comboBox->addItems(values);
     m_gridLayout->addWidget(comboBox, m_rowIndex, m_widgetsInRow);
     addDialogWidget(comboBox);
-    return comboBox;
+    return new ScriptDialogWidget(comboBoxLabel, comboBox);
 }
 
-QPushButton * ScriptDialog::addButton(const QString &labelText)
+Tiled::ScriptDialogWidget *ScriptDialog::addButton(const QString &labelText)
 {
     QPushButton *pushButton;
     checkIfSameType(typeid(pushButton).name());
@@ -207,10 +208,10 @@ QPushButton * ScriptDialog::addButton(const QString &labelText)
     m_gridLayout->addWidget(pushButton, m_rowIndex, m_widgetsInRow);
     pushButton->setText(labelText);
     addDialogWidget(pushButton);
-    return pushButton;
+    return new ScriptDialogWidget(nullptr, pushButton);
 }
 
-Tiled::ColorButton* ScriptDialog::addColorButton(const QString &labelText)
+Tiled::ScriptDialogWidget *ScriptDialog::addColorButton(const QString &labelText)
 {
     ColorButton *colorButton;
     checkIfSameType(typeid(colorButton).name());
@@ -220,7 +221,7 @@ Tiled::ColorButton* ScriptDialog::addColorButton(const QString &labelText)
     colorButton = new ColorButton(m_gridLayoutWidget);
     colorButton->setObjectName(QString::fromUtf8("colorButton%1").arg(m_widgetNumber));
     addDialogWidget(colorButton);
-    return colorButton;
+    return new ScriptDialogWidget(colorLabel, colorButton);
 }
 
 

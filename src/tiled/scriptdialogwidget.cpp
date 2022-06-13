@@ -3,15 +3,19 @@ namespace Tiled {
 ScriptDialogWidget::ScriptDialogWidget(QLabel *label, QWidget *mainWidget)
 {
     this->label = label;
-    this->mainWidget = mainWidget;
+    this->m_mainWidget = mainWidget;
+}
+QWidget *ScriptDialogWidget::mainWidget() const
+{
+    return m_mainWidget;
 }
 QString ScriptDialogWidget::getToolTip()
 {
-    return mainWidget->toolTip();
+    return mainWidget()->toolTip();
 }
 void ScriptDialogWidget::setToolTip(const QString &labelText)
 {
-    mainWidget->setToolTip(labelText);
+    mainWidget()->setToolTip(labelText);
     label->setToolTip(labelText);
 }
 void ScriptDialogWidget::setLabelText(const QString &labelText)

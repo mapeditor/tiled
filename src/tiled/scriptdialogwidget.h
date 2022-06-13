@@ -31,20 +31,21 @@ namespace Tiled {
 class ScriptDialogWidget : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString toolTip READ getToolTip WRITE setToolTip)
-
+    Q_PROPERTY(QWidget *mainWidget READ mainWidget)
 public:
     Q_INVOKABLE void setLabelText(const QString &labelText);
     Q_INVOKABLE void setToolTip(const QString &labelText);
     Q_INVOKABLE ScriptDialogWidget(QLabel *label, QWidget *mainWidget);
 
     QLabel *label;
-    QWidget *mainWidget;
-
+    QWidget *mainWidget() const;
     QString getToolTip();
 private:
     ScriptDialogWidget();
+    QWidget *m_mainWidget;
 };
 } //namespace Tiled
 Q_DECLARE_METATYPE(Tiled::ScriptDialogWidget*);
+Q_DECLARE_METATYPE(QWidget*);
 
 

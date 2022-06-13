@@ -32,7 +32,7 @@ namespace Tiled {
 class ColorButton : public QToolButton
 {
     Q_OBJECT
-    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY  colorChanged)
 
 public:
     ColorButton(QWidget *parent = nullptr);
@@ -40,7 +40,7 @@ public:
     QColor color() const { return mColor; }
     void setColor(const QColor &color);
 
-signals:
+Q_SIGNALS:
     void colorChanged(const QColor &color);
 
 protected:
