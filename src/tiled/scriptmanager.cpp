@@ -47,6 +47,7 @@
 #include "scriptimage.h"
 #include "scriptmodule.h"
 #include "scriptprocess.h"
+#include "scriptdialogwidget.h"
 #include "scriptdialog.h"
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
@@ -134,7 +135,8 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<QDoubleSpinBox *>();
     qRegisterMetaType<ScriptTilesetFormatWrapper*>();
     qRegisterMetaType<ScriptImage*>();
-    qRegisterMetaType<QLabel *>();
+    qRegisterMetaType<ScriptDialogWidget*>();
+    qRegisterMetaType<QLabel*>();
     qRegisterMetaType<QCheckBox*>();
     qRegisterMetaType<QComboBox*>();
     qRegisterMetaType<QSlider*>();
@@ -143,6 +145,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<QPushButton*>();
     qRegisterMetaType<QDialog*>();
     qRegisterMetaType<ColorButton*>();
+    qRegisterMetaType<QWidget*>();
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 

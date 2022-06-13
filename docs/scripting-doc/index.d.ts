@@ -3506,3 +3506,50 @@ declare class Process {
    */
   writeLine(text : string) : void
 }
+
+/**
+ * The `Dialog` object is used to display a dialog to the user
+ * which can be filled with a variety of widgets.
+ *
+ */
+declare class Dialog{
+
+  /**
+   * Create a new Dialog object without assigning
+   * a title and using the default width and height of 450 pixels.
+   */
+  constructor();
+  /**
+   * Create a new dialog object, customizing the title and size.
+   * @param labelText
+   * @param width - The width of the dialog in pixels
+   * @param height - The height of the dialog in pixels
+   */
+  constructor(labelText: string, width:number, height:number);
+
+  /**
+   * Add a label to the dialog. A label will always be the first
+   * widget in a row. Calling this version of addLabel() will
+   * confine the text to the left-hand column of the dialog.
+   *
+   * TODO: best way to link to Qt types?
+   * @param labelText - the text to display in the label.
+   */
+  addLabel(labelText:string): any;
+  /**
+   * Add a label to the dialog. A label will always be the first
+   * widget in a row.
+   *
+   * TODO: best way to link to Qt types?
+   * @param labelText - the text to display in the label.
+   * @param maxWidth -  if true, the label will be expanded to the full
+   *                    width of the dialog. if false, it will be confined
+   *                    to the left-hand column of the dialog.
+   */
+  addLabel(labelText:string, maxWidth: boolean): any;
+
+  /**
+   * Show the dialog. Call this after you have added all of your desired widgets
+   */
+  show():void;
+}

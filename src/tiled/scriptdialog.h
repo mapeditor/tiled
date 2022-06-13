@@ -22,7 +22,7 @@
 #pragma once
 
 #include "mainwindow.h"
-
+#include "scriptdialogwidget.h"
 #include <QString>
 #include <QObject>
 #include <QtWidgets/QDialogButtonBox>
@@ -58,16 +58,16 @@ public:
 
 
     Q_INVOKABLE void setTitle(const QString &title);
-    Q_INVOKABLE QLabel * addLabel(const QString &text);
-    Q_INVOKABLE QLabel * addLabel(const QString &text, bool maxWidth);
-    Q_INVOKABLE QFrame* addSeparator();
-    Q_INVOKABLE QFrame* addSeparator(const QString &labelText);
+    Q_INVOKABLE QLabel *addLabel(const QString &text);
+    Q_INVOKABLE QLabel *addLabel(const QString &text, bool maxWidth);
+    Q_INVOKABLE QFrame *addSeparator();
+    Q_INVOKABLE QFrame *addSeparator(const QString &labelText);
     Q_INVOKABLE QDoubleSpinBox *addNumberInput(const QString &labelText);
-    Q_INVOKABLE QSlider * addSlider(const QString &labelText);
-    Q_INVOKABLE QComboBox * addComboBox(const QString &labelText, const QStringList &values);
-    Q_INVOKABLE QCheckBox * addCheckbox(const QString &labelText, bool defaultValue);
-    Q_INVOKABLE QPushButton * addButton(const QString &labelText);
-    Q_INVOKABLE Tiled::ColorButton * addColorButton(const QString &labelText);
+    Q_INVOKABLE Tiled::ScriptDialogWidget *addSlider(const QString &labelText);
+    Q_INVOKABLE QComboBox *addComboBox(const QString &labelText, const QStringList &values);
+    Q_INVOKABLE QCheckBox *addCheckbox(const QString &labelText, bool defaultValue);
+    Q_INVOKABLE QPushButton *addButton(const QString &labelText);
+    Q_INVOKABLE Tiled::ColorButton *addColorButton(const QString &labelText);
     Q_INVOKABLE void resize(const int width, const int height);
     Q_INVOKABLE void close();
     Q_INVOKABLE void clear();
