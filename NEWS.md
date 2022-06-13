@@ -8,6 +8,7 @@
 * Fixed breaking of alternative shortcuts on import or reset (#3367)
 * Fixed conflict detection to handle alternative shortcuts (#3368)
 * Fixed locking up UI on property type name conflict (#3380)
+* Scripting: Fixed possible crash when accessing Layer.map
 * Defold plugins: Added support for rotated tiles (#3369)
 
 ### Tiled 1.8.5 (17 May 2022)

@@ -47,7 +47,8 @@ EditableLayer::~EditableLayer()
 
 EditableMap *EditableLayer::map() const
 {
-    return asset()->isMap() ? static_cast<EditableMap*>(asset()) : nullptr;
+    return (asset() && asset()->isMap()) ? static_cast<EditableMap*>(asset())
+                                         : nullptr;
 }
 
 EditableGroupLayer *EditableLayer::parentLayer() const
