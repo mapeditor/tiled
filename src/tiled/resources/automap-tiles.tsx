@@ -23,7 +23,7 @@
  </tile>
  <tile id="0">
   <properties>
-   <property name="MatchType" value="Forbid"/>
+   <property name="MatchType" value="Negate"/>
   </properties>
  </tile>
 </tileset>

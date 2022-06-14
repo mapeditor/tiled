@@ -87,7 +87,7 @@ enum class MatchType {
     Empty,
     NonEmpty,
     Other,
-    Forbid,
+    Negate,
     Ignore,
 };
 
@@ -103,8 +103,8 @@ static MatchType matchType(const Tile *tile)
         return MatchType::NonEmpty;
     else if (matchType == QLatin1String("Other"))
         return MatchType::Other;
-    else if (matchType == QLatin1String("Forbid"))
-        return MatchType::Forbid;
+    else if (matchType == QLatin1String("Negate"))
+        return MatchType::Negate;
     else if (matchType == QLatin1String("Ignore"))
         return MatchType::Ignore;
 
@@ -788,7 +788,7 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
             anyOf.clear();
             noneOf.clear();
 
-            bool forbid = false;
+            bool negate = false;
 
             for (const InputLayer &inputLayer : conditions.listYes) {
                 const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
@@ -814,8 +814,8 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                         collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
                     noneOf.append(inputCells);
                     break;
-                case MatchType::Forbid:
-                    forbid = true;
+                case MatchType::Negate:
+                    negate = true;
                     break;
                 case MatchType::Ignore:
                     break;
@@ -846,8 +846,8 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                         collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
                     anyOf.append(inputCells);
                     break;
-                case MatchType::Forbid:
-                    forbid = true;
+                case MatchType::Negate:
+                    negate = true;
                     break;
                 case MatchType::Ignore:
                     break;
@@ -867,7 +867,7 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                 }
             }
 
-            if (forbid)
+            if (negate)
                 std::swap(anyOf, noneOf);
 
             if (!optimizeAnyNoneOf(anyOf, noneOf)) {
