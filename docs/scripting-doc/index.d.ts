@@ -374,6 +374,23 @@ declare namespace Qt {
   }
 
   /**
+   * A widget containing a single line of text that the user can edit.
+   * Qt documentation: [QLineEdit](https://doc.qt.io/qt-5/qlineedit.html)
+   */
+  class QLineEdit extends QWidget{
+
+    /**
+     * This signal is emitted when the Return or Enter key is pressed or the line edit loses focus.
+     *  Note that if there is a validator() or inputMask() set on the line edit and enter/return is pressed, 
+     *  the editingFinished() signal will only be emitted if the input follows the inputMask() and the validator() returns QValidator::Acceptable.
+     */
+    editingFinished: Signal<void>;
+    /**
+     * Signal emitted when the text inside the QLineEdit is changed.
+     */
+    textChanged: Signal<string>;
+  }
+  /**
    * A check box widget which allows the user to toggle
    * a value on and off.
    * Qt documentation: [QCheckBox](https://doc.qt.io/qt-5/qcheckbox.html)
@@ -3775,7 +3792,7 @@ declare class Dialog{
    * @param labelText 
    */
   addButton(labelText: string): Qt.QPushButton; 
-  
+
   /**
    * Add a {@link Qt.QComboBox} widget (AKA a dropdown) allowing the user to pick 
    * between multiple pre-set values. 

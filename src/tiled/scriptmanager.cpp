@@ -67,6 +67,7 @@
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
+#include <QLineEdit>
 #include <QComboBox>
 #include <QDialog>
 #if QT_VERSION < QT_VERSION_CHECK(6,0,0)
@@ -146,6 +147,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<QDialog*>();
     qRegisterMetaType<ColorButton*>();
     qRegisterMetaType<QWidget*>();
+    qRegisterMetaType<QLineEdit*>();
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 

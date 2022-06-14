@@ -39,6 +39,7 @@
 #include <QDialog>
 #include "colorbutton.h"
 #include <QString>
+#include <QLineEdit>
 #include <QList>
 #include <QSize>
 #include <QResizeEvent>
@@ -62,6 +63,7 @@ public:
     Q_INVOKABLE QLabel *addLabel(const QString &text, bool maxWidth);
     Q_INVOKABLE Tiled::ScriptDialogWidget *addSeparator();
     Q_INVOKABLE Tiled::ScriptDialogWidget *addSeparator(const QString &labelText);
+    Q_INVOKABLE Tiled::ScriptDialogWidget *addTextInput(const QString &labelText, const QString &defaultValue);
     Q_INVOKABLE Tiled::ScriptDialogWidget *addNumberInput(const QString &labelText);
     Q_INVOKABLE Tiled::ScriptDialogWidget *addSlider(const QString &labelText);
     Q_INVOKABLE Tiled::ScriptDialogWidget *addComboBox(const QString &labelText, const QStringList &values);
@@ -96,3 +98,8 @@ void registerDialog(QJSEngine *jsEngine);
 
 } // namespace Tiled
 Q_DECLARE_METATYPE(Tiled::ScriptDialog*);
+Q_DECLARE_METATYPE(QCheckBox*)
+Q_DECLARE_METATYPE(QPushButton*)
+Q_DECLARE_METATYPE(QSlider*)
+Q_DECLARE_METATYPE(QLabel*)
+Q_DECLARE_METATYPE(QLineEdit*)

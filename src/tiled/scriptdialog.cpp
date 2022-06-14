@@ -145,7 +145,18 @@ Tiled::ScriptDialogWidget *ScriptDialog::addSeparator(const QString &labelText)
     addNewRow();
     return new ScriptDialogWidget(separatorLabel, line);
 }
-
+Tiled::ScriptDialogWidget *ScriptDialog::addTextInput(const QString &labelText, const QString &defaultValue)
+{
+    QLineEdit *lineEdit;
+    checkIfSameType(typeid(lineEdit).name());
+    moveToColumn2();
+    QLabel * lineEditLabel = newLabel(labelText);
+    addDialogWidget(lineEditLabel);
+    lineEdit = new QLineEdit(defaultValue, m_gridLayoutWidget);
+    lineEdit->setObjectName(QString::fromUtf8("lineEdit%1").arg(m_widgetNumber));
+    addDialogWidget(lineEdit);
+    return new ScriptDialogWidget(lineEditLabel, lineEdit);
+}
 Tiled::ScriptDialogWidget *ScriptDialog::addNumberInput(const QString &labelText)
 {
     QDoubleSpinBox *doubleSpinBox;
@@ -315,8 +326,5 @@ void registerDialog(QJSEngine *jsEngine)
 }
 
 } // namespace Tiled
-Q_DECLARE_METATYPE(QCheckBox*)
-Q_DECLARE_METATYPE(QPushButton*)
-Q_DECLARE_METATYPE(QSlider*)
-Q_DECLARE_METATYPE(QLabel*)
+
 #include "moc_scriptdialog.cpp"
