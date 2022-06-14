@@ -205,3 +205,12 @@ Tiled::Alignment Tiled::alignmentFromString(const QString &string)
 
     return Unspecified;
 }
+
+Tiled::CompatibilityVersion Tiled::versionFromString(const QString &string)
+{
+    if (string == QLatin1String("1.8"))
+        return Tiled_1_8;
+    else if (string == QLatin1String("latest"))
+        return Tiled_Latest;
+    return UnknownVersion;
+}

@@ -41,8 +41,7 @@ ObjectTemplate::ObjectTemplate()
 }
 
 ObjectTemplate::ObjectTemplate(const QString &fileName)
-    : Object(ObjectTemplateType)
-    , mFileName(fileName)
+    : mFileName(fileName)
 {
 }
 

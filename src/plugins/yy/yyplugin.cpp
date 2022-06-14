@@ -926,9 +926,9 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
     }
 
     for (const MapObject *mapObject : qAsConst(objects)) {
-        const QString type = mapObject->effectiveType();
+        const QString &className = mapObject->effectiveClassName();
 
-        if (type == QLatin1String("view")) {
+        if (className == QLatin1String("view")) {
             // GM only has 8 views so drop anything more than that
             if (context.views.size() > 7) {
                 Tiled::ERROR(QLatin1String("YY plugin: Can't export more than 8 views."),
@@ -957,7 +957,7 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
             view.vspeed = qRound(optionalProperty(mapObject, "vspeed", -1.0));
             view.objectId = optionalProperty(mapObject, "objectId", QString());
         }
-        else if (!type.isEmpty())
+        else if (!className.isEmpty())
         {
             GMRInstance &instance = instances.emplace_back();
 
@@ -965,7 +965,7 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
 
             // The type is used to refer to the name of the object
             instance.isDnd = takeProperty(props, "isDnd", instance.isDnd);
-            instance.objectId = sanitizeName(type);
+            instance.objectId = sanitizeName(className);
 
             QPointF origin(takeProperty(props, "originX", 0.0),
                            takeProperty(props, "originY", 0.0));

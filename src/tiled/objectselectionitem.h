@@ -98,6 +98,7 @@ private:
     void layerChanged(const LayerChangeEvent &event);
     void syncOverlayItems(const QList<MapObject *> &objects);
     void updateItemColors() const;
+    void updateItemColorsForObject(MapObject *mapObject) const;
     void objectsAdded(const QList<MapObject*> &objects);
     void objectsAboutToBeRemoved(const QList<MapObject*> &objects);
     void tilesetTilePositioningChanged(Tileset *tileset);

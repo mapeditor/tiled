@@ -72,7 +72,7 @@ public:
 
     enum Column {
         Name,
-        Type,
+        Class,
         Id,
         Position,
         LastColumn = Position,
@@ -111,7 +111,7 @@ public:
 private:
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *groupLayer, int index);
-    void tileTypeChanged(Tile *tile);
+    void classChanged(const QList<Object *> &objects);
     void documentChanged(const ChangeEvent &change);
 
     void emitDataChanged(const QList<MapObject *> &objects,

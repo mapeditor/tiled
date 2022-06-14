@@ -964,6 +964,9 @@ WangSet *WangSet::clone(Tileset *tileset) const
     // Caller is responsible for adding the WangSet to this tileset
     WangSet *c = new WangSet(tileset, mName, mType, mImageTileId);
 
+    c->setClassName(className());
+    c->setProperties(properties());
+
     c->mUniqueFullWangIdCount = mUniqueFullWangIdCount;
     c->mColors = mColors;
     c->mTileIdToWangId = mTileIdToWangId;
@@ -972,7 +975,6 @@ WangSet *WangSet::clone(Tileset *tileset) const
     c->mColorDistancesDirty = mColorDistancesDirty;
     c->mCellsDirty = mCellsDirty;
     c->mLastSeenTranslationFlags = mLastSeenTranslationFlags;
-    c->setProperties(properties());
 
     // Avoid sharing Wang colors
     for (QSharedPointer<WangColor> &wangColor : c->mColors) {
@@ -983,6 +985,7 @@ WangSet *WangSet::clone(Tileset *tileset) const
                                                       wangColor->color(),
                                                       wangColor->imageId(),
                                                       wangColor->probability());
+        wangColor->setClassName(wangColor->className());
         wangColor->setProperties(wangColor->properties());
         wangColor->mWangSet = c;
         wangColor->mDistanceToColor = distanceToColor;

@@ -376,7 +376,7 @@ void test_Properties::mergeProperties()
 
     // Verify EnumString was replaced
     auto enumStringType = static_cast<const EnumPropertyType*>(types.findTypeByName(QStringLiteral("EnumString")));
-    QVERIFY(enumStringType && enumStringType->type == PropertyType::PT_Enum);
+    QVERIFY(enumStringType && enumStringType->isEnum());
     const auto expectedValues = QStringList { QStringLiteral("X"), QStringLiteral("Y"), QStringLiteral("Z") };
     QCOMPARE(enumStringType->values, expectedValues);
 
@@ -387,7 +387,7 @@ void test_Properties::mergeProperties()
 
     // Verify NewClass was added, and that its member newEnumString has the right type ID
     auto classType = static_cast<const ClassPropertyType*>(types.findTypeByName(QStringLiteral("NewClass")));
-    QVERIFY(classType && classType->type == PropertyType::PT_Class);
+    QVERIFY(classType && classType->isClass());
     const auto classMember = classType->members.value(QStringLiteral("newEnumString")).value<PropertyValue>();
     QCOMPARE(classMember.typeId, newEnumStringType->id);
 }

@@ -151,8 +151,8 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     connect(variantEditorFactory, &VariantEditorFactory::resetProperty,
             this, &PropertyBrowser::resetProperty);
 
-    connect(Preferences::instance(), &Preferences::objectTypesChanged,
-            this, &PropertyBrowser::objectTypesChanged);
+    connect(Preferences::instance(), &Preferences::propertyTypesChanged,
+            this, &PropertyBrowser::propertyTypesChanged);
 }
 
 /**
@@ -196,8 +196,6 @@ void PropertyBrowser::setDocument(Document *document)
     if (mapDocument) {
         connect(mapDocument, &MapDocument::mapChanged,
                 this, &PropertyBrowser::mapChanged);
-        connect(mapDocument, &MapDocument::tileTypeChanged,
-                this, &PropertyBrowser::tileTypeChanged);
 
         connect(mapDocument, &MapDocument::selectedObjectsChanged,
                 this, &PropertyBrowser::selectedObjectsChanged);
@@ -219,8 +217,6 @@ void PropertyBrowser::setDocument(Document *document)
                 this, &PropertyBrowser::tileChanged);
         connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
                 this, &PropertyBrowser::tileChanged);
-        connect(tilesetDocument, &TilesetDocument::tileTypeChanged,
-                this, &PropertyBrowser::tileTypeChanged);
 
         connect(tilesetDocument, &TilesetDocument::selectedTilesChanged,
                 this, &PropertyBrowser::selectedTilesChanged);
@@ -317,7 +313,30 @@ bool PropertyBrowser::event(QEvent *event)
 
 void PropertyBrowser::documentChanged(const ChangeEvent &change)
 {
+    if (!mObject)
+        return;
+
     switch (change.type) {
+    case ChangeEvent::ObjectsChanged: {
+        auto &objectsChange = static_cast<const ObjectsChangeEvent&>(change);
+
+        if (objectsChange.properties & ObjectsChangeEvent::ClassProperty) {
+            if (objectsChange.objects.contains(mObject)) {
+                updateProperties();
+                updateCustomProperties();
+            } else if (mObject->typeId() == Object::MapObjectType) {
+                auto mapObject = static_cast<MapObject*>(mObject);
+                if (auto tile = mapObject->cell().tile()) {
+                    if (mapObject->className().isEmpty() && objectsChange.objects.contains(tile)) {
+                        updateProperties();
+                        updateCustomProperties();
+                    }
+                }
+            }
+        }
+
+        break;
+    }
     case ChangeEvent::LayerChanged:
     case ChangeEvent::TileLayerChanged:
     case ChangeEvent::ImageLayerChanged:
@@ -325,7 +344,7 @@ void PropertyBrowser::documentChanged(const ChangeEvent &change)
             updateProperties();
         break;
     case ChangeEvent::MapObjectsChanged:
-        objectsChanged(static_cast<const MapObjectsChangeEvent&>(change));
+        mapObjectsChanged(static_cast<const MapObjectsChangeEvent&>(change));
         break;
     case ChangeEvent::ObjectGroupChanged:
         if (mObject == static_cast<const ObjectGroupChangeEvent&>(change).objectGroup)
@@ -350,7 +369,7 @@ void PropertyBrowser::mapChanged()
         updateProperties();
 }
 
-void PropertyBrowser::objectsChanged(const MapObjectsChangeEvent &mapObjectsChange)
+void PropertyBrowser::mapObjectsChanged(const MapObjectsChangeEvent &mapObjectsChange)
 {
     if (!mObject || mObject->typeId() != Object::MapObjectType)
         return;
@@ -359,7 +378,7 @@ void PropertyBrowser::objectsChanged(const MapObjectsChangeEvent &mapObjectsChan
 
     updateProperties();
 
-    if (mapObjectsChange.properties & (MapObject::CustomProperties | MapObject::TypeProperty))
+    if (mapObjectsChange.properties & MapObject::CustomProperties)
         updateCustomProperties();
 }
 
@@ -384,7 +403,7 @@ void PropertyBrowser::tileTypeChanged(Tile *tile)
         updateCustomProperties();
     } else if (mObject && mObject->typeId() == Object::MapObjectType) {
         auto mapObject = static_cast<MapObject*>(mObject);
-        if (mapObject->cell().tile() == tile && mapObject->type().isEmpty())
+        if (mapObject->cell().tile() == tile && mapObject->className().isEmpty())
             updateProperties();
     }
 }
@@ -529,10 +548,20 @@ void PropertyBrowser::selectedTilesChanged()
     updateCustomProperties();
 }
 
-void PropertyBrowser::objectTypesChanged()
+void PropertyBrowser::propertyTypesChanged()
 {
-    if (mObject && mObject->typeId() == Object::MapObjectType)
-        updateCustomProperties();
+    if (!mObject)
+        return;
+
+    // Don't do anything if there can't be any properties based on the class
+    if (mObject->typeId() == Object::MapObjectType) {
+        if (static_cast<MapObject*>(mObject)->effectiveClassName().isEmpty())
+            return;
+    } else if (mObject->className().isEmpty()) {
+        return;
+    }
+
+    updateCustomProperties();
 }
 
 void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
@@ -546,6 +575,14 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
 
     const PropertyId id = mPropertyToId.value(property);
 
+    if (id == ClassProperty) {
+        QUndoStack *undoStack = mDocument->undoStack();
+        undoStack->push(new ChangeClassName(mDocument,
+                                            mDocument->currentObjects(),
+                                            val.toString()));
+        return;
+    }
+
     switch (mObject->typeId()) {
     case Object::MapType:               applyMapValue(id, val); break;
     case Object::MapObjectType:         applyMapObjectValue(id, val); break;
@@ -554,7 +591,6 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::TileType:              applyTileValue(id, val); break;
     case Object::WangSetType:           applyWangSetValue(id, val); break;
     case Object::WangColorType:         applyWangColorValue(id, val); break;
-    case Object::ObjectTemplateType:    break;
     }
 }
 
@@ -583,6 +619,8 @@ void PropertyBrowser::resetProperty(QtProperty *property)
 void PropertyBrowser::addMapProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Map"));
+
+    addClassProperty(groupProperty);
 
     QtVariantProperty *orientationProperty =
             addProperty(OrientationProperty,
@@ -649,11 +687,13 @@ void PropertyBrowser::addMapProperties()
     addProperty(groupProperty);
 }
 
-static QStringList objectTypeNames()
+static QStringList classNamesFor(const Object &object)
 {
     QStringList names;
-    for (const ObjectType &type : Object::objectTypes())
-        names.append(type.name);
+    for (const auto type : Object::propertyTypes())
+        if (type->isClass())
+            if (static_cast<const ClassPropertyType*>(type)->isClassFor(object))
+                names.append(type->name);
     return names;
 }
 
@@ -683,9 +723,7 @@ void PropertyBrowser::addMapObjectProperties()
     addProperty(TemplateProperty, filePathTypeId(), tr("Template"), groupProperty)->setEnabled(false);
     addProperty(NameProperty, QMetaType::QString, tr("Name"), groupProperty);
 
-    QtVariantProperty *typeProperty =
-            addProperty(TypeProperty, QMetaType::QString, tr("Type"), groupProperty);
-    typeProperty->setAttribute(QLatin1String("suggestions"), objectTypeNames());
+    addClassProperty(groupProperty);
 
     if (mMapDocument->allowHidingObjects())
         addProperty(VisibleProperty, QMetaType::Bool, tr("Visible"), groupProperty);
@@ -727,6 +765,7 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
 {
     addProperty(IdProperty, QMetaType::Int, tr("ID"), parent)->setEnabled(false);
     addProperty(NameProperty, QMetaType::QString, tr("Name"), parent);
+    addClassProperty(parent);
     addProperty(VisibleProperty, QMetaType::Bool, tr("Visible"), parent);
     addProperty(LockedProperty, QMetaType::Bool, tr("Locked"), parent);
 
@@ -814,6 +853,8 @@ void PropertyBrowser::addTilesetProperties()
 
     QtVariantProperty *nameProperty = addProperty(NameProperty, QMetaType::QString, tr("Name"), groupProperty);
     nameProperty->setEnabled(mTilesetDocument);
+
+    addClassProperty(groupProperty);
 
     QtVariantProperty *alignmentProperty =
             addProperty(ObjectAlignmentProperty,
@@ -906,10 +947,7 @@ void PropertyBrowser::addTileProperties()
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile"));
     addProperty(IdProperty, QMetaType::Int, tr("ID"), groupProperty)->setEnabled(false);
 
-    QtVariantProperty *typeProperty =
-            addProperty(TypeProperty, QMetaType::QString, tr("Type"), groupProperty);
-    typeProperty->setAttribute(QLatin1String("suggestions"), objectTypeNames());
-    typeProperty->setEnabled(mTilesetDocument);
+    addClassProperty(groupProperty)->setEnabled(mTilesetDocument);
 
     addProperty(WidthProperty, QMetaType::Int, tr("Width"), groupProperty)->setEnabled(false);
     addProperty(HeightProperty, QMetaType::Int, tr("Height"), groupProperty)->setEnabled(false);
@@ -945,6 +983,7 @@ void PropertyBrowser::addWangSetProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Terrain Set"));
     QtVariantProperty *nameProperty = addProperty(NameProperty, QMetaType::QString, tr("Name"), groupProperty);
+    QtVariantProperty *classProperty = addClassProperty(groupProperty);
     QtVariantProperty *typeProperty = addProperty(WangSetTypeProperty,
                                                   QtVariantPropertyManager::enumTypeId(),
                                                   tr("Type"),
@@ -958,6 +997,7 @@ void PropertyBrowser::addWangSetProperties()
     colorCountProperty->setAttribute(QLatin1String("maximum"), WangId::MAX_COLOR_COUNT);
 
     nameProperty->setEnabled(mTilesetDocument);
+    classProperty->setEnabled(mTilesetDocument);
     typeProperty->setEnabled(mTilesetDocument);
     colorCountProperty->setEnabled(mTilesetDocument);
 
@@ -971,6 +1011,7 @@ void PropertyBrowser::addWangColorProperties()
                                                   QMetaType::QString,
                                                   tr("Name"),
                                                   groupProperty);
+    QtVariantProperty *classProperty = addClassProperty(groupProperty);
     QtVariantProperty *colorProperty = addProperty(ColorProperty,
                                                    QMetaType::QColor,
                                                    tr("Color"),
@@ -983,10 +1024,24 @@ void PropertyBrowser::addWangColorProperties()
     probabilityProperty->setAttribute(QLatin1String("minimum"), 0.01);
 
     nameProperty->setEnabled(mTilesetDocument);
+    classProperty->setEnabled(mTilesetDocument);
     colorProperty->setEnabled(mTilesetDocument);
     probabilityProperty->setEnabled(mTilesetDocument);
 
     addProperty(groupProperty);
+}
+
+QtVariantProperty *PropertyBrowser::addClassProperty(QtProperty *parent)
+{
+    QtVariantProperty *classProperty = addProperty(ClassProperty,
+                                                   QMetaType::QString,
+                                                   tr("Class"),
+                                                   parent);
+
+    classProperty->setAttribute(QLatin1String("suggestions"),
+                                classNamesFor(*mObject));
+
+    return classProperty;
 }
 
 void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
@@ -1098,7 +1153,6 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
 
         switch (id) {
         case NameProperty:          property = MapObject::NameProperty; break;
-        case TypeProperty:          property = MapObject::TypeProperty; break;
         case VisibleProperty:       property = MapObject::VisibleProperty; break;
         case TextProperty:          property = MapObject::TextProperty; break;
         case FontProperty:          property = MapObject::TextFontProperty; break;
@@ -1458,11 +1512,6 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
     QUndoStack *undoStack = mDocument->undoStack();
 
     switch (id) {
-    case TypeProperty:
-        undoStack->push(new ChangeTileType(mTilesetDocument,
-                                           mTilesetDocument->selectedTiles(),
-                                           val.toString()));
-        break;
     case TileProbabilityProperty:
         undoStack->push(new ChangeTileProbability(mTilesetDocument,
                                                   mTilesetDocument->selectedTiles(),
@@ -1657,7 +1706,6 @@ void PropertyBrowser::addProperties()
     case Object::TileType:              addTileProperties(); break;
     case Object::WangSetType:           addWangSetProperties(); break;
     case Object::WangColorType:         addWangColorProperties(); break;
-    case Object::ObjectTemplateType:    break;
     }
 
     // Make sure certain properties are collapsed, to save space
@@ -1697,6 +1745,8 @@ void PropertyBrowser::updateProperties()
 
     QScopedValueRollback<bool> updating(mUpdating, true);
 
+    mIdToProperty[ClassProperty]->setValue(mObject->className());
+
     switch (mObject->typeId()) {
     case Object::MapType: {
         const Map *map = static_cast<const Map*>(mObject);
@@ -1729,9 +1779,9 @@ void PropertyBrowser::updateProperties()
             return;
         }
 
-        const QString &type = mapObject->effectiveType();
-        const auto typeColorGroup = mapObject->type().isEmpty() ? QPalette::Disabled
-                                                                : QPalette::Active;
+        const QString &type = mapObject->effectiveClassName();
+        const auto classColorGroup = mapObject->className().isEmpty() ? QPalette::Disabled
+                                                                      : QPalette::Active;
 
         FilePath templateFilePath;
         if (auto objectTemplate = mapObject->objectTemplate())
@@ -1740,8 +1790,8 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[IdProperty]->setValue(mapObject->id());
         mIdToProperty[TemplateProperty]->setValue(QVariant::fromValue(templateFilePath));
         mIdToProperty[NameProperty]->setValue(mapObject->name());
-        mIdToProperty[TypeProperty]->setValue(type);
-        mIdToProperty[TypeProperty]->setValueColor(palette().color(typeColorGroup, QPalette::WindowText));
+        mIdToProperty[ClassProperty]->setValue(type);
+        mIdToProperty[ClassProperty]->setValueColor(palette().color(classColorGroup, QPalette::WindowText));
         if (auto visibleProperty = mIdToProperty[VisibleProperty])
             visibleProperty->setValue(mapObject->isVisible());
         mIdToProperty[XProperty]->setValue(mapObject->x());
@@ -1849,7 +1899,6 @@ void PropertyBrowser::updateProperties()
         const Tile *tile = static_cast<const Tile*>(mObject);
         const QSize tileSize = tile->size();
         mIdToProperty[IdProperty]->setValue(tile->id());
-        mIdToProperty[TypeProperty]->setValue(tile->type());
         mIdToProperty[WidthProperty]->setValue(tileSize.width());
         mIdToProperty[HeightProperty]->setValue(tileSize.height());
         mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
@@ -1872,8 +1921,6 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[WangColorProbabilityProperty]->setValue(wangColor->probability());
         break;
     }
-    case Object::ObjectTemplateType:
-        break;
     }
 }
 
@@ -1902,15 +1949,11 @@ void PropertyBrowser::updateCustomProperties()
         }
     }
 
-    QString objectType;
+    QString objectType = mObject->className();
 
-    switch (mObject->typeId()) {
-    case Object::TileType:
-        objectType = static_cast<Tile*>(mObject)->type();
-        break;
-    case Object::MapObjectType: {
+    if (mObject->typeId() == Object::MapObjectType) {
         auto mapObject = static_cast<MapObject*>(mObject);
-        objectType = mapObject->type();
+        objectType = mapObject->effectiveClassName();
 
         // Inherit properties from the template
         if (const MapObject *templateObject = mapObject->templateObject()) {
@@ -1922,10 +1965,7 @@ void PropertyBrowser::updateCustomProperties()
             }
         }
 
-        if (Tile *tile = mapObject->cell().tile()) {
-            if (objectType.isEmpty())
-                objectType = tile->type();
-
+        if (const Tile *tile = mapObject->cell().tile()) {
             // Inherit properties from the tile
             QMapIterator<QString,QVariant> it(tile->properties());
             while (it.hasNext()) {
@@ -1934,22 +1974,13 @@ void PropertyBrowser::updateCustomProperties()
                     mCombinedProperties.insert(it.key(), it.value());
             }
         }
-        break;
-    }
-    case Object::LayerType:
-    case Object::MapType:
-    case Object::TilesetType:
-    case Object::WangSetType:
-    case Object::WangColorType:
-    case Object::ObjectTemplateType:
-        break;
     }
 
     if (!objectType.isEmpty()) {
         // Inherit properties from the object type
-        for (const ObjectType &type : Object::objectTypes()) {
-            if (type.name == objectType) {
-                QMapIterator<QString,QVariant> it(type.defaultProperties);
+        if (auto type = Object::propertyTypes().findClassByName(objectType)) {
+            if (type->isClassFor(*mObject)) {
+                QMapIterator<QString,QVariant> it(static_cast<const ClassPropertyType*>(type)->members);
                 while (it.hasNext()) {
                     it.next();
                     if (!mCombinedProperties.contains(it.key()))

@@ -146,11 +146,6 @@ void EditableMapObject::setName(QString name)
     setMapObjectProperty(MapObject::NameProperty, name);
 }
 
-void EditableMapObject::setType(QString type)
-{
-    setMapObjectProperty(MapObject::TypeProperty, type);
-}
-
 void EditableMapObject::setPos(QPointF pos)
 {
     setMapObjectProperty(MapObject::PositionProperty, pos);

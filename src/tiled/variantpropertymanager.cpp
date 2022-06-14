@@ -168,13 +168,15 @@ int VariantPropertyManager::unstyledGroupTypeId()
 
 QString VariantPropertyManager::objectRefLabel(const MapObject &object)
 {
+    const QString &className = object.effectiveClassName();
+
     QString label = tr("%1: ").arg(object.id());
     if (!object.name().isEmpty()) {
         label.append(object.name());
-        if (!object.type().isEmpty())
-            label.append(tr(" (%1)").arg(object.type()));
-    } else if (!object.type().isEmpty())
-        label.append(tr("(%1)").arg(object.type()));
+        if (!className.isEmpty())
+            label.append(tr(" (%1)").arg(className));
+    } else if (!className.isEmpty())
+        label.append(tr("(%1)").arg(className));
     else
         label.append(tr("Unnamed object"));
 

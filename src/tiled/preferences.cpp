@@ -86,9 +86,6 @@ void Preferences::initialize()
     if (!dataDir.exists())
         dataDir.mkpath(QStringLiteral("."));
 
-    connect(&mWatcher, &FileSystemWatcher::fileChanged,
-            this, &Preferences::objectTypesFileChangedOnDisk);
-
     SaveFile::setSafeSavingEnabled(safeSavingEnabled());
 
     // Backwards compatibility check since 'FusionStyle' was removed from the
@@ -520,12 +517,6 @@ void Preferences::setUseOpenGL(bool useOpenGL)
     emit useOpenGLChanged(useOpenGL);
 }
 
-void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
-{
-    Object::setObjectTypes(objectTypes);
-    emit objectTypesChanged();
-}
-
 void Preferences::setPropertyTypes(const SharedPropertyTypes &propertyTypes)
 {
     Object::setPropertyTypes(propertyTypes);
@@ -777,46 +768,14 @@ void Preferences::setStartupProject(const QString &filePath)
     mStartupProject = filePath;
 }
 
-QString Preferences::objectTypesFile() const
-{
-    return mObjectTypesFile;
-}
-
 void Preferences::setObjectTypesFile(const QString &fileName)
 {
     QString newObjectTypesFile = fileName;
     if (newObjectTypesFile.isEmpty())
         newObjectTypesFile = dataLocation() + QLatin1String("/objecttypes.xml");
 
-    if (mObjectTypesFile != newObjectTypesFile) {
-        if (!mObjectTypesFile.isEmpty())
-            mWatcher.removePath(mObjectTypesFile);
-
+    if (mObjectTypesFile != newObjectTypesFile)
         mObjectTypesFile = newObjectTypesFile;
-        mWatcher.addPath(newObjectTypesFile);
-    }
-
-    // Always reload the object types file, even if its path didn't change,
-    // because it might rely on property types defined in the loaded project.
-    ObjectTypes objectTypes;
-    ObjectTypesSerializer().readObjectTypes(mObjectTypesFile, objectTypes);
-    setObjectTypes(objectTypes);
-}
-
-void Preferences::setObjectTypesFileLastSaved(const QDateTime &time)
-{
-    mObjectTypesFileLastSaved = time;
-}
-
-void Preferences::objectTypesFileChangedOnDisk()
-{
-    const QFileInfo fileInfo { objectTypesFile() };
-    if (fileInfo.lastModified() == mObjectTypesFileLastSaved)
-        return;
-
-    ObjectTypes objectTypes;
-    if (ObjectTypesSerializer().readObjectTypes(fileInfo.filePath(), objectTypes))
-        setObjectTypes(objectTypes);
 }
 
 #include "moc_preferences.cpp"

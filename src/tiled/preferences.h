@@ -26,9 +26,7 @@
 #include <QObject>
 #include <QSettings>
 
-#include "filesystemwatcher.h"
 #include "map.h"
-#include "objecttypes.h"
 #include "tilededitor_global.h"
 
 namespace Tiled {
@@ -135,12 +133,9 @@ public:
     bool useOpenGL() const;
     void setUseOpenGL(bool useOpenGL);
 
-    void setObjectTypes(const ObjectTypes &objectTypes);
     void setPropertyTypes(const SharedPropertyTypes &propertyTypes);
 
-    QString objectTypesFile() const;
     void setObjectTypesFile(const QString &filePath);
-    void setObjectTypesFileLastSaved(const QDateTime &time);
 
     QDate firstRun() const;
     int runCount() const;
@@ -238,8 +233,6 @@ signals:
 
     void languageChanged();
 
-    void objectTypesChanged();
-
     void propertyTypesChanged();
 
     void isPatronChanged();
@@ -255,13 +248,9 @@ signals:
 private:
     void addToRecentFileList(const QString &fileName, QStringList &files);
 
-    void objectTypesFileChangedOnDisk();
-
-    FileSystemWatcher mWatcher;
     bool mPortable = false;
 
     QString mObjectTypesFile;
-    QDateTime mObjectTypesFileLastSaved;
 
     static Preferences *mInstance;
     static QString mStartupProject;

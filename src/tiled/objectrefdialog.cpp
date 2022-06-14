@@ -90,7 +90,7 @@ ObjectsTreeView::ObjectsTreeView(MapDocument *mapDocument, QWidget *parent)
     hideColumn(MapObjectModel::Position);
     header()->setStretchLastSection(false);
     header()->setSectionResizeMode(MapObjectModel::Name, QHeaderView::Stretch);
-    header()->setSectionResizeMode(MapObjectModel::Type, QHeaderView::Stretch);
+    header()->setSectionResizeMode(MapObjectModel::Class, QHeaderView::Stretch);
     header()->setSectionResizeMode(MapObjectModel::Id, QHeaderView::ResizeToContents);
 }
 

@@ -359,7 +359,7 @@ Then, you can set the connection by either:
 
 As shown on the screenshot above, any connections between objects are rendered
 as arrows, taking the color of their target object (defined as part of the
-:ref:`object types <predefining-properties>` or by the color of the object
+:ref:`object class <custom-classes>` or by the color of the object
 layer). You can toggle the display of these arrows using *View -> Show Object
 References*.
 

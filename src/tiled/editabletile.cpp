@@ -131,14 +131,6 @@ void EditableTile::detachObjectGroup()
     mAttachedObjectGroup = nullptr;
 }
 
-void EditableTile::setType(const QString &type)
-{
-    if (TilesetDocument *doc = tilesetDocument())
-        asset()->push(new ChangeTileType(doc, { tile() }, type));
-    else if (!checkReadOnly())
-        tile()->setType(type);
-}
-
 void EditableTile::setImageFileName(const QString &fileName)
 {
     if (TilesetDocument *doc = tilesetDocument()) {

@@ -583,10 +583,11 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
                 MapObject *mapObject = underlyingObjectItems[i];
                 QString objectName = mapObject->name();
                 if (objectName.isEmpty()) {
-                    if (mapObject->type().isEmpty())
+                    const QString &className = mapObject->effectiveClassName();
+                    if (className.isEmpty())
                         objectName = tr("Unnamed object");
                     else
-                        objectName = tr("Instance of %1").arg(mapObject->type());
+                        objectName = tr("Instance of %1").arg(className);
                 }
                 QString actionName;
                 if (i < 9)

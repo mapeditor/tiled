@@ -37,6 +37,7 @@ class ChangeEvent
 {
 public:
     enum Type {
+        ObjectsChanged,
         MapChanged,
         LayerChanged,
         TileLayerChanged,
@@ -68,6 +69,23 @@ protected:
     // not virtual, but protected to avoid calling at this level
     ~ChangeEvent()
     {}
+};
+
+class ObjectsChangeEvent : public ChangeEvent
+{
+public:
+    enum ObjectProperty {
+        ClassProperty           = 1 << 0,
+    };
+
+    ObjectsChangeEvent(const QList<Object *> &objects, int properties)
+        : ChangeEvent(ObjectsChanged)
+        , objects(objects)
+        , properties(properties)
+    {}
+
+    QList<Object *> objects;
+    int properties;
 };
 
 class MapChangeEvent : public ChangeEvent

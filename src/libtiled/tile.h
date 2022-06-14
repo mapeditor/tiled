@@ -91,8 +91,9 @@ public:
 
     QPoint offset() const;
 
-    const QString &type() const;
-    void setType(const QString &type);
+    // For Python API compatibility
+    const QString &type() const { return className(); }
+    void setType(const QString &type) { setClassName(type); };
 
     qreal probability() const;
     void setProbability(qreal probability);
@@ -121,7 +122,6 @@ private:
     QUrl mImageSource;
     QRect mImageRect;
     LoadingStatus mImageStatus;
-    QString mType;
     qreal mProbability;
     std::unique_ptr<ObjectGroup> mObjectGroup;
 
@@ -193,25 +193,6 @@ inline int Tile::height() const
 inline QSize Tile::size() const
 {
     return mImageRect.size();
-}
-
-/**
- * Returns the type of this tile. Tile objects that do not have a type
- * explicitly set on them are assumed to be of the type returned by this
- * function.
- */
-inline const QString &Tile::type() const
-{
-    return mType;
-}
-
-/**
- * Sets the type of this tile.
- * \sa type()
- */
-inline void Tile::setType(const QString &type)
-{
-    mType = type;
 }
 
 /**

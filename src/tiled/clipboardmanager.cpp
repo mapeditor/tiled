@@ -201,7 +201,7 @@ static void processObjectReferences(Properties &properties, Callback callback)
         } else if (value.userType() == propertyValueId()) {
             auto propertyValue = value.value<PropertyValue>();
             if (auto type = propertyValue.type()) {
-                if (type->type == PropertyType::PT_Class) {
+                if (type->isClass()) {
                     Properties properties = propertyValue.value.toMap();
                     processObjectReferences(properties, callback);
                     propertyValue.value = properties;

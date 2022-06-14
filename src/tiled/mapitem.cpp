@@ -149,7 +149,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::objectLineWidthChanged, this, &MapItem::setObjectLineWidth);
     connect(prefs, &Preferences::showTileObjectOutlinesChanged, this, &MapItem::setShowTileObjectOutlines);
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
-    connect(prefs, &Preferences::objectTypesChanged, this, &MapItem::syncAllObjectItems);
+    connect(prefs, &Preferences::propertyTypesChanged, this, &MapItem::syncAllObjectItems);
     connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] (QColor color) { mDarkRectangle->setBrush(color); });
 
     connect(mapDocument.data(), &Document::changed, this, &MapItem::documentChanged);
@@ -357,6 +357,23 @@ void MapItem::repaintRegion(const QRegion &region, TileLayer *tileLayer)
 void MapItem::documentChanged(const ChangeEvent &change)
 {
     switch (change.type) {
+    case ChangeEvent::ObjectsChanged: {
+        auto &objectsChange = static_cast<const ObjectsChangeEvent&>(change);
+        if (!objectsChange.objects.isEmpty() && (objectsChange.properties & ObjectsChangeEvent::ClassProperty)) {
+            const auto typeId = objectsChange.objects.first()->typeId();
+            if (typeId == Object::MapObjectType) {
+                for (Object *object : objectsChange.objects)
+                    mObjectItems.value(static_cast<MapObject*>(object))->syncWithMapObject();
+            } else if (typeId == Object::TileType) {
+                if (mapDocument()->renderer()->testFlag(ShowTileObjectOutlines))
+                    for (MapObjectItem *item : qAsConst(mObjectItems))
+                        if (item->mapObject()->isTileObject())
+                            item->syncWithMapObject();
+            }
+        }
+
+        break;
+    }
     case ChangeEvent::LayerChanged:
         layerChanged(static_cast<const LayerChangeEvent&>(change));
         break;

@@ -276,7 +276,8 @@ bool ObjectTypesSerializer::writeObjectTypes(const QString &fileName,
 }
 
 bool ObjectTypesSerializer::readObjectTypes(const QString &fileName,
-                                            ObjectTypes &objectTypes)
+                                            ObjectTypes &objectTypes,
+                                            const ExportContext &context)
 {
     mError.clear();
 
@@ -286,8 +287,6 @@ bool ObjectTypesSerializer::readObjectTypes(const QString &fileName,
                     "ObjectTypes", "Could not open file.");
         return false;
     }
-
-    const ExportContext context(QFileInfo(fileName).path());
 
     Format format = mFormat;
     if (format == Autodetect)
@@ -306,6 +305,45 @@ bool ObjectTypesSerializer::readObjectTypes(const QString &fileName,
     }
 
     return mError.isEmpty();
+}
+
+/**
+ * Converts object types to class property types, for compatibility.
+ */
+PropertyTypes toPropertyTypes(const ObjectTypes &objectTypes)
+{
+    PropertyTypes propertyTypes;
+
+    // Convert object types to class property types
+    for (const ObjectType &type : qAsConst(objectTypes)) {
+        auto propertyType = std::make_unique<ClassPropertyType>(type.name);
+        propertyType->color = type.color;
+        propertyType->members = type.defaultProperties;
+        propertyType->usageFlags = ClassPropertyType::MapObjectClass | ClassPropertyType::TileClass;
+        propertyTypes.add(std::move(propertyType));
+    }
+
+    return propertyTypes;
+}
+
+/**
+ * Converts class property types to object types, for compatibility.
+ */
+ObjectTypes toObjectTypes(const PropertyTypes &propertyTypes)
+{
+    ObjectTypes objectTypes;
+
+    for (const PropertyType *type : qAsConst(propertyTypes)) {
+        if (!type->isClass())   // only classes supported
+            continue;
+
+        auto classType = static_cast<const ClassPropertyType*>(type);
+        objectTypes.append(ObjectType(classType->name,
+                                      classType->color,
+                                      classType->members));
+    }
+
+    return objectTypes;
 }
 
 } // namespace Tiled

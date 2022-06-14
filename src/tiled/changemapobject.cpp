@@ -204,6 +204,7 @@ DetachObjects::DetachObjects(Document *document,
 {
     for (const MapObject *object : mapObjects) {
         mObjectTemplates.append(object->objectTemplate());
+        mClassNames.append(object->className());
         mProperties.append(object->properties());
     }
 }
@@ -223,6 +224,7 @@ void DetachObjects::undo()
     for (int i = 0; i < mMapObjects.size(); ++i) {
         MapObject *object = mMapObjects.at(i);
         object->setObjectTemplate(mObjectTemplates.at(i));
+        object->setClassName(mClassNames.at(i));
         object->setProperties(mProperties.at(i));
         object->syncWithTemplate();
     }

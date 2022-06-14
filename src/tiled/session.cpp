@@ -211,7 +211,7 @@ static QString lastPathKey(Session::FileType fileType)
     case Session::ObjectTemplateFile:
         key.append(QLatin1String("objectTemplatePath"));
         break;
-    case Session::ObjectTypesFile:
+    case Session::PropertyTypesFile:
         key.append(QLatin1String("objectTypesPath"));
         break;
     case Session::WorkingDirectory:

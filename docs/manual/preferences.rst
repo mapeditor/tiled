@@ -108,7 +108,7 @@ Object line width
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.5</div>
+   <div class="new new-prev">Since Tiled 1.5</div>
 
 Object selection behavior
     By default the :ref:`select-objects-tool` tool selects objects from any
@@ -136,7 +136,7 @@ Mouse wheel zooms by default
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.5</div>
+   <div class="new new-prev">Since Tiled 1.5</div>
 
 Middle mouse button uses auto-scrolling
     With this option enabled, the clicking middle mouse button doesn't drag the
@@ -145,7 +145,7 @@ Middle mouse button uses auto-scrolling
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.5</div>
+   <div class="new new-prev">Since Tiled 1.5</div>
 
 Use smooth scrolling
     This option affects the behavior when scrolling with the arrow keys. When

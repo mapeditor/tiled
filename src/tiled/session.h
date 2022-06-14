@@ -168,7 +168,7 @@ public:
         ExternalTileset,
         ImageFile,
         ObjectTemplateFile,
-        ObjectTypesFile,
+        PropertyTypesFile,
         WorkingDirectory,
         WorldFile,
         ShortcutSettingsFile,

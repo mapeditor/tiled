@@ -236,12 +236,12 @@ bool Tile::advanceAnimation(int ms)
 Tile *Tile::clone(Tileset *tileset) const
 {
     Tile *c = new Tile(mImage, mId, tileset);
+    c->setClassName(className());
     c->setProperties(properties());
 
     c->mImageSource = mImageSource;
     c->mImageRect = mImageRect;
     c->mImageStatus = mImageStatus;
-    c->mType = mType;
     c->mProbability = mProbability;
 
     if (mObjectGroup)
