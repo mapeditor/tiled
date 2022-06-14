@@ -326,4 +326,24 @@ PropertyTypes toPropertyTypes(const ObjectTypes &objectTypes)
     return propertyTypes;
 }
 
+/**
+ * Converts class property types to object types, for compatibility.
+ */
+ObjectTypes toObjectTypes(const PropertyTypes &propertyTypes)
+{
+    ObjectTypes objectTypes;
+
+    for (const PropertyType *type : qAsConst(propertyTypes)) {
+        if (!type->isClass())   // only classes supported
+            continue;
+
+        auto classType = static_cast<const ClassPropertyType*>(type);
+        objectTypes.append(ObjectType(classType->name,
+                                      classType->color,
+                                      classType->members));
+    }
+
+    return objectTypes;
+}
+
 } // namespace Tiled

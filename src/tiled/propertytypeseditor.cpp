@@ -710,31 +710,45 @@ void PropertyTypesEditor::exportPropertyTypes()
     Session &session = Session::current();
     QString lastPath = session.lastPath(Session::PropertyTypesFile);
 
-    if (!lastPath.endsWith(QLatin1String(".json")))
+    if (!QFileInfo(lastPath).isFile())
         lastPath.append(QStringLiteral("/propertytypes.json"));
 
+    PropertyTypesFilter filter(lastPath);
     const QString fileName =
             QFileDialog::getSaveFileName(this, tr("Export Property Types"),
                                          lastPath,
-                                         QCoreApplication::translate("File Types", "Property Types files (*.json)"));
+                                         filter.filters,
+                                         &filter.selectedFilter);
     if (fileName.isEmpty())
         return;
 
     session.setLastPath(Session::PropertyTypesFile, fileName);
 
-    SaveFile file(fileName);
-
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        const auto error = QCoreApplication::translate("File Errors", "Could not open file for writing.");
-        QMessageBox::critical(this, tr("Error Writing Property Types"), error);
-        return;
-    }
-
     const auto types = mPropertyTypesModel->propertyTypes();
-    file.device()->write(QJsonDocument(types->toJson()).toJson());
 
-    if (!file.commit())
-        QMessageBox::critical(this, tr("Error Writing Property Types"), file.errorString());
+    if (filter.selectedFilter == filter.objectTypesJsonFilter ||
+            filter.selectedFilter == filter.objectTypesXmlFilter) {
+        ObjectTypesSerializer serializer;
+        const ObjectTypes objectTypes = toObjectTypes(*types);
+
+        if (!serializer.writeObjectTypes(fileName, objectTypes)) {
+            QMessageBox::critical(this, tr("Error Writing Object Types"),
+                                  serializer.errorString());
+        }
+    } else {
+        SaveFile file(fileName);
+
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            const auto error = QCoreApplication::translate("File Errors", "Could not open file for writing.");
+            QMessageBox::critical(this, tr("Error Writing Property Types"), error);
+            return;
+        }
+
+        file.device()->write(QJsonDocument(types->toJson()).toJson());
+
+        if (!file.commit())
+            QMessageBox::critical(this, tr("Error Writing Property Types"), file.errorString());
+    }
 }
 
 void PropertyTypesEditor::updateDetails()
