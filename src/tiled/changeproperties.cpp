@@ -20,11 +20,55 @@
 
 #include "changeproperties.h"
 
-#include "document.h"
+#include "changeevents.h"
+#include "mapdocument.h"
+#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 
-using namespace Tiled;
+namespace Tiled {
+
+ChangeClassName::ChangeClassName(Document *document,
+                                 const QList<Object *> &objects,
+                                 const QString &className,
+                                 QUndoCommand *parent)
+    : ChangeValue(document, objects, className, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Change Type"));
+}
+
+void ChangeClassName::undo()
+{
+    ChangeValue<Object, QString>::undo();
+    emitChangeEvent();
+}
+
+void ChangeClassName::redo()
+{
+    ChangeValue<Object, QString>::redo();
+    emitChangeEvent();
+}
+
+QString ChangeClassName::getValue(const Object *object) const
+{
+    return object->className();
+}
+
+void ChangeClassName::setValue(Object *object, const QString &className) const
+{
+    object->setClassName(className);
+}
+
+void ChangeClassName::emitChangeEvent()
+{
+    const ObjectsChangeEvent event(objects(), ObjectsChangeEvent::ClassProperty);
+    emit document()->changed(event);
+
+    if (document()->type() == Document::TilesetDocumentType)
+        for (MapDocument *mapDocument : static_cast<TilesetDocument*>(document())->mapDocuments())
+            emit mapDocument->changed(event);
+}
+
 
 ChangeProperties::ChangeProperties(Document *document,
                                    const QString &kind,
@@ -186,3 +230,5 @@ RenameProperty::RenameProperty(Document *document,
         new SetProperty(document, objects, newName, value, this);
     }
 }
+
+} // namespace Tiled

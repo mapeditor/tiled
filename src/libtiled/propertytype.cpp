@@ -298,14 +298,14 @@ static const struct  {
     ClassPropertyType::ClassUsageFlag flag;
     QLatin1String name;
 } flagsWithNames[] = {
-    { ClassPropertyType::PropertyValueType,    QLatin1String("property") },
-    { ClassPropertyType::MapType,              QLatin1String("map") },
-    { ClassPropertyType::LayerType,            QLatin1String("layer") },
-    { ClassPropertyType::MapObjectType,        QLatin1String("object") },
-    { ClassPropertyType::TileType,             QLatin1String("tile") },
-    { ClassPropertyType::TilesetType,          QLatin1String("tileset") },
-    { ClassPropertyType::WangColorType,        QLatin1String("wangcolor") },
-    { ClassPropertyType::WangSetType,          QLatin1String("wangset") },
+    { ClassPropertyType::PropertyValueType,     QLatin1String("property") },
+    { ClassPropertyType::MapClass,              QLatin1String("map") },
+    { ClassPropertyType::LayerClass,            QLatin1String("layer") },
+    { ClassPropertyType::MapObjectClass,        QLatin1String("object") },
+    { ClassPropertyType::TileClass,             QLatin1String("tile") },
+    { ClassPropertyType::TilesetClass,          QLatin1String("tileset") },
+    { ClassPropertyType::WangColorClass,        QLatin1String("wangcolor") },
+    { ClassPropertyType::WangSetClass,          QLatin1String("wangset") },
 };
 
 QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
@@ -429,25 +429,9 @@ bool ClassPropertyType::canAddMemberOfType(const PropertyType *propertyType, con
     return true;
 }
 
-bool ClassPropertyType::isTypeFor(const Object &object) const
+bool ClassPropertyType::isClassFor(const Object &object) const
 {
-    switch (object.typeId()) {
-    case Object::LayerType:
-        return usageFlags & LayerType;
-    case Object::MapObjectType:
-        return usageFlags & MapObjectType;
-    case Object::MapType:
-        return usageFlags & MapType;
-    case Object::TilesetType:
-        return usageFlags & TilesetType;
-    case Object::TileType:
-        return usageFlags & TileType;
-    case Object::WangSetType:
-        return usageFlags & WangSetType;
-    case Object::WangColorType:
-        return usageFlags & WangColorType;
-    }
-    return false;
+    return usageFlags & object.typeId();
 }
 
 void ClassPropertyType::setUsageFlags(int flags, bool value)

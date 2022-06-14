@@ -132,6 +132,7 @@ private:
     Document *mDocument;
     const QList<MapObject*> mMapObjects;
     QVector<const ObjectTemplate*> mObjectTemplates;
+    QVector<QString> mClassNames;
     QVector<Properties> mProperties;
 };
 

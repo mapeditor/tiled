@@ -241,7 +241,9 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
                 layer->setCell(ix, iy, cell);
 
                 if (ttile.props.size() > 0) {
-                    auto obj = std::make_unique<Tiled::MapObject>("TileData", QString(), QPointF(ix * tlayer.tileSize.x, iy * tlayer.tileSize.y), QSizeF(tlayer.tileSize.x, tlayer.tileSize.y));
+                    auto obj = std::make_unique<Tiled::MapObject>("TileData");
+                    obj->setPosition(QPointF(ix * tlayer.tileSize.x, iy * tlayer.tileSize.y));
+                    obj->setSize(QSizeF(tlayer.tileSize.x, tlayer.tileSize.y));
                     tbinToTiledProperties(ttile.props, *obj);
                     objects->addObject(std::move(obj));
                 }

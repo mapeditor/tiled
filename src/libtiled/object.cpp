@@ -52,37 +52,30 @@ QVariant Object::resolvedProperty(const QString &name) const
     if (hasProperty(name))
         return property(name);
 
-    QString objectType;
+    QString objectClassName = className();
 
     switch (typeId()) {
     case MapObjectType: {
         auto mapObject = static_cast<const MapObject*>(this);
-        objectType = mapObject->type();
+        objectClassName = mapObject->effectiveClassName();
 
         if (const MapObject *templateObject = mapObject->templateObject())
             if (templateObject->hasProperty(name))
                 return templateObject->property(name);
 
-        if (Tile *tile = mapObject->cell().tile()) {
+        if (Tile *tile = mapObject->cell().tile())
             if (tile->hasProperty(name))
                 return tile->property(name);
 
-            if (objectType.isEmpty())
-                objectType = tile->type();
-        }
-
         break;
     }
-    case TileType:
-        objectType = static_cast<const Tile*>(this)->type();
-        break;
     default:
         return QVariant();
     }
 
-    if (!objectType.isEmpty()) {
-        if (auto type = mPropertyTypes->findClassByName(objectType))
-            if (type->isTypeFor(*this))
+    if (!objectClassName.isEmpty()) {
+        if (auto type = mPropertyTypes->findClassByName(objectClassName))
+            if (type->isClassFor(*this))
                 return type->members.value(name);
     }
 
@@ -96,26 +89,15 @@ QVariantMap Object::resolvedProperties() const
     // Object::resolvedProperty searches them, to make sure that the
     // same precedence is maintained.
 
-    QString objectType;
-    switch (typeId()) {
-    case Object::MapObjectType: {
+    QString objectClassName = className();
+    if (objectClassName.isEmpty() && typeId() == Object::MapObjectType) {
         auto mapObject = static_cast<const MapObject*>(this);
-        objectType = mapObject->type();
-        if (objectType.isEmpty())
-            if (const Tile *tile = mapObject->cell().tile())
-                objectType = tile->type();
-        break;
-    }
-    case Object::TileType:
-        objectType = static_cast<const Tile*>(this)->type();
-        break;
-    default:
-        break;
+        objectClassName = mapObject->effectiveClassName();
     }
 
-    if (!objectType.isEmpty()) {
-        if (auto type = mPropertyTypes->findClassByName(objectType)) {
-            if (type->isTypeFor(*this)) {
+    if (!objectClassName.isEmpty()) {
+        if (auto type = mPropertyTypes->findClassByName(objectClassName)) {
+            if (type->isClassFor(*this)) {
                 Tiled::mergeProperties(allProperties,
                                        static_cast<const ClassPropertyType*>(type)->members);
             }

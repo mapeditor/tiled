@@ -55,7 +55,7 @@ class EditableMapObject : public EditableObject
     Q_PROPERTY(int id READ id)
     Q_PROPERTY(Shape shape READ shape WRITE setShape)
     Q_PROPERTY(QString name READ name WRITE setName)
-    Q_PROPERTY(QString type READ type WRITE setType)
+    Q_PROPERTY(QString type READ className WRITE setClassName)  // compatibility with Tiled < 1.9
     Q_PROPERTY(qreal x READ x WRITE setX)
     Q_PROPERTY(qreal y READ y WRITE setY)
     Q_PROPERTY(QPointF pos READ pos WRITE setPos)
@@ -107,7 +107,6 @@ public:
     int id() const;
     Shape shape() const;
     QString name() const;
-    QString type() const;
     qreal x() const;
     qreal y() const;
     QPointF pos() const;
@@ -139,7 +138,6 @@ public:
 public slots:
     void setShape(Shape shape);
     void setName(QString name);
-    void setType(QString type);
     void setX(qreal x);
     void setY(qreal y);
     void setPos(QPointF pos);
@@ -179,11 +177,6 @@ inline EditableMapObject::Shape EditableMapObject::shape() const
 inline QString EditableMapObject::name() const
 {
     return mapObject()->name();
-}
-
-inline QString EditableMapObject::type() const
-{
-    return mapObject()->type();
 }
 
 inline qreal EditableMapObject::x() const

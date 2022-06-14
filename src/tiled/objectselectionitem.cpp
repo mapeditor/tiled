@@ -287,9 +287,6 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
     connect(mapDocument, &MapDocument::tilesetTilePositioningChanged,
             this, &ObjectSelectionItem::tilesetTilePositioningChanged);
 
-    connect(mapDocument, &MapDocument::tileTypeChanged,
-            this, &ObjectSelectionItem::tileTypeChanged);
-
     Preferences *prefs = Preferences::instance();
 
     connect(prefs, &Preferences::objectLabelVisibilityChanged,
@@ -346,6 +343,20 @@ const MapRenderer &ObjectSelectionItem::mapRenderer() const
 void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
 {
     switch (event.type) {
+    case ChangeEvent::ObjectsChanged: {
+        auto &objectsChange = static_cast<const ObjectsChangeEvent&>(event);
+        if (!objectsChange.objects.isEmpty() && (objectsChange.properties & ObjectsChangeEvent::ClassProperty)) {
+            const auto typeId = objectsChange.objects.first()->typeId();
+            if (typeId == Object::TileType) {
+                for (Object *object : objectsChange.objects)
+                    tileTypeChanged(static_cast<Tile*>(object));
+            } else if (typeId == Object::MapObjectType) {
+                for (Object *object : objectsChange.objects)
+                    updateItemColorsForObject(static_cast<MapObject*>(object));
+            }
+        }
+        break;
+    }
     case ChangeEvent::LayerChanged:
         layerChanged(static_cast<const LayerChangeEvent&>(event));
         break;
@@ -567,6 +578,19 @@ void ObjectSelectionItem::updateItemColors() const
             item->updateColor();
 }
 
+void ObjectSelectionItem::updateItemColorsForObject(MapObject *mapObject) const
+{
+    if (auto label = mObjectLabels.value(mapObject))
+        label->updateColor();
+
+    const auto it = mReferencesByTargetObject.find(mapObject);
+    if (it != mReferencesByTargetObject.end()) {
+        const QList<ObjectReferenceItem*> &items = *it;
+        for (auto item : items)
+            item->updateColor();
+    }
+}
+
 void ObjectSelectionItem::objectsAdded(const QList<MapObject *> &objects)
 {
     if (objectLabelVisibility() == Preferences::AllObjectLabels) {
@@ -648,7 +672,7 @@ void ObjectSelectionItem::tilesetTilePositioningChanged(Tileset *tileset)
 void ObjectSelectionItem::tileTypeChanged(Tile *tile)
 {
     auto isObjectAffected = [tile] (const MapObject *object) -> bool {
-        if (!object->type().isEmpty())
+        if (!object->className().isEmpty())
             return false;
 
         const auto &cell = object->cell();

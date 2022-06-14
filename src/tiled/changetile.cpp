@@ -28,26 +28,6 @@
 
 namespace Tiled {
 
-ChangeTileType::ChangeTileType(TilesetDocument *tilesetDocument,
-                               const QList<Tile *> &tiles,
-                               const QString &type,
-                               QUndoCommand *parent)
-    : ChangeValue(tilesetDocument, tiles, type, parent)
-{
-    setText(QCoreApplication::translate("Undo Commands", "Change Tile Type"));
-}
-
-QString ChangeTileType::getValue(const Tile *tile) const
-{
-    return tile->type();
-}
-
-void ChangeTileType::setValue(Tile *tile, const QString &type) const
-{
-    static_cast<TilesetDocument*>(document())->setTileType(tile, type);
-}
-
-
 ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
                                              const QList<Tile*>& tiles,
                                              qreal probability,

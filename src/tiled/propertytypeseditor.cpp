@@ -103,7 +103,7 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     , mPropertyTypesModel(new PropertyTypesModel(this))
     , mDetailsLayout(new QFormLayout)
     , mValuesModel(new QStringListModel(this))
-    , mTypeOfMenu(new PersistentMenu(this))
+    , mClassOfMenu(new PersistentMenu(this))
 {
     mUi->setupUi(this);
 
@@ -112,21 +112,21 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     mUi->propertyTypesView->setModel(mPropertyTypesModel);
     mUi->horizontalLayout->addLayout(mDetailsLayout);
 
-    const struct  {
+    const struct {
         ClassPropertyType::ClassUsageFlag flag;
         QString name;
     } flagsWithNames[] = {
-        { ClassPropertyType::MapType,       tr("Map") },
-        { ClassPropertyType::LayerType,     tr("Layer") },
-        { ClassPropertyType::MapObjectType, tr("Object") },
-        { ClassPropertyType::TileType,      tr("Tile") },
-        { ClassPropertyType::TilesetType,   tr("Tileset") },
-        { ClassPropertyType::WangColorType, tr("Terrain") },
-        { ClassPropertyType::WangSetType,   tr("Terrain Set") },
+        { ClassPropertyType::MapClass,          tr("Map") },
+        { ClassPropertyType::LayerClass,        tr("Layer") },
+        { ClassPropertyType::MapObjectClass,    tr("Object") },
+        { ClassPropertyType::TileClass,         tr("Tile") },
+        { ClassPropertyType::TilesetClass,      tr("Tileset") },
+        { ClassPropertyType::WangColorClass,    tr("Terrain") },
+        { ClassPropertyType::WangSetClass,      tr("Terrain Set") },
     };
 
     for (auto &entry : flagsWithNames) {
-        auto action = mTypeOfMenu->addAction(entry.name);
+        auto action = mClassOfMenu->addAction(entry.name);
         action->setCheckable(true);
         action->setData(entry.flag);
         connect(action, &QAction::toggled,
@@ -793,10 +793,10 @@ void PropertyTypesEditor::updateClassUsageDetails(const ClassPropertyType &class
 {
     QScopedValueRollback<bool> updatingDetails(mUpdatingDetails, true);
 
-    mTypeOfCheckBox->setChecked(classType.usageFlags & ClassPropertyType::AnyObjectType);
+    mClassOfCheckBox->setChecked(classType.usageFlags & ClassPropertyType::AnyObjectClass);
 
     QStringList selectedTypes;
-    const auto actions = mTypeOfMenu->actions();
+    const auto actions = mClassOfMenu->actions();
     for (QAction *typeAction : actions) {
         const auto flag = typeAction->data().toInt();
         typeAction->setChecked(classType.usageFlags & flag);
@@ -805,13 +805,13 @@ void PropertyTypesEditor::updateClassUsageDetails(const ClassPropertyType &class
     }
 
     if (selectedTypes.isEmpty()) {
-        mTypeOfButton->setText(tr("Select Types"));
+        mClassOfButton->setText(tr("Select Types"));
     } else {
         if (selectedTypes.size() > 3) {
             selectedTypes.erase(selectedTypes.begin() + 3, selectedTypes.end());
             selectedTypes.append(QStringLiteral("..."));
         }
-        mTypeOfButton->setText(selectedTypes.join(QStringLiteral(", ")));
+        mClassOfButton->setText(selectedTypes.join(QStringLiteral(", ")));
     }
 }
 
@@ -891,19 +891,19 @@ void PropertyTypesEditor::addClassProperties()
     connect(mUseAsPropertyCheckBox, &QCheckBox::toggled,
             this, [this] (bool checked) { setUsageFlags(ClassPropertyType::PropertyValueType, checked); });
 
-    mTypeOfButton = new QPushButton(tr("Select Types"));
-    mTypeOfButton->setAutoDefault(false);
-    mTypeOfButton->setMenu(mTypeOfMenu);
-    mTypeOfCheckBox = new QCheckBox(tr("Type of"));
+    mClassOfButton = new QPushButton(tr("Select Types"));
+    mClassOfButton->setAutoDefault(false);
+    mClassOfButton->setMenu(mClassOfMenu);
+    mClassOfCheckBox = new QCheckBox(tr("Class of"));
 
-    connect(mTypeOfCheckBox, &QCheckBox::toggled,
-            this, [this] (bool checked) { setUsageFlags(ClassPropertyType::AnyObjectType, checked); });
+    connect(mClassOfCheckBox, &QCheckBox::toggled,
+            this, [this] (bool checked) { setUsageFlags(ClassPropertyType::AnyObjectClass, checked); });
 
     auto usageOptions = new QHBoxLayout;
     usageOptions->addWidget(mUseAsPropertyCheckBox);
     usageOptions->addSpacing(Utils::dpiScaled(20));
-    usageOptions->addWidget(mTypeOfCheckBox);
-    usageOptions->addWidget(mTypeOfButton);
+    usageOptions->addWidget(mClassOfCheckBox);
+    usageOptions->addWidget(mClassOfButton);
     usageOptions->addStretch();
 
     QToolBar *membersToolBar = createSmallToolBar(mUi->groupBox);

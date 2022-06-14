@@ -20,16 +20,40 @@
 
 #pragma once
 
+#include "changevalue.h"
 #include "object.h"
 #include "undocommands.h"
 
 #include <QString>
-#include <QUndoCommand>
 #include <QVector>
 
 namespace Tiled {
 
 class Document;
+
+class ChangeClassName : public ChangeValue<Object, QString>
+{
+public:
+    /**
+     * Creates an undo command that sets the given \a object's \a className.
+     */
+    ChangeClassName(Document *document,
+                    const QList<Object*> &objects,
+                    const QString &className,
+                    QUndoCommand *parent = nullptr);
+
+    int id() const override { return Cmd_ChangeClassName; }
+
+    void undo() override;
+    void redo() override;
+
+protected:
+    QString getValue(const Object *object) const override;
+    void setValue(Object *object, const QString &type) const override;
+
+private:
+    void emitChangeEvent();
+};
 
 class ChangeProperties : public QUndoCommand, public ClonableUndoCommand
 {

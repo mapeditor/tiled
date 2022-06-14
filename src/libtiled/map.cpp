@@ -328,6 +328,8 @@ bool Map::isTilesetUsed(const Tileset *tileset) const
 std::unique_ptr<Map> Map::clone() const
 {
     auto o = std::make_unique<Map>(mParameters);
+    o->setClassName(className());
+    o->setProperties(properties());
     o->fileName = fileName;
     o->exportFileName = exportFileName;
     o->exportFormat = exportFormat;
@@ -342,7 +344,6 @@ std::unique_ptr<Map> Map::clone() const
     o->mTilesets = mTilesets;
     o->mNextLayerId = mNextLayerId;
     o->mNextObjectId = mNextObjectId;
-    o->setProperties(properties());
     return o;
 }
 

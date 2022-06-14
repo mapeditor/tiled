@@ -196,6 +196,8 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
 
     w.writeAttribute(QStringLiteral("version"), QLatin1String("1.8"));
     w.writeAttribute(QStringLiteral("tiledversion"), QCoreApplication::applicationVersion());
+    if (!map.className().isEmpty())
+        w.writeAttribute(QStringLiteral("class"), map.className());
     w.writeAttribute(QStringLiteral("orientation"), orientation);
     w.writeAttribute(QStringLiteral("renderorder"), renderOrder);
     if (map.compressionLevel() >= 0)
@@ -275,7 +277,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
 
 static bool includeTile(const Tile *tile)
 {
-    if (!tile->type().isEmpty())
+    if (!tile->className().isEmpty())
         return true;
     if (!tile->properties().isEmpty())
         return true;
@@ -316,6 +318,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     }
 
     w.writeAttribute(QStringLiteral("name"), tileset.name());
+    if (!tileset.className().isEmpty())
+        w.writeAttribute(QStringLiteral("class"), tileset.className());
     w.writeAttribute(QStringLiteral("tilewidth"),
                      QString::number(tileset.tileWidth()));
     w.writeAttribute(QStringLiteral("tileheight"),
@@ -440,8 +444,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                                  QString::number(imageRect.height()));
             }
 
-            if (!tile->type().isEmpty())
-                w.writeAttribute(QStringLiteral("type"), tile->type());
+            if (!tile->className().isEmpty())
+                w.writeAttribute(QStringLiteral("class"), tile->className());
             if (tile->probability() != 1.0)
                 w.writeAttribute(QStringLiteral("probability"), QString::number(tile->probability()));
             if (!tile->properties().isEmpty())
@@ -503,6 +507,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             w.writeStartElement(QStringLiteral("wangset"));
 
             w.writeAttribute(QStringLiteral("name"), ws->name());
+            if (!ws->className().isEmpty())
+                w.writeAttribute(QStringLiteral("class"), ws->className());
             w.writeAttribute(QStringLiteral("type"), wangSetTypeToString(ws->type()));
             w.writeAttribute(QStringLiteral("tile"), QString::number(ws->imageTileId()));
 
@@ -511,6 +517,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                     w.writeStartElement(QStringLiteral("wangcolor"));
 
                     w.writeAttribute(QStringLiteral("name"), wc->name());
+                    if (!wc->className().isEmpty())
+                        w.writeAttribute(QStringLiteral("class"), wc->className());
                     w.writeAttribute(QStringLiteral("color"), colorToString(wc->color()));
                     w.writeAttribute(QStringLiteral("tile"), QString::number(wc->imageId()));
                     w.writeAttribute(QStringLiteral("probability"), QString::number(wc->probability()));
@@ -667,6 +675,8 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
         w.writeAttribute(QStringLiteral("id"), QString::number(layer.id()));
     if (!layer.name().isEmpty())
         w.writeAttribute(QStringLiteral("name"), layer.name());
+    if (!layer.className().isEmpty())
+        w.writeAttribute(QStringLiteral("class"), layer.className());
 
     const int x = layer.x();
     const int y = layer.y();
@@ -745,7 +755,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     w.writeStartElement(QStringLiteral("object"));
     const int id = mapObject.id();
     const QString &name = mapObject.name();
-    const QString &type = mapObject.type();
+    const QString &className = mapObject.className();
     const QPointF pos = mapObject.position();
 
     bool isTemplateInstance = mapObject.isTemplateInstance();
@@ -763,8 +773,8 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (shouldWrite(!name.isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::NameProperty)))
         w.writeAttribute(QStringLiteral("name"), name);
 
-    if (shouldWrite(!type.isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::TypeProperty)))
-        w.writeAttribute(QStringLiteral("type"), type);
+    if (!className.isEmpty())
+        w.writeAttribute(QStringLiteral("class"), className);
 
     if (shouldWrite(!mapObject.cell().isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::CellProperty))) {
         const unsigned gid = mGidMapper.cellToGid(mapObject.cell());

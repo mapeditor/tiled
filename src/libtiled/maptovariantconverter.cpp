@@ -45,10 +45,15 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     QVariantMap mapVariant;
 
     mapVariant[QStringLiteral("type")] = QLatin1String("map");
+
+    if (!map.className().isEmpty())
+        mapVariant[QStringLiteral("class")] = map.className();
+
     if (mVersion == 2)
         mapVariant[QStringLiteral("version")] = QStringLiteral("1.8");
     else
         mapVariant[QStringLiteral("version")] = 1.1;
+
     mapVariant[QStringLiteral("tiledversion")] = QCoreApplication::applicationVersion();
     mapVariant[QStringLiteral("orientation")] = orientationToString(map.orientation());
     mapVariant[QStringLiteral("renderorder")] = renderOrderToString(map.renderOrder());
@@ -177,6 +182,8 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     }
 
     tilesetVariant[QStringLiteral("name")] = tileset.name();
+    if (!tileset.className().isEmpty())
+        tilesetVariant[QStringLiteral("class")] = tileset.className();
     tilesetVariant[QStringLiteral("tilewidth")] = tileset.tileWidth();
     tilesetVariant[QStringLiteral("tileheight")] = tileset.tileHeight();
     tilesetVariant[QStringLiteral("spacing")] = tileset.tileSpacing();
@@ -280,8 +287,8 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
             addProperties(tileVariant, properties);
         }
 
-        if (!tile->type().isEmpty())
-            tileVariant[QStringLiteral("type")] = tile->type();
+        if (!tile->className().isEmpty())
+            tileVariant[QStringLiteral("class")] = tile->className();
         if (tile->probability() != 1.0)
             tileVariant[QStringLiteral("probability")] = tile->probability();
         if (!tile->imageSource().isEmpty()) {
@@ -386,6 +393,8 @@ QVariant MapToVariantConverter::toVariant(const WangSet &wangSet) const
     QVariantMap wangSetVariant;
 
     wangSetVariant[QStringLiteral("name")] = wangSet.name();
+    if (!wangSet.className().isEmpty())
+        wangSetVariant[QStringLiteral("class")] = wangSet.className();
     wangSetVariant[QStringLiteral("type")] = wangSetTypeToString(wangSet.type());
     wangSetVariant[QStringLiteral("tile")] = wangSet.imageTileId();
 
@@ -420,6 +429,8 @@ QVariant MapToVariantConverter::toVariant(const WangColor &wangColor) const
     QVariantMap colorVariant;
     colorVariant[QStringLiteral("color")] = colorToString(wangColor.color());
     colorVariant[QStringLiteral("name")] = wangColor.name();
+    if (!wangColor.className().isEmpty())
+        colorVariant[QStringLiteral("class")] = wangColor.className();
     colorVariant[QStringLiteral("probability")] = wangColor.probability();
     colorVariant[QStringLiteral("tile")] = wangColor.imageId();
     addProperties(colorVariant, wangColor.properties());
@@ -536,7 +547,7 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
 {
     QVariantMap objectVariant;
     const QString &name = object.name();
-    const QString &type = object.type();
+    const QString &className = object.className();
 
     addProperties(objectVariant, object.properties());
 
@@ -554,9 +565,8 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
     if (notTemplateInstance || object.propertyChanged(MapObject::NameProperty))
         objectVariant[QStringLiteral("name")] = name;
 
-    if (notTemplateInstance || object.propertyChanged(MapObject::TypeProperty))
-        objectVariant[QStringLiteral("type")] = type;
-
+    if (notTemplateInstance || !className.isEmpty())
+        objectVariant[QStringLiteral("class")] = className;
 
     if (notTemplateInstance || object.propertyChanged(MapObject::CellProperty))
         if (!object.cell().isEmpty())
@@ -747,6 +757,8 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
         layerVariant[QStringLiteral("id")] = layer.id();
 
     layerVariant[QStringLiteral("name")] = layer.name();
+    if (!layer.className().isEmpty())
+        layerVariant[QStringLiteral("class")] = layer.className();
     layerVariant[QStringLiteral("x")] = layer.x();
     layerVariant[QStringLiteral("y")] = layer.y();
     layerVariant[QStringLiteral("visible")] = layer.isVisible();

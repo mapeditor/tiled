@@ -221,6 +221,7 @@ bool Layer::canMergeDown() const
  */
 Layer *Layer::initializeClone(Layer *clone) const
 {
+    clone->setClassName(className());
     clone->mId = mId;
     clone->mOffset = mOffset;
     clone->mParallaxFactor = mParallaxFactor;

@@ -134,9 +134,9 @@ private:
 
     ColorButton *mColorButton = nullptr;
     QCheckBox *mUseAsPropertyCheckBox = nullptr;
-    QCheckBox *mTypeOfCheckBox = nullptr;
-    QPushButton *mTypeOfButton = nullptr;
-    QMenu *mTypeOfMenu;
+    QCheckBox *mClassOfCheckBox = nullptr;
+    QPushButton *mClassOfButton = nullptr;
+    QMenu *mClassOfMenu;
     QtTreePropertyBrowser *mMembersView = nullptr;
     CustomPropertiesHelper *mPropertiesHelper = nullptr;
 

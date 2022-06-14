@@ -74,12 +74,12 @@ QSizeF TextData::textSize() const
 }
 
 
-MapObject::MapObject(const QString &name, const QString &type,
+MapObject::MapObject(const QString &name,
+                     const QString &className,
                      const QPointF &pos,
                      const QSizeF &size)
-    : Object(MapObjectType)
+    : Object(MapObjectType, className)
     , mName(name)
-    , mType(type)
     , mPos(pos)
     , mSize(size)
 {
@@ -93,16 +93,20 @@ int MapObject::index() const
 }
 
 /**
- * Returns the affective type of this object. This may be the type of its tile,
- * if the object does not have a type set explicitly.
+ * Returns the affective class of this object. This may be the class of its
+ * tile, if the object does not have a class set explicitly.
  */
-const QString &MapObject::effectiveType() const
+const QString &MapObject::effectiveClassName() const
 {
-    if (mType.isEmpty())
-        if (const Tile *tile = mCell.tile())
-            return tile->type();
+    if (className().isEmpty()) {
+        if (const MapObject *base = templateObject())
+            return base->effectiveClassName();
 
-    return mType;
+        if (const Tile *tile = mCell.tile())
+            return tile->className();
+    }
+
+    return className();
 }
 
 /**
@@ -280,17 +284,17 @@ Alignment MapObject::alignment(const Map *map) const
 
 /**
  * A helper function to determine the color of a map object. The color is
- * determined first of all by the object type, and otherwise by the group
+ * determined first of all by the object class, and otherwise by the group
  * that the object is in. If still no color is defined, it defaults to
  * gray.
  */
 QColor MapObject::effectiveColor() const
 {
-    const QString effectiveType = this->effectiveType();
+    const QString &effectiveClass = this->effectiveClassName();
 
-    // See if this object type has a color associated with it
-    if (auto type = Object::propertyTypes().findClassByName(effectiveType))
-        if (type->isTypeFor(*this))
+    // See if this object's class has a color associated with it
+    if (auto type = Object::propertyTypes().findClassByName(effectiveClass))
+        if (type->isClassFor(*this))
             return type->color;
 
     // If not, get color from object group
@@ -305,7 +309,6 @@ QVariant MapObject::mapObjectProperty(Property property) const
 {
     switch (property) {
     case NameProperty:          return mName;
-    case TypeProperty:          return mType;
     case VisibleProperty:       return mVisible;
     case TextProperty:          return mTextData.text;
     case TextFontProperty:      return mTextData.font;
@@ -328,7 +331,6 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
 {
     switch (property) {
     case NameProperty:          setName(value.toString()); break;
-    case TypeProperty:          setType(value.toString()); break;
     case VisibleProperty:       setVisible(value.toBool()); break;
     case TextProperty:          mTextData.text = value.toString(); break;
     case TextFontProperty:      mTextData.font = value.value<QFont>(); break;
@@ -370,7 +372,7 @@ void MapObject::flip(FlipDirection direction, const QPointF &origin)
  */
 MapObject *MapObject::clone() const
 {
-    MapObject *o = new MapObject(mName, mType, mPos, mSize);
+    MapObject *o = new MapObject(mName, className(), mPos, mSize);
     o->setId(mId);
     o->setProperties(properties());
     o->setTextData(mTextData);
@@ -388,7 +390,6 @@ void MapObject::copyPropertiesFrom(const MapObject *object)
 {
     setName(object->name());
     setSize(object->size());
-    setType(object->type());
     setTextData(object->textData());
     setPolygon(object->polygon());
     setShape(object->shape());
@@ -419,9 +420,6 @@ void MapObject::syncWithTemplate()
     if (!propertyChanged(MapObject::SizeProperty))
         setSize(base->size());
 
-    if (!propertyChanged(MapObject::TypeProperty))
-        setType(base->type());
-
     if (!propertyChanged(MapObject::TextProperty))
         setTextData(base->textData());
 
@@ -448,7 +446,10 @@ void MapObject::detachFromTemplate()
         return;
 
     // All non-overridden properties are already synchronized, so we only need
-    // to merge the custom properties.
+    // to merge the class and the custom properties.
+    if (className().isEmpty())
+        setClassName(base->className());
+
     Properties newProperties = base->properties();
     Tiled::mergeProperties(newProperties, properties());
     setProperties(newProperties);

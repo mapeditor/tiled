@@ -75,7 +75,7 @@ protected:
 private:
     void documentChanged(const ChangeEvent &change);
     void mapChanged();
-    void objectsChanged(const MapObjectsChangeEvent &mapObjectsChange);
+    void mapObjectsChanged(const MapObjectsChangeEvent &mapObjectsChange);
     void tilesetChanged(Tileset *tileset);
     void tileChanged(Tile *tile);
     void tileTypeChanged(Tile *tile);
@@ -98,7 +98,7 @@ private:
 
     enum PropertyId {
         NameProperty,
-        TypeProperty,
+        ClassProperty,
         XProperty,
         YProperty,
         WidthProperty,
@@ -170,6 +170,8 @@ private:
     void addTileProperties();
     void addWangSetProperties();
     void addWangColorProperties();
+
+    QtVariantProperty *addClassProperty(QtProperty *parent);
 
     void applyMapValue(PropertyId id, const QVariant &val);
     void applyMapObjectValue(PropertyId id, const QVariant &val);

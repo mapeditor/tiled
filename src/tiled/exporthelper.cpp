@@ -153,24 +153,24 @@ void ExportHelper::resolveTypeAndProperties(MapObject *object) const
 {
     Tile *tile = object->cell().tile();
 
-    // Inherit type from tile if not set on object (not inheriting
-    // type from tile of tile object template here, for that the
+    // Inherit the class from the tile if not set on the object (not inheriting
+    // class from tile of tile object template here, since for that the
     // "Detach templates" option needs to be used as well)
-    if (object->type().isEmpty() && tile &&
+    if (object->className().isEmpty() && tile &&
             (!object->isTemplateInstance() || object->propertyChanged(MapObject::CellProperty)))
-        object->setType(tile->type());
+        object->setClassName(tile->className());
 
     Properties properties;
 
-    // Inherit properties from type
-    if (!object->type().isEmpty()) {
-        if (auto type = Object::propertyTypes().findClassByName(object->type())) {
-            if (type->isTypeFor(*object))
+    // Inherit properties from the class
+    if (!object->className().isEmpty()) {
+        if (auto type = Object::propertyTypes().findClassByName(object->className())) {
+            if (type->isClassFor(*object))
                 mergeProperties(properties, static_cast<const ClassPropertyType*>(type)->members);
         }
     }
 
-    // Inherit properties from tile
+    // Inherit properties from the tile
     if (tile)
         mergeProperties(properties, tile->properties());
 

@@ -43,6 +43,7 @@ class EditableObject : public QObject
 
     Q_PROPERTY(Tiled::EditableAsset *asset READ asset)
     Q_PROPERTY(bool readOnly READ isReadOnly)
+    Q_PROPERTY(QString className READ className WRITE setClassName)
 
 public:
     EditableObject(EditableAsset *asset,
@@ -53,6 +54,8 @@ public:
 
     virtual bool isReadOnly() const;
     bool checkReadOnly() const;
+
+    const QString &className() const;
 
     Q_INVOKABLE QVariant property(const QString &name) const;
     Q_INVOKABLE void setProperty(const QString &name, const QVariant &value);
@@ -71,6 +74,9 @@ public:
     void setAsset(EditableAsset *asset);
     void setObject(Object *object);
 
+public slots:
+    void setClassName(const QString &type);
+
 private:
     QVariant toScript(const QVariant &value) const;
     QVariant fromScript(const QVariant &value) const;
@@ -85,6 +91,11 @@ private:
 inline EditableAsset *EditableObject::asset() const
 {
     return mAsset;
+}
+
+inline const QString &EditableObject::className() const
+{
+    return object()->className();
 }
 
 inline QVariant EditableObject::property(const QString &name) const

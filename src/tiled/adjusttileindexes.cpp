@@ -146,7 +146,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
     };
 
     // Adjust tile meta data
-    QMap<QString, QList<Tile*>> tilesChangingTypeByType;
+    QMap<QString, QList<Object*>> tilesChangingClassByClass;
     QList<Tile*> tilesChangingProbability;
     QVector<qreal> tileProbabilities;
     QSet<Tile*> tilesToReset;
@@ -164,7 +164,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
 
     auto applyMetaData = [&](Tile *toTile,
                              const Properties &properties,
-                             const QString &type,
+                             const QString &className,
                              qreal probability,
                              std::unique_ptr<ObjectGroup> objectGroup,
                              const QVector<Frame> &frames)
@@ -177,8 +177,8 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
                                  this);
         }
 
-        if (type != toTile->type())
-            tilesChangingTypeByType[type].append(toTile);
+        if (className != toTile->className())
+            tilesChangingClassByClass[className].append(toTile);
 
         if (probability != toTile->probability()) {
             tilesChangingProbability.append(toTile);
@@ -212,7 +212,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
 
         applyMetaData(toTile,
                       fromTile->properties(),
-                      fromTile->type(),
+                      fromTile->className(),
                       fromTile->probability(),
                       std::move(objectGroup),
                       adjustAnimationFrames(fromTile->frames()));
@@ -291,10 +291,10 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
             new ChangeTileWangId(tilesetDocument, wangSet, changes, this);
     }
 
-    QMapIterator<QString, QList<Tile*>> it(tilesChangingTypeByType);
+    QMapIterator<QString, QList<Object*>> it(tilesChangingClassByClass);
     while (it.hasNext()) {
         it.next();
-        new ChangeTileType(tilesetDocument, it.value(), it.key(), this);
+        new ChangeClassName(tilesetDocument, it.value(), it.key(), this);
     }
 
     if (!tilesChangingProbability.isEmpty()) {

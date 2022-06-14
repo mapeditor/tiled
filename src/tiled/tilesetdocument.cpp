@@ -398,17 +398,6 @@ WangColorModel *TilesetDocument::wangColorModel(WangSet *wangSet)
     return model.get();
 }
 
-void TilesetDocument::setTileType(Tile *tile, const QString &type)
-{
-    Q_ASSERT(tile->tileset() == mTileset.data());
-
-    tile->setType(type);
-    emit tileTypeChanged(tile);
-
-    for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tileTypeChanged(tile);
-}
-
 void TilesetDocument::setTileImage(Tile *tile,
                                    const QPixmap &image,
                                    const QUrl &source)

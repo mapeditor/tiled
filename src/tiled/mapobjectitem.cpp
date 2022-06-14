@@ -66,9 +66,9 @@ void MapObjectItem::syncWithMapObject()
     }
 
     QString toolTip = mObject->name();
-    const QString &type = mObject->type();
-    if (!type.isEmpty())
-        toolTip += QStringLiteral(" (") + type + QLatin1Char(')');
+    const QString &className = mObject->effectiveClassName();
+    if (!className.isEmpty())
+        toolTip += QStringLiteral(" (") + className + QLatin1Char(')');
     setToolTip(toolTip);
 
     MapRenderer *renderer = mMapDocument->renderer();

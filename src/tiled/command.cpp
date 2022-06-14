@@ -96,8 +96,12 @@ static QString replaceVariables(const QString &string, bool quoteValues = true)
         }
 
         if (const MapObject *currentObject = dynamic_cast<MapObject *>(document->currentObject())) {
+            // For compatility with Tiled < 1.9
             finalString.replace(QLatin1String("%objecttype"),
-                                replaceString.arg(currentObject->type()));
+                                replaceString.arg(currentObject->className()));
+
+            finalString.replace(QLatin1String("%objectclass"),
+                                replaceString.arg(currentObject->className()));
             finalString.replace(QLatin1String("%objectid"),
                                 replaceString.arg(currentObject->id()));
         }

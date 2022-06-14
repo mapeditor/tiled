@@ -21,9 +21,10 @@
 
 #include "mapobjectmodel.h"
 
+#include "changeevents.h"
 #include "changelayer.h"
 #include "changemapobject.h"
-#include "changeevents.h"
+#include "changeproperties.h"
 #include "grouplayer.h"
 #include "layermodel.h"
 #include "map.h"
@@ -156,8 +157,8 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
             switch (index.column()) {
             case Name:
                 return mapObject->name();
-            case Type:
-                return mapObject->effectiveType();
+            case Class:
+                return mapObject->effectiveClassName();
             case Id:
                 return mapObject->id();
             case Position:
@@ -175,9 +176,9 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
         case Qt::ForegroundRole:
             if (index.column() == 1) {
                 const QPalette palette = QApplication::palette();
-                const auto typeColorGroup = mapObject->type().isEmpty() ? QPalette::Disabled
-                                                                        : QPalette::Active;
-                return palette.brush(typeColorGroup, QPalette::WindowText);
+                const auto classColorGroup = mapObject->className().isEmpty() ? QPalette::Disabled
+                                                                              : QPalette::Active;
+                return palette.brush(classColorGroup, QPalette::WindowText);
             }
             return QVariant();
         case Qt::CheckStateRole:
@@ -242,12 +243,9 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
                                                MapObject::NameProperty, s));
                 undo->endMacro();
             }
-            if (index.column() == 1 && s != mapObject->type()) {
+            if (index.column() == 1 && s != mapObject->className()) {
                 QUndoStack *undo = mMapDocument->undoStack();
-                undo->beginMacro(tr("Change Object Type"));
-                undo->push(new ChangeMapObject(mMapDocument, mapObject,
-                                               MapObject::TypeProperty, s));
-                undo->endMacro();
+                undo->push(new ChangeClassName(mMapDocument, { mapObject }, s));
             }
             return true;
         }
@@ -289,7 +287,7 @@ Qt::ItemFlags MapObjectModel::flags(const QModelIndex &index) const
     if (index.column() == 0)
         rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
     else if (toMapObject(index)) {
-        if (index.column() == Type)// allow to edit only type column
+        if (index.column() == Class)    // allow to edit only class column
             rc |= Qt::ItemIsEditable;
     }
     return rc;
@@ -301,7 +299,7 @@ QVariant MapObjectModel::headerData(int section, Qt::Orientation orientation,
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch (section) {
         case Name: return tr("Name");
-        case Type: return tr("Type");
+        case Class: return tr("Class");
         case Id: return tr("ID");
         case Position: return tr("Position");
         }
@@ -404,8 +402,6 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
                 this, &MapObjectModel::layerAdded);
         connect(mMapDocument, &MapDocument::layerAboutToBeRemoved,
                 this, &MapObjectModel::layerAboutToBeRemoved);
-        connect(mMapDocument, &MapDocument::tileTypeChanged,
-                this, &MapObjectModel::tileTypeChanged);
 
         connect(mMapDocument, &Document::changed,
                 this, &MapObjectModel::documentChanged);
@@ -461,24 +457,35 @@ void MapObjectModel::layerAboutToBeRemoved(GroupLayer *groupLayer, int index)
     }
 }
 
-void MapObjectModel::tileTypeChanged(Tile *tile)
+void MapObjectModel::classChanged(const QList<Object *> &objects)
 {
-    LayerIterator it(mMap);
+    if (objects.isEmpty())
+        return;
 
-    while (Layer *layer = it.next()) {
-        if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+    const auto typeId = objects.first()->typeId();
+
+    QList<MapObject *> affectedObjects;
+    affectedObjects.reserve(objects.size());
+
+    if (typeId == Object::MapObjectType) {
+        for (Object *object : objects)
+            affectedObjects.append(static_cast<MapObject*>(object));
+    } else if (typeId == Object::TileType) {
+        for (const Layer *layer : mMap->objectGroups()) {
+            auto objectGroup = static_cast<const ObjectGroup*>(layer);
             for (MapObject *mapObject : objectGroup->objects()) {
-                if (!mapObject->type().isEmpty())
-                    continue;
-
-                const auto &cell = mapObject->cell();
-                if (cell.tileset() == tile->tileset() && cell.tileId() == tile->id()) {
-                    QModelIndex index = this->index(mapObject, 1);
-                    emit dataChanged(index, index);
-                }
+                if (mapObject->className().isEmpty())
+                    if (auto tile = mapObject->cell().tile())
+                        if (objects.contains(tile))
+                            affectedObjects.append(mapObject);
             }
         }
     }
+
+    QVarLengthArray<Column, 3> columns;
+    columns.append(MapObjectModel::Class);
+
+    emitDataChanged(affectedObjects, columns);
 }
 
 QList<Layer *> &MapObjectModel::filteredChildLayers(GroupLayer *parentLayer) const
@@ -511,6 +518,12 @@ void MapObjectModel::documentChanged(const ChangeEvent &change)
 {
     // Notify views about certain property changes
     switch (change.type) {
+    case ChangeEvent::ObjectsChanged: {
+        auto &objectsChange = static_cast<const ObjectsChangeEvent&>(change);
+        if (objectsChange.properties & ObjectsChangeEvent::ClassProperty)
+            classChanged(objectsChange.objects);
+        break;
+    }
     case ChangeEvent::LayerChanged: {
         auto &layerChange = static_cast<const LayerChangeEvent&>(change);
 
@@ -551,8 +564,6 @@ void MapObjectModel::documentChanged(const ChangeEvent &change)
         QVarLengthArray<Column, 3> columns;
         if (mapObjectChange.properties & (MapObject::NameProperty | MapObject::VisibleProperty))
             columns.append(MapObjectModel::Name);
-        if (mapObjectChange.properties & MapObject::TypeProperty)
-            columns.append(MapObjectModel::Type);
         if (mapObjectChange.properties & MapObject::PositionProperty)
             columns.append(MapObjectModel::Position);
 

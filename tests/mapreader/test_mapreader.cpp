@@ -46,7 +46,7 @@ void test_MapReader::loadMap()
     MapObject *mapObject = objectGroup->objects().at(0);
 
     QCOMPARE(mapObject->name(), QLatin1String("Some object"));
-    QCOMPARE(mapObject->type(), QLatin1String("WARP"));
+    QCOMPARE(mapObject->className(), QLatin1String("WARP"));
     QCOMPARE(mapObject->x(), qreal(200));
     QCOMPARE(mapObject->y(), qreal(200));
     QCOMPARE(mapObject->width(), qreal(128));

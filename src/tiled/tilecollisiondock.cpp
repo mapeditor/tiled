@@ -258,9 +258,8 @@ void TileCollisionDock::autoDetectMask()
                                                    : pixmap.rect();
 
     // Create the rectangular collision shape
-    MapObject *newObject = new MapObject(QString(), QString(),
-                                         content.topLeft(),
-                                         content.size());
+    MapObject *newObject = new MapObject;
+    newObject->setBounds(content);
 
     ObjectGroup *objectGroup = static_cast<ObjectGroup*>(mDummyMapDocument->map()->layerAt(1));
     mDummyMapDocument->undoStack()->push(new AddMapObjects(mDummyMapDocument.data(), objectGroup, newObject));

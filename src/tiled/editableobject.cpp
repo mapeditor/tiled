@@ -76,6 +76,14 @@ Document *EditableObject::document() const
     return asset() ? asset()->document() : nullptr;
 }
 
+void EditableObject::setClassName(const QString &className)
+{
+    if (Document *doc = document())
+        asset()->push(new ChangeClassName(doc, { object() }, className));
+    else if (!checkReadOnly())
+        object()->setClassName(className);
+}
+
 /**
  * When this object is read-only, raises a script error and returns true.
  */
