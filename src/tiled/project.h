@@ -21,8 +21,9 @@
 #pragma once
 
 #include "command.h"
-#include "propertytype.h"
 #include "properties.h"
+#include "propertytype.h"
+#include "tiled.h"
 
 #include <QDateTime>
 #include <QStringList>
@@ -51,6 +52,7 @@ public:
     QString mObjectTypesFile;
     QString mAutomappingRulesFile;
     QVector<Command> mCommands;
+    CompatibilityVersion mCompatibilityVersion = Tiled_Latest;
 
 private:
     QDateTime mLastSaved;

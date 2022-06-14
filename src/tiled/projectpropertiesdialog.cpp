@@ -45,14 +45,21 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
     ui->propertyBrowser->setFactoryForManager<QtVariantPropertyManager>(variantPropertyManager,
                                                                         variantEditorFactory);
 
-    auto extensionsGroupProperty = groupPropertyManager->addProperty(tr("Extensions"));
-    mExtensionPathProperty = variantPropertyManager->addProperty(filePathTypeId(), tr("Directory"));
+    const QMap<CompatibilityVersion, QString> versionToName {
+        { Tiled_1_8,             tr("Tiled 1.8") },
+        { Tiled_Latest,          tr("Latest") },
+    };
+    mVersions = versionToName.keys();
+
+    mCompatibilityVersionProperty = variantPropertyManager->addProperty(QtVariantPropertyManager::enumTypeId(),
+                                                                        tr("Compatibility Version"));
+    mCompatibilityVersionProperty->setAttribute(QLatin1String("enumNames"),
+                                                QVariant::fromValue<QStringList>(versionToName.values()));
+    mCompatibilityVersionProperty->setValue(mVersions.indexOf(project.mCompatibilityVersion));
+
+    mExtensionPathProperty = variantPropertyManager->addProperty(filePathTypeId(), tr("Extensions Directory"));
     mExtensionPathProperty->setValue(project.mExtensionsPath);
     mExtensionPathProperty->setAttribute(QStringLiteral("directory"), true);
-    extensionsGroupProperty->addSubProperty(mExtensionPathProperty);
-    ui->propertyBrowser->addProperty(extensionsGroupProperty);
-
-    auto filesGroupProperty = groupPropertyManager->addProperty(tr("Files"));
 
     QString ruleFileFilter = QCoreApplication::translate("File Types", "Automapping Rules files (*.txt)");
     FormatHelper<MapFormat> helper(FileFormat::ReadWrite, std::move(ruleFileFilter));
@@ -60,8 +67,15 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
     mAutomappingRulesFileProperty = variantPropertyManager->addProperty(filePathTypeId(), tr("Automapping rules"));
     mAutomappingRulesFileProperty->setValue(project.mAutomappingRulesFile);
     mAutomappingRulesFileProperty->setAttribute(QStringLiteral("filter"), helper.filter());
+
+    auto generalGroupProperty = groupPropertyManager->addProperty(tr("General"));
+    generalGroupProperty->addSubProperty(mCompatibilityVersionProperty);
+
+    auto filesGroupProperty = groupPropertyManager->addProperty(tr("Paths && Files"));
+    filesGroupProperty->addSubProperty(mExtensionPathProperty);
     filesGroupProperty->addSubProperty(mAutomappingRulesFileProperty);
 
+    ui->propertyBrowser->addProperty(generalGroupProperty);
     ui->propertyBrowser->addProperty(filesGroupProperty);
 }
 
@@ -72,6 +86,7 @@ ProjectPropertiesDialog::~ProjectPropertiesDialog()
 
 void ProjectPropertiesDialog::accept()
 {
+    mProject.mCompatibilityVersion = mVersions.at(mCompatibilityVersionProperty->value().toInt());
     mProject.mExtensionsPath = mExtensionPathProperty->value().toString();
     mProject.mAutomappingRulesFile = mAutomappingRulesFileProperty->value().toString();
 

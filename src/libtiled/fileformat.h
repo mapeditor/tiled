@@ -29,12 +29,11 @@
 #pragma once
 
 #include "pluginmanager.h"
+#include "tiled.h"
 
 #include <QObject>
 
-
 namespace Tiled {
-
 
 class TILEDSHARED_EXPORT FileFormat : public QObject
 {
@@ -88,6 +87,14 @@ public:
      * trying to read or write a file.
      */
     virtual QString errorString() const = 0;
+
+    static CompatibilityVersion compatibilityVersion();
+    static void setCompatibilityVersion(CompatibilityVersion version);
+
+    static QString versionString();
+
+private:
+    static CompatibilityVersion mCompatibilityVersion;
 };
 
 } // namespace Tiled

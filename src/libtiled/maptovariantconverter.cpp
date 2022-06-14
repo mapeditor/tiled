@@ -21,6 +21,7 @@
 
 #include "maptovariantconverter.h"
 
+#include "fileformat.h"
 #include "grouplayer.h"
 #include "imagelayer.h"
 #include "map.h"
@@ -50,7 +51,7 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
         mapVariant[QStringLiteral("class")] = map.className();
 
     if (mVersion == 2)
-        mapVariant[QStringLiteral("version")] = QStringLiteral("1.8");
+        mapVariant[QStringLiteral("version")] = FileFormat::versionString();
     else
         mapVariant[QStringLiteral("version")] = 1.1;
 
@@ -287,8 +288,12 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
             addProperties(tileVariant, properties);
         }
 
-        if (!tile->className().isEmpty())
-            tileVariant[QStringLiteral("class")] = tile->className();
+        if (!tile->className().isEmpty()) {
+            if (FileFormat::compatibilityVersion() <= Tiled_1_8)
+                tileVariant[QStringLiteral("type")] = tile->className();
+            else
+                tileVariant[QStringLiteral("class")] = tile->className();
+        }
         if (tile->probability() != 1.0)
             tileVariant[QStringLiteral("probability")] = tile->probability();
         if (!tile->imageSource().isEmpty()) {
@@ -565,8 +570,12 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
     if (notTemplateInstance || object.propertyChanged(MapObject::NameProperty))
         objectVariant[QStringLiteral("name")] = name;
 
-    if (notTemplateInstance || !className.isEmpty())
-        objectVariant[QStringLiteral("class")] = className;
+    if (notTemplateInstance || !className.isEmpty()) {
+        if (FileFormat::compatibilityVersion() <= Tiled_1_8)
+            objectVariant[QStringLiteral("type")] = className;
+        else
+            objectVariant[QStringLiteral("class")] = className;
+    }
 
     if (notTemplateInstance || object.propertyChanged(MapObject::CellProperty))
         if (!object.cell().isEmpty())

@@ -20,6 +20,7 @@
 
 #include "projectmanager.h"
 
+#include "fileformat.h"
 #include "preferences.h"
 #include "projectmodel.h"
 
@@ -58,6 +59,8 @@ void ProjectManager::setProject(Project _project)
 
     Preferences *prefs = Preferences::instance();
     prefs->setPropertyTypes(project.propertyTypes());
+
+    FileFormat::setCompatibilityVersion(project.mCompatibilityVersion);
 
     emit projectChanged();
 }

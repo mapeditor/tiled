@@ -69,6 +69,12 @@ enum LoadingStatus {
     LoadingError
 };
 
+enum CompatibilityVersion {
+    UnknownVersion  = 0,
+    Tiled_1_8       = 1080,
+    Tiled_Latest    = 65535,
+};
+
 const int CHUNK_SIZE = 16;
 const int CHUNK_BITS = 4;
 const int CHUNK_SIZE_MIN = 4;
@@ -118,6 +124,8 @@ inline QMargins maxMargins(const QMargins &a,
 
 TILEDSHARED_EXPORT QString alignmentToString(Alignment);
 TILEDSHARED_EXPORT Alignment alignmentFromString(const QString &);
+
+TILEDSHARED_EXPORT CompatibilityVersion versionFromString(const QString &);
 
 } // namespace Tiled
 

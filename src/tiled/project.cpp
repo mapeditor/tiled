@@ -76,13 +76,16 @@ bool Project::save(const QString &fileName)
 
     const QJsonArray propertyTypes = mPropertyTypes->toJson(dir.path());
 
-    const QJsonObject project {
+    QJsonObject project {
         { QStringLiteral("propertyTypes"), propertyTypes },
         { QStringLiteral("folders"), folders },
         { QStringLiteral("extensionsPath"), relative(dir, extensionsPath) },
         { QStringLiteral("automappingRulesFile"), dir.relativeFilePath(mAutomappingRulesFile) },
-        { QStringLiteral("commands"), commands }
+        { QStringLiteral("commands"), commands },
     };
+
+    if (mCompatibilityVersion != Tiled_Latest)
+        project[QStringLiteral("compatibilityVersion")] = mCompatibilityVersion;
 
     const QJsonDocument document(project);
 
@@ -132,6 +135,8 @@ bool Project::load(const QString &fileName)
     const QJsonArray commands = project.value(QLatin1String("commands")).toArray();
     for (const QJsonValue &commandValue : commands)
         mCommands.append(Command::fromVariant(commandValue.toVariant()));
+
+    mCompatibilityVersion = static_cast<CompatibilityVersion>(project.value(QLatin1String("compatibilityVersion")).toInt(Tiled_Latest));
 
     return true;
 }

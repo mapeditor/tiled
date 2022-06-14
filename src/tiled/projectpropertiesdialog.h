@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "tiled.h"
+
 #include <QDialog>
 
 class QtVariantProperty;
@@ -46,6 +48,8 @@ private:
     Ui::ProjectPropertiesDialog *ui;
 
     Project &mProject;
+    QList<CompatibilityVersion> mVersions;
+    QtVariantProperty *mCompatibilityVersionProperty;
     QtVariantProperty *mExtensionPathProperty;
     QtVariantProperty *mAutomappingRulesFileProperty;
 };

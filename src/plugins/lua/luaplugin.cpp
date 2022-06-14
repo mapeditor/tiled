@@ -207,7 +207,7 @@ void LuaWriter::writeMap(const Map *map)
     mWriter.writeStartDocument();
     mWriter.writeStartReturnTable();
 
-    mWriter.writeKeyAndValue("version", "1.5");
+    mWriter.writeKeyAndValue("version", FileFormat::versionString());
     mWriter.writeKeyAndValue("luaversion", "5.1");
     mWriter.writeKeyAndValue("tiledversion", QCoreApplication::applicationVersion());
     mWriter.writeKeyAndValue("class", map->className());
@@ -316,7 +316,7 @@ void LuaWriter::writeTileset(const Tileset &tileset,
         mWriter.writeStartReturnTable();
 
         // Include version in external tilesets
-        mWriter.writeKeyAndValue("version", "1.5");
+        mWriter.writeKeyAndValue("version", FileFormat::versionString());
         mWriter.writeKeyAndValue("luaversion", "5.1");
         mWriter.writeKeyAndValue("tiledversion", QCoreApplication::applicationVersion());
     }
@@ -403,8 +403,10 @@ void LuaWriter::writeTileset(const Tileset &tileset,
         mWriter.writeStartTable();
         mWriter.writeKeyAndValue("id", tile->id());
 
-        if (!tile->className().isEmpty())
-            mWriter.writeKeyAndValue("class", tile->className());
+        if (!tile->className().isEmpty()) {
+            mWriter.writeKeyAndValue(FileFormat::compatibilityVersion() <= Tiled_1_8 ? "type" : "class",
+                                     tile->className());
+        }
 
         if (!tile->properties().isEmpty())
             writeProperties(tile->properties());
@@ -713,7 +715,8 @@ void LuaWriter::writeMapObject(const Tiled::MapObject *mapObject)
     mWriter.writeStartTable();
     mWriter.writeKeyAndValue("id", mapObject->id());
     mWriter.writeKeyAndValue("name", mapObject->name());
-    mWriter.writeKeyAndValue("class", mapObject->className());
+    mWriter.writeKeyAndValue(FileFormat::compatibilityVersion() <= Tiled_1_8 ? "type" : "class",
+                             mapObject->className());
     mWriter.writeKeyAndValue("shape", toString(mapObject->shape()));
 
     mWriter.writeKeyAndValue("x", mapObject->x());

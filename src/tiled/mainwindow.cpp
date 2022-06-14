@@ -1522,6 +1522,8 @@ void MainWindow::projectProperties()
 
         ScriptManager::instance().refreshExtensionsPaths();
         mAutomappingManager->refreshRulesFile();
+
+        FileFormat::setCompatibilityVersion(project.mCompatibilityVersion);
     }
 }
 

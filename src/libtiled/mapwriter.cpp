@@ -44,6 +44,7 @@
 #include "tilelayer.h"
 #include "tileset.h"
 #include "wangset.h"
+#include "fileformat.h"
 
 #include <QBuffer>
 #include <QCoreApplication>
@@ -194,7 +195,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     const QString orientation = orientationToString(map.orientation());
     const QString renderOrder = renderOrderToString(map.renderOrder());
 
-    w.writeAttribute(QStringLiteral("version"), QLatin1String("1.8"));
+    w.writeAttribute(QStringLiteral("version"), FileFormat::versionString());
     w.writeAttribute(QStringLiteral("tiledversion"), QCoreApplication::applicationVersion());
     if (!map.className().isEmpty())
         w.writeAttribute(QStringLiteral("class"), map.className());
@@ -313,7 +314,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         }
     } else {
         // Include version in external tilesets
-        w.writeAttribute(QStringLiteral("version"), QLatin1String("1.8"));
+        w.writeAttribute(QStringLiteral("version"), FileFormat::versionString());
         w.writeAttribute(QStringLiteral("tiledversion"), QCoreApplication::applicationVersion());
     }
 
@@ -444,8 +445,11 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                                  QString::number(imageRect.height()));
             }
 
-            if (!tile->className().isEmpty())
-                w.writeAttribute(QStringLiteral("class"), tile->className());
+            if (!tile->className().isEmpty()) {
+                const bool classAsType = FileFormat::compatibilityVersion() <= Tiled_1_8;
+                w.writeAttribute(classAsType ? QStringLiteral("type")
+                                             : QStringLiteral("class"), tile->className());
+            }
             if (tile->probability() != 1.0)
                 w.writeAttribute(QStringLiteral("probability"), QString::number(tile->probability()));
             if (!tile->properties().isEmpty())
@@ -773,8 +777,11 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (shouldWrite(!name.isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::NameProperty)))
         w.writeAttribute(QStringLiteral("name"), name);
 
-    if (!className.isEmpty())
-        w.writeAttribute(QStringLiteral("class"), className);
+    if (!className.isEmpty()) {
+        const bool classAsType = FileFormat::compatibilityVersion() <= Tiled_1_8;
+        w.writeAttribute(classAsType ? QStringLiteral("type")
+                                     : QStringLiteral("class"), className);
+    }
 
     if (shouldWrite(!mapObject.cell().isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::CellProperty))) {
         const unsigned gid = mGidMapper.cellToGid(mapObject.cell());
