@@ -1,4 +1,4 @@
-### Unreleased 1.8 patch
+### Tiled 1.8.6 (15 Jun 2022)
 
 * Keep references between objects when copy/pasting or duplicating (#3361)
 * Improved default translation used in case of multiple options
@@ -10,6 +10,7 @@
 * Fixed locking up UI on property type name conflict (#3380)
 * Scripting: Fixed possible crash when accessing Layer.map
 * Defold plugins: Added support for rotated tiles (#3369)
+* Updates to German translation (by Ettore Atalan)
 
 ### Tiled 1.8.5 (17 May 2022)
 
