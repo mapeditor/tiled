@@ -284,7 +284,7 @@ NoOverlappingRules
 
 .. raw:: html
 
-   <div class="new new-prev">New in Tiled 1.9</div>
+   <div class="new">New in Tiled 1.9</div>
 
 .. _automapping-MatchInOrder:
 

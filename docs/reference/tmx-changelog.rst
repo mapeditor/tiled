@@ -7,6 +7,13 @@ Below are described the changes/additions that were made to the
 Tiled 1.9
 ---------
 
+-  Renamed the ``type`` attribute on :ref:`tmx-tileset-tile` and
+   :ref:`tmx-object` to ``class``.
+
+-  Added ``class`` attribute to :ref:`tmx-map`, :ref:`tmx-tileset`,
+   :ref:`tmx-layer`, :ref:`tmx-imagelayer`, :ref:`tmx-objectgroup`,
+   :ref:`tmx-group`, :ref:`tmx-wangset` and :ref:`tmx-wangcolor`.
+
 -  Added ``x``, ``y``, ``width`` and ``height`` attributes to the
    :ref:`tmx-tileset-tile` element, which store the sub-rectangle of a tile's
    image used to represent this tile. By default the entire image is used.

@@ -20,6 +20,7 @@ Map
     :widths: 1, 1, 4
 
     backgroundcolor,  string,           "Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)"
+    class,            string,           "The class of the map (since 1.9, optional)"
     compressionlevel, int,              "The compression level to use for tile layer data (defaults to -1, which means to use the algorithm default)"
     height,           int,              "Number of tile rows"
     hexsidelength,    int,              "Length of the side of a hex tile in pixels (hexagonal maps only)"
@@ -83,6 +84,7 @@ Layer
     :widths: 1, 1, 4
 
     chunks,           array,            "Array of :ref:`chunks <json-chunk>` (optional). ``tilelayer`` only."
+    class,            string,           "The class of the layer (since 1.9, optional)"
     compression,      string,           "``zlib``, ``gzip``, ``zstd`` (since Tiled 1.3) or empty (default). ``tilelayer`` only."
     data,             array or string,  "Array of ``unsigned int`` (GIDs) or base64-encoded data. ``tilelayer`` only."
     draworder,        string,           "``topdown`` (default) or ``index``. ``objectgroup`` only."
@@ -204,6 +206,7 @@ Object
     :header: Field, Type, Description
     :widths: 1, 1, 4
 
+    class,            string,           "The class of the object (renamed from ``type`` since 1.9, optional)"
     ellipse,          bool,             "Used to mark an object as an ellipse"
     gid,              int,              "Global tile ID, only if object represents a tile"
     height,           double,           "Height in pixels."
@@ -216,7 +219,6 @@ Object
     rotation,         double,           "Angle in degrees clockwise"
     template,         string,           "Reference to a template file, in case object is a :doc:`template instance </manual/using-templates>`"
     text,             :ref:`json-object-text`, "Only used for text objects"
-    type,             string,           "String assigned to type field in editor"
     visible,          bool,             "Whether object is shown in editor."
     width,            double,           "Width in pixels."
     x,                double,           "X coordinate in pixels"
@@ -228,6 +230,7 @@ Object Example
 .. code:: json
 
     {
+      "class":"npc",
       "gid":5,
       "height":0,
       "id":1,
@@ -239,7 +242,6 @@ Object Example
           "value":12
         }],
       "rotation":0,
-      "type":"npc",
       "visible":true,
       "width":0,
       "x":32,
@@ -252,12 +254,12 @@ Ellipse Example
 .. code:: json
 
     {
+      "class":"",
       "ellipse":true,
       "height":152,
       "id":13,
       "name":"",
       "rotation":0,
-      "type":"",
       "visible":true,
       "width":248,
       "x":560,
@@ -270,11 +272,11 @@ Rectangle Example
 .. code:: json
 
     {
+      "class":"",
       "height":184,
       "id":14,
       "name":"",
       "rotation":0,
-      "type":"",
       "visible":true,
       "width":368,
       "x":576,
@@ -287,12 +289,12 @@ Point Example
 .. code:: json
 
     {
-      "point":true,
+      "class":"",
       "height":0,
       "id":20,
       "name":"",
+      "point":true,
       "rotation":0,
-      "type":"",
       "visible":true,
       "width":0,
       "x":220,
@@ -305,6 +307,7 @@ Polygon Example
 .. code:: json
 
     {
+      "class":"",
       "height":0,
       "id":15,
       "name":"",
@@ -330,7 +333,6 @@ Polygon Example
         "y":-288
       }],
       "rotation":0,
-      "type":"",
       "visible":true,
       "width":0,
       "x":-176,
@@ -343,6 +345,7 @@ Polyline Example
 .. code:: json
 
     {
+      "class":"",
       "height":0,
       "id":16,
       "name":"",
@@ -372,7 +375,6 @@ Polyline Example
         "y":0
       }],
       "rotation":0,
-      "type":"",
       "visible":true,
       "width":0,
       "x":240,
@@ -385,6 +387,7 @@ Text Example
 .. code:: json
 
     {
+      "class":"",
       "height":19,
       "id":15,
       "name":"",
@@ -394,7 +397,6 @@ Text Example
         "wrap":true
       },
       "rotation":0,
-      "type":"",
       "visible":true,
       "width":248,
       "x":48,
@@ -434,6 +436,7 @@ Tileset
     :widths: 1, 1, 4
 
     backgroundcolor,  string,           "Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)"
+    class,            string,           "The class of the tileset (since 1.9, optional)"
     columns,          int,              "The number of tile columns in the tileset"
     fillmode,         string,           "The fill mode to use when rendering tiles from this tileset (``stretch`` (default) or ``preserve-aspect-fit``) (since 1.9)"
     firstgid,         int,              "GID corresponding to the first tile in the set"
@@ -549,6 +552,7 @@ Tile (Definition)
     :widths: 1, 1, 4
 
     animation,        array,              "Array of :ref:`Frames <json-frame>`"
+    class,            string,             "The class of the tile (renamed from ``type`` since 1.9, optional)"
     id,               int,                "Local ID of the tile"
     image,            string,             "Image representing this tile (optional, used for image collection tilesets)"
     imageheight,      int,                "Height of the tile image in pixels"
@@ -561,10 +565,9 @@ Tile (Definition)
     probability,      double,             "Percentage chance this tile is chosen when competing with others in the editor (optional)"
     properties,       array,              "Array of :ref:`Properties <json-property>`"
     terrain,          array,              "Index of terrain for each corner of tile (optional)"
-    type,             string,             "The type of the tile (optional)"
 
 A tileset that associates information with each tile, like its image
-path or terrain type, may include a ``tiles`` array property. Each tile
+path, may include a ``tiles`` array property. Each tile
 has an ``id`` property, which specifies the local ID within the tileset.
 
 For the terrain information, each value is a length-4 array where each
@@ -630,6 +633,7 @@ Wang Set
     :header: Field, Type, Description
     :widths: 1, 1, 4
 
+    class,            string,           "The class of the Wang set (since 1.9, optional)"
     colors,           array,            "Array of :ref:`Wang colors <json-wangcolor>` (since 1.5)"
     name,             string,           "Name of the Wang set"
     properties,       array,            "Array of :ref:`Properties <json-property>`"
@@ -646,6 +650,7 @@ Wang Color
     :header: Field, Type, Description
     :widths: 1, 1, 4
 
+    class,            string,           "The class of the Wang color (since 1.9, optional)"
     color,            string,           "Hex-formatted color (#RRGGBB or #AARRGGBB)"
     name,             string,           "Name of the Wang color"
     probability,      double,           "Probability used when randomizing"
@@ -733,6 +738,12 @@ Changelog
 
 Tiled 1.9
 ~~~~~~~~~
+
+* Renamed the ``type`` property on :ref:`json-tile` and :ref:`json-object` to
+  ``class``.
+
+* Added ``class`` property to :ref:`json-map`, :ref:`json-tileset`,
+  :ref:`json-layer`, :ref:`json-wangset` and :ref:`json-wangcolor`.
 
 * Added ``x``, ``y``, ``width`` and ``height`` properties to :ref:`json-tile`,
   which store the sub-rectangle of a tile's image used to represent this tile.

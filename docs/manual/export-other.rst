@@ -14,7 +14,7 @@ replicaisland
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.5</div>
+   <div class="new new-prev">Since Tiled 1.5</div>
 
 rpmap
     Adds support for exporting Tiled maps as RpMap (\*.rpmap), the format used

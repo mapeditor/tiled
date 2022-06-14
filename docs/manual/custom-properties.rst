@@ -8,8 +8,8 @@ your game or by the framework you're using to integrate Tiled maps.
 
 Custom properties are displayed in the Properties view. This view is
 context-sensitive, usually displaying the properties of the last
-selected object. For tiles in a tileset or objects on an object layer,
-it also supports multi-selection.
+selected object. It also supports multi-selection, for changing the
+properties of many objects at once.
 
 .. figure:: images/properties/properties-dock.png
    :alt: Properties View
@@ -51,7 +51,7 @@ quickly jump to the referenced object.
 
 .. raw:: html
 
-   <div class="new">Since Tiled 1.8</div>
+   <div class="new">New in Tiled 1.8</div>
 
 .. _custom-property-types:
 
@@ -67,11 +67,11 @@ property types in your project. Tiled supports :ref:`custom enums
 
    Property Types Editor
 
-.. warning::
+.. note::
 
    The property types are automatically saved in the
-   :doc:`project file <projects>`. Make sure you have set up your project,
-   before setting up your property types.
+   :doc:`project file <projects>`. Hence you need to create a project,
+   before you can set up your property types.
 
 .. _custom-enums:
 
@@ -100,9 +100,24 @@ A class is useful if you want to be able to add a set of properties at once,
 with predefined defaults. It can also prevent excessive prefixing of property
 names. Classes can have members referring to other classes.
 
+.. _predefining-properties:
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.9</div>
+
+Each data type has a "Class" property, which can be used to refer to a custom
+class. The members of this class will then be directly available as custom
+properties of that instance (until Tiled 1.9, this feature was only available
+for objects and tiles as the "Type" property).
+
+Each class can also have a custom color, which is used to make objects more
+recognizable. The class color is used when rendering shape objects, object name
+labels and connections between objects.
+
 In the :doc:`JSON </reference/json-map-format>` and :ref:`Lua <lua-export>`
-file formats, custom class properties are saved using the native object and
-table constructs.
+file formats, custom class properties used as property values are saved using
+the native object and table constructs.
 
 .. raw:: html
 
@@ -123,42 +138,6 @@ Inherited properties will be displayed in gray (disabled text color),
 whereas overridden properties will be displayed in black (usual text
 color).
 
-.. _predefining-properties:
-
-Predefining Properties
-----------------------
-
-General Setup
-~~~~~~~~~~~~~
-
-Usually you only use a limited set of object types in your game, and
-each type of object has a fixed set of possible properties, with
-specific types and default values. To save you time, Tiled allows
-predefining these properties based on the "Type" field for objects. You
-can set this up using the Object Types Editor, available from the *View*
-menu.
-
-.. figure:: images/properties/object-types-editor.png
-   :alt: Object Types Editor
-   :scale: 66
-
-   Object Types Editor
-
-By default, Tiled stores these object types globally. However, since you'll
-often want to share them with other people in your project, you can export
-your object types or change the storage location of the object types file
-:doc:`for your project <projects>`. A simple XML or JSON file with
-self-explanatory contents is used to store your object types.
-
-The color not only affects the rendering of the various shapes of
-objects, but is also the color of the label which will show up if you
-give your object a name.
-
-To make the predefined properties show up in the Properties view, all
-you need to do is to enter the name of the type in the built-in "Type"
-property. Usually this is what you're doing already anyway to tell your
-engine what kind of object it is dealing with.
-
 .. raw:: html
 
    <div class="new new-prev">Since Tiled 1.0</div>
@@ -169,13 +148,13 @@ Typed Tiles
 ~~~~~~~~~~~
 
 If you're using :ref:`tile objects <insert-tile-tool>`, you can set the
-type on the tile to avoid having to set it on each object instance.
-Setting the type on the tile makes the predefined properties visible
+class on the tile to avoid having to set it on each object instance.
+Setting the class on the tile makes the predefined properties visible
 when having the tile selected, allowing to override the values. It also
 makes those possibly overridden values visible when having a tile object
 instance selected, again allowing you to override them.
 
-An example use-case for this would be to define custom types like "NPC",
+An example use-case for this would be to define custom classes like "NPC",
 "Enemy" or "Item" with properties like "name", "health" or "weight". You
 can then specify values for these on the tiles representing these
 entities. And when placing those tiles as objects, you can override
