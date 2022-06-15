@@ -27,11 +27,7 @@
 
 namespace Tiled {
 
-ScriptDialog::ScriptDialog(): ScriptDialog(QString(), 450, 450)
-{
-
-}
-ScriptDialog::ScriptDialog(const QString &title, const int width=450, const int height=450)
+ScriptDialog::ScriptDialog(const QString &title)
  : QDialog(MainWindow::maybeInstance())
 {
     if (title.isEmpty()){

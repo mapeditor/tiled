@@ -3725,10 +3725,8 @@ declare class Dialog{
   /**
    * Create a new dialog object, customizing the title and size.
    * @param labelText
-   * @param width - The width of the dialog in pixels
-   * @param height - The height of the dialog in pixels
    */
-  constructor(labelText: string, width:number, height:number);
+  constructor(labelText: string);
 
   /**
    * Call this to force the next widget to go on a new row,

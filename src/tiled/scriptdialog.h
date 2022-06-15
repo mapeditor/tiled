@@ -50,8 +50,7 @@ class ScriptDialog : public QDialog
     Q_OBJECT
 
 public:
-    Q_INVOKABLE ScriptDialog();
-    Q_INVOKABLE ScriptDialog(const QString &title, const int width, const int height);
+    Q_INVOKABLE ScriptDialog(const QString &title = QString());
     ~ScriptDialog() override;
 
     bool checkForClosed() const;
