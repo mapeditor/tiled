@@ -1006,6 +1006,13 @@ void PropertyTypesEditor::valuesChanged()
 
 void PropertyTypesEditor::nameEditingFinished()
 {
+    // The dialog that might pop up when setPropertyTypeName fails can cause
+    // another "editingFinished" signal to get emitted from the QLineEdit due
+    // to losing focus. This needs to be ignored to prevent lockup in the UI
+    // with two modal dialogs (issue #3380).
+    if (mSettingName)
+        return;
+
     const auto index = selectedPropertyTypeIndex();
     if (!index.isValid())
         return;

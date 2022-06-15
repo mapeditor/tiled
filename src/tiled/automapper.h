@@ -200,7 +200,7 @@ struct TILED_EDITOR_EXPORT AutoMappingContext
 
     QVector<SharedTileset> newTilesets;             // New tilesets that might get used
     std::vector<std::unique_ptr<Layer>> newLayers;  // Layers created in AutoMapper::prepareAutoMap
-    QVector<AddMapObjects::Entry> newMapObjects;    // Objects placed by AutoMapper
+    QVector<QVector<AddMapObjects::Entry>> newMapObjects;   // Objects placed by AutoMapper
     QSet<MapObject*> mapObjectsToRemove;
     QHash<Layer*, Properties> changedProperties;
 

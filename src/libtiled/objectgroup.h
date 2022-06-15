@@ -169,7 +169,6 @@ public:
 
     ObjectGroup *clone() const override;
 
-    void resetObjectIds();
     int highestObjectId() const;
 
     // Enable easy iteration over objects with range-based for

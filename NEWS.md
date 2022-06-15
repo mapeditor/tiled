@@ -27,15 +27,19 @@
 * Raised minimum C++ version to C++17
 * Removed qmake project files (only Qbs supported now)
 
-### Unreleased 1.8 patch
+### Tiled 1.8.6 (15 Jun 2022)
 
-* Keep references between objects when copy/pasting (#3361)
+* Keep references between objects when copy/pasting or duplicating (#3361)
 * Improved default translation used in case of multiple options
+* Terrain Brush: Update preview on mouse release (#3381)
 * Fixed 'Add Variation' action in Tile Stamps context menu (#3362)
 * Fixed importing of removed shortcuts (#3367)
 * Fixed breaking of alternative shortcuts on import or reset (#3367)
 * Fixed conflict detection to handle alternative shortcuts (#3368)
+* Fixed locking up UI on property type name conflict (#3380)
+* Scripting: Fixed possible crash when accessing Layer.map
 * Defold plugins: Added support for rotated tiles (#3369)
+* Updates to German translation (by Ettore Atalan)
 
 ### Tiled 1.8.5 (17 May 2022)
 

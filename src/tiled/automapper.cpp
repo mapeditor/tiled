@@ -960,18 +960,8 @@ void AutoMapper::autoMap(const QRegion &where,
                     const auto objects = objectsToErase(context.targetDocument,
                                                         context.outputObjectGroups.value(name),
                                                         regionToErase);
-                    for (MapObject *mapObject : objects) {
-                        auto it = std::find_if(context.newMapObjects.begin(), context.newMapObjects.end(),
-                                               [=] (const AddMapObjects::Entry &entry) { return entry.mapObject == mapObject; });
-
-                        if (it != context.newMapObjects.end()) {
-                            // If this object is still new, delete it again
-                            delete it->mapObject;
-                            context.newMapObjects.erase(it);
-                        } else {
-                            context.mapObjectsToRemove.insert(mapObject);
-                        }
-                    }
+                    for (MapObject *mapObject : objects)
+                        context.mapObjectsToRemove.insert(mapObject);
                     break;
                 }
                 case Layer::ImageLayerType:
@@ -1318,19 +1308,23 @@ void AutoMapper::copyObjectRegion(const ObjectGroup *srcLayer, const QRectF &rec
 {
     const QRectF pixelRect = context.targetDocument->renderer()->tileToPixelCoords(rect);
     const QList<MapObject*> objects = objectsInRegion(srcLayer, pixelRect.toAlignedRect());
+    if (objects.isEmpty())
+        return;
 
     QPointF pixelOffset = context.targetDocument->renderer()->tileToPixelCoords(dstX, dstY);
     pixelOffset -= pixelRect.topLeft();
 
-    context.newMapObjects.reserve(context.newMapObjects.size() + objects.size());
+    QVector<AddMapObjects::Entry> newMapObjects;
+    newMapObjects.reserve(objects.size());
 
     for (MapObject *obj : objects) {
         MapObject *clone = obj->clone();
-        clone->resetId();
         clone->setX(clone->x() + pixelOffset.x());
         clone->setY(clone->y() + pixelOffset.y());
-        context.newMapObjects.append(AddMapObjects::Entry { clone, dstLayer });
+        newMapObjects.append(AddMapObjects::Entry { clone, dstLayer });
     }
+
+    context.newMapObjects.append(newMapObjects);
 }
 
 void AutoMapper::addWarning(const QString &message, std::function<void ()> callback)

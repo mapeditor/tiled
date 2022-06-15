@@ -37,6 +37,7 @@
 #include "mapview.h"
 #include "movelayer.h"
 #include "objectgroup.h"
+#include "objectreferenceshelper.h"
 #include "tilelayer.h"
 #include "utils.h"
 
@@ -587,7 +588,8 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
     if (!mMapDocument)
         return;
 
-    auto *currentLayer = mMapDocument->currentLayer();
+    auto currentLayer = mMapDocument->currentLayer();
+    auto map = mMapDocument->map();
     Layer *newLayer = nullptr;
     QRegion selectedArea;
     TileLayer *sourceLayer = nullptr;
@@ -601,7 +603,6 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
         if (selectedArea.isEmpty())
             return;
 
-        auto map = mMapDocument->map();
         sourceLayer = static_cast<TileLayer*>(currentLayer);
         auto newTileLayer = new TileLayer(name, 0, 0, map->width(), map->height());
         newTileLayer->setCells(0, 0, sourceLayer, selectedArea);
@@ -619,13 +620,17 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
         newObjectGroup->setDrawOrder(currentObjectGroup->drawOrder());
         newObjectGroup->setColor(currentObjectGroup->color());
 
+        ObjectReferencesHelper objectRefs(map);
+
         for (MapObject *mapObject : qAsConst(selectedObjects)) {
             MapObject *clone = mapObject->clone();
             if (variant == ViaCopy)
-                clone->resetId();
+                objectRefs.reassignId(clone);
             newObjects.append(clone);
             newObjectGroup->addObject(clone);
         }
+
+        objectRefs.rewire();
 
         newLayer = newObjectGroup;
         break;
@@ -645,8 +650,6 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
         undoStack->push(addLayer);
     } else {
         undoStack->beginMacro(name);
-        undoStack->push(addLayer);
-
         switch (currentLayer->layerType()) {
         case Layer::TileLayerType: {
             undoStack->push(new EraseTiles(mMapDocument, sourceLayer, selectedArea));
@@ -660,6 +663,7 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
             break;
         }
 
+        undoStack->push(addLayer);
         undoStack->endMacro();
     }
 

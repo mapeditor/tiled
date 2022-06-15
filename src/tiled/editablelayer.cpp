@@ -47,7 +47,8 @@ EditableLayer::~EditableLayer()
 
 EditableMap *EditableLayer::map() const
 {
-    return asset()->isMap() ? static_cast<EditableMap*>(asset()) : nullptr;
+    return (asset() && asset()->isMap()) ? static_cast<EditableMap*>(asset())
+                                         : nullptr;
 }
 
 EditableGroupLayer *EditableLayer::parentLayer() const
@@ -75,7 +76,7 @@ void EditableLayer::detach()
     setAsset(nullptr);
 
     mDetachedLayer.reset(layer()->clone());
-    mDetachedLayer->resetIds();
+//    mDetachedLayer->resetIds();
     setObject(mDetachedLayer.get());
     EditableManager::instance().mEditables.insert(layer(), this);
 }

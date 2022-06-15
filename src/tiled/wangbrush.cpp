@@ -141,7 +141,6 @@ void WangBrush::mousePressed(QGraphicsSceneMouseEvent *event)
                     mLineStartSet = true;
                 } else {
                     doPaint(false);
-                    updateBrush();
                 }
                 break;
             default:
@@ -173,6 +172,8 @@ void WangBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
     default:
         break;
     }
+
+    updateBrush();
 }
 
 void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
