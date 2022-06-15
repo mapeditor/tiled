@@ -57,7 +57,8 @@ public:
     bool checkForClosed() const;
 
     Q_INVOKABLE void setTitle(const QString &title);
-    Q_INVOKABLE QLabel *addLabel(const QString &text, bool maxWidth = false);
+    Q_INVOKABLE QLabel *addHeading(const QString &text, bool fillRow = false);
+    Q_INVOKABLE QLabel *addLabel(const QString &text);
     Q_INVOKABLE QFrame *addSeparator(const QString &labelText = QString());
     Q_INVOKABLE QLineEdit *addTextInput(const QString &labelText= QString(), const QString &defaultValue= QString());
     Q_INVOKABLE QDoubleSpinBox *addNumberInput(const QString &labelText);
@@ -73,7 +74,8 @@ private:
     int m_rowIndex = 0;
     int m_widgetsInRow = 0;
     int m_leftColumnStretch = 1;
-    int m_rightColumnStretch = 4;
+    // stretch as much as we can so that the left column looks as close to zero width as possible when there is no content
+    int m_rightColumnStretch = 9999;
     QGridLayout *m_gridLayout;
     QLabel *newLabel(const QString& labelText);
     void initializeLayout();

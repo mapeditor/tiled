@@ -29,7 +29,7 @@ namespace Tiled {
 
 ScriptDialog::ScriptDialog(): ScriptDialog(QString(), 450, 450)
 {
-    
+
 }
 ScriptDialog::ScriptDialog(const QString &title, const int width=450, const int height=450)
  : QDialog(MainWindow::maybeInstance())
@@ -55,6 +55,7 @@ void ScriptDialog::initializeLayout()
     m_gridLayout->setColumnStretch(0, m_leftColumnStretch);
     m_gridLayout->setColumnStretch(1, m_rightColumnStretch);
     m_rowIndex = 0;
+
     addNewRow();
 }
 void ScriptDialog::clear()
@@ -89,24 +90,29 @@ void ScriptDialog::resize(const int width, const int height)
     QDialog::resize(width, height);
 }
 
-QLabel *ScriptDialog::addLabel(const QString &text, bool maxWidth)
+QLabel *ScriptDialog::addHeading(const QString &text, bool fillRow)
 {
     QLabel * label;
     addNewRow();
-    checkIfSameType("QLabel");
     label = newLabel(text);
-    if (m_widgetsInRow == 0) {
-        m_gridLayout->addWidget(label, m_rowIndex, m_widgetsInRow, 1, maxWidth ? -1 : 1); // max width
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        label->setSizePolicy(sizePolicy);
-        m_widgetsInRow++;
-        if (maxWidth){
-            label->setWordWrap(true);
-            addNewRow();
-        }
+    m_gridLayout->addWidget(label, m_rowIndex, m_widgetsInRow, 1, fillRow  ? -1 : 1); // max width
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    label->setSizePolicy(sizePolicy);
+    m_widgetsInRow++;
+    if (fillRow){
+        label->setWordWrap(true);
+        addNewRow();
     }
-    else
-        addDialogWidget(label);
+    return label;
+}
+QLabel *ScriptDialog::addLabel(const QString &text)
+{
+    QLabel * label;
+    moveToColumn2();
+    label = newLabel(text);
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    label->setSizePolicy(sizePolicy);
+    addDialogWidget(label);
     return label;
 }
 
