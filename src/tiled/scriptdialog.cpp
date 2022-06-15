@@ -41,8 +41,6 @@ ScriptDialog::ScriptDialog(const QString &title, const int width=450, const int 
     }
     setAttribute(Qt::WA_DeleteOnClose);
     m_lastWidgetTypeName.clear();
-
-    setMinimumSize(width, height);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     initializeLayout();
 }
@@ -85,11 +83,6 @@ void ScriptDialog::deleteWidgetsFromLayout(QLayout *layout){
         }
     }
 }
-void ScriptDialog::resize(const int width, const int height)
-{
-    QDialog::resize(width, height);
-}
-
 QLabel *ScriptDialog::addHeading(const QString &text, bool fillRow)
 {
     QLabel * label;

@@ -3794,12 +3794,6 @@ declare class Dialog{
    * @param labelText the text of the widget label displayed to the left of the widget.
   */
   addColorButton(labelText: string): ColorButton;
-  /**
-   * Set the minimum width and height of the dialog after it has been created. 
-   * @param width the new minimum width for the dialog
-   * @param height the new minimum height for the dialog
-   */
-  resize(width: number, height: number): void;
 
   /**
    * Erase all of the widgets that you have added to the dialog.

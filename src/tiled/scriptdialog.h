@@ -67,7 +67,6 @@ public:
     Q_INVOKABLE QCheckBox *addCheckBox(const QString &labelText, bool defaultValue);
     Q_INVOKABLE QPushButton *addButton(const QString &labelText);
     Q_INVOKABLE Tiled::ColorButton *addColorButton(const QString &labelText);
-    Q_INVOKABLE void resize(const int width, const int height);
     Q_INVOKABLE void clear();
     Q_INVOKABLE void addNewRow();
 private:
