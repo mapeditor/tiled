@@ -20,6 +20,7 @@
 
 #include "scriptmanager.h"
 #include "colorbutton.h"
+#include "fileedit.h"
 #include "documentmanager.h"
 #include "editablegrouplayer.h"
 #include "editableimagelayer.h"
@@ -144,6 +145,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<QPushButton*>();
     qRegisterMetaType<QDialog*>();
     qRegisterMetaType<ColorButton*>();
+    qRegisterMetaType<FileEdit*>();
     qRegisterMetaType<QWidget*>();
     qRegisterMetaType<QLineEdit*>();
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,

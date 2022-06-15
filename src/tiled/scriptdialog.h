@@ -22,6 +22,8 @@
 #pragma once
 
 #include "mainwindow.h"
+#include "fileedit.h"
+#include "colorbutton.h"
 #include <QString>
 #include <QObject>
 #include <QtWidgets/QDialogButtonBox>
@@ -36,7 +38,6 @@
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QDialog>
-#include "colorbutton.h"
 #include <QString>
 #include <QLineEdit>
 #include <QList>
@@ -63,9 +64,10 @@ public:
     Q_INVOKABLE QDoubleSpinBox *addNumberInput(const QString &labelText);
     Q_INVOKABLE QSlider *addSlider(const QString &labelText);
     Q_INVOKABLE QComboBox *addComboBox(const QString &labelText, const QStringList &values);
-    Q_INVOKABLE QCheckBox *addCheckBox(const QString &labelText, bool defaultValue);
-    Q_INVOKABLE QPushButton *addButton(const QString &labelText);
-    Q_INVOKABLE Tiled::ColorButton *addColorButton(const QString &labelText);
+    Q_INVOKABLE QCheckBox *addCheckBox(const QString &labelText =QString(), bool defaultValue = false);
+    Q_INVOKABLE QPushButton *addButton(const QString &labelText = QString());
+    Q_INVOKABLE Tiled::FileEdit *addFilePicker(const QString &labelText = QString());
+    Q_INVOKABLE Tiled::ColorButton *addColorButton(const QString &labelText = QString());
     Q_INVOKABLE void clear();
     Q_INVOKABLE void addNewRow();
 private:

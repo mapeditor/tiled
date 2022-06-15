@@ -34,6 +34,8 @@ namespace Tiled {
 class FileEdit : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY(QString filter READ filter WRITE setFilter)
+    Q_PROPERTY(QUrl fileUrl READ fileUrl WRITE setFileUrl)
 
 public:
     explicit FileEdit(QWidget *parent = nullptr);
@@ -80,3 +82,4 @@ inline bool FileEdit::isDirectory() const
 }
 
 } // namespace Tiled
+Q_DECLARE_METATYPE(Tiled::FileEdit*)

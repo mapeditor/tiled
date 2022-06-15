@@ -203,7 +203,19 @@ QPushButton *ScriptDialog::addButton(const QString &labelText)
     addDialogWidget(pushButton);
     return pushButton;
 }
-
+Tiled::FileEdit *ScriptDialog::addFilePicker(const QString &labelText)
+{
+    FileEdit *fileEdit;
+    checkIfSameType("FileEdit");
+    moveToColumn2();
+    if(!labelText.isEmpty()){
+        QLabel *filePickerLabel = newLabel(labelText);
+        addDialogWidget(filePickerLabel);
+    }
+    fileEdit = new FileEdit(this);
+    addDialogWidget(fileEdit);
+    return fileEdit;
+}
 Tiled::ColorButton *ScriptDialog::addColorButton(const QString &labelText)
 {
     ColorButton *colorButton;
