@@ -426,8 +426,6 @@ DynamicLibrary {
         "resizetilelayer.h",
         "reversingproxymodel.cpp",
         "reversingproxymodel.h",
-        "scriptdialogwidget.cpp",
-        "scriptdialogwidget.h",
         "scriptdialog.cpp",
         "scriptdialog.h",
         "scriptedaction.cpp",

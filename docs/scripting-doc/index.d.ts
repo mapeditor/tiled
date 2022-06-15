@@ -365,12 +365,6 @@ declare namespace Qt {
      * The toolTip displayed when the user mouses over this widget
      */
     toolTip: string;
-    /**
-     * Set a new value for {@link toolTip}.
-     * @param newToolTip - the new text to display on the widget when the
-     *                     user mouses over it
-     */
-    setToolTip(newToolTip: string): void;
   }
 
   /**
@@ -389,6 +383,11 @@ declare namespace Qt {
      * Signal emitted when the text inside the QLineEdit is changed.
      */
     textChanged: Signal<string>;
+
+    /**
+     * Setting this property makes the line edit display a grayed-out placeholder text as long as the line edit is empty.
+     */
+    placeholderText: string;
   }
   /**
    * A check box widget which allows the user to toggle
@@ -3703,24 +3702,6 @@ declare class ColorButton extends Qt.QWidget{
 }
 
 /**
- * A widget created on a {@link Dialog} object. This type is used 
- * for widgets that allow the addition of a widget label. 
- * Some widgets such as checkboxes and labels do not return this type 
- * as they do not allow an additional label.
- */
-declare class DialogWidget<T extends Qt.QWidget>{
-
-  /**
-   * The widget label for this widget.
-   */
-  label: Qt.QLabel;
-  /**
-   * The main widget that you created. For example, after calling 
-   * {@link addSlider}, this would be of type {@link Qt.QSlider}.
-   */
-  mainWidget: T;
-}
-/**
  * The `Dialog` object is used to display a dialog to the user
  * which can be filled with a variety of widgets.
  * 
@@ -3771,13 +3752,13 @@ declare class Dialog{
    * Adds a separator line with optional label to the dialog. 
    * Used to visually split up sections of the dialog.
    */
-  addSeparator(labelText?:string): DialogWidget<Qt.QFrame>;
+  addSeparator(labelText?:string): Qt.QFrame;
 
   /**
    * Add a {@link Qt.QSlider} widget to the dialog to allow a user to 
    * slide a handle within a number range. This can only be used to enter integer-type values.
    */
-  addSlider(labelText: string): DialogWidget<Qt.QSlider>;
+  addSlider(labelText: string): Qt.QSlider;
  /**
   * Add a {@link Qt.QCheckBox} widget to the dialog to allow a user to 
   * toggle a boolean value.
@@ -3792,6 +3773,13 @@ declare class Dialog{
    * @param labelText 
    */
   addButton(labelText: string): Qt.QPushButton; 
+  /**
+   * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user 
+   * to enter a single line of text
+   * @param labelText - text to display in a label to the left of the widget
+   * @param defualtValue - the default value to display in the input
+   */
+   addTextInput(labelText?: string, defualtValue?: string): Qt.QLineEdit;
 
   /**
    * Add a {@link Qt.QComboBox} widget (AKA a dropdown) allowing the user to pick 
@@ -3799,13 +3787,13 @@ declare class Dialog{
    * @param labelText The text to display on the widget label to the left of the dropdown
    * @param values The values to allow the user to select between. 
    */
-  addComboBox(labelText: string, values: string[]): DialogWidget<Qt.QComboBox>;
+  addComboBox(labelText: string, values: string[]): Qt.QComboBox;
 
   /**
    * Add a {@link ColorButton} widget that allows the user to pick a color.
    * @param labelText the text of the widget label displayed to the left of the widget.
   */
-  addColorButton(labelText: string): DialogWidget<ColorButton>;
+  addColorButton(labelText: string): ColorButton;
   /**
    * Set the minimum width and height of the dialog after it has been created. 
    * @param width the new minimum width for the dialog

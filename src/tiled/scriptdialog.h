@@ -22,7 +22,6 @@
 #pragma once
 
 #include "mainwindow.h"
-#include "scriptdialogwidget.h"
 #include <QString>
 #include <QObject>
 #include <QtWidgets/QDialogButtonBox>
@@ -57,33 +56,25 @@ public:
 
     bool checkForClosed() const;
 
-
     Q_INVOKABLE void setTitle(const QString &title);
-    Q_INVOKABLE QLabel *addLabel(const QString &text);
-    Q_INVOKABLE QLabel *addLabel(const QString &text, bool maxWidth);
-    Q_INVOKABLE Tiled::ScriptDialogWidget *addSeparator();
-    Q_INVOKABLE Tiled::ScriptDialogWidget *addSeparator(const QString &labelText);
-    Q_INVOKABLE Tiled::ScriptDialogWidget *addTextInput(const QString &labelText, const QString &defaultValue);
-    Q_INVOKABLE Tiled::ScriptDialogWidget *addNumberInput(const QString &labelText);
-    Q_INVOKABLE Tiled::ScriptDialogWidget *addSlider(const QString &labelText);
-    Q_INVOKABLE Tiled::ScriptDialogWidget *addComboBox(const QString &labelText, const QStringList &values);
+    Q_INVOKABLE QLabel *addLabel(const QString &text, bool maxWidth = false);
+    Q_INVOKABLE QFrame *addSeparator(const QString &labelText = QString());
+    Q_INVOKABLE QLineEdit *addTextInput(const QString &labelText= QString(), const QString &defaultValue= QString());
+    Q_INVOKABLE QDoubleSpinBox *addNumberInput(const QString &labelText);
+    Q_INVOKABLE QSlider *addSlider(const QString &labelText);
+    Q_INVOKABLE QComboBox *addComboBox(const QString &labelText, const QStringList &values);
     Q_INVOKABLE QCheckBox *addCheckBox(const QString &labelText, bool defaultValue);
     Q_INVOKABLE QPushButton *addButton(const QString &labelText);
-    Q_INVOKABLE Tiled::ScriptDialogWidget *addColorButton(const QString &labelText);
+    Q_INVOKABLE Tiled::ColorButton *addColorButton(const QString &labelText);
     Q_INVOKABLE void resize(const int width, const int height);
     Q_INVOKABLE void clear();
     Q_INVOKABLE void addNewRow();
-protected:
-    void resizeEvent(QResizeEvent* event) override;
 private:
-    // used to generate unique IDs for all components
-    int m_widgetNumber = 0;
     int m_rowIndex = 0;
     int m_widgetsInRow = 0;
     int m_leftColumnStretch = 1;
     int m_rightColumnStretch = 4;
     QGridLayout *m_gridLayout;
-    QWidget *m_gridLayoutWidget;
     QLabel *newLabel(const QString& labelText);
     void initializeLayout();
     QWidget *m_rowLayoutWidget;
@@ -92,6 +83,7 @@ private:
     bool checkIfSameType(const char *newTypeName);
     void addDialogWidget(QWidget * widget);
     void moveToColumn2();
+    void deleteWidgetsFromLayout(QLayout * layout);
 };
 
 void registerDialog(QJSEngine *jsEngine);
