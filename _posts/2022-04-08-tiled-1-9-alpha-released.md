@@ -41,9 +41,9 @@ Now, there is a "MatchType" tile property, which can be used to mark certain til
 
 As a potential replacement for using "inputnot" layers, there is also a "MatchType" called "Forbid", which can be used to effectively negate the condition at a certain location. Instead of creating an "inputnot" layer, you would create another "input" layer and place the "Forbid" tile where you want to reverse the conditions for a target layer.
 
-![automap-tiles](https://raw.githubusercontent.com/mapeditor/tiled/master/src/tiled/images/scalable/automap-tiles.svg)
+![automap-tiles](https://raw.githubusercontent.com/mapeditor/tiled/accee950b4a9b84249038496afe778cf791283d7/src/tiled/images/scalable/automap-tiles.svg)
 
-A [preliminary tileset](https://github.com/mapeditor/tiled/blob/master/tests/automapping/automap-tiles.tsx) is provided with tiles of each of these types. Feedback on the icons is welcome!
+A [preliminary tileset](https://github.com/mapeditor/tiled/blob/accee950b4a9b84249038496afe778cf791283d7/tests/automapping/automap-tiles.tsx) is provided with tiles of each of these types. Feedback on the icons is welcome!
 
 ### More Powerful
 
