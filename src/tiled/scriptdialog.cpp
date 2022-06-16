@@ -90,7 +90,6 @@ QLabel *ScriptDialog::addLabel(const QString &text)
     QLabel *label;
     moveToColumn2();
     label = newLabel(text);
-    label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     addDialogWidget(label);
     return label;
 }
@@ -213,6 +212,7 @@ Tiled::ColorButton *ScriptDialog::addColorButton(const QString &labelText)
     }
     colorButton = new ColorButton(this);
     addDialogWidget(colorButton);
+    colorButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     return colorButton;
 }
 
@@ -227,6 +227,7 @@ void ScriptDialog::addDialogWidget(QWidget *widget)
             m_rowLayout = new QHBoxLayout();
             m_gridLayout->addLayout(m_rowLayout, m_rowIndex, 1, 1, 1);
         }
+        widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
         m_rowLayout->addWidget(widget);
     }
     m_widgetsInRow++;
@@ -275,7 +276,7 @@ QLabel *ScriptDialog::newLabel(const QString& labelText)
     label->setTextInteractionFlags(Qt::TextSelectableByMouse);
     label->setText(labelText);
     label->setWordWrap(false);
-    label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     label->adjustSize();
     return label;
 }
