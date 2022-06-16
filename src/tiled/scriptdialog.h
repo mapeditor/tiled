@@ -52,11 +52,7 @@ class ScriptDialog : public QDialog
 
 public:
     Q_INVOKABLE ScriptDialog(const QString &title = QString());
-    ~ScriptDialog() override;
 
-    bool checkForClosed() const;
-
-    Q_INVOKABLE void setTitle(const QString &title);
     Q_INVOKABLE QLabel *addHeading(const QString &text, bool fillRow = false);
     Q_INVOKABLE QLabel *addLabel(const QString &text);
     Q_INVOKABLE QFrame *addSeparator(const QString &labelText = QString());
@@ -73,19 +69,14 @@ public:
 private:
     int m_rowIndex = 0;
     int m_widgetsInRow = 0;
-    int m_leftColumnStretch = 1;
-    // stretch as much as we can so that the left column looks as close to zero width as possible when there is no content
-    int m_rightColumnStretch = 9999;
     QGridLayout *m_gridLayout;
     QLabel *newLabel(const QString& labelText);
     void initializeLayout();
-    QWidget *m_rowLayoutWidget;
     QHBoxLayout* m_rowLayout;
     QString m_lastWidgetTypeName;
     bool checkIfSameType(const char *newTypeName);
     void addDialogWidget(QWidget * widget);
     void moveToColumn2();
-    void deleteWidgetsFromLayout(QLayout * layout);
 };
 
 void registerDialog(QJSEngine *jsEngine);
