@@ -130,7 +130,7 @@ QLineEdit *ScriptDialog::addTextInput(const QString &labelText, const QString &d
     checkIfSameType("QLineEdit");
     moveToColumn2();
     if(!labelText.isEmpty()){
-        QLabel * lineEditLabel = newLabel(labelText);
+        QLabel *lineEditLabel = newLabel(labelText);
         addDialogWidget(lineEditLabel);
     }
     lineEdit = new QLineEdit(defaultValue, this);
