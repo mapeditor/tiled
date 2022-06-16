@@ -368,6 +368,15 @@ declare namespace Qt {
   }
 
   /**
+   * Used in {@link FileEdit} as the URL of the currently selected file. 
+   */
+  class QUrl{
+    /**
+     * Get a string representation of the file
+     */
+    toString(): string;
+  }
+  /**
    * A widget containing a single line of text that the user can edit.
    * Qt documentation: [QLineEdit](https://doc.qt.io/qt-5/qlineedit.html)
    */
@@ -3700,7 +3709,22 @@ declare class ColorButton extends Qt.QWidget{
    */
   colorChanged: Signal<color>;
 }
+/**
+ * Widget with a button which opens a file picker dialog 
+ * and displays the path in the dialog.
+ */
+declare class FileEdit extends Qt.QWidget{
 
+  /**
+   * The {@link Qt.Qurl} of the currently selected file.
+   */
+  fileUrl: Qt.QUrl;
+
+  /**
+   * Signal emitted when the selected fileUrl changes
+   */
+  fileUrlChanged: Signal<Qt.QUrl>;
+}
 /**
  * The `Dialog` object is used to display a dialog to the user
  * which can be filled with a variety of widgets.
@@ -3756,7 +3780,7 @@ declare class Dialog{
    * Add a {@link Qt.QSlider} widget to the dialog to allow a user to 
    * slide a handle within a number range. This can only be used to enter integer-type values.
    */
-  addSlider(labelText: string): Qt.QSlider;
+  addSlider(labelText?: string): Qt.QSlider;
  /**
   * Add a {@link Qt.QCheckBox} widget to the dialog to allow a user to 
   * toggle a boolean value.
@@ -3791,8 +3815,12 @@ declare class Dialog{
    * Add a {@link ColorButton} widget that allows the user to pick a color.
    * @param labelText the text of the widget label displayed to the left of the widget.
   */
-  addColorButton(labelText: string): ColorButton;
+  addColorButton(labelText?: string): ColorButton;
 
+  /* Widget with a button which opens a file picker dialog 
+  * and displays the path in the dialog.
+  */
+  addFilePicker(labelText?: string): FileEdit;
   /**
    * Erase all of the widgets that you have added to the dialog.
    * Call this if you want to re-draw your dialog with a new configuration of widgets.
@@ -3830,4 +3858,16 @@ declare class Dialog{
    */
   finished: Signal<number>;
 
+  /**
+   * You can use this property to prevent the dialog from being resized to a width
+   * below this amount. When you change minimumWidth, ifthe dialog is already less wide than
+   * the provided width, it will scale itself up automatically.
+   */
+  minimumWidth: number;
+  /**
+   * You can use this property to prevent the dialog from being resized to a height
+   * below this amount. When you change minimumHeight, ifthe dialog is already less tall than
+   * the provided width, it will scale itself up automatically.
+   */
+  minimumHeight: number;
 }
