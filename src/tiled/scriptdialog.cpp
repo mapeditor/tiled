@@ -99,8 +99,7 @@ QLabel *ScriptDialog::addLabel(const QString &text)
     QLabel * label;
     moveToColumn2();
     label = newLabel(text);
-    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    label->setSizePolicy(sizePolicy);
+    label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     addDialogWidget(label);
     return label;
 }
