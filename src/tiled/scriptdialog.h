@@ -75,7 +75,7 @@ private:
     QHBoxLayout* m_rowLayout;
     QString m_lastWidgetTypeName;
     bool checkIfSameType(const char *newTypeName);
-    void addDialogWidget(QWidget * widget);
+    QWidget *addDialogWidget(QWidget * widget);
     void moveToColumn2();
 };
 

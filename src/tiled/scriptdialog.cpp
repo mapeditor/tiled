@@ -71,7 +71,6 @@ void ScriptDialog::clear()
     initializeLayout();
 }
 
-
 QLabel *ScriptDialog::addHeading(const QString &text, bool fillRow)
 {
     addNewRow();
@@ -87,11 +86,8 @@ QLabel *ScriptDialog::addHeading(const QString &text, bool fillRow)
 }
 QLabel *ScriptDialog::addLabel(const QString &text)
 {
-    QLabel *label;
     moveToColumn2();
-    label = newLabel(text);
-    addDialogWidget(label);
-    return label;
+    return (QLabel *)addDialogWidget(newLabel(text));
 }
 
 QFrame *ScriptDialog::addSeparator(const QString &labelText)
@@ -115,108 +111,88 @@ QFrame *ScriptDialog::addSeparator(const QString &labelText)
 }
 QLineEdit *ScriptDialog::addTextInput(const QString &labelText, const QString &defaultValue)
 {
-    QLineEdit *lineEdit;
     checkIfSameType("QLineEdit");
     moveToColumn2();
     if (!labelText.isEmpty()) {
         QLabel *lineEditLabel = newLabel(labelText);
         addDialogWidget(lineEditLabel);
     }
-    lineEdit = new QLineEdit(defaultValue, this);
-    addDialogWidget(lineEdit);
-    return lineEdit;
+    return (QLineEdit *)addDialogWidget(new QLineEdit(defaultValue, this));
 }
 QDoubleSpinBox *ScriptDialog::addNumberInput(const QString &labelText)
 {
-    QDoubleSpinBox *doubleSpinBox;
     checkIfSameType("QDoubleSpinBox");
     moveToColumn2();
     if (!labelText.isEmpty()) {
         QLabel *numberLabel = newLabel(labelText);
         addDialogWidget(numberLabel);
     }
-    doubleSpinBox = new QDoubleSpinBox(this);
-    addDialogWidget(doubleSpinBox);
-    return doubleSpinBox;
+    return (QDoubleSpinBox *)addDialogWidget(new QDoubleSpinBox(this));
 }
 QSlider *ScriptDialog::addSlider(const QString &labelText)
 {
-    QSlider *horizontalSlider;
     checkIfSameType("QSlider");
     moveToColumn2();
     if (!labelText.isEmpty()) {
         QLabel *sliderLabel= newLabel(labelText);
         addDialogWidget(sliderLabel);
     }
-    horizontalSlider = new QSlider(this);
+    QSlider *horizontalSlider = new QSlider(this);
     horizontalSlider->setOrientation(Qt::Horizontal);
-    addDialogWidget(horizontalSlider);
-    return horizontalSlider;
+    return (QSlider *)addDialogWidget(horizontalSlider);
 }
 
 QCheckBox *ScriptDialog::addCheckBox(const QString &labelText, bool defaultValue)
 {
-    QCheckBox *checkBox;
     checkIfSameType("QCheckBox");
     moveToColumn2();
-    checkBox = new QCheckBox(labelText, this);
+    QCheckBox *checkBox = new QCheckBox(labelText, this);
     checkBox->setCheckState(defaultValue ? Qt::Checked: Qt::Unchecked);
-    addDialogWidget(checkBox);
-    return checkBox;
+    return (QCheckBox *)addDialogWidget(checkBox);
 }
 QComboBox *ScriptDialog::addComboBox(const QString &labelText, const QStringList &values)
 {
-    QComboBox *comboBox;
     checkIfSameType("QComboBox");
     moveToColumn2();
     if (!labelText.isEmpty()) {
         QLabel *comboBoxLabel = newLabel(labelText);
         addDialogWidget(comboBoxLabel);
     }
-    comboBox = new QComboBox(this);
+    QComboBox *comboBox = new QComboBox(this);
     comboBox->addItems(values);
-    addDialogWidget(comboBox);
-    return comboBox;
+    return (QComboBox *)addDialogWidget(comboBox);
 }
 
 QPushButton *ScriptDialog::addButton(const QString &labelText)
 {
-    QPushButton *pushButton;
     checkIfSameType("QPushButton");
     moveToColumn2();
-    pushButton = new QPushButton(labelText, this);
-    addDialogWidget(pushButton);
-    return pushButton;
+    return (QPushButton *)addDialogWidget(new QPushButton(labelText, this));
 }
 Tiled::FileEdit *ScriptDialog::addFilePicker(const QString &labelText)
 {
-    FileEdit *fileEdit;
     checkIfSameType("FileEdit");
     moveToColumn2();
     if (!labelText.isEmpty()) {
         QLabel *filePickerLabel = newLabel(labelText);
         addDialogWidget(filePickerLabel);
     }
-    fileEdit = new FileEdit(this);
-    addDialogWidget(fileEdit);
-    return fileEdit;
+    addDialogWidget(new FileEdit(this));
 }
 Tiled::ColorButton *ScriptDialog::addColorButton(const QString &labelText)
-{
-    ColorButton *colorButton;
+{    
     checkIfSameType("ColorButton");
     moveToColumn2();
     if (!labelText.isEmpty()) {
         QLabel *colorLabel = newLabel(labelText);
         addDialogWidget(colorLabel);
     }
-    colorButton = new ColorButton(this);
-    addDialogWidget(colorButton);
+    ColorButton *colorButton = (ColorButton *)addDialogWidget(new ColorButton(this));
     colorButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     return colorButton;
 }
 
-void ScriptDialog::addDialogWidget(QWidget *widget)
+QWidget *ScriptDialog::addDialogWidget(QWidget *widget)
 {
     // left-hand side element that occupies the first grid column
     if (m_widgetsInRow == 0)
@@ -231,6 +207,7 @@ void ScriptDialog::addDialogWidget(QWidget *widget)
         m_rowLayout->addWidget(widget);
     }
     m_widgetsInRow++;
+    return widget;
 }
 
 /**
