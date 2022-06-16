@@ -86,23 +86,24 @@ QLabel *ScriptDialog::addHeading(const QString &text, bool fillRow)
 }
 QLabel *ScriptDialog::addLabel(const QString &text)
 {
-    moveToColumn2();
+    moveToRightColumn();
     return (QLabel *)addDialogWidget(newLabel(text));
 }
 
 QFrame *ScriptDialog::addSeparator(const QString &labelText)
 {
-    QFrame *line;
     addNewRow();
     m_rowLayout = new QHBoxLayout();
-    m_gridLayout->addLayout(m_rowLayout, m_rowIndex,0, 1, -1); // span entire
+    // we don't use addDialogWidget() here so that we can make the size of the separator
+    // level independent of the size of the left column.
+    m_gridLayout->addLayout(m_rowLayout, m_rowIndex, 0, 1, -1); // span entire row
     if (!labelText.isEmpty()) {
         QLabel *separatorLabel;
         separatorLabel= newLabel(labelText);
         separatorLabel->setWordWrap(false);
         m_rowLayout->addWidget(separatorLabel, 1);
     }
-    line = new QFrame(this);
+    QFrame *line = new QFrame(this);
     line->setFrameShape(QFrame::HLine);
     line->setFrameShadow(QFrame::Sunken);
     m_rowLayout->addWidget(line, rightColumnStretch); // higher stretch
@@ -112,7 +113,7 @@ QFrame *ScriptDialog::addSeparator(const QString &labelText)
 QLineEdit *ScriptDialog::addTextInput(const QString &labelText, const QString &defaultValue)
 {
     checkIfSameType("QLineEdit");
-    moveToColumn2();
+    moveToRightColumn();
     if (!labelText.isEmpty()) {
         QLabel *lineEditLabel = newLabel(labelText);
         addDialogWidget(lineEditLabel);
@@ -122,7 +123,7 @@ QLineEdit *ScriptDialog::addTextInput(const QString &labelText, const QString &d
 QDoubleSpinBox *ScriptDialog::addNumberInput(const QString &labelText)
 {
     checkIfSameType("QDoubleSpinBox");
-    moveToColumn2();
+    moveToRightColumn();
     if (!labelText.isEmpty()) {
         QLabel *numberLabel = newLabel(labelText);
         addDialogWidget(numberLabel);
@@ -132,7 +133,7 @@ QDoubleSpinBox *ScriptDialog::addNumberInput(const QString &labelText)
 QSlider *ScriptDialog::addSlider(const QString &labelText)
 {
     checkIfSameType("QSlider");
-    moveToColumn2();
+    moveToRightColumn();
     if (!labelText.isEmpty()) {
         QLabel *sliderLabel= newLabel(labelText);
         addDialogWidget(sliderLabel);
@@ -145,7 +146,7 @@ QSlider *ScriptDialog::addSlider(const QString &labelText)
 QCheckBox *ScriptDialog::addCheckBox(const QString &labelText, bool defaultValue)
 {
     checkIfSameType("QCheckBox");
-    moveToColumn2();
+    moveToRightColumn();
     QCheckBox *checkBox = new QCheckBox(labelText, this);
     checkBox->setCheckState(defaultValue ? Qt::Checked: Qt::Unchecked);
     return (QCheckBox *)addDialogWidget(checkBox);
@@ -153,7 +154,7 @@ QCheckBox *ScriptDialog::addCheckBox(const QString &labelText, bool defaultValue
 QComboBox *ScriptDialog::addComboBox(const QString &labelText, const QStringList &values)
 {
     checkIfSameType("QComboBox");
-    moveToColumn2();
+    moveToRightColumn();
     if (!labelText.isEmpty()) {
         QLabel *comboBoxLabel = newLabel(labelText);
         addDialogWidget(comboBoxLabel);
@@ -166,23 +167,23 @@ QComboBox *ScriptDialog::addComboBox(const QString &labelText, const QStringList
 QPushButton *ScriptDialog::addButton(const QString &labelText)
 {
     checkIfSameType("QPushButton");
-    moveToColumn2();
+    moveToRightColumn();
     return (QPushButton *)addDialogWidget(new QPushButton(labelText, this));
 }
 Tiled::FileEdit *ScriptDialog::addFilePicker(const QString &labelText)
 {
     checkIfSameType("FileEdit");
-    moveToColumn2();
+    moveToRightColumn();
     if (!labelText.isEmpty()) {
         QLabel *filePickerLabel = newLabel(labelText);
         addDialogWidget(filePickerLabel);
     }
-    addDialogWidget(new FileEdit(this));
+    return (FileEdit *)addDialogWidget(new FileEdit(this));
 }
 Tiled::ColorButton *ScriptDialog::addColorButton(const QString &labelText)
 {    
     checkIfSameType("ColorButton");
-    moveToColumn2();
+    moveToRightColumn();
     if (!labelText.isEmpty()) {
         QLabel *colorLabel = newLabel(labelText);
         addDialogWidget(colorLabel);
@@ -241,7 +242,7 @@ void ScriptDialog::addNewRow()
     m_lastWidgetTypeName.clear();
 }
 
-void ScriptDialog::moveToColumn2()
+void ScriptDialog::moveToRightColumn()
 {
     if (m_widgetsInRow == 0)
         m_widgetsInRow = 1;

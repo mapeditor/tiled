@@ -76,7 +76,7 @@ private:
     QString m_lastWidgetTypeName;
     bool checkIfSameType(const char *newTypeName);
     QWidget *addDialogWidget(QWidget * widget);
-    void moveToColumn2();
+    void moveToRightColumn();
 };
 
 void registerDialog(QJSEngine *jsEngine);
@@ -88,3 +88,4 @@ Q_DECLARE_METATYPE(QPushButton*)
 Q_DECLARE_METATYPE(QSlider*)
 Q_DECLARE_METATYPE(QLabel*)
 Q_DECLARE_METATYPE(QLineEdit*)
+
