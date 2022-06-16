@@ -25,9 +25,9 @@
 #include <string.h>
 #include <memory>
 
-static int leftColumnStretch = 1;
+static int leftColumnStretch = 0;
 // stretch as much as we can so that the left column looks as close to zero width as possible when there is no content
-static int rightColumnStretch = 9999;
+static int rightColumnStretch = 1;
 namespace Tiled {
 
 static void deleteAllFromLayout(QLayout *layout)
