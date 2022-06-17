@@ -192,7 +192,14 @@ Tiled::ColorButton *ScriptDialog::addColorButton(const QString &labelText)
     colorButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     return colorButton;
 }
-
+bool ScriptDialog::groupSameTypeWidgets() const
+{
+    return m_groupSameTypeWidgets;
+}
+void ScriptDialog::setGroupSameTypeWidgets(bool groupSameTypeWidgets)
+{
+    m_groupSameTypeWidgets = groupSameTypeWidgets;
+}
 QWidget *ScriptDialog::addDialogWidget(QWidget *widget)
 {
     // left-hand side element that occupies the first grid column
@@ -223,7 +230,8 @@ bool ScriptDialog::checkIfSameType(const char *widgetTypeName)
 {
     bool isSameType = true;
     QString widgetTypeNameQt = QString::fromUtf8(widgetTypeName);
-    if (m_lastWidgetTypeName.compare(QString::fromUtf8("QLabel")) == 0)
+    if (!m_groupSameTypeWidgets ||
+        m_lastWidgetTypeName.compare(QString::fromUtf8("QLabel")) == 0)
         isSameType = true;
     else if (m_widgetsInRow != 1 &&
              !m_lastWidgetTypeName.isEmpty() &&

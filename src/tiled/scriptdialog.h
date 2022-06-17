@@ -49,6 +49,7 @@ namespace Tiled {
 class ScriptDialog : public QDialog
 {
     Q_OBJECT
+    Q_PROPERTY(bool groupSameTypeWidgets READ groupSameTypeWidgets WRITE setGroupSameTypeWidgets)
 
 public:
     Q_INVOKABLE ScriptDialog(const QString &title = QString());
@@ -66,6 +67,9 @@ public:
     Q_INVOKABLE Tiled::ColorButton *addColorButton(const QString &labelText = QString());
     Q_INVOKABLE void clear();
     Q_INVOKABLE void addNewRow();
+
+    bool groupSameTypeWidgets() const;
+    void setGroupSameTypeWidgets(bool groupSameTypeWidgets);
 private:
     int m_rowIndex = 0;
     int m_widgetsInRow = 0;
@@ -74,10 +78,12 @@ private:
     void initializeLayout();
     QHBoxLayout* m_rowLayout;
     QString m_lastWidgetTypeName;
+    bool m_groupSameTypeWidgets = true;
     bool checkIfSameType(const char *newTypeName);
     QWidget *addDialogWidget(QWidget * widget);
     void moveToRightColumn();
 };
+
 
 void registerDialog(QJSEngine *jsEngine);
 
