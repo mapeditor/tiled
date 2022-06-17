@@ -55,23 +55,23 @@ quickly jump to the referenced object.
 
 .. _custom-property-types:
 
-Custom Property Types
----------------------
+Custom Types
+------------
 
 In addition to the basic property types listed above, you can define custom
-property types in your project. Tiled supports :ref:`custom enums
-<custom-enums>` and :ref:`custom classes <custom-classes>`.
+types in your project. Tiled supports :ref:`custom enums <custom-enums>` and
+:ref:`custom classes <custom-classes>`.
 
 .. figure:: images/properties/property-types-editor.png
-   :alt: Property Types Editor
+   :alt: Custom Types Editor
 
-   Property Types Editor
+   Custom Types Editor
 
 .. note::
 
-   The property types are automatically saved in the
-   :doc:`project file <projects>`. Hence you need to create a project,
-   before you can set up your property types.
+   These types are automatically saved in the :doc:`project file <projects>`.
+   Hence you need to create a project, before you can set up your custom
+   types.
 
 .. _custom-enums:
 
@@ -108,7 +108,7 @@ names. Classes can have members referring to other classes.
 
 Each data type has a "Class" property, which can be used to refer to a custom
 class. The members of this class will then be directly available as custom
-properties of that instance (until Tiled 1.9, this feature was only available
+properties of that instance (before Tiled 1.9, this feature was only available
 for objects and tiles as the "Type" property).
 
 Each class can also have a custom color, which is used to make objects more

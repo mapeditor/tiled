@@ -35,7 +35,7 @@ Automapping Rules File
    should be used for all maps while this project is loaded. It is ignored for
    maps that have a ``rules.txt`` file saved alongside them.
 
-Any types defined in the :ref:`Property Types Editor <custom-property-types>`
+Any types defined in the :ref:`Custom Types Editor <custom-property-types>`
 are also saved in the project.
 
 .. _sessions:

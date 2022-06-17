@@ -796,7 +796,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mResetToDefaultLayout, "ResetToDefaultLayout");
     ActionManager::registerAction(mLockLayout, "LockLayout");
 
-    mShowPropertyTypesEditor = new QAction(tr("Property Types Editor"), this);
+    mShowPropertyTypesEditor = new QAction(tr("Custom Types Editor"), this);
     mShowPropertyTypesEditor->setCheckable(true);
 
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
@@ -2344,7 +2344,7 @@ void MainWindow::retranslateUi()
     mViewsAndToolbarsAction->setText(tr("Views and Toolbars"));
     mResetToDefaultLayout->setText(tr("Reset to Default Layout"));
     mLockLayout->setText(tr("Lock Layout"));
-    mShowPropertyTypesEditor->setText(tr("Property Types Editor"));
+    mShowPropertyTypesEditor->setText(tr("Custom Types Editor"));
     mActionHandler->retranslateUi();
     CommandManager::instance()->retranslateUi();
 }

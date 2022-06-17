@@ -87,7 +87,7 @@ public:
 
 
 PropertyTypesFilter::PropertyTypesFilter(const QString &lastPath)
-    : propertyTypesFilter(QCoreApplication::translate("File Types", "Property Types files (*.json)"))
+    : propertyTypesFilter(QCoreApplication::translate("File Types", "Custom Types files (*.json)"))
     , objectTypesJsonFilter(QCoreApplication::translate("File Types", "Object Types JSON (*.json)"))
     , objectTypesXmlFilter(QCoreApplication::translate("File Types", "Object Types XML (*.xml)"))
 {
@@ -288,9 +288,9 @@ void PropertyTypesEditor::retranslateUi()
     mRenameMemberAction->setText(tr("Rename Member"));
 
     mExportAction->setText(tr("Export..."));
-    mExportAction->setToolTip(tr("Export Property Types"));
+    mExportAction->setToolTip(tr("Export Types"));
     mImportAction->setText(tr("Import..."));
-    mImportAction->setToolTip(tr("Import Property Types"));
+    mImportAction->setToolTip(tr("Import Types"));
 }
 
 void PropertyTypesEditor::addPropertyType(PropertyType::Type type)
@@ -338,7 +338,7 @@ void PropertyTypesEditor::removeSelectedPropertyType()
 
 /**
  * Returns the index of the currently selected property type, or an invalid
- * index if no or multiple property types are selected.
+ * index if no or multiple types are selected.
  */
 QModelIndex PropertyTypesEditor::selectedPropertyTypeIndex() const
 {
@@ -655,7 +655,7 @@ void PropertyTypesEditor::importPropertyTypes()
 
     PropertyTypesFilter filter(lastPath);
     const QString fileName =
-            QFileDialog::getOpenFileName(this, tr("Import Property Types"),
+            QFileDialog::getOpenFileName(this, tr("Import Types"),
                                          lastPath,
                                          filter.filters,
                                          &filter.selectedFilter);
@@ -684,14 +684,14 @@ void PropertyTypesEditor::importPropertyTypes()
         QFile file(fileName);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             const auto error = QCoreApplication::translate("File Errors", "Could not open file for reading.");
-            QMessageBox::critical(this, tr("Error Reading Property Types"), error);
+            QMessageBox::critical(this, tr("Error Reading Types"), error);
             return;
         }
 
         QJsonParseError jsonError;
         const QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &jsonError);
         if (document.isNull()) {
-            QMessageBox::critical(this, tr("Error Reading Property Types"),
+            QMessageBox::critical(this, tr("Error Reading Types"),
                                   Utils::Error::jsonParseError(jsonError));
             return;
         }
@@ -715,7 +715,7 @@ void PropertyTypesEditor::exportPropertyTypes()
 
     PropertyTypesFilter filter(lastPath);
     const QString fileName =
-            QFileDialog::getSaveFileName(this, tr("Export Property Types"),
+            QFileDialog::getSaveFileName(this, tr("Export Types"),
                                          lastPath,
                                          filter.filters,
                                          &filter.selectedFilter);
@@ -740,14 +740,14 @@ void PropertyTypesEditor::exportPropertyTypes()
 
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
             const auto error = QCoreApplication::translate("File Errors", "Could not open file for writing.");
-            QMessageBox::critical(this, tr("Error Writing Property Types"), error);
+            QMessageBox::critical(this, tr("Error Writing Types"), error);
             return;
         }
 
         file.device()->write(QJsonDocument(types->toJson()).toJson());
 
         if (!file.commit())
-            QMessageBox::critical(this, tr("Error Writing Property Types"), file.errorString());
+            QMessageBox::critical(this, tr("Error Writing Types"), file.errorString());
     }
 }
 
