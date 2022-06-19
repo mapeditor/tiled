@@ -43,10 +43,7 @@ static void deleteAllFromLayout(QLayout *layout)
         delete item;
     }
 }
-ScriptHeadingWidget::ScriptHeadingWidget(const QString &text, QWidget *parent):
-    QLabel(text, parent)
-{
-}
+
 ScriptImageWidget::ScriptImageWidget(Tiled::ScriptImage *image, QWidget *parent):
     QLabel(parent)
 {
@@ -94,9 +91,12 @@ void ScriptDialog::clear()
 
 QWidget *ScriptDialog::addHeading(const QString &text, bool fillRow)
 {
-    QLabel *label = newLabel(text, true);
+    // if anything has been placed in this row, go to the next row
+    if (m_widgetsInRow != 0)
+        addNewRow();
+    QLabel *label = newLabel(text);
     // if fillRow, specify column span = -1, meaning fill all remaining columns
-    m_gridLayout->addWidget(label, m_rowIndex, 0, leftColumnStretch, fillRow? -1 : 1);
+    m_gridLayout->addWidget(label, m_rowIndex, 0, 1, fillRow? -1 : 1);
     label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_widgetsInRow++;
     if (fillRow) {
@@ -112,13 +112,14 @@ QWidget *ScriptDialog::addLabel(const QString &text)
 
 QWidget *ScriptDialog::addSeparator(const QString &labelText)
 {
-    addNewRow();
+    if (m_widgetsInRow != 0)
+        addNewRow();
     m_rowLayout = new QHBoxLayout();
     // we don't use addDialogWidget() here so that we can make the size of the separator
     // level independent of the size of the left column.
     m_gridLayout->addLayout(m_rowLayout, m_rowIndex, 0, 1, -1); // span entire row
     if (!labelText.isEmpty()) {
-        QLabel *separatorLabel = newLabel(labelText, true);
+        QLabel *separatorLabel = newLabel(labelText);
         separatorLabel->setWordWrap(false);
         m_rowLayout->addWidget(separatorLabel, leftColumnStretch);
     }
@@ -131,42 +132,44 @@ QWidget *ScriptDialog::addSeparator(const QString &labelText)
 }
 QWidget *ScriptDialog::addTextInput(const QString &labelText, const QString &defaultValue)
 {
-    if (!labelText.isEmpty()) {
-        QLabel *lineEditLabel = newLabel(labelText);
-        addDialogWidget(lineEditLabel);
-    }
-    return addDialogWidget(new QLineEdit(defaultValue, this));
+    QLabel *lineEditLabel = nullptr;
+    if (!labelText.isEmpty())
+         lineEditLabel = newLabel(labelText);
+    return addDialogWidget(new QLineEdit(defaultValue, this), lineEditLabel);
 }
-QWidget *ScriptDialog::addTextEdit(const QString &defaultValue)
+QWidget *ScriptDialog::addTextEdit(const QString &labelText, const QString &defaultValue)
 {
+    QLabel *textEditLabel = nullptr;
+    if (!labelText.isEmpty())
+        textEditLabel = newLabel(labelText);
     QTextEdit *textEdit = new QTextEdit(defaultValue, this);
-    addDialogWidget(textEdit);
+    addDialogWidget(textEdit, textEditLabel);
     textEdit->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::TextEditorInteraction);
     textEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     return textEdit;
 }
-QWidget *ScriptDialog::addImage(Tiled::ScriptImage *image){
-
+QWidget *ScriptDialog::addImage(const QString &labelText, Tiled::ScriptImage *image){
+    QLabel *imageLabel = nullptr;
+    if (!labelText.isEmpty())
+        imageLabel = newLabel(labelText);
     ScriptImageWidget *imageWidget = new ScriptImageWidget(image, this);
-    return addDialogWidget(imageWidget);
+    return addDialogWidget(imageWidget, imageLabel);
 }
 QWidget *ScriptDialog::addNumberInput(const QString &labelText)
 {
-    if (!labelText.isEmpty()) {
-        QLabel *numberLabel = newLabel(labelText);
-        addDialogWidget(numberLabel);
-    }
-    return addDialogWidget(new QDoubleSpinBox(this));
+    QLabel *numberLabel = nullptr;
+    if (!labelText.isEmpty())
+        numberLabel = newLabel(labelText);
+    return addDialogWidget(new QDoubleSpinBox(this), numberLabel);
 }
 QWidget *ScriptDialog::addSlider(const QString &labelText)
 {
-    if (!labelText.isEmpty()) {
-        QLabel *sliderLabel= newLabel(labelText);
-        addDialogWidget(sliderLabel);
-    }
+    QLabel *sliderLabel = nullptr;
+    if (!labelText.isEmpty())
+        sliderLabel = newLabel(labelText);
     QSlider *horizontalSlider = new QSlider(this);
     horizontalSlider->setOrientation(Qt::Horizontal);
-    return addDialogWidget(horizontalSlider);
+    return addDialogWidget(horizontalSlider, sliderLabel);
 }
 
 QWidget *ScriptDialog::addCheckBox(const QString &labelText, bool defaultValue)
@@ -177,13 +180,12 @@ QWidget *ScriptDialog::addCheckBox(const QString &labelText, bool defaultValue)
 }
 QWidget *ScriptDialog::addComboBox(const QString &labelText, const QStringList &values)
 {
-    if (!labelText.isEmpty()) {
-        QLabel *comboBoxLabel = newLabel(labelText);
-        addDialogWidget(comboBoxLabel);
-    }
+    QLabel *comboBoxLabel = nullptr;
+    if (!labelText.isEmpty())
+        comboBoxLabel = newLabel(labelText);
     QComboBox *comboBox = new QComboBox(this);
     comboBox->addItems(values);
-    return addDialogWidget(comboBox);
+    return addDialogWidget(comboBox, comboBoxLabel);
 }
 
 QWidget *ScriptDialog::addButton(const QString &labelText)
@@ -192,19 +194,17 @@ QWidget *ScriptDialog::addButton(const QString &labelText)
 }
 QWidget *ScriptDialog::addFilePicker(const QString &labelText)
 {
-    if (!labelText.isEmpty()) {
-        QLabel *filePickerLabel = newLabel(labelText);
-        addDialogWidget(filePickerLabel);
-    }
-    return addDialogWidget(new FileEdit(this));
+    QLabel *filePickerLabel = nullptr;
+    if (!labelText.isEmpty())
+        filePickerLabel = newLabel(labelText);
+    return addDialogWidget(new FileEdit(this), filePickerLabel);
 }
 QWidget *ScriptDialog::addColorButton(const QString &labelText)
 {
-    if (!labelText.isEmpty()) {
-        QLabel *colorLabel = newLabel(labelText);
-        addDialogWidget(colorLabel);
-    }
-    ColorButton *colorButton = (ColorButton *)addDialogWidget(new ColorButton(this));
+    QLabel *colorLabel = nullptr;
+    if (!labelText.isEmpty())
+         colorLabel = newLabel(labelText);
+    QWidget *colorButton = addDialogWidget(new ColorButton(this), colorLabel);
     colorButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     return colorButton;
 }
@@ -216,7 +216,7 @@ void ScriptDialog::setNewRowMode(NewRowMode mode)
 {
     m_newRowMode = mode;
 }
-QWidget *ScriptDialog::addDialogWidget(QWidget *widget)
+QWidget *ScriptDialog::addDialogWidget(QWidget *widget, QLabel *widgetLabel)
 {
     determineWidgetGrouping(widget);
     if (m_widgetsInRow == 0)
@@ -225,6 +225,10 @@ QWidget *ScriptDialog::addDialogWidget(QWidget *widget)
     if (m_widgetsInRow == 1) {
         m_rowLayout = new QHBoxLayout();
         m_gridLayout->addLayout(m_rowLayout, m_rowIndex, 1, 1, 1);
+    }
+    if (widgetLabel != nullptr) {
+        widgetLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        m_rowLayout->addWidget(widgetLabel);
     }
     widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     m_rowLayout->addWidget(widget);
@@ -276,17 +280,13 @@ void ScriptDialog::addNewRow()
     m_lastWidgetTypeName.clear();
 }
 
-QLabel *ScriptDialog::newLabel(const QString& labelText, bool isHeading)
+QLabel *ScriptDialog::newLabel(const QString& labelText)
 {
-    QLabel *label;
-    if (isHeading)
-        label = new ScriptHeadingWidget(labelText, this);
-    else
-        label = new QLabel(labelText, this);
+    QLabel *label = new QLabel(this);
     label->setTextInteractionFlags(Qt::TextSelectableByMouse);
     label->setWordWrap(false);
     label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    label->adjustSize();
+    label->setText(labelText);
     return label;
 }
 

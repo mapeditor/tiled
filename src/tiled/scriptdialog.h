@@ -51,14 +51,8 @@ class QJSEngine;
 namespace Tiled {
 
 /**
- * This type is just used to differentiate between addLabel() and addHeading() when
- * automatically laying out widgets
+ * A widget which allows the user to display a ScriptImage
  */
-class ScriptHeadingWidget: public QLabel
-{
-public:
-    ScriptHeadingWidget(const QString &text = QString(), QWidget *parent = nullptr);
-};
 class ScriptImageWidget: public QLabel{
     Q_OBJECT
     Q_PROPERTY(Tiled::ScriptImage *image READ image WRITE setImage)
@@ -89,7 +83,7 @@ public:
     Q_INVOKABLE QWidget *addLabel(const QString &text);
     Q_INVOKABLE QWidget *addSeparator(const QString &labelText = QString());
     Q_INVOKABLE QWidget *addTextInput(const QString &labelText= QString(), const QString &defaultValue= QString());
-    Q_INVOKABLE QWidget *addTextEdit(const QString &defaultValue= QString());
+    Q_INVOKABLE QWidget *addTextEdit(const QString &labelText, const QString &defaultValue= QString());
     Q_INVOKABLE QWidget *addNumberInput(const QString &labelText);
     Q_INVOKABLE QWidget *addSlider(const QString &labelText);
     Q_INVOKABLE QWidget *addComboBox(const QString &labelText, const QStringList &values);
@@ -97,7 +91,7 @@ public:
     Q_INVOKABLE QWidget *addButton(const QString &labelText = QString());
     Q_INVOKABLE QWidget *addFilePicker(const QString &labelText = QString());
     Q_INVOKABLE QWidget *addColorButton(const QString &labelText = QString());
-    Q_INVOKABLE QWidget *addImage(Tiled::ScriptImage * image);
+    Q_INVOKABLE QWidget *addImage(const QString &labelText, Tiled::ScriptImage * image);
     Q_INVOKABLE void clear();
     Q_INVOKABLE void addNewRow();
 
@@ -107,13 +101,13 @@ private:
     int m_rowIndex = 0;
     int m_widgetsInRow = 0;
     QGridLayout *m_gridLayout;
-    QLabel *newLabel(const QString& labelText, bool isHeading = false);
+    QLabel *newLabel(const QString& labelText);
     void initializeLayout();
     QHBoxLayout* m_rowLayout;
     QString m_lastWidgetTypeName;
     NewRowMode m_newRowMode = SameWidgetRows;
     void determineWidgetGrouping(QWidget *widget);
-    QWidget *addDialogWidget(QWidget * widget);
+    QWidget *addDialogWidget(QWidget * widget, QLabel *widgetLabel = nullptr);
 };
 
 
@@ -128,5 +122,4 @@ Q_DECLARE_METATYPE(QLabel*)
 Q_DECLARE_METATYPE(QLineEdit*)
 Q_DECLARE_METATYPE(QTextEdit*)
 Q_DECLARE_METATYPE(Tiled::ScriptImageWidget*)
-Q_DECLARE_METATYPE(Tiled::ScriptHeadingWidget*)
 

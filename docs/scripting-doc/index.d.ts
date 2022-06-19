@@ -398,6 +398,29 @@ declare namespace Qt {
      */
     placeholderText: string;
   }
+
+    /**
+   * A widget containing a multiple lines of text that the user can edit.
+   * Qt documentation: [QTextEdit](https://doc.qt.io/qt-5/qtextedit.html)
+   */
+     class QTextEdit extends QWidget{
+
+      /**
+       * This property holds whether the user can change the contents of the widget.
+       * If true, the user cannot change the text. Defaults to false.
+       */
+      readOnly: boolean;
+      /**
+       * This property holds the text editor's contents as plain text.
+       */
+      plainText: string;
+      /**
+       * Signal emitted when the text inside the QTextEdit is changed.
+       * Check the text with {@link plainText} or {@link html} when this is emitted.
+       */
+      textChanged: Signal<void>;
+
+    }
   /**
    * A check box widget which allows the user to toggle
    * a value on and off.
@@ -506,8 +529,21 @@ declare namespace Qt {
 
     /**
      * Signal emitted when the value in the slider is changed.
+     * The value passed as a argument to functions connected to this signal is 
+     * of type string, and will contain {@link prefix} and {@link suffix},
+     * if any are set.
      */
-    valueChanged: Signal<number>;
+    valueChanged: Signal<string>;
+
+    /**
+     * Text such as "$" to display to the user at the beginning of the numerical value.
+     */
+    prefix: string;
+
+    /**
+     * Text such as "ms" to display to the user at the end of the numerical value.
+     */
+    suffix: string;
   }
 
   /**
@@ -3726,6 +3762,16 @@ declare class FileEdit extends Qt.QWidget{
   fileUrlChanged: Signal<Qt.QUrl>;
 }
 /**
+ * A widget that displays an {@link Image} on your dialog.
+ */
+declare class ImageWidget extends Qt.QWidget{
+
+  /**
+   * The image to be displayed in the widget
+   */
+  image: Image;
+}
+/**
  * The `Dialog` object is used to display a dialog to the user
  * which can be filled with a variety of widgets.
  * 
@@ -3783,16 +3829,24 @@ declare class Dialog{
   addNewRow(): void;
 
   /**
-   * Add a label to the dialog. A label will always be the first
+   * Add a heading to the dialog. A heading will always be the first
    * widget in a row.
    *
-   * @param labelText - the text to display in the label.
-   * @param maxWidth -  if true, the label will be expanded to the full
+   * @param labelText - the text to display in the heading.
+   * @param maxWidth -  if true, the heading will be expanded to the full
    *                    width of the dialog. if false, it will be confined
    *                    to the left-hand column of the dialog.
    *                    Defaults to false.
    */
-  addLabel(labelText:string, maxWidth?: boolean): Qt.QLabel;
+  addHeading(labelText:string, maxWidth?: boolean): Qt.QLabel;
+
+  /**
+   * Add a label to the dialog. A label will always be the first
+   * widget in a row.
+   *
+   * @param labelText - the text to display in the label.
+   */
+  addLabel(labelText:string): Qt.QLabel;
 
   /**
    * Adds a separator line with optional label to the dialog. 
@@ -3805,6 +3859,12 @@ declare class Dialog{
    */
    addImage(image: Image): ImageWidget;
 
+  /**
+   * Add a {@link Qt.QSlider} widget to the dialog to allow a user to 
+   * type a numerical value or use up and down controls on the widget to manipulate the value.
+   * This can be used to enter integer or decimal values.   
+   */
+  addNumberInput(labelText?: string): Qt.QDoubleSpinBox;
   /**
    * Add a {@link Qt.QSlider} widget to the dialog to allow a user to 
    * slide a handle within a number range. This can only be used to enter integer-type values.
@@ -3828,9 +3888,18 @@ declare class Dialog{
    * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user 
    * to enter a single line of text
    * @param labelText - text to display in a label to the left of the widget
-   * @param defualtValue - the default value to display in the input
+   * @param defaultValue - the default value to display in the input
    */
-   addTextInput(labelText?: string, defualtValue?: string): Qt.QLineEdit;
+  addTextInput(labelText?: string, defaultValue?: string): Qt.QLineEdit;
+
+  /**
+   * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user 
+   * to edit multiple lines of text. Also allows display of rendered HTML
+   * by setting the {@link Qt.QLineEdit.html} property.
+   * @param labelText - text to display in a label to the left of the widget
+   * @param defaultValue - the default value to display in the input
+   */
+  addTextEdit(labelText?: string, defaultValue?: string): Qt.QTextEdit;
 
   /**
    * Add a {@link Qt.QComboBox} widget (AKA a dropdown) allowing the user to pick 
@@ -3843,7 +3912,7 @@ declare class Dialog{
   /**
    * Add a {@link ColorButton} widget that allows the user to pick a color.
    * @param labelText the text of the widget label displayed to the left of the widget.
-  */
+   */
   addColorButton(labelText?: string): ColorButton;
 
   /* Widget with a button which opens a file picker dialog 
@@ -3865,18 +3934,27 @@ declare class Dialog{
   show(): void;
 
   /**
-   * Close this dialog, setting its result code to @link Qt.Accepted} or {@link Qt.Rejected}. 
+   * Close this dialog, setting its result code to {@link Qt.Accepted}.
+   */
+  accept(): void;
+  /**
+   * Close this dialog, setting its result code to {@link Qt.Rejected}.
+   */
+  reject(): void;
+
+  /**
+   * Close this dialog, setting its result code to {@link Qt.Accepted} or {@link Qt.Rejected}. 
    * @param resultCode - @link Qt.Accepted} or {@link Qt.Rejected}
    */
   done(resultCode: Qt.DialogCode): void;
 
-    /**
-   * Called when the dialog is closed via the X button or the {@link done()} 
-   * method is called with {@link Qt.Rejected} as its argument.
+  /**
+   * Called when the dialog is closed via {@link accept()} or the {@link done()} 
+   * method is called with {@link Qt.Accepted} as its argument.
    */
   accepted: Signal<void>;
   /**
-   * Called when the dialog is closed via the X button or the {@link done()} 
+   * Called when the dialog is closed via the X button, {@link reject()}, or the {@link done()} 
    * method is called with {@link Qt.Rejected} as its argument.
    */
   rejected: Signal<void>;
@@ -3886,6 +3964,11 @@ declare class Dialog{
    * The number value it provides is either {@link Qt.Accepted} or {@link Qt.Rejected}.
    */
   finished: Signal<number>;
+
+  /**
+   * The title of your dialog.
+   */
+  windowTitle: string;
 
   /**
    * You can use this property to prevent the dialog from being resized to a width
