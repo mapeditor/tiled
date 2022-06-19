@@ -22,6 +22,7 @@
 #pragma once
 
 #include "mainwindow.h"
+#include "scriptimage.h"
 #include "fileedit.h"
 #include "colorbutton.h"
 #include <QString>
@@ -40,48 +41,79 @@
 #include <QDialog>
 #include <QString>
 #include <QLineEdit>
+#include <QTextEdit>
 #include <QList>
 #include <QSize>
-#include <QResizeEvent>
+#include <QPixmap>
+#include <QBitmap>
 class QJSEngine;
 
 namespace Tiled {
+
+/**
+ * This type is just used to differentiate between addLabel() and addHeading() when
+ * automatically laying out widgets
+ */
+class ScriptHeadingWidget: public QLabel
+{
+public:
+    ScriptHeadingWidget(const QString &text = QString(), QWidget *parent = nullptr);
+};
+class ScriptImageWidget: public QLabel{
+    Q_OBJECT
+    Q_PROPERTY(Tiled::ScriptImage *image READ image WRITE setImage)
+
+public:
+    ScriptImageWidget(Tiled::ScriptImage *image, QWidget *parent);
+    ScriptImage *image() const;
+    void setImage(Tiled::ScriptImage *image);
+private:
+    ScriptImage *m_image;
+};
 class ScriptDialog : public QDialog
 {
     Q_OBJECT
-    Q_PROPERTY(bool groupSameTypeWidgets READ groupSameTypeWidgets WRITE setGroupSameTypeWidgets)
+    Q_PROPERTY(Tiled::ScriptDialog::NewRowMode newRowMode READ newRowMode WRITE setNewRowMode)
 
 public:
+
+    enum NewRowMode {
+        SameWidgetRows =0,
+        ManualRows = 1,
+        SingleWidgetRows = 2
+    };
+    Q_ENUM(NewRowMode)
     Q_INVOKABLE ScriptDialog(const QString &title = QString());
 
-    Q_INVOKABLE QLabel *addHeading(const QString &text, bool fillRow = false);
-    Q_INVOKABLE QLabel *addLabel(const QString &text);
-    Q_INVOKABLE QFrame *addSeparator(const QString &labelText = QString());
-    Q_INVOKABLE QLineEdit *addTextInput(const QString &labelText= QString(), const QString &defaultValue= QString());
-    Q_INVOKABLE QDoubleSpinBox *addNumberInput(const QString &labelText);
-    Q_INVOKABLE QSlider *addSlider(const QString &labelText);
-    Q_INVOKABLE QComboBox *addComboBox(const QString &labelText, const QStringList &values);
-    Q_INVOKABLE QCheckBox *addCheckBox(const QString &labelText =QString(), bool defaultValue = false);
-    Q_INVOKABLE QPushButton *addButton(const QString &labelText = QString());
-    Q_INVOKABLE Tiled::FileEdit *addFilePicker(const QString &labelText = QString());
-    Q_INVOKABLE Tiled::ColorButton *addColorButton(const QString &labelText = QString());
+    Q_INVOKABLE QWidget *addHeading(const QString &text, bool fillRow = false);
+    Q_INVOKABLE QWidget *addLabel(const QString &text);
+    Q_INVOKABLE QWidget *addSeparator(const QString &labelText = QString());
+    Q_INVOKABLE QWidget *addTextInput(const QString &labelText= QString(), const QString &defaultValue= QString());
+    Q_INVOKABLE QWidget *addTextEdit(const QString &defaultValue= QString());
+    Q_INVOKABLE QWidget *addNumberInput(const QString &labelText);
+    Q_INVOKABLE QWidget *addSlider(const QString &labelText);
+    Q_INVOKABLE QWidget *addComboBox(const QString &labelText, const QStringList &values);
+    Q_INVOKABLE QWidget *addCheckBox(const QString &labelText =QString(), bool defaultValue = false);
+    Q_INVOKABLE QWidget *addButton(const QString &labelText = QString());
+    Q_INVOKABLE QWidget *addFilePicker(const QString &labelText = QString());
+    Q_INVOKABLE QWidget *addColorButton(const QString &labelText = QString());
+    Q_INVOKABLE QWidget *addImage(Tiled::ScriptImage * image);
     Q_INVOKABLE void clear();
     Q_INVOKABLE void addNewRow();
 
-    bool groupSameTypeWidgets() const;
-    void setGroupSameTypeWidgets(bool groupSameTypeWidgets);
+    NewRowMode newRowMode() const;
+    void setNewRowMode(NewRowMode mode);
 private:
     int m_rowIndex = 0;
     int m_widgetsInRow = 0;
     QGridLayout *m_gridLayout;
-    QLabel *newLabel(const QString& labelText);
+    QLabel *newLabel(const QString& labelText, bool isHeading = false);
     void initializeLayout();
     QHBoxLayout* m_rowLayout;
     QString m_lastWidgetTypeName;
-    bool m_groupSameTypeWidgets = true;
-    bool checkIfSameType(const char *newTypeName);
+    NewRowMode m_newRowMode = SameWidgetRows;
+    void determineWidgetGrouping(QWidget *widget);
     QWidget *addDialogWidget(QWidget * widget);
-    void moveToRightColumn();
 };
 
 
@@ -94,4 +126,7 @@ Q_DECLARE_METATYPE(QPushButton*)
 Q_DECLARE_METATYPE(QSlider*)
 Q_DECLARE_METATYPE(QLabel*)
 Q_DECLARE_METATYPE(QLineEdit*)
+Q_DECLARE_METATYPE(QTextEdit*)
+Q_DECLARE_METATYPE(Tiled::ScriptImageWidget*)
+Q_DECLARE_METATYPE(Tiled::ScriptHeadingWidget*)
 

@@ -70,6 +70,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QDialog>
+#include <QTextEdit>
 #if QT_VERSION < QT_VERSION_CHECK(6,0,0)
 #include <QTextCodec>
 #endif
@@ -148,6 +149,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<FileEdit*>();
     qRegisterMetaType<QWidget*>();
     qRegisterMetaType<QLineEdit*>();
+    qRegisterMetaType<QTextEdit*>();
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 

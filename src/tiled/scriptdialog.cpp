@@ -28,6 +28,8 @@
 static int leftColumnStretch = 0;
 // stretch as much as we can so that the left column looks as close to zero width as possible when there is no content
 static int rightColumnStretch = 1;
+static QString labelType = QString::fromUtf8("QLabel");
+
 namespace Tiled {
 
 static void deleteAllFromLayout(QLayout *layout)
@@ -41,7 +43,26 @@ static void deleteAllFromLayout(QLayout *layout)
         delete item;
     }
 }
+ScriptHeadingWidget::ScriptHeadingWidget(const QString &text, QWidget *parent):
+    QLabel(text, parent)
+{
+}
+ScriptImageWidget::ScriptImageWidget(Tiled::ScriptImage *image, QWidget *parent):
+    QLabel(parent)
+{
+    setImage(image);
+}
 
+Tiled::ScriptImage *ScriptImageWidget::image() const{
+    return m_image;
+}
+void ScriptImageWidget::setImage(Tiled::ScriptImage *image){
+    m_image = image;
+    setMinimumSize(m_image->width(), m_image->height());
+    QPixmap newPixmap = QPixmap::fromImage(m_image->image());
+    setPixmap(newPixmap);
+    setMask(newPixmap.mask());
+}
 ScriptDialog::ScriptDialog(const QString &title)
  : QDialog(MainWindow::maybeInstance())
 {
@@ -71,11 +92,11 @@ void ScriptDialog::clear()
     initializeLayout();
 }
 
-QLabel *ScriptDialog::addHeading(const QString &text, bool fillRow)
+QWidget *ScriptDialog::addHeading(const QString &text, bool fillRow)
 {
-    addNewRow();
-    QLabel *label = newLabel(text);
-    m_gridLayout->addWidget(label, m_rowIndex, m_widgetsInRow, 1, fillRow? -1 : 1); // max width
+    QLabel *label = newLabel(text, true);
+    // if fillRow, specify column span = -1, meaning fill all remaining columns
+    m_gridLayout->addWidget(label, m_rowIndex, 0, leftColumnStretch, fillRow? -1 : 1);
     label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_widgetsInRow++;
     if (fillRow) {
@@ -84,13 +105,12 @@ QLabel *ScriptDialog::addHeading(const QString &text, bool fillRow)
     }
     return label;
 }
-QLabel *ScriptDialog::addLabel(const QString &text)
+QWidget *ScriptDialog::addLabel(const QString &text)
 {
-    moveToRightColumn();
-    return (QLabel *)addDialogWidget(newLabel(text));
+    return addDialogWidget(newLabel(text));
 }
 
-QFrame *ScriptDialog::addSeparator(const QString &labelText)
+QWidget *ScriptDialog::addSeparator(const QString &labelText)
 {
     addNewRow();
     m_rowLayout = new QHBoxLayout();
@@ -98,10 +118,9 @@ QFrame *ScriptDialog::addSeparator(const QString &labelText)
     // level independent of the size of the left column.
     m_gridLayout->addLayout(m_rowLayout, m_rowIndex, 0, 1, -1); // span entire row
     if (!labelText.isEmpty()) {
-        QLabel *separatorLabel;
-        separatorLabel= newLabel(labelText);
+        QLabel *separatorLabel = newLabel(labelText, true);
         separatorLabel->setWordWrap(false);
-        m_rowLayout->addWidget(separatorLabel, 1);
+        m_rowLayout->addWidget(separatorLabel, leftColumnStretch);
     }
     QFrame *line = new QFrame(this);
     line->setFrameShape(QFrame::HLine);
@@ -110,80 +129,77 @@ QFrame *ScriptDialog::addSeparator(const QString &labelText)
     addNewRow();
     return line;
 }
-QLineEdit *ScriptDialog::addTextInput(const QString &labelText, const QString &defaultValue)
+QWidget *ScriptDialog::addTextInput(const QString &labelText, const QString &defaultValue)
 {
-    checkIfSameType("QLineEdit");
-    moveToRightColumn();
     if (!labelText.isEmpty()) {
         QLabel *lineEditLabel = newLabel(labelText);
         addDialogWidget(lineEditLabel);
     }
-    return (QLineEdit *)addDialogWidget(new QLineEdit(defaultValue, this));
+    return addDialogWidget(new QLineEdit(defaultValue, this));
 }
-QDoubleSpinBox *ScriptDialog::addNumberInput(const QString &labelText)
+QWidget *ScriptDialog::addTextEdit(const QString &defaultValue)
 {
-    checkIfSameType("QDoubleSpinBox");
-    moveToRightColumn();
+    QTextEdit *textEdit = new QTextEdit(defaultValue, this);
+    addDialogWidget(textEdit);
+    textEdit->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::TextEditorInteraction);
+    textEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+    return textEdit;
+}
+QWidget *ScriptDialog::addImage(Tiled::ScriptImage *image){
+
+    ScriptImageWidget *imageWidget = new ScriptImageWidget(image, this);
+    return addDialogWidget(imageWidget);
+}
+QWidget *ScriptDialog::addNumberInput(const QString &labelText)
+{
     if (!labelText.isEmpty()) {
         QLabel *numberLabel = newLabel(labelText);
         addDialogWidget(numberLabel);
     }
-    return (QDoubleSpinBox *)addDialogWidget(new QDoubleSpinBox(this));
+    return addDialogWidget(new QDoubleSpinBox(this));
 }
-QSlider *ScriptDialog::addSlider(const QString &labelText)
+QWidget *ScriptDialog::addSlider(const QString &labelText)
 {
-    checkIfSameType("QSlider");
-    moveToRightColumn();
     if (!labelText.isEmpty()) {
         QLabel *sliderLabel= newLabel(labelText);
         addDialogWidget(sliderLabel);
     }
     QSlider *horizontalSlider = new QSlider(this);
     horizontalSlider->setOrientation(Qt::Horizontal);
-    return (QSlider *)addDialogWidget(horizontalSlider);
+    return addDialogWidget(horizontalSlider);
 }
 
-QCheckBox *ScriptDialog::addCheckBox(const QString &labelText, bool defaultValue)
+QWidget *ScriptDialog::addCheckBox(const QString &labelText, bool defaultValue)
 {
-    checkIfSameType("QCheckBox");
-    moveToRightColumn();
     QCheckBox *checkBox = new QCheckBox(labelText, this);
     checkBox->setCheckState(defaultValue ? Qt::Checked: Qt::Unchecked);
-    return (QCheckBox *)addDialogWidget(checkBox);
+    return addDialogWidget(checkBox);
 }
-QComboBox *ScriptDialog::addComboBox(const QString &labelText, const QStringList &values)
+QWidget *ScriptDialog::addComboBox(const QString &labelText, const QStringList &values)
 {
-    checkIfSameType("QComboBox");
-    moveToRightColumn();
     if (!labelText.isEmpty()) {
         QLabel *comboBoxLabel = newLabel(labelText);
         addDialogWidget(comboBoxLabel);
     }
     QComboBox *comboBox = new QComboBox(this);
     comboBox->addItems(values);
-    return (QComboBox *)addDialogWidget(comboBox);
+    return addDialogWidget(comboBox);
 }
 
-QPushButton *ScriptDialog::addButton(const QString &labelText)
+QWidget *ScriptDialog::addButton(const QString &labelText)
 {
-    checkIfSameType("QPushButton");
-    moveToRightColumn();
-    return (QPushButton *)addDialogWidget(new QPushButton(labelText, this));
+    return addDialogWidget(new QPushButton(labelText, this));
 }
-Tiled::FileEdit *ScriptDialog::addFilePicker(const QString &labelText)
+QWidget *ScriptDialog::addFilePicker(const QString &labelText)
 {
-    checkIfSameType("FileEdit");
-    moveToRightColumn();
     if (!labelText.isEmpty()) {
         QLabel *filePickerLabel = newLabel(labelText);
         addDialogWidget(filePickerLabel);
     }
-    return (FileEdit *)addDialogWidget(new FileEdit(this));
+    return addDialogWidget(new FileEdit(this));
 }
-Tiled::ColorButton *ScriptDialog::addColorButton(const QString &labelText)
-{    
-    checkIfSameType("ColorButton");
-    moveToRightColumn();
+QWidget *ScriptDialog::addColorButton(const QString &labelText)
+{
     if (!labelText.isEmpty()) {
         QLabel *colorLabel = newLabel(labelText);
         addDialogWidget(colorLabel);
@@ -192,56 +208,66 @@ Tiled::ColorButton *ScriptDialog::addColorButton(const QString &labelText)
     colorButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     return colorButton;
 }
-bool ScriptDialog::groupSameTypeWidgets() const
+ScriptDialog::NewRowMode ScriptDialog::newRowMode() const
 {
-    return m_groupSameTypeWidgets;
+    return m_newRowMode;
 }
-void ScriptDialog::setGroupSameTypeWidgets(bool groupSameTypeWidgets)
+void ScriptDialog::setNewRowMode(NewRowMode mode)
 {
-    m_groupSameTypeWidgets = groupSameTypeWidgets;
+    m_newRowMode = mode;
 }
 QWidget *ScriptDialog::addDialogWidget(QWidget *widget)
 {
-    // left-hand side element that occupies the first grid column
+    determineWidgetGrouping(widget);
     if (m_widgetsInRow == 0)
-        m_gridLayout->addWidget(widget, m_rowIndex, 0);
-    else {
-        // right-hand side elements, add to the layout inside the second column
-        if (m_widgetsInRow == 1) {
-            m_rowLayout = new QHBoxLayout();
-            m_gridLayout->addLayout(m_rowLayout, m_rowIndex, 1, 1, 1);
-        }
-        widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-        m_rowLayout->addWidget(widget);
+        m_widgetsInRow = 1;
+    // right-hand side elements, add to the layout inside the second column
+    if (m_widgetsInRow == 1) {
+        m_rowLayout = new QHBoxLayout();
+        m_gridLayout->addLayout(m_rowLayout, m_rowIndex, 1, 1, 1);
     }
+    widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+    m_rowLayout->addWidget(widget);
     m_widgetsInRow++;
     return widget;
 }
 
 /**
- * Check if the current widget we are trying to add is of the same type
- * as the last we added. If so, we keep it on the same row
+ * Based on the current NewRoWmode, determine whether we should add a newline before
+ * placing a widget
  *
- * @param widgetTypeName - the name of the new widget (typeinfo(widget).name())
- * @return true if the widget was the same as the last type, false if they were different and a new
- *         row was made
+ * @param widget - the widget that is about to be added to the layout
  */
-bool ScriptDialog::checkIfSameType(const char *widgetTypeName)
+void ScriptDialog::determineWidgetGrouping(QWidget *widget)
 {
-    bool isSameType = true;
-    QString widgetTypeNameQt = QString::fromUtf8(widgetTypeName);
-    if (!m_groupSameTypeWidgets ||
-        m_lastWidgetTypeName.compare(QString::fromUtf8("QLabel")) == 0)
-        isSameType = true;
-    else if (m_widgetsInRow != 1 &&
-             !m_lastWidgetTypeName.isEmpty() &&
-             m_lastWidgetTypeName.compare(widgetTypeNameQt) != 0) {
-       // if the widget type is not the same as the last
-       addNewRow();
-       isSameType = false;
+    const char *widgetTypeNameCStr = widget->metaObject()->className();
+    QString widgetTypeName = QString::fromUtf8(widgetTypeNameCStr);
+
+    // any widgets that get checked via this method
+    // are right column widgets.
+    if (newRowMode() == NewRowMode::ManualRows)
+        return;
+    if (newRowMode() == NewRowMode::SingleWidgetRows)
+    {
+        // if there are any other widgets on this row so far in single widget mode,
+        // wrap to the next row
+        if (m_widgetsInRow > 1)
+            addNewRow();
+        return;
     }
-    m_lastWidgetTypeName = QString::fromUtf8(widgetTypeName);
-    return isSameType;
+    // otherwise,  same-type widget grouping
+
+    // labels can be mixed with any type of widget
+    if ((m_lastWidgetTypeName.compare(labelType) == 0  ||
+        m_lastWidgetTypeName.isEmpty()) &&
+        widgetTypeName.compare(labelType) != 0)
+            // store the widget type to help determine if the next widget will start a new row
+            m_lastWidgetTypeName = widgetTypeName;
+    // if the new widget type is not the same as the last
+    else
+        if (widgetTypeName.compare(labelType) != 0 &&
+            widgetTypeName.compare(m_lastWidgetTypeName) != 0)
+            addNewRow();
 }
 void ScriptDialog::addNewRow()
 {
@@ -250,17 +276,14 @@ void ScriptDialog::addNewRow()
     m_lastWidgetTypeName.clear();
 }
 
-void ScriptDialog::moveToRightColumn()
+QLabel *ScriptDialog::newLabel(const QString& labelText, bool isHeading)
 {
-    if (m_widgetsInRow == 0)
-        m_widgetsInRow = 1;
-}
-
-QLabel *ScriptDialog::newLabel(const QString& labelText)
-{
-    QLabel *label = new QLabel(this);
+    QLabel *label;
+    if (isHeading)
+        label = new ScriptHeadingWidget(labelText, this);
+    else
+        label = new QLabel(labelText, this);
     label->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    label->setText(labelText);
     label->setWordWrap(false);
     label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     label->adjustSize();

@@ -3751,6 +3751,30 @@ declare class Dialog{
    * @param labelText
    */
   constructor(labelText: string);
+  /**
+   * The default row layout mode for Dialogs.
+   * In this mode, if you add multiple of the same type of widget in a row,
+   * (for instance by calling {@link addButton} twice in a row),
+   * the Dialog will automatically group them into the same row. 
+   * 
+   * As soon as a differently typed widget is added, a new 
+   * row will be added to the dialog. The exception to this rule is 
+   * the widget created by addLabel(), which will be mixed with any other
+   * widget types when using this mode.
+   */
+  static readonly SameWidgetRows: unique symbol;
+  /**
+   * In this mode, the dialog will not add a new row unless you call
+   * {@link addNewRow}, {@link addHeading} or {@link addSeparator}.
+   */
+  static readonly ManualRows: unique symbol;
+
+  /**
+   * In this mode, only one widget will be allowed in the right column.
+   * A new row will be added after each time you place a widget in the right
+   * column.
+   */
+  static readonly SingleWidgetRows: unique symbol;
 
   /**
    * Call this to force the next widget to go on a new row,
@@ -3775,6 +3799,11 @@ declare class Dialog{
    * Used to visually split up sections of the dialog.
    */
   addSeparator(labelText?:string): Qt.QFrame;
+
+  /**
+   * Adds an image widget that can display an image in a dialog
+   */
+   addImage(image: Image): ImageWidget;
 
   /**
    * Add a {@link Qt.QSlider} widget to the dialog to allow a user to 
