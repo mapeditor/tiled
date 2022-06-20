@@ -476,8 +476,7 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
         state.setRotation(newRotation);
     }
 
-    auto command = new TransformMapObjects(this, mSelectedObjects, states);
-    command->setText(tr("Rotate %n Object(s)", "", mSelectedObjects.size()));
+    undoStack()->push(new TransformMapObjects(this, mSelectedObjects, states));
 }
 
 /**
