@@ -70,17 +70,17 @@
     <message>
         <location line="+165"/>
         <source>Missing argument, set version using: --export-version &lt;version&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Не хватает аргумента, задайте версию используя: --export-version &lt;версия&gt;</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Unknown version: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестная версия: %1</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Missing argument, evaluate a script using: --evaluate &lt;script-file&gt; [args]</source>
-        <translation type="unfinished"></translation>
+        <translation>Не хватает аргумента, выполняйте скрипт используя: --evaluate &lt;скрипт-файл&gt; [аргументы]</translation>
     </message>
     <message>
         <location line="+122"/>
@@ -156,7 +156,7 @@
     <message>
         <location line="+10"/>
         <source>Set the compatibility version used when exporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Задать версию для совместимости при экспорте</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -166,7 +166,7 @@
     <message>
         <location line="+10"/>
         <source>Evaluate a script file and quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Выполнить скрипт-файл и выйти</translation>
     </message>
     <message>
         <location line="+65"/>
@@ -296,7 +296,7 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+95"/>
         <source>Defold Tile Map (*.tilemap)</source>
-        <translation type="unfinished"></translation>
+        <translation>Тайловая карта для Defold (*.tilemap)</translation>
     </message>
 </context>
 <context>
@@ -304,7 +304,7 @@
     <message>
         <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+138"/>
         <source>Defold Collection (*.collection)</source>
-        <translation type="unfinished"></translation>
+        <translation>Коллекция для Defold (*.collection)</translation>
     </message>
 </context>
 <context>
@@ -467,17 +467,17 @@
     <message>
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-596"/>
         <source>Custom Types files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Файлы пользовательских типов (*.json)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Object Types JSON (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON типов объектов (*.json)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Object Types XML (*.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML типов объектов (*.xml)</translation>
     </message>
 </context>
 <context>
@@ -633,7 +633,7 @@
     <message>
         <location line="+4"/>
         <source>&amp;Recent Files</source>
-        <translation>&amp;Последние открытые</translation>
+        <translation>&amp;Последние открытые файлы</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -788,12 +788,12 @@
     <message>
         <location line="+103"/>
         <source>&amp;New Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый &amp;проект...</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Add Automapping Rules Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить набор тайлов для правил Автокарты</translation>
     </message>
     <message>
         <location line="-81"/>
@@ -1384,7 +1384,7 @@ Line %1, column %2</source>
     <message>
         <location line="+30"/>
         <source>Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Последние проекты</translation>
     </message>
     <message>
         <location line="+110"/>
