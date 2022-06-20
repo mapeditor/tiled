@@ -24,6 +24,6 @@ If you are interested in the full changelist since `rs-tiled` 0.9.5, you can go 
 [@mattyhall]: https://github.com/mattyhall
 [@aleokdev]: https://github.com/aleokdev
 [adoption-issue]: https://github.com/mapeditor/rs-tiled/issues/105
-[release-notes]: https://github.com/mapeditor/rs-tiled/releases/edit/v0.10.0
+[release-notes]: https://github.com/mapeditor/rs-tiled/releases/v0.10.0
 [examples]: https://github.com/mapeditor/rs-tiled/tree/master/examples
 [@mapeditor]: https://github.com/mapeditor
