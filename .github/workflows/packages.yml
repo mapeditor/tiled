@@ -148,10 +148,11 @@ jobs:
         path: tiled_*_amd64.snap
 
     - name: Release snap (beta channel)
-      uses: snapcore/action-publish@v1
+      uses: snapcore/action-publish@master
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push' && (github.ref == 'refs/heads/snapshot' || needs.version.outputs.release == 'true')
+      env:
+        SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
       with:
-        store_login: ${{ secrets.SNAP_STORE_LOGIN }}
         snap: ${{ steps.build.outputs.snap }}
         release: ${{ steps.version.outputs.snap_channel }}
 
