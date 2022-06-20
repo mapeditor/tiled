@@ -444,7 +444,7 @@
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+245"/>
         <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+57"/>
         <location filename="../src/plugins/yy/yyplugin.cpp" line="+1347"/>
-        <location filename="../src/tiled/propertytypeseditor.cpp" line="+56"/>
+        <location filename="../src/tiled/propertytypeseditor.cpp" line="+57"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+55"/>
         <source>Could not open file for writing.</source>
         <translation>쓰기용으로 파일을 열 수 없습니다.</translation>
@@ -1519,7 +1519,7 @@ Line %1, column %2</source>
     <name>PreferencesDialog</name>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+76"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+1258"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+1257"/>
         <source>CSV</source>
         <translation>CSV</translation>
     </message>
@@ -1572,7 +1572,12 @@ Line %1, column %2</source>
         <translation> 타일</translation>
     </message>
     <message>
-        <location line="+268"/>
+        <location line="+116"/>
+        <source>Pixel-perfect tile object selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+152"/>
         <source>Enabled Plugins</source>
         <translation>내장 플러그인</translation>
     </message>
@@ -1659,12 +1664,7 @@ Line %1, column %2</source>
         <translation>그리드 색상:</translation>
     </message>
     <message>
-        <location line="+155"/>
-        <source>Precise tile object selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+119"/>
+        <location line="+274"/>
         <source>Base color:</source>
         <translation>기본 색상:</translation>
     </message>
@@ -4486,7 +4486,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::MapDocument</name>
     <message>
-        <location filename="../src/tiled/mapdocument.cpp" line="+1267"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="+1266"/>
         <source>Tile</source>
         <translation>타일</translation>
     </message>
@@ -4498,12 +4498,12 @@ Please select specific format.</source>
         </translation>
     </message>
     <message>
-        <location line="-1233"/>
+        <location line="-1232"/>
         <source>Resize Map</source>
         <translation>맵 크기 조정</translation>
     </message>
     <message>
-        <location line="+350"/>
+        <location line="+349"/>
         <source>Merge Layer Down</source>
         <translation>아래 레이어와 병합</translation>
     </message>
@@ -4533,24 +4533,24 @@ Please select specific format.</source>
         </translation>
     </message>
     <message>
-        <location line="-1401"/>
+        <location line="-1400"/>
         <source>untitled.tmx</source>
         <translation>untitled.tmx</translation>
     </message>
     <message numerus="yes">
-        <location line="+1437"/>
+        <location line="+1436"/>
         <source>Move %n Object(s) Down</source>
         <translation>
             <numerusform>%n개 레이어를 아래로 이동</numerusform>
         </translation>
     </message>
     <message>
-        <location line="-1541"/>
+        <location line="-1540"/>
         <source>Map format &apos;%1&apos; not found</source>
         <translation>맵 형식 %1를 찾을 수 없습니다</translation>
     </message>
     <message numerus="yes">
-        <location line="+430"/>
+        <location line="+429"/>
         <source>Ungroup %n Layer(s)</source>
         <translation>
             <numerusform>%n개 레이어(s) 그룹 해제</numerusform>
@@ -4575,12 +4575,12 @@ Please select specific format.</source>
         <translation>그룹 %1</translation>
     </message>
     <message>
-        <location line="-120"/>
+        <location line="-119"/>
         <source>Offset Map</source>
         <translation>맵 Offset</translation>
     </message>
     <message numerus="yes">
-        <location line="+1164"/>
+        <location line="+1163"/>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>%n개 오브젝트 삭제</numerusform>
@@ -4610,15 +4610,8 @@ Please select specific format.</source>
         <source>Tileset Changes</source>
         <translation>타일셋 변경</translation>
     </message>
-    <message numerus="yes">
-        <location line="-797"/>
-        <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>%n개 오브젝트 회전</numerusform>
-        </translation>
-    </message>
     <message>
-        <location line="+158"/>
+        <location line="-639"/>
         <location filename="../src/tiled/tileseteditor.cpp" line="+980"/>
         <source>Copy of %1</source>
         <translation>%1의 사본</translation>
@@ -5355,19 +5348,19 @@ Please select specific format.</source>
 <context>
     <name>Tiled::PropertyBrowser</name>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="-1340"/>
-        <location line="+1332"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-1339"/>
+        <location line="+1331"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location line="-1331"/>
-        <location line="+1332"/>
+        <location line="-1330"/>
+        <location line="+1331"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location line="-1342"/>
+        <location line="-1341"/>
         <location line="+44"/>
         <location line="+182"/>
         <source>ID</source>
@@ -5414,7 +5407,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1029"/>
+        <location line="+1028"/>
         <source>Odd</source>
         <translation>홀수</translation>
     </message>
@@ -5454,17 +5447,17 @@ Please select specific format.</source>
         <translation>짝수</translation>
     </message>
     <message>
-        <location line="-1312"/>
+        <location line="-1311"/>
         <source>Font</source>
         <translation>폰트</translation>
     </message>
     <message>
-        <location line="+1364"/>
+        <location line="+1363"/>
         <source>Left</source>
         <translation>왼쪽</translation>
     </message>
     <message>
-        <location line="-1396"/>
+        <location line="-1395"/>
         <location line="+43"/>
         <location line="+87"/>
         <location line="+131"/>
@@ -5507,7 +5500,7 @@ Please select specific format.</source>
         <translation>이미지</translation>
     </message>
     <message>
-        <location line="+1171"/>
+        <location line="+1170"/>
         <source>Mixed</source>
         <translation>혼합된</translation>
     </message>
@@ -5517,19 +5510,19 @@ Please select specific format.</source>
         <translation>오른쪽</translation>
     </message>
     <message>
-        <location line="-1489"/>
+        <location line="-1488"/>
         <location line="+105"/>
         <location line="+214"/>
         <source>Width</source>
         <translation>너비</translation>
     </message>
     <message>
-        <location line="+1176"/>
+        <location line="+1175"/>
         <source>Horizontal</source>
         <translation>수평</translation>
     </message>
     <message>
-        <location line="-1449"/>
+        <location line="-1448"/>
         <source>Tile Render Order</source>
         <translation>타일 렌더링 순서</translation>
     </message>
@@ -5549,12 +5542,12 @@ Please select specific format.</source>
         <translation>레이어 그룹화</translation>
     </message>
     <message>
-        <location line="+1285"/>
+        <location line="+1284"/>
         <source>Top Right</source>
         <translation>오른쪽 위</translation>
     </message>
     <message>
-        <location line="-1315"/>
+        <location line="-1314"/>
         <source>Drawing Order</source>
         <translation>그리기 순서</translation>
     </message>
@@ -5594,7 +5587,7 @@ Please select specific format.</source>
         <translation>오브젝트 정렬</translation>
     </message>
     <message>
-        <location line="+1262"/>
+        <location line="+1261"/>
         <source>Bottom</source>
         <translation>하단</translation>
     </message>
@@ -5604,17 +5597,17 @@ Please select specific format.</source>
         <translation>중앙</translation>
     </message>
     <message>
-        <location line="-1222"/>
+        <location line="-1221"/>
         <source>Grid Height</source>
         <translation>격자 높이</translation>
     </message>
     <message>
-        <location line="+1237"/>
+        <location line="+1236"/>
         <source>Corner</source>
         <translation>코너</translation>
     </message>
     <message>
-        <location line="-1500"/>
+        <location line="-1499"/>
         <location line="+292"/>
         <source>Tile Height</source>
         <translation>타일 높이</translation>
@@ -5637,12 +5630,12 @@ Please select specific format.</source>
         <translation>잠금</translation>
     </message>
     <message>
-        <location line="+1363"/>
+        <location line="+1362"/>
         <source>Manual</source>
         <translation>수동으로</translation>
     </message>
     <message>
-        <location line="-1204"/>
+        <location line="-1203"/>
         <source>Margin</source>
         <translation>여백</translation>
     </message>
@@ -5662,18 +5655,18 @@ Please select specific format.</source>
         <translation>소스</translation>
     </message>
     <message>
-        <location line="+1197"/>
+        <location line="+1196"/>
         <source>Bottom Left</source>
         <translation>왼쪽 하단</translation>
     </message>
     <message>
-        <location line="-1495"/>
+        <location line="-1494"/>
         <location line="+264"/>
         <source>Orientation</source>
         <translation>구도</translation>
     </message>
     <message>
-        <location line="+1240"/>
+        <location line="+1239"/>
         <source>Top Down</source>
         <translation>위에서 아래로</translation>
     </message>
@@ -5683,7 +5676,7 @@ Please select specific format.</source>
         <translation>왼쪽 위</translation>
     </message>
     <message>
-        <location line="-1340"/>
+        <location line="-1339"/>
         <source>Tint Color</source>
         <translation>색조 색상</translation>
     </message>
@@ -5801,7 +5794,7 @@ Please select specific format.</source>
         <translation>변형되지 않은 타일 선호</translation>
     </message>
     <message>
-        <location line="+1205"/>
+        <location line="+1204"/>
         <source>Unspecified</source>
         <translation>정의되지 않은</translation>
     </message>
@@ -5811,7 +5804,7 @@ Please select specific format.</source>
         <translation>오른쪽 하단</translation>
     </message>
     <message>
-        <location line="-1342"/>
+        <location line="-1341"/>
         <source>Parallax Factor</source>
         <translation>시차 요소</translation>
     </message>
@@ -5827,12 +5820,12 @@ Please select specific format.</source>
         <translation>투명색</translation>
     </message>
     <message>
-        <location line="+1198"/>
+        <location line="+1197"/>
         <source>Vertical</source>
         <translation>수직</translation>
     </message>
     <message>
-        <location line="-1400"/>
+        <location line="-1399"/>
         <location line="+40"/>
         <source>Visible</source>
         <translation>표시됨</translation>
@@ -6023,7 +6016,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+38"/>
         <source>Error Reading Object Types</source>
         <translation type="unfinished">오브젝트 타입을 읽어오는 중 오류 발생</translation>
     </message>
@@ -6034,7 +6027,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+42"/>
         <source>Error Writing Object Types</source>
         <translation type="unfinished">오브젝트 타입 쓰는중 오류 발생</translation>
     </message>
@@ -6110,7 +6103,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::PropertyTypesModel</name>
     <message>
-        <location filename="../src/tiled/propertytypesmodel.cpp" line="+215"/>
+        <location filename="../src/tiled/propertytypesmodel.cpp" line="+222"/>
         <source>Error Renaming Type</source>
         <translation type="unfinished"></translation>
     </message>

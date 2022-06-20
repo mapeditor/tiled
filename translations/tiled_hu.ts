@@ -429,7 +429,7 @@
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+245"/>
         <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+57"/>
         <location filename="../src/plugins/yy/yyplugin.cpp" line="+1347"/>
-        <location filename="../src/tiled/propertytypeseditor.cpp" line="+742"/>
+        <location filename="../src/tiled/propertytypeseditor.cpp" line="+743"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+745"/>
         <source>Could not open file for writing.</source>
         <translation type="unfinished">Nem sikerült megnyitni a fájlt írásra.</translation>
@@ -444,7 +444,7 @@
         <location line="+162"/>
         <location line="+109"/>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+138"/>
-        <location filename="../src/tiled/propertytypeseditor.cpp" line="-56"/>
+        <location filename="../src/tiled/propertytypeseditor.cpp" line="-57"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="-55"/>
         <source>Could not open file for reading.</source>
         <translation type="unfinished">Nem sikerült megnyitni a fájlt olvasásra.</translation>
@@ -464,7 +464,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tiled/propertytypeseditor.cpp" line="-596"/>
+        <location filename="../src/tiled/propertytypeseditor.cpp" line="-595"/>
         <source>Custom Types files (*.json)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1533,7 +1533,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+77"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+1244"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+1243"/>
         <source>Base64 (uncompressed)</source>
         <translation>Base64 (tömörítetlen)</translation>
     </message>
@@ -1737,12 +1737,7 @@ Line %1, column %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+123"/>
-        <source>Precise tile object selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+139"/>
         <source>Display news in status bar</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1810,7 +1805,12 @@ Line %1, column %2</source>
         <translation>Frissítések</translation>
     </message>
     <message>
-        <location line="+136"/>
+        <location line="-10"/>
+        <source>Pixel-perfect tile object selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+146"/>
         <source>Plugins</source>
         <translation>Bővítmények</translation>
     </message>
@@ -4503,15 +4503,8 @@ Válasszon egy adott formátumot.</translation>
         <source>Offset Map</source>
         <translation type="unfinished">Térkép eltolása</translation>
     </message>
-    <message numerus="yes">
-        <location line="+61"/>
-        <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>%n objektum forgatása</numerusform>
-        </translation>
-    </message>
     <message>
-        <location line="+14"/>
+        <location line="+74"/>
         <location filename="../src/tiled/newmapdialog.cpp" line="+88"/>
         <source>Tile Layer %1</source>
         <translation type="unfinished">%1. csemperéteg</translation>
@@ -5353,7 +5346,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::PropertyBrowser</name>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="-1453"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-1452"/>
         <source>Map</source>
         <translation type="unfinished">Térkép</translation>
     </message>
@@ -5484,18 +5477,18 @@ Válasszon egy adott formátumot.</translation>
     </message>
     <message>
         <location line="-38"/>
-        <location line="+1332"/>
+        <location line="+1331"/>
         <source>X</source>
         <translation type="unfinished">X</translation>
     </message>
     <message>
-        <location line="-1331"/>
-        <location line="+1332"/>
+        <location line="-1330"/>
+        <location line="+1331"/>
         <source>Y</source>
         <translation type="unfinished">Y</translation>
     </message>
     <message>
-        <location line="-1321"/>
+        <location line="-1320"/>
         <source>Rotation</source>
         <translation type="unfinished">Forgatás</translation>
     </message>
@@ -5736,7 +5729,7 @@ Válasszon egy adott formátumot.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1043"/>
+        <location line="+1042"/>
         <source>Tile Size</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5771,7 +5764,7 @@ Válasszon egy adott formátumot.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1074"/>
+        <location line="-1073"/>
         <source>Change Infinite Property</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5786,7 +5779,7 @@ Válasszon egy adott formátumot.</translation>
         <translation type="unfinished">Egyéni tulajdonságok</translation>
     </message>
     <message>
-        <location line="+344"/>
+        <location line="+343"/>
         <source>Odd</source>
         <translation type="unfinished">Páratlan</translation>
     </message>
@@ -6021,7 +6014,7 @@ Válasszon egy adott formátumot.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+38"/>
         <source>Error Reading Object Types</source>
         <translation type="unfinished">Hiba az objektumtípusok olvasásakor</translation>
     </message>
@@ -6032,7 +6025,7 @@ Válasszon egy adott formátumot.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+42"/>
         <source>Error Writing Object Types</source>
         <translation type="unfinished">Hiba az objektumtípusok írásakor</translation>
     </message>
@@ -6108,7 +6101,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::PropertyTypesModel</name>
     <message>
-        <location filename="../src/tiled/propertytypesmodel.cpp" line="+215"/>
+        <location filename="../src/tiled/propertytypesmodel.cpp" line="+222"/>
         <source>Error Renaming Type</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7498,7 +7491,7 @@ Válasszon egy adott formátumot.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+47"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="-922"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-921"/>
         <source>Flip %n Object(s)</source>
         <translation>
             <numerusform>%n objektum tükrözése</numerusform>

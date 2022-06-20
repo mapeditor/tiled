@@ -429,7 +429,7 @@
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+245"/>
         <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+57"/>
         <location filename="../src/plugins/yy/yyplugin.cpp" line="+1347"/>
-        <location filename="../src/tiled/propertytypeseditor.cpp" line="+742"/>
+        <location filename="../src/tiled/propertytypeseditor.cpp" line="+743"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+745"/>
         <source>Could not open file for writing.</source>
         <translation>Le fichier n&apos;a pas pu être ouvert en écriture.</translation>
@@ -444,7 +444,7 @@
         <location line="+162"/>
         <location line="+109"/>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+138"/>
-        <location filename="../src/tiled/propertytypeseditor.cpp" line="-56"/>
+        <location filename="../src/tiled/propertytypeseditor.cpp" line="-57"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="-55"/>
         <source>Could not open file for reading.</source>
         <translation>Le fichier n&apos;a pas pu être ouvert en lecture.</translation>
@@ -465,7 +465,7 @@
         <translation>Fichiers de Règles d&apos;Automapping (*.txt)</translation>
     </message>
     <message>
-        <location filename="../src/tiled/propertytypeseditor.cpp" line="-596"/>
+        <location filename="../src/tiled/propertytypeseditor.cpp" line="-595"/>
         <source>Custom Types files (*.json)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1534,7 +1534,7 @@ Ligne %1, colonne %2</translation>
     </message>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+77"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+1244"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+1243"/>
         <source>Base64 (uncompressed)</source>
         <translation>Base64 (non compressé)</translation>
     </message>
@@ -1738,12 +1738,7 @@ Ligne %1, colonne %2</translation>
         <translation>par</translation>
     </message>
     <message>
-        <location line="+123"/>
-        <source>Precise tile object selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+139"/>
         <source>Display news in status bar</source>
         <translation>Afficher les nouveautés dans la barre d&apos;état</translation>
     </message>
@@ -1811,7 +1806,12 @@ Ligne %1, colonne %2</translation>
         <translation>Mises à Jour</translation>
     </message>
     <message>
-        <location line="+136"/>
+        <location line="-10"/>
+        <source>Pixel-perfect tile object selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+146"/>
         <source>Plugins</source>
         <translation>Greffons</translation>
     </message>
@@ -4514,16 +4514,8 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Offset Map</source>
         <translation>Décaler la Carte</translation>
     </message>
-    <message numerus="yes">
-        <location line="+61"/>
-        <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>Pivoter %n Objet</numerusform>
-            <numerusform>Pivoter %n Objets</numerusform>
-        </translation>
-    </message>
     <message>
-        <location line="+14"/>
+        <location line="+74"/>
         <location filename="../src/tiled/newmapdialog.cpp" line="+88"/>
         <source>Tile Layer %1</source>
         <translation>Calque de Tuiles %1</translation>
@@ -5384,7 +5376,7 @@ Veuillez sélectionner un format spécifique.</translation>
 <context>
     <name>Tiled::PropertyBrowser</name>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="-1453"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-1452"/>
         <source>Map</source>
         <translation>Carte</translation>
     </message>
@@ -5515,18 +5507,18 @@ Veuillez sélectionner un format spécifique.</translation>
     </message>
     <message>
         <location line="-38"/>
-        <location line="+1332"/>
+        <location line="+1331"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location line="-1331"/>
-        <location line="+1332"/>
+        <location line="-1330"/>
+        <location line="+1331"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location line="-1321"/>
+        <location line="-1320"/>
         <source>Rotation</source>
         <translation>Rotation</translation>
     </message>
@@ -5767,7 +5759,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation type="unfinished">Classe</translation>
     </message>
     <message>
-        <location line="+1043"/>
+        <location line="+1042"/>
         <source>Tile Size</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5802,7 +5794,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Mélangé</translation>
     </message>
     <message>
-        <location line="-1074"/>
+        <location line="-1073"/>
         <source>Change Infinite Property</source>
         <translation>Changer la Propriété Infinie</translation>
     </message>
@@ -5817,7 +5809,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Propriétés Personnalisées</translation>
     </message>
     <message>
-        <location line="+344"/>
+        <location line="+343"/>
         <source>Odd</source>
         <translation>Impair</translation>
     </message>
@@ -6052,7 +6044,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Erreur de Lecture d&apos;un Membre</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+38"/>
         <source>Error Reading Object Types</source>
         <translation type="unfinished">Erreur lors de la Lecture des Types d&apos;Objet</translation>
     </message>
@@ -6063,7 +6055,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+42"/>
         <source>Error Writing Object Types</source>
         <translation type="unfinished">Erreur lors de l&apos;Écriture des Types d&apos;Objet</translation>
     </message>
@@ -6139,7 +6131,7 @@ Veuillez sélectionner un format spécifique.</translation>
 <context>
     <name>Tiled::PropertyTypesModel</name>
     <message>
-        <location filename="../src/tiled/propertytypesmodel.cpp" line="+215"/>
+        <location filename="../src/tiled/propertytypesmodel.cpp" line="+222"/>
         <source>Error Renaming Type</source>
         <translation>Erreur de Renommage du Type</translation>
     </message>
@@ -7534,7 +7526,7 @@ Veuillez sélectionner un format spécifique.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+47"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="-922"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-921"/>
         <source>Flip %n Object(s)</source>
         <translation>
             <numerusform>Inverser %n Objet</numerusform>
