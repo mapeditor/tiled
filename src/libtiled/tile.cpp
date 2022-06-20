@@ -116,6 +116,10 @@ const QPainterPath &Tile::imageShape() const
  */
 void Tile::setImage(const QPixmap &image)
 {
+    // Initialize or auto-adjust the image rect
+    if (mImage.isNull() || mImageRect == mImage.rect())
+        mImageRect = image.rect();
+
     mImage = image;
     mImageStatus = image.isNull() ? LoadingError : LoadingReady;
     mImageShape.reset();
