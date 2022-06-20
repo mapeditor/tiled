@@ -421,6 +421,22 @@ declare namespace Qt {
       textChanged: Signal<void>;
 
     }
+
+    type CheckState = number;
+    /**
+    * The item is unchecked.
+    * Value = 0
+    */
+    const Unchecked: CheckState;
+    /**
+    * The item is partially checked.
+    * Value = 1.
+    */
+    const PartiallyChecked:CheckState;
+    /**
+     * Value = 2
+     */
+    const Checked: CheckState;
   /**
    * A check box widget which allows the user to toggle
    * a value on and off.
@@ -430,7 +446,15 @@ declare namespace Qt {
     /**
      * Signal emitted when the state of the checkbox changes.
      */
-    stateChanged: Signal<number>;
+    stateChanged: Signal<CheckState>;
+
+    /**
+     * Ehether the checkbox is a tri-state checkbox
+     * The default is false, to have only two states, checked and unchecked.
+     * Setting this to true allows the checkbox to be partially checked.
+     */
+    tristate: boolean;
+    
   }
 
   /**
