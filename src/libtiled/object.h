@@ -28,7 +28,6 @@
 
 #pragma once
 
-#include "objecttypes.h"
 #include "properties.h"
 #include "propertytype.h"
 

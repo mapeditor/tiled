@@ -191,6 +191,13 @@ void PropertyTypesModel::importPropertyTypes(PropertyTypes typesToImport)
     endResetModel();
 }
 
+void PropertyTypesModel::importObjectTypes(const QVector<ObjectType> &objectTypes)
+{
+    beginResetModel();
+    mPropertyTypes->mergeObjectTypes(objectTypes);
+    endResetModel();
+}
+
 QIcon PropertyTypesModel::iconForPropertyType(PropertyType::Type type)
 {
     switch (type) {

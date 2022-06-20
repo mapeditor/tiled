@@ -25,6 +25,7 @@
 #include "colorbutton.h"
 #include "custompropertieshelper.h"
 #include "object.h"
+#include "objecttypes.h"
 #include "preferences.h"
 #include "project.h"
 #include "projectmanager.h"
@@ -664,8 +665,6 @@ void PropertyTypesEditor::importPropertyTypes()
 
     session.setLastPath(Session::PropertyTypesFile, fileName);
 
-    PropertyTypes typesToImport;
-
     if (filter.selectedFilter == filter.objectTypesJsonFilter ||
             filter.selectedFilter == filter.objectTypesXmlFilter) {
         ObjectTypesSerializer serializer;
@@ -674,7 +673,8 @@ void PropertyTypesEditor::importPropertyTypes()
                                     QFileInfo(fileName).path());
 
         if (serializer.readObjectTypes(fileName, objectTypes, context)) {
-            typesToImport = toPropertyTypes(objectTypes);
+            mPropertyTypesModel->importObjectTypes(objectTypes);
+            applyPropertyTypes();
         } else {
             QMessageBox::critical(this, tr("Error Reading Object Types"),
                                   serializer.errorString());
@@ -696,12 +696,13 @@ void PropertyTypesEditor::importPropertyTypes()
             return;
         }
 
+        PropertyTypes typesToImport;
         typesToImport.loadFromJson(document.array(), QFileInfo(fileName).path());
-    }
 
-    if (typesToImport.count() > 0) {
-        mPropertyTypesModel->importPropertyTypes(std::move(typesToImport));
-        applyPropertyTypes();
+        if (typesToImport.count() > 0) {
+            mPropertyTypesModel->importPropertyTypes(std::move(typesToImport));
+            applyPropertyTypes();
+        }
     }
 }
 

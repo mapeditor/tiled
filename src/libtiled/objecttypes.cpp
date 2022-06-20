@@ -308,25 +308,6 @@ bool ObjectTypesSerializer::readObjectTypes(const QString &fileName,
 }
 
 /**
- * Converts object types to class property types, for compatibility.
- */
-PropertyTypes toPropertyTypes(const ObjectTypes &objectTypes)
-{
-    PropertyTypes propertyTypes;
-
-    // Convert object types to class property types
-    for (const ObjectType &type : qAsConst(objectTypes)) {
-        auto propertyType = std::make_unique<ClassPropertyType>(type.name);
-        propertyType->color = type.color;
-        propertyType->members = type.defaultProperties;
-        propertyType->usageFlags = ClassPropertyType::MapObjectClass | ClassPropertyType::TileClass;
-        propertyTypes.add(std::move(propertyType));
-    }
-
-    return propertyTypes;
-}
-
-/**
  * Converts class property types to object types, for compatibility.
  */
 ObjectTypes toObjectTypes(const PropertyTypes &propertyTypes)

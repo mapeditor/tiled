@@ -21,6 +21,7 @@
 #include "projectmanager.h"
 
 #include "fileformat.h"
+#include "objecttypes.h"
 #include "preferences.h"
 #include "projectmodel.h"
 
@@ -52,7 +53,7 @@ void ProjectManager::setProject(Project _project)
                                     QFileInfo(project.mObjectTypesFile).path());
 
         if (ObjectTypesSerializer().readObjectTypes(project.mObjectTypesFile, objectTypes, context)) {
-            project.propertyTypes()->merge(toPropertyTypes(objectTypes));
+            project.propertyTypes()->mergeObjectTypes(objectTypes);
             project.mObjectTypesFile.clear();
         }
     }

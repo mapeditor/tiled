@@ -228,8 +228,6 @@ private:
     QHash<PropertyId, QtVariantProperty *> mIdToProperty;
     CustomPropertiesHelper mCustomPropertiesHelper;
 
-    Properties mCombinedProperties;
-
     QStringList mStaggerAxisNames;
     QStringList mStaggerIndexNames;
     QStringList mOrientationNames;

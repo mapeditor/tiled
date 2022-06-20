@@ -53,7 +53,9 @@ public:
 
     QModelIndex addNewPropertyType(PropertyType::Type type);
     QModelIndex addPropertyType(std::unique_ptr<PropertyType> type);
+
     void importPropertyTypes(PropertyTypes typesToImport);
+    void importObjectTypes(const QVector<ObjectType> &objectTypes);
 
     static QIcon iconForPropertyType(PropertyType::Type type);
 

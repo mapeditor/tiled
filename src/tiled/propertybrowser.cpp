@@ -1933,7 +1933,8 @@ void PropertyBrowser::updateCustomProperties()
 
     mCustomPropertiesHelper.clear();
 
-    mCombinedProperties = mObject->properties();
+    Properties combinedProperties = mObject->properties();
+
     // Add properties from selected objects which mObject does not contain to mCombinedProperties.
     const auto currentObjects = mDocument->currentObjects();
     for (Object *obj : currentObjects) {
@@ -1944,24 +1945,24 @@ void PropertyBrowser::updateCustomProperties()
 
         while (it.hasNext()) {
             it.next();
-            if (!mCombinedProperties.contains(it.key()))
-                mCombinedProperties.insert(it.key(), QString());
+            if (!combinedProperties.contains(it.key()))
+                combinedProperties.insert(it.key(), QString());
         }
     }
 
-    QString objectType = mObject->className();
+    QString className = mObject->className();
 
     if (mObject->typeId() == Object::MapObjectType) {
         auto mapObject = static_cast<MapObject*>(mObject);
-        objectType = mapObject->effectiveClassName();
+        className = mapObject->effectiveClassName();
 
         // Inherit properties from the template
         if (const MapObject *templateObject = mapObject->templateObject()) {
             QMapIterator<QString,QVariant> it(templateObject->properties());
             while (it.hasNext()) {
                 it.next();
-                if (!mCombinedProperties.contains(it.key()))
-                    mCombinedProperties.insert(it.key(), it.value());
+                if (!combinedProperties.contains(it.key()))
+                    combinedProperties.insert(it.key(), it.value());
             }
         }
 
@@ -1970,27 +1971,25 @@ void PropertyBrowser::updateCustomProperties()
             QMapIterator<QString,QVariant> it(tile->properties());
             while (it.hasNext()) {
                 it.next();
-                if (!mCombinedProperties.contains(it.key()))
-                    mCombinedProperties.insert(it.key(), it.value());
+                if (!combinedProperties.contains(it.key()))
+                    combinedProperties.insert(it.key(), it.value());
             }
         }
     }
 
-    if (!objectType.isEmpty()) {
+    if (!className.isEmpty()) {
         // Inherit properties from the object type
-        if (auto type = Object::propertyTypes().findClassByName(objectType)) {
-            if (type->isClassFor(*mObject)) {
-                QMapIterator<QString,QVariant> it(static_cast<const ClassPropertyType*>(type)->members);
-                while (it.hasNext()) {
-                    it.next();
-                    if (!mCombinedProperties.contains(it.key()))
-                        mCombinedProperties.insert(it.key(), it.value());
-                }
+        if (auto type = Object::propertyTypes().findClassFor(className, *mObject)) {
+            QMapIterator<QString,QVariant> it(type->members);
+            while (it.hasNext()) {
+                it.next();
+                if (!combinedProperties.contains(it.key()))
+                    combinedProperties.insert(it.key(), it.value());
             }
         }
     }
 
-    QMapIterator<QString,QVariant> it(mCombinedProperties);
+    QMapIterator<QString,QVariant> it(combinedProperties);
 
     while (it.hasNext()) {
         it.next();

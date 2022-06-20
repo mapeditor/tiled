@@ -54,6 +54,7 @@ constexpr auto propertyTypesJson = R"([
         "valuesAsFlags": true
     },
     {
+        "color": "#ffa0a0a4",
         "id": 5,
         "members": [
             {
@@ -82,7 +83,10 @@ constexpr auto propertyTypesJson = R"([
             }
         ],
         "name": "ClassWithEnums",
-        "type": "class"
+        "type": "class",
+        "useAs": [
+            "property"
+        ]
     }
 ]
 )";
@@ -236,8 +240,7 @@ void test_Properties::loadAndSavePropertyTypes()
     QCOMPARE(types.count(), mTypes.count());
 
     const auto json = QJsonDocument(types.toJson()).toJson();
-    QByteArray expectedJson(propertyTypesJson); // needed with Qt 5.6
-    QCOMPARE(json, expectedJson);
+    QCOMPARE(json, propertyTypesJson);
 }
 
 void test_Properties::loadCircularReference()
@@ -249,7 +252,7 @@ void test_Properties::loadCircularReference()
     PropertyTypes types;
     types.loadFromJson(doc.array(), QString());
 
-    const auto type = types.findTypeByName(QStringLiteral("ClassReferencingItself"));
+    const auto type = types.findPropertyValueType(QStringLiteral("ClassReferencingItself"));
     QVERIFY(type);
     QCOMPARE(type->type, PropertyType::PT_Class);
 
@@ -263,7 +266,7 @@ void test_Properties::loadCircularReference()
     types.loadFromJson(doc.array(), QString());
 
     // Verify the back reference is not present
-    const auto b = types.findTypeByName(QStringLiteral("B"));
+    const auto b = types.findPropertyValueType(QStringLiteral("B"));
     QVERIFY(b);
     QCOMPARE(b->type, PropertyType::PT_Class);
     const auto &membersB = static_cast<const ClassPropertyType*>(b)->members;
@@ -274,8 +277,8 @@ void test_Properties::loadProperties()
 {
     ExportContext context(mTypes, QString());
 
-    const auto enumStringType = mTypes.findTypeByName(QStringLiteral("EnumString"));
-    const auto classType = mTypes.findTypeByName(QStringLiteral("ClassWithEnums"));
+    const auto enumStringType = mTypes.findPropertyValueType(QStringLiteral("EnumString"));
+    const auto classType = mTypes.findPropertyValueType(QStringLiteral("ClassWithEnums"));
     QVERIFY(enumStringType);
     QVERIFY(classType);
 
@@ -319,8 +322,8 @@ void test_Properties::saveProperties()
 {
     ExportContext context(mTypes, QString());
 
-    const auto enumStringType = mTypes.findTypeByName(QStringLiteral("EnumString"));
-    const auto classType = mTypes.findTypeByName(QStringLiteral("ClassWithEnums"));
+    const auto enumStringType = mTypes.findPropertyValueType(QStringLiteral("EnumString"));
+    const auto classType = mTypes.findPropertyValueType(QStringLiteral("ClassWithEnums"));
     QVERIFY(enumStringType);
     QVERIFY(classType);
 
@@ -375,18 +378,18 @@ void test_Properties::mergeProperties()
     }
 
     // Verify EnumString was replaced
-    auto enumStringType = static_cast<const EnumPropertyType*>(types.findTypeByName(QStringLiteral("EnumString")));
+    auto enumStringType = static_cast<const EnumPropertyType*>(types.findPropertyValueType(QStringLiteral("EnumString")));
     QVERIFY(enumStringType && enumStringType->isEnum());
     const auto expectedValues = QStringList { QStringLiteral("X"), QStringLiteral("Y"), QStringLiteral("Z") };
     QCOMPARE(enumStringType->values, expectedValues);
 
     // Verify NewEnumString was added and got a new ID
-    auto newEnumStringType = types.findTypeByName(QStringLiteral("NewEnumString"));
+    auto newEnumStringType = types.findPropertyValueType(QStringLiteral("NewEnumString"));
     QVERIFY(newEnumStringType);
     QCOMPARE(newEnumStringType->id, 6);
 
     // Verify NewClass was added, and that its member newEnumString has the right type ID
-    auto classType = static_cast<const ClassPropertyType*>(types.findTypeByName(QStringLiteral("NewClass")));
+    auto classType = static_cast<const ClassPropertyType*>(types.findPropertyValueType(QStringLiteral("NewClass")));
     QVERIFY(classType && classType->isClass());
     const auto classMember = classType->members.value(QStringLiteral("newEnumString")).value<PropertyValue>();
     QCOMPARE(classMember.typeId, newEnumStringType->id);

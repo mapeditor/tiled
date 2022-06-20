@@ -251,7 +251,7 @@ QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
 
     // Wrap the value in its custom property type when applicable
     if (!exportValue.propertyTypeName.isEmpty()) {
-        if (const PropertyType *propertyType = mTypes.findTypeByName(exportValue.propertyTypeName)) {
+        if (const PropertyType *propertyType = mTypes.findPropertyValueType(exportValue.propertyTypeName)) {
             propertyValue = propertyType->toPropertyValue(propertyValue, *this);
         } else {
            Tiled::ERROR(QStringLiteral("Unrecognized property type: '%1'")

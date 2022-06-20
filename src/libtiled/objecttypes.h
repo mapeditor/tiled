@@ -61,7 +61,6 @@ struct ObjectType
 using ObjectTypes = QVector<ObjectType>;
 
 
-
 class TILEDSHARED_EXPORT ObjectTypesSerializer
 {
 public:
@@ -90,7 +89,6 @@ private:
 TILEDSHARED_EXPORT QJsonArray toJson(const ObjectTypes &objectTypes, const ExportContext &context);
 TILEDSHARED_EXPORT void fromJson(const QJsonArray &array, ObjectTypes &objectTypes, const ExportContext &context);
 
-TILEDSHARED_EXPORT PropertyTypes toPropertyTypes(const ObjectTypes &objectTypes);
 TILEDSHARED_EXPORT ObjectTypes toObjectTypes(const PropertyTypes &propertyTypes);
 
 } // namespace Tiled

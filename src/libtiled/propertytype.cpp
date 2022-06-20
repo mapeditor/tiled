@@ -31,6 +31,7 @@
 #include "containerhelpers.h"
 #include "logginginterface.h"
 #include "object.h"
+#include "objecttypes.h"
 #include "properties.h"
 
 #include <QVector>
@@ -368,6 +369,10 @@ void ClassPropertyType::initializeFromJson(const QJsonObject &json)
             if (useAsArray.contains(entry.name))
                 usageFlags |= entry.flag;
         }
+    } else {
+        // Before "useAs" was introduced, class types were only used as
+        // property values.
+        usageFlags = PropertyValueType;
     }
 }
 
@@ -385,7 +390,7 @@ void ClassPropertyType::resolveDependencies(const ExportContext &context)
 
         // Remove any members that would result in a circular reference
         if (!exportValue.propertyTypeName.isEmpty()) {
-            if (auto propertyType = context.types().findTypeByName(exportValue.propertyTypeName)) {
+            if (auto propertyType = context.types().findPropertyValueType(exportValue.propertyTypeName)) {
                 if (!canAddMemberOfType(propertyType, context.types())) {
                     Tiled::ERROR(QStringLiteral("Removed member '%1' from class '%2' since it would cause a circular reference")
                                  .arg(it.key(), name));
@@ -456,6 +461,12 @@ size_t PropertyTypes::count(PropertyType::Type type) const
     });
 }
 
+static int typeUsageFlags(const PropertyType &type)
+{
+    return type.isClass() ? static_cast<const ClassPropertyType&>(type).usageFlags
+                          : ClassPropertyType::PropertyValueType;
+}
+
 void PropertyTypes::merge(PropertyTypes typesToMerge)
 {
     QHash<int, QString> oldTypeIdToName;
@@ -466,8 +477,11 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
 
     while (typesToMerge.count() > 0) {
         auto typeToImport = typesToMerge.takeAt(0);
+        auto typeToImportUsageFlags = typeUsageFlags(*typeToImport);
         auto existingIt = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
-            return type->name == typeToImport->name;
+            // Consider same type only when name matches and usage flags overlap
+            return type->name == typeToImport->name &&
+                    (typeUsageFlags(*type) & typeToImportUsageFlags) != 0;
         });
 
         if (typeToImport->isClass())
@@ -494,7 +508,7 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
                 PropertyValue classMemberValue = classMember.value<PropertyValue>();
 
                 const QString typeName = oldTypeIdToName.value(classMemberValue.typeId);
-                auto type = findTypeByName(typeName);
+                auto type = findPropertyValueType(typeName);
                 Q_ASSERT(type);
 
                 if (classMemberValue.typeId != type->id) {
@@ -502,6 +516,30 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
                     classMember = QVariant::fromValue(classMemberValue);
                 }
             }
+        }
+    }
+}
+
+void PropertyTypes::mergeObjectTypes(const QVector<ObjectType> &objectTypes)
+{
+    for (const ObjectType &type : objectTypes) {
+        auto propertyType = std::make_unique<ClassPropertyType>(type.name);
+        propertyType->color = type.color;
+        propertyType->members = type.defaultProperties;
+        propertyType->usageFlags = ClassPropertyType::MapObjectClass | ClassPropertyType::TileClass;
+
+        auto existingIt = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+            // Consider same type only when name matches and usage flags overlap
+            return type->name == propertyType->name &&
+                    (typeUsageFlags(*type) & propertyType->usageFlags) != 0;
+        });
+
+        if (existingIt != mTypes.end()) {
+            // Replace existing classes, but retain their ID
+            propertyType->id = (*existingIt)->id;
+            delete std::exchange(*existingIt, propertyType.release());
+        } else {
+            add(std::move(propertyType));
         }
     }
 }
@@ -519,21 +557,26 @@ const PropertyType *PropertyTypes::findTypeById(int typeId) const
 }
 
 /**
- * Returns a pointer to the PropertyType matching the given \a name, or
- * nullptr if it can't be found.
+ * Returns a pointer to the PropertyType matching the given \a name and
+ * \a usageFlags, or nullptr if it can't be found.
  */
-const PropertyType *PropertyTypes::findTypeByName(const QString &name) const
+const PropertyType *PropertyTypes::findTypeByName(const QString &name, int usageFlags) const
 {
     auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
-        return type->name == name;
+        return type->name == name && (typeUsageFlags(*type) & usageFlags) != 0;
     });
     return it == mTypes.end() ? nullptr : *it;
 }
 
-const ClassPropertyType *PropertyTypes::findClassByName(const QString &name) const
+const PropertyType *PropertyTypes::findPropertyValueType(const QString &name) const
+{
+    return findTypeByName(name, ClassPropertyType::PropertyValueType);
+}
+
+const ClassPropertyType *PropertyTypes::findClassFor(const QString &name, const Object &object) const
 {
     auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
-        return type->name == name && type->isClass();
+        return type->name == name && type->isClass() && static_cast<const ClassPropertyType*>(type)->isClassFor(object);
     });
     return static_cast<const ClassPropertyType*>(it == mTypes.end() ? nullptr : *it);
 }

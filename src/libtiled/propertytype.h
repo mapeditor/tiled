@@ -47,6 +47,7 @@ namespace Tiled {
 class ExportContext;
 class Object;
 class PropertyTypes;
+struct ObjectType;
 
 class TILEDSHARED_EXPORT ExportValue
 {
@@ -148,12 +149,13 @@ public:
         WangSetClass        = 0x40,
         WangColorClass      = 0x80,
 
-        AnyObjectClass      = 0xFF & ~PropertyValueType,
+        AnyUsage            = 0xFF,
+        AnyObjectClass      = AnyUsage & ~PropertyValueType,
     };
 
     QVariantMap members;
     QColor color = Qt::gray;
-    int usageFlags = PropertyValueType | AnyObjectClass;
+    int usageFlags = AnyUsage;
 
     ClassPropertyType(const QString &name) : PropertyType(PT_Class, name) {}
 
@@ -199,10 +201,12 @@ public:
     PropertyType &typeAt(int index);
     void moveType(int from, int to);
     void merge(PropertyTypes types);
+    void mergeObjectTypes(const QVector<ObjectType> &objectTypes);
 
     const PropertyType *findTypeById(int typeId) const;
-    const PropertyType *findTypeByName(const QString &name) const;
-    const ClassPropertyType *findClassByName(const QString &name) const;
+    const PropertyType *findTypeByName(const QString &name, int usageFlags = ClassPropertyType::AnyUsage) const;
+    const PropertyType *findPropertyValueType(const QString &name) const;
+    const ClassPropertyType *findClassFor(const QString &name, const Object &object) const;
 
     void loadFromJson(const QJsonArray &list, const QString &path = QString());
     QJsonArray toJson(const QString &path = QString()) const;

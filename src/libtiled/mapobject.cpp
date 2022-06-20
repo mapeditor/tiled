@@ -293,9 +293,8 @@ QColor MapObject::effectiveColor() const
     const QString &effectiveClass = this->effectiveClassName();
 
     // See if this object's class has a color associated with it
-    if (auto type = Object::propertyTypes().findClassByName(effectiveClass))
-        if (type->isClassFor(*this))
-            return type->color;
+    if (auto type = Object::propertyTypes().findClassFor(effectiveClass, *this))
+        return type->color;
 
     // If not, get color from object group
     if (mObjectGroup && mObjectGroup->color().isValid())

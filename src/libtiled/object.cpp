@@ -74,9 +74,8 @@ QVariant Object::resolvedProperty(const QString &name) const
     }
 
     if (!objectClassName.isEmpty()) {
-        if (auto type = mPropertyTypes->findClassByName(objectClassName))
-            if (type->isClassFor(*this))
-                return type->members.value(name);
+        if (auto type = mPropertyTypes->findClassFor(objectClassName, *this))
+            return type->members.value(name);
     }
 
     return QVariant();
@@ -96,11 +95,9 @@ QVariantMap Object::resolvedProperties() const
     }
 
     if (!objectClassName.isEmpty()) {
-        if (auto type = mPropertyTypes->findClassByName(objectClassName)) {
-            if (type->isClassFor(*this)) {
-                Tiled::mergeProperties(allProperties,
-                                       static_cast<const ClassPropertyType*>(type)->members);
-            }
+        if (auto type = mPropertyTypes->findClassFor(objectClassName, *this)) {
+            Tiled::mergeProperties(allProperties,
+                                   static_cast<const ClassPropertyType*>(type)->members);
         }
     }
     
