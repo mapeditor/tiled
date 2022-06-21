@@ -365,6 +365,19 @@ declare namespace Qt {
      * The toolTip displayed when the user mouses over this widget
      */
     toolTip: string;
+
+    /**
+     * Controls whether this widget is visible.
+     * When toggling this property, the dialog layout will automatically adjust itself
+     * based on the visible widgets.
+     * Qt documentation: [QWidget.visible](https://doc.qt.io/qt-5/qwidget.html#visible-prop);
+     */
+    visible: boolean;
+    /**
+     * If false, the widget cannot be interacted with.
+     * Qt documentation: [QWidget.enabled](https://doc.qt.io/qt-5/qwidget.html#enabled-prop)
+     */
+    enabled: boolean;
   }
 
   /**
