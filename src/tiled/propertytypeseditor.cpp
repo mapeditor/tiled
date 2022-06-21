@@ -108,6 +108,8 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
 {
     mUi->setupUi(this);
 
+    mDetailsLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+
     resize(Utils::dpiScaled(size()));
 
     mUi->propertyTypesView->setModel(mPropertyTypesModel);
