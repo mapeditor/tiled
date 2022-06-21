@@ -163,10 +163,8 @@ void ExportHelper::resolveTypeAndProperties(MapObject *object) const
     Properties properties;
 
     // Inherit properties from the class
-    if (!object->className().isEmpty()) {
-        if (auto type = Object::propertyTypes().findClassFor(object->className(), *object))
-            mergeProperties(properties, static_cast<const ClassPropertyType*>(type)->members);
-    }
+    if (auto type = Object::propertyTypes().findClassFor(object->className(), *object))
+        mergeProperties(properties, static_cast<const ClassPropertyType*>(type)->members);
 
     // Inherit properties from the tile
     if (tile)

@@ -1924,6 +1924,70 @@ void PropertyBrowser::updateProperties()
     }
 }
 
+static bool isAutomappingRulesMap(const Map &map)
+{
+    bool hasInputLayer = false;
+    bool hasOutputLayer = false;
+
+    for (Layer *layer : map.allLayers()) {
+        if (layer->name().startsWith(QLatin1String("input"), Qt::CaseInsensitive))
+            hasInputLayer |= layer->isTileLayer();
+        else if (layer->name().startsWith(QLatin1String("output"), Qt::CaseInsensitive))
+            hasOutputLayer = true;
+    }
+
+    return hasInputLayer && hasOutputLayer;
+}
+
+static void addAutomappingProperties(Properties &properties, const Object *object)
+{
+    auto addRuleOptions = [&] {
+        mergeProperties(properties, QVariantMap {
+            { QStringLiteral("Probability"), 0.0 },
+            { QStringLiteral("ModX"), 0 },
+            { QStringLiteral("ModY"), 0 },
+            { QStringLiteral("OffsetX"), 0 },
+            { QStringLiteral("OffsetY"), 0 },
+            { QStringLiteral("NoOverlappingOutput"), false },
+            { QStringLiteral("Disabled"), false },
+        });
+    };
+
+    switch (object->typeId()) {
+    case Object::LayerType: {
+        if (static_cast<const Layer*>(object)->name().startsWith(QLatin1String("input"), Qt::CaseInsensitive)) {
+            mergeProperties(properties, QVariantMap {
+                { QStringLiteral("AutoEmpty"), false },
+            });
+        }
+        break;
+    }
+    case Object::MapType:
+        mergeProperties(properties, QVariantMap {
+            { QStringLiteral("DeleteTiles"), false },
+            { QStringLiteral("MatchOutsideMap"), false },
+            { QStringLiteral("OverflowBorder"), false },
+            { QStringLiteral("WrapBorder"), false },
+            { QStringLiteral("AutomappingRadius"), 0 },
+            { QStringLiteral("NoOverlappingOutput"), false },
+            { QStringLiteral("MatchInOrder"), false },
+        });
+        addRuleOptions();
+        break;
+    case Object::MapObjectType: {
+        if (auto objectGroup = static_cast<const MapObject*>(object)->objectGroup())
+            if (objectGroup->name().compare(QLatin1String("rule_options"), Qt::CaseInsensitive) == 0)
+                addRuleOptions();
+        break;
+    }
+    case Object::TilesetType:
+    case Object::TileType:
+    case Object::WangSetType:
+    case Object::WangColorType:
+        break;
+    }
+}
+
 void PropertyBrowser::updateCustomProperties()
 {
     if (!mObject)
@@ -1933,61 +1997,38 @@ void PropertyBrowser::updateCustomProperties()
 
     mCustomPropertiesHelper.clear();
 
-    Properties combinedProperties = mObject->properties();
+    Properties combinedProperties;
 
     // Add properties from selected objects which mObject does not contain to mCombinedProperties.
     const auto currentObjects = mDocument->currentObjects();
     for (Object *obj : currentObjects) {
-        if (obj == mObject)
-            continue;
-
-        QMapIterator<QString,QVariant> it(obj->properties());
-
-        while (it.hasNext()) {
-            it.next();
-            if (!combinedProperties.contains(it.key()))
-                combinedProperties.insert(it.key(), QString());
-        }
+        if (obj != mObject)
+            mergeProperties(combinedProperties, obj->properties());
     }
 
-    QString className = mObject->className();
+    if (mMapDocument && isAutomappingRulesMap(*mMapDocument->map()))
+        addAutomappingProperties(combinedProperties, mObject);
+
+    const QString className = mObject->typeId() == Object::MapObjectType ? static_cast<MapObject*>(mObject)->effectiveClassName()
+                                                                         : mObject->className();
+
+    // Inherit properties from the class
+    if (auto type = Object::propertyTypes().findClassFor(className, *mObject))
+        mergeProperties(combinedProperties, type->members);
 
     if (mObject->typeId() == Object::MapObjectType) {
         auto mapObject = static_cast<MapObject*>(mObject);
-        className = mapObject->effectiveClassName();
+
+        // Inherit properties from the tile
+        if (const Tile *tile = mapObject->cell().tile())
+            mergeProperties(combinedProperties, tile->properties());
 
         // Inherit properties from the template
-        if (const MapObject *templateObject = mapObject->templateObject()) {
-            QMapIterator<QString,QVariant> it(templateObject->properties());
-            while (it.hasNext()) {
-                it.next();
-                if (!combinedProperties.contains(it.key()))
-                    combinedProperties.insert(it.key(), it.value());
-            }
-        }
-
-        if (const Tile *tile = mapObject->cell().tile()) {
-            // Inherit properties from the tile
-            QMapIterator<QString,QVariant> it(tile->properties());
-            while (it.hasNext()) {
-                it.next();
-                if (!combinedProperties.contains(it.key()))
-                    combinedProperties.insert(it.key(), it.value());
-            }
-        }
+        if (const MapObject *templateObject = mapObject->templateObject())
+            mergeProperties(combinedProperties, templateObject->properties());
     }
 
-    if (!className.isEmpty()) {
-        // Inherit properties from the object type
-        if (auto type = Object::propertyTypes().findClassFor(className, *mObject)) {
-            QMapIterator<QString,QVariant> it(type->members);
-            while (it.hasNext()) {
-                it.next();
-                if (!combinedProperties.contains(it.key()))
-                    combinedProperties.insert(it.key(), it.value());
-            }
-        }
-    }
+    mergeProperties(combinedProperties, mObject->properties());
 
     QMapIterator<QString,QVariant> it(combinedProperties);
 
