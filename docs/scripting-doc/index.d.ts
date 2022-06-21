@@ -553,9 +553,12 @@ declare namespace Qt {
 
     /**
      * Signal emitted when the value in the slider is changed.
-     * The value passed as a argument to functions connected to this signal is 
+     * In QT 5 builds, the value passed as a argument to functions connected to this signal is 
      * of type string, and will contain {@link prefix} and {@link suffix},
-     * if any are set.
+     * if any are set. In Qt 6 it is of number type. 
+     * 
+     * For compatibility between Qt 5 and 6, It's recommended to use the {@link value} property
+     * rather than using the parameter passed to your signal handler.
      */
     valueChanged: Signal<string>;
 
