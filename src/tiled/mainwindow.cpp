@@ -82,10 +82,6 @@
 #include "worldmanager.h"
 #include "zoomable.h"
 
-#ifdef Q_OS_MAC
-#include "macsupport.h"
-#endif
-
 #include <QActionGroup>
 #include <QCloseEvent>
 #include <QDesktopServices>
@@ -327,10 +323,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     // Created after registering all the main window actions, since the
     // NoEditorWidget uses some of those actions.
     mDocumentManager = new DocumentManager(this);
-
-#ifdef Q_OS_MAC
-    MacSupport::addFullscreen(this);
-#endif
 
     Preferences *preferences = Preferences::instance();
 
