@@ -580,14 +580,6 @@ DynamicLibrary {
         bundle.isBundle: false
         cpp.sonamePrefix: "@rpath"
     }
-    Group {
-        name: "macOS"
-        condition: qbs.targetOS.contains("macos")
-        files: [
-            "macsupport.h",
-            "macsupport.mm",
-        ]
-    }
 
     Export {
         Depends { name: "cpp" }
