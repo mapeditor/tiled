@@ -21,6 +21,7 @@
 * AutoMapping: Erase tiles by placing tiles with "MatchType" set to "Empty" on output layers (#3100)
 * AutoMapping: Accumulate touched layers in AutoMap While Drawing (#3313)
 * AutoMapping: Support map name filters in rules.txt (#3014)
+* AutoMapping: Show relevant custom properties when a rules map is detected
 * Split up object types file type selection
 * Optimized rendering of tinted layers by caching tinted images
 * tmxrasterizer: Added options to hide certain layer types (#3343)

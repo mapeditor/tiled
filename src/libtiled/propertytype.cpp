@@ -575,6 +575,9 @@ const PropertyType *PropertyTypes::findPropertyValueType(const QString &name) co
 
 const ClassPropertyType *PropertyTypes::findClassFor(const QString &name, const Object &object) const
 {
+    if (name.isEmpty())
+        return nullptr;
+
     auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
         return type->name == name && type->isClass() && static_cast<const ClassPropertyType*>(type)->isClassFor(object);
     });

@@ -39,13 +39,12 @@ Object::~Object()
 
 /**
  * Returns the value of the property \a name, taking into account that it may
- * be inherited from another object or from the type.
+ * be inherited from another object or from the class.
  *
- * - A Tile instance can inherit properties based on its type
- * - A MapObject instance can inherit properties based on:
+ * - Any object can inherit properties based on its class
+ * - A MapObject instance can in addition inherit properties based on:
  *      - Its template object
- *      - Its tile
- *      - Its type (or the type of its tile)
+ *      - Its tile or the class of its tile
  */
 QVariant Object::resolvedProperty(const QString &name) const
 {
@@ -73,10 +72,8 @@ QVariant Object::resolvedProperty(const QString &name) const
         return QVariant();
     }
 
-    if (!objectClassName.isEmpty()) {
-        if (auto type = mPropertyTypes->findClassFor(objectClassName, *this))
-            return type->members.value(name);
-    }
+    if (auto type = mPropertyTypes->findClassFor(objectClassName, *this))
+        return type->members.value(name);
 
     return QVariant();
 }
@@ -94,11 +91,9 @@ QVariantMap Object::resolvedProperties() const
         objectClassName = mapObject->effectiveClassName();
     }
 
-    if (!objectClassName.isEmpty()) {
-        if (auto type = mPropertyTypes->findClassFor(objectClassName, *this)) {
-            Tiled::mergeProperties(allProperties,
-                                   static_cast<const ClassPropertyType*>(type)->members);
-        }
+    if (auto type = mPropertyTypes->findClassFor(objectClassName, *this)) {
+        Tiled::mergeProperties(allProperties,
+                               static_cast<const ClassPropertyType*>(type)->members);
     }
     
     if (typeId() == Object::MapObjectType) {

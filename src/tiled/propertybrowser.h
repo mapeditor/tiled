@@ -205,6 +205,7 @@ private:
     void addProperties();
     void removeProperties();
     void updateProperties();
+    Properties combinedProperties() const;
     void updateCustomProperties();
     void updateCustomPropertyColor(const QString &name);
 
