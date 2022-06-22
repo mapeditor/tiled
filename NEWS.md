@@ -28,6 +28,7 @@
 * Raised minimum supported Qt version from 5.6 to 5.12 (drops Windows XP support)
 * Raised minimum C++ version to C++17
 * Removed qmake project files (only Qbs supported now)
+* AppImage: Updated to Sentry 0.4.18
 
 ### Tiled 1.8.6 (15 Jun 2022)
 
