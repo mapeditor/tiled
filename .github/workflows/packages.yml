@@ -345,7 +345,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [version, linux, macos, windows]
 
-    # if: github.repository == 'mapeditor/tiled' && github.event_name == 'push' && needs.version.outputs.release == 'true'
+    if: github.repository == 'mapeditor/tiled' && github.event_name == 'push' && needs.version.outputs.release == 'true'
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
