@@ -58,7 +58,6 @@
 #include "newsbutton.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
-#include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
 #include "projectdock.h"
 #include "projectmanager.h"
@@ -82,10 +81,6 @@
 #include "worlddocument.h"
 #include "worldmanager.h"
 #include "zoomable.h"
-
-#ifdef Q_OS_MAC
-#include "macsupport.h"
-#endif
 
 #include <QActionGroup>
 #include <QCloseEvent>
@@ -234,7 +229,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags)
     , mUi(new Ui::MainWindow)
     , mActionHandler(new MapDocumentActionHandler(this))
-    , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mPropertyTypesEditor(new PropertyTypesEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(nullptr)
@@ -329,10 +323,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     // Created after registering all the main window actions, since the
     // NoEditorWidget uses some of those actions.
     mDocumentManager = new DocumentManager(this);
-
-#ifdef Q_OS_MAC
-    MacSupport::addFullscreen(this);
-#endif
 
     Preferences *preferences = Preferences::instance();
 
@@ -798,14 +788,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mResetToDefaultLayout, "ResetToDefaultLayout");
     ActionManager::registerAction(mLockLayout, "LockLayout");
 
-    mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
-    mShowObjectTypesEditor->setCheckable(true);
-
-    mShowPropertyTypesEditor = new QAction(tr("Property Types Editor"), this);
+    mShowPropertyTypesEditor = new QAction(tr("Custom Types Editor"), this);
     mShowPropertyTypesEditor->setCheckable(true);
 
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mShowObjectTypesEditor);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowPropertyTypesEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
 
@@ -820,11 +806,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mViewsAndToolbarsMenu, &QMenu::aboutToShow,
             this, &MainWindow::updateViewsAndToolbarsMenu);
-
-    connect(mShowObjectTypesEditor, &QAction::toggled,
-            mObjectTypesEditor, &QWidget::setVisible);
-    connect(mObjectTypesEditor, &ObjectTypesEditor::closed,
-            this, &MainWindow::onObjectTypesEditorClosed);
 
     connect(mShowPropertyTypesEditor, &QAction::toggled,
             mPropertyTypesEditor, &QWidget::setVisible);
@@ -1048,12 +1029,6 @@ void MainWindow::initializeSession()
         ProjectManager::instance()->setProject(std::move(project));
         updateWindowTitle();
         updateActions();
-    } else {
-        // Even if we haven't loaded a project, we still want set the property
-        // types reference, to make sure that when the user starts adding
-        // types, they will be available in the Add Property dialog.
-        const Project &project = ProjectManager::instance()->project();
-        Preferences::instance()->setPropertyTypes(project.propertyTypes());
     }
 
     // Script manager initialization is delayed until after the project has
@@ -1536,10 +1511,11 @@ void MainWindow::projectProperties()
 
     if (ProjectPropertiesDialog(project, this).exec() == QDialog::Accepted) {
         project.save();
-        Preferences::instance()->setObjectTypesFile(project.mObjectTypesFile);
 
         ScriptManager::instance().refreshExtensionsPaths();
         mAutomappingManager->refreshRulesFile();
+
+        FileFormat::setCompatibilityVersion(project.mCompatibilityVersion);
     }
 }
 
@@ -2018,11 +1994,6 @@ void MainWindow::autoMappingWarning(bool automatic)
     }
 }
 
-void MainWindow::onObjectTypesEditorClosed()
-{
-    mShowObjectTypesEditor->setChecked(false);
-}
-
 void MainWindow::onPropertyTypesEditorClosed()
 {
     mShowPropertyTypesEditor->setChecked(false);
@@ -2365,8 +2336,7 @@ void MainWindow::retranslateUi()
     mViewsAndToolbarsAction->setText(tr("Views and Toolbars"));
     mResetToDefaultLayout->setText(tr("Reset to Default Layout"));
     mLockLayout->setText(tr("Lock Layout"));
-    mShowObjectTypesEditor->setText(tr("Object Types Editor"));
-    mShowPropertyTypesEditor->setText(tr("Property Types Editor"));
+    mShowPropertyTypesEditor->setText(tr("Custom Types Editor"));
     mActionHandler->retranslateUi();
     CommandManager::instance()->retranslateUi();
 }

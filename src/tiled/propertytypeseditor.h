@@ -1,6 +1,6 @@
 /*
  * propertytypeseditor.h
- * Copyright 2016-2021, Thorbjørn Lindeijer <bjorn@lindeijer.nl>>
+ * Copyright 2016-2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>>
  *
  * This file is part of Tiled.
  *
@@ -29,6 +29,7 @@ class QComboBox;
 class QFormLayout;
 class QItemSelection;
 class QLineEdit;
+class QMenu;
 class QStringListModel;
 class QTreeView;
 
@@ -41,8 +42,20 @@ class PropertyTypesEditor;
 
 namespace Tiled {
 
+class ColorButton;
 class CustomPropertiesHelper;
 class PropertyTypesModel;
+
+struct PropertyTypesFilter
+{
+    PropertyTypesFilter(const QString &lastPath = QString());
+
+    const QString propertyTypesFilter;
+    const QString objectTypesJsonFilter;
+    const QString objectTypesXmlFilter;
+    QString filters;
+    QString selectedFilter;
+};
 
 class PropertyTypesEditor : public QDialog
 {
@@ -65,6 +78,7 @@ private:
     void removeSelectedPropertyType();
     QModelIndex selectedPropertyTypeIndex() const;
     PropertyType *selectedPropertyType() const;
+    ClassPropertyType *selectedClassPropertyType() const;
 
     void currentMemberItemChanged(QtBrowserItem *item);
 
@@ -75,9 +89,12 @@ private:
     void propertyTypesChanged();
 
     void updateDetails();
+    void updateClassUsageDetails(const ClassPropertyType &classType);
     void selectedValuesChanged(const QItemSelection &selected);
 
     void setCurrentPropertyType(PropertyType::Type type);
+    void addClassProperties();
+    void addEnumProperties();
 
     void setStorageType(EnumPropertyType::StorageType storageType);
     void setValuesAsFlags(bool flags);
@@ -99,6 +116,8 @@ private:
     void valuesChanged();
     void nameEditingFinished();
 
+    void colorChanged(const QColor &color);
+    void setUsageFlags(int flags, bool value);
     void memberValueChanged(const QString &name, const QVariant &value);
 
     void retranslateUi();
@@ -107,10 +126,17 @@ private:
     PropertyTypesModel *mPropertyTypesModel;
     QFormLayout *mDetailsLayout = nullptr;
     QLineEdit *mNameEdit = nullptr;
+
     QComboBox *mStorageTypeComboBox = nullptr;
     QCheckBox *mValuesAsFlagsCheckBox = nullptr;
     QTreeView *mValuesView = nullptr;
     QStringListModel *mValuesModel;
+
+    ColorButton *mColorButton = nullptr;
+    QCheckBox *mUseAsPropertyCheckBox = nullptr;
+    QCheckBox *mClassOfCheckBox = nullptr;
+    QPushButton *mClassOfButton = nullptr;
+    QMenu *mClassOfMenu;
     QtTreePropertyBrowser *mMembersView = nullptr;
     CustomPropertiesHelper *mPropertiesHelper = nullptr;
 

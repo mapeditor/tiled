@@ -1,6 +1,6 @@
 /*
  * propertytypesmodel.cpp
- * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011-2022, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -188,6 +188,13 @@ void PropertyTypesModel::importPropertyTypes(PropertyTypes typesToImport)
 {
     beginResetModel();
     mPropertyTypes->merge(std::move(typesToImport));
+    endResetModel();
+}
+
+void PropertyTypesModel::importObjectTypes(const QVector<ObjectType> &objectTypes)
+{
+    beginResetModel();
+    mPropertyTypes->mergeObjectTypes(objectTypes);
     endResetModel();
 }
 

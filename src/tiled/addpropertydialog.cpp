@@ -73,6 +73,11 @@ void AddPropertyDialog::initialize(const Tiled::ClassPropertyType *parentClassTy
         if (parentClassType && !parentClassType->canAddMemberOfType(propertyType))
             continue;
 
+        // Avoid suggesting classes not meant to be used as property value
+        if (propertyType->isClass())
+            if (!static_cast<const ClassPropertyType*>(propertyType)->isPropertyValueType())
+                continue;
+
         const QVariant var = propertyType->wrap(propertyType->defaultValue());
         const QIcon icon = PropertyTypesModel::iconForPropertyType(propertyType->type);
         mUi->typeBox->addItem(icon, propertyType->name, var);

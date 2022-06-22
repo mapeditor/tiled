@@ -83,6 +83,8 @@ cls_properties.add_method('keys', 'QList<QString>', [])
 #cls_propsc = tiled.add_container('QMap<QString,QString>', ('QString','QString'), 'map', cls_properties)
 
 cls_object = tiled.add_class('Object')
+cls_object.add_method('className', 'QString', [])
+cls_object.add_method('setClassName', None, [('QString','n')])
 cls_object.add_method('properties', retval('Tiled::Properties','p'), [])
 cls_object.add_method('propertyAsString', 'QString', [('QString','prop')])
 cls_object.add_method('setProperty', None,

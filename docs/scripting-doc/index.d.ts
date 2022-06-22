@@ -912,6 +912,15 @@ declare class TiledObject {
   readonly readOnly: boolean;
 
   /**
+   * Class name of the object.
+   *
+   * Replaced the "type" of {@link MapObject} and {@link Tile} in Tiled 1.9.
+   *
+   * @since 1.9
+   */
+  className: string;
+
+  /**
    * Returns the value of the custom property with the given name, or
    * `undefined` if no such property is set on the object. Does not
    * include inherited values (see {@link resolvedProperty}).
@@ -1038,6 +1047,8 @@ declare class MapObject extends TiledObject {
 
   /**
    * Type of the object.
+   *
+   * @deprecated Use {@link Object.className} instead.
    */
   type: string;
 
@@ -1969,8 +1980,10 @@ declare class Tile extends TiledObject {
 
   /**
    * Type of the tile.
+   *
+   * @deprecated Use {@link Object.className} instead.
    */
-  type : string
+  type: string;
 
   /**
    * File name of the tile image (when the tile is part of an image collection tileset).

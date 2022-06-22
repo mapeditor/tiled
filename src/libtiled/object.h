@@ -28,7 +28,6 @@
 
 #pragma once
 
-#include "objecttypes.h"
 #include "properties.h"
 #include "propertytype.h"
 
@@ -40,18 +39,21 @@ namespace Tiled {
 class TILEDSHARED_EXPORT Object
 {
 public:
+    // Keep values synchronized with ClassPropertyType::ClassUsageFlag
     enum TypeId {
-        LayerType,
-        MapObjectType,
-        MapType,
-        ObjectTemplateType,
-        TilesetType,
-        TileType,
-        WangSetType,
-        WangColorType
+        LayerType           = 0x02,
+        MapObjectType       = 0x04,
+        MapType             = 0x08,
+        TilesetType         = 0x10,
+        TileType            = 0x20,
+        WangSetType         = 0x40,
+        WangColorType       = 0x80,
     };
 
-    explicit Object(TypeId typeId) : mTypeId(typeId) {}
+    explicit Object(TypeId typeId, const QString &className = QString())
+        : mTypeId(typeId)
+        , mClassName(className)
+    {}
 
     /**
      * Virtual destructor.
@@ -62,6 +64,9 @@ public:
      * Returns the type of this object.
      */
     TypeId typeId() const { return mTypeId; }
+
+    const QString &className() const;
+    void setClassName(const QString &className);
 
     /**
      * Returns the properties of this object.
@@ -138,20 +143,33 @@ public:
 
     bool isPartOfTileset() const;
 
-    static void setObjectTypes(const ObjectTypes &objectTypes);
     static void setPropertyTypes(const SharedPropertyTypes &propertyTypes);
-    static const ObjectTypes &objectTypes()
-    { return mObjectTypes; }
     static const PropertyTypes &propertyTypes();
 
 private:
     const TypeId mTypeId;
+    QString mClassName;
     Properties mProperties;
 
-    static ObjectTypes mObjectTypes;
     static SharedPropertyTypes mPropertyTypes;
 };
 
+
+/**
+ * Returns the class of this object. The class usually says something about
+ * how the object is meant to be interpreted by the engine.
+ *
+ * Tile objects that do not have a class explicitly set on them are assumed to
+ * be of the class set on their tile (see MapObject::effectiveClassName).
+ */
+inline const QString &Object::className() const
+{ return mClassName; }
+
+/**
+ * Sets the class of this object.
+ */
+inline void Object::setClassName(const QString &className)
+{ mClassName = className; }
 
 /**
  * Returns whether this object is stored as part of a tileset.

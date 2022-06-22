@@ -1,6 +1,6 @@
 /*
- * macsupport.h
- * Copyright 2011, Vsevolod Klementjev <klemix@inbox.lv>
+ * objectreferenceshelper.h
+ * Copyright 2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,18 +20,31 @@
 
 #pragma once
 
-#include "mainwindow.h"
+#include <QHash>
 
-class MacSupport
+namespace Tiled {
+
+class Layer;
+class Map;
+class MapObject;
+
+/**
+ * Helps to keep connections between objects in-place when copying groups of
+ * objects.
+ */
+class ObjectReferencesHelper
 {
 public:
-    /**
-     * Returns whether the current system is Lion.
-     */
-    static bool isLion();
+    explicit ObjectReferencesHelper(Map *map);
 
-    /**
-     * Adds fullscreen button to window for Lion.
-     */
-    static void addFullscreen(Tiled::MainWindow *window);
+    void reassignId(MapObject *mapObject);
+    void reassignIds(Layer *layer);
+
+    void rewire();
+
+private:
+    Map *mMap;
+    QHash<int, MapObject*> mOldIdToObject;
 };
+
+} // namespace Tiled

@@ -20,6 +20,8 @@
 
 #include "projectmanager.h"
 
+#include "fileformat.h"
+#include "objecttypes.h"
 #include "preferences.h"
 #include "projectmodel.h"
 
@@ -42,11 +44,24 @@ void ProjectManager::setProject(Project _project)
 {
     mProjectModel->setProject(std::move(_project));
 
-    const auto &project = mProjectModel->project(); // _project was moved
+    auto &project = mProjectModel->project(); // _project was moved
+
+    // Automatically import object types if they are referenced by the project
+    if (!project.mObjectTypesFile.isEmpty()) {
+        ObjectTypes objectTypes;
+        const ExportContext context(*project.propertyTypes(),
+                                    QFileInfo(project.mObjectTypesFile).path());
+
+        if (ObjectTypesSerializer().readObjectTypes(project.mObjectTypesFile, objectTypes, context)) {
+            project.propertyTypes()->mergeObjectTypes(objectTypes);
+            project.mObjectTypesFile.clear();
+        }
+    }
 
     Preferences *prefs = Preferences::instance();
     prefs->setPropertyTypes(project.propertyTypes());
-    prefs->setObjectTypesFile(project.mObjectTypesFile);
+
+    FileFormat::setCompatibilityVersion(project.mCompatibilityVersion);
 
     emit projectChanged();
 }

@@ -2,7 +2,7 @@
 
 .. raw:: html
 
-    <div class="new">New in Tiled 1.5</div>
+    <div class="new new-prev">Since Tiled 1.5</div>
 
 GameMaker Studio 2.3
 ====================
@@ -327,7 +327,7 @@ the view object.
 .. hint::
 
    When you're defining views in Tiled, it is useful to add ``view``
-   as object type in the :ref:`Object Types Editor <predefining-properties>`,
+   as class in the :ref:`Custom Types Editor <custom-property-types>`,
    adding the above properties for ease of access. If you frequently use
    views with similar settings, you can set up
    :doc:`templates <using-templates>` for them.

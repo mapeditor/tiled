@@ -7,6 +7,7 @@ lupdate -locations relative -no-obsolete \
     src/qtsingleapplication \
     src/terraingenerator \
     src/tiled \
+    src/tiledapp \
     src/tiledquick \
     src/tiledquickplugin \
     src/tmxrasterizer \

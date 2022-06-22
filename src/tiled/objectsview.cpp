@@ -40,7 +40,7 @@ namespace Tiled {
 
 namespace preferences {
 static Preference<int> firstColumnWidth { "ObjectsDock/FirstSectionSize", 200 };
-static Preference<QVariantList> visibleColumns { "ObjectsDock/VisibleSections", { MapObjectModel::Name, MapObjectModel::Type } };
+static Preference<QVariantList> visibleColumns { "ObjectsDock/VisibleSections", { MapObjectModel::Name, MapObjectModel::Class } };
 } // namespace preferences
 
 ObjectsView::ObjectsView(QWidget *parent)

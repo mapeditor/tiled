@@ -31,24 +31,6 @@ class Tile;
 
 class TilesetDocument;
 
-class ChangeTileType : public ChangeValue<Tile, QString>
-{
-public:
-    /**
-     * Creates an undo command that sets the given \a tile's \a type.
-     */
-    ChangeTileType(TilesetDocument *tilesetDocument,
-                   const QList<Tile*> &tiles,
-                   const QString &type,
-                   QUndoCommand *parent = nullptr);
-
-    int id() const override { return Cmd_ChangeTileType; }
-
-protected:
-    QString getValue(const Tile *tile) const override;
-    void setValue(Tile *tile, const QString &type) const override;
-};
-
 class ChangeTileProbability : public ChangeValue<Tile, qreal>
 {
 public:

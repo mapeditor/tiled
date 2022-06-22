@@ -5,6 +5,7 @@
 * Added Tile Render Size and Fill Mode options to Tileset
 * Added %worldfile variable for custom commands (by Pixel-Nori, #3352)
 * Added 'New Project' action, replacing 'Save Project As' (#3279)
+* Added ability to load .tiled-session files from command-line
 * Don't scale point objects with the zoom level (#3356)
 * Scripting: Added -e,--evaluate to run a script from command-line
 * Scripting: Added Tool.toolBarActions property (#3318)
@@ -20,6 +21,7 @@
 * AutoMapping: Erase tiles by placing tiles with "MatchType" set to "Empty" on output layers (#3100)
 * AutoMapping: Accumulate touched layers in AutoMap While Drawing (#3313)
 * AutoMapping: Support map name filters in rules.txt (#3014)
+* AutoMapping: Show relevant custom properties when a rules map is detected
 * Split up object types file type selection
 * Optimized rendering of tinted layers by caching tinted images
 * tmxrasterizer: Added options to hide certain layer types (#3343)
@@ -27,15 +29,19 @@
 * Raised minimum C++ version to C++17
 * Removed qmake project files (only Qbs supported now)
 
-### Unreleased 1.8 patch
+### Tiled 1.8.6 (15 Jun 2022)
 
-* Keep references between objects when copy/pasting (#3361)
+* Keep references between objects when copy/pasting or duplicating (#3361)
 * Improved default translation used in case of multiple options
+* Terrain Brush: Update preview on mouse release (#3381)
 * Fixed 'Add Variation' action in Tile Stamps context menu (#3362)
 * Fixed importing of removed shortcuts (#3367)
 * Fixed breaking of alternative shortcuts on import or reset (#3367)
 * Fixed conflict detection to handle alternative shortcuts (#3368)
+* Fixed locking up UI on property type name conflict (#3380)
+* Scripting: Fixed possible crash when accessing Layer.map
 * Defold plugins: Added support for rotated tiles (#3369)
+* Updates to German translation (by Ettore Atalan)
 
 ### Tiled 1.8.5 (17 May 2022)
 

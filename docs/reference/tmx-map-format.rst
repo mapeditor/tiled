@@ -46,6 +46,7 @@ in what changed between Tiled versions.
    incremented to match minor Tiled releases.
 -  **tiledversion:** The Tiled version used to save the file (since Tiled
    1.0.1). May be a date (for snapshot builds). (optional)
+-  **class:** The class of this map (since 1.9, defaults to "").
 -  **orientation:** Map orientation. Tiled supports "orthogonal",
    "isometric", "staggered" and "hexagonal" (since 0.11).
 -  **renderorder:** The order in which tiles on tile layers are rendered.
@@ -147,6 +148,7 @@ Can contain at most one: :ref:`tmx-chunksize`, :ref:`tmx-export`
    there. These two attributes are kept in the TMX map, since they are
    map specific.)
 -  **name:** The name of this tileset.
+-  **class:** The class of this tileset (since 1.9, defaults to "").
 -  **tilewidth:** The (maximum) width of the tiles in this tileset. Irrelevant
    for image collection tilesets, but stores the maximum tile width.
 -  **tileheight:** The (maximum) height of the tiles in this tileset.
@@ -295,8 +297,8 @@ tiles (e.g. to extend a Wang set by transforming existing tiles).
 ~~~~~~
 
 -  **id:** The local tile ID within its tileset.
--  **type:** The type of the tile. Refers to an object type and is used
-   by tile objects. (optional) (since 1.0)
+-  **class:** The type of the tile. Refers to an object type and is used
+   by tile objects. (optional) (since 1.0, renamed from ``type`` since 1.9)
 -  *terrain:* Defines the terrain type of each corner of the tile,
    given as comma-separated indexes in the terrain types array in the
    order top-left, top-right, bottom-left, bottom-right. Leaving out a
@@ -352,6 +354,7 @@ Can contain any number: :ref:`tmx-wangset`
 Defines a list of colors and any number of Wang tiles using these colors.
 
 -  **name:** The name of the Wang set.
+-  **class:** The class of the Wang set (since 1.9, defaults to "").
 -  **tile:** The tile ID of the tile representing this Wang set.
 
 Can contain at most one: :ref:`tmx-properties`
@@ -368,6 +371,7 @@ Can contain any number: :ref:`tmx-wangtile`
 A color that can be used to define the corner and/or edge of a Wang tile.
 
 -  **name:** The name of this color.
+-  **class:** The class of this color (since 1.9, defaults to "").
 -  **color:** The color in ``#RRGGBB`` format (example: ``#c17d11``).
 -  **tile:** The tile ID of the tile representing this color.
 -  **probability:** The relative probability that this color is chosen
@@ -409,6 +413,7 @@ tiles.
    deleted, no layer ever gets the same ID. Can not be changed in Tiled.
    (since Tiled 1.2)
 -  **name:** The name of the layer. (defaults to "")
+-  **class:** The class of the layer (since 1.9, defaults to "").
 -  *x:* The x coordinate of the layer in tiles. Defaults to 0 and can not be changed in Tiled.
 -  *y:* The y coordinate of the layer in tiles. Defaults to 0 and can not be changed in Tiled.
 -  **width:** The width of the layer in tiles. Always the same as the map width for fixed-size maps.
@@ -492,6 +497,7 @@ should generally be avoided.
    deleted, no layer ever gets the same ID. Can not be changed in Tiled.
    (since Tiled 1.2)
 -  **name:** The name of the object group. (defaults to "")
+-  **class:** The class of the object group (since 1.9, defaults to "").
 -  **color:** The color used to display the objects in this group. (optional)
 -  *x:* The x coordinate of the object group in tiles. Defaults to 0 and
    can no longer be changed in Tiled.
@@ -528,7 +534,8 @@ Can contain any number: :ref:`tmx-object`
    object was deleted, no object gets the same ID. Can not be changed in Tiled.
    (since Tiled 0.11)
 -  **name:** The name of the object. An arbitrary string. (defaults to "")
--  **type:** The type of the object. An arbitrary string. (defaults to "")
+-  **class:** The class of the object. An arbitrary string. (defaults to "",
+   renamed from ``type`` since 1.9)
 -  **x:** The x coordinate of the object in pixels. (defaults to 0)
 -  **y:** The y coordinate of the object in pixels. (defaults to 0)
 -  **width:** The width of the object in pixels. (defaults to 0)
@@ -654,6 +661,7 @@ of the object.
    deleted, no layer ever gets the same ID. Can not be changed in Tiled.
    (since Tiled 1.2)
 -  **name:** The name of the image layer. (defaults to "")
+-  **class:** The class of the image layer (since 1.9, defaults to "").
 -  **offsetx:** Horizontal offset of the image layer in pixels. (defaults to
    0) (since 0.15)
 -  **offsety:** Vertical offset of the image layer in pixels. (defaults to
@@ -683,6 +691,7 @@ Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-image`
    deleted, no layer ever gets the same ID. Can not be changed in Tiled.
    (since Tiled 1.2)
 -  **name:** The name of the group layer. (defaults to "")
+-  **class:** The class of the group layer (since 1.9, defaults to "").
 -  **offsetx:** Horizontal offset of the group layer in pixels. (defaults to
    0)
 -  **offsety:** Vertical offset of the group layer in pixels. (defaults to

@@ -243,7 +243,7 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
                 const auto key = lineView.left(epos).trimmed();
                 const auto value = lineView.mid(epos + 1, -1).trimmed();
                 if (key == QLatin1String("type")) {
-                    mapObject->setType(value.toString());
+                    mapObject->setClassName(value.toString());
                 } else if (key == QLatin1String("location")) {
                     const auto loc = value.split(QChar(','));
                     qreal x,y;
@@ -379,14 +379,14 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName, Options 
         }
         if (ObjectGroup *group = layer->asObjectGroup()) {
             for (const MapObject *o : group->objects()) {
-                if (!o->type().isEmpty()) {
+                if (!o->className().isEmpty()) {
                     out << "[" << group->name() << "]\n";
 
                     // display object name as comment
                     if (!o->name().isEmpty())
                         out << "# " << o->name() << "\n";
 
-                    out << "type=" << o->type() << "\n";
+                    out << "type=" << o->className() << "\n";
                     int x,y,w,h;
                     if (map->orientation() == Map::Orthogonal) {
                         x = o->x()/map->tileWidth();

@@ -88,8 +88,7 @@ static bool checkIfViewsDefined(const Map *map)
         const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
         for (const MapObject *object : objectLayer->objects()) {
-            const QString type = object->effectiveType();
-            if (type == "view")
+            if (object->effectiveClassName() == "view")
                 return true;
         }
     }
@@ -145,8 +144,8 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
             const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
             for (const MapObject *object : objectLayer->objects()) {
-                const QString type = object->effectiveType();
-                if (type != "view")
+                const QString &className = object->effectiveClassName();
+                if (className != "view")
                     continue;
 
                 // GM only has 8 views so drop anything more than that
@@ -205,16 +204,16 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
         const auto colorString = QString::number(color.rgba());
 
         for (const MapObject *object : objectLayer->objects()) {
-            const QString type = object->effectiveType();
-            if (type.isEmpty())
+            const QString &className = object->effectiveClassName();
+            if (className.isEmpty())
                 continue;
-            if (type == "view")
+            if (className == "view")
                 continue;
 
             stream.writeStartElement("instance");
 
-            // The type is used to refer to the name of the object
-            stream.writeAttribute("objName", sanitizeName(type));
+            // The class is used to refer to the name of the object
+            stream.writeAttribute("objName", sanitizeName(className));
 
             qreal scaleX = 1;
             qreal scaleY = 1;
@@ -381,8 +380,8 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
             }
 
             for (const MapObject *object : qAsConst(objects)) {
-                // Objects with types are already exported as instances
-                if (!object->effectiveType().isEmpty())
+                // Objects with a class are already exported as instances
+                if (!object->effectiveClassName().isEmpty())
                     continue;
 
                 // Non-typed tile objects are exported as tiles. Rotation is

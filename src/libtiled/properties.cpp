@@ -52,6 +52,11 @@ FilePath FilePath::fromString(const QString &string)
 
 void mergeProperties(Properties &target, const Properties &source)
 {
+    if (target.isEmpty()) {
+        target = source;
+        return;
+    }
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     // Based on QMap::unite, but using insert instead of insertMulti
     Properties::const_iterator it = source.constEnd();
@@ -251,7 +256,7 @@ QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
 
     // Wrap the value in its custom property type when applicable
     if (!exportValue.propertyTypeName.isEmpty()) {
-        if (const PropertyType *propertyType = mTypes.findTypeByName(exportValue.propertyTypeName)) {
+        if (const PropertyType *propertyType = mTypes.findPropertyValueType(exportValue.propertyTypeName)) {
             propertyValue = propertyType->toPropertyValue(propertyValue, *this);
         } else {
            Tiled::ERROR(QStringLiteral("Unrecognized property type: '%1'")

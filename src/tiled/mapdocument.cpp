@@ -46,6 +46,7 @@
 #include "movelayer.h"
 #include "movemapobjecttogroup.h"
 #include "objectgroup.h"
+#include "objectreferenceshelper.h"
 #include "objecttemplate.h"
 #include "offsetlayer.h"
 #include "painttilelayer.h"
@@ -475,8 +476,7 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
         state.setRotation(newRotation);
     }
 
-    auto command = new TransformMapObjects(this, mSelectedObjects, states);
-    command->setText(tr("Rotate %n Object(s)", "", mSelectedObjects.size()));
+    undoStack()->push(new TransformMapObjects(this, mSelectedObjects, states));
 }
 
 /**
@@ -610,37 +610,55 @@ void MapDocument::duplicateLayers(const QList<Layer *> &layers)
         if (layers.contains(layer))
             layersToDuplicate.append(layer);
 
+    struct Duplication {
+        Layer *original;
+        Layer *clone;
+    };
+    QVector<Duplication> duplications;
+    ObjectReferencesHelper objectRefs(map());
+
+    // Duplicate the layers, reassigning any layer and object IDs
+    while (!layersToDuplicate.isEmpty()) {
+        Duplication dup;
+        dup.original = layersToDuplicate.takeFirst();
+        dup.clone = dup.original->clone();
+
+        // If a group layer gets duplicated, make sure any children are removed
+        // from the remaining list of layers to duplicate
+        if (dup.original->isGroupLayer()) {
+            layersToDuplicate.erase(std::remove_if(layersToDuplicate.begin(),
+                                                   layersToDuplicate.end(),
+                                                   [&] (Layer *layer) {
+                                        return layer->isParentOrSelf(dup.original);
+                                    }), layersToDuplicate.end());
+        }
+
+        objectRefs.reassignIds(dup.clone);
+        dup.clone->setName(tr("Copy of %1").arg(dup.clone->name()));
+
+        duplications.append(dup);
+    }
+
+    objectRefs.rewire();
+
+    // Actually add each duplicated layer
     QList<Layer *> newLayers;
     GroupLayer *previousParentLayer = nullptr;
     int previousIndex = 0;
 
-    while (!layersToDuplicate.isEmpty()) {
-        Layer *layer = layersToDuplicate.takeFirst();
-
-        // If a group layer gets duplicated, make sure any children are removed
-        // from the remaining list of layers to duplicate
-        if (layer->isGroupLayer()) {
-            for (int i = layersToDuplicate.size() - 1; i >= 0; --i)
-                if (layersToDuplicate.at(i)->isParentOrSelf(layer))
-                    layersToDuplicate.removeAt(i);
-        }
-
-        Layer *duplicate = layer->clone();
-        duplicate->resetIds();
-        duplicate->setName(tr("Copy of %1").arg(duplicate->name()));
-
-        auto parentLayer = layer->parentLayer();
+    for (const auto &dup : qAsConst(duplications)) {
+        auto parentLayer = dup.original->parentLayer();
 
         int index = previousIndex;
         if (newLayers.isEmpty() || previousParentLayer != parentLayer)
-            index = layer->siblingIndex() + 1;
+            index = dup.original->siblingIndex() + 1;
 
-        undoStack()->push(new AddLayer(this, index, duplicate, parentLayer));
+        undoStack()->push(new AddLayer(this, index, dup.clone, parentLayer));
 
         previousParentLayer = parentLayer;
         previousIndex = index;
 
-        newLayers.append(duplicate);
+        newLayers.append(dup.clone);
     }
 
     undoStack()->endMacro();
@@ -1536,12 +1554,16 @@ void MapDocument::duplicateObjects(const QList<MapObject *> &objects)
     QVector<AddMapObjects::Entry> objectsToAdd;
     objectsToAdd.reserve(objects.size());
 
+    ObjectReferencesHelper objectRefs(map());
+
     for (MapObject *mapObject : objects) {
         MapObject *clone = mapObject->clone();
-        clone->resetId();
+        objectRefs.reassignId(clone);
         objectsToAdd.append(AddMapObjects::Entry { clone, mapObject->objectGroup() });
         objectsToAdd.last().index = mapObject->objectGroup()->objects().indexOf(mapObject) + 1;
     }
+
+    objectRefs.rewire();
 
     auto command = new AddMapObjects(this, objectsToAdd);
     command->setText(tr("Duplicate %n Object(s)", "", objects.size()));

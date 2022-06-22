@@ -104,7 +104,7 @@ const QPainterPath &Tile::imageShape() const
         if (mImageRect != image().rect()) {
             QPainterPath rect;
             rect.addRect(mImageRect);
-            mImageShape.value() &= rect;
+            *mImageShape &= rect;
             mImageShape->translate(-mImageRect.topLeft());
         }
     }
@@ -116,6 +116,10 @@ const QPainterPath &Tile::imageShape() const
  */
 void Tile::setImage(const QPixmap &image)
 {
+    // Initialize or auto-adjust the image rect
+    if (mImage.isNull() || mImageRect == mImage.rect())
+        mImageRect = image.rect();
+
     mImage = image;
     mImageStatus = image.isNull() ? LoadingError : LoadingReady;
     mImageShape.reset();
@@ -236,12 +240,12 @@ bool Tile::advanceAnimation(int ms)
 Tile *Tile::clone(Tileset *tileset) const
 {
     Tile *c = new Tile(mImage, mId, tileset);
+    c->setClassName(className());
     c->setProperties(properties());
 
     c->mImageSource = mImageSource;
     c->mImageRect = mImageRect;
     c->mImageStatus = mImageStatus;
-    c->mType = mType;
     c->mProbability = mProbability;
 
     if (mObjectGroup)

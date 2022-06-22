@@ -75,7 +75,6 @@ public:
      */
     int id() const { return mId; }
     void setId(int id) { mId = id; }
-    void resetIds();
 
     const QColor &tintColor() const { return mTintColor; }
     void setTintColor(const QColor &tintColor) { mTintColor = tintColor; }

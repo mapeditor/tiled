@@ -111,8 +111,8 @@ ID
 
    <div class="new new-prev">Since Tiled 1.0</div>
 
-Type
-   This property refers to custom types defined in the :ref:`Object Types Editor <predefining-properties>`.
+Class
+   This property refers to custom classes defined in the :ref:`Custom Types Editor <custom-property-types>`.
    See the section about :ref:`typed-tiles` for more information.
 
 Width and Height

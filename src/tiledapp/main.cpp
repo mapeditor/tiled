@@ -100,6 +100,7 @@ private:
     void setExportResolveObjectTypesAndProperties();
     void setExportMinimized();
     void showExportFormats();
+    void setCompatibilityVersion();
     void evaluateScript();
     void startNewInstance();
 
@@ -207,6 +208,11 @@ CommandLineHandler::CommandLineHandler()
                 QChar(),
                 QLatin1String("--export-formats"),
                 tr("Print a list of supported export formats"));
+
+    option<&CommandLineHandler::setCompatibilityVersion>(
+                QChar(),
+                QLatin1String("--export-version"),
+                tr("Set the compatibility version used when exporting"));
 
     option<&CommandLineHandler::setExportEmbedTilesets>(
                 QChar(),
@@ -320,13 +326,31 @@ void CommandLineHandler::showExportFormats()
     quit = true;
 }
 
+void CommandLineHandler::setCompatibilityVersion()
+{
+    const QString versionString = nextArgument();
+    if (versionString.isNull()) {
+        qWarning().noquote() << QCoreApplication::translate("Command line", "Missing argument, set version using: --export-version <version>");
+        justQuit();
+        return;
+    }
+
+    const auto version = versionFromString(versionString);
+    if (version == UnknownVersion) {
+        qWarning().noquote() << QCoreApplication::translate("Command line", "Unknown version: %1").arg(versionString);
+        justQuit();
+    }
+
+    FileFormat::setCompatibilityVersion(version);
+}
+
 void CommandLineHandler::evaluateScript()
 {
     justQuit(); // always quit after running the script
 
     const QString scriptFile = nextArgument();
     if (scriptFile.isEmpty()) {
-        qWarning().noquote() << QCoreApplication::translate("Command line", "Missing file argument, evaluate a script using: --evaluate <script-file> [args]");
+        qWarning().noquote() << QCoreApplication::translate("Command line", "Missing argument, evaluate a script using: --evaluate <script-file> [args]");
         return;
     }
 
@@ -526,6 +550,12 @@ int main(int argc, char *argv[])
                 return 1;
             }
             Preferences::setStartupProject(filePath);
+        } if (fileInfo.suffix() == QLatin1String("tiled-session")) {
+            if (!fileInfo.exists()) {
+                qWarning().noquote() << QCoreApplication::translate("Command line", "Session file '%1' not found.").arg(fileName);
+                return 1;
+            }
+            Preferences::setStartupSession(filePath);
         } else {
             filesToOpen.append(filePath);
         }

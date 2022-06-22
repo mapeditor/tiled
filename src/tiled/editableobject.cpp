@@ -76,6 +76,14 @@ Document *EditableObject::document() const
     return asset() ? asset()->document() : nullptr;
 }
 
+void EditableObject::setClassName(const QString &className)
+{
+    if (Document *doc = document())
+        asset()->push(new ChangeClassName(doc, { object() }, className));
+    else if (!checkReadOnly())
+        object()->setClassName(className);
+}
+
 /**
  * When this object is read-only, raises a script error and returns true.
  */
@@ -100,7 +108,6 @@ static Map *mapForObject(Object *object)
         return static_cast<MapObject*>(object)->map();
     case Object::MapType:
         return static_cast<Map*>(object);
-    case Object::ObjectTemplateType:
     case Object::TilesetType:
     case Object::TileType:
     case Object::WangSetType:

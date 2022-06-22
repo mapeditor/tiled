@@ -7,32 +7,150 @@
         ".",
         "../tests"
     ],
-    "objectTypesFile": "objecttypes.xml",
     "propertyTypes": [
         {
             "id": 1,
             "name": "BodyType",
+            "storageType": "string",
+            "type": "enum",
             "values": [
                 "Static",
                 "Dynamic"
-            ]
+            ],
+            "valuesAsFlags": false
         },
         {
             "id": 2,
             "name": "EnemyType",
+            "storageType": "string",
+            "type": "enum",
             "values": [
                 "Neutral",
                 "Friendly",
                 "Aggressive"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "color": "#ffad7fa8",
+            "id": 4,
+            "members": [
+                {
+                    "name": "friction",
+                    "type": "float",
+                    "value": 1
+                },
+                {
+                    "name": "static",
+                    "type": "bool",
+                    "value": false
+                }
+            ],
+            "name": "Fixture",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffeeeeec",
+            "id": 5,
+            "members": [
+            ],
+            "name": "Location",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff729fcf",
+            "id": 6,
+            "members": [
+            ],
+            "name": "NPC",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff99c1f1",
+            "id": 7,
+            "members": [
+                {
+                    "name": "disabled",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "modX",
+                    "type": "int",
+                    "value": 1
+                },
+                {
+                    "name": "modY",
+                    "type": "int",
+                    "value": 1
+                },
+                {
+                    "name": "noOverlappingOutput",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "offsetX",
+                    "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "offsetY",
+                    "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "probability",
+                    "type": "float",
+                    "value": 1
+                }
+            ],
+            "name": "RuleOptions",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
             ]
         },
         {
             "id": 3,
             "name": "State",
+            "storageType": "string",
+            "type": "enum",
             "values": [
                 "Open",
                 "Closed",
                 "Locked"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "color": "#fffcaf3e",
+            "id": 8,
+            "members": [
+                {
+                    "name": "script",
+                    "type": "file",
+                    "value": ""
+                }
+            ],
+            "name": "Trigger",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
             ]
         }
     ]

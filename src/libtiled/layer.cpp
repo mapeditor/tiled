@@ -54,23 +54,6 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y)
 {
 }
 
-void Layer::resetIds()
-{
-    mId = 0;        // reset out own ID
-
-    switch (layerType()) {
-    case ObjectGroupType:
-        static_cast<ObjectGroup*>(this)->resetObjectIds();
-        break;
-    case GroupLayerType:
-        for (Layer *layer : static_cast<GroupLayer*>(this)->layers())
-            layer->resetIds();
-        break;
-    default:
-        break;
-    }
-}
-
 /**
  * Returns the effective opacity, which is the opacity multiplied by the
  * opacity of any parent layers.
@@ -221,6 +204,7 @@ bool Layer::canMergeDown() const
  */
 Layer *Layer::initializeClone(Layer *clone) const
 {
+    clone->setClassName(className());
     clone->mId = mId;
     clone->mOffset = mOffset;
     clone->mParallaxFactor = mParallaxFactor;

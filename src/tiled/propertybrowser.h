@@ -75,7 +75,7 @@ protected:
 private:
     void documentChanged(const ChangeEvent &change);
     void mapChanged();
-    void objectsChanged(const MapObjectsChangeEvent &mapObjectsChange);
+    void mapObjectsChanged(const MapObjectsChangeEvent &mapObjectsChange);
     void tilesetChanged(Tileset *tileset);
     void tileChanged(Tile *tile);
     void tileTypeChanged(Tile *tile);
@@ -89,7 +89,7 @@ private:
     void selectedLayersChanged();
     void selectedTilesChanged();
 
-    void objectTypesChanged();
+    void propertyTypesChanged();
 
     void valueChanged(QtProperty *property, const QVariant &val);
     void customPropertyValueChanged(const QString &name, const QVariant &value);
@@ -98,7 +98,7 @@ private:
 
     enum PropertyId {
         NameProperty,
-        TypeProperty,
+        ClassProperty,
         XProperty,
         YProperty,
         WidthProperty,
@@ -171,6 +171,8 @@ private:
     void addWangSetProperties();
     void addWangColorProperties();
 
+    QtVariantProperty *addClassProperty(QtProperty *parent);
+
     void applyMapValue(PropertyId id, const QVariant &val);
     void applyMapObjectValue(PropertyId id, const QVariant &val);
     QUndoCommand *applyMapObjectValueTo(PropertyId id, const QVariant &val, MapObject *mapObject);
@@ -203,6 +205,7 @@ private:
     void addProperties();
     void removeProperties();
     void updateProperties();
+    Properties combinedProperties() const;
     void updateCustomProperties();
     void updateCustomPropertyColor(const QString &name);
 
@@ -225,8 +228,6 @@ private:
     QHash<QtProperty *, PropertyId> mPropertyToId;
     QHash<PropertyId, QtVariantProperty *> mIdToProperty;
     CustomPropertiesHelper mCustomPropertiesHelper;
-
-    Properties mCombinedProperties;
 
     QStringList mStaggerAxisNames;
     QStringList mStaggerIndexNames;

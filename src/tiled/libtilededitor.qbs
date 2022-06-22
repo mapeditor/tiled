@@ -348,6 +348,8 @@ DynamicLibrary {
         "objectrefedit.h",
         "objectreferenceitem.cpp",
         "objectreferenceitem.h",
+        "objectreferenceshelper.cpp",
+        "objectreferenceshelper.h",
         "objectreferencetool.cpp",
         "objectreferencetool.h",
         "objectsdock.cpp",
@@ -358,11 +360,6 @@ DynamicLibrary {
         "objectselectiontool.h",
         "objectsview.cpp",
         "objectsview.h",
-        "objecttypeseditor.cpp",
-        "objecttypeseditor.h",
-        "objecttypeseditor.ui",
-        "objecttypesmodel.cpp",
-        "objecttypesmodel.h",
         "offsetlayer.cpp",
         "offsetlayer.h",
         "offsetmapdialog.cpp",
@@ -584,14 +581,6 @@ DynamicLibrary {
         condition: qbs.targetOS.contains("macos")
         bundle.isBundle: false
         cpp.sonamePrefix: "@rpath"
-    }
-    Group {
-        name: "macOS"
-        condition: qbs.targetOS.contains("macos")
-        files: [
-            "macsupport.h",
-            "macsupport.mm",
-        ]
     }
 
     Export {

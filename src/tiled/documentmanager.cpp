@@ -212,10 +212,6 @@ DocumentManager::DocumentManager(QObject *parent)
             case Object::MapType:
                 obj = mapDocument->map();
                 break;
-            case Object::ObjectTemplateType:
-                emit templateOpenRequested(select.fileName);
-                // todo: can't access Object pointer
-                break;
             }
             break;
         }
@@ -242,10 +238,6 @@ DocumentManager::DocumentManager(QObject *parent)
             }
             case Object::WangColorType:
                 // todo: can't select just by color index
-                break;
-            case Object::ObjectTemplateType:
-                emit templateOpenRequested(select.fileName);
-                // todo: can't access Object pointer
                 break;
             }
             break;

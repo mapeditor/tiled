@@ -175,8 +175,6 @@ SelectCustomProperty::SelectCustomProperty(QString fileName,
         break;
     case Object::MapType:
         break;
-    case Object::ObjectTemplateType:
-        break;
     case Object::TilesetType:
         break;
     case Object::TileType:

@@ -40,7 +40,7 @@ class EditableTile : public EditableObject
     Q_PROPERTY(int width READ width)
     Q_PROPERTY(int height READ height)
     Q_PROPERTY(QSize size READ size)
-    Q_PROPERTY(QString type READ type WRITE setType)
+    Q_PROPERTY(QString type READ className WRITE setClassName)  // compatibility with Tiled < 1.9
     Q_PROPERTY(QString imageFileName READ imageFileName WRITE setImageFileName)
     Q_PROPERTY(QRect imageRect READ imageRect WRITE setImageRect)
     Q_PROPERTY(qreal probability READ probability WRITE setProbability)
@@ -75,7 +75,6 @@ public:
     int width() const;
     int height() const;
     QSize size() const;
-    const QString &type() const;
     QString imageFileName() const;
     QRect imageRect() const;
     qreal probability() const;
@@ -95,7 +94,6 @@ public:
     void detachObjectGroup();
 
 public slots:
-    void setType(const QString &type);
     void setImageFileName(const QString &fileName);
     void setImageRect(const QRect &rect);
     void setProbability(qreal probability);
@@ -128,11 +126,6 @@ inline int EditableTile::height() const
 inline QSize EditableTile::size() const
 {
     return tile()->size();
-}
-
-inline const QString &EditableTile::type() const
-{
-    return tile()->type();
 }
 
 inline QString EditableTile::imageFileName() const

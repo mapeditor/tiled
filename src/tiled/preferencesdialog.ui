@@ -368,7 +368,7 @@
           <item row="7" column="0" colspan="2">
            <widget class="QCheckBox" name="preciseTileObjectSelection">
             <property name="text">
-             <string>Precise tile object selection</string>
+             <string>Pixel-perfect tile object selection</string>
             </property>
            </widget>
           </item>

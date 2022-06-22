@@ -97,27 +97,26 @@ public:
      */
     enum Property {
         NameProperty            = 1 << 0,
-        TypeProperty            = 1 << 1,
-        VisibleProperty         = 1 << 2,
-        TextProperty            = 1 << 3,
-        TextFontProperty        = 1 << 4,
-        TextAlignmentProperty   = 1 << 5,
-        TextWordWrapProperty    = 1 << 6,
-        TextColorProperty       = 1 << 7,
-        PositionProperty        = 1 << 8,
-        SizeProperty            = 1 << 9,
-        RotationProperty        = 1 << 10,
-        CellProperty            = 1 << 11,
-        ShapeProperty           = 1 << 12,
-        TemplateProperty        = 1 << 13,
-        CustomProperties        = 1 << 14,
+        VisibleProperty         = 1 << 1,
+        TextProperty            = 1 << 2,
+        TextFontProperty        = 1 << 3,
+        TextAlignmentProperty   = 1 << 4,
+        TextWordWrapProperty    = 1 << 5,
+        TextColorProperty       = 1 << 6,
+        PositionProperty        = 1 << 7,
+        SizeProperty            = 1 << 8,
+        RotationProperty        = 1 << 9,
+        CellProperty            = 1 << 10,
+        ShapeProperty           = 1 << 11,
+        TemplateProperty        = 1 << 12,
+        CustomProperties        = 1 << 13,
         AllProperties           = 0xFF
     };
 
     Q_DECLARE_FLAGS(ChangedProperties, Property)
 
     explicit MapObject(const QString &name = QString(),
-                       const QString &type = QString(),
+                       const QString &className = QString(),
                        const QPointF &pos = QPointF(),
                        const QSizeF &size = QSizeF(0, 0));
 
@@ -130,10 +129,12 @@ public:
     const QString &name() const;
     void setName(const QString &name);
 
-    const QString &type() const;
-    void setType(const QString &type);
+    const QString &effectiveClassName() const;
 
-    const QString &effectiveType() const;
+    // For Python API compatibility
+    const QString &type() const { return className(); }
+    void setType(const QString &type) { setClassName(type); };
+    const QString &effectiveType() const { return effectiveClassName(); }
 
     const QPointF &position() const;
     void setPosition(const QPointF &pos);
@@ -226,7 +227,6 @@ private:
     int mId = 0;
     Shape mShape = Rectangle;
     QString mName;
-    QString mType;
     QPointF mPos;
     QSizeF mSize;
     TextData mTextData;
@@ -272,19 +272,6 @@ inline const QString &MapObject::name() const
  */
 inline void MapObject::setName(const QString &name)
 { mName = name; }
-
-/**
- * Returns the type of this object. The type usually says something about
- * how the object is meant to be interpreted by the engine.
- */
-inline const QString &MapObject::type() const
-{ return mType; }
-
-/**
- * Sets the type of this object.
- */
-inline void MapObject::setType(const QString &type)
-{ mType = type; }
 
 /**
  * Returns the position of this object.

@@ -228,7 +228,7 @@ ObjectRef ScriptModule::objectRef(int id) const
 
 QVariant ScriptModule::propertyValue(const QString &typeName, const QVariant &value) const
 {
-    auto type = Object::propertyTypes().findTypeByName(typeName);
+    auto type = Object::propertyTypes().findPropertyValueType(typeName);
     if (!type) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Unknown type: %1").arg(typeName));
         return {};

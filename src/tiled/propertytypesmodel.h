@@ -1,6 +1,6 @@
 /*
  * propertytypesmodel.h
- * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011-2022, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -53,7 +53,9 @@ public:
 
     QModelIndex addNewPropertyType(PropertyType::Type type);
     QModelIndex addPropertyType(std::unique_ptr<PropertyType> type);
+
     void importPropertyTypes(PropertyTypes typesToImport);
+    void importObjectTypes(const QVector<ObjectType> &objectTypes);
 
     static QIcon iconForPropertyType(PropertyType::Type type);
 

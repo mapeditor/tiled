@@ -207,9 +207,10 @@ void LuaWriter::writeMap(const Map *map)
     mWriter.writeStartDocument();
     mWriter.writeStartReturnTable();
 
-    mWriter.writeKeyAndValue("version", "1.5");
+    mWriter.writeKeyAndValue("version", FileFormat::versionString());
     mWriter.writeKeyAndValue("luaversion", "5.1");
     mWriter.writeKeyAndValue("tiledversion", QCoreApplication::applicationVersion());
+    mWriter.writeKeyAndValue("class", map->className());
 
     const QString orientation = orientationToString(map->orientation());
     const QString renderOrder = renderOrderToString(map->renderOrder());
@@ -289,7 +290,7 @@ void LuaWriter::writeProperties(const Properties &properties)
 
 static bool includeTile(const Tile *tile)
 {
-    if (!tile->type().isEmpty())
+    if (!tile->className().isEmpty())
         return true;
     if (!tile->properties().isEmpty())
         return true;
@@ -315,7 +316,7 @@ void LuaWriter::writeTileset(const Tileset &tileset,
         mWriter.writeStartReturnTable();
 
         // Include version in external tilesets
-        mWriter.writeKeyAndValue("version", "1.5");
+        mWriter.writeKeyAndValue("version", FileFormat::versionString());
         mWriter.writeKeyAndValue("luaversion", "5.1");
         mWriter.writeKeyAndValue("tiledversion", QCoreApplication::applicationVersion());
     }
@@ -342,9 +343,7 @@ void LuaWriter::writeTileset(const Tileset &tileset,
         }
     }
 
-    /* Include all tileset information even for external tilesets, since the
-     * external reference is generally a .tsx file (in XML format).
-     */
+    mWriter.writeKeyAndValue("class", tileset.className());
     mWriter.writeKeyAndValue("tilewidth", tileset.tileWidth());
     mWriter.writeKeyAndValue("tileheight", tileset.tileHeight());
     mWriter.writeKeyAndValue("spacing", tileset.tileSpacing());
@@ -404,8 +403,10 @@ void LuaWriter::writeTileset(const Tileset &tileset,
         mWriter.writeStartTable();
         mWriter.writeKeyAndValue("id", tile->id());
 
-        if (!tile->type().isEmpty())
-            mWriter.writeKeyAndValue("type", tile->type());
+        if (!tile->className().isEmpty()) {
+            mWriter.writeKeyAndValue(FileFormat::compatibilityVersion() <= Tiled_1_8 ? "type" : "class",
+                                     tile->className());
+        }
 
         if (!tile->properties().isEmpty())
             writeProperties(tile->properties());
@@ -462,6 +463,7 @@ void LuaWriter::writeWangSet(const WangSet &wangSet)
     mWriter.writeStartTable();
 
     mWriter.writeKeyAndValue("name", wangSet.name());
+    mWriter.writeKeyAndValue("class", wangSet.className());
     mWriter.writeKeyAndValue("tile", wangSet.imageTileId());
 
     writeProperties(wangSet.properties());
@@ -473,6 +475,7 @@ void LuaWriter::writeWangSet(const WangSet &wangSet)
 
         writeColor("color", wangColor.color());
         mWriter.writeKeyAndValue("name", wangColor.name());
+        mWriter.writeKeyAndValue("class", wangColor.className());
         mWriter.writeKeyAndValue("probability", wangColor.probability());
         mWriter.writeKeyAndValue("tile", wangColor.imageId());
 
@@ -712,7 +715,8 @@ void LuaWriter::writeMapObject(const Tiled::MapObject *mapObject)
     mWriter.writeStartTable();
     mWriter.writeKeyAndValue("id", mapObject->id());
     mWriter.writeKeyAndValue("name", mapObject->name());
-    mWriter.writeKeyAndValue("type", mapObject->type());
+    mWriter.writeKeyAndValue(FileFormat::compatibilityVersion() <= Tiled_1_8 ? "type" : "class",
+                             mapObject->className());
     mWriter.writeKeyAndValue("shape", toString(mapObject->shape()));
 
     mWriter.writeKeyAndValue("x", mapObject->x());
@@ -757,6 +761,7 @@ void LuaWriter::writeLayerProperties(const Layer *layer)
     if (layer->id() != 0)
         mWriter.writeKeyAndValue("id", layer->id());
     mWriter.writeKeyAndValue("name", layer->name());
+    mWriter.writeKeyAndValue("class", layer->className());
     mWriter.writeKeyAndValue("visible", layer->isVisible());
     mWriter.writeKeyAndValue("opacity", layer->opacity());
 

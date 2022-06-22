@@ -31,6 +31,7 @@
 #include "containerhelpers.h"
 #include "logginginterface.h"
 #include "object.h"
+#include "objecttypes.h"
 #include "properties.h"
 
 #include <QVector>
@@ -91,12 +92,12 @@ std::unique_ptr<PropertyType> PropertyType::createFromJson(const QJsonObject &js
     const PropertyType::Type type = PropertyType::typeFromString(json.value(QStringLiteral("type")).toString());
 
     switch (type) {
-    case PropertyType::PT_Invalid:
+    case PT_Invalid:
         break;
-    case PropertyType::PT_Class:
+    case PT_Class:
         propertyType = std::make_unique<ClassPropertyType>(name);
         break;
-    case PropertyType::PT_Enum:
+    case PT_Enum:
         propertyType = std::make_unique<EnumPropertyType>(name);
         break;
     }
@@ -294,6 +295,20 @@ QVariant ClassPropertyType::defaultValue() const
     return QVariantMap();
 }
 
+static const struct  {
+    ClassPropertyType::ClassUsageFlag flag;
+    QLatin1String name;
+} flagsWithNames[] = {
+    { ClassPropertyType::PropertyValueType,     QLatin1String("property") },
+    { ClassPropertyType::MapClass,              QLatin1String("map") },
+    { ClassPropertyType::LayerClass,            QLatin1String("layer") },
+    { ClassPropertyType::MapObjectClass,        QLatin1String("object") },
+    { ClassPropertyType::TileClass,             QLatin1String("tile") },
+    { ClassPropertyType::TilesetClass,          QLatin1String("tileset") },
+    { ClassPropertyType::WangColorClass,        QLatin1String("wangcolor") },
+    { ClassPropertyType::WangSetClass,          QLatin1String("wangset") },
+};
+
 QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
 {
     QJsonArray members;
@@ -318,6 +333,17 @@ QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
 
     auto json = PropertyType::toJson(context);
     json.insert(QStringLiteral("members"), members);
+    json.insert(QStringLiteral("color"), color.name(QColor::HexArgb));
+
+    QJsonArray useAs;
+
+    for (auto &entry : flagsWithNames) {
+        if (usageFlags & entry.flag)
+            useAs.append(entry.name);
+    }
+
+    json.insert(QStringLiteral("useAs"), useAs);
+
     return json;
 }
 
@@ -329,6 +355,24 @@ void ClassPropertyType::initializeFromJson(const QJsonObject &json)
         const QString name = map.value(QStringLiteral("name")).toString();
 
         members.insert(name, map);
+    }
+
+    const QString colorName = json.value(QLatin1String("color")).toString();
+    if (QColor::isValidColor(colorName))
+        color.setNamedColor(colorName);
+
+    const QJsonValue useAsJson = json.value(QLatin1String("useAs"));
+    if (useAsJson.isArray()) {
+        const QJsonArray useAsArray = useAsJson.toArray();
+        usageFlags = 0;
+        for (auto &entry : flagsWithNames) {
+            if (useAsArray.contains(entry.name))
+                usageFlags |= entry.flag;
+        }
+    } else {
+        // Before "useAs" was introduced, class types were only used as
+        // property values.
+        usageFlags = PropertyValueType;
     }
 }
 
@@ -346,7 +390,7 @@ void ClassPropertyType::resolveDependencies(const ExportContext &context)
 
         // Remove any members that would result in a circular reference
         if (!exportValue.propertyTypeName.isEmpty()) {
-            if (auto propertyType = context.types().findTypeByName(exportValue.propertyTypeName)) {
+            if (auto propertyType = context.types().findPropertyValueType(exportValue.propertyTypeName)) {
                 if (!canAddMemberOfType(propertyType, context.types())) {
                     Tiled::ERROR(QStringLiteral("Removed member '%1' from class '%2' since it would cause a circular reference")
                                  .arg(it.key(), name));
@@ -370,7 +414,7 @@ bool ClassPropertyType::canAddMemberOfType(const PropertyType *propertyType, con
     if (propertyType == this)
         return false;   // Can't add class as member of itself
 
-    if (propertyType->type != PropertyType::PT_Class)
+    if (!propertyType->isClass())
         return true;    // Can always add non-class members
 
     // Can't add if any member of the added class can't be added to this type
@@ -390,6 +434,19 @@ bool ClassPropertyType::canAddMemberOfType(const PropertyType *propertyType, con
     return true;
 }
 
+bool ClassPropertyType::isClassFor(const Object &object) const
+{
+    return usageFlags & object.typeId();
+}
+
+void ClassPropertyType::setUsageFlags(int flags, bool value)
+{
+    if (value)
+        usageFlags |= flags;
+    else
+        usageFlags &= ~flags;
+}
+
 // PropertyTypes
 
 PropertyTypes::~PropertyTypes()
@@ -404,6 +461,12 @@ size_t PropertyTypes::count(PropertyType::Type type) const
     });
 }
 
+static int typeUsageFlags(const PropertyType &type)
+{
+    return type.isClass() ? static_cast<const ClassPropertyType&>(type).usageFlags
+                          : ClassPropertyType::PropertyValueType;
+}
+
 void PropertyTypes::merge(PropertyTypes typesToMerge)
 {
     QHash<int, QString> oldTypeIdToName;
@@ -414,11 +477,14 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
 
     while (typesToMerge.count() > 0) {
         auto typeToImport = typesToMerge.takeAt(0);
+        auto typeToImportUsageFlags = typeUsageFlags(*typeToImport);
         auto existingIt = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
-            return type->name == typeToImport->name;
+            // Consider same type only when name matches and usage flags overlap
+            return type->name == typeToImport->name &&
+                    (typeUsageFlags(*type) & typeToImportUsageFlags) != 0;
         });
 
-        if (typeToImport->type == PropertyType::PT_Class)
+        if (typeToImport->isClass())
             classesToProcess.append(static_cast<ClassPropertyType*>(typeToImport.get()));
 
         if (existingIt != mTypes.end()) {
@@ -442,7 +508,7 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
                 PropertyValue classMemberValue = classMember.value<PropertyValue>();
 
                 const QString typeName = oldTypeIdToName.value(classMemberValue.typeId);
-                auto type = findTypeByName(typeName);
+                auto type = findPropertyValueType(typeName);
                 Q_ASSERT(type);
 
                 if (classMemberValue.typeId != type->id) {
@@ -450,6 +516,30 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
                     classMember = QVariant::fromValue(classMemberValue);
                 }
             }
+        }
+    }
+}
+
+void PropertyTypes::mergeObjectTypes(const QVector<ObjectType> &objectTypes)
+{
+    for (const ObjectType &type : objectTypes) {
+        auto propertyType = std::make_unique<ClassPropertyType>(type.name);
+        propertyType->color = type.color;
+        propertyType->members = type.defaultProperties;
+        propertyType->usageFlags = ClassPropertyType::MapObjectClass | ClassPropertyType::TileClass;
+
+        auto existingIt = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+            // Consider same type only when name matches and usage flags overlap
+            return type->name == propertyType->name &&
+                    (typeUsageFlags(*type) & propertyType->usageFlags) != 0;
+        });
+
+        if (existingIt != mTypes.end()) {
+            // Replace existing classes, but retain their ID
+            propertyType->id = (*existingIt)->id;
+            delete std::exchange(*existingIt, propertyType.release());
+        } else {
+            add(std::move(propertyType));
         }
     }
 }
@@ -467,15 +557,31 @@ const PropertyType *PropertyTypes::findTypeById(int typeId) const
 }
 
 /**
- * Returns a pointer to the PropertyType matching the given \a name, or
- * nullptr if it can't be found.
+ * Returns a pointer to the PropertyType matching the given \a name and
+ * \a usageFlags, or nullptr if it can't be found.
  */
-const PropertyType *PropertyTypes::findTypeByName(const QString &name) const
+const PropertyType *PropertyTypes::findTypeByName(const QString &name, int usageFlags) const
 {
     auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
-        return type->name == name;
+        return type->name == name && (typeUsageFlags(*type) & usageFlags) != 0;
     });
     return it == mTypes.end() ? nullptr : *it;
+}
+
+const PropertyType *PropertyTypes::findPropertyValueType(const QString &name) const
+{
+    return findTypeByName(name, ClassPropertyType::PropertyValueType);
+}
+
+const ClassPropertyType *PropertyTypes::findClassFor(const QString &name, const Object &object) const
+{
+    if (name.isEmpty())
+        return nullptr;
+
+    auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+        return type->name == name && type->isClass() && static_cast<const ClassPropertyType*>(type)->isClassFor(object);
+    });
+    return static_cast<const ClassPropertyType*>(it == mTypes.end() ? nullptr : *it);
 }
 
 void PropertyTypes::loadFromJson(const QJsonArray &list, const QString &path)

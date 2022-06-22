@@ -81,8 +81,9 @@ the following variables:
 ``%projectpath``
     the path in which the current project is located.
 
-``%objecttype``
-    the type of the currently selected object, if any.
+``%objectclass``
+    the class of the currently selected object, if any (also available as
+    ``%objecttype`` for compatibility with Tiled < 1.9).
 
 ``%objectid``
     the ID of the currently selected object, if any.

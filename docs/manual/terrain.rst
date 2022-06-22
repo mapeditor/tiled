@@ -280,7 +280,7 @@ the tiles we need to exit the *Terrain Sets* mode.
 
 .. raw:: html
 
-    <div class="new">New in Tiled 1.5</div>
+    <div class="new new-prev">Since Tiled 1.5</div>
 
 Tile Transformations
 --------------------

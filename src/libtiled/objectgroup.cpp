@@ -214,17 +214,6 @@ ObjectGroup *ObjectGroup::clone() const
 }
 
 /**
- * Resets the ids of all objects to 0. Mostly used when new ids should be
- * assigned after the object group has been cloned.
- */
-void ObjectGroup::resetObjectIds()
-{
-    const QList<MapObject*> &objects = mObjects;
-    for (MapObject *object : objects)
-        object->resetId();
-}
-
-/**
  * Returns the highest object id in use by this object group, or 0 if no object
  * with assigned id exists.
  */

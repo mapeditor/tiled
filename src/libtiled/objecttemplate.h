@@ -38,12 +38,12 @@
 
 namespace Tiled {
 
-class TILEDSHARED_EXPORT ObjectTemplate : public Object
+class TILEDSHARED_EXPORT ObjectTemplate
 {
 public:
     ObjectTemplate();
     ObjectTemplate(const QString &fileName);
-    ~ObjectTemplate() override;
+    ~ObjectTemplate();
 
     const MapObject *object() const;
     void setObject(const MapObject *object);

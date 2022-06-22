@@ -58,7 +58,6 @@ class MapDocumentActionHandler;
 class MapEditor;
 class MapScene;
 class MapView;
-class ObjectTypesEditor;
 class PropertyTypesEditor;
 class ProjectDock;
 class ProjectModel;
@@ -190,7 +189,6 @@ private:
     void autoMappingError(bool automatic);
     void autoMappingWarning(bool automatic);
 
-    void onObjectTypesEditorClosed();
     void onPropertyTypesEditorClosed();
     void ensureHasBorderInFullScreen();
 
@@ -239,7 +237,6 @@ private:
     ConsoleDock *mConsoleDock;
     ProjectDock *mProjectDock;
     IssuesDock *mIssuesDock;
-    ObjectTypesEditor *mObjectTypesEditor;
     PropertyTypesEditor *mPropertyTypesEditor;
     QPointer<LocatorWidget> mLocatorWidget;
     QPointer<QWidget> mPopupWidget;
@@ -252,7 +249,6 @@ private:
     QMenu *mGroupLayerMenu;
     QMenu *mViewsAndToolbarsMenu;
     QAction *mViewsAndToolbarsAction;
-    QAction *mShowObjectTypesEditor;
     QAction *mShowPropertyTypesEditor;
     QAction *mResetToDefaultLayout;
     QAction *mLockLayout;

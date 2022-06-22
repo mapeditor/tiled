@@ -3204,6 +3204,18 @@ _wrap_PyTiledObject__tp_init(void)
 
 
 PyObject *
+_wrap_PyTiledObject_className(PyTiledObject *self, PyObject *PYBINDGEN_UNUSED(_args), PyObject *PYBINDGEN_UNUSED(_kwargs))
+{
+    PyObject *py_retval;
+    QString retval;
+
+    retval = self->obj->className();
+    py_retval = Py_BuildValue((char *) "s", retval.toUtf8().data());
+    return py_retval;
+}
+
+
+PyObject *
 _wrap_PyTiledObject_properties(PyTiledObject *self, PyObject *PYBINDGEN_UNUSED(_args), PyObject *PYBINDGEN_UNUSED(_kwargs))
 {
     PyObject *py_retval;
@@ -3250,6 +3262,24 @@ _wrap_PyTiledObject_propertyType(PyTiledObject *self, PyObject *args, PyObject *
     }
     retval = self->obj->propertyType(QString::fromUtf8(prop));
     py_retval = Py_BuildValue((char *) "s", retval.toUtf8().data());
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledObject_setClassName(PyTiledObject *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    const char *n;
+    Py_ssize_t n_len;
+    const char *keywords[] = {"n", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#", (char **) keywords, &n, &n_len)) {
+        return NULL;
+    }
+    self->obj->setClassName(QString::fromUtf8(n));
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
     return py_retval;
 }
 
@@ -3363,9 +3393,11 @@ PyObject * _wrap_PyTiledObject_setProperty(PyTiledObject *self, PyObject *args, 
 }
 
 static PyMethodDef PyTiledObject_methods[] = {
+    {(char *) "className", (PyCFunction) _wrap_PyTiledObject_className, METH_NOARGS, "className()\n\n" },
     {(char *) "properties", (PyCFunction) _wrap_PyTiledObject_properties, METH_NOARGS, "properties()\n\n" },
     {(char *) "propertyAsString", (PyCFunction) _wrap_PyTiledObject_propertyAsString, METH_KEYWORDS|METH_VARARGS, "propertyAsString(prop)\n\ntype: prop: QString" },
     {(char *) "propertyType", (PyCFunction) _wrap_PyTiledObject_propertyType, METH_KEYWORDS|METH_VARARGS, "propertyType(prop)\n\ntype: prop: QString" },
+    {(char *) "setClassName", (PyCFunction) _wrap_PyTiledObject_setClassName, METH_KEYWORDS|METH_VARARGS, "setClassName(n)\n\ntype: n: QString" },
     {(char *) "setProperty", (PyCFunction) _wrap_PyTiledObject_setProperty, METH_KEYWORDS|METH_VARARGS, NULL },
     {NULL, NULL, 0, NULL}
 };

@@ -127,7 +127,7 @@ be used to quickly erase rectangular areas.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.5</div>
+   <div class="new new-prev">Since Tiled 1.5</div>
 
 -  Holding ``Shift`` erases on all layers.
 

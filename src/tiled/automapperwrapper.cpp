@@ -29,6 +29,7 @@
 #include "containerhelpers.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "objectreferenceshelper.h"
 #include "tile.h"
 #include "tilelayer.h"
 
@@ -103,19 +104,25 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         new ChangeProperties(mapDocument, QString(), item.key(), item.value(), this);
     }
 
+    auto anyObjectForObjectGroup = [&] (ObjectGroup *objectGroup) {
+        for (const QVector<AddMapObjects::Entry> &entries : qAsConst(context.newMapObjects)) {
+            for (const AddMapObjects::Entry &entry : entries) {
+                if (entry.objectGroup == objectGroup)
+                    return true;
+            }
+        }
+        return false;
+    };
+
     // Add any new non-empty layers to the map
     auto newLayerIndex = context.targetMap->layerCount();
     for (auto &layer : context.newLayers) {
         if (layer->isTileLayer() && layer->isEmpty())
             continue;
 
-        if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-            if (std::none_of(context.newMapObjects.cbegin(),
-                             context.newMapObjects.cend(),
-                             [=] (const AddMapObjects::Entry &entry) { return entry.objectGroup == objectGroup; })) {
+        if (ObjectGroup *objectGroup = layer->asObjectGroup())
+            if (!anyObjectForObjectGroup(objectGroup))
                 continue;
-            }
-        }
 
         new AddLayer(mapDocument,
                      newLayerIndex++,
@@ -123,8 +130,21 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
     }
 
     // Add any newly placed objects
-    if (!context.newMapObjects.isEmpty())
-        new AddMapObjects(mapDocument, context.newMapObjects, this);
+    if (!context.newMapObjects.isEmpty()) {
+        QVector<AddMapObjects::Entry> allEntries;
+
+        for (const QVector<AddMapObjects::Entry> &entries : qAsConst(context.newMapObjects)) {
+            // Each group of copied objects needs to be rewired separately
+            ObjectReferencesHelper objectRefs(mapDocument->map());
+            for (auto &entry : qAsConst(entries))
+                objectRefs.reassignId(entry.mapObject);
+            objectRefs.rewire();
+
+            allEntries.append(entries);
+        }
+
+        new AddMapObjects(mapDocument, allEntries, this);
+    }
 
     // Remove any objects that have been scheduled for removal
     if (!context.mapObjectsToRemove.isEmpty())

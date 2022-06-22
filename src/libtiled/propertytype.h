@@ -28,6 +28,7 @@
 
 #pragma once
 
+#include <QColor>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QMetaType>
@@ -44,7 +45,9 @@
 namespace Tiled {
 
 class ExportContext;
+class Object;
 class PropertyTypes;
+struct ObjectType;
 
 class TILEDSHARED_EXPORT ExportValue
 {
@@ -69,6 +72,9 @@ public:
     const Type type;
     int id = 0;
     QString name;
+
+    bool isClass() const { return type == PT_Class; }
+    bool isEnum() const { return type == PT_Enum; }
 
     virtual ~PropertyType() = default;
 
@@ -131,7 +137,25 @@ public:
 class TILEDSHARED_EXPORT ClassPropertyType final : public PropertyType
 {
 public:
+    enum ClassUsageFlag {
+        PropertyValueType   = 0x01,
+
+        // Keep values synchronized with Object::TypeId
+        LayerClass          = 0x02,
+        MapObjectClass      = 0x04,
+        MapClass            = 0x08,
+        TilesetClass        = 0x10,
+        TileClass           = 0x20,
+        WangSetClass        = 0x40,
+        WangColorClass      = 0x80,
+
+        AnyUsage            = 0xFF,
+        AnyObjectClass      = AnyUsage & ~PropertyValueType,
+    };
+
     QVariantMap members;
+    QColor color = Qt::gray;
+    int usageFlags = AnyUsage;
 
     ClassPropertyType(const QString &name) : PropertyType(PT_Class, name) {}
 
@@ -147,6 +171,11 @@ public:
 
     bool canAddMemberOfType(const PropertyType *propertyType) const;
     bool canAddMemberOfType(const PropertyType *propertyType, const PropertyTypes &types) const;
+
+    bool isPropertyValueType() const { return usageFlags & PropertyValueType; }
+    bool isClassFor(const Object &object) const;
+
+    void setUsageFlags(int flags, bool value);
 };
 
 /**
@@ -172,9 +201,12 @@ public:
     PropertyType &typeAt(int index);
     void moveType(int from, int to);
     void merge(PropertyTypes types);
+    void mergeObjectTypes(const QVector<ObjectType> &objectTypes);
 
     const PropertyType *findTypeById(int typeId) const;
-    const PropertyType *findTypeByName(const QString &name) const;
+    const PropertyType *findTypeByName(const QString &name, int usageFlags = ClassPropertyType::AnyUsage) const;
+    const PropertyType *findPropertyValueType(const QString &name) const;
+    const ClassPropertyType *findClassFor(const QString &name, const Object &object) const;
 
     void loadFromJson(const QJsonArray &list, const QString &path = QString());
     QJsonArray toJson(const QString &path = QString()) const;
