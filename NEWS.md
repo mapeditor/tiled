@@ -29,6 +29,7 @@
 * Raised minimum C++ version to C++17
 * Removed qmake project files (only Qbs supported now)
 * AppImage: Updated to Sentry 0.4.18
+* Python plugin: Now built against Python 3.8 on Windows and Linux
 
 ### Tiled 1.8.6 (15 Jun 2022)
 
