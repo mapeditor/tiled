@@ -22,15 +22,17 @@
 #include "scriptdialog.h"
 #include "scriptmanager.h"
 #include <QJSEngine>
+#include <QSet>
 #include <string.h>
 #include <memory>
-
 static int leftColumnStretch = 0;
 // stretch as much as we can so that the left column looks as close to zero width as possible when there is no content
 static int rightColumnStretch = 1;
 static QString labelType = QString::fromUtf8("QLabel");
 
 namespace Tiled {
+
+static QSet<ScriptDialog*> sDialogInstances;
 
 static void deleteAllFromLayout(QLayout *layout)
 {
@@ -73,6 +75,17 @@ ScriptDialog::ScriptDialog(const QString &title)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_gridLayout = new QGridLayout(this);
     initializeLayout();
+    sDialogInstances.insert(this);
+}
+ScriptDialog::~ScriptDialog()
+{
+    sDialogInstances.remove(this);
+}
+
+void ScriptDialog::deleteAllDialogs()
+{
+    for (ScriptDialog *dialog : sDialogInstances)
+        dialog->deleteLater();
 }
 void ScriptDialog::initializeLayout()
 {

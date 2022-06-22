@@ -97,7 +97,9 @@ public:
 
     NewRowMode newRowMode() const;
     void setNewRowMode(NewRowMode mode);
+    static void deleteAllDialogs();
 private:
+    ~ScriptDialog();
     int m_rowIndex = 0;
     int m_widgetsInRow = 0;
     QGridLayout *m_gridLayout;
