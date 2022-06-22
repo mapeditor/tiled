@@ -39,6 +39,7 @@ using namespace Tiled;
 
 Preferences *Preferences::mInstance;
 QString Preferences::mStartupProject;
+QString Preferences::mStartupSession;
 
 Preferences *Preferences::instance()
 {
@@ -608,6 +609,8 @@ void Preferences::addRecentProject(const QString &fileName)
 
 QString Preferences::startupSession() const
 {
+    if (!mStartupSession.isEmpty())
+        return mStartupSession;
     if (!startupProject().isEmpty())
         return Session::defaultFileNameForProject(startupProject());
     if (!restoreSessionOnStartup())
@@ -766,6 +769,14 @@ QString Preferences::startupProject()
 void Preferences::setStartupProject(const QString &filePath)
 {
     mStartupProject = filePath;
+}
+
+/**
+ * Sets the session to load on startup.
+ */
+void Preferences::setStartupSession(const QString &filePath)
+{
+    mStartupSession = filePath;
 }
 
 void Preferences::setObjectTypesFile(const QString &fileName)

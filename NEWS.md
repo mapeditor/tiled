@@ -5,6 +5,7 @@
 * Added Tile Render Size and Fill Mode options to Tileset
 * Added %worldfile variable for custom commands (by Pixel-Nori, #3352)
 * Added 'New Project' action, replacing 'Save Project As' (#3279)
+* Added ability to load .tiled-session files from command-line
 * Don't scale point objects with the zoom level (#3356)
 * Scripting: Added -e,--evaluate to run a script from command-line
 * Scripting: Added Tool.toolBarActions property (#3318)

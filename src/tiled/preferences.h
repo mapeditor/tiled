@@ -176,6 +176,7 @@ public:
 
     static QString startupProject();
     static void setStartupProject(const QString &filePath);
+    static void setStartupSession(const QString &filePath);
 
 public slots:
     void setShowGrid(bool showGrid);
@@ -254,6 +255,7 @@ private:
 
     static Preferences *mInstance;
     static QString mStartupProject;
+    static QString mStartupSession;
 };
 
 
