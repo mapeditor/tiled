@@ -6050,7 +6050,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+31"/>
         <source>Error Adding Member</source>
-        <translation>Chyba při přidání prvku</translation>
+        <translation>Chyba při přidávání prvku</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6099,12 +6099,12 @@ Prosím vyberte formát ručně.</translation>
         <location line="+72"/>
         <location line="+86"/>
         <source>Select Types</source>
-        <translation>Vybeat typy</translation>
+        <translation>Vybrat typy</translation>
     </message>
     <message>
         <location line="-23"/>
         <source>Color</source>
-        <translation>BarvaBarva</translation>
+        <translation>Barva</translation>
     </message>
     <message>
         <location line="+18"/>
