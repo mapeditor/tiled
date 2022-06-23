@@ -82,7 +82,7 @@ public:
      * Returns the bounding rectangle in pixels of the map associated with
      * this renderer.
      */
-    virtual QRect mapBoundingRect() const = 0;
+    QRect mapBoundingRect() const;
 
     /**
      * Returns the bounding rectangle in pixels of the given \a rect given in

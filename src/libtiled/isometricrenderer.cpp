@@ -39,29 +39,6 @@
 
 using namespace Tiled;
 
-QRect IsometricRenderer::mapBoundingRect() const
-{
-    if (!map()->infinite()) {
-        const int side = map()->height() + map()->width();
-        return QRect(0, 0,
-                     side * map()->tileWidth() / 2,
-                     side * map()->tileHeight() / 2);
-    }
-
-    QRect mapBounds;
-
-    LayerIterator iterator(map());
-    while (Layer *layer = iterator.next()) {
-        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-            mapBounds = mapBounds.united(tileLayer->bounds());
-    }
-
-    if (mapBounds.size() == QSize(0, 0))
-        mapBounds.setSize(QSize(1, 1));
-
-    return boundingRect(mapBounds);
-}
-
 QRect IsometricRenderer::boundingRect(const QRect &rect) const
 {
     const int tileWidth = map()->tileWidth();

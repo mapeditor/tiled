@@ -55,13 +55,8 @@ MiniMapRenderer::~MiniMapRenderer()
 QSize MiniMapRenderer::mapSize() const
 {
     QRect mapBoundingRect = mRenderer->mapBoundingRect();
-    QSize mapSize = mapBoundingRect.size();
-
-    QMargins margins = mMap->computeLayerOffsetMargins();
-    mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
-    mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
-
-    return mapSize;
+    mMap->adjustBoundingRectForOffsetsAndImageLayers(mapBoundingRect);
+    return mapBoundingRect.size();
 }
 
 QImage MiniMapRenderer::render(QSize size, RenderFlags renderFlags) const
@@ -143,10 +138,10 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
     if (renderFlags.testFlag(IncludeOverhangingTiles))
         extendMapRect(mapBoundingRect, *mRenderer);
 
+    if (!renderFlags.testFlag(IgnoreOffsetsAndImages))
+        mMap->adjustBoundingRectForOffsetsAndImageLayers(mapBoundingRect);
+
     QSize mapSize = mapBoundingRect.size();
-    QMargins margins = mMap->computeLayerOffsetMargins();
-    mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
-    mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
 
     // Determine the largest possible scale
     const qreal scale = qMin(static_cast<qreal>(image.width()) / mapSize.width(),
@@ -167,7 +162,6 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
 
     painter.translate(centerOffset);
     painter.scale(scale, scale);
-    painter.translate(margins.left(), margins.top());
     painter.translate(-mapBoundingRect.topLeft());
 
     mRenderer->setPainterScale(scale);

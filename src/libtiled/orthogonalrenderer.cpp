@@ -39,29 +39,6 @@
 
 using namespace Tiled;
 
-QRect OrthogonalRenderer::mapBoundingRect() const
-{
-    if (!map()->infinite()) {
-        return QRect(0, 0,
-                     map()->width() * map()->tileWidth(),
-                     map()->height() * map()->tileHeight());
-    }
-
-    QRect mapBounds;
-
-    LayerIterator iterator(map(), Layer::TileLayerType);
-    while (TileLayer *tileLayer = static_cast<TileLayer*>(iterator.next()))
-        mapBounds = mapBounds.united(tileLayer->bounds());
-
-    if (mapBounds.size() == QSize(0, 0))
-        mapBounds.setSize(QSize(1, 1));
-
-    return QRect(mapBounds.x() * map()->tileWidth(),
-                 mapBounds.y() * map()->tileHeight(),
-                 mapBounds.width() * map()->tileWidth(),
-                 mapBounds.height() * map()->tileHeight());
-}
-
 QRect OrthogonalRenderer::boundingRect(const QRect &rect) const
 {
     const int tileWidth = map()->tileWidth();

@@ -63,50 +63,6 @@ HexagonalRenderer::RenderParams::RenderParams(const Map *map)
     rowHeight = sideOffsetY + sideLengthY;
 }
 
-QRect HexagonalRenderer::mapBoundingRect() const
-{
-    const RenderParams p(map());
-
-    QRect mapBounds;
-
-    if (map()->infinite()) {
-        LayerIterator iterator(map());
-        while (Layer *layer = iterator.next()) {
-            if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-                mapBounds = mapBounds.united(tileLayer->bounds());
-        }
-
-        if (mapBounds.size() == QSize(0, 0))
-            mapBounds.setSize(QSize(1, 1));
-    } else {
-        mapBounds = QRect(0, 0, map()->width(), map()->height());
-    }
-
-    // The map size is the same regardless of which indexes are shifted.
-    if (p.staggerX) {
-        QSize size(mapBounds.width() * p.columnWidth + p.sideOffsetX,
-                   mapBounds.height() * (p.tileHeight + p.sideLengthY));
-        QPoint origin(mapBounds.x() * p.columnWidth,
-                      mapBounds.y() * (p.tileHeight + p.sideLengthY));
-
-
-        if (mapBounds.width() > 1)
-            size.rheight() += p.rowHeight;
-
-        return QRect(origin, size);
-    } else {
-        QSize size(mapBounds.width() * (p.tileWidth + p.sideLengthX),
-                   mapBounds.height() * p.rowHeight + p.sideOffsetY);
-        QPoint origin(mapBounds.x() * (p.tileWidth + p.sideLengthX),
-                      mapBounds.y() * p.rowHeight);
-
-        if (mapBounds.height() > 1)
-            size.rwidth() += p.columnWidth;
-
-        return QRect(origin, size);
-    }
-}
-
 QRect HexagonalRenderer::boundingRect(const QRect &rect) const
 {
     const RenderParams p(map());

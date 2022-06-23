@@ -142,8 +142,8 @@ int TmxRasterizer::renderMap(const QString &mapFileName,
 
     const auto renderer = MapRenderer::create(map.get());
     QRect mapBoundingRect = renderer->mapBoundingRect();
+    map->adjustBoundingRectForOffsetsAndImageLayers(mapBoundingRect);
     QSize mapSize = mapBoundingRect.size();
-    QPoint mapOffset = mapBoundingRect.topLeft();
     qreal xScale, yScale;
 
     if (mSize > 0) {
@@ -160,10 +160,6 @@ int TmxRasterizer::renderMap(const QString &mapFileName,
     if (mAdvanceAnimations > 0) 
         TilesetManager::instance()->advanceTileAnimations(mAdvanceAnimations);
 
-    QMargins margins = map->computeLayerOffsetMargins();
-    mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
-    mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
-
     mapSize.rwidth() *= xScale;
     mapSize.rheight() *= yScale;
 
@@ -175,8 +171,7 @@ int TmxRasterizer::renderMap(const QString &mapFileName,
     painter.setRenderHint(QPainter::SmoothPixmapTransform, mSmoothImages);
     painter.setTransform(QTransform::fromScale(xScale, yScale));
 
-    painter.translate(margins.left(), margins.top());
-    painter.translate(-mapOffset);
+    painter.translate(-mapBoundingRect.left(), -mapBoundingRect.top());
 
     drawMapLayers(*renderer, painter);
     map.reset();

@@ -1887,23 +1887,9 @@ void MainWindow::resizeMap()
 
     Map *map = mapDocument->map();
 
-    QSize mapSize(map->size());
-    QPoint mapStart(0, 0);
-
-    if (map->infinite()) {
-        QRect mapBounds;
-
-        LayerIterator iterator(map);
-        while (Layer *layer = iterator.next()) {
-            if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-                mapBounds = mapBounds.united(tileLayer->bounds());
-        }
-
-        if (!mapBounds.isEmpty()) {
-            mapSize = mapBounds.size();
-            mapStart = mapBounds.topLeft();
-        }
-    }
+    const QRect mapBounds = map->tileBoundingRect();
+    const QSize mapSize = mapBounds.size();
+    const QPoint mapStart = mapBounds.topLeft();
 
     ResizeDialog resizeDialog(this);
     resizeDialog.setOldSize(mapSize);
@@ -1917,7 +1903,8 @@ void MainWindow::resizeMap()
                                                               | MiniMapRenderer::DrawImageLayers
                                                               | MiniMapRenderer::DrawTileLayers
                                                               | MiniMapRenderer::IgnoreInvisibleLayer
-                                                              | MiniMapRenderer::SmoothPixmapTransform);
+                                                              | MiniMapRenderer::SmoothPixmapTransform
+                                                              | MiniMapRenderer::IgnoreOffsetsAndImages);
             return image;
         });
     }

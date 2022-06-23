@@ -56,7 +56,8 @@ public:
         DrawGrid                = 0x0010,
         DrawBackground          = 0x0020,
         SmoothPixmapTransform   = 0x0040,
-        IncludeOverhangingTiles = 0x0080
+        IncludeOverhangingTiles = 0x0080,
+        IgnoreOffsetsAndImages  = 0x0100,
     };
 
     Q_DECLARE_FLAGS(RenderFlags, RenderFlag)

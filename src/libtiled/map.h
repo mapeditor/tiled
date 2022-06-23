@@ -232,7 +232,7 @@ public:
     QMargins drawMargins() const;
     void invalidateDrawMargins();
 
-    QMargins computeLayerOffsetMargins() const;
+    void adjustBoundingRectForOffsetsAndImageLayers(QRect &boundingRect) const;
 
     int layerCount() const;
     int layerCount(Layer::TypeFlag type) const;
@@ -313,6 +313,7 @@ public:
     Layer *findLayerById(int layerId) const;
     MapObject *findObjectById(int objectId) const;
 
+    QRect tileBoundingRect() const;
     QRegion tileRegion() const;
 
 private:
