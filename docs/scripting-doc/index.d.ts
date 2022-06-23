@@ -1537,6 +1537,18 @@ declare class ImageLayer extends Layer {
   imageSource: string;
 
   /**
+   * Returns a copy of this layer's image.
+   *
+   * When assigning an image to this property, the imageSource property is
+   * cleared. Use {@link setImage} when you want to also set the imageSource.
+   *
+   * @warning This property is writable but has no undo!
+   *
+   * @since 1.9
+   */
+  image: Image;
+
+  /**
    * Whether the image rendered by this layer repeats along the X axis.
    *
    * @since 1.8
@@ -1561,7 +1573,7 @@ declare class ImageLayer extends Layer {
    *
    * @warning This function has no undo!
    */
-  loadFromImage(image: Image, source?: string) : void;
+  setImage(image: Image, source?: string) : void;
 }
 
 /**

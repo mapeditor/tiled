@@ -11,6 +11,7 @@
 * Scripting: Added -e,--evaluate to run a script from command-line
 * Scripting: Added Tool.toolBarActions property (#3318)
 * Scripting: Added Tileset.columnCount property
+* Scripting: Added ImageLayer.image property
 * Scripting: Added access to selected terrain in tileset editor
 * AutoMapping: Applying rules is now 10-30x faster
 * AutoMapping: Explicit "regions" layers are no longer needed and have been deprecated (#1918)
