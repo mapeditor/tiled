@@ -7,6 +7,7 @@
 * Added 'New Project' action, replacing 'Save Project As' (#3279)
 * Added ability to load .tiled-session files from command-line
 * Don't scale point objects with the zoom level (#3356)
+* Scripting: Added Dialog API for building custom UI (by tileboydog, #3384)
 * Scripting: Added -e,--evaluate to run a script from command-line
 * Scripting: Added Tool.toolBarActions property (#3318)
 * Scripting: Added Tileset.columnCount property
