@@ -5,34 +5,43 @@ Automapping
 What is Automapping?
 ====================
 
-Automapping is an advanced tool to automatically search certain
-combinations of tiles across layers in a map and to replace these parts
-with another combination. This allows the user to draw structures quickly
-and Automapping will generate a complex scenario from them, which would have
-taken much more time if manually crafted.
+Automapping can automatically place or replace tiles based on predefined
+rules. This enables complex or repetitive tile placement to be entirely
+automated, which can make level creation faster and more enjoyable. It can
+also help to avoid certain types of errors.
 
-The goal of Automapping is that you only need to draw within one
-layer and everything else is setup for you. This brings some advantages:
+.. note::
 
--  **Working speed** - you need less time to setup a map.
--  **Less errors** - the main reason is to reduce the error rate. If you
-   have setup the rules properly, there are no hidden errors.
+   The Automapping feature changed significantly in Tiled 1.9. It became
+   10-30x faster, no longer needs input and output regions to be explicitly
+   defined, works very well while drawing since it no longer produces separate
+   undo steps and a lot of new options were added. Make sure you are up to
+   date, or look for an older version of the documentation!
 
-External Links
---------------
+Setting Up The Rules File
+=========================
 
-* `Automapping explained for Tiled 0.9 and later (YouTube) <http://www.youtube.com/watch?v=UUi0lD1pxyQ>`__
-* `Examples on Automapping <https://github.com/stefanbeller/tiled_examples>`__
-* `Tiled Map Editor Tutorial Part Three: AutoMap (YouTube) <https://youtu.be/A_A6rz7cvG4>`__
+Automapping rules are defined in regular map files, which we'll call **rule
+maps**. These files are then referenced by a text file, usually called
+``rules.txt``. The ``rules.txt`` can list any number of rule maps, in the
+order in which their rules should be applied.
 
+There are two ways to make the rule maps defined in the ``rules.txt`` apply to
+a map:
 
-Setting it Up
-=============
+.. raw:: html
 
-The Automapping feature looks for a text file called ``rules.txt`` in the
-folder where the current map is located. If there isn't one, it uses the
-Automapping rules file set in your Project. Each line in this text file is
-either:
+   <div class="new new-prev">Since Tiled 1.4</div>
+
+* Open *Project > Project Propecties* and set the "Automapping rules" property
+  to the ``rules.txt`` file that you created in your project. If you have only a
+  single rule map, you can also refer to that map file directly.
+
+* Alternatively, you can save your ``rules.txt`` in the same directory as the
+  map files to which you want the rules to apply. This can also be used to
+  override the project-wide rules for a certain set of maps.
+
+Each line in the ``rules.txt`` file is either:
 
 -  A path to a **rule map**.
 -  A path to another ``.txt`` file which has the same syntax (e.g. in
@@ -40,62 +49,52 @@ either:
 -  A map filename filter, enclosed in ``[]`` and using ``*`` as a wildcard.
 -  A comment, when the line starts  with ``#`` or ``//``.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.9</div>
+
 By default, all Automapping rules will run on any map you Automap. The map
 filename filters let you restrict which maps rules apply to. For example, any
 rule maps listed after ``[town*]`` will only apply to maps whose filenames
 start with "town". To start applying rules to all maps again, you can use
 ``[*]``, which will match any map name.
 
+Setting Up a Rule Map
+=====================
+
 A **rule map** is a standard map file, which can be read and written by Tiled
-(in TMX or JSON format). A rule map can define any number of rules. It consists
-of 4 major parts:
+(usually in TMX or JSON format). A rule map can define any number of rules.
+At a minimum, a rule map contains:
 
-#. The definition of regions describes which locations of the rule map
-   are actually used to create Automapping rules.
-#. The definition of inputs describes which kind of pattern the working
-   map will be searched for.
-#. The definition of outputs describes how the working map is changed
-   when an input pattern is found.
-#. The map properties are used to fine-tune the input pattern
-   localization and the output of all rules within this rules file.
+* One or more input layers, describing which kind of pattern the working
+  map will be searched for.
 
-Defining the Regions
---------------------
+* One or more output layers, describing how the working map is changed
+  when an input pattern is found.
 
-Up to three special layers can be used to define the input and output region
-of each rule:
+In addition, custom properties on the rule map, its layers and on objects can
+be used to fine-tune the overal behavior or the behavior of specific rules.
 
-* A layer called **regions** defines the shared input and output region for
-  each rule. Using this layer can save some work when the input and output
-  regions are entirely or mostly the same.
-* A layer called **regions\_input** defines just the input region for each
-  rule.
-* A layer called **regions\_output** defines just the output region for each
-  rule.
+Finally, you may need some :ref:`special tiles <automapping-SpecialCases>` to
+set up certain rules. Tiled provides a built-in "Automapping Rules Tileset",
+which can be added to your rule map through *Map > Add Automapping Rules
+Tileset*.
 
-Since both input and output regions need to be defined, there must be both a
-**regions\_input** and a **regions\_output** layer if there is no **regions**
-layer.
+Defining the Rules
+==================
 
-It does not matter which tiles are used to define the regions. So either use
-any tile or no tile at a coordinate to indicate if that coordinate belongs to a
-rule or if it doesn't. Any tiles placed on input or output layers outside of
-the respective region are ignored.
+Multiple Rules in one Rule Map
+------------------------------
 
-If multiple rules are defined in one rule map, the regions must not be
-adjacent. That means there must be at least one tile of unused space in between
-two rules. If the regions are adjacent (coherent) then both regions are
-interpreted as one rule. Since Tiled 1.9, diagonal connections are considered
-adjacent.
+If multiple rules are defined in one rule map, there must be at least one tile
+of unused space between the rules. Adjacently placed tiles are interpreted as
+a single rule. Diagonal connections are considered adjacent as well.
 
 .. note::
 
-   If the output tiles are not adjacent to the matching input tiles, the output
-   region can be used to connect the two parts of the rule, since empty output
-   tiles are ignored by default.
-
-Multiple Rules in one Rule Map
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   If the output tiles are not adjacent to the matching input tiles, special
+   ignored tiles can be used to connect the two parts of the rule. See
+   :ref:`automapping-SpecialCases`.
 
 Since Tiled 1.9, the rules within one rule map are matched concurrently by
 default, so they can't take into account changes made by other rules defined in
@@ -136,7 +135,7 @@ for example the layer *input\_Ground* will check the layer called
 check the layer *test\_case* in the working map for this rule.
 
 Multiple layers having the same name and index is explicitly allowed and
-is intended. Having multiple layers of the same name and index , will
+is intended. Having multiple layers of the same name and index, will
 allow you to define different possible tiles per coordinate as input.
 
 The index is used to create complete different input conditions. All
@@ -155,29 +154,44 @@ rule match. Within one rule you can combine the usage of both input and
 inputnot layers to make rules input conditions as accurate as you need
 or as fuzzy as you need.
 
-.. note::
+.. raw:: html
 
-    Empty tiles within **input** or **inputnot** layers are normally ignored.
-    However, when there are no **inputnot** layers and all of the **input**
-    layers contain an empty tile at a given location, it has a special meaning.
-    In this case, it only matches on any tiles that are not empty, and that
-    also are not one of the other input tiles used in the same rule. This can
-    be useful, because normally to achieve this logic you could need a lot of
-    **inputnot** layers. It is used in the :ref:`automapping-BasicShoreline`
-    example.
+   <div class="new">New in Tiled 1.9</div>
 
-    If this special case is not the desired behavior, there are a few possible
-    workarounds:
+.. _automapping-SpecialCases:
 
-    * Adding an empty **inputnot** layer. This disables the special behavior,
-      causing empty tiles to be ignored.
+Matching Special Cases
+~~~~~~~~~~~~~~~~~~~~~~
 
-    * Defining the **regions_input** and **regions_ouput** separately, reducing
-      your input region such that it does not contain empty tiles.
+In addition to placing any of your own tiles on an input or inputnot layer,
+there are a few special cases that are covered by tiles in the "Automapping
+Rules Tileset" mentioned previously:
 
-    * Setting the :ref:`StrictEmpty <automapping-StrictEmpty>` boolean property
-      on the **input** layer to ``true``. This causes the empty tiles to only
-      match against empty tiles.
+Empty
+   This tile matches any empty cell.
+
+Ignore
+   This tile does not affect the rule in any way. Its only function is to
+   allow connecting otherwise disconnected parts into a single rule, but it
+   can also be used for clarity.
+
+NonEmpty
+   This tile matches any non-empty cell.
+
+Other
+   This tile matches any non-empty cell, which contains a tile that is
+   *different* from all the tiles used on the current input layer in the
+   current rule.
+
+Negate
+   This tile negates the condition at a specific location. It is effectively
+   the same as swapping all tiles from any input layer with all tiles from any
+   inputnot layer, but might in some cases be more convenient or more
+   readable.
+
+Note that the meaning of these tiles is derived from their custom "MatchType"
+property. This means that you can set up your own tiles for matching these
+special cases as well!
 
 Definition of Outputs
 ---------------------
@@ -195,18 +209,18 @@ All layers of the same index are treated as one possible output. So the
 intention of indexes in the outputs of rules is only used for random
 output.
 
-The indexes in the output section have nothing to do with the indexes in
-the input section, they are independent. In the output section they are
-used for randomness. In the input section they are used to define
-multiple possible layers as input. So when there are multiple indexes
-within one rule, the output will be chosen fairly (uniformly
-distributed) across all indexes. So a dice will be rolled and one index
-is picked. All of the output layers carrying this index will be put out
-into the working map then.
+The indexes in the output section have nothing to do with the indexes in the
+input section, they are independent. In the output section they are used for
+randomness. In the input section they are used to define multiple possible
+layers as input. So when there are multiple indexes within one rule, the
+output will be chosen fairly (uniformly distributed) across all indexes. Only
+the output layers with the chosen index will be put out into the working map.
 
-Note that the output is not being checked for overlapping on itself. This
-can be achieved by setting the map property
-:ref:`NoOverlappingRules <automapping-NoOverlappingRules>` to ``true``.
+Note that the output is by default not being checked for overlapping on
+itself. This can be achieved by setting the map property
+:ref:`NoOverlappingOutput <automapping-NoOverlappingOutput>` to ``true``. This
+option applies independently for each rule, so different rules can still
+overlap each other.
 
 Map Properties
 --------------
@@ -276,12 +290,6 @@ WrapBorder
    If both **WrapBorder** and **OverflowBorder** are ``true``, **WrapBorder** takes
    precedence over **OverflowBorder**.
 
-.. _automapping-NoOverlappingRules:
-
-NoOverlappingRules
-   This map property is a boolean property: A rule is not allowed to overlap on
-   itself.
-
 .. raw:: html
 
    <div class="new">New in Tiled 1.9</div>
@@ -302,6 +310,10 @@ These properties are map wide, meaning it applies to all rules which are
 part of the rule map. If you need rules with different properties you
 can use multiple rule maps.
 
+A number of per-rule options are also supported and can be specified as
+:ref:`object properties <automapping-ObjectProperties>`. These can also be
+placed on the rule map, in which case they apply to all rules in the map.
+
 Layer Properties
 ----------------
 
@@ -312,14 +324,58 @@ The following properties are supported on a per-layer basis:
 AutoEmpty (alias: StrictEmpty)
    This layer property is a boolean property. It can be added to
    **input** and **inputnot** layers to customize the behavior for
-   empty tiles within the input region.
+   empty tiles within a rule.
 
-   In "AutoEmpty" mode, empty tiles in the input region match empty tiles
-   in the set layer. So when an "input" layer contains an empty tile within
-   the input region, this means an empty tile is allowed at that location.
-   And when an "inputnot" layer contains an empty tile within the input region,
-   it means an empty tile is not allowed at that location.
+   In "AutoEmpty" mode, empty tiles within the rule match empty tiles in the
+   set layer. This can only happen when you have multiple input/inputnot
+   layers and some of the tiles that are part of the same coherent rule are
+   empty. Normally these tiles would be ignored, unless the special "Empty"
+   tile was placed. With this option they behave as tiles matching "Empty".
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.9</div>
+
+.. _automapping-ObjectProperties:
+
+Object Properties
+-----------------
+
+A number of options can be set on individual rules, even within the same rule
+map. To do this, add an Object Layer to your rule map called "rule_options".
+On this layer, you can create plain rectangle objects and any options you set
+on these objects will apply to all rules they contain.
+
+The following options are supported per-rule:
+
+ModX
+   Only apply a rule every N tiles on the X axis (defaults to 1).
+
+ModY
+   Only apply a rule every N tiles on the Y axis (defaults to 1).
+
+OffsetX
+   An offset applied in combination with ModX (defaults to 0).
+
+OffsetY
+   An offset applied in combination with ModY (defaults to 0).
+
+Probability
+   The chance that a rule is skipped even if its input layers would have
+   matched, from 0 to 1. A value of 0 effectively disables the rule, whereas
+   a value of 1 (the default) means it is never skipped.
+
+Disabled
+   A convenient way to (temporarily) disable some rules (defaults to false).
+
+.. _automapping-NoOverlappingOutput:
+
+NoOverlappingOutput
+   When set to true, the output of a rule is not allowed to overlap on itself.
+
+All these options can also be set on the rule map itself, in which case they
+apply as defaults for all rules, which can then be overridden for specific
+rules by placing rectangle objects.
 
 Examples
 ========
@@ -431,6 +487,13 @@ random by using 5 different grass tiles.
 
 Basic Shoreline
 ~~~~~~~~~~~~~~~
+
+.. warning::
+
+    The below examples are not adjusted yet to Tiled 1.9! They still work,
+    since compatibility has been largely maintained, but they use explicit
+    region layers to achieve what you can now do with :ref:`special Automapping
+    tiles <automapping-SpecialCases>`.
 
 This example will demonstrate how a straight shoreline can easily be
 setup between shallow water grass tiles. In this example we will only
@@ -662,8 +725,6 @@ output layers (the order of the layers doesn't matter).
 +-------------------------------------------------------------------------------+-------------------+
 | Tile layer                                                                    | Name              |
 +===============================================================================+===================+
-| .. image:: images/automapping/TheManaWorld/5/regions.png                      | regions           |
-+-------------------------------------------------------------------------------+-------------------+
 | .. image:: images/automapping/TheManaWorld/5/1.png                            | input\_Ground     |
 +-------------------------------------------------------------------------------+-------------------+
 | .. image:: images/automapping/TheManaWorld/5/2.png                            | input\_Ground     |
@@ -745,7 +806,7 @@ contains the actual wall tiles.
 .. figure:: images/automapping/LoneCoder/firstattempt.png
 
    A broken version of the rule, because
-   :ref:`NoOverlappingRules <automapping-NoOverlappingRules>` was not yet set.
+   :ref:`NoOverlappingOutput <automapping-NoOverlappingOutput>` was not yet set.
 
 When trying to match the input layer to the desired set layer (right
 picture of the figure at the beginning of the example), you will see it
@@ -756,7 +817,8 @@ result, because this rule overlaps itself. The overlapping problem is shown
 in figure above.
 
 Since the overlapping is not desired, we can turn it off by adding the map
-property :ref:`NoOverlappingRules <automapping-NoOverlappingRules>` to the
+property :ref:`NoOverlappingOutput <automapping-NoOverlappingOutput>` to the
 rule map and setting it to ``true``.
 
-Keep in mind that the map property applies for all rules on that rule map.
+Keep in mind that the map property applies for all rules on that rule map,
+unless we set it only for specific rules using a "rule_options" layer.
