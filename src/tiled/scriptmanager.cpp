@@ -19,8 +19,6 @@
  */
 
 #include "scriptmanager.h"
-#include "colorbutton.h"
-#include "fileedit.h"
 #include "documentmanager.h"
 #include "editablegrouplayer.h"
 #include "editableimagelayer.h"
@@ -126,7 +124,6 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<ScriptMapFormatWrapper*>();
     qRegisterMetaType<ScriptTilesetFormatWrapper*>();
     qRegisterMetaType<ScriptImage*>();
-    qRegisterMetaType<QWidget*>();
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 
