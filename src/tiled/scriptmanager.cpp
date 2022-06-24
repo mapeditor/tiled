@@ -61,16 +61,6 @@
 #include <QFile>
 #include <QQmlEngine>
 #include <QStandardPaths>
-#include <QtWidgets/QDoubleSpinBox>
-#include <QtWidgets/QSlider>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QDialog>
-#include <QTextEdit>
 #if QT_VERSION < QT_VERSION_CHECK(6,0,0)
 #include <QTextCodec>
 #endif
