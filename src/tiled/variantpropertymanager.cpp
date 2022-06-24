@@ -67,6 +67,15 @@ VariantPropertyManager::VariantPropertyManager(QObject *parent)
             this, &VariantPropertyManager::slotPropertyDestroyed);
 }
 
+VariantPropertyManager::~VariantPropertyManager()
+{
+    // Disconnect early since these functions may be called during destruction
+    disconnect(this, &QtVariantPropertyManager::valueChanged,
+               this, &VariantPropertyManager::slotValueChanged);
+    disconnect(this, &QtAbstractPropertyManager::propertyDestroyed,
+               this, &VariantPropertyManager::slotPropertyDestroyed);
+}
+
 QVariant VariantPropertyManager::value(const QtProperty *property) const
 {
     if (mValues.contains(property))

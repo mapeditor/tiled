@@ -62,6 +62,7 @@ class VariantPropertyManager : public QtVariantPropertyManager
 
 public:
     explicit VariantPropertyManager(QObject *parent = nullptr);
+    ~VariantPropertyManager() override;
 
     QVariant value(const QtProperty *property) const override;
     int valueType(int propertyType) const override;
