@@ -134,22 +134,9 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<TilesetDock*>();
     qRegisterMetaType<TilesetEditor*>();
     qRegisterMetaType<ScriptMapFormatWrapper*>();
-    qRegisterMetaType<QDoubleSpinBox *>();
     qRegisterMetaType<ScriptTilesetFormatWrapper*>();
     qRegisterMetaType<ScriptImage*>();
-    qRegisterMetaType<QLabel*>();
-    qRegisterMetaType<QCheckBox*>();
-    qRegisterMetaType<QComboBox*>();
-    qRegisterMetaType<QSlider*>();
-    qRegisterMetaType<QFrame*>();
-    qRegisterMetaType<QDialogButtonBox*>();
-    qRegisterMetaType<QPushButton*>();
-    qRegisterMetaType<QDialog*>();
-    qRegisterMetaType<ColorButton*>();
-    qRegisterMetaType<FileEdit*>();
     qRegisterMetaType<QWidget*>();
-    qRegisterMetaType<QLineEdit*>();
-    qRegisterMetaType<QTextEdit*>();
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 
