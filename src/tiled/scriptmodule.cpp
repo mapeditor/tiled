@@ -32,6 +32,7 @@
 #include "scriptedtool.h"
 #include "scriptfileformatwrappers.h"
 #include "scriptmanager.h"
+#include "scriptdialog.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
 
@@ -67,6 +68,7 @@ ScriptModule::~ScriptModule()
     ActionManager::clearMenuExtensions();
 
     IssuesModel::instance().removeIssuesWithContext(this);
+    ScriptDialog::deleteAllDialogs();
 }
 
 QString ScriptModule::version() const

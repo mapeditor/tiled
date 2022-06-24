@@ -19,7 +19,6 @@
  */
 
 #include "scriptmanager.h"
-
 #include "documentmanager.h"
 #include "editablegrouplayer.h"
 #include "editableimagelayer.h"
@@ -47,6 +46,7 @@
 #include "scriptimage.h"
 #include "scriptmodule.h"
 #include "scriptprocess.h"
+#include "scriptdialog.h"
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"
@@ -124,7 +124,6 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<ScriptMapFormatWrapper*>();
     qRegisterMetaType<ScriptTilesetFormatWrapper*>();
     qRegisterMetaType<ScriptImage*>();
-
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 
@@ -398,7 +397,7 @@ void ScriptManager::initialize()
     registerFile(engine);
     registerFileInfo(engine);
     registerProcess(engine);
-
+    registerDialog(engine);
     loadExtensions();
 }
 

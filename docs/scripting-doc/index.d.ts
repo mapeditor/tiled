@@ -343,6 +343,257 @@ declare namespace Qt {
   const AlignTop: Alignment;
   const AlignBottom: Alignment;
   const AlignCenter: Alignment;
+
+  /**
+   * The base type from which all Qt widgets derive.
+   * Qt documentation: [QWidget](https://doc.qt.io/qt-5/qwidget.html)
+   */
+  class QWidget{
+    /**
+     * The toolTip displayed when the user mouses over this widget
+     */
+    toolTip: string;
+
+    /**
+     * Controls whether this widget is visible.
+     * When toggling this property, the dialog layout will automatically adjust itself
+     * based on the visible widgets.
+     * Qt documentation: [QWidget.visible](https://doc.qt.io/qt-5/qwidget.html#visible-prop);
+     */
+    visible: boolean;
+    /**
+     * If false, the widget cannot be interacted with.
+     * Qt documentation: [QWidget.enabled](https://doc.qt.io/qt-5/qwidget.html#enabled-prop)
+     */
+    enabled: boolean;
+  }
+
+  /**
+   * Used in {@link FileEdit} as the URL of the currently selected file. 
+   */
+  class QUrl{
+    /**
+     * Get a string representation of the file
+     */
+    toString(): string;
+  }
+  /**
+   * A widget containing a single line of text that the user can edit.
+   * Qt documentation: [QLineEdit](https://doc.qt.io/qt-5/qlineedit.html)
+   */
+  class QLineEdit extends QWidget{
+
+    /**
+     * This signal is emitted when the Return or Enter key is pressed or the line edit loses focus.
+     *  Note that if there is a validator() or inputMask() set on the line edit and enter/return is pressed, 
+     *  the editingFinished() signal will only be emitted if the input follows the inputMask() and the validator() returns QValidator::Acceptable.
+     */
+    editingFinished: Signal<void>;
+    /**
+     * Signal emitted when the text inside the QLineEdit is changed.
+     */
+    textChanged: Signal<string>;
+
+    /**
+     * Setting this property makes the line edit display a grayed-out placeholder text as long as the line edit is empty.
+     */
+    placeholderText: string;
+  }
+
+    /**
+   * A widget containing a multiple lines of text that the user can edit.
+   * Qt documentation: [QTextEdit](https://doc.qt.io/qt-5/qtextedit.html)
+   */
+     class QTextEdit extends QWidget{
+
+      /**
+       * This property holds whether the user can change the contents of the widget.
+       * If true, the user cannot change the text. Defaults to false.
+       */
+      readOnly: boolean;
+      /**
+       * This property holds the text editor's contents as plain text.
+       */
+      plainText: string;
+      /**
+       * Signal emitted when the text inside the QTextEdit is changed.
+       * Check the text with {@link plainText} or {@link html} when this is emitted.
+       */
+      textChanged: Signal<void>;
+
+    }
+
+    type CheckState = number;
+    /**
+    * The item is unchecked.
+    * Value = 0
+    */
+    const Unchecked: CheckState;
+    /**
+    * The item is partially checked.
+    * Value = 1.
+    */
+    const PartiallyChecked:CheckState;
+    /**
+     * Value = 2
+     */
+    const Checked: CheckState;
+  /**
+   * A check box widget which allows the user to toggle
+   * a value on and off.
+   * Qt documentation: [QCheckBox](https://doc.qt.io/qt-5/qcheckbox.html)
+   */
+  class QCheckBox extends QWidget{
+    /**
+     * Signal emitted when the state of the checkbox changes.
+     */
+    stateChanged: Signal<CheckState>;
+
+    /**
+     * Ehether the checkbox is a tri-state checkbox
+     * The default is false, to have only two states, checked and unchecked.
+     * Setting this to true allows the checkbox to be partially checked.
+     */
+    tristate: boolean;
+    
+  }
+
+  /**
+   * A combo box/ dropdown widget which allows the user to select
+   * one of multiple preset values. 
+   * Qt documentation: [QComboBox](https://doc.qt.io/qt-5/qcombobox.html)
+   */
+  class QComboBox extends QWidget{
+    /**
+     * Index into the list of possible values that the user has selected.
+     */
+    currentIndex : number;
+
+    /**
+     * Signal emitted when the user selects a different option. Provides the index 
+     * into the list of values for the new selection.
+     */
+    currentIndexChanged: Signal<number>;
+
+    /**
+     * Signal emitted when the user selects a different option.
+     * Provides the string value of the selected option.
+     */
+    currentTextChanged: Signal<string>;
+  }
+  /**
+   * A label  widget which displays text to the user
+   */
+   class QLabel extends QWidget{
+    /**
+     * The text currently being displayed on the label.
+     */
+    text: string;
+  }
+
+  /**
+   * A slider for allowing the user to set an integer value.
+   * Qt documentation: [QSlider](https://doc.qt.io/qt-5/qslider.html)
+   */
+  class QSlider extends QWidget{
+
+    /**
+     * The minimum value that can be set by the slider.
+     */
+    minimum: number;
+    /**
+     * The maximum value that can be set by the slider.
+     */
+    maximum: number;
+    /**
+     * The amount that each tick left or right on the slider will
+     * change the value.
+     */
+    tickInterval: number;
+
+    /**
+     * The integer value set in the slider
+     */
+    value: number;
+
+    /**
+     * Signal emitted when the value in the slider is changed.
+     */
+    valueChanged: Signal<number>;
+  }
+
+/**
+ * An input widget which allows the user to set a floating point or integer
+ * value by incrementing and decrementing it.
+ * Qt documentation: [QDoubleSpinBox](https://doc.qt.io/qt-5/qdoublespinbox.html)
+ */
+  class QDoubleSpinBox extends QWidget{
+
+    /**
+     * The minimum value that can be set by the input.
+     */
+    minimum: number;
+    /**
+     * The maximum value that can be set by the input.
+     */
+    maximum: number;
+    /**
+     * The amount that each tick left or right on the slider will
+     * change the value.
+     */
+    tickInterval: number;
+    /**
+     * The number of decimal places that are allowed in the input.
+     * Specify 0 for integer values. 
+     */
+    decimals: number;
+    /**
+     * The integer value set in the slider
+     */
+    value: number;
+
+    /**
+     * Signal emitted when the value in the slider is changed.
+     * In QT 5 builds, the value passed as a argument to functions connected to this signal is 
+     * of type string, and will contain {@link prefix} and {@link suffix},
+     * if any are set. In Qt 6 it is of number type. 
+     * 
+     * For compatibility between Qt 5 and 6, It's recommended to use the {@link value} property
+     * rather than using the parameter passed to your signal handler.
+     */
+    valueChanged: Signal<string>;
+
+    /**
+     * Text such as "$" to display to the user at the beginning of the numerical value.
+     */
+    prefix: string;
+
+    /**
+     * Text such as "ms" to display to the user at the end of the numerical value.
+     */
+    suffix: string;
+  }
+
+  /**
+   * A button which the user can push. 
+   */
+  class QPushButton extends QWidget{
+    /**
+     * The text displayed on the surface of the button.
+     */
+    text: string;
+    /**
+     * Signal emitted when the button is pressed.
+     */
+    clicked: Signal<void>;
+  }
+
+  /**
+   * This type is returned in mainWidget when calling {@link Dialog.addSeparator}.
+   * Qt documentation [QFrame](https://doc.qt.io/qt-5/qframe.html)
+   */
+  class QFrame extends QWidget{
+  }
 }
 
 /**
@@ -3530,4 +3781,279 @@ declare class Process {
    * Writes text, followed by a newline character, into the process’ input channel.
    */
   writeLine(text : string) : void
+}
+
+/**
+ * A widget which allows the user to select a color. 
+ * When the color button is clicked, a color picker dialog will pop up.
+ */
+declare class ColorButton extends Qt.QWidget{
+  /**
+   * The currently selected color of the button. 
+   */
+  color: color;
+
+  /**
+   * Signal emitted when the color is changed by the user.
+   */
+  colorChanged: Signal<color>;
+}
+/**
+ * Widget with a button which opens a file picker dialog 
+ * and displays the path in the dialog.
+ */
+declare class FileEdit extends Qt.QWidget{
+
+  /**
+   * The {@link Qt.Qurl} of the currently selected file.
+   */
+  fileUrl: Qt.QUrl;
+
+  /**
+   * Signal emitted when the selected fileUrl changes
+   */
+  fileUrlChanged: Signal<Qt.QUrl>;
+}
+/**
+ * A widget that displays an {@link Image} on your dialog.
+ */
+declare class ImageWidget extends Qt.QWidget{
+
+  /**
+   * The image to be displayed in the widget
+   */
+  image: Image;
+}
+/**
+ * The `Dialog` object is used to display a dialog to the user
+ * which can be filled with a variety of widgets.
+ * 
+ * The left-hand column of the dialog can only contain labels. If you call {@link addLabel()} without 
+ * specifying maxWidth = true, your label will be placed in the left-hand column of the dialog.
+ * 
+ * All other widgets will be placed in the right-hand side column. When you add multiple instances 
+ * of the same type of widget sequentially, they will be grouped into the same row unless you call {@link addNewRow()}
+ * in between adding the widgets.
+ * 
+ * This type is an extension of the [QDialog](https://doc.qt.io/qt-5/qdialog.html#DialogCode-enum) type from Qt.
+ *
+ */
+declare class Dialog {
+  /**
+   * The result of a {@link Dialog} after it is closed.
+   */
+  type DialogCode = number;
+
+  /**
+   * The dialog was rejected. Value is 0.
+   */
+
+  const Rejected: DialogCode;
+
+  /**
+   * The dialog was accepted. Value is 1.
+   */
+  const Accepted: DialogCode;
+
+  /**
+   * Create a new Dialog object without assigning
+   * a title and using the default width and height of 450 pixels.
+   */
+  constructor();
+  /**
+   * Create a new dialog object, customizing the title and size.
+   * @param labelText
+   */
+  constructor(labelText: string);
+  /**
+   * The default row layout mode for Dialogs.
+   * In this mode, if you add multiple of the same type of widget in a row,
+   * (for instance by calling {@link addButton} twice in a row),
+   * the Dialog will automatically group them into the same row. 
+   * 
+   * As soon as a differently typed widget is added, a new 
+   * row will be added to the dialog. The exception to this rule is 
+   * the widget created by addLabel(), which will be mixed with any other
+   * widget types when using this mode.
+   */
+  static readonly SameWidgetRows: unique symbol;
+  /**
+   * In this mode, the dialog will not add a new row unless you call
+   * {@link addNewRow}, {@link addHeading} or {@link addSeparator}.
+   */
+  static readonly ManualRows: unique symbol;
+
+  /**
+   * In this mode, only one widget will be allowed in the right column.
+   * A new row will be added after each time you place a widget in the right
+   * column.
+   */
+  static readonly SingleWidgetRows: unique symbol;
+
+  /**
+   * Call this to force the next widget to go on a new row,
+   * even if it is the same type widget as the last one you added.
+   */
+  addNewRow(): void;
+
+  /**
+   * Add a heading to the dialog. A heading will always be the first
+   * widget in a row.
+   *
+   * @param labelText - the text to display in the heading.
+   * @param maxWidth -  if true, the heading will be expanded to the full
+   *                    width of the dialog. if false, it will be confined
+   *                    to the left-hand column of the dialog.
+   *                    Defaults to false.
+   */
+  addHeading(labelText:string, maxWidth?: boolean): Qt.QLabel;
+
+  /**
+   * Add a label to the dialog. A label will always be the first
+   * widget in a row.
+   *
+   * @param labelText - the text to display in the label.
+   */
+  addLabel(labelText:string): Qt.QLabel;
+
+  /**
+   * Adds a separator line with optional label to the dialog. 
+   * Used to visually split up sections of the dialog.
+   */
+  addSeparator(labelText?:string): Qt.QFrame;
+
+  /**
+   * Adds an image widget that can display an image in a dialog
+   */
+   addImage(image: Image): ImageWidget;
+
+  /**
+   * Add a {@link Qt.QSlider} widget to the dialog to allow a user to 
+   * type a numerical value or use up and down controls on the widget to manipulate the value.
+   * This can be used to enter integer or decimal values.   
+   */
+  addNumberInput(labelText?: string): Qt.QDoubleSpinBox;
+  /**
+   * Add a {@link Qt.QSlider} widget to the dialog to allow a user to 
+   * slide a handle within a number range. This can only be used to enter integer-type values.
+   */
+  addSlider(labelText?: string): Qt.QSlider;
+ /**
+  * Add a {@link Qt.QCheckBox} widget to the dialog to allow a user to 
+  * toggle a boolean value.
+  * @param labelText The text of the label to display inside the checkbox widget
+  * @param defaultValue true to have the checkbox checked by default, false to have the checkbox start unchecked.
+  */
+  addCheckBox(labelText: string, defaultValue: boolean): Qt.QCheckBox;
+
+  /**
+   * Add a {@link Qt.QPushButton} widget to the dialog to allow the user 
+   * to press a button that you can respond to the clicked signal of. 
+   * @param labelText 
+   */
+  addButton(labelText: string): Qt.QPushButton; 
+  /**
+   * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user 
+   * to enter a single line of text
+   * @param labelText - text to display in a label to the left of the widget
+   * @param defaultValue - the default value to display in the input
+   */
+  addTextInput(labelText?: string, defaultValue?: string): Qt.QLineEdit;
+
+  /**
+   * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user 
+   * to edit multiple lines of text. Also allows display of rendered HTML
+   * by setting the {@link Qt.QLineEdit.html} property.
+   * @param labelText - text to display in a label to the left of the widget
+   * @param defaultValue - the default value to display in the input
+   */
+  addTextEdit(labelText?: string, defaultValue?: string): Qt.QTextEdit;
+
+  /**
+   * Add a {@link Qt.QComboBox} widget (AKA a dropdown) allowing the user to pick 
+   * between multiple pre-set values. 
+   * @param labelText The text to display on the widget label to the left of the dropdown
+   * @param values The values to allow the user to select between. 
+   */
+  addComboBox(labelText: string, values: string[]): Qt.QComboBox;
+
+  /**
+   * Add a {@link ColorButton} widget that allows the user to pick a color.
+   * @param labelText the text of the widget label displayed to the left of the widget.
+   */
+  addColorButton(labelText?: string): ColorButton;
+
+  /* Widget with a button which opens a file picker dialog 
+  * and displays the path in the dialog.
+  */
+  addFilePicker(labelText?: string): FileEdit;
+  /**
+   * Erase all of the widgets that you have added to the dialog.
+   * Call this if you want to re-draw your dialog with a new configuration of widgets.
+   */
+  clear(): void;
+  /**
+   * Show the dialog. Call this after you have added all of your desired widgets.
+   * This will not block your script until the dialog opens. 
+   * 
+   * To respond to the dialog closing, it is recommended to connect to the {@link finished}
+   * signal. 
+   */
+  show(): void;
+
+  /**
+   * Close this dialog, setting its result code to {@link Dialog.Accepted}.
+   */
+  accept(): void;
+
+  /**
+   * Close this dialog, setting its result code to {@link Dialog.Rejected}.
+   */
+  reject(): void;
+
+  /**
+   * Close this dialog, setting its result code to {@link Dialog.Accepted} or
+   * {@link Dialog.Rejected}.
+
+   * @param resultCode - {@link Dialog.Accepted} or {@link Dialog.Rejected}
+   */
+  done(resultCode: Qt.DialogCode): void;
+
+  /**
+   * Called when the dialog is closed via {@link accept()} or the {@link done()} 
+   * method is called with {@link Dialog.Accepted} as its argument.
+   */
+  accepted: Signal<void>;
+
+  /**
+   * Called when the dialog is closed via the X button, {@link reject()}, or the
+   * {@link done()} method is called with {@link Dialog.Rejected} as its
+   * argument.
+   */
+  rejected: Signal<void>;
+
+  /**
+   * Called when the dialog is closed or the {@link done()} method is called.
+   * The number value it provides is either {@link Dialog.Accepted} or
+   * {@link Dialog.Rejected}.
+   */
+  finished: Signal<number>;
+
+  /**
+   * The title of your dialog.
+   */
+  windowTitle: string;
+
+  /**
+   * You can use this property to prevent the dialog from being resized to a width
+   * below this amount. When you change minimumWidth, ifthe dialog is already less wide than
+   * the provided width, it will scale itself up automatically.
+   */
+  minimumWidth: number;
+  /**
+   * You can use this property to prevent the dialog from being resized to a height
+   * below this amount. When you change minimumHeight, ifthe dialog is already less tall than
+   * the provided width, it will scale itself up automatically.
+   */
+  minimumHeight: number;
 }
