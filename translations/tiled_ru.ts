@@ -1834,12 +1834,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertytypeseditor.ui" line="+14"/>
         <source>Custom Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Редактор пользовательских типов</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Custom Types</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Пользовательские типы</translation>
     </message>
 </context>
 <context>
@@ -2603,7 +2603,7 @@ Line %1, column %2</source>
     <message>
         <location line="+20"/>
         <source>Can&apos;t set column count for image-based tilesets</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно установить количество столбцов набора тайлов основанного на изображении</translation>
     </message>
     <message>
         <location line="+78"/>
@@ -2644,7 +2644,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/scriptedtool.cpp" line="+231"/>
         <source>Could not find action &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Действие &apos;%1&apos; не найдено</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -3289,7 +3289,7 @@ Line %1, column %2</source>
     <message>
         <location line="+21"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; for rule options (rule map &apos;%1&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Игнорируется неизвестное свойство &apos;%2&apos; = &apos;%3&apos; опций для правил (карта правил &apos;%1&apos;)</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -3304,17 +3304,17 @@ Line %1, column %2</source>
     <message>
         <location line="+18"/>
         <source>Only rectangle objects are supported on &apos;rule_options&apos; layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Только прямоугольные объекты разрешены на слоях &apos;rule_options&apos;.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Rotated rectangles are not supported on &apos;rule_options&apos; layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Повернутые прямоугольники не разрешены на слоях &apos;rule_options&apos;.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>&apos;rule_options&apos; layers must be object layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Слои &apos;rule_options&apos; должны быть слоями объектов.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -3329,7 +3329,7 @@ Line %1, column %2</source>
     <message>
         <location line="+48"/>
         <source>No input_&lt;name&gt; or inputnot_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не найдено слоев input_&lt;имя&gt; или inputnot_&lt;имя&gt;!</translation>
     </message>
     <message>
         <location line="-119"/>
@@ -4339,7 +4339,7 @@ Please select specific format.</source>
         <location line="-496"/>
         <location line="+1548"/>
         <source>Custom Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Редактор пользовательских типов</translation>
     </message>
     <message>
         <location line="-1096"/>
@@ -4396,7 +4396,7 @@ Please select specific format.</source>
     <message>
         <location line="+15"/>
         <source>New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый проект</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -5253,22 +5253,22 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="-15"/>
         <source>Tiled 1.8</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled 1.8</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Latest</source>
-        <translation type="unfinished"></translation>
+        <translation>Новейшая</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Compatibility Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Версия для совместимости</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Extensions Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка дополнений</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -5682,12 +5682,12 @@ Please select specific format.</source>
     <message>
         <location line="+6"/>
         <source>Tile Render Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер рисования тайлов</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Режим заполнения</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -5788,22 +5788,22 @@ Please select specific format.</source>
     <message>
         <location line="+1042"/>
         <source>Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер тайла</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Map Grid Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер сетки карты</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Растянуть</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Preserve Aspect Ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить пропорции</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -6011,13 +6011,13 @@ Please select specific format.</source>
         <location line="+166"/>
         <location line="+427"/>
         <source>Export Types</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Экспортировать типы</translation>
     </message>
     <message>
         <location line="-425"/>
         <location line="+365"/>
         <source>Import Types</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Импортировать типы</translation>
     </message>
     <message>
         <location line="-327"/>
@@ -6079,7 +6079,7 @@ Please select specific format.</source>
         <location line="+8"/>
         <location line="+7"/>
         <source>Error Reading Types</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ошибка при чтении типов</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -6090,7 +6090,7 @@ Please select specific format.</source>
         <location line="+8"/>
         <location line="+7"/>
         <source>Error Writing Types</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ошибка при писании типов</translation>
     </message>
     <message>
         <location line="+72"/>
@@ -6106,7 +6106,7 @@ Please select specific format.</source>
     <message>
         <location line="+18"/>
         <source>Property value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Значение свойства</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -6191,7 +6191,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/scriptmanager.cpp" line="-154"/>
         <source>Importing module &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Импортируется модуль &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -6713,7 +6713,7 @@ Please select specific format.</source>
     <message>
         <location line="+38"/>
         <source>Tileset format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат набора тайлов &apos;%s&apos; не найден</translation>
     </message>
     <message>
         <location line="+83"/>
@@ -7183,7 +7183,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changeproperties.cpp" line="+37"/>
         <source>Change Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Изменение типа</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -7289,12 +7289,12 @@ Please select specific format.</source>
     <message>
         <location line="+22"/>
         <source>Change Tile Render Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Изменение размера рисования тайлов</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Change Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Изменение режима заполнения</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -7704,20 +7704,20 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/abstractworldtool.cpp" line="-299"/>
         <source>Add Map to World</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить карту в мир</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Remove Map from World</source>
-        <translation type="unfinished"></translation>
+        <translation>Убрать карту из мира</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/transformmapobjects.cpp" line="+4"/>
         <source>Transform %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Преобразование объекта</numerusform>
+            <numerusform>Преобразование объектов</numerusform>
+            <numerusform>Преобразование объектов</numerusform>
         </translation>
     </message>
     <message>
@@ -7824,17 +7824,17 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Don&apos;t render tile layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не рисовать слои тайлов.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Don&apos;t render object layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не рисовать слои объектов.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Don&apos;t render image layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не рисовать слои изображений.</translation>
     </message>
     <message>
         <location line="+2"/>

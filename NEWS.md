@@ -1,36 +1,43 @@
-### Unreleased
+### Tiled 1.9.0 (24 June 2022)
 
-* Ignore transparent pixels when selecting tile objects (#1477)
+* Added option to ignore transparent pixels when selecting tile objects (#1477)
 * Added support for sub-images in image collection tilesets (#1008)
+* Added "Class" field to all data types, referring to a custom class
 * Added Tile Render Size and Fill Mode options to Tileset
 * Added %worldfile variable for custom commands (by Pixel-Nori, #3352)
 * Added 'New Project' action, replacing 'Save Project As' (#3279)
 * Added ability to load .tiled-session files from command-line
+* Merged Object Types with Property Types
 * Don't scale point objects with the zoom level (#3356)
+* Take into account image layer content when determining visual map size (#3386)
 * Scripting: Added Dialog API for building custom UI (by tileboydog, #3384)
 * Scripting: Added -e,--evaluate to run a script from command-line
 * Scripting: Added Tool.toolBarActions property (#3318)
 * Scripting: Added Tileset.columnCount property
+* Scripting: Added ImageLayer.image property
 * Scripting: Added access to selected terrain in tileset editor
 * AutoMapping: Applying rules is now 10-30x faster
 * AutoMapping: Explicit "regions" layers are no longer needed and have been deprecated (#1918)
 * AutoMapping: "AutoMap While Drawing" no longer creates separate undo steps (#2166)
 * AutoMapping: Custom tiles can now match "Empty", "Non-Empty" and "Other" tiles through a "MatchType" property (#3100)
-* AutoMapping: A custom tile with "MatchType" set to "Forbid" can be used instead of "inputnot" layers
+* AutoMapping: A custom tile with "MatchType" set to "Negate" can be used instead of "inputnot" layers
 * AutoMapping: Added built-in tileset with these custom rule tiles
 * AutoMapping: Added a number of per-rule options which can be set using rectangle objects
 * AutoMapping: Erase tiles by placing tiles with "MatchType" set to "Empty" on output layers (#3100)
 * AutoMapping: Accumulate touched layers in AutoMap While Drawing (#3313)
 * AutoMapping: Support map name filters in rules.txt (#3014)
 * AutoMapping: Show relevant custom properties when a rules map is detected
-* Split up object types file type selection
 * Optimized rendering of tinted layers by caching tinted images
 * tmxrasterizer: Added options to hide certain layer types (#3343)
 * Raised minimum supported Qt version from 5.6 to 5.12 (drops Windows XP support)
 * Raised minimum C++ version to C++17
 * Removed qmake project files (only Qbs supported now)
+* macOS: Fixed layout of Custom Types Editor when using native style
+* AppImage: Updated to Sentry 0.4.18
+* Python plugin: Now built against Python 3.8 on Windows and Linux
+* Updated Bulgarian, Czech, French and Russian translations
 
-### Tiled 1.8.6 (15 Jun 2022)
+### Tiled 1.8.6 (15 June 2022)
 
 * Keep references between objects when copy/pasting or duplicating (#3361)
 * Improved default translation used in case of multiple options

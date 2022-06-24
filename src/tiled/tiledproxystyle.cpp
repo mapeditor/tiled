@@ -1125,6 +1125,18 @@ void TiledProxyStyle::drawControl(ControlElement element,
             }
         }
         break;
+
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0) && defined(Q_OS_WIN)
+    case CE_ItemViewItem:
+        if (const QStyleOptionViewItem *vopt = qstyleoption_cast<const QStyleOptionViewItem *>(option)) {
+            // Work around wrong inactive HighlightedText color
+            QStyleOptionViewItem voptCopy(*vopt);
+            voptCopy.palette = mPalette;
+            QProxyStyle::drawControl(element, &voptCopy, painter, widget);
+        }
+        break;
+#endif
+
     default:
         QProxyStyle::drawControl(element, option, painter, widget);
         break;

@@ -70,17 +70,17 @@
     <message>
         <location line="+165"/>
         <source>Missing argument, set version using: --export-version &lt;version&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Argument manquant, donnez la version en utilisant : --export-version &lt;version&gt;</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Unknown version: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Version inconnue : %1</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Missing argument, evaluate a script using: --evaluate &lt;script-file&gt; [args]</source>
-        <translation type="unfinished"></translation>
+        <translation>Argument manquant, évaluez un script en utilisant : --evaluate &lt;fichier-de-script&gt; [args]</translation>
     </message>
     <message>
         <location line="+122"/>
@@ -156,7 +156,7 @@
     <message>
         <location line="+10"/>
         <source>Set the compatibility version used when exporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Donnez la version de compatibilité utilisée lors de l&apos;exportation</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -166,7 +166,7 @@
     <message>
         <location line="+10"/>
         <source>Evaluate a script file and quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Évaluer un fichier de script et quitter</translation>
     </message>
     <message>
         <location line="+65"/>
@@ -296,7 +296,7 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+95"/>
         <source>Defold Tile Map (*.tilemap)</source>
-        <translation type="unfinished"></translation>
+        <translation>Carte de Tuiles Defold (*.tilemap)</translation>
     </message>
 </context>
 <context>
@@ -304,7 +304,7 @@
     <message>
         <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+138"/>
         <source>Defold Collection (*.collection)</source>
-        <translation type="unfinished"></translation>
+        <translation>Collection Defold (*.collection)</translation>
     </message>
 </context>
 <context>
@@ -467,17 +467,17 @@
     <message>
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-595"/>
         <source>Custom Types files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de Types Personnalisés (*.json)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Object Types JSON (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Types d&apos;Objets JSON (*.json)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Object Types XML (*.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation>Types d&apos;Objets XML (*.xml)</translation>
     </message>
 </context>
 <context>
@@ -788,12 +788,12 @@
     <message>
         <location line="+103"/>
         <source>&amp;New Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nouveau Projet...</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Add Automapping Rules Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un Jeu de Tuiles de Règles d&apos;Automapping</translation>
     </message>
     <message>
         <location line="-81"/>
@@ -1384,7 +1384,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+30"/>
         <source>Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Projets Récents</translation>
     </message>
     <message>
         <location line="+110"/>
@@ -1808,7 +1808,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-10"/>
         <source>Pixel-perfect tile object selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélection d&apos;objets de tuile au pixel près</translation>
     </message>
     <message>
         <location line="+146"/>
@@ -1834,12 +1834,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/propertytypeseditor.ui" line="+14"/>
         <source>Custom Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditeur de Types Personnalisés</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Custom Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Types Personnalisés</translation>
     </message>
 </context>
 <context>
@@ -2603,7 +2603,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+20"/>
         <source>Can&apos;t set column count for image-based tilesets</source>
-        <translation type="unfinished"></translation>
+        <translation>Le nombre de colonnes des jeux de tuiles basé sur des images ne peut pas être choisi</translation>
     </message>
     <message>
         <location line="+78"/>
@@ -2644,7 +2644,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/scriptedtool.cpp" line="+231"/>
         <source>Could not find action &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;action &apos;%1&apos; n&apos;a pas pu être trouvée</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -3286,7 +3286,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+21"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; for rule options (rule map &apos;%1&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>La propriété &apos;%2&apos; = &apos;%3&apos; est ignorée pour les options de règles (carte de règles &apos;%1&apos;)</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -3301,17 +3301,17 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+18"/>
         <source>Only rectangle objects are supported on &apos;rule_options&apos; layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Seuls les objets rectangulaires sont supportés sur le calque &apos;rule_options&apos;.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Rotated rectangles are not supported on &apos;rule_options&apos; layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les rectangles pivotés ne sont pas supportés sur le calque &apos;rule_options&apos;.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>&apos;rule_options&apos; layers must be object layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les calques &apos;rule_options&apos; doivent être des calques d&apos;objets.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -3326,7 +3326,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+48"/>
         <source>No input_&lt;name&gt; or inputnot_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun calque input_&lt;nom&gt; ou &lt;inputnot_&lt;nom&gt; n&apos;a été trouvé !</translation>
     </message>
     <message>
         <location line="-119"/>
@@ -4331,7 +4331,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="-496"/>
         <location line="+1548"/>
         <source>Custom Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditeur de Types Personnalisés</translation>
     </message>
     <message>
         <location line="-1096"/>
@@ -4388,7 +4388,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+15"/>
         <source>New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau Projet</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -4879,7 +4879,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+1"/>
         <source>Class</source>
-        <translation type="unfinished">Classe</translation>
+        <translation>Classe</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5229,22 +5229,22 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="-15"/>
         <source>Tiled 1.8</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled 1.8</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Latest</source>
-        <translation type="unfinished"></translation>
+        <translation>Dernière version</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Compatibility Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Version de Compatibilité</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Extensions Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Répertoire d&apos;Extensions</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -5254,12 +5254,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+4"/>
         <source>General</source>
-        <translation type="unfinished">Général</translation>
+        <translation>Général</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Paths &amp;&amp; Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemins &amp;&amp; Fichiers</translation>
     </message>
 </context>
 <context>
@@ -5655,12 +5655,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+6"/>
         <source>Tile Render Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille d&apos;Affichage des Tuiles</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de Remplissage</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -5736,7 +5736,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+15"/>
         <source>Image Rect</source>
-        <translation type="unfinished"></translation>
+        <translation>Aire de l&apos;Image</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -5756,27 +5756,27 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+29"/>
         <source>Class</source>
-        <translation type="unfinished">Classe</translation>
+        <translation>Classe</translation>
     </message>
     <message>
         <location line="+1042"/>
         <source>Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille de Tuile</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Map Grid Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille de la Grille de la Carte</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Écartement</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Preserve Aspect Ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>Préserver le Format de l&apos;Image</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -5948,49 +5948,49 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-173"/>
         <source>Map</source>
-        <translation type="unfinished">Carte</translation>
+        <translation>Carte</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Layer</source>
-        <translation type="unfinished">Calques</translation>
+        <translation>Calque</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Object</source>
-        <translation type="unfinished">Objet</translation>
+        <translation>Objet</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tile</source>
-        <translation type="unfinished">Tuile</translation>
+        <translation>Tuile</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tileset</source>
-        <translation type="unfinished">Jeu de Tuiles</translation>
+        <translation>Jeu de Tuiles</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Terrain</source>
-        <translation type="unfinished">Terrain</translation>
+        <translation>Terrain</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Terrain Set</source>
-        <translation type="unfinished">Collection de Terrains</translation>
+        <translation>Collection de Terrains</translation>
     </message>
     <message>
         <location line="+166"/>
         <location line="+427"/>
         <source>Export Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Types d&apos;Exportation</translation>
     </message>
     <message>
         <location line="-425"/>
         <location line="+365"/>
         <source>Import Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Types d&apos;Importation</translation>
     </message>
     <message>
         <location line="-327"/>
@@ -6046,45 +6046,45 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+38"/>
         <source>Error Reading Object Types</source>
-        <translation type="unfinished">Erreur lors de la Lecture des Types d&apos;Objet</translation>
+        <translation>Erreur lors de la Lecture des Types d&apos;Objet</translation>
     </message>
     <message>
         <location line="+8"/>
         <location line="+7"/>
         <source>Error Reading Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de la Lecture des Types</translation>
     </message>
     <message>
         <location line="+42"/>
         <source>Error Writing Object Types</source>
-        <translation type="unfinished">Erreur lors de l&apos;Écriture des Types d&apos;Objet</translation>
+        <translation>Erreur lors de l&apos;Écriture des Types d&apos;Objet</translation>
     </message>
     <message>
         <location line="+8"/>
         <location line="+7"/>
         <source>Error Writing Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de l&apos;Écriture des Types</translation>
     </message>
     <message>
         <location line="+72"/>
         <location line="+86"/>
         <source>Select Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Types de Sélection</translation>
     </message>
     <message>
         <location line="-23"/>
         <source>Color</source>
-        <translation type="unfinished">Couleur</translation>
+        <translation>Couleur</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Property value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur de la propriété</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Class of</source>
-        <translation type="unfinished"></translation>
+        <translation>Classe de</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -6095,7 +6095,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-37"/>
         <source>Use as</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser en tant que</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6164,7 +6164,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/scriptmanager.cpp" line="-154"/>
         <source>Importing module &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Importation du module &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -6686,7 +6686,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+38"/>
         <source>Tileset format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Format de Jeu de Tuiles &apos;%s&apos; non trouvé</translation>
     </message>
     <message>
         <location line="+83"/>
@@ -7156,7 +7156,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/changeproperties.cpp" line="+37"/>
         <source>Change Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer le Type</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -7262,12 +7262,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+22"/>
         <source>Change Tile Render Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer la Taille d&apos;Affichage des Tuiles</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Change Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer le Mode de Remplissage</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -7506,7 +7506,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+21"/>
         <source>Change Image Rect</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer l&apos;Aire de l&apos;Image</translation>
     </message>
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="-127"/>
@@ -7670,25 +7670,25 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/abstractworldtool.cpp" line="-299"/>
         <source>Add Map to World</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter la Carte au Monde</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Remove Map from World</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la Carte du Monde</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/transformmapobjects.cpp" line="+4"/>
         <source>Transform %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Transformer %n Objet</numerusform>
+            <numerusform>Transformer %n Objets</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/tiled/worldmovemaptool.cpp" line="-146"/>
         <source>Move Map</source>
-        <translation type="unfinished">Déplacer la Carte</translation>
+        <translation>Déplacer la Carte</translation>
     </message>
 </context>
 <context>
@@ -7789,17 +7789,17 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+3"/>
         <source>Don&apos;t render tile layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne pas afficher les calques de tuiles.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Don&apos;t render object layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne pas afficher les calques d&apos;objets.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Don&apos;t render image layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne pas afficher les calques d&apos;images.</translation>
     </message>
     <message>
         <location line="+2"/>

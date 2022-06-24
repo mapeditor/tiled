@@ -41,8 +41,6 @@ class TILEDSHARED_EXPORT OrthogonalRenderer : public MapRenderer
 public:
     OrthogonalRenderer(const Map *map) : MapRenderer(map) {}
 
-    QRect mapBoundingRect() const override;
-
     QRect boundingRect(const QRect &rect) const override;
 
     QRectF boundingRect(const MapObject *object) const override;

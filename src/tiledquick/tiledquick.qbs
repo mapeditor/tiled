@@ -22,6 +22,14 @@ QtGuiApplication {
     cpp.includePaths: ["."]
     cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../lib"]
     cpp.cxxLanguageVersion: "c++17"
+    cpp.cxxFlags: {
+        var flags = base;
+        if (qbs.toolchain.contains("msvc")) {
+            if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 3)
+                flags.push("/permissive-");
+        }
+        return flags;
+    }
 
     files: [
         "fonts/fonts.qrc",

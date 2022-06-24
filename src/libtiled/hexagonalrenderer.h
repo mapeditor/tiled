@@ -73,8 +73,6 @@ public:
         setCellType(HexagonalCells);
     }
 
-    QRect mapBoundingRect() const override;
-
     QRect boundingRect(const QRect &rect) const override;
 
     void drawGrid(QPainter *painter, const QRectF &exposed,

@@ -806,27 +806,19 @@ void MapItem::deleteLayerItems(Layer *layer)
 
 void MapItem::updateBoundingRect()
 {
-    QRectF boundingRect;
+    QRect boundingRect = mapDocument()->renderer()->mapBoundingRect();
 
-    for (auto layerItem : qAsConst(mLayerItems))
-        if (layerItem->layer()->isTileLayer())
-            boundingRect |= layerItem->boundingRect().translated(layerItem->layer()->totalOffset());
+    // This rectangle represents the map boundary and as such is unaffected
+    // by layer offsets or image layers.
+    mBorderRectangle->setRect(boundingRect);
 
-    const QRectF mapBoundingRect = mapDocument()->renderer()->mapBoundingRect();
-
-    // For fixed-size maps, make the bounding rect at least the size of the map
-    if (!mMapDocument->map()->infinite())
-        boundingRect |= mapBoundingRect;
+    mMapDocument->map()->adjustBoundingRectForOffsetsAndImageLayers(boundingRect);
 
     if (mBoundingRect != boundingRect) {
         prepareGeometryChange();
         mBoundingRect = boundingRect;
         emit boundingRectChanged();
     }
-
-    // This rectangle represents the map boundary and as such is unaffected
-    // by layer offsets.
-    mBorderRectangle->setRect(mapBoundingRect);
 }
 
 void MapItem::updateSelectedLayersHighlight()

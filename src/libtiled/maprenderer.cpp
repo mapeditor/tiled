@@ -121,6 +121,11 @@ static QPixmap tinted(const QPixmap &pixmap, const QColor &color)
 MapRenderer::~MapRenderer()
 {}
 
+QRect MapRenderer::mapBoundingRect() const
+{
+    return boundingRect(map()->tileBoundingRect());
+}
+
 QRectF MapRenderer::boundingRect(const ImageLayer *imageLayer) const
 {
     QRectF bounds = QRectF(QPointF(), imageLayer->image().size());

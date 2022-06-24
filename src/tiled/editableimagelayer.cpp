@@ -36,6 +36,11 @@ EditableImageLayer::EditableImageLayer(EditableMap *map, ImageLayer *imageLayer,
 {
 }
 
+ScriptImage *EditableImageLayer::image() const
+{
+    return new ScriptImage(imageLayer()->image().toImage());
+}
+
 void EditableImageLayer::setTransparentColor(const QColor &transparentColor)
 {
     if (auto doc = mapDocument()) {

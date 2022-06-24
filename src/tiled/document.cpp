@@ -53,6 +53,10 @@ Document::Document(DocumentType type, const QString &fileName,
 
 Document::~Document()
 {
+    // Disconnect early to avoid being called on our own destroy signal
+    if (mCurrentObjectDocument)
+        mCurrentObjectDocument->disconnect(this);
+
     if (!mCanonicalFilePath.isEmpty()) {
         auto i = sDocumentInstances.find(mCanonicalFilePath);
         if (i != sDocumentInstances.end() && *i == this)

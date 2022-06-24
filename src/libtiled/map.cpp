@@ -30,12 +30,13 @@
 
 #include "map.h"
 
+#include "imagelayer.h"
 #include "layer.h"
+#include "mapobject.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "mapobject.h"
 
 #include <QtMath>
 
@@ -82,26 +83,55 @@ QMargins Map::drawMargins() const
 }
 
 /**
- * Computes the extra margins due to layer offsets. These need to be taken into
- * account when determining the bounding rect of the map for example.
+ * Adjusts the given \a boundingRect to account for layer offsets and image
+ * layers.
+ *
+ * The bounding rect is assumed to already cover the tile content of the map in
+ * pixels. This function may extend it, when an offset has been applied to any
+ * tile layers and when any image layers extend beyond the map.
  */
-QMargins Map::computeLayerOffsetMargins() const
+void Map::adjustBoundingRectForOffsetsAndImageLayers(QRect &boundingRect) const
 {
     QMargins offsetMargins;
 
     for (const Layer *layer : allLayers()) {
-        if (layer->isGroupLayer())
-            continue;
-
-        const QPointF offset = layer->totalOffset();
-        offsetMargins = maxMargins(QMargins(qCeil(-offset.x()),
-                                            qCeil(-offset.y()),
-                                            qCeil(offset.x()),
-                                            qCeil(offset.y())),
-                                   offsetMargins);
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            // Offset tile layers currently always contribute to the bounding
+            // rect. More precise would be to take into account their
+            // contents.
+            const QPointF offset = layer->totalOffset();
+            offsetMargins = maxMargins(QMargins(qCeil(-offset.x()),
+                                                qCeil(-offset.y()),
+                                                qCeil(offset.x()),
+                                                qCeil(offset.y())),
+                                       offsetMargins);
+            break;
+        }
+        case Layer::ImageLayerType: {
+            auto imageLayer = static_cast<const ImageLayer*>(layer);
+            const QRect bounds = QRectF(layer->totalOffset(),
+                                        imageLayer->image().size()).toAlignedRect();
+            if (!imageLayer->repeatX()) {
+                boundingRect.setRight(qMax(bounds.right(), boundingRect.right()));
+                boundingRect.setLeft(qMin(bounds.left(), boundingRect.left()));
+            }
+            if (!imageLayer->repeatY()) {
+                boundingRect.setTop(qMin(bounds.top(), boundingRect.top()));
+                boundingRect.setBottom(qMax(bounds.bottom(), boundingRect.bottom()));
+            }
+            break;
+        }
+        case Layer::ObjectGroupType:
+            // Objects are entirely ignored when determining which part of a
+            // map to render.
+            break;
+        case Layer::GroupLayerType:
+            break;
+        }
     }
 
-    return offsetMargins;
+    boundingRect += offsetMargins;
 }
 
 /**
@@ -466,6 +496,28 @@ MapObject *Map::findObjectById(int objectId) const
         }
     }
     return nullptr;
+}
+
+/**
+ * Returns the area occupied by tiles. Usually simply matches the map size,
+ * but for infinite maps it returns a rough (chunks based) bounding rectangle
+ * covering the contents of all tile layers.
+ */
+QRect Map::tileBoundingRect() const
+{
+    if (!infinite())
+        return QRect(0, 0, width(), height());
+
+    QRect mapBounds;
+
+    LayerIterator iterator(this, Layer::TileLayerType);
+    while (TileLayer *tileLayer = static_cast<TileLayer*>(iterator.next()))
+        mapBounds = mapBounds.united(tileLayer->bounds());
+
+    if (mapBounds.size() == QSize(0, 0))
+        mapBounds.setSize(QSize(1, 1));
+
+    return mapBounds;
 }
 
 QRegion Map::tileRegion() const
