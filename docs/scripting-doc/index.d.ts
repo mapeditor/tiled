@@ -345,18 +345,6 @@ declare namespace Qt {
   const AlignCenter: Alignment;
 
   /**
-   * The result of a {@link Dialog} after it is closed.
-   */
-  type DialogCode = number;
-  /**
-   * The dialog was rejected. Value is 0.
-   */
-  const Rejected: DialogCode;
-  /**
-   * The dialog was accepted. Value is 1.
-   */
-  const Accepted: DialogCode; 
-  /**
    * The base type from which all Qt widgets derive.
    * Qt documentation: [QWidget](https://doc.qt.io/qt-5/qwidget.html)
    */
@@ -3838,7 +3826,22 @@ declare class ImageWidget extends Qt.QWidget{
  * This type is an extension of the [QDialog](https://doc.qt.io/qt-5/qdialog.html#DialogCode-enum) type from Qt.
  *
  */
-declare class Dialog{
+declare class Dialog {
+  /**
+   * The result of a {@link Dialog} after it is closed.
+   */
+  type DialogCode = number;
+
+  /**
+   * The dialog was rejected. Value is 0.
+   */
+
+  const Rejected: DialogCode;
+
+  /**
+   * The dialog was accepted. Value is 1.
+   */
+  const Accepted: DialogCode;
 
   /**
    * Create a new Dialog object without assigning
@@ -3987,34 +3990,40 @@ declare class Dialog{
   show(): void;
 
   /**
-   * Close this dialog, setting its result code to {@link Qt.Accepted}.
+   * Close this dialog, setting its result code to {@link Dialog.Accepted}.
    */
   accept(): void;
+
   /**
-   * Close this dialog, setting its result code to {@link Qt.Rejected}.
+   * Close this dialog, setting its result code to {@link Dialog.Rejected}.
    */
   reject(): void;
 
   /**
-   * Close this dialog, setting its result code to {@link Qt.Accepted} or {@link Qt.Rejected}. 
-   * @param resultCode - @link Qt.Accepted} or {@link Qt.Rejected}
+   * Close this dialog, setting its result code to {@link Dialog.Accepted} or
+   * {@link Dialog.Rejected}.
+
+   * @param resultCode - {@link Dialog.Accepted} or {@link Dialog.Rejected}
    */
   done(resultCode: Qt.DialogCode): void;
 
   /**
    * Called when the dialog is closed via {@link accept()} or the {@link done()} 
-   * method is called with {@link Qt.Accepted} as its argument.
+   * method is called with {@link Dialog.Accepted} as its argument.
    */
   accepted: Signal<void>;
+
   /**
-   * Called when the dialog is closed via the X button, {@link reject()}, or the {@link done()} 
-   * method is called with {@link Qt.Rejected} as its argument.
+   * Called when the dialog is closed via the X button, {@link reject()}, or the
+   * {@link done()} method is called with {@link Dialog.Rejected} as its
+   * argument.
    */
   rejected: Signal<void>;
 
   /**
    * Called when the dialog is closed or the {@link done()} method is called.
-   * The number value it provides is either {@link Qt.Accepted} or {@link Qt.Rejected}.
+   * The number value it provides is either {@link Dialog.Accepted} or
+   * {@link Dialog.Rejected}.
    */
   finished: Signal<number>;
 

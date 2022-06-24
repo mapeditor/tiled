@@ -64,6 +64,10 @@ public:
     };
     Q_ENUM(NewRowMode)
 
+    // Duplicate from QDialog, because the enum on QDialog isn't marked Q_ENUM
+    enum DialogCode { Rejected, Accepted };
+    Q_ENUM(DialogCode)
+
     Q_INVOKABLE ScriptDialog(const QString &title = QString());
     ~ScriptDialog() override;
 
