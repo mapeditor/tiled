@@ -1,4 +1,4 @@
-### Tiled 1.9.0 (24 June 2022)
+### Tiled 1.9.0 (25 June 2022)
 
 * Added option to ignore transparent pixels when selecting tile objects (#1477)
 * Added support for sub-images in image collection tilesets (#1008)
