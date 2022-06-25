@@ -795,6 +795,9 @@ Tiled 1.5
 * Removed ``dflip``, ``hflip`` and ``vflip`` properties from
   :ref:`json-wangtile` (no longer supported).
 
+* Added ``parallaxx`` and ``parallaxy`` properties to the :ref:`json-layer`
+  object.
+
 Tiled 1.4
 ~~~~~~~~~
 

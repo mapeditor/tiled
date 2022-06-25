@@ -513,6 +513,8 @@ should generally be avoided.
    to 0) (since 0.14)
 -  **offsety:** Vertical offset for this object group in pixels. (defaults
    to 0) (since 0.14)
+-  **parallaxx:** Horizontal :ref:`parallax factor <parallax-factor>` for this object group. Defaults to 1. (since 1.5)
+-  **parallaxy:** Vertical :ref:`parallax factor <parallax-factor>` for this object group. Defaults to 1. (since 1.5)
 -  **draworder:** Whether the objects are drawn according to the order of
    appearance ("index") or sorted by their y-coordinate ("topdown").
    (defaults to "topdown")
@@ -666,6 +668,8 @@ of the object.
    0) (since 0.15)
 -  **offsety:** Vertical offset of the image layer in pixels. (defaults to
    0) (since 0.15)
+-  **parallaxx:** Horizontal :ref:`parallax factor <parallax-factor>` for this layer. Defaults to 1. (since 1.5)
+-  **parallaxy:** Vertical :ref:`parallax factor <parallax-factor>` for this layer. Defaults to 1. (since 1.5)
 -  *x:* The x position of the image layer in pixels. (defaults to 0, deprecated
    since 0.15)
 -  *y:* The y position of the image layer in pixels. (defaults to 0, deprecated
@@ -692,12 +696,11 @@ Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-image`
    (since Tiled 1.2)
 -  **name:** The name of the group layer. (defaults to "")
 -  **class:** The class of the group layer (since 1.9, defaults to "").
--  **offsetx:** Horizontal offset of the group layer in pixels. (defaults to
-   0)
--  **offsety:** Vertical offset of the group layer in pixels. (defaults to
-   0)
--  **opacity:** The opacity of the layer as a value from 0 to 1. (defaults to
-   1)
+-  **offsetx:** Horizontal offset of the group layer in pixels. (defaults to 0)
+-  **offsety:** Vertical offset of the group layer in pixels. (defaults to 0)
+-  **parallaxx:** Horizontal :ref:`parallax factor <parallax-factor>` for this group. Defaults to 1. (since 1.5)
+-  **parallaxy:** Vertical :ref:`parallax factor <parallax-factor>` for this group. Defaults to 1. (since 1.5)
+-  **opacity:** The opacity of the layer as a value from 0 to 1. (defaults to 1)
 -  **visible:** Whether the layer is shown (1) or hidden (0). (defaults to 1)
 -  **tintcolor:** A color that is multiplied with any graphics drawn by any child layers, in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
 

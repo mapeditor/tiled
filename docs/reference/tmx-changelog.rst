@@ -66,6 +66,9 @@ Tiled 1.5
 -  The :ref:`tmx-wangset` element has replaced the now deprecated
    :ref:`tmx-terraintypes` element.
 
+-  Added ``parallaxx`` and ``parallaxy`` attributes to the :ref:`tmx-layer`,
+   :ref:`tmx-objectgroup`, :ref:`tmx-imagelayer` and :ref:`tmx-group` elements.
+
 Tiled 1.4
 ---------
 
