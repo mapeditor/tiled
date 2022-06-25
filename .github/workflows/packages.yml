@@ -384,7 +384,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled-macos-10.12.app/Tiled-macos-10.12.zip
+        asset_path: Tiled-macOS-10.12.app/Tiled-macOS-10.12.zip
         asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-10.12.zip
         asset_content_type: application/zip
 
@@ -392,7 +392,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled-macos-10.13+.app/Tiled-macos-10.13+.zip
+        asset_path: Tiled-macOS-10.13+.app/Tiled-macOS-10.13+.zip
         asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-10.13+.zip
         asset_content_type: application/zip
 
