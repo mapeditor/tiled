@@ -369,7 +369,7 @@ declare namespace Qt {
   }
 
   /**
-   * Used in {@link FileEdit} as the URL of the currently selected file. 
+   * Used in {@link FileEdit} as the URL of the currently selected file.
    */
   class QUrl{
     /**
@@ -385,7 +385,7 @@ declare namespace Qt {
 
     /**
      * This signal is emitted when the Return or Enter key is pressed or the line edit loses focus.
-     *  Note that if there is a validator() or inputMask() set on the line edit and enter/return is pressed, 
+     *  Note that if there is a validator() or inputMask() set on the line edit and enter/return is pressed,
      *  the editingFinished() signal will only be emitted if the input follows the inputMask() and the validator() returns QValidator::Acceptable.
      */
     editingFinished: Signal<void>;
@@ -455,12 +455,12 @@ declare namespace Qt {
      * Setting this to true allows the checkbox to be partially checked.
      */
     tristate: boolean;
-    
+
   }
 
   /**
    * A combo box/ dropdown widget which allows the user to select
-   * one of multiple preset values. 
+   * one of multiple preset values.
    * Qt documentation: [QComboBox](https://doc.qt.io/qt-5/qcombobox.html)
    */
   class QComboBox extends QWidget{
@@ -470,7 +470,7 @@ declare namespace Qt {
     currentIndex : number;
 
     /**
-     * Signal emitted when the user selects a different option. Provides the index 
+     * Signal emitted when the user selects a different option. Provides the index
      * into the list of values for the new selection.
      */
     currentIndexChanged: Signal<number>;
@@ -544,7 +544,7 @@ declare namespace Qt {
     tickInterval: number;
     /**
      * The number of decimal places that are allowed in the input.
-     * Specify 0 for integer values. 
+     * Specify 0 for integer values.
      */
     decimals: number;
     /**
@@ -554,10 +554,10 @@ declare namespace Qt {
 
     /**
      * Signal emitted when the value in the slider is changed.
-     * In QT 5 builds, the value passed as a argument to functions connected to this signal is 
+     * In QT 5 builds, the value passed as a argument to functions connected to this signal is
      * of type string, and will contain {@link prefix} and {@link suffix},
-     * if any are set. In Qt 6 it is of number type. 
-     * 
+     * if any are set. In Qt 6 it is of number type.
+     *
      * For compatibility between Qt 5 and 6, It's recommended to use the {@link value} property
      * rather than using the parameter passed to your signal handler.
      */
@@ -575,7 +575,7 @@ declare namespace Qt {
   }
 
   /**
-   * A button which the user can push. 
+   * A button which the user can push.
    */
   class QPushButton extends QWidget{
     /**
@@ -3784,12 +3784,12 @@ declare class Process {
 }
 
 /**
- * A widget which allows the user to select a color. 
+ * A widget which allows the user to select a color.
  * When the color button is clicked, a color picker dialog will pop up.
  */
 declare class ColorButton extends Qt.QWidget{
   /**
-   * The currently selected color of the button. 
+   * The currently selected color of the button.
    */
   color: color;
 
@@ -3799,7 +3799,7 @@ declare class ColorButton extends Qt.QWidget{
   colorChanged: Signal<color>;
 }
 /**
- * Widget with a button which opens a file picker dialog 
+ * Widget with a button which opens a file picker dialog
  * and displays the path in the dialog.
  */
 declare class FileEdit extends Qt.QWidget{
@@ -3827,33 +3827,26 @@ declare class ImageWidget extends Qt.QWidget{
 /**
  * The `Dialog` object is used to display a dialog to the user
  * which can be filled with a variety of widgets.
- * 
- * The left-hand column of the dialog can only contain labels. If you call {@link addLabel()} without 
+ *
+ * The left-hand column of the dialog can only contain labels. If you call {@link addLabel()} without
  * specifying maxWidth = true, your label will be placed in the left-hand column of the dialog.
- * 
- * All other widgets will be placed in the right-hand side column. When you add multiple instances 
+ *
+ * All other widgets will be placed in the right-hand side column. When you add multiple instances
  * of the same type of widget sequentially, they will be grouped into the same row unless you call {@link addNewRow()}
  * in between adding the widgets.
- * 
- * This type is an extension of the [QDialog](https://doc.qt.io/qt-5/qdialog.html#DialogCode-enum) type from Qt.
  *
+ * This type is an extension of the [QDialog](https://doc.qt.io/qt-5/qdialog.html) type from Qt.
  */
 declare class Dialog {
   /**
-   * The result of a {@link Dialog} after it is closed.
-   */
-  type DialogCode = number;
-
-  /**
    * The dialog was rejected. Value is 0.
    */
-
-  const Rejected: DialogCode;
+  static readonly Rejected: unique symbol
 
   /**
    * The dialog was accepted. Value is 1.
    */
-  const Accepted: DialogCode;
+  static readonly Accepted: unique symbol
 
   /**
    * Create a new Dialog object without assigning
@@ -3869,10 +3862,10 @@ declare class Dialog {
    * The default row layout mode for Dialogs.
    * In this mode, if you add multiple of the same type of widget in a row,
    * (for instance by calling {@link addButton} twice in a row),
-   * the Dialog will automatically group them into the same row. 
-   * 
-   * As soon as a differently typed widget is added, a new 
-   * row will be added to the dialog. The exception to this rule is 
+   * the Dialog will automatically group them into the same row.
+   *
+   * As soon as a differently typed widget is added, a new
+   * row will be added to the dialog. The exception to this rule is
    * the widget created by addLabel(), which will be mixed with any other
    * widget types when using this mode.
    */
@@ -3917,7 +3910,7 @@ declare class Dialog {
   addLabel(labelText:string): Qt.QLabel;
 
   /**
-   * Adds a separator line with optional label to the dialog. 
+   * Adds a separator line with optional label to the dialog.
    * Used to visually split up sections of the dialog.
    */
   addSeparator(labelText?:string): Qt.QFrame;
@@ -3928,18 +3921,18 @@ declare class Dialog {
    addImage(image: Image): ImageWidget;
 
   /**
-   * Add a {@link Qt.QSlider} widget to the dialog to allow a user to 
+   * Add a {@link Qt.QSlider} widget to the dialog to allow a user to
    * type a numerical value or use up and down controls on the widget to manipulate the value.
-   * This can be used to enter integer or decimal values.   
+   * This can be used to enter integer or decimal values.
    */
   addNumberInput(labelText?: string): Qt.QDoubleSpinBox;
   /**
-   * Add a {@link Qt.QSlider} widget to the dialog to allow a user to 
+   * Add a {@link Qt.QSlider} widget to the dialog to allow a user to
    * slide a handle within a number range. This can only be used to enter integer-type values.
    */
   addSlider(labelText?: string): Qt.QSlider;
  /**
-  * Add a {@link Qt.QCheckBox} widget to the dialog to allow a user to 
+  * Add a {@link Qt.QCheckBox} widget to the dialog to allow a user to
   * toggle a boolean value.
   * @param labelText The text of the label to display inside the checkbox widget
   * @param defaultValue true to have the checkbox checked by default, false to have the checkbox start unchecked.
@@ -3947,13 +3940,13 @@ declare class Dialog {
   addCheckBox(labelText: string, defaultValue: boolean): Qt.QCheckBox;
 
   /**
-   * Add a {@link Qt.QPushButton} widget to the dialog to allow the user 
-   * to press a button that you can respond to the clicked signal of. 
-   * @param labelText 
+   * Add a {@link Qt.QPushButton} widget to the dialog to allow the user
+   * to press a button that you can respond to the clicked signal of.
+   * @param labelText
    */
-  addButton(labelText: string): Qt.QPushButton; 
+  addButton(labelText: string): Qt.QPushButton;
   /**
-   * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user 
+   * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user
    * to enter a single line of text
    * @param labelText - text to display in a label to the left of the widget
    * @param defaultValue - the default value to display in the input
@@ -3961,7 +3954,7 @@ declare class Dialog {
   addTextInput(labelText?: string, defaultValue?: string): Qt.QLineEdit;
 
   /**
-   * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user 
+   * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user
    * to edit multiple lines of text. Also allows display of rendered HTML
    * by setting the {@link Qt.QLineEdit.html} property.
    * @param labelText - text to display in a label to the left of the widget
@@ -3970,10 +3963,10 @@ declare class Dialog {
   addTextEdit(labelText?: string, defaultValue?: string): Qt.QTextEdit;
 
   /**
-   * Add a {@link Qt.QComboBox} widget (AKA a dropdown) allowing the user to pick 
-   * between multiple pre-set values. 
+   * Add a {@link Qt.QComboBox} widget (AKA a dropdown) allowing the user to pick
+   * between multiple pre-set values.
    * @param labelText The text to display on the widget label to the left of the dropdown
-   * @param values The values to allow the user to select between. 
+   * @param values The values to allow the user to select between.
    */
   addComboBox(labelText: string, values: string[]): Qt.QComboBox;
 
@@ -3983,7 +3976,7 @@ declare class Dialog {
    */
   addColorButton(labelText?: string): ColorButton;
 
-  /* Widget with a button which opens a file picker dialog 
+  /* Widget with a button which opens a file picker dialog
   * and displays the path in the dialog.
   */
   addFilePicker(labelText?: string): FileEdit;
@@ -3992,12 +3985,13 @@ declare class Dialog {
    * Call this if you want to re-draw your dialog with a new configuration of widgets.
    */
   clear(): void;
+
   /**
    * Show the dialog. Call this after you have added all of your desired widgets.
-   * This will not block your script until the dialog opens. 
-   * 
+   * This will not block your script until the dialog opens.
+   *
    * To respond to the dialog closing, it is recommended to connect to the {@link finished}
-   * signal. 
+   * signal.
    */
   show(): void;
 
@@ -4014,13 +4008,13 @@ declare class Dialog {
   /**
    * Close this dialog, setting its result code to {@link Dialog.Accepted} or
    * {@link Dialog.Rejected}.
-
+   *
    * @param resultCode - {@link Dialog.Accepted} or {@link Dialog.Rejected}
    */
-  done(resultCode: Qt.DialogCode): void;
+  done(resultCode: typeof Dialog.Rejected | typeof Dialog.Accepted): void;
 
   /**
-   * Called when the dialog is closed via {@link accept()} or the {@link done()} 
+   * Called when the dialog is closed via {@link accept()} or the {@link done()}
    * method is called with {@link Dialog.Accepted} as its argument.
    */
   accepted: Signal<void>;
