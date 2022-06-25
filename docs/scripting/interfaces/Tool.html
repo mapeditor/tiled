@@ -123,6 +123,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#selectedTile" class="tsd-kind-icon">selected<wbr>Tile</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#statusInfo" class="tsd-kind-icon">status<wbr>Info</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#tilePosition" class="tsd-kind-icon">tile<wbr>Position</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#toolBarActions" class="tsd-kind-icon">tool<wbr>Bar<wbr>Actions</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#usesSelectedTiles" class="tsd-kind-icon">uses<wbr>Selected<wbr>Tiles</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#usesWangSets" class="tsd-kind-icon">uses<wbr>Wang<wbr>Sets</a></li>
 							</ul>
@@ -246,6 +247,23 @@
 						<div class="lead">
 							<p>Mouse cursor position in tile coordinates.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="toolBarActions" class="tsd-anchor"></a>
+					<h3>tool<wbr>Bar<wbr>Actions</h3>
+					<div class="tsd-signature tsd-kind-icon">tool<wbr>Bar<wbr>Actions<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>List of action IDs, specifying the actions that should be added to the
+							tool-specific tool bar.</p>
+						</div>
+						<p>Separators can be added to this tool bar by adding &quot;-&quot; in the list of
+						actions.</p>
+						<p>The actions need to be registered using
+						<a href="../modules/tiled.html#registerAction">tiled.registerAction()</a>.</p>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
@@ -609,6 +627,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="Tool.html#tilePosition" class="tsd-kind-icon">tile<wbr>Position</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="Tool.html#toolBarActions" class="tsd-kind-icon">tool<wbr>Bar<wbr>Actions</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="Tool.html#usesSelectedTiles" class="tsd-kind-icon">uses<wbr>Selected<wbr>Tiles</a>

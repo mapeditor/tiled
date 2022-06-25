@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>TilesetEditor | Tiled Scripting API</title>
+	<title>QUrl | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -76,10 +76,13 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="TilesetEditor.html">TilesetEditor</a>
+					<a href="../modules/Qt.html">Qt</a>
+				</li>
+				<li>
+					<a href="Qt.QUrl.html">QUrl</a>
 				</li>
 			</ul>
-			<h1>Interface TilesetEditor</h1>
+			<h1>Class QUrl</h1>
 		</div>
 	</div>
 </header>
@@ -89,7 +92,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The tileset editor, accessible through <a href="../modules/tiled.html#tilesetEditor">tiled.tilesetEditor</a>.</p>
+						<p>Used in <a href="FileEdit.html">FileEdit</a> as the URL of the currently selected file.</p>
 					</div>
 				</div>
 			</section>
@@ -97,7 +100,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">TilesetEditor</span>
+						<span class="target">QUrl</span>
 					</li>
 				</ul>
 			</section>
@@ -106,101 +109,55 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TilesetEditor.html#collisionEditor" class="tsd-kind-icon">collision<wbr>Editor</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TilesetEditor.html#currentWangColorIndex" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TilesetEditor.html#currentWangColorIndexChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TilesetEditor.html#currentWangSet" class="tsd-kind-icon">current<wbr>Wang<wbr>Set</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TilesetEditor.html#currentWangSetChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="Qt.QUrl.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Qt.QUrl.html#toString" class="tsd-kind-icon">to<wbr>String</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="collisionEditor" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> collision<wbr>Editor</h3>
-					<div class="tsd-signature tsd-kind-icon">collision<wbr>Editor<span class="tsd-signature-symbol">:</span> <a href="TileCollisionEditor.html" class="tsd-signature-type" data-tsd-kind="Interface">TileCollisionEditor</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Access the collision editor within the tileset editor.</p>
-						</div>
-					</div>
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new QUrl<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QUrl.html" class="tsd-signature-type" data-tsd-kind="Class">QUrl</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+						</li>
+					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangColorIndex" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Color<wbr>Index</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Gets the currently selected Wang color index in the &quot;Terrain Sets&quot; view.
-								The value 0 is used to represent the eraser mode, and the first Wang color
-							has index 1.</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.9</p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangColorIndexChanged" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The signal emitted when <a href="TilesetEditor.html#currentWangColorIndex">currentWangColorIndex</a> changes.</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.9</p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangSet" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Set</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Set<span class="tsd-signature-symbol">:</span> <a href="../classes/WangSet.html" class="tsd-signature-type" data-tsd-kind="Class">WangSet</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Gets the currently selected <a href="../classes/WangSet.html">WangSet</a> in the &quot;Terrain Sets&quot; view.</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.9</p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangSetChanged" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Set<wbr>Changed</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The signal emitted when <a href="TilesetEditor.html#currentWangSet">currentWangSet</a> changes.</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.9</p>
-							</dd>
-						</dl>
-					</div>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="toString" class="tsd-anchor"></a>
+					<h3>to<wbr>String</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">to<wbr>String<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get a string representation of the file</p>
+								</div>
+							</div>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -210,34 +167,115 @@
 					<li class=" ">
 						<a href="../index.html">Exports</a>
 					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/File.html">File</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/FileInfo.html">File<wbr>Info</a>
+					</li>
+					<li class="current tsd-kind-namespace">
+						<a href="../modules/Qt.html">Qt</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/tiled.html">tiled</a>
+					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QCheckBox.html" class="tsd-kind-icon">QCheck<wbr>Box</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QComboBox.html" class="tsd-kind-icon">QCombo<wbr>Box</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QDoubleSpinBox.html" class="tsd-kind-icon">QDouble<wbr>Spin<wbr>Box</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QFrame.html" class="tsd-kind-icon">QFrame</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QLabel.html" class="tsd-kind-icon">QLabel</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QLineEdit.html" class="tsd-kind-icon">QLine<wbr>Edit</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QPushButton.html" class="tsd-kind-icon">QPush<wbr>Button</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QSlider.html" class="tsd-kind-icon">QSlider</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QTextEdit.html" class="tsd-kind-icon">QText<wbr>Edit</a>
+					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="TilesetEditor.html" class="tsd-kind-icon">Tileset<wbr>Editor</a>
+					<li class="current tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QUrl.html" class="tsd-kind-icon">QUrl</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="TilesetEditor.html#collisionEditor" class="tsd-kind-icon">collision<wbr>Editor</a>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="Qt.QUrl.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="TilesetEditor.html#currentWangColorIndex" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="TilesetEditor.html#currentWangColorIndexChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="TilesetEditor.html#currentWangSet" class="tsd-kind-icon">current<wbr>Wang<wbr>Set</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="TilesetEditor.html#currentWangSetChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Qt.QUrl.html#toString" class="tsd-kind-icon">to<wbr>String</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QWidget.html" class="tsd-kind-icon">QWidget</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#Alignment" class="tsd-kind-icon">Alignment</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#CheckState" class="tsd-kind-icon">Check<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignBottom" class="tsd-kind-icon">Align<wbr>Bottom</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignCenter" class="tsd-kind-icon">Align<wbr>Center</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignHCenter" class="tsd-kind-icon">AlignHCenter</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignJustify" class="tsd-kind-icon">Align<wbr>Justify</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignLeft" class="tsd-kind-icon">Align<wbr>Left</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignRight" class="tsd-kind-icon">Align<wbr>Right</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignTop" class="tsd-kind-icon">Align<wbr>Top</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignVCenter" class="tsd-kind-icon">AlignVCenter</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#Checked" class="tsd-kind-icon">Checked</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#PartiallyChecked" class="tsd-kind-icon">Partially<wbr>Checked</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#Unchecked" class="tsd-kind-icon">Unchecked</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#point" class="tsd-kind-icon">point</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#rect" class="tsd-kind-icon">rect</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#size" class="tsd-kind-icon">size</a>
+					</li>
 				</ul>
 			</nav>
 		</div>

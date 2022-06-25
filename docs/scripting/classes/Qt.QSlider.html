@@ -1,0 +1,451 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<meta name='viewport' content="width=device-width, initial-scale=1" />
+	<meta property="og:image" content="https://www.mapeditor.org/img/tiled-logo-filled.png" />
+	<link href='/favicon.ico' rel='icon' type='image/png'/>
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="/css/base.css">
+	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
+	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
+	<link rel="stylesheet" href="../assets/css/override.css">
+	<title>QSlider | Tiled Scripting API</title>
+	<meta name="description" content="Documentation for Tiled Scripting API">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<div class="headerbar-container">
+	<nav class="headerbar container">
+		<a href="/" class="headerbar-logo"><img src="/img/tiled-logo-white.png" class="logo" alt="Tiled logo" width="393" height="213" /></a>
+		<div class="headerbar-content">
+			<a class="header-item headerbar-button" href="https://doc.mapeditor.org/en/stable/">Docs</a>
+			<a class="header-item headerbar-button" href="/news">News</a>
+			<a class="header-item headerbar-button" href="/donate">Donate</a>
+			<div class="stretch"></div>
+			<!-- All icons from Font Awesome Free 5.15.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) -->
+			<a href="https://discourse.mapeditor.org/" class="header-item headerbar-social"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m22.59 2.7652c-12.26 0-22.59 9.85-22.59 22.01 0 0.39 0.01 22.79 0.01 22.79l22.58-0.02c12.27 0 22.21-10.23 22.21-22.39s-9.94-22.39-22.21-22.39zm-0.19 35.2c-1.94 0-3.79-0.43-5.44-1.21l-8.11 2.01 2.29-7.5c-0.98-1.81-1.54-3.89-1.54-6.1 0-7.07 5.73-12.8 12.8-12.8s12.8 5.73 12.8 12.8-5.73 12.8-12.8 12.8z"/></svg> <span class="tooltiptext">Forum</span></a>
+			<a href="https://discord.gg/39wbTv7" class="header-item headerbar-social"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m29.722 24.32c0 1.5616-1.152 2.8416-2.6112 2.8416-1.4336 0-2.6112-1.28-2.6112-2.8416s1.152-2.8416 2.6112-2.8416 2.6112 1.28 2.6112 2.8416zm-11.955-2.8416c-1.4592 0-2.6112 1.28-2.6112 2.8416s1.1776 2.8416 2.6112 2.8416c1.4592 0 2.6112-1.28 2.6112-2.8416 0.0256-1.5616-1.152-2.8416-2.6112-2.8416zm27.034-16.205v45.926c-6.4494-5.6994-4.3868-3.8128-11.878-10.778l1.3568 4.736h-29.03c-2.8928 0-5.248-2.3552-5.248-5.2736v-34.611c0-2.9184 2.3552-5.2736 5.248-5.2736h34.304c2.8928 0 5.248 2.3552 5.248 5.2736zm-7.296 24.269c0-8.2432-3.6864-14.925-3.6864-14.925-3.6864-2.7648-7.1936-2.688-7.1936-2.688l-0.3584 0.4096c4.352 1.3312 6.3744 3.2512 6.3744 3.2512-6.0811-3.3329-13.224-3.3335-19.123-0.7424-0.9472 0.4352-1.5104 0.7424-1.5104 0.7424s2.1248-2.0224 6.7328-3.3536l-0.256-0.3072s-3.5072-0.0768-7.1936 2.688c0 0-3.6864 6.6816-3.6864 14.925 0 0 2.1504 3.712 7.808 3.8912 0 0 0.9472-1.152 1.7152-2.1248-3.2512-0.9728-4.48-3.0208-4.48-3.0208 0.3766 0.2636 0.9976 0.6053 1.0496 0.64 4.321 2.4198 10.459 3.2126 15.974 0.896 0.896-0.3328 1.8944-0.8192 2.944-1.5104 0 0-1.28 2.0992-4.6336 3.0464 0.768 0.9728 1.6896 2.0736 1.6896 2.0736 5.6576-0.1792 7.8336-3.8912 7.8336-3.8912z"/></svg> <span class="tooltiptext">Discord</span></a>
+			<a href="https://twitter.com/TiledApp" class="header-item headerbar-social"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 51.2 51.2"><path d="m45.937 15.218c0.0325 0.4548 0.0325 0.9097 0.0325 1.3645 0 13.872-10.558 29.856-29.856 29.856-5.9452 0-11.468-1.7219-16.114-4.7106 0.8447 0.0974 1.6568 0.1299 2.534 0.1299 4.9055 0 9.4213-1.6568 13.027-4.4832-4.6132-0.0975-8.4792-3.1188-9.8112-7.2772 0.6498 0.0974 1.2995 0.1624 1.9818 0.1624 0.9421 0 1.8843-0.13 2.7614-0.3573-4.8081-0.9747-8.4143-5.198-8.4143-10.298v-0.1299c1.3969 0.7797 3.0214 1.267 4.7431 1.3319-2.8264-1.8843-4.6781-5.1005-4.6781-8.7391 0-1.9492 0.5197-3.736 1.4294-5.2954 5.1655 6.3675 12.93 10.526 21.636 10.981-0.1624-0.7797-0.2599-1.5918-0.2599-2.404 0-5.7828 4.6782-10.493 10.493-10.493 3.0213 0 5.7502 1.267 7.667 3.3137 2.3715-0.4548 4.6456-1.332 6.6599-2.534-0.7798 2.4366-2.4366 4.4833-4.6132 5.7827 2.1117-0.2273 4.1584-0.8122 6.0426-1.6243-1.4292 2.0791-3.2161 3.9308-5.2628 5.4253z"/></svg> <span class="tooltiptext">Twitter</span></a>
+			<a href="https://github.com/mapeditor/tiled" class="header-item headerbar-social"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.6 51.2"><path d="m16.59 40.099c0 0.2-0.23 0.36-0.52 0.36-0.33 0.03-0.56-0.13-0.56-0.36 0-0.2 0.23-0.36 0.52-0.36 0.3-0.03 0.56 0.13 0.56 0.36zm-3.11-0.45c-0.07 0.2 0.13 0.43 0.43 0.49 0.26 0.1 0.56 0 0.62-0.2s-0.13-0.43-0.43-0.52c-0.26-0.07-0.55 0.03-0.62 0.23zm4.42-0.17c-0.29 0.07-0.49 0.26-0.46 0.49 0.03 0.2 0.29 0.33 0.59 0.26 0.29-0.07 0.49-0.26 0.46-0.46-0.03-0.19-0.3-0.32-0.59-0.29zm6.58-38.32c-13.87 0-24.48 10.53-24.48 24.4 0 11.09 6.98 20.58 16.95 23.92 1.28 0.23 1.73-0.56 1.73-1.21 0-0.62-0.03-4.04-0.03-6.14 0 0-7 1.5-8.47-2.98 0 0-1.14-2.91-2.78-3.66 0 0-2.29-1.57 0.16-1.54 0 0 2.49 0.2 3.86 2.58 2.19 3.86 5.86 2.75 7.29 2.09 0.23-1.6 0.88-2.71 1.6-3.37-5.59-0.62-11.23-1.43-11.23-11.05 0-2.75 0.76-4.13 2.36-5.89-0.26-0.65-1.11-3.33 0.26-6.79 2.09-0.65 6.9 2.7 6.9 2.7 2-0.56 4.15-0.85 6.28-0.85s4.28 0.29 6.28 0.85c0 0 4.81-3.36 6.9-2.7 1.37 3.47 0.52 6.14 0.26 6.79 1.6 1.77 2.58 3.15 2.58 5.89 0 9.65-5.89 10.42-11.48 11.05 0.92 0.79 1.7 2.29 1.7 4.64 0 3.37-0.03 7.54-0.03 8.36 0 0.65 0.46 1.44 1.73 1.21 10-3.32 16.78-12.81 16.78-23.9 0-13.87-11.25-24.4-25.12-24.4zm-14.76 34.49c-0.13 0.1-0.1 0.33 0.07 0.52 0.16 0.16 0.39 0.23 0.52 0.1 0.13-0.1 0.1-0.33-0.07-0.52-0.16-0.16-0.39-0.23-0.52-0.1zm-1.08-0.81c-0.07 0.13 0.03 0.29 0.23 0.39 0.16 0.1 0.36 0.07 0.43-0.07 0.07-0.13-0.03-0.29-0.23-0.39-0.2-0.06-0.36-0.03-0.43 0.07zm3.24 3.56c-0.16 0.13-0.1 0.43 0.13 0.62 0.23 0.23 0.52 0.26 0.65 0.1 0.13-0.13 0.07-0.43-0.13-0.62-0.22-0.23-0.52-0.26-0.65-0.1zm-1.14-1.47c-0.16 0.1-0.16 0.36 0 0.59s0.43 0.33 0.56 0.23c0.16-0.13 0.16-0.39 0-0.62-0.14-0.23-0.4-0.33-0.56-0.2z"/></svg> <span class="tooltiptext">GitHub</span></a>
+		</div>
+	</nav>
+</div>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">Tiled Scripting API</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../index.html">Tiled Scripting API</a>
+				</li>
+				<li>
+					<a href="../modules/Qt.html">Qt</a>
+				</li>
+				<li>
+					<a href="Qt.QSlider.html">QSlider</a>
+				</li>
+			</ul>
+			<h1>Class QSlider</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>A slider for allowing the user to set an integer value.
+						Qt documentation: <a href="https://doc.qt.io/qt-5/qslider.html">QSlider</a></p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<a href="Qt.QWidget.html" class="tsd-signature-type" data-tsd-kind="Class">QWidget</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">QSlider</span>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section tsd-is-inherited">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QSlider.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QSlider.html#enabled" class="tsd-kind-icon">enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QSlider.html#maximum" class="tsd-kind-icon">maximum</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QSlider.html#minimum" class="tsd-kind-icon">minimum</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QSlider.html#tickInterval" class="tsd-kind-icon">tick<wbr>Interval</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QSlider.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QSlider.html#value" class="tsd-kind-icon">value</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QSlider.html#valueChanged" class="tsd-kind-icon">value<wbr>Changed</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QSlider.html#visible" class="tsd-kind-icon">visible</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">new QSlider<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QSlider.html" class="tsd-signature-type" data-tsd-kind="Class">QSlider</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#constructor">constructor</a></p>
+							</aside>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="enabled" class="tsd-anchor"></a>
+					<h3>enabled</h3>
+					<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#enabled">enabled</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>If false, the widget cannot be interacted with.
+							Qt documentation: <a href="https://doc.qt.io/qt-5/qwidget.html#enabled-prop">QWidget.enabled</a></p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="maximum" class="tsd-anchor"></a>
+					<h3>maximum</h3>
+					<div class="tsd-signature tsd-kind-icon">maximum<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The maximum value that can be set by the slider.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="minimum" class="tsd-anchor"></a>
+					<h3>minimum</h3>
+					<div class="tsd-signature tsd-kind-icon">minimum<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The minimum value that can be set by the slider.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="tickInterval" class="tsd-anchor"></a>
+					<h3>tick<wbr>Interval</h3>
+					<div class="tsd-signature tsd-kind-icon">tick<wbr>Interval<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The amount that each tick left or right on the slider will
+							change the value.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="toolTip" class="tsd-anchor"></a>
+					<h3>tool<wbr>Tip</h3>
+					<div class="tsd-signature tsd-kind-icon">tool<wbr>Tip<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#toolTip">toolTip</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The toolTip displayed when the user mouses over this widget</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="value" class="tsd-anchor"></a>
+					<h3>value</h3>
+					<div class="tsd-signature tsd-kind-icon">value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The integer value set in the slider</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="valueChanged" class="tsd-anchor"></a>
+					<h3>value<wbr>Changed</h3>
+					<div class="tsd-signature tsd-kind-icon">value<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Signal emitted when the value in the slider is changed.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="visible" class="tsd-anchor"></a>
+					<h3>visible</h3>
+					<div class="tsd-signature tsd-kind-icon">visible<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#visible">visible</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Controls whether this widget is visible.
+								When toggling this property, the dialog layout will automatically adjust itself
+								based on the visible widgets.
+							Qt documentation: <a href="https://doc.qt.io/qt-5/qwidget.html#visible-prop">QWidget.visible</a>;</p>
+						</div>
+					</div>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../index.html">Exports</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/File.html">File</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/FileInfo.html">File<wbr>Info</a>
+					</li>
+					<li class="current tsd-kind-namespace">
+						<a href="../modules/Qt.html">Qt</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/tiled.html">tiled</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QCheckBox.html" class="tsd-kind-icon">QCheck<wbr>Box</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QComboBox.html" class="tsd-kind-icon">QCombo<wbr>Box</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QDoubleSpinBox.html" class="tsd-kind-icon">QDouble<wbr>Spin<wbr>Box</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QFrame.html" class="tsd-kind-icon">QFrame</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QLabel.html" class="tsd-kind-icon">QLabel</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QLineEdit.html" class="tsd-kind-icon">QLine<wbr>Edit</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QPushButton.html" class="tsd-kind-icon">QPush<wbr>Button</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QSlider.html" class="tsd-kind-icon">QSlider</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QSlider.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QSlider.html#enabled" class="tsd-kind-icon">enabled</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QSlider.html#maximum" class="tsd-kind-icon">maximum</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QSlider.html#minimum" class="tsd-kind-icon">minimum</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QSlider.html#tickInterval" class="tsd-kind-icon">tick<wbr>Interval</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QSlider.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QSlider.html#value" class="tsd-kind-icon">value</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QSlider.html#valueChanged" class="tsd-kind-icon">value<wbr>Changed</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QSlider.html#visible" class="tsd-kind-icon">visible</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QTextEdit.html" class="tsd-kind-icon">QText<wbr>Edit</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QUrl.html" class="tsd-kind-icon">QUrl</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QWidget.html" class="tsd-kind-icon">QWidget</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#Alignment" class="tsd-kind-icon">Alignment</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#CheckState" class="tsd-kind-icon">Check<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignBottom" class="tsd-kind-icon">Align<wbr>Bottom</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignCenter" class="tsd-kind-icon">Align<wbr>Center</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignHCenter" class="tsd-kind-icon">AlignHCenter</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignJustify" class="tsd-kind-icon">Align<wbr>Justify</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignLeft" class="tsd-kind-icon">Align<wbr>Left</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignRight" class="tsd-kind-icon">Align<wbr>Right</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignTop" class="tsd-kind-icon">Align<wbr>Top</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#AlignVCenter" class="tsd-kind-icon">AlignVCenter</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#Checked" class="tsd-kind-icon">Checked</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#PartiallyChecked" class="tsd-kind-icon">Partially<wbr>Checked</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#Unchecked" class="tsd-kind-icon">Unchecked</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#point" class="tsd-kind-icon">point</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#rect" class="tsd-kind-icon">rect</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="../modules/Qt.html#size" class="tsd-kind-icon">size</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<footer class="media-content">
+	<div class="footer-content container">
+		<p>Tiled - Copyright © 2008-2021 Thorbjørn Lindeijer<br> and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a></p>
+		<nav style="display: flex; justify-content: center; align-items: top; margin-left: 1em;">
+			<ul style="float: right; border-left: 2px solid #ececec; padding: 0 1em">
+				<li><a href="https://discourse.mapeditor.org/">Forum</a></li>
+				<li><a href="https://doc.mapeditor.org/en/stable/">Documentation</a></li>
+				<li><a href="/news">News</a></li>
+				<li><a href="/donate">Donate</a></li>
+				<li><a href="https://discord.gg/39wbTv7">Discord</a></li>
+				<li><a href="https://twitter.com/TiledApp">Twitter</a></li>
+				<li><a href="https://github.com/mapeditor/tiled">GitHub</a></li>
+			</ul>
+		</nav>
+	</div>
+</footer>
+</body>
+</html>

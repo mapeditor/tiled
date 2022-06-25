@@ -123,8 +123,11 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#asset" class="tsd-kind-icon">asset</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#backgroundColor" class="tsd-kind-icon">background<wbr>Color</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#className" class="tsd-kind-icon">class<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#columnCount" class="tsd-kind-icon">column<wbr>Count</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#fileName" class="tsd-kind-icon">file<wbr>Name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#fileNameChanged" class="tsd-kind-icon">file<wbr>Name<wbr>Changed</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#fillMode" class="tsd-kind-icon">fill<wbr>Mode</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#image" class="tsd-kind-icon">image</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#imageHeight" class="tsd-kind-icon">image<wbr>Height</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#imageSize" class="tsd-kind-icon">image<wbr>Size</a></li>
@@ -144,6 +147,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#tileCount" class="tsd-kind-icon">tile<wbr>Count</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#tileHeight" class="tsd-kind-icon">tile<wbr>Height</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#tileOffset" class="tsd-kind-icon">tile<wbr>Offset</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#tileRenderSize" class="tsd-kind-icon">tile<wbr>Render<wbr>Size</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#tileSize" class="tsd-kind-icon">tile<wbr>Size</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#tileSpacing" class="tsd-kind-icon">tile<wbr>Spacing</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#tileWidth" class="tsd-kind-icon">tile<wbr>Width</a></li>
@@ -153,10 +157,14 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#BottomLeft" class="tsd-kind-icon">Bottom<wbr>Left</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#BottomRight" class="tsd-kind-icon">Bottom<wbr>Right</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#Center" class="tsd-kind-icon">Center</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#GridSize" class="tsd-kind-icon">Grid<wbr>Size</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#Isometric" class="tsd-kind-icon">Isometric</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#Left" class="tsd-kind-icon">Left</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#Orthogonal" class="tsd-kind-icon">Orthogonal</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#PreserveAspectFit" class="tsd-kind-icon">Preserve<wbr>Aspect<wbr>Fit</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#Right" class="tsd-kind-icon">Right</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#Stretch" class="tsd-kind-icon">Stretch</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#TileSize" class="tsd-kind-icon">Tile<wbr>Size</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#Top" class="tsd-kind-icon">Top</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#TopLeft" class="tsd-kind-icon">Top<wbr>Left</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#TopRight" class="tsd-kind-icon">Top<wbr>Right</a></li>
@@ -238,6 +246,45 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="className" class="tsd-anchor"></a>
+					<h3>class<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">class<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#className">className</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Class name of the object.</p>
+						</div>
+						<p>Replaced the &quot;type&quot; of <a href="MapObject.html">MapObject</a> and <a href="Tile.html">Tile</a> in Tiled 1.9.</p>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.9</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="columnCount" class="tsd-anchor"></a>
+					<h3>column<wbr>Count</h3>
+					<div class="tsd-signature tsd-kind-icon">column<wbr>Count<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The number of tile columns in this tileset.</p>
+						</div>
+						<p>Can be changed in case of image-collection tilesets, in which case it
+							determines the number of columns used in the tileset view when dynamic
+						wrapping is disabled.</p>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.9</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="fileName" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> file<wbr>Name</h3>
 					<div class="tsd-signature tsd-kind-icon">file<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
@@ -263,6 +310,24 @@
 						</div>
 						<p>Its first parameter is the new file name, the second parameter is the old
 						file name.</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="fillMode" class="tsd-anchor"></a>
+					<h3>fill<wbr>Mode</h3>
+					<div class="tsd-signature tsd-kind-icon">fill<wbr>Mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#Stretch" class="tsd-signature-type" data-tsd-kind="Property">Stretch</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#PreserveAspectFit" class="tsd-signature-type" data-tsd-kind="Property">PreserveAspectFit</a></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The fill mode to use when rendering tiles from this tileset. Only relevant
+							when the tiles are not rendered at their native size.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.9</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -403,7 +468,7 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="nextTileId" class="tsd-anchor"></a>
-					<h3>next<wbr>Tile<wbr>Id</h3>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> next<wbr>Tile<wbr>Id</h3>
 					<div class="tsd-signature tsd-kind-icon">next<wbr>Tile<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 					</aside>
@@ -466,7 +531,7 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="tileCount" class="tsd-anchor"></a>
-					<h3>tile<wbr>Count</h3>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> tile<wbr>Count</h3>
 					<div class="tsd-signature tsd-kind-icon">tile<wbr>Count<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 					</aside>
@@ -498,6 +563,23 @@
 						<div class="lead">
 							<p>Offset in pixels that is applied when tiles from this tileset are rendered.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="tileRenderSize" class="tsd-anchor"></a>
+					<h3>tile<wbr>Render<wbr>Size</h3>
+					<div class="tsd-signature tsd-kind-icon">tile<wbr>Render<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#TileSize" class="tsd-signature-type" data-tsd-kind="Property">TileSize</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#GridSize" class="tsd-signature-type" data-tsd-kind="Property">GridSize</a></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The size to use when rendering tiles from this tileset on a tile layer.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.9</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -589,6 +671,13 @@
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="GridSize" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Grid<wbr>Size</h3>
+					<div class="tsd-signature tsd-kind-icon">Grid<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#GridSize" class="tsd-signature-type" data-tsd-kind="Property">GridSize</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="Isometric" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Isometric</h3>
 					<div class="tsd-signature tsd-kind-icon">Isometric<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#Isometric" class="tsd-signature-type" data-tsd-kind="Property">Isometric</a></div>
@@ -610,9 +699,30 @@
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="PreserveAspectFit" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Preserve<wbr>Aspect<wbr>Fit</h3>
+					<div class="tsd-signature tsd-kind-icon">Preserve<wbr>Aspect<wbr>Fit<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#PreserveAspectFit" class="tsd-signature-type" data-tsd-kind="Property">PreserveAspectFit</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="Right" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Right</h3>
 					<div class="tsd-signature tsd-kind-icon">Right<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#Right" class="tsd-signature-type" data-tsd-kind="Property">Right</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="Stretch" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Stretch</h3>
+					<div class="tsd-signature tsd-kind-icon">Stretch<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#Stretch" class="tsd-signature-type" data-tsd-kind="Property">Stretch</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="TileSize" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Tile<wbr>Size</h3>
+					<div class="tsd-signature tsd-kind-icon">Tile<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#TileSize" class="tsd-signature-type" data-tsd-kind="Property">TileSize</a></div>
 					<aside class="tsd-sources">
 					</aside>
 				</section>
@@ -1039,10 +1149,19 @@
 								<a href="Tileset.html#backgroundColor" class="tsd-kind-icon">background<wbr>Color</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Tileset.html#className" class="tsd-kind-icon">class<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Tileset.html#columnCount" class="tsd-kind-icon">column<wbr>Count</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="Tileset.html#fileName" class="tsd-kind-icon">file<wbr>Name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="Tileset.html#fileNameChanged" class="tsd-kind-icon">file<wbr>Name<wbr>Changed</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Tileset.html#fillMode" class="tsd-kind-icon">fill<wbr>Mode</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Tileset.html#image" class="tsd-kind-icon">image</a>
@@ -1102,6 +1221,9 @@
 								<a href="Tileset.html#tileOffset" class="tsd-kind-icon">tile<wbr>Offset</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Tileset.html#tileRenderSize" class="tsd-kind-icon">tile<wbr>Render<wbr>Size</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Tileset.html#tileSize" class="tsd-kind-icon">tile<wbr>Size</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
@@ -1129,6 +1251,9 @@
 								<a href="Tileset.html#Center" class="tsd-kind-icon">Center</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="Tileset.html#GridSize" class="tsd-kind-icon">Grid<wbr>Size</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
 								<a href="Tileset.html#Isometric" class="tsd-kind-icon">Isometric</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
@@ -1138,7 +1263,16 @@
 								<a href="Tileset.html#Orthogonal" class="tsd-kind-icon">Orthogonal</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="Tileset.html#PreserveAspectFit" class="tsd-kind-icon">Preserve<wbr>Aspect<wbr>Fit</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
 								<a href="Tileset.html#Right" class="tsd-kind-icon">Right</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="Tileset.html#Stretch" class="tsd-kind-icon">Stretch</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="Tileset.html#TileSize" class="tsd-kind-icon">Tile<wbr>Size</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
 								<a href="Tileset.html#Top" class="tsd-kind-icon">Top</a>

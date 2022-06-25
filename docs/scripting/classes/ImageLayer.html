@@ -120,7 +120,9 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#asset" class="tsd-kind-icon">asset</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#className" class="tsd-kind-icon">class<wbr>Name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="ImageLayer.html#image" class="tsd-kind-icon">image</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="ImageLayer.html#imageSource" class="tsd-kind-icon">image<wbr>Source</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#isGroupLayer" class="tsd-kind-icon">is<wbr>Group<wbr>Layer</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#isImageLayer" class="tsd-kind-icon">is<wbr>Image<wbr>Layer</a></li>
@@ -145,12 +147,12 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ImageLayer.html#loadFromImage" class="tsd-kind-icon">load<wbr>From<wbr>Image</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#properties" class="tsd-kind-icon">properties</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#property" class="tsd-kind-icon">property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#removeProperty" class="tsd-kind-icon">remove<wbr>Property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#resolvedProperties" class="tsd-kind-icon">resolved<wbr>Properties</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ImageLayer.html#setImage" class="tsd-kind-icon">set<wbr>Image</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#setProperties" class="tsd-kind-icon">set<wbr>Properties</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#setProperty" class="tsd-kind-icon">set<wbr>Property</a></li>
 							</ul>
@@ -196,6 +198,25 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="className" class="tsd-anchor"></a>
+					<h3>class<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">class<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Layer.html">Layer</a>.<a href="Layer.html#className">className</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Class name of the object.</p>
+						</div>
+						<p>Replaced the &quot;type&quot; of <a href="MapObject.html">MapObject</a> and <a href="Tile.html">Tile</a> in Tiled 1.9.</p>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.9</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="id" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> id</h3>
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
@@ -209,6 +230,28 @@
 						<dl class="tsd-comment-tags">
 							<dt>since</dt>
 							<dd><p>1.5</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="image" class="tsd-anchor"></a>
+					<h3>image</h3>
+					<div class="tsd-signature tsd-kind-icon">image<span class="tsd-signature-symbol">:</span> <a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Returns a copy of this layer&#39;s image.</p>
+						</div>
+						<p>When assigning an image to this property, the imageSource property is
+						cleared. Use <a href="ImageLayer.html#setImage">setImage</a> when you want to also set the imageSource.</p>
+						<dl class="tsd-comment-tags">
+							<dt>warning</dt>
+							<dd><p>This property is writable but has no undo!</p>
+							</dd>
+							<dt>since</dt>
+							<dd><p>1.9</p>
 							</dd>
 						</dl>
 					</div>
@@ -442,6 +485,8 @@
 								layer or by any child layers. Affects tile layers, image layers and tile
 							objects.</p>
 						</div>
+						<p>Since Tiled 1.8.5, this property is #ffffff when no tint color has been
+						set on this layer (before it was #000000 in that case).</p>
 						<dl class="tsd-comment-tags">
 							<dt>since</dt>
 							<dd><p>1.8</p>
@@ -477,30 +522,6 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="loadFromImage" class="tsd-anchor"></a>
-					<h3>load<wbr>From<wbr>Image</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">load<wbr>From<wbr>Image<span class="tsd-signature-symbol">(</span>image<span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a>, source<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Sets the image for this layer to the given image, optionally also
-									setting the source of the image.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>warning</dt>
-									<dd><p>This function has no undo!</p>
-									</dd>
-								</dl>
-							</div>
-						</li>
-					</ul>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="properties" class="tsd-anchor"></a>
 					<h3>properties</h3>
@@ -607,6 +628,30 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setImage" class="tsd-anchor"></a>
+					<h3>set<wbr>Image</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Image<span class="tsd-signature-symbol">(</span>image<span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a>, source<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the image for this layer to the given image, optionally also
+									setting the source of the image.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>warning</dt>
+									<dd><p>This function has no undo!</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="setProperties" class="tsd-anchor"></a>
 					<h3>set<wbr>Properties</h3>
@@ -679,7 +724,13 @@
 								<a href="ImageLayer.html#asset" class="tsd-kind-icon">asset</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="ImageLayer.html#className" class="tsd-kind-icon">class<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="ImageLayer.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="ImageLayer.html#image" class="tsd-kind-icon">image</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="ImageLayer.html#imageSource" class="tsd-kind-icon">image<wbr>Source</a>
@@ -738,9 +789,6 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="ImageLayer.html#visible" class="tsd-kind-icon">visible</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ImageLayer.html#loadFromImage" class="tsd-kind-icon">load<wbr>From<wbr>Image</a>
-							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="ImageLayer.html#properties" class="tsd-kind-icon">properties</a>
 							</li>
@@ -755,6 +803,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="ImageLayer.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="ImageLayer.html#setImage" class="tsd-kind-icon">set<wbr>Image</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="ImageLayer.html#setProperties" class="tsd-kind-icon">set<wbr>Properties</a>

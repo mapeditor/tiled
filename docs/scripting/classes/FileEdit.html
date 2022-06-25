@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>TilesetEditor | Tiled Scripting API</title>
+	<title>FileEdit | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -76,10 +76,10 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="TilesetEditor.html">TilesetEditor</a>
+					<a href="FileEdit.html">FileEdit</a>
 				</li>
 			</ul>
-			<h1>Interface TilesetEditor</h1>
+			<h1>Class FileEdit</h1>
 		</div>
 	</div>
 </header>
@@ -89,7 +89,8 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The tileset editor, accessible through <a href="../modules/tiled.html#tilesetEditor">tiled.tilesetEditor</a>.</p>
+						<p>Widget with a button which opens a file picker dialog
+						and displays the path in the dialog.</p>
 					</div>
 				</div>
 			</section>
@@ -97,7 +98,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">TilesetEditor</span>
+						<a href="Qt.QWidget.html" class="tsd-signature-type" data-tsd-kind="Class">QWidget</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">FileEdit</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -105,101 +111,109 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
+						<section class="tsd-index-section tsd-is-inherited">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="FileEdit.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TilesetEditor.html#collisionEditor" class="tsd-kind-icon">collision<wbr>Editor</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TilesetEditor.html#currentWangColorIndex" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TilesetEditor.html#currentWangColorIndexChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TilesetEditor.html#currentWangSet" class="tsd-kind-icon">current<wbr>Wang<wbr>Set</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TilesetEditor.html#currentWangSetChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="FileEdit.html#enabled" class="tsd-kind-icon">enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="FileEdit.html#fileUrl" class="tsd-kind-icon">file<wbr>Url</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="FileEdit.html#fileUrlChanged" class="tsd-kind-icon">file<wbr>Url<wbr>Changed</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="FileEdit.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="FileEdit.html#visible" class="tsd-kind-icon">visible</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>File<wbr>Edit<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="FileEdit.html" class="tsd-signature-type" data-tsd-kind="Class">FileEdit</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#constructor">constructor</a></p>
+							</aside>
+						</li>
+					</ul>
+				</section>
+			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="collisionEditor" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> collision<wbr>Editor</h3>
-					<div class="tsd-signature tsd-kind-icon">collision<wbr>Editor<span class="tsd-signature-symbol">:</span> <a href="TileCollisionEditor.html" class="tsd-signature-type" data-tsd-kind="Interface">TileCollisionEditor</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="enabled" class="tsd-anchor"></a>
+					<h3>enabled</h3>
+					<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#enabled">enabled</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Access the collision editor within the tileset editor.</p>
+							<p>If false, the widget cannot be interacted with.
+							Qt documentation: <a href="https://doc.qt.io/qt-5/qwidget.html#enabled-prop">QWidget.enabled</a></p>
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangColorIndex" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Color<wbr>Index</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="fileUrl" class="tsd-anchor"></a>
+					<h3>file<wbr>Url</h3>
+					<div class="tsd-signature tsd-kind-icon">file<wbr>Url<span class="tsd-signature-symbol">:</span> <a href="Qt.QUrl.html" class="tsd-signature-type" data-tsd-kind="Class">QUrl</a></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Gets the currently selected Wang color index in the &quot;Terrain Sets&quot; view.
-								The value 0 is used to represent the eraser mode, and the first Wang color
-							has index 1.</p>
+							<p>The {@link Qt.Qurl} of the currently selected file.</p>
 						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.9</p>
-							</dd>
-						</dl>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangColorIndexChanged" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="fileUrlChanged" class="tsd-anchor"></a>
+					<h3>file<wbr>Url<wbr>Changed</h3>
+					<div class="tsd-signature tsd-kind-icon">file<wbr>Url<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><a href="Qt.QUrl.html" class="tsd-signature-type" data-tsd-kind="Class">QUrl</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The signal emitted when <a href="TilesetEditor.html#currentWangColorIndex">currentWangColorIndex</a> changes.</p>
+							<p>Signal emitted when the selected fileUrl changes</p>
 						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.9</p>
-							</dd>
-						</dl>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangSet" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Set</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Set<span class="tsd-signature-symbol">:</span> <a href="../classes/WangSet.html" class="tsd-signature-type" data-tsd-kind="Class">WangSet</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="toolTip" class="tsd-anchor"></a>
+					<h3>tool<wbr>Tip</h3>
+					<div class="tsd-signature tsd-kind-icon">tool<wbr>Tip<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#toolTip">toolTip</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Gets the currently selected <a href="../classes/WangSet.html">WangSet</a> in the &quot;Terrain Sets&quot; view.</p>
+							<p>The toolTip displayed when the user mouses over this widget</p>
 						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.9</p>
-							</dd>
-						</dl>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangSetChanged" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Set<wbr>Changed</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="visible" class="tsd-anchor"></a>
+					<h3>visible</h3>
+					<div class="tsd-signature tsd-kind-icon">visible<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#visible">visible</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The signal emitted when <a href="TilesetEditor.html#currentWangSet">currentWangSet</a> changes.</p>
+							<p>Controls whether this widget is visible.
+								When toggling this property, the dialog layout will automatically adjust itself
+								based on the visible widgets.
+							Qt documentation: <a href="https://doc.qt.io/qt-5/qwidget.html#visible-prop">QWidget.visible</a>;</p>
 						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.9</p>
-							</dd>
-						</dl>
 					</div>
 				</section>
 			</section>
@@ -216,23 +230,26 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="TilesetEditor.html" class="tsd-kind-icon">Tileset<wbr>Editor</a>
+					<li class="current tsd-kind-class">
+						<a href="FileEdit.html" class="tsd-kind-icon">File<wbr>Edit</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="TilesetEditor.html#collisionEditor" class="tsd-kind-icon">collision<wbr>Editor</a>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+								<a href="FileEdit.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="TilesetEditor.html#currentWangColorIndex" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="FileEdit.html#enabled" class="tsd-kind-icon">enabled</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="TilesetEditor.html#currentWangColorIndexChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="FileEdit.html#fileUrl" class="tsd-kind-icon">file<wbr>Url</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="TilesetEditor.html#currentWangSet" class="tsd-kind-icon">current<wbr>Wang<wbr>Set</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="FileEdit.html#fileUrlChanged" class="tsd-kind-icon">file<wbr>Url<wbr>Changed</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="TilesetEditor.html#currentWangSetChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="FileEdit.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="FileEdit.html#visible" class="tsd-kind-icon">visible</a>
 							</li>
 						</ul>
 					</li>

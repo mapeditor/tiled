@@ -93,7 +93,7 @@
 					</div>
 					<p>Also useful when writing an importer, where the image can be set on a
 						tileset (<a href="Tileset.html#loadFromImage">Tileset.loadFromImage</a>), its tiles (<a href="Tile.html#setImage">Tile.setImage</a>)
-					or an image layer (<a href="ImageLayer.html#loadFromImage">ImageLayer.loadFromImage</a>).</p>
+					or an image layer ({@link ImageLayer.loadFromImage}).</p>
 					<dl class="tsd-comment-tags">
 						<dt>since</dt>
 						<dd><p>1.5</p>
@@ -633,8 +633,8 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Fills the image with the given 32-bit color value or color table
-									index.</p>
+									<p>Fills the image with the given 32-bit unsigned color value (ARGB) or color
+									table index.</p>
 								</div>
 							</div>
 						</li>
@@ -718,7 +718,7 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns the 32-bit color value.</p>
+									<p>Returns the 32-bit unsigned color value (in ARGB order).</p>
 								</div>
 							</div>
 						</li>
@@ -833,7 +833,7 @@
 					<a name="setColorTable" class="tsd-anchor"></a>
 					<h3>set<wbr>Color<wbr>Table</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Color<wbr>Table<span class="tsd-signature-symbol">(</span>colors<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Color<wbr>Table<span class="tsd-signature-symbol">(</span>colors<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -860,8 +860,8 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sets the color at the specified location to the given 32-bit color
-									value or color table index.</p>
+									<p>Sets the color at the specified location to the given 32-bit unsigned
+									color value (ARGB) or color table index.</p>
 								</div>
 							</div>
 						</li>
