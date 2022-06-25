@@ -3824,11 +3824,12 @@ declare class ImageWidget extends Qt.QWidget{
    */
   image: Image;
 }
+
 /**
  * The `Dialog` object is used to display a dialog to the user
  * which can be filled with a variety of widgets.
  *
- * The left-hand column of the dialog can only contain labels. If you call {@link addLabel()} without
+ * The left-hand column of the dialog can only contain labels. If you call {@link addLabel} without
  * specifying maxWidth = true, your label will be placed in the left-hand column of the dialog.
  *
  * All other widgets will be placed in the right-hand side column. When you add multiple instances
