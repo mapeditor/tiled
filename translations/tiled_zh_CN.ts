@@ -76,7 +76,7 @@
     <message>
         <location line="+7"/>
         <source>Unknown version: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>未知版本: %1</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -167,7 +167,7 @@
     <message>
         <location line="+10"/>
         <source>Evaluate a script file and quit</source>
-        <translation type="unfinished"></translation>
+        <translation>运行脚本文件并退出</translation>
     </message>
     <message>
         <location line="+65"/>
@@ -297,7 +297,7 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+95"/>
         <source>Defold Tile Map (*.tilemap)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Defold Tile Map (*.tilemap)</translation>
     </message>
 </context>
 <context>
@@ -305,7 +305,7 @@
     <message>
         <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+138"/>
         <source>Defold Collection (*.collection)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Defold Collection (*.collection)</translation>
     </message>
 </context>
 <context>
@@ -468,7 +468,7 @@
     <message>
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-595"/>
         <source>Custom Types files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>自定义格式文件 (*.json)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -780,7 +780,7 @@
     <message>
         <location line="+181"/>
         <source>&amp;New Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>新建项目(&amp;N)...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -945,7 +945,7 @@
     <message>
         <location line="+158"/>
         <source>&amp;New World...</source>
-        <translation type="unfinished">新的世界...</translation>
+        <translation>新的世界(&amp;N)...</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -995,7 +995,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation type="unfinished">载入世界...</translation>
+        <translation>载入世界(&amp;L)...</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1386,7 +1386,7 @@ Line %1, column %2</source>
     <message>
         <location line="+30"/>
         <source>Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>最近项目</translation>
     </message>
     <message>
         <location line="+110"/>
@@ -1836,12 +1836,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertytypeseditor.ui" line="+14"/>
         <source>Custom Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>自定义格式编辑器</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Custom Types</source>
-        <translation type="unfinished"></translation>
+        <translation>自定义格式</translation>
     </message>
 </context>
 <context>
@@ -4325,7 +4325,7 @@ Please select specific format.</source>
         <location line="-496"/>
         <location line="+1548"/>
         <source>Custom Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>自定义格式编辑器</translation>
     </message>
     <message>
         <location line="-1096"/>
@@ -4382,7 +4382,7 @@ Please select specific format.</source>
     <message>
         <location line="+15"/>
         <source>New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>新建项目</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -5212,17 +5212,17 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Latest</source>
-        <translation type="unfinished"></translation>
+        <translation>最新</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Compatibility Version</source>
-        <translation type="unfinished"></translation>
+        <translation>版本兼容</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Extensions Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>插件文件夹</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -5237,7 +5237,7 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Paths &amp;&amp; Files</source>
-        <translation type="unfinished"></translation>
+        <translation>路径 &amp;&amp; 文件</translation>
     </message>
 </context>
 <context>
@@ -5635,7 +5635,7 @@ Please select specific format.</source>
     <message>
         <location line="+8"/>
         <source>Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>填充模式</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -5746,7 +5746,7 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">拉伸</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5959,13 +5959,13 @@ Please select specific format.</source>
         <location line="+166"/>
         <location line="+427"/>
         <source>Export Types</source>
-        <translation type="unfinished"></translation>
+        <translation>导出格式</translation>
     </message>
     <message>
         <location line="-425"/>
         <location line="+365"/>
         <source>Import Types</source>
-        <translation type="unfinished"></translation>
+        <translation>导入格式</translation>
     </message>
     <message>
         <location line="-327"/>
@@ -6027,7 +6027,7 @@ Please select specific format.</source>
         <location line="+8"/>
         <location line="+7"/>
         <source>Error Reading Types</source>
-        <translation type="unfinished"></translation>
+        <translation>读取格式错误</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -6038,13 +6038,13 @@ Please select specific format.</source>
         <location line="+8"/>
         <location line="+7"/>
         <source>Error Writing Types</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">写入格式错误</translation>
     </message>
     <message>
         <location line="+72"/>
         <location line="+86"/>
         <source>Select Types</source>
-        <translation type="unfinished"></translation>
+        <translation>选择格式</translation>
     </message>
     <message>
         <location line="-23"/>
@@ -7120,7 +7120,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changeproperties.cpp" line="+37"/>
         <source>Change Type</source>
-        <translation type="unfinished"></translation>
+        <translation>切换格式</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -7236,7 +7236,7 @@ Please select specific format.</source>
     <message>
         <location line="+26"/>
         <source>Change Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>切换填充模式</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -7637,12 +7637,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/abstractworldtool.cpp" line="-299"/>
         <source>Add Map to World</source>
-        <translation type="unfinished"></translation>
+        <translation>添加地图到世界</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Remove Map from World</source>
-        <translation type="unfinished"></translation>
+        <translation>从世界中删除地图</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/transformmapobjects.cpp" line="+4"/>
