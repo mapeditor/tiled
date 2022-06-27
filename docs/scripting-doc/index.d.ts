@@ -3855,10 +3855,10 @@ declare class Dialog {
    */
   constructor();
   /**
-   * Create a new dialog object, customizing the title and size.
-   * @param labelText
+   * Create a new dialog object, customizing the title.
+   * @param windowTitle - the title appearing at the top of the dialog.
    */
-  constructor(labelText: string);
+  constructor(windowTitle: string);
   /**
    * The default row layout mode for Dialogs.
    * In this mode, if you add multiple of the same type of widget in a row,
