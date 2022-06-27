@@ -3829,11 +3829,11 @@ declare class ImageWidget extends Qt.QWidget{
  * The `Dialog` object is used to display a dialog to the user
  * which can be filled with a variety of widgets.
  *
- * The left-hand column of the dialog can only contain labels. If you call {@link addLabel} without
- * specifying maxWidth = true, your label will be placed in the left-hand column of the dialog.
+ * The left-hand column of the dialog can only contain headings. If you call {@link addHeading} without
+ * specifying maxWidth = true, your heading will be placed in the left-hand column of the dialog.
  *
  * All other widgets will be placed in the right-hand side column. When you add multiple instances
- * of the same type of widget sequentially, they will be grouped into the same row unless you call {@link addNewRow()}
+ * of the same type of widget sequentially, they will be grouped into the same row unless you call {@link addNewRow}
  * in between adding the widgets.
  *
  * This type is an extension of the [QDialog](https://doc.qt.io/qt-5/qdialog.html) type from Qt.
@@ -3883,6 +3883,12 @@ declare class Dialog {
    * column.
    */
   static readonly SingleWidgetRows: unique symbol;
+
+  /**
+   * Controls the automatic widget placement behavior of the dialog. 
+   * Defaults to {@link SameWidgetRows}
+   */
+  newRowMode: typeof Dialog.SingleWidgetRows | typeof Dialog.SameWidgetRows | typeof Dialog.ManualRows;
 
   /**
    * Call this to force the next widget to go on a new row,
