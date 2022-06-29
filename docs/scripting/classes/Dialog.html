@@ -92,10 +92,10 @@
 						<p>The <code>Dialog</code> object is used to display a dialog to the user
 						which can be filled with a variety of widgets.</p>
 					</div>
-					<p>The left-hand column of the dialog can only contain labels. If you call <a href="Dialog.html#addLabel">addLabel</a> without
-					specifying maxWidth = true, your label will be placed in the left-hand column of the dialog.</p>
+					<p>The left-hand column of the dialog can only contain headings. If you call <a href="Dialog.html#addHeading">addHeading</a> without
+					specifying maxWidth = true, your heading will be placed in the left-hand column of the dialog.</p>
 					<p>All other widgets will be placed in the right-hand side column. When you add multiple instances
-						of the same type of widget sequentially, they will be grouped into the same row unless you call {@link addNewRow()}
+						of the same type of widget sequentially, they will be grouped into the same row unless you call <a href="Dialog.html#addNewRow">addNewRow</a>
 					in between adding the widgets.</p>
 					<p>This type is an extension of the <a href="https://doc.qt.io/qt-5/qdialog.html">QDialog</a> type from Qt.</p>
 				</div>
@@ -125,6 +125,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#finished" class="tsd-kind-icon">finished</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#newRowMode" class="tsd-kind-icon">new<wbr>Row<wbr>Mode</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#rejected" class="tsd-kind-icon">rejected</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#windowTitle" class="tsd-kind-icon">window<wbr>Title</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Dialog.html#Accepted" class="tsd-kind-icon">Accepted</a></li>
@@ -168,7 +169,7 @@
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
 						<li class="tsd-signature tsd-kind-icon">new <wbr>Dialog<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Dialog.html" class="tsd-signature-type" data-tsd-kind="Class">Dialog</a></li>
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Dialog<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Dialog.html" class="tsd-signature-type" data-tsd-kind="Class">Dialog</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Dialog<span class="tsd-signature-symbol">(</span>windowTitle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Dialog.html" class="tsd-signature-type" data-tsd-kind="Class">Dialog</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -186,7 +187,7 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Create a new dialog object, customizing the title and size.</p>
+									<p>Create a new dialog object, customizing the title.</p>
 								</div>
 							</div>
 						</li>
@@ -247,6 +248,19 @@
 							<p>You can use this property to prevent the dialog from being resized to a width
 								below this amount. When you change minimumWidth, ifthe dialog is already less wide than
 							the provided width, it will scale itself up automatically.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="newRowMode" class="tsd-anchor"></a>
+					<h3>new<wbr>Row<wbr>Mode</h3>
+					<div class="tsd-signature tsd-kind-icon">new<wbr>Row<wbr>Mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#SameWidgetRows" class="tsd-signature-type" data-tsd-kind="Property">SameWidgetRows</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#ManualRows" class="tsd-signature-type" data-tsd-kind="Property">ManualRows</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#SingleWidgetRows" class="tsd-signature-type" data-tsd-kind="Property">SingleWidgetRows</a></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Controls the automatic widget placement behavior of the dialog.
+							Defaults to <a href="Dialog.html#SameWidgetRows">SameWidgetRows</a></p>
 						</div>
 					</div>
 				</section>
@@ -735,6 +749,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Dialog.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Dialog.html#newRowMode" class="tsd-kind-icon">new<wbr>Row<wbr>Mode</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Dialog.html#rejected" class="tsd-kind-icon">rejected</a>
