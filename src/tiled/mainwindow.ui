@@ -184,6 +184,7 @@
     <addaction name="separator"/>
     <addaction name="actionFullScreen"/>
     <addaction name="actionClearView"/>
+    <addaction name="actionSearchActions"/>
    </widget>
    <widget class="QMenu" name="menuTileset">
     <property name="title">
@@ -790,6 +791,17 @@
   <action name="actionAddAutomappingRulesTileset">
    <property name="text">
     <string>Add Automapping Rules Tileset</string>
+   </property>
+  </action>
+  <action name="actionSearchActions">
+   <property name="text">
+    <string>Search Actions</string>
+   </property>
+   <property name="toolTip">
+    <string>Search actions available in Tiled</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
    </property>
   </action>
  </widget>

@@ -30,6 +30,7 @@
 
 #include "aboutdialog.h"
 #include "actionmanager.h"
+#include "actionsearchwidget.h"
 #include "addremovetileset.h"
 #include "automappingmanager.h"
 #include "commandbutton.h"
@@ -294,6 +295,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionOffsetMap, "OffsetMap");
     ActionManager::registerAction(mUi->actionOpen, "Open");
     ActionManager::registerAction(mUi->actionOpenFileInProject, "OpenFileInProject");
+    ActionManager::registerAction(mUi->actionSearchActions, "SearchActions");
     ActionManager::registerAction(mUi->actionPaste, "Paste");
     ActionManager::registerAction(mUi->actionPasteInPlace, "PasteInPlace");
     ActionManager::registerAction(mUi->actionPreferences, "Preferences");
@@ -530,6 +532,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
     connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);
     connect(mUi->actionOpenFileInProject, &QAction::triggered, this, &MainWindow::openFileInProject);
+    connect(mUi->actionSearchActions, &QAction::triggered, this, &MainWindow::searchActions);
     connect(mUi->actionReopenClosedFile, &QAction::triggered, this, &MainWindow::reopenClosedFile);
     connect(mUi->actionClearRecentFiles, &QAction::triggered, preferences, &Preferences::clearRecentFiles);
     connect(mUi->actionSave, &QAction::triggered, this, &MainWindow::saveFile);
@@ -1156,6 +1159,23 @@ void MainWindow::openFileInProject()
     mLocatorWidget->show();
 }
 
+void MainWindow::searchActions()
+{
+    if (mActionSearchWidget)
+        return;
+
+    const QSize size(qMax(width() / 3, qMin(Utils::dpiScaled(600), width())),
+                     qMin(Utils::dpiScaled(600), height()));
+    const int remainingHeight = height() - size.height();
+    const QPoint localPos((width() - size.width()) / 2,
+                          qMin(remainingHeight / 5, Utils::dpiScaled(60)));
+    const QRect rect = QRect(mapToGlobal(localPos), size);
+
+    mActionSearchWidget = new ActionSearchWidget(this);
+    mActionSearchWidget->move(rect.topLeft());
+    mActionSearchWidget->setMaximumSize(rect.size());
+    mActionSearchWidget->show();
+}
 static Document *saveAsDocument(Document *document)
 {
     if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document))
@@ -2152,6 +2172,7 @@ void MainWindow::updateActions()
         standardActions = editor->enabledStandardActions();
 
     mUi->actionOpenFileInProject->setEnabled(projectHasFolders);
+    mUi->actionSearchActions->setEnabled(true);
     mUi->actionSave->setEnabled(document);
     mUi->actionSaveAs->setEnabled(document);
     mUi->actionSaveAll->setEnabled(document);

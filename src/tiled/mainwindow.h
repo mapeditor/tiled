@@ -23,6 +23,7 @@
 
 #pragma once
 
+#include "actionsearchwidget.h"
 #include "clipboardmanager.h"
 #include "document.h"
 #include "preferences.h"
@@ -117,6 +118,7 @@ private:
     void newMap();
     void openFileDialog();
     void openFileInProject();
+    void searchActions();
     bool saveFile();
     bool saveFileAs();
     void saveAll();
@@ -239,6 +241,7 @@ private:
     IssuesDock *mIssuesDock;
     PropertyTypesEditor *mPropertyTypesEditor;
     QPointer<LocatorWidget> mLocatorWidget;
+    QPointer<ActionSearchWidget> mActionSearchWidget;
     QPointer<QWidget> mPopupWidget;
     double mPopupWidgetShowProgress = 1.0;
 
