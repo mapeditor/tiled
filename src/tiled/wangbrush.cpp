@@ -151,7 +151,11 @@ void WangBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 
 void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
-    const bool isTileMode = modifiers & Qt::ControlModifier;
+    // TODO: set this from a toolbar toggle or something.
+    const bool isTileModeByDefault = true;
+
+    const bool isControlPressed = modifiers & Qt::ControlModifier;
+    const bool isTileMode = isControlPressed != isTileModeByDefault;
     const bool rotationalSymmetry = modifiers & Qt::AltModifier;
     const bool lineMode = modifiers & Qt::ShiftModifier;
 
