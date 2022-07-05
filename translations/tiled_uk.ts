@@ -6181,7 +6181,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/varianteditorfactory.cpp" line="+64"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Скинути</translation>
     </message>
 </context>
 <context>
