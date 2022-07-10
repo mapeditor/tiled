@@ -33,6 +33,7 @@
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
 #include "wangfiller.h"
+#include "actionmanager.h"
 
 #include <QStyleOptionGraphicsItem>
 #include <QtMath>
@@ -115,6 +116,25 @@ WangBrush::WangBrush(QObject *parent)
                        new WangBrushItem,
                        parent)
 {
+    // Set up toolbar action for toggling fill full tiles mode,
+    // which basically makes the brush bigger.
+
+    // TODO: set a proper icon for this action.
+    QIcon rotateRightIcon(QLatin1String(":images/24/rotate-right.png"));
+    rotateRightIcon.addFile(QLatin1String(":images/32/rotate-right.png"));
+
+    mToggleFillFullTiles = new QAction(this);
+    mToggleFillFullTiles->setCheckable(true);
+    mToggleFillFullTiles->setIcon(rotateRightIcon);
+    mToggleFillFullTiles->setText(tr("Fill Full Tiles"));
+    mToggleFillFullTiles->setShortcut(Qt::Key_L);
+
+    ActionManager::registerAction(mToggleFillFullTiles, "ToggleFillFullTiles");
+    connect(mToggleFillFullTiles, &QAction::toggled, [this](bool isChecked) {
+        mIsFillFullTilesByDefault = isChecked;
+        mIsTileMode = mIsFillFullTilesByDefault;
+        stateChanged();
+    });
 }
 
 WangBrush::~WangBrush()
@@ -178,11 +198,9 @@ void WangBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 
 void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
-    // TODO: set this from a toolbar toggle or something.
-    const bool isTileModeByDefault = true;
 
     const bool isControlPressed = modifiers & Qt::ControlModifier;
-    const bool isTileMode = isControlPressed != isTileModeByDefault;
+    const bool isTileMode = isControlPressed != mIsFillFullTilesByDefault;
     const bool rotationalSymmetry = modifiers & Qt::AltModifier;
     const bool lineMode = modifiers & Qt::ShiftModifier;
 
@@ -210,6 +228,7 @@ void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 void WangBrush::languageChanged()
 {
     setName(tr("Terrain Brush"));
+    mToggleFillFullTiles->setText(tr("Fill Full Tiles"));
 }
 
 void WangBrush::setColor(int color)
@@ -816,6 +835,11 @@ void WangBrush::updateBrushAt(FillRegion &fill, QPoint pos)
             break;
         }
     }
+}
+
+void WangBrush::populateToolBar(QToolBar *toolbar)
+{
+    toolbar->addAction(mToggleFillFullTiles);
 }
 
 } // namespace Tiled

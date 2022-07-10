@@ -23,6 +23,8 @@
 #include "abstracttiletool.h"
 #include "wangset.h"
 
+#include <QToolBar>
+
 namespace Tiled {
 
 struct FillRegion;
@@ -53,6 +55,8 @@ public:
     void languageChanged() override;
 
     void setColor(int color);
+
+    void populateToolBar(QToolBar *toolbar) override;
 
 signals:
     void colorCaptured(int color);
@@ -100,6 +104,8 @@ private:
     bool mRotationalSymmetry = false;
     bool mLineStartSet = false;
     BrushBehavior mBrushBehavior = Free;
+    QAction *mToggleFillFullTiles;
+    bool mIsFillFullTilesByDefault = false;
 };
 
 } // namespace Tiled
