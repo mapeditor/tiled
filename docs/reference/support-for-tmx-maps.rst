@@ -327,11 +327,11 @@ LibGDX
    `provides <https://libgdx.com/wiki/graphics/2d/tile-maps>`__ a
    packer, loader and renderer for TMX maps
 
-LITIengine
+LITIENGINE
 ~~~~~~~~~~
 
--  `LITIengine <https://litiengine.com>`__ is a 2D Java Game Engine that
-   supports loading, saving and rendering maps in the .tmx format.
+-  `LITIENGINE <https://litiengine.com>`__ is an open source Java 2D Game Engine that
+   supports loading, editing, saving, and rendering maps in the .tmx format.
 
 LÖVE
 ~~~~
