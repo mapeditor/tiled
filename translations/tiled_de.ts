@@ -75,7 +75,7 @@
     <message>
         <location line="+7"/>
         <source>Unknown version: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbekannte Version: %1</translation>
     </message>
     <message>
         <location line="+13"/>
