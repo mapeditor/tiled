@@ -87,9 +87,10 @@ parts:
       - adwaita-icon-theme
       - gnome-themes-standard
       - shared-mime-info
+      - libqt5concurrent5
       - libqt5gui5
-      - libgdk-pixbuf2.0-0
       - libqt5svg5 # for loading icon themes which are svg
+      - libgdk-pixbuf2.0-0
       - try: [appmenu-qt5] # not available on core18
       - locales-all
       - xdg-user-dirs
