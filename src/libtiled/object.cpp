@@ -72,7 +72,7 @@ QVariant Object::resolvedProperty(const QString &name) const
         return QVariant();
     }
 
-    if (auto type = mPropertyTypes->findClassFor(objectClassName, *this))
+    if (auto type = propertyTypes().findClassFor(objectClassName, *this))
         return type->members.value(name);
 
     return QVariant();
@@ -91,7 +91,7 @@ QVariantMap Object::resolvedProperties() const
         objectClassName = mapObject->effectiveClassName();
     }
 
-    if (auto type = mPropertyTypes->findClassFor(objectClassName, *this)) {
+    if (auto type = propertyTypes().findClassFor(objectClassName, *this)) {
         Tiled::mergeProperties(allProperties,
                                static_cast<const ClassPropertyType*>(type)->members);
     }
