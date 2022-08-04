@@ -536,6 +536,16 @@ static bool objectPropertiesRelevant(Document *document, Object *object)
     return false;
 }
 
+static QStringList classNamesFor(const Object &object)
+{
+    QStringList names;
+    for (const auto type : Object::propertyTypes())
+        if (type->isClass())
+            if (static_cast<const ClassPropertyType*>(type)->isClassFor(object))
+                names.append(type->name);
+    return names;
+}
+
 void PropertyBrowser::propertyAdded(Object *object, const QString &name)
 {
     if (!objectPropertiesRelevant(mDocument, object))
@@ -630,6 +640,11 @@ void PropertyBrowser::propertyTypesChanged()
 {
     if (!mObject)
         return;
+
+    if (auto classProperty = mIdToProperty.value(ClassProperty)) {
+        classProperty->setAttribute(QStringLiteral("suggestions"),
+                                    classNamesFor(*mObject));
+    }
 
     // Don't do anything if there can't be any properties based on the class
     if (mObject->typeId() == Object::MapObjectType) {
@@ -763,16 +778,6 @@ void PropertyBrowser::addMapProperties()
 
     addProperty(BackgroundColorProperty, QMetaType::QColor, tr("Background Color"), groupProperty);
     addProperty(groupProperty);
-}
-
-static QStringList classNamesFor(const Object &object)
-{
-    QStringList names;
-    for (const auto type : Object::propertyTypes())
-        if (type->isClass())
-            if (static_cast<const ClassPropertyType*>(type)->isClassFor(object))
-                names.append(type->name);
-    return names;
 }
 
 enum MapObjectFlags {
