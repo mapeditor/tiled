@@ -814,17 +814,8 @@ std::unique_ptr<ImageLayer> VariantToMapConverter::toImageLayer(const QVariantMa
         imageLayer->loadFromImage(imageSource);
     }
 
-
-	QVariant repeatVariantX = variantMap[QStringLiteral("repeatx")];
-    QVariant repeatVariantY = variantMap[QStringLiteral("repeaty")];
-	
-    if (!repeatVariantX.isNull()) {
-		imageLayer->setRepeatX(repeatVariantX.toBool());
-	}
-
-	if (!repeatVariantY.isNull()) {
-		imageLayer->setRepeatY(repeatVariantY.toBool());
-	}
+    imageLayer->setRepeatX(variantMap[QStringLiteral("repeatx")].toBool());
+    imageLayer->setRepeatY(variantMap[QStringLiteral("repeaty")].toBool());
 
     return imageLayer;
 }
