@@ -100,7 +100,6 @@ WangBrush::WangBrush(QObject *parent)
     mToggleFillFullTiles->setCheckable(true);
     mToggleFillFullTiles->setIcon(rotateRightIcon);
     mToggleFillFullTiles->setText(tr("Fill Full Tiles"));
-    mToggleFillFullTiles->setShortcut(Qt::Key_L);
 
     ActionManager::registerAction(mToggleFillFullTiles, "ToggleFillFullTiles");
     connect(mToggleFillFullTiles, &QAction::toggled, [this](bool isChecked) {
