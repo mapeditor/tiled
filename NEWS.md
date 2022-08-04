@@ -2,6 +2,7 @@
 
 * Fixed properties-related crash when having no project loaded
 * Fixed visibility of "Move Object to Layer" sub-menu (#3417)
+* Fixed shadow offset for other maps in a world (#3429)
 * Scripting: Added TilesetsView.currentTilesetChanged
 * JSON plugin: Fixed loading image layer "repeatx/y" properties (by Jene Litsch, #3428)
 * snap: Fixed startup error due to missing libQt5Concurrent.so.5 (#3408)

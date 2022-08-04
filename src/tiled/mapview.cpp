@@ -467,8 +467,8 @@ void MapView::paintEvent(QPaintEvent *event)
             fitMapInView();
     }
 
-    if (mMapDocument)
-        mMapDocument->renderer()->setPainterScale(scale());
+    if (auto scene = mapScene())
+        scene->setPainterScale(scale());
 
     QGraphicsView::paintEvent(event);
 }
