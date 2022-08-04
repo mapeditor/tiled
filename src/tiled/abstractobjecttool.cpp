@@ -699,7 +699,7 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
 
     auto objectGroups = mapDocument()->map()->objectGroups();
     auto objectGroupsIterator = objectGroups.begin();
-    if (objectGroupsIterator.next() && objectGroupsIterator.next()) {
+    if (objectGroupsIterator != objectGroups.end() && objectGroupsIterator.next()) {
         menu.addSeparator();
         QMenu *moveToLayerMenu = menu.addMenu(tr("Move %n Object(s) to Layer",
                                                  "", selectedObjects.size()));
