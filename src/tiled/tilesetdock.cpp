@@ -273,7 +273,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     horizontal->addWidget(mZoomComboBox);
 
     connect(mViewStack, &QStackedWidget::currentChanged,
-            this, &TilesetDock::currentTilesetChanged);
+            this, &TilesetDock::onCurrentTilesetChanged);
 
     connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
             this, &TilesetDock::tilesetChanged);
@@ -448,11 +448,13 @@ void TilesetDock::dropEvent(QDropEvent *e)
     }
 }
 
-void TilesetDock::currentTilesetChanged()
+void TilesetDock::onCurrentTilesetChanged()
 {
     TilesetView *view = currentTilesetView();
-    if (!view)
+    if (!view) {
+        emit currentTilesetChanged();
         return;
+    }
 
     if (!mSynchronizingSelection)
         updateCurrentTiles();
@@ -463,6 +465,8 @@ void TilesetDock::currentTilesetChanged()
         setCurrentTile(view->tilesetModel()->tileAt(s->currentIndex()));
 
     mDynamicWrappingToggle->setChecked(view->dynamicWrapping());
+
+    emit currentTilesetChanged();
 }
 
 void TilesetDock::selectionChanged()
@@ -980,7 +984,7 @@ void TilesetDock::setCurrentEditableTileset(EditableTileset *tileset)
 
 EditableTileset *TilesetDock::currentEditableTileset() const
 {
-    const int index = mTabBar->currentIndex();
+    const int index = mViewStack->currentIndex();
     if (index == -1)
         return nullptr;
 

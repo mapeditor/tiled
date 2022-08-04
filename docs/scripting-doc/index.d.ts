@@ -1924,6 +1924,11 @@ interface TilesetsView {
   currentTileset: Tileset
 
   /**
+   * The signal emitted when {@link currentTileset} changes.
+   */
+  readonly currentTilesetChanged: Signal<null>;
+
+  /**
    * A list of the tiles that are selected in the current tileset.
    *
    * See {@link MapEditor.currentBrush} for the current tile brush, which is
