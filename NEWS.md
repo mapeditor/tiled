@@ -4,6 +4,7 @@
 * Fixed visibility of "Move Object to Layer" sub-menu (#3417)
 * Fixed shadow offset for other maps in a world (#3429)
 * Fixed class dropdown to update immediately when changing custom types (#3398)
+* Fixed deleting an overridden property to not make it disappear (#3409)
 * Scripting: Added TilesetsView.currentTilesetChanged
 * JSON plugin: Fixed loading image layer "repeatx/y" properties (by Jene Litsch, #3428)
 * snap: Fixed startup error due to missing libQt5Concurrent.so.5 (#3408)
