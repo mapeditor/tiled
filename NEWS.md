@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Fixed properties-related crash when having no project loaded
+* Fixed loading of custom tile image rectangles (#3405)
 * Fixed visibility of "Move Object to Layer" sub-menu (#3417)
 * Fixed shadow offset for other maps in a world (#3429)
 * Fixed class dropdown to update immediately when changing custom types (#3398)

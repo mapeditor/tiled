@@ -534,9 +534,6 @@ void Tileset::setTileImage(Tile *tile,
     tile->setImage(image);
     tile->setImageSource(source);
 
-    if (tile->imageRect().isNull())
-        tile->setImageRect(image.rect());
-
     maybeUpdateTileSize(previousTileSize, tile->size());
 }
 
