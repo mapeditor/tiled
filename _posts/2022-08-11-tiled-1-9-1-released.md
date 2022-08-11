@@ -32,6 +32,7 @@ Changelog
 *   Scripting: Added `TilesetsView.currentTilesetChanged`
 *   JSON plugin: Fixed loading image layer "repeatx/y" properties (by Jene Litsch, [#3428](https://github.com/mapeditor/tiled/pull/3428))
 *   snap: Fixed startup error due to missing libQt5Concurrent.so.5 ([#3408](https://github.com/mapeditor/tiled/issues/3408))
+*   AppImage: Use custom AppRun that can call all binaries (by Philipp Seiler, [#3415](https://github.com/mapeditor/tiled/pull/3415))
 *   AppImage: Updated to Sentry 0.5.0
 *   Updated Chinese (Simplified) and Portuguese translations
 
