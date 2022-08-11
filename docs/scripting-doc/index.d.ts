@@ -1036,7 +1036,7 @@ declare class MapObject extends TiledObject {
   /**
    * Type of the object.
    *
-   * @deprecated Use {@link Object.className} instead.
+   * @deprecated Use {@link TiledObject.className} instead.
    */
   type: string;
 
@@ -1986,7 +1986,7 @@ declare class Tile extends TiledObject {
   /**
    * Type of the tile.
    *
-   * @deprecated Use {@link Object.className} instead.
+   * @deprecated Use {@link TiledObject.className} instead.
    */
   type: string;
 
