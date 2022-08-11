@@ -1,4 +1,4 @@
-### Unreleased
+### Tiled 1.9.1 (11 August 2022)
 
 * Fixed properties-related crash when having no project loaded
 * Fixed loading of custom tile image rectangles (#3405)
@@ -11,6 +11,7 @@
 * JSON plugin: Fixed loading image layer "repeatx/y" properties (by Jene Litsch, #3428)
 * snap: Fixed startup error due to missing libQt5Concurrent.so.5 (#3408)
 * AppImage: Updated to Sentry 0.5.0
+* Updated Chinese (Simplified) and Portuguese translations
 
 ### Tiled 1.9.0 (25 June 2022)
 
