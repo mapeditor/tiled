@@ -88,8 +88,6 @@ public:
     virtual QJsonObject toJson(const ExportContext &) const;
     virtual void initializeFromJson(const QJsonObject &json) = 0;
 
-    virtual void resolveDependencies(const ExportContext &) {};
-
     static std::unique_ptr<PropertyType> createFromJson(const QJsonObject &json);
 
     static Type typeFromString(const QString &string);
@@ -156,6 +154,7 @@ public:
     QVariantMap members;
     QColor color = Qt::gray;
     int usageFlags = AnyUsage;
+    bool memberValuesResolved = true;
 
     ClassPropertyType(const QString &name) : PropertyType(PT_Class, name) {}
 
@@ -166,8 +165,6 @@ public:
 
     QJsonObject toJson(const ExportContext &context) const override;
     void initializeFromJson(const QJsonObject &json) override;
-
-    void resolveDependencies(const ExportContext &context) override;
 
     bool canAddMemberOfType(const PropertyType *propertyType) const;
     bool canAddMemberOfType(const PropertyType *propertyType, const PropertyTypes &types) const;
@@ -218,6 +215,11 @@ public:
     Types::const_iterator end() const { return mTypes.end(); }
 
 private:
+    void resolveMemberValues(ClassPropertyType *classType, const ExportContext &context);
+
+    PropertyType *findTypeByNamePriv(const QString &name, int usageFlags = ClassPropertyType::AnyUsage);
+    PropertyType *findPropertyValueTypePriv(const QString &name);
+
     Types mTypes;
     int mNextId = 0;
 };

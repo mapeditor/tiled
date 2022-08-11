@@ -259,8 +259,8 @@ QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
         if (const PropertyType *propertyType = mTypes.findPropertyValueType(exportValue.propertyTypeName)) {
             propertyValue = propertyType->toPropertyValue(propertyValue, *this);
         } else {
-           Tiled::ERROR(QStringLiteral("Unrecognized property type: '%1'")
-                        .arg(exportValue.propertyTypeName));
+            Tiled::ERROR(QStringLiteral("Unrecognized property type: '%1'")
+                         .arg(exportValue.propertyTypeName));
         }
     }
 
