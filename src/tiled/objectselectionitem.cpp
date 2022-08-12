@@ -454,15 +454,18 @@ void ObjectSelectionItem::mapChanged()
     updateItemPositions();
 }
 
-static void collectObjects(const GroupLayer &groupLayer, QList<MapObject*> &objects)
+static void collectObjects(const GroupLayer &groupLayer, QList<MapObject*> &objects, bool onlyVisibleLayers = false)
 {
     for (Layer *layer : groupLayer) {
+        if (onlyVisibleLayers && !layer->isVisible())
+            continue;
+
         switch (layer->layerType()) {
         case Layer::ObjectGroupType:
             objects.append(static_cast<ObjectGroup*>(layer)->objects());
             break;
         case Layer::GroupLayerType:
-            collectObjects(*static_cast<GroupLayer*>(layer), objects);
+            collectObjects(*static_cast<GroupLayer*>(layer), objects, onlyVisibleLayers);
             break;
         default:
             break;
@@ -472,12 +475,15 @@ static void collectObjects(const GroupLayer &groupLayer, QList<MapObject*> &obje
 
 void ObjectSelectionItem::layerAdded(Layer *layer)
 {
+    if (layer->isHidden())
+        return;
+
     QList<MapObject*> newObjects;
 
     if (auto objectGroup = layer->asObjectGroup())
         newObjects = objectGroup->objects();
     else if (auto groupLayer = layer->asGroupLayer())
-        collectObjects(*groupLayer, newObjects);
+        collectObjects(*groupLayer, newObjects, true);
 
     if (newObjects.isEmpty())
         return;
@@ -736,14 +742,13 @@ void ObjectSelectionItem::addRemoveObjectLabels()
 
     switch (objectLabelVisibility()) {
     case Preferences::AllObjectLabels: {
-        LayerIterator iterator(mMapDocument->map());
-        while (Layer *layer = iterator.next()) {
-            if (layer->isHidden())
+        LayerIterator iterator(mMapDocument->map(), Layer::ObjectGroupType);
+        while (auto objectGroup = static_cast<ObjectGroup*>(iterator.next())) {
+            if (objectGroup->isHidden())
                 continue;
 
-            if (ObjectGroup *objectGroup = layer->asObjectGroup())
-                for (MapObject *object : objectGroup->objects())
-                    ensureLabel(object);
+            for (MapObject *object : objectGroup->objects())
+                ensureLabel(object);
         }
     }
         // We want labels on selected objects regardless layer visibility
@@ -852,17 +857,15 @@ void ObjectSelectionItem::addRemoveObjectReferences()
     };
 
     if (Preferences::instance()->showObjectReferences()) {
-        LayerIterator iterator(mMapDocument->map());
-        while (Layer *layer = iterator.next()) {
-            if (layer->isHidden())
+        LayerIterator iterator(mMapDocument->map(), Layer::ObjectGroupType);
+        while (auto objectGroup = static_cast<ObjectGroup*>(iterator.next())) {
+            if (objectGroup->isHidden())
                 continue;
 
-            if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-                for (MapObject *object : objectGroup->objects()) {
-                    forEachObjectReference(object->properties(), [&] (ObjectRef ref) {
-                        ensureReferenceItem(object, ref);
-                    });
-                }
+            for (MapObject *object : objectGroup->objects()) {
+                forEachObjectReference(object->properties(), [&] (ObjectRef ref) {
+                    ensureReferenceItem(object, ref);
+                });
             }
         }
     }
