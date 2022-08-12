@@ -1,3 +1,7 @@
+### Unreleased
+
+* Allow adding maps to image collection tilesets (#3447)
+
 ### Tiled 1.9.1 (11 August 2022)
 
 * Fixed properties-related crash when having no project loaded
