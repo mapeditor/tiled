@@ -103,94 +103,84 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
                                             QWidget *parent)
 {
     const int type = manager->propertyType(property);
+    QWidget *editor = nullptr;
 
     if (type == filePathTypeId()) {
-        FileEdit *editor = new FileEdit(parent);
+        FileEdit *fileEdit = new FileEdit(parent);
         FilePath filePath = manager->value(property).value<FilePath>();
-        editor->setFileUrl(filePath.url);
-        editor->setFilter(manager->attributeValue(property, QLatin1String("filter")).toString());
-        editor->setIsDirectory(manager->attributeValue(property, QLatin1String("directory")).toBool());
-        mCreatedFileEdits[property].append(editor);
-        mFileEditToProperty[editor] = property;
+        fileEdit->setFileUrl(filePath.url);
+        fileEdit->setFilter(manager->attributeValue(property, QLatin1String("filter")).toString());
+        fileEdit->setIsDirectory(manager->attributeValue(property, QLatin1String("directory")).toBool());
+        mCreatedFileEdits[property].append(fileEdit);
+        mFileEditToProperty[fileEdit] = property;
 
-        connect(editor, &FileEdit::fileUrlChanged,
+        connect(fileEdit, &FileEdit::fileUrlChanged,
                 this, &VariantEditorFactory::fileEditFileUrlChanged);
-        connect(editor, &QObject::destroyed,
+        connect(fileEdit, &QObject::destroyed,
                 this, &VariantEditorFactory::slotEditorDestroyed);
 
-        return editor;
-    }
-
-    if (type == VariantPropertyManager::displayObjectRefTypeId()) {
-        auto editor = new ObjectRefEdit(parent);
+        editor = fileEdit;
+    } else if (type == VariantPropertyManager::displayObjectRefTypeId()) {
+        auto objectRefEdit = new ObjectRefEdit(parent);
         auto objectRef = manager->value(property).value<DisplayObjectRef>();
-        editor->setValue(objectRef);
-        mCreatedObjectRefEdits[property].append(editor);
-        mObjectRefEditToProperty[editor] = property;
+        objectRefEdit->setValue(objectRef);
+        mCreatedObjectRefEdits[property].append(objectRefEdit);
+        mObjectRefEditToProperty[objectRefEdit] = property;
 
-        connect(editor, &ObjectRefEdit::valueChanged,
+        connect(objectRefEdit, &ObjectRefEdit::valueChanged,
                 this, &VariantEditorFactory::objectRefEditValueChanged);
-        connect(editor, &QObject::destroyed,
+        connect(objectRefEdit, &QObject::destroyed,
                 this, &VariantEditorFactory::slotEditorDestroyed);
 
-        auto resetEditor = new ResetWidget(property, editor, parent);
+        editor = objectRefEdit;
+    } else if (type == VariantPropertyManager::tilesetParametersTypeId()) {
+        auto tilesetEdit = new TilesetParametersEdit(parent);
+        tilesetEdit->setTilesetDocument(manager->value(property).value<TilesetDocument*>());
+        mCreatedTilesetEdits[property].append(tilesetEdit);
+        mTilesetEditToProperty[tilesetEdit] = property;
 
-        connect(resetEditor, &ResetWidget::resetProperty,
-                this, &VariantEditorFactory::resetProperty);
-
-        return resetEditor;
-    }
-
-    if (type == VariantPropertyManager::tilesetParametersTypeId()) {
-        auto editor = new TilesetParametersEdit(parent);
-        editor->setTilesetDocument(manager->value(property).value<TilesetDocument*>());
-        mCreatedTilesetEdits[property].append(editor);
-        mTilesetEditToProperty[editor] = property;
-
-        connect(editor, &QObject::destroyed,
+        connect(tilesetEdit, &QObject::destroyed,
                 this, &VariantEditorFactory::slotEditorDestroyed);
 
-        return editor;
-    }
-
-    if (type == QMetaType::QString) {
+        editor = tilesetEdit;
+    } else if (type == QMetaType::QString) {
         bool multiline = manager->attributeValue(property, QLatin1String("multiline")).toBool();
-        if (multiline) {
-            auto editor = new TextPropertyEdit(parent);
-            editor->setText(manager->value(property).toString());
-            mCreatedTextPropertyEdits[property].append(editor);
-            mTextPropertyEditToProperty[editor] = property;
-
-            connect(editor, &TextPropertyEdit::textChanged,
-                    this, &VariantEditorFactory::textPropertyEditTextChanged);
-            connect(editor, &QObject::destroyed,
-                    this, &VariantEditorFactory::slotEditorDestroyed);
-
-            return editor;
-        }
-
         QStringList suggestions = manager->attributeValue(property, QLatin1String("suggestions")).toStringList();
-        if (!suggestions.isEmpty()) {
-            auto editor = new QComboBox(parent);
-            editor->setEditable(true);
-            editor->addItems(suggestions);
-            editor->setCurrentText(manager->value(property).toString());
-            mCreatedComboBoxes[property].append(editor);
-            mComboBoxToProperty[editor] = property;
 
-            connect(editor, &QComboBox::currentTextChanged,
-                    this, &VariantEditorFactory::comboBoxPropertyEditTextChanged);
-            connect(editor, &QObject::destroyed,
+        if (multiline) {
+            auto textEdit = new TextPropertyEdit(parent);
+            textEdit->setText(manager->value(property).toString());
+            mCreatedTextPropertyEdits[property].append(textEdit);
+            mTextPropertyEditToProperty[textEdit] = property;
+
+            connect(textEdit, &TextPropertyEdit::textChanged,
+                    this, &VariantEditorFactory::textPropertyEditTextChanged);
+            connect(textEdit, &QObject::destroyed,
                     this, &VariantEditorFactory::slotEditorDestroyed);
 
-            return editor;
+            editor = textEdit;
+        } else if (!suggestions.isEmpty()) {
+            auto comboBox = new QComboBox(parent);
+            comboBox->setEditable(true);
+            comboBox->addItems(suggestions);
+            comboBox->setCurrentText(manager->value(property).toString());
+            mCreatedComboBoxes[property].append(comboBox);
+            mComboBoxToProperty[comboBox] = property;
+
+            connect(comboBox, &QComboBox::currentTextChanged,
+                    this, &VariantEditorFactory::comboBoxPropertyEditTextChanged);
+            connect(comboBox, &QObject::destroyed,
+                    this, &VariantEditorFactory::slotEditorDestroyed);
+
+            editor = comboBox;
         }
     }
 
-    QWidget *editor = QtVariantEditorFactory::createEditor(manager, property, parent);
+    if (!editor)
+        editor = QtVariantEditorFactory::createEditor(manager, property, parent);
 
-    if (type == QMetaType::QColor || property->isModified()) {
-        // Allow resetting a color property to the invalid color, or allow
+    if (type == QMetaType::QColor || type == VariantPropertyManager::displayObjectRefTypeId() || property->isModified()) {
+        // Allow resetting color and object reference properties, or allow
         // unsetting a class member (todo: resolve conflict...).
         ResetWidget *resetWidget = new ResetWidget(property, editor, parent);
         connect(resetWidget, &ResetWidget::resetProperty,
