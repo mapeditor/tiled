@@ -311,11 +311,7 @@ namespace Tiled {
     }
 
 ///////////////////////////////////////////////////////////////////////////////
-    static QTextStream& stdOut() // TODO REMOVE
-    {
-        static QTextStream ts(stdout);
-        return ts;
-    }
+
 
     ActionSearchWidget::ActionSearchWidget(QWidget *parent)
             : QFrame(parent, Qt::Popup)
@@ -379,9 +375,7 @@ namespace Tiled {
     {
         QList<Id> actions = ActionManager::actions();
         QList<Id> menus = ActionManager::menus();
-        for (const Id &actionId: actions){
-            stdOut() << "Found action ID " << actionId.name() << Qt::endl;
-        }
+
         QVector<ActionSearchWidget::Match> result;
         for (const auto &tiledAction: actions) {
             QAction *tiledQAction = ActionManager::findAction(tiledAction.name());
@@ -426,9 +420,6 @@ namespace Tiled {
             return a.text.compare(b.text, Qt::CaseInsensitive) < 0;
         });
 
-        for (const ActionSearchWidget::Match  match: matches){
-            stdOut() << "Action matched: " << match.text << (match.isFromScript? ", from script": ", not from script") << Qt::endl;
-        }
         mDelegate->setWords(words);
         mListModel->setMatches(matches);
 
