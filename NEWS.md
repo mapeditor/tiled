@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Allow adding maps to image collection tilesets (#3447)
+* Added file system actions to the tile context menu (#3448)
 
 ### Tiled 1.9.1 (11 August 2022)
 

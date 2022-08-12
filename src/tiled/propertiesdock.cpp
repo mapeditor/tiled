@@ -372,7 +372,7 @@ void PropertiesDock::showContextMenu(const QPoint &pos)
                 Utils::addOpenContainingFolderAction(contextMenu, localFile);
 
                 if (QFileInfo { localFile }.isFile())
-                    Utils::addOpenWithSystemEditorAction(contextMenu, filePath.url.toLocalFile());
+                    Utils::addOpenWithSystemEditorAction(contextMenu, localFile);
             }
         } else if (value.userType() == objectRefTypeId()) {
             if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
