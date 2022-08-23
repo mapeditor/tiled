@@ -1,5 +1,5 @@
 /*
- * EGM(Enigma) Tiled Plugin
+ * Enigma Tiled Plugin
  * Copyright 2022, Kartik Shrivastava <shrivastavakartik19@gmail.com>
  *
  * This file is part of Tiled.
@@ -22,18 +22,18 @@
 
 #include "mapformat.h"
 
-#include "egm_global.h"
+#include "enigma_global.h"
 
-namespace Egm {
+namespace Enigma {
 
-class EGMSHARED_EXPORT EgmPlugin : public Tiled::MapFormat
+class ENIGMASHARED_EXPORT EnigmaPlugin : public Tiled::MapFormat
 {
   Q_OBJECT
   Q_INTERFACES(Tiled::MapFormat)
   Q_PLUGIN_METADATA(IID "org.mapeditor.MapFormat" FILE "plugin.json")
 
 public:
-    EgmPlugin();
+    EnigmaPlugin();
 
     std::unique_ptr<Tiled::Map> read(const QString &fileName) override;
     bool supportsFile(const QString &fileName) const override;

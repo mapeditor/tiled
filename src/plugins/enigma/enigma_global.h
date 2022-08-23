@@ -1,5 +1,5 @@
 /*
- * EGM(Enigma) Tiled Plugin
+ * Enigma Tiled Plugin
  * Copyright 2022, Kartik Shrivastava <shrivastavakartik19@gmail.com>
  *
  * This file is part of Tiled.
@@ -22,8 +22,8 @@
 
 #include <QtCore/qglobal.h>
 
-#if defined(EGM_LIBRARY)
-#  define EGMSHARED_EXPORT Q_DECL_EXPORT
+#if defined(ENIGMA_LIBRARY)
+#  define ENIGMASHARED_EXPORT Q_DECL_EXPORT
 #else
-#  define EGMSHARED_EXPORT Q_DECL_IMPORT
+#  define ENIGMASHARED_EXPORT Q_DECL_IMPORT
 #endif

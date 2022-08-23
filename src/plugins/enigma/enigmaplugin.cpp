@@ -1,5 +1,5 @@
 /*
- * EGM(Enigma) Tiled Plugin
+ * Enigma Tiled Plugin
  * Copyright 2022, Kartik Shrivastava <shrivastavakartik19@gmail.com>
  *
  * This file is part of Tiled.
@@ -18,20 +18,23 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "egmplugin.h"
+#include "enigmaplugin.h"
 #include "egm.h"
+#include "tmx.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
+using namespace egm;
 
-namespace Egm {
+namespace Enigma {
 
-EgmPlugin::EgmPlugin()
+EnigmaPlugin::EnigmaPlugin()
 {
+  std::cout << "Constructor called" << std::endl;
 }
 
-std::unique_ptr<Tiled::Map> EgmPlugin::read(const QString &fileName)
+std::unique_ptr<Tiled::Map> EnigmaPlugin::read(const QString &fileName)
 {
     QFile file(fileName);
 
@@ -50,30 +53,41 @@ std::unique_ptr<Tiled::Map> EgmPlugin::read(const QString &fileName)
 
     auto map = std::make_unique<Map>(mapParameters);
 
+    std::cout << "Trying to read egm file" << std::endl;
+
+    EGMFileFormat egmFileFormat(NULL);
+
+    std::filesystem::path fPath(fileName.toStdString());
+    std::unique_ptr<egm::Project> project = egmFileFormat.LoadProject(fPath);
+    if(project)
+      std::cout << "Object group size " << project->game().root().room().objectgroups_size() << std::endl;
+    else
+      std::cout << "Project is null" << std::endl;
+
     return map;
 }
 
-bool EgmPlugin::supportsFile(const QString &fileName) const
+bool EnigmaPlugin::supportsFile(const QString &fileName) const
 {
     return fileName.endsWith(QLatin1String(".egm"), Qt::CaseInsensitive);
 }
 
-QString EgmPlugin::nameFilter() const
+QString EnigmaPlugin::nameFilter() const
 {
     return tr("EGM project files (*.egm)");
 }
 
-QString EgmPlugin::shortName() const
+QString EnigmaPlugin::shortName() const
 {
     return QStringLiteral("egm");
 }
 
-QString EgmPlugin::errorString() const
+QString EnigmaPlugin::errorString() const
 {
     return mError;
 }
 
-bool EgmPlugin::write(const Tiled::Map *map, const QString &fileName, Options options)
+bool EnigmaPlugin::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
     Q_UNUSED(options)
 
