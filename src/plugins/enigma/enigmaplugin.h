@@ -21,6 +21,8 @@
 #pragma once
 
 #include "mapformat.h"
+#include "gidmapper.h"
+#include "egm.h"
 
 #include "enigma_global.h"
 
@@ -44,8 +46,14 @@ public:
     QString errorString() const override;
 
 private:
-
     QString mError;
+
+    Tiled::Cell cellForGid(unsigned gid, Tiled::GidMapper &mGidMapper);
+    void addObject(const buffers::resources::EGMRoom_ObjectGroup_Object &obj, Tiled::Layer *objectGroupLayer, Tiled::GidMapper &mGidMapper);
+    void addObjectGroup(const buffers::resources::EGMRoom_ObjectGroup &objGrp, Tiled::Map *map, Tiled::GidMapper &mGidMapper);
+    Tiled::SharedTileset readExternalTileset(const QString &source, QString *error);
+    void addTileset(const buffers::resources::EGMRoom_Tileset &tilesetProto, Tiled::Map *map, Tiled::GidMapper &mGidMapper);
+    int flattenTree(const buffers::TreeNode &root, buffers::resources::EGMRoom &egmRoom);
 };
 
 }
