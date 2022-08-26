@@ -1115,7 +1115,7 @@ void AutoMapper::matchRule(const Rule &rule,
         for (int y = startY; y <= rect.bottom(); y += rule.options.modY) {
             for (int x = startX; x <= rect.right(); x += rule.options.modX) {
                 if (rule.options.skipChance != 0.0 && randomDouble() < rule.options.skipChance)
-                    return;
+                    continue;
 
                 if (matchRuleAtOffset(inputSets, QPoint(x, y), getCell))
                     matched(QPoint(x, y));

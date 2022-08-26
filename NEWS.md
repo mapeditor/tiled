@@ -4,6 +4,7 @@
 * Added file system actions to the tile context menu (#3448)
 * Fixed ability to reset nested string and file properties (#3409)
 * Fixed case where object labels could become visible for hidden layer (#3442)
+* AutoMapping: Fixed applying of rule probability (#3425)
 
 ### Tiled 1.9.1 (11 August 2022)
 
