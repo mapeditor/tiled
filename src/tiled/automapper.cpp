@@ -22,8 +22,8 @@
 #include "automapper.h"
 
 #include "automappingutils.h"
+#include "containerhelpers.h"
 #include "geometry.h"
-#include "layermodel.h"
 #include "logginginterface.h"
 #include "map.h"
 #include "mapdocument.h"

@@ -92,7 +92,7 @@ private:
     void propertyTypesChanged();
 
     void valueChanged(QtProperty *property, const QVariant &val);
-    void customPropertyValueChanged(const QString &name, const QVariant &value);
+    void customPropertyValueChanged(const QStringList &path, const QVariant &value);
 
     void resetProperty(QtProperty *property);
 

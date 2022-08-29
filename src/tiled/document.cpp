@@ -265,6 +265,72 @@ void Document::setProperty(Object *object,
         emit propertyAdded(object, name);
 }
 
+static bool setMemberValue(QVariant &classValue,
+                           int level,
+                           const QStringList &path,
+                           const QVariant &value)
+{
+    if (level >= path.size())
+        return false;   // hierarchy not deep enough for path
+
+    if (classValue.userType() != propertyValueId())
+        return false;   // invalid class value
+
+    auto classPropertyValue = classValue.value<PropertyValue>();
+    if (classPropertyValue.value.userType() != QMetaType::QVariantMap)
+        return false;   // invalid class value
+
+    QVariantMap classMembers = classPropertyValue.value.toMap();
+    const auto &memberName = path.at(level);
+    QVariant &member = classMembers[memberName];
+
+    if (level == path.size() - 1) {
+        member = value;
+    } else {
+        if (!member.isValid() && value.isValid()) {
+            // We expect an unset class member, so we'll try to introduce it
+            // based on the class definition.
+            auto type = classPropertyValue.type();
+            if (type && type->isClass())
+                member = static_cast<const ClassPropertyType*>(type)->members.value(memberName);
+        }
+        if (!setMemberValue(member, level + 1, path, value))
+           return false;
+    }
+
+    // Remove "unset" members (marked by invalid QVariant)
+    if (!member.isValid())
+        classMembers.remove(memberName);
+
+    // Mark whole class as "unset" if it has no members left, unless at top level
+    if (!classMembers.isEmpty() || level == 1) {
+        classPropertyValue.value = classMembers;
+        classValue = QVariant::fromValue(classPropertyValue);
+    } else {
+        classValue = QVariant();
+    }
+    return true;
+}
+
+void Document::setPropertyMember(Object *object,
+                                 const QStringList &names,
+                                 const QVariant &value)
+{
+    Q_ASSERT(!names.isEmpty());
+
+    auto &topLevelName = names.first();
+    auto topLevelValue = object->resolvedProperty(topLevelName);
+
+    if (names.size() > 1) {
+        if (!setMemberValue(topLevelValue, 1, names, value))
+            return;
+    } else {
+        topLevelValue = value;
+    }
+
+    setProperty(object, topLevelName, topLevelValue);
+}
+
 void Document::setProperties(Object *object, const Properties &properties)
 {
     object->setProperties(properties);

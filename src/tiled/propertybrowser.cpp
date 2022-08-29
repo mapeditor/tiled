@@ -142,7 +142,7 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
             this, &PropertyBrowser::valueChanged);
 
-    connect(&mCustomPropertiesHelper, &CustomPropertiesHelper::propertyValueChanged,
+    connect(&mCustomPropertiesHelper, &CustomPropertiesHelper::propertyMemberValueChanged,
             this, &PropertyBrowser::customPropertyValueChanged);
 
     connect(&mCustomPropertiesHelper, &CustomPropertiesHelper::recreateProperty,
@@ -687,7 +687,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     }
 }
 
-void PropertyBrowser::customPropertyValueChanged(const QString &name, const QVariant &value)
+void PropertyBrowser::customPropertyValueChanged(const QStringList &path, const QVariant &value)
 {
     if (mUpdating)
         return;
@@ -697,7 +697,7 @@ void PropertyBrowser::customPropertyValueChanged(const QString &name, const QVar
     QUndoStack *undoStack = mDocument->undoStack();
     undoStack->push(new SetProperty(mDocument,
                                     mDocument->currentObjects(),
-                                    name, value));
+                                    path, value));
 }
 
 void PropertyBrowser::resetProperty(QtProperty *property)
