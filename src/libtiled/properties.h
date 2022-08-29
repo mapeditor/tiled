@@ -156,6 +156,15 @@ using Properties = QVariantMap;
  */
 using AggregatedProperties = QMap<QString, AggregatedPropertyData>;
 
+TILEDSHARED_EXPORT bool setClassPropertyMemberValue(QVariant &classValue,
+                                                    int depth,
+                                                    const QStringList &path,
+                                                    const QVariant &value);
+
+TILEDSHARED_EXPORT bool setPropertyMemberValue(Properties &properties,
+                                               const QStringList &path,
+                                               const QVariant &value);
+
 TILEDSHARED_EXPORT void aggregateProperties(AggregatedProperties &aggregated, const Properties &properties);
 TILEDSHARED_EXPORT void mergeProperties(Properties &target, const Properties &source);
 

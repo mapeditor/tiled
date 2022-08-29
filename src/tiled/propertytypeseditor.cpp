@@ -897,7 +897,7 @@ void PropertyTypesEditor::addClassProperties()
     mMembersView = new QtTreePropertyBrowser(this);
     mPropertiesHelper = new CustomPropertiesHelper(mMembersView, this);
 
-    connect(mPropertiesHelper, &CustomPropertiesHelper::propertyValueChanged,
+    connect(mPropertiesHelper, &CustomPropertiesHelper::propertyMemberValueChanged,
             this, &PropertyTypesEditor::memberValueChanged);
 
     connect(mMembersView, &QtTreePropertyBrowser::currentItemChanged,
@@ -1051,12 +1051,25 @@ void PropertyTypesEditor::setUsageFlags(int flags, bool value)
     }
 }
 
-void PropertyTypesEditor::memberValueChanged(const QString &name, const QVariant &value)
+void PropertyTypesEditor::memberValueChanged(const QStringList &path, const QVariant &value)
 {
     if (mUpdatingDetails)
         return;
 
-    applyMemberToSelectedType(name, value);
+    PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType || !propertyType->isClass())
+        return;
+
+    auto &classType = static_cast<ClassPropertyType&>(*propertyType);
+    auto &topLevelName = path.first();
+
+    if (!setPropertyMemberValue(classType.members, path, value))
+        return;
+
+    if (auto property = mPropertiesHelper->property(topLevelName))
+        property->setValue(mPropertiesHelper->toDisplayValue(classType.members.value(topLevelName)));
+
+    applyPropertyTypes();
 }
 
 } // namespace Tiled

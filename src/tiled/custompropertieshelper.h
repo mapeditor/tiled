@@ -55,7 +55,7 @@ public:
     void setMapDocument(MapDocument *mapDocument);
 
 signals:
-    void propertyValueChanged(const QString &name, const QVariant &value);
+    void propertyMemberValueChanged(const QStringList &path, const QVariant &value);
     void recreateProperty(QtVariantProperty *property, const QVariant &value);
 
 private:
@@ -70,6 +70,7 @@ private:
     void setPropertyAttributes(QtVariantProperty *property, const PropertyType &propertyType);
 
     const PropertyType *propertyType(QtProperty *property) const;
+    QStringList propertyPath(QtProperty *property) const;
 
     QtAbstractPropertyBrowser *mPropertyBrowser;
     QtVariantPropertyManager *mPropertyManager;

@@ -118,7 +118,7 @@ private:
 
     void colorChanged(const QColor &color);
     void setUsageFlags(int flags, bool value);
-    void memberValueChanged(const QString &name, const QVariant &value);
+    void memberValueChanged(const QStringList &path, const QVariant &value);
 
     void retranslateUi();
 
