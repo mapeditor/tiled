@@ -37,7 +37,7 @@ CustomPropertiesHelper::CustomPropertiesHelper(QtAbstractPropertyBrowser *proper
     , mPropertyBrowser(propertyBrowser)
     , mPropertyManager(new VariantPropertyManager(this))
 {
-    VariantEditorFactory *variantEditorFactory = new VariantEditorFactory(this);
+    auto variantEditorFactory = new VariantEditorFactory(this);
 
     propertyBrowser->setFactoryForManager(mPropertyManager, variantEditorFactory);
 

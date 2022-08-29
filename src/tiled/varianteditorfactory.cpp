@@ -55,9 +55,9 @@ ResetWidget::ResetWidget(QtProperty *property, QWidget *editor, QWidget *parent)
     : QWidget(parent)
     , mProperty(property)
 {
-    QHBoxLayout *layout = new QHBoxLayout(this);
+    auto layout = new QHBoxLayout(this);
 
-    QToolButton *resetButton = new QToolButton(this);
+    auto resetButton = new QToolButton(this);
     resetButton->setIcon(QIcon(QLatin1String(":/images/16/edit-clear.png")));
     resetButton->setIconSize(Utils::smallIconSize());
     resetButton->setAutoRaise(true);
@@ -82,11 +82,13 @@ void ResetWidget::buttonClicked()
 
 VariantEditorFactory::~VariantEditorFactory()
 {
-    qDeleteAll(mFileEditToProperty.keyBegin(), mFileEditToProperty.keyEnd());
-    qDeleteAll(mTilesetEditToProperty.keyBegin(), mTilesetEditToProperty.keyEnd());
-    qDeleteAll(mTextPropertyEditToProperty.keyBegin(), mTextPropertyEditToProperty.keyEnd());
-    qDeleteAll(mObjectRefEditToProperty.keyBegin(), mObjectRefEditToProperty.keyEnd());
-    qDeleteAll(mComboBoxToProperty.keyBegin(), mComboBoxToProperty.keyEnd());
+    // Using QMap::keys here is important because the maps get modified in
+    // slotEditorDestroyed.
+    qDeleteAll(mFileEditToProperty.keys());
+    qDeleteAll(mTilesetEditToProperty.keys());
+    qDeleteAll(mTextPropertyEditToProperty.keys());
+    qDeleteAll(mObjectRefEditToProperty.keys());
+    qDeleteAll(mComboBoxToProperty.keys());
 }
 
 void VariantEditorFactory::connectPropertyManager(QtVariantPropertyManager *manager)
@@ -106,7 +108,7 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
     QWidget *editor = nullptr;
 
     if (type == filePathTypeId()) {
-        FileEdit *fileEdit = new FileEdit(parent);
+        auto fileEdit = new FileEdit(parent);
         FilePath filePath = manager->value(property).value<FilePath>();
         fileEdit->setFileUrl(filePath.url);
         fileEdit->setFilter(manager->attributeValue(property, QLatin1String("filter")).toString());
@@ -182,7 +184,7 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
     if (type == QMetaType::QColor || type == VariantPropertyManager::displayObjectRefTypeId() || property->isModified()) {
         // Allow resetting color and object reference properties, or allow
         // unsetting a class member (todo: resolve conflict...).
-        ResetWidget *resetWidget = new ResetWidget(property, editor, parent);
+        auto resetWidget = new ResetWidget(property, editor, parent);
         connect(resetWidget, &ResetWidget::resetProperty,
                 this, &VariantEditorFactory::resetProperty);
         editor = resetWidget;
@@ -253,7 +255,7 @@ void VariantEditorFactory::slotPropertyAttributeChanged(QtProperty *property,
 
 void VariantEditorFactory::fileEditFileUrlChanged(const QUrl &value)
 {
-    FileEdit *fileEdit = qobject_cast<FileEdit*>(sender());
+    auto fileEdit = qobject_cast<FileEdit*>(sender());
     Q_ASSERT(fileEdit);
 
     if (QtProperty *property = mFileEditToProperty.value(fileEdit)) {
@@ -306,7 +308,7 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 {
     // Check if it was an ObjectRefEdit
     {
-        ObjectRefEdit *objectRefEdit = static_cast<ObjectRefEdit*>(object);
+        auto objectRefEdit = static_cast<ObjectRefEdit*>(object);
 
         if (QtProperty *property = mObjectRefEditToProperty.value(objectRefEdit)) {
             mObjectRefEditToProperty.remove(objectRefEdit);
@@ -319,7 +321,7 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 
     // Check if it was a FileEdit
     {
-        FileEdit *fileEdit = static_cast<FileEdit*>(object);
+        auto fileEdit = static_cast<FileEdit*>(object);
 
         if (QtProperty *property = mFileEditToProperty.value(fileEdit)) {
             mFileEditToProperty.remove(fileEdit);
@@ -332,7 +334,7 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 
     // Check if it was a TilesetParametersEdit
     {
-        TilesetParametersEdit *tilesetEdit = static_cast<TilesetParametersEdit*>(object);
+        auto tilesetEdit = static_cast<TilesetParametersEdit*>(object);
 
         if (QtProperty *property = mTilesetEditToProperty.value(tilesetEdit)) {
             mTilesetEditToProperty.remove(tilesetEdit);
@@ -345,7 +347,7 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 
     // Check if it was a TextPropertyEdit
     {
-        TextPropertyEdit *textPropertyEdit = static_cast<TextPropertyEdit*>(object);
+        auto textPropertyEdit = static_cast<TextPropertyEdit*>(object);
 
         if (QtProperty *property = mTextPropertyEditToProperty.value(textPropertyEdit)) {
             mTextPropertyEditToProperty.remove(textPropertyEdit);
@@ -358,7 +360,7 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 
     // Check if it was a QComboBox
     {
-        QComboBox *comboBox = static_cast<QComboBox*>(object);
+        auto comboBox = static_cast<QComboBox*>(object);
 
         if (QtProperty *property = mComboBoxToProperty.value(comboBox)) {
             mComboBoxToProperty.remove(comboBox);
