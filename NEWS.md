@@ -4,6 +4,7 @@
 * Added file system actions to the tile context menu (#3448)
 * Fixed possible crash in Custom Types Editor (#3465)
 * Fixed ability to reset nested string and file properties (#3409)
+* Fixed possible duplication of Automapping Rules Tileset (#3462)
 * Fixed case where object labels could become visible for hidden layer (#3442)
 * AutoMapping: Fixed applying of rule probability (#3425)
 
