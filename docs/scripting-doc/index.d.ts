@@ -2883,7 +2883,7 @@ declare class Tileset extends Asset {
   /**
    * Selected tiles in the tileset editor.
    *
-   * See {@link TilesetView.selectedTiles} for getting the selected tiles in
+   * See {@link TilesetsView.selectedTiles} for getting the selected tiles in
    * the Tilesets view.
    */
   selectedTiles : Tile[]
