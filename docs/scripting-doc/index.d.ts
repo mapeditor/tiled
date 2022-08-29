@@ -2901,6 +2901,13 @@ declare class Tileset extends Asset {
   public tile(id : number) : Tile
 
   /**
+   * Returns a reference to the tile with the given ID, or `null` if no such tile exists. When the tile gets removed from the tileset, the reference changes to a standalone copy of the tile.
+   *
+   * Note that the tiles in a tileset are only guaranteed to have consecutive IDs for tileset-image based tilesets. For image collection tilesets there will be gaps when tiles have been removed from the tileset.
+   */
+  public findTile(id : number) : Tile | null
+
+  /**
    * Sets the tile size for this tileset. If an image has been specified as well, the tileset will be (re)loaded. Can’t be used on image collection tilesets.
    */
   public setTileSize(width : number, height : number) : void

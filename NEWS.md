@@ -6,6 +6,7 @@
 * Fixed ability to reset nested string and file properties (#3409)
 * Fixed possible duplication of Automapping Rules Tileset (#3462)
 * Fixed case where object labels could become visible for hidden layer (#3442)
+* Scripting: Added Tileset.findTile
 * AutoMapping: Fixed applying of rule probability (#3425)
 
 ### Tiled 1.9.1 (11 August 2022)
