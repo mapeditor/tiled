@@ -123,10 +123,20 @@ SetProperty::SetProperty(Document *document,
                          const QString &name,
                          const QVariant &value,
                          QUndoCommand *parent)
+    : SetProperty(document, objects, QStringList(name), value, parent)
+{
+}
+
+SetProperty::SetProperty(Document *document,
+                         const QList<Object *> &objects,
+                         const QStringList &path,
+                         const QVariant &value,
+                         QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
     , mObjects(objects)
-    , mName(name)
+    , mName(path.first())
+    , mPath(path)
     , mValue(value)
 {
     for (Object *obj : objects) {
@@ -156,16 +166,16 @@ void SetProperty::redo()
 {
     const QList<Object*> &objects = mObjects;
     for (Object *obj : objects)
-        mDocument->setProperty(obj, mName, mValue);
+        mDocument->setPropertyMember(obj, mPath, mValue);
 }
 
 bool SetProperty::mergeWith(const QUndoCommand *other)
 {
-    // If the same property is changed of the same layer, the commands can
-    // be trivially merged. The value is already changed on the layer, and
+    // If the same property is changed of the same object, the commands can
+    // be trivially merged. The value is already changed on the object, and
     // the old value already remembered on this undo command.
     auto o = static_cast<const SetProperty*>(other);
-    if (mDocument == o->mDocument && mName == o->mName && mObjects == o->mObjects) {
+    if (mDocument == o->mDocument && mPath == o->mPath && mObjects == o->mObjects) {
         mValue = o->mValue;
 
         setObsolete(std::all_of(mProperties.cbegin(), mProperties.cend(),
