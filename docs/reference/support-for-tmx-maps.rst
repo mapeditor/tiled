@@ -97,6 +97,11 @@ D
 -  `dtiled <https://github.com/rcorre/dtiled>`__ can load JSON-formatted Tiled
    maps. It also provides general tilemap-related functions and algorithms.
 
+Dart
+~~~~
+
+- `tiled <https://pub.dev/packages/tiled>`__: a library for loading TMX files
+
 Go
 ~~
 
@@ -107,7 +112,7 @@ Haskell
 ~~~~~~~
 
 -  `htiled <http://hackage.haskell.org/package/htiled>`__ (TMX) by `Christian
-   Rødli Amble <https://github.com/chrra>`__.
+   R�¸dli Amble <https://github.com/chrra>`__.
 -  `aeson-tiled <https://hackage.haskell.org/package/aeson-tiled>`__ (JSON) by `Schell Scivally <https://github.com/schell>`__.
 
 Java
@@ -235,6 +240,13 @@ Construct 2 - Scirra
    file inside the editor. `Official
    Note <https://www.scirra.com/construct2/releases/r149>`__
 
+Flame
+~~~~~
+
+- `flame_tiled <https://pub.dev/packages/flame_tiled>`__ is a library for 
+  incorporating Tiled maps into the `Flame <https://pub.dev/packages/flame>`
+  game engine.
+
 Flixel
 ~~~~~~
 
@@ -333,12 +345,12 @@ LITIENGINE
 -  `LITIENGINE <https://litiengine.com>`__ is an open source Java 2D Game Engine that
    supports loading, editing, saving, and rendering maps in the .tmx format.
 
-LÖVE
+L�VE
 ~~~~
 
 -  `Simple Tiled
    Implementation <https://github.com/Karai17/Simple-Tiled-Implementation>`__
-   Lua loader for the LÖVE (Love2d) game framework.
+   Lua loader for the L�VE (Love2d) game framework.
 
 MOAI SDK
 ~~~~~~~~
@@ -396,7 +408,7 @@ Pyglet
 
 -  `JSON map loader/renderer for
    pyglet <https://github.com/reidrac/pyglet-tiled-json-map>`__ by Juan
-   J. Martínez (reidrac)
+   J. Mart�­nez (reidrac)
 -  `PyTMX <https://github.com/bitcraft/PyTMX>`__ by Leif Theden
    (bitcraft)
 
