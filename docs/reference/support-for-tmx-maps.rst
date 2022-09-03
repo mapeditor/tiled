@@ -112,7 +112,7 @@ Haskell
 ~~~~~~~
 
 -  `htiled <http://hackage.haskell.org/package/htiled>`__ (TMX) by `Christian
-   R�¸dli Amble <https://github.com/chrra>`__.
+   Rødli Amble <https://github.com/chrra>`__.
 -  `aeson-tiled <https://hackage.haskell.org/package/aeson-tiled>`__ (JSON) by `Schell Scivally <https://github.com/schell>`__.
 
 Java
@@ -345,12 +345,12 @@ LITIENGINE
 -  `LITIENGINE <https://litiengine.com>`__ is an open source Java 2D Game Engine that
    supports loading, editing, saving, and rendering maps in the .tmx format.
 
-L�VE
+LÖVE
 ~~~~
 
 -  `Simple Tiled
    Implementation <https://github.com/Karai17/Simple-Tiled-Implementation>`__
-   Lua loader for the L�VE (Love2d) game framework.
+   Lua loader for the LÖVE (Love2d) game framework.
 
 MOAI SDK
 ~~~~~~~~
@@ -408,7 +408,7 @@ Pyglet
 
 -  `JSON map loader/renderer for
    pyglet <https://github.com/reidrac/pyglet-tiled-json-map>`__ by Juan
-   J. Mart�­nez (reidrac)
+   J. Martínez (reidrac)
 -  `PyTMX <https://github.com/bitcraft/PyTMX>`__ by Leif Theden
    (bitcraft)
 
