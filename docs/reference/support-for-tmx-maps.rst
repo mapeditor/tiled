@@ -97,6 +97,11 @@ D
 -  `dtiled <https://github.com/rcorre/dtiled>`__ can load JSON-formatted Tiled
    maps. It also provides general tilemap-related functions and algorithms.
 
+Dart
+~~~~
+
+- `tiled <https://pub.dev/packages/tiled>`__: a library for loading TMX files
+
 Go
 ~~
 
@@ -234,6 +239,13 @@ Construct 2 - Scirra
    officially supports TMX maps, and importing it by simple dragging the
    file inside the editor. `Official
    Note <https://www.scirra.com/construct2/releases/r149>`__
+
+Flame
+~~~~~
+
+- `flame_tiled <https://pub.dev/packages/flame_tiled>`__ is a library for 
+  incorporating Tiled maps into the `Flame <https://pub.dev/packages/flame>`
+  game engine.
 
 Flixel
 ~~~~~~
