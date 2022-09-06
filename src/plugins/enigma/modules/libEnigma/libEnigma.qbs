@@ -1,27 +1,19 @@
-import qbs 1.0
+import qbs
+import qbs.Environment
 
 Module {
     Depends { name: "cpp" }
 
-    cpp.includePaths: ["/home/kash/github/RadialGM/Submodules/enigma-dev/CommandLine/libEGM",
-    "/home/kash/github/RadialGM/Submodules/enigma-dev/shared/protos/.eobjs",
-    "/home/kash/github/RadialGM/Submodules/enigma-dev/shared",
-    "/home/kash/github/RadialGM/Submodules/enigma-dev/shared/event_reader"]
+    property string enigmaPath: Environment.getEnv("ENIGMA_PATH")
 
-    /*cpp.dynamicLibraries: ["/home/kash/github/RadialGM/Submodules/enigma-dev/libEGM.so",
-    "/home/kash/github/RadialGM/Submodules/enigma-dev/libENIGMAShared.so",
-    "/home/kash/github/RadialGM/Submodules/enigma-dev/libProtocols.so",
-    "/home/kash/github/RadialGM/Submodules/enigma-dev/libcompileEGMf.so"]*/
+    cpp.includePaths: [enigmaPath + "/CommandLine/libEGM",
+    enigmaPath + "/shared/protos/.eobjs",
+    enigmaPath + "/shared",
+    enigmaPath + "/shared/event_reader"]
 
-    cpp.libraryPaths: ["/home/kash/github/RadialGM/Submodules/enigma-dev"]
+    cpp.libraryPaths: [enigmaPath]
 
-    cpp.rpaths: ["/home/kash/github/RadialGM/Submodules/enigma-dev"]
+    cpp.rpaths: [enigmaPath]
 
     cpp.dynamicLibraries: ["EGM", "ENIGMAShared", "Protocols", "compileEGMf"]
-
-    /*Properties {
-        cpp.libraryPaths: ["/home/kash/github/RadialGM/Submodules/enigma-dev"]
-
-        cpp.dynamicLibraries: ["EGM", "ENIGMAShared", "Protocols", "compileEGMf"]
-    }*/
 }
