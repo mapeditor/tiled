@@ -78,7 +78,6 @@ private:
     QHash<QString, QtVariantProperty *> mProperties;
     QHash<QtProperty *, int> mPropertyTypeIds;
     QHash<QtProperty *, QtProperty *> mPropertyParents;
-    bool mApplyingToParent = false;
     bool mApplyingToChildren = false;
     bool mEmittingValueChanged = false;
 };

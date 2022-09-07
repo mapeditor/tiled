@@ -20,6 +20,58 @@
             "valuesAsFlags": false
         },
         {
+            "id": 10,
+            "name": "CharacterDirection",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Down"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "color": "#ffa0a0a4",
+            "id": 9,
+            "members": [
+                {
+                    "name": "fixture",
+                    "propertyType": "Fixture",
+                    "type": "class",
+                    "value": {
+                        "friction": 4,
+                        "static": false
+                    }
+                },
+                {
+                    "name": "j",
+                    "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "kk",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "name": "o",
+                    "type": "object",
+                    "value": 0
+                }
+            ],
+            "name": "Class2",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset"
+            ]
+        },
+        {
             "id": 2,
             "name": "EnemyType",
             "storageType": "string",
@@ -33,7 +85,7 @@
         },
         {
             "color": "#ffad7fa8",
-            "id": 4,
+            "id": 11,
             "members": [
                 {
                     "name": "friction",
@@ -43,12 +95,13 @@
                 {
                     "name": "static",
                     "type": "bool",
-                    "value": false
+                    "value": true
                 }
             ],
             "name": "Fixture",
             "type": "class",
             "useAs": [
+                "property",
                 "object",
                 "tile"
             ]
@@ -61,6 +114,7 @@
             "name": "Location",
             "type": "class",
             "useAs": [
+                "property",
                 "object",
                 "tile"
             ]
@@ -73,14 +127,22 @@
             "name": "NPC",
             "type": "class",
             "useAs": [
+                "property",
                 "object",
                 "tile"
             ]
         },
         {
             "color": "#ff99c1f1",
-            "id": 7,
+            "id": 12,
             "members": [
+                {
+                    "name": "class2",
+                    "propertyType": "Class2",
+                    "type": "class",
+                    "value": {
+                    }
+                },
                 {
                     "name": "disabled",
                     "type": "bool",

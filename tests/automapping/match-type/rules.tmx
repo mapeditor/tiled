@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.8.4" orientation="orthogonal" renderorder="right-down" width="7" height="4" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="2">
+<map version="1.9" tiledversion="1.9.1" orientation="orthogonal" renderorder="right-down" width="7" height="4" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="5">
+ <editorsettings>
+  <export target="../../../../../../../tmp/rules.json" format="json"/>
+ </editorsettings>
  <properties>
   <property name="NoOverlappingRules" type="bool" value="true"/>
  </properties>
@@ -29,5 +32,34 @@
 6,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup color="#ed333b" id="4" name="//comments"/>
+ <objectgroup color="#ed333b" id="4" name="//comments">
+  <object id="2" class="Class2" x="34" y="63" width="17" height="26">
+   <properties>
+    <property name="222" type="int" value="7"/>
+    <property name="class2" type="class" propertytype="Class2">
+     <properties>
+      <property name="j" type="int" value="3"/>
+      <property name="kk" value="ee"/>
+     </properties>
+    </property>
+    <property name="o" type="object" value="3"/>
+   </properties>
+  </object>
+  <object id="3" class="Class2" x="70" y="43" width="45" height="24">
+   <properties>
+    <property name="class2" type="class" propertytype="Class2">
+     <properties>
+      <property name="fixture" type="class" propertytype="Fixture">
+       <properties>
+        <property name="static" type="bool" value="true"/>
+       </properties>
+      </property>
+      <property name="j" type="int" value="3"/>
+      <property name="kk" value="dd"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="4" class="Class2" x="144" y="43" width="50" height="37"/>
+ </objectgroup>
 </map>
