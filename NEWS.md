@@ -3,6 +3,7 @@
 * Allow adding maps to image collection tilesets (#3447)
 * Added file system actions to the tile context menu (#3448)
 * Fixed possible crash in Custom Types Editor (#3465)
+* Fixed display of overridden values from a nested class
 * Fixed ability to reset nested string and file properties (#3409)
 * Fixed changing nested property values for multiple objects (#3344)
 * Fixed possible duplication of Automapping Rules Tileset (#3462)
