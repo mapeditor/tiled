@@ -67,7 +67,9 @@ QtVariantProperty *CustomPropertiesHelper::createProperty(const QString &name,
     return property;
 }
 
-QtVariantProperty *CustomPropertiesHelper::createPropertyInternal(const QString &name, const QVariant &value)
+QtVariantProperty *CustomPropertiesHelper::createPropertyInternal(const QString &name,
+                                                                  const QVariant &value,
+                                                                  QtVariantProperty *parentProperty)
 {
     int type = value.userType();
 
@@ -119,9 +121,13 @@ QtVariantProperty *CustomPropertiesHelper::createPropertyInternal(const QString 
         mPropertyTypeIds.insert(property, 0);
     }
 
+    if (parentProperty) {
+        parentProperty->addSubProperty(property);
+        mPropertyParents.insert(property, parentProperty);
+    }
+
     // Avoids emitting propertyValueChanged
     QScopedValueRollback<bool> initializing(mApplyingToChildren, true);
-
     property->setValue(toDisplayValue(value));
 
     return property;
@@ -269,12 +275,20 @@ void CustomPropertiesHelper::propertyTypesChanged()
         if (!typeId)
             continue;
 
-        if (const auto type = Object::propertyTypes().findTypeById(typeId))
+        if (const auto type = Object::propertyTypes().findTypeById(typeId)) {
             setPropertyAttributes(property, *type);
+
+            if (type->isClass()) {
+                // Restore the existing member values
+                QScopedValueRollback<bool> updating(mApplyingToChildren, true);
+                onValueChanged(property, property->value());
+            }
+        }
     }
 }
 
-void CustomPropertiesHelper::setPropertyAttributes(QtVariantProperty *property, const PropertyType &propertyType)
+void CustomPropertiesHelper::setPropertyAttributes(QtVariantProperty *property,
+                                                   const PropertyType &propertyType)
 {
     switch (propertyType.type) {
     case Tiled::PropertyType::PT_Invalid:
@@ -292,14 +306,8 @@ void CustomPropertiesHelper::setPropertyAttributes(QtVariantProperty *property, 
             const QString &name = it.key();
             const QVariant &value = it.value();
 
-            QtVariantProperty *subProperty = createPropertyInternal(name, value);
-            property->addSubProperty(subProperty);
-            mPropertyParents.insert(subProperty, property);
+            createPropertyInternal(name, value, property);
         }
-
-        // Restore the existing member values
-        QScopedValueRollback<bool> updating(mApplyingToChildren, true);
-        onValueChanged(property, property->value());
         break;
     }
     case Tiled::PropertyType::PT_Enum: {

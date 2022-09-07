@@ -59,7 +59,9 @@ signals:
     void recreateProperty(QtVariantProperty *property, const QVariant &value);
 
 private:
-    QtVariantProperty *createPropertyInternal(const QString &name, const QVariant &value);
+    QtVariantProperty *createPropertyInternal(const QString &name,
+                                              const QVariant &value,
+                                              QtVariantProperty *parentProperty = nullptr);
     void deletePropertyInternal(QtProperty *property);
     void deleteSubProperties(QtProperty *property);
 
@@ -67,7 +69,8 @@ private:
     void resetProperty(QtProperty *property);
     void propertyTypesChanged();
 
-    void setPropertyAttributes(QtVariantProperty *property, const PropertyType &propertyType);
+    void setPropertyAttributes(QtVariantProperty *property,
+                               const PropertyType &propertyType);
 
     const PropertyType *propertyType(QtProperty *property) const;
     QStringList propertyPath(QtProperty *property) const;
