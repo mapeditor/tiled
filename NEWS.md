@@ -8,6 +8,7 @@
 * Fixed changing nested property values for multiple objects (#3344)
 * Fixed possible duplication of Automapping Rules Tileset (#3462)
 * Fixed case where object labels could become visible for hidden layer (#3442)
+* Fixed updating of custom property colors when changing style
 * Scripting: Added Tileset.findTile
 * AutoMapping: Fixed applying of rule probability (#3425)
 

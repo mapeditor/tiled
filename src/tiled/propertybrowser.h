@@ -207,7 +207,10 @@ private:
     void updateProperties();
     Properties combinedProperties() const;
     void updateCustomProperties();
+
     void updateCustomPropertyColor(const QString &name);
+    void updateCustomPropertyColors();
+    void updateCustomPropertyColor(QtVariantProperty *property);
 
     QVariant toDisplayValue(QVariant value) const;
     QVariant fromDisplayValue(QtProperty *property, QVariant value) const;

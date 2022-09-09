@@ -43,6 +43,7 @@
 #include "preferences.h"
 #include "properties.h"
 #include "replacetileset.h"
+#include "stylehelper.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetchanges.h"
@@ -59,8 +60,8 @@
 
 #include <QtGroupPropertyManager>
 
-#include <QCoreApplication>
 #include <QDebug>
+#include <QGuiApplication>
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QScopedValueRollback>
@@ -153,6 +154,9 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
 
     connect(Preferences::instance(), &Preferences::propertyTypesChanged,
             this, &PropertyBrowser::propertyTypesChanged);
+
+    connect(StyleHelper::instance(), &StyleHelper::styleApplied,
+            this, &PropertyBrowser::updateCustomPropertyColors);
 }
 
 /**
@@ -2069,22 +2073,32 @@ void PropertyBrowser::updateCustomProperties()
     }
 }
 
-// If there are other objects selected check if their properties are equal. If not give them a gray color.
 void PropertyBrowser::updateCustomPropertyColor(const QString &name)
 {
-    QtVariantProperty *property = mCustomPropertiesHelper.property(name);
-    if (!property)
-        return;
+    if (QtVariantProperty *property = mCustomPropertiesHelper.property(name))
+        updateCustomPropertyColor(property);
+}
+
+void PropertyBrowser::updateCustomPropertyColors()
+{
+    for (QtVariantProperty *property : mCustomPropertiesHelper.properties())
+        updateCustomPropertyColor(property);
+}
+
+// If there are other objects selected check if their properties are equal. If not give them a gray color.
+void PropertyBrowser::updateCustomPropertyColor(QtVariantProperty *property)
+{
     if (!property->isEnabled())
         return;
 
-    QString propertyName = property->propertyName();
-    QString propertyValue = property->valueText();
+    const QString propertyName = property->propertyName();
+    const QString propertyValue = property->valueText();
 
     const auto &objects = mDocument->currentObjects();
 
-    QColor textColor = palette().color(QPalette::Active, QPalette::WindowText);
-    QColor disabledTextColor = palette().color(QPalette::Disabled, QPalette::WindowText);
+    const QPalette palette = QGuiApplication::palette();
+    const QColor textColor = palette.color(QPalette::Active, QPalette::WindowText);
+    const QColor disabledTextColor = palette.color(QPalette::Disabled, QPalette::WindowText);
 
     // If one of the objects doesn't have this property then gray out the name and value.
     for (Object *obj : objects) {
