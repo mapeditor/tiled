@@ -1,4 +1,4 @@
-/*
+@id:ms-vscode.cpptools-extension-pack/*
  *  actionsearchwidget.cpp
  * Copyright 2022, Chris Boehm AKA dogboydog
  * Copyright 2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
@@ -256,102 +256,46 @@ namespace Tiled {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-    class ActionResultsView : public QTreeView
-    {
-    public:
-        explicit ActionResultsView(QWidget *parent = nullptr);
-
-        QSize sizeHint() const override;
-
-        void updateMaximumHeight();
-
-    protected:
-        void keyPressEvent(QKeyEvent *event) override;
-    };
-
-    ActionResultsView::ActionResultsView(QWidget *parent)
-            : QTreeView(parent)
-    {
-        setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    }
-
-    QSize ActionResultsView::sizeHint() const
-    {
-        return QSize(Utils::dpiScaled(600), Utils::dpiScaled(600));
-    }
-
-    void ActionResultsView::updateMaximumHeight()
-    {
-        int maximumHeight = 0;
-
-        if (auto m = model()) {
-            int rowCount = m->rowCount();
-            if (rowCount > 0) {
-                const int itemHeight = indexRowSizeHint(m->index(0, 0));
-                maximumHeight = itemHeight * rowCount;
-            }
-        }
-
-        setMaximumHeight(maximumHeight);
-    }
-
-    inline void ActionResultsView::keyPressEvent(QKeyEvent *event)
-    {
-        // Make sure the Enter and Return keys activate the current index. This
-        // doesn't happen otherwise on macOS.
-        switch (event->key()) {
-            case Qt::Key_Enter:
-            case Qt::Key_Return:
-                if (currentIndex().isValid())
-                    emit activated(currentIndex());
-                return;
-        }
-
-        QTreeView::keyPressEvent(event);
-    }
-
-///////////////////////////////////////////////////////////////////////////////
-
-
+  
     ActionSearchWidget::ActionSearchWidget(QWidget *parent)
             : QFrame(parent, Qt::Popup)
             , mFilterEdit(new FilterEdit(this))
-            , mActionResultsView(new ActionResultsView(this))
+            , mResultsView(new ResultsView(this))
             , mListModel(new ActionMatchesModel(this))
             , mDelegate(new ActionMatchDelegate(this))
     {
         setAttribute(Qt::WA_DeleteOnClose);
         setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
 
-        mActionResultsView->setUniformRowHeights(true);
-        mActionResultsView->setRootIsDecorated(false);
-        mActionResultsView->setItemDelegate(mDelegate);
-        mActionResultsView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-        mActionResultsView->setModel(mListModel);
-        mActionResultsView->setHeaderHidden(true);
+        mResultsView->setUniformRowHeights(true);
+        mResultsView->setRootIsDecorated(false);
+        mResultsView->setItemDelegate(mDelegate);
+        mResultsView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+        mResultsView->setModel(mListModel);
+        mResultsView->setHeaderHidden(true);
 
         mFilterEdit->setPlaceholderText(tr("Search Tiled Actions..."));
-        mFilterEdit->setFilteredView(mActionResultsView);
+        mFilterEdit->setFilteredView(mResultsView);
         mFilterEdit->setClearTextOnEscape(false);
         mFilterEdit->setFont(scaledFont(mFilterEdit->font(), 1.5));
 
         setFocusProxy(mFilterEdit);
-        mActionResultsView->setFocusProxy(mFilterEdit);
+        mResultsView->setFocusProxy(mFilterEdit);
 
-        mActionResultsView->setFrameShape(QFrame::NoFrame);
-        mActionResultsView->viewport()->setBackgroundRole(QPalette::Window);
+        mResultsView->setFrameShape(QFrame::NoFrame);
+        mResultsView->viewport()->setBackgroundRole(QPalette::Window);
 
         auto margin = Utils::dpiScaled(4);
         auto verticalLayout = new QVBoxLayout;
         verticalLayout->setContentsMargins(margin, margin, margin, margin);
         verticalLayout->setSpacing(margin);
         verticalLayout->addWidget(mFilterEdit);
-        verticalLayout->addWidget(mActionResultsView);
+        verticalLayout->addWidget(mResultsView);
         verticalLayout->addStretch(0);
         setLayout(verticalLayout);
 
         connect(mFilterEdit, &QLineEdit::textChanged, this, &ActionSearchWidget::setFilterText);
-        connect(mActionResultsView, &QAbstractItemView::activated, this, [this] (const QModelIndex &index) {
+        connect(mResultsView, &QAbstractItemView::activated, this, [this] (const QModelIndex &index) {
             const Id actionId = mListModel->matches().at(index.row()).actionId;
             close();
             ActionManager::instance()->action(actionId)->trigger();
@@ -423,12 +367,12 @@ namespace Tiled {
         mDelegate->setWords(words);
         mListModel->setMatches(matches);
 
-        mActionResultsView->updateGeometry();
-        mActionResultsView->updateMaximumHeight();
+        mResultsView->updateGeometry();
+        mResultsView->updateMaximumHeight();
 
         // Restore or introduce selection
         if (!matches.isEmpty())
-            mActionResultsView->setCurrentIndex(mListModel->index(0));
+            mResultsView->setCurrentIndex(mListModel->index(0));
 
         // TODO test code end
         layout()->activate();
