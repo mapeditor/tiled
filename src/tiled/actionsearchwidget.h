@@ -23,13 +23,13 @@
 #include <QFrame>
 #include <QAction>
 #include "id.h"
+#include "locatorwidget.h"
 
 namespace Tiled {
 
     class FilterEdit;
-    class ActionMatchDelegate;
+    class MatchDelegate;
     class ActionMatchesModel;
-    class ActionResultsView;
 
     class ActionSearchWidget : public QFrame
     {
@@ -52,9 +52,9 @@ namespace Tiled {
         void setFilterText(const QString &text);
 
         FilterEdit *mFilterEdit;
-        ActionResultsView *mActionResultsView;
+        ResultsView *mResultsView;
         ActionMatchesModel *mListModel;
-        ActionMatchDelegate *mDelegate;
+        MatchDelegate *mDelegate;
     };
 
 } // namespace Tiled
