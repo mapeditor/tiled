@@ -1,4 +1,4 @@
-@id:ms-vscode.cpptools-extension-pack/*
+/*
  *  actionsearchwidget.cpp
  * Copyright 2022, Chris Boehm AKA dogboydog
  * Copyright 2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
@@ -90,179 +90,13 @@ namespace Tiled {
     }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-    static QFont scaledFont(const QFont &font, qreal scale)
-    {
-        QFont scaled(font);
-        if (font.pixelSize() > 0)
-            scaled.setPixelSize(font.pixelSize() * scale);
-        else
-            scaled.setPointSizeF(font.pointSizeF() * scale);
-        return scaled;
-    }
-
-    class ActionMatchDelegate : public QStyledItemDelegate
-    {
-    public:
-        ActionMatchDelegate(QObject *parent = nullptr);
-
-        QSize sizeHint(const QStyleOptionViewItem &option,
-                       const QModelIndex &index) const override;
-
-        void paint(QPainter *painter,
-                   const QStyleOptionViewItem &option,
-                   const QModelIndex &index) const override;
-
-        void setWords(const QStringList &words) { mWords = words; }
-
-    private:
-        class Fonts {
-        public:
-            Fonts(const QFont &base)
-                    : small(scaledFont(base, 0.9))
-                    , big(scaledFont(base, 1.2))
-            {}
-
-            const QFont small;
-            const QFont big;
-        };
-
-        QStringList mWords;
-    };
-
-    ActionMatchDelegate::ActionMatchDelegate(QObject *parent)
-            : QStyledItemDelegate(parent)
-    {}
-
-    QSize ActionMatchDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &) const
-    {
-        const QFont bigFont = scaledFont(option.font, 1.2);
-        const QFontMetrics bigFontMetrics(bigFont);
-
-        const int margin = Utils::dpiScaled(2);
-        return QSize(margin * 2, margin * 2 + bigFontMetrics.lineSpacing() * 2);
-    }
-
-    void ActionMatchDelegate::paint(QPainter *painter,
-                              const QStyleOptionViewItem &option,
-                              const QModelIndex &index) const
-    {
-        painter->save();
-
-        QString filePath = index.data().toString();
-        const int lastSlash = filePath.lastIndexOf(QLatin1Char('/'));
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-        const auto ranges = Utils::matchingRanges(mWords, &filePath);
-#else
-        const auto ranges = Utils::matchingRanges(mWords, filePath);
-#endif
-
-        filePath = QDir::toNativeSeparators(filePath);
-
-        // Since we're using HTML to markup the entries we'll need to escape the
-        // filePath and fileName to avoid them introducing any formatting, however
-        // unlikely this may be.
-        QString filePathHtml;
-        QString fileNameHtml;
-        int filePathIndex = 0;
-
-        auto escapedRange = [&] (int first, int last) -> QString {
-            return filePath.mid(first, last - first + 1).toHtmlEscaped();
-        };
-
-        for (const auto &range : ranges) {
-            if (range.first > filePathIndex)
-                filePathHtml.append(escapedRange(filePathIndex, range.first - 1));
-
-            filePathHtml.append(QStringLiteral("<b>"));
-            filePathHtml.append(escapedRange(range.first, range.second));
-            filePathHtml.append(QStringLiteral("</b>"));
-
-            if (range.second > lastSlash) {
-                const auto first = qMax(range.first, lastSlash + 1);
-                const auto fileNameIndex = qMax(filePathIndex, lastSlash + 1);
-
-                if (first > fileNameIndex)
-                    fileNameHtml.append(escapedRange(fileNameIndex, first - 1));
-
-                fileNameHtml.append(QStringLiteral("<b>"));
-                fileNameHtml.append(escapedRange(first, range.second));
-                fileNameHtml.append(QStringLiteral("</b>"));
-            }
-
-            filePathIndex = range.second + 1;
-        }
-
-        filePathHtml.append(escapedRange(filePathIndex, filePath.size() - 1));
-        fileNameHtml.append(escapedRange(qMax(filePathIndex, lastSlash + 1), filePath.size() - 1));
-
-        const Fonts fonts(option.font);
-        const QFontMetrics bigFontMetrics(fonts.big);
-
-        const int margin = Utils::dpiScaled(2);
-        const auto fileNameRect = option.rect.adjusted(margin, margin, -margin, 0);
-        const auto filePathRect = option.rect.adjusted(margin, margin + bigFontMetrics.lineSpacing(), -margin, 0);
-
-        // draw the background (covers selection)
-        QStyle *style = QApplication::style();
-        style->drawPrimitive(QStyle::PE_PanelItemViewItem, &option, painter);
-
-        // adjust text color to state
-        QPalette::ColorGroup cg = option.state & QStyle::State_Enabled
-                                  ? QPalette::Normal : QPalette::Disabled;
-        if (cg == QPalette::Normal && !(option.state & QStyle::State_Active))
-            cg = QPalette::Inactive;
-        if (option.state & QStyle::State_Selected) {
-            painter->setPen(option.palette.color(cg, QPalette::HighlightedText));
-        } else {
-            painter->setPen(option.palette.color(cg, QPalette::Text));
-        }
-
-        QTextOption textOption;
-        textOption.setWrapMode(QTextOption::NoWrap);
-
-        QStaticText staticText(fileNameHtml);
-        staticText.setTextOption(textOption);
-        staticText.setTextFormat(Qt::RichText);
-        staticText.setTextWidth(fileNameRect.width());
-        staticText.prepare(painter->transform(), fonts.big);
-
-        painter->setFont(fonts.big);
-        painter->drawStaticText(fileNameRect.topLeft(), staticText);
-
-        staticText.setText(filePathHtml);
-        staticText.prepare(painter->transform(), fonts.small);
-
-        painter->setOpacity(0.75);
-        painter->setFont(fonts.small);
-        painter->drawStaticText(filePathRect.topLeft(), staticText);
-
-        // draw the focus rect
-        if (option.state & QStyle::State_HasFocus) {
-            QStyleOptionFocusRect o;
-            o.QStyleOption::operator=(option);
-            o.rect = style->subElementRect(QStyle::SE_ItemViewItemFocusRect, &option);
-            o.state |= QStyle::State_KeyboardFocusChange;
-            o.state |= QStyle::State_Item;
-            QPalette::ColorGroup cg = (option.state & QStyle::State_Enabled)
-                                      ? QPalette::Normal : QPalette::Disabled;
-            o.backgroundColor = option.palette.color(cg, (option.state & QStyle::State_Selected)
-                                                         ? QPalette::Highlight : QPalette::Window);
-            style->drawPrimitive(QStyle::PE_FrameFocusRect, &o, painter);
-        }
-
-        painter->restore();
-    }
-
-///////////////////////////////////////////////////////////////////////////////
-
   
     ActionSearchWidget::ActionSearchWidget(QWidget *parent)
             : QFrame(parent, Qt::Popup)
             , mFilterEdit(new FilterEdit(this))
             , mResultsView(new ResultsView(this))
             , mListModel(new ActionMatchesModel(this))
-            , mDelegate(new ActionMatchDelegate(this))
+            , mDelegate(new MatchDelegate(this))
     {
         setAttribute(Qt::WA_DeleteOnClose);
         setFrameStyle(QFrame::StyledPanel | QFrame::Plain);

@@ -86,44 +86,7 @@ void MatchesModel::setMatches(QVector<ProjectModel::Match> matches)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static QFont scaledFont(const QFont &font, qreal scale)
-{
-    QFont scaled(font);
-    if (font.pixelSize() > 0)
-        scaled.setPixelSize(font.pixelSize() * scale);
-    else
-        scaled.setPointSizeF(font.pointSizeF() * scale);
-    return scaled;
-}
 
-class MatchDelegate : public QStyledItemDelegate
-{
-public:
-    MatchDelegate(QObject *parent = nullptr);
-
-    QSize sizeHint(const QStyleOptionViewItem &option,
-                  const QModelIndex &index) const override;
-
-    void paint(QPainter *painter,
-               const QStyleOptionViewItem &option,
-               const QModelIndex &index) const override;
-
-    void setWords(const QStringList &words) { mWords = words; }
-
-private:
-    class Fonts {
-    public:
-        Fonts(const QFont &base)
-            : small(scaledFont(base, 0.9))
-            , big(scaledFont(base, 1.2))
-        {}
-
-        const QFont small;
-        const QFont big;
-    };
-
-    QStringList mWords;
-};
 
 MatchDelegate::MatchDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
@@ -251,18 +214,6 @@ void MatchDelegate::paint(QPainter *painter,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class ResultsView : public QTreeView
-{
-public:
-    explicit ResultsView(QWidget *parent = nullptr);
-
-    QSize sizeHint() const override;
-
-    void updateMaximumHeight();
-
-protected:
-    void keyPressEvent(QKeyEvent *event) override;
-};
 
 ResultsView::ResultsView(QWidget *parent)
     : QTreeView(parent)
