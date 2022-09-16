@@ -1,4 +1,4 @@
-### Unreleased
+### Tiled 1.9.2 (16 September 2022)
 
 * Allow adding maps to image collection tilesets (#3447)
 * Auto-detect JSON file format when importing custom types (#3472)
@@ -14,6 +14,7 @@
 * Scripting: Added Tileset.findTile
 * AutoMapping: Fixed applying of rule probability (#3425)
 * Defold plugin: Assign incrementing z values and allow specifying tile\_set (#3214)
+* Updates to German translation (by Christian Pervoelz)
 
 ### Tiled 1.9.1 (11 August 2022)
 

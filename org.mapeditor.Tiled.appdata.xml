@@ -16,6 +16,28 @@
  </keywords>
  <content_rating type="oars-1.0" />
  <releases>
+  <release version="1.9.2" type="stable" date="2022-09-16">
+   <url>https://www.mapeditor.org/2022/09/16/tiled-1-9-2-released.html</url>
+   <description>
+    <ul>
+     <li>Allow adding maps to image collection tilesets (#3447)</li>
+     <li>Auto-detect JSON file format when importing custom types (#3472)</li>
+     <li>Added file system actions to the tile context menu (#3448)</li>
+     <li>Fixed possible crash in Custom Types Editor (#3465)</li>
+     <li>Fixed display of overridden values from a nested class</li>
+     <li>Fixed ability to reset nested string and file properties (#3409)</li>
+     <li>Fixed changing nested property values for multiple objects (#3344)</li>
+     <li>Fixed resolving of class properties on export to affect all data types (#3470)</li>
+     <li>Fixed possible duplication of Automapping Rules Tileset (#3462)</li>
+     <li>Fixed case where object labels could become visible for hidden layer (#3442)</li>
+     <li>Fixed updating of custom property colors when changing style</li>
+     <li>Scripting: Added Tileset.findTile</li>
+     <li>AutoMapping: Fixed applying of rule probability (#3425)</li>
+     <li>Defold plugin: Assign incrementing z values and allow specifying tile\_set (#3214)</li>
+     <li>Updates to German translation (by Christian Pervoelz)</li>
+    </ul>
+   </description>
+  </release>
   <release version="1.9.1" type="stable" date="2022-08-11">
    <url>https://www.mapeditor.org/2022/08/11/tiled-1-9-1-released.html</url>
    <description>
