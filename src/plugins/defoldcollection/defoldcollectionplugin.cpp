@@ -129,6 +129,24 @@ static QString replaceTags(QString context, const QVariantHash &map)
     return context;
 }
 
+template <typename T>
+static T optionalProperty(const Tiled::Object &object, const QString &name, const T &def)
+{
+    const QVariant var = object.resolvedProperty(name);
+    return var.isValid() ? var.value<T>() : def;
+}
+
+static QString tileSource(const Tiled::Tileset &tileset)
+{
+    // Below, we input a value that's not necessarily correct in Defold, but it
+    // lets the user know what tilesource to link this tilemap with manually.
+    // However, if the user keeps all tilesources in /tilesources/ and the name
+    // of the tilesource corresponds with the name of the tileset in Defold,
+    // the value will be automatically correct.
+    const QString defaultTileSource = "/tilesources/" + tileset.name() + ".tilesource";
+    return optionalProperty(tileset, QStringLiteral("tilesource"), defaultTileSource);
+}
+
 DefoldCollectionPlugin::DefoldCollectionPlugin()
 {
 }
@@ -299,10 +317,7 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
             tileMapHash["layers"] = layers;
             tileMapHash["material"] = "/builtins/materials/tile_map.material";
             tileMapHash["blend_mode"] = "BLEND_MODE_ALPHA";
-            // Below, we input a value that's not necessarily correct in Defold, but it lets the user know what tilesource to link this tilemap with manually.
-            // However, if the user keeps all tilesources in /tilesources/ and the name of the tilesource corresponds with the name of the tileset in Defold,
-            // the value will be automatically correct.
-            tileMapHash["tile_set"] = "/tilesources/" + tileset->name() + ".tilesource";
+            tileMapHash["tile_set"] = tileSource(*tileset);
 
             QString result = replaceTags(QLatin1String(tileMapTemplate), tileMapHash);
             Tiled::SaveFile mapFile(tilemapFilePath);
@@ -403,10 +418,7 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
             tileMapHash["layers"] = layers;
             tileMapHash["material"] = "/builtins/materials/tile_map.material";
             tileMapHash["blend_mode"] = "BLEND_MODE_ALPHA";
-            // Below, we input a value that's not necessarily correct in Defold, but it lets the user know what tilesource to link this tilemap with manually.
-            // However, if the user keeps all tilesources in /tilesources/ and the name of the tilesource corresponds with the name of the tileset in Defold,
-            // the value will be automatically correct.
-            tileMapHash["tile_set"] = "/tilesources/" + tileset->name() + ".tilesource";
+            tileMapHash["tile_set"] = tileSource(*tileset);
 
             QString result = replaceTags(QLatin1String(tileMapTemplate), tileMapHash);
             Tiled::SaveFile mapFile(tilemapFilePath);

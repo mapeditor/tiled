@@ -13,6 +13,7 @@
 * Fixed updating of custom property colors when changing style
 * Scripting: Added Tileset.findTile
 * AutoMapping: Fixed applying of rule probability (#3425)
+* Defold plugin: Assign incrementing z values and allow specifying tile\_set (#3214)
 
 ### Tiled 1.9.1 (11 August 2022)
 
