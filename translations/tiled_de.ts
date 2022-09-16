@@ -260,7 +260,7 @@
     <message>
         <location line="+17"/>
         <source>Clear</source>
-        <translation type="unfinished">Löschen</translation>
+        <translation>Löschen</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -280,7 +280,7 @@
     <message>
         <location line="+17"/>
         <source>Show output in Console view</source>
-        <translation>Ausgabe in der Konsolenansicht anzeigen</translation>
+        <translation>Zeige Ausgabe in der Konsole</translation>
     </message>
 </context>
 <context>
@@ -398,7 +398,7 @@
     <message>
         <location line="+7"/>
         <source>Draw object &amp;names</source>
-        <translation>Objekt&amp;namen zeichnen</translation>
+        <translation>Zeichne Objektnamen</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -447,7 +447,7 @@
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-57"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="-55"/>
         <source>Could not open file for reading.</source>
-        <translation>Konnte Datei nicht zum Lesen öffnen.</translation>
+        <translation>Lesen der Datei nicht möglich.</translation>
     </message>
     <message>
         <location filename="../src/tiled/utils.cpp" line="+535"/>
@@ -462,7 +462,7 @@
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="+64"/>
         <source>Automapping Rules files (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Automapping Regeln (*.txt)</translation>
     </message>
     <message>
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-595"/>
@@ -768,7 +768,7 @@
     <message>
         <location line="+9"/>
         <source>Clear Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Verlauf löschen</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -943,7 +943,7 @@
     <message>
         <location line="+181"/>
         <source>&amp;New Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Neues Projekt...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1384,7 +1384,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+30"/>
         <source>Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Verlauf</translation>
     </message>
     <message>
         <location line="+110"/>
@@ -1808,7 +1808,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="-10"/>
         <source>Pixel-perfect tile object selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Pixelgenau Auswahl von Kachelobjekten</translation>
     </message>
     <message>
         <location line="+146"/>
@@ -2547,12 +2547,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/editablewangset.cpp" line="-34"/>
         <source>Wang ID must be an array of length 8</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Wang-Id muss ein Feld mit der Länge 8 sein</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Invalid Wang ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Wang-ID</translation>
     </message>
     <message>
         <location line="+53"/>
