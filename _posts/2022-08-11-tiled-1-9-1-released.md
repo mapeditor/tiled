@@ -7,7 +7,7 @@ author:
 tags: release
 ---
 
-This patch releases addresses a few serious issues in [Tiled 1.9][tiled-1.9],
+This patch release addresses a few serious issues in [Tiled 1.9][tiled-1.9],
 including a crash when removing a custom property without having a project
 loaded. Upgrading is highly recommended!
 
