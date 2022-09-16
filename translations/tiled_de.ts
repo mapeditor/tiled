@@ -3827,7 +3827,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+321"/>
         <source>Tileset Columns Changed</source>
-        <translation type="unfinished">Tilesetspalten geändert</translation>
+        <translation>Kachelsatzspalten geändert</translation>
     </message>
     <message>
         <location line="+1"/>
