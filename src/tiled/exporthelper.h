@@ -48,7 +48,7 @@ public:
     const Map *prepareExportMap(const Map *map, std::unique_ptr<Map> &exportMap) const;
 
 private:
-    void resolveTypeAndProperties(MapObject *object) const;
+    void resolveProperties(Object *object) const;
 
     const Preferences::ExportOptions mOptions;
 };

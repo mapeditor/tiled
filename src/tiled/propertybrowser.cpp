@@ -1866,7 +1866,7 @@ void PropertyBrowser::updateProperties()
             return;
         }
 
-        const QString &type = mapObject->effectiveClassName();
+        const QString &className = mapObject->effectiveClassName();
         const auto classColorGroup = mapObject->className().isEmpty() ? QPalette::Disabled
                                                                       : QPalette::Active;
 
@@ -1877,7 +1877,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[IdProperty]->setValue(mapObject->id());
         mIdToProperty[TemplateProperty]->setValue(QVariant::fromValue(templateFilePath));
         mIdToProperty[NameProperty]->setValue(mapObject->name());
-        mIdToProperty[ClassProperty]->setValue(type);
+        mIdToProperty[ClassProperty]->setValue(className);
         mIdToProperty[ClassProperty]->setValueColor(palette().color(classColorGroup, QPalette::WindowText));
         if (auto visibleProperty = mIdToProperty[VisibleProperty])
             visibleProperty->setValue(mapObject->isVisible());
@@ -2025,8 +2025,8 @@ Properties PropertyBrowser::combinedProperties() const
     if (isAutomappingRulesMap(mMapDocument))
         addAutomappingProperties(combinedProperties, mObject);
 
-    const QString className = mObject->typeId() == Object::MapObjectType ? static_cast<MapObject*>(mObject)->effectiveClassName()
-                                                                         : mObject->className();
+    const QString &className = mObject->typeId() == Object::MapObjectType ? static_cast<MapObject*>(mObject)->effectiveClassName()
+                                                                          : mObject->className();
 
     // Inherit properties from the class
     if (auto type = Object::propertyTypes().findClassFor(className, *mObject))

@@ -962,7 +962,7 @@ WangId WangSet::templateWangIdAt(unsigned n) const
 WangSet *WangSet::clone(Tileset *tileset) const
 {
     // Caller is responsible for adding the WangSet to this tileset
-    WangSet *c = new WangSet(tileset, mName, mType, mImageTileId);
+    auto c = new WangSet(tileset, mName, mType, mImageTileId);
 
     c->setClassName(className());
     c->setProperties(properties());
@@ -980,15 +980,18 @@ WangSet *WangSet::clone(Tileset *tileset) const
     for (QSharedPointer<WangColor> &wangColor : c->mColors) {
         const auto distanceToColor = wangColor->mDistanceToColor;
 
-        wangColor = QSharedPointer<WangColor>::create(wangColor->colorIndex(),
-                                                      wangColor->name(),
-                                                      wangColor->color(),
-                                                      wangColor->imageId(),
-                                                      wangColor->probability());
-        wangColor->setClassName(wangColor->className());
-        wangColor->setProperties(wangColor->properties());
-        wangColor->mWangSet = c;
-        wangColor->mDistanceToColor = distanceToColor;
+
+        auto clonedColor = QSharedPointer<WangColor>::create(wangColor->colorIndex(),
+                                                             wangColor->name(),
+                                                             wangColor->color(),
+                                                             wangColor->imageId(),
+                                                             wangColor->probability());
+        clonedColor->setClassName(wangColor->className());
+        clonedColor->setProperties(wangColor->properties());
+        clonedColor->mWangSet = c;
+        clonedColor->mDistanceToColor = distanceToColor;
+
+        wangColor = std::move(clonedColor);
     }
 
     return c;
