@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Allow adding maps to image collection tilesets (#3447)
+* Auto-detect JSON file format when importing custom types (#3472)
 * Added file system actions to the tile context menu (#3448)
 * Fixed possible crash in Custom Types Editor (#3465)
 * Fixed display of overridden values from a nested class
