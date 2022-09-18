@@ -2693,7 +2693,7 @@ Zeile %1, Spalte %2</translation>
         <location line="+14"/>
         <location line="+14"/>
         <source>Invalid shortName</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiger Kurzname</translation>
     </message>
     <message>
         <location line="+77"/>
@@ -2783,7 +2783,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+23"/>
         <source>BinaryFile constructor needs path of file to be opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konstruktor von BinaryFile muss einen Dateipfad öffnen können.</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -2817,12 +2817,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="-135"/>
         <source>Access to BinaryFile object that was already closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zugriff auf bereits geschlossenes Objekt vom Typ BinaryFile.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>TextFile constructor needs path of file to be opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konstruktor von TextFile muss einen Dateipfad öffnen können.</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -2839,12 +2839,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/scriptfileformatwrappers.cpp" line="+59"/>
         <source>File format doesn&apos;t support `read`</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateiformat unterstützt `read` nicht</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>File format doesn&apos;t support `write`</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateiformat unterstützt `write` nicht</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -3228,7 +3228,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+18"/>
         <source>Add &quot;%1&quot; to World &quot;%2&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; zu Welt &quot;%2&quot; hinzufügen</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -3276,17 +3276,17 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+264"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; (rule map &apos;%1&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbekannte Eigenschaft &apos;%2&apos; = &apos;%3&apos; (Regelsatz &apos;%1&apos;) - wird ignoriert</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; (rule map &apos;%1&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbekannte Eigenschaft &apos;%2&apos; = &apos;%3&apos; auf Ebene &apos;%4&apos; (Regelsatz &apos;%1&apos;) - wird ignoriert</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; for rule options (rule map &apos;%1&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbekannte Eigenschaft &apos;%2&apos; = &apos;%3&apos; für Regeloptionen (Regelsatz &apos;%1&apos;) - wird ignoriert</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -3301,17 +3301,17 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+18"/>
         <source>Only rectangle objects are supported on &apos;rule_options&apos; layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>In der Ebene &apos;Regel_Optionen&apos; sind Nur Rechteck-Objekte zugelassen.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Rotated rectangles are not supported on &apos;rule_options&apos; layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gedrehte Rechtecke sind auf der Ebene &apos;Regel_Optionen&apos; nicht zugelassen.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>&apos;rule_options&apos; layers must be object layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Ebene &apos;Regel_Optionen&apos; muss eine Ebene des Typs &apos;Objekt&apos; sein.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -5984,13 +5984,13 @@ Bitte Format angeben.</translation>
         <location line="+166"/>
         <location line="+427"/>
         <source>Export Types</source>
-        <translation>Exporttypen</translation>
+        <translation>Typen exportieren</translation>
     </message>
     <message>
         <location line="-425"/>
         <location line="+365"/>
         <source>Import Types</source>
-        <translation>Importtypen</translation>
+        <translation>Typen importieren</translation>
     </message>
     <message>
         <location line="-327"/>
