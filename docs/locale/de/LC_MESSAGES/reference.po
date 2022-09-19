@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-07 13:45+0200\n"
-"PO-Revision-Date: 2022-09-19 08:15+0000\n"
+"PO-Revision-Date: 2022-09-20 11:18+0000\n"
 "Last-Translator: Christian Pervoelz <cpervoelz@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tiled/reference/"
 "de/>\n"
@@ -1180,17 +1180,19 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:705
 msgid "Object Template"
-msgstr ""
+msgstr "Objektvorlage"
 
 #: ../../reference/json-map-format.rst:707
 msgid ""
 "An object template is written to its own file and referenced by any "
 "instances of that template."
 msgstr ""
+"Eine Objektvorlage wird in einer eigenen Datei gespeichert von allen "
+"Instanzen dieser Vorlage referenziert."
 
 #: ../../reference/json-map-format.rst:1
 msgid "``template``"
-msgstr ""
+msgstr "``Vorlage``"
 
 #: ../../reference/json-map-format.rst:1
 msgid "tileset"
@@ -1202,7 +1204,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:1
 msgid "External tileset used by the template (optional)"
-msgstr ""
+msgstr "Externes, von der Vorlage verwendetes Tileset (optional)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "object"
@@ -1214,7 +1216,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:1
 msgid "The object instantiated by this template"
-msgstr ""
+msgstr "Das auf Grundlage dieser Vorlage erzeugte Objekt"
 
 #: ../../reference/json-map-format.rst:721
 msgid "Property"
@@ -1230,6 +1232,9 @@ msgid ""
 " ``color`` or ``file`` (since 0.16, with ``color`` and ``file`` added in "
 "0.17))"
 msgstr ""
+"Typ der Eigenschaft (``Zeichenkette`` (Standard), ``int``, ``float``, "
+"``bool``, ``color`` oder ``file`` (seit0.16, mit``color`` und``file`` "
+"hinzugefügt in 0.17))"
 
 #: ../../reference/json-map-format.rst:1
 msgid "value"
@@ -1237,7 +1242,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:1
 msgid "Value of the property"
-msgstr ""
+msgstr "Wert der Eigenschaft"
 
 #: ../../reference/json-map-format.rst:734
 msgid "Point"
@@ -1400,7 +1405,7 @@ msgstr "Scripting"
 
 #: ../../reference/scripting.rst:11
 msgid "Introduction"
-msgstr ""
+msgstr "Einführung"
 
 #: ../../reference/scripting.rst:13
 msgid ""
@@ -4329,6 +4334,9 @@ msgid ""
 "`Creative Commons Attribution-ShareAlike 3.0 Unported License "
 "<http://creativecommons.org/licenses/by-sa/3.0/>`__."
 msgstr ""
+"Das **TMX Map Format** von https://www.mapeditor.org verwendet die Lizenz `"
+"Creative Commons Attribution-ShareAlike 3.0 Unported License "
+"<http://creativecommons.org/licenses/by-sa/3.0/>`__."
 
 #~ msgid "Rendering direction (orthogonal maps only)"
 #~ msgstr "Renderrichtung (nur für rechtwinklige Karten)"
