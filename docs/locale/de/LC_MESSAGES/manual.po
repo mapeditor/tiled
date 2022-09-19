@@ -6,17 +6,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2021-09-07 13:45+0200\n"
-"PO-Revision-Date: 2019-05-20 20:50+0000\n"
-"Last-Translator: ssantos <ssantos@web.de>\n"
+"PO-Revision-Date: 2022-09-19 08:15+0000\n"
+"Last-Translator: Christian Pervoelz <cpervoelz@gmail.com>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/tiled/manual/de/>"
+"\n"
 "Language: de\n"
-"Language-Team: German "
-"<https://hosted.weblate.org/projects/tiled/manual/de/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14.1\n"
 "Generated-By: Babel 2.8.0\n"
 
 #: ../../manual/automapping.rst:3
@@ -54,13 +55,15 @@ msgstr ""
 
 #: ../../manual/automapping.rst:22
 msgid "External Links"
-msgstr ""
+msgstr "Externe Links"
 
 #: ../../manual/automapping.rst:24
 msgid ""
 "`Automapping explained for Tiled 0.9 and later (YouTube) "
 "<http://www.youtube.com/watch?v=UUi0lD1pxyQ>`__"
 msgstr ""
+"`Automapping für Tiled ab Version 0.9 (YouTube) <http://www.youtube.com/"
+"watch?v=UUi0lD1pxyQ>`__"
 
 #: ../../manual/automapping.rst:25
 msgid ""
@@ -76,7 +79,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:30
 msgid "Setting it Up"
-msgstr ""
+msgstr "Einrichtung"
 
 #: ../../manual/automapping.rst:32
 msgid ""
@@ -135,7 +138,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:56
 msgid "Defining the Regions"
-msgstr ""
+msgstr "Regionen festlegen"
 
 #: ../../manual/automapping.rst:58
 msgid ""
@@ -1605,7 +1608,7 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:116
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: ../../manual/editing-tilesets.rst:115
 msgid ""
@@ -5875,7 +5878,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:22
 msgid "Defining a World"
-msgstr ""
+msgstr "Welt festlegen"
 
 #: ../../manual/worlds.rst:24
 msgid ""
@@ -5913,7 +5916,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:71
 msgid "Editing Worlds"
-msgstr ""
+msgstr "Welt bearbeiten"
 
 #: ../../manual/worlds.rst:73
 msgid ""
@@ -5936,7 +5939,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:86
 msgid "Removing Maps"
-msgstr ""
+msgstr "Karten entfernen"
 
 #: ../../manual/worlds.rst:84
 msgid ""
@@ -6352,4 +6355,3 @@ msgstr ""
 #~ "accessed by rightclicking in the  map"
 #~ " editor."
 #~ msgstr ""
-
