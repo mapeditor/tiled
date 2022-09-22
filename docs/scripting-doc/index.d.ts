@@ -472,6 +472,8 @@ declare namespace Qt {
     /**
      * Signal emitted when the user selects a different option. Provides the index
      * into the list of values for the new selection.
+     * Warning: Most builds of Tiled use Qt5, where this signal is bugged and index is the chosen text rather than the index number.
+     *          When using this event, instead of using index, you can get the updated index using QtComboBox.currentIndex.
      */
     currentIndexChanged: Signal<number>;
 
