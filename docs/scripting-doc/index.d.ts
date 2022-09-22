@@ -2607,6 +2607,10 @@ declare class TileLayer extends Layer {
 
   /**
    * Returns the flags used for the tile at the given position.
+   *
+   * The returned number is a combination of {@link Tile.FlippedHorizontally},
+   * {@link Tile.FlippedVertically}, {@link Tile.FlippedAntiDiagonally} and
+   * {@link Tile.RotatedHexagonal120}.
    */
   flagsAt(x : number, y : number) : number
 
