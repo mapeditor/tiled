@@ -5111,7 +5111,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+166"/>
         <source>Select Touched Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Angefasste Objekte auswähle</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5352,7 +5352,7 @@ Bitte Format angeben.</translation>
     <message numerus="yes">
         <location line="-62"/>
         <source>Convert Property/Properties</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Eigenschaft umwandeln</numerusform>
             <numerusform>Eigenschaften umwandeln</numerusform>
         </translation>
@@ -6184,7 +6184,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+67"/>
         <source>Stack traceback:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stacktrace:</translation>
     </message>
     <message>
         <location line="+12"/>
