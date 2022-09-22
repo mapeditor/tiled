@@ -1,3 +1,7 @@
+### Unreleased
+
+* Defold plugin: Allow overriding z value also when exporting to .collection (#3214)
+
 ### Tiled 1.9.2 (16 September 2022)
 
 * Allow adding maps to image collection tilesets (#3447)
