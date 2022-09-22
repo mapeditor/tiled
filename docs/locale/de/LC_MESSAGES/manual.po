@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2021-09-07 13:45+0200\n"
-"PO-Revision-Date: 2022-09-20 11:18+0000\n"
+"PO-Revision-Date: 2022-09-23 11:18+0000\n"
 "Last-Translator: Christian Pervoelz <cpervoelz@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tiled/manual/de/>"
 "\n"
@@ -3190,6 +3190,9 @@ msgid ""
 "have a quick look at the :doc:`various layer types <layers>` supported by"
 " Tiled."
 msgstr ""
+"Jetzt sind wir bereit Kacheln auszuwählen und eine Karte zu bauen. Aber "
+"zuerst, sollten wir uns noch die :doc:`verschiedenen Arten von Ebenen "
+"<layers>`ansehen, die Tiled zu bieten hat."
 
 #: ../../manual/introduction.rst:148
 msgid ""
@@ -3199,6 +3202,11 @@ msgid ""
 "</reference/support-for-tmx-maps>` often comes with some usage "
 "information."
 msgstr ""
+"Sehr viel von diesem Handbuch muss noch geschrieben werden, aber "
+"glücklicherweise gibt es auf GamesFromScratch.com schon ein paar sehr schöne "
+"`Tiled-Tutorials`. Zusätzlich bieten die meisten :doc: `Engines und "
+"Frameworks </reference/support-for-tmx-maps>`, das Tiled-Format untersützen, "
+"nützliche Informationen."
 
 #: ../../manual/keyboard-shortcuts.rst:2
 msgid "Keyboard Shortcuts"
@@ -4773,11 +4781,11 @@ msgstr ""
 
 #: ../../manual/projects.rst:6
 msgid "Projects"
-msgstr ""
+msgstr "Projekte"
 
 #: ../../manual/projects.rst:9
 msgid "What's in a Project"
-msgstr ""
+msgstr "Bestandteile eines Projektes"
 
 #: ../../manual/projects.rst:11
 msgid ""
@@ -4785,6 +4793,9 @@ msgid ""
 " assets belonging to that project. In addition, it provides an anchor for"
 " the :ref:`session file <sessions>`."
 msgstr ""
+"Eine Projektdatei definiert sich hauptsächlich über eine Liste von "
+"Verzeichnissen mit Assets, die zu dem Projekt gehören. Zusätzlich ist sie "
+"der Anker für :ref: `die Sitzungsdatei sessions>`."
 
 #: ../../manual/projects.rst:15
 msgid ""
@@ -4792,10 +4803,13 @@ msgid ""
 "properties, which can be changed through the *Project -> Project "
 "Properties...* dialog."
 msgstr ""
+"Neben der Liste von Verzeichnissen, verfügt ein Projekt über ein paar "
+"Eigenschaften. Diese können in einem Dialog, der über *Projekt -> "
+"Projekteigenschaften...* aufgerufen wird, geändert werden."
 
 #: ../../manual/projects.rst:25
 msgid "Extensions Directory"
-msgstr ""
+msgstr "Verzeichnis für Erweiterungen"
 
 #: ../../manual/projects.rst:20
 msgid ""
