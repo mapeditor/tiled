@@ -23,10 +23,7 @@
 
 #include "layer.h"
 #include "map.h"
-#include "mapobject.h"
-#include "objectgroup.h"
 #include "savefile.h"
-#include "tile.h"
 #include "tilelayer.h"
 #include "grouplayer.h"
 
@@ -189,10 +186,15 @@ static QString tilesetRelativePath(const QString &filePath)
 }
 
 /*
- * Returns z-Index for a layer, depending on its order in the map
+ * Returns z-Index for a layer, depending on its order in the map or a custom
+ * "z" property.
  */
 static float zIndexForLayer(const Tiled::Map &map, const Tiled::Layer &inLayer, bool isTopLayer)
 {
+    bool ok;
+    if (float z = inLayer.property(QStringLiteral("z")).toFloat(&ok); ok)
+        return z;
+
     if (isTopLayer) {
         int topLayerOrder = 0;
         for (auto layer : map.layers()) {
@@ -202,10 +204,10 @@ static float zIndexForLayer(const Tiled::Map &map, const Tiled::Layer &inLayer, 
                 return qBound(0, topLayerOrder, 9999) * 0.0001f;
             topLayerOrder++;
         }
-    } else if (inLayer.parentLayer()) {
-        float zIndex = zIndexForLayer(map, *inLayer.parentLayer(), true);
+    } else if (auto parentLayer = inLayer.parentLayer()) {
+        float zIndex = zIndexForLayer(map, *parentLayer, true);
         int subLayerOrder = 0;
-        for (auto subLayer : inLayer.parentLayer()->layers()) {
+        for (auto subLayer : parentLayer->layers()) {
             if (subLayer == &inLayer) {
                 zIndex += qBound(0, subLayerOrder, 9999) * 0.00000001f;
                 return zIndex;

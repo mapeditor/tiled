@@ -42,7 +42,15 @@ It supports:
 * Group layers (**only top-level group layers are supported, not nested ones!**)
 * Multiple Tilesets per Tilemap
 
-Upon export:
+The plugin automatically assigns a Z-index to each layer ranging between 0 and
+0.1. It supports the use of 9999 Group Layers and 9999 Tile Layers per Group
+Layer.
+
+When any additional information from the map is needed, the map can be
+exported in :ref:`Lua format <lua-export>` and loaded as Defold script.
+
+Custom Properties
+^^^^^^^^^^^^^^^^^
 
 * The ``tile_set`` property of each tilemap may need to be set up manually in
   Defold after each export. However, Tiled will attempt to find the
@@ -59,9 +67,9 @@ Upon export:
   GameObject in the Collection. This is useful when working with :doc:`Worlds
   <worlds>`.
 
-All layers of a Tilemap will have Z-index property assigned with values
-ranging between 0 and 0.1. The plugin supports the use of 9999 Group Layers
-and 9999 Tile Layers per Group Layer.
+.. raw:: html
 
-When any additional information from the map is needed, the map can be
-exported in :ref:`Lua format <lua-export>` and loaded as Defold script.
+   <div class="new">New in Tiled 1.9.3</div>
+
+* A custom float property named "z" can be added to tile layers to manually
+  specify their ``z`` value.
