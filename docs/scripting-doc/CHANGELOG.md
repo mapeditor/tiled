@@ -1,5 +1,14 @@
 ## Changelog
 
+### 1.9.2
+
+> 22 Sep 2022
+
+- Added the new API from Tiled 1.8.5, 1.9.0, 1.9.1 and 1.9.2
+- Changed FileInfo API to a namespace so it can be accessed in TypeScript (#3346)
+- Clarified the format of integer color values
+- Fixed a few members to be marked readonly
+
 ### 1.8.2
 
 > 3 May 2022

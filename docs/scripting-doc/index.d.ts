@@ -1927,6 +1927,8 @@ interface TilesetsView {
 
   /**
    * The signal emitted when {@link currentTileset} changes.
+   *
+   * @since 1.9.1
    */
   readonly currentTilesetChanged: Signal<null>;
 
@@ -2906,6 +2908,8 @@ declare class Tileset extends Asset {
    * Returns a reference to the tile with the given ID, or `null` if no such tile exists. When the tile gets removed from the tileset, the reference changes to a standalone copy of the tile.
    *
    * Note that the tiles in a tileset are only guaranteed to have consecutive IDs for tileset-image based tilesets. For image collection tilesets there will be gaps when tiles have been removed from the tileset.
+   *
+   * @since 1.9.2
    */
   public findTile(id : number) : Tile | null
 
@@ -3090,6 +3094,8 @@ interface Tool {
    *
    * The actions need to be registered using
    * {@link registerAction | tiled.registerAction()}.
+   *
+   * @since 1.9
    */
   toolBarActions: string[];
 
@@ -3851,6 +3857,8 @@ declare class ImageWidget extends Qt.QWidget{
  * in between adding the widgets.
  *
  * This type is an extension of the [QDialog](https://doc.qt.io/qt-5/qdialog.html) type from Qt.
+ *
+ * @since 1.9
  */
 declare class Dialog {
   /**
