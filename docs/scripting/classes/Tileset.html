@@ -176,6 +176,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Tileset.html#addTile" class="tsd-kind-icon">add<wbr>Tile</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Tileset.html#addWangSet" class="tsd-kind-icon">add<wbr>Wang<wbr>Set</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Tileset.html#findTile" class="tsd-kind-icon">find<wbr>Tile</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Tileset.html#loadFromImage" class="tsd-kind-icon">load<wbr>From<wbr>Image</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="Tileset.html#macro" class="tsd-kind-icon">macro</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#properties" class="tsd-kind-icon">properties</a></li>
@@ -525,7 +526,7 @@
 						<div class="lead">
 							<p>Selected tiles in the tileset editor.</p>
 						</div>
-						<p>See {@link TilesetView.selectedTiles} for getting the selected tiles in
+						<p>See <a href="../interfaces/TilesetsView.html#selectedTiles">TilesetsView.selectedTiles</a> for getting the selected tiles in
 						the Tilesets view.</p>
 					</div>
 				</section>
@@ -789,6 +790,30 @@
 								<div class="lead">
 									<p>Add a new Wang set to this tileset with the given name and type.</p>
 								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="findTile" class="tsd-anchor"></a>
+					<h3>find<wbr>Tile</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">find<wbr>Tile<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="Tile.html" class="tsd-signature-type" data-tsd-kind="Class">Tile</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns a reference to the tile with the given ID, or <code>null</code> if no such tile exists. When the tile gets removed from the tileset, the reference changes to a standalone copy of the tile.</p>
+								</div>
+								<p>Note that the tiles in a tileset are only guaranteed to have consecutive IDs for tileset-image based tilesets. For image collection tilesets there will be gaps when tiles have been removed from the tileset.</p>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.9.2</p>
+									</dd>
+								</dl>
 							</div>
 						</li>
 					</ul>
@@ -1291,6 +1316,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="Tileset.html#addWangSet" class="tsd-kind-icon">add<wbr>Wang<wbr>Set</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Tileset.html#findTile" class="tsd-kind-icon">find<wbr>Tile</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="Tileset.html#loadFromImage" class="tsd-kind-icon">load<wbr>From<wbr>Image</a>
