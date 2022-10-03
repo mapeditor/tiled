@@ -68,12 +68,19 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
     mAutomappingRulesFileProperty->setValue(project.mAutomappingRulesFile);
     mAutomappingRulesFileProperty->setAttribute(QStringLiteral("filter"), helper.filter());
 
+    QString ruleDirFilter = QCoreApplication::translate("File Types", "Directory");
+    FormatHelper<MapFormat> pathDirHelper(FileFormat::ReadWrite, std::move(ruleFileFilter));
+    mFileScriptRootPathProperty = variantPropertyManager->addProperty(filePathTypeId(), tr("Script Root Directory"));
+    mFileScriptRootPathProperty->setValue(project.mScriptRootPath);
+    mFileScriptRootPathProperty->setAttribute(QStringLiteral("directory"), true);
+
     auto generalGroupProperty = groupPropertyManager->addProperty(tr("General"));
     generalGroupProperty->addSubProperty(mCompatibilityVersionProperty);
 
     auto filesGroupProperty = groupPropertyManager->addProperty(tr("Paths && Files"));
     filesGroupProperty->addSubProperty(mExtensionPathProperty);
     filesGroupProperty->addSubProperty(mAutomappingRulesFileProperty);
+    filesGroupProperty->addSubProperty(mFileScriptRootPathProperty);
 
     ui->propertyBrowser->addProperty(generalGroupProperty);
     ui->propertyBrowser->addProperty(filesGroupProperty);
@@ -89,6 +96,7 @@ void ProjectPropertiesDialog::accept()
     mProject.mCompatibilityVersion = mVersions.at(mCompatibilityVersionProperty->value().toInt());
     mProject.mExtensionsPath = mExtensionPathProperty->value().toString();
     mProject.mAutomappingRulesFile = mAutomappingRulesFileProperty->value().toString();
+    mProject.mScriptRootPath = mFileScriptRootPathProperty->value().toString();
 
     QDialog::accept();
 }

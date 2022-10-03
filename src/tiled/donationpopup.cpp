@@ -41,7 +41,7 @@ DonationPopup::DonationPopup(QWidget *parent)
 
     auto label = new QLabel(QCoreApplication::translate("DonationDialog", "Please consider supporting Tiled development with a small monthly donation."));
 
-    auto visitDonatePage = new QPushButton(QCoreApplication::translate("DonationDialog", "&Donate ↗"));
+    auto visitDonatePage = new QPushButton(QCoreApplication::translate("DonationDialog", "&Donate"));
     auto alreadyDonating = new QPushButton(QCoreApplication::translate("DonationDialog", "I'm a &supporter!"));
     auto maybeLaterButton = new QPushButton(QCoreApplication::translate("DonationDialog", "&Maybe later"));
 

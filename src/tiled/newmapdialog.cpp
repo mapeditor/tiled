@@ -27,6 +27,7 @@
 #include "maprenderer.h"
 #include "session.h"
 #include "tilelayer.h"
+#include "grouplayer.h"
 #include "utils.h"
 
 #include <QCoreApplication>
@@ -170,9 +171,15 @@ MapDocumentPtr NewMapDialog::createMap()
 
     // Add a tile layer to new maps of reasonable size
     if (memory < gigabyte) {
-        map->addLayer(new TileLayer(QCoreApplication::translate("Tiled::MapDocument", "Tile Layer %1").arg(1),
-                                    0, 0,
-                                    map->width(), map->height()));
+        auto* eventGroupLayer = new GroupLayer(tr("Event Layers"), 0, 0);
+
+        auto* renderGroupLayer = new GroupLayer(tr("Render Layers"), 0, 0);
+        renderGroupLayer->addLayer(std::make_unique<TileLayer>(QCoreApplication::translate("Tiled::MapDocument", "Tile Layer %1").arg(1),
+                                                0, 0,
+                                                map->width(), map->height()));
+
+        map->addLayer(renderGroupLayer);
+        map->addLayer(eventGroupLayer);
     } else {
         const double gigabytes = static_cast<double>(memory) / gigabyte;
         QMessageBox::warning(this, tr("Memory Usage Warning"),
