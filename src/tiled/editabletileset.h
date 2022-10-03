@@ -131,6 +131,7 @@ public:
                                    const QString &source = QString());
 
     Q_INVOKABLE Tiled::EditableTile *tile(int id);
+    Q_INVOKABLE Tiled::EditableTile *findTile(int id);
     QList<QObject*> tiles();
     QList<QObject*> wangSets();
 

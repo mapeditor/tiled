@@ -5283,7 +5283,7 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Paths &amp;&amp; Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Пути и файлы</translation>
     </message>
 </context>
 <context>
@@ -6096,7 +6096,7 @@ Please select specific format.</source>
         <location line="+72"/>
         <location line="+86"/>
         <source>Select Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбор типов</translation>
     </message>
     <message>
         <location line="-23"/>
@@ -6111,7 +6111,7 @@ Please select specific format.</source>
     <message>
         <location line="+8"/>
         <source>Class of</source>
-        <translation type="unfinished"></translation>
+        <translation>Класс</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -6122,7 +6122,7 @@ Please select specific format.</source>
     <message>
         <location line="-37"/>
         <source>Use as</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать как</translation>
     </message>
     <message>
         <location line="+1"/>

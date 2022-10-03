@@ -104,6 +104,7 @@ public:
     virtual QList<Object*> currentObjects() const;
 
     void setProperty(Object *object, const QString &name, const QVariant &value);
+    void setPropertyMember(Object *object, const QStringList &path, const QVariant &value);
     void setProperties(Object *object, const Properties &properties);
     void removeProperty(Object *object, const QString &name);
 

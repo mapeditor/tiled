@@ -91,15 +91,27 @@ public:
     /**
      * Constructs a new 'Set Property' command.
      *
-     * @param document     the document owning the objects
-     * @param objects      the objects of which the property should be changed
-     * @param name         the name of the property to be changed
-     * @param value        the new value of the property
-     * @param type         the (new) type ot the property to be changed
+     * @param document      the document owning the objects
+     * @param objects       the objects of which the property should be changed
+     * @param name          the name of the property to be changed
+     * @param value         the new value of the property
      */
     SetProperty(Document *document,
                 const QList<Object*> &objects,
                 const QString &name,
+                const QVariant &value,
+                QUndoCommand *parent = nullptr);
+    /**
+     * Constructs a new 'Set Property' command.
+     *
+     * @param document      the document owning the objects
+     * @param objects       the objects of which the property should be changed
+     * @param path          the path to a property member
+     * @param value         the new value of the property
+     */
+    SetProperty(Document *document,
+                const QList<Object*> &objects,
+                const QStringList &path,
                 const QVariant &value,
                 QUndoCommand *parent = nullptr);
 
@@ -119,6 +131,7 @@ private:
     Document *mDocument;
     QList<Object*> mObjects;
     QString mName;
+    QStringList mPath;
     QVariant mValue;
 };
 

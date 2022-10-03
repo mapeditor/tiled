@@ -265,6 +265,25 @@ void Document::setProperty(Object *object,
         emit propertyAdded(object, name);
 }
 
+void Document::setPropertyMember(Object *object,
+                                 const QStringList &path,
+                                 const QVariant &value)
+{
+    Q_ASSERT(!path.isEmpty());
+    auto &topLevelName = path.first();
+
+    if (path.size() == 1)
+        return setProperty(object, topLevelName, value);
+
+    // Take the resolved property since we may not have this property yet
+    // when we want to override it with a changed member.
+    auto topLevelValue = object->resolvedProperty(topLevelName);
+    if (!setClassPropertyMemberValue(topLevelValue, 1, path, value))
+        return;
+
+    setProperty(object, topLevelName, topLevelValue);
+}
+
 void Document::setProperties(Object *object, const Properties &properties)
 {
     object->setProperties(properties);

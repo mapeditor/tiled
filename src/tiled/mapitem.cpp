@@ -377,6 +377,12 @@ void MapItem::documentChanged(const ChangeEvent &change)
     case ChangeEvent::LayerChanged:
         layerChanged(static_cast<const LayerChangeEvent&>(change));
         break;
+    case ChangeEvent::TileLayerChanged: {
+        auto &e = static_cast<const TileLayerChangeEvent&>(change);
+        if (e.properties & TileLayerChangeEvent::SizeProperty)
+            tileLayerChanged(e.tileLayer(), MapDocument::TileLayerChangeFlags());
+        break;
+    }
     case ChangeEvent::ImageLayerChanged:
         imageLayerChanged(static_cast<const ImageLayerChangeEvent&>(change).imageLayer());
         break;
