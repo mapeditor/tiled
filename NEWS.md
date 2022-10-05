@@ -1,12 +1,25 @@
 ### Unreleased
 
+* Scripting: Fixed painting issues after changing TileLayer size (#3481)
+* Defold plugin: Allow overriding z value also when exporting to .collection (#3214)
+
+### Tiled 1.9.2 (16 September 2022)
+
 * Allow adding maps to image collection tilesets (#3447)
+* Auto-detect JSON file format when importing custom types (#3472)
 * Added file system actions to the tile context menu (#3448)
 * Fixed possible crash in Custom Types Editor (#3465)
+* Fixed display of overridden values from a nested class
 * Fixed ability to reset nested string and file properties (#3409)
+* Fixed changing nested property values for multiple objects (#3344)
+* Fixed resolving of class properties on export to affect all data types (#3470)
 * Fixed possible duplication of Automapping Rules Tileset (#3462)
 * Fixed case where object labels could become visible for hidden layer (#3442)
+* Fixed updating of custom property colors when changing style
+* Scripting: Added Tileset.findTile
 * AutoMapping: Fixed applying of rule probability (#3425)
+* Defold plugin: Assign incrementing z values and allow specifying tile\_set (#3214)
+* Updates to German translation (by Christian Pervoelz)
 
 ### Tiled 1.9.1 (11 August 2022)
 

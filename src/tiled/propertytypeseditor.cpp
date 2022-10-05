@@ -657,27 +657,27 @@ void PropertyTypesEditor::importPropertyTypes()
     const QString lastPath = session.lastPath(Session::PropertyTypesFile);
 
     PropertyTypesFilter filter(lastPath);
+    // When importing, we don't use the "objectTypesJsonFilter". Instead, we
+    // will auto-detect the format of the JSON file.
+    const QString filters = QStringList { filter.propertyTypesFilter, filter.objectTypesXmlFilter }.join(QStringLiteral(";;"));
     const QString fileName =
             QFileDialog::getOpenFileName(this, tr("Import Types"),
                                          lastPath,
-                                         filter.filters,
+                                         filters,
                                          &filter.selectedFilter);
     if (fileName.isEmpty())
         return;
 
     session.setLastPath(Session::PropertyTypesFile, fileName);
 
-    if (filter.selectedFilter == filter.objectTypesJsonFilter ||
-            filter.selectedFilter == filter.objectTypesXmlFilter) {
-        ObjectTypesSerializer serializer;
-        ObjectTypes objectTypes;
-        const ExportContext context(*mPropertyTypesModel->propertyTypes(),
-                                    QFileInfo(fileName).path());
+    ObjectTypes objectTypes;
+    const ExportContext context(*mPropertyTypesModel->propertyTypes(),
+                                QFileInfo(fileName).path());
 
-        if (serializer.readObjectTypes(fileName, objectTypes, context)) {
-            mPropertyTypesModel->importObjectTypes(objectTypes);
-            applyPropertyTypes();
-        } else {
+    if (filter.selectedFilter == filter.objectTypesXmlFilter) {
+        ObjectTypesSerializer serializer(ObjectTypesSerializer::Xml);
+
+        if (!serializer.readObjectTypes(fileName, objectTypes, context)) {
             QMessageBox::critical(this, tr("Error Reading Object Types"),
                                   serializer.errorString());
             return;
@@ -698,13 +698,29 @@ void PropertyTypesEditor::importPropertyTypes()
             return;
         }
 
-        PropertyTypes typesToImport;
-        typesToImport.loadFromJson(document.array(), QFileInfo(fileName).path());
+        // We can detect the old format by the absence of an "id" property:
+        //
+        //  Object Types: "[ { color, name, properties } ]"
+        //  Custom Types: "[ { id, name, type, ... } ]"
+        //
+        const QJsonArray array = document.array();
+        const bool oldFormat = array.first().toObject().value(QLatin1String("id")).isUndefined();
+        if (oldFormat) {
+            fromJson(array, objectTypes, context);
+        } else {
+            PropertyTypes typesToImport;
+            typesToImport.loadFromJson(array, QFileInfo(fileName).path());
 
-        if (typesToImport.count() > 0) {
-            mPropertyTypesModel->importPropertyTypes(std::move(typesToImport));
-            applyPropertyTypes();
+            if (typesToImport.count() > 0) {
+                mPropertyTypesModel->importPropertyTypes(std::move(typesToImport));
+                applyPropertyTypes();
+            }
         }
+    }
+
+    if (!objectTypes.isEmpty()) {
+        mPropertyTypesModel->importObjectTypes(objectTypes);
+        applyPropertyTypes();
     }
 }
 
@@ -897,7 +913,7 @@ void PropertyTypesEditor::addClassProperties()
     mMembersView = new QtTreePropertyBrowser(this);
     mPropertiesHelper = new CustomPropertiesHelper(mMembersView, this);
 
-    connect(mPropertiesHelper, &CustomPropertiesHelper::propertyValueChanged,
+    connect(mPropertiesHelper, &CustomPropertiesHelper::propertyMemberValueChanged,
             this, &PropertyTypesEditor::memberValueChanged);
 
     connect(mMembersView, &QtTreePropertyBrowser::currentItemChanged,
@@ -1051,12 +1067,25 @@ void PropertyTypesEditor::setUsageFlags(int flags, bool value)
     }
 }
 
-void PropertyTypesEditor::memberValueChanged(const QString &name, const QVariant &value)
+void PropertyTypesEditor::memberValueChanged(const QStringList &path, const QVariant &value)
 {
     if (mUpdatingDetails)
         return;
 
-    applyMemberToSelectedType(name, value);
+    PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType || !propertyType->isClass())
+        return;
+
+    auto &classType = static_cast<ClassPropertyType&>(*propertyType);
+    auto &topLevelName = path.first();
+
+    if (!setPropertyMemberValue(classType.members, path, value))
+        return;
+
+    if (auto property = mPropertiesHelper->property(topLevelName))
+        property->setValue(mPropertiesHelper->toDisplayValue(classType.members.value(topLevelName)));
+
+    applyPropertyTypes();
 }
 
 } // namespace Tiled

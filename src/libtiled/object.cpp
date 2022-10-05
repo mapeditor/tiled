@@ -85,10 +85,8 @@ QVariantMap Object::resolvedProperties() const
         objectClassName = mapObject->effectiveClassName();
     }
 
-    if (auto type = propertyTypes().findClassFor(objectClassName, *this)) {
-        Tiled::mergeProperties(allProperties,
-                               static_cast<const ClassPropertyType*>(type)->members);
-    }
+    if (auto type = propertyTypes().findClassFor(objectClassName, *this))
+        Tiled::mergeProperties(allProperties, type->members);
     
     if (typeId() == Object::MapObjectType) {
         auto mapObject = static_cast<const MapObject*>(this);

@@ -95,6 +95,13 @@ EditableTile *EditableTileset::tile(int id)
     return EditableManager::instance().editableTile(this, tile);
 }
 
+EditableTile *EditableTileset::findTile(int id)
+{
+    if (auto tile = tileset()->findTile(id))
+        return EditableManager::instance().editableTile(this, tile);
+    return nullptr;
+}
+
 QList<QObject*> EditableTileset::tiles()
 {
     auto &editableManager = EditableManager::instance();

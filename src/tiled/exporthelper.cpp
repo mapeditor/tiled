@@ -22,6 +22,7 @@
 
 #include "mapobject.h"
 #include "objectgroup.h"
+#include "wangset.h"
 
 namespace Tiled {
 
@@ -87,15 +88,8 @@ SharedTileset ExportHelper::prepareExportTileset(const SharedTileset &tileset,
         }
     }
 
-    if (mOptions.testFlag(Preferences::ResolveObjectTypesAndProperties)) {
-        for (Tile *tile : exportTileset->tiles()) {
-            if (!tile->objectGroup())
-                continue;
-
-            for (MapObject *object : *tile->objectGroup())
-                resolveTypeAndProperties(object);
-        }
-    }
+    if (mOptions.testFlag(Preferences::ResolveObjectTypesAndProperties))
+        resolveProperties(exportTileset.data());
 
     return exportTileset;
 }
@@ -134,9 +128,7 @@ const Map *ExportHelper::prepareExportMap(const Map *map, std::unique_ptr<Map> &
     }
 
     if (mOptions.testFlag(Preferences::ResolveObjectTypesAndProperties))
-        for (Layer *layer : exportMap->objectGroups())
-            for (MapObject *object : *static_cast<ObjectGroup*>(layer))
-                resolveTypeAndProperties(object);
+        resolveProperties(exportMap.get());
 
     const auto tilesets = exportMap->tilesets();    // needs a copy
     for (const SharedTileset &tileset : tilesets) {
@@ -149,31 +141,75 @@ const Map *ExportHelper::prepareExportMap(const Map *map, std::unique_ptr<Map> &
     return exportMap.get();
 }
 
-void ExportHelper::resolveTypeAndProperties(MapObject *object) const
+void ExportHelper::resolveProperties(Object *object) const
 {
-    Tile *tile = object->cell().tile();
+    switch (object->typeId()) {
+    case Object::MapObjectType: {
+        // Map objects need special handling because:
+        //
+        // * We don't want to inherit the properties from the template, since
+        //   that is covered by a separate "Detach templates" option.
+        //
+        // * They can inherit their class from their tile (again, unless that
+        //   tile came from a template).
+        //
+        auto mapObject = static_cast<MapObject*>(object);
+        auto tile = mapObject->cell().tile();
 
-    // Inherit the class from the tile if not set on the object (not inheriting
-    // class from tile of tile object template here, since for that the
-    // "Detach templates" option needs to be used as well)
-    if (object->className().isEmpty() && tile &&
-            (!object->isTemplateInstance() || object->propertyChanged(MapObject::CellProperty)))
-        object->setClassName(tile->className());
+        if (mapObject->className().isEmpty() && tile &&
+                (!mapObject->isTemplateInstance() ||
+                 mapObject->propertyChanged(MapObject::CellProperty))) {
+            mapObject->setClassName(tile->className());
+        }
 
-    Properties properties;
+        Properties properties;
 
-    // Inherit properties from the class
-    if (auto type = Object::propertyTypes().findClassFor(object->className(), *object))
-        mergeProperties(properties, static_cast<const ClassPropertyType*>(type)->members);
+        // Inherit properties from the class
+        if (auto type = Object::propertyTypes().findClassFor(mapObject->className(), *mapObject))
+            mergeProperties(properties, type->members);
 
-    // Inherit properties from the tile
-    if (tile)
-        mergeProperties(properties, tile->properties());
+        // Inherit properties from the tile
+        if (tile)
+            mergeProperties(properties, tile->properties());
 
-    // Override with own properties
-    mergeProperties(properties, object->properties());
+        // Override with own properties
+        mergeProperties(properties, mapObject->properties());
 
-    object->setProperties(properties);
+        mapObject->setProperties(properties);
+        return;
+    }
+    case Object::LayerType:
+        if (static_cast<Layer*>(object)->isObjectGroup()) {
+            auto objectGroup = static_cast<ObjectGroup*>(object);
+            for (MapObject *mapObject : *objectGroup)
+                resolveProperties(mapObject);
+        }
+        // Group layers are handled by layer iterator
+        break;
+    case Object::MapType:
+        for (auto layer : static_cast<Map*>(object)->allLayers())
+            resolveProperties(layer);
+        // Tilesets are handled by prepareExportTileset
+        break;
+    case Object::TilesetType:
+        for (auto tile : static_cast<Tileset*>(object)->tiles())
+            resolveProperties(tile);
+        for (auto wangSet : static_cast<Tileset*>(object)->wangSets())
+            resolveProperties(wangSet);
+        break;
+    case Object::TileType:
+        if (auto objectGroup = static_cast<Tile*>(object)->objectGroup())
+            resolveProperties(objectGroup);
+        break;
+    case Object::WangSetType:
+        for (const auto &color : static_cast<WangSet*>(object)->colors())
+            resolveProperties(color.data());
+        break;
+    case Object::WangColorType:
+        break;
+    }
+
+    object->setProperties(object->resolvedProperties());
 }
 
 } // namespace Tiled

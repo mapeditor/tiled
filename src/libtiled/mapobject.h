@@ -133,7 +133,7 @@ public:
 
     // For Python API compatibility
     const QString &type() const { return className(); }
-    void setType(const QString &type) { setClassName(type); };
+    void setType(const QString &type) { setClassName(type); }
     const QString &effectiveType() const { return effectiveClassName(); }
 
     const QPointF &position() const;

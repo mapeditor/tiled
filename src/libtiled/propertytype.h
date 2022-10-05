@@ -37,7 +37,6 @@
 #include <QVariant>
 #include <QVector>
 
-#include "containerhelpers.h"
 #include "tiled_global.h"
 
 #include <memory>
