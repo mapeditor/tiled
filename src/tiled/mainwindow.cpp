@@ -981,8 +981,16 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
 {
     const QList<QUrl> urls = e->mimeData()->urls();
-    if (!urls.isEmpty() && !urls.first().toLocalFile().isEmpty())
-        e->accept();
+    if (!urls.isEmpty() && !urls.first().toLocalFile().isEmpty()) {
+        auto url = urls.first().path();
+        QFileInfo fileInfo(url);
+        if (fileInfo.completeSuffix() == QStringLiteral("json5")) {
+            e->ignore();
+        }
+        else {
+            e->accept();
+        }
+    }
 }
 
 void MainWindow::dropEvent(QDropEvent *e)
@@ -995,6 +1003,7 @@ void MainWindow::dropEvent(QDropEvent *e)
 
         openFile(localFile);
     }
+    QMainWindow::dropEvent(e);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *e)

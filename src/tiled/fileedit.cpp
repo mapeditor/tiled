@@ -27,6 +27,7 @@
 #include <QFocusEvent>
 #include <QHBoxLayout>
 #include <QLineEdit>
+#include <QMimeData>
 #include <QToolButton>
 
 namespace Tiled {
@@ -54,6 +55,7 @@ FileEdit::FileEdit(QWidget *parent)
     setFocusProxy(mLineEdit);
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_InputMethodEnabled);
+    setAcceptDrops(true);
 
     connect(mLineEdit, &QLineEdit::textEdited,
             this, &FileEdit::textEdited);
@@ -99,6 +101,29 @@ void FileEdit::keyPressEvent(QKeyEvent *e)
 void FileEdit::keyReleaseEvent(QKeyEvent *e)
 {
     mLineEdit->event(e);
+}
+
+void FileEdit::dragEnterEvent(QDragEnterEvent *event) {
+    const auto mimeData = event->mimeData();
+    if (mimeData->hasUrls()) {
+        auto url = mimeData->urls()[0];
+        QFileInfo fileInfo(url.path());
+        if (fileInfo.completeSuffix() == QStringLiteral("json5")) {
+            event->acceptProposedAction();
+        }
+    }
+}
+
+
+void FileEdit::dropEvent(QDropEvent *event) {
+    auto mimeData = event->mimeData();
+    if (mimeData->hasUrls()) {
+        for (const auto &item: mimeData->urls()) {
+            mLineEdit->setText(item.toString(QUrl::PreferLocalFile));
+            event->accept();
+            break;
+        }
+    }
 }
 
 void FileEdit::textEdited()

@@ -59,6 +59,8 @@ protected:
     void focusOutEvent(QFocusEvent *e) override;
     void keyPressEvent(QKeyEvent *e) override;
     void keyReleaseEvent(QKeyEvent *e) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 
 private:
     void textEdited();

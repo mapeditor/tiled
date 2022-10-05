@@ -385,6 +385,9 @@ void ProjectModel::updateNameFilters()
     // have a registered FileFormat.
     nameFilters.append(QStringLiteral("*.world"));
 
+    // HACK: Needed to support json5 file as LPS JScript in the project
+    nameFilters.append(QStringLiteral("*.json5"));
+
     nameFilters.removeDuplicates();
 
     if (mNameFilters != nameFilters) {
@@ -466,7 +469,7 @@ void ProjectModel::folderScanned(FolderEntry *resultPointer)
 
 void FolderScanner::setNameFilters(const QStringList &nameFilters)
 {
-    mNameFilters = nameFilters;
+    mNameFilters     = nameFilters;
 }
 
 void FolderScanner::scanFolder(const QString &folder)
