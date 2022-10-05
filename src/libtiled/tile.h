@@ -90,6 +90,8 @@ public:
     QSize size() const;
 
     QPoint offset() const;
+    const QPoint &drawOffset() const;
+    void setDrawOffset(QPoint &offset);
 
     // For Python API compatibility
     const QString &type() const { return className(); }
@@ -124,6 +126,7 @@ private:
     LoadingStatus mImageStatus;
     qreal mProbability;
     std::unique_ptr<ObjectGroup> mObjectGroup;
+    QPoint mDrawOffset;
 
     QVector<Frame> mFrames;
     int mCurrentFrameIndex;

@@ -452,6 +452,11 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             }
             if (tile->probability() != 1.0)
                 w.writeAttribute(QStringLiteral("probability"), QString::number(tile->probability()));
+            const QPoint &localOffset = tile->drawOffset();
+            if (localOffset.x() != 0)
+                w.writeAttribute(QStringLiteral("drawx"), QString::number(localOffset.x()));
+            if (localOffset.y() != 0)
+                w.writeAttribute(QStringLiteral("drawy"), QString::number(localOffset.y()));
             if (!tile->properties().isEmpty())
                 writeProperties(w, tile->properties());
             if (isCollection) {

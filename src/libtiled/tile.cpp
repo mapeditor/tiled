@@ -41,6 +41,7 @@ Tile::Tile(int id, Tileset *tileset):
     mTileset(tileset),
     mImageStatus(LoadingReady),
     mProbability(1.0),
+    mDrawOffset(0, 0),
     mCurrentFrameIndex(0),
     mUnusedTime(0)
 {}
@@ -52,6 +53,7 @@ Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
     mImage(image),
     mImageStatus(image.isNull() ? LoadingError : LoadingReady),
     mProbability(1.0),
+    mDrawOffset(0, 0),
     mCurrentFrameIndex(0),
     mUnusedTime(0)
 {}
@@ -150,11 +152,28 @@ void Tile::setImageRect(const QRect &imageRect)
 }
 
 /**
- * Returns the drawing offset of the tile (in pixels).
+ * Returns the total drawing offset of the tile (in pixels).
  */
 QPoint Tile::offset() const
 {
-    return mTileset->tileOffset();
+    return mTileset->tileOffset() + this->mDrawOffset;
+}
+
+/**
+ * Returns the local draw offset of the tile (in pixels).
+ */
+const QPoint &Tile::drawOffset() const
+{
+    return this->mDrawOffset;
+}
+
+/**
+ * Sets the local draw offset of the tile (in pixels).
+ */
+void Tile::setDrawOffset(QPoint &offset)
+{
+    this->mDrawOffset.setX(offset.x());
+    this->mDrawOffset.setY(offset.y());
 }
 
 /**
