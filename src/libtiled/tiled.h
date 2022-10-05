@@ -92,7 +92,7 @@ inline QPointF alignmentOffset(const QRectF &r, Alignment alignment)
 { return alignmentOffset(r.size(), alignment); }
 
 TILEDSHARED_EXPORT QString toFileReference(const QUrl &url, const QString &path = QString());
-TILEDSHARED_EXPORT QUrl toUrl(const QString &filePathOrUrl, const QString &path = QString());
+TILEDSHARED_EXPORT QUrl toUrl(const QString &filePathOrUrl, const QString &path = QString(), const QString& projectFilePath = QString());
 TILEDSHARED_EXPORT QString urlToLocalFileOrQrc(const QUrl &url);
 TILEDSHARED_EXPORT QString filePathRelativeTo(const QDir &dir, const QString &filePath);
 

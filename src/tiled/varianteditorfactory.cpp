@@ -110,6 +110,7 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
     if (type == filePathTypeId()) {
         auto fileEdit = new FileEdit(parent);
         FilePath filePath = manager->value(property).value<FilePath>();
+        qDebug() << "[Create Editor]" << filePath.url.path() << "," << filePath.url.url();
         fileEdit->setFileUrl(filePath.url);
         fileEdit->setFilter(manager->attributeValue(property, QLatin1String("filter")).toString());
         fileEdit->setIsDirectory(manager->attributeValue(property, QLatin1String("directory")).toBool());

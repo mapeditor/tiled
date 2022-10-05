@@ -81,7 +81,7 @@ bool Project::save(const QString &fileName)
         { QStringLiteral("folders"), folders },
         { QStringLiteral("extensionsPath"), relative(dir, extensionsPath) },
         { QStringLiteral("automappingRulesFile"), dir.relativeFilePath(mAutomappingRulesFile) },
-        { QStringLiteral("scriptRootPath"), relative(dir, mScriptRootPath)},
+//        { QStringLiteral("scriptRootPath"), relative(dir, mScriptRootPath)},
         { QStringLiteral("commands"), commands },
     };
 
@@ -124,7 +124,7 @@ bool Project::load(const QString &fileName)
     mExtensionsPath = absolute(dir, project.value(QLatin1String("extensionsPath")).toString(QLatin1String("extensions")));
     mObjectTypesFile = absolute(dir, project.value(QLatin1String("objectTypesFile")).toString());
     mAutomappingRulesFile = absolute(dir, project.value(QLatin1String("automappingRulesFile")).toString());
-    mScriptRootPath = absolute(dir, project.value(QLatin1String("scriptRootPath")).toString());
+//    mScriptRootPath = absolute(dir, project.value(QLatin1String("scriptRootPath")).toString());
 
     mPropertyTypes->loadFromJson(project.value(QLatin1String("propertyTypes")).toArray(), dir.path());
 

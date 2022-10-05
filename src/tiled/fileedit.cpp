@@ -22,13 +22,16 @@
 #include "fileedit.h"
 
 #include "tiled.h"
+#include "projectmanager.h"
 
+#include <QCompleter>
 #include <QFileDialog>
 #include <QFocusEvent>
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QMimeData>
 #include <QToolButton>
+#include <QStringListModel>
 
 namespace Tiled {
 
@@ -42,6 +45,7 @@ FileEdit::FileEdit(QWidget *parent)
 
     mLineEdit = new QLineEdit(this);
     mLineEdit->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
+    mLineEdit->setCompleter(new QCompleter(new QStringListModel(), this));
 
     mOkTextColor = mLineEdit->palette().color(QPalette::Active, QPalette::Text);
 
@@ -67,15 +71,23 @@ FileEdit::FileEdit(QWidget *parent)
 
 void FileEdit::setFileUrl(const QUrl &url)
 {
-    const QString path = url.toString(QUrl::PreferLocalFile);
-    if (mLineEdit->text() != path)
-        mLineEdit->setText(path);
+    qDebug() << "[setFileUrl]" << url.path();
+    if (mLineEdit->text() != url.path())
+        mLineEdit->setText(url.path());
 }
 
 QUrl FileEdit::fileUrl() const
 {
     const QString path = mLineEdit->text();
-    return Tiled::toUrl(path);
+
+    QUrl full;
+    if (!path.isEmpty()) {
+        QFileInfo projectFile(ProjectManager::instance()->project().fileName());
+        QFileInfo absoluteFilePath(projectFile.absoluteDir(), path);
+        full = QUrl::fromLocalFile(absoluteFilePath.absoluteFilePath());
+    }
+
+    return Tiled::toUrl(full.url(QUrl::PreferLocalFile), QString(), ProjectManager::instance()->project().fileName());
 }
 
 void FileEdit::focusInEvent(QFocusEvent *e)
@@ -116,10 +128,11 @@ void FileEdit::dragEnterEvent(QDragEnterEvent *event) {
 
 
 void FileEdit::dropEvent(QDropEvent *event) {
-    auto mimeData = event->mimeData();
+    auto* mimeData = event->mimeData();
     if (mimeData->hasUrls()) {
         for (const auto &item: mimeData->urls()) {
-            mLineEdit->setText(item.toString(QUrl::PreferLocalFile));
+            setFileUrl(item);
+            emit fileUrlChanged(item);
             event->accept();
             break;
         }
@@ -134,10 +147,13 @@ void FileEdit::textEdited()
 void FileEdit::validate()
 {
     const QUrl url(fileUrl());
+    QFileInfo projectFile(ProjectManager::instance()->project().fileName());
+    QFileInfo absoluteFilePath(projectFile.absoluteDir(), url.url(QUrl::PreferLocalFile));
+    const QUrl full = QUrl::fromLocalFile(absoluteFilePath.absoluteFilePath());
 
     QColor textColor = mOkTextColor;
-    if (url.isLocalFile()) {
-        const QString localFile = url.toLocalFile();
+    if (full.isLocalFile()) {
+        const QString localFile = full.toLocalFile();
         if (!QFile::exists(localFile) || (mIsDirectory && !QFileInfo(localFile).isDir()))
             textColor = mErrorTextColor;
     }
@@ -145,6 +161,22 @@ void FileEdit::validate()
     QPalette palette = mLineEdit->palette();
     palette.setColor(QPalette::Text, textColor);
     mLineEdit->setPalette(palette);
+
+    auto text = mLineEdit->text();
+
+    auto index = text.lastIndexOf(QStringLiteral("/"));
+    if (index > 0) {
+        text = text.remove(index, text.length() - index);
+    }
+    QDir currentRootRelativeToProjectRoot(projectFile.absoluteDir().absolutePath() + QStringLiteral("/") + text);
+    currentRootRelativeToProjectRoot.setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
+    QStringList files = currentRootRelativeToProjectRoot.entryList();
+    for (auto &item: files) {
+        item = text + QStringLiteral("/") + item;
+    }
+
+    auto* stringListModel = static_cast<QStringListModel*>(mLineEdit->completer()->model());
+    stringListModel->setStringList(files);
 }
 
 void FileEdit::buttonClicked()

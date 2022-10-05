@@ -51,7 +51,7 @@ public:
     QString mExtensionsPath;
     QString mObjectTypesFile;
     QString mAutomappingRulesFile;
-    QString mScriptRootPath;
+//    QString mScriptRootPath;
     QVector<Command> mCommands;
     CompatibilityVersion mCompatibilityVersion = Tiled_Latest;
 

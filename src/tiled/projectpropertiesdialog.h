@@ -52,7 +52,7 @@ private:
     QtVariantProperty *mCompatibilityVersionProperty;
     QtVariantProperty *mExtensionPathProperty;
     QtVariantProperty *mAutomappingRulesFileProperty;
-    QtVariantProperty *mFileScriptRootPathProperty;
+//    QtVariantProperty *mFileScriptRootPathProperty;
 };
 
 } // namespace Tiled

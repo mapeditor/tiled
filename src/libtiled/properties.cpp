@@ -47,6 +47,7 @@ QString FilePath::toString(const FilePath &path)
 FilePath FilePath::fromString(const QString &string)
 {
     return { Tiled::toUrl(string) };
+//    return {QUrl(string)};
 }
 
 
@@ -305,7 +306,7 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
         exportValue.value = color.isValid() ? color.name(QColor::HexArgb) : QString();
     } else if (metaType == filePathTypeId()) {
         const auto filePath = value.value<FilePath>();
-        exportValue.value = toFileReference(filePath.url, mPath);
+        exportValue.value = toFileReference(filePath.url);
     } else if (metaType == objectRefTypeId()) {
         exportValue.value = ObjectRef::toInt(value.value<ObjectRef>());
     } else {
