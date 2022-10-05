@@ -66,6 +66,11 @@
 
 using namespace Tiled;
 
+namespace Tiled {
+    const QString kRenderLayersGroupName = QStringLiteral("Render Layers");
+    const QString kEventLayersGroupName = QStringLiteral("Event Layers");
+}
+
 MapDocument::MapDocument(std::unique_ptr<Map> map)
     : Document(MapDocumentType, map->fileName)
     , mMap(std::move(map))
@@ -508,14 +513,33 @@ Layer *MapDocument::addLayer(Layer::TypeFlag layerType)
     }
     Q_ASSERT(layer);
 
-    auto parentLayer = mCurrentLayer ? mCurrentLayer->parentLayer() : nullptr;
-    const int index = layerIndex(mCurrentLayer) + 1;
+    GroupLayer* parentLayer = nullptr;
+    int index = 0;
+
+    if (!currentIsTopGroupLayer()) {
+        parentLayer = mCurrentLayer ? mCurrentLayer->parentLayer() : nullptr;
+        index = layerIndex(mCurrentLayer) + 1;
+    }
+    else {
+        parentLayer = static_cast<GroupLayer*>(mCurrentLayer);
+        index = parentLayer->layerCount();
+    }
+
     undoStack()->push(new AddLayer(this, index, layer, parentLayer));
     switchSelectedLayers({layer});
 
     emit editLayerNameRequested();
 
     return layer;
+}
+
+bool MapDocument::currentIsTopGroupLayer() const {
+    auto* currentLayer = mCurrentLayer;
+    return currentLayer != nullptr
+           && currentLayer->isGroupLayer()
+           && !currentLayer->parentLayer()
+           && (currentLayer->name() == kEventLayersGroupName
+               || currentLayer->name() == kRenderLayersGroupName);
 }
 
 void MapDocument::groupLayers(const QList<Layer *> &layers)

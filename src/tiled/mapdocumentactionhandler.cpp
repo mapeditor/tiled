@@ -52,10 +52,6 @@
 #include <algorithm>
 
 namespace Tiled {
-
-const QString kRenderLayersGroupName = QStringLiteral("Render Layers");
-const QString kEventLayersGroupName = QStringLiteral("Event Layers");
-
 MapDocumentActionHandler *MapDocumentActionHandler::mInstance;
 
 MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
@@ -336,7 +332,7 @@ void MapDocumentActionHandler::setupNewLayerMenu(QMenu *newLayerMenu) const {
             newLayerMenu->addAction(actionAddImageLayer());
         }
 
-        if (!checkLayerIsTopDirectory(currentLayer)) {
+        if (!mMapDocument->currentIsTopGroupLayer()) {
             newLayerMenu->addAction(actionAddGroupLayer());
         }
 
@@ -347,14 +343,7 @@ void MapDocumentActionHandler::setupNewLayerMenu(QMenu *newLayerMenu) const {
     newLayerMenu->addAction(actionLayerViaCut());
 }
 
-bool MapDocumentActionHandler::checkLayerIsTopDirectory(Layer* currentLayer) {
-    return currentLayer != nullptr
-        && currentLayer->parentLayer() == nullptr
-        && (currentLayer->name() == kEventLayersGroupName
-            || currentLayer->name() == kRenderLayersGroupName);
-}
-
-MapDocumentActionHandler::DirectoryType MapDocumentActionHandler::checkBelongs(Layer* current) const {
+MapDocumentActionHandler::DirectoryType MapDocumentActionHandler::checkBelongs(Layer* current) {
     if (!current) {
         return DirectoryType::None;
     }
@@ -695,7 +684,11 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
         return;
     }
 
-    auto parentLayer = currentLayer->parentLayer();
+    GroupLayer* parentLayer = nullptr;
+
+    parentLayer = mMapDocument->currentIsTopGroupLayer() ? static_cast<GroupLayer *>(currentLayer)
+                                                         : currentLayer->parentLayer();
+
     auto newLayerIndex = mMapDocument->layerIndex(currentLayer) + 1;
     auto addLayer = new AddLayer(mMapDocument, newLayerIndex, newLayer, parentLayer);
     addLayer->setText(name);

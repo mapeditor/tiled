@@ -149,8 +149,7 @@ public slots:
 private:
     void updateActions();
 
-    DirectoryType checkBelongs(Layer* current) const;
-    static bool checkLayerIsTopDirectory(Layer* layer) ;
+    static DirectoryType checkBelongs(Layer* current) ;
 
     MapDocument *mMapDocument;
 

@@ -44,6 +44,9 @@ class QUndoStack;
 
 namespace Tiled {
 
+extern const QString kRenderLayersGroupName;
+extern const QString kEventLayersGroupName;
+
 class Map;
 class MapObject;
 class MapRenderer;
@@ -113,6 +116,8 @@ public:
     void setExportFormat(FileFormat *format) override;
 
     QString displayName() const override;
+
+    bool currentIsTopGroupLayer() const;
 
     /**
      * Returns the map instance. Be aware that directly modifying the map will

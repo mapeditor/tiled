@@ -887,7 +887,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
 void MainWindow::refreshNewMapMenu() {
     auto *mapDocument = qobject_cast<MapDocument*>(mDocumentManager->currentDocument());
-//    mActionHandler->setMapDocument(mapDocument);
     mActionHandler->refreshNewLayerMenu(mNewLayerMenu);
 }
 
