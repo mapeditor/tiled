@@ -170,7 +170,7 @@ const QPoint &Tile::drawOffset() const
 /**
  * Sets the local draw offset of the tile (in pixels).
  */
-void Tile::setDrawOffset(QPoint &offset)
+void Tile::setDrawOffset(const QPoint &offset)
 {
     this->mDrawOffset.setX(offset.x());
     this->mDrawOffset.setY(offset.y());

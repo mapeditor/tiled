@@ -157,6 +157,7 @@ private:
         AllowFlipVerticallyProperty,
         AllowRotateProperty,
         PreferUntransformedProperty,
+        TileDrawOffsetProperty,
     };
 
     void addMapProperties();

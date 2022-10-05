@@ -84,4 +84,41 @@ void ChangeTileImageRect::setValue(Tile *tile, const QRect &rect) const
         emit mapDocument->tileImageSourceChanged(tile);
 }
 
+
+ChangeTileDrawOffset::ChangeTileDrawOffset(TilesetDocument *tilesetDocument,
+                                         const QList<Tile *> &tiles,
+                                         const QPoint &offsets,
+                                         QUndoCommand *parent)
+    : ChangeValue(tilesetDocument, tiles, offsets, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Image Draw Offset"));
+}
+
+ChangeTileDrawOffset::ChangeTileDrawOffset(TilesetDocument *tilesetDocument,
+                                         const QList<Tile *> &tiles,
+                                         const QVector<QPoint> &offsets,
+                                         QUndoCommand *parent)
+    : ChangeValue(tilesetDocument, tiles, offsets, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Image Draw Offset"));
+}
+
+QPoint ChangeTileDrawOffset::getValue(const Tile *tile) const
+{
+    return tile->drawOffset();
+}
+
+void ChangeTileDrawOffset::setValue(Tile *tile, const QPoint &offset) const
+{
+    tile->setDrawOffset(offset);
+
+    //since we changed the offset we need to tell it to update any maps
+    emit static_cast<TilesetDocument*>(document())->tileImageSourceChanged(tile);
+
+    for (MapDocument *mapDocument : static_cast<TilesetDocument*>(document())->mapDocuments())
+        emit mapDocument->tileImageSourceChanged(tile);
+}
+
 } // namespace Tiled

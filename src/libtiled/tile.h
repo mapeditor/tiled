@@ -91,7 +91,7 @@ public:
 
     QPoint offset() const;
     const QPoint &drawOffset() const;
-    void setDrawOffset(QPoint &offset);
+    void setDrawOffset(const QPoint &offset);
 
     // For Python API compatibility
     const QString &type() const { return className(); }
