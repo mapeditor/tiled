@@ -81,6 +81,8 @@ LayerDock::LayerDock(QWidget *parent):
     mNewLayerButton->setMenu(newLayerMenu);
     mNewLayerButton->setIcon(newLayerMenu->icon());
 
+    connect(newLayerMenu, &QMenu::aboutToShow, this, &LayerDock::refreshNewMapMenu);
+
     QToolBar *buttonContainer = new QToolBar;
     buttonContainer->setFloatable(false);
     buttonContainer->setMovable(false);
@@ -114,6 +116,12 @@ LayerDock::LayerDock(QWidget *parent):
     connect(mOpacitySlider, &QAbstractSlider::valueChanged,
             this, &LayerDock::sliderValueChanged);
     updateOpacitySlider();
+}
+
+void LayerDock::refreshNewMapMenu() {
+    auto* menu = mNewLayerButton->menu();
+    auto* handler = MapDocumentActionHandler::instance();
+    handler->refreshNewLayerMenu(menu);
 }
 
 void LayerDock::setMapDocument(MapDocument *mapDocument)

@@ -114,6 +114,8 @@ protected:
     void resizeEvent(QResizeEvent *) override;
 
 private:
+    void refreshNewMapMenu();
+
     void newMap();
     void openFileDialog();
     void openFileInProject();

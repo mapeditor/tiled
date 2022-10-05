@@ -53,6 +53,9 @@
 
 namespace Tiled {
 
+const QString kRenderLayersGroupName = QStringLiteral("Render Layers");
+const QString kEventLayersGroupName = QStringLiteral("Event Layers");
+
 MapDocumentActionHandler *MapDocumentActionHandler::mInstance;
 
 MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
@@ -307,20 +310,73 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
  */
 QMenu *MapDocumentActionHandler::createNewLayerMenu(QWidget *parent) const
 {
-    QMenu *newLayerMenu = new QMenu(tr("&New"), parent);
+    auto* newLayerMenu = new QMenu(tr("&New"), parent);
+    setupNewLayerMenu(newLayerMenu);
+    return newLayerMenu;
+}
 
+void MapDocumentActionHandler::refreshNewLayerMenu(QMenu* newLayerMenu) const {
+    newLayerMenu->clear();
+    setupNewLayerMenu(newLayerMenu);
+}
+
+void MapDocumentActionHandler::setupNewLayerMenu(QMenu *newLayerMenu) const {
     newLayerMenu->setIcon(QIcon(QLatin1String(":/images/16/document-new.png")));
     Utils::setThemeIcon(newLayerMenu, "document-new");
 
-    newLayerMenu->addAction(actionAddTileLayer());
-    newLayerMenu->addAction(actionAddObjectGroup());
-    newLayerMenu->addAction(actionAddImageLayer());
-    newLayerMenu->addAction(actionAddGroupLayer());
-    newLayerMenu->addSeparator();
+    if (mMapDocument) {
+        Layer* currentLayer = mMapDocument->currentLayer();
+        auto dirType = checkBelongs(currentLayer);
+
+        if (dirType == DirectoryType::RenderDirectory) {
+            newLayerMenu->addAction(actionAddTileLayer());
+        }
+        else if (dirType == DirectoryType::EventDirectory) {
+            newLayerMenu->addAction(actionAddObjectGroup());
+            newLayerMenu->addAction(actionAddImageLayer());
+        }
+
+        if (!checkLayerIsTopDirectory(currentLayer)) {
+            newLayerMenu->addAction(actionAddGroupLayer());
+        }
+
+        newLayerMenu->addSeparator();
+    }
+
     newLayerMenu->addAction(actionLayerViaCopy());
     newLayerMenu->addAction(actionLayerViaCut());
+}
 
-    return newLayerMenu;
+bool MapDocumentActionHandler::checkLayerIsTopDirectory(Layer* currentLayer) {
+    return currentLayer != nullptr
+        && currentLayer->parentLayer() == nullptr
+        && (currentLayer->name() == kEventLayersGroupName
+            || currentLayer->name() == kRenderLayersGroupName);
+}
+
+MapDocumentActionHandler::DirectoryType MapDocumentActionHandler::checkBelongs(Layer* current) const {
+    if (!current) {
+        return DirectoryType::None;
+    }
+
+    do {
+        if (current->isGroupLayer() && current->parentLayer() == nullptr) {
+            if (current->name() == kEventLayersGroupName) {
+                return DirectoryType::EventDirectory;
+            }
+            else if (current->name() == kRenderLayersGroupName) {
+                return DirectoryType::RenderDirectory;
+            }
+            else {
+                return DirectoryType::None;
+            }
+        }
+        else {
+            current = current->parentLayer();
+        }
+    } while (current);
+
+    return DirectoryType::None;
 }
 
 QMenu *MapDocumentActionHandler::createGroupLayerMenu(QWidget *parent) const

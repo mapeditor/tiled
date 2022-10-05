@@ -58,6 +58,7 @@ protected:
     void changeEvent(QEvent *e) override;
 
 private:
+    void refreshNewMapMenu();
     void updateOpacitySlider();
     void documentChanged(const ChangeEvent &change);
     void editLayerName();

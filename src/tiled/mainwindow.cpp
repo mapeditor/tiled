@@ -500,8 +500,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
     mNewLayerMenu = mActionHandler->createNewLayerMenu(mLayerMenu);
+    connect(mNewLayerMenu, &QMenu::aboutToShow, this, &MainWindow::refreshNewMapMenu);
+
     mGroupLayerMenu = mActionHandler->createGroupLayerMenu(mLayerMenu);
     mLayerMenu->addMenu(mNewLayerMenu);
+
     mLayerMenu->addMenu(mGroupLayerMenu);
     mLayerMenu->addAction(mActionHandler->actionDuplicateLayers());
     mLayerMenu->addAction(mActionHandler->actionMergeLayersDown());
@@ -880,6 +883,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         if (preferences->shouldShowDonationReminder())
             showDonationPopup();
     });
+}
+
+void MainWindow::refreshNewMapMenu() {
+    auto *mapDocument = qobject_cast<MapDocument*>(mDocumentManager->currentDocument());
+//    mActionHandler->setMapDocument(mapDocument);
+    mActionHandler->refreshNewLayerMenu(mNewLayerMenu);
 }
 
 MainWindow::~MainWindow()

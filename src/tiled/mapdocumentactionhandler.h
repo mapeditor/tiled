@@ -47,6 +47,12 @@ class MapDocumentActionHandler : public QObject
         ViaCut,
     };
 
+    enum class DirectoryType {
+        None,
+        EventDirectory,
+        RenderDirectory,
+    };
+
 public:
     explicit MapDocumentActionHandler(QObject *parent = nullptr);
     ~MapDocumentActionHandler() override;
@@ -137,8 +143,14 @@ public slots:
 
     void selectAllInstances(const ObjectTemplate *objectTemplate);
 
+    void refreshNewLayerMenu(QMenu* newLayerMenu) const;
+    void setupNewLayerMenu(QMenu* newLayerMenu) const;
+
 private:
     void updateActions();
+
+    DirectoryType checkBelongs(Layer* current) const;
+    static bool checkLayerIsTopDirectory(Layer* layer) ;
 
     MapDocument *mMapDocument;
 
