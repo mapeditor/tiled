@@ -59,6 +59,7 @@
 #include <QFile>
 #include <QQmlEngine>
 #include <QStandardPaths>
+#include <QStringDecoder>
 #if QT_VERSION < QT_VERSION_CHECK(6,0,0)
 #include <QTextCodec>
 #endif

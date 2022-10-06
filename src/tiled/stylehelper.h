@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <QObject>
 #include <QPalette>
 #include <QString>
 
