@@ -62,6 +62,8 @@
 
 #include <QFileInfo>
 #include <QRect>
+#include <QSet>
+#include <QString>
 #include <QUndoStack>
 
 using namespace Tiled;
@@ -486,23 +488,20 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
 Layer *MapDocument::addLayer(Layer::TypeFlag layerType)
 {
     Layer *layer = nullptr;
-    QString name;
+    QString name = newLayerName(layerType);
+    Q_ASSERT(!name.isEmpty());
 
     switch (layerType) {
     case Layer::TileLayerType:
-        name = tr("Tile Layer %1").arg(mMap->tileLayerCount() + 1);
         layer = new TileLayer(name, 0, 0, mMap->width(), mMap->height());
         break;
     case Layer::ObjectGroupType:
-        name = tr("Object Layer %1").arg(mMap->objectGroupCount() + 1);
         layer = new ObjectGroup(name, 0, 0);
         break;
     case Layer::ImageLayerType:
-        name = tr("Image Layer %1").arg(mMap->imageLayerCount() + 1);
         layer = new ImageLayer(name, 0, 0);
         break;
     case Layer::GroupLayerType:
-        name = tr("Group %1").arg(mMap->groupLayerCount() + 1);
         layer = new GroupLayer(name, 0, 0);
         break;
     }
@@ -1449,6 +1448,41 @@ void MapDocument::onLayerRemoved(Layer *layer)
     switchSelectedLayers(selectedLayers);
 
     emit layerRemoved(layer);
+}
+
+QString MapDocument::newLayerName(Layer::TypeFlag layerType) const
+{
+    const char *parametricName = nullptr;
+    switch (layerType)
+    {
+        case Layer::TypeFlag::TileLayerType:
+            parametricName = QT_TR_NOOP("Tile Layer %1");
+            break;
+        case Layer::TypeFlag::ObjectGroupType:
+            parametricName = QT_TR_NOOP("Object Layer %1");
+            break;
+        case Layer::TypeFlag::ImageLayerType:
+            parametricName = QT_TR_NOOP("Image Layer %1");
+            break;
+        case Layer::TypeFlag::GroupLayerType:
+            parametricName = QT_TR_NOOP("Group Layer %1");
+            break;
+        default:
+            // invalid layer type
+            return {};
+    }
+
+    QSet<QString> layerNames;
+    for (const auto& layer : mMap->allLayers(layerType))
+            layerNames.insert(layer->name());
+
+    int number = 1;
+    auto candidateName = tr(parametricName).arg(number);
+    while (layerNames.contains(candidateName)) {
+        candidateName = tr(parametricName).arg(++number);
+    }
+
+    return candidateName;
 }
 
 void MapDocument::checkIssues()
