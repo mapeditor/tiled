@@ -2,6 +2,7 @@
 
 * Scripting: Fixed painting issues after changing TileLayer size (#3481)
 * Defold plugin: Allow overriding z value also when exporting to .collection (#3214)
+* Qt 6: Fixed invisible tileset tabs when only a single tileset is open
 * Fixed compile against Qt 6.4
 
 ### Tiled 1.9.2 (16 September 2022)
