@@ -246,7 +246,6 @@ QString EnumPropertyType::storageTypeToString(StorageType type)
 
 ExportValue ClassPropertyType::toExportValue(const QVariant &value, const ExportContext &context) const
 {
-    ExportValue result;
     Properties properties = value.toMap();
 
     QMutableMapIterator<QString, QVariant> it(properties);

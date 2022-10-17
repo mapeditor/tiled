@@ -39,6 +39,7 @@
 #include <QAction>
 #include <QCoreApplication>
 #include <QInputDialog>
+#include <QLibraryInfo>
 #include <QMenu>
 #include <QMessageBox>
 #include <QQmlEngine>
