@@ -1,6 +1,6 @@
 ### Unreleased
 
-* Fixed new layer names to be always unique (#3452)
+* Fixed new layer names to be always unique (by Logan Higinbotham, #3452)
 * Scripting: Fixed painting issues after changing TileLayer size (#3481)
 * Defold plugin: Allow overriding z value also when exporting to .collection (#3214)
 
