@@ -36,9 +36,9 @@ jobs:
     - name: Get version
       id: get-version
       run: |
-        if [[ "$TILED_RELEASE" == 'true' ]]; then echo "::set-output name=version::${GITHUB_REF:11}" ; fi
-        if [[ "$TILED_RELEASE" != 'true' ]]; then echo "::set-output name=version::$(date "+%Y.%m.%d")" ; fi
-        echo "::set-output name=release::${TILED_RELEASE}"
+        if [[ "$TILED_RELEASE" == 'true' ]]; then echo "version=${GITHUB_REF:11}" >> $GITHUB_OUTPUT ; fi
+        if [[ "$TILED_RELEASE" != 'true' ]]; then echo "version=$(date "+%Y.%m.%d")" >> $GITHUB_OUTPUT ; fi
+        echo "release=${TILED_RELEASE}" >> $GITHUB_OUTPUT
 
   linux:
     name: Linux (AppImage, Qt ${{ matrix.qt_version_major }})
