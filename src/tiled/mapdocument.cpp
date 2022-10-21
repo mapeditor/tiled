@@ -488,7 +488,7 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
 Layer *MapDocument::addLayer(Layer::TypeFlag layerType)
 {
     Layer *layer = nullptr;
-    QString name = newLayerName(layerType);
+    const QString name = newLayerName(layerType);
     Q_ASSERT(!name.isEmpty());
 
     switch (layerType) {
@@ -1473,14 +1473,16 @@ QString MapDocument::newLayerName(Layer::TypeFlag layerType) const
     }
 
     QSet<QString> layerNames;
-    for (const auto& layer : mMap->allLayers(layerType))
-            layerNames.insert(layer->name());
-
-    int number = 1;
-    auto candidateName = tr(parametricName).arg(number);
-    while (layerNames.contains(candidateName)) {
-        candidateName = tr(parametricName).arg(++number);
+    int number = 0;
+    for (const auto layer : mMap->allLayers(layerType)) {
+        ++number;
+        layerNames.insert(layer->name());
     }
+
+    QString candidateName;
+    do {
+        candidateName = tr(parametricName).arg(++number);
+    } while (layerNames.contains(candidateName));
 
     return candidateName;
 }
