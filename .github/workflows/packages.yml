@@ -61,7 +61,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Install dependencies
       run: |
@@ -74,12 +74,12 @@ jobs:
         ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
 
     - name: Setup ccache
-      uses: hendrikmuhs/ccache-action@v1
+      uses: hendrikmuhs/ccache-action@v1.2
       with:
         max-size: 250M
 
     - name: Setup CMake
-      uses: jwlawson/actions-setup-cmake@v1.8
+      uses: jwlawson/actions-setup-cmake@v1
       with:
         cmake-version: '3.19'
 
@@ -124,7 +124,7 @@ jobs:
         ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --plugin qt --output appimage
 
     - name: Upload Tiled.AppImage
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Tiled-Qt${{ matrix.qt_version_major }}-x86_64.AppImage
         path: Tiled-Qt${{ matrix.qt_version_major }}-x86_64.AppImage
@@ -139,7 +139,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set Tiled version
       id: version
@@ -153,7 +153,7 @@ jobs:
       uses: snapcore/action-build@v1
 
     - name: Upload snap artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: tiled_amd64.snap
         path: tiled_*_amd64.snap
@@ -189,7 +189,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Install Qt
       run: |
@@ -250,7 +250,7 @@ jobs:
         ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled-macOS-${{ matrix.version_suffix }}.zip
 
     - name: Upload Tiled.app
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Tiled-macOS-${{ matrix.version_suffix }}.app
         path: Tiled-macOS-${{ matrix.version_suffix }}.zip
@@ -289,7 +289,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Install Qt
       run: |
@@ -322,13 +322,13 @@ jobs:
         mv release/installer*/Tiled-*.msi .
 
     - name: Upload Tiled installer
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Tiled-win${{ matrix.arch }}.msi
         path: Tiled-*.msi
 
     - name: Upload Tiled archive
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Tiled-win${{ matrix.arch }}
         path: release/install-root/*
@@ -405,7 +405,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Create Sentry release
       uses: getsentry/action-release@v1
