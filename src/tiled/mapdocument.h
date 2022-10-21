@@ -388,6 +388,8 @@ private:
 
     void moveObjectIndex(const MapObject *object, int count);
 
+    QString newLayerName(Layer::TypeFlag layerType) const;
+
     /*
      * QString is used since the formats referenced here may be dynamically
      * added by a plugin, and can also be removed again.

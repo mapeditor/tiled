@@ -1,5 +1,6 @@
 ### Unreleased
 
+* Fixed new layer names to be always unique (by Logan Higinbotham, #3452)
 * Scripting: Fixed painting issues after changing TileLayer size (#3481)
 * Defold plugin: Allow overriding z value also when exporting to .collection (#3214)
 * Qt 6: Fixed invisible tileset tabs when only a single tileset is open
