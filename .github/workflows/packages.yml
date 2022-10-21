@@ -18,7 +18,7 @@ env:
   QT_VERSION: 5.15.2
   QTCREATOR_VERSION: 7.0.3
   QBS_VERSION: 1.21.0
-  SENTRY_VERSION: 0.5.0
+  SENTRY_VERSION: 0.5.2
   SENTRY_ORG: mapeditor
   SENTRY_PROJECT: tiled
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
