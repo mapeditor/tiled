@@ -348,7 +348,7 @@ declare namespace Qt {
    * The base type from which all Qt widgets derive.
    * Qt documentation: [QWidget](https://doc.qt.io/qt-5/qwidget.html)
    */
-  class QWidget{
+  class QWidget {
     /**
      * The toolTip displayed when the user mouses over this widget
      */
@@ -381,14 +381,12 @@ declare namespace Qt {
    * A widget containing a single line of text that the user can edit.
    * Qt documentation: [QLineEdit](https://doc.qt.io/qt-5/qlineedit.html)
    */
-  class QLineEdit extends QWidget{
-
+  class QLineEdit extends QWidget {
     /**
      * This signal is emitted when the Return or Enter key is pressed or the line edit loses focus.
-     *  Note that if there is a validator() or inputMask() set on the line edit and enter/return is pressed,
-     *  the editingFinished() signal will only be emitted if the input follows the inputMask() and the validator() returns QValidator::Acceptable.
      */
     editingFinished: Signal<void>;
+
     /**
      * Signal emitted when the text inside the QLineEdit is changed.
      */
@@ -401,11 +399,10 @@ declare namespace Qt {
   }
 
     /**
-   * A widget containing a multiple lines of text that the user can edit.
-   * Qt documentation: [QTextEdit](https://doc.qt.io/qt-5/qtextedit.html)
-   */
-     class QTextEdit extends QWidget{
-
+     * A widget containing a multiple lines of text that the user can edit.
+     * Qt documentation: [QTextEdit](https://doc.qt.io/qt-5/qtextedit.html)
+     */
+     class QTextEdit extends QWidget {
       /**
        * This property holds whether the user can change the contents of the widget.
        * If true, the user cannot change the text. Defaults to false.
@@ -420,7 +417,6 @@ declare namespace Qt {
        * Check the text with {@link plainText} or {@link html} when this is emitted.
        */
       textChanged: Signal<void>;
-
     }
 
     type CheckState = number;
@@ -443,7 +439,7 @@ declare namespace Qt {
    * a value on and off.
    * Qt documentation: [QCheckBox](https://doc.qt.io/qt-5/qcheckbox.html)
    */
-  class QCheckBox extends QWidget{
+  class QCheckBox extends QWidget {
     /**
      * Signal emitted when the state of the checkbox changes.
      */
@@ -463,7 +459,7 @@ declare namespace Qt {
    * one of multiple preset values.
    * Qt documentation: [QComboBox](https://doc.qt.io/qt-5/qcombobox.html)
    */
-  class QComboBox extends QWidget{
+  class QComboBox extends QWidget {
     /**
      * Index into the list of possible values that the user has selected.
      */
@@ -482,11 +478,21 @@ declare namespace Qt {
      * Provides the string value of the selected option.
      */
     currentTextChanged: Signal<string>;
+
+    /**
+     * Removes all items from the combo box.
+     */
+    clear() : void;
+
+    /**
+     * Adds the given items to the combo box.
+     */
+    addItems(texts : string[]) : void;
   }
   /**
    * A label  widget which displays text to the user
    */
-   class QLabel extends QWidget{
+   class QLabel extends QWidget {
     /**
      * The text currently being displayed on the label.
      */
@@ -497,7 +503,7 @@ declare namespace Qt {
    * A slider for allowing the user to set an integer value.
    * Qt documentation: [QSlider](https://doc.qt.io/qt-5/qslider.html)
    */
-  class QSlider extends QWidget{
+  class QSlider extends QWidget {
 
     /**
      * The minimum value that can be set by the slider.
@@ -529,7 +535,7 @@ declare namespace Qt {
  * value by incrementing and decrementing it.
  * Qt documentation: [QDoubleSpinBox](https://doc.qt.io/qt-5/qdoublespinbox.html)
  */
-  class QDoubleSpinBox extends QWidget{
+  class QDoubleSpinBox extends QWidget {
 
     /**
      * The minimum value that can be set by the input.
@@ -579,7 +585,7 @@ declare namespace Qt {
   /**
    * A button which the user can push.
    */
-  class QPushButton extends QWidget{
+  class QPushButton extends QWidget {
     /**
      * The text displayed on the surface of the button.
      */
@@ -594,7 +600,7 @@ declare namespace Qt {
    * This type is returned in mainWidget when calling {@link Dialog.addSeparator}.
    * Qt documentation [QFrame](https://doc.qt.io/qt-5/qframe.html)
    */
-  class QFrame extends QWidget{
+  class QFrame extends QWidget {
   }
 }
 
@@ -3811,7 +3817,7 @@ declare class Process {
  * A widget which allows the user to select a color.
  * When the color button is clicked, a color picker dialog will pop up.
  */
-declare class ColorButton extends Qt.QWidget{
+declare class ColorButton extends Qt.QWidget {
   /**
    * The currently selected color of the button.
    */
@@ -3826,7 +3832,7 @@ declare class ColorButton extends Qt.QWidget{
  * Widget with a button which opens a file picker dialog
  * and displays the path in the dialog.
  */
-declare class FileEdit extends Qt.QWidget{
+declare class FileEdit extends Qt.QWidget {
 
   /**
    * The {@link Qt.Qurl} of the currently selected file.
@@ -3841,7 +3847,7 @@ declare class FileEdit extends Qt.QWidget{
 /**
  * A widget that displays an {@link Image} on your dialog.
  */
-declare class ImageWidget extends Qt.QWidget{
+declare class ImageWidget extends Qt.QWidget {
 
   /**
    * The image to be displayed in the widget

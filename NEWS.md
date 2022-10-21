@@ -3,6 +3,7 @@
 * Fixed new layer names to be always unique (by Logan Higinbotham, #3452)
 * Scripting: Fixed painting issues after changing TileLayer size (#3481)
 * Scripting: Allow assigning null to Tile.objectGroup (by Logan Higinbotham, #3495)
+* Scripting: Allow changing the items in a combo box added to a dialog
 * Defold plugin: Allow overriding z value also when exporting to .collection (#3214)
 * Qt 6: Fixed invisible tileset tabs when only a single tileset is open
 * Fixed compile against Qt 6.4
