@@ -145,8 +145,8 @@ jobs:
       id: version
       run: |
         sed -i 's/^version: .*/version: '"${TILED_VERSION}"'/g' snap/snapcraft.yaml
-        if [[ "$TILED_RELEASE" == 'true' ]]; then echo "::set-output name=snap_channel::candidate" ; fi
-        if [[ "$TILED_RELEASE" != 'true' ]]; then echo "::set-output name=snap_channel::beta" ; fi
+        if [[ "$TILED_RELEASE" == 'true' ]]; then echo "snap_channel=candidate" >> $GITHUB_OUTPUT ; fi
+        if [[ "$TILED_RELEASE" != 'true' ]]; then echo "snap_channel=beta" >> $GITHUB_OUTPUT ; fi
 
     - name: Build snap
       id: build
