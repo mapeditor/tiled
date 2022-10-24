@@ -56,6 +56,16 @@ public:
                QWidget *) override;
 
 private:
+    // For most cases, an object label is anchored to some world position
+    // but for object annotations that have a fixed screen size rather than
+    // a fixed world size (like for the Point object), we must anchor the label
+    // to some screen pixel.  We cannot offset the object via setPos() as the offset
+    // will scale with the zoom level (aka, translating the position by 10 in 
+    // `syncWithMapObject` will result in 10 being scaled as the zoom level changes).
+    // Thus, hold off on this offsetting until we are in `paint` such that the offset can
+    // be done in screen space rather than world space.
+    QPointF mScreenspaceOffset;
+
     QRectF mBoundingRect;
     QPointF mTextPos;
     const MapObject *mObject;

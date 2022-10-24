@@ -199,16 +199,28 @@ void MapObjectLabel::syncWithMapObject(const MapRenderer &renderer)
     QPointF screenPos = renderer.pixelToScreenCoords(mObject->position());
     QRectF bounds = mObject->screenBounds(renderer);
 
-    // Adjust the bounding box for object rotation
-    bounds = rotateAt(screenPos, mObject->rotation()).mapRect(bounds);
+    if (mObject->shape() == MapObject::Point) {
+        // Use screenspace offset, since the Point annotation rescales with the zoom-level
+        mScreenspaceOffset = { 0, -bounds.height() };
 
-    // Center the object name on the object bounding box
-    QPointF pos((bounds.left() + bounds.right()) / 2, bounds.top());
+        if (auto mapScene = static_cast<MapScene*>(scene()))
+            screenPos += mapScene->absolutePositionForLayer(*mObject->objectGroup());
 
-    if (auto mapScene = static_cast<MapScene*>(scene()))
-        pos += mapScene->absolutePositionForLayer(*mObject->objectGroup());
+        setPos(screenPos);
+    } else {
+        mScreenspaceOffset = { 0, 0 };
 
-    setPos(pos);
+        // Adjust the bounding box for object rotation
+        bounds = rotateAt(screenPos, mObject->rotation()).mapRect(bounds);
+
+        // Center the object name on the object bounding box
+        QPointF pos((bounds.left() + bounds.right()) / 2, bounds.top());
+
+        if (auto mapScene = static_cast<MapScene*>(scene()))
+            pos += mapScene->absolutePositionForLayer(*mObject->objectGroup());
+
+        setPos(pos);
+    }
 
     if (mBoundingRect != boundingRect) {
         prepareGeometryChange();
@@ -229,13 +241,18 @@ void MapObjectLabel::updateColor()
 
 QRectF MapObjectLabel::boundingRect() const
 {
-    return mBoundingRect.adjusted(0, 0, 1, 1);
+    return mBoundingRect.translated(mScreenspaceOffset).adjusted(0, 0, 1, 1);
 }
 
 void MapObjectLabel::paint(QPainter *painter,
                            const QStyleOptionGraphicsItem *,
                            QWidget *)
 {
+    if (!mScreenspaceOffset.isNull()) {
+        painter->save();
+        painter->translate(mScreenspaceOffset);
+    }
+
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setBrush(Qt::black);
     painter->setPen(Qt::NoPen);
@@ -248,6 +265,9 @@ void MapObjectLabel::paint(QPainter *painter,
     painter->drawText(mTextPos + QPointF(1,1), mObject->name());
     painter->setPen(Qt::white);
     painter->drawText(mTextPos, mObject->name());
+
+    if (!mScreenspaceOffset.isNull())
+        painter->restore();
 }
 
 
