@@ -258,19 +258,18 @@ inline void ResultsView::keyPressEvent(QKeyEvent *event)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-LocatorWidget::LocatorWidget(QWidget *parent)
+LocatorWidget::LocatorWidget(LocatorSource *locatorSource, QWidget *parent)
     : QFrame(parent, Qt::Popup)
     , mFilterEdit(new FilterEdit(this))
     , mResultsView(new ResultsView(this))
-    , mListModel(new MatchesModel(this))
-    , mDelegate(new MatchDelegate(this))
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
 
+    mLocatorSource = locatorSource;
     mResultsView->setUniformRowHeights(true);
     mResultsView->setRootIsDecorated(false);
-    mResultsView->setItemDelegate(mDelegate);
+    mResultsView->setItemDelegate(locatorSource->delegate);
     mResultsView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     mResultsView->setModel(mListModel);
     mResultsView->setHeaderHidden(true);
@@ -295,12 +294,8 @@ LocatorWidget::LocatorWidget(QWidget *parent)
     verticalLayout->addStretch(0);
     setLayout(verticalLayout);
 
-    connect(mFilterEdit, &QLineEdit::textChanged, this, &LocatorWidget::setFilterText);
-    connect(mResultsView, &QAbstractItemView::activated, this, [this] (const QModelIndex &index) {
-        const QString file = mListModel->matches().at(index.row()).path;
-        close();
-        DocumentManager::instance()->openFile(file);
-    });
+    connect(mFilterEdit, &QLineEdit::textChanged, mLocatorSource, &LocatorSource::setFilterWords);
+    connect(mResultsView, &QAbstractItemView::activated, mLocatorSource, &LocatorSource::activate);
 }
 
 void LocatorWidget::setVisible(bool visible)
@@ -313,11 +308,15 @@ void LocatorWidget::setVisible(bool visible)
         if (!mFilterEdit->text().isEmpty())
             mFilterEdit->clear();
         else
-            setFilterText(QString());
+            mLocatorSource->setFilterWords(QString());
     }
 }
+ProjectFileLocatorSource::ProjectFileLocatorSource(QObject *parent)  
+    : listModel(new MatchesModel(parent))
+    , delegate(new MatchDelegate(parent)){
 
-void LocatorWidget::setFilterText(const QString &text)
+}
+void ProjectFileLocatorSource::setFilterWords(const QString &text)
 {
     const QString normalized = QDir::fromNativeSeparators(text);
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
@@ -338,7 +337,7 @@ void LocatorWidget::setFilterText(const QString &text)
         return a.relativePath().compare(b.relativePath(), Qt::CaseInsensitive) < 0;
     });
 
-    mDelegate->setWords(words);
+    locatorSource->delegate->setWords(words);
     mListModel->setMatches(matches);
 
     mResultsView->updateGeometry();

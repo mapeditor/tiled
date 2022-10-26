@@ -80,22 +80,39 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 };
 
+class LocatorSource{ 
+public:
+    explicit LocatorSource(QObject *parent);
+    virtual void setFilterWords(const QString &text);
+    virtual void activate(const QModelIndex &index);
+    MatchDelegate *delegate;
+private:
+    QAbstractListModel *mListModel;
+};
 class LocatorWidget : public QFrame
 {
     Q_OBJECT
 
 public:
-    explicit LocatorWidget(QWidget *parent = nullptr);
+    explicit LocatorWidget(LocatorSource *locatorSource, QWidget *parent = nullptr);
 
     void setVisible(bool visible) override;
 
 private:
-    void setFilterText(const QString &text);
 
     FilterEdit *mFilterEdit;
     ResultsView *mResultsView;
     MatchesModel *mListModel;
-    MatchDelegate *mDelegate;
+    LocatorSource *mLocatorSource;
 };
 
+
+class ProjectFileLocatorSource: public LocatorSource {
+    public:
+        explicit ProjectFileLocatorSource(QObject *parent);
+        void setFilterWords(const QString &text) override;
+        void activate(const QModelIndex &index) override;
+        MatchesModel *listModel;
+        MatchDelegate *delegate;
+};
 } // namespace Tiled
