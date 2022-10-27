@@ -66,6 +66,8 @@ parts:
       - libzstd-dev
     stage-packages:
       - libqt5quick5
+      - qt5-image-formats-plugins
+      - qtwayland5
     #  - libpython2.7
       - libzstd1
     after: [desktop-qt5]

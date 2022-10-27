@@ -9,6 +9,7 @@
 * Qt 6: Fixed invisible tileset tabs when only a single tileset is open
 * Fixed positioning of point object name labels (by Logan Higinbotham, #3400)
 * Fixed compile against Qt 6.4
+* snap: Added Wayland platform plugin and additional image format plugins
 * AppImage: Updated to Sentry 0.5.2
 
 ### Tiled 1.9.2 (16 September 2022)
