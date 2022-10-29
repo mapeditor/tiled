@@ -814,6 +814,9 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     connect(toggleGrid, &QAction::toggled,
             prefs, &Preferences::setShowTilesetGrid);
 
+    QAction *selectAllTiles = menu.addAction(tr("Select &All Tiles"));
+    connect(selectAllTiles, &QAction::triggered, this, &QAbstractItemView::selectAll);
+
     ActionManager::applyMenuExtensions(&menu, MenuIds::tilesetViewTiles);
 
     menu.exec(event->globalPos());
