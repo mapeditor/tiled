@@ -452,10 +452,10 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(handler->actionDuplicateLayers());
         menu.addAction(handler->actionMergeLayersDown());
         menu.addAction(handler->actionRemoveLayers());
-        menu.addSeparator();
     }
     
     // independent of whether index is valid but maintaining positioning
+    menu.addSeparator();
     menu.addAction(handler->actionSelectAllLayers());
 
     if (proxyIndex.isValid()) {
