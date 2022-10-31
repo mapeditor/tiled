@@ -7322,7 +7322,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+20"/>
         <source>Change Layer Tint Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Tintfarbe der Ebene ändern</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -7464,7 +7464,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+10"/>
         <source>Change Chunk Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Blockgröße ändern</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -7655,7 +7655,7 @@ Bitte Format angeben.</translation>
         <location line="+25"/>
         <location line="+21"/>
         <source>Change Image Layer Repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Wiederholung der Bildebene ändern</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeobjectgroupproperties.cpp" line="+36"/>
