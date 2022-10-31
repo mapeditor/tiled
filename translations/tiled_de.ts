@@ -2963,7 +2963,7 @@ Zeile %1, Spalte %2</translation>
         <location line="+69"/>
         <location line="+69"/>
         <source>Bad layer tile data</source>
-        <translation>Falsche Kachelebenen-Daten</translation>
+        <translation>Falsche Kacheldaten auf Ebene</translation>
     </message>
     <message>
         <location line="+72"/>
