@@ -280,7 +280,7 @@
     <message>
         <location line="+17"/>
         <source>Show output in Console view</source>
-        <translation>Zeige Ausgabe in der Konsole</translation>
+        <translation>Ausgabe in Konsolenfenster anzeigen</translation>
     </message>
 </context>
 <context>
