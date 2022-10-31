@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2021-09-07 13:45+0200\n"
-"PO-Revision-Date: 2022-09-23 11:18+0000\n"
+"PO-Revision-Date: 2022-11-01 11:32+0000\n"
 "Last-Translator: Christian Pervoelz <cpervoelz@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tiled/manual/de/>"
 "\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 "Generated-By: Babel 2.8.0\n"
 
 #: ../../manual/automapping.rst:3
@@ -2834,7 +2834,7 @@ msgstr ""
 
 #: ../../manual/export-yy.rst:279
 msgid "Paths"
-msgstr ""
+msgstr "Pfade"
 
 #: ../../manual/export-yy.rst:283
 msgid ""
@@ -2857,13 +2857,15 @@ msgstr ""
 
 #: ../../manual/export-yy.rst:304
 msgid "**Camera Properties**"
-msgstr ""
+msgstr "**Kameraeinstellungen**"
 
 #: ../../manual/export-yy.rst:306
 msgid ""
 "The Camera Properties are automatically derived from the position and "
 "size of the view object."
 msgstr ""
+"Die Kameraeinstellungen werden automatisch von der Position und der Größe "
+"des angezeigten Objektes abgeleitet."
 
 #: ../../manual/export-yy.rst:309
 msgid "**Viewport Properties**"
@@ -3948,11 +3950,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:38
 msgid "Insert Rectangle"
-msgstr ""
+msgstr "Rechteck einfügen"
 
 #: ../../manual/objects.rst:40
 msgid "Shortcut: ``R``"
-msgstr ""
+msgstr "Kürzel: ``R``"
 
 #: ../../manual/objects.rst:42
 msgid ""
@@ -3980,11 +3982,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:62
 msgid "Insert Point"
-msgstr ""
+msgstr "Punkt einfügen"
 
 #: ../../manual/objects.rst:64
 msgid "Shortcut: ``I``"
-msgstr ""
+msgstr "Kürzel: ``I``"
 
 #: ../../manual/objects.rst:66
 msgid ""
@@ -3992,14 +3994,18 @@ msgid ""
 "represent a location, and cannot be resized or rotated. Simply click on "
 "the map to position a point object."
 msgstr ""
+"Punkte sind die einfachsten Objekte, die auf einer Karte platziert werden "
+"können. Sie stellen nur einen Ort dar und können von daher weder gedreht, "
+"noch in ihrer Größe geändert werden. Ein Punkt wird durch einen Klick auf "
+"die Karte erstellt."
 
 #: ../../manual/objects.rst:73
 msgid "Insert Ellipse"
-msgstr ""
+msgstr "Ellipse einfügen"
 
 #: ../../manual/objects.rst:75
 msgid "Shortcut: ``C``"
-msgstr ""
+msgstr "Kürzel: ``C``"
 
 #: ../../manual/objects.rst:77
 msgid ""
@@ -4010,11 +4016,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:84
 msgid "Insert Polygon"
-msgstr ""
+msgstr "Polygon einfügen"
 
 #: ../../manual/objects.rst:86
 msgid "Shortcut: ``P``"
-msgstr ""
+msgstr "Kürzel: ``P``"
 
 #: ../../manual/objects.rst:88
 msgid ""
@@ -4070,11 +4076,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:126
 msgid "Insert Tile"
-msgstr ""
+msgstr "Kachel einfügen"
 
 #: ../../manual/objects.rst:128
 msgid "Shortcut: ``T``"
-msgstr ""
+msgstr "Kürzel: ``T``"
 
 #: ../../manual/objects.rst:130
 msgid ""
@@ -4115,11 +4121,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:169
 msgid "Insert Template"
-msgstr ""
+msgstr "Vorlage einfügen"
 
 #: ../../manual/objects.rst:171 ../../manual/using-templates.rst:50
 msgid "Shortcut: ``V``"
-msgstr ""
+msgstr "Kürzel: ``V``"
 
 #: ../../manual/objects.rst:173
 msgid ""
@@ -4129,11 +4135,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:179
 msgid "Insert Text"
-msgstr ""
+msgstr "Text einfügen"
 
 #: ../../manual/objects.rst:181
 msgid "Shortcut: ``X``"
-msgstr ""
+msgstr "Kürzel: ``X``"
 
 #: ../../manual/objects.rst:183
 msgid ""
@@ -4145,11 +4151,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:191
 msgid "Select Objects"
-msgstr ""
+msgstr "Objekte auswählen"
 
 #: ../../manual/objects.rst:193
 msgid "Shortcut: ``S``"
-msgstr ""
+msgstr "Kürzel: ``S``"
 
 #: ../../manual/objects.rst:195
 msgid ""
@@ -4159,7 +4165,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:199
 msgid "Selecting and Deselecting"
-msgstr ""
+msgstr "Aus- und Abwählen"
 
 #: ../../manual/objects.rst:201
 msgid ""
@@ -4194,7 +4200,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:229
 msgid "Moving"
-msgstr ""
+msgstr "Verschieben"
 
 #: ../../manual/objects.rst:231
 msgid ""
@@ -4219,7 +4225,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:244
 msgid "Resizing"
-msgstr ""
+msgstr "Größe ändern"
 
 #: ../../manual/objects.rst:246
 msgid ""
@@ -4238,7 +4244,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:256
 msgid "Rotating"
-msgstr ""
+msgstr "Drehen"
 
 #: ../../manual/objects.rst:258
 msgid ""
@@ -4256,7 +4262,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:267
 msgid "Changing Stacking Order"
-msgstr ""
+msgstr "Stapelreihenfolge ändern"
 
 #: ../../manual/objects.rst:269
 msgid ""
@@ -4268,11 +4274,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:274
 msgid "``PgUp`` - Raise selected objects"
-msgstr ""
+msgstr "``BildAuf`` - Ausgewählte Objekte nach oben verschieben"
 
 #: ../../manual/objects.rst:275
 msgid "``PgDown`` - Lower selected objects"
-msgstr ""
+msgstr "``BildAb`` - ausgewählte Objekte nach unten verschieben"
 
 #: ../../manual/objects.rst:276
 msgid "``Home`` - Move selected objects to Top"
@@ -4280,7 +4286,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:277
 msgid "``End`` - Move selected objects to Bottom"
-msgstr ""
+msgstr "``Ende`` - Ausgewählte Objekte nach ganz unten verschieben"
 
 #: ../../manual/objects.rst:279
 msgid ""
@@ -4306,7 +4312,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:295
 msgid "Shortcut: ``E``"
-msgstr ""
+msgstr "Kürzel: ``E``"
 
 #: ../../manual/objects.rst:297
 msgid ""
@@ -4352,7 +4358,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:336
 msgid "Connecting Objects"
-msgstr ""
+msgstr "Objekte verbinden"
 
 #: ../../manual/objects.rst:338
 msgid ""
