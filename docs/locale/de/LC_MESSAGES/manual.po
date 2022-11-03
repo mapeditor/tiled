@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2021-09-07 13:45+0200\n"
-"PO-Revision-Date: 2022-11-01 11:32+0000\n"
-"Last-Translator: Christian Pervoelz <cpervoelz@gmail.com>\n"
+"PO-Revision-Date: 2022-11-04 15:04+0000\n"
+"Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tiled/manual/de/>"
 "\n"
 "Language: de\n"
@@ -6061,7 +6061,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:81
 msgid "Adding Maps"
-msgstr ""
+msgstr "Karten hinzufügen"
 
 #: ../../manual/worlds.rst:77
 msgid ""
@@ -6085,7 +6085,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:93
 msgid "Moving Maps"
-msgstr ""
+msgstr "Karten verschieben"
 
 #: ../../manual/worlds.rst:89
 msgid ""
@@ -6101,7 +6101,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:98
 msgid "Saving World files"
-msgstr ""
+msgstr "Welt-Dateien speichern"
 
 #: ../../manual/worlds.rst:96
 msgid ""
@@ -6112,7 +6112,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:101
 msgid "Using Pattern Matching"
-msgstr ""
+msgstr "Musterabgleich verwenden"
 
 #: ../../manual/worlds.rst:103
 msgid ""
@@ -6131,7 +6131,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:113
 msgid "Here is an example:"
-msgstr ""
+msgstr "Hier ist ein Beispiel:"
 
 #: ../../manual/worlds.rst:130
 msgid ""
@@ -6158,7 +6158,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:148
 msgid "Showing Only Direct Neighbors"
-msgstr ""
+msgstr "Nur direkte Nachbarn werden angezeigt"
 
 #: ../../manual/worlds.rst:150
 msgid ""
