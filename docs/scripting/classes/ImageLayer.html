@@ -152,6 +152,8 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#removeProperty" class="tsd-kind-icon">remove<wbr>Property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#resolvedProperties" class="tsd-kind-icon">resolved<wbr>Properties</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#setColorProperty" class="tsd-kind-icon">set<wbr>Color<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#setFloatProperty" class="tsd-kind-icon">set<wbr>Float<wbr>Property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ImageLayer.html#setImage" class="tsd-kind-icon">set<wbr>Image</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#setProperties" class="tsd-kind-icon">set<wbr>Properties</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="ImageLayer.html#setProperty" class="tsd-kind-icon">set<wbr>Property</a></li>
@@ -628,6 +630,79 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="setColorProperty" class="tsd-anchor"></a>
+					<h3>set<wbr>Color<wbr>Property</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Color<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Color<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, red<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, green<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, blue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, alpha<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Layer.html">Layer</a>.<a href="Layer.html#setColorProperty">setColorProperty</a></p>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the value of the custom property with the given name to the given
+									color value.</p>
+								</div>
+								<p>The color is specified as a string &quot;#RGB&quot;, &quot;#RRGGBB&quot; or &quot;#AARRGGBB&quot;.</p>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.9.3</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Layer.html">Layer</a>.<a href="Layer.html#setColorProperty">setColorProperty</a></p>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the value of the custom property with the given name to the given
+									color value.</p>
+								</div>
+								<p>The color is specified by its red, green, blue and alpha components.
+									Each component takes a value from 0 to 255. When not provided, the alpha
+								defaults to 255.</p>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.9.3</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="setFloatProperty" class="tsd-anchor"></a>
+					<h3>set<wbr>Float<wbr>Property</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Float<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Layer.html">Layer</a>.<a href="Layer.html#setFloatProperty">setFloatProperty</a></p>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the value of the custom property with the given name to the given
+									float value.</p>
+								</div>
+								<p>This function is provided as alternative to <a href="ImageLayer.html#setProperty">setProperty</a>, since
+								that function will set whole numbers as <code>int</code> properties.</p>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.9.3</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="setImage" class="tsd-anchor"></a>
 					<h3>set<wbr>Image</h3>
@@ -689,11 +764,15 @@
 										types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="../interfaces/FilePath.html">FilePath</a>,
 									<a href="../interfaces/ObjectRef.html">ObjectRef</a> and <a href="MapObject.html">MapObject</a>.</p>
 								</div>
-								<p>When setting a <code>number</code>, the property type will be set to either
-								<code>int</code> or <code>float</code>, depending on whether it is a whole number.</p>
 								<dl class="tsd-comment-tags">
 									<dt>note</dt>
-									<dd><p>Support for setting <code>color</code> properties is currently missing.</p>
+									<dd><p>When setting a <code>number</code>, the property type will be set to either
+											<code>int</code> or <code>float</code>, depending on whether it is a whole number. To force
+										the property to be <code>float</code>, use <a href="ImageLayer.html#setFloatProperty">setFloatProperty</a>.</p>
+									</dd>
+									<dt>note</dt>
+									<dd><p>This function does not support setting <code>color</code> properties. Use
+										<a href="ImageLayer.html#setColorProperty">setColorProperty</a> instead.</p>
 									</dd>
 								</dl>
 							</div>
@@ -803,6 +882,12 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="ImageLayer.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="ImageLayer.html#setColorProperty" class="tsd-kind-icon">set<wbr>Color<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="ImageLayer.html#setFloatProperty" class="tsd-kind-icon">set<wbr>Float<wbr>Property</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="ImageLayer.html#setImage" class="tsd-kind-icon">set<wbr>Image</a>
