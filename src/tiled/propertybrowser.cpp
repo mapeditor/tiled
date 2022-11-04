@@ -1063,12 +1063,11 @@ void PropertyBrowser::addTileProperties()
     imageRectProperty->setEnabled(mTilesetDocument && tile->tileset()->isCollection());
     imageRectProperty->setAttribute(QLatin1String("constraint"), tile->image().rect());
 
-    QtVariantProperty *drawOffsetProperty = addProperty(TileDrawOffsetProperty,
-                                                        QMetaType::QPoint,
-                                                        tr("Draw Offset"),
-                                                        groupProperty);
-    drawOffsetProperty->setAttribute(QLatin1String("singleStep"), 1);
-    drawOffsetProperty->setEnabled(mTilesetDocument);
+    QtVariantProperty *originProperty = addProperty(TileOriginProperty,
+                                                    QMetaType::QPoint,
+                                                    tr("Origin"),
+                                                    groupProperty);
+    originProperty->setEnabled(mTilesetDocument);
 
     addProperty(groupProperty);
 }
@@ -1621,10 +1620,10 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
                                                   tile, filePath.url));
         break;
     }
-    case TileDrawOffsetProperty: {
-        undoStack->push(new ChangeTileDrawOffset(mTilesetDocument,
-                                                mTilesetDocument->selectedTiles(),
-                                                val.toPoint()));
+    case TileOriginProperty: {
+        undoStack->push(new ChangeTileOrigin(mTilesetDocument,
+                                             mTilesetDocument->selectedTiles(),
+                                             val.toPoint()));
         
         break;
     }
@@ -2006,7 +2005,7 @@ void PropertyBrowser::updateProperties()
         if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
             imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));
         mIdToProperty[ImageRectProperty]->setValue(tile->imageRect());
-        mIdToProperty[TileDrawOffsetProperty]->setValue(tile->drawOffset());
+        mIdToProperty[TileOriginProperty]->setValue(tile->origin());
         break;
     }
     case Object::WangSetType: {

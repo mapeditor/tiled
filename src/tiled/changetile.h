@@ -67,24 +67,24 @@ protected:
     void setValue(Tile *tile, const QRect &rect) const override;
 };
 
-class ChangeTileDrawOffset : public ChangeValue<Tile, QPoint>
+class ChangeTileOrigin : public ChangeValue<Tile, QPoint>
 {
 public:
-    ChangeTileDrawOffset(TilesetDocument *tilesetDocument,
-                          const QList<Tile*> &tiles,
-                          const QPoint &offsets,
-                          QUndoCommand *parent = nullptr);
-                          
-    ChangeTileDrawOffset(TilesetDocument *tilesetDocument,
-                          const QList<Tile*> &tiles,
-                          const QVector<QPoint> &offsets,
-                          QUndoCommand *parent = nullptr);
+    ChangeTileOrigin(TilesetDocument *tilesetDocument,
+                     const QList<Tile*> &tiles,
+                     const QPoint &origins,
+                     QUndoCommand *parent = nullptr);
 
-    int id() const override { return Cmd_ChangeTileDrawOffset; }
+    ChangeTileOrigin(TilesetDocument *tilesetDocument,
+                     const QList<Tile*> &tiles,
+                     const QVector<QPoint> &origins,
+                     QUndoCommand *parent = nullptr);
+
+    int id() const override { return Cmd_ChangeTileOrigin; }
 
 protected:
     QPoint getValue(const Tile *tile) const override;
-    void setValue(Tile *tile, const QPoint &offset) const override;
+    void setValue(Tile *tile, const QPoint &origin) const override;
 };
 
 } // namespace Tiled

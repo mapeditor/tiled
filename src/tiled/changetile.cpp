@@ -85,34 +85,34 @@ void ChangeTileImageRect::setValue(Tile *tile, const QRect &rect) const
 }
 
 
-ChangeTileDrawOffset::ChangeTileDrawOffset(TilesetDocument *tilesetDocument,
-                                         const QList<Tile *> &tiles,
-                                         const QPoint &offsets,
-                                         QUndoCommand *parent)
-    : ChangeValue(tilesetDocument, tiles, offsets, parent)
+ChangeTileOrigin::ChangeTileOrigin(TilesetDocument *tilesetDocument,
+                                   const QList<Tile *> &tiles,
+                                   const QPoint &origins,
+                                   QUndoCommand *parent)
+    : ChangeValue(tilesetDocument, tiles, origins, parent)
 {
     setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Image Draw Offset"));
+                                        "Change Tile Origin"));
 }
 
-ChangeTileDrawOffset::ChangeTileDrawOffset(TilesetDocument *tilesetDocument,
+ChangeTileOrigin::ChangeTileOrigin(TilesetDocument *tilesetDocument,
                                          const QList<Tile *> &tiles,
-                                         const QVector<QPoint> &offsets,
+                                         const QVector<QPoint> &origins,
                                          QUndoCommand *parent)
-    : ChangeValue(tilesetDocument, tiles, offsets, parent)
+    : ChangeValue(tilesetDocument, tiles, origins, parent)
 {
     setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Image Draw Offset"));
+                                        "Change Tile Origin"));
 }
 
-QPoint ChangeTileDrawOffset::getValue(const Tile *tile) const
+QPoint ChangeTileOrigin::getValue(const Tile *tile) const
 {
-    return tile->drawOffset();
+    return tile->origin();
 }
 
-void ChangeTileDrawOffset::setValue(Tile *tile, const QPoint &offset) const
+void ChangeTileOrigin::setValue(Tile *tile, const QPoint &origin) const
 {
-    tile->setDrawOffset(offset);
+    tile->setOrigin(origin);
 
     //since we changed the offset we need to tell it to update any maps
     emit static_cast<TilesetDocument*>(document())->tileImageSourceChanged(tile);

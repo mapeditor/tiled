@@ -43,6 +43,7 @@ enum UndoCommands {
     Cmd_ChangeMapObjectTransform,
     Cmd_ChangeSelectedArea,
     Cmd_ChangeTileImageRect,
+    Cmd_ChangeTileOrigin,
     Cmd_ChangeTileProbability,
     Cmd_ChangeTileWangId,
     Cmd_ChangeTilesetName,
@@ -52,7 +53,6 @@ enum UndoCommands {
     Cmd_EraseTiles,
     Cmd_PaintTileLayer,
     Cmd_SetProperty,
-    Cmd_ChangeTileDrawOffset,
 };
 
 /**

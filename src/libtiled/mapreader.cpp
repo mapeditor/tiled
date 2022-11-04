@@ -538,13 +538,9 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
         tile->setProbability(probability.toDouble());
 
     // Read local tile offset
-    const auto drawOffsetX = atts.value(QLatin1String("drawx"));
-    const auto drawOffsetY = atts.value(QLatin1String("drawy"));
-    if(!drawOffsetX.isEmpty() || !drawOffsetY.isEmpty()) {
-        //toInt() defaults to 0 if conversion fails, which is exactly what we want
-        QPoint drawOffset(drawOffsetX.toInt(), drawOffsetY.toInt());
-        tile->setDrawOffset(drawOffset);
-    }
+    const QPoint origin(atts.value(QLatin1String("originx")).toInt(),
+                        atts.value(QLatin1String("originy")).toInt());
+    tile->setOrigin(origin);
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
