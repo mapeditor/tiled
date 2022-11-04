@@ -288,6 +288,8 @@ static bool includeTile(const Tile *tile)
         return true;
     if (tile->isAnimated())
         return true;
+    if (!tile->origin().isNull())
+        return true;
     if (tile->probability() != 1.0)
         return true;
 
