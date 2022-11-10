@@ -30,6 +30,7 @@ C
 ~
 
 -  `cute tiled <https://github.com/RandyGaul/cute_headers>`__ - JSON map loader with examples (zlib/Public Domain).
+-  `libtmj <https://github.com/Zer0-One/libtmj>`__ - JSON map and tileset loader with zlib/gzip/zstd support (BSD 2-Clause)
 -  `TMX <https://github.com/baylej/tmx/>`__ - TMX map loader
    with Allegro5 and SDL2 examples (BSD).
 
