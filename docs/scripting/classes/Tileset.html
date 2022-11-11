@@ -152,6 +152,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#tileSpacing" class="tsd-kind-icon">tile<wbr>Spacing</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#tileWidth" class="tsd-kind-icon">tile<wbr>Width</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#tiles" class="tsd-kind-icon">tiles</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#transparentColor" class="tsd-kind-icon">transparent<wbr>Color</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#wangSets" class="tsd-kind-icon">wang<wbr>Sets</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#Bottom" class="tsd-kind-icon">Bottom</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#BottomLeft" class="tsd-kind-icon">Bottom<wbr>Left</a></li>
@@ -343,6 +344,16 @@
 						<div class="lead">
 							<p>The file name of the image used by this tileset. Empty in case of image collection tilesets.</p>
 						</div>
+						<dl class="tsd-comment-tags">
+							<dt>note</dt>
+							<dd><p>You&#39;ll want to set up the tile size, tile spacing, margin and
+									transparent color as appropriate before setting this property, to avoid
+								repeatedly setting up the tiles in response to changing parameters.</p>
+							</dd>
+							<dt>note</dt>
+							<dd><p>Map files are supported tileset image source as well.</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -554,6 +565,13 @@
 						<div class="lead">
 							<p>Tile Height for tiles in this tileset in pixels.</p>
 						</div>
+						<dl class="tsd-comment-tags">
+							<dt>note</dt>
+							<dd><p>Changing this property will cause an image-based tileset to update
+									all its tiles. When setting up a tileset, you&#39;ll want to set this property
+								before setting the <a href="Tileset.html#image">image</a> property.</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -595,6 +613,13 @@
 						<div class="lead">
 							<p>Tile size for tiles in this tileset in pixels.</p>
 						</div>
+						<dl class="tsd-comment-tags">
+							<dt>note</dt>
+							<dd><p>Changing this property will cause an image-based tileset to update
+									all its tiles. When setting up a tileset, you&#39;ll want to set this property
+								before setting the <a href="Tileset.html#image">image</a> property.</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -619,6 +644,13 @@
 						<div class="lead">
 							<p>Tile width for tiles in this tileset in pixels.</p>
 						</div>
+						<dl class="tsd-comment-tags">
+							<dt>note</dt>
+							<dd><p>Changing this property will cause an image-based tileset to update
+									all its tiles. When setting up a tileset, you&#39;ll want to set this property
+								before setting the <a href="Tileset.html#image">image</a> property.</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -631,6 +663,26 @@
 						<div class="lead">
 							<p>Array of all tiles in this tileset. Note that the index of a tile in this array does not always match with its ID.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="transparentColor" class="tsd-anchor"></a>
+					<h3>transparent<wbr>Color</h3>
+					<div class="tsd-signature tsd-kind-icon">transparent<wbr>Color<span class="tsd-signature-symbol">:</span> <a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Color used as transparent color when rendering tiles from this tileset.</p>
+						</div>
+						<p>This property is currently not supported for image collection tilesets.</p>
+						<dl class="tsd-comment-tags">
+							<dt>note</dt>
+							<dd><p>Changing this property will cause an image-based tileset to update
+									all its tiles. When setting up a tileset, you&#39;ll want to set this property
+								before setting the <a href="Tileset.html#image">image</a> property.</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -836,6 +888,9 @@
 								</div>
 								<p>Optionally sets the source file of the image. This may be useful, but be careful since Tiled will try to reload the tileset from that source when the tileset parameters are changed.</p>
 								<dl class="tsd-comment-tags">
+									<dt>note</dt>
+									<dd><p>Usually you&#39;ll just want to assign the image file name to the <a href="Tileset.html#image">image</a> property!</p>
+									</dd>
 									<dt>warning</dt>
 									<dd><p>This function has no undo!</p>
 									</dd>
@@ -1338,6 +1393,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Tileset.html#tiles" class="tsd-kind-icon">tiles</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Tileset.html#transparentColor" class="tsd-kind-icon">transparent<wbr>Color</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Tileset.html#wangSets" class="tsd-kind-icon">wang<wbr>Sets</a>
