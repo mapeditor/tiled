@@ -8,6 +8,7 @@
 * Improved Terrain Brush for Hexagonal (Staggered) maps with side length 0 (#3617)
 * Qt 6: Increased the image allocation limit from 128 MB to 1 GB (#3616)
 * Qt 6 / Linux: Fixed long startup time for some icon themes
+* snap: Updated from core20 to core22 (now uses Qt 5.15)
 
 ### Tiled 1.10.0 (10 March 2023)
 
