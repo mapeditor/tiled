@@ -2,6 +2,7 @@
 
 * Fixed new layer names to be always unique (by Logan Higinbotham, #3452)
 * Scripting: Added Object.setColorProperty and Object.setFloatProperty (#3423)
+* Scripting: Added tiled.projectFilePath
 * Scripting: Allow assigning null to Tile.objectGroup (by Logan Higinbotham, #3495)
 * Scripting: Allow changing the items in a combo box added to a dialog
 * Scripting: Fixed painting issues after changing TileLayer size (#3481)

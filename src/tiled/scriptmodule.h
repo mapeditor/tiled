@@ -58,6 +58,7 @@ class ScriptModule : public QObject
     Q_PROPERTY(QString arch READ arch)
     Q_PROPERTY(QString extensionsPath READ extensionsPath)
     Q_PROPERTY(QString applicationDirPath READ applicationDirPath)
+    Q_PROPERTY(QString projectFilePath READ projectFilePath)
     Q_PROPERTY(QStringList scriptArguments READ scriptArguments)
 
     Q_PROPERTY(QStringList actions READ actions)
@@ -81,6 +82,7 @@ public:
     QString arch() const;
     QString extensionsPath() const;
     QString applicationDirPath() const;
+    QString projectFilePath() const;
 
     QStringList scriptArguments() const;
     void setScriptArguments(const QStringList &arguments);

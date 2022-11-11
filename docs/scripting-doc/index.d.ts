@@ -3336,6 +3336,14 @@ declare namespace tiled {
   export const extensionsPath: string;
 
   /**
+   * The file path of the currently loaded project, or empty if no project is
+   * currently loaded.
+   *
+   * @since 1.9.3
+   */
+  export const projectFilePath: string;
+
+  /**
    * A list of arguments passed to a script that is evaluated from the
    * command-line.
    *
