@@ -1825,7 +1825,7 @@ declare class ImageLayer extends Layer {
   /**
    * Color used as transparent color when rendering the image.
    */
-  transparentColor: number;
+  transparentColor: color;
 
   /**
    * Reference to the image rendered by this layer.
@@ -2817,6 +2817,12 @@ declare class Tileset extends Asset {
 
   /**
    * The file name of the image used by this tileset. Empty in case of image collection tilesets.
+   *
+   * @note You'll want to set up the tile size, tile spacing, margin and
+   * transparent color as appropriate before setting this property, to avoid
+   * repeatedly setting up the tiles in response to changing parameters.
+   *
+   * @note Map files are supported tileset image source as well.
    */
   image : string
 
@@ -2853,16 +2859,28 @@ declare class Tileset extends Asset {
 
   /**
    * Tile width for tiles in this tileset in pixels.
+   *
+   * @note Changing this property will cause an image-based tileset to update
+   * all its tiles. When setting up a tileset, you'll want to set this property
+   * before setting the {@link image} property.
    */
   tileWidth : number
 
   /**
    * Tile Height for tiles in this tileset in pixels.
+   *
+   * @note Changing this property will cause an image-based tileset to update
+   * all its tiles. When setting up a tileset, you'll want to set this property
+   * before setting the {@link image} property.
    */
   tileHeight : number
 
   /**
    * Tile size for tiles in this tileset in pixels.
+   *
+   * @note Changing this property will cause an image-based tileset to update
+   * all its tiles. When setting up a tileset, you'll want to set this property
+   * before setting the {@link image} property.
    */
   tileSize : size
 
@@ -2922,6 +2940,17 @@ declare class Tileset extends Asset {
   orientation : typeof Tileset.Orthogonal | typeof Tileset.Isometric
 
   /**
+   * Color used as transparent color when rendering tiles from this tileset.
+   *
+   * This property is currently not supported for image collection tilesets.
+   *
+   * @note Changing this property will cause an image-based tileset to update
+   * all its tiles. When setting up a tileset, you'll want to set this property
+   * before setting the {@link image} property.
+   */
+  transparentColor: color;
+
+  /**
    * Background color for this tileset in the Tilesets view.
    */
   backgroundColor : color
@@ -2969,6 +2998,8 @@ declare class Tileset extends Asset {
    * Creates the tiles in this tileset by cutting them out of the given image, using the current tile size, tile spacing and margin parameters. These values should be set before calling this function.
    *
    * Optionally sets the source file of the image. This may be useful, but be careful since Tiled will try to reload the tileset from that source when the tileset parameters are changed.
+   *
+   * @note Usually you'll just want to assign the image file name to the {@link image} property!
    *
    * @warning This function has no undo!
    */
