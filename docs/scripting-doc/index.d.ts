@@ -486,6 +486,8 @@ declare namespace Qt {
 
     /**
      * Adds the given items to the combo box.
+     *
+     * @since 1.9.3
      */
     addItems(texts : string[]) : void;
   }
@@ -933,12 +935,47 @@ declare class TiledObject {
    * types are `bool`, `number`, `string`, {@link FilePath},
    * {@link ObjectRef} and {@link MapObject}.
    *
-   * When setting a `number`, the property type will be set to either
-   * `int` or `float`, depending on whether it is a whole number.
+   * @note When setting a `number`, the property type will be set to either
+   * `int` or `float`, depending on whether it is a whole number. To force
+   * the property to be `float`, use {@link setFloatProperty}.
    *
-   * @note Support for setting `color` properties is currently missing.
+   * @note This function does not support setting `color` properties. Use
+   * {@link setColorProperty} instead.
    */
   setProperty(name: string, value: TiledObjectPropertyValue): void;
+
+  /**
+   * Sets the value of the custom property with the given name to the given
+   * color value.
+   *
+   * The color is specified as a string "#RGB", "#RRGGBB" or "#AARRGGBB".
+   *
+   * @since 1.9.3
+   */
+  setColorProperty(name: string, value: color): void;
+
+  /**
+   * Sets the value of the custom property with the given name to the given
+   * color value.
+   *
+   * The color is specified by its red, green, blue and alpha components.
+   * Each component takes a value from 0 to 255. When not provided, the alpha
+   * defaults to 255.
+   *
+   * @since 1.9.3
+   */
+  setColorProperty(name: string, red: number, green: number, blue: number, alpha?: number): void;
+
+  /**
+   * Sets the value of the custom property with the given name to the given
+   * float value.
+   *
+   * This function is provided as alternative to {@link setProperty}, since
+   * that function will set whole numbers as `int` properties.
+   *
+   * @since 1.9.3
+   */
+  setFloatProperty(name: string, value: number): void;
 
   /**
    * Returns all custom properties set on this object.
@@ -3297,6 +3334,14 @@ declare namespace tiled {
    * @since 1.8
    */
   export const extensionsPath: string;
+
+  /**
+   * The file path of the currently loaded project, or empty if no project is
+   * currently loaded.
+   *
+   * @since 1.9.3
+   */
+  export const projectFilePath: string;
 
   /**
    * A list of arguments passed to a script that is evaluated from the

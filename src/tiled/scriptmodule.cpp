@@ -27,6 +27,7 @@
 #include "logginginterface.h"
 #include "mainwindow.h"
 #include "mapeditor.h"
+#include "projectmanager.h"
 #include "scriptedaction.h"
 #include "scriptedfileformat.h"
 #include "scriptedtool.h"
@@ -114,6 +115,11 @@ QString ScriptModule::extensionsPath() const
 QString ScriptModule::applicationDirPath() const
 {
     return QCoreApplication::applicationDirPath();
+}
+
+QString ScriptModule::projectFilePath() const
+{
+    return ProjectManager::instance()->project().fileName();
 }
 
 QStringList ScriptModule::scriptArguments() const
