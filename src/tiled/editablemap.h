@@ -23,6 +23,7 @@
 #include "editableasset.h"
 #include "mapdocument.h"
 #include "regionvaluetype.h"
+#include "scriptimage.h"
 
 namespace Tiled {
 
@@ -160,6 +161,8 @@ public:
     Q_INVOKABLE void autoMap(const QRect &region, const QString &rulesFile = QString());
     Q_INVOKABLE void autoMap(const QRectF &region, const QString &rulesFile = QString());
     Q_INVOKABLE void autoMap(const Tiled::RegionValueType &region, const QString &rulesFile = QString());
+
+    Q_INVOKABLE Tiled::ScriptImage *toImage(QSize size = QSize());
 
     Q_INVOKABLE QPointF screenToTile(qreal x, qreal y) const;
     Q_INVOKABLE QPointF screenToTile(const QPointF &position) const;

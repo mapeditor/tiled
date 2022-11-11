@@ -2499,6 +2499,17 @@ declare class TileMap extends Asset {
   public resize(size: size, offset?: point, removeObjects?: boolean): void;
 
   /**
+   * Renders the map to an image. When no size is given, creates an image the
+   * size of the map.
+   *
+   * @warning A tile map can easily be way too large to render to an image
+   * unscaled, so be careful when calling this function.
+   *
+   * @since 1.10
+   */
+  public toImage(size?: size): Image;
+
+  /**
    * Converts the given position from screen to tile coordinates.
    */
   public screenToTile(x: number, y: number): point;
@@ -2784,10 +2795,10 @@ interface color {}
 /**
  * A container for tiles that can be used by a map.
  *
- * Can contain either tiles cut from a single image, using {@link
- * loadFromImage}, or individual tiles using {@link addTile} and then setting
- * the image on each tile using {@link Tile.imageFileName} or {@link
- * Tile.setImage}.
+ * Can contain either tiles cut from a single image, by setting {@link image}
+ * or calling {@link loadFromImage}, or individual tiles using {@link addTile}
+ * and then setting the image on each tile using {@link Tile.imageFileName} or
+ * {@link Tile.setImage}.
  */
 declare class Tileset extends Asset {
   static readonly Unspecified: unique symbol
