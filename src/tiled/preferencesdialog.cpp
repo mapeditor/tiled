@@ -137,6 +137,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             this, [] (bool checked) { MapView::ourAutoScrollingEnabled = checked; });
     connect(mUi->smoothScrolling, &QCheckBox::toggled,
             this, [] (bool checked) { MapView::ourSmoothScrollingEnabled = checked; });
+    connect(mUi->noZoomLimit, &QCheckBox::toggled,
+            this, [] (bool checked) { MapView::noZoomLimitEnabled = checked; });
 
     connect(mUi->styleCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::styleComboChanged);
@@ -217,6 +219,7 @@ void PreferencesDialog::fromPreferences()
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());
     mUi->autoScrolling->setChecked(MapView::ourAutoScrollingEnabled);
     mUi->smoothScrolling->setChecked(MapView::ourSmoothScrollingEnabled);
+    mUi->noZoomLimit->setChecked(MapView::noZoomLimitEnabled);
 
     // Not found (-1) ends up at index 0, system default
     int languageIndex = mUi->languageCombo->findData(prefs->language());

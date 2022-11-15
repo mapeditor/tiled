@@ -65,6 +65,7 @@ public:
 
     static Preference<bool> ourAutoScrollingEnabled;
     static Preference<bool> ourSmoothScrollingEnabled;
+    static Preference<bool> noZoomLimitEnabled;
 
     MapView(QWidget *parent = nullptr, Mode mode = StaticContents);
     ~MapView() override;

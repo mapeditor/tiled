@@ -59,6 +59,7 @@ using namespace Tiled;
 
 Preference<bool> MapView::ourAutoScrollingEnabled { "Interface/AutoScrolling", false };
 Preference<bool> MapView::ourSmoothScrollingEnabled { "Interface/SmoothScrolling", true };
+Preference<bool> MapView::noZoomLimitEnabled { "Interface/NoZoomLimit", true};
 
 MapView::MapView(QWidget *parent, Mode mode)
     : QGraphicsView(parent)
@@ -165,7 +166,14 @@ void MapView::fitMapInView()
                               height() / (256.0 * tileSize.height()));
 
     centerOn(rect.center());
-    setScale(std::max(std::max(desiredScale, scale256), 0.015625));
+    if (noZoomLimitEnabled)
+    {
+        setScale(desiredScale);
+    }
+    else
+    {
+        setScale(std::max(std::max(desiredScale, scale256), 0.015625));
+    }
 }
 
 void MapView::adjustScale(qreal scale)
