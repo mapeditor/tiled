@@ -169,7 +169,7 @@ jobs:
 
   macos:
     name: macOS (${{ matrix.version_suffix }})
-    runs-on: macos-latest
+    runs-on: macos-11
     needs: version
 
     strategy:
