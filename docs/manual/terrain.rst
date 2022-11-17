@@ -16,7 +16,7 @@ editing tile maps easier in such cases.
     defined in Tiled 1.5 can't be used by older versions.*
 
 The Terrain Brush relies on the tileset providing one or more *Terrain Sets* -
-sets of tiles labelled according to their terrain layouts. Tiled supports the
+sets of tiles labeled according to their terrain layouts. Tiled supports the
 following terrain sets:
 
 .. figure:: images/terrain/corner-set.png
@@ -49,7 +49,7 @@ Mixed Set
 Based on the information in a terrain set, the :ref:`terrain-tool` can
 understand the map and automatically choose the right tiles when making edits.
 When necessary, it also adjusts neighboring tiles to make sure they correctly
-connect to the modified area.
+connect to the modified area. A terrain set can contain up to 255 terrains.
 
 The :ref:`stamp-tool`, as well as the :ref:`bucket-fill-tool` and the
 :ref:`shape-fill-tool`, also have a mode where they can :ref:`fill an area with
@@ -240,7 +240,7 @@ well as terrains have a *Probability* property, which can be used to change
 the frequency with which a certain tile or terrain is chosen compared to other
 valid options.
 
-The relative probability of a tile is the product of its own propability and
+The relative probability of a tile is the product of its own probability and
 the probability of the terrain at each corner and/or side.
 
 .. figure:: images/terrain/low-and-high-probability.png
@@ -359,4 +359,4 @@ your own project. A few things to keep in mind:
     * An image showing what a click replacing one corner would initially do (change the corner label)
     * An image showing what Tiled does to remedy this (adjust the surrounding corners), showing the different tiles placed underneath
 
-    Optionally, a similar sequence of images showing a Ctrl click. Original -> all corners changed -> neighbouring corners adjusted.
+    Optionally, a similar sequence of images showing a Ctrl click. Original -> all corners changed -> neighboring corners adjusted.
