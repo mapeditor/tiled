@@ -1153,7 +1153,7 @@ void MainWindow::openFileInProject()
                           qMin(remainingHeight / 5, Utils::dpiScaled(60)));
     const QRect rect = QRect(mapToGlobal(localPos), size);
     ProjectFileLocatorSource *source = new ProjectFileLocatorSource(this);
-    mLocatorWidget = new LocatorWidget(&source, this);
+    mLocatorWidget = new LocatorWidget(source, this);
     mLocatorWidget->move(rect.topLeft());
     mLocatorWidget->setMaximumSize(rect.size());
     mLocatorWidget->show();

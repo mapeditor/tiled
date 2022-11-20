@@ -23,6 +23,7 @@
 #include <QFrame>
 #include <QTreeView>
 #include <QStyledItemDelegate>
+#include "projectmodel.h"
 
 namespace Tiled {
 
@@ -66,7 +67,19 @@ private:
     QStringList mWords;
 };
 
-class MatchesModel;
+/*
+ * Base class of the model of entities matching 
+ * the filter words the user enters.
+*/
+class LocatorMatchesModel: public QAbstractListModel
+{
+public:
+    explicit LocatorMatchesModel(QObject *parent =nullptr);
+    const QVector<ProjectModel::Match> &matches() const { return mMatches; }
+    virtual void setMatches(QVector<ProjectModel::Match> matches) = 0;     
+private:
+    QVector<ProjectModel::Match> mMatches;
+};
 class ResultsView : public QTreeView
 {
 public:
@@ -80,14 +93,24 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 };
 
-class LocatorSource{ 
+/**
+ * Base class that provides an implementation of searching for
+ * and clicking on items in locator widgets.
+ * 
+ * Whenever the filter words changed, the signal filterWordsChanged
+ * will be triggered.
+*/
+class LocatorSource: public QObject
+{ 
+Q_OBJECT
 public:
-    explicit LocatorSource(QObject *parent);
-    virtual void setFilterWords(const QString &text);
-    virtual void activate(const QModelIndex &index);
+    LocatorSource(QObject *parent = nullptr);
+    virtual void setFilterWords(const QString &text) = 0;
+    virtual void activate(const QModelIndex &index) = 0;
     MatchDelegate *delegate;
-private:
-    QAbstractListModel *mListModel;
+    LocatorMatchesModel *listModel;
+signals:
+    void filterWordsChanged();
 };
 class LocatorWidget : public QFrame
 {
@@ -95,15 +118,20 @@ class LocatorWidget : public QFrame
 
 public:
     explicit LocatorWidget(LocatorSource *locatorSource, QWidget *parent = nullptr);
-
+    LocatorMatchesModel *listModel;
     void setVisible(bool visible) override;
 
-private:
+protected:
+    LocatorSource *mLocatorSource;
 
+    /* Called to adjust the size of the widget when
+     * the filter words change.
+     */
+    void adjustLayout();
+private:
     FilterEdit *mFilterEdit;
     ResultsView *mResultsView;
-    MatchesModel *mListModel;
-    LocatorSource *mLocatorSource;
+
 };
 
 
@@ -112,7 +140,7 @@ class ProjectFileLocatorSource: public LocatorSource {
         explicit ProjectFileLocatorSource(QObject *parent);
         void setFilterWords(const QString &text) override;
         void activate(const QModelIndex &index) override;
-        MatchesModel *listModel;
+        LocatorMatchesModel *listModel;
         MatchDelegate *delegate;
 };
 } // namespace Tiled

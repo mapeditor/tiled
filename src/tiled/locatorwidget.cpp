@@ -42,31 +42,34 @@
 
 namespace Tiled {
 
-class MatchesModel : public QAbstractListModel
+LocatorMatchesModel::LocatorMatchesModel(QObject *parent)
+    : QAbstractListModel(parent)
+{
+}
+class ProjectFileMatchesModel : public LocatorMatchesModel
 {
 public:
-    explicit MatchesModel(QObject *parent = nullptr);
+    explicit ProjectFileMatchesModel(QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     const QVector<ProjectModel::Match> &matches() const { return mMatches; }
     void setMatches(QVector<ProjectModel::Match> matches);
-
 private:
     QVector<ProjectModel::Match> mMatches;
 };
 
-MatchesModel::MatchesModel(QObject *parent)
-    : QAbstractListModel(parent)
+ProjectFileMatchesModel::ProjectFileMatchesModel(QObject *parent)
+    : LocatorMatchesModel(parent)
 {}
 
-int MatchesModel::rowCount(const QModelIndex &parent) const
+int ProjectFileMatchesModel::rowCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : mMatches.size();
 }
 
-QVariant MatchesModel::data(const QModelIndex &index, int role) const
+QVariant ProjectFileMatchesModel::data(const QModelIndex &index, int role) const
 {
     switch (role) {
     case Qt::DisplayRole: {
@@ -77,7 +80,7 @@ QVariant MatchesModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void MatchesModel::setMatches(QVector<ProjectModel::Match> matches)
+void ProjectFileMatchesModel::setMatches(QVector<ProjectModel::Match> matches)
 {
     beginResetModel();
     mMatches = std::move(matches);
@@ -267,11 +270,12 @@ LocatorWidget::LocatorWidget(LocatorSource *locatorSource, QWidget *parent)
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
 
     mLocatorSource = locatorSource;
+    mLocatorSource->setParent(this);
     mResultsView->setUniformRowHeights(true);
     mResultsView->setRootIsDecorated(false);
-    mResultsView->setItemDelegate(locatorSource->delegate);
+    mResultsView->setItemDelegate(mLocatorSource->delegate);
     mResultsView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-    mResultsView->setModel(mListModel);
+    mResultsView->setModel(listModel);
     mResultsView->setHeaderHidden(true);
 
     mFilterEdit->setPlaceholderText(tr("Filename"));
@@ -296,8 +300,21 @@ LocatorWidget::LocatorWidget(LocatorSource *locatorSource, QWidget *parent)
 
     connect(mFilterEdit, &QLineEdit::textChanged, mLocatorSource, &LocatorSource::setFilterWords);
     connect(mResultsView, &QAbstractItemView::activated, mLocatorSource, &LocatorSource::activate);
+    connect(mResultsView, &QAbstractItemView::activated, this, &LocatorWidget::close);
+    connect(mLocatorSource, &LocatorSource::filterWordsChanged, this, &LocatorWidget::adjustLayout);
 }
 
+void LocatorWidget::adjustLayout()
+{
+    mResultsView->updateGeometry();
+    mResultsView->updateMaximumHeight();
+    // Restore or introduce selection
+    auto matches = mLocatorSource->listModel->matches();
+    if (!matches.isEmpty())
+        mResultsView->setCurrentIndex(mLocatorSource->listModel->index(0));
+    layout()->activate();
+    resize(sizeHint());
+}
 void LocatorWidget::setVisible(bool visible)
 {
     QFrame::setVisible(visible);
@@ -311,10 +328,21 @@ void LocatorWidget::setVisible(bool visible)
             mLocatorSource->setFilterWords(QString());
     }
 }
-ProjectFileLocatorSource::ProjectFileLocatorSource(QObject *parent)  
-    : listModel(new MatchesModel(parent))
-    , delegate(new MatchDelegate(parent)){
 
+LocatorSource::LocatorSource(QObject *parent)
+    : QObject(parent)
+{
+}
+
+ProjectFileLocatorSource::ProjectFileLocatorSource(QObject *parent)  
+    : listModel(new ProjectFileMatchesModel(parent))
+    , delegate(new MatchDelegate(parent))
+{
+}
+void ProjectFileLocatorSource::activate(const QModelIndex &index) 
+{
+    const QString file = listModel->matches().at(index.row()).path;
+    DocumentManager::instance()->openFile(file);
 }
 void ProjectFileLocatorSource::setFilterWords(const QString &text)
 {
@@ -337,18 +365,10 @@ void ProjectFileLocatorSource::setFilterWords(const QString &text)
         return a.relativePath().compare(b.relativePath(), Qt::CaseInsensitive) < 0;
     });
 
-    locatorSource->delegate->setWords(words);
-    mListModel->setMatches(matches);
-
-    mResultsView->updateGeometry();
-    mResultsView->updateMaximumHeight();
-
-    // Restore or introduce selection
-    if (!matches.isEmpty())
-        mResultsView->setCurrentIndex(mListModel->index(0));
-
-    layout()->activate();
-    resize(sizeHint());
+    delegate->setWords(words);
+    listModel->setMatches(matches);
+    
+    emit filterWordsChanged();
 }
 
 } // namespace Tiled
