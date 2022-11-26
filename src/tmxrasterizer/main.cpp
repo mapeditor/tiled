@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
                           { QStringLiteral("hide-image-layers"),
                             QCoreApplication::translate("main", "Don't render image layers.") },
                           { QStringLiteral("advance-animations"),
-                            QCoreApplication::translate("main", "If used tile animations are advanced by the specified duration."),
+                            QCoreApplication::translate("main", "If used, tile animations are advanced by the specified duration."),
                             QCoreApplication::translate("main", "duration") }
                       });
     parser.addPositionalArgument(QStringLiteral("map|world"), QCoreApplication::translate("main", "Map or world file to render."));
