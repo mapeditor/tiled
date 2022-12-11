@@ -4121,6 +4121,12 @@ declare class Dialog {
    */
   show(): void;
 
+  /*
+   * Open the dialog, blocking your script until the Dialog has been
+   * accepted or rejected.
+   */
+  exec(): typeof Dialog.Rejected | typeof Dialog.Accepted;
+
   /**
    * Close this dialog, setting its result code to {@link Dialog.Accepted}.
    */
