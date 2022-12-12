@@ -20,25 +20,28 @@
 
 #pragma once
 
+#include <QAbstractListModel>
 #include <QFrame>
 
-class QAbstractListModel;
+#include "projectmodel.h"
 
 namespace Tiled {
 
 class FilterEdit;
 class MatchDelegate;
-class MatchesModel;
 class ResultsView;
 
 /**
  * Interface for providing a source of locator items based on filter words.
 */
-class LocatorSource
+class LocatorSource : public QAbstractListModel
 { 
 public:
+    explicit LocatorSource(QObject *parent = nullptr)
+        : QAbstractListModel(parent)
+    {}
+
     virtual QString placeholderText() const = 0;
-    virtual QAbstractListModel *model() const = 0;
     virtual void setFilterWords(const QStringList &words) = 0;
     virtual void activate(const QModelIndex &index) = 0;
 };
@@ -48,34 +51,34 @@ class LocatorWidget : public QFrame
     Q_OBJECT
 
 public:
-    explicit LocatorWidget(std::unique_ptr<LocatorSource> locatorSource,
+    explicit LocatorWidget(LocatorSource *locatorSource,
                            QWidget *parent = nullptr);
     void setVisible(bool visible) override;
 
 private:
     void setFilterText(const QString &text);
 
-    std::unique_ptr<LocatorSource> mLocatorSource;
+    LocatorSource *mLocatorSource;
     FilterEdit *mFilterEdit;
     ResultsView *mResultsView;
     MatchDelegate *mDelegate;
 };
 
-class FileMatchesModel;
-
 class FileLocatorSource : public LocatorSource
 {
 public:
-    explicit FileLocatorSource();
-    ~FileLocatorSource();
+    explicit FileLocatorSource(QObject *parent = nullptr);
 
+    int rowCount(const QModelIndex &parent) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+
+    // LocatorSource
     QString placeholderText() const override;
-    QAbstractListModel *model() const override;
     void setFilterWords(const QStringList &words) override;
     void activate(const QModelIndex &index) override;
 
 private:
-    std::unique_ptr<FileMatchesModel> mModel;
+    QVector<ProjectModel::Match> mMatches;
 };
 
 } // namespace Tiled

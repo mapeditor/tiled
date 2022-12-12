@@ -119,7 +119,7 @@ private:
     void openFileDialog();
     void openFileInProject();
     void searchActions();
-    void showLocatorWidget(std::unique_ptr<LocatorSource> source);
+    void showLocatorWidget(LocatorSource *source);
     bool saveFile();
     bool saveFileAs();
     void saveAll();

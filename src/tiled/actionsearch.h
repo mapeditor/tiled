@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include "id.h"
 #include "locatorwidget.h"
 
 namespace Tiled {
@@ -29,17 +30,29 @@ class ActionMatchesModel;
 
 class ActionLocatorSource : public LocatorSource
 {
-public:
-    explicit ActionLocatorSource();
-    ~ActionLocatorSource();
+    Q_OBJECT
 
+public:
+    explicit ActionLocatorSource(QObject *parent = nullptr);
+
+    int rowCount(const QModelIndex &parent) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+
+    // LocatorSource
     QString placeholderText() const override;
-    QAbstractListModel *model() const override;
     void setFilterWords(const QStringList &words) override;
     void activate(const QModelIndex &index) override;
 
 private:
-    std::unique_ptr<ActionMatchesModel> mModel;
+    struct Match {
+        int score;
+        Id actionId;
+        QString text;
+    };
+
+    QVector<Match> mMatches;
+
+    static QVector<Match> findActions(const QStringList &words);
 };
 
 } // namespace Tiled

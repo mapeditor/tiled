@@ -23,47 +23,22 @@
 
 #include "actionmanager.h"
 #include "utils.h"
-#include "id.h"
 
-#include <QAbstractListModel>
 #include <QAction>
 #include <QCoreApplication>
 
 namespace Tiled {
 
-class ActionMatchesModel : public QAbstractListModel
-{
-    Q_OBJECT
-
-public:
-    struct Match {
-        int score;
-        Id actionId;
-        QString text;
-    };
-
-    explicit ActionMatchesModel(QObject *parent = nullptr);
-
-    int rowCount(const QModelIndex &parent) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-
-    const QVector<Match> &matches() const { return mMatches; }
-    void setMatches(QVector<Match> matches);
-
-private:
-    QVector<Match> mMatches;
-};
-
-ActionMatchesModel::ActionMatchesModel(QObject *parent)
-    : QAbstractListModel(parent)
+ActionLocatorSource::ActionLocatorSource(QObject *parent)
+    : LocatorSource(parent)
 {}
 
-int ActionMatchesModel::rowCount(const QModelIndex &parent) const
+int ActionLocatorSource::rowCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : mMatches.size();
 }
 
-QVariant ActionMatchesModel::data(const QModelIndex &index, int role) const
+QVariant ActionLocatorSource::data(const QModelIndex &index, int role) const
 {
     switch (role) {
     case Qt::DisplayRole: {
@@ -79,21 +54,17 @@ QVariant ActionMatchesModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void ActionMatchesModel::setMatches(QVector<Match> matches)
+QString ActionLocatorSource::placeholderText() const
 {
-    beginResetModel();
-    mMatches = std::move(matches);
-    endResetModel();
+    return QCoreApplication::translate("Tiled::LocatorWidget", "Search actions...");
 }
 
-///////////////////////////////////////////////////////////////////////////////
-
-static QVector<ActionMatchesModel::Match> findActions(const QStringList &words)
+QVector<ActionLocatorSource::Match> ActionLocatorSource::findActions(const QStringList &words)
 {
     const QRegularExpression re(QLatin1String("(?<=^|[^&])&"));
     const QList<Id> actions = ActionManager::actions();
 
-    QVector<ActionMatchesModel::Match> result;
+    QVector<Match> result;
 
     for (const Id &actionId : actions) {
         const QAction *action = ActionManager::action(actionId);
@@ -112,7 +83,7 @@ static QVector<ActionMatchesModel::Match> findActions(const QStringList &words)
             QString sanitizedText = actionText;
             sanitizedText.replace(re, QString());
 
-            result.append(ActionMatchesModel::Match {
+            result.append(Match {
                               totalScore,
                               actionId,
                               sanitizedText
@@ -123,30 +94,11 @@ static QVector<ActionMatchesModel::Match> findActions(const QStringList &words)
     return result;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-
-ActionLocatorSource::ActionLocatorSource()
-    : mModel(std::make_unique<ActionMatchesModel>())
-{}
-
-ActionLocatorSource::~ActionLocatorSource()
-{}
-
-QString ActionLocatorSource::placeholderText() const
-{
-    return QCoreApplication::translate("Tiled::LocatorWidget", "Search actions...");
-}
-
-QAbstractListModel *ActionLocatorSource::model() const
-{
-    return mModel.get();
-}
-
 void ActionLocatorSource::setFilterWords(const QStringList &words)
 {
     auto matches = findActions(words);
 
-    std::stable_sort(matches.begin(), matches.end(), [] (const ActionMatchesModel::Match &a, const ActionMatchesModel::Match &b) {
+    std::stable_sort(matches.begin(), matches.end(), [] (const Match &a, const Match &b) {
         // Sort based on score first
         if (a.score != b.score)
             return a.score > b.score;
@@ -155,16 +107,18 @@ void ActionLocatorSource::setFilterWords(const QStringList &words)
         return a.text.compare(b.text, Qt::CaseInsensitive) < 0;
     });
 
-    mModel->setMatches(std::move(matches));
+    beginResetModel();
+    mMatches = std::move(matches);
+    endResetModel();
 }
 
 void ActionLocatorSource::activate(const QModelIndex &index)
 {
-    const Id actionId = mModel->matches().at(index.row()).actionId;
+    const Id actionId = mMatches.at(index.row()).actionId;
     if (auto action = ActionManager::findAction(actionId))
         action->trigger();
 }
 
 } // namespace Tiled
 
-#include "actionsearch.moc"
+#include "moc_actionsearch.cpp"

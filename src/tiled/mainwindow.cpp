@@ -1147,15 +1147,15 @@ void MainWindow::openFileDialog()
 
 void MainWindow::openFileInProject()
 {
-    showLocatorWidget(std::make_unique<FileLocatorSource>());
+    showLocatorWidget(new FileLocatorSource);
 }
 
 void MainWindow::searchActions()
 {
-    showLocatorWidget(std::make_unique<ActionLocatorSource>());
+    showLocatorWidget(new ActionLocatorSource);
 }
 
-void MainWindow::showLocatorWidget(std::unique_ptr<LocatorSource> source)
+void MainWindow::showLocatorWidget(LocatorSource *source)
 {
     if (mLocatorWidget)
         return;
@@ -1167,7 +1167,7 @@ void MainWindow::showLocatorWidget(std::unique_ptr<LocatorSource> source)
                           qMin(remainingHeight / 5, Utils::dpiScaled(60)));
     const QRect rect = QRect(mapToGlobal(localPos), size);
 
-    mLocatorWidget = new LocatorWidget(std::move(source), this);
+    mLocatorWidget = new LocatorWidget(source, this);
     mLocatorWidget->move(rect.topLeft());
     mLocatorWidget->setMaximumSize(rect.size());
     mLocatorWidget->show();
