@@ -1,5 +1,5 @@
 /*
- * actionsearchwidget.h
+ * actionsearch.h
  * Copyright 2022, Chris Boehm AKA dogboydog
  * Copyright 2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
@@ -18,42 +18,28 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 #pragma once
 
-#include <QFrame>
-#include <QAction>
-#include "id.h"
 #include "locatorwidget.h"
 
 namespace Tiled {
 
-class FilterEdit;
-class MatchDelegate;
 class ActionMatchesModel;
 
-class ActionSearchWidget : public QFrame
+class ActionLocatorSource : public LocatorSource
 {
-    Q_OBJECT
-
 public:
-    struct Match {
-        int score;
-        Id actionId;
-        bool isFromScript;
-        QString text;
-    };
+    explicit ActionLocatorSource();
+    ~ActionLocatorSource();
 
-    explicit ActionSearchWidget(QWidget *parent = nullptr);
-
-    void setVisible(bool visible) override;
+    QString placeholderText() const override;
+    QAbstractListModel *model() const override;
+    void setFilterWords(const QStringList &words) override;
+    void activate(const QModelIndex &index) override;
 
 private:
-    void setFilterText(const QString &text);
-
-    FilterEdit *mFilterEdit;
-    ResultsView *mResultsView;
-    ActionMatchesModel *mListModel;
-    MatchDelegate *mDelegate;
+    std::unique_ptr<ActionMatchesModel> mModel;
 };
 
 } // namespace Tiled

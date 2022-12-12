@@ -23,7 +23,6 @@
 
 #pragma once
 
-#include "actionsearchwidget.h"
 #include "clipboardmanager.h"
 #include "document.h"
 #include "preferences.h"
@@ -53,6 +52,7 @@ class ConsoleDock;
 class DocumentManager;
 class Editor;
 class IssuesDock;
+class LocatorSource;
 class LocatorWidget;
 class MapDocument;
 class MapDocumentActionHandler;
@@ -119,6 +119,7 @@ private:
     void openFileDialog();
     void openFileInProject();
     void searchActions();
+    void showLocatorWidget(std::unique_ptr<LocatorSource> source);
     bool saveFile();
     bool saveFileAs();
     void saveAll();
@@ -241,7 +242,6 @@ private:
     IssuesDock *mIssuesDock;
     PropertyTypesEditor *mPropertyTypesEditor;
     QPointer<LocatorWidget> mLocatorWidget;
-    QPointer<ActionSearchWidget> mActionSearchWidget;
     QPointer<QWidget> mPopupWidget;
     double mPopupWidgetShowProgress = 1.0;
 

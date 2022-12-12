@@ -21,64 +21,15 @@
 #pragma once
 
 #include <QFrame>
-#include <QTreeView>
-#include <QStyledItemDelegate>
+
+class QAbstractListModel;
 
 namespace Tiled {
 
 class FilterEdit;
-
-static QFont scaledFont(const QFont &font, qreal scale)
-{
-    QFont scaled(font);
-    if (font.pixelSize() > 0)
-        scaled.setPixelSize(font.pixelSize() * scale);
-    else
-        scaled.setPointSizeF(font.pointSizeF() * scale);
-    return scaled;
-}
-
-class MatchDelegate : public QStyledItemDelegate
-{
-public:
-    MatchDelegate(QObject *parent = nullptr);
-
-    QSize sizeHint(const QStyleOptionViewItem &option,
-                  const QModelIndex &index) const override;
-
-    void paint(QPainter *painter,
-               const QStyleOptionViewItem &option,
-               const QModelIndex &index) const override;
-
-    void setWords(const QStringList &words) { mWords = words; }
-
-private:
-    class Fonts {
-    public:
-        Fonts(const QFont &base)
-            : small(scaledFont(base, 0.9))
-            , big(scaledFont(base, 1.2))
-        {}
-
-        const QFont small;
-        const QFont big;
-    };
-
-    QStringList mWords;
-};
-
-class ResultsView : public QTreeView
-{
-public:
-    explicit ResultsView(QWidget *parent = nullptr);
-
-    QSize sizeHint() const override;
-
-    void updateMaximumHeight();
-
-protected:
-    void keyPressEvent(QKeyEvent *event) override;
-};
+class MatchDelegate;
+class MatchesModel;
+class ResultsView;
 
 /**
  * Interface for providing a source of locator items based on filter words.
@@ -86,6 +37,7 @@ protected:
 class LocatorSource
 { 
 public:
+    virtual QString placeholderText() const = 0;
     virtual QAbstractListModel *model() const = 0;
     virtual void setFilterWords(const QStringList &words) = 0;
     virtual void activate(const QModelIndex &index) = 0;
@@ -109,20 +61,21 @@ private:
     MatchDelegate *mDelegate;
 };
 
-class ProjectFileMatchesModel;
+class FileMatchesModel;
 
-class ProjectFileLocatorSource : public LocatorSource
+class FileLocatorSource : public LocatorSource
 {
 public:
-    explicit ProjectFileLocatorSource();
-    ~ProjectFileLocatorSource();
+    explicit FileLocatorSource();
+    ~FileLocatorSource();
 
+    QString placeholderText() const override;
     QAbstractListModel *model() const override;
     void setFilterWords(const QStringList &words) override;
     void activate(const QModelIndex &index) override;
 
 private:
-    std::unique_ptr<ProjectFileMatchesModel> mModel;
+    std::unique_ptr<FileMatchesModel> mModel;
 };
 
 } // namespace Tiled

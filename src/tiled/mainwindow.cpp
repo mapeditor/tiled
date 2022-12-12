@@ -30,7 +30,7 @@
 
 #include "aboutdialog.h"
 #include "actionmanager.h"
-#include "actionsearchwidget.h"
+#include "actionsearch.h"
 #include "addremovetileset.h"
 #include "automappingmanager.h"
 #include "commandbutton.h"
@@ -1147,6 +1147,16 @@ void MainWindow::openFileDialog()
 
 void MainWindow::openFileInProject()
 {
+    showLocatorWidget(std::make_unique<FileLocatorSource>());
+}
+
+void MainWindow::searchActions()
+{
+    showLocatorWidget(std::make_unique<ActionLocatorSource>());
+}
+
+void MainWindow::showLocatorWidget(std::unique_ptr<LocatorSource> source)
+{
     if (mLocatorWidget)
         return;
 
@@ -1157,28 +1167,10 @@ void MainWindow::openFileInProject()
                           qMin(remainingHeight / 5, Utils::dpiScaled(60)));
     const QRect rect = QRect(mapToGlobal(localPos), size);
 
-    mLocatorWidget = new LocatorWidget(std::make_unique<ProjectFileLocatorSource>(), this);
+    mLocatorWidget = new LocatorWidget(std::move(source), this);
     mLocatorWidget->move(rect.topLeft());
     mLocatorWidget->setMaximumSize(rect.size());
     mLocatorWidget->show();
-}
-
-void MainWindow::searchActions()
-{
-    if (mActionSearchWidget)
-        return;
-
-    const QSize size(qMax(width() / 3, qMin(Utils::dpiScaled(600), width())),
-                     qMin(Utils::dpiScaled(600), height()));
-    const int remainingHeight = height() - size.height();
-    const QPoint localPos((width() - size.width()) / 2,
-                          qMin(remainingHeight / 5, Utils::dpiScaled(60)));
-    const QRect rect = QRect(mapToGlobal(localPos), size);
-
-    mActionSearchWidget = new ActionSearchWidget(this);
-    mActionSearchWidget->move(rect.topLeft());
-    mActionSearchWidget->setMaximumSize(rect.size());
-    mActionSearchWidget->show();
 }
 
 static Document *saveAsDocument(Document *document)

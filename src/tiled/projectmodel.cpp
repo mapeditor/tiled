@@ -211,7 +211,7 @@ void ProjectModel::refreshFolders()
 
 QVector<ProjectModel::Match> ProjectModel::findFiles(const QStringList &words) const
 {
-    QVector<ProjectModel::Match> result;
+    QVector<Match> result;
     for (const auto &entry : mFolders)
         Tiled::findFiles(*entry, entry->filePath.lastIndexOf(QLatin1Char('/')) + 1, words, result);
     return result;
