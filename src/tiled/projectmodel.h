@@ -22,7 +22,7 @@
 
 #include "filesystemwatcher.h"
 #include "project.h"
-
+#include "locatorwidget.h"
 #include <QAbstractListModel>
 #include <QFileIconProvider>
 #include <QThread>
@@ -63,19 +63,7 @@ public:
     void removeFolder(int row);
     void refreshFolders();
 
-    struct Match {
-        int score;
-        int offset;
-        QString path;
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-        QStringRef relativePath() const { return path.midRef(offset); }
-#else
-        QStringView relativePath() const { return QStringView(path).mid(offset); }
-#endif
-    };
-
-    QVector<Match> findFiles(const QStringList &words) const;
+    QVector<LocatorMatch> findFiles(const QStringList &words) const;
 
     QString filePath(const QModelIndex &index) const;
 

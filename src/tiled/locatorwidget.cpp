@@ -54,10 +54,10 @@ public:
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
-    const QVector<ProjectModel::Match> &matches() const { return mMatches; }
-    void setMatches(QVector<ProjectModel::Match> matches);
+    const QVector<LocatorMatch> &matches() const { return mMatches; }
+    void setMatches(QVector<LocatorMatch> matches);
 private:
-    QVector<ProjectModel::Match> mMatches;
+    QVector<LocatorMatch> mMatches;
 };
 
 ProjectFileMatchesModel::ProjectFileMatchesModel(QObject *parent)
@@ -73,14 +73,14 @@ QVariant ProjectFileMatchesModel::data(const QModelIndex &index, int role) const
 {
     switch (role) {
     case Qt::DisplayRole: {
-        const ProjectModel::Match &match = mMatches.at(index.row());
+        const LocatorMatch &match = mMatches.at(index.row());
         return match.relativePath().toString();
     }
     }
     return QVariant();
 }
 
-void ProjectFileMatchesModel::setMatches(QVector<ProjectModel::Match> matches)
+void ProjectFileMatchesModel::setMatches(QVector<LocatorMatch> matches)
 {
     beginResetModel();
     mMatches = std::move(matches);
@@ -275,7 +275,7 @@ LocatorWidget::LocatorWidget(LocatorSource *locatorSource, QWidget *parent)
     mResultsView->setRootIsDecorated(false);
     mResultsView->setItemDelegate(mLocatorSource->delegate);
     mResultsView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-    mResultsView->setModel(listModel);
+    mResultsView->setModel(mLocatorSource->listModel);
     mResultsView->setHeaderHidden(true);
 
     mFilterEdit->setPlaceholderText(tr("Filename"));
@@ -356,7 +356,7 @@ void ProjectFileLocatorSource::setFilterWords(const QString &text)
     auto projectModel = ProjectManager::instance()->projectModel();
     auto matches = projectModel->findFiles(words);
 
-    std::stable_sort(matches.begin(), matches.end(), [] (const ProjectModel::Match &a, const ProjectModel::Match &b) {
+    std::stable_sort(matches.begin(), matches.end(), [] (const LocatorMatch &a, const LocatorMatch &b) {
         // Sort based on score first
         if (a.score != b.score)
             return a.score > b.score;

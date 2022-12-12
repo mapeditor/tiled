@@ -332,10 +332,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QIcon saveIcon(QLatin1String(":images/16/document-save.png"));
     QIcon redoIcon(QLatin1String(":images/16/edit-redo.png"));
     QIcon undoIcon(QLatin1String(":images/16/edit-undo.png"));
+    QIcon searchActionsIcon(QLatin1String(":images/16/edit-find.png"));
     QIcon highlightCurrentLayerIcon(QLatin1String("://images/scalable/highlight-current-layer-16.svg"));
 
     openIcon.addFile(QLatin1String(":images/24/document-open.png"));
     saveIcon.addFile(QLatin1String(":images/24/document-save.png"));
+    searchActionsIcon.addFile(QLatin1String(":images/24/edit-find.png"));
     highlightCurrentLayerIcon.addFile(QLatin1String("://images/scalable/highlight-current-layer-24.svg"));
 
 #ifndef Q_OS_MAC
@@ -353,6 +355,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     redoAction->setPriority(QAction::LowPriority);
     redoAction->setIcon(redoIcon);
     undoAction->setIcon(undoIcon);
+    QAction *searchActionsAction = ActionManager::action("SearchActions");
+    searchActionsAction->setIcon(searchActionsIcon);
 
     mUi->actionNewMap->setShortcuts(QKeySequence::New);
     mUi->actionOpen->setShortcuts(QKeySequence::Open);
@@ -719,6 +723,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionDelete, "edit-delete");
     setThemeIcon(redoAction, "edit-redo");
     setThemeIcon(undoAction, "edit-undo");
+    setThemeIcon(searchActionsAction, "edit-find");
     setThemeIcon(mUi->actionZoomIn, "zoom-in");
     setThemeIcon(mUi->actionZoomOut, "zoom-out");
     setThemeIcon(mUi->actionZoomNormal, "zoom-original");

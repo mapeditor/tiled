@@ -23,9 +23,20 @@
 #include <QFrame>
 #include <QTreeView>
 #include <QStyledItemDelegate>
-#include "projectmodel.h"
-
 namespace Tiled {
+
+struct LocatorMatch
+{
+    int score;
+    int offset;
+    QString path;
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    QStringRef relativePath() const { return path.midRef(offset); }
+#else
+    QStringView relativePath() const { return QStringView(path).mid(offset); }
+#endif
+};
 
 class FilterEdit;
 static QFont scaledFont(const QFont &font, qreal scale)
@@ -75,10 +86,10 @@ class LocatorMatchesModel: public QAbstractListModel
 {
 public:
     explicit LocatorMatchesModel(QObject *parent =nullptr);
-    const QVector<ProjectModel::Match> &matches() const { return mMatches; }
-    virtual void setMatches(QVector<ProjectModel::Match> matches) = 0;     
+    const QVector<LocatorMatch> &matches() const { return mMatches; }
+    virtual void setMatches(QVector<LocatorMatch> matches) = 0;     
 private:
-    QVector<ProjectModel::Match> mMatches;
+    QVector<LocatorMatch> mMatches;
 };
 class ResultsView : public QTreeView
 {

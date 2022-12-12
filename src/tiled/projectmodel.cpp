@@ -19,7 +19,6 @@
  */
 
 #include "projectmodel.h"
-
 #include "containerhelpers.h"
 #include "fileformat.h"
 #include "pluginmanager.h"
@@ -78,7 +77,7 @@ static void collectDirectories(const FolderEntry &entry, QStringList &filePaths)
     }
 }
 
-static void findFiles(const FolderEntry &entry, int offset, const QStringList &words, QVector<ProjectModel::Match> &result)
+static void findFiles(const FolderEntry &entry, int offset, const QStringList &words, QVector<LocatorMatch> &result)
 {
     for (const auto &childEntry : entry.entries) {
         if (childEntry->entries.empty()) {
@@ -90,7 +89,7 @@ static void findFiles(const FolderEntry &entry, int offset, const QStringList &w
             const int totalScore = Utils::matchingScore(words, relativePath);
 
             if (totalScore > 0) {
-                result.append(ProjectModel::Match {
+                result.append(LocatorMatch {
                                    totalScore,
                                    offset,
                                    childEntry->filePath
@@ -209,9 +208,9 @@ void ProjectModel::refreshFolders()
                      index(int(mFolders.size() - 1), 0), { Qt::DisplayRole });
 }
 
-QVector<ProjectModel::Match> ProjectModel::findFiles(const QStringList &words) const
+QVector<LocatorMatch> ProjectModel::findFiles(const QStringList &words) const
 {
-    QVector<Match> result;
+    QVector<LocatorMatch> result;
     for (const auto &entry : mFolders)
         Tiled::findFiles(*entry, entry->filePath.lastIndexOf(QLatin1Char('/')) + 1, words, result);
     return result;
