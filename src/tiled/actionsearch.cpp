@@ -71,18 +71,17 @@ QVector<ActionLocatorSource::Match> ActionLocatorSource::findActions(const QStri
         if (!action->isEnabled())
             continue;
 
-        const QString actionText = action->text();
+        // remove single & characters
+        QString sanitizedText = action->text();
+        sanitizedText.replace(re, QString());
+
 #if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
-        const int totalScore = Utils::matchingScore(words, actionText);
+        const int totalScore = Utils::matchingScore(words, sanitizedText);
 #else
-        const int totalScore = Utils::matchingScore(words, QStringRef(&actionText));
+        const int totalScore = Utils::matchingScore(words, QStringRef(&sanitizedText));
 #endif
 
         if (totalScore > 0) {
-            // remove single & characters, avoid changing the original text
-            QString sanitizedText = actionText;
-            sanitizedText.replace(re, QString());
-
             result.append(Match {
                               totalScore,
                               actionId,
