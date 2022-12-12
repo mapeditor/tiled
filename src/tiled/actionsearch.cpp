@@ -266,6 +266,8 @@ void ActionLocatorSource::setFilterWords(const QStringList &words)
         return a.text.compare(b.text, Qt::CaseInsensitive) < 0;
     });
 
+    mDelegate->setWords(words);
+
     beginResetModel();
     mMatches = std::move(matches);
     endResetModel();
