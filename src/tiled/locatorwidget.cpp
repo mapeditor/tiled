@@ -49,13 +49,13 @@ static QFont scaledFont(const QFont &font, qreal scale)
     return scaled;
 }
 
-class MatchDelegate : public QStyledItemDelegate
+class FileMatchDelegate : public QStyledItemDelegate
 {
 public:
-    MatchDelegate(QObject *parent = nullptr);
+    FileMatchDelegate(QObject *parent = nullptr);
 
     QSize sizeHint(const QStyleOptionViewItem &option,
-                  const QModelIndex &index) const override;
+                   const QModelIndex &index) const override;
 
     void paint(QPainter *painter,
                const QStyleOptionViewItem &option,
@@ -78,11 +78,12 @@ private:
     QStringList mWords;
 };
 
-MatchDelegate::MatchDelegate(QObject *parent)
+FileMatchDelegate::FileMatchDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
 {}
 
-QSize MatchDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &) const
+QSize FileMatchDelegate::sizeHint(const QStyleOptionViewItem &option,
+                                  const QModelIndex &) const
 {
     const QFont bigFont = scaledFont(option.font, 1.2);
     const QFontMetrics bigFontMetrics(bigFont);
@@ -91,9 +92,9 @@ QSize MatchDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIn
     return QSize(margin * 2, margin * 2 + bigFontMetrics.lineSpacing() * 2);
 }
 
-void MatchDelegate::paint(QPainter *painter,
-                          const QStyleOptionViewItem &option,
-                          const QModelIndex &index) const
+void FileMatchDelegate::paint(QPainter *painter,
+                              const QStyleOptionViewItem &option,
+                              const QModelIndex &index) const
 {
     painter->save();
 
@@ -243,7 +244,7 @@ void ResultsView::updateMaximumHeight()
     setMaximumHeight(maximumHeight);
 }
 
-inline void ResultsView::keyPressEvent(QKeyEvent *event)
+void ResultsView::keyPressEvent(QKeyEvent *event)
 {
     // Make sure the Enter and Return keys activate the current index. This
     // doesn't happen otherwise on macOS.
@@ -266,7 +267,6 @@ LocatorWidget::LocatorWidget(LocatorSource *locatorSource,
     , mLocatorSource(locatorSource)
     , mFilterEdit(new FilterEdit(this))
     , mResultsView(new ResultsView(this))
-    , mDelegate(new MatchDelegate(this))
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
@@ -275,7 +275,7 @@ LocatorWidget::LocatorWidget(LocatorSource *locatorSource,
 
     mResultsView->setUniformRowHeights(true);
     mResultsView->setRootIsDecorated(false);
-    mResultsView->setItemDelegate(mDelegate);
+    mResultsView->setItemDelegate(mLocatorSource->delegate());
     mResultsView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     mResultsView->setModel(mLocatorSource);
     mResultsView->setHeaderHidden(true);
@@ -330,14 +330,13 @@ void LocatorWidget::setFilterText(const QString &text)
     const QStringList words = normalized.split(QLatin1Char(' '), Qt::SkipEmptyParts);
 #endif
 
-    mDelegate->setWords(words);
     mLocatorSource->setFilterWords(words);
 
     mResultsView->updateGeometry();
     mResultsView->updateMaximumHeight();
 
     // Restore or introduce selection
-    if (auto index = mResultsView->model()->index(0, 0); index.isValid())
+    if (auto index = mLocatorSource->index(0, 0); index.isValid())
         mResultsView->setCurrentIndex(index);
 
     layout()->activate();
@@ -348,6 +347,7 @@ void LocatorWidget::setFilterText(const QString &text)
 
 FileLocatorSource::FileLocatorSource(QObject *parent)
     : LocatorSource(parent)
+    , mDelegate(new FileMatchDelegate(this))
 {}
 
 int FileLocatorSource::rowCount(const QModelIndex &parent) const
@@ -364,6 +364,11 @@ QVariant FileLocatorSource::data(const QModelIndex &index, int role) const
     }
     }
     return QVariant();
+}
+
+QAbstractItemDelegate *FileLocatorSource::delegate() const
+{
+    return mDelegate;
 }
 
 QString FileLocatorSource::placeholderText() const
@@ -390,6 +395,8 @@ void FileLocatorSource::setFilterWords(const QStringList &words)
         // If score is the same, sort alphabetically
         return a.relativePath().compare(b.relativePath(), Qt::CaseInsensitive) < 0;
     });
+
+    mDelegate->setWords(words);
 
     beginResetModel();
     mMatches = std::move(matches);

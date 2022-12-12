@@ -26,7 +26,7 @@
 
 namespace Tiled {
 
-class ActionMatchesModel;
+class ActionMatchDelegate;
 
 class ActionLocatorSource : public LocatorSource
 {
@@ -39,6 +39,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     // LocatorSource
+    QAbstractItemDelegate *delegate() const override;
     QString placeholderText() const override;
     void setFilterWords(const QStringList &words) override;
     void activate(const QModelIndex &index) override;
@@ -50,6 +51,7 @@ private:
         QString text;
     };
 
+    ActionMatchDelegate *mDelegate;
     QVector<Match> mMatches;
 
     static QVector<Match> findActions(const QStringList &words);

@@ -1147,18 +1147,23 @@ void MainWindow::openFileDialog()
 
 void MainWindow::openFileInProject()
 {
+    if (mLocatorWidget)
+        return;
+
     showLocatorWidget(new FileLocatorSource);
 }
 
 void MainWindow::searchActions()
 {
+    if (mLocatorWidget)
+        return;
+
     showLocatorWidget(new ActionLocatorSource);
 }
 
 void MainWindow::showLocatorWidget(LocatorSource *source)
 {
-    if (mLocatorWidget)
-        return;
+    Q_ASSERT(!mLocatorWidget);
 
     const QSize size(qMax(width() / 3, qMin(Utils::dpiScaled(600), width())),
                      qMin(Utils::dpiScaled(600), height()));

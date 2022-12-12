@@ -26,11 +26,166 @@
 
 #include <QAction>
 #include <QCoreApplication>
+#include <QStaticText>
+#include <QStyledItemDelegate>
 
 namespace Tiled {
 
+static QFont scaledFont(const QFont &font, qreal scale)
+{
+    QFont scaled(font);
+    if (font.pixelSize() > 0)
+        scaled.setPixelSize(font.pixelSize() * scale);
+    else
+        scaled.setPointSizeF(font.pointSizeF() * scale);
+    return scaled;
+}
+
+class ActionMatchDelegate : public QStyledItemDelegate
+{
+public:
+    ActionMatchDelegate(QObject *parent = nullptr);
+
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index) const override;
+
+    void paint(QPainter *painter,
+               const QStyleOptionViewItem &option,
+               const QModelIndex &index) const override;
+
+    void setWords(const QStringList &words) { mWords = words; }
+
+private:
+    class Fonts {
+    public:
+        Fonts(const QFont &base)
+            : small(scaledFont(base, 0.9))
+            , big(scaledFont(base, 1.2))
+        {}
+
+        const QFont small;
+        const QFont big;
+    };
+
+    QStringList mWords;
+};
+
+ActionMatchDelegate::ActionMatchDelegate(QObject *parent)
+    : QStyledItemDelegate(parent)
+{}
+
+QSize ActionMatchDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &) const
+{
+    const QFont bigFont = scaledFont(option.font, 1.2);
+    const QFontMetrics bigFontMetrics(bigFont);
+
+    const int margin = Utils::dpiScaled(2);
+    return QSize(margin * 2, margin * 2 + bigFontMetrics.lineSpacing());
+}
+
+void ActionMatchDelegate::paint(QPainter *painter,
+                          const QStyleOptionViewItem &option,
+                          const QModelIndex &index) const
+{
+    painter->save();
+
+    const QString name = index.data().toString();
+    const QIcon icon = index.data(Qt::DecorationRole).value<QIcon>();
+    // todo: shortcut
+
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+    const auto ranges = Utils::matchingRanges(mWords, &name);
+#else
+    const auto ranges = Utils::matchingRanges(mWords, name);
+#endif
+
+    QString nameHtml;
+    int nameIndex = 0;
+
+    auto copyRange = [&] (int first, int last) -> QString {
+        return name.mid(first, last - first + 1);
+    };
+
+    for (const auto &range : ranges) {
+        if (range.first > nameIndex)
+            nameHtml.append(copyRange(nameIndex, range.first - 1));
+
+        nameHtml.append(QStringLiteral("<b>"));
+        nameHtml.append(copyRange(range.first, range.second));
+        nameHtml.append(QStringLiteral("</b>"));
+
+        nameIndex = range.second + 1;
+    }
+
+    nameHtml.append(copyRange(nameIndex, name.size() - 1));
+
+    const Fonts fonts(option.font);
+    const QFontMetrics bigFontMetrics(fonts.big);
+
+    const int margin = Utils::dpiScaled(2);
+    const auto nameRect = option.rect.adjusted(margin, margin, -margin, 0);
+//    const auto filePathRect = option.rect.adjusted(margin, margin + bigFontMetrics.lineSpacing(), -margin, 0);
+
+    // draw the background (covers selection)
+    QStyle *style = QApplication::style();
+    style->drawPrimitive(QStyle::PE_PanelItemViewItem, &option, painter);
+
+    // adjust text color to state
+    QPalette::ColorGroup cg = option.state & QStyle::State_Enabled
+                          ? QPalette::Normal : QPalette::Disabled;
+    if (cg == QPalette::Normal && !(option.state & QStyle::State_Active))
+        cg = QPalette::Inactive;
+    if (option.state & QStyle::State_Selected) {
+        painter->setPen(option.palette.color(cg, QPalette::HighlightedText));
+    } else {
+        painter->setPen(option.palette.color(cg, QPalette::Text));
+    }
+
+    QTextOption textOption;
+    textOption.setWrapMode(QTextOption::NoWrap);
+
+    QStaticText staticText(nameHtml);
+    staticText.setTextOption(textOption);
+    staticText.setTextFormat(Qt::RichText);
+    staticText.setTextWidth(nameRect.width());
+    staticText.prepare(painter->transform(), fonts.big);
+
+    painter->setFont(fonts.big);
+    painter->drawStaticText(nameRect.topLeft(), staticText);
+
+//    staticText.setText(nameHtml);
+//    staticText.prepare(painter->transform(), fonts.small);
+
+//    painter->setOpacity(0.75);
+//    painter->setFont(fonts.small);
+//    painter->drawStaticText(filePathRect.topLeft(), staticText);
+
+    if (!icon.isNull()) {
+        icon.paint(painter, nameRect, Qt::AlignLeft);
+    }
+
+    // draw the focus rect
+    if (option.state & QStyle::State_HasFocus) {
+        QStyleOptionFocusRect o;
+        o.QStyleOption::operator=(option);
+        o.rect = style->subElementRect(QStyle::SE_ItemViewItemFocusRect, &option);
+        o.state |= QStyle::State_KeyboardFocusChange;
+        o.state |= QStyle::State_Item;
+        QPalette::ColorGroup cg = (option.state & QStyle::State_Enabled)
+                ? QPalette::Normal : QPalette::Disabled;
+        o.backgroundColor = option.palette.color(cg, (option.state & QStyle::State_Selected)
+                                                ? QPalette::Highlight : QPalette::Window);
+        style->drawPrimitive(QStyle::PE_FrameFocusRect, &o, painter);
+    }
+
+    painter->restore();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 ActionLocatorSource::ActionLocatorSource(QObject *parent)
     : LocatorSource(parent)
+    , mDelegate(new ActionMatchDelegate(this))
 {}
 
 int ActionLocatorSource::rowCount(const QModelIndex &parent) const
@@ -52,6 +207,11 @@ QVariant ActionLocatorSource::data(const QModelIndex &index, int role) const
     }
     }
     return QVariant();
+}
+
+QAbstractItemDelegate *ActionLocatorSource::delegate() const
+{
+    return mDelegate;
 }
 
 QString ActionLocatorSource::placeholderText() const
@@ -78,7 +238,7 @@ QVector<ActionLocatorSource::Match> ActionLocatorSource::findActions(const QStri
 #if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
         const int totalScore = Utils::matchingScore(words, sanitizedText);
 #else
-        const int totalScore = Utils::matchingScore(words, QStringRef(&sanitizedText));
+        const int totalScore = Utils::matchingScore(words, &sanitizedText);
 #endif
 
         if (totalScore > 0) {

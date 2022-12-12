@@ -25,10 +25,12 @@
 
 #include "projectmodel.h"
 
+class QAbstractItemDelegate;
+
 namespace Tiled {
 
 class FilterEdit;
-class MatchDelegate;
+class FileMatchDelegate;
 class ResultsView;
 
 /**
@@ -41,6 +43,7 @@ public:
         : QAbstractListModel(parent)
     {}
 
+    virtual QAbstractItemDelegate *delegate() const = 0;
     virtual QString placeholderText() const = 0;
     virtual void setFilterWords(const QStringList &words) = 0;
     virtual void activate(const QModelIndex &index) = 0;
@@ -61,7 +64,6 @@ private:
     LocatorSource *mLocatorSource;
     FilterEdit *mFilterEdit;
     ResultsView *mResultsView;
-    MatchDelegate *mDelegate;
 };
 
 class FileLocatorSource : public LocatorSource
@@ -73,11 +75,13 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     // LocatorSource
+    QAbstractItemDelegate *delegate() const override;
     QString placeholderText() const override;
     void setFilterWords(const QStringList &words) override;
     void activate(const QModelIndex &index) override;
 
 private:
+    FileMatchDelegate *mDelegate;
     QVector<ProjectModel::Match> mMatches;
 };
 
