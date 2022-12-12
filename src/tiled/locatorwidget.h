@@ -23,22 +23,11 @@
 #include <QFrame>
 #include <QTreeView>
 #include <QStyledItemDelegate>
+
 namespace Tiled {
 
-struct LocatorMatch
-{
-    int score;
-    int offset;
-    QString path;
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QStringRef relativePath() const { return path.midRef(offset); }
-#else
-    QStringView relativePath() const { return QStringView(path).mid(offset); }
-#endif
-};
-
 class FilterEdit;
+
 static QFont scaledFont(const QFont &font, qreal scale)
 {
     QFont scaled(font);
@@ -78,19 +67,6 @@ private:
     QStringList mWords;
 };
 
-/*
- * Base class of the model of entities matching 
- * the filter words the user enters.
-*/
-class LocatorMatchesModel: public QAbstractListModel
-{
-public:
-    explicit LocatorMatchesModel(QObject *parent =nullptr);
-    const QVector<LocatorMatch> &matches() const { return mMatches; }
-    virtual void setMatches(QVector<LocatorMatch> matches) = 0;     
-private:
-    QVector<LocatorMatch> mMatches;
-};
 class ResultsView : public QTreeView
 {
 public:
@@ -105,53 +81,48 @@ protected:
 };
 
 /**
- * Base class that provides an implementation of searching for
- * and clicking on items in locator widgets.
- * 
- * Whenever the filter words changed, the signal filterWordsChanged
- * will be triggered.
+ * Interface for providing a source of locator items based on filter words.
 */
-class LocatorSource: public QObject
+class LocatorSource
 { 
-Q_OBJECT
 public:
-    LocatorSource(QObject *parent = nullptr);
-    virtual void setFilterWords(const QString &text) = 0;
+    virtual QAbstractListModel *model() const = 0;
+    virtual void setFilterWords(const QStringList &words) = 0;
     virtual void activate(const QModelIndex &index) = 0;
-    MatchDelegate *delegate;
-    LocatorMatchesModel *listModel;
-signals:
-    void filterWordsChanged();
 };
+
 class LocatorWidget : public QFrame
 {
     Q_OBJECT
 
 public:
-    explicit LocatorWidget(LocatorSource *locatorSource, QWidget *parent = nullptr);
-    LocatorMatchesModel *listModel;
+    explicit LocatorWidget(std::unique_ptr<LocatorSource> locatorSource,
+                           QWidget *parent = nullptr);
     void setVisible(bool visible) override;
 
-protected:
-    LocatorSource *mLocatorSource;
-
-    /* Called to adjust the size of the widget when
-     * the filter words change.
-     */
-    void adjustLayout();
 private:
+    void setFilterText(const QString &text);
+
+    std::unique_ptr<LocatorSource> mLocatorSource;
     FilterEdit *mFilterEdit;
     ResultsView *mResultsView;
-
+    MatchDelegate *mDelegate;
 };
 
+class ProjectFileMatchesModel;
 
-class ProjectFileLocatorSource: public LocatorSource {
-    public:
-        explicit ProjectFileLocatorSource(QObject *parent);
-        void setFilterWords(const QString &text) override;
-        void activate(const QModelIndex &index) override;
-        LocatorMatchesModel *listModel;
-        MatchDelegate *delegate;
+class ProjectFileLocatorSource : public LocatorSource
+{
+public:
+    explicit ProjectFileLocatorSource();
+    ~ProjectFileLocatorSource();
+
+    QAbstractListModel *model() const override;
+    void setFilterWords(const QStringList &words) override;
+    void activate(const QModelIndex &index) override;
+
+private:
+    std::unique_ptr<ProjectFileMatchesModel> mModel;
 };
+
 } // namespace Tiled

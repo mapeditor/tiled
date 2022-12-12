@@ -348,6 +348,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mUi->actionOpen->setIcon(openIcon);
     mUi->actionSave->setIcon(saveIcon);
+    mUi->actionSearchActions->setIcon(searchActionsIcon);
 
     QUndoGroup *undoGroup = mDocumentManager->undoGroup();
     QAction *undoAction = undoGroup->createUndoAction(this, tr("Undo"));
@@ -355,8 +356,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     redoAction->setPriority(QAction::LowPriority);
     redoAction->setIcon(redoIcon);
     undoAction->setIcon(undoIcon);
-    QAction *searchActionsAction = ActionManager::action("SearchActions");
-    searchActionsAction->setIcon(searchActionsIcon);
 
     mUi->actionNewMap->setShortcuts(QKeySequence::New);
     mUi->actionOpen->setShortcuts(QKeySequence::Open);
@@ -723,7 +722,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionDelete, "edit-delete");
     setThemeIcon(redoAction, "edit-redo");
     setThemeIcon(undoAction, "edit-undo");
-    setThemeIcon(searchActionsAction, "edit-find");
+    setThemeIcon(mUi->actionSearchActions, "edit-find");
     setThemeIcon(mUi->actionZoomIn, "zoom-in");
     setThemeIcon(mUi->actionZoomOut, "zoom-out");
     setThemeIcon(mUi->actionZoomNormal, "zoom-original");
@@ -1157,8 +1156,8 @@ void MainWindow::openFileInProject()
     const QPoint localPos((width() - size.width()) / 2,
                           qMin(remainingHeight / 5, Utils::dpiScaled(60)));
     const QRect rect = QRect(mapToGlobal(localPos), size);
-    ProjectFileLocatorSource *source = new ProjectFileLocatorSource(this);
-    mLocatorWidget = new LocatorWidget(source, this);
+
+    mLocatorWidget = new LocatorWidget(std::make_unique<ProjectFileLocatorSource>(), this);
     mLocatorWidget->move(rect.topLeft());
     mLocatorWidget->setMaximumSize(rect.size());
     mLocatorWidget->show();
@@ -1181,6 +1180,7 @@ void MainWindow::searchActions()
     mActionSearchWidget->setMaximumSize(rect.size());
     mActionSearchWidget->show();
 }
+
 static Document *saveAsDocument(Document *document)
 {
     if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document))
@@ -2177,7 +2177,6 @@ void MainWindow::updateActions()
         standardActions = editor->enabledStandardActions();
 
     mUi->actionOpenFileInProject->setEnabled(projectHasFolders);
-    mUi->actionSearchActions->setEnabled(true);
     mUi->actionSave->setEnabled(document);
     mUi->actionSaveAs->setEnabled(document);
     mUi->actionSaveAll->setEnabled(document);

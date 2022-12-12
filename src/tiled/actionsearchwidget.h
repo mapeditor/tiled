@@ -1,5 +1,5 @@
 /*
- *  actionsearchwidget.h
+ * actionsearchwidget.h
  * Copyright 2022, Chris Boehm AKA dogboydog
  * Copyright 2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
@@ -27,34 +27,33 @@
 
 namespace Tiled {
 
-    class FilterEdit;
-    class MatchDelegate;
-    class ActionMatchesModel;
+class FilterEdit;
+class MatchDelegate;
+class ActionMatchesModel;
 
-    class ActionSearchWidget : public QFrame
-    {
-        Q_OBJECT
+class ActionSearchWidget : public QFrame
+{
+    Q_OBJECT
 
-
-    public:
-        struct Match {
-            int score;
-            Id actionId;
-            bool isFromScript;
-            QString text;
-        };
-
-        explicit ActionSearchWidget(QWidget *parent = nullptr);
-
-        void setVisible(bool visible) override;
-
-    private:
-        void setFilterText(const QString &text);
-
-        FilterEdit *mFilterEdit;
-        ResultsView *mResultsView;
-        ActionMatchesModel *mListModel;
-        MatchDelegate *mDelegate;
+public:
+    struct Match {
+        int score;
+        Id actionId;
+        bool isFromScript;
+        QString text;
     };
+
+    explicit ActionSearchWidget(QWidget *parent = nullptr);
+
+    void setVisible(bool visible) override;
+
+private:
+    void setFilterText(const QString &text);
+
+    FilterEdit *mFilterEdit;
+    ResultsView *mResultsView;
+    ActionMatchesModel *mListModel;
+    MatchDelegate *mDelegate;
+};
 
 } // namespace Tiled
