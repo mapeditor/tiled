@@ -48,6 +48,7 @@ public:
     void clear();
     bool hasProperty(QtProperty *property) const;
     QtVariantProperty *property(const QString &name);
+    const QHash<QString, QtVariantProperty *> &properties() const;
 
     QVariant toDisplayValue(QVariant value) const;
     QVariant fromDisplayValue(QtProperty *property, QVariant value) const;
@@ -55,11 +56,12 @@ public:
     void setMapDocument(MapDocument *mapDocument);
 
 signals:
-    void propertyValueChanged(const QString &name, const QVariant &value);
+    void propertyMemberValueChanged(const QStringList &path, const QVariant &value);
     void recreateProperty(QtVariantProperty *property, const QVariant &value);
 
 private:
-    QtVariantProperty *createPropertyInternal(const QString &name, const QVariant &value);
+    QtVariantProperty *createPropertyInternal(const QString &name,
+                                              const QVariant &value);
     void deletePropertyInternal(QtProperty *property);
     void deleteSubProperties(QtProperty *property);
 
@@ -67,9 +69,11 @@ private:
     void resetProperty(QtProperty *property);
     void propertyTypesChanged();
 
-    void setPropertyAttributes(QtVariantProperty *property, const PropertyType &propertyType);
+    void setPropertyAttributes(QtVariantProperty *property,
+                               const PropertyType &propertyType);
 
     const PropertyType *propertyType(QtProperty *property) const;
+    QStringList propertyPath(QtProperty *property) const;
 
     QtAbstractPropertyBrowser *mPropertyBrowser;
     QtVariantPropertyManager *mPropertyManager;
@@ -77,8 +81,7 @@ private:
     QHash<QString, QtVariantProperty *> mProperties;
     QHash<QtProperty *, int> mPropertyTypeIds;
     QHash<QtProperty *, QtProperty *> mPropertyParents;
-    bool mApplyingToParent = false;
-    bool mApplyingToChildren = false;
+    bool mUpdating = false;
     bool mEmittingValueChanged = false;
 };
 
@@ -90,6 +93,11 @@ inline bool CustomPropertiesHelper::hasProperty(QtProperty *property) const
 inline QtVariantProperty *CustomPropertiesHelper::property(const QString &name)
 {
     return mProperties.value(name);
+}
+
+inline const QHash<QString, QtVariantProperty *> &CustomPropertiesHelper::properties() const
+{
+    return mProperties;
 }
 
 inline void CustomPropertiesHelper::setMapDocument(MapDocument *mapDocument)

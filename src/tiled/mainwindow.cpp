@@ -1885,7 +1885,7 @@ void MainWindow::addAutomappingRulesTileset()
     if (!mapDocument)
         return;
 
-    auto tileset = Tiled::readTileset(QStringLiteral("://automap-tiles.tsx"));
+    auto tileset = TilesetManager::instance()->loadTileset(QStringLiteral(":/automap-tiles.tsx"));
     if (!tileset)   // Should never happen, but better do nothing than crash
         return;
 

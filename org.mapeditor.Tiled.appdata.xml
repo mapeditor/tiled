@@ -16,44 +16,84 @@
  </keywords>
  <content_rating type="oars-1.0" />
  <releases>
+  <release version="1.9.2" type="stable" date="2022-09-16">
+   <url>https://www.mapeditor.org/2022/09/16/tiled-1-9-2-released.html</url>
+   <description>
+    <ul>
+     <li>Allow adding maps to image collection tilesets (#3447)</li>
+     <li>Auto-detect JSON file format when importing custom types (#3472)</li>
+     <li>Added file system actions to the tile context menu (#3448)</li>
+     <li>Fixed possible crash in Custom Types Editor (#3465)</li>
+     <li>Fixed display of overridden values from a nested class</li>
+     <li>Fixed ability to reset nested string and file properties (#3409)</li>
+     <li>Fixed changing nested property values for multiple objects (#3344)</li>
+     <li>Fixed resolving of class properties on export to affect all data types (#3470)</li>
+     <li>Fixed possible duplication of Automapping Rules Tileset (#3462)</li>
+     <li>Fixed case where object labels could become visible for hidden layer (#3442)</li>
+     <li>Fixed updating of custom property colors when changing style</li>
+     <li>Scripting: Added Tileset.findTile</li>
+     <li>AutoMapping: Fixed applying of rule probability (#3425)</li>
+     <li>Defold plugin: Assign incrementing z values and allow specifying tile\_set (#3214)</li>
+     <li>Updates to German translation (by Christian Pervoelz)</li>
+    </ul>
+   </description>
+  </release>
+  <release version="1.9.1" type="stable" date="2022-08-11">
+   <url>https://www.mapeditor.org/2022/08/11/tiled-1-9-1-released.html</url>
+   <description>
+    <ul>
+     <li>Fixed properties-related crash when having no project loaded</li>
+     <li>Fixed loading of custom tile image rectangles (#3405)</li>
+     <li>Fixed loading of member values for nested classes (#3414)</li>
+     <li>Fixed visibility of "Move Object to Layer" sub-menu (#3417)</li>
+     <li>Fixed shadow offset for other maps in a world (#3429)</li>
+     <li>Fixed class dropdown to update immediately when changing custom types (#3398)</li>
+     <li>Fixed deleting an overridden property to not make it disappear (#3409)</li>
+     <li>Scripting: Added TilesetsView.currentTilesetChanged</li>
+     <li>JSON plugin: Fixed loading image layer "repeatx/y" properties (by Jene Litsch, #3428)</li>
+     <li>snap: Fixed startup error due to missing libQt5Concurrent.so.5 (#3408)</li>
+     <li>AppImage: Updated to Sentry 0.5.0</li>
+    </ul>
+   </description>
+  </release>
   <release version="1.9.0" type="stable" date="2022-06-24">
    <url>https://www.mapeditor.org/2022/06/25/tiled-1-9-0-released.html</url>
    <description>
     <ul>
-      <li>Ignore transparent pixels when selecting tile objects (#1477)</li>
-      <li>Added support for sub-images in image collection tilesets (#1008)</li>
-      <li>Added Tile Render Size and Fill Mode options to Tileset</li>
-      <li>Added %worldfile variable for custom commands (by Pixel-Nori, #3352)</li>
-      <li>Added 'New Project' action, replacing 'Save Project As' (#3279)</li>
-      <li>Added ability to load .tiled-session files from command-line</li>
-      <li>Don't scale point objects with the zoom level (#3356)</li>
-      <li>Take into account image layer content when determining visual map size (#3386)</li>
-      <li>Scripting: Added Dialog API for building custom UI (by tileboydog, #3384)</li>
-      <li>Scripting: Added -e,--evaluate to run a script from command-line</li>
-      <li>Scripting: Added Tool.toolBarActions property (#3318)</li>
-      <li>Scripting: Added Tileset.columnCount property</li>
-      <li>Scripting: Added ImageLayer.image property</li>
-      <li>Scripting: Added access to selected terrain in tileset editor</li>
-      <li>AutoMapping: Applying rules is now 10-30x faster</li>
-      <li>AutoMapping: Explicit "regions" layers are no longer needed and have been deprecated (#1918)</li>
-      <li>AutoMapping: "AutoMap While Drawing" no longer creates separate undo steps (#2166)</li>
-      <li>AutoMapping: Custom tiles can now match "Empty", "Non-Empty" and "Other" tiles through a "MatchType" property (#3100)</li>
-      <li>AutoMapping: A custom tile with "MatchType" set to "Negate" can be used instead of "inputnot" layers</li>
-      <li>AutoMapping: Added built-in tileset with these custom rule tiles</li>
-      <li>AutoMapping: Added a number of per-rule options which can be set using rectangle objects</li>
-      <li>AutoMapping: Erase tiles by placing tiles with "MatchType" set to "Empty" on output layers (#3100)</li>
-      <li>AutoMapping: Accumulate touched layers in AutoMap While Drawing (#3313)</li>
-      <li>AutoMapping: Support map name filters in rules.txt (#3014)</li>
-      <li>AutoMapping: Show relevant custom properties when a rules map is detected</li>
-      <li>Split up object types file type selection</li>
-      <li>Optimized rendering of tinted layers by caching tinted images</li>
-      <li>tmxrasterizer: Added options to hide certain layer types (#3343)</li>
-      <li>Raised minimum supported Qt version from 5.6 to 5.12 (drops Windows XP support)</li>
-      <li>Raised minimum C++ version to C++17</li>
-      <li>Removed qmake project files (only Qbs supported now)</li>
-      <li>AppImage: Updated to Sentry 0.4.18</li>
-      <li>Python plugin: Now built against Python 3.8 on Windows and Linux</li>
-      <li>Updated Bulgarian, Czech, French and Russian translations</li>
+     <li>Ignore transparent pixels when selecting tile objects (#1477)</li>
+     <li>Added support for sub-images in image collection tilesets (#1008)</li>
+     <li>Added Tile Render Size and Fill Mode options to Tileset</li>
+     <li>Added %worldfile variable for custom commands (by Pixel-Nori, #3352)</li>
+     <li>Added 'New Project' action, replacing 'Save Project As' (#3279)</li>
+     <li>Added ability to load .tiled-session files from command-line</li>
+     <li>Don't scale point objects with the zoom level (#3356)</li>
+     <li>Take into account image layer content when determining visual map size (#3386)</li>
+     <li>Scripting: Added Dialog API for building custom UI (by tileboydog, #3384)</li>
+     <li>Scripting: Added -e,--evaluate to run a script from command-line</li>
+     <li>Scripting: Added Tool.toolBarActions property (#3318)</li>
+     <li>Scripting: Added Tileset.columnCount property</li>
+     <li>Scripting: Added ImageLayer.image property</li>
+     <li>Scripting: Added access to selected terrain in tileset editor</li>
+     <li>AutoMapping: Applying rules is now 10-30x faster</li>
+     <li>AutoMapping: Explicit "regions" layers are no longer needed and have been deprecated (#1918)</li>
+     <li>AutoMapping: "AutoMap While Drawing" no longer creates separate undo steps (#2166)</li>
+     <li>AutoMapping: Custom tiles can now match "Empty", "Non-Empty" and "Other" tiles through a "MatchType" property (#3100)</li>
+     <li>AutoMapping: A custom tile with "MatchType" set to "Negate" can be used instead of "inputnot" layers</li>
+     <li>AutoMapping: Added built-in tileset with these custom rule tiles</li>
+     <li>AutoMapping: Added a number of per-rule options which can be set using rectangle objects</li>
+     <li>AutoMapping: Erase tiles by placing tiles with "MatchType" set to "Empty" on output layers (#3100)</li>
+     <li>AutoMapping: Accumulate touched layers in AutoMap While Drawing (#3313)</li>
+     <li>AutoMapping: Support map name filters in rules.txt (#3014)</li>
+     <li>AutoMapping: Show relevant custom properties when a rules map is detected</li>
+     <li>Split up object types file type selection</li>
+     <li>Optimized rendering of tinted layers by caching tinted images</li>
+     <li>tmxrasterizer: Added options to hide certain layer types (#3343)</li>
+     <li>Raised minimum supported Qt version from 5.6 to 5.12 (drops Windows XP support)</li>
+     <li>Raised minimum C++ version to C++17</li>
+     <li>Removed qmake project files (only Qbs supported now)</li>
+     <li>AppImage: Updated to Sentry 0.4.18</li>
+     <li>Python plugin: Now built against Python 3.8 on Windows and Linux</li>
+     <li>Updated Bulgarian, Czech, French and Russian translations</li>
     </ul>
    </description>
   </release>

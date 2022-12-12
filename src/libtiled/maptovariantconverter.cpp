@@ -176,7 +176,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
 
         // Include version in external tilesets
         if (mVersion == 2)
-            tilesetVariant[QStringLiteral("version")] = QStringLiteral("1.8");
+            tilesetVariant[QStringLiteral("version")] = FileFormat::versionString();
         else
             tilesetVariant[QStringLiteral("version")] = 1.1;
         tilesetVariant[QStringLiteral("tiledversion")] = QCoreApplication::applicationVersion();

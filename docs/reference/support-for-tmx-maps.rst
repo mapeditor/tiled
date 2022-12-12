@@ -30,6 +30,7 @@ C
 ~
 
 -  `cute tiled <https://github.com/RandyGaul/cute_headers>`__ - JSON map loader with examples (zlib/Public Domain).
+-  `libtmj <https://github.com/Zer0-One/libtmj>`__ - JSON map and tileset loader with zlib/gzip/zstd support (BSD 2-Clause)
 -  `TMX <https://github.com/baylej/tmx/>`__ - TMX map loader
    with Allegro5 and SDL2 examples (BSD).
 
@@ -96,6 +97,11 @@ D
    rendering logic using `DSFML <https://github.com/Jebbs/DSFML/>`__
 -  `dtiled <https://github.com/rcorre/dtiled>`__ can load JSON-formatted Tiled
    maps. It also provides general tilemap-related functions and algorithms.
+
+Dart
+~~~~
+
+- `tiled <https://pub.dev/packages/tiled>`__: a library for loading TMX files
 
 Go
 ~~
@@ -235,6 +241,13 @@ Construct 2 - Scirra
    file inside the editor. `Official
    Note <https://www.scirra.com/construct2/releases/r149>`__
 
+Flame
+~~~~~
+
+- `flame_tiled <https://pub.dev/packages/flame_tiled>`__ is a library for 
+  incorporating Tiled maps into the `Flame <https://pub.dev/packages/flame>`
+  game engine.
+
 Flixel
 ~~~~~~
 
@@ -327,11 +340,11 @@ LibGDX
    `provides <https://libgdx.com/wiki/graphics/2d/tile-maps>`__ a
    packer, loader and renderer for TMX maps
 
-LITIengine
+LITIENGINE
 ~~~~~~~~~~
 
--  `LITIengine <https://litiengine.com>`__ is a 2D Java Game Engine that
-   supports loading, saving and rendering maps in the .tmx format.
+-  `LITIENGINE <https://litiengine.com>`__ is an open source Java 2D Game Engine that
+   supports loading, editing, saving, and rendering maps in the .tmx format.
 
 LÖVE
 ~~~~

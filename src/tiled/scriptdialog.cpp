@@ -94,6 +94,20 @@ void ScriptImageWidget::setImage(ScriptImage *image)
     setPixmap(QPixmap::fromImage(image->image()));
 }
 
+class ScriptComboBox : public QComboBox
+{
+    Q_OBJECT
+
+public:
+    ScriptComboBox(QWidget *parent)
+        : QComboBox(parent)
+    {}
+
+    Q_INVOKABLE void addItems(const QStringList &texts)
+    { QComboBox::addItems(texts); }
+};
+
+
 ScriptDialog::ScriptDialog(const QString &title)
     : QDialog(MainWindow::maybeInstance())
     , m_gridLayout(new QGridLayout(this))
@@ -225,7 +239,7 @@ QWidget *ScriptDialog::addCheckBox(const QString &labelText, bool defaultValue)
 }
 QWidget *ScriptDialog::addComboBox(const QString &labelText, const QStringList &values)
 {
-    QComboBox *comboBox = new QComboBox(this);
+    QComboBox *comboBox = new ScriptComboBox(this);
     comboBox->addItems(values);
     return addDialogWidget(comboBox, labelText);
 }
@@ -351,3 +365,4 @@ void registerDialog(QJSEngine *jsEngine)
 } // namespace Tiled
 
 #include "moc_scriptdialog.cpp"
+#include "scriptdialog.moc"

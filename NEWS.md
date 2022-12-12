@@ -1,3 +1,52 @@
+### Unreleased
+
+* Fixed new layer names to be always unique (by Logan Higinbotham, #3452)
+* Scripting: Added Object.setColorProperty and Object.setFloatProperty (#3423)
+* Scripting: Added tiled.projectFilePath
+* Scripting: Added TileMap.toImage (#3519)
+* Scripting: Allow assigning null to Tile.objectGroup (by Logan Higinbotham, #3495)
+* Scripting: Allow changing the items in a combo box added to a dialog
+* Scripting: Fixed painting issues after changing TileLayer size (#3481)
+* Defold plugin: Allow overriding z value also when exporting to .collection (#3214)
+* Qt 6: Fixed invisible tileset tabs when only a single tileset is open
+* Fixed positioning of point object name labels (by Logan Higinbotham, #3400)
+* Fixed compile against Qt 6.4
+* snap: Added Wayland platform plugin and additional image format plugins
+* AppImage: Updated to Sentry 0.5.2
+
+### Tiled 1.9.2 (16 September 2022)
+
+* Allow adding maps to image collection tilesets (#3447)
+* Auto-detect JSON file format when importing custom types (#3472)
+* Added file system actions to the tile context menu (#3448)
+* Fixed possible crash in Custom Types Editor (#3465)
+* Fixed display of overridden values from a nested class
+* Fixed ability to reset nested string and file properties (#3409)
+* Fixed changing nested property values for multiple objects (#3344)
+* Fixed resolving of class properties on export to affect all data types (#3470)
+* Fixed possible duplication of Automapping Rules Tileset (#3462)
+* Fixed case where object labels could become visible for hidden layer (#3442)
+* Fixed updating of custom property colors when changing style
+* Scripting: Added Tileset.findTile
+* AutoMapping: Fixed applying of rule probability (#3425)
+* Defold plugin: Assign incrementing z values and allow specifying tile\_set (#3214)
+* Updates to German translation (by Christian Pervoelz)
+
+### Tiled 1.9.1 (11 August 2022)
+
+* Fixed properties-related crash when having no project loaded
+* Fixed loading of custom tile image rectangles (#3405)
+* Fixed loading of member values for nested classes (#3414)
+* Fixed visibility of "Move Object to Layer" sub-menu (#3417)
+* Fixed shadow offset for other maps in a world (#3429)
+* Fixed class dropdown to update immediately when changing custom types (#3398)
+* Fixed deleting an overridden property to not make it disappear (#3409)
+* Scripting: Added TilesetsView.currentTilesetChanged
+* JSON plugin: Fixed loading image layer "repeatx/y" properties (by Jene Litsch, #3428)
+* snap: Fixed startup error due to missing libQt5Concurrent.so.5 (#3408)
+* AppImage: Updated to Sentry 0.5.0
+* Updated Chinese (Simplified) and Portuguese translations
+
 ### Tiled 1.9.0 (25 June 2022)
 
 * Added option to ignore transparent pixels when selecting tile objects (#1477)

@@ -89,7 +89,7 @@ Layer
     data,             array or string,  "Array of ``unsigned int`` (GIDs) or base64-encoded data. ``tilelayer`` only."
     draworder,        string,           "``topdown`` (default) or ``index``. ``objectgroup`` only."
     encoding,         string,           "``csv`` (default) or ``base64``. ``tilelayer`` only."
-    height,           int,              "Row count. Same as map height for fixed-size maps."
+    height,           int,              "Row count. Same as map height for fixed-size maps. ``tilelayer`` only."
     id,               int,              "Incremental ID - unique across all layers"
     image,            string,           "Image used by this layer. ``imagelayer`` only."
     layers,           array,            "Array of :ref:`layers <json-layer>`. ``group`` only."
@@ -110,7 +110,7 @@ Layer
     transparentcolor, string,           "Hex-formatted color (#RRGGBB) (optional). ``imagelayer`` only."
     type,             string,           "``tilelayer``, ``objectgroup``, ``imagelayer`` or ``group``"
     visible,          bool,             "Whether layer is shown or hidden in editor"
-    width,            int,              "Column count. Same as map width for fixed-size maps."
+    width,            int,              "Column count. Same as map width for fixed-size maps. ``tilelayer`` only."
     x,                int,              "Horizontal layer offset in tiles. Always 0."
     y,                int,              "Vertical layer offset in tiles. Always 0."
 

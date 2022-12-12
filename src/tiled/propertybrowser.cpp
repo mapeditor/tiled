@@ -43,6 +43,7 @@
 #include "preferences.h"
 #include "properties.h"
 #include "replacetileset.h"
+#include "stylehelper.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetchanges.h"
@@ -59,8 +60,8 @@
 
 #include <QtGroupPropertyManager>
 
-#include <QCoreApplication>
 #include <QDebug>
+#include <QGuiApplication>
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QScopedValueRollback>
@@ -142,7 +143,7 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
             this, &PropertyBrowser::valueChanged);
 
-    connect(&mCustomPropertiesHelper, &CustomPropertiesHelper::propertyValueChanged,
+    connect(&mCustomPropertiesHelper, &CustomPropertiesHelper::propertyMemberValueChanged,
             this, &PropertyBrowser::customPropertyValueChanged);
 
     connect(&mCustomPropertiesHelper, &CustomPropertiesHelper::recreateProperty,
@@ -153,6 +154,9 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
 
     connect(Preferences::instance(), &Preferences::propertyTypesChanged,
             this, &PropertyBrowser::propertyTypesChanged);
+
+    connect(StyleHelper::instance(), &StyleHelper::styleApplied,
+            this, &PropertyBrowser::updateCustomPropertyColors);
 }
 
 /**
@@ -536,6 +540,16 @@ static bool objectPropertiesRelevant(Document *document, Object *object)
     return false;
 }
 
+static QStringList classNamesFor(const Object &object)
+{
+    QStringList names;
+    for (const auto type : Object::propertyTypes())
+        if (type->isClass())
+            if (static_cast<const ClassPropertyType*>(type)->isClassFor(object))
+                names.append(type->name);
+    return names;
+}
+
 void PropertyBrowser::propertyAdded(Object *object, const QString &name)
 {
     if (!objectPropertiesRelevant(mDocument, object))
@@ -631,6 +645,11 @@ void PropertyBrowser::propertyTypesChanged()
     if (!mObject)
         return;
 
+    if (auto classProperty = mIdToProperty.value(ClassProperty)) {
+        classProperty->setAttribute(QStringLiteral("suggestions"),
+                                    classNamesFor(*mObject));
+    }
+
     // Don't do anything if there can't be any properties based on the class
     if (mObject->typeId() == Object::MapObjectType) {
         if (static_cast<MapObject*>(mObject)->effectiveClassName().isEmpty())
@@ -672,7 +691,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     }
 }
 
-void PropertyBrowser::customPropertyValueChanged(const QString &name, const QVariant &value)
+void PropertyBrowser::customPropertyValueChanged(const QStringList &path, const QVariant &value)
 {
     if (mUpdating)
         return;
@@ -682,7 +701,7 @@ void PropertyBrowser::customPropertyValueChanged(const QString &name, const QVar
     QUndoStack *undoStack = mDocument->undoStack();
     undoStack->push(new SetProperty(mDocument,
                                     mDocument->currentObjects(),
-                                    name, value));
+                                    path, value));
 }
 
 void PropertyBrowser::resetProperty(QtProperty *property)
@@ -763,16 +782,6 @@ void PropertyBrowser::addMapProperties()
 
     addProperty(BackgroundColorProperty, QMetaType::QColor, tr("Background Color"), groupProperty);
     addProperty(groupProperty);
-}
-
-static QStringList classNamesFor(const Object &object)
-{
-    QStringList names;
-    for (const auto type : Object::propertyTypes())
-        if (type->isClass())
-            if (static_cast<const ClassPropertyType*>(type)->isClassFor(object))
-                names.append(type->name);
-    return names;
 }
 
 enum MapObjectFlags {
@@ -1857,7 +1866,7 @@ void PropertyBrowser::updateProperties()
             return;
         }
 
-        const QString &type = mapObject->effectiveClassName();
+        const QString &className = mapObject->effectiveClassName();
         const auto classColorGroup = mapObject->className().isEmpty() ? QPalette::Disabled
                                                                       : QPalette::Active;
 
@@ -1868,7 +1877,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[IdProperty]->setValue(mapObject->id());
         mIdToProperty[TemplateProperty]->setValue(QVariant::fromValue(templateFilePath));
         mIdToProperty[NameProperty]->setValue(mapObject->name());
-        mIdToProperty[ClassProperty]->setValue(type);
+        mIdToProperty[ClassProperty]->setValue(className);
         mIdToProperty[ClassProperty]->setValueColor(palette().color(classColorGroup, QPalette::WindowText));
         if (auto visibleProperty = mIdToProperty[VisibleProperty])
             visibleProperty->setValue(mapObject->isVisible());
@@ -2016,8 +2025,8 @@ Properties PropertyBrowser::combinedProperties() const
     if (isAutomappingRulesMap(mMapDocument))
         addAutomappingProperties(combinedProperties, mObject);
 
-    const QString className = mObject->typeId() == Object::MapObjectType ? static_cast<MapObject*>(mObject)->effectiveClassName()
-                                                                         : mObject->className();
+    const QString &className = mObject->typeId() == Object::MapObjectType ? static_cast<MapObject*>(mObject)->effectiveClassName()
+                                                                          : mObject->className();
 
     // Inherit properties from the class
     if (auto type = Object::propertyTypes().findClassFor(className, *mObject))
@@ -2064,22 +2073,32 @@ void PropertyBrowser::updateCustomProperties()
     }
 }
 
-// If there are other objects selected check if their properties are equal. If not give them a gray color.
 void PropertyBrowser::updateCustomPropertyColor(const QString &name)
 {
-    QtVariantProperty *property = mCustomPropertiesHelper.property(name);
-    if (!property)
-        return;
+    if (QtVariantProperty *property = mCustomPropertiesHelper.property(name))
+        updateCustomPropertyColor(property);
+}
+
+void PropertyBrowser::updateCustomPropertyColors()
+{
+    for (QtVariantProperty *property : mCustomPropertiesHelper.properties())
+        updateCustomPropertyColor(property);
+}
+
+// If there are other objects selected check if their properties are equal. If not give them a gray color.
+void PropertyBrowser::updateCustomPropertyColor(QtVariantProperty *property)
+{
     if (!property->isEnabled())
         return;
 
-    QString propertyName = property->propertyName();
-    QString propertyValue = property->valueText();
+    const QString propertyName = property->propertyName();
+    const QString propertyValue = property->valueText();
 
     const auto &objects = mDocument->currentObjects();
 
-    QColor textColor = palette().color(QPalette::Active, QPalette::WindowText);
-    QColor disabledTextColor = palette().color(QPalette::Disabled, QPalette::WindowText);
+    const QPalette palette = QGuiApplication::palette();
+    const QColor textColor = palette.color(QPalette::Active, QPalette::WindowText);
+    const QColor disabledTextColor = palette.color(QPalette::Disabled, QPalette::WindowText);
 
     // If one of the objects doesn't have this property then gray out the name and value.
     for (Object *obj : objects) {

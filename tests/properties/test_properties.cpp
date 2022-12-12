@@ -173,6 +173,65 @@ constexpr auto propertyTypesToMerge = R"([
 ]
 )";
 
+constexpr auto propertyTypesWithEnumInNestedClass = R"([
+    {
+        "color": "#ffff0000",
+        "id": 18,
+        "members": [
+            {
+                "name": "00__ElementType",
+                "propertyType": "ElementType",
+                "type": "class",
+                "value": {
+                    "ElementType": "Panel_Inventory"
+                }
+            }
+        ],
+        "name": "!Prop_Special_Door",
+        "type": "class",
+        "useAs": [
+            "object",
+            "tile"
+        ]
+    },
+    {
+        "id": 28,
+        "name": "*EN_ElementType",
+        "storageType": "string",
+        "type": "enum",
+        "values": [
+            "### Select ENUM value! ###",
+            "Agent",
+            "Panel_Container",
+            "Panel_Inventory",
+            "Panel_MasterPocket",
+            "Panel_PlayerBackpack_temp",
+            "Prop",
+            "Blueprint_UseThis",
+            "Tile"
+        ],
+        "valuesAsFlags": false
+    },
+    {
+        "color": "#ffa0a0a4",
+        "id": 50,
+        "members": [
+            {
+                "name": "ElementType",
+                "propertyType": "*EN_ElementType",
+                "type": "string",
+                "value": "Panel_Container"
+            }
+        ],
+        "name": "ElementType",
+        "type": "class",
+        "useAs": [
+            "property"
+        ]
+    }
+]
+)";
+
 
 class test_Properties : public QObject
 {
@@ -183,6 +242,7 @@ private slots:
 
     void loadAndSavePropertyTypes();
     void loadCircularReference();
+    void loadEnumInNestedClass();
 
     void loadProperties();
     void saveProperties();
@@ -271,6 +331,30 @@ void test_Properties::loadCircularReference()
     QCOMPARE(b->type, PropertyType::PT_Class);
     const auto &membersB = static_cast<const ClassPropertyType*>(b)->members;
     QVERIFY(!membersB.contains(QStringLiteral("a")));
+}
+
+void test_Properties::loadEnumInNestedClass()
+{
+    QJsonParseError error;
+    auto doc = QJsonDocument::fromJson(propertyTypesWithEnumInNestedClass, &error);
+    QVERIFY(error.error == QJsonParseError::NoError);
+
+    PropertyTypes types;
+    types.loadFromJson(doc.array(), QString());
+
+    const auto type = types.findTypeByName(QStringLiteral("!Prop_Special_Door"));
+    const auto elementType = types.findPropertyValueType(QStringLiteral("ElementType"));
+    const auto enumType = types.findPropertyValueType(QStringLiteral("*EN_ElementType"));
+    QVERIFY(type);
+    QVERIFY(elementType);
+    QVERIFY(enumType);
+
+    const auto &members = static_cast<const ClassPropertyType*>(type)->members;
+    const auto classMember = members.value(QStringLiteral("00__ElementType")).value<PropertyValue>();
+    QCOMPARE(classMember.typeId, elementType->id);
+
+    const auto nestedEnumValue = classMember.value.toMap().value(QStringLiteral("ElementType"));
+    QCOMPARE(nestedEnumValue.value<PropertyValue>().typeId, enumType->id);
 }
 
 void test_Properties::loadProperties()

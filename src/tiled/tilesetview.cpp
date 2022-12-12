@@ -759,8 +759,6 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
 
     QMenu menu;
 
-    QIcon propIcon(QLatin1String(":images/16/document-properties.png"));
-
     if (tile) {
         if (mEditWangSet) {
             selectionModel()->setCurrentIndex(index,
@@ -775,7 +773,20 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                 QAction *setImage = menu.addAction(tr("Use as Terrain Image"));
                 connect(setImage, &QAction::triggered, this, &TilesetView::selectWangColorImage);
             }
-        } else if (mTilesetDocument) {
+            menu.addSeparator();
+        }
+
+        if (!tile->imageSource().isEmpty()) {
+            const QString localFile = tile->imageSource().toLocalFile();
+            if (!localFile.isEmpty()) {
+                Utils::addOpenContainingFolderAction(menu, localFile);
+                Utils::addOpenWithSystemEditorAction(menu, localFile);
+                menu.addSeparator();
+            }
+        }
+
+        if (mTilesetDocument) {
+            const QIcon propIcon(QStringLiteral(":images/16/document-properties.png"));
             QAction *tileProperties = menu.addAction(propIcon,
                                                      tr("Tile &Properties..."));
             Utils::setThemeIcon(tileProperties, "document-properties");
@@ -784,7 +795,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
             // Assuming we're used in the MapEditor
 
             // Enable "swap" if there are exactly 2 tiles selected
-            bool exactlyTwoTilesSelected =
+            const bool exactlyTwoTilesSelected =
                     (selectionModel()->selectedIndexes().size() == 2);
 
             QAction *swapTilesAction = menu.addAction(tr("&Swap Tiles"));
@@ -802,6 +813,9 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     Preferences *prefs = Preferences::instance();
     connect(toggleGrid, &QAction::toggled,
             prefs, &Preferences::setShowTilesetGrid);
+
+    QAction *selectAllTiles = menu.addAction(tr("Select &All Tiles"));
+    connect(selectAllTiles, &QAction::triggered, this, &QAbstractItemView::selectAll);
 
     ActionManager::applyMenuExtensions(&menu, MenuIds::tilesetViewTiles);
 

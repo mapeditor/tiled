@@ -39,6 +39,7 @@
 #include "imagelayer.h"
 #include "mapobject.h"
 #include "maprenderer.h"
+#include "minimaprenderer.h"
 #include "objectgroup.h"
 #include "replacetileset.h"
 #include "resizemap.h"
@@ -447,6 +448,19 @@ void EditableMap::autoMap(const RegionValueType &region, const QString &rulesFil
         manager.autoMap();
     else
         manager.autoMapRegion(region.region());
+}
+
+Tiled::ScriptImage *EditableMap::toImage(QSize size)
+{
+    const MiniMapRenderer miniMapRenderer(map());
+    const QSize imageSize = size.isValid() ? size : miniMapRenderer.mapSize();
+    const MiniMapRenderer::RenderFlags renderFlags(MiniMapRenderer::DrawTileLayers |
+                                                   MiniMapRenderer::DrawMapObjects |
+                                                   MiniMapRenderer::DrawImageLayers |
+                                                   MiniMapRenderer::IgnoreInvisibleLayer |
+                                                   MiniMapRenderer::DrawBackground);
+
+    return new ScriptImage(miniMapRenderer.render(imageSize, renderFlags));
 }
 
 QPointF EditableMap::screenToTile(qreal x, qreal y) const

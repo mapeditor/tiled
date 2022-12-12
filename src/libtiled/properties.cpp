@@ -50,6 +50,74 @@ FilePath FilePath::fromString(const QString &string)
 }
 
 
+bool setClassPropertyMemberValue(QVariant &classValue,
+                                 int depth,
+                                 const QStringList &path,
+                                 const QVariant &value)
+{
+    if (depth >= path.size())
+        return false;   // hierarchy not deep enough for path
+
+    if (classValue.userType() != propertyValueId())
+        return false;   // invalid class value
+
+    auto classPropertyValue = classValue.value<PropertyValue>();
+    if (classPropertyValue.value.userType() != QMetaType::QVariantMap)
+        return false;   // invalid class value
+
+    QVariantMap classMembers = classPropertyValue.value.toMap();
+    const auto &memberName = path.at(depth);
+    QVariant &member = classMembers[memberName];
+
+    if (depth == path.size() - 1) {
+        member = value;
+    } else {
+        if (!member.isValid() && value.isValid()) {
+            // We expect an unset class member, so we'll try to introduce it
+            // based on the class definition.
+            auto type = classPropertyValue.type();
+            if (type && type->isClass())
+                member = static_cast<const ClassPropertyType*>(type)->members.value(memberName);
+        }
+        if (!setClassPropertyMemberValue(member, depth + 1, path, value))
+           return false;
+    }
+
+    // Remove "unset" members (marked by invalid QVariant)
+    if (!member.isValid())
+        classMembers.remove(memberName);
+
+    // Mark whole class as "unset" if it has no members left, unless at top level
+    if (!classMembers.isEmpty() || depth == 1) {
+        classPropertyValue.value = classMembers;
+        classValue = QVariant::fromValue(classPropertyValue);
+    } else {
+        classValue = QVariant();
+    }
+
+    return true;
+}
+
+bool setPropertyMemberValue(Properties &properties,
+                            const QStringList &path,
+                            const QVariant &value)
+{
+    Q_ASSERT(!path.isEmpty());
+
+    auto &topLevelName = path.first();
+    auto topLevelValue = properties.value(topLevelName);
+
+    if (path.size() > 1) {
+        if (!setClassPropertyMemberValue(topLevelValue, 1, path, value))
+            return false;
+    } else {
+        topLevelValue = value;
+    }
+
+    properties.insert(topLevelName, topLevelValue);
+    return true;
+}
+
 void mergeProperties(Properties &target, const Properties &source)
 {
     if (target.isEmpty()) {
@@ -220,7 +288,7 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
     const int metaType = value.userType();
 
     if (metaType == propertyValueId()) {
-        const PropertyValue propertyValue = value.value<PropertyValue>();
+        const auto propertyValue = value.value<PropertyValue>();
 
         if (const PropertyType *propertyType = mTypes.findTypeById(propertyValue.typeId)) {
             exportValue = propertyType->toExportValue(propertyValue.value, *this);
@@ -233,10 +301,10 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
     }
 
     if (metaType == QMetaType::QColor) {
-        const QColor color = value.value<QColor>();
+        const auto color = value.value<QColor>();
         exportValue.value = color.isValid() ? color.name(QColor::HexArgb) : QString();
     } else if (metaType == filePathTypeId()) {
-        const FilePath filePath = value.value<FilePath>();
+        const auto filePath = value.value<FilePath>();
         exportValue.value = toFileReference(filePath.url, mPath);
     } else if (metaType == objectRefTypeId()) {
         exportValue.value = ObjectRef::toInt(value.value<ObjectRef>());
@@ -259,8 +327,8 @@ QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
         if (const PropertyType *propertyType = mTypes.findPropertyValueType(exportValue.propertyTypeName)) {
             propertyValue = propertyType->toPropertyValue(propertyValue, *this);
         } else {
-           Tiled::ERROR(QStringLiteral("Unrecognized property type: '%1'")
-                        .arg(exportValue.propertyTypeName));
+            Tiled::ERROR(QStringLiteral("Unrecognized property type: '%1'")
+                         .arg(exportValue.propertyTypeName));
         }
     }
 

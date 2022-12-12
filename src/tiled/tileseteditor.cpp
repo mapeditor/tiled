@@ -30,6 +30,7 @@
 #include "editablemanager.h"
 #include "editablewangset.h"
 #include "erasetiles.h"
+#include "imagecache.h"
 #include "maintoolbar.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -738,17 +739,23 @@ void TilesetEditor::addTiles(const QList<QUrl> &urls)
             if (!rememberOption)
                 continue;
         }
-        const QPixmap image(url.toLocalFile());
+        const QPixmap image = ImageCache::loadPixmap(url.toLocalFile());
         if (!image.isNull()) {
             loadedFiles.append(LoadedFile { url, image });
         } else {
             // todo: support lazy loading of selected remote files
+            QMessageBox::StandardButtons buttons =
+                    urls.size() == 1 ? QMessageBox::Ok
+                                     : QMessageBox::Ignore | QMessageBox::Cancel;
+
             QMessageBox warning(QMessageBox::Warning,
                                 tr("Add Tiles"),
                                 tr("Could not load \"%1\"!").arg(url.toString()),
-                                QMessageBox::Ignore | QMessageBox::Cancel,
+                                buttons,
                                 mMainWindow->window());
-            warning.setDefaultButton(QMessageBox::Ignore);
+
+            if (urls.size() > 1)
+                warning.setDefaultButton(QMessageBox::Ignore);
 
             if (warning.exec() != QMessageBox::Ignore)
                 return;
@@ -767,7 +774,7 @@ void TilesetEditor::addTiles(const QList<QUrl> &urls)
     QList<Tile*> tiles;
     tiles.reserve(loadedFiles.size());
 
-    for (LoadedFile &loadedFile : loadedFiles) {
+    for (const LoadedFile &loadedFile : qAsConst(loadedFiles)) {
         Tile *newTile = new Tile(tileset->takeNextTileId(), tileset);
         newTile->setImage(loadedFile.image);
         newTile->setImageSource(loadedFile.imageSource);

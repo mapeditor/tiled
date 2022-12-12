@@ -136,6 +136,16 @@ void MapScene::setParallaxEnabled(bool enabled)
 }
 
 /**
+ * Sets the painter scale on the MapRenderer instances for all MapItem
+ * instances.
+ */
+void MapScene::setPainterScale(qreal painterScale)
+{
+    for (auto mapItem : qAsConst(mMapItems))
+        mapItem->mapDocument()->renderer()->setPainterScale(painterScale);
+}
+
+/**
  * Returns the bounding rect of the map. This can be different from the
  * sceneRect() when multiple maps are displayed.
  */

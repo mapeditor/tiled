@@ -273,7 +273,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     horizontal->addWidget(mZoomComboBox);
 
     connect(mViewStack, &QStackedWidget::currentChanged,
-            this, &TilesetDock::currentTilesetChanged);
+            this, &TilesetDock::onCurrentTilesetChanged);
 
     connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
             this, &TilesetDock::tilesetChanged);
@@ -448,11 +448,13 @@ void TilesetDock::dropEvent(QDropEvent *e)
     }
 }
 
-void TilesetDock::currentTilesetChanged()
+void TilesetDock::onCurrentTilesetChanged()
 {
     TilesetView *view = currentTilesetView();
-    if (!view)
+    if (!view) {
+        emit currentTilesetChanged();
         return;
+    }
 
     if (!mSynchronizingSelection)
         updateCurrentTiles();
@@ -463,6 +465,8 @@ void TilesetDock::currentTilesetChanged()
         setCurrentTile(view->tilesetModel()->tileAt(s->currentIndex()));
 
     mDynamicWrappingToggle->setChecked(view->dynamicWrapping());
+
+    emit currentTilesetChanged();
 }
 
 void TilesetDock::selectionChanged()
@@ -597,6 +601,13 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
     mViewStack->insertWidget(index, view);
     mTabBar->insertTab(index, tileset->name());
     mTabBar->setTabToolTip(index, tileset->fileName());
+
+    // Workaround a bug that appears to have snug into Qt 6 which causes the
+    // tab bar to be entirely invisible if only a single tab exists.
+#if QT_VERSION >= QT_VERSION_CHECK(6, 2, 4)
+    if (!mTabBar->isVisible())
+        mTabBar->updateGeometry();
+#endif
 
     connect(tilesetDocument, &TilesetDocument::fileNameChanged,
             this, &TilesetDock::tilesetFileNameChanged);
@@ -980,7 +991,7 @@ void TilesetDock::setCurrentEditableTileset(EditableTileset *tileset)
 
 EditableTileset *TilesetDock::currentEditableTileset() const
 {
-    const int index = mTabBar->currentIndex();
+    const int index = mViewStack->currentIndex();
     if (index == -1)
         return nullptr;
 
