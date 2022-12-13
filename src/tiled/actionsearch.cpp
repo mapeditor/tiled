@@ -22,6 +22,8 @@
 #include "actionsearch.h"
 
 #include "actionmanager.h"
+#include "qapplication.h"
+#include "qpainter.h"
 #include "utils.h"
 
 #include <QAction>
@@ -123,7 +125,9 @@ void ActionMatchDelegate::paint(QPainter *painter,
     const QFontMetrics bigFontMetrics(fonts.big);
 
     const int margin = Utils::dpiScaled(2);
-    const auto nameRect = option.rect.adjusted(margin, margin, -margin, 0);
+    const int leftMargin = Utils::dpiScaled(32);
+    const auto iconRect = option.rect.adjusted(margin, margin, -margin, 0);
+    const auto nameRect = option.rect.adjusted(leftMargin, margin, -margin, 0);
 //    const auto filePathRect = option.rect.adjusted(margin, margin + bigFontMetrics.lineSpacing(), -margin, 0);
 
     // draw the background (covers selection)
@@ -161,7 +165,7 @@ void ActionMatchDelegate::paint(QPainter *painter,
 //    painter->drawStaticText(filePathRect.topLeft(), staticText);
 
     if (!icon.isNull()) {
-        icon.paint(painter, nameRect, Qt::AlignLeft);
+        icon.paint(painter, iconRect, Qt::AlignLeft);
     }
 
     // draw the focus rect
