@@ -242,12 +242,15 @@ QVector<ActionLocatorSource::Match> ActionLocatorSource::findActions(const QStri
 {
     const QRegularExpression re(QLatin1String("(?<=^|[^&])&"));
     const QList<Id> actions = ActionManager::actions();
+    const QAction *searchActionsAction = ActionManager::action("SearchActions");
 
     QVector<Match> result;
 
     for (const Id &actionId : actions) {
         const QAction *action = ActionManager::action(actionId);
         if (!action->isEnabled())
+            continue;
+        if (action == searchActionsAction)
             continue;
 
         // remove single & characters
