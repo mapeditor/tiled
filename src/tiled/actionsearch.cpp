@@ -22,12 +22,11 @@
 #include "actionsearch.h"
 
 #include "actionmanager.h"
-#include "qapplication.h"
-#include "qpainter.h"
 #include "utils.h"
 
 #include <QAction>
-#include <QCoreApplication>
+#include <QApplication>
+#include <QPainter>
 #include <QStaticText>
 #include <QStyledItemDelegate>
 
@@ -62,7 +61,7 @@ private:
     public:
         Fonts(const QFont &base)
             : small(scaledFont(base, 0.9))
-            , big(scaledFont(base, 1.2))
+            , big(scaledFont(base, 1.1))
         {}
 
         const QFont small;
@@ -122,12 +121,13 @@ void ActionMatchDelegate::paint(QPainter *painter,
     nameHtml.append(copyRange(nameIndex, name.size() - 1));
 
     const Fonts fonts(option.font);
-    const QFontMetrics bigFontMetrics(fonts.big);
+//    const QFontMetrics bigFontMetrics(fonts.big);
 
     const int margin = Utils::dpiScaled(2);
-    const int leftMargin = Utils::dpiScaled(32);
-    const auto iconRect = option.rect.adjusted(margin, margin, -margin, 0);
-    const auto nameRect = option.rect.adjusted(leftMargin, margin, -margin, 0);
+    const int iconSize = option.rect.height() - margin * 2;
+    const auto iconRect = QRect(option.rect.topLeft() + QPoint(margin, margin),
+                                QSize(iconSize, iconSize));
+    const auto nameRect = option.rect.adjusted(margin * 4 + iconSize, margin, -margin, 0);
 //    const auto filePathRect = option.rect.adjusted(margin, margin + bigFontMetrics.lineSpacing(), -margin, 0);
 
     // draw the background (covers selection)
@@ -164,9 +164,8 @@ void ActionMatchDelegate::paint(QPainter *painter,
 //    painter->setFont(fonts.small);
 //    painter->drawStaticText(filePathRect.topLeft(), staticText);
 
-    if (!icon.isNull()) {
-        icon.paint(painter, iconRect, Qt::AlignLeft);
-    }
+    if (!icon.isNull())
+        icon.paint(painter, iconRect);
 
     // draw the focus rect
     if (option.state & QStyle::State_HasFocus) {
