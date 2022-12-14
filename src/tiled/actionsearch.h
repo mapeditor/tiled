@@ -33,6 +33,10 @@ class ActionLocatorSource : public LocatorSource
     Q_OBJECT
 
 public:
+    enum {
+        ShortcutRole = Qt::UserRole
+    };
+
     explicit ActionLocatorSource(QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent) const override;

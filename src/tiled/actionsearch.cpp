@@ -91,8 +91,6 @@ void ActionMatchDelegate::paint(QPainter *painter,
     painter->save();
 
     const QString name = index.data().toString();
-    const QIcon icon = index.data(Qt::DecorationRole).value<QIcon>();
-    // todo: shortcut
 
 #if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     const auto ranges = Utils::matchingRanges(mWords, &name);
@@ -103,32 +101,29 @@ void ActionMatchDelegate::paint(QPainter *painter,
     QString nameHtml;
     int nameIndex = 0;
 
-    auto copyRange = [&] (int first, int last) -> QString {
-        return name.mid(first, last - first + 1);
+    auto nameRange = [&] (int first, int last) -> QStringView {
+        return QStringView(name).mid(first, last - first + 1);
     };
 
     for (const auto &range : ranges) {
         if (range.first > nameIndex)
-            nameHtml.append(copyRange(nameIndex, range.first - 1));
+            nameHtml.append(nameRange(nameIndex, range.first - 1));
 
         nameHtml.append(QStringLiteral("<b>"));
-        nameHtml.append(copyRange(range.first, range.second));
+        nameHtml.append(nameRange(range.first, range.second));
         nameHtml.append(QStringLiteral("</b>"));
 
         nameIndex = range.second + 1;
     }
 
-    nameHtml.append(copyRange(nameIndex, name.size() - 1));
+    nameHtml.append(nameRange(nameIndex, name.size() - 1));
 
     const Fonts fonts(option.font);
-//    const QFontMetrics bigFontMetrics(fonts.big);
 
     const int margin = Utils::dpiScaled(2);
     const int iconSize = option.rect.height() - margin * 2;
-    const auto iconRect = QRect(option.rect.topLeft() + QPoint(margin, margin),
-                                QSize(iconSize, iconSize));
     const auto nameRect = option.rect.adjusted(margin * 4 + iconSize, margin, -margin, 0);
-//    const auto filePathRect = option.rect.adjusted(margin, margin + bigFontMetrics.lineSpacing(), -margin, 0);
+    const auto shortcutRect = option.rect.adjusted(0, margin, -margin, -margin);
 
     // draw the background (covers selection)
     QStyle *style = QApplication::style();
@@ -151,21 +146,35 @@ void ActionMatchDelegate::paint(QPainter *painter,
     QStaticText staticText(nameHtml);
     staticText.setTextOption(textOption);
     staticText.setTextFormat(Qt::RichText);
-    staticText.setTextWidth(nameRect.width());
     staticText.prepare(painter->transform(), fonts.big);
 
     painter->setFont(fonts.big);
     painter->drawStaticText(nameRect.topLeft(), staticText);
 
-//    staticText.setText(nameHtml);
-//    staticText.prepare(painter->transform(), fonts.small);
+    const QIcon icon = index.data(Qt::DecorationRole).value<QIcon>();
+    if (!icon.isNull()) {
+        const auto iconRect = QRect(option.rect.topLeft() + QPoint(margin, margin),
+                                    QSize(iconSize, iconSize));
 
-//    painter->setOpacity(0.75);
-//    painter->setFont(fonts.small);
-//    painter->drawStaticText(filePathRect.topLeft(), staticText);
-
-    if (!icon.isNull())
         icon.paint(painter, iconRect);
+    }
+
+    const QKeySequence shortcut = index.data(ActionLocatorSource::ShortcutRole).value<QKeySequence>();
+    if (!shortcut.isEmpty()) {
+        const QString shortcutText = shortcut.toString(QKeySequence::NativeText);
+        const QFontMetrics smallFontMetrics(fonts.small);
+
+        staticText.setTextFormat(Qt::PlainText);
+        staticText.setText(shortcutText);
+        staticText.prepare(painter->transform(), fonts.small);
+
+        const int centeringMargin = (shortcutRect.height() - smallFontMetrics.height()) / 2;
+        painter->setOpacity(0.75);
+        painter->setFont(fonts.small);
+        painter->drawStaticText(shortcutRect.right() - staticText.size().width() - centeringMargin,
+                                shortcutRect.top() + centeringMargin,
+                                staticText);
+    }
 
     // draw the focus rect
     if (option.state & QStyle::State_HasFocus) {
@@ -207,6 +216,13 @@ QVariant ActionLocatorSource::data(const QModelIndex &index, int role) const
         const Match &match = mMatches.at(index.row());
         if (auto action = ActionManager::findAction(match.actionId))
             return action->icon();
+        break;
+    }
+    case ShortcutRole: {
+        const Match &match = mMatches.at(index.row());
+        if (auto action = ActionManager::findAction(match.actionId))
+            return action->shortcut();
+        break;
     }
     }
     return QVariant();
