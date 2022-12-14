@@ -164,6 +164,7 @@
      <addaction name="actionSnapToFineGrid"/>
      <addaction name="actionSnapToPixels"/>
     </widget>
+    <addaction name="actionSearchActions"/>
     <addaction name="actionShowGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
     <addaction name="actionShowObjectReferences"/>
@@ -184,7 +185,6 @@
     <addaction name="separator"/>
     <addaction name="actionFullScreen"/>
     <addaction name="actionClearView"/>
-    <addaction name="actionSearchActions"/>
    </widget>
    <widget class="QMenu" name="menuTileset">
     <property name="title">
@@ -795,7 +795,7 @@
   </action>
   <action name="actionSearchActions">
    <property name="text">
-    <string>Search Actions</string>
+    <string>Search Actions...</string>
    </property>
    <property name="toolTip">
     <string>Search actions available in Tiled</string>

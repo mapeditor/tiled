@@ -792,13 +792,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     lockIcon.addFile(QLatin1String(":/images/24/locked.png"));
     mLockLayout->setIcon(lockIcon);
 
-    ActionManager::registerAction(mResetToDefaultLayout, "ResetToDefaultLayout");
-    ActionManager::registerAction(mLockLayout, "LockLayout");
-
     mShowPropertyTypesEditor = new QAction(tr("Custom Types Editor"), this);
     mShowPropertyTypesEditor->setCheckable(true);
 
-    mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
+    ActionManager::registerAction(mResetToDefaultLayout, "ResetToDefaultLayout");
+    ActionManager::registerAction(mLockLayout, "LockLayout");
+    ActionManager::registerAction(mShowPropertyTypesEditor, "CustomTypesEditor");
+
+    mUi->menuView->insertAction(mUi->actionSearchActions, mViewsAndToolbarsAction);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowPropertyTypesEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
 
