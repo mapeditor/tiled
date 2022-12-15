@@ -101,22 +101,26 @@ void ActionMatchDelegate::paint(QPainter *painter,
     QString nameHtml;
     int nameIndex = 0;
 
-    auto nameRange = [&] (int first, int last) -> QStringView {
+    auto nameRange = [&] (int first, int last) -> QStringRef {
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
         return QStringView(name).mid(first, last - first + 1);
+#else
+        return name.midRef(first, last - first + 1);
+#endif
     };
 
     for (const auto &range : ranges) {
         if (range.first > nameIndex)
-            nameHtml.append(nameRange(nameIndex, range.first - 1).toString());
+            nameHtml.append(nameRange(nameIndex, range.first - 1));
 
         nameHtml.append(QStringLiteral("<b>"));
-        nameHtml.append(nameRange(range.first, range.second).toString());
+        nameHtml.append(nameRange(range.first, range.second));
         nameHtml.append(QStringLiteral("</b>"));
 
         nameIndex = range.second + 1;
     }
 
-    nameHtml.append(nameRange(nameIndex, name.size() - 1).toString());
+    nameHtml.append(nameRange(nameIndex, name.size() - 1));
 
     const Fonts fonts(option.font);
 
