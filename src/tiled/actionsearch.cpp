@@ -107,16 +107,16 @@ void ActionMatchDelegate::paint(QPainter *painter,
 
     for (const auto &range : ranges) {
         if (range.first > nameIndex)
-            nameHtml.append(nameRange(nameIndex, range.first - 1));
+            nameHtml.append(nameRange(nameIndex, range.first - 1).toString());
 
         nameHtml.append(QStringLiteral("<b>"));
-        nameHtml.append(nameRange(range.first, range.second));
+        nameHtml.append(nameRange(range.first, range.second).toString());
         nameHtml.append(QStringLiteral("</b>"));
 
         nameIndex = range.second + 1;
     }
 
-    nameHtml.append(nameRange(nameIndex, name.size() - 1));
+    nameHtml.append(nameRange(nameIndex, name.size() - 1).toString());
 
     const Fonts fonts(option.font);
 
