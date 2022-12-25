@@ -259,11 +259,36 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
             device->write(sanitizeQuotedString(itTileset->id).toUtf8());
             device->write("\")\n");
 
+            // Margin/Separation/Size
+            if (itTileset->tileset->margin() != 0) {
+                device->write("margins = Vector2i(");
+                device->write(QString::number(itTileset->tileset->margin()).toUtf8());
+                device->write(", ");
+                device->write(QString::number(itTileset->tileset->margin()).toUtf8());
+                device->write(")\n");
+            }
+
+            if (itTileset->tileset->tileSpacing() != 0) {
+                device->write("separation = Vector2i(");
+                device->write(QString::number(itTileset->tileset->tileSpacing()).toUtf8());
+                device->write(", ");
+                device->write(QString::number(itTileset->tileset->tileSpacing()).toUtf8());
+                device->write(")\n");
+            }
+
+            if (itTileset->tileset->tileWidth() != 16 || itTileset->tileset->tileHeight() != 16) {
+                device->write("texture_region_size = Vector2i(");
+                device->write(QString::number(itTileset->tileset->tileWidth()).toUtf8());
+                device->write(", ");
+                device->write(QString::number(itTileset->tileset->tileHeight()).toUtf8());
+                device->write(")\n");
+            }
+
             // Tile info
             for (auto&& tile : itTileset->tileset->tiles()) {
                 if (itTileset->usedTiles.contains(tile->id())) {
-                    auto x = tile->id() % itTileset->tileset->tileWidth();
-                    auto y = tile->id() / itTileset->tileset->tileWidth();
+                    auto x = tile->id() % itTileset->tileset->columnCount();
+                    auto y = tile->id() / itTileset->tileset->columnCount();
                     device->write(QString::number(x).toUtf8());
                     device->write(":");
                     device->write(QString::number(y).toUtf8());
@@ -276,6 +301,14 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
 
         // TileSet node
         device->write("[sub_resource type=\"TileSet\" id=\"TileSet_0\"]\n");
+        if (map->tileWidth() != 16 || map->tileHeight() != 16) {
+            device->write("tile_size = Vector2i(");
+            device->write(QString::number(map->tileWidth()).toUtf8());
+            device->write(", ");
+            device->write(QString::number(map->tileHeight()).toUtf8());
+            device->write(")\n");
+        }
+
         for (auto it = assetLists.tilesetInfo.begin(); it != assetLists.tilesetInfo.end(); ++it) {
             device->write("sources/");
             device->write(QString::number(it->atlasId).toUtf8());
@@ -293,16 +326,8 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
 
         device->write("tile_set = SubResource(\"TileSet_0\")\n");
 
-        if (map->tileHeight() != map->tileWidth())
-            throw std::invalid_argument("Tile height and width must be the same for the Godot exporter.");
         if (map->orientation() != Map::Orthogonal)
             throw std::invalid_argument("Godot exporter currently only supports orthogonal maps.");
-        
-        if (map->tileWidth() != 16) {
-            device->write("cell_quadrant_size = ");
-            device->write(QString::number(map->tileWidth()).toUtf8());
-            device->write("\n");
-        }
 
         device->write("format = 2\n");
 
@@ -334,10 +359,10 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
                         auto resPath = fileToResPath(cell.tile()->tileset(), params.resRoot);
                         auto& tilesetInfo = assetLists.tilesetInfo[resPath];
                         int destLocation = (x >= 0 ? y : y + 1) * 65536 + x;
-                        int srcX = cell.tileId() % cell.tileset()->tileWidth();
+                        int srcX = cell.tileId() % cell.tileset()->columnCount();
                         srcX *= 65536;
                         srcX += tilesetInfo.atlasId;
-                        int srcY = cell.tileId() / cell.tileset()->tileWidth();
+                        int srcY = cell.tileId() / cell.tileset()->columnCount();
 
                         if (!first) {
                             device->write(", ");
