@@ -21,6 +21,8 @@
 
 #include "grouplayer.h"
 #include "map.h"
+#include "mapobject.h"
+#include "objectgroup.h"
 #include "savefile.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -202,6 +204,75 @@ static AssetLists collectAssets(const Map *map, CollectAssetsParams& params)
     return assetLists;
 }
 
+static bool exportTileCollisions(QFileDevice* device, const Tile* tile, QString tileName)
+{
+    bool foundCollisions = false;
+
+    auto objectGroup = tile->objectGroup();
+
+    if (objectGroup) {
+        int polygonId = 0;
+
+        for (auto&& object : objectGroup->objects()) {
+            foundCollisions = true;
+
+            auto centerX = tile->width() / 2 - object->x();
+            auto centerY = tile->height() / 2 - object->y();
+
+            device->write(tileName.toUtf8());
+            device->write("/physics_layer_0/polygon_");
+            device->write(QString::number(polygonId).toUtf8());
+            device->write("/points = PackedVector2Array(");
+
+            switch (object->shape()) {
+                case MapObject::Rectangle: {
+                    auto x1 = object->x() - centerX;
+                    auto y1 = object->y() - centerY;
+                    auto x2 = object->width() - centerX;
+                    auto y2 = object->height() - centerY;
+
+                    device->write(QString::number(x1).toUtf8());
+                    device->write(", ");
+                    device->write(QString::number(y1).toUtf8());
+                    device->write(", ");
+                    device->write(QString::number(x2).toUtf8());
+                    device->write(", ");
+                    device->write(QString::number(y1).toUtf8());
+                    device->write(", ");
+                    device->write(QString::number(x2).toUtf8());
+                    device->write(", ");
+                    device->write(QString::number(y2).toUtf8());
+                    device->write(", ");
+                    device->write(QString::number(x1).toUtf8());
+                    device->write(", ");
+                    device->write(QString::number(y2).toUtf8());
+                    break;
+                }
+                case MapObject::Polygon: {
+                    auto polygon = object->polygon().toPolygon();
+                    bool first = true;
+                    for (auto point : polygon) {
+                        if (!first)
+                            device->write(", ");
+                        device->write(QString::number(point.x() - centerX).toUtf8());
+                        device->write(", ");
+                        device->write(QString::number(point.y() - centerY).toUtf8());
+                        first = false;
+                    }
+                    break;
+                }
+                default:
+                    throw std::invalid_argument("Godot exporter only supports collisions that are rectangles or polygons.");
+            }
+
+            device->write(")\n");
+            polygonId++;
+        }
+    }
+
+    return foundCollisions;
+}
+
 bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
 {
     Q_UNUSED(options)
@@ -221,6 +292,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
     {
         CollectAssetsParams params;
         auto assetLists = collectAssets(map, params);
+        bool foundCollisions = false;
 
         // One TileSet, one TileMap, plus a Texture2D and TileSetAtlasSource per tileset
         auto loadSteps = assetLists.tilesetInfo.size() * 2 + 2;
@@ -287,12 +359,18 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
             // Tile info
             for (auto&& tile : itTileset->tileset->tiles()) {
                 if (itTileset->usedTiles.contains(tile->id())) {
+                    // Tile existence
                     auto x = tile->id() % itTileset->tileset->columnCount();
                     auto y = tile->id() / itTileset->tileset->columnCount();
-                    device->write(QString::number(x).toUtf8());
-                    device->write(":");
-                    device->write(QString::number(y).toUtf8());
-                    device->write("/0 = 0\n");
+                    QString tileName =
+                        QString::number(x)
+                        + ":"
+                        + QString::number(y)
+                        + "/0";
+                    device->write(tileName.toUtf8());
+                    device->write(" = 0\n");
+
+                    foundCollisions |= exportTileCollisions(device, tile, tileName);
                 }
             }
 
@@ -301,6 +379,10 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
 
         // TileSet node
         device->write("[sub_resource type=\"TileSet\" id=\"TileSet_0\"]\n");
+
+        if (foundCollisions)
+            device->write("physics_layer_0/collision_layer = 1\n");
+        
         if (map->tileWidth() != 16 || map->tileHeight() != 16) {
             device->write("tile_size = Vector2i(");
             device->write(QString::number(map->tileWidth()).toUtf8());
