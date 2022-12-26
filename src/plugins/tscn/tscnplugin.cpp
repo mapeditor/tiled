@@ -44,6 +44,20 @@ TscnPlugin::TscnPlugin()
 {
 }
 
+// Convenience functions for throwing translated errors
+static std::invalid_argument tscnError(const char* error)
+{
+    return std::invalid_argument(QCoreApplication::translate("TscnPlugin", error).toStdString());
+}
+
+template <typename... Types>
+static std::invalid_argument tscnError(const char* error, Types... args)
+{
+    return std::invalid_argument(
+        QCoreApplication::translate("TscnPlugin", error).arg(args...).toStdString()
+    );
+}
+
 /**
  * Determines the res:// root for the Godot project. This is done by searching
  * for a .godot file in the parent paths of the file.
@@ -66,12 +80,13 @@ static QString determineResRoot(const QString &filePath)
         }
     }
 
-    throw std::invalid_argument((
-        "Could not find .godot project in file path for file "
-        + filePath).toStdString());
+    throw tscnError("Could not find .godot project in file path for file %1", filePath);
 }
 
-static QString fileToResPath(const Tileset* tileset, std::unique_ptr<QString>& resRoot)
+// Converts a tileset's image source to a res:// path
+// If resRoot is null, this will find the nearest .godot project and set that to the resRoot,
+// otherwise, it will ensure that the image source is a child of resRoot.
+static QString imageSourceToRes(const Tileset* tileset, std::unique_ptr<QString>& resRoot)
 {
     auto filePath = tileset->imageSource().toLocalFile();
 
@@ -80,56 +95,52 @@ static QString fileToResPath(const Tileset* tileset, std::unique_ptr<QString>& r
     }
 
     if(!filePath.startsWith(*resRoot)) {
-        throw std::invalid_argument(QT_TR_NOOP((
-            "All files must share the same project root. File '" 
-            + filePath 
-            + "' does not share project root '" 
-            + *resRoot 
-            + "'.").toStdString()));
+        throw tscnError(
+            "All files must share the same project root. File '%1' does not share project root '%2'.",
+            filePath,
+            *resRoot);
     }
 
     return "res:/" + filePath.right(filePath.length() - resRoot->length());
 }
 
+// Replace any instance of " with \" so you can include it in a quoted string
 static QString sanitizeQuotedString(QString str)
 {
     static const QRegularExpression regexp(QLatin1String("\""));
     return str.replace(regexp, QStringLiteral("\\\""));
 }
 
+// For collecting information about the tilesets we're using
 struct TilesetInfo
 {
-    QString id;
-    int atlasId = -1;
-    QSet<int> usedTiles;
+    QString id;             // The id for the Godot texture
+    int atlasId = -1;       // The id for the Godot atlas
+    QSet<int> usedTiles;    // Tracks which tiles were actually used
     SharedTileset tileset;
 };
 
-struct LayerInfo
-{
-    const TileLayer* layer;
-};
-
-struct AssetLists
+// All the info we'll collect with collectAssets() before outputting the .tscn file
+struct AssetInfo
 {
     QMap<QString, TilesetInfo> tilesetInfo;
-    QList<LayerInfo> layerInfo;
-};
-
-struct CollectAssetsParams
-{
+    QList<const TileLayer*> layers;
     QSet<QString> tilesetIds;
     std::unique_ptr<QString> resRoot;
 };
 
-static void findUsedTiles(const TileLayer* layer, AssetLists& assetLists, CollectAssetsParams& params) {
+// Search a layer for every tile that was used and store it in assetInfo
+static void findUsedTiles(const TileLayer* layer, AssetInfo& assetInfo) {
     auto bounds = layer->bounds();
     for (int y = bounds.y(); y < bounds.y() + bounds.height(); ++y) {
         for (int x = bounds.x(); x < bounds.x() + bounds.width(); ++x) {
             auto cell = layer->cellAt(x, y);
             if (!cell.isEmpty()) {
-                auto resPath = fileToResPath(cell.tileset(), params.resRoot);
-                auto& tilesetInfo = assetLists.tilesetInfo[resPath];
+                if (cell.tileset()->isCollection())
+                    throw tscnError("Cannot export layer '%1' because the Godot exporter does not support collection-type tilesets", layer->name());
+
+                auto resPath = imageSourceToRes(cell.tileset(), assetInfo.resRoot);
+                auto& tilesetInfo = assetInfo.tilesetInfo[resPath];
                 tilesetInfo.usedTiles.insert(cell.tileId());
                 if (!tilesetInfo.tileset)
                     tilesetInfo.tileset = cell.tileset()->sharedPointer();
@@ -138,7 +149,8 @@ static void findUsedTiles(const TileLayer* layer, AssetLists& assetLists, Collec
     }
 }
 
-static void collectAssetsRecursive(const QList<Layer*> &layers, AssetLists& assetLists, CollectAssetsParams& params)
+// Used by collectAssets() to search all layers and layer groups
+static void collectAssetsRecursive(const QList<Layer*> &layers, AssetInfo& assetInfo)
 {
     for(auto it = layers.rbegin(); it != layers.rend(); ++it) {
         const Layer *layer = *it;
@@ -148,62 +160,59 @@ static void collectAssetsRecursive(const QList<Layer*> &layers, AssetLists& asse
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
-                LayerInfo layerInfo;
-                layerInfo.layer = static_cast<const TileLayer*>(layer);
-                findUsedTiles(layerInfo.layer, assetLists, params);
-                assetLists.layerInfo.push_back(std::move(layerInfo));
+                auto tileLayer = static_cast<const TileLayer*>(layer);
+                findUsedTiles(tileLayer, assetInfo);
+                assetInfo.layers.push_back(tileLayer);
                 break;
             }
         case Layer::ObjectGroupType:
-            throw std::invalid_argument("The Godot exporter does not yet support objects");
+            throw tscnError("The Godot exporter does not yet support objects");
             break;
         case Layer::ImageLayerType:
-            throw std::invalid_argument("The Godot exporter does not yet support image layers");
+            throw tscnError("The Godot exporter does not yet support image layers");
             break;
         case Layer::GroupLayerType: {
                 auto groupLayer = static_cast<const GroupLayer*>(layer);
-                collectAssetsRecursive(groupLayer->layers(), assetLists, params);
+                collectAssetsRecursive(groupLayer->layers(), assetInfo);
                 break;
             }
         }
     }
 }
 
-static AssetLists collectAssets(const Map *map, CollectAssetsParams& params)
+// Search the map for all layers and tiles
+// Also finds the .godot project root and assigns IDs to tilesets and atlases
+static AssetInfo collectAssets(const Map *map)
 {
-    AssetLists assetLists;
-    collectAssetsRecursive(map->layers(), assetLists, params);
+    AssetInfo assetInfo;
+    collectAssetsRecursive(map->layers(), assetInfo);
 
     // Run through all the assets collected and assign them IDs
     int i = 0;
-    for (auto&& itTilesetInfo = assetLists.tilesetInfo.begin();
-        itTilesetInfo != assetLists.tilesetInfo.end();
+    for (auto&& itTilesetInfo = assetInfo.tilesetInfo.begin();
+        itTilesetInfo != assetInfo.tilesetInfo.end();
         ++itTilesetInfo)
     {
         QString basename = itTilesetInfo->tileset->name();
 
-        if (itTilesetInfo->tileset->isCollection())
-            throw std::invalid_argument(("Cannot export tileset "
-                + basename
-                + " because the Godot exporter does not support tilesets that"
-                + " are a collection of images").toStdString());
-
+        // Make sure the tileset ID is unique by adding a number to the end
         QString id = basename;
         int uniqueifier = 1;
-        while (params.tilesetIds.contains(id)) {
+        while (assetInfo.tilesetIds.contains(id)) {
             id = basename + "_" + QString::number(uniqueifier);
             uniqueifier++;
         }
 
         itTilesetInfo->id = id;
         itTilesetInfo->atlasId = i;
-        params.tilesetIds.insert(id);
+        assetInfo.tilesetIds.insert(id);
         ++i;
     }
 
-    return assetLists;
+    return assetInfo;
 }
 
+// Export a tile's object groups as Godot physics layers
 static bool exportTileCollisions(QFileDevice* device, const Tile* tile, QString tileName)
 {
     bool foundCollisions = false;
@@ -219,10 +228,8 @@ static bool exportTileCollisions(QFileDevice* device, const Tile* tile, QString 
             auto centerX = tile->width() / 2 - object->x();
             auto centerY = tile->height() / 2 - object->y();
 
-            device->write(tileName.toUtf8());
-            device->write("/physics_layer_0/polygon_");
-            device->write(QString::number(polygonId).toUtf8());
-            device->write("/points = PackedVector2Array(");
+            device->write(QString("%1/physics_layer_0/polygon_%2/points = PackedVector2Array(")
+                .arg(tileName, QString::number(polygonId)).toUtf8());
 
             switch (object->shape()) {
                 case MapObject::Rectangle: {
@@ -231,21 +238,10 @@ static bool exportTileCollisions(QFileDevice* device, const Tile* tile, QString 
                     auto x2 = object->width() - centerX;
                     auto y2 = object->height() - centerY;
 
-                    device->write(QString::number(x1).toUtf8());
-                    device->write(", ");
-                    device->write(QString::number(y1).toUtf8());
-                    device->write(", ");
-                    device->write(QString::number(x2).toUtf8());
-                    device->write(", ");
-                    device->write(QString::number(y1).toUtf8());
-                    device->write(", ");
-                    device->write(QString::number(x2).toUtf8());
-                    device->write(", ");
-                    device->write(QString::number(y2).toUtf8());
-                    device->write(", ");
-                    device->write(QString::number(x1).toUtf8());
-                    device->write(", ");
-                    device->write(QString::number(y2).toUtf8());
+                    device->write(QString("%1, %2, %3, %2, %3, %4, %1, %4")
+                        .arg(QString::number(x1), QString::number(y1), QString::number(x2), QString::number(y2))
+                        .toUtf8());
+
                     break;
                 }
                 case MapObject::Polygon: {
@@ -262,7 +258,7 @@ static bool exportTileCollisions(QFileDevice* device, const Tile* tile, QString 
                     break;
                 }
                 default:
-                    throw std::invalid_argument("Godot exporter only supports collisions that are rectangles or polygons.");
+                    throw tscnError("Godot exporter only supports collisions that are rectangles or polygons.");
             }
 
             device->write(")\n");
@@ -290,83 +286,58 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
 
     try
     {
-        CollectAssetsParams params;
-        auto assetLists = collectAssets(map, params);
+        AssetInfo assetInfo = collectAssets(map);
         bool foundCollisions = false;
 
         // One TileSet, one TileMap, plus a Texture2D and TileSetAtlasSource per tileset
-        auto loadSteps = assetLists.tilesetInfo.size() * 2 + 2;
+        auto loadSteps = assetInfo.tilesetInfo.size() * 2 + 2;
 
         // gdscene node
-        device->write("[gd_scene load_steps=");
-        device->write(QString::number(loadSteps).toUtf8());
-        device->write(" format=3]\n\n");
+        device->write(QString("[gd_scene load_steps=%1 format=3]\n\n").arg(QString::number(loadSteps)).toUtf8());
 
         std::unique_ptr<QString> resRoot;
 
         // Texture2D nodes
-        for (auto it = assetLists.tilesetInfo.begin(); it != assetLists.tilesetInfo.end(); ++it) {
+        for (auto it = assetInfo.tilesetInfo.begin(); it != assetInfo.tilesetInfo.end(); ++it) {
             if (it->usedTiles.size() == 0)
                 continue;
 
-            device->write("[ext_resource type=\"Texture2D\" path=\"");
-            device->write(sanitizeQuotedString(it.key()).toUtf8());
-            device->write("\" id=\"");
-            device->write(sanitizeQuotedString(it->id).toUtf8());
-            device->write("\"]\n");
+            device->write(QString("[ext_resource type=\"Texture2D\" path=\"%1\" id=\"%2\"]\n")
+                .arg(sanitizeQuotedString(it.key()), sanitizeQuotedString(it->id)).toUtf8());
         }
         device->write("\n");
 
         // TileSetAtlasSource nodes
-        for (auto itTileset = assetLists.tilesetInfo.begin(); itTileset != assetLists.tilesetInfo.end(); ++itTileset) {
+        for (auto itTileset = assetInfo.tilesetInfo.begin(); itTileset != assetInfo.tilesetInfo.end(); ++itTileset) {
             if (itTileset->usedTiles.size() == 0)
                 continue;
 
-            device->write("[sub_resource type=\"TileSetAtlasSource\" id=\"TileSetAtlasSource_");
-            device->write(QString::number(itTileset->atlasId).toUtf8());
-            device->write("\"]\n");
+            device->write(QString("[sub_resource type=\"TileSetAtlasSource\" id=\"TileSetAtlasSource_%1\"]\n")
+                .arg(QString::number(itTileset->atlasId)).toUtf8());
 
-            // texture
-            device->write("texture = ExtResource(\"");
-            device->write(sanitizeQuotedString(itTileset->id).toUtf8());
-            device->write("\")\n");
+            device->write(QString("texture = ExtResource(\"%1\")\n")
+                .arg(sanitizeQuotedString(itTileset->id)).toUtf8());
 
-            // Margin/Separation/Size
-            if (itTileset->tileset->margin() != 0) {
-                device->write("margins = Vector2i(");
-                device->write(QString::number(itTileset->tileset->margin()).toUtf8());
-                device->write(", ");
-                device->write(QString::number(itTileset->tileset->margin()).toUtf8());
-                device->write(")\n");
-            }
+            if (itTileset->tileset->margin() != 0)
+                device->write(QString("margins = Vector2i(%1, %1)\n")
+                    .arg(QString::number(itTileset->tileset->margin())).toUtf8());
 
-            if (itTileset->tileset->tileSpacing() != 0) {
-                device->write("separation = Vector2i(");
-                device->write(QString::number(itTileset->tileset->tileSpacing()).toUtf8());
-                device->write(", ");
-                device->write(QString::number(itTileset->tileset->tileSpacing()).toUtf8());
-                device->write(")\n");
-            }
+            if (itTileset->tileset->tileSpacing() != 0)
+                device->write(QString("separation = Vector2i(%1, %1)\n")
+                    .arg(QString::number(itTileset->tileset->tileSpacing())).toUtf8());
 
-            if (itTileset->tileset->tileWidth() != 16 || itTileset->tileset->tileHeight() != 16) {
-                device->write("texture_region_size = Vector2i(");
-                device->write(QString::number(itTileset->tileset->tileWidth()).toUtf8());
-                device->write(", ");
-                device->write(QString::number(itTileset->tileset->tileHeight()).toUtf8());
-                device->write(")\n");
-            }
+            if (itTileset->tileset->tileWidth() != 16 || itTileset->tileset->tileHeight() != 16)
+                device->write(QString("texture_region_size = Vector2i(%1, %2)\n").arg(
+                    QString::number(itTileset->tileset->tileWidth()),
+                    QString::number(itTileset->tileset->tileHeight())).toUtf8());
 
             // Tile info
-            for (auto&& tile : itTileset->tileset->tiles()) {
-                if (itTileset->usedTiles.contains(tile->id())) {
+            for (auto tile : itTileset->tileset->tiles()) {
+                if (itTileset->usedTiles.contains(tile->id()) || tile->objectGroup()) {
                     // Tile existence
                     auto x = tile->id() % itTileset->tileset->columnCount();
                     auto y = tile->id() / itTileset->tileset->columnCount();
-                    QString tileName =
-                        QString::number(x)
-                        + ":"
-                        + QString::number(y)
-                        + "/0";
+                    QString tileName = QString("%1:%2/0").arg(QString::number(x), QString::number(y));
                     device->write(tileName.toUtf8());
                     device->write(" = 0\n");
 
@@ -383,33 +354,26 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         if (foundCollisions)
             device->write("physics_layer_0/collision_layer = 1\n");
         
-        if (map->tileWidth() != 16 || map->tileHeight() != 16) {
-            device->write("tile_size = Vector2i(");
-            device->write(QString::number(map->tileWidth()).toUtf8());
-            device->write(", ");
-            device->write(QString::number(map->tileHeight()).toUtf8());
-            device->write(")\n");
-        }
+        if (map->tileWidth() != 16 || map->tileHeight() != 16)
+            device->write(QString("tile_size = Vector2i(%1, %2)\n").arg(
+                QString::number(map->tileWidth()),
+                QString::number(map->tileHeight()))
+                .toUtf8());
 
-        for (auto it = assetLists.tilesetInfo.begin(); it != assetLists.tilesetInfo.end(); ++it) {
-            device->write("sources/");
-            device->write(QString::number(it->atlasId).toUtf8());
-            device->write(" = SubResource(\"TileSetAtlasSource_");
-            device->write(QString::number(it->atlasId).toUtf8());
-            device->write("\")\n");
-        }
+        for (auto it = assetInfo.tilesetInfo.begin(); it != assetInfo.tilesetInfo.end(); ++it)
+            device->write(QString("sources/%1 = SubResource(\"TileSetAtlasSource_%2\")\n").arg(
+                QString::number(it->atlasId), QString::number(it->atlasId)).toUtf8());
 
         device->write("\n");
 
         // TileMap node
-        device->write("[node name=\"");
-        device->write(sanitizeQuotedString(fi.baseName()).toUtf8());
-        device->write("\" type=\"TileMap\"]\n");
+        device->write(QString("[node name=\"%1\" type=\"TileMap\"]\n")
+            .arg(sanitizeQuotedString(fi.baseName())).toUtf8());
 
         device->write("tile_set = SubResource(\"TileSet_0\")\n");
 
         if (map->orientation() != Map::Orthogonal)
-            throw std::invalid_argument("Godot exporter currently only supports orthogonal maps.");
+            throw tscnError("Godot exporter currently only supports orthogonal maps.");
 
         device->write("format = 2\n");
 
@@ -420,26 +384,24 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         //   SrcX         = SrcX * 65536 + TileSetId
         //   SrcY         = SrcY
         int layerIndex = 0;
-        for (auto&& layer : assetLists.layerInfo) {
-            device->write("layer_");
-            device->write(QString::number(layerIndex).toUtf8());
-            device->write("/name = \"");
-            device->write(sanitizeQuotedString(layer.layer->name()).toUtf8());
-            device->write("\"\n");
+        for (auto layer : assetInfo.layers) {
+            device->write(QString("layer_%1/name = \"%2\"\n").arg(
+                QString::number(layerIndex),
+                sanitizeQuotedString(layer->name()))
+                .toUtf8());
 
-            device->write("layer_");
-            device->write(QString::number(layerIndex).toUtf8());
-            device->write("/tile_data = PackedInt32Array(");
+            device->write(QString("layer_%1/tile_data = PackedInt32Array(")
+                .arg(QString::number(layerIndex)).toUtf8());
 
             bool first = true;
-            auto bounds = layer.layer->bounds();
+            auto bounds = layer->bounds();
             for (int y = bounds.y(); y < bounds.y() + bounds.height(); ++y) {
                 for (int x = bounds.x(); x < bounds.x() + bounds.width(); ++x) {
-                    auto& cell = layer.layer->cellAt(x, y);
+                    auto& cell = layer->cellAt(x, y);
 
                     if (!cell.isEmpty()) {
-                        auto resPath = fileToResPath(cell.tile()->tileset(), params.resRoot);
-                        auto& tilesetInfo = assetLists.tilesetInfo[resPath];
+                        auto resPath = imageSourceToRes(cell.tile()->tileset(), assetInfo.resRoot);
+                        auto& tilesetInfo = assetInfo.tilesetInfo[resPath];
                         int destLocation = (x >= 0 ? y : y + 1) * 65536 + x;
                         int srcX = cell.tileId() % cell.tileset()->columnCount();
                         srcX *= 65536;
@@ -466,7 +428,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         }
     }
     catch (std::exception& e) {
-        mError = tr(e.what());
+        mError = e.what();
         return false;
     }
 
