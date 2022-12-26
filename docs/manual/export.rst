@@ -23,6 +23,7 @@ or tileset itself).
    export-defold
    export-gmx
    export-yy
+   export-tscn
    export-tbin
    export-other
    export-custom
