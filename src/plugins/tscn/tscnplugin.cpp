@@ -390,6 +390,17 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
                 sanitizeQuotedString(layer->name()))
                 .toUtf8());
 
+            if (layer->resolvedProperty("ySortEnabled").isValid())
+                device->write(QString("layer_%1/y_sort_enabled = true\n").arg(
+                    QString::number(layerIndex))
+                    .toUtf8());
+
+            if (layer->resolvedProperty("zIndex").isValid())
+                device->write(QString("layer_%1/z_index = %2\n").arg(
+                    QString::number(layerIndex),
+                    QString::number(layer->resolvedProperty("zIndex").toInt()))
+                    .toUtf8());
+
             device->write(QString("layer_%1/tile_data = PackedInt32Array(")
                 .arg(QString::number(layerIndex)).toUtf8());
 
