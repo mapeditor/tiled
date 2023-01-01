@@ -351,14 +351,62 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         // TileSet node
         device->write("[sub_resource type=\"TileSet\" id=\"TileSet_0\"]\n");
 
+        {
+            int shape, layout;
+            switch (map->orientation()) {
+                case Map::Orthogonal:
+                    shape = 0;
+                    layout = 0;
+                    break;
+                case Map::Staggered:
+                    shape = 1;
+                    layout = 0;
+                    break;
+                case Map::Isometric:
+                    shape = 1;
+                    layout = 5;
+                    break;
+                case Map::Hexagonal:
+                    shape = 3;
+                    layout = 0;
+
+                    if (map->hexSideLength() != map->tileHeight() / 2)
+                        throw tscnError("Godot only supports hexagonal maps "
+                            "where the total side length is exactly half its "
+                            "height. For a tile height of %1, the Total Side "
+                            "Length should be set to %2.",
+                            QString::number(map->tileHeight()),
+                            QString::number(map->tileHeight() / 2));
+                    break;
+                default:
+                    throw tscnError("Unsupported tile orientation.");
+            }
+
+            // We could leave either of these out if they're zero, but as of
+            // Godot 4.0 Beta 10, the Godot editor doesn't properly reset these
+            // values to their defaults if they're missing.
+            device->write(QString("tile_shape = %1\ntile_layout = %2\n")
+                .arg(QString::number(shape), QString::number(layout))
+                .toUtf8());
+        }
+
         if (foundCollisions)
             device->write("physics_layer_0/collision_layer = 1\n");
         
-        if (map->tileWidth() != 16 || map->tileHeight() != 16)
+        if (map->tileWidth() != 16 || map->tileHeight() != 16) {
+            // When Tiled renders odd-height hex tiles, it rounds down to an
+            // even tile height. This is particularly useful for the Godot
+            // exporter, because Godot's hex side length is always
+            // tileHeight / 2, but our side length is integral.
+            int tileHeight = map->tileHeight();
+            if (map->orientation() == Map::Hexagonal && tileHeight % 2 != 0)
+                --tileHeight;
+
             device->write(QString("tile_size = Vector2i(%1, %2)\n").arg(
                 QString::number(map->tileWidth()),
-                QString::number(map->tileHeight()))
+                QString::number(tileHeight))
                 .toUtf8());
+        }
 
         for (auto it = assetInfo.tilesetInfo.begin(); it != assetInfo.tilesetInfo.end(); ++it)
             device->write(QString("sources/%1 = SubResource(\"TileSetAtlasSource_%2\")\n").arg(
@@ -371,9 +419,6 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
             .arg(sanitizeQuotedString(fi.baseName())).toUtf8());
 
         device->write("tile_set = SubResource(\"TileSet_0\")\n");
-
-        if (map->orientation() != Map::Orthogonal)
-            throw tscnError("Godot exporter currently only supports orthogonal maps.");
 
         device->write("format = 2\n");
 

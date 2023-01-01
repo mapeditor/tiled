@@ -17,11 +17,6 @@ common parent folder containing a .godot project file and use that folder
 as the res:// root for the project. The exporter will search at least two
 parent folders for a .godot file.
 
-.. note::
-    The Godot 4 exporter is new an currently does not support non-orthogonal
-    tilemaps, collection of images tilesets, animations, object layers, or
-    image layers.
-
 Layers
 ~~~~~~
 
@@ -42,3 +37,12 @@ layer, including any child layers. This is useful if you use a layer for
 annotations (like adding background image or text objects) that you do not
 want exported to Godot. Note that any views defined on this layer will
 then also get ignored.
+
+Limitations
+~~~~~~~~~~~
+
+* The Godot 4 exporter does not currently support collection of images 
+  tilesets, animations, object layers, or image layers.
+* Godot's hexagonal maps only support :ref:`hex side lengths <tmx-map>`
+  that are exactly half the tile height. So if, for example, your tile 
+  height is 16, then your hex side length must be 8.
