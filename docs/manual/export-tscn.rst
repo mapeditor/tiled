@@ -17,14 +17,15 @@ common parent folder containing a .godot project file and use that folder
 as the res:// root for the project. The exporter will search at least two
 parent folders for a .godot file.
 
-Layers
-~~~~~~
+Layer Properties
+~~~~~~~~~~~~~~~~
 
 All layer types support the following custom properties:
 
 * bool ``ySortEnabled`` (default: false)
 * int ``zIndex`` (default: 0)
 * bool ``noExport`` (default: false)
+* bool ``tilesetOnly`` (default: blank)
 
 The ``ySortEnabled`` property can be used to change the drawing order to allow
 sprites to be drawn behind tiles based on their Y coordinate.
@@ -37,6 +38,33 @@ layer, including any child layers. This is useful if you use a layer for
 annotations (like adding background image or text objects) that you do not
 want exported to Godot. Note that any views defined on this layer will
 then also get ignored.
+
+The ``tilesetOnly`` property can be used if you want to export all the tilesets
+used in this layer, without actually exporting the layer itself. By default,
+the exporter will only export tilesets which are actually used in the map, so
+this property allows you to export tilesets that normally would otherwise get
+skipped. This is most useful in combination with the ``tilesetResPath``
+property, below.
+
+
+Map Properties
+~~~~~~~~~~~~~~
+
+Maps support the following custom property:
+
+* string ``tilesetResPath`` (default: blank)
+
+The ``tilesetResPath`` property saves the tileset to an external .tres file,
+allowing it to be shared between multiple maps more efficiently. This path 
+must be in the form of 'res://<path>.tres'. The tileset file will be
+overwritten every time the map is exported.
+
+.. note::
+
+    Only tilesets that are used in the current map will be exported. You
+    must ensure that every map which uses the same .tres file also uses *all*
+    of the same tilesets. You may wish to create a layer with the
+    ``tilesetOnly`` property to ensure the correct tilesets are exported.
 
 Limitations
 ~~~~~~~~~~~

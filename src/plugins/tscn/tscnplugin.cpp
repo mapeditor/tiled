@@ -116,7 +116,7 @@ struct TilesetInfo
 {
     QString id;             // The id for the Godot texture
     int atlasId = -1;       // The id for the Godot atlas
-    QSet<int> usedTiles;    // Tracks which tiles were actually used
+    QSet<int> usedTiles;    // Tracks which tiles have data
     SharedTileset tileset;
 };
 
@@ -129,21 +129,48 @@ struct AssetInfo
     std::unique_ptr<QString> resRoot;
 };
 
-// Search a layer for every tile that was used and store it in assetInfo
-static void findUsedTiles(const TileLayer* layer, AssetInfo& assetInfo) {
+// Adds a tileset to the assetInfo struct
+static void addTileset(Tileset* tileset, AssetInfo& assetInfo) {
+    if (tileset->isCollection())
+        throw tscnError("Cannot export tileset '%1' because the Godot exporter does not support collection-type tilesets", tileset->name());
+
+    auto resPath = imageSourceToRes(tileset, assetInfo.resRoot);
+    if (!assetInfo.tilesetInfo.contains(resPath)) {
+        auto& tilesetInfo = assetInfo.tilesetInfo[resPath];
+        if (!tilesetInfo.tileset)
+            tilesetInfo.tileset = tileset->sharedPointer();
+        
+        // Find the tiles that aren't blank and have no properties
+        auto image = tileset->image().toImage();
+        for (auto tile : tileset->tiles()) {
+            bool blank = true;
+
+            if (tile->className() != "" || tile->properties().count() > 0)
+                blank = false;
+
+            auto rect = tile->imageRect();
+            for (auto y = rect.y(); blank && y < rect.y() + rect.height(); ++y) {
+                for (auto x = rect.x(); blank && x < rect.x() + rect.width(); ++x) {
+                    if (image.pixelColor(x, y).alpha() != 0) {
+                        blank = false;
+                    }
+                }
+            }
+
+            if (!blank)
+                tilesetInfo.usedTiles.insert(tile->id());
+        }
+    }
+}
+
+// Search a layer for every tileset that was used and store it in assetInfo
+static void findUsedTilesets(const TileLayer* layer, AssetInfo& assetInfo) {
     auto bounds = layer->bounds();
     for (int y = bounds.y(); y < bounds.y() + bounds.height(); ++y) {
         for (int x = bounds.x(); x < bounds.x() + bounds.width(); ++x) {
             auto cell = layer->cellAt(x, y);
             if (!cell.isEmpty()) {
-                if (cell.tileset()->isCollection())
-                    throw tscnError("Cannot export layer '%1' because the Godot exporter does not support collection-type tilesets", layer->name());
-
-                auto resPath = imageSourceToRes(cell.tileset(), assetInfo.resRoot);
-                auto& tilesetInfo = assetInfo.tilesetInfo[resPath];
-                tilesetInfo.usedTiles.insert(cell.tileId());
-                if (!tilesetInfo.tileset)
-                    tilesetInfo.tileset = cell.tileset()->sharedPointer();
+                addTileset(cell.tileset(), assetInfo);
             }
         }
     }
@@ -161,8 +188,11 @@ static void collectAssetsRecursive(const QList<Layer*> &layers, AssetInfo& asset
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
                 auto tileLayer = static_cast<const TileLayer*>(layer);
-                findUsedTiles(tileLayer, assetInfo);
-                assetInfo.layers.push_back(tileLayer);
+                findUsedTilesets(tileLayer, assetInfo);
+
+                if (!layer->resolvedProperty("tilesetOnly").toBool())
+                    assetInfo.layers.push_back(tileLayer);
+
                 break;
             }
         case Layer::ObjectGroupType:
@@ -269,6 +299,142 @@ static bool exportTileCollisions(QFileDevice* device, const Tile* tile, QString 
     return foundCollisions;
 }
 
+// Write the tileset
+// If you're creating a reusable tileset file, pass in a new file device and
+// set isExternal to true, otherwise, reuse the device from the tscn file.
+static void writeTileset(const Map *map, QFileDevice* device, bool isExternal, AssetInfo& assetInfo) {
+    bool foundCollisions = false;
+
+    // One Texture2D and one TileSetAtlasSource per tileset, plus a resource node
+    auto loadSteps = assetInfo.tilesetInfo.size() * 2 + 1;
+
+    if (isExternal) {
+        device->write(QString("[gd_resource type=\"TileSet\" load_steps=%1 format=3]\n\n")
+            .arg(QString::number(loadSteps)).toUtf8());
+    }
+
+    // Texture2D nodes
+    for (auto it = assetInfo.tilesetInfo.begin(); it != assetInfo.tilesetInfo.end(); ++it) {
+        if (it->usedTiles.size() == 0)
+            continue;
+
+        device->write(QString("[ext_resource type=\"Texture2D\" path=\"%1\" id=\"%2\"]\n")
+            .arg(sanitizeQuotedString(it.key()), sanitizeQuotedString(it->id)).toUtf8());
+    }
+    device->write("\n");
+
+    // TileSetAtlasSource nodes
+    for (auto itTileset = assetInfo.tilesetInfo.begin(); itTileset != assetInfo.tilesetInfo.end(); ++itTileset) {
+        if (itTileset->usedTiles.size() == 0)
+            continue;
+
+        device->write(QString("[sub_resource type=\"TileSetAtlasSource\" id=\"TileSetAtlasSource_%1\"]\n")
+            .arg(QString::number(itTileset->atlasId)).toUtf8());
+
+        device->write(QString("texture = ExtResource(\"%1\")\n")
+            .arg(sanitizeQuotedString(itTileset->id)).toUtf8());
+
+        if (itTileset->tileset->margin() != 0)
+            device->write(QString("margins = Vector2i(%1, %1)\n")
+                .arg(QString::number(itTileset->tileset->margin())).toUtf8());
+
+        if (itTileset->tileset->tileSpacing() != 0)
+            device->write(QString("separation = Vector2i(%1, %1)\n")
+                .arg(QString::number(itTileset->tileset->tileSpacing())).toUtf8());
+
+        if (itTileset->tileset->tileWidth() != 16 || itTileset->tileset->tileHeight() != 16)
+            device->write(QString("texture_region_size = Vector2i(%1, %2)\n").arg(
+                QString::number(itTileset->tileset->tileWidth()),
+                QString::number(itTileset->tileset->tileHeight())).toUtf8());
+
+        // Tile info
+        for (auto tile : itTileset->tileset->tiles()) {
+            if (itTileset->usedTiles.contains(tile->id()) || tile->objectGroup()) {
+                // Tile existence
+                auto x = tile->id() % itTileset->tileset->columnCount();
+                auto y = tile->id() / itTileset->tileset->columnCount();
+                QString tileName = QString("%1:%2/0").arg(QString::number(x), QString::number(y));
+                device->write(tileName.toUtf8());
+                device->write(" = 0\n");
+
+                foundCollisions |= exportTileCollisions(device, tile, tileName);
+            }
+        }
+
+        device->write("\n");
+    }
+
+    // TileSet node
+    if (isExternal)
+        device->write("[resource]\n");
+    else
+        device->write("[sub_resource type=\"TileSet\" id=\"TileSet_0\"]\n");
+
+    {
+        int shape, layout;
+        switch (map->orientation()) {
+            case Map::Orthogonal:
+                shape = 0;
+                layout = 0;
+                break;
+            case Map::Staggered:
+                shape = 1;
+                layout = 0;
+                break;
+            case Map::Isometric:
+                shape = 1;
+                layout = 5;
+                break;
+            case Map::Hexagonal:
+                shape = 3;
+                layout = 0;
+
+                if (map->hexSideLength() != map->tileHeight() / 2)
+                    throw tscnError("Godot only supports hexagonal maps "
+                        "where the total side length is exactly half its "
+                        "height. For a tile height of %1, the Total Side "
+                        "Length should be set to %2.",
+                        QString::number(map->tileHeight()),
+                        QString::number(map->tileHeight() / 2));
+                break;
+            default:
+                throw tscnError("Unsupported tile orientation.");
+        }
+
+        // We could leave either of these out if they're zero, but as of
+        // Godot 4.0 Beta 10, the Godot editor doesn't properly reset these
+        // values to their defaults if they're missing.
+        device->write(QString("tile_shape = %1\ntile_layout = %2\n")
+            .arg(QString::number(shape), QString::number(layout))
+            .toUtf8());
+    }
+
+    if (foundCollisions)
+        device->write("physics_layer_0/collision_layer = 1\n");
+    
+    if (map->tileWidth() != 16 || map->tileHeight() != 16) {
+        // When Tiled renders odd-height hex tiles, it rounds down to an
+        // even tile height. This is particularly useful for the Godot
+        // exporter, because Godot's hex side length is always
+        // tileHeight / 2, but our side length is integral.
+        int tileHeight = map->tileHeight();
+        if (map->orientation() == Map::Hexagonal && tileHeight % 2 != 0)
+            --tileHeight;
+
+        device->write(QString("tile_size = Vector2i(%1, %2)\n").arg(
+            QString::number(map->tileWidth()),
+            QString::number(tileHeight))
+            .toUtf8());
+    }
+
+    for (auto it = assetInfo.tilesetInfo.begin(); it != assetInfo.tilesetInfo.end(); ++it)
+        device->write(QString("sources/%1 = SubResource(\"TileSetAtlasSource_%2\")\n").arg(
+            QString::number(it->atlasId), QString::number(it->atlasId)).toUtf8());
+
+    device->write("\n");
+}
+
+
 bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
 {
     Q_UNUSED(options)
@@ -287,138 +453,57 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
     try
     {
         AssetInfo assetInfo = collectAssets(map);
-        bool foundCollisions = false;
+        auto tilesetResPath = map->propertyAsString("tilesetResPath");
 
         // One TileSet, one TileMap, plus a Texture2D and TileSetAtlasSource per tileset
-        auto loadSteps = assetInfo.tilesetInfo.size() * 2 + 2;
+        // (unless we're writing the tileset to an external .tres file)
+        auto loadSteps = tilesetResPath != "" ? 2 : assetInfo.tilesetInfo.size() * 2 + 2;
 
         // gdscene node
         device->write(QString("[gd_scene load_steps=%1 format=3]\n\n").arg(QString::number(loadSteps)).toUtf8());
 
-        std::unique_ptr<QString> resRoot;
+        // tileset, either inline, or as an external file
+        if (tilesetResPath == "")
+            writeTileset(map, device, false, assetInfo);
+        else {
+            QRegularExpressionMatch match;
+            if (!tilesetResPath.contains(QRegularExpression("^res://(.*\\.tres)$"), &match))
+                throw tscnError("tilesetResPath must be in the form of 'res://<filename>.tres'.");
 
-        // Texture2D nodes
-        for (auto it = assetInfo.tilesetInfo.begin(); it != assetInfo.tilesetInfo.end(); ++it) {
-            if (it->usedTiles.size() == 0)
-                continue;
+            device->write(QString("[ext_resource type=\"TileSet\" path=\"%1\" id=\"TileSet_0\"]\n\n")
+                .arg(sanitizeQuotedString(tilesetResPath)).toUtf8());
 
-            device->write(QString("[ext_resource type=\"Texture2D\" path=\"%1\" id=\"%2\"]\n")
-                .arg(sanitizeQuotedString(it.key()), sanitizeQuotedString(it->id)).toUtf8());
-        }
-        device->write("\n");
+            QString resFileName = *assetInfo.resRoot + '/' + match.captured(1);
+            SaveFile tilesetFile(resFileName);
+            if (!tilesetFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+                mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
+                mError += QLatin1String("\n");
+                mError += resFileName;
+                return false;
+            }
+            auto tilesetDevice = tilesetFile.device();
 
-        // TileSetAtlasSource nodes
-        for (auto itTileset = assetInfo.tilesetInfo.begin(); itTileset != assetInfo.tilesetInfo.end(); ++itTileset) {
-            if (itTileset->usedTiles.size() == 0)
-                continue;
+            writeTileset(map, tilesetDevice, true, assetInfo);
 
-            device->write(QString("[sub_resource type=\"TileSetAtlasSource\" id=\"TileSetAtlasSource_%1\"]\n")
-                .arg(QString::number(itTileset->atlasId)).toUtf8());
-
-            device->write(QString("texture = ExtResource(\"%1\")\n")
-                .arg(sanitizeQuotedString(itTileset->id)).toUtf8());
-
-            if (itTileset->tileset->margin() != 0)
-                device->write(QString("margins = Vector2i(%1, %1)\n")
-                    .arg(QString::number(itTileset->tileset->margin())).toUtf8());
-
-            if (itTileset->tileset->tileSpacing() != 0)
-                device->write(QString("separation = Vector2i(%1, %1)\n")
-                    .arg(QString::number(itTileset->tileset->tileSpacing())).toUtf8());
-
-            if (itTileset->tileset->tileWidth() != 16 || itTileset->tileset->tileHeight() != 16)
-                device->write(QString("texture_region_size = Vector2i(%1, %2)\n").arg(
-                    QString::number(itTileset->tileset->tileWidth()),
-                    QString::number(itTileset->tileset->tileHeight())).toUtf8());
-
-            // Tile info
-            for (auto tile : itTileset->tileset->tiles()) {
-                if (itTileset->usedTiles.contains(tile->id()) || tile->objectGroup()) {
-                    // Tile existence
-                    auto x = tile->id() % itTileset->tileset->columnCount();
-                    auto y = tile->id() / itTileset->tileset->columnCount();
-                    QString tileName = QString("%1:%2/0").arg(QString::number(x), QString::number(y));
-                    device->write(tileName.toUtf8());
-                    device->write(" = 0\n");
-
-                    foundCollisions |= exportTileCollisions(device, tile, tileName);
-                }
+            if (tilesetFile.error() != QFileDevice::NoError) {
+                mError = tilesetFile.errorString();
+                return false;
             }
 
-            device->write("\n");
-        }
-
-        // TileSet node
-        device->write("[sub_resource type=\"TileSet\" id=\"TileSet_0\"]\n");
-
-        {
-            int shape, layout;
-            switch (map->orientation()) {
-                case Map::Orthogonal:
-                    shape = 0;
-                    layout = 0;
-                    break;
-                case Map::Staggered:
-                    shape = 1;
-                    layout = 0;
-                    break;
-                case Map::Isometric:
-                    shape = 1;
-                    layout = 5;
-                    break;
-                case Map::Hexagonal:
-                    shape = 3;
-                    layout = 0;
-
-                    if (map->hexSideLength() != map->tileHeight() / 2)
-                        throw tscnError("Godot only supports hexagonal maps "
-                            "where the total side length is exactly half its "
-                            "height. For a tile height of %1, the Total Side "
-                            "Length should be set to %2.",
-                            QString::number(map->tileHeight()),
-                            QString::number(map->tileHeight() / 2));
-                    break;
-                default:
-                    throw tscnError("Unsupported tile orientation.");
+            if (!tilesetFile.commit()) {
+                mError = tilesetFile.errorString();
+                return false;
             }
-
-            // We could leave either of these out if they're zero, but as of
-            // Godot 4.0 Beta 10, the Godot editor doesn't properly reset these
-            // values to their defaults if they're missing.
-            device->write(QString("tile_shape = %1\ntile_layout = %2\n")
-                .arg(QString::number(shape), QString::number(layout))
-                .toUtf8());
         }
-
-        if (foundCollisions)
-            device->write("physics_layer_0/collision_layer = 1\n");
-        
-        if (map->tileWidth() != 16 || map->tileHeight() != 16) {
-            // When Tiled renders odd-height hex tiles, it rounds down to an
-            // even tile height. This is particularly useful for the Godot
-            // exporter, because Godot's hex side length is always
-            // tileHeight / 2, but our side length is integral.
-            int tileHeight = map->tileHeight();
-            if (map->orientation() == Map::Hexagonal && tileHeight % 2 != 0)
-                --tileHeight;
-
-            device->write(QString("tile_size = Vector2i(%1, %2)\n").arg(
-                QString::number(map->tileWidth()),
-                QString::number(tileHeight))
-                .toUtf8());
-        }
-
-        for (auto it = assetInfo.tilesetInfo.begin(); it != assetInfo.tilesetInfo.end(); ++it)
-            device->write(QString("sources/%1 = SubResource(\"TileSetAtlasSource_%2\")\n").arg(
-                QString::number(it->atlasId), QString::number(it->atlasId)).toUtf8());
-
-        device->write("\n");
 
         // TileMap node
         device->write(QString("[node name=\"%1\" type=\"TileMap\"]\n")
             .arg(sanitizeQuotedString(fi.baseName())).toUtf8());
 
-        device->write("tile_set = SubResource(\"TileSet_0\")\n");
+        if (tilesetResPath == "")
+            device->write("tile_set = SubResource(\"TileSet_0\")\n");
+        else
+            device->write("tile_set = ExtResource(\"TileSet_0\")\n");
 
         device->write("format = 2\n");
 
