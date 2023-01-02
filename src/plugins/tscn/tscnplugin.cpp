@@ -117,6 +117,7 @@ struct TilesetInfo
     QString id;             // The id for the Godot texture
     int atlasId = -1;       // The id for the Godot atlas
     QSet<int> usedTiles;    // Tracks which tiles have data
+    QSet<int> reservedAnimationTiles; // Tiles reserved for animation frames
     SharedTileset tileset;
 };
 
@@ -374,9 +375,56 @@ static void writeTileset(const Map *map, QFileDevice* device, bool isExternal, A
 
         // Tile info
         for (auto tile : itTileset->tileset->tiles()) {
+            if (itTileset->reservedAnimationTiles.contains(tile->id()))
+                continue;
+
             if (itTileset->usedTiles.contains(tile->id()) || tile->objectGroup()) {
                 auto x = tile->id() % itTileset->tileset->columnCount();
                 auto y = tile->id() / itTileset->tileset->columnCount();
+
+                if (tile->isAnimated()) {
+                    auto lastTileId = tile->id() - 1;
+                    int columns = 0;
+
+                    // Check that the frames are in the correct order
+                    for (auto& frame : tile->frames()) {
+                        if (frame.tileId != lastTileId + 1) {
+                            if (columns == 0)
+                                columns = lastTileId - tile->id() + 1;
+
+                            if (frame.tileId != lastTileId - columns + 1 + itTileset->tileset->columnCount())
+                                throw tscnError("Tile animations must flow left-to-right, "
+                                    "top-to-bottom, with no skipped tiles.");   
+                        }
+
+                        lastTileId = frame.tileId;
+                    }
+
+                    device->write(QString("%1:%2/animation_frames = %3\n").arg(
+                        QString::number(x),
+                        QString::number(y),
+                        QString::number(tile->frames().size())).toUtf8());
+
+                    if (columns != 0)
+                        device->write(QString("%1:%2/animation_columns = %3\n").arg(
+                            QString::number(x),
+                            QString::number(y),
+                            QString::number(columns)).toUtf8());
+
+                    int frameNum = 0;
+                    for (auto& frame : tile->frames()) {
+                        device->write(QString("%1:%2/animation_frame_%3/duration = %4\n").arg(
+                            QString::number(x),
+                            QString::number(y),
+                            QString::number(frameNum),
+                            QString::number(frame.duration / 1000.0)).toUtf8());
+
+                        if (frame.tileId != tile->id())
+                            itTileset->reservedAnimationTiles.insert(frame.tileId);
+
+                        frameNum++;
+                    }
+                }
 
                 // If we're using alternate tiles, give a hint for the next alt ID
                 if (hasAlternates)
@@ -592,6 +640,12 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
                     if (!cell.isEmpty()) {
                         auto resPath = imageSourceToRes(cell.tile()->tileset(), assetInfo.resRoot);
                         auto& tilesetInfo = assetInfo.tilesetInfo[resPath];
+
+                        if (tilesetInfo.reservedAnimationTiles.contains(cell.tileId()))
+                            throw tscnError("Cannot use tile %1 from tileset %2 because it is "
+                                "reserved as an animation frame.",
+                                QString::number(cell.tileId()),
+                                cell.tileset()->name());
 
                         int alt = 0;
                         if (cell.rotatedHexagonal120())

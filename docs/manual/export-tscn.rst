@@ -82,8 +82,11 @@ Limitations
 ~~~~~~~~~~~
 
 * The Godot 4 exporter does not currently support collection of images 
-  tilesets, animations, object layers, or image layers.
+  tilesets, object layers, or image layers.
 * Godot's hexagonal maps only support :ref:`hex side lengths <tmx-map>`
   that are exactly half the tile height. So if, for example, your tile 
   height is 16, then your hex side length must be 8.
 * Godot's hexagonal maps do not support 120° tile rotations.
+* Animations frames must strictly go from left-to-right and top-to-bottom,
+  without skipping any frames, and animation frames may not be used for
+  anything else.
