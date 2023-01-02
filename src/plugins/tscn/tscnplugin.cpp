@@ -242,8 +242,23 @@ static AssetInfo collectAssets(const Map *map)
     return assetInfo;
 }
 
+enum FlippedState {
+    FlippedH = 1,
+    FlippedV = 2,
+    Transposed = 4
+};
+
+static void flipState(double& x, double& y, int flippedState) {
+    if (flippedState & Transposed)
+        std::swap(x, y);
+    if (flippedState & FlippedH)
+        x *= -1;
+    if (flippedState & FlippedV)
+        y *= -1;
+}
+
 // Export a tile's object groups as Godot physics layers
-static bool exportTileCollisions(QFileDevice* device, const Tile* tile, QString tileName)
+static bool exportTileCollisions(QFileDevice* device, const Tile* tile, QString tileName, int flippedState)
 {
     bool foundCollisions = false;
 
@@ -268,6 +283,9 @@ static bool exportTileCollisions(QFileDevice* device, const Tile* tile, QString 
                     auto x2 = object->width() - centerX;
                     auto y2 = object->height() - centerY;
 
+                    flipState(x1, y1, flippedState);
+                    flipState(x2, y2, flippedState);
+
                     device->write(QString("%1, %2, %3, %2, %3, %4, %1, %4")
                         .arg(QString::number(x1), QString::number(y1), QString::number(x2), QString::number(y2))
                         .toUtf8());
@@ -280,9 +298,12 @@ static bool exportTileCollisions(QFileDevice* device, const Tile* tile, QString 
                     for (auto point : polygon) {
                         if (!first)
                             device->write(", ");
-                        device->write(QString::number(point.x() - centerX).toUtf8());
+                        auto x = point.x() - centerX;
+                        auto y = point.y() - centerY;
+                        flipState(x, y, flippedState);
+                        device->write(QString::number(x).toUtf8());
                         device->write(", ");
-                        device->write(QString::number(point.y() - centerY).toUtf8());
+                        device->write(QString::number(y).toUtf8());
                         first = false;
                     }
                     break;
@@ -347,17 +368,45 @@ static void writeTileset(const Map *map, QFileDevice* device, bool isExternal, A
                 QString::number(itTileset->tileset->tileWidth()),
                 QString::number(itTileset->tileset->tileHeight())).toUtf8());
 
+        bool hasAlternates = itTileset->tileset->resolvedProperty("exportAlternates").toBool();
+
+        unsigned maxAlternate = hasAlternates ? FlippedH|FlippedV|Transposed : 0;
+
         // Tile info
         for (auto tile : itTileset->tileset->tiles()) {
             if (itTileset->usedTiles.contains(tile->id()) || tile->objectGroup()) {
-                // Tile existence
                 auto x = tile->id() % itTileset->tileset->columnCount();
                 auto y = tile->id() / itTileset->tileset->columnCount();
-                QString tileName = QString("%1:%2/0").arg(QString::number(x), QString::number(y));
-                device->write(tileName.toUtf8());
-                device->write(" = 0\n");
 
-                foundCollisions |= exportTileCollisions(device, tile, tileName);
+                // If we're using alternate tiles, give a hint for the next alt ID
+                if (hasAlternates)
+                    device->write(QString("%1:%2/next_alternative_id = 8\n").arg(
+                        QString::number(x),
+                        QString::number(y)).toUtf8());
+
+                for (unsigned alt = 0; alt <= maxAlternate; ++alt) {
+                    QString tileName = QString("%1:%2/%3").arg(
+                        QString::number(x),
+                        QString::number(y),
+                        QString::number(alt));
+
+                    // Tile presence
+                    device->write(QString("%1 = %2\n")
+                        .arg(tileName, QString::number(alt)).toUtf8());
+                    
+                    // Flip/rotate
+                    if (alt & FlippedH)
+                        device->write(QString("%1/flip_h = true\n")
+                            .arg(tileName).toUtf8());
+                    if (alt & FlippedV)
+                        device->write(QString("%1/flip_v = true\n")
+                            .arg(tileName).toUtf8());
+                    if (alt & Transposed)
+                        device->write(QString("%1/transpose = true\n")
+                            .arg(tileName).toUtf8());
+
+                    foundCollisions |= exportTileCollisions(device, tile, tileName, alt);
+                }
             }
         }
 
@@ -512,7 +561,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         // Where:
         //   DestLocation = (DestX >= 0 ? DestY : DestY + 1) * 65536 + DestX
         //   SrcX         = SrcX * 65536 + TileSetId
-        //   SrcY         = SrcY
+        //   SrcY         = SrcY + 65536 * AlternateId
         int layerIndex = 0;
         for (auto layer : assetInfo.layers) {
             device->write(QString("layer_%1/name = \"%2\"\n").arg(
@@ -543,11 +592,26 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
                     if (!cell.isEmpty()) {
                         auto resPath = imageSourceToRes(cell.tile()->tileset(), assetInfo.resRoot);
                         auto& tilesetInfo = assetInfo.tilesetInfo[resPath];
+
+                        int alt = 0;
+                        if (cell.rotatedHexagonal120())
+                            throw tscnError("Cannot export hex tiles that are rotated by 120° degrees.");
+                        if (cell.flippedHorizontally())
+                            alt |= FlippedH;
+                        if (cell.flippedVertically())
+                            alt |= FlippedV;
+                        if (cell.flippedAntiDiagonally())
+                            alt |= Transposed;
+                        if (alt && !cell.tileset()->resolvedProperty("exportAlternates").toBool())
+                            throw tscnError("Map uses flipped/rotated tiles. The tileset must have "
+                                "the custom exportAlternates property enabled to export this map.");
+
                         int destLocation = (x >= 0 ? y : y + 1) * 65536 + x;
                         int srcX = cell.tileId() % cell.tileset()->columnCount();
                         srcX *= 65536;
                         srcX += tilesetInfo.atlasId;
                         int srcY = cell.tileId() / cell.tileset()->columnCount();
+                        srcY += alt * 65536;     
 
                         if (!first) {
                             device->write(", ");

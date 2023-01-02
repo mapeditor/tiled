@@ -43,9 +43,21 @@ The ``tilesetOnly`` property can be used if you want to export all the tilesets
 used in this layer, without actually exporting the layer itself. By default,
 the exporter will only export tilesets which are actually used in the map, so
 this property allows you to export tilesets that normally would otherwise get
-skipped. This is most useful in combination with the ``tilesetResPath``
-property, below.
+skipped. This is most useful in combination with the :ref:`tilesetResPath
+property <godot4-map-properties>`.
 
+Tileset Properties
+~~~~~~~~~~~~~~~~~~
+
+Tilesets support the following property:
+
+* bool ``exportAlternates`` (default: false)
+
+The ``exportAlternates`` property is necessary when using flipped or rotated
+tiles. This will create 7 alternate tiles for each tile, allowing all flipped
+and rotation combinations.
+
+.. _godot4-map-properties:
 
 Map Properties
 ~~~~~~~~~~~~~~
@@ -74,3 +86,4 @@ Limitations
 * Godot's hexagonal maps only support :ref:`hex side lengths <tmx-map>`
   that are exactly half the tile height. So if, for example, your tile 
   height is 16, then your hex side length must be 8.
+* Godot's hexagonal maps do not support 120° tile rotations.
