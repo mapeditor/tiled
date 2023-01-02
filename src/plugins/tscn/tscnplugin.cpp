@@ -45,13 +45,13 @@ TscnPlugin::TscnPlugin()
 }
 
 // Convenience functions for throwing translated errors
-static std::invalid_argument tscnError(const char* error)
+static std::invalid_argument tscnError(const char *error)
 {
     return std::invalid_argument(QCoreApplication::translate("TscnPlugin", error).toStdString());
 }
 
 template <typename... Types>
-static std::invalid_argument tscnError(const char* error, Types... args)
+static std::invalid_argument tscnError(const char *error, Types... args)
 {
     return std::invalid_argument(
         QCoreApplication::translate("TscnPlugin", error).arg(args...).toStdString()
@@ -84,24 +84,23 @@ static QString determineResRoot(const QString &filePath)
 }
 
 // Converts a tileset's image source to a res:// path
-// If resRoot is null, this will find the nearest .godot project and set that to the resRoot,
+// If resRoot is empty, this will find the nearest .godot project and set that to the resRoot,
 // otherwise, it will ensure that the image source is a child of resRoot.
-static QString imageSourceToRes(const Tileset* tileset, std::unique_ptr<QString>& resRoot)
+static QString imageSourceToRes(const Tileset *tileset, QString &resRoot)
 {
     auto filePath = tileset->imageSource().toLocalFile();
 
-    if (!resRoot) {
-        resRoot = std::make_unique<QString>(determineResRoot(filePath));
-    }
+    if (resRoot.isEmpty())
+        resRoot = determineResRoot(filePath);
 
-    if(!filePath.startsWith(*resRoot)) {
+    if(!filePath.startsWith(resRoot)) {
         throw tscnError(
             "All files must share the same project root. File '%1' does not share project root '%2'.",
             filePath,
-            *resRoot);
+            resRoot);
     }
 
-    return "res:/" + filePath.right(filePath.length() - resRoot->length());
+    return "res:/" + filePath.right(filePath.length() - resRoot.length());
 }
 
 // Replace any instance of " with \" so you can include it in a quoted string
@@ -127,11 +126,11 @@ struct AssetInfo
     QMap<QString, TilesetInfo> tilesetInfo;
     QList<const TileLayer*> layers;
     QSet<QString> tilesetIds;
-    std::unique_ptr<QString> resRoot;
+    QString resRoot;
 };
 
 // Adds a tileset to the assetInfo struct
-static void addTileset(Tileset* tileset, AssetInfo& assetInfo) {
+static void addTileset(Tileset *tileset, AssetInfo &assetInfo) {
     if (tileset->isCollection())
         throw tscnError("Cannot export tileset '%1' because the Godot exporter does not support collection-type tilesets", tileset->name());
 
@@ -146,7 +145,7 @@ static void addTileset(Tileset* tileset, AssetInfo& assetInfo) {
         for (auto tile : tileset->tiles()) {
             bool blank = true;
 
-            if (tile->className() != "" || tile->properties().count() > 0)
+            if (!tile->className().isEmpty() || !tile->properties().isEmpty())
                 blank = false;
 
             auto rect = tile->imageRect();
@@ -165,7 +164,7 @@ static void addTileset(Tileset* tileset, AssetInfo& assetInfo) {
 }
 
 // Search a layer for every tileset that was used and store it in assetInfo
-static void findUsedTilesets(const TileLayer* layer, AssetInfo& assetInfo) {
+static void findUsedTilesets(const TileLayer *layer, AssetInfo &assetInfo) {
     auto bounds = layer->bounds();
     for (int y = bounds.y(); y < bounds.y() + bounds.height(); ++y) {
         for (int x = bounds.x(); x < bounds.x() + bounds.width(); ++x) {
@@ -178,7 +177,7 @@ static void findUsedTilesets(const TileLayer* layer, AssetInfo& assetInfo) {
 }
 
 // Used by collectAssets() to search all layers and layer groups
-static void collectAssetsRecursive(const QList<Layer*> &layers, AssetInfo& assetInfo)
+static void collectAssetsRecursive(const QList<Layer*> &layers, AssetInfo &assetInfo)
 {
     for(auto it = layers.rbegin(); it != layers.rend(); ++it) {
         const Layer *layer = *it;
@@ -259,7 +258,7 @@ static void flipState(double& x, double& y, int flippedState) {
 }
 
 // Export a tile's object groups as Godot physics layers
-static bool exportTileCollisions(QFileDevice* device, const Tile* tile, QString tileName, int flippedState)
+static bool exportTileCollisions(QFileDevice *device, const Tile *tile, QString tileName, int flippedState)
 {
     bool foundCollisions = false;
 
@@ -324,7 +323,7 @@ static bool exportTileCollisions(QFileDevice* device, const Tile* tile, QString 
 // Write the tileset
 // If you're creating a reusable tileset file, pass in a new file device and
 // set isExternal to true, otherwise, reuse the device from the tscn file.
-static void writeTileset(const Map *map, QFileDevice* device, bool isExternal, AssetInfo& assetInfo) {
+static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, AssetInfo &assetInfo) {
     bool foundCollisions = false;
 
     // One Texture2D and one TileSetAtlasSource per tileset, plus a resource node
@@ -337,7 +336,7 @@ static void writeTileset(const Map *map, QFileDevice* device, bool isExternal, A
 
     // Texture2D nodes
     for (auto it = assetInfo.tilesetInfo.begin(); it != assetInfo.tilesetInfo.end(); ++it) {
-        if (it->usedTiles.size() == 0)
+        if (it->usedTiles.isEmpty())
             continue;
 
         device->write(QString("[ext_resource type=\"Texture2D\" path=\"%1\" id=\"%2\"]\n")
@@ -347,7 +346,7 @@ static void writeTileset(const Map *map, QFileDevice* device, bool isExternal, A
 
     // TileSetAtlasSource nodes
     for (auto itTileset = assetInfo.tilesetInfo.begin(); itTileset != assetInfo.tilesetInfo.end(); ++itTileset) {
-        if (itTileset->usedTiles.size() == 0)
+        if (itTileset->usedTiles.isEmpty())
             continue;
 
         device->write(QString("[sub_resource type=\"TileSetAtlasSource\" id=\"TileSetAtlasSource_%1\"]\n")
@@ -371,7 +370,7 @@ static void writeTileset(const Map *map, QFileDevice* device, bool isExternal, A
 
         bool hasAlternates = itTileset->tileset->resolvedProperty("exportAlternates").toBool();
 
-        unsigned maxAlternate = hasAlternates ? FlippedH|FlippedV|Transposed : 0;
+        unsigned maxAlternate = hasAlternates ? FlippedH | FlippedV | Transposed : 0;
 
         // Tile info
         for (auto tile : itTileset->tileset->tiles()) {
@@ -554,13 +553,13 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
 
         // One TileSet, one TileMap, plus a Texture2D and TileSetAtlasSource per tileset
         // (unless we're writing the tileset to an external .tres file)
-        auto loadSteps = tilesetResPath != "" ? 2 : assetInfo.tilesetInfo.size() * 2 + 2;
+        auto loadSteps = !tilesetResPath.isEmpty() ? 2 : assetInfo.tilesetInfo.size() * 2 + 2;
 
         // gdscene node
         device->write(QString("[gd_scene load_steps=%1 format=3]\n\n").arg(QString::number(loadSteps)).toUtf8());
 
         // tileset, either inline, or as an external file
-        if (tilesetResPath == "")
+        if (tilesetResPath.isEmpty())
             writeTileset(map, device, false, assetInfo);
         else {
             QRegularExpressionMatch match;
@@ -570,7 +569,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
             device->write(QString("[ext_resource type=\"TileSet\" path=\"%1\" id=\"TileSet_0\"]\n\n")
                 .arg(sanitizeQuotedString(tilesetResPath)).toUtf8());
 
-            QString resFileName = *assetInfo.resRoot + '/' + match.captured(1);
+            QString resFileName = assetInfo.resRoot + '/' + match.captured(1);
             SaveFile tilesetFile(resFileName);
             if (!tilesetFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
                 mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
@@ -597,7 +596,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         device->write(QString("[node name=\"%1\" type=\"TileMap\"]\n")
             .arg(sanitizeQuotedString(fi.baseName())).toUtf8());
 
-        if (tilesetResPath == "")
+        if (tilesetResPath.isEmpty())
             device->write("tile_set = SubResource(\"TileSet_0\")\n");
         else
             device->write("tile_set = ExtResource(\"TileSet_0\")\n");
