@@ -251,10 +251,11 @@ QVector<ActionLocatorSource::Match> ActionLocatorSource::findActions(const QStri
     QVector<Match> result;
 
     for (const Id &actionId : actions) {
-        const QAction *action = ActionManager::action(actionId);
-        if (!action->isEnabled())
-            continue;
         if (actionId == searchActionsId)
+            continue;
+
+        const auto action = ActionManager::findEnabledAction(actionId);
+        if (!action)
             continue;
 
         // remove single & characters
@@ -302,7 +303,7 @@ void ActionLocatorSource::setFilterWords(const QStringList &words)
 void ActionLocatorSource::activate(const QModelIndex &index)
 {
     const Id actionId = mMatches.at(index.row()).actionId;
-    if (auto action = ActionManager::findAction(actionId))
+    if (auto action = ActionManager::findEnabledAction(actionId))
         action->trigger();
 }
 

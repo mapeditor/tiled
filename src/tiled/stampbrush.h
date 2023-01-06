@@ -49,6 +49,7 @@ public:
     StampBrush(QObject *parent = nullptr);
     ~StampBrush() override;
 
+    void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;

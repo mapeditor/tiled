@@ -130,7 +130,21 @@ AbstractObjectTool::AbstractObjectTool(Id id,
     connect(mRotateLeft, &QAction::triggered, this, &AbstractObjectTool::rotateLeft);
     connect(mRotateRight, &QAction::triggered, this, &AbstractObjectTool::rotateRight);
 
+    setActionsEnabled(false);
+
     AbstractObjectTool::languageChanged();
+}
+
+void AbstractObjectTool::activate(MapScene *scene)
+{
+    AbstractTool::activate(scene);
+    setActionsEnabled(true);
+}
+
+void AbstractObjectTool::deactivate(MapScene *scene)
+{
+    setActionsEnabled(false);
+    AbstractTool::deactivate(scene);
 }
 
 void AbstractObjectTool::keyPressed(QKeyEvent *event)
@@ -737,6 +751,14 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
         mapDocument()->moveObjectsToGroup(selectedObjects, objectGroup);
         mapDocument()->setSelectedObjects(selectedObjectsCopy);
     }
+}
+
+void AbstractObjectTool::setActionsEnabled(bool enabled)
+{
+    mFlipHorizontal->setEnabled(enabled);
+    mFlipVertical->setEnabled(enabled);
+    mRotateLeft->setEnabled(enabled);
+    mRotateRight->setEnabled(enabled);
 }
 
 #include "moc_abstractobjecttool.cpp"
