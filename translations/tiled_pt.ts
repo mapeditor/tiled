@@ -26,8 +26,8 @@
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Editor de Mapas&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-%2 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(veja o arquivo AUTHORS para a lista completa de contribuidores)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Você ode modificar e redistribuir este programa sob os termos da licença GPL (versão 2 ou posterior). Uma cópia da GPL está contida no arquivo &apos;COPYING&apos; distribuído com o Tiled.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-%2 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(veja o ficheiro AUTHORS para a lista completa de contribuidores)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Você ode modificar e redistribuir este programa sob os termos da licença GPL (versão 2 ou posterior). Uma cópia da GPL está contida no ficheiro &apos;COPYING&apos; distribuído com o Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
@@ -60,12 +60,12 @@
     <message>
         <location line="+11"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
-        <translation>Extensão de arquivo não exclusivo. Não é possível determinar formato de exportação correto.</translation>
+        <translation>Extensão de ficheiro não exclusivo. Não é possível determinar formato de exportação correto.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>No exporter found for target file.</source>
-        <translation>Nenhum exportador encontrado para o arquivo de destino.</translation>
+        <translation>Nenhum exportador encontrado para o ficheiro de destino.</translation>
     </message>
     <message>
         <location line="+165"/>
@@ -80,7 +80,7 @@
     <message>
         <location line="+13"/>
         <source>Missing argument, evaluate a script using: --evaluate &lt;script-file&gt; [args]</source>
-        <translation>Argumento ausente, avalie um script usando: --evaluate &lt;arquivo_do_script&gt; [args]</translation>
+        <translation>Argumento ausente, avalie um script usando: --evaluate &lt;ficheiro_do_script&gt; [args]</translation>
     </message>
     <message>
         <location line="+122"/>
@@ -90,7 +90,7 @@
     <message>
         <location line="+15"/>
         <source>Failed to export map to target file.</source>
-        <translation>Falha ao exportar mapa para o arquivo de destino.</translation>
+        <translation>Falha ao exportar mapa para o ficheiro de destino.</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -105,12 +105,12 @@
     <message>
         <location line="+14"/>
         <source>Failed to export tileset to target file.</source>
-        <translation>Falha ao exportar o conjunto de blocos para o arquivo de destino.</translation>
+        <translation>Falha ao exportar o conjunto de blocos para o ficheiro de destino.</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Project file &apos;%1&apos; not found.</source>
-        <translation>Arquivo de projeto &apos;%1&apos; não encontrado.</translation>
+        <translation>Ficheiro de projeto &apos;%1&apos; não encontrado.</translation>
     </message>
 </context>
 <context>
@@ -161,7 +161,7 @@
     <message>
         <location line="+20"/>
         <source>Minimize the exported file by omitting unnecessary whitespace</source>
-        <translation>Minimizar o arquivo exportado ao omitir espaços em branco desnecessários</translation>
+        <translation>Minimizar o ficheiro exportado ao omitir espaços em branco desnecessários</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -288,7 +288,7 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+166"/>
         <source>CSV files (*.csv)</source>
-        <translation>Arquivos CSV (*.csv)</translation>
+        <translation>Ficheiros CSV (*.csv)</translation>
     </message>
 </context>
 <context>
@@ -335,7 +335,7 @@
     <message>
         <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
         <source>This is not a valid Droidcraft map file!</source>
-        <translation>Este não é um arquivo de mapa Droidcraft válido!</translation>
+        <translation>Este não é um ficheiro de mapa Droidcraft válido!</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -350,7 +350,7 @@
     <message>
         <location line="+38"/>
         <source>Droidcraft map files (*.dat)</source>
-        <translation>Arquivos de mapa Droidcraft(*.dat)</translation>
+        <translation>Ficheiros de mapa Droidcraft(*.dat)</translation>
     </message>
 </context>
 <context>
@@ -432,7 +432,7 @@
         <location filename="../src/tiled/propertytypeseditor.cpp" line="+743"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+745"/>
         <source>Could not open file for writing.</source>
-        <translation>Impossível abrir o arquivo para escrita.</translation>
+        <translation>Impossível abrir o ficheiro para escrita.</translation>
     </message>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+133"/>
@@ -447,7 +447,7 @@
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-57"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="-55"/>
         <source>Could not open file for reading.</source>
-        <translation>Impossível abrir o arquivo para leitura.</translation>
+        <translation>Impossível abrir o ficheiro para leitura.</translation>
     </message>
     <message>
         <location filename="../src/tiled/utils.cpp" line="+535"/>
@@ -462,12 +462,12 @@
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="+64"/>
         <source>Automapping Rules files (*.txt)</source>
-        <translation>Arquivo de Regras de Auto-mapeamento (*.txt)</translation>
+        <translation>Ficheiro de Regras de Auto-mapeamento (*.txt)</translation>
     </message>
     <message>
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-595"/>
         <source>Custom Types files (*.json)</source>
-        <translation>Tipos de arquivos customizados (*.json)</translation>
+        <translation>Tipos de ficheiros customizados (*.json)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -505,7 +505,7 @@
     <message>
         <location line="+16"/>
         <source>Flare map files (*.txt)</source>
-        <translation>Arquivos de mapa Flare (*.txt)</translation>
+        <translation>Ficheiros de mapa Flare (*.txt)</translation>
     </message>
 </context>
 <context>
@@ -522,35 +522,35 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-251"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-251"/>
         <source>Error parsing file: %1</source>
-        <translation>Erro ao interpretar arquivo: %1</translation>
+        <translation>Erro ao interpretar ficheiro: %1</translation>
     </message>
     <message>
         <location line="+59"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+59"/>
         <source>Error while writing file:
 %1</source>
-        <translation>Erro ao escrever o arquivo:
+        <translation>Erro ao escrever o ficheiro:
 %1</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>JSON map files (*.tmj *.json)</source>
-        <translation>Arquivos de mapa JSON (*.tmj *.json)</translation>
+        <translation>Ficheiros de mapa JSON (*.tmj *.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files (*.js)</source>
-        <translation>Arquivos de mapa JavaScript (*.js)</translation>
+        <translation>Ficheiros de mapa JavaScript (*.js)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+15"/>
         <source>JSON map files [Tiled 1.1] (*.json)</source>
-        <translation>Arquivos de mapa JSON [Tiled 1.1] (*.json)</translation>
+        <translation>Ficheiros de mapa JSON [Tiled 1.1] (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files [Tiled 1.1] (*.js)</source>
-        <translation>Arquivos de mapa JavaScript [Tiled 1.1] (*.js)</translation>
+        <translation>Ficheiros de mapa JavaScript [Tiled 1.1] (*.js)</translation>
     </message>
 </context>
 <context>
@@ -559,25 +559,25 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+183"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+183"/>
         <source>Error parsing file: %1</source>
-        <translation>Erro ao interpretar arquivo: %1</translation>
+        <translation>Erro ao interpretar ficheiro: %1</translation>
     </message>
     <message>
         <location line="+57"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+57"/>
         <source>Error while writing file:
 %1</source>
-        <translation>Erro ao escrever o arquivo:
+        <translation>Erro ao escrever o ficheiro:
 %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>JSON template files (*.tj *.json)</source>
-        <translation>Arquivos de modelo JSON (*.tj *.json)</translation>
+        <translation>Ficheiros de modelo JSON (*.tj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
         <source>JSON template files [Tiled 1.1] (*.json)</source>
-        <translation>Arquivos de modelo JSON [Tiled 1.1] (*.json)</translation>
+        <translation>Ficheiros de modelo JSON [Tiled 1.1] (*.json)</translation>
     </message>
 </context>
 <context>
@@ -586,25 +586,25 @@
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-180"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-180"/>
         <source>Error parsing file: %1</source>
-        <translation>Erro ao interpretar arquivo: %1</translation>
+        <translation>Erro ao interpretar ficheiro: %1</translation>
     </message>
     <message>
         <location line="+64"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+64"/>
         <source>Error while writing file:
 %1</source>
-        <translation>Erro ao escrever o arquivo:
+        <translation>Erro ao escrever o ficheiro:
 %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>JSON tileset files (*.tsj *.json)</source>
-        <translation>Arquivos de conjunto de blocos JSON (*.tsj *.json)</translation>
+        <translation>Ficheiros de conjunto de blocos JSON (*.tsj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
         <source>JSON tileset files [Tiled 1.1] (*.json)</source>
-        <translation>Arquivos de conjunto de blocos JSON [Tiled 1.1] (*.json)</translation>
+        <translation>Ficheiros de conjunto de blocos JSON [Tiled 1.1] (*.json)</translation>
     </message>
 </context>
 <context>
@@ -612,7 +612,7 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="-20"/>
         <source>Lua files (*.lua)</source>
-        <translation>Arquivos Lua (*.lua)</translation>
+        <translation>Ficheiros Lua (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -620,7 +620,7 @@
     <message>
         <location line="+45"/>
         <source>Lua files (*.lua)</source>
-        <translation>Arquivos Lua (*.lua)</translation>
+        <translation>Ficheiros Lua (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -628,7 +628,7 @@
     <message>
         <location filename="../src/tiled/mainwindow.ui" line="+46"/>
         <source>&amp;File</source>
-        <translation>&amp;Arquivo</translation>
+        <translation>&amp;Ficheiro</translation>
     </message>
     <message>
         <location line="+63"/>
@@ -818,7 +818,7 @@
     <message>
         <location line="+5"/>
         <source>Open File in &amp;Project...</source>
-        <translation>Abrir Arquivo no &amp;Projeto...</translation>
+        <translation>Abrir Ficheiro no &amp;Projeto...</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -978,7 +978,7 @@
     <message>
         <location line="-444"/>
         <source>&amp;Recent Files</source>
-        <translation>Arquivos &amp;Recentes</translation>
+        <translation>Ficheiros &amp;Recentes</translation>
     </message>
     <message>
         <location line="+155"/>
@@ -988,7 +988,7 @@
     <message>
         <location line="+30"/>
         <source>&amp;Open File or Project...</source>
-        <translation>&amp;Abrir Arquivo ou Projeto...</translation>
+        <translation>&amp;Abrir Ficheiro ou Projeto...</translation>
     </message>
     <message>
         <location line="+95"/>
@@ -1043,12 +1043,12 @@
     <message>
         <location line="+12"/>
         <source>Clear Recent Files</source>
-        <translation>Limpar Arquivos Recentes</translation>
+        <translation>Limpar Ficheiros Recentes</translation>
     </message>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+848"/>
         <source>All Files (*)</source>
-        <translation>Todos os Arquivos (*)</translation>
+        <translation>Todos os Ficheiros (*)</translation>
     </message>
 </context>
 <context>
@@ -1064,17 +1064,17 @@
     <message>
         <location filename="../src/libtiled/mapreader.cpp" line="+166"/>
         <source>Not a map file.</source>
-        <translation>Não é um arquivo de Mapa.</translation>
+        <translation>Não é um ficheiro de Mapa.</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Not a tileset file.</source>
-        <translation>Não é um arquivo de conjunto de blocos.</translation>
+        <translation>Não é um ficheiro de conjunto de blocos.</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Not a template file.</source>
-        <translation>Não é um arquivo de modelo.</translation>
+        <translation>Não é um ficheiro de modelo.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1088,12 +1088,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+10"/>
         <source>File not found: %1</source>
-        <translation>Arquivo não encontrado: %1</translation>
+        <translation>Ficheiro não encontrado: %1</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unable to read file: %1</source>
-        <translation>Incapaz de ler arquivo: %1</translation>
+        <translation>Incapaz de ler ficheiro: %1</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -1379,7 +1379,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
         <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation>&lt;font size=&quot;+2&quot;&gt;Sem Arquivos Abertos&lt;/font&gt;</translation>
+        <translation>&lt;font size=&quot;+2&quot;&gt;Sem Ficheiros Abertos&lt;/font&gt;</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -1423,17 +1423,17 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/libtiled/objecttypes.cpp" line="+252"/>
         <source>Could not open file for writing.</source>
-        <translation>Impossível abrir arquivo para escrita.</translation>
+        <translation>Impossível abrir ficheiro para escrita.</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Could not open file.</source>
-        <translation>Impossível abrir arquivo.</translation>
+        <translation>Impossível abrir ficheiro.</translation>
     </message>
     <message>
         <location line="-90"/>
         <source>File doesn&apos;t contain object types.</source>
-        <translation>O arquivo não contem tipos de objetos.</translation>
+        <translation>O ficheiro não contem tipos de objetos.</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -1614,12 +1614,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-315"/>
         <source>Turn this off if you&apos;re having trouble saving your files.</source>
-        <translation>Desative isso se estiver tendo problemas para salvar seus arquivos.</translation>
+        <translation>Desative isso se estiver tendo problemas para salvar seus ficheiros.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Use safe writing of files</source>
-        <translation>Usar escrita segura de arquivos</translation>
+        <translation>Usar escrita segura de ficheiros</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1684,7 +1684,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-37"/>
         <source>Mouse wheel &amp;zooms by default</source>
-        <translation>A roda mouse é responsável pelo &amp;zoom por padrão</translation>
+        <translation>A roda do rato é responsável pelo &amp;zoom por padrão</translation>
     </message>
     <message>
         <location line="-211"/>
@@ -2306,12 +2306,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="-186"/>
         <source>Cannot open Replica Island map file!</source>
-        <translation>Não é possível abrir o arquivo de mapa do Replica Island!</translation>
+        <translation>Não é possível abrir o ficheiro de mapa do Replica Island!</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Can&apos;t parse file header!</source>
-        <translation>não é possível interpretar cabeçalho do arquivo!</translation>
+        <translation>não é possível interpretar cabeçalho do ficheiro!</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -2326,17 +2326,17 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+20"/>
         <source>File ended in middle of layer!</source>
-        <translation>O arquivo terminou no meio da camada!</translation>
+        <translation>O ficheiro terminou no meio da camada!</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Unexpected data at end of file!</source>
-        <translation>Dados inesperados no final do arquivo!</translation>
+        <translation>Dados inesperados no final do ficheiro!</translation>
     </message>
     <message>
         <location line="+64"/>
         <source>Replica Island map files (*.bin)</source>
-        <translation>Arquivos de mapa do Replica Island (*.bin)</translation>
+        <translation>Ficheiros de mapa do Replica Island (*.bin)</translation>
     </message>
     <message>
         <location line="+53"/>
@@ -2420,7 +2420,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/plugins/rpmap/rpmapplugin.cpp" line="+93"/>
         <source>RpTool MapTool files (*.rpmap)</source>
-        <translation>Arquivos MapTool da RpTools (*.rpmap)</translation>
+        <translation>Ficheiros MapTool da RpTools (*.rpmap)</translation>
     </message>
 </context>
 <context>
@@ -2624,17 +2624,17 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+40"/>
         <source>Invalid file format object (requires string &apos;name&apos; property)</source>
-        <translation>Formato de arquivo do objeto invalido (requer propriedade cadeia &apos;name&apos;)</translation>
+        <translation>Formato de ficheiro do objeto invalido (requer propriedade cadeia &apos;name&apos;)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Invalid file format object (requires string &apos;extension&apos; property)</source>
-        <translation>Formato de arquivo do objeto inválido (requer propriedade cadeia &apos;extension&apos;)</translation>
+        <translation>Formato de ficheiro do objeto inválido (requer propriedade cadeia &apos;extension&apos;)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Invalid file format object (requires a &apos;write&apos; and/or &apos;read&apos; function property)</source>
-        <translation>Formato de arquivo do objeto inválido (requer uma propriedade função &apos;write&apos; e/ou &apos;read&apos;)</translation>
+        <translation>Formato de ficheiro do objeto inválido (requer uma propriedade função &apos;write&apos; e/ou &apos;read&apos;)</translation>
     </message>
     <message>
         <location line="-22"/>
@@ -2748,17 +2748,17 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+10"/>
         <source>The file &apos;%1&apos; could not be deleted.</source>
-        <translation>O arquivo &apos;%1&apos; não pôde ser deletado.</translation>
+        <translation>O ficheiro &apos;%1&apos; não pôde ser deletado.</translation>
     </message>
     <message>
         <location line="+118"/>
         <source>Could not remove file &apos;%1&apos;: %2</source>
-        <translation>Não foi possível remover o arquivo &apos;%1&apos;: %2</translation>
+        <translation>Não foi possível remover o ficheiro &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Could not copy file &apos;%1&apos; to &apos;%2&apos;: %3</source>
-        <translation>Não foi possível copiar o arquivo &apos;%1&apos; para &apos;%2&apos;: %3</translation>
+        <translation>Não foi possível copiar o ficheiro &apos;%1&apos; para &apos;%2&apos;: %3</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -2768,28 +2768,28 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+6"/>
         <source>Source file path is a directory.</source>
-        <translation>O caminho do arquivo de origem é um diretório.</translation>
+        <translation>O caminho do ficheiro de origem é um diretório.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Destination file path is a directory.</source>
-        <translation>O caminho do arquivo de destino é um diretório.</translation>
+        <translation>O caminho do ficheiro de destino é um diretório.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Destination file exists.</source>
-        <translation>O arquivo de destino existe.</translation>
+        <translation>O ficheiro de destino existe.</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>BinaryFile constructor needs path of file to be opened.</source>
-        <translation>O construtor BinaryFile precisa de caminho de arquivo para ser aberto.</translation>
+        <translation>O construtor BinaryFile precisa de caminho de ficheiro para ser aberto.</translation>
     </message>
     <message>
         <location line="+18"/>
         <location line="+164"/>
         <source>Unable to open file &apos;%1&apos;: %2</source>
-        <translation>Incapaz de abrir o arquivo &apos;%1&apos;: %2</translation>
+        <translation>Incapaz de abrir o ficheiro &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location line="-122"/>
@@ -2822,7 +2822,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+9"/>
         <source>TextFile constructor needs path of file to be opened.</source>
-        <translation>O construtor TextFile precisa de caminho ou arquivo para ser aberto.</translation>
+        <translation>O construtor TextFile precisa de caminho ou ficheiro para ser aberto.</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -2839,12 +2839,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/scriptfileformatwrappers.cpp" line="+59"/>
         <source>File format doesn&apos;t support `read`</source>
-        <translation>Formato do arquivo não suporta `read`</translation>
+        <translation>Formato do ficheiro não suporta `read`</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>File format doesn&apos;t support `write`</source>
-        <translation>Formato do arquivo não suporta `write`</translation>
+        <translation>Formato do ficheiro não suporta `write`</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2938,7 +2938,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+50"/>
         <source>Could not open file for writing</source>
-        <translation>O arquivo não pode ser aberto para escrita</translation>
+        <translation>O ficheiro não pode ser aberto para escrita</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -2948,7 +2948,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+9"/>
         <source>Tbin map files (*.tbin)</source>
-        <translation>Arquivos de mapa Tbin (*.tbin)</translation>
+        <translation>Ficheiros de mapa Tbin (*.tbin)</translation>
     </message>
 </context>
 <context>
@@ -2968,17 +2968,17 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+72"/>
         <source>Failed to open file.</source>
-        <translation>Falha ao abrir arquivo.</translation>
+        <translation>Falha ao abrir ficheiro.</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>File is not a tbin file.</source>
-        <translation>O arquivo não é tbin.</translation>
+        <translation>O ficheiro não é tbin.</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>Failed to open file</source>
-        <translation>Falha ao abrir arquivo</translation>
+        <translation>Falha ao abrir ficheiro</translation>
     </message>
     <message>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="-315"/>
@@ -2991,7 +2991,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+248"/>
         <source>T-Engine4 map files (*.lua)</source>
-        <translation>Arquivos de mapa T-Engine4 (*.lua)</translation>
+        <translation>Ficheiros de mapa T-Engine4 (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -3233,7 +3233,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+26"/>
         <source>All Files (*)</source>
-        <translation>Todos os Arquivos (*)</translation>
+        <translation>Todos os Ficheiros (*)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3243,7 +3243,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+16"/>
         <source>Error Opening File</source>
-        <translation>Erro ao Abrir Arquivo</translation>
+        <translation>Erro ao Abrir Ficheiro</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3345,7 +3345,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/automappingmanager.cpp" line="+115"/>
         <source>No AutoMapping rules provided. Save the map or refer to a rule file in the project properties.</source>
-        <translation>Nenhuma regra de AutoMapeamento fornecida. Salve o mapa ou consulte um arquivo de regras nas propriedades do projeto.</translation>
+        <translation>Nenhuma regra de AutoMapeamento fornecida. Salve o mapa ou consulte um ficheiro de regras nas propriedades do projeto.</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -3355,17 +3355,17 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+34"/>
         <source>No rules file found at &apos;%1&apos;</source>
-        <translation>Arquivo de regras não encontrado em &apos;%1&apos;</translation>
+        <translation>Ficheiro de regras não encontrado em &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error opening rules file &apos;%1&apos;</source>
-        <translation>Erro ao abrir arquivo de regras &apos;%1&apos;</translation>
+        <translation>Erro ao abrir ficheiro de regras &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>File not found: &apos;%1&apos; (referenced by &apos;%2&apos;)</source>
-        <translation>Arquivo não encontrado: &apos;%1&apos; (referenciado por &apos;%2&apos;)</translation>
+        <translation>Ficheiro não encontrado: &apos;%1&apos; (referenciado por &apos;%2&apos;)</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -3403,7 +3403,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+22"/>
         <source>File name</source>
-        <translation>Nome do arquivo</translation>
+        <translation>Nome do ficheiro</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3421,19 +3421,19 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+89"/>
         <source>Some files could not be found</source>
-        <translation>Alguns arquivos não puderam ser encontrados</translation>
+        <translation>Alguns ficheiros não puderam ser encontrados</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>One or more referenced files could not be found. You can help locate them below.</source>
-        <translation>Um ou mais arquivos referenciados não puderam ser encontrados. Você pode ajudar a localizá-los abaixo.</translation>
+        <translation>Um ou mais ficheiros referenciados não puderam ser encontrados. Você pode ajudar a localizá-los abaixo.</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+84"/>
         <location line="+8"/>
         <source>Locate File...</source>
-        <translation>Localizar Arquivo...</translation>
+        <translation>Localizar Ficheiro...</translation>
     </message>
     <message>
         <location line="-5"/>
@@ -3448,7 +3448,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+36"/>
         <source>Locate Directory for Files</source>
-        <translation>Localizar Diretório para Arquivos</translation>
+        <translation>Localizar Diretório para Ficheiros</translation>
     </message>
     <message>
         <location line="+90"/>
@@ -3458,13 +3458,13 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+40"/>
         <source>Locate File</source>
-        <translation>Localizar Arquivo</translation>
+        <translation>Localizar Ficheiro</translation>
     </message>
     <message>
         <location line="+14"/>
         <location line="+17"/>
         <source>All Files (*)</source>
-        <translation>Todos os Arquivos (*)</translation>
+        <translation>Todos os Ficheiros (*)</translation>
     </message>
     <message>
         <location line="-12"/>
@@ -3784,7 +3784,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/document.cpp" line="+106"/>
         <source>Custom property &apos;%1&apos; refers to non-existing file &apos;%2&apos;</source>
-        <translation>Propriedade personalizada &apos;%1&apos; refere-se a um arquivo que não existe &apos;%2&apos;</translation>
+        <translation>Propriedade personalizada &apos;%1&apos; refere-se a um ficheiro que não existe &apos;%2&apos;</translation>
     </message>
 </context>
 <context>
@@ -3792,12 +3792,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="+647"/>
         <source>Unrecognized file format.</source>
-        <translation>Formato de arquivo não reconhecido.</translation>
+        <translation>Formato de ficheiro não reconhecido.</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>Save File As</source>
-        <translation>Salvar Arquivo Como</translation>
+        <translation>Salvar Ficheiro Como</translation>
     </message>
     <message>
         <location line="+214"/>
@@ -3976,7 +3976,7 @@ Deseja substituí-lo?</translation>
     <message>
         <location filename="../src/tiled/filechangedwarning.cpp" line="+39"/>
         <source>File change detected. Discard changes and reload the file?</source>
-        <translation>Alteração de arquivo detectada. Descartar as alterações e recarregar o arquivo?</translation>
+        <translation>Alteração de ficheiro detectada. Descartar as alterações e recarregar o ficheiro?</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -4004,7 +4004,7 @@ Deseja substituí-lo?</translation>
     <message>
         <location line="+4"/>
         <source>Choose a File</source>
-        <translation>Escolha um Arquivo</translation>
+        <translation>Escolha um Ficheiro</translation>
     </message>
 </context>
 <context>
@@ -4140,7 +4140,7 @@ Deseja substituí-lo?</translation>
     <message>
         <location filename="../src/tiled/locatorwidget.cpp" line="+327"/>
         <source>Filename</source>
-        <translation>Nome do Arquivo</translation>
+        <translation>Nome do Ficheiro</translation>
     </message>
 </context>
 <context>
@@ -4188,7 +4188,7 @@ Deseja substituí-lo?</translation>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="-96"/>
         <source>Error Saving File</source>
-        <translation>Erro ao Salvar o Arquivo</translation>
+        <translation>Erro ao Salvar o Ficheiro</translation>
     </message>
     <message>
         <location line="+41"/>
@@ -4198,12 +4198,12 @@ Deseja substituí-lo?</translation>
     <message>
         <location line="+1"/>
         <source>The file extension does not match the chosen file type.</source>
-        <translation>A extensão do arquivo não corresponde ao tipo de arquivo escolhido.</translation>
+        <translation>A extensão do ficheiro não corresponde ao tipo de ficheiro escolhido.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Tiled may not automatically recognize your file when loading. Are you sure you want to save with this extension?</source>
-        <translation>Tiled pode não reconhecer automaticamente este arquivo. Quer mesmo salvar com esta extensão?</translation>
+        <translation>Tiled pode não reconhecer automaticamente este ficheiro. Quer mesmo salvar com esta extensão?</translation>
     </message>
     <message>
         <location filename="../src/tiled/mainwindow.cpp" line="-1278"/>
@@ -4212,7 +4212,7 @@ Deseja substituí-lo?</translation>
         <location line="+484"/>
         <location line="+726"/>
         <source>All Files (*)</source>
-        <translation>Todos os Arquivos (*)</translation>
+        <translation>Todos os Ficheiros (*)</translation>
     </message>
     <message>
         <location line="-1674"/>
@@ -4222,24 +4222,24 @@ Deseja substituí-lo?</translation>
     <message>
         <location line="+15"/>
         <source>Non-unique file extension</source>
-        <translation>Extensão de arquivo não exclusiva</translation>
+        <translation>Extensão de ficheiro não exclusiva</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Non-unique file extension.
 Please select specific format.</source>
-        <translation>Extensão de arquivo não exclusiva
+        <translation>Extensão de ficheiro não exclusiva
 Por favor, selecione um formato específico.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Unknown File Format</source>
-        <translation>Formato de Arquivo Desconhecido</translation>
+        <translation>Formato de Ficheiro Desconhecido</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The given filename does not have any known file extension.</source>
-        <translation>O arquivo especificado não tem nenhuma extensão de arquivo conhecida.</translation>
+        <translation>O ficheiro especificado não tem nenhuma extensão de ficheiro conhecida.</translation>
     </message>
     <message>
         <location line="+158"/>
@@ -4262,7 +4262,7 @@ Por favor, selecione um formato específico.</translation>
         <location line="+36"/>
         <location line="+492"/>
         <source>World files (*.world)</source>
-        <translation>Arquivos Mundo (*.world)</translation>
+        <translation>Ficheiros Mundo (*.world)</translation>
     </message>
     <message>
         <location line="-526"/>
@@ -4306,7 +4306,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="-1247"/>
         <source>Error Opening File</source>
-        <translation>Erro ao Abrir Arquivo</translation>
+        <translation>Erro ao Abrir Ficheiro</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4473,7 +4473,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+4"/>
         <source>Overwrite Files</source>
-        <translation>Sobrescrever Arquivos</translation>
+        <translation>Sobrescrever Ficheiros</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -5259,7 +5259,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+3"/>
         <source>Paths &amp;&amp; Files</source>
-        <translation>Caminhos &amp;&amp; Arquivos</translation>
+        <translation>Caminhos &amp;&amp; Ficheiros</translation>
     </message>
 </context>
 <context>
@@ -5640,7 +5640,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+3"/>
         <source>Filename</source>
-        <translation>Nome do Arquivo</translation>
+        <translation>Nome do Ficheiro</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -6169,12 +6169,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+40"/>
         <source>Error opening file: %1</source>
-        <translation>Erro ao abrir arquivo: %1</translation>
+        <translation>Erro ao abrir ficheiro: %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Error decoding file: %1</source>
-        <translation>Erro ao descodificar arquivo: %1</translation>
+        <translation>Erro ao descodificar ficheiro: %1</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6199,7 +6199,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+58"/>
         <source>Script files changed: %1</source>
-        <translation>Arquivos de script alterados: %1</translation>
+        <translation>Ficheiros de script alterados: %1</translation>
     </message>
     <message>
         <location line="+38"/>
@@ -6315,7 +6315,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Invalid shortcuts file.</source>
-        <translation>Arquivo de atalhos inválido.</translation>
+        <translation>Ficheiro de atalhos inválido.</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -6407,7 +6407,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+17"/>
         <source>All Files (*)</source>
-        <translation>Todos os Arquivos (*)</translation>
+        <translation>Todos os Ficheiros (*)</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -6591,7 +6591,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="-308"/>
         <source>All Files (*)</source>
-        <translation>Todos os Arquivos (*)</translation>
+        <translation>Todos os Ficheiros (*)</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -6818,7 +6818,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+65"/>
         <source>Tiled map files (*.tmx *.xml)</source>
-        <translation>Arquivos de mapa do Tiled (*.tmx *.xml)</translation>
+        <translation>Ficheiros de mapa do Tiled (*.tmx *.xml)</translation>
     </message>
 </context>
 <context>
@@ -6826,7 +6826,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+27"/>
         <source>Tiled tileset files (*.tsx *.xml)</source>
-        <translation>Arquivos de conjunto de blocos Tiled (*.tsx *.xml)</translation>
+        <translation>Ficheiros de conjunto de blocos Tiled (*.tsx *.xml)</translation>
     </message>
 </context>
 <context>
@@ -7073,7 +7073,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+37"/>
         <source>Could not open file for reading.</source>
-        <translation>Impossível abrir arquivo para leitura.</translation>
+        <translation>Impossível abrir ficheiro para leitura.</translation>
     </message>
 </context>
 <context>
@@ -7095,7 +7095,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+27"/>
         <source>Tiled template files (*.tx)</source>
-        <translation>Arquivos de modelo Tiled (*.tx)</translation>
+        <translation>Ficheiros de modelo Tiled (*.tx)</translation>
     </message>
 </context>
 <context>
@@ -7696,12 +7696,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/utils.cpp" line="-482"/>
         <source>Image files</source>
-        <translation>Arquivos de imagem</translation>
+        <translation>Ficheiros de imagem</translation>
     </message>
     <message>
         <location line="+433"/>
         <source>Copy File Path</source>
-        <translation>Copiar Caminho do Arquivo</translation>
+        <translation>Copiar Caminho do Ficheiro</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -7719,7 +7719,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/plugins/yy/yyplugin.cpp" line="+150"/>
         <source>GameMaker Studio 2 files (*.yy)</source>
-        <translation>Arquivos do GameMaker Studio 2 (*.yy)</translation>
+        <translation>Ficheiros do GameMaker Studio 2 (*.yy)</translation>
     </message>
 </context>
 <context>
@@ -7768,7 +7768,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+2"/>
         <source>Ignore all layer visibility flags in the map file, and render all layers in the output (default is to omit invisible layers).</source>
-        <translation>Ignora todas marcas de visibilidade no arquivo do mapa, e renderiza todas as camadas (por padrão omitem-se as camadas invisíveis).</translation>
+        <translation>Ignora todas marcas de visibilidade no ficheiro do mapa, e renderiza todas as camadas (por padrão omitem-se as camadas invisíveis).</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -7814,12 +7814,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+2"/>
         <source>Map or world file to render.</source>
-        <translation>Arquivo de mapa ou mundo para renderizar.</translation>
+        <translation>Ficheiro de mapa ou mundo para renderizar.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Image file to output.</source>
-        <translation>Arquivo de imagem a produzir.</translation>
+        <translation>Ficheiro de imagem a produzir.</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -7849,7 +7849,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+3"/>
         <source>Map file to display.</source>
-        <translation>Arquivo de mapa a ser exibido.</translation>
+        <translation>Ficheiro de mapa a ser exibido.</translation>
     </message>
     <message>
         <location filename="../src/tiledquick/qml/+android/main.qml" line="+17"/>
@@ -7867,7 +7867,7 @@ Por favor, selecione um formato específico.</translation>
         <location line="+65"/>
         <location filename="../src/tiledquick/qml/main.qml" line="+142"/>
         <source>No map file loaded</source>
-        <translation>Nenhum arquivo de mapa carregado</translation>
+        <translation>Nenhum ficheiro de mapa carregado</translation>
     </message>
     <message>
         <location filename="../src/tiledquick/qml/main.qml" line="-132"/>
@@ -7882,7 +7882,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+7"/>
         <source>File</source>
-        <translation>Arquivo</translation>
+        <translation>Ficheiro</translation>
     </message>
     <message>
         <location line="+6"/>
