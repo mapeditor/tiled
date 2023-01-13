@@ -27,6 +27,9 @@
 
 namespace Tiled {
 
+class NewVersionChecker;
+class NewsFeed;
+
 class TILED_EDITOR_EXPORT TiledApplication : public QtSingleApplication
 {
     Q_OBJECT
@@ -34,6 +37,9 @@ class TILED_EDITOR_EXPORT TiledApplication : public QtSingleApplication
 public:
     TiledApplication(int &argc, char **argv);
     ~TiledApplication() override;
+
+    NewVersionChecker &newVersionChecker();
+    NewsFeed &newsFeed();
 
 protected:
     bool event(QEvent *) override;
@@ -45,6 +51,14 @@ private:
     void onMessageReceived(const QString &message);
 
     ProjectManager mProjectManager;
+
+    NewVersionChecker *mNewVersionChecker = nullptr;
+    NewsFeed *mNewsFeed = nullptr;
 };
+
+inline TiledApplication *tiledApp()
+{
+    return static_cast<TiledApplication*>(QCoreApplication::instance());
+}
 
 } // namespace Tiled

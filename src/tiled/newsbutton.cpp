@@ -22,6 +22,7 @@
 
 #include "newsfeed.h"
 #include "preferences.h"
+#include "tiledapplication.h"
 #include "utils.h"
 
 #include <QDesktopServices>
@@ -46,7 +47,7 @@ NewsButton::NewsButton(QWidget *parent)
     setVisible(preferences->displayNews());
     connect(preferences, &Preferences::displayNewsChanged, this, &NewsButton::setVisible);
 
-    auto &feed = NewsFeed::instance();
+    auto &feed = tiledApp()->newsFeed();
 
     setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
@@ -79,7 +80,7 @@ void NewsButton::changeEvent(QEvent *event)
 
 void NewsButton::refreshButton()
 {
-    auto &feed = NewsFeed::instance();
+    auto &feed = tiledApp()->newsFeed();
     auto unreadCount = feed.unreadCount();
 
     if (unreadCount > 0) {
@@ -112,12 +113,12 @@ void NewsButton::refreshButton()
 void NewsButton::showNewsMenu()
 {
     auto newsFeedMenu = new QMenu;
-    auto &feed = NewsFeed::instance();
+    auto &feed = tiledApp()->newsFeed();
 
     for (const NewsItem &newsItem : feed.newsItems()) {
         QAction *action = newsFeedMenu->addAction(newsItem.title, [=] {
             QDesktopServices::openUrl(newsItem.link);
-            NewsFeed::instance().markRead(newsItem);
+            tiledApp()->newsFeed().markRead(newsItem);
         });
 
         if (feed.isUnread(newsItem)) {
@@ -138,7 +139,7 @@ void NewsButton::showNewsMenu()
 #endif
     connect(action, &QAction::triggered, [] {
         QDesktopServices::openUrl(QUrl(QLatin1String(newsArchiveUrl)));
-        NewsFeed::instance().markAllRead();
+        tiledApp()->newsFeed().markAllRead();
     });
 
     auto size = newsFeedMenu->sizeHint();

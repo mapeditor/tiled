@@ -33,8 +33,6 @@ class NewVersionChecker : public QObject
 {
     Q_OBJECT
 
-    NewVersionChecker();
-
 public:
     struct VersionInfo {
         QString version;
@@ -42,7 +40,7 @@ public:
         QUrl downloadUrl;
     };
 
-    static NewVersionChecker &instance();
+    NewVersionChecker(QObject *parent = nullptr);
 
     void setEnabled(bool enabled);
 
