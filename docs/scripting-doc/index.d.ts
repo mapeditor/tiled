@@ -2968,6 +2968,15 @@ declare class Tileset extends Asset {
 
   /**
    * Whether this tileset is a collection of images (same as checking whether image is an empty string).
+   *
+   * @deprecated Use {@link isCollection} instead.
+   */
+  readonly collection : boolean
+
+  /**
+   * Whether this tileset is a collection of images (same as checking whether image is an empty string).
+   *
+   * @since 1.10
    */
   readonly isCollection : boolean
 
