@@ -301,8 +301,8 @@ LocatorWidget::LocatorWidget(LocatorSource *locatorSource,
 
     connect(mFilterEdit, &QLineEdit::textChanged, this, &LocatorWidget::setFilterText);
     connect(mResultsView, &QAbstractItemView::activated, this, [this] (const QModelIndex &index) {
-        mLocatorSource->activate(index);
         close();
+        mLocatorSource->activate(index);
     });
 }
 
