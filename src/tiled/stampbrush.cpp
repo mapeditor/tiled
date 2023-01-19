@@ -73,10 +73,17 @@ StampBrush::~StampBrush()
 {
 }
 
+void StampBrush::activate(MapScene *scene)
+{
+    AbstractTileTool::activate(scene);
+    mStampActions->setEnabled(true);
+}
+
 void StampBrush::deactivate(MapScene *scene)
 {
     mBrushBehavior = Free;
     mCaptureStampHelper.reset();
+    mStampActions->setEnabled(false);
     AbstractTileTool::deactivate(scene);
 }
 

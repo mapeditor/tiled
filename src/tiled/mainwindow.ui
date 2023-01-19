@@ -164,6 +164,7 @@
      <addaction name="actionSnapToFineGrid"/>
      <addaction name="actionSnapToPixels"/>
     </widget>
+    <addaction name="actionSearchActions"/>
     <addaction name="actionShowGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
     <addaction name="actionShowObjectReferences"/>
@@ -790,6 +791,17 @@
   <action name="actionAddAutomappingRulesTileset">
    <property name="text">
     <string>Add Automapping Rules Tileset</string>
+   </property>
+  </action>
+  <action name="actionSearchActions">
+   <property name="text">
+    <string>Search Actions...</string>
+   </property>
+   <property name="toolTip">
+    <string>Search actions available in Tiled</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
    </property>
   </action>
  </widget>

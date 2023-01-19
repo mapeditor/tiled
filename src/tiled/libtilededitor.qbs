@@ -91,6 +91,8 @@ DynamicLibrary {
         "abstractworldtool.h",
         "actionmanager.cpp",
         "actionmanager.h",
+        "actionsearch.cpp",
+        "actionsearch.h",
         "addpropertydialog.cpp",
         "addpropertydialog.h",
         "addpropertydialog.ui",

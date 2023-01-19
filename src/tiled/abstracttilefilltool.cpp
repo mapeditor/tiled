@@ -60,9 +60,16 @@ AbstractTileFillTool::~AbstractTileFillTool()
 {
 }
 
+void AbstractTileFillTool::activate(MapScene *scene)
+{
+    AbstractTileTool::activate(scene);
+    mStampActions->setEnabled(true);
+}
+
 void AbstractTileFillTool::deactivate(MapScene *scene)
 {
     mCaptureStampHelper.reset();
+    mStampActions->setEnabled(false);
     AbstractTileTool::deactivate(scene);
 }
 

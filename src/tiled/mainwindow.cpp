@@ -30,6 +30,7 @@
 
 #include "aboutdialog.h"
 #include "actionmanager.h"
+#include "actionsearch.h"
 #include "addremovetileset.h"
 #include "automappingmanager.h"
 #include "commandbutton.h"
@@ -294,6 +295,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionOffsetMap, "OffsetMap");
     ActionManager::registerAction(mUi->actionOpen, "Open");
     ActionManager::registerAction(mUi->actionOpenFileInProject, "OpenFileInProject");
+    ActionManager::registerAction(mUi->actionSearchActions, "SearchActions");
     ActionManager::registerAction(mUi->actionPaste, "Paste");
     ActionManager::registerAction(mUi->actionPasteInPlace, "PasteInPlace");
     ActionManager::registerAction(mUi->actionPreferences, "Preferences");
@@ -330,10 +332,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QIcon saveIcon(QLatin1String(":images/16/document-save.png"));
     QIcon redoIcon(QLatin1String(":images/16/edit-redo.png"));
     QIcon undoIcon(QLatin1String(":images/16/edit-undo.png"));
+    QIcon searchActionsIcon(QLatin1String(":images/16/edit-find.png"));
     QIcon highlightCurrentLayerIcon(QLatin1String("://images/scalable/highlight-current-layer-16.svg"));
 
     openIcon.addFile(QLatin1String(":images/24/document-open.png"));
     saveIcon.addFile(QLatin1String(":images/24/document-save.png"));
+    searchActionsIcon.addFile(QLatin1String(":images/24/edit-find.png"));
     highlightCurrentLayerIcon.addFile(QLatin1String("://images/scalable/highlight-current-layer-24.svg"));
 
 #ifndef Q_OS_MAC
@@ -344,6 +348,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mUi->actionOpen->setIcon(openIcon);
     mUi->actionSave->setIcon(saveIcon);
+    mUi->actionSearchActions->setIcon(searchActionsIcon);
 
     QUndoGroup *undoGroup = mDocumentManager->undoGroup();
     QAction *undoAction = undoGroup->createUndoAction(this, tr("Undo"));
@@ -530,6 +535,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
     connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);
     connect(mUi->actionOpenFileInProject, &QAction::triggered, this, &MainWindow::openFileInProject);
+    connect(mUi->actionSearchActions, &QAction::triggered, this, &MainWindow::searchActions);
     connect(mUi->actionReopenClosedFile, &QAction::triggered, this, &MainWindow::reopenClosedFile);
     connect(mUi->actionClearRecentFiles, &QAction::triggered, preferences, &Preferences::clearRecentFiles);
     connect(mUi->actionSave, &QAction::triggered, this, &MainWindow::saveFile);
@@ -716,6 +722,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionDelete, "edit-delete");
     setThemeIcon(redoAction, "edit-redo");
     setThemeIcon(undoAction, "edit-undo");
+    setThemeIcon(mUi->actionSearchActions, "edit-find");
     setThemeIcon(mUi->actionZoomIn, "zoom-in");
     setThemeIcon(mUi->actionZoomOut, "zoom-out");
     setThemeIcon(mUi->actionZoomNormal, "zoom-original");
@@ -785,13 +792,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     lockIcon.addFile(QLatin1String(":/images/24/locked.png"));
     mLockLayout->setIcon(lockIcon);
 
-    ActionManager::registerAction(mResetToDefaultLayout, "ResetToDefaultLayout");
-    ActionManager::registerAction(mLockLayout, "LockLayout");
-
     mShowPropertyTypesEditor = new QAction(tr("Custom Types Editor"), this);
     mShowPropertyTypesEditor->setCheckable(true);
 
-    mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
+    ActionManager::registerAction(mResetToDefaultLayout, "ResetToDefaultLayout");
+    ActionManager::registerAction(mLockLayout, "LockLayout");
+    ActionManager::registerAction(mShowPropertyTypesEditor, "CustomTypesEditor");
+
+    mUi->menuView->insertAction(mUi->actionSearchActions, mViewsAndToolbarsAction);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowPropertyTypesEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
 
@@ -1140,8 +1148,18 @@ void MainWindow::openFileDialog()
 
 void MainWindow::openFileInProject()
 {
+    showLocatorWidget(new FileLocatorSource);
+}
+
+void MainWindow::searchActions()
+{
+    showLocatorWidget(new ActionLocatorSource);
+}
+
+void MainWindow::showLocatorWidget(LocatorSource *source)
+{
     if (mLocatorWidget)
-        return;
+        mLocatorWidget->close();
 
     const QSize size(qMax(width() / 3, qMin(Utils::dpiScaled(600), width())),
                      qMin(Utils::dpiScaled(600), height()));
@@ -1150,7 +1168,7 @@ void MainWindow::openFileInProject()
                           qMin(remainingHeight / 5, Utils::dpiScaled(60)));
     const QRect rect = QRect(mapToGlobal(localPos), size);
 
-    mLocatorWidget = new LocatorWidget(this);
+    mLocatorWidget = new LocatorWidget(source, this);
     mLocatorWidget->move(rect.topLeft());
     mLocatorWidget->setMaximumSize(rect.size());
     mLocatorWidget->show();

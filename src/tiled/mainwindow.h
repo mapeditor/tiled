@@ -52,6 +52,7 @@ class ConsoleDock;
 class DocumentManager;
 class Editor;
 class IssuesDock;
+class LocatorSource;
 class LocatorWidget;
 class MapDocument;
 class MapDocumentActionHandler;
@@ -117,6 +118,8 @@ private:
     void newMap();
     void openFileDialog();
     void openFileInProject();
+    void searchActions();
+    void showLocatorWidget(LocatorSource *source);
     bool saveFile();
     bool saveFileAs();
     void saveAll();
