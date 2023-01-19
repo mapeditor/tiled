@@ -1,5 +1,6 @@
 ### Unreleased
 
+* Added action search popup on Ctrl+Shift+P (with dogboydog, #3449)
 * Fixed new layer names to be always unique (by Logan Higinbotham, #3452)
 * Scripting: Added Object.setColorProperty and Object.setFloatProperty (#3423)
 * Scripting: Added tiled.projectFilePath
