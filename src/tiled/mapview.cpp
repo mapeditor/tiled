@@ -385,12 +385,12 @@ void MapView::forceCenterOn(QPointF pos)
 
     auto hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
     auto vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
-    bool hScroll = hBar->minimum() != 0 || hBar->maximum() != 0;
-    bool vScroll = vBar->minimum() != 0 || vBar->maximum() != 0;
+    const bool hScroll = hBar->minimum() != 0 || hBar->maximum() != 0;
+    const bool vScroll = vBar->minimum() != 0 || vBar->maximum() != 0;
 
-    qreal width = viewport()->width();
-    qreal height = viewport()->height();
-    QPointF viewPoint = transform().map(pos);
+    const qreal width = viewport()->width();
+    const qreal height = viewport()->height();
+    const QPointF viewPoint = transform().map(pos) - viewport()->pos();
 
     if (hScroll) {
         if (isRightToLeft()) {
@@ -682,10 +682,10 @@ void MapView::handlePinchGesture(QPinchGesture *pinch)
 void MapView::adjustCenterFromMousePosition(QPoint mousePos)
 {
     // Place the last known mouse scene pos below the mouse again
-    QWidget *view = viewport();
-    QPointF viewCenterScenePos = mapToScene(view->rect().center());
-    QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos));
-    QPointF diff = viewCenterScenePos - mouseScenePos;
+    const QWidget *view = viewport();
+    const QPointF viewCenterScenePos = mapToScene(view->geometry().center());
+    const QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos));
+    const QPointF diff = viewCenterScenePos - mouseScenePos;
     QGraphicsView::centerOn(mLastMouseScenePos + diff);
 }
 
