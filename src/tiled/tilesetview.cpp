@@ -776,8 +776,12 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
             menu.addSeparator();
         }
 
-        if (!tile->imageSource().isEmpty()) {
-            const QString localFile = tile->imageSource().toLocalFile();
+        QUrl imageSource = tile->imageSource();
+        if (imageSource.isEmpty())
+            imageSource = tile->tileset()->imageSource();
+
+        if (!imageSource.isEmpty()) {
+            const QString localFile = imageSource.toLocalFile();
             if (!localFile.isEmpty()) {
                 Utils::addOpenContainingFolderAction(menu, localFile);
                 Utils::addOpenWithSystemEditorAction(menu, localFile);
