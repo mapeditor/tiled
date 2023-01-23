@@ -69,6 +69,7 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     connect(mapDocument, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
     connect(mapDocument, &MapDocument::layerRemoved, this, &EditableMap::detachLayer);
 
+    connect(mapDocument, &MapDocument::selectedAreaChanged, this, &EditableMap::selectedRegionChanged);
     connect(mapDocument, &MapDocument::currentLayerChanged, this, &EditableMap::currentLayerChanged);
     connect(mapDocument, &MapDocument::selectedLayersChanged, this, &EditableMap::selectedLayersChanged);
     connect(mapDocument, &MapDocument::selectedObjectsChanged, this, &EditableMap::selectedObjectsChanged);
@@ -120,6 +121,13 @@ QList<QObject *> EditableMap::layers()
         editables.append(editableManager.editableLayer(this, layer));
 
     return editables;
+}
+
+RegionValueType EditableMap::selectedRegion() const
+{
+    if (auto document = mapDocument())
+        return RegionValueType(document->selectedArea());
+    return {};
 }
 
 EditableLayer *EditableMap::currentLayer()
@@ -608,6 +616,11 @@ void EditableMap::setLayerDataFormat(LayerDataFormat value)
         push(new ChangeMapProperty(doc, static_cast<Map::LayerDataFormat>(value)));
     else if (!checkReadOnly())
         map()->setLayerDataFormat(static_cast<Map::LayerDataFormat>(value));
+}
+
+void EditableMap::setSelectedRegion(const RegionValueType &region)
+{
+    push(new ChangeSelectedArea(mapDocument(), region.region()));
 }
 
 void EditableMap::setCurrentLayer(EditableLayer *layer)
