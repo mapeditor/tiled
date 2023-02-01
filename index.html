@@ -88,7 +88,9 @@ layout: default
 
   <div class="flex-wrap-center" style="padding-left: 5%; padding-right: 5%">
 {% for sponsor in site.data.sponsors  %}
-    <a class="sponsor" href="{{ sponsor.url }}" rel="noopener"><img src="img/{{ sponsor.banner }}" alt="{{ sponsor.name }}" /></a>
+{% assign sponsored_exception_until = sponsor.sponsored_exception_until | default: '2023-01-31' %}
+{% assign today = site.time | date: '%Y-%m-%d' %}
+<a class="sponsor" href="{{ sponsor.url }}" rel="noopener{% if today > sponsored_exception_until %} sponsored{% endif %}"><img src="img/{{ sponsor.banner }}" alt="{{ sponsor.name }}" /></a>
 {% endfor %}
   </div>
   <p class="disclaimer"><em>Disclaimer: The listing of sponsors above should not be taken as an endorsement of any provided services.</em></p>

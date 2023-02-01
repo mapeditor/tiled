@@ -17,6 +17,7 @@
 - name: "ChanelExpert: authenticatie, taxatie, advies, vintage Chanel"
   url: https://www.chanelexpert.nl/
   banner: sponsors/chanel_expert.png
+  sponsored_exception_until: "9999-12-31"
 
 - name: "MäklarOfferter"
   url: https://www.maklarofferter.se/
@@ -53,6 +54,7 @@
 - name: 80+ casinos not on gamstop reviews at justuk.club
   url: https://justuk.club/
   banner: sponsors/justuk.club.png
+  sponsored_exception_until: "2023-02-24"
 
 - name: كازينو اون لاين
   url: https://arabcasinohex.com/online-casino/
@@ -81,6 +83,7 @@
 - name: Casinos Crypto
   url: https://casinoscrypto.com/
   banner: sponsors/casinoscrypto.png
+  sponsored_exception_until: "2023-02-25"
 
 - name: slots online empire
   url: https://slotsempire.com/
