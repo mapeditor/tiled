@@ -52,6 +52,11 @@ using namespace Tiled;
 
 namespace Lua {
 
+static const char* classPropertyNameForObject()
+{
+    return FileFormat::compatibilityVersion() == Tiled_1_9 ? "class" : "type";
+}
+
 class LuaWriter
 {
 public:
@@ -404,7 +409,7 @@ void LuaWriter::writeTileset(const Tileset &tileset,
         mWriter.writeKeyAndValue("id", tile->id());
 
         if (!tile->className().isEmpty()) {
-            mWriter.writeKeyAndValue(FileFormat::compatibilityVersion() <= Tiled_1_8 ? "type" : "class",
+            mWriter.writeKeyAndValue(classPropertyNameForObject(),
                                      tile->className());
         }
 
@@ -465,6 +470,7 @@ void LuaWriter::writeWangSet(const WangSet &wangSet)
     mWriter.writeKeyAndValue("name", wangSet.name());
     mWriter.writeKeyAndValue("class", wangSet.className());
     mWriter.writeKeyAndValue("tile", wangSet.imageTileId());
+    mWriter.writeKeyAndValue("wangsettype", wangSetTypeToString(wangSet.type()));
 
     writeProperties(wangSet.properties());
 
@@ -715,7 +721,7 @@ void LuaWriter::writeMapObject(const Tiled::MapObject *mapObject)
     mWriter.writeStartTable();
     mWriter.writeKeyAndValue("id", mapObject->id());
     mWriter.writeKeyAndValue("name", mapObject->name());
-    mWriter.writeKeyAndValue(FileFormat::compatibilityVersion() <= Tiled_1_8 ? "type" : "class",
+    mWriter.writeKeyAndValue(classPropertyNameForObject(),
                              mapObject->className());
     mWriter.writeKeyAndValue("shape", toString(mapObject->shape()));
 

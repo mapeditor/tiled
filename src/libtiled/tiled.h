@@ -72,6 +72,9 @@ enum LoadingStatus {
 enum CompatibilityVersion {
     UnknownVersion  = 0,
     Tiled_1_8       = 1080,
+    Tiled_1_9       = 1090,
+    Tiled_1_10      = 1100,
+    Tiled_Current   = Tiled_1_10,
     Tiled_Latest    = 65535,
 };
 

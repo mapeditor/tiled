@@ -52,7 +52,7 @@ public:
     QString mObjectTypesFile;
     QString mAutomappingRulesFile;
     QVector<Command> mCommands;
-    CompatibilityVersion mCompatibilityVersion = Tiled_Latest;
+    CompatibilityVersion mCompatibilityVersion = Tiled_Current;
 
 private:
     QDateTime mLastSaved;
