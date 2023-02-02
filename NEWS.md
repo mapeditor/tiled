@@ -3,6 +3,7 @@
 * Added action search popup on Ctrl+Shift+P (with dogboydog, #3449)
 * Added file system actions also for tileset image based tilesets (#3448)
 * Fixed new layer names to be always unique (by Logan Higinbotham, #3452)
+* AutoMapping: Match in order by default, when input regions are defined (#3559)
 * Scripting: Added Object.setColorProperty and Object.setFloatProperty (#3423)
 * Scripting: Added tiled.projectFilePath
 * Scripting: Added TileMap.toImage (#3519)

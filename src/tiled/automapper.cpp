@@ -556,6 +556,10 @@ void AutoMapper::setupRules()
                     regionInput |= inputLayer.tileLayer->region();
             }
         }
+    } else if (!mOptions.matchInOrder.has_value()) {
+        // For backwards compatibility, when the input regions have been
+        // explicitly defined, we default MatchInOrder to true.
+        mOptions.matchInOrder = true;
     }
 
     // When no output regions have been defined at all, derive them from the
@@ -985,7 +989,7 @@ void AutoMapper::autoMap(const QRegion &where,
 
     ApplyContext applyContext(appliedRegion);
 
-    if (mOptions.matchInOrder) {
+    if (mOptions.matchInOrder.value_or(false)) {
         for (const Rule &rule : mRules) {
             if (rule.options.disabled)
                 continue;
