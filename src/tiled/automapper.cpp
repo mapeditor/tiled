@@ -227,6 +227,8 @@ static bool checkRuleOptions(const QString &name,
         return true;
     if (checkRuleOption(name, value, QLatin1String("Disabled"), options.disabled, setOptions, RuleOptions::Disabled))
         return true;
+    if (checkRuleOption(name, value, QLatin1String("SkipLocked"), options.skipLocked, setOptions, RuleOptions::SkipLocked))
+        return true;
 
     return false;
 }
@@ -1186,16 +1188,18 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
         });
     }
 
-    copyMapRegion(rule.outputRegion, pos, ruleOutput, context);
+    copyMapRegion(rule, pos, ruleOutput, context);
 
     if (applyContext.appliedRegion)
         *applyContext.appliedRegion |= rule.outputRegion.translated(pos.x(), pos.y());
 }
 
-void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
+void AutoMapper::copyMapRegion(const Rule &rule, QPoint offset,
                                const OutputSet &ruleOutput,
                                AutoMappingContext &context) const
 {
+    const QRegion &outputRegion = rule.outputRegion;
+
     for (auto it = ruleOutput.layers.begin(), end = ruleOutput.layers.end(); it != end; ++it) {
         const Layer *from = it.key();
         const QString &targetName = it.value();
@@ -1207,11 +1211,14 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
             auto fromTileLayer = static_cast<const TileLayer*>(from);
             auto toTileLayer = context.outputTileLayers.value(targetName);
 
+            if (rule.options.skipLocked && !toTileLayer->isUnlocked())
+                continue;
+
             if (!context.touchedTileLayers.isEmpty())
                 appendUnique<const TileLayer*>(context.touchedTileLayers, toTileLayer);
 
             to = toTileLayer;
-            for (const QRect &rect : region) {
+            for (const QRect &rect : outputRegion) {
                 copyTileRegion(fromTileLayer, rect, toTileLayer,
                                rect.x() + offset.x(), rect.y() + offset.y(),
                                context);
@@ -1221,8 +1228,12 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
         case Layer::ObjectGroupType: {
             auto fromObjectGroup = static_cast<const ObjectGroup*>(from);
             auto toObjectGroup = context.outputObjectGroups.value(targetName);
+
+            if (rule.options.skipLocked && !toObjectGroup->isUnlocked())
+                continue;
+
             to = toObjectGroup;
-            for (const QRect &rect : region) {
+            for (const QRect &rect : outputRegion) {
                 copyObjectRegion(fromObjectGroup, rect, toObjectGroup,
                                  rect.x() + offset.x(), rect.y() + offset.y(),
                                  context);
