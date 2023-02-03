@@ -69,7 +69,10 @@ DynamicLibrary {
         qbs.install: true
         qbs.installDir: {
             if (qbs.targetOS.contains("windows"))
-                return ""
+                if (project.windowsLayout)
+                    return ""
+                else
+                    return "bin"
             else
                 return "lib"
         }
