@@ -11,15 +11,15 @@
       let pkgs = nixpkgs.legacyPackages.${system};
       in {
         devShell = pkgs.mkShell {
-          buildInputs = [
-            pkgs.ccache      # modules.cpp.compilerWrapper:ccache
-            pkgs.gdb
-            pkgs.lld         # modules.cpp.linkerVariant:lld
-            pkgs.pkg-config
-            pkgs.qbs         # More recent than shipping with QtCreator
-            pkgs.qt6.full
-            pkgs.qtcreator   # IDE
-            pkgs.zlib
+          buildInputs = with pkgs; [
+            ccache      # modules.cpp.compilerWrapper:ccache
+            gdb
+            lld         # modules.cpp.linkerVariant:lld
+            pkg-config
+            qbs         # More recent than shipping with QtCreator
+            qt6.full
+            qtcreator   # IDE
+            zlib
           ];
 
           # Avoid warning spam due to trying to enable hardening in debug builds
