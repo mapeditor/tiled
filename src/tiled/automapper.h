@@ -35,7 +35,6 @@
 #include <QVector>
 
 #include <memory>
-#include <optional>
 #include <type_traits>
 #include <unordered_map>
 #include <vector>
@@ -261,7 +260,8 @@ public:
         /**
          * Determines whether the rules on the map need to be matched in order.
          */
-        std::optional<bool> matchInOrder;
+        bool matchInOrder = false;
+        bool matchInOrderWasSet = false;
 
         /**
          * This variable determines, how many overlapping tiles should be used.

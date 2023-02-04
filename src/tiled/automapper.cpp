@@ -255,8 +255,10 @@ void AutoMapper::setupRuleMapProperties()
             continue;
         if (checkOption(name, value, QLatin1String("NoOverlappingRules"), noOverlappingRules))
             continue;
-        if (checkOption(name, value, QLatin1String("MatchInOrder"), mOptions.matchInOrder))
+        if (checkOption(name, value, QLatin1String("MatchInOrder"), mOptions.matchInOrder)) {
+            mOptions.matchInOrderWasSet = true;
             continue;
+        }
 
         if (checkRuleOptions(name, value, mRuleOptions, setRuleOptions))
             continue;
@@ -556,7 +558,7 @@ void AutoMapper::setupRules()
                     regionInput |= inputLayer.tileLayer->region();
             }
         }
-    } else if (!mOptions.matchInOrder.has_value()) {
+    } else if (!mOptions.matchInOrderWasSet) {
         // For backwards compatibility, when the input regions have been
         // explicitly defined, we default MatchInOrder to true.
         mOptions.matchInOrder = true;
@@ -989,7 +991,7 @@ void AutoMapper::autoMap(const QRegion &where,
 
     ApplyContext applyContext(appliedRegion);
 
-    if (mOptions.matchInOrder.value_or(false)) {
+    if (mOptions.matchInOrder) {
         for (const Rule &rule : mRules) {
             if (rule.options.disabled)
                 continue;
