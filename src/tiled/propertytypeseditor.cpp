@@ -907,10 +907,13 @@ void PropertyTypesEditor::addClassProperties()
     connect(mColorButton, &ColorButton::colorChanged,
             this, &PropertyTypesEditor::colorChanged);
 
+    mDrawFillPropertyCheckBox = new QCheckBox(tr("Draw fill"));
+    connect(mDrawFillPropertyCheckBox, &QCheckBox::toggled,
+            this, &PropertyTypesEditor::setDrawFill);
     auto nameAndColor = new QHBoxLayout;
     nameAndColor->addWidget(mNameEdit);
     nameAndColor->addWidget(mColorButton);
-
+    nameAndColor->addWidget(mDrawFillPropertyCheckBox);
     mMembersView = new QtTreePropertyBrowser(this);
     mPropertiesHelper = new CustomPropertiesHelper(mMembersView, this);
 
@@ -933,16 +936,12 @@ void PropertyTypesEditor::addClassProperties()
     connect(mClassOfCheckBox, &QCheckBox::toggled,
             this, [this] (bool checked) { setUsageFlags(ClassPropertyType::AnyObjectClass, checked); });
 
-    mDrawFillPropertyCheckBox = new QCheckBox(tr("Draw fill"));
-    connect(mDrawFillPropertyCheckBox, &QCheckBox::toggled,
-            this, &PropertyTypesEditor::setDrawFill);
 
     auto usageOptions = new QHBoxLayout;
     usageOptions->addWidget(mUseAsPropertyCheckBox);
     usageOptions->addSpacing(Utils::dpiScaled(20));
     usageOptions->addWidget(mClassOfCheckBox);
     usageOptions->addWidget(mClassOfButton);
-    usageOptions->addWidget(mDrawFillPropertyCheckBox);
     usageOptions->addStretch();
 
     QToolBar *membersToolBar = createSmallToolBar(mUi->groupBox);
