@@ -335,6 +335,7 @@ QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
     auto json = PropertyType::toJson(context);
     json.insert(QStringLiteral("members"), members);
     json.insert(QStringLiteral("color"), color.name(QColor::HexArgb));
+    json.insert(QStringLiteral("drawFill"), drawFill);
 
     QJsonArray useAs;
 
@@ -363,6 +364,7 @@ void ClassPropertyType::initializeFromJson(const QJsonObject &json)
     if (QColor::isValidColor(colorName))
         color.setNamedColor(colorName);
 
+    const bool drawFillValue = json.value(QLatin1String("drawFill")).toBool();
     const QJsonValue useAsJson = json.value(QLatin1String("useAs"));
     if (useAsJson.isArray()) {
         const QJsonArray useAsArray = useAsJson.toArray();
