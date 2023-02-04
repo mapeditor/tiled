@@ -935,7 +935,7 @@ void PropertyTypesEditor::addClassProperties()
 
     mDrawFillPropertyCheckBox = new QCheckBox(tr("Draw fill"));
     connect(mDrawFillPropertyCheckBox, &QCheckBox::toggled,
-            this, PropertyTypesEditor::setDrawFill);
+            this, &PropertyTypesEditor::setDrawFill);
 
     auto usageOptions = new QHBoxLayout;
     usageOptions->addWidget(mUseAsPropertyCheckBox);
