@@ -29,7 +29,7 @@ QtGuiApplication {
     Group {
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows")) {
+            if (project.windowsLayout) {
                 return "";
             } else if (qbs.targetOS.contains("darwin")) {
                 // Non-bundle applications are installed into the main Tiled.app bundle
