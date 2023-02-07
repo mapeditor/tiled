@@ -24,7 +24,6 @@
 #include "addpropertydialog.h"
 #include "colorbutton.h"
 #include "custompropertieshelper.h"
-#include "object.h"
 #include "objecttypes.h"
 #include "preferences.h"
 #include "project.h"
@@ -33,8 +32,6 @@
 #include "savefile.h"
 #include "session.h"
 #include "utils.h"
-#include "varianteditorfactory.h"
-#include "variantpropertymanager.h"
 
 #include <QCheckBox>
 #include <QCloseEvent>
@@ -51,6 +48,7 @@
 #include <QToolBar>
 
 #include <QtTreePropertyBrowser>
+#include <QtVariantProperty>
 
 namespace Tiled {
 
@@ -68,23 +66,6 @@ static bool confirm(const QString &title, const QString& text, QWidget *parent)
                                 QMessageBox::Yes | QMessageBox::No,
                                 QMessageBox::No) == QMessageBox::Yes;
 }
-
-class PersistentMenu : public QMenu
-{
-public:
-    using QMenu::QMenu;
-
-    void setVisible(bool visible) override
-    {
-        // Don't hide the menu when over a checkbox
-        if (!visible)
-            if (auto action = activeAction())
-                if (action->isCheckable())
-                    return;
-
-        QMenu::setVisible(visible);
-    }
-};
 
 
 PropertyTypesFilter::PropertyTypesFilter(const QString &lastPath)
@@ -104,7 +85,6 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     , mPropertyTypesModel(new PropertyTypesModel(this))
     , mDetailsLayout(new QFormLayout)
     , mValuesModel(new QStringListModel(this))
-    , mClassOfMenu(new PersistentMenu(this))
 {
     mUi->setupUi(this);
 
@@ -115,10 +95,7 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     mUi->propertyTypesView->setModel(mPropertyTypesModel);
     mUi->horizontalLayout->addLayout(mDetailsLayout);
 
-    const struct {
-        ClassPropertyType::ClassUsageFlag flag;
-        QString name;
-    } flagsWithNames[] = {
+    mFlagsWithNames = {
         { ClassPropertyType::MapClass,          tr("Map") },
         { ClassPropertyType::LayerClass,        tr("Layer") },
         { ClassPropertyType::MapObjectClass,    tr("Object") },
@@ -127,16 +104,6 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
         { ClassPropertyType::WangColorClass,    tr("Terrain") },
         { ClassPropertyType::WangSetClass,      tr("Terrain Set") },
     };
-
-    for (auto &entry : flagsWithNames) {
-        auto action = mClassOfMenu->addAction(entry.name);
-        action->setCheckable(true);
-        action->setData(entry.flag);
-        connect(action, &QAction::toggled,
-                this, [this, flag = entry.flag] (bool checked) {
-            setUsageFlags(flag, checked);
-        });
-    }
 
     mAddEnumPropertyTypeAction = new QAction(this);
     mAddClassPropertyTypeAction = new QAction(this);
@@ -518,6 +485,44 @@ bool PropertyTypesEditor::checkValueCount(int count)
     return true;
 }
 
+void PropertyTypesEditor::openClassOfPopup()
+{
+    ClassPropertyType *classType = selectedClassPropertyType();
+    if (!classType)
+        return;
+
+    QFrame *popup = new QFrame(this, Qt::Popup);
+    popup->setAttribute(Qt::WA_DeleteOnClose);
+    popup->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+
+    QVBoxLayout *layout = new QVBoxLayout(popup);
+    const int space = Utils::dpiScaled(4);
+    layout->setSpacing(space);
+    layout->setContentsMargins(space, space, space, space);
+
+    for (auto &entry : mFlagsWithNames) {
+        auto checkBox = new QCheckBox(entry.name);
+        checkBox->setChecked(classType->usageFlags & entry.flag);
+        layout->addWidget(checkBox);
+
+        connect(checkBox, &QCheckBox::toggled,
+                this, [this, flag = entry.flag] (bool checked) {
+            setUsageFlags(flag, checked);
+        });
+    }
+
+    // Focus the first checkbox for convenient keyboard navigation
+    layout->itemAt(0)->widget()->setFocus();
+
+    const QSize size = popup->sizeHint();
+    popup->setGeometry(Utils::popupGeometry(mClassOfButton, size));
+    popup->show();
+
+    connect(popup, &QWidget::destroyed, this, [this] {
+        mClassOfButton->setDown(false);
+    });
+}
+
 void PropertyTypesEditor::openAddMemberDialog()
 {
     const PropertyType *propertyType = selectedPropertyType();
@@ -829,12 +834,9 @@ void PropertyTypesEditor::updateClassUsageDetails(const ClassPropertyType &class
     mClassOfCheckBox->setChecked(classType.usageFlags & ClassPropertyType::AnyObjectClass);
 
     QStringList selectedTypes;
-    const auto actions = mClassOfMenu->actions();
-    for (QAction *typeAction : actions) {
-        const auto flag = typeAction->data().toInt();
-        typeAction->setChecked(classType.usageFlags & flag);
-        if (classType.usageFlags & flag)
-            selectedTypes.append(typeAction->text());
+    for (const NamedFlag &namedFlag : qAsConst(mFlagsWithNames)) {
+        if (classType.usageFlags & namedFlag.flag)
+            selectedTypes.append(namedFlag.name);
     }
 
     if (selectedTypes.isEmpty()) {
@@ -926,9 +928,9 @@ void PropertyTypesEditor::addClassProperties()
 
     mClassOfButton = new QPushButton(tr("Select Types"));
     mClassOfButton->setAutoDefault(false);
-    mClassOfButton->setMenu(mClassOfMenu);
     mClassOfCheckBox = new QCheckBox(tr("Class of"));
 
+    connect(mClassOfButton, &QToolButton::pressed, this, &PropertyTypesEditor::openClassOfPopup);
     connect(mClassOfCheckBox, &QCheckBox::toggled,
             this, [this] (bool checked) { setUsageFlags(ClassPropertyType::AnyObjectClass, checked); });
 
@@ -1072,18 +1074,17 @@ void PropertyTypesEditor::memberValueChanged(const QStringList &path, const QVar
     if (mUpdatingDetails)
         return;
 
-    PropertyType *propertyType = selectedPropertyType();
-    if (!propertyType || !propertyType->isClass())
+    ClassPropertyType *classType = selectedClassPropertyType();
+    if (!classType)
         return;
 
-    auto &classType = static_cast<ClassPropertyType&>(*propertyType);
     auto &topLevelName = path.first();
 
-    if (!setPropertyMemberValue(classType.members, path, value))
+    if (!setPropertyMemberValue(classType->members, path, value))
         return;
 
     if (auto property = mPropertiesHelper->property(topLevelName))
-        property->setValue(mPropertiesHelper->toDisplayValue(classType.members.value(topLevelName)));
+        property->setValue(mPropertiesHelper->toDisplayValue(classType->members.value(topLevelName)));
 
     applyPropertyTypes();
 }

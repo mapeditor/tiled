@@ -24,11 +24,6 @@
 
 #include "utils.h"
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-#include <QDesktopWidget>
-#else
-#include <QScreen>
-#endif
 #include <QMouseEvent>
 
 using namespace Tiled;
@@ -62,11 +57,7 @@ bool ImageColorPickerWidget::selectColor(const QString &image)
     mScaleX = 1;
     mScaleY = 1;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    const QRect screenRect = QApplication::desktop()->availableGeometry(parentWidget());
-#else
-    const QRect screenRect = parentWidget()->screen()->availableGeometry();
-#endif
+    const QRect screenRect = Utils::screenRect(parentWidget());
     const int maxW = screenRect.width() * 2 / 3;
     const int maxH = screenRect.height() * 2 / 3;
 

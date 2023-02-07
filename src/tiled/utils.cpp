@@ -31,6 +31,9 @@
 #include <QDBusMessage>
 #endif
 #include <QDesktopServices>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+#include <QDesktopWidget>
+#endif
 #include <QDir>
 #include <QFileInfo>
 #include <QGuiApplication>
@@ -288,6 +291,46 @@ QIcon colorIcon(const QColor &color, QSize size)
     painter.drawRect(0, 0, size.width() - 1, size.height() - 1);
 
     return QIcon(pixmap);
+}
+
+/**
+ * Returns the available geometry of the screen containing the given \a widget.
+ */
+QRect screenRect(const QWidget *widget)
+{
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    return QApplication::desktop()->availableGeometry(widget);
+#else
+    const QPoint center = widget->mapToGlobal(widget->rect().center());
+    const QScreen *screen = widget->screen()->virtualSiblingAt(center);
+    if (!screen)
+        screen = widget->screen();
+    return screen->availableGeometry();
+#endif
+}
+
+/**
+ * Returns the suitable geometry for a popup of the given \a popupSize,
+ * relative to the \a parent widget.
+ */
+QRect popupGeometry(const QWidget *parent, QSize popupSize)
+{
+    const QRect screen = screenRect(parent);
+    const QSize widgetSize = parent->size();
+    QPoint pos = parent->mapToGlobal(QPoint(0, widgetSize.height()));
+
+    // Move popup up when there is not enough space below
+    if (pos.y() + popupSize.height() > screen.bottom())
+        pos.ry() -= widgetSize.height() + popupSize.height();
+
+    // Align popup to the right when expected
+    if (parent->isRightToLeft())
+        pos.rx() += widgetSize.width() - popupSize.width();
+
+    // Make sure the popup is visible on the sides of the screen
+    pos.rx() = qBound(screen.left(), pos.x(), screen.right() - popupSize.width());
+
+    return QRect(pos, popupSize);
 }
 
 /**
