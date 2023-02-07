@@ -227,7 +227,7 @@ static bool checkRuleOptions(const QString &name,
         return true;
     if (checkRuleOption(name, value, QLatin1String("Disabled"), options.disabled, setOptions, RuleOptions::Disabled))
         return true;
-    if (checkRuleOption(name, value, QLatin1String("SkipLocked"), options.skipLocked, setOptions, RuleOptions::SkipLocked))
+    if (checkRuleOption(name, value, QLatin1String("IgnoreLock"), options.ignoreLock, setOptions, RuleOptions::IgnoreLock))
         return true;
 
     return false;
@@ -1211,7 +1211,7 @@ void AutoMapper::copyMapRegion(const Rule &rule, QPoint offset,
             auto fromTileLayer = static_cast<const TileLayer*>(from);
             auto toTileLayer = context.outputTileLayers.value(targetName);
 
-            if (rule.options.skipLocked && !toTileLayer->isUnlocked())
+            if (!rule.options.ignoreLock && !toTileLayer->isUnlocked())
                 continue;
 
             if (!context.touchedTileLayers.isEmpty())
@@ -1229,7 +1229,7 @@ void AutoMapper::copyMapRegion(const Rule &rule, QPoint offset,
             auto fromObjectGroup = static_cast<const ObjectGroup*>(from);
             auto toObjectGroup = context.outputObjectGroups.value(targetName);
 
-            if (rule.options.skipLocked && !toObjectGroup->isUnlocked())
+            if (!rule.options.ignoreLock && !toObjectGroup->isUnlocked())
                 continue;
 
             to = toObjectGroup;

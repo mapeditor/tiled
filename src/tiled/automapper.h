@@ -93,7 +93,7 @@ struct RuleOptions
         OffsetY             = 1 << 4,
         NoOverlappingOutput = 1 << 5,
         Disabled            = 1 << 6,
-        SkipLocked          = 1 << 7
+        IgnoreLock          = 1 << 7
     };
 
     qreal skipChance = 0.0;
@@ -103,7 +103,7 @@ struct RuleOptions
     int offsetY = 0;
     bool noOverlappingOutput = false;
     bool disabled = false;
-    bool skipLocked = true;
+    bool ignoreLock = false;
 };
 
 struct RuleOptionsArea

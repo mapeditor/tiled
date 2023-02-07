@@ -447,7 +447,7 @@ static void addAutomappingProperties(Properties &properties, const Object *objec
             { QStringLiteral("OffsetY"), 0 },
             { QStringLiteral("NoOverlappingOutput"), false },
             { QStringLiteral("Disabled"), false },
-            { QStringLiteral("SkipLocked"), true },
+            { QStringLiteral("IgnoreLock"), false },
         });
     };
 
