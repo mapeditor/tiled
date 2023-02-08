@@ -48,38 +48,29 @@ TscnPlugin::TscnPlugin()
 // This is very similar to the vararg version of Qt's QString::arg function,
 // available in Qt 5.14. But as of 2023-01-02, Qt's offline installer is only 5.12.
 template <typename T>
-static QString FormatString(QString fmt, T&& arg)
+static QString formatString(QString fmt, T&& arg)
 {
     return fmt.arg(arg);
 }
 
 template <typename T1, typename... Types>
-static QString FormatString(QString fmt, T1&& t1, Types&&... args)
+static QString formatString(QString fmt, T1&& t1, Types&&... args)
 {
-    return FormatString(fmt.arg(t1), args...);
+    return formatString(fmt.arg(t1), args...);
 }
 
-// Same as FormatString, but returns a byte string.
+// Same as formatString, but returns a byte string.
 // Used for device->write(), which only accepts byte strings.
 template <typename... Types>
-static QByteArray FormatByteString(QString fmt, Types&&... args)
+static QByteArray formatByteString(QString fmt, Types&&... args)
 {
-    return FormatString(fmt, args...).toUtf8();
+    return formatString(fmt, args...).toUtf8();
 }
 
 // Convenience functions for throwing translated errors
-static std::invalid_argument tscnError(const char *error)
+static std::invalid_argument tscnError(const QString &error)
 {
-    return std::invalid_argument(
-        QCoreApplication::translate("TscnPlugin", error).toStdString());
-}
-
-template <typename... Types>
-static std::invalid_argument tscnError(const char *error, Types&&... args)
-{
-    return std::invalid_argument(FormatString
-        (QCoreApplication::translate("TscnPlugin", error),
-        args...).toStdString());
+    return std::invalid_argument(error.toStdString());
 }
 
 /**
@@ -99,12 +90,11 @@ static QString determineResRoot(const QString &filePath)
             break;
 
         const QString godotFile = QDirIterator(dir).next();
-        if (!godotFile.isEmpty()) {
+        if (!godotFile.isEmpty())
             return dir.path();
-        }
     }
 
-    throw tscnError("Could not find .godot project in file path for file %1", filePath);
+    throw tscnError(TscnPlugin::tr("Could not find .godot project in file path for file %1").arg(filePath));
 }
 
 // Converts a tileset's image source to a res:// path
@@ -117,12 +107,8 @@ static QString imageSourceToRes(const Tileset *tileset, QString &resRoot)
     if (resRoot.isEmpty())
         resRoot = determineResRoot(filePath);
 
-    if(!filePath.startsWith(resRoot)) {
-        throw tscnError(
-            "All files must share the same project root. File '%1' does not share project root '%2'.",
-            filePath,
-            resRoot);
-    }
+    if (!filePath.startsWith(resRoot))
+        throw tscnError(TscnPlugin::tr("All files must share the same project root. File '%1' does not share project root '%2'.").arg(filePath, resRoot));
 
     return "res:/" + filePath.right(filePath.length() - resRoot.length());
 }
@@ -156,10 +142,7 @@ struct AssetInfo
 // Adds a tileset to the assetInfo struct
 static void addTileset(Tileset *tileset, AssetInfo &assetInfo) {
     if (tileset->isCollection())
-        throw tscnError(
-            "Cannot export tileset '%1' because the Godot exporter does not "
-            "support collection-type tilesets",
-            tileset->name());
+        throw tscnError(TscnPlugin::tr("Cannot export tileset '%1' because the Godot exporter does not support collection-type tilesets.").arg(tileset->name()));
 
     auto resPath = imageSourceToRes(tileset, assetInfo.resRoot);
     if (!assetInfo.tilesetInfo.contains(resPath)) {
@@ -223,10 +206,10 @@ static void collectAssetsRecursive(const QList<Layer*> &layers, AssetInfo &asset
                 break;
             }
         case Layer::ObjectGroupType:
-            throw tscnError("The Godot exporter does not yet support objects");
+            throw tscnError(TscnPlugin::tr("The Godot exporter does not yet support objects"));
             break;
         case Layer::ImageLayerType:
-            throw tscnError("The Godot exporter does not yet support image layers");
+            throw tscnError(TscnPlugin::tr("The Godot exporter does not yet support image layers"));
             break;
         case Layer::GroupLayerType: {
                 auto groupLayer = static_cast<const GroupLayer*>(layer);
@@ -300,7 +283,7 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile, QString 
             auto centerX = tile->width() / 2 - object->x();
             auto centerY = tile->height() / 2 - object->y();
 
-            device->write(FormatByteString(
+            device->write(formatByteString(
                 "%1/physics_layer_0/polygon_%2/points = PackedVector2Array(",
                 tileName, polygonId));
 
@@ -314,7 +297,7 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile, QString 
                     flipState(x1, y1, flippedState);
                     flipState(x2, y2, flippedState);
 
-                    device->write(FormatByteString(
+                    device->write(formatByteString(
                         "%1, %2, %3, %2, %3, %4, %1, %4",
                         x1, y1, x2, y2));
 
@@ -329,15 +312,13 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile, QString 
                         auto x = point.x() - centerX;
                         auto y = point.y() - centerY;
                         flipState(x, y, flippedState);
-                        device->write(FormatByteString("%1, %2", x, y));
+                        device->write(formatByteString("%1, %2", x, y));
                         first = false;
                     }
                     break;
                 }
                 default:
-                    throw tscnError(
-                        "Godot exporter only supports collisions that are "
-                        "rectangles or polygons.");
+                    throw tscnError(TscnPlugin::tr("Godot exporter only supports collisions that are rectangles or polygons."));
             }
 
             device->write(")\n");
@@ -351,14 +332,15 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile, QString 
 // Write the tileset
 // If you're creating a reusable tileset file, pass in a new file device and
 // set isExternal to true, otherwise, reuse the device from the tscn file.
-static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, AssetInfo &assetInfo) {
+static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, AssetInfo &assetInfo)
+{
     bool foundCollisions = false;
 
     // One Texture2D and one TileSetAtlasSource per tileset, plus a resource node
     auto loadSteps = assetInfo.tilesetInfo.size() * 2 + 1;
 
     if (isExternal) {
-        device->write(FormatByteString(
+        device->write(formatByteString(
             "[gd_resource type=\"TileSet\" load_steps=%1 format=3]\n\n",
             loadSteps));
     }
@@ -368,7 +350,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
         if (it->usedTiles.isEmpty())
             continue;
 
-        device->write(FormatByteString(
+        device->write(formatByteString(
             "[ext_resource type=\"Texture2D\" path=\"%1\" id=\"%2\"]\n",
             sanitizeQuotedString(it.key()),
             sanitizeQuotedString(it->id)));
@@ -380,26 +362,26 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
         if (itTileset->usedTiles.isEmpty())
             continue;
 
-        device->write(FormatByteString(
+        device->write(formatByteString(
             "[sub_resource type=\"TileSetAtlasSource\" id=\"TileSetAtlasSource_%1\"]\n",
             itTileset->atlasId));
 
-        device->write(FormatByteString(
+        device->write(formatByteString(
             "texture = ExtResource(\"%1\")\n",
             sanitizeQuotedString(itTileset->id)));
 
         if (itTileset->tileset->margin() != 0)
-            device->write(FormatByteString(
+            device->write(formatByteString(
                 "margins = Vector2i(%1, %1)\n",
                 itTileset->tileset->margin()));
 
         if (itTileset->tileset->tileSpacing() != 0)
-            device->write(FormatByteString(
+            device->write(formatByteString(
                 "separation = Vector2i(%1, %1)\n",
                 itTileset->tileset->tileSpacing()));
 
         if (itTileset->tileset->tileWidth() != 16 || itTileset->tileset->tileHeight() != 16)
-            device->write(FormatByteString(
+            device->write(formatByteString(
                 "texture_region_size = Vector2i(%1, %2)\n",
                 itTileset->tileset->tileWidth(), itTileset->tileset->tileHeight()));
 
@@ -427,25 +409,24 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
                                 columns = lastTileId - tile->id() + 1;
 
                             if (frame.tileId != lastTileId - columns + 1 + itTileset->tileset->columnCount())
-                                throw tscnError("Tile animations must flow left-to-right, "
-                                    "top-to-bottom, with no skipped tiles.");   
+                                throw tscnError(TscnPlugin::tr("Tile animations must flow left-to-right, top-to-bottom, with no skipped tiles."));
                         }
 
                         lastTileId = frame.tileId;
                     }
 
-                    device->write(FormatByteString(
+                    device->write(formatByteString(
                         "%1:%2/animation_frames = %3\n",
                         x, y, tile->frames().size()));
 
                     if (columns != 0)
-                        device->write(FormatByteString(
+                        device->write(formatByteString(
                             "%1:%2/animation_columns = %3\n",
                             x, y, columns));
 
                     int frameNum = 0;
                     for (auto& frame : tile->frames()) {
-                        device->write(FormatByteString(
+                        device->write(formatByteString(
                             "%1:%2/animation_frame_%3/duration = %4\n",
                             x, y, frameNum, frame.duration / 1000.0));
 
@@ -458,22 +439,22 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
 
                 // If we're using alternate tiles, give a hint for the next alt ID
                 if (hasAlternates)
-                    device->write(FormatByteString(
+                    device->write(formatByteString(
                         "%1:%2/next_alternative_id = 8\n", x, y));
 
                 for (unsigned alt = 0; alt <= maxAlternate; ++alt) {
-                    QString tileName = FormatString("%1:%2/%3", x, y, alt);
+                    QString tileName = formatString("%1:%2/%3", x, y, alt);
 
                     // Tile presence
-                    device->write(FormatByteString("%1 = %2\n", tileName, alt));
+                    device->write(formatByteString("%1 = %2\n", tileName, alt));
                     
                     // Flip/rotate
                     if (alt & FlippedH)
-                        device->write(FormatByteString("%1/flip_h = true\n", tileName));
+                        device->write(formatByteString("%1/flip_h = true\n", tileName));
                     if (alt & FlippedV)
-                        device->write(FormatByteString("%1/flip_v = true\n", tileName));
+                        device->write(formatByteString("%1/flip_v = true\n", tileName));
                     if (alt & Transposed)
-                        device->write(FormatByteString("%1/transpose = true\n", tileName));
+                        device->write(formatByteString("%1/transpose = true\n", tileName));
 
                     foundCollisions |= exportTileCollisions(device, tile, tileName, alt);
                 }
@@ -508,22 +489,23 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
                 shape = 3;
                 layout = 0;
 
-                if (map->hexSideLength() != map->tileHeight() / 2)
-                    throw tscnError("Godot only supports hexagonal maps "
-                        "where the total side length is exactly half its "
-                        "height. For a tile height of %1, the Total Side "
-                        "Length should be set to %2.",
-                        map->tileHeight(),
-                        map->tileHeight() / 2);
+                if (map->hexSideLength() != map->tileHeight() / 2) {
+                    throw tscnError(formatString(TscnPlugin::tr("Godot only supports hexagonal maps "
+                                                                "where the Hex Side Length is exactly half its "
+                                                                "height. For a tile height of %1, the Hex Side "
+                                                                "Length should be set to %2."),
+                                                 map->tileHeight(),
+                                                 map->tileHeight() / 2));
+                }
                 break;
             default:
-                throw tscnError("Unsupported tile orientation.");
+                throw tscnError(TscnPlugin::tr("Unsupported tile orientation."));
         }
 
         // We could leave either of these out if they're zero, but as of
         // Godot 4.0 Beta 10, the Godot editor doesn't properly reset these
         // values to their defaults if they're missing.
-        device->write(FormatByteString("tile_shape = %1\ntile_layout = %2\n",
+        device->write(formatByteString("tile_shape = %1\ntile_layout = %2\n",
             shape, layout));
     }
 
@@ -539,12 +521,12 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
         if (map->orientation() == Map::Hexagonal && tileHeight % 2 != 0)
             --tileHeight;
 
-        device->write(FormatByteString("tile_size = Vector2i(%1, %2)\n",
+        device->write(formatByteString("tile_size = Vector2i(%1, %2)\n",
             map->tileWidth(), tileHeight));
     }
 
     for (auto it = assetInfo.tilesetInfo.begin(); it != assetInfo.tilesetInfo.end(); ++it)
-        device->write(FormatByteString(
+        device->write(formatByteString(
             "sources/%1 = SubResource(\"TileSetAtlasSource_%2\")\n",
             it->atlasId, it->atlasId));
 
@@ -567,8 +549,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
     QFileInfo fi(fileName);
     auto device = file.device();
 
-    try
-    {
+    try {
         AssetInfo assetInfo = collectAssets(map);
         auto tilesetResPath = map->propertyAsString("tilesetResPath");
 
@@ -577,17 +558,17 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         auto loadSteps = !tilesetResPath.isEmpty() ? 2 : assetInfo.tilesetInfo.size() * 2 + 2;
 
         // gdscene node
-        device->write(FormatByteString("[gd_scene load_steps=%1 format=3]\n\n", loadSteps));
+        device->write(formatByteString("[gd_scene load_steps=%1 format=3]\n\n", loadSteps));
 
         // tileset, either inline, or as an external file
-        if (tilesetResPath.isEmpty())
+        if (tilesetResPath.isEmpty()) {
             writeTileset(map, device, false, assetInfo);
-        else {
+        } else {
             QRegularExpressionMatch match;
             if (!tilesetResPath.contains(QRegularExpression("^res://(.*\\.tres)$"), &match))
-                throw tscnError("tilesetResPath must be in the form of 'res://<filename>.tres'.");
+                throw tscnError(tr("tilesetResPath must be in the form of 'res://<filename>.tres'."));
 
-            device->write(FormatByteString(
+            device->write(formatByteString(
                 "[ext_resource type=\"TileSet\" path=\"%1\" id=\"TileSet_0\"]\n\n",
                 sanitizeQuotedString(tilesetResPath)));
 
@@ -615,7 +596,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         }
 
         // TileMap node
-        device->write(FormatByteString("[node name=\"%1\" type=\"TileMap\"]\n",
+        device->write(formatByteString("[node name=\"%1\" type=\"TileMap\"]\n",
             sanitizeQuotedString(fi.baseName())));
 
         if (tilesetResPath.isEmpty())
@@ -632,21 +613,21 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         //   SrcX         = SrcX * 65536 + TileSetId
         //   SrcY         = SrcY + 65536 * AlternateId
         int layerIndex = 0;
-        for (auto layer : assetInfo.layers) {
-            device->write(FormatByteString("layer_%1/name = \"%2\"\n",
+        for (const auto &layer : qAsConst(assetInfo.layers)) {
+            device->write(formatByteString("layer_%1/name = \"%2\"\n",
                 layerIndex,
                 sanitizeQuotedString(layer->name())));
 
             if (layer->resolvedProperty("ySortEnabled").isValid())
-                device->write(FormatByteString("layer_%1/y_sort_enabled = true\n",
+                device->write(formatByteString("layer_%1/y_sort_enabled = true\n",
                     layerIndex));
 
             if (layer->resolvedProperty("zIndex").isValid())
-                device->write(FormatByteString("layer_%1/z_index = %2\n",
+                device->write(formatByteString("layer_%1/z_index = %2\n",
                     layerIndex,
                     layer->resolvedProperty("zIndex").toInt()));
 
-            device->write(FormatByteString("layer_%1/tile_data = PackedInt32Array(",
+            device->write(formatByteString("layer_%1/tile_data = PackedInt32Array(",
                 layerIndex));
 
             bool first = true;
@@ -659,24 +640,26 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
                         auto resPath = imageSourceToRes(cell.tile()->tileset(), assetInfo.resRoot);
                         auto& tilesetInfo = assetInfo.tilesetInfo[resPath];
 
-                        if (tilesetInfo.reservedAnimationTiles.contains(cell.tileId()))
-                            throw tscnError("Cannot use tile %1 from tileset %2 because it is "
-                                "reserved as an animation frame.",
-                                cell.tileId(),
-                                cell.tileset()->name());
+                        if (tilesetInfo.reservedAnimationTiles.contains(cell.tileId())) {
+                            throw tscnError(formatString(tr("Cannot use tile %1 from tileset %2 because it is "
+                                                            "reserved as an animation frame."),
+                                                         cell.tileId(),
+                                                         cell.tileset()->name()));
+                        }
 
                         int alt = 0;
                         if (cell.rotatedHexagonal120())
-                            throw tscnError("Cannot export hex tiles that are rotated by 120° degrees.");
+                            throw tscnError(tr("Cannot export hex tiles that are rotated by 120° degrees."));
                         if (cell.flippedHorizontally())
                             alt |= FlippedH;
                         if (cell.flippedVertically())
                             alt |= FlippedV;
                         if (cell.flippedAntiDiagonally())
                             alt |= Transposed;
-                        if (alt && !cell.tileset()->resolvedProperty("exportAlternates").toBool())
-                            throw tscnError("Map uses flipped/rotated tiles. The tileset must have "
-                                "the custom exportAlternates property enabled to export this map.");
+                        if (alt && !cell.tileset()->resolvedProperty("exportAlternates").toBool()) {
+                            throw tscnError(tr("Map uses flipped/rotated tiles. The tileset must have "
+                                               "the custom exportAlternates property enabled to export this map."));
+                        }
 
                         int destLocation = (x >= 0 ? y : y + 1) * 65536 + x;
                         int srcX = cell.tileId() % cell.tileset()->columnCount();
@@ -688,7 +671,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
                         if (!first) {
                             device->write(", ");
                         }
-                        device->write(FormatByteString("%1, %2, %3",
+                        device->write(formatByteString("%1, %2, %3",
                             destLocation, srcX, srcY));
 
                         first = false;
@@ -700,8 +683,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
 
             layerIndex++;
         }
-    }
-    catch (std::exception& e) {
+    } catch (std::exception& e) {
         mError = e.what();
         return false;
     }
