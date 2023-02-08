@@ -44,17 +44,16 @@ TscnPlugin::TscnPlugin()
 {
 }
 
-// Convenience functions for formatting strings.
-// This is very similar to the vararg version of Qt's QString::arg function,
-// available in Qt 5.14. But as of 2023-01-02, Qt's offline installer is only 5.12.
+// Convenience functions for formatting strings. This is very similar to
+// QString::arg function, but it also supports multiple numbers.
 template <typename T>
-static QString formatString(QString fmt, T&& arg)
+static QString formatString(const QString &fmt, T&& arg)
 {
     return fmt.arg(arg);
 }
 
 template <typename T1, typename... Types>
-static QString formatString(QString fmt, T1&& t1, Types&&... args)
+static QString formatString(const QString &fmt, T1&& t1, Types&&... args)
 {
     return formatString(fmt.arg(t1), args...);
 }
@@ -62,7 +61,7 @@ static QString formatString(QString fmt, T1&& t1, Types&&... args)
 // Same as formatString, but returns a byte string.
 // Used for device->write(), which only accepts byte strings.
 template <typename... Types>
-static QByteArray formatByteString(QString fmt, Types&&... args)
+static QByteArray formatByteString(const QString &fmt, Types&&... args)
 {
     return formatString(fmt, args...).toUtf8();
 }
@@ -116,8 +115,7 @@ static QString imageSourceToRes(const Tileset *tileset, QString &resRoot)
 // Replace any instance of " with \" so you can include it in a quoted string
 static QString sanitizeQuotedString(QString str)
 {
-    static const QRegularExpression regexp(QLatin1String("\""));
-    return str.replace(regexp, QStringLiteral("\\\""));
+    return str.replace(QLatin1Char('"'), QStringLiteral("\\\""));
 }
 
 // For collecting information about the tilesets we're using
@@ -140,19 +138,19 @@ struct AssetInfo
 };
 
 // Adds a tileset to the assetInfo struct
-static void addTileset(Tileset *tileset, AssetInfo &assetInfo) {
+static void addTileset(Tileset *tileset, AssetInfo &assetInfo)
+{
     if (tileset->isCollection())
         throw tscnError(TscnPlugin::tr("Cannot export tileset '%1' because the Godot exporter does not support collection-type tilesets.").arg(tileset->name()));
 
     auto resPath = imageSourceToRes(tileset, assetInfo.resRoot);
-    if (!assetInfo.tilesetInfo.contains(resPath)) {
-        auto& tilesetInfo = assetInfo.tilesetInfo[resPath];
-        if (!tilesetInfo.tileset)
-            tilesetInfo.tileset = tileset->sharedPointer();
-        
+    auto& tilesetInfo = assetInfo.tilesetInfo[resPath];
+    if (!tilesetInfo.tileset) {
+        tilesetInfo.tileset = tileset->sharedPointer();
+
         // Find the tiles that aren't blank and have no properties
         auto image = tileset->image().toImage();
-        for (auto tile : tileset->tiles()) {
+        for (const auto tile : tileset->tiles()) {
             bool blank = true;
 
             if (!tile->className().isEmpty() || !tile->properties().isEmpty())
@@ -174,14 +172,14 @@ static void addTileset(Tileset *tileset, AssetInfo &assetInfo) {
 }
 
 // Search a layer for every tileset that was used and store it in assetInfo
-static void findUsedTilesets(const TileLayer *layer, AssetInfo &assetInfo) {
-    auto bounds = layer->bounds();
+static void findUsedTilesets(const TileLayer *layer, AssetInfo &assetInfo)
+{
+    auto bounds = layer->localBounds();
     for (int y = bounds.y(); y < bounds.y() + bounds.height(); ++y) {
         for (int x = bounds.x(); x < bounds.x() + bounds.width(); ++x) {
             auto cell = layer->cellAt(x, y);
-            if (!cell.isEmpty()) {
+            if (!cell.isEmpty())
                 addTileset(cell.tileset(), assetInfo);
-            }
         }
     }
 }
@@ -189,9 +187,7 @@ static void findUsedTilesets(const TileLayer *layer, AssetInfo &assetInfo) {
 // Used by collectAssets() to search all layers and layer groups
 static void collectAssetsRecursive(const QList<Layer*> &layers, AssetInfo &assetInfo)
 {
-    for(auto it = layers.rbegin(); it != layers.rend(); ++it) {
-        const Layer *layer = *it;
-
+    for (const Layer *layer : layers) {
         if (layer->resolvedProperty("noExport").toBool())
             continue;
 
@@ -229,11 +225,8 @@ static AssetInfo collectAssets(const Map *map)
 
     // Run through all the assets collected and assign them IDs
     int i = 0;
-    for (auto&& itTilesetInfo = assetInfo.tilesetInfo.begin();
-        itTilesetInfo != assetInfo.tilesetInfo.end();
-        ++itTilesetInfo)
-    {
-        QString basename = itTilesetInfo->tileset->name();
+    for (TilesetInfo &tilesetInfo : assetInfo.tilesetInfo) {
+        const QString &basename = tilesetInfo.tileset->name();
 
         // Make sure the tileset ID is unique by adding a number to the end
         QString id = basename;
@@ -243,8 +236,8 @@ static AssetInfo collectAssets(const Map *map)
             uniqueifier++;
         }
 
-        itTilesetInfo->id = id;
-        itTilesetInfo->atlasId = i;
+        tilesetInfo.id = id;
+        tilesetInfo.atlasId = i;
         assetInfo.tilesetIds.insert(id);
         ++i;
     }
@@ -258,7 +251,8 @@ enum FlippedState {
     Transposed = 4
 };
 
-static void flipState(double& x, double& y, int flippedState) {
+static void flipState(double& x, double& y, int flippedState)
+{
     if (flippedState & Transposed)
         std::swap(x, y);
     if (flippedState & FlippedH)
@@ -268,16 +262,15 @@ static void flipState(double& x, double& y, int flippedState) {
 }
 
 // Export a tile's object groups as Godot physics layers
-static bool exportTileCollisions(QFileDevice *device, const Tile *tile, QString tileName, int flippedState)
+static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
+                                 const QString &tileName, int flippedState)
 {
     bool foundCollisions = false;
 
-    auto objectGroup = tile->objectGroup();
-
-    if (objectGroup) {
+    if (const auto objectGroup = tile->objectGroup()) {
         int polygonId = 0;
 
-        for (auto&& object : objectGroup->objects()) {
+        for (const auto object : objectGroup->objects()) {
             foundCollisions = true;
 
             auto centerX = tile->width() / 2 - object->x();
@@ -358,45 +351,42 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
     device->write("\n");
 
     // TileSetAtlasSource nodes
-    for (auto itTileset = assetInfo.tilesetInfo.begin(); itTileset != assetInfo.tilesetInfo.end(); ++itTileset) {
-        if (itTileset->usedTiles.isEmpty())
+    for (TilesetInfo &tilesetInfo : assetInfo.tilesetInfo) {
+        if (tilesetInfo.usedTiles.isEmpty())
             continue;
 
-        device->write(formatByteString(
-            "[sub_resource type=\"TileSetAtlasSource\" id=\"TileSetAtlasSource_%1\"]\n",
-            itTileset->atlasId));
+        const Tileset &tileset = *tilesetInfo.tileset;
 
-        device->write(formatByteString(
-            "texture = ExtResource(\"%1\")\n",
-            sanitizeQuotedString(itTileset->id)));
+        device->write(formatByteString("[sub_resource type=\"TileSetAtlasSource\" id=\"TileSetAtlasSource_%1\"]\n",
+                                       tilesetInfo.atlasId));
 
-        if (itTileset->tileset->margin() != 0)
-            device->write(formatByteString(
-                "margins = Vector2i(%1, %1)\n",
-                itTileset->tileset->margin()));
+        device->write(formatByteString("texture = ExtResource(\"%1\")\n",
+                                       sanitizeQuotedString(tilesetInfo.id)));
 
-        if (itTileset->tileset->tileSpacing() != 0)
-            device->write(formatByteString(
-                "separation = Vector2i(%1, %1)\n",
-                itTileset->tileset->tileSpacing()));
+        if (tileset.margin() != 0)
+            device->write(formatByteString("margins = Vector2i(%1, %1)\n",
+                                           tileset.margin()));
 
-        if (itTileset->tileset->tileWidth() != 16 || itTileset->tileset->tileHeight() != 16)
-            device->write(formatByteString(
-                "texture_region_size = Vector2i(%1, %2)\n",
-                itTileset->tileset->tileWidth(), itTileset->tileset->tileHeight()));
+        if (tileset.tileSpacing() != 0)
+            device->write(formatByteString("separation = Vector2i(%1, %1)\n",
+                                           tileset.tileSpacing()));
 
-        bool hasAlternates = itTileset->tileset->resolvedProperty("exportAlternates").toBool();
+        if (tileset.tileWidth() != 16 || tileset.tileHeight() != 16)
+            device->write(formatByteString("texture_region_size = Vector2i(%1, %2)\n",
+                                           tileset.tileWidth(), tileset.tileHeight()));
+
+        bool hasAlternates = tileset.resolvedProperty("exportAlternates").toBool();
 
         unsigned maxAlternate = hasAlternates ? FlippedH | FlippedV | Transposed : 0;
 
         // Tile info
-        for (auto tile : itTileset->tileset->tiles()) {
-            if (itTileset->reservedAnimationTiles.contains(tile->id()))
+        for (auto tile : tileset.tiles()) {
+            if (tilesetInfo.reservedAnimationTiles.contains(tile->id()))
                 continue;
 
-            if (itTileset->usedTiles.contains(tile->id()) || tile->objectGroup()) {
-                auto x = tile->id() % itTileset->tileset->columnCount();
-                auto y = tile->id() / itTileset->tileset->columnCount();
+            if (tilesetInfo.usedTiles.contains(tile->id()) || tile->objectGroup()) {
+                auto x = tile->id() % tileset.columnCount();
+                auto y = tile->id() / tileset.columnCount();
 
                 if (tile->isAnimated()) {
                     auto lastTileId = tile->id() - 1;
@@ -408,7 +398,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
                             if (columns == 0)
                                 columns = lastTileId - tile->id() + 1;
 
-                            if (frame.tileId != lastTileId - columns + 1 + itTileset->tileset->columnCount())
+                            if (frame.tileId != lastTileId - columns + 1 + tileset.columnCount())
                                 throw tscnError(TscnPlugin::tr("Tile animations must flow left-to-right, top-to-bottom, with no skipped tiles."));
                         }
 
@@ -431,7 +421,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
                             x, y, frameNum, frame.duration / 1000.0));
 
                         if (frame.tileId != tile->id())
-                            itTileset->reservedAnimationTiles.insert(frame.tileId);
+                            tilesetInfo.reservedAnimationTiles.insert(frame.tileId);
 
                         frameNum++;
                     }
@@ -443,7 +433,9 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
                         "%1:%2/next_alternative_id = 8\n", x, y));
 
                 for (unsigned alt = 0; alt <= maxAlternate; ++alt) {
-                    QString tileName = formatString("%1:%2/%3", x, y, alt);
+                    const QString tileName = QStringLiteral("%1:%2/%3").arg(QString::number(x),
+                                                                            QString::number(y),
+                                                                            QString::number(alt));
 
                     // Tile presence
                     device->write(formatByteString("%1 = %2\n", tileName, alt));
@@ -490,12 +482,12 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
                 layout = 0;
 
                 if (map->hexSideLength() != map->tileHeight() / 2) {
-                    throw tscnError(formatString(TscnPlugin::tr("Godot only supports hexagonal maps "
-                                                                "where the Hex Side Length is exactly half its "
-                                                                "height. For a tile height of %1, the Hex Side "
-                                                                "Length should be set to %2."),
-                                                 map->tileHeight(),
-                                                 map->tileHeight() / 2));
+                    throw tscnError(TscnPlugin::tr("Godot only supports hexagonal maps "
+                                                   "where the Hex Side Length is exactly half its "
+                                                   "height. For a tile height of %1, the Hex Side "
+                                                   "Length should be set to %2.")
+                                    .arg(QString::number(map->tileHeight()),
+                                         QString::number(map->tileHeight() / 2)));
                 }
                 break;
             default:
@@ -525,10 +517,11 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
             map->tileWidth(), tileHeight));
     }
 
-    for (auto it = assetInfo.tilesetInfo.begin(); it != assetInfo.tilesetInfo.end(); ++it)
+    for (const TilesetInfo &tilesetInfo : qAsConst(assetInfo.tilesetInfo)) {
         device->write(formatByteString(
             "sources/%1 = SubResource(\"TileSetAtlasSource_%2\")\n",
-            it->atlasId, it->atlasId));
+            tilesetInfo.atlasId, tilesetInfo.atlasId));
+    }
 
     device->write("\n");
 }
@@ -641,10 +634,10 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
                         auto& tilesetInfo = assetInfo.tilesetInfo[resPath];
 
                         if (tilesetInfo.reservedAnimationTiles.contains(cell.tileId())) {
-                            throw tscnError(formatString(tr("Cannot use tile %1 from tileset %2 because it is "
-                                                            "reserved as an animation frame."),
-                                                         cell.tileId(),
-                                                         cell.tileset()->name()));
+                            throw tscnError(tr("Cannot use tile %1 from tileset %2 because it is "
+                                               "reserved as an animation frame.")
+                                            .arg(cell.tileId())
+                                            .arg(cell.tileset()->name()));
                         }
 
                         int alt = 0;
