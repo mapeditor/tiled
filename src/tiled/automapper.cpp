@@ -531,6 +531,8 @@ static void mergeRuleOptions(RuleOptions &self, const RuleOptions &other,
         self.noOverlappingOutput = other.noOverlappingOutput;
     if (setOptions & RuleOptions::Disabled)
         self.disabled = other.disabled;
+    if (setOptions & RuleOptions::IgnoreLock)
+        self.ignoreLock = other.ignoreLock;
 }
 
 void AutoMapper::setupRules()
@@ -1030,8 +1032,9 @@ void AutoMapper::autoMap(const QRegion &where,
 #endif
 
         for (size_t i = 0; i < mRules.size(); ++i) {
+            const Rule &rule = mRules[i];
             for (const QPoint pos : result[i])
-                applyRule(mRules[i], pos, applyContext, context);
+                applyRule(rule, pos, applyContext, context);
             applyContext.appliedRegions.clear();
         }
     }
