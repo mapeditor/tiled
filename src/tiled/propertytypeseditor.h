@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "properties.h"
+#include "propertytype.h"
 
 #include <QDialog>
 
@@ -29,7 +29,6 @@ class QComboBox;
 class QFormLayout;
 class QItemSelection;
 class QLineEdit;
-class QMenu;
 class QStringListModel;
 class QTreeView;
 
@@ -102,6 +101,7 @@ private:
     void removeValues();
     bool checkValueCount(int count);
 
+    void openClassOfPopup();
     void openAddMemberDialog();
     void addMember(const QString &name, const QVariant &value = QVariant());
     void editMember(const QString &name);
@@ -122,6 +122,12 @@ private:
 
     void retranslateUi();
 
+    struct NamedFlag {
+        ClassPropertyType::ClassUsageFlag flag;
+        QString name;
+    };
+    QVector<NamedFlag> mFlagsWithNames;
+
     Ui::PropertyTypesEditor *mUi;
     PropertyTypesModel *mPropertyTypesModel;
     QFormLayout *mDetailsLayout = nullptr;
@@ -136,7 +142,6 @@ private:
     QCheckBox *mUseAsPropertyCheckBox = nullptr;
     QCheckBox *mClassOfCheckBox = nullptr;
     QPushButton *mClassOfButton = nullptr;
-    QMenu *mClassOfMenu;
     QtTreePropertyBrowser *mMembersView = nullptr;
     CustomPropertiesHelper *mPropertiesHelper = nullptr;
 

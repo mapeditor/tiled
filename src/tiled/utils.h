@@ -79,6 +79,9 @@ void setThemeIcon(T *t, const char *name)
 
 QIcon colorIcon(const QColor &color, QSize size);
 
+QRect screenRect(const QWidget *widget);
+QRect popupGeometry(const QWidget *parent, QSize popupSize);
+
 void restoreGeometry(QWidget *widget);
 void saveGeometry(QWidget *widget);
 
