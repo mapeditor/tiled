@@ -20,7 +20,7 @@
 * Fixed slight drift when zooming the map view in/out
 * Fixed compile against Qt 6.4
 * snap: Added Wayland platform plugin and additional image format plugins
-* AppImage: Updated to Sentry 0.5.2
+* AppImage: Updated to Sentry 0.5.4
 
 ### Tiled 1.9.2 (16 September 2022)
 
