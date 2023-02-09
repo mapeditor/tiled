@@ -47,6 +47,8 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
 
     const QMap<CompatibilityVersion, QString> versionToName {
         { Tiled_1_8,             tr("Tiled 1.8") },
+        { Tiled_1_9,             tr("Tiled 1.9") },
+        { Tiled_1_10,            tr("Tiled 1.10") },
         { Tiled_Latest,          tr("Latest") },
     };
     mVersions = versionToName.keys();
