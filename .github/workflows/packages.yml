@@ -218,6 +218,7 @@ jobs:
     - name: Deploy Qt
       run: |
         macdeployqt install/Tiled.app -verbose=2
+        rm -f install/Tiled.app/Contents/PlugIns/tls/libqopensslbackend.dylib
         pushd install
         ruby ../dist/macos/fixup-install-names.rb
 
