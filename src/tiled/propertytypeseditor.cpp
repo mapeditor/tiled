@@ -67,6 +67,31 @@ static bool confirm(const QString &title, const QString& text, QWidget *parent)
                                 QMessageBox::No) == QMessageBox::Yes;
 }
 
+class DropDownPushButton : public QPushButton
+{
+public:
+    using QPushButton::QPushButton;
+
+    QSize sizeHint() const override
+    {
+        QSize hint = QPushButton::sizeHint();
+
+        QStyleOptionButton opt;
+        initStyleOption(&opt);
+
+        hint.rwidth() += style()->pixelMetric(QStyle::PM_MenuButtonIndicator, &opt, this);
+
+        return hint;
+    }
+
+protected:
+    void initStyleOption(QStyleOptionButton *option) const override
+    {
+        QPushButton::initStyleOption(option);
+        option->features |= QStyleOptionButton::HasMenu;
+    }
+};
+
 
 PropertyTypesFilter::PropertyTypesFilter(const QString &lastPath)
     : propertyTypesFilter(QCoreApplication::translate("File Types", "Custom Types files (*.json)"))
@@ -926,7 +951,7 @@ void PropertyTypesEditor::addClassProperties()
     connect(mUseAsPropertyCheckBox, &QCheckBox::toggled,
             this, [this] (bool checked) { setUsageFlags(ClassPropertyType::PropertyValueType, checked); });
 
-    mClassOfButton = new QPushButton(tr("Select Types"));
+    mClassOfButton = new DropDownPushButton(tr("Select Types"));
     mClassOfButton->setAutoDefault(false);
     mClassOfCheckBox = new QCheckBox(tr("Class of"));
 
