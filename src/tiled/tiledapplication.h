@@ -25,6 +25,8 @@
 
 #include <QtSingleApplication>
 
+#include <memory>
+
 namespace Tiled {
 
 class NewVersionChecker;
@@ -53,7 +55,7 @@ private:
     ProjectManager mProjectManager;
 
     NewVersionChecker *mNewVersionChecker = nullptr;
-    NewsFeed *mNewsFeed = nullptr;
+    std::unique_ptr<NewsFeed> mNewsFeed;
 };
 
 inline TiledApplication *tiledApp()

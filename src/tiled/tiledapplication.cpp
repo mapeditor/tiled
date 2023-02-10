@@ -78,7 +78,7 @@ NewVersionChecker &TiledApplication::newVersionChecker()
 NewsFeed &TiledApplication::newsFeed()
 {
     if (!mNewsFeed)
-        mNewsFeed = new NewsFeed(this);
+        mNewsFeed = std::make_unique<NewsFeed>();
     return *mNewsFeed;
 }
 
