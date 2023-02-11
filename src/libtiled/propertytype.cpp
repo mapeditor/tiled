@@ -364,7 +364,9 @@ void ClassPropertyType::initializeFromJson(const QJsonObject &json)
     if (QColor::isValidColor(colorName))
         color.setNamedColor(colorName);
 
-    drawFill = json.value(QLatin1String("drawFill")).toBool();
+    const QString drawFillPropertyName = QLatin1String("drawFill");
+    if (json.contains(drawFillPropertyName))
+        drawFill = json.value(drawFillPropertyName).toBool();
 
     const QJsonValue useAsJson = json.value(QLatin1String("useAs"));
     if (useAsJson.isArray()) {
