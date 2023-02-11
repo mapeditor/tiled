@@ -205,6 +205,7 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
 
                         const QColor color = object->effectiveColor();
                         QColor fillColor = color;
+                        fillColor.setAlpha(50);
                         if (auto type = Object::propertyTypes().findClassFor(object->className(), *object))
                             if (!type->drawFill)
                                 fillColor.setAlpha(0);
