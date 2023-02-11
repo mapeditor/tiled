@@ -330,7 +330,8 @@ void IsometricRenderer::drawTileSelection(QPainter *painter,
 
 void IsometricRenderer::drawMapObject(QPainter *painter,
                                       const MapObject *object,
-                                      const QColor &color) const
+                                      const QColor &color,
+                                      const QColor &fillColor) const
 {
     painter->save();
 
@@ -387,8 +388,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         const qreal scale = painterScale();
         const QPointF shadowOffset(0, (lineWidth == 0 ? 1 : lineWidth) / scale);
 
-        QColor brushColor = color;
-        brushColor.setAlpha(50);
+        QColor brushColor = fillColor;
         QBrush brush(brushColor);
 
         pen.setJoinStyle(Qt::RoundJoin);

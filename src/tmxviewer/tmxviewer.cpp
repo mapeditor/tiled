@@ -76,8 +76,14 @@ public:
     {
         const QColor &color = mMapObject->objectGroup()->color();
         p->translate(-pos());
+        QColor fillColor = color.isValid() ? color : Qt::darkGray;
+        fillColor.setAlpha(50);
+        if (auto type = Object::propertyTypes().findClassFor(mMapObject->className(), *mMapObject))
+            if (!type->drawFill)
+                fillColor.setAlpha(0);
         mRenderer->drawMapObject(p, mMapObject,
-                                 color.isValid() ? color : Qt::darkGray);
+                                 color.isValid() ? color : Qt::darkGray,
+                                 fillColor);
     }
 
 private:

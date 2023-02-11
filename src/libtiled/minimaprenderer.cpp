@@ -204,7 +204,11 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
                         }
 
                         const QColor color = object->effectiveColor();
-                        mRenderer->drawMapObject(&painter, object, color);
+                        QColor fillColor = color;
+                        if (auto type = Object::propertyTypes().findClassFor(object->className(), *object))
+                            if (!type->drawFill)
+                                fillColor.setAlpha(0);
+                        mRenderer->drawMapObject(&painter, object, color, fillColor);
 
                         if (object->rotation() != qreal(0))
                             painter.restore();

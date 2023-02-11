@@ -333,7 +333,8 @@ void OrthogonalRenderer::drawTileSelection(QPainter *painter,
 
 void OrthogonalRenderer::drawMapObject(QPainter *painter,
                                        const MapObject *object,
-                                       const QColor &color) const
+                                       const QColor &color,
+                                       const QColor &fillColor) const
 {
     painter->save();
 
@@ -387,8 +388,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         QPen shadowPen(linePen);
         shadowPen.setColor(Qt::black);
 
-        QColor brushColor = color;
-        brushColor.setAlpha(50);
+        QColor brushColor = fillColor;
         const QBrush fillBrush(brushColor);
 
         painter->setRenderHint(QPainter::Antialiasing);

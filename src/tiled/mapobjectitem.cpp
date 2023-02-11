@@ -140,6 +140,12 @@ void MapObjectItem::paint(QPainter *painter,
     const auto renderer = mMapDocument->renderer();
     const qreal painterScale = renderer->painterScale();
     const QColor color = mIsHoveredIndicator ? mColor.lighter() : mColor;
+    QColor fillColor = color;
+    fillColor.setAlpha(50);
+    if (auto type = Object::propertyTypes().findClassFor(mapObject()->className(), *mapObject()))
+        if (!type->drawFill)
+            fillColor.setAlpha(0);
+
     const qreal previousOpacity = painter->opacity();
 
     if (flags() & QGraphicsItem::ItemIgnoresTransformations)
@@ -149,7 +155,7 @@ void MapObjectItem::paint(QPainter *painter,
         painter->setOpacity(0.4);
 
     painter->translate(-pos());
-    renderer->drawMapObject(painter, mObject, color);
+    renderer->drawMapObject(painter, mObject, color, fillColor);
     painter->translate(pos());
 
     if (mIsHoveredIndicator) {
