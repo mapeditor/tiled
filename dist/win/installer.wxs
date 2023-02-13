@@ -114,18 +114,22 @@
               <?endif?>
             <?endif?>
 
-            <?ifdef OpenSsl102Dir ?>
-              <File Source="$(var.OpenSsl102Dir)\libeay32.dll" />
-              <File Source="$(var.OpenSsl102Dir)\ssleay32.dll" />
-            <?endif?>
+            <!-- OpenSSL is needed for Qt versions older than 6.2,
+                 otherwise rely on the schannel backend -->
+            <?if $(var.QtVersionMajor) < 6 or $(var.QtVersionMinor) < 2 ?>
+              <?ifdef OpenSsl102Dir ?>
+                <File Source="$(var.OpenSsl102Dir)\libeay32.dll" />
+                <File Source="$(var.OpenSsl102Dir)\ssleay32.dll" />
+              <?endif?>
 
-            <?ifdef OpenSsl111Dir ?>
-              <?if $(var.Platform) = x64 ?>
-                <File Source="$(var.OpenSsl111Dir)\libcrypto-1_1-x64.dll" />
-                <File Source="$(var.OpenSsl111Dir)\libssl-1_1-x64.dll" />
-              <?else?>
-                <File Source="$(var.OpenSsl111Dir)\libcrypto-1_1.dll" />
-                <File Source="$(var.OpenSsl111Dir)\libssl-1_1.dll" />
+              <?ifdef OpenSsl111Dir ?>
+                <?if $(var.Platform) = x64 ?>
+                  <File Source="$(var.OpenSsl111Dir)\libcrypto-1_1-x64.dll" />
+                  <File Source="$(var.OpenSsl111Dir)\libssl-1_1-x64.dll" />
+                <?else?>
+                  <File Source="$(var.OpenSsl111Dir)\libcrypto-1_1.dll" />
+                  <File Source="$(var.OpenSsl111Dir)\libssl-1_1.dll" />
+                <?endif?>
               <?endif?>
             <?endif?>
 
@@ -208,8 +212,6 @@
             <?if $(var.QtVersionMajor) >= 6 and $(var.QtVersionMinor) >= 2 ?>
             <Directory Id="tlsPlugins" Name="tls">
               <Component Id="TlsPlugins" Guid="{98C9FB27-68C9-4B85-AE3B-B59B3735A38E}">
-                <File Source="$(var.QtDir)\plugins\tls\qcertonlybackend.dll"/>
-                <File Source="$(var.QtDir)\plugins\tls\qopensslbackend.dll"/>
                 <File Source="$(var.QtDir)\plugins\tls\qschannelbackend.dll"/>
               </Component>
             </Directory>
