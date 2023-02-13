@@ -33,7 +33,6 @@
 #include "actionsearch.h"
 #include "addremovetileset.h"
 #include "automappingmanager.h"
-#include "commandbutton.h"
 #include "commandmanager.h"
 #include "consoledock.h"
 #include "documentmanager.h"
@@ -42,7 +41,6 @@
 #include "exporthelper.h"
 #include "issuescounter.h"
 #include "issuesdock.h"
-#include "languagemanager.h"
 #include "layer.h"
 #include "locatorwidget.h"
 #include "map.h"
@@ -50,15 +48,12 @@
 #include "mapdocumentactionhandler.h"
 #include "mapeditor.h"
 #include "mapformat.h"
-#include "mapobject.h"
-#include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
 #include "minimaprenderer.h"
 #include "newmapdialog.h"
 #include "newsbutton.h"
 #include "newtilesetdialog.h"
-#include "objectgroup.h"
 #include "offsetmapdialog.h"
 #include "projectdock.h"
 #include "projectmanager.h"
@@ -69,17 +64,13 @@
 #include "sentryhelper.h"
 #include "stylehelper.h"
 #include "templatesdock.h"
-#include "tile.h"
-#include "tilelayer.h"
 #include "tileset.h"
 #include "tilesetdock.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
 #include "tilesetmanager.h"
 #include "tmxmapformat.h"
-#include "undodock.h"
 #include "utils.h"
-#include "worlddocument.h"
 #include "worldmanager.h"
 #include "zoomable.h"
 
@@ -740,7 +731,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     // Set up the status bar (see also currentEditorChanged)
     auto myStatusBar = statusBar();
-    myStatusBar->addPermanentWidget(new NewsButton(myStatusBar));
+    mNewsButton = new NewsButton(myStatusBar);
+    myStatusBar->addPermanentWidget(mNewsButton);
     myStatusBar->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible, myStatusBar));
 
     QIcon terminalIcon(QLatin1String("://images/24/terminal.png"));
@@ -2497,9 +2489,20 @@ void MainWindow::closeDocument(int index)
 
 void MainWindow::currentEditorChanged(Editor *editor)
 {
-    for (QWidget *widget : mEditorStatusBarWidgets)
+    for (QWidget *widget : mEditorStatusBarWidgets) {
         statusBar()->removeWidget(widget);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+        widget->hide();
+#endif
+    }
     mEditorStatusBarWidgets.clear();
+
+    // QStatusBar::removeWidget hides the wrong widget
+    // https://codereview.qt-project.org/c/qt/qtbase/+/460302
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+    if (Preferences::instance()->displayNews())
+        mNewsButton->setVisible(true);
+#endif
 
     if (!editor)
         return;
