@@ -45,6 +45,9 @@
 #include <QPushButton>
 #include <QScopedValueRollback>
 #include <QStringListModel>
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+#include <QStylePainter>
+#endif
 #include <QToolBar>
 
 #include <QtTreePropertyBrowser>
@@ -74,18 +77,29 @@ public:
 
     QSize sizeHint() const override
     {
+        QStyleOptionButton option;
+        initStyleOption(&option);
+
         QSize hint = QPushButton::sizeHint();
-
-        QStyleOptionButton opt;
-        initStyleOption(&opt);
-
-        hint.rwidth() += style()->pixelMetric(QStyle::PM_MenuButtonIndicator, &opt, this);
-
+        hint.rwidth() += style()->pixelMetric(QStyle::PM_MenuButtonIndicator, &option, this);
         return hint;
     }
 
 protected:
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+    void paintEvent(QPaintEvent *) override
+    {
+        QStyleOptionButton option;
+        initStyleOption(&option);
+
+        QStylePainter p(this);
+        p.drawControl(QStyle::CE_PushButton, option);
+    }
+
+    void initStyleOption(QStyleOptionButton *option) const
+#else
     void initStyleOption(QStyleOptionButton *option) const override
+#endif
     {
         QPushButton::initStyleOption(option);
         option->features |= QStyleOptionButton::HasMenu;
