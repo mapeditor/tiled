@@ -124,7 +124,10 @@ jobs:
         export EXTRA_QT_PLUGINS=svg
         export LD_LIBRARY_PATH=/opt/Qt/${QT_VERSION}/gcc_64/lib:$PWD/AppDir/usr/lib
         export OUTPUT=Tiled-Qt${{ matrix.qt_version_major }}-x86_64.AppImage
-        ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --plugin qt --output appimage
+        ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --plugin qt
+        # We don't need the bearer plugins (needed for Qt 5 only)
+        rm -rfv AppDir/usr/plugins/bearer
+        ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --output appimage
 
     - name: Upload Tiled.AppImage
       uses: actions/upload-artifact@v3
