@@ -23,7 +23,6 @@
 
 #pragma once
 
-#include "clipboardmanager.h"
 #include "document.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
@@ -37,6 +36,7 @@
 
 class QComboBox;
 class QLabel;
+class QToolButton;
 
 namespace Ui {
 class MainWindow;
@@ -263,6 +263,7 @@ private:
     MapEditor *mMapEditor;
     TilesetEditor *mTilesetEditor;
     QList<QWidget*> mEditorStatusBarWidgets;
+    QToolButton *mNewsButton;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 
