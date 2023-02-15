@@ -44,6 +44,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QQmlEngine>
+#include <QVersionNumber>
 
 namespace Tiled {
 
@@ -253,6 +254,11 @@ QVariant ScriptModule::propertyValue(const QString &typeName, const QVariant &va
     }
 
     return type->wrap(value);
+}
+
+bool ScriptModule::versionLessThan(const QString &a, const QString &b)
+{
+    return QVersionNumber::fromString(a) < QVersionNumber::fromString(b);
 }
 
 EditableAsset *ScriptModule::open(const QString &fileName) const

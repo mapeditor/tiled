@@ -8,6 +8,7 @@
 * AutoMapping: Skip locked layers when applying rules (#3544)
 * Scripting: Added Object.setColorProperty and Object.setFloatProperty (#3423)
 * Scripting: Added tiled.projectFilePath
+* Scripting: Added tiled.versionLessThan
 * Scripting: Added TileMap.toImage (#3519)
 * Scripting: Allow assigning null to Tile.objectGroup (by Logan Higinbotham, #3495)
 * Scripting: Allow changing the items in a combo box added to a dialog
