@@ -132,7 +132,7 @@ interface region {
   /**
    * Returns this region as an array of contiguous regions, based on 8-way
    * connectivity (regions touching each other diagonally are considered
-   * contiguous).
+   * one contiguous region).
    *
    * The returned regions are guaranteed not to touch each other.
    *
