@@ -7,15 +7,15 @@
 Godot 4
 =======
 
-Godot 4.0 revamped its tilemap node, and Tiled ships with a plugin to export
-maps in this format. For previous version of Godot, see
-`Tiled To Godot Export <https://github.com/MikeMnD/tiled-to-godot-export>`__.
+Godot 4 revamped its TileMap node, and Tiled ships with a plugin to export
+maps in this format. For exporting to Godot 3, see the `Tiled To Godot Export
+<https://github.com/mapeditor/tiled-to-godot-export>`__ extension.
 
-The Godot 4 exporter assumes that the generated .tscn files and the tileset
+The Godot 4 exporter assumes that the generated ``.tscn`` files and the tileset
 artwork all share the same file hierarchy. The exporter will search for a
-common parent folder containing a .godot project file and use that folder
-as the res:// root for the project. The exporter will search at least two
-parent folders for a .godot file.
+common parent folder containing a ``.godot`` project file and use that folder
+as the ``res://`` root for the project. The exporter will search at least two
+parent folders for a ``.godot`` file.
 
 Layer Properties
 ~~~~~~~~~~~~~~~~
@@ -74,8 +74,8 @@ overwritten every time the map is exported.
 .. note::
 
     Only tilesets that are used in the current map will be exported. You
-    must ensure that every map which uses the same .tres file also uses *all*
-    of the same tilesets. You may wish to create a layer with the
+    must ensure that every map which uses the same ``.tres`` file also uses
+    *all* of the same tilesets. You may wish to create a layer with the
     ``tilesetOnly`` property to ensure the correct tilesets are exported.
 
 Limitations

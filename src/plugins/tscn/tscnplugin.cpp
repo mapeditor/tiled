@@ -20,6 +20,7 @@
 #include "tscnplugin.h"
 
 #include "grouplayer.h"
+#include "logginginterface.h"
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
@@ -157,13 +158,10 @@ static void addTileset(Tileset *tileset, AssetInfo &assetInfo)
                 blank = false;
 
             auto rect = tile->imageRect();
-            for (auto y = rect.y(); blank && y < rect.y() + rect.height(); ++y) {
-                for (auto x = rect.x(); blank && x < rect.x() + rect.width(); ++x) {
-                    if (image.pixelColor(x, y).alpha() != 0) {
+            for (auto y = rect.y(); blank && y < rect.y() + rect.height(); ++y)
+                for (auto x = rect.x(); blank && x < rect.x() + rect.width(); ++x)
+                    if (image.pixelColor(x, y).alpha() != 0)
                         blank = false;
-                    }
-                }
-            }
 
             if (!blank)
                 tilesetInfo.usedTiles.insert(tile->id());
@@ -193,25 +191,27 @@ static void collectAssetsRecursive(const QList<Layer*> &layers, AssetInfo &asset
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
-                auto tileLayer = static_cast<const TileLayer*>(layer);
-                findUsedTilesets(tileLayer, assetInfo);
+            auto tileLayer = static_cast<const TileLayer*>(layer);
+            findUsedTilesets(tileLayer, assetInfo);
 
-                if (!layer->resolvedProperty("tilesetOnly").toBool())
-                    assetInfo.layers.push_back(tileLayer);
+            if (!layer->resolvedProperty("tilesetOnly").toBool())
+                assetInfo.layers.append(tileLayer);
 
-                break;
-            }
+            break;
+        }
         case Layer::ObjectGroupType:
-            throw tscnError(TscnPlugin::tr("The Godot exporter does not yet support objects"));
+            Tiled::WARNING(TscnPlugin::tr("The Godot exporter does not yet support objects"),
+                           Tiled::SelectLayer { layer });
             break;
         case Layer::ImageLayerType:
-            throw tscnError(TscnPlugin::tr("The Godot exporter does not yet support image layers"));
+            Tiled::WARNING(TscnPlugin::tr("The Godot exporter does not yet support image layers"),
+                           Tiled::SelectLayer { layer });
             break;
         case Layer::GroupLayerType: {
-                auto groupLayer = static_cast<const GroupLayer*>(layer);
-                collectAssetsRecursive(groupLayer->layers(), assetInfo);
-                break;
-            }
+            auto groupLayer = static_cast<const GroupLayer*>(layer);
+            collectAssetsRecursive(groupLayer->layers(), assetInfo);
+            break;
+        }
         }
     }
 }
@@ -271,47 +271,54 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
         int polygonId = 0;
 
         for (const auto object : objectGroup->objects()) {
+            const auto shape = object->shape();
+
+            if (shape != MapObject::Rectangle && shape != MapObject::Polygon) {
+                Tiled::WARNING(TscnPlugin::tr("Godot exporter only supports collisions that are rectangles or polygons."),
+                               Tiled::SelectTile { tile });
+                continue;
+            }
+
             foundCollisions = true;
 
-            auto centerX = tile->width() / 2 - object->x();
-            auto centerY = tile->height() / 2 - object->y();
+            const auto centerX = tile->width() / 2 - object->x();
+            const auto centerY = tile->height() / 2 - object->y();
 
             device->write(formatByteString(
                 "%1/physics_layer_0/polygon_%2/points = PackedVector2Array(",
                 tileName, polygonId));
 
-            switch (object->shape()) {
-                case MapObject::Rectangle: {
-                    auto x1 = object->x() - centerX;
-                    auto y1 = object->y() - centerY;
-                    auto x2 = object->width() - centerX;
-                    auto y2 = object->height() - centerY;
+            switch (shape) {
+            case MapObject::Rectangle: {
+                auto x1 = object->x() - centerX;
+                auto y1 = object->y() - centerY;
+                auto x2 = object->width() - centerX;
+                auto y2 = object->height() - centerY;
 
-                    flipState(x1, y1, flippedState);
-                    flipState(x2, y2, flippedState);
+                flipState(x1, y1, flippedState);
+                flipState(x2, y2, flippedState);
 
-                    device->write(formatByteString(
-                        "%1, %2, %3, %2, %3, %4, %1, %4",
-                        x1, y1, x2, y2));
+                device->write(formatByteString("%1, %2, %3, %2, %3, %4, %1, %4",
+                                               x1, y1, x2, y2));
 
-                    break;
+                break;
+            }
+            case MapObject::Polygon: {
+                auto polygon = object->polygon().toPolygon();
+                bool first = true;
+                for (auto point : polygon) {
+                    if (!first)
+                        device->write(", ");
+                    auto x = point.x() - centerX;
+                    auto y = point.y() - centerY;
+                    flipState(x, y, flippedState);
+                    device->write(formatByteString("%1, %2", x, y));
+                    first = false;
                 }
-                case MapObject::Polygon: {
-                    auto polygon = object->polygon().toPolygon();
-                    bool first = true;
-                    for (auto point : polygon) {
-                        if (!first)
-                            device->write(", ");
-                        auto x = point.x() - centerX;
-                        auto y = point.y() - centerY;
-                        flipState(x, y, flippedState);
-                        device->write(formatByteString("%1, %2", x, y));
-                        first = false;
-                    }
-                    break;
-                }
-                default:
-                    throw tscnError(TscnPlugin::tr("Godot exporter only supports collisions that are rectangles or polygons."));
+                break;
+            }
+            default:
+                break;
             }
 
             device->write(")\n");
@@ -380,7 +387,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
         unsigned maxAlternate = hasAlternates ? FlippedH | FlippedV | Transposed : 0;
 
         // Tile info
-        for (auto tile : tileset.tiles()) {
+        for (const auto tile : tileset.tiles()) {
             if (tilesetInfo.reservedAnimationTiles.contains(tile->id()))
                 continue;
 
@@ -398,21 +405,23 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
                             if (columns == 0)
                                 columns = lastTileId - tile->id() + 1;
 
-                            if (frame.tileId != lastTileId - columns + 1 + tileset.columnCount())
-                                throw tscnError(TscnPlugin::tr("Tile animations must flow left-to-right, top-to-bottom, with no skipped tiles."));
+                            if (frame.tileId != lastTileId - columns + 1 + tileset.columnCount()) {
+                                Tiled::ERROR(TscnPlugin::tr("Tile animations must flow left-to-right, top-to-bottom, with no skipped tiles."),
+                                             Tiled::SelectTile { tile });
+                                break;
+                            }
                         }
 
                         lastTileId = frame.tileId;
                     }
 
-                    device->write(formatByteString(
-                        "%1:%2/animation_frames = %3\n",
-                        x, y, tile->frames().size()));
+                    device->write(formatByteString("%1:%2/animation_frames = %3\n",
+                                                   x, y, tile->frames().size()));
 
-                    if (columns != 0)
-                        device->write(formatByteString(
-                            "%1:%2/animation_columns = %3\n",
-                            x, y, columns));
+                    if (columns != 0) {
+                        device->write(formatByteString("%1:%2/animation_columns = %3\n",
+                                                       x, y, columns));
+                    }
 
                     int frameNum = 0;
                     for (auto& frame : tile->frames()) {
@@ -428,9 +437,10 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
                 }
 
                 // If we're using alternate tiles, give a hint for the next alt ID
-                if (hasAlternates)
-                    device->write(formatByteString(
-                        "%1:%2/next_alternative_id = 8\n", x, y));
+                if (hasAlternates) {
+                    device->write(formatByteString("%1:%2/next_alternative_id = 8\n",
+                                                   x, y));
+                }
 
                 for (unsigned alt = 0; alt <= maxAlternate; ++alt) {
                     const QString tileName = QStringLiteral("%1:%2/%3").arg(QString::number(x),
@@ -465,33 +475,33 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
     {
         int shape, layout;
         switch (map->orientation()) {
-            case Map::Orthogonal:
-                shape = 0;
-                layout = 0;
-                break;
-            case Map::Staggered:
-                shape = 1;
-                layout = 0;
-                break;
-            case Map::Isometric:
-                shape = 1;
-                layout = 5;
-                break;
-            case Map::Hexagonal:
-                shape = 3;
-                layout = 0;
+        case Map::Orthogonal:
+            shape = 0;
+            layout = 0;
+            break;
+        case Map::Staggered:
+            shape = 1;
+            layout = 0;
+            break;
+        case Map::Isometric:
+            shape = 1;
+            layout = 5;
+            break;
+        case Map::Hexagonal:
+            shape = 3;
+            layout = 0;
 
-                if (map->hexSideLength() != map->tileHeight() / 2) {
-                    throw tscnError(TscnPlugin::tr("Godot only supports hexagonal maps "
-                                                   "where the Hex Side Length is exactly half its "
-                                                   "height. For a tile height of %1, the Hex Side "
-                                                   "Length should be set to %2.")
-                                    .arg(QString::number(map->tileHeight()),
-                                         QString::number(map->tileHeight() / 2)));
-                }
-                break;
-            default:
-                throw tscnError(TscnPlugin::tr("Unsupported tile orientation."));
+            if (map->hexSideLength() != map->tileHeight() / 2) {
+                throw tscnError(TscnPlugin::tr("Godot only supports hexagonal maps "
+                                               "where the Hex Side Length is exactly half its "
+                                               "height. For a tile height of %1, the Hex Side "
+                                               "Length should be set to %2.")
+                                .arg(QString::number(map->tileHeight()),
+                                     QString::number(map->tileHeight() / 2)));
+            }
+            break;
+        default:
+            throw tscnError(TscnPlugin::tr("Unsupported tile orientation."));
         }
 
         // We could leave either of these out if they're zero, but as of
@@ -608,20 +618,22 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         int layerIndex = 0;
         for (const auto &layer : qAsConst(assetInfo.layers)) {
             device->write(formatByteString("layer_%1/name = \"%2\"\n",
-                layerIndex,
-                sanitizeQuotedString(layer->name())));
+                                           layerIndex,
+                                           sanitizeQuotedString(layer->name())));
 
-            if (layer->resolvedProperty("ySortEnabled").isValid())
+            if (layer->resolvedProperty("ySortEnabled").isValid()) {
                 device->write(formatByteString("layer_%1/y_sort_enabled = true\n",
-                    layerIndex));
+                                               layerIndex));
+            }
 
-            if (layer->resolvedProperty("zIndex").isValid())
+            if (layer->resolvedProperty("zIndex").isValid()) {
                 device->write(formatByteString("layer_%1/z_index = %2\n",
-                    layerIndex,
-                    layer->resolvedProperty("zIndex").toInt()));
+                                               layerIndex,
+                                               layer->resolvedProperty("zIndex").toInt()));
+            }
 
             device->write(formatByteString("layer_%1/tile_data = PackedInt32Array(",
-                layerIndex));
+                                           layerIndex));
 
             bool first = true;
             auto bounds = layer->bounds();
@@ -634,15 +646,18 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
                         auto& tilesetInfo = assetInfo.tilesetInfo[resPath];
 
                         if (tilesetInfo.reservedAnimationTiles.contains(cell.tileId())) {
-                            throw tscnError(tr("Cannot use tile %1 from tileset %2 because it is "
-                                               "reserved as an animation frame.")
-                                            .arg(cell.tileId())
-                                            .arg(cell.tileset()->name()));
+                            Tiled::ERROR(TscnPlugin::tr("Cannot use tile %1 from tileset %2 because it is "
+                                                        "reserved as an animation frame.")
+                                                     .arg(cell.tileId())
+                                                     .arg(cell.tileset()->name()),
+                                         Tiled::SelectTile { cell.tile() });
                         }
 
                         int alt = 0;
-                        if (cell.rotatedHexagonal120())
-                            throw tscnError(tr("Cannot export hex tiles that are rotated by 120° degrees."));
+                        if (cell.rotatedHexagonal120()) {
+                            Tiled::ERROR(TscnPlugin::tr("Hex tiles that are rotated by 120° degrees are not supported."),
+                                         Tiled::JumpToTile { map, QPoint(x, y), layer });
+                        }
                         if (cell.flippedHorizontally())
                             alt |= FlippedH;
                         if (cell.flippedVertically())
@@ -650,8 +665,10 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
                         if (cell.flippedAntiDiagonally())
                             alt |= Transposed;
                         if (alt && !cell.tileset()->resolvedProperty("exportAlternates").toBool()) {
-                            throw tscnError(tr("Map uses flipped/rotated tiles. The tileset must have "
-                                               "the custom exportAlternates property enabled to export this map."));
+                            Tiled::ERROR(TscnPlugin::tr("Map uses flipped/rotated tiles. The tileset must have "
+                                                        "the custom exportAlternates property enabled to export this map."),
+                                         Tiled::JumpToTile { map, QPoint(x, y), layer });
+                            alt = 0;
                         }
 
                         int destLocation = (x >= 0 ? y : y + 1) * 65536 + x;
@@ -661,11 +678,11 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
                         int srcY = cell.tileId() / cell.tileset()->columnCount();
                         srcY += alt * 65536;     
 
-                        if (!first) {
+                        if (!first)
                             device->write(", ");
-                        }
+
                         device->write(formatByteString("%1, %2, %3",
-                            destLocation, srcX, srcY));
+                                                       destLocation, srcX, srcY));
 
                         first = false;
                     }
