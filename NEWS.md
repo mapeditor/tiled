@@ -11,6 +11,7 @@
 * Scripting: Added tiled.projectFilePath
 * Scripting: Added tiled.versionLessThan
 * Scripting: Added TileMap.toImage (#3519)
+* Scripting: Added region.contiguousRegions() (#3576)
 * Scripting: Allow assigning null to Tile.objectGroup (by Logan Higinbotham, #3495)
 * Scripting: Allow changing the items in a combo box added to a dialog
 * Scripting: Fixed painting issues after changing TileLayer size (#3481)
