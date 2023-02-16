@@ -37,7 +37,7 @@ DynamicLibrary {
     Group {
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows"))
+            if (project.windowsLayout)
                 return "plugins/tiled"
             else if (qbs.targetOS.contains("macos"))
                 return "Tiled.app/Contents/PlugIns"

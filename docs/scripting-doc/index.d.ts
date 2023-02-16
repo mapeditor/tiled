@@ -487,7 +487,7 @@ declare namespace Qt {
     /**
      * Adds the given items to the combo box.
      *
-     * @since 1.9.3
+     * @since 1.10
      */
     addItems(texts : string[]) : void;
   }
@@ -950,7 +950,7 @@ declare class TiledObject {
    *
    * The color is specified as a string "#RGB", "#RRGGBB" or "#AARRGGBB".
    *
-   * @since 1.9.3
+   * @since 1.10
    */
   setColorProperty(name: string, value: color): void;
 
@@ -962,7 +962,7 @@ declare class TiledObject {
    * Each component takes a value from 0 to 255. When not provided, the alpha
    * defaults to 255.
    *
-   * @since 1.9.3
+   * @since 1.10
    */
   setColorProperty(name: string, red: number, green: number, blue: number, alpha?: number): void;
 
@@ -973,7 +973,7 @@ declare class TiledObject {
    * This function is provided as alternative to {@link setProperty}, since
    * that function will set whole numbers as `int` properties.
    *
-   * @since 1.9.3
+   * @since 1.10
    */
   setFloatProperty(name: string, value: number): void;
 
@@ -2968,6 +2968,15 @@ declare class Tileset extends Asset {
 
   /**
    * Whether this tileset is a collection of images (same as checking whether image is an empty string).
+   *
+   * @deprecated Use {@link isCollection} instead.
+   */
+  readonly collection : boolean
+
+  /**
+   * Whether this tileset is a collection of images (same as checking whether image is an empty string).
+   *
+   * @since 1.10
    */
   readonly isCollection : boolean
 
@@ -3337,6 +3346,15 @@ declare namespace tiled {
   export const version: string;
 
   /**
+   * When given two versions, returns whether the first version comes before
+   * the second version. When given one version, it returns whether Tiled's
+   * current {@link version} comes before the given version.
+   *
+   * @since 1.10
+   */
+  export function versionLessThan(a: string, b?: string): boolean;
+
+  /**
    * The version of Qt which Tiled is running against.
    *
    * @since 1.8.5
@@ -3381,7 +3399,7 @@ declare namespace tiled {
    * The file path of the currently loaded project, or empty if no project is
    * currently loaded.
    *
-   * @since 1.9.3
+   * @since 1.10
    */
   export const projectFilePath: string;
 

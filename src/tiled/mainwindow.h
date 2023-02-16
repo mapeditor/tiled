@@ -23,7 +23,6 @@
 
 #pragma once
 
-#include "clipboardmanager.h"
 #include "document.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
@@ -37,6 +36,7 @@
 
 class QComboBox;
 class QLabel;
+class QToolButton;
 
 namespace Ui {
 class MainWindow;
@@ -52,6 +52,7 @@ class ConsoleDock;
 class DocumentManager;
 class Editor;
 class IssuesDock;
+class LocatorSource;
 class LocatorWidget;
 class MapDocument;
 class MapDocumentActionHandler;
@@ -117,6 +118,8 @@ private:
     void newMap();
     void openFileDialog();
     void openFileInProject();
+    void searchActions();
+    void showLocatorWidget(LocatorSource *source);
     bool saveFile();
     bool saveFileAs();
     void saveAll();
@@ -260,6 +263,7 @@ private:
     MapEditor *mMapEditor;
     TilesetEditor *mTilesetEditor;
     QList<QWidget*> mEditorStatusBarWidgets;
+    QToolButton *mNewsButton;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 

@@ -161,6 +161,19 @@ QAction *ActionManager::findAction(Id id)
     return d->mIdToActions.value(id);
 }
 
+QAction *ActionManager::findEnabledAction(Id id)
+{
+    auto d = instance();
+
+    const auto [start, end] = qAsConst(d->mIdToActions).equal_range(id);
+    for (auto it = start; it != end; ++it) {
+        if (it.value()->isEnabled())
+            return it.value();
+    }
+
+    return nullptr;
+}
+
 bool ActionManager::hasMenu(Id id)
 {
     return instance()->mIdToMenu.contains(id);

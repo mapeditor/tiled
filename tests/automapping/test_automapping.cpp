@@ -1,6 +1,4 @@
 #include "map.h"
-#include "mapobject.h"
-#include "objectgroup.h"
 #include "tilelayer.h"
 #include "mapreader.h"
 
@@ -28,7 +26,8 @@ void test_AutoMapping::autoMap_data()
     QTest::newRow("inputnot") << QStringLiteral("inputnot");
     QTest::newRow("match-type") << QStringLiteral("match-type");
     QTest::newRow("mod-and-offset") << QStringLiteral("mod-and-offset");
-    QTest::newRow("option-no-overlapping-rules") << QStringLiteral("option-no-overlapping-rules");
+    QTest::newRow("option-ignore-lock") << QStringLiteral("option-ignore-lock");
+    QTest::newRow("option-no-overlapping-output") << QStringLiteral("option-no-overlapping-output");
     QTest::newRow("option-overflow-border") << QStringLiteral("option-overflow-border");
     QTest::newRow("option-wrap-border") << QStringLiteral("option-wrap-border");
     QTest::newRow("simple-2x2-rule") << QStringLiteral("simple-2x2-rule");

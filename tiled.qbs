@@ -13,6 +13,7 @@ Project {
     property bool installHeaders: false
     property bool useRPaths: true
     property bool windowsInstaller: false
+    property bool windowsLayout: qbs.targetOS.contains("windows")
     property bool staticZstd: false
     property bool sentry: false
     property bool dbus: true

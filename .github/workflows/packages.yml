@@ -15,10 +15,8 @@ on:
     - '.travis.yml'
 
 env:
-  QT_VERSION: 5.15.2
-  QTCREATOR_VERSION: 7.0.3
   QBS_VERSION: 1.23.1
-  SENTRY_VERSION: 0.5.2
+  SENTRY_VERSION: 0.5.4
   SENTRY_ORG: mapeditor
   SENTRY_PROJECT: tiled
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
@@ -53,6 +51,11 @@ jobs:
           qt_version_major: 5
           qt_creator_version: 5.0.3
           gcc_version: 9
+        - image: ubuntu-20.04
+          qt_version: 6.4.2
+          qt_version_major: 6
+          qt_creator_version: 9.0.1
+          gcc_version: 10
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
@@ -66,7 +69,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libxcb-randr0 libzstd-dev libcurl4-openssl-dev
+        sudo apt install libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libxcb-randr0 libxcb-shape0 libzstd-dev libcurl4-openssl-dev
 
     - name: Install Qt
       run: |
@@ -74,7 +77,7 @@ jobs:
         ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
 
     - name: Setup ccache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1
       with:
         max-size: 250M
 
@@ -121,7 +124,10 @@ jobs:
         export EXTRA_QT_PLUGINS=svg
         export LD_LIBRARY_PATH=/opt/Qt/${QT_VERSION}/gcc_64/lib:$PWD/AppDir/usr/lib
         export OUTPUT=Tiled-Qt${{ matrix.qt_version_major }}-x86_64.AppImage
-        ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --plugin qt --output appimage
+        ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --plugin qt
+        # We don't need the bearer plugins (needed for Qt 5 only)
+        rm -rfv AppDir/usr/plugins/bearer
+        ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --output appimage
 
     - name: Upload Tiled.AppImage
       uses: actions/upload-artifact@v3
@@ -176,10 +182,10 @@ jobs:
       matrix:
         include:
         - qt_version: 5.12.12
-          version_suffix: "10.12"
+          version_suffix: "10.12-10.13"
           qt_creator_version: 5.0.3
-        - qt_version: 5.15.2
-          version_suffix: "10.13+"
+        - qt_version: 6.4.2
+          version_suffix: "10.14+"
           qt_creator_version: 7.0.2
 
     env:
@@ -215,6 +221,7 @@ jobs:
     - name: Deploy Qt
       run: |
         macdeployqt install/Tiled.app -verbose=2
+        rm -f install/Tiled.app/Contents/PlugIns/tls/libqopensslbackend.dylib
         pushd install
         ruby ../dist/macos/fixup-install-names.rb
 
@@ -247,16 +254,16 @@ jobs:
 
     - name: Create Archive
       run: |
-        ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled-macOS-${{ matrix.version_suffix }}.zip
+        ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled_macOS-${{ matrix.version_suffix }}.zip
 
     - name: Upload Tiled.app
       uses: actions/upload-artifact@v3
       with:
-        name: Tiled-macOS-${{ matrix.version_suffix }}.app
-        path: Tiled-macOS-${{ matrix.version_suffix }}.zip
+        name: Tiled_macOS-${{ matrix.version_suffix }}.app
+        path: Tiled_macOS-${{ matrix.version_suffix }}.zip
 
   windows:
-    name: Windows (${{ matrix.arch }}-bit)
+    name: Windows (${{ matrix.arch }}-bit, Qt ${{ matrix.qt_version_major }})
     runs-on: windows-2019
     needs: version
 
@@ -264,19 +271,21 @@ jobs:
       matrix:
         include:
         - qt_version: 5.15.2
+          qt_version_major: 5
           qt_toolchain: win32_mingw81
           arch: 32
           openssl_arch: x86
           mingw_version: 8.1.0
           mingw_component: mingw
           mingw_path: /c/Qt/Tools/mingw810_32/bin
-        - qt_version: 5.15.2
-          qt_toolchain: win64_mingw81
+        - qt_version: 6.4.2
+          qt_version_major: 6
+          qt_toolchain: win64_mingw
           arch: 64
           openssl_arch: x64
-          mingw_version: 8.1.0
-          mingw_component: mingw
-          mingw_path: /c/Qt/Tools/mingw810_64/bin
+          mingw_version: 9.0.0
+          mingw_component: mingw90
+          mingw_path: /c/Qt/Tools/mingw1120_64/bin
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
@@ -361,7 +370,7 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: Tiled-win64.msi/Tiled-${{ needs.version.outputs.version }}-win64.msi
-        asset_name: Tiled-${{ needs.version.outputs.version }}_Windows_x86_64.msi
+        asset_name: Tiled-${{ needs.version.outputs.version }}_Windows-10+_x86_64.msi
         asset_content_type: application/x-msi
 
     - name: Upload Windows 32-bit installer
@@ -369,7 +378,7 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: Tiled-win32.msi/Tiled-${{ needs.version.outputs.version }}-win32.msi
-        asset_name: Tiled-${{ needs.version.outputs.version }}_Windows_x86.msi
+        asset_name: Tiled-${{ needs.version.outputs.version }}_Windows-7-8_x86.msi
         asset_content_type: application/x-msi
 
     - name: Upload Linux AppImage (Qt5)
@@ -377,23 +386,31 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: Tiled-Qt5-x86_64.AppImage/Tiled-Qt5-x86_64.AppImage
-        asset_name: Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage
+        asset_name: Tiled-${{ needs.version.outputs.version }}_Linux_Qt-5_x86_64.AppImage
         asset_content_type: application/vnd.appimage
 
-    - name: Upload macOS app (10.12)
+    - name: Upload Linux AppImage (Qt6)
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled-macOS-10.12.app/Tiled-macOS-10.12.zip
-        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-10.12.zip
+        asset_path: Tiled-Qt6-x86_64.AppImage/Tiled-Qt6-x86_64.AppImage
+        asset_name: Tiled-${{ needs.version.outputs.version }}_Linux_Qt-6_x86_64.AppImage
+        asset_content_type: application/vnd.appimage
+
+    - name: Upload macOS app (10.12-10.13)
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: Tiled_macOS-10.12-10.13.app/Tiled_macOS-10.12-10.13.zip
+        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-10.12-10.13.zip
         asset_content_type: application/zip
 
-    - name: Upload macOS app (10.13+)
+    - name: Upload macOS app (10.14+)
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled-macOS-10.13+.app/Tiled-macOS-10.13+.zip
-        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-10.13+.zip
+        asset_path: Tiled_macOS-10.14+.app/Tiled_macOS-10.14+.zip
+        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-10.14+.zip
         asset_content_type: application/zip
 
   sentry:

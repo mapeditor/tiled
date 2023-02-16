@@ -34,6 +34,8 @@ class StampActions : public QObject
 public:
     StampActions(QObject *parent = nullptr);
 
+    void setEnabled(bool enabled);
+
     void languageChanged();
 
     void populateToolBar(QToolBar *toolBar, bool isRandom, bool isWangFill);

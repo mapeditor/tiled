@@ -22,6 +22,7 @@
 
 #include "newversiondialog.h"
 #include "preferences.h"
+#include "tiledapplication.h"
 #include "utils.h"
 
 #include <QGuiApplication>
@@ -43,7 +44,7 @@ NewVersionButton::NewVersionButton(NewVersionButton::Visibility visibility, QWid
     setText(tr("Up to date"));
     setEnabled(false);
 
-    const auto &checker = NewVersionChecker::instance();
+    const auto &checker = tiledApp()->newVersionChecker();
 
     connect(&checker, &NewVersionChecker::newVersionAvailable,
             this, &NewVersionButton::newVersionAvailable);
@@ -95,7 +96,7 @@ void NewVersionButton::updateVisiblity()
         return;
 
     const auto preferences = Preferences::instance();
-    const auto &checker = NewVersionChecker::instance();
+    const auto &checker = tiledApp()->newVersionChecker();
 
     setVisible(preferences->checkForUpdates() && checker.isNewVersionAvailable());
 }

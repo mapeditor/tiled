@@ -92,6 +92,7 @@ public:
     static void setCompatibilityVersion(CompatibilityVersion version);
 
     static QString versionString();
+    static QString classPropertyNameForObject();
 
 private:
     static CompatibilityVersion mCompatibilityVersion;

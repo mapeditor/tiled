@@ -92,7 +92,8 @@ struct RuleOptions
         OffsetX             = 1 << 3,
         OffsetY             = 1 << 4,
         NoOverlappingOutput = 1 << 5,
-        Disabled            = 1 << 6
+        Disabled            = 1 << 6,
+        IgnoreLock          = 1 << 7
     };
 
     qreal skipChance = 0.0;
@@ -102,6 +103,7 @@ struct RuleOptions
     int offsetY = 0;
     bool noOverlappingOutput = false;
     bool disabled = false;
+    bool ignoreLock = false;
 };
 
 struct RuleOptionsArea
@@ -261,6 +263,7 @@ public:
          * Determines whether the rules on the map need to be matched in order.
          */
         bool matchInOrder = false;
+        bool matchInOrderWasSet = false;
 
         /**
          * This variable determines, how many overlapping tiles should be used.
@@ -378,13 +381,13 @@ private:
 
 
     /**
-     * This copies multiple TileLayers from one map to another.
-     * Only the region \a region is considered for copying.
-     * In the destination it will come to the region translated by Offset.
+     * This copies multiple layers from one map to another.
+     * Only the output region of the \a rule is considered for copying.
+     * In the destination it will come to the region translated by \a offset.
      * The parameter \a ruleOutput contains a map of which layers of the rules
      * map should get copied into which layers of the working map.
      */
-    void copyMapRegion(const QRegion &region, QPoint Offset,
+    void copyMapRegion(const Rule &rule, QPoint offset,
                        const OutputSet &ruleOutput,
                        AutoMappingContext &context) const;
 

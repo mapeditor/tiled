@@ -59,6 +59,9 @@ public:
                        const QKeySequence &shortcut,
                        QObject *parent = nullptr);
 
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
+
     void keyPressed(QKeyEvent *event) override;
     void mouseLeft() override;
     void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
@@ -106,6 +109,8 @@ private:
 
     void showContextMenu(MapObject *clickedObject,
                          QPoint screenPos);
+
+    void setActionsEnabled(bool enabled);
 
     QAction *mFlipHorizontal;
     QAction *mFlipVertical;

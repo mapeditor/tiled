@@ -210,6 +210,10 @@ Tiled::CompatibilityVersion Tiled::versionFromString(const QString &string)
 {
     if (string == QLatin1String("1.8"))
         return Tiled_1_8;
+    else if (string == QLatin1String("1.9"))
+        return Tiled_1_9;
+    else if (string == QLatin1String("1.10"))
+        return Tiled_1_10;
     else if (string == QLatin1String("latest"))
         return Tiled_Latest;
     return UnknownVersion;

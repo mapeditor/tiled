@@ -24,7 +24,7 @@
 
 namespace Tiled {
 
-class NewsButton : public QToolButton
+class NewsButton final : public QToolButton
 {
     Q_OBJECT
 

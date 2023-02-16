@@ -297,8 +297,8 @@ tiles (e.g. to extend a Wang set by transforming existing tiles).
 ~~~~~~
 
 -  **id:** The local tile ID within its tileset.
--  **class:** The type of the tile. Refers to an object type and is used
-   by tile objects. (optional) (since 1.0, renamed from ``type`` since 1.9)
+-  **type:** The class of the tile. Is inherited by tile objects. (since 1.0,
+   defaults to "", was saved as ``class`` in 1.9)
 -  *terrain:* Defines the terrain type of each corner of the tile,
    given as comma-separated indexes in the terrain types array in the
    order top-left, top-right, bottom-left, bottom-right. Leaving out a
@@ -536,8 +536,8 @@ Can contain any number: :ref:`tmx-object`
    object was deleted, no object gets the same ID. Can not be changed in Tiled.
    (since Tiled 0.11)
 -  **name:** The name of the object. An arbitrary string. (defaults to "")
--  **class:** The class of the object. An arbitrary string. (defaults to "",
-   renamed from ``type`` since 1.9)
+-  **type:** The class of the object. An arbitrary string. (defaults to "",
+   was saved as ``class`` in 1.9)
 -  **x:** The x coordinate of the object in pixels. (defaults to 0)
 -  **y:** The y coordinate of the object in pixels. (defaults to 0)
 -  **width:** The width of the object in pixels. (defaults to 0)
