@@ -87,13 +87,7 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
                         painter.translate(-origin);
                     }
 
-                    const QColor color = object->effectiveColor();
-                    QColor fillColor = color;
-                    fillColor.setAlpha(50);
-                    if (auto type = Object::propertyTypes().findClassFor(object->className(), *object))
-                        if (!type->drawFill)
-                            fillColor.setAlpha(0);
-                    renderer.drawMapObject(&painter, object, color, fillColor);
+                    renderer.drawMapObject(&painter, object, object->effectiveColors());
 
                     if (object->rotation() != qreal(0))
                         painter.restore();

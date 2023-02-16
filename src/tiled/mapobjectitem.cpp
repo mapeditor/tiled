@@ -63,6 +63,17 @@ void MapObjectItem::syncWithMapObject()
         update();
     }
 
+    QColor fillColor;
+    auto type = Object::propertyTypes().findClassFor(mObject->className(), *mObject);
+    if (!type || type->drawFill) {
+        fillColor = color;
+        fillColor.setAlpha(50);
+    }
+    if (fillColor != mFillColor) {
+        mFillColor = fillColor;
+        update();
+    }
+
     QString toolTip = mObject->name();
     const QString &className = mObject->effectiveClassName();
     if (!className.isEmpty())
@@ -140,11 +151,7 @@ void MapObjectItem::paint(QPainter *painter,
     const auto renderer = mMapDocument->renderer();
     const qreal painterScale = renderer->painterScale();
     const QColor color = mIsHoveredIndicator ? mColor.lighter() : mColor;
-    QColor fillColor = color;
-    fillColor.setAlpha(50);
-    if (auto type = Object::propertyTypes().findClassFor(mapObject()->className(), *mapObject()))
-        if (!type->drawFill)
-            fillColor.setAlpha(0);
+    const QColor fillColor = mFillColor;
 
     const qreal previousOpacity = painter->opacity();
 
@@ -155,7 +162,7 @@ void MapObjectItem::paint(QPainter *painter,
         painter->setOpacity(0.4);
 
     painter->translate(-pos());
-    renderer->drawMapObject(painter, mObject, color, fillColor);
+    renderer->drawMapObject(painter, mObject, mObject->effectiveColors());
     painter->translate(pos());
 
     if (mIsHoveredIndicator) {

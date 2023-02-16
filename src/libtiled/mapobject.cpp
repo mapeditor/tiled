@@ -304,6 +304,38 @@ QColor MapObject::effectiveColor() const
     return Qt::gray;
 }
 
+/**
+ * A helper function to determine the color of a map object. The color is
+ * determined first of all by the object class, and otherwise by the group
+ * that the object is in. If still no color is defined, it defaults to
+ * gray.
+ */
+MapObjectColors MapObject::effectiveColors() const
+{
+    const QString &effectiveClass = this->effectiveClassName();
+    MapObjectColors colors;
+    // See if this object's class has a color associated with it
+    if (auto type = Object::propertyTypes().findClassFor(effectiveClass, *this)) {
+        colors.main = type->color;
+        if (!type || type->drawFill) {
+            colors.fill = colors.main;
+            colors.fill.setAlpha(50);
+        }
+        // otherwise leave colors.fill invalid
+    }
+    // If not, get color from object group
+    if (mObjectGroup && mObjectGroup->color().isValid()) {
+        colors.main = mObjectGroup->color();
+    } else {
+        colors.main = Qt::gray;
+        colors.fill = colors.main;
+        colors.fill.setAlpha(0);
+    }
+
+    // Fallback color
+    return colors;
+}
+
 QVariant MapObject::mapObjectProperty(Property property) const
 {
     switch (property) {
