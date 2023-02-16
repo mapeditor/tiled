@@ -117,6 +117,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<MapEditor*>();
     qRegisterMetaType<MapView*>();
     qRegisterMetaType<RegionValueType>();
+    qRegisterMetaType<QVector<Tiled::RegionValueType>>();
     qRegisterMetaType<ScriptedAction*>();
     qRegisterMetaType<ScriptedTool*>();
     qRegisterMetaType<TileCollisionDock*>();

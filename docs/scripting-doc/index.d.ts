@@ -128,6 +128,17 @@ interface region {
    * @since 1.8
    */
   intersect(region : region) : void;
+
+  /**
+   * Returns this region as an array of contiguous regions, based on 8-way
+   * connectivity (regions touching each other diagonally are considered
+   * contiguous).
+   *
+   * The returned regions are guaranteed not to touch each other.
+   *
+   * @since 1.10
+   */
+  contiguousRegions() : region[];
 }
 
 /**
