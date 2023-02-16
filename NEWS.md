@@ -1,5 +1,6 @@
 ### Unreleased
 
+* Added Godot 4 export plugin (#3550)
 * Fixed new layer names to be always unique (by Logan Higinbotham, #3452)
 * Scripting: Added Object.setColorProperty and Object.setFloatProperty (#3423)
 * Scripting: Added tiled.projectFilePath
