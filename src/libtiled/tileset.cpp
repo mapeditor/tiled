@@ -662,6 +662,7 @@ SharedTileset Tileset::clone() const
     // Call setter to please TilesetManager, which starts watching the image of
     // the tileset when it calls TilesetManager::tilesetImageSourceChanged.
     c->setImageReference(mImageReference);
+    c->mImage = mImage;
 
     return c;
 }
