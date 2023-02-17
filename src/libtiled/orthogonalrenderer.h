@@ -61,7 +61,7 @@ public:
 
     void drawMapObject(QPainter *painter,
                        const MapObject *object,
-                       MapObjectColors colors) const override;
+                       const MapObjectColors &colors) const override;
 
     using MapRenderer::pixelToTileCoords;
     QPointF pixelToTileCoords(qreal x, qreal y) const override;

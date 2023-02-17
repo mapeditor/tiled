@@ -88,13 +88,6 @@ private:
     QTransform tileCollisionObjectsTransform(const Tile &tile) const;
 
     MapDocument *mapDocument() const { return mMapDocument; }
-    MapObjectColors colors() const
-    {
-        MapObjectColors result;
-        result.main = mColor;
-        result.fill = mFillColor;
-        return result;
-     }
 
     MapObject *mObject;
     MapDocument *mMapDocument;
@@ -102,8 +95,7 @@ private:
     /** Bounding rect cached, for adapting to geometry change correctly. */
     QRectF mBoundingRect;
     QPolygonF mPolygon; // Copy of the polygon, so we know when it changes
-    QColor mColor;      // Cached main color of the object
-    QColor mFillColor;  // Cached fill color
+    MapObjectColors mColors; // Cached colors of the object
     bool mIsHoveredIndicator = false;
 };
 

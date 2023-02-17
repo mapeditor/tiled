@@ -288,51 +288,25 @@ Alignment MapObject::alignment(const Map *map) const
  * that the object is in. If still no color is defined, it defaults to
  * gray.
  */
-QColor MapObject::effectiveColor() const
-{
-    const QString &effectiveClass = this->effectiveClassName();
-
-    // See if this object's class has a color associated with it
-    if (auto type = Object::propertyTypes().findClassFor(effectiveClass, *this))
-        return type->color;
-
-    // If not, get color from object group
-    if (mObjectGroup && mObjectGroup->color().isValid())
-        return mObjectGroup->color();
-
-    // Fallback color
-    return Qt::gray;
-}
-
-/**
- * A helper function to determine the color of a map object. The color is
- * determined first of all by the object class, and otherwise by the group
- * that the object is in. If still no color is defined, it defaults to
- * gray.
- */
 MapObjectColors MapObject::effectiveColors() const
 {
-    const QString &effectiveClass = this->effectiveClassName();
     MapObjectColors colors;
-    // See if this object's class has a color associated with it
-    if (auto type = Object::propertyTypes().findClassFor(effectiveClass, *this)) {
-        colors.main = type->color;
-        if (!type || type->drawFill) {
-            colors.fill = colors.main;
-            colors.fill.setAlpha(50);
-        }
-        // otherwise leave colors.fill invalid
-    }
-    // If not, get color from object group
-    if (mObjectGroup && mObjectGroup->color().isValid()) {
+    bool drawFill = true;
+
+    if (auto classType = Object::propertyTypes().findClassFor(effectiveClassName(), *this)) {
+        colors.main = classType->color;
+        drawFill = classType->drawFill;
+    } else if (mObjectGroup && mObjectGroup->color().isValid()) {
         colors.main = mObjectGroup->color();
     } else {
         colors.main = Qt::gray;
-        colors.fill = colors.main;
-        colors.fill.setAlpha(0);
     }
 
-    // Fallback color
+    if (drawFill) {
+        colors.fill = colors.main;
+        colors.fill.setAlpha(50);
+    }
+
     return colors;
 }
 

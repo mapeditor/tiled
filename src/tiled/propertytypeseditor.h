@@ -135,7 +135,7 @@ private:
 
     ColorButton *mColorButton = nullptr;
     QCheckBox *mUseAsPropertyCheckBox = nullptr;
-    QCheckBox *mDrawFillPropertyCheckBox = nullptr;
+    QCheckBox *mDrawFillCheckBox = nullptr;
     QCheckBox *mClassOfCheckBox = nullptr;
     QPushButton *mClassOfButton = nullptr;
     QMenu *mClassOfMenu;

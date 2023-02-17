@@ -24,11 +24,9 @@
 
 #include "geometry.h"
 #include "mapdocument.h"
-#include "mapobject.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
-#include "objectgroupitem.h"
 #include "tile.h"
 #include "utils.h"
 
@@ -54,23 +52,15 @@ MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
 
 void MapObjectItem::syncWithMapObject()
 {
-    const QColor color = mObject->effectiveColor();
+    MapObjectColors colors = mObject->effectiveColors();
+
+    if (mIsHoveredIndicator)
+        colors.main = colors.main.lighter();
 
     // Update the whole object when the name, polygon or color has changed
-    if (mPolygon != mObject->polygon() || mColor != color) {
+    if (mPolygon != mObject->polygon() || mColors != colors) {
         mPolygon = mObject->polygon();
-        mColor = color;
-        update();
-    }
-
-    QColor fillColor;
-    auto type = Object::propertyTypes().findClassFor(mObject->className(), *mObject);
-    if (!type || type->drawFill) {
-        fillColor = color;
-        fillColor.setAlpha(50);
-    }
-    if (fillColor != mFillColor) {
-        mFillColor = fillColor;
+        mColors = colors;
         update();
     }
 
@@ -119,14 +109,7 @@ void MapObjectItem::setIsHoverIndicator(bool isHoverIndicator)
 
     mIsHoveredIndicator = isHoverIndicator;
 
-    if (isHoverIndicator) {
-        auto totalOffset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*mObject->objectGroup());
-        setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
-    } else {
-        setTransform(QTransform());
-    }
-
-    update();
+    syncWithMapObject();
 }
 
 QRectF MapObjectItem::boundingRect() const
@@ -150,8 +133,6 @@ void MapObjectItem::paint(QPainter *painter,
 {
     const auto renderer = mMapDocument->renderer();
     const qreal painterScale = renderer->painterScale();
-    const QColor color = mIsHoveredIndicator ? mColor.lighter() : mColor;
-    const QColor fillColor = mFillColor;
 
     const qreal previousOpacity = painter->opacity();
 
@@ -162,7 +143,7 @@ void MapObjectItem::paint(QPainter *painter,
         painter->setOpacity(0.4);
 
     painter->translate(-pos());
-    renderer->drawMapObject(painter, mObject, mObject->effectiveColors());
+    renderer->drawMapObject(painter, mObject, mColors);
     painter->translate(pos());
 
     if (mIsHoveredIndicator) {

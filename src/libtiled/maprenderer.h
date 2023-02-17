@@ -182,7 +182,7 @@ public:
      */
     virtual void drawMapObject(QPainter *painter,
                                const MapObject *object,
-                               const MapObjectColors colors) const = 0;
+                               const MapObjectColors &colors) const = 0;
 
     /**
      * Draws the a pin in the given \a color using the \a painter.

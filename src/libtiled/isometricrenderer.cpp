@@ -330,7 +330,7 @@ void IsometricRenderer::drawTileSelection(QPainter *painter,
 
 void IsometricRenderer::drawMapObject(QPainter *painter,
                                       const MapObject *object,
-                                      MapObjectColors colors) const
+                                      const MapObjectColors &colors) const
 {
     painter->save();
 

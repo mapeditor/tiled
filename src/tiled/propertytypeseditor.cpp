@@ -791,7 +791,7 @@ void PropertyTypesEditor::updateDetails()
 
         mColorButton->setColor(classType.color);
         mUseAsPropertyCheckBox->setChecked(classType.isPropertyValueType());
-        mDrawFillPropertyCheckBox->setChecked(classType.drawFill);
+        mDrawFillCheckBox->setChecked(classType.drawFill);
         updateClassUsageDetails(classType);
 
         mPropertiesHelper->clear();
@@ -907,13 +907,14 @@ void PropertyTypesEditor::addClassProperties()
     connect(mColorButton, &ColorButton::colorChanged,
             this, &PropertyTypesEditor::colorChanged);
 
-    mDrawFillPropertyCheckBox = new QCheckBox(tr("Draw fill"));
-    connect(mDrawFillPropertyCheckBox, &QCheckBox::toggled,
+    mDrawFillCheckBox = new QCheckBox(tr("Draw fill"));
+    connect(mDrawFillCheckBox, &QCheckBox::toggled,
             this, &PropertyTypesEditor::setDrawFill);
     auto nameAndColor = new QHBoxLayout;
     nameAndColor->addWidget(mNameEdit);
     nameAndColor->addWidget(mColorButton);
-    nameAndColor->addWidget(mDrawFillPropertyCheckBox);
+    nameAndColor->addWidget(mDrawFillCheckBox);
+
     mMembersView = new QtTreePropertyBrowser(this);
     mPropertiesHelper = new CustomPropertiesHelper(mMembersView, this);
 
@@ -935,7 +936,6 @@ void PropertyTypesEditor::addClassProperties()
 
     connect(mClassOfCheckBox, &QCheckBox::toggled,
             this, [this] (bool checked) { setUsageFlags(ClassPropertyType::AnyObjectClass, checked); });
-
 
     auto usageOptions = new QHBoxLayout;
     usageOptions->addWidget(mUseAsPropertyCheckBox);
@@ -1059,6 +1059,7 @@ void PropertyTypesEditor::colorChanged(const QColor &color)
         applyPropertyTypes();
     }
 }
+
 void PropertyTypesEditor::setDrawFill(bool value)
 {
     if (mUpdatingDetails)
@@ -1066,10 +1067,10 @@ void PropertyTypesEditor::setDrawFill(bool value)
 
     if (ClassPropertyType *classType = selectedClassPropertyType()) {
         classType->drawFill = value;
-        updateClassUsageDetails(*classType);
         applyPropertyTypes();
     }
 }
+
 void PropertyTypesEditor::setUsageFlags(int flags, bool value)
 {
     if (mUpdatingDetails)

@@ -333,7 +333,7 @@ void OrthogonalRenderer::drawTileSelection(QPainter *painter,
 
 void OrthogonalRenderer::drawMapObject(QPainter *painter,
                                        const MapObject *object,
-                                       const MapObjectColors colors) const
+                                       const MapObjectColors &colors) const
 {
     painter->save();
 

@@ -67,7 +67,13 @@ struct MapObjectColors
 {
     QColor main;
     QColor fill;
+
+    bool operator!=(const MapObjectColors &other) const
+    {
+        return main != other.main || fill != other.fill;
+    }
 };
+
 /**
  * An object on a map. Objects are positioned and scaled using floating point
  * values, ensuring they are not limited to the tile grid. They are suitable
@@ -478,6 +484,9 @@ inline bool MapObject::isVisible() const
 
 inline void MapObject::setVisible(bool visible)
 { mVisible = visible; }
+
+inline QColor MapObject::effectiveColor() const
+{ return effectiveColors().main; }
 
 inline void MapObject::setChangedProperties(ChangedProperties changedProperties)
 { mChangedProperties = changedProperties; }
