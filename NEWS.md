@@ -4,6 +4,7 @@
 * Added action search popup on Ctrl+Shift+P (with dogboydog, #3449)
 * Added Godot 4 export plugin (#3550)
 * Added file system actions also for tileset image based tilesets (#3448)
+* Added custom class option to disable drawing fill for objects (with dogboydog, #3312)
 * Fixed new layer names to be always unique (by Logan Higinbotham, #3452)
 * Fixed broken tile images after importing/exporting a tileset
 * AutoMapping: Match in order by default, when input regions are defined (#3559)

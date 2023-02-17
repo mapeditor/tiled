@@ -74,10 +74,8 @@ public:
 
     void paint(QPainter *p, const QStyleOptionGraphicsItem *, QWidget *) override
     {
-        const QColor &color = mMapObject->objectGroup()->color();
         p->translate(-pos());
-        mRenderer->drawMapObject(p, mMapObject,
-                                 color.isValid() ? color : Qt::darkGray);
+        mRenderer->drawMapObject(p, mMapObject, mMapObject->effectiveColors());
     }
 
 private:

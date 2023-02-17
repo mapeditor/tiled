@@ -835,6 +835,7 @@ void PropertyTypesEditor::updateDetails()
 
         mColorButton->setColor(classType.color);
         mUseAsPropertyCheckBox->setChecked(classType.isPropertyValueType());
+        mDrawFillCheckBox->setChecked(classType.drawFill);
         updateClassUsageDetails(classType);
 
         mPropertiesHelper->clear();
@@ -947,9 +948,13 @@ void PropertyTypesEditor::addClassProperties()
     connect(mColorButton, &ColorButton::colorChanged,
             this, &PropertyTypesEditor::colorChanged);
 
+    mDrawFillCheckBox = new QCheckBox(tr("Draw fill"));
+    connect(mDrawFillCheckBox, &QCheckBox::toggled,
+            this, &PropertyTypesEditor::setDrawFill);
     auto nameAndColor = new QHBoxLayout;
     nameAndColor->addWidget(mNameEdit);
     nameAndColor->addWidget(mColorButton);
+    nameAndColor->addWidget(mDrawFillCheckBox);
 
     mMembersView = new QtTreePropertyBrowser(this);
     mPropertiesHelper = new CustomPropertiesHelper(mMembersView, this);
@@ -1092,6 +1097,17 @@ void PropertyTypesEditor::colorChanged(const QColor &color)
 
     if (ClassPropertyType *classType = selectedClassPropertyType()) {
         classType->color = color;
+        applyPropertyTypes();
+    }
+}
+
+void PropertyTypesEditor::setDrawFill(bool value)
+{
+    if (mUpdatingDetails)
+        return;
+
+    if (ClassPropertyType *classType = selectedClassPropertyType()) {
+        classType->drawFill = value;
         applyPropertyTypes();
     }
 }

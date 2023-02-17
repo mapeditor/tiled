@@ -203,8 +203,7 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
                             painter.translate(-origin);
                         }
 
-                        const QColor color = object->effectiveColor();
-                        mRenderer->drawMapObject(&painter, object, color);
+                        mRenderer->drawMapObject(&painter, object, object->effectiveColors());
 
                         if (object->rotation() != qreal(0))
                             painter.restore();

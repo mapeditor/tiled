@@ -288,20 +288,26 @@ Alignment MapObject::alignment(const Map *map) const
  * that the object is in. If still no color is defined, it defaults to
  * gray.
  */
-QColor MapObject::effectiveColor() const
+MapObjectColors MapObject::effectiveColors() const
 {
-    const QString &effectiveClass = this->effectiveClassName();
+    MapObjectColors colors;
+    bool drawFill = true;
 
-    // See if this object's class has a color associated with it
-    if (auto type = Object::propertyTypes().findClassFor(effectiveClass, *this))
-        return type->color;
+    if (auto classType = Object::propertyTypes().findClassFor(effectiveClassName(), *this)) {
+        colors.main = classType->color;
+        drawFill = classType->drawFill;
+    } else if (mObjectGroup && mObjectGroup->color().isValid()) {
+        colors.main = mObjectGroup->color();
+    } else {
+        colors.main = Qt::gray;
+    }
 
-    // If not, get color from object group
-    if (mObjectGroup && mObjectGroup->color().isValid())
-        return mObjectGroup->color();
+    if (drawFill) {
+        colors.fill = colors.main;
+        colors.fill.setAlpha(50);
+    }
 
-    // Fallback color
-    return Qt::gray;
+    return colors;
 }
 
 QVariant MapObject::mapObjectProperty(Property property) const

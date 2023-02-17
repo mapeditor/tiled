@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include "mapobject.h"
 #include "preferences.h"
 
 #include <QCoreApplication>
@@ -87,7 +88,6 @@ private:
     QTransform tileCollisionObjectsTransform(const Tile &tile) const;
 
     MapDocument *mapDocument() const { return mMapDocument; }
-    QColor color() const { return mColor; }
 
     MapObject *mObject;
     MapDocument *mMapDocument;
@@ -95,7 +95,7 @@ private:
     /** Bounding rect cached, for adapting to geometry change correctly. */
     QRectF mBoundingRect;
     QPolygonF mPolygon; // Copy of the polygon, so we know when it changes
-    QColor mColor;      // Cached color of the object
+    MapObjectColors mColors; // Cached colors of the object
     bool mIsHoveredIndicator = false;
 };
 

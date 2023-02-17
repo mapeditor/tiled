@@ -117,6 +117,7 @@ private:
     void nameEditingFinished();
 
     void colorChanged(const QColor &color);
+    void setDrawFill(bool value);
     void setUsageFlags(int flags, bool value);
     void memberValueChanged(const QStringList &path, const QVariant &value);
 
@@ -140,6 +141,7 @@ private:
 
     ColorButton *mColorButton = nullptr;
     QCheckBox *mUseAsPropertyCheckBox = nullptr;
+    QCheckBox *mDrawFillCheckBox = nullptr;
     QCheckBox *mClassOfCheckBox = nullptr;
     QPushButton *mClassOfButton = nullptr;
     QtTreePropertyBrowser *mMembersView = nullptr;

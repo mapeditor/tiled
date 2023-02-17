@@ -154,7 +154,7 @@ public:
     QColor color = Qt::gray;
     int usageFlags = AnyUsage;
     bool memberValuesResolved = true;
-
+    bool drawFill = true;
     ClassPropertyType(const QString &name) : PropertyType(PT_Class, name) {}
 
     ExportValue toExportValue(const QVariant &value, const ExportContext &) const override;
