@@ -387,7 +387,6 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         const qreal scale = painterScale();
         const QPointF shadowOffset(0, (lineWidth == 0 ? 1 : lineWidth) / scale);
 
-
         QBrush brush = colors.fill.isValid() ? QBrush(colors.fill) : QBrush(Qt::NoBrush);
 
         pen.setJoinStyle(Qt::RoundJoin);
