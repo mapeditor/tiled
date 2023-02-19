@@ -551,7 +551,7 @@ declare namespace Qt {
      * The amount that each tick left or right on the slider will
      * change the value.
      */
-    tickInterval: number;
+    singleStep: number;
     /**
      * The number of decimal places that are allowed in the input.
      * Specify 0 for integer values.
