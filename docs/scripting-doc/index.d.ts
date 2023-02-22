@@ -548,8 +548,7 @@ declare namespace Qt {
      */
     maximum: number;
     /**
-     * The amount that each tick left or right on the slider will
-     * change the value.
+     * This property holds the step value.
      */
     singleStep: number;
     /**
