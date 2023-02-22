@@ -206,7 +206,6 @@ Object
     :header: Field, Type, Description
     :widths: 1, 1, 4
 
-    class,            string,           "The class of the object (renamed from ``type`` since 1.9, optional)"
     ellipse,          bool,             "Used to mark an object as an ellipse"
     gid,              int,              "Global tile ID, only if object represents a tile"
     height,           double,           "Height in pixels."
@@ -219,6 +218,7 @@ Object
     rotation,         double,           "Angle in degrees clockwise"
     template,         string,           "Reference to a template file, in case object is a :doc:`template instance </manual/using-templates>`"
     text,             :ref:`json-object-text`, "Only used for text objects"
+    type,             string,           "The class of the object (was saved as ``class`` in 1.9, optional)"
     visible,          bool,             "Whether object is shown in editor."
     width,            double,           "Width in pixels."
     x,                double,           "X coordinate in pixels"
@@ -230,7 +230,6 @@ Object Example
 .. code:: json
 
     {
-      "class":"npc",
       "gid":5,
       "height":0,
       "id":1,
@@ -242,6 +241,7 @@ Object Example
           "value":12
         }],
       "rotation":0,
+      "type":"npc",
       "visible":true,
       "width":0,
       "x":32,
@@ -254,12 +254,12 @@ Ellipse Example
 .. code:: json
 
     {
-      "class":"",
       "ellipse":true,
       "height":152,
       "id":13,
       "name":"",
       "rotation":0,
+      "type":"",
       "visible":true,
       "width":248,
       "x":560,
@@ -272,11 +272,11 @@ Rectangle Example
 .. code:: json
 
     {
-      "class":"",
       "height":184,
       "id":14,
       "name":"",
       "rotation":0,
+      "type":"",
       "visible":true,
       "width":368,
       "x":576,
@@ -289,12 +289,12 @@ Point Example
 .. code:: json
 
     {
-      "class":"",
       "height":0,
       "id":20,
       "name":"",
       "point":true,
       "rotation":0,
+      "type":"",
       "visible":true,
       "width":0,
       "x":220,
@@ -307,7 +307,6 @@ Polygon Example
 .. code:: json
 
     {
-      "class":"",
       "height":0,
       "id":15,
       "name":"",
@@ -333,6 +332,7 @@ Polygon Example
         "y":-288
       }],
       "rotation":0,
+      "type":"",
       "visible":true,
       "width":0,
       "x":-176,
@@ -345,7 +345,6 @@ Polyline Example
 .. code:: json
 
     {
-      "class":"",
       "height":0,
       "id":16,
       "name":"",
@@ -375,6 +374,7 @@ Polyline Example
         "y":0
       }],
       "rotation":0,
+      "type":"",
       "visible":true,
       "width":0,
       "x":240,
@@ -387,7 +387,6 @@ Text Example
 .. code:: json
 
     {
-      "class":"",
       "height":19,
       "id":15,
       "name":"",
@@ -397,6 +396,7 @@ Text Example
         "wrap":true
       },
       "rotation":0,
+      "type":"",
       "visible":true,
       "width":248,
       "x":48,
@@ -552,7 +552,6 @@ Tile (Definition)
     :widths: 1, 1, 4
 
     animation,        array,              "Array of :ref:`Frames <json-frame>`"
-    class,            string,             "The class of the tile (renamed from ``type`` since 1.9, optional)"
     id,               int,                "Local ID of the tile"
     image,            string,             "Image representing this tile (optional, used for image collection tilesets)"
     imageheight,      int,                "Height of the tile image in pixels"
@@ -564,7 +563,8 @@ Tile (Definition)
     objectgroup,      :ref:`json-layer`,  "Layer with type ``objectgroup``, when collision shapes are specified (optional)"
     probability,      double,             "Percentage chance this tile is chosen when competing with others in the editor (optional)"
     properties,       array,              "Array of :ref:`Properties <json-property>`"
-    terrain,          array,              "Index of terrain for each corner of tile (optional)"
+    terrain,          array,              "Index of terrain for each corner of tile (optional, replaced by :ref:`Wang sets <json-wangset>` since 1.5)"
+    type,             string,             "The class of the tile (was saved as ``class`` in 1.9, optional)"
 
 A tileset that associates information with each tile, like its image
 path, may include a ``tiles`` array property. Each tile
@@ -735,6 +735,14 @@ A point on a polygon or a polyline, relative to the position of the object.
 
 Changelog
 ---------
+
+Tiled 1.10
+~~~~~~~~~~
+
+* Renamed the ``class`` property on :ref:`json-tile` and :ref:`json-object`
+  back to ``type``, to keep compatibility with Tiled 1.8 and earlier. The
+  property remains ``class`` in other places since it could not be renamed
+  to ``type`` everywhere.
 
 Tiled 1.9
 ~~~~~~~~~

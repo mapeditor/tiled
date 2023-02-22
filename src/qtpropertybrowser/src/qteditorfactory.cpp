@@ -1748,7 +1748,7 @@ void QtCharEdit::handleKeyEvent(QKeyEvent *e)
     }
 
     const QString text = e->text();
-    if (text.count() != 1)
+    if (text.size() != 1)
         return;
 
     const QChar c = text.at(0);

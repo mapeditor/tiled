@@ -333,7 +333,7 @@ void OrthogonalRenderer::drawTileSelection(QPainter *painter,
 
 void OrthogonalRenderer::drawMapObject(QPainter *painter,
                                        const MapObject *object,
-                                       const QColor &color) const
+                                       const MapObjectColors &colors) const
 {
     painter->save();
 
@@ -371,7 +371,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             painter->setPen(pen);
             painter->drawRect(bounds);
             pen.setStyle(Qt::DotLine);
-            pen.setColor(color);
+            pen.setColor(colors.main);
             painter->setPen(pen);
             painter->drawRect(bounds);
         }
@@ -382,14 +382,12 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         const QPointF shadowOffset = QPointF(shadowDist * 0.5,
                                              shadowDist * 0.5);
 
-        QPen linePen(color, lineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        QPen linePen(colors.main, lineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
         linePen.setCosmetic(true);
         QPen shadowPen(linePen);
         shadowPen.setColor(Qt::black);
 
-        QColor brushColor = color;
-        brushColor.setAlpha(50);
-        const QBrush fillBrush(brushColor);
+        const QBrush fillBrush = colors.fill.isValid() ? QBrush(colors.fill) : QBrush(Qt::NoBrush);
 
         painter->setRenderHint(QPainter::Antialiasing);
 
@@ -469,7 +467,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             break;
         }
         case MapObject::Point: {
-            drawPointObject(painter, color);
+            drawPointObject(painter, colors.main);
             break;
         }
         }

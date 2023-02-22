@@ -56,7 +56,8 @@ class EditableTileset : public EditableAsset
     Q_PROPERTY(Orientation orientation READ orientation WRITE setOrientation)
     Q_PROPERTY(QColor transparentColor READ transparentColor WRITE setTransparentColor)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
-    Q_PROPERTY(bool collection READ isCollection)
+    Q_PROPERTY(bool collection READ isCollection)   // deprecated
+    Q_PROPERTY(bool isCollection READ isCollection)
     Q_PROPERTY(QList<QObject*> selectedTiles READ selectedTiles WRITE setSelectedTiles)
 
 public:

@@ -67,7 +67,21 @@ ShapeFillTool::ShapeFillTool(QObject *parent)
     connect(mCircleFill, &QAction::triggered,
             [this] { setCurrentShape(Circle); });
 
+    setActionsEnabled(false);
+
     ShapeFillTool::languageChanged();
+}
+
+void ShapeFillTool::activate(MapScene *scene)
+{
+    AbstractTileFillTool::activate(scene);
+    setActionsEnabled(true);
+}
+
+void ShapeFillTool::deactivate(MapScene *scene)
+{
+    setActionsEnabled(false);
+    AbstractTileFillTool::deactivate(scene);
 }
 
 void ShapeFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -169,6 +183,12 @@ void ShapeFillTool::updateStatusInfo()
                   .arg(pos.x()).arg(pos.y())
                   .arg(mCurrentShape == Rect ? tr("Rectangle") : tr("Circle"))
                   .arg(mFillBounds.width()).arg(mFillBounds.height()));
+}
+
+void ShapeFillTool::setActionsEnabled(bool enabled)
+{
+    mRectFill->setEnabled(enabled);
+    mCircleFill->setEnabled(enabled);
 }
 
 void ShapeFillTool::setCurrentShape(Shape shape)

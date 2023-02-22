@@ -37,6 +37,9 @@ DynamicLibrary {
         if (project.staticZstd || pkgConfigZstd.found)
             defs.push("TILED_ZSTD_SUPPORT");
 
+        if (project.windowsLayout)
+            defs.push("TILED_WINDOWS_LAYOUT");
+
         return defs;
     }
     cpp.dynamicLibraries: {
@@ -201,7 +204,10 @@ DynamicLibrary {
         qbs.install: true
         qbs.installDir: {
             if (qbs.targetOS.contains("windows"))
-                return ""
+                if (project.windowsLayout)
+                    return ""
+                else
+                    return "bin"
             else
                 return "lib"
         }

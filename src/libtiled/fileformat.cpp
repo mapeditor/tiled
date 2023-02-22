@@ -30,7 +30,7 @@
 
 namespace Tiled {
 
-CompatibilityVersion FileFormat::mCompatibilityVersion = Tiled_Latest;
+CompatibilityVersion FileFormat::mCompatibilityVersion = Tiled_Current;
 
 FileFormat::FileFormat(QObject *parent)
     : QObject(parent)
@@ -64,13 +64,23 @@ void FileFormat::setCompatibilityVersion(CompatibilityVersion version)
 QString FileFormat::versionString()
 {
     switch (mCompatibilityVersion) {
-    case Tiled::Tiled_1_8:
+    case Tiled_1_8:
         return QStringLiteral("1.8");
-    case Tiled::UnknownVersion:
-    case Tiled::Tiled_Latest:
+    case Tiled_1_9:
+        return QStringLiteral("1.9");
+    case UnknownVersion:
+    case Tiled_Current:
+    case Tiled_Latest:
         break;
     }
-    return QStringLiteral("1.9");
+    return QStringLiteral("1.10");
+}
+
+QString FileFormat::classPropertyNameForObject()
+{
+    if (mCompatibilityVersion == Tiled_1_9)
+        return QStringLiteral("class");
+    return QStringLiteral("type");
 }
 
 } // namespace Tiled

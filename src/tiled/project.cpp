@@ -120,7 +120,7 @@ bool Project::load(const QString &fileName)
     const QDir dir = QFileInfo(fileName).dir();
     const QJsonObject project = document.object();
 
-    mExtensionsPath = absolute(dir, project.value(QLatin1String("extensionsPath")).toString(QLatin1String("extensions")));
+    mExtensionsPath = absolute(dir, project.value(QLatin1String("extensionsPath")).toString(QStringLiteral("extensions")));
     mObjectTypesFile = absolute(dir, project.value(QLatin1String("objectTypesFile")).toString());
     mAutomappingRulesFile = absolute(dir, project.value(QLatin1String("automappingRulesFile")).toString());
 

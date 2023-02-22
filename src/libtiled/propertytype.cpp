@@ -246,7 +246,6 @@ QString EnumPropertyType::storageTypeToString(StorageType type)
 
 ExportValue ClassPropertyType::toExportValue(const QVariant &value, const ExportContext &context) const
 {
-    ExportValue result;
     Properties properties = value.toMap();
 
     QMutableMapIterator<QString, QVariant> it(properties);
@@ -336,6 +335,7 @@ QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
     auto json = PropertyType::toJson(context);
     json.insert(QStringLiteral("members"), members);
     json.insert(QStringLiteral("color"), color.name(QColor::HexArgb));
+    json.insert(QStringLiteral("drawFill"), drawFill);
 
     QJsonArray useAs;
 
@@ -363,6 +363,10 @@ void ClassPropertyType::initializeFromJson(const QJsonObject &json)
     const QString colorName = json.value(QLatin1String("color")).toString();
     if (QColor::isValidColor(colorName))
         color.setNamedColor(colorName);
+
+    const QString drawFillPropertyName = QLatin1String("drawFill");
+    if (json.contains(drawFillPropertyName))
+        drawFill = json.value(drawFillPropertyName).toBool();
 
     const QJsonValue useAsJson = json.value(QLatin1String("useAs"));
     if (useAsJson.isArray()) {

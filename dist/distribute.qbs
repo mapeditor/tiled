@@ -190,6 +190,27 @@ Product {
     }
 
     Group {
+        name: "Qt TLS Plugins"
+        condition: Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 2;
+        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/tls/")
+        files: {
+            if (qbs.targetOS.contains("windows")) {
+                if (qbs.debugInformation)
+                    return ["qschannelbackendd.dll"];
+                else
+                    return ["qschannelbackend.dll"];
+            } else if (qbs.targetOS.contains("macos")) {
+                return ["libqsecuretransportbackend.dylib"];
+            }
+
+            return pluginFiles;
+        }
+        excludeFiles: pluginExcludeFiles
+        qbs.install: true
+        qbs.installDir: "plugins/tls"
+    }
+
+    Group {
         name: "Qt XCB GL Integration Plugins"
         condition: qbs.targetOS.contains("linux")
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/xcbglintegrations/")
@@ -296,7 +317,11 @@ Product {
 
     Group {
         name: "OpenSSL DLLs"
-        condition: qbs.targetOS.contains("windows") && File.exists(prefix)
+        condition: {
+            return qbs.targetOS.contains("windows") &&
+                    !(Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 2) &&
+                    File.exists(prefix)
+        }
 
         prefix: {
             if (project.openSslPath) {

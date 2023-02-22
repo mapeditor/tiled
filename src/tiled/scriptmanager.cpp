@@ -61,6 +61,8 @@
 #include <QStandardPaths>
 #if QT_VERSION < QT_VERSION_CHECK(6,0,0)
 #include <QTextCodec>
+#else
+#include <QStringDecoder>
 #endif
 #include <QtDebug>
 
@@ -115,6 +117,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<MapEditor*>();
     qRegisterMetaType<MapView*>();
     qRegisterMetaType<RegionValueType>();
+    qRegisterMetaType<QVector<Tiled::RegionValueType>>();
     qRegisterMetaType<ScriptedAction*>();
     qRegisterMetaType<ScriptedTool*>();
     qRegisterMetaType<TileCollisionDock*>();

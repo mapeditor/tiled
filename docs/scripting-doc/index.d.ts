@@ -128,6 +128,17 @@ interface region {
    * @since 1.8
    */
   intersect(region : region) : void;
+
+  /**
+   * Returns this region as an array of contiguous regions, based on 8-way
+   * connectivity (regions touching each other diagonally are considered
+   * one contiguous region).
+   *
+   * The returned regions are guaranteed not to touch each other.
+   *
+   * @since 1.10
+   */
+  contiguousRegions() : region[];
 }
 
 /**
@@ -348,7 +359,7 @@ declare namespace Qt {
    * The base type from which all Qt widgets derive.
    * Qt documentation: [QWidget](https://doc.qt.io/qt-5/qwidget.html)
    */
-  class QWidget{
+  class QWidget {
     /**
      * The toolTip displayed when the user mouses over this widget
      */
@@ -381,14 +392,12 @@ declare namespace Qt {
    * A widget containing a single line of text that the user can edit.
    * Qt documentation: [QLineEdit](https://doc.qt.io/qt-5/qlineedit.html)
    */
-  class QLineEdit extends QWidget{
-
+  class QLineEdit extends QWidget {
     /**
      * This signal is emitted when the Return or Enter key is pressed or the line edit loses focus.
-     *  Note that if there is a validator() or inputMask() set on the line edit and enter/return is pressed,
-     *  the editingFinished() signal will only be emitted if the input follows the inputMask() and the validator() returns QValidator::Acceptable.
      */
     editingFinished: Signal<void>;
+
     /**
      * Signal emitted when the text inside the QLineEdit is changed.
      */
@@ -401,11 +410,10 @@ declare namespace Qt {
   }
 
     /**
-   * A widget containing a multiple lines of text that the user can edit.
-   * Qt documentation: [QTextEdit](https://doc.qt.io/qt-5/qtextedit.html)
-   */
-     class QTextEdit extends QWidget{
-
+     * A widget containing a multiple lines of text that the user can edit.
+     * Qt documentation: [QTextEdit](https://doc.qt.io/qt-5/qtextedit.html)
+     */
+     class QTextEdit extends QWidget {
       /**
        * This property holds whether the user can change the contents of the widget.
        * If true, the user cannot change the text. Defaults to false.
@@ -420,7 +428,6 @@ declare namespace Qt {
        * Check the text with {@link plainText} or {@link html} when this is emitted.
        */
       textChanged: Signal<void>;
-
     }
 
     type CheckState = number;
@@ -443,7 +450,7 @@ declare namespace Qt {
    * a value on and off.
    * Qt documentation: [QCheckBox](https://doc.qt.io/qt-5/qcheckbox.html)
    */
-  class QCheckBox extends QWidget{
+  class QCheckBox extends QWidget {
     /**
      * Signal emitted when the state of the checkbox changes.
      */
@@ -463,7 +470,7 @@ declare namespace Qt {
    * one of multiple preset values.
    * Qt documentation: [QComboBox](https://doc.qt.io/qt-5/qcombobox.html)
    */
-  class QComboBox extends QWidget{
+  class QComboBox extends QWidget {
     /**
      * Index into the list of possible values that the user has selected.
      */
@@ -482,11 +489,23 @@ declare namespace Qt {
      * Provides the string value of the selected option.
      */
     currentTextChanged: Signal<string>;
+
+    /**
+     * Removes all items from the combo box.
+     */
+    clear() : void;
+
+    /**
+     * Adds the given items to the combo box.
+     *
+     * @since 1.10
+     */
+    addItems(texts : string[]) : void;
   }
   /**
    * A label  widget which displays text to the user
    */
-   class QLabel extends QWidget{
+   class QLabel extends QWidget {
     /**
      * The text currently being displayed on the label.
      */
@@ -497,7 +516,7 @@ declare namespace Qt {
    * A slider for allowing the user to set an integer value.
    * Qt documentation: [QSlider](https://doc.qt.io/qt-5/qslider.html)
    */
-  class QSlider extends QWidget{
+  class QSlider extends QWidget {
 
     /**
      * The minimum value that can be set by the slider.
@@ -529,7 +548,7 @@ declare namespace Qt {
  * value by incrementing and decrementing it.
  * Qt documentation: [QDoubleSpinBox](https://doc.qt.io/qt-5/qdoublespinbox.html)
  */
-  class QDoubleSpinBox extends QWidget{
+  class QDoubleSpinBox extends QWidget {
 
     /**
      * The minimum value that can be set by the input.
@@ -579,7 +598,7 @@ declare namespace Qt {
   /**
    * A button which the user can push.
    */
-  class QPushButton extends QWidget{
+  class QPushButton extends QWidget {
     /**
      * The text displayed on the surface of the button.
      */
@@ -594,7 +613,7 @@ declare namespace Qt {
    * This type is returned in mainWidget when calling {@link Dialog.addSeparator}.
    * Qt documentation [QFrame](https://doc.qt.io/qt-5/qframe.html)
    */
-  class QFrame extends QWidget{
+  class QFrame extends QWidget {
   }
 }
 
@@ -927,12 +946,47 @@ declare class TiledObject {
    * types are `bool`, `number`, `string`, {@link FilePath},
    * {@link ObjectRef} and {@link MapObject}.
    *
-   * When setting a `number`, the property type will be set to either
-   * `int` or `float`, depending on whether it is a whole number.
+   * @note When setting a `number`, the property type will be set to either
+   * `int` or `float`, depending on whether it is a whole number. To force
+   * the property to be `float`, use {@link setFloatProperty}.
    *
-   * @note Support for setting `color` properties is currently missing.
+   * @note This function does not support setting `color` properties. Use
+   * {@link setColorProperty} instead.
    */
   setProperty(name: string, value: TiledObjectPropertyValue): void;
+
+  /**
+   * Sets the value of the custom property with the given name to the given
+   * color value.
+   *
+   * The color is specified as a string "#RGB", "#RRGGBB" or "#AARRGGBB".
+   *
+   * @since 1.10
+   */
+  setColorProperty(name: string, value: color): void;
+
+  /**
+   * Sets the value of the custom property with the given name to the given
+   * color value.
+   *
+   * The color is specified by its red, green, blue and alpha components.
+   * Each component takes a value from 0 to 255. When not provided, the alpha
+   * defaults to 255.
+   *
+   * @since 1.10
+   */
+  setColorProperty(name: string, red: number, green: number, blue: number, alpha?: number): void;
+
+  /**
+   * Sets the value of the custom property with the given name to the given
+   * float value.
+   *
+   * This function is provided as alternative to {@link setProperty}, since
+   * that function will set whole numbers as `int` properties.
+   *
+   * @since 1.10
+   */
+  setFloatProperty(name: string, value: number): void;
 
   /**
    * Returns all custom properties set on this object.
@@ -1782,7 +1836,7 @@ declare class ImageLayer extends Layer {
   /**
    * Color used as transparent color when rendering the image.
    */
-  transparentColor: number;
+  transparentColor: color;
 
   /**
    * Reference to the image rendered by this layer.
@@ -1927,6 +1981,8 @@ interface TilesetsView {
 
   /**
    * The signal emitted when {@link currentTileset} changes.
+   *
+   * @since 1.9.1
    */
   readonly currentTilesetChanged: Signal<null>;
 
@@ -2454,6 +2510,17 @@ declare class TileMap extends Asset {
   public resize(size: size, offset?: point, removeObjects?: boolean): void;
 
   /**
+   * Renders the map to an image. When no size is given, creates an image the
+   * size of the map.
+   *
+   * @warning A tile map can easily be way too large to render to an image
+   * unscaled, so be careful when calling this function.
+   *
+   * @since 1.10
+   */
+  public toImage(size?: size): Image;
+
+  /**
    * Converts the given position from screen to tile coordinates.
    */
   public screenToTile(x: number, y: number): point;
@@ -2605,6 +2672,10 @@ declare class TileLayer extends Layer {
 
   /**
    * Returns the flags used for the tile at the given position.
+   *
+   * The returned number is a combination of {@link Tile.FlippedHorizontally},
+   * {@link Tile.FlippedVertically}, {@link Tile.FlippedAntiDiagonally} and
+   * {@link Tile.RotatedHexagonal120}.
    */
   flagsAt(x : number, y : number) : number
 
@@ -2735,10 +2806,10 @@ interface color {}
 /**
  * A container for tiles that can be used by a map.
  *
- * Can contain either tiles cut from a single image, using {@link
- * loadFromImage}, or individual tiles using {@link addTile} and then setting
- * the image on each tile using {@link Tile.imageFileName} or {@link
- * Tile.setImage}.
+ * Can contain either tiles cut from a single image, by setting {@link image}
+ * or calling {@link loadFromImage}, or individual tiles using {@link addTile}
+ * and then setting the image on each tile using {@link Tile.imageFileName} or
+ * {@link Tile.setImage}.
  */
 declare class Tileset extends Asset {
   static readonly Unspecified: unique symbol
@@ -2768,6 +2839,12 @@ declare class Tileset extends Asset {
 
   /**
    * The file name of the image used by this tileset. Empty in case of image collection tilesets.
+   *
+   * @note You'll want to set up the tile size, tile spacing, margin and
+   * transparent color as appropriate before setting this property, to avoid
+   * repeatedly setting up the tiles in response to changing parameters.
+   *
+   * @note Map files are supported tileset image source as well.
    */
   image : string
 
@@ -2804,16 +2881,28 @@ declare class Tileset extends Asset {
 
   /**
    * Tile width for tiles in this tileset in pixels.
+   *
+   * @note Changing this property will cause an image-based tileset to update
+   * all its tiles. When setting up a tileset, you'll want to set this property
+   * before setting the {@link image} property.
    */
   tileWidth : number
 
   /**
    * Tile Height for tiles in this tileset in pixels.
+   *
+   * @note Changing this property will cause an image-based tileset to update
+   * all its tiles. When setting up a tileset, you'll want to set this property
+   * before setting the {@link image} property.
    */
   tileHeight : number
 
   /**
    * Tile size for tiles in this tileset in pixels.
+   *
+   * @note Changing this property will cause an image-based tileset to update
+   * all its tiles. When setting up a tileset, you'll want to set this property
+   * before setting the {@link image} property.
    */
   tileSize : size
 
@@ -2873,12 +2962,32 @@ declare class Tileset extends Asset {
   orientation : typeof Tileset.Orthogonal | typeof Tileset.Isometric
 
   /**
+   * Color used as transparent color when rendering tiles from this tileset.
+   *
+   * This property is currently not supported for image collection tilesets.
+   *
+   * @note Changing this property will cause an image-based tileset to update
+   * all its tiles. When setting up a tileset, you'll want to set this property
+   * before setting the {@link image} property.
+   */
+  transparentColor: color;
+
+  /**
    * Background color for this tileset in the Tilesets view.
    */
   backgroundColor : color
 
   /**
    * Whether this tileset is a collection of images (same as checking whether image is an empty string).
+   *
+   * @deprecated Use {@link isCollection} instead.
+   */
+  readonly collection : boolean
+
+  /**
+   * Whether this tileset is a collection of images (same as checking whether image is an empty string).
+   *
+   * @since 1.10
    */
   readonly isCollection : boolean
 
@@ -2906,6 +3015,8 @@ declare class Tileset extends Asset {
    * Returns a reference to the tile with the given ID, or `null` if no such tile exists. When the tile gets removed from the tileset, the reference changes to a standalone copy of the tile.
    *
    * Note that the tiles in a tileset are only guaranteed to have consecutive IDs for tileset-image based tilesets. For image collection tilesets there will be gaps when tiles have been removed from the tileset.
+   *
+   * @since 1.9.2
    */
   public findTile(id : number) : Tile | null
 
@@ -2918,6 +3029,8 @@ declare class Tileset extends Asset {
    * Creates the tiles in this tileset by cutting them out of the given image, using the current tile size, tile spacing and margin parameters. These values should be set before calling this function.
    *
    * Optionally sets the source file of the image. This may be useful, but be careful since Tiled will try to reload the tileset from that source when the tileset parameters are changed.
+   *
+   * @note Usually you'll just want to assign the image file name to the {@link image} property!
    *
    * @warning This function has no undo!
    */
@@ -3090,6 +3203,8 @@ interface Tool {
    *
    * The actions need to be registered using
    * {@link registerAction | tiled.registerAction()}.
+   *
+   * @since 1.9
    */
   toolBarActions: string[];
 
@@ -3242,6 +3357,15 @@ declare namespace tiled {
   export const version: string;
 
   /**
+   * When given two versions, returns whether the first version comes before
+   * the second version. When given one version, it returns whether Tiled's
+   * current {@link version} comes before the given version.
+   *
+   * @since 1.10
+   */
+  export function versionLessThan(a: string, b?: string): boolean;
+
+  /**
    * The version of Qt which Tiled is running against.
    *
    * @since 1.8.5
@@ -3281,6 +3405,14 @@ declare namespace tiled {
    * @since 1.8
    */
   export const extensionsPath: string;
+
+  /**
+   * The file path of the currently loaded project, or empty if no project is
+   * currently loaded.
+   *
+   * @since 1.10
+   */
+  export const projectFilePath: string;
 
   /**
    * A list of arguments passed to a script that is evaluated from the
@@ -3801,7 +3933,7 @@ declare class Process {
  * A widget which allows the user to select a color.
  * When the color button is clicked, a color picker dialog will pop up.
  */
-declare class ColorButton extends Qt.QWidget{
+declare class ColorButton extends Qt.QWidget {
   /**
    * The currently selected color of the button.
    */
@@ -3816,7 +3948,7 @@ declare class ColorButton extends Qt.QWidget{
  * Widget with a button which opens a file picker dialog
  * and displays the path in the dialog.
  */
-declare class FileEdit extends Qt.QWidget{
+declare class FileEdit extends Qt.QWidget {
 
   /**
    * The {@link Qt.Qurl} of the currently selected file.
@@ -3831,7 +3963,7 @@ declare class FileEdit extends Qt.QWidget{
 /**
  * A widget that displays an {@link Image} on your dialog.
  */
-declare class ImageWidget extends Qt.QWidget{
+declare class ImageWidget extends Qt.QWidget {
 
   /**
    * The image to be displayed in the widget
@@ -3851,6 +3983,8 @@ declare class ImageWidget extends Qt.QWidget{
  * in between adding the widgets.
  *
  * This type is an extension of the [QDialog](https://doc.qt.io/qt-5/qdialog.html) type from Qt.
+ *
+ * @since 1.9
  */
 declare class Dialog {
   /**
@@ -4015,6 +4149,12 @@ declare class Dialog {
    * signal.
    */
   show(): void;
+
+  /*
+   * Open the dialog, blocking your script until the Dialog has been
+   * accepted or rejected.
+   */
+  exec(): typeof Dialog.Rejected | typeof Dialog.Accepted;
 
   /**
    * Close this dialog, setting its result code to {@link Dialog.Accepted}.

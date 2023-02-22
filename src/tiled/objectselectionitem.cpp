@@ -196,14 +196,20 @@ void MapObjectLabel::syncWithMapObject(const MapRenderer &renderer)
 
     boundingRect.adjust(-margin*2, -margin, margin*2, margin);
 
-    QPointF screenPos = renderer.pixelToScreenCoords(mObject->position());
+    QPointF pos = renderer.pixelToScreenCoords(mObject->position());
     QRectF bounds = mObject->screenBounds(renderer);
 
     // Adjust the bounding box for object rotation
-    bounds = rotateAt(screenPos, mObject->rotation()).mapRect(bounds);
+    bounds = rotateAt(pos, mObject->rotation()).mapRect(bounds);
 
     // Center the object name on the object bounding box
-    QPointF pos((bounds.left() + bounds.right()) / 2, bounds.top());
+    if (mObject->shape() == MapObject::Point) {
+        // Use a local offset, since point objects don't scale with the view
+        boundingRect.translate(0, -bounds.height());
+        mTextPos.ry() -= bounds.height();
+    } else {
+        pos = { (bounds.left() + bounds.right()) / 2, bounds.top() };
+    }
 
     if (auto mapScene = static_cast<MapScene*>(scene()))
         pos += mapScene->absolutePositionForLayer(*mObject->objectGroup());

@@ -22,6 +22,7 @@
 #include "aboutdialog.h"
 
 #include "newversionchecker.h"
+#include "tiledapplication.h"
 #include "tiledproxystyle.h"
 #include "utils.h"
 
@@ -62,7 +63,7 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
 
     // Manual refresh to update the NewVersionButton in this dialog, in case
     // automatic checking was disabled.
-    NewVersionChecker::instance().refresh();
+    tiledApp()->newVersionChecker().refresh();
 }
 
 void AboutDialog::donate()

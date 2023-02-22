@@ -27,6 +27,7 @@
 #include "logginginterface.h"
 #include "mainwindow.h"
 #include "mapeditor.h"
+#include "projectmanager.h"
 #include "scriptedaction.h"
 #include "scriptedfileformat.h"
 #include "scriptedtool.h"
@@ -39,9 +40,11 @@
 #include <QAction>
 #include <QCoreApplication>
 #include <QInputDialog>
+#include <QLibraryInfo>
 #include <QMenu>
 #include <QMessageBox>
 #include <QQmlEngine>
+#include <QVersionNumber>
 
 namespace Tiled {
 
@@ -113,6 +116,11 @@ QString ScriptModule::extensionsPath() const
 QString ScriptModule::applicationDirPath() const
 {
     return QCoreApplication::applicationDirPath();
+}
+
+QString ScriptModule::projectFilePath() const
+{
+    return ProjectManager::instance()->project().fileName();
 }
 
 QStringList ScriptModule::scriptArguments() const
@@ -246,6 +254,11 @@ QVariant ScriptModule::propertyValue(const QString &typeName, const QVariant &va
     }
 
     return type->wrap(value);
+}
+
+bool ScriptModule::versionLessThan(const QString &a, const QString &b)
+{
+    return QVersionNumber::fromString(a) < QVersionNumber::fromString(b);
 }
 
 EditableAsset *ScriptModule::open(const QString &fileName) const

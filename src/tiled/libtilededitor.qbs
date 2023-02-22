@@ -52,6 +52,9 @@ DynamicLibrary {
         if (project.snapshot)
             defs.push("TILED_SNAPSHOT");
 
+        if (project.windowsLayout)
+            defs.push("TILED_WINDOWS_LAYOUT");
+
         if (qbs.targetOS.contains("linux") && project.dbus && Qt.dbus.present)
             defs.push("TILED_ENABLE_DBUS");
 
@@ -91,6 +94,8 @@ DynamicLibrary {
         "abstractworldtool.h",
         "actionmanager.cpp",
         "actionmanager.h",
+        "actionsearch.cpp",
+        "actionsearch.h",
         "addpropertydialog.cpp",
         "addpropertydialog.h",
         "addpropertydialog.ui",
@@ -596,7 +601,10 @@ DynamicLibrary {
         qbs.install: true
         qbs.installDir: {
             if (qbs.targetOS.contains("windows"))
-                return ""
+                if (project.windowsLayout)
+                    return ""
+                else
+                    return "bin"
             else
                 return "lib"
         }

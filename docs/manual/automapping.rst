@@ -33,7 +33,7 @@ a map:
 
    <div class="new new-prev">Since Tiled 1.4</div>
 
-* Open *Project > Project Propecties* and set the "Automapping rules" property
+* Open *Project > Project Properties* and set the "Automapping rules" property
   to the ``rules.txt`` file that you created in your project. If you have only a
   single rule map, you can also refer to that map file directly.
 
@@ -73,7 +73,7 @@ At a minimum, a rule map contains:
   when an input pattern is found.
 
 In addition, custom properties on the rule map, its layers and on objects can
-be used to fine-tune the overal behavior or the behavior of specific rules.
+be used to fine-tune the overall behavior or the behavior of specific rules.
 
 Finally, you may need some :ref:`special tiles <automapping-SpecialCases>` to
 set up certain rules. Tiled provides a built-in "Automapping Rules Tileset",
@@ -196,7 +196,7 @@ special cases as well!
 Definition of Outputs
 ---------------------
 
-Outputs are generally defined by layers whichs name follows this scheme:
+Outputs are generally defined by layers whose name follows this scheme:
 
 **output[index]\_name**
 
@@ -373,6 +373,15 @@ Disabled
 NoOverlappingOutput
    When set to true, the output of a rule is not allowed to overlap on itself.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.10</div>
+
+IgnoreLock
+   Since Tiled 1.10, rules will no longer modify locked layers. Set this
+   property to true to ignore the lock. This can be useful, when you want to
+   keep layers locked which are only changed by rules.
+
 All these options can also be set on the rule map itself, in which case they
 apply as defaults for all rules, which can then be overridden for specific
 rules by placing rectangle objects.
@@ -502,7 +511,7 @@ northern direction.
 
 So basically the meaning we will define in the input region is: *All
 tiles which are south of a water tile and are not water tiles themselves,
-will be replaced by a shoreline tile*
+will be replaced by a shoreline tile.*
 
 +-----------------------------------------------------------+------------------+
 | Tile layer                                                | Name             |
@@ -539,7 +548,7 @@ Corners on a Shore Line
 
 This example is a continuation of the previous example. Now the corners
 of the given shoreline should be implemented automatically. Within this
-article we will just examine the bent in corner shoreline in the topleft
+article we will just examine the bent in corner shoreline in the top left
 corner. The other shoreline corners are constructed the same way. So
 after the example is applied, we would like to have the corners of the
 shoreline get suitable tiles. Since we rely on the other example being
@@ -572,9 +581,9 @@ Input and Output Regions
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 So with this rule we want to put the bent in shore line tile in the top
-left corner, we don't care which tile was there before. Also
-we don't care about the tile in the lower right corner. (probably water,
-but can be any decorative watertile, so just ignore it).
+left corner; we don't care which tile was there before. We also don't
+care about the tile in the lower right corner (probably water, but can
+be any decorative water tile, so just ignore it).
 
 +-----------------------------------------------------------------+------------------------------------------------------------------+-------------------------------------------------------------------+
 | .. image:: images/automapping/TheManaWorld/2/regions_input.png  | .. image:: images/automapping/TheManaWorld/2/regions_output.png  | .. image:: images/automapping/TheManaWorld/2/regions_united.png   |
@@ -598,15 +607,15 @@ Input Layers
 
 Now we want to put all the nine possible patterns we observed as
 possible input for this rule. We could of course define nine different
-layers *input1\_Ground* up to *input9\_Ground*
+layers *input1\_Ground* up to *input9\_Ground*.
 
-Nine TileLayers?! What a mess, we'll do it a better way.
+Nine TileLayers?! What a mess; we'll do it a better way.
 
 Also, consider having not just 3 possible tiles at the 2 locations but 4.
 Then we would need 4\*4=16 tilelayers to get all conditions. Another
 downside of this comes with more needed locations: Think of more than 2
-locations needed to construct a ruleinput. So for 3 locations, then each
-location could have the 3 possibilites, hence you need 3\*3\*3 = 27
+locations needed to construct a rule input. So for 3 locations, each
+location could have the 3 possibilities, hence you need 3\*3\*3 = 27
 tilelayers. It's not getting better...
 
 So let's try a smart way: All input layers have the same name, so at
@@ -625,7 +634,7 @@ each position any of the three different tiles is valid.
 Output Layer
 ^^^^^^^^^^^^
 
-The output is straight forward, since only one tile is needed. No
+The output is straightforward, since only one tile is needed. No
 randomness is needed, hence the index is not needed to be varied, so
 it's kept empty. The desired output layer is called Ground, so the over
 all name of the single output layer will be output\_Ground. The correct
@@ -750,7 +759,7 @@ An Alternating Wall
 -------------------
 
 This example will demonstrate how a wall as a transition between a
-walkable area and the non-walkable black void can easily be setup. As
+walkable area and the unwalkable black void can easily be setup. As
 input a dedicated set layer will be used.
 
 +-------------------------------------------------------+--------------------------------------------------------+

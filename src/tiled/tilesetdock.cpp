@@ -602,6 +602,13 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
     mTabBar->insertTab(index, tileset->name());
     mTabBar->setTabToolTip(index, tileset->fileName());
 
+    // Workaround a bug that appears to have snug into Qt 6 which causes the
+    // tab bar to be entirely invisible if only a single tab exists.
+#if QT_VERSION >= QT_VERSION_CHECK(6, 2, 4)
+    if (!mTabBar->isVisible())
+        mTabBar->updateGeometry();
+#endif
+
     connect(tilesetDocument, &TilesetDocument::fileNameChanged,
             this, &TilesetDock::tilesetFileNameChanged);
     connect(tilesetDocument, &TilesetDocument::tilesetChanged,

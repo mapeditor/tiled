@@ -330,7 +330,7 @@ void IsometricRenderer::drawTileSelection(QPainter *painter,
 
 void IsometricRenderer::drawMapObject(QPainter *painter,
                                       const MapObject *object,
-                                      const QColor &color) const
+                                      const MapObjectColors &colors) const
 {
     painter->save();
 
@@ -367,7 +367,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             painter->setPen(pen);
             painter->drawRect(bounds);
             pen.setStyle(Qt::DotLine);
-            pen.setColor(color);
+            pen.setColor(colors.main);
             painter->setPen(pen);
             painter->drawRect(bounds);
         }
@@ -387,16 +387,14 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         const qreal scale = painterScale();
         const QPointF shadowOffset(0, (lineWidth == 0 ? 1 : lineWidth) / scale);
 
-        QColor brushColor = color;
-        brushColor.setAlpha(50);
-        QBrush brush(brushColor);
+        QBrush brush = colors.fill.isValid() ? QBrush(colors.fill) : QBrush(Qt::NoBrush);
 
         pen.setJoinStyle(Qt::RoundJoin);
         pen.setCapStyle(Qt::RoundCap);
         pen.setWidthF(lineWidth);
 
         QPen colorPen(pen);
-        colorPen.setColor(color);
+        colorPen.setColor(colors.main);
 
         painter->setPen(pen);
         painter->setRenderHint(QPainter::Antialiasing);
@@ -423,7 +421,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         }
         case MapObject::Point:
             painter->translate(pixelToScreenCoords(object->position()));
-            drawPointObject(painter, color);
+            drawPointObject(painter, colors.main);
             break;
         case MapObject::Rectangle: {
             const QPolygonF polygon = pixelRectToScreenPolygon(bounds);

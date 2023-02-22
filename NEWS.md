@@ -1,7 +1,31 @@
 ### Unreleased
 
+* Restored Tiled 1.8 file format compatibility by default (#3560)
+* Added action search popup on Ctrl+Shift+P (with dogboydog, #3449)
+* Added Godot 4 export plugin (#3550)
+* Added file system actions also for tileset image based tilesets (#3448)
+* Added custom class option to disable drawing fill for objects (with dogboydog, #3312)
+* Fixed new layer names to be always unique (by Logan Higinbotham, #3452)
+* Fixed broken tile images after importing/exporting a tileset
+* AutoMapping: Match in order by default, when input regions are defined (#3559)
+* AutoMapping: Skip locked layers when applying rules (#3544)
+* Scripting: Added Object.setColorProperty and Object.setFloatProperty (#3423)
+* Scripting: Added tiled.projectFilePath
+* Scripting: Added tiled.versionLessThan
+* Scripting: Added TileMap.toImage (#3519)
+* Scripting: Added region.contiguousRegions() (#3576)
+* Scripting: Allow assigning null to Tile.objectGroup (by Logan Higinbotham, #3495)
+* Scripting: Allow changing the items in a combo box added to a dialog
 * Scripting: Fixed painting issues after changing TileLayer size (#3481)
+* Scripting: Renamed Tileset.collection to Tileset.isCollection (#3543)
 * Defold plugin: Allow overriding z value also when exporting to .collection (#3214)
+* Qt 6: Fixed invisible tileset tabs when only a single tileset is open
+* Qt 6: Fixed behavior of "Class of" selection popup
+* Fixed positioning of point object name labels (by Logan Higinbotham, #3400)
+* Fixed slight drift when zooming the map view in/out
+* Fixed compile against Qt 6.4
+* snap: Added Wayland platform plugin and additional image format plugins
+* AppImage: Updated to Sentry 0.5.4
 
 ### Tiled 1.9.2 (16 September 2022)
 

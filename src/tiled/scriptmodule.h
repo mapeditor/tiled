@@ -58,6 +58,7 @@ class ScriptModule : public QObject
     Q_PROPERTY(QString arch READ arch)
     Q_PROPERTY(QString extensionsPath READ extensionsPath)
     Q_PROPERTY(QString applicationDirPath READ applicationDirPath)
+    Q_PROPERTY(QString projectFilePath READ projectFilePath)
     Q_PROPERTY(QStringList scriptArguments READ scriptArguments)
 
     Q_PROPERTY(QStringList actions READ actions)
@@ -81,6 +82,7 @@ public:
     QString arch() const;
     QString extensionsPath() const;
     QString applicationDirPath() const;
+    QString projectFilePath() const;
 
     QStringList scriptArguments() const;
     void setScriptArguments(const QStringList &arguments);
@@ -101,6 +103,8 @@ public:
     Q_INVOKABLE Tiled::FilePath filePath(const QUrl &path) const;
     Q_INVOKABLE Tiled::ObjectRef objectRef(int id) const;
     Q_INVOKABLE QVariant propertyValue(const QString &typeName, const QVariant &value) const;
+    Q_INVOKABLE bool versionLessThan(const QString &a);
+    Q_INVOKABLE bool versionLessThan(const QString &a, const QString &b);
 
     Q_INVOKABLE Tiled::EditableAsset *open(const QString &fileName) const;
     Q_INVOKABLE bool close(Tiled::EditableAsset *asset) const;
@@ -157,5 +161,10 @@ private:
 
     QStringList mScriptArguments;
 };
+
+inline bool ScriptModule::versionLessThan(const QString &a)
+{
+    return versionLessThan(version(), a);
+}
 
 } // namespace Tiled
