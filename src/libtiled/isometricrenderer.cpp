@@ -32,7 +32,6 @@
 #include "mapobject.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "tileset.h"
 #include "objectgroup.h"
 
 #include <QtMath>
