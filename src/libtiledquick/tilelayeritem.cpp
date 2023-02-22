@@ -164,7 +164,7 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
         if (tileset != helper.tileset() || tileData.size() == TilesNode::MaxTileCount) {
             if (!tileData.isEmpty()) {
                 node->appendChildNode(new TilesNode(helper.texture(), tileData));
-                tileData.resize(0);
+                tileData.clear();
             }
 
             helper.setTileset(tileset);

@@ -21,6 +21,7 @@
 * Defold plugin: Allow overriding z value also when exporting to .collection (#3214)
 * Qt 6: Fixed invisible tileset tabs when only a single tileset is open
 * Qt 6: Fixed behavior of "Class of" selection popup
+* Qt 6: Fixed tile rendering when OpenGL is enabled (#3578)
 * Fixed positioning of point object name labels (by Logan Higinbotham, #3400)
 * Fixed slight drift when zooming the map view in/out
 * Fixed compile against Qt 6.4

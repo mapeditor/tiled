@@ -491,7 +491,13 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
     fragment.scaleX *= flippedHorizontally ? -1 : 1;
     fragment.scaleY *= flippedVertically ? -1 : 1;
 
+    // Avoid using drawPixmapFragments with OpenGL in Qt 6.4.1 and above
+    // (https://bugreports.qt.io/browse/QTBUG-111416)
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 1)
     if (mIsOpenGL || (fragment.scaleX > 0 && fragment.scaleY > 0)) {
+#else
+    if (!mIsOpenGL && fragment.scaleX > 0 && fragment.scaleY > 0) {
+#endif
         mTile = tile;
         mFragments.append(fragment);
         return;
@@ -525,7 +531,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
         mFragments.append(fragment);
         paintTileCollisionShapes();
         mTile = nullptr;
-        mFragments.resize(0);
+        mFragments.clear();
     }
 }
 
@@ -548,7 +554,7 @@ void CellRenderer::flush()
     }
 
     mTile = nullptr;
-    mFragments.resize(0);
+    mFragments.clear();
 }
 
 /**
