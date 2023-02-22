@@ -6,6 +6,7 @@
 * Added file system actions also for tileset image based tilesets (#3448)
 * Added custom class option to disable drawing fill for objects (with dogboydog, #3312)
 * Added option to choose a custom interface font (#3589)
+* Implemented rendering of major grid lines for staggered / hexagonal maps (#3583)
 * Fixed new layer names to be always unique (by Logan Higinbotham, #3452)
 * Fixed broken tile images after importing/exporting a tileset
 * AutoMapping: Match in order by default, when input regions are defined (#3559)
