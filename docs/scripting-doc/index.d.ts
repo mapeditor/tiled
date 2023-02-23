@@ -549,33 +549,37 @@ declare namespace Qt {
  * Qt documentation: [QDoubleSpinBox](https://doc.qt.io/qt-5/qdoublespinbox.html)
  */
   class QDoubleSpinBox extends QWidget {
-
     /**
-     * The minimum value that can be set by the input.
+     * This property holds the minimum value of the spin box.
      */
     minimum: number;
+
     /**
-     * The maximum value that can be set by the input.
+     * This property holds the maximum value of the spin box.
      */
     maximum: number;
+
     /**
-     * The amount that each tick left or right on the slider will
-     * change the value.
+     * This property holds the step value.
      */
-    tickInterval: number;
+    singleStep: number;
+
     /**
-     * The number of decimal places that are allowed in the input.
-     * Specify 0 for integer values.
+     * This property holds the precision of the spin box, in decimals.
+     *
+     * Sets how many decimals the spinbox will use for displaying and
+     * interpreting doubles. Specify 0 for integer values.
      */
     decimals: number;
+
     /**
-     * The integer value set in the slider
+     * This property holds the value of the spin box.
      */
     value: number;
 
     /**
      * Signal emitted when the value in the slider is changed.
-     * In QT 5 builds, the value passed as a argument to functions connected to this signal is
+     * In Qt 5 builds, the value passed as a argument to functions connected to this signal is
      * of type string, and will contain {@link prefix} and {@link suffix},
      * if any are set. In Qt 6 it is of number type.
      *
@@ -585,12 +589,18 @@ declare namespace Qt {
     valueChanged: Signal<string>;
 
     /**
-     * Text such as "$" to display to the user at the beginning of the numerical value.
+     * This property holds the spin box's prefix.
+     *
+     * The prefix is prepended to the start of the displayed value. Typical use
+     * is to display a unit of measurement or a currency symbol.
      */
     prefix: string;
 
     /**
-     * Text such as "ms" to display to the user at the end of the numerical value.
+     * This property holds the suffix of the spin box.
+     *
+     * The suffix is appended to the end of the displayed value. Typical use is
+     * to display a unit of measurement or a currency symbol.
      */
     suffix: string;
   }
