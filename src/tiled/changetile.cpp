@@ -114,10 +114,16 @@ void ChangeTileOrigin::setValue(Tile *tile, const QPoint &origin) const
 {
     tile->setOrigin(origin);
 
-    //since we changed the offset we need to tell it to update any maps
-    emit static_cast<TilesetDocument*>(document())->tileImageSourceChanged(tile);
+    auto tilesetDocument = static_cast<TilesetDocument*>(document());
 
-    for (MapDocument *mapDocument : static_cast<TilesetDocument*>(document())->mapDocuments())
+    // Invalidate the draw margins of the maps using this tileset
+    for (MapDocument *mapDocument : tilesetDocument->mapDocuments())
+        mapDocument->map()->invalidateDrawMargins();
+
+    // Since we changed the offset we need to tell it to update any maps
+    emit tilesetDocument->tileImageSourceChanged(tile);
+
+    for (MapDocument *mapDocument : tilesetDocument->mapDocuments())
         emit mapDocument->tileImageSourceChanged(tile);
 }
 

@@ -30,3 +30,11 @@ using ::endl;
 #if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
 using QStringRef = QStringView;
 #endif
+
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+constexpr inline QMargins operator|(const QMargins &m1, const QMargins &m2) noexcept
+{
+    return QMargins(qMax(m1.left(), m2.left()), qMax(m1.top(), m2.top()),
+                    qMax(m1.right(), m2.right()), qMax(m1.bottom(), m2.bottom()));
+}
+#endif

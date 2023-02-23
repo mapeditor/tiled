@@ -35,10 +35,11 @@
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
-#include "tile.h"
 #include "tilelayer.h"
 
 #include <QtMath>
+
+#include "qtcompat_p.h"
 
 using namespace Tiled;
 
@@ -101,11 +102,10 @@ void Map::adjustBoundingRectForOffsetsAndImageLayers(QRect &boundingRect) const
             // rect. More precise would be to take into account their
             // contents.
             const QPointF offset = layer->totalOffset();
-            offsetMargins = maxMargins(QMargins(qCeil(-offset.x()),
-                                                qCeil(-offset.y()),
-                                                qCeil(offset.x()),
-                                                qCeil(offset.y())),
-                                       offsetMargins);
+            offsetMargins = offsetMargins | QMargins(qCeil(-offset.x()),
+                                                     qCeil(-offset.y()),
+                                                     qCeil(offset.x()),
+                                                     qCeil(offset.y()));
             break;
         }
         case Layer::ImageLayerType: {
@@ -151,12 +151,7 @@ void Map::recomputeDrawMargins() const
         maxTileSize = std::max(maxTileSize, std::max(tileSize.width(),
                                                      tileSize.height()));
 
-        const QPoint offset = tileset->tileOffset();
-        offsetMargins = maxMargins(QMargins(-offset.x(),
-                                            -offset.y(),
-                                            offset.x(),
-                                            offset.y()),
-                                   offsetMargins);
+        offsetMargins = offsetMargins | tileset->drawMargins();
     }
 
     // We subtract the tile size of the map, since that part does not

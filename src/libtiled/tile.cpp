@@ -157,6 +157,9 @@ QPoint Tile::offset() const
 void Tile::setOrigin(QPoint offset)
 {
     mOrigin = offset;
+
+    if (mTileset)
+        mTileset->invalidateDrawMargins();
 }
 
 /**

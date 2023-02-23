@@ -267,16 +267,16 @@ Alignment MapObject::alignment(const Map *map) const
     if (Tileset *tileset = mCell.tileset())
         alignment = tileset->objectAlignment();
 
-    if (!map && mObjectGroup)
-        map = mObjectGroup->map();
-
     if (alignment == Unspecified) {
-        if (mCell.isEmpty())
-            return TopLeft;
-        else if (map && map->orientation() == Map::Isometric)
-            return Bottom;
+        if (!map && mObjectGroup)
+            map = mObjectGroup->map();
 
-        return BottomLeft;
+        if (mCell.isEmpty())
+            alignment = TopLeft;
+        else if (map && map->orientation() == Map::Isometric)
+            alignment = Bottom;
+        else
+            alignment = BottomLeft;
     }
 
     return alignment;
