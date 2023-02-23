@@ -96,6 +96,8 @@ public:
     void forceCenterOn(QPointF pos);
     void forceCenterOn(QPointF pos, const Layer &layer);
 
+    void setUseOpenGL(bool useOpenGL);
+
 protected:
     bool event(QEvent *event) override;
 
@@ -124,7 +126,6 @@ signals:
 
 private:
     void adjustScale(qreal scale);
-    void setUseOpenGL(bool useOpenGL);
     void updateSceneRect(const QRectF &sceneRect);
     void updateSceneRect(const QRectF &sceneRect, const QTransform &transform);
     void updateViewRect();

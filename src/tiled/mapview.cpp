@@ -72,9 +72,7 @@ MapView::MapView(QWidget *parent, Mode mode)
 #endif
 
 #ifndef QT_NO_OPENGL
-    Preferences *prefs = Preferences::instance();
-    setUseOpenGL(prefs->useOpenGL());
-    connect(prefs, &Preferences::useOpenGLChanged, this, &MapView::setUseOpenGL);
+    setUseOpenGL(Preferences::instance()->useOpenGL());
 #endif
 
     QWidget *v = viewport();
