@@ -28,7 +28,9 @@
 #include "pluginlistmodel.h"
 #include "preferences.h"
 #include "scriptmanager.h"
+#ifdef TILED_SENTRY
 #include "sentryhelper.h"
+#endif
 
 #include <QDesktopServices>
 #include <QSortFilterProxyModel>
@@ -147,6 +149,17 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     connect(mUi->selectionColor, &ColorButton::colorChanged,
             preferences, &Preferences::setSelectionColor);
 
+    connect(mUi->fontGroupBox, &QGroupBox::toggled,
+            preferences, &Preferences::setUseCustomFont);
+    connect(mUi->fontComboBox, &QFontComboBox::currentFontChanged,
+            preferences, &Preferences::setCustomFont);
+    connect(mUi->fontSize, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, [=] (int size) {
+        QFont font = mUi->fontComboBox->currentFont();
+        font.setPointSize(size);
+        mUi->fontComboBox->setCurrentFont(font);
+    });
+
     connect(mUi->displayNewsCheckBox, &QCheckBox::toggled,
             preferences, &Preferences::setDisplayNews);
     connect(mUi->displayNewVersionCheckBox, &QCheckBox::toggled,
@@ -158,7 +171,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     const QString &extensionsPath = ScriptManager::instance().extensionsPath();
     mUi->extensionsPathEdit->setText(extensionsPath);
     mUi->openExtensionsPathButton->setEnabled(!extensionsPath.isEmpty());
-    connect(mUi->openExtensionsPathButton, &QPushButton::clicked, this, [&] {
+    connect(mUi->openExtensionsPathButton, &QPushButton::clicked, this, [=] {
         QDesktopServices::openUrl(QUrl::fromLocalFile(extensionsPath));
     });
 
@@ -217,6 +230,11 @@ void PreferencesDialog::fromPreferences()
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());
     mUi->autoScrolling->setChecked(MapView::ourAutoScrollingEnabled);
     mUi->smoothScrolling->setChecked(MapView::ourSmoothScrollingEnabled);
+
+    const QFont customFont = prefs->customFont();
+    mUi->fontGroupBox->setChecked(prefs->useCustomFont());
+    mUi->fontComboBox->setCurrentFont(customFont);
+    mUi->fontSize->setValue(customFont.pointSize());
 
     // Not found (-1) ends up at index 0, system default
     int languageIndex = mUi->languageCombo->findData(prefs->language());

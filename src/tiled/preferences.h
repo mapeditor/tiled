@@ -23,6 +23,7 @@
 
 #include <QColor>
 #include <QDateTime>
+#include <QFont>
 #include <QObject>
 #include <QSettings>
 
@@ -99,6 +100,11 @@ public:
 
     QColor selectionColor() const;
     void setSelectionColor(const QColor &color);
+
+    bool useCustomFont() const;
+    void setUseCustomFont(bool useCustomFont);
+    QFont customFont() const;
+    void setCustomFont(const QFont &font);
 
     Map::LayerDataFormat layerDataFormat() const;
     void setLayerDataFormat(Map::LayerDataFormat layerDataFormat);
@@ -252,6 +258,8 @@ private:
     bool mPortable = false;
 
     QString mObjectTypesFile;
+
+    QFont mDefaultFont;
 
     static Preferences *mInstance;
     static QString mStartupProject;

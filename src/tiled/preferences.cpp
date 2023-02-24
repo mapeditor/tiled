@@ -94,6 +94,9 @@ void Preferences::initialize()
     if (applicationStyle() == FusionStyle)
         setApplicationStyle(TiledStyle);
 
+    if (useCustomFont())
+        QGuiApplication::setFont(customFont());
+
     // Read object types from the default location (custom location moved to project)
     setObjectTypesFile(QString());
 
@@ -279,6 +282,29 @@ void Preferences::setSelectionColor(const QColor &color)
 {
     setValue(QLatin1String("Interface/SelectionColor"), color.name());
     emit selectionColorChanged(color);
+}
+
+bool Preferences::useCustomFont() const
+{
+    return get<bool>("Interface/UseCustomFont", false);
+}
+
+void Preferences::setUseCustomFont(bool useCustomFont)
+{
+    setValue(QLatin1String("Interface/UseCustomFont"), useCustomFont);
+    QGuiApplication::setFont(useCustomFont ? customFont() : mDefaultFont);
+}
+
+QFont Preferences::customFont() const
+{
+    return get<QFont>("Interface/CustomFont", QGuiApplication::font());
+}
+
+void Preferences::setCustomFont(const QFont &font)
+{
+    setValue(QLatin1String("Interface/CustomFont"), font);
+    if (useCustomFont())
+        QGuiApplication::setFont(font);
 }
 
 Map::LayerDataFormat Preferences::layerDataFormat() const
