@@ -250,6 +250,7 @@ Tile *Tile::clone(Tileset *tileset) const
 
     c->mImageSource = mImageSource;
     c->mImageRect = mImageRect;
+    c->mOrigin = mOrigin;
     c->mImageStatus = mImageStatus;
     c->mProbability = mProbability;
 
