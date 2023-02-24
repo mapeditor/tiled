@@ -22,16 +22,15 @@
 
 #include "commandlineparser.h"
 #include "exporthelper.h"
-#include "languagemanager.h"
 #include "logginginterface.h"
 #include "mainwindow.h"
-#include "mapdocument.h"
 #include "mapformat.h"
-#include "mapreader.h"
 #include "pluginmanager.h"
 #include "preferences.h"
 #include "scriptmanager.h"
+#ifdef TILED_SENTRY
 #include "sentryhelper.h"
+#endif
 #include "tiledapplication.h"
 #include "tileset.h"
 #include "tmxmapformat.h"
@@ -40,6 +39,7 @@
 #include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QSurfaceFormat>
 #include <QtPlugin>
 
 #include "qtcompat_p.h"
@@ -570,6 +570,11 @@ int main(int argc, char *argv[])
     }
 
     Session::initialize();
+
+    // Disable vsync to make hardware accelerated mode more responsive
+    QSurfaceFormat format;
+    format.setSwapInterval(0);
+    QSurfaceFormat::setDefaultFormat(format);
 
     MainWindow w;
     w.show();
