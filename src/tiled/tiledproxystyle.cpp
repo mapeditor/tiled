@@ -992,7 +992,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
 
         // Fix the font used to draw dock widget titles (see QDockWidget::paintEvent)
     case CE_DockWidgetTitle:
-        painter->setFont(QApplication::font());
+        painter->setFont(QFont());
         QProxyStyle::drawControl(element, option, painter, widget);
 
     case CE_TabBarTabShape:

@@ -205,7 +205,7 @@ QVariant ActionsModel::data(const QModelIndex &index, int role) const
         const Id actionId = mActions.at(index.row());
 
         if (ActionManager::instance()->hasCustomShortcut(actionId)) {
-            QFont font = QApplication::font();
+            QFont font;
             font.setBold(true);
             return font;
         }
