@@ -235,6 +235,7 @@ signals:
     void applicationStyleChanged(ApplicationStyle);
     void baseColorChanged(const QColor &baseColor);
     void selectionColorChanged(const QColor &selectionColor);
+    void applicationFontChanged();
 
     void useOpenGLChanged(bool useOpenGL);
 
@@ -258,8 +259,6 @@ private:
     bool mPortable = false;
 
     QString mObjectTypesFile;
-
-    QFont mDefaultFont;
 
     static Preferences *mInstance;
     static QString mStartupProject;

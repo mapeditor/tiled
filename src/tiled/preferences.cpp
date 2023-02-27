@@ -21,9 +21,7 @@
 
 #include "preferences.h"
 
-#include "documentmanager.h"
 #include "languagemanager.h"
-#include "mapdocument.h"
 #include "pluginmanager.h"
 #include "savefile.h"
 #include "session.h"
@@ -93,9 +91,6 @@ void Preferences::initialize()
     // preferences dialog.
     if (applicationStyle() == FusionStyle)
         setApplicationStyle(TiledStyle);
-
-    if (useCustomFont())
-        QGuiApplication::setFont(customFont());
 
     // Read object types from the default location (custom location moved to project)
     setObjectTypesFile(QString());
@@ -292,7 +287,7 @@ bool Preferences::useCustomFont() const
 void Preferences::setUseCustomFont(bool useCustomFont)
 {
     setValue(QLatin1String("Interface/UseCustomFont"), useCustomFont);
-    QGuiApplication::setFont(useCustomFont ? customFont() : mDefaultFont);
+    emit applicationFontChanged();
 }
 
 QFont Preferences::customFont() const
@@ -304,7 +299,7 @@ void Preferences::setCustomFont(const QFont &font)
 {
     setValue(QLatin1String("Interface/CustomFont"), font);
     if (useCustomFont())
-        QGuiApplication::setFont(font);
+        emit applicationFontChanged();
 }
 
 Map::LayerDataFormat Preferences::layerDataFormat() const
