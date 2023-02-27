@@ -134,7 +134,7 @@ QVariant WangSetModel::data(const QModelIndex &index, int role) const
         case Qt::SizeHintRole:
             return QSize(1, 32);
         case Qt::FontRole: {
-            QFont font = QApplication::font();
+            QFont font;
             font.setBold(true);
             return font;
         }

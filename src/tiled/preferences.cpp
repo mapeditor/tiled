@@ -21,9 +21,7 @@
 
 #include "preferences.h"
 
-#include "documentmanager.h"
 #include "languagemanager.h"
-#include "mapdocument.h"
 #include "pluginmanager.h"
 #include "savefile.h"
 #include "session.h"
@@ -279,6 +277,29 @@ void Preferences::setSelectionColor(const QColor &color)
 {
     setValue(QLatin1String("Interface/SelectionColor"), color.name());
     emit selectionColorChanged(color);
+}
+
+bool Preferences::useCustomFont() const
+{
+    return get<bool>("Interface/UseCustomFont", false);
+}
+
+void Preferences::setUseCustomFont(bool useCustomFont)
+{
+    setValue(QLatin1String("Interface/UseCustomFont"), useCustomFont);
+    emit applicationFontChanged();
+}
+
+QFont Preferences::customFont() const
+{
+    return get<QFont>("Interface/CustomFont", QGuiApplication::font());
+}
+
+void Preferences::setCustomFont(const QFont &font)
+{
+    setValue(QLatin1String("Interface/CustomFont"), font);
+    if (useCustomFont())
+        emit applicationFontChanged();
 }
 
 Map::LayerDataFormat Preferences::layerDataFormat() const

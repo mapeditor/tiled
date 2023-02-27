@@ -100,11 +100,13 @@ StyleHelper::StyleHelper()
 #endif
 {
     apply();
+    applyFont();
 
     Preferences *preferences = Preferences::instance();
     QObject::connect(preferences, &Preferences::applicationStyleChanged, this, &StyleHelper::apply);
     QObject::connect(preferences, &Preferences::baseColorChanged, this, &StyleHelper::apply);
     QObject::connect(preferences, &Preferences::selectionColorChanged, this, &StyleHelper::apply);
+    QObject::connect(preferences, &Preferences::applicationFontChanged, this, &StyleHelper::applyFont);
 }
 
 void StyleHelper::apply()
@@ -164,6 +166,21 @@ void StyleHelper::apply()
     QtBoolPropertyManager::resetIcons();
 
     emit styleApplied();
+}
+
+void StyleHelper::applyFont()
+{
+    Preferences *prefs = Preferences::instance();
+
+    if (prefs->useCustomFont()) {
+        if (!mDefaultFont.has_value())
+            mDefaultFont = QApplication::font();
+
+        QApplication::setFont(prefs->customFont());
+
+    } else if (mDefaultFont.has_value()) {
+        QApplication::setFont(*mDefaultFont);
+    }
 }
 
 } // namespace Tiled
