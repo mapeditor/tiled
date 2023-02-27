@@ -1148,8 +1148,11 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
     case InfiniteProperty: {
         bool infinite = val.toInt();
 
+        auto changePropertyCommand = new ChangeMapProperty(mMapDocument, Map::InfiniteProperty,
+                                                           val.toInt());
+
         QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->beginMacro(tr("Change Infinite Property"));
+        undoStack->beginMacro(changePropertyCommand->text());
 
         if (!infinite) {
             QRect mapBounds(QPoint(0, 0), mMapDocument->map()->size());
@@ -1166,8 +1169,7 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
             mMapDocument->resizeMap(mapBounds.size(), -mapBounds.topLeft(), false);
         }
 
-        undoStack->push(new ChangeMapProperty(mMapDocument, Map::InfiniteProperty,
-                                              val.toInt()));
+        undoStack->push(changePropertyCommand);
         undoStack->endMacro();
         break;
     }
