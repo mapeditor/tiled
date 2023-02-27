@@ -5,6 +5,7 @@
 * Added Godot 4 export plugin (#3550)
 * Added file system actions also for tileset image based tilesets (#3448)
 * Added custom class option to disable drawing fill for objects (with dogboydog, #3312)
+* Added option to choose a custom interface font (#3589)
 * Fixed new layer names to be always unique (by Logan Higinbotham, #3452)
 * Fixed broken tile images after importing/exporting a tileset
 * AutoMapping: Match in order by default, when input regions are defined (#3559)
