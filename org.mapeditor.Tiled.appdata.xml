@@ -204,6 +204,7 @@
  <url type="vcs-browser">https://github.com/mapeditor/tiled</url>
  <launchable type="desktop-id">org.mapeditor.Tiled.desktop</launchable>
  <provides>
+   <binary>tiled</binary>
    <id>tiled.desktop</id>
  </provides>
  <translation type="qt">tiled</translation>
