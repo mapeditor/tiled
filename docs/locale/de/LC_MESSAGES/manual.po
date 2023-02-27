@@ -6,17 +6,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2021-09-07 13:45+0200\n"
-"PO-Revision-Date: 2019-05-20 20:50+0000\n"
-"Last-Translator: ssantos <ssantos@web.de>\n"
+"PO-Revision-Date: 2022-11-04 15:04+0000\n"
+"Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/tiled/manual/de/>"
+"\n"
 "Language: de\n"
-"Language-Team: German "
-"<https://hosted.weblate.org/projects/tiled/manual/de/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 "Generated-By: Babel 2.8.0\n"
 
 #: ../../manual/automapping.rst:3
@@ -54,13 +55,15 @@ msgstr ""
 
 #: ../../manual/automapping.rst:22
 msgid "External Links"
-msgstr ""
+msgstr "Externe Links"
 
 #: ../../manual/automapping.rst:24
 msgid ""
 "`Automapping explained for Tiled 0.9 and later (YouTube) "
 "<http://www.youtube.com/watch?v=UUi0lD1pxyQ>`__"
 msgstr ""
+"`Automapping für Tiled ab Version 0.9 (YouTube) <http://www.youtube.com/"
+"watch?v=UUi0lD1pxyQ>`__"
 
 #: ../../manual/automapping.rst:25
 msgid ""
@@ -76,7 +79,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:30
 msgid "Setting it Up"
-msgstr ""
+msgstr "Einrichtung"
 
 #: ../../manual/automapping.rst:32
 msgid ""
@@ -135,7 +138,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:56
 msgid "Defining the Regions"
-msgstr ""
+msgstr "Regionen festlegen"
 
 #: ../../manual/automapping.rst:58
 msgid ""
@@ -1605,7 +1608,7 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:116
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: ../../manual/editing-tilesets.rst:115
 msgid ""
@@ -2831,7 +2834,7 @@ msgstr ""
 
 #: ../../manual/export-yy.rst:279
 msgid "Paths"
-msgstr ""
+msgstr "Pfade"
 
 #: ../../manual/export-yy.rst:283
 msgid ""
@@ -2854,13 +2857,15 @@ msgstr ""
 
 #: ../../manual/export-yy.rst:304
 msgid "**Camera Properties**"
-msgstr ""
+msgstr "**Kameraeinstellungen**"
 
 #: ../../manual/export-yy.rst:306
 msgid ""
 "The Camera Properties are automatically derived from the position and "
 "size of the view object."
 msgstr ""
+"Die Kameraeinstellungen werden automatisch von der Position und der Größe "
+"des angezeigten Objektes abgeleitet."
 
 #: ../../manual/export-yy.rst:309
 msgid "**Viewport Properties**"
@@ -2927,11 +2932,11 @@ msgstr ""
 
 #: ../../manual/introduction.rst:2
 msgid "Introduction"
-msgstr ""
+msgstr "Einführung"
 
 #: ../../manual/introduction.rst:5
 msgid "About Tiled"
-msgstr ""
+msgstr "Über Tiled"
 
 #: ../../manual/introduction.rst:7
 msgid ""
@@ -2941,6 +2946,12 @@ msgid ""
 "your level with extra information used by the game. Tiled focuses on "
 "general flexibility while trying to stay intuitive.**"
 msgstr ""
+"**Tiled in ein 2D-Leveleditor mit dessen Hilfe du Inhalte für dein Spiel "
+"erstellen kannst. Seine wichtigste Funktion liegt in der Erstellung "
+"verschiedenster Kartentypen mit Hilfe von Kacheln. Daneben kannst du Bilder "
+"frei platzieren oder aber auch Zusatzinformationen, die für dein Spiel "
+"benötigt werden, einfügen. Der Fokus von Tiled liegt dabei auf "
+"größtmöglicher Flexibilität bei gleichzeitig einfacher Benutzbarkeit.**"
 
 #: ../../manual/introduction.rst:13
 msgid ""
@@ -2951,6 +2962,12 @@ msgid ""
 "depth faking techniques, tiles and layers can be offset by a custom "
 "distance and their rendering order can be configured."
 msgstr ""
+"Tiled unterstützt dabei einfache rechteckige Ebenen, aber auch isometrische "
+"Projektion, gestaffelte isometrische Projektion und gestaffelte hexagonale "
+"Ebenen. Ein Tileset kann aus einem einzelnen Bild mit mehreren Kacheln "
+"bestehen oder es existiert als Sammlung verschiedener Bilder. Mit Hilfe von "
+"Versatz, benutzerdefinierten Entfernungen und Zeichenreihenfolgen werden "
+"verschiedene Techniken zur Tiefendarstellung unterstützt."
 
 #: ../../manual/introduction.rst:20
 msgid ""
@@ -2961,6 +2978,13 @@ msgid ""
 "transitions <terrain>`. Finally, it can apply changes based on :doc"
 ":`pattern-matching <automapping>` to automate parts of your work."
 msgstr ""
+"Das Hauptwerkzeug für die Bearbeitung von :ref:`Kachelebenen <tile-layer-"
+"introduction>` ist der Stempel. Mit ihm können ganze Gebiete effizient "
+"gefüllt oder kopiert werden. Tiled erlaubt auch das Zeichnen von Linien und "
+"Kreisen. Zusätzlich existieren zahlreiche Auswahlwerkzeuge und die "
+"Möglichkeit :doc:`Terrainübergänge automatisch anlegen zu lassen<terrain>`. "
+"Daneben erleichtert Tiled die Arbeit durch ein Werkzeug zur Mustererkennung "
+":doc:`pattern-matching <automapping>` work."
 
 #: ../../manual/introduction.rst:27
 msgid ""
@@ -2972,6 +2996,15 @@ msgid ""
 "or rotated. Object layers offer a lot of flexibility to add almost any "
 "information to your level that your game needs."
 msgstr ""
+"Tiled unterstützt auch :ref:`Objektebenen<object-layer-introduction>`. "
+"Ursprünglich nur für die Speicherung von Zusatzinformationen in der Karte "
+"gedacht, ist es seit einigen Versionen möglich, auch Bilder in einer "
+"Objektebene zu speichern. Die Elemente einer Objektebene werden als "
+"Rechtecke, Punkte, Ellipsen, Polygone oder Polygonzüge definiert. Objekte in "
+"solch einer Ebene sind nicht an das Raster gebunden und können darüber "
+"hinaus skaliert und rotiert werden. Objektebenen bieten die Flexibilität "
+"nahezu jede Art von Information zu speichern, die in einem Spiel benötigt "
+"werden."
 
 #: ../../manual/introduction.rst:35
 msgid ""
@@ -2981,24 +3014,31 @@ msgid ""
 ":ref:`tile animation support <tile-animation-editor>` and the :ref:`tile "
 "collision editor <tile-collision-editor>`."
 msgstr ""
+"Daneben bietet Tiled weitere nützliche Funktionen, wie zum Beispiel die "
+"Unterstützung benutzerdefinierter Karten- und Tilesetformate mittels "
+"Plugins, :doc:`Erweiterungen </reference/scripting>` über JavaScript, einen "
+"Stempelspeicher, :ref:`Unterstützung bei Animationen <tile-animation-editor>`"
+" und einen :ref:`Kollisionseditor <tile-collision-editor>`."
 
 #: ../../manual/introduction.rst:44
 msgid "Getting Started"
-msgstr ""
+msgstr "Erste Schritte"
 
 #: ../../manual/introduction.rst:51
 msgid "Setting up a New Project"
-msgstr ""
+msgstr "Ein neues Projekt erstellen"
 
 #: ../../manual/introduction.rst:53
 msgid ""
 "When launching Tiled for the first time, we are greeted with the "
 "following window:"
 msgstr ""
+"Wenn wir Tiled zum ersten Mal starten, werden wir von folgendem Fenster "
+"begrüßt:"
 
 #: ../../manual/introduction.rst:59
 msgid "Tiled Window"
-msgstr ""
+msgstr "Startfenster"
 
 #: ../../manual/introduction.rst:61
 msgid ""
@@ -3007,6 +3047,10 @@ msgid ""
 "it is recommended to first set up a Tiled project. This is however an "
 "entirely optional step that can be skipped when desired."
 msgstr ""
+"Wir empfehlen als ersten Schritt ein Tiled-Projekt anzulegen. Dadurch "
+"erleichtern wir uns den Zugriff auf alle Assets eine :guilabel: `Projektes` "
+"ebenso, wie den schnellen Wechsel zwischen Projekten. Dieser Schritt ist "
+"vollständig optional und kann ausgelassen werden."
 
 #: ../../manual/introduction.rst:66
 msgid ""
@@ -3014,6 +3058,9 @@ msgid ""
 "recommended location is the root of your project, but you can place it "
 "anywhere you want."
 msgstr ""
+"Eine neue Projektdatei kann über \"Projekt -> Projekt speichern unter...\" "
+"angelegt und gespeichert werden. Wir empfehlen das Hauptverzeichnis des "
+"Spielprojektes als Speicherort, aber letztlich spielt es keine Rolle."
 
 #: ../../manual/introduction.rst:70
 msgid ""
@@ -3023,20 +3070,27 @@ msgid ""
 "click in the Project view and choose *Add Folder to Project...* to add "
 "the relevant folders."
 msgstr ""
+"Als nächstes fügen wir wenigstens ein Verzeichnis hinzu. Entweder eines mit "
+"\"Assets\" oder einfach das Basisverzeichnis des Projektes. Es können aber "
+"natürlich auch andere Verzeichnisse (z.B. Tilesets, Karten, Vorlagen, o.ä.) "
+"gewählt werden. Verzeichnisse werden über einen Rechtsklick in der "
+"Projektansicht und dann \"Ordner zum Projekt hinzufügen...\" eingefügt."
 
 #: ../../manual/introduction.rst:77
 msgid "Creating a New Map"
-msgstr ""
+msgstr "Neue Karte erstellen"
 
 #: ../../manual/introduction.rst:79
 msgid ""
 "To create a new map, choose *File -> New -> New Map…* (``Ctrl+N``). The "
 "following dialog will pop up:"
 msgstr ""
+"Eine neue Karte kann über die Menüeinträge *Datei -> Neu -> Neue Karte...* "
+"(``Strg+N``) angelegt werden. Dadurch öffnet sich folgender Dialog:"
 
 #: ../../manual/introduction.rst:86
 msgid "New Map"
-msgstr ""
+msgstr "Neue Karte"
 
 #: ../../manual/introduction.rst:88
 msgid ""
@@ -3046,6 +3100,11 @@ msgid ""
 "these things can be changed later as needed, so it's not important to get"
 " it all right the first time."
 msgstr ""
+"Hier wählen wir die ínitiale Kartengröße, die Kachelgröße, das Format für "
+"Kachelebenen, die Zeichenreihefolge (nur für rechtwinklige Karten verfügbar) "
+"und ob die Karte :doc:`unendlich <using-infinite-maps>` groß ist. All diese "
+"Werte können später geändert werden. Es ist also nicht erforderlich, alles "
+"von Anfang an richtig einzustellen."
 
 #: ../../manual/introduction.rst:96
 msgid ""
@@ -3053,6 +3112,9 @@ msgid ""
 "had added to your project. This will make it quickly accessible using "
 "*File -> Open File in Project* (``Ctrl+P``)."
 msgstr ""
+"Wenn ein Projekt erstellt wurde, empfehlen wir die neue Karte in einem der "
+"Verzeichnisse dieses Projektes zu speichern. Dadurch ist ein schneller "
+"Zugriff über *Datei -> Datei in Projekt öffnen...* (``Strg+P``) möglich."
 
 #: ../../manual/introduction.rst:100
 msgid ""
@@ -3061,10 +3123,14 @@ msgid ""
 " need to add a tileset. Choose *File -> New -> New Tileset…* to open the "
 "New Tileset dialog:"
 msgstr ""
+"Nachdem wir die Karte gespeichert haben, sehen wir das Kachelraster für die "
+"standardmäßig erstellte Kachelebene. Jetzt brauchen wir nur noch ein "
+"Tileset, damit wir überhaupt Kacheln einfügen können. Dafür öffnen wir den "
+"Tileset-Dialog über *Datei -> Neu -> Neues Tileset...*:"
 
 #: ../../manual/introduction.rst:109
 msgid "New Tileset"
-msgstr ""
+msgstr "Neues Tileset"
 
 #: ../../manual/introduction.rst:111
 msgid ""
@@ -3075,6 +3141,12 @@ msgid ""
 " a one pixel *spacing* in between the tiles (this is pretty rare "
 "actually, usually you should leave these values on 0)."
 msgstr ""
+"Im Dialog klicken wir jetzt auf `Durchsuchen...` und wählen das Tileset "
+":file:`tmw_desert_spacing.png`, welches sich im Installationsverzeichnis von "
+"Tiled befindet (ein eigenes Tileset tut es natürlich auch). Die Kacheln im "
+"mitgelieferte Tileset haben eine Größe von 32x32 Pixeln, mit einem 1-Pixel "
+"starken *Seitenrand* und einem *Abstand* von einem Pixel zwischen den "
+"Kacheln. Normalerweise müssen wir diese Werte aber nicht ändern."
 
 #: ../../manual/introduction.rst:120
 msgid ""
@@ -3085,24 +3157,34 @@ msgid ""
 "definitions, collision shapes, etc., since that information is then "
 "shared between all your maps."
 msgstr ""
+"Die Option :guilabel:`In Karte einbetten` nutzen wir nicht. Das sollten wir "
+"auch bei anderen Tilesets so halten, damit wir unser Set problemlos in "
+"verschiedenen Karten nutzen können ohne es immer wieder neu erstellen zu "
+"müssen. Zusätzlich speichern wir es in einer eigenen Datei, um später "
+"verschiedene Dinge, wie Kacheleigenschaften, Terraindefinitionen, "
+"Kollisionsformen und ähnliches einfach benutzen und ändern zu können. Durch "
+"die eigene Datei wird außerdem sichergestellt, dass wir unser Set in all "
+"unseren Karten nutzen können."
 
 #: ../../manual/introduction.rst:127
 msgid "After saving the tileset, Tiled should look as follows:"
-msgstr ""
+msgstr "Nach dem Speichern sollte Tiled so aussehen:"
 
 #: ../../manual/introduction.rst:132
 msgid "Tileset Created"
-msgstr ""
+msgstr "Erzeugtes Tileset"
 
 #: ../../manual/introduction.rst:134
 msgid ""
 "Since we don't want to do anything else with the tileset for now, just "
 "switch back to the map file:"
 msgstr ""
+"Für dem Moment wollen wir nichts weiter mit dem Tileset tun, also gehen wir "
+"zurück zur Karte:"
 
 #: ../../manual/introduction.rst:140
 msgid "Tileset Usable on the Map"
-msgstr ""
+msgstr "Tileset, dass jetzt auf der Karte genutzt werden kann"
 
 #: ../../manual/introduction.rst:142
 msgid ""
@@ -3110,6 +3192,9 @@ msgid ""
 "have a quick look at the :doc:`various layer types <layers>` supported by"
 " Tiled."
 msgstr ""
+"Jetzt sind wir bereit Kacheln auszuwählen und eine Karte zu bauen. Aber "
+"zuerst, sollten wir uns noch die :doc:`verschiedenen Arten von Ebenen "
+"<layers>`ansehen, die Tiled zu bieten hat."
 
 #: ../../manual/introduction.rst:148
 msgid ""
@@ -3119,396 +3204,439 @@ msgid ""
 "</reference/support-for-tmx-maps>` often comes with some usage "
 "information."
 msgstr ""
+"Sehr viel von diesem Handbuch muss noch geschrieben werden, aber "
+"glücklicherweise gibt es auf GamesFromScratch.com schon ein paar sehr schöne "
+"`Tiled-Tutorials`. Zusätzlich bieten die meisten :doc: `Engines und "
+"Frameworks </reference/support-for-tmx-maps>`, das Tiled-Format untersützen, "
+"nützliche Informationen."
 
 #: ../../manual/keyboard-shortcuts.rst:2
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Tastenkürzel"
 
 #: ../../manual/keyboard-shortcuts.rst:6
 msgid ""
 "Most of the below shortcuts can be changed in the :ref:`Preferences "
 "<keyboard-options>`."
 msgstr ""
+"Die meisten der unten aufgeführten Kürzel können über die :ref:`Einstellungen"
+"<keyboard-options>` geändert werden."
 
 #: ../../manual/keyboard-shortcuts.rst:9
 msgid "On macOS, replace ``Ctrl`` with the ``Command`` key."
-msgstr ""
+msgstr "Unter macOs gilt statt ``Strg`` natürlich ``Cmd``."
 
 #: ../../manual/keyboard-shortcuts.rst:14
 msgid "``Ctrl + N`` - Create a new map"
-msgstr ""
+msgstr "``Strg + N`` - Neue Karte erzeugen"
 
 #: ../../manual/keyboard-shortcuts.rst:15
 msgid "``Ctrl + O`` - Open any file or project"
-msgstr ""
+msgstr "``Strg + O`` - Datei oder Projekt öffnen"
 
 #: ../../manual/keyboard-shortcuts.rst:16
 msgid "``Ctrl + P`` - Open a file in the current project"
-msgstr ""
+msgstr "``Strg + P`` - Datei im aktuellen Projekt öffnen"
 
 #: ../../manual/keyboard-shortcuts.rst:17
 msgid "``Ctrl + Shift + T`` - Reopen a recently closed file"
-msgstr ""
+msgstr "``Strg + Umsch + T`` - kürzlich geschlossene Datei erneut öffnen"
 
 #: ../../manual/keyboard-shortcuts.rst:18
 msgid "``Ctrl + S`` - Save current document"
-msgstr ""
+msgstr "``Strg + S`` - aktuelle Datei speichern"
 
 #: ../../manual/keyboard-shortcuts.rst:19
 msgid "``Ctrl + Alt + S`` - Save current document to another file"
-msgstr ""
+msgstr "``Strg + Alt + S`` - Aktuelle Datei mit anderem Namen speichern"
 
 #: ../../manual/keyboard-shortcuts.rst:20
 msgid "``Ctrl + Shift + S`` - Save all documents"
-msgstr ""
+msgstr "``Strg + Umsch + S`` - Alles speichern"
 
 #: ../../manual/keyboard-shortcuts.rst:21
 msgid "``Ctrl + E`` - Export current document"
-msgstr ""
+msgstr "``Strg + E `` - Aktuelles Dokument exportieren"
 
 #: ../../manual/keyboard-shortcuts.rst:22
 msgid "``Ctrl + Shift + E`` - Export current document to another file"
-msgstr ""
+msgstr "``Strg + Umsch + E`` - Aktuelles Dokument mit anderem Namen speichern"
 
 #: ../../manual/keyboard-shortcuts.rst:23
 msgid "``Ctrl + R`` - Reload current document"
-msgstr ""
+msgstr "``Strg + R`` - Aktuelles Dokument neu laden"
 
 #: ../../manual/keyboard-shortcuts.rst:24
 msgid "``Ctrl + W`` - Close current document"
-msgstr ""
+msgstr "``Strg + W`` - Aktuelles Dokument schließen"
 
 #: ../../manual/keyboard-shortcuts.rst:25
 msgid "``Ctrl + Shift + W`` - Close all documents"
-msgstr ""
+msgstr "``Strg + Umsch + W`` - Alle Dokumente schließen"
 
 #: ../../manual/keyboard-shortcuts.rst:26
 msgid "``Ctrl + Q`` - Quit Tiled"
-msgstr ""
+msgstr "``Strg + Q`` - Tiled beenden"
 
 #: ../../manual/keyboard-shortcuts.rst:27
 msgid "``Ctrl + MouseWheel`` - Zoom in/out on tileset and map"
 msgstr ""
+"``Strg + Mausrad`` - Vergrößern/Verkleinern eines Tilesets oder einer Karte"
 
 #: ../../manual/keyboard-shortcuts.rst:28
 msgid "``Ctrl + Plus/Minus`` - Zoom in/out on map"
-msgstr ""
+msgstr "``Strg + Plus/Minus`` - Karte Vergrößern/Verkleinern"
 
 #: ../../manual/keyboard-shortcuts.rst:29
 msgid "``Ctrl + 0`` - Reset zoom on map"
-msgstr ""
+msgstr "``Strg + 0`` - Zoom zurücksetzen"
 
 #: ../../manual/keyboard-shortcuts.rst:30
 msgid "``Ctrl + /`` - Adjust zoom to fit map in view"
-msgstr ""
+msgstr "``Strg + /`` - Karte in Ansicht einpassen"
 
 #: ../../manual/keyboard-shortcuts.rst:31
 msgid "``Ctrl + Object Move`` - Toggles \"Snap to Grid\" temporarily"
 msgstr ""
+"``Strg + Objekt bewegen`` - Schaltet \"Am Raster fangen\" vorübergehend ein "
+"oder aus"
 
 #: ../../manual/keyboard-shortcuts.rst:32
 msgid "``Ctrl + Object Resize`` - Keep aspect ratio"
-msgstr ""
+msgstr "``Strg + Objektgröße ändern`` - erhält das Seitenverhältnis"
 
 #: ../../manual/keyboard-shortcuts.rst:33
 msgid "``Alt + Object Resize`` - Toggles \"Snap to Grid\" temporarily"
 msgstr ""
+"``Alt + Objektgröße ändern`` - Schaltet \"Am Raster fangen\" vorübergehend "
+"ein oder aus"
 
 #: ../../manual/keyboard-shortcuts.rst:34
 msgid "``Middle Click`` or ``Space Bar`` - Hold to pan the map view"
 msgstr ""
+"``Mausradklick`` oder ``Leertaste`` - Halten um die Kartenansicht zu "
+"verschieben"
 
 #: ../../manual/keyboard-shortcuts.rst:35
 msgid "``Ctrl + X`` - Cut (tiles, objects or properties)"
-msgstr ""
+msgstr "``Strg + X`` - Ausschneiden (Kacheln, Objekte oder Eigenschaften``"
 
 #: ../../manual/keyboard-shortcuts.rst:36
 msgid "``Ctrl + C`` - Copy (tiles, objects or properties)"
-msgstr ""
+msgstr "``Strg + C`` - Kopieren (Kacheln, Objekte oder Eigenschaften)"
 
 #: ../../manual/keyboard-shortcuts.rst:37
 msgid "``Ctrl + V`` - Paste (tiles, objects or properties)"
-msgstr ""
+msgstr "``Strg + V`` - Einfügen (Kacheln, Objekte oder Eigenschaften)"
 
 #: ../../manual/keyboard-shortcuts.rst:38
 msgid "``Del`` - Delete (tiles, objects, properties or layers)"
-msgstr ""
+msgstr "``Entf`` - Löschen (Kacheln, Objekte, Eigenschaften oder Ebenen)"
 
 #: ../../manual/keyboard-shortcuts.rst:39
 msgid "``Ctrl + G`` - Toggle displaying of the tile grid"
-msgstr ""
+msgstr "``Strg + G`` - Raster ein/aus"
 
 #: ../../manual/keyboard-shortcuts.rst:40
 msgid "``H`` - Toggle highlighting of the current layer"
-msgstr ""
+msgstr "``H``- Aktuelle Ebene hervorheben"
 
 #: ../../manual/keyboard-shortcuts.rst:41
 msgid "``Ctrl + M`` - Invokes :doc:`automapping`"
-msgstr ""
+msgstr "``Strg + M`` - :doc: `Automapping` aufrufen"
 
 #: ../../manual/keyboard-shortcuts.rst:42
 msgid ""
 "``Alt + C`` - Copy current position of mouse cursor to clipboard (in tile"
 " coordinates)"
 msgstr ""
+"``Alt + C`` - Aktuelle Position der Maus in die Zwischenablage kopieren (als "
+"Kachelkoordinaten)"
 
 #: ../../manual/keyboard-shortcuts.rst:44
 msgid "``Ctrl + D`` - Duplicate selected objects"
-msgstr ""
+msgstr "``Strg + D`` - Ausgewählte Objekte duplizieren"
 
 #: ../../manual/keyboard-shortcuts.rst:45
 msgid ""
 "``Ctrl + J`` - Create a new layer and copy the currently selected objects"
 " or tiles to it"
 msgstr ""
+"``Strg + J`` - Neue Ebene erzeugen und die aktuell ausgewählten Objekte oder "
+"Kacheln hineinkopieren"
 
 #: ../../manual/keyboard-shortcuts.rst:46
 msgid ""
 "``Ctrl + Shift + J`` - Create a new layer and move currently selected "
 "objects or tiles to it"
 msgstr ""
+"``Strg + Umsch + J`` - Neue Ebene erzeugen und die aktuell ausgewählten "
+"Objekte oder kacheln dorthin verschieben"
 
 #: ../../manual/keyboard-shortcuts.rst:47
 msgid "``Ctrl + Shift + D`` - Duplicate selected layers"
-msgstr ""
+msgstr "``Strg + Umsch + D`` - Ausgewählte Ebenen duplizieren"
 
 #: ../../manual/keyboard-shortcuts.rst:48
 msgid "``F2`` - Rename (if applicable in context)"
-msgstr ""
+msgstr "``F2`` - Umbenennen (falls verfügbar)"
 
 #: ../../manual/keyboard-shortcuts.rst:49
 msgid "``Tab`` - Hide docks and tool bars"
-msgstr ""
+msgstr "``Tab`` - Ansichten und Werkzeugleisten verstecken"
 
 #: ../../manual/keyboard-shortcuts.rst:50
 msgid "``Ctrl + PgUp`` - Select previous layer (above current layer)"
-msgstr ""
+msgstr "``Strg + Bild-Auf`` - Vorherige Ebene wählen (über der aktuellen)"
 
 #: ../../manual/keyboard-shortcuts.rst:51
 msgid "``Ctrl + PgDown`` - Select next layer (below current layer)"
-msgstr ""
+msgstr "``Strg + Bild-Ab`` - Nächste Ebene wählen (unter der aktuellen)"
 
 #: ../../manual/keyboard-shortcuts.rst:52
 msgid "``Ctrl + Shift + Up`` - Move selected layers up"
-msgstr ""
+msgstr "``Strg + Umsch + Hoch`` - Ausgewählte Ebenen nach oben verschieben"
 
 #: ../../manual/keyboard-shortcuts.rst:53
 msgid "``Ctrl + Shift + Down`` - Move selected layers down"
-msgstr ""
+msgstr "``Strg + Umsch + Runter`` - Ausgewählte Ebenen nach unten verschieben"
 
 #: ../../manual/keyboard-shortcuts.rst:54
 msgid "``Ctrl + H`` - Show/Hide selected layers"
-msgstr ""
+msgstr "``Strg + H`` - Ausgewählte Ebenen zeigen/verstecken"
 
 #: ../../manual/keyboard-shortcuts.rst:55
 msgid "``Ctrl + L`` - Lock/Unlock selected layers"
-msgstr ""
+msgstr "``Strg + L`` - Ausgewählte Ebenen (ent)sperren"
 
 #: ../../manual/keyboard-shortcuts.rst:56
 msgid ""
 "``Ctrl + Shift + H`` - Show/Hide all other layers (only active layer "
 "visible / all layers visible)"
 msgstr ""
+"``Strg + Umsch + H`` - Alle anderen Ebenen zeigen/verstecken (\"Nur aktive "
+"Ebenen sichtbar\" / \"Alle Ebenen sichtbar\")"
 
 #: ../../manual/keyboard-shortcuts.rst:58
 msgid "``Ctrl + Shift + L`` - Lock/Unlock all other layers"
-msgstr ""
+msgstr "``Strg + Umsch + L`` - alle anderen Ebenen (ent)sperren"
 
 #: ../../manual/keyboard-shortcuts.rst:59
 msgid "``Ctrl + Tab`` / ``Alt + Left`` - Switch to left document"
-msgstr ""
+msgstr "``Strg + Tab`` / ``Alt + Links`` - Zum Dokument links wechseln"
 
 #: ../../manual/keyboard-shortcuts.rst:60
 msgid "``Ctrl + Shift + Tab`` / ``Alt + Right`` - Switch to right document"
 msgstr ""
+"``Strg + Umsch + Tab`` / ``Alt + Rechts`` - Zum Dokument rechts wechseln"
 
 #: ../../manual/keyboard-shortcuts.rst:61
 msgid "``]`` - Select next tileset"
-msgstr ""
+msgstr "``]`` - Nächstes Tileset wählen"
 
 #: ../../manual/keyboard-shortcuts.rst:62
 msgid "``[`` - Select previous tileset"
-msgstr ""
+msgstr "``[`` - Vorheriges Tileset wählen"
 
 #: ../../manual/keyboard-shortcuts.rst:63
 msgid ""
 "``Ctrl + T`` - Force-reload all tilesets used by the current map (mainly "
 "useful when not using the automatic reloading)"
 msgstr ""
+"``Strg + T`` - Neuladen aller von der aktuellen Karte verwendeten Tilesets "
+"erzwingen (Nützlich, wenn das automatische Neuladen ausgeschaltet ist)"
 
 #: ../../manual/keyboard-shortcuts.rst:65
 msgid "``Ctrl + Shift + A`` - Clear any object and tile selection"
-msgstr ""
+msgstr "``Strg + Umsch + A`` - Auswahl aufheben (Kacheln und Objekte)"
 
 #: ../../manual/keyboard-shortcuts.rst:68
 msgid "When a tile layer is selected"
-msgstr ""
+msgstr "Bei ausgewählter Kachelebene"
 
 #: ../../manual/keyboard-shortcuts.rst:70
 msgid ""
 "``Right Click on Tile`` - Captures the tile under the mouse (drag to "
 "capture larger areas)."
 msgstr ""
+"``Rechtsklick auf Kachel`` - Übernimmt die Kachel unter dem Mauszeiger ("
+"Ziehen um größere Gebiete auszuwählen)."
 
 #: ../../manual/keyboard-shortcuts.rst:72
 msgid ""
 "``Ctrl + Right Click on Tile`` - Selects the layer containing the top-"
 "most tile under the mouse."
 msgstr ""
+"``Strg + Rechtsklick auf Kachel`` - Wählt die Ebene mit der am höchsten "
+"liegenden Kachel unter dem Mauszeiger."
 
 #: ../../manual/keyboard-shortcuts.rst:73
 msgid "``D`` - Toggle Random Mode"
-msgstr ""
+msgstr "``D`` - Zufallsmodus an/aus"
 
 #: ../../manual/keyboard-shortcuts.rst:74
 msgid "``B`` - Activate :ref:`stamp-tool`"
-msgstr ""
+msgstr "``B`` - :ref:`stamp-tool` aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:76
 msgid ""
 "``Shift + Click`` - Line mode, places tiles on a line between two clicked"
 " locations"
 msgstr ""
+"``Umsch-Klick`` - Linienmodus. Platziert Kacheln auf der Linie zwischen zwei "
+"angeklickten Orten"
 
 #: ../../manual/keyboard-shortcuts.rst:78
 msgid ""
 "``Ctrl + Shift + Click`` - Circle mode, places tiles around the clicked "
 "center"
 msgstr ""
+"``Strg + Umsch + Klick`` - Kreismodus. Platziert Kacheln um einen "
+"angeklickten Mittelpunkt."
 
 #: ../../manual/keyboard-shortcuts.rst:81
 msgid "``T`` - Activate :ref:`terrain-tool`"
-msgstr ""
+msgstr "``T`` - :ref:`terrain-tool` aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:82
 msgid "``F`` - Activate :ref:`bucket-fill-tool`"
-msgstr ""
+msgstr "``F`` - :ref:`bucket-fill-tool` aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:83
 msgid "``P`` - Activate :ref:`shape-fill-tool`"
-msgstr ""
+msgstr "``P`` - :ref:`shape-fill-tool` aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:84
 msgid "``E`` - Activate :ref:`eraser-tool`"
-msgstr ""
+msgstr "``E`` - :ref:`eraser-tool` aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:85
 msgid "``R`` - Activate Rectangular Select"
-msgstr ""
+msgstr "``R`` - Rechteckige Auswahl aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:86
 msgid "``W`` - Activate Magic Wand"
-msgstr ""
+msgstr "``W`` - Zauberstab aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:87
 msgid "``S`` - Activate Select Same Tile"
-msgstr ""
+msgstr "``S`` - Gleiche Kachel wählen"
 
 #: ../../manual/keyboard-shortcuts.rst:91
 msgid "``1-9`` - Recall a previously stored tile stamp (similar to ``Ctrl + V``)"
 msgstr ""
+"``1-9`` - Vor Kurzem gespeicherte(n) Kachelstempel erneut aktivieren ("
+"dasselbe wie ``Strg + V``)"
 
 #: ../../manual/keyboard-shortcuts.rst:92
 msgid "``Ctrl + A`` - Select the whole layer"
-msgstr ""
+msgstr "``Strg + A`` - ganze Ebene wählen"
 
 #: ../../manual/keyboard-shortcuts.rst:94
 msgid "Changing the active stamp:"
-msgstr ""
+msgstr "Aktiven Stempel anpassen:"
 
 #: ../../manual/keyboard-shortcuts.rst:96
 msgid "``X`` - Flip active stamp horizontally"
-msgstr ""
+msgstr "``X`` - Horizontal spiegeln"
 
 #: ../../manual/keyboard-shortcuts.rst:97
 msgid "``Y`` - Flip active stamp vertically"
-msgstr ""
+msgstr "``Y`` - Vertikal spiegeln"
 
 #: ../../manual/keyboard-shortcuts.rst:98
 msgid "``Z`` - Rotate active stamp clockwise"
-msgstr ""
+msgstr "``Z`` - Im Uhrzeigersinn drehen"
 
 #: ../../manual/keyboard-shortcuts.rst:99
 msgid "``Shift + Z`` - Rotate active stamp counterclockwise"
-msgstr ""
+msgstr "``Umsch + Z`` - Gegen den Uhrzeigersinn drehen"
 
 #: ../../manual/keyboard-shortcuts.rst:103
 msgid "When an object layer is selected"
-msgstr ""
+msgstr "Bei ausgewählter Objektebene"
 
 #: ../../manual/keyboard-shortcuts.rst:105
 msgid "``S`` - Activate :ref:`select-objects-tool`"
-msgstr ""
+msgstr "``S`` - :ref:`select-objects-tool` aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:107
 msgid "``PgUp`` - Raise selected objects (with Manual object drawing order)"
 msgstr ""
+"``Bild-Auf`` - Ausgewählte Objekte anheben (mit manueller Zeichenreihenfolge "
+"für Objekte)"
 
 #: ../../manual/keyboard-shortcuts.rst:109
 msgid "``PgDown`` - Lower selected objects (with Manual object drawing order)"
 msgstr ""
+"``Bild-Ab`` - Ausgewählte Objekte absenken (mit manueller Zeichenreihenfolge "
+"für Objekte)"
 
 #: ../../manual/keyboard-shortcuts.rst:111
 msgid "``Home`` - Move selected objects to Top (with Manual object drawing order)"
 msgstr ""
+"``Pos1`` - Ausgewählte Objekte nach ganz oben verschieben (mit manueller "
+"Zeichenreihenfolge für Objekte)"
 
 #: ../../manual/keyboard-shortcuts.rst:113
 msgid ""
 "``End`` - Move selected objects to Bottom (with Manual object drawing "
 "order)"
 msgstr ""
+"``Ende`` - Ausgewählte Objekte nach ganz unten verschieben (mit manueller "
+"Zeichenreihenfolge für Objekte)"
 
 #: ../../manual/keyboard-shortcuts.rst:116
 msgid "``O`` - Activate :ref:`edit-polygons-tool`"
-msgstr ""
+msgstr "``O`` - :ref:`edit-polygons-tool` aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:117
 msgid "``R`` - Activate :ref:`insert-rectangle-tool`"
-msgstr ""
+msgstr "``R`` - :ref:`insert-rectangle-tool` aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:118
 msgid "``I`` - Activate :ref:`insert-point-tool`"
-msgstr ""
+msgstr "``I`` - :ref:`insert-point-tool` aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:119
 msgid "``C`` - Activate :ref:`insert-ellipse-tool`"
-msgstr ""
+msgstr "``C`` - :ref:`insert-ellipse-tool` aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:120
 msgid "``P`` - Activate :ref:`insert-polygon-tool`"
-msgstr ""
+msgstr "``P`` - :ref:`insert-polygon-tool` aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:122
 msgid "``Enter`` - Finish creating object"
-msgstr ""
+msgstr "``Enter`` - Objekterzeugung beenden"
 
 #: ../../manual/keyboard-shortcuts.rst:123
 msgid "``Escape`` - Cancel creating object"
-msgstr ""
+msgstr "``Esc`` - Objekterzeugung abbrechen"
 
 #: ../../manual/keyboard-shortcuts.rst:125
 msgid "``T`` - Activate :ref:`insert-tile-tool`"
-msgstr ""
+msgstr "``T`` - :ref:`insert-tile-tool` aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:126
 msgid "``V`` - Activate :ref:`insert-template-tool` (since Tiled 1.1)"
-msgstr ""
+msgstr "``V`` - :ref:`insert-template-tool` aktivieren (seit Tiled 1.1)"
 
 #: ../../manual/keyboard-shortcuts.rst:127
 msgid "``E`` - Activate :ref:`insert-text-tool`"
-msgstr ""
+msgstr "``E`` - :ref:`insert-text-tool` aktivieren"
 
 #: ../../manual/keyboard-shortcuts.rst:128
 msgid "``Ctrl + A`` - Select all objects on the selected layers"
-msgstr ""
+msgstr "``Strg + A`` - alle Objekte in den ausgewählten Ebenen auswählen"
 
 #: ../../manual/keyboard-shortcuts.rst:131
 msgid "In the Properties dialog"
-msgstr ""
+msgstr "Im Eigenschaften-Dialog"
 
 #: ../../manual/keyboard-shortcuts.rst:133
 msgid "``Backspace`` - Deletes a property"
-msgstr ""
+msgstr "``Rück`` - Eigenschaft löschen"
 
 #: ../../manual/layers.rst:2
 msgid "Working with Layers"
@@ -3822,11 +3950,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:38
 msgid "Insert Rectangle"
-msgstr ""
+msgstr "Rechteck einfügen"
 
 #: ../../manual/objects.rst:40
 msgid "Shortcut: ``R``"
-msgstr ""
+msgstr "Kürzel: ``R``"
 
 #: ../../manual/objects.rst:42
 msgid ""
@@ -3854,11 +3982,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:62
 msgid "Insert Point"
-msgstr ""
+msgstr "Punkt einfügen"
 
 #: ../../manual/objects.rst:64
 msgid "Shortcut: ``I``"
-msgstr ""
+msgstr "Kürzel: ``I``"
 
 #: ../../manual/objects.rst:66
 msgid ""
@@ -3866,14 +3994,18 @@ msgid ""
 "represent a location, and cannot be resized or rotated. Simply click on "
 "the map to position a point object."
 msgstr ""
+"Punkte sind die einfachsten Objekte, die auf einer Karte platziert werden "
+"können. Sie stellen nur einen Ort dar und können von daher weder gedreht, "
+"noch in ihrer Größe geändert werden. Ein Punkt wird durch einen Klick auf "
+"die Karte erstellt."
 
 #: ../../manual/objects.rst:73
 msgid "Insert Ellipse"
-msgstr ""
+msgstr "Ellipse einfügen"
 
 #: ../../manual/objects.rst:75
 msgid "Shortcut: ``C``"
-msgstr ""
+msgstr "Kürzel: ``C``"
 
 #: ../../manual/objects.rst:77
 msgid ""
@@ -3884,11 +4016,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:84
 msgid "Insert Polygon"
-msgstr ""
+msgstr "Polygon einfügen"
 
 #: ../../manual/objects.rst:86
 msgid "Shortcut: ``P``"
-msgstr ""
+msgstr "Kürzel: ``P``"
 
 #: ../../manual/objects.rst:88
 msgid ""
@@ -3944,11 +4076,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:126
 msgid "Insert Tile"
-msgstr ""
+msgstr "Kachel einfügen"
 
 #: ../../manual/objects.rst:128
 msgid "Shortcut: ``T``"
-msgstr ""
+msgstr "Kürzel: ``T``"
 
 #: ../../manual/objects.rst:130
 msgid ""
@@ -3989,11 +4121,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:169
 msgid "Insert Template"
-msgstr ""
+msgstr "Vorlage einfügen"
 
 #: ../../manual/objects.rst:171 ../../manual/using-templates.rst:50
 msgid "Shortcut: ``V``"
-msgstr ""
+msgstr "Kürzel: ``V``"
 
 #: ../../manual/objects.rst:173
 msgid ""
@@ -4003,11 +4135,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:179
 msgid "Insert Text"
-msgstr ""
+msgstr "Text einfügen"
 
 #: ../../manual/objects.rst:181
 msgid "Shortcut: ``X``"
-msgstr ""
+msgstr "Kürzel: ``X``"
 
 #: ../../manual/objects.rst:183
 msgid ""
@@ -4019,11 +4151,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:191
 msgid "Select Objects"
-msgstr ""
+msgstr "Objekte auswählen"
 
 #: ../../manual/objects.rst:193
 msgid "Shortcut: ``S``"
-msgstr ""
+msgstr "Kürzel: ``S``"
 
 #: ../../manual/objects.rst:195
 msgid ""
@@ -4033,7 +4165,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:199
 msgid "Selecting and Deselecting"
-msgstr ""
+msgstr "Aus- und Abwählen"
 
 #: ../../manual/objects.rst:201
 msgid ""
@@ -4068,7 +4200,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:229
 msgid "Moving"
-msgstr ""
+msgstr "Verschieben"
 
 #: ../../manual/objects.rst:231
 msgid ""
@@ -4093,7 +4225,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:244
 msgid "Resizing"
-msgstr ""
+msgstr "Größe ändern"
 
 #: ../../manual/objects.rst:246
 msgid ""
@@ -4112,7 +4244,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:256
 msgid "Rotating"
-msgstr ""
+msgstr "Drehen"
 
 #: ../../manual/objects.rst:258
 msgid ""
@@ -4130,7 +4262,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:267
 msgid "Changing Stacking Order"
-msgstr ""
+msgstr "Stapelreihenfolge ändern"
 
 #: ../../manual/objects.rst:269
 msgid ""
@@ -4142,11 +4274,11 @@ msgstr ""
 
 #: ../../manual/objects.rst:274
 msgid "``PgUp`` - Raise selected objects"
-msgstr ""
+msgstr "``BildAuf`` - Ausgewählte Objekte nach oben verschieben"
 
 #: ../../manual/objects.rst:275
 msgid "``PgDown`` - Lower selected objects"
-msgstr ""
+msgstr "``BildAb`` - ausgewählte Objekte nach unten verschieben"
 
 #: ../../manual/objects.rst:276
 msgid "``Home`` - Move selected objects to Top"
@@ -4154,7 +4286,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:277
 msgid "``End`` - Move selected objects to Bottom"
-msgstr ""
+msgstr "``Ende`` - Ausgewählte Objekte nach ganz unten verschieben"
 
 #: ../../manual/objects.rst:279
 msgid ""
@@ -4180,7 +4312,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:295
 msgid "Shortcut: ``E``"
-msgstr ""
+msgstr "Kürzel: ``E``"
 
 #: ../../manual/objects.rst:297
 msgid ""
@@ -4226,7 +4358,7 @@ msgstr ""
 
 #: ../../manual/objects.rst:336
 msgid "Connecting Objects"
-msgstr ""
+msgstr "Objekte verbinden"
 
 #: ../../manual/objects.rst:338
 msgid ""
@@ -4655,11 +4787,11 @@ msgstr ""
 
 #: ../../manual/projects.rst:6
 msgid "Projects"
-msgstr ""
+msgstr "Projekte"
 
 #: ../../manual/projects.rst:9
 msgid "What's in a Project"
-msgstr ""
+msgstr "Bestandteile eines Projektes"
 
 #: ../../manual/projects.rst:11
 msgid ""
@@ -4667,6 +4799,9 @@ msgid ""
 " assets belonging to that project. In addition, it provides an anchor for"
 " the :ref:`session file <sessions>`."
 msgstr ""
+"Eine Projektdatei definiert sich hauptsächlich über eine Liste von "
+"Verzeichnissen mit Assets, die zu dem Projekt gehören. Zusätzlich ist sie "
+"der Anker für :ref: `die Sitzungsdatei sessions>`."
 
 #: ../../manual/projects.rst:15
 msgid ""
@@ -4674,10 +4809,13 @@ msgid ""
 "properties, which can be changed through the *Project -> Project "
 "Properties...* dialog."
 msgstr ""
+"Neben der Liste von Verzeichnissen, verfügt ein Projekt über ein paar "
+"Eigenschaften. Diese können in einem Dialog, der über *Projekt -> "
+"Projekteigenschaften...* aufgerufen wird, geändert werden."
 
 #: ../../manual/projects.rst:25
 msgid "Extensions Directory"
-msgstr ""
+msgstr "Verzeichnis für Erweiterungen"
 
 #: ../../manual/projects.rst:20
 msgid ""
@@ -5875,7 +6013,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:22
 msgid "Defining a World"
-msgstr ""
+msgstr "Welt festlegen"
 
 #: ../../manual/worlds.rst:24
 msgid ""
@@ -5913,7 +6051,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:71
 msgid "Editing Worlds"
-msgstr ""
+msgstr "Welt bearbeiten"
 
 #: ../../manual/worlds.rst:73
 msgid ""
@@ -5923,7 +6061,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:81
 msgid "Adding Maps"
-msgstr ""
+msgstr "Karten hinzufügen"
 
 #: ../../manual/worlds.rst:77
 msgid ""
@@ -5936,7 +6074,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:86
 msgid "Removing Maps"
-msgstr ""
+msgstr "Karten entfernen"
 
 #: ../../manual/worlds.rst:84
 msgid ""
@@ -5947,7 +6085,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:93
 msgid "Moving Maps"
-msgstr ""
+msgstr "Karten verschieben"
 
 #: ../../manual/worlds.rst:89
 msgid ""
@@ -5963,7 +6101,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:98
 msgid "Saving World files"
-msgstr ""
+msgstr "Welt-Dateien speichern"
 
 #: ../../manual/worlds.rst:96
 msgid ""
@@ -5974,7 +6112,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:101
 msgid "Using Pattern Matching"
-msgstr ""
+msgstr "Musterabgleich verwenden"
 
 #: ../../manual/worlds.rst:103
 msgid ""
@@ -5993,7 +6131,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:113
 msgid "Here is an example:"
-msgstr ""
+msgstr "Hier ist ein Beispiel:"
 
 #: ../../manual/worlds.rst:130
 msgid ""
@@ -6020,7 +6158,7 @@ msgstr ""
 
 #: ../../manual/worlds.rst:148
 msgid "Showing Only Direct Neighbors"
-msgstr ""
+msgstr "Nur direkte Nachbarn werden angezeigt"
 
 #: ../../manual/worlds.rst:150
 msgid ""
@@ -6352,4 +6490,3 @@ msgstr ""
 #~ "accessed by rightclicking in the  map"
 #~ " editor."
 #~ msgstr ""
-
