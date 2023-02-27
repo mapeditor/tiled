@@ -994,6 +994,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
     case CE_DockWidgetTitle:
         painter->setFont(QFont());
         QProxyStyle::drawControl(element, option, painter, widget);
+        break;
 
     case CE_TabBarTabShape:
         painter->save();
