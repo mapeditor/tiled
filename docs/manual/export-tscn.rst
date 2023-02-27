@@ -2,7 +2,7 @@
 
 .. raw:: html
 
-    <div class="new new-prev">Since Tiled 1.10</div>
+    <div class="new">New in Tiled 1.10</div>
 
 Godot 4
 =======
