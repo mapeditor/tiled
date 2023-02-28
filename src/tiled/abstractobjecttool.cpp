@@ -94,6 +94,8 @@ AbstractObjectTool::AbstractObjectTool(Id id,
                                        QObject *parent)
     : AbstractTool(id, name, icon, shortcut, parent)
 {
+    setTargetLayerType(Layer::ObjectGroupType);
+
     QIcon flipHorizontalIcon(QLatin1String(":images/24/flip-horizontal.png"));
     QIcon flipVerticalIcon(QLatin1String(":images/24/flip-vertical.png"));
     QIcon rotateLeftIcon(QLatin1String(":images/24/rotate-left.png"));
@@ -239,11 +241,6 @@ void AbstractObjectTool::filterMapObjects(QList<MapObject *> &mapObjects) const
         if (behavior == SelectedLayers || !filteredList.isEmpty())
             mapObjects.swap(filteredList);
     }
-}
-
-void AbstractObjectTool::updateEnabledState()
-{
-    setEnabled(currentObjectGroup() != nullptr);
 }
 
 ObjectGroup *AbstractObjectTool::currentObjectGroup() const

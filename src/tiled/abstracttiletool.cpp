@@ -25,7 +25,6 @@
 #include "mapdocument.h"
 #include "maprenderer.h"
 #include "mapscene.h"
-#include "tile.h"
 #include "tilelayer.h"
 #include "tilestamp.h"
 
@@ -45,6 +44,8 @@ AbstractTileTool::AbstractTileTool(Id id,
     , mBrushItem(brushItem)
     , mBrushVisible(false)
 {
+    setTargetLayerType(Layer::TileLayerType);
+
     if (!mBrushItem)
         mBrushItem = new BrushItem;
     mBrushItem->setVisible(false);
@@ -160,7 +161,7 @@ void AbstractTileTool::mapDocumentChanged(MapDocument *oldDocument,
 
 void AbstractTileTool::updateEnabledState()
 {
-    setEnabled(currentTileLayer() != nullptr);
+    AbstractTool::updateEnabledState();
     updateBrushVisibility();
 }
 
@@ -212,6 +213,9 @@ TileLayer *AbstractTileTool::currentTileLayer() const
 
 void AbstractTileTool::updateBrushVisibility()
 {
+    if (!mBrushItem)
+        return;
+
     // Show the tile brush only when at least one target layer is visible
     bool showBrush = false;
     if (mBrushVisible) {
@@ -223,6 +227,7 @@ void AbstractTileTool::updateBrushVisibility()
             }
         }
     }
+
     mBrushItem->setVisible(showBrush);
 }
 

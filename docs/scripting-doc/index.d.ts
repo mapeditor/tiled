@@ -2100,6 +2100,11 @@ declare class Tile extends TiledObject {
  * The base class of the various supported layer types.
  */
 declare class Layer extends TiledObject {
+  static readonly TileLayerType: number
+  static readonly ObjectGroupType: number
+  static readonly ImageLayerType: number
+  static readonly GroupLayerType: number
+
   /**
    * Unique (map-wide) ID of the layer
    *
@@ -3270,6 +3275,18 @@ interface Tool {
    * @since 1.8
    */
   usesWangSets: boolean;
+
+  /**
+   * The target layer type for which this tool should be enabled. A convenient
+   * alternative to overriding {@link updateEnabledState}.
+   *
+   * The value can be any combination of the layer types
+   * {@link Layer.TileLayerType}, {@link Layer.ObjectGroupType},
+   * {@link Layer.ImageLayerType} and {@link Layer.GroupLayerType}.
+   *
+   * @since 1.10
+   */
+  targetLayerType: number;
 
   /**
    * Called when the tool was activated.

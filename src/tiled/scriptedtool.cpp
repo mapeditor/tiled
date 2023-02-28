@@ -43,6 +43,8 @@ ScriptedTool::ScriptedTool(Id id, QJSValue object, QObject *parent)
     : AbstractTileTool(id, QStringLiteral("<unnamed tool>"), QIcon(), QKeySequence(), nullptr, parent)
     , mScriptObject(std::move(object))
 {
+    setTargetLayerType(0);  // default behavior is not to disable based on current layer
+
     const QJSValue nameProperty = mScriptObject.property(QStringLiteral("name"));
     if (nameProperty.isString())
         setName(nameProperty.toString());
@@ -67,6 +69,10 @@ ScriptedTool::ScriptedTool(Id id, QJSValue object, QObject *parent)
     const QJSValue usesWangSetsProperty = mScriptObject.property(QStringLiteral("usesWangSets"));
     if (usesWangSetsProperty.isBool())
         setUsesWangSets(usesWangSetsProperty.toBool());
+
+    const QJSValue targetLayerTypeProperty = mScriptObject.property(QStringLiteral("targetLayerType"));
+    if (targetLayerTypeProperty.isNumber())
+        setTargetLayerType(targetLayerTypeProperty.toInt());
 
     // Make members of ScriptedTool available through the original object
     auto &scriptManager = ScriptManager::instance();
@@ -302,10 +308,10 @@ void ScriptedTool::updateStatusInfo()
 void ScriptedTool::updateEnabledState()
 {
     if (!call(QStringLiteral("updateEnabledState"))) {
-        // Skipping AbstractTileTool since we do not want the enabled state to
-        // automatically depend on any selected tile layers.
-        AbstractTool::updateEnabledState();
+        AbstractTileTool::updateEnabledState();
+        return;
     }
+
     updateBrushVisibility();
 }
 
