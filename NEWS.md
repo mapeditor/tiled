@@ -26,6 +26,7 @@
 * Fixed positioning of point object name labels (by Logan Higinbotham, #3400)
 * Fixed slight drift when zooming the map view in/out
 * Fixed remaining lag after switching off hardware acceleration (#3584)
+* Fixed point object hover highlight position (#3571)
 * Fixed compile against Qt 6.4
 * snap: Added Wayland platform plugin and additional image format plugins
 * AppImage: Updated to Sentry 0.5.4

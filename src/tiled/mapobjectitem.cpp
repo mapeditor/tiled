@@ -71,7 +71,7 @@ void MapObjectItem::syncWithMapObject()
     setToolTip(toolTip);
 
     MapRenderer *renderer = mMapDocument->renderer();
-    const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
+    QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
     QRectF bounds = renderer->boundingRect(mObject);
 
     bounds.translate(-pixelPos);
@@ -79,17 +79,16 @@ void MapObjectItem::syncWithMapObject()
     if (renderer->flags().testFlag(ShowTileCollisionShapes))
         expandBoundsToCoverTileCollisionObjects(bounds);
 
-    setPos(pixelPos);
-    setRotation(mObject->rotation());
-
     if (ObjectGroup *objectGroup = mObject->objectGroup()) {
         if (mIsHoveredIndicator) {
-            auto totalOffset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*objectGroup);
-            setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
+            pixelPos += static_cast<MapScene*>(scene())->absolutePositionForLayer(*objectGroup);
         } else if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder) {
             setZValue(pixelPos.y());
         }
     }
+
+    setPos(pixelPos);
+    setRotation(mObject->rotation());
 
     if (mBoundingRect != bounds) {
         // Notify the graphics scene about the geometry change in advance
