@@ -58,7 +58,6 @@
 - name: 80+ casinos not on gamstop reviews at justuk.club
   url: https://justuk.club/
   banner: sponsors/justuk.club.png
-  sponsored_exception_until: "2023-02-24"
 
 - name: كازينو اون لاين
   url: https://arabcasinohex.com/online-casino/
@@ -84,11 +83,6 @@
   url: https://www.apostar.org/casinos-online/
   banner: sponsors/apostarorg.png
 
-- name: Casinos Crypto
-  url: https://casinoscrypto.com/
-  banner: sponsors/casinoscrypto.png
-  sponsored_exception_until: "2023-02-25"
-
 - name: slots online empire
   url: https://slotsempire.com/
   banner: sponsors/slots-empire-casino.png
@@ -104,18 +98,6 @@
 - name: https://casino-wise.com/casinos-not-on-gamstop/
   url: https://casino-wise.com/casinos-not-on-gamstop/
   banner: sponsors/casino-wise-com-dark.png
-
-- name: https://www.nongamstopbets.com/casinos-not-on-gamstop/
-  url: https://www.nongamstopbets.com/casinos-not-on-gamstop/
-  banner: sponsors/non-gamstop-bets.png
-
-- name: NZ Casino Deps
-  url: https://casinodeps.co.nz/
-  banner: sponsors/nz-casino-deps.png
-
-- name: Casino Gap
-  url: https://casinogap.org/
-  banner: sponsors/uk-casino-gap.png
 
 - name: crypto casino
   url: https://bonusbitcoin.co/
