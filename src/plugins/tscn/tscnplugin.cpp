@@ -527,7 +527,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
             map->tileWidth(), tileHeight));
     }
 
-    for (const TilesetInfo &tilesetInfo : qAsConst(assetInfo.tilesetInfo)) {
+    for (const TilesetInfo &tilesetInfo : std::as_const(assetInfo.tilesetInfo)) {
         device->write(formatByteString(
             "sources/%1 = SubResource(\"TileSetAtlasSource_%2\")\n",
             tilesetInfo.atlasId, tilesetInfo.atlasId));
@@ -616,7 +616,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         //   SrcX         = SrcX * 65536 + TileSetId
         //   SrcY         = SrcY + 65536 * AlternateId
         int layerIndex = 0;
-        for (const auto &layer : qAsConst(assetInfo.layers)) {
+        for (const auto &layer : std::as_const(assetInfo.layers)) {
             device->write(formatByteString("layer_%1/name = \"%2\"\n",
                                            layerIndex,
                                            sanitizeQuotedString(layer->name())));

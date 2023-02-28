@@ -219,7 +219,7 @@ static int matchingScore(const QString &word, QStringRef string)
     int score = 1;  // empty word matches
     int previousIndex = -1;
 
-    for (const Match &match : qAsConst(indexes)) {
+    for (const Match &match : std::as_const(indexes)) {
         const int start = match.stringIndex == 0;
         const int sequential = match.stringIndex == previousIndex + 1;
 
@@ -239,7 +239,7 @@ static bool matchingRanges(const QString &word, QStringRef string, int offset, R
     if (!matchingIndexes(word, string, indexes))
         return false;
 
-    for (const Match &match : qAsConst(indexes))
+    for (const Match &match : std::as_const(indexes))
         result.insert(match.stringIndex + offset);
 
     return true;

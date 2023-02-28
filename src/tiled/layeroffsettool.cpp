@@ -104,7 +104,7 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
     }
 
     mApplyingChange = true;
-    for (const DraggingLayer &dragging : qAsConst(mDraggingLayers)) {
+    for (const DraggingLayer &dragging : std::as_const(mDraggingLayers)) {
         QPointF newOffset = dragging.oldOffset + (pos - mMouseSceneStart);
         SnapHelper(mapDocument()->renderer(), modifiers).snap(newOffset);
         dragging.layer->setOffset(newOffset);
@@ -209,7 +209,7 @@ void LayerOffsetTool::abortDrag()
         return;
 
     mApplyingChange = true;
-    for (const DraggingLayer &dragging : qAsConst(draggedLayers)) {
+    for (const DraggingLayer &dragging : std::as_const(draggedLayers)) {
         dragging.layer->setOffset(dragging.oldOffset);
         emit mapDocument()->changed(LayerChangeEvent(dragging.layer, LayerChangeEvent::OffsetProperty));
     }
@@ -232,7 +232,7 @@ void LayerOffsetTool::finishDrag()
     QList<Layer *> layers;
     QVector<QPointF> offsets;
 
-    for (const DraggingLayer &dragging : qAsConst(draggedLayers)) {
+    for (const DraggingLayer &dragging : std::as_const(draggedLayers)) {
         const QPointF newOffset = dragging.layer->offset();
         dragging.layer->setOffset(dragging.oldOffset);  // restore old offset for undo command
         layers.append(dragging.layer);

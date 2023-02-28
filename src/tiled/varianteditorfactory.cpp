@@ -206,25 +206,25 @@ void VariantEditorFactory::slotPropertyChanged(QtProperty *property,
                                                const QVariant &value)
 {
     if (mCreatedFileEdits.contains(property)) {
-        for (FileEdit *edit : qAsConst(mCreatedFileEdits)[property]) {
+        for (FileEdit *edit : std::as_const(mCreatedFileEdits)[property]) {
             FilePath filePath = value.value<FilePath>();
             edit->setFileUrl(filePath.url);
         }
     }
     else if (mCreatedTilesetEdits.contains(property)) {
-        for (TilesetParametersEdit *edit : qAsConst(mCreatedTilesetEdits)[property])
+        for (TilesetParametersEdit *edit : std::as_const(mCreatedTilesetEdits)[property])
             edit->setTilesetDocument(value.value<TilesetDocument*>());
     }
     else if (mCreatedTextPropertyEdits.contains(property)) {
-        for (TextPropertyEdit *edit : qAsConst(mCreatedTextPropertyEdits)[property])
+        for (TextPropertyEdit *edit : std::as_const(mCreatedTextPropertyEdits)[property])
             edit->setText(value.toString());
     }
     else if (mCreatedComboBoxes.contains(property)) {
-        for (QComboBox *comboBox : qAsConst(mCreatedComboBoxes)[property])
+        for (QComboBox *comboBox : std::as_const(mCreatedComboBoxes)[property])
             comboBox->setCurrentText(value.toString());
     }
     else if (mCreatedObjectRefEdits.contains(property)) {
-        for (ObjectRefEdit *objectRefEdit : qAsConst(mCreatedObjectRefEdits)[property])
+        for (ObjectRefEdit *objectRefEdit : std::as_const(mCreatedObjectRefEdits)[property])
             objectRefEdit->setValue(value.value<DisplayObjectRef>());
     }
 }
@@ -235,16 +235,16 @@ void VariantEditorFactory::slotPropertyAttributeChanged(QtProperty *property,
 {
     if (mCreatedFileEdits.contains(property)) {
         if (attribute == QLatin1String("filter")) {
-            for (FileEdit *edit : qAsConst(mCreatedFileEdits)[property])
+            for (FileEdit *edit : std::as_const(mCreatedFileEdits)[property])
                 edit->setFilter(value.toString());
         } else if (attribute == QLatin1String("directory")) {
-            for (FileEdit *edit : qAsConst(mCreatedFileEdits)[property])
+            for (FileEdit *edit : std::as_const(mCreatedFileEdits)[property])
                 edit->setIsDirectory(value.toBool());
         }
     }
     else if (mCreatedComboBoxes.contains(property)) {
         if (attribute == QLatin1String("suggestions")) {
-            for (QComboBox *comboBox: qAsConst(mCreatedComboBoxes)[property]) {
+            for (QComboBox *comboBox: std::as_const(mCreatedComboBoxes)[property]) {
                 comboBox->clear();
                 comboBox->addItems(value.toStringList());
             }

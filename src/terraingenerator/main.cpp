@@ -450,7 +450,7 @@ int main(int argc, char *argv[])
     }
 
     // Read source tilesets.
-    for (const QString &sourceFileName : qAsConst(options.sources)) {
+    for (const QString &sourceFileName : std::as_const(options.sources)) {
         SharedTileset source = reader.readTileset(sourceFileName);
         if (!source) {
             qCritical("Error reading source tileset '%s':\n%s",
@@ -507,7 +507,7 @@ int main(int argc, char *argv[])
     } else {
         // Dump the combine lists.
         qInfo() << "Terrains to combine:";
-        for (const QStringList &combine : qAsConst(options.combineList)) {
+        for (const QStringList &combine : std::as_const(options.combineList)) {
             if (combine.isEmpty()) {
                 qCritical("Empty combine set");
             }
@@ -524,7 +524,7 @@ int main(int argc, char *argv[])
     // Setup terrain priorities.
     TerrainLessThan lessThan;
     int priority = 0;
-    for (const QString &terrainName : qAsConst(options.terrainPriority)) {
+    for (const QString &terrainName : std::as_const(options.terrainPriority)) {
         lessThan.terrainPriority.insert(terrainName, priority);
         ++priority;
     }
@@ -579,7 +579,7 @@ int main(int argc, char *argv[])
 
     // Prepare a list of terrain combinations.
     QVector<TileTerrainNames> process;
-    for (const QStringList &combine : qAsConst(options.combineList)) {
+    for (const QStringList &combine : std::as_const(options.combineList)) {
         QList<WangColor*> terrainList;
         // Get the terrains to combine
         for (const QString &terrainName : combine)
@@ -630,7 +630,7 @@ int main(int argc, char *argv[])
             if (baseTile)
                 painter.drawPixmap(0, 0, baseTile->image());
 
-            for (const QString &terrainName : qAsConst(terrainList)) {
+            for (const QString &terrainName : std::as_const(terrainList)) {
                 TileTerrainNames filtered = terrainNames.filter(terrainName);
                 Tile *tile = terrainToTile.value(filtered);
                 if (!tile) {

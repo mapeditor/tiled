@@ -165,7 +165,7 @@ QAction *ActionManager::findEnabledAction(Id id)
 {
     auto d = instance();
 
-    const auto [start, end] = qAsConst(d->mIdToActions).equal_range(id);
+    const auto [start, end] = std::as_const(d->mIdToActions).equal_range(id);
     for (auto it = start; it != end; ++it) {
         if (it.value()->isEnabled())
             return it.value();

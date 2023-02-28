@@ -321,7 +321,7 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
                 this, &LayerView::layerRemoved);
 
         // Restore expanded layers
-        for (const int layerId : qAsConst(mMapDocument->expandedGroupLayers)) {
+        for (const int layerId : std::as_const(mMapDocument->expandedGroupLayers)) {
             if (Layer *layer = mMapDocument->map()->findLayerById(layerId)) {
                 const QModelIndex sourceIndex = layerModel->index(layer);
                 const QModelIndex index = mProxyModel->mapFromSource(sourceIndex);

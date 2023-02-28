@@ -992,7 +992,7 @@ void MapEditor::setupQuickStamps()
 
 void MapEditor::setUseOpenGL(bool useOpenGL)
 {
-    for (MapView *mapView : qAsConst(mWidgetForMap))
+    for (MapView *mapView : std::as_const(mWidgetForMap))
         mapView->setUseOpenGL(useOpenGL);
 
     if (useOpenGL)
@@ -1020,13 +1020,13 @@ void MapEditor::retranslateUi()
 
 void MapEditor::showTileCollisionShapesChanged(bool enabled)
 {
-    for (MapView *mapView : qAsConst(mWidgetForMap))
+    for (MapView *mapView : std::as_const(mWidgetForMap))
         mapView->mapScene()->setShowTileCollisionShapes(enabled);
 }
 
 void MapEditor::parallaxEnabledChanged(bool enabled)
 {
-    for (MapView *mapView : qAsConst(mWidgetForMap))
+    for (MapView *mapView : std::as_const(mWidgetForMap))
         mapView->mapScene()->setParallaxEnabled(enabled);
 }
 

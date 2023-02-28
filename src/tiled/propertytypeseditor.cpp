@@ -874,7 +874,7 @@ void PropertyTypesEditor::updateClassUsageDetails(const ClassPropertyType &class
     mClassOfCheckBox->setChecked(classType.usageFlags & ClassPropertyType::AnyObjectClass);
 
     QStringList selectedTypes;
-    for (const NamedFlag &namedFlag : qAsConst(mFlagsWithNames)) {
+    for (const NamedFlag &namedFlag : std::as_const(mFlagsWithNames)) {
         if (classType.usageFlags & namedFlag.flag)
             selectedTypes.append(namedFlag.name);
     }

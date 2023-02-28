@@ -864,7 +864,7 @@ static std::unique_ptr<GMRLayer> processTileLayer(const TileLayer *tileLayer,
             return a->name() < b->name();
         });
 
-        for (const auto &tileset : qAsConst(tilesets)) {
+        for (const auto &tileset : std::as_const(tilesets)) {
             if (tileset->isCollection())
                 continue;
             if (tileset->tileSize() != tileLayer->map()->tileSize())
@@ -925,7 +925,7 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
                          [](const MapObject *a, const MapObject *b) { return a->y() < b->y(); });
     }
 
-    for (const MapObject *mapObject : qAsConst(objects)) {
+    for (const MapObject *mapObject : std::as_const(objects)) {
         const QString &className = mapObject->effectiveClassName();
 
         if (className == QLatin1String("view")) {
@@ -1382,7 +1382,7 @@ bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
     // Last view in Object layer is the first view in the room
     json.writeStartArray("views");
     context.views.resize(8);    // GameMaker always stores 8 views
-    for (const GMRView &view : qAsConst(context.views)) {
+    for (const GMRView &view : std::as_const(context.views)) {
         json.prepareNewLine();
         json.writeStartObject();
         const bool wasMinimize = json.minimize();

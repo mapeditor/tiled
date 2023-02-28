@@ -596,7 +596,7 @@ void CellRenderer::paintTileCollisionShapes()
 
     mPainter->setRenderHint(QPainter::Antialiasing);
 
-    for (const auto &fragment : qAsConst(mFragments)) {
+    for (const auto &fragment : std::as_const(mFragments)) {
         QTransform tileTransform;
         tileTransform.translate(fragment.x, fragment.y);
         tileTransform.rotate(fragment.rotation);

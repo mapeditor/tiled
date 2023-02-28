@@ -50,7 +50,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->openGL->setEnabled(true);
 #endif
 
-    for (const QString &name : qAsConst(mLanguages)) {
+    for (const QString &name : std::as_const(mLanguages)) {
         QLocale locale(name);
         QString string = QStringLiteral("%1 (%2)")
             .arg(QLocale::languageToString(locale.language()),

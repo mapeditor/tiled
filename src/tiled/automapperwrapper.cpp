@@ -93,7 +93,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
     }
 
     // Make sure to add any newly used tilesets to the map
-    for (const SharedTileset &tileset : qAsConst(context.newTilesets))
+    for (const SharedTileset &tileset : std::as_const(context.newTilesets))
         if (context.targetMap->isTilesetUsed(tileset.data()))
             new AddTileset(mapDocument, tileset, this);
 
@@ -105,7 +105,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
     }
 
     auto anyObjectForObjectGroup = [&] (ObjectGroup *objectGroup) {
-        for (const QVector<AddMapObjects::Entry> &entries : qAsConst(context.newMapObjects)) {
+        for (const QVector<AddMapObjects::Entry> &entries : std::as_const(context.newMapObjects)) {
             for (const AddMapObjects::Entry &entry : entries) {
                 if (entry.objectGroup == objectGroup)
                     return true;
@@ -133,10 +133,10 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
     if (!context.newMapObjects.isEmpty()) {
         QVector<AddMapObjects::Entry> allEntries;
 
-        for (const QVector<AddMapObjects::Entry> &entries : qAsConst(context.newMapObjects)) {
+        for (const QVector<AddMapObjects::Entry> &entries : std::as_const(context.newMapObjects)) {
             // Each group of copied objects needs to be rewired separately
             ObjectReferencesHelper objectRefs(mapDocument->map());
-            for (auto &entry : qAsConst(entries))
+            for (auto &entry : std::as_const(entries))
                 objectRefs.reassignId(entry.mapObject);
             objectRefs.rewire();
 

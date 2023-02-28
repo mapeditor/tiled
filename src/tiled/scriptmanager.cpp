@@ -251,7 +251,7 @@ void ScriptManager::loadExtensions()
 {
     QStringList extensionSearchPaths;
 
-    for (const QString &extensionsPath : qAsConst(mExtensionsPaths)) {
+    for (const QString &extensionsPath : std::as_const(mExtensionsPaths)) {
         // Extension scripts and resources can also be in the top-level
         extensionSearchPaths.append(extensionsPath);
 

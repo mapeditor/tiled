@@ -89,7 +89,7 @@ void ChangeTileWangId::redo()
 
     QList<Tile *> changedTiles;
 
-    for (const WangIdChange &wangIdChange : qAsConst(mChanges)) {
+    for (const WangIdChange &wangIdChange : std::as_const(mChanges)) {
         if (Tile *tile = findTile(wangIdChange.tileId))
             changedTiles.append(tile);
         mWangSet->setWangId(wangIdChange.tileId, wangIdChange.to);

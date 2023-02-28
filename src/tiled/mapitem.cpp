@@ -214,7 +214,7 @@ void MapItem::setDisplayMode(DisplayMode displayMode)
     mDisplayMode = displayMode;
 
     // Enabled state is checked by selection tools
-    for (LayerItem *layerItem : qAsConst(mLayerItems))
+    for (LayerItem *layerItem : std::as_const(mLayerItems))
         layerItem->setEnabled(displayMode == Editable);
 
     if (displayMode == ReadOnly) {
@@ -249,12 +249,12 @@ void MapItem::setShowTileCollisionShapes(bool enabled)
 {
     mapDocument()->renderer()->setFlag(ShowTileCollisionShapes, enabled);
 
-    for (MapObjectItem *item : qAsConst(mObjectItems))
+    for (MapObjectItem *item : std::as_const(mObjectItems))
         if (Tile *tile = item->mapObject()->cell().tile())
             if (tile->objectGroup() && !tile->objectGroup()->isEmpty())
                 item->syncWithMapObject();
 
-    for (LayerItem *item : qAsConst(mLayerItems))
+    for (LayerItem *item : std::as_const(mLayerItems))
         if (item->layer()->isTileLayer())
             item->update();
 }
@@ -263,7 +263,7 @@ void MapItem::updateLayerPositions()
 {
     const MapScene *mapScene = static_cast<MapScene*>(scene());
 
-    for (LayerItem *layerItem : qAsConst(mLayerItems)) {
+    for (LayerItem *layerItem : std::as_const(mLayerItems)) {
         const Layer &layer = *layerItem->layer();
         layerItem->setPos(mapScene->layerItemPosition(layer));
     }
@@ -366,7 +366,7 @@ void MapItem::documentChanged(const ChangeEvent &change)
                     mObjectItems.value(static_cast<MapObject*>(object))->syncWithMapObject();
             } else if (typeId == Object::TileType) {
                 if (mapDocument()->renderer()->testFlag(ShowTileObjectOutlines))
-                    for (MapObjectItem *item : qAsConst(mObjectItems))
+                    for (MapObjectItem *item : std::as_const(mObjectItems))
                         if (item->mapObject()->isTileObject())
                             item->syncWithMapObject();
             }
@@ -416,7 +416,7 @@ void MapItem::documentChanged(const ChangeEvent &change)
         auto &tilesetChange = static_cast<const TilesetChangeEvent&>(change);
         if (tilesetChange.property == Tileset::TileRenderSizeProperty) {
             // This might affect the draw margins
-            for (QGraphicsItem *item : qAsConst(mLayerItems)) {
+            for (QGraphicsItem *item : std::as_const(mLayerItems)) {
                 if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
                     tli->syncWithTileLayer();
             }
@@ -433,7 +433,7 @@ void MapItem::documentChanged(const ChangeEvent &change)
  */
 void MapItem::mapChanged()
 {
-    for (QGraphicsItem *item : qAsConst(mLayerItems)) {
+    for (QGraphicsItem *item : std::as_const(mLayerItems)) {
         if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
             tli->syncWithTileLayer();
     }
@@ -582,11 +582,11 @@ void MapItem::imageLayerChanged(ImageLayer *imageLayer)
  */
 void MapItem::adaptToTilesetTileSizeChanges(Tileset *tileset)
 {
-    for (QGraphicsItem *item : qAsConst(mLayerItems))
+    for (QGraphicsItem *item : std::as_const(mLayerItems))
         if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
             tli->syncWithTileLayer();
 
-    for (MapObjectItem *item : qAsConst(mObjectItems)) {
+    for (MapObjectItem *item : std::as_const(mObjectItems)) {
         const Cell &cell = item->mapObject()->cell();
         if (cell.tileset() == tileset)
             item->syncWithMapObject();
@@ -595,11 +595,11 @@ void MapItem::adaptToTilesetTileSizeChanges(Tileset *tileset)
 
 void MapItem::adaptToTileSizeChanges(Tile *tile)
 {
-    for (QGraphicsItem *item : qAsConst(mLayerItems))
+    for (QGraphicsItem *item : std::as_const(mLayerItems))
         if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
             tli->syncWithTileLayer();
 
-    for (MapObjectItem *item : qAsConst(mObjectItems)) {
+    for (MapObjectItem *item : std::as_const(mObjectItems)) {
         const Cell &cell = item->mapObject()->cell();
         if (cell.tile() == tile)
             item->syncWithMapObject();
@@ -611,7 +611,7 @@ void MapItem::tileObjectGroupChanged(Tile *tile)
     if (!Preferences::instance()->showTileCollisionShapes())
         return;
 
-    for (MapObjectItem *item : qAsConst(mObjectItems)) {
+    for (MapObjectItem *item : std::as_const(mObjectItems)) {
         const Cell &cell = item->mapObject()->cell();
         if (cell.tile() == tile)
             item->syncWithMapObject();
@@ -690,7 +690,7 @@ void MapItem::objectsIndexChanged(ObjectGroup *objectGroup,
 
 void MapItem::syncAllObjectItems()
 {
-    for (MapObjectItem *item : qAsConst(mObjectItems))
+    for (MapObjectItem *item : std::as_const(mObjectItems))
         item->syncWithMapObject();
 }
 
@@ -699,7 +699,7 @@ void MapItem::setObjectLineWidth(qreal lineWidth)
     mapDocument()->renderer()->setObjectLineWidth(lineWidth);
 
     // Changing the line width can change the size of the object items
-    for (MapObjectItem *item : qAsConst(mObjectItems)) {
+    for (MapObjectItem *item : std::as_const(mObjectItems)) {
         if (item->mapObject()->cell().isEmpty()) {
             item->syncWithMapObject();
             item->update();
@@ -711,7 +711,7 @@ void MapItem::setShowTileObjectOutlines(bool enabled)
 {
     mapDocument()->renderer()->setFlag(ShowTileObjectOutlines, enabled);
 
-    for (MapObjectItem *item : qAsConst(mObjectItems)) {
+    for (MapObjectItem *item : std::as_const(mObjectItems)) {
         if (!item->mapObject()->cell().isEmpty())
             item->update();
     }
@@ -838,7 +838,7 @@ void MapItem::updateSelectedLayersHighlight()
             mDarkRectangle->setParentItem(this);    // avoid automatic deletion
 
             // Restore opacity for all layers
-            for (auto layerItem : qAsConst(mLayerItems))
+            for (auto layerItem : std::as_const(mLayerItems))
                 layerItem->setOpacity(layerItem->layer()->opacity());
         }
 

@@ -153,7 +153,7 @@ bool CommandLineParser::handleLongOption(const QString &longName)
         return true;
     }
 
-    for (const Option &option : qAsConst(mOptions)) {
+    for (const Option &option : std::as_const(mOptions)) {
         if (longName == option.longName) {
             option.callback(option.data);
             return true;
@@ -170,7 +170,7 @@ bool CommandLineParser::handleShortOption(QChar c)
         return true;
     }
 
-    for (const Option &option : qAsConst(mOptions)) {
+    for (const Option &option : std::as_const(mOptions)) {
         if (c == option.shortName) {
             option.callback(option.data);
             return true;

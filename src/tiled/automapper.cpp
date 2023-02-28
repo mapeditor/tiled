@@ -554,7 +554,7 @@ void AutoMapper::setupRules()
     // When no input regions have been defined at all, derive them from the
     // "input" and "inputnot" layers.
     if (!setup.mLayerRegions && !setup.mLayerInputRegions) {
-        for (const InputSet &inputSet : qAsConst(mRuleMapSetup.mInputSets)) {
+        for (const InputSet &inputSet : std::as_const(mRuleMapSetup.mInputSets)) {
             for (const InputConditions &conditions : inputSet.layers) {
                 for (const InputLayer &inputLayer : conditions.listNo)
                     regionInput |= inputLayer.tileLayer->region();
@@ -571,7 +571,7 @@ void AutoMapper::setupRules()
     // When no output regions have been defined at all, derive them from the
     // "output" layers.
     if (!setup.mLayerRegions && !setup.mLayerOutputRegions) {
-        for (const OutputSet &outputSet : qAsConst(mRuleMapSetup.mOutputSets)) {
+        for (const OutputSet &outputSet : std::as_const(mRuleMapSetup.mOutputSets)) {
             std::for_each(outputSet.layers.keyBegin(),
                           outputSet.layers.keyEnd(),
                           [&] (const Layer *layer) {
@@ -623,7 +623,7 @@ void AutoMapper::setupWorkMapLayers(AutoMappingContext &context) const
 {
     // Set up pointers to output tile layers in the target map.
     // They are cloned when found in the target map, or created otherwise.
-    for (const QString &name : qAsConst(mRuleMapSetup.mOutputTileLayerNames)) {
+    for (const QString &name : std::as_const(mRuleMapSetup.mOutputTileLayerNames)) {
         auto &outputTileLayer = context.outputTileLayers[name];
         if (outputTileLayer)
             continue;
@@ -643,7 +643,7 @@ void AutoMapper::setupWorkMapLayers(AutoMappingContext &context) const
     // Set up pointers to output object layers in the target map.
     // They are created when they are not present, but not cloned since objects
     // are not added directly.
-    for (const QString &name : qAsConst(mRuleMapSetup.mOutputObjectGroupNames)) {
+    for (const QString &name : std::as_const(mRuleMapSetup.mOutputObjectGroupNames)) {
         auto &objectGroup = context.outputObjectGroups[name];
         if (objectGroup)
             continue;
@@ -659,7 +659,7 @@ void AutoMapper::setupWorkMapLayers(AutoMappingContext &context) const
 
     // Set up pointers to "set" layers (input layers in the target map). They
     // don't need to be created if not present.
-    for (const QString &name : qAsConst(mRuleMapSetup.mInputLayerNames)) {
+    for (const QString &name : std::as_const(mRuleMapSetup.mInputLayerNames)) {
         // Check whether this input layer is also an output layer, in which
         // case we want to use its copy so we can see changes applied by
         // earlier rules.
@@ -714,7 +714,7 @@ void AutoMapper::compileRule(QVector<RuleInputSet> &inputSets,
 {
     CompileContext compileContext;
 
-    for (const InputSet &inputSet : qAsConst(mRuleMapSetup.mInputSets)) {
+    for (const InputSet &inputSet : std::as_const(mRuleMapSetup.mInputSets)) {
         RuleInputSet index;
         if (compileInputSet(index, inputSet, rule.inputRegion, compileContext, context))
             inputSets.append(std::move(index));
@@ -949,13 +949,13 @@ void AutoMapper::autoMap(const QRegion &where,
         // In principle we erase the entire applyRegion, excluding areas where
         // none of the input layers have any contents.
         QRegion inputLayersRegion;
-        for (const QString &name : qAsConst(mRuleMapSetup.mInputLayerNames)) {
+        for (const QString &name : std::as_const(mRuleMapSetup.mInputLayerNames)) {
             if (const TileLayer *inputLayer = context.inputLayers.value(name))
                 inputLayersRegion |= inputLayer->region();
         }
 
         const QRegion regionToErase = inputLayersRegion.intersected(applyRegion);
-        for (const OutputSet &ruleOutput : qAsConst(mRuleMapSetup.mOutputSets)) {
+        for (const OutputSet &ruleOutput : std::as_const(mRuleMapSetup.mOutputSets)) {
             QHashIterator<const Layer*, QString> it(ruleOutput.layers);
             while (it.hasNext()) {
                 it.next();

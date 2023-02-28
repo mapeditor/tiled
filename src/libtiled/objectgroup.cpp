@@ -147,7 +147,7 @@ bool ObjectGroup::referencesTileset(const Tileset *tileset) const
 void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
                                              Tileset *newTileset)
 {
-    for (MapObject *object : qAsConst(mObjects)) {
+    for (MapObject *object : std::as_const(mObjects)) {
         if (object->cell().tileset() == oldTileset) {
             Cell cell = object->cell();
             cell.setTile(newTileset, cell.tileId());
@@ -165,7 +165,7 @@ void ObjectGroup::offsetObjects(const QPointF &offset,
 
     const bool boundsValid = bounds.isValid();
 
-    for (MapObject *object : qAsConst(mObjects)) {
+    for (MapObject *object : std::as_const(mObjects)) {
         const QPointF objectCenter = object->bounds().center();
         if (boundsValid && !bounds.contains(objectCenter))
             continue;

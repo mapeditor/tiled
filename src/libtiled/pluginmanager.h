@@ -116,7 +116,7 @@ public:
     {
         QList<T*> results;
         if (mInstance)
-            for (QObject *object : qAsConst(mInstance->mObjects))
+            for (QObject *object : std::as_const(mInstance->mObjects))
                 if (T *result = qobject_cast<T*>(object))
                     results.append(result);
         return results;
@@ -129,7 +129,7 @@ public:
     static void each(std::function<void(T*)> function)
     {
         if (mInstance)
-            for (QObject *object : qAsConst(mInstance->mObjects))
+            for (QObject *object : std::as_const(mInstance->mObjects))
                 if (T *result = qobject_cast<T*>(object))
                     function(result);
     }
@@ -142,7 +142,7 @@ public:
     static T *find(std::function<bool(T*)> function)
     {
         if (mInstance)
-            for (QObject *object : qAsConst(mInstance->mObjects))
+            for (QObject *object : std::as_const(mInstance->mObjects))
                 if (T *result = qobject_cast<T*>(object))
                     if (function(result))
                         return result;

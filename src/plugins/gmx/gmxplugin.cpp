@@ -379,7 +379,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
                                  [](const MapObject *a, const MapObject *b) { return a->y() < b->y(); });
             }
 
-            for (const MapObject *object : qAsConst(objects)) {
+            for (const MapObject *object : std::as_const(objects)) {
                 // Objects with a class are already exported as instances
                 if (!object->effectiveClassName().isEmpty())
                     continue;

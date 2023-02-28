@@ -77,7 +77,7 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
             if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
                 std::stable_sort(objects.begin(), objects.end(), [](MapObject *a, MapObject *b){return a->y() < b->y();});
 
-            for (const MapObject *object : qAsConst(objects)) {
+            for (const MapObject *object : std::as_const(objects)) {
                 if (object->isVisible()) {
                     if (object->rotation() != qreal(0)) {
                         QPointF origin = renderer.pixelToScreenCoords(object->position());

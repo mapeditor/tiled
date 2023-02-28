@@ -67,11 +67,11 @@ bool Project::save(const QString &fileName)
     const QDir dir = QFileInfo(fileName).dir();
 
     QJsonArray folders;
-    for (auto &folder : qAsConst(mFolders))
+    for (auto &folder : std::as_const(mFolders))
         folders.append(relative(dir, folder));
 
     QJsonArray commands;
-    for (const Command &command : qAsConst(mCommands))
+    for (const Command &command : std::as_const(mCommands))
         commands.append(QJsonObject::fromVariantHash(command.toVariant()));
 
     const QJsonArray propertyTypes = mPropertyTypes->toJson(dir.path());

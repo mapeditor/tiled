@@ -628,7 +628,7 @@ void WangSet::recalculateColorDistances()
         QVector<int> distance(colorCount() + 1, -1);
 
         // Check all tiles for transitions to other Wang colors
-        for (const WangId wangId : qAsConst(mTileIdToWangId)) {
+        for (const WangId wangId : std::as_const(mTileIdToWangId)) {
 
             // Don't consider edges and corners to be connected. This helps
             // avoid seeing transitions to "no color" for edge or corner

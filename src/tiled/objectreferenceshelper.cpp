@@ -87,7 +87,7 @@ void ObjectReferencesHelper::reassignIds(Layer *layer)
  */
 void ObjectReferencesHelper::rewire()
 {
-    for (MapObject *mapObject : qAsConst(mOldIdToObject)) {
+    for (MapObject *mapObject : std::as_const(mOldIdToObject)) {
         processObjectReferences(mapObject->properties(), [&] (ObjectRef objectRef) {
             if (const MapObject *referencedObject = mOldIdToObject.value(objectRef.id))
                 objectRef.id = referencedObject->id();

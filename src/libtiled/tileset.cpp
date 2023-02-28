@@ -278,7 +278,7 @@ void Tileset::initializeTilesetTiles()
     QPixmap blank;
 
     // Blank out any remaining tiles to avoid confusion (todo: could be more clear)
-    for (Tile *tile : qAsConst(mTiles)) {
+    for (Tile *tile : std::as_const(mTiles)) {
         if (tile->id() >= tileRects.size()) {
             if (blank.isNull()) {
                 blank = QPixmap(mTileWidth, mTileHeight);
@@ -616,14 +616,14 @@ void Tileset::swap(Tileset &other)
     // Don't swap mWeakPointer, since it's a reference to this.
 
     // Update back references from tiles and Wang sets
-    for (auto tile : qAsConst(mTiles))
+    for (auto tile : std::as_const(mTiles))
         tile->mTileset = this;
-    for (auto wangSet : qAsConst(mWangSets))
+    for (auto wangSet : std::as_const(mWangSets))
         wangSet->setTileset(this);
 
-    for (auto tile : qAsConst(other.mTiles))
+    for (auto tile : std::as_const(other.mTiles))
         tile->mTileset = &other;
-    for (auto wangSet : qAsConst(other.mWangSets))
+    for (auto wangSet : std::as_const(other.mWangSets))
         wangSet->setTileset(&other);
 }
 
@@ -674,7 +674,7 @@ void Tileset::updateTileSize()
 {
     int maxWidth = 0;
     int maxHeight = 0;
-    for (Tile *tile : qAsConst(mTiles)) {
+    for (Tile *tile : std::as_const(mTiles)) {
         const QSize size = tile->size();
         if (maxWidth < size.width())
             maxWidth = size.width();

@@ -478,7 +478,7 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
     }
 
     // Update the type IDs for the class members
-    for (auto classType : qAsConst(classesToProcess)) {
+    for (auto classType : std::as_const(classesToProcess)) {
         QMutableMapIterator<QString, QVariant> it(classType->members);
         while (it.hasNext()) {
             QVariant &classMember = it.next().value();
@@ -568,7 +568,7 @@ const ClassPropertyType *PropertyTypes::findClassFor(const QString &name, const 
 
 PropertyType *PropertyTypes::findTypeByNamePriv(const QString &name, int usageFlags)
 {
-    return const_cast<PropertyType*>(qAsConst(*this).findTypeByName(name, usageFlags));
+    return const_cast<PropertyType*>(std::as_const(*this).findTypeByName(name, usageFlags));
 }
 
 PropertyType *PropertyTypes::findPropertyValueTypePriv(const QString &name)

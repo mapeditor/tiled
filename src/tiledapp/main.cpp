@@ -594,7 +594,7 @@ int main(int argc, char *argv[])
 
     w.initializeSession();
 
-    for (const QString &fileName : qAsConst(filesToOpen))
+    for (const QString &fileName : std::as_const(filesToOpen))
         w.openFile(fileName);
 
     return a.exec();
