@@ -23,6 +23,7 @@
 
 #include "changeevents.h"
 #include "id.h"
+#include "layer.h"
 
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
@@ -70,6 +71,7 @@ class AbstractTool : public QObject
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
     Q_PROPERTY(bool usesSelectedTiles READ usesSelectedTiles WRITE setUsesSelectedTiles)
     Q_PROPERTY(bool usesWangSets READ usesWangSets WRITE setUsesWangSets)
+    Q_PROPERTY(int targetLayerType READ targetLayerType WRITE setTargetLayerType)
 
 public:
     /**
@@ -110,6 +112,9 @@ public:
 
     bool usesWangSets() const;
     void setUsesWangSets(bool usesWangSets);
+
+    int targetLayerType() const;
+    void setTargetLayerType(int targetLayerType);
 
     ToolManager *toolManager() const;
     Tile *tile() const;
@@ -231,6 +236,7 @@ private:
     bool mVisible = true;
     bool mUsesSelectedTiles = false;
     bool mUsesWangSets = false;
+    int mTargetLayerType = 0;
 
     ToolManager *mToolManager = nullptr;
     MapDocument *mMapDocument = nullptr;
@@ -302,6 +308,11 @@ inline bool AbstractTool::usesWangSets() const
 inline void AbstractTool::setUsesWangSets(bool usesWangSets)
 {
     mUsesWangSets = usesWangSets;
+}
+
+inline int AbstractTool::targetLayerType() const
+{
+    return mTargetLayerType;
 }
 
 /**

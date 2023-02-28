@@ -23,7 +23,6 @@
 
 #include "changelayer.h"
 #include "grouplayer.h"
-#include "layermodel.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
 #include "mapscene.h"
@@ -47,6 +46,7 @@ LayerOffsetTool::LayerOffsetTool(QObject *parent)
     , mDragging(false)
     , mApplyingChange(false)
 {
+    setTargetLayerType(Layer::AnyLayerType);
 }
 
 void LayerOffsetTool::mouseEntered()
@@ -137,11 +137,6 @@ void LayerOffsetTool::modifiersChanged(Qt::KeyboardModifiers)
 void LayerOffsetTool::languageChanged()
 {
     setName(tr("Offset Layers"));
-}
-
-void LayerOffsetTool::updateEnabledState()
-{
-    setEnabled(currentLayer());
 }
 
 void LayerOffsetTool::mapDocumentChanged(MapDocument *oldDocument,
