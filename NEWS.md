@@ -9,7 +9,7 @@
 * Implemented rendering of major grid lines for staggered / hexagonal maps (#3583)
 * Fixed new layer names to be always unique (by Logan Higinbotham, #3452)
 * Fixed broken tile images after importing/exporting a tileset
-* AutoMapping: Match in order by default, when input regions are defined (#3559)
+* AutoMapping: When input regions are defined, match in order by default (#3559)
 * AutoMapping: Skip locked layers when applying rules (#3544)
 * Scripting: Added Object.setColorProperty and Object.setFloatProperty (#3423)
 * Scripting: Added tiled.projectFilePath
