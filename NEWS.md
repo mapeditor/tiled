@@ -17,6 +17,8 @@
 * Scripting: Added TileMap.toImage (#3519)
 * Scripting: Added Tool.targetLayerType (#3248)
 * Scripting: Added region.contiguousRegions() (#3576)
+* Scripting: Added tiled.compress and tiled.decompress (#3153)
+* Scripting: Added Base64 encoding and decoding API (#3153)
 * Scripting: Allow assigning null to Tile.objectGroup (by Logan Higinbotham, #3495)
 * Scripting: Allow changing the items in a combo box added to a dialog
 * Scripting: Fixed painting issues after changing TileLayer size (#3481)

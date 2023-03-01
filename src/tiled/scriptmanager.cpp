@@ -19,7 +19,6 @@
  */
 
 #include "scriptmanager.h"
-#include "documentmanager.h"
 #include "editablegrouplayer.h"
 #include "editableimagelayer.h"
 #include "editablemap.h"
@@ -37,8 +36,8 @@
 #include "project.h"
 #include "projectmanager.h"
 #include "regionvaluetype.h"
+#include "scriptbase64.h"
 #include "scriptedaction.h"
-#include "scriptedfileformat.h"
 #include "scriptedtool.h"
 #include "scriptfile.h"
 #include "scriptfileformatwrappers.h"
@@ -373,7 +372,7 @@ void ScriptManager::initialize()
 
     // Work around issue where since Qt 6, the value from the global Qt
     // namespace are no longer part of the Qt object.
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0) && QT_VERSION < QT_VERSION_CHECK(6,4,0)
     QJSValue qtObject = globalObject.property(QStringLiteral("Qt"));
 
     auto &qtNamespace = Qt::staticMetaObject;
@@ -385,6 +384,7 @@ void ScriptManager::initialize()
 #endif
 
     globalObject.setProperty(QStringLiteral("tiled"), engine->newQObject(mModule));
+    globalObject.setProperty(QStringLiteral("Tiled"), engine->newQMetaObject<ScriptModule>());
     globalObject.setProperty(QStringLiteral("GroupLayer"), engine->newQMetaObject<EditableGroupLayer>());
     globalObject.setProperty(QStringLiteral("Image"), engine->newQMetaObject<ScriptImage>());
     globalObject.setProperty(QStringLiteral("ImageLayer"), engine->newQMetaObject<EditableImageLayer>());
@@ -397,10 +397,11 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("Tileset"), engine->newQMetaObject<EditableTileset>());
     globalObject.setProperty(QStringLiteral("WangSet"), engine->newQMetaObject<EditableWangSet>());
 
+    registerBase64(engine);
+    registerDialog(engine);
     registerFile(engine);
     registerFileInfo(engine);
     registerProcess(engine);
-    registerDialog(engine);
     loadExtensions();
 }
 

@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include "documentmanager.h"
 #include "id.h"
 #include "issuesdock.h"
+#include "properties.h"
 
 #include <QJSValue>
 #include <QObject>
@@ -34,6 +34,7 @@ class QAction;
 
 namespace Tiled {
 
+class Document;
 class EditableAsset;
 class MapEditor;
 class ScriptImage;
@@ -121,6 +122,17 @@ public:
     Q_INVOKABLE Tiled::ScriptTilesetFormatWrapper *tilesetFormatForFile(const QString &fileName) const;
 
     Q_INVOKABLE void extendMenu(const QByteArray &idName, QJSValue items);
+
+    // Synchronized with Tiled::CompressionMethod
+    enum CompressionMethod {
+        Gzip,
+        Zlib,
+        Zstandard
+    };
+    Q_ENUM(CompressionMethod)
+
+    Q_INVOKABLE QByteArray compress(const QByteArray &data, CompressionMethod method = Zlib, int compressionLevel = -1);
+    Q_INVOKABLE QByteArray decompress(const QByteArray &data, CompressionMethod method = Zlib);
 
 signals:
     void assetCreated(Tiled::EditableAsset *asset);
