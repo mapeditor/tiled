@@ -2064,6 +2064,19 @@ declare class Tile extends TiledObject {
   imageFileName : string
 
   /**
+   * The source rectangle (in pixels) for this tile.
+   *
+   * This can be either a sub-rectangle of the tile image when the tile is part
+   * of an image collection tileset or the sub-rectangle of the tileset image.
+   *
+   * This property can currently only be modified when the tile is part of an
+   * image collection. For tileset image based tiles, it is read-only.
+   *
+   * @since 1.9
+   */
+  imageRect: rect
+
+  /**
    * Probability that the tile gets chosen relative to other tiles.
    */
   probability : number
