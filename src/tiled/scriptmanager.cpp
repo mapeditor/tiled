@@ -19,7 +19,6 @@
  */
 
 #include "scriptmanager.h"
-#include "documentmanager.h"
 #include "editablegrouplayer.h"
 #include "editableimagelayer.h"
 #include "editablemap.h"
@@ -37,8 +36,8 @@
 #include "project.h"
 #include "projectmanager.h"
 #include "regionvaluetype.h"
+#include "scriptbase64.h"
 #include "scriptedaction.h"
-#include "scriptedfileformat.h"
 #include "scriptedtool.h"
 #include "scriptfile.h"
 #include "scriptfileformatwrappers.h"
@@ -398,10 +397,11 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("Tileset"), engine->newQMetaObject<EditableTileset>());
     globalObject.setProperty(QStringLiteral("WangSet"), engine->newQMetaObject<EditableWangSet>());
 
+    registerBase64(engine);
+    registerDialog(engine);
     registerFile(engine);
     registerFileInfo(engine);
     registerProcess(engine);
-    registerDialog(engine);
     loadExtensions();
 }
 

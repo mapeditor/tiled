@@ -1366,6 +1366,37 @@ interface TilesetFormat extends FileFormat {
 }
 
 /**
+ * Provides functions to encode and decode data using Base64.
+ *
+ * @since 1.10
+ */
+declare namespace Base64 {
+  /**
+   * Encodes the given data using Base64, with the result converted to a
+   * string for convenience.
+   *
+   * @example
+   * ```js
+   * let buffer = new ArrayBuffer(byteLength);
+   * // [Fill the buffer with data, for example using a DataView]
+   * json.data = Base64.encode(buffer);
+   * file.write(JSON.stringify(json));
+   * ```
+   */
+  export function encode(data: ArrayBuffer | string): string;
+
+  /**
+   * Encodes the given data using Base64, keeping the result in binary form.
+   */
+  export function encodeAsBytes(data: ArrayBuffer | string): ArrayBuffer;
+
+  /**
+   * Decodes the given data using Base64.
+   */
+  export function decode(data: ArrayBuffer | string): ArrayBuffer;
+}
+
+/**
  * Offers various operations on file paths, such as turning absolute paths
  * into relative ones, splitting a path into its components, and so on.
  */
@@ -3833,38 +3864,30 @@ declare namespace tiled {
   ): void;
 
   /**
-   * Compresses the given \a data using the given compression \a method and
-   * \a compressionLevel.
+   * Compresses the given data using the given compression method and
+   * compression level.
    *
    * When no compression method is given, defaults to Zlib compression. The
    * compression level defaults to the default for the respective method.
    *
+   * @example
+   * Example that compresses data using Gzip compression:
+   * ```js
+   * buffer = tiled.compress(buffer, Tiled.Gzip);
+   * ```
+   *
    * @since 1.10
    */
-  export function compress(data: ArrayBuffer | string, method?: CompressionMethod, compressionLevel?: number): ArrayBuffer;
+  export function compress(data: ArrayBuffer | string, method?: Tiled.CompressionMethod, compressionLevel?: number): ArrayBuffer;
 
   /**
-   * Decompresses the given \a data using the given compression \a method.
+   * Decompresses the given data using the given compression method.
    *
    * When no compression method is given, defaults to Zlib compression.
    *
    * @since 1.10
    */
-  export function decompress(data: ArrayBuffer | string, method?: CompressionMethod): ArrayBuffer;
-
-  /**
-   * Encodes the given \a data using Base64.
-   *
-   * @since 1.10
-   */
-  export function toBase64(data: ArrayBuffer | string): ArrayBuffer;
-
-  /**
-   * Decodes the given \a data using Base64.
-   *
-   * @since 1.10
-   */
-  export function fromBase64(data: ArrayBuffer | string): ArrayBuffer;
+  export function decompress(data: ArrayBuffer | string, method?: Tiled.CompressionMethod): ArrayBuffer;
 
   /**
    * A new asset has been created.

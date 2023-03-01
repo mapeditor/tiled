@@ -22,6 +22,7 @@
 
 #include "actionmanager.h"
 #include "commandmanager.h"
+#include "compression.h"
 #include "documentmanager.h"
 #include "editabletileset.h"
 #include "issuesmodel.h"
@@ -531,16 +532,6 @@ QByteArray ScriptModule::compress(const QByteArray &data, CompressionMethod meth
 QByteArray ScriptModule::decompress(const QByteArray &data, CompressionMethod method)
 {
     return Tiled::decompress(data, data.size(), static_cast<Tiled::CompressionMethod>(method));
-}
-
-QByteArray ScriptModule::toBase64(const QByteArray &data)
-{
-    return data.toBase64();
-}
-
-QByteArray ScriptModule::fromBase64(const QByteArray &data)
-{
-    return QByteArray::fromBase64(data);
 }
 
 void ScriptModule::trigger(const QByteArray &actionName) const

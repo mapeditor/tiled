@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include "compression.h"
 #include "id.h"
 #include "issuesdock.h"
 #include "properties.h"
@@ -134,8 +133,6 @@ public:
 
     Q_INVOKABLE QByteArray compress(const QByteArray &data, CompressionMethod method = Zlib, int compressionLevel = -1);
     Q_INVOKABLE QByteArray decompress(const QByteArray &data, CompressionMethod method = Zlib);
-    Q_INVOKABLE QByteArray toBase64(const QByteArray &data);
-    Q_INVOKABLE QByteArray fromBase64(const QByteArray &data);
 
 signals:
     void assetCreated(Tiled::EditableAsset *asset);
