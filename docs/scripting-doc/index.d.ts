@@ -3373,6 +3373,18 @@ interface Tool {
   updateEnabledState(): void;
 }
 
+declare namespace Tiled {
+  /**
+   * Compression methods used for the {@link tiled.compress} and
+   * {@link tiled.decompress} functions.
+   */
+  type CompressionMethod = number;
+
+  const Gzip: CompressionMethod;
+  const Zlib: CompressionMethod;
+  const Zstandard: CompressionMethod;
+}
+
 /**
  * The `tiled` module is the main entry point and provides properties,
  * functions and signals which are documented below.
@@ -3819,6 +3831,40 @@ declare namespace tiled {
     shortName: string,
     tilesetFormat: ScriptedTilesetFormat
   ): void;
+
+  /**
+   * Compresses the given \a data using the given compression \a method and
+   * \a compressionLevel.
+   *
+   * When no compression method is given, defaults to Zlib compression. The
+   * compression level defaults to the default for the respective method.
+   *
+   * @since 1.10
+   */
+  export function compress(data: ArrayBuffer | string, method?: CompressionMethod, compressionLevel?: number): ArrayBuffer;
+
+  /**
+   * Decompresses the given \a data using the given compression \a method.
+   *
+   * When no compression method is given, defaults to Zlib compression.
+   *
+   * @since 1.10
+   */
+  export function decompress(data: ArrayBuffer | string, method?: CompressionMethod): ArrayBuffer;
+
+  /**
+   * Encodes the given \a data using Base64.
+   *
+   * @since 1.10
+   */
+  export function toBase64(data: ArrayBuffer | string): ArrayBuffer;
+
+  /**
+   * Decodes the given \a data using Base64.
+   *
+   * @since 1.10
+   */
+  export function fromBase64(data: ArrayBuffer | string): ArrayBuffer;
 
   /**
    * A new asset has been created.

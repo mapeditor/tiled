@@ -22,18 +22,19 @@
 
 #include "actionmanager.h"
 #include "commandmanager.h"
+#include "documentmanager.h"
 #include "editabletileset.h"
 #include "issuesmodel.h"
 #include "logginginterface.h"
 #include "mainwindow.h"
 #include "mapeditor.h"
 #include "projectmanager.h"
+#include "scriptdialog.h"
 #include "scriptedaction.h"
 #include "scriptedfileformat.h"
 #include "scriptedtool.h"
 #include "scriptfileformatwrappers.h"
 #include "scriptmanager.h"
-#include "scriptdialog.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
 
@@ -520,6 +521,26 @@ void ScriptModule::extendMenu(const QByteArray &idName, QJSValue items)
     }
 
     ActionManager::registerMenuExtension(menuId, extension);
+}
+
+QByteArray ScriptModule::compress(const QByteArray &data, CompressionMethod method, int compressionLevel)
+{
+    return Tiled::compress(data, static_cast<Tiled::CompressionMethod>(method), compressionLevel);
+}
+
+QByteArray ScriptModule::decompress(const QByteArray &data, CompressionMethod method)
+{
+    return Tiled::decompress(data, data.size(), static_cast<Tiled::CompressionMethod>(method));
+}
+
+QByteArray ScriptModule::toBase64(const QByteArray &data)
+{
+    return data.toBase64();
+}
+
+QByteArray ScriptModule::fromBase64(const QByteArray &data)
+{
+    return QByteArray::fromBase64(data);
 }
 
 void ScriptModule::trigger(const QByteArray &actionName) const

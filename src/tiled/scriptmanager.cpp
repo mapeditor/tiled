@@ -373,7 +373,7 @@ void ScriptManager::initialize()
 
     // Work around issue where since Qt 6, the value from the global Qt
     // namespace are no longer part of the Qt object.
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0) && QT_VERSION < QT_VERSION_CHECK(6,4,0)
     QJSValue qtObject = globalObject.property(QStringLiteral("Qt"));
 
     auto &qtNamespace = Qt::staticMetaObject;
@@ -385,6 +385,7 @@ void ScriptManager::initialize()
 #endif
 
     globalObject.setProperty(QStringLiteral("tiled"), engine->newQObject(mModule));
+    globalObject.setProperty(QStringLiteral("Tiled"), engine->newQMetaObject<ScriptModule>());
     globalObject.setProperty(QStringLiteral("GroupLayer"), engine->newQMetaObject<EditableGroupLayer>());
     globalObject.setProperty(QStringLiteral("Image"), engine->newQMetaObject<ScriptImage>());
     globalObject.setProperty(QStringLiteral("ImageLayer"), engine->newQMetaObject<EditableImageLayer>());
