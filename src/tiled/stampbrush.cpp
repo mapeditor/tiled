@@ -478,21 +478,23 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         QHash<const Map *, QRegion> regionCache;
         QHash<const Map *, Map *> shiftedCopies;
         const auto randomVariations = mStamp.randomVariations();
+        const Map::StaggerAxis mapStaggerAxis = mapDocument()->map()->staggerAxis();
+        const Map::StaggerIndex mapStaggerIndex = mapDocument()->map()->staggerIndex();
 
         mMissingTilesets.clear();
 
-        for (const QPoint &p : points) {
-            Map *map = randomVariations.pick();
-            mapDocument()->unifyTilesets(*map, mMissingTilesets);
+        // Pick a random variation for the first position
+        Map *variation = randomVariations.pick();
+        mapDocument()->unifyTilesets(*variation, mMissingTilesets);
 
-            Map::StaggerAxis mapStaggerAxis = mapDocument()->map()->staggerAxis();
+        for (const QPoint &p : points) {
+            Map *map = variation;
 
             // if staggered map, makes sure stamp stays the same
             if (mapDocument()->map()->isStaggered()
                     && ((mapStaggerAxis == Map::StaggerY) ? map->height() > 1 : map->width() > 1)) {
 
-                Map::StaggerIndex mapStaggerIndex = mapDocument()->map()->staggerIndex();
-                Map::StaggerIndex stampStaggerIndex = map->staggerIndex();
+                const Map::StaggerIndex stampStaggerIndex = map->staggerIndex();
 
                 if (mapStaggerAxis == Map::StaggerY) {
                     bool topIsOdd = (p.y() - map->height() / 2) & 1;
@@ -545,6 +547,13 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
 
                 PaintOperation op = { centered, map };
                 operations.append(op);
+
+                // Pick a potentially new random variation for the next position
+                Map *newVariation = randomVariations.pick();
+                if (variation != newVariation) {
+                    variation = newVariation;
+                    mapDocument()->unifyTilesets(*variation, mMissingTilesets);
+                }
             }
         }
 
