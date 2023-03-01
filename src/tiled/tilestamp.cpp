@@ -133,10 +133,8 @@ void TileStamp::setProbability(int index, qreal probability)
 QSize TileStamp::maxSize() const
 {
     QSize size;
-    for (const TileStampVariation &variation : std::as_const(d->variations)) {
-        size.setWidth(qMax(size.width(), variation.map->width()));
-        size.setHeight(qMax(size.height(), variation.map->height()));
-    }
+    for (const TileStampVariation &variation : std::as_const(d->variations))
+        size = size.expandedTo(variation.map->size());
     return size;
 }
 

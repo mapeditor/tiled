@@ -21,7 +21,6 @@
 #include "abstracttilefilltool.h"
 #include "brushitem.h"
 #include "mapdocument.h"
-#include "staggeredrenderer.h"
 #include "stampactions.h"
 #include "wangfiller.h"
 
@@ -46,13 +45,13 @@ AbstractTileFillTool::AbstractTileFillTool(Id id,
     connect(mStampActions->random(), &QAction::toggled, this, &AbstractTileFillTool::randomChanged);
     connect(mStampActions->wangFill(), &QAction::toggled, this, &AbstractTileFillTool::wangFillChanged);
 
-    connect(mStampActions->flipHorizontal(), &QAction::triggered,
+    connect(mStampActions->flipHorizontal(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
-    connect(mStampActions->flipVertical(), &QAction::triggered,
+    connect(mStampActions->flipVertical(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.flipped(FlipVertically)); });
-    connect(mStampActions->rotateLeft(), &QAction::triggered,
+    connect(mStampActions->rotateLeft(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.rotated(RotateLeft)); });
-    connect(mStampActions->rotateRight(), &QAction::triggered,
+    connect(mStampActions->rotateRight(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.rotated(RotateRight)); });
 }
 
@@ -299,19 +298,19 @@ void AbstractTileFillTool::fillWithStamp(Map &map,
     if (stamp.isEmpty())
         return;
 
-    const QSize size = stamp.maxSize();
-    if (size.isEmpty())
-        return;
-
     const QRect bounds = mask.boundingRect();
     const auto randomVariations = stamp.randomVariations();
 
     QHash<QString, QList<TileLayer*>> targetLayersByName;
 
     // Fill the entire map with random variations of the stamp
-    for (int y = 0; y < bounds.height(); y += size.height()) {
-        for (int x = 0; x < bounds.width(); x += size.width()) {
+    for (int y = 0; y < bounds.height();) {
+        int maxHeight = 1;
+
+        for (int x = 0; x < bounds.width();) {
             const Map *stampMap = randomVariations.pick();
+            maxHeight = qMax(maxHeight, stampMap->height());
+
             QHash<QString, int> targetLayersIndices;
 
             for (const Layer *layer : stampMap->tileLayers()) {
@@ -331,7 +330,11 @@ void AbstractTileFillTool::fillWithStamp(Map &map,
 
                 target->setCells(x, y, static_cast<const TileLayer*>(layer));
             }
+
+            x += qMax(1, stampMap->width());
         }
+
+        y += maxHeight;
     }
 
     // Erase tiles outside of the masked region. This can easily be faster than
