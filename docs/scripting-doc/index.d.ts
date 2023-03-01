@@ -2724,7 +2724,9 @@ interface TileLayerEdit {
   mergeable : boolean
 
   /**
-   * Sets the tile at the given location, optionally specifying tile flags.
+   * Sets the tile at the given location, optionally specifying tile flags (any
+   * combination of {@link Tile.FlippedHorizontally}, {@link Tile.FlippedVertically},
+   * {@link Tile.FlippedAntiDiagonally} and {@link Tile.RotatedHexagonal120}).
    *
    * To remove a tile, set it to `null`.
    */
