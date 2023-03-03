@@ -50,7 +50,7 @@
     <message>
         <location filename="../src/tiledapp/main.cpp" line="+454"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation>Синтаксис команды экспорта такой: --export-map [format] &lt;source&gt; &lt;target&gt;</translation>
+        <translation>Синтаксис команды экспорта: --export-map [format] &lt;source&gt; &lt;target&gt;</translation>
     </message>
     <message>
         <location line="-303"/>
@@ -60,7 +60,7 @@
     <message>
         <location line="+11"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
-        <translation>Не уникальное расширение файла. Невозможно определить формат экспорта.</translation>
+        <translation>Неуникальное расширение файла. Невозможно определить формат экспорта.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -70,7 +70,7 @@
     <message>
         <location line="+165"/>
         <source>Missing argument, set version using: --export-version &lt;version&gt;</source>
-        <translation>Не хватает аргумента, задайте версию используя: --export-version &lt;версия&gt;</translation>
+        <translation>Не хватает аргумента. Задайте версию, используя: --export-version &lt;версия&gt;</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -80,7 +80,7 @@
     <message>
         <location line="+13"/>
         <source>Missing argument, evaluate a script using: --evaluate &lt;script-file&gt; [args]</source>
-        <translation>Не хватает аргумента, выполняйте скрипт используя: --evaluate &lt;скрипт-файл&gt; [аргументы]</translation>
+        <translation>Не хватает аргумента. Выполняйте скрипт, используя: --evaluate &lt;скрипт-файл&gt; [аргументы]</translation>
     </message>
     <message>
         <location line="+122"/>
@@ -95,7 +95,7 @@
     <message>
         <location line="+9"/>
         <source>Export syntax is --export-tileset [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation>Формат экспорта такой: --export-tileset [format] &lt;source&gt; &lt;target&gt;</translation>
+        <translation>Формат экспорта: --export-tileset [format] &lt;source&gt; &lt;target&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -136,7 +136,7 @@
     <message>
         <location filename="../src/tiledapp/main.cpp" line="-370"/>
         <source>Display the version</source>
-        <translation>Отобразить версию</translation>
+        <translation>Показать версию</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -241,7 +241,7 @@
     <message>
         <location line="+2"/>
         <source>Display this help</source>
-        <translation>Отобразить эту справку</translation>
+        <translation>Показать эту справку</translation>
     </message>
 </context>
 <context>
@@ -317,7 +317,7 @@
     <message>
         <location filename="../src/tiled/donationpopup.cpp" line="+42"/>
         <source>Please consider supporting Tiled development with a small monthly donation.</source>
-        <translation>Пожалуйста, поддержите небольшим ежемесячным пожертвованием разработку проекта.</translation>
+        <translation>Пожалуйста, поддержите разработку Tiled небольшим ежемесячным пожертвованием.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -507,7 +507,7 @@
     <message>
         <location line="+69"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
-        <translation>Возможно файл не соответствует спецификации Flare-карты. Flare карта состоит по крайней мере из одной секции заголовка, набора тайлов и слоя тайлов.</translation>
+        <translation>Возможно, файл не соответствует спецификации Flare-карты. Flare-карта состоит по крайней мере из одной секции заголовка, набора тайлов и слоя тайлов.</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -665,7 +665,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Save World</source>
-        <translation>Со&amp;хранить Мир</translation>
+        <translation>&amp;Сохранить Мир</translation>
     </message>
     <message>
         <location line="-69"/>
@@ -2043,7 +2043,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Pointing Hand</source>
-        <translation>Указующий перст</translation>
+        <translation>Рука-указатель</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -7648,7 +7648,7 @@ Please select specific format.</source>
     <message>
         <location line="+10"/>
         <source>Change Parallax Origin</source>
-        <translation type="unfinished">Изменение начала параллакса</translation>
+        <translation>Изменение источника параллакса</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -7675,13 +7675,13 @@ Please select specific format.</source>
     <message>
         <location line="+21"/>
         <source>Change Image Rect</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить прямоугольник изображения</translation>
     </message>
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="-127"/>
         <location line="+80"/>
         <source>Adjust Tile Indexes</source>
-        <translation>Отрегулировать индексы тайлов</translation>
+        <translation>Настройте индексы тайлов</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileimagesource.cpp" line="+39"/>
@@ -7827,7 +7827,7 @@ Please select specific format.</source>
         <location line="+25"/>
         <location line="+21"/>
         <source>Change Image Layer Repeat</source>
-        <translation>Изменить повторение изображения</translation>
+        <translation>Изменить повторение слоя изображения</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeobjectgroupproperties.cpp" line="+36"/>
@@ -7900,7 +7900,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tmxrasterizer/main.cpp" line="+55"/>
         <source>Renders a Tiled map or world to an image.</source>
-        <translation>Отображает Tiled-карту или мир в изображение.</translation>
+        <translation>Сохраняет Tiled-карту или мир как изображение.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -7910,7 +7910,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>scale</source>
-        <translation>коэффициент масштабирования</translation>
+        <translation>Коэффициент масштабирования</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -7992,7 +7992,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Image file to output.</source>
-        <translation>Результирующий файл изображения.</translation>
+        <translation>Файл изображения для вывода на экран.</translation>
     </message>
     <message>
         <location line="+27"/>
