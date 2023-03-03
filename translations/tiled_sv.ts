@@ -70,17 +70,17 @@
     <message>
         <location line="+165"/>
         <source>Missing argument, set version using: --export-version &lt;version&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Saknar argument, Ställ in version med: --export-version &lt;version&gt;</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Unknown version: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Okänd version: %1</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Missing argument, evaluate a script using: --evaluate &lt;script-file&gt; [args]</source>
-        <translation type="unfinished"></translation>
+        <translation>Saknade argument, utvärdera ett skript med:--evaluate &lt;Script-fil&gt; [argument]</translation>
     </message>
     <message>
         <location line="+122"/>
@@ -115,7 +115,7 @@
     <message>
         <location line="+6"/>
         <source>Session file &apos;%1&apos; not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sessionfil &apos;%1&apos; hittades inte.</translation>
     </message>
 </context>
 <context>
@@ -161,7 +161,7 @@
     <message>
         <location line="+10"/>
         <source>Set the compatibility version used when exporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Ställ in kompatibilitetsversionen som används vid exportering</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -171,7 +171,7 @@
     <message>
         <location line="+10"/>
         <source>Evaluate a script file and quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Utvärdera en skriptfil och avsluta</translation>
     </message>
     <message>
         <location line="+65"/>
@@ -301,7 +301,7 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+102"/>
         <source>Defold Tile Map (*.tilemap)</source>
-        <translation type="unfinished"></translation>
+        <translation>Defold kakelkarta (*.tileMap)</translation>
     </message>
 </context>
 <context>
@@ -309,7 +309,7 @@
     <message>
         <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+153"/>
         <source>Defold Collection (*.collection)</source>
-        <translation type="unfinished"></translation>
+        <translation>Defold samling (*.collection)</translation>
     </message>
 </context>
 <context>
@@ -460,7 +460,7 @@
         <location filename="../src/tiled/utils.cpp" line="+578"/>
         <source>JSON parse error at offset %1:
 %2.</source>
-        <translation type="unfinished">JSON-tolkningsfel vid förskjutning %1:
+        <translation>JSON-tolkningsfel vid förskjutning %1:
 %2.</translation>
     </message>
 </context>
@@ -474,17 +474,17 @@
     <message>
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-621"/>
         <source>Custom Types files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Anpassade typfiler (*.json)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Object Types JSON (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekttyper JSON (*.JSON)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Object Types XML (*.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekttyper XML (*.xml)</translation>
     </message>
 </context>
 <context>
@@ -542,7 +542,7 @@
     <message>
         <location line="+15"/>
         <source>JSON map files (*.tmj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON kart-filer ( *.tmj *.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -579,7 +579,7 @@
     <message>
         <location line="+14"/>
         <source>JSON template files (*.tj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON mall-filer ( *.tmj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
@@ -606,7 +606,7 @@
     <message>
         <location line="+14"/>
         <source>JSON tileset files (*.tsj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON rutuppsättning-filer (*.tsj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
@@ -795,27 +795,27 @@
     <message>
         <location line="+103"/>
         <source>&amp;New Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nytt projekt...</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Add Automapping Rules Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till automappande regler rutuppsättning</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Search Actions...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sökåtegärder...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Search actions available in Tiled</source>
-        <translation type="unfinished"></translation>
+        <translation>Sökåtergärder tillgånliga i Tiled</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
         <location line="-92"/>
@@ -1406,7 +1406,7 @@ Rad %1, kolumn %2</translation>
     <message>
         <location line="+30"/>
         <source>Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Senaste projekt</translation>
     </message>
     <message>
         <location line="+110"/>
@@ -1747,17 +1747,17 @@ Rad %1, kolumn %2</translation>
     <message>
         <location line="-29"/>
         <source>Background fade color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bakgrund tona bort färg:</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>Major grid:</source>
-        <translation type="unfinished"></translation>
+        <translation>Majornät:</translation>
     </message>
     <message>
         <location line="-33"/>
         <source>by</source>
-        <translation type="unfinished"></translation>
+        <translation>av</translation>
     </message>
     <message>
         <location line="+139"/>
@@ -1783,12 +1783,12 @@ Rad %1, kolumn %2</translation>
     <message>
         <location line="+74"/>
         <source>Use custom interface font</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd anpassat gränssnittsteckensnitt</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Teckensnitt:</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -1840,7 +1840,7 @@ Rad %1, kolumn %2</translation>
     <message>
         <location line="-10"/>
         <source>Pixel-perfect tile object selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Pixel-perfekt kakelobjektval</translation>
     </message>
     <message>
         <location line="+191"/>
@@ -1866,12 +1866,12 @@ Rad %1, kolumn %2</translation>
     <message>
         <location filename="../src/tiled/propertytypeseditor.ui" line="+14"/>
         <source>Custom Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Anpassade typer editor</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Custom Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Anpassade typer</translation>
     </message>
 </context>
 <context>
@@ -2636,7 +2636,7 @@ Rad %1, kolumn %2</translation>
     <message>
         <location line="+20"/>
         <source>Can&apos;t set column count for image-based tilesets</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte ställa in kolumnantal för bildbaserade brickor</translation>
     </message>
     <message>
         <location line="+78"/>
@@ -2677,7 +2677,7 @@ Rad %1, kolumn %2</translation>
     <message>
         <location filename="../src/tiled/scriptedtool.cpp" line="+231"/>
         <source>Could not find action &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte hitta åtegärd &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -2693,7 +2693,7 @@ Rad %1, kolumn %2</translation>
     <message>
         <location line="-25"/>
         <source>Unknown type: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Okänd typ: %1</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -2766,52 +2766,52 @@ Rad %1, kolumn %2</translation>
     <message>
         <location filename="../src/tiled/scriptfile.cpp" line="+343"/>
         <source>The directory &apos;%1&apos; could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalogen &apos;%1&apos; kunde inte skapas.</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>The symlink &apos;%1&apos; could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Symlänk &apos;%1&apos; kunde inte skapas.</translation>
     </message>
     <message>
         <location line="-103"/>
         <source>The directory &apos;%1&apos; could not be deleted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalogen &apos;%1&apos; kunde inte raderas.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>The file &apos;%1&apos; could not be deleted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen &apos;%1&apos; kunde inte raderas.</translation>
     </message>
     <message>
         <location line="+118"/>
         <source>Could not remove file &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte ta bort fil &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Could not copy file &apos;%1&apos; to &apos;%2&apos;: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte kopiera fil &apos;%1&apos; till &apos;%2&apos;: %3</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Could not move &apos;%1&apos; to &apos;%2&apos;: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte flytta &apos;%1&apos; till &apos;%2&apos;: %3</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Source file path is a directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Källfilsökväg är en katalog.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Destination file path is a directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Destinationsfilsökväg är en katalog.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Destination file exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Destinationsfil existerar.</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -3319,7 +3319,7 @@ Rad %1, kolumn %2</translation>
     <message>
         <location line="+21"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; for rule options (rule map &apos;%1&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorerar okänd egendom &apos;%2&apos; = &apos;%3&apos; för regelalternativ (regelkarta &apos;%1&apos;)</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -3329,22 +3329,22 @@ Rad %1, kolumn %2</translation>
     <message>
         <location line="-7"/>
         <source>&apos;%1&apos; layer must not occur more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; lager får inte förekomma mer än en gång.</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Only rectangle objects are supported on &apos;rule_options&apos; layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Endast rektangelobjekt stöds på &apos;rule_options&apos; lager.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Rotated rectangles are not supported on &apos;rule_options&apos; layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Roterade rektanglar stöds inte på &apos;rule_options&apos; lager.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>&apos;rule_options&apos; layers must be object layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;rule_options&apos; lager måste vara objektlager.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -3359,7 +3359,7 @@ Rad %1, kolumn %2</translation>
     <message>
         <location line="+48"/>
         <source>No input_&lt;name&gt; or inputnot_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Inget input_&lt;name&gt; eller inputnot_&lt;name&gt; lager hittades!</translation>
     </message>
     <message>
         <location line="-119"/>
@@ -3378,7 +3378,7 @@ Rad %1, kolumn %2</translation>
     <message>
         <location filename="../src/tiled/automappingmanager.cpp" line="+115"/>
         <source>No AutoMapping rules provided. Save the map or refer to a rule file in the project properties.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga automatiseringsregler tillhandahålls. Spara kartan eller se en regelfil i projektegenskaperna.</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -3912,9 +3912,9 @@ Rad %1, kolumn %2</translation>
     <message numerus="yes">
         <location line="+259"/>
         <source>Move %n Node(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Flytta %n nod</numerusform>
+            <numerusform>Flytta %n noder</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4178,7 +4178,7 @@ Vill du ersätta den?</translation>
     <message>
         <location filename="../src/tiled/actionsearch.cpp" line="+242"/>
         <source>Search actions...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sökåtgärder...</translation>
     </message>
 </context>
 <context>
@@ -4369,7 +4369,7 @@ Var god ange det specifika formatet.</translation>
         <location line="-510"/>
         <location line="+1549"/>
         <source>Custom Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Anpassad typ editor</translation>
     </message>
     <message>
         <location line="-1083"/>
@@ -4426,7 +4426,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+15"/>
         <source>New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Nytt projekt</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -4456,7 +4456,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+35"/>
         <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Det nuvarande projektet innehåller &lt;a href=&quot;https://doc.mapeditor.org/sv/stable/reference/scripting/&quot;&gt; skriptade tillägg &lt;/a&gt;. &lt;br&gt;&lt;i&gt; Se till att du litar på dessa tillägg innan du aktiverar dem!&lt;/i&gt;</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4629,7 +4629,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+193"/>
         <source>Group Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupplager %1</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -4779,7 +4779,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+1"/>
         <source>Select All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj alla lager</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4921,7 +4921,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+1"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Klass</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5271,32 +5271,32 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="-17"/>
         <source>Tiled 1.8</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled 1.8</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tiled 1.9</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled 1.9</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tiled 1.10</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled 1.10</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Latest</source>
-        <translation type="unfinished"></translation>
+        <translation>Senaste</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Compatibility Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompatibilitetsversion</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Extensions Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilläggskatalog</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -5306,12 +5306,12 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+4"/>
         <source>General</source>
-        <translation type="unfinished">Allmänt</translation>
+        <translation>Allmänt</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Paths &amp;&amp; Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Sökvägar &amp;&amp; Filer</translation>
     </message>
 </context>
 <context>
@@ -5324,12 +5324,12 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+16"/>
         <source>Select in Tilesets View</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj i rutuppsättningar vy</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Add Tileset to Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till rutuppsättningar till karta</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -5487,7 +5487,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+5"/>
         <source>Parallax Origin</source>
-        <translation type="unfinished"></translation>
+        <translation>Parallax ursprung</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5672,12 +5672,12 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="-105"/>
         <source>Repeat X</source>
-        <translation type="unfinished"></translation>
+        <translation>Repetera X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Repeat Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Repetera Y</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -5707,12 +5707,12 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+6"/>
         <source>Tile Render Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Kakel renderstorlek</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Fyll läge</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -5788,7 +5788,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+15"/>
         <source>Image Rect</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildhöjning</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -5808,27 +5808,27 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+29"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Klass</translation>
     </message>
     <message>
         <location line="+1035"/>
         <source>Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Kakelstorlek</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Map Grid Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartnätstorlek</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Sträck</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Preserve Aspect Ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>Bevara aspektförhållandet</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -5941,243 +5941,243 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location filename="../src/tiled/propertytypeseditor.cpp" line="+175"/>
         <source>Add Enum</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till Enum</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till klass</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+49"/>
         <source>Remove Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort typ</translation>
     </message>
     <message>
         <location line="-47"/>
         <source>Add Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till värde</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort värde</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+277"/>
         <source>Add Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till medlem</translation>
     </message>
     <message>
         <location line="-276"/>
         <location line="+327"/>
         <source>Remove Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort medlem</translation>
     </message>
     <message>
         <location line="-326"/>
         <location line="+362"/>
         <source>Rename Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Byt namn på medlem</translation>
     </message>
     <message>
         <location line="-360"/>
         <source>Export...</source>
-        <translation type="unfinished">Exportera...</translation>
+        <translation>Exportera...</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Import...</source>
-        <translation type="unfinished">Importera...</translation>
+        <translation>Importera...</translation>
     </message>
     <message>
         <location line="-163"/>
         <source>Map</source>
-        <translation type="unfinished">Karta</translation>
+        <translation>Karta</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Layer</source>
-        <translation type="unfinished">Lager</translation>
+        <translation>Lager</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Object</source>
-        <translation type="unfinished">Objekt</translation>
+        <translation>Objekt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tile</source>
-        <translation type="unfinished">Ruta</translation>
+        <translation>Ruta</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tileset</source>
-        <translation type="unfinished">Rutuppsättning</translation>
+        <translation>Rutuppsättning</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Terrain</source>
-        <translation type="unfinished">Terräng</translation>
+        <translation>Terräng</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Terrain Set</source>
-        <translation type="unfinished">Terränguppsättning</translation>
+        <translation>Terränguppsättning</translation>
     </message>
     <message>
         <location line="+156"/>
         <location line="+481"/>
         <source>Export Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportera typer</translation>
     </message>
     <message>
         <location line="-479"/>
         <location line="+406"/>
         <source>Import Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Importera typer</translation>
     </message>
     <message>
         <location line="-368"/>
         <source>Are you sure you want to remove the type &apos;%1&apos;? This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Är du säker på att du vill ta bort typen &apos;%1&apos;? Denna åtgärd kan inte ångras.</translation>
     </message>
     <message>
         <location line="+165"/>
         <source>Remove Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort värden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Are you sure you want to remove the selected values from enum &apos;%1&apos;? This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Är du säker på att du vill ta bort de valda värdena från enum &apos;%1&apos;? Denna åtgärd kan inte ångras.</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Too Many Values</source>
-        <translation type="unfinished"></translation>
+        <translation>För många värden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation type="unfinished"></translation>
+        <translation>För många värden för enum med värden lagrade som flaggor. Maximalt antal bitflaggor är 32.</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>Error Adding Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel då medlem skulle läggas till</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+97"/>
         <source>There is already a member named &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Det finns redan en medlem som heter &apos;%1&apos;.</translation>
     </message>
     <message>
         <location line="-64"/>
         <source>Are you sure you want to remove &apos;%1&apos; from class &apos;%2&apos;? This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Är du säker på att du vill ta bort &apos;%1&apos; från klass &apos;%2&apos;? Denna åtgärd kan inte ångras.</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Name:</source>
-        <translation type="unfinished">Namn:</translation>
+        <translation>Namn:</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Error Renaming Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel vid byte av namn på medlem</translation>
     </message>
     <message>
         <location line="+38"/>
         <source>Error Reading Object Types</source>
-        <translation type="unfinished">Fel uppstod när objekttyper lästes</translation>
+        <translation>Fel uppstod när objekttyper skulle läsas in</translation>
     </message>
     <message>
         <location line="+8"/>
         <location line="+7"/>
         <source>Error Reading Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel vid inläsning av typer</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>Error Writing Object Types</source>
-        <translation type="unfinished">Fel uppstod när objekttyper skrevs</translation>
+        <translation>Fel vid skrivande av objekttyper</translation>
     </message>
     <message>
         <location line="+8"/>
         <location line="+7"/>
         <source>Error Writing Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel vid skrivande av typer</translation>
     </message>
     <message>
         <location line="+70"/>
         <location line="+90"/>
         <source>Select Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj typer</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Color</source>
-        <translation type="unfinished">Färg</translation>
+        <translation>Färg</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Draw fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Rita påfyllning</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Property value</source>
-        <translation type="unfinished"></translation>
+        <translation>Egenskap värde</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Class of</source>
-        <translation type="unfinished"></translation>
+        <translation>Klass av</translation>
     </message>
     <message>
         <location line="+24"/>
         <location line="+38"/>
         <source>Name</source>
-        <translation type="unfinished">Namn</translation>
+        <translation>Namn</translation>
     </message>
     <message>
         <location line="-37"/>
         <source>Use as</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd som</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Members</source>
-        <translation type="unfinished"></translation>
+        <translation>Medlemmar</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation>Sträng</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Nummer</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Allow multiple values (flags)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tillåt multipla värden (flaggor)</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Save as</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara som</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Värden</translation>
     </message>
 </context>
 <context>
@@ -6185,22 +6185,22 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location filename="../src/tiled/propertytypesmodel.cpp" line="+222"/>
         <source>Error Renaming Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel vid ändrande av namn på typ</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The name &apos;%1&apos; is already in use.</source>
-        <translation type="unfinished"></translation>
+        <translation>Namnet &apos;%1&apos; används redan.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Enum</source>
-        <translation type="unfinished"></translation>
+        <translation>Enum</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Klass</translation>
     </message>
 </context>
 <context>
@@ -6216,7 +6216,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location filename="../src/tiled/scriptdialog.cpp" line="+26"/>
         <source>Script</source>
-        <translation type="unfinished"></translation>
+        <translation>Skript</translation>
     </message>
 </context>
 <context>
@@ -6224,7 +6224,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location filename="../src/tiled/scriptmanager.cpp" line="-154"/>
         <source>Importing module &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Importerar modul &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -6485,17 +6485,17 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="-153"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">Klipp &amp;ut</translation>
+        <translation>Kl&amp;ipp ut</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Kopiera</translation>
+        <translation>&amp;Kopiera</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Klistra in</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -6746,7 +6746,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+38"/>
         <source>Tileset format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Rutuppsättnings format &apos;%s&apos; hittades inte</translation>
     </message>
     <message>
         <location line="+83"/>
@@ -6789,7 +6789,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="-196"/>
         <source>Rearrange Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordna om brickor</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6875,7 +6875,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+8"/>
         <source>Select &amp;All Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj &amp;alla brickor</translation>
     </message>
 </context>
 <context>
@@ -7176,72 +7176,72 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location filename="../src/plugins/tscn/tscnplugin.cpp" line="-484"/>
         <source>Could not find .godot project in file path for file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte hitta. Godot projekt i filsökväg för fil %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>All files must share the same project root. File &apos;%1&apos; does not share project root &apos;%2&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Alla filer måste dela samma projektroot. Fil &apos;%1&apos; delar inte projektroot &apos;%2&apos;.</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Cannot export tileset &apos;%1&apos; because the Godot exporter does not support collection-type tilesets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte exportera rutuppsättning &apos;%1&apos; eftersom Godot-exportören inte stöder brickor av samlingstyp.</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>The Godot exporter does not yet support objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Godot-exportören stöder ännu inte objekt</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The Godot exporter does not yet support image layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Godot-exportören stöder ännu inte bildlager</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>Godot exporter only supports collisions that are rectangles or polygons.</source>
-        <translation type="unfinished"></translation>
+        <translation>Godot-Exportören stöder bara kollisioner som är rektanglar eller polygoner.</translation>
     </message>
     <message>
         <location line="+132"/>
         <source>Tile animations must flow left-to-right, top-to-bottom, with no skipped tiles.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kakelanimationer måste flöda vänster till höger, topp-till-botten, med inga överhoppade plattor.</translation>
     </message>
     <message>
         <location line="+86"/>
         <source>Godot only supports hexagonal maps where the Hex Side Length is exactly half its height. For a tile height of %1, the Hex Side Length should be set to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Godot stöder bara hexagonala kartor där hex sidolängden är exakt hälften av sin höjd. För en kakelhöjd på %1 bör hex -sidolängden ställas in på %2.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Unsupported tile orientation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kakelorientering som inte stöds.</translation>
     </message>
     <message>
         <location line="+68"/>
         <source>tilesetResPath must be in the form of &apos;res://&lt;filename&gt;.tres&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>tilesetResPath måste vara i form av &apos;res: // &lt;filnamn&gt; .tres&apos;.</translation>
     </message>
     <message>
         <location line="+77"/>
         <source>Cannot use tile %1 from tileset %2 because it is reserved as an animation frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte använda kakel %1 från rutuppsättning %2 eftersom det är reserverat som en animationsram.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Hex tiles that are rotated by 120° degrees are not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hexplattor som roteras med 120° grader stöds inte.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Map uses flipped/rotated tiles. The tileset must have the custom exportAlternates property enabled to export this map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Karta använder vänd/roterade plattor. Rutuppsättningen måste ha den anpassade Exportalternates-egenskapen aktiverad för att exportera denna karta.</translation>
     </message>
     <message>
         <location line="+53"/>
         <source>Godot 4 Scene files (*.tscn)</source>
-        <translation type="unfinished"></translation>
+        <translation>Godot 4 Scen filer (*.tscn)</translation>
     </message>
 </context>
 <context>
@@ -7294,7 +7294,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location filename="../src/tiled/changeproperties.cpp" line="+37"/>
         <source>Change Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Ändra typ</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -7400,12 +7400,12 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+22"/>
         <source>Change Tile Render Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Ändra kakel renderstorlek</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Change Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Ändra fyll läge</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -7617,7 +7617,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+10"/>
         <source>Change Parallax Origin</source>
-        <translation type="unfinished"></translation>
+        <translation>Ändra parallax ursprung</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -7644,7 +7644,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+21"/>
         <source>Change Image Rect</source>
-        <translation type="unfinished"></translation>
+        <translation>Ändra bildhöjning</translation>
     </message>
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="-127"/>
@@ -7777,56 +7777,56 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location filename="../src/tiled/relocatetiles.cpp" line="+33"/>
         <source>Relocate Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Flytta kakel</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerproperty.cpp" line="+38"/>
         <source>Change Transparent Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Ändra transparent färg</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Change Image Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Ändra bildkälla</translation>
     </message>
     <message>
         <location line="+25"/>
         <location line="+21"/>
         <source>Change Image Layer Repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Ändra bildlager upprepa</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeobjectgroupproperties.cpp" line="+36"/>
         <source>Change Object Layer Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Ändra objektlager färg</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Change Object Layer Draw Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Ändra objektlager rita ordning</translation>
     </message>
     <message>
         <location filename="../src/tiled/abstractworldtool.cpp" line="-299"/>
         <source>Add Map to World</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till karta till värld</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Remove Map from World</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort karta från värld</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/transformmapobjects.cpp" line="+4"/>
         <source>Transform %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Transformera %n objekt</numerusform>
+            <numerusform>Transformera %n objekt</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/tiled/worldmovemaptool.cpp" line="-146"/>
         <source>Move Map</source>
-        <translation type="unfinished">Flytta Kartan</translation>
+        <translation>Flytta karta</translation>
     </message>
 </context>
 <context>
@@ -7927,17 +7927,17 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+3"/>
         <source>Don&apos;t render tile layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rendera inte kakellager.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Don&apos;t render object layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rendera inte objektlager.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Don&apos;t render image layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rendera inte bildlager.</translation>
     </message>
     <message>
         <location line="+2"/>

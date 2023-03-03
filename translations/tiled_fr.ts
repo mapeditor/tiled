@@ -115,7 +115,7 @@
     <message>
         <location line="+6"/>
         <source>Session file &apos;%1&apos; not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier de session &apos;%1&apos; est introuvable.</translation>
     </message>
 </context>
 <context>
@@ -805,17 +805,17 @@
     <message>
         <location line="+5"/>
         <source>Search Actions...</source>
-        <translation type="unfinished"></translation>
+        <translation>Chercher les Actions...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Search actions available in Tiled</source>
-        <translation type="unfinished"></translation>
+        <translation>Chercher les actions disponibles dans Tiled</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Maj+P</translation>
     </message>
     <message>
         <location line="-92"/>
@@ -1783,12 +1783,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+74"/>
         <source>Use custom interface font</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser une police personnalisée pour l&apos;interface</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Police :</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -4178,7 +4178,7 @@ Voulez-vous le remplacer ?</translation>
     <message>
         <location filename="../src/tiled/actionsearch.cpp" line="+242"/>
         <source>Search actions...</source>
-        <translation type="unfinished"></translation>
+        <translation>Chercher les actions...</translation>
     </message>
 </context>
 <context>
@@ -4629,7 +4629,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+193"/>
         <source>Group Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Groupe de Calques %1</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -5276,12 +5276,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+1"/>
         <source>Tiled 1.9</source>
-        <translation type="unfinished">Tiled 1.9</translation>
+        <translation>Tiled 1.9</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tiled 1.10</source>
-        <translation type="unfinished">Tiled 1.10</translation>
+        <translation>Tiled 1.10</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6126,7 +6126,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+5"/>
         <source>Draw fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplissage</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -6216,7 +6216,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/scriptdialog.cpp" line="+26"/>
         <source>Script</source>
-        <translation type="unfinished"></translation>
+        <translation>Script</translation>
     </message>
 </context>
 <context>
@@ -6875,7 +6875,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+8"/>
         <source>Select &amp;All Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner Toutes les Tuiles (&amp;A)</translation>
     </message>
 </context>
 <context>
@@ -7176,72 +7176,72 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/plugins/tscn/tscnplugin.cpp" line="-484"/>
         <source>Could not find .godot project in file path for file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Le projet .godot est introuvable dans le chemin du fichier pour le fichier %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>All files must share the same project root. File &apos;%1&apos; does not share project root &apos;%2&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tous les fichiers doivent avoir la même racine de projet. Le fichier &apos;%1&apos; ne partage pas la racine de projet &apos;%2&apos;.</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Cannot export tileset &apos;%1&apos; because the Godot exporter does not support collection-type tilesets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;exporter le jeu de tuiles &apos;%1&apos; car l&apos;exportateur Godot ne supporte pas les jeux de tuiles de type collection.</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>The Godot exporter does not yet support objects</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;exportateur Godot ne supporte pas encore les objets</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The Godot exporter does not yet support image layers</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;exportateur Godot ne supporte pas encore les calques d&apos;images</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>Godot exporter only supports collisions that are rectangles or polygons.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;exportateur Godot ne supporte que les collisions rectangulaires ou polygonales.</translation>
     </message>
     <message>
         <location line="+132"/>
         <source>Tile animations must flow left-to-right, top-to-bottom, with no skipped tiles.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les animations de tuiles doivent procéder de gauche à droite, de haut en bas, sans passer de tuile.</translation>
     </message>
     <message>
         <location line="+86"/>
         <source>Godot only supports hexagonal maps where the Hex Side Length is exactly half its height. For a tile height of %1, the Hex Side Length should be set to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Godot supporte seulement les cartes hexagonales où la Taille de Côté d&apos;une Tuile Hexagonale est exactement la moitié de sa hauteur. Pour une hauteur de tuile de %1, la Taille de Côté d&apos;une Tuile Hexagonale doit être %2.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Unsupported tile orientation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientation de tuile non supportée.</translation>
     </message>
     <message>
         <location line="+68"/>
         <source>tilesetResPath must be in the form of &apos;res://&lt;filename&gt;.tres&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le chemin de ressources du jeu de tuiles doit être dans la forme de &apos;res://&lt;nom de fichier&gt;.tres&apos;.</translation>
     </message>
     <message>
         <location line="+77"/>
         <source>Cannot use tile %1 from tileset %2 because it is reserved as an animation frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;utiliser la tuile %1 du jeu de tuiles %2 car elle est réservée en tant que trame d&apos;animation.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Hex tiles that are rotated by 120° degrees are not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les tuiles hexagonales tournées de 120° ne sont pas supportées.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Map uses flipped/rotated tiles. The tileset must have the custom exportAlternates property enabled to export this map.</source>
-        <translation type="unfinished"></translation>
+        <translation>La carte utilise des tuiles inversées/pivotées. Le jeu de tuiles doit avoir la propriété personnalisée exportAlternates active pour exporter cette carte.</translation>
     </message>
     <message>
         <location line="+53"/>
         <source>Godot 4 Scene files (*.tscn)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de Scène de Godot 4 (*.tscn)</translation>
     </message>
 </context>
 <context>
