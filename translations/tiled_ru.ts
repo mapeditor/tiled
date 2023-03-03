@@ -115,7 +115,7 @@
     <message>
         <location line="+6"/>
         <source>Session file &apos;%1&apos; not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл сессии &apos;%1&apos; не найден.</translation>
     </message>
 </context>
 <context>
@@ -805,12 +805,12 @@
     <message>
         <location line="+5"/>
         <source>Search Actions...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Найти действие...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Search actions available in Tiled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Поиск действий, доступных в Tiled</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1783,12 +1783,12 @@ Line %1, column %2</source>
     <message>
         <location line="+74"/>
         <source>Use custom interface font</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать пользовательский шрифт интерфейса</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шрифт:</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -1840,7 +1840,7 @@ Line %1, column %2</source>
     <message>
         <location line="-10"/>
         <source>Pixel-perfect tile object selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выделение тайлов-объектов с точностью до пикселей</translation>
     </message>
     <message>
         <location line="+191"/>
@@ -4186,7 +4186,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/actionsearch.cpp" line="+242"/>
         <source>Search actions...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Найти действие...</translation>
     </message>
 </context>
 <context>
@@ -4641,7 +4641,7 @@ Please select specific format.</source>
     <message>
         <location line="+193"/>
         <source>Group Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Группа слоев %1</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -5815,7 +5815,7 @@ Please select specific format.</source>
     <message>
         <location line="+15"/>
         <source>Image Rect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Прямоугольник изображения</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -6153,7 +6153,7 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Draw fill</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Рисовать заполнение</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -6243,7 +6243,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/scriptdialog.cpp" line="+26"/>
         <source>Script</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрипт</translation>
     </message>
 </context>
 <context>
@@ -6902,7 +6902,7 @@ Please select specific format.</source>
     <message>
         <location line="+8"/>
         <source>Select &amp;All Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Выделить &amp;все тайлы</translation>
     </message>
 </context>
 <context>
@@ -7203,72 +7203,72 @@ Please select specific format.</source>
     <message>
         <location filename="../src/plugins/tscn/tscnplugin.cpp" line="-484"/>
         <source>Could not find .godot project in file path for file %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не найден .godot проект на пути файла %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>All files must share the same project root. File &apos;%1&apos; does not share project root &apos;%2&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Все файлы должны иметь общею корневую папку проекта. Файл &apos;%1&apos; не имеет общей корневой папки &apos;%2&apos;.</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Cannot export tileset &apos;%1&apos; because the Godot exporter does not support collection-type tilesets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно экспортировать набор тайлов &apos;%1&apos;, поскольку экспортер Godot не поддерживает коллекции изображений.</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>The Godot exporter does not yet support objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспортер Godot еще не поддерживает объекты</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The Godot exporter does not yet support image layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспортер Godot еще не поддерживает слои изображений</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>Godot exporter only supports collisions that are rectangles or polygons.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Экспортер Godot поддерживает только формы столкновений, которые прямоугольники или полигоны.</translation>
     </message>
     <message>
         <location line="+132"/>
         <source>Tile animations must flow left-to-right, top-to-bottom, with no skipped tiles.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Анимации тайлов должны идти слева направо, сверху вниз, не пропуская тайлов.</translation>
     </message>
     <message>
         <location line="+86"/>
         <source>Godot only supports hexagonal maps where the Hex Side Length is exactly half its height. For a tile height of %1, the Hex Side Length should be set to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Godot поддерживает только те гексагональные карты у которых длина сторон тайла равна точно половине высоты тайла. Для высоты тайла %1, длина сторон тайла должна быть установлена на %2.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Unsupported tile orientation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неподдерживаемая ориентация тайла.</translation>
     </message>
     <message>
         <location line="+68"/>
         <source>tilesetResPath must be in the form of &apos;res://&lt;filename&gt;.tres&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">tilesetResPath должно быть в виде &apos;res://&lt;имя файла&gt;.tres&apos;.</translation>
     </message>
     <message>
         <location line="+77"/>
         <source>Cannot use tile %1 from tileset %2 because it is reserved as an animation frame.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Нельзя использовать тайл %1 из набора %2, потому что он резервирован для использования как кадр анимации.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Hex tiles that are rotated by 120° degrees are not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Гексагональные тайлы повернутые на 120° не поддерживаются.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Map uses flipped/rotated tiles. The tileset must have the custom exportAlternates property enabled to export this map.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Карта использует отраженные/повернутые тайлы. Набор тайлов должен иметь пользовательское свойство exportAlternates чтобы экспортировать эту карту.</translation>
     </message>
     <message>
         <location line="+53"/>
         <source>Godot 4 Scene files (*.tscn)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлы сцен Godot 4 (*.tscn)</translation>
     </message>
 </context>
 <context>
