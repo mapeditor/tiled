@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>QPushButton | Tiled Scripting API</title>
+	<title>Base64 | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -76,13 +76,10 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="../modules/Qt.html">Qt</a>
-				</li>
-				<li>
-					<a href="Qt.QPushButton.html">QPushButton</a>
+					<a href="Base64.html">Base64</a>
 				</li>
 			</ul>
-			<h1>Class QPushButton</h1>
+			<h1>Namespace Base64</h1>
 		</div>
 	</div>
 </header>
@@ -92,131 +89,95 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>A button which the user can push.</p>
+						<p>Provides functions to encode and decode data using Base64.</p>
 					</div>
+					<dl class="tsd-comment-tags">
+						<dt>since</dt>
+						<dd><p>1.10</p>
+						</dd>
+					</dl>
 				</div>
-			</section>
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<a href="Qt.QWidget.html" class="tsd-signature-type" data-tsd-kind="Class">QWidget</a>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">QPushButton</span>
-							</li>
-						</ul>
-					</li>
-				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-inherited">
-							<h3>Constructors</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QPushButton.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QPushButton.html#clicked" class="tsd-kind-icon">clicked</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QPushButton.html#enabled" class="tsd-kind-icon">enabled</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QPushButton.html#text" class="tsd-kind-icon">text</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QPushButton.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QPushButton.html#visible" class="tsd-kind-icon">visible</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="Base64.html#decode" class="tsd-kind-icon">decode</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="Base64.html#encode" class="tsd-kind-icon">encode</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="Base64.html#encodeAsBytes" class="tsd-kind-icon">encode<wbr>AsBytes</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">new QPush<wbr>Button<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QPushButton.html" class="tsd-signature-type" data-tsd-kind="Class">QPushButton</a></li>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="decode" class="tsd-anchor"></a>
+					<h3>decode</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">decode<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#constructor">constructor</a></p>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Decodes the given data using Base64.</p>
+								</div>
+							</div>
 						</li>
 					</ul>
 				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="clicked" class="tsd-anchor"></a>
-					<h3>clicked</h3>
-					<div class="tsd-signature tsd-kind-icon">clicked<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Signal emitted when the button is pressed.</p>
-						</div>
-					</div>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="encode" class="tsd-anchor"></a>
+					<h3>encode</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">encode<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Encodes the given data using Base64, with the result converted to a
+									string for convenience.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre><code class="language-js"><span style="color: #569CD6">let</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">buffer</span><span style="color: #D4D4D4"> = </span><span style="color: #569CD6">new</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">ArrayBuffer</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">byteLength</span><span style="color: #D4D4D4">);</span>
+<span style="color: #6A9955">// [Fill the buffer with data, for example using a DataView]</span>
+<span style="color: #9CDCFE">json</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">data</span><span style="color: #D4D4D4"> = </span><span style="color: #9CDCFE">Base64</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">encode</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">buffer</span><span style="color: #D4D4D4">);</span>
+<span style="color: #9CDCFE">file</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">write</span><span style="color: #D4D4D4">(</span><span style="color: #4EC9B0">JSON</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">stringify</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">json</span><span style="color: #D4D4D4">));</span>
+</code></pre>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="enabled" class="tsd-anchor"></a>
-					<h3>enabled</h3>
-					<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#enabled">enabled</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>If false, the widget cannot be interacted with.
-							Qt documentation: <a href="https://doc.qt.io/qt-5/qwidget.html#enabled-prop">QWidget.enabled</a></p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="text" class="tsd-anchor"></a>
-					<h3>text</h3>
-					<div class="tsd-signature tsd-kind-icon">text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The text displayed on the surface of the button.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="toolTip" class="tsd-anchor"></a>
-					<h3>tool<wbr>Tip</h3>
-					<div class="tsd-signature tsd-kind-icon">tool<wbr>Tip<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#toolTip">toolTip</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The toolTip displayed when the user mouses over this widget</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="visible" class="tsd-anchor"></a>
-					<h3>visible</h3>
-					<div class="tsd-signature tsd-kind-icon">visible<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#visible">visible</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Controls whether this widget is visible.
-								When toggling this property, the dialog layout will automatically adjust itself
-								based on the visible widgets.
-							Qt documentation: <a href="https://doc.qt.io/qt-5/qwidget.html#visible-prop">QWidget.visible</a>;</p>
-						</div>
-					</div>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="encodeAsBytes" class="tsd-anchor"></a>
+					<h3>encode<wbr>AsBytes</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">encode<wbr>AsBytes<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Encodes the given data using Base64, keeping the result in binary form.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -226,132 +187,36 @@
 					<li class=" ">
 						<a href="../index.html">Exports</a>
 					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="../modules/Base64.html">Base64</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="../modules/File.html">File</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="../modules/FileInfo.html">File<wbr>Info</a>
-					</li>
 					<li class="current tsd-kind-namespace">
-						<a href="../modules/Qt.html">Qt</a>
+						<a href="Base64.html">Base64</a>
 					</li>
 					<li class=" tsd-kind-namespace">
-						<a href="../modules/Tiled.html">Tiled</a>
+						<a href="File.html">File</a>
 					</li>
 					<li class=" tsd-kind-namespace">
-						<a href="../modules/tiled.html">tiled</a>
+						<a href="FileInfo.html">File<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="Qt.html">Qt</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="Tiled.html">Tiled</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="tiled.html">tiled</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QCheckBox.html" class="tsd-kind-icon">QCheck<wbr>Box</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QComboBox.html" class="tsd-kind-icon">QCombo<wbr>Box</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QDoubleSpinBox.html" class="tsd-kind-icon">QDouble<wbr>Spin<wbr>Box</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QFrame.html" class="tsd-kind-icon">QFrame</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QLabel.html" class="tsd-kind-icon">QLabel</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QLineEdit.html" class="tsd-kind-icon">QLine<wbr>Edit</a>
-					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QPushButton.html" class="tsd-kind-icon">QPush<wbr>Button</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-								<a href="Qt.QPushButton.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Qt.QPushButton.html#clicked" class="tsd-kind-icon">clicked</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Qt.QPushButton.html#enabled" class="tsd-kind-icon">enabled</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Qt.QPushButton.html#text" class="tsd-kind-icon">text</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Qt.QPushButton.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Qt.QPushButton.html#visible" class="tsd-kind-icon">visible</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<ul class="after-current">
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QSlider.html" class="tsd-kind-icon">QSlider</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QTextEdit.html" class="tsd-kind-icon">QText<wbr>Edit</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QUrl.html" class="tsd-kind-icon">QUrl</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QWidget.html" class="tsd-kind-icon">QWidget</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#Alignment" class="tsd-kind-icon">Alignment</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#CheckState" class="tsd-kind-icon">Check<wbr>State</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignBottom" class="tsd-kind-icon">Align<wbr>Bottom</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignCenter" class="tsd-kind-icon">Align<wbr>Center</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignHCenter" class="tsd-kind-icon">AlignHCenter</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignJustify" class="tsd-kind-icon">Align<wbr>Justify</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignLeft" class="tsd-kind-icon">Align<wbr>Left</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignRight" class="tsd-kind-icon">Align<wbr>Right</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignTop" class="tsd-kind-icon">Align<wbr>Top</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignVCenter" class="tsd-kind-icon">AlignVCenter</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#Checked" class="tsd-kind-icon">Checked</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#PartiallyChecked" class="tsd-kind-icon">Partially<wbr>Checked</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#Unchecked" class="tsd-kind-icon">Unchecked</a>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="Base64.html#decode" class="tsd-kind-icon">decode</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#point" class="tsd-kind-icon">point</a>
+						<a href="Base64.html#encode" class="tsd-kind-icon">encode</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#rect" class="tsd-kind-icon">rect</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#size" class="tsd-kind-icon">size</a>
+						<a href="Base64.html#encodeAsBytes" class="tsd-kind-icon">encode<wbr>AsBytes</a>
 					</li>
 				</ul>
 			</nav>

@@ -129,8 +129,8 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QDoubleSpinBox.html#maximum" class="tsd-kind-icon">maximum</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QDoubleSpinBox.html#minimum" class="tsd-kind-icon">minimum</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QDoubleSpinBox.html#prefix" class="tsd-kind-icon">prefix</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QDoubleSpinBox.html#singleStep" class="tsd-kind-icon">single<wbr>Step</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QDoubleSpinBox.html#suffix" class="tsd-kind-icon">suffix</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QDoubleSpinBox.html#tickInterval" class="tsd-kind-icon">tick<wbr>Interval</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QDoubleSpinBox.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QDoubleSpinBox.html#value" class="tsd-kind-icon">value</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QDoubleSpinBox.html#valueChanged" class="tsd-kind-icon">value<wbr>Changed</a></li>
@@ -167,9 +167,10 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The number of decimal places that are allowed in the input.
-							Specify 0 for integer values.</p>
+							<p>This property holds the precision of the spin box, in decimals.</p>
 						</div>
+						<p>Sets how many decimals the spinbox will use for displaying and
+						interpreting doubles. Specify 0 for integer values.</p>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
@@ -194,7 +195,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The maximum value that can be set by the input.</p>
+							<p>This property holds the maximum value of the spin box.</p>
 						</div>
 					</div>
 				</section>
@@ -206,7 +207,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The minimum value that can be set by the input.</p>
+							<p>This property holds the minimum value of the spin box.</p>
 						</div>
 					</div>
 				</section>
@@ -218,7 +219,21 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Text such as &quot;$&quot; to display to the user at the beginning of the numerical value.</p>
+							<p>This property holds the spin box&#39;s prefix.</p>
+						</div>
+						<p>The prefix is prepended to the start of the displayed value. Typical use
+						is to display a unit of measurement or a currency symbol.</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="singleStep" class="tsd-anchor"></a>
+					<h3>single<wbr>Step</h3>
+					<div class="tsd-signature tsd-kind-icon">single<wbr>Step<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>This property holds the step value.</p>
 						</div>
 					</div>
 				</section>
@@ -230,21 +245,10 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Text such as &quot;ms&quot; to display to the user at the end of the numerical value.</p>
+							<p>This property holds the suffix of the spin box.</p>
 						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="tickInterval" class="tsd-anchor"></a>
-					<h3>tick<wbr>Interval</h3>
-					<div class="tsd-signature tsd-kind-icon">tick<wbr>Interval<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The amount that each tick left or right on the slider will
-							change the value.</p>
-						</div>
+						<p>The suffix is appended to the end of the displayed value. Typical use is
+						to display a unit of measurement or a currency symbol.</p>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
@@ -268,7 +272,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The integer value set in the slider</p>
+							<p>This property holds the value of the spin box.</p>
 						</div>
 					</div>
 				</section>
@@ -281,7 +285,7 @@
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>Signal emitted when the value in the slider is changed.
-								In QT 5 builds, the value passed as a argument to functions connected to this signal is
+								In Qt 5 builds, the value passed as a argument to functions connected to this signal is
 								of type string, and will contain <a href="Qt.QDoubleSpinBox.html#prefix">prefix</a> and <a href="Qt.QDoubleSpinBox.html#suffix">suffix</a>,
 							if any are set. In Qt 6 it is of number type.</p>
 						</div>
@@ -314,6 +318,9 @@
 						<a href="../index.html">Exports</a>
 					</li>
 					<li class=" tsd-kind-namespace">
+						<a href="../modules/Base64.html">Base64</a>
+					</li>
+					<li class=" tsd-kind-namespace">
 						<a href="../modules/File.html">File</a>
 					</li>
 					<li class=" tsd-kind-namespace">
@@ -321,6 +328,9 @@
 					</li>
 					<li class="current tsd-kind-namespace">
 						<a href="../modules/Qt.html">Qt</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/Tiled.html">Tiled</a>
 					</li>
 					<li class=" tsd-kind-namespace">
 						<a href="../modules/tiled.html">tiled</a>
@@ -359,10 +369,10 @@
 								<a href="Qt.QDoubleSpinBox.html#prefix" class="tsd-kind-icon">prefix</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Qt.QDoubleSpinBox.html#suffix" class="tsd-kind-icon">suffix</a>
+								<a href="Qt.QDoubleSpinBox.html#singleStep" class="tsd-kind-icon">single<wbr>Step</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Qt.QDoubleSpinBox.html#tickInterval" class="tsd-kind-icon">tick<wbr>Interval</a>
+								<a href="Qt.QDoubleSpinBox.html#suffix" class="tsd-kind-icon">suffix</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="Qt.QDoubleSpinBox.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a>

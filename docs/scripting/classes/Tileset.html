@@ -91,8 +91,10 @@
 					<div class="lead">
 						<p>A container for tiles that can be used by a map.</p>
 					</div>
-					<p>Can contain either tiles cut from a single image, using <a href="Tileset.html#loadFromImage">loadFromImage</a>, or individual tiles using <a href="Tileset.html#addTile">addTile</a> and then setting
-					the image on each tile using <a href="Tile.html#imageFileName">Tile.imageFileName</a> or <a href="Tile.html#setImage">Tile.setImage</a>.</p>
+					<p>Can contain either tiles cut from a single image, by setting <a href="Tileset.html#image">image</a>
+						or calling <a href="Tileset.html#loadFromImage">loadFromImage</a>, or individual tiles using <a href="Tileset.html#addTile">addTile</a>
+						and then setting the image on each tile using <a href="Tile.html#imageFileName">Tile.imageFileName</a> or
+					<a href="Tile.html#setImage">Tile.setImage</a>.</p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
@@ -124,6 +126,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#asset" class="tsd-kind-icon">asset</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#backgroundColor" class="tsd-kind-icon">background<wbr>Color</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#className" class="tsd-kind-icon">class<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#collection" class="tsd-kind-icon">collection</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#columnCount" class="tsd-kind-icon">column<wbr>Count</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#fileName" class="tsd-kind-icon">file<wbr>Name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#fileNameChanged" class="tsd-kind-icon">file<wbr>Name<wbr>Changed</a></li>
@@ -269,6 +272,23 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="collection" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> collection</h3>
+					<div class="tsd-signature tsd-kind-icon">collection<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Whether this tileset is a collection of images (same as checking whether image is an empty string).</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>deprecated</dt>
+							<dd><p>Use <a href="Tileset.html#isCollection">isCollection</a> instead.</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="columnCount" class="tsd-anchor"></a>
 					<h3>column<wbr>Count</h3>
 					<div class="tsd-signature tsd-kind-icon">column<wbr>Count<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
@@ -402,6 +422,11 @@
 						<div class="lead">
 							<p>Whether this tileset is a collection of images (same as checking whether image is an empty string).</p>
 						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.10</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
@@ -1115,7 +1140,7 @@
 								<p>The color is specified as a string &quot;#RGB&quot;, &quot;#RRGGBB&quot; or &quot;#AARRGGBB&quot;.</p>
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
-									<dd><p>1.9.3</p>
+									<dd><p>1.10</p>
 									</dd>
 								</dl>
 							</div>
@@ -1134,7 +1159,7 @@
 								defaults to 255.</p>
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
-									<dd><p>1.9.3</p>
+									<dd><p>1.10</p>
 									</dd>
 								</dl>
 							</div>
@@ -1161,7 +1186,7 @@
 								that function will set whole numbers as <code>int</code> properties.</p>
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
-									<dd><p>1.9.3</p>
+									<dd><p>1.10</p>
 									</dd>
 								</dl>
 							</div>
@@ -1309,6 +1334,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="Tileset.html#className" class="tsd-kind-icon">class<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Tileset.html#collection" class="tsd-kind-icon">collection</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Tileset.html#columnCount" class="tsd-kind-icon">column<wbr>Count</a>

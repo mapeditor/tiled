@@ -124,6 +124,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="region.html#add" class="tsd-kind-icon">add</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="region.html#contains" class="tsd-kind-icon">contains</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="region.html#contiguousRegions" class="tsd-kind-icon">contiguous<wbr>Regions</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="region.html#intersect" class="tsd-kind-icon">intersect</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="region.html#subtract" class="tsd-kind-icon">subtract</a></li>
 							</ul>
@@ -242,6 +243,32 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="contiguousRegions" class="tsd-anchor"></a>
+					<h3>contiguous<wbr>Regions</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">contiguous<wbr>Regions<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="region.html" class="tsd-signature-type" data-tsd-kind="Interface">region</a><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns this region as an array of contiguous regions, based on 8-way
+										connectivity (regions touching each other diagonally are considered
+									one contiguous region).</p>
+								</div>
+								<p>The returned regions are guaranteed not to touch each other.</p>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.10</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="intersect" class="tsd-anchor"></a>
 					<h3>intersect</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
@@ -345,6 +372,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="region.html#contains" class="tsd-kind-icon">contains</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="region.html#contiguousRegions" class="tsd-kind-icon">contiguous<wbr>Regions</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="region.html#intersect" class="tsd-kind-icon">intersect</a>

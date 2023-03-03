@@ -126,6 +126,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tile.html#height" class="tsd-kind-icon">height</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tile.html#id" class="tsd-kind-icon">id</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tile.html#imageFileName" class="tsd-kind-icon">image<wbr>File<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tile.html#imageRect" class="tsd-kind-icon">image<wbr>Rect</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tile.html#objectGroup" class="tsd-kind-icon">object<wbr>Group</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tile.html#probability" class="tsd-kind-icon">probability</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Tile.html#readOnly" class="tsd-kind-icon">read<wbr>Only</a></li>
@@ -266,6 +267,27 @@
 						<div class="lead">
 							<p>File name of the tile image (when the tile is part of an image collection tileset).</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="imageRect" class="tsd-anchor"></a>
+					<h3>image<wbr>Rect</h3>
+					<div class="tsd-signature tsd-kind-icon">image<wbr>Rect<span class="tsd-signature-symbol">:</span> <a href="../interfaces/rect.html" class="tsd-signature-type" data-tsd-kind="Interface">rect</a></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The source rectangle (in pixels) for this tile.</p>
+						</div>
+						<p>This can be either a sub-rectangle of the tile image when the tile is part
+						of an image collection tileset or the sub-rectangle of the tileset image.</p>
+						<p>This property can currently only be modified when the tile is part of an
+						image collection. For tileset image based tiles, it is read-only.</p>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.9</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -515,7 +537,7 @@
 								<p>The color is specified as a string &quot;#RGB&quot;, &quot;#RRGGBB&quot; or &quot;#AARRGGBB&quot;.</p>
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
-									<dd><p>1.9.3</p>
+									<dd><p>1.10</p>
 									</dd>
 								</dl>
 							</div>
@@ -534,7 +556,7 @@
 								defaults to 255.</p>
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
-									<dd><p>1.9.3</p>
+									<dd><p>1.10</p>
 									</dd>
 								</dl>
 							</div>
@@ -561,7 +583,7 @@
 								that function will set whole numbers as <code>int</code> properties.</p>
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
-									<dd><p>1.9.3</p>
+									<dd><p>1.10</p>
 									</dd>
 								</dl>
 							</div>
@@ -683,6 +705,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Tile.html#imageFileName" class="tsd-kind-icon">image<wbr>File<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Tile.html#imageRect" class="tsd-kind-icon">image<wbr>Rect</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Tile.html#objectGroup" class="tsd-kind-icon">object<wbr>Group</a>

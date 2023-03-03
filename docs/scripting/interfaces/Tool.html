@@ -122,6 +122,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#preview" class="tsd-kind-icon">preview</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#selectedTile" class="tsd-kind-icon">selected<wbr>Tile</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#statusInfo" class="tsd-kind-icon">status<wbr>Info</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#targetLayerType" class="tsd-kind-icon">target<wbr>Layer<wbr>Type</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#tilePosition" class="tsd-kind-icon">tile<wbr>Position</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#toolBarActions" class="tsd-kind-icon">tool<wbr>Bar<wbr>Actions</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#usesSelectedTiles" class="tsd-kind-icon">uses<wbr>Selected<wbr>Tiles</a></li>
@@ -235,6 +236,27 @@
 						<div class="lead">
 							<p>Text shown in the status bar while the tool is active.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="targetLayerType" class="tsd-anchor"></a>
+					<h3>target<wbr>Layer<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">target<wbr>Layer<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The target layer type for which this tool should be enabled. A convenient
+							alternative to overriding <a href="Tool.html#updateEnabledState">updateEnabledState</a>.</p>
+						</div>
+						<p>The value can be any combination of the layer types
+							<a href="../classes/Layer.html#TileLayerType">Layer.TileLayerType</a>, <a href="../classes/Layer.html#ObjectGroupType">Layer.ObjectGroupType</a>,
+						<a href="../classes/Layer.html#ImageLayerType">Layer.ImageLayerType</a> and <a href="../classes/Layer.html#GroupLayerType">Layer.GroupLayerType</a>.</p>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.10</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
@@ -629,6 +651,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="Tool.html#statusInfo" class="tsd-kind-icon">status<wbr>Info</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="Tool.html#targetLayerType" class="tsd-kind-icon">target<wbr>Layer<wbr>Type</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="Tool.html#tilePosition" class="tsd-kind-icon">tile<wbr>Position</a>

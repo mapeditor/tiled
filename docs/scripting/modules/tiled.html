@@ -130,7 +130,9 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#alert" class="tsd-kind-icon">alert</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#close" class="tsd-kind-icon">close</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#compress" class="tsd-kind-icon">compress</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#confirm" class="tsd-kind-icon">confirm</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#decompress" class="tsd-kind-icon">decompress</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#error" class="tsd-kind-icon">error</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#executeCommand" class="tsd-kind-icon">execute<wbr>Command</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#extendMenu" class="tsd-kind-icon">extend<wbr>Menu</a></li>
@@ -150,6 +152,7 @@
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#tilesetFormat" class="tsd-kind-icon">tileset<wbr>Format</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#tilesetFormatForFile" class="tsd-kind-icon">tileset<wbr>Format<wbr>For<wbr>File</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#trigger" class="tsd-kind-icon">trigger</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#versionLessThan" class="tsd-kind-icon">version<wbr>Less<wbr>Than</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#warn" class="tsd-kind-icon">warn</a></li>
 							</ul>
 						</section>
@@ -390,7 +393,7 @@
 						</div>
 						<dl class="tsd-comment-tags">
 							<dt>since</dt>
-							<dd><p>1.9.3</p>
+							<dd><p>1.10</p>
 							</dd>
 						</dl>
 					</div>
@@ -517,6 +520,37 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="compress" class="tsd-anchor"></a>
+					<h3>compress</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">compress<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span>, method<span class="tsd-signature-symbol">?: </span><a href="Tiled.html#CompressionMethod" class="tsd-signature-type" data-tsd-kind="Type alias">CompressionMethod</a>, compressionLevel<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Compresses the given data using the given compression method and
+									compression level.</p>
+								</div>
+								<p>When no compression method is given, defaults to Zlib compression. The
+								compression level defaults to the default for the respective method.</p>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><p>Example that compresses data using Gzip compression:</p>
+										<pre><code class="language-js"><span style="color: #9CDCFE">buffer</span><span style="color: #D4D4D4"> = </span><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">compress</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">buffer</span><span style="color: #D4D4D4">, </span><span style="color: #9CDCFE">Tiled</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">Gzip</span><span style="color: #D4D4D4">);</span>
+</code></pre>
+									</dd>
+									<dt>since</dt>
+									<dd><p>1.10</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
 					<a name="confirm" class="tsd-anchor"></a>
 					<h3>confirm</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
@@ -531,6 +565,30 @@
 									<p>Shows a yes/no dialog to the user with the given text and optional
 									title. Returns <code>true</code> or <code>false</code>.</p>
 								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="decompress" class="tsd-anchor"></a>
+					<h3>decompress</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">decompress<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span>, method<span class="tsd-signature-symbol">?: </span><a href="Tiled.html#CompressionMethod" class="tsd-signature-type" data-tsd-kind="Type alias">CompressionMethod</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Decompresses the given data using the given compression method.</p>
+								</div>
+								<p>When no compression method is given, defaults to Zlib compression.</p>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.10</p>
+									</dd>
+								</dl>
 							</div>
 						</li>
 					</ul>
@@ -1052,6 +1110,31 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="versionLessThan" class="tsd-anchor"></a>
+					<h3>version<wbr>Less<wbr>Than</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">version<wbr>Less<wbr>Than<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, b<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>When given two versions, returns whether the first version comes before
+										the second version. When given one version, it returns whether Tiled&#39;s
+									current <a href="tiled.html#version">version</a> comes before the given version.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.10</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
 					<a name="warn" class="tsd-anchor"></a>
 					<h3>warn</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
@@ -1081,6 +1164,9 @@
 						<a href="../index.html">Exports</a>
 					</li>
 					<li class=" tsd-kind-namespace">
+						<a href="Base64.html">Base64</a>
+					</li>
+					<li class=" tsd-kind-namespace">
 						<a href="File.html">File</a>
 					</li>
 					<li class=" tsd-kind-namespace">
@@ -1088,6 +1174,9 @@
 					</li>
 					<li class=" tsd-kind-namespace">
 						<a href="Qt.html">Qt</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="Tiled.html">Tiled</a>
 					</li>
 					<li class="current tsd-kind-namespace">
 						<a href="tiled.html">tiled</a>
@@ -1169,7 +1258,13 @@
 						<a href="tiled.html#close" class="tsd-kind-icon">close</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="tiled.html#compress" class="tsd-kind-icon">compress</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#confirm" class="tsd-kind-icon">confirm</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="tiled.html#decompress" class="tsd-kind-icon">decompress</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#error" class="tsd-kind-icon">error</a>
@@ -1227,6 +1322,9 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#trigger" class="tsd-kind-icon">trigger</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="tiled.html#versionLessThan" class="tsd-kind-icon">version<wbr>Less<wbr>Than</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#warn" class="tsd-kind-icon">warn</a>

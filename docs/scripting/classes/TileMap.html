@@ -213,6 +213,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TileMap.html#setTileSize" class="tsd-kind-icon">set<wbr>Tile<wbr>Size</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TileMap.html#tileToPixel" class="tsd-kind-icon">tile<wbr>ToPixel</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TileMap.html#tileToScreen" class="tsd-kind-icon">tile<wbr>ToScreen</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TileMap.html#toImage" class="tsd-kind-icon">to<wbr>Image</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="TileMap.html#undo" class="tsd-kind-icon">undo</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TileMap.html#usedTilesets" class="tsd-kind-icon">used<wbr>Tilesets</a></li>
 							</ul>
@@ -1359,7 +1360,7 @@
 								<p>The color is specified as a string &quot;#RGB&quot;, &quot;#RRGGBB&quot; or &quot;#AARRGGBB&quot;.</p>
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
-									<dd><p>1.9.3</p>
+									<dd><p>1.10</p>
 									</dd>
 								</dl>
 							</div>
@@ -1378,7 +1379,7 @@
 								defaults to 255.</p>
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
-									<dd><p>1.9.3</p>
+									<dd><p>1.10</p>
 									</dd>
 								</dl>
 							</div>
@@ -1405,7 +1406,7 @@
 								that function will set whole numbers as <code>int</code> properties.</p>
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
-									<dd><p>1.9.3</p>
+									<dd><p>1.10</p>
 									</dd>
 								</dl>
 							</div>
@@ -1553,6 +1554,34 @@
 								<div class="lead">
 									<p>Converts the given position from tile to screen coordinates.</p>
 								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="toImage" class="tsd-anchor"></a>
+					<h3>to<wbr>Image</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">to<wbr>Image<span class="tsd-signature-symbol">(</span>size<span class="tsd-signature-symbol">?: </span><a href="../interfaces/size.html" class="tsd-signature-type" data-tsd-kind="Interface">size</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Renders the map to an image. When no size is given, creates an image the
+									size of the map.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>warning</dt>
+									<dd><p>A tile map can easily be way too large to render to an image
+										unscaled, so be careful when calling this function.</p>
+									</dd>
+									<dt>since</dt>
+									<dd><p>1.10</p>
+									</dd>
+								</dl>
 							</div>
 						</li>
 					</ul>
@@ -1870,6 +1899,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="TileMap.html#tileToScreen" class="tsd-kind-icon">tile<wbr>ToScreen</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="TileMap.html#toImage" class="tsd-kind-icon">to<wbr>Image</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="TileMap.html#undo" class="tsd-kind-icon">undo</a>
