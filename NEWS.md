@@ -1,4 +1,4 @@
-### Unreleased
+### Tiled 1.10.0 (6 March 2023)
 
 * Restored Tiled 1.8 file format compatibility by default (#3560)
 * Added action search popup on Ctrl+Shift+P (with dogboydog, #3449)
@@ -35,6 +35,7 @@
 * Fixed compile against Qt 6.4
 * snap: Added Wayland platform plugin and additional image format plugins
 * AppImage: Updated to Sentry 0.5.4
+* Updated Bulgarian, French and Swedish translations
 
 ### Tiled 1.9.2 (16 September 2022)
 

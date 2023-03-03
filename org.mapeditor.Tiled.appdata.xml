@@ -16,6 +16,48 @@
  </keywords>
  <content_rating type="oars-1.0" />
  <releases>
+  <release version="1.10.0" type="stable" date="2023-03-06">
+   <description>
+    <ul>
+     <li>Restored Tiled 1.8 file format compatibility by default (#3560)</li>
+     <li>Added action search popup on Ctrl+Shift+P (with dogboydog, #3449)</li>
+     <li>Added Godot 4 export plugin (#3550)</li>
+     <li>Added file system actions also for tileset image based tilesets (#3448)</li>
+     <li>Added custom class option to disable drawing fill for objects (with dogboydog, #3312)</li>
+     <li>Added option to choose a custom interface font (#3589)</li>
+     <li>Implemented rendering of major grid lines for staggered / hexagonal maps (#3583)</li>
+     <li>Fixed new layer names to be always unique (by Logan Higinbotham, #3452)</li>
+     <li>Fixed broken tile images after importing/exporting a tileset</li>
+     <li>AutoMapping: When input regions are defined, match in order by default (#3559)</li>
+     <li>AutoMapping: Skip locked layers when applying rules (#3544)</li>
+     <li>Scripting: Added Object.setColorProperty and Object.setFloatProperty (#3423)</li>
+     <li>Scripting: Added tiled.projectFilePath</li>
+     <li>Scripting: Added tiled.versionLessThan</li>
+     <li>Scripting: Added TileMap.toImage (#3519)</li>
+     <li>Scripting: Added Tool.targetLayerType (#3248)</li>
+     <li>Scripting: Added region.contiguousRegions() (#3576)</li>
+     <li>Scripting: Added tiled.compress and tiled.decompress (#3153)</li>
+     <li>Scripting: Added Base64 encoding and decoding API (#3153)</li>
+     <li>Scripting: Allow assigning null to Tile.objectGroup (by Logan Higinbotham, #3495)</li>
+     <li>Scripting: Allow changing the items in a combo box added to a dialog</li>
+     <li>Scripting: Fixed painting issues after changing TileLayer size (#3481)</li>
+     <li>Scripting: Renamed Tileset.collection to Tileset.isCollection (#3543)</li>
+     <li>Defold plugin: Allow overriding z value also when exporting to .collection (#3214)</li>
+     <li>Qt 6: Fixed invisible tileset tabs when only a single tileset is open</li>
+     <li>Qt 6: Fixed behavior of "Class of" selection popup</li>
+     <li>Qt 6: Fixed tile rendering when OpenGL is enabled (#3578)</li>
+     <li>Fixed positioning of point object name labels (by Logan Higinbotham, #3400)</li>
+     <li>Fixed slight drift when zooming the map view in/out</li>
+     <li>Fixed remaining lag after switching off hardware acceleration (#3584)</li>
+     <li>Fixed point object hover highlight position (#3571)</li>
+     <li>Fixed drawing lines with stamps having differently sized variations (#3533)</li>
+     <li>Fixed compile against Qt 6.4</li>
+     <li>snap: Added Wayland platform plugin and additional image format plugins</li>
+     <li>AppImage: Updated to Sentry 0.5.4</li>
+     <li>Updated Bulgarian, French and Swedish translations</li>
+    </ul>
+   </description>
+  </release>
   <release version="1.9.2" type="stable" date="2022-09-16">
    <url>https://www.mapeditor.org/2022/09/16/tiled-1-9-2-released.html</url>
    <description>
