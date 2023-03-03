@@ -20,6 +20,10 @@
 
 #include "prolificstyle.h"
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+#include "utils.h"
+#endif
+
 #include <QAbstractButton>
 #include <QAbstractItemView>
 #include <QAbstractSlider>
@@ -67,7 +71,7 @@ static int dpiScaled(int value, const QStyleOption *option)
 
 ProlificStyle::ProlificStyle()
 {
-
+    setObjectName(QStringLiteral("prolific"));
 }
 
 void ProlificStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, QPainter *p, const QWidget *w) const
@@ -84,57 +88,9 @@ void ProlificStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, 
         p->drawRoundedRect(opt->rect.adjusted(1, 1, -1, -1), 5.0, 5.0);
         p->restore();
         return;
-    case PE_CustomBase:
-    case PE_Frame:
-    case PE_FrameButtonBevel:
-    case PE_FrameButtonTool:
-    case PE_FrameDefaultButton:
-    case PE_FrameDockWidget:
-    case PE_FrameFocusRect:
-    case PE_FrameGroupBox:
-    case PE_FrameLineEdit:
-    case PE_FrameMenu:
-    case PE_FrameStatusBarItem:
-    case PE_FrameTabBarBase:
-    case PE_FrameTabWidget:
-    case PE_FrameWindow:
-    case PE_IndicatorArrowDown:
-    case PE_IndicatorArrowLeft:
-    case PE_IndicatorArrowRight:
-    case PE_IndicatorArrowUp:
-    case PE_IndicatorBranch:
-    case PE_IndicatorCheckBox:
-    case PE_IndicatorColumnViewArrow:
-    case PE_IndicatorDockWidgetResizeHandle:
-    case PE_IndicatorHeaderArrow:
-    case PE_IndicatorItemViewItemCheck:
-    case PE_IndicatorItemViewItemDrop:
-    case PE_IndicatorMenuCheckMark:
-    case PE_IndicatorProgressChunk:
-    case PE_IndicatorRadioButton:
-    case PE_IndicatorSpinDown:
-    case PE_IndicatorSpinMinus:
-    case PE_IndicatorSpinPlus:
-    case PE_IndicatorSpinUp:
-    case PE_IndicatorTabClose:
-    case PE_IndicatorTabTear:
-    case PE_IndicatorTabTearRight:
-    case PE_IndicatorToolBarHandle:
-    case PE_IndicatorToolBarSeparator:
-    case PE_PanelItemViewItem:
-    case PE_PanelItemViewRow:
-    case PE_PanelLineEdit:
-    case PE_PanelMenu:
-    case PE_PanelMenuBar:
-    case PE_PanelScrollAreaCorner:
-    case PE_PanelStatusBar:
-    case PE_PanelTipLabel:
-    case PE_PanelToolBar:
-    case PE_Widget:
-        break;
+    default:
+        QCommonStyle::drawPrimitive(pe, opt, p, w);
     }
-
-    QCommonStyle::drawPrimitive(pe, opt, p, w);
 }
 
 void ProlificStyle::drawControl(ControlElement element, const QStyleOption *opt, QPainter *p, const QWidget *w) const
@@ -149,120 +105,17 @@ void ProlificStyle::drawControl(ControlElement element, const QStyleOption *opt,
         if (const QStyleOptionSlider *scrollBar = qstyleoption_cast<const QStyleOptionSlider *>(opt))
             scrollBarDrawSlider(scrollBar, p);
         return;
-    case CE_PushButton:
-    case CE_PushButtonBevel:
-    case CE_CheckBox:
-    case CE_CheckBoxLabel:
-    case CE_DockWidgetTitle:
-    case CE_Header:
-    case CE_HeaderLabel:
-    case CE_HeaderSection:
-    case CE_MenuBarEmptyArea:
-    case CE_MenuBarItem:
-    case CE_MenuEmptyArea:
-    case CE_MenuHMargin:
-    case CE_MenuItem:
-    case CE_MenuScroller:
-    case CE_MenuTearoff:
-    case CE_MenuVMargin:
-    case CE_ProgressBar:
-    case CE_ProgressBarContents:
-    case CE_ProgressBarGroove:
-    case CE_ProgressBarLabel:
-    case CE_PushButtonLabel:
-    case CE_RadioButton:
-    case CE_RadioButtonLabel:
-    case CE_RubberBand:
-    case CE_SizeGrip:
-    case CE_Splitter:
-    case CE_TabBarTab:
-    case CE_TabBarTabLabel:
-    case CE_TabBarTabShape:
-    case CE_ToolBoxTab:
-    case CE_ToolButtonLabel:
-    case CE_ColumnViewGrip:
-    case CE_ComboBoxLabel:
-    case CE_CustomBase:
-    case CE_FocusFrame:
-    case CE_HeaderEmptyArea:
-    case CE_ItemViewItem:
-    case CE_ScrollBarFirst:
-    case CE_ScrollBarLast:
-    case CE_ShapedFrame:
-    case CE_ToolBar:
-    case CE_ToolBoxTabLabel:
-    case CE_ToolBoxTabShape:
-        break;
+    default:
+        QCommonStyle::drawControl(element, opt, p, w);
     }
-
-    QCommonStyle::drawControl(element, opt, p, w);
 }
 
 QRect ProlificStyle::subElementRect(SubElement r, const QStyleOption *opt, const QWidget *widget) const
 {
     switch (r) {
-    case SE_CheckBoxClickRect:
-    case SE_CheckBoxContents:
-    case SE_CheckBoxFocusRect:
-    case SE_CheckBoxIndicator:
-    case SE_CheckBoxLayoutItem:
-    case SE_ComboBoxFocusRect:
-    case SE_ComboBoxLayoutItem:
-    case SE_CustomBase:
-    case SE_DateTimeEditLayoutItem:
-    case SE_DockWidgetCloseButton:
-    case SE_DockWidgetFloatButton:
-    case SE_DockWidgetIcon:
-    case SE_DockWidgetTitleBarText:
-    case SE_FrameContents:
-    case SE_FrameLayoutItem:
-    case SE_GroupBoxLayoutItem:
-    case SE_HeaderArrow:
-    case SE_HeaderLabel:
-    case SE_ItemViewItemCheckIndicator:
-    case SE_ItemViewItemDecoration:
-    case SE_ItemViewItemFocusRect:
-    case SE_ItemViewItemText:
-    case SE_LabelLayoutItem:
-    case SE_LineEditContents:
-    case SE_ProgressBarContents:
-    case SE_ProgressBarGroove:
-    case SE_ProgressBarLabel:
-    case SE_ProgressBarLayoutItem:
-    case SE_PushButtonBevel:
-    case SE_PushButtonContents:
-    case SE_PushButtonFocusRect:
-    case SE_PushButtonLayoutItem:
-    case SE_RadioButtonClickRect:
-    case SE_RadioButtonContents:
-    case SE_RadioButtonFocusRect:
-    case SE_RadioButtonIndicator:
-    case SE_RadioButtonLayoutItem:
-    case SE_ShapedFrameContents:
-    case SE_SliderFocusRect:
-    case SE_SliderLayoutItem:
-    case SE_SpinBoxLayoutItem:
-    case SE_TabBarScrollLeftButton:
-    case SE_TabBarScrollRightButton:
-    case SE_TabBarTabLeftButton:
-    case SE_TabBarTabRightButton:
-    case SE_TabBarTabText:
-    case SE_TabBarTearIndicator:
-    case SE_TabBarTearIndicatorRight:
-    case SE_TabWidgetLayoutItem:
-    case SE_TabWidgetLeftCorner:
-    case SE_TabWidgetRightCorner:
-    case SE_TabWidgetTabBar:
-    case SE_TabWidgetTabContents:
-    case SE_TabWidgetTabPane:
-    case SE_ToolBarHandle:
-    case SE_ToolBoxTabContents:
-    case SE_ToolButtonLayoutItem:
-    case SE_TreeViewDisclosureItem:
-        break;
+    default:
+        return QCommonStyle::subElementRect(r, opt, widget);
     }
-
-    return QCommonStyle::subElementRect(r, opt, widget);
 }
 
 void ProlificStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComplex *opt, QPainter *p, const QWidget *w) const
@@ -277,19 +130,9 @@ void ProlificStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComp
             QCommonStyle::drawComplexControl(cc, &newScrollBar, p, w);
         }
         return;
-    case CC_ComboBox:
-    case CC_CustomBase:
-    case CC_Dial:
-    case CC_GroupBox:
-    case CC_MdiControls:
-    case CC_Slider:
-    case CC_SpinBox:
-    case CC_TitleBar:
-    case CC_ToolButton:
-        break;
+    default:
+        QCommonStyle::drawComplexControl(cc, opt, p, w);
     }
-
-    QCommonStyle::drawComplexControl(cc, opt, p, w);
 }
 
 QRect ProlificStyle::subControlRect(ComplexControl cc, const QStyleOptionComplex *opt, SubControl sc, const QWidget *w) const
@@ -298,19 +141,12 @@ QRect ProlificStyle::subControlRect(ComplexControl cc, const QStyleOptionComplex
     case CC_ScrollBar:
         if (const QStyleOptionSlider *scrollBar = qstyleoption_cast<const QStyleOptionSlider *>(opt))
             return scrollBarSubControlRect(scrollBar, sc, w);
-    case CC_ComboBox:
-    case CC_CustomBase:
-    case CC_Dial:
-    case CC_GroupBox:
-    case CC_MdiControls:
-    case CC_Slider:
-    case CC_SpinBox:
-    case CC_TitleBar:
-    case CC_ToolButton:
         break;
+    default:
+        return QCommonStyle::subControlRect(cc, opt, sc, w);
     }
 
-    return QCommonStyle::subControlRect(cc, opt, sc, w);
+    return QRect();
 }
 
 int ProlificStyle::pixelMetric(PixelMetric m, const QStyleOption *opt, const QWidget *widget) const
@@ -322,103 +158,9 @@ int ProlificStyle::pixelMetric(PixelMetric m, const QStyleOption *opt, const QWi
         return mScrollBarOverlaps ? scrollBarWidth(opt) : 0;
     case PM_ScrollBarSliderMin:
         return scrollBarSliderMin(opt);
-    case PM_ButtonDefaultIndicator:
-    case PM_ButtonIconSize:
-    case PM_ButtonMargin:
-    case PM_ButtonShiftHorizontal:
-    case PM_ButtonShiftVertical:
-    case PM_CheckBoxLabelSpacing:
-    case PM_ComboBoxFrameWidth:
-    case PM_CustomBase:
-    case PM_DefaultFrameWidth:
-    case PM_DialogButtonsButtonHeight:
-    case PM_DialogButtonsButtonWidth:
-    case PM_DialogButtonsSeparator:
-    case PM_DockWidgetFrameWidth:
-    case PM_DockWidgetHandleExtent:
-    case PM_DockWidgetSeparatorExtent:
-    case PM_DockWidgetTitleBarButtonMargin:
-    case PM_DockWidgetTitleMargin:
-    case PM_ExclusiveIndicatorHeight:
-    case PM_ExclusiveIndicatorWidth:
-    case PM_FocusFrameHMargin:
-    case PM_FocusFrameVMargin:
-    case PM_HeaderDefaultSectionSizeHorizontal:
-    case PM_HeaderDefaultSectionSizeVertical:
-    case PM_HeaderGripMargin:
-    case PM_HeaderMargin:
-    case PM_HeaderMarkSize:
-    case PM_IconViewIconSize:
-    case PM_IndicatorHeight:
-    case PM_IndicatorWidth:
-    case PM_LargeIconSize:
-    case PM_LayoutBottomMargin:
-    case PM_LayoutHorizontalSpacing:
-    case PM_LayoutLeftMargin:
-    case PM_LayoutRightMargin:
-    case PM_LayoutTopMargin:
-    case PM_LayoutVerticalSpacing:
-    case PM_LineEditIconMargin:
-    case PM_LineEditIconSize:
-    case PM_ListViewIconSize:
-    case PM_MaximumDragDistance:
-    case PM_MdiSubWindowFrameWidth:
-    case PM_MdiSubWindowMinimizedWidth:
-    case PM_MenuBarHMargin:
-    case PM_MenuBarItemSpacing:
-    case PM_MenuBarPanelWidth:
-    case PM_MenuBarVMargin:
-    case PM_MenuButtonIndicator:
-    case PM_MenuDesktopFrameWidth:
-    case PM_MenuHMargin:
-    case PM_MenuPanelWidth:
-    case PM_MenuScrollerHeight:
-    case PM_MenuTearoffHeight:
-    case PM_MenuVMargin:
-    case PM_MessageBoxIconSize:
-    case PM_ProgressBarChunkWidth:
-    case PM_RadioButtonLabelSpacing:
-    case PM_ScrollView_ScrollBarSpacing:
-    case PM_SizeGripSize:
-    case PM_SliderControlThickness:
-    case PM_SliderLength:
-    case PM_SliderSpaceAvailable:
-    case PM_SliderThickness:
-    case PM_SliderTickmarkOffset:
-    case PM_SmallIconSize:
-    case PM_SpinBoxFrameWidth:
-    case PM_SpinBoxSliderHeight:
-    case PM_SplitterWidth:
-    case PM_SubMenuOverlap:
-    case PM_TabBarBaseHeight:
-    case PM_TabBarBaseOverlap:
-    case PM_TabBarIconSize:
-    case PM_TabBarScrollButtonWidth:
-    case PM_TabBarTabHSpace:
-    case PM_TabBarTabOverlap:
-    case PM_TabBarTabShiftHorizontal:
-    case PM_TabBarTabShiftVertical:
-    case PM_TabBarTabVSpace:
-    case PM_TabBar_ScrollButtonOverlap:
-    case PM_TabCloseIndicatorHeight:
-    case PM_TabCloseIndicatorWidth:
-    case PM_TextCursorWidth:
-    case PM_TitleBarButtonIconSize:
-    case PM_TitleBarButtonSize:
-    case PM_TitleBarHeight:
-    case PM_ToolBarExtensionExtent:
-    case PM_ToolBarFrameWidth:
-    case PM_ToolBarHandleExtent:
-    case PM_ToolBarIconSize:
-    case PM_ToolBarItemMargin:
-    case PM_ToolBarItemSpacing:
-    case PM_ToolBarSeparatorExtent:
-    case PM_ToolTipLabelFrameWidth:
-    case PM_TreeViewIndentation:
-        break;
+    default:
+        return QCommonStyle::pixelMetric(m, opt, widget);
     }
-
-    return QCommonStyle::pixelMetric(m, opt, widget);
 }
 
 int ProlificStyle::styleHint(StyleHint sh, const QStyleOption *opt, const QWidget *w, QStyleHintReturn *shret) const
@@ -429,128 +171,9 @@ int ProlificStyle::styleHint(StyleHint sh, const QStyleOption *opt, const QWidge
         return true;
     case SH_ItemView_ScrollMode:
         return QAbstractItemView::ScrollPerPixel;
-    case SH_BlinkCursorWhenTextSelected:
-    case SH_Button_FocusPolicy:
-    case SH_ComboBox_AllowWheelScrolling:
-    case SH_ComboBox_LayoutDirection:
-    case SH_ComboBox_ListMouseTracking:
-    case SH_ComboBox_Popup:
-    case SH_ComboBox_PopupFrameStyle:
-    case SH_ComboBox_UseNativePopup:
-    case SH_CustomBase:
-    case SH_Dial_BackgroundRole:
-    case SH_DialogButtonBox_ButtonsHaveIcons:
-    case SH_DialogButtonLayout:
-    case SH_DialogButtons_DefaultButton:
-    case SH_DitherDisabledText:
-    case SH_DockWidget_ButtonsHaveFrame:
-    case SH_DrawMenuBarSeparator:
-    case SH_EtchDisabledText:
-    case SH_FocusFrame_AboveWidget:
-    case SH_FocusFrame_Mask:
-    case SH_FontDialog_SelectAssociatedText:
-    case SH_FormLayoutFieldGrowthPolicy:
-    case SH_FormLayoutFormAlignment:
-    case SH_FormLayoutLabelAlignment:
-    case SH_FormLayoutWrapPolicy:
-    case SH_GroupBox_TextLabelColor:
-    case SH_GroupBox_TextLabelVerticalAlignment:
-    case SH_Header_ArrowAlignment:
-    case SH_ItemView_ActivateItemOnSingleClick:
-    case SH_ItemView_ArrowKeysNavigateIntoChildren:
-    case SH_ItemView_ChangeHighlightOnFocus:
-    case SH_ItemView_DrawDelegateFrame:
-    case SH_ItemView_EllipsisLocation:
-    case SH_ItemView_MovementWithoutUpdatingSelection:
-    case SH_ItemView_PaintAlternatingRowColorsForEmptyArea:
-    case SH_ItemView_ShowDecorationSelected:
-    case SH_LineEdit_PasswordCharacter:
-    case SH_LineEdit_PasswordMaskDelay:
-    case SH_ListViewExpand_SelectMouseType:
-    case SH_MainWindow_SpaceBelowMenuBar:
-    case SH_MenuBar_AltKeyNavigation:
-    case SH_MenuBar_MouseTracking:
-    case SH_Menu_AllowActiveAndDisabled:
-    case SH_Menu_FadeOutOnHide:
-    case SH_Menu_FillScreenWithScroll:
-    case SH_Menu_FlashTriggeredItem:
-    case SH_Menu_KeyboardSearch:
-    case SH_Menu_Mask:
-    case SH_Menu_MouseTracking:
-    case SH_Menu_Scrollable:
-    case SH_Menu_SelectionWrap:
-    case SH_Menu_SloppySubMenus:
-    case SH_Menu_SpaceActivatesItem:
-    case SH_Menu_SubMenuDontStartSloppyOnLeave:
-    case SH_Menu_SubMenuPopupDelay:
-    case SH_Menu_SubMenuResetWhenReenteringParent:
-    case SH_Menu_SubMenuSloppyCloseTimeout:
-    case SH_Menu_SubMenuSloppySelectOtherActions:
-    case SH_Menu_SubMenuUniDirection:
-    case SH_Menu_SubMenuUniDirectionFailCount:
-    case SH_Menu_SupportsSections:
-    case SH_MessageBox_CenterButtons:
-    case SH_MessageBox_TextInteractionFlags:
-    case SH_MessageBox_UseBorderForButtonSpacing:
-    case SH_PrintDialog_RightAlignButtons:
-    case SH_ProgressDialog_CenterCancelButton:
-    case SH_ProgressDialog_TextLabelAlignment:
-    case SH_RequestSoftwareInputPanel:
-    case SH_RichText_FullWidthSelection:
-    case SH_RubberBand_Mask:
-    case SH_ScrollBar_ContextMenu:
-    case SH_ScrollBar_LeftClickAbsolutePosition:
-    case SH_ScrollBar_RollBetweenButtons:
-    case SH_ScrollBar_ScrollWhenPointerLeavesControl:
-    case SH_ScrollBar_Transient:
-    case SH_ScrollView_FrameOnlyAroundContents:
-    case SH_Slider_AbsoluteSetButtons:
-    case SH_Slider_PageSetButtons:
-    case SH_Slider_SloppyKeyEvents:
-    case SH_Slider_SnapToValue:
-    case SH_SpinBox_AnimateButton:
-    case SH_SpinBox_ButtonsInsideFrame:
-    case SH_SpinBox_ClickAutoRepeatRate:
-    case SH_SpinBox_ClickAutoRepeatThreshold:
-    case SH_SpinBox_KeyPressAutoRepeatRate:
-    case SH_SpinBox_SelectOnStep:
-    case SH_SpinBox_StepModifier:
-    case SH_SpinControls_DisableOnBounds:
-    case SH_Splitter_OpaqueResize:
-    case SH_TabBar_Alignment:
-    case SH_TabBar_AllowWheelScrolling:
-    case SH_TabBar_ChangeCurrentDelay:
-    case SH_TabBar_CloseButtonPosition:
-    case SH_TabBar_ElideMode:
-    case SH_TabBar_PreferNoArrows:
-    case SH_TabBar_SelectMouseType:
-    case SH_TabWidget_DefaultTabPosition:
-    case SH_Table_AlwaysDrawLeftTopGridLines:
-    case SH_Table_GridLineColor:
-    case SH_TextControl_FocusIndicatorTextCharFormat:
-    case SH_TitleBar_AutoRaise:
-    case SH_TitleBar_ModifyNotification:
-    case SH_TitleBar_NoBorder:
-    case SH_TitleBar_ShowToolTipsOnButtons:
-    case SH_ToolBar_Movable:
-    case SH_ToolBox_SelectedPageTitleBold:
-    case SH_ToolButtonStyle:
-    case SH_ToolButton_PopupDelay:
-    case SH_ToolTipLabel_Opacity:
-    case SH_ToolTip_FallAsleepDelay:
-    case SH_ToolTip_Mask:
-    case SH_ToolTip_WakeUpDelay:
-    case SH_UnderlineShortcut:
-    case SH_Widget_Animate:
-    case SH_Widget_Animation_Duration:
-    case SH_Widget_ShareActivation:
-    case SH_WindowFrame_Mask:
-    case SH_WizardStyle:
-    case SH_Workspace_FillSpaceOnMaximize:
-        break;
+    default:
+        return QCommonStyle::styleHint(sh, opt, w, shret);
     }
-
-    return QCommonStyle::styleHint(sh, opt, w, shret);
 }
 
 static bool doesHoverOrNonOpaquePaint(QWidget *w)
