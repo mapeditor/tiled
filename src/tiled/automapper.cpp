@@ -1152,19 +1152,25 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
         // check if there are no overlaps within this rule.
         QHash<const Layer*, QRegion> ruleRegionInLayer;
 
-        const bool overlap = std::any_of(ruleOutput.layers.keyBegin(),
-                                         ruleOutput.layers.keyEnd(),
-                                         [&] (const Layer *layer) {
+        const bool overlap = std::any_of(ruleOutput.layers.keyValueBegin(),
+                                         ruleOutput.layers.keyValueEnd(),
+                                         [&] (const std::pair<const Layer *, QString> &entry) {
+            const Layer *layer = entry.first;
+            const QString &targetName = entry.second;
+
             QRegion outputLayerRegion;
+            Layer *targetLayer;
 
             // TODO: Very slow to re-calculate the entire region for
             // each rule output layer here, each time a rule has a match.
             switch (layer->layerType()) {
             case Layer::TileLayerType:
                 outputLayerRegion = static_cast<const TileLayer*>(layer)->region();
+                targetLayer = context.outputTileLayers.value(targetName);
                 break;
             case Layer::ObjectGroupType:
                 outputLayerRegion = tileRegionOfObjectGroup(static_cast<const ObjectGroup*>(layer));
+                targetLayer = context.outputObjectGroups.value(targetName);
                 break;
             case Layer::ImageLayerType:
             case Layer::GroupLayerType:
@@ -1175,19 +1181,22 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
             outputLayerRegion &= rule.outputRegion;
             outputLayerRegion.translate(pos.x(), pos.y());
 
-            ruleRegionInLayer[layer] = outputLayerRegion;
+            ruleRegionInLayer[targetLayer] = outputLayerRegion;
 
-            return applyContext.appliedRegions[layer].intersects(outputLayerRegion);
+            return applyContext.appliedRegions[targetLayer].intersects(outputLayerRegion);
         });
 
         if (overlap)
             return;
 
         // Remember the newly applied region
-        std::for_each(ruleOutput.layers.keyBegin(),
-                      ruleOutput.layers.keyEnd(),
-                      [&] (const Layer *layer) {
-            applyContext.appliedRegions[layer] |= ruleRegionInLayer[layer];
+        std::for_each(ruleRegionInLayer.keyValueBegin(),
+                      ruleRegionInLayer.keyValueEnd(),
+                      [&] (const std::pair<const Layer *, QRegion> &entry) {
+            const Layer *layer = entry.first;
+            const QRegion &region = entry.second;
+
+            applyContext.appliedRegions[layer] |= region;
         });
     }
 

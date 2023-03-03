@@ -11,6 +11,7 @@
 * Fixed broken tile images after importing/exporting a tileset
 * AutoMapping: When input regions are defined, match in order by default (#3559)
 * AutoMapping: Skip locked layers when applying rules (#3544)
+* AutoMapping: Fixed NoOverlappingOutput in case of multiple output indices (#3551)
 * Scripting: Added Object.setColorProperty and Object.setFloatProperty (#3423)
 * Scripting: Added tiled.projectFilePath
 * Scripting: Added tiled.versionLessThan
