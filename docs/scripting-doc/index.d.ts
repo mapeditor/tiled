@@ -428,6 +428,12 @@ declare namespace Qt {
        * Check the text with {@link plainText} or {@link html} when this is emitted.
        */
       textChanged: Signal<void>;
+      /**
+       * This property holds the text editor's contents as HTML 
+       * See the supported HTML subset here:
+       * https://doc.qt.io/qt-6/richtext-html-subset.html
+       */
+      html: string;
     }
 
     type CheckState = number;
