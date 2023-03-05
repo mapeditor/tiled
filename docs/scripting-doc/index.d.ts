@@ -4188,9 +4188,9 @@ declare class Dialog {
   addSeparator(labelText?:string): Qt.QFrame;
 
   /**
-   * Adds an image widget that can display an image in a dialog
+   * Adds an image widget that can display an image in a dialog.
    */
-   addImage(image: Image): ImageWidget;
+   addImage(labelText: string, image: Image): ImageWidget;
 
   /**
    * Add a {@link Qt.QSlider} widget to the dialog to allow a user to
