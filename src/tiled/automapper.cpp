@@ -148,10 +148,9 @@ AutoMappingContext::AutoMappingContext(MapDocument *mapDocument)
 
 AutoMapper::AutoMapper(std::unique_ptr<Map> rulesMap, const QRegularExpression &mapNameFilter)
     : mRulesMap(std::move(rulesMap))
+    , mRulesMapRenderer(MapRenderer::create(mRulesMap.get()))
     , mMapNameFilter(mapNameFilter)
 {
-    Q_ASSERT(mRulesMap);
-
     setupRuleMapProperties();
 
     if (setupRuleMapLayers())
@@ -341,7 +340,6 @@ bool AutoMapper::setupRuleMapLayers()
     Q_ASSERT(setup.mInputLayerNames.isEmpty());
 
     QString error;
-    const auto renderer = MapRenderer::create(mRulesMap.get());
 
     for (Layer *layer : mRulesMap->allLayers()) {
         if (layer->isGroupLayer() || layer->isImageLayer())
@@ -403,8 +401,7 @@ bool AutoMapper::setupRuleMapLayers()
                     }
 
                     RuleOptionsArea &optionsArea = setup.mRuleOptionsAreas.emplace_back();
-                    optionsArea.area = QRectF(renderer->pixelToTileCoords(mapObject->bounds().topLeft()),
-                                              renderer->pixelToTileCoords(mapObject->bounds().bottomRight())).toAlignedRect();
+                    optionsArea.area = objectTileRect(*mRulesMapRenderer, *mapObject);
                     setupRuleOptionsArea(optionsArea, mapObject);
                 }
             } else {
@@ -575,8 +572,14 @@ void AutoMapper::setupRules()
             std::for_each(outputSet.layers.keyBegin(),
                           outputSet.layers.keyEnd(),
                           [&] (const Layer *layer) {
-                if (layer->isTileLayer())
-                    regionOutput |= static_cast<const TileLayer*>(layer)->region();
+                if (layer->isTileLayer()) {
+                    auto tileLayer = static_cast<const TileLayer*>(layer);
+                    regionOutput |= tileLayer->region();
+                } else if (layer->isObjectGroup()) {
+                    auto objectGroup = static_cast<const ObjectGroup*>(layer);
+                    regionOutput |= tileRegionOfObjectGroup(*mRulesMapRenderer,
+                                                            objectGroup);
+                }
             });
         }
     }
@@ -1169,7 +1172,8 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
                 targetLayer = context.outputTileLayers.value(targetName);
                 break;
             case Layer::ObjectGroupType:
-                outputLayerRegion = tileRegionOfObjectGroup(static_cast<const ObjectGroup*>(layer));
+                outputLayerRegion = tileRegionOfObjectGroup(*mRulesMapRenderer,
+                                                            static_cast<const ObjectGroup*>(layer));
                 targetLayer = context.outputObjectGroups.value(targetName);
                 break;
             case Layer::ImageLayerType:
