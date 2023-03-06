@@ -31,6 +31,7 @@
 #include "maprenderer.h"
 #include "object.h"
 #include "objectgroup.h"
+#include "randompicker.h"
 #include "tile.h"
 
 #include <QDebug>
@@ -124,16 +125,19 @@ struct CompileContext
 
 struct ApplyContext
 {
-    ApplyContext(QRegion *appliedRegion)
+    ApplyContext(const RuleMapSetup &setup, QRegion *appliedRegion)
         : appliedRegion(appliedRegion)
-    {}
+    {
+        for (const OutputSet &outputSet : std::as_const(setup.mOutputSets))
+            outputSets.add(&outputSet, outputSet.probability);
+    }
 
     // These regions store which parts or the map have already been altered by
     // exactly this rule. We store all the altered parts to make sure there are
     // no overlaps of the same rule applied to (neighbouring) places.
     QHash<const Layer*, QRegion> appliedRegions;
 
-    QRandomGenerator *randomGenerator = QRandomGenerator::global();
+    RandomPicker<const OutputSet*> outputSets;
 
     QRegion *appliedRegion;
 };
@@ -305,6 +309,29 @@ void AutoMapper::setupInputLayerProperties(InputLayer &inputLayer)
                         value.toString(),
                         inputLayer.tileLayer->name()),
                    SelectCustomProperty { rulesMapFileName(), name, inputLayer.tileLayer });
+    }
+}
+
+void AutoMapper::setupOutputSetProperties(OutputSet &outputSet)
+{
+    for (auto it = outputSet.layers.keyBegin(); it != outputSet.layers.keyEnd(); ++it) {
+        const Layer *layer = *it;
+
+        QMapIterator<QString, QVariant> properiesIterator(layer->properties());
+        while (properiesIterator.hasNext()) {
+            properiesIterator.next();
+
+            const QString &name = properiesIterator.key();
+            const QVariant &value = properiesIterator.value();
+
+            if (name.compare(QLatin1String("probability"), Qt::CaseInsensitive) == 0) {
+                bool ok;
+                if (const qreal probability = value.toReal(&ok); ok) {
+                    outputSet.probability = probability;
+                    continue;
+                }
+            }
+        }
     }
 }
 
@@ -494,6 +521,9 @@ bool AutoMapper::setupRuleMapLayers()
         std::sort(set.layers.begin(), set.layers.end(),
                   [] (const InputConditions &a, const InputConditions &b) { return a.layerName < b.layerName; });
     }
+
+    for (OutputSet &set : setup.mOutputSets)
+        setupOutputSetProperties(set);
 
     if (!error.isEmpty()) {
         error = rulesMapFileName() + QLatin1Char('\n') + error;
@@ -996,7 +1026,7 @@ void AutoMapper::autoMap(const QRegion &where,
             get = &getBoundCell;
     }
 
-    ApplyContext applyContext(appliedRegion);
+    ApplyContext applyContext(mRuleMapSetup, appliedRegion);
 
     if (mOptions.matchInOrder) {
         for (const Rule &rule : mRules) {
@@ -1142,14 +1172,13 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
                            ApplyContext &applyContext,
                            AutoMappingContext &context) const
 {
-    Q_ASSERT(!mRuleMapSetup.mOutputSets.empty());
+    Q_ASSERT(!applyContext.outputSets.isEmpty());
 
     // Translate the position to adjust to the location of the rule.
     pos -= rule.inputRegion.boundingRect().topLeft();
 
     // choose by chance which group of rule_layers should be used:
-    const int r = applyContext.randomGenerator->generate() % mRuleMapSetup.mOutputSets.size();
-    const OutputSet &ruleOutput = mRuleMapSetup.mOutputSets.at(r);
+    const OutputSet &ruleOutput = *applyContext.outputSets.pick();
 
     if (rule.options.noOverlappingOutput) {
         // check if there are no overlaps within this rule.

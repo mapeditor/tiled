@@ -9,6 +9,7 @@
 * Implemented rendering of major grid lines for staggered / hexagonal maps (#3583)
 * Fixed new layer names to be always unique (by Logan Higinbotham, #3452)
 * Fixed broken tile images after importing/exporting a tileset
+* AutoMapping: Added support for output set probability (#3179)
 * AutoMapping: When input regions are defined, match in order by default (#3559)
 * AutoMapping: Skip locked layers when applying rules (#3544)
 * AutoMapping: Fixed NoOverlappingOutput in case of multiple output indices (#3551)

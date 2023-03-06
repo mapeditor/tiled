@@ -81,6 +81,7 @@ struct OutputSet
     QString name;
     // Maps output layers in mRulesMap to their names in mTargetMap
     QHash<const Layer*, QString> layers;
+    qreal probability = 1.0;
 };
 
 struct RuleOptions
@@ -336,6 +337,7 @@ private:
 
     void setupRuleMapProperties();
     void setupInputLayerProperties(InputLayer &inputLayer);
+    void setupOutputSetProperties(OutputSet &outputSet);
     void setupRuleOptionsArea(RuleOptionsArea &optionsArea, const MapObject *mapObject);
 
     /**
