@@ -44,6 +44,7 @@ namespace Tiled {
 class Layer;
 class Map;
 class MapObject;
+class MapRenderer;
 class ObjectGroup;
 class TileLayer;
 
@@ -419,6 +420,7 @@ private:
      * Map containing the rules.
      */
     const std::unique_ptr<Map> mRulesMap;
+    const std::unique_ptr<MapRenderer> mRulesMapRenderer;
     const QRegularExpression mMapNameFilter;
 
     RuleMapSetup mRuleMapSetup;

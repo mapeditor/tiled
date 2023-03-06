@@ -100,7 +100,7 @@ void test_AutoMapping::autoMap()
             const QPoint pos = it.key();
             const Cell &expected = it.value();
             const Cell &seen = mapTileLayer->cellAt(pos);
-            QCOMPARE(expected, seen);
+            QCOMPARE(seen, expected);
         }
     }
 }
