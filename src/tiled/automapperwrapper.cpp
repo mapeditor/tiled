@@ -85,24 +85,21 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
     // Apply the changes to existing tile layers
     for (auto& [original, outputLayer] : context.originalToOutputLayerMapping) {
         const QRegion diffRegion = original->computeDiffRegion(*outputLayer);
-        if (diffRegion.isEmpty())
-            continue;
+        if (!diffRegion.isEmpty()) {
+            paint(original, 0, 0, outputLayer.get(),
+                  diffRegion.translated(original->position()));
+        }
 
-        paint(original, 0, 0, outputLayer.get(),
-              diffRegion.translated(original->position()));
+        // Apply any property changes
+        auto propertiesIt = context.changedProperties.find(outputLayer.get());
+        if (propertiesIt != context.changedProperties.end())
+            new ChangeProperties(mapDocument, QString(), original, *propertiesIt, this);
     }
 
     // Make sure to add any newly used tilesets to the map
     for (const SharedTileset &tileset : std::as_const(context.newTilesets))
         if (context.targetMap->isTilesetUsed(tileset.data()))
             new AddTileset(mapDocument, tileset, this);
-
-    // Apply any property changes to existing layers
-    QHashIterator<Layer*, Properties> changedPropertiesIt(context.changedProperties);
-    while (changedPropertiesIt.hasNext()) {
-        const auto item = changedPropertiesIt.next();
-        new ChangeProperties(mapDocument, QString(), item.key(), item.value(), this);
-    }
 
     auto anyObjectForObjectGroup = [&] (ObjectGroup *objectGroup) {
         for (const QVector<AddMapObjects::Entry> &entries : std::as_const(context.newMapObjects)) {

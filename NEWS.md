@@ -14,6 +14,7 @@
 * AutoMapping: Skip locked layers when applying rules (#3544)
 * AutoMapping: Fixed NoOverlappingOutput in case of multiple output indices (#3551)
 * AutoMapping: Fixed automatic output regions for object output (#3473)
+* AutoMapping: Fixed crash on undo when output layers have properties
 * Scripting: Added Object.setColorProperty and Object.setFloatProperty (#3423)
 * Scripting: Added tiled.projectFilePath
 * Scripting: Added tiled.versionLessThan
