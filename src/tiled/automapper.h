@@ -81,6 +81,8 @@ struct OutputSet
     QString name;
     // Maps output layers in mRulesMap to their names in mTargetMap
     QHash<const Layer*, QString> layers;
+    QHash<const Layer*, Properties> outputLayerProperties;
+    qreal probability = 1.0;
 };
 
 struct RuleOptions
@@ -205,7 +207,7 @@ struct TILED_EDITOR_EXPORT AutoMappingContext
     std::vector<std::unique_ptr<Layer>> newLayers;  // Layers created in AutoMapper::prepareAutoMap
     QVector<QVector<AddMapObjects::Entry>> newMapObjects;   // Objects placed by AutoMapper
     QSet<MapObject*> mapObjectsToRemove;
-    QHash<Layer*, Properties> changedProperties;
+    QHash<const Layer*, Properties> changedProperties;
 
     // Clones of existing tile layers that might have been changed in AutoMapper::autoMap
     std::unordered_map<TileLayer*, std::unique_ptr<TileLayer>> originalToOutputLayerMapping;
@@ -336,6 +338,7 @@ private:
 
     void setupRuleMapProperties();
     void setupInputLayerProperties(InputLayer &inputLayer);
+    void setupOutputSetProperties(OutputSet &outputSet);
     void setupRuleOptionsArea(RuleOptionsArea &optionsArea, const MapObject *mapObject);
 
     /**
