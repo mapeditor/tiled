@@ -323,7 +323,7 @@ The following properties are supported on a per-layer basis:
 .. _automapping-StrictEmpty:
 
 AutoEmpty (alias: StrictEmpty)
-   This layer property is a boolean property. It can be added to
+   This input layer property is a boolean property. It can be added to
    **input** and **inputnot** layers to customize the behavior for
    empty tiles within a rule.
 
@@ -332,6 +332,19 @@ AutoEmpty (alias: StrictEmpty)
    layers and some of the tiles that are part of the same coherent rule are
    empty. Normally these tiles would be ignored, unless the special "Empty"
    tile was placed. With this option they behave as tiles matching "Empty".
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.10</div>
+
+Probability
+   This float layer property can be added to **output** layers to control the
+   probability that a given output index will be chosen. The probabilities for
+   each output index are relative to one another, and default to 1.0. For
+   example, if you have **outputA** with probability 2 and **outputB** with
+   probability 0.5, A will be chosen four times as often as B. If multiple
+   output layers with the same index have their "Probability" set, the last
+   (top-most) layer's probability will be used.
 
 .. raw:: html
 
