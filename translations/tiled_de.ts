@@ -3261,7 +3261,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+18"/>
         <source>Add &quot;%1&quot; to World &quot;%2&quot;</source>
-        <translation>&quot;%1&quot; zu Welt &quot;%2&quot; hinzufügen</translation>
+        <translation>„%1“ zur Welt „%2“ hinzufügen</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -5126,7 +5126,7 @@ Bitte Format angeben.</translation>
         <location filename="../src/tiled/transformmapobjects.cpp" line="+83"/>
         <source>Move %n Object(s)</source>
         <translation>
-            <numerusform>Objekt verschieben</numerusform>
+            <numerusform>%n Objekt verschieben</numerusform>
             <numerusform>%n Objekte verschieben</numerusform>
         </translation>
     </message>
