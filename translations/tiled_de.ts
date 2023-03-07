@@ -110,12 +110,12 @@
     <message>
         <location line="+14"/>
         <source>Project file &apos;%1&apos; not found.</source>
-        <translation>Projektdatei &apos;%1&apos; nicht gefunden.</translation>
+        <translation>Projektdatei „%1“ nicht gefunden.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Session file &apos;%1&apos; not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sitzungsdatei „%1“ nicht gefunden.</translation>
     </message>
 </context>
 <context>
@@ -820,17 +820,17 @@
     <message>
         <location line="+18"/>
         <source>Search Actions...</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktionen suchen...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Search actions available in Tiled</source>
-        <translation type="unfinished"></translation>
+        <translation>In Tiled verfügbare Aktionen suchen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Umschalt+P</translation>
     </message>
     <message>
         <location line="-473"/>
@@ -1783,12 +1783,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+74"/>
         <source>Use custom interface font</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzerdefinierte Schriftart für die Oberfläche verwenden</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftart:</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -4178,7 +4178,7 @@ Soll sie ersetzt werden?</translation>
     <message>
         <location filename="../src/tiled/actionsearch.cpp" line="+242"/>
         <source>Search actions...</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktionen suchen...</translation>
     </message>
 </context>
 <context>
@@ -4629,17 +4629,17 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+193"/>
         <source>Group Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppenebene %1</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Failed to load tileset &apos;%1&apos;</source>
-        <translation>Fehler beim Laden von Kachelsatz &apos;%1&apos;</translation>
+        <translation>Fehler beim Laden von Kachelsatz „%1“</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Failed to load template &apos;%1&apos;</source>
-        <translation>Fehler beim Laden von Vorlage &apos;%1&apos;</translation>
+        <translation>Fehler beim Laden von Vorlage „%1“</translation>
     </message>
     <message numerus="yes">
         <location line="+89"/>
@@ -5276,12 +5276,12 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+1"/>
         <source>Tiled 1.9</source>
-        <translation type="unfinished">Tiled 1.9</translation>
+        <translation>Tiled 1.9</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tiled 1.10</source>
-        <translation type="unfinished">Tiled 1.10</translation>
+        <translation>Tiled 1.10</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6126,7 +6126,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+5"/>
         <source>Draw fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Füllung zeichnen</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -6216,7 +6216,7 @@ Bitte Format angeben.</translation>
     <message>
         <location filename="../src/tiled/scriptdialog.cpp" line="+26"/>
         <source>Script</source>
-        <translation type="unfinished"></translation>
+        <translation>Skript</translation>
     </message>
 </context>
 <context>
@@ -6875,7 +6875,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+8"/>
         <source>Select &amp;All Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Alle Kacheln auswählen</translation>
     </message>
 </context>
 <context>
@@ -7176,72 +7176,72 @@ Bitte Format angeben.</translation>
     <message>
         <location filename="../src/plugins/tscn/tscnplugin.cpp" line="-484"/>
         <source>Could not find .godot project in file path for file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Das .godot-Projekt konnte im Dateipfad für die Datei %1 nicht gefunden werden</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>All files must share the same project root. File &apos;%1&apos; does not share project root &apos;%2&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Dateien müssen denselben Projektstamm haben. Datei „%1“ hat nicht den gleichen Projektstamm „%2“.</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Cannot export tileset &apos;%1&apos; because the Godot exporter does not support collection-type tilesets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Kachelsatz „%1“ kann nicht exportiert werden, da der Godot-Exportierer keine Kachelsätze vom Typ Sammlung unterstützt.</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>The Godot exporter does not yet support objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Godot-Exportierer unterstützt noch keine Objekte</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The Godot exporter does not yet support image layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Godot-Exportierer unterstützt noch keine Bildebenen</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>Godot exporter only supports collisions that are rectangles or polygons.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Godot-Exportierer unterstützt nur Kollisionen, die aus Rechtecken oder Polygonen bestehen.</translation>
     </message>
     <message>
         <location line="+132"/>
         <source>Tile animations must flow left-to-right, top-to-bottom, with no skipped tiles.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachelanimationen müssen von links nach rechts und von oben nach unten fließen, ohne dass Kacheln übersprungen werden.</translation>
     </message>
     <message>
         <location line="+86"/>
         <source>Godot only supports hexagonal maps where the Hex Side Length is exactly half its height. For a tile height of %1, the Hex Side Length should be set to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Godot unterstützt nur hexagonale Karten, bei denen die Hex-Seitenlänge genau der halben Höhe entspricht. Bei einer Kachelhöhe von %1 sollte die Hex-Seitenlänge auf %2 eingestellt werden.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Unsupported tile orientation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht unterstützte Kachelausrichtung.</translation>
     </message>
     <message>
         <location line="+68"/>
         <source>tilesetResPath must be in the form of &apos;res://&lt;filename&gt;.tres&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>tilesetResPath muss in der Form „res://&lt;Dateiname&gt;.tres“ vorliegen.</translation>
     </message>
     <message>
         <location line="+77"/>
         <source>Cannot use tile %1 from tileset %2 because it is reserved as an animation frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Kachel %1 aus dem Kachelsatz %2 kann nicht verwendet werden, da sie als Animationsbild reserviert ist.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Hex tiles that are rotated by 120° degrees are not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hex-Kacheln, die um 120° Grad gedreht sind, werden nicht unterstützt.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Map uses flipped/rotated tiles. The tileset must have the custom exportAlternates property enabled to export this map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Karte verwendet gespiegelte/gedrehte Kacheln. Im Kachelsatz muss die benutzerdefinierte Eigenschaft exportAlternates aktiviert sein, um diese Karte zu exportieren.</translation>
     </message>
     <message>
         <location line="+53"/>
         <source>Godot 4 Scene files (*.tscn)</source>
-        <translation type="unfinished"></translation>
+        <translation>Godot 4-Szenen-Dateien (*.tscn)</translation>
     </message>
 </context>
 <context>
@@ -7977,12 +7977,12 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+9"/>
         <source>Invalid advance-animations specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Vorspul-Animationen angegeben: „%1“</translation>
     </message>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+57"/>
         <source>Displays a Tiled map (TMX format).</source>
-        <translation>Zeigt eine Tiled-Karte (TMX Format).</translation>
+        <translation>Zeigt eine Tiled-Karte an (TMX-Format).</translation>
     </message>
     <message>
         <location line="+3"/>
