@@ -453,9 +453,15 @@ static void addAutomappingProperties(Properties &properties, const Object *objec
 
     switch (object->typeId()) {
     case Object::LayerType: {
-        if (static_cast<const Layer*>(object)->name().startsWith(QLatin1String("input"), Qt::CaseInsensitive)) {
+        auto layer = static_cast<const Layer*>(object);
+
+        if (layer->name().startsWith(QLatin1String("input"), Qt::CaseInsensitive)) {
             mergeProperties(properties, QVariantMap {
                 { QStringLiteral("AutoEmpty"), false },
+            });
+        } else if (layer->name().startsWith(QLatin1String("output"), Qt::CaseInsensitive)) {
+            mergeProperties(properties, QVariantMap {
+                { QStringLiteral("Probability"), 1.0 },
             });
         }
         break;
