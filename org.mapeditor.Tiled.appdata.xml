@@ -28,8 +28,12 @@
      <li>Implemented rendering of major grid lines for staggered / hexagonal maps (#3583)</li>
      <li>Fixed new layer names to be always unique (by Logan Higinbotham, #3452)</li>
      <li>Fixed broken tile images after importing/exporting a tileset</li>
+     <li>AutoMapping: Added support for output set probability (#3179)</li>
      <li>AutoMapping: When input regions are defined, match in order by default (#3559)</li>
      <li>AutoMapping: Skip locked layers when applying rules (#3544)</li>
+     <li>AutoMapping: Fixed NoOverlappingOutput in case of multiple output indices (#3551)</li>
+     <li>AutoMapping: Fixed automatic output regions for object output (#3473)</li>
+     <li>AutoMapping: Fixed crash on undo when output layers have properties</li>
      <li>Scripting: Added Object.setColorProperty and Object.setFloatProperty (#3423)</li>
      <li>Scripting: Added tiled.projectFilePath</li>
      <li>Scripting: Added tiled.versionLessThan</li>
@@ -53,8 +57,8 @@
      <li>Fixed drawing lines with stamps having differently sized variations (#3533)</li>
      <li>Fixed compile against Qt 6.4</li>
      <li>snap: Added Wayland platform plugin and additional image format plugins</li>
-     <li>AppImage: Updated to Sentry 0.5.4</li>
-     <li>Updated Bulgarian, French and Swedish translations</li>
+     <li>AppImage: Updated to Sentry 0.6.0</li>
+     <li>Updated Bulgarian, French, German, Hungarian, Russian and Swedish translations</li>
     </ul>
    </description>
   </release>

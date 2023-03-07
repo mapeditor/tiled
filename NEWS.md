@@ -38,7 +38,7 @@
 * Fixed drawing lines with stamps having differently sized variations (#3533)
 * Fixed compile against Qt 6.4
 * snap: Added Wayland platform plugin and additional image format plugins
-* AppImage: Updated to Sentry 0.5.4
+* AppImage: Updated to Sentry 0.6.0
 * Updated Bulgarian, French, German, Hungarian, Russian and Swedish translations
 
 ### Tiled 1.9.2 (16 September 2022)
