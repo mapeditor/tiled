@@ -240,17 +240,14 @@ jobs:
 
     - name: Notarize
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
-      uses: devbotsxyz/xcode-notarize@v1
-      with:
-        product-path: install/Tiled.app
-        appstore-connect-username: ${{ secrets.NOTARIZATION_USERNAME }}
-        appstore-connect-password: ${{ secrets.NOTARIZATION_PASSWORD }}
+      run: |
+        ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled_for_notarization.zip
+        xcrun notarytool submit --apple-id ${{ secrets.NOTARIZATION_USERNAME }} --password ${{ secrets.NOTARIZATION_PASSWORD }} --team-id ${{ secrets.NOTARIZATION_TEAM }} --wait Tiled_for_notarization.zip
 
     - name: Staple
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
-      uses: devbotsxyz/xcode-staple@v1
-      with:
-        product-path: install/Tiled.app
+      run: |
+        xcrun stapler staple install/Tiled.app
 
     - name: Create Archive
       run: |
