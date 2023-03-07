@@ -317,6 +317,8 @@ void AutoMapper::setupOutputSetProperties(OutputSet &outputSet)
     for (auto it = outputSet.layers.keyBegin(); it != outputSet.layers.keyEnd(); ++it) {
         const Layer *layer = *it;
 
+        Properties outputProperties;
+
         QMapIterator<QString, QVariant> properiesIterator(layer->properties());
         while (properiesIterator.hasNext()) {
             properiesIterator.next();
@@ -331,7 +333,13 @@ void AutoMapper::setupOutputSetProperties(OutputSet &outputSet)
                     continue;
                 }
             }
+
+            // Unrecognized properties are copied to target map when a related rule matches
+            outputProperties.insert(name, value);
         }
+
+        if (!outputProperties.isEmpty())
+            outputSet.outputLayerProperties[layer] = std::move(outputProperties);
     }
 }
 
@@ -1301,9 +1309,10 @@ void AutoMapper::copyMapRegion(const Rule &rule, QPoint offset,
         Q_ASSERT(to);
 
         // Copy any custom properties set on the output layer
-        if (!from->properties().isEmpty()) {
+        auto propertiesIt = ruleOutput.outputLayerProperties.constFind(from);
+        if (propertiesIt != ruleOutput.outputLayerProperties.constEnd()) {
             Properties mergedProperties = context.changedProperties.value(to, to->properties());
-            mergeProperties(mergedProperties, from->properties());
+            mergeProperties(mergedProperties, *propertiesIt);
 
             if (mergedProperties != to->properties()) {
                 const bool isNewLayer = contains_where(context.newLayers,

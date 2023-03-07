@@ -81,6 +81,7 @@ struct OutputSet
     QString name;
     // Maps output layers in mRulesMap to their names in mTargetMap
     QHash<const Layer*, QString> layers;
+    QHash<const Layer*, Properties> outputLayerProperties;
     qreal probability = 1.0;
 };
 
