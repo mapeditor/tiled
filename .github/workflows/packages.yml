@@ -242,20 +242,12 @@ jobs:
         security -q import ${{ steps.certificateFile.outputs.filePath }} -f pkcs12 -k mapeditor/tiled -P ${{ secrets.MACOS_CERTIFICATE_PWD }} -T /usr/bin/codesign -x
         security set-key-partition-list -S 'apple-tool:,apple:' -s -k ${{ secrets.KEYCHAIN_PWD }} mapeditor/tiled
 
-    - name: Sign
+    - name: Sign, Notarize & Staple
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
       run: |
         codesign --deep --force --verify --verbose --sign Lindeijer --options runtime install/Tiled.app
-
-    - name: Notarize
-      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
-      run: |
         ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled_for_notarization.zip
         xcrun notarytool submit --apple-id ${{ secrets.NOTARIZATION_USERNAME }} --password ${{ secrets.NOTARIZATION_PASSWORD }} --team-id ${{ secrets.NOTARIZATION_TEAM }} --wait Tiled_for_notarization.zip
-
-    - name: Staple
-      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
-      run: |
         xcrun stapler staple install/Tiled.app
 
     - name: Create Archive
