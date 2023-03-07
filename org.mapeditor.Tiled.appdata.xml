@@ -16,7 +16,7 @@
  </keywords>
  <content_rating type="oars-1.0" />
  <releases>
-  <release version="1.10.0" type="stable" date="2023-03-06">
+  <release version="1.10.0" type="stable" date="2023-03-08">
    <description>
     <ul>
      <li>Restored Tiled 1.8 file format compatibility by default (#3560)</li>
