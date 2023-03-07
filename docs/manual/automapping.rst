@@ -179,9 +179,10 @@ NonEmpty
    This tile matches any non-empty cell.
 
 Other
-   This tile matches any non-empty cell, which contains a tile that is
-   *different* from all the tiles used on the current input layer in the
-   current rule.
+   This tile matches any cell, which contains a tile that is *different* from
+   all the tiles used by the current rule targeting the same input layer. This
+   includes empty cells, unless the Empty tile is explicitly matched on by the
+   rule (since Tiled 1.10).
 
 Negate
    This tile negates the condition at a specific location. It is effectively

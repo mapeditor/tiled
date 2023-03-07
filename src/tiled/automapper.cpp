@@ -732,8 +732,16 @@ static void collectCellsInRegion(const QVector<InputLayer> &list,
     for (const InputLayer &inputLayer : list) {
         forEachPointInRegion(r, [&] (int x, int y) {
             const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
-            if (matchType(cell.tile()) == MatchType::Tile)
+            switch (matchType(cell.tile())) {
+            case MatchType::Tile:
                 appendUnique(cells, cell);
+                break;
+            case MatchType::Empty:
+                appendUnique(cells, Cell());
+                break;
+            default:
+                break;
+            }
         });
     }
 }
