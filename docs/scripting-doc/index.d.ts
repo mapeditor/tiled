@@ -364,7 +364,6 @@ declare namespace Qt {
      * The toolTip displayed when the user mouses over this widget
      */
     toolTip: string;
-
     /**
      * Controls whether this widget is visible.
      * When toggling this property, the dialog layout will automatically adjust itself
@@ -378,10 +377,20 @@ declare namespace Qt {
      */
     enabled: boolean;
     /**
-     * Set the style sheet for this widget.
+     * Set this property to override the style sheet for this widget.
      * @param styleSheet The text of your style sheet. See https://doc.qt.io/qt-6/stylesheet.html and https://doc.qt.io/qt-6/stylesheet-examples.html for more information
      */
-    setStyleSheet(styleSheet: string) : void;
+    styleSheet: string;
+    /**
+     * You can use this property to prevent the widget from being resized to a width
+     * below this amount.
+     */
+    minimumWidth: number;
+    /**
+     * You can use this property to prevent the widget from being resized to a height
+     * below this amount.
+     */
+    minimumHeight: number;
   }
 
   /**
@@ -4108,7 +4117,7 @@ declare class ImageWidget extends Qt.QWidget {
  *
  * @since 1.9
  */
-declare class Dialog {
+declare class Dialog extends Qt.QWidget {
   /**
    * The dialog was rejected. Value is 0.
    */
@@ -4320,22 +4329,4 @@ declare class Dialog {
    * The title of your dialog.
    */
   windowTitle: string;
-
-  /**
-   * You can use this property to prevent the dialog from being resized to a width
-   * below this amount. When you change minimumWidth, ifthe dialog is already less wide than
-   * the provided width, it will scale itself up automatically.
-   */
-  minimumWidth: number;
-  /**
-   * You can use this property to prevent the dialog from being resized to a height
-   * below this amount. When you change minimumHeight, ifthe dialog is already less tall than
-   * the provided width, it will scale itself up automatically.
-   */
-  minimumHeight: number;
-  /**
-   * Set the style sheet for the entire dialog.
-   * @param styleSheet The text of your style sheet. See https://doc.qt.io/qt-6/stylesheet.html and https://doc.qt.io/qt-6/stylesheet-examples.html for more information
-   */
-  setStyleSheet(styleSheet: string) : void;
 }
