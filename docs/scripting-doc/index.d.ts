@@ -378,7 +378,7 @@ declare namespace Qt {
      */
     enabled: boolean;
     /**
-     * Adjust the style sheet for this widget.
+     * Set the style sheet for this widget.
      * @param styleSheet The text of your style sheet. See https://doc.qt.io/qt-6/stylesheet.html and https://doc.qt.io/qt-6/stylesheet-examples.html for more information
      */
     setStyleSheet(styleSheet: string) : void;
@@ -4334,7 +4334,7 @@ declare class Dialog {
    */
   minimumHeight: number;
   /**
-   * Adjust the style sheet for the entire dialog.
+   * Set the style sheet for the entire dialog.
    * @param styleSheet The text of your style sheet. See https://doc.qt.io/qt-6/stylesheet.html and https://doc.qt.io/qt-6/stylesheet-examples.html for more information
    */
   setStyleSheet(styleSheet: string) : void;
