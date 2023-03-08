@@ -318,7 +318,7 @@ interface Signal<Arg> {
  * A global object with useful enums and functions from Qt.
  *
  * Only a small subset of available members in the `Qt` object are documented here.
- * See the [Qt QML Type reference](https://doc.qt.io/qt-5/qml-qtqml-qt.html) for the full documentation
+ * See the [Qt QML Type reference](https://doc.qt.io/qt-6/qml-qtqml-qt.html) for the full documentation
  * (keep in mind, that the QtQuick module is not currently loaded).
  */
 declare namespace Qt {
@@ -357,7 +357,7 @@ declare namespace Qt {
 
   /**
    * The base type from which all Qt widgets derive.
-   * Qt documentation: [QWidget](https://doc.qt.io/qt-5/qwidget.html)
+   * Qt documentation: [QWidget](https://doc.qt.io/qt-6/qwidget.html)
    */
   class QWidget {
     /**
@@ -368,12 +368,12 @@ declare namespace Qt {
      * Controls whether this widget is visible.
      * When toggling this property, the dialog layout will automatically adjust itself
      * based on the visible widgets.
-     * Qt documentation: [QWidget.visible](https://doc.qt.io/qt-5/qwidget.html#visible-prop);
+     * Qt documentation: [QWidget.visible](https://doc.qt.io/qt-6/qwidget.html#visible-prop);
      */
     visible: boolean;
     /**
      * If false, the widget cannot be interacted with.
-     * Qt documentation: [QWidget.enabled](https://doc.qt.io/qt-5/qwidget.html#enabled-prop)
+     * Qt documentation: [QWidget.enabled](https://doc.qt.io/qt-6/qwidget.html#enabled-prop)
      */
     enabled: boolean;
     /**
@@ -405,7 +405,7 @@ declare namespace Qt {
   }
   /**
    * A widget containing a single line of text that the user can edit.
-   * Qt documentation: [QLineEdit](https://doc.qt.io/qt-5/qlineedit.html)
+   * Qt documentation: [QLineEdit](https://doc.qt.io/qt-6/qlineedit.html)
    */
   class QLineEdit extends QWidget {
     /**
@@ -426,7 +426,7 @@ declare namespace Qt {
 
     /**
      * A widget containing a multiple lines of text that the user can edit.
-     * Qt documentation: [QTextEdit](https://doc.qt.io/qt-5/qtextedit.html)
+     * Qt documentation: [QTextEdit](https://doc.qt.io/qt-6/qtextedit.html)
      */
      class QTextEdit extends QWidget {
       /**
@@ -469,7 +469,7 @@ declare namespace Qt {
   /**
    * A check box widget which allows the user to toggle
    * a value on and off.
-   * Qt documentation: [QCheckBox](https://doc.qt.io/qt-5/qcheckbox.html)
+   * Qt documentation: [QCheckBox](https://doc.qt.io/qt-6/qcheckbox.html)
    */
   class QCheckBox extends QWidget {
     /**
@@ -489,7 +489,7 @@ declare namespace Qt {
   /**
    * A combo box/ dropdown widget which allows the user to select
    * one of multiple preset values.
-   * Qt documentation: [QComboBox](https://doc.qt.io/qt-5/qcombobox.html)
+   * Qt documentation: [QComboBox](https://doc.qt.io/qt-6/qcombobox.html)
    */
   class QComboBox extends QWidget {
     /**
@@ -535,7 +535,7 @@ declare namespace Qt {
 
   /**
    * A slider for allowing the user to set an integer value.
-   * Qt documentation: [QSlider](https://doc.qt.io/qt-5/qslider.html)
+   * Qt documentation: [QSlider](https://doc.qt.io/qt-6/qslider.html)
    */
   class QSlider extends QWidget {
 
@@ -567,7 +567,7 @@ declare namespace Qt {
 /**
  * An input widget which allows the user to set a floating point or integer
  * value by incrementing and decrementing it.
- * Qt documentation: [QDoubleSpinBox](https://doc.qt.io/qt-5/qdoublespinbox.html)
+ * Qt documentation: [QDoubleSpinBox](https://doc.qt.io/qt-6/qdoublespinbox.html)
  */
   class QDoubleSpinBox extends QWidget {
     /**
@@ -642,7 +642,7 @@ declare namespace Qt {
 
   /**
    * This type is returned in mainWidget when calling {@link Dialog.addSeparator}.
-   * Qt documentation [QFrame](https://doc.qt.io/qt-5/qframe.html)
+   * Qt documentation [QFrame](https://doc.qt.io/qt-6/qframe.html)
    */
   class QFrame extends QWidget {
   }
@@ -3258,11 +3258,11 @@ interface TilesetEditor {
  * {@link tiled.registerTool} for an example.
  *
  * The mouse button parameters are numbers from the
- * [Qt::MouseButton](https://doc.qt.io/qt-5/qt.html#MouseButton-enum) enum.
+ * [Qt::MouseButton](https://doc.qt.io/qt-6/qt.html#MouseButton-enum) enum.
  * They can be accessed like `Qt.LeftButton`.
  *
  * Whenever there is a keyboard modifiers parameter, they are given as flags
- * from the [Qt::KeyboarModifiers](https://doc.qt.io/qt-5/qt.html#KeyboardModifier-enum)
+ * from the [Qt::KeyboarModifiers](https://doc.qt.io/qt-6/qt.html#KeyboardModifier-enum)
  * enum, available similarly like `Qt.ShiftModifier`.
  */
 interface Tool {
@@ -3369,7 +3369,7 @@ interface Tool {
    * Called when a key was pressed while the tool was active.
    *
    * The keys are defined by numbers from the
-   * [Qt::Key](https://doc.qt.io/qt-5/qt.html#Key-enum) enum. They can
+   * [Qt::Key](https://doc.qt.io/qt-6/qt.html#Key-enum) enum. They can
    * be accessed like `Qt.Key_Return`.
    */
   keyPressed(key: number, modifiers: number): void;
@@ -4114,7 +4114,7 @@ declare class ImageWidget extends Qt.QWidget {
  * of the same type of widget sequentially, they will be grouped into the same row unless you call {@link addNewRow}
  * in between adding the widgets.
  *
- * This type is an extension of the [QDialog](https://doc.qt.io/qt-5/qdialog.html) type from Qt.
+ * This type is an extension of the [QDialog](https://doc.qt.io/qt-6/qdialog.html) type from Qt.
  *
  * @since 1.9
  */
