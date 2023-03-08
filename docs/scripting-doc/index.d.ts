@@ -377,6 +377,11 @@ declare namespace Qt {
      * Qt documentation: [QWidget.enabled](https://doc.qt.io/qt-5/qwidget.html#enabled-prop)
      */
     enabled: boolean;
+    /**
+     * Adjust the style sheet for this widget.
+     * @param styleSheet The text of your style sheet. See https://doc.qt.io/qt-6/stylesheet.html and https://doc.qt.io/qt-6/stylesheet-examples.html for more information
+     */
+    setStyleSheet(styleSheet: string) : void;
   }
 
   /**
@@ -4328,4 +4333,9 @@ declare class Dialog {
    * the provided width, it will scale itself up automatically.
    */
   minimumHeight: number;
+  /**
+   * Adjust the style sheet for the entire dialog.
+   * @param styleSheet The text of your style sheet. See https://doc.qt.io/qt-6/stylesheet.html and https://doc.qt.io/qt-6/stylesheet-examples.html for more information
+   */
+  setStyleSheet(styleSheet: string) : void;
 }
