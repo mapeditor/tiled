@@ -378,7 +378,8 @@ declare namespace Qt {
     enabled: boolean;
     /**
      * Set this property to override the style sheet for this widget.
-     * @param styleSheet The text of your style sheet. See https://doc.qt.io/qt-6/stylesheet.html and https://doc.qt.io/qt-6/stylesheet-examples.html for more information
+     *
+     * See https://doc.qt.io/qt-6/stylesheet.html and https://doc.qt.io/qt-6/stylesheet-examples.html for more information.
      */
     styleSheet: string;
     /**
