@@ -5,3 +5,5 @@ title: Tiled
 repository: mapeditor/tiled
 twitter:
   username: TiledApp
+include:
+  - .well-known
