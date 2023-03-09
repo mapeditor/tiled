@@ -40,6 +40,14 @@
     border-color: gray;
 }
 
+/* we use badges to mark changes */
+.sd-badge {
+    float: right;
+}
+:root {
+    --sd-color-primary: rgb(254, 89, 0);
+}
+
 /* override table no-wrap */
 .wy-table-responsive table td {
     white-space: normal;

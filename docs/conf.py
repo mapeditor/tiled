@@ -33,7 +33,14 @@ import sphinx_rtd_theme
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'myst_parser',
+    'sphinx_design',
     'sphinx_rtd_theme',
+]
+
+myst_enable_extensions = [
+    "colon_fence",
+    "deflist",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -42,15 +49,14 @@ templates_path = ['_templates']
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
-# source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ['.rst', '.md']
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
 project = 'Tiled'
-copyright = '2021, Tiled Documentation Writers'
+copyright = '2023, Tiled Documentation Writers'
 author = 'Thorbjørn Lindeijer'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -76,7 +82,13 @@ gettext_compact = True
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = [
+    '.DS_Store',
+    'README.md',
+    'Thumbs.db',
+    '_build',
+    'scripting-doc',
+]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
