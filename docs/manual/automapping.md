@@ -99,7 +99,6 @@ Negate
 
 The meaning of these tiles is derived from their custom `MatchType` property. This means that you can set up your own tiles for matching these special cases as well!
 
-(objectRegion)=
 ### Defining Outputs
 
 The `output` layers define what will be output when the input of the rule matches something in the working map. These can be Tile or Object Layers, and their names must follow this scheme, which is similar to that of `input` layer names:
@@ -145,6 +144,7 @@ Sometimes, you may want certain outputs to appear more or less frequently than o
 Setting the `Probability` of the grass output to 20 and the `Probability` of the rock output to 0.5 produces much nicer-looking results.
 ```
 
+(objectRegion)=
 :::{warning}
 While Automapping can output Objects, there are some caveats when it comes to detecting whether they're part of a given rule's output:
 
@@ -312,9 +312,11 @@ Since these rules work with a layer called "Cliff", they will not affect cliffs 
 
 The rules above work well if you draw your cliff tops with Terrains and then manually trigger Automapping, but what if you want to see the cliffs appear as you draw with Terrains, or want to keep drawing with Terrains after automapping manually?
 
-![Animation showing erasing the cliff top Terrain. The cliff top is updated correctly, but the cliff tiles are not.](images/automapping/automap_example14.gif)
+```{figure} images/automapping/automap_example14.gif
+:alt: Animation showing erasing the cliff top Terrain. The cliff top is updated correctly, but the cliff tiles are not.
 
 Without some extra rules, Automap While Drawing can produce messy results.
+```
 
 For this, your rules will need to take into account tiles that may have previously been placed by Automapping.
 
@@ -340,9 +342,11 @@ The output tiles in the top row are the [Empty special tile](#specialtiles), whi
 
 For Automap While Drawing to work correctly, you may also need to increase the [`AutomappingRadius`](#AutomappingRadius) property of your rules maps. This is because some of the rules may look only at tiles *near* the ones you change by drawing, such as the rules that erase cliff tiles. In this example, you will probably need to set the `AutomappingRadius` to 1 on the reset rules and on the rules that add cliffs.
 
-![Animation showing erasing the cliff top Terrain. This time, everything is updated correctly.](images/automapping/automap_example15.gif)
+```{figure} images/automapping/automap_example15.gif
+:alt: Animation showing erasing the cliff top Terrain. This time, everything is updated correctly.
 
 Now, Automap While Drawing produces correct results.
+```
 
 ### Sidescroller Details
 
@@ -366,9 +370,11 @@ The inputs for these rules are identical except for the last input layer, in whi
 
 The three outputs select a random foreground detail for the first rule, and are all Empty for the second rule. One of the outputs for the first rule is also Empty, just for extra variety.
 
-![Platforms with grass and flowers over some of the grassy tiles.](images/automapping/automap_example26.png)
+```{figure} images/automapping/automap_example26.png
+:alt: Platforms with grass and flowers over some of the grassy tiles.
 
 A result from the two rules above.
+```
 
 (updating-rules)=
 ## Updating Legacy Rules
