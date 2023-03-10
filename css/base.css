@@ -13,6 +13,14 @@ html, body {
   background-color: #3e3e3e;
   color: #d2d2d2;
 }
+kbd {
+  border-radius: 3px;
+  border: 1px solid #888;
+  display: inline-block;
+  font-weight: bold;
+  padding: 2px 4px;
+  white-space: nowrap;
+}
 
 h1, h2, h3, h4 {
   color: #ececec;
