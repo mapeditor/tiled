@@ -1,4 +1,4 @@
-### Tiled 1.10.0 (8 March 2023)
+### Tiled 1.10.0 (10 March 2023)
 
 * Restored Tiled 1.8 file format compatibility by default (#3560)
 * Added action search popup on Ctrl+Shift+P (with dogboydog, #3449)

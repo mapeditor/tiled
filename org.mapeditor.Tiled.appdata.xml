@@ -16,7 +16,8 @@
  </keywords>
  <content_rating type="oars-1.0" />
  <releases>
-  <release version="1.10.0" type="stable" date="2023-03-08">
+  <release version="1.10.0" type="stable" date="2023-03-10">
+   <url>https://www.mapeditor.org/2023/03/10/tiled-1-10-released.html</url>
    <description>
     <ul>
      <li>Restored Tiled 1.8 file format compatibility by default (#3560)</li>
@@ -103,7 +104,7 @@
    </description>
   </release>
   <release version="1.9.0" type="stable" date="2022-06-24">
-   <url>https://www.mapeditor.org/2022/06/25/tiled-1-9-0-released.html</url>
+   <url>https://www.mapeditor.org/2022/06/25/tiled-1-9-released.html</url>
    <description>
     <ul>
      <li>Ignore transparent pixels when selecting tile objects (#1477)</li>
