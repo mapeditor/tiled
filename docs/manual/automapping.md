@@ -21,7 +21,7 @@ There are two ways to make the rule maps defined in the `rules.txt` apply to a m
 * {bdg-secondary-line}`Since Tiled 1.4` Open *Project > Project Properties* and set the "Automapping rules" property to the `rules.txt` file that you created in your project. If you have only a single rule map, you can also refer to that map file directly.
 * Alternatively, you can save your `rules.txt` in the same directory as the map files to which you want the rules to apply. This can also be used to override the project-wide rules for a certain set of maps.
 
-Each line in the rules.txt file is either:
+Each line in the `rules.txt` file is either:
 
 * A path to a **rule map**.
 * A path to another `.txt` file which has the same syntax (e.g. in another directory).
@@ -331,7 +331,7 @@ There are two approaches you can take to make your Automapping rules take its ow
 *   Include those tiles as alternate inputs in all the rules, or
 *   Make another set of rules to reset all the alternate tiles to a uniform condition.
 
-The appropriate option will depend on your specific rules. In this case, the latter is simpler: all you have to do is erase any cliff tiles, and replace the variants meant to be placed next to cliffs with their basic versions. For this purpose, you should create another rule map, and place it *before* the other rules in your rules.txt, so that it can prepare the map for those other rules. The actual rules are just simple substitutions:
+The appropriate option will depend on your specific rules. In this case, the latter is simpler: all you have to do is erase any cliff tiles, and replace the variants meant to be placed next to cliffs with their basic versions. For this purpose, you should create another rule map, and place it *before* the other rules in your `rules.txt`, so that it can prepare the map for those other rules. The actual rules are just simple substitutions:
 
 | Tile Layer | Name |
 | --- | --- |
