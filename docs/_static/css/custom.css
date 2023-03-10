@@ -40,6 +40,46 @@
     border-color: gray;
 }
 
+/* we use badges to mark changes */
+.sd-badge {
+    float: right;
+    margin: 0px 0px 10px 10px;
+}
+:root {
+    --sd-color-primary: rgb(254, 89, 0);
+    --sd-color-secondary: gray;
+}
+
+/* inline icons for special Automapping tiles */
+.tile {
+    font-weight: bold;
+}
+.tile::after {
+    content: '';
+    display: inline-block;
+    width: 1.4em;
+    height: 1.4em;
+    background-image: url('images/automap-tiles.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: -0.2em 0em -0.2em 0.2em;
+}
+.tile.negate::after {
+    background-position: 0%;
+}
+.tile.ignore::after {
+    background-position: 25%;
+}
+.tile.nonempty::after {
+    background-position: 50%;
+}
+.tile.empty::after {
+    background-position: 75%;
+}
+.tile.other::after {
+    background-position: 100%;
+}
+
 /* override table no-wrap */
 .wy-table-responsive table td {
     white-space: normal;
