@@ -115,7 +115,7 @@
     <message>
         <location line="+6"/>
         <source>Session file &apos;%1&apos; not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo de sessão &apos;%1&apos; não encontrado.</translation>
     </message>
 </context>
 <context>
@@ -800,7 +800,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
         <location line="-92"/>
@@ -1783,12 +1783,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+74"/>
         <source>Use custom interface font</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar fonte de interface personalizada</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonte:</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -5276,12 +5276,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Tiled 1.9</source>
-        <translation type="unfinished">Tiled 1.9</translation>
+        <translation>Tiled 1.9</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tiled 1.10</source>
-        <translation type="unfinished">Tiled 1.10</translation>
+        <translation>Tiled 1.10</translation>
     </message>
     <message>
         <location line="+1"/>
