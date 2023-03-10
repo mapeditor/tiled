@@ -18,14 +18,14 @@ Automapping rules are defined in regular map files, which we’ll call **rule ma
 
 There are two ways to make the rule maps defined in the `rules.txt` apply to a map:
 
-* Open *Project > Project Properties* and set the "Automapping rules" property to the `rules.txt` file that you created in your project. If you have only a single rule map, you can also refer to that map file directly. {bdg-secondary-line}`Since Tiled 1.4`
+* {bdg-secondary-line}`Since Tiled 1.4` Open *Project > Project Properties* and set the "Automapping rules" property to the `rules.txt` file that you created in your project. If you have only a single rule map, you can also refer to that map file directly.
 * Alternatively, you can save your `rules.txt` in the same directory as the map files to which you want the rules to apply. This can also be used to override the project-wide rules for a certain set of maps.
 
 Each line in the rules.txt file is either:
 
 * A path to a **rule map**.
 * A path to another `.txt` file which has the same syntax (e.g. in another directory).
-* A map filename filter, enclosed in `[]` and using `*` as a wildcard. {bdg-secondary-line}`Since Tiled 1.9`
+* {bdg-secondary-line}`Since Tiled 1.9` A map filename filter, enclosed in `[]` and using `*` as a wildcard.
 * A comment, when the line starts with `#` or `//`.
 
 By default, all Automapping rules will run on any map you Automap. The map filename filters let you restrict which maps rules apply to. For example, any rule maps listed after `[town*]` will only apply to maps whose filenames start with “town”. To start applying rules to all maps again, you can use `[*]`, which will match any map name.
@@ -82,19 +82,19 @@ The first two layers both have the index 1, so Automapping will match any combin
 
 In some cases, your tiles alone aren't enough to define the scenario you want to match. Tiled provides a built-in “Automapping Rules Tileset” to handle certain special cases, which can be added to your rule map through *Map > Add Automapping Rules Tileset*.
 
-Empty
+[Empty]{.tile .empty}
 : This tile matches any empty cell. If used on an `output` layer, this tile will output an empty tile, allowing you to erase tiles with Automapping.
 
-Ignore
+[Ignore]{.tile .ignore}
 : This tile does not affect the rule in any way. Its only function is to allow connecting otherwise disconnected parts into a single rule, but it can also be used for clarity.
 
-NonEmpty
+[NonEmpty]{.tile .nonempty}
 : This tile matches any non-empty cell.
 
-Other
+[Other]{.tile .other}
 : This tile matches any cell, which contains a tile that is *different* from all the tiles used by the current rule targeting the same input layer. This includes empty cells, unless the Empty tile is explicitly used elsewhere by the rule (since Tiled 1.10).
 
-Negate
+[Negate]{.tile .negate}
 : This tile negates the condition at a specific location, making other `input` layers with the same target layer name act like inputnot and vice versa, but only in that location, which can simplify your rules in some cases.
 
 The meaning of these tiles is derived from their custom `MatchType` property. This means that you can set up your own tiles for matching these special cases as well!
@@ -154,7 +154,7 @@ While Automapping can output Objects, there are some caveats when it comes to de
 * Point positions are checked *exclusively*, a Point must be within a given cell to count as part of it, merely touching the cell is not enough.
 * Polygons and Polylines are checked as if they were Points at their position, the rest of the shape is not taken into account.
 
-You can ensure these Objects are output by putting [Ignore special tiles](#specialtiles) in a tile output layer at their position. You may also need to connect this tile to the rest of the rule with more Ignore tiles to make sure it isn't treated as a separate rule.
+You can ensure these Objects are output by putting [Ignore]{.tile .ignore} [special tiles](#specialtiles) in a tile output layer at their position. You may also need to connect this tile to the rest of the rule with more Ignore tiles to make sure it isn't treated as a separate rule.
 :::
 
 Any custom properties set on an output layer (other than `Probability`) will be copied to the target layer when the output is applied. You should normally not need to add any such properties to output layers, but this can be a way to automate setting properties on your layers based on their contents.
@@ -167,7 +167,7 @@ The behavior of your rules can be modified by properties on the rules map, input
 
 (DeleteTiles)=
 DeleteTiles
-: This is a boolean map property: it can be `true` or `false`. When `true`, if rules of this rule map get applied at some location in your map, all existing tiles in the input region are deleted before applying the output. The usual way to erase tiles via Automapping is to output the [Empty special tile](#specialtiles), but this property can save you time your rules do a lot of deletions on certain layers.
+: This is a boolean map property: it can be `true` or `false`. When `true`, if rules of this rule map get applied at some location in your map, all existing tiles in the input region are deleted before applying the output. The usual way to erase tiles via Automapping is to output the [Empty]{.tile .empty} [special tile](#specialtiles), but this property can save you time your rules do a lot of deletions on certain layers.
 
   Despite the name, this property affects output Object Layers too, deleting any Objects that fully or partially overlap the input region of any rule that matches. This is currently the only way to delete Objects via Automapping.
 
@@ -210,7 +210,7 @@ The following properties are supported on a per-layer basis:
 AutoEmpty (alias: StrictEmpty)
 : This boolean layer property can be added to `input` and `inputnot` layers to customize the behavior for empty tiles within a rule.
 
-  Normally, empty tiles are simply ignored. When `AutoEmpty` is `true`, empty tiles within the input region match empty tiles in the target layer. This can only happen when you have multiple input/inputnot layers and some of the tiles that are part of the same rule are empty while others are not. Usually, using the [Empty special tile](#specialtiles) is the best way to specify an empty tile, but this property is useful when you have multiple input layers, some of which need to match many empty tiles. Note that the input region is defined by *all* input layers, regardless of index.
+  Normally, empty tiles are simply ignored. When `AutoEmpty` is `true`, empty tiles within the input region match empty tiles in the target layer. This can only happen when you have multiple input/inputnot layers and some of the tiles that are part of the same rule are empty while others are not. Usually, using the [Empty]{.tile .empty} [special tile](#specialtiles) is the best way to specify an empty tile, but this property is useful when you have multiple input layers, some of which need to match many empty tiles. Note that the input region is defined by *all* input layers, regardless of index.
 
 (outputProbability)=
 Probability {bdg-primary}`New in Tiled 1.10`
@@ -338,7 +338,7 @@ The appropriate option will depend on your specific rules. In this case, the lat
 | ![The different cliff tiles in a row above, and the cliff variants of side and corner tiles in a row below.](images/automapping/automap_example12.png) | input\_Cliff |
 | ![Red-outlined Empty tiles in the row above, and the basic variants of the side and corner tiles in the row below.](images/automapping/automap_example13.png) | output\_Cliff |
 
-The output tiles in the top row are the [Empty special tile](#specialtiles), which means the output will erase those tiles.
+The output tiles in the top row are the [Empty]{.tile .empty} [special tile](#specialtiles), which means the output will erase those tiles.
 
 For Automap While Drawing to work correctly, you may also need to increase the [`AutomappingRadius`](#AutomappingRadius) property of your rules maps. This is because some of the rules may look only at tiles *near* the ones you change by drawing, such as the rules that erase cliff tiles. In this example, you will probably need to set the `AutomappingRadius` to 1 on the reset rules and on the rules that add cliffs.
 
@@ -364,7 +364,7 @@ You can use Automapping to add various details to your maps. This small example 
 | ![Grass detail tile in the first rule, Empty tile in the second.](images/automapping/automap_example23.png) | outputB\_Foreground |
 | ![Two Empty tiles.](images/automapping/automap_example24.png) | outputC\_Foreground |
 
-The inputs for these rules are identical except for the last input layer, in which the second rule, which deletes the foreground detail tiles, has the [Negate special tile](#specialtiles). This turns makes all those `input` layers act like `inputnot` layers, but only in that specific location. This means the first rule matches whenever it encounters any of those grassy-topped tiles, while the second rule matches whenever it encounters *anything other* than those grassy-topped tiles. The second rule could've also been made with a bunch of `inputnot` layers instead, but using the Negate tile reduces how many layers this rule map needs, and it's easier to see that the input tiles are negated when the layers are all viewed together:
+The inputs for these rules are identical except for the last input layer, in which the second rule, which deletes the foreground detail tiles, has the [Negate]{.tile .negate} [special tile](#specialtiles). This turns makes all those `input` layers act like `inputnot` layers, but only in that specific location. This means the first rule matches whenever it encounters any of those grassy-topped tiles, while the second rule matches whenever it encounters *anything other* than those grassy-topped tiles. The second rule could've also been made with a bunch of `inputnot` layers instead, but using the Negate tile reduces how many layers this rule map needs, and it's easier to see that the input tiles are negated when the layers are all viewed together:
 
 ![The two rules with both inputs and outputs visible, but the second rule has a negation sign over its platform tiles.](images/automapping/automap_example25.png)
 
@@ -388,13 +388,13 @@ In Tiled 1.9.x, the presense of `regions` layers did not imply `MatchInOrder`. I
 If you'd like to instead update your rules to not rely on any legacy behavior, that can be as simple as deleting your `regions` layer(s), or it might take some extra work, depending on how exactly your rules are set up:
 
 * If your rules rely on being applied in a set order, set the [`MatchInOrder` map property](#MatchInOrder) to `true`.
-* When deleting your `regions` layers, make sure you weren't relying on them to connect otherwise disconnected areas of tiles. If you were, use the [Ignore special tile](#specialtiles) to connect them on one of the `input` layers, so that Tiled knows they're part of the same rule. To make sure the rules behave exactly the same, fill in any part that was previously part of the input region.
+* When deleting your `regions` layers, make sure you weren't relying on them to connect otherwise disconnected areas of tiles. If you were, use the [Ignore]{.tile .ignore} [special tile](#specialtiles) to connect them on one of the `input` layers, so that Tiled knows they're part of the same rule. To make sure the rules behave exactly the same, fill in any part that was previously part of the input region.
     
-* If were using the [`DeleteTiles` map property](#DeleteTiles) to erase tiles from the output layer, you can keep using this property. If you want to make your rule more visually clear, however, you should unset the `DeleteTiles` map property, and instead use the [Empty special tile](#specialtiles) in all the output cells you want to delete from.
+* If were using the [`DeleteTiles` map property](#DeleteTiles) to erase tiles from the output layer, you can keep using this property. If you want to make your rule more visually clear, however, you should unset the `DeleteTiles` map property, and instead use the [Empty]{.tile .empty} [special tile](#specialtiles) in all the output cells you want to delete from.
     
 * If were using the [`StrictEmpty` map property](#AutoEmpty) to look for empty input tiles, you should now use the Empty special tile instead in the cells you want to check for being empty. You can also continue use the `StrictEmpty` property (or its newer alias, `AutoEmpty`), as long as at least one other input layer is not empty at those locations.
     
-* If were relying on the behavior that any tile which is left empty on all of the input layers for a given index is treated as “any tile not in this rule”, you should instead use the [Other special tile](#specialtiles) at those locations, and also the [Empty special tile](#specialtiles) on an inputnot layer at those same locations. The Empty tile is needed because old-style Other never matched Empty, but the MatchType Other tile does match Empty.
+* If were relying on the behavior that any tile which is left empty on all of the input layers for a given index is treated as “any tile not in this rule”, you should instead use the [Other]{.tile .other} [special tile](#specialtiles) at those locations, and also the [Empty]{.tile .empty} [special tile](#specialtiles) on an inputnot layer at those same locations. The Empty tile is needed because old-style Other never matched Empty, but the MatchType Other tile does match Empty.
     
 
 ## Credits

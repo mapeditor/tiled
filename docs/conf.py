@@ -39,6 +39,7 @@ extensions = [
 ]
 
 myst_enable_extensions = [
+    "attrs_inline",
     "colon_fence",
     "deflist",
 ]
