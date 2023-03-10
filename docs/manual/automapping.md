@@ -246,6 +246,10 @@ Disabled
 NoOverlappingOutput
 : When set to `true`, the output of a rule is not allowed to overlap other outputs of the same rule (defaults to `false`).
 
+(IgnoreLock)=
+IgnoreLock {bdg-primary}`New in Tiled 1.10`
+: Since Tiled 1.10, rules will no longer modify locked layers. Set this property to `true` to ignore the lock. This can be useful, when you want to keep layers locked which are only changed by rules.
+
 All these options can also be set on the rule map itself, in which case they apply as defaults for all rules, which can then be overridden for specific rules by placing rectangle objects.
 
 ## Examples
