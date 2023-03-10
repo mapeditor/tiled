@@ -9,7 +9,7 @@ Automapping can be applied manually via *Map > AutoMap*, or dynamically as you d
 :::{note}
 Automapping changed significantly in Tiled 1.9. It's 10-30x faster and setting up rules is more intuitive, but it behaves differently from the old system in some ways. Old rules should still behave the same, but you may want to take a look at the [section on updating your rules](#updating-rules). If you need help understanding your old rules, the [old documentation is available on GitHub](https://github.com/mapeditor/tiled/blob/685dbff38244776108b8ddbe669b4d8937752311/docs/manual/automapping.rst).
 
-If you are making new rules, make sure you *do not* have any “regions” layers. These will enable the old Automapping system, and the rules will likely not behave as you intend.
+If you are making new rules, make sure you *do not* have any `regions` layers. These will enable the old Automapping system, and the rules will likely not behave as you intend.
 :::
 
 ## Setting Up the Rules File
