@@ -399,10 +399,11 @@ declare namespace Qt {
    */
   class QUrl{
     /**
-     * Get a string representation of the file
+     * Get a string representation of the file.
      */
     toString(): string;
   }
+
   /**
    * A widget containing a single line of text that the user can edit.
    * Qt documentation: [QLineEdit](https://doc.qt.io/qt-6/qlineedit.html)
@@ -414,7 +415,7 @@ declare namespace Qt {
     editingFinished: Signal<void>;
 
     /**
-     * Signal emitted when the text inside the QLineEdit is changed.
+     * Signal emitted when the {@link text} inside the QLineEdit is changed.
      */
     textChanged: Signal<string>;
 
@@ -422,6 +423,10 @@ declare namespace Qt {
      * Setting this property makes the line edit display a grayed-out placeholder text as long as the line edit is empty.
      */
     placeholderText: string;
+    /**
+     * This property holds the line edit's text.
+     */
+    text: string;
   }
 
     /**
@@ -440,7 +445,7 @@ declare namespace Qt {
       plainText: string;
       /**
        * Signal emitted when the text inside the QTextEdit is changed.
-       * Check the text with {@link plainText} or {@link html} when this is emitted.
+       * Check the text with {@link plainText}, {@link html} or {@link markdown} when this is emitted.
        */
       textChanged: Signal<void>;
       /**
@@ -449,6 +454,12 @@ declare namespace Qt {
        * https://doc.qt.io/qt-6/richtext-html-subset.html
        */
       html: string;
+      /**
+       * This property provides a Markdown interface to the text of the text edit.
+       *
+       * See [QTextEdit::markdown](https://doc.qt.io/qt-6/qtextedit.html#markdown-prop) for details.
+       */
+      markdown: string;
     }
 
     type CheckState = number;
@@ -4241,9 +4252,9 @@ declare class Dialog extends Qt.QWidget {
   addTextInput(labelText?: string, defaultValue?: string): Qt.QLineEdit;
 
   /**
-   * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user
+   * Add a {@link Qt.QTextEdit} widget to the dialog to allow the user
    * to edit multiple lines of text. Also allows display of rendered HTML
-   * by setting the {@link Qt.QLineEdit.html} property.
+   * by setting the {@link Qt.QTextEdit.html} property.
    * @param labelText - text to display in a label to the left of the widget
    * @param defaultValue - the default value to display in the input
    */
