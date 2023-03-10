@@ -93,7 +93,7 @@
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
 						<p>A widget containing a multiple lines of text that the user can edit.
-						Qt documentation: <a href="https://doc.qt.io/qt-5/qtextedit.html">QTextEdit</a></p>
+						Qt documentation: <a href="https://doc.qt.io/qt-6/qtextedit.html">QTextEdit</a></p>
 					</div>
 				</div>
 			</section>
@@ -124,8 +124,13 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QTextEdit.html#enabled" class="tsd-kind-icon">enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QTextEdit.html#html" class="tsd-kind-icon">html</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QTextEdit.html#markdown" class="tsd-kind-icon">markdown</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QTextEdit.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QTextEdit.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QTextEdit.html#plainText" class="tsd-kind-icon">plain<wbr>Text</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QTextEdit.html#readOnly" class="tsd-kind-icon">read<wbr>Only</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QTextEdit.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QTextEdit.html#textChanged" class="tsd-kind-icon">text<wbr>Changed</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QTextEdit.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QTextEdit.html#visible" class="tsd-kind-icon">visible</a></li>
@@ -163,7 +168,62 @@
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>If false, the widget cannot be interacted with.
-							Qt documentation: <a href="https://doc.qt.io/qt-5/qwidget.html#enabled-prop">QWidget.enabled</a></p>
+							Qt documentation: <a href="https://doc.qt.io/qt-6/qwidget.html#enabled-prop">QWidget.enabled</a></p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="html" class="tsd-anchor"></a>
+					<h3>html</h3>
+					<div class="tsd-signature tsd-kind-icon">html<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>This property holds the text editor&#39;s contents as HTML
+								See the supported HTML subset here:
+							<a href="https://doc.qt.io/qt-6/richtext-html-subset.html">https://doc.qt.io/qt-6/richtext-html-subset.html</a></p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="markdown" class="tsd-anchor"></a>
+					<h3>markdown</h3>
+					<div class="tsd-signature tsd-kind-icon">markdown<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>This property provides a Markdown interface to the text of the text edit.</p>
+						</div>
+						<p>See <a href="https://doc.qt.io/qt-6/qtextedit.html#markdown-prop">QTextEdit::markdown</a> for details.</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="minimumHeight" class="tsd-anchor"></a>
+					<h3>minimum<wbr>Height</h3>
+					<div class="tsd-signature tsd-kind-icon">minimum<wbr>Height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#minimumHeight">minimumHeight</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>You can use this property to prevent the widget from being resized to a height
+							below this amount.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="minimumWidth" class="tsd-anchor"></a>
+					<h3>minimum<wbr>Width</h3>
+					<div class="tsd-signature tsd-kind-icon">minimum<wbr>Width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#minimumWidth">minimumWidth</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>You can use this property to prevent the widget from being resized to a width
+							below this amount.</p>
 						</div>
 					</div>
 				</section>
@@ -192,6 +252,20 @@
 						</div>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="styleSheet" class="tsd-anchor"></a>
+					<h3>style<wbr>Sheet</h3>
+					<div class="tsd-signature tsd-kind-icon">style<wbr>Sheet<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#styleSheet">styleSheet</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Set this property to override the style sheet for this widget.</p>
+						</div>
+						<p>See <a href="https://doc.qt.io/qt-6/stylesheet.html">https://doc.qt.io/qt-6/stylesheet.html</a> and <a href="https://doc.qt.io/qt-6/stylesheet-examples.html">https://doc.qt.io/qt-6/stylesheet-examples.html</a> for more information.</p>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="textChanged" class="tsd-anchor"></a>
 					<h3>text<wbr>Changed</h3>
@@ -201,7 +275,7 @@
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>Signal emitted when the text inside the QTextEdit is changed.
-							Check the text with <a href="Qt.QTextEdit.html#plainText">plainText</a> or {@link html} when this is emitted.</p>
+							Check the text with <a href="Qt.QTextEdit.html#plainText">plainText</a>, <a href="Qt.QTextEdit.html#html">html</a> or <a href="Qt.QTextEdit.html#markdown">markdown</a> when this is emitted.</p>
 						</div>
 					</div>
 				</section>
@@ -230,7 +304,7 @@
 							<p>Controls whether this widget is visible.
 								When toggling this property, the dialog layout will automatically adjust itself
 								based on the visible widgets.
-							Qt documentation: <a href="https://doc.qt.io/qt-5/qwidget.html#visible-prop">QWidget.visible</a>;</p>
+							Qt documentation: <a href="https://doc.qt.io/qt-6/qwidget.html#visible-prop">QWidget.visible</a>;</p>
 						</div>
 					</div>
 				</section>
@@ -300,10 +374,25 @@
 								<a href="Qt.QTextEdit.html#enabled" class="tsd-kind-icon">enabled</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QTextEdit.html#html" class="tsd-kind-icon">html</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QTextEdit.html#markdown" class="tsd-kind-icon">markdown</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QTextEdit.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QTextEdit.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Qt.QTextEdit.html#plainText" class="tsd-kind-icon">plain<wbr>Text</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Qt.QTextEdit.html#readOnly" class="tsd-kind-icon">read<wbr>Only</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QTextEdit.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Qt.QTextEdit.html#textChanged" class="tsd-kind-icon">text<wbr>Changed</a>

@@ -97,7 +97,7 @@
 					<p>All other widgets will be placed in the right-hand side column. When you add multiple instances
 						of the same type of widget sequentially, they will be grouped into the same row unless you call <a href="Dialog.html#addNewRow">addNewRow</a>
 					in between adding the widgets.</p>
-					<p>This type is an extension of the <a href="https://doc.qt.io/qt-5/qdialog.html">QDialog</a> type from Qt.</p>
+					<p>This type is an extension of the <a href="https://doc.qt.io/qt-6/qdialog.html">QDialog</a> type from Qt.</p>
 					<dl class="tsd-comment-tags">
 						<dt>since</dt>
 						<dd><p>1.9</p>
@@ -109,7 +109,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Dialog</span>
+						<a href="Qt.QWidget.html" class="tsd-signature-type" data-tsd-kind="Class">QWidget</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">Dialog</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -120,18 +125,22 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="Dialog.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="Dialog.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#accepted" class="tsd-kind-icon">accepted</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Dialog.html#enabled" class="tsd-kind-icon">enabled</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#finished" class="tsd-kind-icon">finished</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Dialog.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Dialog.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#newRowMode" class="tsd-kind-icon">new<wbr>Row<wbr>Mode</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#rejected" class="tsd-kind-icon">rejected</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Dialog.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Dialog.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Dialog.html#visible" class="tsd-kind-icon">visible</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#windowTitle" class="tsd-kind-icon">window<wbr>Title</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Dialog.html#Accepted" class="tsd-kind-icon">Accepted</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Dialog.html#ManualRows" class="tsd-kind-icon">Manual<wbr>Rows</a></li>
@@ -170,16 +179,17 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 						<li class="tsd-signature tsd-kind-icon">new <wbr>Dialog<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Dialog.html" class="tsd-signature-type" data-tsd-kind="Class">Dialog</a></li>
 						<li class="tsd-signature tsd-kind-icon">new <wbr>Dialog<span class="tsd-signature-symbol">(</span>windowTitle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Dialog.html" class="tsd-signature-type" data-tsd-kind="Class">Dialog</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Overrides <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#constructor">constructor</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
@@ -190,6 +200,7 @@
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Overrides Qt.QWidget.constructor</p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
@@ -215,6 +226,20 @@
 						</div>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="enabled" class="tsd-anchor"></a>
+					<h3>enabled</h3>
+					<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#enabled">enabled</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>If false, the widget cannot be interacted with.
+							Qt documentation: <a href="https://doc.qt.io/qt-6/qwidget.html#enabled-prop">QWidget.enabled</a></p>
+						</div>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="finished" class="tsd-anchor"></a>
 					<h3>finished</h3>
@@ -229,31 +254,31 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="minimumHeight" class="tsd-anchor"></a>
 					<h3>minimum<wbr>Height</h3>
 					<div class="tsd-signature tsd-kind-icon">minimum<wbr>Height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#minimumHeight">minimumHeight</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>You can use this property to prevent the dialog from being resized to a height
-								below this amount. When you change minimumHeight, ifthe dialog is already less tall than
-							the provided width, it will scale itself up automatically.</p>
+							<p>You can use this property to prevent the widget from being resized to a height
+							below this amount.</p>
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="minimumWidth" class="tsd-anchor"></a>
 					<h3>minimum<wbr>Width</h3>
 					<div class="tsd-signature tsd-kind-icon">minimum<wbr>Width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#minimumWidth">minimumWidth</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>You can use this property to prevent the dialog from being resized to a width
-								below this amount. When you change minimumWidth, ifthe dialog is already less wide than
-							the provided width, it will scale itself up automatically.</p>
+							<p>You can use this property to prevent the widget from being resized to a width
+							below this amount.</p>
 						</div>
 					</div>
 				</section>
@@ -281,6 +306,49 @@
 							<p>Called when the dialog is closed via the X button, {@link reject()}, or the
 								{@link done()} method is called with <a href="Dialog.html#Rejected">Dialog.Rejected</a> as its
 							argument.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="styleSheet" class="tsd-anchor"></a>
+					<h3>style<wbr>Sheet</h3>
+					<div class="tsd-signature tsd-kind-icon">style<wbr>Sheet<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#styleSheet">styleSheet</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Set this property to override the style sheet for this widget.</p>
+						</div>
+						<p>See <a href="https://doc.qt.io/qt-6/stylesheet.html">https://doc.qt.io/qt-6/stylesheet.html</a> and <a href="https://doc.qt.io/qt-6/stylesheet-examples.html">https://doc.qt.io/qt-6/stylesheet-examples.html</a> for more information.</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="toolTip" class="tsd-anchor"></a>
+					<h3>tool<wbr>Tip</h3>
+					<div class="tsd-signature tsd-kind-icon">tool<wbr>Tip<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#toolTip">toolTip</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The toolTip displayed when the user mouses over this widget</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="visible" class="tsd-anchor"></a>
+					<h3>visible</h3>
+					<div class="tsd-signature tsd-kind-icon">visible<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#visible">visible</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Controls whether this widget is visible.
+								When toggling this property, the dialog layout will automatically adjust itself
+								based on the visible widgets.
+							Qt documentation: <a href="https://doc.qt.io/qt-6/qwidget.html#visible-prop">QWidget.visible</a>;</p>
 						</div>
 					</div>
 				</section>
@@ -498,7 +566,7 @@
 					<a name="addImage" class="tsd-anchor"></a>
 					<h3>add<wbr>Image</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Image<span class="tsd-signature-symbol">(</span>image<span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ImageWidget.html" class="tsd-signature-type" data-tsd-kind="Class">ImageWidget</a></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Image<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, image<span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ImageWidget.html" class="tsd-signature-type" data-tsd-kind="Class">ImageWidget</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -506,7 +574,7 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Adds an image widget that can display an image in a dialog</p>
+									<p>Adds an image widget that can display an image in a dialog.</p>
 								</div>
 							</div>
 						</li>
@@ -620,9 +688,9 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Add a <a href="Qt.QLineEdit.html">Qt.QLineEdit</a> widget to the dialog to allow the user
+									<p>Add a <a href="Qt.QTextEdit.html">Qt.QTextEdit</a> widget to the dialog to allow the user
 										to edit multiple lines of text. Also allows display of rendered HTML
-									by setting the {@link Qt.QLineEdit.html} property.</p>
+									by setting the <a href="Qt.QTextEdit.html#html">Qt.QTextEdit.html</a> property.</p>
 								</div>
 							</div>
 						</li>
@@ -754,19 +822,22 @@
 					<li class="current tsd-kind-class">
 						<a href="Dialog.html" class="tsd-kind-icon">Dialog</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 								<a href="Dialog.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Dialog.html#accepted" class="tsd-kind-icon">accepted</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Dialog.html#enabled" class="tsd-kind-icon">enabled</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Dialog.html#finished" class="tsd-kind-icon">finished</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="Dialog.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="Dialog.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
@@ -774,6 +845,15 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Dialog.html#rejected" class="tsd-kind-icon">rejected</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Dialog.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Dialog.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Dialog.html#visible" class="tsd-kind-icon">visible</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Dialog.html#windowTitle" class="tsd-kind-icon">window<wbr>Title</a>
