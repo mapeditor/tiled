@@ -348,6 +348,7 @@ For Automap While Drawing to work correctly, you may also need to increase the [
 Now, Automap While Drawing produces correct results.
 ```
 
+(sidescroller-details)=
 ### Sidescroller Details
 
 You can use Automapping to add various details to your maps. This small example shows adding foreground details to a sidescroller platforms. This tileset features a number of platform tiles, some of which have rocky tops, and some of which have grassy tops. These two rules will add random grass and flower decorations to a different layer corresponding to the grassy-topped tiles, and delete any decorations that end up on top of non-grassy tiles. There are many input layers, because there are many grassy-topped tiles to check.

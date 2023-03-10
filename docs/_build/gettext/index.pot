@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2021, Tiled Documentation Writers
+# Copyright (C) 2023, Tiled Documentation Writers
 # This file is distributed under the same license as the Tiled package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Tiled 1.7\n"
+"Project-Id-Version: Tiled 1.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-04 15:28+0200\n"
+"POT-Creation-Date: 2023-03-10 11:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../../index.rst:10
-#: ../../index.rst:10
 msgid "User Manual"
 msgstr ""
 
-#: ../../index.rst:32
 #: ../../index.rst:32
 msgid "Reference"
 msgstr ""
