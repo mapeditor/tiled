@@ -399,4 +399,4 @@ If you'd like to instead update your rules to not rely on any legacy behavior, t
 
 ## Credits
 
-Some examples on this page use art from [A platformer in the forest](https://opengameart.org/content/a-platformer-in-the-forest) by Buch.
+The [Sidescroller Details](#sidescroller-details) example uses art from [A platformer in the forest](https://opengameart.org/content/a-platformer-in-the-forest) by Buch.
