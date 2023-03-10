@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2021-09-07 13:45+0200\n"
-"PO-Revision-Date: 2022-11-04 15:04+0000\n"
+"PO-Revision-Date: 2023-03-08 18:37+0000\n"
 "Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tiled/manual/de/>"
 "\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"X-Generator: Weblate 4.16.2-dev\n"
 "Generated-By: Babel 2.8.0\n"
 
 #: ../../manual/automapping.rst:3
@@ -680,7 +680,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:454
 msgid "Input Layers"
-msgstr ""
+msgstr "Eingabe-Ebenen"
 
 #: ../../manual/automapping.rst:456
 msgid ""
@@ -711,7 +711,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:483
 msgid "Output Layer"
-msgstr ""
+msgstr "Ausgabe-Ebenen"
 
 #: ../../manual/automapping.rst:485
 msgid ""
