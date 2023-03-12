@@ -89,11 +89,29 @@ overwritten every time the map is exported.
     *all* of the same tilesets. You may wish to create a layer with the
     ``tilesetOnly`` property to ensure the correct tilesets are exported.
 
+Object Properties
+~~~~~~~~~~~~~~~~~
+
+Objects support the following properties:
+
+* string ``resPath`` (required)
+* float ``originX`` (default: 0)
+* float ``originY`` (default: 0)
+
+The ``resPath`` property takes the form of 'res://<pbject path>.tscn' and must
+be set to the path of the Godot object you wish to replace the object with.
+Objects without this property set will not be exported.
+
+The ``originX`` and ``originY`` properties provide an offset to the object
+position. Tiled normally sets the origin to the lower-left corner of the
+object, so if the origin of your object in Godot is different, you can use
+these properties to ensure they get properly positioned.
+
 Limitations
 ~~~~~~~~~~~
 
 * The Godot 4 exporter does not currently support collection of images 
-  tilesets, object layers, or image layers.
+  tilesets or image layers.
 * Godot's hexagonal maps only support :ref:`hex side lengths <tmx-map>`
   that are exactly half the tile height. So if, for example, your tile 
   height is 16, then your hex side length must be 8.

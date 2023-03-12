@@ -237,6 +237,12 @@ struct CustomDataLayer
     int index = 0;
 };
 
+// Remove any special chars from a string
+static QString sanitizeSpecialChars(QString str)
+{
+    return str.replace(QRegularExpression("[^a-zA-Z0-9]"), "");
+}
+
 // For collecting information about the tilesets we're using
 struct TilesetInfo
 {
@@ -253,6 +259,8 @@ struct AssetInfo
     QMap<QString, TilesetInfo> tilesetInfo;
     QList<const TileLayer*> layers;
     QSet<QString> tilesetIds;
+    QMap<QString, QString> objectIds;           // Map resPaths to unique IDs
+    QList<const MapObject*> objects;
     QString resRoot;
     std::map<QString, CustomDataLayer> customDataLayers;
 };
@@ -329,6 +337,52 @@ static void findUsedTilesets(const TileLayer *layer, AssetInfo &assetInfo)
     }
 }
 
+// Search an object layer for all object resources and save them in assetInfo
+static void findUsedObjects(const ObjectGroup *objectLayer, AssetInfo &assetInfo)
+{
+    for (const MapObject *object : objectLayer->objects()) {
+        auto resPath = object->resolvedProperty("resPath").toString();
+
+        if (resPath.isEmpty()) {            
+            if (resPath.isEmpty()) {
+                Tiled::WARNING(TscnPlugin::tr("Only objects with the resPath property will be exported"),
+                    Tiled::JumpToObject { object });
+                continue;
+            }
+        }
+        
+        QRegularExpressionMatch match;
+        if (!resPath.contains(QRegularExpression("^res://(.*)\\.tscn$"), &match)) {
+            Tiled::ERROR(TscnPlugin::tr("resPath must be in the form of 'res://<filename>.tscn'."),
+                Tiled::JumpToObject { object });
+            continue;
+        }
+        
+        QString baseName = sanitizeSpecialChars(match.captured(1));
+        int uniqueifier = 1;
+        QString id = baseName;
+
+        // Create the objectId map such that every key and every value is unique.
+        while (true) {
+            // keys() is slow. If this becomes a problem, we can create a reverse map.
+            auto keys = assetInfo.objectIds.keys(id);
+
+            if (keys.empty()) {
+                assetInfo.objectIds[resPath] = id;
+                break;
+            }
+
+            if (keys[0] == resPath)
+                break;
+
+            ++uniqueifier;
+            id = baseName + QString::number(uniqueifier);
+        }
+
+        assetInfo.objects.push_back(object);
+    }
+}
+
 // Used by collectAssets() to search all layers and layer groups
 static void collectAssetsRecursive(const QList<Layer*> &layers, AssetInfo &assetInfo)
 {
@@ -346,10 +400,12 @@ static void collectAssetsRecursive(const QList<Layer*> &layers, AssetInfo &asset
 
             break;
         }
-        case Layer::ObjectGroupType:
-            Tiled::WARNING(TscnPlugin::tr("The Godot exporter does not yet support objects"),
-                           Tiled::SelectLayer { layer });
+        case Layer::ObjectGroupType: {
+            auto objectLayer = static_cast<const ObjectGroup*>(layer);
+            findUsedObjects(objectLayer, assetInfo);
+            
             break;
+        }
         case Layer::ImageLayerType:
             Tiled::WARNING(TscnPlugin::tr("The Godot exporter does not yet support image layers"),
                            Tiled::SelectLayer { layer });
@@ -548,6 +604,18 @@ static bool writeProperties(QFileDevice *device, const QVariantMap &properties, 
     return first;
 }
 
+// Write the ext_resource lines for any objects exported
+static void writeExtObjects(QFileDevice *device, AssetInfo& assetInfo) {
+    for (auto it = assetInfo.objectIds.begin(); it != assetInfo.objectIds.end(); ++it) {
+        device->write(formatByteString(
+            "[ext_resource type=\"PackedScene\" path=\"%1\" id=\"%2\"]\n",
+            sanitizeQuotedString(it.key()),
+            it.value()));
+    }
+
+    device->write("\n");
+}
+
 // Write the tileset
 // If you're creating a reusable tileset file, pass in a new file device and
 // set isExternal to true, otherwise, reuse the device from the tscn file.
@@ -555,10 +623,10 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
 {
     bool foundCollisions = false;
 
-    // One Texture2D and one TileSetAtlasSource per tileset, plus a resource node
-    auto loadSteps = assetInfo.tilesetInfo.size() * 2 + 1;
-
     if (isExternal) {
+        // One Texture2D and one TileSetAtlasSource per tileset, plus a resource node
+        auto loadSteps = assetInfo.tilesetInfo.size() * 2 + 1;
+
         device->write(formatByteString(
             "[gd_resource type=\"TileSet\" load_steps=%1 format=3]\n\n",
             loadSteps));
@@ -574,6 +642,10 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
             sanitizeQuotedString(it.key()),
             sanitizeQuotedString(it->id)));
     }
+
+    if (!isExternal)
+        writeExtObjects(device, assetInfo);
+
     device->write("\n");
 
     // TileSetAtlasSource nodes
@@ -799,6 +871,9 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         // (unless we're writing the tileset to an external .tres file)
         auto loadSteps = !tilesetResPath.isEmpty() ? 2 : assetInfo.tilesetInfo.size() * 2 + 2;
 
+        // And an extra load step per object resource
+        loadSteps += assetInfo.objectIds.size();
+
         // gdscene node
         device->write(formatByteString("[gd_scene load_steps=%1 format=3]\n\n", loadSteps));
 
@@ -811,8 +886,10 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
                 throw tscnError(tr("tilesetResPath must be in the form of 'res://<filename>.tres'."));
 
             device->write(formatByteString(
-                "[ext_resource type=\"TileSet\" path=\"%1\" id=\"TileSet_0\"]\n\n",
+                "[ext_resource type=\"TileSet\" path=\"%1\" id=\"TileSet_0\"]\n",
                 sanitizeQuotedString(tilesetResPath)));
+            
+            writeExtObjects(device, assetInfo);
 
             QString resFileName = assetInfo.resRoot + '/' + match.captured(1);
             SaveFile tilesetFile(resFileName);
@@ -837,9 +914,12 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
             }
         }
 
-        // TileMap node
-        device->write(formatByteString("[node name=\"%1\" type=\"TileMap\"]\n",
+        // Root node
+        device->write(formatByteString("[node name=\"%1\" type=\"Node2D\"]\n\n",
             sanitizeQuotedString(fi.baseName())));
+
+        // TileMap node
+        device->write("[node name=\"TileMap\" type=\"TileMap\" parent=\".\"]\n");
 
         if (tilesetResPath.isEmpty())
             device->write("tile_set = SubResource(\"TileSet_0\")\n");
@@ -931,6 +1011,35 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
             device->write(")\n");
 
             layerIndex++;
+        }
+
+        device->write("\n");
+                    
+        // Object scene nodes
+        for (const MapObject *object : assetInfo.objects) {
+            device->write("\n");
+
+            auto name = object->name();
+            if (name.isEmpty())
+                name = "Object" + QString::number(object->id());
+
+            auto resPath = object->resolvedProperty("resPath").toString();
+
+            device->write(formatByteString(
+                "[node name=\"%1\" parent=\".\" instance=ExtResource(\"%2\")]\n",
+                sanitizeQuotedString(name),
+                sanitizeQuotedString(assetInfo.objectIds[resPath]))
+            );
+
+            auto pos = object->position();
+            pos.setX(pos.x() + object->resolvedProperty("originX").toFloat());
+            pos.setY(pos.y() + object->resolvedProperty("originY").toFloat());
+
+            device->write(formatByteString(
+                "position = Vector2(%1, %2)\n",
+                pos.x(),
+                pos.y()
+            ));
         }
     } catch (std::exception& e) {
         mError = e.what();
