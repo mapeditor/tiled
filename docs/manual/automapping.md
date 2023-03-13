@@ -9,7 +9,7 @@ Automapping can be applied manually via *Map > AutoMap*, or dynamically as you d
 :::{note}
 Automapping changed significantly in Tiled 1.9. It's 10-30x faster and setting up rules is more intuitive, but it behaves differently from the old system in some ways. Old rules should still behave the same, but you may want to take a look at the [section on updating your rules](#updating-rules). If you need help understanding your old rules, the [old documentation is available on GitHub](https://github.com/mapeditor/tiled/blob/685dbff38244776108b8ddbe669b4d8937752311/docs/manual/automapping.rst).
 
-If you are making new rules, make sure you *do not* have any “regions” layers. These will enable the old Automapping system, and the rules will likely not behave as you intend.
+If you are making new rules, make sure you *do not* have any `regions` layers. These will enable the old Automapping system, and the rules will likely not behave as you intend.
 :::
 
 ## Setting Up the Rules File
@@ -39,7 +39,7 @@ A **rule map** is a standard map file, which can be read and written by Tiled (u
 
 In addition, custom properties on the rule map, its layers and on objects can be used to fine-tune the overall behavior or the behavior of specific rules.
 
-Every contiguous region of tiles on the `input` and `output` layers is a rule. Tiles are considered contiguous if they're next to each other vertically, horizontally, or diagonally (8-way connectivity). You can include many rules in one map, as long as you leave space between them. By default all the rules will match simultaneously, and apply their outputs in order from top to bottom, left to right - rules with smaller Y value come first, and if there are rules at the same Y value, then the rules with smaller X come first. If you want the rules to match in order and take previous rules' output into account, you can use the [`MatchInOrder` map property](#MatchInOrder).
+Every contiguous region of tiles on the `input` and `output` layers is a rule. Tiles are considered contiguous if they're next to each other vertically, horizontally, or diagonally (8-way connectivity). You can include many rules in one map, as long as you leave space between them. By default all the rules will match simultaneously, and apply their outputs in order from top to bottom, left to right - rules with smaller Y value come first, and if there are rules at the same Y value, then the rules with smaller X come first. If you want the rules to match in order and take previous rules' output into account, you can use the [**MatchInOrder**](#MatchInOrder) map property.
 
 ### Defining Inputs
 
@@ -97,7 +97,7 @@ In some cases, your tiles alone aren't enough to define the scenario you want to
 [Negate]{.tile .negate}
 : This tile negates the condition at a specific location, making other `input` layers with the same target layer name act like inputnot and vice versa, but only in that location, which can simplify your rules in some cases.
 
-The meaning of these tiles is derived from their custom `MatchType` property. This means that you can set up your own tiles for matching these special cases as well!
+The meaning of these tiles is derived from their custom **MatchType** property. This means that you can set up your own tiles for matching these special cases as well!
 
 ### Defining Outputs
 
@@ -122,7 +122,7 @@ Continuing with the example from before, you can use output layers like these to
 | ![Flower on the left, grass on the right.](images/automapping/automap_output1.png) | output**3**\_Ground |
 | ![Grass on the left, flower on the right.](images/automapping/automap_output2.png) | output**4**\_Ground |
 
-By default, the output of a rule is allowed to overlap previous output from the same rule, which isn't always what you want. In the example above, the output rocks can be partially overwritten by subsequent outputs from that rule. You can set the [`NoOverlappingOutput` map property](#NoOverlappingOutput) to `true` to avoid this. This will only apply to rules overlapping their own output, however - outputs from different rules will still be allowed to overlap. If you want to avoid any kind of overlap, you will need to design your inputs such that your inputs are specific enough for different rules to not overlap.
+By default, the output of a rule is allowed to overlap previous output from the same rule, which isn't always what you want. In the example above, the output rocks can be partially overwritten by subsequent outputs from that rule. You can set the [**NoOverlappingOutput**](#NoOverlappingOutput) map property to `true` to avoid this. This will only apply to rules overlapping their own output, however - outputs from different rules will still be allowed to overlap. If you want to avoid any kind of overlap, you will need to design your inputs such that your inputs are specific enough for different rules to not overlap.
 
 ```{figure} images/automapping/automap_output_overlap2.png
 :alt: Automap output with numerous half-rocks where different outputs overlapped each other.
@@ -133,15 +133,15 @@ Because outputs are allowed to overlap each other and the inputs aren't very spe
 ```{figure} images/automapping/automap_output_overlap3.png
 :alt: Automap output where each rock is whole.
 
-With `NoOverlappingOutput` set to `true`, outputs don't overlap and all the rocks are whole.
+With **NoOverlappingOutput** set to `true`, outputs don't overlap and all the rocks are whole.
 ```
 
-Sometimes, you may want certain outputs to appear more or less frequently than others. The above example would look much nicer if the flowers and rocks didn't appear quite so often. You can control the probability of an output index by setting the [`Probability`](#outputProbability) layer property on one of the layers for that index.
+Sometimes, you may want certain outputs to appear more or less frequently than others. The above example would look much nicer if the flowers and rocks didn't appear quite so often. You can control the probability of an output index by setting the [**Probability**](#outputProbability) layer property on one of the layers for that index.
 
 ```{figure} images/automapping/automap_output_overlap1.png
 :alt: Automap output where most of the ground is grass, with a few flowers and just one rock.
 
-Setting the `Probability` of the grass output to 20 and the `Probability` of the rock output to 0.5 produces much nicer-looking results.
+Setting the **Probability** of the grass output to 20 and the **Probability** of the rock output to 0.5 produces much nicer-looking results.
 ```
 
 (objectRegion)=
@@ -157,7 +157,7 @@ While Automapping can output Objects, there are some caveats when it comes to de
 You can ensure these Objects are output by putting [Ignore]{.tile .ignore} [special tiles](#specialtiles) in a tile output layer at their position. You may also need to connect this tile to the rest of the rule with more Ignore tiles to make sure it isn't treated as a separate rule.
 :::
 
-Any custom properties set on an output layer (other than `Probability`) will be copied to the target layer when the output is applied. You should normally not need to add any such properties to output layers, but this can be a way to automate setting properties on your layers based on their contents.
+Any custom properties set on an output layer (other than **Probability**) will be copied to the target layer when the output is applied. You should normally not need to add any such properties to output layers, but this can be a way to automate setting properties on your layers based on their contents.
 
 ## Automapping Properties
 
@@ -180,21 +180,21 @@ AutomappingRadius
 : This map property is a number: 1, 2, 3 … When using Automap While Drawing, this property determines how far beyond the tiles affected by your changes Automapping will look for matches.
 
 MatchOutsideMap {bdg-secondary-line}`Since Tiled 1.2`
-: This boolean map property determines whether rules can match even when their input region falls partially outside of a map. By default it is `false` for bounded maps and `true` for infinite maps. In some cases it can be useful to enable this for bounded maps. Tiles outside of the map boundaries are simply considered empty, unless one of either `OverflowBorder` or `WrapBorder` are also true.
+: This boolean map property determines whether rules can match even when their input region falls partially outside of a map. By default it is `false` for bounded maps and `true` for infinite maps. In some cases it can be useful to enable this for bounded maps. Tiles outside of the map boundaries are simply considered empty, unless one of either **OverflowBorder** or **WrapBorder** are also true.
 
   Tiled 1.0 and 1.1 behaved as if this property was `true`, whereas older versions of Tiled behaved as if this property was `false`.
 
 OverflowBorder {bdg-secondary-line}`Since Tiled 1.3`
-: This boolean map property customizes the behavior of the `MatchOutsideMap` property. When this property is `true`, tiles outside of the map boundaries are considered as if they were copies of the nearest inbound tiles, effectively “overflowing” the map’s borders to the outside region.
+: This boolean map property customizes the behavior of the **MatchOutsideMap** property. When this property is `true`, tiles outside of the map boundaries are considered as if they were copies of the nearest inbound tiles, effectively “overflowing” the map’s borders to the outside region.
 
-  When this property is `true`, it implies `MatchOutsideMap`. Note that this property has no effect on infinite maps (since there is no notion of border).
+  When this property is `true`, it implies **MatchOutsideMap**. Note that this property has no effect on infinite maps (since there is no notion of border).
 
 WrapBorder {bdg-secondary-line}`Since Tiled 1.3`
-: This boolean map property customizes the behavior of the `MatchOutsideMap` property. When this property is `true`, the map effectively “wraps” around itself, making tiles on one border of the map influence the regions on the other border and vice versa.
+: This boolean map property customizes the behavior of the **MatchOutsideMap** property. When this property is `true`, the map effectively “wraps” around itself, making tiles on one border of the map influence the regions on the other border and vice versa.
 
-  When this property is `true`, it implies `MatchOutsideMap`. Note that this property has no effect on infinite maps (since there is no notion of border).
+  When this property is `true`, it implies **MatchOutsideMap**. Note that this property has no effect on infinite maps (since there is no notion of border).
 
-  If both `WrapBorder` and `OverflowBorder` are `true`, `WrapBorder` takes precedence over `OverflowBorder`.
+  If both **WrapBorder** and **OverflowBorder** are `true`, **WrapBorder** takes precedence over **OverflowBorder**.
 
 (MatchInOrder)=
 MatchInOrder {bdg-secondary-line}`Since Tiled 1.9`
@@ -210,11 +210,11 @@ The following properties are supported on a per-layer basis:
 AutoEmpty (alias: StrictEmpty)
 : This boolean layer property can be added to `input` and `inputnot` layers to customize the behavior for empty tiles within a rule.
 
-  Normally, empty tiles are simply ignored. When `AutoEmpty` is `true`, empty tiles within the input region match empty tiles in the target layer. This can only happen when you have multiple input/inputnot layers and some of the tiles that are part of the same rule are empty while others are not. Usually, using the [Empty]{.tile .empty} [special tile](#specialtiles) is the best way to specify an empty tile, but this property is useful when you have multiple input layers, some of which need to match many empty tiles. Note that the input region is defined by *all* input layers, regardless of index.
+  Normally, empty tiles are simply ignored. When **AutoEmpty** is `true`, empty tiles within the input region match empty tiles in the target layer. This can only happen when you have multiple input/inputnot layers and some of the tiles that are part of the same rule are empty while others are not. Usually, using the [Empty]{.tile .empty} [special tile](#specialtiles) is the best way to specify an empty tile, but this property is useful when you have multiple input layers, some of which need to match many empty tiles. Note that the input region is defined by *all* input layers, regardless of index.
 
 (outputProbability)=
 Probability {bdg-primary}`New in Tiled 1.10`
-: This float layer property can be added to `output` layers to control the probability that a given output index will be chosen. The probabilities for each output index are relative to one another, and default to 1.0. For example, if you have outputA with probability 2 and outputB with probability 0.5, A will be chosen four times as often as B. If multiple output layers with the same index have their `Probability` set, the last (top-most) layer's probability will be used.
+: This float layer property can be added to `output` layers to control the probability that a given output index will be chosen. The probabilities for each output index are relative to one another, and default to 1.0. For example, if you have outputA with probability 2 and outputB with probability 0.5, A will be chosen four times as often as B. If multiple output layers with the same index have their **Probability** set, the last (top-most) layer's probability will be used.
 
 {bdg-secondary-line}`Since Tiled 1.9`
 
@@ -248,7 +248,7 @@ NoOverlappingOutput
 
 (IgnoreLock)=
 IgnoreLock {bdg-primary}`New in Tiled 1.10`
-: Since Tiled 1.10, rules will no longer modify locked layers. Set this property to `true` to ignore the lock. This can be useful, when you want to keep layers locked which are only changed by rules.
+: Since Tiled 1.10, Automapping rules no longer modify locked layers. Set this property to `true` to ignore the lock. This can be useful when you have layers that are only changed by rules and want to keep them locked.
 
 All these options can also be set on the rule map itself, in which case they apply as defaults for all rules, which can then be overridden for specific rules by placing rectangle objects.
 
@@ -344,7 +344,7 @@ The appropriate option will depend on your specific rules. In this case, the lat
 
 The output tiles in the top row are the [Empty]{.tile .empty} [special tile](#specialtiles), which means the output will erase those tiles.
 
-For Automap While Drawing to work correctly, you may also need to increase the [`AutomappingRadius`](#AutomappingRadius) property of your rules maps. This is because some of the rules may look only at tiles *near* the ones you change by drawing, such as the rules that erase cliff tiles. In this example, you will probably need to set the `AutomappingRadius` to 1 on the reset rules and on the rules that add cliffs.
+For Automap While Drawing to work correctly, you may also need to increase the [**AutomappingRadius**](#AutomappingRadius) property of your rules maps. This is because some of the rules may look only at tiles *near* the ones you change by drawing, such as the rules that erase cliff tiles. In this example, you will probably need to set the **AutomappingRadius** to 1 on the reset rules and on the rules that add cliffs.
 
 ```{figure} images/automapping/automap_example15.gif
 :alt: Animation showing erasing the cliff top Terrain. This time, everything is updated correctly.
@@ -387,17 +387,17 @@ A result from the two rules above.
 If you have some Automapping rules from before Tiled 1.9, they should still work much as they always did in most cases. When Tiled sees that a rule map contains `regions` layers, it will automatically bring back the old behavior - rules will be matched in order by default, and cells within input regions that are empty in all the input layers for a given layer and index will be treated as "Other".
 
 :::{warning}
-In Tiled 1.9.x, the presense of `regions` layers did not imply `MatchInOrder`. If you're using 1.9.x rather than 1.10+ and want to use legacy rules, you'll need to set the `MatchInOrder` map property to ``true``.
+In Tiled 1.9.x, the presense of `regions` layers did not imply **MatchInOrder**. If you're using 1.9.x rather than 1.10+ and want to use legacy rules, you'll need to set the **MatchInOrder** map property to `true`.
 :::
 
 If you'd like to instead update your rules to not rely on any legacy behavior, that can be as simple as deleting your `regions` layer(s), or it might take some extra work, depending on how exactly your rules are set up:
 
-* If your rules rely on being applied in a set order, set the [`MatchInOrder` map property](#MatchInOrder) to `true`.
+* If your rules rely on being applied in a set order, set the [**MatchInOrder**](#MatchInOrder) map property to `true`.
 * When deleting your `regions` layers, make sure you weren't relying on them to connect otherwise disconnected areas of tiles. If you were, use the [Ignore]{.tile .ignore} [special tile](#specialtiles) to connect them on one of the `input` layers, so that Tiled knows they're part of the same rule. To make sure the rules behave exactly the same, fill in any part that was previously part of the input region.
     
-* If were using the [`DeleteTiles` map property](#DeleteTiles) to erase tiles from the output layer, you can keep using this property. If you want to make your rule more visually clear, however, you should unset the `DeleteTiles` map property, and instead use the [Empty]{.tile .empty} [special tile](#specialtiles) in all the output cells you want to delete from.
+* If were using the [**DeleteTiles**](#DeleteTiles) map property to erase tiles from the output layer, you can keep using this property. If you want to make your rule more visually clear, however, you should unset the **DeleteTiles** property, and instead use the [Empty]{.tile .empty} [special tile](#specialtiles) in all the output cells you want to delete from.
     
-* If were using the [`StrictEmpty` map property](#AutoEmpty) to look for empty input tiles, you should now use the Empty special tile instead in the cells you want to check for being empty. You can also continue use the `StrictEmpty` property (or its newer alias, `AutoEmpty`), as long as at least one other input layer is not empty at those locations.
+* If were using the [**StrictEmpty**](#AutoEmpty) map property to look for empty input tiles, you should now use the Empty special tile instead in the cells you want to check for being empty. You can also continue use the **StrictEmpty** property (or its newer alias, **AutoEmpty**), as long as at least one other input layer is not empty at those locations.
     
 * If were relying on the behavior that any tile which is left empty on all of the input layers for a given index is treated as “any tile not in this rule”, you should instead use the [Other]{.tile .other} [special tile](#specialtiles) at those locations, and also the [Empty]{.tile .empty} [special tile](#specialtiles) on an inputnot layer at those same locations. The Empty tile is needed because old-style Other never matched Empty, but the MatchType Other tile does match Empty.
     
