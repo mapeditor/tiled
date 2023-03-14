@@ -511,7 +511,7 @@ declare namespace Qt {
     /**
      * Signal emitted when the user selects a different option. Provides the index
      * into the list of values for the new selection.
-     * @warning When Tiled is compiled against Qt 5 (which includes most current releases), the `index` parameter is the chosen text rather than the actual index.
+     * @warning When Tiled is compiled against Qt 5, the `index` parameter is the chosen text rather than the actual index.
      *          Use {@link QComboBox.currentIndex} to get the selected index.
      */
     currentIndexChanged: Signal<number>;
@@ -618,7 +618,7 @@ declare namespace Qt {
      * For compatibility between Qt 5 and 6, It's recommended to use the {@link value} property
      * rather than using the parameter passed to your signal handler.
      */
-    valueChanged: Signal<string>;
+    valueChanged: Signal<number>;
 
     /**
      * This property holds the spin box's prefix.
