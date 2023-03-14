@@ -46,8 +46,9 @@ TileSelectionTool::TileSelectionTool(QObject *parent)
 
 void TileSelectionTool::tilePositionChanged(QPoint)
 {
+
     if (mSelecting)
-        brushItem()->setTileRegion(selectedArea());
+        brushItem()->setTileRegion(QRegion(selectedArea()));
 }
 
 void TileSelectionTool::updateStatusInfo()
