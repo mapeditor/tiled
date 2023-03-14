@@ -279,17 +279,10 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
     case Idle:              // can't happen due to check above
         return;
     case PaintCorner:
-        if (StaggeredRenderer *staggeredRenderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer())) {
-            if (tileLocalPos.x() >= 0.5)
-                tilePos = staggeredRenderer->bottomRight(tilePos.x(), tilePos.y());
-            if (tileLocalPos.y() >= 0.5)
-                tilePos = staggeredRenderer->bottomLeft(tilePos.x(), tilePos.y());
-        } else {
-            if (tileLocalPos.x() >= 0.5)
-                tilePos.rx() += 1;
-            if (tileLocalPos.y() >= 0.5)
-                tilePos.ry() += 1;
-        }
+        if (tileLocalPos.x() >= 0.5)
+            tilePos.rx() += 1;
+        if (tileLocalPos.y() >= 0.5)
+            tilePos.ry() += 1;
         wangIndex = WangId::TopLeft;
         break;
     case PaintEdge: {
@@ -324,44 +317,23 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
         break;
     }
     case PaintEdgeAndCorner:
-        if (StaggeredRenderer *staggeredRenderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer())) {
-            switch (wangIndex) {
-            case WangId::BottomRight:
-                tilePos = staggeredRenderer->bottomRight(tilePos.x(), tilePos.y());
-                tilePos = staggeredRenderer->bottomLeft(tilePos.x(), tilePos.y());
-                wangIndex = WangId::TopLeft;
-                break;
-            case WangId::BottomLeft:
-                tilePos = staggeredRenderer->bottomLeft(tilePos.x(), tilePos.y());
-                wangIndex = WangId::TopLeft;
-                break;
-            case WangId::TopRight:
-                tilePos = staggeredRenderer->bottomRight(tilePos.x(), tilePos.y());
-                wangIndex = WangId::TopLeft;
-                break;
-            default:
-                break;
-            }
-        } else {
-            switch (wangIndex) {
-            case WangId::BottomRight:
-                tilePos.rx() += 1;
-                tilePos.ry() += 1;
-                wangIndex = WangId::TopLeft;
-                break;
-            case WangId::BottomLeft:
-                tilePos.ry() += 1;
-                wangIndex = WangId::TopLeft;
-                break;
-            case WangId::TopRight:
-                tilePos.rx() += 1;
-                wangIndex = WangId::TopLeft;
-                break;
-            default:
-                break;
-            }
+        switch (wangIndex) {
+        case WangId::BottomRight:
+            tilePos.rx() += 1;
+            tilePos.ry() += 1;
+            wangIndex = WangId::TopLeft;
+            break;
+        case WangId::BottomLeft:
+            tilePos.ry() += 1;
+            wangIndex = WangId::TopLeft;
+            break;
+        case WangId::TopRight:
+            tilePos.rx() += 1;
+            wangIndex = WangId::TopLeft;
+            break;
+        default:
+            break;
         }
-        break;
     }
 
     // mWangIndex is changed while drawing lines in Edge mode, in which case it
