@@ -4,7 +4,7 @@ IDI_ICON1               ICON    DISCARDABLE     "images/tiled-icon.ico"
 
 1 VERSIONINFO
  FILEVERSION     1,0,0,0
- PRODUCTVERSION  @VERSION_CSV@
+ PRODUCTVERSION  ${version_csv}
  FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
  FILEFLAGS       0
  FILEOS          VOS_NT_WINDOWS32
@@ -21,7 +21,7 @@ BEGIN
             VALUE "InternalName", "tiled\0"
             VALUE "OriginalFilename", "tiled.exe\0"
             VALUE "ProductName", "Tiled\0"
-            VALUE "ProductVersion", "@VERSION@\0"
+            VALUE "ProductVersion", "${version}\0"
         END
     END
 

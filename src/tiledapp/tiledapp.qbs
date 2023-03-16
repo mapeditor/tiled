@@ -11,6 +11,7 @@ TiledQtGuiApplication {
     Depends { name: "libtilededitor" }
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") && Qt.core.versionMajor >= 6 }
+    Depends { name: "texttemplate" }
 
     property bool qtcRunnable: true
 
@@ -172,49 +173,19 @@ TiledQtGuiApplication {
     // Generate the tiled.rc file in order to dynamically specify the version
     Group {
         name: "RC file (Windows)"
+        condition: qbs.targetOS.contains("windows")
         files: [ "tiled.rc.in" ]
-        fileTags: ["rcIn"]
-    }
-    Rule {
-        inputs: ["rcIn"]
-        Artifact {
-            filePath: {
-                var destdir = FileInfo.joinPaths(product.moduleProperty("Qt.core",
-                                                         "generatedFilesDir"), input.fileName);
-                return destdir.replace(/\.[^\.]*$/,'')
-            }
-            fileTags: "rc"
-        }
-        prepare: {
-            var cmd = new JavaScriptCommand();
-            cmd.description = "prepare " + FileInfo.fileName(output.filePath);
-            cmd.highlight = "codegen";
 
-            cmd.sourceCode = function() {
-                var i;
-                var vars = {};
-                var inf = new TextFile(input.filePath);
-                var all = inf.readAll();
+        texttemplate.outputTag: "rc"
+        texttemplate.dict: {
+            var versionArray = project.version.split(".");
+            if (versionArray.length == 3)
+                versionArray.push("0");
 
-                var versionArray = project.version.split(".");
-                if (versionArray.length == 3)
-                    versionArray.push("0");
-
-                // replace vars
-                vars['VERSION'] = project.version;
-                vars['VERSION_CSV'] = versionArray.join(",");
-
-                for (i in vars) {
-                    all = all.replace(new RegExp('@' + i + '@(?!\w)', 'g'), vars[i]);
-                }
-
-                var file = new TextFile(output.filePath, TextFile.WriteOnly);
-                file.truncate();
-                file.write(all);
-                file.close();
-            }
-
-            return cmd;
+            return {
+                version: project.version,
+                version_csv: versionArray.join(",")
+            };
         }
     }
 }
