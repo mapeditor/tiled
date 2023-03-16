@@ -184,19 +184,21 @@ void PluginManager::loadPlugins()
             addObject(instance);
     }
 
+#ifdef TILED_PLUGIN_DIR
+    QString pluginPath = QLatin1String(TILED_PLUGIN_DIR);
+#else
     // Determine the plugin path based on the application location
-#ifndef TILED_PLUGIN_DIR
     QString pluginPath = QCoreApplication::applicationDirPath();
-#endif
 
 #if defined(TILED_WINDOWS_LAYOUT)
     pluginPath += QStringLiteral("/plugins/tiled");
 #elif defined(Q_OS_MAC)
     pluginPath += QStringLiteral("/../PlugIns");
-#elif defined(TILED_PLUGIN_DIR)
-    QString pluginPath = QLatin1String(TILED_PLUGIN_DIR);
 #else
-    pluginPath += QStringLiteral("/../lib/tiled/plugins");
+    pluginPath += QStringLiteral("/../");
+    pluginPath += QLatin1String(TILED_LIB_DIR);
+    pluginPath += QStringLiteral("/tiled/plugins");
+#endif
 #endif
 
     // Load dynamic plugins

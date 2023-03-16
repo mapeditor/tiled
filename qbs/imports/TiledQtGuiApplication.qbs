@@ -4,7 +4,7 @@ QtGuiApplication {
         if (qbs.targetOS.contains("darwin"))
             return ["@loader_path/../Frameworks"];
         else
-            return ["$ORIGIN/../lib"];
+            return ["$ORIGIN/../" + project.libDir];
     }
     cpp.cxxLanguageVersion: "c++17"
     cpp.cxxFlags: {
@@ -24,23 +24,15 @@ QtGuiApplication {
         "QT_NO_URL_CAST_FROM_STRING",
     ]
 
-    Group {
-        qbs.install: true
-        qbs.installDir: {
-            if (project.windowsLayout) {
-                return "";
-            } else if (qbs.targetOS.contains("darwin")) {
-                // Non-bundle applications are installed into the main Tiled.app bundle
-                return bundle.isBundle ? "." : "Tiled.app/Contents/MacOS";
-            } else {
-                return "bin";
-            }
-        }
-        qbs.installSourceBase: product.buildDirectory
-        fileTagsFilter: {
-            if (qbs.targetOS.contains("darwin") && bundle.isBundle)
-                return ["bundle.content"];
-            return product.type;
+    install: true
+    installDir: {
+        if (project.windowsLayout) {
+            return "";
+        } else if (qbs.targetOS.contains("darwin")) {
+            // Non-bundle applications are installed into the main Tiled.app bundle
+            return isBundle ? "." : "Tiled.app/Contents/MacOS";
+        } else {
+            return "bin";
         }
     }
 }

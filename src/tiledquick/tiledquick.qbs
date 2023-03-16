@@ -19,7 +19,7 @@ QtGuiApplication {
     }
 
     cpp.includePaths: ["."]
-    cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../lib"]
+    cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../" + project.libDir]
     cpp.cxxLanguageVersion: "c++17"
     cpp.cxxFlags: {
         var flags = base;
@@ -42,24 +42,14 @@ QtGuiApplication {
         targetName: "Tiled Quick"
     }
 
-    Group {
-        condition: !qbs.targetOS.contains("darwin")
-        qbs.install: true
-        qbs.installDir: {
-            if (project.windowsLayout)
-                return ""
-            else
-                return "bin"
-        }
-        fileTagsFilter: product.type
-    }
-
-    // This is necessary to install the app bundle (OS X)
-    Group {
-        fileTagsFilter: ["bundle.content"]
-        qbs.install: true
-        qbs.installDir: "."
-        qbs.installSourceBase: product.buildDirectory
+    install: true
+    installDir: {
+        if (project.windowsLayout)
+            return ""
+        else if (qbs.targetOS.contains("darwin"))
+            return "."
+        else
+            return "bin"
     }
 
     // Include libtiled.dylib in the app bundle

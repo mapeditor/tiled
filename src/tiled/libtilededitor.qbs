@@ -597,18 +597,14 @@ DynamicLibrary {
         cpp.includePaths: "."
     }
 
-    Group {
-        condition: !qbs.targetOS.contains("darwin")
-        qbs.install: true
-        qbs.installDir: {
-            if (qbs.targetOS.contains("windows"))
-                if (project.windowsLayout)
-                    return ""
-                else
-                    return "bin"
+    install: !qbs.targetOS.contains("darwin")
+    installDir: {
+        if (qbs.targetOS.contains("windows"))
+            if (project.windowsLayout)
+                return ""
             else
-                return "lib"
-        }
-        fileTagsFilter: "dynamiclibrary"
+                return "bin"
+        else
+            return project.libDir
     }
 }

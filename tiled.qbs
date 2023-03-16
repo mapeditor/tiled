@@ -9,6 +9,7 @@ Project {
     property string version: Environment.getEnv("TILED_VERSION") || "1.10.0";
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT") == "true"
     property bool release: Environment.getEnv("TILED_RELEASE") == "true"
+    property string libDir: "lib"
     property bool installHeaders: false
     property bool useRPaths: true
     property bool windowsInstaller: false

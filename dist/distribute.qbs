@@ -105,7 +105,7 @@ Product {
             return list;
         }
         qbs.install: true
-        qbs.installDir: qbs.targetOS.contains("windows") ? "" : "lib"
+        qbs.installDir: qbs.targetOS.contains("windows") ? "" : project.libDir
     }
 
     property var pluginFiles: {
