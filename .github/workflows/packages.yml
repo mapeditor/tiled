@@ -52,7 +52,7 @@ jobs:
           qt_creator_version: 5.0.3
           gcc_version: 9
         - image: ubuntu-20.04
-          qt_version: 6.4.2
+          qt_version: 6.4.3
           qt_version_major: 6
           qt_creator_version: 9.0.1
           gcc_version: 10
@@ -184,7 +184,7 @@ jobs:
         - qt_version: 5.12.12
           version_suffix: "10.12-10.13"
           qt_creator_version: 5.0.3
-        - qt_version: 6.4.2
+        - qt_version: 6.4.3
           version_suffix: "10.14+"
           qt_creator_version: 7.0.2
 
@@ -276,7 +276,7 @@ jobs:
           mingw_version: 8.1.0
           mingw_component: mingw
           mingw_path: /c/Qt/Tools/mingw810_32/bin
-        - qt_version: 6.4.2
+        - qt_version: 6.4.3
           qt_version_major: 6
           qt_toolchain: win64_mingw
           arch: 64
