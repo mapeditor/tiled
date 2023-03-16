@@ -1,11 +1,10 @@
-import qbs 1.0
 import qbs.Environment
 
 Project {
     name: "Tiled"
 
     qbsSearchPaths: "qbs"
-    minimumQbsVersion: "1.12"
+    minimumQbsVersion: "1.13"
 
     property string version: Environment.getEnv("TILED_VERSION") || "1.10.0";
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT") == "true"

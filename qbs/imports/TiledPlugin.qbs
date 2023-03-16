@@ -1,5 +1,3 @@
-import qbs 1.0
-
 DynamicLibrary {
     Depends { name: "libtiled" }
     Depends { name: "cpp" }

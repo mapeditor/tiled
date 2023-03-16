@@ -1,5 +1,3 @@
-import qbs
-
 QtGuiApplication {
     cpp.useRPaths: project.useRPaths
     cpp.rpaths: {

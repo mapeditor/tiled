@@ -3,7 +3,6 @@
   shipped when Tiled is distributed.
 */
 
-import qbs
 import qbs.File
 import qbs.FileInfo
 

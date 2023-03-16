@@ -1,5 +1,3 @@
-import qbs 1.0
-
 DynamicLibrary {
     targetName: "tiledquick"
     builtByDefault: false

@@ -1,5 +1,3 @@
-import qbs 1.0
-
 Product {
     name: "translations"
     type: "qm"

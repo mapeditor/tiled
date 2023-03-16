@@ -1,4 +1,3 @@
-import qbs 1.0
 import qbs.Probes as Probes
 
 DynamicLibrary {

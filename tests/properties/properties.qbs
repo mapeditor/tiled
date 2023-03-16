@@ -1,5 +1,3 @@
-import qbs
-
 TiledTest {
     name: "test_properties"
 

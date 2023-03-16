@@ -1,4 +1,3 @@
-import qbs 1.0
 import qbs.Environment
 import qbs.File
 
