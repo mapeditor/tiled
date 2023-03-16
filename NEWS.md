@@ -1,3 +1,7 @@
+### Unreleased
+
+* Fixed object labels to adjust to application font changes
+
 ### Tiled 1.10.0 (10 March 2023)
 
 * Restored Tiled 1.8 file format compatibility by default (#3560)
