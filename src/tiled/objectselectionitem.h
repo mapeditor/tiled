@@ -85,6 +85,9 @@ public:
     QRectF boundingRect() const override { return QRectF(); }
     void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
 
+protected:
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+
 private:
     void changeEvent(const ChangeEvent &event);
     void propertyRemoved(Object *object, const QString &name);
@@ -107,6 +110,8 @@ private:
     void objectLabelVisibilityChanged();
     void showObjectReferencesChanged();
     void objectLineWidthChanged();
+
+    void sceneFontChanged();
 
     void addRemoveObjectLabels();
     void addRemoveObjectOutlines();

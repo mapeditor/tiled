@@ -35,7 +35,7 @@
 #include "utils.h"
 #include "variantpropertymanager.h"
 
-#include <QGuiApplication>
+#include <QApplication>
 #include <QTimerEvent>
 #include <QVector2D>
 
@@ -183,7 +183,7 @@ void MapObjectLabel::syncWithMapObject(const MapRenderer &renderer)
     if (!nameVisible)
         return;
 
-    const QFontMetricsF metrics(QGuiApplication::font());
+    const QFontMetricsF metrics(scene() ? scene()->font() : QApplication::font());
     QRectF boundingRect = metrics.boundingRect(mObject->name());
 
     const qreal margin = Utils::dpiScaled(labelMargin);
@@ -346,6 +346,23 @@ void ObjectSelectionItem::updateItemPositions()
 const MapRenderer &ObjectSelectionItem::mapRenderer() const
 {
     return *mMapDocument->renderer();
+}
+
+QVariant ObjectSelectionItem::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemSceneChange) {
+        if (auto mapScene = static_cast<MapScene*>(scene())) {
+            disconnect(mapScene, &MapScene::fontChanged,
+                       this, &ObjectSelectionItem::sceneFontChanged);
+        }
+
+        if (auto mapScene = static_cast<MapScene*>(value.value<QGraphicsScene*>())) {
+            connect(mapScene, &MapScene::fontChanged,
+                    this, &ObjectSelectionItem::sceneFontChanged);
+        }
+    }
+
+    return QGraphicsObject::itemChange(change, value);
 }
 
 void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
@@ -721,6 +738,13 @@ void ObjectSelectionItem::objectLineWidthChanged()
     for (const auto &items : std::as_const(mReferencesBySourceObject))
         for (ObjectReferenceItem *item : items)
             item->update();
+}
+
+void ObjectSelectionItem::sceneFontChanged()
+{
+    const MapRenderer &renderer = *mMapDocument->renderer();
+    for (MapObjectLabel *label : std::as_const(mObjectLabels))
+        label->syncWithMapObject(renderer);
 }
 
 void ObjectSelectionItem::addRemoveObjectLabels()
