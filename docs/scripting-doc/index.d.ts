@@ -3585,9 +3585,10 @@ declare namespace tiled {
   export let activeAsset: Asset | null;
 
   /**
-   * Currently opened project, or `null` if no project is open.
+   * Currently opened project. If no project is open, the properties of the project
+   * will be blank.
    */
-  export let project: Project | null;
+  export let project: Project;
   /**
    * List of currently opened {@link Asset | assets}.
    */
