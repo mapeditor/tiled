@@ -29,31 +29,15 @@ EditableProject::EditableProject(Project *project, QObject *parent)
 }
 QString EditableProject::extensionsPath() const
 {
-   QString path;
-   if (mProject != nullptr)
-    path = mProject->mExtensionsPath;
-   return path;
+   return mProject->mExtensionsPath;
 }
 QString EditableProject::automappingRulesFile() const
 {
-   QString rulesFile;
-   if (mProject != nullptr)
-    rulesFile = mProject->mAutomappingRulesFile;
-   return rulesFile;
-}
-QString EditableProject::objectTypesFile() const
-{
-   QString objectTypesFile;
-   if (mProject != nullptr)
-    objectTypesFile = mProject->mObjectTypesFile;
-   return objectTypesFile;
+   return mProject->mAutomappingRulesFile;
 }
 QStringList EditableProject::folders() const
 {
-   QStringList folders;
-   if (mProject != nullptr)
-    folders = mProject->folders();
-   return folders;
+   return mProject->folders();
 }
 }
 #include "moc_editableproject.cpp"

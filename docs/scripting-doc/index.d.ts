@@ -1077,10 +1077,6 @@ declare class Project {
  */
   extensionsPath: string;
   /**
-   * Path to a file where object custom types are stored.
-   */
-  objectTypesFile: string;
-  /**
    * Path to the file where automapping rules are stored for this project.
    */
   automappingRulesFile: string;
