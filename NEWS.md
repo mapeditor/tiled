@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Fixed object labels to adjust to application font changes
+* Qt 6: Increased the image allocation limit from 128 MB to 1 GB (#3616)
 
 ### Tiled 1.10.0 (10 March 2023)
 

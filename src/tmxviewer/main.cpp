@@ -28,6 +28,8 @@
 
 #include "tmxviewer.h"
 
+#include "tiled.h"
+
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QDebug>
@@ -46,6 +48,8 @@ int main(int argc, char *argv[])
         freopen_s(&dummy, "CONOUT$", "w", stderr);
     }
 #endif
+
+    Tiled::increaseImageAllocationLimit();
 
     QApplication a(argc, argv);
 
