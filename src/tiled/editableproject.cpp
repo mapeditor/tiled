@@ -48,5 +48,12 @@ QString EditableProject::objectTypesFile() const
     objectTypesFile = mProject->mObjectTypesFile;
    return objectTypesFile;
 }
+QStringList EditableProject::folders() const
+{
+   QStringList folders;
+   if (mProject != nullptr)
+    folders = mProject->folders();
+   return folders;
+}
 }
 #include "moc_editableproject.cpp"

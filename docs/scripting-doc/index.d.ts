@@ -1084,6 +1084,10 @@ declare class Project {
    * Path to the file where automapping rules are stored for this project.
    */
   automappingRulesFile: string;
+  /**
+   * An array of folders containing the assets belonging to the project
+   */
+  folders: string[];
 }
 /**
  * Defines the font used to render objects which have {@link MapObject.shape}
