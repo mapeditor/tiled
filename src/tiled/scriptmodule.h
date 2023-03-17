@@ -23,6 +23,7 @@
 #include "id.h"
 #include "issuesdock.h"
 #include "properties.h"
+#include "editableproject.h"
 
 #include <QJSValue>
 #include <QObject>
@@ -68,6 +69,7 @@ class ScriptModule : public QObject
     Q_PROPERTY(QStringList tilesetFormats READ tilesetFormats)
 
     Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
+    Q_PROPERTY(Tiled::EditableProject *project READ project)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
 
     Q_PROPERTY(Tiled::MapEditor *mapEditor READ mapEditor)
@@ -95,6 +97,7 @@ public:
 
     EditableAsset *activeAsset() const;
     bool setActiveAsset(EditableAsset *asset) const;
+    EditableProject *project() const;
 
     QList<QObject*> openAssets() const;
 

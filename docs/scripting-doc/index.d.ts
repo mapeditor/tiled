@@ -1065,6 +1065,13 @@ declare class TiledObject {
 }
 
 /**
+ * A Tiled project file primarily defines the list of folders containing
+ * the assets belonging to that project.
+ */
+declare class Project {
+
+}
+/**
  * Defines the font used to render objects which have {@link MapObject.shape}
  * set to {@link MapObject.Text}.
  */
@@ -3559,6 +3566,10 @@ declare namespace tiled {
    */
   export let activeAsset: Asset | null;
 
+  /**
+   * Currently opened project, or `null` if no project is open.
+   */
+  export let project: Project | null;
   /**
    * List of currently opened {@link Asset | assets}.
    */

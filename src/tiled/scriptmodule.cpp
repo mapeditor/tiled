@@ -651,6 +651,10 @@ void ScriptModule::currentDocumentChanged(Document *document)
     emit activeAssetChanged(document ? document->editable() : nullptr);
 }
 
+EditableProject *ScriptModule::project() const
+{
+    return nullptr;
+}
 } // namespace Tiled
 
 #include "moc_scriptmodule.cpp"
