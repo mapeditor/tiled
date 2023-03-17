@@ -1069,7 +1069,13 @@ declare class TiledObject {
  * the assets belonging to that project.
  */
 declare class Project {
-
+/**
+ * A project-specific directory where you can put Tiled extensions.
+ *  It defaults to simply extensions, so when you have a directory called “extensions” alongside
+ *  your project file it will be picked up automatically.
+ *  The directory is loaded in addition to the global extensions.
+ */
+  extensionsPath: string;
 }
 /**
  * Defines the font used to render objects which have {@link MapObject.shape}

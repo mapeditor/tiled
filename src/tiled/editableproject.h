@@ -28,6 +28,9 @@ namespace Tiled {
 class EditableProject : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString extensionsPath READ extensionsPath)
+    QString extensionsPath() const;
+
 
 public:
     EditableProject(Project *project, QObject *parent = nullptr);

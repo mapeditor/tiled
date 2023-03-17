@@ -653,7 +653,7 @@ void ScriptModule::currentDocumentChanged(Document *document)
 
 EditableProject *ScriptModule::project() const
 {
-    return nullptr;
+    return new EditableProject(&ProjectManager::instance()->project(), MainWindow::maybeInstance());
 }
 } // namespace Tiled
 

@@ -27,6 +27,12 @@ EditableProject::EditableProject(Project *project, QObject *parent)
       mProject(project)
 {
 }
-
+QString EditableProject::extensionsPath() const
+{
+   QString path;
+   if (mProject != nullptr)
+    path = mProject->mExtensionsPath;
+   return path;
+}
 }
 #include "moc_editableproject.cpp"
