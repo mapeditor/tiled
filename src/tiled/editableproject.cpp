@@ -34,5 +34,19 @@ QString EditableProject::extensionsPath() const
     path = mProject->mExtensionsPath;
    return path;
 }
+QString EditableProject::automappingRulesFile() const
+{
+   QString rulesFile;
+   if (mProject != nullptr)
+    rulesFile = mProject->mAutomappingRulesFile;
+   return rulesFile;
+}
+QString EditableProject::objectTypesFile() const
+{
+   QString objectTypesFile;
+   if (mProject != nullptr)
+    objectTypesFile = mProject->mObjectTypesFile;
+   return objectTypesFile;
+}
 }
 #include "moc_editableproject.cpp"

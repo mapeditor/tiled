@@ -1076,6 +1076,14 @@ declare class Project {
  *  The directory is loaded in addition to the global extensions.
  */
   extensionsPath: string;
+  /**
+   * Path to a file where object custom types are stored.
+   */
+  objectTypesFile: string;
+  /**
+   * Path to the file where automapping rules are stored for this project.
+   */
+  automappingRulesFile: string;
 }
 /**
  * Defines the font used to render objects which have {@link MapObject.shape}
