@@ -130,6 +130,8 @@ TILEDSHARED_EXPORT Alignment alignmentFromString(const QString &);
 
 TILEDSHARED_EXPORT CompatibilityVersion versionFromString(const QString &);
 
+TILEDSHARED_EXPORT void increaseImageAllocationLimit(int mbLimit = 1024);
+
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::Alignment);

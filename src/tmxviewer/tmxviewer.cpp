@@ -34,7 +34,6 @@
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "tilelayer.h"
-#include "tileset.h"
 
 #include <QCoreApplication>
 #include <QDebug>
