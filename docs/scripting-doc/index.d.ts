@@ -1084,6 +1084,10 @@ declare class Project {
    * An array of folders containing the assets belonging to the project
    */
   folders: string[];
+  /**
+   * The path to the .tiled-project file.
+   */
+  fileName: string;
 }
 /**
  * Defines the font used to render objects which have {@link MapObject.shape}

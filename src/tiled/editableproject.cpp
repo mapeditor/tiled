@@ -35,6 +35,10 @@ QString EditableProject::automappingRulesFile() const
 {
    return mProject->mAutomappingRulesFile;
 }
+QString EditableProject::fileName() const
+{
+    return mProject->fileName();
+}
 QStringList EditableProject::folders() const
 {
    return mProject->folders();

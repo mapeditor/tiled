@@ -30,12 +30,14 @@ class EditableProject : public QObject
     Q_OBJECT
     Q_PROPERTY(QString extensionsPath READ extensionsPath)
     Q_PROPERTY(QString automappingRulesFile READ automappingRulesFile)
+    Q_PROPERTY(QString fileName READ fileName)
     Q_PROPERTY(QStringList folders READ folders)
 
 public:
     EditableProject(Project *project, QObject *parent = nullptr);
     QString extensionsPath() const;
     QString automappingRulesFile() const;
+    QString fileName() const;
     QStringList folders() const;
 
 private:
