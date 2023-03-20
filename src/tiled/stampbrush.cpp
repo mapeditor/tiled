@@ -379,7 +379,7 @@ static void shiftRows(TileLayer *tileLayer, Map::StaggerIndex staggerIndex)
 {
     tileLayer->resize(QSize(tileLayer->width() + 1, tileLayer->height()), QPoint());
 
-    for (int y = (staggerIndex + 1) & 1; y < tileLayer->height(); y += 2) {
+    for (int y = (tileLayer->y() + staggerIndex + 1) & 1; y < tileLayer->height(); y += 2) {
         for (int x = tileLayer->width() - 2; x >= 0; --x)
             tileLayer->setCell(x + 1, y, tileLayer->cellAt(x, y));
         tileLayer->setCell(0, y, Cell());
@@ -390,7 +390,7 @@ static void shiftColumns(TileLayer *tileLayer, Map::StaggerIndex staggerIndex)
 {
     tileLayer->resize(QSize(tileLayer->width(), tileLayer->height() + 1), QPoint());
 
-    for (int x = (staggerIndex + 1) & 1; x < tileLayer->width(); x += 2) {
+    for (int x = (tileLayer->x() + staggerIndex + 1) & 1; x < tileLayer->width(); x += 2) {
         for (int y = tileLayer->height() - 2; y >= 0; --y)
             tileLayer->setCell(x, y + 1, tileLayer->cellAt(x, y));
         tileLayer->setCell(x, 0, Cell());
