@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Fixed object labels to adjust to application font changes
+* Fixed grid rendering for odd Hex Side Length values (#3623)
 * Improved Terrain Brush for Hexagonal (Staggered) maps with side length 0 (#3617)
 * Qt 6: Increased the image allocation limit from 128 MB to 1 GB (#3616)
 
