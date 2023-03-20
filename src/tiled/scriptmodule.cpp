@@ -651,9 +651,11 @@ void ScriptModule::currentDocumentChanged(Document *document)
     emit activeAssetChanged(document ? document->editable() : nullptr);
 }
 
-EditableProject *ScriptModule::project() const
+EditableProject *ScriptModule::project()
 {
-    return new EditableProject(&ProjectManager::instance()->project(), ScriptManager::instance().module());
+    if (!mEditableProject)
+        mEditableProject = new EditableProject(&ProjectManager::instance()->project(), this);
+    return mEditableProject;
 }
 } // namespace Tiled
 

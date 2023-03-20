@@ -97,7 +97,7 @@ public:
 
     EditableAsset *activeAsset() const;
     bool setActiveAsset(EditableAsset *asset) const;
-    EditableProject *project() const;
+    EditableProject *project();
 
     QList<QObject*> openAssets() const;
 
@@ -175,6 +175,7 @@ private:
     std::map<Id, std::unique_ptr<ScriptedTool>> mRegisteredTools;
 
     QStringList mScriptArguments;
+    EditableProject *mEditableProject = nullptr;
 };
 
 inline bool ScriptModule::versionLessThan(const QString &a)
