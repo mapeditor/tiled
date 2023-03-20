@@ -80,19 +80,14 @@ static std::invalid_argument tscnError(const QString &error)
  */
 static QString determineResRoot(const QString &filePath)
 {
-    constexpr unsigned int searchDepth = 3;
-    QFileInfo fi(filePath);
-    QDir dir(fi.path());
+    QDir dir(QFileInfo(filePath).path());
     dir.setNameFilters(QStringList("*.godot"));
 
-    for (unsigned int i = 0; i < searchDepth; ++i) {
-        if (i > 0 && !dir.cdUp())
-            break;
-
+    do {
         const QString godotFile = QDirIterator(dir).next();
         if (!godotFile.isEmpty())
             return dir.path();
-    }
+    } while (dir.cdUp());
 
     throw tscnError(TscnPlugin::tr("Could not find .godot project in file path for file %1").arg(filePath));
 }
