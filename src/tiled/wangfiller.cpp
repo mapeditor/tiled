@@ -21,8 +21,9 @@
 #include "wangfiller.h"
 
 #include "grid.h"
+#include "hexagonalrenderer.h"
+#include "map.h"
 #include "randompicker.h"
-#include "staggeredrenderer.h"
 #include "tilelayer.h"
 #include "wangset.h"
 
@@ -43,21 +44,21 @@ WangFiller::WangFiller(const WangSet &wangSet,
                        const MapRenderer *mapRenderer)
     : mWangSet(wangSet)
     , mMapRenderer(mapRenderer)
-    , mStaggeredRenderer(dynamic_cast<const StaggeredRenderer*>(mapRenderer))
+    , mHexagonalRenderer(dynamic_cast<const HexagonalRenderer*>(mapRenderer))
 {
 }
 
 static void getSurroundingPoints(QPoint point,
-                                 const StaggeredRenderer *staggeredRenderer,
+                                 const HexagonalRenderer *hexagonalRenderer,
                                  QPoint *points)
 {
-    if (staggeredRenderer) {
-        points[0] = staggeredRenderer->topRight(point.x(), point.y());
-        points[2] = staggeredRenderer->bottomRight(point.x(), point.y());
-        points[4] = staggeredRenderer->bottomLeft(point.x(), point.y());
-        points[6] = staggeredRenderer->topLeft(point.x(), point.y());
+    if (hexagonalRenderer) {
+        points[0] = hexagonalRenderer->topRight(point.x(), point.y());
+        points[2] = hexagonalRenderer->bottomRight(point.x(), point.y());
+        points[4] = hexagonalRenderer->bottomLeft(point.x(), point.y());
+        points[6] = hexagonalRenderer->topLeft(point.x(), point.y());
 
-        if (staggeredRenderer->map()->staggerAxis() == Map::StaggerX) {
+        if (hexagonalRenderer->map()->staggerAxis() == Map::StaggerX) {
             points[1] = point + QPoint(2, 0);
             points[3] = point + QPoint(0, 1);
             points[5] = point + QPoint(-2, 0);
@@ -155,7 +156,7 @@ void WangFiller::fillRegion(TileLayer &target,
 
     // Determine the bounds of the affected area
     QRect bounds = region.boundingRect();
-    int margin = mWangSet.maximumColorDistance() + (mStaggeredRenderer != nullptr);
+    int margin = mWangSet.maximumColorDistance() + (mHexagonalRenderer != nullptr);
     bounds.adjust(-margin, -margin, margin, margin);
 
     // Don't try to make corrections outside of a fixed map
@@ -185,7 +186,7 @@ void WangFiller::fillRegion(TileLayer &target,
 
         // Adjust the desired WangIds for the surrounding tiles based on the placed one
         QPoint adjacentPoints[WangId::NumIndexes];
-        getSurroundingPoints(QPoint(x, y), mStaggeredRenderer, adjacentPoints);
+        getSurroundingPoints(QPoint(x, y), mHexagonalRenderer, adjacentPoints);
 
         for (int i = 0; i < WangId::NumIndexes; ++i) {
             const QPoint p = adjacentPoints[i];
@@ -237,7 +238,7 @@ WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
 {
     Cell surroundingCells[8];
     QPoint adjacentPoints[8];
-    getSurroundingPoints(point, mStaggeredRenderer, adjacentPoints);
+    getSurroundingPoints(point, mHexagonalRenderer, adjacentPoints);
 
     for (int i = 0; i < 8; ++i) {
         if (!region.contains(adjacentPoints[i]))
@@ -324,7 +325,7 @@ bool WangFiller::findBestMatch(const TileLayer &target,
             // Adjust the desired WangIds for the surrounding tiles based on
             // the to be placed one.
             QPoint adjacentPoints[WangId::NumIndexes];
-            getSurroundingPoints(position, mStaggeredRenderer, adjacentPoints);
+            getSurroundingPoints(position, mHexagonalRenderer, adjacentPoints);
 
             for (int i = 0; i < WangId::NumIndexes; ++i) {
                 const QPoint p = adjacentPoints[i];

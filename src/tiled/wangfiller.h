@@ -21,7 +21,6 @@
 #pragma once
 
 #include "grid.h"
-#include "map.h"
 #include "wangset.h"
 
 #include <QList>
@@ -33,7 +32,7 @@
 namespace Tiled {
 
 class MapRenderer;
-class StaggeredRenderer;
+class HexagonalRenderer;
 
 /**
  * WangFiller provides functions for choosing cells based on a surrounding map
@@ -87,7 +86,7 @@ private:
 
     const WangSet &mWangSet;
     const MapRenderer * const mMapRenderer;
-    const StaggeredRenderer * const mStaggeredRenderer;
+    const HexagonalRenderer * const mHexagonalRenderer;
     bool mCorrectionsEnabled = false;
 
     QPainter *mDebugPainter = nullptr;

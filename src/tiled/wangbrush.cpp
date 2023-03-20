@@ -24,13 +24,12 @@
 #include "brushitem.h"
 #include "containerhelpers.h"
 #include "geometry.h"
+#include "hexagonalrenderer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "painttilelayer.h"
-#include "randompicker.h"
-#include "staggeredrenderer.h"
 #include "tilelayer.h"
 #include "wangfiller.h"
 
@@ -279,11 +278,11 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
     case Idle:              // can't happen due to check above
         return;
     case PaintCorner:
-        if (StaggeredRenderer *staggeredRenderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer())) {
+        if (auto hexagonalRenderer = dynamic_cast<HexagonalRenderer*>(mapDocument()->renderer())) {
             if (tileLocalPos.x() >= 0.5)
-                tilePos = staggeredRenderer->bottomRight(tilePos.x(), tilePos.y());
+                tilePos = hexagonalRenderer->bottomRight(tilePos.x(), tilePos.y());
             if (tileLocalPos.y() >= 0.5)
-                tilePos = staggeredRenderer->bottomLeft(tilePos.x(), tilePos.y());
+                tilePos = hexagonalRenderer->bottomLeft(tilePos.x(), tilePos.y());
         } else {
             if (tileLocalPos.x() >= 0.5)
                 tilePos.rx() += 1;
@@ -324,19 +323,19 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
         break;
     }
     case PaintEdgeAndCorner:
-        if (StaggeredRenderer *staggeredRenderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer())) {
+        if (auto hexagonalRenderer = dynamic_cast<HexagonalRenderer*>(mapDocument()->renderer())) {
             switch (wangIndex) {
             case WangId::BottomRight:
-                tilePos = staggeredRenderer->bottomRight(tilePos.x(), tilePos.y());
-                tilePos = staggeredRenderer->bottomLeft(tilePos.x(), tilePos.y());
+                tilePos = hexagonalRenderer->bottomRight(tilePos.x(), tilePos.y());
+                tilePos = hexagonalRenderer->bottomLeft(tilePos.x(), tilePos.y());
                 wangIndex = WangId::TopLeft;
                 break;
             case WangId::BottomLeft:
-                tilePos = staggeredRenderer->bottomLeft(tilePos.x(), tilePos.y());
+                tilePos = hexagonalRenderer->bottomLeft(tilePos.x(), tilePos.y());
                 wangIndex = WangId::TopLeft;
                 break;
             case WangId::TopRight:
-                tilePos = staggeredRenderer->bottomRight(tilePos.x(), tilePos.y());
+                tilePos = hexagonalRenderer->bottomRight(tilePos.x(), tilePos.y());
                 wangIndex = WangId::TopLeft;
                 break;
             default:
@@ -645,7 +644,7 @@ void WangBrush::updateBrush()
 
 void WangBrush::updateBrushAt(FillRegion &fill, QPoint pos)
 {
-    auto staggeredRenderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer());
+    auto hexgonalRenderer = dynamic_cast<HexagonalRenderer*>(mapDocument()->renderer());
     Grid<WangFiller::CellInfo> &grid = fill.grid;
     QRegion &region = fill.region;
 
@@ -654,11 +653,11 @@ void WangBrush::updateBrushAt(FillRegion &fill, QPoint pos)
     if (mIsTileMode || (mBrushBehavior == Line && mBrushMode == PaintEdgeAndCorner)) {
         //array of adjacent positions which is assigned based on map orientation.
         QPoint adjacentPositions[WangId::NumIndexes];
-        if (staggeredRenderer) {
-            adjacentPositions[0] = staggeredRenderer->topRight(pos.x(), pos.y());
-            adjacentPositions[2] = staggeredRenderer->bottomRight(pos.x(), pos.y());
-            adjacentPositions[4] = staggeredRenderer->bottomLeft(pos.x(), pos.y());
-            adjacentPositions[6] = staggeredRenderer->topLeft(pos.x(), pos.y());
+        if (hexgonalRenderer) {
+            adjacentPositions[0] = hexgonalRenderer->topRight(pos.x(), pos.y());
+            adjacentPositions[2] = hexgonalRenderer->bottomRight(pos.x(), pos.y());
+            adjacentPositions[4] = hexgonalRenderer->bottomLeft(pos.x(), pos.y());
+            adjacentPositions[6] = hexgonalRenderer->topLeft(pos.x(), pos.y());
 
             if (mapDocument()->map()->staggerAxis() == Map::StaggerX) {
                 adjacentPositions[1] = pos + QPoint(2, 0);
@@ -742,11 +741,11 @@ void WangBrush::updateBrushAt(FillRegion &fill, QPoint pos)
         case PaintCorner: {
             QPoint adjacentPoints[WangId::NumCorners];
 
-            if (staggeredRenderer) {
-                adjacentPoints[0] = staggeredRenderer->topRight(pos.x(), pos.y());
+            if (hexgonalRenderer) {
+                adjacentPoints[0] = hexgonalRenderer->topRight(pos.x(), pos.y());
                 adjacentPoints[1] = pos;
-                adjacentPoints[2] = staggeredRenderer->topLeft(pos.x(), pos.y());
-                adjacentPoints[3] = staggeredRenderer->topRight(adjacentPoints[2].x(), adjacentPoints[2].y());
+                adjacentPoints[2] = hexgonalRenderer->topLeft(pos.x(), pos.y());
+                adjacentPoints[3] = hexgonalRenderer->topRight(adjacentPoints[2].x(), adjacentPoints[2].y());
             } else {
                 for (int i = 0; i < WangId::NumCorners; ++i)
                     adjacentPoints[i] = pos + aroundVertexPoints[i];
@@ -768,19 +767,19 @@ void WangBrush::updateBrushAt(FillRegion &fill, QPoint pos)
         }
         case PaintEdge: {
             QPoint dirPoint;
-            if (staggeredRenderer) {
+            if (hexgonalRenderer) {
                 switch (mWangIndex) {
                 case WangId::Top:
-                    dirPoint = staggeredRenderer->topRight(pos.x(), pos.y());
+                    dirPoint = hexgonalRenderer->topRight(pos.x(), pos.y());
                     break;
                 case WangId::Right:
-                    dirPoint = staggeredRenderer->bottomRight(pos.x(), pos.y());
+                    dirPoint = hexgonalRenderer->bottomRight(pos.x(), pos.y());
                     break;
                 case WangId::Bottom:
-                    dirPoint = staggeredRenderer->bottomLeft(pos.x(), pos.y());
+                    dirPoint = hexgonalRenderer->bottomLeft(pos.x(), pos.y());
                     break;
                 case WangId::Left:
-                    dirPoint = staggeredRenderer->topLeft(pos.x(), pos.y());
+                    dirPoint = hexgonalRenderer->topLeft(pos.x(), pos.y());
                     break;
                 default:    // Other color indexes not handled when painting edges
                     break;

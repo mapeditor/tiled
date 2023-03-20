@@ -21,15 +21,11 @@
 
 #include "stampbrush.h"
 
-#include "addremovelayer.h"
-#include "addremovetileset.h"
 #include "brushitem.h"
 #include "geometry.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
-#include "painttilelayer.h"
-#include "staggeredrenderer.h"
 #include "stampactions.h"
 #include "tile.h"
 #include "tilestamp.h"
@@ -59,13 +55,13 @@ StampBrush::StampBrush(QObject *parent)
     connect(mStampActions->random(), &QAction::toggled, this, &StampBrush::randomChanged);
     connect(mStampActions->wangFill(), &QAction::toggled, this, &StampBrush::wangFillChanged);
 
-    connect(mStampActions->flipHorizontal(), &QAction::triggered,
+    connect(mStampActions->flipHorizontal(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
-    connect(mStampActions->flipVertical(), &QAction::triggered,
+    connect(mStampActions->flipVertical(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.flipped(FlipVertically)); });
-    connect(mStampActions->rotateLeft(), &QAction::triggered,
+    connect(mStampActions->rotateLeft(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.rotated(RotateLeft)); });
-    connect(mStampActions->rotateRight(), &QAction::triggered,
+    connect(mStampActions->rotateRight(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.rotated(RotateRight)); });
 }
 
