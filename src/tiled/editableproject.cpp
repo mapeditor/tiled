@@ -23,25 +23,31 @@
 namespace Tiled {
 
 EditableProject::EditableProject(Project *project, QObject *parent)
-    : QObject(parent),
-      mProject(project)
+    : QObject(parent)
+    , mProject(project)
 {
 }
+
 QString EditableProject::extensionsPath() const
 {
    return mProject->mExtensionsPath;
 }
+
 QString EditableProject::automappingRulesFile() const
 {
    return mProject->mAutomappingRulesFile;
 }
+
 QString EditableProject::fileName() const
 {
     return mProject->fileName();
 }
+
 QStringList EditableProject::folders() const
 {
    return mProject->folders();
 }
-}
+
+} // namespace Tiled
+
 #include "moc_editableproject.cpp"

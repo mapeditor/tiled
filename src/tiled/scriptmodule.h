@@ -69,8 +69,8 @@ class ScriptModule : public QObject
     Q_PROPERTY(QStringList tilesetFormats READ tilesetFormats)
 
     Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
-    Q_PROPERTY(Tiled::EditableProject *project READ project)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
+    Q_PROPERTY(Tiled::EditableProject *project READ project)
 
     Q_PROPERTY(Tiled::MapEditor *mapEditor READ mapEditor)
     Q_PROPERTY(Tiled::TilesetEditor *tilesetEditor READ tilesetEditor)
@@ -97,9 +97,10 @@ public:
 
     EditableAsset *activeAsset() const;
     bool setActiveAsset(EditableAsset *asset) const;
-    EditableProject *project();
 
     QList<QObject*> openAssets() const;
+
+    EditableProject *project();
 
     TilesetEditor *tilesetEditor() const;
     MapEditor *mapEditor() const;

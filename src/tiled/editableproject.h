@@ -20,14 +20,16 @@
 
 #pragma once
 
-#include "editableobject.h"
 #include "project.h"
+
+#include <QObject>
 
 namespace Tiled {
 
 class EditableProject : public QObject
 {
     Q_OBJECT
+
     Q_PROPERTY(QString extensionsPath READ extensionsPath)
     Q_PROPERTY(QString automappingRulesFile READ automappingRulesFile)
     Q_PROPERTY(QString fileName READ fileName)
@@ -35,13 +37,14 @@ class EditableProject : public QObject
 
 public:
     EditableProject(Project *project, QObject *parent = nullptr);
+
     QString extensionsPath() const;
     QString automappingRulesFile() const;
     QString fileName() const;
     QStringList folders() const;
 
 private:
-   Project *mProject;
+    Project *mProject;
 };
 
 } // namespace Tiled

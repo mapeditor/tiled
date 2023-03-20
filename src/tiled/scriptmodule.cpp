@@ -214,6 +214,13 @@ QList<QObject *> ScriptModule::openAssets() const
     return assets;
 }
 
+EditableProject *ScriptModule::project()
+{
+    if (!mEditableProject)
+        mEditableProject = new EditableProject(&ProjectManager::instance()->project(), this);
+    return mEditableProject;
+}
+
 TilesetEditor *ScriptModule::tilesetEditor() const
 {
     if (auto documentManager = DocumentManager::maybeInstance())
@@ -651,12 +658,6 @@ void ScriptModule::currentDocumentChanged(Document *document)
     emit activeAssetChanged(document ? document->editable() : nullptr);
 }
 
-EditableProject *ScriptModule::project()
-{
-    if (!mEditableProject)
-        mEditableProject = new EditableProject(&ProjectManager::instance()->project(), this);
-    return mEditableProject;
-}
 } // namespace Tiled
 
 #include "moc_scriptmodule.cpp"

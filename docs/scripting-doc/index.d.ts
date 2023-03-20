@@ -1067,28 +1067,36 @@ declare class TiledObject {
 /**
  * A Tiled project file primarily defines the list of folders containing
  * the assets belonging to that project.
+ *
+ * @since 1.11
  */
 declare class Project {
-/**
- * A project-specific directory where you can put Tiled extensions.
- *  It defaults to simply extensions, so when you have a directory called “extensions” alongside
- *  your project file it will be picked up automatically.
- *  The directory is loaded in addition to the global extensions.
- */
-  extensionsPath: string;
+  /**
+   * A project-specific directory where you can put Tiled extensions.
+   *
+   * It defaults to "extensions", so when you have a directory called
+   * “extensions” alongside your project file it will be picked up
+   * automatically. The directory is loaded in addition to the global
+   * extensions.
+   */
+  readonly extensionsPath: string;
+
   /**
    * Path to the file where automapping rules are stored for this project.
    */
-  automappingRulesFile: string;
+  readonly automappingRulesFile: string;
+
   /**
    * An array of folders containing the assets belonging to the project
    */
-  folders: string[];
+  readonly folders: string[];
+
   /**
    * The path to the .tiled-project file.
    */
-  fileName: string;
+  readonly fileName: string;
 }
+
 /**
  * Defines the font used to render objects which have {@link MapObject.shape}
  * set to {@link MapObject.Text}.
@@ -3585,10 +3593,13 @@ declare namespace tiled {
   export let activeAsset: Asset | null;
 
   /**
-   * Currently opened project. If no project is open, the properties of the project
-   * will be blank.
+   * Currently opened project. If no project is open, the properties of the
+   * project will be blank.
+   *
+   * @since 1.11
    */
-  export let project: Project;
+  export const project: Project;
+
   /**
    * List of currently opened {@link Asset | assets}.
    */
