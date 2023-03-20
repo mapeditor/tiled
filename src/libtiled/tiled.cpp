@@ -227,5 +227,7 @@ void Tiled::increaseImageAllocationLimit(int mbLimit)
     const int currentLimit = QImageReader::allocationLimit();
     if (currentLimit && currentLimit < mbLimit)
         QImageReader::setAllocationLimit(mbLimit);
+#else
+    Q_UNUSED(mbLimit);
 #endif
 }
