@@ -1,5 +1,6 @@
 ### Unreleased
 
+* Scripting: Added read-only access to Project properties (by dogboydog, #3622)
 * Fixed object labels to adjust to application font changes
 * Fixed grid rendering for odd Hex Side Length values (#3623)
 * Fixed tile stamp getting messed up on staggered maps in some cases (#3431)
