@@ -28,7 +28,6 @@ class MapObject;
 class MapRenderer;
 
 class ArrowHead;
-class ObjectSelectionItem;
 
 class ObjectReferenceItem : public QGraphicsItem
 {

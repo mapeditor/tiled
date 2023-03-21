@@ -21,15 +21,11 @@
 
 #include "stampbrush.h"
 
-#include "addremovelayer.h"
-#include "addremovetileset.h"
 #include "brushitem.h"
 #include "geometry.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
-#include "painttilelayer.h"
-#include "staggeredrenderer.h"
 #include "stampactions.h"
 #include "tile.h"
 #include "tilestamp.h"
@@ -59,13 +55,13 @@ StampBrush::StampBrush(QObject *parent)
     connect(mStampActions->random(), &QAction::toggled, this, &StampBrush::randomChanged);
     connect(mStampActions->wangFill(), &QAction::toggled, this, &StampBrush::wangFillChanged);
 
-    connect(mStampActions->flipHorizontal(), &QAction::triggered,
+    connect(mStampActions->flipHorizontal(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
-    connect(mStampActions->flipVertical(), &QAction::triggered,
+    connect(mStampActions->flipVertical(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.flipped(FlipVertically)); });
-    connect(mStampActions->rotateLeft(), &QAction::triggered,
+    connect(mStampActions->rotateLeft(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.rotated(RotateLeft)); });
-    connect(mStampActions->rotateRight(), &QAction::triggered,
+    connect(mStampActions->rotateRight(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.rotated(RotateRight)); });
 }
 
@@ -383,7 +379,7 @@ static void shiftRows(TileLayer *tileLayer, Map::StaggerIndex staggerIndex)
 {
     tileLayer->resize(QSize(tileLayer->width() + 1, tileLayer->height()), QPoint());
 
-    for (int y = (staggerIndex + 1) & 1; y < tileLayer->height(); y += 2) {
+    for (int y = (tileLayer->y() + staggerIndex + 1) & 1; y < tileLayer->height(); y += 2) {
         for (int x = tileLayer->width() - 2; x >= 0; --x)
             tileLayer->setCell(x + 1, y, tileLayer->cellAt(x, y));
         tileLayer->setCell(0, y, Cell());
@@ -394,7 +390,7 @@ static void shiftColumns(TileLayer *tileLayer, Map::StaggerIndex staggerIndex)
 {
     tileLayer->resize(QSize(tileLayer->width(), tileLayer->height() + 1), QPoint());
 
-    for (int x = (staggerIndex + 1) & 1; x < tileLayer->width(); x += 2) {
+    for (int x = (tileLayer->x() + staggerIndex + 1) & 1; x < tileLayer->width(); x += 2) {
         for (int y = tileLayer->height() - 2; y >= 0; --y)
             tileLayer->setCell(x, y + 1, tileLayer->cellAt(x, y));
         tileLayer->setCell(x, 0, Cell());

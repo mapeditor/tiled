@@ -22,12 +22,9 @@
 
 #include "commandlineparser.h"
 #include "exporthelper.h"
-#include "languagemanager.h"
 #include "logginginterface.h"
 #include "mainwindow.h"
-#include "mapdocument.h"
 #include "mapformat.h"
-#include "mapreader.h"
 #include "pluginmanager.h"
 #include "preferences.h"
 #include "scriptmanager.h"
@@ -39,6 +36,7 @@
 
 #include <QDebug>
 #include <QFileInfo>
+#include <QImageReader>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QtPlugin>
@@ -420,6 +418,8 @@ int main(int argc, char *argv[])
 #ifdef Q_OS_MAC
     QCoreApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
+
+    Tiled::increaseImageAllocationLimit();
 
     TiledApplication a(argc, argv);
 

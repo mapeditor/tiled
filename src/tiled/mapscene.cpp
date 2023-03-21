@@ -444,6 +444,9 @@ bool MapScene::event(QEvent *event)
         if (mSelectedTool)
             mSelectedTool->mouseLeft();
         break;
+    case QEvent::FontChange:
+        emit fontChanged();
+        break;
     default:
         break;
     }

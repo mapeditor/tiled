@@ -1,6 +1,9 @@
 # General build artifacts
 default/
 
+# clangd cache
+.cache/
+
 # Mac stuff
 *.DS_Store
 
@@ -23,6 +26,8 @@ docs/scripting-doc/node_modules
 
 # Work-in-progress worktrees
 wip/
+
+# Java stuff
 util/java/tmxviewer-java/target
 util/java/libtiled-java/target
 /util/java/target/

@@ -43,6 +43,8 @@ static QString localFile(const QString &fileNameOrUrl)
 
 int main(int argc, char *argv[])
 {
+    Tiled::increaseImageAllocationLimit();
+
     QGuiApplication app(argc, argv);
 
     app.setOrganizationDomain(QLatin1String("mapeditor.org"));

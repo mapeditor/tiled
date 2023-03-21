@@ -1,3 +1,11 @@
+### Unreleased
+
+* Fixed object labels to adjust to application font changes
+* Fixed grid rendering for odd Hex Side Length values (#3623)
+* Fixed tile stamp getting messed up on staggered maps in some cases (#3431)
+* Improved Terrain Brush for Hexagonal (Staggered) maps with side length 0 (#3617)
+* Qt 6: Increased the image allocation limit from 128 MB to 1 GB (#3616)
+
 ### Tiled 1.10.0 (10 March 2023)
 
 * Restored Tiled 1.8 file format compatibility by default (#3560)
