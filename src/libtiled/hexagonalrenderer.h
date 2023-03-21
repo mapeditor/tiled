@@ -54,8 +54,8 @@ protected:
         bool doStaggerY(int y) const
         { return !staggerX && (y & 1) ^ staggerEven; }
 
-        const int tileWidth;
-        const int tileHeight;
+        int tileWidth;
+        int tileHeight;
         int sideLengthX;
         int sideOffsetX;
         int sideLengthY;

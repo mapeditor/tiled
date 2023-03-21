@@ -39,9 +39,7 @@
 using namespace Tiled;
 
 HexagonalRenderer::RenderParams::RenderParams(const Map *map)
-    : tileWidth(map->tileWidth() & ~1)
-    , tileHeight(map->tileHeight() & ~1)
-    , sideLengthX(0)
+    : sideLengthX(0)
     , sideLengthY(0)
     , staggerX(map->staggerAxis() == Map::StaggerX)
     , staggerEven(map->staggerIndex() == Map::StaggerEven)
@@ -53,11 +51,14 @@ HexagonalRenderer::RenderParams::RenderParams(const Map *map)
             sideLengthY = map->hexSideLength();
     }
 
-    sideOffsetX = (tileWidth - sideLengthX) / 2;
-    sideOffsetY = (tileHeight - sideLengthY) / 2;
+    sideOffsetX = (map->tileWidth() - sideLengthX) / 2;
+    sideOffsetY = (map->tileHeight() - sideLengthY) / 2;
 
     columnWidth = sideOffsetX + sideLengthX;
     rowHeight = sideOffsetY + sideLengthY;
+
+    tileWidth = columnWidth + sideOffsetX;
+    tileHeight = rowHeight + sideOffsetY;
 }
 
 QRect HexagonalRenderer::boundingRect(const QRect &rect) const
@@ -93,9 +94,7 @@ QRect HexagonalRenderer::boundingRect(const QRect &rect) const
 void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
                                  QColor gridColor, QSize gridMajor) const
 {
-    Q_UNUSED(gridMajor)  // Unclear how this should apply to hexagonal maps
-
-    QRect rect = exposed.toAlignedRect();
+    const QRect rect = exposed.toAlignedRect();
     if (rect.isNull())
         return;
 
@@ -127,10 +126,10 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
     startPos = tileToScreenCoords(startTile).toPoint();
 
     const QPoint oct[5] = {
-        QPoint(0,                           p.tileHeight - p.sideOffsetY),
+        QPoint(0,                           p.rowHeight),
         QPoint(0,                           p.sideOffsetY),
         QPoint(p.sideOffsetX,               0),
-        QPoint(p.tileWidth - p.sideOffsetX, 0),
+        QPoint(p.columnWidth,               0),
         QPoint(p.tileWidth,                 p.sideOffsetY),
     };
 
@@ -143,9 +142,16 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
     QVarLengthArray<QLine, 8> majorLines;
 
     QPen gridPen, majorGridPen;
-    setupGridPens(painter->device(), gridColor, gridPen, majorGridPen, p.tileWidth, gridMajor);
+    setupGridPens(painter->device(), gridColor, gridPen, majorGridPen, qMin(p.columnWidth, p.rowHeight), gridMajor);
+
+    if (majorGridPen.color().alpha() <= 0)
+        return;
 
     if (p.staggerX) {
+        // Prevent possible infinite loop
+        if (p.columnWidth <= 0 || p.tileHeight + p.sideLengthY <= 0)
+            return;
+
         // Odd row shifting is applied in the rendering loop, so un-apply it here
         if (p.doStaggerX(startTile.x()))
             startPos.ry() -= p.rowHeight;
@@ -205,6 +211,10 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
             majorLines.clear();
         }
     } else {
+        // Prevent possible infinite loop
+        if (p.rowHeight <= 0 || p.tileWidth + p.sideLengthX <= 0)
+            return;
+
         // Odd row shifting is applied in the rendering loop, so un-apply it here
         if (p.doStaggerY(startTile.y()))
             startPos.rx() -= p.columnWidth;
@@ -281,7 +291,7 @@ QPointF HexagonalRenderer::snapToGrid(const QPointF &pixelCoords, int subdivisio
     QPointF nearest;
     qreal minDist = std::numeric_limits<qreal>::max();
 
-    for (const QPointF &candidate : hex) {
+    for (const QPointF &candidate : std::as_const(hex)) {
         const QPointF diff = candidate - pixelCoords;
         const qreal lengthSquared = diff.x() * diff.x() + diff.y() * diff.y();
         if (lengthSquared < minDist) {
@@ -297,6 +307,10 @@ void HexagonalRenderer::drawTileLayer(const RenderTileCallback &renderTile,
                                       const QRectF &exposed) const
 {
     const RenderParams p(map());
+
+    // Prevent possible infinite loop
+    if (p.rowHeight <= 0 || p.tileWidth + p.sideLengthX <= 0)
+        return;
 
     // Determine the tile and pixel coordinates to start at
     QPoint startTile = screenToTileCoords(exposed.topLeft()).toPoint();
@@ -582,13 +596,13 @@ QPolygonF HexagonalRenderer::tileToScreenPolygon(int x, int y) const
     const QPointF topRight = tileToScreenCoords(x, y);
 
     QPolygonF polygon(8);
-    polygon[0] = topRight + QPoint(0,                           p.tileHeight - p.sideOffsetY);
-    polygon[1] = topRight + QPoint(0,                           p.sideOffsetY);
-    polygon[2] = topRight + QPoint(p.sideOffsetX,               0);
-    polygon[3] = topRight + QPoint(p.tileWidth - p.sideOffsetX, 0);
-    polygon[4] = topRight + QPoint(p.tileWidth,                 p.sideOffsetY);
-    polygon[5] = topRight + QPoint(p.tileWidth,                 p.tileHeight - p.sideOffsetY);
-    polygon[6] = topRight + QPoint(p.tileWidth - p.sideOffsetX, p.tileHeight);
-    polygon[7] = topRight + QPoint(p.sideOffsetX,               p.tileHeight);
+    polygon[0] = topRight + QPoint(0,               p.rowHeight);
+    polygon[1] = topRight + QPoint(0,               p.sideOffsetY);
+    polygon[2] = topRight + QPoint(p.sideOffsetX,   0);
+    polygon[3] = topRight + QPoint(p.columnWidth,   0);
+    polygon[4] = topRight + QPoint(p.tileWidth,     p.sideOffsetY);
+    polygon[5] = topRight + QPoint(p.tileWidth,     p.rowHeight);
+    polygon[6] = topRight + QPoint(p.columnWidth,   p.tileHeight);
+    polygon[7] = topRight + QPoint(p.sideOffsetX,   p.tileHeight);
     return polygon;
 }
