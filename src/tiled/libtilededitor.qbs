@@ -226,6 +226,8 @@ DynamicLibrary {
         "editableobject.h",
         "editableobjectgroup.cpp",
         "editableobjectgroup.h",
+        "editableproject.cpp",
+        "editableproject.h",
         "editableselectedarea.cpp",
         "editableselectedarea.h",
         "editabletile.cpp",
