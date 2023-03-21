@@ -1718,7 +1718,7 @@ declare class GroupLayer extends Layer {
  *
  * Also useful when writing an importer, where the image can be set on a
  * tileset ({@link Tileset.loadFromImage}), its tiles ({@link Tile.setImage})
- * or an image layer ({@link ImageLayer.loadFromImage}).
+ * or an image layer ({@link ImageLayer.setImage}).
  *
  * @since 1.5
  */
