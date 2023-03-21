@@ -1,6 +1,7 @@
 /*
  * editableproject.cpp
- * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2023, Chris Boehm AKA dogboydog
+ * Copyright 2023, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
