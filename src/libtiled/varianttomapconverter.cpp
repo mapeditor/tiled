@@ -237,7 +237,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const QString fillMode = variantMap[QStringLiteral("fillmode")].toString();
     const QVariantMap transformations = variantMap[QStringLiteral("transformations")].toMap();
 
-    if (tileWidth <= 0 || tileHeight <= 0 ||
+    if (tileWidth < 0 || tileHeight < 0 ||
             (firstGid == 0 && !mReadingExternalTileset)) {
         mError = tr("Invalid tileset parameters for tileset '%1'").arg(name);
         return SharedTileset();
@@ -287,6 +287,10 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     QVariant imageVariant = variantMap[QStringLiteral("image")];
 
     if (!imageVariant.isNull()) {
+        if (tileWidth == 0 || tileHeight == 0) {
+            mError = tr("Invalid tileset parameters for tileset '%1'").arg(name);
+            return SharedTileset();
+        }
         const int imageWidth = variantMap[QStringLiteral("imagewidth")].toInt();
         const int imageHeight = variantMap[QStringLiteral("imageheight")].toInt();
 

@@ -4,6 +4,7 @@
 * Fixed object labels to adjust to application font changes
 * Fixed grid rendering for odd Hex Side Length values (#3623)
 * Fixed tile stamp getting messed up on staggered maps in some cases (#3431)
+* JSON plugin: Fixed loading of empty tilesets created by script (#3542)
 * Improved Terrain Brush for Hexagonal (Staggered) maps with side length 0 (#3617)
 * Qt 6: Increased the image allocation limit from 128 MB to 1 GB (#3616)
 
