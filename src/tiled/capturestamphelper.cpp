@@ -52,32 +52,12 @@ TileStamp CaptureStampHelper::endCapture(const MapDocument &mapDocument, QPoint 
 
     auto stamp = std::make_unique<Map>(mapParameters);
 
-    // Iterate all layers to make sure we're adding layers in the right order
-    LayerIterator it(mapDocument.map(), Layer::TileLayerType);
-    while (auto tileLayer = static_cast<TileLayer*>(it.next())) {
-        if (!mapDocument.selectedLayers().contains(tileLayer))
-            continue;
-
-        // Intersect with the layer and translate to layer coordinates
-        QRect capturedFromLayer = captured.intersected(tileLayer->bounds());
-        capturedFromLayer.translate(-tileLayer->position());
-
-        auto capture = tileLayer->copy(capturedFromLayer);
-        capture->setName(tileLayer->name());
-        capture->setPosition(capturedFromLayer.topLeft() - captured.topLeft());
-        capture->setOpacity(tileLayer->opacity());
-        capture->setTintColor(tileLayer->tintColor());
-
-        stamp->addLayer(std::move(capture));
-    }
+    mapDocument.map()->copyLayers(mapDocument.selectedLayers(),
+                                  captured,
+                                  *stamp);
 
     if (stamp->layerCount() > 0) {
-        // Adjust the stagger index when the capture starts at an odd offset
-        const auto staggerIndex = stamp->staggerIndex();
-        const int staggerOffSet = (stamp->staggerAxis() == Map::StaggerX ? captured.x()
-                                                                         : captured.y()) % 2;
-
-        stamp->setStaggerIndex(static_cast<Map::StaggerIndex>((staggerIndex + staggerOffSet) % 2));
+        stamp->normalizeTileLayerPositionsAndMapSize();
 
         // Add tileset references to map
         stamp->addTilesets(stamp->usedTilesets());

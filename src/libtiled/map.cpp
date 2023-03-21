@@ -35,7 +35,6 @@
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
-#include "tile.h"
 #include "tilelayer.h"
 
 #include <QtMath>
@@ -437,10 +436,9 @@ void Map::normalizeTileLayerPositionsAndMapSize()
             tileLayer->setPosition(tileLayer->position() - contentRect.topLeft());
 
         // Adjust the stagger index when layers are moved by odd amounts
-        const int staggerOffSet = (staggerAxis() == Map::StaggerX ? contentRect.x()
+        const int staggerOffset = (staggerAxis() == Map::StaggerX ? contentRect.x()
                                                                   : contentRect.y()) % 2;
-
-        setStaggerIndex(static_cast<Map::StaggerIndex>((staggerIndex() + staggerOffSet) % 2));
+        setStaggerIndex(static_cast<Map::StaggerIndex>((staggerIndex() + staggerOffset) % 2));
     }
 
     setWidth(contentRect.width());
