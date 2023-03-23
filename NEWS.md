@@ -7,6 +7,7 @@
 * JSON plugin: Fixed loading of empty tilesets created by script (#3542)
 * Improved Terrain Brush for Hexagonal (Staggered) maps with side length 0 (#3617)
 * Qt 6: Increased the image allocation limit from 128 MB to 1 GB (#3616)
+* Qt 6 / Linux: Fixed long startup time for some icon themes
 
 ### Tiled 1.10.0 (10 March 2023)
 
