@@ -51,6 +51,10 @@
 #endif
 #include <QScreen>
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+#include <QtCore/qapplicationstatic.h>
+#endif
+
 static QString toImageFileFilter(const QList<QByteArray> &formats)
 {
     QString filter(QCoreApplication::translate("Utils", "Image files"));
@@ -280,6 +284,29 @@ RangeSet<int> matchingRanges(const QStringList &words, QStringRef string)
 
     return result;
 }
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+/*
+ * Caching icons here, since Qt no longer caches null icons in
+ * QIcon::fromTheme.
+ */
+using IconCache = QHash<QString, QIcon>;
+Q_APPLICATION_STATIC(IconCache, iconCache);
+
+QIcon themeIcon(const QString &name)
+{
+    IconCache *cache = iconCache();
+    auto it = cache->find(name);
+    if (it == cache->end())
+        it = cache->insert(name, QIcon::fromTheme(name));
+    return *it;
+}
+#else
+QIcon themeIcon(const QString &name)
+{
+    return QIcon::fromTheme(name);
+}
+#endif
 
 QIcon colorIcon(const QColor &color, QSize size)
 {

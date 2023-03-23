@@ -49,6 +49,8 @@ QString firstExtension(const QString &nameFilter);
 int matchingScore(const QStringList &words, QStringRef string);
 RangeSet<int> matchingRanges(const QStringList &words, QStringRef string);
 
+QIcon themeIcon(const QString &name);
+
 /**
  * Looks up the icon with the specified \a name from the system theme and set
  * it on the instance \a t when found.
@@ -62,9 +64,9 @@ template <class T>
 void setThemeIcon(T *t, const QString &name)
 {
 #ifdef Q_OS_LINUX
-    QIcon themeIcon = QIcon::fromTheme(name);
-    if (!themeIcon.isNull())
-        t->setIcon(themeIcon);
+    const QIcon icon = themeIcon(name);
+    if (!icon.isNull())
+        t->setIcon(icon);
 #else
     Q_UNUSED(t)
     Q_UNUSED(name)
