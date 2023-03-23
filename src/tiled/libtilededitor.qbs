@@ -490,7 +490,6 @@ DynamicLibrary {
         "tilecollisiondock.h",
         "tiledapplication.cpp",
         "tiledapplication.h",
-        "tiled.qrc",
         "tilededitor_global.h",
         "tiledproxystyle.cpp",
         "tiledproxystyle.h",
@@ -575,6 +574,13 @@ DynamicLibrary {
         "zoomable.cpp",
         "zoomable.h",
     ]
+
+    Group {
+        name: "Resources"
+        Qt.core.resourceSourceBase: "resources/"
+        files: "resources/**"
+        fileTags: ["qt.core.resource_data"]
+    }
 
     Group {
         name: "Sentry"
