@@ -6,6 +6,7 @@
 * Fixed tile stamp getting messed up on staggered maps in some cases (#3431)
 * JSON plugin: Fixed loading of empty tilesets created by script (#3542)
 * Improved Terrain Brush for Hexagonal (Staggered) maps with side length 0 (#3617)
+* Removed "Add Folder to Project" button from the startup page
 * Qt 6: Increased the image allocation limit from 128 MB to 1 GB (#3616)
 * Qt 6 / Linux: Fixed long startup time for some icon themes
 * snap: Updated from core20 to core22 (now uses Qt 5.15)
