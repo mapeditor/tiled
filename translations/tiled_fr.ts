@@ -3106,6 +3106,7 @@ Ligne %1, colonne %2</translation>
         <translation>
             <numerusform>Dupliquer %n Objet</numerusform>
             <numerusform>Dupliquer %n Objets</numerusform>
+            <numerusform>Dupliquer %n Objets</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3113,6 +3114,7 @@ Ligne %1, colonne %2</translation>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Supprimer %n Objet</numerusform>
+            <numerusform>Supprimer %n Objets</numerusform>
             <numerusform>Supprimer %n Objets</numerusform>
         </translation>
     </message>
@@ -3191,6 +3193,7 @@ Ligne %1, colonne %2</translation>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>Déplacer %n Objet vers le Calque</numerusform>
+            <numerusform>Déplacer %n Objets vers le Calque</numerusform>
             <numerusform>Déplacer %n Objets vers le Calque</numerusform>
         </translation>
     </message>
@@ -3915,6 +3918,7 @@ Ligne %1, colonne %2</translation>
         <translation>
             <numerusform>Déplacer %n Nœud</numerusform>
             <numerusform>Déplacer %n Nœuds</numerusform>
+            <numerusform>Déplacer %n Nœuds</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3923,6 +3927,7 @@ Ligne %1, colonne %2</translation>
         <source>Delete %n Node(s)</source>
         <translation>
             <numerusform>Supprimer %n Nœud</numerusform>
+            <numerusform>Supprimer %n Nœuds</numerusform>
             <numerusform>Supprimer %n Nœuds</numerusform>
         </translation>
     </message>
@@ -4061,6 +4066,7 @@ Voulez-vous le remplacer ?</translation>
         <translation>
             <numerusform>%n erreur</numerusform>
             <numerusform>%n erreurs</numerusform>
+            <numerusform>%n erreurs</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4068,6 +4074,7 @@ Voulez-vous le remplacer ?</translation>
         <source>%n warning(s)</source>
         <translation>
             <numerusform>%n avertissement</numerusform>
+            <numerusform>%n avertissements</numerusform>
             <numerusform>%n avertissements</numerusform>
         </translation>
     </message>
@@ -4135,6 +4142,7 @@ Voulez-vous le remplacer ?</translation>
         <source>Drag Layer(s)</source>
         <translation>
             <numerusform>Déplacer le Calque</numerusform>
+            <numerusform>Déplacer les Calques</numerusform>
             <numerusform>Déplacer les Calques</numerusform>
         </translation>
     </message>
@@ -4579,6 +4587,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>
             <numerusform>Grouper %n Calque</numerusform>
             <numerusform>Grouper %n Calques</numerusform>
+            <numerusform>Grouper %n Calques</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4587,6 +4596,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>
             <numerusform>Séparer %n Calque</numerusform>
             <numerusform>Séparer %n Calques</numerusform>
+            <numerusform>Séparer %n Calques</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4594,6 +4604,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Duplicate %n Layer(s)</source>
         <translation>
             <numerusform>Dupliquer %n Calque</numerusform>
+            <numerusform>Dupliquer %n Calques</numerusform>
             <numerusform>Dupliquer %n Calques</numerusform>
         </translation>
     </message>
@@ -4613,6 +4624,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Remove %n Layer(s)</source>
         <translation>
             <numerusform>Supprimer %n Calque</numerusform>
+            <numerusform>Supprimer %n Calques</numerusform>
             <numerusform>Supprimer %n Calques</numerusform>
         </translation>
     </message>
@@ -4647,6 +4659,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>
             <numerusform>Dupliquer %n Objet</numerusform>
             <numerusform>Dupliquer %n Objets</numerusform>
+            <numerusform>Dupliquer %n Objets</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4654,6 +4667,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Supprimer %n Objet</numerusform>
+            <numerusform>Supprimer %n Objets</numerusform>
             <numerusform>Supprimer %n Objets</numerusform>
         </translation>
     </message>
@@ -4663,6 +4677,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>
             <numerusform>Déplacer %n Objet vers le Calque</numerusform>
             <numerusform>Déplacer %n Objets vers le Calque</numerusform>
+            <numerusform>Déplacer %n Objets vers le Calque</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4671,6 +4686,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>
             <numerusform>Monter %n Objet</numerusform>
             <numerusform>Monter %n Objets</numerusform>
+            <numerusform>Monter %n Objets</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4678,6 +4694,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Move %n Object(s) Down</source>
         <translation>
             <numerusform>Descendre %n Objet</numerusform>
+            <numerusform>Descendre %n Objets</numerusform>
             <numerusform>Descendre %n Objets</numerusform>
         </translation>
     </message>
@@ -4843,6 +4860,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>
             <numerusform>Dupliquer %n Objet</numerusform>
             <numerusform>Dupliquer %n Objets</numerusform>
+            <numerusform>Dupliquer %n Objets</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4850,6 +4868,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Supprimer %n Objet</numerusform>
+            <numerusform>Supprimer %n Objets</numerusform>
             <numerusform>Supprimer %n Objets</numerusform>
         </translation>
     </message>
@@ -4892,6 +4911,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Add %n Tileset(s)</source>
         <translation>
             <numerusform>Ajouter %n Jeu de Tuiles</numerusform>
+            <numerusform>Ajouter %n Jeux de Tuiles</numerusform>
             <numerusform>Ajouter %n Jeux de Tuiles</numerusform>
         </translation>
     </message>
@@ -5128,6 +5148,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>
             <numerusform>Déplacer %n Objet</numerusform>
             <numerusform>Déplacer %n Objets</numerusform>
+            <numerusform>Déplacer %n Objets</numerusform>
         </translation>
     </message>
     <message>
@@ -5166,6 +5187,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>
             <numerusform>Pivoter %n Objet</numerusform>
             <numerusform>Pivoter %n Objets</numerusform>
+            <numerusform>Pivoter %n Objets</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -5173,6 +5195,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Resize %n Object(s)</source>
         <translation>
             <numerusform>Redimensionner %n Objet</numerusform>
+            <numerusform>Redimensionner %n Objets</numerusform>
             <numerusform>Redimensionner %n Objets</numerusform>
         </translation>
     </message>
@@ -5214,6 +5237,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>Déplacer %n Objet vers le Calque</numerusform>
+            <numerusform>Déplacer %n Objets vers le Calque</numerusform>
             <numerusform>Déplacer %n Objets vers le Calque</numerusform>
         </translation>
     </message>
@@ -5345,6 +5369,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>
             <numerusform>Coller la Propriété</numerusform>
             <numerusform>Coller les Propriétés</numerusform>
+            <numerusform>Coller les Propriétés</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -5352,6 +5377,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Remove Property/Properties</source>
         <translation>
             <numerusform>Supprimer une Propriété</numerusform>
+            <numerusform>Supprimer des Propriétés</numerusform>
             <numerusform>Supprimer des Propriétés</numerusform>
         </translation>
     </message>
@@ -5406,6 +5432,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Convert Property/Properties</source>
         <translation>
             <numerusform>Convertir une Propriété</numerusform>
+            <numerusform>Convertir des Propriétés</numerusform>
             <numerusform>Convertir des Propriétés</numerusform>
         </translation>
     </message>
@@ -7499,6 +7526,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>
             <numerusform>Changement de Tuile d&apos;%n Objet</numerusform>
             <numerusform>Changement de Tuile de %n Objets</numerusform>
+            <numerusform>Changement de Tuile de %n Objets</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -7506,6 +7534,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Detach %n Template Instance(s)</source>
         <translation>
             <numerusform>Détacher %n Instance de Modèle</numerusform>
+            <numerusform>Détacher %n Instances de Modèle</numerusform>
             <numerusform>Détacher %n Instances de Modèle</numerusform>
         </translation>
     </message>
@@ -7515,6 +7544,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>
             <numerusform>Remettre à Zéro %n Instance</numerusform>
             <numerusform>Remettre à Zéro %n Instances</numerusform>
+            <numerusform>Remettre à Zéro %n Instances</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -7522,6 +7552,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Replace %n Object(s) With Template</source>
         <translation>
             <numerusform>Remplacer %n Objet(s) par le Modèle</numerusform>
+            <numerusform>Remplacer %n Objets par le Modèle</numerusform>
             <numerusform>Remplacer %n Objets par le Modèle</numerusform>
         </translation>
     </message>
@@ -7669,6 +7700,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>
             <numerusform>Inverser %n Objet</numerusform>
             <numerusform>Inverser %n Objets</numerusform>
+            <numerusform>Inverser %n Objets</numerusform>
         </translation>
     </message>
     <message>
@@ -7697,13 +7729,15 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>
             <numerusform>Monter %n Calque(s)</numerusform>
             <numerusform>Monter %n Calques</numerusform>
+            <numerusform>Monter %n Calques</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
         <translation>
-            <numerusform>Descendre %n Calque(s)</numerusform>
+            <numerusform>Descendre %n Calque</numerusform>
+            <numerusform>Descendre %n Calques</numerusform>
             <numerusform>Descendre %n Calques</numerusform>
         </translation>
     </message>
@@ -7820,6 +7854,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Transform %n Object(s)</source>
         <translation>
             <numerusform>Transformer %n Objet</numerusform>
+            <numerusform>Transformer %n Objets</numerusform>
             <numerusform>Transformer %n Objets</numerusform>
         </translation>
     </message>
