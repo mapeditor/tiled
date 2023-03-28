@@ -23,7 +23,6 @@
 #include "actionmanager.h"
 #include "changeevents.h"
 #include "changetilewangid.h"
-#include "map.h"
 #include "preferences.h"
 #include "stylehelper.h"
 #include "tile.h"
@@ -289,6 +288,7 @@ TilesetView::TilesetView(QWidget *parent)
     setShowGrid(false);
     setTabKeyNavigation(false);
     setDropIndicatorShown(true);
+    setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     QHeaderView *hHeader = horizontalHeader();
     QHeaderView *vHeader = verticalHeader();
@@ -315,6 +315,12 @@ TilesetView::TilesetView(QWidget *parent)
             this, &TilesetView::updateBackgroundColor);
 
     connect(mZoomable, &Zoomable::scaleChanged, this, &TilesetView::adjustScale);
+
+    auto spaceBarFilter = Utils::SpaceBarEventFilter::instance();
+    connect(spaceBarFilter, &Utils::SpaceBarEventFilter::spacePressedChanged,
+            this, [this] (bool pressed) {
+        setHandScrolling(pressed);
+    });
 }
 
 void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
@@ -478,6 +484,15 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
         }
     }
 
+    // Ignore space, becaue we'd like to use it for panning
+    switch (event->key()) {
+    case Qt::Key_Space:
+        event->ignore();
+        return;
+    default:
+        break;
+    }
+
     return QTableView::keyPressEvent(event);
 }
 
@@ -547,9 +562,11 @@ QIcon TilesetView::imageMissingIcon() const
 
 void TilesetView::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MiddleButton && isActiveWindow()) {
-        mLastMousePos = event->globalPos();
+    if (event->button() == Qt::MiddleButton && isActiveWindow())
         setHandScrolling(true);
+
+    if (mHandScrolling) {
+        mLastMousePos = event->globalPos();
         return;
     }
 
@@ -565,10 +582,13 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 
 void TilesetView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (mHandScrolling) {
+    auto lastMousePos = mLastMousePos;
+    mLastMousePos = event->globalPos();
+
+    if (mHandScrolling && (event->buttons() & (Qt::LeftButton | Qt::MiddleButton))) {
         auto *hBar = horizontalScrollBar();
         auto *vBar = verticalScrollBar();
-        const QPoint d = event->globalPos() - mLastMousePos;
+        const QPoint d = event->globalPos() - lastMousePos;
 
         int horizontalValue = hBar->value() + (isRightToLeft() ? d.x() : -d.x());
         int verticalValue = vBar->value() - d.y();
@@ -576,7 +596,6 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
         hBar->setValue(horizontalValue);
         vBar->setValue(verticalValue);
 
-        mLastMousePos = event->globalPos();
         return;
     }
 
@@ -667,7 +686,7 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
 void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MiddleButton) {
-        setHandScrolling(false);
+        setHandScrolling(Utils::SpaceBarEventFilter::instance()->isSpacePressed());
         return;
     }
 

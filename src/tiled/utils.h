@@ -111,5 +111,32 @@ namespace Error {
 QString jsonParseError(QJsonParseError error);
 } // namespace Error
 
+
+class SpaceBarEventFilter : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(bool isSpacePressed READ isSpacePressed NOTIFY spacePressedChanged)
+
+public:
+    static SpaceBarEventFilter* instance();
+
+    bool isSpacePressed() const;
+
+signals:
+    void spacePressedChanged(bool spacePressed);
+
+private:
+    SpaceBarEventFilter(QObject* parent = nullptr);
+
+    bool eventFilter(QObject* obj, QEvent* event) override;
+
+    bool mSpacePressed = false;
+};
+
+inline bool SpaceBarEventFilter::isSpacePressed() const
+{
+    return mSpacePressed;
+}
+
 } // namespace Utils
 } // namespace Tiled

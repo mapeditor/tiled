@@ -90,6 +90,9 @@ public:
     ScrollingMode scrollingMode() const { return mScrollingMode; }
     void setScrollingMode(ScrollingMode mode);
 
+    void setToolCursor(const QCursor &cursor);
+    void unsetToolCursor();
+
     using QGraphicsView::centerOn;
     Q_INVOKABLE void centerOn(qreal x, qreal y) { forceCenterOn(QPointF(x, y)); }
 
@@ -152,6 +155,7 @@ private:
     QPoint mScrollStartPos;
     QPointF mLastMouseScenePos;
     ScrollingMode mScrollingMode = NoScrolling;
+    std::unique_ptr<QCursor> mToolCursor;
     bool mViewInitialized = false;
     bool mHasInitialCenterPos = false;
     QPointF mInitialCenterPos;

@@ -104,6 +104,12 @@ MapView::MapView(QWidget *parent, Mode mode)
     connect(mZoomable, &Zoomable::scaleChanged, this, &MapView::adjustScale);
 
     connect(mPanningDriver, &TileAnimationDriver::update, this, &MapView::updatePanning);
+
+    auto spaceBarFilter = Utils::SpaceBarEventFilter::instance();
+    connect(spaceBarFilter, &Utils::SpaceBarEventFilter::spacePressedChanged,
+            this, [this] (bool pressed) {
+        setScrollingMode(pressed ? MapView::DragScrolling : MapView::NoScrolling);
+    });
 }
 
 MapView::~MapView()
@@ -349,16 +355,32 @@ void MapView::setScrollingMode(ScrollingMode mode)
     case AutoScrolling:
         mLastMousePos = QCursor::pos();
         mScrollStartPos = mLastMousePos;
-        QApplication::setOverrideCursor(mScrollingMode == DragScrolling ? Qt::ClosedHandCursor : Qt::SizeAllCursor);
-        viewport()->grabMouse();
+        viewport()->setCursor(mScrollingMode == DragScrolling ? Qt::ClosedHandCursor : Qt::SizeAllCursor);
         updatePanningDriverState();
         break;
     case NoScrolling:
-        viewport()->releaseMouse();
-        QApplication::restoreOverrideCursor();
+        if (mToolCursor)
+            viewport()->setCursor(*mToolCursor);
+        else
+            viewport()->unsetCursor();
+
         updatePanningDriverState();
         break;
     }
+}
+
+void MapView::setToolCursor(const QCursor &cursor)
+{
+    mToolCursor = std::make_unique<QCursor>(cursor);
+    if (mScrollingMode == NoScrolling)
+        viewport()->setCursor(*mToolCursor);
+}
+
+void MapView::unsetToolCursor()
+{
+    mToolCursor.reset();
+    if (mScrollingMode == NoScrolling)
+        viewport()->unsetCursor();
 }
 
 /**
@@ -641,6 +663,8 @@ void MapView::mouseMoveEvent(QMouseEvent *event)
 {
     switch (mScrollingMode) {
     case DragScrolling: {
+        if (!(event->buttons() & (Qt::LeftButton | Qt::MiddleButton)))
+            break;
         auto *hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
         auto *vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
         const QPoint d = event->globalPos() - mLastMousePos;
