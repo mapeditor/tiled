@@ -29,7 +29,6 @@
 #include "documentmanager.h"
 #include "erasetiles.h"
 #include "grouplayer.h"
-#include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"

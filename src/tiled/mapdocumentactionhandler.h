@@ -22,7 +22,6 @@
 #pragma once
 
 #include <QObject>
-#include "mapobject.h"
 
 class QAction;
 class QMenu;
