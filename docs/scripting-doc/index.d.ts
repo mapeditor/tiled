@@ -395,6 +395,33 @@ declare namespace Qt {
   }
 
   /**
+   * The abstract base class of {@link Qt.QPushButton} and {@link Qt.QCheckBox}.
+   *
+   * Qt documentation: [QAbstractButton](https://doc.qt.io/qt-6/qabstractbutton.html)
+   */
+  class QAbstractButton extends QWidget {
+    /**
+     * This property holds whether the button is checkable.
+     */
+    checkable: boolean;
+
+    /**
+     * This property holds whether the button is checked.
+     */
+    checked: boolean;
+
+    /**
+     * The text displayed on the surface of the button.
+     */
+    text: string;
+
+    /**
+     * Signal emitted when the button is pressed.
+     */
+    clicked: Signal<void>;
+  }
+
+  /**
    * Used in {@link FileEdit} as the URL of the currently selected file.
    */
   class QUrl{
@@ -406,6 +433,7 @@ declare namespace Qt {
 
   /**
    * A widget containing a single line of text that the user can edit.
+   *
    * Qt documentation: [QLineEdit](https://doc.qt.io/qt-6/qlineedit.html)
    */
   class QLineEdit extends QWidget {
@@ -477,24 +505,25 @@ declare namespace Qt {
      * Value = 2
      */
     const Checked: CheckState;
+
   /**
-   * A check box widget which allows the user to toggle
-   * a value on and off.
+   * A check box widget which allows the user to toggle a value on and off.
+   *
    * Qt documentation: [QCheckBox](https://doc.qt.io/qt-6/qcheckbox.html)
    */
-  class QCheckBox extends QWidget {
+  class QCheckBox extends QAbstractButton {
     /**
      * Signal emitted when the state of the checkbox changes.
      */
     stateChanged: Signal<CheckState>;
 
     /**
-     * Ehether the checkbox is a tri-state checkbox
+     * Whether the checkbox is a tri-state checkbox.
+     *
      * The default is false, to have only two states, checked and unchecked.
      * Setting this to true allows the checkbox to be partially checked.
      */
     tristate: boolean;
-
   }
 
   /**
@@ -640,15 +669,7 @@ declare namespace Qt {
   /**
    * A button which the user can push.
    */
-  class QPushButton extends QWidget {
-    /**
-     * The text displayed on the surface of the button.
-     */
-    text: string;
-    /**
-     * Signal emitted when the button is pressed.
-     */
-    clicked: Signal<void>;
+  class QPushButton extends QAbstractButton {
   }
 
   /**
