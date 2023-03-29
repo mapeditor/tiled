@@ -41,17 +41,15 @@
 #include <QSlider>
 #include <QTextEdit>
 
-#include <string.h>
 #include <memory>
 
-static int leftColumnStretch = 0;
+static const int leftColumnStretch = 0;
 // stretch as much as we can so that the left column looks as close to zero width as possible when there is no content
-static int rightColumnStretch = 1;
-static QString labelType = QString::fromUtf8("QLabel");
+static const int rightColumnStretch = 1;
 
 namespace Tiled {
 
-static QSet<ScriptDialog*> sDialogInstances;
+QSet<ScriptDialog*> ScriptDialog::sDialogInstances;
 
 static void deleteAllFromLayout(QLayout *layout)
 {
@@ -131,7 +129,10 @@ ScriptDialog::~ScriptDialog()
 
 void ScriptDialog::deleteAllDialogs()
 {
-    for (ScriptDialog *dialog : sDialogInstances)
+    QSet<ScriptDialog*> dialogToDelete;
+    dialogToDelete.swap(sDialogInstances);
+
+    for (ScriptDialog *dialog : std::as_const(dialogToDelete))
         dialog->deleteLater();
 }
 
@@ -293,6 +294,7 @@ QWidget *ScriptDialog::addDialogWidget(QWidget *widget, const QString &label)
     widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
     m_rowLayout->addWidget(widget);
+    m_lastWidgetType = widget->metaObject();
     m_widgetsInRow++;
 
     return widget;
@@ -306,36 +308,30 @@ QWidget *ScriptDialog::addDialogWidget(QWidget *widget, const QString &label)
  */
 void ScriptDialog::determineWidgetGrouping(QWidget *widget)
 {
-    const char *widgetTypeNameCStr = widget->metaObject()->className();
-    QString widgetTypeName = QString::fromUtf8(widgetTypeNameCStr);
+    switch (newRowMode()) {
+    case SameWidgetRows: {
+        const QMetaObject *widgetType = widget->metaObject();
 
-    // any widgets that get checked via this method
-    // are right column widgets.
-    if (newRowMode() == NewRowMode::ManualRows)
-        return;
-
-    if (newRowMode() == NewRowMode::SingleWidgetRows) {
+        // labels can be mixed with any type of widget
+        if ((m_lastWidgetType != &QLabel::staticMetaObject &&
+             widgetType != &QLabel::staticMetaObject &&
+             m_lastWidgetType != nullptr &&
+             m_lastWidgetType != widgetType)) {
+            // if the new widget type is not the same as the last
+            addNewRow();
+        }
+        break;
+    }
+    case ManualRows:
+        // any widgets that get checked via this method
+        // are right column widgets.
+        break;
+    case SingleWidgetRows:
         // if there are any other widgets on this row so far in single widget
         // mode, wrap to the next row
         if (m_widgetsInRow > 1)
             addNewRow();
-        return;
-    }
-    // otherwise, same-type widget grouping
-
-    // labels can be mixed with any type of widget
-    if ((m_lastWidgetTypeName.compare(labelType) == 0 ||
-         m_lastWidgetTypeName.isEmpty()) &&
-            widgetTypeName.compare(labelType) != 0) {
-        // store the widget type to help determine if the next widget will
-        // start a new row
-        m_lastWidgetTypeName = widgetTypeName;
-    } else {
-        // if the new widget type is not the same as the last
-        if (widgetTypeName.compare(labelType) != 0 &&
-                widgetTypeName.compare(m_lastWidgetTypeName) != 0) {
-            addNewRow();
-        }
+        break;
     }
 }
 
@@ -343,7 +339,7 @@ void ScriptDialog::addNewRow()
 {
     m_rowIndex++;
     m_widgetsInRow = 0;
-    m_lastWidgetTypeName.clear();
+    m_lastWidgetType = nullptr;
 }
 
 QLabel *ScriptDialog::newLabel(const QString &labelText)
