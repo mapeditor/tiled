@@ -92,17 +92,16 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>A check box widget which allows the user to toggle
-							a value on and off.
-						Qt documentation: <a href="https://doc.qt.io/qt-6/qcheckbox.html">QCheckBox</a></p>
+						<p>A check box widget which allows the user to toggle a value on and off.</p>
 					</div>
+					<p>Qt documentation: <a href="https://doc.qt.io/qt-6/qcheckbox.html">QCheckBox</a></p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="Qt.QWidget.html" class="tsd-signature-type" data-tsd-kind="Class">QWidget</a>
+						<a href="Qt.QAbstractButton.html" class="tsd-signature-type" data-tsd-kind="Class">QAbstractButton</a>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">QCheckBox</span>
@@ -124,11 +123,15 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QCheckBox.html#checkable" class="tsd-kind-icon">checkable</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QCheckBox.html#checked" class="tsd-kind-icon">checked</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QCheckBox.html#clicked" class="tsd-kind-icon">clicked</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QCheckBox.html#enabled" class="tsd-kind-icon">enabled</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QCheckBox.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QCheckBox.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QCheckBox.html#stateChanged" class="tsd-kind-icon">state<wbr>Changed</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QCheckBox.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QCheckBox.html#text" class="tsd-kind-icon">text</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QCheckBox.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QCheckBox.html#tristate" class="tsd-kind-icon">tristate</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QCheckBox.html#visible" class="tsd-kind-icon">visible</a></li>
@@ -148,7 +151,7 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#constructor">constructor</a></p>
+								<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#constructor">constructor</a></p>
 							</aside>
 						</li>
 					</ul>
@@ -157,11 +160,50 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="checkable" class="tsd-anchor"></a>
+					<h3>checkable</h3>
+					<div class="tsd-signature tsd-kind-icon">checkable<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#checkable">checkable</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>This property holds whether the button is checkable.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="checked" class="tsd-anchor"></a>
+					<h3>checked</h3>
+					<div class="tsd-signature tsd-kind-icon">checked<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#checked">checked</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>This property holds whether the button is checked.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="clicked" class="tsd-anchor"></a>
+					<h3>clicked</h3>
+					<div class="tsd-signature tsd-kind-icon">clicked<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#clicked">clicked</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Signal emitted when the button is pressed.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="enabled" class="tsd-anchor"></a>
 					<h3>enabled</h3>
 					<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#enabled">enabled</a></p>
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#enabled">enabled</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
@@ -175,7 +217,7 @@
 					<h3>minimum<wbr>Height</h3>
 					<div class="tsd-signature tsd-kind-icon">minimum<wbr>Height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#minimumHeight">minimumHeight</a></p>
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#minimumHeight">minimumHeight</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
@@ -189,7 +231,7 @@
 					<h3>minimum<wbr>Width</h3>
 					<div class="tsd-signature tsd-kind-icon">minimum<wbr>Width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#minimumWidth">minimumWidth</a></p>
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#minimumWidth">minimumWidth</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
@@ -215,7 +257,7 @@
 					<h3>style<wbr>Sheet</h3>
 					<div class="tsd-signature tsd-kind-icon">style<wbr>Sheet<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#styleSheet">styleSheet</a></p>
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#styleSheet">styleSheet</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
@@ -225,11 +267,24 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="text" class="tsd-anchor"></a>
+					<h3>text</h3>
+					<div class="tsd-signature tsd-kind-icon">text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#text">text</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The text displayed on the surface of the button.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="toolTip" class="tsd-anchor"></a>
 					<h3>tool<wbr>Tip</h3>
 					<div class="tsd-signature tsd-kind-icon">tool<wbr>Tip<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#toolTip">toolTip</a></p>
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#toolTip">toolTip</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
@@ -245,10 +300,10 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Ehether the checkbox is a tri-state checkbox
-								The default is false, to have only two states, checked and unchecked.
-							Setting this to true allows the checkbox to be partially checked.</p>
+							<p>Whether the checkbox is a tri-state checkbox.</p>
 						</div>
+						<p>The default is false, to have only two states, checked and unchecked.
+						Setting this to true allows the checkbox to be partially checked.</p>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
@@ -256,7 +311,7 @@
 					<h3>visible</h3>
 					<div class="tsd-signature tsd-kind-icon">visible<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#visible">visible</a></p>
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#visible">visible</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
@@ -297,6 +352,9 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QAbstractButton.html" class="tsd-kind-icon">QAbstract<wbr>Button</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-namespace">
@@ -304,6 +362,15 @@
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
 								<a href="Qt.QCheckBox.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QCheckBox.html#checkable" class="tsd-kind-icon">checkable</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QCheckBox.html#checked" class="tsd-kind-icon">checked</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QCheckBox.html#clicked" class="tsd-kind-icon">clicked</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="Qt.QCheckBox.html#enabled" class="tsd-kind-icon">enabled</a>
@@ -319,6 +386,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="Qt.QCheckBox.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QCheckBox.html#text" class="tsd-kind-icon">text</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="Qt.QCheckBox.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a>

@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>QLabel | Tiled Scripting API</title>
+	<title>QAbstractButton | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -79,10 +79,10 @@
 					<a href="../modules/Qt.html">Qt</a>
 				</li>
 				<li>
-					<a href="Qt.QLabel.html">QLabel</a>
+					<a href="Qt.QAbstractButton.html">QAbstractButton</a>
 				</li>
 			</ul>
-			<h1>Class QLabel</h1>
+			<h1>Class QAbstractButton</h1>
 		</div>
 	</div>
 </header>
@@ -92,8 +92,9 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>A label  widget which displays text to the user</p>
+						<p>The abstract base class of <a href="Qt.QPushButton.html">Qt.QPushButton</a> and <a href="Qt.QCheckBox.html">Qt.QCheckBox</a>.</p>
 					</div>
+					<p>Qt documentation: <a href="https://doc.qt.io/qt-6/qabstractbutton.html">QAbstractButton</a></p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
@@ -103,7 +104,15 @@
 						<a href="Qt.QWidget.html" class="tsd-signature-type" data-tsd-kind="Class">QWidget</a>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">QLabel</span>
+								<span class="target">QAbstractButton</span>
+								<ul class="tsd-hierarchy">
+									<li>
+										<a href="Qt.QCheckBox.html" class="tsd-signature-type" data-tsd-kind="Class">QCheckBox</a>
+									</li>
+									<li>
+										<a href="Qt.QPushButton.html" class="tsd-signature-type" data-tsd-kind="Class">QPushButton</a>
+									</li>
+								</ul>
 							</li>
 						</ul>
 					</li>
@@ -116,19 +125,22 @@
 						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QLabel.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QAbstractButton.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QLabel.html#enabled" class="tsd-kind-icon">enabled</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QLabel.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QLabel.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QLabel.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QLabel.html#text" class="tsd-kind-icon">text</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QLabel.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QLabel.html#visible" class="tsd-kind-icon">visible</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QAbstractButton.html#checkable" class="tsd-kind-icon">checkable</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QAbstractButton.html#checked" class="tsd-kind-icon">checked</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QAbstractButton.html#clicked" class="tsd-kind-icon">clicked</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QAbstractButton.html#enabled" class="tsd-kind-icon">enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QAbstractButton.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QAbstractButton.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QAbstractButton.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QAbstractButton.html#text" class="tsd-kind-icon">text</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QAbstractButton.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QAbstractButton.html#visible" class="tsd-kind-icon">visible</a></li>
 							</ul>
 						</section>
 					</div>
@@ -140,7 +152,7 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">new QLabel<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QLabel.html" class="tsd-signature-type" data-tsd-kind="Class">QLabel</a></li>
+						<li class="tsd-signature tsd-kind-icon">new QAbstract<wbr>Button<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QAbstractButton.html" class="tsd-signature-type" data-tsd-kind="Class">QAbstractButton</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -153,6 +165,42 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="checkable" class="tsd-anchor"></a>
+					<h3>checkable</h3>
+					<div class="tsd-signature tsd-kind-icon">checkable<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>This property holds whether the button is checkable.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="checked" class="tsd-anchor"></a>
+					<h3>checked</h3>
+					<div class="tsd-signature tsd-kind-icon">checked<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>This property holds whether the button is checked.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="clicked" class="tsd-anchor"></a>
+					<h3>clicked</h3>
+					<div class="tsd-signature tsd-kind-icon">clicked<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Signal emitted when the button is pressed.</p>
+						</div>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="enabled" class="tsd-anchor"></a>
 					<h3>enabled</h3>
@@ -217,7 +265,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The text currently being displayed on the label.</p>
+							<p>The text displayed on the surface of the button.</p>
 						</div>
 					</div>
 				</section>
@@ -280,9 +328,48 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-namespace">
 						<a href="Qt.QAbstractButton.html" class="tsd-kind-icon">QAbstract<wbr>Button</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QAbstractButton.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QAbstractButton.html#checkable" class="tsd-kind-icon">checkable</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QAbstractButton.html#checked" class="tsd-kind-icon">checked</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QAbstractButton.html#clicked" class="tsd-kind-icon">clicked</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QAbstractButton.html#enabled" class="tsd-kind-icon">enabled</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QAbstractButton.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QAbstractButton.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QAbstractButton.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QAbstractButton.html#text" class="tsd-kind-icon">text</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QAbstractButton.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QAbstractButton.html#visible" class="tsd-kind-icon">visible</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-class tsd-parent-kind-namespace">
 						<a href="Qt.QCheckBox.html" class="tsd-kind-icon">QCheck<wbr>Box</a>
 					</li>
@@ -295,39 +382,9 @@
 					<li class=" tsd-kind-class tsd-parent-kind-namespace">
 						<a href="Qt.QFrame.html" class="tsd-kind-icon">QFrame</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-namespace">
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
 						<a href="Qt.QLabel.html" class="tsd-kind-icon">QLabel</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-								<a href="Qt.QLabel.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Qt.QLabel.html#enabled" class="tsd-kind-icon">enabled</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Qt.QLabel.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Qt.QLabel.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Qt.QLabel.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Qt.QLabel.html#text" class="tsd-kind-icon">text</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Qt.QLabel.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Qt.QLabel.html#visible" class="tsd-kind-icon">visible</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-class tsd-parent-kind-namespace">
 						<a href="Qt.QLineEdit.html" class="tsd-kind-icon">QLine<wbr>Edit</a>
 					</li>
