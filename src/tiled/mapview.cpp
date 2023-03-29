@@ -107,7 +107,19 @@ MapView::MapView(QWidget *parent, Mode mode)
 
     auto spaceBarFilter = Utils::SpaceBarEventFilter::instance();
     connect(spaceBarFilter, &Utils::SpaceBarEventFilter::spacePressedChanged,
-            this, &MapView::updateCursor);
+            this, [this] (bool pressed) {
+
+        // If this view is the focus widget and the left mouse button is down,
+        // allow Space to immediately activate or de-activate panning.
+        if (QApplication::focusWidget() == this && QApplication::mouseButtons() & Qt::LeftButton) {
+            if (pressed && mScrollingMode == NoScrolling)
+                setScrollingMode(DragScrollingSpaceActivated);
+            else if (!pressed && mScrollingMode == DragScrollingSpaceActivated)
+                setScrollingMode(NoScrolling);
+        }
+
+        updateCursor();
+    });
 }
 
 MapView::~MapView()
@@ -271,6 +283,7 @@ void MapView::updateCursor()
         else
             viewport()->unsetCursor();
         break;
+    case DragScrollingSpaceActivated:
     case DragScrolling:
         viewport()->setCursor(Qt::ClosedHandCursor);
         break;
@@ -676,6 +689,7 @@ void MapView::focusInEvent(QFocusEvent *event)
 void MapView::mouseMoveEvent(QMouseEvent *event)
 {
     switch (mScrollingMode) {
+    case DragScrollingSpaceActivated:
     case DragScrolling: {
         if (!(event->buttons() & (Qt::LeftButton | Qt::MiddleButton)))
             break;

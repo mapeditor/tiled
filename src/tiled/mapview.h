@@ -84,6 +84,7 @@ public:
 
     enum ScrollingMode {
         NoScrolling,
+        DragScrollingSpaceActivated,
         DragScrolling,
         AutoScrolling
     };
