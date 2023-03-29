@@ -227,21 +227,14 @@ jobs:
         pushd install
         ruby ../dist/macos/fixup-install-names.rb
 
-    - name: Create Certificate File
-      id: certificateFile
-      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
-      uses: timheuer/base64-to-file@v1
-      with:
-        fileName: 'certificate.p12'
-        encodedString: ${{ secrets.MACOS_CERTIFICATE }}
-
-    - name: Import Certificate
+    - name: Import Signing Certificate
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
       run: |
+        openssl base64 -d -out cert.p12 <<< '${{ secrets.MACOS_CERTIFICATE }}'
         security create-keychain -p ${{ secrets.KEYCHAIN_PWD }} mapeditor/tiled
         security default-keychain -s mapeditor/tiled
         security unlock-keychain -p ${{ secrets.KEYCHAIN_PWD }} mapeditor/tiled
-        security -q import ${{ steps.certificateFile.outputs.filePath }} -f pkcs12 -k mapeditor/tiled -P ${{ secrets.MACOS_CERTIFICATE_PWD }} -T /usr/bin/codesign -x
+        security -q import cert.p12 -f pkcs12 -k mapeditor/tiled -P ${{ secrets.MACOS_CERTIFICATE_PWD }} -T /usr/bin/codesign -x
         security set-key-partition-list -S 'apple-tool:,apple:' -s -k ${{ secrets.KEYCHAIN_PWD }} mapeditor/tiled
 
     - name: Sign, Notarize & Staple
