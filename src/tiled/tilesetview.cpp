@@ -482,13 +482,10 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
         }
     }
 
-    // Ignore space, becaue we'd like to use it for panning
-    switch (event->key()) {
-    case Qt::Key_Space:
+    // Ignore space, because we'd like to use it for panning
+    if (event->key() == Qt::Key_Space) {
         event->ignore();
         return;
-    default:
-        break;
     }
 
     return QTableView::keyPressEvent(event);
@@ -582,13 +579,12 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 
 void TilesetView::mouseMoveEvent(QMouseEvent *event)
 {
-    auto lastMousePos = mLastMousePos;
+    const QPoint d = event->globalPos() - mLastMousePos;
     mLastMousePos = event->globalPos();
 
     if (mHandScrolling && (event->buttons() & (Qt::LeftButton | Qt::MiddleButton))) {
         auto *hBar = horizontalScrollBar();
         auto *vBar = verticalScrollBar();
-        const QPoint d = event->globalPos() - lastMousePos;
 
         int horizontalValue = hBar->value() + (isRightToLeft() ? d.x() : -d.x());
         int verticalValue = vBar->value() - d.y();
@@ -1005,11 +1001,11 @@ void TilesetView::setHandScrolling(bool handScrolling)
 void TilesetView::updateCursor()
 {
     if (mHandScrolling)
-        setCursor(Qt::ClosedHandCursor);
+        viewport()->setCursor(Qt::ClosedHandCursor);
     else if (Utils::isSpacePressed())
-        setCursor(Qt::OpenHandCursor);
+        viewport()->setCursor(Qt::OpenHandCursor);
     else
-        unsetCursor();
+        viewport()->unsetCursor();
 }
 
 void TilesetView::updateBackgroundColor()

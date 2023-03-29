@@ -664,6 +664,8 @@ void MapView::mousePressEvent(QMouseEvent *event)
 void MapView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (mScrollingMode != NoScrolling) {
+        const bool wasSpaceActivated = mScrollingMode == DragScrollingSpaceActivated;
+
         // Stop scrolling only when middle button is no longer pressed and
         // left + space are no longer pressed.
         if (!(event->buttons() & Qt::MiddleButton) &&
@@ -671,7 +673,10 @@ void MapView::mouseReleaseEvent(QMouseEvent *event)
             setScrollingMode(NoScrolling);
         }
 
-        return;
+        // Eat the mouse release event when we're still scrolling, or if the
+        // scrolling was not activated with space.
+        if (mScrollingMode != NoScrolling || !wasSpaceActivated)
+            return;
     }
 
     QGraphicsView::mouseReleaseEvent(event);

@@ -140,7 +140,7 @@ inline bool SpaceBarEventFilter::isSpacePressed() const
 
 inline bool isSpacePressed()
 {
-    return Utils::SpaceBarEventFilter::instance()->isSpacePressed();
+    return SpaceBarEventFilter::instance()->isSpacePressed();
 }
 
 } // namespace Utils
