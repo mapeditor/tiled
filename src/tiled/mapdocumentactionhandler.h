@@ -28,8 +28,9 @@ class QMenu;
 
 namespace Tiled {
 
-class ObjectGroup;
 class MapObject;
+class ObjectGroup;
+class ObjectTemplate;
 
 class MapDocument;
 
