@@ -23,7 +23,6 @@
 
 #include "documentmanager.h"
 #include "editpolygontool.h"
-#include "mapdocumentactionhandler.h"
 #include "mapscene.h"
 #include "mapview.h"
 #include "objectgroup.h"
@@ -34,7 +33,6 @@
 #include "templatemanager.h"
 #include "tilesetmanager.h"
 #include "tilesetdocument.h"
-#include "tmxmapformat.h"
 #include "toolmanager.h"
 #include "utils.h"
 
@@ -64,7 +62,7 @@ TemplatesDock::TemplatesDock(QWidget *parent)
     , mUndoAction(new QAction(this))
     , mRedoAction(new QAction(this))
     , mMapScene(new MapScene(this))
-    , mMapView(new MapView(this, MapView::NoStaticContents))
+    , mMapView(new MapView(this))
     , mToolManager(new ToolManager(this))
 {
     setObjectName(QLatin1String("TemplatesDock"));
