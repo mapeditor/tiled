@@ -318,9 +318,7 @@ TilesetView::TilesetView(QWidget *parent)
 
     auto spaceBarFilter = Utils::SpaceBarEventFilter::instance();
     connect(spaceBarFilter, &Utils::SpaceBarEventFilter::spacePressedChanged,
-            this, [this] (bool pressed) {
-        setHandScrolling(pressed);
-    });
+            this, &TilesetView::updateCursor);
 }
 
 void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
@@ -562,8 +560,10 @@ QIcon TilesetView::imageMissingIcon() const
 
 void TilesetView::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MiddleButton && isActiveWindow())
+    if ((event->button() == Qt::MiddleButton && isActiveWindow()) ||
+            (event->button() == Qt::LeftButton && Utils::isSpacePressed())) {
         setHandScrolling(true);
+    }
 
     if (mHandScrolling) {
         mLastMousePos = event->globalPos();
@@ -685,8 +685,11 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
 
 void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MiddleButton) {
-        setHandScrolling(Utils::SpaceBarEventFilter::instance()->isSpacePressed());
+    if (mHandScrolling) {
+        // Keep hand scrolling only when middle button is still pressed or
+        // when left + space is still pressed.
+        setHandScrolling(event->buttons() & Qt::MiddleButton ||
+                         (Utils::isSpacePressed() && event->buttons() & Qt::LeftButton));
         return;
     }
 
@@ -996,9 +999,15 @@ void TilesetView::setHandScrolling(bool handScrolling)
         return;
 
     mHandScrolling = handScrolling;
+    updateCursor();
+}
 
+void TilesetView::updateCursor()
+{
     if (mHandScrolling)
-        setCursor(QCursor(Qt::ClosedHandCursor));
+        setCursor(Qt::ClosedHandCursor);
+    else if (Utils::isSpacePressed())
+        setCursor(Qt::OpenHandCursor);
     else
         unsetCursor();
 }

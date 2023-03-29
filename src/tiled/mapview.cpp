@@ -107,14 +107,11 @@ MapView::MapView(QWidget *parent, Mode mode)
 
     auto spaceBarFilter = Utils::SpaceBarEventFilter::instance();
     connect(spaceBarFilter, &Utils::SpaceBarEventFilter::spacePressedChanged,
-            this, [this] (bool pressed) {
-        setScrollingMode(pressed ? MapView::DragScrolling : MapView::NoScrolling);
-    });
+            this, &MapView::updateCursor);
 }
 
 MapView::~MapView()
 {
-    setScrollingMode(NoScrolling); // Just in case we didn't get a hide event
 }
 
 void MapView::setScene(MapScene *scene)
@@ -263,6 +260,26 @@ void MapView::focusMapObject(MapObject *mapObject)
     forceCenterOn(screenCoords, *mapObject->objectGroup());
 }
 
+void MapView::updateCursor()
+{
+    switch (mScrollingMode) {
+    case NoScrolling:
+        if (Utils::isSpacePressed())
+            viewport()->setCursor(Qt::OpenHandCursor);
+        else if (mToolCursor)
+            viewport()->setCursor(*mToolCursor);
+        else
+            viewport()->unsetCursor();
+        break;
+    case DragScrolling:
+        viewport()->setCursor(Qt::ClosedHandCursor);
+        break;
+    case AutoScrolling:
+        viewport()->setCursor(Qt::SizeAllCursor);
+        break;
+    }
+}
+
 void MapView::setPanDirections(PanDirections directions)
 {
     if (mPanDirections == directions)
@@ -350,37 +367,23 @@ void MapView::setScrollingMode(ScrollingMode mode)
     mScrollingMode = mode;
     setInteractive(mode == NoScrolling);
 
-    switch (mScrollingMode) {
-    case DragScrolling:
-    case AutoScrolling:
-        mLastMousePos = QCursor::pos();
+    if (mScrollingMode == AutoScrolling)
         mScrollStartPos = mLastMousePos;
-        viewport()->setCursor(mScrollingMode == DragScrolling ? Qt::ClosedHandCursor : Qt::SizeAllCursor);
-        updatePanningDriverState();
-        break;
-    case NoScrolling:
-        if (mToolCursor)
-            viewport()->setCursor(*mToolCursor);
-        else
-            viewport()->unsetCursor();
 
-        updatePanningDriverState();
-        break;
-    }
+    updatePanningDriverState();
+    updateCursor();
 }
 
 void MapView::setToolCursor(const QCursor &cursor)
 {
     mToolCursor = std::make_unique<QCursor>(cursor);
-    if (mScrollingMode == NoScrolling)
-        viewport()->setCursor(*mToolCursor);
+    updateCursor();
 }
 
 void MapView::unsetToolCursor()
 {
     mToolCursor.reset();
-    if (mScrollingMode == NoScrolling)
-        viewport()->unsetCursor();
+    updateCursor();
 }
 
 /**
@@ -450,7 +453,7 @@ void MapView::forceCenterOn(QPointF position, const Layer &layer)
 
 bool MapView::event(QEvent *e)
 {
-    // Ignore space bar events since they're handled by the MainWindow
+    // Ignore space bar events since they're handled by the SpaceBarEventFilter
     if (e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease) {
         if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_Space) {
             e->ignore();
@@ -629,10 +632,15 @@ void MapView::wheelEvent(QWheelEvent *event)
  */
 void MapView::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MiddleButton && isActiveWindow()) {
+    mLastMousePos = event->globalPos();
+
+    if (event->button() == Qt::MiddleButton && isActiveWindow())
         setScrollingMode(ourAutoScrollingEnabled ? AutoScrolling : DragScrolling);
+    else if (event->button() == Qt::LeftButton && Utils::isSpacePressed())
+        setScrollingMode(DragScrolling);
+
+    if (mScrollingMode != NoScrolling)
         return;
-    }
 
     QGraphicsView::mousePressEvent(event);
 }
@@ -642,8 +650,14 @@ void MapView::mousePressEvent(QMouseEvent *event)
  */
 void MapView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MiddleButton) {
-        setScrollingMode(NoScrolling);
+    if (mScrollingMode != NoScrolling) {
+        // Stop scrolling only when middle button is no longer pressed and
+        // left + space are no longer pressed.
+        if (!(event->buttons() & Qt::MiddleButton) &&
+                !(Utils::isSpacePressed() && event->buttons() & Qt::LeftButton)) {
+            setScrollingMode(NoScrolling);
+        }
+
         return;
     }
 

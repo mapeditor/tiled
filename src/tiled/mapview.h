@@ -133,6 +133,7 @@ private:
     void updateSceneRect(const QRectF &sceneRect, const QTransform &transform);
     void updateViewRect();
     void focusMapObject(MapObject *mapObject);
+    void updateCursor();
 
     enum PanDirectionFlag {
         Left    = 0x1,

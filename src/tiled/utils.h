@@ -138,5 +138,10 @@ inline bool SpaceBarEventFilter::isSpacePressed() const
     return mSpacePressed;
 }
 
+inline bool isSpacePressed()
+{
+    return Utils::SpaceBarEventFilter::instance()->isSpacePressed();
+}
+
 } // namespace Utils
 } // namespace Tiled

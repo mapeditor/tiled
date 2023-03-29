@@ -134,6 +134,7 @@ private:
     void finishWangIdChange();
     Tile *currentTile() const;
     void setHandScrolling(bool handScrolling);
+    void updateCursor();
 
     enum WangBehavior {
         AssignWholeId,      // Assigning templates
