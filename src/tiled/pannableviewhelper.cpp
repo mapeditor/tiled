@@ -24,6 +24,9 @@
 #include "mainwindow.h"
 #include "mapview.h"
 
+#include <QApplication>
+#include <QMouseEvent>
+
 namespace Tiled {
 
 class SpaceBarEventFilter : public QObject
