@@ -21,8 +21,12 @@
 #pragma once
 
 #include <QObject>
+#include <QPoint>
+
+#include <optional>
 
 class QAbstractScrollArea;
+class QMouseEvent;
 
 namespace Tiled {
 
