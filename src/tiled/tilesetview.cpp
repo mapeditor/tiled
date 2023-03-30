@@ -23,6 +23,7 @@
 #include "actionmanager.h"
 #include "changeevents.h"
 #include "changetilewangid.h"
+#include "pannableviewhelper.h"
 #include "preferences.h"
 #include "stylehelper.h"
 #include "tile.h"
@@ -316,9 +317,13 @@ TilesetView::TilesetView(QWidget *parent)
 
     connect(mZoomable, &Zoomable::scaleChanged, this, &TilesetView::adjustScale);
 
-    auto spaceBarFilter = Utils::SpaceBarEventFilter::instance();
-    connect(spaceBarFilter, &Utils::SpaceBarEventFilter::spacePressedChanged,
-            this, &TilesetView::updateCursor);
+    connect(new PannableViewHelper(this), &PannableViewHelper::cursorChanged,
+            this, [this] (std::optional<Qt::CursorShape> cursor) {
+        if (cursor)
+            viewport()->setCursor(*cursor);
+        else
+            viewport()->unsetCursor();
+    });
 }
 
 void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
@@ -557,16 +562,6 @@ QIcon TilesetView::imageMissingIcon() const
 
 void TilesetView::mousePressEvent(QMouseEvent *event)
 {
-    if ((event->button() == Qt::MiddleButton && isActiveWindow()) ||
-            (event->button() == Qt::LeftButton && Utils::isSpacePressed())) {
-        setHandScrolling(true);
-    }
-
-    if (mHandScrolling) {
-        mLastMousePos = event->globalPos();
-        return;
-    }
-
     if (mEditWangSet) {
         if (event->button() == Qt::LeftButton)
             applyWangId();
@@ -579,22 +574,6 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 
 void TilesetView::mouseMoveEvent(QMouseEvent *event)
 {
-    const QPoint d = event->globalPos() - mLastMousePos;
-    mLastMousePos = event->globalPos();
-
-    if (mHandScrolling && (event->buttons() & (Qt::LeftButton | Qt::MiddleButton))) {
-        auto *hBar = horizontalScrollBar();
-        auto *vBar = verticalScrollBar();
-
-        int horizontalValue = hBar->value() + (isRightToLeft() ? d.x() : -d.x());
-        int verticalValue = vBar->value() - d.y();
-
-        hBar->setValue(horizontalValue);
-        vBar->setValue(verticalValue);
-
-        return;
-    }
-
     if (mEditWangSet) {
         if (!mWangSet)
             return;
@@ -681,14 +660,6 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
 
 void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (mHandScrolling) {
-        // Keep hand scrolling only when middle button is still pressed or
-        // when left + space is still pressed.
-        setHandScrolling(event->buttons() & Qt::MiddleButton ||
-                         (Utils::isSpacePressed() && event->buttons() & Qt::LeftButton));
-        return;
-    }
-
     if (mEditWangSet) {
         if (event->button() == Qt::LeftButton)
             finishWangIdChange();
@@ -987,25 +958,6 @@ Tile *TilesetView::currentTile() const
 {
     const TilesetModel *model = tilesetModel();
     return model ? model->tileAt(currentIndex()) : nullptr;
-}
-
-void TilesetView::setHandScrolling(bool handScrolling)
-{
-    if (mHandScrolling == handScrolling)
-        return;
-
-    mHandScrolling = handScrolling;
-    updateCursor();
-}
-
-void TilesetView::updateCursor()
-{
-    if (mHandScrolling)
-        viewport()->setCursor(Qt::ClosedHandCursor);
-    else if (Utils::isSpacePressed())
-        viewport()->setCursor(Qt::OpenHandCursor);
-    else
-        viewport()->unsetCursor();
 }
 
 void TilesetView::updateBackgroundColor()

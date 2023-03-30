@@ -26,6 +26,7 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
+#include "pannableviewhelper.h"
 #include "preferences.h"
 #include "tileanimationdriver.h"
 #include "utils.h"
@@ -105,20 +106,19 @@ MapView::MapView(QWidget *parent, Mode mode)
 
     connect(mPanningDriver, &TileAnimationDriver::update, this, &MapView::updatePanning);
 
-    auto spaceBarFilter = Utils::SpaceBarEventFilter::instance();
-    connect(spaceBarFilter, &Utils::SpaceBarEventFilter::spacePressedChanged,
-            this, [this] (bool pressed) {
+    mPannableViewHelper = new PannableViewHelper(this);
+    mPannableViewHelper->setAutoPanningEnabled(true);
 
-        // If this view is the focus widget and the left mouse button is down,
-        // allow Space to immediately activate or de-activate panning.
-        if (QApplication::focusWidget() == this && QApplication::mouseButtons() & Qt::LeftButton) {
-            if (pressed && mScrollingMode == NoScrolling)
-                setScrollingMode(DragScrollingSpaceActivated);
-            else if (!pressed && mScrollingMode == DragScrollingSpaceActivated)
-                setScrollingMode(NoScrolling);
-        }
+    connect(mPannableViewHelper, &PannableViewHelper::cursorChanged,
+            this, &MapView::updateCursor);
+    connect(mPannableViewHelper, &PannableViewHelper::modeChanged,
+            this, [this] (PannableViewHelper::PanningMode mode) {
 
-        updateCursor();
+        if (mode == PannableViewHelper::AutoPanning)
+            mScrollStartPos = mLastMousePos;
+
+        setInteractive(mode == PannableViewHelper::NoPanning);
+        updatePanningDriverState();
     });
 }
 
@@ -274,23 +274,12 @@ void MapView::focusMapObject(MapObject *mapObject)
 
 void MapView::updateCursor()
 {
-    switch (mScrollingMode) {
-    case NoScrolling:
-        if (Utils::isSpacePressed())
-            viewport()->setCursor(Qt::OpenHandCursor);
-        else if (mToolCursor)
-            viewport()->setCursor(*mToolCursor);
-        else
-            viewport()->unsetCursor();
-        break;
-    case DragScrollingSpaceActivated:
-    case DragScrolling:
-        viewport()->setCursor(Qt::ClosedHandCursor);
-        break;
-    case AutoScrolling:
-        viewport()->setCursor(Qt::SizeAllCursor);
-        break;
-    }
+    if (const auto cursor = mPannableViewHelper->cursor())
+        viewport()->setCursor(*cursor);
+    else if (mToolCursor)
+        viewport()->setCursor(*mToolCursor);
+    else
+        viewport()->unsetCursor();
 }
 
 void MapView::setPanDirections(PanDirections directions)
@@ -304,7 +293,7 @@ void MapView::setPanDirections(PanDirections directions)
 
 void MapView::updatePanningDriverState()
 {
-    const bool run = (mPanDirections && ourSmoothScrollingEnabled) || mScrollingMode == AutoScrolling;
+    const bool run = (mPanDirections && ourSmoothScrollingEnabled) || mPannableViewHelper->mode() == PannableViewHelper::AutoPanning;
     if (run && mPanningDriver->state() != QAbstractAnimation::Running)
         mPanningDriver->start();
     else if (!run && mPanningDriver->state() == QAbstractAnimation::Running)
@@ -315,7 +304,7 @@ void MapView::updatePanning(int deltaTime)
 {
     QPoint distance;
 
-    if (mScrollingMode == AutoScrolling) {
+    if (mPannableViewHelper->mode() == PannableViewHelper::AutoPanning) {
         distance = (mLastMousePos - mScrollStartPos) * deltaTime / 100;
     } else if (mPanDirections && ourSmoothScrollingEnabled) {
         if (mPanDirections & Left)
@@ -370,21 +359,6 @@ void MapView::setMapDocument(MapDocument *mapDocument)
         connect(mapDocument, &MapDocument::focusMapObjectRequested,
                 this, &MapView::focusMapObject);
     }
-}
-
-void MapView::setScrollingMode(ScrollingMode mode)
-{
-    if (mScrollingMode == mode)
-        return;
-
-    mScrollingMode = mode;
-    setInteractive(mode == NoScrolling);
-
-    if (mScrollingMode == AutoScrolling)
-        mScrollStartPos = mLastMousePos;
-
-    updatePanningDriverState();
-    updateCursor();
 }
 
 void MapView::setToolCursor(const QCursor &cursor)
@@ -511,8 +485,8 @@ void MapView::paintEvent(QPaintEvent *event)
 
 void MapView::hideEvent(QHideEvent *event)
 {
-    // Disable hand scrolling when the view gets hidden in any way
-    setScrollingMode(NoScrolling);
+    // Disable panning when the view gets hidden in any way
+    mPannableViewHelper->setMode(PannableViewHelper::NoPanning);
     QGraphicsView::hideEvent(event);
 }
 
@@ -640,83 +614,14 @@ void MapView::wheelEvent(QWheelEvent *event)
     scrollBy(-pixels);
 }
 
-/**
- * Activates hand scrolling when the middle mouse button is pressed.
- */
-void MapView::mousePressEvent(QMouseEvent *event)
-{
-    mLastMousePos = event->globalPos();
-
-    if (event->button() == Qt::MiddleButton && isActiveWindow())
-        setScrollingMode(ourAutoScrollingEnabled ? AutoScrolling : DragScrolling);
-    else if (event->button() == Qt::LeftButton && Utils::isSpacePressed())
-        setScrollingMode(DragScrolling);
-
-    if (mScrollingMode != NoScrolling)
-        return;
-
-    QGraphicsView::mousePressEvent(event);
-}
-
-/**
- * Deactivates hand scrolling when the middle mouse button is released.
- */
-void MapView::mouseReleaseEvent(QMouseEvent *event)
-{
-    if (mScrollingMode != NoScrolling) {
-        const bool wasSpaceActivated = mScrollingMode == DragScrollingSpaceActivated;
-
-        // Stop scrolling only when middle button is no longer pressed and
-        // left + space are no longer pressed.
-        if (!(event->buttons() & Qt::MiddleButton) &&
-                !(Utils::isSpacePressed() && event->buttons() & Qt::LeftButton)) {
-            setScrollingMode(NoScrolling);
-        }
-
-        // Eat the mouse release event when we're still scrolling, or if the
-        // scrolling was not activated with space.
-        if (mScrollingMode != NoScrolling || !wasSpaceActivated)
-            return;
-    }
-
-    QGraphicsView::mouseReleaseEvent(event);
-}
-
 void MapView::focusInEvent(QFocusEvent *event)
 {
     Q_UNUSED(event)
     emit focused();
 }
 
-/**
- * Moves the view with the mouse while hand scrolling.
- */
 void MapView::mouseMoveEvent(QMouseEvent *event)
 {
-    switch (mScrollingMode) {
-    case DragScrollingSpaceActivated:
-    case DragScrolling: {
-        if (!(event->buttons() & (Qt::LeftButton | Qt::MiddleButton)))
-            break;
-        auto *hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
-        auto *vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
-        const QPoint d = event->globalPos() - mLastMousePos;
-
-        int horizontalValue = hBar->value() + (isRightToLeft() ? d.x() : -d.x());
-        int verticalValue = vBar->value() - d.y();
-
-        // Panning can freely move the map without restriction on boundaries
-        hBar->forceSetValue(horizontalValue);
-        vBar->forceSetValue(verticalValue);
-
-        mLastMousePos = event->globalPos();
-        return;
-    }
-    case AutoScrolling:
-    case NoScrolling:
-        break;
-    }
-
     QGraphicsView::mouseMoveEvent(event);
     mLastMousePos = event->globalPos();
     mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));

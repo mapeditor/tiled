@@ -373,6 +373,8 @@ DynamicLibrary {
         "offsetmapdialog.ui",
         "painttilelayer.cpp",
         "painttilelayer.h",
+        "pannableviewhelper.cpp",
+        "pannableviewhelper.h",
         "pluginlistmodel.cpp",
         "pluginlistmodel.h",
         "pointhandle.cpp",

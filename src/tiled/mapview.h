@@ -32,6 +32,7 @@ class MapObject;
 
 class MapDocument;
 class MapScene;
+class PannableViewHelper;
 class TileAnimationDriver;
 class Zoomable;
 
@@ -82,15 +83,6 @@ public:
 
     void fitMapInView();
 
-    enum ScrollingMode {
-        NoScrolling,
-        DragScrollingSpaceActivated,
-        DragScrolling,
-        AutoScrolling
-    };
-    ScrollingMode scrollingMode() const { return mScrollingMode; }
-    void setScrollingMode(ScrollingMode mode);
-
     void setToolCursor(const QCursor &cursor);
     void unsetToolCursor();
 
@@ -114,8 +106,6 @@ protected:
 
     void wheelEvent(QWheelEvent *event) override;
 
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
     void focusInEvent(QFocusEvent *event) override;
@@ -156,7 +146,7 @@ private:
     QPoint mLastMousePos;
     QPoint mScrollStartPos;
     QPointF mLastMouseScenePos;
-    ScrollingMode mScrollingMode = NoScrolling;
+    PannableViewHelper *mPannableViewHelper;
     std::unique_ptr<QCursor> mToolCursor;
     bool mViewInitialized = false;
     bool mHasInitialCenterPos = false;

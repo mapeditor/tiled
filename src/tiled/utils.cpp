@@ -20,7 +20,6 @@
 
 #include "utils.h"
 
-#include "mainwindow.h"
 #include "mapformat.h"
 #include "preferences.h"
 
@@ -606,40 +605,6 @@ QString Error::jsonParseError(QJsonParseError error)
     return QCoreApplication::translate("File Errors",
                                        "JSON parse error at offset %1:\n%2.").arg(error.offset).arg(error.errorString());
 
-}
-
-SpaceBarEventFilter *SpaceBarEventFilter::instance()
-{
-    static SpaceBarEventFilter* instance = new SpaceBarEventFilter;
-    return instance;
-}
-
-SpaceBarEventFilter::SpaceBarEventFilter(QObject *parent)
-    : QObject(parent)
-{
-    MainWindow::instance()->installEventFilter(this);
-}
-
-bool SpaceBarEventFilter::eventFilter(QObject *, QEvent *event)
-{
-    switch (event->type()) {
-    case QEvent::KeyPress:
-    case QEvent::KeyRelease: {
-        auto keyEvent = static_cast<QKeyEvent*>(event);
-        if (keyEvent->key() == Qt::Key_Space && !keyEvent->isAutoRepeat()) {
-            const bool isPressed = event->type() == QEvent::KeyPress;
-            if (mSpacePressed != isPressed) {
-                mSpacePressed = isPressed;
-                emit spacePressedChanged(isPressed);
-            }
-        }
-        break;
-    }
-    default:
-        break;
-    }
-
-    return false;
 }
 
 } // namespace Utils
