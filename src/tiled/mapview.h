@@ -50,23 +50,10 @@ class MapView : public QGraphicsView
     Q_PROPERTY(QPointF center READ viewCenter WRITE forceCenterOn)
 
 public:
-    /**
-     * Using Qt::WA_StaticContents gives a performance boost in certain
-     * resizing operations. There is however a problem with it when used in
-     * child windows, so this option allows it to be turned off in that case.
-     *
-     * See https://codereview.qt-project.org/#change,74595 for my attempt at
-     * fixing the problem in Qt.
-     */
-    enum Mode {
-        StaticContents,
-        NoStaticContents,
-    };
-
     static Preference<bool> ourAutoScrollingEnabled;
     static Preference<bool> ourSmoothScrollingEnabled;
 
-    MapView(QWidget *parent = nullptr, Mode mode = StaticContents);
+    MapView(QWidget *parent = nullptr);
     ~MapView() override;
 
     void setScene(MapScene *scene);
@@ -156,7 +143,6 @@ private:
     bool mHasInitialCenterPos = false;
     QPointF mInitialCenterPos;
     QRectF mViewRect;
-    Mode mMode;
     Zoomable *mZoomable;
 
     PanDirections mPanDirections;

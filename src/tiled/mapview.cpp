@@ -60,9 +60,8 @@ using namespace Tiled;
 Preference<bool> MapView::ourAutoScrollingEnabled { "Interface/AutoScrolling", false };
 Preference<bool> MapView::ourSmoothScrollingEnabled { "Interface/SmoothScrolling", true };
 
-MapView::MapView(QWidget *parent, Mode mode)
+MapView::MapView(QWidget *parent)
     : QGraphicsView(parent)
-    , mMode(mode)
     , mZoomable(new Zoomable(this))
     , mPanningDriver(new TileAnimationDriver(this))
 {
@@ -79,8 +78,7 @@ MapView::MapView(QWidget *parent, Mode mode)
 
     /* Since Qt 4.5, setting this attribute yields significant repaint
      * reduction when the view is being resized. */
-    if (mMode == StaticContents)
-        v->setAttribute(Qt::WA_StaticContents);
+    v->setAttribute(Qt::WA_StaticContents);
 
     /* Since Qt 4.6, mouse tracking is disabled when no graphics item uses
      * hover events. We need to set it since our scene wants the events. */
@@ -207,8 +205,7 @@ void MapView::setUseOpenGL(bool useOpenGL)
     }
 
     QWidget *v = viewport();
-    if (mMode == StaticContents)
-        v->setAttribute(Qt::WA_StaticContents);
+    v->setAttribute(Qt::WA_StaticContents);
     v->setMouseTracking(true);
 #else
     Q_UNUSED(useOpenGL)
