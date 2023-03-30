@@ -1,4 +1,4 @@
-name: Compile on Ubuntu 20.04
+name: Compile on Ubuntu 22.04
 
 on:
   push:
@@ -18,7 +18,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout repository
@@ -38,7 +38,7 @@ jobs:
       run: |
         qbs --version
         qbs setup-toolchains --detect
-        qbs config defaultProfile gcc
+        qbs config defaultProfile x86_64-linux-gnu-gcc-12
 
     - name: Build
       run: |
