@@ -62,7 +62,6 @@
 #include "resizedialog.h"
 #include "scriptmanager.h"
 #include "sentryhelper.h"
-#include "stylehelper.h"
 #include "templatesdock.h"
 #include "tileset.h"
 #include "tilesetdock.h"
@@ -937,34 +936,6 @@ void MainWindow::changeEvent(QEvent *event)
         break;
     default:
         break;
-    }
-}
-
-void MainWindow::keyPressEvent(QKeyEvent *event)
-{
-    if (event->isAutoRepeat())
-        return;
-
-    if (MapView *mapView = mDocumentManager->currentMapView()) {
-        switch (event->key()) {
-        case Qt::Key_Space:
-            mapView->setScrollingMode(MapView::DragScrolling);
-            break;
-        }
-    }
-}
-
-void MainWindow::keyReleaseEvent(QKeyEvent *event)
-{
-    if (event->isAutoRepeat())
-        return;
-
-    if (MapView *mapView = mDocumentManager->currentMapView()) {
-        switch (event->key()) {
-        case Qt::Key_Space:
-            mapView->setScrollingMode(MapView::NoScrolling);
-            break;
-        }
     }
 }
 

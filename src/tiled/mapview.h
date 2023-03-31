@@ -32,6 +32,7 @@ class MapObject;
 
 class MapDocument;
 class MapScene;
+class PannableViewHelper;
 class TileAnimationDriver;
 class Zoomable;
 
@@ -69,13 +70,8 @@ public:
 
     void fitMapInView();
 
-    enum ScrollingMode {
-        NoScrolling,
-        DragScrolling,
-        AutoScrolling
-    };
-    ScrollingMode scrollingMode() const { return mScrollingMode; }
-    void setScrollingMode(ScrollingMode mode);
+    void setToolCursor(const QCursor &cursor);
+    void unsetToolCursor();
 
     using QGraphicsView::centerOn;
     Q_INVOKABLE void centerOn(qreal x, qreal y) { forceCenterOn(QPointF(x, y)); }
@@ -97,8 +93,6 @@ protected:
 
     void wheelEvent(QWheelEvent *event) override;
 
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
     void focusInEvent(QFocusEvent *event) override;
@@ -117,6 +111,7 @@ private:
     void updateSceneRect(const QRectF &sceneRect, const QTransform &transform);
     void updateViewRect();
     void focusMapObject(MapObject *mapObject);
+    void updateCursor();
 
     enum PanDirectionFlag {
         Left    = 0x1,
@@ -138,7 +133,8 @@ private:
     QPoint mLastMousePos;
     QPoint mScrollStartPos;
     QPointF mLastMouseScenePos;
-    ScrollingMode mScrollingMode = NoScrolling;
+    PannableViewHelper *mPannableViewHelper;
+    std::unique_ptr<QCursor> mToolCursor;
     bool mViewInitialized = false;
     bool mHasInitialCenterPos = false;
     QPointF mInitialCenterPos;

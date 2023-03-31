@@ -20,7 +20,6 @@
 
 #include "tiledapplication.h"
 
-#include "documentmanager.h"
 #include "languagemanager.h"
 #include "newsfeed.h"
 #include "newversionchecker.h"

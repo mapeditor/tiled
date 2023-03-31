@@ -443,9 +443,9 @@ void MapEditor::setCurrentDocument(Document *document)
         mapScene->setSelectedTool(mSelectedTool);
 
         if (mSelectedTool)
-            mapView->viewport()->setCursor(mSelectedTool->cursor());
+            mapView->setToolCursor(mSelectedTool->cursor());
         else
-            mapView->viewport()->unsetCursor();
+            mapView->unsetToolCursor();
 
         mViewWithTool = mapView;
     }
@@ -662,9 +662,9 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
         mapScene->setSelectedTool(tool);
 
         if (tool)
-            mViewWithTool->viewport()->setCursor(tool->cursor());
+            mViewWithTool->setToolCursor(tool->cursor());
         else
-            mViewWithTool->viewport()->unsetCursor();
+            mViewWithTool->unsetToolCursor();
     }
 
     if (tool) {
@@ -806,7 +806,7 @@ void MapEditor::currentWidgetChanged()
 void MapEditor::cursorChanged(const QCursor &cursor)
 {
     if (mViewWithTool)
-        mViewWithTool->viewport()->setCursor(cursor);
+        mViewWithTool->setToolCursor(cursor);
 }
 
 void MapEditor::updateStatusInfoLabel(const QString &statusInfo)

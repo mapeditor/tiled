@@ -1,5 +1,6 @@
 ### Unreleased
 
+* Make panning with Space require pressing a mouse button as well (#3626)
 * Scripting: Added read-only access to Project properties (by dogboydog, #3622)
 * Scripting: Fixed behavior of Dialog.SameWidgetRows (#3607)
 * Fixed object labels to adjust to application font changes

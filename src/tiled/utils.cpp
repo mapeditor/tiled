@@ -553,7 +553,7 @@ void addFileManagerActions(QMenu &menu, const QString &fileName)
     if (fileName.isEmpty())
         return;
 
-    menu.addAction(QCoreApplication::translate("Utils", "Copy File Path"), [fileName] {
+    menu.addAction(QCoreApplication::translate("Utils", "Copy File Path"), &menu, [fileName] {
         QApplication::clipboard()->setText(QDir::toNativeSeparators(fileName));
     });
 
@@ -562,14 +562,14 @@ void addFileManagerActions(QMenu &menu, const QString &fileName)
 
 void addOpenContainingFolderAction(QMenu &menu, const QString &fileName)
 {
-    menu.addAction(QCoreApplication::translate("Utils", "Open Containing Folder..."), [fileName] {
+    menu.addAction(QCoreApplication::translate("Utils", "Open Containing Folder..."), &menu, [fileName] {
         showInFileManager(fileName);
     });
 }
 
 void addOpenWithSystemEditorAction(QMenu &menu, const QString &fileName)
 {
-    menu.addAction(QCoreApplication::translate("Utils", "Open with System Editor"), [=] {
+    menu.addAction(QCoreApplication::translate("Utils", "Open with System Editor"), &menu, [=] {
         QDesktopServices::openUrl(QUrl::fromLocalFile(fileName));
     });
 }
