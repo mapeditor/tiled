@@ -1,5 +1,6 @@
 ### Unreleased
 
+* Make panning with Space require pressing a mouse button as well (#3626)
 * Scripting: Added read-only access to Project properties (by dogboydog, #3622)
 * Fixed object labels to adjust to application font changes
 * Fixed grid rendering for odd Hex Side Length values (#3623)
