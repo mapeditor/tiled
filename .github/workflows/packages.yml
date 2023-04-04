@@ -40,19 +40,17 @@ jobs:
 
   linux:
     name: Linux (AppImage, Qt ${{ matrix.qt_version_major }})
-    runs-on: ${{ matrix.image }}
+    runs-on: ubuntu-20.04
     needs: version
 
     strategy:
       matrix:
         include:
-        - image: ubuntu-18.04
-          qt_version: 5.15.2
+        - qt_version: 5.15.2
           qt_version_major: 5
           qt_creator_version: 5.0.3
           gcc_version: 9
-        - image: ubuntu-20.04
-          qt_version: 6.4.3
+        - qt_version: 6.4.3
           qt_version_major: 6
           qt_creator_version: 9.0.1
           gcc_version: 10
