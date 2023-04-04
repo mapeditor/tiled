@@ -1089,7 +1089,7 @@ declare class TiledObject {
  * A Tiled project file primarily defines the list of folders containing
  * the assets belonging to that project.
  *
- * @since 1.11
+ * @since 1.10.1
  */
 declare class Project {
   /**
@@ -3617,7 +3617,7 @@ declare namespace tiled {
    * Currently opened project. If no project is open, the properties of the
    * project will be blank.
    *
-   * @since 1.11
+   * @since 1.10.1
    */
   export const project: Project;
 

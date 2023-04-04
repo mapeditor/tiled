@@ -1,4 +1,4 @@
-### Unreleased
+### Tiled 1.10.1 (4 April 2023)
 
 * Make panning with Space require pressing a mouse button as well (#3626)
 * Scripting: Added read-only access to Project properties (by dogboydog, #3622)

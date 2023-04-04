@@ -16,6 +16,27 @@
  </keywords>
  <content_rating type="oars-1.0" />
  <releases>
+  <release version="1.10.1" type="stable" date="2023-04-04">
+   <url>https://www.mapeditor.org/2023/04/04/tiled-1-10-1-released.html</url>
+   <description>
+    <ul>
+      <li>Make panning with Space require pressing a mouse button as well (#3626)</li>
+      <li>Scripting: Added read-only access to Project properties (by dogboydog, #3622)</li>
+      <li>Scripting: Fixed behavior of Dialog.SameWidgetRows (#3607)</li>
+      <li>Fixed object labels to adjust to application font changes</li>
+      <li>Fixed grid rendering for odd Hex Side Length values (#3623)</li>
+      <li>Fixed tile stamp getting messed up on staggered maps in some cases (#3431)</li>
+      <li>JSON plugin: Fixed loading of empty tilesets created by script (#3542)</li>
+      <li>Godot 4 plugin: Removed depth limit for .godot project file (#3612)</li>
+      <li>Improved Terrain Brush for Hexagonal (Staggered) maps with side length 0 (#3617)</li>
+      <li>Removed "Add Folder to Project" button from the startup page</li>
+      <li>Qt 6: Increased the image allocation limit from 128 MB to 1 GB (#3616)</li>
+      <li>Qt 6 / Linux: Fixed long startup time for some icon themes</li>
+      <li>snap: Updated from core20 to core22 (now uses Qt 5.15)</li>
+      <li>Qbs: Added projects.Tiled.libDir option (#3613)</li>
+    </ul>
+   </description>
+  </release>
   <release version="1.10.0" type="stable" date="2023-03-10">
    <url>https://www.mapeditor.org/2023/03/10/tiled-1-10-released.html</url>
    <description>
