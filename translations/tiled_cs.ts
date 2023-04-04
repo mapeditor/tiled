@@ -5303,12 +5303,12 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+1"/>
         <source>Tiled 1.9</source>
-        <translation type="unfinished">Tiled 1.9</translation>
+        <translation>Tiled 1.9</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tiled 1.10</source>
-        <translation type="unfinished">Tiled 1.10</translation>
+        <translation>Tiled 1.10</translation>
     </message>
     <message>
         <location line="+1"/>
