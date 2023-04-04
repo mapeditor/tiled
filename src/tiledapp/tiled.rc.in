@@ -1,4 +1,4 @@
-IDI_ICON1               ICON    DISCARDABLE     "images/tiled-icon.ico"
+IDI_ICON1               ICON    DISCARDABLE     "resources/images/tiled-icon.ico"
 
 #include <winver.h>
 
