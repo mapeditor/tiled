@@ -48,17 +48,13 @@ jobs:
         include:
         - qt_version: 5.15.2
           qt_version_major: 5
-          qt_creator_version: 5.0.3
-          gcc_version: 9
         - qt_version: 6.4.3
           qt_version_major: 6
-          qt_creator_version: 9.0.1
-          gcc_version: 10
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       QT_VERSION: ${{ matrix.qt_version }}
-      QTCREATOR_VERSION: ${{ matrix.qt_creator_version }}
+      QTCREATOR_VERSION: 9.0.1
 
     steps:
     - name: Checkout repository
@@ -88,7 +84,7 @@ jobs:
       run: |
         qbs --version
         qbs setup-toolchains --detect
-        qbs config defaultProfile x86_64-linux-gnu-gcc-${{ matrix.gcc_version }}
+        qbs config defaultProfile x86_64-linux-gnu-gcc-10
 
     - name: Build Sentry Native
       run: |
