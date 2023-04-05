@@ -18,6 +18,11 @@ since it is now built on Ubuntu 20.04 and requires Glibc 2.30. Users of Ubuntu
 [Flatpak][Flatpak]. The snap has now also been updated to Qt 5.15 and the
 Flatpak for 1.10.1 will use Qt 6.4.
 
+_Note that the initial Windows builds of 1.10.1 unfortunately shipped with a
+tiled.exe that didn't have an icon. This was corrected the next day, so if
+you're affected by this problem you can just re-download the installer to fix
+the icon._
+
 Changelog
 ---------
 
