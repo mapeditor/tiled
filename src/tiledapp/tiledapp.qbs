@@ -11,7 +11,7 @@ TiledQtGuiApplication {
     Depends { name: "libtilededitor" }
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") && Qt.core.versionMajor >= 6 }
-    Depends { name: "texttemplate" }
+    Depends { name: "texttemplate"; condition: qbs.targetOS.contains("windows") }
 
     property bool qtcRunnable: true
 
@@ -45,6 +45,22 @@ TiledQtGuiApplication {
         bundle.identifierPrefix: "org.mapeditor"
         ib.appIconName: "tiled-icon-mac"
         targetName: "Tiled"
+    }
+
+    Properties {
+        condition: qbs.targetOS.contains("windows")
+
+        texttemplate.outputTag: "rc"
+        texttemplate.dict: {
+            var versionArray = project.version.split(".");
+            if (versionArray.length == 3)
+                versionArray.push("0");
+
+            return {
+                version: project.version,
+                version_csv: versionArray.join(",")
+            };
+        }
     }
 
     Group {
@@ -175,17 +191,5 @@ TiledQtGuiApplication {
         name: "RC file (Windows)"
         condition: qbs.targetOS.contains("windows")
         files: [ "tiled.rc.in" ]
-
-        texttemplate.outputTag: "rc"
-        texttemplate.dict: {
-            var versionArray = project.version.split(".");
-            if (versionArray.length == 3)
-                versionArray.push("0");
-
-            return {
-                version: project.version,
-                version_csv: versionArray.join(",")
-            };
-        }
     }
 }
