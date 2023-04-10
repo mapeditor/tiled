@@ -454,6 +454,28 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
                         device->write(formatByteString("%1/transpose = true\n", tileName));
 
                     foundCollisions |= exportTileCollisions(device, tile, tileName, alt);
+
+                    // Custom properties
+                    const Properties &properties = tile->properties();
+                    const auto keys = properties.keys();
+                    device->write(formatByteString("%1/custom_data_0 = {", tileName));
+                    bool first = true;
+                    for (auto& key : keys) {
+                        auto value = properties.value(key);
+                        if (value.type() == QVariant::Bool
+                            || value.type() == QVariant::Int
+                            || value.type() == QVariant::Double
+                            || value.type() == QVariant::String) {
+                            const QString sep = first ? QStringLiteral("") : QStringLiteral(",");
+                            const QString val = value.type() == QVariant::String
+                                                    ? formatString("\"%1\"", sanitizeQuotedString(value.toString()))
+                                                    : value.toString();
+                            device->write(formatByteString("%1\n\"%2\": %3",
+                                                           sep, sanitizeQuotedString(key), val));
+                            first = false;
+                        }
+                    }
+                    device->write("\n}\n");
                 }
             }
         }
@@ -521,6 +543,9 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
         device->write(formatByteString("tile_size = Vector2i(%1, %2)\n",
             map->tileWidth(), tileHeight));
     }
+
+    device->write("custom_data_layer_0/name = \"Properties\"\n");
+    device->write("custom_data_layer_0/type = 27\n");
 
     for (const TilesetInfo &tilesetInfo : std::as_const(assetInfo.tilesetInfo)) {
         device->write(formatByteString(
