@@ -6036,8 +6036,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation>枚举值太多，其值存储为标志。位标志的最大数量为 32。</translation>
+        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is %1.</source>
+        <translation>枚举值太多，其值存储为标志。位标志的最大数量为 %1。</translation>
     </message>
     <message>
         <location line="+69"/>
