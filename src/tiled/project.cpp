@@ -45,7 +45,8 @@ static QString absolute(const QDir &dir, const QString &fileName)
 }
 
 Project::Project()
-    : mPropertyTypes(SharedPropertyTypes::create())
+    : Object(Object::Project)
+    , mPropertyTypes(SharedPropertyTypes::create())
 {
 }
 

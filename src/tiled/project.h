@@ -21,6 +21,7 @@
 #pragma once
 
 #include "command.h"
+#include "object.h"
 #include "properties.h"
 #include "propertytype.h"
 #include "tiled.h"
@@ -31,7 +32,7 @@
 
 namespace Tiled {
 
-class Project
+class Project : public Object
 {
 public:
     Project();
