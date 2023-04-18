@@ -6061,8 +6061,8 @@ Bitte Format angeben.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation>Zu viele Werte für einen Enum, in dem die Werte als Flag gespeichert werden. Maximale Anzahl: 32.</translation>
+        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is %1.</source>
+        <translation>Zu viele Werte für einen Enum, in dem die Werte als Flag gespeichert werden. Maximale Anzahl: %1.</translation>
     </message>
     <message>
         <location line="+69"/>

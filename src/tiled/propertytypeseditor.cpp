@@ -515,10 +515,10 @@ void PropertyTypesEditor::removeValues()
 
 bool PropertyTypesEditor::checkValueCount(int count)
 {
-    if (count > 32) {
+    if (count > 31) {
         QMessageBox::critical(this,
                               tr("Too Many Values"),
-                              tr("Too many values for enum with values stored as flags. Maximum number of bit flags is 32."));
+                              tr("Too many values for enum with values stored as flags. Maximum number of bit flags is %1.").arg(31));
         return false;
     }
     return true;

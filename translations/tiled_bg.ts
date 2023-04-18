@@ -6061,8 +6061,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation>Твърде много стойности за изброен тип, чийто стойности се съхраняват като флагове. Максималния брой на флаговете в този вид е 32.</translation>
+        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is %1.</source>
+        <translation>Твърде много стойности за изброен тип, чийто стойности се съхраняват като флагове. Максималния брой на флаговете в този вид е %1.</translation>
     </message>
     <message>
         <location line="+69"/>

@@ -6061,8 +6061,8 @@ Ole hyvä ja valitse tietty tiedostomuoto.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation>Liian monta arvoa enumille, jonka arvot on tallennettu lippuina. Lippujen enimmäismäärä on 32 bittiä.</translation>
+        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is %1.</source>
+        <translation>Liian monta arvoa enumille, jonka arvot on tallennettu lippuina. Lippujen enimmäismäärä on %1 bittiä.</translation>
     </message>
     <message>
         <location line="+69"/>

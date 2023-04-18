@@ -6061,7 +6061,7 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
+        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
