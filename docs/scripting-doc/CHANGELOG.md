@@ -1,5 +1,12 @@
 ## Changelog
 
+### 1.10.1
+
+- Added the new API from Tiled 1.10.1
+- Added missing documentation for MapObject(shape, name?) constructor
+- Fixed link in docs for Image
+- Improved docs for QCheckBox and QPushButton
+
 ### 1.10.0
 
 - Added the new API from Tiled 1.10.0
