@@ -1160,6 +1160,13 @@ interface Font {
 }
 
 /**
+ * The various possible shapes for {@link MapObject} instances.
+ *
+ * Accessible like `MapObject.Rectangle`, `MapObject.Polygon`, etc.
+ */
+type MapObjectShape = typeof MapObject.Rectangle | typeof MapObject.Polygon | typeof MapObject.Polyline | typeof MapObject.Ellipse | typeof MapObject.Text | typeof MapObject.Point;
+
+/**
  * An object that can be part of an {@link ObjectGroup}.
  */
 declare class MapObject extends TiledObject {
@@ -1178,7 +1185,7 @@ declare class MapObject extends TiledObject {
   /**
    * Shape of the object.
    */
-  shape: typeof MapObject.Rectangle | typeof MapObject.Polygon | typeof MapObject.Polyline | typeof MapObject.Ellipse | typeof MapObject.Text | typeof MapObject.Point
+  shape: MapObjectShape;
 
   /**
    * Name of the object.
@@ -1298,6 +1305,11 @@ declare class MapObject extends TiledObject {
    * Constructs a new map object, which can be added to an {@link ObjectGroup}.
    */
   constructor(name? : string)
+
+  /**
+   * Constructs a new map object of the given shape, which can be added to an {@link ObjectGroup}.
+   */
+  constructor(shape: MapObjectShape, name? : string)
 }
 
 /**
