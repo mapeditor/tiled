@@ -48,6 +48,7 @@ public:
         TileType            = 0x20,
         WangSetType         = 0x40,
         WangColorType       = 0x80,
+        Project             = 0xA0,
     };
 
     explicit Object(TypeId typeId, const QString &className = QString())

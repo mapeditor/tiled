@@ -145,7 +145,7 @@ public:
         TileClass           = 0x20,
         WangSetClass        = 0x40,
         WangColorClass      = 0x80,
-
+        ProjectClass        = 0xA0,
         AnyUsage            = 0xFF,
         AnyObjectClass      = AnyUsage & ~PropertyValueType,
     };

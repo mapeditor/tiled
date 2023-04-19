@@ -308,6 +308,7 @@ static const struct  {
     { ClassPropertyType::TilesetClass,          QLatin1String("tileset") },
     { ClassPropertyType::WangColorClass,        QLatin1String("wangcolor") },
     { ClassPropertyType::WangSetClass,          QLatin1String("wangset") },
+    { ClassPropertyType::ProjectClass,          QLatin1String("project") },
 };
 
 QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
