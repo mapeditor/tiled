@@ -348,7 +348,7 @@ your own project. A few things to keep in mind:
 
 .. _blob tileset: http://www.cr31.co.uk/stagecast/wang/blob.html
 
-.. |terrain| image:: ../../src/tiled/images/24/terrain.png
+.. |terrain| image:: ../../src/tiled/resources/images/24/terrain.png
 
 ..
     TODO:

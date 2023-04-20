@@ -215,11 +215,11 @@ changing the value in the :guilabel:`Frame Duration` field and then clicking
 :guilabel:`Apply`.
 
 .. |tile-collision-editor-icon|
-   image:: ../../src/tiled/images/48/tile-collision-editor.png
+   image:: ../../src/tiled/resources/images/48/tile-collision-editor.png
       :scale: 50
 
 .. |tile-animation-editor-icon|
-   image:: ../../src/tiled/images/24/animation-edit.png
+   image:: ../../src/tiled/resources/images/24/animation-edit.png
 
 .. _Tiled2Unity: http://www.seanba.com/Tiled2Unity
 .. _Mega Dad Adventures: http://www.seanba.com/megadadadventures.html
