@@ -253,7 +253,7 @@ bool CreateObjectTool::startNewMapObject(const QPointF &pos,
 
     mNewMapObjectGroup->setColor(objectGroup->color());
     mNewMapObjectGroup->setOffset(objectGroup->totalOffset());
-    mNewMapObjectGroup->setParallaxFactor(objectGroup->parallaxFactor());
+    mNewMapObjectGroup->setParallaxFactor(objectGroup->effectiveParallaxFactor());
 
     updateNewObjectGroupItemPos();
 
