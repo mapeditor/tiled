@@ -1,3 +1,7 @@
+### [Unreleased]
+
+* Removed Space and Ctrl+Space shortcuts from Layers view to avoid conflict with panning (#3672)
+
 ### Tiled 1.10.1 (4 April 2023)
 
 * Make panning with Space require pressing a mouse button as well (#3626)
