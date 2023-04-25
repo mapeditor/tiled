@@ -87,9 +87,10 @@ the index of the current value in the list of values. The former is more
 readable whereas the latter could easier and more efficient to load.
 
 Finally, an enum can also allow multiple values to be chosen. In this case
-each option is displayed with checkbox. When saving as string, a
+each option is displayed with a checkbox. When saving as string, a
 comma-separated list is used and when saving as number the selected indexes are
-encoded as bitflags.
+encoded as bitflags. In both cases, the maximum number of flags supported is 30,
+since internally a 32-bit signed integer is used to store the value.
 
 .. _custom-classes:
 
