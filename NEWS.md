@@ -2,6 +2,7 @@
 
 * Removed Space and Ctrl+Space shortcuts from Layers view to avoid conflict with panning (#3672)
 * Fixed object preview position with parallax factor on group layer (#3669)
+* Fixed hover highlight rendering with active parallax factor (#3669)
 
 ### Tiled 1.10.1 (4 April 2023)
 
