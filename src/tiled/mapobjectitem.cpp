@@ -141,15 +141,17 @@ void MapObjectItem::paint(QPainter *painter,
     if (mIsHoveredIndicator)
         painter->setOpacity(0.4);
 
-    painter->translate(-pos());
+    // This is the same as pos(), except for hover indicators
+    const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
+
+    painter->translate(-pixelPos);
     renderer->drawMapObject(painter, mObject, mColors);
-    painter->translate(pos());
+    painter->translate(pixelPos);
 
     if (mIsHoveredIndicator) {
         painter->setOpacity(0.6);
 
         // TODO: Code mostly duplicated in MapObjectOutline
-        const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
         QRectF bounds = mObject->screenBounds(*renderer);
         bounds.translate(-pixelPos);
 
