@@ -493,7 +493,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
 
     // Avoid using drawPixmapFragments with OpenGL in Qt 6.4.1 and above
     // (https://bugreports.qt.io/browse/QTBUG-111416)
-#if QT_VERSION < QT_VERSION_CHECK(6, 4, 1)
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 1) || QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
     if (mIsOpenGL || (fragment.scaleX > 0 && fragment.scaleY > 0)) {
 #else
     if (!mIsOpenGL && fragment.scaleX > 0 && fragment.scaleY > 0) {
