@@ -561,7 +561,7 @@ void ObjectSelectionItem::layerChanged(const LayerChangeEvent &event)
     // If an object or group layer changed, that means its offset may have
     // changed, which affects the outlines of selected objects on that layer
     // and the positions of any name labels that are shown.
-    if (event.properties & LayerChangeEvent::OffsetProperty) {
+    if (event.properties & LayerChangeEvent::PositionProperties) {
         if (objectGroup) {
             syncOverlayItems(objectGroup->objects());
         } else {
