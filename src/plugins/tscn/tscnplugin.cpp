@@ -456,12 +456,11 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
                     foundCollisions |= exportTileCollisions(device, tile, tileName, alt);
 
                     // Custom properties
-                    const Properties &properties = tile->properties();
-                    const auto keys = properties.keys();
                     device->write(formatByteString("%1/custom_data_0 = {", tileName));
                     bool first = true;
-                    for (auto& key : keys) {
-                        auto value = properties.value(key);
+                    QMapIterator<QString,QVariant> it(tile->properties());
+                    while (it.hasNext()) {
+                        auto value = it.next().value();
                         if (value.type() == QVariant::Bool
                             || value.type() == QVariant::Int
                             || value.type() == QVariant::Double
@@ -471,7 +470,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
                                                     ? formatString("\"%1\"", sanitizeQuotedString(value.toString()))
                                                     : value.toString();
                             device->write(formatByteString("%1\n\"%2\": %3",
-                                                           sep, sanitizeQuotedString(key), val));
+                                                           sep, sanitizeQuotedString(it.key()), val));
                             first = false;
                         }
                     }
