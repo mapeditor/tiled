@@ -324,6 +324,9 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
     return foundCollisions;
 }
 
+// Write supported property types to output device
+static bool writeProperties(QFileDevice *device, const Properties &properties, bool first);
+
 // Write the tileset
 // If you're creating a reusable tileset file, pass in a new file device and
 // set isExternal to true, otherwise, reuse the device from the tscn file.
@@ -457,23 +460,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
 
                     // Custom properties
                     device->write(formatByteString("%1/custom_data_0 = {", tileName));
-                    bool first = true;
-                    QMapIterator<QString,QVariant> it(tile->properties());
-                    while (it.hasNext()) {
-                        auto value = it.next().value();
-                        if (value.type() == QVariant::Bool
-                            || value.type() == QVariant::Int
-                            || value.type() == QVariant::Double
-                            || value.type() == QVariant::String) {
-                            const QString sep = first ? QStringLiteral("") : QStringLiteral(",");
-                            const QString val = value.type() == QVariant::String
-                                                    ? formatString("\"%1\"", sanitizeQuotedString(value.toString()))
-                                                    : value.toString();
-                            device->write(formatByteString("%1\n\"%2\": %3",
-                                                           sep, sanitizeQuotedString(it.key()), val));
-                            first = false;
-                        }
-                    }
+                    writeProperties(device, tile->resolvedProperties(), true);
                     device->write("\n}\n");
                 }
             }
@@ -555,6 +542,50 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
     device->write("\n");
 }
 
+static bool writeProperty(QFileDevice *device, const QString &key, const QVariant &value, bool first)
+{
+    const int metaType = value.userType();
+
+    const QString sep = first ? QStringLiteral("") : QStringLiteral(",");
+    const QString sanitizedKey = sanitizeQuotedString(key);
+
+    if (metaType == propertyValueId()) {
+        const auto propertyValue = value.value<PropertyValue>();
+        if (propertyValue.type()->isClass()) {
+            device->write(formatByteString("%1\n\"%2\": {", sep, sanitizedKey));
+            writeProperties(device, propertyValue.value.toMap(), true);
+            device->write("\n}");
+            return false;
+        } else if (propertyValue.type()->isEnum()) {
+            device->write(formatByteString("%1\n\"%2\": %3", sep, sanitizedKey, propertyValue.value.toInt()));
+            return false;
+        }
+        return first;
+    }
+
+    switch (metaType) {
+    case QMetaType::QString:
+        device->write(formatByteString("%1\n\"%2\": \"%3\"", sep, sanitizedKey, sanitizeQuotedString(value.toString())));
+        return false;
+    case QMetaType::Bool:
+    case QMetaType::Int:
+    case QMetaType::Double:
+        device->write(formatByteString("%1\n\"%2\": %3", sep, sanitizedKey, value.toString()));
+        return false;
+    default:
+        return first;
+    }
+}
+
+static bool writeProperties(QFileDevice *device, const Properties &properties, bool first)
+{
+    QMapIterator<QString,QVariant> it(properties);
+    while (it.hasNext()) {
+        auto value = it.next().value();
+        first = writeProperty(device, it.key(), value, first);
+    }
+    return first;
+}
 
 bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
 {
